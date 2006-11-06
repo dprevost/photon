@@ -1,0 +1,50 @@
+# Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+CLEANFILES = *~ core
+
+SUBDIRS =             \
+          DirAccess   \
+          Error       \
+          MemFile     \
+          Options     \
+          ProcessLock \
+          ThreadLock
+
+check_PROGRAMS =               \
+                 nanosleepTest \
+                 TimerTest
+
+nanosleepTest_SOURCES = nanosleepTest.c
+TimerTest_SOURCES     = TimerTest.c
+
+EXTRA_DIST = 
+
+TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+
+TESTS =               \
+        nanosleepTest \
+        TimerTest
+
+XFAIL_TESTS = 
+
+LDADD = $(top_builddir)/src/Common/libCommon.la
+
+AM_CPPFLAGS = -I$(top_srcdir)/src/Common \
+              -I$(top_srcdir)/src/include
+
+
+if COND_USE_DBC
+   AM_CPPFLAGS += -DUSE_DBC
+endif
+if COND_USE_EXTREME_DBC
+   AM_CPPFLAGS += -DUSE_EXTREME_DBC
+endif
+

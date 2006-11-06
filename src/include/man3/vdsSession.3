@@ -1,0 +1,79 @@
+.TH "vdsSession" 3 "4 Nov 2006" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+vdsSession \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <vdsSession.h>\fP
+.PP
+.SH "Detailed Description"
+.PP 
+Definition at line 35 of file vdsSession.h.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBvdsSession\fP (bool explicitTransaction=false)"
+.br
+.ti -1c
+.RI "virtual \fB~vdsSession\fP ()"
+.br
+.ti -1c
+.RI "int \fBCreateObject\fP (const char *objectName, vdsObjectType objectType)"
+.br
+.ti -1c
+.RI "int \fBDestroyObject\fP (const char *objectName)"
+.br
+.ti -1c
+.RI "int \fBCommit\fP ()"
+.br
+.ti -1c
+.RI "int \fBRollback\fP ()"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "vdsSessionHook * \fBm_pSessionHook\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBvdsProxyObject\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "vdsSession::vdsSession (bool explicitTransaction = \fCfalse\fP)"
+.PP
+.SS "virtual vdsSession::~vdsSession ()\fC [virtual]\fP"
+.PP
+.SH "Member Function Documentation"
+.PP 
+.SS "int vdsSession::Commit ()"
+.PP
+.SS "int vdsSession::CreateObject (const char * objectName, vdsObjectType objectType)"
+.PP
+.SS "int vdsSession::DestroyObject (const char * objectName)"
+.PP
+.SS "int vdsSession::Rollback ()"
+.PP
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class vdsProxyObject\fC [friend]\fP"
+.PP
+Definition at line 74 of file vdsSession.h.
+.SH "Member Data Documentation"
+.PP 
+.SS "vdsSessionHook* \fBvdsSession::m_pSessionHook\fP\fC [private]\fP"
+.PP
+Definition at line 72 of file vdsSession.h.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for vdsf C++ API from the source code.

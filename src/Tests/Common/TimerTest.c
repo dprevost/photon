@@ -1,0 +1,124 @@
+/*
+ * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ *
+ * This file is part of vdsf (Virtual Data Space Framework).
+ *
+ * This file may be distributed and/or modified under the terms of the
+ * GNU General Public License version 2 as published by the Free Software
+ * Foundation and appearing in the file COPYING included in the
+ * packaging of this library.
+ *
+ * This file is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ */
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#include "Common.h"
+#include "Timer.h"
+
+#define NS_PER_SEC     1000000000
+#define NS_PER_US            1000
+#define HALF_SEC_IN_US     500000
+#define TEST_LOOP          100000
+#define TENTH_SEC_IN_US    100000    /* (1/10 sec in usecs) */
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+int main( int argc, char* argv[] )
+{
+   unsigned long sec, nanoSec, sum;
+   vdscTimer timer;
+   
+   unsigned long loop;
+   int dum, i, innerLoop = TEST_LOOP, outerLoop = 15;
+
+   sec = 0;
+   nanoSec = 0;
+   loop = 0;
+   dum = 0;
+   vdscInitTimer( &timer );
+   
+   /*
+    * The first thing we must do is to calibrate the loop. The problem
+    * we have to "solve" is to make sure we cover all code paths in
+    * VdsTimer::Calculate(), specially this if condition:
+    *   "if ( timeEnd.tv_usec < timeBegin.tv_usec )"
+    *
+    * To do that, we ajust the inner loop to be multiples of ~0.10 sec 
+    * and run the outer loop multiple times. This gives us a good chance 
+    * of hitting the if condition. 
+    *
+    * Note that this does not always work perfectly in real life. The 
+    * inner loops end up not always being multiple of 0.1 secs in the 
+    * tests I've ran (but it was done on a laptop with a Centrino - it is 
+    * likely that the frequency of the cpu was increased by the heavy 
+    * workload of these tests).
+    */
+   vdscBeginTimer( &timer );
+
+   while ( loop < innerLoop )
+   {
+      dum = (dum+1)*loop;
+      dum = dum - loop;
+      dum = dum + 2 - dum /2;
+      loop++;
+   }
+      
+   vdscEndTimer( &timer );
+   vdscCalculateTimer( &timer, &sec, &nanoSec );
+
+   if ( sec == 0 && nanoSec == 0 )
+   {
+      fprintf( stderr, "Timer returns invalid time!\n" );
+      return 1;
+   }
+   sum = NS_PER_SEC*sec + nanoSec;
+   fprintf( stderr, "zzz %u %u \n",   sum,  innerLoop );
+   sum = sum / NS_PER_US;    /* in micro-seconds */
+   if ( sum == 0 ) sum = 1;
+
+   /* 
+    * Note: the 2 factors "1000" in the next line are to avoid integer
+    * overflow on 32 bits machine. The side effect is to diminush the 
+    * precision of the calculations to a millisec.
+    */
+   innerLoop = ((innerLoop/1000)*TENTH_SEC_IN_US/sum)*1000;
+   fprintf( stderr, "zzz %u %u \n",   sum,  innerLoop/(TEST_LOOP) );
+
+   /* The test itself */
+
+   for ( i = 0; i < outerLoop; ++i )
+   {
+      sec = 0;
+      nanoSec = 0;
+      loop = 0;
+      dum = 0;
+      
+      vdscBeginTimer( &timer );
+
+      while ( loop < innerLoop*(i+1) )
+      {
+         dum = (dum+1)*loop;
+         dum = dum - loop;
+         dum = dum + 2 - dum /2;
+         loop++;
+      }
+      
+      vdscEndTimer( &timer );
+      vdscCalculateTimer( &timer, &sec, &nanoSec );
+
+      if ( sec == 0 && nanoSec == 0 )
+      {
+         fprintf( stderr, "Timer returns invalid time!\n" );
+         return 1;
+      }
+      
+      fprintf( stderr, "Sec = %u, nanoSec = %u\n", sec, nanoSec );
+   }
+   
+   return 0;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

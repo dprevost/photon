@@ -1,0 +1,13 @@
+Welcome to vdsf - the virtual data space framework version 0.2.
+
+WARNING: this version is a prototype and not an official release.
+
+This library offers the following shared data components:
+ - queues
+ - folders
+
+vdsf is free software. The framework is distributed under the GPL,
+the GNU General Public License (see the file COPYING.LIB for details).
+
+For documentation, please see the files in the doc subdirectory.
+For building and installation instructions please see the INSTALL file.
