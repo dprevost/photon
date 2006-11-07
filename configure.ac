@@ -286,6 +286,7 @@ AC_CONFIG_FILES([
    m4/Makefile
    src/Makefile
    src/BuildTools/Makefile
+   src/BuildTools/Tests/Makefile
    src/Common/Makefile
    src/API/Makefile
    src/Engine/Makefile
