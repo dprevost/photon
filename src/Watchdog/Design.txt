@@ -1,0 +1,99 @@
+Some issues that need to be considered for the watchdog.
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+Goals of the watchdog:
+
+1) To be able to detect application crashes and to cleanup the VDS as
+   required.
+
+2) To have a single "owner" of the shared memory/backstored file in order
+   to provide additional features (for example adding ACLs to these objects
+   on system that support them).
+
+3) To eliminate the need, for applications, to specify parameters for 
+   the VDS (size, etc.) in the form of a config file or whatever. 
+
+4) To eliminate the small but non-null danger of a race condition when 
+   the VDS is created/started (the other solution was to used a file lock
+   on the backstored file but...).
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+Issues:
+
+1) Which IPC mechanism should be used?
+
+   I've looked at different possibilities, for example named pipes but 
+   in the end, sockets are more universal than other  mechanisms so the 
+   choice was not difficult to make.
+ 
+   However, to maintain the possibility of using a different mechanism,
+   the interface must be "universal":
+     - using wrapper classes with a very simple interface for both 
+       client and server. 
+     - use more generic parameters for the methods of this class, for 
+       example passing the address of the watchdog as a char* instead of 
+       something more specific like an unsigned short (a port number)).
+
+2) Should the connection be permanent?
+
+   The main advantage of a permanent connection is that it makes it easy 
+   to intercept crashes (using a signal handler for SIG_PIPE is a definite 
+   possibility). This allows for faster recovery.
+
+   The other alternative is for the watchdog to periodically "probe" 
+   whether the processes are still alive or not (using something like 
+   kill(pid,0)). The problem with this alternative would be:
+    - slower response time to crashes (it would depend on the period of
+      the probe).
+    - applications would likely need to reconnect to tell the watchdog that 
+      they are leaving (so that no false positive occurs). 
+
+   The main problem with a permanent connection is the problem of a 
+   single point of failure. This is discuss in the next item.
+
+   Note: I haven't quite decided yet which option is the best. 
+
+3) If the connection is permanent, is there a danger of having a single 
+   point of failure issue?
+
+   Yes. One way to insure that this does not cause a problem is to make
+   the watchdog itself very simple and to use another application to 
+   do the crash recovery. This application would be spawned by the wd
+   (fork/exec on linux/unix).
+
+   Not sure yet if this is a good idea as it will require additional time
+   to response to a crash. I need to measure this (or find timing data 
+   on the web...).
+ 
+4) What if a crash-recovery attempt ends up crashing the watchdog itself?
+
+   This problem goes away if we use the technique discuss previously for
+   permanent connections.
+
+   Otherwise, it might be possible to use other techniques (for example a
+   wd parent process and a wd child and use SIG_CHILD to alert signals to 
+   alert the parent of a problem with the child.
+
+   Of course, for both of these alternatives we are left with a damaged
+   VDS - which is unacceptable. So more thinking is needed to avoid these
+   problems.
+   
+5) On Unix/linux, the watchdog will be a daemon. An NT service on Windows.
+   Combining the two is not easy.
+
+   Daemon on unix/linux is pretty easy.
+   If I remember correctly, setting up a service in Windows is more complex.
+   You might need to setup two threads, one for control, one for "serving"
+   requests. The threads are not started by the app but by the service 
+	management itself - what we have to provide are callbacks functions.
+
+   
+Notes on the design for Windows:
+
+Part of the design was inspired by an article on creating Win32 Services in
+C++ written by Nigel Thompson in 1995.
+(http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dndllpro/html/
+msdn_ntservic.asp)
+
