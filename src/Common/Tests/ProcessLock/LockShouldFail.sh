@@ -19,7 +19,10 @@
 # must provide the name of the directory where the sources are located
 # as the second argument to the script. Example:
 #
-# ./LockConcurrencyTry.sh 100 /home/dprevost/vdsf0.1/src
+# ./LockConcurrency.sh 100 /home/dprevost/vdsf0.1/src
+#
+# A second argument can be provided to indicate the build directory
+# if using the VPATH functionality of make.
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -29,7 +32,7 @@ if [ "$?" != 0 ] ; then
 fi
 
 if [ "$1" = "" ] ; then
-   timer=25
+   timer=250
 fi
 
 if [ "$TMPDIR" = "" ] ; then
@@ -58,23 +61,25 @@ mkdir $TMPDIR/vdsf
 if [ "$?" != 0 ] ; then
    exit 1
 fi
+#mkdir $BASE_DIR
+#if [ "$?" != 0 ] ; then
+#   exit 1
+#fi
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-$top_builddir/src/Tests/Common/ThreadLock/LockConcurrency $timer $BASE_DIR "try" &
+$top_builddir/src/Common/Tests/ProcessLock/LockShouldFail $timer $BASE_DIR
+####>& /dev/null
 if [ "$?" != 0 ] ; then
-   rm -rf $BASE_DIR
-   exit 1
-fi
-
-wait %1
-if [ "$?" != 0 ] ; then
-   rm -rf $BASE_DIR
+#   rm -rf $BASE_DIR
    exit 1
 fi
 
 echo "Tests terminated successfully"
 
-rm -rf $BASE_DIR
+#rm -rf $BASE_DIR
+
+jobs
+
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

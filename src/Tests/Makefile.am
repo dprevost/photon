@@ -11,7 +11,6 @@
 CLEANFILES = *~ core
 
 SUBDIRS =          \
-          Common   \
           Engine   \
           API      \
           Watchdog

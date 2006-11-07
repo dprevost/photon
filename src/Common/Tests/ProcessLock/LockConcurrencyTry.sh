@@ -32,7 +32,7 @@ if [ "$?" != 0 ] ; then
 fi
 
 if [ "$1" = "" ] ; then
-   timer=250
+   timer=25
 fi
 
 if [ "$TMPDIR" = "" ] ; then
@@ -61,23 +61,62 @@ mkdir $TMPDIR/vdsf
 if [ "$?" != 0 ] ; then
    exit 1
 fi
-#mkdir $BASE_DIR
-#if [ "$?" != 0 ] ; then
-#   exit 1
-#fi
+
+exe=$top_builddir/src/Common/Tests/ProcessLock/LockConcurrency
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-$top_builddir/src/Tests/Common/ThreadLock/LockShouldFail $timer $BASE_DIR
-####>& /dev/null
+$exe 0 $timer $BASE_DIR "try" &
 if [ "$?" != 0 ] ; then
-#   rm -rf $BASE_DIR
+   rm -rf $BASE_DIR
+   exit 1
+fi
+
+sleep 1
+$exe 1 $timer $BASE_DIR "try" &
+if [ "$?" != 0 ] ; then
+   rm -rf $BASE_DIR
+   exit 1
+fi
+sleep 1
+$exe 2 $timer $BASE_DIR "try" &
+if [ "$?" != 0 ] ; then
+   rm -rf $BASE_DIR
+   exit 1
+fi
+sleep 1
+$exe 3 $timer $BASE_DIR "try" &
+if [ "$?" != 0 ] ; then
+   rm -rf $BASE_DIR
+   exit 1
+fi
+
+sleep 1
+
+wait %1
+if [ "$?" != 0 ] ; then
+   rm -rf $BASE_DIR
+   exit 1
+fi
+wait %2
+if [ "$?" != 0 ] ; then
+   rm -rf $BASE_DIR
+   exit 1
+fi
+wait %3
+if [ "$?" != 0 ] ; then
+   rm -rf $BASE_DIR
+   exit 1
+fi
+wait %4
+if [ "$?" != 0 ] ; then
+   rm -rf $BASE_DIR
    exit 1
 fi
 
 echo "Tests terminated successfully"
 
-#rm -rf $BASE_DIR
+rm -rf $BASE_DIR
 
 jobs
 

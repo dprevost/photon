@@ -288,6 +288,13 @@ AC_CONFIG_FILES([
    src/BuildTools/Makefile
    src/BuildTools/Tests/Makefile
    src/Common/Makefile
+   src/Common/Tests/Makefile
+   src/Common/Tests/DirAccess/Makefile
+   src/Common/Tests/Error/Makefile
+   src/Common/Tests/MemFile/Makefile
+   src/Common/Tests/Options/Makefile
+   src/Common/Tests/ProcessLock/Makefile
+   src/Common/Tests/ThreadLock/Makefile
    src/API/Makefile
    src/Engine/Makefile
    src/Demo/Makefile
@@ -297,13 +304,6 @@ AC_CONFIG_FILES([
    src/CrashRecovery/Makefile
    src/Tests/Makefile
    src/Tests/API/Makefile
-   src/Tests/Common/Makefile
-   src/Tests/Common/DirAccess/Makefile
-   src/Tests/Common/Error/Makefile
-   src/Tests/Common/MemFile/Makefile
-   src/Tests/Common/Options/Makefile
-   src/Tests/Common/ProcessLock/Makefile
-   src/Tests/Common/ThreadLock/Makefile
    src/Tests/Engine/Makefile
    src/Tests/Engine/List/Makefile
    src/Tests/Engine/LogFile/Makefile

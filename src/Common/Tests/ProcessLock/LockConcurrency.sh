@@ -62,15 +62,53 @@ if [ "$?" != 0 ] ; then
    exit 1
 fi
 
+exe=$top_builddir/src/Common/Tests/ProcessLock/LockConcurrency
+
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-$top_builddir/src/Tests/Common/ThreadLock/LockConcurrency $timer $BASE_DIR "lock" &
+$exe 0 $timer $BASE_DIR "lock" &
 if [ "$?" != 0 ] ; then
    rm -rf $BASE_DIR
    exit 1
 fi
 
+sleep 1
+$exe 1 $timer $BASE_DIR "lock" &
+if [ "$?" != 0 ] ; then
+   rm -rf $BASE_DIR
+   exit 1
+fi
+sleep 1
+$exe 2 $timer $BASE_DIR "lock" &
+if [ "$?" != 0 ] ; then
+   rm -rf $BASE_DIR
+   exit 1
+fi
+sleep 1
+$exe 3 $timer $BASE_DIR "lock" &
+if [ "$?" != 0 ] ; then
+   rm -rf $BASE_DIR
+   exit 1
+fi
+
+sleep 1
+
 wait %1
+if [ "$?" != 0 ] ; then
+   rm -rf $BASE_DIR
+   exit 1
+fi
+wait %2
+if [ "$?" != 0 ] ; then
+   rm -rf $BASE_DIR
+   exit 1
+fi
+wait %3
+if [ "$?" != 0 ] ; then
+   rm -rf $BASE_DIR
+   exit 1
+fi
+wait %4
 if [ "$?" != 0 ] ; then
    rm -rf $BASE_DIR
    exit 1
@@ -80,5 +118,7 @@ echo "Tests terminated successfully"
 
 rm -rf $BASE_DIR
 
-# --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+jobs
 
+
+# --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

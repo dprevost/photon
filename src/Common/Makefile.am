@@ -10,6 +10,10 @@
 
 CLEANFILES = *~
 
+SUBDIRS =       \
+          .     \
+          Tests
+
 noinst_LTLIBRARIES   = libCommon.la
 
 libCommon_la_SOURCES =                 \
