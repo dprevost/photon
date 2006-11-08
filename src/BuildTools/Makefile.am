@@ -10,9 +10,7 @@
 
 CLEANFILES        = *~
 
-SUBDIRS =       \
-          .     \
-          Tests 
+SUBDIRS = . Tests
 
 bin_PROGRAMS = errorParser
 
@@ -27,7 +25,7 @@ errorParser_SOURCES =                  \
                       outputFiles.cpp  \
                       outputFiles.h   
 
-AM_CPPFLAGS       = -I$(top_srcdir)/src/Common 
+AM_CPPFLAGS = -I$(top_srcdir)/src/Common 
 
 if COND_USE_DBC
    AM_CPPFLAGS += -DUSE_DBC

@@ -10,9 +10,7 @@
 
 CLEANFILES = *~
 
-SUBDIRS =       \
-          .     \
-          Tests
+SUBDIRS = . Tests
 
 noinst_LTLIBRARIES   = libCommon.la
 
@@ -38,12 +36,6 @@ libCommon_la_SOURCES =                 \
                        Timer.c         \
                        Timer.h
 
-#                       Barrier.c       
-#                       Barrier.h       
-#                       ThreadWrap.c    
-#                       ThreafdWrap.h   
-
-                       
 EXTRA_DIST =               \
              asctime_r.c   \
              ctime_r.c     \
@@ -73,3 +65,4 @@ endif
 if COND_USE_EXTREME_DBC
    AM_CPPFLAGS += -DUSE_EXTREME_DBC
 endif
+

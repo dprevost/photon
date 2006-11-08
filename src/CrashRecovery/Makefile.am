@@ -8,26 +8,24 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-CLEANFILES        = *~
+CLEANFILES = *~
 
-SUBDIRS = . Tests
- 
-bin_PROGRAMS = vdswd
+bin_PROGRAMS = vdscr
 
-vdswd_SOURCES =                \
-                Acceptor.cpp   \
-                Acceptor.h     \
-                LogMsg.cpp     \
-                LogMsg.h       \
-                VDSHandler.cpp \
-                VDSHandler.h   \
-                Watchdog.cpp   \
-                Watchdog.h     \
-                wd.cpp            
+vdscr_SOURCES =                         \
+                CrashRecovery.cpp       \
+                MemoryRecovery.cpp      \
+                MemoryRecovery.h        \
+                Report.cpp              \
+                Report.h                \
+                TransactionRecovery.cpp \
+                TransactionRecovery.h   \
+                TreeRecovery.cpp        \
+                TreeRecovery.h          
 
-AM_CPPFLAGS = -I$(top_srcdir)/src/Common  \
-              -I$(top_srcdir)/src/Engine  \
-              -I$(top_srcdir)/src/include \
+AM_CPPFLAGS = -I$(top_srcdir)/src/Common     \
+              -I$(top_srcdir)/src/include    \
+              -I$(top_srcdir)/src/Engine \
               -I$(top_srcdir)/src/API
 
 if COND_USE_ASSERT
@@ -44,5 +42,7 @@ if COND_USE_EXTREME_DBC
    AM_CPPFLAGS += -DUSE_EXTREME_DBC
 endif
 
-vdswd_LDADD = $(top_builddir)/src/API/libvdsf.la 
+vdscr_LDADD = \
+   $(top_builddir)/src/API/libvdsf.la 
 
+###   $(top_builddir)/src/Wrappers/libCommon.la

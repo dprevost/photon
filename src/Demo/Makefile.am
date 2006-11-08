@@ -8,46 +8,33 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-CLEANFILES = *~ core
+CLEANFILES = *~
 
-#SUBDIRS =          \
-#          Engine   \
-#          API      \
-#          Watchdog
-
-#          include       
-#          java          
-#          CrashRecovery 
-#          Demo
-
-noinst_PROGRAMS = \
-                  Interrupted
+noinst_PROGRAMS = InitCrashDemo \
+                  CrashClient   \
+                  TMDemo        \
+                  TMReadLoop
 
 
-check_PROGRAMS = \
-                 bget             
+InitCrashDemo_SOURCES = InitCrashDemo.cpp demo.h
+CrashClient_SOURCES   = CrashClient.cpp demo.h
+TMDemo_SOURCES        = TMDemo.cpp
+TMReadLoop_SOURCES    = TMReadLoop.cpp
 
-#DoNothing
+EXTRA_DIST               =                  \
+                         CrashClient.sh     \
+                         StartCrashDemo.sh  \
+                         StartTMDemo.sh     \
+                         TMDemo.sh          \
+                         TMReadLoop.sh 
 
-bget_SOURCES             = bget.cpp
-#DoNothing_SOURCES        = DoNothing.cpp
-Interrupted_SOURCES = Interrupted.cpp
-
-EXTRA_DIST =                    \
-             bget.sh            
-
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
-
-TESTS =                    \
-        TimerTest          \
-        bget.sh            
 
 LDADD = $(top_builddir)/src/API/libvdsf.la
 
 AM_CPPFLAGS = -I$(top_srcdir)/src/include    \
               -I$(top_srcdir)/src/API        \
               -I$(top_srcdir)/src/Common     \
-              -I$(top_srcdir)/src/Engine
+              -I$(top_srcdir)/src/CoreEngine
 
 if COND_USE_ASSERT
    AM_CPPFLAGS += -DUSE_ASSERT
@@ -63,6 +50,6 @@ if COND_USE_EXTREME_DBC
    AM_CPPFLAGS += -DUSE_EXTREME_DBC
 endif
 
-distclean-local:
-	-rm -rf $(testsubdir)
+#distclean-local:
+#	-rm -rf $(testsubdir)
 

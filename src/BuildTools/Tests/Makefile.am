@@ -18,7 +18,9 @@ check_PROGRAMS = testParser
 testParser_SOURCES = testParser.c testError.h
 nodist_testParser_SOURCES = genError.c genError.h
 
-testParser.c genError.c: testError.h genError.h
+testParser.c: genError.h
+
+genError.h genError.c: testError.h 
 	$(top_builddir)/src/BuildTools/errorParser -i testError.h -o genError -p myErr
 
 EXTRA_DIST =             \

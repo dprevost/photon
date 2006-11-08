@@ -10,37 +10,23 @@
 
 CLEANFILES = *~ core
 
-#SUBDIRS =          \
-#          Engine   \
-#          API      \
-#          Watchdog
+check_PROGRAMS =                  \
+                 SimpleTest1      \
+                 TransactionTests 
 
-#          include       
-#          java          
-#          CrashRecovery 
-#          Demo
+SimpleTest1_SOURCES = SimpleTest1.cpp
+TransactionTests_SOURCES = TransactionTests.cpp 
 
-noinst_PROGRAMS = \
-                  Interrupted
-
-
-check_PROGRAMS = \
-                 bget             
-
-#DoNothing
-
-bget_SOURCES             = bget.cpp
-#DoNothing_SOURCES        = DoNothing.cpp
-Interrupted_SOURCES = Interrupted.cpp
-
-EXTRA_DIST =                    \
-             bget.sh            
+EXTRA_DIST =                 \
+             Common.py       \
+             api_tests.py    \
+             transactions.py \
+             python_tests.sh 
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
-TESTS =                    \
-        TimerTest          \
-        bget.sh            
+TESTS =                 \
+        python_tests.sh 
 
 LDADD = $(top_builddir)/src/API/libvdsf.la
 

@@ -285,6 +285,8 @@ AC_CONFIG_FILES([
    doc/Makefile
    m4/Makefile
    src/Makefile
+   src/API/Makefile
+   src/API/Tests/Makefile
    src/BuildTools/Makefile
    src/BuildTools/Tests/Makefile
    src/Common/Makefile
@@ -295,20 +297,18 @@ AC_CONFIG_FILES([
    src/Common/Tests/Options/Makefile
    src/Common/Tests/ProcessLock/Makefile
    src/Common/Tests/ThreadLock/Makefile
-   src/API/Makefile
-   src/Engine/Makefile
-   src/Demo/Makefile
-   src/include/Makefile
-   src/java/Makefile
-   src/Watchdog/Makefile
    src/CrashRecovery/Makefile
+   src/Demo/Makefile
+   src/Engine/Makefile
+   src/Engine/Tests/Makefile
+   src/Engine/Tests/List/Makefile
+   src/Engine/Tests/LogFile/Makefile
+   src/Engine/Tests/MemAlloc/Makefile
+   src/include/Makefile
+   src/Java/Makefile
+   src/Watchdog/Makefile
+   src/Watchdog/Tests/Makefile
    src/Tests/Makefile
-   src/Tests/API/Makefile
-   src/Tests/Engine/Makefile
-   src/Tests/Engine/List/Makefile
-   src/Tests/Engine/LogFile/Makefile
-   src/Tests/Engine/MemAlloc/Makefile
-   src/Tests/Watchdog/Makefile
 ])
 
 AC_OUTPUT

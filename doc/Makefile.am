@@ -10,26 +10,12 @@
 
 CLEANFILES = *~
 
-# The code have to be build following a certain order:
-#   1-    Common
-#   2-    BuildTools
-#   3-    Engine
-#   4-    API
-#   n-    ...
-#   Last- Tests
+#man_MANS = API/man/man3/vdsQueue.3
 
-if COND_INCLUDE_DEMO
-  MAYBE_DEMO = Demo
-endif
+#EXTRA_DIST = $(man_MANS)
 
-SUBDIRS =               \
-          Common        \
-          BuildTools    \
-          Engine        \
-          API           \
-          include       \
-          Java          \
-          Watchdog      \
-          CrashRecovery \
-          Tests         \
-          $(MAYBE_DEMO)
+#API/man/man3/vdsQueue.3:
+#	doxygen $(top_builddir)/src/include/Doxyfile
+
+install-data-local:
+	qq
