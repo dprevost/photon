@@ -115,6 +115,14 @@ internationalization...
 #  include <io.h>
 #endif
 
+#if defined WIN32
+#  define DllImport   __declspec( dllimport )
+#  define DllExport   __declspec( dllexport )
+#else
+#  define DllImport
+#  define DllExport
+#endif
+
 #if  ! defined ( BEGIN_C_DECLS )
 #  ifdef __cplusplus
 #    define BEGIN_C_DECLS extern "C" {

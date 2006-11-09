@@ -20,7 +20,7 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int main( int argc, char* argv[] )
+int main()
 {
    /* For non-win32 platforms (linux, Unix), the test for a missing
     * directory is done when the directory is open. On Windows, the
@@ -50,7 +50,7 @@ int main( int argc, char* argv[] )
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
 
    if ( str != NULL )     return -1;
-   if ( errorHandler.error == 0 ) return -1;
+   if ( errorHandler.errorCode[0] == 0 ) return -1;
 
    vdscCloseDir( &iterator );
 

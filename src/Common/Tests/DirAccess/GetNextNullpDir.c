@@ -20,7 +20,7 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int main( int argc, char* argv[] )
+int main()
 {
    /* pDir () is used in Unix/linux, not on Windows. */
 #if defined (WIN32)

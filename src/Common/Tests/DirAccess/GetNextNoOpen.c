@@ -20,9 +20,8 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int main( int argc, char* argv[] )
+int main()
 {
-   int errcode = 0;
    vdscDirIterator iterator;
    const char* str;
    vdscErrorHandler errorHandler;

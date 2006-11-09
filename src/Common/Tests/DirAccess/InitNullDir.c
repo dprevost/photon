@@ -20,11 +20,11 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int main( int argc, char* argv[] )
+int main()
 {
-   vdscDirIterator iterator;
+   vdscDirIterator* iterator = NULL;
 
-   vdscInitDir( NULL );
+   vdscInitDir( iterator );
 
    return 0;
 }

@@ -20,7 +20,7 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int main( int argc, char* argv[] )
+int main()
 {
    /* For non-win32 platforms (linux, Unix), the test for a missing
     * directory is done when the directory is open. On Windows, the

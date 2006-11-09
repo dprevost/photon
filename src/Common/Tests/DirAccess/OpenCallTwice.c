@@ -20,7 +20,7 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int main( int argc, char* argv[] )
+int main()
 {
    /* 
     * This test handles the precondition that pDir must be NULL on 
@@ -34,7 +34,6 @@ int main( int argc, char* argv[] )
    int errcode;
    vdscDirIterator iterator;
    vdscErrorHandler errorHandler;
-   const char* str;
 
    vdscInitErrorDefs();
    vdscInitDir( &iterator );

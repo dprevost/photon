@@ -55,6 +55,11 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib /nologo /dll /machine:I386 /out:"Release/vdsfCommon.dll"
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PreLink_Cmds=del ..\Release\vdsfCommon.dll	del ..\Release\vdsfCommon.lib
+PostBuild_Cmds=copy Release\vdsfCommon.dll ..\Release	copy Release\vdsfCommon.lib ..\Release
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "Common - Win32 Debug"
 
@@ -81,6 +86,11 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib /nologo /dll /debug /machine:I386 /out:"Debug/vdsfCommon.dll" /pdbtype:sept
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PreLink_Cmds=del ..\Debug\vdsfCommon.dll	del ..\Debug\vdsfCommon.lib
+PostBuild_Cmds=copy debug\vdsfCommon.dll ..\Debug	copy debug\vdsfCommon.lib ..\Debug
+# End Special Build Tool
 
 !ENDIF 
 

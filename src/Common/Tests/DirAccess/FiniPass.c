@@ -20,7 +20,7 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int main( int argc, char* argv[] )
+int main()
 {
    vdscDirIterator iterator;
 
@@ -33,7 +33,6 @@ int main( int argc, char* argv[] )
    
 #if defined(WIN32)
    if ( iterator.handle != VDS_INVALID_HANDLE ) return -1;
-   if ( iterator.data   != VDS_INVALID_HANDLE ) return -1;
    if ( iterator.dirName[0] != '\0' ) return -1;
 #else
    if ( iterator.pDir != NULL ) return -1;
