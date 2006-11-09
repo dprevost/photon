@@ -45,8 +45,8 @@ void vdscInitMemoryFile( vdscMemoryFile* pMem,
    pMem->baseAddr = VDS_MAP_FAILED;
    pMem->length   = kblength*1024;
    pMem->fileHandle = VDS_INVALID_HANDLE;
-   memset( pMem->name, 0, MAXPATHLEN );
-   strncpy( pMem->name, filename, MAXPATHLEN );
+   memset( pMem->name, 0, PATH_MAX );
+   strncpy( pMem->name, filename, PATH_MAX );
 
    pMem->initialized = VDSC_MEMFILE_SIGNATURE;
    
@@ -71,7 +71,7 @@ void vdscFiniMemoryFile( vdscMemoryFile* pMem )
    pMem->baseAddr = VDS_MAP_FAILED;
    pMem->length   = 0;
    pMem->fileHandle = VDS_INVALID_HANDLE;
-   memset( pMem->name, 0, MAXPATHLEN );
+   memset( pMem->name, 0, PATH_MAX );
 
    pMem->initialized = 0;
    
@@ -106,6 +106,11 @@ vdscBackStoreStatus( vdscMemoryFile*       pMem,
    int err = 0;
 #if ! HAVE_ACCESS || ! HAVE_STAT
    FILE* fp = NULL;
+#endif
+#if HAVE__STAT
+   struct _stat info;
+#elif HAVE_STAT
+   struct stat info;
 #endif
 
    VDS_PRE_CONDITION( pMem    != NULL );
@@ -142,7 +147,6 @@ vdscBackStoreStatus( vdscMemoryFile*       pMem,
 #endif
 
 #if HAVE_STAT
-   struct stat info;
    err = stat( pMem->name, &info );
    if ( err != 0 ) goto error;
    pStatus->actualLLength = info.st_size;
@@ -193,7 +197,7 @@ vdscCreateBackstore( vdscMemoryFile*   pMem,
 {
    FILE* fp;
    size_t numWritten;
-   int errcode = 0;
+   int errcode = 0, fd;
    char buf[1];
 
 //   fprintf( stderr, "fp: %d (%d)\n", filePerms & 0600, filePerms );
@@ -206,7 +210,7 @@ vdscCreateBackstore( vdscMemoryFile*   pMem,
    VDS_PRE_CONDITION( ( filePerms & 0600 ) == 0600 );
    
    /* Create the file with the right permissions */
-   int fd = creat( pMem->name, filePerms );
+   fd = creat( pMem->name, filePerms );
    if ( fd < 0 )
    {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );      
@@ -329,7 +333,8 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
                                      FILE_MAP_WRITE,
                                      0,
                                      0,
-                                     0 );
+                                     0,
+                                     NULL );
 
    if ( pMem->baseAddr == VDS_MAP_FAILED )
    {

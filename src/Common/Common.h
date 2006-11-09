@@ -25,7 +25,6 @@
 
 list of functions/macros/types that might cause portability problems:
 
-MAXPATHLEN           ok
 access               ok 
 bool                 ok
 bufsize_T            ok
@@ -107,7 +106,13 @@ internationalization...
 #  include "config.h"
 #endif
 #if defined WIN32
-#  include "ConfigHeaders/config-win32.h"
+#  include "config-win32.h"
+   /* The pragma is to hide a warning in Microsoft include files */
+#  pragma warning(disable:4115)
+#  include <windows.h>
+#  pragma warning(default:4115)
+#  include <winbase.h>
+#  include <io.h>
 #endif
 
 #if  ! defined ( BEGIN_C_DECLS )
@@ -173,7 +178,9 @@ internationalization...
 #if USE_PTHREAD
 # include <pthread.h>
 #else
-# error Need to include Posix Thread somehow!!!
+#  if ! defined(WIN32)
+#    error Need to include Posix Thread somehow!!!
+#  endif
 #endif
 
 #if TIME_WITH_SYS_TIME
@@ -212,15 +219,15 @@ internationalization...
 #  include <sys/param.h>
 #endif
 
-#ifndef MAXPATHLEN
-#  if defined PATH_MAX 
-#    define MAXPATHLEN PATH_MAX
+#ifndef PATH_MAX
+#  if defined MAXPATHLEN 
+#    define PATH_MAX MAXPATHLEN 
 #  elif defined _POSIX_PATH_MAX
-#    define MAXPATHLEN _POSIX_PATH_MAX
+#    define PATH_MAX _POSIX_PATH_MAX
 #  elif defined _MAX_PATH
-#    define MAXPATHLEN  _MAX_PATH
+#    define PATH_MAX  _MAX_PATH
 #  else
-#    define MAXPATHLEN 1024
+#    define PATH_MAX 1024
 # endif
 #endif
 
@@ -238,8 +245,21 @@ internationalization...
 #  include <fcntl.h>
 #endif
 
-#ifndef HAVE_ACCESS
-# error Need to write a wrapper for access()!!!
+#if HAVE__STAT   /* Win32 */
+#  define stat(a, b) _stat(a, b)
+#endif
+
+#ifdef HAVE_ACCESS
+#  ifdef HAVE__ACCESS
+#    define access(a,b) _access(a,b)
+#    ifndef F_OK
+#      define F_OK 00
+#      define R_OK 04
+#      define W_OK 06
+#    endif
+#  endif
+#else
+#  error Need to write a wrapper for access()!!!
 #endif
 
 /* From Alexandre Duret-Lutz <adl@gnu.org> */

@@ -253,7 +253,8 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
                              char *           argv[], 
                              int              printError )
 {
-   int i = 1, j, returnCode = 0, len, found;
+   int i = 1, j, returnCode = 0, found;
+   size_t len;
    vdscInternalOpt* optStruct = (vdscInternalOpt*)handle;
    
    VDS_PRE_CONDITION( handle != NULL );

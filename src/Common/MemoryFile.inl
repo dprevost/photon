@@ -47,7 +47,7 @@ vdscSetReadOnly( vdscMemoryFile*   pMem,
    int errcode;
 #if defined (WIN32)
    int err;
-   int oldProt;
+   unsigned long oldProt;
 #endif
 
    VDS_PRE_CONDITION( pMem   != NULL );
@@ -59,7 +59,7 @@ vdscSetReadOnly( vdscMemoryFile*   pMem,
 
    err = VirtualProtect( pMem->baseAddr, 
                          pMem->length, 
-                         PAGE_READ, 
+                         PAGE_READONLY, 
                          &oldProt );
    if ( err == 0 )
    {
@@ -117,7 +117,7 @@ vdscSetReadWrite( vdscMemoryFile*   pMem,
    int errcode;
 #if defined (WIN32)
    int err;
-   int oldProt;
+   unsigned long oldProt;
 #endif
 
    VDS_PRE_CONDITION( pMem != NULL );

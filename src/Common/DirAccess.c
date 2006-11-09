@@ -134,8 +134,7 @@ void vdscFiniDir( vdscDirIterator * pIterator )
 
 #if defined ( WIN32 )
    pIterator->handle = VDS_INVALID_HANDLE;
-   pIterator->data   = VDS_INVALID_HANDLE;
-   memset( pIterator->dirName, 0, MAXPATHLEN);
+   memset( pIterator->dirName, 0, PATH_MAX);
 #else
    pIterator->pDir = NULL;
 #endif
@@ -158,8 +157,7 @@ void vdscInitDir( vdscDirIterator * pIterator )
 
 #if defined ( WIN32 )
    pIterator->handle = VDS_INVALID_HANDLE;
-   pIterator->data   = VDS_INVALID_HANDLE;
-   memset( pIterator->dirName, 0, MAXPATHLEN);
+   memset( pIterator->dirName, 0, PATH_MAX);
 #else
    pIterator->pDir = NULL;
 #endif
@@ -187,8 +185,7 @@ void vdscCloseDir( vdscDirIterator * pIterator )
    if ( pIterator->handle != VDS_INVALID_HANDLE )
       FindClose( pIterator->handle );
    pIterator->handle = VDS_INVALID_HANDLE;
-   pIterator->data   = VDS_INVALID_HANDLE;
-   memset( pIterator->dirName, 0, MAXPATHLEN);
+   memset( pIterator->dirName, 0, PATH_MAX);
 #else
    if ( pIterator->pDir != NULL )
       closedir (pIterator->pDir);   
@@ -242,8 +239,9 @@ int vdscOpenDir( vdscDirIterator * pIterator,
 #endif
 
 #if defined (WIN32)
+   pError = pError; /* Avoid a warning */
    i = strlen( dirName );
-   if ( i > MAXPATHLEN - 3 )
+   if ( i > PATH_MAX - 3 )
       return -1;
 
    if ( dirName[i-1] == '/' || dirName[i-1] == '\\' )

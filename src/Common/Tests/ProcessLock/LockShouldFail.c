@@ -74,7 +74,7 @@ int main( int argc, char* argv[] )
    unsigned long elapsedTime = 0, maxTime = 0;
    unsigned long loop = 1;
    void* ptr = NULL;   
-   char filename[MAXPATHLEN];
+   char filename[PATH_MAX];
    struct localData *data = NULL;
    int errcode;
    vdscMemoryFile memFile;

@@ -23,15 +23,15 @@ void vdscInitTimer( vdscTimer* pTimer )
 {
 #if defined (WIN32)
    pTimer->highResolution = TRUE;
-   pTimer->frequency      = 0;
-   pTimer->beginCount     = 0;
-   pTimer->endCount       = 0;
+   pTimer->frequency.QuadPart  = 0;
+   pTimer->beginCount.QuadPart = 0;
+   pTimer->endCount.QuadPart   = 0;
 #endif
    memset( &pTimer->timeBegin, 0, sizeof(struct timeval) );
    memset( &pTimer->timeEnd,   0, sizeof(struct timeval) );
 
 #if defined (WIN32)
-   pTimer->highResolution = QueryPerformanceFrequency(pTimer->frequency);
+   pTimer->highResolution = QueryPerformanceFrequency(&pTimer->frequency);
 #endif   
 }
 
@@ -47,11 +47,11 @@ vdscCalculateTimer( vdscTimer *pTimer,
 #if defined (WIN32)
    if ( pTimer->highResolution == TRUE )
    {
-      *pSecs = (pTimer->endCount.QuadPart - pTimer->beginCount.QuadPart)
-         / pTimer->frequency.QuadPart;
-      *pnanoSecs = pTimer->endCount.QuadPart - 
-         (*pSecs * pTimer->frequency.QuadPart);
-      *pnanoSecs = (*pnanoSecs * 1000000000)/pTimer->frequency.QuadPart;
+      *pSecs = (unsigned long)((pTimer->endCount.QuadPart - pTimer->beginCount.QuadPart)
+         / pTimer->frequency.QuadPart);
+      *pnanoSecs = (unsigned long)(pTimer->endCount.QuadPart - 
+         (*pSecs * pTimer->frequency.QuadPart));
+      *pnanoSecs = (unsigned long)((*pnanoSecs * 1000000000)/pTimer->frequency.QuadPart);
    }
    else
 #endif

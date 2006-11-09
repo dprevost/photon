@@ -68,7 +68,7 @@ struct vdscMemoryFileStatus
    /** Set to one if the length matches the expectation. */
    int  lenghtOK;
    /** The length of the file. */
-   off_t actualLLength;
+   size_t actualLLength;
 };
 
 typedef struct vdscMemoryFileStatus vdscMemoryFileStatus;
@@ -91,7 +91,7 @@ struct vdscMemoryFile
    size_t length;
 
    /** Name of the backstore file. */
-   char name[MAXPATHLEN];
+   char name[PATH_MAX];
    
 #if defined (WIN32)
    /** Win32 specific - the underlying file handle (a void*). */

@@ -125,6 +125,7 @@ vdscReleaseThreadLock( vdscThreadLock* pLock )
    VDS_INV_CONDITION( pLock->initialized == VDSC_THREADLOCK_SIGNATURE );
 
 #if defined (WIN32)
+   status = 0; /* To avoid a warning */
    LeaveCriticalSection( &pLock->mutex );
 #else
    status = pthread_mutex_unlock( &pLock->mutex );

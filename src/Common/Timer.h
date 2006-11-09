@@ -63,6 +63,25 @@ typedef struct vdscTimer
 
 } vdscTimer;
 
+#if defined(WIN32)
+static inline int gettimeofday( struct timeval *tv, void* tz )
+{
+   union timeUnion
+   {
+      FILETIME timeStruct;
+      __int64  timeInt;
+   } theTime;
+
+   tz = tz;
+   GetSystemTimeAsFileTime( &theTime.timeStruct );
+
+   tv->tv_usec = (long) ((theTime.timeInt / 10) % 1000000);
+   tv->tv_sec  = (long) ( theTime.timeInt / 10000000);
+
+   return 0;
+} 
+#endif
+
 /** Start the timer */
 static inline void 
 vdscBeginTimer( vdscTimer* pTimer )

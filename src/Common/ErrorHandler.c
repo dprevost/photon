@@ -331,7 +331,7 @@ static int vdscGetWinErrMsg( int errnum, char *msg, unsigned int msgLength )
          NULL,
          errnum,
          MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-         &buff,
+         buff,
          0, NULL );
       
       if ( len == 0 )

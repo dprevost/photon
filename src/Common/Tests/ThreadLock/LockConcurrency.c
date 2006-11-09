@@ -112,7 +112,7 @@ void * worker( void* pIdentifier )
 int main( int argc, char* argv[] )
 {
    void* ptr = NULL;   
-   char filename[MAXPATHLEN];
+   char filename[PATH_MAX];
    int errcode;
    vdscErrorHandler errorHandler;
    int i, identifier[TEST_MAX_THREADS];

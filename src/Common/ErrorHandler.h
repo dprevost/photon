@@ -21,7 +21,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
-#include <vdsf/vdsErrors.h>
+//#include <vdsf/vdsErrors.h>
 
 BEGIN_C_DECLS
 

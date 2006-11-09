@@ -160,6 +160,7 @@ extern int g_timeOutinMilliSecs;
 
 extern struct timespec g_timeOut;
 
+typedef int pid_t;
 
 typedef struct vdscProcessLock
 {

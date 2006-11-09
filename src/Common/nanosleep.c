@@ -17,8 +17,13 @@
 #  include "config.h"
 #endif
 #if defined WIN32
-#  include "ConfigHeaders/config-win32.h"
+#  include "config-win32.h"
 #endif
+#include "Common.h"
+#if defined WIN32
+#  include <winsock2.h>
+#endif
+/*
 #include <stdio.h>
 #if HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -34,6 +39,7 @@
 #if HAVE_UNISTD_H
 #  include <unistd.h>
 #endif
+*/
 
 /*
  * Note: this version of nanosleep is fundamentally incorrect since the
@@ -47,6 +53,7 @@ nanosleep(const struct timespec * pRequest,
    struct timeval req;
    int ret;
    
+   pRemain = pRemain;
    req.tv_sec  = pRequest->tv_sec;
    req.tv_usec = pRequest->tv_nsec / 1000;
    

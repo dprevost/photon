@@ -95,7 +95,7 @@ int vdscReadConfig( const char*          cfgname,
       return -1;
    }
    
-   while( 1 )
+   for (;;)
    {
       memset( line, 0, LINE_MAX_LEN );
 

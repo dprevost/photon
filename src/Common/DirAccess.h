@@ -97,10 +97,10 @@ struct vdscDirIterator
 #if defined ( WIN32 )
    /** Win32 specific - the underlying file handle (a void*). */
    HANDLE          handle;
-   /** Win32 specific - the underlying handle for the iterator. */
+   /** Win32 specific - the underlying data structure for the iterator. */
    WIN32_FIND_DATA data;
    /** The name of the directory. */
-   char            dirName[MAXPATHLEN];
+   char            dirName[PATH_MAX];
 #else
    /** The directory stream */
    DIR* pDir;

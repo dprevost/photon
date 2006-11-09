@@ -25,7 +25,10 @@
 #  if defined (WIN32)
 
 #    define TRY_ACQUIRE( LOCK, VALUE, ISITLOCKED ) \
-   ISITLOCKED = InterlockedExchange( &LOCK, &VALUE );
+   ISITLOCKED = InterlockedExchange( (LPLONG)&LOCK, VALUE );
+
+#    define UNLOCK( LOCK ) \
+   InterlockedExchange( (LPLONG)&LOCK, 0 );
 
 #  elif defined (  __GNUC__ )
    /*
@@ -147,14 +150,13 @@ inline void
 vdscAcquireProcessLock( vdscProcessLock* pLock,
                         vds_lock_T lockValue )
 {
+   vds_lock_T tempValue = lockValue;
+   int isItLocked = -1;
+
    VDS_PRE_CONDITION( pLock != NULL );
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( lockValue != 0 );
 
-   vds_lock_T tempValue = lockValue;
-   
-/*   fprintf( stderr, " lockValue1: %d %d\n", pLock->lock, saved ); */
-   int isItLocked = -1;
 
 #if defined (VDS_USE_HP_LOCK)
    register pid_t* pTryPID = (pid_t*) &pLock->lockArray[HP_TRY_PID_LOCATION];
@@ -171,7 +173,8 @@ vdscAcquireProcessLock( vdscProcessLock* pLock,
       nanosleep( &g_timeOut, NULL );
    }
 #elif defined (VDS_USE_TRY_ACQUIRE)
-   while ( 1 )
+//   while ( 1 )
+   for (;;)
    {
       if ( pLock->lock == 0 )
       {
@@ -221,13 +224,12 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
                            vds_lock_T   lockValue,
                            unsigned int milliSecs )
 {
+   vds_lock_T tempValue = lockValue;
+   int isItLocked = -1;
+
    VDS_PRE_CONDITION( pLock != NULL );
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( lockValue != 0 );
-
-   vds_lock_T tempValue = lockValue;
-
-   int isItLocked = -1;
 
 #if defined (VDS_USE_HP_LOCK)
    register pid_t* pTryPID = (pid_t*) &pLock->lockArray[HP_TRY_PID_LOCATION];

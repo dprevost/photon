@@ -63,7 +63,9 @@ int vdscInitThreadLock( vdscThreadLock* pLock )
 
 void vdscFiniThreadLock( vdscThreadLock* pLock )
 {
+#if ! defined(WIN32)
    int err = 0;
+#endif
 
    VDS_PRE_CONDITION( pLock != NULL );
    VDS_INV_CONDITION( pLock->initialized == VDSC_THREADLOCK_SIGNATURE );
