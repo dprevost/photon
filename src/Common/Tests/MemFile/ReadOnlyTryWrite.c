@@ -22,21 +22,24 @@
 
 void signalHandler(int s) 
 {
+   s = s;
    /* A fprintf... probably not a good idea usually but we know where
     * the memory violation is so there is no issue in this case.
     */
    fprintf( stderr, "Failed in signal handler - all ok!\n" );
    
-   exit(-1);
+   exit(1);
 }
 
-int main( int argc, char* argv[] )
+int main()
 {
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
    char *          pAddr = NULL;
    int errcode = 0, rc = 0;
+#if ! defined(WIN32)
    struct sigaction newAction, oldAction;
+#endif
 
    unlink( "MemFile.mem" );
    
@@ -65,9 +68,13 @@ int main( int argc, char* argv[] )
    /* This should crash the whole thing. We intercept it with a signal
     * handler to make the output look cleaner.
     */
+#if defined(WIN32)
+   signal(SIGSEGV, signalHandler );
+#else
    newAction.sa_handler = signalHandler;
    newAction.sa_flags   = SA_RESTART;
    errcode = sigaction( SIGSEGV, &newAction, &oldAction );
+#endif
 
    pAddr[0] = 'x';
    pAddr[1] = 'y';

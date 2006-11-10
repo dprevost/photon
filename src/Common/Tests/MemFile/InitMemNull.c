@@ -19,10 +19,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
-{
-   vdscMemoryFile mem;
-   
+int main()
+{  
    vdscInitMemoryFile( NULL, 10, "MemFile.mem" );
    
    return 0;

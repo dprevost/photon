@@ -19,7 +19,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
+int main()
 {
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
@@ -55,7 +55,7 @@ int main( int argc, char* argv[] )
    if ( mem.baseAddr == VDS_MAP_FAILED ) rc = -1;
    
 #if defined (WIN32)
-   if ( mem.mapHandle != VDS_INVALID_HANDLE ) rc = -1;
+   if ( mem.mapHandle == VDS_INVALID_HANDLE ) rc = -1;
 #endif
 
    vdscCloseMemFile( &mem, &errorHandler );

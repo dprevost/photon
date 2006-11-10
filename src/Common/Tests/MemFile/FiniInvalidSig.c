@@ -19,10 +19,9 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
+int main()
 {
    vdscMemoryFile  mem;
-   int errcode = 0;
    
    unlink( "MemFile.mem" );
    

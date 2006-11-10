@@ -60,6 +60,62 @@ err_fail_programs.append('SetErrorInvalidSig')
 err_fail_programs.append('SetErrorInvalidValue')
 err_fail_programs.append('SetErrorNullError')
 
+mem_ok_programs = []
+mem_ok_programs.append('BackStatusPass')
+mem_ok_programs.append('ClosePass')
+mem_ok_programs.append('CreateBackPass')
+mem_ok_programs.append('FiniPass')
+mem_ok_programs.append('InitPass')
+mem_ok_programs.append('OpenPass')
+mem_ok_programs.append('ReadOnlyPass')
+mem_ok_programs.append('ReadWritePass')
+mem_ok_programs.append('SynchPass')
+mem_ok_programs.append('Tests')
+
+mem_fail_programs = []
+mem_fail_programs.append('BackStatusInvalidSig')
+mem_fail_programs.append('BackStatusMemNull')
+mem_fail_programs.append('BackStatusNameEmpty')
+mem_fail_programs.append('BackStatusStatusNull')
+mem_fail_programs.append('CloseInfoNull')
+mem_fail_programs.append('CloseInvalidSig')
+mem_fail_programs.append('CloseMemNull')
+mem_fail_programs.append('CreateBackInfoNull')
+mem_fail_programs.append('CreateBackInvalidSig')
+mem_fail_programs.append('CreateBackInvLength')
+mem_fail_programs.append('CreateBackMemNull')
+mem_fail_programs.append('CreateBackNameEmpty')
+mem_fail_programs.append('CreateBackPerm0000')
+mem_fail_programs.append('CreateBackPerm0200')
+mem_fail_programs.append('CreateBackPerm0400')
+mem_fail_programs.append('CreateBackPerm0500')
+mem_fail_programs.append('FiniInvalidSig')
+mem_fail_programs.append('FiniNullMem')
+mem_fail_programs.append('InitLengthPositive')
+mem_fail_programs.append('InitMemNull')
+mem_fail_programs.append('InitNameEmpty')
+mem_fail_programs.append('InitNameNull')
+mem_fail_programs.append('OpenAddrNull')
+mem_fail_programs.append('OpenInfoNull')
+mem_fail_programs.append('OpenInvalidLength')
+mem_fail_programs.append('OpenInvalidSig')
+mem_fail_programs.append('OpenMemNull')
+mem_fail_programs.append('OpenNameEmpty')
+mem_fail_programs.append('ReadOnlyInfoNull')
+mem_fail_programs.append('ReadOnlyInvalidBaseAddr')
+mem_fail_programs.append('ReadOnlyInvalidSig')
+mem_fail_programs.append('ReadOnlyMemNull')
+mem_fail_programs.append('ReadOnlyTryWrite')
+mem_fail_programs.append('ReadWriteInfoNull')
+mem_fail_programs.append('ReadWriteInvalidSig')
+mem_fail_programs.append('ReadWriteInvBaseAddr')
+mem_fail_programs.append('ReadWriteMemNull')
+mem_fail_programs.append('SynchInfoNull')
+mem_fail_programs.append('SynchInvalidBaseAddr')
+mem_fail_programs.append('SynchInvalidSig')
+mem_fail_programs.append('SynchMemNull')
+
+# DirAccess
 prefix = os.path.join('DirAccess','Release')
 rc = 0
 
@@ -80,9 +136,9 @@ for program in dir_ok_programs:
       rc = os.spawnl( os.P_WAIT, path, path )
       print 'rc = ', rc
       if rc != 0:
-         failed_tests.append(os.path.join( prefix, program))
          raise os.error
    except:
+      failed_tests.append(os.path.join( prefix, program))
       print program, ' failed! Error = ', rc
 #      raise os.error
 
@@ -94,11 +150,13 @@ for program in dir_fail_programs:
       rc = os.spawnl( os.P_WAIT, path, path )
       print 'rc = ', rc
       if rc == 0:
-         failed_tests.append(os.path.join( prefix, program))
          raise os.error
    except:
+      failed_tests.append(os.path.join( prefix, program))
       print program, ' failed! Error = ', rc
 #      raise os.error
+
+### Error tests
 
 prefix = os.path.join('Error','Release')
 for program in err_ok_programs:
@@ -109,9 +167,9 @@ for program in err_ok_programs:
       rc = os.spawnl( os.P_WAIT, path, path )
       print 'rc = ', rc
       if rc != 0:
-         failed_tests.append(os.path.join( prefix, program))
          raise os.error
    except:
+      failed_tests.append(os.path.join( prefix, program))
       print program, ' failed! Error = ', rc
 #      raise os.error
 
@@ -123,14 +181,47 @@ for program in err_fail_programs:
       rc = os.spawnl( os.P_WAIT, path, path )
       print 'rc = ', rc
       if rc == 0:
-         failed_tests.append(os.path.join( prefix, program))
          raise os.error
    except:
+      failed_tests.append(os.path.join( prefix, program))
       print program, ' failed! Error = ', rc
 #      raise os.error
 
-l = len(dir_ok_programs)+ len(dir_fail_programs) + 1
+### Memfile tests
+
+prefix = os.path.join('MemFile','Release')
+for program in mem_ok_programs:
+   arg0 = 'Mem' + program
+   exe = 'Mem' + program + '.exe'
+   path = os.path.join( prefix, exe )
+   try:
+      rc = os.spawnl( os.P_WAIT, path, path )
+      print 'rc = ', rc
+      if rc != 0:
+         raise os.error
+   except:
+      failed_tests.append(os.path.join( prefix, program))
+      print program, ' failed! Error = ', rc
+#      raise os.error
+
+for program in mem_fail_programs:
+   arg0 = 'Mem' + program
+   exe = 'Mem' + program + '.exe'
+   path = os.path.join( prefix, exe )
+   try:
+      rc = os.spawnl( os.P_WAIT, path, path )
+      print 'rc = ', rc
+      if rc == 0:
+         raise os.error
+   except Exception, e:
+      failed_tests.append(os.path.join( prefix, program))
+      print program, ' failed! Error = ', rc
+#      print "Exception is:", sys.exc_info()[0], e.args
+#      raise os.error
+
+l  = len(dir_ok_programs)+ len(dir_fail_programs) + 1
 l += len(err_ok_programs)+ len(err_fail_programs)
+l += len(mem_ok_programs)+ len(mem_fail_programs)
 m = len(failed_tests)
 
 print ''

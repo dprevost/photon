@@ -23,8 +23,9 @@
 int main()
 {
    /* pDir () is used in Unix/linux, not on Windows. */
-#if defined (WIN32)
-   return -1;
+#if defined(WIN32)
+   Sleep( 10 );
+   return 1;
 #else
 
    int errcode;

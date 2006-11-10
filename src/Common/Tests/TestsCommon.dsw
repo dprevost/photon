@@ -339,30 +339,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "ErrChainErrorNullDef"=.\Error\ProjectFiles\ErrChainErrorNullDef.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "ErrChainErrorNullHandler"=.\Error\ProjectFiles\ErrChainErrorNullHandler.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
 Project: "ErrChainErrorInvalidSig"=.\Error\ProjectFiles\ErrChainErrorInvalidSig.dsp - Package Owner=<4>
 
 Package=<5>
@@ -387,7 +363,19 @@ Package=<4>
 
 ###############################################################################
 
-Project: "ErrChainErrorTooMany"=.\Error\ProjectFiles\ErrChainErrorTooMany.dsp - Package Owner=<4>
+Project: "ErrChainErrorNullDef"=.\Error\ProjectFiles\ErrChainErrorNullDef.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ErrChainErrorNullHandler"=.\Error\ProjectFiles\ErrChainErrorNullHandler.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -400,6 +388,18 @@ Package=<4>
 ###############################################################################
 
 Project: "ErrChainErrorPass"=.\Error\ProjectFiles\ErrChainErrorPass.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ErrChainErrorTooMany"=.\Error\ProjectFiles\ErrChainErrorTooMany.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -568,6 +568,618 @@ Package=<4>
 ###############################################################################
 
 Project: "ErrTests"=.\Error\ProjectFiles\ErrTests.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemBackStatusInvalidSig"=.\MemFile\ProjectFiles\MemBackStatusInvalidSig.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemBackStatusMemNull"=.\MemFile\ProjectFiles\MemBackStatusMemNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemBackStatusNameEmpty"=.\MemFile\ProjectFiles\MemBackStatusNameEmpty.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemBackStatusPass"=.\MemFile\ProjectFiles\MemBackStatusPass.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemBackStatusStatusNull"=.\MemFile\ProjectFiles\MemBackStatusStatusNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemCloseInfoNull"=.\MemFile\ProjectFiles\MemCloseInfoNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemCloseInvalidSig"=.\MemFile\ProjectFiles\MemCloseInvalidSig.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemCloseMemNull"=.\MemFile\ProjectFiles\MemCloseMemNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemClosePass"=.\MemFile\ProjectFiles\MemClosePass.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemCreateBackInfoNull"=.\MemFile\ProjectFiles\MemCreateBackInfoNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemCreateBackInvLength"=.\MemFile\ProjectFiles\MemCreateBackInvLength.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemCreateBackInvalidSig"=.\MemFile\ProjectFiles\MemCreateBackInvalidSig.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemCreateBackMemNull"=.\MemFile\ProjectFiles\MemCreateBackMemNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemCreateBackNameEmpty"=.\MemFile\ProjectFiles\MemCreateBackNameEmpty.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemCreateBackPass"=.\MemFile\ProjectFiles\MemCreateBackPass.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemCreateBackPerm0000"=.\MemFile\ProjectFiles\MemCreateBackPerm0000.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemCreateBackPerm0200"=.\MemFile\ProjectFiles\MemCreateBackPerm0200.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemCreateBackPerm0400"=.\MemFile\ProjectFiles\MemCreateBackPerm0400.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemCreateBackPerm0500"=.\MemFile\ProjectFiles\MemCreateBackPerm0500.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemFiniInvalidSig"=.\MemFile\ProjectFiles\MemFiniInvalidSig.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemFiniNullMem"=.\MemFile\ProjectFiles\MemFiniNullMem.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemFiniPass"=.\MemFile\ProjectFiles\MemFiniPass.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemInitLengthPositive"=.\MemFile\ProjectFiles\MemInitLengthPositive.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemInitMemNull"=.\MemFile\ProjectFiles\MemInitMemNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemInitNameEmpty"=.\MemFile\ProjectFiles\MemInitNameEmpty.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemInitNameNull"=.\MemFile\ProjectFiles\MemInitNameNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemInitPass"=.\MemFile\ProjectFiles\MemInitPass.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemOpenAddrNull"=.\MemFile\ProjectFiles\MemOpenAddrNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemOpenInfoNull"=.\MemFile\ProjectFiles\MemOpenInfoNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemOpenInvalidLength"=.\MemFile\ProjectFiles\MemOpenInvalidLength.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemOpenInvalidSig"=.\MemFile\ProjectFiles\MemOpenInvalidSig.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemOpenMemNull"=.\MemFile\ProjectFiles\MemOpenMemNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemOpenNameEmpty"=.\MemFile\ProjectFiles\MemOpenNameEmpty.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemOpenPass"=.\MemFile\ProjectFiles\MemOpenPass.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemReadOnlyInfoNull"=.\MemFile\ProjectFiles\MemReadOnlyInfoNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemReadOnlyInvalidBaseAddr"=.\MemFile\ProjectFiles\MemReadOnlyInvalidBaseAddr.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemReadOnlyInvalidSig"=.\MemFile\ProjectFiles\MemReadOnlyInvalidSig.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemReadOnlyMemNull"=.\MemFile\ProjectFiles\MemReadOnlyMemNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemReadOnlyPass"=.\MemFile\ProjectFiles\MemReadOnlyPass.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemReadOnlyTryWrite"=.\MemFile\ProjectFiles\MemReadOnlyTryWrite.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemReadWriteInfoNull"=.\MemFile\ProjectFiles\MemReadWriteInfoNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemReadWriteInvBaseAddr"=.\MemFile\ProjectFiles\MemReadWriteInvBaseAddr.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemReadWriteInvalidSig"=.\MemFile\ProjectFiles\MemReadWriteInvalidSig.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemReadWriteMemNull"=.\MemFile\ProjectFiles\MemReadWriteMemNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemReadWritePass"=.\MemFile\ProjectFiles\MemReadWritePass.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemSynchInfoNull"=.\MemFile\ProjectFiles\MemSynchInfoNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemSynchInvalidBaseAddr"=.\MemFile\ProjectFiles\MemSynchInvalidBaseAddr.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemSynchInvalidSig"=.\MemFile\ProjectFiles\MemSynchInvalidSig.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemSynchMemNull"=.\MemFile\ProjectFiles\MemSynchMemNull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemSynchPass"=.\MemFile\ProjectFiles\MemSynchPass.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MemTests"=.\MemFile\ProjectFiles\MemTests.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

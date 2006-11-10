@@ -19,11 +19,11 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
+int main()
 {
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
-   int errcode = 0, rc = 0;
+   int errcode = 0;
    
    unlink( "MemFile.mem" );
 

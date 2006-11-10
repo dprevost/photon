@@ -26,7 +26,7 @@
  * write home about...
  */
 
-int main( int argc, char* argv[] )
+int main()
 {
    vdscMemoryFile  mem1, mem2;
    vdscErrorHandler errorHandler;
@@ -56,7 +56,7 @@ int main( int argc, char* argv[] )
    if ( mem1.baseAddr == VDS_MAP_FAILED ) rc = -1;
    
 #if defined (WIN32)
-   if ( mem1.mapHandle != VDS_INVALID_HANDLE ) rc = -1;
+   if ( mem1.mapHandle == VDS_INVALID_HANDLE ) rc = -1;
 #endif
 
    if ( rc != 0 ) goto the_exit;
@@ -78,7 +78,7 @@ int main( int argc, char* argv[] )
       goto the_exit;
    }
    
-   str = (char*) pAddr;
+   str = (unsigned char*) pAddr;
    for ( i = 0; i < 10*1024; ++i )
       if ( str[i] != (unsigned char)(i % 256) )
       {
