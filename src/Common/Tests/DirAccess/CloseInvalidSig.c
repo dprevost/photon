@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "DirAccess.h"
+#include <crtdbg.h>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -29,7 +30,12 @@ int main()
    vdscInitErrorDefs();
    vdscInitDir( &iterator );
    vdscInitErrorHandler( &errorHandler );
-   
+
+#if defined(WIN32)
+   _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_FILE );
+   _CrtSetReportFile( _CRT_ASSERT, _CRTDBG_FILE_STDERR );
+#endif
+
    errcode = vdscOpenDir( &iterator, "..", &errorHandler );
    if ( errcode != 0 )
    {

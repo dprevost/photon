@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "DirCloseInvalidSig"=.\DirAccess\DirCloseInvalidSig.dsp - Package Owner=<4>
+Project: "DirCloseInvalidSig"=.\DirAccess\ProjectFiles\DirCloseInvalidSig.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirCloseNullDir"=.\DirAccess\DirCloseNullDir.dsp - Package Owner=<4>
+Project: "DirCloseNullDir"=.\DirAccess\ProjectFiles\DirCloseNullDir.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -27,7 +27,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirClosePass"=.\DirAccess\DirClosePass.dsp - Package Owner=<4>
+Project: "DirClosePass"=.\DirAccess\ProjectFiles\DirClosePass.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -39,7 +39,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirFiniInvalidSig"=.\DirAccess\DirFiniInvalidSig.dsp - Package Owner=<4>
+Project: "DirFiniInvalidSig"=.\DirAccess\ProjectFiles\DirFiniInvalidSig.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -51,7 +51,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirFiniNullDir"=.\DirAccess\DirFiniNullDir.dsp - Package Owner=<4>
+Project: "DirFiniNullDir"=.\DirAccess\ProjectFiles\DirFiniNullDir.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -63,7 +63,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirFiniPass"=.\DirAccess\DirFiniPass.dsp - Package Owner=<4>
+Project: "DirFiniPass"=.\DirAccess\ProjectFiles\DirFiniPass.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -75,7 +75,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirGetNextInvalidSig"=.\DirAccess\DirGetNextInvalidSig.dsp - Package Owner=<4>
+Project: "DirGetNextInvalidSig"=.\DirAccess\ProjectFiles\DirGetNextInvalidSig.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -87,7 +87,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirGetNextNoOpen"=.\DirAccess\DirGetNextNoOpen.dsp - Package Owner=<4>
+Project: "DirGetNextNoOpen"=.\DirAccess\ProjectFiles\DirGetNextNoOpen.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -99,7 +99,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirGetNextNoSuchDir"=.\DirAccess\DirGetNextNoSuchDir.dsp - Package Owner=<4>
+Project: "DirGetNextNoSuchDir"=.\DirAccess\ProjectFiles\DirGetNextNoSuchDir.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -111,7 +111,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirGetNextNullDir"=.\DirAccess\DirGetNextNullDir.dsp - Package Owner=<4>
+Project: "DirGetNextNullDir"=.\DirAccess\ProjectFiles\DirGetNextNullDir.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -123,7 +123,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirGetNextNullError"=.\DirAccess\DirGetNextNullError.dsp - Package Owner=<4>
+Project: "DirGetNextNullError"=.\DirAccess\ProjectFiles\DirGetNextNullError.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -135,7 +135,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirGetNextNullpDir"=.\DirAccess\DirGetNextNullpDir.dsp - Package Owner=<4>
+Project: "DirGetNextNullpDir"=.\DirAccess\ProjectFiles\DirGetNextNullpDir.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -147,7 +147,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirGetNextPass"=.\DirAccess\DirGetNextPass.dsp - Package Owner=<4>
+Project: "DirGetNextPass"=.\DirAccess\ProjectFiles\DirGetNextPass.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -159,7 +159,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirInitNullDir"=.\DirAccess\DirInitNullDir.dsp - Package Owner=<4>
+Project: "DirInitNullDir"=.\DirAccess\ProjectFiles\DirInitNullDir.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -171,7 +171,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirInitPass"=.\DirAccess\DirInitPass.dsp - Package Owner=<4>
+Project: "DirInitPass"=.\DirAccess\ProjectFiles\DirInitPass.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -183,7 +183,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirOpenCallTwice"=.\DirAccess\DirOpenCallTwice.dsp - Package Owner=<4>
+Project: "DirOpenCallTwice"=.\DirAccess\ProjectFiles\DirOpenCallTwice.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -195,7 +195,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirOpenInvalidSig"=.\DirAccess\DirOpenInvalidSig.dsp - Package Owner=<4>
+Project: "DirOpenInvalidSig"=.\DirAccess\ProjectFiles\DirOpenInvalidSig.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -207,7 +207,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirOpenNoInit"=.\DirAccess\DirOpenNoInit.dsp - Package Owner=<4>
+Project: "DirOpenNoInit"=.\DirAccess\ProjectFiles\DirOpenNoInit.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -219,7 +219,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirOpenNoSuchDir"=.\DirAccess\DirOpenNoSuchDir.dsp - Package Owner=<4>
+Project: "DirOpenNoSuchDir"=.\DirAccess\ProjectFiles\DirOpenNoSuchDir.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -231,7 +231,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirOpenNullDir"=.\DirAccess\DirOpenNullDir.dsp - Package Owner=<4>
+Project: "DirOpenNullDir"=.\DirAccess\ProjectFiles\DirOpenNullDir.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -243,7 +243,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirOpenNullDirname"=.\DirAccess\DirOpenNullDirname.dsp - Package Owner=<4>
+Project: "DirOpenNullDirname"=.\DirAccess\ProjectFiles\DirOpenNullDirname.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -255,7 +255,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirOpenNullError"=.\DirAccess\DirOpenNullError.dsp - Package Owner=<4>
+Project: "DirOpenNullError"=.\DirAccess\ProjectFiles\DirOpenNullError.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -267,7 +267,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirOpenPass"=.\DirAccess\DirOpenPass.dsp - Package Owner=<4>
+Project: "DirOpenPass"=.\DirAccess\ProjectFiles\DirOpenPass.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -279,7 +279,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DirTests"=.\DirAccess\DirTests.dsp - Package Owner=<4>
+Project: "DirTests"=.\DirAccess\ProjectFiles\DirTests.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

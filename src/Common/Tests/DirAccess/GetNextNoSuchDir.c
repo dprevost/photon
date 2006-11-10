@@ -43,6 +43,9 @@ int main()
    errcode = vdscOpenDir( &iterator, "abc123", &errorHandler );
    if ( errcode != 0 )
    {
+      /* OpenDir cannot fail on Win32 but someone might update
+       * the code eventually...
+       */
       fprintf( stderr, "Error opening the directory\n" );
       return -1;
    }
@@ -50,7 +53,7 @@ int main()
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
 
    if ( str != NULL )     return -1;
-   if ( errorHandler.errorCode[0] == 0 ) return -1;
+   if ( ! vdscAnyErrors( &errorHandler ) ) return -1;
 
    vdscCloseDir( &iterator );
 

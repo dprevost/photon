@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="DirOpenCallTwice" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="DirGetNextInvalidSig" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=DirOpenCallTwice - Win32 Debug
+CFG=DirGetNextInvalidSig - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "DirOpenCallTwice.mak".
+!MESSAGE NMAKE /f "DirGetNextInvalidSig.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "DirOpenCallTwice.mak" CFG="DirOpenCallTwice - Win32 Debug"
+!MESSAGE NMAKE /f "DirGetNextInvalidSig.mak" CFG="DirGetNextInvalidSig - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "DirOpenCallTwice - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "DirOpenCallTwice - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "DirGetNextInvalidSig - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "DirGetNextInvalidSig - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,20 +28,21 @@ CFG=DirOpenCallTwice - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "DirOpenCallTwice - Win32 Release"
+!IF  "$(CFG)" == "DirGetNextInvalidSig - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "Release_OpenCallTwice"
-# PROP BASE Intermediate_Dir "Release_OpenCallTwice"
+# PROP BASE Output_Dir "..\Release\Release_GetNextInvalidSig"
+# PROP BASE Intermediate_Dir "..\Release\Release_GetNextInvalidSig"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Release_OpenCallTwice"
-# PROP Intermediate_Dir "Release_OpenCallTwice"
+# PROP Output_Dir "..\Release\Release_GetNextInvalidSig"
+# PROP Intermediate_Dir "..\Release\Release_GetNextInvalidSig"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W4 /GX /O2 /I "../.." /I "../../.." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /W4 /GX /O2 /I "../.." /I "../../.." /I "../../../.." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD BASE RSC /l 0x1009 /d "NDEBUG"
 # ADD RSC /l 0x1009 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -49,23 +50,23 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../../Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /out:"..\Release\DirGetNextInvalidSig.exe" /libpath:"../../../Release"
 
-!ELSEIF  "$(CFG)" == "DirOpenCallTwice - Win32 Debug"
+!ELSEIF  "$(CFG)" == "DirGetNextInvalidSig - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Debug_OpenCallTwice"
-# PROP BASE Intermediate_Dir "Debug_OpenCallTwice"
+# PROP BASE Output_Dir "..\Debug\Debug_GetNextInvalidSig"
+# PROP BASE Intermediate_Dir "..\Debug\Debug_GetNextInvalidSig"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug_OpenCallTwice"
-# PROP Intermediate_Dir "Debug_OpenCallTwice"
+# PROP Output_Dir "..\Debug\Debug_GetNextInvalidSig"
+# PROP Intermediate_Dir "..\Debug\Debug_GetNextInvalidSig"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W4 /Gm /GX /ZI /Od /I "../.." /I "../../.." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /W4 /Gm /GX /ZI /Od /I "../.." /I "../../.." /I "../../../.." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x1009 /d "_DEBUG"
 # ADD RSC /l 0x1009 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -73,20 +74,20 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"../../../Debug"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommond.lib /nologo /subsystem:console /debug /machine:I386 /out:"..\Debug\DirGetNextInvalidSig.exe" /pdbtype:sept /libpath:"../../../Debug"
 
 !ENDIF 
 
 # Begin Target
 
-# Name "DirOpenCallTwice - Win32 Release"
-# Name "DirOpenCallTwice - Win32 Debug"
+# Name "DirGetNextInvalidSig - Win32 Release"
+# Name "DirGetNextInvalidSig - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\OpenCallTwice.c
+SOURCE=..\GetNextInvalidSig.c
 # End Source File
 # End Group
 # Begin Group "Header Files"

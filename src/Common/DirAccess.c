@@ -51,15 +51,18 @@ const char* vdscDirGetNextFileName( vdscDirIterator*  pIterator,
    VDS_INV_CONDITION( pIterator->initialized == VDSC_DIR_ACCESS_SIGNATURE );
    VDS_PRE_CONDITION( pError    != NULL );
 
-#if ! defined (WIN32)
+#if defined (WIN32)
+   VDS_PRE_CONDITION( pIterator->dirName[0] != '\0' );
+#else
    VDS_PRE_CONDITION( pIterator->pDir != NULL );
 #endif
 
 #if defined (WIN32)
    if ( pIterator->handle == VDS_INVALID_HANDLE )
+   {
       pIterator->handle = 
          FindFirstFile( pIterator->dirName, &pIterator->data );
-
+   }
    if ( pIterator->handle == VDS_INVALID_HANDLE )
    {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );

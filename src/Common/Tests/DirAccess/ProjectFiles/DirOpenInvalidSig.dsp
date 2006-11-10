@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="DirOpenNoSuchDir" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="DirOpenInvalidSig" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=DirOpenNoSuchDir - Win32 Debug
+CFG=DirOpenInvalidSig - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "DirOpenNoSuchDir.mak".
+!MESSAGE NMAKE /f "DirOpenInvalidSig.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "DirOpenNoSuchDir.mak" CFG="DirOpenNoSuchDir - Win32 Debug"
+!MESSAGE NMAKE /f "DirOpenInvalidSig.mak" CFG="DirOpenInvalidSig - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "DirOpenNoSuchDir - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "DirOpenNoSuchDir - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "DirOpenInvalidSig - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "DirOpenInvalidSig - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,20 +28,21 @@ CFG=DirOpenNoSuchDir - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "DirOpenNoSuchDir - Win32 Release"
+!IF  "$(CFG)" == "DirOpenInvalidSig - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "Release_OpenNoSuchDir"
-# PROP BASE Intermediate_Dir "Release_OpenNoSuchDir"
+# PROP BASE Output_Dir "..\Release\Release_OpenInvalidSig"
+# PROP BASE Intermediate_Dir "..\Release\Release_OpenInvalidSig"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Release_OpenNoSuchDir"
-# PROP Intermediate_Dir "Release_OpenNoSuchDir"
+# PROP Output_Dir "..\Release\Release_OpenInvalidSig"
+# PROP Intermediate_Dir "..\Release\Release_OpenInvalidSig"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W4 /GX /O2 /I "../.." /I "../../.." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /W4 /GX /O2 /I "../.." /I "../../.." /I "../../../.." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD BASE RSC /l 0x1009 /d "NDEBUG"
 # ADD RSC /l 0x1009 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -49,23 +50,23 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../../Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /out:"..\Release\DirOpenInvalidSig.exe" /libpath:"../../../Release"
 
-!ELSEIF  "$(CFG)" == "DirOpenNoSuchDir - Win32 Debug"
+!ELSEIF  "$(CFG)" == "DirOpenInvalidSig - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Debug_OpenNoSuchDir"
-# PROP BASE Intermediate_Dir "Debug_OpenNoSuchDir"
+# PROP BASE Output_Dir "..\Debug\Debug_OpenInvalidSig"
+# PROP BASE Intermediate_Dir "..\Debug\Debug_OpenInvalidSig"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug_OpenNoSuchDir"
-# PROP Intermediate_Dir "Debug_OpenNoSuchDir"
+# PROP Output_Dir "..\Debug\Debug_OpenInvalidSig"
+# PROP Intermediate_Dir "..\Debug\Debug_OpenInvalidSig"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W4 /Gm /GX /ZI /Od /I "../.." /I "../../.." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /W4 /Gm /GX /ZI /Od /I "../.." /I "../../.." /I "../../../.." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x1009 /d "_DEBUG"
 # ADD RSC /l 0x1009 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -73,20 +74,20 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"../../../Debug"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommond.lib /nologo /subsystem:console /debug /machine:I386 /out:"..\Debug\DirOpenInvalidSig.exe" /pdbtype:sept /libpath:"../../../Debug"
 
 !ENDIF 
 
 # Begin Target
 
-# Name "DirOpenNoSuchDir - Win32 Release"
-# Name "DirOpenNoSuchDir - Win32 Debug"
+# Name "DirOpenInvalidSig - Win32 Release"
+# Name "DirOpenInvalidSig - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\OpenNoSuchDir.c
+SOURCE=..\OpenInvalidSig.c
 # End Source File
 # End Group
 # Begin Group "Header Files"

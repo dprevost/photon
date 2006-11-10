@@ -400,26 +400,36 @@ extern char *new_ctime_r( const time_t *timep, char *buf, int buflen );
 #  if !HAVE_ASSERT_H
 #    error "assert.h is needed to implement Design By Contract"
 #  endif
+/*
+ * Some issue on Win32. The tests always generate a popup because 
+ * of abort(). So, I'll replace abort() with _exit(). 
+ * We use the exit code of abort.
+ */
+#  if defined(WIN32)
+#    define ABORT() _exit(3)
+#  else
+#    define ABORT() abort()
+#  endif
 #  define VDS_PRE_CONDITION(x) \
    if ( ! (x) ) \
    { \
       fprintf( stderr, "%s (\"%s\") failed in file %s at line %d\n", \
          "DBC: precondition", #x, __FILE__, __LINE__ ); \
-      abort(); \
+      ABORT(); \
    }
 #  define VDS_POST_CONDITION(x) \
    if ( ! (x) ) \
    { \
       fprintf( stderr, "%s (\"%s\") failed in file %s at line %d\n", \
          "DBC: postcondition", #x, __FILE__, __LINE__ ); \
-      abort(); \
+      ABORT(); \
    }
 #  define VDS_INV_CONDITION(x) \
    if ( ! (x) ) \
    { \
       fprintf( stderr, "%s (\"%s\") failed in file %s at line %d\n", \
          "DBC: invariant", #x, __FILE__, __LINE__ ); \
-      abort(); \
+      ABORT(); \
    }
 #  define VDS_ASSERT(x) assert(x)
 #  define VDS_ASSERT_RETURN(x,p,rc) assert(x)

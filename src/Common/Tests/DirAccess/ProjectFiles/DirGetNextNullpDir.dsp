@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="DirGetNextNoSuchDir" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="DirGetNextNullpDir" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=DirGetNextNoSuchDir - Win32 Debug
+CFG=DirGetNextNullpDir - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "DirGetNextNoSuchDir.mak".
+!MESSAGE NMAKE /f "DirGetNextNullpDir.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "DirGetNextNoSuchDir.mak" CFG="DirGetNextNoSuchDir - Win32 Debug"
+!MESSAGE NMAKE /f "DirGetNextNullpDir.mak" CFG="DirGetNextNullpDir - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "DirGetNextNoSuchDir - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "DirGetNextNoSuchDir - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "DirGetNextNullpDir - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "DirGetNextNullpDir - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,20 +28,21 @@ CFG=DirGetNextNoSuchDir - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "DirGetNextNoSuchDir - Win32 Release"
+!IF  "$(CFG)" == "DirGetNextNullpDir - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "Release_GetNextNoSuchDir"
-# PROP BASE Intermediate_Dir "Release_GetNextNoSuchDir"
+# PROP BASE Output_Dir "..\Release\Release_GetNextNullpDir"
+# PROP BASE Intermediate_Dir "..\Release\Release_GetNextNullpDir"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Release_GetNextNoSuchDir"
-# PROP Intermediate_Dir "Release_GetNextNoSuchDir"
+# PROP Output_Dir "..\Release\Release_GetNextNullpDir"
+# PROP Intermediate_Dir "..\Release\Release_GetNextNullpDir"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W4 /GX /O2 /I "../.." /I "../../.." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /W4 /GX /O2 /I "../.." /I "../../.." /I "../../../.." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD BASE RSC /l 0x1009 /d "NDEBUG"
 # ADD RSC /l 0x1009 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -49,23 +50,23 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../../Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /out:"..\Release\DirGetNextNullpDir.exe" /libpath:"../../../Release"
 
-!ELSEIF  "$(CFG)" == "DirGetNextNoSuchDir - Win32 Debug"
+!ELSEIF  "$(CFG)" == "DirGetNextNullpDir - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Debug_GetNextNoSuchDir"
-# PROP BASE Intermediate_Dir "Debug_GetNextNoSuchDir"
+# PROP BASE Output_Dir "..\Debug\Debug_GetNextNullpDir"
+# PROP BASE Intermediate_Dir "..\Debug\Debug_GetNextNullpDir"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug_GetNextNoSuchDir"
-# PROP Intermediate_Dir "Debug_GetNextNoSuchDir"
+# PROP Output_Dir "..\Debug\Debug_GetNextNullpDir"
+# PROP Intermediate_Dir "..\Debug\Debug_GetNextNullpDir"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W4 /Gm /GX /ZI /Od /I "../.." /I "../../.." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /W4 /Gm /GX /ZI /Od /I "../.." /I "../../.." /I "../../../.." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x1009 /d "_DEBUG"
 # ADD RSC /l 0x1009 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -73,20 +74,20 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"../../../Debug"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommond.lib /nologo /subsystem:console /debug /machine:I386 /out:"..\Debug\DirGetNextNullpDir.exe" /pdbtype:sept /libpath:"../../../Debug"
 
 !ENDIF 
 
 # Begin Target
 
-# Name "DirGetNextNoSuchDir - Win32 Release"
-# Name "DirGetNextNoSuchDir - Win32 Debug"
+# Name "DirGetNextNullpDir - Win32 Release"
+# Name "DirGetNextNullpDir - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\GetNextNoSuchDir.c
+SOURCE=..\GetNextNullpDir.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
