@@ -22,6 +22,9 @@
 
 int errorHandler( int errorCode, char* msg, unsigned int msgLength )
 {
+   errorCode = errorCode;
+   msgLength = msgLength;
+
    strncpy( msg, "Dummy Handler", strlen("Dummy Handler") );
 
    return 0;
@@ -29,7 +32,7 @@ int errorHandler( int errorCode, char* msg, unsigned int msgLength )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int main( int argc, char* argv[] )
+int main()
 {
    vdscErrMsgHandle handle1, handle2;
    vdscErrorHandler error;

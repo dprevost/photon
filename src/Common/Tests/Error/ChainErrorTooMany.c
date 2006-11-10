@@ -20,10 +20,9 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int main( int argc, char* argv[] )
+int main()
 {
    vdscErrorHandler errorHandler;
-   char msg[100] = "";
    int i;
    
    vdscInitErrorDefs();
