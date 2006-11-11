@@ -150,6 +150,13 @@ size_t vdscGetErrorMsg( vdscErrorHandler * pErrorHandler,
                         char*              msg, 
                         size_t             maxLength );
 
+/*! \brief Retrieves the length of the error message or the length of a 
+ *         concatenation of all error messages (if more than one) - the
+ *         space for a NULL terminator is not included.
+ */
+DllExport
+size_t vdscGetErrorMsgLength( vdscErrorHandler * pErrorHandler );
+
 /*! \brief 
  * Sets both the error code and the handler for the 
  * error message. It will first reset the chain of error codes to zero.

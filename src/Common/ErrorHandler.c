@@ -675,6 +675,70 @@ vdscGetErrorMsg( vdscErrorHandler * pErrorHandler,
    return strnlen( msg, maxLength );
 }
 
+/** 
+ * \param[in]     pErrorHandler A pointer to the vdscErrorHandler struct 
+ *                              itself.
+ *
+ * \return The length of the message (or zero on error, for example when 
+ *         acquiring the lock fails).
+ *
+ * \pre \em pErrorHandler cannot be NULL.
+ *
+ * \invariant \em g_definition cannot be NULL.
+ * \invariant \em pErrorHandler->initialized must equal 
+ *                ::VDSC_ERROR_HANDLER_SIGNATURE.
+ */
+size_t 
+vdscGetErrorMsgLength( vdscErrorHandler * pErrorHandler )
+{
+   size_t len, sum = 0;
+   vdscErrMsgHandle i;
+   int k;
+   vdscErrorDefinition * nextAvailable = NULL;
+   char tmpMsg[4096];
+
+   VDS_INV_CONDITION( g_definition != NULL );
+   VDS_PRE_CONDITION( pErrorHandler != NULL );
+   VDS_INV_CONDITION( 
+      pErrorHandler->initialized == VDSC_ERROR_HANDLER_SIGNATURE );
+   
+   if ( vdscTryAcquireThreadLock( &g_lock, 100 ) != 0 )
+      return 0;
+
+   for ( k = 0; k < pErrorHandler->chainLength; ++k )
+   {
+      nextAvailable = g_definition;
+      for ( i = 0; i < pErrorHandler->errorHandle[k]; i++ )
+      {
+         nextAvailable = nextAvailable->next;
+         if ( nextAvailable == NULL )
+         {
+            vdscReleaseThreadLock( &g_lock );
+            return 0;
+         }
+      }
+
+      if ( nextAvailable->initialized != VDSC_ERROR_DEFINITION_SIGNATURE )
+      {
+         vdscReleaseThreadLock( &g_lock );
+         return 0;
+      }
+
+      nextAvailable->handler( pErrorHandler->errorCode[k], 
+                              tmpMsg, 
+                              4096 );
+      /* Just in case */
+      len = strnlen( tmpMsg, 4096 );
+      VDS_POST_CONDITION( len < 4096 );      
+      sum += len;
+
+   }
+   
+   vdscReleaseThreadLock( &g_lock );
+
+   return sum;
+}
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
