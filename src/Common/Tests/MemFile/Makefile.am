@@ -38,7 +38,6 @@ check_PROGRAMS =                         \
                  InitNameEmpty           \
                  InitNameNull            \
                  InitPass                \
-                 MemTests                \
                  OpenAddrNull            \
                  OpenInfoNull            \
                  OpenInvalidLength       \
@@ -61,7 +60,8 @@ check_PROGRAMS =                         \
                  SynchInvalidBaseAddr    \
                  SynchInvalidSig         \
                  SynchMemNull            \
-                 SynchPass               
+                 SynchPass               \
+                 Tests                   
 
 
 BackStatusInvalidSig_SOURCES    = BackStatusInvalidSig.c
@@ -91,7 +91,6 @@ InitMemNull_SOURCES             = InitMemNull.c
 InitNameEmpty_SOURCES           = InitNameEmpty.c
 InitNameNull_SOURCES            = InitNameNull.c
 InitPass_SOURCES                = InitPass.c
-MemTests_SOURCES                = MemTests.c
 OpenAddrNull_SOURCES            = OpenAddrNull.c
 OpenInfoNull_SOURCES            = OpenInfoNull.c
 OpenInvalidLength_SOURCES       = OpenInvalidLength.c
@@ -115,6 +114,7 @@ SynchInvalidBaseAddr_SOURCES    = SynchInvalidBaseAddr.c
 SynchInvalidSig_SOURCES         = SynchInvalidSig.c
 SynchMemNull_SOURCES            = SynchMemNull.c
 SynchPass_SOURCES               = SynchPass.c
+Tests_SOURCES                   = Tests.c
 
 
 EXTRA_DIST =                     
@@ -181,8 +181,7 @@ if COND_USE_EXTREME_DBC
 TESTS += 
 endif
 
-TESTS +=          \
-         MemTests 
+TESTS += Tests 
 
 XFAIL_TESTS =                         \
               BackStatusInvalidSig    \
