@@ -19,18 +19,10 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int main( int argc, char* argv[] )
+int main()
 {
    int errcode = 0;
    vdscOptionHandle handle;
-   
-   struct vdscOptStruct opts[5] = 
-      { '3', "three",   1, "", "repeat the loop three times",
-        'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog",
-        'x', "",        1, "DISPLAY", "X display to use",
-        'v', "verbose", 1, "", "try to explain what is going on",
-        'z', "zzz",     1, "", "go to sleep..."
-      };
    
    errcode = vdscSetSupportedOptions( 5, NULL, &handle );
 

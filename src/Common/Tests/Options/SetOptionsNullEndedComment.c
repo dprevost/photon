@@ -19,7 +19,7 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int main( int argc, char* argv[] )
+int main()
 {
    int errcode = 0, i;
    vdscOptionHandle handle;

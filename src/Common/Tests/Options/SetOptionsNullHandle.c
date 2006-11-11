@@ -19,10 +19,10 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int main( int argc, char* argv[] )
+int main()
 {
    int errcode = 0;
-   vdscOptionHandle handle;
+   vdscOptionHandle handle = 0;
    
    struct vdscOptStruct opts[5] = 
       { '3', "three",   1, "", "repeat the loop three times",

@@ -19,12 +19,11 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int main( int argc, char* argv[] )
+int main()
 {
    int errcode = 0;
    char dummyArgs[100];
    char *dummyPtrs[10];
-   char *value = NULL;
    vdscOptionHandle handle;
    vdscBool gotIt;
    

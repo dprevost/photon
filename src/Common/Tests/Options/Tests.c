@@ -19,13 +19,12 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int main( int argc, char* argv[] )
+int main()
 {
    int errcode = 0;
    vdscOptionHandle handle;
    char dummyArgs[100];
    char *dummyPtrs[10];
-   dummyPtrs[0] = dummyArgs;
 
    struct vdscOptStruct opts[5] = 
       { '3', "three",   1, "", "repeat the loop three times",
@@ -34,6 +33,8 @@ int main( int argc, char* argv[] )
         'v', "verbose", 1, "", "try to explain what is going on",
         'z', "zzz",     1, "", "go to sleep..."
       };
+
+   dummyPtrs[0] = dummyArgs;
    
    errcode = vdscSetSupportedOptions( 5, opts, &handle );
    if ( errcode != 0 )

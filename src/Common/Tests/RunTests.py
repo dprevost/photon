@@ -116,6 +116,42 @@ mem_fail_programs.append('SynchInvalidBaseAddr')
 mem_fail_programs.append('SynchInvalidSig')
 mem_fail_programs.append('SynchMemNull')
 
+opt_ok_programs = []
+opt_ok_programs.append('GetLongOptPass')
+opt_ok_programs.append('GetShortOptPass')
+opt_ok_programs.append('IsLongPresentPass')
+opt_ok_programs.append('IsShortPresentPass')
+opt_ok_programs.append('SetOptionsPass')
+opt_ok_programs.append('ShowUsagePass')
+opt_ok_programs.append('Tests')
+opt_ok_programs.append('ValidatePass')
+
+opt_fail_programs = []
+opt_fail_programs.append('GetLongOptNullHandle')
+opt_fail_programs.append('GetLongOptNullOpt')
+opt_fail_programs.append('GetLongOptNullValue')
+opt_fail_programs.append('GetShortOptNullHandle')
+opt_fail_programs.append('GetShortOptNullValue')
+opt_fail_programs.append('IsLongPresentNullHandle')
+opt_fail_programs.append('IsLongPresentNullOpt')
+opt_fail_programs.append('IsShortPresentNullHandle')
+opt_fail_programs.append('SetOptionsNullHandle')
+opt_fail_programs.append('SetOptionsNullOpts')
+opt_fail_programs.append('SetOptionsNullEndedOpt')
+opt_fail_programs.append('SetOptionsNullEndedComment')
+opt_fail_programs.append('SetOptionsNullEndedValue')
+opt_fail_programs.append('SetOptionsNumOptsZero')
+opt_fail_programs.append('SetOptionsRepeatedLong')
+opt_fail_programs.append('SetOptionsRepeatedShort')
+opt_fail_programs.append('ShowUsageNullAddArgs')
+opt_fail_programs.append('ShowUsageNullHandle')
+opt_fail_programs.append('ShowUsageNullProgName')
+opt_fail_programs.append('UnsetOptNullHandle')
+opt_fail_programs.append('ValidateArgcZero')
+opt_fail_programs.append('ValidateNullArgv')
+opt_fail_programs.append('ValidateNULLArgvi')
+opt_fail_programs.append('ValidateNullHandle')
+
 # DirAccess
 prefix = os.path.join('DirAccess','Release')
 rc = 0
@@ -211,9 +247,40 @@ for program in mem_fail_programs:
 #      print "Exception is:", sys.exc_info()[0], e.args
 #      raise os.error
 
+prefix = os.path.join('Options','Release')
+for program in opt_ok_programs:
+   arg0 = 'Opt' + program
+   exe = 'Opt' + program + '.exe'
+   path = os.path.join( prefix, exe )
+   try:
+      rc = os.spawnl( os.P_WAIT, path, path )
+      print 'rc = ', rc
+      if rc != 0:
+         raise os.error
+   except:
+      failed_tests.append(os.path.join( prefix, program))
+      print program, ' failed! Error = ', rc
+#      raise os.error
+
+for program in opt_fail_programs:
+   arg0 = 'Opt' + program
+   exe = 'Opt' + program + '.exe'
+   path = os.path.join( prefix, exe )
+   try:
+      rc = os.spawnl( os.P_WAIT, path, path )
+      print 'rc = ', rc
+      if rc == 0:
+         raise os.error
+   except Exception, e:
+      failed_tests.append(os.path.join( prefix, program))
+      print program, ' failed! Error = ', rc
+#      print "Exception is:", sys.exc_info()[0], e.args
+#      raise os.error
+
 l  = len(dir_ok_programs)+ len(dir_fail_programs)
 l += len(err_ok_programs)+ len(err_fail_programs)
 l += len(mem_ok_programs)+ len(mem_fail_programs)
+l += len(opt_ok_programs)+ len(opt_fail_programs)
 m = len(failed_tests)
 
 print ''

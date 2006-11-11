@@ -87,6 +87,7 @@ typedef void* vdscOptionHandle;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Populate the internal arrays of all supported options. */
+DllExport
 int vdscSetSupportedOptions( int                   numOpts, 
                              struct vdscOptStruct* opts,
                              vdscOptionHandle*     pHandle );
@@ -95,34 +96,41 @@ int vdscSetSupportedOptions( int                   numOpts,
  * \brief Unset the internal arrays of all supported options (and free
  * the allocated memory, if needed).
  */
+DllExport
 void vdscUnsetSupportedOptions( vdscOptionHandle handle );
 
 /*! \brief Verify the validity of the options passed in by the end-user. */
+DllExport
 int vdscValidateUserOptions( vdscOptionHandle handle,
                              int              argc, 
                              char *           argv[], 
                              int              printError );
 
 /*! \brief Print usage information. */
+DllExport
 void vdscShowUsage( vdscOptionHandle handle,
                     char*            progName,
                     char*            addArguments );
 
 /*! \brief Retrieves the argument associated with a given option. */
+DllExport
 vdscBool vdscGetShortOptArgument( vdscOptionHandle handle,
                                   const char       opt, 
                                   char**           argument );
 
 /*! \brief Retrieves the argument associated with a given option. */
+DllExport
 vdscBool vdscGetLongOptArgument( vdscOptionHandle handle,
                                  const char*      opt, 
                                  char**           argument );
 
 /*! \brief Verify if the option is present. */
+DllExport
 vdscBool vdscIsLongOptPresent( vdscOptionHandle handle,
                                const char*      opt );
 
 /*! \brief Verify if the option is present. */
+DllExport
 vdscBool vdscIsShortOptPresent( vdscOptionHandle handle,
                                 const char       opt );
 
