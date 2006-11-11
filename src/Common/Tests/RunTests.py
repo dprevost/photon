@@ -1,6 +1,7 @@
 import os
 import sys
 
+
 # List of failed tests. We append to this list when an error is encountered
 # while running the tests
 failed_tests = []
@@ -181,7 +182,7 @@ for my_list in master_list:
       full_name = os.path.join( prog_path, exe_name )
       try:
          rc = os.spawnl( os.P_WAIT, full_name, full_name )
-         print 'rc = ', rc
+         print program, ', rc = ', rc
          if rc != 0:
             failed_tests.append(os.path.join( full_name, program))
       except:
@@ -193,7 +194,7 @@ for my_list in master_list:
       full_name = os.path.join( prog_path, exe_name )
       try:
          rc = os.spawnl( os.P_WAIT, full_name, full_name )
-         print 'rc = ', rc
+         print program, ', rc = ', rc
          if rc == 0:
             failed_tests.append(os.path.join( full_name, program))
       except:

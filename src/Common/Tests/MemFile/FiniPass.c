@@ -23,7 +23,11 @@ int main()
 {
    vdscMemoryFile  mem;
    
-   unlink( "MemFile.mem" );
+   /* The rename is a work around for a bug on Windows. It seems that the delete
+    * call is not as synchroneous as it should be...
+    */
+   rename( "MemFile.mem", "MemFile.old" );
+   unlink( "MemFile.old" );
    
    vdscInitMemoryFile( &mem, 10, "MemFile.mem" );
 

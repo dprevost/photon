@@ -16,6 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "MemoryFile.h"
+#include "PrintError.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -26,7 +27,11 @@ int main()
    int errcode = 0, rc = 0;
    vdscMemoryFileStatus status;
    
-   unlink( "MemFile.mem" );
+   /* The rename is a work around for a bug on Windows. It seems that the delete
+    * call is not as synchroneous as it should be...
+    */
+   rename( "MemFile.mem", "MemFile.old" );
+   unlink( "MemFile.old" );
 
    vdscInitErrorDefs();
    vdscInitErrorHandler( &errorHandler );
@@ -124,6 +129,7 @@ int main()
 
  the_exit:
 
+   printError( &errorHandler );
    unlink( "MemFile.mem" );
    
    vdscFiniMemoryFile( &mem );

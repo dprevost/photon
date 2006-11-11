@@ -17,6 +17,7 @@
 
 #include "MemoryFile.h"
 #include <signal.h>
+#include "PrintError.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -41,7 +42,11 @@ int main()
    struct sigaction newAction, oldAction;
 #endif
 
-   unlink( "MemFile.mem" );
+   /* The rename is a work around for a bug on Windows. It seems that the delete
+    * call is not as synchroneous as it should be...
+    */
+   rename( "MemFile.mem", "MemFile.old" );
+   unlink( "MemFile.old" );
    
    vdscInitErrorDefs();
    vdscInitErrorHandler( &errorHandler );
@@ -82,6 +87,7 @@ int main()
    vdscCloseMemFile( &mem, &errorHandler );
 
 the_exit:
+   printError( &errorHandler );
    unlink( "MemFile.mem" );
    
    vdscFiniMemoryFile( &mem );
