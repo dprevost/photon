@@ -13,6 +13,7 @@ dir_ok_programs.append('GetNextPass')
 dir_ok_programs.append('InitPass')
 dir_ok_programs.append('OpenNoSuchDir')
 dir_ok_programs.append('OpenPass')
+dir_ok_programs.append('Tests')
 
 dir_fail_programs = []
 dir_fail_programs.append('CloseInvalidSig')
@@ -119,15 +120,6 @@ mem_fail_programs.append('SynchMemNull')
 prefix = os.path.join('DirAccess','Release')
 rc = 0
 
-try:
-   rc = os.spawnl(os.P_WAIT, 'DirAccess\Release\DirTests.exe', 'DirTests.exe')
-   print 'rc = ', rc
-   if rc != 0:
-      failed_tests.append(os.path.join( prefix, 'DirTests'))
-      raise os.error
-except:
-   print 'DirTests failed! Error = ', rc
-
 for program in dir_ok_programs:
    arg0 = 'Dir' + program
    exe = 'Dir' + program + '.exe'
@@ -219,7 +211,7 @@ for program in mem_fail_programs:
 #      print "Exception is:", sys.exc_info()[0], e.args
 #      raise os.error
 
-l  = len(dir_ok_programs)+ len(dir_fail_programs) + 1
+l  = len(dir_ok_programs)+ len(dir_fail_programs)
 l += len(err_ok_programs)+ len(err_fail_programs)
 l += len(mem_ok_programs)+ len(mem_fail_programs)
 m = len(failed_tests)
