@@ -14,7 +14,6 @@ check_PROGRAMS =                   \
                  CloseInvalidSig   \
                  CloseNullDir      \
                  ClosePass         \
-                 DirTests          \
                  FiniInvalidSig    \
                  FiniNullDir       \
                  FiniPass          \
@@ -34,12 +33,15 @@ check_PROGRAMS =                   \
                  OpenNullDir       \
                  OpenNullDirname   \
                  OpenNullError     \
-                 OpenPass
+                 OpenPass          \
+                 Tests             
 
 CloseInvalidSig_SOURCES   = CloseInvalidSig.c
 CloseNullDir_SOURCES      = CloseNullDir.c
 ClosePass_SOURCES         = ClosePass.c
-DirTests_SOURCES          = DirTests.c
+FiniInvalidSig_SOURCES    = FiniInvalidSig.c
+FiniNullDir_SOURCES       = FiniNullDir.c
+FiniPass_SOURCES          = FiniPass.c
 GetNextInvalidSig_SOURCES = GetNextInvalidSig.c
 GetNextNoOpen_SOURCES     = GetNextNoOpen.c
 GetNextNoSuchDir_SOURCES  = GetNextNoSuchDir.c
@@ -57,6 +59,7 @@ OpenNullDir_SOURCES       = OpenNullDir.c
 OpenNullDirname_SOURCES   = OpenNullDirname.c
 OpenNullError_SOURCES     = OpenNullError.c
 OpenPass_SOURCES          = OpenPass.c
+Tests_SOURCES             = Tests.c
 
 EXTRA_DIST = 
 
@@ -69,6 +72,9 @@ TESTS +=                  \
         CloseInvalidSig   \
         CloseNullDir      \
         ClosePass         \
+        FiniInvalidSig    \
+        FiniNullDir       \
+        FiniPass          \
         GetNextInvalidSig \
         GetNextNoOpen     \
         GetNextNoSuchDir  \
@@ -92,12 +98,13 @@ if COND_USE_EXTREME_DBC
 TESTS += 
 endif
 
-TESTS +=          \
-         DirTests 
+TESTS += Tests 
 
 XFAIL_TESTS =                   \
               CloseInvalidSig   \
               CloseNullDir      \
+              FiniInvalidSig    \
+              FiniNullDir       \
               GetNextInvalidSig \
               GetNextNoOpen     \
               GetNextNullDir    \
