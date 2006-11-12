@@ -23,7 +23,6 @@ check_PROGRAMS =                            \
                  IsLongPresentPass          \
                  IsShortPresentNullHandle   \
                  IsShortPresentPass         \
-                 OptionTests                \
                  SetOptionsNullHandle       \
                  SetOptionsNullOpts         \
                  SetOptionsNullEndedOpt     \
@@ -37,6 +36,7 @@ check_PROGRAMS =                            \
                  ShowUsageNullHandle        \
                  ShowUsageNullProgName      \
                  ShowUsagePass              \
+                 Tests                      \
                  UnsetOptNullHandle         \
                  ValidateArgcZero           \
                  ValidateNullArgv           \
@@ -56,7 +56,6 @@ IsLongPresentNullOpt_SOURCES       = IsLongPresentNullOpt.c
 IsLongPresentPass_SOURCES          = IsLongPresentPass.c
 IsShortPresentNullHandle_SOURCES   = IsShortPresentNullHandle.c
 IsShortPresentPass_SOURCES         = IsShortPresentPass.c
-OptionTests_SOURCES                = OptionTests.c
 SetOptionsNullHandle_SOURCES       = SetOptionsNullHandle.c
 SetOptionsNullOpts_SOURCES         = SetOptionsNullOpts.c
 SetOptionsNullEndedOpt_SOURCES     = SetOptionsNullEndedOpt.c
@@ -70,6 +69,7 @@ ShowUsageNullAddArgs_SOURCES       = ShowUsageNullAddArgs.c
 ShowUsageNullHandle_SOURCES        = ShowUsageNullHandle.c
 ShowUsageNullProgName_SOURCES      = ShowUsageNullProgName.c
 ShowUsagePass_SOURCES              = ShowUsagePass.c
+Tests_SOURCES                      = Tests.c
 UnsetOptNullHandle_SOURCES         = UnsetOptNullHandle.c
 ValidateArgcZero_SOURCES           = ValidateArgcZero.c
 ValidateNullArgv_SOURCES           = ValidateNullArgv.c
@@ -122,7 +122,7 @@ if COND_USE_EXTREME_DBC
 TESTS += 
 endif
 
-TESTS += OptionTests  
+TESTS += Tests  
 
 XFAIL_TESTS =                       \
          GetLongOptNullHandle       \
@@ -151,7 +151,8 @@ XFAIL_TESTS =                       \
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
 
-AM_CPPFLAGS = -I$(top_srcdir)/src/Common \
+AM_CPPFLAGS = -I$(top_srcdir)/src/Common       \
+              -I$(top_srcdir)/src/Common/Tests \
               -I$(top_srcdir)/src/include
 
 if COND_USE_DBC
