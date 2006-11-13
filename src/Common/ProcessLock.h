@@ -239,12 +239,6 @@ int vdscTestLockPidValue( vdscProcessLock* pLock, pid_t pid );
  */
 static inline
 int vdscIsItLocked( vdscProcessLock* pLock );
-  
-
-//void vdscInitGuard( vdscProcessLock* pLock, vds_lock_T lockValue );
-
-//void vdscFiniGuard( vdscProcessLock* pLock );
-
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

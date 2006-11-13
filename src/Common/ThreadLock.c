@@ -84,23 +84,4 @@ void vdscFiniThreadLock( vdscThreadLock* pLock )
 }
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-#if 0
-void vdscInitGuard( vdscThreadLock* pLock, vds_lock_T lockValue )
-{
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
 
-   vdscAcquireLock( pLock, lockValue );
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void vdscFiniGuard( vdscThreadLock* pLock )
-{
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
-
-   vdscReleaseLock( pLock );
-}
-#endif
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
