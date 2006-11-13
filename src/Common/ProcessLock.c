@@ -19,9 +19,17 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+
+BEGIN_C_DECLS
+
+VDSF_COMMON_EXPORT
 int g_timeOutinMilliSecs = 5;
 
+//VDSF_COMMON_EXPORT
+//extern
 struct timespec g_timeOut = { 0, 5000000 };
+
+END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

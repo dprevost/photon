@@ -118,22 +118,22 @@ typedef struct vdscMemoryFile vdscMemoryFile;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Initialize a vdscMemoryFile struct. */
-DllExport
+VDSF_COMMON_EXPORT
 void vdscInitMemoryFile( vdscMemoryFile* pMem,
                          size_t          kblength, 
                          const char *    filename );
 
 /*! \brief Terminate access to a vdscMemoryFile struct. */
-DllExport
+VDSF_COMMON_EXPORT
 void vdscFiniMemoryFile( vdscMemoryFile* pMem );
 
 /*! \brief Return the status of the backstore file. */
-DllExport
+VDSF_COMMON_EXPORT
 void vdscBackStoreStatus( vdscMemoryFile*       pMem,
                           vdscMemoryFileStatus* pStatus );
    
 /*! \brief Create the backstore file */
-DllExport
+VDSF_COMMON_EXPORT
 int vdscCreateBackstore( vdscMemoryFile*   pMem,
                          int               filePerms,
                          vdscErrorHandler* pError );
@@ -142,7 +142,7 @@ int vdscCreateBackstore( vdscMemoryFile*   pMem,
  *  \brief "Open" an access to the memory file (this might load the 
  *  backstore in memory).
  */
-DllExport
+VDSF_COMMON_EXPORT
 int vdscOpenMemFile( vdscMemoryFile*   pMem,
                      void**            ppAddr,
                      vdscErrorHandler* pError );
@@ -151,12 +151,12 @@ int vdscOpenMemFile( vdscMemoryFile*   pMem,
  *  \brief Close our access the memory file (possibly removing the memory
  *  file itself from memory).
  */
-DllExport
+VDSF_COMMON_EXPORT
 void vdscCloseMemFile( vdscMemoryFile*   pMem,
                        vdscErrorHandler* pError );
 
 /*! \brief Synchronize the memory file to the backstore (disk) */
-DllExport
+VDSF_COMMON_EXPORT
 int vdscSyncMemFile( vdscMemoryFile*   pMem,
                      vdscErrorHandler* pError );
 

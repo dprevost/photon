@@ -113,24 +113,27 @@ typedef struct vdscDirIterator vdscDirIterator;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Initialize the struct vdscDirIterator. */
-DllExport void vdscInitDir( vdscDirIterator * pIterator );
+VDSF_COMMON_EXPORT
+void vdscInitDir( vdscDirIterator * pIterator );
 
 /*! \brief Terminate access to the struct vdscDirIterator. */
-DllExport void vdscFiniDir( vdscDirIterator * pIterator );
+VDSF_COMMON_EXPORT
+void vdscFiniDir( vdscDirIterator * pIterator );
 
 /*! \brief Open the directory. */
-DllExport
+VDSF_COMMON_EXPORT
 int vdscOpenDir( vdscDirIterator*  pIterator,
                  const char*       dirName,
                  vdscErrorHandler* pError );
 
 /*! \brief Get the next file name. */
-DllExport
+VDSF_COMMON_EXPORT
 const char* vdscDirGetNextFileName( vdscDirIterator*  pIterator,
                                     vdscErrorHandler* pError );
 
 /*! \brief Close the directory. */
-DllExport void vdscCloseDir( vdscDirIterator * pIterator );
+VDSF_COMMON_EXPORT
+void vdscCloseDir( vdscDirIterator * pIterator );
 
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

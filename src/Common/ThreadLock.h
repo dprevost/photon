@@ -55,11 +55,13 @@ typedef struct vdscThreadLock
  * for the process owning it (if the underlying platform specific 
  * mechanism allows this distinction).
  */
+VDSF_COMMON_EXPORT
 int vdscInitThreadLock( vdscThreadLock* pLock );
 
 /**
  *  Uninitialize the lock (it will remove the lock for POSIX semaphores).
  */
+VDSF_COMMON_EXPORT
 void vdscFiniThreadLock( vdscThreadLock* pLock );
 
 /** Acquire lock ownership (loop forever) - this is dangerous for

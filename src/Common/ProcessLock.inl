@@ -173,7 +173,6 @@ vdscAcquireProcessLock( vdscProcessLock* pLock,
       nanosleep( &g_timeOut, NULL );
    }
 #elif defined (VDS_USE_TRY_ACQUIRE)
-//   while ( 1 )
    for (;;)
    {
       if ( pLock->lock == 0 )

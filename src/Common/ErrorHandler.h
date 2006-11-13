@@ -107,22 +107,24 @@ typedef struct vdscErrorHandler
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Use for initializing our internal data. */
-DllExport int vdscInitErrorDefs();
+VDSF_COMMON_EXPORT
+int vdscInitErrorDefs();
 
 /*! \brief Clear our internal data. */
-DllExport void vdscFiniErrorDefs();
+VDSF_COMMON_EXPORT
+void vdscFiniErrorDefs();
 
 /*! \brief Add a function to handle error messages. */
-DllExport
+VDSF_COMMON_EXPORT
 vdscErrMsgHandle vdscAddErrorMsgHandler( const char*         name, 
                                          vdscErrMsgHandler_T handler );
 
 /*! \brief Use for initializing the struct or to reset it, as needed. */
-DllExport
+VDSF_COMMON_EXPORT
 void vdscInitErrorHandler( vdscErrorHandler * pErrorHandler );
 
 /*! \brief Terminate access to the struct vdscErrorHandler */
-DllExport
+VDSF_COMMON_EXPORT
 void vdscFiniErrorHandler( vdscErrorHandler * pErrorHandler );
 
 /*! Test to see if errors were found. 
@@ -145,7 +147,7 @@ int vdscAnyErrors( vdscErrorHandler * pErrorHandler )
 /*! \brief Retrieves the error message or a concatenation of all error 
  *         messages (if more than one)
  */
-DllExport
+VDSF_COMMON_EXPORT
 size_t vdscGetErrorMsg( vdscErrorHandler * pErrorHandler,
                         char*              msg, 
                         size_t             maxLength );
@@ -154,14 +156,14 @@ size_t vdscGetErrorMsg( vdscErrorHandler * pErrorHandler,
  *         concatenation of all error messages (if more than one) - the
  *         space for a NULL terminator is not included.
  */
-DllExport
+VDSF_COMMON_EXPORT
 size_t vdscGetErrorMsgLength( vdscErrorHandler * pErrorHandler );
 
 /*! \brief 
  * Sets both the error code and the handler for the 
  * error message. It will first reset the chain of error codes to zero.
  */
-DllExport
+VDSF_COMMON_EXPORT
 void vdscSetError( vdscErrorHandler *  pErrorHandler, 
                    vdscErrMsgHandle    handle,
                    int                 errorCode );   
@@ -169,7 +171,7 @@ void vdscSetError( vdscErrorHandler *  pErrorHandler,
  * Adds the error code and the handler for the error message to an 
  * existing chain.
  */
-DllExport
+VDSF_COMMON_EXPORT
 void vdscChainError( vdscErrorHandler *  pErrorHandler, 
                      vdscErrMsgHandle    handle,
                      int                 errorCode );  

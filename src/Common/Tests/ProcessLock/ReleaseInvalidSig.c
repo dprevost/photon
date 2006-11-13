@@ -18,6 +18,9 @@
 #include "Common.h"
 #include "ProcessLock.h"
 
+/* unreachable code */
+#pragma warning(disable:4702) 
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int main()

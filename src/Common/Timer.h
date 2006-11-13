@@ -113,10 +113,12 @@ void vdscEndTimer( vdscTimer* pTimer )
 }
    
 /** Calculates - returns the time to the caller in seconds and nanosecs. */
+VDSF_COMMON_EXPORT
 void vdscCalculateTimer( vdscTimer* pTimer,
                          unsigned long *pSecs,
                          unsigned long *pnanoSecs );
    
+VDSF_COMMON_EXPORT
 void vdscInitTimer( vdscTimer* pTimer );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

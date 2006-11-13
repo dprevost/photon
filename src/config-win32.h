@@ -63,7 +63,7 @@
 #define HAVE_FSYNC 1
 
 /* Define to 1 if you have the `getpid' function. */
-#define HAVE_GETPID 1
+/* #define HAVE_GETPID 1 */
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 /* #define HAVE_INTTYPES_H 1 */
@@ -205,7 +205,7 @@
 /* #define HAVE_WORKING_VFORK 1 */
 
 /* Define to 1 if you have the `_getpid' function. */
-/* #undef HAVE__GETPID */
+#define HAVE__GETPID 1
 
 /* Define to 1 if you have the `_mkdir' function. */
 /* #undef HAVE__MKDIR */

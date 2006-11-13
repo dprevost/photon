@@ -87,7 +87,7 @@ typedef void* vdscOptionHandle;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Populate the internal arrays of all supported options. */
-DllExport
+VDSF_COMMON_EXPORT
 int vdscSetSupportedOptions( int                   numOpts, 
                              struct vdscOptStruct* opts,
                              vdscOptionHandle*     pHandle );
@@ -96,41 +96,41 @@ int vdscSetSupportedOptions( int                   numOpts,
  * \brief Unset the internal arrays of all supported options (and free
  * the allocated memory, if needed).
  */
-DllExport
+VDSF_COMMON_EXPORT
 void vdscUnsetSupportedOptions( vdscOptionHandle handle );
 
 /*! \brief Verify the validity of the options passed in by the end-user. */
-DllExport
+VDSF_COMMON_EXPORT
 int vdscValidateUserOptions( vdscOptionHandle handle,
                              int              argc, 
                              char *           argv[], 
                              int              printError );
 
 /*! \brief Print usage information. */
-DllExport
+VDSF_COMMON_EXPORT
 void vdscShowUsage( vdscOptionHandle handle,
                     char*            progName,
                     char*            addArguments );
 
 /*! \brief Retrieves the argument associated with a given option. */
-DllExport
+VDSF_COMMON_EXPORT
 vdscBool vdscGetShortOptArgument( vdscOptionHandle handle,
                                   const char       opt, 
                                   char**           argument );
 
 /*! \brief Retrieves the argument associated with a given option. */
-DllExport
+VDSF_COMMON_EXPORT
 vdscBool vdscGetLongOptArgument( vdscOptionHandle handle,
                                  const char*      opt, 
                                  char**           argument );
 
 /*! \brief Verify if the option is present. */
-DllExport
+VDSF_COMMON_EXPORT
 vdscBool vdscIsLongOptPresent( vdscOptionHandle handle,
                                const char*      opt );
 
 /*! \brief Verify if the option is present. */
-DllExport
+VDSF_COMMON_EXPORT
 vdscBool vdscIsShortOptPresent( vdscOptionHandle handle,
                                 const char       opt );
 

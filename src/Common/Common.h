@@ -113,14 +113,17 @@ internationalization...
 #  pragma warning(default:4115)
 #  include <winbase.h>
 #  include <io.h>
+#  include <process.h> 
 #endif
 
 #if defined WIN32
-#  define DllImport   __declspec( dllimport )
-#  define DllExport   __declspec( dllexport )
+#  ifdef BUILD_VDSF_COMMON
+#    define VDSF_COMMON_EXPORT __declspec ( dllexport )
+#  else
+#    define VDSF_COMMON_EXPORT __declspec ( dllimport )
+#  endif
 #else
-#  define DllImport
-#  define DllExport
+#  define VDSF_COMMON_EXPORT
 #endif
 
 #if  ! defined ( BEGIN_C_DECLS )
@@ -286,7 +289,7 @@ internationalization...
 
 #if HAVE_GETPID
 #elif HAVE__GETPID  /* Windows 32 */
-#  define getpid(a) _getpid(a)
+#  define getpid() _getpid()
 #else
 #error "Don't know how to get the pid on this system."
 #endif
@@ -367,6 +370,8 @@ struct timespec
   time_t tv_sec;
   long tv_nsec;
 };
+
+VDSF_COMMON_EXPORT
 extern int nanosleep(const struct timespec * pRequest, 
                      struct timespec       * pRemain );
 #endif

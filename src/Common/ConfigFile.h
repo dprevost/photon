@@ -97,6 +97,7 @@ struct ConfigParams
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Read the configuration file from disk. */
+VDSF_COMMON_EXPORT
 int vdscReadConfig( const char*          cfgname,
                     struct ConfigParams* pConfig,
                     const char**         pMissing,

@@ -156,8 +156,10 @@ typedef volatile unsigned int vds_lock_T;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+VDSF_COMMON_EXPORT
 extern int g_timeOutinMilliSecs;
 
+VDSF_COMMON_EXPORT
 extern struct timespec g_timeOut;
 
 typedef int pid_t;
@@ -200,11 +202,13 @@ typedef struct vdscProcessLock
  * Initialize the lock - used for POSIX semaphore since sem_init()
  * may return an error.
  */
+VDSF_COMMON_EXPORT
 int vdscInitProcessLock( vdscProcessLock* pLock );
 
 /**
  *  Uninitialize the lock (it will remove the lock for POSIX semaphores).
  */
+VDSF_COMMON_EXPORT
 int vdscFiniProcessLock( vdscProcessLock* pLock );
 
 /** Acquire lock ownership (loop forever) - this is dangerous for

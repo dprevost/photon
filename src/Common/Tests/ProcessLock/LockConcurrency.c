@@ -66,13 +66,16 @@ int main( int argc, char* argv[] )
    int errcode;
    vdscMemoryFile memFile;
    vdscErrorHandler errorHandler;
-   
+   int identifier;
+   char dum3[100];
+   int dumId;
+
    if ( argc < 5 )
       return -1;
 
    vdscInitErrorDefs();
 
-   int identifier = atoi( argv[1] );
+   identifier = atoi( argv[1] );
    maxTime = strtol( argv[2], NULL, 0 );
    maxTime *= US_PER_SEC;
   
@@ -121,11 +124,9 @@ int main( int argc, char* argv[] )
    
    vdscBeginTimer( &timer );
 
-   char dum3[100];
-   int dumId;
    pid = getpid();
    
-   while ( 1 )
+   for (;;)
    {      
       pid_t savepid = pid;
 
