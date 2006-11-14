@@ -15,26 +15,14 @@ SUBDIRS = . Tests
 noinst_LTLIBRARIES   = libEngine.la
 
 libEngine_la_SOURCES =     \
-   BaseNode.cpp            \
-   BaseNode.h              \
-   BaseObject.h            \
-   CleanupManager.cpp      \
-   CleanupManager.h        \
-   CleanupProcess.cpp      \
-   CleanupProcess.h        \
-   CleanupSession.cpp      \
-   CleanupSession.h        \
    Engine.h                \
-   Folder.cpp              \
-   Folder.h                \
-   HashList.cpp            \
-   HashList.h              \
    LinkedList.c            \
    LinkedList.h            \
    LinkedList.inl          \
    LinkNode.h              \
-   ListErrors.h            \
-   LogFile.c               \
+   ListErrors.h            
+
+#   LogFile.c               \
    LogFile.h               \
    MemoryAllocator.c       \
    MemoryAllocator.h       \
@@ -51,6 +39,20 @@ libEngine_la_SOURCES =     \
    TreeManager.cpp         \
    TreeManager.h 
 
+#   BaseNode.cpp            \
+   BaseNode.h              \
+   BaseObject.h            \
+   CleanupManager.cpp      \
+   CleanupManager.h        \
+   CleanupProcess.cpp      \
+   CleanupProcess.h        \
+   CleanupSession.cpp      \
+   CleanupSession.h        \
+   Folder.cpp              \
+   Folder.h                \
+   HashList.cpp            \
+   HashList.h              
+   
 AM_CPPFLAGS = -I$(top_srcdir)/src/Common  \
               -I$(top_srcdir)/src/API     \
               -I$(top_srcdir)/src/include \
