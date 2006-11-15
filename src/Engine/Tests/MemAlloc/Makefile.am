@@ -11,142 +11,135 @@
 CLEANFILES = *~ core
 
 check_PROGRAMS =                     \
-                 bget                \
                  bgetNULLAlloc       \
-                 bgetNULLInfo        \
+                 bgetNULLError       \
                  bgetPass            \
                  bgetZeroLen         \
                  bpoolNULLAlloc      \
                  bpoolNULLBuf        \
-                 bpoolNULLInfo       \
+                 bpoolNULLError      \
                  bpoolPass           \
                  bpoolZeroLen        \
                  brelNULLAlloc       \
-                 brelNULLInfo        \
+                 brelNULLError       \
                  brelNULLPtr         \
                  brelPass            \
                  CloseNULLAlloc      \
-                 CloseNULLInfo       \
+                 CloseNULLError      \
                  ClosePass           \
                  FreeBuffNULLAlloc   \
                  FreeBuffNULLArray   \
-                 FreeBuffNULLInfo    \
+                 FreeBuffNULLError   \
                  FreeBuffPass        \
                  FreeBuffZeroLen     \
                  FreeNULLAlloc       \
-                 FreeNULLInfo        \
+                 FreeNULLError       \
                  FreeNULLPtr         \
                  FreePass            \
                  GetBuffNULLAlloc    \
                  GetBuffNULLArray    \
-                 GetBuffNULLInfo     \
+                 GetBuffNULLError    \
                  GetBuffPass         \
                  GetBuffZeroLen      \
                  InitNULLAddr        \
                  InitNULLAlloc       \
                  InitNULLBase        \
-                 InitNULLInfo        \
+                 InitNULLError       \
                  InitPass            \
                  InitZeroLen         \
                  IsBuffNULLAlloc     \
                  IsBuffNULLBuf       \
-                 IsBuffNULLInfo      \
+                 IsBuffNULLError     \
                  IsBuffPass          \
                  Macros              \
                  MallocNULLAlloc     \
-                 MallocNULLInfo      \
+                 MallocNULLError     \
                  MallocPass          \
                  MallocZeroLen       \
-                 RecoverNULLAlloc    \
-                 RecoverNULLInfo     \
-                 RecoverNULLNum      \
-                 RecoverPass         \
                  ResetStatsNULLAlloc \
-                 ResetStatsNULLInfo  \
+                 ResetStatsNULLError \
                  ResetStatsPass      \
                  SetBaseNULLAlloc    \
                  SetBaseNULLBase     \
-                 SetBaseNULLInfo     \
+                 SetBaseNULLError    \
                  SetBasePass         \
                  StatsNULLAlloc      \
                  StatsNULLCurrent    \
-                 StatsNULLInfo       \
+                 StatsNULLError      \
                  StatsNULLMax        \
                  StatsNULLNumFree    \
                  StatsNULLNumMalloc  \
                  StatsNULLTotal      \
                  StatsPass           \
                  ValidateNULLAlloc   \
-                 ValidateNULLInfo    \
+                 ValidateNULLError   \
                  ValidatePass
+
+#                 bget                
 
 bget_SOURCES                = bget.cpp
 bgetNULLAlloc_SOURCES       = bgetNULLAlloc.c
-bgetNULLInfo_SOURCES        = bgetNULLInfo.c
+bgetNULLError_SOURCES       = bgetNULLError.c
 bgetPass_SOURCES            = bgetPass.c
 bgetZeroLen_SOURCES         = bgetZeroLen.c
 bpoolNULLAlloc_SOURCES      = bpoolNULLAlloc.c
 bpoolNULLBuf_SOURCES        = bpoolNULLBuf.c
-bpoolNULLInfo_SOURCES       = bpoolNULLInfo.c
+bpoolNULLError_SOURCES      = bpoolNULLError.c
 bpoolPass_SOURCES           = bpoolPass.c
 bpoolZeroLen_SOURCES        = bpoolZeroLen.c
 brelNULLAlloc_SOURCES       = brelNULLAlloc.c
-brelNULLInfo_SOURCES        = brelNULLInfo.c
+brelNULLError_SOURCES       = brelNULLError.c
 brelNULLPtr_SOURCES         = brelNULLPtr.c
 brelPass_SOURCES            = brelPass.c
 CloseNULLAlloc_SOURCES      = CloseNULLAlloc.c
-CloseNULLInfo_SOURCES       = CloseNULLInfo.c
+CloseNULLError_SOURCES      = CloseNULLError.c
 ClosePass_SOURCES           = ClosePass.c
 FreeBuffNULLAlloc_SOURCES   = FreeBuffNULLAlloc.c
 FreeBuffNULLArray_SOURCES   = FreeBuffNULLArray.c
-FreeBuffNULLInfo_SOURCES    = FreeBuffNULLInfo.c
+FreeBuffNULLError_SOURCES   = FreeBuffNULLError.c
 FreeBuffPass_SOURCES        = FreeBuffPass.c
 FreeBuffZeroLen_SOURCES     = FreeBuffZeroLen.c
 FreeNULLAlloc_SOURCES       = FreeNULLAlloc.c
-FreeNULLInfo_SOURCES        = FreeNULLInfo.c
+FreeNULLError_SOURCES       = FreeNULLError.c
 FreeNULLPtr_SOURCES         = FreeNULLPtr.c
 FreePass_SOURCES            = FreePass.c
 GetBuffNULLAlloc_SOURCES    = GetBuffNULLAlloc.c
 GetBuffNULLArray_SOURCES    = GetBuffNULLArray.c
-GetBuffNULLInfo_SOURCES     = GetBuffNULLInfo.c
+GetBuffNULLError_SOURCES    = GetBuffNULLError.c
 GetBuffPass_SOURCES         = GetBuffPass.c
 GetBuffZeroLen_SOURCES      = GetBuffZeroLen.c
 InitNULLAddr_SOURCES        = InitNULLAddr.c
 InitNULLAlloc_SOURCES       = InitNULLAlloc.c
 InitNULLBase_SOURCES        = InitNULLBase.c
-InitNULLInfo_SOURCES        = InitNULLInfo.c
+InitNULLError_SOURCES       = InitNULLError.c
 InitPass_SOURCES            = InitPass.c
 InitZeroLen_SOURCES         = InitZeroLen.c
 IsBuffNULLAlloc_SOURCES     = IsBuffNULLAlloc.c
 IsBuffNULLBuf_SOURCES       = IsBuffNULLBuf.c
-IsBuffNULLInfo_SOURCES      = IsBuffNULLInfo.c
+IsBuffNULLError_SOURCES     = IsBuffNULLError.c
 IsBuffPass_SOURCES          = IsBuffPass.c
 Macros_SOURCES              = Macros.c
 MallocNULLAlloc_SOURCES     = MallocNULLAlloc.c
-MallocNULLInfo_SOURCES      = MallocNULLInfo.c
+MallocNULLError_SOURCES     = MallocNULLError.c
 MallocPass_SOURCES          = MallocPass.c
 MallocZeroLen_SOURCES       = MallocZeroLen.c
-RecoverNULLAlloc_SOURCES    = RecoverNULLAlloc.c
-RecoverNULLInfo_SOURCES     = RecoverNULLInfo.c
-RecoverNULLNum_SOURCES      = RecoverNULLNum.c
-RecoverPass_SOURCES         = RecoverPass.c
 ResetStatsNULLAlloc_SOURCES = ResetStatsNULLAlloc.c
-ResetStatsNULLInfo_SOURCES  = ResetStatsNULLInfo.c
+ResetStatsNULLError_SOURCES = ResetStatsNULLError.c
 ResetStatsPass_SOURCES      = ResetStatsPass.c
 SetBaseNULLAlloc_SOURCES    = SetBaseNULLAlloc.c
 SetBaseNULLBase_SOURCES     = SetBaseNULLBase.c
-SetBaseNULLInfo_SOURCES     = SetBaseNULLInfo.c
+SetBaseNULLError_SOURCES    = SetBaseNULLError.c
 SetBasePass_SOURCES         = SetBasePass.c
 StatsNULLAlloc_SOURCES      = StatsNULLAlloc.c
 StatsNULLCurrent_SOURCES    = StatsNULLCurrent.c
-StatsNULLInfo_SOURCES       = StatsNULLInfo.c
+StatsNULLError_SOURCES      = StatsNULLError.c
 StatsNULLMax_SOURCES        = StatsNULLMax.c
 StatsNULLNumFree_SOURCES    = StatsNULLNumFree.c
 StatsNULLNumMalloc_SOURCES  = StatsNULLNumMalloc.c
 StatsNULLTotal_SOURCES      = StatsNULLTotal.c
 StatsPass_SOURCES           = StatsPass.c
 ValidateNULLAlloc_SOURCES   = ValidateNULLAlloc.c
-ValidateNULLInfo_SOURCES    = ValidateNULLInfo.c
+ValidateNULLError_SOURCES   = ValidateNULLError.c
 ValidatePass_SOURCES        = ValidatePass.c
 
 EXTRA_DIST =         \
@@ -158,126 +151,120 @@ TESTS1 = Macros
 
 TESTS =                     \
         bgetNULLAlloc       \
-        bgetNULLInfo        \
+        bgetNULLError       \
         bgetZeroLen         \
         bgetPass            \
         bpoolNULLAlloc      \
         bpoolNULLBuf        \
-        bpoolNULLInfo       \
+        bpoolNULLError      \
         bpoolZeroLen        \
         bpoolPass           \
         brelNULLAlloc       \
-        brelNULLInfo        \
+        brelNULLError       \
         brelNULLPtr         \
         brelPass            \
         CloseNULLAlloc      \
-        CloseNULLInfo       \
+        CloseNULLError      \
         ClosePass           \
         FreeBuffNULLAlloc   \
         FreeBuffNULLArray   \
-        FreeBuffNULLInfo    \
+        FreeBuffNULLError   \
         FreeBuffZeroLen     \
         FreeBuffPass        \
         FreeNULLAlloc       \
-        FreeNULLInfo        \
+        FreeNULLError       \
         FreeNULLPtr         \
         FreePass            \
         GetBuffNULLAlloc    \
         GetBuffNULLArray    \
-        GetBuffNULLInfo     \
+        GetBuffNULLError    \
         GetBuffZeroLen      \
         GetBuffPass         \
         InitNULLAddr        \
         InitNULLAlloc       \
         InitNULLBase        \
-        InitNULLInfo        \
+        InitNULLError       \
         InitPass            \
         InitZeroLen         \
         IsBuffNULLAlloc     \
         IsBuffNULLBuf       \
-        IsBuffNULLInfo      \
+        IsBuffNULLError     \
         IsBuffPass          \
         Macros              \
         MallocNULLAlloc     \
-        MallocNULLInfo      \
+        MallocNULLError     \
         MallocPass          \
         MallocZeroLen       \
-        RecoverNULLAlloc    \
-        RecoverNULLInfo     \
-        RecoverNULLNum      \
-        RecoverPass         \
         ResetStatsNULLAlloc \
-        ResetStatsNULLInfo  \
+        ResetStatsNULLError \
         ResetStatsPass      \
         SetBaseNULLAlloc    \
         SetBaseNULLBase     \
-        SetBaseNULLInfo     \
+        SetBaseNULLError    \
         SetBasePass         \
         StatsNULLAlloc      \
         StatsNULLCurrent    \
-        StatsNULLInfo       \
+        StatsNULLError      \
         StatsNULLMax        \
         StatsNULLNumFree    \
         StatsNULLNumMalloc  \
         StatsNULLTotal      \
         StatsPass           \
         ValidateNULLAlloc   \
-        ValidateNULLInfo    \
-        ValidatePass        \
-        bget.sh            
+        ValidateNULLError   \
+        ValidatePass        
+
+#        bget.sh            
 
 XFAIL_TESTS =                     \
               bgetNULLAlloc       \
-              bgetNULLInfo        \
+              bgetNULLError       \
               bgetZeroLen         \
               bpoolNULLAlloc      \
               bpoolNULLBuf        \
-              bpoolNULLInfo       \
+              bpoolNULLError      \
               bpoolZeroLen        \
               brelNULLAlloc       \
-              brelNULLInfo        \
+              brelNULLError       \
               brelNULLPtr         \
               CloseNULLAlloc      \
-              CloseNULLInfo       \
+              CloseNULLError      \
               FreeBuffNULLAlloc   \
               FreeBuffNULLArray   \
-              FreeBuffNULLInfo    \
+              FreeBuffNULLError   \
               FreeBuffZeroLen     \
               FreeNULLAlloc       \
-              FreeNULLInfo        \
+              FreeNULLError       \
               FreeNULLPtr         \
               GetBuffNULLAlloc    \
               GetBuffNULLArray    \
-              GetBuffNULLInfo     \
+              GetBuffNULLError    \
               GetBuffZeroLen      \
               InitNULLAddr        \
               InitNULLAlloc       \
               InitNULLBase        \
-              InitNULLInfo        \
+              InitNULLError       \
               InitZeroLen         \
               IsBuffNULLAlloc     \
               IsBuffNULLBuf       \
-              IsBuffNULLInfo      \
+              IsBuffNULLError     \
               MallocNULLAlloc     \
-              MallocNULLInfo      \
+              MallocNULLError     \
               MallocZeroLen       \
-              RecoverNULLAlloc    \
-              RecoverNULLInfo     \
-              RecoverNULLNum      \
               ResetStatsNULLAlloc \
-              ResetStatsNULLInfo  \
+              ResetStatsNULLError \
               SetBaseNULLAlloc    \
               SetBaseNULLBase     \
-              SetBaseNULLInfo     \
+              SetBaseNULLError    \
               StatsNULLAlloc      \
               StatsNULLCurrent    \
-              StatsNULLInfo       \
+              StatsNULLError      \
               StatsNULLMax        \
               StatsNULLNumFree    \
               StatsNULLNumMalloc  \
               StatsNULLTotal      \
               ValidateNULLAlloc   \
-              ValidateNULLInfo
+              ValidateNULLError
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la

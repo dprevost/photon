@@ -20,12 +20,12 @@ libEngine_la_SOURCES =     \
    LinkedList.h            \
    LinkedList.inl          \
    LinkNode.h              \
-   ListErrors.h            
+   ListErrors.h            \
+   MemoryAllocator.c       \
+   MemoryAllocator.h       
 
 #   LogFile.c               \
    LogFile.h               \
-   MemoryAllocator.c       \
-   MemoryAllocator.h       \
    MemoryManager.cpp       \
    MemoryManager.h         \
    Queue.cpp               \
