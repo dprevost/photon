@@ -59,7 +59,7 @@ int main( int argc, char* argv[] )
    outputFiles output;
    analyser  parser( &input, &output );
    vdscOptionHandle handle;
-   vdscBool optionOK;
+   bool optionOK;
    char* inputFilename = NULL;
    char* outputRoot = NULL;
    char* prefix = NULL;
