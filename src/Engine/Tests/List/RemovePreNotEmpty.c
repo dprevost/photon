@@ -28,13 +28,13 @@ int main( int argc, char* argv[] )
       return 0;
    
    vdseLinkNodeInit( &node );
-   vdseLinkedListInit( &list, &g_alloc );
+   vdseLinkedListInit( &list );
    
-   vdseLinkedListPutLast( &list, &node, &g_alloc );
+   vdseLinkedListPutLast( &list, &node );
 
-   vdseLinkedListGetFirst( &list, &pNode, &g_alloc );
+   vdseLinkedListGetFirst( &list, &pNode );
    
-   vdseLinkedListRemoveItem( &list, &node, &g_alloc );
+   vdseLinkedListRemoveItem( &list, &node );
 
    return 0;
 }

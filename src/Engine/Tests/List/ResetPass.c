@@ -28,14 +28,14 @@ int main( int argc, char* argv[] )
    if ( InitMem() == -1 )
       return -1;
    
-   vdseLinkedListInit( &list, &g_alloc );
+   vdseLinkedListInit( &list );
    
-   vdseLinkedListReset( &list, &g_alloc );
+   vdseLinkedListReset( &list );
 
    if ( list.initialized != VDSE_LIST_SIGNATURE ) return -1;
    if ( list.currentSize != 0 ) return -1;
 
-   error = vdseLinkedListGetFirst( &list, &pNode, &g_alloc );
+   error = vdseLinkedListGetFirst( &list, &pNode );
    if ( error != LIST_EMPTY ) 
       return -1;
 

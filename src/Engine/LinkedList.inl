@@ -19,13 +19,11 @@
 
 inline enum ListErrors 
 vdseLinkedListGetFirst( vdseLinkedList* pList,
-                        vdseLinkNode**  ppItem,
-                        vdseMemAlloc*   pAllocator )
+                        vdseLinkNode**  ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pAllocator != NULL );
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty queue. */
@@ -33,9 +31,7 @@ vdseLinkedListGetFirst( vdseLinkedList* pList,
       return LIST_EMPTY;
 
    /* Get the pointer to the first node */
-   *ppItem = GET_PTR( pList->head.nextOffset, 
-                      vdseLinkNode, 
-                      pAllocator );
+   *ppItem = GET_PTR( pList->head.nextOffset, vdseLinkNode );
 
    pList->currBuffOffset = pList->head.nextOffset;   
 
@@ -43,10 +39,8 @@ vdseLinkedListGetFirst( vdseLinkedList* pList,
     * of the item after the item we are removing.
     */
    pList->head.nextOffset = (*ppItem)->nextOffset;
-   GET_PTR( (*ppItem)->nextOffset,
-            vdseLinkNode,
-            pAllocator)->previousOffset = 
-      SET_OFFSET( &pList->head, pAllocator );
+   GET_PTR( (*ppItem)->nextOffset, vdseLinkNode)->previousOffset = 
+      SET_OFFSET( &pList->head );
 
    --pList->currentSize;
 
@@ -59,13 +53,11 @@ vdseLinkedListGetFirst( vdseLinkedList* pList,
 
 inline enum ListErrors 
 vdseLinkedListGetLast( vdseLinkedList* pList,
-                       vdseLinkNode**  ppItem,
-                       vdseMemAlloc*   pAllocator )
+                       vdseLinkNode**  ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pAllocator != NULL );
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
@@ -73,19 +65,15 @@ vdseLinkedListGetLast( vdseLinkedList* pList,
       return LIST_EMPTY;
 
    /* Get the pointer to the last node */
-   *ppItem = GET_PTR( pList->head.previousOffset, 
-                      vdseLinkNode, 
-                      pAllocator );
+   *ppItem = GET_PTR( pList->head.previousOffset, vdseLinkNode );
 
    pList->currBuffOffset = pList->head.nextOffset;   
    
    /* Reset the previous offset of the head and the next offset
     * of the item before the item we are removing.
     */   pList->head.previousOffset = (*ppItem)->previousOffset;
-   GET_PTR( (*ppItem)->previousOffset, 
-            vdseLinkNode, 
-            pAllocator)->nextOffset = 
-      SET_OFFSET( &pList->head, pAllocator );
+   GET_PTR( (*ppItem)->previousOffset, vdseLinkNode)->nextOffset = 
+      SET_OFFSET( &pList->head );
 
    --pList->currentSize;
 
@@ -98,23 +86,21 @@ vdseLinkedListGetLast( vdseLinkedList* pList,
 
 inline void 
 vdseLinkedListPutLast( vdseLinkedList* pList,
-                       vdseLinkNode *  pNewItem,
-                       vdseMemAlloc*   pAllocator )
+                       vdseLinkNode *  pNewItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pAllocator != NULL );
    VDS_PRE_CONDITION( pNewItem   != NULL );
 
-   pList->currBuffOffset = SET_OFFSET( pNewItem, pAllocator );
+   pList->currBuffOffset = SET_OFFSET( pNewItem );
 
-   pNewItem->nextOffset     = SET_OFFSET( &pList->head, pAllocator );
+   pNewItem->nextOffset     = SET_OFFSET( &pList->head );
    /* The order of the next two is important - don't change it! */
-   pNewItem->previousOffset = pList->head.previousOffset;   
-   pList->head.previousOffset    = pList->currBuffOffset;
-   GET_PTR(pNewItem->previousOffset,vdseLinkNode,pAllocator)
-      ->nextOffset = pList->currBuffOffset;
+   pNewItem->previousOffset   = pList->head.previousOffset;   
+   pList->head.previousOffset = pList->currBuffOffset;
+   GET_PTR( pNewItem->previousOffset, vdseLinkNode )->nextOffset = 
+      pList->currBuffOffset;
    
    pList->currentSize++;
 
@@ -128,25 +114,22 @@ vdseLinkedListPutLast( vdseLinkedList* pList,
 
 inline void 
 vdseLinkedListPutFirst( vdseLinkedList* pList,
-                        vdseLinkNode *  pNewItem,
-                        vdseMemAlloc*   pAllocator )
+                        vdseLinkNode *  pNewItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pAllocator != NULL );
    VDS_PRE_CONDITION( pNewItem   != NULL );
 
-   pList->currBuffOffset = SET_OFFSET( pNewItem, pAllocator );
+   pList->currBuffOffset = SET_OFFSET( pNewItem );
 
-   pNewItem->previousOffset = SET_OFFSET( &pList->head, pAllocator );
+   pNewItem->previousOffset = SET_OFFSET( &pList->head );
 
    /* The order of the next two is important - don't change it! */
    pNewItem->nextOffset = pList->head.nextOffset;   
    pList->head.nextOffset    = pList->currBuffOffset;
-   GET_PTR( pNewItem->nextOffset,
-            vdseLinkNode,
-            pAllocator )->previousOffset = pList->currBuffOffset;
+   GET_PTR( pNewItem->nextOffset, vdseLinkNode )->previousOffset = 
+      pList->currBuffOffset;
    
    pList->currentSize++;
 
@@ -160,13 +143,11 @@ vdseLinkedListPutFirst( vdseLinkedList* pList,
 
 inline void 
 vdseLinkedListRemoveItem( vdseLinkedList* pList,
-                          vdseLinkNode*   pRemovedItem,
-                          vdseMemAlloc*   pAllocator )
+                          vdseLinkNode*   pRemovedItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pAllocator   != NULL );
    VDS_PRE_CONDITION( pRemovedItem != NULL );
    VDS_PRE_CONDITION( pRemovedItem->previousOffset != NULL_OFFSET );
    VDS_PRE_CONDITION( pRemovedItem->nextOffset     != NULL_OFFSET );
@@ -183,8 +164,7 @@ vdseLinkedListRemoveItem( vdseLinkedList* pList,
       vdseLinkNode* dbc_ptr;
 
       dbc_ptr = GET_PTR( pRemovedItem->nextOffset,
-                         vdseLinkNode,
-                         pAllocator );
+                         vdseLinkNode );
       while ( dbc_count > 0 )
       {
          if ( dbc_ptr == &pList->head )
@@ -193,9 +173,7 @@ vdseLinkedListRemoveItem( vdseLinkedList* pList,
             break;
          }
          VDS_PRE_CONDITION( dbc_ptr->nextOffset != NULL_OFFSET );
-         dbc_ptr = GET_PTR( dbc_ptr->nextOffset,
-                            vdseLinkNode,
-                            pAllocator );
+         dbc_ptr = GET_PTR( dbc_ptr->nextOffset, vdseLinkNode );
          dbc_count--;
          
       }
@@ -203,16 +181,13 @@ vdseLinkedListRemoveItem( vdseLinkedList* pList,
    }
 #endif
 
-   pList->currBuffOffset = SET_OFFSET( pRemovedItem, pAllocator );
+   pList->currBuffOffset = SET_OFFSET( pRemovedItem );
    
-   GET_PTR( pRemovedItem->nextOffset,
-            vdseLinkNode,
-            pAllocator )->previousOffset = 
+   GET_PTR( pRemovedItem->nextOffset, vdseLinkNode )->previousOffset = 
       pRemovedItem->previousOffset;
 
-   GET_PTR( pRemovedItem->previousOffset, 
-            vdseLinkNode,
-            pAllocator )->nextOffset = pRemovedItem->nextOffset;
+   GET_PTR( pRemovedItem->previousOffset, vdseLinkNode )->nextOffset = 
+      pRemovedItem->nextOffset;
 
    --pList->currentSize;
 
@@ -223,22 +198,18 @@ vdseLinkedListRemoveItem( vdseLinkedList* pList,
 
 inline enum ListErrors 
 vdseLinkedListPeakFirst( vdseLinkedList* pList,
-                         vdseLinkNode**  ppItem,
-                         vdseMemAlloc*   pAllocator )
+                         vdseLinkNode**  ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pAllocator != NULL );
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
    if ( pList->currentSize == 0 )
       return LIST_EMPTY;
 
-   *ppItem = GET_PTR( pList->head.nextOffset, 
-                      vdseLinkNode, 
-                      pAllocator );
+   *ppItem = GET_PTR( pList->head.nextOffset, vdseLinkNode );
 
    VDS_POST_CONDITION( *ppItem != NULL );
 
@@ -249,22 +220,18 @@ vdseLinkedListPeakFirst( vdseLinkedList* pList,
 
 inline enum ListErrors 
 vdseLinkedListPeakLast( vdseLinkedList* pList,
-                        vdseLinkNode**  ppItem,
-                        vdseMemAlloc*   pAllocator )
+                        vdseLinkNode**  ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pAllocator != NULL );
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
    if ( pList->currentSize == 0 )
       return LIST_EMPTY;
 
-   *ppItem = GET_PTR( pList->head.previousOffset, 
-                      vdseLinkNode, 
-                      pAllocator );
+   *ppItem = GET_PTR( pList->head.previousOffset, vdseLinkNode );
 
    VDS_POST_CONDITION( *ppItem != NULL );
 
@@ -276,13 +243,11 @@ vdseLinkedListPeakLast( vdseLinkedList* pList,
 inline enum ListErrors 
 vdseLinkedListPeakNext( vdseLinkedList* pList,
                         vdseLinkNode*   pCurrent, 
-                        vdseLinkNode**  ppNext,
-                        vdseMemAlloc*   pAllocator )
+                        vdseLinkNode**  ppNext )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pAllocator != NULL );
    VDS_PRE_CONDITION( pCurrent   != NULL );
    VDS_PRE_CONDITION( ppNext     != NULL );
    VDS_PRE_CONDITION( pCurrent->previousOffset != NULL_OFFSET );
@@ -298,9 +263,7 @@ vdseLinkedListPeakNext( vdseLinkedList* pList,
       int dbc_ok = 0;
       vdseLinkNode* dbc_ptr;
 
-      dbc_ptr = GET_PTR( pCurrent->nextOffset,
-                         vdseLinkNode,
-                         pAllocator );
+      dbc_ptr = GET_PTR( pCurrent->nextOffset, vdseLinkNode );
       while ( dbc_count > 0 )
       {
          if ( dbc_ptr == &pList->head )
@@ -309,19 +272,14 @@ vdseLinkedListPeakNext( vdseLinkedList* pList,
             break;
          }
          VDS_PRE_CONDITION( dbc_ptr->nextOffset != NULL_OFFSET );
-         dbc_ptr = GET_PTR( dbc_ptr->nextOffset,
-                            vdseLinkNode,
-                            pAllocator );
+         dbc_ptr = GET_PTR( dbc_ptr->nextOffset, vdseLinkNode );
          dbc_count--;
-         
       }
       VDS_PRE_CONDITION( dbc_ok == 1 );
    }
 #endif
 
-   vdseLinkNode* pNext = GET_PTR( pCurrent->nextOffset,
-                                  vdseLinkNode,
-                                  pAllocator );
+   vdseLinkNode* pNext = GET_PTR( pCurrent->nextOffset, vdseLinkNode );
    if ( pNext == &pList->head )
       return LIST_END_OF_LIST;
    *ppNext = pNext;
@@ -336,13 +294,11 @@ vdseLinkedListPeakNext( vdseLinkedList* pList,
 inline enum ListErrors 
 vdseLinkedListPeakPrevious( vdseLinkedList* pList,
                             vdseLinkNode*   pCurrent, 
-                            vdseLinkNode**  ppPrevious,
-                            vdseMemAlloc*   pAllocator )
+                            vdseLinkNode**  ppPrevious )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pAllocator != NULL );
    VDS_PRE_CONDITION( pCurrent   != NULL );
    VDS_PRE_CONDITION( ppPrevious != NULL );
    VDS_PRE_CONDITION( pCurrent->previousOffset != NULL_OFFSET );
@@ -358,9 +314,7 @@ vdseLinkedListPeakPrevious( vdseLinkedList* pList,
       int dbc_ok = 0;
       vdseLinkNode* dbc_ptr;
 
-      dbc_ptr = GET_PTR( pCurrent->nextOffset,
-                         vdseLinkNode,
-                         pAllocator );
+      dbc_ptr = GET_PTR( pCurrent->nextOffset, vdseLinkNode );
       while ( dbc_count > 0 )
       {
          if ( dbc_ptr == &pList->head )
@@ -369,19 +323,14 @@ vdseLinkedListPeakPrevious( vdseLinkedList* pList,
             break;
          }
          VDS_PRE_CONDITION( dbc_ptr->nextOffset != NULL_OFFSET );
-         dbc_ptr = GET_PTR( dbc_ptr->nextOffset,
-                            vdseLinkNode,
-                            pAllocator );
+         dbc_ptr = GET_PTR( dbc_ptr->nextOffset, vdseLinkNode );
          dbc_count--;
-         
       }
       VDS_PRE_CONDITION( dbc_ok == 1 );
    }
 #endif
 
-   vdseLinkNode* pPrevious = GET_PTR( pCurrent->previousOffset, 
-                                      vdseLinkNode, 
-                                      pAllocator );
+   vdseLinkNode* pPrevious = GET_PTR( pCurrent->previousOffset, vdseLinkNode );
    if ( pPrevious == &pList->head )
       return LIST_END_OF_LIST;
    *ppPrevious = pPrevious;

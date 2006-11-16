@@ -28,10 +28,10 @@ int main( int argc, char* argv[] )
    if ( InitMem() == -1 )
       return 0;
 
-   vdseLinkedListInit( &list, &g_alloc );
+   vdseLinkedListInit( &list );
    list.initialized = 0;
    
-   vdseLinkedListIsValid( &list, &node, &g_alloc );
+   vdseLinkedListIsValid( &list, &node );
    
    return 0;
 }

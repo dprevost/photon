@@ -30,14 +30,14 @@ int main( int argc, char* argv[] )
 
    vdseLinkNodeInit( &node );
    vdseLinkNodeInit( &node2 );
-   vdseLinkedListInit( &list, &g_alloc );
+   vdseLinkedListInit( &list );
    
-   vdseLinkedListPutLast( &list, &node, &g_alloc );
+   vdseLinkedListPutLast( &list, &node );
    
-   valid = vdseLinkedListIsValid( &list, &node, &g_alloc );
+   valid = vdseLinkedListIsValid( &list, &node );
    if ( ! valid ) return -1;
 
-   valid = vdseLinkedListIsValid( &list, &node2, &g_alloc );
+   valid = vdseLinkedListIsValid( &list, &node2 );
    if ( valid ) return -1;
 
    vdseLinkedListFini( &list );

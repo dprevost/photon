@@ -23,11 +23,12 @@ libEngine_la_SOURCES =     \
    ListErrors.h            \
    MemoryAllocator.c       \
    MemoryAllocator.h       
+   
+#   MemoryManager.c         \
+   MemoryManager.h         
 
 #   LogFile.c               \
    LogFile.h               \
-   MemoryManager.cpp       \
-   MemoryManager.h         \
    Queue.cpp               \
    Queue.h                 \
    SessionContext.h        \

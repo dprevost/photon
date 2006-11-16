@@ -29,11 +29,11 @@ int main( int argc, char* argv[] )
       return -1;
    
    vdseLinkNodeInit( &node );
-   vdseLinkedListInit( &list, &g_alloc );
+   vdseLinkedListInit( &list );
    
-   vdseLinkedListPutLast( &list, &node, &g_alloc );
+   vdseLinkedListPutLast( &list, &node );
    
-   error = vdseLinkedListPeakFirst( &list, &pNode, &g_alloc );
+   error = vdseLinkedListPeakFirst( &list, &pNode );
    if ( error != LIST_OK )
       return -1;
    if ( pNode != &node ) 

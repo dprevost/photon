@@ -36,11 +36,9 @@ void vdseLinkedListFini( vdseLinkedList* pList )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseLinkedListInit( vdseLinkedList* pList,
-                         vdseMemAlloc*   pAllocator )
+void vdseLinkedListInit( vdseLinkedList* pList )
 {
    VDS_PRE_CONDITION( pList      != NULL );
-   VDS_PRE_CONDITION( pAllocator != NULL );
    
    vdseLinkNodeInit( &pList->head );
    pList->currentSize = 0;
@@ -48,34 +46,31 @@ void vdseLinkedListInit( vdseLinkedList* pList,
 
    /* Make the list circular by pointing it back to itself. */
    pList->head.previousOffset = pList->head.nextOffset = 
-      SET_OFFSET( &pList->head, pAllocator );
+      SET_OFFSET( &pList->head );
 
    pList->initialized = VDSE_LIST_SIGNATURE;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseLinkedListReset( vdseLinkedList* pList,
-                          vdseMemAlloc*   pAllocator )
+void vdseLinkedListReset( vdseLinkedList* pList )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pAllocator != NULL );
 
    pList->currentSize = 0;
    pList->currBuffOffset = NULL_OFFSET;
 
    /* Make the list circular by pointing it back to itself. */
    pList->head.previousOffset = pList->head.nextOffset = 
-      SET_OFFSET( &pList->head, pAllocator );
+      SET_OFFSET( &pList->head );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseLinkedListIsValid( vdseLinkedList* pList,
-                           vdseLinkNode*   pUnknown,
-                           vdseMemAlloc*   pAllocator )
+                           vdseLinkNode*   pUnknown )
 {
    int valid = 0;
    
@@ -84,12 +79,11 @@ int vdseLinkedListIsValid( vdseLinkedList* pList,
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pAllocator != NULL );
    VDS_PRE_CONDITION( pUnknown   != NULL );
 
    pItem = &pList->head;
    
-   pItem = GET_PTR( pItem->nextOffset, vdseLinkNode, pAllocator );
+   pItem = GET_PTR( pItem->nextOffset, vdseLinkNode );
    while ( pItem != &pList->head )
    {
       if ( pItem == pUnknown )
@@ -98,7 +92,7 @@ int vdseLinkedListIsValid( vdseLinkedList* pList,
          break;
       }
       
-      pItem = GET_PTR( pItem->nextOffset, vdseLinkNode, pAllocator );
+      pItem = GET_PTR( pItem->nextOffset, vdseLinkNode );
    }
 
    return valid;

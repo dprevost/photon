@@ -74,57 +74,48 @@ vdseLinkedListFini( vdseLinkedList* pList );
 /** Removes and returns the first item on the list. */
 static inline enum ListErrors 
 vdseLinkedListGetFirst( vdseLinkedList* pList,
-                        vdseLinkNode**  ppItem,
-                        vdseMemAlloc*   pAllocator );
+                        vdseLinkNode**  ppItem );
 
 /** Removes and returns the last item on the list. */ 
 static inline enum ListErrors 
 vdseLinkedListGetLast( vdseLinkedList* pList,
-                       vdseLinkNode**  ppItem,
-                       vdseMemAlloc*   pAllocator );
+                       vdseLinkNode**  ppItem );
 
 /** Initialize the linked list. */
 void 
-vdseLinkedListInit( vdseLinkedList*     pList,
-                    vdseMemAlloc* pAllocator );
+vdseLinkedListInit( vdseLinkedList* pList );
 
 /** Adds pNewItem to the beginning of the list. */
 static inline void 
 vdseLinkedListPutFirst( vdseLinkedList* pList,
-                        vdseLinkNode *  pNewItem,
-                        vdseMemAlloc*   pAllocator );
+                        vdseLinkNode *  pNewItem );
 
 /** Adds pNewItem to the tail of the list. */
 static inline void 
 vdseLinkedListPutLast( vdseLinkedList* pList,
-                       vdseLinkNode *  pNewItem,
-                       vdseMemAlloc*   pAllocator );
+                       vdseLinkNode *  pNewItem );
 
 /** Returns the first item on the list. The item is not removed. */
 static inline enum ListErrors 
 vdseLinkedListPeakFirst( vdseLinkedList* pList,
-                         vdseLinkNode**  ppItem,
-                         vdseMemAlloc*   pAllocator );
+                         vdseLinkNode**  ppItem );
 
 /** Returns the last item on the list. The item is not removed. */
 static inline enum ListErrors 
 vdseLinkedListPeakLast( vdseLinkedList* pList,
-                        vdseLinkNode**  ppItem,
-                        vdseMemAlloc*   pAllocator );
+                        vdseLinkNode**  ppItem );
 
 /** Returns the item just after pCurrent. The item is not removed. */
 static inline enum ListErrors 
 vdseLinkedListPeakNext( vdseLinkedList* pList, 
                         vdseLinkNode*   pCurrent, 
-                        vdseLinkNode**  ppNext,
-                        vdseMemAlloc*   pAllocator );
+                        vdseLinkNode**  ppNext );
 
 /** Returns the item just before pCurrent. The item is not removed. */
 static inline enum ListErrors 
 vdseLinkedListPeakPrevious( vdseLinkedList* pList,
                             vdseLinkNode*   pCurrent, 
-                            vdseLinkNode**  ppPrevious,
-                            vdseMemAlloc*   pAllocator );
+                            vdseLinkNode**  ppPrevious );
 
 /** 
  * Remove the item pointed to by pRemovedItem from the list (this 
@@ -132,8 +123,7 @@ vdseLinkedListPeakPrevious( vdseLinkedList* pList,
  */
 static inline void 
 vdseLinkedListRemoveItem( vdseLinkedList* pList,
-                          vdseLinkNode*   pRemovedItem,
-                          vdseMemAlloc*   pAllocator );
+                          vdseLinkNode*   pRemovedItem );
 
 /*
  * The next functions are part of the recovery algorithm and should not
@@ -144,16 +134,14 @@ vdseLinkedListRemoveItem( vdseLinkedList* pList,
  *  crash recovery algorithm
  */
 void 
-vdseLinkedListReset( vdseLinkedList* pList,
-                     vdseMemAlloc*   pAllocator );
+vdseLinkedListReset( vdseLinkedList* pList );
 
 /** Search in the list to see if pUnknown is in it or not - used by the
  *  crash recovery algorithm 
  */
 int 
 vdseLinkedListIsValid( vdseLinkedList* pList,
-                       vdseLinkNode*   pUnknown,
-                       vdseMemAlloc*   pAllocator );
+                       vdseLinkNode*   pUnknown );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

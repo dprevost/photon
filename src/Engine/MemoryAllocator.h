@@ -1,8 +1,18 @@
 /*
- * Code from the BGET allocator (http://www.fourmilab.ch/bget/) was used
- * to develop this MemoryAllocator class.
+ * Originally, code from the BGET allocator (http://www.fourmilab.ch/bget/) 
+ * was used to develop the first version of the MemoryAllocator class. The
+ * main modification was to replaced all pointers with offsets (we used 
+ * offsets since the address of the shared memory can vary from process to
+ * process - offsets to the start of the shared memory eliminates this issue).
  *
- * This is their (the BGET authors) comments:
+ * However, the complete rewrite of the allocator means that most of the code
+ * was changed. There are still some ideas of bget in there (the linked
+ * list of free buffers) but I'm not sure how would be able to recognize the 
+ * bget code in there.
+ *
+ * -------------------------------------
+ *
+ * This is their (the BGET authors) original comments (in the .c file):
  *
  * Designed and implemented in April of 1972 by John Walker, based on the
  * Case Algol OPRO$ algorithm implemented in 1966.
@@ -29,10 +39,11 @@
  * To quote the website:
  * "BGET is in the public domain. You can do anything you like with it."
  *
- * The original code still follow this license - of course!
+ * If there are still bits and pieces of code in this module belonging 
+ * to the original bget code they still follow this license - of course!
  *
- * However, modifications to the original code are covered by this 
- * copyright:
+ * However, additions and modifications to the original code are covered 
+ * by this copyright:
  *
  * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
  *
@@ -55,41 +66,41 @@
 
 #include "Engine.h"
 #include "ErrorHandler.h"
+#include "MemoryObject.h"
 
 BEGIN_C_DECLS
 
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define SET_OFFSET(ptr,alloc) ( (ptrdiff_t) ( (unsigned char*)(ptr) - \
-       (alloc)->pBaseAddr ) )
+#define SET_OFFSET(ptr) ( (ptrdiff_t) ( (unsigned char*)(ptr) - \
+       g_pBaseAddr ) )
 
 /* Only use this macro when you know, for a fact, that the offset cannot
  * be the NULL_OFFSET (for example, in the LinkedList class, the links
  * are never set to NULL_OFFSET...). 
  */
-#define GET_PTR(off,class,alloc) ( (class*) (           \
-       (unsigned char*)((alloc)->pBaseAddr) + (ptrdiff_t) off ))
+#define GET_PTR(off,class) ( (class*) (           \
+       (unsigned char*) g_pBaseAddr + (ptrdiff_t) off ))
 
-#define SET_PTR(target,offset,type,alloc)  \
+#define SET_PTR(target,offset,type)  \
    if ( offset == NULL_OFFSET ) \
       target = NULL; \
    else \
       target = (type*) (           \
-         (unsigned char*)((alloc)->pBaseAddr) + (ptrdiff_t) offset );
+         (unsigned char*) g_pBaseAddr + (ptrdiff_t) offset );
 
 /* These next macros are only used inside this class and in the crash
  * recovery procedure (which is why they are in the .h file) 
  */
 
-#define GET_FLINK(p,alloc) ( (struct bfhead *) \
-   ((alloc)->pBaseAddr+(p)->ql.flink ) )
+#define GET_FLINK(p) ( (struct bfhead *) \
+   (g_pBaseAddr+(p)->ql.flink ) )
 
-#define GET_BLINK(p,alloc) ( (struct bfhead *) \
-   ((alloc)->pBaseAddr+(p)->ql.blink ) )
+#define GET_BLINK(p) ( (struct bfhead *) \
+   (g_pBaseAddr+(p)->ql.blink ) )
 
-#define SET_LINK(p,alloc)  ( (size_t) \
-   ( (unsigned char*)(p) - (alloc)->pBaseAddr ) )
+#define SET_LINK(p)  ( (size_t) \
+   ( (unsigned char*)(p) - g_pBaseAddr ) )
 
 #define NUM_OF_BITS_IN_BYTE 8
 
@@ -133,13 +144,12 @@ struct bfhead
 
 typedef struct vdseMemAlloc
 {
-   /** 
-    *  The base address of the shared memory. This address might differs
-    *  for the different process using the shared memory - which is why
-    *  we use offsets instead of pointers.
+   /**
+    * The vdseMemAlloc is itself a memory object and "inherits" from
+    * the memObj structure.
     */
-   unsigned char* pBaseAddr;
-
+   vdseMemObject memObj;
+   
    /** Total space currently allocated */
    bufsize_T totalAlloc;   
 
@@ -274,11 +284,10 @@ enum vdsErrors vdseMemAllocInit( vdseMemAlloc*    pAlloc,
                                  vdscErrorHandler* pError );
 
 /** Verify if a buffer is allocated or free. This function should 
- *  only be used to recover after a crash. Returns true (eTrue) if 
- *  the buffer is free, false (eFalse) otherwise.
+ *  only be used to recover after a crash. Returns true if 
+ *  the buffer is free, false otherwise.
  */
-enum vdscBool
-vdseMemAllocIsBufferFree( vdseMemAlloc*    pAlloc,
+bool vdseMemAllocIsBufferFree( vdseMemAlloc*    pAlloc,
                           void*            buffer,
                           vdscErrorHandler* pError );
 
@@ -296,24 +305,24 @@ void vdseSetBaseAddress( vdseMemAlloc*    pAlloc,
    VDS_PRE_CONDITION( pAlloc       != NULL );
    VDS_PRE_CONDITION( pBaseAddress != NULL );
    
-   pAlloc->pBaseAddr = (unsigned char*) pBaseAddress;
+   g_pBaseAddr = (unsigned char*) pBaseAddress;
 }
 
 /** Returns status and statistics from the memory allocator. Note 
  *  that the number of mallocs/frees are not based on a 64 bits 
  *  integer on 32 bits machine - these numbers might loop around.
  */
-vdsErrors vdseMemAllocStats( vdseMemAlloc*    pAlloc,
-                             bufsize_T *      pCurrentAllocated,
-                             bufsize_T *      pTotalFree,
-                             bufsize_T *      pMaxFree,
-                             size_t *         pNumberOfMallocs,
-                             size_t *         pNumberOfFrees,
+vdsErrors vdseMemAllocStats( vdseMemAlloc*     pAlloc,
+                             bufsize_T *       pCurrentAllocated,
+                             bufsize_T *       pTotalFree,
+                             bufsize_T *       pMaxFree,
+                             size_t *          pNumberOfMallocs,
+                             size_t *          pNumberOfFrees,
                              vdscErrorHandler* pError  );
 
 /** Validate/test the content of the memory pool. */
-int vdseMemAllocValidate( vdseMemAlloc*    pAlloc,
-                          enum vdscBool    verbose,
+int vdseMemAllocValidate( vdseMemAlloc*     pAlloc,
+                          bool              verbose,
                           vdscErrorHandler* pError );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

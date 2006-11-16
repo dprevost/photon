@@ -26,7 +26,7 @@ int main( int argc, char* argv[] )
    if ( InitMem() == -1 )
       return 0;
    
-   vdseLinkedListInit( NULL, &g_alloc );
+   vdseLinkedListInit( NULL );
    
    return 0;
 }

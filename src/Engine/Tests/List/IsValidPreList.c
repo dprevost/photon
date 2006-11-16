@@ -29,11 +29,11 @@ int main( int argc, char* argv[] )
       return 0;
 
    vdseLinkNodeInit( &node );
-   vdseLinkedListInit( &list, &g_alloc );
+   vdseLinkedListInit( &list );
    
-   vdseLinkedListPutLast( &list, &node, &g_alloc );
+   vdseLinkedListPutLast( &list, &node );
    
-   valid = vdseLinkedListIsValid( NULL, &node, &g_alloc );
+   valid = vdseLinkedListIsValid( NULL, &node );
    
    return 0;
 }

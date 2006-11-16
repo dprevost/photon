@@ -30,12 +30,12 @@ int main( int argc, char* argv[] )
    
    vdseLinkNodeInit( &node1 );
    vdseLinkNodeInit( &node2 );
-   vdseLinkedListInit( &list, &g_alloc );
+   vdseLinkedListInit( &list );
    
-   vdseLinkedListPutLast( &list, &node1, &g_alloc );
-   vdseLinkedListPutLast( &list, &node2, &g_alloc );
+   vdseLinkedListPutLast( &list, &node1 );
+   vdseLinkedListPutLast( &list, &node2 );
 
-   error = vdseLinkedListPeakNext( NULL, &node1, &pNode, &g_alloc );
+   error = vdseLinkedListPeakNext( NULL, &node1, &pNode );
 
    return 0;
 }

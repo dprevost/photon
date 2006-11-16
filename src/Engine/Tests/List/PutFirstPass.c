@@ -28,9 +28,9 @@ int main( int argc, char* argv[] )
       return -1;
    
    vdseLinkNodeInit( &node );
-   vdseLinkedListInit( &list, &g_alloc );
+   vdseLinkedListInit( &list );
 
-   vdseLinkedListPutFirst( &list, &node, &g_alloc );
+   vdseLinkedListPutFirst( &list, &node );
    if ( list.currentSize != 1 ) return -1;
 
    vdseLinkedListFini( &list );

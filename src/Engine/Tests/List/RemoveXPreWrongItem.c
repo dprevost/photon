@@ -30,14 +30,14 @@ int main( int argc, char* argv[] )
    
    vdseLinkNodeInit( &node1 );
    vdseLinkNodeInit( &node2 );
-   vdseLinkedListInit( &list1, &g_alloc );
-   vdseLinkedListInit( &list2, &g_alloc );
+   vdseLinkedListInit( &list1 );
+   vdseLinkedListInit( &list2 );
    
-   vdseLinkedListPutLast( &list1, &node1, &g_alloc );
-   vdseLinkedListPutLast( &list2, &node2, &g_alloc );
+   vdseLinkedListPutLast( &list1, &node1 );
+   vdseLinkedListPutLast( &list2, &node2 );
 
    /* Remove it from the wrong list */
-   vdseLinkedListRemoveItem( &list1, &node2, &g_alloc );
+   vdseLinkedListRemoveItem( &list1, &node2 );
 
    return 0;
 }

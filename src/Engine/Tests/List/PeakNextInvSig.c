@@ -29,10 +29,10 @@ int main( int argc, char* argv[] )
 
    vdseLinkNodeInit( &node );
    
-   vdseLinkedListInit( &list, &g_alloc );
+   vdseLinkedListInit( &list );
    list.initialized = 0;
 
-   vdseLinkedListPeakNext( &list, &node, &pNode, &g_alloc );
+   vdseLinkedListPeakNext( &list, &node, &pNode );
    
    return 0;
 }

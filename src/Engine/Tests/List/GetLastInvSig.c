@@ -27,10 +27,10 @@ int main( int argc, char* argv[] )
    if ( InitMem() == -1 )
       return 0;
    
-   vdseLinkedListInit( &list, &g_alloc );
+   vdseLinkedListInit( &list );
    list.initialized = 0;
    
-   vdseLinkedListGetLast( &list, &pNode, &g_alloc );
+   vdseLinkedListGetLast( &list, &pNode );
    
    return 0;
 }

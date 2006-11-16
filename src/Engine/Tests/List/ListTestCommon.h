@@ -67,8 +67,7 @@ typedef struct dummyStruct
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int TestList( vdseLinkedList* pList,
-              vdseMemAlloc*   pAllocator )
+int TestList( vdseLinkedList* pList )
 {
    size_t testSize = pList->currentSize;
    vdseLinkNode* pItem = (vdseLinkNode*) &pList->head;
@@ -76,7 +75,7 @@ int TestList( vdseLinkedList* pList,
    /* Check the chain going forward. */ 
    while ( testSize > 0 )
    {
-      pItem = GET_PTR( pItem->nextOffset, vdseLinkNode, pAllocator );
+      pItem = GET_PTR( pItem->nextOffset, vdseLinkNode );
       if ( pItem == &pList->head )
       {
          fprintf( stderr, "Error 1\n" );
@@ -85,7 +84,7 @@ int TestList( vdseLinkedList* pList,
       
       testSize--;
    }
-   pItem = GET_PTR( pItem->nextOffset, vdseLinkNode, pAllocator );
+   pItem = GET_PTR( pItem->nextOffset, vdseLinkNode );
    if ( pItem != &pList->head )
    {
       fprintf( stderr, "Error 2\n" );
@@ -98,9 +97,7 @@ int TestList( vdseLinkedList* pList,
 
    while ( testSize > 0 )
    {
-      pItem = GET_PTR( pItem->previousOffset, 
-                       vdseLinkNode, 
-                       pAllocator );
+      pItem = GET_PTR( pItem->previousOffset, vdseLinkNode );
       if ( pItem == &pList->head )
       {
          fprintf( stderr, "Error 3\n" );
@@ -108,7 +105,7 @@ int TestList( vdseLinkedList* pList,
       }
       testSize--;
    }
-   pItem = GET_PTR( pItem->previousOffset, vdseLinkNode, pAllocator );
+   pItem = GET_PTR( pItem->previousOffset, vdseLinkNode );
    if ( pItem != &pList->head )
    {
       fprintf( stderr, "Error 4\n" );
@@ -141,20 +138,19 @@ void mysrand(unsigned seed) {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void DumpList( vdseLinkedList* pList,
-               vdseMemAlloc*   pAllocator )
+void DumpList( vdseLinkedList* pList )
 {
    size_t testSize = pList->currentSize;
    vdseLinkNode* pItem = &pList->head;
 
    while ( testSize > 0 )
    {
-      pItem = GET_PTR(pItem->nextOffset,vdseLinkNode, pAllocator);
+      pItem = GET_PTR(pItem->nextOffset,vdseLinkNode );
       fprintf( stderr, " %d = %p %p %p %p \n",
                testSize,
                pItem ,
-               GET_PTR(pItem->nextOffset,vdseLinkNode, pAllocator),
-               GET_PTR(pItem->previousOffset,vdseLinkNode,pAllocator),
+               GET_PTR(pItem->nextOffset,vdseLinkNode ),
+               GET_PTR(pItem->previousOffset,vdseLinkNode ),
                &pList->head );
       testSize--;
    }

@@ -79,16 +79,16 @@ int main( int argc, char* argv[] )
    }
 
    /* Initialize the list */
-   vdseLinkedListInit( &list, &g_alloc );
+   vdseLinkedListInit( &list );
 
    for ( i = 0; i < INITIAL_LIST_SIZE; ++i )
    {
-      vdseLinkedListPutLast( &list, &dummy[i].node, &g_alloc );
+      vdseLinkedListPutLast( &list, &dummy[i].node );
       dummy[i].isInUse = 1;
    }
    numInList = INITIAL_LIST_SIZE;
 
-   if ( TestList( &list, &g_alloc ) != 0 )
+   if ( TestList( &list ) != 0 )
       return -1;
    
    /* Initialize the random generator */
@@ -133,7 +133,7 @@ int main( int argc, char* argv[] )
             return -1;
          }
          
-         vdseLinkedListPutFirst( &list, &dummy[k].node, &g_alloc );
+         vdseLinkedListPutFirst( &list, &dummy[k].node );
 
          dummy[k].isInUse = 1;
          numInList++;
@@ -168,14 +168,14 @@ int main( int argc, char* argv[] )
             return -1;
          }
 
-         vdseLinkedListPutLast( &list, &dummy[k].node, &g_alloc );
+         vdseLinkedListPutLast( &list, &dummy[k].node );
 
          dummy[k].isInUse = 1;
          numInList++;
          break;
          
       case 2:
-         error = vdseLinkedListGetFirst( &list, &pNode, &g_alloc );
+         error = vdseLinkedListGetFirst( &list, &pNode );
          if ( error == LIST_INTERNAL_ERROR ) 
             return -1;
 
@@ -187,7 +187,7 @@ int main( int argc, char* argv[] )
          break;
          
       case 3:
-         error = vdseLinkedListGetLast( &list, &pNode, &g_alloc );
+         error = vdseLinkedListGetLast( &list, &pNode );
          if ( error == LIST_INTERNAL_ERROR ) 
             return -1;
 
@@ -225,7 +225,7 @@ int main( int argc, char* argv[] )
             return -1;
          }
 
-         vdseLinkedListRemoveItem( &list, &dummy[k].node, &g_alloc );
+         vdseLinkedListRemoveItem( &list, &dummy[k].node );
 
          dummy[k].isInUse = 0;         
          numInList--;
@@ -243,18 +243,18 @@ int main( int argc, char* argv[] )
       /* Test the iterators */
       if ( ((i+1)%GET_NEXT_LOOP ) == 0 )
       {
-         error = vdseLinkedListPeakFirst( &list, &pNode, &g_alloc );
+         error = vdseLinkedListPeakFirst( &list, &pNode );
          if ( error == LIST_INTERNAL_ERROR ) 
             return -1;
          
          while ( error == LIST_OK )
          {
-            error = vdseLinkedListPeakNext( &list, pNode, &pNode, &g_alloc );
+            error = vdseLinkedListPeakNext( &list, pNode, &pNode );
             if ( error == LIST_INTERNAL_ERROR ) 
                return -1;
          }
 
-         error = vdseLinkedListPeakLast( &list, &pNode, &g_alloc );
+         error = vdseLinkedListPeakLast( &list, &pNode );
          if ( error == LIST_INTERNAL_ERROR ) 
             return -1;
          
@@ -262,8 +262,7 @@ int main( int argc, char* argv[] )
          {
             error = vdseLinkedListPeakPrevious( &list, 
                                                 pNode, 
-                                                &pNode, 
-                                                &g_alloc );
+                                                &pNode );
             if ( error == LIST_INTERNAL_ERROR ) 
                return -1;
          }
@@ -271,7 +270,7 @@ int main( int argc, char* argv[] )
 
    } /* End of for loop */
 
-   errcode = TestList( &list, &g_alloc );
+   errcode = TestList( &list );
    if ( errcode != 0 )
    {
       fprintf( stderr, "TestList failed, error = %d\n", errcode );

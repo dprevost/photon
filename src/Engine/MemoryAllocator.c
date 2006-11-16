@@ -52,6 +52,15 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/** 
+ *  The base address of the shared memory as seen for each process (each 
+ *  process having their own copy of this global). This pointer is used
+ *  everywhere to recover the real pointer addresses from our offsets
+ */
+unsigned char* g_pBaseAddr = NULL;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 #if 0
 #  define FREE_WIPE    1         /* Wipe free buffers to a guaranteed
                                     pattern of garbage to trip up
@@ -103,7 +112,7 @@ void* vdseMemAllocbget( vdseMemAlloc*    pAlloc,
    size += sizeof(struct bhead);     /* Add overhead in allocated buffer
                                          to size required. */
    
-   b = GET_FLINK( &pAlloc->freeList, pAlloc );
+   b = GET_FLINK( &pAlloc->freeList );
 
    /* Scan the free list searching for the first buffer big enough
       to hold the requested size buffer. */
@@ -159,17 +168,17 @@ void* vdseMemAllocbget( vdseMemAlloc*    pAlloc,
             VDS_ASSERT_RETURN( ba->prevfree == b->bh.bsize, pError, NULL );
 
             VDS_ASSERT_RETURN( 
-               GET_BLINK(b,pAlloc)->ql.flink == SET_LINK(b,pAlloc),
+               GET_BLINK(b)->ql.flink == SET_LINK(b),
                pError,
                NULL );
             VDS_ASSERT_RETURN( 
-               GET_FLINK(b,pAlloc)->ql.blink == SET_LINK(b,pAlloc),
+               GET_FLINK(b)->ql.blink == SET_LINK(b),
                pError,
                NULL );
 
 /*            b->ql.blink->ql.flink = b->ql.flink; */
-            GET_BLINK(b,pAlloc)->ql.flink = b->ql.flink;
-            GET_FLINK(b,pAlloc)->ql.blink = b->ql.blink;
+            GET_BLINK(b)->ql.flink = b->ql.flink;
+            GET_FLINK(b)->ql.blink = b->ql.blink;
 /*            b->ql.flink->ql.blink = b->ql.blink; */
 
             pAlloc->totalAlloc += b->bh.bsize;
@@ -188,7 +197,7 @@ void* vdseMemAllocbget( vdseMemAlloc*    pAlloc,
             return buf;
          }
       }
-      b = GET_FLINK(b,pAlloc); /* Link to next buffer */
+      b = GET_FLINK(b); /* Link to next buffer */
    }
 
    return NULL;
@@ -208,7 +217,7 @@ void vdseMemAllocbpool( vdseMemAlloc*    pAlloc,
    VDS_ASSERT_NORETURN( pAlloc != NULL, pError );
    VDS_ASSERT_NORETURN( buf    != NULL, pError );
 
-   pAlloc->poolOffset = SET_OFFSET(b,pAlloc);
+   pAlloc->poolOffset = SET_OFFSET(b);
    len &= ~(pAlloc->sizeQuant - 1);
    pAlloc->poolLength = len;
 
@@ -227,17 +236,17 @@ void vdseMemAllocbpool( vdseMemAlloc*    pAlloc,
 
    /* Chain the new block to the free list. */
 
-   VDS_ASSERT_NORETURN( GET_BLINK(&pAlloc->freeList,pAlloc)->ql.flink == 
-                        SET_LINK(&pAlloc->freeList,pAlloc),
+   VDS_ASSERT_NORETURN( GET_BLINK(&pAlloc->freeList)->ql.flink == 
+                        SET_LINK(&pAlloc->freeList),
                         pError );
-   VDS_ASSERT_NORETURN( GET_FLINK(&pAlloc->freeList,pAlloc)->ql.blink == 
-                        SET_LINK(&pAlloc->freeList,pAlloc),
+   VDS_ASSERT_NORETURN( GET_FLINK(&pAlloc->freeList)->ql.blink == 
+                        SET_LINK(&pAlloc->freeList),
                         pError );
 
-   b->ql.flink = SET_LINK( &pAlloc->freeList, pAlloc ); /* &pAlloc->freeList */
+   b->ql.flink = SET_LINK( &pAlloc->freeList ); /* &pAlloc->freeList */
    b->ql.blink = pAlloc->freeList.ql.blink;
-   pAlloc->freeList.ql.blink = SET_LINK( b, pAlloc );
-   GET_BLINK(b,pAlloc)->ql.flink = SET_LINK( b, pAlloc );
+   pAlloc->freeList.ql.blink = SET_LINK( b );
+   GET_BLINK(b)->ql.flink = SET_LINK( b );
 
    /* Create a dummy allocated buffer at the end of the pool.   This dummy
       buffer is seen when a buffer at the end of the pool is released and
@@ -329,21 +338,21 @@ void vdseMemAllocbrel( vdseMemAlloc*    pAlloc,
       /* The previous buffer is allocated.  Insert this buffer
          on the free list as an isolated free block. */
 
-      VDS_ASSERT_NORETURN( GET_BLINK(&pAlloc->freeList,pAlloc)->ql.flink == 
-                           SET_LINK(&pAlloc->freeList, pAlloc),
+      VDS_ASSERT_NORETURN( GET_BLINK(&pAlloc->freeList)->ql.flink == 
+                           SET_LINK(&pAlloc->freeList),
                            pError );
-      VDS_ASSERT_NORETURN( GET_FLINK(&pAlloc->freeList, pAlloc)->ql.blink == 
-                           SET_LINK(&pAlloc->freeList, pAlloc),
+      VDS_ASSERT_NORETURN( GET_FLINK(&pAlloc->freeList)->ql.blink == 
+                           SET_LINK(&pAlloc->freeList),
                            pError );
 /*        b->ql.flink = &pAlloc->freeList; */
 /*        b->ql.blink = pAlloc->freeList.ql.blink; */
 /*        pAlloc->freeList.ql.blink = b; */
 /*        b->ql.blink->ql.flink = b; */
 
-      b->ql.flink = SET_LINK( &pAlloc->freeList, pAlloc );
+      b->ql.flink = SET_LINK( &pAlloc->freeList );
       b->ql.blink = pAlloc->freeList.ql.blink;
-      pAlloc->freeList.ql.blink = SET_LINK( b, pAlloc );
-      GET_BLINK(b,pAlloc)->ql.flink = SET_LINK( b, pAlloc );
+      pAlloc->freeList.ql.blink = SET_LINK( b );
+      GET_BLINK(b)->ql.flink = SET_LINK( b );
       b->bh.bsize = -b->bh.bsize;
    }
 
@@ -364,8 +373,8 @@ void vdseMemAllocbrel( vdseMemAlloc*    pAlloc,
          pError );
 /*      VDS_ASSERT_NORETURN( bn->ql.blink->ql.flink == bn, pError ); */
 /*      VDS_ASSERT_NORETURN( bn->ql.flink->ql.blink == bn, pError ); */
-      GET_BLINK( bn, pAlloc )->ql.flink = bn->ql.flink;
-      GET_FLINK( bn, pAlloc )->ql.blink = bn->ql.blink;
+      GET_BLINK( bn )->ql.flink = bn->ql.flink;
+      GET_FLINK( bn )->ql.blink = bn->ql.blink;
 /*        bn->ql.blink->ql.flink = bn->ql.flink; */
 /*        bn->ql.flink->ql.blink = bn->ql.blink; */
       b->bh.bsize += bn->bh.bsize;
@@ -409,7 +418,7 @@ void vdseMemAllocClose( vdseMemAlloc*    pAlloc,
    pAlloc->freeList.bh.prevfree = 0;
    pAlloc->freeList.bh.bsize    = 0;
 
-   pAlloc->pBaseAddr = NULL;
+   g_pBaseAddr = NULL;
 
    pAlloc->freeList.ql.flink = NULL_OFFSET;
    pAlloc->freeList.ql.blink = NULL_OFFSET;
@@ -479,7 +488,7 @@ vdseMemAllocGetAllocatedBuffers( vdseMemAlloc*    pAlloc,
    
    /* Loop on each buffer */
 
-   b = GET_PTR( pAlloc->poolOffset, struct bfhead, pAlloc );
+   b = GET_PTR( pAlloc->poolOffset, struct bfhead );
                   size = b->bh.bsize;
    
    while ( size != ESENT )
@@ -535,10 +544,10 @@ vdseMemAllocInit( vdseMemAlloc*    pAlloc,
    pAlloc->freeList.bh.bsize    = 0;
 
    /* Must be initialized before being use in SET_LINK */
-   pAlloc->pBaseAddr = (unsigned char*) pBaseAddress;
+   g_pBaseAddr = (unsigned char*) pBaseAddress;
 
-   pAlloc->freeList.ql.flink = SET_LINK( &pAlloc->freeList, pAlloc );
-   pAlloc->freeList.ql.blink = SET_LINK( &pAlloc->freeList, pAlloc );
+   pAlloc->freeList.ql.flink = SET_LINK( &pAlloc->freeList );
+   pAlloc->freeList.ql.blink = SET_LINK( &pAlloc->freeList );
 
    err =  vdscInitProcessLock( &pAlloc->lock );
    if ( err != 0 )
@@ -552,7 +561,7 @@ vdseMemAllocInit( vdseMemAlloc*    pAlloc,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Verify if a buffer is allocated or free. */
-enum vdscBool
+bool
 vdseMemAllocIsBufferFree( vdseMemAlloc*    pAlloc,
                           void*            buffer,
                           vdscErrorHandler* pError )
@@ -582,7 +591,7 @@ vdseMemAllocIsBufferFree( vdseMemAlloc*    pAlloc,
 
    struct bfhead *b, *bn;
 
-   b = GET_PTR( pAlloc->poolOffset, struct bfhead, pAlloc );
+   b = GET_PTR( pAlloc->poolOffset, struct bfhead );
    bufsize_T size = b->bh.bsize;
    
    while ( size != ESENT )
@@ -590,8 +599,8 @@ vdseMemAllocIsBufferFree( vdseMemAlloc*    pAlloc,
       if ( b == pBuf )
       {
          if ( size > 0 )
-            return eTrue;
-         return eFalse;
+            return true;
+         return false;
       }
 
       if ( size > 0 ) /* free buffer */
@@ -603,7 +612,7 @@ vdseMemAllocIsBufferFree( vdseMemAlloc*    pAlloc,
       size = b->bh.bsize;
    }
 
-   return eTrue;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -623,7 +632,7 @@ void vdseMemAllocResetStats( vdseMemAlloc*    pAlloc,
   
    /* Loop on each buffer */
 
-   b = GET_PTR( pAlloc->poolOffset, struct bfhead, pAlloc );
+   b = GET_PTR( pAlloc->poolOffset, struct bfhead );
    bufsize_T size = b->bh.bsize;
    
    while ( size != ESENT )
@@ -684,14 +693,14 @@ vdsErrors vdseMemAllocStats( vdseMemAlloc*    pAlloc,
       *pTotalFree        = 0;
       *pMaxFree          = -1;
 
-      struct bfhead * b = GET_FLINK( &pAlloc->freeList, pAlloc );
+      struct bfhead * b = GET_FLINK( &pAlloc->freeList );
       while (b != &pAlloc->freeList)
       {
          VDS_ASSERT_NORETURN( b->bh.bsize > 0, pError );
          *pTotalFree += b->bh.bsize;
          if (b->bh.bsize > *pMaxFree)
             *pMaxFree = b->bh.bsize;
-         b = GET_FLINK( b, pAlloc );
+         b = GET_FLINK( b );
       }
       vdscReleaseProcessLock( &pAlloc->lock );
 
@@ -703,8 +712,8 @@ vdsErrors vdseMemAllocStats( vdseMemAlloc*    pAlloc,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseMemAllocValidate( vdseMemAlloc*    pAlloc,
-                          enum vdscBool    verbose,
+int vdseMemAllocValidate( vdseMemAlloc*     pAlloc,
+                          bool              verbose,
                           vdscErrorHandler* pError )
 {
    struct bfhead *b = NULL, *bn = NULL;
@@ -715,14 +724,14 @@ int vdseMemAllocValidate( vdseMemAlloc*    pAlloc,
    b = &pAlloc->freeList;
    fprintf( stderr, "%p %10ld %10ld %10ld %10d %10d\n", 
             b, 
-            (long)((unsigned char*)b-pAlloc->pBaseAddr),
+            (long)((unsigned char*)b-g_pBaseAddr),
             b->bh.prevfree, 
             b->bh.bsize,
             b->ql.flink, 
             b->ql.blink );
 
    /* Start with the linked list */
-   b = GET_FLINK( &pAlloc->freeList, pAlloc );
+   b = GET_FLINK( &pAlloc->freeList );
    while (b != &pAlloc->freeList) 
    {
 /*
@@ -733,21 +742,21 @@ int vdseMemAllocValidate( vdseMemAlloc*    pAlloc,
       VDS_ASSERT_RETURN( b->bh.bsize >= 0, pError, VDS_INTERNAL_ERROR );
       VDS_ASSERT_RETURN( b->bh.prevfree == 0, pError, VDS_INTERNAL_ERROR );
 */
-      if ( GET_BLINK(b,pAlloc)->ql.flink != SET_LINK(b,pAlloc) )
+      if ( GET_BLINK(b)->ql.flink != SET_LINK(b) )
          return -1;
-      if ( GET_FLINK(b,pAlloc)->ql.blink != SET_LINK(b,pAlloc) )
+      if ( GET_FLINK(b)->ql.blink != SET_LINK(b) )
          return -2;
       if ( b->bh.bsize < 0 )
          return -3;
       if ( b->bh.prevfree != 0 )
          return -4;
 
-      b = GET_FLINK(b,pAlloc);        /* Link to next buffer */
+      b = GET_FLINK(b);        /* Link to next buffer */
    }
 
    /* Loop on each buffer */
 
-   b = GET_PTR( pAlloc->poolOffset, struct bfhead, pAlloc );
+   b = GET_PTR( pAlloc->poolOffset, struct bfhead );
    bufsize_T size = b->bh.bsize;
    
    while ( size != ESENT )
@@ -757,7 +766,7 @@ int vdseMemAllocValidate( vdseMemAlloc*    pAlloc,
          if ( size > 0 ) /* free buffer */
             fprintf( stderr, "%p %10ld %10ld %10ld %10d %10d\n", 
                      b, 
-                     (long)((unsigned char*)b-pAlloc->pBaseAddr),
+                     (long)((unsigned char*)b-g_pBaseAddr),
                      b->bh.prevfree, 
                      size,
                      b->ql.flink, 
@@ -765,7 +774,7 @@ int vdseMemAllocValidate( vdseMemAlloc*    pAlloc,
          else
             fprintf( stderr, "%p %10ld %10ld %10ld\n", 
                      b, 
-                     (long)((unsigned char*)b-pAlloc->pBaseAddr),
+                     (long)((unsigned char*)b-g_pBaseAddr),
                      b->bh.prevfree, 
                      size );
       }
