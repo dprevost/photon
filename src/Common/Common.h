@@ -173,6 +173,9 @@ internationalization...
 #if HAVE_UNISTD_H
 #  include <unistd.h>
 #endif
+#if HAVE_STDBOOL_H
+#  include <stdbool.h>
+#endif
 
 #if HAVE_SYS_WAIT_H
 # include <sys/wait.h>
@@ -327,11 +330,6 @@ internationalization...
 typedef size_t ptrdiff_t;
 #endif
 
-#if !defined (HAVE_BOOL)
-enum boolvals { false, true };
-typedef enum boolvals bool;
-#endif
-
 BEGIN_C_DECLS
 
 /*
@@ -483,12 +481,11 @@ extern char *new_ctime_r( const time_t *timep, char *buf, int buflen );
  *  Define our own boolean type. This might be overkill to some extent
  *  since many C compilers will handle the new bool type of C. But...
  */
-typedef enum vdscBool
-{
-   eFalse = 0,
-   eTrue = 1
 
-} vdscBool;
+#if !defined (HAVE__BOOL)
+enum boolvals { false, true };
+typedef enum boolvals bool;
+#endif
 
 
 #if defined (WIN32)

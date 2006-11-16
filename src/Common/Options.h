@@ -114,25 +114,25 @@ void vdscShowUsage( vdscOptionHandle handle,
 
 /*! \brief Retrieves the argument associated with a given option. */
 VDSF_COMMON_EXPORT
-vdscBool vdscGetShortOptArgument( vdscOptionHandle handle,
-                                  const char       opt, 
-                                  char**           argument );
+bool vdscGetShortOptArgument( vdscOptionHandle handle,
+                              const char       opt, 
+                              char**           argument );
 
 /*! \brief Retrieves the argument associated with a given option. */
 VDSF_COMMON_EXPORT
-vdscBool vdscGetLongOptArgument( vdscOptionHandle handle,
-                                 const char*      opt, 
-                                 char**           argument );
+bool vdscGetLongOptArgument( vdscOptionHandle handle,
+                             const char*      opt, 
+                             char**           argument );
 
 /*! \brief Verify if the option is present. */
 VDSF_COMMON_EXPORT
-vdscBool vdscIsLongOptPresent( vdscOptionHandle handle,
-                               const char*      opt );
+bool vdscIsLongOptPresent( vdscOptionHandle handle,
+                           const char*      opt );
 
 /*! \brief Verify if the option is present. */
 VDSF_COMMON_EXPORT
-vdscBool vdscIsShortOptPresent( vdscOptionHandle handle,
-                                const char       opt );
+bool vdscIsShortOptPresent( vdscOptionHandle handle,
+                            const char       opt );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

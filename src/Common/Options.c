@@ -125,7 +125,7 @@ int vdscSetSupportedOptions( int               numOpts,
                              vdscOptionHandle* pHandle )
 {
    int i, k;
-   vdscBool nullTerminatedString;
+   bool nullTerminatedString;
    vdscInternalOpt* optStruct;
    
    /* There is no point in supporting all of this if the list
@@ -149,32 +149,32 @@ int vdscSetSupportedOptions( int               numOpts,
        * before the "repeated option test" since we use the strcmp() 
        * function in that test).
        */
-      nullTerminatedString = eFalse;
+      nullTerminatedString = false;
       for ( k = 0; k < VDSC_OPT_LONG_OPT_LENGTH; ++k )
          if ( opts[i].longOpt[k] == '\0' )
          {
-            nullTerminatedString = eTrue;
+            nullTerminatedString = true;
             break;
          }
-      VDS_PRE_CONDITION( nullTerminatedString == eTrue );
+      VDS_PRE_CONDITION( nullTerminatedString == true );
 
-      nullTerminatedString = eFalse;
+      nullTerminatedString = false;
       for ( k = 0; k < VDSC_OPT_ARGUMENT_MSG_LENGTH; ++k )
          if ( opts[i].argumentMessage[k] == '\0' )
          {
-            nullTerminatedString = eTrue;
+            nullTerminatedString = true;
             break;
          }
-      VDS_PRE_CONDITION( nullTerminatedString == eTrue );
+      VDS_PRE_CONDITION( nullTerminatedString == true );
 
-      nullTerminatedString = eFalse;
+      nullTerminatedString = false;
       for ( k = 0; k < VDSC_OPT_COMMENT_LENGTH; ++k )
          if ( opts[i].comment[k] == '\0' )
          {
-            nullTerminatedString = eTrue;
+            nullTerminatedString = true;
             break;
          }
-      VDS_PRE_CONDITION( nullTerminatedString == eTrue );
+      VDS_PRE_CONDITION( nullTerminatedString == true );
       
       /* Repeated options */
       for ( k = 0; k < i; ++k )
@@ -509,9 +509,9 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
  * \param[in] opt    The short option.
  * \param[out] argument The argument associated with this short option, if any.
  *
- * \retval eFalse (0) If either option or argument are not found. *argument 
- *                    is also set to NULL.
- * \retval eTrue (1) The argument was found.
+ * \retval false  If either option or argument are not found. *argument 
+ *                is also set to NULL.
+ * \retval true   The argument was found.
  *
  * The function can be used in boolean expressions.
  *
@@ -523,9 +523,9 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
  * \invariant \em optStruct->pArray cannot be NULL.
  * \invariant \em optStruct->numOpt must be positive.
  */
-vdscBool vdscGetShortOptArgument( vdscOptionHandle handle,
-                                  const char       opt, 
-                                  char**           argument )
+bool vdscGetShortOptArgument( vdscOptionHandle handle,
+                              const char       opt, 
+                              char**           argument )
 {
    vdscInternalOpt* optStruct = (vdscInternalOpt*)handle;
    int i;
@@ -539,16 +539,16 @@ vdscBool vdscGetShortOptArgument( vdscOptionHandle handle,
    VDS_PRE_CONDITION( argument != NULL );
 
    *argument = NULL;
-   if ( opt == ' ' || opt == '\0' ) return eFalse;
+   if ( opt == ' ' || opt == '\0' ) return false;
    
    for ( i = 0; i < optStruct->numOpt; ++i )
       if ( optStruct->pArray[i].opt.shortOpt == opt )
       {
          *argument = optStruct->argv[optStruct->pArray[i].argumentLocation];
-         return eTrue;
+         return true;
       }
    
-   return eFalse;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -566,9 +566,9 @@ vdscBool vdscGetShortOptArgument( vdscOptionHandle handle,
  * \param[in] opt    The long option.
  * \param[out] argument The argument associated with this long option, if any.
  *
- * \retval eFalse (0) If either option or argument are not found. *argument 
- *                    is also set to NULL.
- * \retval eTrue (1) The argument was found.
+ * \retval false  If either option or argument are not found. *argument 
+ *                is also set to NULL.
+ * \retval true   The argument was found.
  *
  * The function can be used in boolean expressions.
  *
@@ -581,13 +581,13 @@ vdscBool vdscGetShortOptArgument( vdscOptionHandle handle,
  * \invariant \em optStruct->pArray cannot be NULL.
  * \invariant \em optStruct->numOpt must be positive.
  */
-vdscBool vdscGetLongOptArgument( vdscOptionHandle handle,
-                                 const char*      opt, 
-                                 char**           argument )
+bool vdscGetLongOptArgument( vdscOptionHandle handle,
+                             const char*      opt, 
+                             char**           argument )
 {
    vdscInternalOpt* optStruct = (vdscInternalOpt*)handle;
    int i;
-   vdscBool nullTerminatedString;
+   bool nullTerminatedString;
    
    VDS_PRE_CONDITION( handle != NULL );
    VDS_INV_CONDITION( optStruct->initialized == VDSC_OPTION_SIGNATURE );
@@ -599,26 +599,26 @@ vdscBool vdscGetLongOptArgument( vdscOptionHandle handle,
    VDS_PRE_CONDITION( argument != NULL );
 
    *argument = NULL;
-   if ( opt[0] == ' ' || opt[0] == '\0' ) return eFalse;
+   if ( opt[0] == ' ' || opt[0] == '\0' ) return false;
 
    /* Make sure we were passed a null-terminated string */
-   nullTerminatedString = eFalse;
+   nullTerminatedString = false;
    for ( i = 0; i < VDSC_OPT_LONG_OPT_LENGTH; ++i )
       if ( opt[i] == '\0' )
       {
-         nullTerminatedString = eTrue;
+         nullTerminatedString = true;
          break;
       }
-   if ( ! nullTerminatedString ) return eFalse;   
+   if ( ! nullTerminatedString ) return false;   
 
    for ( i = 0; i < optStruct->numOpt; ++i )
       if ( strcmp( optStruct->pArray[i].opt.longOpt, opt ) == 0 )
       {
          *argument = optStruct->argv[optStruct->pArray[i].argumentLocation];
-         return eTrue;
+         return true;
       }
    
-   return eFalse;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -635,8 +635,8 @@ vdscBool vdscGetLongOptArgument( vdscOptionHandle handle,
  * \param[in] handle Opaque handle to a vdscOptArray struct.
  * \param[in] opt    The long option.
  *
- * \retval eFalse (0) If the option was not found.
- * \retval eTrue (1) The option was found.
+ * \retval false  If the option was not found.
+ * \retval true   The option was found.
  *
  * The function can be used in boolean expressions.
  *
@@ -647,8 +647,8 @@ vdscBool vdscGetLongOptArgument( vdscOptionHandle handle,
  * \invariant \em optStruct->pArray cannot be NULL.
  * \invariant \em optStruct->numOpt must be positive.
  */
-vdscBool vdscIsShortOptPresent( vdscOptionHandle handle,
-                                const char       opt )
+bool vdscIsShortOptPresent( vdscOptionHandle handle,
+                            const char       opt )
 {
    vdscInternalOpt* optStruct = (vdscInternalOpt*)handle;
    int i;
@@ -659,13 +659,13 @@ vdscBool vdscIsShortOptPresent( vdscOptionHandle handle,
    VDS_INV_CONDITION( optStruct->pArray != NULL );
    VDS_INV_CONDITION( optStruct->numOpt > 0 );
    
-   if ( opt == ' ' || opt == '\0' ) return eFalse;
+   if ( opt == ' ' || opt == '\0' ) return false;
    
    for ( i = 0; i < optStruct->numOpt; ++i )
       if ( optStruct->pArray[i].opt.shortOpt == opt )
-         return eTrue;
+         return true;
    
-   return eFalse;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -682,8 +682,8 @@ vdscBool vdscIsShortOptPresent( vdscOptionHandle handle,
  * \param[in] handle Opaque handle to a vdscOptArray struct.
  * \param[in] opt    The long option.
  *
- * \retval eFalse (0) If the option was not found.
- * \retval eTrue (1) The option was found.
+ * \retval false  If the option was not found.
+ * \retval true   The option was found.
  *
  * The function can be used in boolean expressions.
  *
@@ -695,12 +695,12 @@ vdscBool vdscIsShortOptPresent( vdscOptionHandle handle,
  * \invariant \em optStruct->pArray cannot be NULL.
  * \invariant \em optStruct->numOpt must be positive.
  */
-vdscBool vdscIsLongOptPresent( vdscOptionHandle handle,
-                               const char*      opt )
+bool vdscIsLongOptPresent( vdscOptionHandle handle,
+                           const char*      opt )
 {
    vdscInternalOpt* optStruct = (vdscInternalOpt*)handle;
    int i;
-   vdscBool nullTerminatedString;
+   bool nullTerminatedString;
    
    VDS_PRE_CONDITION( handle != NULL );
    VDS_INV_CONDITION( optStruct->initialized == VDSC_OPTION_SIGNATURE );
@@ -710,23 +710,23 @@ vdscBool vdscIsLongOptPresent( vdscOptionHandle handle,
    
    VDS_PRE_CONDITION( opt   != NULL );
 
-   if ( opt[0] == ' ' || opt[0] == '\0' ) return eFalse;
+   if ( opt[0] == ' ' || opt[0] == '\0' ) return false;
 
    /* Make sure we were passed a null-terminated string */
-   nullTerminatedString = eFalse;
+   nullTerminatedString = false;
    for ( i = 0; i < VDSC_OPT_LONG_OPT_LENGTH; ++i )
       if ( opt[i] == '\0' )
       {
-         nullTerminatedString = eTrue;
+         nullTerminatedString = true;
          break;
       }
-   if ( ! nullTerminatedString ) return eFalse;   
+   if ( ! nullTerminatedString ) return false;   
 
    for ( i = 0; i < optStruct->numOpt; ++i )
       if ( strcmp( optStruct->pArray[i].opt.longOpt, opt ) == 0 )
-         return eTrue;
+         return true;
    
-   return eFalse;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -95,6 +95,7 @@ AC_CHECK_HEADERS(semaphore.h sys/semaphore.h sys/ipc.h sys/sem.h)
 #AC_CHECK_HEADERS(linux/futex.h)
 AC_CHECK_HEADERS(timers.h) # for Tru64
 AC_HEADER_DIRENT 
+AC_HEADER_STDBOOL
 
 ##############################
 #                            #
