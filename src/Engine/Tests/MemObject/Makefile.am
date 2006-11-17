@@ -11,6 +11,8 @@
 CLEANFILES = *~ core
 
 check_PROGRAMS =               \
+                 FiniNullObj   \
+                 FiniPass      \
                  InitNullObj   \
                  InitInvType   \
                  InitPass      \
@@ -18,6 +20,8 @@ check_PROGRAMS =               \
                  InitZeroSize  \
                  InitZeroType  
 
+FiniNullObj_SOURCES    = FiniNullObj.c
+FiniPass_SOURCES       = FiniPass.c
 InitNullObj_SOURCES    = InitNullObj.c
 InitInvType_SOURCES    = InitInvType.c
 InitPass_SOURCES       = InitPass.c
@@ -31,6 +35,8 @@ TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTH
 
 
 TESTS =               \
+        FiniNullObj   \
+        FiniPass      \
         InitNullObj   \
         InitInvType   \
         InitPass      \
@@ -39,6 +45,7 @@ TESTS =               \
         InitZeroType  
 
 XFAIL_TESTS =               \
+              FiniNullObj   \
               InitNullObj   \
               InitInvType   \
               InitZeroPages \

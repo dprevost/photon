@@ -52,6 +52,9 @@ vdseMemObjectInit( vdseMemObject* pMemObj,
    VDS_PRE_CONDITION( objType > VDSE_IDENT_FIRST && 
                       objType < VDSE_IDENT_LAST );
 
+   /* In case InitProcessLock fails */
+   pMemObj->objType = VDSE_IDENT_CLEAR;
+   
    errcode =  vdscInitProcessLock( &pMemObj->lock );
    if ( errcode != 0 )
       return VDS_NOT_ENOUGH_RESOURCES;
@@ -69,3 +72,37 @@ vdseMemObjectInit( vdseMemObject* pMemObj,
    
    return VDS_OK;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/** 
+ * Terminate access to (destroy) a vdseMemObject struct. 
+ *
+ *
+ * \param[in] pMemObj A pointer to the data struct we are initializing.
+ *
+ * \pre \em pMemObj cannot be NULL.
+ * \pre \em objType must be valid (greater than VDSE_IDENT_FIRST and less than 
+ *          VDSE_IDENT_LAST).
+ */
+
+enum vdsErrors 
+vdseMemObjectFini( vdseMemObject* pMemObj )
+{
+   VDS_PRE_CONDITION( pMemObj != NULL );
+   VDS_PRE_CONDITION( pMemObj->objType > VDSE_IDENT_FIRST && 
+                      pMemObj->objType < VDSE_IDENT_LAST );
+
+   pMemObj->objType = VDSE_IDENT_CLEAR;
+
+   pMemObj->accessCounter = 0;
+   pMemObj->remainingBytes = 0;
+   pMemObj->navigator.numPagesGroup = 0;
+   pMemObj->navigator.nextGroupOfPages = NULL_OFFSET;
+
+   if ( vdscFiniProcessLock( &pMemObj->lock ) != 0 )
+      return VDS_NOT_ENOUGH_RESOURCES;
+   return VDS_OK;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

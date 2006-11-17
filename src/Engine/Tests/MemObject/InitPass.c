@@ -23,10 +23,11 @@ int main()
 {
    vdseMemObject obj;
    vdsErrors errcode;
+   size_t len;
    
    errcode = vdseMemObjectInit( &obj, 
                                 VDSE_IDENT_ALLOCATOR,
-                                sizeof(obj),
+                                63,
                                 7 );
 
    if ( errcode != VDS_OK ) return 1;
@@ -35,7 +36,35 @@ int main()
    if ( obj.navigator.numPagesGroup != 7 ) return 1;
    if ( obj.navigator.nextGroupOfPages != NULL_OFFSET ) return 1;
 
-   /* Test the algorithm to calculate remaining free space */
+   /* 
+    * Test the algorithm to calculate remaining free space. The test will
+    * fail if run on a machine with more than 256 bits alignment...
+    */
+   len = 7*PAGESIZE-sizeof(vdsePageNavig)-64;
+   fprintf( stderr, "%d %d\n", len, obj.remainingBytes );
+   if ( obj.remainingBytes != len ) return 1;
+   
+   errcode = vdseMemObjectFini( &obj );
+   if ( errcode != VDS_OK ) return 1;
+   errcode = vdseMemObjectInit( &obj, 
+                                VDSE_IDENT_ALLOCATOR,
+                                64,
+                                7 );
+   if ( errcode != VDS_OK ) return 1;
+   len = 7*PAGESIZE-sizeof(vdsePageNavig)-64;
+   fprintf( stderr, "%d %d\n", len, obj.remainingBytes );
+   if ( obj.remainingBytes != len ) return 1;
+
+   errcode = vdseMemObjectFini( &obj );
+   if ( errcode != VDS_OK ) return 1;
+   errcode = vdseMemObjectInit( &obj, 
+                                VDSE_IDENT_ALLOCATOR,
+                                65,
+                                7 );
+   if ( errcode != VDS_OK ) return 1;
+   len = 7*PAGESIZE-sizeof(vdsePageNavig)-64-VDSE_MEM_ALIGNMENT;
+   fprintf( stderr, "%d %d\n", len, obj.remainingBytes );
+   if ( obj.remainingBytes != len ) return 1;
    
    return 0;
 }

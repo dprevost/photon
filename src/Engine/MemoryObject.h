@@ -77,6 +77,9 @@ vdseMemObjectInit( vdseMemObject*        pMemObj,
                    size_t                objSize,
                    size_t                numPages );
 
+enum vdsErrors 
+vdseMemObjectFini( vdseMemObject* pMemObj );
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS

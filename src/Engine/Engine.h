@@ -92,6 +92,7 @@ typedef unsigned int transaction_T;
 
 enum ObjectIdentifier
 {
+   VDSE_IDENT_CLEAR           = 0xccaaffee,
    VDSE_IDENT_FIRST           = 0x34220100,
 
    VDSE_IDENT_ALLOCATOR       = 0x34220101,
