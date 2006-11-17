@@ -36,7 +36,7 @@ struct localData
    char dum2[250];
 };
 
-vdscBool g_tryMode = eFalse;
+bool g_tryMode = false;
 vdscMemoryFile g_memFile;
 struct localData *g_data = NULL;
 unsigned long g_maxTime = 0;
@@ -128,7 +128,7 @@ int main( int argc, char* argv[] )
    g_maxTime *= US_PER_SEC;
   
    if ( strcmp( argv[3], "try" ) == 0 )
-      g_tryMode = eTrue;
+      g_tryMode = true;
    
    vdscInitErrorHandler( &errorHandler );
 

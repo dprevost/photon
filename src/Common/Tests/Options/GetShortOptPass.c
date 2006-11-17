@@ -26,7 +26,7 @@ int main()
    char *dummyPtrs[10];
    char *value = NULL;
    vdscOptionHandle handle;
-   vdscBool gotIt;
+   bool gotIt;
    
    struct vdscOptStruct opts[5] = 
       { '3', "three",   1, "", "repeat the loop three times",

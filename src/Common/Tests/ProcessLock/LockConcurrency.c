@@ -56,7 +56,7 @@ int main( int argc, char* argv[] )
    pid_t pid;
    unsigned long sec, nanoSec;
    vdscTimer timer;
-   vdscBool tryMode = eFalse;
+   bool tryMode = false;
    
    unsigned long elapsedTime = 0, maxTime = 0;
    unsigned long loop = 0;
@@ -80,7 +80,7 @@ int main( int argc, char* argv[] )
    maxTime *= US_PER_SEC;
   
    if ( strcmp( argv[4], "try" ) == 0 )
-      tryMode = eTrue;
+      tryMode = true;
    
    vdscInitTimer( &timer );   
 
