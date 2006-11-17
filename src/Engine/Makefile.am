@@ -14,15 +14,17 @@ SUBDIRS = . Tests
  
 noinst_LTLIBRARIES   = libEngine.la
 
-libEngine_la_SOURCES =     \
-   Engine.h                \
-   LinkedList.c            \
-   LinkedList.h            \
-   LinkedList.inl          \
-   LinkNode.h              \
-   ListErrors.h            \
-   MemoryAllocator.c       \
-   MemoryAllocator.h       
+libEngine_la_SOURCES =                   \
+                       Engine.h          \
+                       LinkedList.c      \
+                       LinkedList.h      \
+                       LinkedList.inl    \
+                       LinkNode.h        \
+                       ListErrors.h      \
+                       MemoryAllocator.c \
+                       MemoryAllocator.h \
+                       MemoryObject.h    \
+                       MemoryObject.c    
    
 #   MemoryManager.c         \
    MemoryManager.h         

@@ -90,6 +90,60 @@ unsigned char* g_pBaseAddr = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+enum vdsErrors 
+vdseMemAllocInit( vdseMemAlloc*     pAlloc,
+                  void*             pBaseAddress,
+                  unsigned char*    buffer, 
+                  size_t            length,
+                  vdscErrorHandler* pError )
+{
+   enum vdsErrors errcode;
+
+   VDS_PRE_CONDITION( pError != NULL );
+   VDS_PRE_CONDITION( pAlloc != NULL );
+   VDS_PRE_CONDITION( pBaseAddress != NULL );
+   VDS_PRE_CONDITION( buffer != NULL );
+   VDS_PRE_CONDITION( length > 0 );
+
+   errcode = vdseMemObjectInit( &pAlloc->memObj,                         
+                                VDSE_IDENT_ALLOCATOR,
+                                sizeof( struct vdseMemAlloc),
+                                1 );
+   if ( errcode != VDS_OK )
+      return errcode;
+   
+   pAlloc->totalAlloc    = 0;
+   pAlloc->numMalloc     = 0;
+   pAlloc->numFree       = 0;
+   pAlloc->poolLength    = 0;
+   pAlloc->poolOffset    = NULL_OFFSET;
+   pAlloc->sizeQuant     = 8;
+   
+   pAlloc->freeList.bh.prevfree = 0;
+   pAlloc->freeList.bh.bsize    = 0;
+
+   /* Must be initialized before being use in SET_LINK */
+   g_pBaseAddr = (unsigned char*) pBaseAddress;
+
+   pAlloc->freeList.ql.flink = SET_LINK( &pAlloc->freeList );
+   pAlloc->freeList.ql.blink = SET_LINK( &pAlloc->freeList );
+
+//   err =  vdscInitProcessLock( &pAlloc->lock );
+//   if ( err != 0 )
+//      return VDS_NOT_ENOUGH_RESOURCES;
+
+   /* Can this failed? */
+//   vdseMemAllocbpool( pAlloc, buffer, length, pError );
+
+//   pAlloc->initialized = VDSC_MEM_ALLOC_SIGNATURE;
+
+   return VDS_OK;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#if 0
+
 /* Allocate <nbytes>, but don't give them any initial value. */
 void* vdseMemAllocbget( vdseMemAlloc*    pAlloc,
                         bufsize_T        requestedSize,
@@ -518,48 +572,6 @@ vdseMemAllocGetAllocatedBuffers( vdseMemAlloc*    pAlloc,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdsErrors 
-vdseMemAllocInit( vdseMemAlloc*    pAlloc,
-                  void*            pBaseAddress,
-                  unsigned char*   buffer, 
-                  size_t           length,
-                  vdscErrorHandler* pError )
-{
-   int err;
-
-   VDS_ASSERT( pError != NULL );
-   VDS_ASSERT_RETURN( pAlloc != NULL,       pError, VDS_INTERNAL_ERROR );
-   VDS_ASSERT_RETURN( pBaseAddress != NULL, pError, VDS_INTERNAL_ERROR );
-   VDS_ASSERT_RETURN( buffer != NULL,       pError, VDS_INTERNAL_ERROR );
-   VDS_ASSERT_RETURN( length > 0,           pError, VDS_INTERNAL_ERROR );
-
-   pAlloc->totalAlloc    = 0;
-   pAlloc->numMalloc     = 0;
-   pAlloc->numFree       = 0;
-   pAlloc->poolLength    = 0;
-   pAlloc->poolOffset    = NULL_OFFSET;
-   pAlloc->sizeQuant     = 8;
-   
-   pAlloc->freeList.bh.prevfree = 0;
-   pAlloc->freeList.bh.bsize    = 0;
-
-   /* Must be initialized before being use in SET_LINK */
-   g_pBaseAddr = (unsigned char*) pBaseAddress;
-
-   pAlloc->freeList.ql.flink = SET_LINK( &pAlloc->freeList );
-   pAlloc->freeList.ql.blink = SET_LINK( &pAlloc->freeList );
-
-   err =  vdscInitProcessLock( &pAlloc->lock );
-   if ( err != 0 )
-      return VDS_NOT_ENOUGH_RESOURCES;
-
-   /* Can this failed? */
-   vdseMemAllocbpool( pAlloc, buffer, length, pError );
-   return VDS_OK;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 /* Verify if a buffer is allocated or free. */
 bool
 vdseMemAllocIsBufferFree( vdseMemAlloc*    pAlloc,
@@ -826,5 +838,6 @@ int vdseMemAllocValidate( vdseMemAlloc*     pAlloc,
    return 0;
 }
 
+#endif
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

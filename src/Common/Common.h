@@ -504,6 +504,14 @@ typedef enum boolvals bool;
 #  define VDS_MAP_FAILED MAP_FAILED
 #endif
 
+/* Getting the real page size of the system is not really that critical.
+ * On most systems it seems to be 
+*/
+#ifndef PAGESIZE
+//#  error "aaa..."
+#  define PAGESIZE 4096
+#endif
+
 END_C_DECLS
 
 #endif /* VDSC_COMMON_H */

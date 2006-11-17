@@ -38,7 +38,7 @@ void vdseLinkedListFini( vdseLinkedList* pList )
 
 void vdseLinkedListInit( vdseLinkedList* pList )
 {
-   VDS_PRE_CONDITION( pList      != NULL );
+   VDS_PRE_CONDITION( pList != NULL );
    
    vdseLinkNodeInit( &pList->head );
    pList->currentSize = 0;

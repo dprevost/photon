@@ -72,6 +72,8 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#define VDSC_MEM_ALLOC_SIGNATURE 0x1
+
 #define SET_OFFSET(ptr) ( (ptrdiff_t) ( (unsigned char*)(ptr) - \
        g_pBaseAddr ) )
 
@@ -161,14 +163,14 @@ typedef struct vdseMemAlloc
 
    /**
     *  Total size of the buffer pool (aka the shared memory under control 
-    *  of bget/this class).
+    *  of this object).
     */
    bufsize_T poolLength;
 
    /** offset of the pool with respect to the whole shared memory "mmaped" */
    ptrdiff_t poolOffset;   
 
-   vdscProcessLock lock;
+//   vdscProcessLock lock;
 
    /** Structure used by bget */
    struct bfhead freeList;   
@@ -182,6 +184,21 @@ typedef struct vdseMemAlloc
 } vdseMemAlloc;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/** Initialize the vdseMemAlloc struct. The second argument is the start of
+ *  the shared memory itself, the third indicates where the memory pool 
+ *  starts (the start of the shared memory + the VDS header). 
+ */
+enum vdsErrors vdseMemAllocInit( vdseMemAlloc*    pAlloc,
+                                 void*            pBaseAddress,
+                                 unsigned char*   buffer, 
+                                 size_t           length,
+                                 vdscErrorHandler* pError );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+/* Not done */
+
+#if 0
 
 /** The malloc function of the bget allocator. */
 void* vdseMemAllocbget ( vdseMemAlloc*    pAlloc,
@@ -273,16 +290,6 @@ vdseMemAllocGetAllocatedBuffers( vdseMemAlloc*    pAlloc,
                                  size_t           nNumOfAllocatedBuffer,
                                  vdscErrorHandler* pError );
 
-/** Initialize the vdseMemAlloc struct. The second argument is the start of
- *  the shared memory itself, the third indicates where the memory pool 
- *  starts (the start of the shared memory + the VDS header). 
- */
-enum vdsErrors vdseMemAllocInit( vdseMemAlloc*    pAlloc,
-                                 void*            pBaseAddress,
-                                 unsigned char*   buffer, 
-                                 size_t           length,
-                                 vdscErrorHandler* pError );
-
 /** Verify if a buffer is allocated or free. This function should 
  *  only be used to recover after a crash. Returns true if 
  *  the buffer is free, false otherwise.
@@ -325,6 +332,8 @@ int vdseMemAllocValidate( vdseMemAlloc*     pAlloc,
                           bool              verbose,
                           vdscErrorHandler* pError );
 
+#endif
+                          
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS

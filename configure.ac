@@ -305,6 +305,7 @@ AC_CONFIG_FILES([
    src/Engine/Tests/List/Makefile
    src/Engine/Tests/LogFile/Makefile
    src/Engine/Tests/MemAlloc/Makefile
+   src/Engine/Tests/MemObject/Makefile
    src/include/Makefile
    src/Java/Makefile
    src/Watchdog/Makefile

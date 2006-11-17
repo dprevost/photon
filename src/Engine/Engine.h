@@ -84,33 +84,34 @@ typedef unsigned int transaction_T;
 
 /**
  * List of possible "type" identifiers for all objects allocated
- * in shared memory. Each of these objects inherits from BaseObject
- * which sets the object identifier (as part of the constructor).
+ * in shared memory. Each of these objects "inherits" from MemoryObject
+ * which sets the object identifier (as part of the initializer).
  * This is used, in part, by the crash recovery process
  * to validate/invalidate recovered buffers.
  */
 
 enum ObjectIdentifier
 {
-   IDENT_FIRST           = 0x34220101,
+   VDSE_IDENT_FIRST           = 0x34220100,
 
-   IDENT_FOLDER          = 0x34220102,
-   IDENT_QUEUE           = 0x34220103,
-   IDENT_DUMMY_NODE      = 0x34220104,    /** linked list dummy node */
-   IDENT_OBJECT_CONTEXT  = 0x34220105,
-   IDENT_TRANSACTION_OPS = 0x34220106,
-   IDENT_QUEUE_ELEMENT   = 0x34220107,
-   IDENT_TRANSACTION     = 0x34220108,
-   IDENT_CLEAN_PROCESS   = 0x34220109,
-   IDENT_CLEAN_SESSION   = 0x3422010a,
-   IDENT_HASH_LIST       = 0x3422010b,
-   IDENT_TRANSACTION_MGR = 0x3422010c,
-   IDENT_CLEANUP_MGR     = 0x3422010d,
-   IDENT_HASH_ARRAY      = 0x3422010e,
-   IDENT_OBJ_DESC        = 0x34220110,
-   IDENT_ROW_DESC        = 0x34220111,
+   VDSE_IDENT_ALLOCATOR       = 0x34220101,
+   VDSE_IDENT_FOLDER          = 0x34220102,
+   VDSE_IDENT_QUEUE           = 0x34220103,
+   VDSE_IDENT_DUMMY_NODE      = 0x34220104,    /** linked list dummy node */
+   VDSE_IDENT_OBJECT_CONTEXT  = 0x34220105,
+   VDSE_IDENT_TRANSACTION_OPS = 0x34220106,
+   VDSE_IDENT_QUEUE_ELEMENT   = 0x34220107,
+   VDSE_IDENT_TRANSACTION     = 0x34220108,
+   VDSE_IDENT_CLEAN_PROCESS   = 0x34220109,
+   VDSE_IDENT_CLEAN_SESSION   = 0x3422010a,
+   VDSE_IDENT_HASH_LIST       = 0x3422010b,
+   VDSE_IDENT_TRANSACTION_MGR = 0x3422010c,
+   VDSE_IDENT_CLEANUP_MGR     = 0x3422010d,
+   VDSE_IDENT_HASH_ARRAY      = 0x3422010e,
+   VDSE_IDENT_OBJ_DESC        = 0x34220110,
+   VDSE_IDENT_ROW_DESC        = 0x34220111,
 
-   IDENT_LAST            = 0x34220112,
+   VDSE_IDENT_LAST            = 0x34220112,
 
    /** 
     * Identify a destroyed object. Special identifier used in the 

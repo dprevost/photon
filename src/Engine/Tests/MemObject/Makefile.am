@@ -10,38 +10,41 @@
 
 CLEANFILES = *~ core
 
-SUBDIRS =           \
-          List      \
-          MemObject
-          
-#          MemAlloc 
+check_PROGRAMS =               \
+                 InitNullObj   \
+                 InitInvType   \
+                 InitPass      \
+                 InitZeroPages \
+                 InitZeroSize  \
+                 InitZeroType  
 
-#          LogFile  
+InitNullObj_SOURCES    = InitNullObj.c
+InitInvType_SOURCES    = InitInvType.c
+InitPass_SOURCES       = InitPass.c
+InitZeroPages_SOURCES  = InitZeroPages.c
+InitZeroSize_SOURCES   = InitZeroSize.c
+InitZeroType_SOURCES   = InitZeroType.c
 
-check_PROGRAMS =                  \
-                 LinkNodeNULLInit \
-                 LinkNodeNULLTest \
-                 LinkNodeTestTest            
-
-LinkNodeNULLInit_SOURCES = LinkNodeNULLInit.c
-LinkNodeNULLTest_SOURCES = LinkNodeNULLTest.c
-LinkNodeTestTest_SOURCES = LinkNodeTestTest.c
-
-EXTRA_DIST = 
+EXTRA_DIST =         
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
-TESTS1 = 
 
-TESTS =                  \
-        LinkNodeNULLInit \
-        LinkNodeNULLTest \
-        LinkNodeTestTest            
+TESTS =               \
+        InitNullObj   \
+        InitInvType   \
+        InitPass      \
+        InitZeroPages \
+        InitZeroSize  \
+        InitZeroType  
 
-XFAIL_TESTS =                  \
-              LinkNodeNULLInit \
-              LinkNodeNULLTest            
-
+XFAIL_TESTS =               \
+              InitNullObj   \
+              InitInvType   \
+              InitZeroPages \
+              InitZeroSize  \
+              InitZeroType  
+              
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la
 
@@ -63,6 +66,4 @@ if COND_USE_EXTREME_DBC
    AM_CPPFLAGS += -DUSE_EXTREME_DBC
 endif
 
-distclean-local:
-	-rm -rf $(testsubdir)
 

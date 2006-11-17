@@ -24,6 +24,8 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#define VDSE_MEM_ALIGNMENT 4
+
 /**
  * This structure enables "navigation" of the pages allocated to a
  * memory object. 
@@ -66,6 +68,14 @@ typedef struct vdseMemObject
    vdsePageNavig navigator;
    
 } vdseMemObject;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+enum vdsErrors 
+vdseMemObjectInit( vdseMemObject*        pMemObj,
+                   enum ObjectIdentifier objType,
+                   size_t                objSize,
+                   size_t                numPages );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
