@@ -66,8 +66,7 @@ int main( int argc, char* argv[] )
    vdseLinkNode* pNode;
    dummyStruct*  pDummy;
    
-   if ( InitMem() == -1 )
-      return -1;
+   InitMem();
 
    /* Initialize the array of dummy structs */
    memset( dummy, 0, sizeof(dummyStruct)*MAX_ELEMENTS );

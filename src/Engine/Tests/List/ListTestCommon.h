@@ -30,26 +30,11 @@
 #define MEM_SIZE (1024)
 
 vdscErrorHandler g_info;
-vdseMemAlloc     g_alloc;
 unsigned char    g_dum[MEM_SIZE];
 
-/* Return 0 on success and -1 on error */
-int InitMem()
+void InitMem()
 {
-   vdsErrors err;
-
-   vdscInitErrorDefs();
-   vdscInitErrorHandler( &g_info );
-   
-   err = vdseMemAllocInit( &g_alloc, 
-                           g_dum, 
-                           g_dum, 
-                           MEM_SIZE, 
-                           &g_info );
-   if ( err != 0 )
-      return -1;
-
-   return 0;
+   g_pBaseAddr = g_dum;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

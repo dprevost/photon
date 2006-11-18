@@ -67,29 +67,13 @@
 #include "Engine.h"
 #include "ErrorHandler.h"
 #include "MemoryObject.h"
+#include "LinkedList.h"
 
 BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #define VDSC_MEM_ALLOC_SIGNATURE 0x1
-
-#define SET_OFFSET(ptr) ( (ptrdiff_t) ( (unsigned char*)(ptr) - \
-       g_pBaseAddr ) )
-
-/* Only use this macro when you know, for a fact, that the offset cannot
- * be the NULL_OFFSET (for example, in the LinkedList class, the links
- * are never set to NULL_OFFSET...). 
- */
-#define GET_PTR(off,class) ( (class*) (           \
-       (unsigned char*) g_pBaseAddr + (ptrdiff_t) off ))
-
-#define SET_PTR(target,offset,type)  \
-   if ( offset == NULL_OFFSET ) \
-      target = NULL; \
-   else \
-      target = (type*) (           \
-         (unsigned char*) g_pBaseAddr + (ptrdiff_t) offset );
 
 /* These next macros are only used inside this class and in the crash
  * recovery procedure (which is why they are in the .h file) 
@@ -153,41 +137,41 @@ typedef struct vdseMemAlloc
    vdseMemObject memObj;
    
    /** Total space currently allocated */
-   bufsize_T totalAlloc;   
+   size_t totalAllocPages;   
 
-   /** Number of bget() calls */
-   size_t    numMalloc;
+   /** Number of malloc calls */
+   size_t    numMallocCalls;
 
-   /** Number of brel() calls */
-   size_t    numFree;
+   /** Number of free calls */
+   size_t    numFreeCalls;
 
    /**
-    *  Total size of the buffer pool (aka the shared memory under control 
-    *  of this object).
+    *  Total size of the shared memory.
     */
-   bufsize_T poolLength;
+   size_t totalLength;
 
-   /** offset of the pool with respect to the whole shared memory "mmaped" */
-   ptrdiff_t poolOffset;   
-
-//   vdscProcessLock lock;
-
-   /** Structure used by bget */
-   struct bfhead freeList;   
-
+   /** Structure used to hold the list of free buffers. */
+//   struct bfhead freeList;   
+   vdseLinkedList freeList;
+   
    /** 
     *  Buffer allocation size quantum. All buffers allocated are a
     *  multiple of this size.  This MUST be a power of two.  
     */
-   bufsize_T sizeQuant;
-
+//   bufsize_T sizeQuant;
+   
 } vdseMemAlloc;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** Initialize the vdseMemAlloc struct. The second argument is the start of
- *  the shared memory itself, the third indicates where the memory pool 
- *  starts (the start of the shared memory + the VDS header). 
+/** 
+ * Initialize the vdseMemAlloc struct. The second argument is the start of
+ * the shared memory itself, the third indicates where the memory pool 
+ * starts (the start of the shared memory + the VDS header). 
+ *
+ * This function should only be called by the watchdog (it might move there
+ * eventually). Reason: when a program access the VDS, the allocator is 
+ * already there, initialized and all.
  */
 enum vdsErrors vdseMemAllocInit( vdseMemAlloc*    pAlloc,
                                  void*            pBaseAddress,

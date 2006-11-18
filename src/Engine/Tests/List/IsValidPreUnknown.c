@@ -25,8 +25,7 @@ int main( int argc, char* argv[] )
    vdseLinkNode node;
    int valid;
    
-   if ( InitMem() == -1 )
-      return 0;
+   InitMem();
 
    vdseLinkNodeInit( &node );
    vdseLinkedListInit( &list );

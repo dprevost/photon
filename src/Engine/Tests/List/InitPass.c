@@ -23,8 +23,7 @@ int main( int argc, char* argv[] )
 {
    vdseLinkedList list;
    
-   if ( InitMem() == -1 )
-      return -1;
+   InitMem();
    
    vdseLinkedListInit( &list );
    

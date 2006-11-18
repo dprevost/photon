@@ -25,8 +25,7 @@ int main( int argc, char* argv[] )
    vdseLinkNode node, *pNode;
    enum ListErrors error;
    
-   if ( InitMem() == -1 )
-      return 0;
+   InitMem();
    
    vdseLinkNodeInit( &node );
    vdseLinkedListInit( &list );

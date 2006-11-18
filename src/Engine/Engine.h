@@ -47,6 +47,23 @@
  */
 extern unsigned char* g_pBaseAddr;
 
+#define SET_OFFSET(ptr) ( (ptrdiff_t) ( (unsigned char*)(ptr) - \
+       g_pBaseAddr ) )
+
+/* Only use this macro when you know, for a fact, that the offset cannot
+ * be the NULL_OFFSET (for example, in the LinkedList class, the links
+ * are never set to NULL_OFFSET...). 
+ */
+#define GET_PTR(off,class) ( (class*) (           \
+       (unsigned char*) g_pBaseAddr + (ptrdiff_t) off ))
+
+#define SET_PTR(target,offset,type)  \
+   if ( offset == NULL_OFFSET ) \
+      target = NULL; \
+   else \
+      target = (type*) (           \
+         (unsigned char*) g_pBaseAddr + (ptrdiff_t) offset );
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* 

@@ -90,6 +90,17 @@ unsigned char* g_pBaseAddr = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+typedef struct vdseFreeBufferNode
+{
+   /* The linked list itself */
+   vdseLinkNode node;
+   
+   /* The number of pages associate with each member of the list. */
+   size_t numPages;
+} vdseFreeBufferNode;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 enum vdsErrors 
 vdseMemAllocInit( vdseMemAlloc*     pAlloc,
                   void*             pBaseAddress,
@@ -98,12 +109,14 @@ vdseMemAllocInit( vdseMemAlloc*     pAlloc,
                   vdscErrorHandler* pError )
 {
    enum vdsErrors errcode;
+   vdseFreeBufferNode* pNode;
 
    VDS_PRE_CONDITION( pError != NULL );
    VDS_PRE_CONDITION( pAlloc != NULL );
    VDS_PRE_CONDITION( pBaseAddress != NULL );
    VDS_PRE_CONDITION( buffer != NULL );
-   VDS_PRE_CONDITION( length > 0 );
+   VDS_PRE_CONDITION( length >= 3*PAGESIZE );
+   VDS_INV_CONDITION( g_pBaseAddr != NULL );
 
    errcode = vdseMemObjectInit( &pAlloc->memObj,                         
                                 VDSE_IDENT_ALLOCATOR,
@@ -112,31 +125,19 @@ vdseMemAllocInit( vdseMemAlloc*     pAlloc,
    if ( errcode != VDS_OK )
       return errcode;
    
-   pAlloc->totalAlloc    = 0;
-   pAlloc->numMalloc     = 0;
-   pAlloc->numFree       = 0;
-   pAlloc->poolLength    = 0;
-   pAlloc->poolOffset    = NULL_OFFSET;
-   pAlloc->sizeQuant     = 8;
+   /* The overall header and the memory allocator itself */
+   pAlloc->totalAllocPages = 2; 
+   pAlloc->numMallocCalls  = 0;
+   pAlloc->numFreeCalls    = 0;
+   pAlloc->totalLength     = length;
+
+   vdseLinkedListInit( &pAlloc->freeList );
    
-   pAlloc->freeList.bh.prevfree = 0;
-   pAlloc->freeList.bh.bsize    = 0;
-
-   /* Must be initialized before being use in SET_LINK */
-   g_pBaseAddr = (unsigned char*) pBaseAddress;
-
-   pAlloc->freeList.ql.flink = SET_LINK( &pAlloc->freeList );
-   pAlloc->freeList.ql.blink = SET_LINK( &pAlloc->freeList );
-
-//   err =  vdscInitProcessLock( &pAlloc->lock );
-//   if ( err != 0 )
-//      return VDS_NOT_ENOUGH_RESOURCES;
-
-   /* Can this failed? */
-//   vdseMemAllocbpool( pAlloc, buffer, length, pError );
-
-//   pAlloc->initialized = VDSC_MEM_ALLOC_SIGNATURE;
-
+   /* Now put the rest of the free pages in our free list */
+   pNode = (vdseFreeBufferNode*)pBaseAddress + 2 * PAGESIZE;
+   pNode->numPages = length / PAGESIZE - 2;
+   vdseLinkedListPutFirst( &pAlloc->freeList, &pNode->node );
+   
    return VDS_OK;
 }
 
