@@ -16,6 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "ListTestCommon.h"
+#include "EngineTestCommon.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -23,6 +24,7 @@ int main( int argc, char* argv[] )
 {
    vdseLinkedList list;
    
+   initTest( true );
    InitMem();
    
    vdseLinkedListInit( &list );

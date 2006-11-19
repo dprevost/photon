@@ -16,13 +16,15 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "ListTestCommon.h"
+#include "EngineTestCommon.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
+int main()
 {
    vdseLinkedList list;
    
+   initTest( false );
    InitMem();
    
    vdseLinkedListInit( &list );

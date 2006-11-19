@@ -151,14 +151,7 @@ typedef struct vdseMemAlloc
    size_t totalLength;
 
    /** Structure used to hold the list of free buffers. */
-//   struct bfhead freeList;   
    vdseLinkedList freeList;
-   
-   /** 
-    *  Buffer allocation size quantum. All buffers allocated are a
-    *  multiple of this size.  This MUST be a power of two.  
-    */
-//   bufsize_T sizeQuant;
    
 } vdseMemAlloc;
 
@@ -173,11 +166,19 @@ typedef struct vdseMemAlloc
  * eventually). Reason: when a program access the VDS, the allocator is 
  * already there, initialized and all.
  */
-enum vdsErrors vdseMemAllocInit( vdseMemAlloc*    pAlloc,
-                                 void*            pBaseAddress,
-                                 unsigned char*   buffer, 
-                                 size_t           length,
-                                 vdscErrorHandler* pError );
+enum vdsErrors 
+vdseMemAllocInit( vdseMemAlloc*     pAlloc,
+                  void*             pBaseAddress,
+                  unsigned char*    buffer, 
+                  size_t            length,
+                  vdscErrorHandler* pError );
+
+/**
+ * 
+ */
+void * vdseMalloc( vdseMemAlloc*     pAlloc,
+                   size_t            numPages,
+                   vdscErrorHandler* pError );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 /* Not done */

@@ -24,7 +24,9 @@ libEngine_la_SOURCES =                   \
                        MemoryAllocator.c \
                        MemoryAllocator.h \
                        MemoryObject.h    \
-                       MemoryObject.c    
+                       MemoryObject.c    \
+                       VdsErrorHandler.c \
+                       VdsErrorHandler.h
    
 #   MemoryManager.c         \
    MemoryManager.h         
@@ -56,6 +58,11 @@ libEngine_la_SOURCES =                   \
    HashList.cpp            \
    HashList.h              
    
+Engine.h: VdsErrorHandler.h
+
+VdsErrorHandler.c VdsErrorHandler.h:
+	$(top_builddir)/src/BuildTools/errorParser -i $(top_srcdir)/src/include/vdsf/vdsErrors.h -o VdsErrorHandler -p vdseErr
+
 AM_CPPFLAGS = -I$(top_srcdir)/src/Common  \
               -I$(top_srcdir)/src/API     \
               -I$(top_srcdir)/src/include \

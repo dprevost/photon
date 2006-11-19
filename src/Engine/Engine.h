@@ -25,6 +25,7 @@
 #include "ProcessLock.h"
 #include <vdsf/vdsErrors.h>
 #include <vdsf/vdsCommon.h>
+#include "ErrorHandler.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -46,6 +47,7 @@
  *  everywhere to recover the real pointer addresses from our offsets
  */
 extern unsigned char* g_pBaseAddr;
+extern vdscErrMsgHandle g_vdsErrorHandle;
 
 #define SET_OFFSET(ptr) ( (ptrdiff_t) ( (unsigned char*)(ptr) - \
        g_pBaseAddr ) )

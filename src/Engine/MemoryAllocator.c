@@ -70,26 +70,6 @@ unsigned char* g_pBaseAddr = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/*  Header in directly allocated buffers  */
-
-#define BH(p)	((struct bhead *) (p))
-#define BFH(p)	((struct bfhead *) (p))
-
-/*  Minimum allocation quantum: */
-
-#define QLSIZE  ((bufsize_T)(sizeof(struct qlinks)))
-#define SIZEQ   ((pAlloc->sizeQuant > QLSIZE) ? pAlloc->sizeQuant : QLSIZE)
-
-/* End sentinel: value placed in bsize field of dummy block delimiting 
- * end of pool block.  The most negative number which will  fit  in  a 
- * bufsize_T, defined in a way that the compiler will accept. 
- * On 32bit architecture: -2147483648 or 0x80000000.
- */
-
-#define ESENT   ((bufsize_T) (-(((1L << (sizeof(bufsize_T) * 8 - 2)) - 1) * 2) - 2))
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 typedef struct vdseFreeBufferNode
 {
    /* The linked list itself */
@@ -143,6 +123,196 @@ vdseMemAllocInit( vdseMemAlloc*     pAlloc,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#define BEST_FIT_MAX_LOOP 100
+/**
+ * This function was splitted from the vdseMalloc() function in order 
+ * to be able to test the algorithm without having to setup everything.
+ */
+static inline 
+vdseFreeBufferNode* FindBuffer( vdseMemAlloc*     pAlloc,
+                                size_t            requestedPages,
+                                vdscErrorHandler* pError )
+{
+   size_t i;
+   size_t diff = (size_t) -1;
+   size_t numPages;
+   vdseLinkNode *oldNode = NULL;
+   vdseLinkNode *currentNode = NULL;
+   vdseLinkNode *bestNode = NULL;
+   enum ListErrors errcode;
+
+   /** \todo Move the test for unsigned size_t to autoconf */ 
+   VDS_INV_CONDITION( (size_t)-1 > (size_t) 0 );
+   /* 
+    * A bit tricky. To avoid fragmentation, we search for the best fitted
+    * buffer in the first N buffers. By choosing a relative small N we 
+    * make sur we don't loop around the whole free list. At the same time 
+    * we avoid splitting up the larger buffers (which might be needed when
+    * reallocating arrays...).[N is BEST_FIT_MAX_LOOP, a define just in
+    * case the compiler can optimize the loop].
+    */
+   errcode = vdseLinkedListPeakFirst( &pAlloc->freeList,
+                                      &oldNode );
+   if ( errcode != LIST_OK )
+      goto error_exit;
+
+   numPages = ((vdseFreeBufferNode*)oldNode)->numPages;
+   if ( numPages == requestedPages )
+   {
+      /* Special case - perfect match */
+      return (void*) oldNode;
+   }
+   if ( numPages > requestedPages )
+   {
+      if ( (numPages - requestedPages) < diff )
+      {
+         diff = numPages - requestedPages;
+         bestNode = oldNode;
+      }
+   }
+   
+   for ( i = 0; i < BEST_FIT_MAX_LOOP; ++i )
+   {
+      errcode = vdseLinkedListPeakNext( &pAlloc->freeList,
+                                        oldNode,
+                                        &currentNode );
+      if ( errcode != LIST_OK ) 
+      {
+         if ( bestNode == NULL ) goto error_exit;
+         break;
+      }
+      numPages = ((vdseFreeBufferNode*)currentNode)->numPages;
+      if ( numPages == requestedPages )
+      {
+         /* Special case - perfect match */
+         return (void*) currentNode;
+      }
+      if ( numPages > requestedPages )
+      {
+         if ( (numPages - requestedPages) < diff )
+         {
+            diff = numPages - requestedPages;
+            bestNode = currentNode;
+         }
+      }
+      oldNode = currentNode;
+   }
+   
+   while ( bestNode == NULL )
+   {
+      errcode = vdseLinkedListPeakNext( &pAlloc->freeList,
+                                        oldNode,
+                                        &currentNode );
+      if ( errcode != LIST_OK ) 
+      {
+         goto error_exit;
+      }
+      numPages = ((vdseFreeBufferNode*)currentNode)->numPages;
+      if ( numPages >= requestedPages )
+      {
+         bestNode = currentNode;
+      }
+      oldNode = currentNode;
+   }
+   
+   return (vdseFreeBufferNode*) bestNode;
+   
+ error_exit:
+ 
+   /** 
+    * \todo Eventually, it might be a good idea to separate "no memory"
+    * versus a lack of a chunk big enough to accomodate the # of requested
+    * pages.
+    */
+   vdscSetError( pError, g_vdsErrorHandle, VDS_NOT_ENOUGH_MEMORY );
+
+   return NULL;
+}
+                   
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
+ * Allocates the pages of shared memory we need.  
+ */
+void * vdseMalloc( vdseMemAlloc*     pAlloc,
+                   size_t            requestedPages,
+                   vdscErrorHandler* pError )
+{
+   vdseFreeBufferNode* pNode = NULL;
+   vdseFreeBufferNode* pNewNode = NULL;
+   int errcode = 0;
+   size_t newNumPages = 0;
+   
+   VDS_PRE_CONDITION( pError != NULL );
+   VDS_PRE_CONDITION( pAlloc != NULL );
+   VDS_PRE_CONDITION( requestedPages > 0 );
+   VDS_INV_CONDITION( g_pBaseAddr != NULL );
+
+   errcode = vdscTryAcquireProcessLock( &pAlloc->memObj.lock, 
+                                        getpid(),
+                                        LONG_LOCK_TIMEOUT );
+   if ( errcode != VDS_OK )
+   {
+      vdscSetError( pError, g_vdsErrorHandle, errcode );
+      return NULL;
+   }
+   
+   pNode = FindBuffer( pAlloc, requestedPages, pError );
+   if ( pNode != NULL )
+   {
+      newNumPages = pNode->numPages - requestedPages;
+      if ( newNumPages == 0 )
+      {
+         /* Remove the node from the list */
+         vdseLinkedListRemoveItem( &pAlloc->freeList, &pNode->node );
+      }
+      else
+      {
+         pNewNode = (vdseFreeBufferNode*)
+                    ((unsigned char*) pNode + (newNumPages*PAGESIZE));
+         pNewNode->numPages = newNumPages;
+         vdseLinkedListReplaceItem( &pAlloc->freeList, 
+                                    &pNode->node, 
+                                    &pNewNode->node );
+      }
+
+      pAlloc->totalAllocPages += requestedPages;   
+      pAlloc->numMallocCalls++;
+   }
+   vdscReleaseProcessLock( &pAlloc->memObj.lock );
+
+   return (void *)pNode;
+}
+ 
+/** Free ptr, the memory is returned to the pool. */
+static inline
+void vdseFree( vdseMemAlloc*    pAlloc,
+               void *           ptr, 
+               vdscErrorHandler* pError )
+{
+   int errcode = 0;
+
+   VDS_PRE_CONDITION( pError != NULL );
+   VDS_PRE_CONDITION( pAlloc != NULL );
+   VDS_PRE_CONDITION( ptr    != NULL );
+
+   errcode = vdscTryAcquireProcessLock( &pAlloc->memObj.lock, getpid(), LONG_LOCK_TIMEOUT );
+         if ( errcode != VDS_OK )
+   {
+      vdscSetError( pError, g_vdsErrorHandle, errcode );
+      return NULL;
+   }
+   if ( errcode == 0 )
+   {
+qqq
+      vdseMemAllocbrel( pAlloc, ptr, pError );
+      
+      vdscReleaseProcessLock( &pAlloc->memObj.lock );
+   }
+}
+  
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+                   
 #if 0
 
 /* Allocate <nbytes>, but don't give them any initial value. */

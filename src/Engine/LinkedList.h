@@ -125,6 +125,15 @@ static inline void
 vdseLinkedListRemoveItem( vdseLinkedList* pList,
                           vdseLinkNode*   pRemovedItem );
 
+/** 
+ * Replace the item pointed to by pOldItem with the item pNewItem (this 
+ * assumes that pOldItem is in the list... otherwise big trouble!)
+ */
+static inline void 
+vdseLinkedListReplaceItem( vdseLinkedList* pList,
+                           vdseLinkNode*   pOldItem,
+                           vdseLinkNode*   pNewItem );
+
 /*
  * The next functions are part of the recovery algorithm and should not
  * be used in any other situations!

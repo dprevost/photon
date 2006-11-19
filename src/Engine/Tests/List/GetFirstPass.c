@@ -16,6 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "ListTestCommon.h"
+#include "EngineTestCommon.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -25,6 +26,7 @@ int main( int argc, char* argv[] )
    vdseLinkNode node, *pNode;
    enum ListErrors error;
    
+   initTest( true );
    InitMem();
    
    vdseLinkNodeInit( &node );

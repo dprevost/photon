@@ -27,7 +27,7 @@ LinkNodeNULLInit_SOURCES = LinkNodeNULLInit.c
 LinkNodeNULLTest_SOURCES = LinkNodeNULLTest.c
 LinkNodeTestTest_SOURCES = LinkNodeTestTest.c
 
-EXTRA_DIST = 
+EXTRA_DIST = EngineTestCommon.h
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 

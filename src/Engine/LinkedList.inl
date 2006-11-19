@@ -342,3 +342,65 @@ vdseLinkedListPeakPrevious( vdseLinkedList* pList,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/** 
+ * Replace the item pointed to by pOldItem with the item pNewItem (this 
+ * assumes that pOldItem is in the list... otherwise big trouble!)
+ */
+inline void 
+vdseLinkedListReplaceItem( vdseLinkedList* pList,
+                           vdseLinkNode*   pOldItem,
+                           vdseLinkNode*   pNewItem )
+{
+   VDS_PRE_CONDITION( pList != NULL );
+   /* Test to see if the list is initialized */
+   VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
+   VDS_PRE_CONDITION( pOldItem != NULL );
+   VDS_PRE_CONDITION( pOldItem->previousOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( pOldItem->nextOffset     != NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem != NULL );
+   VDS_PRE_CONDITION( pList->currentSize > 0 );
+
+#ifdef USE_EXTREME_DBC
+   /* A more complex precondition, that the removed buffer is indeed
+    * in the list... (it is also likely that a memory violation will 
+    * occur if the buffer is indeed not in the list).
+    */
+   {
+      int dbc_count = pList->currentSize;
+      int dbc_ok = 0;
+      vdseLinkNode* dbc_ptr;
+
+      dbc_ptr = GET_PTR( pOldItem->nextOffset,
+                         vdseLinkNode );
+      while ( dbc_count > 0 )
+      {
+         if ( dbc_ptr == &pList->head )
+         {
+            dbc_ok = 1;
+            break;
+         }
+         VDS_PRE_CONDITION( dbc_ptr->nextOffset != NULL_OFFSET );
+         dbc_ptr = GET_PTR( dbc_ptr->nextOffset, vdseLinkNode );
+         dbc_count--;
+         
+      }
+      VDS_PRE_CONDITION( dbc_ok == 1 );
+   }
+#endif
+
+   pList->currBuffOffset = SET_OFFSET( pNewItem );
+   pNewItem->nextOffset     = pOldItem->nextOffset;
+   pNewItem->previousOffset = pOldItem->previousOffset;
+
+   pNewItem->previousOffset   = pList->head.previousOffset;   
+   pList->head.previousOffset = pList->currBuffOffset;
+ 
+   GET_PTR( pOldItem->nextOffset, vdseLinkNode )->previousOffset = 
+      pList->currBuffOffset;
+
+   GET_PTR( pOldItem->previousOffset, vdseLinkNode )->nextOffset = 
+      pList->currBuffOffset;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

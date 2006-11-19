@@ -19,7 +19,7 @@ CLEANFILES = *~ core
 
 check_PROGRAMS =                           \
                  FiniInvSig                \
-                 FiniPreList               \
+                 FiniNullList              \
                  FiniPass                  \
                  GetFirstInvSig            \
                  GetFirstPreItem           \
@@ -79,10 +79,10 @@ check_PROGRAMS =                           \
                  TestSmall                 \
                  TestBig
 
-LIST_H = ListTestCommon.h
+LIST_H = ListTestCommon.h 
 
 FiniInvSig_SOURCES                = $(LIST_H) FiniInvSig.c
-FiniPreList_SOURCES               = $(LIST_H) FiniPreList.c
+FiniNullList_SOURCES              = $(LIST_H) FiniNullList.c
 FiniPass_SOURCES                  = $(LIST_H) FiniPass.c
 GetFirstInvSig_SOURCES            = $(LIST_H) GetFirstInvSig.c
 GetFirstPreItem_SOURCES           = $(LIST_H) GetFirstPreItem.c
@@ -151,7 +151,7 @@ TESTS =
 if COND_USE_DBC
 TESTS +=                           \
          FiniInvSig                \
-         FiniPreList               \
+         FiniNullList              \
          FiniPass                  \
          GetFirstInvSig            \
          GetFirstPreItem           \
@@ -220,7 +220,7 @@ TESTS +=           \
 
 XFAIL_TESTS =                           \
               FiniInvSig                \
-              FiniPreList               \
+              FiniNullList              \
               GetFirstInvSig            \
               GetFirstPreItem           \
               GetFirstPreList           \
@@ -268,8 +268,9 @@ XFAIL_TESTS =                           \
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la
 
-AM_CPPFLAGS = -I$(top_srcdir)/src/Engine \
-              -I$(top_srcdir)/src/Common \
+AM_CPPFLAGS = -I$(top_srcdir)/src/Engine       \
+              -I$(top_srcdir)/src/Engine/Tests \
+              -I$(top_srcdir)/src/Common       \
               -I$(top_srcdir)/src/include
 
 if COND_USE_DBC
