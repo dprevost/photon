@@ -153,6 +153,9 @@ typedef struct vdseMemAlloc
    /** Structure used to hold the list of free buffers. */
    vdseLinkedList freeList;
    
+   size_t bitmapLength;
+   unsigned char bitmap[1];
+   
 } vdseMemAlloc;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -168,8 +171,7 @@ typedef struct vdseMemAlloc
  */
 enum vdsErrors 
 vdseMemAllocInit( vdseMemAlloc*     pAlloc,
-                  void*             pBaseAddress,
-                  unsigned char*    buffer, 
+                  unsigned char*    pBaseAddress, 
                   size_t            length,
                   vdscErrorHandler* pError );
 

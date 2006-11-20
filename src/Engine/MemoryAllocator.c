@@ -70,6 +70,8 @@ unsigned char* g_pBaseAddr = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#define VDSE_FREENODE_SIGNATURE 0x1fe76914
+
 typedef struct vdseFreeBufferNode
 {
    /* The linked list itself */
@@ -77,36 +79,130 @@ typedef struct vdseFreeBufferNode
    
    /* The number of pages associate with each member of the list. */
    size_t numPages;
+   
+   int initialize;
+   
 } vdseFreeBufferNode;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+inline
+bool vdseIsPageFree( vdseMemAlloc*  pAlloc,
+                     unsigned char* ptr )
+{
+   ptrdiff_t offset = ptr - g_pBaseAddr;
+   size_t byte, bit;
+   
+   if ( offset < 0 || offset > pAlloc->totalLength )
+      return false;
+   
+   byte = offset / PAGESIZE >> 3; // / 8;
+//   bit = offset % 8;
+   bit = offset & 7;
+//   pAlloc->bitmap[byte] ;
+//   ptrdiff_t
+   
+   return ( (pAlloc->bitmap[byte] & (unsigned char)(1 << bit)) == 0 );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+inline
+void vdseSetPagesAllocated( vdseMemAlloc*  pAlloc,
+                            unsigned char* ptr,
+                            size_t         numPages )
+{
+   ptrdiff_t offset = ptr - g_pBaseAddr;
+   size_t byte, bit, i;
+   
+   byte = offset / PAGESIZE >> 3; // / 8;
+//   bit = offset % 8;
+   bit = offset & 7;
+//   pAlloc->bitmap[byte] ;
+//   ptrdiff_t
+   for ( i = 0; i < numPages; ++i )
+   {
+      /* Setting the bit to one */
+      pAlloc->bitmap[byte] |= (unsigned char)(1 << bit);
+      bit++;
+      if ( bit == 8 )
+      {
+         bit = 0;
+         byte++;
+      }
+   }
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+inline
+void vdseSetPagesFree( vdseMemAlloc*  pAlloc,
+                       unsigned char* ptr,
+                       size_t         numPages )
+{
+   ptrdiff_t offset = ptr - g_pBaseAddr;
+   size_t byte, bit, i;
+   
+   byte = offset / PAGESIZE >> 3; // / 8;
+//   bit = offset % 8;
+   bit = offset & 7;
+//   pAlloc->bitmap[byte] ;
+//   ptrdiff_t
+   for ( i = 0; i < numPages; ++i )
+   {
+      /* Setting the bit to zero */
+      pAlloc->bitmap[byte] &= (unsigned char)(~(1 << bit));
+      bit++;
+      if ( bit == 8 )
+      {
+         bit = 0;
+         byte++;
+      }
+   }
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum vdsErrors 
 vdseMemAllocInit( vdseMemAlloc*     pAlloc,
-                  void*             pBaseAddress,
-                  unsigned char*    buffer, 
+                  unsigned char*    pBaseAddress,
                   size_t            length,
                   vdscErrorHandler* pError )
 {
    enum vdsErrors errcode;
    vdseFreeBufferNode* pNode;
-
+   size_t neededPages, neededBytes;
+   unsigned char* ptr;
+   
    VDS_PRE_CONDITION( pError != NULL );
    VDS_PRE_CONDITION( pAlloc != NULL );
    VDS_PRE_CONDITION( pBaseAddress != NULL );
-   VDS_PRE_CONDITION( buffer != NULL );
    VDS_PRE_CONDITION( length >= 3*PAGESIZE );
    VDS_INV_CONDITION( g_pBaseAddr != NULL );
 
+   /* We truncate it to amultiple of PAGESIZE */
+   length = length / PAGESIZE * PAGESIZE;
+   pAlloc->bitmapLength = (length/PAGESIZE - 1) / 8 + 1;
+   
+   /* How many pages do we need for the allocator */
+   /* Note: "-1" because vdseMemAlloc already has bitmap[1] */
+   neededBytes = pAlloc->bitmapLength + sizeof( struct vdseMemAlloc) - 1;
+   /* Align it on VDSE_MEM_ALIGNMENT bytes boundary */
+   neededBytes = ( (neededBytes - 1) / VDSE_MEM_ALIGNMENT + 1 ) * 
+                 VDSE_MEM_ALIGNMENT;
+   /* Always leave space for the navigator struct */
+   neededBytes += sizeof(vdsePageNavig);
+   neededPages = (neededBytes - 1)/PAGESIZE + 1;
+
    errcode = vdseMemObjectInit( &pAlloc->memObj,                         
                                 VDSE_IDENT_ALLOCATOR,
-                                sizeof( struct vdseMemAlloc),
-                                1 );
+                                pAlloc->bitmapLength + sizeof( struct vdseMemAlloc) - 1,
+                                neededPages );
    if ( errcode != VDS_OK )
       return errcode;
    
    /* The overall header and the memory allocator itself */
-   pAlloc->totalAllocPages = 2; 
+   pAlloc->totalAllocPages = neededPages+1; 
    pAlloc->numMallocCalls  = 0;
    pAlloc->numFreeCalls    = 0;
    pAlloc->totalLength     = length;
@@ -114,10 +210,25 @@ vdseMemAllocInit( vdseMemAlloc*     pAlloc,
    vdseLinkedListInit( &pAlloc->freeList );
    
    /* Now put the rest of the free pages in our free list */
-   pNode = (vdseFreeBufferNode*)pBaseAddress + 2 * PAGESIZE;
-   pNode->numPages = length / PAGESIZE - 2;
+   pNode = (vdseFreeBufferNode*)(pBaseAddress + (neededPages+1) * PAGESIZE);
+   pNode->numPages = length / PAGESIZE - (neededPages+1);
+   pNode->initialize = VDSE_FREENODE_SIGNATURE;
    vdseLinkedListPutFirst( &pAlloc->freeList, &pNode->node );
    
+   /*
+    * Put the offset of the first free page on the last free page. This
+    * makes it simpler/faster to rejoin groups of free pages. But only 
+    * if the number of pages in the group > 1.
+    */
+   if ( pNode->numPages > 1 )
+   {
+      ptr = pBaseAddress + length - PAGESIZE; 
+      *((ptrdiff_t *)ptr) = (neededPages+1) * PAGESIZE;
+   }
+   /* Set the bitmap */
+   memset( pAlloc->bitmap, 0, pAlloc->bitmapLength );
+   vdseSetPagesAllocated( pAlloc, pBaseAddress, neededPages+1 );
+
    return VDS_OK;
 }
 
@@ -127,6 +238,8 @@ vdseMemAllocInit( vdseMemAlloc*     pAlloc,
 /**
  * This function was splitted from the vdseMalloc() function in order 
  * to be able to test the algorithm without having to setup everything.
+ * (And it becomes easier to replace the algorithm, if needed or to 
+ * tweak it).
  */
 static inline 
 vdseFreeBufferNode* FindBuffer( vdseMemAlloc*     pAlloc,
@@ -242,6 +355,7 @@ void * vdseMalloc( vdseMemAlloc*     pAlloc,
    vdseFreeBufferNode* pNewNode = NULL;
    int errcode = 0;
    size_t newNumPages = 0;
+   unsigned char* ptr;
    
    VDS_PRE_CONDITION( pError != NULL );
    VDS_PRE_CONDITION( pAlloc != NULL );
@@ -269,29 +383,49 @@ void * vdseMalloc( vdseMemAlloc*     pAlloc,
       else
       {
          pNewNode = (vdseFreeBufferNode*)
-                    ((unsigned char*) pNode + (newNumPages*PAGESIZE));
+                    ((unsigned char*) pNode + (requestedPages*PAGESIZE));
          pNewNode->numPages = newNumPages;
          vdseLinkedListReplaceItem( &pAlloc->freeList, 
                                     &pNode->node, 
                                     &pNewNode->node );
+         /*
+          * Put the offset of the first free page on the last free page.
+          * This makes it simpler/faster to rejoin groups of free pages. But 
+          * only if the number of pages in the group > 1.
+          */
+          if ( newNumPages > 1 )
+          {
+             ptr = (unsigned char*) pNewNode + (newNumPages-1) * PAGESIZE; 
+             *((ptrdiff_t *)ptr) = SET_OFFSET(pNewNode);
+          }
       }
 
       pAlloc->totalAllocPages += requestedPages;   
       pAlloc->numMallocCalls++;
+
+      /* Set the bitmap */
+      vdseSetPagesAllocated( pAlloc, (unsigned char*)pNode, requestedPages );
    }
    vdscReleaseProcessLock( &pAlloc->memObj.lock );
 
    return (void *)pNode;
 }
- 
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /** Free ptr, the memory is returned to the pool. */
 static inline
-void vdseFree( vdseMemAlloc*    pAlloc,
-               void *           ptr, 
-               vdscErrorHandler* pError )
+int vdseFree( vdseMemAlloc*     pAlloc,
+              void *            ptr, 
+              size_t            numPages,
+              vdscErrorHandler* pError )
 {
    int errcode = 0;
-
+   vdseFreeBufferNode* otherNode;
+   bool otherBufferisFree = false;
+   unsigned char* p;
+   ptrdiff_t offset;
+   
    VDS_PRE_CONDITION( pError != NULL );
    VDS_PRE_CONDITION( pAlloc != NULL );
    VDS_PRE_CONDITION( ptr    != NULL );
@@ -300,330 +434,78 @@ void vdseFree( vdseMemAlloc*    pAlloc,
          if ( errcode != VDS_OK )
    {
       vdscSetError( pError, g_vdsErrorHandle, errcode );
-      return NULL;
+      return -1;
    }
-   if ( errcode == 0 )
+
+   /* 
+    * Check if the page before the current group-of-pages-to-be-released
+    * is in the freeList or not.
+    */
+   p = (unsigned char*)ptr - PAGESIZE;
+   otherBufferisFree = vdseIsPageFree( pAlloc, p );
+   if ( otherBufferisFree )
    {
-qqq
-      vdseMemAllocbrel( pAlloc, ptr, pError );
-      
-      vdscReleaseProcessLock( &pAlloc->memObj.lock );
+      /* Find the start of that free group of pages */
+      if ( vdseIsPageFree( pAlloc, (unsigned char*)ptr - 2*PAGESIZE ) )
+      {
+         /* The free group has more than one page */
+         offset = *((ptrdiff_t*)p);
+         p = GET_PTR(offset, unsigned char);
+      }
+      ((vdseFreeBufferNode*)p)->numPages += numPages;
    }
+   else
+   {
+      /*
+       * We make p the node, it could be the current group of pages or
+       * the previous one.
+       */
+      p = (unsigned char*)ptr;
+      ((vdseFreeBufferNode*)p)->numPages = numPages;
+      ((vdseFreeBufferNode*)p)->initialize = VDSE_FREENODE_SIGNATURE;
+   }
+
+   /* 
+    * Check if the page after the current group-of-pages-to-be-released
+    * is in the freeList or not.
+    */
+   otherNode = (vdseFreeBufferNode*)((unsigned char*)ptr + numPages*PAGESIZE);
+   otherBufferisFree = vdseIsPageFree( pAlloc, (unsigned char*) otherNode );
+   if ( otherBufferisFree )
+   {
+      ((vdseFreeBufferNode*)p)->numPages += otherNode->numPages;
+      vdseLinkedListReplaceItem( &pAlloc->freeList, 
+                                 &otherNode->node, 
+                                 &((vdseFreeBufferNode*)p)->node );
+      memset( otherNode, 0, sizeof(vdseFreeBufferNode) );
+   }
+
+   pAlloc->totalAllocPages -= numPages;   
+   pAlloc->numFreeCalls++;
+
+   /* Set the bitmap */
+   vdseSetPagesFree( pAlloc, ptr, numPages );
+   
+   /*
+    * Put the offset of the first free page on the last free page.
+    * This makes it simpler/faster to rejoin groups of free pages. But 
+    * only if the number of pages in the group > 1.
+    */
+   if ( ((vdseFreeBufferNode*)p)->numPages > 1 )
+   {
+      /* Warning - we reuse ptr here */
+       ptr = p + (numPages-1) * PAGESIZE; 
+       *((ptrdiff_t *)ptr) = SET_OFFSET(p);
+   }
+    
+   vdscReleaseProcessLock( &pAlloc->memObj.lock );
+
+   return 0;
 }
   
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
                    
 #if 0
-
-/* Allocate <nbytes>, but don't give them any initial value. */
-void* vdseMemAllocbget( vdseMemAlloc*    pAlloc,
-                        bufsize_T        requestedSize,
-                        vdscErrorHandler* pError )
-{
-   bufsize_T size = requestedSize;
-   struct bfhead *b;
-   void *buf;
-
-   VDS_ASSERT( pError != NULL );
-   VDS_ASSERT_RETURN( pAlloc != NULL,    pError, NULL );
-   VDS_ASSERT_RETURN( requestedSize > 0, pError, NULL );
-
-   if (size < SIZEQ) 
-   {                 /* Need at least room for the */
-      size = SIZEQ;            /*    queue links.  */
-   }
-   size = (size + (pAlloc->sizeQuant - 1)) & (~(pAlloc->sizeQuant - 1));
-
-   size += sizeof(struct bhead);     /* Add overhead in allocated buffer
-                                         to size required. */
-   
-   b = GET_FLINK( &pAlloc->freeList );
-
-   /* Scan the free list searching for the first buffer big enough
-      to hold the requested size buffer. */
-
-   while (b != &pAlloc->freeList) 
-   {
-      if ((bufsize_T) b->bh.bsize >= size) 
-      {
-         /* Buffer  is big enough to satisfy  the request.  Allocate it
-            to the caller.  We must decide whether the buffer is  large
-            enough  to  split  into  the part given to the caller and a
-            free buffer that remains on the free list, or  whether  the
-            entire  buffer  should  be  removed   from the free list and
-            given to the caller in its entirety.   We  only  split  the
-            buffer if enough room remains for a header plus the minimum
-            quantum of allocation. */
-
-         if ((b->bh.bsize - size) > (int) (SIZEQ + (sizeof(struct bhead)))) 
-         {
-            /* ba is the new allocated buffer */
-            /* b is the remaining free buffer */
-            /* bn is the following buffer  */
-            struct bhead *ba, *bn;
-
-            ba = BH(((unsigned char *) b) + (b->bh.bsize - size));
-            bn = BH(((unsigned char *) ba) + size);
-            VDS_ASSERT_RETURN( bn->prevfree == b->bh.bsize, pError, NULL );
-            
-            /* Subtract size from length of free block. */
-            b->bh.bsize -= size;
-            /* Link allocated buffer to the previous free buffer. */
-            ba->prevfree = b->bh.bsize;
-            /* Plug negative size into user buffer. */
-            ba->bsize = -(bufsize_T) size;
-            /* Mark buffer after this one not preceded by free block. */
-            bn->prevfree = 0;
-
-            pAlloc->totalAlloc += size;
-            pAlloc->numMalloc++;        /* Increment number of bget() calls */
-
-            buf = (void *) ((((unsigned char *) ba) + sizeof(struct bhead)));
-            
-            return buf;
-         } 
-         else 
-         {
-            /* The buffer isn't big enough to split.  Give  the  whole
-               shebang to the caller and remove it from the free list. */
-
-            struct bhead *ba;
-
-            ba = BH(((unsigned char *) b) + b->bh.bsize);
-            VDS_ASSERT_RETURN( ba->prevfree == b->bh.bsize, pError, NULL );
-
-            VDS_ASSERT_RETURN( 
-               GET_BLINK(b)->ql.flink == SET_LINK(b),
-               pError,
-               NULL );
-            VDS_ASSERT_RETURN( 
-               GET_FLINK(b)->ql.blink == SET_LINK(b),
-               pError,
-               NULL );
-
-/*            b->ql.blink->ql.flink = b->ql.flink; */
-            GET_BLINK(b)->ql.flink = b->ql.flink;
-            GET_FLINK(b)->ql.blink = b->ql.blink;
-/*            b->ql.flink->ql.blink = b->ql.blink; */
-
-            pAlloc->totalAlloc += b->bh.bsize;
-            pAlloc->numMalloc++;        /* Increment number of bget() calls */
-
-            /* Negate size to mark buffer allocated. */
-            b->bh.bsize = -(b->bh.bsize);
-
-            /* Zero the back pointer in the next buffer in memory
-               to indicate that this buffer is allocated. */
-            ba->prevfree = 0;
-
-            /* Give user buffer starting at queue links. */
-            buf =  (void *) &(b->ql);
-
-            return buf;
-         }
-      }
-      b = GET_FLINK(b); /* Link to next buffer */
-   }
-
-   return NULL;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void vdseMemAllocbpool( vdseMemAlloc*    pAlloc,
-                        unsigned char*   buf, 
-                        bufsize_T        len,
-                        vdscErrorHandler* pError )
-{
-   struct bfhead *b = BFH(buf);
-   struct bhead *bn;
- 
-   VDS_ASSERT( pError != NULL );
-   VDS_ASSERT_NORETURN( pAlloc != NULL, pError );
-   VDS_ASSERT_NORETURN( buf    != NULL, pError );
-
-   pAlloc->poolOffset = SET_OFFSET(b);
-   len &= ~(pAlloc->sizeQuant - 1);
-   pAlloc->poolLength = len;
-
-   /* Since the block is initially occupied by a single free  buffer,
-      it  had   better   not  be  (much) larger than the largest buffer
-      whose size we can store in bhead.bsize. */
-
-   VDS_ASSERT_NORETURN( len - sizeof(struct bhead) <= -((bufsize_T) ESENT + 1),
-                        pError );
-
-   /* Clear  the  backpointer at  the start of the block to indicate that
-      there  is  no  free  block  prior  to  this   one.    That   blocks
-      recombination when the first block in memory is released. */
-
-   b->bh.prevfree = 0;
-
-   /* Chain the new block to the free list. */
-
-   VDS_ASSERT_NORETURN( GET_BLINK(&pAlloc->freeList)->ql.flink == 
-                        SET_LINK(&pAlloc->freeList),
-                        pError );
-   VDS_ASSERT_NORETURN( GET_FLINK(&pAlloc->freeList)->ql.blink == 
-                        SET_LINK(&pAlloc->freeList),
-                        pError );
-
-   b->ql.flink = SET_LINK( &pAlloc->freeList ); /* &pAlloc->freeList */
-   b->ql.blink = pAlloc->freeList.ql.blink;
-   pAlloc->freeList.ql.blink = SET_LINK( b );
-   GET_BLINK(b)->ql.flink = SET_LINK( b );
-
-   /* Create a dummy allocated buffer at the end of the pool.   This dummy
-      buffer is seen when a buffer at the end of the pool is released and
-      blocks  recombination  of  the last buffer with the dummy buffer at
-      the end.  The length in the dummy buffer  is  set  to  the  largest
-      negative  number  to  denote  the  end  of  the pool for diagnostic
-      routines (this specific value is  not  counted  on  by  the  actual
-      allocation and release functions). */
-
-   len -= sizeof(struct bhead);
-   b->bh.bsize = (bufsize_T) len;
-#ifdef FREE_WIPE
-   memset(((unsigned char *) b) + sizeof(struct bfhead), 0x55,
-          (size_t) (len - sizeof(struct bfhead)));
-#endif
-   bn = BH(((unsigned char *) b) + len);
-   bn->prevfree = (bufsize_T) len;
-   /* Definition of ESENT assumes two's complement! */
-   VDS_ASSERT_NORETURN( (~0) == -1, pError );
-   bn->bsize = ESENT;
-
-   /* Add the dummy buffer to the sum of allocated space */
-   pAlloc->totalAlloc = sizeof(struct bhead);
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void vdseMemAllocbrel( vdseMemAlloc*    pAlloc,
-                       void*            buf,
-                       vdscErrorHandler* pError )
-{
-   struct bfhead *b, *bn;
-
-   VDS_ASSERT( pError != NULL );
-   VDS_ASSERT_NORETURN( pAlloc != NULL, pError );
-
-   b = BFH(((unsigned char *) buf) - sizeof(struct bhead));
-
-   VDS_ASSERT_NORETURN( buf != NULL, pError );
-   if ( buf == NULL )
-      return;
-
-   pAlloc->numFree++;               /* Increment number of brel() calls */
-
-   /* Buffer size must be negative, indicating that the buffer is allocated. */
-   VDS_ASSERT_NORETURN( b->bh.bsize < 0, pError );
-
-   /* Back pointer in next buffer must be zero, indicating the same thing: */
-   VDS_ASSERT_NORETURN( BH((unsigned char *) b - b->bh.bsize)->prevfree == 0,
-                        pError );
-
-   pAlloc->totalAlloc += b->bh.bsize;
-   VDS_ASSERT_NORETURN( pAlloc->totalAlloc >= 0, pError );
-
-   /* If the back link is nonzero, the previous buffer is free.  */
-   
-   if (b->bh.prevfree != 0) 
-   {
-      /* The previous buffer is free.  Consolidate this buffer  with   it
-         by  adding  the  length  of   this  buffer  to the previous free
-         buffer.  Note that we subtract the size  in   the  buffer  being
-         released,  since  it's  negative to indicate that the buffer is
-         allocated. */
-
-      register bufsize_T size = b->bh.bsize;
-
-      /* Make the previous buffer the one we're working on. */
-/*
-      VDS_ASSERT_NORETURN(
-         BH((unsigned char *) b - b->bh.prevfree)->bsize == b->bh.prevfree,
-         pError ); 
-*/
-      if ( BH((unsigned char *) b - b->bh.prevfree)->bsize != b->bh.prevfree)
-      {
-         fprintf( stderr, " b , bh, etc... %p %p %ld %ld %ld\n", 
-                  b, 
-                  BH((unsigned char *) b - b->bh.prevfree),
-                  BH((unsigned char *) b - b->bh.prevfree)->bsize,
-                  b->bh.prevfree,
-                  b->bh.bsize );
-         VDS_ASSERT_NORETURN( 0, pError );
-      }
-      
-      b = BFH(((unsigned char *) b) - b->bh.prevfree);
-      b->bh.bsize -= size;
-   } 
-   else 
-   {
-      /* The previous buffer is allocated.  Insert this buffer
-         on the free list as an isolated free block. */
-
-      VDS_ASSERT_NORETURN( GET_BLINK(&pAlloc->freeList)->ql.flink == 
-                           SET_LINK(&pAlloc->freeList),
-                           pError );
-      VDS_ASSERT_NORETURN( GET_FLINK(&pAlloc->freeList)->ql.blink == 
-                           SET_LINK(&pAlloc->freeList),
-                           pError );
-/*        b->ql.flink = &pAlloc->freeList; */
-/*        b->ql.blink = pAlloc->freeList.ql.blink; */
-/*        pAlloc->freeList.ql.blink = b; */
-/*        b->ql.blink->ql.flink = b; */
-
-      b->ql.flink = SET_LINK( &pAlloc->freeList );
-      b->ql.blink = pAlloc->freeList.ql.blink;
-      pAlloc->freeList.ql.blink = SET_LINK( b );
-      GET_BLINK(b)->ql.flink = SET_LINK( b );
-      b->bh.bsize = -b->bh.bsize;
-   }
-
-   /* Now we look at the next buffer in memory, located by advancing from
-      the  start  of  this  buffer  by its size, to see if that buffer is
-      free.  If it is, we combine  this  buffer  with   the  next  one   in
-      memory, dechaining the second buffer from the free list. */
-
-   bn =  BFH(((unsigned char *) b) + b->bh.bsize);
-   if (bn->bh.bsize > 0) 
-   {
-
-      /* The buffer is free.   Remove it from the free list and add
-         its size to that of our buffer. */
-
-      VDS_ASSERT_NORETURN(
-         BH((unsigned char *) bn + bn->bh.bsize)->prevfree == bn->bh.bsize,
-         pError );
-/*      VDS_ASSERT_NORETURN( bn->ql.blink->ql.flink == bn, pError ); */
-/*      VDS_ASSERT_NORETURN( bn->ql.flink->ql.blink == bn, pError ); */
-      GET_BLINK( bn )->ql.flink = bn->ql.flink;
-      GET_FLINK( bn )->ql.blink = bn->ql.blink;
-/*        bn->ql.blink->ql.flink = bn->ql.flink; */
-/*        bn->ql.flink->ql.blink = bn->ql.blink; */
-      b->bh.bsize += bn->bh.bsize;
-
-      /* Finally,  advance  to   the   buffer   that   follows   the  newly
-         consolidated free block.  We must set its  backpointer  to  the
-         head  of  the  consolidated free block.  We know the next block
-         must be an allocated block because the process of recombination
-         guarantees  that  two  free   blocks will never be contiguous in
-         memory.  */
-
-      bn = BFH(((unsigned char *) b) + b->bh.bsize);
-   }
-#ifdef FREE_WIPE
-   memset(((unsigned char *) b) + sizeof(struct bfhead), 0x55,
-          (size_t) (b->bh.bsize - sizeof(struct bfhead)));
-#endif
-   VDS_ASSERT_NORETURN( bn->bh.bsize < 0, pError );
-
-   /* The next buffer is allocated.  Set the backpointer in it  to  point
-      to this buffer; the previous free buffer in memory. */
-
-   bn->bh.prevfree = b->bh.bsize;
-}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

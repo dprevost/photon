@@ -67,6 +67,7 @@ vdseMemObjectInit( vdseMemObject* pMemObj,
    /* Always leave space for the navigator struct */
    pMemObj->remainingBytes = (numPages * PAGESIZE) - objSize - 
                              sizeof(vdsePageNavig);
+   pMemObj->totalPages = numPages;
    pMemObj->navigator.numPagesGroup = numPages;
    pMemObj->navigator.nextGroupOfPages = NULL_OFFSET;
    

@@ -69,10 +69,10 @@ void vdseLinkedListReset( vdseLinkedList* pList )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseLinkedListIsValid( vdseLinkedList* pList,
-                           vdseLinkNode*   pUnknown )
+bool vdseLinkedListIsValid( vdseLinkedList* pList,
+                            vdseLinkNode*   pUnknown )
 {
-   int valid = 0;
+   bool valid = false;
    
    vdseLinkNode* pItem;
 
@@ -88,7 +88,7 @@ int vdseLinkedListIsValid( vdseLinkedList* pList,
    {
       if ( pItem == pUnknown )
       {
-         valid = 1;
+         valid = true;
          break;
       }
       

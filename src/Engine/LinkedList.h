@@ -134,6 +134,13 @@ vdseLinkedListReplaceItem( vdseLinkedList* pList,
                            vdseLinkNode*   pOldItem,
                            vdseLinkNode*   pNewItem );
 
+/** Search in the list to see if pUnknown is in it or not - used by the
+ *  crash recovery algorithm, vdseFree, etc. 
+ */
+bool 
+vdseLinkedListIsValid( vdseLinkedList* pList,
+                       vdseLinkNode*   pUnknown );
+
 /*
  * The next functions are part of the recovery algorithm and should not
  * be used in any other situations!
@@ -145,12 +152,6 @@ vdseLinkedListReplaceItem( vdseLinkedList* pList,
 void 
 vdseLinkedListReset( vdseLinkedList* pList );
 
-/** Search in the list to see if pUnknown is in it or not - used by the
- *  crash recovery algorithm 
- */
-int 
-vdseLinkedListIsValid( vdseLinkedList* pList,
-                       vdseLinkNode*   pUnknown );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

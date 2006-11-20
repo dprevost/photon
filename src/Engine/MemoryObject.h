@@ -61,6 +61,9 @@ typedef struct vdseMemObject
     */
    size_t accessCounter;
 
+   /** Total number of pages for the current object */
+   size_t totalPages;
+   
    /** The number of free bytes in the object allocated memory. */
    size_t remainingBytes;
    
