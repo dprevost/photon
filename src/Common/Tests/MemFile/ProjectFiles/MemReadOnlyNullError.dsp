@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="MemReadOnlyInfoNull" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="MemReadOnlyNullError" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=MemReadOnlyInfoNull - Win32 Debug
+CFG=MemReadOnlyNullError - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "MemReadOnlyInfoNull.mak".
+!MESSAGE NMAKE /f "MemReadOnlyNullError.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "MemReadOnlyInfoNull.mak" CFG="MemReadOnlyInfoNull - Win32 Debug"
+!MESSAGE NMAKE /f "MemReadOnlyNullError.mak" CFG="MemReadOnlyNullError - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "MemReadOnlyInfoNull - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "MemReadOnlyInfoNull - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "MemReadOnlyNullError - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "MemReadOnlyNullError - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,17 +28,17 @@ CFG=MemReadOnlyInfoNull - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "MemReadOnlyInfoNull - Win32 Release"
+!IF  "$(CFG)" == "MemReadOnlyNullError - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "..\Release\Release_ReadOnlyInfoNull"
-# PROP BASE Intermediate_Dir "..\Release\Release_ReadOnlyInfoNull"
+# PROP BASE Output_Dir "..\Release\Release_ReadOnlyNullError"
+# PROP BASE Intermediate_Dir "..\Release\Release_ReadOnlyNullError"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "..\Release\Release_ReadOnlyInfoNull"
-# PROP Intermediate_Dir "..\Release\Release_ReadOnlyInfoNull"
+# PROP Output_Dir "..\Release\Release_ReadOnlyNullError"
+# PROP Intermediate_Dir "..\Release\Release_ReadOnlyNullError"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
@@ -50,19 +50,19 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /out:"..\Release\MemReadOnlyInfoNull.exe" /libpath:"../../../Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /out:"..\Release\MemReadOnlyNullError.exe" /libpath:"../../../Release"
 
-!ELSEIF  "$(CFG)" == "MemReadOnlyInfoNull - Win32 Debug"
+!ELSEIF  "$(CFG)" == "MemReadOnlyNullError - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "..\Debug\Debug_ReadOnlyInfoNull"
-# PROP BASE Intermediate_Dir "..\Debug\Debug_ReadOnlyInfoNull"
+# PROP BASE Output_Dir "..\Debug\Debug_ReadOnlyNullError"
+# PROP BASE Intermediate_Dir "..\Debug\Debug_ReadOnlyNullError"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "..\Debug\Debug_ReadOnlyInfoNull"
-# PROP Intermediate_Dir "..\Debug\Debug_ReadOnlyInfoNull"
+# PROP Output_Dir "..\Debug\Debug_ReadOnlyNullError"
+# PROP Intermediate_Dir "..\Debug\Debug_ReadOnlyNullError"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
@@ -74,20 +74,20 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommond.lib /nologo /subsystem:console /debug /machine:I386 /out:"..\Debug\MemReadOnlyInfoNull.exe" /pdbtype:sept /libpath:"../../../Debug"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommond.lib /nologo /subsystem:console /debug /machine:I386 /out:"..\Debug\MemReadOnlyNullError.exe" /pdbtype:sept /libpath:"../../../Debug"
 
 !ENDIF 
 
 # Begin Target
 
-# Name "MemReadOnlyInfoNull - Win32 Release"
-# Name "MemReadOnlyInfoNull - Win32 Debug"
+# Name "MemReadOnlyNullError - Win32 Release"
+# Name "MemReadOnlyNullError - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\ReadOnlyInfoNull.c
+SOURCE=..\ReadOnlyNullError.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
