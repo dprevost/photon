@@ -639,7 +639,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "MemCloseInfoNull"=.\MemFile\ProjectFiles\MemCloseInfoNull.dsp - Package Owner=<4>
+Project: "MemCloseNullError"=.\MemFile\ProjectFiles\MemCloseNullError.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -687,7 +687,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "MemCreateBackInfoNull"=.\MemFile\ProjectFiles\MemCreateBackInfoNull.dsp - Package Owner=<4>
+Project: "MemCreateBackNullError"=.\MemFile\ProjectFiles\MemCreateBackNullError.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -915,7 +915,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "MemOpenInfoNull"=.\MemFile\ProjectFiles\MemOpenInfoNull.dsp - Package Owner=<4>
+Project: "MemOpenNullError"=.\MemFile\ProjectFiles\MemOpenNullError.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -987,7 +987,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "MemReadOnlyInfoNull"=.\MemFile\ProjectFiles\MemReadOnlyInfoNull.dsp - Package Owner=<4>
+Project: "MemReadOnlyNullError"=.\MemFile\ProjectFiles\MemReadOnlyNullError.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1059,7 +1059,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "MemReadWriteInfoNull"=.\MemFile\ProjectFiles\MemReadWriteInfoNull.dsp - Package Owner=<4>
+Project: "MemReadWriteNullError"=.\MemFile\ProjectFiles\MemReadWriteNullError.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1119,7 +1119,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "MemSynchInfoNull"=.\MemFile\ProjectFiles\MemSynchInfoNull.dsp - Package Owner=<4>
+Project: "MemSynchNullError"=.\MemFile\ProjectFiles\MemSynchNullError.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
