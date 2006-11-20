@@ -16,11 +16,11 @@ check_PROGRAMS =                         \
                  BackStatusNameEmpty     \
                  BackStatusPass          \
                  BackStatusStatusNull    \
-                 CloseInfoNull           \
+                 CloseNullError          \
                  CloseInvalidSig         \
                  CloseMemNull            \
                  ClosePass               \
-                 CreateBackInfoNull      \
+                 CreateBackNullError     \
                  CreateBackInvalidSig    \
                  CreateBackInvLength     \
                  CreateBackMemNull       \
@@ -39,24 +39,24 @@ check_PROGRAMS =                         \
                  InitNameNull            \
                  InitPass                \
                  OpenAddrNull            \
-                 OpenInfoNull            \
+                 OpenNullError           \
                  OpenInvalidLength       \
                  OpenInvalidSig          \
                  OpenMemNull             \
                  OpenNameEmpty           \
                  OpenPass                \
-                 ReadOnlyInfoNull        \
+                 ReadOnlyNullError       \
                  ReadOnlyInvalidBaseAddr \
                  ReadOnlyInvalidSig      \
                  ReadOnlyMemNull         \
                  ReadOnlyPass            \
                  ReadOnlyTryWrite        \
-                 ReadWriteInfoNull       \
+                 ReadWriteNullError      \
                  ReadWriteInvalidSig     \
                  ReadWriteInvBaseAddr    \
                  ReadWriteMemNull        \
                  ReadWritePass           \
-                 SynchInfoNull           \
+                 SynchNullError          \
                  SynchInvalidBaseAddr    \
                  SynchInvalidSig         \
                  SynchMemNull            \
@@ -69,11 +69,11 @@ BackStatusMemNull_SOURCES       = BackStatusMemNull.c
 BackStatusNameEmpty_SOURCES     = BackStatusNameEmpty.c
 BackStatusPass_SOURCES          = BackStatusPass.c
 BackStatusStatusNull_SOURCES    = BackStatusStatusNull.c
-CloseInfoNull_SOURCES           = CloseInfoNull.c
+CloseNullError_SOURCES          = CloseNullError.c
 CloseInvalidSig_SOURCES         = CloseInvalidSig.c
 CloseMemNull_SOURCES            = CloseMemNull.c
 ClosePass_SOURCES               = ClosePass.c
-CreateBackInfoNull_SOURCES      = CreateBackInfoNull.c
+CreateBackNullError_SOURCES     = CreateBackNullError.c
 CreateBackInvalidSig_SOURCES    = CreateBackInvalidSig.c
 CreateBackInvLength_SOURCES     = CreateBackInvLength.c
 CreateBackMemNull_SOURCES       = CreateBackMemNull.c
@@ -92,24 +92,24 @@ InitNameEmpty_SOURCES           = InitNameEmpty.c
 InitNameNull_SOURCES            = InitNameNull.c
 InitPass_SOURCES                = InitPass.c
 OpenAddrNull_SOURCES            = OpenAddrNull.c
-OpenInfoNull_SOURCES            = OpenInfoNull.c
+OpenNullError_SOURCES           = OpenNullError.c
 OpenInvalidLength_SOURCES       = OpenInvalidLength.c
 OpenInvalidSig_SOURCES          = OpenInvalidSig.c
 OpenMemNull_SOURCES             = OpenMemNull.c
 OpenNameEmpty_SOURCES           = OpenNameEmpty.c
 OpenPass_SOURCES                = OpenPass.c
-ReadOnlyInfoNull_SOURCES        = ReadOnlyInfoNull.c
+ReadOnlyNullError_SOURCES       = ReadOnlyNullError.c
 ReadOnlyInvalidBaseAddr_SOURCES = ReadOnlyInvalidBaseAddr.c
 ReadOnlyInvalidSig_SOURCES      = ReadOnlyInvalidSig.c
 ReadOnlyMemNull_SOURCES         = ReadOnlyMemNull.c
 ReadOnlyPass_SOURCES            = ReadOnlyPass.c
 ReadOnlyTryWrite_SOURCES        = ReadOnlyTryWrite.c
-ReadWriteInfoNull_SOURCES       = ReadWriteInfoNull.c
+ReadWriteNullError_SOURCES      = ReadWriteNullError.c
 ReadWriteInvalidSig_SOURCES     = ReadWriteInvalidSig.c
 ReadWriteInvBaseAddr_SOURCES    = ReadWriteInvBaseAddr.c
 ReadWriteMemNull_SOURCES        = ReadWriteMemNull.c
 ReadWritePass_SOURCES           = ReadWritePass.c
-SynchInfoNull_SOURCES           = SynchInfoNull.c
+SynchNullError_SOURCES          = SynchNullError.c
 SynchInvalidBaseAddr_SOURCES    = SynchInvalidBaseAddr.c
 SynchInvalidSig_SOURCES         = SynchInvalidSig.c
 SynchMemNull_SOURCES            = SynchMemNull.c
@@ -130,11 +130,11 @@ TESTS +=                         \
          BackStatusNameEmpty     \
          BackStatusPass          \
          BackStatusStatusNull    \
-         CloseInfoNull           \
+         CloseNullError          \
          CloseInvalidSig         \
          CloseMemNull            \
          ClosePass               \
-         CreateBackInfoNull      \
+         CreateBackNullError     \
          CreateBackInvalidSig    \
          CreateBackInvLength     \
          CreateBackMemNull       \
@@ -153,24 +153,24 @@ TESTS +=                         \
          InitNameNull            \
          InitPass                \
          OpenAddrNull            \
-         OpenInfoNull            \
+         OpenNullError           \
          OpenInvalidLength       \
          OpenInvalidSig          \
          OpenMemNull             \
          OpenNameEmpty           \
          OpenPass                \
-         ReadOnlyInfoNull        \
+         ReadOnlyNullError       \
          ReadOnlyInvalidBaseAddr \
          ReadOnlyInvalidSig      \
          ReadOnlyMemNull         \
          ReadOnlyPass            \
          ReadOnlyTryWrite        \
-         ReadWriteInfoNull       \
+         ReadWriteNullError      \
          ReadWriteInvalidSig     \
          ReadWriteInvBaseAddr    \
          ReadWriteMemNull        \
          ReadWritePass           \
-         SynchInfoNull           \
+         SynchNullError          \
          SynchInvalidBaseAddr    \
          SynchInvalidSig         \
          SynchMemNull            \
@@ -188,10 +188,10 @@ XFAIL_TESTS =                         \
               BackStatusMemNull       \
               BackStatusNameEmpty     \
               BackStatusStatusNull    \
-              CloseInfoNull           \
+              CloseNullError          \
               CloseInvalidSig         \
               CloseMemNull            \
-              CreateBackInfoNull      \
+              CreateBackNullError     \
               CreateBackInvalidSig    \
               CreateBackInvLength     \
               CreateBackMemNull       \
@@ -207,21 +207,21 @@ XFAIL_TESTS =                         \
               InitNameEmpty           \
               InitNameNull            \
               OpenAddrNull            \
-              OpenInfoNull            \
+              OpenNullError           \
               OpenInvalidLength       \
               OpenInvalidSig          \
               OpenMemNull             \
               OpenNameEmpty           \
-              ReadOnlyInfoNull        \
+              ReadOnlyNullError       \
               ReadOnlyInvalidBaseAddr \
               ReadOnlyInvalidSig      \
               ReadOnlyMemNull         \
               ReadOnlyTryWrite        \
-              ReadWriteInfoNull       \
+              ReadWriteNullError      \
               ReadWriteInvalidSig     \
               ReadWriteInvBaseAddr    \
               ReadWriteMemNull        \
-              SynchInfoNull           \
+              SynchNullError          \
               SynchInvalidBaseAddr    \
               SynchInvalidSig         \
               SynchMemNull             
