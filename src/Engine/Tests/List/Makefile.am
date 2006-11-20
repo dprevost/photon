@@ -17,130 +17,140 @@ CLEANFILES = *~ core
 # (I could have bundled it all together but the test would take too
 # much clock time/cpu time). 
 
-check_PROGRAMS =                           \
-                 FiniInvSig                \
-                 FiniNullList              \
-                 FiniPass                  \
-                 GetFirstInvSig            \
+check_PROGRAMS =                            \
+                 FiniInvSig                 \
+                 FiniNullList               \
+                 FiniPass                   \
+                 GetFirstInvSig             \
                  GetFirstNullItem           \
                  GetFirstNullList           \
-                 GetFirstPass              \
-                 GetLastInvSig             \
+                 GetFirstPass               \
+                 GetLastInvSig              \
                  GetLastNullItem            \
                  GetLastNullList            \
-                 GetLastPass               \
+                 GetLastPass                \
                  InitNullList               \
-                 InitPass                  \
-                 IsValidInvSig             \
+                 InitPass                   \
+                 IsValidInvSig              \
                  IsValidNullList            \
                  IsValidNullUnknown         \
-                 IsValidPass               \
-                 PeakFirstInvSig           \
+                 IsValidPass                \
+                 PeakFirstInvSig            \
                  PeakFirstNullItem          \
                  PeakFirstNullList          \
-                 PeakFirstPass             \
-                 PeakLastInvSig            \
+                 PeakFirstPass              \
+                 PeakLastInvSig             \
                  PeakLastNullItem           \
                  PeakLastNullList           \
-                 PeakLastPass              \
-                 PeakNextInvSig            \
+                 PeakLastPass               \
+                 PeakNextInvSig             \
                  PeakNextNullCurrent        \
                  PeakNextNullCurrNextOffset \
                  PeakNextNullCurrPrevOffset \
                  PeakNextNullList           \
                  PeakNextNullNext           \
-                 PeakNextPass              \
-                 PeakPreviousInvSig        \
+                 PeakNextPass               \
+                 PeakPreviousInvSig         \
                  PeakPreviousNullCurrent    \
                  PeakPrevNullCurrNextOffset \
                  PeakPrevNullCurrPrevOffset \
                  PeakPreviousNullList       \
                  PeakPreviousNullPrevious   \
-                 PeakPreviousPass          \
-                 PutFirstInvSig            \
+                 PeakPreviousPass           \
+                 PutFirstInvSig             \
                  PutFirstNullList           \
                  PutFirstNullNewItem        \
-                 PutFirstPass              \
-                 PutLastInvSig             \
+                 PutFirstPass               \
+                 PutLastInvSig              \
                  PutLastNullList            \
                  PutLastNullNewItem         \
-                 PutLastPass               \
-                 RemoveInvSig              \
-                 RemoveAbsent         \
+                 PutLastPass                \
+                 RemoveInvSig               \
+                 RemoveAbsent               \
                  RemoveNullItem             \
-                 RemoveNullNextOffset   \
-                 RemoveNullPrevOffset   \
+                 RemoveNullNextOffset       \
+                 RemoveNullPrevOffset       \
                  RemoveNullList             \
-                 RemovePass                \
-                 RemoveWrongItem       \
-                 ResetInvSig               \
+                 RemovePass                 \
+                 RemoveWrongItem            \
+                 ReplaceInvSig              \
+                 ReplaceNullList            \
+                 ReplaceNullNew             \
+                 ReplaceNullOld             \
+                 ReplacePass                \
+                 ResetInvSig                \
                  ResetNullList              \
-                 ResetPass                 \
-                 TestSmall                 \
+                 ResetPass                  \
+                 TestSmall                  \
                  TestBig
 
 LIST_H = ListTestCommon.h 
 
-FiniInvSig_SOURCES                = $(LIST_H) FiniInvSig.c
-FiniNullList_SOURCES              = $(LIST_H) FiniNullList.c
-FiniPass_SOURCES                  = $(LIST_H) FiniPass.c
-GetFirstInvSig_SOURCES            = $(LIST_H) GetFirstInvSig.c
+FiniInvSig_SOURCES                 = $(LIST_H) FiniInvSig.c
+FiniNullList_SOURCES               = $(LIST_H) FiniNullList.c
+FiniPass_SOURCES                   = $(LIST_H) FiniPass.c
+GetFirstInvSig_SOURCES             = $(LIST_H) GetFirstInvSig.c
 GetFirstNullItem_SOURCES           = $(LIST_H) GetFirstNullItem.c
 GetFirstNullList_SOURCES           = $(LIST_H) GetFirstNullList.c
-GetFirstPass_SOURCES              = $(LIST_H) GetFirstPass.c
-GetLastInvSig_SOURCES             = $(LIST_H) GetLastInvSig.c
+GetFirstPass_SOURCES               = $(LIST_H) GetFirstPass.c
+GetLastInvSig_SOURCES              = $(LIST_H) GetLastInvSig.c
 GetLastNullItem_SOURCES            = $(LIST_H) GetLastNullItem.c
 GetLastNullList_SOURCES            = $(LIST_H) GetLastNullList.c
-GetLastPass_SOURCES               = $(LIST_H) GetLastPass.c
+GetLastPass_SOURCES                = $(LIST_H) GetLastPass.c
 InitNullList_SOURCES               = $(LIST_H) InitNullList.c
-InitPass_SOURCES                  = $(LIST_H) InitPass.c
-IsValidInvSig_SOURCES             = $(LIST_H) IsValidInvSig.c
+InitPass_SOURCES                   = $(LIST_H) InitPass.c
+IsValidInvSig_SOURCES              = $(LIST_H) IsValidInvSig.c
 IsValidNullList_SOURCES            = $(LIST_H) IsValidNullList.c
 IsValidNullUnknown_SOURCES         = $(LIST_H) IsValidNullUnknown.c
-IsValidPass_SOURCES               = $(LIST_H) IsValidPass.c
-PeakFirstInvSig_SOURCES           = $(LIST_H) PeakFirstInvSig.c
+IsValidPass_SOURCES                = $(LIST_H) IsValidPass.c
+PeakFirstInvSig_SOURCES            = $(LIST_H) PeakFirstInvSig.c
 PeakFirstNullItem_SOURCES          = $(LIST_H) PeakFirstNullItem.c
 PeakFirstNullList_SOURCES          = $(LIST_H) PeakFirstNullList.c
-PeakFirstPass_SOURCES             = $(LIST_H) PeakFirstPass.c
-PeakLastInvSig_SOURCES            = $(LIST_H) PeakLastInvSig.c
+PeakFirstPass_SOURCES              = $(LIST_H) PeakFirstPass.c
+PeakLastInvSig_SOURCES             = $(LIST_H) PeakLastInvSig.c
 PeakLastNullItem_SOURCES           = $(LIST_H) PeakLastNullItem.c
 PeakLastNullList_SOURCES           = $(LIST_H) PeakLastNullList.c
-PeakLastPass_SOURCES              = $(LIST_H) PeakLastPass.c
-PeakNextInvSig_SOURCES            = $(LIST_H) PeakNextInvSig.c
+PeakLastPass_SOURCES               = $(LIST_H) PeakLastPass.c
+PeakNextInvSig_SOURCES             = $(LIST_H) PeakNextInvSig.c
 PeakNextNullCurrent_SOURCES        = $(LIST_H) PeakNextNullCurrent.c
 PeakNextNullCurrNextOffset_SOURCES = $(LIST_H) PeakNextNullCurrNextOffset.c
 PeakNextNullCurrPrevOffset_SOURCES = $(LIST_H) PeakNextNullCurrPrevOffset.c
 PeakNextNullList_SOURCES           = $(LIST_H) PeakNextNullList.c
 PeakNextNullNext_SOURCES           = $(LIST_H) PeakNextNullNext.c
-PeakNextPass_SOURCES              = $(LIST_H) PeakNextPass.c
-PeakPreviousInvSig_SOURCES        = $(LIST_H) PeakPreviousInvSig.c
+PeakNextPass_SOURCES               = $(LIST_H) PeakNextPass.c
+PeakPreviousInvSig_SOURCES         = $(LIST_H) PeakPreviousInvSig.c
 PeakPreviousNullCurrent_SOURCES    = $(LIST_H) PeakPreviousNullCurrent.c
 PeakPrevNullCurrNextOffset_SOURCES = $(LIST_H) PeakPrevNullCurrNextOffset.c
 PeakPrevNullCurrPrevOffset_SOURCES = $(LIST_H) PeakPrevNullCurrPrevOffset.c
 PeakPreviousNullList_SOURCES       = $(LIST_H) PeakPreviousNullList.c
 PeakPreviousNullPrevious_SOURCES   = $(LIST_H) PeakPreviousNullPrevious.c
-PeakPreviousPass_SOURCES          = $(LIST_H) PeakPreviousPass.c
-PutFirstInvSig_SOURCES            = $(LIST_H) PutFirstInvSig.c
+PeakPreviousPass_SOURCES           = $(LIST_H) PeakPreviousPass.c
+PutFirstInvSig_SOURCES             = $(LIST_H) PutFirstInvSig.c
 PutFirstNullList_SOURCES           = $(LIST_H) PutFirstNullList.c
 PutFirstNullNewItem_SOURCES        = $(LIST_H) PutFirstNullNewItem.c
-PutFirstPass_SOURCES              = $(LIST_H) PutFirstPass.c
-PutLastInvSig_SOURCES             = $(LIST_H) PutLastInvSig.c
+PutFirstPass_SOURCES               = $(LIST_H) PutFirstPass.c
+PutLastInvSig_SOURCES              = $(LIST_H) PutLastInvSig.c
 PutLastNullList_SOURCES            = $(LIST_H) PutLastNullList.c
 PutLastNullNewItem_SOURCES         = $(LIST_H) PutLastNullNewItem.c
-PutLastPass_SOURCES               = $(LIST_H) PutLastPass.c
-RemoveInvSig_SOURCES              = $(LIST_H) RemoveInvSig.c
+PutLastPass_SOURCES                = $(LIST_H) PutLastPass.c
+RemoveInvSig_SOURCES               = $(LIST_H) RemoveInvSig.c
 RemoveNullItem_SOURCES             = $(LIST_H) RemoveNullItem.c
-RemoveNullNextOffset_SOURCES   = $(LIST_H) RemoveNullNextOffset.c
-RemoveNullPrevOffset_SOURCES   = $(LIST_H) RemoveNullPrevOffset.c
+RemoveNullNextOffset_SOURCES       = $(LIST_H) RemoveNullNextOffset.c
+RemoveNullPrevOffset_SOURCES       = $(LIST_H) RemoveNullPrevOffset.c
 RemoveNullList_SOURCES             = $(LIST_H) RemoveNullList.c
-RemoveAbsent_SOURCES             = $(LIST_H) RemoveAbsent.c
-RemoveWrongItem_SOURCES       = $(LIST_H) RemoveWrongItem.c
-RemovePass_SOURCES                = $(LIST_H) RemovePass.c
-ResetInvSig_SOURCES               = $(LIST_H) ResetInvSig.c
+RemoveAbsent_SOURCES               = $(LIST_H) RemoveAbsent.c
+RemoveWrongItem_SOURCES            = $(LIST_H) RemoveWrongItem.c
+RemovePass_SOURCES                 = $(LIST_H) RemovePass.c
+ReplaceInvSig_SOURCES              = $(LIST_H) ReplaceInvSig.c
+ReplaceNullList_SOURCES            = $(LIST_H) ReplaceNullList.c
+ReplaceNullNew_SOURCES             = $(LIST_H) ReplaceNullNew.c
+ReplaceNullOld_SOURCES             = $(LIST_H) ReplaceNullOld.c
+ReplacePass_SOURCES                = $(LIST_H) ReplacePass.c
+ResetInvSig_SOURCES                = $(LIST_H) ResetInvSig.c
 ResetNullList_SOURCES              = $(LIST_H) ResetNullList.c
-ResetPass_SOURCES                 = $(LIST_H) ResetPass.c
-TestSmall_SOURCES                 = $(LIST_H) TestSmall.c
-TestBig_SOURCES                   = $(LIST_H) TestBig.c
+ResetPass_SOURCES                  = $(LIST_H) ResetPass.c
+TestSmall_SOURCES                  = $(LIST_H) TestSmall.c
+TestBig_SOURCES                    = $(LIST_H) TestBig.c
 
 EXTRA_DIST = $(LIST_H)
 
@@ -149,62 +159,67 @@ TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTH
 TESTS = 
 
 if COND_USE_DBC
-TESTS +=                           \
-         FiniInvSig                \
-         FiniNullList              \
-         FiniPass                  \
-         GetFirstInvSig            \
+TESTS +=                            \
+         FiniInvSig                 \
+         FiniNullList               \
+         FiniPass                   \
+         GetFirstInvSig             \
          GetFirstNullItem           \
          GetFirstNullList           \
-         GetFirstPass              \
-         GetLastInvSig             \
+         GetFirstPass               \
+         GetLastInvSig              \
          GetLastNullItem            \
          GetLastNullList            \
-         GetLastPass               \
+         GetLastPass                \
          InitNullList               \
-         InitPass                  \
-         IsValidInvSig             \
+         InitPass                   \
+         IsValidInvSig              \
          IsValidNullList            \
          IsValidNullUnknown         \
-         IsValidPass               \
-         PeakFirstInvSig           \
+         IsValidPass                \
+         PeakFirstInvSig            \
          PeakFirstNullItem          \
          PeakFirstNullList          \
-         PeakFirstPass             \
-         PeakLastInvSig            \
+         PeakFirstPass              \
+         PeakLastInvSig             \
          PeakLastNullItem           \
          PeakLastNullList           \
-         PeakLastPass              \
-         PeakNextInvSig            \
+         PeakLastPass               \
+         PeakNextInvSig             \
          PeakNextNullCurrent        \
          PeakNextNullCurrNextOffset \
          PeakNextNullCurrPrevOffset \
          PeakNextNullList           \
          PeakNextNullNext           \
-         PeakNextPass              \
-         PeakPreviousInvSig        \
+         PeakNextPass               \
+         PeakPreviousInvSig         \
          PeakPreviousNullCurrent    \
          PeakPrevNullCurrNextOffset \
          PeakPrevNullCurrPrevOffset \
          PeakPreviousNullList       \
          PeakPreviousNullPrevious   \
-         PeakPreviousPass          \
-         PutFirstInvSig            \
+         PeakPreviousPass           \
+         PutFirstInvSig             \
          PutFirstNullList           \
          PutFirstNullNewItem        \
-         PutFirstPass              \
-         PutLastInvSig             \
+         PutFirstPass               \
+         PutLastInvSig              \
          PutLastNullList            \
          PutLastNullNewItem         \
-         PutLastPass               \
-         RemoveInvSig              \
+         PutLastPass                \
+         RemoveInvSig               \
          RemoveNullItem             \
-         RemoveNullNextOffset   \
-         RemoveNullPrevOffset   \
+         RemoveNullNextOffset       \
+         RemoveNullPrevOffset       \
          RemoveNullList             \
-         RemoveAbsent         \
-         RemovePass                \
-         ResetInvSig               \
+         RemoveAbsent               \
+         RemovePass                 \
+         ReplaceInvSig              \
+         ReplaceNullList            \
+         ReplaceNullNew             \
+         ReplaceNullOld             \
+         ReplacePass                \
+         ResetInvSig                \
          ResetNullList              \
          ResetPass 
 endif
@@ -218,51 +233,55 @@ TESTS +=           \
          TestSmall \
          TestBig
 
-XFAIL_TESTS =                           \
-              FiniInvSig                \
-              FiniNullList              \
-              GetFirstInvSig            \
+XFAIL_TESTS =                            \
+              FiniInvSig                 \
+              FiniNullList               \
+              GetFirstInvSig             \
               GetFirstNullItem           \
               GetFirstNullList           \
-              GetLastInvSig             \
+              GetLastInvSig              \
               GetLastNullItem            \
               GetLastNullList            \
               InitNullList               \
-              IsValidInvSig             \
+              IsValidInvSig              \
               IsValidNullList            \
               IsValidNullUnknown         \
-              PeakFirstInvSig           \
+              PeakFirstInvSig            \
               PeakFirstNullItem          \
               PeakFirstNullList          \
-              PeakLastInvSig            \
+              PeakLastInvSig             \
               PeakLastNullItem           \
               PeakLastNullList           \
-              PeakNextInvSig            \
+              PeakNextInvSig             \
               PeakNextNullCurrent        \
               PeakNextNullCurrNextOffset \
               PeakNextNullCurrPrevOffset \
               PeakNextNullList           \
               PeakNextNullNext           \
-              PeakPreviousInvSig        \
+              PeakPreviousInvSig         \
               PeakPreviousNullCurrent    \
               PeakPrevNullCurrNextOffset \
               PeakPrevNullCurrPrevOffset \
               PeakPreviousNullList       \
               PeakPreviousNullPrevious   \
-              PutFirstInvSig            \
+              PutFirstInvSig             \
               PutFirstNullList           \
               PutFirstNullNewItem        \
-              PutLastInvSig             \
+              PutLastInvSig              \
               PutLastNullList            \
               PutLastNullNewItem         \
-              RemoveInvSig              \
+              RemoveInvSig               \
               RemoveNullItem             \
-              RemoveNullNextOffset   \
-              RemoveNullPrevOffset   \
+              RemoveNullNextOffset       \
+              RemoveNullPrevOffset       \
               RemoveNullList             \
-              RemoveAbsent         \
-              RemoveWrongItem       \
-              ResetInvSig               \
+              RemoveAbsent               \
+              RemoveWrongItem            \
+              ReplaceInvSig              \
+              ReplaceNullList            \
+              ReplaceNullNew             \
+              ReplaceNullOld             \
+              ResetInvSig                \
               ResetNullList 
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \

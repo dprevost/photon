@@ -392,9 +392,6 @@ vdseLinkedListReplaceItem( vdseLinkedList* pList,
    pNewItem->nextOffset     = pOldItem->nextOffset;
    pNewItem->previousOffset = pOldItem->previousOffset;
 
-   pNewItem->previousOffset   = pList->head.previousOffset;   
-   pList->head.previousOffset = pList->currBuffOffset;
- 
    GET_PTR( pOldItem->nextOffset, vdseLinkNode )->previousOffset = 
       pList->currBuffOffset;
 
