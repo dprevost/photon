@@ -10,22 +10,66 @@
 
 CLEANFILES = *~ core
 
-check_PROGRAMS = 
+check_PROGRAMS =                  \
+                 InitBigVDS       \
+                 InitNullAddress  \
+                 InitNullAlloc    \
+                 InitNullError    \
+                 InitPass         \
+                 InitSmallLength  \
+                 IsPageFreeTest   \
+                 MallocNullAlloc  \
+                 MallocNullError  \
+                 MallocPass       \
+                 MallocZeroLength
+
+COMMON_ENGINE = EngineTestCommon.h
+
+InitBigVDS_SOURCES         = $(COMMON_ENGINE) InitBigVDS.c
+InitNullAddress_SOURCES    = $(COMMON_ENGINE) InitNullAddress.c
+InitNullAlloc_SOURCES      = $(COMMON_ENGINE) InitNullAlloc.c
+InitNullError_SOURCES      = $(COMMON_ENGINE) InitNullError.c
+InitPass_SOURCES           = $(COMMON_ENGINE) InitPass.c
+InitSmallLength_SOURCES    = $(COMMON_ENGINE) InitSmallLength.c
+IsPageFreeTest_SOURCES     = $(COMMON_ENGINE) IsPageFreeTest.c
+MallocNullAlloc_SOURCES    = $(COMMON_ENGINE) MallocNullAlloc.c
+MallocNullError_SOURCES    = $(COMMON_ENGINE) MallocNullError.c
+MallocPass_SOURCES         = $(COMMON_ENGINE) MallocPass.c
+MallocZeroLength_SOURCES   = $(COMMON_ENGINE) MallocZeroLength.c
 
 EXTRA_DIST =         
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
 
-TESTS =                     
+TESTS =                  \
+        InitBigVDS       \
+        InitNullAddress  \
+        InitNullAlloc    \
+        InitNullError    \
+        InitPass         \
+        InitSmallLength  \
+        IsPageFreeTest   \
+        MallocNullAlloc  \
+        MallocNullError  \
+        MallocPass       \
+        MallocZeroLength
 
-XFAIL_TESTS =                     
+XFAIL_TESTS =                  \
+              InitNullAddress  \
+              InitNullAlloc    \
+              InitNullError    \
+              InitSmallLength  \
+              MallocNullAlloc  \
+              MallocNullError  \
+              MallocZeroLength
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la
 
-AM_CPPFLAGS = -I$(top_srcdir)/src/Engine \
-              -I$(top_srcdir)/src/Common \
+AM_CPPFLAGS = -I$(top_srcdir)/src/Engine       \
+              -I$(top_srcdir)/src/Engine/Tests \
+              -I$(top_srcdir)/src/Common       \
               -I$(top_srcdir)/src/include
 
 if COND_USE_ASSERT

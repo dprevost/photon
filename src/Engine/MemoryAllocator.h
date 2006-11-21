@@ -183,9 +183,18 @@ void * vdseMalloc( vdseMemAlloc*     pAlloc,
                    vdscErrorHandler* pError );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-/* Not done */
+
+/** Free ptr, the memory is returned to the pool. */
+int vdseFree( vdseMemAlloc*     pAlloc,
+              void *            ptr, 
+              size_t            numPages,
+              vdscErrorHandler* pError );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if 0
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+/* Not done */
 
 /** The malloc function of the bget allocator. */
 void* vdseMemAllocbget ( vdseMemAlloc*    pAlloc,

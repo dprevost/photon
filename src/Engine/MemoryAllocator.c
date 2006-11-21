@@ -92,16 +92,20 @@ bool vdseIsPageFree( vdseMemAlloc*  pAlloc,
 {
    ptrdiff_t offset = ptr - g_pBaseAddr;
    size_t byte, bit;
+   size_t pageOffset;
    
-   if ( offset < 0 || offset > pAlloc->totalLength )
+   if ( offset < 0 || offset >= pAlloc->totalLength )
       return false;
+
+   pageOffset = offset / PAGESIZE;
    
-   byte = offset / PAGESIZE >> 3; // / 8;
-//   bit = offset % 8;
-   bit = offset & 7;
-//   pAlloc->bitmap[byte] ;
-//   ptrdiff_t
-   
+   byte = pageOffset >> 3; /* Equivalent to divide by  8  */
+   /*
+    * We use the highest bit for the lower page so that the bitmap
+    * is "ordered".
+    */
+   bit = 7 - (pageOffset & 7);
+
    return ( (pAlloc->bitmap[byte] & (unsigned char)(1 << bit)) == 0 );
 }
 
@@ -114,22 +118,27 @@ void vdseSetPagesAllocated( vdseMemAlloc*  pAlloc,
 {
    ptrdiff_t offset = ptr - g_pBaseAddr;
    size_t byte, bit, i;
+   size_t pageOffset;
    
-   byte = offset / PAGESIZE >> 3; // / 8;
-//   bit = offset % 8;
-   bit = offset & 7;
-//   pAlloc->bitmap[byte] ;
-//   ptrdiff_t
+   pageOffset = offset / PAGESIZE;
+   
+   byte = pageOffset >> 3; /* Equivalent to divide by  8  */
+   /*
+    * We use the highest bit for the lower page so that the bitmap
+    * is "ordered".
+    */
+   bit = 7 - (pageOffset & 7);
+//   fprintf( stderr, "bit = %d %d\n", bit, offset/PAGESIZE );
    for ( i = 0; i < numPages; ++i )
    {
       /* Setting the bit to one */
       pAlloc->bitmap[byte] |= (unsigned char)(1 << bit);
-      bit++;
-      if ( bit == 8 )
+      if ( bit == 0 )
       {
-         bit = 0;
+         bit = 8;
          byte++;
       }
+      bit--;
    }
 }
 
@@ -142,22 +151,30 @@ void vdseSetPagesFree( vdseMemAlloc*  pAlloc,
 {
    ptrdiff_t offset = ptr - g_pBaseAddr;
    size_t byte, bit, i;
+   size_t pageOffset;
    
-   byte = offset / PAGESIZE >> 3; // / 8;
-//   bit = offset % 8;
-   bit = offset & 7;
-//   pAlloc->bitmap[byte] ;
-//   ptrdiff_t
+   pageOffset = offset / PAGESIZE;
+   
+   byte = pageOffset >> 3; /* Equivalent to divide by  8  */
+   /*
+    * We use the highest bit for the lower page so that the bitmap
+    * is "ordered".
+    */
+   bit = 7 - (pageOffset & 7);
+   
+//   fprintf( stderr, "bit = %d %d\n", bit, offset/PAGESIZE );
    for ( i = 0; i < numPages; ++i )
    {
       /* Setting the bit to zero */
+//      fprintf( stderr, "1: %d %d %d %x\n", offset, byte, bit, pAlloc->bitmap[byte] );
       pAlloc->bitmap[byte] &= (unsigned char)(~(1 << bit));
-      bit++;
-      if ( bit == 8 )
+//      fprintf( stderr, "1: %d %d %d %x\n", offset, byte, bit, pAlloc->bitmap[byte] );
+      if ( bit == 0 )
       {
-         bit = 0;
+         bit = 8;
          byte++;
       }
+      bit--;
    }
 }
 
@@ -414,7 +431,7 @@ void * vdseMalloc( vdseMemAlloc*     pAlloc,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Free ptr, the memory is returned to the pool. */
-static inline
+
 int vdseFree( vdseMemAlloc*     pAlloc,
               void *            ptr, 
               size_t            numPages,
@@ -463,6 +480,8 @@ int vdseFree( vdseMemAlloc*     pAlloc,
       p = (unsigned char*)ptr;
       ((vdseFreeBufferNode*)p)->numPages = numPages;
       ((vdseFreeBufferNode*)p)->initialize = VDSE_FREENODE_SIGNATURE;
+      vdseLinkedListPutLast( &pAlloc->freeList, 
+                             &((vdseFreeBufferNode*)p)->node );
    }
 
    /* 
@@ -474,9 +493,8 @@ int vdseFree( vdseMemAlloc*     pAlloc,
    if ( otherBufferisFree )
    {
       ((vdseFreeBufferNode*)p)->numPages += otherNode->numPages;
-      vdseLinkedListReplaceItem( &pAlloc->freeList, 
-                                 &otherNode->node, 
-                                 &((vdseFreeBufferNode*)p)->node );
+      vdseLinkedListRemoveItem( &pAlloc->freeList, 
+                                &otherNode->node );
       memset( otherNode, 0, sizeof(vdseFreeBufferNode) );
    }
 
@@ -494,7 +512,7 @@ int vdseFree( vdseMemAlloc*     pAlloc,
    if ( ((vdseFreeBufferNode*)p)->numPages > 1 )
    {
       /* Warning - we reuse ptr here */
-       ptr = p + (numPages-1) * PAGESIZE; 
+       ptr = p + (((vdseFreeBufferNode*)p)->numPages-1) * PAGESIZE; 
        *((ptrdiff_t *)ptr) = SET_OFFSET(p);
    }
     

@@ -516,13 +516,13 @@ vdscErrMsgHandle vdscAddErrorMsgHandler( const char*         name,
    length = offsetof(vdscErrorDefinition,name) + strlen( name ) + 1;
          
    pDefinition = malloc( length );
-   if ( pDefinition != NULL )
-   {
-      pDefinition->initialized = VDSC_ERROR_DEFINITION_SIGNATURE;
-      pDefinition->next = NULL;
-      strcpy( pDefinition->name, name );
-      pDefinition->handler = handler;
-   }
+   if ( pDefinition == NULL )
+      return handle;
+   
+   pDefinition->initialized = VDSC_ERROR_DEFINITION_SIGNATURE;
+   pDefinition->next = NULL;
+   strcpy( pDefinition->name, name );
+   pDefinition->handler = handler;
 
    i = 1;
    nextAvailable = g_definition;
