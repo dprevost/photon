@@ -162,8 +162,7 @@ typedef struct vdseMemAlloc
 
 /** 
  * Initialize the vdseMemAlloc struct. The second argument is the start of
- * the shared memory itself, the third indicates where the memory pool 
- * starts (the start of the shared memory + the VDS header). 
+ * the shared memory itself. 
  *
  * This function should only be called by the watchdog (it might move there
  * eventually). Reason: when a program access the VDS, the allocator is 
@@ -190,85 +189,14 @@ int vdseFree( vdseMemAlloc*     pAlloc,
               size_t            numPages,
               vdscErrorHandler* pError );
 
+
+void vdseMemAllocClose( vdseMemAlloc*     pAlloc,
+                        vdscErrorHandler* pError );
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if 0
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-/* Not done */
-
-/** The malloc function of the bget allocator. */
-void* vdseMemAllocbget ( vdseMemAlloc*    pAlloc,
-                         bufsize_T        requestedSize,
-                         vdscErrorHandler* pError );
-
-/** The init function of the bget allocator. */
-void vdseMemAllocbpool( vdseMemAlloc*    pAlloc,
-                        unsigned char*   buf, 
-                        bufsize_T        len,
-                        vdscErrorHandler* pError );
-
-/** The free function of the bget allocator. */
-void  vdseMemAllocbrel ( vdseMemAlloc*    pAlloc,
-                         void*            ptr,
-                         vdscErrorHandler* pError );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/** Free ptr, the memory is returned to the pool. */
-static inline
-void vdseFree( vdseMemAlloc*    pAlloc,
-               void *           ptr, 
-               vdscErrorHandler* pError )
-{
-   int errcode = 0;
-
-   VDS_ASSERT( pError != NULL );
-   VDS_PRE_CONDITION( pAlloc != NULL );
-   VDS_PRE_CONDITION( ptr    != NULL );
-
-   errcode = vdscTryAcquireProcessLock( &pAlloc->lock, getpid(), LONG_LOCK_TIMEOUT );
-   if ( errcode == 0 )
-   {
-      vdseMemAllocbrel( pAlloc, ptr, pError );
-      
-      vdscReleaseProcessLock( &pAlloc->lock );
-   }
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/** Allocate nbytes from our pool. The memory is not initialized. */
-static inline
-void *vdseMalloc( vdseMemAlloc*    pAlloc,
-                  size_t           numBytes, 
-                  vdscErrorHandler* pError )
-{
-   void* ptr = 0;
-   int errcode = 0;
-
-   VDS_PRE_CONDITION( pError != NULL );
-   VDS_PRE_CONDITION( pAlloc != NULL );
-   VDS_PRE_CONDITION( numBytes > 0 );
-
-   errcode = vdscTryAcquireProcessLock( &pAlloc->lock, 
-//                                 pError->pid, 
-                                 getpid(),
-                                 LONG_LOCK_TIMEOUT );
-   if ( errcode == 0 )
-   {
-      ptr = vdseMemAllocbget( pAlloc, numBytes, pError );
-
-      vdscReleaseProcessLock( &pAlloc->lock );
-   }
-
-   return ptr;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/** Close/end the use of the memory allocator.  */
-void vdseMemAllocClose( vdseMemAlloc*    pAlloc,
-                        vdscErrorHandler* pError );
 
 /** Free all the floating buffers, if any */
 void

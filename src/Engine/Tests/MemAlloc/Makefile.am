@@ -11,6 +11,14 @@
 CLEANFILES = *~ core
 
 check_PROGRAMS =                  \
+                 CloseNullAlloc   \
+                 CloseNullError   \
+                 ClosePass        \
+                 FreeNullAlloc    \
+                 FreeNullError    \
+                 FreeNullPtr      \
+                 FreePass         \
+                 FreeZeroLength   \
                  InitBigVDS       \
                  InitNullAddress  \
                  InitNullAlloc    \
@@ -25,6 +33,14 @@ check_PROGRAMS =                  \
 
 COMMON_ENGINE = EngineTestCommon.h
 
+CloseNullAlloc_SOURCES     = $(COMMON_ENGINE) CloseNullAlloc.c
+CloseNullError_SOURCES     = $(COMMON_ENGINE) CloseNullError.c
+ClosePass_SOURCES          = $(COMMON_ENGINE) ClosePass.c
+FreeNullAlloc_SOURCES      = $(COMMON_ENGINE) FreeNullAlloc.c
+FreeNullError_SOURCES      = $(COMMON_ENGINE) FreeNullError.c
+FreeNullPtr_SOURCES        = $(COMMON_ENGINE) FreeNullPtr.c
+FreePass_SOURCES           = $(COMMON_ENGINE) FreePass.c
+FreeZeroLength_SOURCES     = $(COMMON_ENGINE) FreeZeroLength.c
 InitBigVDS_SOURCES         = $(COMMON_ENGINE) InitBigVDS.c
 InitNullAddress_SOURCES    = $(COMMON_ENGINE) InitNullAddress.c
 InitNullAlloc_SOURCES      = $(COMMON_ENGINE) InitNullAlloc.c
@@ -41,8 +57,15 @@ EXTRA_DIST =
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
-
 TESTS =                  \
+        CloseNullAlloc   \
+        CloseNullError   \
+        ClosePass        \
+        FreeNullAlloc    \
+        FreeNullError    \
+        FreeNullPtr      \
+        FreePass         \
+        FreeZeroLength   \
         InitBigVDS       \
         InitNullAddress  \
         InitNullAlloc    \
@@ -56,6 +79,12 @@ TESTS =                  \
         MallocZeroLength
 
 XFAIL_TESTS =                  \
+              CloseNullAlloc   \
+              CloseNullError   \
+              FreeNullAlloc    \
+              FreeNullError    \
+              FreeNullPtr      \
+              FreeZeroLength   \
               InitNullAddress  \
               InitNullAlloc    \
               InitNullError    \

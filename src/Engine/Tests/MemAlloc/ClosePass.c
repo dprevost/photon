@@ -24,8 +24,6 @@ int main()
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr;
    size_t allocatedLength = PAGESIZE*10;
-   unsigned char* newBuff[8];
-   int i;
    
    initTest( true );
    vdscInitErrorHandler( &error );
@@ -35,30 +33,8 @@ int main()
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &error );
-   
-   newBuff[0] = vdseMalloc( pAlloc, 2, &error );
-   if ( newBuff[0] == NULL ) return 1;
-   /* 6 pages remaining */
-   newBuff[1] = vdseMalloc( pAlloc, 6, &error );
-   if ( newBuff[1] == NULL ) return 1;
-   /* No pages remaining */
-   newBuff[2] = vdseMalloc( pAlloc, 6, &error );
-   if ( newBuff[2] != NULL ) return 1;
-   
-   vdseFree( pAlloc, newBuff[0], 2, &error );
-   vdseFree( pAlloc, newBuff[1], 6, &error );
-   /* 8 pages remaining */
-   
-   for ( i = 0; i < 8; ++i )
-   {
-      newBuff[i] = vdseMalloc( pAlloc, 1, &error );
-   }
-   for ( i = 0; i < 8; i += 2 )
-      vdseFree( pAlloc, newBuff[i], 1, &error );
-   
-   /* 4 pages remaining - fragmented. This new alloc should fail! */
-   newBuff[0] = vdseMalloc( pAlloc, 2, &error );
-   if ( newBuff[0] != NULL ) return 1;
+
+   vdseMemAllocClose( pAlloc, &error );
    
    return 0;
 }

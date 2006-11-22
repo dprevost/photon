@@ -61,15 +61,6 @@ unsigned char* g_pBaseAddr = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#if 0
-#  define FREE_WIPE    1         /* Wipe free buffers to a guaranteed
-                                    pattern of garbage to trip up
-                                    miscreants who attempt to use
-                                    pointers into released buffers. */
-#endif
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 #define VDSE_FREENODE_SIGNATURE 0x1fe76914
 
 typedef struct vdseFreeBufferNode
@@ -128,7 +119,7 @@ void vdseSetPagesAllocated( vdseMemAlloc*  pAlloc,
     * is "ordered".
     */
    bit = 7 - (pageOffset & 7);
-//   fprintf( stderr, "bit = %d %d\n", bit, offset/PAGESIZE );
+
    for ( i = 0; i < numPages; ++i )
    {
       /* Setting the bit to one */
@@ -162,13 +153,10 @@ void vdseSetPagesFree( vdseMemAlloc*  pAlloc,
     */
    bit = 7 - (pageOffset & 7);
    
-//   fprintf( stderr, "bit = %d %d\n", bit, offset/PAGESIZE );
    for ( i = 0; i < numPages; ++i )
    {
       /* Setting the bit to zero */
-//      fprintf( stderr, "1: %d %d %d %x\n", offset, byte, bit, pAlloc->bitmap[byte] );
       pAlloc->bitmap[byte] &= (unsigned char)(~(1 << bit));
-//      fprintf( stderr, "1: %d %d %d %x\n", offset, byte, bit, pAlloc->bitmap[byte] );
       if ( bit == 0 )
       {
          bit = 8;
@@ -197,7 +185,7 @@ vdseMemAllocInit( vdseMemAlloc*     pAlloc,
    VDS_PRE_CONDITION( length >= 3*PAGESIZE );
    VDS_INV_CONDITION( g_pBaseAddr != NULL );
 
-   /* We truncate it to amultiple of PAGESIZE */
+   /* We truncate it to a multiple of PAGESIZE */
    length = length / PAGESIZE * PAGESIZE;
    pAlloc->bitmapLength = (length/PAGESIZE - 1) / 8 + 1;
    
@@ -264,6 +252,7 @@ vdseFreeBufferNode* FindBuffer( vdseMemAlloc*     pAlloc,
                                 vdscErrorHandler* pError )
 {
    size_t i;
+   /* size_t is unsigned. This is check by autoconf AC_TYPE_SIZE_T */
    size_t diff = (size_t) -1;
    size_t numPages;
    vdseLinkNode *oldNode = NULL;
@@ -271,8 +260,6 @@ vdseFreeBufferNode* FindBuffer( vdseMemAlloc*     pAlloc,
    vdseLinkNode *bestNode = NULL;
    enum ListErrors errcode;
 
-   /** \todo Move the test for unsigned size_t to autoconf */ 
-   VDS_INV_CONDITION( (size_t)-1 > (size_t) 0 );
    /* 
     * A bit tricky. To avoid fragmentation, we search for the best fitted
     * buffer in the first N buffers. By choosing a relative small N we 
@@ -446,6 +433,7 @@ int vdseFree( vdseMemAlloc*     pAlloc,
    VDS_PRE_CONDITION( pError != NULL );
    VDS_PRE_CONDITION( pAlloc != NULL );
    VDS_PRE_CONDITION( ptr    != NULL );
+   VDS_PRE_CONDITION( numPages > 0 );
 
    errcode = vdscTryAcquireProcessLock( &pAlloc->memObj.lock, getpid(), LONG_LOCK_TIMEOUT );
          if ( errcode != VDS_OK )
@@ -522,32 +510,26 @@ int vdseFree( vdseMemAlloc*     pAlloc,
 }
   
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-                   
-#if 0
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void vdseMemAllocClose( vdseMemAlloc*    pAlloc,
+void vdseMemAllocClose( vdseMemAlloc*     pAlloc,
                         vdscErrorHandler* pError )
 {
-   VDS_ASSERT( pError != NULL );
-   VDS_ASSERT_NORETURN( pAlloc != NULL, pError );
+   VDS_PRE_CONDITION( pError != NULL );
+   VDS_PRE_CONDITION( pAlloc != NULL );
 
-   pAlloc->totalAlloc    = 0;
-   pAlloc->numMalloc     = 0;
-   pAlloc->numFree       = 0;
-   pAlloc->poolLength    = 0;
-   pAlloc->poolOffset    = NULL_OFFSET;
-   pAlloc->sizeQuant     = 8;
-   
-   pAlloc->freeList.bh.prevfree = 0;
-   pAlloc->freeList.bh.bsize    = 0;
+   pAlloc->totalAllocPages = 0;
+   pAlloc->numMallocCalls  = 0;
+   pAlloc->numFreeCalls    = 0;
+   pAlloc->totalLength     = 0;
+   pAlloc-> bitmapLength   = 0;
+//   pAlloc->freeList.bh.prevfree = 0;
+//   pAlloc->freeList.bh.bsize    = 0;
 
-   g_pBaseAddr = NULL;
+//   g_pBaseAddr = NULL;
 
-   pAlloc->freeList.ql.flink = NULL_OFFSET;
-   pAlloc->freeList.ql.blink = NULL_OFFSET;
 }
+
+#if 0
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
