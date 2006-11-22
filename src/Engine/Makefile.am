@@ -16,8 +16,6 @@ noinst_LTLIBRARIES   = libEngine.la
 
 libEngine_la_SOURCES =                   \
                        Engine.h          \
-                       HashMap.c         \
-                       HashMap.h         \
                        LinkedList.c      \
                        LinkedList.h      \
                        LinkedList.inl    \
