@@ -16,11 +16,15 @@ noinst_LTLIBRARIES   = libEngine.la
 
 libEngine_la_SOURCES =                   \
                        Engine.h          \
+                       HashMap.c         \
+                       HashMap.h         \
                        LinkedList.c      \
                        LinkedList.h      \
                        LinkedList.inl    \
                        LinkNode.h        \
                        ListErrors.h      \
+                       LogFile.c         \
+                       LogFile.h         \
                        MemoryAllocator.c \
                        MemoryAllocator.h \
                        MemoryObject.h    \

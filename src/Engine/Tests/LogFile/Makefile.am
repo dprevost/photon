@@ -13,30 +13,30 @@ CLEANFILES = *~ core *.tlog
 check_PROGRAMS =                 \
                  CloseNoInit     \
                  CloseNULLLog    \
-                 CloseNULLInfo   \
+                 CloseNULLError  \
                  ClosePass       \
                  InitNULLDir     \
-                 InitNULLInfo    \
+                 InitNULLError   \
                  InitNULLLog     \
                  InitNULLSession \
                  InitPass        \
                  LogNoInit       \
-                 LogNULLInfo     \
+                 LogNULLError    \
                  LogNULLLog      \
                  LogPass         \
                  LogFileTest
 
 CloseNoInit_SOURCES     = CloseNoInit.c
 CloseNULLLog_SOURCES    = CloseNULLLog.c
-CloseNULLInfo_SOURCES   = CloseNULLInfo.c
+CloseNULLError_SOURCES  = CloseNULLError.c
 ClosePass_SOURCES       = ClosePass.c
 InitNULLDir_SOURCES     = InitNULLDir.c
-InitNULLInfo_SOURCES    = InitNULLInfo.c
+InitNULLError_SOURCES   = InitNULLError.c
 InitNULLLog_SOURCES     = InitNULLLog.c
 InitNULLSession_SOURCES = InitNULLSession.c
 InitPass_SOURCES        = InitPass.c
 LogNoInit_SOURCES       = LogNoInit.c
-LogNULLInfo_SOURCES     = LogNULLInfo.c
+LogNULLError_SOURCES    = LogNULLError.c
 LogNULLLog_SOURCES      = LogNULLLog.c
 LogPass_SOURCES         = LogPass.c
 LogFileTest_SOURCES     = LogFileTest.c
@@ -45,20 +45,18 @@ EXTRA_DIST =
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
-TESTS1 = Macros
-
 TESTS =                 \
         CloseNoInit     \
         CloseNULLLog    \
-        CloseNULLInfo   \
+        CloseNULLError  \
         ClosePass       \
         InitNULLDir     \
-        InitNULLInfo    \
+        InitNULLError   \
         InitNULLLog     \
         InitNULLSession \
         InitPass        \
         LogNoInit       \
-        LogNULLInfo     \
+        LogNULLError    \
         LogNULLLog      \
         LogPass         \
         LogFileTest
@@ -66,13 +64,13 @@ TESTS =                 \
 XFAIL_TESTS =                 \
               CloseNoInit     \
               CloseNULLLog    \
-              CloseNULLInfo   \
+              CloseNULLError  \
               InitNULLDir     \
-              InitNULLInfo    \
+              InitNULLError   \
               InitNULLLog     \
               InitNULLSession \
               LogNoInit       \
-              LogNULLInfo     \
+              LogNULLError    \
               LogNULLLog      
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
@@ -95,7 +93,4 @@ endif
 if COND_USE_EXTREME_DBC
    AM_CPPFLAGS += -DUSE_EXTREME_DBC
 endif
-
-distclean-local:
-	-rm -rf $(testsubdir)
 
