@@ -60,9 +60,9 @@ int main()
    /* Allocate all the pages, one by one. */
    for ( i = 0; i < 8*PAGESIZE-3; ++i )
    {
-      buffer[i] = vdseMalloc( pAlloc, 1, &error );
+      buffer[i] = vdseMallocPages( pAlloc, 1, &error );
    }
-   buffer[8*PAGESIZE-3] = vdseMalloc( pAlloc, 1, &error );
+   buffer[8*PAGESIZE-3] = vdseMallocPages( pAlloc, 1, &error );
    if ( buffer[8*PAGESIZE-3] != NULL )
       return 1;
    
@@ -80,7 +80,7 @@ int main()
    /* Free 1 page out of two */
    for ( i = 0; i < 8*PAGESIZE-3; i += 2 )
    {
-      vdseFree( pAlloc, buffer[i], 1, &error );
+      vdseFreePages( pAlloc, buffer[i], 1, &error );
    }
    
    /* Check the bitmap pattern - the first 3 are always busy */

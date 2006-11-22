@@ -36,10 +36,10 @@ int main()
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &error );
    
-   newBuff[0] = vdseMalloc( pAlloc, 2, &error );
+   newBuff[0] = vdseMallocPages( pAlloc, 2, &error );
    if ( newBuff[0] == NULL ) return 1;
 
-   vdseFree( pAlloc, newBuff[0], 2, &error );
+   vdseFreePages( pAlloc, newBuff[0], 2, &error );
    if (pAlloc->totalAllocPages != 2 ) return 1;
    if (pAlloc->numFreeCalls != 1 ) return 1;
    
@@ -48,59 +48,59 @@ int main()
     * following each other, of course).
     */
    /* unite with following buffer */
-   newBuff[0] = vdseMalloc( pAlloc, 3, &error );
+   newBuff[0] = vdseMallocPages( pAlloc, 3, &error );
    if ( newBuff[0] == NULL ) return 1;
-   newBuff[1] = vdseMalloc( pAlloc, 3, &error );
+   newBuff[1] = vdseMallocPages( pAlloc, 3, &error );
    if ( newBuff[1] == NULL ) return 1;
-   newBuff[2] = vdseMalloc( pAlloc, 2, &error );
+   newBuff[2] = vdseMallocPages( pAlloc, 2, &error );
    if ( newBuff[2] == NULL ) return 1;
 
-   vdseFree( pAlloc, newBuff[1], 3, &error );
-   vdseFree( pAlloc, newBuff[0], 3, &error );
+   vdseFreePages( pAlloc, newBuff[1], 3, &error );
+   vdseFreePages( pAlloc, newBuff[0], 3, &error );
    /* if the "unite" failed, no 6 pages free buffer should exist */
-   newBuff[3] = vdseMalloc( pAlloc, 6, &error );
+   newBuff[3] = vdseMallocPages( pAlloc, 6, &error );
    if ( newBuff[3] == NULL ) return 1;
-   vdseFree( pAlloc, newBuff[3], 6, &error );
-   vdseFree( pAlloc, newBuff[2], 2, &error );
+   vdseFreePages( pAlloc, newBuff[3], 6, &error );
+   vdseFreePages( pAlloc, newBuff[2], 2, &error );
 
    /* unite with preceding buffer */
-   newBuff[0] = vdseMalloc( pAlloc, 2, &error );
+   newBuff[0] = vdseMallocPages( pAlloc, 2, &error );
    if ( newBuff[0] == NULL ) return 1;
-   newBuff[1] = vdseMalloc( pAlloc, 3, &error );
+   newBuff[1] = vdseMallocPages( pAlloc, 3, &error );
    if ( newBuff[1] == NULL ) return 1;
-   newBuff[2] = vdseMalloc( pAlloc, 3, &error );
+   newBuff[2] = vdseMallocPages( pAlloc, 3, &error );
    if ( newBuff[2] == NULL ) return 1;
 
-   vdseFree( pAlloc, newBuff[1], 3, &error );
-   vdseFree( pAlloc, newBuff[2], 3, &error );
+   vdseFreePages( pAlloc, newBuff[1], 3, &error );
+   vdseFreePages( pAlloc, newBuff[2], 3, &error );
    /* if the "unite" failed, no 6 pages free buffer should exist */
-   newBuff[3] = vdseMalloc( pAlloc, 6, &error );
+   newBuff[3] = vdseMallocPages( pAlloc, 6, &error );
    if ( newBuff[3] == NULL ) return 1;   
-   vdseFree( pAlloc, newBuff[0], 2, &error );
-   vdseFree( pAlloc, newBuff[3], 6, &error );
+   vdseFreePages( pAlloc, newBuff[0], 2, &error );
+   vdseFreePages( pAlloc, newBuff[3], 6, &error );
 
    /* unite with both */
-   newBuff[0] = vdseMalloc( pAlloc, 1, &error );
+   newBuff[0] = vdseMallocPages( pAlloc, 1, &error );
    if ( newBuff[0] == NULL ) return 1;
-   newBuff[1] = vdseMalloc( pAlloc, 2, &error );
+   newBuff[1] = vdseMallocPages( pAlloc, 2, &error );
    if ( newBuff[1] == NULL ) return 1;
-   newBuff[2] = vdseMalloc( pAlloc, 2, &error );
+   newBuff[2] = vdseMallocPages( pAlloc, 2, &error );
    if ( newBuff[2] == NULL ) return 1;   
-   newBuff[3] = vdseMalloc( pAlloc, 2, &error );
+   newBuff[3] = vdseMallocPages( pAlloc, 2, &error );
    if ( newBuff[3] == NULL ) return 1;   
-   newBuff[4] = vdseMalloc( pAlloc, 1, &error );
+   newBuff[4] = vdseMallocPages( pAlloc, 1, &error );
    if ( newBuff[4] == NULL ) return 1;   
 
-   vdseFree( pAlloc, newBuff[1], 2, &error );
-   vdseFree( pAlloc, newBuff[3], 2, &error );
-   vdseFree( pAlloc, newBuff[2], 2, &error );
+   vdseFreePages( pAlloc, newBuff[1], 2, &error );
+   vdseFreePages( pAlloc, newBuff[3], 2, &error );
+   vdseFreePages( pAlloc, newBuff[2], 2, &error );
    /* if the "unite" failed, no 6 pages free buffer should exist */
-   newBuff[1] = vdseMalloc( pAlloc, 6, &error );
+   newBuff[1] = vdseMallocPages( pAlloc, 6, &error );
    if ( newBuff[1] == NULL ) return 1;   
    
-   vdseFree( pAlloc, newBuff[0], 1, &error );
-   vdseFree( pAlloc, newBuff[1], 6, &error );
-   vdseFree( pAlloc, newBuff[4], 1, &error );
+   vdseFreePages( pAlloc, newBuff[0], 1, &error );
+   vdseFreePages( pAlloc, newBuff[1], 6, &error );
+   vdseFreePages( pAlloc, newBuff[4], 1, &error );
 
    if (pAlloc->totalAllocPages != 2 ) return 1;
    

@@ -1,37 +1,4 @@
 /*
- * Code from the BGET allocator (http://www.fourmilab.ch/bget/) was used
- * to develop this MemoryAllocator class.
- *
- * Designed and implemented in April of 1972 by John Walker, based on the
- * Case Algol OPRO$ algorithm implemented in 1966.
- *
- * Reimplemented in 1975 by John Walker for the Interdata 70.
- * Reimplemented in 1977 by John Walker for the Marinchip 9900.
- * Reimplemented in 1982 by Duff Kurland for the Intel 8080.
- *
- * Portable C version implemented in September of 1990 by an older, wiser
- * instance of the original implementor.
- *
- * Souped up and/or weighed down  slightly  shortly  thereafter  by  Greg
- * Lutz.
- *
- * AMIX  edition, including the new compaction call-back option, prepared
- * by John Walker in July of 1992.
- *
- * Bug in built-in test program fixed, ANSI compiler warnings eradicated,
- * buffer pool validator  implemented,  and  guaranteed  repeatable  test
- * added by John Walker in October of 1995.
- *
- * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
- *
- * To quote the website:
- * "BGET is in the public domain. You can do anything you like with it."
- *
- * The original code still follow this license - of course!
- *
- * However, modifications to the original code are covered by this 
- * copyright:
- *
  * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
@@ -351,9 +318,9 @@ vdseFreeBufferNode* FindBuffer( vdseMemAlloc*     pAlloc,
 /**
  * Allocates the pages of shared memory we need.  
  */
-void * vdseMalloc( vdseMemAlloc*     pAlloc,
-                   size_t            requestedPages,
-                   vdscErrorHandler* pError )
+void* vdseMallocPages( vdseMemAlloc*     pAlloc,
+                       size_t            requestedPages,
+                       vdscErrorHandler* pError )
 {
    vdseFreeBufferNode* pNode = NULL;
    vdseFreeBufferNode* pNewNode = NULL;
@@ -419,10 +386,10 @@ void * vdseMalloc( vdseMemAlloc*     pAlloc,
 
 /** Free ptr, the memory is returned to the pool. */
 
-int vdseFree( vdseMemAlloc*     pAlloc,
-              void *            ptr, 
-              size_t            numPages,
-              vdscErrorHandler* pError )
+int vdseFreePages( vdseMemAlloc*     pAlloc,
+                   void *            ptr, 
+                   size_t            numPages,
+                   vdscErrorHandler* pError )
 {
    int errcode = 0;
    vdseFreeBufferNode* otherNode;
@@ -533,163 +500,14 @@ void vdseMemAllocClose( vdseMemAlloc*     pAlloc,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/* Free all the floating buffers */
-void vdseMemAllocFreeTheseBuffers( vdseMemAlloc*    pAlloc,
-                                   char**           pArrayBuffers, 
-                                   size_t           numOfAllocatedBuffer,
-                                   vdscErrorHandler* pError )
-{
-   size_t sum = 0;
-   struct bfhead *b = NULL;
-   size_t i, size;
-   
-   VDS_ASSERT( pError != NULL );
-   VDS_ASSERT_NORETURN( pAlloc        != NULL, pError );
-   VDS_ASSERT_NORETURN( pArrayBuffers != NULL, pError );
-   if ( pAlloc->numMalloc > pAlloc->numFree )
-      size = pAlloc->numMalloc - pAlloc->numFree;
-   else
-      size = (size_t)-1 - pAlloc->numFree + pAlloc->numMalloc;
-   VDS_ASSERT_NORETURN( numOfAllocatedBuffer == size, pError );
-   
-   for ( i = 0; i < numOfAllocatedBuffer; ++i )
-   {
-      if ( pArrayBuffers[i] != NULL )
-      {
-         b = BFH(((unsigned char *)pArrayBuffers[i] ) - sizeof(struct bhead));
-         /* Verify if a buffer is allocated or free. */
-         if ( ! vdseMemAllocIsBufferFree( pAlloc, pArrayBuffers[i], pError ) )
-            vdseMemAllocbrel( pAlloc, pArrayBuffers[i], pError );
-         else
-/*              fprintf( stderr, " pArrayBuffer[%d]  = %p size = %ld\n", i,  */
-/*                       pArrayBuffers[i], */
-/*                       b->bh.bsize  ); */
-            sum++;
-      }
-   }
-   fprintf( stderr, "FreeTheseBuffers: %d %d\n", sum, numOfAllocatedBuffer );
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/* Populate an array of all allocated buffers (to recover all floating */
-/* buffers). */
-void 
-vdseMemAllocGetAllocatedBuffers( vdseMemAlloc*    pAlloc,
-                                 char**           pArrayBuffers, 
-                                 size_t           numOfAllocatedBuffer,
-                                 vdscErrorHandler* pError )
-{
-   struct bfhead *b = NULL, *bn = NULL;
-   size_t i = 0;
-   bufsize_T size;
-   
-   VDS_ASSERT( pError != NULL );
-   VDS_ASSERT_NORETURN( pAlloc        != NULL, pError );
-   VDS_ASSERT_NORETURN( pArrayBuffers != NULL, pError );
-   if ( pAlloc->numMalloc > pAlloc->numFree )
-      size = pAlloc->numMalloc - pAlloc->numFree;
-   else
-      size = (size_t)-1 - pAlloc->numFree + pAlloc->numMalloc;
-   VDS_ASSERT_NORETURN( numOfAllocatedBuffer == size, pError );
-   
-   /* Loop on each buffer */
-
-   b = GET_PTR( pAlloc->poolOffset, struct bfhead );
-                  size = b->bh.bsize;
-   
-   while ( size != ESENT )
-   {
-      if ( size > 0 ) /* free buffer */
-      {
-         /* Calculate where the next buffer is */
-         bn =  BFH(((unsigned char *) b) + b->bh.bsize);
-      }
-      else /* used buffer */
-      {
-         if ( i == numOfAllocatedBuffer )
-         {
-            fprintf( stderr, "GetAllocatedBuffers overflow!!!\n" );
-            return;
-         }
-         pArrayBuffers[i] = (char*) &(b->ql);
-         i++;
-
-         /* Calculate where the next buffer is */
-         bn =  BFH(((unsigned char *) b) - b->bh.bsize);         
-      }
-      b = bn;
-      size = b->bh.bsize;
-   }
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/* Verify if a buffer is allocated or free. */
-bool
-vdseMemAllocIsBufferFree( vdseMemAlloc*    pAlloc,
-                          void*            buffer,
-                          vdscErrorHandler* pError )
-{
-   struct bfhead *pBuf;
-
-   VDS_ASSERT( pError != NULL );
-   VDS_ASSERT_NORETURN( pAlloc != NULL, pError );
-   VDS_ASSERT_NORETURN( buffer != NULL, pError );
-
-   pBuf = BFH(((unsigned char *) buffer) - sizeof(struct bhead));
-
-   /* Since free buffers can be consolidated with either the one */
-   /* before or the one after (if they are free themselves), the sole */
-   /* indication of "bh.bsize >= 0" is not enough to decide if a buffer */
-   /* is free or not. */
-
-   /* In fact the "buffer" might now be a part of another buffer which */
-   /* itself is part of another buffer... */
-
-   /* What we need to do is walk the list of all known blocks to search  */
-   /* for the given buffer - if it not there it ain't allocated! */
-   /* And if it is there, the test "bh.bsize >= 0" will test for us if it */ 
-   /* free or not */
-
-   /* Sadly, this is a bit slow... */
-
-   struct bfhead *b, *bn;
-
-   b = GET_PTR( pAlloc->poolOffset, struct bfhead );
-   bufsize_T size = b->bh.bsize;
-   
-   while ( size != ESENT )
-   {
-      if ( b == pBuf )
-      {
-         if ( size > 0 )
-            return true;
-         return false;
-      }
-
-      if ( size > 0 ) /* free buffer */
-         bn =  BFH(((unsigned char *) b) + b->bh.bsize);
-      else
-         bn =  BFH(((unsigned char *) b) - b->bh.bsize);
-
-      b = bn;
-      size = b->bh.bsize;
-   }
-
-   return true;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 /* Reset statistics after a crash */
 void vdseMemAllocResetStats( vdseMemAlloc*    pAlloc,
                              vdscErrorHandler* pError )
 {
    struct bfhead *b = NULL, *bn = NULL;
 
-   VDS_ASSERT( pError != NULL );
-   VDS_ASSERT_NORETURN( pAlloc != NULL, pError );
+   VDS_PRE_CONDITION( pError != NULL );
+   VDS_PRE_CONDITION( pAlloc != NULL, pError );
 
    pAlloc->totalAlloc = 0;
    pAlloc->numMalloc = 0;
@@ -726,39 +544,40 @@ void vdseMemAllocResetStats( vdseMemAlloc*    pAlloc,
    pAlloc->totalAlloc += sizeof(struct bhead);
 }
 
+#endif
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 vdsErrors vdseMemAllocStats( vdseMemAlloc*    pAlloc,
-                             bufsize_T *      pCurrentAllocated,
-                             bufsize_T *      pTotalFree,
-                             bufsize_T *      pMaxFree,
+                             size_t *         pCurrentAllocated,
+                             size_t *         pTotalFree,
+                             size_t *         pMaxFree,
                              size_t *         pNumberOfMallocs,
                              size_t *         pNumberOfFrees,
                              vdscErrorHandler* pError )
 {
    int errcode = 0;
 
-   VDS_ASSERT( pError != NULL );
-   VDS_ASSERT_NORETURN( pAlloc            != NULL, pError );
-   VDS_ASSERT_NORETURN( pCurrentAllocated != NULL, pError );
-   VDS_ASSERT_NORETURN( pTotalFree        != NULL, pError );
-   VDS_ASSERT_NORETURN( pMaxFree          != NULL, pError );
-   VDS_ASSERT_NORETURN( pNumberOfMallocs  != NULL, pError );
-   VDS_ASSERT_NORETURN( pNumberOfFrees    != NULL, pError );
+   VDS_PRE_CONDITION( pError            != NULL );
+   VDS_PRE_CONDITION( pAlloc            != NULL );
+   VDS_PRE_CONDITION( pCurrentAllocated != NULL );
+   VDS_PRE_CONDITION( pTotalFree        != NULL );
+   VDS_PRE_CONDITION( pMaxFree          != NULL );
+   VDS_PRE_CONDITION( pNumberOfMallocs  != NULL );
+   VDS_PRE_CONDITION( pNumberOfFrees    != NULL );
 
-   errcode = vdscTryAcquireProcessLock( &pAlloc->lock, 
-//                                        pError->pid, 
+   errcode = vdscTryAcquireProcessLock( &pAlloc->memObj.lock, 
                                         getpid(),
                                         LONG_LOCK_TIMEOUT );
    if ( errcode == 0 )
    {
-      *pNumberOfMallocs  = pAlloc->numMalloc;
-      *pNumberOfFrees    = pAlloc->numFree;
-      *pCurrentAllocated = pAlloc->totalAlloc;
+      *pNumberOfMallocs  = pAlloc->numMallocCalls;
+      *pNumberOfFrees    = pAlloc->numFreeCalls;
+      *pCurrentAllocated = pAlloc->totalAllocPages*PAGESIZE;
       *pTotalFree        = 0;
       *pMaxFree          = -1;
 
-      struct bfhead * b = GET_FLINK( &pAlloc->freeList );
+/*      struct bfhead * b = GET_FLINK( &pAlloc->freeList );
       while (b != &pAlloc->freeList)
       {
          VDS_ASSERT_NORETURN( b->bh.bsize > 0, pError );
@@ -767,7 +586,8 @@ vdsErrors vdseMemAllocStats( vdseMemAlloc*    pAlloc,
             *pMaxFree = b->bh.bsize;
          b = GET_FLINK( b );
       }
-      vdscReleaseProcessLock( &pAlloc->lock );
+      */
+      vdscReleaseProcessLock( &pAlloc->memObj.lock );
 
       return VDS_OK;
    }
@@ -775,118 +595,13 @@ vdsErrors vdseMemAllocStats( vdseMemAlloc*    pAlloc,
    return VDS_ENGINE_BUSY;
 }
 
+#if 0
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseMemAllocValidate( vdseMemAlloc*     pAlloc,
                           bool              verbose,
                           vdscErrorHandler* pError )
 {
-   struct bfhead *b = NULL, *bn = NULL;
-
-   VDS_ASSERT( pError != NULL );
-   VDS_ASSERT_RETURN( pAlloc != NULL, pError, VDS_INTERNAL_ERROR );
-
-   b = &pAlloc->freeList;
-   fprintf( stderr, "%p %10ld %10ld %10ld %10d %10d\n", 
-            b, 
-            (long)((unsigned char*)b-g_pBaseAddr),
-            b->bh.prevfree, 
-            b->bh.bsize,
-            b->ql.flink, 
-            b->ql.blink );
-
-   /* Start with the linked list */
-   b = GET_FLINK( &pAlloc->freeList );
-   while (b != &pAlloc->freeList) 
-   {
-/*
-      VDS_ASSERT_RETURN( GET_BLINK(b)->ql.flink == SET_LINK(b),
-                         pError, VDS_INTERNAL_ERROR );
-      VDS_ASSERT_RETURN( GET_FLINK(b)->ql.blink == SET_LINK(b), 
-                         pError, VDS_INTERNAL_ERROR );
-      VDS_ASSERT_RETURN( b->bh.bsize >= 0, pError, VDS_INTERNAL_ERROR );
-      VDS_ASSERT_RETURN( b->bh.prevfree == 0, pError, VDS_INTERNAL_ERROR );
-*/
-      if ( GET_BLINK(b)->ql.flink != SET_LINK(b) )
-         return -1;
-      if ( GET_FLINK(b)->ql.blink != SET_LINK(b) )
-         return -2;
-      if ( b->bh.bsize < 0 )
-         return -3;
-      if ( b->bh.prevfree != 0 )
-         return -4;
-
-      b = GET_FLINK(b);        /* Link to next buffer */
-   }
-
-   /* Loop on each buffer */
-
-   b = GET_PTR( pAlloc->poolOffset, struct bfhead );
-   bufsize_T size = b->bh.bsize;
-   
-   while ( size != ESENT )
-   {
-      if ( verbose)
-      {
-         if ( size > 0 ) /* free buffer */
-            fprintf( stderr, "%p %10ld %10ld %10ld %10d %10d\n", 
-                     b, 
-                     (long)((unsigned char*)b-g_pBaseAddr),
-                     b->bh.prevfree, 
-                     size,
-                     b->ql.flink, 
-                     b->ql.blink );
-         else
-            fprintf( stderr, "%p %10ld %10ld %10ld\n", 
-                     b, 
-                     (long)((unsigned char*)b-g_pBaseAddr),
-                     b->bh.prevfree, 
-                     size );
-      }
-      
-      if (b->bh.prevfree != 0) 
-         if ( BH((unsigned char *) b - b->bh.prevfree)->bsize != b->bh.prevfree )
-         {
-            fprintf( stderr, " z3 %p %p %ld %ld\n", b, bn, size, 
-                     bn->bh.prevfree );
-            return -5;
-         }
-      
-      if ( size > 0 ) /* free buffer */
-      {
-         bn =  BFH(((unsigned char *) b) + b->bh.bsize);
-/*           VDS_ASSERT_RETURN( bn->bh.prevfree == b->bh.bsize, 
-                                pError, VDS_INTERNAL_ERROR ); */
-         if ( bn->bh.prevfree != b->bh.bsize )
-         {
-            fprintf( stderr, " z1 %p %p %ld %ld \n", b, bn, size, 
-                    bn->bh.prevfree );
-            return -6;
-         }
-         /* 2 free consecutive buffers... */
-/*       VDS_ASSERT_RETURN( bn->bh.bsize < 0, pError, VDS_INTERNAL_ERROR ); */
-         if ( bn->bh.bsize >= 0 ) /* 2 free consecutive buffers... */
-            
-         {
-            fprintf( stderr, " z2 %p %p %ld %ld\n", b, bn, size, bn->bh.prevfree );
-            return -7;
-         }
-      }
-      else
-      {
-         bn =  BFH(((unsigned char *) b) - b->bh.bsize);
-/*       VDS_ASSERT_RETURN( bn->bh.prevfree == 0, pError, VDS_INTERNAL_ERROR );
-*/
-         if ( bn->bh.prevfree != 0 )
-         {
-            fprintf( stderr, " z3 %p %p %ld %ld\n", b, bn, size, bn->bh.prevfree );
-            return -8;
-         }
-      }
-      b = bn;
-      size = b->bh.bsize;
-   }
-
    fprintf( stderr, "Validate ok !\n" );
    return 0;
 }

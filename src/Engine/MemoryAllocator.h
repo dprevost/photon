@@ -177,79 +177,42 @@ vdseMemAllocInit( vdseMemAlloc*     pAlloc,
 /**
  * 
  */
-void * vdseMalloc( vdseMemAlloc*     pAlloc,
-                   size_t            numPages,
-                   vdscErrorHandler* pError );
+void* vdseMallocPages( vdseMemAlloc*     pAlloc,
+                       size_t            numPages,
+                       vdscErrorHandler* pError );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Free ptr, the memory is returned to the pool. */
-int vdseFree( vdseMemAlloc*     pAlloc,
-              void *            ptr, 
-              size_t            numPages,
-              vdscErrorHandler* pError );
-
+int vdseFreePages( vdseMemAlloc*     pAlloc,
+                   void *            ptr, 
+                   size_t            numPages,
+                   vdscErrorHandler* pError );
 
 void vdseMemAllocClose( vdseMemAlloc*     pAlloc,
                         vdscErrorHandler* pError );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-#if 0
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/** Free all the floating buffers, if any */
-void
-vdseMemAllocFreeTheseBuffers( vdseMemAlloc*    pAlloc,
-                              char**           pArrayBuffers, 
-                              size_t           nNumOfAllocatedBuffer,
-                              vdscErrorHandler* pError );
-
-/** Populate an array of all allocated buffers (to recover all floating
- *  buffers). 
- */
-void
-vdseMemAllocGetAllocatedBuffers( vdseMemAlloc*    pAlloc,
-                                 char**           pArrayBuffers, 
-                                 size_t           nNumOfAllocatedBuffer,
-                                 vdscErrorHandler* pError );
-
-/** Verify if a buffer is allocated or free. This function should 
- *  only be used to recover after a crash. Returns true if 
- *  the buffer is free, false otherwise.
- */
-bool vdseMemAllocIsBufferFree( vdseMemAlloc*    pAlloc,
-                          void*            buffer,
-                          vdscErrorHandler* pError );
-
-/** Reset statistics after a crash. */
-void vdseMemAllocResetStats( vdseMemAlloc*    pAlloc,
-                             vdscErrorHandler* pError );
-
-/** Do we need this? */
-static inline
-void vdseSetBaseAddress( vdseMemAlloc*    pAlloc,
-                         void*            pBaseAddress,
-                         vdscErrorHandler* pError )
-{
-   VDS_PRE_CONDITION( pError != NULL );
-   VDS_PRE_CONDITION( pAlloc       != NULL );
-   VDS_PRE_CONDITION( pBaseAddress != NULL );
-   
-   g_pBaseAddr = (unsigned char*) pBaseAddress;
-}
 
 /** Returns status and statistics from the memory allocator. Note 
  *  that the number of mallocs/frees are not based on a 64 bits 
  *  integer on 32 bits machine - these numbers might loop around.
  */
 vdsErrors vdseMemAllocStats( vdseMemAlloc*     pAlloc,
-                             bufsize_T *       pCurrentAllocated,
-                             bufsize_T *       pTotalFree,
-                             bufsize_T *       pMaxFree,
+                             size_t *          pCurrentAllocated,
+                             size_t *          pTotalFree,
+                             size_t *          pMaxFree,
                              size_t *          pNumberOfMallocs,
                              size_t *          pNumberOfFrees,
                              vdscErrorHandler* pError  );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#if 0
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/** Reset statistics after a crash. */
+void vdseMemAllocResetStats( vdseMemAlloc*    pAlloc,
+                             vdscErrorHandler* pError );
+
 
 /** Validate/test the content of the memory pool. */
 int vdseMemAllocValidate( vdseMemAlloc*     pAlloc,

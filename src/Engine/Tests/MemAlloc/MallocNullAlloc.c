@@ -35,7 +35,7 @@ int main()
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &error );
    
-   newBuff = vdseMalloc( NULL, 2, &error );
+   newBuff = vdseMallocPages( NULL, 2, &error );
    
    return 0;
 }

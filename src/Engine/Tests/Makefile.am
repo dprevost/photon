@@ -12,11 +12,9 @@ CLEANFILES = *~ core
 
 SUBDIRS =           \
           List      \
+          LogFile   \
+          MemAlloc  \
           MemObject
-          
-#          MemAlloc 
-
-#          LogFile  
 
 check_PROGRAMS =                  \
                  LinkNodeNULLInit \
