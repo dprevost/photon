@@ -91,6 +91,9 @@ vdseMemObjectFini( vdseMemObject* pMemObj )
    pMemObj->objType = VDSE_IDENT_CLEAR;
 
    pMemObj->accessCounter = 0;
+   pMemObj->totalPages = 0;
+
+   vdseLinkedListFini( &pMemObj->listPageGroup );
 
    if ( vdscFiniProcessLock( &pMemObj->lock ) != 0 )
       return VDS_NOT_ENOUGH_RESOURCES;

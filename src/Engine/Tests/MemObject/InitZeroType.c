@@ -28,7 +28,6 @@ int main()
 
    vdseMemObjectInit( &obj, 
                       (enum ObjectIdentifier)0,
-                      sizeof(obj),
                       1 );
    return 0;
 }

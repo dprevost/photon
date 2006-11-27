@@ -36,9 +36,7 @@ int main()
    
    if ( obj.objType != VDSE_IDENT_CLEAR ) return 1;
    if ( obj.accessCounter != 0 ) return 1;
-   if ( obj.navigator.numPagesGroup != 0 ) return 1;
-   if ( obj.navigator.nextGroupOfPages != NULL_OFFSET ) return 1;
-   if ( obj.remainingBytes != 0 ) return 1;
+   if ( obj.totalPages != 0 ) return 1;
    
    return 0;
 }

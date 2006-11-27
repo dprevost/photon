@@ -28,7 +28,6 @@ int main()
 
    vdseMemObjectInit( &obj, 
                       VDSE_IDENT_ALLOCATOR,
-                      sizeof(obj),
                       0 );
    return 0;
 }

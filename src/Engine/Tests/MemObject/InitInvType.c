@@ -27,7 +27,6 @@ int main()
    initTest( false );
    vdseMemObjectInit( &obj, 
                       (enum ObjectIdentifier)(VDSE_IDENT_LAST + 200),
-                      sizeof(obj),
                       1 );
    return 0;
 }
