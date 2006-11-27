@@ -176,6 +176,19 @@ void vdscChainError( vdscErrorHandler *  pErrorHandler,
                      vdscErrMsgHandle    handle,
                      int                 errorCode );  
 
+/*! \brief
+ * Retrieves the last error number or zero if no errors.
+ */
+static inline 
+int vdscGetLastError( vdscErrorHandler * pErrorHandler )
+{
+   VDS_PRE_CONDITION( pErrorHandler != NULL );
+
+   if ( pErrorHandler->chainLength > 0 )
+      return pErrorHandler->errorCode[pErrorHandler->chainLength-1];
+   return 0;
+}
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
