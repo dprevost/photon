@@ -19,6 +19,9 @@
 #define VDSE_MEMORY_OBJECT_H
 
 #include "Engine.h"
+#include "LinkNode.h"
+#include "LinkedList.h"
+#include "SessionContext.h"
 
 BEGIN_C_DECLS
 
@@ -27,25 +30,13 @@ BEGIN_C_DECLS
 #define VDSE_MEM_ALIGNMENT 4
 
 /**
- * This structure enables "navigation" of the pages allocated to a
- * memory object. 
- */
-typedef struct vdsePageNavig
-{
-   /** Number of page in the current group of pages */
-   size_t numPagesGroup;
-   
-   /** Offset to the next group of pages for the object or NULL_OFFSET if
-    * we are at the end. 
-    */
-   ptrdiff_t nextGroupOfPages;
-   
-} vdsePageNavig;
-
-/**
  * MemoryObject includes all the data containers (queues, etc.), the folders
  * and all "hidden" top level objects (the allocator, the sessions recovery
  * objects, etc.).
+ *
+ * This struct should always be the first member of the struct defining an
+ * object. This way, the identifier is always at the top of a page and it
+ * should help debug, recover from crashes, etc. 
  */
 typedef struct vdseMemObject
 {
@@ -64,11 +55,7 @@ typedef struct vdseMemObject
    /** Total number of pages for the current object */
    size_t totalPages;
    
-   /** The number of free bytes in the object allocated memory. */
-   size_t remainingBytes;
-   
-   /** Used to navigate through the allocated pages of memory of an object. */
-   vdsePageNavig navigator;
+   vdseLinkedList listPageGroup;
    
 } vdseMemObject;
 
@@ -77,11 +64,19 @@ typedef struct vdseMemObject
 enum vdsErrors 
 vdseMemObjectInit( vdseMemObject*        pMemObj,
                    enum ObjectIdentifier objType,
-                   size_t                objSize,
                    size_t                numPages );
 
 enum vdsErrors 
 vdseMemObjectFini( vdseMemObject* pMemObj );
+
+unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
+                           size_t              numBytes,
+                           vdseSessionContext* pContext );
+
+int vdseFree( vdseMemObject*      pMemObj,
+              unsigned char*      ptr, 
+              size_t              numBytes,
+              vdseSessionContext* pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

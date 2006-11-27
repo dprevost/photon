@@ -68,6 +68,8 @@
 #include "ErrorHandler.h"
 #include "MemoryObject.h"
 #include "LinkedList.h"
+#include "PageGroup.h"
+#include "SessionContext.h"
 
 BEGIN_C_DECLS
 
@@ -75,56 +77,9 @@ BEGIN_C_DECLS
 
 #define VDSC_MEM_ALLOC_SIGNATURE 0x1
 
-/* These next macros are only used inside this class and in the crash
- * recovery procedure (which is why they are in the .h file) 
- */
-
-#define GET_FLINK(p) ( (struct bfhead *) \
-   (g_pBaseAddr+(p)->ql.flink ) )
-
-#define GET_BLINK(p) ( (struct bfhead *) \
-   (g_pBaseAddr+(p)->ql.blink ) )
-
-#define SET_LINK(p)  ( (size_t) \
-   ( (unsigned char*)(p) - g_pBaseAddr ) )
-
-#define NUM_OF_BITS_IN_BYTE 8
-
 #if ! defined( LONG_LOCK_TIMEOUT)
 #  define LONG_LOCK_TIMEOUT (100*LOCK_TIMEOUT)
 #endif
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-typedef long bufsize_T;
-
-struct qlinks {
-   /** Forward link */
-   ptrdiff_t flink;
-
-   /** Backward link */
-   ptrdiff_t blink;	      
-};
-
-/** Header in allocated and free buffers */
-struct bhead 
-{
-   /** Relative link back to previous free buffer in memory or 0 if
-       previous buffer is allocated.	*/
-   bufsize_T prevfree;
-
-   /** Buffer size: positive if free, negative if allocated. */
-   bufsize_T bsize;		      
-};
-
-struct bfhead 
-{
-   /** Common allocated/free header */
-   struct bhead bh;
-
-   /** Links on free list */
-   struct qlinks ql;
-};
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -152,9 +107,14 @@ typedef struct vdseMemAlloc
 
    /** Structure used to hold the list of free buffers. */
    vdseLinkedList freeList;
+
+   ptrdiff_t bitmapOffset;
    
-   size_t bitmapLength;
-   unsigned char bitmap[1];
+   /** 
+    * The header of the group of pages for this object. It MUST be
+    * at the end of the struct since it contains a variable array.
+    */
+   vdsePageGroup pageGroup;
    
 } vdseMemAlloc;
 
@@ -169,40 +129,40 @@ typedef struct vdseMemAlloc
  * already there, initialized and all.
  */
 enum vdsErrors 
-vdseMemAllocInit( vdseMemAlloc*     pAlloc,
-                  unsigned char*    pBaseAddress, 
-                  size_t            length,
-                  vdscErrorHandler* pError );
+vdseMemAllocInit( vdseMemAlloc*       pAlloc,
+                  unsigned char*      pBaseAddress, 
+                  size_t              length,
+                  vdseSessionContext* pContext );
 
 /**
  * 
  */
-void* vdseMallocPages( vdseMemAlloc*     pAlloc,
-                       size_t            numPages,
-                       vdscErrorHandler* pError );
+void* vdseMallocPages( vdseMemAlloc*       pAlloc,
+                       size_t              numPages,
+                       vdseSessionContext* pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Free ptr, the memory is returned to the pool. */
-int vdseFreePages( vdseMemAlloc*     pAlloc,
-                   void *            ptr, 
-                   size_t            numPages,
-                   vdscErrorHandler* pError );
+int vdseFreePages( vdseMemAlloc*       pAlloc,
+                   void *              ptr, 
+                   size_t              numPages,
+                   vdseSessionContext* pContext );
 
-void vdseMemAllocClose( vdseMemAlloc*     pAlloc,
-                        vdscErrorHandler* pError );
+void vdseMemAllocClose( vdseMemAlloc*       pAlloc,
+                        vdseSessionContext* pContext );
 
 /** Returns status and statistics from the memory allocator. Note 
  *  that the number of mallocs/frees are not based on a 64 bits 
  *  integer on 32 bits machine - these numbers might loop around.
  */
-vdsErrors vdseMemAllocStats( vdseMemAlloc*     pAlloc,
-                             size_t *          pCurrentAllocated,
-                             size_t *          pTotalFree,
-                             size_t *          pMaxFree,
-                             size_t *          pNumberOfMallocs,
-                             size_t *          pNumberOfFrees,
-                             vdscErrorHandler* pError  );
+vdsErrors vdseMemAllocStats( vdseMemAlloc*       pAlloc,
+                             size_t *            pCurrentAllocated,
+                             size_t *            pTotalFree,
+                             size_t *            pMaxFree,
+                             size_t *            pNumberOfMallocs,
+                             size_t *            pNumberOfFrees,
+                             vdseSessionContext* pContext  );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

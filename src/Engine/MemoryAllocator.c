@@ -28,163 +28,101 @@ unsigned char* g_pBaseAddr = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define VDSE_FREENODE_SIGNATURE 0x1fe76914
-
-typedef struct vdseFreeBufferNode
-{
-   /* The linked list itself */
-   vdseLinkNode node;
-   
-   /* The number of pages associate with each member of the list. */
-   size_t numPages;
-   
-   int initialize;
-   
-} vdseFreeBufferNode;
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-inline
-bool vdseIsPageFree( vdseMemAlloc*  pAlloc,
-                     unsigned char* ptr )
-{
-   ptrdiff_t offset = ptr - g_pBaseAddr;
-   size_t byte, bit;
-   size_t pageOffset;
-   
-   if ( offset < 0 || offset >= pAlloc->totalLength )
-      return false;
-
-   pageOffset = offset / PAGESIZE;
-   
-   byte = pageOffset >> 3; /* Equivalent to divide by  8  */
-   /*
-    * We use the highest bit for the lower page so that the bitmap
-    * is "ordered".
-    */
-   bit = 7 - (pageOffset & 7);
-
-   return ( (pAlloc->bitmap[byte] & (unsigned char)(1 << bit)) == 0 );
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-inline
-void vdseSetPagesAllocated( vdseMemAlloc*  pAlloc,
-                            unsigned char* ptr,
-                            size_t         numPages )
-{
-   ptrdiff_t offset = ptr - g_pBaseAddr;
-   size_t byte, bit, i;
-   size_t pageOffset;
-   
-   pageOffset = offset / PAGESIZE;
-   
-   byte = pageOffset >> 3; /* Equivalent to divide by  8  */
-   /*
-    * We use the highest bit for the lower page so that the bitmap
-    * is "ordered".
-    */
-   bit = 7 - (pageOffset & 7);
-
-   for ( i = 0; i < numPages; ++i )
-   {
-      /* Setting the bit to one */
-      pAlloc->bitmap[byte] |= (unsigned char)(1 << bit);
-      if ( bit == 0 )
-      {
-         bit = 8;
-         byte++;
-      }
-      bit--;
-   }
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-inline
-void vdseSetPagesFree( vdseMemAlloc*  pAlloc,
-                       unsigned char* ptr,
-                       size_t         numPages )
-{
-   ptrdiff_t offset = ptr - g_pBaseAddr;
-   size_t byte, bit, i;
-   size_t pageOffset;
-   
-   pageOffset = offset / PAGESIZE;
-   
-   byte = pageOffset >> 3; /* Equivalent to divide by  8  */
-   /*
-    * We use the highest bit for the lower page so that the bitmap
-    * is "ordered".
-    */
-   bit = 7 - (pageOffset & 7);
-   
-   for ( i = 0; i < numPages; ++i )
-   {
-      /* Setting the bit to zero */
-      pAlloc->bitmap[byte] &= (unsigned char)(~(1 << bit));
-      if ( bit == 0 )
-      {
-         bit = 8;
-         byte++;
-      }
-      bit--;
-   }
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 enum vdsErrors 
-vdseMemAllocInit( vdseMemAlloc*     pAlloc,
-                  unsigned char*    pBaseAddress,
-                  size_t            length,
-                  vdscErrorHandler* pError )
+vdseMemAllocInit( vdseMemAlloc*       pAlloc,
+                  unsigned char*      pBaseAddress,
+                  size_t              length,
+                  vdseSessionContext* pContext )
 {
    enum vdsErrors errcode;
    vdseFreeBufferNode* pNode;
-   size_t neededPages, neededBytes;
+   size_t neededPages, neededBytes, bitmapLength;
    unsigned char* ptr;
+   vdseMemBitmap* pBitmap = NULL;
    
-   VDS_PRE_CONDITION( pError != NULL );
-   VDS_PRE_CONDITION( pAlloc != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pAlloc   != NULL );
    VDS_PRE_CONDITION( pBaseAddress != NULL );
    VDS_PRE_CONDITION( length >= 3*PAGESIZE );
    VDS_INV_CONDITION( g_pBaseAddr != NULL );
 
-   /* We truncate it to a multiple of PAGESIZE */
-   length = length / PAGESIZE * PAGESIZE;
-   pAlloc->bitmapLength = (length/PAGESIZE - 1) / 8 + 1;
+   pContext->pAllocator = (void*) pAlloc;
+   /*
+    * We need to calculate the following:
+    *  1) the lenght of the allocator bitmap.bitmap which depends on the 
+    *     total size of the sharedmemory.
+    *  2) the number of pages required to hold this bitmap and wether this
+    *     number of pages can also hold the alloc struct itself (let's
+    *     not forget that the alloc struct has also a bitmap as part of
+    *     the pageGroup struct).
+    *  3) if this is too small, increment the number of pages by one.
+    *
+    * Not too complex.
+    */
+
+   /* Calculate the size of the bitmap of the allocator */
+   bitmapLength = offsetof( vdseMemBitmap, bitmap ) + 
+                  vdseGetBitmapLengthBytes( length, PAGESIZE );
+   /* Align it on VDSE_ALLOCATION_UNIT bytes boundary */
+   bitmapLength = ( (bitmapLength - 1) / VDSE_ALLOCATION_UNIT + 1 ) * 
+                 VDSE_ALLOCATION_UNIT;
+
+   /* How many pages do we need, at a minimum, for the allocator */
+   neededPages =  (bitmapLength - 1)/PAGESIZE + 1;
    
-   /* How many pages do we need for the allocator */
-   /* Note: "-1" because vdseMemAlloc already has bitmap[1] */
-   neededBytes = pAlloc->bitmapLength + sizeof( struct vdseMemAlloc) - 1;
-   /* Align it on VDSE_MEM_ALIGNMENT bytes boundary */
-   neededBytes = ( (neededBytes - 1) / VDSE_MEM_ALIGNMENT + 1 ) * 
-                 VDSE_MEM_ALIGNMENT;
-   /* Always leave space for the navigator struct */
-   neededBytes += sizeof(vdsePageNavig);
-   neededPages = (neededBytes - 1)/PAGESIZE + 1;
+   /* How many bytes do we need for the allocator */
+   neededBytes = offsetof( struct vdseMemAlloc, pageGroup ) +
+                 offsetof( vdsePageGroup, bitmap ) + 
+                 offsetof( vdseMemBitmap, bitmap ) +
+                 vdseGetBitmapLengthBytes( neededPages*PAGESIZE, 
+                                           VDSE_ALLOCATION_UNIT );
+
+   /* Align it on VDSE_ALLOCATION_UNIT bytes boundary */
+   neededBytes = ( (neededBytes - 1) / VDSE_ALLOCATION_UNIT + 1 ) * 
+                 VDSE_ALLOCATION_UNIT;
+
+   /* So, enough space or not ? */
+   if ( neededPages*PAGESIZE < (neededBytes + bitmapLength) )
+      neededPages++;
 
    errcode = vdseMemObjectInit( &pAlloc->memObj,                         
                                 VDSE_IDENT_ALLOCATOR,
-                                pAlloc->bitmapLength + sizeof( struct vdseMemAlloc) - 1,
                                 neededPages );
    if ( errcode != VDS_OK )
       return errcode;
    
+   vdsePageGroupInit( &pAlloc->pageGroup,
+                      PAGESIZE,
+                      neededPages,
+                      VDSE_ALLOCATION_UNIT );
+
+   /* Add the pageGroup to the list of groups of the memObject */
+   vdseLinkedListPutFirst( &pAlloc->memObj.listPageGroup, 
+                           &pAlloc->pageGroup.node );
+
    /* The overall header and the memory allocator itself */
    pAlloc->totalAllocPages = neededPages+1; 
    pAlloc->numMallocCalls  = 0;
    pAlloc->numFreeCalls    = 0;
    pAlloc->totalLength     = length;
 
+   /* Initialize the bitmap for the allocator itself */ 
+   pBitmap = (vdseMemBitmap*) vdseMalloc( &pAlloc->memObj,
+                                          bitmapLength,
+                                          pContext );
+   vdseMemBitmapInit( pBitmap,
+                      0,
+                      pAlloc->totalLength,
+                      PAGESIZE );
+   vdseSetBlocksAllocated( pBitmap, 0, (neededPages+1)*PAGESIZE );
+   pAlloc->bitmapOffset = SET_OFFSET( pBitmap );
+   
+   /* Initialize the linked list */
    vdseLinkedListInit( &pAlloc->freeList );
    
    /* Now put the rest of the free pages in our free list */
    pNode = (vdseFreeBufferNode*)(pBaseAddress + (neededPages+1) * PAGESIZE);
-   pNode->numPages = length / PAGESIZE - (neededPages+1);
-   pNode->initialize = VDSE_FREENODE_SIGNATURE;
+   pNode->numBlocks = length / PAGESIZE - (neededPages+1);
    vdseLinkedListPutFirst( &pAlloc->freeList, &pNode->node );
    
    /*
@@ -192,15 +130,12 @@ vdseMemAllocInit( vdseMemAlloc*     pAlloc,
     * makes it simpler/faster to rejoin groups of free pages. But only 
     * if the number of pages in the group > 1.
     */
-   if ( pNode->numPages > 1 )
+   if ( pNode->numBlocks > 1 )
    {
       ptr = pBaseAddress + length - PAGESIZE; 
       *((ptrdiff_t *)ptr) = (neededPages+1) * PAGESIZE;
    }
-   /* Set the bitmap */
-   memset( pAlloc->bitmap, 0, pAlloc->bitmapLength );
-   vdseSetPagesAllocated( pAlloc, pBaseAddress, neededPages+1 );
-
+   
    return VDS_OK;
 }
 
@@ -240,7 +175,7 @@ vdseFreeBufferNode* FindBuffer( vdseMemAlloc*     pAlloc,
    if ( errcode != LIST_OK )
       goto error_exit;
 
-   numPages = ((vdseFreeBufferNode*)oldNode)->numPages;
+   numPages = ((vdseFreeBufferNode*)oldNode)->numBlocks;
    if ( numPages == requestedPages )
    {
       /* Special case - perfect match */
@@ -265,7 +200,7 @@ vdseFreeBufferNode* FindBuffer( vdseMemAlloc*     pAlloc,
          if ( bestNode == NULL ) goto error_exit;
          break;
       }
-      numPages = ((vdseFreeBufferNode*)currentNode)->numPages;
+      numPages = ((vdseFreeBufferNode*)currentNode)->numBlocks;
       if ( numPages == requestedPages )
       {
          /* Special case - perfect match */
@@ -291,7 +226,7 @@ vdseFreeBufferNode* FindBuffer( vdseMemAlloc*     pAlloc,
       {
          goto error_exit;
       }
-      numPages = ((vdseFreeBufferNode*)currentNode)->numPages;
+      numPages = ((vdseFreeBufferNode*)currentNode)->numBlocks;
       if ( numPages >= requestedPages )
       {
          bestNode = currentNode;
@@ -318,17 +253,18 @@ vdseFreeBufferNode* FindBuffer( vdseMemAlloc*     pAlloc,
 /**
  * Allocates the pages of shared memory we need.  
  */
-void* vdseMallocPages( vdseMemAlloc*     pAlloc,
-                       size_t            requestedPages,
-                       vdscErrorHandler* pError )
+void* vdseMallocPages( vdseMemAlloc*       pAlloc,
+                       size_t              requestedPages,
+                       vdseSessionContext* pContext )
 {
    vdseFreeBufferNode* pNode = NULL;
    vdseFreeBufferNode* pNewNode = NULL;
    int errcode = 0;
    size_t newNumPages = 0;
    unsigned char* ptr;
+   vdseMemBitmap* pBitmap;
    
-   VDS_PRE_CONDITION( pError != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pAlloc != NULL );
    VDS_PRE_CONDITION( requestedPages > 0 );
    VDS_INV_CONDITION( g_pBaseAddr != NULL );
@@ -338,14 +274,16 @@ void* vdseMallocPages( vdseMemAlloc*     pAlloc,
                                         LONG_LOCK_TIMEOUT );
    if ( errcode != VDS_OK )
    {
-      vdscSetError( pError, g_vdsErrorHandle, errcode );
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return NULL;
    }
    
-   pNode = FindBuffer( pAlloc, requestedPages, pError );
+   pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
+   
+   pNode = FindBuffer( pAlloc, requestedPages, &pContext->errorHandler );
    if ( pNode != NULL )
    {
-      newNumPages = pNode->numPages - requestedPages;
+      newNumPages = pNode->numBlocks - requestedPages;
       if ( newNumPages == 0 )
       {
          /* Remove the node from the list */
@@ -355,7 +293,7 @@ void* vdseMallocPages( vdseMemAlloc*     pAlloc,
       {
          pNewNode = (vdseFreeBufferNode*)
                     ((unsigned char*) pNode + (requestedPages*PAGESIZE));
-         pNewNode->numPages = newNumPages;
+         pNewNode->numBlocks = newNumPages;
          vdseLinkedListReplaceItem( &pAlloc->freeList, 
                                     &pNode->node, 
                                     &pNewNode->node );
@@ -375,7 +313,8 @@ void* vdseMallocPages( vdseMemAlloc*     pAlloc,
       pAlloc->numMallocCalls++;
 
       /* Set the bitmap */
-      vdseSetPagesAllocated( pAlloc, (unsigned char*)pNode, requestedPages );
+      vdseSetBlocksAllocated( pBitmap, SET_OFFSET(pNode), 
+                              requestedPages * PAGESIZE );
    }
    vdscReleaseProcessLock( &pAlloc->memObj.lock );
 
@@ -386,45 +325,48 @@ void* vdseMallocPages( vdseMemAlloc*     pAlloc,
 
 /** Free ptr, the memory is returned to the pool. */
 
-int vdseFreePages( vdseMemAlloc*     pAlloc,
-                   void *            ptr, 
-                   size_t            numPages,
-                   vdscErrorHandler* pError )
+int vdseFreePages( vdseMemAlloc*       pAlloc,
+                   void *              ptr, 
+                   size_t              numPages,
+                   vdseSessionContext* pContext )
 {
    int errcode = 0;
    vdseFreeBufferNode* otherNode;
    bool otherBufferisFree = false;
    unsigned char* p;
    ptrdiff_t offset;
+   vdseMemBitmap* pBitmap;
    
-   VDS_PRE_CONDITION( pError != NULL );
-   VDS_PRE_CONDITION( pAlloc != NULL );
-   VDS_PRE_CONDITION( ptr    != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pAlloc   != NULL );
+   VDS_PRE_CONDITION( ptr      != NULL );
    VDS_PRE_CONDITION( numPages > 0 );
 
    errcode = vdscTryAcquireProcessLock( &pAlloc->memObj.lock, getpid(), LONG_LOCK_TIMEOUT );
          if ( errcode != VDS_OK )
    {
-      vdscSetError( pError, g_vdsErrorHandle, errcode );
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return -1;
    }
 
+   pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
    /* 
     * Check if the page before the current group-of-pages-to-be-released
     * is in the freeList or not.
     */
    p = (unsigned char*)ptr - PAGESIZE;
-   otherBufferisFree = vdseIsPageFree( pAlloc, p );
+   otherBufferisFree = vdseIsBlockFree( pBitmap, SET_OFFSET(p) );
    if ( otherBufferisFree )
    {
       /* Find the start of that free group of pages */
-      if ( vdseIsPageFree( pAlloc, (unsigned char*)ptr - 2*PAGESIZE ) )
+      if ( vdseIsBlockFree( pBitmap, 
+         SET_OFFSET( (unsigned char*)ptr - 2*PAGESIZE ) ) )
       {
          /* The free group has more than one page */
          offset = *((ptrdiff_t*)p);
          p = GET_PTR(offset, unsigned char);
       }
-      ((vdseFreeBufferNode*)p)->numPages += numPages;
+      ((vdseFreeBufferNode*)p)->numBlocks += numPages;
    }
    else
    {
@@ -433,8 +375,7 @@ int vdseFreePages( vdseMemAlloc*     pAlloc,
        * the previous one.
        */
       p = (unsigned char*)ptr;
-      ((vdseFreeBufferNode*)p)->numPages = numPages;
-      ((vdseFreeBufferNode*)p)->initialize = VDSE_FREENODE_SIGNATURE;
+      ((vdseFreeBufferNode*)p)->numBlocks = numPages;
       vdseLinkedListPutLast( &pAlloc->freeList, 
                              &((vdseFreeBufferNode*)p)->node );
    }
@@ -444,10 +385,11 @@ int vdseFreePages( vdseMemAlloc*     pAlloc,
     * is in the freeList or not.
     */
    otherNode = (vdseFreeBufferNode*)((unsigned char*)ptr + numPages*PAGESIZE);
-   otherBufferisFree = vdseIsPageFree( pAlloc, (unsigned char*) otherNode );
+   otherBufferisFree = vdseIsBlockFree( pBitmap, 
+                                        SET_OFFSET(otherNode) );
    if ( otherBufferisFree )
    {
-      ((vdseFreeBufferNode*)p)->numPages += otherNode->numPages;
+      ((vdseFreeBufferNode*)p)->numBlocks += otherNode->numBlocks;
       vdseLinkedListRemoveItem( &pAlloc->freeList, 
                                 &otherNode->node );
       memset( otherNode, 0, sizeof(vdseFreeBufferNode) );
@@ -457,17 +399,17 @@ int vdseFreePages( vdseMemAlloc*     pAlloc,
    pAlloc->numFreeCalls++;
 
    /* Set the bitmap */
-   vdseSetPagesFree( pAlloc, ptr, numPages );
+   vdseSetBlocksFree( pBitmap, SET_OFFSET(ptr), numPages*PAGESIZE );
    
    /*
     * Put the offset of the first free page on the last free page.
     * This makes it simpler/faster to rejoin groups of free pages. But 
     * only if the number of pages in the group > 1.
     */
-   if ( ((vdseFreeBufferNode*)p)->numPages > 1 )
+   if ( ((vdseFreeBufferNode*)p)->numBlocks > 1 )
    {
       /* Warning - we reuse ptr here */
-       ptr = p + (((vdseFreeBufferNode*)p)->numPages-1) * PAGESIZE; 
+       ptr = p + (((vdseFreeBufferNode*)p)->numBlocks-1) * PAGESIZE; 
        *((ptrdiff_t *)ptr) = SET_OFFSET(p);
    }
     
@@ -478,17 +420,17 @@ int vdseFreePages( vdseMemAlloc*     pAlloc,
   
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseMemAllocClose( vdseMemAlloc*     pAlloc,
-                        vdscErrorHandler* pError )
+void vdseMemAllocClose( vdseMemAlloc*       pAlloc,
+                        vdseSessionContext* pContext )
 {
-   VDS_PRE_CONDITION( pError != NULL );
-   VDS_PRE_CONDITION( pAlloc != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pAlloc   != NULL );
 
    pAlloc->totalAllocPages = 0;
    pAlloc->numMallocCalls  = 0;
    pAlloc->numFreeCalls    = 0;
    pAlloc->totalLength     = 0;
-   pAlloc-> bitmapLength   = 0;
+//   pAlloc-> bitmapLength   = 0;
 //   pAlloc->freeList.bh.prevfree = 0;
 //   pAlloc->freeList.bh.bsize    = 0;
 
@@ -548,17 +490,17 @@ void vdseMemAllocResetStats( vdseMemAlloc*    pAlloc,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdsErrors vdseMemAllocStats( vdseMemAlloc*    pAlloc,
-                             size_t *         pCurrentAllocated,
-                             size_t *         pTotalFree,
-                             size_t *         pMaxFree,
-                             size_t *         pNumberOfMallocs,
-                             size_t *         pNumberOfFrees,
-                             vdscErrorHandler* pError )
+vdsErrors vdseMemAllocStats( vdseMemAlloc*       pAlloc,
+                             size_t *            pCurrentAllocated,
+                             size_t *            pTotalFree,
+                             size_t *            pMaxFree,
+                             size_t *            pNumberOfMallocs,
+                             size_t *            pNumberOfFrees,
+                             vdseSessionContext* pContext )
 {
    int errcode = 0;
 
-   VDS_PRE_CONDITION( pError            != NULL );
+   VDS_PRE_CONDITION( pContext          != NULL );
    VDS_PRE_CONDITION( pAlloc            != NULL );
    VDS_PRE_CONDITION( pCurrentAllocated != NULL );
    VDS_PRE_CONDITION( pTotalFree        != NULL );

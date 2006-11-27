@@ -20,22 +20,22 @@
 
 int main()
 {
-   vdscErrorHandler error;
+   vdseSessionContext context;
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr;
    size_t allocatedLength = PAGESIZE*10;
    unsigned char* newBuff;
    
    initTest( false );
-   vdscInitErrorHandler( &error );
+   vdscInitErrorHandler( &context.errorHandler );
    
    ptr = malloc( allocatedLength );
 
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
-   vdseMemAllocInit( pAlloc, ptr, allocatedLength, &error );
+   vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
-   newBuff = vdseMallocPages( pAlloc, 0, &error );
+   newBuff = vdseMallocPages( pAlloc, 0, &context );
    
    return 0;
 }

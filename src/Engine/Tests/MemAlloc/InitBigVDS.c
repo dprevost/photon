@@ -35,14 +35,15 @@
 
 int main()
 {
-   vdscErrorHandler error;
+   vdseSessionContext context;
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr;
    size_t allocatedLength, i;
    unsigned char* buffer[8*PAGESIZE-2];
+   vdseMemBitmap* pBitmap;
 
    initTest( true );
-   vdscInitErrorHandler( &error );
+   vdscInitErrorHandler( &context.errorHandler );
    
    allocatedLength = 8*PAGESIZE*PAGESIZE;
 
@@ -50,8 +51,10 @@ int main()
 
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
-   vdseMemAllocInit( pAlloc, ptr, allocatedLength, &error );
-   if ( pAlloc->bitmapLength != PAGESIZE )
+   
+   vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
+   pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
+   if ( pBitmap->lengthInBits != 8*PAGESIZE )
    {
       fprintf( stderr, "Bitmap has the wrong length\n" );
       return 1;
@@ -60,19 +63,19 @@ int main()
    /* Allocate all the pages, one by one. */
    for ( i = 0; i < 8*PAGESIZE-3; ++i )
    {
-      buffer[i] = vdseMallocPages( pAlloc, 1, &error );
+      buffer[i] = vdseMallocPages( pAlloc, 1, &context );
    }
-   buffer[8*PAGESIZE-3] = vdseMallocPages( pAlloc, 1, &error );
+   buffer[8*PAGESIZE-3] = vdseMallocPages( pAlloc, 1, &context );
    if ( buffer[8*PAGESIZE-3] != NULL )
       return 1;
    
    /* Check the bitmap pattern */
-   for (i = 0; i < pAlloc->bitmapLength; ++i )
+   for (i = 0; i < pBitmap->lengthInBits/8; ++i )
    {
-      if (pAlloc->bitmap[i] != 0xff )
+      if (pBitmap->bitmap[i] != 0xff )
       {
          fprintf( stderr, "Malloc bitmap issue - %d 0x%x\n", i, 
-                  pAlloc->bitmap[i] );
+                  pBitmap->bitmap[i] );
          return 1;
       }
    }
@@ -80,24 +83,24 @@ int main()
    /* Free 1 page out of two */
    for ( i = 0; i < 8*PAGESIZE-3; i += 2 )
    {
-      vdseFreePages( pAlloc, buffer[i], 1, &error );
+      vdseFreePages( pAlloc, buffer[i], 1, &context );
    }
    
    /* Check the bitmap pattern - the first 3 are always busy */
-   if (pAlloc->bitmap[0] != 0xea ) /* 11101010 */
+   if (pBitmap->bitmap[0] != 0xea ) /* 11101010 */
    {
       fprintf( stderr, "Malloc bitmap issue - %d 0x%x\n", i, 
-               pAlloc->bitmap[i] );
+               pBitmap->bitmap[i] );
       return 1;
    }
       
-   fprintf( stderr, "%x\n", pAlloc->bitmap[0] ); 
-   for (i = 1; i < pAlloc->bitmapLength; ++i )
+   fprintf( stderr, "%x\n", pBitmap->bitmap[0] ); 
+   for (i = 1; i < pBitmap->lengthInBits/8; ++i )
    {
-      if (pAlloc->bitmap[i] != 0xaa ) /* 10101010 */
+      if (pBitmap->bitmap[i] != 0xaa ) /* 10101010 */
       {
          fprintf( stderr, "Malloc bitmap issue - %d 0x%x\n", i, 
-                  pAlloc->bitmap[i] );
+                  pBitmap->bitmap[i] );
          return 1;
       }
    }

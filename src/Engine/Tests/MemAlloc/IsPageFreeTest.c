@@ -20,47 +20,51 @@
 
 int main()
 {
-   vdscErrorHandler error;
+   vdseSessionContext context;
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr;
    bool isFree;
+   vdseMemBitmap* pBitmap;
    
    initTest( true );
+   vdscInitErrorHandler( &context.errorHandler );
+
    ptr = malloc( 50*PAGESIZE );
 
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
-   vdseMemAllocInit( pAlloc, ptr, 50*PAGESIZE, &error );
+   vdseMemAllocInit( pAlloc, ptr, 50*PAGESIZE, &context );
+   pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
    
-   if ( pAlloc->bitmapLength != 7 )
+   if ( (pBitmap->lengthInBits-1)/8+1 != 7 )
    {
       fprintf( stderr, "Wrong bitmapLength, got %d, expected %d\n",
-               pAlloc->bitmapLength, 7 );
+               pBitmap->lengthInBits/8, 7 );
       return 1;
    }
-   if ( pAlloc->bitmap[0] != 0xc0 )
+   if ( pBitmap->bitmap[0] != 0xc0 )
    {
       fprintf( stderr, "Wrong bitmap[0], got 0x%x, expected 0x%x\n", 
-               pAlloc->bitmap[0], 0xc0 );
+               pBitmap->bitmap[0], 0xc0 );
       return 1;
    }
    
-   isFree = vdseIsPageFree( pAlloc, ptr );
+   isFree = vdseIsBlockFree( pBitmap, 0 );
 //   fprintf( stderr, "q = %d\n", isFree );
    if ( isFree )
       return 1;
 
-   isFree = vdseIsPageFree( pAlloc, ptr+2*PAGESIZE );
+   isFree = vdseIsBlockFree( pBitmap, 2*PAGESIZE );
 //   fprintf( stderr, "q = %d\n", isFree );
    if ( ! isFree )
       return 1;
 
-   isFree = vdseIsPageFree( pAlloc, ptr-PAGESIZE );
+   isFree = vdseIsBlockFree( pBitmap, -PAGESIZE );
 //   fprintf( stderr, "q = %d\n", isFree );
    if ( isFree )
       return 1;
    
-   isFree = vdseIsPageFree( pAlloc, ptr+50*PAGESIZE );
+   isFree = vdseIsBlockFree( pBitmap, 50*PAGESIZE );
 //   fprintf( stderr, "q = %d\n", isFree );
    if ( isFree )
       return 1;

@@ -46,6 +46,24 @@ typedef struct	vdseLinkNode
 
 } vdseLinkNode;
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/** 
+ * A "specialized" version of vdseLinkNode. It is used in many places
+ * and was put here to avoid circular dependencies...
+ */
+typedef struct vdseFreeBufferNode
+{
+   /* The linked node itself */
+   vdseLinkNode node;
+   
+   /* The number of blocks associate with each member of the list. */
+   size_t numBlocks;
+   
+} vdseFreeBufferNode;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /** Initialize the elements of the vdseLinkNode to NULL_OFFSET. */
 static inline
 void vdseLinkNodeInit( vdseLinkNode* pNode )
@@ -54,6 +72,12 @@ void vdseLinkNodeInit( vdseLinkNode* pNode )
    
    pNode->nextOffset     = NULL_OFFSET;
    pNode->previousOffset = NULL_OFFSET;
+}
+
+static inline
+void vdseLinkNodeFini( vdseLinkNode* pNode )
+{
+   vdseLinkNodeInit( pNode );
 }
 
 /** Test the values of the elements of the vdseLinkNode.

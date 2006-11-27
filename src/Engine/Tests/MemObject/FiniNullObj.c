@@ -16,6 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "MemoryObject.h"
+#include "EngineTestCommon.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -24,9 +25,9 @@ int main()
    vdseMemObject obj;
    vdsErrors errcode;
    
+   initTest( false );
    errcode = vdseMemObjectInit( &obj, 
                                 VDSE_IDENT_ALLOCATOR,
-                                sizeof(vdseMemObject),
                                 1 );
    if ( errcode != VDS_OK ) return 0;
    

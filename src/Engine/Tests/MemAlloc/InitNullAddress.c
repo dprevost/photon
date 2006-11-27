@@ -22,19 +22,19 @@
 
 int main()
 {
-   vdscErrorHandler error;
+   vdseSessionContext context;
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr;
    size_t allocatedLength = PAGESIZE*10;
    
    initTest( false );
-   vdscInitErrorHandler( &error );
+   vdscInitErrorHandler( &context.errorHandler );
    
    ptr = malloc( allocatedLength );
 
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
-   vdseMemAllocInit( pAlloc, NULL, allocatedLength, &error );
+   vdseMemAllocInit( pAlloc, NULL, allocatedLength, &context );
    
    return 0;
 }

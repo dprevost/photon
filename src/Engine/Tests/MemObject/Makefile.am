@@ -17,7 +17,6 @@ check_PROGRAMS =               \
                  InitInvType   \
                  InitPass      \
                  InitZeroPages \
-                 InitZeroSize  \
                  InitZeroType  
 
 FiniNullObj_SOURCES    = FiniNullObj.c
@@ -26,7 +25,6 @@ InitNullObj_SOURCES    = InitNullObj.c
 InitInvType_SOURCES    = InitInvType.c
 InitPass_SOURCES       = InitPass.c
 InitZeroPages_SOURCES  = InitZeroPages.c
-InitZeroSize_SOURCES   = InitZeroSize.c
 InitZeroType_SOURCES   = InitZeroType.c
 
 EXTRA_DIST =         
@@ -41,7 +39,6 @@ TESTS =               \
         InitInvType   \
         InitPass      \
         InitZeroPages \
-        InitZeroSize  \
         InitZeroType  
 
 XFAIL_TESTS =               \
@@ -49,13 +46,13 @@ XFAIL_TESTS =               \
               InitNullObj   \
               InitInvType   \
               InitZeroPages \
-              InitZeroSize  \
               InitZeroType  
               
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la
 
 AM_CPPFLAGS = -I$(top_srcdir)/src/Engine \
+              -I$(top_srcdir)/src/Engine/Tests \
               -I$(top_srcdir)/src/Common \
               -I$(top_srcdir)/src/include
 

@@ -23,21 +23,26 @@ libEngine_la_SOURCES =                   \
                        ListErrors.h      \
                        LogFile.c         \
                        LogFile.h         \
+                       Hash.c            \
+                       Hash.h            \
                        MemoryAllocator.c \
                        MemoryAllocator.h \
-                       MemoryObject.h    \
+                       MemBitmap.c       \
+                       MemBitmap.h       \
+                       MemBitmap.inl     \
                        MemoryObject.c    \
+                       MemoryObject.h    \
+                       PageGroup.c       \
+                       PageGroup.h       \
+                       SessionContext.h  \
                        VdsErrorHandler.c \
                        VdsErrorHandler.h
    
 #   MemoryManager.c         \
    MemoryManager.h         
 
-#   LogFile.c               \
-   LogFile.h               \
-   Queue.cpp               \
+#  Queue.cpp               \
    Queue.h                 \
-   SessionContext.h        \
    Transaction.cpp         \
    Transaction.h           \
    TransactionBase.h       \

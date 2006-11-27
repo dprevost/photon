@@ -57,7 +57,7 @@ extern vdscErrMsgHandle g_vdsErrorHandle;
  * are never set to NULL_OFFSET...). 
  */
 #define GET_PTR(off,class) ( (class*) (           \
-       (unsigned char*) g_pBaseAddr + (ptrdiff_t) off ))
+       (unsigned char*) g_pBaseAddr + (ptrdiff_t) (off) ))
 
 #define SET_PTR(target,offset,type)  \
    if ( offset == NULL_OFFSET ) \
@@ -98,6 +98,9 @@ typedef unsigned int transaction_T;
 #define MAX_KEY_LENGTH    1024
 
 #define LOCK_TIMEOUT 10000 /* in milliseconds */
+
+/** Memory allocation will be done as multiples of VDSE_ALLOCATION_UNIT. */
+#define VDSE_ALLOCATION_UNIT 16
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -16,11 +16,14 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "MemoryObject.h"
+#include "EngineTestCommon.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
+   initTest( false );
+
    vdseMemObjectInit( NULL, 
                       VDSE_IDENT_ALLOCATOR,
                       sizeof(vdseMemObject),

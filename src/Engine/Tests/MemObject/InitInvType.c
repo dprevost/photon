@@ -16,6 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "MemoryObject.h"
+#include "EngineTestCommon.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -23,6 +24,7 @@ int main()
 {
    vdseMemObject obj;
    
+   initTest( false );
    vdseMemObjectInit( &obj, 
                       (enum ObjectIdentifier)(VDSE_IDENT_LAST + 200),
                       sizeof(obj),
