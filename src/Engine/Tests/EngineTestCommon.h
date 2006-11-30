@@ -24,6 +24,12 @@
 
 vdscErrMsgHandle g_vdsErrorHandle;
 
+#define ERROR_EXIT(RC) \
+{\
+   fprintf( stderr, "Abnormal error at line %d\n", __LINE__ );\
+   return RC;\
+}
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**

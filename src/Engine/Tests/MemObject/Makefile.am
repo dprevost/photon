@@ -10,43 +10,78 @@
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =               \
-                 FiniNullObj   \
-                 FiniPass      \
-                 InitNullObj   \
-                 InitInvType   \
-                 InitPass      \
-                 InitZeroPages \
-                 InitZeroType  
+check_PROGRAMS =                   \
+                 FiniNullObj       \
+                 FiniPass          \
+                 FreeNullContext   \
+                 FreeNullObj       \
+                 FreeNullPtr       \
+                 FreePass          \
+                 FreeZeroBytes     \
+                 InitNullObj       \
+                 InitInvType       \
+                 InitPass          \
+                 InitZeroPages     \
+                 InitZeroType      \
+                 MallocNullContext \
+                 MallocNullObj     \
+                 MallocPass        \
+                 MallocZeroBytes   
 
-FiniNullObj_SOURCES    = FiniNullObj.c
-FiniPass_SOURCES       = FiniPass.c
-InitNullObj_SOURCES    = InitNullObj.c
-InitInvType_SOURCES    = InitInvType.c
-InitPass_SOURCES       = InitPass.c
-InitZeroPages_SOURCES  = InitZeroPages.c
-InitZeroType_SOURCES   = InitZeroType.c
+
+FiniNullObj_SOURCES       = FiniNullObj.c
+FiniPass_SOURCES          = FiniPass.c
+FreeNullContext_SOURCES   = FreeNullContext.c
+FreeNullObj_SOURCES       = FreeNullObj.c
+FreeNullPtr_SOURCES       = FreeNullPtr.c
+FreePass_SOURCES          = FreePass.c
+FreeZeroBytes_SOURCES     = FreeZeroBytes.c
+InitNullObj_SOURCES       = InitNullObj.c
+InitInvType_SOURCES       = InitInvType.c
+InitPass_SOURCES          = InitPass.c
+InitZeroPages_SOURCES     = InitZeroPages.c
+InitZeroType_SOURCES      = InitZeroType.c
+MallocNullContext_SOURCES = MallocNullContext.c
+MallocNullObj_SOURCES     = MallocNullObj.c
+MallocPass_SOURCES        = MallocPass.c
+MallocZeroBytes_SOURCES   = MallocZeroBytes.c
 
 EXTRA_DIST =         
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
 
-TESTS =               \
-        FiniNullObj   \
-        FiniPass      \
-        InitNullObj   \
-        InitInvType   \
-        InitPass      \
-        InitZeroPages \
-        InitZeroType  
+TESTS =                   \
+        FiniNullObj       \
+        FiniPass          \
+        FreeNullContext   \
+        FreeNullObj       \
+        FreeNullPtr       \
+        FreePass          \
+        FreeZeroBytes     \
+        InitNullObj       \
+        InitInvType       \
+        InitPass          \
+        InitZeroPages     \
+        InitZeroType      \
+        MallocNullContext \
+        MallocNullObj     \
+        MallocPass        \
+        MallocZeroBytes   
 
-XFAIL_TESTS =               \
-              FiniNullObj   \
-              InitNullObj   \
-              InitInvType   \
-              InitZeroPages \
-              InitZeroType  
+XFAIL_TESTS =                   \
+              FiniNullObj       \
+              FreeNullContext   \
+              FreeNullObj       \
+              FreeNullPtr       \
+              FreeZeroBytes     \
+              InitNullObj       \
+              InitInvType       \
+              InitZeroPages     \
+              InitZeroType      \
+              MallocNullContext \
+              MallocNullObj     \
+              MallocZeroBytes   
               
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la

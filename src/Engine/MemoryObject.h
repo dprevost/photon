@@ -73,10 +73,10 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
                            size_t              numBytes,
                            vdseSessionContext* pContext );
 
-int vdseFree( vdseMemObject*      pMemObj,
-              unsigned char*      ptr, 
-              size_t              numBytes,
-              vdseSessionContext* pContext );
+void vdseFree( vdseMemObject*      pMemObj,
+               unsigned char*      ptr, 
+               size_t              numBytes,
+               vdseSessionContext* pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
