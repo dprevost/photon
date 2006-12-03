@@ -15,6 +15,8 @@ check_PROGRAMS =                       \
                  AddHandlerNullHandler \
                  AddHandlerNullName    \
                  AddHandlerPass        \
+                 AnyErrorNullError     \
+                 AnyErrorPass          \
                  ChainErrorNullDef     \
                  ChainErrorNullHandler \
                  ChainErrorInvalidSig  \
@@ -28,6 +30,10 @@ check_PROGRAMS =                       \
                  GetErrorNullError     \
                  GetErrorNullMsg       \
                  GetErrorZeroLength    \
+                 GetLastNullError      \
+                 GetLastPass           \
+                 GetLengthNullError    \
+                 GetLengthPass         \
                  InitNoInitDefs        \
                  InitNullError         \
                  InitPass              \
@@ -40,6 +46,8 @@ AddHandlerNullDef_SOURCES     = AddHandlerNullDef.c
 AddHandlerNullHandler_SOURCES = AddHandlerNullHandler.c
 AddHandlerNullName_SOURCES    = AddHandlerNullName.c
 AddHandlerPass_SOURCES        = AddHandlerPass.c
+AnyErrorNullError_SOURCES     = AnyErrorNullError.c
+AnyErrorPass_SOURCES          = AnyErrorPass.c
 ChainErrorNullDef_SOURCES     = ChainErrorNullDef.c
 ChainErrorNullHandler_SOURCES = ChainErrorNullHandler.c
 ChainErrorInvalidSig_SOURCES  = ChainErrorInvalidSig.c
@@ -53,6 +61,10 @@ GetErrorInvalidSig_SOURCES    = GetErrorInvalidSig.c
 GetErrorNullError_SOURCES     = GetErrorNullError.c
 GetErrorNullMsg_SOURCES       = GetErrorNullMsg.c
 GetErrorZeroLength_SOURCES    = GetErrorZeroLength.c
+GetLastNullError_SOURCES      = GetLastNullError.c
+GetLastPass_SOURCES           = GetLastPass.c
+GetLengthNullError_SOURCES    = GetLengthNullError.c
+GetLengthPass_SOURCES         = GetLengthPass.c
 InitNoInitDefs_SOURCES        = InitNoInitDefs.c
 InitNullError_SOURCES         = InitNullError.c
 InitPass_SOURCES              = InitPass.c
@@ -73,6 +85,8 @@ TESTS +=                       \
          AddHandlerNullHandler \
          AddHandlerNullName    \
          AddHandlerPass        \
+         AnyErrorNullError     \
+         AnyErrorPass          \
          ChainErrorNullDef     \
          ChainErrorNullHandler \
          ChainErrorInvalidSig  \
@@ -86,6 +100,10 @@ TESTS +=                       \
          GetErrorNullError     \
          GetErrorNullMsg       \
          GetErrorZeroLength    \
+         GetLastNullError      \
+         GetLastPass           \
+         GetLengthNullError    \
+         GetLengthPass         \
          InitNoInitDefs        \
          InitNullError         \
          InitPass              \
@@ -105,6 +123,7 @@ XFAIL_TESTS =                       \
               AddHandlerNullDef     \
               AddHandlerNullHandler \
               AddHandlerNullName    \
+              AnyErrorNullError     \
               ChainErrorNullDef     \
               ChainErrorNullHandler \
               ChainErrorInvalidSig  \
@@ -116,6 +135,8 @@ XFAIL_TESTS =                       \
               GetErrorNullError     \
               GetErrorNullMsg       \
               GetErrorZeroLength    \
+              GetLastNullError      \
+              GetLengthNullError    \
               InitNoInitDefs        \
               InitNullError         \
               SetErrorInvalidSig    \
