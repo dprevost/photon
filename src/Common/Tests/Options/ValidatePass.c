@@ -16,6 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Options.h"
+#include "PrintError.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -36,10 +37,7 @@ int main()
    
    errcode = vdscSetSupportedOptions( 5, opts, &handle );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Unexpected error in vdscSetSupportedOptions\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
    
    strcpy( dummyArgs, "OptionTest2 --address 12345 -v --zzz" );
    /*                  012345678901234567890123456789012345 */
@@ -56,10 +54,7 @@ int main()
 
    errcode = vdscValidateUserOptions( handle, 5, dummyPtrs, 1 );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Unexpected error in vdscSetSupportedOptions\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
    
    vdscUnsetSupportedOptions( handle );
 

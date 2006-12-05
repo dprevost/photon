@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ErrorHandler.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -30,10 +31,13 @@ int main()
    
    for ( i = 0; i < VDSC_ERROR_CHAIN_LENGTH; ++i )
    {
-      if ( errorHandler.errorCode[0]   != 0 ) return -1;
-      if ( errorHandler.errorHandle[0] != VDSC_NO_ERRHANDLER ) return -1;
+      if ( errorHandler.errorCode[0]   != 0 )
+         ERROR_EXIT( 1, NULL, );
+      if ( errorHandler.errorHandle[0] != VDSC_NO_ERRHANDLER )
+         ERROR_EXIT( 1, NULL, );
    }
-   if ( errorHandler.initialized != VDSC_ERROR_HANDLER_SIGNATURE ) return -1;
+   if ( errorHandler.initialized != VDSC_ERROR_HANDLER_SIGNATURE )
+      ERROR_EXIT( 1, NULL, );
    
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();

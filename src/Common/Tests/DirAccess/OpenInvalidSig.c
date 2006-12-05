@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "DirAccess.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -41,3 +42,4 @@ int main()
 
    return 0;
 }
+

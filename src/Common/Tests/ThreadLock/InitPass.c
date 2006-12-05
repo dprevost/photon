@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ThreadLock.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -27,16 +28,10 @@ int main( int argc, char* argv[] )
 
    errcode = vdscInitThreadLock( &lock );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Unexpected error in vdscInitLock!\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
  
    if ( lock.initialized != VDSC_THREADLOCK_SIGNATURE )
-   {
-      fprintf( stderr, "lock.initialized - wrong value!\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
    
    vdscFiniThreadLock( &lock );
 

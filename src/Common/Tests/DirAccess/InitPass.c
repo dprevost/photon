@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "DirAccess.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -27,13 +28,16 @@ int main()
    vdscInitDir( &iterator );
 
    if ( iterator.initialized != VDSC_DIR_ACCESS_SIGNATURE )
-      return -1;
+      ERROR_EXIT( 1, NULL, );
    
 #if defined(WIN32)
-   if ( iterator.handle != VDS_INVALID_HANDLE ) return -1;
-   if ( iterator.dirName[0] != '\0' ) return -1;
+   if ( iterator.handle != VDS_INVALID_HANDLE )
+      ERROR_EXIT( 1, NULL, );
+   if ( iterator.dirName[0] != '\0' )
+      ERROR_EXIT( 1, NULL, );
 #else
-   if ( iterator.pDir != NULL ) return -1;
+   if ( iterator.pDir != NULL )
+      ERROR_EXIT( 1, NULL, );
 #endif
 
    vdscFiniDir( &iterator );

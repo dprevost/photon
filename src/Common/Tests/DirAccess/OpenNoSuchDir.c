@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "DirAccess.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -42,8 +43,10 @@ int main()
    vdscInitErrorHandler( &errorHandler );
    
    errcode = vdscOpenDir( &iterator, "abc123", &errorHandler );
-   if ( errcode == 0 ) return -1;
-   if ( ! vdscAnyErrors( &errorHandler ) ) return -1;
+   if ( errcode == 0 )
+      ERROR_EXIT( 1, NULL, );
+   if ( ! vdscAnyErrors( &errorHandler ) )
+      ERROR_EXIT( 1, NULL, );
 
    vdscCloseDir( &iterator );
 
@@ -55,3 +58,4 @@ int main()
 
 #endif
 }
+

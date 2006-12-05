@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ProcessLock.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -27,32 +28,20 @@ int main()
 
    errcode = vdscInitProcessLock( &lock );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Unexpected error in vdscInitLock!\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
    
    if ( vdscTestLockPidValue( &lock, 0xff ) )
-   {
-      fprintf( stderr, "TestLockPidValue invalid answer before Acquire\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
 
    vdscAcquireProcessLock( &lock, 0xff );
 
    if ( !vdscTestLockPidValue( &lock, 0xff ) )
-   {
-      fprintf( stderr, "TestLockPidValue invalid answer after Acquire\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
 
    vdscReleaseProcessLock( &lock );
 
    if ( vdscTestLockPidValue( &lock, 0xff ) )
-   {
-      fprintf( stderr, "TestLockPidValue invalid answer after Release\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
 
    vdscFiniProcessLock( &lock );
 

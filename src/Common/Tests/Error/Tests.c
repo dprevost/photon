@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ErrorHandler.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -42,7 +43,11 @@ int main()
    vdscInitErrorHandler( &errorHandler );
   
    handle1 = vdscAddErrorMsgHandler( "Dummy1", &msgErrorHandler );
+   if ( handle1 == VDSC_NO_ERRHANDLER )
+      ERROR_EXIT( 1, NULL, );
    handle2 = vdscAddErrorMsgHandler( "Dummy2", &msgErrorHandler );
+   if ( handle2 == VDSC_NO_ERRHANDLER )
+      ERROR_EXIT( 1, NULL, );
    
    vdscSetError( &errorHandler, handle2, 7 );
 

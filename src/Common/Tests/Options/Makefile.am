@@ -10,6 +10,8 @@
 
 CLEANFILES = *~ core
 
+INCLUDE_FILES = PrintError.h
+
 check_PROGRAMS =                            \
                  GetLongOptNullHandle       \
                  GetLongOptNullOpt          \
@@ -44,38 +46,38 @@ check_PROGRAMS =                            \
                  ValidateNullHandle         \
                  ValidatePass               
 
-GetLongOptNullHandle_SOURCES       = GetLongOptNullHandle.c
-GetLongOptNullOpt_SOURCES          = GetLongOptNullOpt.c
-GetLongOptNullValue_SOURCES        = GetLongOptNullValue.c
-GetLongOptPass_SOURCES             = GetLongOptPass.c
-GetShortOptNullHandle_SOURCES      = GetShortOptNullHandle.c
-GetShortOptNullValue_SOURCES       = GetShortOptNullValue.c
-GetShortOptPass_SOURCES            = GetShortOptPass.c
-IsLongPresentNullHandle_SOURCES    = IsLongPresentNullHandle.c
-IsLongPresentNullOpt_SOURCES       = IsLongPresentNullOpt.c
-IsLongPresentPass_SOURCES          = IsLongPresentPass.c
-IsShortPresentNullHandle_SOURCES   = IsShortPresentNullHandle.c
-IsShortPresentPass_SOURCES         = IsShortPresentPass.c
-SetOptionsNullHandle_SOURCES       = SetOptionsNullHandle.c
-SetOptionsNullOpts_SOURCES         = SetOptionsNullOpts.c
-SetOptionsNullEndedOpt_SOURCES     = SetOptionsNullEndedOpt.c
-SetOptionsNullEndedComment_SOURCES = SetOptionsNullEndedComment.c
-SetOptionsNullEndedValue_SOURCES   = SetOptionsNullEndedValue.c
-SetOptionsNumOptsZero_SOURCES      = SetOptionsNumOptsZero.c
-SetOptionsPass_SOURCES             = SetOptionsPass.c
-SetOptionsRepeatedLong_SOURCES     = SetOptionsRepeatedLong.c
-SetOptionsRepeatedShort_SOURCES    = SetOptionsRepeatedShort.c
-ShowUsageNullAddArgs_SOURCES       = ShowUsageNullAddArgs.c
-ShowUsageNullHandle_SOURCES        = ShowUsageNullHandle.c
-ShowUsageNullProgName_SOURCES      = ShowUsageNullProgName.c
-ShowUsagePass_SOURCES              = ShowUsagePass.c
-Tests_SOURCES                      = Tests.c
-UnsetOptNullHandle_SOURCES         = UnsetOptNullHandle.c
-ValidateArgcZero_SOURCES           = ValidateArgcZero.c
-ValidateNullArgv_SOURCES           = ValidateNullArgv.c
-ValidateNULLArgvi_SOURCES          = ValidateNULLArgvi.c
-ValidateNullHandle_SOURCES         = ValidateNullHandle.c
-ValidatePass_SOURCES               = ValidatePass.c
+GetLongOptNullHandle_SOURCES       = $(INCLUDE_FILES) GetLongOptNullHandle.c
+GetLongOptNullOpt_SOURCES          = $(INCLUDE_FILES) GetLongOptNullOpt.c
+GetLongOptNullValue_SOURCES        = $(INCLUDE_FILES) GetLongOptNullValue.c
+GetLongOptPass_SOURCES             = $(INCLUDE_FILES) GetLongOptPass.c
+GetShortOptNullHandle_SOURCES      = $(INCLUDE_FILES) GetShortOptNullHandle.c
+GetShortOptNullValue_SOURCES       = $(INCLUDE_FILES) GetShortOptNullValue.c
+GetShortOptPass_SOURCES            = $(INCLUDE_FILES) GetShortOptPass.c
+IsLongPresentNullHandle_SOURCES    = $(INCLUDE_FILES) IsLongPresentNullHandle.c
+IsLongPresentNullOpt_SOURCES       = $(INCLUDE_FILES) IsLongPresentNullOpt.c
+IsLongPresentPass_SOURCES          = $(INCLUDE_FILES) IsLongPresentPass.c
+IsShortPresentNullHandle_SOURCES   = $(INCLUDE_FILES) IsShortPresentNullHandle.c
+IsShortPresentPass_SOURCES         = $(INCLUDE_FILES) IsShortPresentPass.c
+SetOptionsNullHandle_SOURCES       = $(INCLUDE_FILES) SetOptionsNullHandle.c
+SetOptionsNullOpts_SOURCES         = $(INCLUDE_FILES) SetOptionsNullOpts.c
+SetOptionsNullEndedOpt_SOURCES     = $(INCLUDE_FILES) SetOptionsNullEndedOpt.c
+SetOptionsNullEndedComment_SOURCES = $(INCLUDE_FILES) SetOptionsNullEndedComment.c
+SetOptionsNullEndedValue_SOURCES   = $(INCLUDE_FILES) SetOptionsNullEndedValue.c
+SetOptionsNumOptsZero_SOURCES      = $(INCLUDE_FILES) SetOptionsNumOptsZero.c
+SetOptionsPass_SOURCES             = $(INCLUDE_FILES) SetOptionsPass.c
+SetOptionsRepeatedLong_SOURCES     = $(INCLUDE_FILES) SetOptionsRepeatedLong.c
+SetOptionsRepeatedShort_SOURCES    = $(INCLUDE_FILES) SetOptionsRepeatedShort.c
+ShowUsageNullAddArgs_SOURCES       = $(INCLUDE_FILES) ShowUsageNullAddArgs.c
+ShowUsageNullHandle_SOURCES        = $(INCLUDE_FILES) ShowUsageNullHandle.c
+ShowUsageNullProgName_SOURCES      = $(INCLUDE_FILES) ShowUsageNullProgName.c
+ShowUsagePass_SOURCES              = $(INCLUDE_FILES) ShowUsagePass.c
+Tests_SOURCES                      = $(INCLUDE_FILES) Tests.c
+UnsetOptNullHandle_SOURCES         = $(INCLUDE_FILES) UnsetOptNullHandle.c
+ValidateArgcZero_SOURCES           = $(INCLUDE_FILES) ValidateArgcZero.c
+ValidateNullArgv_SOURCES           = $(INCLUDE_FILES) ValidateNullArgv.c
+ValidateNULLArgvi_SOURCES          = $(INCLUDE_FILES) ValidateNULLArgvi.c
+ValidateNullHandle_SOURCES         = $(INCLUDE_FILES) ValidateNullHandle.c
+ValidatePass_SOURCES               = $(INCLUDE_FILES) ValidatePass.c
 
 EXTRA_DIST = 
 

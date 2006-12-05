@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "DirAccess.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -34,10 +35,7 @@ int main()
    
    errcode = vdscOpenDir( pIterator, "..", &errorHandler );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Error opening the directory\n" );
-      return 0;
-   }
+      ERROR_EXIT( 0, &errorHandler, );
    
    vdscCloseDir( pIterator );
 

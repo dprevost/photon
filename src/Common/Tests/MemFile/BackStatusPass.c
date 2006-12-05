@@ -39,103 +39,59 @@ int main()
 
    errcode = vdscCreateBackstore( &mem, 0644, &errorHandler );
    if ( errcode != 0 ) 
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
    
    vdscBackStoreStatus( &mem, &status );
    if ( status.fileExist != 1 )
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
    if ( status.fileReadable != 1 )
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
    if ( status.fileWritable != 1 )
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
    if ( status.lenghtOK != 1 )
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
    if ( status.actualLLength != 10*1024 )
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
 
    errcode = unlink( "MemFile.mem" );
    if ( errcode != 0 ) 
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, NULL, );
 
    errcode = vdscCreateBackstore( &mem, 0600, &errorHandler );
    if ( errcode != 0 ) 
-   {
-      fprintf( stderr, "errno = %d\n", errno );
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
    
    vdscBackStoreStatus( &mem, &status );
    if ( status.fileExist != 1 )
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
    if ( status.fileReadable != 1 )
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
    if ( status.fileWritable != 1 )
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
 
    errcode = unlink( "MemFile.mem" );
    if ( errcode != 0 ) 
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, NULL, );
 
    errcode = vdscCreateBackstore( &mem, 0660, &errorHandler );
    if ( errcode != 0 ) 
-   {
-      fprintf( stderr, "errno = %d\n", errno );
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
    
    vdscBackStoreStatus( &mem, &status );
 
    if ( status.fileExist != 1 )
-      rc = -1;
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
    if ( status.fileReadable != 1 )
-      rc = -1;
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
    if ( status.fileWritable != 1 )
-      rc = -1;
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
 
- the_exit:
-
-   printError( &errorHandler );
    unlink( "MemFile.mem" );
    
    vdscFiniMemoryFile( &mem );
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
 
-   return rc;
+   return 0;
 }
 

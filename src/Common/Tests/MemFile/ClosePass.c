@@ -39,28 +39,25 @@ int main()
 
    errcode = vdscCreateBackstore( &mem, 0755, &errorHandler );
    if ( errcode != 0 ) 
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
 
    errcode = vdscOpenMemFile( &mem, &pAddr, &errorHandler );
    if ( errcode != 0 ) 
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
 
    vdscCloseMemFile( &mem, &errorHandler );
    
-   if ( mem.fileHandle != VDS_INVALID_HANDLE ) rc = -1;
-   if ( mem.baseAddr   != VDS_MAP_FAILED ) rc = -1;
+   if ( mem.fileHandle != VDS_INVALID_HANDLE )
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+
+   if ( mem.baseAddr   != VDS_MAP_FAILED )
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+
 
 #if defined (WIN32)
-   if ( mem.mapHandle != VDS_INVALID_HANDLE ) rc = -1;
+   if ( mem.mapHandle != VDS_INVALID_HANDLE )
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
 #endif
-
-the_exit:
 
    unlink( "MemFile.mem" );
    
@@ -68,6 +65,6 @@ the_exit:
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
 
-   return rc;
+   return 0;
 }
 

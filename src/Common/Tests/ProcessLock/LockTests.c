@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ProcessLock.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -28,38 +29,23 @@ int main()
    
    errcode = vdscInitProcessLock( &lock );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Failed to init the lock\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
    
    errcode = vdscTryAcquireProcessLock( &lock, pid, 0 );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Failed to acquire the lock\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
 
    errcode = vdscTryAcquireProcessLock( &lock, pid, 1000 );
    if ( errcode == 0 )
-   {
-      fprintf( stderr, "Failed to not acquire the lock\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
 
    errcode = vdscIsItLocked( &lock );   
    if ( errcode == 0 ) 
-   {
-      fprintf( stderr, "Failed vdscIsItLocked() \n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
    
    errcode = vdscTestLockPidValue( &lock, pid );
    if ( errcode == 0 )
-   {
-      fprintf( stderr, "Failed to test the PID %d\n", errcode );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
       
    vdscReleaseProcessLock( &lock );
 
@@ -68,10 +54,7 @@ int main()
 
    errcode = vdscTryAcquireProcessLock( &lock, pid, 1000 );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Failed to acquire the lock\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
 
    vdscReleaseProcessLock( &lock );
 

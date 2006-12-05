@@ -20,6 +20,7 @@
 #include "Timer.h"
 #include "ProcessLock.h"
 #include "ErrorHandler.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -71,7 +72,7 @@ int main( int argc, char* argv[] )
    int dumId;
 
    if ( argc < 5 )
-      return -1;
+      ERROR_EXIT( 1, NULL, );
 
    vdscInitErrorDefs();
 
@@ -95,18 +96,12 @@ int main( int argc, char* argv[] )
       errcode = vdscCreateBackstore( &memFile, 0644, &errorHandler );
 
       if ( errcode < 0 )
-      {
-         fprintf( stderr, " mmap problem = %d\n", errno );
-         return -1;
-      }
-
+         ERROR_EXIT( 1, &errorHandler, );
    }
    errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
    if ( errcode < 0 )
-   {
-      fprintf( stderr, " mmap problem = (id = %d)%d\n", identifier, errno );
-      return -1;
-   }
+      ERROR_EXIT( 1, &errorHandler, );
+
    if ( identifier == 0 )
       memset( ptr, 0, 10000 );
    data = (struct localData*) ptr;
@@ -116,10 +111,7 @@ int main( int argc, char* argv[] )
    {
       errcode = vdscInitProcessLock( &data->lock );
       if ( errcode < 0 )
-      {
-         fprintf( stderr, " lock problem = %d\n", errno );
-         return -1;
-      } 
+         ERROR_EXIT( 1, NULL, );
    }
    
    vdscBeginTimer( &timer );
@@ -142,7 +134,7 @@ int main( int argc, char* argv[] )
       if ( pid != savepid || pid == 0 )
       {
          fprintf( stderr, "Wrong2... %d %d\n", pid, savepid );
-         return 1; // Error!!!
+         ERROR_EXIT( 1, NULL, );
       }
       sprintf( data->dum2, "dumStr2 %d  ", identifier+1 );
       memcpy( data->dum1, data->dum2, 100 );
@@ -152,6 +144,7 @@ int main( int argc, char* argv[] )
       {
          fprintf( stderr, "Wrong... %d %d %s-%s\n", identifier+1, 
                   dumId, data->dum1, data->dum2 );
+         ERROR_EXIT( 1, NULL, );
          return 1; // Error!!!
       }
       
@@ -181,3 +174,4 @@ int main( int argc, char* argv[] )
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

@@ -10,6 +10,8 @@
 
 CLEANFILES = *~ core MemFile.mem
 
+INCLUDE_FILES = PrintError.h
+
 check_PROGRAMS =                         \
                  BackStatusInvalidSig    \
                  BackStatusMemNull       \
@@ -64,57 +66,57 @@ check_PROGRAMS =                         \
                  Tests                   
 
 
-BackStatusInvalidSig_SOURCES    = BackStatusInvalidSig.c
-BackStatusMemNull_SOURCES       = BackStatusMemNull.c
-BackStatusNameEmpty_SOURCES     = BackStatusNameEmpty.c
-BackStatusPass_SOURCES          = BackStatusPass.c
-BackStatusStatusNull_SOURCES    = BackStatusStatusNull.c
-CloseNullError_SOURCES          = CloseNullError.c
-CloseInvalidSig_SOURCES         = CloseInvalidSig.c
-CloseMemNull_SOURCES            = CloseMemNull.c
-ClosePass_SOURCES               = ClosePass.c
-CreateBackNullError_SOURCES     = CreateBackNullError.c
-CreateBackInvalidSig_SOURCES    = CreateBackInvalidSig.c
-CreateBackInvLength_SOURCES     = CreateBackInvLength.c
-CreateBackMemNull_SOURCES       = CreateBackMemNull.c
-CreateBackNameEmpty_SOURCES     = CreateBackNameEmpty.c
-CreateBackPass_SOURCES          = CreateBackPass.c
-CreateBackPerm0000_SOURCES      = CreateBackPerm0000.c
-CreateBackPerm0200_SOURCES      = CreateBackPerm0200.c
-CreateBackPerm0400_SOURCES      = CreateBackPerm0400.c
-CreateBackPerm0500_SOURCES      = CreateBackPerm0500.c
-FiniInvalidSig_SOURCES          = FiniInvalidSig.c
-FiniNullMem_SOURCES             = FiniNullMem.c
-FiniPass_SOURCES                = FiniPass.c
-InitLengthPositive_SOURCES      = InitLengthPositive.c
-InitMemNull_SOURCES             = InitMemNull.c
-InitNameEmpty_SOURCES           = InitNameEmpty.c
-InitNameNull_SOURCES            = InitNameNull.c
-InitPass_SOURCES                = InitPass.c
-OpenAddrNull_SOURCES            = OpenAddrNull.c
-OpenNullError_SOURCES           = OpenNullError.c
-OpenInvalidLength_SOURCES       = OpenInvalidLength.c
-OpenInvalidSig_SOURCES          = OpenInvalidSig.c
-OpenMemNull_SOURCES             = OpenMemNull.c
-OpenNameEmpty_SOURCES           = OpenNameEmpty.c
-OpenPass_SOURCES                = OpenPass.c
-ReadOnlyNullError_SOURCES       = ReadOnlyNullError.c
-ReadOnlyInvalidBaseAddr_SOURCES = ReadOnlyInvalidBaseAddr.c
-ReadOnlyInvalidSig_SOURCES      = ReadOnlyInvalidSig.c
-ReadOnlyMemNull_SOURCES         = ReadOnlyMemNull.c
-ReadOnlyPass_SOURCES            = ReadOnlyPass.c
-ReadOnlyTryWrite_SOURCES        = ReadOnlyTryWrite.c
-ReadWriteNullError_SOURCES      = ReadWriteNullError.c
-ReadWriteInvalidSig_SOURCES     = ReadWriteInvalidSig.c
-ReadWriteInvBaseAddr_SOURCES    = ReadWriteInvBaseAddr.c
-ReadWriteMemNull_SOURCES        = ReadWriteMemNull.c
-ReadWritePass_SOURCES           = ReadWritePass.c
-SynchNullError_SOURCES          = SynchNullError.c
-SynchInvalidBaseAddr_SOURCES    = SynchInvalidBaseAddr.c
-SynchInvalidSig_SOURCES         = SynchInvalidSig.c
-SynchMemNull_SOURCES            = SynchMemNull.c
-SynchPass_SOURCES               = SynchPass.c
-Tests_SOURCES                   = Tests.c
+BackStatusInvalidSig_SOURCES    = $(INCLUDE_FILES) BackStatusInvalidSig.c
+BackStatusMemNull_SOURCES       = $(INCLUDE_FILES) BackStatusMemNull.c
+BackStatusNameEmpty_SOURCES     = $(INCLUDE_FILES) BackStatusNameEmpty.c
+BackStatusPass_SOURCES          = $(INCLUDE_FILES) BackStatusPass.c
+BackStatusStatusNull_SOURCES    = $(INCLUDE_FILES) BackStatusStatusNull.c
+CloseNullError_SOURCES          = $(INCLUDE_FILES) CloseNullError.c
+CloseInvalidSig_SOURCES         = $(INCLUDE_FILES) CloseInvalidSig.c
+CloseMemNull_SOURCES            = $(INCLUDE_FILES) CloseMemNull.c
+ClosePass_SOURCES               = $(INCLUDE_FILES) ClosePass.c
+CreateBackNullError_SOURCES     = $(INCLUDE_FILES) CreateBackNullError.c
+CreateBackInvalidSig_SOURCES    = $(INCLUDE_FILES) CreateBackInvalidSig.c
+CreateBackInvLength_SOURCES     = $(INCLUDE_FILES) CreateBackInvLength.c
+CreateBackMemNull_SOURCES       = $(INCLUDE_FILES) CreateBackMemNull.c
+CreateBackNameEmpty_SOURCES     = $(INCLUDE_FILES) CreateBackNameEmpty.c
+CreateBackPass_SOURCES          = $(INCLUDE_FILES) CreateBackPass.c
+CreateBackPerm0000_SOURCES      = $(INCLUDE_FILES) CreateBackPerm0000.c
+CreateBackPerm0200_SOURCES      = $(INCLUDE_FILES) CreateBackPerm0200.c
+CreateBackPerm0400_SOURCES      = $(INCLUDE_FILES) CreateBackPerm0400.c
+CreateBackPerm0500_SOURCES      = $(INCLUDE_FILES) CreateBackPerm0500.c
+FiniInvalidSig_SOURCES          = $(INCLUDE_FILES) FiniInvalidSig.c
+FiniNullMem_SOURCES             = $(INCLUDE_FILES) FiniNullMem.c
+FiniPass_SOURCES                = $(INCLUDE_FILES) FiniPass.c
+InitLengthPositive_SOURCES      = $(INCLUDE_FILES) InitLengthPositive.c
+InitMemNull_SOURCES             = $(INCLUDE_FILES) InitMemNull.c
+InitNameEmpty_SOURCES           = $(INCLUDE_FILES) InitNameEmpty.c
+InitNameNull_SOURCES            = $(INCLUDE_FILES) InitNameNull.c
+InitPass_SOURCES                = $(INCLUDE_FILES) InitPass.c
+OpenAddrNull_SOURCES            = $(INCLUDE_FILES) OpenAddrNull.c
+OpenNullError_SOURCES           = $(INCLUDE_FILES) OpenNullError.c
+OpenInvalidLength_SOURCES       = $(INCLUDE_FILES) OpenInvalidLength.c
+OpenInvalidSig_SOURCES          = $(INCLUDE_FILES) OpenInvalidSig.c
+OpenMemNull_SOURCES             = $(INCLUDE_FILES) OpenMemNull.c
+OpenNameEmpty_SOURCES           = $(INCLUDE_FILES) OpenNameEmpty.c
+OpenPass_SOURCES                = $(INCLUDE_FILES) OpenPass.c
+ReadOnlyNullError_SOURCES       = $(INCLUDE_FILES) ReadOnlyNullError.c
+ReadOnlyInvalidBaseAddr_SOURCES = $(INCLUDE_FILES) ReadOnlyInvalidBaseAddr.c
+ReadOnlyInvalidSig_SOURCES      = $(INCLUDE_FILES) ReadOnlyInvalidSig.c
+ReadOnlyMemNull_SOURCES         = $(INCLUDE_FILES) ReadOnlyMemNull.c
+ReadOnlyPass_SOURCES            = $(INCLUDE_FILES) ReadOnlyPass.c
+ReadOnlyTryWrite_SOURCES        = $(INCLUDE_FILES) ReadOnlyTryWrite.c
+ReadWriteNullError_SOURCES      = $(INCLUDE_FILES) ReadWriteNullError.c
+ReadWriteInvalidSig_SOURCES     = $(INCLUDE_FILES) ReadWriteInvalidSig.c
+ReadWriteInvBaseAddr_SOURCES    = $(INCLUDE_FILES) ReadWriteInvBaseAddr.c
+ReadWriteMemNull_SOURCES        = $(INCLUDE_FILES) ReadWriteMemNull.c
+ReadWritePass_SOURCES           = $(INCLUDE_FILES) ReadWritePass.c
+SynchNullError_SOURCES          = $(INCLUDE_FILES) SynchNullError.c
+SynchInvalidBaseAddr_SOURCES    = $(INCLUDE_FILES) SynchInvalidBaseAddr.c
+SynchInvalidSig_SOURCES         = $(INCLUDE_FILES) SynchInvalidSig.c
+SynchMemNull_SOURCES            = $(INCLUDE_FILES) SynchMemNull.c
+SynchPass_SOURCES               = $(INCLUDE_FILES) SynchPass.c
+Tests_SOURCES                   = $(INCLUDE_FILES) Tests.c
 
 
 EXTRA_DIST =                     

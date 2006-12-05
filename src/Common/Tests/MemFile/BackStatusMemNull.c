@@ -39,13 +39,10 @@ int main()
 
    errcode = vdscCreateBackstore( &mem, 0644, &errorHandler );
    if ( errcode != 0 ) 
-      goto the_exit;
+      ERROR_EXIT( 0, &errorHandler, unlink( "MemFile.mem" ) );
 
    vdscBackStoreStatus( NULL, &status );
 
- the_exit:
-
-   printError( &errorHandler );
    unlink( "MemFile.mem" );
    
    vdscFiniMemoryFile( &mem );

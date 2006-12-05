@@ -16,6 +16,7 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Options.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -34,10 +35,7 @@ int main()
    
    errcode = vdscSetSupportedOptions( 5, opts, &handle );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Unexpected error in vdscSetSupportedOptions\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
    
    vdscShowUsage( handle, "MyProgram", "file1 [file2...]" );
    vdscShowUsage( handle, "", "file1 [file2...]" );

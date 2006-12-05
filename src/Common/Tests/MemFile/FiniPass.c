@@ -16,6 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "MemoryFile.h"
+#include "PrintError.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,18 +34,20 @@ int main()
 
    vdscFiniMemoryFile( &mem );
 
-   if ( mem.initialized != 0 ) return -1;
-
-   if ( mem.name[0] != 0 ) return -1;
-   
-   if ( mem.length  != 0 ) return -1;
-   
-   if ( mem.baseAddr != VDS_MAP_FAILED ) return -1;
-   
-   if ( mem.fileHandle != VDS_INVALID_HANDLE ) return -1;
+   if ( mem.initialized != 0 )
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+   if ( mem.name[0] != 0 )
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );   
+   if ( mem.length  != 0 )
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+   if ( mem.baseAddr != VDS_MAP_FAILED )
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+   if ( mem.fileHandle != VDS_INVALID_HANDLE )
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
 
 #if defined (WIN32)
-   if ( mem.mapHandle != VDS_INVALID_HANDLE ) return -1;
+   if ( mem.mapHandle != VDS_INVALID_HANDLE )
+      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
 #endif
    
    return 0;

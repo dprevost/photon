@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "DirAccess.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -46,14 +47,15 @@ int main()
       /* OpenDir cannot fail on Win32 but someone might update
        * the code eventually...
        */
-      fprintf( stderr, "Error opening the directory\n" );
-      return -1;
+      ERROR_EXIT( 0, &errorHandler );
    }
 
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
 
-   if ( str != NULL )     return -1;
-   if ( ! vdscAnyErrors( &errorHandler ) ) return -1;
+   if ( str != NULL )
+      ERROR_EXIT( 0, &errorHandler );
+   if ( ! vdscAnyErrors( &errorHandler ) )
+      ERROR_EXIT( 0, &errorHandler );
 
    vdscCloseDir( &iterator );
 

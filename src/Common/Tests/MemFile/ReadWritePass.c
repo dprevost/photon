@@ -39,29 +39,21 @@ int main()
 
    errcode = vdscCreateBackstore( &mem, 0755, &errorHandler );
    if ( errcode != 0 ) 
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
 
    errcode = vdscOpenMemFile( &mem, (void**)&pAddr, &errorHandler );
    if ( errcode != 0 ) 
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
 
    errcode = vdscSetReadWrite( &mem, &errorHandler );
-   if ( errcode != 0 ) 
-      rc = -1;
+   if ( errcode != 0 )
+      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
 
    pAddr[0] = 'x';
    pAddr[1] = 'y';
    
    vdscCloseMemFile( &mem, &errorHandler );
 
-the_exit:
-   printError( &errorHandler );
    unlink( "MemFile.mem" );
    
    vdscFiniMemoryFile( &mem );

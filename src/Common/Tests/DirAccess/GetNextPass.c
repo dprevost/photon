@@ -17,12 +17,13 @@
 
 #include "Common.h"
 #include "DirAccess.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int main()
 {
-   int errcode, rc = 0;
+   int errcode;
    vdscDirIterator iterator;
    const char* str;
    vdscErrorHandler errorHandler;
@@ -33,18 +34,14 @@ int main()
 
    errcode = vdscOpenDir( &iterator, "..", &errorHandler );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Error opening the directory\n" );
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 1, &errorHandler, );
 
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
 
-   if ( str == NULL ) rc = -1;
-   if ( vdscAnyErrors( &errorHandler ) ) rc = -1;
-
- the_exit:
+   if ( str == NULL )
+      ERROR_EXIT( 1, &errorHandler, );
+   if ( vdscAnyErrors( &errorHandler ) )
+      ERROR_EXIT( 1, &errorHandler, );
 
    vdscCloseDir( &iterator );
 
@@ -52,5 +49,6 @@ int main()
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
 
-   return rc;
+   return 0;
 }
+

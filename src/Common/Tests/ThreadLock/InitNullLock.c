@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ThreadLock.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

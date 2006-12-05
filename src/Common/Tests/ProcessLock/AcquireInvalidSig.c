@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ProcessLock.h"
+#include "PrintError.h"
 
 /* unreachable code */
 #pragma warning(disable:4702) 
@@ -30,10 +31,7 @@ int main()
 
    errcode = vdscInitProcessLock( &lock );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Unexpected error in vdscInitProcessLock!\n" );
-      return 0;
-   }
+      ERROR_EXIT( 0, NULL, );
    
    lock.initialized = 0;
    vdscAcquireProcessLock( &lock, 0xff );

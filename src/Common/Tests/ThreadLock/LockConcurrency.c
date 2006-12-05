@@ -22,6 +22,7 @@
 #include "ErrorHandler.h"
 #include "ThreadWrap.h"
 #include "Barrier.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -120,7 +121,7 @@ int main( int argc, char* argv[] )
    char msg[MAX_MSG] = "";
    
    if ( argc < 4 )
-      return -1;
+      ERROR_EXIT( 1, NULL, );
 
    vdscInitErrorDefs();
 
@@ -134,39 +135,25 @@ int main( int argc, char* argv[] )
 
    errcode = vdstInitBarrier( &g_barrier, TEST_MAX_THREADS, &errorHandler );
    if ( errcode < 0 )
-   {
-      vdscGetErrorMsg( &errorHandler, msg, MAX_MSG );
-      fprintf( stderr, "vdstInitBarrier error: %s\n", msg );
-      return -1;
-   }
+      ERROR_EXIT( 1, &errorHandler, );
    
    strcpy( filename, argv[2] );
    vdscInitMemoryFile( &g_memFile, 10, filename );
 
    errcode = vdscCreateBackstore( &g_memFile, 0644, &errorHandler );
    if ( errcode < 0 )
-   {
-      vdscGetErrorMsg( &errorHandler, msg, MAX_MSG );
-      fprintf( stderr, "vdscCreateBackstore error: %s\n", msg );
-      return -1;
-   }
+      ERROR_EXIT( 1, &errorHandler, );
 
    errcode = vdscOpenMemFile( &g_memFile, &ptr, &errorHandler );
    if ( errcode < 0 )
-   {
-      vdscGetErrorMsg( &errorHandler, msg, MAX_MSG );
-      fprintf( stderr, "vdscOpenMemFile error: %s\n", msg );
-      return -1;
-   }
+      ERROR_EXIT( 1, &errorHandler, );
+
    memset( ptr, 0, 10000 );
    g_data = (struct localData*) ptr;
    
    errcode = vdscInitThreadLock( &g_data->lock );
    if ( errcode < 0 )
-   {
-      fprintf( stderr, " lock problem = %d\n", errno );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
    
    for ( i = 0; i < TEST_MAX_THREADS; ++i )
    {
@@ -176,22 +163,14 @@ int main( int argc, char* argv[] )
                                   (void*)&identifier[i],
                                   &errorHandler );
       if ( errcode < 0 )
-      {
-         vdscGetErrorMsg( &errorHandler, msg, MAX_MSG );
-         fprintf( stderr, "vdstCreateThread error: %s\n", msg );
-         return -1;
-      }
+         ERROR_EXIT( 1, &errorHandler, );
    }
 
    for ( i = 0; i < TEST_MAX_THREADS; ++i )
    {
       errcode = vdstJoinThread( &threadWrap[i], NULL, &errorHandler );
       if ( errcode < 0 )
-      {
-         vdscGetErrorMsg( &errorHandler, msg, MAX_MSG );
-         fprintf( stderr, "vdstJoinThread error: %s\n", msg );
-         return -1;
-      }
+         ERROR_EXIT( 1, &errorHandler, );
    }
    
    vdscFiniMemoryFile( &g_memFile );
@@ -203,3 +182,4 @@ int main( int argc, char* argv[] )
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

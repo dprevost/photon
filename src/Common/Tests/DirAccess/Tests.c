@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "DirAccess.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -33,34 +34,22 @@ int main()
    
    errcode = vdscOpenDir( &iterator, ".", &errorHandler );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Error opening the directory\n" );
-      return 1;
-   }
+      ERROR_EXIT( 1, &errorHandler, );
 
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
    if ( str == NULL ) 
-   {
-      vdscCloseDir( &iterator );
-      return 1;
-   }
+      ERROR_EXIT( 1, &errorHandler, );
    
    /* Close and reopen */
    vdscCloseDir( &iterator );
 
    errcode = vdscOpenDir( &iterator, ".", &errorHandler );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Error opening the directory\n" );
-      return 1;
-   }
+      ERROR_EXIT( 1, &errorHandler, );
 
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
    if ( str == NULL )
-   {
-      vdscCloseDir( &iterator );
-      return 1;
-   }
+      ERROR_EXIT( 1, &errorHandler, );
    
    /* Close twice and reopen - should work */
    vdscCloseDir( &iterator );
@@ -68,17 +57,12 @@ int main()
 
    errcode = vdscOpenDir( &iterator, ".", &errorHandler );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Error opening the directory\n" );
-      return 1;
-   }
+      ERROR_EXIT( 1, &errorHandler, );
 
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
    if ( str == NULL )
-   {
-      vdscCloseDir( &iterator );
-      return 1;
-   }
+      ERROR_EXIT( 1, &errorHandler, );
+
    vdscCloseDir( &iterator );
 
    vdscFiniDir( &iterator );
@@ -87,3 +71,4 @@ int main()
 
    return 0;
 }
+

@@ -39,22 +39,14 @@ int main()
 
    errcode = vdscCreateBackstore( &mem, 0755, &errorHandler );
    if ( errcode != 0 ) 
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 0, &errorHandler, unlink( "MemFile.mem" ) );
 
    errcode = vdscOpenMemFile( &mem, &pAddr, &errorHandler );
    if ( errcode != 0 ) 
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 0, &errorHandler, unlink( "MemFile.mem" ) );
 
    vdscCloseMemFile( NULL, &errorHandler );
    
-the_exit:
-
    unlink( "MemFile.mem" );
    
    vdscFiniMemoryFile( &mem );

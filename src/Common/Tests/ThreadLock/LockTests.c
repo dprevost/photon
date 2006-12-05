@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ThreadLock.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -28,33 +29,21 @@ int main( int argc, char* argv[] )
    
    errcode = vdscInitThreadLock( &lock );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Failed to init the lock\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
    
    errcode = vdscTryAcquireThreadLock( &lock, 0 );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Failed to acquire the lock\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
 
    errcode = vdscTryAcquireThreadLock( &lock, 1000 );
    if ( errcode == 0 )
-   {
-      fprintf( stderr, "Failed to not acquire the lock\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
       
    vdscReleaseThreadLock( &lock );
 
    errcode = vdscTryAcquireThreadLock( &lock, 1000 );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Failed to acquire the lock\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
 
    vdscReleaseThreadLock( &lock );
 

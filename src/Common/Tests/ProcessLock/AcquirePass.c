@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ProcessLock.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -27,18 +28,12 @@ int main()
 
    errcode = vdscInitProcessLock( &lock );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Unexpected error in vdscInitLock!\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
    
    vdscAcquireProcessLock( &lock, 0xff );
 
    if ( ! vdscIsItLocked( &lock ) )
-   {
-      fprintf( stderr, "Unexpected error in vdscIsItLocked!\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
    
    vdscReleaseProcessLock( &lock );
 

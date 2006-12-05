@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ErrorHandler.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

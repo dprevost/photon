@@ -28,6 +28,8 @@ void signalHandler(int s)
     * the memory violation is so there is no issue in this case.
     */
    fprintf( stderr, "Failed in signal handler - all ok!\n" );
+
+   unlink( "MemFile.mem" );
    
    exit(1);
 }
@@ -54,21 +56,15 @@ int main()
 
    errcode = vdscCreateBackstore( &mem, 0755, &errorHandler );
    if ( errcode != 0 ) 
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 0, &errorHandler, unlink( "MemFile.mem" ) );
 
    errcode = vdscOpenMemFile( &mem, (void**)&pAddr, &errorHandler );
    if ( errcode != 0 ) 
-   {
-      rc = -1;
-      goto the_exit;
-   }
+      ERROR_EXIT( 0, &errorHandler, unlink( "MemFile.mem" ) );
 
    errcode = vdscSetReadOnly( &mem, &errorHandler );
    if ( errcode != 0 ) 
-      rc = -1;
+      ERROR_EXIT( 0, &errorHandler, unlink( "MemFile.mem" ) );
    
    /* This should crash the whole thing. We intercept it with a signal
     * handler to make the output look cleaner.
@@ -86,14 +82,12 @@ int main()
 
    vdscCloseMemFile( &mem, &errorHandler );
 
-the_exit:
-   printError( &errorHandler );
    unlink( "MemFile.mem" );
    
    vdscFiniMemoryFile( &mem );
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
 
-   return rc;
+   return 0;
 }
 

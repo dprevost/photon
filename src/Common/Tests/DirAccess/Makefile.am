@@ -10,6 +10,8 @@
 
 CLEANFILES = *~ core
 
+INCLUDE_FILES = PrintError.h
+
 check_PROGRAMS =                   \
                  CloseInvalidSig   \
                  CloseNullDir      \
@@ -36,30 +38,30 @@ check_PROGRAMS =                   \
                  OpenPass          \
                  Tests             
 
-CloseInvalidSig_SOURCES   = CloseInvalidSig.c
-CloseNullDir_SOURCES      = CloseNullDir.c
-ClosePass_SOURCES         = ClosePass.c
-FiniInvalidSig_SOURCES    = FiniInvalidSig.c
-FiniNullDir_SOURCES       = FiniNullDir.c
-FiniPass_SOURCES          = FiniPass.c
-GetNextInvalidSig_SOURCES = GetNextInvalidSig.c
-GetNextNoOpen_SOURCES     = GetNextNoOpen.c
-GetNextNoSuchDir_SOURCES  = GetNextNoSuchDir.c
-GetNextNullDir_SOURCES    = GetNextNullDir.c
-GetNextNullError_SOURCES  = GetNextNullError.c
-GetNextNullpDir_SOURCES   = GetNextNullpDir.c
-GetNextPass_SOURCES       = GetNextPass.c
-InitNullDir_SOURCES       = InitNullDir.c
-InitPass_SOURCES          = InitPass.c
-OpenCallTwice_SOURCES     = OpenCallTwice.c
-OpenInvalidSig_SOURCES    = OpenInvalidSig.c
-OpenNoInit_SOURCES        = OpenNoInit.c
-OpenNoSuchDir_SOURCES     = OpenNoSuchDir.c
-OpenNullDir_SOURCES       = OpenNullDir.c
-OpenNullDirname_SOURCES   = OpenNullDirname.c
-OpenNullError_SOURCES     = OpenNullError.c
-OpenPass_SOURCES          = OpenPass.c
-Tests_SOURCES             = Tests.c
+CloseInvalidSig_SOURCES   = $(INCLUDE_FILES) CloseInvalidSig.c
+CloseNullDir_SOURCES      = $(INCLUDE_FILES) CloseNullDir.c
+ClosePass_SOURCES         = $(INCLUDE_FILES) ClosePass.c
+FiniInvalidSig_SOURCES    = $(INCLUDE_FILES) FiniInvalidSig.c
+FiniNullDir_SOURCES       = $(INCLUDE_FILES) FiniNullDir.c
+FiniPass_SOURCES          = $(INCLUDE_FILES) FiniPass.c
+GetNextInvalidSig_SOURCES = $(INCLUDE_FILES) GetNextInvalidSig.c
+GetNextNoOpen_SOURCES     = $(INCLUDE_FILES) GetNextNoOpen.c
+GetNextNoSuchDir_SOURCES  = $(INCLUDE_FILES) GetNextNoSuchDir.c
+GetNextNullDir_SOURCES    = $(INCLUDE_FILES) GetNextNullDir.c
+GetNextNullError_SOURCES  = $(INCLUDE_FILES) GetNextNullError.c
+GetNextNullpDir_SOURCES   = $(INCLUDE_FILES) GetNextNullpDir.c
+GetNextPass_SOURCES       = $(INCLUDE_FILES) GetNextPass.c
+InitNullDir_SOURCES       = $(INCLUDE_FILES) InitNullDir.c
+InitPass_SOURCES          = $(INCLUDE_FILES) InitPass.c
+OpenCallTwice_SOURCES     = $(INCLUDE_FILES) OpenCallTwice.c
+OpenInvalidSig_SOURCES    = $(INCLUDE_FILES) OpenInvalidSig.c
+OpenNoInit_SOURCES        = $(INCLUDE_FILES) OpenNoInit.c
+OpenNoSuchDir_SOURCES     = $(INCLUDE_FILES) OpenNoSuchDir.c
+OpenNullDir_SOURCES       = $(INCLUDE_FILES) OpenNullDir.c
+OpenNullDirname_SOURCES   = $(INCLUDE_FILES) OpenNullDirname.c
+OpenNullError_SOURCES     = $(INCLUDE_FILES) OpenNullError.c
+OpenPass_SOURCES          = $(INCLUDE_FILES) OpenPass.c
+Tests_SOURCES             = $(INCLUDE_FILES) Tests.c
 
 EXTRA_DIST = 
 

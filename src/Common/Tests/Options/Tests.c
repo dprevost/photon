@@ -16,6 +16,7 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Options.h"
+#include "PrintError.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -38,10 +39,7 @@ int main()
    
    errcode = vdscSetSupportedOptions( 5, opts, &handle );
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Unexpected error in vdscSetSupportedOptions\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
    
    strcpy( dummyArgs, "OptionTest2 -?" );
    dummyPtrs[1] = &dummyArgs[12];
@@ -49,10 +47,7 @@ int main()
    
    errcode = vdscValidateUserOptions( handle, 2, dummyPtrs, 1 );
    if ( errcode != 1 )
-   {
-      fprintf( stderr, "Unexpected error in vdscValidateUserOptions\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
    
    strcpy( dummyArgs, "OptionTest2 -a 12345" );
    dummyPtrs[1] = &dummyArgs[12];
@@ -63,12 +58,8 @@ int main()
 //   dummyArgs[20] = 0;
 
    errcode = vdscValidateUserOptions( handle, 3, dummyPtrs, 1 );
-   fprintf( stderr, "Err = %d\n", errcode );   
    if ( errcode != 0 )
-   {
-      fprintf( stderr, "Unexpected error in vdscValidateUserOptions\n" );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
    
    return 0;
 }

@@ -33,6 +33,7 @@
 #include "MemoryFile.h"
 #include "Timer.h"
 #include "ProcessLock.h"
+#include "PrintError.h"
 #include <sys/wait.h>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -89,7 +90,7 @@ int main( int argc, char* argv[] )
       child_pid[i] = -1;
    
    if ( argc < 3 )
-      return -1;
+      ERROR_EXIT( 1, NULL, );
    
    maxTime = strtol( argv[1], NULL, 0 );
    maxTime *= US_PER_SEC;
@@ -103,26 +104,18 @@ int main( int argc, char* argv[] )
    
    errcode = vdscCreateBackstore( &memFile, 0644, &errorHandler );
    if ( errcode < 0 )
-   {
-      fprintf( stderr, " mmap problem = %d\n", errno );
-      return -1;
-   }
+      ERROR_EXIT( 1, &errorHandler, );
 
    errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
    if ( errcode < 0 )
-   {
-      fprintf( stderr, " mmap problem = %d\n", errno );
-      return -1;
-   }
+      ERROR_EXIT( 1, &errorHandler, );
+
    memset( ptr, 0, 10000 );
    data = (struct localData*) ptr;
    
    errcode = vdscInitProcessLock( &data->lock );
    if ( errcode < 0 )
-   {
-      fprintf( stderr, " lock problem = %d\n", errno );
-      return -1;
-   }
+      ERROR_EXIT( 1, NULL, );
 
    vdscSyncMemFile( &memFile, &errorHandler );
    
@@ -144,10 +137,7 @@ int main( int argc, char* argv[] )
          vdscInitMemoryFile( &memFile, 10, filename );
          errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
          if ( errcode < 0 )
-         {
-            fprintf( stderr, " mmap problem = (pid = %d)%d\n", pid, errno );
-            return -1;
-         }
+            ERROR_EXIT( 1, NULL, );
          data = (struct localData*) ptr;
    
          while ( 1 )
@@ -158,7 +148,7 @@ int main( int argc, char* argv[] )
             if ( mypid == 0 )
             {
                fprintf( stderr, "Wrong2... pid is zero\n" );
-               return 1; // Error!!!
+               ERROR_EXIT( 1, NULL, );
             }
             sprintf( data->dum2, "dumStr2 %d  ", mypid );
             memcpy( data->dum1, data->dum2, 100 );
@@ -186,7 +176,7 @@ int main( int argc, char* argv[] )
       else
       {
          fprintf( stderr, "Fork failure, errno = %d\n", errno );
-         return 1; // Error!!!
+         ERROR_EXIT( 1, NULL, );
       }
    }
 

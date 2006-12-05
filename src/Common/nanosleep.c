@@ -45,10 +45,19 @@
  * Note: this version of nanosleep is fundamentally incorrect since the
  * the remaining time is not calculated... but for our purposes, it 
  * really does not matter! We are not attempting to rewrite libc here.
+
+[EINTR]
+    The nanosleep() function was interrupted by a signal. 
+[EINVAL]
+    The rqtp argument specified a nanosecond value less than zero or greater than or equal to 1000 million. 
+[ENOSYS]
+    The nanosleep() function is not supported by this implementation.
+
+
  */
 int  
-nanosleep(const struct timespec * pRequest, 
-          struct timespec * pRemain )
+nanosleep( const struct timespec * pRequest, 
+           struct timespec * pRemain )
 {
    struct timeval req;
    int ret;
@@ -56,6 +65,12 @@ nanosleep(const struct timespec * pRequest,
    pRemain = pRemain;
    req.tv_sec  = pRequest->tv_sec;
    req.tv_usec = pRequest->tv_nsec / 1000;
+   if ( req.tv_sec *1000000 + req.tv_usec < 0  ||
+      req.tv_sec *1000000 + req.tv_usec >= 1000000000 )
+   {
+      errno = EINVAL;
+      return -1;
+   }
    
    ret = select (1, 0, 0, 0, &req );
 

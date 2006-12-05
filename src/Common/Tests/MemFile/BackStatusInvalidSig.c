@@ -27,8 +27,8 @@ int main()
    int errcode = 0;
    vdscMemoryFileStatus status;
    
-   /* The rename is a work around for a bug on Windows. It seems that the delete
-    * call is not as synchroneous as it should be...
+   /* The rename is a work around for a bug on Windows. It seems that the 
+    * delete call (unlink) is not as synchroneous as it should be...
     */
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
@@ -39,14 +39,11 @@ int main()
 
    errcode = vdscCreateBackstore( &mem, 0644, &errorHandler );
    if ( errcode != 0 ) 
-      goto the_exit;
+      ERROR_EXIT( 0, &errorHandler, unlink( "MemFile.mem" ) );
 
    mem.initialized = 0;
    vdscBackStoreStatus( &mem, &status );
 
- the_exit:
-
-   printError( &errorHandler );
    unlink( "MemFile.mem" );
    
    vdscFiniMemoryFile( &mem );
