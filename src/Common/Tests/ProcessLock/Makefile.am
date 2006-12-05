@@ -135,8 +135,8 @@ XFAIL_TESTS =                      \
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
 
-AM_CPPFLAGS = -I$(top_srcdir)/src/Common       \
-              -I$(top_srcdir)/src/Common/Tests \
+AM_CPPFLAGS = -I$(top_srcdir)/src/Common  \
+              -I$(top_srcdir)/src/Tests   \
               -I$(top_srcdir)/src/include
 
 
