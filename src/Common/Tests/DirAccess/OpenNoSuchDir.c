@@ -13,13 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "DirAccess.h"
 #include "PrintError.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+const bool expectedToPass = true;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
@@ -44,9 +46,9 @@ int main()
    
    errcode = vdscOpenDir( &iterator, "abc123", &errorHandler );
    if ( errcode == 0 )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
    if ( ! vdscAnyErrors( &errorHandler ) )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
 
    vdscCloseDir( &iterator );
 
@@ -58,4 +60,6 @@ int main()
 
 #endif
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

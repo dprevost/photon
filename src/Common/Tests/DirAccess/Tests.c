@@ -13,13 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "DirAccess.h"
 #include "PrintError.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+const bool expectedToPass = true;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
@@ -34,22 +36,22 @@ int main()
    
    errcode = vdscOpenDir( &iterator, ".", &errorHandler );
    if ( errcode != 0 )
-      ERROR_EXIT( 1, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
 
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
    if ( str == NULL ) 
-      ERROR_EXIT( 1, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
    
    /* Close and reopen */
    vdscCloseDir( &iterator );
 
    errcode = vdscOpenDir( &iterator, ".", &errorHandler );
    if ( errcode != 0 )
-      ERROR_EXIT( 1, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
 
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
    if ( str == NULL )
-      ERROR_EXIT( 1, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
    
    /* Close twice and reopen - should work */
    vdscCloseDir( &iterator );
@@ -57,11 +59,11 @@ int main()
 
    errcode = vdscOpenDir( &iterator, ".", &errorHandler );
    if ( errcode != 0 )
-      ERROR_EXIT( 1, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
 
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
    if ( str == NULL )
-      ERROR_EXIT( 1, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
 
    vdscCloseDir( &iterator );
 
@@ -71,4 +73,6 @@ int main()
 
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

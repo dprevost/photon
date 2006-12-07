@@ -13,13 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "ErrorHandler.h"
 #include "PrintError.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+const bool expectedToPass = true;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
@@ -32,16 +34,18 @@ int main()
    for ( i = 0; i < VDSC_ERROR_CHAIN_LENGTH; ++i )
    {
       if ( errorHandler.errorCode[0]   != 0 )
-         ERROR_EXIT( 1, NULL, );
+         ERROR_EXIT( expectedToPass, NULL, );
       if ( errorHandler.errorHandle[0] != VDSC_NO_ERRHANDLER )
-         ERROR_EXIT( 1, NULL, );
+         ERROR_EXIT( expectedToPass, NULL, );
    }
    if ( errorHandler.initialized != VDSC_ERROR_HANDLER_SIGNATURE )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
    
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
 
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

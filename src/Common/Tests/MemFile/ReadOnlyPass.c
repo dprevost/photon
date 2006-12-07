@@ -18,6 +18,8 @@
 #include "MemoryFile.h"
 #include "PrintError.h"
 
+const bool expectedToPass = true;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
@@ -25,7 +27,7 @@ int main()
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
    void*           pAddr = NULL;
-   int errcode = 0, rc = 0;
+   int errcode = 0;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete
     * call is not as synchroneous as it should be...
@@ -39,15 +41,15 @@ int main()
 
    errcode = vdscCreateBackstore( &mem, 0755, &errorHandler );
    if ( errcode != 0 ) 
-      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
 
    errcode = vdscOpenMemFile( &mem, &pAddr, &errorHandler );
    if ( errcode != 0 ) 
-      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
 
    errcode = vdscSetReadOnly( &mem, &errorHandler );
    if ( errcode != 0 ) 
-      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    
    vdscCloseMemFile( &mem, &errorHandler );
 
@@ -57,6 +59,8 @@ int main()
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
 
-   return rc;
+   return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

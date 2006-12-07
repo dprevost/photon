@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "MemoryFile.h"
@@ -24,7 +24,9 @@
 #include "Barrier.h"
 #include "PrintError.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+const bool expectedToPass = true;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #define US_PER_SEC     1000000
 
@@ -46,7 +48,7 @@ vdstBarrier g_barrier;
 #define TEST_MAX_THREADS 4
 #define MAX_MSG 100
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void * worker( void* pIdentifier )
 {
@@ -108,7 +110,7 @@ void * worker( void* pIdentifier )
    return;
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char* argv[] )
 {
@@ -121,7 +123,7 @@ int main( int argc, char* argv[] )
    char msg[MAX_MSG] = "";
    
    if ( argc < 4 )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
 
    vdscInitErrorDefs();
 
@@ -135,25 +137,25 @@ int main( int argc, char* argv[] )
 
    errcode = vdstInitBarrier( &g_barrier, TEST_MAX_THREADS, &errorHandler );
    if ( errcode < 0 )
-      ERROR_EXIT( 1, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
    
    strcpy( filename, argv[2] );
    vdscInitMemoryFile( &g_memFile, 10, filename );
 
    errcode = vdscCreateBackstore( &g_memFile, 0644, &errorHandler );
    if ( errcode < 0 )
-      ERROR_EXIT( 1, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
 
    errcode = vdscOpenMemFile( &g_memFile, &ptr, &errorHandler );
    if ( errcode < 0 )
-      ERROR_EXIT( 1, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
 
    memset( ptr, 0, 10000 );
    g_data = (struct localData*) ptr;
    
    errcode = vdscInitThreadLock( &g_data->lock );
    if ( errcode < 0 )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
    
    for ( i = 0; i < TEST_MAX_THREADS; ++i )
    {
@@ -163,14 +165,14 @@ int main( int argc, char* argv[] )
                                   (void*)&identifier[i],
                                   &errorHandler );
       if ( errcode < 0 )
-         ERROR_EXIT( 1, &errorHandler, );
+         ERROR_EXIT( expectedToPass, &errorHandler, );
    }
 
    for ( i = 0; i < TEST_MAX_THREADS; ++i )
    {
       errcode = vdstJoinThread( &threadWrap[i], NULL, &errorHandler );
       if ( errcode < 0 )
-         ERROR_EXIT( 1, &errorHandler, );
+         ERROR_EXIT( expectedToPass, &errorHandler, );
    }
    
    vdscFiniMemoryFile( &g_memFile );
@@ -181,5 +183,5 @@ int main( int argc, char* argv[] )
    return 0;
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

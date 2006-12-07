@@ -18,16 +18,21 @@
 #include "MemoryObject.h"
 #include "EngineTestCommon.h"
 
+const bool expectedToPass = false;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
    vdseMemObject obj;
    
-   initTest( false );
+   initTest( expectedToPass );
 
    vdseMemObjectInit( &obj, 
                       VDSE_IDENT_ALLOCATOR,
                       0 );
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, );
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

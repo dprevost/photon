@@ -18,6 +18,8 @@
 #include "ListTestCommon.h"
 #include "EngineTestCommon.h"
 
+const bool expectedToPass = false;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char* argv[] )
@@ -25,7 +27,7 @@ int main( int argc, char* argv[] )
    vdseLinkedList list;
    vdseLinkNode node, * pNode;
    
-   initTest( false );
+   initTest( expectedToPass );
    InitMem();
 
    vdseLinkNodeInit( &node );
@@ -35,5 +37,8 @@ int main( int argc, char* argv[] )
 
    vdseLinkedListPeakNext( &list, &node, &pNode );
    
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, );
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

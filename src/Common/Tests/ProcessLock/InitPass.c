@@ -13,11 +13,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Common.h"
 #include "ProcessLock.h"
 #include "PrintError.h"
+
+const bool expectedToPass = true;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -28,10 +29,10 @@ int main()
 
    errcode = vdscInitProcessLock( &lock );
    if ( errcode != 0 )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
  
    if ( lock.initialized != VDSC_LOCK_SIGNATURE )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
    
    vdscFiniProcessLock( &lock );
 

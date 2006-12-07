@@ -45,6 +45,7 @@ LDADD = $(top_builddir)/src/Engine/libEngine.la \
 
 AM_CPPFLAGS = -I$(top_srcdir)/src/Engine \
               -I$(top_srcdir)/src/Common \
+              -I$(top_srcdir)/src/Tests  \
               -I$(top_srcdir)/src/include
 
 if COND_USE_ASSERT

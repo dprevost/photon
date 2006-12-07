@@ -19,6 +19,8 @@
 #include <signal.h>
 #include "PrintError.h"
 
+const bool expectedToPass = false;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void signalHandler(int s) 
@@ -33,6 +35,8 @@ void signalHandler(int s)
    
    exit(1);
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
@@ -56,15 +60,15 @@ int main()
 
    errcode = vdscCreateBackstore( &mem, 0755, &errorHandler );
    if ( errcode != 0 ) 
-      ERROR_EXIT( 0, &errorHandler, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
 
    errcode = vdscOpenMemFile( &mem, (void**)&pAddr, &errorHandler );
    if ( errcode != 0 ) 
-      ERROR_EXIT( 0, &errorHandler, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
 
    errcode = vdscSetReadOnly( &mem, &errorHandler );
    if ( errcode != 0 ) 
-      ERROR_EXIT( 0, &errorHandler, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    
    /* This should crash the whole thing. We intercept it with a signal
     * handler to make the output look cleaner.
@@ -80,14 +84,8 @@ int main()
    pAddr[0] = 'x';
    pAddr[1] = 'y';
 
-   vdscCloseMemFile( &mem, &errorHandler );
-
-   unlink( "MemFile.mem" );
-   
-   vdscFiniMemoryFile( &mem );
-   vdscFiniErrorHandler( &errorHandler );
-   vdscFiniErrorDefs();
-
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

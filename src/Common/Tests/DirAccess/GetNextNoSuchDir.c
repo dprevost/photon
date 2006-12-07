@@ -13,13 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "DirAccess.h"
 #include "PrintError.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+const bool expectedToPass = true;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
@@ -47,15 +49,15 @@ int main()
       /* OpenDir cannot fail on Win32 but someone might update
        * the code eventually...
        */
-      ERROR_EXIT( 0, &errorHandler );
+      ERROR_EXIT( expectedToPass, &errorHandler );
    }
 
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
 
    if ( str != NULL )
-      ERROR_EXIT( 0, &errorHandler );
+      ERROR_EXIT( expectedToPass, &errorHandler );
    if ( ! vdscAnyErrors( &errorHandler ) )
-      ERROR_EXIT( 0, &errorHandler );
+      ERROR_EXIT( expectedToPass, &errorHandler );
 
    vdscCloseDir( &iterator );
 
@@ -67,3 +69,6 @@ int main()
 
 #endif
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "ProcessLock.h"
@@ -22,7 +22,9 @@
 /* unreachable code */
 #pragma warning(disable:4702) 
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+const bool expectedToPass = false;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
@@ -31,16 +33,14 @@ int main()
 
    errcode = vdscInitProcessLock( &lock );
    if ( errcode != 0 )
-      ERROR_EXIT( 0, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
    
    vdscAcquireProcessLock( &lock, 0xff );
 
    vdscTestLockPidValue( NULL, 0xff );
 
-   vdscReleaseProcessLock( &lock );
-
-   vdscFiniProcessLock( &lock );
-
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, );
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

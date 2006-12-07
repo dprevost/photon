@@ -18,6 +18,10 @@
 #include "MemoryAllocator.h"
 #include "EngineTestCommon.h"
 
+const bool expectedToPass = true;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int main()
 {
    vdseSessionContext context;
@@ -25,15 +29,19 @@ int main()
    unsigned char* ptr;
    size_t allocatedLength = PAGESIZE*10;
    
-   initTest( true );
+   initTest( expectedToPass );
    vdscInitErrorHandler( &context.errorHandler );
    
    ptr = malloc( allocatedLength );
-
+   if ( ptr == NULL )
+      ERROR_EXIT( expectedToPass, NULL, );
+   
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

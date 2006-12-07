@@ -19,6 +19,8 @@
 #include "EngineTestCommon.h"
 #include "MemoryAllocator.h"
 
+const bool expectedToPass = false;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
@@ -31,24 +33,27 @@ int main()
    size_t allocatedLength = PAGESIZE*10;
    vdsePageGroup *pageGroup = NULL;
    
-   initTest( false );
+   initTest( expectedToPass );
 
    vdscInitErrorHandler( &context.errorHandler );
 
    ptr = malloc( allocatedLength );
-
+   if ( ptr == NULL )
+      ERROR_EXIT( expectedToPass, NULL, );
+   
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
    pObj = vdseMallocPages( pAlloc, 4, &context );
-   
-   if ( pObj == NULL ) ERROR_EXIT(0);
+   if ( pObj == NULL )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, );
    
    errcode = vdseMemObjectInit( pObj, 
                                 VDSE_IDENT_ALLOCATOR,
                                 4 );
-   if ( errcode != VDS_OK ) ERROR_EXIT(0);
+   if ( errcode != VDS_OK )
+      ERROR_EXIT( expectedToPass, NULL, );
    
    pageGroup = (vdsePageGroup*) ((unsigned char*)pObj + sizeof(vdseMemObject));
    vdsePageGroupInit( pageGroup,
@@ -62,7 +67,8 @@ int main()
 
    buff[0] = vdseMalloc( pObj, 0, &context );
 
-   vdseMemObjectFini( pObj );
-   
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, );
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

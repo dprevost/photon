@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include "genError.h"
 #include "testError.h"
+#include "PrintError.h"
 
 int main()
 {

@@ -18,13 +18,15 @@
 #include "ListTestCommon.h"
 #include "EngineTestCommon.h"
 
+const bool expectedToPass = false;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char* argv[] )
 {
    vdseLinkedList list;
    
-   initTest( false );
+   initTest( expectedToPass );
    InitMem();
    
    vdseLinkedListInit( &list );
@@ -32,5 +34,8 @@ int main( int argc, char* argv[] )
 
    vdseLinkedListReset( &list );
    
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, );
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -18,6 +18,8 @@
 #include "MemoryFile.h"
 #include "PrintError.h"
 
+const bool expectedToPass = true;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
@@ -27,27 +29,29 @@ int main()
    vdscInitMemoryFile( &mem, 10, "MemFile.mem" );
 
    if ( mem.initialized != VDSC_MEMFILE_SIGNATURE )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 
    if ( strcmp( mem.name, "MemFile.mem" ) != 0 )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    
    if ( mem.length != 1024*10 )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    
    if ( mem.baseAddr != VDS_MAP_FAILED )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    
    if ( mem.fileHandle != VDS_INVALID_HANDLE )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 
 #if defined (WIN32)
    if ( mem.mapHandle != VDS_INVALID_HANDLE )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 #endif
 
    vdscFiniMemoryFile( &mem );
 
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

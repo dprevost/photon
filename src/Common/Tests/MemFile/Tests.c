@@ -18,6 +18,8 @@
 #include "MemoryFile.h"
 #include "PrintError.h"
 
+const bool expectedToPass = true;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* 
@@ -49,20 +51,20 @@ int main()
    
    errcode = vdscCreateBackstore( &mem1, 0600, &errorHandler );
    if ( errcode != 0 ) 
-      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
 
    errcode = vdscOpenMemFile( &mem1, &pAddr, &errorHandler );
    if ( errcode != 0 )
-      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    
    if ( mem1.fileHandle == VDS_INVALID_HANDLE )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    if ( mem1.baseAddr == VDS_MAP_FAILED )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    
 #if defined (WIN32)
    if ( mem1.mapHandle == VDS_INVALID_HANDLE )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 #endif
 
    str = (unsigned char*) pAddr;
@@ -75,15 +77,13 @@ int main()
 
    errcode = vdscOpenMemFile( &mem2, &pAddr, &errorHandler );
    if ( errcode != 0 )
-      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    
    str = (unsigned char*) pAddr;
    for ( i = 0; i < 10*1024; ++i )
       if ( str[i] != (unsigned char)(i % 256) )
       {
-         ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
-         rc = -1;
-         break;
+         ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
       }
 
    vdscCloseMemFile( &mem2, &errorHandler );
@@ -97,4 +97,6 @@ int main()
 
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

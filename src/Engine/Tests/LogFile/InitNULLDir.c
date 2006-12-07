@@ -16,6 +16,9 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "LogFile.h"
+#include "PrintError.h"
+
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -30,6 +33,8 @@ int main( int argc, char* argv[] )
 
    error = vdseInitLogFile( &logfile, NULL, (void*)0x1234, &errorHandler );
 
-   vdscFiniErrorDefs();
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, );
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

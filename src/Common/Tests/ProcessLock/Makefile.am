@@ -115,7 +115,6 @@ TESTS +=                       \
          LockTests             
 
 XFAIL_TESTS =                      \
-              LockShouldFail.sh    \
               AcquireInvalidSig    \
               AcquireNullLock      \
               AcquireZeroValue     \

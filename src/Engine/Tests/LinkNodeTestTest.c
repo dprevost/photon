@@ -16,6 +16,9 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "LinkNode.h"
+#include "PrintError.h"
+
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -28,24 +31,27 @@ int main( int argc, char* argv[] )
 
    rc = vdseLinkNodeTest( &node );
    if ( rc != 0 )
-      return -1;
+      ERROR_EXIT( expectedToPass, NULL, );
    
    node.nextOffset = 0x1234;
    rc = vdseLinkNodeTest( &node );
    if ( rc != 0 )
-      return -1;
+      ERROR_EXIT( expectedToPass, NULL, );
 
    vdseLinkNodeInit( &node );
 
    node.previousOffset = 0x1234;
    rc = vdseLinkNodeTest( &node );
    if ( rc != 0 )
-      return -1;
+      ERROR_EXIT( expectedToPass, NULL, );
    
    node.nextOffset = 0x1234;
    rc = vdseLinkNodeTest( &node );
    if ( rc == 0 )
-      return -1;
+      ERROR_EXIT( expectedToPass, NULL, );
 
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

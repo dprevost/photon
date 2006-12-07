@@ -21,14 +21,9 @@
 #include "Engine.h"
 #include "ErrorHandler.h"
 #include "VdsErrorHandler.h"
+#include "PrintError.h"
 
 vdscErrMsgHandle g_vdsErrorHandle;
-
-#define ERROR_EXIT(RC) \
-{\
-   fprintf( stderr, "Abnormal error at line %d\n", __LINE__ );\
-   return RC;\
-}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -58,3 +53,4 @@ void initTest( bool testIsExpectedToSucceed )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* ENGINE_TEST_COMMON_H */
+

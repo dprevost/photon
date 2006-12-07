@@ -18,6 +18,10 @@
 #include "MemoryAllocator.c"
 #include "EngineTestCommon.h"
 
+const bool expectedToPass = true;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int main()
 {
    vdseSessionContext context;
@@ -26,11 +30,13 @@ int main()
    bool isFree;
    vdseMemBitmap* pBitmap;
    
-   initTest( true );
+   initTest( expectedToPass );
    vdscInitErrorHandler( &context.errorHandler );
 
    ptr = malloc( 50*PAGESIZE );
-
+   if ( ptr == NULL )
+      ERROR_EXIT( expectedToPass, NULL, );
+   
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
    vdseMemAllocInit( pAlloc, ptr, 50*PAGESIZE, &context );
@@ -40,35 +46,33 @@ int main()
    {
       fprintf( stderr, "Wrong bitmapLength, got %d, expected %d\n",
                pBitmap->lengthInBits/8, 7 );
-      return 1;
+      ERROR_EXIT( expectedToPass, NULL, );
    }
    if ( pBitmap->bitmap[0] != 0xc0 )
    {
       fprintf( stderr, "Wrong bitmap[0], got 0x%x, expected 0x%x\n", 
                pBitmap->bitmap[0], 0xc0 );
-      return 1;
+      ERROR_EXIT( expectedToPass, NULL, );
    }
    
    isFree = vdseIsBlockFree( pBitmap, 0 );
-//   fprintf( stderr, "q = %d\n", isFree );
    if ( isFree )
-      return 1;
+      ERROR_EXIT( expectedToPass, NULL, );
 
    isFree = vdseIsBlockFree( pBitmap, 2*PAGESIZE );
-//   fprintf( stderr, "q = %d\n", isFree );
    if ( ! isFree )
-      return 1;
+      ERROR_EXIT( expectedToPass, NULL, );
 
    isFree = vdseIsBlockFree( pBitmap, -PAGESIZE );
-//   fprintf( stderr, "q = %d\n", isFree );
    if ( isFree )
-      return 1;
+      ERROR_EXIT( expectedToPass, NULL, );
    
    isFree = vdseIsBlockFree( pBitmap, 50*PAGESIZE );
-//   fprintf( stderr, "q = %d\n", isFree );
    if ( isFree )
-      return 1;
+      ERROR_EXIT( expectedToPass, NULL, );
       
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

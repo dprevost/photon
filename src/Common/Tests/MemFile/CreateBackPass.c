@@ -18,13 +18,15 @@
 #include "MemoryFile.h"
 #include "PrintError.h"
 
+const bool expectedToPass = true;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
-   int errcode = 0, rc = 0;
+   int errcode = 0;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete
     * call is not as synchroneous as it should be...
@@ -38,7 +40,7 @@ int main()
 
    errcode = vdscCreateBackstore( &mem, 0755, &errorHandler );
    if ( errcode != 0 ) 
-      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
 
    unlink( "MemFile.mem" );
    
@@ -46,5 +48,8 @@ int main()
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
 
-   return rc;
+   return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

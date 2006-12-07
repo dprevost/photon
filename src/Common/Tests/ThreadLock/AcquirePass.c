@@ -13,13 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "ThreadLock.h"
 #include "PrintError.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+const bool expectedToPass = true;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char* argv[] )
 {
@@ -28,14 +30,14 @@ int main( int argc, char* argv[] )
 
    errcode = vdscInitThreadLock( &lock );
    if ( errcode != 0 )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
    
    vdscAcquireThreadLock( &lock );
 
    /*
     * Normally we should test if the lock is really in place. Because
-    * CriticalSections are recursive anf the most simple pthread mutex
-    * is noty, there is no easy way to test this unless you try to 
+    * CriticalSections are recursive and the most simple pthread mutex
+    * is not, there is no easy way to test this unless you try to 
     * acquire the mutex from a different thread.
     *
     * We might want to add this test later.
@@ -47,4 +49,6 @@ int main( int argc, char* argv[] )
 
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

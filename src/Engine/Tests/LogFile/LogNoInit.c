@@ -16,6 +16,9 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "LogFile.h"
+#include "PrintError.h"
+
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -29,11 +32,9 @@ int main( int argc, char* argv[] )
    vdscInitErrorHandler( &errorHandler );
 
    error = vdseLogTransaction( &logfile, 1, &errorHandler );
-   if ( error != VDS_OK )
-      return 0;
-
-   vdseCloseLogFile( &logfile, &errorHandler );
-   vdscFiniErrorDefs();
    
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, );
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

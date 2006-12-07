@@ -53,13 +53,16 @@ void printError( vdscErrorHandler* pError )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define ERROR_EXIT(RC,PERROR,SPECIAL_CLEANUP_CODE) \
+#define ERROR_EXIT(EXPECTED_TO_PASS,PERROR,SPECIAL_CLEANUP_CODE) \
 {\
    fprintf( stderr, "Abnormal error at line %d\n", __LINE__ );\
    if ( PERROR != NULL )\
       printError(PERROR);\
    SPECIAL_CLEANUP_CODE;\
-   return RC;\
+   if (EXPECTED_TO_PASS)\
+      return 1;\
+   else\
+      return 0;\
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

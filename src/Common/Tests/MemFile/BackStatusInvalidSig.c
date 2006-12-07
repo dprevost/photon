@@ -18,6 +18,8 @@
 #include "MemoryFile.h"
 #include "PrintError.h"
 
+const bool expectedToPass = false;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
@@ -39,16 +41,13 @@ int main()
 
    errcode = vdscCreateBackstore( &mem, 0644, &errorHandler );
    if ( errcode != 0 ) 
-      ERROR_EXIT( 0, &errorHandler, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
 
    mem.initialized = 0;
    vdscBackStoreStatus( &mem, &status );
 
-   unlink( "MemFile.mem" );
-   
-   vdscFiniMemoryFile( &mem );
-   vdscFiniErrorHandler( &errorHandler );
-   vdscFiniErrorDefs();
-
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

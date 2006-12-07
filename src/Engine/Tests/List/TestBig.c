@@ -18,6 +18,8 @@
 #include "ListTestCommon.h"
 #include "EngineTestCommon.h"
 
+const bool expectedToPass = true;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
@@ -67,7 +69,7 @@ int main( int argc, char* argv[] )
    vdseLinkNode* pNode;
    dummyStruct*  pDummy;
    
-   initTest( true );
+   initTest( expectedToPass );
    InitMem();
 
    /* Initialize the array of dummy structs */
@@ -90,7 +92,7 @@ int main( int argc, char* argv[] )
    numInList = INITIAL_LIST_SIZE;
 
    if ( TestList( &list ) != 0 )
-      return -1;
+      ERROR_EXIT( expectedToPass, NULL, );
    
    /* Initialize the random generator */
    mysrand( 0x130bc9 );
@@ -131,7 +133,7 @@ int main( int argc, char* argv[] )
          if ( k == randElement )
          {
             fprintf( stderr, "Case 0, did not found a free element\n" );
-            return -1;
+            ERROR_EXIT( expectedToPass, NULL, );
          }
          
          vdseLinkedListPutFirst( &list, &dummy[k].node );
@@ -166,7 +168,7 @@ int main( int argc, char* argv[] )
          if ( k == randElement )
          {
             fprintf( stderr, "Case 1 or 5, did not found a free element\n" );
-            return -1;
+            ERROR_EXIT( expectedToPass, NULL, );
          }
 
          vdseLinkedListPutLast( &list, &dummy[k].node );
@@ -178,7 +180,7 @@ int main( int argc, char* argv[] )
       case 2:
          error = vdseLinkedListGetFirst( &list, &pNode );
          if ( error == LIST_INTERNAL_ERROR ) 
-            return -1;
+            ERROR_EXIT( expectedToPass, NULL, );
 
          pDummy = (dummyStruct* )
             ((char*)pNode - offsetof(dummyStruct, node ));
@@ -190,7 +192,7 @@ int main( int argc, char* argv[] )
       case 3:
          error = vdseLinkedListGetLast( &list, &pNode );
          if ( error == LIST_INTERNAL_ERROR ) 
-            return -1;
+            ERROR_EXIT( expectedToPass, NULL, );
 
          pDummy = (dummyStruct* )
             ((char*)pNode - offsetof(dummyStruct, node ));
@@ -223,7 +225,7 @@ int main( int argc, char* argv[] )
          if ( k == randElement )
          {
             fprintf( stderr, "Case 4, did not found a used element\n" );
-            return -1;
+            ERROR_EXIT( expectedToPass, NULL, );
          }
 
          vdseLinkedListRemoveItem( &list, &dummy[k].node );
@@ -238,7 +240,7 @@ int main( int argc, char* argv[] )
       {
          fprintf( stderr, "Discrepency in list size (%d %d), action = %d\n", 
                   numInList, list.currentSize, randAction%6 );
-         return -1;
+         ERROR_EXIT( expectedToPass, NULL, );
       }
 
       /* Test the iterators */
@@ -246,18 +248,18 @@ int main( int argc, char* argv[] )
       {
          error = vdseLinkedListPeakFirst( &list, &pNode );
          if ( error == LIST_INTERNAL_ERROR ) 
-            return -1;
+            ERROR_EXIT( expectedToPass, NULL, );
          
          while ( error == LIST_OK )
          {
             error = vdseLinkedListPeakNext( &list, pNode, &pNode );
             if ( error == LIST_INTERNAL_ERROR ) 
-               return -1;
+               ERROR_EXIT( expectedToPass, NULL, );
          }
 
          error = vdseLinkedListPeakLast( &list, &pNode );
          if ( error == LIST_INTERNAL_ERROR ) 
-            return -1;
+            ERROR_EXIT( expectedToPass, NULL, );
          
          while ( error == LIST_OK )
          {
@@ -265,7 +267,7 @@ int main( int argc, char* argv[] )
                                                 pNode, 
                                                 &pNode );
             if ( error == LIST_INTERNAL_ERROR ) 
-               return -1;
+               ERROR_EXIT( expectedToPass, NULL, );
          }
       } /* End of if ((i+1)%GET_NEXT_LOOP ) == 0 */
 
@@ -275,11 +277,13 @@ int main( int argc, char* argv[] )
    if ( errcode != 0 )
    {
       fprintf( stderr, "TestList failed, error = %d\n", errcode );
-      return -1;
+      ERROR_EXIT( expectedToPass, NULL, );
    }
 
    vdseLinkedListFini( &list );
 
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

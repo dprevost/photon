@@ -18,6 +18,8 @@
 #include "MemoryFile.h"
 #include "PrintError.h"
 
+const bool expectedToPass = true;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
@@ -39,52 +41,52 @@ int main()
 
    errcode = vdscCreateBackstore( &mem, 0644, &errorHandler );
    if ( errcode != 0 ) 
-      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    
    vdscBackStoreStatus( &mem, &status );
    if ( status.fileExist != 1 )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    if ( status.fileReadable != 1 )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    if ( status.fileWritable != 1 )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    if ( status.lenghtOK != 1 )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    if ( status.actualLLength != 10*1024 )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 
    errcode = unlink( "MemFile.mem" );
    if ( errcode != 0 ) 
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
 
    errcode = vdscCreateBackstore( &mem, 0600, &errorHandler );
    if ( errcode != 0 ) 
-      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    
    vdscBackStoreStatus( &mem, &status );
    if ( status.fileExist != 1 )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    if ( status.fileReadable != 1 )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    if ( status.fileWritable != 1 )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 
    errcode = unlink( "MemFile.mem" );
    if ( errcode != 0 ) 
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
 
    errcode = vdscCreateBackstore( &mem, 0660, &errorHandler );
    if ( errcode != 0 ) 
-      ERROR_EXIT( 1, &errorHandler, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    
    vdscBackStoreStatus( &mem, &status );
 
    if ( status.fileExist != 1 )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    if ( status.fileReadable != 1 )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    if ( status.fileWritable != 1 )
-      ERROR_EXIT( 1, NULL, unlink( "MemFile.mem" ) );
+      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 
    unlink( "MemFile.mem" );
    
@@ -94,4 +96,6 @@ int main()
 
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

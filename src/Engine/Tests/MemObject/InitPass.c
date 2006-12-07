@@ -18,6 +18,8 @@
 #include "MemoryObject.h"
 #include "EngineTestCommon.h"
 
+const bool expectedToPass = true;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
@@ -25,19 +27,24 @@ int main()
    vdseMemObject obj;
    vdsErrors errcode;
    
-   initTest( true );
+   initTest( expectedToPass );
 
    errcode = vdseMemObjectInit( &obj, 
                                 VDSE_IDENT_ALLOCATOR,
                                 7 );
-
-   if ( errcode != VDS_OK ) return 1;
-   if ( obj.objType != VDSE_IDENT_ALLOCATOR ) return 1;
-   if ( obj.accessCounter != 0 ) return 1;
-   if ( obj.totalPages != 7 ) return 1;
+   if ( errcode != VDS_OK )
+      ERROR_EXIT( expectedToPass, NULL, );
+   if ( obj.objType != VDSE_IDENT_ALLOCATOR )
+      ERROR_EXIT( expectedToPass, NULL, );
+   if ( obj.accessCounter != 0 )
+      ERROR_EXIT( expectedToPass, NULL, );
+   if ( obj.totalPages != 7 )
+      ERROR_EXIT( expectedToPass, NULL, );
 
    vdseMemObjectFini( &obj );
    
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -13,10 +13,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "Timer.h"
+#include "PrintError.h"
+
+const bool expectedToPass = true;
 
 #define NS_PER_SEC     1000000000
 #define NS_PER_US            1000
@@ -24,7 +27,7 @@
 #define TEST_LOOP          100000
 #define TENTH_SEC_IN_US    100000    /* (1/10 sec in usecs) */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char* argv[] )
 {
@@ -72,10 +75,9 @@ int main( int argc, char* argv[] )
    if ( sec == 0 && nanoSec == 0 )
    {
       fprintf( stderr, "Timer returns invalid time!\n" );
-      return 1;
+      ERROR_EXIT( expectedToPass, NULL, );
    }
    sum = NS_PER_SEC*sec + nanoSec;
-   fprintf( stderr, "zzz %u %u \n",   sum,  innerLoop );
    sum = sum / NS_PER_US;    /* in micro-seconds */
    if ( sum == 0 ) sum = 1;
 
@@ -85,7 +87,6 @@ int main( int argc, char* argv[] )
     * precision of the calculations to a millisec.
     */
    innerLoop = ((innerLoop/1000)*TENTH_SEC_IN_US/sum)*1000;
-   fprintf( stderr, "zzz %u %u \n",   sum,  innerLoop/(TEST_LOOP) );
 
    /* The test itself */
 
@@ -112,7 +113,7 @@ int main( int argc, char* argv[] )
       if ( sec == 0 && nanoSec == 0 )
       {
          fprintf( stderr, "Timer returns invalid time!\n" );
-         return 1;
+         ERROR_EXIT( expectedToPass, NULL, );
       }
       
       fprintf( stderr, "Sec = %u, nanoSec = %u\n", sec, nanoSec );
@@ -121,4 +122,5 @@ int main( int argc, char* argv[] )
    return 0;
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

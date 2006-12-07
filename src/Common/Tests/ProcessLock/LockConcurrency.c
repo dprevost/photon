@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "MemoryFile.h"
@@ -22,7 +22,9 @@
 #include "ErrorHandler.h"
 #include "PrintError.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+const bool expectedToPass = true;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #define US_PER_SEC     1000000
 
@@ -50,7 +52,7 @@ struct localData
  */
 #define FAILURE_RATE 10
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char* argv[] )
 {
@@ -72,7 +74,7 @@ int main( int argc, char* argv[] )
    int dumId;
 
    if ( argc < 5 )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
 
    vdscInitErrorDefs();
 
@@ -96,11 +98,11 @@ int main( int argc, char* argv[] )
       errcode = vdscCreateBackstore( &memFile, 0644, &errorHandler );
 
       if ( errcode < 0 )
-         ERROR_EXIT( 1, &errorHandler, );
+         ERROR_EXIT( expectedToPass, &errorHandler, );
    }
    errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
    if ( errcode < 0 )
-      ERROR_EXIT( 1, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
 
    if ( identifier == 0 )
       memset( ptr, 0, 10000 );
@@ -111,7 +113,7 @@ int main( int argc, char* argv[] )
    {
       errcode = vdscInitProcessLock( &data->lock );
       if ( errcode < 0 )
-         ERROR_EXIT( 1, NULL, );
+         ERROR_EXIT( expectedToPass, NULL, );
    }
    
    vdscBeginTimer( &timer );
@@ -134,7 +136,7 @@ int main( int argc, char* argv[] )
       if ( pid != savepid || pid == 0 )
       {
          fprintf( stderr, "Wrong2... %d %d\n", pid, savepid );
-         ERROR_EXIT( 1, NULL, );
+         ERROR_EXIT( expectedToPass, NULL, );
       }
       sprintf( data->dum2, "dumStr2 %d  ", identifier+1 );
       memcpy( data->dum1, data->dum2, 100 );
@@ -144,8 +146,7 @@ int main( int argc, char* argv[] )
       {
          fprintf( stderr, "Wrong... %d %d %s-%s\n", identifier+1, 
                   dumId, data->dum1, data->dum2 );
-         ERROR_EXIT( 1, NULL, );
-         return 1; // Error!!!
+         ERROR_EXIT( expectedToPass, NULL, );
       }
       
       vdscReleaseProcessLock( &data->lock );
@@ -173,5 +174,5 @@ int main( int argc, char* argv[] )
    return 0;
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

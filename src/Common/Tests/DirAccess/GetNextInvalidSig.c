@@ -13,13 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "DirAccess.h"
 #include "PrintError.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+const bool expectedToPass = false;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
@@ -34,16 +36,13 @@ int main()
    
    errcode = vdscOpenDir( &iterator, "..", &errorHandler );
    if ( errcode != 0 )
-      ERROR_EXIT( 0, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
 
    iterator.initialized = 0;
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
 
-   vdscCloseDir( &iterator );
-
-   vdscFiniDir( &iterator );
-   vdscFiniErrorHandler( &errorHandler );
-   vdscFiniErrorDefs();
-
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, );
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

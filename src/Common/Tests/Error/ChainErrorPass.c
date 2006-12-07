@@ -13,13 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "ErrorHandler.h"
 #include "PrintError.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+const bool expectedToPass = true;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
@@ -33,19 +35,21 @@ int main()
    vdscChainError( &errorHandler, VDSC_ERRNO_HANDLE, EINTR );
 
    if ( errorHandler.chainLength != 2 ) 
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
    if ( errorHandler.errorCode[0] != ENOENT )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
    if ( errorHandler.errorCode[1] != EINTR )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
    if ( errorHandler.errorHandle[0] != VDSC_ERRNO_HANDLE )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
    if ( errorHandler.errorHandle[1] != VDSC_ERRNO_HANDLE )
-      ERROR_EXIT( 1, NULL, );
-      
+      ERROR_EXIT( expectedToPass, NULL, );
+   
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
 
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

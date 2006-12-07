@@ -13,13 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "ErrorHandler.h"
 #include "PrintError.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+const bool expectedToPass = true;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int msgErrorHandler( int errorCode, char* msg, unsigned int msgLength )
 {
@@ -31,7 +33,7 @@ int msgErrorHandler( int errorCode, char* msg, unsigned int msgLength )
    return 0;
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
@@ -44,10 +46,10 @@ int main()
   
    handle1 = vdscAddErrorMsgHandler( "Dummy1", &msgErrorHandler );
    if ( handle1 == VDSC_NO_ERRHANDLER )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
    handle2 = vdscAddErrorMsgHandler( "Dummy2", &msgErrorHandler );
    if ( handle2 == VDSC_NO_ERRHANDLER )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
    
    vdscSetError( &errorHandler, handle2, 7 );
 
@@ -65,4 +67,6 @@ int main()
    
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

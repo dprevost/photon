@@ -13,13 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "DirAccess.h"
 #include "PrintError.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+const bool expectedToPass = false;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
@@ -35,7 +37,7 @@ int main()
    
    errcode = vdscOpenDir( pIterator, "..", &errorHandler );
    if ( errcode != 0 )
-      ERROR_EXIT( 0, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
    
    vdscCloseDir( pIterator );
 
@@ -43,6 +45,8 @@ int main()
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
 
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, );
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

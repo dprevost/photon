@@ -13,13 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "DirAccess.h"
 #include "PrintError.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+const bool expectedToPass = true;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
@@ -33,16 +35,16 @@ int main()
    
    errcode = vdscOpenDir( &iterator, "..", &errorHandler );
    if ( errcode != 0 )
-      ERROR_EXIT( 1, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
 
    vdscCloseDir( &iterator );
 
 #if defined (WIN32)
    if ( iterator.handle != VDS_INVALID_HANDLE ) 
-      ERROR_EXIT( 1, NULL );
+      ERROR_EXIT( expectedToPass, NULL );
 #else
    if ( iterator.pDir != NULL )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
 #endif
 
    vdscFiniDir( &iterator );
@@ -51,3 +53,6 @@ int main()
 
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

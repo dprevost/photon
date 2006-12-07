@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
  * This test is very similar to the LockConcurrency test... except that
@@ -27,7 +27,7 @@
  * determined by the first argument to the program.
  */
  
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common.h"
 #include "MemoryFile.h"
@@ -36,7 +36,10 @@
 #include "PrintError.h"
 #include <sys/wait.h>
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+const bool expectedToPass = true;
+const bool childExpectedToPass = true;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #define US_PER_SEC     1000000
 
@@ -60,10 +63,10 @@ struct localData
  * [FAILURE_RATE 500 --> 0.2% failure]
  */
 #define FAILURE_RATE 500
-//#define FAILURE_RATE 1000 000 000
+/* #define FAILURE_RATE 1000 000 000 */
 #define NUM_CHILDREN 4
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char* argv[] )
 {
@@ -71,6 +74,7 @@ int main( int argc, char* argv[] )
    pid_t child_pid[NUM_CHILDREN];
    unsigned long sec, nanoSec;
    vdscTimer timer;
+   int childStatus;
    
    unsigned long elapsedTime = 0, maxTime = 0;
    unsigned long loop = 1;
@@ -90,7 +94,7 @@ int main( int argc, char* argv[] )
       child_pid[i] = -1;
    
    if ( argc < 3 )
-      ERROR_EXIT( 1, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, );
    
    maxTime = strtol( argv[1], NULL, 0 );
    maxTime *= US_PER_SEC;
@@ -104,11 +108,11 @@ int main( int argc, char* argv[] )
    
    errcode = vdscCreateBackstore( &memFile, 0644, &errorHandler );
    if ( errcode < 0 )
-      ERROR_EXIT( 1, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
 
    errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
    if ( errcode < 0 )
-      ERROR_EXIT( 1, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, );
 
    memset( ptr, 0, 10000 );
    data = (struct localData*) ptr;
@@ -130,14 +134,15 @@ int main( int argc, char* argv[] )
       pid = fork();
       if ( pid == 0 )
       {
-         // A child - we only get out of this loop when an error is 
-         // encountered (or if the timer expires and our parent kill us)
-
+         /*
+          * A child - we only get out of this loop when an error is 
+          * encountered (or if the timer expires and our parent kill us)
+          */
          pid_t mypid = getpid();
          vdscInitMemoryFile( &memFile, 10, filename );
          errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
          if ( errcode < 0 )
-            ERROR_EXIT( 1, NULL, );
+            ERROR_EXIT( childExpectedToPass, NULL, );
          data = (struct localData*) ptr;
    
          while ( 1 )
@@ -148,7 +153,7 @@ int main( int argc, char* argv[] )
             if ( mypid == 0 )
             {
                fprintf( stderr, "Wrong2... pid is zero\n" );
-               ERROR_EXIT( 1, NULL, );
+               ERROR_EXIT( childExpectedToPass, NULL, );
             }
             sprintf( data->dum2, "dumStr2 %d  ", mypid );
             memcpy( data->dum1, data->dum2, 100 );
@@ -176,17 +181,14 @@ int main( int argc, char* argv[] )
       else
       {
          fprintf( stderr, "Fork failure, errno = %d\n", errno );
-         ERROR_EXIT( 1, NULL, );
+         ERROR_EXIT( expectedToPass, NULL, );
       }
    }
 
-   /* Warning: the logic of the return is reversed. This program
-    * should end in error but if no error is caught after the time
-    * limit... we return zero - which should indicate to the caller
-    * that something went wrong.
-    */
    while ( 1 )
    {
+      int num;
+      
       sleep( 1 );
       vdscEndTimer( &timer );
       vdscCalculateTimer( &timer, &sec, &nanoSec );
@@ -202,11 +204,19 @@ int main( int argc, char* argv[] )
          vdscFiniErrorHandler( &errorHandler );
          vdscFiniErrorDefs();
 
-         return 0;
+         ERROR_EXIT( expectedToPass, NULL, );
       }
-      int num = waitpid( -1, NULL, WNOHANG );
+      num = waitpid( -1, &childStatus, WNOHANG );
       if ( num != 0 )
+      {
+         if ( WEXITSTATUS(childStatus) != 0 )
+         {
+            for ( i = 0; i < NUM_CHILDREN; ++i )
+               kill( child_pid[i], SIGTERM );
+            ERROR_EXIT( expectedToPass, NULL, );
+         }
          break;
+      }
    }
 
    fprintf( stderr, "Time: %d us \n", elapsedTime );
@@ -217,7 +227,8 @@ int main( int argc, char* argv[] )
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
 
-   return 1;
+   return 0;
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -18,6 +18,10 @@
 #include "MemoryAllocator.h"
 #include "EngineTestCommon.h"
 
+const bool expectedToPass = true;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int main()
 {
    vdseSessionContext context;
@@ -27,23 +31,28 @@ int main()
    unsigned char* newBuff[8];
    int i;
    
-   initTest( true );
+   initTest( expectedToPass );
    vdscInitErrorHandler( &context.errorHandler );
    
    ptr = malloc( allocatedLength );
-
+   if ( ptr == NULL )
+      ERROR_EXIT( expectedToPass, NULL, );
+   
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
    newBuff[0] = vdseMallocPages( pAlloc, 2, &context );
-   if ( newBuff[0] == NULL ) return 1;
+   if ( newBuff[0] == NULL )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, );
    /* 6 pages remaining */
    newBuff[1] = vdseMallocPages( pAlloc, 6, &context );
-   if ( newBuff[1] == NULL ) return 1;
+   if ( newBuff[1] == NULL )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, );
    /* No pages remaining */
    newBuff[2] = vdseMallocPages( pAlloc, 6, &context );
-   if ( newBuff[2] != NULL ) return 1;
+   if ( newBuff[2] != NULL )
+      ERROR_EXIT( expectedToPass, NULL, );
    
    vdseFreePages( pAlloc, newBuff[0], 2, &context );
    vdseFreePages( pAlloc, newBuff[1], 6, &context );
@@ -52,13 +61,19 @@ int main()
    for ( i = 0; i < 8; ++i )
    {
       newBuff[i] = vdseMallocPages( pAlloc, 1, &context );
+      if ( newBuff[i] == NULL )
+         ERROR_EXIT( expectedToPass, &context.errorHandler, );
    }
    for ( i = 0; i < 8; i += 2 )
       vdseFreePages( pAlloc, newBuff[i], 1, &context );
    
    /* 4 pages remaining - fragmented. This new alloc should fail! */
    newBuff[0] = vdseMallocPages( pAlloc, 2, &context );
-   if ( newBuff[0] != NULL ) return 1;
+   if ( newBuff[0] != NULL )
+      ERROR_EXIT( expectedToPass, NULL, );
    
    return 0;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

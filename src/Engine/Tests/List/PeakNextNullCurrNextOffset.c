@@ -18,6 +18,8 @@
 #include "ListTestCommon.h"
 #include "EngineTestCommon.h"
 
+const bool expectedToPass = false;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char* argv[] )
@@ -26,7 +28,7 @@ int main( int argc, char* argv[] )
    vdseLinkNode node1, node2, *pNode;
    enum ListErrors error;
    
-   initTest( false );
+   initTest( expectedToPass );
    InitMem();
    
    vdseLinkNodeInit( &node1 );
@@ -38,11 +40,14 @@ int main( int argc, char* argv[] )
 
    error = vdseLinkedListPeakFirst( &list, &pNode );
    if ( error != LIST_OK )
-      return 0;
+      ERROR_EXIT( expectedToPass, NULL, );
    
    pNode->nextOffset = NULL_OFFSET;
    
    error = vdseLinkedListPeakNext( &list, pNode, &pNode );
 
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, );
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
