@@ -17,163 +17,179 @@
 
 #include "Hash.h"
 #include "SessionContext.h"
+#include "MemoryObject.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #define HASH_ARRAY_MIN_SIZE 13   /* a prime number */
 
-static unsigned int g_lowDensity  = 30;
-static unsigned int g_highDensity = 50;
+/** In % */
+static unsigned int g_maxLoadFactor = 300;
+static unsigned int g_minLoadFactor = 100;
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+/**
+ * The array lenght (for the hash) will double or shrink by a factor two
+ * using precomputed lengths (all the lengths are prime numbers - using
+ * prime numbers help reduces the risk of collision.
+ *
+ * To make it simple, we use the first prime number less than 2^n (except 
+ * for 29 to make the jump from 13 to 61 smoother).
+ *
+ * The list of prime numbers was obtained from http://primes.utm.edu/,
+ * specifically the page http://primes.utm.edu/lists/2small/0bit.html
+ * (which list the first 10 prime numbers less than 2^n for n up to 400).
+ */
+ 
+#if SIZEOF_VOID_P == 4
+#  define PRIME_NUMBER_ARRAY_LENGTH 28
+static size_t g_arrayLengths[PRIME_NUMBER_ARRAY_LENGTH] = 
+{
+   13,     
+   29,
+   61,
+   127,
+   251,
+   509,
+   1021,
+   2039,
+   4093,
+   8191,
+   0x00004000 - 3,  /* 2^14 - 3 */
+   0x00008000 - 19,
+   0x00010000 - 15,
+   0x00020000 - 1,
+   0x00040000 - 5,
+   0x00080000 - 1,
+   0x00100000 - 3,
+   0x00200000 - 9,
+   0x00400000 - 3,
+   0x00800000 - 15,
+   0x01000000 - 3,
+   0x02000000 - 39,
+   0x04000000 - 5,
+   0x08000000 - 39,
+   0x10000000 - 57,
+   0x20000000 - 3,
+   0x40000000 - 35,
+   0x80000000 - 1
+};
+#else
+#  define PRIME_NUMBER_ARRAY_LENGTH 60
+static size_t g_arrayLengths[PRIME_NUMBER_ARRAY_LENGTH] = 
+{
+   13,     
+   29,
+   61,
+   127,
+   251,
+   509,
+   1021,
+   2039,
+   4093,
+   8191,
+   0x0000000000004000 - 3,  /* 2^14 - 3 */
+   0x0000000000008000 - 19,
+   0x0000000000010000 - 15,
+   0x0000000000020000 - 1,
+   0x0000000000040000 - 5,
+   0x0000000000080000 - 1,
+   0x0000000000100000 - 3,
+   0x0000000000200000 - 9,
+   0x0000000000400000 - 3,
+   0x0000000000800000 - 15,
+   0x0000000001000000 - 3,
+   0x0000000002000000 - 39,
+   0x0000000004000000 - 5,
+   0x0000000008000000 - 39,
+   0x0000000010000000 - 57,
+   0x0000000020000000 - 3,
+   0x0000000040000000 - 35,
+   0x0000000080000000 - 1,
+   0x0000000100000000 - 5,
+   0x0000000200000000 - 9,
+   0x0000000400000000 - 41,
+   0x0000000800000000 - 31,
+   0x0000001000000000 - 5,
+   0x0000002000000000 - 25,
+   0x0000004000000000 - 45,
+   0x0000008000000000 - 7,
+   0x0000010000000000 - 87,
+   0x0000020000000000 - 21,
+   0x0000040000000000 - 11,
+   0x0000080000000000 - 57,
+   0x0000100000000000 - 17,
+   0x0000200000000000 - 55,
+   0x0000400000000000 - 21,
+   0x0000800000000000 - 115,
+   0x0001000000000000 - 59,
+   0x0002000000000000 - 81,
+   0x0004000000000000 - 27,
+   0x0008000000000000 - 129,
+   0x0010000000000000 - 47,
+   0x0020000000000000 - 111,
+   0x0040000000000000 - 33,
+   0x0080000000000000 - 55,
+   0x0100000000000000 - 5,
+   0x0200000000000000 - 13,
+   0x0400000000000000 - 27,
+   0x0800000000000000 - 55,
+   0x1000000000000000 - 93,
+   0x2000000000000000 - 1,
+   0x4000000000000000 - 57,
+   0x8000000000000000 - 25,
 
-#if 0
+};
 
-   /** Do nothing - all is done by Close() */
-   ~HashMap();
-
-   bool FindKey  ( HashArray*  pArray,
-                   const char* pKey,
-                   size_t      keyLength, 
-                   size_t*     pRowNumber,
-                   vdseSessionContext* pContext );
-
-   /** Case insensitive version */
-   bool FindKeyCI( HashArray*  pArray,
-                   const char* pKey, 
-                   size_t      keyLength, 
-                   size_t*     pRowNumber,
-                   vdseSessionContext* pContext );
-
-   size_t HashAKey  ( char*  pKey, 
-                      size_t keyLength );
-   /** Case insensitive version */
-   size_t HashAKeyCI( char*  pKey, 
-                      size_t keyLength );
-   
-   enum ListErrors ResizeArray( vdseSessionContext* pContext );
-
-   bool TimeToResize()
-   {
-      return (((m_numberOfRows + 1)*100)/m_arraySize) >= m_highDensity;
-   }
-
-
-   /** Crash recovery attributes and functions */
-
-   friend class TreeRecovery;
-   friend class Folder;
-
-   void DeleteEntry( size_t rowNumber,
-                     vdseMemAlloc* pAlloc );
-
-   int ResetArray( vdseMemAlloc* pAlloc );
-
-   bool SelfTest( vdseMemAlloc* pAlloc );
-   
-   /** Return the pointer to the array so that it can be included in
-    * the MemoryAllocator validation
-    */
-   void* GetArray(struct vdseMemAlloc* pAlloc) const
-   { return GET_PTR( m_arrayOffset, HashArray, pAlloc ); }
 #endif
 
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
+ *
+ * Static inline functions are first.
+ * 
+ * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-
-
-#if 0
-
-HashList::HashList( int flag )
-   : BaseObject   ( IDENT_HASH_LIST ),
-     m_arrayOffset  ( NULL_OFFSET ),
-     m_numberOfRows ( 0     ),
-     m_arraySize    ( 0     ),
-     m_totalSize    ( 0     ),
-     m_flag         ( flag )
+static inline 
+size_t calculateItemLength( size_t keyLength,
+                            size_t dataLength )
 {
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-enum ListErrors 
-vdseHashInit( vdseHash*           pHash,
-              int                 caseSensitiveFlag,
-              size_t              initialSize, 
-              vdseSessionContext* pContext )
-{
-   enum ListErrors errCode = LIST_OK;
    size_t len;
-
-   VDS_PRE_CONDITION( pHash != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
    
-   initialSize = (100*initialSize)/g_lowDensity;
-
-   if ( initialSize < HASH_ARRAY_MIN_SIZE ) 
-      initialSize = HASH_ARRAY_MIN_SIZE;
-
-   len = sizeof(HashArray) - sizeof(BaseObject) + 
-      initialSize * sizeof(ptrdiff_t);
-   fprintf( stderr, "%d %d\n",   sizeof(HashArray), sizeof(BaseObject) );
+   len = offsetof(vdseHashItem, key) + keyLength;
+   len = ((len-1)/VDST_STRUCT_ALIGNMENT + 1)*VDST_STRUCT_ALIGNMENT;
    
-   HashArray* ptr = (HashArray*)
-      vdseMalloc( pContext->pAllocator, len, &pContext->errorHandler );
-   if ( ptr == NULL )
-      errCode = LIST_NO_MEMORY;
-   else
-   {
-      new (ptr) HashArray;
-
-      for ( unsigned int i = 0; i < initialSize; ++i)
-         ptr->Set( i, NULL_OFFSET );
-      
-      m_arraySize = initialSize;
-      m_arrayOffset = SET_OFFSET( ptr, pContext->pAllocator );
-   }
+   len += dataLength;
    
-   return errCode;
+   return len;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-HashList::~HashList()
+static inline 
+unsigned char* getData( vdseHashItem* pItem )
 {
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void HashList::Close( vdseSessionContext* pContext )
-{
-   EmptyList( pContext );
-
-   /* EmptyList deallocates the rows but not the main array of */
-   /* RowDescriptor* */
-   HashArray* pArray;
-   SET_PTR( pArray, m_arrayOffset, HashArray, pContext->pAllocator );
+   size_t len;
    
-   if ( pArray != NULL )
-   {
-      pArray->~HashArray();
-      vdseFree( pContext->pAllocator, pArray, &pContext->errorHandler );
-   }
-   m_arrayOffset = NULL_OFFSET;
+   len = offsetof(vdseHashItem, key) + pItem->keyLength;
+   len = ((len-1)/VDST_STRUCT_ALIGNMENT + 1)*VDST_STRUCT_ALIGNMENT;
+   
+   return (unsigned char*)pItem + len;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-inline u_long
-hash_pjw (const char *str, size_t len)
+static inline u_long
+hash_pjw (const unsigned char *str, size_t len)
 {
-   u_long hash = 0;
-
-   for (size_t i = 0; i < len; i++)
+   u_long hash = 0, g;
+   size_t i;
+   
+   for ( i = 0; i < len; i++ )
    {
-      const char temp = str[i];
+      const unsigned char temp = str[i];
       hash = (hash << 4) + (temp * 13);
 
-      u_long g = hash & 0xf0000000;
-
+      g = hash & 0xf0000000;
       if (g)
       {
          hash ^= (g >> 24);
@@ -184,173 +200,220 @@ hash_pjw (const char *str, size_t len)
    return hash;
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
- *
- * Never call this function directly!
- *
- * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-size_t HashList::HashAKey( char*  pKey, 
-                           size_t keyLength )
+static inline 
+vdseHashResizeEnum isItTimeToResize( vdseHash* pHash )
 {
-   return hash_pjw( pKey, keyLength );
+   unsigned int loadFactor = 100 * pHash->numberOfItems / 
+      g_arrayLengths[pHash->lengthIndex];
+
+  if ( loadFactor >= g_maxLoadFactor )
+     return VDSE_HASH_TIME_TO_GROW;
+  if ( pHash->lengthIndex > pHash->lengthIndexMinimum ) 
+     if ( loadFactor <= g_minLoadFactor ) 
+        return VDSE_HASH_TIME_TO_SHRINK;
+  return VDSE_HASH_NO_RESIZE;
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
  *
- * Never call this function directly!
- * Case insensitive version
- *
+ * Static non-inline functions.
+ * 
  * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-size_t HashList::HashAKeyCI( char*  pKey, 
-                             size_t keyLength )
+static bool findKey( vdseHash*            pHash,
+                     ptrdiff_t*           pArray,
+                     const unsigned char* pKey,
+                     size_t               keyLength,
+                     vdseHashItem**       ppItem,
+                     vdseHashItem**       ppPreviousItem,
+                     size_t*              pBucket )
 {
-   char searchKey[MAX_KEY_LENGTH];
-   size_t i;
+   ptrdiff_t currentOffset, nextOffset;
+   vdseHashItem* pItem;
+
+   *pBucket = hash_pjw( pKey, keyLength ) % g_arrayLengths[pHash->lengthIndex];
+   currentOffset = pArray[*pBucket];
    
-   VDS_ASSERT( keyLength <= MAX_KEY_LENGTH );
+   *ppPreviousItem = NULL;
+
+   while ( currentOffset != NULL_OFFSET )
+   {
+      pItem = GET_PTR( currentOffset, vdseHashItem );
+      nextOffset = pItem->nextItem;
+     
+      if ( keyLength == pItem->keyLength )
+      {
+         if ( memcmp( pKey, pItem->key, keyLength ) == 0 )
+         {
+            *ppItem = pItem;
+            return true;
+         }
+      }
+
+      /* Move to the next item in our bucket */
+      currentOffset = nextOffset;
+      *ppPreviousItem = pItem;
+   }
    
-   for ( i = 0; i < keyLength; ++i )
-      searchKey[i] = tolower( pKey[i] );
+   /* Nothing was found, return false */
+   *ppItem = NULL;
    
-   return hash_pjw( searchKey, keyLength );
+   return false;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
+ *
+ * Functions declared in Hash.h (alphabetic order).
+ * 
+ * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+enum ListErrors 
+vdseHashDelete( vdseHash*            pHash,
+                const unsigned char* pKey, 
+                size_t               keyLength,
+                vdseSessionContext*  pContext  )
+{
+   size_t bucket = 0;
+   ptrdiff_t* pArray;
+   bool keyFound = false;
+   vdseHashItem* pItem, *previousItem = NULL;
+   
+   VDS_PRE_CONDITION( pHash != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   
+   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
+   VDS_INV_CONDITION( pArray != NULL );
+
+   keyFound = findKey( pHash, pArray, pKey, keyLength, 
+                       &pItem, &previousItem, &bucket );
+   if ( keyFound )   
+   {
+      pHash->totalDataSizeInBytes -= pItem->dataLength;
+      vdseFree( (vdseMemObject*)pContext->pCurrentMemObject, 
+                (unsigned char*)pItem, 
+                calculateItemLength(pItem->keyLength,pItem->dataLength),
+                pContext );
+      if ( previousItem == NULL )
+         pArray[bucket] = NULL_OFFSET;
+      else
+         previousItem->nextItem = NULL_OFFSET;
+      
+      pHash->numberOfItems--;
+
+      pHash->enumResize = isItTimeToResize( pHash );
+
+      return LIST_OK;
+
+   }
+
+   return LIST_KEY_NOT_FOUND;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool HashList::FindKeyCI( HashArray*  pArray,
-                          const char* pKey, 
-                          size_t      keyLength, 
-                          size_t*     pRowNumber,
-                          vdseSessionContext* pContext )
+void vdseHashEmpty( vdseHash*           pHash,
+                    vdseSessionContext* pContext )
 {
-   char searchKey[MAX_KEY_LENGTH];
-   char foundKey[MAX_KEY_LENGTH];
+   ptrdiff_t* pArray, currentOffset, nextOffset;
    size_t i;
+   vdseHashItem* pItem;
    
-   VDS_ASSERT( keyLength <= MAX_KEY_LENGTH );
+   VDS_PRE_CONDITION( pHash != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   
+   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
+   VDS_INV_CONDITION( pArray != NULL );
 
-   for ( i = 0; i < keyLength; ++i )
-      searchKey[i] = tolower( pKey[i] );
-   
-   size_t rowNumber = hash_pjw( searchKey, keyLength ) % m_arraySize;
-   
-   while (1)
+   for ( i = 0; i < g_arrayLengths[pHash->lengthIndex]; ++i )
    {
-      RowDescriptor* pRow;
-      SET_PTR( pRow, 
-               pArray->Get(rowNumber), 
-               RowDescriptor, 
-               pContext->pAllocator );
-
-      if ( pRow == NULL )
+      currentOffset = pArray[i];
+      
+      while ( currentOffset != NULL_OFFSET )
       {
-         *pRowNumber = rowNumber;
-         return false;
-      }
-     
-      if ( keyLength == pRow->keyLength )
-      {
-         char* pOldKey = GET_PTR(pRow->keyOffset, char, pContext->pAllocator );
+         pItem = GET_PTR( currentOffset, vdseHashItem );
+         nextOffset = pItem->nextItem;
          
-         for ( i = 0; i < keyLength; ++i )
-            foundKey[i] = tolower( pOldKey[i] ); 
-
-         if ( memcmp( searchKey, foundKey, keyLength ) == 0 )
-         {
-            *pRowNumber = rowNumber;
-            return true;
-         }
+         vdseFree( (vdseMemObject*)pContext->pCurrentMemObject, 
+                   (unsigned char*) pItem, 
+                   calculateItemLength(pItem->keyLength,pItem->dataLength), 
+                   pContext );
+         
+         /* Move to the next item in our bucket */
+         currentOffset = nextOffset;
       }
       
-      ++rowNumber; /* Advance to next possible emplacement */
-
-      /* Go back to the beginning of the array (since the key might have been */
-      /* hashed close to the end of the array, the requested location might */
-      /* be at the beginning */
-      if ( rowNumber == m_arraySize )
-         rowNumber = 0;
+      pArray[i] = NULL_OFFSET;
    }
+   
+   pHash->numberOfItems = 0;
+   pHash->totalDataSizeInBytes = 0;
+   pHash->enumResize = VDSE_HASH_TIME_TO_SHRINK;
+
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool HashList::FindKey( HashArray*  pArray,
-                        const char* pKey, 
-                        size_t      keyLength, 
-                        size_t*     pRowNumber,
-                        vdseSessionContext* pContext )
+void vdseHashFini( vdseHash*           pHash,
+                   vdseSessionContext* pContext )
 {
-   size_t rowNumber = hash_pjw( pKey, keyLength ) % m_arraySize;
+   ptrdiff_t* pArray;
 
-   while (1)
+   VDS_PRE_CONDITION( pHash != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   
+   vdseHashEmpty( pHash, pContext );
+
+   /* EmptyList deallocates the rows but not the main array of */
+   /* RowDescriptor* */
+   if ( pHash->arrayOffset != NULL_OFFSET )
    {
-      RowDescriptor* pRow;
-      SET_PTR( pRow, 
-               pArray->Get(rowNumber), 
-               RowDescriptor, 
-               pContext->pAllocator );
-
-      if ( pRow == NULL )
-      {
-         *pRowNumber = rowNumber;
-         return false;
-      }
-     
-      if ( keyLength == pRow->keyLength )
-      {
-         char* pOldKey = GET_PTR( pRow->keyOffset, 
-                                  char, 
-                                  pContext->pAllocator );
-         if ( memcmp( pKey, pOldKey, keyLength ) == 0 )
-         {
-            *pRowNumber = rowNumber;
-            return true;
-         }
-      }
-      
-      ++rowNumber; /* Advance to next possible emplacement */
-
-      /* Go back to the beginning of the array (since the key might have been */
-      /* hashed close to the end of the array, the requested location might */
-      /* be at the beginning */
-      if ( rowNumber == m_arraySize )
-         rowNumber = 0;
+      pArray = GET_PTR( pHash->arrayOffset, ptrdiff_t );
+      vdseFree( (vdseMemObject*)pContext->pCurrentMemObject, 
+                (unsigned char*) pArray,
+                g_arrayLengths[pHash->lengthIndex]*sizeof(ptrdiff_t),
+                pContext );
+      pHash->arrayOffset = NULL_OFFSET;
    }
+   pHash->initialized = 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum ListErrors HashList::GetByKey( const char* pKey,
-                                    size_t      keyLength,
-                                    void **     ppData,
-                                    size_t*     pDataLength,
-                                    vdseSessionContext* pContext,
-                                    size_t*     pRowNumber )
+enum ListErrors 
+vdseHashGet( vdseHash*            pHash,
+             const unsigned char* pKey,
+             size_t               keyLength,
+             void **              ppData,
+             size_t*              pDataLength,
+             vdseSessionContext*  pContext,
+             size_t*              pBucket )
 {
-   size_t rowNumber;
+   size_t bucket;
    bool   keyFound = false;
-   HashArray* pArray;
+   ptrdiff_t* pArray;
+   vdseHashItem* pItem, *dummy;
    
-   SET_PTR( pArray, m_arrayOffset, HashArray, pContext->pAllocator );
-   VDS_ASSERT( pArray != NULL );
+   VDS_PRE_CONDITION( pHash != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   
+   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
+   VDS_INV_CONDITION( pArray != NULL );
 
-   if ( m_flag == HASH_CASE_INSENSITIVE )
-      keyFound = FindKeyCI( pArray, pKey, keyLength, &rowNumber, pContext );
-   else
-      keyFound = FindKey( pArray, pKey, keyLength, &rowNumber, pContext );
-   
+   keyFound = findKey( pHash, pArray, pKey, keyLength, 
+                       &pItem, &dummy, &bucket );
    if ( keyFound )
    {
-      RowDescriptor* pRow  = GET_PTR( pArray->Get(rowNumber), 
-                                      RowDescriptor,
-                                      pContext->pAllocator );
-
-      *ppData      = GET_PTR( pRow->dataOffset, void, pContext->pAllocator );
-      *pDataLength = pRow->dataLength;
-      if ( pRowNumber )
-         *pRowNumber  = rowNumber;
+      *ppData      = getData( pItem );
+      *pDataLength = pItem->dataLength;
+      if ( pBucket )
+         *pBucket  = bucket;
       
       return LIST_OK;
    }
@@ -359,322 +422,343 @@ enum ListErrors HashList::GetByKey( const char* pKey,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void HashList::EmptyList( vdseSessionContext* pContext )
+enum ListErrors 
+vdseHashGetFirst( vdseHash*  pHash,
+                  size_t*    pBucket, 
+                  ptrdiff_t* pFirstItemOffset )
 {
-   HashArray* pArray;
+   ptrdiff_t* pArray, currentOffset;
+   bool SHOULD_NOT_REACHED_THIS = true;
+   size_t i;
    
-   SET_PTR( pArray, m_arrayOffset, HashArray, pContext->pAllocator );
-   VDS_ASSERT( pArray != NULL );
-
-   for ( size_t i = 0; i < m_arraySize; ++i )
-   {
-      if ( pArray->Get(i) != NULL_OFFSET )
-      {
-         RowDescriptor* pRow = GET_PTR( pArray->Get(i), 
-                                        RowDescriptor,
-                                        pContext->pAllocator );
-
-         /* The allocation was done in one block - it must be freed the */
-         /* same way */
-         pRow->~RowDescriptor();
-         vdseFree( pContext->pAllocator, pRow, &pContext->errorHandler );
-         pArray->Set( i, NULL_OFFSET );
-      }
-   }
+   VDS_PRE_CONDITION( pHash != NULL );
+   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
-   m_numberOfRows = 0;
-   m_totalSize = 0;
+   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
+   VDS_INV_CONDITION( pArray != NULL );
 
-   return;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-enum ListErrors HashList::GetFirst( size_t*         pNewRowNumber, 
-                                    RowDescriptor** ppRow,
-                                    vdseMemAlloc*   pAlloc )
-{
-   if ( m_numberOfRows == 0 )
+   if ( pHash->numberOfItems == 0 )
       return LIST_EMPTY;
-
-   HashArray* pArray;
    
-   SET_PTR( pArray, m_arrayOffset, HashArray, pAlloc );
-   VDS_ASSERT( pArray != NULL );
-  
-   for ( size_t i = 0; i < m_arraySize; ++i )
+   /* 
+    * Note: the first item has to be the first non-empty pArray[i],
+    * this makes the search easier.
+    */
+   for ( i = 0; i < g_arrayLengths[pHash->lengthIndex]; ++i )
    {
-      if ( pArray->Get(i) != NULL_OFFSET )
+      currentOffset = pArray[i];
+      
+      if (currentOffset != NULL_OFFSET )
       {
-         *ppRow  = GET_PTR( pArray->Get(i), 
-                            RowDescriptor, 
-                            pAlloc );
-         *pNewRowNumber = i;
-
+         *pBucket = i;
+         *pFirstItemOffset = currentOffset;
          return LIST_OK;
       }
    }
-   if ( m_numberOfRows > 0 ) 
-      fprintf( stderr, " ERROR 1 - %d \n", m_numberOfRows );
+
+   VDS_POST_CONDITION( SHOULD_NOT_REACHED_THIS == false );
    
    return LIST_EMPTY; /* Should never occur */
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum ListErrors HashList::GetNext( size_t  oldRowNumber,
-                                   size_t* pNewRowNumber, 
-                                   RowDescriptor** ppRow,
-                                   vdseMemAlloc* pAlloc )
+enum ListErrors 
+vdseHashGetNext( vdseHash*  pHash,
+                 size_t     previousBucket,
+                 ptrdiff_t  previousOffset,
+                 size_t*    pNextBucket, 
+                 ptrdiff_t* pNextItemOffset )
 {
-   HashArray* pArray;
+   ptrdiff_t* pArray, currentOffset;
+   size_t i;
+   vdseHashItem* pItem;
    
-   SET_PTR( pArray, m_arrayOffset, HashArray, pAlloc );
-   VDS_ASSERT( pArray != NULL );
+   VDS_PRE_CONDITION( pHash != NULL );
+   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   
+   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
+   VDS_INV_CONDITION( pArray != NULL );
 
-   for ( size_t i = oldRowNumber+1; i < m_arraySize; ++i )
+   pItem = GET_PTR( previousOffset, vdseHashItem );
+   if ( pItem->nextItem != NULL_OFFSET )
    {
-      if ( pArray->Get(i) != NULL_OFFSET )
-      {
-         *ppRow  = GET_PTR( pArray->Get(i), 
-                            RowDescriptor, 
-                            pAlloc );
-         *pNewRowNumber = i;
-
-         return LIST_OK;
-      }
+      /* We found the next one in the linked list. */
+      *pNextBucket = previousBucket;
+      *pNextItemOffset = pItem->nextItem;
+      return LIST_OK;
    }
+   
+   /* 
+    * Note: the next item has to be the first non-empty pArray[i] beyond
+    * the current bucket (previousBucket). 
+    */
+   for ( i = previousBucket+1; i < g_arrayLengths[pHash->lengthIndex]; ++i )
+   {
+      currentOffset = pArray[i];
+      
+      if (currentOffset != NULL_OFFSET )
+      {
+         *pNextBucket = i;
+         *pNextItemOffset = currentOffset;
+         return LIST_OK;
+      }      
+   }
+   
    return LIST_END_OF_LIST;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum ListErrors HashList::InsertByKey( const char*     pKey,
-                                       size_t          keyLength,
-                                       void*           pData,
-                                       size_t          dataLength,
-                                       ptrdiff_t*      pSelf,
-                                       vdseSessionContext* pContext )
+enum ListErrors 
+vdseHashInit( vdseHash*           pHash,
+              size_t              reservedSize, 
+              vdseSessionContext* pContext )
 {
-   HashArray* pArray;   
-   size_t rowNumber = 0;
-   bool   keyFound = false;
-
-   /* We resize first in order to get the "right" row number immediately */
-   if ((( (m_numberOfRows + 1)*100)/m_arraySize) >= m_highDensity )
-   {
-      enum ListErrors rc = ResizeArray( pContext );
-      if ( rc != 0 )
-         return rc;
-   }
-
-   SET_PTR( pArray, m_arrayOffset, HashArray, pContext->pAllocator );
-   VDS_ASSERT( pArray != NULL );
+   enum ListErrors errCode = LIST_OK;
+   size_t len, numBuckets;
+   ptrdiff_t* ptr;
+   unsigned int i;
    
-   if ( m_flag == HASH_CASE_INSENSITIVE )
-      keyFound = FindKeyCI( pArray, pKey, keyLength, &rowNumber, pContext );
+   VDS_PRE_CONDITION( pHash != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+
+   pHash->numberOfItems = 0;
+   pHash->totalDataSizeInBytes = 0;
+   pHash->enumResize = VDSE_HASH_NO_RESIZE;
+   
+   /*
+    * reservedSize... In real life what it means is that we cannot shrink 
+    * the array to a point where we would need to increase it in order
+    * to hold reservedSize items.
+    *
+    * Since a ratio (load factor) of 1.5-2 is considered optimal (based on
+    * research done on the web...) we will use a load factor of 1.75 to 
+    * calculate the number of buckets.
+    */
+   numBuckets = reservedSize * 100 / 175;
+   
+   /* Which one of our lenghts is closer but larger than numBuckets? */
+   pHash->lengthIndex = pHash->lengthIndexMinimum = 0;
+   for ( i = 1; i < PRIME_NUMBER_ARRAY_LENGTH; ++i )
+   {
+      if ( g_arrayLengths[i] > numBuckets )
+      {
+         pHash->lengthIndex = i - 1;
+         pHash->lengthIndexMinimum = i - 1;
+         break;
+      }
+   }
+   
+   len = g_arrayLengths[pHash->lengthIndex] * sizeof(ptrdiff_t);
+   
+   ptr = (ptrdiff_t*) 
+      vdseMalloc( (vdseMemObject*)pContext->pCurrentMemObject, 
+                  len, 
+                  pContext );
+   if ( ptr == NULL )
+      errCode = LIST_NO_MEMORY;
    else
-      keyFound = FindKey( pArray, pKey, keyLength, &rowNumber, pContext );
+   {
+      for ( i = 0; i < g_arrayLengths[pHash->lengthIndex]; ++i)
+         ptr[i] = NULL_OFFSET;
+      
+      pHash->arrayOffset = SET_OFFSET( ptr );
+      pHash->initialized = VDSE_HASH_SIGNATURE;
+   }
+   
+   return errCode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+enum ListErrors 
+vdseHashInsert( vdseHash*            pHash,
+                const unsigned char* pKey,
+                size_t               keyLength,
+                void*                pData,
+                size_t               dataLength,
+                ptrdiff_t*           pOffsetOfNewItem,
+                vdseSessionContext*  pContext )
+{
+   ptrdiff_t* pArray;   
+   size_t bucket = 0;
+   bool   keyFound = false;
+   vdseHashItem* pItem, *previousItem = NULL;
+
+   VDS_PRE_CONDITION( pHash != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   
+   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
+   VDS_INV_CONDITION( pArray != NULL );
+
+   keyFound = findKey( pHash, pArray, pKey, keyLength, 
+                       &pItem, &previousItem, &bucket );
 
    if ( keyFound )
       return LIST_KEY_FOUND;
 
-   /* The whole row is allocated in one step, header+data, to minimize */
-   /* overheads of the memory allocator (bget) */
-   RowDescriptor* pRow = (RowDescriptor*) 
-      vdseMalloc( pContext->pAllocator, 
-                  sizeof(RowDescriptor) + keyLength + dataLength,
-                  &pContext->errorHandler );
-   if ( pRow == NULL ) return LIST_NO_MEMORY;
+   /* The whole item is allocated in one step, header+data, to minimize */
+   /* overheads of the memory allocator */
+   pItem = (vdseHashItem*) 
+      vdseMalloc( (vdseMemObject*)pContext->pCurrentMemObject, 
+                  calculateItemLength( keyLength, dataLength ),
+                  pContext );
+   if ( pItem == NULL ) return LIST_NO_MEMORY;
    
-   new (pRow) RowDescriptor;
+   pItem->nextItem = NULL_OFFSET;
    
-   pRow->dataOffset = SET_OFFSET( (char*)pRow + sizeof(RowDescriptor),
-                                  pContext->pAllocator );
-   pRow->keyOffset  = SET_OFFSET( (char*)pRow + sizeof(RowDescriptor) + 
-                                  dataLength,
-                                  pContext->pAllocator );
+   memcpy( pItem->key,     pKey, keyLength );
+   memcpy( getData(pItem), pData, dataLength );
    
-   memcpy( (char*)pRow + sizeof(RowDescriptor) + dataLength,  pKey,  
-           keyLength );
-   memcpy( (char*)pRow + sizeof(RowDescriptor), pData, dataLength );
-   
-   pRow->keyLength = keyLength;
-   pRow->dataLength = dataLength;
+   pItem->keyLength = keyLength;
+   pItem->dataLength = dataLength;
 
-   m_totalSize += dataLength;
-   m_numberOfRows++;
+   pHash->totalDataSizeInBytes += dataLength;
+   pHash->numberOfItems++;
 
-   pArray->Set( rowNumber, SET_OFFSET(pRow, pContext->pAllocator) );
-
-   *pSelf = pArray->Get( rowNumber );
+   pHash->enumResize = isItTimeToResize( pHash );
+   
+   *pOffsetOfNewItem = SET_OFFSET(pItem );
+   
+   if ( previousItem == NULL )
+      pArray[bucket] = *pOffsetOfNewItem;
+   else
+      previousItem->nextItem = *pOffsetOfNewItem;
    
    return LIST_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum ListErrors HashList::DeleteByKey( const char*     pKey, 
-                                       size_t          keyLength,
-                                       vdseSessionContext* pContext  )
+enum ListErrors 
+vdseHashResize( vdseHash*           pHash,
+                vdseSessionContext* pContext )
 {
-   size_t rowNumber = 0;
-   HashArray* pArray;
-   bool keyFound = false;
+   int newIndexLength;
+   ptrdiff_t* ptr;
+   size_t len, i;
+   ptrdiff_t* pArray, currentOffset, nextOffset, newBucket, newOffset;
+   vdseHashItem* pItem, *pNewItem;
+  
+   VDS_PRE_CONDITION( pHash != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
-   SET_PTR( pArray, m_arrayOffset, HashArray, pContext->pAllocator );
-   VDS_ASSERT( pArray != NULL );
+   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
+   VDS_INV_CONDITION( pArray != NULL );
 
-   if ( m_flag == HASH_CASE_INSENSITIVE )
-      keyFound = FindKeyCI( pArray, pKey, keyLength, &rowNumber, pContext );
+   if ( pHash->enumResize == VDSE_HASH_NO_RESIZE )
+      return LIST_OK;
+
+   if ( pHash->enumResize == VDSE_HASH_TIME_TO_GROW )
+      newIndexLength = pHash->lengthIndex + 1;
    else
-      keyFound = FindKey( pArray, pKey, keyLength, &rowNumber, pContext );
+      newIndexLength = pHash->lengthIndex - 1;     
 
-   if ( keyFound )   
+   len = g_arrayLengths[newIndexLength] * sizeof(ptrdiff_t);
+   
+   ptr = (ptrdiff_t*) 
+      vdseMalloc( (vdseMemObject*)pContext->pCurrentMemObject, 
+                  len, 
+                  pContext );
+   if ( ptr == NULL )
+      return LIST_NO_MEMORY;
+
+   for ( i = 0; i < g_arrayLengths[newIndexLength]; ++i)
+      ptr[i] = NULL_OFFSET;
+      
+   for ( i = 0; i < g_arrayLengths[pHash->lengthIndex]; ++i )
    {
-      RowDescriptor* pRow = GET_PTR( pArray->Get(rowNumber), 
-                                     RowDescriptor,
-                                     pContext->pAllocator );
-
-      m_totalSize -= pRow->dataLength;
-      pRow->~RowDescriptor();
-      vdseFree( pContext->pAllocator, pRow, &pContext->errorHandler );
-      pArray->Set( rowNumber, NULL_OFFSET );
-      m_numberOfRows--;
-
-      /* The algorithm for deletions in a hash array look complex but */
-      /* is in fact pretty basic: */
-      /* Suppose you're deleting entry 13 and you have a chain of 5  */
-      /* non-null entries, 13 to 17. */ 
-      /* If we leave 13 empty and either one of the four others */
-      /* hash to 13, then it won't be found in a search. */
-      /* So, to be able to find this (say entry 14 hash to 14 but entry */
-      /* 15 hash to 13) we have to move it into the empty slot. */
-      /* Moving this guy to the empty slot creates a new empty slot */
-      /* (15) and any subsequent entry in the chain must be checked */
-      /* to make sure they don't hash to that new slot. If they do, */
-      /* you have to move it... repeat the process until the end of */
-      /* the chain of non-empty entries. */
-
-      /* To complicate matter, the chain might wrape around the end of */
-      /* the array (as in, 101, 102, 0, 1 if the array has 103 entries). */
-
-      size_t curr; /* Current entry we are checking */
-      size_t hole; /* Location of the hole */
-      size_t hashValue; /* Hash value for current entry */
-
-      curr = rowNumber;
-
-      while( true )
+      currentOffset = pArray[i];
+      
+      while ( currentOffset != NULL_OFFSET )
       {
-         pArray->Set( curr, NULL_OFFSET );
-         hole = curr;
-
-         do
+         pItem = GET_PTR( currentOffset, vdseHashItem );
+         nextOffset = pItem->nextItem;
+         
+         newBucket = hash_pjw( pItem->key, pItem->keyLength ) % 
+                     g_arrayLengths[newIndexLength];
+         if ( ptr[newBucket] == NULL_OFFSET )
+            ptr[newBucket] = currentOffset;
+         else
          {
-            curr++;
-            if ( curr == m_arraySize )
-               curr = 0;
-
-            if( pArray->Get(curr) == NULL_OFFSET )
+            newOffset = ptr[newBucket];
+            pNewItem = GET_PTR( newOffset, vdseHashItem );
+            while ( pNewItem->nextItem != NULL_OFFSET )
             {
-               return LIST_OK;
+               newOffset = pNewItem->nextItem;
+               pNewItem = GET_PTR( newOffset, vdseHashItem );
             }
-            
-            pRow = GET_PTR( pArray->Get(curr), 
-                            RowDescriptor,
-                            pContext->pAllocator );
-            char* pKey = GET_PTR( pRow->keyOffset, 
-                                  char, 
-                                  pContext->pAllocator );
-            if ( m_flag == HASH_CASE_INSENSITIVE )
-               hashValue =  HashAKeyCI( pKey, pRow->keyLength ) % m_arraySize;
-            else
-               hashValue =  HashAKey( pKey, pRow->keyLength ) % m_arraySize;
+            pNewItem->nextItem = currentOffset;
+            pItem->nextItem = NULL_OFFSET;
+         }
+         
+         /* Move to the next item in our bucket */
+         currentOffset = nextOffset;
+      }
+   }
+   
+   len = g_arrayLengths[pHash->lengthIndex]*sizeof(ptrdiff_t);
 
-         } while( ((hole < hashValue) && (hashValue <= curr)) ||
-                  ((curr < hole)  && (hole < hashValue)) ||
-                  ((hashValue <= curr)  && (curr < hole)) );
+   pHash->lengthIndex = newIndexLength;
+   pHash->arrayOffset = SET_OFFSET( ptr );
 
-         /* To explain this while condition:
-          *
-          * Curr < Hole    Hash value is in region:
-          *
-          *  _________     __
-          * |         | 
-          * |         |    No move (condition 3)
-          * |         |
-          * | Current |    __     
-          * |         |
-          * |         |    Move curr into hole
-          * |         |
-          * |  Hole   |    __
-          * |         |
-          * |         |    No move (condition 2)
-          * |_________|    __
-
-          * Curr > Hole    Hash value is in region:
-          *
-          *  _________     __
-          * |         | 
-          * |         |    Move curr into hole
-          * |         |
-          * |  Hole   |    __     
-          * |         |
-          * |         |    No move (condition 1)
-          * |         |
-          * | Current |    __
-          * |         |
-          * |         |    Move curr into hole
-          * |_________|    __ 
-          */
-
-         pArray->Set( hole, pArray->Get(curr) );
-
-      } /* end of infinite while (true) loop */
-
-   } /* end if ( keyFound )    */
-
-
-   return LIST_KEY_NOT_FOUND;
+   vdseFree( (vdseMemObject*)pContext->pCurrentMemObject,
+             (unsigned char*)pArray,
+             len, 
+             pContext );
+   
+   return LIST_OK;   
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum ListErrors HashList::ReplaceByKey( const char*     pKey,
-                                        size_t          keyLength,
-                                        void*           pData,
-                                        size_t          dataLength,
-                                        vdseSessionContext* pContext )
-{
-   size_t rowNumber = 0;
-   bool keyFound = false;
-   HashArray* pArray;
-   
-   SET_PTR( pArray, m_arrayOffset, HashArray, pContext->pAllocator );
-   VDS_ASSERT( pArray != NULL );
-   
-   if ( m_flag == HASH_CASE_INSENSITIVE )
-      keyFound = FindKeyCI( pArray, pKey, keyLength, &rowNumber, pContext );
-   else
-      keyFound = FindKey( pArray, pKey, keyLength, &rowNumber, pContext );
+#if 0
 
+not sure this function is useful in a transaction environment
+you can't really rollback here
+
+enum ListErrors 
+vdseHashUpdate( vdseHash*            pHash,
+                const unsigned char* pKey,
+                size_t               keyLength,
+                void*                pData,
+                size_t               dataLength,
+                vdseSessionContext*  pContext )
+{
+   size_t bucket = 0;
+   bool keyFound = false;
+   ptrdiff_t* pArray;
+   
+   vdseHashItem* pItem, *previousItem = NULL;
+   
+   VDS_PRE_CONDITION( pHash != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   
+   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
+   VDS_INV_CONDITION( pArray != NULL );
+
+   keyFound = findKey( pHash, pArray, pKey, keyLength, 
+                       &pItem, &previousItem, &bucket );
    if ( keyFound )   
    {
       RowDescriptor* pOldRow = 
-         GET_PTR( pArray->Get(rowNumber), 
+         GET_PTR( pArray->Get(bucket), 
                   RowDescriptor, 
-                  pContext->pAllocator );
+                  (vdseMemObject*)pContext->pCurrentMemObject );
 
-      /* Sadly, if ( dataLength == pOldRow->dataLength ) */
-      /* we cannot just copy the new data into the row - this */
-      /* is not "crash-recovery safe"!!! */
+      /* Sadly, if ( dataLength == pOldRow->dataLength )
+       * we cannot just copy the new data into the row - this
+       * is not "crash-recovery safe"!!! */
 
       /* mem alloc first - the only thing that might fail */
       RowDescriptor* pRow = (RowDescriptor*) 
-         vdseMalloc( pContext->pAllocator, 
+         vdseMalloc( (vdseMemObject*)pContext->pCurrentMemObject, 
                      sizeof(RowDescriptor) + keyLength + dataLength,
-                     &pContext->errorHandler );
+                     pContext );
       if ( pRow == NULL )
          return LIST_NO_MEMORY;
 
@@ -683,10 +767,10 @@ enum ListErrors HashList::ReplaceByKey( const char*     pKey,
       new (pRow) RowDescriptor;
 
       pRow->dataOffset = SET_OFFSET( (char*)pRow + sizeof(RowDescriptor),
-                                     pContext->pAllocator );
+                                     (vdseMemObject*)pContext->pCurrentMemObject );
       pRow->keyOffset  = SET_OFFSET( (char*)pRow + sizeof(RowDescriptor) + 
                                      dataLength,
-                                     pContext->pAllocator );
+                                     (vdseMemObject*)pContext->pCurrentMemObject );
    
       memcpy( (char*)pRow + sizeof(RowDescriptor) + dataLength,  pKey,  
               keyLength );
@@ -696,419 +780,86 @@ enum ListErrors HashList::ReplaceByKey( const char*     pKey,
       pRow->dataLength = dataLength;
       
       /* Eliminate the old row */
-      m_totalSize -= pOldRow->dataLength;
+      pHash->totalDataSizeInBytes -= pOldRow->dataLength;
       pOldRow->~RowDescriptor();
-      vdseFree( pContext->pAllocator, pOldRow, &pContext->errorHandler );
+      vdseFree( (vdseMemObject*)pContext->pCurrentMemObject, pOldRow, pContext );
 
-      m_totalSize += dataLength;
+      pHash->totalDataSizeInBytes += dataLength;
 
-      pArray->Set( rowNumber, SET_OFFSET( pRow, pContext->pAllocator ) );
+      pArray->Set( bucket, SET_OFFSET( pRow, (vdseMemObject*)pContext->pCurrentMemObject ) );
 
       return LIST_OK;
 
    }
    return LIST_KEY_NOT_FOUND;
 }
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum ListErrors HashList::ResizeArray( vdseSessionContext* pContext )
-{
-   size_t i, rowNumber = 0;
+#if 0
 
-   HashArray* pArray;
-   SET_PTR( pArray, m_arrayOffset, HashArray, pContext->pAllocator );
-   VDS_ASSERT( pArray != NULL );
+   int ResetArray( vdseMemAlloc* pAlloc );
 
-   size_t newSize = (m_arraySize * 100) / g_lowDensity + 1;
-
-   fprintf( stderr, "Resizing array %d\n", m_arraySize );
+   bool SelfTest( vdseMemAlloc* pAlloc );
    
-   /* bug - new size should really be a prime number!!! */
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-   size_t len = sizeof(HashArray) - sizeof(BaseObject) + 
-      newSize * sizeof(ptrdiff_t);
-   fprintf( stderr, "Resizing array2 %d %d\n", newSize, len );
+enum ListErrors HashList::GetFirst( size_t*         pNewBucket, 
+                                    RowDescriptor** ppRow,
+                                    vdseMemAlloc*   pAlloc )
+{
+   if ( pHash->numberOfItems == 0 )
+      return LIST_EMPTY;
 
-   HashArray* ptr = (HashArray*)
-      vdseMalloc( pContext->pAllocator, len, &pContext->errorHandler );
-   if ( ptr == NULL )
-      return LIST_NO_MEMORY;
-
-   new (ptr) HashArray;
-
-   fprintf( stderr, "Resizing array3 %p %p\n", pArray, ptr );
-
-   for ( i = 0; i < newSize; ++i)
-      ptr->Set( i, NULL_OFFSET );
-
-   for ( i = 0; i < m_arraySize; ++i)
+   ptrdiff_t* pArray;
+   
+   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t, pAlloc );
+   VDS_ASSERT( pArray != NULL );
+  
+   for ( size_t i = 0; i < pHash->arrayLength; ++i )
    {
       if ( pArray->Get(i) != NULL_OFFSET )
       {
-         RowDescriptor* pRow = GET_PTR( pArray->Get(i), 
-                                        RowDescriptor,
-                                        pContext->pAllocator );
-         char* pKey = GET_PTR( pRow->keyOffset, char, pContext->pAllocator );
-         
-         if ( m_flag == HASH_CASE_INSENSITIVE )
-            rowNumber =  HashAKeyCI( pKey, pRow->keyLength ) % newSize;
-         else
-            rowNumber =  HashAKey( pKey, pRow->keyLength ) % newSize;
-         
-         while (1)
-         {
-            if ( ptr->Get(rowNumber) == NULL_OFFSET )
-            {
-               /* We found a valid spot */
-               ptr->Set( rowNumber, pArray->Get(i) );
-               break;
-            }
-            ++rowNumber;
-            
-            if ( rowNumber == newSize )
-               rowNumber = 0;
-         }
+         *ppRow  = GET_PTR( pArray->Get(i), 
+                            RowDescriptor, 
+                            pAlloc );
+         *pNewBucket = i;
+
+         return LIST_OK;
       }
    }
-
-   /* All pointers are copied - we can finish */
-/*     m_zCurrentBuffer = m_arrayOffset; */
-/*     m_zNewArray = SET_OFFSET(ptr,pContext->pAllocator); */
-/*     m_nCurrentRowNumber = m_arraySize; */
-/*     m_echeckPoint = eResize; */
-
-/*     MemoryManager::Instance()->Sync(); */
-
-   /* The order of the next two statements is important */
-   m_arraySize = newSize;
-   m_arrayOffset = SET_OFFSET( ptr, pContext->pAllocator );
-
-   pArray->~HashArray();
-   vdseFree( pContext->pAllocator, pArray, &pContext->errorHandler );
-
-/*     m_echeckPoint = eOK; */
-/*     m_zCurrentBuffer = NULL_OFFSET; */
-/*     m_nCurrentRowNumber = (size_t) -1; */
-/*     SelfTest(); */
+   if ( pHash->numberOfItems > 0 ) 
+      fprintf( stderr, " ERROR 1 - %d \n", pHash->numberOfItems );
    
-   return LIST_OK;
+   return LIST_EMPTY; /* Should never occur */
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/*  void HashList::Recover( char**     pArrayBuffers, */
-/*                          size_t*    pnNumOfAllocatedBuffer, */
-/*                          vds_lock_T lockValue ) */
-/*  { */
-/*     HashArray* pArray; */
-/*     SET_PTR( pArray, m_arrayOffset, HashArray ); */
-
-/*     RowDescriptor* pRow; */
-
-/*     if ( m_echeckPoint != eOK ) */
-/*        fprintf( stderr, "HashList %d %d %d\n", */
-/*                 m_echeckPoint, */
-/*                 m_zCurrentBuffer, */
-/*                 m_currentRowNumber ); */
-
-/*     switch( m_echeckPoint ) */
-/*     { */
-/*     case eOK: */
-
-/*        break; */
-      
-/*     case eInitialize: */
-/*     { */
-/*        HashArray* ptr; */
-      
-/*        if ( m_zCurrentBuffer == NULL_OFFSET ) */
-/*        { */
-/*           ptr = (HashArray*) pContext->pAllocator->Malloc(  */
-/*              m_currentRowNumber * sizeof ( ptrdiff_t ), lockValue ); */
-/*           if ( ptr == NULL ) */
-/*              break; */
-/*           m_arrayOffset = SET_OFFSET( ptr, pContext->pAllocator ); */
-/*        } */
-/*        else */
-/*           ptr = GET_PTR( m_zCurrentBuffer, HashArray ); */
-
-/*        m_arrayOffset = SET_OFFSET( ptr, pContext->pAllocator ); */
-/*        for ( unsigned int i = 0; i < m_currentRowNumber; ++i) */
-/*           ptr[i] = NULL_OFFSET; */
-/*        m_arraySize = m_currentRowNumber; */
-
-/*        break; */
-/*     } */
-   
-/*     case eClose: */
-
-/*        if ( m_arrayOffset != NULL_OFFSET ) */
-/*        { */
-/*           // Is the array still in the memory allocator */
-/*           if ( ! pAllocator->IsBufferFree( pArray ) ) */
-/*           { */
-/*              for ( size_t i = 0; i < *pnNumOfAllocatedBuffer; ++i ) */
-/*              { */
-/*                 if ( (char*)pArray  == pArrayBuffers[i] ) */
-/*                 { */
-/*                    pArrayBuffers[i] = NULL; */
-/*                    if ( i != *pnNumOfAllocatedBuffer-1 ) */
-/*                    { */
-/*                       pArrayBuffers[i] =  */
-/*                          pArrayBuffers[*pnNumOfAllocatedBuffer-1]; */
-/*                       pArrayBuffers[*pnNumOfAllocatedBuffer-1] = NULL; */
-/*                    } */
-/*                    (*pnNumOfAllocatedBuffer)--; */
-         
-/*                    break; */
-/*                 } */
-/*              } */
-/*              pContext->pAllocator->Free( pArray, lockValue ); */
-/*           } */
-/*           m_arrayOffset = NULL_OFFSET; */
-/*           pArray = NULL; */
-/*        } */
-      
-/*        break; */
-
-/*     case eEmpty: */
-
-/*        if ( m_currentRowNumber < m_arraySize ) */
-/*        { */
-/*           size_t rowNumber = m_currentRowNumber; */
-/*           if ( pArray[m_currentRowNumber] != NULL_OFFSET ) */
-/*           {          */
-/*              pRow = GET_PTR( pArray[m_currentRowNumber], RowDescriptor ); */
-/*              if ( ! pContext->pAllocator->IsBufferFree( pRow ) ) */
-/*              { */
-/*                 for ( size_t i = 0; i < *pnNumOfAllocatedBuffer; ++i ) */
-/*                 { */
-/*                    if ( (char*)pArray  == pArrayBuffers[i] ) */
-/*                    { */
-/*                       pArrayBuffers[i] = NULL; */
-/*                       if ( i != *pnNumOfAllocatedBuffer-1 ) */
-/*                       { */
-/*                          pArrayBuffers[i] =  */
-/*                             pArrayBuffers[*pnNumOfAllocatedBuffer-1]; */
-/*                          pArrayBuffers[*pnNumOfAllocatedBuffer-1] = NULL; */
-/*                       } */
-/*                       (*pnNumOfAllocatedBuffer)--; */
-         
-/*                       break; */
-/*                    } */
-/*                 } */
-/*                 pContext->pAllocator->Free( pRow, lockValue ); */
-/*              } */
-/*              pArray[m_currentRowNumber] = NULL_OFFSET; */
-/*           } */
-/*           for ( m_currentRowNumber = rowNumber+1; */
-/*                 m_currentRowNumber < m_arraySize; ++m_currentRowNumber ) */
-/*           { */
-/*              if ( pArray[m_currentRowNumber] != NULL_OFFSET ) */
-/*              {       */   
-/*                 RowDescriptor* pRow = GET_PTR( pArray[m_currentRowNumber],  */
-/*                                                RowDescriptor ); */
-/*                 for ( size_t i = 0; i < *pnNumOfAllocatedBuffer; ++i ) */
-/*                 { */
-/*                    if ( (char*)pArray  == pArrayBuffers[i] ) */
-/*                    { */
-/*                       pArrayBuffers[i] = NULL; */
-/*                       if ( i != *pnNumOfAllocatedBuffer-1 ) */
-/*                       { */
-/*                          pArrayBuffers[i] =  */
-/*                             pArrayBuffers[*pnNumOfAllocatedBuffer-1]; */
-/*                          pArrayBuffers[*pnNumOfAllocatedBuffer-1] = NULL; */
-/*                       } */
-/*                       (*pnNumOfAllocatedBuffer)--; */
-         
-/*                       break; */
-/*                    } */
-/*                 } */
-/*                 pContext->pAllocator->Free( pRow, lockValue ); */
-/*                 pArray[m_currentRowNumber] = NULL_OFFSET; */
-/*              } */
-/*           } */
-/*        } */
-/*        break; */
-      
-/*     case eDelete: */
-/*     { */
-/*        if ( pArray[m_currentRowNumber] != NULL_OFFSET ) */
-/*        { */
-/*           // Attempt to delete the row */
-/*           pRow = GET_PTR( pArray[m_currentRowNumber], RowDescriptor ); */
-/*           if ( ! pContext->pAllocator->IsBufferFree( pRow ) ) */
-/*           { */
-/*              for ( size_t i = 0; i < *pnNumOfAllocatedBuffer; ++i ) */
-/*              { */
-/*                 if ( (char*)pArray  == pArrayBuffers[i] ) */
-/*                 { */
-/*                    pArrayBuffers[i] = NULL; */
-/*                    if ( i != *pnNumOfAllocatedBuffer-1 ) */
-/*                    { */
-/*                       pArrayBuffers[i] =  */
-/*                          pArrayBuffers[*pnNumOfAllocatedBuffer-1]; */
-/*                       pArrayBuffers[*pnNumOfAllocatedBuffer-1] = NULL; */
-/*                    } */
-/*                    (*pnNumOfAllocatedBuffer)--; */
-         
-/*                    break; */
-/*                 } */
-/*              } */
-/*              pContext->pAllocator->Free( pRow, lockValue ); */
-/*           } */
-         
-/*           pArray[m_currentRowNumber] = NULL_OFFSET; */
-/*        } */
-
-/*        // And repeat the whole procedure... */
-
-/*        size_t curr; // Current entry we are checking */
-/*        size_t hole; // Location of the hole */
-/*        size_t hash; // Hash value for current entry */
-
-/*        bool bBreak = false; // To get out of the two loops */
-      
-/*        curr = m_currentRowNumber; */
-      
-/*        for(;;) */
-/*        { */
-/*           pArray[curr] = NULL_OFFSET; */
-/*           hole = curr; */
-
-/*           do */
-/*           { */
-/*              curr++; */
-/*              if ( curr == m_arraySize ) */
-/*                 curr = 0; */
-
-/*              if( pArray[curr] == NULL_OFFSET ) */
-/*              { */
-/*                 bBreak = true; */
-/*                 break; */
-/*              } */
-            
-//              pRow = GET_PTR( pArray[curr], RowDescriptor );
-//              char* pKey = GET_PTR( pRow->keyOffset, char );
-//              if ( m_flag == HASH_CASE_INSENSITIVE )
-//                 hash =  HashAKeyCI( pKey, pRow->keyLength ) % m_arraySize;
-//              else
-//                 hash =  HashAKey( pKey, pRow->keyLength ) % m_arraySize;
-
-//           } while( ((hole < hash) && (hash <= curr)) ||
-//                    ((curr < hole)  && (hole < hash)) ||
-//                    ((hash <= curr)  && (curr < hole)) );
-
-//           if ( bBreak )
-//              break;
-         
-//           pArray[hole] = pArray[curr];
-//        }
-//        break;
-//     }
-   
-//     case eResize:
-
-//        if ( m_arrayOffset == m_zCurrentBuffer )
-//           m_arraySize = m_currentRowNumber;
-      
-//        break;
-
-//     case eInsert:
-//     case eReplace:
-
-//        if ( pArray[m_currentRowNumber] != m_zCurrentBuffer )
-//           pArray[m_currentRowNumber] = m_zCurrentBuffer;
-      
-//        break;
-//     } // End of switch statement
-
-//     // #of rows and size might be invalid! Recalculate them
-//     if ( m_echeckPoint != eOK && pArray != NULL )
-//     {
-//        m_numberOfRows = 0;
-//        m_totalSize = 0;
-//        for ( size_t i = 0; i < m_arraySize; ++i )
-//        {
-//           if ( pArray[i] != NULL_OFFSET )
-//           {
-//              m_numberOfRows++;
-//              pRow  = GET_PTR( pArray[i], RowDescriptor );
-//              m_totalSize += pRow->dataLength;
-//           }
-//        }
-//     }
-   
-//     size_t ijk = *pnNumOfAllocatedBuffer; */
-   
-//     if ( m_arrayOffset != NULL_OFFSET ) */
-//     { */
-//  //      fprintf(stderr, " hash list array = %p\n", pArray ); */
-      
-//        // The main array */
-//        for ( size_t i = 0; i < *pnNumOfAllocatedBuffer; ++i ) */
-//        { */
-//           if ( (char*)pArray  == pArrayBuffers[i] ) */
-//           { */
-//              pArrayBuffers[i] = NULL; */
-//              if ( i != *pnNumOfAllocatedBuffer-1 ) */
-//              { */
-//                 pArrayBuffers[i] =  */
-//                    pArrayBuffers[*pnNumOfAllocatedBuffer-1]; */
-//                 pArrayBuffers[*pnNumOfAllocatedBuffer-1] = NULL; */
-//              } */
-//              (*pnNumOfAllocatedBuffer)--; */
-         
-//              break; */
-//           } */
-//        } */
-//        // the rows
-//        for ( size_t n = 0; n < m_arraySize; ++n ) */
-//        { */
-//           if ( pArray[n] != NULL_OFFSET ) */
-//           { */
-//              pRow  = GET_PTR( pArray[n], RowDescriptor ); */
-//              for ( size_t i = 0; i < *pnNumOfAllocatedBuffer; ++i )
-//              {
-//                 if ( (char*)pRow  == pArrayBuffers[i] )
-//                 {
-//                    pArrayBuffers[i] = NULL;
-//                    if ( i != *pnNumOfAllocatedBuffer-1 )
-//                    {
-//                       pArrayBuffers[i] = 
-//                          pArrayBuffers[*pnNumOfAllocatedBuffer-1];
-//                       pArrayBuffers[*pnNumOfAllocatedBuffer-1] = NULL;
-//                    } */
-//                    (*pnNumOfAllocatedBuffer)--; */
-         
-//                    break; */
-//                 } */
-//              } */
-//           } */
-//        } */
-//     } */
-//     if ( ijk != (*pnNumOfAllocatedBuffer)+m_numberOfRows+1 ) */
-//        fprintf( stderr, "ijk = %d %d %d\n", ijk, (*pnNumOfAllocatedBuffer), */
-//                 m_numberOfRows ); */
-
-//     m_echeckPoint = eOK; */
-//     m_zCurrentBuffer =  NULL_OFFSET; */
-//     m_currentRowNumber = (size_t) -1; */
-//  } */
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void HashList::DeleteEntry( size_t rowNumber, 
-                            vdseMemAlloc* pAlloc )
+enum ListErrors HashList::GetNext( size_t  oldBucket,
+                                   size_t* pNewBucket, 
+                                   RowDescriptor** ppRow,
+                                   vdseMemAlloc* pAlloc )
 {
-   HashArray* pArray;
+   ptrdiff_t* pArray;
    
-   SET_PTR( pArray, m_arrayOffset, HashArray, pAlloc );
+   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t, pAlloc );
    VDS_ASSERT( pArray != NULL );
 
-   pArray->Set( rowNumber, NULL_OFFSET );
-   m_numberOfRows--;
+   for ( size_t i = oldBucket+1; i < pHash->arrayLength; ++i )
+   {
+      if ( pArray->Get(i) != NULL_OFFSET )
+      {
+         *ppRow  = GET_PTR( pArray->Get(i), 
+                            RowDescriptor, 
+                            pAlloc );
+         *pNewBucket = i;
+
+         return LIST_OK;
+      }
+   }
+   return LIST_END_OF_LIST;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -1116,28 +867,28 @@ void HashList::DeleteEntry( size_t rowNumber,
 /* Rehash the whole array back into the current array */
 int HashList::ResetArray( vdseMemAlloc* pAlloc )
 {
-   size_t i, rowNumber = 0;
-   HashArray* pArray;
+   size_t i, bucket = 0;
+   ptrdiff_t* pArray;
    
-   SET_PTR( pArray, m_arrayOffset, HashArray, pAlloc );
+   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t, pAlloc );
    VDS_ASSERT( pArray != NULL );
 
    /* Create a temporary array on the heap to hold the pointers */
    ptrdiff_t* ptr = (ptrdiff_t*) 
-      malloc( m_arraySize * sizeof ( ptrdiff_t ) );
+      malloc( pHash->arrayLength * sizeof ( ptrdiff_t ) );
    if ( ptr == NULL )
       return -1;
 
    /* Copy to the temp array */
-   for ( i = 0; i < m_arraySize; ++i)
+   for ( i = 0; i < pHash->arrayLength; ++i)
       ptr[i] = pArray->Get(i);
 
    /* Clear the existing array */
-   for ( i = 0; i < m_arraySize; ++i)
+   for ( i = 0; i < pHash->arrayLength; ++i)
       pArray->Set( i, NULL_OFFSET );
    
    /* Repopulate the array using our hash function */
-   for ( i = 0; i < m_arraySize; ++i)
+   for ( i = 0; i < pHash->arrayLength; ++i)
    {
       if ( ptr[i] != NULL_OFFSET )
       {
@@ -1146,23 +897,20 @@ int HashList::ResetArray( vdseMemAlloc* pAlloc )
                                         pAlloc );
          char* pKey = GET_PTR( pRow->keyOffset, char, pAlloc );
          
-         if ( m_flag == HASH_CASE_INSENSITIVE )
-            rowNumber =  HashAKeyCI( pKey, pRow->keyLength ) % m_arraySize;
-         else
-            rowNumber =  HashAKey( pKey, pRow->keyLength ) % m_arraySize;
+         bucket =  hash_pjw( pKey, pRow->keyLength ) % pHash->arrayLength;
          
          while (1)
          {
-            if ( pArray->Get(rowNumber) == NULL_OFFSET )
+            if ( pArray->Get(bucket) == NULL_OFFSET )
             {
                /* We found a valid spot */
-               pArray->Set( rowNumber, ptr[i] );
+               pArray->Set( bucket, ptr[i] );
                break;
             }
-            ++rowNumber;
+            ++bucket;
             
-            if ( rowNumber == m_arraySize )
-               rowNumber = 0;
+            if ( bucket == pHash->arrayLength )
+               bucket = 0;
          }
       }
    }
@@ -1175,13 +923,13 @@ int HashList::ResetArray( vdseMemAlloc* pAlloc )
 
 bool HashList::SelfTest( vdseMemAlloc* pAlloc )
 {
-   size_t i, j, rowNumber, numRows = 0, sum = 0;
-   HashArray* pArray;
+   size_t i, j, bucket, numRows = 0, sum = 0;
+   ptrdiff_t* pArray;
    
-   SET_PTR( pArray, m_arrayOffset, HashArray, pAlloc );
+   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t, pAlloc );
    VDS_ASSERT( pArray != NULL );
 
-   for ( i = 0; i < m_arraySize; ++i)
+   for ( i = 0; i < pHash->arrayLength; ++i)
    {
       if ( pArray->Get(i) != NULL_OFFSET )
       {
@@ -1199,19 +947,16 @@ bool HashList::SelfTest( vdseMemAlloc* pAlloc )
          sum += pRow->dataLength;
          
          /* Check the key */
-         if ( m_flag == HASH_CASE_INSENSITIVE )
-            rowNumber =  HashAKeyCI( pKey, pRow->keyLength ) % m_arraySize;
-         else
-            rowNumber =  HashAKey( pKey, pRow->keyLength ) % m_arraySize;
+         bucket =  hash_pjw( pKey, pRow->keyLength ) % pHash->arrayLength;
          
-         if ( rowNumber == i ) continue;
+         if ( bucket == i ) continue;
          
-         /* The row is at "i" but the key hashes to "rowNumber" - which means */
-         /* that there was something at rowNumber already if all is well (and */
-         /* at rowNumber+1, rowNumber+2, etc. if it applies) */
+         /* The row is at "i" but the key hashes to "bucket" - which means */
+         /* that there was something at bucket already if all is well (and */
+         /* at bucket+1, bucket+2, etc. if it applies) */
          /* Let's see... */
 
-         j = rowNumber;
+         j = bucket;
          while ( j != i )
          {
             if ( pArray->Get(j) == NULL_OFFSET )
@@ -1221,18 +966,18 @@ bool HashList::SelfTest( vdseMemAlloc* pAlloc )
                return false;
             }
             j++;
-            if ( j == m_arraySize )
+            if ( j == pHash->arrayLength )
                j = 0;
          }
       }
    }
-   if ( numRows != m_numberOfRows )
-      fprintf( stderr, "Invalid number of rows %d %d\n", numRows, m_numberOfRows );
-   if ( sum != m_totalSize )
-      fprintf( stderr, "Invalid total sum %d %d \n", sum, m_totalSize );
+   if ( numRows != pHash->numberOfItems )
+      fprintf( stderr, "Invalid number of rows %d %d\n", numRows, pHash->numberOfItems );
+   if ( sum != pHash->totalDataSizeInBytes )
+      fprintf( stderr, "Invalid total sum %d %d \n", sum, pHash->totalDataSizeInBytes );
 
-   m_numberOfRows = numRows;
-   m_totalSize = sum;
+   pHash->numberOfItems = numRows;
+   pHash->totalDataSizeInBytes = sum;
    
    return BaseObject::SelfTest();
 }

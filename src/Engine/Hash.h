@@ -21,28 +21,43 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Engine.h"
-#include "MemoryAllocator.h"
 #include "ListErrors.h"
 #include "SessionContext.h"
+#include "TransactionItem.h"
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-#define HASH_CASE_INSENSITIVE 1
+#define VDSE_HASH_SIGNATURE  ((unsigned int)0x2026fe02)
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * Descriptor for elements of the hash array. It keeps track of the locations
- * of both the key and the data and of their respective length.
+ * Descriptor/container for elements of the hash array. 
+ *
+ * Note: the data is to be found after the key. It MUST be properly 
+ * aligned if we eventually allow direct access to the data (from the 
+ * API) or even to be able to use it easily internally. 
  */
-typedef struct vdseHashElement
+typedef struct vdseHashItem
 {
-   size_t    keyLength;
-   size_t    dataLength;
-   ptrdiff_t dataOffset;
-   ptrdiff_t keyOffset;
+   vdseTxItem    txInfo;
    
-} vdseHashElement;
+   /** Next item in this bucket */
+   ptrdiff_t     nextItem;
+   
+   size_t        keyLength;
+   size_t        dataLength;
+   unsigned char key[1];
+   
+} vdseHashItem;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+typedef enum vdseHashResizeEnum
+{
+   VDSE_HASH_NO_RESIZE,
+   VDSE_HASH_TIME_TO_GROW,
+   VDSE_HASH_TIME_TO_SHRINK
+   
+} vdseHashResizeEnum;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -67,79 +82,87 @@ typedef struct vdseHashElement
 
 typedef struct vdseHash
 {
-   /** Offset to an array of offsets to vdseHashElement objects */
+   /** Offset to an array of offsets to vdseHashItem objects */
    ptrdiff_t    arrayOffset; 
    
-   size_t       numberOfRows;
-   size_t       arraySize;
-   unsigned int lowDensity;   
-   unsigned int highDensity;
-   size_t       totalSize;
-   int          flag;
+   /** Number of items stored in this hash map. */
+   size_t       numberOfItems;
    
-} vdseHash;
+   /** Total amount of bytes of data stored in this hash */
+   size_t       totalDataSizeInBytes;
 
+   /** The index into the array of lengths (aka the number of buckets). */
+   int lengthIndex;
+
+   /** The mimimum shrinking factor that we can tolerate to accommodate
+    *  the reservedSize argument of vdseHashInit() ) */
+   int lengthIndexMinimum;
+
+   /** Indicator of the current status of the array. */
+   vdseHashResizeEnum enumResize;
+   
+   /** Set to VDSE_HASH_SIGNATURE at initialization. */
+   unsigned int initialized;
+
+} vdseHash;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseHashEmpty( vdseSessionContext* pContext );
+enum ListErrors 
+vdseHashDelete( vdseHash*            pHash,
+                const unsigned char* pKey, 
+                size_t               keyLength,
+                vdseSessionContext*  pContext );
 
-void vdseHashClose( vdseSessionContext* pContext );
-   
+void vdseHashEmpty( vdseHash*           pHash,
+                    vdseSessionContext* pContext );
+
+void vdseHashFini( vdseHash*           pHash,
+                   vdseSessionContext* pContext );
+
 enum ListErrors 
 vdseHashInit( vdseHash*           pHash,
-              int                 caseSensitiveFlag,
-              size_t              initialSize, 
+              size_t              reservedSize, 
               vdseSessionContext* pContext );
 
 enum ListErrors 
-vdseHashGetFirst( vdseHash*         pHash,
-                  size_t*           pNewRowNumber,
-                  vdseHashElement** ppRow,
-                  vdseMemAlloc*     pAlloc );
+vdseHashGet( vdseHash*            pHash,
+             const unsigned char* pkey,
+             size_t               keyLength,
+             void **              ppData,
+             size_t*              pDataLength,
+             vdseSessionContext*  pContext,
+             size_t*              pBucket );
 
 enum ListErrors 
-vdseHashGetNext( vdseHash*         pHash,
-                 size_t            oldRowNumber,
-                 size_t*           pNewRowNumber, 
-                 vdseHashElement** ppRow,
-                 vdseMemAlloc*     pAlloc );
+vdseHashGetFirst( vdseHash*  pHash,
+                  size_t*    pBucket, 
+                  ptrdiff_t* pFirstItemOffset );
 
 enum ListErrors 
-vdseHashInsert( vdseHash*           pHash,
-                const char*         pKey,
-                size_t              keyLength,
-                void*               pData,
-                size_t              dataLength,
-                /* pSelf is used to access the name of  */
-                /* objects from the "this" pointer of */
-                /* the objects themselves */
-                ptrdiff_t*          pSelf,
+vdseHashGetNext( vdseHash*  pHash,
+                 size_t     previousBucket,
+                 ptrdiff_t  previousOffset,
+                 size_t*    pNextBucket, 
+                 ptrdiff_t* pNextItemOffset );
+
+enum ListErrors 
+vdseHashInsert( vdseHash*            pHash,
+                const unsigned char* pKey,
+                size_t               keyLength,
+                void*                pData,
+                size_t               dataLength,
+                /* pOffsetOfNewItem is used to access the name of 
+                 * objects from the "this" pointer of
+                 * the objects themselves */
+                ptrdiff_t*           pOffsetOfNewItem,
+                vdseSessionContext*  pContext );
+
+enum ListErrors 
+vdseHashResize( vdseHash*           pHash,
                 vdseSessionContext* pContext );
-
-enum ListErrors 
-vdseHashDelete( vdseHash*           pHash,
-                const char*         pKey, 
-                size_t              keyLength,
-                vdseSessionContext* pContext );
-
-enum ListErrors 
-vdseHashReplaceData( vdseHash*           pHash,
-                     const char*         pKey,
-                     size_t              keyLength,
-                     void*               pData,
-                     size_t              dataLength,
-                     vdseSessionContext* pContext );
-
-enum ListErrors 
-vdseHashGet( vdseHash*           pHash,
-             const char*         pkey,
-             size_t              keyLength,
-             void **             ppData,
-             size_t*             pDataLength,
-             vdseSessionContext* pContext,
-             size_t*             pRowNumber );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* VDSE_HASH_MAP_H */
+

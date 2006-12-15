@@ -41,7 +41,7 @@ typedef struct vdseSessionContext
 {
    vdscErrorHandler errorHandler;
    
-   /* This should be set to the process id (pid) of the process */
+   /** Normally set to the process id (pid) of the process */
    vds_lock_T       lockValue;
 
    /** Offset to the currently locked object, if any.*/
@@ -49,8 +49,18 @@ typedef struct vdseSessionContext
 
    void* pTransaction;
 
-   void* pAllocator;
+   /** 
+    * For allocating/freeing memory in sub-objects using the allocator
+    * of the MemObject.
+    */
+   void* pCurrentMemObject;
 
+   /** 
+    * For requesting/freeing memory pages from the global allocator (used
+    * by the allocator of the MemObject).
+    */
+   void *pAllocator;
+   
    void* pLogFile;
    
 } vdseSessionContext;
@@ -66,9 +76,10 @@ vdseInitSessionContext( vdseSessionContext* pContext )
    
    pContext->lockValue = getpid();
    pContext->lockObject = NULL_OFFSET;
-   pContext->pTransaction = NULL;
-   pContext->pAllocator = NULL;
-   pContext->pLogFile = NULL;
+   pContext->pTransaction      = NULL;
+   pContext->pCurrentMemObject = NULL;
+   pContext->pAllocator        = NULL;
+   pContext->pLogFile          = NULL;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
