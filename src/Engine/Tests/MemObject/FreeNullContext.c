@@ -58,8 +58,7 @@ int main()
    pageGroup = (vdsePageGroup*) ((unsigned char*)pObj + sizeof(vdseMemObject));
    vdsePageGroupInit( pageGroup,
                       2*PAGESIZE,
-                      4,
-                      VDSE_ALLOCATION_UNIT );
+                      4 );
 
    /* Add the pageGroup to the list of groups of the memObject */
    vdseLinkedListPutFirst( &pObj->listPageGroup, 
