@@ -505,12 +505,23 @@ typedef enum boolvals bool;
 #endif
 
 /* Getting the real page size of the system is not really that critical.
- * On most systems it seems to be 
-*/
+ * On most systems it seems to be 4096...
+ */
 #ifndef PAGESIZE
 //#  error "aaa..."
 #  define PAGESIZE 4096
 #endif
+
+struct vdstTestAlignment
+{
+   unsigned char c;
+   struct vdstTestAlignment2
+   {
+      double d;
+   } two;
+};
+
+#define VDST_STRUCT_ALIGNMENT offsetof(struct vdstTestAlignment, two)
 
 END_C_DECLS
 

@@ -14,7 +14,8 @@ SUBDIRS =           \
           List      \
           LogFile   \
           MemAlloc  \
-          MemObject
+          MemObject \
+          PageGroup
 
 check_PROGRAMS =                  \
                  LinkNodeNULLInit \

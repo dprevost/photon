@@ -222,8 +222,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
    {
       vdsePageGroupInit( currentGroup,
                          SET_OFFSET( currentGroup ),
-                         i,
-                         VDSE_ALLOCATION_UNIT );
+                         i );
       /* Add the pageGroup to the list of groups of the memObject */
       vdseLinkedListPutLast( &pMemObj->listPageGroup, &currentGroup->node );
       pMemObj->totalPages += i;

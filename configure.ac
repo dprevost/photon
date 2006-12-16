@@ -112,6 +112,8 @@ AC_TYPE_SIGNAL
 
 ETR_STRUCT_SEMUN
 
+AC_CHECK_SIZEOF(void *)
+
 ###################################
 #                                 #
 # Section - checks for structures #
@@ -306,6 +308,7 @@ AC_CONFIG_FILES([
    src/Engine/Tests/LogFile/Makefile
    src/Engine/Tests/MemAlloc/Makefile
    src/Engine/Tests/MemObject/Makefile
+   src/Engine/Tests/PageGroup/Makefile
    src/include/Makefile
    src/Java/Makefile
    src/Watchdog/Makefile

@@ -53,8 +53,7 @@ typedef struct vdsePageGroup
  */
 void vdsePageGroupInit( vdsePageGroup* pGroup,
                         ptrdiff_t      groupOffset,
-                        size_t         numPages,
-                        size_t         allocationUnit );
+                        size_t         numPages );
 
 void vdsePageGroupFini( vdsePageGroup* pGroup );
 

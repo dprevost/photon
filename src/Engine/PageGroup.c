@@ -21,14 +21,15 @@
 
 void vdsePageGroupInit( vdsePageGroup* pGroup,
                         ptrdiff_t      groupOffset,
-                        size_t         numPages,
-                        size_t         allocationUnit )
+                        size_t         numPages )
 {
    ptrdiff_t offset;
    size_t currentLength;
    vdseFreeBufferNode* firstNode;
 
    VDS_PRE_CONDITION( pGroup != NULL );
+   VDS_PRE_CONDITION( groupOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( numPages > 0 );
    
    pGroup->numPages = numPages;
    
@@ -38,7 +39,7 @@ void vdsePageGroupInit( vdsePageGroup* pGroup,
    vdseMemBitmapInit( &pGroup->bitmap,
                       groupOffset,
                       numPages*PAGESIZE, 
-                      allocationUnit );
+                      VDSE_ALLOCATION_UNIT );
    
    /* Is the groupPage struct at the beginning of the group ? */
    offset = SET_OFFSET(pGroup);
@@ -65,8 +66,8 @@ void vdsePageGroupInit( vdsePageGroup* pGroup,
    currentLength += offsetof(vdsePageGroup,bitmap) +
                     offsetof(vdseMemBitmap,bitmap) +
                     vdseGetBitmapLengthBytes( numPages*PAGESIZE, 
-                                              allocationUnit );
-   currentLength = ((currentLength-1)/allocationUnit+1)*allocationUnit;
+                                              VDSE_ALLOCATION_UNIT );
+   currentLength = ((currentLength-1)/VDSE_ALLOCATION_UNIT+1)*VDSE_ALLOCATION_UNIT;
    
    pGroup->maxFreeBytes = numPages*PAGESIZE - currentLength;
 
@@ -76,7 +77,7 @@ void vdsePageGroupInit( vdsePageGroup* pGroup,
     */
    firstNode = GET_PTR( groupOffset+currentLength, vdseFreeBufferNode );
    vdseLinkNodeInit( &firstNode->node );
-   firstNode->numBlocks = pGroup->maxFreeBytes/allocationUnit;
+   firstNode->numBlocks = pGroup->maxFreeBytes/VDSE_ALLOCATION_UNIT;
 
    vdseLinkedListPutFirst( &pGroup->freeList, &firstNode->node );
 
@@ -89,9 +90,14 @@ void vdsePageGroupInit( vdsePageGroup* pGroup,
 
 void vdsePageGroupFini( vdsePageGroup* pGroup )
 {
+   VDS_PRE_CONDITION( pGroup != NULL );
+
    vdseMemBitmapFini(  &pGroup->bitmap );
    vdseLinkedListFini( &pGroup->freeList );
    vdseLinkNodeFini(   &pGroup->node );
+
+   pGroup->numPages = 0;
+   pGroup->maxFreeBytes = 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

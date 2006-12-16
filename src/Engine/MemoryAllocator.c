@@ -93,8 +93,7 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
    
    vdsePageGroupInit( &pAlloc->pageGroup,
                       PAGESIZE,
-                      neededPages,
-                      VDSE_ALLOCATION_UNIT );
+                      neededPages );
 
    /* Add the pageGroup to the list of groups of the memObject */
    vdseLinkedListPutFirst( &pAlloc->memObj.listPageGroup, 
