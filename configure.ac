@@ -307,6 +307,7 @@ AC_CONFIG_FILES([
    src/Engine/Tests/List/Makefile
    src/Engine/Tests/LogFile/Makefile
    src/Engine/Tests/MemAlloc/Makefile
+   src/Engine/Tests/MemBitmap/Makefile
    src/Engine/Tests/MemObject/Makefile
    src/Engine/Tests/PageGroup/Makefile
    src/include/Makefile
