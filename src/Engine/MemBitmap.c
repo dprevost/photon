@@ -29,7 +29,15 @@ void vdseMemBitmapInit( vdseMemBitmap* pBitmap,
    VDS_PRE_CONDITION( pBitmap     != NULL );
    VDS_PRE_CONDITION( baseAddressOffset != NULL_OFFSET );
    VDS_PRE_CONDITION( totalLength      > 0 );
-   VDS_INV_CONDITION( allocGranularity > 0 );
+   /* Testing that it is non-zero and a power of two */
+   VDS_PRE_CONDITION( allocGranularity > 0  && 
+                      ! (allocGranularity & (allocGranularity-1)) );
+
+fprintf( stderr, " z: %d %d %d %d\n",
+allocGranularity,
+allocGranularity, 
+(allocGranularity & (allocGranularity-1)), 
+! (allocGranularity & (allocGranularity-1)) );
 
    pBitmap->lengthInBits = totalLength/allocGranularity;
    pBitmap->allocGranularity = allocGranularity;
@@ -49,6 +57,7 @@ void vdseMemBitmapFini( vdseMemBitmap* pBitmap )
    len = ( (pBitmap->lengthInBits - 1 ) >> 3 ) + 1;
    memset(pBitmap->bitmap, 0, len );
    pBitmap->lengthInBits = 0;
+   pBitmap->allocGranularity = 0;
    pBitmap->baseAddressOffset = NULL_OFFSET;
 }
 

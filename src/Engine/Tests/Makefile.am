@@ -14,6 +14,7 @@ SUBDIRS =           \
           List      \
           LogFile   \
           MemAlloc  \
+          MemBitmap \
           MemObject \
           PageGroup
 

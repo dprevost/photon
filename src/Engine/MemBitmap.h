@@ -47,7 +47,7 @@ void vdseMemBitmapInit( vdseMemBitmap* pBitmap,
                         size_t         totalLength,
                         size_t         allocationUnit );
 
-void vdseMemBitmapFini( vdseMemBitmap* pAlloc );
+void vdseMemBitmapFini( vdseMemBitmap* pBitmap );
 
 static inline
 bool vdseIsBlockFree( vdseMemBitmap* pBitmap,

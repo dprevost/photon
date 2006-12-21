@@ -29,6 +29,9 @@ bool vdseIsBlockFree( vdseMemBitmap* pBitmap,
    size_t inUnitsOfAllocation;
    ptrdiff_t localOffset;
    
+   VDS_PRE_CONDITION( pBitmap != NULL );
+   VDS_PRE_CONDITION( offset  != NULL_OFFSET );
+
    localOffset = offset - pBitmap->baseAddressOffset;
    if ( localOffset < 0 )
       return false;
@@ -58,6 +61,10 @@ void vdseSetBlocksAllocated( vdseMemBitmap* pBitmap,
    size_t byte, bit, i;
    size_t inUnitsOfAllocation;
    ptrdiff_t localOffset;
+   
+   VDS_PRE_CONDITION( pBitmap != NULL );
+   VDS_PRE_CONDITION( offset  != NULL_OFFSET );
+   VDS_PRE_CONDITION( length > 0 );
    
    localOffset = offset - pBitmap->baseAddressOffset;
 
@@ -94,7 +101,11 @@ void vdseSetBlocksFree( vdseMemBitmap* pBitmap,
    size_t byte, bit, i;
    size_t inUnitsOfAllocation;
    ptrdiff_t localOffset;
-   
+
+   VDS_PRE_CONDITION( pBitmap != NULL );
+   VDS_PRE_CONDITION( offset  != NULL_OFFSET );
+   VDS_PRE_CONDITION( length > 0 );
+
    localOffset = offset - pBitmap->baseAddressOffset;
    
    inUnitsOfAllocation = localOffset / pBitmap->allocGranularity;
@@ -125,10 +136,14 @@ void vdseSetBlocksFree( vdseMemBitmap* pBitmap,
 inline
 size_t vdseGetBitmapLengthBytes( size_t length, size_t allocationUnit )
 {
-   VDS_PRE_CONDITION( allocationUnit != 0 );
+   /* Testing that it is non-zero and a power of two */
+   VDS_PRE_CONDITION( allocationUnit > 0  && 
+                      ! (allocationUnit & (allocationUnit-1)) );
+   VDS_PRE_CONDITION( length > 0 );
    
-   /* We truncate it to a multiple of allocationUnit */
-   length = length / allocationUnit * allocationUnit;
+   /* We "align" it to a multiple of allocationUnit */
+   length = ((length - 1) / allocationUnit + 1 ) * allocationUnit;
+//   fprintf( stderr, "l = %u %u\n", length, ( (length/allocationUnit - 1) >> 3 ) + 1 );
    return ( (length/allocationUnit - 1) >> 3 ) + 1;
 }
 
