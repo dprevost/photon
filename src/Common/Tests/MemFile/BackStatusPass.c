@@ -26,7 +26,7 @@ int main()
 {
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
-   int errcode = 0, rc = 0;
+   int errcode = 0;
    vdscMemoryFileStatus status;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete
@@ -57,7 +57,7 @@ int main()
 
    errcode = unlink( "MemFile.mem" );
    if ( errcode != 0 ) 
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    errcode = vdscCreateBackstore( &mem, 0600, &errorHandler );
    if ( errcode != 0 ) 
@@ -73,7 +73,7 @@ int main()
 
    errcode = unlink( "MemFile.mem" );
    if ( errcode != 0 ) 
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    errcode = vdscCreateBackstore( &mem, 0660, &errorHandler );
    if ( errcode != 0 ) 

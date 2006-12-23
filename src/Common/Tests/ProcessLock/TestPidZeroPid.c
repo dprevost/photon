@@ -33,13 +33,13 @@ int main()
 
    errcode = vdscInitProcessLock( &lock );
    if ( errcode != 0 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    vdscAcquireProcessLock( &lock, 0xff );
 
    vdscTestLockPidValue( &lock, 0 );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

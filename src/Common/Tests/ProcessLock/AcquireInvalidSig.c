@@ -33,7 +33,7 @@ int main()
 
    errcode = vdscInitProcessLock( &lock );
    if ( errcode != 0 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    lock.initialized = 0;
    vdscAcquireProcessLock( &lock, 0xff );
@@ -42,7 +42,7 @@ int main()
 
    vdscFiniProcessLock( &lock );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

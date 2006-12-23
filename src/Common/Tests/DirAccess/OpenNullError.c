@@ -35,7 +35,7 @@ int main()
    
    errcode = vdscOpenDir( &iterator, "..", NULL );
    
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

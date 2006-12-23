@@ -37,7 +37,7 @@ int main()
    mem.initialized = 0;
    vdscFiniMemoryFile( &mem );
    
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

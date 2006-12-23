@@ -36,7 +36,7 @@ int main()
    for ( i = 0; i < VDSC_ERROR_CHAIN_LENGTH; ++i )
       vdscChainError( &errorHandler, VDSC_ERRNO_HANDLE, ENOENT );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

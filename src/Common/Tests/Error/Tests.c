@@ -46,10 +46,10 @@ int main()
   
    handle1 = vdscAddErrorMsgHandler( "Dummy1", &msgErrorHandler );
    if ( handle1 == VDSC_NO_ERRHANDLER )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    handle2 = vdscAddErrorMsgHandler( "Dummy2", &msgErrorHandler );
    if ( handle2 == VDSC_NO_ERRHANDLER )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    vdscSetError( &errorHandler, handle2, 7 );
 

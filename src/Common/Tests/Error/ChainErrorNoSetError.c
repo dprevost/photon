@@ -32,7 +32,7 @@ int main()
    
    vdscChainError( &errorHandler, VDSC_ERRNO_HANDLE, ENOENT );
     
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

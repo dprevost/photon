@@ -24,13 +24,11 @@ const bool expectedToPass = false;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
-{
-   vdscErrorHandler errorHandler;
-   
+{   
    vdscInitErrorDefs();
    vdscInitErrorHandler( NULL );
    
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

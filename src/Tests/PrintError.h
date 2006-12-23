@@ -53,6 +53,9 @@ void printError( vdscErrorHandler* pError )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#pragma warning(disable:4127)
+#pragma warning(disable:4702)
+
 #define ERROR_EXIT(EXPECTED_TO_PASS,PERROR,SPECIAL_CLEANUP_CODE) \
 {\
    fprintf( stderr, "Abnormal error at line %d\n", __LINE__ );\

@@ -49,15 +49,15 @@ int main()
       /* OpenDir cannot fail on Win32 but someone might update
        * the code eventually...
        */
-      ERROR_EXIT( expectedToPass, &errorHandler );
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
 
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
 
    if ( str != NULL )
-      ERROR_EXIT( expectedToPass, &errorHandler );
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
    if ( ! vdscAnyErrors( &errorHandler ) )
-      ERROR_EXIT( expectedToPass, &errorHandler );
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
 
    vdscCloseDir( &iterator );
 

@@ -33,7 +33,7 @@ int main()
    errorHandler.initialized = 0;
    vdscFiniErrorHandler( &errorHandler );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

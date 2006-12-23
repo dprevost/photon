@@ -43,7 +43,7 @@ int main()
 
    handle = vdscAddErrorMsgHandler( NULL, &errorHandler );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

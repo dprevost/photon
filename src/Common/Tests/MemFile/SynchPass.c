@@ -27,7 +27,7 @@ int main()
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
    void*           pAddr = NULL;
-   int errcode = 0, rc = 0;
+   int errcode = 0;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete
     * call is not as synchroneous as it should be...

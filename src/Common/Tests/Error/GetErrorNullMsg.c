@@ -32,7 +32,7 @@ int main()
    
    vdscGetErrorMsg( &errorHandler, NULL, 100 );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

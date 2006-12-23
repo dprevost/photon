@@ -43,7 +43,7 @@ int main()
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
    char *          pAddr = NULL;
-   int errcode = 0, rc = 0;
+   int errcode = 0;
 #if ! defined(WIN32)
    struct sigaction newAction, oldAction;
 #endif

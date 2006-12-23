@@ -36,9 +36,9 @@ int main()
    errcode = vdscOpenDir( &iterator, "..", &errorHandler );
 
    if ( errcode != 0 )
-      ERROR_EXIT( expectedToPass, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
    if ( vdscAnyErrors( &errorHandler ) )
-      ERROR_EXIT( expectedToPass, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
 
    vdscCloseDir( &iterator );
 

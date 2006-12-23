@@ -36,12 +36,12 @@ int main()
    
    errcode = vdscOpenDir( &iterator, "..", &errorHandler );
    if ( errcode != 0 )
-      ERROR_EXIT( expectedToPass, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
 
    iterator.initialized = 0;
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

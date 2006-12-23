@@ -30,20 +30,20 @@ int main()
 
    errcode = vdscInitProcessLock( &lock );
    if ( errcode != 0 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    if ( vdscTestLockPidValue( &lock, 0xff ) )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    vdscAcquireProcessLock( &lock, 0xff );
 
    if ( !vdscTestLockPidValue( &lock, 0xff ) )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    vdscReleaseProcessLock( &lock );
 
    if ( vdscTestLockPidValue( &lock, 0xff ) )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    vdscFiniProcessLock( &lock );
 

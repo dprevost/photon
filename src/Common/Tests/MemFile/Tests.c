@@ -34,7 +34,7 @@ int main()
    vdscMemoryFile  mem1, mem2;
    vdscErrorHandler errorHandler;
    void*           pAddr = NULL;
-   int errcode = 0, rc = 0;
+   int errcode = 0;
    unsigned char* str;
    unsigned int i;
    

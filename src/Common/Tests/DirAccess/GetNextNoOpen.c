@@ -35,7 +35,7 @@ int main()
 
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
    
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

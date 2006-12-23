@@ -37,7 +37,7 @@ int main()
    
    errcode = vdscOpenDir( pIterator, "..", &errorHandler );
    if ( errcode != 0 )
-      ERROR_EXIT( expectedToPass, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
    
    vdscCloseDir( pIterator );
 
@@ -45,7 +45,7 @@ int main()
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

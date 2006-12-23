@@ -34,7 +34,7 @@ int main()
    errorHandler.initialized = 0;
    vdscGetErrorMsg( &errorHandler, msg, 100 );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

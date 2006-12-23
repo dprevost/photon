@@ -35,15 +35,15 @@ int main()
    vdscChainError( &errorHandler, VDSC_ERRNO_HANDLE, EINTR );
 
    if ( errorHandler.chainLength != 2 ) 
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    if ( errorHandler.errorCode[0] != ENOENT )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    if ( errorHandler.errorCode[1] != EINTR )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    if ( errorHandler.errorHandle[0] != VDSC_ERRNO_HANDLE )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    if ( errorHandler.errorHandle[1] != VDSC_ERRNO_HANDLE )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();

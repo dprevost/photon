@@ -40,7 +40,7 @@ int main()
    
    errcode = vdscSetSupportedOptions( 5, opts, &handle );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

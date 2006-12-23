@@ -26,7 +26,7 @@ int main()
 {  
    vdscInitMemoryFile( NULL, 10, "MemFile.mem" );
    
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
