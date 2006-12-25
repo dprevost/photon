@@ -1,0 +1,85 @@
+# Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+include ..\Makefile.inc.Win32
+
+all: 
+
+CLEANFILES = *~ 
+
+check_PROGRAMS =                                       \
+                 .\Release\BackStatusInvalidSig.exe    \
+                 .\Release\BackStatusMemNull.exe       \
+                 .\Release\BackStatusNameEmpty.exe     \
+                 .\Release\BackStatusPass.exe          \
+                 .\Release\BackStatusStatusNull.exe    \
+                 .\Release\CloseNullError.exe          \
+                 .\Release\CloseInvalidSig.exe         \
+                 .\Release\CloseMemNull.exe            \
+                 .\Release\ClosePass.exe               \
+                 .\Release\CreateBackNullError.exe     \
+                 .\Release\CreateBackInvalidSig.exe    \
+                 .\Release\CreateBackInvLength.exe     \
+                 .\Release\CreateBackMemNull.exe       \
+                 .\Release\CreateBackNameEmpty.exe     \
+                 .\Release\CreateBackPass.exe          \
+                 .\Release\CreateBackPerm0000.exe      \
+                 .\Release\CreateBackPerm0200.exe      \
+                 .\Release\CreateBackPerm0400.exe      \
+                 .\Release\CreateBackPerm0500.exe      \
+                 .\Release\FiniInvalidSig.exe          \
+                 .\Release\FiniNullMem.exe             \
+                 .\Release\FiniPass.exe                \
+                 .\Release\InitLengthPositive.exe      \
+                 .\Release\InitMemNull.exe             \
+                 .\Release\InitNameEmpty.exe           \
+                 .\Release\InitNameNull.exe            \
+                 .\Release\InitPass.exe                \
+                 .\Release\OpenAddrNull.exe            \
+                 .\Release\OpenNullError.exe           \
+                 .\Release\OpenInvalidLength.exe       \
+                 .\Release\OpenInvalidSig.exe          \
+                 .\Release\OpenMemNull.exe             \
+                 .\Release\OpenNameEmpty.exe           \
+                 .\Release\OpenPass.exe                \
+                 .\Release\ReadOnlyNullError.exe       \
+                 .\Release\ReadOnlyInvalidBaseAddr.exe \
+                 .\Release\ReadOnlyInvalidSig.exe      \
+                 .\Release\ReadOnlyMemNull.exe         \
+                 .\Release\ReadOnlyPass.exe            \
+                 .\Release\ReadOnlyTryWrite.exe        \
+                 .\Release\ReadWriteNullError.exe      \
+                 .\Release\ReadWriteInvalidSig.exe     \
+                 .\Release\ReadWriteInvBaseAddr.exe    \
+                 .\Release\ReadWriteMemNull.exe        \
+                 .\Release\ReadWritePass.exe           \
+                 .\Release\SynchNullError.exe          \
+                 .\Release\SynchInvalidBaseAddr.exe    \
+                 .\Release\SynchInvalidSig.exe         \
+                 .\Release\SynchMemNull.exe            \
+                 .\Release\SynchPass.exe               \
+                 .\Release\Tests.exe                   
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+#
+
+check: $(OUTDIR) $(check_PROGRAMS)
+	python RunTests.py --path=Release
+
+checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	python RunTests.py --path=Debug
+
+clean: 
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+

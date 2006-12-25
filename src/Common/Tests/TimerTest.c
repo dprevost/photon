@@ -29,13 +29,13 @@ const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
+int main()
 {
    unsigned long sec, nanoSec, sum;
    vdscTimer timer;
    
-   unsigned long loop;
-   int dum, i, innerLoop = TEST_LOOP, outerLoop = 15;
+   unsigned long loop, innerLoop = TEST_LOOP;
+   int dum, i, outerLoop = 15;
 
    sec = 0;
    nanoSec = 0;
@@ -71,11 +71,12 @@ int main( int argc, char* argv[] )
       
    vdscEndTimer( &timer );
    vdscCalculateTimer( &timer, &sec, &nanoSec );
+   fprintf( stderr, "Sec = %u, nanoSec = %u\n", sec, nanoSec );
 
    if ( sec == 0 && nanoSec == 0 )
    {
       fprintf( stderr, "Timer returns invalid time!\n" );
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    }
    sum = NS_PER_SEC*sec + nanoSec;
    sum = sum / NS_PER_US;    /* in micro-seconds */
@@ -113,7 +114,7 @@ int main( int argc, char* argv[] )
       if ( sec == 0 && nanoSec == 0 )
       {
          fprintf( stderr, "Timer returns invalid time!\n" );
-         ERROR_EXIT( expectedToPass, NULL, );
+         ERROR_EXIT( expectedToPass, NULL, ; );
       }
       
       fprintf( stderr, "Sec = %u, nanoSec = %u\n", sec, nanoSec );

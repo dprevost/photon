@@ -28,7 +28,7 @@ const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
+int main()
 {
    unsigned long sec = 0, nanoSec = 0;
    struct timespec sleepTime = { 0, 10000 };
@@ -40,7 +40,7 @@ int main( int argc, char* argv[] )
 
    errCode = nanosleep( &sleepTime, NULL );
    if ( errCode != 0 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    vdscEndTimer( &timer );
    vdscCalculateTimer( &timer, &sec, &nanoSec );
@@ -49,7 +49,7 @@ int main( int argc, char* argv[] )
    if ( sec == 0 && nanoSec < 10000 )
    {
       fprintf( stderr, "Timer returns invalid time!\n" );
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    return 0;

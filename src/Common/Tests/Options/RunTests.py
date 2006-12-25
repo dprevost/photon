@@ -14,8 +14,39 @@ fail_programs = []
 ##
 ## Now populate the program lists...
 ##
-ok_programs.append('nanosleepTest')
-ok_programs.append('TimerTest')
+ok_programs.append('GetLongOptPass')
+ok_programs.append('GetShortOptPass')
+ok_programs.append('IsLongPresentPass')
+ok_programs.append('IsShortPresentPass')
+ok_programs.append('SetOptionsPass')
+ok_programs.append('ShowUsagePass')
+ok_programs.append('Tests')
+ok_programs.append('ValidatePass')
+
+fail_programs.append('GetLongOptNullHandle')
+fail_programs.append('GetLongOptNullOpt')
+fail_programs.append('GetLongOptNullValue')
+fail_programs.append('GetShortOptNullHandle')
+fail_programs.append('GetShortOptNullValue')
+fail_programs.append('IsLongPresentNullHandle')
+fail_programs.append('IsLongPresentNullOpt')
+fail_programs.append('IsShortPresentNullHandle')
+fail_programs.append('SetOptionsNullHandle')
+fail_programs.append('SetOptionsNullOpts')
+fail_programs.append('SetOptionsNullEndedOpt')
+fail_programs.append('SetOptionsNullEndedComment')
+fail_programs.append('SetOptionsNullEndedValue')
+fail_programs.append('SetOptionsNumOptsZero')
+fail_programs.append('SetOptionsRepeatedLong')
+fail_programs.append('SetOptionsRepeatedShort')
+fail_programs.append('ShowUsageNullAddArgs')
+fail_programs.append('ShowUsageNullHandle')
+fail_programs.append('ShowUsageNullProgName')
+fail_programs.append('UnsetOptNullHandle')
+fail_programs.append('ValidateArgcZero')
+fail_programs.append('ValidateNullArgv')
+fail_programs.append('ValidateNULLArgvi')
+fail_programs.append('ValidateNullHandle')
 
 l = 0
 rc = 0

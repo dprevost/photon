@@ -14,8 +14,38 @@ fail_programs = []
 ##
 ## Now populate the program lists...
 ##
-ok_programs.append('nanosleepTest')
-ok_programs.append('TimerTest')
+# Programs that should return 0
+ok_programs.append('AddHandlerPass')
+ok_programs.append('AnyErrorPass')
+ok_programs.append('ChainErrorPass')
+ok_programs.append('FiniPass')
+ok_programs.append('GetLastPass')
+ok_programs.append('GetLengthPass')
+ok_programs.append('InitPass')
+ok_programs.append('Tests')
+
+fail_programs.append('AddHandlerNullDef')
+fail_programs.append('AddHandlerNullHandler')
+fail_programs.append('AddHandlerNullName')
+fail_programs.append('AnyErrorNullError')
+fail_programs.append('ChainErrorNullDef')
+fail_programs.append('ChainErrorNullHandler')
+fail_programs.append('ChainErrorInvalidSig')
+fail_programs.append('ChainErrorNoSetError')
+fail_programs.append('ChainErrorTooMany')
+fail_programs.append('FiniInvalidSig')
+fail_programs.append('FiniNullError')
+fail_programs.append('GetErrorInvalidSig')
+fail_programs.append('GetErrorNullError')
+fail_programs.append('GetErrorNullMsg')
+fail_programs.append('GetErrorZeroLength')
+fail_programs.append('GetLastNullError')
+fail_programs.append('GetLengthNullError')
+fail_programs.append('InitNoInitDefs')
+fail_programs.append('InitNullError')
+fail_programs.append('SetErrorInvalidSig')
+fail_programs.append('SetErrorInvalidValue')
+fail_programs.append('SetErrorNullError')
 
 l = 0
 rc = 0
@@ -46,7 +76,7 @@ for program in fail_programs:
       if rc == 0:
          failed_tests.append(os.path.join( full_name, program))
    except:
-      failed_tests.append( full_name )
+      failed_tests.append(os.path.join( full_name, program))
       print program, ' failed (spawnl threw an exception)!'
 
 l += len(ok_programs)+ len(fail_programs)

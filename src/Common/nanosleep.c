@@ -68,11 +68,13 @@ nanosleep( const struct timespec * pRequest,
    if ( req.tv_sec *1000000 + req.tv_usec < 0  ||
       req.tv_sec *1000000 + req.tv_usec >= 1000000000 )
    {
+      fprintf( stderr, "%u %u\n", req.tv_sec, req.tv_usec );
       errno = EINVAL;
       return -1;
    }
    
    ret = select (1, 0, 0, 0, &req );
+fprintf( stderr, "ret = %d %d\n", ret, WSAGetLastError() );
 
    return ret;
 }

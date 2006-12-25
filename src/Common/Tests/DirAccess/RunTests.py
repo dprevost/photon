@@ -14,8 +14,32 @@ fail_programs = []
 ##
 ## Now populate the program lists...
 ##
-ok_programs.append('nanosleepTest')
-ok_programs.append('TimerTest')
+# Programs that should return 0
+ok_programs.append('ClosePass')
+ok_programs.append('FiniPass')
+ok_programs.append('GetNextNoSuchDir')
+ok_programs.append('GetNextPass')
+ok_programs.append('InitPass')
+ok_programs.append('OpenNoSuchDir')
+ok_programs.append('OpenPass')
+ok_programs.append('Tests')
+
+fail_programs.append('CloseInvalidSig')
+fail_programs.append('CloseNullDir')
+fail_programs.append('FiniInvalidSig')
+fail_programs.append('FiniNullDir')
+fail_programs.append('GetNextInvalidSig')
+fail_programs.append('GetNextNoOpen')
+fail_programs.append('GetNextNullDir')
+fail_programs.append('GetNextNullError')
+fail_programs.append('GetNextNullpDir')
+fail_programs.append('InitNullDir')
+fail_programs.append('OpenCallTwice')
+fail_programs.append('OpenInvalidSig')
+fail_programs.append('OpenNoInit')
+fail_programs.append('OpenNullDir')
+fail_programs.append('OpenNullDirname')
+fail_programs.append('OpenNullError')
 
 l = 0
 rc = 0
@@ -46,7 +70,7 @@ for program in fail_programs:
       if rc == 0:
          failed_tests.append(os.path.join( full_name, program))
    except:
-      failed_tests.append( full_name )
+      failed_tests.append(os.path.join( full_name, program))
       print program, ' failed (spawnl threw an exception)!'
 
 l += len(ok_programs)+ len(fail_programs)
