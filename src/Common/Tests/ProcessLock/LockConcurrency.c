@@ -37,21 +37,6 @@ struct localData
    char dum2[250];
 };
 
-
-/*
- * Misnamed define... the failure rate is 1/FAILURE_RATE...
- *
- * I would prefer a much lower failure rate but it would mean
- * being very patient... (failures can only be seen when context
- * switches are done and with time slices of 1/1000 sec. (on many
- * modern OSes), it would force us to run the test for a lot longer).
- *
- * A better solution would be to use fork to create a few children
- * and to keep the mother task to kill all other children when one
- * encounters an inconsistency. 
- */
-#define FAILURE_RATE 10
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char* argv[] )

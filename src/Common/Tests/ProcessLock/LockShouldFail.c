@@ -34,7 +34,9 @@
 #include "Timer.h"
 #include "ProcessLock.h"
 #include "PrintError.h"
-#if ! defined(WIN32)
+#if defined(WIN32)
+#  include <Process.h>
+#else
 #  include <sys/wait.h>
 #endif
 
@@ -48,8 +50,7 @@ const bool childExpectedToPass = true;
 struct localData
 {
    vdscProcessLock lock;
-   int counter;
-   int overflow;
+   int exitFlag;
    char dum1[150];
    char dum2[250];
 };
@@ -66,22 +67,24 @@ struct localData
  */
 #define FAILURE_RATE 500
 /* #define FAILURE_RATE 1000 000 000 */
+
 #define NUM_CHILDREN 4
+#define CHECK_TIMER 1345 /* Check the time every CHECK_TIMER loops */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char* argv[] )
 {
-   pid_t pid;
-   pid_t child_pid[NUM_CHILDREN];
+   pid_t child_pid[NUM_CHILDREN], pid, mypid;
    unsigned long sec, nanoSec;
    vdscTimer timer;
    int childStatus;
+   bool foundError = false;
    
    unsigned long elapsedTime = 0, maxTime = 0;
    unsigned long loop = 1;
    void* ptr = NULL;   
-   char filename[PATH_MAX];
+   char filename[PATH_MAX], str[10];
    struct localData *data = NULL;
    int errcode;
    vdscMemoryFile memFile;
@@ -91,7 +94,6 @@ int main( int argc, char* argv[] )
    int dumId, i;
 
    vdscInitErrorDefs();
-   pid = getpid();
    for ( i = 0; i < NUM_CHILDREN; ++i )
       child_pid[i] = -1;
    
@@ -108,124 +110,137 @@ int main( int argc, char* argv[] )
    vdscInitErrorHandler( &errorHandler );
    vdscInitMemoryFile( &memFile, 10, filename );
    
-   errcode = vdscCreateBackstore( &memFile, 0644, &errorHandler );
-   if ( errcode < 0 )
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
-   errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
-   if ( errcode < 0 )
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
-   memset( ptr, 0, 10000 );
-   data = (struct localData*) ptr;
-   
-   errcode = vdscInitProcessLock( &data->lock );
-   if ( errcode < 0 )
-      ERROR_EXIT( 1, NULL, ; );
-
-   vdscSyncMemFile( &memFile, &errorHandler );
-   
-   vdscCloseMemFile( &memFile, &errorHandler );
-   data = NULL;
-   ptr = NULL;
-   
-   vdscBeginTimer( &timer );
-
-   for ( i = 0; i < NUM_CHILDREN; ++i )
+   if ( argc == 3 )
    {
-      pid = fork();
-      if ( pid == 0 )
-      {
-         /*
-          * A child - we only get out of this loop when an error is 
-          * encountered (or if the timer expires and our parent kill us)
-          */
-         pid_t mypid = getpid();
-         vdscInitMemoryFile( &memFile, 10, filename );
-         errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
-         if ( errcode < 0 )
-            ERROR_EXIT( childExpectedToPass, NULL, ; );
-         data = (struct localData*) ptr;
-   
-         while ( 1 )
-         {            
-            if ( (loop%FAILURE_RATE) != 0 )
-               vdscAcquireProcessLock( &data->lock, mypid );
-            
-            if ( mypid == 0 )
-            {
-               fprintf( stderr, "Wrong2... pid is zero\n" );
-               ERROR_EXIT( childExpectedToPass, NULL, ; );
-            }
-            sprintf( data->dum2, "dumStr2 %d  ", mypid );
-            memcpy( data->dum1, data->dum2, 100 );
-            
-            sscanf( data->dum1, "%s %d", dum3, &dumId );
-            if ( dumId != mypid )
-            {
-               fprintf( stderr, "Ok! We got our expected error (pid = %d)\n",
-                        mypid );
-               return 0;
-            }
+      /*
+       * This is the parent!
+       */
+      errcode = vdscCreateBackstore( &memFile, 0644, &errorHandler );
+      if ( errcode < 0 )
+         ERROR_EXIT( expectedToPass, &errorHandler, ; );
 
-            if ( (loop%FAILURE_RATE) != 0 )
-               vdscReleaseProcessLock( &data->lock );
-            
-            loop++;
-         }
-      }
-      else if ( pid > 0 )
-      {
-         child_pid[i] = pid;
-         
-         fprintf( stderr, "Lauch child, pid = %d\n", pid );
-      }
-      else
-      {
-         fprintf( stderr, "Fork failure, errno = %d\n", errno );
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
-   }
+      errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
+      if ( errcode < 0 )
+         ERROR_EXIT( expectedToPass, &errorHandler, ; );
 
-   while ( 1 )
-   {
-      int num;
+      memset( ptr, 0, 10000 );
+      data = (struct localData *)ptr;
       
-      sleep( 1 );
-      vdscEndTimer( &timer );
-      vdscCalculateTimer( &timer, &sec, &nanoSec );
-         
-      elapsedTime = sec*US_PER_SEC + nanoSec/1000;
+      errcode = vdscInitProcessLock( &data->lock );
+      if ( errcode < 0 )
+         ERROR_EXIT( 1, NULL, ; );
 
-      if ( elapsedTime > maxTime )
+      vdscSyncMemFile( &memFile, &errorHandler );
+   
+      vdscCloseMemFile( &memFile, &errorHandler );
+      ptr = NULL;
+   
+      for ( i = 0; i < NUM_CHILDREN; ++i )
       {
-         fprintf( stderr, "Wrong... no error was caught!\n" );
-         for ( i = 0; i < NUM_CHILDREN; ++i )
-            kill( child_pid[i], SIGTERM );
-
-         vdscFiniErrorHandler( &errorHandler );
-         vdscFiniErrorDefs();
-
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
-      num = waitpid( -1, &childStatus, WNOHANG );
-      if ( num != 0 )
-      {
-         if ( WEXITSTATUS(childStatus) != 0 )
+         sprintf( str, "%d", i );
+#if defined (WIN32)
+         pid = _spawnl( _P_NOWAIT, argv[0], argv[0], argv[1], argv[2], str, NULL );
+         if ( pid < 0 )
          {
-            for ( i = 0; i < NUM_CHILDREN; ++i )
-               kill( child_pid[i], SIGTERM );
+            fprintf( stderr, "_spawnl failure, errno = %d\n", errno );
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
-         break;
+         child_pid[i] = pid;
+#else
+         pid = fork();
+         if ( pid == 0 )
+         {
+            execl( argv[0], argv[0], argv[1], argv[2], str, NULL );
+            /* If we come here, something is wrong ! */
+            ERROR_EXIT( childExpectedToPass, NULL, ; );
+         }
+         else if ( pid > 0 )
+         {
+            child_pid[i] = pid;
+            fprintf( stderr, "Launched child, pid = %d\n", pid );
+         }
+         else
+         {
+            fprintf( stderr, "Fork failure, errno = %d\n", errno );
+            ERROR_EXIT( expectedToPass, NULL, ; );
+         }
+#endif
+      }
+      
+      /* We now wait for the children to exit */
+      for ( i = 0; i < NUM_CHILDREN; ++i )
+      {
+#if defined(WIN32)
+         _cwait( &childStatus, child_pid[i], _WAIT_CHILD );
+         if ( childStatus == 0 )
+            foundError = true;
+#else
+         waitpid( child_pid[i], &childStatus, 0 );
+         if ( WEXITSTATUS(childStatus) == 0 )
+            foundError = true;
+#endif
+      }
+      if ( ! foundError )
+      {
+         fprintf( stderr, "Wrong... no error was caught!\n" );
+         vdscFiniErrorHandler( &errorHandler );
+         vdscFiniErrorDefs();
+          ERROR_EXIT( expectedToPass, NULL, ; );
       }
    }
+   else
+   {
+      /*
+       * A child - we only get out of this loop when an error is 
+       * encountered (or if the timer expires)
+       */
+      vdscBeginTimer( &timer );
 
-   fprintf( stderr, "Time: %d us \n", elapsedTime );
+      mypid = getpid();
+      errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
+      if ( errcode < 0 )
+         ERROR_EXIT( childExpectedToPass, NULL, ; );
+      data = (struct localData*) ptr;
    
-   for ( i = 0; i < NUM_CHILDREN; ++i )
-      kill( child_pid[i], SIGTERM );
-      
+      for (;;)
+      {            
+         if ( (loop%FAILURE_RATE) != 0 )
+            vdscAcquireProcessLock( &data->lock, mypid );
+         
+         sprintf( data->dum2, "dumStr2 %d  ", mypid );
+         memcpy( data->dum1, data->dum2, 100 );
+            
+         sscanf( data->dum1, "%s %d", dum3, &dumId );
+
+         if ( (loop%FAILURE_RATE) != 0 )
+            vdscReleaseProcessLock( &data->lock );
+
+         if ( dumId != mypid || data->exitFlag == 1)
+         {
+            if ( dumId != mypid )
+               fprintf( stderr, "Ok! We got our expected error (pid = %d)\n",
+                        mypid );
+            data->exitFlag = 1;
+            break;
+         }
+         
+         if ( (loop%CHECK_TIMER) != 0 )
+         {
+            vdscEndTimer( &timer );
+            vdscCalculateTimer( &timer, &sec, &nanoSec );
+         
+            elapsedTime = sec*US_PER_SEC + nanoSec/1000;
+            if ( elapsedTime > maxTime )
+            {
+               vdscFiniErrorHandler( &errorHandler );
+               vdscFiniErrorDefs();
+               return 1;
+            }
+         }
+         loop++;
+      } /* For loop */
+   } /* parent or child */
+
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
 

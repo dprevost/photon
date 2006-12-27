@@ -62,9 +62,9 @@ for program in ok_programs:
       rc = os.spawnl( os.P_WAIT, full_name, full_name )
       print program, ', rc = ', rc
       if rc != 0:
-         failed_tests.append(os.path.join( full_name, program))
+         failed_tests.append(full_name)
    except:
-      failed_tests.append(os.path.join( full_name, program))
+      failed_tests.append(full_name)
       print program, ' failed (spawnl threw an exception)!'
 
 for program in fail_programs:
@@ -74,9 +74,9 @@ for program in fail_programs:
       rc = os.spawnl( os.P_WAIT, full_name, full_name )
       print program, ', rc = ', rc
       if rc == 0:
-         failed_tests.append(os.path.join( full_name, program))
+         failed_tests.append(full_name)
    except:
-      failed_tests.append(os.path.join( full_name, program))
+      failed_tests.append(full_name)
       print program, ' failed (spawnl threw an exception)!'
 
 l += len(ok_programs)+ len(fail_programs)

@@ -181,7 +181,11 @@ vdscAcquireProcessLock( vdscProcessLock* pLock,
       }
       if ( isItLocked == 0 )
          break;
+#if defined (WIN32)
+      Sleep( g_timeOutinMilliSecs );
+#else
       nanosleep( &g_timeOut, NULL );
+#endif
       tempValue = lockValue;
    }
 #elif defined (VDS_USE_POSIX_SEMAPHORE)
@@ -270,7 +274,12 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
   if ( isItLocked != 0 )
   fprintf( stderr, "acquire 1\n" ); 
 */
+#if defined (WIN32)
+         Sleep( g_timeOutinMilliSecs );
+#else
          nanosleep( &g_timeOut, NULL );
+#endif
+
 #if defined (VDS_USE_HP_LOCK)
          if ( *pLock->pLock == 1 )
          {
