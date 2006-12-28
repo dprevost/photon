@@ -31,7 +31,7 @@ BEGIN_C_DECLS
  * For example: vdswd --config filename
  * 
  * I know that this looks like reinventing the wheel... but I've look
- * at alternatives and was not satisfy. They were either too complex,
+ * at alternatives and was not satisfied. They were either too complex,
  * too simple, not portable enough (VDSF on Windows should not depend
  * on cygwin or the gnu utilities to be present), etc.
  *
@@ -72,7 +72,7 @@ struct vdscOptStruct
    char longOpt[VDSC_OPT_LONG_OPT_LENGTH];
    /** Is the option mandatory or optional? */
    int  isOptionel;
-   /** Display name of the argument. */
+   /** Display name of the argument - use "" if the option takes no argument */
    char argumentMessage[VDSC_OPT_ARGUMENT_MSG_LENGTH];
    /** Comment to be displayed in "usage: ..." */
    char comment[VDSC_OPT_COMMENT_LENGTH];

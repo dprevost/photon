@@ -59,10 +59,17 @@ int main()
    if ( errcode != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
+   /* Option is present */
    gotIt = vdscIsShortOptPresent( handle, 'a' );
    if ( ! gotIt )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
+   /* Option is absent */
+   gotIt = vdscIsShortOptPresent( handle, '3' );
+   if ( gotIt )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   /* Unknown option */
    gotIt = vdscIsShortOptPresent( handle, 'd' );
    if ( gotIt )
       ERROR_EXIT( expectedToPass, NULL, ; );

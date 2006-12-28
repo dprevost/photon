@@ -34,7 +34,7 @@ int main()
    struct vdscOptStruct opts[5] = 
       { '3', "three",   1, "", "repeat the loop three times",
         'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog",
-        'x', "",        1, "DISPLAY", "X display to use",
+        'x', "display", 1, "DISPLAY", "X display to use",
         'v', "verbose", 1, "", "try to explain what is going on",
         'z', "zzz",     1, "", "go to sleep..."
       };
@@ -60,10 +60,22 @@ int main()
    if ( errcode != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
+   /* Option + value are present */
    gotIt = vdscGetLongOptArgument( handle, "address", &value );
    if ( ! gotIt )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
+   /* Option is absent */
+   gotIt = vdscGetLongOptArgument( handle, "display", &value );
+   if ( gotIt )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   /* Option is present but takes no value */
+   gotIt = vdscGetLongOptArgument( handle, "verbose", &value );
+   if ( gotIt )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   /* Unknown option */
    gotIt = vdscGetLongOptArgument( handle, "zzaddress", &value );
    if ( gotIt )
       ERROR_EXIT( expectedToPass, NULL, ; );

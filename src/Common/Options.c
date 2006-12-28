@@ -239,7 +239,7 @@ int vdscSetSupportedOptions( int               numOpts,
  *
  * \retval 1  Help was requested (-?, -h or --help)
  * \retval 0  Success
- * \retval -1 Error (use pInfo to retrieve the error)
+ * \retval -1 Error
  *
  * \pre \em handle cannot be NULL.
  * \pre \em argc must be greater than zero.
@@ -542,11 +542,17 @@ bool vdscGetShortOptArgument( vdscOptionHandle handle,
    if ( opt == ' ' || opt == '\0' ) return false;
    
    for ( i = 0; i < optStruct->numOpt; ++i )
+   {
       if ( optStruct->pArray[i].opt.shortOpt == opt )
       {
-         *argument = optStruct->argv[optStruct->pArray[i].argumentLocation];
-         return true;
+         if ( optStruct->pArray[i].argumentLocation != 0 )
+         {
+            *argument = optStruct->argv[optStruct->pArray[i].argumentLocation];
+            return true;
+         }
+         break;
       }
+   }
    
    return false;
 }
@@ -604,19 +610,27 @@ bool vdscGetLongOptArgument( vdscOptionHandle handle,
    /* Make sure we were passed a null-terminated string */
    nullTerminatedString = false;
    for ( i = 0; i < VDSC_OPT_LONG_OPT_LENGTH; ++i )
+   {
       if ( opt[i] == '\0' )
       {
          nullTerminatedString = true;
          break;
       }
+   }
    if ( ! nullTerminatedString ) return false;   
 
    for ( i = 0; i < optStruct->numOpt; ++i )
+   {
       if ( strcmp( optStruct->pArray[i].opt.longOpt, opt ) == 0 )
       {
-         *argument = optStruct->argv[optStruct->pArray[i].argumentLocation];
-         return true;
+         if ( optStruct->pArray[i].argumentLocation != 0 )
+         {
+            *argument = optStruct->argv[optStruct->pArray[i].argumentLocation];
+            return true;
+         }
+         break;
       }
+   }
    
    return false;
 }
@@ -662,8 +676,14 @@ bool vdscIsShortOptPresent( vdscOptionHandle handle,
    if ( opt == ' ' || opt == '\0' ) return false;
    
    for ( i = 0; i < optStruct->numOpt; ++i )
+   {
       if ( optStruct->pArray[i].opt.shortOpt == opt )
-         return true;
+      {
+         if ( optStruct->pArray[i].optionLocation != 0 )
+            return true;
+         break;
+      }
+   }
    
    return false;
 }
@@ -715,16 +735,24 @@ bool vdscIsLongOptPresent( vdscOptionHandle handle,
    /* Make sure we were passed a null-terminated string */
    nullTerminatedString = false;
    for ( i = 0; i < VDSC_OPT_LONG_OPT_LENGTH; ++i )
+   {
       if ( opt[i] == '\0' )
       {
          nullTerminatedString = true;
          break;
       }
+   }
    if ( ! nullTerminatedString ) return false;   
 
    for ( i = 0; i < optStruct->numOpt; ++i )
+   {
       if ( strcmp( optStruct->pArray[i].opt.longOpt, opt ) == 0 )
-         return true;
+      {
+         if ( optStruct->pArray[i].optionLocation != 0 )
+            return true;
+         break;
+      }
+   }
    
    return false;
 }

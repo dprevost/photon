@@ -60,10 +60,22 @@ int main()
    if ( errcode != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
+   /* Option + value are present */
    gotIt = vdscGetShortOptArgument( handle, 'a', &value );
    if ( ! gotIt )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
+   /* Option is absent */
+   gotIt = vdscGetShortOptArgument( handle, 'x', &value );
+   if ( gotIt )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   /* Option is present but takes no value */
+   gotIt = vdscGetShortOptArgument( handle, 'v', &value );
+   if ( gotIt )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   
+   /* Unknown option */
    gotIt = vdscGetShortOptArgument( handle, 't', &value );
    if ( gotIt )
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -59,10 +59,17 @@ int main()
    if ( errcode != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
+   /* Option is present */
    gotIt = vdscIsLongOptPresent( handle, "address" );
    if ( ! gotIt )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
+   /* Option is absent */
+   gotIt = vdscIsLongOptPresent( handle, "three" );
+   if ( gotIt )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   /* Unknown option */
    gotIt = vdscIsLongOptPresent( handle, "zzaddress" );
    if ( gotIt )
       ERROR_EXIT( expectedToPass, NULL, ; );
