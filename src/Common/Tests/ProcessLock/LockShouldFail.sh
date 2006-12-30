@@ -38,7 +38,7 @@ fi
 if [ "$TMPDIR" = "" ] ; then
    TMPDIR=/tmp
 fi
-BASE_DIR=$TMPDIR/vdsf/lock_concurr
+BASE_DIR=$TMPDIR/vdsf_lock_concurr
 
 trap `rm -rf $BASE_DIR; exit 1` 1 2 3 15
 
@@ -56,28 +56,22 @@ if test -z "$srcdir"; then
   verbose=1
 fi
 
-rm -rf $TMPDIR/vdsf
-mkdir $TMPDIR/vdsf
+mkdir $BASE_DIR
 if [ "$?" != 0 ] ; then
    exit 1
 fi
-#mkdir $BASE_DIR
-#if [ "$?" != 0 ] ; then
-#   exit 1
-#fi
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-$top_builddir/src/Common/Tests/ProcessLock/LockShouldFail $timer $BASE_DIR
-####>& /dev/null
+$top_builddir/src/Common/Tests/ProcessLock/LockShouldFail -f $BASE_DIR/Memfile
 if [ "$?" != 0 ] ; then
-#   rm -rf $BASE_DIR
+   rm -rf $BASE_DIR
    exit 1
 fi
 
 echo "Tests terminated successfully"
 
-#rm -rf $BASE_DIR
+rm -rf $BASE_DIR
 
 jobs
 

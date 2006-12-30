@@ -58,7 +58,7 @@ BEGIN_C_DECLS
 /** Maximum length of the display name of a argument. */
 #define VDSC_OPT_ARGUMENT_MSG_LENGTH 20
 /** Maximum length of the comment field (to be displayed). */
-#define VDSC_OPT_COMMENT_LENGTH   40
+#define VDSC_OPT_COMMENT_LENGTH   50
 
 /**
  * This struct is used to define which options will be supported

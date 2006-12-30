@@ -340,6 +340,7 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
 
                      optStruct->pArray[j].argumentLocation = i+1;
                      i++;
+                     break;
                   }
                }
             }
@@ -407,6 +408,7 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
                         
                         optStruct->pArray[j].argumentLocation = i+1;
                         i++;
+                        break;
                      }
 
                   } /* end if - check that the content is equal */

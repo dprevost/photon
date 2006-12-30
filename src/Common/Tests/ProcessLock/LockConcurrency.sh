@@ -38,7 +38,7 @@ fi
 if [ "$TMPDIR" = "" ] ; then
    TMPDIR=/tmp
 fi
-BASE_DIR=$TMPDIR/vdsf/lock_concurr
+BASE_DIR=$TMPDIR/vdsf_lock_concurr
 
 trap `rm -rf $BASE_DIR; exit 1` 1 2 3 15
 
@@ -56,8 +56,7 @@ if test -z "$srcdir"; then
   verbose=1
 fi
 
-rm -rf $TMPDIR/vdsf
-mkdir $TMPDIR/vdsf
+mkdir $BASE_DIR
 if [ "$?" != 0 ] ; then
    exit 1
 fi
@@ -66,49 +65,7 @@ exe=$top_builddir/src/Common/Tests/ProcessLock/LockConcurrency
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-$exe 0 $timer $BASE_DIR "lock" &
-if [ "$?" != 0 ] ; then
-   rm -rf $BASE_DIR
-   exit 1
-fi
-
-sleep 1
-$exe 1 $timer $BASE_DIR "lock" &
-if [ "$?" != 0 ] ; then
-   rm -rf $BASE_DIR
-   exit 1
-fi
-sleep 1
-$exe 2 $timer $BASE_DIR "lock" &
-if [ "$?" != 0 ] ; then
-   rm -rf $BASE_DIR
-   exit 1
-fi
-sleep 1
-$exe 3 $timer $BASE_DIR "lock" &
-if [ "$?" != 0 ] ; then
-   rm -rf $BASE_DIR
-   exit 1
-fi
-
-sleep 1
-
-wait %1
-if [ "$?" != 0 ] ; then
-   rm -rf $BASE_DIR
-   exit 1
-fi
-wait %2
-if [ "$?" != 0 ] ; then
-   rm -rf $BASE_DIR
-   exit 1
-fi
-wait %3
-if [ "$?" != 0 ] ; then
-   rm -rf $BASE_DIR
-   exit 1
-fi
-wait %4
+$exe -c 4 -i 0 -t $timer -f $BASE_DIR/Memfile -m "lock"
 if [ "$?" != 0 ] ; then
    rm -rf $BASE_DIR
    exit 1
@@ -117,8 +74,5 @@ fi
 echo "Tests terminated successfully"
 
 rm -rf $BASE_DIR
-
-jobs
-
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
