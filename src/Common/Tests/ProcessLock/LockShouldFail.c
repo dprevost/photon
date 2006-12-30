@@ -84,7 +84,7 @@ int main( int argc, char* argv[] )
    unsigned long elapsedTime = 0, maxTime = 0;
    unsigned long loop = 1, failureRate;
    void* ptr = NULL;   
-   char filename[PATH_MAX], str[10];
+   char filename[PATH_MAX];
    struct localData *data = NULL;
    int errcode;
    vdscMemoryFile memFile;
@@ -360,6 +360,7 @@ int main( int argc, char* argv[] )
       } /* For loop */
    } /* parent or child */
 
+   unlink( filename );
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
 

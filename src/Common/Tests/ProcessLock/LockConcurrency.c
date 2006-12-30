@@ -321,6 +321,7 @@ int main( int argc, char* argv[] )
    else
       printf( "Program #%d Number of loops = %lu\n", identifier, loop );
    
+   unlink( filename );
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
 
