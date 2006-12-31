@@ -323,26 +323,31 @@ int main( int argc, char* argv[] )
             
          sscanf( data->dum1, "%s %d", dum3, &dumId );
 
-         if ( (loop%failureRate) != 0 )
-            vdscReleaseProcessLock( &data->lock );
-
-         if ( dumId != mypid || data->exitFlag == 1)
+         if ( dumId != mypid )
          {
-            if ( dumId != mypid )
-            {
-               vdscEndTimer( &timer );
-               vdscCalculateTimer( &timer, &sec, &nanoSec );
+            vdscEndTimer( &timer );
+            vdscCalculateTimer( &timer, &sec, &nanoSec );
 
-               fprintf( stderr, "%s %d) - time = %d.%03d secs, \n",
-                        "Ok! We got our expected error (pid =",
-                        mypid,
-                        sec,
-                        nanoSec/1000/1000 );
-            }
+            fprintf( stderr, "%s %d) - time = %d.%03d secs, \n",
+                     "Ok! We got our expected error (pid =",
+                     mypid,
+                     sec,
+                     nanoSec/1000/1000 );
             data->exitFlag = 1;
+            if ( (loop%failureRate) != 0 )
+               vdscReleaseProcessLock( &data->lock );
+
             break;
          }
          
+         if ( (loop%failureRate) != 0 )
+            vdscReleaseProcessLock( &data->lock );
+
+         if ( data->exitFlag == 1 )
+            break;
+   
+         loop++;
+
          if ( (loop%CHECK_TIMER) != 0 )
          {
             vdscEndTimer( &timer );
@@ -356,7 +361,6 @@ int main( int argc, char* argv[] )
                return 1;
             }
          }
-         loop++;
       } /* For loop */
    } /* parent or child */
 

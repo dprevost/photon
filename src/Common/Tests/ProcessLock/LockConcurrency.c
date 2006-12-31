@@ -43,8 +43,7 @@ const bool childExpectedToPass = true;
 struct localData
 {
    vdscProcessLock lock;
-   int counter;
-   int overflow;
+   int exitFlag;
    char dum1[150];
    char dum2[250];
 };
@@ -284,11 +283,6 @@ int main( int argc, char* argv[] )
          else
             vdscAcquireProcessLock( &data->lock, pid );
 
-         if ( pid != savepid || pid == 0 )
-         {
-            fprintf( stderr, "Wrong2... %d %d\n", pid, savepid );
-            ERROR_EXIT( expectedToPass, NULL, ; );
-         }
          sprintf( data->dum2, "dumStr2 %d  ", identifier+1 );
          memcpy( data->dum1, data->dum2, 100 );
 
@@ -297,11 +291,16 @@ int main( int argc, char* argv[] )
          {
             fprintf( stderr, "Wrong... %d %d %s-%s\n", identifier+1, 
                      dumId, data->dum1, data->dum2 );
+            data->exitFlag = 1;
+            vdscReleaseProcessLock( &data->lock );
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
       
          vdscReleaseProcessLock( &data->lock );
       
+         if ( data->exitFlag == 1 )
+            break;
+
          loop++;
 
          if ( (loop % CHECK_TIMER ) == 0 )
@@ -316,9 +315,7 @@ int main( int argc, char* argv[] )
       }
    }
    
-   if ( identifier == 0 )
-      printf( "\n" );
-   else
+   if ( identifier != 0 )
       printf( "Program #%d Number of loops = %lu\n", identifier, loop );
    
    unlink( filename );

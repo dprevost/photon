@@ -49,11 +49,19 @@ BEGIN_C_DECLS
 typedef struct vdstThreadWrap
 {
 #if defined (WIN32)
+   /** The WIN32 thread identifier */
    HANDLE hThread;
 #else
+   /** The POSIX thread identifier */
    pthread_t threadId;
 #endif
 
+   /** Argument to the thread */
+   void* arg;
+
+   /** Return code of the thread */
+   int returnCode;
+   
 } vdstThreadWrap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -64,7 +72,7 @@ int vdstCreateThread( vdstThreadWrap*   pThread,
                       vdscErrorHandler* pError );
 
 int vdstJoinThread( vdstThreadWrap*   pThread, 
-                    void*             retValue,
+//                    void*             retValue,
                     vdscErrorHandler* pError);
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

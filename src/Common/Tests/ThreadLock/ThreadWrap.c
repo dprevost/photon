@@ -33,11 +33,14 @@ int vdstCreateThread( vdstThreadWrap* pThread,
    VDS_PRE_CONDITION( pThread != NULL );
    VDS_PRE_CONDITION( startRoutine != NULL );
 
+   pThread->arg = arg;
+   pThread->returnCode = 0;
+   
 #if defined (WIN32)
    handle = (HANDLE) _beginthreadex( NULL, /* Default sec. attributes */
                                      0,    /* Default stack size */
                                      &startRoutine,
-                                     arg,
+                                     (void*)pThread,
                                      0, /* Thread does not start suspended */
                                      &threadId );
    if ( handle == NULL )
@@ -49,7 +52,8 @@ int vdstCreateThread( vdstThreadWrap* pThread,
    pThread->hThread = handle;
    
 #else
-   errcode = pthread_create ( &pThread->threadId, NULL, startRoutine, arg);
+   errcode = pthread_create ( &pThread->threadId, 
+                              NULL, startRoutine, (void*)pThread );
 
    if ( errcode != 0 )
    {
@@ -67,7 +71,7 @@ int vdstCreateThread( vdstThreadWrap* pThread,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdstJoinThread( vdstThreadWrap* pThread, 
-                    void* retValue,
+//                    void* retValue,
                     vdscErrorHandler* pError )
 {
 #if defined (WIN32)
@@ -76,13 +80,13 @@ int vdstJoinThread( vdstThreadWrap* pThread,
    err = WaitForSingleObject( pThread->hThread, INFINITE );
    if ( err == WAIT_OBJECT_0 )
    {
-      if ( GetExitCodeThread( pThread->hThread, &value ) == TRUE )
-      {
+//      if ( GetExitCodeThread( pThread->hThread, &value ) == TRUE )
+//      {
          CloseHandle( pThread->hThread );
-         if ( retValue != NULL )
-            *(void *)retValue = value;
+//         if ( retValue != NULL )
+//            *(void *)retValue = value;
          return 0;
-      }
+//      }
    }
 
    vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
@@ -91,7 +95,7 @@ int vdstJoinThread( vdstThreadWrap* pThread,
 #else
    int errcode;
    
-   errcode = pthread_join( pThread->threadId, &retValue );
+   errcode = pthread_join( pThread->threadId, NULL ); // &retValue
    if ( errcode != 0 )
    {
       if ( errcode > 0 )

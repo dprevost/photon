@@ -98,7 +98,6 @@ XFAIL_TESTS =                   \
               FiniInvalidSig    \
               FiniNullLock      \
               InitNullLock      \
-              LockShouldFail.sh \
               ReleaseInvalidSig \
               ReleaseNullLock   \
               TryAcqInvalidSig  \

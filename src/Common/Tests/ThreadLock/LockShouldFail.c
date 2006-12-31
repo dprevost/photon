@@ -18,7 +18,7 @@
 /*
  * This test is very similar to the LockConcurrency test... except that
  * this program does not always lock properly (on purpose)!!! The rate of 
- * failure of our locks is controlled by the #define FAILURE_RATE.
+ * failure of our locks is controlled by the #define DEFAULT_FAILURE_RATE.
  *
  * In a way, it insures that we would be able to detect a failure in
  * our locking mechanism using the standard LockConcurrency test. 
@@ -37,8 +37,9 @@
 #include "ThreadWrap.h"
 #include "Barrier.h"
 #include "PrintError.h"
+#include "Options.h"
 
-const bool expectedToPass = false;
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -47,48 +48,50 @@ const bool expectedToPass = false;
 struct localData
 {
    vdscThreadLock lock;
-   int counter;
-   int overflow;
+   int exitFlag;
    char dum1[150];
    char dum2[250];
 };
 
-vdscMemoryFile g_memFile;
+vdscMemoryFile    g_memFile;
 struct localData *g_data = NULL;
-unsigned long g_maxTime = 0;
-vdstBarrier g_barrier;
-
-#define TEST_MAX_THREADS 4
-#define MAX_MSG 100
+unsigned long     g_maxTime = 0;
+unsigned long     g_failureRate;
+vdstBarrier       g_barrier;
+bool              g_tryMode = false;
 
 /*
- * Misnamed define... the failure rate is 1/FAILURE_RATE...
+ * Misnamed define... the failure rate is 1/DEFAULT_FAILURE_RATE...
  *
  * I would prefer a much lower failure rate but it would mean
  * being very patient... (failures can only be seen when context
  * switches are done and with time slices of 1/1000 sec. (on many
  * modern OSes), it would force us to run the test for a lot longer).
  *
- * [FAILURE_RATE 500 --> 0.2% failure]
+ * [DEFAULT_FAILURE_RATE 500 --> 0.2% failure]
  */
-#define FAILURE_RATE 500
-/* #define FAILURE_RATE 1000 000 000 */
-#define NUM_CHILDREN 4
+#define DEFAULT_FAILURE_RATE 500
+#define DEFAULT_NUM_THREADS    4
+#define DEFAULT_TIME         300
+#define CHECK_TIMER         1345 /* Check the time every CHECK_TIMER loops */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void * worker( void* pIdentifier )
+void * worker( void* arg )
 {
    pid_t pid;
    unsigned long sec, nanoSec;
    vdscTimer timer;
    
-   int identifier = *((int*)pIdentifier);
+   vdstThreadWrap* pThread = (vdstThreadWrap*) arg;
+   int identifier;
    unsigned long elapsedTime = 0;
    unsigned long loop = 0;
    int errcode;
    int THIS_ASSERT_IS_OK = 0;
    
+   identifier = *((int*)pThread->arg);
+
    vdscInitTimer( &timer );   
 
    vdstBarrierWait( &g_barrier );
@@ -100,7 +103,7 @@ void * worker( void* pIdentifier )
   
    while ( 1 )
    {      
-      if ( (loop%FAILURE_RATE) != 0 )
+      if ( (loop%DEFAULT_FAILURE_RATE) != 0 )
          vdscAcquireThreadLock( &g_data->lock );
   
       sprintf( g_data->dum2, "dumStr2 %d  ", identifier );
@@ -109,25 +112,42 @@ void * worker( void* pIdentifier )
       sscanf( g_data->dum1, "%s %d", dum3, &dumId );
       if ( dumId != identifier )
       {
-         fprintf( stderr, "Ok! We got our expected error !\n" );
+         vdscEndTimer( &timer );
+         vdscCalculateTimer( &timer, &sec, &nanoSec );
+
+         fprintf( stderr, "%s - time = %d.%03d secs, \n",
+                  "Ok! We got our expected error",
+                  sec,
+                  nanoSec/1000/1000 );
+         g_data->exitFlag = 1;
          vdscReleaseThreadLock( &g_data->lock );
-         assert( THIS_ASSERT_IS_OK == 1 ); /* Crash it! */
+         fprintf( stderr, "Thread #%d, Number of loops = %lu\n", 
+                  identifier, loop );
+         pThread->returnCode = 1;
+         return;
       }
       
-      if ( (loop%FAILURE_RATE) != 0 )
+      if ( (loop%DEFAULT_FAILURE_RATE) != 0 )
          vdscReleaseThreadLock( &g_data->lock );
+
+      if ( g_data->exitFlag == 1 )
+         break;
       
       loop++;
       
-      vdscEndTimer( &timer );
-      vdscCalculateTimer( &timer, &sec, &nanoSec );
+      if ( (loop%CHECK_TIMER) != 0 )
+      {
+         vdscEndTimer( &timer );
+         vdscCalculateTimer( &timer, &sec, &nanoSec );
 
-      elapsedTime = sec*US_PER_SEC + nanoSec/1000;
-      if ( elapsedTime > g_maxTime )
-         break;
+         elapsedTime = sec*US_PER_SEC + nanoSec/1000;
+         if ( elapsedTime > g_maxTime )
+            break;
+      }
    }
    
    printf( "Thread #%d, Number of loops = %lu\n", identifier, loop );
+   pThread->returnCode = 0;
 
    return;
 }
@@ -140,21 +160,104 @@ int main( int argc, char* argv[] )
    char filename[PATH_MAX];
    int errcode;
    vdscErrorHandler errorHandler;
-   int i, identifier[TEST_MAX_THREADS];
-   vdstThreadWrap threadWrap[TEST_MAX_THREADS];
-   char msg[MAX_MSG] = "";
+   int i, *identifier, numThreads;
+   vdstThreadWrap *threadWrap;
+   bool foundError = false;
+   vdscOptionHandle handle;
+   char *argument;
+   struct vdscOptStruct opts[5] = 
+      { 
+         'f', "filename",   1, "memoryFile",    "Filename for shared memory",
+         'm', "mode",       1, "lockMode",      "Set this to 'try' for testing TryAcquire",
+         'n', "numThreads", 1, "numThreads", "Number of threads",
+         'r', "rate",       1, "rateOfFailure", "Inverse rate: 1000 means a rate of 0.1%",
+         't', "time",       1, "timeInSecs",    "Time to run the tests"
+      };
    
-   if ( argc < 3 )
-      ERROR_EXIT( expectedToPass, NULL, );
-
    vdscInitErrorDefs();
-
-   g_maxTime = strtol( argv[1], NULL, 0 );
-   g_maxTime *= US_PER_SEC;
-  
    vdscInitErrorHandler( &errorHandler );
 
-   errcode = vdstInitBarrier( &g_barrier, TEST_MAX_THREADS, &errorHandler );
+   errcode = vdscSetSupportedOptions( 4, opts, &handle );
+   if ( errcode != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   errcode = vdscValidateUserOptions( handle, argc, argv, 1 );
+   if ( errcode < 0 )
+   {
+      vdscShowUsage( handle, "LockConcurrency", "" );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( errcode > 0 )
+   {
+      vdscShowUsage( handle, "LockConcurrency", "" );
+      return 0;
+   }
+
+   if ( vdscGetShortOptArgument( handle, 'n', &argument ) )
+   {
+      numThreads = atoi( argument );
+      if ( numThreads < 2 )
+      {
+         fprintf( stderr, "Number of childs must be >= to two\n" );
+         ERROR_EXIT( expectedToPass, NULL, ; );
+      }      
+   }
+   else
+      numThreads = DEFAULT_NUM_THREADS;
+
+   if ( vdscGetShortOptArgument( handle, 'r', &argument ) )
+   {
+      g_failureRate = strtol( argument, NULL, 0 );
+      if ( g_failureRate < 1 )
+      {
+         fprintf( stderr, "Failure rate must be positive\n" );
+         ERROR_EXIT( expectedToPass, NULL, ; );
+      }      
+   }
+   else
+      g_failureRate = DEFAULT_FAILURE_RATE;
+
+   if ( vdscGetShortOptArgument( handle, 't', &argument ) )
+   {
+      g_maxTime = strtol( argument, NULL, 0 );
+      if ( g_maxTime < 1 )
+      {
+         fprintf( stderr, "Time of test must be positive\n" );
+         ERROR_EXIT( expectedToPass, NULL, ; );
+      }      
+   }
+   else
+      g_maxTime = DEFAULT_TIME; /* in seconds */
+  
+   if ( vdscGetShortOptArgument( handle, 'm', &argument ) )
+   {
+      if ( strcmp( argument, "try" ) == 0 )
+         g_tryMode = true;
+   }
+   
+   if ( vdscGetShortOptArgument( handle, 'f', &argument ) )
+   {
+      strncpy( filename, argument, PATH_MAX );
+      if ( filename[0] == '\0' )
+      {
+         fprintf( stderr, "Empty memfile name\n" );
+         ERROR_EXIT( expectedToPass, NULL, ; );
+      }
+   }
+   else
+      strcpy( filename, "Memfile.mem" );
+
+   g_maxTime *= US_PER_SEC;
+   identifier = (int*) malloc( numThreads*sizeof(int));
+   if ( identifier == NULL )
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
+   memset( identifier, 0, numThreads*sizeof(int) );
+   threadWrap = (vdstThreadWrap*) malloc(numThreads*sizeof(vdstThreadWrap));
+   if ( threadWrap == NULL )
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
+   memset( threadWrap, 0, numThreads*sizeof(vdstThreadWrap) );
+   
+   errcode = vdstInitBarrier( &g_barrier, numThreads, &errorHandler );
    if ( errcode < 0 )
       ERROR_EXIT( expectedToPass, &errorHandler, );
    
@@ -176,7 +279,7 @@ int main( int argc, char* argv[] )
    if ( errcode < 0 )
       ERROR_EXIT( expectedToPass, NULL, );
    
-   for ( i = 0; i < TEST_MAX_THREADS; ++i )
+   for ( i = 0; i < numThreads; ++i )
    {
       identifier[i] = i+1;
       errcode = vdstCreateThread( &threadWrap[i], 
@@ -187,13 +290,18 @@ int main( int argc, char* argv[] )
          ERROR_EXIT( expectedToPass, &errorHandler, );
    }
 
-   for ( i = 0; i < TEST_MAX_THREADS; ++i )
+   for ( i = 0; i < numThreads; ++i )
    {
-      errcode = vdstJoinThread( &threadWrap[i], NULL, &errorHandler );
+      errcode = vdstJoinThread( &threadWrap[i], &errorHandler );
       if ( errcode < 0 )
          ERROR_EXIT( expectedToPass, &errorHandler, );
+      if ( threadWrap[i].returnCode != 0 )
+         foundError = true;
    }
    
+   if ( ! foundError )
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
+
    vdscFiniMemoryFile( &g_memFile );
    vdstFiniBarrier( &g_barrier );
    vdscFiniErrorHandler( &errorHandler );
