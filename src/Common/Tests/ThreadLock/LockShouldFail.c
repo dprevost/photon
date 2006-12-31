@@ -77,29 +77,21 @@ bool              g_tryMode = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void * worker( void* arg )
+int worker( void* arg )
 {
-   pid_t pid;
    unsigned long sec, nanoSec;
    vdscTimer timer;
-   
-   vdstThreadWrap* pThread = (vdstThreadWrap*) arg;
    int identifier;
    unsigned long elapsedTime = 0;
    unsigned long loop = 0;
-   int errcode;
-   int THIS_ASSERT_IS_OK = 0;
-   
-   identifier = *((int*)pThread->arg);
-
-   vdscInitTimer( &timer );   
-
-   vdstBarrierWait( &g_barrier );
-   
-   vdscBeginTimer( &timer );
-
    char dum3[100];
    int dumId;
+   
+   identifier = *((int*)arg);
+
+   vdscInitTimer( &timer );   
+   vdstBarrierWait( &g_barrier );
+   vdscBeginTimer( &timer );
   
    while ( 1 )
    {      
@@ -120,11 +112,11 @@ void * worker( void* arg )
                   sec,
                   nanoSec/1000/1000 );
          g_data->exitFlag = 1;
-         vdscReleaseThreadLock( &g_data->lock );
+         if ( (loop%DEFAULT_FAILURE_RATE) != 0 )
+            vdscReleaseThreadLock( &g_data->lock );
          fprintf( stderr, "Thread #%d, Number of loops = %lu\n", 
                   identifier, loop );
-         pThread->returnCode = 1;
-         return;
+         return 1;
       }
       
       if ( (loop%DEFAULT_FAILURE_RATE) != 0 )
@@ -147,9 +139,8 @@ void * worker( void* arg )
    }
    
    printf( "Thread #%d, Number of loops = %lu\n", identifier, loop );
-   pThread->returnCode = 0;
 
-   return;
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -169,7 +160,7 @@ int main( int argc, char* argv[] )
       { 
          'f', "filename",   1, "memoryFile",    "Filename for shared memory",
          'm', "mode",       1, "lockMode",      "Set this to 'try' for testing TryAcquire",
-         'n', "numThreads", 1, "numThreads", "Number of threads",
+         'n', "numThreads", 1, "numThreads",    "Number of threads",
          'r', "rate",       1, "rateOfFailure", "Inverse rate: 1000 means a rate of 0.1%",
          't', "time",       1, "timeInSecs",    "Time to run the tests"
       };
@@ -177,7 +168,7 @@ int main( int argc, char* argv[] )
    vdscInitErrorDefs();
    vdscInitErrorHandler( &errorHandler );
 
-   errcode = vdscSetSupportedOptions( 4, opts, &handle );
+   errcode = vdscSetSupportedOptions( 5, opts, &handle );
    if ( errcode != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
@@ -259,25 +250,24 @@ int main( int argc, char* argv[] )
    
    errcode = vdstInitBarrier( &g_barrier, numThreads, &errorHandler );
    if ( errcode < 0 )
-      ERROR_EXIT( expectedToPass, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
    
-   strcpy( filename, argv[2] );
    vdscInitMemoryFile( &g_memFile, 10, filename );
 
    errcode = vdscCreateBackstore( &g_memFile, 0644, &errorHandler );
    if ( errcode < 0 )
-      ERROR_EXIT( expectedToPass, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
 
    errcode = vdscOpenMemFile( &g_memFile, &ptr, &errorHandler );
    if ( errcode < 0 )
-      ERROR_EXIT( expectedToPass, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
 
    memset( ptr, 0, 10000 );
    g_data = (struct localData*) ptr;
    
    errcode = vdscInitThreadLock( &g_data->lock );
    if ( errcode < 0 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    for ( i = 0; i < numThreads; ++i )
    {
@@ -287,14 +277,14 @@ int main( int argc, char* argv[] )
                                   (void*)&identifier[i],
                                   &errorHandler );
       if ( errcode < 0 )
-         ERROR_EXIT( expectedToPass, &errorHandler, );
+         ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
 
    for ( i = 0; i < numThreads; ++i )
    {
       errcode = vdstJoinThread( &threadWrap[i], &errorHandler );
       if ( errcode < 0 )
-         ERROR_EXIT( expectedToPass, &errorHandler, );
+         ERROR_EXIT( expectedToPass, &errorHandler, ; );
       if ( threadWrap[i].returnCode != 0 )
          foundError = true;
    }

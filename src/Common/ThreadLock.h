@@ -28,10 +28,11 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+VDSF_COMMON_EXPORT
 extern int g_timeOutinMilliSecs;
 
+VDSF_COMMON_EXPORT
 extern struct timespec g_timeOut;
-
 
 typedef struct vdscThreadLock
 {

@@ -33,8 +33,8 @@ INTDIR=.\Release
 OUTDIR_DEBUG=.\Debug
 INTDIR_DEBUG=.\Debug
 
-CFLAGS_DEBUG= $(CFLAGS) /nologo /MTd /W4 /I "../.." /I "../../.." /I "../../../.." /I "../../../Tests" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
-CFLAGS_RELEASE= $(CFLAGS) /nologo /MT /W4 /O2 /I "../.." /I "../../.." /I "../../../.." /I "../../../Tests" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
+CFLAGS_DEBUG=   /nologo /MTd /W4     /I "../.." /I "../../.." /I "../../../.." /I "../../../Tests" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
+CFLAGS_RELEASE= /nologo /MT  /W4 /O2 /I "../.." /I "../../.." /I "../../../.." /I "../../../Tests" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
 
 .c{$(OUTDIR)}.exe:
 	$(CPP) $(CFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"

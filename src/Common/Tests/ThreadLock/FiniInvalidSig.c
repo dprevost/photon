@@ -23,19 +23,19 @@ const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
+int main()
 {
    int errcode;
    vdscThreadLock lock;
 
    errcode = vdscInitThreadLock( &lock );
    if ( errcode != 0 )
-      ERROR_EXIT( 0, NULL, );
+      ERROR_EXIT( 0, NULL, ; );
    
    lock.initialized = 0;
    vdscFiniThreadLock( &lock );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

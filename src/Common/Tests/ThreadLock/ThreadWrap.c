@@ -19,15 +19,35 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#if defined (WIN32)
+unsigned __stdcall vdstStartRoutine( void* arg )
+#else
+void * vdstStartRoutine( void* arg )
+#endif
+{
+   vdstThreadWrap* pThread = (vdstThreadWrap*) arg;
+
+   pThread->returnCode = pThread->startRoutine( pThread->arg );
+   
+#if defined(WIN32)
+   return 0;
+#else
+   return NULL;
+#endif
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdstCreateThread( vdstThreadWrap* pThread, 
-                      void *(*startRoutine)(void*),
+                      VDST_THREAD_FUNCTION startRoutine,
                       void* arg,
                       vdscErrorHandler* pError )
 {
-   int errcode = -1;
 #if defined (WIN32)
    HANDLE handle;
    unsigned threadId;
+#else
+   int errcode = -1;
 #endif
 
    VDS_PRE_CONDITION( pThread != NULL );
@@ -35,11 +55,12 @@ int vdstCreateThread( vdstThreadWrap* pThread,
 
    pThread->arg = arg;
    pThread->returnCode = 0;
+   pThread->startRoutine = startRoutine;
    
 #if defined (WIN32)
    handle = (HANDLE) _beginthreadex( NULL, /* Default sec. attributes */
                                      0,    /* Default stack size */
-                                     &startRoutine,
+                                     &vdstStartRoutine,
                                      (void*)pThread,
                                      0, /* Thread does not start suspended */
                                      &threadId );
@@ -75,7 +96,7 @@ int vdstJoinThread( vdstThreadWrap* pThread,
                     vdscErrorHandler* pError )
 {
 #if defined (WIN32)
-   DWORD err, value;
+   DWORD err;
 
    err = WaitForSingleObject( pThread->hThread, INFINITE );
    if ( err == WAIT_OBJECT_0 )

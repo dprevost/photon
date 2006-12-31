@@ -76,7 +76,7 @@ vdscTryAcquireThreadLock( vdscThreadLock* pLock,
       
       for ( i = 0; i < iterations; ++i )
       {
-         nanosleep( &g_timeOut, NULL );
+         Sleep( g_timeOutinMilliSecs );
 
          status = TryEnterCriticalSection( &pLock->mutex );
          if ( status == TRUE )

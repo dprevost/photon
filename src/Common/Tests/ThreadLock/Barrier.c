@@ -165,9 +165,7 @@ void vdstFiniBarrier( vdstBarrier * pBarrier )
 
 void vdstBarrierWait( vdstBarrier * pBarrier )
 {
-#if defined (WIN32)
-   BOOL status;
-#else
+#if ! defined (WIN32)
    int status;      
 #endif
    struct vdstSubBarrier* pCurrentSub;
@@ -205,8 +203,8 @@ void vdstBarrierWait( vdstBarrier * pBarrier )
        * Note: currentSubBarrier was modified - it does not point
        * to the current barrier anymore).
        */
-      ResetEvent(pBarrier->subBarrier[pBarrier->currentSubBarrier]);
-      SetEvent( pBarrier->waitEvent ); 
+      ResetEvent(pBarrier->subBarrier[pBarrier->currentSubBarrier].waitEvent);
+      SetEvent( pBarrier->subBarrier[1-pBarrier->currentSubBarrier].waitEvent ); 
 #else
       status = pthread_cond_broadcast( &pCurrentSub->waitVar );
       VDS_POST_CONDITION( status == 0 );
@@ -215,7 +213,7 @@ void vdstBarrierWait( vdstBarrier * pBarrier )
    else
    {
 #if defined (WIN32)
-      WaitForSingleObject(pBarrier->waitEvent, INFINITE);
+      WaitForSingleObject(pBarrier->subBarrier[pBarrier->currentSubBarrier].waitEvent, INFINITE);
 #else
       while ( pCurrentSub->numRunners != pBarrier->numThreads )
          pthread_cond_wait( &pCurrentSub->waitVar, &pCurrentSub->waitLock );

@@ -42,40 +42,31 @@ struct localData
    char dum2[250];
 };
 
-bool g_tryMode = false;
-vdscMemoryFile g_memFile;
+bool              g_tryMode = false;
+vdscMemoryFile    g_memFile;
 struct localData *g_data = NULL;
-unsigned long g_maxTime = 0;
-vdstBarrier g_barrier;
-
-#define TEST_MAX_THREADS 4
-#define MAX_MSG 100
+unsigned long     g_maxTime = 0;
+vdstBarrier       g_barrier;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void * worker( void* arg )
+int worker( void* arg )
 {
-   pid_t pid;
    unsigned long sec, nanoSec;
-   vdscTimer timer;
-   
-   vdstThreadWrap* pThread = (vdstThreadWrap*) arg;
+   vdscTimer timer;   
    int identifier;
    unsigned long elapsedTime = 0;
    unsigned long loop = 0;
    int errcode;
-   
-   identifier = *((int*)pThread->arg);
-
-   vdscInitTimer( &timer );
-   
-   vdstBarrierWait( &g_barrier );
-   
-   vdscBeginTimer( &timer );
-
    char dum3[100];
    int dumId;
-  
+   
+   identifier = *((int*)arg);
+
+   vdscInitTimer( &timer );
+   vdstBarrierWait( &g_barrier );
+   vdscBeginTimer( &timer );
+   
    while ( 1 )
    {      
       if ( g_tryMode )
@@ -97,8 +88,7 @@ void * worker( void* arg )
                   dumId, g_data->dum1, g_data->dum2 );
          g_data->exitFlag = 1;
          vdscReleaseThreadLock( &g_data->lock );
-         pThread->returnCode = 1;
-         return;
+         return 1;
       }
       
       vdscReleaseThreadLock( &g_data->lock );
@@ -119,9 +109,8 @@ void * worker( void* arg )
       }
    }
    printf( "Thread #%d, Number of loops = %lu\n", identifier, loop );
-   pThread->returnCode = 0;
    
-   return;
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -134,7 +123,6 @@ int main( int argc, char* argv[] )
    vdscErrorHandler errorHandler;
    int i, *identifier;
    vdstThreadWrap *threadWrap;
-   char msg[MAX_MSG] = "";
    int numThreads = 0;
    
    vdscOptionHandle handle;
@@ -218,7 +206,7 @@ int main( int argc, char* argv[] )
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    memset( threadWrap, 0, numThreads*sizeof(vdstThreadWrap) );
       
-   errcode = vdstInitBarrier( &g_barrier, TEST_MAX_THREADS, &errorHandler );
+   errcode = vdstInitBarrier( &g_barrier, numThreads, &errorHandler );
    if ( errcode < 0 )
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    

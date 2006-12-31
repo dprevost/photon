@@ -46,6 +46,8 @@ BEGIN_C_DECLS
  
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+typedef int (*VDST_THREAD_FUNCTION)(void*);
+
 typedef struct vdstThreadWrap
 {
 #if defined (WIN32)
@@ -56,6 +58,9 @@ typedef struct vdstThreadWrap
    pthread_t threadId;
 #endif
 
+   /** Address of the routine to be executed */
+   VDST_THREAD_FUNCTION startRoutine;
+   
    /** Argument to the thread */
    void* arg;
 
@@ -66,10 +71,10 @@ typedef struct vdstThreadWrap
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdstCreateThread( vdstThreadWrap*   pThread, 
-                      void *(*start_routine)(void*),
-                      void*             arg,
-                      vdscErrorHandler* pError );
+int vdstCreateThread( vdstThreadWrap*      pThread, 
+                      VDST_THREAD_FUNCTION startRoutine,
+                      void*                arg,
+                      vdscErrorHandler*    pError );
 
 int vdstJoinThread( vdstThreadWrap*   pThread, 
 //                    void*             retValue,

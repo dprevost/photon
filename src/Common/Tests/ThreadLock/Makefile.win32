@@ -1,0 +1,75 @@
+# Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+include ..\Makefile.inc.Win32
+
+all: 
+
+CLEANFILES = *~ 
+check_PROGRAMS =                                    \
+                 .\Release\AcquireInvalidSig.exe    \
+                 .\Release\AcquireNullLock.exe      \
+                 .\Release\AcquirePass.exe          \
+                 .\Release\FiniInvalidSig.exe       \
+                 .\Release\FiniNullLock.exe         \
+                 .\Release\FiniPass.exe             \
+                 .\Release\InitNullLock.exe         \
+                 .\Release\InitPass.exe             \
+                 .\Release\LockTests.exe            \
+                 .\Release\ReleaseInvalidSig.exe    \
+                 .\Release\ReleaseNullLock.exe      \
+                 .\Release\ReleasePass.exe          \
+                 .\Release\TryAcqInvalidSig.exe     \
+                 .\Release\TryAcqNullLock.exe       \
+                 .\Release\TryAcqPass.exe           \
+                 .\Release\LockConcurrency.exe      \
+                 .\Release\LockShouldFail.exe       
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+
+# -----------------------------------------
+
+check: $(OUTDIR) $(check_PROGRAMS) 
+	python RunTests.py --path=Release
+
+.\Release\Barrier.obj: Barrier.h Barrier.c
+	$(CPP) /c $(CFLAGS_RELEASE) Barrier.c 
+   
+.\Release\ThreadWrap.obj: ThreadWrap.h ThreadWrap.c
+	$(CPP) /c $(CFLAGS_RELEASE) ThreadWrap.c 
+
+.\Debug\Barrier.obj: Barrier.h Barrier.c
+	$(CPP) /c $(CFLAGS_DEBUG) Barrier.c 
+   
+.\Debug\ThreadWrap.obj: ThreadWrap.h ThreadWrap.c
+	$(CPP) /c $(CFLAGS_DEBUG) ThreadWrap.c 
+
+.\Release\LockConcurrency.exe: .\Release\ThreadWrap.obj .\Release\Barrier.obj LockConcurrency.c
+	$(CPP) $(CFLAGS_RELEASE) LockConcurrency.c .\Release\ThreadWrap.obj .\Release\Barrier.obj /link $(LDD_FLAGS) /out:"$@"
+
+.\Debug\LockConcurrency.exe: .\Debug\ThreadWrap.obj .\Debug\Barrier.obj LockConcurrency.c
+	$(CPP) $(CFLAGS_DEBUG) LockConcurrency.c .\Debug\ThreadWrap.obj .\Debug\Barrier.obj /link $(LDD_FLAGS_DEBUG) /out:"$@"
+
+.\Release\LockShouldFail.exe: .\Release\ThreadWrap.obj .\Release\Barrier.obj LockShouldFail.c
+	$(CPP) $(CFLAGS_RELEASE) LockShouldFail.c .\Release\ThreadWrap.obj .\Release\Barrier.obj /link $(LDD_FLAGS) /out:"$@"
+
+.\Debug\LockShouldFail.exe: .\Debug\ThreadWrap.obj .\Debug\Barrier.obj LockShouldFail.c
+	$(CPP) $(CFLAGS_DEBUG) LockShouldFail.c .\Debug\ThreadWrap.obj .\Debug\Barrier.obj /link $(LDD_FLAGS_DEBUG) /out:"$@"
+
+checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	python RunTests.py --path=Debug
+
+clean: 
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+
