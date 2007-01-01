@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -74,7 +74,7 @@ int vdstCreateThread( vdstThreadWrap* pThread,
    
 #else
    errcode = pthread_create ( &pThread->threadId, 
-                              NULL, startRoutine, (void*)pThread );
+                              NULL, vdstStartRoutine, (void*)pThread );
 
    if ( errcode != 0 )
    {
