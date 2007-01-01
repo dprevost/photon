@@ -1,0 +1,112 @@
+###########################################################################
+#
+# Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+###########################################################################
+#
+# Defines the main macros.
+#
+###########################################################################
+
+!IF "$(OS)" == "Windows_NT"
+NULL=
+!ELSE 
+NULL=nul
+!ENDIF 
+
+LINK32=link.exe
+
+OUTDIR_RELEASE = .\Release
+INTDIR_RELEASE = .\Release
+OUTDIR_DEBUG   = .\Debug
+INTDIR_DEBUG   = .\Debug
+
+CLEANFILES = *~ 
+
+W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib
+
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\vdsfCommon.dll" /implib:"$(OUTDIR_RELEASE)\vdsfCommon.lib"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\vdsfCommond.dll"  /implib:"$(OUTDIR_DEBUG)\vdsfCommond.lib"
+
+CFLAGS_RELEASE=/nologo /MT  /W4 /O2     /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /D "BUILD_VDSF_COMMON" /Fo"$(INTDIR_RELEASE)\\"     /c 
+CFLAGS_DEBUG  =/nologo /MTd /W4 /ZI /Od /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /D "BUILD_VDSF_COMMON" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
+
+OBJS_RELEASE= \
+	"$(INTDIR_RELEASE)\ConfigFile.obj" \
+	"$(INTDIR_RELEASE)\DirAccess.obj" \
+	"$(INTDIR_RELEASE)\ErrorHandler.obj" \
+	"$(INTDIR_RELEASE)\MemoryFile.obj" \
+	"$(INTDIR_RELEASE)\nanosleep.obj" \
+	"$(INTDIR_RELEASE)\Options.obj" \
+	"$(INTDIR_RELEASE)\ProcessLock.obj" \
+	"$(INTDIR_RELEASE)\strnlen.obj" \
+	"$(INTDIR_RELEASE)\ThreadLock.obj" \
+	"$(INTDIR_RELEASE)\Timer.obj"
+
+OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
+
+###########################################################################
+#
+# Defines the rules.
+#
+###########################################################################
+
+.c{$(INTDIR_RELEASE)}.obj::
+	$(CPP) $(CFLAGS_RELEASE) $< 
+
+.c{$(INTDIR_DEBUG)}.obj::
+	$(CPP) $(CFLAGS_DEBUG) $< 
+
+
+all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdsfCommon.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdsfCommond.dll
+
+"$(OUTDIR_RELEASE)\vdsfCommon.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
+   del ..\Release\vdsfCommon.dll
+	del ..\Release\vdsfCommon.lib
+	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
+   copy Release\vdsfCommon.dll ..\Release
+	copy Release\vdsfCommon.lib ..\Release
+
+"$(OUTDIR_DEBUG)\vdsfCommond.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
+   del ..\Debug\vdsfCommond.dll
+	del ..\Debug\vdsfCommond.lib
+	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
+   copy debug\vdsfCommond.dll ..\Debug
+	copy debug\vdsfCommond.lib ..\Debug
+
+###########################################################################
+#
+# The targets
+#
+###########################################################################
+
+check: all
+	cd Tests && nmake -f Makefile.win32 check && cd ..
+
+checkdebug: all
+	cd Tests && nmake -f Makefile.win32 checkdebug && cd ..
+
+"$(OUTDIR_RELEASE)" :
+	if not exist "$(OUTDIR_RELEASE)/$(NULL)" mkdir "$(OUTDIR_RELEASE)"
+
+"$(OUTDIR_DEBUG)" :
+	if not exist "$(OUTDIR_DEBUG)/$(NULL)" mkdir "$(OUTDIR_DEBUG)"
+   
+clean: 
+	cd Tests && nmake -f Makefile.win32 clean && cd ..
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+
+
