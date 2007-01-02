@@ -27,13 +27,13 @@
 #include "VDSHandler.h"
 #include "LogMsg.h"
 #include "ConfigFile.h"
+#include "ErrorHandler.h"
 
 #define PROG_NAME "vdswd"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #define WD_SHUTDOWN_REQUEST 0X001
-//#define WD_SHUTDOWN_REQUEST X001
 
 #define WD_MSG_LEN 512
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -147,11 +147,11 @@ public:
    VdsAcceptor m_acceptor;
 
    /// Send messages to system log facility once stderr is not available
-   VdsLogMsg   m_log;
+   VdsLogMsg  m_log;
    
    VdsHandler m_vds;
 
-   vdscErrorHandler errorHandler;
+   vdscErrorHandler m_errorHandler;
    
 private:
 

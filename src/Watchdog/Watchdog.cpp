@@ -64,12 +64,17 @@ VdsWatchdog::VdsWatchdog()
      m_log            ( PROG_NAME )
 {
    memset( &m_params, 0, sizeof m_params );
+
+   vdscInitErrorDefs();
+   vdscInitErrorHandler( &m_errorHandler );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 VdsWatchdog::~VdsWatchdog()
 {
+   vdscFiniErrorHandler( &m_errorHandler );
+   vdscFiniErrorDefs();
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -373,8 +378,7 @@ int VdsWatchdog::ReadConfig( const char* cfgname )
    int errcode;
    const char* missing;
 
-   vdscInitErrorHandler( &errorHandler );
-   errcode = vdscReadConfig( cfgname, &m_params, &missing, &errorHandler );
+   errcode = vdscReadConfig( cfgname, &m_params, &missing, &m_errorHandler );
    if ( errcode != 0 )
    {
       memset( m_errorMsg, 0, WD_MSG_LEN );
@@ -382,9 +386,9 @@ int VdsWatchdog::ReadConfig( const char* cfgname )
       {
          sprintf( m_errorMsg, "%s%d%s",
                   "Error reading config file, error code = ", 
-                  errorHandler.errorCode[0],
+                  vdscGetLastError( &m_errorHandler ),
                   ", error message = " );
-         vdscGetErrorMsg( &errorHandler, m_errorMsg, WD_MSG_LEN );
+         vdscGetErrorMsg( &m_errorHandler, m_errorMsg, WD_MSG_LEN );
       }  
       else
          sprintf( m_errorMsg, "%s%s",

@@ -54,6 +54,7 @@ void
 VdsHandler::HandleCrash( pid_t pid )
 {
    int errcode;
+#if 0   
    CleanupProcess* pProcess = NULL;
    vdseSessionContext context;
    CleanupSession* pFirstSession = NULL;
@@ -127,6 +128,7 @@ VdsHandler::HandleCrash( pid_t pid )
    {
       // log it
    }
+#endif // #if 0
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

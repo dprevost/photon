@@ -25,6 +25,7 @@
 
 #include "WatchdogCommon.h"
 #include "Watchdog.h"
+#include "Options.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -34,87 +35,95 @@ int main( int argc, char *argv[] )
    VdsWatchdog::g_pWD = &wDog;
    int errcode = 0;
    
-   if ( argc < 2 )
+   vdscOptionHandle optHandle;
+   char *optArgument;
+#if defined (WIN32)
+   struct vdscOptStruct opts[4] = 
+      { 
+         'c', "config",  0, "filename", "Filename for the configuration options",
+         'i', "install", 1, "",         "Install the program as a NT service (Windows only)",
+         't', "test",    1, "",         "Test the config file and exit",
+         'u', "time",    1, "",         "Uninstall the program as a NT service (Windows only)"
+      };
+   errcode = vdscSetSupportedOptions( 4, opts, &optHandle );
+#else
+   struct vdscOptStruct opts[3] = 
+      { 
+         'c', "config", 0, "filename", "Filename for the configuration options",
+         'd', "daemon", 1, "",         "Run the program as a Unix daemon (Unix/linux only)",
+         't', "test",   1, "",         "Test the config file and exit"
+      };
+   errcode = vdscSetSupportedOptions( 3, opts, &optHandle );
+#endif
+   if ( errcode != 0 )
+      return 1;
+
+   errcode = vdscValidateUserOptions( optHandle, argc, argv, 1 );
+   if ( errcode < 0 )
    {
-      wDog.Help( argv[0] );
-      return -1;
+      vdscShowUsage( optHandle, argv[0], "" );
+      return 1;
    }
-   
-   if ( strcmp( argv[1], "--help" ) == 0 || strcmp( argv[1], "-h" ) == 0 )
+   if ( errcode > 0 )
    {
-      wDog.Help( argv[0] );
+      vdscShowUsage( optHandle, argv[0], "" );
       return 0;
    }
 
-   if (strcmp( argv[1], "--uninstall" ) == 0 || strcmp( argv[1], "-u" ) == 0)
+   if ( vdscGetShortOptArgument( optHandle, 'c', &optArgument ) )
    {
+      errcode = wDog.ReadConfig( optArgument );
+      if ( errcode != 0 )
+      {
+         fprintf( stderr, "%s\n", wDog.GetErrorMsg() );
+
+         return errcode;
+      }
+   }
+   else
+      /* Should be unreachable */
+      VDS_ASSERT( 0 == 1 );
+
+   // In test mode, we test the config file and exit.
+   if ( vdscIsShortOptPresent( optHandle, 't' ) )
+      return 0;
+   
 #if defined ( WIN32 )
+   if ( vdscIsShortOptPresent( optHandle, 'i' ) )
+   {
+      errcode = wDog.Instal();
+      if ( errcode != 0 )
+         return errcode;
+      return 0;
+   }
+   
+   if ( vdscIsShortOptPresent( optHandle, 'u' ) )
+   {
       errcode = wDog.Uninstall();
       if ( errcode != 0 )
          return errcode;
       return 0;
+   }
 #else
-      fprintf( stderr, "This option is only valid on Windows\n" );
-      return -1;
-   }
-#endif
-
-   // From now on, a config file is needed - we test the last argv for a
-   // leading '-' just in case.
-   if ( argv[argc-1][0] == '-' )
+   if ( vdscIsShortOptPresent( optHandle, 'd' ) )
    {
-      wDog.Help( argv[0] );
-      return -1;
-   }
-
-   errcode = wDog.ReadConfig( argv[argc-1] );
-   if ( errcode != 0 )
-   {
-      fprintf( stderr, "%s\n", wDog.GetErrorMsg() );
-
-      return errcode;
-   }
-   
-   if ( strcmp( argv[1], "--install" ) == 0 || strcmp( argv[1], "-i" ) == 0 )
-   {
-#if defined ( WIN32 )
-      errcode = wDog.Install();
-      if ( errcode != 0 )
-         return errcode;
-      return 0;
-#else
-      fprintf( stderr, "This option is only valid on Windows\n" );
-      return -1;
-   }
-#endif
-
-   if ( strcmp( argv[1], "--daemon" ) == 0 || strcmp( argv[1], "-d" ) == 0 )
-   {
-#if defined ( WIN32 )
-      fprintf( stderr, "This option is only valid on Unix/linux\n" );
-      return -1;
-#else
       errcode = wDog.Daemon();
       if ( errcode != 0 )
          return errcode;
    }
 #endif
 
-   // In test mode, we test the config file and exit.
-   if ( strcmp( argv[1], "--test" ) != 0 )
+   errcode = wDog.InitializeVDS();
+   if ( errcode != 0 )
    {
-      errcode = wDog.InitializeVDS();
-      if ( errcode != 0 )
-      {
-         return errcode;
-      }
-
-      /*
-       * This is the main loop. If using Windows NT services, this loop
-       * is called by the Service Control Manager (SCM) directly.
-       */
-      VdsWatchdog::Run();
+      return errcode;
    }
+
+   /*
+    * This is the main loop. If using Windows NT services, this loop
+    * is called by the Service Control Manager (SCM) directly.
+    */
+   VdsWatchdog::Run();
    
    return 0;
 }
