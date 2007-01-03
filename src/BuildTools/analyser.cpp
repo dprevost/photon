@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -51,7 +51,6 @@ string analyser::GetComment( string::size_type startComment,
 {
    string::size_type i;
    string s, s1;
-   char c = 0, old_c = 0;
    
    if ( startComment == string::npos )
       return s;
@@ -119,7 +118,7 @@ string analyser::GetComment( string::size_type startComment,
       i++;
    }
    
-   s.clear();
+   s.resize(0);
 
    // Trim white space (remove it from the beginning the end and everywhere
    // there is more than one occurence).
@@ -156,7 +155,6 @@ void analyser::GetEnumValue( string::size_type startToken,
    string s;
    const char* str;
    char* endStr;
-   int i;
    
    GetNextToken( startToken, enumName );
 
@@ -228,7 +226,7 @@ string::size_type analyser::GetNextToken(
    string::size_type i;
    string::size_type beginToken = string::npos;
 
-   tokenString.clear();
+   tokenString.resize(0);
    
    // Find the first "non-space" character.
    for ( i = startSearch; i < m_stripData.length(); ++i )
@@ -265,8 +263,7 @@ void analyser::ProcessInput()
    string::size_type location;
    
    string s;
-   bool found = false;
-   bool commentsBeforeCode;
+//   bool found = false;
    
    CreatePattern(  m_inputData, m_pattern )  ;
 
@@ -496,8 +493,8 @@ void analyser::CreatePattern( const string& line,
    // We recursively called ourselves until we've analysed the whole string.
    if ( unfinished != string::npos )
    {
-      string tmp1( line, unfinished );
-      string tmp2( pattern, unfinished );
+      string tmp1( line,    unfinished, line.length()-unfinished );
+      string tmp2( pattern, unfinished, line.length()-unfinished );
       CreatePattern( tmp1, tmp2 );
       pattern.replace( unfinished, tmp2.length(), tmp2 );
    }
@@ -658,7 +655,7 @@ void analyser::ParseEnum( string::size_type startSearch,
    string s;
    string enumName;
    
-   while ( true )
+   for ( ;; )
    {
       nextLocation = IdentifyElements( currentLocation,
                                        endSearch,
@@ -695,7 +692,7 @@ void analyser::StripComments()
    bool textMode = true;
    string::size_type i;
    
-   m_stripData.clear();
+   m_stripData.resize(0);
 
    if ( m_pattern.length() == 0 ) return;
 

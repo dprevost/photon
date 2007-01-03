@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -87,7 +87,7 @@ void outputFiles::OpenFiles( const char* filenamePrefix,
    else 
       offset++;
    
-   for ( int i = offset; i < strlen( filenamePrefix ); ++i )
+   for ( unsigned int i = offset; i < strlen( filenamePrefix ); ++i )
    {
       if ( isalnum(filenamePrefix[i]) )
          m_ifdefname += toupper(filenamePrefix[i]);
@@ -114,8 +114,8 @@ void outputFiles::Write( const char* inFilename, const char* prefix )
    WriteHeader( m_stream_h, inFilename );
    WriteHeader( m_stream_c, inFilename );
    
-   for ( string::size_type i = 0; i < stringPrefix.length(); ++i )
-      upperPrefix += toupper(stringPrefix[i]);
+   for ( string::size_type j = 0; j < stringPrefix.length(); ++j )
+      upperPrefix += toupper(stringPrefix[j]);
    
    //
    // Write a few basic things to the generated header file

@@ -482,11 +482,12 @@ extern char *new_ctime_r( const time_t *timep, char *buf, int buflen );
  *  since many C compilers will handle the new bool type of C. But...
  */
 
-#if !defined (HAVE__BOOL)
+#ifndef __cplusplus
+#  if !defined (HAVE__BOOL)
 enum boolvals { false, true };
 typedef enum boolvals bool;
+#  endif
 #endif
-
 
 #if defined (WIN32)
 #  define VDS_INVALID_HANDLE (NULL)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -36,15 +36,22 @@ void inputHeader::GetData( std::string& s )
 {
    std::string tmp;
    int lineCounter = 0;
-   
-   s.clear(); // Just to be safe.
+#if defined (WIN32)
+   char tmpLine[10000];
+#endif
+
+   s.resize(0); // Just to be safe.
    
    while ( true )
    {
       lineCounter++;
-      tmp.clear();
+      tmp.resize(0);
+#if defined (WIN32)
+      m_stream.getline( tmpLine, 10000 );
+      tmp = tmpLine;
+#else
       std::getline( m_stream, tmp );
-
+#endif
       if ( ! m_stream.good() )
       {
          if ( m_stream.eof() )
