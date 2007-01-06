@@ -19,17 +19,21 @@
 all:
 	cd Common     && nmake -f Makefile.win32 && cd ..
 	cd BuildTools && nmake -f Makefile.win32 && cd ..
+	cd Engine     && nmake -f Makefile.win32 && cd ..
    
 check:
 	cd Common     && nmake -f Makefile.win32 check && cd ..
 	cd BuildTools && nmake -f Makefile.win32 check && cd ..
+	cd Engine     && nmake -f Makefile.win32 check && cd ..
 
 checkdebug: 
 	cd Common     && nmake -f Makefile.win32 checkdebug && cd ..
 	cd BuildTools && nmake -f Makefile.win32 checkdebug && cd ..
+	cd Engine     && nmake -f Makefile.win32 checkdebug && cd ..
 
 clean: 
 	cd Common     && nmake -f Makefile.win32 clean && cd ..
 	cd BuildTools && nmake -f Makefile.win32 clean && cd ..
+	cd Engine     && nmake -f Makefile.win32 clean && cd ..
 
 

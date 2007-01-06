@@ -119,17 +119,6 @@ int main( int argc, char* argv[] )
       goto the_exit;
    }
    
-   
-//    if ( argc != 4 )
-//    {
-//       cerr << "Usage: " << argv[0] << " --test" << endl;
-//       cerr << "or" << endl;
-//       cerr << "Usage: " << argv[0] 
-//            << " inputfile output_prefix data_prefix" << endl;
-//       errcode = -1;
-//       goto the_exit;
-//    }
-
    try
    {
       input.OpenFile( inputFilename );

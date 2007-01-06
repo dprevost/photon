@@ -26,15 +26,15 @@ CLEANFILES = *~
 
 W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
 LDD_FLAGS = $(W32_SYS_LIBS) vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../../Release" 
-LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) vdsfCommond.lib /nologo /subsystem:console /machine:I386 /libpath:"../../../Debug" 
+LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../../Debug" 
 
 OUTDIR=.\Release
 INTDIR=.\Release
 OUTDIR_DEBUG=.\Debug
 INTDIR_DEBUG=.\Debug
 
-CFLAGS_DEBUG=   /nologo /MTd /W4     /I "../.." /I "../../.." /I "../../../.." /I "../../../Tests" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
-CFLAGS_RELEASE= /nologo /MT  /W4 /O2 /I "../.." /I "../../.." /I "../../../.." /I "../../../Tests" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
+CFLAGS_DEBUG=   /nologo /MDd /W4     /I "../.." /I "../../.." /I "../../../.." /I "../../../Tests" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
+CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I "../.." /I "../../.." /I "../../../.." /I "../../../Tests" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
 
 .c{$(OUTDIR)}.exe:
 	$(CPP) $(CFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"

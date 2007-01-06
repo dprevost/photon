@@ -33,22 +33,22 @@ CLEANFILES = *~
 
 W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\vdsfCommon.dll" /implib:"$(OUTDIR_RELEASE)\vdsfCommon.lib"
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\vdsfCommon.dll"   /implib:"$(OUTDIR_DEBUG)\vdsfCommon.lib"
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfCommon.lib /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\vdsfEngine.dll" /implib:"$(OUTDIR_RELEASE)\vdsfEngine.lib" /libpath:"..\Release"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfCommon.lib /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\vdsfEngine.dll"   /implib:"$(OUTDIR_DEBUG)\vdsfEngine.lib"   /libpath:"..\Debug"
 
-CFLAGS_RELEASE=/nologo /MD  /W4 /O2     /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /D "BUILD_VDSF_COMMON" /Fo"$(INTDIR_RELEASE)\\"     /c 
-CFLAGS_DEBUG  =/nologo /MDd /W4 /ZI /Od /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /D "BUILD_VDSF_COMMON" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
+CFLAGS_RELEASE=/nologo /MD  /W4 /O2     /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ENGINE_EXPORTS" /D "BUILD_VDSF_ENGINE" /Fo"$(INTDIR_RELEASE)\\"     /c 
+CFLAGS_DEBUG  =/nologo /MDd /W4 /ZI /Od /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ENGINE_EXPORTS" /D "BUILD_VDSF_ENGINE" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
 
 OBJS_RELEASE= \
-	"$(INTDIR_RELEASE)\ConfigFile.obj" \
-	"$(INTDIR_RELEASE)\DirAccess.obj" \
-	"$(INTDIR_RELEASE)\ErrorHandler.obj" \
-	"$(INTDIR_RELEASE)\MemoryFile.obj" \
-	"$(INTDIR_RELEASE)\Options.obj" \
-	"$(INTDIR_RELEASE)\ProcessLock.obj" \
-	"$(INTDIR_RELEASE)\strnlen.obj" \
-	"$(INTDIR_RELEASE)\ThreadLock.obj" \
-	"$(INTDIR_RELEASE)\Timer.obj"
+	"$(INTDIR_RELEASE)\Hash.obj" \
+	"$(INTDIR_RELEASE)\InitEngine.obj" \
+	"$(INTDIR_RELEASE)\LinkedList.obj" \
+	"$(INTDIR_RELEASE)\LogFile.obj" \
+	"$(INTDIR_RELEASE)\MemBitmap.obj" \
+	"$(INTDIR_RELEASE)\MemoryAllocator.obj" \
+	"$(INTDIR_RELEASE)\MemoryObject.obj" \
+	"$(INTDIR_RELEASE)\PageGroup.obj" \
+	"$(INTDIR_RELEASE)\VdsErrorHandler.obj"
 
 OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 
@@ -64,21 +64,24 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 .c{$(INTDIR_DEBUG)}.obj::
 	$(CPP) $(CFLAGS_DEBUG) $< 
 
-all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdsfCommon.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdsfCommon.dll
+all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdsfEngine.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdsfEngine.dll
 
-"$(OUTDIR_RELEASE)\vdsfCommon.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
-   del ..\Release\vdsfCommon.dll
-	del ..\Release\vdsfCommon.lib
+VdsErrorHandler.c VdsErrorHandler.h : ..\include\vdsf\vdsErrors.h
+	..\Release\errorParser -i ..\include\vdsf\vdsErrors.h -o VdsErrorHandler -p vdseErr
+
+"$(OUTDIR_RELEASE)\vdsfEngine.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
+   del ..\Release\vdsfEngine.dll
+	del ..\Release\vdsfEngine.lib
 	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
-   copy Release\vdsfCommon.dll ..\Release
-	copy Release\vdsfCommon.lib ..\Release
+   copy Release\vdsfEngine.dll ..\Release
+	copy Release\vdsfEngine.lib ..\Release
 
-"$(OUTDIR_DEBUG)\vdsfCommon.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
-   del ..\Debug\vdsfCommon.dll
-	del ..\Debug\vdsfCommon.lib
+"$(OUTDIR_DEBUG)\vdsfEngine.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
+   del ..\Debug\vdsfEngine.dll
+	del ..\Debug\vdsfEngine.lib
 	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
-   copy debug\vdsfCommon.dll ..\Debug
-	copy debug\vdsfCommon.lib ..\Debug
+   copy debug\vdsfEngine.dll ..\Debug
+	copy debug\vdsfEngine.lib ..\Debug
 
 ###########################################################################
 #
@@ -99,11 +102,12 @@ checkdebug: all
 	if not exist "$(OUTDIR_DEBUG)/$(NULL)" mkdir "$(OUTDIR_DEBUG)"
    
 clean: 
-	cd Tests && nmake -f Makefile.win32 clean && cd ..
+	rem cd Tests && nmake -f Makefile.win32 clean && cd ..
 	-@erase /Q Debug
 	-@rmdir /Q Debug
 	-@erase /Q Release
 	-@rmdir /Q Release
 	-@erase /Q $(CLEANFILES)
+   -@erase VdsErrorHandler.c VdsErrorHandler.h
 
 
