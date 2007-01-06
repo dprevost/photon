@@ -16,6 +16,8 @@ noinst_LTLIBRARIES   = libEngine.la
 
 libEngine_la_SOURCES =                   \
                        Engine.h          \
+                       InitEngine.c      \
+                       InitEngine.h      \
                        LinkedList.c      \
                        LinkedList.h      \
                        LinkedList.inl    \

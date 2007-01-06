@@ -19,8 +19,7 @@
 #define ENGINE_TEST_COMMON_H
 
 #include "Engine.h"
-#include "ErrorHandler.h"
-#include "VdsErrorHandler.h"
+#include "InitEngine.h"
 #include "PrintError.h"
 
 vdscErrMsgHandle g_vdsErrorHandle;
@@ -34,20 +33,15 @@ vdscErrMsgHandle g_vdsErrorHandle;
  
 void initTest( bool testIsExpectedToSucceed )
 {
-   vdscInitErrorDefs();
-
-   g_vdsErrorHandle = vdscAddErrorMsgHandler( "VDSF", vdseErrGetErrMessage );
-
-   if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER )
+   int errcode;
+   
+   errcode = vdseInitEngine();
+   if ( errcode != 0 )
    {
-      fprintf( stderr, "Error registring the error handler for VDS errors\n" );
-      fprintf( stderr, "The problem might be a lack of memory\n" );
-      /* We do the opposite of what a successful test should return to
-       * signal the issue. */
       if ( testIsExpectedToSucceed )
          exit(1);
       exit(0);
-   }
+   }      
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

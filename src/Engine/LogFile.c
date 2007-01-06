@@ -92,7 +92,7 @@ vdsErrors vdseLogTransaction( vdseLogFile*      logFile,
 #else
    t = time(NULL);
    localtime_r( &t, &formattedTime );
-   strftime( timeBuf, 30, "%a %b %e %H:%M:%S %Y''", formattedTime );
+   strftime( timeBuf, 30, "%a %b %e %H:%M:%S %Y''", &formattedTime );
 #endif
 
 /*   fprintf(stderr, " ctime: %d %d %s %s\n", t, errno, szTime, n ); */
