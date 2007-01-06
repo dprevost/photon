@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -516,7 +516,7 @@ vdsErrors vdseMemAllocStats( vdseMemAlloc*       pAlloc,
       *pNumberOfFrees    = pAlloc->numFreeCalls;
       *pCurrentAllocated = pAlloc->totalAllocPages*PAGESIZE;
       *pTotalFree        = 0;
-      *pMaxFree          = -1;
+      *pMaxFree          = 0;
 
 /*      struct bfhead * b = GET_FLINK( &pAlloc->freeList );
       while (b != &pAlloc->freeList)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -69,16 +69,32 @@ vdsErrors vdseLogTransaction( vdseLogFile*      logFile,
 {
    char msg[80];
    char timeBuf[30];
-   time_t t = time(NULL);
    int err;
-   
+#if defined (WIN32)
+   char tmpTime[9];
+#else
+   time_t t;
+   struct tm formattedTime;
+#endif
+
    VDS_PRE_CONDITION( pError  != NULL );
    VDS_PRE_CONDITION( logFile != NULL );
    VDS_INV_CONDITION( logFile->initialized == VDSE_LOGFILE_SIGNATURE );
    VDS_INV_CONDITION( logFile->handle != -1 );
    
    memset( timeBuf, '\0', 30 );
-   new_ctime_r( &t, timeBuf, 30 );
+
+#if defined (WIN32)
+   _strdate( timeBuf );
+   _strtime( tmpTime );
+   strcat( timeBuf, " " );
+   strcat( timeBuf, tmpTime );
+#else
+   t = time(NULL);
+   localtime_r( &t, &formattedTime );
+   strftime( timeBuf, 30, "%a %b %e %H:%M:%S %Y''", formattedTime );
+#endif
+
 /*   fprintf(stderr, " ctime: %d %d %s %s\n", t, errno, szTime, n ); */
 
    /* szTime already includes a \n - part of the return value for ::ctime */
@@ -109,6 +125,8 @@ vdsErrors vdseLogTransaction( vdseLogFile*      logFile,
 void vdseCloseLogFile( vdseLogFile*     logFile,
                        vdscErrorHandler* pError )
 {
+   int err;
+
    VDS_PRE_CONDITION( pError  != NULL );
    VDS_PRE_CONDITION( logFile != NULL );
    VDS_INV_CONDITION( logFile->initialized == VDSE_LOGFILE_SIGNATURE );
@@ -117,7 +135,7 @@ void vdseCloseLogFile( vdseLogFile*     logFile,
    {
       close( logFile->handle );
       logFile->handle = -1;
-      int err = unlink( logFile->filename );
+      err = unlink( logFile->filename );
       if ( err != 0 )
          fprintf( stderr, "Unlink error %d\n", errno );
    }

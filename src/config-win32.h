@@ -54,13 +54,13 @@
 #define HAVE_FCNTL_H 1
 
 /* Define to 1 if you have the `fdatasync' function. */
-#define HAVE_FDATASYNC 1
+#define HAVE_FDATASYNC 0
 
 /* Define to 1 if you have the `fork' function. */
 #define HAVE_FORK 1
 
 /* Define to 1 if you have the `fsync' function. */
-#define HAVE_FSYNC 1
+#define HAVE_FSYNC 0
 
 /* Define to 1 if you have the `getpid' function. */
 /* #define HAVE_GETPID 1 */
@@ -292,3 +292,5 @@
 /* Define to empty if the keyword `volatile' does not work. Warning: valid
    code using `volatile' can become incorrect without. Disable with care. */
 /* #undef volatile */
+
+#define SIZEOF_VOID_P 4

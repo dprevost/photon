@@ -1,7 +1,7 @@
 /* -*- c -*- */
 /* :mode=c:  - For jedit, previous line for emacs */
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -245,6 +245,8 @@ vdseLinkedListPeakNext( vdseLinkedList* pList,
                         vdseLinkNode*   pCurrent, 
                         vdseLinkNode**  ppNext )
 {
+   vdseLinkNode* pNext;
+
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
@@ -279,7 +281,7 @@ vdseLinkedListPeakNext( vdseLinkedList* pList,
    }
 #endif
 
-   vdseLinkNode* pNext = GET_PTR( pCurrent->nextOffset, vdseLinkNode );
+   pNext = GET_PTR( pCurrent->nextOffset, vdseLinkNode );
    if ( pNext == &pList->head )
       return LIST_END_OF_LIST;
    *ppNext = pNext;
@@ -296,6 +298,8 @@ vdseLinkedListPeakPrevious( vdseLinkedList* pList,
                             vdseLinkNode*   pCurrent, 
                             vdseLinkNode**  ppPrevious )
 {
+   vdseLinkNode* pPrevious;
+
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
@@ -330,7 +334,7 @@ vdseLinkedListPeakPrevious( vdseLinkedList* pList,
    }
 #endif
 
-   vdseLinkNode* pPrevious = GET_PTR( pCurrent->previousOffset, vdseLinkNode );
+   pPrevious = GET_PTR( pCurrent->previousOffset, vdseLinkNode );
    if ( pPrevious == &pList->head )
       return LIST_END_OF_LIST;
    *ppPrevious = pPrevious;
