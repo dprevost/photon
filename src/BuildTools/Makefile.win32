@@ -36,8 +36,8 @@ W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi3
 LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfCommon.lib  /nologo /version:0.1 /subsystem:console /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\errorParser.exe" /libpath:"..\Release" 
 LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfCommond.lib /nologo /version:0.1 /subsystem:console /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\errorParser.exe"   /libpath:"..\Debug" 
 
-CFLAGS_RELEASE = /nologo /MT /W3 /GX     /O2 /I "..\Common" /I ".." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_RELEASE)\\"     /c 
-CFLAGS_DEBUG   = /nologo /MTd /W3 /GX /ZI /Od /I "..\Common" /I ".." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" /GZ /c 
+CFLAGS_RELEASE = /nologo /MD /W3 /GX     /O2 /I "..\Common" /I ".." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_RELEASE)\\"     /c 
+CFLAGS_DEBUG   = /nologo /MDd /W3 /GX /ZI /Od /I "..\Common" /I ".." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" /GZ /c 
 
 OBJS_RELEASE= \
 	"$(INTDIR_RELEASE)\analyser.obj" \
