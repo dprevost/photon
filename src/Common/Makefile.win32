@@ -36,15 +36,14 @@ W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi3
 LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\vdsfCommon.dll" /implib:"$(OUTDIR_RELEASE)\vdsfCommon.lib"
 LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\vdsfCommond.dll"  /implib:"$(OUTDIR_DEBUG)\vdsfCommond.lib"
 
-CFLAGS_RELEASE=/nologo /MT  /W4 /O2     /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /D "BUILD_VDSF_COMMON" /Fo"$(INTDIR_RELEASE)\\"     /c 
-CFLAGS_DEBUG  =/nologo /MTd /W4 /ZI /Od /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /D "BUILD_VDSF_COMMON" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
+CFLAGS_RELEASE=/nologo /MD  /W4 /O2     /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /D "BUILD_VDSF_COMMON" /Fo"$(INTDIR_RELEASE)\\"     /c 
+CFLAGS_DEBUG  =/nologo /MDd /W4 /ZI /Od /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /D "BUILD_VDSF_COMMON" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
 
 OBJS_RELEASE= \
 	"$(INTDIR_RELEASE)\ConfigFile.obj" \
 	"$(INTDIR_RELEASE)\DirAccess.obj" \
 	"$(INTDIR_RELEASE)\ErrorHandler.obj" \
 	"$(INTDIR_RELEASE)\MemoryFile.obj" \
-	"$(INTDIR_RELEASE)\nanosleep.obj" \
 	"$(INTDIR_RELEASE)\Options.obj" \
 	"$(INTDIR_RELEASE)\ProcessLock.obj" \
 	"$(INTDIR_RELEASE)\strnlen.obj" \

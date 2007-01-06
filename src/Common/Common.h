@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -163,13 +163,17 @@ internationalization...
 #if HAVE_STRINGS_H
 #  include <strings.h>
 #endif
+
 #if HAVE_INTTYPES_H
 #  include <inttypes.h>
+#elif HAVE_STDINT_H
+#  include <stdint.h>
 #else
-#  if HAVE_STDINT_H
-#    include <stdint.h>
+#  if defined(WIN32)
+typedef DWORD uint32_t;
 #  endif
 #endif
+
 #if HAVE_UNISTD_H
 #  include <unistd.h>
 #endif

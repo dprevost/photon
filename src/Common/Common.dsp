@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W4 /GX /O2 /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /D "BUILD_VDSF_COMMON" /YX /FD /c
+# ADD CPP /nologo /MD /W4 /GX /O2 /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /D "BUILD_VDSF_COMMON" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -75,7 +75,7 @@ PostBuild_Cmds=copy Release\vdsfCommon.dll ..\Release	copy Release\vdsfCommon.li
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W4 /Gm /GX /ZI /Od /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /D "BUILD_VDSF_COMMON" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W4 /Gm /GX /ZI /Od /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /D "BUILD_VDSF_COMMON" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x1009 /d "_DEBUG"
@@ -116,10 +116,6 @@ SOURCE=.\ErrorHandler.c
 # Begin Source File
 
 SOURCE=.\MemoryFile.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\nanosleep.c
 # End Source File
 # Begin Source File
 

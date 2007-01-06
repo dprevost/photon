@@ -24,6 +24,9 @@
 */
 
 extern char *new_asctime_r( const struct tm *, char *, int );
+extern struct tm *
+localtime_r( const time_t * const timep,
+             struct tm *          tm );
 
 char *
 new_ctime_r (const time_t *timep, char *buf, int buflen)
