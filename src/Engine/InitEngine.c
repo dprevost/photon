@@ -13,6 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
+#include "InitEngine.h"
 #include "ErrorHandler.h"
 #include "VdsErrorHandler.h"
 

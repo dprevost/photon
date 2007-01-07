@@ -1,0 +1,99 @@
+# Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+include ..\Makefile.inc.Win32
+
+all: 
+
+CLEANFILES = *~ 
+
+check_PROGRAMS =                                          \
+                 .\Release\FiniInvSig.exe                 \
+                 .\Release\FiniNullList.exe               \
+                 .\Release\FiniPass.exe                   \
+                 .\Release\GetFirstInvSig.exe             \
+                 .\Release\GetFirstNullItem.exe           \
+                 .\Release\GetFirstNullList.exe           \
+                 .\Release\GetFirstPass.exe               \
+                 .\Release\GetLastInvSig.exe              \
+                 .\Release\GetLastNullItem.exe            \
+                 .\Release\GetLastNullList.exe            \
+                 .\Release\GetLastPass.exe                \
+                 .\Release\InitNullList.exe               \
+                 .\Release\InitPass.exe                   \
+                 .\Release\IsValidInvSig.exe              \
+                 .\Release\IsValidNullList.exe            \
+                 .\Release\IsValidNullUnknown.exe         \
+                 .\Release\IsValidPass.exe                \
+                 .\Release\PeakFirstInvSig.exe            \
+                 .\Release\PeakFirstNullItem.exe          \
+                 .\Release\PeakFirstNullList.exe          \
+                 .\Release\PeakFirstPass.exe              \
+                 .\Release\PeakLastInvSig.exe             \
+                 .\Release\PeakLastNullItem.exe           \
+                 .\Release\PeakLastNullList.exe           \
+                 .\Release\PeakLastPass.exe               \
+                 .\Release\PeakNextInvSig.exe             \
+                 .\Release\PeakNextNullCurrent.exe        \
+                 .\Release\PeakNextNullCurrNextOffset.exe \
+                 .\Release\PeakNextNullCurrPrevOffset.exe \
+                 .\Release\PeakNextNullList.exe           \
+                 .\Release\PeakNextNullNext.exe           \
+                 .\Release\PeakNextPass.exe               \
+                 .\Release\PeakPreviousInvSig.exe         \
+                 .\Release\PeakPreviousNullCurrent.exe    \
+                 .\Release\PeakPrevNullCurrNextOffset.exe \
+                 .\Release\PeakPrevNullCurrPrevOffset.exe \
+                 .\Release\PeakPreviousNullList.exe       \
+                 .\Release\PeakPreviousNullPrevious.exe   \
+                 .\Release\PeakPreviousPass.exe           \
+                 .\Release\PutFirstInvSig.exe             \
+                 .\Release\PutFirstNullList.exe           \
+                 .\Release\PutFirstNullNewItem.exe        \
+                 .\Release\PutFirstPass.exe               \
+                 .\Release\PutLastInvSig.exe              \
+                 .\Release\PutLastNullList.exe            \
+                 .\Release\PutLastNullNewItem.exe         \
+                 .\Release\PutLastPass.exe                \
+                 .\Release\RemoveInvSig.exe               \
+                 .\Release\RemoveAbsent.exe               \
+                 .\Release\RemoveNullItem.exe             \
+                 .\Release\RemoveNullNextOffset.exe       \
+                 .\Release\RemoveNullPrevOffset.exe       \
+                 .\Release\RemoveNullList.exe             \
+                 .\Release\RemovePass.exe                 \
+                 .\Release\RemoveWrongItem.exe            \
+                 .\Release\ReplaceInvSig.exe              \
+                 .\Release\ReplaceNullList.exe            \
+                 .\Release\ReplaceNullNew.exe             \
+                 .\Release\ReplaceNullOld.exe             \
+                 .\Release\ReplacePass.exe                \
+                 .\Release\ResetInvSig.exe                \
+                 .\Release\ResetNullList.exe              \
+                 .\Release\ResetPass.exe                  \
+                 .\Release\TestSmall.exe                  \
+                 .\Release\TestBig.exe
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+#
+
+check: $(OUTDIR) $(check_PROGRAMS)
+	python RunTests.py --path=Release
+
+checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	python RunTests.py --path=Debug
+
+clean: 
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+

@@ -1,0 +1,62 @@
+# Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+include .\Makefile.inc.Win32
+
+#
+# Override the values in Makefile.inc.Win32
+#
+LDD_FLAGS = $(W32_SYS_LIBS)     vdsfEngine.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Release" 
+LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) vdsfEngine.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Debug" 
+CFLAGS_DEBUG=   /nologo /MDd /W4     /I ".." /I "../.." /I "../../Common" /I "../../Tests" /I "../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
+CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I ".." /I "../.." /I "../../Common" /I "../../Tests" /I "../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
+
+all: 
+
+CLEANFILES = *~ 
+
+check_PROGRAMS =                                \
+                 .\Release\LinkNodeNULLInit.exe \
+                 .\Release\LinkNodeNULLTest.exe \
+                 .\Release\LinkNodeTestTest.exe 
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+
+check: $(OUTDIR) $(check_PROGRAMS)
+	rem python RunTests.py --path=Release
+	cd List      && nmake -f Makefile.win32 check && cd ..
+	cd LogFile   && nmake -f Makefile.win32 check && cd ..
+	cd MemAlloc  && nmake -f Makefile.win32 check && cd ..
+	cd MemBitmap && nmake -f Makefile.win32 check && cd ..
+	cd MemObject && nmake -f Makefile.win32 check && cd ..
+	cd PageGroup && nmake -f Makefile.win32 check && cd ..
+
+checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	rem python RunTests.py --path=Debug
+	cd List      && nmake -f Makefile.win32 checkdebug && cd ..
+	cd LogFile   && nmake -f Makefile.win32 checkdebug && cd ..
+	cd MemAlloc  && nmake -f Makefile.win32 checkdebug && cd ..
+	cd MemBitmap && nmake -f Makefile.win32 checkdebug && cd ..
+	cd MemObject && nmake -f Makefile.win32 checkdebug && cd ..
+	cd PageGroup && nmake -f Makefile.win32 checkdebug && cd ..
+
+clean: 
+	cd List      && nmake -f Makefile.win32 clean && cd ..
+	cd LogFile   && nmake -f Makefile.win32 clean && cd ..
+	cd MemAlloc  && nmake -f Makefile.win32 clean && cd ..
+	cd MemBitmap && nmake -f Makefile.win32 clean && cd ..
+	cd MemObject && nmake -f Makefile.win32 clean && cd ..
+	cd PageGroup && nmake -f Makefile.win32 clean && cd ..
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+

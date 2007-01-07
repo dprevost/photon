@@ -102,7 +102,7 @@ checkdebug: all
 	if not exist "$(OUTDIR_DEBUG)/$(NULL)" mkdir "$(OUTDIR_DEBUG)"
    
 clean: 
-	rem cd Tests && nmake -f Makefile.win32 clean && cd ..
+	cd Tests && nmake -f Makefile.win32 clean && cd ..
 	-@erase /Q Debug
 	-@rmdir /Q Debug
 	-@erase /Q Release

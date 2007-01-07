@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -67,7 +67,7 @@ typedef struct vdseLinkedList
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Cleanup the list once we're done with it. */
-void 
+VDSF_ENGINE_EXPORT void 
 vdseLinkedListFini( vdseLinkedList* pList );
 
 /** Removes and returns the first item on the list. */
@@ -81,7 +81,7 @@ vdseLinkedListGetLast( vdseLinkedList* pList,
                        vdseLinkNode**  ppItem );
 
 /** Initialize the linked list. */
-void 
+VDSF_ENGINE_EXPORT void 
 vdseLinkedListInit( vdseLinkedList* pList );
 
 /** Adds pNewItem to the beginning of the list. */
@@ -136,7 +136,7 @@ vdseLinkedListReplaceItem( vdseLinkedList* pList,
 /** Search in the list to see if pUnknown is in it or not - used by the
  *  crash recovery algorithm, vdseFree, etc. 
  */
-bool 
+VDSF_ENGINE_EXPORT bool 
 vdseLinkedListIsValid( vdseLinkedList* pList,
                        vdseLinkNode*   pUnknown );
 
@@ -148,7 +148,7 @@ vdseLinkedListIsValid( vdseLinkedList* pList,
 /** Reset the list to be empty - used by the
  *  crash recovery algorithm
  */
-void 
+VDSF_ENGINE_EXPORT void 
 vdseLinkedListReset( vdseLinkedList* pList );
 
 

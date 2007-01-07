@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -42,13 +42,16 @@ typedef struct vdseMemBitmap
 /** 
  * Initialize the vdseMemBitmap struct. 
  */
+VDSF_ENGINE_EXPORT
 void vdseMemBitmapInit( vdseMemBitmap* pBitmap,
                         ptrdiff_t      offset,
                         size_t         totalLength,
                         size_t         allocationUnit );
 
+VDSF_ENGINE_EXPORT
 void vdseMemBitmapFini( vdseMemBitmap* pBitmap );
 
+//VDSF_ENGINE_EXPORT
 static inline
 bool vdseIsBlockFree( vdseMemBitmap* pBitmap,
                       ptrdiff_t      offset );

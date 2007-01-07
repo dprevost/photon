@@ -1,0 +1,53 @@
+# Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+include ..\Makefile.inc.Win32
+
+all: 
+
+CLEANFILES = *~ 
+
+check_PROGRAMS =                                \
+                 .\Release\CloseNullAlloc.exe   \
+                 .\Release\CloseNullError.exe   \
+                 .\Release\ClosePass.exe        \
+                 .\Release\FreeNullAlloc.exe    \
+                 .\Release\FreeNullError.exe    \
+                 .\Release\FreeNullPtr.exe      \
+                 .\Release\FreePass.exe         \
+                 .\Release\FreeZeroLength.exe   \
+                 .\Release\InitBigVDS.exe       \
+                 .\Release\InitNullAddress.exe  \
+                 .\Release\InitNullAlloc.exe    \
+                 .\Release\InitNullError.exe    \
+                 .\Release\InitPass.exe         \
+                 .\Release\InitSmallLength.exe  \
+                 .\Release\IsPageFreeTest.exe   \
+                 .\Release\MallocNullAlloc.exe  \
+                 .\Release\MallocNullError.exe  \
+                 .\Release\MallocPass.exe       \
+                 .\Release\MallocZeroLength.exe
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+#
+
+check: $(OUTDIR) $(check_PROGRAMS)
+	python RunTests.py --path=Release
+
+checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	python RunTests.py --path=Debug
+
+clean: 
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+

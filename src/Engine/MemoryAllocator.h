@@ -45,7 +45,7 @@
  * However, additions and modifications to the original code are covered 
  * by this copyright:
  *
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -128,6 +128,7 @@ typedef struct vdseMemAlloc
  * eventually). Reason: when a program access the VDS, the allocator is 
  * already there, initialized and all.
  */
+VDSF_ENGINE_EXPORT
 enum vdsErrors 
 vdseMemAllocInit( vdseMemAlloc*       pAlloc,
                   unsigned char*      pBaseAddress, 
@@ -137,6 +138,7 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
 /**
  * 
  */
+VDSF_ENGINE_EXPORT
 void* vdseMallocPages( vdseMemAlloc*       pAlloc,
                        size_t              numPages,
                        vdseSessionContext* pContext );
@@ -144,11 +146,13 @@ void* vdseMallocPages( vdseMemAlloc*       pAlloc,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Free ptr, the memory is returned to the pool. */
+VDSF_ENGINE_EXPORT
 int vdseFreePages( vdseMemAlloc*       pAlloc,
                    void *              ptr, 
                    size_t              numPages,
                    vdseSessionContext* pContext );
 
+VDSF_ENGINE_EXPORT
 void vdseMemAllocClose( vdseMemAlloc*       pAlloc,
                         vdseSessionContext* pContext );
 
@@ -156,6 +160,7 @@ void vdseMemAllocClose( vdseMemAlloc*       pAlloc,
  *  that the number of mallocs/frees are not based on a 64 bits 
  *  integer on 32 bits machine - these numbers might loop around.
  */
+VDSF_ENGINE_EXPORT
 vdsErrors vdseMemAllocStats( vdseMemAlloc*       pAlloc,
                              size_t *            pCurrentAllocated,
                              size_t *            pTotalFree,

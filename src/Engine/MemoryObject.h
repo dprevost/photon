@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -61,18 +61,22 @@ typedef struct vdseMemObject
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+VDSF_ENGINE_EXPORT
 enum vdsErrors 
 vdseMemObjectInit( vdseMemObject*        pMemObj,
                    enum ObjectIdentifier objType,
                    size_t                numPages );
 
+VDSF_ENGINE_EXPORT
 enum vdsErrors 
 vdseMemObjectFini( vdseMemObject* pMemObj );
 
+VDSF_ENGINE_EXPORT
 unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
                            size_t              numBytes,
                            vdseSessionContext* pContext );
 
+VDSF_ENGINE_EXPORT
 void vdseFree( vdseMemObject*      pMemObj,
                unsigned char*      ptr, 
                size_t              numBytes,

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -15,7 +15,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "MemoryAllocator.c"
+#include "MemoryAllocator.h"
 #include "EngineTestCommon.h"
 
 const bool expectedToPass = true;
@@ -33,13 +33,13 @@ int main()
    initTest( expectedToPass );
    vdscInitErrorHandler( &context.errorHandler );
 
-   ptr = malloc( 50*PAGESIZE );
+   ptr = malloc( 51*PAGESIZE );
    if ( ptr == NULL )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
-   g_pBaseAddr = ptr;
+   g_pBaseAddr = (unsigned char *)((((size_t)ptr - 1)/PAGESIZE + 1)*PAGESIZE);
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
-   vdseMemAllocInit( pAlloc, ptr, 50*PAGESIZE, &context );
+   vdseMemAllocInit( pAlloc, g_pBaseAddr, 50*PAGESIZE, &context );
    pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
    
    if ( (pBitmap->lengthInBits-1)/8+1 != 7 )

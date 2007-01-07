@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -59,6 +59,7 @@ typedef struct vdseLogFile
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+VDSF_ENGINE_EXPORT
 void vdseCloseLogFile( vdseLogFile*      logFile,
                        vdscErrorHandler* pError );
 
@@ -68,11 +69,13 @@ void vdseCloseLogFile( vdseLogFile*      logFile,
  * pSession is only used to uniquely identify the log file (since each 
  * session of a given process would otherwise have the same name).
  */
+VDSF_ENGINE_EXPORT
 vdsErrors vdseInitLogFile( vdseLogFile*      logFile,
                            const char*       dirName,
                            void*             pSession,
                            vdscErrorHandler* pError );
    
+VDSF_ENGINE_EXPORT
 vdsErrors vdseLogTransaction( vdseLogFile*      logFile,
                               transaction_T     transactionId,
                               vdscErrorHandler* pError );

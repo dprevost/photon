@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -29,6 +29,16 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#if defined(WIN32)
+#  ifdef ENGINE_EXPORTS
+#    define VDSF_ENGINE_EXPORT __declspec ( dllexport )
+#  else
+#    define VDSF_ENGINE_EXPORT __declspec ( dllimport )
+#  endif
+#else
+#  define VDSF_ENGINE_EXPORT
+#endif
+
 #ifdef __cplusplus
 #  if HAVE_NEW
 #    include <new>
@@ -46,7 +56,9 @@
  *  process having their own copy of this global). This pointer is used
  *  everywhere to recover the real pointer addresses from our offsets
  */
+VDSF_ENGINE_EXPORT
 extern unsigned char* g_pBaseAddr;
+
 extern vdscErrMsgHandle g_vdsErrorHandle;
 
 #define SET_OFFSET(ptr) ( (ptrdiff_t) ( (unsigned char*)(ptr) - \
