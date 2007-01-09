@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -22,9 +22,8 @@ const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
+int main()
 {
-   vdseLogFile logfile;
    vdscErrorHandler errorHandler;
    vdsErrors error;
    
@@ -33,7 +32,7 @@ int main( int argc, char* argv[] )
 
    error = vdseInitLogFile( NULL, ".", (void*)0x1234, &errorHandler );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

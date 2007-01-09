@@ -46,30 +46,30 @@ int main()
    {
       fprintf( stderr, "Wrong bitmapLength, got %d, expected %d\n",
                pBitmap->lengthInBits/8, 7 );
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pBitmap->bitmap[0] != 0xc0 )
    {
       fprintf( stderr, "Wrong bitmap[0], got 0x%x, expected 0x%x\n", 
                pBitmap->bitmap[0], 0xc0 );
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    isFree = vdseIsBlockFree( pBitmap, 0 );
    if ( isFree )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    isFree = vdseIsBlockFree( pBitmap, 2*PAGESIZE );
    if ( ! isFree )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    isFree = vdseIsBlockFree( pBitmap, -PAGESIZE );
    if ( isFree )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    isFree = vdseIsBlockFree( pBitmap, 50*PAGESIZE );
    if ( isFree )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
       
    return 0;
 }

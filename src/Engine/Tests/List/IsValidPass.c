@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -22,7 +22,7 @@ const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
+int main()
 {
    vdseLinkedList list;
    vdseLinkNode node, node2;
@@ -38,10 +38,10 @@ int main( int argc, char* argv[] )
    vdseLinkedListPutLast( &list, &node );
    
    valid = vdseLinkedListIsValid( &list, &node );
-   if ( ! valid ) ERROR_EXIT( expectedToPass, NULL, );
+   if ( ! valid ) ERROR_EXIT( expectedToPass, NULL, ; );
 
    valid = vdseLinkedListIsValid( &list, &node2 );
-   if ( valid ) ERROR_EXIT( expectedToPass, NULL, );
+   if ( valid ) ERROR_EXIT( expectedToPass, NULL, ; );
 
    vdseLinkedListFini( &list );
 

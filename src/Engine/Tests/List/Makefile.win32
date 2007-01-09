@@ -12,8 +12,6 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-CLEANFILES = *~ 
-
 check_PROGRAMS =                                          \
                  .\Release\FiniInvSig.exe                 \
                  .\Release\FiniNullList.exe               \

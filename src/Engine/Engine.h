@@ -1,4 +1,3 @@
-/* -*- c++ -*- */
 /*
  * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -25,14 +25,13 @@ const bool expectedToPass = false;
 int main()
 {
    vdsePageGroup *pGroup;
-   vdsErrors errcode;
    unsigned char* ptr;
    
    initTest( expectedToPass );
 
    ptr = malloc( PAGESIZE*10 );
    if (ptr == NULL )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    g_pBaseAddr = ptr;
    
    /* This "100" (non-zero) offset should mark this page group 
@@ -44,7 +43,7 @@ int main()
                       NULL_OFFSET,
                       10 );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

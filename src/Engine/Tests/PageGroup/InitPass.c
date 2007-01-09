@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -25,14 +25,13 @@ const bool expectedToPass = true;
 int main()
 {
    vdsePageGroup *pGroup;
-   vdsErrors errcode;
    unsigned char* ptr;
    
    initTest( expectedToPass );
 
    ptr = malloc( PAGESIZE*10 );
    if (ptr == NULL )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    g_pBaseAddr = ptr;
    
    /* This "100" (non-zero) offset should mark this page group 
@@ -44,20 +43,20 @@ int main()
                       SET_OFFSET(ptr),
                       10 );
    if ( pGroup->node.nextOffset != NULL_OFFSET )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    if ( pGroup->node.previousOffset != NULL_OFFSET )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    if ( pGroup->numPages != 10 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    if ( pGroup->maxFreeBytes < 9*PAGESIZE || 
         pGroup->maxFreeBytes >= 10*PAGESIZE )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    if (pGroup->freeList.initialized != VDSE_LIST_SIGNATURE )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    if ( pGroup->isDeletable == true )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    if ( pGroup->bitmap.baseAddressOffset != SET_OFFSET(ptr) )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    vdsePageGroupFini( pGroup );
 
@@ -65,7 +64,7 @@ int main()
    pGroup = (vdsePageGroup*) ptr;
    vdsePageGroupInit( pGroup, SET_OFFSET(ptr), 10 );
    if ( pGroup->isDeletable == false )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    vdsePageGroupFini( pGroup );
    

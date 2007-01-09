@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -55,7 +55,7 @@ gf after fini -> assert
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
+int main()
 {
    vdseLinkedList list;
    dummyStruct dummy[MAX_ELEMENTS];
@@ -92,7 +92,7 @@ int main( int argc, char* argv[] )
    numInList = INITIAL_LIST_SIZE;
 
    if ( TestList( &list ) != 0 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    /* Initialize the random generator */
    mysrand( 0x130bc9 );
@@ -133,7 +133,7 @@ int main( int argc, char* argv[] )
          if ( k == randElement )
          {
             fprintf( stderr, "Case 0, did not found a free element\n" );
-            ERROR_EXIT( expectedToPass, NULL, );
+            ERROR_EXIT( expectedToPass, NULL, ; );
          }
          
          vdseLinkedListPutFirst( &list, &dummy[k].node );
@@ -168,7 +168,7 @@ int main( int argc, char* argv[] )
          if ( k == randElement )
          {
             fprintf( stderr, "Case 1 or 5, did not found a free element\n" );
-            ERROR_EXIT( expectedToPass, NULL, );
+            ERROR_EXIT( expectedToPass, NULL, ; );
          }
 
          vdseLinkedListPutLast( &list, &dummy[k].node );
@@ -180,7 +180,7 @@ int main( int argc, char* argv[] )
       case 2:
          error = vdseLinkedListGetFirst( &list, &pNode );
          if ( error == LIST_INTERNAL_ERROR ) 
-            ERROR_EXIT( expectedToPass, NULL, );
+            ERROR_EXIT( expectedToPass, NULL, ; );
 
          pDummy = (dummyStruct* )
             ((char*)pNode - offsetof(dummyStruct, node ));
@@ -192,7 +192,7 @@ int main( int argc, char* argv[] )
       case 3:
          error = vdseLinkedListGetLast( &list, &pNode );
          if ( error == LIST_INTERNAL_ERROR ) 
-            ERROR_EXIT( expectedToPass, NULL, );
+            ERROR_EXIT( expectedToPass, NULL, ; );
 
          pDummy = (dummyStruct* )
             ((char*)pNode - offsetof(dummyStruct, node ));
@@ -225,7 +225,7 @@ int main( int argc, char* argv[] )
          if ( k == randElement )
          {
             fprintf( stderr, "Case 4, did not found a used element\n" );
-            ERROR_EXIT( expectedToPass, NULL, );
+            ERROR_EXIT( expectedToPass, NULL, ; );
          }
 
          vdseLinkedListRemoveItem( &list, &dummy[k].node );
@@ -236,11 +236,11 @@ int main( int argc, char* argv[] )
          
       } /* End switch statement */
 
-      if ( numInList != list.currentSize )
+      if ( (size_t)numInList != list.currentSize )
       {
          fprintf( stderr, "Discrepency in list size (%d %d), action = %d\n", 
                   numInList, list.currentSize, randAction%6 );
-         ERROR_EXIT( expectedToPass, NULL, );
+         ERROR_EXIT( expectedToPass, NULL, ; );
       }
 
       /* Test the iterators */
@@ -248,18 +248,18 @@ int main( int argc, char* argv[] )
       {
          error = vdseLinkedListPeakFirst( &list, &pNode );
          if ( error == LIST_INTERNAL_ERROR ) 
-            ERROR_EXIT( expectedToPass, NULL, );
+            ERROR_EXIT( expectedToPass, NULL, ; );
          
          while ( error == LIST_OK )
          {
             error = vdseLinkedListPeakNext( &list, pNode, &pNode );
             if ( error == LIST_INTERNAL_ERROR ) 
-               ERROR_EXIT( expectedToPass, NULL, );
+               ERROR_EXIT( expectedToPass, NULL, ; );
          }
 
          error = vdseLinkedListPeakLast( &list, &pNode );
          if ( error == LIST_INTERNAL_ERROR ) 
-            ERROR_EXIT( expectedToPass, NULL, );
+            ERROR_EXIT( expectedToPass, NULL, ; );
          
          while ( error == LIST_OK )
          {
@@ -267,7 +267,7 @@ int main( int argc, char* argv[] )
                                                 pNode, 
                                                 &pNode );
             if ( error == LIST_INTERNAL_ERROR ) 
-               ERROR_EXIT( expectedToPass, NULL, );
+               ERROR_EXIT( expectedToPass, NULL, ; );
          }
       } /* End of if ((i+1)%GET_NEXT_LOOP ) == 0 */
 
@@ -277,7 +277,7 @@ int main( int argc, char* argv[] )
    if ( errcode != 0 )
    {
       fprintf( stderr, "TestList failed, error = %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    vdseLinkedListFini( &list );

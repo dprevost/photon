@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -38,6 +38,7 @@ int main()
    vdscInitErrorHandler( &context.errorHandler );
 
    ptr = malloc( allocatedLength );
+   if ( ptr == NULL ) ERROR_EXIT( expectedToPass, NULL, ; );
 
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
@@ -45,12 +46,12 @@ int main()
    
    pObj = vdseMallocPages( pAlloc, 4, &context );
    if ( pObj == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    errcode = vdseMemObjectInit( pObj, 
                                 VDSE_IDENT_ALLOCATOR,
                                 4 );
-   if ( errcode != VDS_OK ) ERROR_EXIT( expectedToPass, NULL, );
+   if ( errcode != VDS_OK ) ERROR_EXIT( expectedToPass, NULL, ; );
    
    pageGroup = (vdsePageGroup*) ((unsigned char*)pObj + sizeof(vdseMemObject));
    vdsePageGroupInit( pageGroup,
@@ -63,61 +64,61 @@ int main()
 
    buff[0] = vdseMalloc( pObj, PAGESIZE, &context );
    if ( buff[0] == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    buff[1] = vdseMalloc( pObj, PAGESIZE, &context );
    if ( buff[1] == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
    buff[2] = vdseMalloc( pObj, PAGESIZE, &context );
    if ( buff[2] == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
    /* Needs two new pages at this point */
    buff[3] = vdseMalloc( pObj, PAGESIZE, &context );
    if ( buff[3] == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    if ( pObj->totalPages != 6 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    /* Needs NO new page at this point */
    buff[4] = vdseMalloc( pObj, PAGESIZE/2, &context );
    if ( buff[4] == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    if ( pObj->totalPages != 6 )
-      ERROR_EXIT( expectedToPass, NULL, );   
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    /* Needs NO new page at this point */
    buff[5] = vdseMalloc( pObj, PAGESIZE/2, &context );
    if ( buff[5] == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    if ( pObj->totalPages != 6 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    /* Needs a new page at this point */
    buff[6] = vdseMalloc( pObj, PAGESIZE/2, &context );
    if ( buff[6] == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    if ( pObj->totalPages != 7 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    /* Needs a new page at this point */
    buff[7] = vdseMalloc( pObj, PAGESIZE/2, &context );
    if ( buff[7] == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    if ( pObj->totalPages != 8 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    /* We exhausted all the memory */
    buff[8] = vdseMalloc( pObj, PAGESIZE, &context );
    if ( buff[8] != NULL )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    if ( pObj->totalPages != 8 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    errcode = vdseMemObjectFini( pObj );
    if ( errcode != VDS_OK )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    return 0;
 }

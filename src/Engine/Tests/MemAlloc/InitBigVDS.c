@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -53,7 +53,7 @@ int main()
 
    ptr = malloc( allocatedLength );
    if ( ptr == NULL )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
@@ -61,18 +61,18 @@ int main()
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
    if ( pBitmap->lengthInBits != 8*PAGESIZE )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    /* Allocate all the pages, one by one. */
    for ( i = 0; i < 8*PAGESIZE-3; ++i )
    {
       buffer[i] = vdseMallocPages( pAlloc, 1, &context );
       if ( buffer[i] == NULL )
-         ERROR_EXIT( expectedToPass, &context.errorHandler, );
+         ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    buffer[8*PAGESIZE-3] = vdseMallocPages( pAlloc, 1, &context );
    if ( buffer[8*PAGESIZE-3] != NULL )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    /* Check the bitmap pattern */
    for (i = 0; i < pBitmap->lengthInBits/8; ++i )
@@ -81,7 +81,7 @@ int main()
       {
          fprintf( stderr, "Malloc bitmap issue - %d 0x%x\n", i, 
                   pBitmap->bitmap[i] );
-         ERROR_EXIT( expectedToPass, NULL, );
+         ERROR_EXIT( expectedToPass, NULL, ; );
       }
    }
    
@@ -96,7 +96,7 @@ int main()
    {
       fprintf( stderr, "Malloc bitmap issue - %d 0x%x\n", i, 
                pBitmap->bitmap[i] );
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    }
       
    for (i = 1; i < pBitmap->lengthInBits/8; ++i )
@@ -105,7 +105,7 @@ int main()
       {
          fprintf( stderr, "Malloc bitmap issue - %d 0x%x\n", i, 
                   pBitmap->bitmap[i] );
-         ERROR_EXIT( expectedToPass, NULL, );
+         ERROR_EXIT( expectedToPass, NULL, ; );
       }
    }
    

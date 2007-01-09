@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -29,14 +29,13 @@ int main()
    unsigned char* ptr;
    size_t allocatedLength = PAGESIZE*10;
    unsigned char* newBuff;
-   int i;
    
    initTest( expectedToPass );
    vdscInitErrorHandler( &context.errorHandler );
    
    ptr = malloc( allocatedLength );
    if ( ptr == NULL )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
@@ -44,11 +43,11 @@ int main()
    
    newBuff = vdseMallocPages( pAlloc, 2, &context );
    if ( newBuff == NULL ) 
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
    vdseFreePages( NULL, newBuff, 2, &context );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

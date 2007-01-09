@@ -12,7 +12,7 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-CLEANFILES = *~ 
+CLEANFILES = $(CLEANFILES) *.tlog
 
 check_PROGRAMS =                                           \
                  .\Release\CloseNoInit.exe     \

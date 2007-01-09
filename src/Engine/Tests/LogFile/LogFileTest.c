@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -22,7 +22,7 @@ const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
+int main()
 {
    vdseLogFile logfile;
    vdscErrorHandler errorHandler;
@@ -33,17 +33,17 @@ int main( int argc, char* argv[] )
 
    error = vdseInitLogFile( &logfile, ".", (void*)0x1234, &errorHandler );
    if ( error != VDS_OK )
-      ERROR_EXIT( expectedToPass, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
 
    error = vdseLogTransaction( &logfile, 1, &errorHandler );
    if ( error != VDS_OK )
-      ERROR_EXIT( expectedToPass, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
    error = vdseLogTransaction( &logfile, 2, &errorHandler );
    if ( error != VDS_OK )
-      ERROR_EXIT( expectedToPass, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
    error = vdseLogTransaction( &logfile, 3, &errorHandler );
    if ( error != VDS_OK )
-      ERROR_EXIT( expectedToPass, &errorHandler, );
+      ERROR_EXIT( expectedToPass, &errorHandler, ; );
 
    vdseCloseLogFile( &logfile, &errorHandler );
    

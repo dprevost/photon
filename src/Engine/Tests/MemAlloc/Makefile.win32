@@ -12,8 +12,6 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-CLEANFILES = *~ 
-
 check_PROGRAMS =                                \
                  .\Release\CloseNullAlloc.exe   \
                  .\Release\CloseNullError.exe   \
@@ -36,10 +34,9 @@ check_PROGRAMS =                                \
                  .\Release\MallocZeroLength.exe
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
-#
 
 check: $(OUTDIR) $(check_PROGRAMS)
-	python RunTests.py --path=Release
+	python RunTests.py --path=Release 
 
 checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
 	python RunTests.py --path=Debug

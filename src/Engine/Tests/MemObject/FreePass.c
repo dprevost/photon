@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -39,7 +39,7 @@ int main()
 
    ptr = malloc( allocatedLength );
    if ( ptr == NULL )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
@@ -47,13 +47,13 @@ int main()
    
    pObj = vdseMallocPages( pAlloc, 4, &context );
    if ( pObj == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    errcode = vdseMemObjectInit( pObj, 
                                 VDSE_IDENT_ALLOCATOR,
                                 4 );
    if ( errcode != VDS_OK )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    pageGroup = (vdsePageGroup*) ((unsigned char*)pObj + sizeof(vdseMemObject));
    vdsePageGroupInit( pageGroup,
@@ -66,42 +66,42 @@ int main()
 
    buff[0] = vdseMalloc( pObj, PAGESIZE, &context );
    if ( buff[0] == NULL ) 
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    buff[1] = vdseMalloc( pObj, PAGESIZE, &context );
-   if ( buff[1] == NULL ) 
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+   if ( buff[1] == NULL )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
    buff[2] = vdseMalloc( pObj, PAGESIZE, &context );
    if ( buff[2] == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
    vdseFree( pObj, buff[1], PAGESIZE, &context );
    vdseFree( pObj, buff[2], PAGESIZE, &context );
    vdseFree( pObj, buff[0], PAGESIZE, &context );
    if ( pObj->totalPages != 4 ) 
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    buff[0] = vdseMalloc( pObj, 3*PAGESIZE, &context );
    if ( buff[0] == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    if ( pObj->totalPages != 4 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    /* Needs two new pages at this point */
    buff[3] = vdseMalloc( pObj, PAGESIZE, &context );
    if ( buff[3] == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    if ( pObj->totalPages != 6 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    vdseFree( pObj, buff[3], PAGESIZE, &context );
    if ( pObj->totalPages != 4 )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    errcode = vdseMemObjectFini( pObj );
    if ( errcode != VDS_OK )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    return 0;
 }

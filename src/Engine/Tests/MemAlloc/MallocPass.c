@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -36,7 +36,7 @@ int main()
    
    ptr = malloc( allocatedLength );
    if ( ptr == NULL )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
@@ -44,15 +44,15 @@ int main()
    
    newBuff[0] = vdseMallocPages( pAlloc, 2, &context );
    if ( newBuff[0] == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    /* 6 pages remaining */
    newBuff[1] = vdseMallocPages( pAlloc, 6, &context );
    if ( newBuff[1] == NULL )
-      ERROR_EXIT( expectedToPass, &context.errorHandler, );
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    /* No pages remaining */
    newBuff[2] = vdseMallocPages( pAlloc, 6, &context );
    if ( newBuff[2] != NULL )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    vdseFreePages( pAlloc, newBuff[0], 2, &context );
    vdseFreePages( pAlloc, newBuff[1], 6, &context );
@@ -62,7 +62,7 @@ int main()
    {
       newBuff[i] = vdseMallocPages( pAlloc, 1, &context );
       if ( newBuff[i] == NULL )
-         ERROR_EXIT( expectedToPass, &context.errorHandler, );
+         ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    for ( i = 0; i < 8; i += 2 )
       vdseFreePages( pAlloc, newBuff[i], 1, &context );
@@ -70,7 +70,7 @@ int main()
    /* 4 pages remaining - fragmented. This new alloc should fail! */
    newBuff[0] = vdseMallocPages( pAlloc, 2, &context );
    if ( newBuff[0] != NULL )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    return 0;
 }
