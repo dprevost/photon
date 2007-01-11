@@ -1,0 +1,61 @@
+# Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+include .\Makefile.inc.Win32
+
+#
+# Override the values in Makefile.inc.Win32
+#
+LDD_FLAGS = $(W32_SYS_LIBS) vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Release" 
+LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Debug" 
+CFLAGS_DEBUG=   /nologo /MDd /W4     /I ".." /I "../.." /I "../../.." /I "../../Tests" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
+CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I ".." /I "../.." /I "../../.." /I "../../Tests" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
+
+all: 
+
+CLEANFILES = *~ TestsCommon.ncb
+
+check_PROGRAMS =                             \
+                 .\Release\nanosleepTest.exe \
+                 .\Release\TimerTest.exe     
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+
+check: $(OUTDIR) $(check_PROGRAMS)
+	rem python RunTests.py --path=Release
+	cd DirAccess   && nmake -f Makefile.win32 check && cd ..
+	cd Error       && nmake -f Makefile.win32 check && cd ..
+	cd MemFile     && nmake -f Makefile.win32 check && cd ..
+	cd Options     && nmake -f Makefile.win32 check && cd ..
+	cd ProcessLock && nmake -f Makefile.win32 check && cd ..
+	cd ThreadLock  && nmake -f Makefile.win32 check && cd ..
+
+checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	rem python RunTests.py --path=Debug
+	cd DirAccess   && nmake -f Makefile.win32 checkdebug && cd ..
+	cd Error       && nmake -f Makefile.win32 checkdebug && cd ..
+	cd MemFile     && nmake -f Makefile.win32 checkdebug && cd ..
+	cd Options     && nmake -f Makefile.win32 checkdebug && cd ..
+	cd ProcessLock && nmake -f Makefile.win32 checkdebug && cd ..
+	cd ThreadLock  && nmake -f Makefile.win32 checkdebug && cd ..
+
+clean: 
+	cd DirAccess   && nmake -f Makefile.win32 clean && cd ..
+	cd Error       && nmake -f Makefile.win32 clean && cd ..
+	cd MemFile     && nmake -f Makefile.win32 clean && cd ..
+	cd Options     && nmake -f Makefile.win32 clean && cd ..
+	cd ProcessLock && nmake -f Makefile.win32 clean && cd ..
+	cd ThreadLock  && nmake -f Makefile.win32 clean && cd ..
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+

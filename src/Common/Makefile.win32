@@ -29,7 +29,7 @@ INTDIR_RELEASE = .\Release
 OUTDIR_DEBUG   = .\Debug
 INTDIR_DEBUG   = .\Debug
 
-CLEANFILES = *~ 
+CLEANFILES = *~ Common.plg Common.dep vc60.idb vc60.pdb Common.mak Common.ncb
 
 W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib
 

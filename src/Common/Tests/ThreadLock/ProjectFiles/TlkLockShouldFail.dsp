@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="MemCreateBackPass" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="TlkLockShouldFail" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=MemCreateBackPass - Win32 Debug
+CFG=TlkLockShouldFail - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "MemCreateBackPass.mak".
+!MESSAGE NMAKE /f "TlkLockShouldFail.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "MemCreateBackPass.mak" CFG="MemCreateBackPass - Win32 Debug"
+!MESSAGE NMAKE /f "TlkLockShouldFail.mak" CFG="TlkLockShouldFail - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "MemCreateBackPass - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "MemCreateBackPass - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "TlkLockShouldFail - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "TlkLockShouldFail - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,21 +28,22 @@ CFG=MemCreateBackPass - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "MemCreateBackPass - Win32 Release"
+!IF  "$(CFG)" == "TlkLockShouldFail - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "..\Release\Release_CreateBackPass"
-# PROP BASE Intermediate_Dir "..\Release\Release_CreateBackPass"
+# PROP BASE Output_Dir "..\Release\Release_LockShouldFail"
+# PROP BASE Intermediate_Dir "..\Release\Release_LockShouldFail"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "..\Release\Release_CreateBackPass"
-# PROP Intermediate_Dir "..\Release\Release_CreateBackPass"
+# PROP Output_Dir "..\Release\LockShouldFail"
+# PROP Intermediate_Dir "..\Release\LockShouldFail"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W4 /GX /O2 /I "../.." /I "../../.." /I "../../../.." /I "../../../../Tests" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MD /W4 /GX /O2 /I "../.." /I "../../.." /I "../../../.." /I "../../../../Tests" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
+# SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x1009 /d "NDEBUG"
 # ADD RSC /l 0x1009 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,23 +51,24 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /out:"..\Release\MemCreateBackPass.exe" /libpath:"../../../Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /out:"..\Release\LockShouldFail.exe" /libpath:"../../../Release"
 
-!ELSEIF  "$(CFG)" == "MemCreateBackPass - Win32 Debug"
+!ELSEIF  "$(CFG)" == "TlkLockShouldFail - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "..\Debug\Debug_CreateBackPass"
-# PROP BASE Intermediate_Dir "..\Debug\Debug_CreateBackPass"
+# PROP BASE Output_Dir "..\Debug\Debug_LockShouldFail"
+# PROP BASE Intermediate_Dir "..\Debug\Debug_LockShouldFail"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "..\Debug\Debug_CreateBackPass"
-# PROP Intermediate_Dir "..\Debug\Debug_CreateBackPass"
+# PROP Output_Dir "..\Debug\LockShouldFail"
+# PROP Intermediate_Dir "..\Debug\LockShouldFail"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W4 /Gm /GX /ZI /Od /I "../.." /I "../../.." /I "../../../.." /I "../../../../Tests" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W4 /Gm /GX /ZI /Od /I "../.." /I "../../.." /I "../../../.." /I "../../../../Tests" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FD /GZ /c
+# SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x1009 /d "_DEBUG"
 # ADD RSC /l 0x1009 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -74,25 +76,41 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommond.lib /nologo /subsystem:console /debug /machine:I386 /out:"..\Debug\MemCreateBackPass.exe" /pdbtype:sept /libpath:"../../../Debug"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /subsystem:console /debug /machine:I386 /out:"..\Debug\LockShouldFail.exe" /pdbtype:sept /libpath:"../../../Debug"
 
 !ENDIF 
 
 # Begin Target
 
-# Name "MemCreateBackPass - Win32 Release"
-# Name "MemCreateBackPass - Win32 Debug"
+# Name "TlkLockShouldFail - Win32 Release"
+# Name "TlkLockShouldFail - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\CreateBackPass.c
+SOURCE=..\Barrier.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\LockShouldFail.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\ThreadWrap.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\Barrier.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\ThreadWrap.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -51,9 +51,24 @@ checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG)
 	python RunTests.py --path=Debug
 
 clean: 
+	-@erase /Q Debug\LockConcurrency
+	-@rmdir /Q Debug\LockConcurrency
+	-@erase /Q Debug\LockShouldFail
+	-@rmdir /Q Debug\LockShouldFail
+	-@erase /Q Debug\LockTests
+	-@rmdir /Q Debug\LockTests
 	-@erase /Q Debug
 	-@rmdir /Q Debug
+	-@erase /Q Release\LockConcurrency
+	-@rmdir /Q Release\LockConcurrency
+	-@erase /Q Release\LockShouldFail
+	-@rmdir /Q Release\LockShouldFail
+	-@erase /Q Release\LockTests
+	-@rmdir /Q Release\LockTests
 	-@erase /Q Release
 	-@rmdir /Q Release
+	-@erase /Q ProjectFiles\*.dep
+	-@erase /Q ProjectFiles\*.plg
+	-@erase /Q ProjectFiles\*.mak
 	-@erase /Q $(CLEANFILES)
 

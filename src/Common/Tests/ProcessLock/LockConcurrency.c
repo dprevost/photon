@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -272,8 +272,6 @@ int main( int argc, char* argv[] )
    
       for (;;)
       {      
-         pid_t savepid = pid;
-
          if ( tryMode )
          {
             int err = vdscTryAcquireProcessLock( &data->lock, pid, 10000 );
