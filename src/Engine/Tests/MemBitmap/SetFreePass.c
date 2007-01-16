@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -31,7 +31,7 @@ int main()
    
    initTest( expectedToPass );
 
-   ptr = malloc( PAGESIZE*10 );
+   ptr = malloc( VDSE_PAGE_SIZE*10 );
    if (ptr == NULL )
       ERROR_EXIT( expectedToPass, NULL, );
    g_pBaseAddr = ptr;
@@ -40,37 +40,37 @@ int main()
    
    vdseMemBitmapInit( pBitmap, 
                       SET_OFFSET(ptr),
-                      10*PAGESIZE,
+                      10*VDSE_PAGE_SIZE,
                       8 );
 
    vdseSetBlocksAllocated( pBitmap,
-                           PAGESIZE/4, /* offset */
-                           PAGESIZE*2 ); /* length */
+                           VDSE_PAGE_SIZE/4, /* offset */
+                           VDSE_PAGE_SIZE*2 ); /* length */
 
    vdseSetBlocksFree( pBitmap,
-                      PAGESIZE/2, /* offset */
-                      PAGESIZE/4 ); /* length */
+                      VDSE_PAGE_SIZE/2, /* offset */
+                      VDSE_PAGE_SIZE/4 ); /* length */
    vdseSetBlocksFree( pBitmap,
-                      PAGESIZE,
-                      PAGESIZE*3/4 );
+                      VDSE_PAGE_SIZE,
+                      VDSE_PAGE_SIZE*3/4 );
    
-   for ( i = PAGESIZE/4/8/8; i < PAGESIZE/2/8/8 ; ++i )
+   for ( i = VDSE_PAGE_SIZE/4/8/8; i < VDSE_PAGE_SIZE/2/8/8 ; ++i )
       if ( pBitmap->bitmap[i] != 0xff )
          ERROR_EXIT( expectedToPass, NULL, );
-   for ( i = PAGESIZE/2/8/8; i < PAGESIZE*3/4/8/8 ; ++i )
+   for ( i = VDSE_PAGE_SIZE/2/8/8; i < VDSE_PAGE_SIZE*3/4/8/8 ; ++i )
       if ( pBitmap->bitmap[i] != 0 )
          ERROR_EXIT( expectedToPass, NULL, );
-   for ( i = PAGESIZE*3/4/8/8; i < PAGESIZE/8/8 ; ++i )
+   for ( i = VDSE_PAGE_SIZE*3/4/8/8; i < VDSE_PAGE_SIZE/8/8 ; ++i )
       if ( pBitmap->bitmap[i] != 0xff )
          ERROR_EXIT( expectedToPass, NULL, );
-   for ( i = PAGESIZE/8/8; i < PAGESIZE*7/4/8/8 ; ++i )
+   for ( i = VDSE_PAGE_SIZE/8/8; i < VDSE_PAGE_SIZE*7/4/8/8 ; ++i )
       if ( pBitmap->bitmap[i] != 0 )
          ERROR_EXIT( expectedToPass, NULL, );
-   for ( i = PAGESIZE*7/4/8/8; i < PAGESIZE*9/4/8/8 ; ++i )
+   for ( i = VDSE_PAGE_SIZE*7/4/8/8; i < VDSE_PAGE_SIZE*9/4/8/8 ; ++i )
       if ( pBitmap->bitmap[i] != 0xff )
          ERROR_EXIT( expectedToPass, NULL, );
 
-   if ( pBitmap->bitmap[PAGESIZE*9/4/8/8] != 0 )
+   if ( pBitmap->bitmap[VDSE_PAGE_SIZE*9/4/8/8] != 0 )
       ERROR_EXIT( expectedToPass, NULL, );
    
    vdseMemBitmapFini( pBitmap );

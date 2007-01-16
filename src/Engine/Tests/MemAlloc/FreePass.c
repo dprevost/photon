@@ -27,7 +27,7 @@ int main()
    vdseSessionContext context;
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr;
-   size_t allocatedLength = PAGESIZE*10;
+   size_t allocatedLength = VDSE_PAGE_SIZE*10;
    unsigned char* newBuff[5];
    
    initTest( expectedToPass );
@@ -38,7 +38,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
+   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_PAGE_SIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
    newBuff[0] = vdseMallocPages( pAlloc, 2, &context );

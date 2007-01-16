@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -109,6 +109,12 @@ typedef unsigned int transaction_T;
 #define MAX_KEY_LENGTH    1024
 
 #define LOCK_TIMEOUT 10000 /* in milliseconds */
+
+/** Pages allocations will be done as multiples of VDSE_PAGE_SIZE. */
+#if ! defined(VDSE_PAGE_SIZE)
+#  define VDSE_PAGE_SIZE   8192
+#  define VDSE_PAGE_SHIFT    13
+#endif
 
 /** Memory allocation will be done as multiples of VDSE_ALLOCATION_UNIT. */
 #define VDSE_ALLOCATION_UNIT 16

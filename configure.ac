@@ -1,6 +1,6 @@
 #############################################################################
 #                                                                           #
-# Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>        #
+# Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>   #
 #                                                                           #
 # This file is free software; as a special exception the author gives       #
 # unlimited permission to copy and/or distribute it, with or without        #
@@ -233,6 +233,36 @@ fi
 # Section - checks for system services #
 #                                      #
 ########################################
+
+##################################################
+#                                                #
+# Section - override VDSF build/compile defaults #
+#                                                #
+##################################################
+
+AC_ARG_ENABLE([set-page-size],
+              AC_HELP_STRING([--enable-set-page-size=some_value],
+                             [set the size of vdsf pages (values must be either 1k, 2k, 4k, 8k or 16k) @<:@default=8k@:>@]),
+	      [page_size=$enableval],
+	      [page_size=8k])
+if test "$page_size" = "1k"; then
+   AC_DEFINE(VDSE_PAGE_SIZE,  1024)
+   AC_DEFINE(VDSE_PAGE_SHIFT,   10)
+elif test "$page_size" = "2k"; then
+   AC_DEFINE(VDSE_PAGE_SIZE,  2048)
+   AC_DEFINE(VDSE_PAGE_SHIFT,   11)
+elif test "$page_size" = "4k"; then
+   AC_DEFINE(VDSE_PAGE_SIZE,  4096)
+   AC_DEFINE(VDSE_PAGE_SHIFT,   12)
+elif test "$page_size" = "8k"; then
+   AC_DEFINE(VDSE_PAGE_SIZE,  8192)
+   AC_DEFINE(VDSE_PAGE_SHIFT,   13)
+elif test "$page_size" = "16k"; then
+   AC_DEFINE(VDSE_PAGE_SIZE,  16384, This define can be set by using configure with the option --enable-set-page-size=value)
+   AC_DEFINE(VDSE_PAGE_SHIFT,    14, This define can be set indirectly by using configure with the option --enable-set-page-size=value)
+else
+  AC_MSG_ERROR([Invalid value! Values allowed: 1k, 2k, 4k, 8k or 16k])
+fi
 
 ###################################
 #                                 #

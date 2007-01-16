@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -38,7 +38,7 @@ void vdsePageGroupInit( vdsePageGroup* pGroup,
    
    vdseMemBitmapInit( &pGroup->bitmap,
                       groupOffset,
-                      numPages*PAGESIZE, 
+                      numPages << VDSE_PAGE_SHIFT, 
                       VDSE_ALLOCATION_UNIT );
    
    /* Is the groupPage struct at the beginning of the group ? */
@@ -65,11 +65,11 @@ void vdsePageGroupInit( vdsePageGroup* pGroup,
 
    currentLength += offsetof(vdsePageGroup,bitmap) +
                     offsetof(vdseMemBitmap,bitmap) +
-                    vdseGetBitmapLengthBytes( numPages*PAGESIZE, 
+                    vdseGetBitmapLengthBytes( numPages << VDSE_PAGE_SHIFT, 
                                               VDSE_ALLOCATION_UNIT );
    currentLength = ((currentLength-1)/VDSE_ALLOCATION_UNIT+1)*VDSE_ALLOCATION_UNIT;
    
-   pGroup->maxFreeBytes = numPages*PAGESIZE - currentLength;
+   pGroup->maxFreeBytes = (numPages << VDSE_PAGE_SHIFT) - currentLength;
 
    /* 
     * So we have one free buffer, starting at offset "currentLength"

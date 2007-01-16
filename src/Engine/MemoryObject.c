@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -197,7 +197,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
     */
     
    i = ( sizeof(vdsePageGroup) - 1 ) / VDSE_ALLOCATION_UNIT + 1;
-   requestedPages = ((requestedBlocks+i)*VDSE_ALLOCATION_UNIT - 1)/PAGESIZE + 1;
+   requestedPages = (((requestedBlocks+i)*VDSE_ALLOCATION_UNIT - 1) >> VDSE_PAGE_SHIFT) + 1;
    /* We increment the size by 3%, if 3% is bigger than the request */
    i = 3 * pMemObj->totalPages / 100;
    if ( i < requestedPages )
@@ -323,7 +323,7 @@ void vdseFree( vdseMemObject*      pMemObj,
          (unsigned char*)dummy + offsetof(vdsePageGroup,node));
 
       if ( ptr >= (unsigned char*)currentGroup && 
-           ptr < (unsigned char*)currentGroup + PAGESIZE*currentGroup->numPages )
+           ptr < (unsigned char*)currentGroup + (currentGroup->numPages << VDSE_PAGE_SHIFT) )
       {
          goodGroup = currentGroup;
          break;

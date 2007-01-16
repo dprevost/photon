@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -31,7 +31,7 @@ int main()
    
    initTest( expectedToPass );
 
-   ptr = malloc( PAGESIZE*10 );
+   ptr = malloc( VDSE_PAGE_SIZE*10 );
    if (ptr == NULL )
       ERROR_EXIT( expectedToPass, NULL, );
    g_pBaseAddr = ptr;
@@ -40,9 +40,9 @@ int main()
    
    vdseMemBitmapInit( pBitmap, 
                       SET_OFFSET(ptr),
-                      10*PAGESIZE,
+                      10*VDSE_PAGE_SIZE,
                       8 );
-   if ( pBitmap->lengthInBits != 10*PAGESIZE/8 )
+   if ( pBitmap->lengthInBits != 10*VDSE_PAGE_SIZE/8 )
       ERROR_EXIT( expectedToPass, NULL, );
    if ( pBitmap->allocGranularity != 8 )
       ERROR_EXIT( expectedToPass, NULL, );

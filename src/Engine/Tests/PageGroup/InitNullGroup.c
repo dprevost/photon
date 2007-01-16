@@ -29,7 +29,7 @@ int main()
    
    initTest( expectedToPass );
 
-   ptr = malloc( PAGESIZE*10 );
+   ptr = malloc( VDSE_PAGE_SIZE*10 );
    if (ptr == NULL )
       ERROR_EXIT( expectedToPass, NULL, ; );
    g_pBaseAddr = ptr;

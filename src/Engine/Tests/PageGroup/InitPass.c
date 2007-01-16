@@ -29,7 +29,7 @@ int main()
    
    initTest( expectedToPass );
 
-   ptr = malloc( PAGESIZE*10 );
+   ptr = malloc( VDSE_PAGE_SIZE*10 );
    if (ptr == NULL )
       ERROR_EXIT( expectedToPass, NULL, ; );
    g_pBaseAddr = ptr;
@@ -48,8 +48,8 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    if ( pGroup->numPages != 10 )
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pGroup->maxFreeBytes < 9*PAGESIZE || 
-        pGroup->maxFreeBytes >= 10*PAGESIZE )
+   if ( pGroup->maxFreeBytes < 9*VDSE_PAGE_SIZE || 
+        pGroup->maxFreeBytes >= 10*VDSE_PAGE_SIZE )
       ERROR_EXIT( expectedToPass, NULL, ; );
    if (pGroup->freeList.initialized != VDSE_LIST_SIGNATURE )
       ERROR_EXIT( expectedToPass, NULL, ; );

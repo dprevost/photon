@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -32,7 +32,7 @@ int main()
    
    initTest( expectedToPass );
 
-   ptr = malloc( PAGESIZE*10 );
+   ptr = malloc( VDSE_PAGE_SIZE*10 );
    if (ptr == NULL )
       ERROR_EXIT( expectedToPass, NULL, );
    g_pBaseAddr = ptr;
@@ -41,22 +41,22 @@ int main()
    
    vdseMemBitmapInit( pBitmap, 
                       SET_OFFSET(ptr),
-                      10*PAGESIZE,
+                      10*VDSE_PAGE_SIZE,
                       8 );
 
   vdseSetBlocksAllocated( pBitmap,
-                          PAGESIZE/4, /* offset */
-                          PAGESIZE*2 ); /* length */
+                          VDSE_PAGE_SIZE/4, /* offset */
+                          VDSE_PAGE_SIZE*2 ); /* length */
 
    vdseSetBlocksFree( pBitmap,
-                      PAGESIZE/2, /* offset */
-                      PAGESIZE/4 ); /* length */
+                      VDSE_PAGE_SIZE/2, /* offset */
+                      VDSE_PAGE_SIZE/4 ); /* length */
 
-   answer = vdseIsBlockFree( pBitmap, PAGESIZE/4 );
+   answer = vdseIsBlockFree( pBitmap, VDSE_PAGE_SIZE/4 );
    if ( answer == true )
       ERROR_EXIT( expectedToPass, NULL, );
 
-   answer = vdseIsBlockFree( pBitmap, PAGESIZE/2 );
+   answer = vdseIsBlockFree( pBitmap, VDSE_PAGE_SIZE/2 );
    if ( answer == false )
       ERROR_EXIT( expectedToPass, NULL, );
 

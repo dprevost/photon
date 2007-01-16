@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -25,11 +25,11 @@
  * that it forces the allocator to use two pages of memory (because of the
  * bitmap array.
  *
- * We use 8*PAGESIZE*PAGESIZE for the size.
+ * We use 8*VDSE_PAGE_SIZE*VDSE_PAGE_SIZE for the size.
  *
- * If the bitmap is PAGESIZE than adding this with the vdseMemAlloc struct
+ * If the bitmap is VDSE_PAGE_SIZE than adding this with the vdseMemAlloc struct
  * will force the bitmap to be on 2 pages. A bitmap of that size contains
- * 8*PAGESIZE pages. And of course we multiply this by PAGESIZE to get the
+ * 8*VDSE_PAGE_SIZE pages. And of course we multiply this by VDSE_PAGE_SIZE to get the
  * size of the required memory block. 
  */
 
@@ -43,35 +43,35 @@ int main()
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr;
    size_t allocatedLength, i;
-   unsigned char* buffer[8*PAGESIZE-2];
+   unsigned char* buffer[8*VDSE_PAGE_SIZE-2];
    vdseMemBitmap* pBitmap;
 
    initTest( expectedToPass );
    vdscInitErrorHandler( &context.errorHandler );
    
-   allocatedLength = 8*PAGESIZE*PAGESIZE;
+   allocatedLength = 8*VDSE_PAGE_SIZE*VDSE_PAGE_SIZE;
 
    ptr = malloc( allocatedLength );
    if ( ptr == NULL )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
+   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_PAGE_SIZE);
    
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
-   if ( pBitmap->lengthInBits != 8*PAGESIZE )
+   if ( pBitmap->lengthInBits != 8*VDSE_PAGE_SIZE )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    /* Allocate all the pages, one by one. */
-   for ( i = 0; i < 8*PAGESIZE-3; ++i )
+   for ( i = 0; i < 8*VDSE_PAGE_SIZE-3; ++i )
    {
       buffer[i] = vdseMallocPages( pAlloc, 1, &context );
       if ( buffer[i] == NULL )
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   buffer[8*PAGESIZE-3] = vdseMallocPages( pAlloc, 1, &context );
-   if ( buffer[8*PAGESIZE-3] != NULL )
+   buffer[8*VDSE_PAGE_SIZE-3] = vdseMallocPages( pAlloc, 1, &context );
+   if ( buffer[8*VDSE_PAGE_SIZE-3] != NULL )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    /* Check the bitmap pattern */
@@ -86,7 +86,7 @@ int main()
    }
    
    /* Free 1 page out of two */
-   for ( i = 0; i < 8*PAGESIZE-3; i += 2 )
+   for ( i = 0; i < 8*VDSE_PAGE_SIZE-3; i += 2 )
    {
       vdseFreePages( pAlloc, buffer[i], 1, &context );
    }

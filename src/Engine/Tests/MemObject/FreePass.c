@@ -30,7 +30,7 @@ int main()
    vdseSessionContext context;
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr, *buff[9];
-   size_t allocatedLength = PAGESIZE*10;
+   size_t allocatedLength = VDSE_PAGE_SIZE*10;
    vdsePageGroup *pageGroup = NULL;
    
    initTest( expectedToPass );
@@ -42,7 +42,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
+   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_PAGE_SIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
    pObj = vdseMallocPages( pAlloc, 4, &context );
@@ -57,45 +57,45 @@ int main()
    
    pageGroup = (vdsePageGroup*) ((unsigned char*)pObj + sizeof(vdseMemObject));
    vdsePageGroupInit( pageGroup,
-                      2*PAGESIZE,
+                      2*VDSE_PAGE_SIZE,
                       4 );
 
    /* Add the pageGroup to the list of groups of the memObject */
    vdseLinkedListPutFirst( &pObj->listPageGroup, 
                            &pageGroup->node );
 
-   buff[0] = vdseMalloc( pObj, PAGESIZE, &context );
+   buff[0] = vdseMalloc( pObj, VDSE_PAGE_SIZE, &context );
    if ( buff[0] == NULL ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   buff[1] = vdseMalloc( pObj, PAGESIZE, &context );
+   buff[1] = vdseMalloc( pObj, VDSE_PAGE_SIZE, &context );
    if ( buff[1] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   buff[2] = vdseMalloc( pObj, PAGESIZE, &context );
+   buff[2] = vdseMalloc( pObj, VDSE_PAGE_SIZE, &context );
    if ( buff[2] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   vdseFree( pObj, buff[1], PAGESIZE, &context );
-   vdseFree( pObj, buff[2], PAGESIZE, &context );
-   vdseFree( pObj, buff[0], PAGESIZE, &context );
+   vdseFree( pObj, buff[1], VDSE_PAGE_SIZE, &context );
+   vdseFree( pObj, buff[2], VDSE_PAGE_SIZE, &context );
+   vdseFree( pObj, buff[0], VDSE_PAGE_SIZE, &context );
    if ( pObj->totalPages != 4 ) 
       ERROR_EXIT( expectedToPass, NULL, ; );
    
-   buff[0] = vdseMalloc( pObj, 3*PAGESIZE, &context );
+   buff[0] = vdseMalloc( pObj, 3*VDSE_PAGE_SIZE, &context );
    if ( buff[0] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    if ( pObj->totalPages != 4 )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    /* Needs two new pages at this point */
-   buff[3] = vdseMalloc( pObj, PAGESIZE, &context );
+   buff[3] = vdseMalloc( pObj, VDSE_PAGE_SIZE, &context );
    if ( buff[3] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    if ( pObj->totalPages != 6 )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
-   vdseFree( pObj, buff[3], PAGESIZE, &context );
+   vdseFree( pObj, buff[3], VDSE_PAGE_SIZE, &context );
    if ( pObj->totalPages != 4 )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    

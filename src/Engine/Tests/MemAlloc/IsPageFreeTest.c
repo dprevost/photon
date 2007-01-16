@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -33,13 +33,13 @@ int main()
    initTest( expectedToPass );
    vdscInitErrorHandler( &context.errorHandler );
 
-   ptr = malloc( 51*PAGESIZE );
+   ptr = malloc( 51*VDSE_PAGE_SIZE );
    if ( ptr == NULL )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
-   g_pBaseAddr = (unsigned char *)((((size_t)ptr - 1)/PAGESIZE + 1)*PAGESIZE);
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + PAGESIZE);
-   vdseMemAllocInit( pAlloc, g_pBaseAddr, 50*PAGESIZE, &context );
+   g_pBaseAddr = (unsigned char *)((((size_t)ptr - 1)/VDSE_PAGE_SIZE + 1)*VDSE_PAGE_SIZE);
+   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_PAGE_SIZE);
+   vdseMemAllocInit( pAlloc, g_pBaseAddr, 50*VDSE_PAGE_SIZE, &context );
    pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
    
    if ( (pBitmap->lengthInBits-1)/8+1 != 7 )
@@ -59,15 +59,15 @@ int main()
    if ( isFree )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
-   isFree = vdseIsBlockFree( pBitmap, 2*PAGESIZE );
+   isFree = vdseIsBlockFree( pBitmap, 2*VDSE_PAGE_SIZE );
    if ( ! isFree )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
-   isFree = vdseIsBlockFree( pBitmap, -PAGESIZE );
+   isFree = vdseIsBlockFree( pBitmap, -VDSE_PAGE_SIZE );
    if ( isFree )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
-   isFree = vdseIsBlockFree( pBitmap, 50*PAGESIZE );
+   isFree = vdseIsBlockFree( pBitmap, 50*VDSE_PAGE_SIZE );
    if ( isFree )
       ERROR_EXIT( expectedToPass, NULL, ; );
       

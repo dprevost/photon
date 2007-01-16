@@ -509,14 +509,6 @@ typedef enum boolvals bool;
 #  define VDS_MAP_FAILED MAP_FAILED
 #endif
 
-/* Getting the real page size of the system is not really that critical.
- * On most systems it seems to be 4096...
- */
-#ifndef PAGESIZE
-//#  error "aaa..."
-#  define PAGESIZE 4096
-#endif
-
 struct vdstTestAlignment
 {
    unsigned char c;
