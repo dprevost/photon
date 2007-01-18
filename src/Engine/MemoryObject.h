@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -30,13 +30,17 @@ BEGIN_C_DECLS
 #define VDSE_MEM_ALIGNMENT 4
 
 /**
- * MemoryObject includes all the data containers (queues, etc.), the folders
+ * Memory objects include all the data containers (queues, etc.), the folders
  * and all "hidden" top level objects (the allocator, the sessions recovery
  * objects, etc.).
  *
- * This struct should always be the first member of the struct defining an
- * object. This way, the identifier is always at the top of a page and it
+ * This struct should always be the first member of the struct defining such
+ * an object. This way, the identifier is always at the top of a page and it
  * should help debug, recover from crashes, etc. 
+ *
+ * The vdsePageGroup struct is NOT included in this struct since it
+ * contains a variable array size. The vdsePageGroup struct should be
+ * put at the end of the container that owns a vdseMemObject.
  */
 typedef struct vdseMemObject
 {

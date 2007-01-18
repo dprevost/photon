@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -32,12 +32,6 @@ void vdseMemBitmapInit( vdseMemBitmap* pBitmap,
    /* Testing that it is non-zero and a power of two */
    VDS_PRE_CONDITION( allocGranularity > 0  && 
                       ! (allocGranularity & (allocGranularity-1)) );
-
-fprintf( stderr, " z: %d %d %d %d\n",
-allocGranularity,
-allocGranularity, 
-(allocGranularity & (allocGranularity-1)), 
-! (allocGranularity & (allocGranularity-1)) );
 
    pBitmap->lengthInBits = totalLength/allocGranularity;
    pBitmap->allocGranularity = allocGranularity;

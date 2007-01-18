@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -10,13 +10,18 @@
 
 CLEANFILES = *~ core
 
+# There is an order in the tests - for example the Hash tests are done
+# before the Folder tests or the HashMaps tests since the last two use
+# Hash but the Hash tests are after the memory allocation tests since 
+# Hash uses it..
 SUBDIRS =           \
           List      \
           LogFile   \
           MemAlloc  \
           MemBitmap \
           MemObject \
-          PageGroup
+          PageGroup \
+          Hash
 
 check_PROGRAMS =                  \
                  LinkNodeNULLInit \

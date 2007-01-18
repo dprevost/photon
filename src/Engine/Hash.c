@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -54,9 +54,9 @@ static size_t g_arrayLengths[PRIME_NUMBER_ARRAY_LENGTH] =
    2039,
    4093,
    8191,
-   0x00004000 - 3,  /* 2^14 - 3 */
-   0x00008000 - 19,
-   0x00010000 - 15,
+   0x00004000 - 3,  /* 2^14 - 3  */
+   0x00008000 - 19, /* 2^15 - 19 */
+   0x00010000 - 15, /* etc...    */
    0x00020000 - 1,
    0x00040000 - 5,
    0x00080000 - 1,
@@ -399,8 +399,12 @@ vdseHashGet( vdseHash*            pHash,
    ptrdiff_t* pArray;
    vdseHashItem* pItem, *dummy;
    
-   VDS_PRE_CONDITION( pHash != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pHash       != NULL );
+   VDS_PRE_CONDITION( pKey        != NULL );
+   VDS_PRE_CONDITION( ppData      != NULL );
+   VDS_PRE_CONDITION( pDataLength != NULL );
+   VDS_PRE_CONDITION( pContext    != NULL );
+   VDS_PRE_CONDITION( keyLength > 0 );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
    SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
@@ -432,6 +436,9 @@ vdseHashGetFirst( vdseHash*  pHash,
    size_t i;
    
    VDS_PRE_CONDITION( pHash != NULL );
+   VDS_PRE_CONDITION( pBucket != NULL );
+   VDS_PRE_CONDITION( pFirstItemOffset != NULL );
+   
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
    SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
@@ -475,6 +482,10 @@ vdseHashGetNext( vdseHash*  pHash,
    vdseHashItem* pItem;
    
    VDS_PRE_CONDITION( pHash != NULL );
+   VDS_PRE_CONDITION( pNextBucket != NULL );
+   VDS_PRE_CONDITION( pNextItemOffset != NULL );
+   VDS_PRE_CONDITION( previousOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( previousBucket < g_arrayLengths[pHash->lengthIndex]);
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
    SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
@@ -586,8 +597,14 @@ vdseHashInsert( vdseHash*            pHash,
    bool   keyFound = false;
    vdseHashItem* pItem, *previousItem = NULL;
 
-   VDS_PRE_CONDITION( pHash != NULL );
+   VDS_PRE_CONDITION( pHash    != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pKey     != NULL );
+   VDS_PRE_CONDITION( pData    != NULL );
+   VDS_PRE_CONDITION( keyLength  > 0 );
+   VDS_PRE_CONDITION( dataLength > 0 );
+   VDS_PRE_CONDITION( pOffsetOfNewItem != NULL );
+
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
    SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
@@ -608,12 +625,14 @@ vdseHashInsert( vdseHash*            pHash,
    if ( pItem == NULL ) return LIST_NO_MEMORY;
    
    pItem->nextItem = NULL_OFFSET;
-   
+
+   /* keyLength must be set before calling getData() */   
+   pItem->keyLength = keyLength;
+   pItem->dataLength = dataLength;
+
    memcpy( pItem->key,     pKey, keyLength );
    memcpy( getData(pItem), pData, dataLength );
    
-   pItem->keyLength = keyLength;
-   pItem->dataLength = dataLength;
 
    pHash->totalDataSizeInBytes += dataLength;
    pHash->numberOfItems++;

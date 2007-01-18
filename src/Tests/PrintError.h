@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -53,8 +53,10 @@ void printError( vdscErrorHandler* pError )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#pragma warning(disable:4127)
-#pragma warning(disable:4702)
+#if defined(WIN32)
+#  pragma warning(disable:4127)
+#  pragma warning(disable:4702)
+#endif
 
 #define ERROR_EXIT(EXPECTED_TO_PASS,PERROR,SPECIAL_CLEANUP_CODE) \
 {\
