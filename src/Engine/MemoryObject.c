@@ -210,7 +210,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
    {
       /* retry again with a smaller number */
       if ( vdscGetLastError( &pContext->errorHandler ) == 
-         VDS_NOT_ENOUGH_MEMORY )
+         VDS_NOT_ENOUGH_VDS_MEMORY )
       {
          i = requestedPages;
          currentGroup = (vdsePageGroup*) vdseMallocPages( pContext->pAllocator,
@@ -282,7 +282,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
     */
    vdscSetError( &pContext->errorHandler, 
                  g_vdsErrorHandle, 
-                 VDS_NOT_ENOUGH_MEMORY );
+                 VDS_NOT_ENOUGH_VDS_MEMORY );
 
    return NULL;
 }

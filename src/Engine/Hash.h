@@ -108,24 +108,26 @@ typedef struct vdseHash
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum ListErrors 
+VDSF_ENGINE_EXPORT enum ListErrors 
 vdseHashDelete( vdseHash*            pHash,
                 const unsigned char* pKey, 
                 size_t               keyLength,
                 vdseSessionContext*  pContext );
 
+VDSF_ENGINE_EXPORT 
 void vdseHashEmpty( vdseHash*           pHash,
                     vdseSessionContext* pContext );
 
+VDSF_ENGINE_EXPORT
 void vdseHashFini( vdseHash*           pHash,
                    vdseSessionContext* pContext );
 
-enum ListErrors 
+VDSF_ENGINE_EXPORT enum ListErrors 
 vdseHashInit( vdseHash*           pHash,
               size_t              reservedSize, 
               vdseSessionContext* pContext );
 
-enum ListErrors 
+VDSF_ENGINE_EXPORT enum ListErrors 
 vdseHashGet( vdseHash*            pHash,
              const unsigned char* pkey,
              size_t               keyLength,
@@ -134,19 +136,19 @@ vdseHashGet( vdseHash*            pHash,
              vdseSessionContext*  pContext,
              size_t*              pBucket );
 
-enum ListErrors 
+VDSF_ENGINE_EXPORT enum ListErrors 
 vdseHashGetFirst( vdseHash*  pHash,
                   size_t*    pBucket, 
                   ptrdiff_t* pFirstItemOffset );
 
-enum ListErrors 
+VDSF_ENGINE_EXPORT enum ListErrors 
 vdseHashGetNext( vdseHash*  pHash,
                  size_t     previousBucket,
                  ptrdiff_t  previousOffset,
                  size_t*    pNextBucket, 
                  ptrdiff_t* pNextItemOffset );
 
-enum ListErrors 
+VDSF_ENGINE_EXPORT enum ListErrors 
 vdseHashInsert( vdseHash*            pHash,
                 const unsigned char* pKey,
                 size_t               keyLength,
@@ -158,7 +160,7 @@ vdseHashInsert( vdseHash*            pHash,
                 ptrdiff_t*           pOffsetOfNewItem,
                 vdseSessionContext*  pContext );
 
-enum ListErrors 
+VDSF_ENGINE_EXPORT enum ListErrors 
 vdseHashResize( vdseHash*           pHash,
                 vdseSessionContext* pContext );
 

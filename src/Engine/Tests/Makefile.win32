@@ -37,6 +37,7 @@ check: $(OUTDIR) $(check_PROGRAMS)
 	cd MemBitmap && nmake -f Makefile.win32 check && cd ..
 	cd MemObject && nmake -f Makefile.win32 check && cd ..
 	cd PageGroup && nmake -f Makefile.win32 check && cd ..
+	cd Hash      && nmake -f Makefile.win32 check && cd ..
 
 checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
 	rem python RunTests.py --path=Debug
@@ -46,6 +47,7 @@ checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG)
 	cd MemBitmap && nmake -f Makefile.win32 checkdebug && cd ..
 	cd MemObject && nmake -f Makefile.win32 checkdebug && cd ..
 	cd PageGroup && nmake -f Makefile.win32 checkdebug && cd ..
+	cd Hash      && nmake -f Makefile.win32 checkdebug && cd ..
 
 clean: 
 	cd List      && nmake -f Makefile.win32 clean && cd ..
@@ -54,6 +56,7 @@ clean:
 	cd MemBitmap && nmake -f Makefile.win32 clean && cd ..
 	cd MemObject && nmake -f Makefile.win32 clean && cd ..
 	cd PageGroup && nmake -f Makefile.win32 clean && cd ..
+	cd Hash      && nmake -f Makefile.win32 clean && cd ..
 	-@erase /Q Debug
 	-@rmdir /Q Debug
 	-@erase /Q Release

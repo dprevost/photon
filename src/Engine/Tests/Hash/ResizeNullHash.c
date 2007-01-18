@@ -27,6 +27,10 @@ int main()
    vdseSessionContext context;
    vdseHash* pHash;
    enum ListErrors listErr;
+   char key[20];
+   char data[20];
+   ptrdiff_t offsetOfNewItem;
+   int i;
    
    pHash = initHashTest( expectedToPass,
                          &context );
@@ -35,6 +39,32 @@ int main()
    if ( listErr != LIST_OK )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
+   /* A loop to 500 with our low initial size will provoke 4 resizes. */
+   for ( i = 0; i < 500; ++i )
+   {
+      sprintf( key,  "My Key %d", i );
+      sprintf( data, "My Data %d", i );
+      listErr = vdseHashInsert( pHash,
+                                (unsigned char*)key,
+                                strlen(key),
+                                data,
+                                strlen(data),
+                                &offsetOfNewItem,
+                                &context );
+      if ( listErr != LIST_OK )
+      {
+         fprintf( stderr, "i = %d %d\n", i, pHash->enumResize );
+         ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+      }
+      if ( pHash->enumResize == VDSE_HASH_TIME_TO_GROW )
+      {
+         listErr = vdseHashResize( NULL, &context );
+
+         /* We should never come here! */
+         ERROR_EXIT( expectedToPass, NULL, ; );
+      }
+   }
+
    ERROR_EXIT( expectedToPass, NULL, ; );
 }
 

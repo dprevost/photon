@@ -242,7 +242,7 @@ vdseFreeBufferNode* FindBuffer( vdseMemAlloc*     pAlloc,
     * versus a lack of a chunk big enough to accomodate the # of requested
     * pages.
     */
-   vdscSetError( pError, g_vdsErrorHandle, VDS_NOT_ENOUGH_MEMORY );
+   vdscSetError( pError, g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
 
    return NULL;
 }

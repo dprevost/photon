@@ -27,15 +27,97 @@ int main()
    vdseSessionContext context;
    vdseHash* pHash;
    enum ListErrors listErr;
+   char key[20];
+   char data[20];
+   ptrdiff_t offsetOfNewItem;
+   int i;
+   void * pData;
+   size_t dataLength;
+   size_t bucket;
    
    pHash = initHashTest( expectedToPass,
                          &context );
    
-   listErr = vdseHashInit( pHash, 100, &context );
+   listErr = vdseHashInit( pHash, 10, &context );
    if ( listErr != LIST_OK )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   return 1;
+   /* A loop to 500 with our low initial size will provoke 4 resizes. */
+   for ( i = 0; i < 500; ++i )
+   {
+      sprintf( key,  "My Key %d", i );
+      sprintf( data, "My Data %d", i );
+      listErr = vdseHashInsert( pHash,
+                                (unsigned char*)key,
+                                strlen(key),
+                                data,
+                                strlen(data),
+                                &offsetOfNewItem,
+                                &context );
+      if ( listErr != LIST_OK )
+      {
+         fprintf( stderr, "i = %d %d\n", i, pHash->enumResize );
+         ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+      }
+      if ( pHash->enumResize == VDSE_HASH_TIME_TO_GROW )
+      {
+         listErr = vdseHashResize( pHash, &context );
+         if ( listErr != LIST_OK )
+         {
+            ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+         }
+         else
+            fprintf( stderr, "Resize ok %d\n", i );
+         if ( pHash->enumResize == VDSE_HASH_TIME_TO_GROW )
+            ERROR_EXIT( expectedToPass, NULL, ; );
+      }
+   }
+   
+   /* 
+    * Next step: test that we can reach all the data by doing a get,
+    * than a delete and test shrinking at the same time.
+    */
+   for ( i = 0; i < 500; ++i )
+   {
+      sprintf( key,  "My Key %d", i );
+      sprintf( data, "My Data %d", i );
+      
+      listErr = vdseHashGet( pHash,
+                             (unsigned char*)key,
+                             strlen(key),
+                             &pData,
+                             &dataLength,
+                             &context,
+                             &bucket );
+      if ( listErr != LIST_OK )
+         ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+      if ( memcmp( data, pData, strlen(data) ) != 0 )
+         ERROR_EXIT( expectedToPass, NULL, ; );
+      if ( dataLength != strlen(data) )
+         ERROR_EXIT( expectedToPass, NULL, ; );
+
+      listErr = vdseHashDelete( pHash,
+                                (unsigned char*)key,
+                                strlen(key),
+                                &context );
+      if ( listErr != LIST_OK )
+         ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+      if ( pHash->enumResize == VDSE_HASH_TIME_TO_SHRINK )
+      {
+         listErr = vdseHashResize( pHash, &context );
+         if ( listErr != LIST_OK )
+         {
+            ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+         }
+         else
+            fprintf( stderr, "Resize (shrink ok %d\n", i );
+         if ( pHash->enumResize == VDSE_HASH_TIME_TO_SHRINK )
+            ERROR_EXIT( expectedToPass, NULL, ; );
+      }
+   }
+    
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

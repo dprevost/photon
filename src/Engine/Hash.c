@@ -279,9 +279,12 @@ vdseHashDelete( vdseHash*            pHash,
    ptrdiff_t* pArray;
    bool keyFound = false;
    vdseHashItem* pItem, *previousItem = NULL;
+   ptrdiff_t nextOffset;
    
    VDS_PRE_CONDITION( pHash != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pKey != NULL );
+   VDS_PRE_CONDITION( keyLength > 0 );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
    SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
@@ -291,16 +294,19 @@ vdseHashDelete( vdseHash*            pHash,
                        &pItem, &previousItem, &bucket );
    if ( keyFound )   
    {
+      nextOffset = pItem->nextItem;
+      
       pHash->totalDataSizeInBytes -= pItem->dataLength;
       vdseFree( (vdseMemObject*)pContext->pCurrentMemObject, 
                 (unsigned char*)pItem, 
                 calculateItemLength(pItem->keyLength,pItem->dataLength),
                 pContext );
+                
       if ( previousItem == NULL )
-         pArray[bucket] = NULL_OFFSET;
+         pArray[bucket] = nextOffset;
       else
-         previousItem->nextItem = NULL_OFFSET;
-      
+         previousItem->nextItem = nextOffset;
+            
       pHash->numberOfItems--;
 
       pHash->enumResize = isItTimeToResize( pHash );
@@ -696,11 +702,14 @@ vdseHashResize( vdseHash*           pHash,
       {
          pItem = GET_PTR( currentOffset, vdseHashItem );
          nextOffset = pItem->nextItem;
+         pItem->nextItem = NULL_OFFSET;
          
          newBucket = hash_pjw( pItem->key, pItem->keyLength ) % 
                      g_arrayLengths[newIndexLength];
          if ( ptr[newBucket] == NULL_OFFSET )
+         {
             ptr[newBucket] = currentOffset;
+         }
          else
          {
             newOffset = ptr[newBucket];
@@ -711,7 +720,6 @@ vdseHashResize( vdseHash*           pHash,
                pNewItem = GET_PTR( newOffset, vdseHashItem );
             }
             pNewItem->nextItem = currentOffset;
-            pItem->nextItem = NULL_OFFSET;
          }
          
          /* Move to the next item in our bucket */
@@ -729,6 +737,8 @@ vdseHashResize( vdseHash*           pHash,
              len, 
              pContext );
    
+   pHash->enumResize = VDSE_HASH_NO_RESIZE;
+
    return LIST_OK;   
 }
 

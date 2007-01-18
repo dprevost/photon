@@ -27,7 +27,12 @@ int main()
    vdseSessionContext context;
    vdseHash* pHash;
    enum ListErrors listErr;
-   
+   char* key1 = "My Key 1";
+   char* key2 = "My Key 2";
+   char* data1 = "My Data 1";
+   char* data2 = "My Data 2";
+   ptrdiff_t offsetOfNewItem;
+
    pHash = initHashTest( expectedToPass,
                          &context );
    
@@ -35,6 +40,31 @@ int main()
    if ( listErr != LIST_OK )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
+   listErr = vdseHashInsert( pHash,
+                             (unsigned char*)key1,
+                             strlen(key1),
+                             data1,
+                             strlen(data1),
+                             &offsetOfNewItem,
+                             &context );
+   if ( listErr != LIST_OK )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   listErr = vdseHashInsert( pHash,
+                             (unsigned char*)key2,
+                             strlen(key2),
+                             data2,
+                             strlen(data2),
+                             &offsetOfNewItem,
+                             &context );
+   if ( listErr != LIST_OK )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   listErr = vdseHashDelete( pHash,
+                             (unsigned char*)key2,
+                             0,
+                             &context );
+
    ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
