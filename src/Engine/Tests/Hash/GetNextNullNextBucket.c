@@ -33,7 +33,7 @@ int main()
    char* data2 = "My Data 2";
    ptrdiff_t offsetFirstItem, offsetNextItem;
    ptrdiff_t offsetOfNewItem;
-   size_t bucketFirst, bucketNext;
+   size_t bucketFirst;
    
    pHash = initHashTest( expectedToPass,
                          &context );

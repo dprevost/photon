@@ -36,8 +36,6 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    if ( obj.objType != VDSE_IDENT_ALLOCATOR )
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( obj.accessCounter != 0 )
-      ERROR_EXIT( expectedToPass, NULL, ; );
    if ( obj.totalPages != 7 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 

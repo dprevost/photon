@@ -60,7 +60,6 @@ vdseMemObjectInit( vdseMemObject* pMemObj,
       return VDS_NOT_ENOUGH_RESOURCES;
    
    pMemObj->objType = objType;
-   pMemObj->accessCounter = 0;
    vdseLinkedListInit( &pMemObj->listPageGroup );
    
    pMemObj->totalPages = numPages;
@@ -90,7 +89,6 @@ vdseMemObjectFini( vdseMemObject* pMemObj )
 
    pMemObj->objType = VDSE_IDENT_CLEAR;
 
-   pMemObj->accessCounter = 0;
    pMemObj->totalPages = 0;
 
    vdseLinkedListFini( &pMemObj->listPageGroup );

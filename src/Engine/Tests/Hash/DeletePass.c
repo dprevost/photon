@@ -33,8 +33,7 @@ int main()
    char* data2 = "My Data 2";
    ptrdiff_t offsetOfNewItem;
    size_t bucket;
-   void* pData;
-   size_t dataLength;
+   vdseHashItem* pItem = NULL;
    
    pHash = initHashTest( expectedToPass,
                          &context );
@@ -73,8 +72,7 @@ int main()
    listErr = vdseHashGet( pHash,
                           (unsigned char*)key2,
                           strlen(key2),
-                          &pData,
-                          &dataLength,
+                          &pItem,
                           &context,
                           &bucket );
    if ( listErr != LIST_KEY_NOT_FOUND )

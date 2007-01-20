@@ -41,7 +41,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    listErr = vdseHashInsert( pHash,
-                             key1,
+                             (unsigned char*)key1,
                              strlen(key1),
                              data1,
                              strlen(data1),
@@ -54,7 +54,7 @@ int main()
 
    /* A duplicate - not allowed */
    listErr = vdseHashInsert( pHash,
-                             key1,
+                             (unsigned char*)key1,
                              strlen(key1),
                              data2,
                              strlen(data2),
@@ -64,7 +64,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    listErr = vdseHashInsert( pHash,
-                             key2,
+                             (unsigned char*)key2,
                              strlen(key2),
                              data1,
                              strlen(data1),

@@ -32,8 +32,9 @@ int main()
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
    ptrdiff_t offsetOfNewItem;
-   void* pData = NULL;
-   size_t dataLength = 0, bucket = (size_t) -1;
+   unsigned char* pData = NULL;
+   size_t bucket = (size_t) -1;
+   vdseHashItem* pItem;
    
    pHash = initHashTest( expectedToPass,
                          &context );
@@ -65,15 +66,15 @@ int main()
    listErr = vdseHashGet( pHash,
                           (unsigned char*)key2,
                           strlen(key2),
-                          &pData,
-                          &dataLength,
+                          &pItem,
                           &context,
                           &bucket );
    if ( listErr != LIST_OK )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   pData = GET_PTR(pItem->dataOffset, unsigned char);
    if ( pData == NULL )
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( dataLength == 0 )
+   if ( pItem->dataLength == 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
    if ( bucket == (size_t) -1 )
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -81,8 +82,7 @@ int main()
    listErr = vdseHashGet( pHash,
                           (unsigned char*)"My Key 3",
                           strlen("My Key 3"),
-                          &pData,
-                          &dataLength,
+                          &pItem,
                           &context,
                           &bucket );
    if ( listErr != LIST_KEY_NOT_FOUND )

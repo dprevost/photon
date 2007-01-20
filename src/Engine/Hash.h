@@ -44,6 +44,7 @@ typedef struct vdseHashItem
    ptrdiff_t     nextItem;
    
    size_t        keyLength;
+   ptrdiff_t     dataOffset;
    size_t        dataLength;
    unsigned char key[1];
    
@@ -131,8 +132,7 @@ VDSF_ENGINE_EXPORT enum ListErrors
 vdseHashGet( vdseHash*            pHash,
              const unsigned char* pkey,
              size_t               keyLength,
-             void **              ppData,
-             size_t*              pDataLength,
+             vdseHashItem**       ppItem,
              vdseSessionContext*  pContext,
              size_t*              pBucket );
 

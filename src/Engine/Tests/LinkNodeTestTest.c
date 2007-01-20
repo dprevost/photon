@@ -22,9 +22,9 @@ const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
+int main()
 {
-   int errcode, rc;
+   int rc;
    vdseLinkNode node;
 
    vdseLinkNodeInit( &node );

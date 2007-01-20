@@ -31,8 +31,8 @@ int main()
    char data[20];
    ptrdiff_t offsetOfNewItem;
    int i;
-   void * pData;
-   size_t dataLength;
+   unsigned char * pData;
+   vdseHashItem* pItem = NULL;
    size_t bucket;
    
    pHash = initHashTest( expectedToPass,
@@ -85,15 +85,15 @@ int main()
       listErr = vdseHashGet( pHash,
                              (unsigned char*)key,
                              strlen(key),
-                             &pData,
-                             &dataLength,
+                             &pItem,
                              &context,
                              &bucket );
       if ( listErr != LIST_OK )
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+      pData = GET_PTR(pItem->dataOffset, unsigned char);
       if ( memcmp( data, pData, strlen(data) ) != 0 )
          ERROR_EXIT( expectedToPass, NULL, ; );
-      if ( dataLength != strlen(data) )
+      if ( pItem->dataLength != strlen(data) )
          ERROR_EXIT( expectedToPass, NULL, ; );
 
       listErr = vdseHashDelete( pHash,

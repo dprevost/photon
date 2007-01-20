@@ -39,7 +39,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    listErr = vdseHashInsert( pHash,
-                             key,
+                             (unsigned char*)key,
                              0,
                              data1,
                              strlen(data1),

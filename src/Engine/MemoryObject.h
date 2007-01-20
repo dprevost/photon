@@ -54,7 +54,7 @@ typedef struct vdseMemObject
     * It should only be used from a Folder object, when the 
     * TreeManager is locked!
     */
-   size_t accessCounter;
+//   size_t accessCounter;
 
    /** Total number of pages for the current object */
    size_t totalPages;

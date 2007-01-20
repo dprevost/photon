@@ -41,9 +41,8 @@ check_PROGRAMS =                       \
                  GetNextPass           \
                  GetNullBucket         \
                  GetNullContext        \
-                 GetNullData           \
-                 GetNullDataLength     \
                  GetNullHash           \
+                 GetNullItem           \
                  GetNullKey            \
                  GetPass               \
                  GetZeroKeyLength      \
@@ -83,9 +82,8 @@ GetNextNullNextOffset_SOURCES = GetNextNullNextOffset.c
 GetNextPass_SOURCES           = GetNextPass.c
 GetNullBucket_SOURCES         = GetNullBucket.c
 GetNullContext_SOURCES        = GetNullContext.c
-GetNullData_SOURCES           = GetNullData.c
-GetNullDataLength_SOURCES     = GetNullDataLength.c
 GetNullHash_SOURCES           = GetNullHash.c
+GetNullItem_SOURCES           = GetNullItem.c
 GetNullKey_SOURCES            = GetNullKey.c
 GetPass_SOURCES               = GetPass.c
 GetZeroKeyLength_SOURCES      = GetZeroKeyLength.c
@@ -133,9 +131,8 @@ TESTS +=                       \
          GetNextPass           \
          GetNullBucket         \
          GetNullContext        \
-         GetNullData           \
-         GetNullDataLength     \
          GetNullHash           \
+         GetNullItem           \
          GetNullKey            \
          GetPass               \
          GetZeroKeyLength      \
@@ -177,9 +174,8 @@ XFAIL_TESTS =                       \
               GetNextNullNextBucket \
               GetNextNullNextOffset \
               GetNullContext        \
-              GetNullData           \
-              GetNullDataLength     \
               GetNullHash           \
+              GetNullItem           \
               GetNullKey            \
               GetZeroKeyLength      \
               InitNullContext       \

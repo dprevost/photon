@@ -395,8 +395,7 @@ enum ListErrors
 vdseHashGet( vdseHash*            pHash,
              const unsigned char* pKey,
              size_t               keyLength,
-             void **              ppData,
-             size_t*              pDataLength,
+             vdseHashItem**       ppItem,
              vdseSessionContext*  pContext,
              size_t*              pBucket )
 {
@@ -407,8 +406,7 @@ vdseHashGet( vdseHash*            pHash,
    
    VDS_PRE_CONDITION( pHash       != NULL );
    VDS_PRE_CONDITION( pKey        != NULL );
-   VDS_PRE_CONDITION( ppData      != NULL );
-   VDS_PRE_CONDITION( pDataLength != NULL );
+   VDS_PRE_CONDITION( ppItem      != NULL );
    VDS_PRE_CONDITION( pContext    != NULL );
    VDS_PRE_CONDITION( keyLength > 0 );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
@@ -420,13 +418,13 @@ vdseHashGet( vdseHash*            pHash,
                        &pItem, &dummy, &bucket );
    if ( keyFound )
    {
-      *ppData      = getData( pItem );
-      *pDataLength = pItem->dataLength;
+      *ppItem = pItem;
       if ( pBucket )
          *pBucket  = bucket;
       
       return LIST_OK;
    }
+
    return LIST_KEY_NOT_FOUND;
 }
 
@@ -602,7 +600,8 @@ vdseHashInsert( vdseHash*            pHash,
    size_t bucket = 0;
    bool   keyFound = false;
    vdseHashItem* pItem, *previousItem = NULL;
-
+   size_t itemLength;
+   
    VDS_PRE_CONDITION( pHash    != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pKey     != NULL );
@@ -624,9 +623,10 @@ vdseHashInsert( vdseHash*            pHash,
 
    /* The whole item is allocated in one step, header+data, to minimize */
    /* overheads of the memory allocator */
+   itemLength = calculateItemLength( keyLength, dataLength );
    pItem = (vdseHashItem*) 
       vdseMalloc( (vdseMemObject*)pContext->pCurrentMemObject, 
-                  calculateItemLength( keyLength, dataLength ),
+                  itemLength,
                   pContext );
    if ( pItem == NULL ) return LIST_NO_MEMORY;
    
@@ -635,10 +635,10 @@ vdseHashInsert( vdseHash*            pHash,
    /* keyLength must be set before calling getData() */   
    pItem->keyLength = keyLength;
    pItem->dataLength = dataLength;
-
-   memcpy( pItem->key,     pKey, keyLength );
-   memcpy( getData(pItem), pData, dataLength );
+   pItem->dataOffset = SET_OFFSET(pItem) + itemLength - dataLength;
    
+   memcpy( pItem->key,     pKey, keyLength );
+   memcpy( GET_PTR(pItem->dataOffset, unsigned char), pData, dataLength );
 
    pHash->totalDataSizeInBytes += dataLength;
    pHash->numberOfItems++;

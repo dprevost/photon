@@ -25,7 +25,6 @@ const bool expectedToPass = true;
 int main()
 {
    vdseMemBitmap *pBitmap;
-   vdsErrors errcode;
    unsigned char* ptr;
    size_t i;
    
