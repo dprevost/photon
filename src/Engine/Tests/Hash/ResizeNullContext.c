@@ -29,7 +29,7 @@ int main()
    enum ListErrors listErr;
    char key[20];
    char data[20];
-   ptrdiff_t offsetOfNewItem;
+   vdseHashItem* pNewItem;
    int i;
    
    pHash = initHashTest( expectedToPass,
@@ -49,7 +49,7 @@ int main()
                                 strlen(key),
                                 data,
                                 strlen(data),
-                                &offsetOfNewItem,
+                                &pNewItem,
                                 &context );
       if ( listErr != LIST_OK )
       {

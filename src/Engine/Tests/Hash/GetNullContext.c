@@ -31,7 +31,7 @@ int main()
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
-   ptrdiff_t offsetOfNewItem;
+   vdseHashItem* pNewItem;
    vdseHashItem* pItem = NULL;
    size_t bucket;
 
@@ -47,7 +47,7 @@ int main()
                              strlen(key1),
                              data1,
                              strlen(data1),
-                             &offsetOfNewItem,
+                             &pNewItem,
                              &context );
    if ( listErr != LIST_OK )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -57,7 +57,7 @@ int main()
                              strlen(key2),
                              data2,
                              strlen(data2),
-                             &offsetOfNewItem,
+                             &pNewItem,
                              &context );
    if ( listErr != LIST_OK )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

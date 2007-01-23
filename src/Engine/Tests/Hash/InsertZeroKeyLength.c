@@ -29,7 +29,7 @@ int main()
    enum ListErrors listErr;
    char* key = "My Key";
    char* data1 = "My Data 1";
-   ptrdiff_t offsetOfNewItem;
+   vdseHashItem* pNewItem;
    
    pHash = initHashTest( expectedToPass,
                          &context );
@@ -43,7 +43,7 @@ int main()
                              0,
                              data1,
                              strlen(data1),
-                             &offsetOfNewItem,
+                             &pNewItem,
                              &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
