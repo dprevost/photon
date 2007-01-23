@@ -41,7 +41,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdseTxItem
+typedef struct vdseTxStatus
 {
    /* The identifier for the current transaction */
    uint32_t transactionId;
@@ -61,12 +61,12 @@ typedef struct vdseTxItem
 
    uint32_t signature;
    
-} vdseTxItem;
+} vdseTxStatus;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void vdseTxItemInit( vdseTxItem* pItem, transaction_T txId )
+void vdseTxStatusInit( vdseTxStatus* pItem, transaction_T txId )
 {
    pItem->transactionId = txId;
    pItem->statusFlag = 0;
@@ -75,7 +75,7 @@ void vdseTxItemInit( vdseTxItem* pItem, transaction_T txId )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxItemSetId( vdseTxItem* pItem, transaction_T txId )
+void vdseTxStatusSetId( vdseTxStatus* pItem, transaction_T txId )
 {
    pItem->transactionId = txId;
 }
@@ -83,7 +83,7 @@ void vdseTxItemSetId( vdseTxItem* pItem, transaction_T txId )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void vdseTxItemFini( vdseTxItem* pItem )
+void vdseTxStatusFini( vdseTxStatus* pItem )
 {
    pItem->transactionId = 0;
    pItem->statusFlag = 0;
@@ -92,7 +92,7 @@ void vdseTxItemFini( vdseTxItem* pItem )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdseTxItemIsValid( vdseTxItem* pItem, transaction_T transactionId )
+bool vdseTxStatusIsValid( vdseTxStatus* pItem, transaction_T transactionId )
 {
    if ( pItem->transactionId == 0 )
       return true;
@@ -104,7 +104,7 @@ bool vdseTxItemIsValid( vdseTxItem* pItem, transaction_T transactionId )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxItemCommit( vdseTxItem* pItem )
+void vdseTxStatusCommit( vdseTxStatus* pItem )
 {
    pItem->transactionId = 0;
 }
@@ -112,7 +112,7 @@ void vdseTxItemCommit( vdseTxItem* pItem )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
    
 static inline
-bool vdseTxItemIsMarkedAsDestroyed( vdseTxItem* pItem )
+bool vdseTxStatusIsMarkedAsDestroyed( vdseTxStatus* pItem )
 {
    return (pItem->statusFlag & MARKED_AS_DESTROYED);
 }
@@ -120,7 +120,7 @@ bool vdseTxItemIsMarkedAsDestroyed( vdseTxItem* pItem )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdseTxItemIsRemoveCommitted( vdseTxItem* pItem )
+bool vdseTxStatusIsRemoveCommitted( vdseTxStatus* pItem )
 {
    return (pItem->statusFlag & REMOVE_IS_COMMITTED );
 }
@@ -128,7 +128,7 @@ bool vdseTxItemIsRemoveCommitted( vdseTxItem* pItem )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxItemMarkAsDestroyed( vdseTxItem* pItem )
+void vdseTxStatusMarkAsDestroyed( vdseTxStatus* pItem )
 {
    pItem->statusFlag |= MARKED_AS_DESTROYED;
 }
@@ -136,7 +136,7 @@ void vdseTxItemMarkAsDestroyed( vdseTxItem* pItem )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxItemCommitRemove( vdseTxItem* pItem )
+void vdseTxStatusCommitRemove( vdseTxStatus* pItem )
 {
    pItem->statusFlag |= REMOVE_IS_COMMITTED;
 }
@@ -144,7 +144,7 @@ void vdseTxItemCommitRemove( vdseTxItem* pItem )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxItemUnmarkAsDestroyed( vdseTxItem* pItem )
+void vdseTxStatusUnmarkAsDestroyed( vdseTxStatus* pItem )
 {
    pItem->statusFlag = ~(~pItem->statusFlag | MARKED_AS_DESTROYED);
 }
@@ -152,7 +152,7 @@ void vdseTxItemUnmarkAsDestroyed( vdseTxItem* pItem )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdseTxItemSelfTest( vdseTxItem* pItem )
+bool vdseTxStatusSelfTest( vdseTxStatus* pItem )
 {
    if ( pItem->transactionId != 0 )
    {
