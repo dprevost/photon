@@ -53,7 +53,7 @@ check_PROGRAMS =                       \
                  InsertNullData        \
                  InsertNullHash        \
                  InsertNullKey         \
-                 InsertNullOffset      \
+                 InsertNullNewItem     \
                  InsertPass            \
                  InsertZeroDataLength  \
                  InsertZeroKeyLength   \
@@ -94,7 +94,7 @@ InsertNullContext_SOURCES     = InsertNullContext.c
 InsertNullData_SOURCES        = InsertNullData.c
 InsertNullHash_SOURCES        = InsertNullHash.c
 InsertNullKey_SOURCES         = InsertNullKey.c
-InsertNullOffset_SOURCES      = InsertNullOffset.c
+InsertNullNewItem_SOURCES     = InsertNullNewItem.c
 InsertPass_SOURCES            = InsertPass.c
 InsertZeroDataLength_SOURCES  = InsertZeroDataLength.c
 InsertZeroKeyLength_SOURCES   = InsertZeroKeyLength.c
@@ -143,7 +143,7 @@ TESTS +=                       \
          InsertNullData        \
          InsertNullHash        \
          InsertNullKey         \
-         InsertNullOffset      \
+         InsertNullNewItem     \
          InsertPass            \
          InsertZeroDataLength  \
          InsertZeroKeyLength   \
@@ -184,7 +184,7 @@ XFAIL_TESTS =                       \
               InsertNullData        \
               InsertNullHash        \
               InsertNullKey         \
-              InsertNullOffset      \
+              InsertNullNewItem     \
               InsertZeroDataLength  \
               InsertZeroKeyLength   \
               ResizeNullContext     \
