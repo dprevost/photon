@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -8,14 +8,24 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-CLEANFILES = *~
+CLEANFILES = *~ VdsErrorHandler.c VdsErrorHandler.h
 
 SUBDIRS = . Tests
  
 noinst_LTLIBRARIES   = libEngine.la
 
+# Trick: keeping VdsErrorHandler.c as the first file forces make to
+# generate it (and the .h) before trying to build the rest. Otherwise
+# there was a bit of an issue (after doing a make distclean, which 
+# remove the dependency files - the dependencies could have been written
+# by hand but... this would defeat the whole idea of automated tools!).
+
 libEngine_la_SOURCES =                   \
+                       VdsErrorHandler.c \
+                       VdsErrorHandler.h \
                        Engine.h          \
+                       Folder.c          \
+                       Folder.h          \
                        InitEngine.c      \
                        InitEngine.h      \
                        LinkedList.c      \
@@ -37,19 +47,16 @@ libEngine_la_SOURCES =                   \
                        PageGroup.c       \
                        PageGroup.h       \
                        SessionContext.h  \
-                       VdsErrorHandler.c \
-                       VdsErrorHandler.h
+                       Transaction.c     \
+                       Transaction.h     \
+                       TxStatus.h        \
+                       TreeNode.h        
    
 #   MemoryManager.c         \
    MemoryManager.h         
 
 #  Queue.cpp               \
    Queue.h                 \
-   Transaction.cpp         \
-   Transaction.h           \
-   TransactionBase.h       \
-   TransactionManager.cpp  \
-   TransactionManager.h    \
    TreeManager.cpp         \
    TreeManager.h 
 
@@ -61,14 +68,8 @@ libEngine_la_SOURCES =                   \
    CleanupProcess.cpp      \
    CleanupProcess.h        \
    CleanupSession.cpp      \
-   CleanupSession.h        \
-   Folder.cpp              \
-   Folder.h                \
-   HashList.cpp            \
-   HashList.h              
+   CleanupSession.h        
    
-Engine.h: VdsErrorHandler.h
-
 VdsErrorHandler.c VdsErrorHandler.h:
 	$(top_builddir)/src/BuildTools/errorParser -i $(top_srcdir)/src/include/vdsf/vdsErrors.h -o VdsErrorHandler -p vdseErr
 
@@ -90,3 +91,4 @@ endif
 if COND_USE_EXTREME_DBC
    AM_CPPFLAGS += -DUSE_EXTREME_DBC
 endif
+

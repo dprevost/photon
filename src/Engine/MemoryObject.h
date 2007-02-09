@@ -50,12 +50,6 @@ typedef struct vdseMemObject
    /** The lock... obviously */
    vdscProcessLock lock;
 
-   /** Counts the number of clients who are accessing the object.
-    * It should only be used from a Folder object, when the 
-    * TreeManager is locked!
-    */
-//   size_t accessCounter;
-
    /** Total number of pages for the current object */
    size_t totalPages;
    
@@ -85,6 +79,36 @@ void vdseFree( vdseMemObject*      pMemObj,
                unsigned char*      ptr, 
                size_t              numBytes,
                vdseSessionContext* pContext );
+
+static inline
+int vdseLock( vdseMemObject*      pMemObj,
+              ptrdiff_t           objOffset,
+              vdseSessionContext* pContext )
+{
+   pContext->lockObject = objOffset;
+   
+   return vdscTryAcquireProcessLock ( &pMemObj->lock,
+                                      pContext->lockValue,
+                                      LOCK_TIMEOUT );
+}
+
+static inline
+void vdseLockNoFailure( vdseMemObject*      pMemObj,
+                        ptrdiff_t           objOffset,
+                        vdseSessionContext* pContext )
+{
+   pContext->lockObject = objOffset;
+   
+   vdscAcquireProcessLock ( &pMemObj->lock, LOCK_TIMEOUT );
+}
+
+static inline
+void vdseUnlock( vdseMemObject*      pMemObj,
+                 vdseSessionContext* pContext  )
+{
+   return vdscReleaseProcessLock ( &pMemObj->lock );
+   pContext->lockObject = NULL_OFFSET;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

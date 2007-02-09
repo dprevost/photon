@@ -23,7 +23,7 @@
 #include "Engine.h"
 #include "ListErrors.h"
 #include "SessionContext.h"
-#include "TransactionItem.h"
+#include "TxStatus.h"
 
 #define VDSE_HASH_SIGNATURE  ((unsigned int)0x2026fe02)
 
@@ -38,7 +38,7 @@
  */
 typedef struct vdseHashItem
 {
-   vdseTxItem    txInfo;
+   vdseTxStatus  txStatus;
    
    /** Next item in this bucket */
    ptrdiff_t     nextItem;
@@ -154,10 +154,9 @@ vdseHashInsert( vdseHash*            pHash,
                 size_t               keyLength,
                 void*                pData,
                 size_t               dataLength,
-                /* pOffsetOfNewItem is used to access the name of 
-                 * objects from the "this" pointer of
-                 * the objects themselves */
-                ptrdiff_t*           pOffsetOfNewItem,
+                /* ppNewItem is used to access the original name of 
+                 * objects and the vdseTxStatus by the objects themselves */
+                vdseHashItem**       ppNewItem,
                 vdseSessionContext*  pContext );
 
 VDSF_ENGINE_EXPORT enum ListErrors 

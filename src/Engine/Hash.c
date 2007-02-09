@@ -593,7 +593,7 @@ vdseHashInsert( vdseHash*            pHash,
                 size_t               keyLength,
                 void*                pData,
                 size_t               dataLength,
-                ptrdiff_t*           pOffsetOfNewItem,
+                vdseHashItem**       ppNewItem,
                 vdseSessionContext*  pContext )
 {
    ptrdiff_t* pArray;   
@@ -602,13 +602,13 @@ vdseHashInsert( vdseHash*            pHash,
    vdseHashItem* pItem, *previousItem = NULL;
    size_t itemLength;
    
-   VDS_PRE_CONDITION( pHash    != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pKey     != NULL );
-   VDS_PRE_CONDITION( pData    != NULL );
+   VDS_PRE_CONDITION( pHash     != NULL );
+   VDS_PRE_CONDITION( pContext  != NULL );
+   VDS_PRE_CONDITION( pKey      != NULL );
+   VDS_PRE_CONDITION( pData     != NULL );
+   VDS_PRE_CONDITION( ppNewItem != NULL );
    VDS_PRE_CONDITION( keyLength  > 0 );
    VDS_PRE_CONDITION( dataLength > 0 );
-   VDS_PRE_CONDITION( pOffsetOfNewItem != NULL );
 
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
@@ -645,13 +645,13 @@ vdseHashInsert( vdseHash*            pHash,
 
    pHash->enumResize = isItTimeToResize( pHash );
    
-   *pOffsetOfNewItem = SET_OFFSET(pItem );
-   
    if ( previousItem == NULL )
-      pArray[bucket] = *pOffsetOfNewItem;
+      pArray[bucket] = SET_OFFSET(pItem);
    else
-      previousItem->nextItem = *pOffsetOfNewItem;
+      previousItem->nextItem = SET_OFFSET(pItem);
    
+   *ppNewItem = pItem;
+
    return LIST_OK;
 }
 

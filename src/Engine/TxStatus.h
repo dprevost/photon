@@ -1,6 +1,5 @@
-/* -*- c++ -*- */
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -16,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_TRANSACTION_ITEM_H
-#define VDSE_TRANSACTION_ITEM_H
+#ifndef VDSE_TX_STATUS_H
+#define VDSE_TX_STATUS_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -43,9 +42,8 @@ BEGIN_C_DECLS
 
 typedef struct vdseTxStatus
 {
-   /* The identifier for the current transaction */
-   uint32_t transactionId;
-
+   /* The offset of the current transaction */
+   ptrdiff_t txOffset;
 
    /** An object is marked as destroyed as soon as the API call to destroy 
     * it is processed. Once it is marked as destroyed, you can't open it
@@ -57,46 +55,58 @@ typedef struct vdseTxStatus
     */
    uint32_t statusFlag;
    
+   /** 
+    * Counts the number of clients who are accessing either the current
+    * object and or the current data item (this is to prevent the removal
+    * of data/objects while they are used).
+    */
    uint32_t usageCounter;
 
-   uint32_t signature;
-   
 } vdseTxStatus;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void vdseTxStatusInit( vdseTxStatus* pItem, transaction_T txId )
+void vdseTxStatusInit( vdseTxStatus* pStatus, ptrdiff_t txOffset )
 {
-   pItem->transactionId = txId;
-   pItem->statusFlag = 0;
+   VDS_PRE_CONDITION( pStatus != NULL );
+   
+   pStatus->txOffset = txOffset;
+   pStatus->statusFlag = 0;
+   pStatus->usageCounter = 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusSetId( vdseTxStatus* pItem, transaction_T txId )
+void vdseTxStatusSetTx( vdseTxStatus* pStatus, ptrdiff_t txOffset )
 {
-   pItem->transactionId = txId;
+   pStatus->txOffset = txOffset;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void vdseTxStatusFini( vdseTxStatus* pItem )
+void vdseTxStatusFini( vdseTxStatus* pStatus )
 {
-   pItem->transactionId = 0;
-   pItem->statusFlag = 0;
+   VDS_PRE_CONDITION( pStatus != NULL );
+   VDS_PRE_CONDITION( pStatus->statusFlag   == 0 );
+   VDS_PRE_CONDITION( pStatus->usageCounter == 0 );
+
+   pStatus->txOffset = NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdseTxStatusIsValid( vdseTxStatus* pItem, transaction_T transactionId )
+bool vdseTxStatusIsValid( vdseTxStatus* pStatus, ptrdiff_t txOffset )
 {
-   if ( pItem->transactionId == 0 )
+   VDS_PRE_CONDITION( pStatus  != NULL );
+   VDS_PRE_CONDITION( txOffset != NULL_OFFSET );
+
+   if ( pStatus->txOffset == NULL_OFFSET )
       return true;
-   if ( pItem->transactionId == transactionId )
+   if ( pStatus->txOffset == txOffset )
       return true;
    return false;
 }
@@ -104,61 +114,76 @@ bool vdseTxStatusIsValid( vdseTxStatus* pItem, transaction_T transactionId )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusCommit( vdseTxStatus* pItem )
+void vdseTxStatusCommit( vdseTxStatus* pStatus )
 {
-   pItem->transactionId = 0;
+   VDS_PRE_CONDITION( pStatus != NULL );
+   VDS_PRE_CONDITION( pStatus->txOffset != NULL_OFFSET );
+
+   pStatus->txOffset = NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
    
 static inline
-bool vdseTxStatusIsMarkedAsDestroyed( vdseTxStatus* pItem )
+bool vdseTxStatusIsMarkedAsDestroyed( vdseTxStatus* pStatus )
 {
-   return (pItem->statusFlag & MARKED_AS_DESTROYED);
+   VDS_PRE_CONDITION( pStatus != NULL );
+
+   return (pStatus->statusFlag & MARKED_AS_DESTROYED);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdseTxStatusIsRemoveCommitted( vdseTxStatus* pItem )
+bool vdseTxStatusIsRemoveCommitted( vdseTxStatus* pStatus )
 {
-   return (pItem->statusFlag & REMOVE_IS_COMMITTED );
+   VDS_PRE_CONDITION( pStatus != NULL );
+
+   return (pStatus->statusFlag & REMOVE_IS_COMMITTED );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusMarkAsDestroyed( vdseTxStatus* pItem )
+void vdseTxStatusMarkAsDestroyed( vdseTxStatus* pStatus )
 {
-   pItem->statusFlag |= MARKED_AS_DESTROYED;
+   VDS_PRE_CONDITION( pStatus != NULL );
+
+   pStatus->statusFlag |= MARKED_AS_DESTROYED;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusCommitRemove( vdseTxStatus* pItem )
+void vdseTxStatusCommitRemove( vdseTxStatus* pStatus )
 {
-   pItem->statusFlag |= REMOVE_IS_COMMITTED;
+   VDS_PRE_CONDITION( pStatus != NULL );
+
+   pStatus->statusFlag |= REMOVE_IS_COMMITTED;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusUnmarkAsDestroyed( vdseTxStatus* pItem )
+void vdseTxStatusUnmarkAsDestroyed( vdseTxStatus* pStatus )
 {
-   pItem->statusFlag = ~(~pItem->statusFlag | MARKED_AS_DESTROYED);
+   VDS_PRE_CONDITION( pStatus != NULL );
+
+   pStatus->statusFlag = ~(~pStatus->statusFlag | MARKED_AS_DESTROYED);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdseTxStatusSelfTest( vdseTxStatus* pItem )
+bool vdseTxStatusSelfTest( vdseTxStatus* pStatus )
 {
-   if ( pItem->transactionId != 0 )
+   VDS_PRE_CONDITION( pStatus != NULL );
+
+   if ( pStatus->txOffset != NULL_OFFSET )
    {
 #if defined (VDS_DEBUG)
-      fprintf( stderr, "TransactionBase::pItem->transactionId = %d \n", 
-               pItem->transactionId );
+      fprintf( stderr, "TransactionBase::pStatus->transactionId = %d \n", 
+               pStatus->transactionId );
       VDS_ASSERT( 0 );
 #endif
       return false;
@@ -168,5 +193,5 @@ bool vdseTxStatusSelfTest( vdseTxStatus* pItem )
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_TRANSACTION_BASE_H */
+#endif /* VDSE_TX_STATUS_H */
 
