@@ -25,77 +25,18 @@
 
 list of functions/macros/types that might cause portability problems:
 
-access               ok 
-bool                 ok
-bufsize_T            ok
-close                ok
 ctime_r              ok
 vds_lock_T           NO - to be replaced by (?)
-fclose               ok 
 fdatasync            ok
-fgets                ok
-fopen                ok
-fprintf              ok
-free                 ok
 getpid               ok
+
 isalnum              ok
-malloc               ok
-memcmp               ok
-memcpy               ok   
-memset               ok
-mkdir                ok
-mmap                   need to work on the win32 wrapper
-munmap                 ""
 nanosleep            ok but depends on select + signal stuff
-offsetof             ANSI C required macro
-open                 ok
-O_RDWR               ok
-O_CREAT              ok
-O_APPEND             ok
-off_t                ok
 pid_t                ok
-size_t               ok
-sizeof               ok
-sscanf               ok
-strncmp              ok
-strcpy               ok
-strncpy              ???????????????????
-strlen               ok
-struct timespec      ok   win32 ?
-time                 ok
+
 tolower              ok
-transaction_T        ok
-unlink               ok 
-write                ok
 
 the mmap stuff:
-
-VDS_DEFAULT_FILE_PERMS
-PROT_RDWR
-VDS_MAP_SHARED
-LPSECURITY_ATTRIBUTES
-MS_SYNC
-VDS_HANDLE
-filesize
-VDS_static_cast
-lseek
-write
-ftruncate -> replacement depend on fstat, fcntl, lseek, chsize
-strsncpy
-shm_open
-open
-shm_unlink
-close
-munmap
-MAP_FAILED
-msync
-mprotect
-madvise
-
-
-the asm lock code
-put two's complement test in autoconf
-internationalization...
 
  */
 
@@ -136,7 +77,11 @@ internationalization...
 #  endif /* __cplusplus */
 #endif
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /* Standard tests - they do not require an autoconf macro */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include <stdio.h>
 #if HAVE_SYS_TYPES_H
@@ -191,7 +136,11 @@ typedef DWORD uint32_t;
 # define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
 #endif
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /* End of standard tests that do not require an autoconf macro */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if USE_PTHREAD
 # include <pthread.h>
@@ -333,6 +282,41 @@ typedef DWORD uint32_t;
 #if !HAVE_PTRDIFF_T
 typedef size_t ptrdiff_t;
 #endif
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- *
+ *
+ * i18n - internationalization is optional (it can be suppressed when
+ *        running configure) and will default to single byte chars if 
+ *        some features are missing.
+ *
+ * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#if VDS_SUPPORT_i18n
+
+#  include <wchar.h>
+#  include <wctype.h>
+
+typedef wchar_t vdsChar_T;
+
+#  define vds_isalnum(c) iswalnum(c)
+
+#  define VDS_BACKSLASH  L'\\'
+#  define VDS_SLASH      L'/'
+#  define VDS_SPACE      L' '
+#  define VDS_UNDERSCORE L'_'
+#  define VDS_HYPHEN     L'-'
+
+#else /* VDS_SUPPORT I18N */
+
+typedef char vdsChar_T;
+#  define vds_isalnum(c) isalnum(c)
+#  define VDS_BACKSLASH  '\\'
+#  define VDS_SLASH      '/'
+#  define VDS_SPACE      ' '
+#  define VDS_UNDERSCORE '_'
+#  define VDS_HYPHEN     '-'
+
+#endif /* VDS_SUPPORT I18N */
 
 BEGIN_C_DECLS
 
