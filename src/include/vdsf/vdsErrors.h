@@ -44,7 +44,7 @@ typedef enum vdsErrors
    VDS_NOT_ENOUGH_VDS_MEMORY       = 2,
  
    /** Not enough heap memory (non-VDS memory). */
-   VDS_NOT_ENOUGH_MEMORY           = 3,
+   VDS_NOT_ENOUGH_HEAP_MEMORY      = 3,
 
    /**
     * Permitted characters for names are alphanumerics [a-z,0-9], 
@@ -117,7 +117,8 @@ typedef enum vdsErrors
    VDS_SEND_ERROR                  = 28,
    VDS_RECEIVE_ERROR               = 29,
    VDS_BACKSTORE_FILE_MISSING      = 30,
-   VDS_ERROR_OPENING_VDS           = 31
+   VDS_ERROR_OPENING_VDS           = 31,
+   VDS_FOLDER_IS_NOT_EMPTY         = 32
 
 } vdsErrors;
 
