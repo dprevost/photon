@@ -23,7 +23,7 @@
 #include "Engine.h"
 #include "MemoryObject.h"
 #include "TreeNode.h"
-#include "PageGroup.h"
+#include "BlockGroup.h"
 #include "Hash.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -44,7 +44,7 @@ typedef struct vdseFolder
    struct vdseHash      hashObj;
 
    /** Variable size struct - always put at the end */
-   struct vdsePageGroup pageGroup;
+   struct vdseBlockGroup blockGroup;
 
 } vdseFolder;
    
@@ -53,7 +53,7 @@ typedef struct vdseFolder
 VDSF_ENGINE_EXPORT
 int vdseFolderInit( vdseFolder*         pFolder,
                     ptrdiff_t           parentOffset,
-                    size_t              numberOfPages,
+                    size_t              numberOfBlocks,
                     size_t              expectedNumOfChilds,
                     vdseTxStatus*       pTxStatus,
                     size_t              origNameLength,
@@ -79,7 +79,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
                             const vdsChar_T*    originalName,
                             size_t              strLength, 
                             enum vdsObjectType  objectType,
-                            size_t              numPages,
+                            size_t              numBlocks,
                             size_t              expectedNumOfChilds,
                             vdseSessionContext* pContext );
 

@@ -15,35 +15,49 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "PageGroup.h"
+#include "BlockGroup.h"
 #include "EngineTestCommon.h"
 
-const bool expectedToPass = false;
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   vdsePageGroup *pGroup;
+   vdseBlockGroup *pGroup;
    unsigned char* ptr;
    
    initTest( expectedToPass );
 
-   ptr = malloc( VDSE_PAGE_SIZE*10 );
+   ptr = malloc( VDSE_BLOCK_SIZE*10 );
    if (ptr == NULL )
       ERROR_EXIT( expectedToPass, NULL, ; );
    g_pBaseAddr = ptr;
    
-   /* This "100" (non-zero) offset should mark this page group 
-    * as the first page group of a MemObject.
+   /* This "100" (non-zero) offset should mark this block group 
+    * as the first block group of a MemObject.
     */
-   pGroup = (vdsePageGroup*) (ptr + 100);
+   pGroup = (vdseBlockGroup*) (ptr + 100);
    
-   vdsePageGroupInit( pGroup, 
+   vdseBlockGroupInit( pGroup, 
                       SET_OFFSET(ptr),
-                      0 );
- 
-   ERROR_EXIT( expectedToPass, NULL, ; );
+                      10 );
+   vdseBlockGroupFini( pGroup );
+   
+   if ( pGroup->node.nextOffset != NULL_OFFSET )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pGroup->node.previousOffset != NULL_OFFSET )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pGroup->numBlocks != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pGroup->maxFreeBytes != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if (pGroup->freeList.initialized != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pGroup->bitmap.baseAddressOffset != NULL_OFFSET )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

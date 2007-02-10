@@ -23,6 +23,8 @@ noinst_LTLIBRARIES   = libEngine.la
 libEngine_la_SOURCES =                   \
                        VdsErrorHandler.c \
                        VdsErrorHandler.h \
+                       BlockGroup.c      \
+                       BlockGroup.h      \
                        Engine.h          \
                        Folder.c          \
                        Folder.h          \
@@ -44,8 +46,6 @@ libEngine_la_SOURCES =                   \
                        MemBitmap.inl     \
                        MemoryObject.c    \
                        MemoryObject.h    \
-                       PageGroup.c       \
-                       PageGroup.h       \
                        SessionContext.h  \
                        Transaction.c     \
                        Transaction.h     \

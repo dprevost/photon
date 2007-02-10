@@ -92,7 +92,7 @@ bool vdseFolderDeletable( vdseFolder*         pFolder,
 
 int vdseFolderInit( vdseFolder*         pFolder,
                     ptrdiff_t           parentOffset,
-                    size_t              numberOfPages,
+                    size_t              numberOfBlocks,
                     size_t              expectedNumOfChilds,
                     vdseTxStatus*       pTxStatus,
                     size_t              origNameLength,
@@ -106,13 +106,13 @@ int vdseFolderInit( vdseFolder*         pFolder,
    VDS_PRE_CONDITION( pContext  != NULL );
    VDS_PRE_CONDITION( pTxStatus != NULL );
    VDS_PRE_CONDITION( origName  != NULL );
-   VDS_PRE_CONDITION( numberOfPages  > 0 );
+   VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    VDS_PRE_CONDITION( origNameLength > 0 );
    VDS_PRE_CONDITION( parentOffset != NULL_OFFSET );
    
    errcode = vdseMemObjectInit( &pFolder->memObject, 
                                 VDSE_IDENT_FOLDER,
-                                numberOfPages );
+                                numberOfBlocks );
    if ( errcode != VDS_OK )
    {
       vdscSetError( &pContext->errorHandler,
@@ -127,9 +127,9 @@ int vdseFolderInit( vdseFolder*         pFolder,
                      SET_OFFSET(origName),
                      parentOffset );
    
-   vdsePageGroupInit( &pFolder->pageGroup,
+   vdseBlockGroupInit( &pFolder->blockGroup,
                       SET_OFFSET(pFolder), 
-                      numberOfPages ); 
+                      numberOfBlocks ); 
 
    listErr = vdseHashInit( &pFolder->hashObj, expectedNumOfChilds, pContext );
    if ( listErr != LIST_OK )
@@ -154,7 +154,7 @@ void vdseFolderFini( vdseFolder*         pFolder,
    VDS_PRE_CONDITION( pContext != NULL );
 
    vdseHashFini(      &pFolder->hashObj, pContext );
-   vdsePageGroupFini( &pFolder->pageGroup );
+   vdseBlockGroupFini( &pFolder->blockGroup );
    vdseTreeNodeFini(  &pFolder->nodeObject );
    vdseMemObjectFini( &pFolder->memObject );
 }
@@ -295,7 +295,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
                             const vdsChar_T*    originalName,
                             size_t              strLength, 
                             enum vdsObjectType  objectType,
-                            size_t              numPages,
+                            size_t              numBlocks,
                             size_t              expectedNumOfChilds,
                             vdseSessionContext* pContext )
 {
@@ -342,8 +342,8 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
        * once we have many types of objects
        */
       
-      ptr = (unsigned char*) vdseMallocPages( pContext->pAllocator,
-                                     numPages,
+      ptr = (unsigned char*) vdseMallocBlocks( pContext->pAllocator,
+                                     numBlocks,
                                      pContext );
       if ( ptr == NULL )
       {
@@ -355,7 +355,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
       pDesc = (vdseObjectDescriptor *) malloc( descLength );
       if ( pDesc == NULL )
       {
-         vdseFree( pContext->pAllocator, ptr, numPages, pContext );
+         vdseFree( pContext->pAllocator, ptr, numBlocks, pContext );
          errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
          goto the_exit;
       }
@@ -372,7 +372,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
                                 pContext );
       if ( listErr != LIST_OK )
       {
-         vdseFree( pContext->pAllocator, ptr, numPages, pContext );
+         vdseFree( pContext->pAllocator, ptr, numBlocks, pContext );
          free( pDesc );
          if ( listErr == LIST_KEY_FOUND )
             errcode = VDS_OBJECT_ALREADY_PRESENT;
@@ -398,7 +398,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
                          (unsigned char*)objectName, 
                          partialLength * sizeof(vdsChar_T), 
                          pContext );
-         vdseFreePages( pContext->pAllocator, ptr, numPages, pContext );
+         vdseFreeBlocks( pContext->pAllocator, ptr, numBlocks, pContext );
          goto the_exit;
       }
       
@@ -411,7 +411,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
       case VDS_FOLDER:
          rc = vdseFolderInit( (vdseFolder*)ptr,
                               SET_OFFSET(pFolder),
-                              numPages,
+                              numBlocks,
                               expectedNumOfChilds,
                               objTxStatus,
                               partialLength,
@@ -431,7 +431,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
                          (unsigned char*)objectName, 
                          partialLength * sizeof(vdsChar_T), 
                          pContext );
-         vdseFreePages( pContext->pAllocator, ptr, numPages, pContext );
+         vdseFreeBlocks( pContext->pAllocator, ptr, numBlocks, pContext );
          goto the_exit;
       }
 
@@ -492,7 +492,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
                                     &originalName[partialLength+1],
                                     strLength - partialLength - 1,
                                     objectType,
-                                    numPages,
+                                    numBlocks,
                                     expectedNumOfChilds,
                                     pContext );
    return rc;

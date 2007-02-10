@@ -33,13 +33,13 @@ int main()
    initTest( expectedToPass );
    vdscInitErrorHandler( &context.errorHandler );
 
-   ptr = malloc( 51*VDSE_PAGE_SIZE );
+   ptr = malloc( 51*VDSE_BLOCK_SIZE );
    if ( ptr == NULL )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
-   g_pBaseAddr = (unsigned char *)((((size_t)ptr - 1)/VDSE_PAGE_SIZE + 1)*VDSE_PAGE_SIZE);
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_PAGE_SIZE);
-   vdseMemAllocInit( pAlloc, g_pBaseAddr, 50*VDSE_PAGE_SIZE, &context );
+   g_pBaseAddr = (unsigned char *)((((size_t)ptr - 1)/VDSE_BLOCK_SIZE + 1)*VDSE_BLOCK_SIZE);
+   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
+   vdseMemAllocInit( pAlloc, g_pBaseAddr, 50*VDSE_BLOCK_SIZE, &context );
    pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
    
    if ( (pBitmap->lengthInBits-1)/8+1 != 7 )
@@ -55,19 +55,19 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   isFree = vdseIsBlockFree( pBitmap, 0 );
+   isFree = vdseIsBufferFree( pBitmap, 0 );
    if ( isFree )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
-   isFree = vdseIsBlockFree( pBitmap, 2*VDSE_PAGE_SIZE );
+   isFree = vdseIsBufferFree( pBitmap, 2*VDSE_BLOCK_SIZE );
    if ( ! isFree )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
-   isFree = vdseIsBlockFree( pBitmap, -VDSE_PAGE_SIZE );
+   isFree = vdseIsBufferFree( pBitmap, -VDSE_BLOCK_SIZE );
    if ( isFree )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
-   isFree = vdseIsBlockFree( pBitmap, 50*VDSE_PAGE_SIZE );
+   isFree = vdseIsBufferFree( pBitmap, 50*VDSE_BLOCK_SIZE );
    if ( isFree )
       ERROR_EXIT( expectedToPass, NULL, ; );
       

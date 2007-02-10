@@ -15,7 +15,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "PageGroup.h"
+#include "BlockGroup.h"
 #include "EngineTestCommon.h"
 
 const bool expectedToPass = false;
@@ -24,23 +24,23 @@ const bool expectedToPass = false;
 
 int main()
 {
-   vdsePageGroup *pGroup;
+   vdseBlockGroup *pGroup;
    unsigned char* ptr;
    
    initTest( expectedToPass );
 
-   ptr = malloc( VDSE_PAGE_SIZE*10 );
+   ptr = malloc( VDSE_BLOCK_SIZE*10 );
    if (ptr == NULL )
       ERROR_EXIT( expectedToPass, NULL, ; );
    g_pBaseAddr = ptr;
    
-   /* This "100" (non-zero) offset should mark this page group 
-    * as the first page group of a MemObject.
+   /* This "100" (non-zero) offset should mark this block group 
+    * as the first block group of a MemObject.
     */
-   pGroup = (vdsePageGroup*) (ptr + 100);
+   pGroup = (vdseBlockGroup*) (ptr + 100);
    
-   vdsePageGroupInit( pGroup, 
-                      NULL_OFFSET,
+   vdseBlockGroupInit( NULL,
+                      SET_OFFSET(ptr),
                       10 );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

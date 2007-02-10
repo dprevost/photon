@@ -30,7 +30,7 @@ int main()
    
    initTest( expectedToPass );
 
-   ptr = malloc( VDSE_PAGE_SIZE*10 );
+   ptr = malloc( VDSE_BLOCK_SIZE*10 );
    if (ptr == NULL )
       ERROR_EXIT( expectedToPass, NULL, );
    g_pBaseAddr = ptr;
@@ -39,22 +39,22 @@ int main()
    
    vdseMemBitmapInit( pBitmap, 
                       SET_OFFSET(ptr),
-                      10*VDSE_PAGE_SIZE,
+                      10*VDSE_BLOCK_SIZE,
                       8 );
 
-  vdseSetBlocksAllocated( pBitmap,
-                          VDSE_PAGE_SIZE/4, /* offset */
-                          VDSE_PAGE_SIZE*2 ); /* length */
+  vdseSetBufferAllocated( pBitmap,
+                          VDSE_BLOCK_SIZE/4, /* offset */
+                          VDSE_BLOCK_SIZE*2 ); /* length */
 
-   vdseSetBlocksFree( pBitmap,
-                      VDSE_PAGE_SIZE/2, /* offset */
-                      VDSE_PAGE_SIZE/4 ); /* length */
+   vdseSetBufferFree( pBitmap,
+                      VDSE_BLOCK_SIZE/2, /* offset */
+                      VDSE_BLOCK_SIZE/4 ); /* length */
 
-   answer = vdseIsBlockFree( pBitmap, VDSE_PAGE_SIZE/4 );
+   answer = vdseIsBufferFree( pBitmap, VDSE_BLOCK_SIZE/4 );
    if ( answer == true )
       ERROR_EXIT( expectedToPass, NULL, );
 
-   answer = vdseIsBlockFree( pBitmap, VDSE_PAGE_SIZE/2 );
+   answer = vdseIsBufferFree( pBitmap, VDSE_BLOCK_SIZE/2 );
    if ( answer == false )
       ERROR_EXIT( expectedToPass, NULL, );
 

@@ -68,7 +68,7 @@
 #include "ErrorHandler.h"
 #include "MemoryObject.h"
 #include "LinkedList.h"
-#include "PageGroup.h"
+#include "BlockGroup.h"
 #include "SessionContext.h"
 
 BEGIN_C_DECLS
@@ -92,7 +92,7 @@ typedef struct vdseMemAlloc
    vdseMemObject memObj;
    
    /** Total space currently allocated */
-   size_t totalAllocPages;   
+   size_t totalAllocBlocks;   
 
    /** Number of malloc calls */
    size_t    numMallocCalls;
@@ -111,10 +111,10 @@ typedef struct vdseMemAlloc
    ptrdiff_t bitmapOffset;
    
    /** 
-    * The header of the group of pages for this object. It MUST be
+    * The header of the group of blocks for this object. It MUST be
     * at the end of the struct since it contains a variable array.
     */
-   vdsePageGroup pageGroup;
+   vdseBlockGroup blockGroup;
    
 } vdseMemAlloc;
 
@@ -139,17 +139,17 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
  * 
  */
 VDSF_ENGINE_EXPORT
-void* vdseMallocPages( vdseMemAlloc*       pAlloc,
-                       size_t              numPages,
+void* vdseMallocBlocks( vdseMemAlloc*       pAlloc,
+                       size_t              numBlocks,
                        vdseSessionContext* pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Free ptr, the memory is returned to the pool. */
 VDSF_ENGINE_EXPORT
-int vdseFreePages( vdseMemAlloc*       pAlloc,
+int vdseFreeBlocks( vdseMemAlloc*       pAlloc,
                    void *              ptr, 
-                   size_t              numPages,
+                   size_t              numBlocks,
                    vdseSessionContext* pContext );
 
 VDSF_ENGINE_EXPORT

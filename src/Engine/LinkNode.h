@@ -57,8 +57,8 @@ typedef struct vdseFreeBufferNode
    /* The linked node itself */
    vdseLinkNode node;
    
-   /* The number of blocks associate with each member of the list. */
-   size_t numBlocks;
+   /* The number of buffers associate with each member of the list. */
+   size_t numBuffers;
    
 } vdseFreeBufferNode;
 

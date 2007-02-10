@@ -20,7 +20,7 @@
 
 #include "Engine.h"
 #include "MemoryObject.h"
-#include "PageGroup.h"
+#include "BlockGroup.h"
 #include "MemoryAllocator.h"
 #include "Hash.h"
 #include "InitEngine.h"
@@ -33,7 +33,7 @@ typedef struct vdstObjDummy
    struct vdseMemObject memObject;
    struct vdseHash      hashObj;
    /* Variable size struct - always put at the end */
-   struct vdsePageGroup pageGroup;
+   struct vdseBlockGroup blockGroup;
 } vdstObjDummy;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -55,7 +55,7 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
    unsigned char* ptr;
    vdseMemAlloc*  pAlloc;
    vdstObjDummy* pDummy;
-   size_t allocatedLength = VDSE_PAGE_SIZE * 10;
+   size_t allocatedLength = VDSE_BLOCK_SIZE * 10;
    errcode = vdseInitEngine();
    if ( errcode != 0 )
    {
@@ -76,11 +76,11 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
       exit(0);
    }
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_PAGE_SIZE);
+   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
-   /* Allocate memory for our dummy object + initialize it + pageGroup */
-   pDummy = vdseMallocPages( pAlloc, 2, pContext );
+   /* Allocate memory for our dummy object + initialize it + blockGroup */
+   pDummy = vdseMallocBlocks( pAlloc, 2, pContext );
    if ( pDummy == NULL )
    {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
@@ -100,9 +100,9 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
    }
    pContext->pCurrentMemObject = pDummy;
    
-   vdsePageGroupInit( &pDummy->pageGroup,
-                      2*VDSE_PAGE_SIZE, /* offset */
-                      2 ); /* Number of pages */
+   vdseBlockGroupInit( &pDummy->blockGroup,
+                      2*VDSE_BLOCK_SIZE, /* offset */
+                      2 ); /* Number of blocks */
 
    /*
     * We do not initialize hash - otherwise we would not be able

@@ -22,26 +22,26 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseTxInit( vdseTx *            pTx,
-                size_t              numberOfPages,
+                size_t              numberOfBlocks,
                 vdseSessionContext* pContext )
 {
    vdsErrors errcode;
    
    VDS_PRE_CONDITION( pTx != NULL );
-   VDS_PRE_CONDITION( numberOfPages  > 0 );
+   VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    
    errcode = vdseMemObjectInit( &pTx->memObject, 
                                 VDSE_IDENT_FOLDER,
-                                numberOfPages );
+                                numberOfBlocks );
    if ( errcode != VDS_OK )
    {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return -1;
    }
 
-   vdsePageGroupInit( &pTx->pageGroup,
-                      SET_OFFSET(pTx), 
-                      numberOfPages );
+   vdseBlockGroupInit( &pTx->blockGroup,
+                       SET_OFFSET(pTx), 
+                       numberOfBlocks );
    vdseLinkedListInit( &pTx->listOfOps );
 
    pTx->signature = VDSE_TX_SIGNATURE;
@@ -256,8 +256,9 @@ int vdseTxCommit( vdseTx*             pTx,
          vdseUnlock( &parentFolder->memObject, pContext );
 
          break;
-#if 0
+
       case VDSE_TX_REMOVE:
+#if 0
          /* We only have one type of objects doing this, currently */
          pQueue =  GET_PTR( pOps->parentOffset, Queue, pContext->pAllocator );
          errcode = pQueue->Lock( pContext->lockValue );
@@ -266,6 +267,7 @@ int vdseTxCommit( vdseTx*             pTx,
             pQueue->RollbackInsert( pOps->childOffset, pContext );
             pQueue->Unlock();
          }
+#endif
          break;
 
       case VDSE_TX_SELECT:
@@ -275,7 +277,6 @@ int vdseTxCommit( vdseTx*             pTx,
       case VDSE_TX_UPDATE:
          /* Not yet! */
          break;
-#endif
       } /* end of switch on type of ops */
 
       vdseFree( &pTx->memObject, (unsigned char*) pOps, sizeof(vdseTxOps), 

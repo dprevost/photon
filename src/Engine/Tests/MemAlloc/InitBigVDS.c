@@ -22,14 +22,14 @@
  * Goal of this test:
  *
  * To allocate a large block of memory. This block should be large enough
- * that it forces the allocator to use two pages of memory (because of the
+ * that it forces the allocator to use two blocks of memory (because of the
  * bitmap array.
  *
- * We use 8*VDSE_PAGE_SIZE*VDSE_PAGE_SIZE for the size.
+ * We use 8*VDSE_BLOCK_SIZE*VDSE_BLOCK_SIZE for the size.
  *
- * If the bitmap is VDSE_PAGE_SIZE than adding this with the vdseMemAlloc struct
- * will force the bitmap to be on 2 pages. A bitmap of that size contains
- * 8*VDSE_PAGE_SIZE pages. And of course we multiply this by VDSE_PAGE_SIZE to get the
+ * If the bitmap is VDSE_BLOCK_SIZE than adding this with the vdseMemAlloc struct
+ * will force the bitmap to be on 2 blocks. A bitmap of that size contains
+ * 8*VDSE_BLOCK_SIZE blocks. And of course we multiply this by VDSE_BLOCK_SIZE to get the
  * size of the required memory block. 
  */
 
@@ -43,35 +43,35 @@ int main()
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr;
    size_t allocatedLength, i;
-   unsigned char* buffer[8*VDSE_PAGE_SIZE-2];
+   unsigned char* buffer[8*VDSE_BLOCK_SIZE-2];
    vdseMemBitmap* pBitmap;
 
    initTest( expectedToPass );
    vdscInitErrorHandler( &context.errorHandler );
    
-   allocatedLength = 8*VDSE_PAGE_SIZE*VDSE_PAGE_SIZE;
+   allocatedLength = 8*VDSE_BLOCK_SIZE*VDSE_BLOCK_SIZE;
 
    ptr = malloc( allocatedLength );
    if ( ptr == NULL )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_PAGE_SIZE);
+   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
    
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
-   if ( pBitmap->lengthInBits != 8*VDSE_PAGE_SIZE )
+   if ( pBitmap->lengthInBits != 8*VDSE_BLOCK_SIZE )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
-   /* Allocate all the pages, one by one. */
-   for ( i = 0; i < 8*VDSE_PAGE_SIZE-3; ++i )
+   /* Allocate all the blocks, one by one. */
+   for ( i = 0; i < 8*VDSE_BLOCK_SIZE-3; ++i )
    {
-      buffer[i] = vdseMallocPages( pAlloc, 1, &context );
+      buffer[i] = vdseMallocBlocks( pAlloc, 1, &context );
       if ( buffer[i] == NULL )
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   buffer[8*VDSE_PAGE_SIZE-3] = vdseMallocPages( pAlloc, 1, &context );
-   if ( buffer[8*VDSE_PAGE_SIZE-3] != NULL )
+   buffer[8*VDSE_BLOCK_SIZE-3] = vdseMallocBlocks( pAlloc, 1, &context );
+   if ( buffer[8*VDSE_BLOCK_SIZE-3] != NULL )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    /* Check the bitmap pattern */
@@ -85,10 +85,10 @@ int main()
       }
    }
    
-   /* Free 1 page out of two */
-   for ( i = 0; i < 8*VDSE_PAGE_SIZE-3; i += 2 )
+   /* Free 1 block out of two */
+   for ( i = 0; i < 8*VDSE_BLOCK_SIZE-3; i += 2 )
    {
-      vdseFreePages( pAlloc, buffer[i], 1, &context );
+      vdseFreeBlocks( pAlloc, buffer[i], 1, &context );
    }
    
    /* Check the bitmap pattern - the first 3 are always busy */

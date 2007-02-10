@@ -30,8 +30,8 @@ int main()
    vdseSessionContext context;
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr, *buff[9];
-   size_t allocatedLength = VDSE_PAGE_SIZE*10;
-   vdsePageGroup *pageGroup = NULL;
+   size_t allocatedLength = VDSE_BLOCK_SIZE*10;
+   vdseBlockGroup *blockGroup = NULL;
    
    initTest( expectedToPass );
 
@@ -42,10 +42,10 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_PAGE_SIZE);
+   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
-   pObj = vdseMallocPages( pAlloc, 4, &context );
+   pObj = vdseMallocBlocks( pAlloc, 4, &context );
    if ( pObj == NULL ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
@@ -55,20 +55,20 @@ int main()
    if ( errcode != VDS_OK ) 
       ERROR_EXIT( expectedToPass, NULL, ; );
    
-   pageGroup = (vdsePageGroup*) ((unsigned char*)pObj + sizeof(vdseMemObject));
-   vdsePageGroupInit( pageGroup,
-                      2*VDSE_PAGE_SIZE,
+   blockGroup = (vdseBlockGroup*) ((unsigned char*)pObj + sizeof(vdseMemObject));
+   vdseBlockGroupInit( blockGroup,
+                      2*VDSE_BLOCK_SIZE,
                       4 );
 
-   /* Add the pageGroup to the list of groups of the memObject */
-   vdseLinkedListPutFirst( &pObj->listPageGroup, 
-                           &pageGroup->node );
+   /* Add the blockGroup to the list of groups of the memObject */
+   vdseLinkedListPutFirst( &pObj->listBlockGroup, 
+                           &blockGroup->node );
 
-   buff[0] = vdseMalloc( pObj, VDSE_PAGE_SIZE, &context );
+   buff[0] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
    if ( buff[0] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   vdseFree( NULL, buff[0], VDSE_PAGE_SIZE, &context );
+   vdseFree( NULL, buff[0], VDSE_BLOCK_SIZE, &context );
    
    vdseMemObjectFini( pObj );
    

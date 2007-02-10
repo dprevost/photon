@@ -26,7 +26,7 @@ int main()
 {
    vdseMemAlloc* pAlloc;
    unsigned char* ptr;
-   size_t allocatedLength = VDSE_PAGE_SIZE*10;
+   size_t allocatedLength = VDSE_BLOCK_SIZE*10;
    vdseSessionContext context;
    
    initTest( expectedToPass );
@@ -37,7 +37,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_PAGE_SIZE);
+   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
 
    vdseMemAllocClose( pAlloc, NULL );

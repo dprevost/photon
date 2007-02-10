@@ -110,10 +110,10 @@ typedef unsigned int transaction_T;
 
 #define LOCK_TIMEOUT 10000 /* in milliseconds */
 
-/** Pages allocations will be done as multiples of VDSE_PAGE_SIZE. */
-#if ! defined(VDSE_PAGE_SIZE)
-#  define VDSE_PAGE_SIZE   8192
-#  define VDSE_PAGE_SHIFT    13
+/** Pages allocations will be done as multiples of VDSE_BLOCK_SIZE. */
+#if ! defined(VDSE_BLOCK_SIZE)
+#  define VDSE_BLOCK_SIZE   8192
+#  define VDSE_BLOCK_SHIFT    13
 #endif
 
 /** Memory allocation will be done as multiples of VDSE_ALLOCATION_UNIT. */

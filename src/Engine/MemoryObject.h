@@ -35,11 +35,11 @@ BEGIN_C_DECLS
  * objects, etc.).
  *
  * This struct should always be the first member of the struct defining such
- * an object. This way, the identifier is always at the top of a page and it
+ * an object. This way, the identifier is always at the top of a block and it
  * should help debug, recover from crashes, etc. 
  *
- * The vdsePageGroup struct is NOT included in this struct since it
- * contains a variable array size. The vdsePageGroup struct should be
+ * The vdseBlockGroup struct is NOT included in this struct since it
+ * contains a variable array size. The vdseBlockGroup struct should be
  * put at the end of the container that owns a vdseMemObject.
  */
 typedef struct vdseMemObject
@@ -50,10 +50,10 @@ typedef struct vdseMemObject
    /** The lock... obviously */
    vdscProcessLock lock;
 
-   /** Total number of pages for the current object */
-   size_t totalPages;
+   /** Total number of blocks for the current object */
+   size_t totalBlocks;
    
-   vdseLinkedList listPageGroup;
+   vdseLinkedList listBlockGroup;
    
 } vdseMemObject;
 
@@ -63,7 +63,7 @@ VDSF_ENGINE_EXPORT
 enum vdsErrors 
 vdseMemObjectInit( vdseMemObject*        pMemObj,
                    enum ObjectIdentifier objType,
-                   size_t                numPages );
+                   size_t                numBlocks );
 
 VDSF_ENGINE_EXPORT
 enum vdsErrors 

@@ -15,7 +15,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "PageGroup.h"
+#include "BlockGroup.h"
 #include "EngineTestCommon.h"
 
 const bool expectedToPass = true;
@@ -24,32 +24,32 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdsePageGroup *pGroup;
+   vdseBlockGroup *pGroup;
    unsigned char* ptr;
    
    initTest( expectedToPass );
 
-   ptr = malloc( VDSE_PAGE_SIZE*10 );
+   ptr = malloc( VDSE_BLOCK_SIZE*10 );
    if (ptr == NULL )
       ERROR_EXIT( expectedToPass, NULL, ; );
    g_pBaseAddr = ptr;
    
-   /* This "100" (non-zero) offset should mark this page group 
-    * as the first page group of a MemObject.
+   /* This "100" (non-zero) offset should mark this block group 
+    * as the first block group of a MemObject.
     */
-   pGroup = (vdsePageGroup*) (ptr + 100);
+   pGroup = (vdseBlockGroup*) (ptr + 100);
    
-   vdsePageGroupInit( pGroup, 
+   vdseBlockGroupInit( pGroup, 
                       SET_OFFSET(ptr),
                       10 );
    if ( pGroup->node.nextOffset != NULL_OFFSET )
       ERROR_EXIT( expectedToPass, NULL, ; );
    if ( pGroup->node.previousOffset != NULL_OFFSET )
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pGroup->numPages != 10 )
+   if ( pGroup->numBlocks != 10 )
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pGroup->maxFreeBytes < 9*VDSE_PAGE_SIZE || 
-        pGroup->maxFreeBytes >= 10*VDSE_PAGE_SIZE )
+   if ( pGroup->maxFreeBytes < 9*VDSE_BLOCK_SIZE || 
+        pGroup->maxFreeBytes >= 10*VDSE_BLOCK_SIZE )
       ERROR_EXIT( expectedToPass, NULL, ; );
    if (pGroup->freeList.initialized != VDSE_LIST_SIGNATURE )
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -58,15 +58,15 @@ int main()
    if ( pGroup->bitmap.baseAddressOffset != SET_OFFSET(ptr) )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
-   vdsePageGroupFini( pGroup );
+   vdseBlockGroupFini( pGroup );
 
    /* A zero offset this time */
-   pGroup = (vdsePageGroup*) ptr;
-   vdsePageGroupInit( pGroup, SET_OFFSET(ptr), 10 );
+   pGroup = (vdseBlockGroup*) ptr;
+   vdseBlockGroupInit( pGroup, SET_OFFSET(ptr), 10 );
    if ( pGroup->isDeletable == false )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
-   vdsePageGroupFini( pGroup );
+   vdseBlockGroupFini( pGroup );
    
    return 0;
 }

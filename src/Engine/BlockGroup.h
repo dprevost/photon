@@ -27,13 +27,13 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdsePageGroup
+typedef struct vdseBlockGroup
 {
    /* The linked list itself */
    vdseLinkNode node;
 
-   /* The number of pages associate with each member of the list. */
-   size_t numPages;
+   /* The number of blocks associate with each member of the list. */
+   size_t numBlocks;
 
    size_t maxFreeBytes;
    
@@ -44,20 +44,20 @@ typedef struct vdsePageGroup
    /* Must be last since this struct contains a "variable-length" array. */
    vdseMemBitmap bitmap;
    
-} vdsePageGroup;
+} vdseBlockGroup;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Initialize the vdsePageGroup struct. 
+ * Initialize the vdseBlockGroup struct. 
  */
 VDSF_ENGINE_EXPORT
-void vdsePageGroupInit( vdsePageGroup* pGroup,
-                        ptrdiff_t      groupOffset,
-                        size_t         numPages );
+void vdseBlockGroupInit( vdseBlockGroup* pGroup,
+                         ptrdiff_t      groupOffset,
+                         size_t         numBlocks );
 
 VDSF_ENGINE_EXPORT
-void vdsePageGroupFini( vdsePageGroup* pGroup );
+void vdseBlockGroupFini( vdseBlockGroup* pGroup );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

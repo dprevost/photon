@@ -240,26 +240,26 @@ fi
 #                                                #
 ##################################################
 
-AC_ARG_ENABLE([set-page-size],
-              AC_HELP_STRING([--enable-set-page-size=some_value],
-                             [set the size of vdsf pages (values must be either 1k, 2k, 4k, 8k or 16k) @<:@default=8k@:>@]),
-	      [page_size=$enableval],
-	      [page_size=8k])
-if test "$page_size" = "1k"; then
-   AC_DEFINE(VDSE_PAGE_SIZE,  1024)
-   AC_DEFINE(VDSE_PAGE_SHIFT,   10)
-elif test "$page_size" = "2k"; then
-   AC_DEFINE(VDSE_PAGE_SIZE,  2048)
-   AC_DEFINE(VDSE_PAGE_SHIFT,   11)
-elif test "$page_size" = "4k"; then
-   AC_DEFINE(VDSE_PAGE_SIZE,  4096)
-   AC_DEFINE(VDSE_PAGE_SHIFT,   12)
-elif test "$page_size" = "8k"; then
-   AC_DEFINE(VDSE_PAGE_SIZE,  8192)
-   AC_DEFINE(VDSE_PAGE_SHIFT,   13)
-elif test "$page_size" = "16k"; then
-   AC_DEFINE(VDSE_PAGE_SIZE,  16384, This define can be set by using configure with the option --enable-set-page-size=value)
-   AC_DEFINE(VDSE_PAGE_SHIFT,    14, This define can be set indirectly by using configure with the option --enable-set-page-size=value)
+AC_ARG_ENABLE([set-block-size],
+              AC_HELP_STRING([--enable-set-block-size=some_value],
+                             [set the size of vdsf blocks (values must be either 1k, 2k, 4k, 8k or 16k) @<:@default=8k@:>@]),
+	      [block_size=$enableval],
+	      [block_size=8k])
+if test "$block_size" = "1k"; then
+   AC_DEFINE(VDSE_BLOCK_SIZE,  1024)
+   AC_DEFINE(VDSE_BLOCK_SHIFT,   10)
+elif test "$block_size" = "2k"; then
+   AC_DEFINE(VDSE_BLOCK_SIZE,  2048)
+   AC_DEFINE(VDSE_BLOCK_SHIFT,   11)
+elif test "$block_size" = "4k"; then
+   AC_DEFINE(VDSE_BLOCK_SIZE,  4096)
+   AC_DEFINE(VDSE_BLOCK_SHIFT,   12)
+elif test "$block_size" = "8k"; then
+   AC_DEFINE(VDSE_BLOCK_SIZE,  8192)
+   AC_DEFINE(VDSE_BLOCK_SHIFT,   13)
+elif test "$block_size" = "16k"; then
+   AC_DEFINE(VDSE_BLOCK_SIZE,  16384, This define can be set by using configure with the option --enable-set-block-size=value)
+   AC_DEFINE(VDSE_BLOCK_SHIFT,    14, This define can be set indirectly by using configure with the option --enable-set-block-size=value)
 else
   AC_MSG_ERROR([Invalid value! Values allowed: 1k, 2k, 4k, 8k or 16k])
 fi
@@ -340,7 +340,7 @@ AC_CONFIG_FILES([
    src/Engine/Tests/MemAlloc/Makefile
    src/Engine/Tests/MemBitmap/Makefile
    src/Engine/Tests/MemObject/Makefile
-   src/Engine/Tests/PageGroup/Makefile
+   src/Engine/Tests/BlockGroup/Makefile
    src/include/Makefile
    src/Java/Makefile
    src/Watchdog/Makefile

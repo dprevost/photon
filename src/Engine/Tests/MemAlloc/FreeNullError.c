@@ -27,7 +27,7 @@ int main()
    vdseSessionContext context;
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr;
-   size_t allocatedLength = VDSE_PAGE_SIZE*10;
+   size_t allocatedLength = VDSE_BLOCK_SIZE*10;
    unsigned char* newBuff;
    
    initTest( expectedToPass );
@@ -38,14 +38,14 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_PAGE_SIZE);
+   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
-   newBuff = vdseMallocPages( pAlloc, 2, &context );
+   newBuff = vdseMallocBlocks( pAlloc, 2, &context );
    if ( newBuff == NULL ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   vdseFreePages( pAlloc, newBuff, 2, NULL );
+   vdseFreeBlocks( pAlloc, newBuff, 2, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

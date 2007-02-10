@@ -36,7 +36,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    if ( obj.objType != VDSE_IDENT_ALLOCATOR )
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( obj.totalPages != 7 )
+   if ( obj.totalBlocks != 7 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    vdseMemObjectFini( &obj );

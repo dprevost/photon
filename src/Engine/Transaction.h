@@ -24,7 +24,7 @@
 #include "LinkedList.h"
 #include "SessionContext.h"
 #include "MemoryObject.h"
-#include "PageGroup.h"
+#include "BlockGroup.h"
 
 #define VDSE_TX_SIGNATURE 0xabc6c981
 
@@ -75,7 +75,7 @@ typedef struct vdseTx
    vdseLinkedList listOfOps;
 
    /** Variable size struct - always put at the end */
-   struct vdsePageGroup pageGroup;
+   struct vdseBlockGroup blockGroup;
 
 } vdseTx;
 
@@ -95,7 +95,7 @@ void vdseTxRemoveLastOps( vdseTx * pTx, vdseSessionContext* pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseTxInit( vdseTx * pTx,
-                size_t   numberOfPages,
+                size_t   numberOfBlocks,
                 vdseSessionContext* pContext );
 
 void vdseTxFini( vdseTx*             pTx, 

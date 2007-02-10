@@ -14,13 +14,13 @@ CLEANFILES = *~ core
 # before the Folder tests or the HashMaps tests since the last two use
 # Hash but the Hash tests are after the memory allocation tests since 
 # Hash uses it..
-SUBDIRS =           \
-          List      \
-          LogFile   \
-          MemAlloc  \
-          MemBitmap \
-          MemObject \
-          PageGroup \
+SUBDIRS =            \
+          List       \
+          LogFile    \
+          MemAlloc   \
+          MemBitmap  \
+          MemObject  \
+          BlockGroup \
           Hash
 
 check_PROGRAMS =                  \

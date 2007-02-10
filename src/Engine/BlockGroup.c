@@ -15,13 +15,13 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "PageGroup.h"
+#include "BlockGroup.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsePageGroupInit( vdsePageGroup* pGroup,
+void vdseBlockGroupInit( vdseBlockGroup* pGroup,
                         ptrdiff_t      groupOffset,
-                        size_t         numPages )
+                        size_t         numBlocks )
 {
    ptrdiff_t offset;
    size_t currentLength;
@@ -29,24 +29,24 @@ void vdsePageGroupInit( vdsePageGroup* pGroup,
 
    VDS_PRE_CONDITION( pGroup != NULL );
    VDS_PRE_CONDITION( groupOffset != NULL_OFFSET );
-   VDS_PRE_CONDITION( numPages > 0 );
+   VDS_PRE_CONDITION( numBlocks > 0 );
    
-   pGroup->numPages = numPages;
+   pGroup->numBlocks = numBlocks;
    
    vdseLinkNodeInit( &pGroup->node );
    vdseLinkedListInit( &pGroup->freeList );
    
    vdseMemBitmapInit( &pGroup->bitmap,
                       groupOffset,
-                      numPages << VDSE_PAGE_SHIFT, 
+                      numBlocks << VDSE_BLOCK_SHIFT, 
                       VDSE_ALLOCATION_UNIT );
    
-   /* Is the groupPage struct at the beginning of the group ? */
+   /* Is the groupBlock struct at the beginning of the group ? */
    offset = SET_OFFSET(pGroup);
    if ( SET_OFFSET(pGroup) == groupOffset )
    {
       /* 
-       * Yes, we are. This pageGroup is therefore NOT the pageGroup 
+       * Yes, we are. This blockGroup is therefore NOT the pageGroup 
        * initially allocated when an object is first allocated.
        */
       pGroup->isDeletable = true;
@@ -55,7 +55,7 @@ void vdsePageGroupInit( vdsePageGroup* pGroup,
    else
    {
       /*
-       * No, we're not. Can't deallocate this groupPage when empty!
+       * No, we're not. Can't deallocate this groupBlock when empty!
        * The offset of "this" (pGroup) tells us how much memory was
        * allocated for the header of the object.
        */
@@ -63,13 +63,13 @@ void vdsePageGroupInit( vdsePageGroup* pGroup,
       currentLength = offset-groupOffset;
    }
 
-   currentLength += offsetof(vdsePageGroup,bitmap) +
+   currentLength += offsetof(vdseBlockGroup,bitmap) +
                     offsetof(vdseMemBitmap,bitmap) +
-                    vdseGetBitmapLengthBytes( numPages << VDSE_PAGE_SHIFT, 
+                    vdseGetBitmapLengthBytes( numBlocks << VDSE_BLOCK_SHIFT, 
                                               VDSE_ALLOCATION_UNIT );
    currentLength = ((currentLength-1)/VDSE_ALLOCATION_UNIT+1)*VDSE_ALLOCATION_UNIT;
    
-   pGroup->maxFreeBytes = (numPages << VDSE_PAGE_SHIFT) - currentLength;
+   pGroup->maxFreeBytes = (numBlocks << VDSE_BLOCK_SHIFT) - currentLength;
 
    /* 
     * So we have one free buffer, starting at offset "currentLength"
@@ -77,18 +77,18 @@ void vdsePageGroupInit( vdsePageGroup* pGroup,
     */
    firstNode = GET_PTR( groupOffset+currentLength, vdseFreeBufferNode );
    vdseLinkNodeInit( &firstNode->node );
-   firstNode->numBlocks = pGroup->maxFreeBytes/VDSE_ALLOCATION_UNIT;
+   firstNode->numBuffers = pGroup->maxFreeBytes/VDSE_ALLOCATION_UNIT;
 
    vdseLinkedListPutFirst( &pGroup->freeList, &firstNode->node );
 
    /* And set the bitmap */
-   vdseSetBlocksAllocated( &pGroup->bitmap, groupOffset, currentLength );
+   vdseSetBufferAllocated( &pGroup->bitmap, groupOffset, currentLength );
 
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsePageGroupFini( vdsePageGroup* pGroup )
+void vdseBlockGroupFini( vdseBlockGroup* pGroup )
 {
    VDS_PRE_CONDITION( pGroup != NULL );
 
@@ -96,7 +96,7 @@ void vdsePageGroupFini( vdsePageGroup* pGroup )
    vdseLinkedListFini( &pGroup->freeList );
    vdseLinkNodeFini(   &pGroup->node );
 
-   pGroup->numPages = 0;
+   pGroup->numBlocks = 0;
    pGroup->maxFreeBytes = 0;
 }
 

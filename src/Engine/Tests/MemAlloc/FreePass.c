@@ -27,7 +27,7 @@ int main()
    vdseSessionContext context;
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr;
-   size_t allocatedLength = VDSE_PAGE_SIZE*10;
+   size_t allocatedLength = VDSE_BLOCK_SIZE*10;
    unsigned char* newBuff[5];
    
    initTest( expectedToPass );
@@ -38,15 +38,15 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_PAGE_SIZE);
+   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
-   newBuff[0] = vdseMallocPages( pAlloc, 2, &context );
+   newBuff[0] = vdseMallocBlocks( pAlloc, 2, &context );
    if ( newBuff[0] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   vdseFreePages( pAlloc, newBuff[0], 2, &context );
-   if (pAlloc->totalAllocPages != 2 ) ERROR_EXIT( expectedToPass, NULL, ; );
+   vdseFreeBlocks( pAlloc, newBuff[0], 2, &context );
+   if (pAlloc->totalAllocBlocks != 2 ) ERROR_EXIT( expectedToPass, NULL, ; );
    if (pAlloc->numFreeCalls != 1 ) ERROR_EXIT( expectedToPass, NULL, ; );
    
    /*
@@ -54,75 +54,75 @@ int main()
     * following each other, of course).
     */
    /* unite with following buffer */
-   newBuff[0] = vdseMallocPages( pAlloc, 3, &context );
+   newBuff[0] = vdseMallocBlocks( pAlloc, 3, &context );
    if ( newBuff[0] == NULL ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   newBuff[1] = vdseMallocPages( pAlloc, 3, &context );
+   newBuff[1] = vdseMallocBlocks( pAlloc, 3, &context );
    if ( newBuff[1] == NULL ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   newBuff[2] = vdseMallocPages( pAlloc, 2, &context );
+   newBuff[2] = vdseMallocBlocks( pAlloc, 2, &context );
    if ( newBuff[2] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   vdseFreePages( pAlloc, newBuff[1], 3, &context );
-   vdseFreePages( pAlloc, newBuff[0], 3, &context );
-   /* if the "unite" failed, no 6 pages free buffer should exist */
-   newBuff[3] = vdseMallocPages( pAlloc, 6, &context );
+   vdseFreeBlocks( pAlloc, newBuff[1], 3, &context );
+   vdseFreeBlocks( pAlloc, newBuff[0], 3, &context );
+   /* if the "unite" failed, no 6 blocks free buffer should exist */
+   newBuff[3] = vdseMallocBlocks( pAlloc, 6, &context );
    if ( newBuff[3] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   vdseFreePages( pAlloc, newBuff[3], 6, &context );
-   vdseFreePages( pAlloc, newBuff[2], 2, &context );
+   vdseFreeBlocks( pAlloc, newBuff[3], 6, &context );
+   vdseFreeBlocks( pAlloc, newBuff[2], 2, &context );
 
    /* unite with preceding buffer */
-   newBuff[0] = vdseMallocPages( pAlloc, 2, &context );
+   newBuff[0] = vdseMallocBlocks( pAlloc, 2, &context );
    if ( newBuff[0] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   newBuff[1] = vdseMallocPages( pAlloc, 3, &context );
+   newBuff[1] = vdseMallocBlocks( pAlloc, 3, &context );
    if ( newBuff[1] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   newBuff[2] = vdseMallocPages( pAlloc, 3, &context );
+   newBuff[2] = vdseMallocBlocks( pAlloc, 3, &context );
    if ( newBuff[2] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   vdseFreePages( pAlloc, newBuff[1], 3, &context );
-   vdseFreePages( pAlloc, newBuff[2], 3, &context );
-   /* if the "unite" failed, no 6 pages free buffer should exist */
-   newBuff[3] = vdseMallocPages( pAlloc, 6, &context );
+   vdseFreeBlocks( pAlloc, newBuff[1], 3, &context );
+   vdseFreeBlocks( pAlloc, newBuff[2], 3, &context );
+   /* if the "unite" failed, no 6 blocks free buffer should exist */
+   newBuff[3] = vdseMallocBlocks( pAlloc, 6, &context );
    if ( newBuff[3] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   vdseFreePages( pAlloc, newBuff[0], 2, &context );
-   vdseFreePages( pAlloc, newBuff[3], 6, &context );
+   vdseFreeBlocks( pAlloc, newBuff[0], 2, &context );
+   vdseFreeBlocks( pAlloc, newBuff[3], 6, &context );
 
    /* unite with both */
-   newBuff[0] = vdseMallocPages( pAlloc, 1, &context );
+   newBuff[0] = vdseMallocBlocks( pAlloc, 1, &context );
    if ( newBuff[0] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   newBuff[1] = vdseMallocPages( pAlloc, 2, &context );
+   newBuff[1] = vdseMallocBlocks( pAlloc, 2, &context );
    if ( newBuff[1] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   newBuff[2] = vdseMallocPages( pAlloc, 2, &context );
+   newBuff[2] = vdseMallocBlocks( pAlloc, 2, &context );
    if ( newBuff[2] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   newBuff[3] = vdseMallocPages( pAlloc, 2, &context );
+   newBuff[3] = vdseMallocBlocks( pAlloc, 2, &context );
    if ( newBuff[3] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   newBuff[4] = vdseMallocPages( pAlloc, 1, &context );
+   newBuff[4] = vdseMallocBlocks( pAlloc, 1, &context );
    if ( newBuff[4] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   vdseFreePages( pAlloc, newBuff[1], 2, &context );
-   vdseFreePages( pAlloc, newBuff[3], 2, &context );
-   vdseFreePages( pAlloc, newBuff[2], 2, &context );
-   /* if the "unite" failed, no 6 pages free buffer should exist */
-   newBuff[1] = vdseMallocPages( pAlloc, 6, &context );
+   vdseFreeBlocks( pAlloc, newBuff[1], 2, &context );
+   vdseFreeBlocks( pAlloc, newBuff[3], 2, &context );
+   vdseFreeBlocks( pAlloc, newBuff[2], 2, &context );
+   /* if the "unite" failed, no 6 blocks free buffer should exist */
+   newBuff[1] = vdseMallocBlocks( pAlloc, 6, &context );
    if ( newBuff[1] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   vdseFreePages( pAlloc, newBuff[0], 1, &context );
-   vdseFreePages( pAlloc, newBuff[1], 6, &context );
-   vdseFreePages( pAlloc, newBuff[4], 1, &context );
+   vdseFreeBlocks( pAlloc, newBuff[0], 1, &context );
+   vdseFreeBlocks( pAlloc, newBuff[1], 6, &context );
+   vdseFreeBlocks( pAlloc, newBuff[4], 1, &context );
 
-   if (pAlloc->totalAllocPages != 2 ) ERROR_EXIT( expectedToPass, NULL, ; );
+   if (pAlloc->totalAllocBlocks != 2 ) ERROR_EXIT( expectedToPass, NULL, ; );
    
    return 0;
 }

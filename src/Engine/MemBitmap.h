@@ -53,16 +53,16 @@ void vdseMemBitmapFini( vdseMemBitmap* pBitmap );
 
 //VDSF_ENGINE_EXPORT
 static inline
-bool vdseIsBlockFree( vdseMemBitmap* pBitmap,
+bool vdseIsBufferFree( vdseMemBitmap* pBitmap,
                       ptrdiff_t      offset );
 
 static inline
-void vdseSetBlocksAllocated( vdseMemBitmap* pBitmap,
+void vdseSetBufferAllocated( vdseMemBitmap* pBitmap,
                              ptrdiff_t      offset,
                              size_t         length );
 
 static inline
-void vdseSetBlocksFree( vdseMemBitmap* pBitmap,
+void vdseSetBufferFree( vdseMemBitmap* pBitmap,
                         ptrdiff_t      offset,
                         size_t         length );
 
