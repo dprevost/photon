@@ -334,13 +334,14 @@ AC_CONFIG_FILES([
    src/Demo/Makefile
    src/Engine/Makefile
    src/Engine/Tests/Makefile
+   src/Engine/Tests/BlockGroup/Makefile
    src/Engine/Tests/Hash/Makefile
    src/Engine/Tests/List/Makefile
    src/Engine/Tests/LogFile/Makefile
    src/Engine/Tests/MemAlloc/Makefile
    src/Engine/Tests/MemBitmap/Makefile
    src/Engine/Tests/MemObject/Makefile
-   src/Engine/Tests/BlockGroup/Makefile
+   src/Engine/Tests/Transaction/Makefile
    src/include/Makefile
    src/Java/Makefile
    src/Watchdog/Makefile
