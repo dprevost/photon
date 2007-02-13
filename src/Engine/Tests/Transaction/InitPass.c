@@ -15,7 +15,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Transaction.h"
+#include "txTest.h"
 
 const bool expectedToPass = true;
 
@@ -23,7 +23,17 @@ const bool expectedToPass = true;
 
 int main()
 {
-   return 1;
+   vdseTx* pTx;
+   vdseSessionContext context;
+   int errcode;
+   
+   pTx = initTxTest( expectedToPass, &context );
+
+   errcode = vdseTxInit( pTx, 1, &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

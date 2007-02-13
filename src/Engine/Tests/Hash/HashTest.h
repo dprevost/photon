@@ -113,4 +113,4 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* ENGINE_TEST_COMMON_H */
+#endif /* HASH_TEST_COMMON_H */

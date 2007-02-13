@@ -28,6 +28,7 @@ int vdseTxInit( vdseTx *            pTx,
    vdsErrors errcode;
    
    VDS_PRE_CONDITION( pTx != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    
    errcode = vdseMemObjectInit( &pTx->memObject, 
@@ -128,7 +129,7 @@ void vdseTxRemoveLastOps( vdseTx* pTx, vdseSessionContext* pContext )
    
    listErr = vdseLinkedListGetLast( &pTx->listOfOps, &pDummy );
 
-   VDS_POST_CONDITION( listErr != LIST_OK );
+   VDS_POST_CONDITION( listErr == LIST_OK );
    
    pOps = (vdseTxOps*)((char*)pDummy - offsetof( vdseTxOps, node ));
    
@@ -289,8 +290,6 @@ int vdseTxCommit( vdseTx*             pTx,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#if 0
-
 void vdseTxRollback( vdseTx*             pTx,
                      vdseSessionContext* pContext )
 {
@@ -311,12 +310,12 @@ void vdseTxRollback( vdseTx*             pTx,
 
    
    while ( vdseLinkedListGetLast( &pTx->listOfOps, 
-                                  &pLinkNode, 
-                                  pContext->pAllocator ) == LIST_OK )
+                                  &pLinkNode ) == LIST_OK )
    {
       pOps = (vdseTxOps*)
          ((char*)pLinkNode - offsetof( vdseTxOps, node ));
 
+#if 0
       if ( pOps->parentType == VDS_FOLDER )
       {
          parentFolder = GET_PTR( pOps->parentOffset, vdseFolder );
@@ -329,7 +328,8 @@ void vdseTxRollback( vdseTx*             pTx,
             pChildStatus = GET_PTR( pChildNode->txStatusOffset, vdseTxStatus );
          }
       }
-
+#endif
+      
       switch( pOps->transType )
       {            
       case VDSE_TX_ADD:
@@ -346,7 +346,7 @@ void vdseTxRollback( vdseTx*             pTx,
          break;
             
       case VDSE_TX_CREATE:
-
+#if 0
          pFolder =  
             GET_PTR( pOps->parentOffset, Folder, pContext->pAllocator );
 
@@ -358,9 +358,11 @@ void vdseTxRollback( vdseTx*             pTx,
                                      pContext );
             pFolder->Unlock();
          }
+#endif
          break;
 
       case VDSE_TX_DESTROY:
+#if 0
          /* Is locking the folder necessary? Not sure... */
          pFolder = GET_PTR( pOps->parentOffset, Folder, pContext->pAllocator );
          errcode = pFolder->Lock( pContext->lockValue );
@@ -370,6 +372,7 @@ void vdseTxRollback( vdseTx*             pTx,
                                       pContext );
             pFolder->Unlock();
          }
+#endif
          break;
 
       case VDSE_TX_REMOVE:
@@ -400,7 +403,5 @@ void vdseTxRollback( vdseTx*             pTx,
    }
    
 }
-
-#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

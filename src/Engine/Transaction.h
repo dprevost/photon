@@ -104,8 +104,8 @@ void vdseTxFini( vdseTx*             pTx,
 int vdseTxCommit( vdseTx*             pTx,
                   vdseSessionContext* pContext );
                   
-int vdseTxRollback( vdseTx*             pTx,
-                    vdseSessionContext* pContext );
+void vdseTxRollback( vdseTx*             pTx,
+                     vdseSessionContext* pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

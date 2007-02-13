@@ -15,7 +15,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Transaction.h"
+#include "txTest.h"
 
 const bool expectedToPass = false;
 
@@ -23,7 +23,26 @@ const bool expectedToPass = false;
 
 int main()
 {
-   return 0;
+   vdseTx* pTx;
+   vdseSessionContext context;
+   int errcode;
+   ptrdiff_t parentOffset = 0x1010, childOffset = 0x0101;
+   
+   pTx = initTxTest( expectedToPass, &context );
+
+   errcode = vdseTxInit( pTx, 1, &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   
+   errcode = vdseTxAddOps( pTx,
+                           VDSE_TX_ADD,
+                           parentOffset, 
+                           VDS_FOLDER,
+                           childOffset,
+                           VDS_FOLDER,
+                           NULL );
+
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
