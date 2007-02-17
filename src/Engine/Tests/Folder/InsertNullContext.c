@@ -15,26 +15,37 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "txTest.h"
+#include "folderTest.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   vdseTx* pTx;
+   vdseFolder* pFolder;
    vdseSessionContext context;
    int errcode;
+   vdseTxStatus status;
    
-   pTx = initTxTest( expectedToPass, &context );
+   pFolder = initFolderTest( expectedToPass, &context );
 
-   errcode = vdseTxInit( pTx, 1, &context );
+   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   
+   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   return 0;
+   errcode = vdseFolderInsertObject( pFolder,
+                                     "test2",
+                                     "Test2",
+                                     5,
+                                     VDS_FOLDER,
+                                     1,
+                                     0,
+                                     NULL );
+
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-

@@ -38,34 +38,36 @@ check_PROGRAMS =                       \
                  RollbackNullTx        \
                  RollbackPass          
                  
-AddInvalidSig_SOURCES         = AddInvalidSig.c
-AddNullChildOffset_SOURCES    = AddNullChildOffset.c
-AddNullContext_SOURCES        = AddNullContext.c
-AddNullParentOffset_SOURCES   = AddNullParentOffset.c
-AddNullTx_SOURCES             = AddNullTx.c
-AddPass_SOURCES               = AddPass.c
-CommitInvalidSig_SOURCES      = CommitInvalidSig.c
-CommitNullContext_SOURCES     = CommitNullContext.c
-CommitNullTx_SOURCES          = CommitNullTx.c
-CommitPass_SOURCES            = CommitPass.c
-FiniInvalidSig_SOURCES        = FiniInvalidSig.c
-FiniNullContext_SOURCES       = FiniNullContext.c
-FiniNullTx_SOURCES            = FiniNullTx.c
-FiniPass_SOURCES              = FiniPass.c
-InitNullContext_SOURCES       = InitNullContext.c
-InitNullTx_SOURCES            = InitNullTx.c
-InitPass_SOURCES              = InitPass.c
-InitZeroBlocks_SOURCES        = InitZeroBlocks.c
-RemoveLastInvalidSig_SOURCES  = RemoveLastInvalidSig.c
-RemoveLastNullContext_SOURCES = RemoveLastNullContext.c
-RemoveLastNullTx_SOURCES      = RemoveLastNullTx.c
-RemoveLastPass_SOURCES        = RemoveLastPass.c
-RollbackInvalidSig_SOURCES    = RollbackInvalidSig.c
-RollbackNullContext_SOURCES   = RollbackNullContext.c
-RollbackNullTx_SOURCES        = RollbackNullTx.c
-RollbackPass_SOURCES          = RollbackPass.c
+COMMON_HEADER = txTest.h
+
+AddInvalidSig_SOURCES         = $(COMMON_HEADER) AddInvalidSig.c
+AddNullChildOffset_SOURCES    = $(COMMON_HEADER) AddNullChildOffset.c
+AddNullContext_SOURCES        = $(COMMON_HEADER) AddNullContext.c
+AddNullParentOffset_SOURCES   = $(COMMON_HEADER) AddNullParentOffset.c
+AddNullTx_SOURCES             = $(COMMON_HEADER) AddNullTx.c
+AddPass_SOURCES               = $(COMMON_HEADER) AddPass.c
+CommitInvalidSig_SOURCES      = $(COMMON_HEADER) CommitInvalidSig.c
+CommitNullContext_SOURCES     = $(COMMON_HEADER) CommitNullContext.c
+CommitNullTx_SOURCES          = $(COMMON_HEADER) CommitNullTx.c
+CommitPass_SOURCES            = $(COMMON_HEADER) CommitPass.c
+FiniInvalidSig_SOURCES        = $(COMMON_HEADER) FiniInvalidSig.c
+FiniNullContext_SOURCES       = $(COMMON_HEADER) FiniNullContext.c
+FiniNullTx_SOURCES            = $(COMMON_HEADER) FiniNullTx.c
+FiniPass_SOURCES              = $(COMMON_HEADER) FiniPass.c
+InitNullContext_SOURCES       = $(COMMON_HEADER) InitNullContext.c
+InitNullTx_SOURCES            = $(COMMON_HEADER) InitNullTx.c
+InitPass_SOURCES              = $(COMMON_HEADER) InitPass.c
+InitZeroBlocks_SOURCES        = $(COMMON_HEADER) InitZeroBlocks.c
+RemoveLastInvalidSig_SOURCES  = $(COMMON_HEADER) RemoveLastInvalidSig.c
+RemoveLastNullContext_SOURCES = $(COMMON_HEADER) RemoveLastNullContext.c
+RemoveLastNullTx_SOURCES      = $(COMMON_HEADER) RemoveLastNullTx.c
+RemoveLastPass_SOURCES        = $(COMMON_HEADER) RemoveLastPass.c
+RollbackInvalidSig_SOURCES    = $(COMMON_HEADER) RollbackInvalidSig.c
+RollbackNullContext_SOURCES   = $(COMMON_HEADER) RollbackNullContext.c
+RollbackNullTx_SOURCES        = $(COMMON_HEADER) RollbackNullTx.c
+RollbackPass_SOURCES          = $(COMMON_HEADER) RollbackPass.c
                  
-EXTRA_DIST =         
+EXTRA_DIST = 
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 

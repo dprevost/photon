@@ -22,7 +22,8 @@ SUBDIRS =             \
           MemObject   \
           BlockGroup  \
           Hash        \
-          Transaction 
+          Transaction \
+          Folder
 
 check_PROGRAMS =                  \
                  LinkNodeNULLInit \

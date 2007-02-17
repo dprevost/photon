@@ -120,6 +120,7 @@ int vdseFolderInit( vdseFolder*         pFolder,
                     errcode );
       return -1;
    }
+   pContext->pCurrentMemObject = &pFolder->memObject;
 
    vdseTreeNodeInit( &pFolder->nodeObject,
                      SET_OFFSET(pTxStatus),
@@ -150,8 +151,11 @@ int vdseFolderInit( vdseFolder*         pFolder,
 void vdseFolderFini( vdseFolder*         pFolder,
                      vdseSessionContext* pContext )
 {
-   VDS_PRE_CONDITION( pFolder != NULL );
+   VDS_PRE_CONDITION( pFolder  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   
+   pContext->pCurrentMemObject = &pFolder->memObject;
 
    vdseHashFini(      &pFolder->hashObj, pContext );
    vdseBlockGroupFini( &pFolder->blockGroup );
@@ -182,6 +186,9 @@ int vdseFolderGetObject( vdseFolder*            pFolder,
    VDS_PRE_CONDITION( strLength > 0 );
    VDS_PRE_CONDITION( ppDescriptor != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+
+   pContext->pCurrentMemObject = &pFolder->memObject;
 
    if ( ! ValidateString( objectName, 
                           strLength, 
@@ -311,11 +318,15 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
    vdseFolder* pNextFolder;
    vdseTxStatus* objTxStatus;  /* txStatus of the created object */
    
-   VDS_PRE_CONDITION( pFolder != NULL );
-   VDS_PRE_CONDITION( objectName != NULL )
+   VDS_PRE_CONDITION( pFolder      != NULL );
+   VDS_PRE_CONDITION( objectName   != NULL )
+   VDS_PRE_CONDITION( originalName != NULL )
+   VDS_PRE_CONDITION( pContext     != NULL );
    VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
    
+   pContext->pCurrentMemObject = &pFolder->memObject;
+
    if ( ! ValidateString( objectName, 
                           strLength, 
                           &partialLength, 
@@ -383,7 +394,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
          goto the_exit;
       }
 
-      rc = vdseTxAddOps( (vdseTx*)&pContext->pTransaction,
+      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_CREATE,
                          SET_OFFSET(pFolder),
                          VDS_FOLDER,
@@ -403,6 +414,8 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
       }
       
       objTxStatus = &pHashItem->txStatus;
+      vdseTxStatusSetTx( objTxStatus, SET_OFFSET(pContext->pTransaction) );
+      
       pDesc = GET_PTR(pHashItem->dataOffset, vdseObjectDescriptor );
       switch ( objectType )
       {
@@ -426,7 +439,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
 
       if ( rc != 0 )
       {
-         vdseTxRemoveLastOps( (vdseTx*)&pContext->pTransaction, pContext );
+         vdseTxRemoveLastOps( (vdseTx*)pContext->pTransaction, pContext );
          vdseHashDelete( &pFolder->hashObj, 
                          (unsigned char*)objectName, 
                          partialLength * sizeof(vdsChar_T), 
@@ -529,7 +542,10 @@ int vdseFolderDeleteObject( vdseFolder*         pFolder,
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( strLength > 0 );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
    
+   pContext->pCurrentMemObject = &pFolder->memObject;
+
    if ( ! ValidateString( objectName, 
                           strLength, 
                           &partialLength, 
@@ -584,14 +600,14 @@ int vdseFolderDeleteObject( vdseFolder*         pFolder,
       if ( pDesc->type == VDS_FOLDER )
       {
          pDeletedFolder = GET_PTR( pDesc->offset, vdseFolder );
-         if ( ! vdseFolderDeletable( pFolder, pContext ) )
+         if ( ! vdseFolderDeletable( pDeletedFolder, pContext ) )
          {
             errcode = VDS_FOLDER_IS_NOT_EMPTY;
             goto the_exit;
          }
       }
       
-      rc = vdseTxAddOps( (vdseTx*)&pContext->pTransaction,
+      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_DESTROY,
                          SET_OFFSET(pFolder),
                          VDS_FOLDER,
@@ -718,6 +734,8 @@ int vdseFolderRollbackCreate( vdseFolder*         pFolder,
    
    BaseNode* pNode = GET_PTR( childOffset, BaseNode, pContext->pAllocator );
 
+   pContext->pCurrentMemObject = &pFolder->memObject;
+
    if ( pNode->m_accessCounter > 0 || pNode->m_transactionCounter > 0 )
    {
       pNode->CommitRemove();
@@ -778,6 +796,8 @@ vdsErrors Folder::RollbackDestroy( ptrdiff_t       childOffset,
    int errCode = pNode->Lock( pContext->lockValue );
    if ( errCode == VDS_OK )
    {
+      pContext->pCurrentMemObject = &pFolder->memObject;
+   
       pNode->Commit();
       pNode->UnmarkAsDestroyed();
       pNode->Unlock();
@@ -807,6 +827,8 @@ void vdseFolderRemoveObject( vdseFolder*         pFolder,
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( nameLength > 0 );
+
+   pContext->pCurrentMemObject = &pFolder->memObject;
 
    listErr = vdseHashDelete( &pFolder->hashObj,
                              (unsigned char*)objectName,

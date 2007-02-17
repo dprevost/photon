@@ -15,25 +15,25 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "txTest.h"
+#include "folderTest.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   vdseTx* pTx;
+   vdseFolder* pFolder;
    vdseSessionContext context;
-   int errcode;
+   vdseTxStatus status;
    
-   pTx = initTxTest( expectedToPass, &context );
+   pFolder = initFolderTest( expectedToPass, &context );
 
-   errcode = vdseTxInit( pTx, 1, &context );
-   if ( errcode != 0 ) 
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   return 0;
+   vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", NULL );
+
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

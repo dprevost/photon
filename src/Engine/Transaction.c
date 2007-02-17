@@ -32,7 +32,7 @@ int vdseTxInit( vdseTx *            pTx,
    VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    
    errcode = vdseMemObjectInit( &pTx->memObject, 
-                                VDSE_IDENT_FOLDER,
+                                VDSE_IDENT_TRANSACTION,
                                 numberOfBlocks );
    if ( errcode != VDS_OK )
    {
