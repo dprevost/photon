@@ -1,7 +1,7 @@
 /* -*- c -*- */
 /* :mode=c:  - For jedit, previous line for emacs */
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -122,7 +122,9 @@ vdscTestLockPidValue( vdscProcessLock* pLock, pid_t pid )
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( pid != 0 );
 
-#if defined (VDS_USE_HP_LOCK)
+#if defined(CONFIG_KERNEL_HEADERS)
+   return pLock->pid == pid;
+#elif defined (VDS_USE_HP_LOCK)
    return (pid_t) pLock->lockArray[HP_LOCK_PID_LOCATION] == pid;
 #else
    return pLock->lock == (unsigned) pid;
@@ -137,7 +139,9 @@ vdscIsItLocked( vdscProcessLock* pLock )
    VDS_PRE_CONDITION( pLock != NULL );
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
 
-#if defined (VDS_USE_HP_LOCK)
+#if defined(CONFIG_KERNEL_HEADERS)
+   return spin_is_locked( &pLock->lock );
+#elif defined (VDS_USE_HP_LOCK)
    return *(pLock->pLock) == 1;
 #else
    return pLock->lock != 0;
@@ -157,7 +161,13 @@ vdscAcquireProcessLock( vdscProcessLock* pLock,
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( lockValue != 0 );
 
+#if defined(CONFIG_KERNEL_HEADERS)
+   spin_lock(&pLock->lock);
+   pLock->pid = lockValue;
 
+   return;
+#endif
+   
 #if defined (VDS_USE_HP_LOCK)
    register pid_t* pTryPID = (pid_t*) &pLock->lockArray[HP_TRY_PID_LOCATION];
 
@@ -234,7 +244,11 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( lockValue != 0 );
 
-#if defined (VDS_USE_HP_LOCK)
+#if defined(CONFIG_KERNEL_HEADERS)
+   isItLocked = spin_trylock( &pLock->lock );
+   isItLocked--;
+
+#elif defined (VDS_USE_HP_LOCK)
    register pid_t* pTryPID = (pid_t*) &pLock->lockArray[HP_TRY_PID_LOCATION];
    if ( *pLock->pLock == 1 )
    {
@@ -279,8 +293,10 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
 #else
          nanosleep( &g_timeOut, NULL );
 #endif
-
-#if defined (VDS_USE_HP_LOCK)
+#if defined(CONFIG_KERNEL_HEADERS)
+         isItLocked = spin_trylock( &pLock->lock );
+         isItLocked--;
+#elif defined (VDS_USE_HP_LOCK)
          if ( *pLock->pLock == 1 )
          {
             *pTryPID = lockValue;
@@ -311,7 +327,10 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
          }
 #endif
          if ( isItLocked == 0 )
+         {
+            pLock->pid = lockValue;
             break;
+         }
       }
       if ( isItLocked != 0 )
       {
@@ -319,11 +338,12 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
       }
       
    }
-
+ 
    /* There is a "race condition" when saving the pid of the caller
     * this way -> it is possible to have lock out-of-synch with
     * the actual condition of the object.
     */
+   pLock->pid = lockValue;
 
 #if defined (VDS_USE_HP_LOCK)
    if ( isItLocked == 0 )
@@ -354,7 +374,10 @@ vdscReleaseProcessLock( vdscProcessLock* pLock )
    VDS_PRE_CONDITION( pLock != NULL );
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
 
-#if defined (VDS_USE_HP_LOCK)
+#if defined(CONFIG_KERNEL_HEADERS)
+   pLock->pid = 0;
+   spin_unlock( &pLock->lock );
+#elif defined (VDS_USE_HP_LOCK)
    *( (pid_t*) &pLock->lockArray[HP_LOCK_PID_LOCATION] ) = -1;
 
    _flush_globals();

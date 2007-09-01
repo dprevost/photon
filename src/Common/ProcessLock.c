@@ -47,7 +47,9 @@ int vdscInitProcessLock( vdscProcessLock* pLock )
    if ( pLock->initialized == VDSC_LOCK_SIGNATURE )
       return 0;
    
-#if defined (VDS_USE_HP_LOCK)
+#if defined(CONFIG_KERNEL_HEADERS)
+   spin_lock_init(&pLock->lock);
+#elif defined (VDS_USE_HP_LOCK)
    pLock->pLock = NULL;
 #else
    pLock->lock = 0;

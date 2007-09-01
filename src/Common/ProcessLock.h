@@ -62,24 +62,28 @@ BEGIN_C_DECLS
  *    files of the kernel is not really recommended but...).
  */
 
-#if HAVE_SEMAPHORE_H
-#  include <semaphore.h>
-#endif
-#if HAVE_SYS_IPC_H && HAVE_SYS_SEM_H
-#  include <sys/ipc.h>
-#  include <sys/sem.h>
-#  if ! HAVE_STRUCT_SEMUN
+#if defined(CONFIG_KERNEL_HEADERS)
+#  include "mylinux/spinlock.h"
+#else
+#  if HAVE_SEMAPHORE_H
+#    include <semaphore.h>
+#  endif
+#  if HAVE_SYS_IPC_H && HAVE_SYS_SEM_H
+#    include <sys/ipc.h>
+#    include <sys/sem.h>
+#    if ! HAVE_STRUCT_SEMUN
 union semun {
    int val;                    /* value for SETVAL */
    struct semid_ds *buf;       /* buffer for IPC_STAT, IPC_SET */
    unsigned short int *array;  /* array for GETALL, SETALL */
    struct seminfo *__buf;      /* buffer for IPC_INFO */
 };
+#    endif
 #  endif
-#endif
-#if HAVE_LINUX_FUTEX_H
-#  include <linux/futex.h>
-#endif
+#  if HAVE_LINUX_FUTEX_H
+#    include <linux/futex.h>
+#  endif
+#endif /* CONFIG_KERNEL_HEADERS */
 
 #define VDSC_LOCK_SIGNATURE ((unsigned int)0x174a0c46 )
 
@@ -89,17 +93,19 @@ union semun {
  * Choose how we will implement our locking.
  */
 
-#if defined (WIN32)
-#  define VDS_USE_TRY_ACQUIRE
-#elif defined (  __GNUC__ )
-#  if defined (__i386) ||  defined (__i386__) || defined(__sparc)
+#if !defined(CONFIG_KERNEL_HEADERS)
+#  if defined (WIN32)
 #    define VDS_USE_TRY_ACQUIRE
+#  elif defined (  __GNUC__ )
+#    if defined (__i386) ||  defined (__i386__) || defined(__sparc)
+#      define VDS_USE_TRY_ACQUIRE
+#    endif
+#  elif defined ( __HP_aCC )
+#    define VDS_USE_HP_LOCK
 #  endif
-#elif defined ( __HP_aCC )
-#  define VDS_USE_HP_LOCK
-#endif
-#if !defined (VDS_USE_TRY_ACQUIRE) && !defined( VDS_USE_HP_LOCK )
-#  define VDS_USE_POSIX_SEMAPHORE
+#  if !defined (VDS_USE_TRY_ACQUIRE) && !defined( VDS_USE_HP_LOCK )
+#    define VDS_USE_POSIX_SEMAPHORE
+#  endif
 #endif
 
 /* Override the macro for testing purposes. Change the #if 0 to
@@ -168,7 +174,11 @@ typedef struct vdscProcessLock
 {
    unsigned int initialized;
 
-#if defined (VDS_USE_HP_LOCK)
+#if defined(CONFIG_KERNEL_HEADERS)
+
+   spinlock_t lock;
+   
+#elif defined (VDS_USE_HP_LOCK)
 
    /**
     *  HP (PA-RISC) requires that the variable used for locking be aligned

@@ -30,6 +30,7 @@ libCommon_la_SOURCES =                 \
                        ProcessLock.c   \
                        ProcessLock.h   \
                        ProcessLock.inl \
+                       spinlock.c \
                        ThreadLock.c    \
                        ThreadLock.h    \
                        ThreadLock.inl  \
@@ -50,7 +51,19 @@ EXTRA_DIST =               \
 libCommon_la_LIBADD = @LTLIBOBJS@
 
 AM_CPPFLAGS = -I$(top_srcdir)/src/include \
+              -I$(top_srcdir)/src/zzz/include \
               -Wall
+
+if COND_USE_KERNEL_HEADERS
+   AM_CPPFLAGS += -DCONFIG_KERNEL_HEADERS \
+                  -I$(top_srcdir)/src/Locking/include \
+                  -include $(top_srcdir)/src/Locking/include/mylinux/autoconf.h \
+                  -D__KERNEL__
+endif
+
+if COND_USE_SMP
+   AM_CPPFLAGS += -DCONFIG_SMP
+endif
 
 if COND_USE_ASSERT
    AM_CPPFLAGS += -DUSE_ASSERT
