@@ -12,6 +12,18 @@
 #                                                                           #
 #############################################################################
 
+#############################################################################
+#                                                                           #
+# To do:                                                                    #
+#                                                                           #
+#  - java, python, etc. APIS as optional (specially if we cannot find the   #
+#    package, JAVA_HOME or similar.                                         #
+#  - using --enable-kernel-headers can create a problem with some compilers #
+#    since it is using inline assembler. This should be tested and we       #
+#    should revert to using semaphores if assembler is not supported.       #
+#                                                                           #
+#############################################################################
+
 AC_INIT([Virtual Data Space Framework],
         [0.1.0],
         [Daniel Prevost dprevost@users.sourceforge.net],
@@ -92,7 +104,6 @@ AC_LANG_POP([C++])
 AC_CHECK_HEADERS(assert.h ctype.h limits.h sys/param.h errno.h fcntl.h)
 AC_CHECK_HEADERS(sys/time.h sys/mman.h signal.h sys/wait.h)
 AC_CHECK_HEADERS(semaphore.h sys/semaphore.h sys/ipc.h sys/sem.h)
-#AC_CHECK_HEADERS(linux/futex.h)
 AC_CHECK_HEADERS(timers.h) # for Tru64
 AC_HEADER_DIRENT 
 AC_HEADER_STDBOOL
@@ -190,7 +201,15 @@ if test "$replace_functions" = "yes"; then
   AC_LIBOBJ(strnlen)
 else
   AC_FUNC_MEMCMP
-  AC_FUNC_STRNLEN
+  # on autoconf 2.61, the macro (AC_FUNC_STRNLEN) pulls the new macro 
+  # AC_USE_SYSTEM_EXTENSIONS which is not defined in previous autoconf 
+  # versions. Three solutions:
+  #   1) require 2.61
+  #   2) drop support for AIX 4.3 and any other system with a broken strnlen.
+  #   3) implement my own check
+  # For the moment solution 2 it is.
+  ####  AC_FUNC_STRNLEN
+  AC_REPLACE_FUNCS(strnlen)
   AC_REPLACE_FUNCS(memset)
   AC_REPLACE_FUNCS(nanosleep)
   AC_REPLACE_FUNCS(localtime_r)
@@ -307,6 +326,21 @@ AM_CONDITIONAL( [COND_USE_TRAP_ERRORS],
 
 AM_CONDITIONAL([COND_INCLUDE_DEMO], [test "$want_demo" = yes])
 
+############################################################
+#                                                          #
+# SECTION - all the stuff needed to implement concurrency  #
+#           (locks, memory barriers, etc)                  #
+#                                                          #
+############################################################
+
+AC_ARG_ENABLE([kernel-headers],
+              AC_HELP_STRING([--enable-kernel-headers],
+                             [Enable the use of the linux-kernel modified headers to implement locking @<:@default=yes@:>@]),
+              [use_headers=$enableval],
+              [use_headers=yes])
+
+AM_CONDITIONAL([COND_USE_KERNEL_HEADERS], [test "$use_headers" = yes])
+              
 ####################
 #                  #
 # Section - output #
@@ -335,6 +369,7 @@ AC_CONFIG_FILES([
    src/Engine/Makefile
    src/Engine/Tests/Makefile
    src/Engine/Tests/BlockGroup/Makefile
+   src/Engine/Tests/Folder/Makefile
    src/Engine/Tests/Hash/Makefile
    src/Engine/Tests/List/Makefile
    src/Engine/Tests/LogFile/Makefile
