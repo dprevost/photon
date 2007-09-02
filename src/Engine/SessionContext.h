@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -34,6 +34,8 @@ BEGIN_C_DECLS
  * or session specific. Regrouping this information in this single
  * structure simplify the code. 
  *
+ * This struct is allocated in the process space, not in the VDS memory.
+ *
  * The pointers are to void* to avoid problems of circular dependency.
  */
 
@@ -42,10 +44,13 @@ typedef struct vdseSessionContext
    vdscErrorHandler errorHandler;
    
    /** Normally set to the process id (pid) of the process */
-   vds_lock_T       lockValue;
+   vds_lock_T lockValue;
 
    /** Offset to the currently locked object, if any.*/
-   ptrdiff_t        lockObject;
+   ptrdiff_t lockObject;
+
+   /** Offset to the currently locked object, if any.*/
+//   ptrdiff_t lockObjectNew;
 
    void* pTransaction;
 

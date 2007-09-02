@@ -117,7 +117,13 @@ typedef unsigned int transaction_T;
 #endif
 
 /** Memory allocation will be done as multiples of VDSE_ALLOCATION_UNIT. */
-#define VDSE_ALLOCATION_UNIT 16
+#if SIZEOF_VOID_P == 4
+#  define VDSE_ALLOCATION_UNIT 16
+#elif SIZEOF_VOID_P == 8
+#  define VDSE_ALLOCATION_UNIT 32
+#else
+#  error "Without a known SIZEOF_VOID_P (4 or 8) I cannot calculate VDSE_ALLOCATION_UNIT"
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -127,31 +133,41 @@ typedef unsigned int transaction_T;
  * which sets the object identifier (as part of the initializer).
  * This is used, in part, by the crash recovery process
  * to validate/invalidate recovered buffers.
+ *
+ * Note: all the identifiers are odd numbers to distinguish them from
+ * stray pointers/offsets (for debugging, if needed).
  */
 
 enum ObjectIdentifier
 {
    VDSE_IDENT_CLEAR           = 0xccaaffee,
-   VDSE_IDENT_FIRST           = 0x34220100,
-
-   VDSE_IDENT_ALLOCATOR       = 0x34220101,
-   VDSE_IDENT_FOLDER          = 0x34220102,
-   VDSE_IDENT_QUEUE           = 0x34220103,
-   VDSE_IDENT_DUMMY_NODE      = 0x34220104,    /** linked list dummy node */
-   VDSE_IDENT_OBJECT_CONTEXT  = 0x34220105,
-   VDSE_IDENT_TRANSACTION_OPS = 0x34220106,
-   VDSE_IDENT_QUEUE_ELEMENT   = 0x34220107,
-   VDSE_IDENT_TRANSACTION     = 0x34220108,
-   VDSE_IDENT_CLEAN_PROCESS   = 0x34220109,
-   VDSE_IDENT_CLEAN_SESSION   = 0x3422010a,
-   VDSE_IDENT_HASH_LIST       = 0x3422010b,
-   VDSE_IDENT_TRANSACTION_MGR = 0x3422010c,
-   VDSE_IDENT_CLEANUP_MGR     = 0x3422010d,
-   VDSE_IDENT_HASH_ARRAY      = 0x3422010e,
-   VDSE_IDENT_OBJ_DESC        = 0x34220110,
-   VDSE_IDENT_ROW_DESC        = 0x34220111,
-
-   VDSE_IDENT_LAST            = 0x34220112,
+   /**
+    * Special identifier - it is set by the allocator when a group of blocks
+    * is allocated (under lock). An "allocated" group with VDSE_IDENT_CLEAR
+    * is a group in limbo while the same group with VDSE_IDENT_ALLOCATED
+    * is not.
+    */
+   VDSE_IDENT_ALLOCATED       = 0xeeffaacc,
+   
+   VDSE_IDENT_FIRST           = 0x34220101,
+   VDSE_IDENT_ALLOCATOR       = 0x34220103,
+   VDSE_IDENT_FOLDER          = 0x34220105,
+   VDSE_IDENT_QUEUE           = 0x34220107,
+   VDSE_IDENT_DUMMY_NODE      = 0x34220109,    /** linked list dummy node */
+   VDSE_IDENT_OBJECT_CONTEXT  = 0x3422010a,
+   VDSE_IDENT_TRANSACTION_OPS = 0x3422010c,
+   VDSE_IDENT_QUEUE_ELEMENT   = 0x3422010e,
+   VDSE_IDENT_TRANSACTION     = 0x34220111,
+   VDSE_IDENT_CLEAN_PROCESS   = 0x34220113,
+   VDSE_IDENT_CLEAN_SESSION   = 0x34220115,
+   VDSE_IDENT_HASH_LIST       = 0x34220117,
+   VDSE_IDENT_TRANSACTION_MGR = 0x34220119,
+   VDSE_IDENT_CLEANUP_MGR     = 0x3422011a,
+   VDSE_IDENT_HASH_ARRAY      = 0x3422011c,
+   VDSE_IDENT_OBJ_DESC        = 0x3422011e,
+   VDSE_IDENT_ROW_DESC        = 0x34220121,
+   VDSE_IDENT_PAGE_GROUP      = 0x34220123,
+   VDSE_IDENT_LAST            = 0x34220125,
 
    /** 
     * Identify a destroyed object. Special identifier used in the 

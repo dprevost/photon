@@ -55,7 +55,9 @@ int main()
                                   &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   
+   if ( memcmp( pDescriptor->originalName, "Test2", 5*sizeof(vdsChar_T) ) != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
    errcode = vdseFolderGetObject( pFolder,
                                   "test3",
                                   5,

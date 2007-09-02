@@ -51,10 +51,9 @@ void vdseMemBitmapInit( vdseMemBitmap* pBitmap,
 VDSF_ENGINE_EXPORT
 void vdseMemBitmapFini( vdseMemBitmap* pBitmap );
 
-//VDSF_ENGINE_EXPORT
 static inline
 bool vdseIsBufferFree( vdseMemBitmap* pBitmap,
-                      ptrdiff_t      offset );
+                       ptrdiff_t      offset );
 
 static inline
 void vdseSetBufferAllocated( vdseMemBitmap* pBitmap,

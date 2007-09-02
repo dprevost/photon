@@ -30,7 +30,6 @@ void vdseLinkedListFini( vdseLinkedList* pList )
    vdseLinkNodeInit( &pList->head );
 
    pList->currentSize    = 0;
-   pList->currBuffOffset = NULL_OFFSET;
    pList->initialized    = 0;
 }
 
@@ -42,7 +41,6 @@ void vdseLinkedListInit( vdseLinkedList* pList )
    
    vdseLinkNodeInit( &pList->head );
    pList->currentSize = 0;
-   pList->currBuffOffset = NULL_OFFSET;
 
    /* Make the list circular by pointing it back to itself. */
    pList->head.previousOffset = pList->head.nextOffset = 
@@ -60,7 +58,6 @@ void vdseLinkedListReset( vdseLinkedList* pList )
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
 
    pList->currentSize = 0;
-   pList->currBuffOffset = NULL_OFFSET;
 
    /* Make the list circular by pointing it back to itself. */
    pList->head.previousOffset = pList->head.nextOffset = 

@@ -42,7 +42,8 @@ check_PROGRAMS =                      \
                  InsertNullOrigName   \
                  InsertPass           \
                  InsertZeroBlocks     \
-                 InsertZeroNameLength 
+                 InsertZeroNameLength \
+                 Tests
 
 COMMON_HEADER = folderTest.h
 
@@ -109,7 +110,8 @@ TESTS =                      \
         InsertNullOrigName   \
         InsertPass           \
         InsertZeroBlocks     \
-        InsertZeroNameLength 
+        InsertZeroNameLength \
+        Tests
         
 XFAIL_TESTS =                      \
               DeleteInvalidSig     \

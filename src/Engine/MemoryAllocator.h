@@ -1,51 +1,5 @@
 /*
- * Originally, code from the BGET allocator (http://www.fourmilab.ch/bget/) 
- * was used to develop the first version of the MemoryAllocator class. The
- * main modification was to replaced all pointers with offsets (we used 
- * offsets since the address of the shared memory can vary from process to
- * process - offsets to the start of the shared memory eliminates this issue).
- *
- * However, the complete rewrite of the allocator means that most of the code
- * was changed. There are still some ideas of bget in there (the linked
- * list of free buffers) but I'm not sure how would be able to recognize the 
- * bget code in there.
- *
- * -------------------------------------
- *
- * This is their (the BGET authors) original comments (in the .c file):
- *
- * Designed and implemented in April of 1972 by John Walker, based on the
- * Case Algol OPRO$ algorithm implemented in 1966.
- *
- * Reimplemented in 1975 by John Walker for the Interdata 70.
- * Reimplemented in 1977 by John Walker for the Marinchip 9900.
- * Reimplemented in 1982 by Duff Kurland for the Intel 8080.
- *
- * Portable C version implemented in September of 1990 by an older, wiser
- * instance of the original implementor.
- *
- * Souped up and/or weighed down  slightly  shortly  thereafter  by  Greg
- * Lutz.
- *
- * AMIX  edition, including the new compaction call-back option, prepared
- * by John Walker in July of 1992.
- *
- * Bug in built-in test program fixed, ANSI compiler warnings eradicated,
- * buffer pool validator  implemented,  and  guaranteed  repeatable  test
- * added by John Walker in October of 1995.
- *
- * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
- *
- * To quote the website:
- * "BGET is in the public domain. You can do anything you like with it."
- *
- * If there are still bits and pieces of code in this module belonging 
- * to the original bget code they still follow this license - of course!
- *
- * However, additions and modifications to the original code are covered 
- * by this copyright:
- *
- * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -72,14 +26,6 @@
 #include "SessionContext.h"
 
 BEGIN_C_DECLS
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-#define VDSC_MEM_ALLOC_SIGNATURE 0x1
-
-#if ! defined( LONG_LOCK_TIMEOUT)
-#  define LONG_LOCK_TIMEOUT (100*LOCK_TIMEOUT)
-#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -138,19 +84,25 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
 /**
  * 
  */
-VDSF_ENGINE_EXPORT
-void* vdseMallocBlocks( vdseMemAlloc*       pAlloc,
-                       size_t              numBlocks,
-                       vdseSessionContext* pContext );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+VDSF_ENGINE_EXPORT unsigned char* 
+vdseMallocBlocks( vdseMemAlloc*       pAlloc,
+                  size_t              numBlocks,
+                  vdseSessionContext* pContext );
 
 /** Free ptr, the memory is returned to the pool. */
 VDSF_ENGINE_EXPORT
-int vdseFreeBlocks( vdseMemAlloc*       pAlloc,
-                   void *              ptr, 
-                   size_t              numBlocks,
-                   vdseSessionContext* pContext );
+void vdseFreeBlocks( vdseMemAlloc*       pAlloc,
+                     unsigned char*      ptr, 
+                     size_t              numBlocks,
+                     vdseSessionContext* pContext );
+
+static inline
+bool vdseMemAllocLastBlock( vdseMemAlloc* pAlloc,
+                            ptrdiff_t     offset,
+                            size_t        numBlocks )
+{
+   return ( pAlloc->totalLength <= (size_t)offset + (numBlocks << VDSE_BLOCK_SHIFT));
+}
 
 VDSF_ENGINE_EXPORT
 void vdseMemAllocClose( vdseMemAlloc*       pAlloc,

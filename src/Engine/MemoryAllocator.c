@@ -16,6 +16,109 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "MemoryAllocator.h"
+#include "Barrier.h"
+
+/* 
+ * group of blocks in limbo.
+ *
+ * A group of blocks in limbo is a group of blocks that could not be put
+ * back in the free list of the memory allocator. Until it is put back in
+ * the free list, it becomes unavailable (in limbo).
+ *
+ * The problem occurs during commit or rollback -  these two operations cannot
+ * fail but that may not be able to get a lock on the memory allocator...
+ * In these conditions (no lock), they have to release the memory in limbo.
+ *
+ * Notes:
+ * Another strategy would be to get the lock on the memory allocator for
+ * the duration of the transaction as a pre-condition but... this creates
+ * other problems (contention for that lock -> performance bottleneck, the
+ * automatic cleanup upon abnormal client termination (rollback) becomes
+ * potentially problematic, etc.).
+ *
+ ************************************
+ *
+ * Groups of blocks in limbo are identifies with theit first and last 4 bytes
+ * (the first bytes set to VDSE_IDENT_LIMBO and the field isInLimbo set to 
+ * true in the endblock).
+ *
+ * When a group of block is deallocated:
+ *  - the object must be locked (or must be unreachable by using its name
+ *    through its parent folder and its usage count must be zero).
+ *  - call vdseFreeBlocks()
+ *      - if we get a lock on the allocator, go on as usual
+ *      - if not
+ *         - the bytes following the first bytes must be set with the number of 
+ *           blocks in the group (using the vdseFreeBlock struct).
+  *        - set a write memory barrier to make sure that the stores will
+ *           be properly ordered (in other words, to make sure that isInLimbo
+ *           and VDSE_IDENT_LIMBO are set last.
+ *         - the first bytes must be set to VDSE_IDENT_LIMBO.
+ *         - set the field isInLimbo to true in the endblock.
+ *           (the number of blocks should already be set)
+ *  - unlock the object, if needed.
+ * Results:
+ *  - either we could lock the allocator and the group is now in the 
+ *    freelist of the allocator (the best result)
+ *  - or the group is still marked as allocated but has fields both at the
+ *    beginning and the end that indicates that the group is not really
+ *    allocated (in limbo). 
+ * Warning: the issue: once a group is in limbo, you cannot access it. The
+ *          last ops to definitely marked a group as in limbo must be the
+ *          last operations on the block of memory (which is why we use a
+ *          write memory barrier. Do not remove it!
+ *
+ * When a group of block is allocated:
+ *  - We hold the lock so - no problem of synchronization should arise.
+ *  - set the first bytes to VDSE_IDENT_ALLOCATED so that the group cannot
+ *    be mistaken as in limbo.
+ *  - Set the isInLimbo field of the endBlock to false (just in case).
+ *  - Set the bitmap of allocated blocks.
+ *  - release the allocator lock.
+ *
+ * This is to avoid a potential race condition between the release of the
+ * allocator lock and the initialization of the group of blocks. We want to
+ * make sure that no other thread/process getting a hold of the allocator
+ * might think that the group is in limbo.
+ * Note: the beginning of the group should be a vdseFreeBufferNode that
+ *       cannot be confused with VDSE_IDENT_LIMBO. But... 
+ *        1 - one never knows if that code will always stay the same.
+ *        2 - being explicit and setting VDSE_IDENT_ALLOCATED cannot
+ *            hurt and makes the code itself more clear.
+ *        3 - and setting the fields like this might help debugging.
+ *
+ * When trying to regroup loose memory (in vdseFreeBlocks):
+ *  - if the group is marked as free, just do the normal stuff (concatenate
+ *    the buffers).
+ *  - when checking previous buffers marked as allocated, if the isInLimbo 
+ *    field if true, concatenate.
+ *  - when checking forward buffers, if the first bytes are VDSE_IDENT_LIMBO,
+ *    concatenate.
+ *  - Put a read memory barrier between reading the first bytes (or last bytes)
+ *    and reading anything else in the block (to make sure that the compiler 
+ *    will not reorder the LOAD operations and prefetch data before the other
+ *    thread/process write it).
+ *    Example of why this is needed:
+ *      cpu1 (has lock)       cpu2 (want to put blocks in limbo)
+ *     
+ *      read # of blocks in group
+ *                            set # blocks in group
+ *                            write memory barrier
+ *                            set VDSE_IDENT_LIMBO
+ *      read VDSE_IDENT_LIMBO
+ *
+ *    The point being that the cpu/compiler can reorder operations as 
+ *    they see fit unless explicitely told not to (a read barrier forces
+ *    the load of the # of blocks to be after the loads of either 
+ *    VDSE_IDENT_LIMBO or isInLimbo.
+ *
+ */
+
+typedef struct vdseFreeBlock
+{
+    enum ObjectIdentifier identifier;
+    size_t numBlocks;
+} vdseFreeBlock;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -37,7 +140,6 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
    enum vdsErrors errcode;
    vdseFreeBufferNode* pNode;
    size_t neededBlocks, neededBytes, bitmapLength;
-   unsigned char* ptr;
    vdseMemBitmap* pBitmap = NULL;
    
    VDS_PRE_CONDITION( pContext != NULL );
@@ -75,7 +177,8 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
                  offsetof( vdseBlockGroup, bitmap ) + 
                  offsetof( vdseMemBitmap, bitmap ) +
                  vdseGetBitmapLengthBytes( neededBlocks << VDSE_BLOCK_SHIFT, 
-                                           VDSE_ALLOCATION_UNIT );
+                                           VDSE_ALLOCATION_UNIT ) +
+                 VDSE_ALLOCATION_UNIT; /* The endBlock struct */
 
    /* Align it on VDSE_ALLOCATION_UNIT bytes boundary */
    neededBytes = ( (neededBytes - 1) / VDSE_ALLOCATION_UNIT + 1 ) * 
@@ -92,9 +195,13 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
       return errcode;
    
    vdseBlockGroupInit( &pAlloc->blockGroup,
-                      VDSE_BLOCK_SIZE,
-                      neededBlocks );
-
+                       VDSE_BLOCK_SIZE, /* offset of the allocator */
+                       neededBlocks );
+   vdseEndBlockSet( SET_OFFSET(pAlloc), 
+                    neededBlocks, 
+                    false,   /* isInLimbo */
+                    false ); /* is at the end of the VDS */
+                                              
    /* Add the blockGroup to the list of groups of the memObject */
    vdseLinkedListPutFirst( &pAlloc->memObj.listBlockGroup, 
                            &pAlloc->blockGroup.node );
@@ -122,18 +229,9 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
    /* Now put the rest of the free blocks in our free list */
    pNode = (vdseFreeBufferNode*)(pBaseAddress + ((neededBlocks+1) << VDSE_BLOCK_SHIFT));
    pNode->numBuffers = (length >> VDSE_BLOCK_SHIFT) - (neededBlocks+1);
-   vdseLinkedListPutFirst( &pAlloc->freeList, &pNode->node );
+   vdseLinkedListPutFirst( &pAlloc->freeList, &pNode->node );   
    
-   /*
-    * Put the offset of the first free block on the last free block. This
-    * makes it simpler/faster to rejoin groups of free blocks. But only 
-    * if the number of blocks in the group > 1.
-    */
-   if ( pNode->numBuffers > 1 )
-   {
-      ptr = pBaseAddress + length - VDSE_BLOCK_SIZE; 
-      *((ptrdiff_t *)ptr) = (neededBlocks+1) << VDSE_BLOCK_SHIFT;
-   }
+   vdseEndBlockSet( SET_OFFSET(pNode), pNode->numBuffers, false, true );
    
    return VDS_OK;
 }
@@ -252,17 +350,17 @@ vdseFreeBufferNode* FindBuffer( vdseMemAlloc*     pAlloc,
 /**
  * Allocates the blocks of shared memory we need.  
  */
-void* vdseMallocBlocks( vdseMemAlloc*       pAlloc,
-                       size_t              requestedBlocks,
-                       vdseSessionContext* pContext )
+unsigned char* vdseMallocBlocks( vdseMemAlloc*       pAlloc,
+                                 size_t              requestedBlocks,
+                                 vdseSessionContext* pContext )
 {
    vdseFreeBufferNode* pNode = NULL;
    vdseFreeBufferNode* pNewNode = NULL;
    int errcode = 0;
    size_t newNumBlocks = 0;
-   unsigned char* ptr;
    vdseMemBitmap* pBitmap;
-   
+   enum ObjectIdentifier* identifier;
+
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pAlloc != NULL );
    VDS_PRE_CONDITION( requestedBlocks > 0 );
@@ -270,7 +368,7 @@ void* vdseMallocBlocks( vdseMemAlloc*       pAlloc,
 
    errcode = vdscTryAcquireProcessLock( &pAlloc->memObj.lock, 
                                         getpid(),
-                                        LONG_LOCK_TIMEOUT );
+                                        LOCK_TIMEOUT );
    if ( errcode != VDS_OK )
    {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
@@ -296,18 +394,27 @@ void* vdseMallocBlocks( vdseMemAlloc*       pAlloc,
          vdseLinkedListReplaceItem( &pAlloc->freeList, 
                                     &pNode->node, 
                                     &pNewNode->node );
-         /*
-          * Put the offset of the first free block on the last free block.
-          * This makes it simpler/faster to rejoin groups of free blocks. But 
-          * only if the number of blocks in the group > 1.
-          */
-          if ( newNumBlocks > 1 )
-          {
-             ptr = (unsigned char*) pNewNode + ((newNumBlocks-1) << VDSE_BLOCK_SHIFT); 
-             *((ptrdiff_t *)ptr) = SET_OFFSET(pNewNode);
-          }
+         
+         /* Reset the vdseEndBlock struct */
+         vdseEndBlockSet( SET_OFFSET(pNewNode), 
+                          newNumBlocks, 
+                          false,
+                          vdseMemAllocLastBlock( pAlloc,
+                                                 SET_OFFSET(pNewNode),
+                                                 newNumBlocks ) );
       }
-
+      /* Set the first bytes to "allocated" and set the endBlock of the
+       * newly allocated blocks.
+       */
+      identifier = (enum ObjectIdentifier *) pNode;
+      *identifier = VDSE_IDENT_ALLOCATED;
+      vdseEndBlockSet( SET_OFFSET(pNode), 
+                       requestedBlocks, 
+                       false,
+                       vdseMemAllocLastBlock( pAlloc,
+                                              SET_OFFSET(pNode),
+                                              requestedBlocks ) );
+      
       pAlloc->totalAllocBlocks += requestedBlocks;   
       pAlloc->numMallocCalls++;
 
@@ -317,103 +424,165 @@ void* vdseMallocBlocks( vdseMemAlloc*       pAlloc,
    }
    vdscReleaseProcessLock( &pAlloc->memObj.lock );
 
-   return (void *)pNode;
+   return (unsigned char *)pNode;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Free ptr, the memory is returned to the pool. */
 
-int vdseFreeBlocks( vdseMemAlloc*       pAlloc,
-                   void *              ptr, 
-                   size_t              numBlocks,
-                   vdseSessionContext* pContext )
+void vdseFreeBlocks( vdseMemAlloc*       pAlloc,
+                     unsigned char *     ptr, 
+                     size_t              numBlocks,
+                     vdseSessionContext* pContext )
 {
    int errcode = 0;
-   vdseFreeBufferNode* otherNode;
+   vdseFreeBufferNode* otherNode, *previousNode = NULL, *newNode = NULL;
    bool otherBufferisFree = false;
    unsigned char* p;
    ptrdiff_t offset;
    vdseMemBitmap* pBitmap;
+   vdseEndBlockGroup* endBlock;
+//   bool saveInList = true;
+   bool lastBlock;
+   enum ObjectIdentifier* pIdentifier;
+   vdseFreeBlock* pFreeHeader;
    
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pAlloc   != NULL );
    VDS_PRE_CONDITION( ptr      != NULL );
    VDS_PRE_CONDITION( numBlocks > 0 );
 
-   errcode = vdscTryAcquireProcessLock( &pAlloc->memObj.lock, getpid(), LONG_LOCK_TIMEOUT );
-         if ( errcode != VDS_OK )
+   errcode = vdseLock( &pAlloc->memObj, SET_OFFSET(pAlloc), pContext );
+   if ( errcode != 0 )
    {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
-      return -1;
+      /* 
+       * Potential race conditions here if the memory is accessed beyond
+       * this point. Setting the field isInLimbo and VDSE_IDENT_LIMBO
+       * must be done after the memory barrier (to make sure they are the
+       * last operations done on this piece of memory).
+       */
+      pFreeHeader = (vdseFreeBlock*) ptr;
+      endBlock = (vdseEndBlockGroup *)
+         (ptr + (numBlocks << VDSE_BLOCK_SHIFT) - VDSE_ALLOCATION_UNIT);
+
+      pFreeHeader->numBlocks = numBlocks;
+      
+      vdscWriteMemoryBarrier();
+      pFreeHeader->identifier = VDSE_IDENT_CLEAR;
+      endBlock->isInLimbo = true;
+
+      return;
    }
 
    pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
-   /* 
-    * Check if the block before the current group-of-blocks-to-be-released
-    * is in the freeList or not.
+   newNode = (vdseFreeBufferNode*)ptr;
+   newNode->numBuffers = numBlocks;
+
+   /*
+    * We need to recover any memory left in limbo. We also must consolidate
+    * free groups of blocks together in a single block.
     */
-   p = (unsigned char*)ptr - VDSE_BLOCK_SIZE;
-   otherBufferisFree = vdseIsBufferFree( pBitmap, SET_OFFSET(p) );
-   if ( otherBufferisFree )
+
+   /* Starts with the previous blocks */
+   endBlock = (vdseEndBlockGroup*)((unsigned char*)newNode-VDSE_ALLOCATION_UNIT);
+   previousNode = GET_PTR( endBlock->firstBlockOffset, vdseFreeBufferNode );
+   otherBufferisFree = vdseIsBufferFree( pBitmap, endBlock->firstBlockOffset );
+   
+   /*
+    * Do we need a memory block?
+    */
+   while ( otherBufferisFree || endBlock->isInLimbo )
    {
-      /* Find the start of that free group of blocks */
-      if ( vdseIsBufferFree( pBitmap, 
-         SET_OFFSET( (unsigned char*)ptr - (2 << VDSE_BLOCK_SHIFT) ) ) )
+      if ( otherBufferisFree )
       {
-         /* The free group has more than one block */
-         offset = *((ptrdiff_t*)p);
-         p = GET_PTR(offset, unsigned char);
+         /*
+          * It might be better to remove this check later when the system
+          * is all working and stable.
+          */
+         VDS_INV_CONDITION( previousNode->numBuffers == endBlock->numBlocks );
+      
+         /*
+          * The previous node is already in our list of free blocks. We remove
+          * it from the list (at the end we put back, in the list, the 
+          * consolidated group).
+          */
+         previousNode->numBuffers += newNode->numBuffers;
+         vdseLinkedListRemoveItem( &pAlloc->freeList, 
+                                   &previousNode->node );
       }
-      ((vdseFreeBufferNode*)p)->numBuffers += numBlocks;
+      else
+      {
+         previousNode->numBuffers = newNode->numBuffers + endBlock->numBlocks;
+      }
+      newNode = previousNode;
+      endBlock = (vdseEndBlockGroup*)((unsigned char*)newNode-VDSE_ALLOCATION_UNIT);
+      previousNode = GET_PTR( endBlock->firstBlockOffset, vdseFreeBufferNode );
+      otherBufferisFree = vdseIsBufferFree( pBitmap, endBlock->firstBlockOffset );
    }
-   else
-   {
-      /*
-       * We make p the node, it could be the current group of blocks or
-       * the previous one.
-       */
-      p = (unsigned char*)ptr;
-      ((vdseFreeBufferNode*)p)->numBuffers = numBlocks;
-      vdseLinkedListPutLast( &pAlloc->freeList, 
-                             &((vdseFreeBufferNode*)p)->node );
-   }
-
+   
    /* 
-    * Check if the block after the current group-of-blocks-to-be-released
-    * is in the freeList or not.
+    * Now do the following group of blocks.
+    *
+    * Things we have to watchout for:
+    *   - not going past the end of the shared memory...
+    *   - if the group of block is allocated, test the first few bytes for
+    *     the VDSE_IDENT_CLEAR identifier and then check the isInLimbo field.
+    *     Warning: the isInLimbo field is THE ultimate criteria (see notes at
+    *              the beginning of this file.
     */
-   otherNode = (vdseFreeBufferNode*)((unsigned char*)ptr + (numBlocks << VDSE_BLOCK_SHIFT) );
-   otherBufferisFree = vdseIsBufferFree( pBitmap, SET_OFFSET(otherNode) );
-   if ( otherBufferisFree )
+   otherNode = (vdseFreeBufferNode*)
+      ((unsigned char*)newNode + (newNode->numBuffers << VDSE_BLOCK_SHIFT) );
+   pFreeHeader = (vdseFreeBlock*) otherNode;   
+   endBlock = (vdseEndBlockGroup*)((unsigned char*)otherNode-VDSE_ALLOCATION_UNIT);
+   /* 
+    * At this point enBlock is set to the end of the current buffer, not to
+    * the end of the next one (otherNode) we are looking at.
+    */
+   while ( ! endBlock->lastBlock )
    {
-      ((vdseFreeBufferNode*)p)->numBuffers += otherNode->numBuffers;
-      vdseLinkedListRemoveItem( &pAlloc->freeList, 
-                                &otherNode->node );
-      memset( otherNode, 0, sizeof(vdseFreeBufferNode) );
-   }
+      otherBufferisFree = vdseIsBufferFree( pBitmap, SET_OFFSET(otherNode) );
+      if ( otherBufferisFree )
+      {
+      }
+      else
+      {
+         if ( pFreeHeader->identifier == VDSE_IDENT_CLEAR )
+         {
+            endBlock = (vdseEndBlockGroup *) ((unsigned char*)otherNode + 
+                          (pFreeHeader->numBlocks << VDSE_BLOCK_SHIFT) - 
+                          VDSE_ALLOCATION_UNIT);
+         }
+         else
+            break;
 
+         while ( otherBufferisFree || ( !otherBufferisFree && *pIdentifier == VDSE_IDENT_CLEAR ) )
+         {
+            newNode->numBuffers += otherNode->numBuffers;
+            vdseLinkedListRemoveItem( &pAlloc->freeList, 
+                                      &otherNode->node );
+            memset( otherNode, 0, sizeof(vdseFreeBufferNode) );
+         }
+      }
+   }
+   vdseLinkedListPutLast( &pAlloc->freeList, &newNode->node );
+                             
    pAlloc->totalAllocBlocks -= numBlocks;   
    pAlloc->numFreeCalls++;
 
    /* Set the bitmap */
-   vdseSetBufferFree( pBitmap, SET_OFFSET(ptr), numBlocks << VDSE_BLOCK_SHIFT );
-   
-   /*
-    * Put the offset of the first free block on the last free block.
-    * This makes it simpler/faster to rejoin groups of free blocks. But 
-    * only if the number of blocks in the group > 1.
-    */
-   if ( ((vdseFreeBufferNode*)p)->numBuffers > 1 )
-   {
-      /* Warning - we reuse ptr here */
-       ptr = p + ((((vdseFreeBufferNode*)p)->numBuffers-1) << VDSE_BLOCK_SHIFT); 
-       *((ptrdiff_t *)ptr) = SET_OFFSET(p);
-   }
-    
-   vdscReleaseProcessLock( &pAlloc->memObj.lock );
+   vdseSetBufferFree( pBitmap, SET_OFFSET(newNode), newNode->numBuffers << VDSE_BLOCK_SHIFT );
 
-   return 0;
+   vdseEndBlockSet( SET_OFFSET(newNode), 
+                    newNode->numBuffers, 
+                    false,
+                    vdseMemAllocLastBlock( pAlloc,
+                                           SET_OFFSET(newNode),
+                                           newNode->numBuffers ));
+   
+   vdseUnlock( &pAlloc->memObj, pContext );
+
+   return;
 }
   
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -508,7 +677,7 @@ vdsErrors vdseMemAllocStats( vdseMemAlloc*       pAlloc,
 
    errcode = vdscTryAcquireProcessLock( &pAlloc->memObj.lock, 
                                         getpid(),
-                                        LONG_LOCK_TIMEOUT );
+                                        LOCK_TIMEOUT );
    if ( errcode == 0 )
    {
       *pNumberOfMallocs  = pAlloc->numMallocCalls;

@@ -19,31 +19,36 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * Note: no need to initialize the endBlock struct. It is set by the 
+ * memory allocator when calling vdseMallocBlocks().
+ */
 void vdseBlockGroupInit( vdseBlockGroup* pGroup,
-                        ptrdiff_t      groupOffset,
-                        size_t         numBlocks )
+                         ptrdiff_t       firstBlockOffset,
+                         size_t          numBlocks )
 {
-   ptrdiff_t offset;
+   ptrdiff_t groupOffset;
    size_t currentLength;
    vdseFreeBufferNode* firstNode;
-
+   
    VDS_PRE_CONDITION( pGroup != NULL );
-   VDS_PRE_CONDITION( groupOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( firstBlockOffset != NULL_OFFSET );
    VDS_PRE_CONDITION( numBlocks > 0 );
    
    pGroup->numBlocks = numBlocks;
+   pGroup->objType = VDSE_IDENT_PAGE_GROUP;
    
    vdseLinkNodeInit( &pGroup->node );
    vdseLinkedListInit( &pGroup->freeList );
    
    vdseMemBitmapInit( &pGroup->bitmap,
-                      groupOffset,
+                      firstBlockOffset,
                       numBlocks << VDSE_BLOCK_SHIFT, 
                       VDSE_ALLOCATION_UNIT );
    
    /* Is the groupBlock struct at the beginning of the group ? */
-   offset = SET_OFFSET(pGroup);
-   if ( SET_OFFSET(pGroup) == groupOffset )
+   groupOffset = SET_OFFSET(pGroup);
+   if ( SET_OFFSET(pGroup) == firstBlockOffset )
    {
       /* 
        * Yes, we are. This blockGroup is therefore NOT the pageGroup 
@@ -60,7 +65,7 @@ void vdseBlockGroupInit( vdseBlockGroup* pGroup,
        * allocated for the header of the object.
        */
       pGroup->isDeletable = false;
-      currentLength = offset-groupOffset;
+      currentLength = groupOffset-firstBlockOffset;
    }
 
    currentLength += offsetof(vdseBlockGroup,bitmap) +
@@ -70,20 +75,25 @@ void vdseBlockGroupInit( vdseBlockGroup* pGroup,
    currentLength = ((currentLength-1)/VDSE_ALLOCATION_UNIT+1)*VDSE_ALLOCATION_UNIT;
    
    pGroup->maxFreeBytes = (numBlocks << VDSE_BLOCK_SHIFT) - currentLength;
+   
+   /* remove the space required by the vdseEndBlockGroup struct */
+   pGroup->maxFreeBytes -= VDSE_ALLOCATION_UNIT;
 
    /* 
     * So we have one free buffer, starting at offset "currentLength"
-    * + groupOffset with length "maxFreeBytes". Insert it in our freeList.
+    * + firstBlockOffset with length "maxFreeBytes". Insert it in our freeList.
     */
-   firstNode = GET_PTR( groupOffset+currentLength, vdseFreeBufferNode );
+   firstNode = GET_PTR( firstBlockOffset+currentLength, vdseFreeBufferNode );
    vdseLinkNodeInit( &firstNode->node );
    firstNode->numBuffers = pGroup->maxFreeBytes/VDSE_ALLOCATION_UNIT;
 
    vdseLinkedListPutFirst( &pGroup->freeList, &firstNode->node );
 
    /* And set the bitmap */
-   vdseSetBufferAllocated( &pGroup->bitmap, groupOffset, currentLength );
-
+   vdseSetBufferAllocated( &pGroup->bitmap, firstBlockOffset, currentLength );
+   vdseSetBufferAllocated( &pGroup->bitmap, 
+                           vdseEndBlockOffset(firstBlockOffset, numBlocks), 
+                           VDSE_ALLOCATION_UNIT );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -98,6 +108,7 @@ void vdseBlockGroupFini( vdseBlockGroup* pGroup )
 
    pGroup->numBlocks = 0;
    pGroup->maxFreeBytes = 0;
+   pGroup->objType = VDSE_IDENT_CLEAR;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

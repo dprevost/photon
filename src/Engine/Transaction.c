@@ -240,9 +240,13 @@ int vdseTxCommit( vdseTx*             pTx,
          }
          else
          {
+            /* 
+             * No one uses the object to remove and no one can access it
+             * since we have a lock on its parent. We can safely unlock it.
+             */
             vdseUnlock( pChildMemObject, pContext );
 
-            /* Remove it from the folder and free the memory */
+            /* Remove it from the folder (from the hash list) */
             vdseFolderRemoveObject( parentFolder, 
                                     pChildMemObject,
                                     GET_PTR(pChildNode->myKeyOffset, vdsChar_T),

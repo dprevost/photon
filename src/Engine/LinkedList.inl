@@ -33,8 +33,6 @@ vdseLinkedListGetFirst( vdseLinkedList* pList,
    /* Get the pointer to the first node */
    *ppItem = GET_PTR( pList->head.nextOffset, vdseLinkNode );
 
-   pList->currBuffOffset = pList->head.nextOffset;   
-
    /* Reset the next offset of the head and the previous offset
     * of the item after the item we are removing.
     */
@@ -67,8 +65,6 @@ vdseLinkedListGetLast( vdseLinkedList* pList,
    /* Get the pointer to the last node */
    *ppItem = GET_PTR( pList->head.previousOffset, vdseLinkNode );
 
-   pList->currBuffOffset = pList->head.nextOffset;   
-   
    /* Reset the previous offset of the head and the next offset
     * of the item before the item we are removing.
     */   pList->head.previousOffset = (*ppItem)->previousOffset;
@@ -88,23 +84,23 @@ inline void
 vdseLinkedListPutLast( vdseLinkedList* pList,
                        vdseLinkNode *  pNewItem )
 {
+   ptrdiff_t tmpOffset;
+   
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pNewItem   != NULL );
 
-   pList->currBuffOffset = SET_OFFSET( pNewItem );
+   tmpOffset = SET_OFFSET( pNewItem );
 
    pNewItem->nextOffset     = SET_OFFSET( &pList->head );
    /* The order of the next two is important - don't change it! */
    pNewItem->previousOffset   = pList->head.previousOffset;   
-   pList->head.previousOffset = pList->currBuffOffset;
+   pList->head.previousOffset = tmpOffset;
    GET_PTR( pNewItem->previousOffset, vdseLinkNode )->nextOffset = 
-      pList->currBuffOffset;
+      tmpOffset;
    
    pList->currentSize++;
-
-   pList->currBuffOffset = NULL_OFFSET;
 
    VDS_POST_CONDITION( pNewItem->previousOffset != NULL_OFFSET );
    VDS_POST_CONDITION( pNewItem->nextOffset     != NULL_OFFSET );
@@ -116,24 +112,24 @@ inline void
 vdseLinkedListPutFirst( vdseLinkedList* pList,
                         vdseLinkNode *  pNewItem )
 {
+   ptrdiff_t tmpOffset;
+   
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pNewItem   != NULL );
 
-   pList->currBuffOffset = SET_OFFSET( pNewItem );
+   tmpOffset = SET_OFFSET( pNewItem );
 
    pNewItem->previousOffset = SET_OFFSET( &pList->head );
 
    /* The order of the next two is important - don't change it! */
    pNewItem->nextOffset = pList->head.nextOffset;   
-   pList->head.nextOffset    = pList->currBuffOffset;
+   pList->head.nextOffset = tmpOffset;
    GET_PTR( pNewItem->nextOffset, vdseLinkNode )->previousOffset = 
-      pList->currBuffOffset;
+      tmpOffset;
    
    pList->currentSize++;
-
-   pList->currBuffOffset = NULL_OFFSET;
 
    VDS_POST_CONDITION( pNewItem->previousOffset != NULL_OFFSET );
    VDS_POST_CONDITION( pNewItem->nextOffset     != NULL_OFFSET );
@@ -181,8 +177,6 @@ vdseLinkedListRemoveItem( vdseLinkedList* pList,
    }
 #endif
 
-   pList->currBuffOffset = SET_OFFSET( pRemovedItem );
-   
    GET_PTR( pRemovedItem->nextOffset, vdseLinkNode )->previousOffset = 
       pRemovedItem->previousOffset;
 
@@ -190,8 +184,6 @@ vdseLinkedListRemoveItem( vdseLinkedList* pList,
       pRemovedItem->nextOffset;
 
    --pList->currentSize;
-
-   pList->currBuffOffset = NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -355,6 +347,8 @@ vdseLinkedListReplaceItem( vdseLinkedList* pList,
                            vdseLinkNode*   pOldItem,
                            vdseLinkNode*   pNewItem )
 {
+   ptrdiff_t tmpOffset;
+
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
@@ -392,15 +386,15 @@ vdseLinkedListReplaceItem( vdseLinkedList* pList,
    }
 #endif
 
-   pList->currBuffOffset = SET_OFFSET( pNewItem );
+   tmpOffset = SET_OFFSET( pNewItem );
    pNewItem->nextOffset     = pOldItem->nextOffset;
    pNewItem->previousOffset = pOldItem->previousOffset;
 
    GET_PTR( pOldItem->nextOffset, vdseLinkNode )->previousOffset = 
-      pList->currBuffOffset;
+      tmpOffset;
 
    GET_PTR( pOldItem->previousOffset, vdseLinkNode )->nextOffset = 
-      pList->currBuffOffset;
+      tmpOffset;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

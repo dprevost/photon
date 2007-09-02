@@ -1,6 +1,5 @@
-/* -*- c++ -*- */
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -41,8 +40,8 @@ BEGIN_C_DECLS
  */
 typedef struct	vdseLinkNode
 {
-   volatile ptrdiff_t nextOffset;
-   volatile ptrdiff_t previousOffset;
+   ptrdiff_t nextOffset;
+   ptrdiff_t previousOffset;
 
 } vdseLinkNode;
 

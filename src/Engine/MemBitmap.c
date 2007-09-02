@@ -24,7 +24,7 @@ void vdseMemBitmapInit( vdseMemBitmap* pBitmap,
                         size_t         totalLength,
                         size_t         allocGranularity )
 {
-   size_t len;
+   size_t len, i;
    
    VDS_PRE_CONDITION( pBitmap     != NULL );
    VDS_PRE_CONDITION( baseAddressOffset != NULL_OFFSET );
@@ -38,18 +38,21 @@ void vdseMemBitmapInit( vdseMemBitmap* pBitmap,
    pBitmap->baseAddressOffset = baseAddressOffset;
    
    len = ( (pBitmap->lengthInBits - 1 ) >> 3 ) + 1;
-   memset(pBitmap->bitmap, 0, len );
+   for ( i = 0; i < len; ++i )
+      pBitmap->bitmap[i] = 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void vdseMemBitmapFini( vdseMemBitmap* pBitmap )
 {
-   size_t len;
+   size_t len, i;
    VDS_PRE_CONDITION( pBitmap != NULL );
    
    len = ( (pBitmap->lengthInBits - 1 ) >> 3 ) + 1;
-   memset(pBitmap->bitmap, 0, len );
+   for ( i = 0; i < len; ++i )
+      pBitmap->bitmap[i] = 0;
+
    pBitmap->lengthInBits = 0;
    pBitmap->allocGranularity = 0;
    pBitmap->baseAddressOffset = NULL_OFFSET;

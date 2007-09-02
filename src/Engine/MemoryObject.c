@@ -118,18 +118,26 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
    
    requestedChunks = (numBytes-1)/VDSE_ALLOCATION_UNIT + 1;
    
+   /*
+    * The first loop is done on the list of block groups of the current 
+    * memory object.
+    */
    errGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup,
                                        &dummy );
    while ( errGroup == LIST_OK )
    {
       currentGroup = (vdseBlockGroup*)( 
-         (unsigned char*)dummy + offsetof(vdseBlockGroup,node));
+         (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
 
+      /*
+       * This second loop is done on the list of free chunks in the current
+       * block group.
+       */
       errNode = vdseLinkedListPeakFirst( &currentGroup->freeList, &dummy );
       while ( errNode == LIST_OK )
       {
          currentNode = (vdseFreeBufferNode*)( 
-            (unsigned char*)dummy + offsetof(vdseFreeBufferNode,node));
+            (unsigned char*)dummy - offsetof(vdseFreeBufferNode,node));
          numChunks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
          if ( numChunks >= requestedChunks )
          {
@@ -137,7 +145,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
             remainingChunks = numChunks - requestedChunks;
             if ( remainingChunks == 0 )
             {
-               /* Remove the node from the list */
+               /* Remove the chunk from the list */
                vdseLinkedListRemoveItem( &currentGroup->freeList, 
                                          &currentNode->node );
             }
@@ -164,7 +172,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
                }
             }
 
-            /* Set the bitmap */
+            /* Set the bitmap of chunks of the current block group. */
             vdseSetBufferAllocated( &currentGroup->bitmap, 
                                     SET_OFFSET(currentNode), 
                                     requestedChunks*VDSE_ALLOCATION_UNIT );
@@ -173,17 +181,16 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
          }
    
          oldNode = currentNode;
-
          errNode = vdseLinkedListPeakNext( &currentGroup->freeList,
                                            &oldNode->node,
                                            &dummy );
-      }
+      } /* end of second loop on chunks */
       
       oldGroup = currentGroup;
       errGroup = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
                                          &oldGroup->node,
                                          &dummy );
-   }
+   } /* end of first loop on block groups */
 
    /*
     * If we come here, it means that we did not find a free buffer of
@@ -191,7 +198,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
     *  - find how many blocks to get
     *  - get them
     *  - initialize them
-    *  - alloc the buffer from them
+    *  - alloc the buffer the caller requested from that new chunk of memory.
     */
     
    i = ( sizeof(vdseBlockGroup) - 1 ) / VDSE_ALLOCATION_UNIT + 1;
@@ -202,31 +209,31 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
       i = requestedBlocks;
    
    currentGroup = (vdseBlockGroup*) vdseMallocBlocks( pContext->pAllocator,
-                                                    i,
-                                                    pContext );
+                                                      i,
+                                                      pContext );
    if ( currentGroup == NULL && i > requestedBlocks )
    {
-      /* retry again with a smaller number */
+      /* 
+       * We retry again with a smaller number, the minimal increase needed
+       * to satisfy the original request.
+       */
       if ( vdscGetLastError( &pContext->errorHandler ) == 
          VDS_NOT_ENOUGH_VDS_MEMORY )
       {
          i = requestedBlocks;
          currentGroup = (vdseBlockGroup*) vdseMallocBlocks( pContext->pAllocator,
-                                                          i,
-                                                          pContext );
+                                                            i,
+                                                            pContext );
       }
    }
    if ( currentGroup != NULL )
    {
-      vdseBlockGroupInit( currentGroup,
-                         SET_OFFSET( currentGroup ),
-                         i );
+      vdseBlockGroupInit( currentGroup, SET_OFFSET( currentGroup ), i );
       /* Add the blockGroup to the list of groups of the memObject */
       vdseLinkedListPutLast( &pMemObj->listBlockGroup, &currentGroup->node );
       pMemObj->totalBlocks += i;
       
-      /* Allocate the memory */
-      
+      /* Allocate the memory (the chunks) needed to satisfy the request. */
       errNode = vdseLinkedListPeakFirst( &currentGroup->freeList, &dummy );
       if ( errNode == LIST_OK )
       {
@@ -318,10 +325,12 @@ void vdseFree( vdseMemObject*      pMemObj,
    while ( errGroup == LIST_OK )
    {
       currentGroup = (vdseBlockGroup*)( 
-         (unsigned char*)dummy + offsetof(vdseBlockGroup,node));
+         (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
 
-      if ( ptr >= (unsigned char*)currentGroup && 
-           ptr < (unsigned char*)currentGroup + (currentGroup->numBlocks << VDSE_BLOCK_SHIFT) )
+      offset = currentGroup->bitmap.baseAddressOffset;
+      if ( ptr >= GET_PTR( offset, unsigned char) && 
+           ptr < GET_PTR( offset+ (currentGroup->numBlocks << VDSE_BLOCK_SHIFT), 
+                          unsigned char ) )
       {
          goodGroup = currentGroup;
          break;
@@ -397,7 +406,7 @@ void vdseFree( vdseMemObject*      pMemObj,
       vdseBlockGroupFini( goodGroup );
       
       vdseFreeBlocks( pContext->pAllocator,
-                      goodGroup,
+                      (unsigned char*)goodGroup,
                       numBlocks,
                       pContext );
    }

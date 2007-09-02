@@ -55,10 +55,6 @@ typedef struct vdseLinkedList
    /** Current size of the list. */
    size_t currentSize;
 
-   /* Crash recovery attributes */
-
-   ptrdiff_t   currBuffOffset;
-
    /** Set to VDSE_LIST_SIGNATURE at initialization. */
    unsigned int initialized;
    

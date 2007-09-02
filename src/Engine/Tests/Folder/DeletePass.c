@@ -52,7 +52,6 @@ int main()
                                      "test2",
                                      5,
                                      &context );
-fprintf( stderr, "err = %d\n", vdscGetLastError( &context.errorHandler ) );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    

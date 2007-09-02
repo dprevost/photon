@@ -51,9 +51,10 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
    vdseMemAlloc*  pAlloc;
    vdseTx* pTx;
    vdseFolder* pFolder;
-   size_t allocatedLength = VDSE_BLOCK_SIZE * 10;
+   size_t allocatedLength = VDSE_BLOCK_SIZE * 25;
 
    memset( pContext, 0, sizeof(vdseSessionContext) );
+   pContext->lockValue = 0xff;
    
    errcode = vdseInitEngine();
    if ( errcode != 0 )

@@ -277,16 +277,19 @@ int vdseFolderGetObject( vdseFolder*            pFolder,
    vdseUnlock( &pFolder->memObject, pContext );
      
    rc = vdseFolderGetObject( pNextFolder,
-                                  &objectName[partialLength+1], 
-                                  strLength - partialLength - 1, 
-                                  ppDescriptor,
-                                  pContext );
+                             &objectName[partialLength+1], 
+                             strLength - partialLength - 1, 
+                             ppDescriptor,
+                             pContext );
    
    return rc;
 
 the_exit:
 
-   /* vdscSetError might have been already called by some other function */
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called vdscSetError. 
+    */
    if ( errcode != VDS_OK )
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
 
@@ -354,8 +357,8 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
        */
       
       ptr = (unsigned char*) vdseMallocBlocks( pContext->pAllocator,
-                                     numBlocks,
-                                     pContext );
+                                               numBlocks,
+                                               pContext );
       if ( ptr == NULL )
       {
          errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
@@ -366,7 +369,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
       pDesc = (vdseObjectDescriptor *) malloc( descLength );
       if ( pDesc == NULL )
       {
-         vdseFree( pContext->pAllocator, ptr, numBlocks, pContext );
+         vdseFreeBlocks( pContext->pAllocator, ptr, numBlocks, pContext );
          errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
          goto the_exit;
       }
@@ -383,7 +386,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
                                 pContext );
       if ( listErr != LIST_OK )
       {
-         vdseFree( pContext->pAllocator, ptr, numBlocks, pContext );
+         vdseFreeBlocks( pContext->pAllocator, ptr, numBlocks, pContext );
          free( pDesc );
          if ( listErr == LIST_KEY_FOUND )
             errcode = VDS_OBJECT_ALREADY_PRESENT;
@@ -512,7 +515,10 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
    
 the_exit:
 
-   /* vdscSetError might have been already called by some other function */
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called vdscSetError. 
+    */
    if ( errcode != VDS_OK )
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
 
