@@ -111,8 +111,12 @@ endif
 TESTS +=                       \
          LockConcurrency.sh    \
          LockConcurrencyTry.sh \
-         LockShouldFail.sh     \
          LockTests             
+
+# This test is eliminated for now. It won't
+# work on a uniprocessor if the kernel was built
+# without CONFIG_PREEMPT (linux kernel that is).
+#         LockShouldFail.sh     
 
 XFAIL_TESTS =                      \
               AcquireInvalidSig    \

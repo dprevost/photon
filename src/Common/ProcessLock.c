@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -19,14 +19,11 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-
 BEGIN_C_DECLS
 
 VDSF_COMMON_EXPORT
 int g_timeOutinMilliSecs = 5;
 
-//VDSF_COMMON_EXPORT
-//extern
 struct timespec g_timeOut = { 0, 5000000 };
 
 END_C_DECLS
@@ -36,7 +33,9 @@ END_C_DECLS
 /* Initialize the lock - used for POSIX semaphore. */
 int vdscInitProcessLock( vdscProcessLock* pLock )
 {
-   int err = 0;
+   int err#  if HAVE_LINUX_FUTEX_H
+#    include <linux/futex.h>
+#  endif = 0;
 
 #if defined (VDS_USE_POSIX_SEMAPHORE)
    int pshared = 1; /* Shared between processes */
@@ -49,25 +48,13 @@ int vdscInitProcessLock( vdscProcessLock* pLock )
    
 #if defined(CONFIG_KERNEL_HEADERS)
    spin_lock_init(&pLock->lock);
-#elif defined (VDS_USE_HP_LOCK)
-   pLock->pLock = NULL;
-#else
+#elif defined(WIN32)
    pLock->lock = 0;
-#endif
-
-#if defined (VDS_USE_POSIX_SEMAPHORE)
+#elif defined (VDS_USE_POSIX_SEMAPHORE)
    memset( &pLock->semaphore.sem, 0, sizeof(sem_t) );
 #endif
 
-#if defined (VDS_USE_HP_LOCK)
-   memset( pLock->lockArray, 0, 16 );
-   pLock->pLock = (volatile int *)((int)(pLock->lockArray)+15&~0xf);
-#  if 0
-   /* 64 bits ? */
-   pLock->pLock = (volatile int *)((long)(pLock->lockArray)+15&~0xf);
-#  endif
-#endif
-
+   pLock->pid = 0;
    pLock->initialized = VDSC_LOCK_SIGNATURE;
 
 #if defined (VDS_USE_POSIX_SEMAPHORE)
@@ -102,6 +89,8 @@ int vdscFiniProcessLock( vdscProcessLock* pLock )
    } while ( err == -1 && errno == EINTR );
 #endif
 
+   pLock->pid = 0;
+   
    if ( err == 0 )
       pLock->initialized = 0;
    

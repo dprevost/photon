@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -80,9 +80,6 @@ union semun {
 };
 #    endif
 #  endif
-#  if HAVE_LINUX_FUTEX_H
-#    include <linux/futex.h>
-#  endif
 #endif /* CONFIG_KERNEL_HEADERS */
 
 #define VDSC_LOCK_SIGNATURE ((unsigned int)0x174a0c46 )
@@ -93,19 +90,8 @@ union semun {
  * Choose how we will implement our locking.
  */
 
-#if !defined(CONFIG_KERNEL_HEADERS)
-#  if defined (WIN32)
-#    define VDS_USE_TRY_ACQUIRE
-#  elif defined (  __GNUC__ )
-#    if defined (__i386) ||  defined (__i386__) || defined(__sparc)
-#      define VDS_USE_TRY_ACQUIRE
-#    endif
-#  elif defined ( __HP_aCC )
-#    define VDS_USE_HP_LOCK
-#  endif
-#  if !defined (VDS_USE_TRY_ACQUIRE) && !defined( VDS_USE_HP_LOCK )
-#    define VDS_USE_POSIX_SEMAPHORE
-#  endif
+#if !defined(CONFIG_KERNEL_HEADERS) && ! defined (WIN32)
+#  define VDS_USE_POSIX_SEMAPHORE
 #endif
 
 /* Override the macro for testing purposes. Change the #if 0 to
@@ -113,10 +99,9 @@ union semun {
  */
 
 #if 0
-#  undef VDS_USE_TRY_ACQUIRE
-#  undef VDS_USE_POSIX_SEMAPHORE
+#  undef  CONFIG_KERNEL_HEADERS
    /* replace by an appropriate macro for the test */
-#  define VDS_???  
+#  define VDS_USE_POSIX_SEMAPHORE 
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -177,15 +162,6 @@ typedef struct vdscProcessLock
 #if defined(CONFIG_KERNEL_HEADERS)
 
    spinlock_t lock;
-   
-#elif defined (VDS_USE_HP_LOCK)
-
-   /**
-    *  HP (PA-RISC) requires that the variable used for locking be aligned
-    *  on a 16-byte boundary.
-    */
-   char lockArray[16];
-   vds_lock_T* pLock;
    
 #else
    /** Might be used to hold the pid and not for locking */
@@ -263,3 +239,4 @@ END_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* VDSC_PROCESS_LOCK_H */
+

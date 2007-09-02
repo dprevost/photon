@@ -16,104 +16,6 @@
  */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-/*
- * linux in kernel 2.5.? started to implement futex (fast user mutexes).
- * Our locking could be reimplemented with them eventually.
- */
-
-#if defined (VDS_USE_TRY_ACQUIRE)
-#  if defined (WIN32)
-
-#    define TRY_ACQUIRE( LOCK, VALUE, ISITLOCKED ) \
-   ISITLOCKED = InterlockedExchange( (LPLONG)&LOCK, VALUE );
-
-#    define UNLOCK( LOCK ) \
-   InterlockedExchange( (LPLONG)&LOCK, 0 );
-
-#  elif defined (  __GNUC__ )
-   /*
-    * With gcc, inline assembler provides the locking
-    */
-#    if defined (__i386) || defined (__i386__) 
-#      define TRY_ACQUIRE( LOCK, VALUE, ISITLOCKED ) \
-   unsigned int out;                                 \
-   __asm__ __volatile__ (                            \
-         "xchg %2, (%1);                             \
-          movl %2, %0     "                          \
-         :"=r"(out)                                  \
-         :"r"(&LOCK), "r"(VALUE) : "memory" );                  \
-   if ( out  == 0 )                                  \
-      ISITLOCKED = 0;
-
-#      if defined (CONFIG_X86_OOSTORE)
-#        define UNLOCK( LOCK )                       \
-   __asm__ __volatile__ (                            \
-      "lock; movl $0, %0 "                           \
-      :"=m"(LOCK)                                    \
-      :  /* No input regs */                         \
-      :"memory" );
-#      else
-#        define UNLOCK( LOCK )                       \
-   __asm__ __volatile__ (                            \
-      "movl $0, %0 "                                 \
-      :"=m"(LOCK)                                    \
-      :  /* No input regs */                         \
-      :"memory" );
-#      endif
-
-#    elif defined(__sparc) 
-#    define TRY_ACQUIRE( LOCK, VALUE, ISITLOCKED )   \
-        unsigned int out;                            \
-        __asm__ __volatile__("ldstub [%1], %0"       \
-                             : "=r" (out)            \
-                             : "r" (&LOCK)           \
-                             : "memory" );           \
-   if ( out  == 0 ) \
-      ISITLOCKED = 0;
-
-#    endif /* on the cpu types */
-#  endif /* __GNUC__ */
-#endif /* VDS_USE_TRY_ACQUIRE */
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/*
- * We write to the highest byte of the lock word to invalidate the caches on
- * SMP systems. See the following document from HP for more details:
- * http://h21007.www2.hp.com/dspp/files/unprotected/itanium/spinlocks.pdf
- */
-#if defined (VDS_USE_HP_LOCK)
-#  define HP_LOCK( LOCK, ISITLOCKED )                \
-   *((volatile char *)LOCK) = 0;                     \
-   _asm("LDCWS", 0, 0, LOCK, ISITLOCKED );
-
-/*
- * The next define is used to find where in the lockArray should we store
- * the pid of the process which owns the lock (remember that the lock word 
- * must be 16-byte aligned - therefore pLock can point to 4 different
- * places in the lockArray). This pid is always in the word following the
- * lock word (unless we wrap around and it is at position 0).
- */
-#  define HP_LOCK_PID_LOCATION ( ((int)((char*)pLock->pLock-pLock->lockArray)+4) % 16 )
-
-/*
- * The next define is used to find where in the lockArray should we store
- * the pid of the process which is attempting to acquire the lock.
- * Not sure yet if this will be useful in attempting to recover from a
- * a crashed process (if a crash occurs between obtaining a lock and 
- * setting lockArray[HP_LOCK_PID_LOCATION] - our "race" condition) 
- * since the data here is not protected by a lock (if a second process
- * was also trying to get the lock it might have overwritten this value
- * just before the lock was obtained by the first process).
- * IOW, if the value of lockArrayHP_TRY_PID_LOCATION] is the value of our
- * chashed process... ok - but if not, the lock might still be held by that 
- * process.
- */
-#  define HP_TRY_PID_LOCATION ( ((int)((char*)pLock->pLock-pLock->lockArray)+8) % 16 )
-
-#endif 
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline int  
 vdscTestLockPidValue( vdscProcessLock* pLock, pid_t pid )
@@ -122,13 +24,7 @@ vdscTestLockPidValue( vdscProcessLock* pLock, pid_t pid )
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( pid != 0 );
 
-#if defined(CONFIG_KERNEL_HEADERS)
    return pLock->pid == pid;
-#elif defined (VDS_USE_HP_LOCK)
-   return (pid_t) pLock->lockArray[HP_LOCK_PID_LOCATION] == pid;
-#else
-   return pLock->lock == (unsigned) pid;
-#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -141,8 +37,6 @@ vdscIsItLocked( vdscProcessLock* pLock )
 
 #if defined(CONFIG_KERNEL_HEADERS)
    return spin_is_locked( &pLock->lock );
-#elif defined (VDS_USE_HP_LOCK)
-   return *(pLock->pLock) == 1;
 #else
    return pLock->lock != 0;
 #endif
@@ -154,8 +48,10 @@ inline void
 vdscAcquireProcessLock( vdscProcessLock* pLock,
                         vds_lock_T lockValue )
 {
+#if defined(WIN32)
    vds_lock_T tempValue = lockValue;
-   int isItLocked = -1;
+#endif
+   int isItLocked = -1; /* Value of 0 indicates success */
 
    VDS_PRE_CONDITION( pLock != NULL );
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
@@ -163,39 +59,17 @@ vdscAcquireProcessLock( vdscProcessLock* pLock,
 
 #if defined(CONFIG_KERNEL_HEADERS)
    spin_lock(&pLock->lock);
-   pLock->pid = lockValue;
-
-   return;
-#endif
-   
-#if defined (VDS_USE_HP_LOCK)
-   register pid_t* pTryPID = (pid_t*) &pLock->lockArray[HP_TRY_PID_LOCATION];
-
-   while ( 1 )
-   {
-      if ( *pLock->pLock == 1 )
-      {
-         *pTryPID = lockValue;
-         HP_LOCK( pLock->pLock, isItLocked );
-      }
-      if ( isItLocked == 0 )
-         break;
-      nanosleep( &g_timeOut, NULL );
-   }
-#elif defined (VDS_USE_TRY_ACQUIRE)
+   isItLocked = 0;
+#elif defined(WIN32)
    for (;;)
    {
       if ( pLock->lock == 0 )
       {
-         TRY_ACQUIRE( pLock->lock, tempValue, isItLocked );
+         isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, tempValue );
       }
       if ( isItLocked == 0 )
          break;
-#if defined (WIN32)
       Sleep( g_timeOutinMilliSecs );
-#else
-      nanosleep( &g_timeOut, NULL );
-#endif
       tempValue = lockValue;
    }
 #elif defined (VDS_USE_POSIX_SEMAPHORE)
@@ -206,10 +80,6 @@ vdscAcquireProcessLock( vdscProcessLock* pLock,
    } while ( isItLocked == -1 && errno == EINTR );
 #endif
 
-/*   
-fprintf( stderr, " lockValue2: %d %d %d\n", pLock->lock, saved, isItLocked );
-*/
-
    /* Failure to get the lock should not occured!!! */
    VDS_POST_CONDITION( isItLocked == 0 );
 
@@ -217,17 +87,7 @@ fprintf( stderr, " lockValue2: %d %d %d\n", pLock->lock, saved, isItLocked );
     * this way -> it is possible to have lock out-of-synch with
     * the actual condition of the object.
     */
-#if defined (VDS_USE_HP_LOCK)
-   *( (pid_t*) &pLock->lockArray[HP_LOCK_PID_LOCATION] ) = lockValue;
-   
-#elif defined (VDS_USE_POSIX_SEMAPHORE)
-   int val;
-   int ok = sem_getvalue( &pLock->semaphore.sem, &val ); 
-   if ( ok == 0 && val > 0 )
-      fprintf( stderr, "acquire 3 %d\n", errno );
-   pLock->lock = lockValue;
-   
-#endif
+   pLock->pid = lockValue;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -237,8 +97,10 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
                            vds_lock_T   lockValue,
                            unsigned int milliSecs )
 {
+#if defined (WIN32)
    vds_lock_T tempValue = lockValue;
-   int isItLocked = -1;
+#endif
+   int isItLocked = -1; /* Value of 0 indicates success */
 
    VDS_PRE_CONDITION( pLock != NULL );
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
@@ -247,19 +109,10 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
 #if defined(CONFIG_KERNEL_HEADERS)
    isItLocked = spin_trylock( &pLock->lock );
    isItLocked--;
-
-#elif defined (VDS_USE_HP_LOCK)
-   register pid_t* pTryPID = (pid_t*) &pLock->lockArray[HP_TRY_PID_LOCATION];
-   if ( *pLock->pLock == 1 )
-   {
-      *pTryPID = lockValue;
-      HP_LOCK( pLock->pLock, isItLocked );
-   }
-
-#elif defined (VDS_USE_TRY_ACQUIRE)
+#elif defined (WIN32)
    if ( pLock->lock == 0 )
    {
-      TRY_ACQUIRE( pLock->lock, tempValue, isItLocked );
+      isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, tempValue );
    }
 #elif defined (VDS_USE_POSIX_SEMAPHORE)
    errno = 0;
@@ -284,10 +137,6 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
       
       for ( i = 0; i < iterations; ++i )
       {
-/*
-  if ( isItLocked != 0 )
-  fprintf( stderr, "acquire 1\n" ); 
-*/
 #if defined (WIN32)
          Sleep( g_timeOutinMilliSecs );
 #else
@@ -296,17 +145,11 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
 #if defined(CONFIG_KERNEL_HEADERS)
          isItLocked = spin_trylock( &pLock->lock );
          isItLocked--;
-#elif defined (VDS_USE_HP_LOCK)
-         if ( *pLock->pLock == 1 )
-         {
-            *pTryPID = lockValue;
-            HP_LOCK( pLock->pLock, isItLocked );
-         }
-#elif defined (VDS_USE_TRY_ACQUIRE)
+#elif defined (WIN32)
          if ( pLock->lock == 0 )
          {
             tempValue = lockValue;
-            TRY_ACQUIRE( pLock->lock, tempValue, isItLocked );
+            isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, tempValue );
          }
 #elif defined (VDS_USE_POSIX_SEMAPHORE)
          do
@@ -327,16 +170,14 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
          }
 #endif
          if ( isItLocked == 0 )
-         {
-            pLock->pid = lockValue;
             break;
-         }
-      }
+      } /* end of for loop */
+      
+      /* We come here - the time slice was not enough, no luck getting the lock */
       if ( isItLocked != 0 )
       {
          return -1;   
       }
-      
    }
  
    /* There is a "race condition" when saving the pid of the caller
@@ -344,24 +185,6 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
     * the actual condition of the object.
     */
    pLock->pid = lockValue;
-
-#if defined (VDS_USE_HP_LOCK)
-   if ( isItLocked == 0 )
-   {
-      *( (pid_t*) &pLock->lockArray[HP_LOCK_PID_LOCATION] ) = lockValue;
-   }
-   
-#elif defined (VDS_USE_POSIX_SEMAPHORE)
-   if ( isItLocked == 0 )
-   {
-      int val;
-      int ok = sem_getvalue( &pLock->semaphore.sem, &val ); 
-      if ( ok == 0 && val > 0 )
-         fprintf( stderr, "acquire 3 %d\n", errno );
-      pLock->lock = lockValue;
-   }
-   
-#endif
 
    return isItLocked;
 }
@@ -374,22 +197,13 @@ vdscReleaseProcessLock( vdscProcessLock* pLock )
    VDS_PRE_CONDITION( pLock != NULL );
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
 
-#if defined(CONFIG_KERNEL_HEADERS)
    pLock->pid = 0;
+
+#if defined(CONFIG_KERNEL_HEADERS)
    spin_unlock( &pLock->lock );
-#elif defined (VDS_USE_HP_LOCK)
-   *( (pid_t*) &pLock->lockArray[HP_LOCK_PID_LOCATION] ) = -1;
-
-   _flush_globals();
-   pLock->pLock = 1;
-   
-   *( (pid_t*) &pLock->lockArray[HP_LOCK_PID_LOCATION] ) = -1;
-
-#elif defined (VDS_USE_TRY_ACQUIRE)
-   UNLOCK( pLock->lock );
+#elif defined (WIN32)
+   InterlockedExchange( (LPLONG)&pLock->lock, 0 );
 #elif defined (VDS_USE_POSIX_SEMAPHORE)
-
-   pLock->lock = 0;
 
    errno = 0;
    int val;
@@ -412,3 +226,4 @@ vdscReleaseProcessLock( vdscProcessLock* pLock )
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
