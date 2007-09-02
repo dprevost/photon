@@ -51,7 +51,6 @@ EXTRA_DIST =               \
 libCommon_la_LIBADD = @LTLIBOBJS@
 
 AM_CPPFLAGS = -I$(top_srcdir)/src/include \
-              -I$(top_srcdir)/src/zzz/include \
               -Wall
 
 if COND_USE_KERNEL_HEADERS
@@ -59,10 +58,6 @@ if COND_USE_KERNEL_HEADERS
                   -I$(top_srcdir)/src/Locking/include \
                   -include $(top_srcdir)/src/Locking/include/mylinux/autoconf.h \
                   -D__KERNEL__
-endif
-
-if COND_USE_SMP
-   AM_CPPFLAGS += -DCONFIG_SMP
 endif
 
 if COND_USE_ASSERT

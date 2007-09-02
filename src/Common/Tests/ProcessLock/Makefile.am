@@ -149,10 +149,6 @@ if COND_USE_KERNEL_HEADERS
                   -D__KERNEL__
 endif
 
-if COND_USE_SMP
-   AM_CPPFLAGS += -DCONFIG_SMP
-endif
-
 if COND_USE_DBC
    AM_CPPFLAGS += -DUSE_DBC
 endif

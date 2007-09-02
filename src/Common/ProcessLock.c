@@ -33,9 +33,7 @@ END_C_DECLS
 /* Initialize the lock - used for POSIX semaphore. */
 int vdscInitProcessLock( vdscProcessLock* pLock )
 {
-   int err#  if HAVE_LINUX_FUTEX_H
-#    include <linux/futex.h>
-#  endif = 0;
+   int err = 0;
 
 #if defined (VDS_USE_POSIX_SEMAPHORE)
    int pshared = 1; /* Shared between processes */
