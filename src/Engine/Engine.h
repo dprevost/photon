@@ -140,10 +140,11 @@ typedef unsigned int transaction_T;
 
 enum ObjectIdentifier
 {
-   VDSE_IDENT_CLEAR           = 0xccaaffee,
+   VDSE_IDENT_CLEAR           = 0xc1ea9001,
+   VDSE_IDENT_LIMBO           = 0xccaaffee,
    /**
     * Special identifier - it is set by the allocator when a group of blocks
-    * is allocated (under lock). An "allocated" group with VDSE_IDENT_CLEAR
+    * is allocated (under lock). An "allocated" group with VDSE_IDENT_LIMBO
     * is a group in limbo while the same group with VDSE_IDENT_ALLOCATED
     * is not.
     */

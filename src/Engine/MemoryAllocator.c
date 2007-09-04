@@ -439,13 +439,10 @@ void vdseFreeBlocks( vdseMemAlloc*       pAlloc,
    int errcode = 0;
    vdseFreeBufferNode* otherNode, *previousNode = NULL, *newNode = NULL;
    bool otherBufferisFree = false;
-   unsigned char* p;
-   ptrdiff_t offset;
    vdseMemBitmap* pBitmap;
    vdseEndBlockGroup* endBlock;
-//   bool saveInList = true;
-   bool lastBlock;
-   enum ObjectIdentifier* pIdentifier;
+   bool isInLimbo;
+   enum ObjectIdentifier ident;
    vdseFreeBlock* pFreeHeader;
    
    VDS_PRE_CONDITION( pContext != NULL );
@@ -469,7 +466,7 @@ void vdseFreeBlocks( vdseMemAlloc*       pAlloc,
       pFreeHeader->numBlocks = numBlocks;
       
       vdscWriteMemoryBarrier();
-      pFreeHeader->identifier = VDSE_IDENT_CLEAR;
+      pFreeHeader->identifier = VDSE_IDENT_LIMBO;
       endBlock->isInLimbo = true;
 
       return;
@@ -484,17 +481,32 @@ void vdseFreeBlocks( vdseMemAlloc*       pAlloc,
     * free groups of blocks together in a single block.
     */
 
-   /* Starts with the previous blocks */
-   endBlock = (vdseEndBlockGroup*)((unsigned char*)newNode-VDSE_ALLOCATION_UNIT);
-   previousNode = GET_PTR( endBlock->firstBlockOffset, vdseFreeBufferNode );
-   otherBufferisFree = vdseIsBufferFree( pBitmap, endBlock->firstBlockOffset );
-   
-   /*
-    * Do we need a memory block?
+   /* 
+    * Starts with the previous blocks. We use a do while loop since we know 
+    * that the first group at the beginning of the shared memory is allocated
+    * for the shared-memory header - no chance of going beyond the allocated
+    * memory.
     */
-   while ( otherBufferisFree || endBlock->isInLimbo )
+   do
    {
-      if ( otherBufferisFree )
+      endBlock = (vdseEndBlockGroup*)((unsigned char*)newNode-VDSE_ALLOCATION_UNIT);
+      isInLimbo = endBlock->isInLimbo;
+      
+      /* 
+       * Impose a load (read) memory barrier before reading the location
+       * of the start of the page group, etc.
+       */
+      vdscReadMemoryBarrier();
+
+      previousNode = GET_PTR( endBlock->firstBlockOffset, vdseFreeBufferNode );
+      otherBufferisFree = vdseIsBufferFree( pBitmap, endBlock->firstBlockOffset );
+
+      if ( isInLimbo )
+      {
+         previousNode->numBuffers = newNode->numBuffers + endBlock->numBlocks;
+         newNode = previousNode;
+      }
+      else if ( otherBufferisFree )
       {
          /*
           * It might be better to remove this check later when the system
@@ -510,16 +522,10 @@ void vdseFreeBlocks( vdseMemAlloc*       pAlloc,
          previousNode->numBuffers += newNode->numBuffers;
          vdseLinkedListRemoveItem( &pAlloc->freeList, 
                                    &previousNode->node );
+         newNode = previousNode;
       }
-      else
-      {
-         previousNode->numBuffers = newNode->numBuffers + endBlock->numBlocks;
-      }
-      newNode = previousNode;
-      endBlock = (vdseEndBlockGroup*)((unsigned char*)newNode-VDSE_ALLOCATION_UNIT);
-      previousNode = GET_PTR( endBlock->firstBlockOffset, vdseFreeBufferNode );
-      otherBufferisFree = vdseIsBufferFree( pBitmap, endBlock->firstBlockOffset );
-   }
+      
+   } while ( otherBufferisFree || isInLimbo );
    
    /* 
     * Now do the following group of blocks.
@@ -527,44 +533,60 @@ void vdseFreeBlocks( vdseMemAlloc*       pAlloc,
     * Things we have to watchout for:
     *   - not going past the end of the shared memory...
     *   - if the group of block is allocated, test the first few bytes for
-    *     the VDSE_IDENT_CLEAR identifier and then check the isInLimbo field.
-    *     Warning: the isInLimbo field is THE ultimate criteria (see notes at
-    *              the beginning of this file.
+    *     the VDSE_IDENT_LIMBO identifier.
+    *
+    * We use a while loop to test if the current group would not be the last
+    * group before doing any data processing beyond the shared memory boundary.
     */
+
    otherNode = (vdseFreeBufferNode*)
       ((unsigned char*)newNode + (newNode->numBuffers << VDSE_BLOCK_SHIFT) );
    pFreeHeader = (vdseFreeBlock*) otherNode;   
-   endBlock = (vdseEndBlockGroup*)((unsigned char*)otherNode-VDSE_ALLOCATION_UNIT);
    /* 
     * At this point enBlock is set to the end of the current buffer, not to
     * the end of the next one (otherNode) we are looking at.
     */
+   endBlock = (vdseEndBlockGroup*)((unsigned char*)otherNode-VDSE_ALLOCATION_UNIT);
+      
    while ( ! endBlock->lastBlock )
    {
       otherBufferisFree = vdseIsBufferFree( pBitmap, SET_OFFSET(otherNode) );
       if ( otherBufferisFree )
       {
+         newNode->numBuffers += otherNode->numBuffers;
+         vdseLinkedListRemoveItem( &pAlloc->freeList, 
+                                   &otherNode->node );
       }
       else
       {
-         if ( pFreeHeader->identifier == VDSE_IDENT_CLEAR )
-         {
-            endBlock = (vdseEndBlockGroup *) ((unsigned char*)otherNode + 
-                          (pFreeHeader->numBlocks << VDSE_BLOCK_SHIFT) - 
-                          VDSE_ALLOCATION_UNIT);
-         }
+         ident = pFreeHeader->identifier;
+
+         /* 
+          * Impose a load (read) memory barrier before reading the number
+          * of blocks  in this group, etc.
+          */
+         vdscReadMemoryBarrier();
+         
+         if ( ident == VDSE_IDENT_LIMBO )
+            newNode->numBuffers += pFreeHeader->numBlocks;
          else
             break;
-
-         while ( otherBufferisFree || ( !otherBufferisFree && *pIdentifier == VDSE_IDENT_CLEAR ) )
-         {
-            newNode->numBuffers += otherNode->numBuffers;
-            vdseLinkedListRemoveItem( &pAlloc->freeList, 
-                                      &otherNode->node );
-            memset( otherNode, 0, sizeof(vdseFreeBufferNode) );
-         }
       }
+
+      otherNode = (vdseFreeBufferNode*)
+         ((unsigned char*)newNode + (newNode->numBuffers << VDSE_BLOCK_SHIFT) );
+      pFreeHeader = (vdseFreeBlock*) otherNode;   
+      /* 
+       * At this point enBlock is set to the end of the current consolidated
+       * buffer, not to the end of the next one (otherNode) we'll be looking
+       * at in the next iteration.
+       */
+      endBlock = (vdseEndBlockGroup*)((unsigned char*)otherNode-VDSE_ALLOCATION_UNIT);
    }
+   /*
+    * All consolidation done. Complete the job by putting the group in the
+    * free list and setting the bitmap.
+    */
    vdseLinkedListPutLast( &pAlloc->freeList, &newNode->node );
                              
    pAlloc->totalAllocBlocks -= numBlocks;   
@@ -575,7 +597,7 @@ void vdseFreeBlocks( vdseMemAlloc*       pAlloc,
 
    vdseEndBlockSet( SET_OFFSET(newNode), 
                     newNode->numBuffers, 
-                    false,
+                    false, /* limbo flag */
                     vdseMemAllocLastBlock( pAlloc,
                                            SET_OFFSET(newNode),
                                            newNode->numBuffers ));
