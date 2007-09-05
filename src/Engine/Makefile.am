@@ -81,8 +81,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/src/Common  \
 if COND_USE_KERNEL_HEADERS
    AM_CPPFLAGS += -DCONFIG_KERNEL_HEADERS \
                   -I$(top_srcdir)/src/Locking/include \
-                  -include $(top_srcdir)/src/Locking/include/mylinux/autoconf.h \
-                  -D__KERNEL__
+                  -include $(top_srcdir)/src/Locking/include/mylinux/autoconf.h 
 endif
 
 if COND_USE_ASSERT

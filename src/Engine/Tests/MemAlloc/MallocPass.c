@@ -33,6 +33,7 @@ int main()
    
    initTest( expectedToPass );
    vdscInitErrorHandler( &context.errorHandler );
+   context.lockValue = 0xff;
    
    ptr = malloc( allocatedLength );
    if ( ptr == NULL )
