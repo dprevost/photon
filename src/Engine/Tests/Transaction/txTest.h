@@ -52,6 +52,7 @@ vdseTx* initTxTest( bool                testIsExpectedToSucceed,
    size_t allocatedLength = VDSE_BLOCK_SIZE * 10;
 
    memset( pContext, 0, sizeof(vdseSessionContext) );
+   pContext->lockValue= 0xff;
    
    errcode = vdseInitEngine();
    if ( errcode != 0 )
@@ -77,7 +78,7 @@ vdseTx* initTxTest( bool                testIsExpectedToSucceed,
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object */
-   pDummy = vdseMallocBlocks( pAlloc, 1, pContext );
+   pDummy = (vdseTx*) vdseMallocBlocks( pAlloc, 1, pContext );
    if ( pDummy == NULL )
    {
       fprintf( stderr, "Abnormal error at line %d in txTest.h\n", __LINE__ );
