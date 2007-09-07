@@ -202,15 +202,15 @@ int vdscFiniProcessLock( vdscProcessLock* pLock );
  */
 static inline
 void vdscAcquireProcessLock( vdscProcessLock* pLock,
-                             vds_lock_T lockValue );
+                             pid_t            pidLocker );
 
 /** Attempt to acquire the lock for nMilliSecs - fails if it can't 
  *  Returns -1 on failure.  
  */
 static inline
 int vdscTryAcquireProcessLock ( vdscProcessLock* pLock,
-                                vds_lock_T   lockValue,
-                                unsigned int milliSecs );   
+                                pid_t            pidLocker,
+                                unsigned int     milliSecs );   
 
 /** Release lock. */
 static inline

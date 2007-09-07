@@ -46,16 +46,13 @@ vdscIsItLocked( vdscProcessLock* pLock )
 
 inline void
 vdscAcquireProcessLock( vdscProcessLock* pLock,
-                        vds_lock_T lockValue )
+                        pid_t            pid_locker )
 {
-#if defined(WIN32)
-   vds_lock_T tempValue = lockValue;
-#endif
    int isItLocked = -1; /* Value of 0 indicates success */
 
    VDS_PRE_CONDITION( pLock != NULL );
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
-   VDS_PRE_CONDITION( lockValue != 0 );
+   VDS_PRE_CONDITION( pid_locker != 0 );
 
 #if defined(CONFIG_KERNEL_HEADERS)
    spin_lock(&pLock->lock);
@@ -65,12 +62,11 @@ vdscAcquireProcessLock( vdscProcessLock* pLock,
    {
       if ( pLock->lock == 0 )
       {
-         isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, tempValue );
+         isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, 0xff );
       }
       if ( isItLocked == 0 )
          break;
       Sleep( g_timeOutinMilliSecs );
-      tempValue = lockValue;
    }
 #elif defined (VDS_USE_POSIX_SEMAPHORE)
    do
@@ -87,32 +83,32 @@ vdscAcquireProcessLock( vdscProcessLock* pLock,
     * this way -> it is possible to have lock out-of-synch with
     * the actual condition of the object.
     */
-   pLock->pid = lockValue;
+   pLock->pid = pid_locker;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline int
 vdscTryAcquireProcessLock( vdscProcessLock* pLock,
-                           vds_lock_T   lockValue,
-                           unsigned int milliSecs )
+                           pid_t            pid_locker,
+                           unsigned int     milliSecs )
 {
-#if defined (WIN32)
-   vds_lock_T tempValue = lockValue;
-#endif
    int isItLocked = -1; /* Value of 0 indicates success */
 
    VDS_PRE_CONDITION( pLock != NULL );
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
-   VDS_PRE_CONDITION( lockValue != 0 );
+   VDS_PRE_CONDITION( pid_locker != 0 );
 
 #if defined(CONFIG_KERNEL_HEADERS)
-   isItLocked = spin_trylock( &pLock->lock );
-   isItLocked--;
+   if ( spin_can_lock( &pLock->lock ) )
+   {
+      isItLocked = spin_trylock( &pLock->lock );
+      isItLocked--;
+   }
 #elif defined (WIN32)
    if ( pLock->lock == 0 )
    {
-      isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, tempValue );
+      isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, 0xff );
    }
 #elif defined (VDS_USE_POSIX_SEMAPHORE)
    errno = 0;
@@ -143,13 +139,15 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
          nanosleep( &g_timeOut, NULL );
 #endif
 #if defined(CONFIG_KERNEL_HEADERS)
-         isItLocked = spin_trylock( &pLock->lock );
-         isItLocked--;
+         if ( spin_can_lock( &pLock->lock ) )
+         {
+            isItLocked = spin_trylock( &pLock->lock );
+            isItLocked--;
+         }
 #elif defined (WIN32)
          if ( pLock->lock == 0 )
          {
-            tempValue = lockValue;
-            isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, tempValue );
+            isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, 0xff );
          }
 #elif defined (VDS_USE_POSIX_SEMAPHORE)
          do
@@ -184,7 +182,7 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
     * this way -> it is possible to have lock out-of-synch with
     * the actual condition of the object.
     */
-   pLock->pid = lockValue;
+   pLock->pid = pid_locker;
 
    return isItLocked;
 }
