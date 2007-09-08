@@ -24,6 +24,7 @@ if COND_INCLUDE_DEMO
 endif
 
 SUBDIRS =               \
+          Locking       \
           Common        \
           BuildTools    \
           Engine        \
