@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -8,9 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-#bin_PROGRAMS      = zzz
-
-CLEANFILES = *~ core
+CLEANFILES = *~ core Memfile.mem
 
 THREAD_TEST_CODE =              \
                    Barrier.c    \
@@ -110,12 +108,5 @@ AM_CPPFLAGS = -I$(top_srcdir)/src/Common  \
               -I$(top_srcdir)/src/Tests   \
               -I$(top_srcdir)/src/include
 
-
-if COND_USE_DBC
-   AM_CPPFLAGS += -DUSE_DBC
-endif
-if COND_USE_EXTREME_DBC
-   AM_CPPFLAGS += -DUSE_EXTREME_DBC
-endif
-
+include $(top_srcdir)/src/Makefile.Common.am
 

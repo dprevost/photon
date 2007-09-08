@@ -18,7 +18,7 @@
 #ifndef VDSC_BARRIER_H
 #define VDSC_BARRIER_H
 
-#include "mylinux/spinlock.h"
+#include "Locking/linux/spinlock.h"
 /*
  * Currently, these are simply wrappers to the equivalent calls found in
  * the linux kernel (win32 being the exception)

@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -11,10 +11,11 @@
 CLEANFILES = *~
 
 # The code have to be build following a certain order:
-#   1-    Common
-#   2-    BuildTools
-#   3-    Engine
-#   4-    API
+#   1-    Locking (???)
+#   2-    Common
+#   3-    BuildTools
+#   4-    Engine
+#   5-    API
 #   n-    ...
 #   Last- Tests
 
@@ -33,3 +34,6 @@ SUBDIRS =               \
           CrashRecovery \
           Tests         \
           $(MAYBE_DEMO)
+
+DIST_SUBDIRS = Locking      
+

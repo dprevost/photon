@@ -63,7 +63,7 @@ BEGIN_C_DECLS
  */
 
 #if defined(CONFIG_KERNEL_HEADERS)
-#  include "mylinux/spinlock.h"
+#  include "Locking/linux/spinlock.h"
 #else
 #  if HAVE_SEMAPHORE_H
 #    include <semaphore.h>

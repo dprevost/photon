@@ -14,8 +14,8 @@
  * frame contact the architecture maintainers.
  */
 
-#include <mylinux/linkage.h>
-#include <mylinux/spinlock.h>
+#include "Locking/linux/linkage.h"
+#include "Locking/linux/spinlock.h"
 
 int __lockfunc _spin_trylock(spinlock_t *lock)
 {
