@@ -15,13 +15,13 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Common.h"
-#include "MemoryFile.h"
-#include "Timer.h"
-#include "ProcessLock.h"
-#include "ErrorHandler.h"
-#include "PrintError.h"
-#include "Options.h"
+#include "Common/Common.h"
+#include "Common/MemoryFile.h"
+#include "Common/Timer.h"
+#include "Common/ProcessLock.h"
+#include "Common/ErrorHandler.h"
+#include "Tests/PrintError.h"
+#include "Common/Options.h"
 #if defined(WIN32)
 #  include <Process.h>
 #else
@@ -74,11 +74,11 @@ int main( int argc, char* argv[] )
    char strId[10], strNumChilds[10], strTime[10], strMode[5];
    struct vdscOptStruct opts[5] = 
       { 
-         'c', "child",      1, "numChilds",  "Number of child processes",
-         'f', "filename",   1, "memoryFile", "Filename for shared memory",
-         'i', "identifier", 1, "identifier", "Identifier for the process",
-         'm', "mode",       1, "lockMode",   "Are we testing Acquire or TryAcquire",
-         't', "time",       1, "timeInSecs", "Time to run the tests"
+         { 'c', "child",      1, "numChilds",  "Number of child processes" },
+         { 'f', "filename",   1, "memoryFile", "Filename for shared memory" },
+         { 'i', "identifier", 1, "identifier", "Identifier for the process" },
+         { 'm', "mode",       1, "lockMode",   "Are we testing Acquire or TryAcquire" },
+         { 't', "time",       1, "timeInSecs", "Time to run the tests" }
       };
 
    vdscInitErrorDefs();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -15,15 +15,15 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Common.h"
-#include "MemoryFile.h"
-#include "Timer.h"
-#include "ThreadLock.h"
-#include "ErrorHandler.h"
+#include "Common/Common.h"
+#include "Common/MemoryFile.h"
+#include "Common/Timer.h"
+#include "Common/ThreadLock.h"
+#include "Common/ErrorHandler.h"
 #include "ThreadWrap.h"
 #include "Barrier.h"
-#include "PrintError.h"
-#include "Options.h"
+#include "Tests/PrintError.h"
+#include "Common/Options.h"
 
 const bool expectedToPass = true;
 
@@ -129,10 +129,10 @@ int main( int argc, char* argv[] )
    char *argument;
    struct vdscOptStruct opts[4] = 
       { 
-         'f', "filename",   1, "memoryFile", "Filename for shared memory",
-         'm', "mode",       1, "lockMode",   "Set this to 'try' for testing TryAcquire",
-         'n', "numThreads", 1, "numThreads", "Number of threads",
-         't', "time",       1, "timeInSecs", "Time to run the tests"
+         { 'f', "filename",   1, "memoryFile", "Filename for shared memory" },
+         { 'm', "mode",       1, "lockMode",   "Set this to 'try' for testing TryAcquire" },
+         { 'n', "numThreads", 1, "numThreads", "Number of threads" },
+         { 't', "time",       1, "timeInSecs", "Time to run the tests" }
       };
 
    vdscInitErrorDefs();

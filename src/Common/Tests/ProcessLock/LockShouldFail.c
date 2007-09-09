@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -29,12 +29,12 @@
  
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Common.h"
-#include "MemoryFile.h"
-#include "Timer.h"
-#include "ProcessLock.h"
-#include "PrintError.h"
-#include "Options.h"
+#include "Common/Common.h"
+#include "Common/MemoryFile.h"
+#include "Common/Timer.h"
+#include "Common/ProcessLock.h"
+#include "Tests/PrintError.h"
+#include "Common/Options.h"
 #if defined(WIN32)
 #  include <Process.h>
 #else
@@ -98,12 +98,12 @@ int main( int argc, char* argv[] )
    char strId[10], strNumChilds[10], strTime[10], strMode[5], strRate[10];
    struct vdscOptStruct opts[6] = 
       { 
-         'c', "child",      1, "numChilds",     "Number of child processes",
-         'f', "filename",   1, "memoryFile",    "Filename for shared memory",
-         'i', "identifier", 1, "identifier",    "Identifier for the process (do not used)",
-         'm', "mode",       1, "lockMode",      "Set this to 'try' for testing TryAcquire",
-         'r', "rate",       1, "rateOfFailure", "Inverse rate: 1000 means a rate of 0.1%",
-         't', "time",       1, "timeInSecs",    "Time to run the tests"
+         { 'c', "child",      1, "numChilds",     "Number of child processes" },
+         { 'f', "filename",   1, "memoryFile",    "Filename for shared memory" },
+         { 'i', "identifier", 1, "identifier",    "Identifier for the process (do not used)" },
+         { 'm', "mode",       1, "lockMode",      "Set this to 'try' for testing TryAcquire" },
+         { 'r', "rate",       1, "rateOfFailure", "Inverse rate: 1000 means a rate of 0.1%" },
+         { 't', "time",       1, "timeInSecs",    "Time to run the tests" }
       };
 
    vdscInitErrorDefs();

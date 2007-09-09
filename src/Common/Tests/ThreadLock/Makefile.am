@@ -8,6 +8,10 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+# Include this at the beginning to allow the current Makefile.am to
+# overwrite any macros set in the common file
+include $(top_srcdir)/src/Makefile.Common.am
+
 CLEANFILES = *~ core Memfile.mem
 
 THREAD_TEST_CODE =              \
@@ -103,10 +107,4 @@ XFAIL_TESTS =                   \
               TryAcqZeroValue 
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
-
-AM_CPPFLAGS = -I$(top_srcdir)/src/Common  \
-              -I$(top_srcdir)/src/Tests   \
-              -I$(top_srcdir)/src/include
-
-include $(top_srcdir)/src/Makefile.Common.am
 

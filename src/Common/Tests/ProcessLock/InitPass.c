@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -14,9 +14,9 @@
  */
 
 
-#include "Common.h"
-#include "ProcessLock.h"
-#include "PrintError.h"
+#include "Common/Common.h"
+#include "Common/ProcessLock.h"
+#include "Tests/PrintError.h"
 
 const bool expectedToPass = true;
 
