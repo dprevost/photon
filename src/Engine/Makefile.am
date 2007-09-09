@@ -8,6 +8,10 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+# Include this at the beginning to allow the current Makefile.am to
+# overwrite any macros set in the common file
+include $(top_srcdir)/src/Makefile.Common.am
+
 CLEANFILES = *~ VdsErrorHandler.c VdsErrorHandler.h
 
 SUBDIRS = . Tests
@@ -73,10 +77,4 @@ libEngine_la_SOURCES =                   \
 VdsErrorHandler.c VdsErrorHandler.h:
 	$(top_builddir)/src/BuildTools/errorParser -i $(top_srcdir)/src/include/vdsf/vdsErrors.h -o VdsErrorHandler -p vdseErr
 
-AM_CPPFLAGS = -I$(top_srcdir)/src/Common  \
-              -I$(top_srcdir)/src/API     \
-              -I$(top_srcdir)/src/include \
-              -Wall
-
-include $(top_srcdir)/src/Makefile.Common.am
 

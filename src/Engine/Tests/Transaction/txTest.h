@@ -18,13 +18,13 @@
 #ifndef TX_TEST_COMMON_H
 #define TX_TEST_COMMON_H
 
-#include "Engine.h"
-#include "MemoryObject.h"
-#include "BlockGroup.h"
-#include "MemoryAllocator.h"
-#include "Transaction.h"
-#include "InitEngine.h"
-#include "PrintError.h"
+#include "Engine/Engine.h"
+#include "Engine/MemoryObject.h"
+#include "Engine/BlockGroup.h"
+#include "Engine/MemoryAllocator.h"
+#include "Engine/Transaction.h"
+#include "Engine/InitEngine.h"
+#include "Tests/PrintError.h"
 
 vdscErrMsgHandle g_vdsErrorHandle;
 

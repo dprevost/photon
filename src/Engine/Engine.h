@@ -20,11 +20,11 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Common.h"
-#include "ProcessLock.h"
+#include "Common/Common.h"
+#include "Common/ProcessLock.h"
 #include <vdsf/vdsErrors.h>
 #include <vdsf/vdsCommon.h>
-#include "ErrorHandler.h"
+#include "Common/ErrorHandler.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

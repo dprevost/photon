@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Hash.h"
-#include "HashTest.h"
+#include "Engine/Hash.h"
+#include "Engine/Tests/Hash/HashTest.h"
 
 const bool expectedToPass = true;
 

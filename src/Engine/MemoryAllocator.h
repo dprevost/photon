@@ -19,7 +19,7 @@
 #define VDSE_MEMORY_ALLOCATOR_H
 
 #include "Engine.h"
-#include "ErrorHandler.h"
+#include "Common/ErrorHandler.h"
 #include "MemoryObject.h"
 #include "LinkedList.h"
 #include "BlockGroup.h"

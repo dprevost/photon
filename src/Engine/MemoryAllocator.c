@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "MemoryAllocator.h"
-#include "Barrier.h"
+#include "Engine/MemoryAllocator.h"
+#include "Common/Barrier.h"
 
 /* 
  * group of blocks in limbo.

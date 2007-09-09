@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "MemoryObject.h"
-#include "EngineTestCommon.h"
+#include "Engine/MemoryObject.h"
+#include "Engine/Tests/EngineTestCommon.h"
 
 const bool expectedToPass = false;
 

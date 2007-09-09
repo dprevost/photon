@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -18,9 +18,9 @@
 #ifndef ENGINE_TEST_COMMON_H
 #define ENGINE_TEST_COMMON_H
 
-#include "Engine.h"
-#include "InitEngine.h"
-#include "PrintError.h"
+#include "Engine/Engine.h"
+#include "Engine/InitEngine.h"
+#include "Tests/PrintError.h"
 
 vdscErrMsgHandle g_vdsErrorHandle;
 

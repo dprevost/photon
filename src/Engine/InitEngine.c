@@ -15,7 +15,7 @@
 
 #include "Engine.h"
 #include "InitEngine.h"
-#include "ErrorHandler.h"
+#include "Common/ErrorHandler.h"
 #include "VdsErrorHandler.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

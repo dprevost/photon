@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "BlockGroup.h"
-#include "EngineTestCommon.h"
+#include "Engine/BlockGroup.h"
+#include "Engine/Tests/EngineTestCommon.h"
 
 const bool expectedToPass = true;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -18,8 +18,8 @@
 #ifndef LIST_TEST_COMMON_H
 #define LIST_TEST_COMMON_H
 
-#include "LinkedList.h"
-#include "ErrorHandler.h"
+#include "Engine/LinkedList.h"
+#include "Common/ErrorHandler.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
