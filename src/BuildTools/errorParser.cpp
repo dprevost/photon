@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -40,13 +40,13 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#include "Common.h"
+#include "Common/Common.h"
 #include <iostream>
 #include "inputHeader.h"
 #include "outputFiles.h"
 #include "analyser.h"
 #include "analyserTest.h"
-#include "Options.h"
+#include "Common/Options.h"
 
 using namespace std;
 
@@ -65,9 +65,10 @@ int main( int argc, char* argv[] )
    char* prefix = NULL;
    
    struct vdscOptStruct opts[3] = 
-      { 'i', "input",  0, "INPUT_HEADER_FILE", "The input header file",
-        'o', "output", 0, "OUTPUT_ROOT_NAME", "The root name use for output files",
-        'p', "prefix", 0, "PREFIX", "Prefix used for names (output files)"
+      { 
+         { 'i', "input",  0, "INPUT_HEADER_FILE", "The input header file" },
+         { 'o', "output", 0, "OUTPUT_ROOT_NAME", "The root name use for output files" },
+         { 'p', "prefix", 0, "PREFIX", "Prefix used for names (output files)" }
       };
 
    errcode = vdscSetSupportedOptions( 3, opts, &handle );

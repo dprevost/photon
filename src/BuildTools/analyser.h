@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -19,7 +19,7 @@
 #ifndef ANALYSER_H
 #define ANALYSER_H
 
-#include "Common.h"
+#include "Common/Common.h"
 #include <exception>
 #include <string>
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -164,7 +164,7 @@ void outputFiles::Write( const char* inFilename, const char* prefix )
    m_stream_h << "#endif /* " << m_ifdefname << " */" << endl;
 
    //
-   m_stream_c << "#include \"Common.h\"" << endl;
+   m_stream_c << "#include \"Common/Common.h\"" << endl;
    m_stream_c << "#include \"" << m_headerName << "\"" << endl << endl;
    
    m_stream_c << "struct " << stringPrefix << "ErrMsgStruct" << endl;
