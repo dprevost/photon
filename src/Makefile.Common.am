@@ -12,6 +12,10 @@
 # avoid having to modify these numerous files (a bit more than 20 of them 
 # currently and more to follow when new tests will be added).
 
+AM_CPPFLAGS = -I$(top_srcdir)/src         \
+              -I$(top_srcdir)/src/include \
+              -Wall
+
 if COND_USE_KERNEL_HEADERS
    AM_CPPFLAGS += -DCONFIG_KERNEL_HEADERS \
                   -I$(top_srcdir)/src/Locking/include \
