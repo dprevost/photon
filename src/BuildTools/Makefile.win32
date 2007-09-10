@@ -63,12 +63,12 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\errorParser.exe $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\errorParser.exe
 
 "$(OUTDIR_RELEASE)\errorParser.exe" : "$(OUTDIR_RELEASE)" $(OBJS_RELEASE)
-   del ..\Release\errorParser.exe
+   -del ..\Release\errorParser.exe
 	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
    copy Release\errorParser.exe ..\Release
 
 "$(OUTDIR_DEBUG)\errorParser.exe" : "$(OUTDIR_DEBUG)" $(OBJS_DEBUG)
-   del ..\Debug\errorParser.exe
+   -del ..\Debug\errorParser.exe
 	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
    copy debug\errorParser.exe ..\Debug
 

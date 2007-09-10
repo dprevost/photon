@@ -40,6 +40,8 @@ CFLAGS_RELEASE=/nologo /MD  /W4 /O2     /I "..\Common" /I "..\include" /I ".." /
 CFLAGS_DEBUG  =/nologo /MDd /W4 /ZI /Od /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ENGINE_EXPORTS" /D "BUILD_VDSF_ENGINE" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
 
 OBJS_RELEASE= \
+	"$(INTDIR_RELEASE)\BlockGroup.obj" \
+	"$(INTDIR_RELEASE)\Folder.obj" \
 	"$(INTDIR_RELEASE)\Hash.obj" \
 	"$(INTDIR_RELEASE)\InitEngine.obj" \
 	"$(INTDIR_RELEASE)\LinkedList.obj" \
@@ -47,7 +49,7 @@ OBJS_RELEASE= \
 	"$(INTDIR_RELEASE)\MemBitmap.obj" \
 	"$(INTDIR_RELEASE)\MemoryAllocator.obj" \
 	"$(INTDIR_RELEASE)\MemoryObject.obj" \
-	"$(INTDIR_RELEASE)\PageGroup.obj" \
+	"$(INTDIR_RELEASE)\Transaction.obj" \
 	"$(INTDIR_RELEASE)\VdsErrorHandler.obj"
 
 OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
@@ -70,15 +72,15 @@ VdsErrorHandler.c VdsErrorHandler.h : ..\include\vdsf\vdsErrors.h
 	..\Release\errorParser -i ..\include\vdsf\vdsErrors.h -o VdsErrorHandler -p vdseErr
 
 "$(OUTDIR_RELEASE)\vdsfEngine.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
-   del ..\Release\vdsfEngine.dll
-	del ..\Release\vdsfEngine.lib
+   -del ..\Release\vdsfEngine.dll
+	-del ..\Release\vdsfEngine.lib
 	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
    copy Release\vdsfEngine.dll ..\Release
 	copy Release\vdsfEngine.lib ..\Release
 
 "$(OUTDIR_DEBUG)\vdsfEngine.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
-   del ..\Debug\vdsfEngine.dll
-	del ..\Debug\vdsfEngine.lib
+   -del ..\Debug\vdsfEngine.dll
+	-del ..\Debug\vdsfEngine.lib
 	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
    copy debug\vdsfEngine.dll ..\Debug
 	copy debug\vdsfEngine.lib ..\Debug

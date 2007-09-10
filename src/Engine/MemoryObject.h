@@ -106,7 +106,7 @@ static inline
 void vdseUnlock( vdseMemObject*      pMemObj,
                  vdseSessionContext* pContext  )
 {
-   return vdscReleaseProcessLock ( &pMemObj->lock );
+   vdscReleaseProcessLock ( &pMemObj->lock );
    pContext->lockObject = NULL_OFFSET;
 }
 

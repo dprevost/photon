@@ -10,13 +10,23 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
+
+!IF "$(OS)" == "Windows_NT"
+NULL=
+!ELSE 
+NULL=
+!ENDIF 
+
+OUTDIR_RELEASE = .\Release
+OUTDIR_DEBUG   = .\Debug
+
 ###########################################################################
 #
 # The targets
 #
 ###########################################################################
 
-all:
+all: "$(OUTDIR_RELEASE)" "$(OUTDIR_DEBUG)"
 	cd Common     && nmake -f Makefile.win32 && cd ..
 	cd BuildTools && nmake -f Makefile.win32 && cd ..
 	cd Engine     && nmake -f Makefile.win32 && cd ..
@@ -36,4 +46,9 @@ clean:
 	cd BuildTools && nmake -f Makefile.win32 clean && cd ..
 	cd Engine     && nmake -f Makefile.win32 clean && cd ..
 
+"$(OUTDIR_RELEASE)" :
+	if not exist "$(OUTDIR_RELEASE)/$(NULL)" mkdir "$(OUTDIR_RELEASE)"
 
+"$(OUTDIR_DEBUG)" :
+	if not exist "$(OUTDIR_DEBUG)/$(NULL)" mkdir "$(OUTDIR_DEBUG)"
+   

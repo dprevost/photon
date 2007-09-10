@@ -104,6 +104,14 @@ PostBuild_Cmds=copy Debug\vdsfEngine.lib ..\Debug	copy Debug\vdsfEngine.dll ..\D
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\BlockGroup.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\Folder.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\Hash.c
 # End Source File
 # Begin Source File
@@ -132,7 +140,7 @@ SOURCE=.\MemoryObject.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\PageGroup.c
+SOURCE=.\Transaction.c
 # End Source File
 # Begin Source File
 

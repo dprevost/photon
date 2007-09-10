@@ -67,18 +67,18 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdsfCommon.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdsfCommon.dll
 
 "$(OUTDIR_RELEASE)\vdsfCommon.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
-   del ..\Release\vdsfCommon.dll
-	del ..\Release\vdsfCommon.lib
+   -del ..\Release\vdsfCommon.dll
+	-del ..\Release\vdsfCommon.lib
 	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
-   copy Release\vdsfCommon.dll ..\Release
-	copy Release\vdsfCommon.lib ..\Release
+   copy Release\vdsfCommon.dll ..\Release\vdsfCommon.dll
+	copy Release\vdsfCommon.lib ..\Release\vdsfCommon.lib
 
 "$(OUTDIR_DEBUG)\vdsfCommon.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
-   del ..\Debug\vdsfCommon.dll
-	del ..\Debug\vdsfCommon.lib
+   -del ..\Debug\vdsfCommon.dll
+	-del ..\Debug\vdsfCommon.lib
 	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
-   copy debug\vdsfCommon.dll ..\Debug
-	copy debug\vdsfCommon.lib ..\Debug
+   copy debug\vdsfCommon.dll ..\Debug\vdsfCommon.dll
+	copy debug\vdsfCommon.lib ..\Debug\vdsfCommon.lib
 
 ###########################################################################
 #

@@ -18,7 +18,10 @@
 #ifndef VDSC_BARRIER_H
 #define VDSC_BARRIER_H
 
-#include "Locking/linux/spinlock.h"
+#if defined(CONFIG_KERNEL_HEADERS)
+#  include "Locking/linux/spinlock.h"
+#endif
+
 /*
  * Currently, these are simply wrappers to the equivalent calls found in
  * the linux kernel (win32 being the exception)
@@ -30,13 +33,16 @@
  */
 static inline void vdscCompilerBarrier()
 { 
+#if defined (WIN32)
+#else
    barrier();
+#endif
 }
 
 static inline void vdscMemoryBarrier()
 {
 #if defined (WIN32)
-   static int dummy = 0;
+   static LONG dummy = 0;
    InterlockedIncrement( &dummy );
 #else
    smp_mb();
@@ -46,7 +52,7 @@ static inline void vdscMemoryBarrier()
 static inline void vdscReadMemoryBarrier()
 {
 #if defined (WIN32)
-   static int dummy = 0;
+   static LONG dummy = 0;
    InterlockedIncrement( &dummy );
 #else
    smp_rmb();
@@ -56,7 +62,7 @@ static inline void vdscReadMemoryBarrier()
 static inline void vdscWriteMemoryBarrier()
 {
 #if defined (WIN32)
-   static int dummy = 0;
+   static LONG dummy = 0;
    InterlockedIncrement( &dummy );
 #else
    smp_wmb();
