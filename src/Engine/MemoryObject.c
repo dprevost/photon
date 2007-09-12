@@ -20,13 +20,15 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Initialize a vdseMemObject struct. 
- *
+ * Initialize a vdseMemObject struct. This will also initialize the lock
+ * itself (each basic memory object has a lock), the initial group of
+ * blocks struct representing the memory allocated for the object and 
+ * the linked list of all such groups of blocks that might be allocated 
+ * in the future, as needed.
  *
  * \param[in] pMemObj A pointer to the data struct we are initializing.
  * \param[in] objType The buffer used to store the message.
- * \param[in] objSize The size of the object struct, needed to calculate the
- *                    amount of free space left in the Block(s).
+ * \param[in] pGroup  A pointer to the vdseBlockGroup struct.
  * \param[in] numBlocks The initial number of Blocks allocated to this object.
  *
  * \retval VDS_OK  No error found
@@ -36,18 +38,20 @@
  * \pre \em pMemObj cannot be NULL.
  * \pre \em objType must be valid (greater than VDSE_IDENT_FIRST and less than 
  *          VDSE_IDENT_LAST).
- * \pre \em objSize must be greater than zero.
+ * \pre \em pGroup cannot be NULL.
  * \pre \em numBlocks must be greater than zero.
  */
 
 enum vdsErrors 
-vdseMemObjectInit( vdseMemObject* pMemObj,
+vdseMemObjectInit( vdseMemObject*        pMemObj,
                    enum ObjectIdentifier objType,
-                   size_t numBlocks )
+                   vdseBlockGroup*       pGroup,
+                   size_t                numBlocks )
 {
    int errcode = 0;
    
    VDS_PRE_CONDITION( pMemObj != NULL );
+   VDS_PRE_CONDITION( pGroup  != NULL );
    VDS_PRE_CONDITION( numBlocks > 0 );
    VDS_PRE_CONDITION( objType > VDSE_IDENT_FIRST && 
                       objType < VDSE_IDENT_LAST );
@@ -62,6 +66,14 @@ vdseMemObjectInit( vdseMemObject* pMemObj,
    pMemObj->objType = objType;
    vdseLinkedListInit( &pMemObj->listBlockGroup );
    
+   vdseBlockGroupInit( pGroup,
+                       SET_OFFSET(pMemObj),
+                       numBlocks );
+   
+   /* Add the blockGroup to the list of groups of the memObject */
+   vdseLinkedListPutFirst( &pMemObj->listBlockGroup, 
+                           &pGroup->node );
+                           
    pMemObj->totalBlocks = numBlocks;
    
    return VDS_OK;
@@ -70,23 +82,54 @@ vdseMemObjectInit( vdseMemObject* pMemObj,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Terminate access to (destroy) a vdseMemObject struct. 
+ * Terminate access to (destroy) a vdseMemObject struct. It will release
+ * groups of blocks of memory associated with this object.
  *
  *
  * \param[in] pMemObj A pointer to the data struct we are initializing.
+ * \param[in] pContext A pointer to our session information
  *
  * \pre \em pMemObj cannot be NULL.
+ * \pre \em pContext cannot be NULL.
  * \pre \em objType must be valid (greater than VDSE_IDENT_FIRST and less than 
  *          VDSE_IDENT_LAST).
  */
 
 enum vdsErrors 
-vdseMemObjectFini( vdseMemObject* pMemObj )
+vdseMemObjectFini( vdseMemObject*      pMemObj,
+                   vdseSessionContext* pContext )
 {
-   VDS_PRE_CONDITION( pMemObj != NULL );
+   vdseLinkNode* firstNode, *dummy;
+   enum ListErrors errGroup; // , errNode;
+   vdseBlockGroup* pGroup;
+
+   VDS_PRE_CONDITION( pMemObj  != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pMemObj->objType > VDSE_IDENT_FIRST && 
                       pMemObj->objType < VDSE_IDENT_LAST );
 
+   /*
+    * We retrieve the first node - and leave it alone.
+    */
+   errGroup = vdseLinkedListGetFirst( &pMemObj->listBlockGroup,
+                                      &firstNode );
+   VDS_PRE_CONDITION( errGroup == LIST_OK );
+
+   errGroup = vdseLinkedListGetFirst( &pMemObj->listBlockGroup,
+                                      &dummy );
+   while ( errGroup == LIST_OK )
+   {
+      pGroup = (vdseBlockGroup*)( 
+         (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
+
+      vdseFreeBlocks( pContext->pAllocator, 
+                      (unsigned char*)pGroup, 
+                      pGroup->numBlocks,
+                      pContext );
+      errGroup = vdseLinkedListGetFirst( &pMemObj->listBlockGroup,
+                                         &dummy );
+   }
+                      
    pMemObj->objType = VDSE_IDENT_CLEAR;
 
    pMemObj->totalBlocks = 0;
@@ -95,6 +138,18 @@ vdseMemObjectFini( vdseMemObject* pMemObj )
 
    if ( vdscFiniProcessLock( &pMemObj->lock ) != 0 )
       return VDS_NOT_ENOUGH_RESOURCES;
+
+   pGroup = (vdseBlockGroup*)(
+      (unsigned char*)firstNode - offsetof(vdseBlockGroup,node));
+
+   /*
+    * This must be the last access to the memory object.
+    */
+   vdseFreeBlocks( pContext->pAllocator, 
+                   (unsigned char*)pMemObj, 
+                   pGroup->numBlocks,
+                   pContext );
+   
    return VDS_OK;
 }
 

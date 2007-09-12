@@ -33,6 +33,7 @@ int vdseTxInit( vdseTx *            pTx,
    
    errcode = vdseMemObjectInit( &pTx->memObject, 
                                 VDSE_IDENT_TRANSACTION,
+                                &pTx->blockGroup,
                                 numberOfBlocks );
    if ( errcode != VDS_OK )
    {
@@ -40,9 +41,9 @@ int vdseTxInit( vdseTx *            pTx,
       return -1;
    }
 
-   vdseBlockGroupInit( &pTx->blockGroup,
-                       SET_OFFSET(pTx), 
-                       numberOfBlocks );
+//   vdseBlockGroupInit( &pTx->blockGroup,
+//                       SET_OFFSET(pTx), 
+//                       numberOfBlocks );
    vdseLinkedListInit( &pTx->listOfOps );
 
    pTx->signature = VDSE_TX_SIGNATURE;
@@ -256,7 +257,10 @@ int vdseTxCommit( vdseTx*             pTx,
              * Since the object is now remove from the hash, all we need
              * to do is reclaim the memory.
              */
-
+            if ( pOps->childType == VDS_FOLDER )
+            {
+               vdseFolderFini( pChildFolder, pContext );
+            }
          }
          vdseUnlock( &parentFolder->memObject, pContext );
 

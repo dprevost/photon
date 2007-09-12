@@ -30,11 +30,12 @@ int main()
    
    pDummy = initMemObjTest( expectedToPass, &context );
    pObj = &pDummy->memObject;
-   
+
    vdseMemObjectInit( pObj, 
                       VDSE_IDENT_ALLOCATOR,
-                      &pDummy->blockGroup,
-                      0 );
+                      NULL,
+                      4 );
+                      
    ERROR_EXIT( expectedToPass, NULL, ; );
 }
 

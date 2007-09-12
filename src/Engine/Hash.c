@@ -28,7 +28,7 @@ static unsigned int g_maxLoadFactor = 300;
 static unsigned int g_minLoadFactor = 100;
 
 /**
- * The array lenght (for the hash) will double or shrink by a factor two
+ * The array length (for the hash) will double or shrink by a factor two
  * using precomputed lengths (all the lengths are prime numbers - using
  * prime numbers help reduces the risk of collision.
  *
@@ -553,7 +553,7 @@ vdseHashInit( vdseHash*           pHash,
     */
    numBuckets = reservedSize * 100 / 175;
    
-   /* Which one of our lenghts is closer but larger than numBuckets? */
+   /* Which one of our lengths is closer but larger than numBuckets? */
    pHash->lengthIndex = pHash->lengthIndexMinimum = 0;
    for ( i = 1; i < PRIME_NUMBER_ARRAY_LENGTH; ++i )
    {

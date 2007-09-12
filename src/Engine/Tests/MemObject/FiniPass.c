@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Engine/MemoryObject.h"
-#include "Engine/Tests/EngineTestCommon.h"
+#include "MemObjTest.h"
 
 const bool expectedToPass = true;
 
@@ -24,24 +24,23 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseMemObject obj;
    vdsErrors errcode;
+   vdstObjDummy *pDummy;
+   vdseSessionContext context;
    
-   initTest( expectedToPass );
-   errcode = vdseMemObjectInit( &obj, 
-                                VDSE_IDENT_ALLOCATOR,
-                                7 );
+   pDummy = initMemObjTest( expectedToPass, &context );
+   
+   errcode = vdseMemObjectInit( &pDummy->memObject, 
+                                VDSE_IDENT_FOLDER,
+                                &pDummy->blockGroup,
+                                1 );
    if ( errcode != VDS_OK ) 
       ERROR_EXIT( expectedToPass, NULL, ; );
    
-   errcode = vdseMemObjectFini( &obj );
+   errcode = vdseMemObjectFini( &pDummy->memObject, &context );
    if ( errcode != VDS_OK ) 
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( obj.objType != VDSE_IDENT_CLEAR ) 
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( obj.totalBlocks != 0 )
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   
+
    return 0;
 }
 

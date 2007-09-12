@@ -15,6 +15,7 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES = *~ core
 
 check_PROGRAMS =                   \
+                 FiniNullContext   \
                  FiniNullObj       \
                  FiniPass          \
                  FreeNullContext   \
@@ -22,8 +23,9 @@ check_PROGRAMS =                   \
                  FreeNullPtr       \
                  FreePass          \
                  FreeZeroBytes     \
-                 InitNullObj       \
                  InitInvType       \
+                 InitNullGroup     \
+                 InitNullObj       \
                  InitPass          \
                  InitZeroPages     \
                  InitZeroType      \
@@ -32,23 +34,26 @@ check_PROGRAMS =                   \
                  MallocPass        \
                  MallocZeroBytes   
 
+COMMON_HEADER = MemObjTest.h
 
-FiniNullObj_SOURCES       = FiniNullObj.c
-FiniPass_SOURCES          = FiniPass.c
-FreeNullContext_SOURCES   = FreeNullContext.c
-FreeNullObj_SOURCES       = FreeNullObj.c
-FreeNullPtr_SOURCES       = FreeNullPtr.c
-FreePass_SOURCES          = FreePass.c
-FreeZeroBytes_SOURCES     = FreeZeroBytes.c
-InitNullObj_SOURCES       = InitNullObj.c
-InitInvType_SOURCES       = InitInvType.c
-InitPass_SOURCES          = InitPass.c
-InitZeroPages_SOURCES     = InitZeroPages.c
-InitZeroType_SOURCES      = InitZeroType.c
-MallocNullContext_SOURCES = MallocNullContext.c
-MallocNullObj_SOURCES     = MallocNullObj.c
-MallocPass_SOURCES        = MallocPass.c
-MallocZeroBytes_SOURCES   = MallocZeroBytes.c
+FiniNullContext_SOURCES   = $(COMMON_HEADER) FiniNullContext.c
+FiniNullObj_SOURCES       = $(COMMON_HEADER) FiniNullObj.c
+FiniPass_SOURCES          = $(COMMON_HEADER) FiniPass.c
+FreeNullContext_SOURCES   = $(COMMON_HEADER) FreeNullContext.c
+FreeNullObj_SOURCES       = $(COMMON_HEADER) FreeNullObj.c
+FreeNullPtr_SOURCES       = $(COMMON_HEADER) FreeNullPtr.c
+FreePass_SOURCES          = $(COMMON_HEADER) FreePass.c
+FreeZeroBytes_SOURCES     = $(COMMON_HEADER) FreeZeroBytes.c
+InitInvType_SOURCES       = $(COMMON_HEADER) InitInvType.c
+InitNullGroup_SOURCES     = $(COMMON_HEADER) InitNullGroup.c
+InitNullObj_SOURCES       = $(COMMON_HEADER) InitNullObj.c
+InitPass_SOURCES          = $(COMMON_HEADER) InitPass.c
+InitZeroPages_SOURCES     = $(COMMON_HEADER) InitZeroPages.c
+InitZeroType_SOURCES      = $(COMMON_HEADER) InitZeroType.c
+MallocNullContext_SOURCES = $(COMMON_HEADER) MallocNullContext.c
+MallocNullObj_SOURCES     = $(COMMON_HEADER) MallocNullObj.c
+MallocPass_SOURCES        = $(COMMON_HEADER) MallocPass.c
+MallocZeroBytes_SOURCES   = $(COMMON_HEADER) MallocZeroBytes.c
 
 EXTRA_DIST =         
 
@@ -56,6 +61,7 @@ TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTH
 
 
 TESTS =                   \
+        FiniNullContext   \
         FiniNullObj       \
         FiniPass          \
         FreeNullContext   \
@@ -63,8 +69,9 @@ TESTS =                   \
         FreeNullPtr       \
         FreePass          \
         FreeZeroBytes     \
-        InitNullObj       \
         InitInvType       \
+        InitNullGroup     \
+        InitNullObj       \
         InitPass          \
         InitZeroPages     \
         InitZeroType      \
@@ -74,13 +81,15 @@ TESTS =                   \
         MallocZeroBytes   
 
 XFAIL_TESTS =                   \
+              FiniNullContext   \
               FiniNullObj       \
               FreeNullContext   \
               FreeNullObj       \
               FreeNullPtr       \
               FreeZeroBytes     \
-              InitNullObj       \
               InitInvType       \
+              InitNullGroup     \
+              InitNullObj       \
               InitZeroPages     \
               InitZeroType      \
               MallocNullContext \

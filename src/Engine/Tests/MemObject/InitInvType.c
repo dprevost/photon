@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Engine/MemoryObject.h"
-#include "Engine/Tests/EngineTestCommon.h"
+#include "MemObjTest.h"
 
 const bool expectedToPass = false;
 
@@ -24,13 +24,17 @@ const bool expectedToPass = false;
 
 int main()
 {
-   vdseMemObject obj;
+   vdseMemObject* pObj;
+   vdstObjDummy  *pDummy;
+   vdseSessionContext context;
    
-   initTest( expectedToPass );
+   pDummy = initMemObjTest( expectedToPass, &context );
+   pObj = &pDummy->memObject;
    
-   vdseMemObjectInit( &obj, 
+   vdseMemObjectInit( pObj, 
                       (enum ObjectIdentifier)(VDSE_IDENT_LAST + 200),
-                      1 );
+                      &pDummy->blockGroup,
+                      4 );
    ERROR_EXIT( expectedToPass, NULL, ; );
 }
 

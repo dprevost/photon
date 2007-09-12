@@ -22,6 +22,7 @@
 #include "LinkNode.h"
 #include "LinkedList.h"
 #include "SessionContext.h"
+#include "Engine/BlockGroup.h"
 
 BEGIN_C_DECLS
 
@@ -63,11 +64,13 @@ VDSF_ENGINE_EXPORT
 enum vdsErrors 
 vdseMemObjectInit( vdseMemObject*        pMemObj,
                    enum ObjectIdentifier objType,
+                   vdseBlockGroup*       pGroup,
                    size_t                numBlocks );
 
 VDSF_ENGINE_EXPORT
 enum vdsErrors 
-vdseMemObjectFini( vdseMemObject* pMemObj );
+vdseMemObjectFini( vdseMemObject*      pMemObj,
+                   vdseSessionContext* pContext );
 
 VDSF_ENGINE_EXPORT
 unsigned char* vdseMalloc( vdseMemObject*      pMemObj,

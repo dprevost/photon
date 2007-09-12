@@ -151,7 +151,7 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
    pContext->pAllocator = (void*) pAlloc;
    /*
     * We need to calculate the following:
-    *  1) the lenght of the allocator bitmap.bitmap which depends on the 
+    *  1) the length of the allocator bitmap.bitmap which depends on the 
     *     total size of the sharedmemory.
     *  2) the number of blocks required to hold this bitmap and wether this
     *     number of blocks can also hold the alloc struct itself (let's
@@ -190,13 +190,14 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
 
    errcode = vdseMemObjectInit( &pAlloc->memObj,                         
                                 VDSE_IDENT_ALLOCATOR,
+                                &pAlloc->blockGroup,
                                 neededBlocks );
    if ( errcode != VDS_OK )
       return errcode;
    
-   vdseBlockGroupInit( &pAlloc->blockGroup,
-                       VDSE_BLOCK_SIZE, /* offset of the allocator */
-                       neededBlocks );
+//   vdseBlockGroupInit( &pAlloc->blockGroup,
+//                       VDSE_BLOCK_SIZE, /* offset of the allocator */
+//                       neededBlocks );
    vdseEndBlockSet( SET_OFFSET(pAlloc), 
                     neededBlocks, 
                     false,   /* isInLimbo */

@@ -112,6 +112,7 @@ int vdseFolderInit( vdseFolder*         pFolder,
    
    errcode = vdseMemObjectInit( &pFolder->memObject, 
                                 VDSE_IDENT_FOLDER,
+                                &pFolder->blockGroup,
                                 numberOfBlocks );
    if ( errcode != VDS_OK )
    {
@@ -127,10 +128,6 @@ int vdseFolderInit( vdseFolder*         pFolder,
                      origNameLength,
                      SET_OFFSET(origName),
                      parentOffset );
-   
-   vdseBlockGroupInit( &pFolder->blockGroup,
-                      SET_OFFSET(pFolder), 
-                      numberOfBlocks ); 
 
    listErr = vdseHashInit( &pFolder->hashObj, expectedNumOfChilds, pContext );
    if ( listErr != LIST_OK )
@@ -157,10 +154,9 @@ void vdseFolderFini( vdseFolder*         pFolder,
    
    pContext->pCurrentMemObject = &pFolder->memObject;
 
-   vdseHashFini(      &pFolder->hashObj, pContext );
-   vdseBlockGroupFini( &pFolder->blockGroup );
-   vdseTreeNodeFini(  &pFolder->nodeObject );
-   vdseMemObjectFini( &pFolder->memObject );
+   vdseHashFini(       &pFolder->hashObj, pContext );
+   vdseTreeNodeFini(   &pFolder->nodeObject );
+   vdseMemObjectFini(  &pFolder->memObject, pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

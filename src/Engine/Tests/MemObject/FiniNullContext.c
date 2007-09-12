@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -24,17 +24,22 @@ const bool expectedToPass = false;
 
 int main()
 {
-   vdseMemObject* pObj;
-   vdstObjDummy  *pDummy;
+   vdsErrors errcode;
+   vdstObjDummy *pDummy;
    vdseSessionContext context;
    
    pDummy = initMemObjTest( expectedToPass, &context );
-   pObj = &pDummy->memObject;
+
+   errcode = vdseMemObjectInit( &pDummy->memObject,
+                                VDSE_IDENT_ALLOCATOR,
+                                &pDummy->blockGroup,
+                                4 );
+   if ( errcode != VDS_OK ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
-   vdseMemObjectInit( pObj, 
-                      VDSE_IDENT_ALLOCATOR,
-                      &pDummy->blockGroup,
-                      0 );
+   /* Should crash at this point */
+   vdseMemObjectFini( &pDummy->memObject, NULL );
+   
    ERROR_EXIT( expectedToPass, NULL, ; );
 }
 

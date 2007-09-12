@@ -16,8 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Engine/MemoryObject.h"
-#include "Engine/Tests/EngineTestCommon.h"
-#include "Engine/MemoryAllocator.h"
+#include "MemObjTest.h"
 
 const bool expectedToPass = false;
 
@@ -28,49 +27,26 @@ int main()
    vdseMemObject* pObj;
    vdsErrors errcode;
    vdseSessionContext context;
-   vdseMemAlloc*     pAlloc;
-   unsigned char* ptr, *buff[9];
-   size_t allocatedLength = VDSE_BLOCK_SIZE*10;
-   vdseBlockGroup *blockGroup = NULL;
+   unsigned char *buff[9];
+   vdstObjDummy  *pDummy;
    
-   initTest( expectedToPass );
-
-   vdscInitErrorHandler( &context.errorHandler );
-
-   ptr = malloc( allocatedLength );
-   if ( ptr == NULL )
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   
-   g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
-   vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
-   
-   pObj = vdseMallocBlocks( pAlloc, 4, &context );
-   if ( pObj == NULL ) 
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   pDummy = initMemObjTest( expectedToPass, &context );
+   pObj = &pDummy->memObject;
    
    errcode = vdseMemObjectInit( pObj, 
                                 VDSE_IDENT_ALLOCATOR,
+                                &pDummy->blockGroup,
                                 4 );
    if ( errcode != VDS_OK ) 
       ERROR_EXIT( expectedToPass, NULL, ; );
    
-   blockGroup = (vdseBlockGroup*) ((unsigned char*)pObj + sizeof(vdseMemObject));
-   vdseBlockGroupInit( blockGroup,
-                      2*VDSE_BLOCK_SIZE,
-                      4 );
-
-   /* Add the blockGroup to the list of groups of the memObject */
-   vdseLinkedListPutFirst( &pObj->listBlockGroup, 
-                           &blockGroup->node );
-
    buff[0] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
    if ( buff[0] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    vdseFree( pObj, NULL, VDSE_BLOCK_SIZE, &context );
    
-   vdseMemObjectFini( pObj );
+   vdseMemObjectFini( pObj, &context );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

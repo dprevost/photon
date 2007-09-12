@@ -46,12 +46,12 @@ void vdseBlockGroupInit( vdseBlockGroup* pGroup,
                       numBlocks << VDSE_BLOCK_SHIFT, 
                       VDSE_ALLOCATION_UNIT );
    
-   /* Is the groupBlock struct at the beginning of the group ? */
+   /* Is the blockGroup struct at the beginning of the group ? */
    groupOffset = SET_OFFSET(pGroup);
    if ( SET_OFFSET(pGroup) == firstBlockOffset )
    {
       /* 
-       * Yes, we are. This blockGroup is therefore NOT the pageGroup 
+       * Yes, we are. This blockGroup is therefore NOT the blockGroup 
        * initially allocated when an object is first allocated.
        */
       pGroup->isDeletable = true;

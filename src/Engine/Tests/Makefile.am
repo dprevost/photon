@@ -23,8 +23,8 @@ SUBDIRS =             \
           LogFile     \
           MemAlloc    \
           MemBitmap   \
-          MemObject   \
           BlockGroup  \
+          MemObject   \
           Hash        \
           Transaction \
           Folder
