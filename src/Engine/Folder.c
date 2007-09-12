@@ -15,12 +15,6 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/*
- * gotos... 
- */
- 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 #include "Folder.h"
 #include "Transaction.h"
 #include "MemoryAllocator.h"
@@ -721,97 +715,7 @@ bool ValidateString( const vdsChar_T* objectName,
    return true;
 }
 
-#if 0
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-int vdseFolderRollbackCreate( vdseFolder*         pFolder,
-                              ptrdiff_t           childOffset,
-                              enum vdsObjectType  objType,
-                              vdseSessionContext* pContext )
-{
-   VDS_PRE_CONDITION( pFolder  != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( childOffset != NULL_OFFSET );
-   
-   BaseNode* pNode = GET_PTR( childOffset, BaseNode, pContext->pAllocator );
-
-   pContext->pCurrentMemObject = &pFolder->memObject;
-
-   if ( pNode->m_accessCounter > 0 || pNode->m_transactionCounter > 0 )
-   {
-      pNode->CommitRemove();
-
-      return VDS_OK;
-   }
-
-   RemoveObject( pNode, objType, pContext );
-
-/*     this whole function needs to be revisited - see RemoveObject() */
-
-/*     if ( pNode->m_nAccessCounter > 0 ) */
-/*     { */
-/*        pNode->Commit();  */
-      
-/*        fprintf( stderr, " Error in Folder::RollbackCreate()\n" ); */
-/*        return VDS_OBJECT_IN_USE;   */
-/*     } */
-
-       /* Should I lock the node ? */
-
-/*     const ptrdiff_t selfOffset = pNode->GetSelf(); */
-   
-/*     RowDescriptor* pRow = GET_PTR( selfOffset, RowDescriptor ); */
-   
-/*  //     enum ListErrors listErr = LIST_OK; */
-/*     HashList* pHashList = GET_PTR( m_hashListOffset, HashList ); */
-
-/*     pHashList->DeleteByKey( (char*)pRow + sizeof(RowDescriptor), */
-/*                             pRow->nKeyLength, */
-/*                             pContext ); */
-/*  //     if ( errCode == VDS_OK ) */
-/*  //     { */
-/*        char* ptr = GET_PTR( zChildObject, char ); */
-/*        switch ( nType ) */
-/*        { */
-/*        case QUEUE: */
-/*           ((Queue*)ptr)->Close( pContext ); */
-/*           pContext->pAllocator->Free( ptr, pContext->lockValue ); */
-/*           break; */
-         
-/*        case FOLDER: */
-/*           ((Folder*)ptr)->Close( pContext ); */
-/*           pContext->pAllocator->Free( ptr, pContext->lockValue ); */
-/*           break; */
-/*        } */
-/*  //   } */
-   return VDS_OK;
-}
-   
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-vdsErrors Folder::RollbackDestroy( ptrdiff_t       childOffset,
-                                   vdseSessionContext* pContext )
-{
-   BaseNode* pNode = GET_PTR( childOffset, BaseNode, pContext->pAllocator );
-
-   int errCode = pNode->Lock( pContext->lockValue );
-   if ( errCode == VDS_OK )
-   {
-      pContext->pCurrentMemObject = &pFolder->memObject;
-   
-      pNode->Commit();
-      pNode->UnmarkAsDestroyed();
-      pNode->Unlock();
-
-      return VDS_OK;
-   }
-
-   return VDS_ENGINE_BUSY;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-#endif
 
 /* 
  * lock on the folder is the responsability of the caller.

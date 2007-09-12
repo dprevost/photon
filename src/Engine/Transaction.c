@@ -218,7 +218,7 @@ int vdseTxCommit( vdseTx*             pTx,
       case VDSE_TX_CREATE:
          
          vdseLockNoFailure( pChildMemObject, pOps->childOffset, pContext );
-         vdseTxStatusCommit( pChildStatus );
+         vdseTxStatusClearTx( pChildStatus );
          vdseUnlock( pChildMemObject, pContext );
          
          break;
@@ -255,7 +255,8 @@ int vdseTxCommit( vdseTx*             pTx,
                                     pContext );
             /*
              * Since the object is now remove from the hash, all we need
-             * to do is reclaim the memory.
+             * to do is reclaim the memory (which is done in the destructor
+             * of the memory object).
              */
             if ( pOps->childType == VDS_FOLDER )
             {
@@ -304,6 +305,10 @@ void vdseTxRollback( vdseTx*             pTx,
    int errcode = VDS_OK;
    vdseTxOps* pOps = NULL;
    vdseLinkNode * pLinkNode = NULL;
+   vdseFolder    *parentFolder,    *pChildFolder;
+   vdseMemObject *pChildMemObject, *pParentMemObject;
+   vdseTreeNode  *pChildNode;
+   vdseTxStatus  *pChildStatus;
 
    VDS_PRE_CONDITION( pTx != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -313,17 +318,34 @@ void vdseTxRollback( vdseTx*             pTx,
       /* All is well - nothing to rollback */
       return;
 
-   /* Synch the VDS ??? */   
-   /* Write to the log file ??? */
+   /* Synch the VDS */
+//   MemoryManager::Instance()->Sync( &pContext->errorHandler );
+   
+   /* Write to the log file */
+   if ( pContext->pLogFile != NULL )
+   {
+      errcode = vdseLogTransaction( pContext->pLogFile, 
+                                    SET_OFFSET(pTx), 
+                                    &pContext->errorHandler );
+      if ( errcode != VDS_OK )
+      {
+         fprintf(stderr, "Transaction::Rollback err1 \n" );
+         return;
+      }
+   }
 
    
    while ( vdseLinkedListGetLast( &pTx->listOfOps, 
                                   &pLinkNode ) == LIST_OK )
    {
+      parentFolder = pChildFolder = NULL;
+      pChildMemObject = pParentMemObject = NULL;
+      pChildNode = NULL;
+      pChildStatus = NULL;
+
       pOps = (vdseTxOps*)
          ((char*)pLinkNode - offsetof( vdseTxOps, node ));
 
-#if 0
       if ( pOps->parentType == VDS_FOLDER )
       {
          parentFolder = GET_PTR( pOps->parentOffset, vdseFolder );
@@ -336,7 +358,6 @@ void vdseTxRollback( vdseTx*             pTx,
             pChildStatus = GET_PTR( pChildNode->txStatusOffset, vdseTxStatus );
          }
       }
-#endif
       
       switch( pOps->transType )
       {            
@@ -354,33 +375,63 @@ void vdseTxRollback( vdseTx*             pTx,
          break;
             
       case VDSE_TX_CREATE:
-#if 0
-         pFolder =  
-            GET_PTR( pOps->parentOffset, Folder, pContext->pAllocator );
+         vdseLockNoFailure( &parentFolder->memObject, pOps->childOffset, pContext );
 
-         errcode = pFolder->Lock( pContext->lockValue );
-         if ( errcode == VDS_OK )
+         vdseLockNoFailure( pChildMemObject, pOps->childOffset, pContext );
+
+         if ( pChildStatus->usageCounter > 0 || pChildNode->txCounter > 0 )
          {
-            pFolder->RollbackCreate( pOps->childOffset, 
-                                     pOps->childType,
-                                     pContext );
-            pFolder->Unlock();
+            /*
+             * Can this really happen? No other session is supposed to
+             * be able to open the object until CREATE is committed but
+             * the current session might still have it open I guess.
+             */
+            /** \todo Revisit this */
+            /* 
+             * We can't "uncreate" it - someone is using it. But we flag it
+             * as "Remove is committed" so that the last "user" do delete
+             * it.
+             */
+            vdseTxStatusCommitRemove( pChildStatus );
+            vdseUnlock( pChildMemObject, pContext );
          }
-#endif
+         else
+         {
+            /* 
+             * No one uses the object to remove and no one can access it
+             * since we have a lock on its parent. We can safely unlock it.
+             */
+            vdseUnlock( pChildMemObject, pContext );
+
+            /* Remove it from the folder (from the hash list) */
+            vdseFolderRemoveObject( parentFolder, 
+                                    pChildMemObject,
+                                    GET_PTR(pChildNode->myKeyOffset, vdsChar_T),
+                                    pChildNode->myNameLength,
+                                    pContext );
+            /*
+             * Since the object is now remove from the hash, all we need
+             * to do is reclaim the memory (which is done in the destructor
+             * of the memory object).
+             */
+            if ( pOps->childType == VDS_FOLDER )
+            {
+               vdseFolderFini( pChildFolder, pContext );
+            }
+         }
+         vdseUnlock( &parentFolder->memObject, pContext );
+
          break;
 
       case VDSE_TX_DESTROY:
-#if 0
-         /* Is locking the folder necessary? Not sure... */
-         pFolder = GET_PTR( pOps->parentOffset, Folder, pContext->pAllocator );
-         errcode = pFolder->Lock( pContext->lockValue );
-         if ( errcode == VDS_OK )
-         {
-            pFolder->RollbackDestroy( pOps->childOffset, 
-                                      pContext );
-            pFolder->Unlock();
-         }
-#endif
+         /*
+          * Tricky: the status of a child is only use in the Folder object,
+          * not in the object itself. So no need to lock the child...
+          */
+         vdseLockNoFailure( pParentMemObject, pOps->parentOffset, pContext );
+         vdseTxStatusClearTx( pChildStatus );
+         vdseUnlock( pParentMemObject, pContext );
+
          break;
 
       case VDSE_TX_REMOVE:

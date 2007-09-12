@@ -90,6 +90,7 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
    }
    errcode = vdseMemObjectInit( &pDummy->memObject, 
                                 VDSE_IDENT_ALLOCATOR,
+                                &pDummy->blockGroup,
                                 2 );
    if ( errcode != VDS_OK )
    {
@@ -100,10 +101,6 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
    }
    pContext->pCurrentMemObject = pDummy;
    
-   vdseBlockGroupInit( &pDummy->blockGroup,
-                      2*VDSE_BLOCK_SIZE, /* offset */
-                      2 ); /* Number of blocks */
-
    /*
     * We do not initialize hash - otherwise we would not be able
     * to test the init call.
@@ -114,3 +111,4 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* HASH_TEST_COMMON_H */
+

@@ -114,12 +114,13 @@ bool vdseTxStatusIsValid( vdseTxStatus* pStatus, ptrdiff_t txOffset )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusCommit( vdseTxStatus* pStatus )
+void vdseTxStatusClearTx( vdseTxStatus* pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
    VDS_PRE_CONDITION( pStatus->txOffset != NULL_OFFSET );
 
    pStatus->txOffset = NULL_OFFSET;
+   pStatus->statusFlag = 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
