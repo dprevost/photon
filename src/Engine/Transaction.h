@@ -98,12 +98,15 @@ int vdseTxInit( vdseTx * pTx,
                 size_t   numberOfBlocks,
                 vdseSessionContext* pContext );
 
+VDSF_ENGINE_EXPORT
 void vdseTxFini( vdseTx*             pTx, 
                  vdseSessionContext* pContext );
 
+VDSF_ENGINE_EXPORT
 int vdseTxCommit( vdseTx*             pTx,
                   vdseSessionContext* pContext );
                   
+VDSF_ENGINE_EXPORT
 void vdseTxRollback( vdseTx*             pTx,
                      vdseSessionContext* pContext );
 

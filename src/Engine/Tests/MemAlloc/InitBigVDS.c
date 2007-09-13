@@ -46,6 +46,7 @@ int main()
    unsigned char* buffer[8*VDSE_BLOCK_SIZE-2];
    vdseMemBitmap* pBitmap;
 
+   context.lockValue = getpid();
    initTest( expectedToPass );
    vdscInitErrorHandler( &context.errorHandler );
    

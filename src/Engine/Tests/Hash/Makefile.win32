@@ -1,0 +1,72 @@
+# Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+include ..\Makefile.inc.Win32
+
+all: 
+
+check_PROGRAMS =                                     \
+                 .\Release\DeleteNullContext.exe     \
+                 .\Release\DeleteNullHash.exe        \
+                 .\Release\DeleteNullKey.exe         \
+                 .\Release\DeletePass.exe            \
+                 .\Release\DeleteZeroLength.exe      \
+                 .\Release\EmptyNullContext.exe      \
+                 .\Release\EmptyNullHash.exe         \
+                 .\Release\EmptyPass.exe             \
+                 .\Release\FiniNullContext.exe       \
+                 .\Release\FiniNullHash.exe          \
+                 .\Release\FiniPass.exe              \
+                 .\Release\GetFirstNullBucket.exe    \
+                 .\Release\GetFirstNullHash.exe      \
+                 .\Release\GetFirstNullOffset.exe    \
+                 .\Release\GetFirstPass.exe          \
+                 .\Release\GetNextNullHash.exe       \
+                 .\Release\GetNextNullNextBucket.exe \
+                 .\Release\GetNextNullNextOffset.exe \
+                 .\Release\GetNextPass.exe           \
+                 .\Release\GetNullBucket.exe         \
+                 .\Release\GetNullContext.exe        \
+                 .\Release\GetNullHash.exe           \
+                 .\Release\GetNullItem.exe           \
+                 .\Release\GetNullKey.exe            \
+                 .\Release\GetPass.exe               \
+                 .\Release\GetZeroKeyLength.exe      \
+                 .\Release\InitNullContext.exe       \
+                 .\Release\InitNullHash.exe          \
+                 .\Release\InitPass.exe              \
+                 .\Release\InsertNullContext.exe     \
+                 .\Release\InsertNullData.exe        \
+                 .\Release\InsertNullHash.exe        \
+                 .\Release\InsertNullKey.exe         \
+                 .\Release\InsertNullNewItem.exe     \
+                 .\Release\InsertPass.exe            \
+                 .\Release\InsertZeroDataLength.exe  \
+                 .\Release\InsertZeroKeyLength.exe   \
+                 .\Release\ResizeNullContext.exe     \
+                 .\Release\ResizeNullHash.exe        \
+                 .\Release\ResizePass.exe           
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+#
+
+check: $(OUTDIR) $(check_PROGRAMS)
+	python RunTests.py --path=Release
+
+checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	python RunTests.py --path=Debug
+
+clean: 
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+

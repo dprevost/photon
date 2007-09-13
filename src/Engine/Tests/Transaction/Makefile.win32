@@ -1,0 +1,58 @@
+# Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+include ..\Makefile.inc.Win32
+
+all: 
+
+check_PROGRAMS =                                     \
+                 .\Release\AddInvalidSig.exe         \
+                 .\Release\AddNullChildOffset.exe    \
+                 .\Release\AddNullContext.exe        \
+                 .\Release\AddNullParentOffset.exe   \
+                 .\Release\AddNullTx.exe             \
+                 .\Release\AddPass.exe               \
+                 .\Release\CommitInvalidSig.exe      \
+                 .\Release\CommitNullContext.exe     \
+                 .\Release\CommitNullTx.exe          \
+                 .\Release\CommitPass.exe            \
+                 .\Release\FiniInvalidSig.exe        \
+                 .\Release\FiniNullContext.exe       \
+                 .\Release\FiniNullTx.exe            \
+                 .\Release\FiniPass.exe              \
+                 .\Release\InitNullContext.exe       \
+                 .\Release\InitNullTx.exe            \
+                 .\Release\InitPass.exe              \
+                 .\Release\InitZeroBlocks.exe        \
+                 .\Release\RemoveLastInvalidSig.exe  \
+                 .\Release\RemoveLastNullContext.exe \
+                 .\Release\RemoveLastNullTx.exe      \
+                 .\Release\RemoveLastPass.exe        \
+                 .\Release\RollbackInvalidSig.exe    \
+                 .\Release\RollbackNullContext.exe   \
+                 .\Release\RollbackNullTx.exe        \
+                 .\Release\RollbackPass.exe          
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+#
+
+check: $(OUTDIR) $(check_PROGRAMS)
+	python RunTests.py --path=Release
+
+checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	python RunTests.py --path=Debug
+
+clean: 
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+

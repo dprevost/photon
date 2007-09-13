@@ -194,6 +194,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
          currentNode = (vdseFreeBufferNode*)( 
             (unsigned char*)dummy - offsetof(vdseFreeBufferNode,node));
          numChunks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
+//         fprintf(stderr, "chunks: %d %d \n", numChunks, requestedChunks );
          if ( numChunks >= requestedChunks )
          {
             /* We got it */

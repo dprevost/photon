@@ -14,13 +14,7 @@
 # _MBCS Multi-bytes chars (not the 16 bits of win32 unicode). Not used yet.
 # /GX ???
 # /nologo - suppress MS banner since it is a bit hard to see errors with it
-# turned on
-
-!IF "$(OS)" == "Windows_NT"
-NULL=
-!ELSE 
-NULL=nul
-!ENDIF 
+#           turned on
 
 CLEANFILES = *~  vc60.pdb
 
@@ -43,9 +37,9 @@ CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I ".." /I "../.." /I "../../.." /I "../../
 	$(CPP) $(CFLAGS_DEBUG) $< /link $(LDD_FLAGS_DEBUG) /out:"$@"
 
 "$(OUTDIR)" :
-	if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+	if not exist "$(OUTDIR)/" mkdir "$(OUTDIR)"
 
 "$(OUTDIR_DEBUG)" :
-	if not exist "$(OUTDIR_DEBUG)/$(NULL)" mkdir "$(OUTDIR_DEBUG)"
+	if not exist "$(OUTDIR_DEBUG)/" mkdir "$(OUTDIR_DEBUG)"
   
 
