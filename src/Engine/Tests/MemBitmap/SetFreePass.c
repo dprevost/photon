@@ -32,7 +32,7 @@ int main()
 
    ptr = malloc( VDSE_BLOCK_SIZE*10 );
    if (ptr == NULL )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    g_pBaseAddr = ptr;
    
    pBitmap = (vdseMemBitmap*) ptr;
@@ -55,22 +55,22 @@ int main()
    
    for ( i = VDSE_BLOCK_SIZE/4/8/8; i < VDSE_BLOCK_SIZE/2/8/8 ; ++i )
       if ( pBitmap->bitmap[i] != 0xff )
-         ERROR_EXIT( expectedToPass, NULL, );
+         ERROR_EXIT( expectedToPass, NULL, ; );
    for ( i = VDSE_BLOCK_SIZE/2/8/8; i < VDSE_BLOCK_SIZE*3/4/8/8 ; ++i )
       if ( pBitmap->bitmap[i] != 0 )
-         ERROR_EXIT( expectedToPass, NULL, );
+         ERROR_EXIT( expectedToPass, NULL, ; );
    for ( i = VDSE_BLOCK_SIZE*3/4/8/8; i < VDSE_BLOCK_SIZE/8/8 ; ++i )
       if ( pBitmap->bitmap[i] != 0xff )
-         ERROR_EXIT( expectedToPass, NULL, );
+         ERROR_EXIT( expectedToPass, NULL, ; );
    for ( i = VDSE_BLOCK_SIZE/8/8; i < VDSE_BLOCK_SIZE*7/4/8/8 ; ++i )
       if ( pBitmap->bitmap[i] != 0 )
-         ERROR_EXIT( expectedToPass, NULL, );
+         ERROR_EXIT( expectedToPass, NULL, ; );
    for ( i = VDSE_BLOCK_SIZE*7/4/8/8; i < VDSE_BLOCK_SIZE*9/4/8/8 ; ++i )
       if ( pBitmap->bitmap[i] != 0xff )
-         ERROR_EXIT( expectedToPass, NULL, );
+         ERROR_EXIT( expectedToPass, NULL, ; );
 
    if ( pBitmap->bitmap[VDSE_BLOCK_SIZE*9/4/8/8] != 0 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    vdseMemBitmapFini( pBitmap );
 

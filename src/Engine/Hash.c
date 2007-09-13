@@ -430,6 +430,8 @@ vdseHashGet( vdseHash*            pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#pragma warning(disable:4702) /* unreachable code */
+
 enum ListErrors 
 vdseHashGetFirst( vdseHash*  pHash,
                   size_t*    pBucket, 
@@ -471,6 +473,8 @@ vdseHashGetFirst( vdseHash*  pHash,
    
    return LIST_EMPTY; /* Should never occur */
 }
+
+#pragma warning(default:4702) /* unreachable code */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

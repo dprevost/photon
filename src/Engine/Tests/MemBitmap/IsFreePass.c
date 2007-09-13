@@ -32,7 +32,7 @@ int main()
 
    ptr = malloc( VDSE_BLOCK_SIZE*10 );
    if (ptr == NULL )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    g_pBaseAddr = ptr;
    
    pBitmap = (vdseMemBitmap*) ptr;
@@ -52,11 +52,11 @@ int main()
 
    answer = vdseIsBufferFree( pBitmap, VDSE_BLOCK_SIZE/4 );
    if ( answer == true )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    answer = vdseIsBufferFree( pBitmap, VDSE_BLOCK_SIZE/2 );
    if ( answer == false )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    vdseMemBitmapFini( pBitmap );
 

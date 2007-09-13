@@ -31,24 +31,24 @@ int main()
 
    rc = vdseLinkNodeTest( &node );
    if ( rc != 0 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    node.nextOffset = 0x1234;
    rc = vdseLinkNodeTest( &node );
    if ( rc != 0 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    vdseLinkNodeInit( &node );
 
    node.previousOffset = 0x1234;
    rc = vdseLinkNodeTest( &node );
    if ( rc != 0 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    node.nextOffset = 0x1234;
    rc = vdseLinkNodeTest( &node );
    if ( rc == 0 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    return 0;
 }

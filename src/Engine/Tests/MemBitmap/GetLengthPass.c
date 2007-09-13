@@ -28,31 +28,31 @@ int main()
    
    calculatedSize = vdseGetBitmapLengthBytes( 1024, 8 );
    if ( calculatedSize != 1024/8/8 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    calculatedSize = vdseGetBitmapLengthBytes( 1023, 8 );
    if ( calculatedSize != 1024/8/8 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    calculatedSize = vdseGetBitmapLengthBytes( 1025, 8 );
    if ( calculatedSize != 1024/8/8 + 1 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    calculatedSize = vdseGetBitmapLengthBytes( 1016, 8 );
    if ( calculatedSize != 1024/8/8 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    calculatedSize = vdseGetBitmapLengthBytes( 1024+63, 8 );
    if ( calculatedSize != 1024/8/8 + 1 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    calculatedSize = vdseGetBitmapLengthBytes( 1024+64, 8 );
    if ( calculatedSize != 1024/8/8 + 1 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    calculatedSize = vdseGetBitmapLengthBytes( 1024+65, 8 );
    if ( calculatedSize != 1024/8/8 + 2 )
-      ERROR_EXIT( expectedToPass, NULL, );
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    return 0;
 }

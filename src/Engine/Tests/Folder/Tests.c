@@ -23,7 +23,7 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseFolder* pFolder1, *pFolder2, *pFolder3;
+   vdseFolder* pFolder1, *pFolder2;
 
    vdseSessionContext context;
    int errcode;

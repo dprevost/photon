@@ -28,7 +28,7 @@ int main()
    
    calculatedSize = vdseGetBitmapLengthBytes( 0, 8 );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
