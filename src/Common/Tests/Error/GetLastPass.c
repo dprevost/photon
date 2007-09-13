@@ -26,7 +26,6 @@ const bool expectedToPass = true;
 int main()
 {
    vdscErrorHandler errorHandler;
-   char msg[100] = "";
    
    vdscInitErrorDefs();
    vdscInitErrorHandler( &errorHandler );

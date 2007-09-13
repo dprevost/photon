@@ -26,14 +26,13 @@ const bool expectedToPass = false;
 int main()
 {
    vdscErrorHandler errorHandler;
-   char msg[100] = "";
    
    vdscInitErrorDefs();
    vdscInitErrorHandler( &errorHandler );
    
    vdscGetLastError( NULL );
 
-   ERROR_EXIT( expectedToPass, NULL, );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

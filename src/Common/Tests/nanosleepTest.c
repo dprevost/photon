@@ -30,6 +30,7 @@ const bool expectedToPass = true;
 
 int main()
 {
+#if !defined(WIN32)
    unsigned long sec = 0, nanoSec = 0;
    struct timespec sleepTime = { 0, 10000 };
    int errCode;
@@ -51,7 +52,7 @@ int main()
       fprintf( stderr, "Timer returns invalid time!\n" );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-
+#endif
    return 0;
 }
 
