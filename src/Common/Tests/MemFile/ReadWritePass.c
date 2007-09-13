@@ -26,7 +26,7 @@ int main()
 {
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
-   char*           pAddr = NULL;
+   void *           pAddr = NULL;
    int errcode = 0, rc = 0;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete
@@ -43,7 +43,7 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
 
-   errcode = vdscOpenMemFile( &mem, (void**)&pAddr, &errorHandler );
+   errcode = vdscOpenMemFile( &mem, &pAddr, &errorHandler );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
 
@@ -51,8 +51,8 @@ int main()
    if ( errcode != 0 )
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
 
-   pAddr[0] = 'x';
-   pAddr[1] = 'y';
+   ((char*)pAddr)[0] = 'x';
+   ((char*)pAddr)[1] = 'y';
    
    vdscCloseMemFile( &mem, &errorHandler );
 

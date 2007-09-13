@@ -42,7 +42,7 @@ int main()
 {
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
-   char *          pAddr = NULL;
+   void *          pAddr = NULL;
    int errcode = 0;
 #if ! defined(WIN32)
    struct sigaction newAction, oldAction;
@@ -62,7 +62,7 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
 
-   errcode = vdscOpenMemFile( &mem, (void**)&pAddr, &errorHandler );
+   errcode = vdscOpenMemFile( &mem, &pAddr, &errorHandler );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
 
@@ -81,8 +81,8 @@ int main()
    errcode = sigaction( SIGSEGV, &newAction, &oldAction );
 #endif
 
-   pAddr[0] = 'x';
-   pAddr[1] = 'y';
+   ((char*)pAddr)[0] = 'x';
+   ((char*)pAddr)[1] = 'y';
 
    ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 }

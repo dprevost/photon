@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -13,8 +13,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-#include "ErrorHandler.h"
-#include "ThreadLock.h"
+#include "Common/ErrorHandler.h"
+#include "Common/ThreadLock.h"
 
 /** Unique identifier for the vdscErrorDefinition struct. */
 #define VDSC_ERROR_DEFINITION_SIGNATURE ((unsigned)0xfd13a982)

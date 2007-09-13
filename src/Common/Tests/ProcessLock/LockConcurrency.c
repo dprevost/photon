@@ -181,7 +181,7 @@ int main( int argc, char* argv[] )
          ERROR_EXIT( expectedToPass, NULL, ; );
       
       sprintf( strNumChilds, "%d", numChilds );
-      sprintf( strTime, "%d", maxTime );
+      sprintf( strTime, "%u", (unsigned int)maxTime );
       if ( tryMode )
          strcpy( strMode, "try" );
       else

@@ -66,7 +66,7 @@ int main()
 //   int jj, kk;
    
    int numInList;
-   vdseLinkNode* pNode;
+   vdseLinkNode* pNode = NULL;
    dummyStruct*  pDummy;
    
    initTest( expectedToPass );

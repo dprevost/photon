@@ -38,7 +38,6 @@ int main()
    int errcode;
    vdscDirIterator iterator;
    vdscErrorHandler errorHandler;
-   const char* str;
 
    vdscInitErrorDefs();
    vdscInitDir( &iterator );

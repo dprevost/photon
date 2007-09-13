@@ -19,8 +19,10 @@
 #include "Common/ProcessLock.h"
 #include "Tests/PrintError.h"
 
+#if defined(WIN32)
 /* unreachable code */
-#pragma warning(disable:4702) 
+#  pragma warning(disable:4702) 
+#endif
 
 const bool expectedToPass = false;
 

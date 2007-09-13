@@ -27,12 +27,11 @@ int main()
    vdscOptionHandle handle;
 
    struct vdscOptStruct opts[3] = 
-      {
-        'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog",
-        'v', "address", 1, "", "try to explain what is going on",
-        'z', "zzz",     1, "", "sleep"
-      };
-
+   {
+      { 'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog" },
+      { 'v', "address", 1, "", "try to explain what is going on" },
+      { 'z', "zzz",     1, "", "sleep" }
+   };
    
    vdscSetSupportedOptions( 3, opts, &handle );
 

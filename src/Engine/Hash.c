@@ -430,7 +430,10 @@ vdseHashGet( vdseHash*            pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#pragma warning(disable:4702) /* unreachable code */
+#if defined(WIN32)
+/* unreachable code */
+#  pragma warning(disable:4702) 
+#endif
 
 enum ListErrors 
 vdseHashGetFirst( vdseHash*  pHash,
@@ -474,7 +477,9 @@ vdseHashGetFirst( vdseHash*  pHash,
    return LIST_EMPTY; /* Should never occur */
 }
 
-#pragma warning(default:4702) /* unreachable code */
+#if defined (WIN32)
+#  pragma warning(default:4702) /* unreachable code */
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

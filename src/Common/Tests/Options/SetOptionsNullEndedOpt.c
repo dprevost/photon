@@ -28,12 +28,13 @@ int main()
    vdscOptionHandle handle;
    
    struct vdscOptStruct opts[5] = 
-      { '3', "three",   1, "", "repeat the loop three times",
-        'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog",
-        'x', "",        1, "DISPLAY", "X display to use",
-        'v', "verbose", 1, "", "try to explain what is going on",
-        'z', "zzz",     1, "", "go to sleep..."
-      };
+   {
+      { '3', "three",   1, "", "repeat the loop three times" },
+      { 'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog" },
+      { 'x', "",        1, "DISPLAY", "X display to use" },
+      { 'v', "verbose", 1, "", "try to explain what is going on" },
+      { 'z', "zzz",     1, "", "go to sleep..." }
+   };
    
    for ( i = 0; i < VDSC_OPT_LONG_OPT_LENGTH; ++i )
       opts[2].longOpt[i] = 'x';

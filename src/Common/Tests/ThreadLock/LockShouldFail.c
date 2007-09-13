@@ -107,10 +107,10 @@ int worker( void* arg )
          vdscEndTimer( &timer );
          vdscCalculateTimer( &timer, &sec, &nanoSec );
 
-         fprintf( stderr, "%s - time = %d.%03d secs, \n",
+         fprintf( stderr, "%s - time = %u.%03u secs, \n",
                   "Ok! We got our expected error",
-                  sec,
-                  nanoSec/1000/1000 );
+                  (unsigned int)sec,
+                  (unsigned int)(nanoSec/1000/1000) );
          g_data->exitFlag = 1;
          if ( (loop%DEFAULT_FAILURE_RATE) != 0 )
             vdscReleaseThreadLock( &g_data->lock );

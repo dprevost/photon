@@ -17,4 +17,5 @@ distclean: clean
 clean:
 	rm -f asm
 
-check:
+check: asm
+

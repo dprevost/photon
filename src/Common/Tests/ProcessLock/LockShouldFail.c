@@ -224,8 +224,8 @@ int main( int argc, char* argv[] )
       ptr = NULL;
    
       sprintf( strNumChilds, "%d", numChilds );
-      sprintf( strRate, "%d", failureRate );
-      sprintf( strTime, "%d", maxTime );
+      sprintf( strRate, "%u", (unsigned int)failureRate );
+      sprintf( strTime, "%u", (unsigned int)maxTime );
       if ( tryMode )
          strcpy( strMode, "try" );
       else
@@ -328,11 +328,11 @@ int main( int argc, char* argv[] )
             vdscEndTimer( &timer );
             vdscCalculateTimer( &timer, &sec, &nanoSec );
 
-            fprintf( stderr, "%s %d) - time = %d.%03d secs, \n",
+            fprintf( stderr, "%s %d) - time = %u.%03u secs, \n",
                      "Ok! We got our expected error (pid =",
                      mypid,
-                     sec,
-                     nanoSec/1000/1000 );
+                     (unsigned int)sec,
+                     (unsigned int)(nanoSec/1000/1000) );
             data->exitFlag = 1;
             if ( (loop%failureRate) != 0 )
                vdscReleaseProcessLock( &data->lock );

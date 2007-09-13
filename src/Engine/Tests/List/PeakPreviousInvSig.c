@@ -30,6 +30,9 @@ int main()
    initTest( expectedToPass );
    InitMem();
 
+   vdseLinkedListInit( &list );
+   list.initialized = 0;
+
    vdseLinkNodeInit( &node );
    
    vdseLinkedListPeakPrevious( &list, &node, &pNode );

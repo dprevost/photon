@@ -30,12 +30,13 @@ int main()
    vdscOptionHandle handle;
  
    struct vdscOptStruct opts[5] = 
-      { '3', "three",   1, "", "repeat the loop three times",
-        'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog",
-        'x', "",        1, "DISPLAY", "X display to use",
-        'v', "verbose", 1, "", "try to explain what is going on",
-        'z', "zzz",     1, "", "go to sleep..."
-      };
+   {
+      { '3', "three",   1, "", "repeat the loop three times" },
+      { 'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog" },
+      { 'x', "",        1, "DISPLAY", "X display to use" },
+      { 'v', "verbose", 1, "", "try to explain what is going on" },
+      { 'z', "zzz",     1, "", "go to sleep..." }
+   };
    
    errcode = vdscSetSupportedOptions( 5, opts, &handle );
    if ( errcode != 0 )

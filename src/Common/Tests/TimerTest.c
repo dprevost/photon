@@ -71,7 +71,8 @@ int main()
       
    vdscEndTimer( &timer );
    vdscCalculateTimer( &timer, &sec, &nanoSec );
-   fprintf( stderr, "Sec = %u, nanoSec = %u\n", sec, nanoSec );
+   fprintf( stderr, "Sec = %u, nanoSec = %u\n", (unsigned int)sec, 
+                                                (unsigned int)nanoSec );
 
    if ( sec == 0 && nanoSec == 0 )
    {
@@ -117,7 +118,8 @@ int main()
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
       
-      fprintf( stderr, "Sec = %u, nanoSec = %u\n", sec, nanoSec );
+      fprintf( stderr, "Sec = %u, nanoSec = %u\n", (unsigned int)sec, 
+                                                   (unsigned int)nanoSec );
    }
    
    return 0;
