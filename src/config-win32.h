@@ -147,6 +147,9 @@
 /* Define to 1 if you have the <string.h> header file. */
 #define HAVE_STRING_H 1
 
+/* Define to 1 if you have the `strnlen' function. */
+/* #define HAVE_STRNLEN 1 */
+
 /* Define if your system's sys/sem.h file defines struct semun */
 /* #undef HAVE_STRUCT_SEMUN */
 
@@ -206,6 +209,9 @@
 /* Define to 1 if `vfork' works. */
 /* #define HAVE_WORKING_VFORK 1 */
 
+/* Define to 1 if the system has the type `_Bool'. */
+/* #define HAVE__BOOL 1 */
+
 /* Define to 1 if you have the `_getpid' function. */
 #define HAVE__GETPID 1
 
@@ -240,6 +246,9 @@
 /* Define as the return type of signal handlers (`int' or `void'). */
 #define RETSIGTYPE void
 
+/* The size of `void *', as computed by sizeof. */
+#define SIZEOF_VOID_P 4
+
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
@@ -251,6 +260,14 @@
 
 /* Using Posix threads */
 /* #define USE_PTHREAD 1 */
+
+/* This define can be set indirectly by using configure with the option
+   --enable-set-block-size=value */
+#define VDSE_BLOCK_SHIFT 13
+
+/* This define can be set by using configure with the option
+   --enable-set-block-size=value */
+#define VDSE_BLOCK_SIZE 8192
 
 /* Version number of package */
 #define VERSION "0.1.0"
@@ -295,4 +312,3 @@
    code using `volatile' can become incorrect without. Disable with care. */
 /* #undef volatile */
 
-#define SIZEOF_VOID_P 4

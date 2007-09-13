@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -7,6 +7,10 @@
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+# Include this at the beginning to allow the current Makefile.am to
+# overwrite any macros set in the common file
+include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ ./org/vdsf/*~  $(top_builddir)/src/java/org/vdsf/*.class
 
@@ -46,27 +50,6 @@ lib_LTLIBRARIES = libvdsf_jni.la
 libvdsf_jni_la_LDFLAGS = -version-info 1:0:0
 
 libvdsf_jni_la_SOURCES = vdsf_jni.cpp
-
-AM_CPPFLAGS = -I$(top_srcdir)/src/include    \
-              -I$(top_srcdir)/src/Common     \
-              -I$(top_srcdir)/src/Engine \
-              -I$(top_srcdir)/src/API        \
-              -I$(JAVA_HOME)/include         \
-              -I$(JAVA_HOME)/include/linux
-
-if COND_USE_ASSERT
-   AM_CPPFLAGS += -DUSE_ASSERT
-endif
-if COND_USE_TRAP_ERRORS
-   AM_CPPFLAGS += -DUSE_TRAP_ERRORS
-endif
-
-if COND_USE_DBC
-   AM_CPPFLAGS += -DUSE_DBC
-endif
-if COND_USE_EXTREME_DBC
-   AM_CPPFLAGS += -DUSE_EXTREME_DBC
-endif
 
 libvdsf_jni_la_LIBADD = \
    $(top_builddir)/src/API/libvdsf.la 

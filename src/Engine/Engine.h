@@ -38,16 +38,6 @@
 #  define VDSF_ENGINE_EXPORT
 #endif
 
-#ifdef __cplusplus
-#  if HAVE_NEW
-#    include <new>
-#  else
-#    if HAVE_NEW_H
-#      include <new.h>
-#    endif
-#  endif
-#endif
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
@@ -105,8 +95,6 @@ typedef unsigned int transaction_T;
 #define NULL_OFFSET ( (ptrdiff_t) -1 )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-#define MAX_KEY_LENGTH    1024
 
 #define LOCK_TIMEOUT 10000 /* in milliseconds */
 

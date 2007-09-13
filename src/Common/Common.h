@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006, 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -21,25 +21,6 @@
  *
  */
 
-/*
-
-list of functions/macros/types that might cause portability problems:
-
-ctime_r              ok
-vds_lock_T           NO - to be replaced by (?)
-fdatasync            ok
-getpid               ok
-
-isalnum              ok
-nanosleep            ok but depends on select + signal stuff
-pid_t                ok
-
-tolower              ok
-
-the mmap stuff:
-
- */
-
 #ifndef VDSC_COMMON_H
 #define VDSC_COMMON_H
 
@@ -48,7 +29,10 @@ the mmap stuff:
 #endif
 #if defined WIN32
 #  include "config-win32.h"
-   /* The pragma is to hide a warning in Microsoft include files */
+   /* 
+    * The pragma is to hide a warning in Microsoft include files
+    * with VC++ 6. Don't know about other versions yet.
+    */
 #  pragma warning(disable:4115)
 #  include <windows.h>
 #  pragma warning(default:4115)
@@ -422,48 +406,13 @@ extern char *new_ctime_r( const time_t *timep, char *buf, int buflen );
          "DBC: invariant", #x, __FILE__, __LINE__ ); \
       ABORT(); \
    }
-#  define VDS_ASSERT(x) assert(x)
-#  define VDS_ASSERT_RETURN(x,p,rc) assert(x)
-#  define VDS_ASSERT_NORETURN(x,p)  assert(x)
-#  define VDS_INTEGRITY_TEST(p)
+//#  define VDS_INTEGRITY_TEST(p)
 #else
 #  define VDS_PRE_CONDITION(x) 
 #  define VDS_POST_CONDITION(x)
 #  define VDS_INV_CONDITION(x)
-#  define VDS_ASSERT(x) 
-#  define VDS_ASSERT_RETURN(x,p,rc) 
-#  define VDS_ASSERT_NORETURN(x,p) 
-#  define VDS_INTEGRITY_TEST(p) 
+//#  define VDS_INTEGRITY_TEST(p) 
 #endif
-
-/*
- * VDS_ASSERT is the standard macro for asserts, it is set to 
- * nothing if the package was configured without -DUSE_ASSERT.
- *
- * VDS_ASSERT_RETURN is a special version of the previous macro.
- * If USE_ASSERT is not used, it will return an error instead of
- * doing nothing. VDS_ASSERT_RETURN should be used instead of 
- * VDS_ASSERT when ever possible (although in some places, it is
- * not always very convenient).
- */
-//#if HAVE_ASSERT_H && USE_ASSERT
-//#  if USE_TRAP_ERRORS
-//#    define VDS_ASSERT(x) assert(x)
-//#    define VDS_ASSERT_RETURN(x,p,rc) 
-//#    define VDS_ASSERT_NORETURN(x,p) 
-//#    define VDS_INTEGRITY_TEST(p) 
-//#  else
-//#    define VDS_ASSERT(x) assert(x)
-//#    define VDS_ASSERT_RETURN(x,p,rc) assert(x)
-//#    define VDS_ASSERT_NORETURN(x,p)  assert(x)
-//#    define VDS_INTEGRITY_TEST(p)
-//#  endif
-//#else
-//#    define VDS_ASSERT(x)
-//#    define VDS_ASSERT_RETURN(x,p,rc)
-//#    define VDS_ASSERT_NORETURN(x,p)
-//#    define VDS_INTEGRITY_TEST(p)
-//#endif
 
 /**
  *  Define our own boolean type. This might be overkill to some extent

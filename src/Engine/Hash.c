@@ -837,126 +837,8 @@ vdseHashUpdate( vdseHash*            pHash,
 
 #if 0
 
-   int ResetArray( vdseMemAlloc* pAlloc );
-
    bool SelfTest( vdseMemAlloc* pAlloc );
    
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-enum ListErrors HashList::GetFirst( size_t*         pNewBucket, 
-                                    RowDescriptor** ppRow,
-                                    vdseMemAlloc*   pAlloc )
-{
-   if ( pHash->numberOfItems == 0 )
-      return LIST_EMPTY;
-
-   ptrdiff_t* pArray;
-   
-   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t, pAlloc );
-   VDS_ASSERT( pArray != NULL );
-  
-   for ( size_t i = 0; i < pHash->arrayLength; ++i )
-   {
-      if ( pArray->Get(i) != NULL_OFFSET )
-      {
-         *ppRow  = GET_PTR( pArray->Get(i), 
-                            RowDescriptor, 
-                            pAlloc );
-         *pNewBucket = i;
-
-         return LIST_OK;
-      }
-   }
-   if ( pHash->numberOfItems > 0 ) 
-      fprintf( stderr, " ERROR 1 - %d \n", pHash->numberOfItems );
-   
-   return LIST_EMPTY; /* Should never occur */
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-enum ListErrors HashList::GetNext( size_t  oldBucket,
-                                   size_t* pNewBucket, 
-                                   RowDescriptor** ppRow,
-                                   vdseMemAlloc* pAlloc )
-{
-   ptrdiff_t* pArray;
-   
-   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t, pAlloc );
-   VDS_ASSERT( pArray != NULL );
-
-   for ( size_t i = oldBucket+1; i < pHash->arrayLength; ++i )
-   {
-      if ( pArray->Get(i) != NULL_OFFSET )
-      {
-         *ppRow  = GET_PTR( pArray->Get(i), 
-                            RowDescriptor, 
-                            pAlloc );
-         *pNewBucket = i;
-
-         return LIST_OK;
-      }
-   }
-   return LIST_END_OF_LIST;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/* Rehash the whole array back into the current array */
-int HashList::ResetArray( vdseMemAlloc* pAlloc )
-{
-   size_t i, bucket = 0;
-   ptrdiff_t* pArray;
-   
-   SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t, pAlloc );
-   VDS_ASSERT( pArray != NULL );
-
-   /* Create a temporary array on the heap to hold the pointers */
-   ptrdiff_t* ptr = (ptrdiff_t*) 
-      malloc( pHash->arrayLength * sizeof ( ptrdiff_t ) );
-   if ( ptr == NULL )
-      return -1;
-
-   /* Copy to the temp array */
-   for ( i = 0; i < pHash->arrayLength; ++i)
-      ptr[i] = pArray->Get(i);
-
-   /* Clear the existing array */
-   for ( i = 0; i < pHash->arrayLength; ++i)
-      pArray->Set( i, NULL_OFFSET );
-   
-   /* Repopulate the array using our hash function */
-   for ( i = 0; i < pHash->arrayLength; ++i)
-   {
-      if ( ptr[i] != NULL_OFFSET )
-      {
-         RowDescriptor* pRow = GET_PTR( ptr[i], 
-                                        RowDescriptor,
-                                        pAlloc );
-         char* pKey = GET_PTR( pRow->keyOffset, char, pAlloc );
-         
-         bucket =  hash_pjw( pKey, pRow->keyLength ) % pHash->arrayLength;
-         
-         while (1)
-         {
-            if ( pArray->Get(bucket) == NULL_OFFSET )
-            {
-               /* We found a valid spot */
-               pArray->Set( bucket, ptr[i] );
-               break;
-            }
-            ++bucket;
-            
-            if ( bucket == pHash->arrayLength )
-               bucket = 0;
-         }
-      }
-   }
-   free( ptr );
-   
-   return 0;
-}
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 bool HashList::SelfTest( vdseMemAlloc* pAlloc )
@@ -975,11 +857,6 @@ bool HashList::SelfTest( vdseMemAlloc* pAlloc )
                                         RowDescriptor,
                                         pAlloc );
          char* pKey = GET_PTR( pRow->keyOffset, char, pAlloc );
-
-         if ( pRow->keyLength > MAX_KEY_LENGTH )
-            fprintf( stderr, "Wrong key length\n" );
-         if ( pRow->dataLength != 8 )
-            fprintf( stderr, "Wrong data length\n" );
       
          numRows++;
          sum += pRow->dataLength;
