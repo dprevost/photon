@@ -29,7 +29,7 @@ check_PROGRAMS =                             \
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 
 check: $(OUTDIR) $(check_PROGRAMS)
-	rem python RunTests.py --path=Release
+	python RunTests.py --path=Release
 	cd DirAccess   && nmake -f Makefile.win32 check && cd ..
 	cd Error       && nmake -f Makefile.win32 check && cd ..
 	cd MemFile     && nmake -f Makefile.win32 check && cd ..
@@ -38,7 +38,7 @@ check: $(OUTDIR) $(check_PROGRAMS)
 	cd ThreadLock  && nmake -f Makefile.win32 check && cd ..
 
 checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	rem python RunTests.py --path=Debug
+	python RunTests.py --path=Debug
 	cd DirAccess   && nmake -f Makefile.win32 checkdebug && cd ..
 	cd Error       && nmake -f Makefile.win32 checkdebug && cd ..
 	cd MemFile     && nmake -f Makefile.win32 checkdebug && cd ..

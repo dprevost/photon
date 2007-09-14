@@ -24,7 +24,7 @@ const bool expectedToPass = true;
 #define NS_PER_SEC     1000000000
 #define NS_PER_US            1000
 #define HALF_SEC_IN_US     500000
-#define TEST_LOOP          100000
+#define TEST_LOOP          300000
 #define TENTH_SEC_IN_US    100000    /* (1/10 sec in usecs) */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -71,8 +71,7 @@ int main()
       
    vdscEndTimer( &timer );
    vdscCalculateTimer( &timer, &sec, &nanoSec );
-   fprintf( stderr, "Sec = %u, nanoSec = %u\n", (unsigned int)sec, 
-                                                (unsigned int)nanoSec );
+   fprintf( stderr, "Calibration: Sec = %u, nanoSec = %u\n", sec, nanoSec );
 
    if ( sec == 0 && nanoSec == 0 )
    {
@@ -118,8 +117,7 @@ int main()
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
       
-      fprintf( stderr, "Sec = %u, nanoSec = %u\n", (unsigned int)sec, 
-                                                   (unsigned int)nanoSec );
+      fprintf( stderr, "Sec = %u, nanoSec = %09u\n", sec, nanoSec );
    }
    
    return 0;

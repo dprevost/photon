@@ -1,6 +1,5 @@
-/* -*- c++ -*- */
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -85,18 +84,20 @@ static inline int gettimeofday( struct timeval *tv, void* tz )
 /** Start the timer */
 static inline void 
 vdscBeginTimer( vdscTimer* pTimer )
-   {
+{
 #if defined (WIN32)
-      if ( pTimer->highResolution == TRUE )
-      {
-         QueryPerformanceCounter( &pTimer->beginCount );
-         return;
-      }
-#endif
-      gettimeofday( &pTimer->timeBegin, NULL );
-/*      fprintf(stderr, "begin : %u\n", timeBegin.tv_sec ); */
+   if ( pTimer->highResolution == TRUE )
+   {
+      QueryPerformanceCounter( &pTimer->beginCount );
+      return;
    }
-   
+   else
+#endif
+   {
+      gettimeofday( &pTimer->timeBegin, NULL );
+   }
+}
+
 /** Stop the timer */
 static inline
 void vdscEndTimer( vdscTimer* pTimer )
@@ -107,9 +108,11 @@ void vdscEndTimer( vdscTimer* pTimer )
       QueryPerformanceCounter( &pTimer->endCount );
       return;
    }
+   else
 #endif
-   gettimeofday( &pTimer->timeEnd, NULL );
-/*      fprintf(stderr, "end : %u\n", timeEnd.tv_sec ); */
+   {
+      gettimeofday( &pTimer->timeEnd, NULL );
+   }
 }
    
 /** Calculates - returns the time to the caller in seconds and nanosecs. */
@@ -126,3 +129,4 @@ void vdscInitTimer( vdscTimer* pTimer );
 END_C_DECLS
 
 #endif /* VDSC_TIMER_H */
+

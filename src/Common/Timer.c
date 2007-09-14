@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -45,13 +45,16 @@ vdscCalculateTimer( vdscTimer *pTimer,
    unsigned long tmp;
    
 #if defined (WIN32)
+   double d;
+   
    if ( pTimer->highResolution == TRUE )
    {
-      *pSecs = (unsigned long)((pTimer->endCount.QuadPart - pTimer->beginCount.QuadPart)
-         / pTimer->frequency.QuadPart);
-      *pnanoSecs = (unsigned long)(pTimer->endCount.QuadPart - 
-         (*pSecs * pTimer->frequency.QuadPart));
-      *pnanoSecs = (unsigned long)((*pnanoSecs * 1000000000)/pTimer->frequency.QuadPart);
+      *pSecs = (unsigned long)( 
+         (pTimer->endCount.QuadPart-pTimer->beginCount.QuadPart) / pTimer->frequency.QuadPart );
+      *pnanoSecs = (unsigned long)((pTimer->endCount.QuadPart-pTimer->beginCount.QuadPart)
+         - (*pSecs * pTimer->frequency.QuadPart));
+      d = (*pnanoSecs * 1000000000.0)/pTimer->frequency.QuadPart;
+      *pnanoSecs = (unsigned long) d;
    }
    else
 #endif
