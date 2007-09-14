@@ -381,7 +381,7 @@ extern char *new_ctime_r( const time_t *timep, char *buf, int buflen );
  * We use the exit code of abort.
  */
 #  if defined(WIN32)
-#    define ABORT() _exit(3)
+#    define ABORT() exit(3)
 #  else
 #    define ABORT() abort()
 #  endif
