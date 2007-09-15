@@ -29,22 +29,22 @@ check_PROGRAMS =                             \
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 
 check: $(OUTDIR) $(check_PROGRAMS)
-	python RunTests.py --path=Release
-	cd DirAccess   && nmake -f Makefile.win32 check && cd ..
-	cd Error       && nmake -f Makefile.win32 check && cd ..
-	cd MemFile     && nmake -f Makefile.win32 check && cd ..
-	cd Options     && nmake -f Makefile.win32 check && cd ..
-	cd ProcessLock && nmake -f Makefile.win32 check && cd ..
-	cd ThreadLock  && nmake -f Makefile.win32 check && cd ..
+   cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+	cd DirAccess   && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Error       && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd MemFile     && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Options     && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd ProcessLock && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd ThreadLock  && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	python RunTests.py --path=Debug
-	cd DirAccess   && nmake -f Makefile.win32 checkdebug && cd ..
-	cd Error       && nmake -f Makefile.win32 checkdebug && cd ..
-	cd MemFile     && nmake -f Makefile.win32 checkdebug && cd ..
-	cd Options     && nmake -f Makefile.win32 checkdebug && cd ..
-	cd ProcessLock && nmake -f Makefile.win32 checkdebug && cd ..
-	cd ThreadLock  && nmake -f Makefile.win32 checkdebug && cd ..
+	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+	cd DirAccess   && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Error       && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd MemFile     && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Options     && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd ProcessLock && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd ThreadLock  && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 clean: 
 	cd DirAccess   && nmake -f Makefile.win32 clean && cd ..

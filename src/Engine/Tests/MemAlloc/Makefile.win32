@@ -36,10 +36,10 @@ check_PROGRAMS =                                \
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 
 check: $(OUTDIR) $(check_PROGRAMS)
-	python RunTests.py --path=Release 
+	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
 
 checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	python RunTests.py --path=Debug
+	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
 
 clean: 
 	-@erase /Q Debug

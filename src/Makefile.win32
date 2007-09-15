@@ -32,14 +32,14 @@ all: "$(OUTDIR_RELEASE)" "$(OUTDIR_DEBUG)"
 	cd Engine     && nmake -f Makefile.win32 && cd ..
    
 check:
-	cd Common     && nmake -f Makefile.win32 check && cd ..
-	cd BuildTools && nmake -f Makefile.win32 check && cd ..
-	cd Engine     && nmake -f Makefile.win32 check && cd ..
+	cd Common     && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd BuildTools && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Engine     && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 checkdebug: 
-	cd Common     && nmake -f Makefile.win32 checkdebug && cd ..
-	cd BuildTools && nmake -f Makefile.win32 checkdebug && cd ..
-	cd Engine     && nmake -f Makefile.win32 checkdebug && cd ..
+	cd Common     && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd BuildTools && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Engine     && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 clean: 
 	cd Common     && nmake -f Makefile.win32 clean && cd ..

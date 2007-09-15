@@ -71,10 +71,10 @@ genError.c genError.h : testError.h
 ###########################################################################
 
 check: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\testParser.exe
-	python RunTests.py --path=Release
+	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
 
 checkdebug: $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\testParser.exe
-	python RunTests.py --path=Debug
+	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
 
 "$(OUTDIR_RELEASE)" :
 	if not exist "$(OUTDIR_RELEASE)/$(NULL)" mkdir "$(OUTDIR_RELEASE)"

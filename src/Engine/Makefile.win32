@@ -92,10 +92,10 @@ VdsErrorHandler.c VdsErrorHandler.h : ..\include\vdsf\vdsErrors.h
 ###########################################################################
 
 check: all
-	cd Tests && nmake -f Makefile.win32 check && cd ..
+	cd Tests && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 checkdebug: all
-	cd Tests && nmake -f Makefile.win32 checkdebug && cd ..
+	cd Tests && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 "$(OUTDIR_RELEASE)" :
 	if not exist "$(OUTDIR_RELEASE)/$(NULL)" mkdir "$(OUTDIR_RELEASE)"

@@ -14,13 +14,9 @@
 # _MBCS Multi-bytes chars (not the 16 bits of win32 unicode). Not used yet.
 # /GX ???
 # /nologo - suppress MS banner since it is a bit hard to see errors with it
-# turned on
+#           turned on
 
-!IF "$(OS)" == "Windows_NT"
-NULL=
-!ELSE 
-NULL=nul
-!ENDIF 
+VBS_VERBOSE=
 
 CLEANFILES = *~ 
 
