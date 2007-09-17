@@ -31,7 +31,7 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   vdseFolderInit( pFolder, 0, 0, 0, &status, 5, "Test1", &context );
+   vdseFolderInit( pFolder, 0, 0, 0, &status, 5, strCheck("Test1"), &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

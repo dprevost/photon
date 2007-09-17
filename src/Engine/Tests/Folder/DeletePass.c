@@ -17,9 +17,20 @@
 
 #include "folderTest.h"
 
+#if VDS_SUPPORT_i18n
+#  define PREFIX L
+#else
+#  define PREFIX
+#endif
+
 const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+vdsChar_T* stringTransform( char* s)
+{
+   return s;
+}
 
 int main()
 {
@@ -32,13 +43,20 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", &context );
-   if ( errcode != 0 ) 
+   errcode = vdseFolderInit( pFolder,
+                             0,
+                             1,
+                             0,
+                             &status,
+                             5,
+                             strCheck("Test1"),
+                             &context );
+   if ( errcode != 0 )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    errcode = vdseFolderInsertObject( pFolder,
-                                     "test2",
-                                     "Test2",
+                                     strCheckLow("test2"),
+                                     strCheck("Test2"),
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -48,14 +66,14 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
    errcode = vdseFolderDeleteObject( pFolder,
-                                     "test2",
+                                     strCheckLow("test2"),
                                      5,
                                      &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    errcode = vdseFolderDeleteObject( pFolder,
-                                     "test3",
+                                     strCheck("test3"),
                                      5,
                                      &context );
    if ( errcode != -1 ) 

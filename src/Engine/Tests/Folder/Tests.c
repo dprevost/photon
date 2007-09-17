@@ -35,14 +35,14 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseFolderInit( pFolder1, 0, 1, 0, &status, 5, "Test1", &context );
+   errcode = vdseFolderInit( pFolder1, 0, 1, 0, &status, 5, strCheck("Test1"), &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
    /* Create "/Test2" */   
    errcode = vdseFolderInsertObject( pFolder1,
-                                     "test2",
-                                     "Test2",
+                                     strCheckLow("test2"),
+                                     strCheck("Test2"),
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -54,8 +54,8 @@ fprintf( stderr, "ok 1\n" );
 
    /* Try to create "/Test2" again - must fail */   
    errcode = vdseFolderInsertObject( pFolder1,
-                                     "test2",
-                                     "Test5",
+                                     strCheckLow("test2"),
+                                     strCheck("Test5"),
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -69,8 +69,8 @@ fprintf( stderr, "ok 2 %d\n", errcode );
 
    /* Create "/Test3" */   
    errcode = vdseFolderInsertObject( pFolder1,
-                                     "test3",
-                                     "Test3",
+                                     strCheckLow("test3"),
+                                     strCheck("Test3"),
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -82,7 +82,7 @@ fprintf( stderr, "ok 3\n" );
 
    /* Get "/Test2" */   
    errcode = vdseFolderGetObject( pFolder1,
-                                  "test2",
+                                  strCheckLow("test2"),
                                   5,
                                   &pDescriptor,
                                   &context );
@@ -93,8 +93,8 @@ fprintf( stderr, "ok 4\n" );
 
    /* Create "/Test2/Test4" from "/Test2" */   
    errcode = vdseFolderInsertObject( pFolder2,
-                                     "test4",
-                                     "Test4",
+                                     strCheckLow("test4"),
+                                     strCheck("Test4"),
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -106,8 +106,8 @@ fprintf( stderr, "ok 5\n" );
 
    /* Create "/Test2/Test2" */   
    errcode = vdseFolderInsertObject( pFolder2,
-                                     "test2",
-                                     "Test2",
+                                     strCheckLow("test2"),
+                                     strCheck("Test2"),
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -118,7 +118,7 @@ fprintf( stderr, "ok 5\n" );
 
    /* Try to delete "/Test2" - should fail (not empty) */
    errcode = vdseFolderDeleteObject( pFolder1,
-                                     "test2",
+                                     strCheckLow("test2"),
                                      5,
                                      &context );
    if ( errcode != -1 ) 
@@ -128,7 +128,7 @@ fprintf( stderr, "ok 5\n" );
    
    /* Try to delete "/Test55" - should fail (no such object) */
    errcode = vdseFolderDeleteObject( pFolder1,
-                                     "test55",
+                                     strCheckLow("test55"),
                                      6,
                                      &context );
    if ( errcode != -1 ) 
@@ -138,21 +138,21 @@ fprintf( stderr, "ok 5\n" );
    
    /* Get "/Test2/Test4" from "/" */   
    errcode = vdseFolderGetObject( pFolder1,
-                                  "test2/test4",
+                                  strCheckLow("test2/test4"),
                                   11,
                                   &pDescriptor,
                                   &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );   
 
-   if ( memcmp( pDescriptor->originalName, "Test4", 5*sizeof(vdsChar_T) ) != 0 )
+   if ( memcmp( pDescriptor->originalName, strCheck("Test4"), 5*sizeof(vdsChar_T) ) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    /* Create "/Test2/Test4/Test5 from "/" */
    
    errcode = vdseFolderInsertObject( pFolder1,
-                                     "test2/test4/test5",
-                                     "Test2/Test4/Test5",
+                                     strCheckLow("test2/test4/test5"),
+                                     strCheck("Test2/Test4/Test5"),
                                      17,
                                      VDS_FOLDER,
                                      1,
@@ -163,7 +163,7 @@ fprintf( stderr, "ok 5\n" );
 
    /* Delete "/Test2/Test4/Test6" - must fail (no such object) */
    errcode = vdseFolderDeleteObject( pFolder1,
-                                     "test2/test4/test6",
+                                     strCheckLow("test2/test4/test6"),
                                      17,
                                      &context );
    if ( errcode != -1 ) 
@@ -173,7 +173,7 @@ fprintf( stderr, "ok 5\n" );
 
    /* Delete "/Test2/Test5/Test5" - must fail (no such folder) */
    errcode = vdseFolderDeleteObject( pFolder1,
-                                     "test2/test5/test5",
+                                     strCheckLow("test2/test5/test5"),
                                      17,
                                      &context );
    if ( errcode != -1 ) 
@@ -183,7 +183,7 @@ fprintf( stderr, "ok 5\n" );
 
    /* Delete "/Test2/Test4/Test5" */
    errcode = vdseFolderDeleteObject( pFolder1,
-                                     "test2/test4/test5",
+                                     strCheckLow("test2/test4/test5"),
                                      17,
                                      &context );
    if ( errcode != -0 ) 
