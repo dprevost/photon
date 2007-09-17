@@ -73,6 +73,13 @@ int main()
    vdscCalculateTimer( &timer, &sec, &nanoSec );
    fprintf( stderr, "Calibration: Sec = %u, nanoSec = %u\n", sec, nanoSec );
 
+   /*
+    * Newer version of gcc seem to strip the loop away since dum is not
+    * used anywhere. This seems to fix the problem.
+    */
+   if (dum == 0 )
+      fprintf(stderr, "%d\n", dum );
+   
    if ( sec == 0 && nanoSec == 0 )
    {
       fprintf( stderr, "Timer returns invalid time!\n" );
@@ -110,6 +117,13 @@ int main()
       
       vdscEndTimer( &timer );
       vdscCalculateTimer( &timer, &sec, &nanoSec );
+
+      /*
+       * Newer version of gcc seem to strip the loop away since dum is not
+       * used anywhere. This seems to fix the problem.
+       */
+      if (dum == 0 )
+         fprintf(stderr, "%d\n", dum );
 
       if ( sec == 0 && nanoSec == 0 )
       {

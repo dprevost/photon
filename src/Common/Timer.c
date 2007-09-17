@@ -61,7 +61,7 @@ vdscCalculateTimer( vdscTimer *pTimer,
    {
       tmp = (pTimer->timeEnd.tv_sec - pTimer->timeBegin.tv_sec) * 1000000 + 
          pTimer->timeEnd.tv_usec - pTimer->timeBegin.tv_usec;
-
+      
       *pSecs = tmp/ 1000000;
       *pnanoSecs = (tmp - *pSecs * 1000000)* 1000;
    }
