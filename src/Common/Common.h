@@ -270,10 +270,19 @@ typedef size_t ptrdiff_t;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- *
  *
  * i18n - internationalization is optional (it can be suppressed when
- *        running configure) and will default to single byte chars if 
- *        some features are missing.
+ *        running configure by using --disable-i18n) and will default to 
+ *        single byte chars if some features are missing.
+ *
+ *        configure will check for missing header files and missing 
+ *        functions. As additional functions will be used, they must
+ *        be added to configure.ac in the i18n section.
  *
  * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * Simple if. If all the functions/headers we need are present AND the 
+ * option was not turned off when running configure... we have i18n! 
+ */
 
 #if VDS_SUPPORT_i18n
 
