@@ -28,7 +28,9 @@ libvdsf_la_LDFLAGS = -version-info 1:0:0
 include_HEADERS = \
    Item.h
 
-libvdsf_la_SOURCES = 
+libvdsf_la_SOURCES = api.c     \
+                     Process.c \
+                     Session.c
 
 #Connector.cpp    
 #   Connector.h      

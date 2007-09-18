@@ -29,6 +29,12 @@ libEngine_la_SOURCES =                   \
                        VdsErrorHandler.h \
                        BlockGroup.c      \
                        BlockGroup.h      \
+                       CleanupManager.c  \
+                       CleanupManager.h  \
+                       CleanupProcess.c  \
+                       CleanupProcess.h  \
+                       CleanupSession.c  \
+                       CleanupSession.h  \
                        Engine.h          \
                        Folder.c          \
                        Folder.h          \
@@ -53,6 +59,8 @@ libEngine_la_SOURCES =                   \
                        SessionContext.h  \
                        Transaction.c     \
                        Transaction.h     \
+                       TransactionManager.c \
+                       TransactionManager.h \
                        TxStatus.h        \
                        TreeNode.h        
    
@@ -66,13 +74,7 @@ libEngine_la_SOURCES =                   \
 
 #   BaseNode.cpp            \
    BaseNode.h              \
-   BaseObject.h            \
-   CleanupManager.cpp      \
-   CleanupManager.h        \
-   CleanupProcess.cpp      \
-   CleanupProcess.h        \
-   CleanupSession.cpp      \
-   CleanupSession.h        
+   BaseObject.h            
    
 VdsErrorHandler.c VdsErrorHandler.h:
 	$(top_builddir)/src/BuildTools/errorParser -i $(top_srcdir)/src/include/vdsf/vdsErrors.h -o VdsErrorHandler -p vdseErr

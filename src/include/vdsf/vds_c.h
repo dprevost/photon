@@ -63,33 +63,25 @@ void vdsExit( VDS_HANDLE processHandle );
 
 
 /**
- * This function initializes a session. It takes one input argument, 
- * an integer (used as a boolean,  0 for false, 1 for true) to indicate 
- * if transactions are implicit or explicit for the current session (see 
- * below).
+ * This function initializes a session. It takes one output argument, 
+ * the session handle.
  * 
- * Upon successful completion, the session handle is set. Otherwise 
- * the error code is returned.
+ * Upon successful completion, the session handle is set and the function
+ * returns zero. Otherwise the error code is returned and the handle is set
+ * to NULL.
  * 
- * Two types of transaction management, implicit and explicit.
+ * This function will also initiate a new transaction:
  *
- * - Implicit transactions, as the name indicates, hides all transactions
- *   from the application. The underlying framework will periodically
- *   save the current work at predetermined "check points".
- *   The method Commit can be called to save the current work but 
- *   Rollback is unavailable.
- *   Upon normal termination, the current work is automatically saved.
+ * Contrary to some other transaction management software, almost every 
+ * call made is part of a transaction. Even viewing data (for example 
+ * deleting the data by another session will be delayed until the current
+ * session terminates its access).
  *
- * - Explicit transactions are ideal for real-time processing. Contrary
- *   to some other transaction management software, every call made 
- *   in such a session is part of the transaction (in other words a new
- *   transaction is started immediately after either Commit or RollBack
- *   was called).
- *   Upon normal termination, the current transaction is rolled back.
+ * Upon normal termination, the current transaction is rolled back. You
+ * MUST explicitly call vdseCommit to save your changes.
  */
 
-int vdsInitSession( int         explicitTransaction,
-                    VDS_HANDLE* sessionHandle );
+int vdsInitSession( VDS_HANDLE* sessionHandle );
 
 void vdsExitSession( VDS_HANDLE handle );
    
