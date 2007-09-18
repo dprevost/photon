@@ -29,12 +29,6 @@ libEngine_la_SOURCES =                   \
                        VdsErrorHandler.h \
                        BlockGroup.c      \
                        BlockGroup.h      \
-                       CleanupManager.c  \
-                       CleanupManager.h  \
-                       CleanupProcess.c  \
-                       CleanupProcess.h  \
-                       CleanupSession.c  \
-                       CleanupSession.h  \
                        Engine.h          \
                        Folder.c          \
                        Folder.h          \
@@ -56,7 +50,13 @@ libEngine_la_SOURCES =                   \
                        MemBitmap.inl     \
                        MemoryObject.c    \
                        MemoryObject.h    \
+                       Process.c         \
+                       Process.h         \
+                       ProcessManager.c  \
+                       ProcessManager.h  \
                        SessionContext.h  \
+                       Session.c         \
+                       Session.h         \
                        Transaction.c     \
                        Transaction.h     \
                        TransactionManager.c \

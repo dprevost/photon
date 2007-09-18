@@ -451,7 +451,7 @@ void vdseFreeBlocks( vdseMemAlloc*       pAlloc,
    VDS_PRE_CONDITION( ptr      != NULL );
    VDS_PRE_CONDITION( numBlocks > 0 );
 
-   errcode = vdseLock( &pAlloc->memObj, SET_OFFSET(pAlloc), pContext );
+   errcode = vdseLock( &pAlloc->memObj, pContext );
    if ( errcode != 0 )
    {
       /* 

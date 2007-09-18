@@ -83,12 +83,12 @@ void vdseFree( vdseMemObject*      pMemObj,
                size_t              numBytes,
                vdseSessionContext* pContext );
 
+/** Returns 0 on success, -1 on error */
 static inline
 int vdseLock( vdseMemObject*      pMemObj,
-              ptrdiff_t           objOffset,
               vdseSessionContext* pContext )
 {
-   pContext->lockObject = objOffset;
+   pContext->lockObject = SET_OFFSET( pMemObj );
    
    return vdscTryAcquireProcessLock ( &pMemObj->lock,
                                       pContext->lockValue,
@@ -97,10 +97,9 @@ int vdseLock( vdseMemObject*      pMemObj,
 
 static inline
 void vdseLockNoFailure( vdseMemObject*      pMemObj,
-                        ptrdiff_t           objOffset,
                         vdseSessionContext* pContext )
 {
-   pContext->lockObject = objOffset;
+   pContext->lockObject = SET_OFFSET( pMemObj );
    
    vdscAcquireProcessLock ( &pMemObj->lock, LOCK_TIMEOUT );
 }

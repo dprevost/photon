@@ -217,7 +217,7 @@ int vdseTxCommit( vdseTx*             pTx,
 #endif         
       case VDSE_TX_CREATE:
          
-         vdseLockNoFailure( pChildMemObject, pOps->childOffset, pContext );
+         vdseLockNoFailure( pChildMemObject, pContext );
          vdseTxStatusClearTx( pChildStatus );
          vdseUnlock( pChildMemObject, pContext );
          
@@ -225,9 +225,9 @@ int vdseTxCommit( vdseTx*             pTx,
 
       case VDSE_TX_DESTROY:
       
-         vdseLockNoFailure( &parentFolder->memObject, pOps->childOffset, pContext );
+         vdseLockNoFailure( &parentFolder->memObject, pContext );
 
-         vdseLockNoFailure( pChildMemObject, pOps->childOffset, pContext );
+         vdseLockNoFailure( pChildMemObject, pContext );
 
          if ( pChildStatus->usageCounter > 0 || pChildNode->txCounter > 0 )
          {
@@ -375,9 +375,9 @@ void vdseTxRollback( vdseTx*             pTx,
          break;
             
       case VDSE_TX_CREATE:
-         vdseLockNoFailure( &parentFolder->memObject, pOps->childOffset, pContext );
+         vdseLockNoFailure( &parentFolder->memObject, pContext );
 
-         vdseLockNoFailure( pChildMemObject, pOps->childOffset, pContext );
+         vdseLockNoFailure( pChildMemObject, pContext );
 
          if ( pChildStatus->usageCounter > 0 || pChildNode->txCounter > 0 )
          {
@@ -428,7 +428,7 @@ void vdseTxRollback( vdseTx*             pTx,
           * Tricky: the status of a child is only use in the Folder object,
           * not in the object itself. So no need to lock the child...
           */
-         vdseLockNoFailure( pParentMemObject, pOps->parentOffset, pContext );
+         vdseLockNoFailure( pParentMemObject, pContext );
          vdseTxStatusClearTx( pChildStatus );
          vdseUnlock( pParentMemObject, pContext );
 

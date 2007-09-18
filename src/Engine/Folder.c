@@ -258,7 +258,7 @@ int vdseFolderGetObject( vdseFolder*            pFolder,
    }
    
    pNextFolder = GET_PTR( pDesc->offset, vdseFolder );
-   rc = vdseLock( &pNextFolder->memObject, pDesc->offset, pContext );
+   rc = vdseLock( &pNextFolder->memObject, pContext );
    if ( rc != 0 )
    {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
@@ -484,7 +484,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
    }
    
    pNextFolder = GET_PTR( pDesc->offset, vdseFolder );   
-   rc = vdseLock( &pNextFolder->memObject, pDesc->offset, pContext );
+   rc = vdseLock( &pNextFolder->memObject, pContext );
    if ( rc != 0 )
    {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
@@ -648,7 +648,7 @@ int vdseFolderDeleteObject( vdseFolder*         pFolder,
    }
 
    pNextFolder = GET_PTR( pDesc->offset, vdseFolder );
-   rc = vdseLock( &pNextFolder->memObject, pDesc->offset, pContext );
+   rc = vdseLock( &pNextFolder->memObject, pContext );
    if ( rc != 0 )
    {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
