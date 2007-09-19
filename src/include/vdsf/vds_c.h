@@ -83,7 +83,7 @@ void vdsExit( VDS_HANDLE processHandle );
 
 int vdsInitSession( VDS_HANDLE* sessionHandle );
 
-void vdsExitSession( VDS_HANDLE handle );
+int vdsExitSession( VDS_HANDLE handle );
    
 int vdsCreateObject( VDS_HANDLE handle,
                      const char*   objectName,

@@ -26,6 +26,8 @@
 #include "Engine/MemoryObject.h"
 #include "Engine/BlockGroup.h"
 
+struct vdseTx;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
@@ -67,12 +69,15 @@ typedef struct vdseSession
    /** Always first */
    struct vdseMemObject memObject;
 
-   /** This object is part of the linked list of the vdseCleanupProcess */
+   /** This object is part of the linked list of the vdseProcess */
    vdseLinkNode node;
 
-   /** Pointer to the vdsaSession. To be use by the process object when
+   /** Pointer to the vdsaSession. To be used by the process object when
        it cleans up its sessions. */
    void * pApiSession;
+   
+   /** Pointer to our transaction object */
+   struct vdseTx * pTransaction;
    
    /** Our own internal list of objects accessed by the current session */
    vdseLinkedList listOfObjects;

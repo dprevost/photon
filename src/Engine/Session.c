@@ -18,6 +18,7 @@
 #include "Engine/Session.h"
 #include "Engine/MemoryAllocator.h"
 #include "Engine/SessionContext.h"
+#include "Engine/Transaction.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -26,6 +27,8 @@ int vdseSessionInit( vdseSession        * pSession,
                      vdseSessionContext * pContext )
 {
    vdsErrors errcode;
+   int rc = -1;
+   vdseTx *pTx;
    
    VDS_PRE_CONDITION( pSession  != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
@@ -39,15 +42,41 @@ int vdseSessionInit( vdseSession        * pSession,
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
-      return -1;
    }
-   pContext->pCurrentMemObject = &pSession->memObject;
+   else
+   {
+      pContext->pCurrentMemObject = &pSession->memObject;
 
-   pSession->pApiSession = pApiSession;
+      pSession->pApiSession = pApiSession;
    
-   vdseLinkedListInit( &pSession->listOfObjects );
+      vdseLinkedListInit( &pSession->listOfObjects );
 
-   return 0;
+      pTx = (vdseTx*) vdseMallocBlocks( pContext->pAllocator, 1, pContext );
+      if ( pTx != NULL )
+      {
+         errcode = vdseTxInit( pTx, 1, pContext );
+         if ( errcode == 0 )
+         {
+            pSession->pTransaction = pTx;
+            pContext->pTransaction = (void *) pTx;
+            rc = 0;
+         }
+         else
+         {
+            vdseFreeBlocks( pContext->pAllocator, 
+                            (unsigned char *)pTx, 
+                            1, pContext );
+         }
+      }
+      else
+      {
+         vdscSetError( &pContext->errorHandler, 
+                       g_vdsErrorHandle, 
+                       VDS_NOT_ENOUGH_VDS_MEMORY );
+      }
+   }
+   
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -78,6 +107,11 @@ void vdseSessionFini( vdseSession        * pSession,
       vdseSessionRemoveObj( pSession, pObject, pContext );
    }
    
+   /* Terminates our associated transaction objects. We presume that
+    * either commit or rollback was called to clear it.
+    */
+   vdseTxFini( pSession->pTransaction, pContext );
+
    /* This will remove the blocks of allocated memory */
    vdseMemObjectFini(  &pSession->memObject, pContext );
 }

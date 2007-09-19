@@ -72,6 +72,9 @@ void vdseTxFini( vdseTx*             pTx,
    
    vdseLinkedListFini( &pTx->listOfOps );
    pTx->signature = 0;
+   
+   /* This will remove the blocks of allocated memory */
+   vdseMemObjectFini(  &pTx->memObject, pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

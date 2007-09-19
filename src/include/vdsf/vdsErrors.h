@@ -82,7 +82,6 @@ typedef enum vdsErrors
    VDS_PROCESS_NOT_INITIALIZED     = 15,
    VDS_OBJECT_CANNOT_GET_LOCK      = 16,
    VDS_OBJECT_ALREADY_OPEN         = 17,
-
    /**
     * You must call vdsProcess::Terminate() before calling 
     * vdsProcess::Initialize() a second time. 
@@ -118,7 +117,16 @@ typedef enum vdsErrors
    VDS_RECEIVE_ERROR               = 29,
    VDS_BACKSTORE_FILE_MISSING      = 30,
    VDS_ERROR_OPENING_VDS           = 31,
-   VDS_FOLDER_IS_NOT_EMPTY         = 32
+   VDS_FOLDER_IS_NOT_EMPTY         = 32,
+   
+   /**
+    * The provided handle is of the wrong type.
+    */
+   VDS_WRONG_TYPE_HANDLE              = 33,
+   /**
+    * The provided handle is NULL (zero).
+    */
+   VDS_NULL_HANDLE                 = 34
 
 } vdsErrors;
 
