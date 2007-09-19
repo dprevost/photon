@@ -91,7 +91,7 @@ int vdseSessionAddObj( vdseSession        * pSession,
                        vdseObjectContext ** ppObject,
                        vdseSessionContext * pContext )
 {
-   int errcode = 0;
+   int errcode = 0, rc = -1;
    vdseObjectContext* pCurrentBuffer;
 
    /* For recovery purposes, always lock before doing anything! */
@@ -109,9 +109,14 @@ int vdseSessionAddObj( vdseSession        * pSession,
          vdseLinkedListPutLast( &pSession->listOfObjects, 
                                 &pCurrentBuffer->node );
          *ppObject = pCurrentBuffer;
+         rc = 0;
       }
       else
-         errcode = -1;
+      {
+         vdscSetError( &pContext->errorHandler,
+                       g_vdsErrorHandle,
+                       VDS_NOT_ENOUGH_VDS_MEMORY );
+      }
       
       vdseUnlock( &pSession->memObject, pContext );
    }
@@ -120,7 +125,7 @@ int vdseSessionAddObj( vdseSession        * pSession,
                     g_vdsErrorHandle,
                     VDS_ENGINE_BUSY );
 
-   return errcode;
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
