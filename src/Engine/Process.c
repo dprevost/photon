@@ -48,7 +48,7 @@ int vdseProcessInit( vdseProcess *        pProcess,
 
    vdseLinkedListInit( &pProcess->listOfSessions );
 
-   return -1;
+   return 0;
 }
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
