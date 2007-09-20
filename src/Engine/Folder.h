@@ -150,8 +150,7 @@ int vdseTopFolderOpenObject( vdseFolder            * pFolder,
                              vdseObjectDescriptor ** ppDescriptor,
                              vdseSessionContext    * pContext );
 
-int vdseTopFolderCloseObject( vdseFolder           * pFolder,
-                              vdseObjectDescriptor * pDescriptor,
+int vdseTopFolderCloseObject( vdseObjectDescriptor * pDescriptor,
                               vdseSessionContext   * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

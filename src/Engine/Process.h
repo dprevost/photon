@@ -99,7 +99,7 @@ int vdseProcessGetNextSession( vdseProcess        * pProcess,
                                vdseSession       ** ppNext,
                                vdseSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+VDSF_ENGINE_EXPORT static inline
 void vdseProcessNoMoreSessionAllowed( vdseProcess        * pProcess,
                                       vdseSessionContext * pContext )
 {

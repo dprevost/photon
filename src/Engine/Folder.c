@@ -1104,8 +1104,7 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseTopFolderCloseObject( vdseFolder           * pFolder,
-                              vdseObjectDescriptor * pDescriptor,
+int vdseTopFolderCloseObject( vdseObjectDescriptor * pDescriptor,
                               vdseSessionContext   * pContext )
 {
    vdseFolder * parentFolder;
@@ -1122,7 +1121,7 @@ int vdseTopFolderCloseObject( vdseFolder           * pFolder,
       pStatus = GET_PTR(pNode->txStatusOffset, vdseTxStatus );
       pStatus->usageCounter++;
       
-      vdseUnlock( &pFolder->memObject, pContext );
+      vdseUnlock( &parentFolder->memObject, pContext );
       return 0;
    }
    

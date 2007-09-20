@@ -107,7 +107,8 @@ typedef enum vdsErrors
    /**
     * There are not enough resources to correctly process the call. 
     * This might be due to a lack of POSIX semaphores on systems 
-    * where locks are implemented that way.
+    * where locks are implemented that way or a failure in initializing
+    * a pthread_mutex (or on Windows, a critical section).
     */
    VDS_NOT_ENOUGH_RESOURCES        = 24,
 
@@ -134,7 +135,13 @@ typedef enum vdsErrors
     * The name of the object is too long.
     * The maximum length of a name cannot be over VDS_MAX_NAME_LENGTH.
     */
-   VDS_OBJECT_NAME_TOO_LONG        = 35
+   VDS_OBJECT_NAME_TOO_LONG        = 35,
+   
+   /**
+    * Cannot get a lock on the session (a pthread_mutex or a critical 
+    * section on Windows). 
+    */
+   VDS_SESSION_CANNOT_GET_LOCK     = 36
    
 } vdsErrors;
 
