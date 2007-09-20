@@ -70,6 +70,7 @@ typedef enum vdsErrors
    VDS_OBJECT_IN_USE               = 8,
 
    VDS_INVALID_LENGTH_FIELD        = 9,
+   
    /** The object (data container) is empty. */
    VDS_IS_EMPTY                    = 10,
    
@@ -122,12 +123,19 @@ typedef enum vdsErrors
    /**
     * The provided handle is of the wrong type.
     */
-   VDS_WRONG_TYPE_HANDLE              = 33,
+   VDS_WRONG_TYPE_HANDLE           = 33,
+   
    /**
     * The provided handle is NULL (zero).
     */
-   VDS_NULL_HANDLE                 = 34
+   VDS_NULL_HANDLE                 = 34,
 
+   /**
+    * The name of the object is too long.
+    * The maximum length of a name cannot be over VDS_MAX_NAME_LENGTH.
+    */
+   VDS_OBJECT_NAME_TOO_LONG        = 35
+   
 } vdsErrors;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

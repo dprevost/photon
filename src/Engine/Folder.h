@@ -128,11 +128,32 @@ VDSF_ENGINE_EXPORT
    bool vdseFolderSelfTest( vdseFolder*         pFolder,
                           vdseMemAlloc* pAlloc );
    
-/*     void Recover( char**     pArrayBuffers, */
-/*                   size_t*    pNumOfAllocatedBuffer, */
-/*                   vds_lock_T lockValue ); */
-   
 #endif
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * The next 4 functions should only be used by the API, to create, destroy,
+ * open or close a memory object.
+ */
+
+int vdseTopFolderCreateObject( vdseFolder         * pFolder,
+                               const char         * objectName,
+                               enum vdsObjectType   objectType,
+                               vdseSessionContext * pContext );
+
+int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
+                                const char         * objectName,
+                                vdseSessionContext * pContext );
+
+int vdseTopFolderOpenObject( vdseFolder            * pFolder,
+                             const char            * objectName,
+                             vdseObjectDescriptor ** ppDescriptor,
+                             vdseSessionContext    * pContext );
+
+int vdseTopFolderCloseObject( vdseFolder           * pFolder,
+                              vdseObjectDescriptor * pDescriptor,
+                              vdseSessionContext   * pContext );
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* VDSE_FOLDER_H */

@@ -292,6 +292,7 @@ typedef size_t ptrdiff_t;
 typedef wchar_t vdsChar_T;
 
 #  define vds_isalnum(c) iswalnum(c)
+#  define vds_tolower(c) towlower(c)
 
 #  define VDS_BACKSLASH  L'\\'
 #  define VDS_SLASH      L'/'
@@ -302,7 +303,10 @@ typedef wchar_t vdsChar_T;
 #else /* VDS_SUPPORT I18N */
 
 typedef char vdsChar_T;
+
 #  define vds_isalnum(c) isalnum(c)
+#  define vds_tolower(c) tolower(c)
+
 #  define VDS_BACKSLASH  '\\'
 #  define VDS_SLASH      '/'
 #  define VDS_SPACE      ' '

@@ -26,9 +26,21 @@ BEGIN_C_DECLS
 	
 typedef struct vdseObjectDescriptor
 {
-   ptrdiff_t          offset;
+   /** Offset of the object */
+   ptrdiff_t offset;
+   
+   /* Offset to the node information */
+   ptrdiff_t nodeOffset;
+   
    enum vdsObjectType type;
+   
    int                nameLengthInBytes;
+   
+   /** 
+    * The original name (not including the parent folder name).
+    * This name does not include the trailing zero ('\0' or L'\0'),
+    * it cannot be used as a valid C string!
+    */
    vdsChar_T          originalName[1];
    
 } vdseObjectDescriptor;
@@ -57,12 +69,13 @@ typedef struct vdseTreeNode
 
    /** Offset to the string used for the key (lowercase of the original). */
    ptrdiff_t myKeyOffset;
-
-   /** Offset to the parent of this object. */
-   ptrdiff_t myParentOffset;
    
    /** Offset to the transaction info (vdseTxStatus). */
    ptrdiff_t txStatusOffset;
+
+   /** Offset to the parent of this object. */
+   /* NULL_OFFSET for top folder ("/") */
+   ptrdiff_t myParentOffset;
    
 } vdseTreeNode;
 
@@ -80,8 +93,8 @@ void vdseTreeNodeInit( vdseTreeNode* pNode,
    pNode->txCounter      = 0;
    pNode->myNameLength   = originalNameLength;
    pNode->myNameOffset   = originalNameOffset;
-   pNode->myParentOffset = parentOffset;
    pNode->txStatusOffset = txStatusOffset;
+   pNode->myParentOffset = parentOffset;
 }
 
 static inline 
@@ -92,10 +105,9 @@ void vdseTreeNodeFini( vdseTreeNode* pNode )
    pNode->txCounter      = 0;
    pNode->myNameLength   = 0;
    pNode->myNameOffset   = NULL_OFFSET;
-   pNode->myParentOffset = NULL_OFFSET;
    pNode->txStatusOffset = NULL_OFFSET;
+   pNode->myParentOffset = NULL_OFFSET;
 }
-
 
 END_C_DECLS
 

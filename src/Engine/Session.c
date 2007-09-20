@@ -197,14 +197,41 @@ int vdseSessionRemoveObj( vdseSession        * pSession,
 
 /* Lock and Unlock must be used before calling this function */
 int vdseSessionRemoveFirst( vdseSession        * pSession,
-                            vdseObjectContext ** ppObject,
                             vdseSessionContext * pContext )
 {
    vdseLinkNode * pNode = NULL;
    int rc;
+   vdseObjectContext * pObject;
    
    rc = vdseLinkedListGetFirst( &pSession->listOfObjects, 
                                 &pNode );
+   if ( rc == 0 )
+   {
+      pObject = (vdseObjectContext*)
+         ((char*)pNode - offsetof( vdseObjectContext, node ));
+
+      vdseFree( &pSession->memObject, 
+                (unsigned char *)pObject, 
+                sizeof(vdseObjectContext),
+                pContext );
+      return 0;
+   }
+   
+   return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/* Lock and Unlock must be used before calling this function */
+int vdseSessionGetFirst( vdseSession        * pSession,
+                         vdseObjectContext ** ppObject,
+                         vdseSessionContext * pContext )
+{
+   vdseLinkNode * pNode = NULL;
+   int rc;
+   
+   rc = vdseLinkedListPeakFirst( &pSession->listOfObjects, 
+                                 &pNode );
    if ( rc == 0 )
       *ppObject = (vdseObjectContext*)
          ((char*)pNode - offsetof( vdseObjectContext, node ));

@@ -59,8 +59,6 @@ libEngine_la_SOURCES =                   \
                        Session.h         \
                        Transaction.c     \
                        Transaction.h     \
-                       TransactionManager.c \
-                       TransactionManager.h \
                        TxStatus.h        \
                        TreeNode.h        
    
@@ -68,13 +66,8 @@ libEngine_la_SOURCES =                   \
    MemoryManager.h         
 
 #  Queue.cpp               \
-   Queue.h                 \
-   TreeManager.cpp         \
-   TreeManager.h 
+   Queue.h                 
 
-#   BaseNode.cpp            \
-   BaseNode.h              \
-   BaseObject.h            
    
 VdsErrorHandler.c VdsErrorHandler.h:
 	$(top_builddir)/src/BuildTools/errorParser -i $(top_srcdir)/src/include/vdsf/vdsErrors.h -o VdsErrorHandler -p vdseErr

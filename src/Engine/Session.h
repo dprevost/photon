@@ -114,8 +114,12 @@ int vdseSessionRemoveObj( vdseSession        * pSession,
 /* Lock and Unlock must be used before calling this function */
 VDSF_ENGINE_EXPORT
 int vdseSessionRemoveFirst( vdseSession        * pSession,
-                            vdseObjectContext ** ppObject,
                             vdseSessionContext * pContext );
+
+/* Lock and Unlock must be used before calling this function */
+int vdseSessionGetFirst( vdseSession        * pSession,
+                         vdseObjectContext ** ppObject,
+                         vdseSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

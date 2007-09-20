@@ -100,9 +100,9 @@ int vdseFolderInit( vdseFolder*         pFolder,
    VDS_PRE_CONDITION( pContext  != NULL );
    VDS_PRE_CONDITION( pTxStatus != NULL );
    VDS_PRE_CONDITION( origName  != NULL );
+   VDS_PRE_CONDITION( parentOffset != NULL_OFFSET );
    VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    VDS_PRE_CONDITION( origNameLength > 0 );
-   VDS_PRE_CONDITION( parentOffset != NULL_OFFSET );
    
    errcode = vdseMemObjectInit( &pFolder->memObject, 
                                 VDSE_IDENT_FOLDER,
@@ -226,6 +226,10 @@ int vdseFolderGetObject( vdseFolder*            pFolder,
          goto the_exit;
       }
 
+      /*
+       * usageCounter is only modified (or read) when the parent folder
+       * is locked. No need to lock the object itself for this.
+       */
       txStatus->usageCounter++;
       *ppDescriptor = pDesc;
       
@@ -423,6 +427,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
                               partialLength,
                               pDesc->originalName,
                               pContext );
+         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseFolder,nodeObject);
          break;
       
       default:
@@ -494,13 +499,13 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
    vdseUnlock( &pFolder->memObject, pContext );
 
    rc = vdseFolderInsertObject( pNextFolder,
-                                    &objectName[partialLength+1],
-                                    &originalName[partialLength+1],
-                                    strLength - partialLength - 1,
-                                    objectType,
-                                    numBlocks,
-                                    expectedNumOfChilds,
-                                    pContext );
+                                &objectName[partialLength+1],
+                                &originalName[partialLength+1],
+                                strLength - partialLength - 1,
+                                objectType,
+                                numBlocks,
+                                expectedNumOfChilds,
+                                pContext );
    return rc;
    
 the_exit:
@@ -746,4 +751,385 @@ void vdseFolderRemoveObject( vdseFolder*         pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * The next 4 functions should only be used by the API, to create, destroy,
+ * open or close a memory object.
+ */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdseTopFolderCreateObject( vdseFolder         * pFolder,
+                               const char         * objectName,
+                               enum vdsObjectType   objectType,
+                               vdseSessionContext * pContext )
+{
+   vdsErrors errcode = VDS_OK;
+   size_t strLength, i;
+   int rc;
+   size_t first = 0;
+#if VDS_SUPPORT_i18n
+   mbstate_t ps;
+   wchar_t * name = NULL, *lowerName = NULL;
+#else
+   const char * name = objectName, *lowerName = NULL;
+#endif
+
+#if VDS_SUPPORT_i18n
+   strLength = mbsrtowcs( NULL, &objectName, 0, &ps );
+#else
+   strLength = strlen( objectName );
+#endif
+   
+   if ( strLength > VDS_MAX_NAME_LENGTH )
+   {
+      errcode = VDS_OBJECT_NAME_TOO_LONG;
+      goto error_handler;
+   }
+   if ( strLength == 0 ) 
+   {
+      errcode = VDS_INVALID_OBJECT_NAME;
+      goto error_handler;
+   }
+
+#if VDS_SUPPORT_i18n
+   name = (wchar_t*)malloc( (strLength+1)*sizeof(wchar_t) );
+   if ( name == NULL ) 
+   {
+      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      goto error_handler;
+   }
+   lowerName = (wchar_t*)malloc( (strLength+1)*sizeof(wchar_t) );
+   
+   mbsrtowcs( name, &objectName, strLength, &ps );
+#else
+   lowerName = (char_t*)malloc( (strLength+1)*sizeof(char_t) );
+#endif
+   if ( lowerName == NULL ) 
+   {
+      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      goto error_handler;
+   }
+
+   /* lowecase the string */
+   for ( i = 0; i < strLength; ++i )
+      lowerName[i] = vds_tolower( name[i] );
+   
+   /* strip the first char if a separator */
+   if ( name[0] == VDS_SLASH || name[0] == VDS_BACKSLASH )
+   {
+      first = 1;
+      --strLength;
+      if ( strLength == 0 )
+      {
+         errcode = VDS_INVALID_OBJECT_NAME;
+         goto error_handler;
+      }
+   }
+
+   if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
+   {
+      rc = vdseFolderInsertObject( pFolder,
+                                   &(lowerName[first]),
+                                   &(name[first]),
+                                   strLength, 
+                                   objectType,
+                                   1, /* numBlocks, */
+                                   0, /* expectedNumOfChilds, */
+                                   pContext );
+      vdseUnlock( &pFolder->memObject, pContext );
+      if ( rc != 0 ) goto error_handler;
+   }
+   else
+   {
+      errcode = VDS_ENGINE_BUSY;
+      goto error_handler;
+   }
+   
+#if VDS_SUPPORT_i18n
+   free( name );
+#endif
+   free( lowerName );
+   
+   return 0;
+
+error_handler:
+
+#if VDS_SUPPORT_i18n
+   if ( name != NULL )
+      free( name );
+#endif
+   if ( lowerName != NULL )
+      free( lowerName );
+
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called vdscSetError. 
+    */
+   if ( errcode != VDS_OK )
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+
+   return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
+                                const char         * objectName,
+                                vdseSessionContext * pContext )
+{
+   vdsErrors errcode = VDS_OK;
+   size_t strLength, i;
+   int rc;
+   size_t first = 0;
+#if VDS_SUPPORT_i18n
+   mbstate_t ps;
+   wchar_t * name = NULL, *lowerName = NULL;
+#else
+   const char * name = objectName, *lowerName = NULL;
+#endif
+
+#if VDS_SUPPORT_i18n
+   strLength = mbsrtowcs( NULL, &objectName, 0, &ps );
+#else
+   strLength = strlen( objectName );
+#endif
+   
+   if ( strLength > VDS_MAX_NAME_LENGTH )
+   {
+      errcode = VDS_OBJECT_NAME_TOO_LONG;
+      goto error_handler;
+   }
+   if ( strLength == 0 ) 
+   {
+      errcode = VDS_INVALID_OBJECT_NAME;
+      goto error_handler;
+   }
+
+#if VDS_SUPPORT_i18n
+   name = (wchar_t*)malloc( (strLength+1)*sizeof(wchar_t) );
+   if ( name == NULL ) 
+   {
+      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      goto error_handler;
+   }
+   lowerName = (wchar_t*)malloc( (strLength+1)*sizeof(wchar_t) );
+   
+   mbsrtowcs( name, &objectName, strLength, &ps );
+#else
+   lowerName = (char_t*)malloc( (strLength+1)*sizeof(char_t) );
+#endif
+   if ( lowerName == NULL ) 
+   {
+      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      goto error_handler;
+   }
+
+   /* lowecase the string */
+   for ( i = 0; i < strLength; ++i )
+      lowerName[i] = vds_tolower( name[i] );
+   
+   /* strip the first char if a separator */
+   if ( name[0] == VDS_SLASH || name[0] == VDS_BACKSLASH )
+   {
+      first = 1;
+      --strLength;
+      if ( strLength == 0 )
+      {
+         errcode = VDS_INVALID_OBJECT_NAME;
+         goto error_handler;
+      }
+   }
+
+   if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
+   {
+      rc = vdseFolderDeleteObject( pFolder,
+                                   &(lowerName[first]), 
+                                   strLength,
+                                   pContext );
+
+//      rc = vdseFolderInsertObject( pFolder,
+//                                   &(lowerName[first]),
+//                                   &(name[first]),
+//                                   strLength, 
+//                                   objectType,
+//                                   1, /* numBlocks, */
+//                                   0, /* expectedNumOfChilds, */
+//                                   pContext );
+      vdseUnlock( &pFolder->memObject, pContext );
+      if ( rc != 0 ) goto error_handler;
+   }
+   else
+   {
+      errcode = VDS_ENGINE_BUSY;
+      goto error_handler;
+   }
+   
+#if VDS_SUPPORT_i18n
+   free( name );
+#endif
+   free( lowerName );
+   
+   return 0;
+
+error_handler:
+
+#if VDS_SUPPORT_i18n
+   if ( name != NULL )
+      free( name );
+#endif
+   if ( lowerName != NULL )
+      free( lowerName );
+
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called vdscSetError. 
+    */
+   if ( errcode != VDS_OK )
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+
+   return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdseTopFolderOpenObject( vdseFolder            * pFolder,
+                             const char            * objectName,
+                             vdseObjectDescriptor ** ppDescriptor,
+                             vdseSessionContext    * pContext )
+{
+   vdsErrors errcode = VDS_OK;
+   size_t strLength, i;
+   int rc;
+   size_t first = 0;
+#if VDS_SUPPORT_i18n
+   mbstate_t ps;
+   wchar_t * name = NULL, *lowerName = NULL;
+#else
+   const char * name = objectName, *lowerName = NULL;
+#endif
+
+#if VDS_SUPPORT_i18n
+   strLength = mbsrtowcs( NULL, &objectName, 0, &ps );
+#else
+   strLength = strlen( objectName );
+#endif
+   
+   if ( strLength > VDS_MAX_NAME_LENGTH )
+   {
+      errcode = VDS_OBJECT_NAME_TOO_LONG;
+      goto error_handler;
+   }
+   if ( strLength == 0 ) 
+   {
+      errcode = VDS_INVALID_OBJECT_NAME;
+      goto error_handler;
+   }
+
+#if VDS_SUPPORT_i18n
+   name = (wchar_t*)malloc( (strLength+1)*sizeof(wchar_t) );
+   if ( name == NULL ) 
+   {
+      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      goto error_handler;
+   }
+   lowerName = (wchar_t*)malloc( (strLength+1)*sizeof(wchar_t) );
+   
+   mbsrtowcs( name, &objectName, strLength, &ps );
+#else
+   lowerName = (char_t*)malloc( (strLength+1)*sizeof(char_t) );
+#endif
+   if ( lowerName == NULL ) 
+   {
+      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      goto error_handler;
+   }
+
+   /* lowecase the string */
+   for ( i = 0; i < strLength; ++i )
+      lowerName[i] = vds_tolower( name[i] );
+   
+   /* strip the first char if a separator */
+   if ( name[0] == VDS_SLASH || name[0] == VDS_BACKSLASH )
+   {
+      first = 1;
+      --strLength;
+      if ( strLength == 0 )
+      {
+         errcode = VDS_INVALID_OBJECT_NAME;
+         goto error_handler;
+      }
+   }
+
+   if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
+   {
+      rc = vdseFolderGetObject( pFolder,
+                                &(lowerName[first]), 
+                                strLength, 
+                                ppDescriptor,
+                                pContext );
+      vdseUnlock( &pFolder->memObject, pContext );
+      if ( rc != 0 ) goto error_handler;
+   }
+   else
+   {
+      errcode = VDS_ENGINE_BUSY;
+      goto error_handler;
+   }
+   
+#if VDS_SUPPORT_i18n
+   free( name );
+#endif
+   free( lowerName );
+   
+   return 0;
+
+error_handler:
+
+#if VDS_SUPPORT_i18n
+   if ( name != NULL )
+      free( name );
+#endif
+   if ( lowerName != NULL )
+      free( lowerName );
+
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called vdscSetError. 
+    */
+   if ( errcode != VDS_OK )
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+
+   return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdseTopFolderCloseObject( vdseFolder           * pFolder,
+                              vdseObjectDescriptor * pDescriptor,
+                              vdseSessionContext   * pContext )
+{
+   vdseFolder * parentFolder;
+   vdseTreeNode* pNode;
+   vdseTxStatus* pStatus;
+   
+   pNode = GET_PTR( pDescriptor->nodeOffset, vdseTreeNode);
+   
+   parentFolder = (vdseFolder *) GET_PTR( pNode->myParentOffset,
+                                          vdseFolder );
+   
+   if ( vdseLock( &parentFolder->memObject, pContext ) == 0 )
+   {
+      pStatus = GET_PTR(pNode->txStatusOffset, vdseTxStatus );
+      pStatus->usageCounter++;
+      
+      vdseUnlock( &pFolder->memObject, pContext );
+      return 0;
+   }
+   
+   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_ENGINE_BUSY );
+   
+   return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
