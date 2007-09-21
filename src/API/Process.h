@@ -23,8 +23,9 @@
 #include "Engine/Engine.h"
 #include "Engine/SessionContext.h"
 #include <vdsf/vdsCommon.h>
-//#include "Connector.h"
+#include "API/Connector.h"
 #include "Common/ThreadLock.h"
+#include "Common/MemoryFile.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -55,7 +56,9 @@ typedef struct vdsaProcess
    char logDirName[MAXPATHLEN];
 
    /** This object encapsulates the task of talking with the watchdog. */
-//   Connector connector;
+   vdsaConnector connector;
+   
+   vdscMemoryFile memoryFile;
    
 } vdsaProcess;
 

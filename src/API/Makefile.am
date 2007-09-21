@@ -29,22 +29,22 @@ include_HEADERS =
 #\
 #   Item.h
 
-libvdsf_la_SOURCES = api.c     \
-                     Process.c \
-                     Session.c
+libvdsf_la_SOURCES = api.c            \
+                     api.h            \
+                     Connector.c      \
+                     Connector.h      \
+                     Process.c        \
+                     Process.h        \
+                     Session.c        \
+                     Session.h        \
+                     WatchdogCommon.h
 
 #Connector.cpp    
 #   Connector.h      
 #   Folder.cpp       
-#   Process.cpp      
-#   ProcessHook.cpp  
-#   ProcessHook.h    
 #   ProxyObject.cpp  
 #   ProxyObject.h    
 #   Queue.cpp        
-#   Session.cpp      
-#   SessionHook.cpp  
-#   SessionHook.h    
 #   WatchdogCommon.h 
 #   vdsfcapi.cpp
 

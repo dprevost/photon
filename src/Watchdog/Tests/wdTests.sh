@@ -133,14 +133,14 @@ echo "LogTransaction       0             " >> $BASE_DIR/cfg.txt
 echo "FilePermissions      0660          " >> $BASE_DIR/cfg.txt
 echo "DirectoryPermissions 0770          " >> $BASE_DIR/cfg.txt
 #if [ $verbose = 1 ] ; then
-$top_builddir/src/Watchdog/vdswd --test $BASE_DIR/cfg.txt
+$top_builddir/src/Watchdog/vdswd --test -c $BASE_DIR/cfg.txt
 #else
 #$top_builddir/src/Watchdog/vdswd --test $BASE_DIR/cfg.txt >/dev/null 2>&1
 #fi
 if [ "$?" != 0 ] ; then
    exit 1
 fi
-kill 
+
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 if [ $verbose = 1 ] ; then
