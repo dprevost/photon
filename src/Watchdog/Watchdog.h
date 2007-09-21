@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -21,13 +21,13 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#include "Common.h"
-#include "ProcessLock.h"
+#include "Common/Common.h"
+#include "Common/ProcessLock.h"
 #include "Acceptor.h"
 #include "VDSHandler.h"
 #include "LogMsg.h"
-#include "ConfigFile.h"
-#include "ErrorHandler.h"
+#include "Common/ConfigFile.h"
+#include "Common/ErrorHandler.h"
 
 #define PROG_NAME "vdswd"
 
@@ -39,7 +39,7 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 // Forward declaration(s)
-struct MemoryHeader;
+struct vdseMemoryHeader;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -65,13 +65,13 @@ struct MemoryHeader;
  *  Note: this synchronisation is not implemented yet...
  */
 
-class VdsWatchdog
+class vdswWatchdog
 {
 public:
 
-   VdsWatchdog();
+   vdswWatchdog();
 
-   ~VdsWatchdog();
+   ~vdswWatchdog();
 
    int ReadConfig( const char* cfgname );   
    
@@ -127,13 +127,13 @@ public:
 
    static void Run();
    
-   static VdsWatchdog* g_pWD;
+   static vdswWatchdog* g_pWD;
    
    /// Configuration parameters (as read from Windows registry or from 
    /// the config file.
    struct ConfigParams m_params;
 
-   MemoryHeader* m_pMemoryAddress;
+   vdseMemoryHeader* m_pMemoryAddress;
    
    /// Lock to control synchronization (needed on Win32 only?)
    /// todo - check this + initialize lock
@@ -144,12 +144,12 @@ public:
    unsigned int m_controlWord;
    
    /// Listen to connection requests
-   VdsAcceptor m_acceptor;
+   vdswAcceptor m_acceptor;
 
    /// Send messages to system log facility once stderr is not available
-   VdsLogMsg  m_log;
+   vdswLogMsg  m_log;
    
-   VdsHandler m_vds;
+   vdswHandler m_vds;
 
    vdscErrorHandler m_errorHandler;
    

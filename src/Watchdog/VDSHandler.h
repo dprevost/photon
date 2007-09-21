@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -16,16 +16,18 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_VALIDATE_H
-#define VDS_VALIDATE_H
+#ifndef VDSW_HANDLER_H
+#define VDSW_HANDLER_H
+
+#include "Engine/SessionContext.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 // Forward declaration
 struct ConfigParams;
-struct MemoryHeader;
-class  CleanupSession;
-class  MemoryManager;
+struct vdseMemoryHeader;
+class  vdseSession;
+class  vdswMemoryManager;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -35,34 +37,36 @@ class  MemoryManager;
  *    - it will open it otherwise and make sure that its content is valid
  */
 
-class VdsHandler
+class vdswHandler
 {
 
 public:
 
-   VdsHandler();
+   vdswHandler();
    
-   ~VdsHandler();
+   ~vdswHandler();
 
    void HandleCrash( pid_t pid );
 
-   int Init( struct ConfigParams * pConfig,
-             struct MemoryHeader** ppMemoryAddress );
+   int Init( struct ConfigParams      * pConfig,
+             struct vdseMemoryHeader ** ppMemoryAddress );
    
 private:   
 
-   void CleanSession( CleanupSession* pSession );
+   void CleanSession( vdseSession* pSession );
    
    int ValidateVDS();
    
    struct ConfigParams * m_pConfig;
 
-   MemoryManager * m_pMemManager;
+   vdswMemoryManager * m_pMemManager;
 
-   MemoryHeader* m_pMemHeader;
+   vdseMemoryHeader* m_pMemHeader;
    
+   vdseSessionContext m_context;
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_VALIDATE_H */
+#endif /* VDSW_HANDLER_H */
+

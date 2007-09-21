@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -22,7 +22,7 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-VdsLogMsg::VdsLogMsg( const char* progName )
+vdswLogMsg::vdswLogMsg( const char* progName )
    : m_useLog ( true )
 #if defined ( WIN32 )
       , m_handle ( NULL )
@@ -37,7 +37,7 @@ VdsLogMsg::VdsLogMsg( const char* progName )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-VdsLogMsg::~VdsLogMsg()
+vdswLogMsg::~vdswLogMsg()
 {
 #if defined ( WIN32 )
    if ( m_handle != NULL )
@@ -53,7 +53,7 @@ VdsLogMsg::~VdsLogMsg()
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #if defined ( WIN32 )
-int VdsLogMsg::Install( const char* progName, 
+int vdswLogMsg::Install( const char* progName, 
                         const char* msgPathName,
                         int   numCategories )
 {
@@ -138,7 +138,7 @@ int VdsLogMsg::Install( const char* progName,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void 
-VdsLogMsg::SendMessage( enum wdMsgSeverity severity,
+vdswLogMsg::SendMessage( enum wdMsgSeverity severity,
                         const char* format, 
                         ... )
 {
@@ -193,7 +193,7 @@ VdsLogMsg::SendMessage( enum wdMsgSeverity severity,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #if defined ( WIN32 )
-int VdsLogMsg::Uninstall( const char* progName )
+int vdswLogMsg::Uninstall( const char* progName )
 {
    HKEY hKey; 
    char buffer[MAX_PATH]; 

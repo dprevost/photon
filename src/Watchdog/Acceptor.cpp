@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -24,7 +24,7 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-VdsAcceptor::VdsAcceptor()
+vdswAcceptor::vdswAcceptor()
    : m_socketFD ( VDS_INVALID_SOCKET )
 #if defined (WIN32)
      , m_cleanupNeeded ( false )
@@ -34,7 +34,7 @@ VdsAcceptor::VdsAcceptor()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-VdsAcceptor::~VdsAcceptor()
+vdswAcceptor::~vdswAcceptor()
 {
    if ( m_socketFD != VDS_INVALID_SOCKET )
    {
@@ -55,7 +55,7 @@ VdsAcceptor::~VdsAcceptor()
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int
-VdsAcceptor::Accept()
+vdswAcceptor::Accept()
 {
    VDS_SOCKET newSock = VDS_INVALID_SOCKET;
    int errcode, i;
@@ -126,7 +126,7 @@ VdsAcceptor::Accept()
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void 
-VdsAcceptor::HandleAbnormalTermination( pid_t pid )
+vdswAcceptor::HandleAbnormalTermination( pid_t pid )
 {
    m_pWatchdog->m_log.SendMessage( WD_ERROR, 
                                    "Abnormal termination of process %d %s",
@@ -139,7 +139,7 @@ VdsAcceptor::HandleAbnormalTermination( pid_t pid )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int 
-VdsAcceptor::PrepareConnection( VdsWatchdog* pWatchdog )
+vdswAcceptor::PrepareConnection( vdswWatchdog* pWatchdog )
 {
    int errcode = 0;
    int one = 1;
@@ -259,7 +259,7 @@ VdsAcceptor::PrepareConnection( VdsWatchdog* pWatchdog )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void
-VdsAcceptor::Receive( int indice )
+vdswAcceptor::Receive( int indice )
 {
    int errcode = 0;
    struct WDInput input;
@@ -356,7 +356,7 @@ VdsAcceptor::Receive( int indice )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void
-VdsAcceptor::Send( int indice )
+vdswAcceptor::Send( int indice )
 {
    int errcode = 0;
    char* ptr = (char*) &m_answer;
@@ -416,7 +416,7 @@ VdsAcceptor::Send( int indice )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void 
-VdsAcceptor::WaitForConnections()
+vdswAcceptor::WaitForConnections()
 {
    int errcode = 0;
    fd_set readSet, writeSet;
@@ -441,8 +441,8 @@ VdsAcceptor::WaitForConnections()
 
    while ( true ) 
    {
-//      fprintf( stderr, "%d\n", VdsWatchdog::g_pWD->m_controlWord );
-      if ( VdsWatchdog::g_pWD->m_controlWord & WD_SHUTDOWN_REQUEST )
+//      fprintf( stderr, "%d\n", vdswWatchdog::g_pWD->m_controlWord );
+      if ( vdswWatchdog::g_pWD->m_controlWord & WD_SHUTDOWN_REQUEST )
          break;
       
       timeout.tv_sec = 1;

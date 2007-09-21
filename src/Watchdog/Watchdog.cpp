@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -15,15 +15,15 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#include "Common.h"
+#include "Common/Common.h"
 #include <signal.h>
-#include "Watchdog.h"
-#include "ErrorHandler.h"
+#include "Watchdog/Watchdog.h"
+#include "Common/ErrorHandler.h"
 
 // This should be more than enough...
 #define LINE_MAX_LEN (2*PATH_MAX)
 
-VdsWatchdog* VdsWatchdog::g_pWD = NULL;
+vdswWatchdog* vdswWatchdog::g_pWD = NULL;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -34,7 +34,7 @@ RETSIGTYPE sigterm_handler( int s )
    /*
     * We need to turn a flag on, to indicate it is time to shutdown
     */
-   VdsWatchdog::g_pWD->m_controlWord |= WD_SHUTDOWN_REQUEST;
+   vdswWatchdog::g_pWD->m_controlWord |= WD_SHUTDOWN_REQUEST;
 }
 
 RETSIGTYPE sighup_handler( int s )
@@ -58,7 +58,7 @@ END_C_DECLS
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-VdsWatchdog::VdsWatchdog()
+vdswWatchdog::vdswWatchdog()
    : m_pMemoryAddress ( NULL      ),
      m_controlWord    ( 0         ),
      m_log            ( PROG_NAME )
@@ -71,7 +71,7 @@ VdsWatchdog::VdsWatchdog()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-VdsWatchdog::~VdsWatchdog()
+vdswWatchdog::~vdswWatchdog()
 {
    vdscFiniErrorHandler( &m_errorHandler );
    vdscFiniErrorDefs();
@@ -84,7 +84,7 @@ VdsWatchdog::~VdsWatchdog()
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #if !defined ( WIN32 )
-int VdsWatchdog::Daemon()
+int vdswWatchdog::Daemon()
 {
    pid_t pid;
    int errcode;
@@ -201,7 +201,7 @@ int VdsWatchdog::Daemon()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void VdsWatchdog::Help( const char* progName ) const
+void vdswWatchdog::Help( const char* progName ) const
 {
    fprintf( stderr, "Usage: %s [options] config_file \n", progName );
    fprintf( stderr, "Options:\n" );
@@ -221,7 +221,7 @@ void VdsWatchdog::Help( const char* progName ) const
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #if defined ( WIN32 )
-int VdsWatchdog::Install()
+int vdswWatchdog::Install()
 {
    SC_HANDLE   hService;
    SC_HANDLE   hManager;
@@ -373,7 +373,7 @@ int VdsWatchdog::Install()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int VdsWatchdog::ReadConfig( const char* cfgname )
+int vdswWatchdog::ReadConfig( const char* cfgname )
 {
    int errcode;
    const char* missing;
@@ -401,7 +401,7 @@ int VdsWatchdog::ReadConfig( const char* cfgname )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #if defined ( WIN32 )
-int VdsWatchdog::ReadRegistry()
+int vdswWatchdog::ReadRegistry()
 {
    int errcode;
    HKEY hKey;
@@ -517,7 +517,7 @@ int VdsWatchdog::ReadRegistry()
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 // A reminder - this function is static
-void VdsWatchdog::Run()
+void vdswWatchdog::Run()
 {
    int errcode = 0;
    
@@ -527,14 +527,14 @@ void VdsWatchdog::Run()
    {
       // This condition is possible if run is called by the NT SCM (Service
       // Control Manager) instead of being called from main().
-      g_pWD = (VdsWatchdog*) malloc( sizeof(VdsWatchdog) );
+      g_pWD = (vdswWatchdog*) malloc( sizeof(vdswWatchdog) );
 
       // A failure here is very unlikely - however since we need the 
       // watchdog object to log errors... the only way to alert of a
       // problem is by forcing a crash!!!
       assert( g_pWD != NULL );
 
-      new (g_pWD) VdsWatchdog();
+      new (g_pWD) vdswWatchdog();
 
       deallocWD = true;
       
@@ -573,7 +573,7 @@ void VdsWatchdog::Run()
 #if defined ( WIN32 )
    if ( deallocWD )
    {
-      g_pWD->~VdsWatchdog();
+      g_pWD->~vdswWatchdog();
       free( g_pWD );
       g_pWD = NULL;
    }
@@ -582,7 +582,7 @@ void VdsWatchdog::Run()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int VdsWatchdog::SetSigHandler()
+int vdswWatchdog::SetSigHandler()
 {
    int errcode;
    sigset_t old_set, new_set;
@@ -654,7 +654,7 @@ int VdsWatchdog::SetSigHandler()
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #if defined ( WIN32 )
-void VdsWatchdog::Uninstall()
+void vdswWatchdog::Uninstall()
 {
    SC_HANDLE   hService;
    SC_HANDLE   hManager;

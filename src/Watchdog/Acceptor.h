@@ -1,6 +1,6 @@
 /* -*- C++ -*- */
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -16,19 +16,19 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_ACCEPTOR_H
-#define VDS_ACCEPTOR_H
+#ifndef VDSW_ACCEPTOR_H
+#define VDSW_ACCEPTOR_H
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#include "Common.h"
+#include "Common/Common.h"
 #if defined (WIN32)
 #  define FD_SETSIZE 100
 #  include <Winsock2.h>
 #endif
 
-#include "WatchdogCommon.h"
-#include "ErrorHandler.h"
+#include "API/WatchdogCommon.h"
+#include "Common/ErrorHandler.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -45,7 +45,7 @@
 /* 
  * Not really a dispatch table but...
  */
-struct VdsDispatch
+struct vdswDispatch
 {
    VDS_SOCKET socketId;
    pid_t      pid;
@@ -55,7 +55,7 @@ struct VdsDispatch
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 // Forward declaration
-class VdsWatchdog;
+class vdswWatchdog;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -75,15 +75,15 @@ class VdsWatchdog;
  *
  */
 
-class VdsAcceptor
+class vdswAcceptor
 {
 public:
 
-   VdsAcceptor();
+   vdswAcceptor();
 
-   ~VdsAcceptor();
+   ~vdswAcceptor();
 
-   int PrepareConnection( VdsWatchdog* pWatchdog );
+   int PrepareConnection( vdswWatchdog* pWatchdog );
 
    void WaitForConnections();
 
@@ -93,9 +93,9 @@ private:
 
    VDS_SOCKET m_socketFD;
 
-   VdsWatchdog* m_pWatchdog;
+   vdswWatchdog* m_pWatchdog;
    
-   VdsDispatch m_dispatch[FD_SETSIZE];
+   vdswDispatch m_dispatch[FD_SETSIZE];
 
    struct WDOutput m_answer;
 
@@ -125,4 +125,4 @@ private:
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_ACCEPTOR_H */
+#endif /* VDSW_ACCEPTOR_H */

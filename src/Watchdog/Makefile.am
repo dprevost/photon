@@ -18,15 +18,17 @@ SUBDIRS = . Tests
  
 bin_PROGRAMS = vdswd
 
-vdswd_SOURCES =                \
-                Acceptor.cpp   \
-                Acceptor.h     \
-                LogMsg.cpp     \
-                LogMsg.h       \
-                VDSHandler.cpp \
-                VDSHandler.h   \
-                Watchdog.cpp   \
-                Watchdog.h     \
+vdswd_SOURCES =                   \
+                Acceptor.cpp      \
+                Acceptor.h        \
+                LogMsg.cpp        \
+                LogMsg.h          \
+                MemoryManager.cpp \
+                MemoryManager.h   \
+                VDSHandler.cpp    \
+                VDSHandler.h      \
+                Watchdog.cpp      \
+                Watchdog.h        \
                 wd.cpp            
 
 vdswd_LDADD = $(top_builddir)/src/API/libvdsf.la 

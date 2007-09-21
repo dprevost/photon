@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -15,31 +15,41 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#include "Common.h"
+#include "Common/Common.h"
 #include "VDSHandler.h"
 #include "MemoryManager.h"
 #include "Watchdog.h"
-#include "WatchdogCommon.h"
-#include "CleanupManager.h"
-#include "SessionContext.h"
-
+#include "API/WatchdogCommon.h"
+#include "Engine/ProcessManager.h"
+#include "Engine/SessionContext.h"
+#include "Engine/InitEngine.h"
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-VdsHandler::VdsHandler()
+vdswHandler::vdswHandler()
    : m_pConfig ( NULL )
 {
+   memset( &m_context, 0, sizeof(vdseSessionContext) );
+   m_context.lockValue = getpid();
+   
+   int errcode = vdseInitEngine();
+   if ( errcode != 0 )
+   {
+      fprintf( stderr, "Abnormal error at line %d in VdsHandler.cpp\n", __LINE__ );
+         exit(1);
+   }
+   vdscInitErrorHandler( &m_context.errorHandler );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-VdsHandler::~VdsHandler()
+vdswHandler::~vdswHandler()
 {
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void
-VdsHandler::CleanSession( CleanupSession* pSession )
+vdswHandler::CleanSession( vdseSession* pSession )
 {
    fprintf( stderr, "Session %p\n", pSession );
 
@@ -51,15 +61,15 @@ VdsHandler::CleanSession( CleanupSession* pSession )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void
-VdsHandler::HandleCrash( pid_t pid )
+vdswHandler::HandleCrash( pid_t pid )
 {
    int errcode;
 #if 0   
-   CleanupProcess* pProcess = NULL;
+   vdseProcess* pProcess = NULL;
    vdseSessionContext context;
-   CleanupSession* pFirstSession = NULL;
-   CleanupSession* pCurrSession  = NULL;
-   CleanupSession* pNextSession  = NULL;
+   vdseSession* pFirstSession = NULL;
+   vdseSession* pCurrSession  = NULL;
+   vdseSession* pNextSession  = NULL;
 
    memset( &context, 0, sizeof context );
    context.lockValue = getpid();
@@ -67,10 +77,8 @@ VdsHandler::HandleCrash( pid_t pid )
    
 //      GET_PTR( m_pMemHeader->allocatorOffset, MemoryAllocator );
 
-   CleanupManager* pCleanupManager = 
-      GET_PTR( m_pMemHeader->cleanupMgrOffset, 
-               CleanupManager,
-               context.pAllocator );
+   vdseProcessManager* pCleanupManager = 
+      GET_PTR( m_pMemHeader->cleanupMgrOffset, vdseProcessManager );
 
    // Start by checking if we are not holding the lock to the 
    // cleanup manager, the memory allocator, etc...
@@ -134,8 +142,8 @@ VdsHandler::HandleCrash( pid_t pid )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int 
-VdsHandler::Init( struct ConfigParams * pConfig,
-                  MemoryHeader** ppMemoryAddress )
+vdswHandler::Init( struct ConfigParams * pConfig,
+                  vdseMemoryHeader   ** ppMemoryAddress )
 {
    int errcode = 0;
    char path[PATH_MAX];
@@ -147,11 +155,7 @@ VdsHandler::Init( struct ConfigParams * pConfig,
       return -1;
    m_pConfig = pConfig;
 
-   m_pMemManager = (MemoryManager*) 
-      malloc( sizeof(MemoryManager) );
-   if ( m_pMemManager == NULL )
-      return -1;
-   new (m_pMemManager) MemoryManager();
+   m_pMemManager = new vdswMemoryManager();
    
    path_len = strlen( pConfig->wdLocation ) + strlen( VDS_DIR_SEPARATOR ) +
       strlen( VDS_MEMFILE_NAME )  + strlen( ".bak" );
@@ -168,7 +172,8 @@ VdsHandler::Init( struct ConfigParams * pConfig,
       errcode = m_pMemManager->CreateVDS( path,
                                           pConfig->memorySizekb,
                                           pConfig->filePerms,
-                                          ppMemoryAddress );
+                                          ppMemoryAddress,
+                                          &m_context );
       if ( errcode != 0 )
       {
          return -1;
@@ -242,7 +247,7 @@ VdsHandler::Init( struct ConfigParams * pConfig,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int
-VdsHandler::ValidateVDS()
+vdswHandler::ValidateVDS()
 {
    return 0;
 }

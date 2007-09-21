@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -16,12 +16,12 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_LOGMSG_H
-#define VDS_LOGMSG_H
+#ifndef VDSW_LOGMSG_H
+#define VDSW_LOGMSG_H
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#include "Common.h"
+#include "Common/Common.h"
 #if ! defined ( WIN32 )
 #include <syslog.h>
 #endif
@@ -45,7 +45,7 @@ enum wdMsgSeverity
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 /**
- *  The VdsLogMsg class is a wrapper for the differences between different
+ *  The vdswLogMsg class is a wrapper for the differences between different
  *  platform-specific event-logging mechanisms (well... so far this means
  *  EventLog on Windows and syslog on Unix/linux).
  *
@@ -54,13 +54,13 @@ enum wdMsgSeverity
  *  for example) to disturb a production environment.
  */
 
-class VdsLogMsg
+class vdswLogMsg
 {
 public:
 
-   VdsLogMsg( const char* progName );
+   vdswLogMsg( const char* progName );
    
-   ~VdsLogMsg();   
+   ~vdswLogMsg();   
    
    void StartUsingLogger()
    {
@@ -96,5 +96,5 @@ public:
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_LOGMSG_H */
+#endif /* VDSW_LOGMSG_H */
 
