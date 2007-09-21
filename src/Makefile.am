@@ -30,8 +30,8 @@ SUBDIRS =               \
           Engine        \
           API           \
           include       \
-          Java          \
           Watchdog      \
+          Java          \
           CrashRecovery \
           Tests         \
           $(MAYBE_DEMO)
