@@ -51,7 +51,9 @@ typedef struct vdsaSession
 
    struct vdseSession* pCleanup;
 
-   bool initialized;
+   bool terminated;
+   
+   int numberOfObjects;
    
    /** Our lock to serialize access to this object, if needed. */
    vdscThreadLock  mutex;
@@ -60,7 +62,14 @@ typedef struct vdsaSession
 
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-   
+
+/*
+ * No lock is taken on the vdsaSession.
+ */
+int vdsaCloseSession( vdsaSession* pSession );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static inline
 int vdsaSessionLock( vdsaSession * pSession )
 {
@@ -83,3 +92,4 @@ void vdsaSessionUnlock( vdsaSession* pSession )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* VDSA_SESSION_H */
+

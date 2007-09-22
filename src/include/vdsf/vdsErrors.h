@@ -141,7 +141,13 @@ typedef enum vdsErrors
     * Cannot get a lock on the session (a pthread_mutex or a critical 
     * section on Windows). 
     */
-   VDS_SESSION_CANNOT_GET_LOCK     = 36
+   VDS_SESSION_CANNOT_GET_LOCK     = 36,
+   
+   /*
+    * An attempt was made to use a session object (a session handle)
+    * after this session was terminated.
+    */
+   VDS_SESSION_IS_TERMINATED       = 37
    
 } vdsErrors;
 

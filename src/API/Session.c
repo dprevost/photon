@@ -54,37 +54,37 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
 
    pSession->context.lockValue = getpid();
    vdscInitErrorHandler( &pSession->context.errorHandler );
-   
-   if ( g_protectionIsNeeded )
-   {
-      errcode = vdscInitThreadLock( &pSession->mutex );
-      if ( errcode != 0 )
-      {
-         free( pSession );
-         return VDS_NOT_ENOUGH_RESOURCES;
-      }
-   }
 
    /*
     * From this point we can use "goto error_handler" to recover
     * from errors;
     */
    
+   if ( g_protectionIsNeeded )
+   {
+      errcode = vdscInitThreadLock( &pSession->mutex );
+      if ( errcode != 0 )
+      {
+         errcode = VDS_NOT_ENOUGH_RESOURCES;
+         goto error_handler;
+      }
+   }
+
+   
    pSession->pHeader = g_pProcessInstance->pHeader;
    if ( pSession->pHeader == NULL )
    {
       errcode = VDS_PROCESS_NOT_INITIALIZED;
-      goto error;
+      goto error_handler;
    }
 
-   pSession->context.lockValue = getpid();
    pSession->context.pAllocator = GET_PTR( pSession->pHeader->allocatorOffset, 
                                            void );   
    if ( pSession->pHeader->logON )
    {
       ptr = malloc( sizeof(vdseLogFile) );
       if ( ptr == NULL )
-         goto error;
+         goto error_handler;
    
       pSession->context.pLogFile = (vdseLogFile*)ptr;
       errcode = vdseInitLogFile( 
@@ -93,7 +93,7 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
          pSession,
          &pSession->context.errorHandler );
       if ( errcode != VDS_OK )
-         goto error;
+         goto error_handler;
    }
    
    /*
@@ -108,7 +108,7 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
                                        &pSession->pCleanup, 
                                        &pSession->context );
       vdsaSessionUnlock( pSession );
-      if ( errcode != VDS_OK ) goto error;
+      if ( errcode != VDS_OK ) goto error_handler;
    }
    else
    {
@@ -117,42 +117,30 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
        * unknown to other and cannot be locked.
        */
       errcode = VDS_INTERNAL_ERROR;
-      goto error;
+      goto error_handler;
    }
+   
+   pSession->terminated = false;
    *sessionHandle = (VDS_HANDLE) pSession;
 
    return VDS_OK;
    
    /* Error processing... */
 
-error:
+error_handler:
 
    /* 
-    * We lock ourselves, just in case. We can't rely on the value
-    * of pSession->pCleanup (being null that is). The only way to
-    * be able to do this safely without locks would be to use 
-    * memory barriers (ref.: discussions on the net about the 
-    * singleton pattern).
+    * The last operation that might fail is to add ourselves to the
+    * vdseProcess object. If this call succeeded, we would not come
+    * here - this session is unknown to the rest of the software and
+    * we can safely clean ourselves without locks.
     */
-   if ( vdsaSessionLock( pSession ) == 0 )
+   if ( pSession->context.pLogFile != NULL )
    {
-      if ( pSession->pCleanup != NULL )
-      {
-         vdseProcessRemoveSession( g_pProcessInstance->pCleanup,
-                                   pSession->pCleanup,
-                                   &pSession->context );
-         pSession->pCleanup = NULL;
-      }
-
-      if ( pSession->context.pLogFile != NULL )
-      {
-         vdseCloseLogFile( pSession->context.pLogFile, &pSession->context.errorHandler );
-         free( pSession->context.pLogFile );
-         pSession->context.pLogFile = NULL;
-      }
-      vdsaSessionUnlock( pSession );
+      vdseCloseLogFile( pSession->context.pLogFile, &pSession->context.errorHandler );
+      free( pSession->context.pLogFile );
+      pSession->context.pLogFile = NULL;
    }
-   pSession->pHeader = NULL;
    
    free( pSession );
    
@@ -166,7 +154,7 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
    vdsaSession* pSession;
    vdseObjectContext* pObject = NULL;
    vdsaProxyObject* pProxyObject = NULL;
-   int errcode;
+   int errcode = -1;
    
    pSession = (vdsaSession*) sessionHandle;
    if ( pSession == NULL )
@@ -175,65 +163,39 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
    if ( pSession->type != VDSA_SESSION )
       return VDS_WRONG_TYPE_HANDLE;
 
-   if ( vdsaSessionLock( pSession ) == 0 )
+   if ( vdsaProcessLock() == 0 )
    {
-      if ( pSession->context.pTransaction != NULL )
+      /*
+       * if the exit process was called at the "same time" the session
+       * might have been "removed" by the process object.
+       */
+      if ( ! pSession->terminated )
       {
-         vdseTxRollback( (vdseTx*)(pSession->context.pTransaction), &pSession->context );
-         pSession->context.pTransaction = NULL;
-      }
-   
-      if ( pSession->pCleanup != NULL )
-      {
-         errcode = vdseLock( &pSession->pCleanup->memObject, &pSession->context);
+         /* ok we are still there */
+         errcode = vdsaCloseSession( pSession );
+         
+         /*
+          * vdsaCloseSession can be called by the api process object while
+          * it holds the lock to the vdesProcess object. And the next
+          * call locks it as well. To avoid a recursive lock (leading to 
+          * a deadlock) we cannot include this call in vdsaCloseSession.
+          */
          if ( errcode == 0 )
-         {
-            while ( true )
-            {
-               errcode = vdseSessionGetFirst( pSession->pCleanup, &pObject, &pSession->context );
-               if ( errcode != 0 ) break;
+            vdseProcessRemoveSession( g_pProcessInstance->pCleanup, 
+                                      pSession->pCleanup, 
+                                      &pSession->context );
 
-               /* This would be an internal error... */
-               if ( pObject == NULL ) continue;
-            
-               if ( pObject->pProxyObject == NULL ) continue;
-            
-               pProxyObject = (vdsaProxyObject*) pObject->pProxyObject;
-            
-               errcode = vdsaProxyLock( pProxyObject );
-               if ( errcode == 0 )
-               {
-                  vdseObjectDescriptor desc;
-
-                  vdsaProxyCloseObject( pProxyObject );
-
-                  desc.offset = pObject->offset;
-                  desc.type   = pObject->type;
-
-                  errcode = vdseTopFolderCloseObject( &desc, 
-                                                   &pSession->context );
-
-                  vdsaProxyUnlock( pProxyObject );
-               }
-
-               vdseSessionRemoveFirst(pSession->pCleanup, &pSession->context );
-            }
-            vdseUnlock( &pSession->pCleanup->memObject, &pSession->context);
-         }
-      
-         vdseProcessRemoveSession( g_pProcessInstance->pCleanup, 
-                                   pSession->pCleanup, 
-                                   &pSession->context );
-         pSession->pCleanup = NULL;
       }
-      vdsaSessionUnlock( pSession );
-
+      
+      vdsaProcessUnlock();
+   }
+   else
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+   
+   if ( errcode == 0 && pSession->numberOfObjects == 0 )
       free( pSession );
 
-      return VDS_OK;
-   }
-   
-   return VDS_SESSION_CANNOT_GET_LOCK;
+   return errcode;
 }
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -254,13 +216,19 @@ int vdsCreateObject( VDS_HANDLE      sessionHandle,
    
    if ( vdsaSessionLock( pSession ) == 0 )
    {
-      rc = vdseTopFolderCreateObject( GET_PTR( pSession->pHeader->treeMgrOffset, 
-                                               vdseFolder ),
-                                      objectName, 
-                                      objectType,
-                                      &pSession->context );
-      if ( rc != 0 )
-         rc = vdscGetLastError( &pSession->context.errorHandler );
+      if ( ! pSession->terminated )
+      {
+         rc = vdseTopFolderCreateObject( GET_PTR( pSession->pHeader->treeMgrOffset, 
+                                                  vdseFolder ),
+                                         objectName, 
+                                         objectType,
+                                         &pSession->context );
+         if ( rc != 0 )
+            rc = vdscGetLastError( &pSession->context.errorHandler );
+      }
+      else
+         rc = VDS_SESSION_IS_TERMINATED;
+
       vdsaSessionUnlock( pSession );
    }
 
@@ -284,12 +252,18 @@ int vdsDestroyObject( VDS_HANDLE  sessionHandle,
    
    if ( vdsaSessionLock( pSession ) == 0 )
    {
-      rc = vdseTopFolderDestroyObject( GET_PTR( pSession->pHeader->treeMgrOffset, 
-                                                vdseFolder ),
-                                       objectName, 
-                                       &pSession->context );
-      if ( rc != 0 )
-         rc = vdscGetLastError( &pSession->context.errorHandler );
+      if ( ! pSession->terminated )
+      {
+         rc = vdseTopFolderDestroyObject( GET_PTR( pSession->pHeader->treeMgrOffset, 
+                                                   vdseFolder ),
+                                          objectName, 
+                                          &pSession->context );
+         if ( rc != 0 )
+            rc = vdscGetLastError( &pSession->context.errorHandler );
+      }
+      else
+         rc = VDS_SESSION_IS_TERMINATED;
+
       vdsaSessionUnlock( pSession );
    }
    
@@ -312,10 +286,16 @@ int vdsCommit( VDS_HANDLE sessionHandle )
    
    if ( vdsaSessionLock( pSession ) == 0 )
    {
-      rc = vdseTxCommit( (vdseTx*)pSession->context.pTransaction, 
-                         &pSession->context );
-      if ( rc != 0 )
-         rc = vdscGetLastError( &pSession->context.errorHandler );
+      if ( ! pSession->terminated )
+      {
+         rc = vdseTxCommit( (vdseTx*)pSession->context.pTransaction, 
+                            &pSession->context );
+         if ( rc != 0 )
+            rc = vdscGetLastError( &pSession->context.errorHandler );
+      }
+      else
+         rc = VDS_SESSION_IS_TERMINATED;
+         
       vdsaSessionUnlock( pSession );
    }
    
@@ -338,15 +318,79 @@ int vdsRollback( VDS_HANDLE sessionHandle )
    
    if ( vdsaSessionLock( pSession ) == 0 )
    {
-      rc = 0;
-      vdseTxRollback( (vdseTx*)pSession->context.pTransaction, 
-                           &pSession->context );
+      if ( ! pSession->terminated )
+      {
+         rc = 0;
+         vdseTxRollback( (vdseTx*)pSession->context.pTransaction, 
+                         &pSession->context );
       //if ( rc != 0 )
       //   rc = vdscGetLastError( &pSession->context.errorHandler );
+      }
+      else
+         rc = VDS_SESSION_IS_TERMINATED;
+
       vdsaSessionUnlock( pSession );
    }
    
    return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdsaCloseSession( vdsaSession* pSession )
+{
+   vdseObjectContext* pObject = NULL;
+   vdsaProxyObject* pProxyObject = NULL;
+   int errcode, rc = 0;
+   
+   if ( vdsaSessionLock( pSession ) == 0 )
+   {
+      if ( ! pSession->terminated )
+      {
+         if ( pSession->context.pTransaction != NULL )
+         {
+            vdseTxRollback( (vdseTx*)(pSession->context.pTransaction), 
+                            &pSession->context );
+            pSession->context.pTransaction = NULL;
+         }
+   
+         errcode = vdseLock( &pSession->pCleanup->memObject, 
+                             &pSession->context);
+         if ( errcode == 0 )
+         {
+            while ( true )
+            {
+               errcode = vdseSessionGetFirst( pSession->pCleanup, &pObject, &pSession->context );
+               if ( errcode != 0 ) break;
+
+               /* This would be an internal error... */
+               if ( pObject == NULL ) continue;
+            
+               if ( pObject->pProxyObject == NULL ) continue;
+            
+               pProxyObject = (vdsaProxyObject*) pObject->pProxyObject;
+            
+               errcode = vdseTopFolderCloseObject( &pProxyObject->desc, 
+                                                   &pSession->context );
+               vdsaProxyCloseObject( pProxyObject );
+
+               vdseSessionRemoveFirst(pSession->pCleanup, &pSession->context );
+            }
+            vdseUnlock( &pSession->pCleanup->memObject, &pSession->context);
+         }
+      
+         pSession->pCleanup = NULL;
+         pSession->terminated = true;
+        
+      }
+      else
+         rc = VDS_SESSION_IS_TERMINATED;
+
+      vdsaSessionUnlock( pSession );
+
+      return rc;
+   }
+   return VDS_SESSION_CANNOT_GET_LOCK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

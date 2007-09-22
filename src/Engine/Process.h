@@ -83,6 +83,9 @@ vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
                                  vdseSession       ** pSession,
                                  vdseSessionContext * pContext );
 
+/*
+ * Takes a lock on the current object. Not on the vdseSession itself. 
+ */
 VDSF_ENGINE_EXPORT
 vdsErrors vdseProcessRemoveSession( vdseProcess        * pProcess,
                                     vdseSession        * pSession,

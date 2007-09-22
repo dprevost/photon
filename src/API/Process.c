@@ -20,6 +20,7 @@
 #include "Engine/MemoryHeader.h"
 #include "Engine/ProcessManager.h"
 #include "Common/MemoryFile.h"
+#include "API/Session.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -34,7 +35,10 @@ bool             g_protectionIsNeeded = false;
 static int vdsaOpenVDS( vdsaProcess * process,
                         const char  * memoryFileName,
                         size_t        memorySizekb );
-
+                        
+static void vdsaCloseVDS( vdsaProcess      * process,
+                          vdscErrorHandler * pError );
+                          
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 bool AreWeTerminated()
@@ -137,8 +141,77 @@ int vdsaProcessInit( vdsaProcess *process, const char  *wdAddress )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsaProcessFini( vdsaProcess *process )
+void vdsaProcessFini( vdsaProcess * process )
 {
+   vdseProcMgr * processManager = NULL;
+   vdseSessionContext context;
+   vdsaSession * pApiSession = NULL;
+   vdseSession * pVdsSession = NULL, * pCurrent;
+   int errcode = 0;
+
+   memset( &context, 0, sizeof context );
+
+   context.lockValue = getpid();
+   context.pAllocator = GET_PTR( process->pHeader->allocatorOffset, void );
+   vdscInitErrorHandler( &context.errorHandler );
+
+   if ( g_protectionIsNeeded )
+      vdscAcquireThreadLock( &g_ProcessMutex );
+
+   processManager = GET_PTR( process->pHeader->cleanupMgrOffset, vdseProcMgr );
+
+   vdseProcessNoMoreSessionAllowed( process->pCleanup,
+                                    &context );
+
+   errcode = vdseLock( &process->pCleanup->memObject, &context );
+   if ( errcode == 0 )
+   {
+      errcode = vdseProcessGetFirstSession( process->pCleanup, 
+                                            &pVdsSession, 
+                                            &context );
+      while ( errcode == 0 )
+      {
+         pApiSession = pVdsSession->pApiSession;
+         if ( pApiSession != NULL ) 
+         {
+            errcode = vdsaCloseSession( pApiSession );
+            /* \todo */
+         }
+
+         pCurrent = pVdsSession;
+         errcode = vdseProcessGetNextSession( process->pCleanup,
+                                              pCurrent,
+                                              &pVdsSession,
+                                              &context );
+      }
+      
+      vdseUnlock( &process->pCleanup->memObject, &context );
+   }
+   else
+   {
+      errcode = VDS_INTERNAL_ERROR;
+      goto error_handler;
+   }
+   
+   /*
+    * The lock is implicit. This call will also recursively destroy
+    * all the vdseSession objects of the current process.
+    */
+   vdseProcMgrRemoveProcess( processManager, process->pCleanup, &context );
+   process->pCleanup = NULL;
+   
+   /* close our access to the VDS */
+   if ( process->pHeader != NULL )
+   {
+      vdsaCloseVDS( process, &context.errorHandler );
+      process->pHeader = NULL;
+   }
+   
+error_handler:
+
+   if ( g_protectionIsNeeded )
+      vdscReleaseThreadLock( &g_ProcessMutex );
+
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

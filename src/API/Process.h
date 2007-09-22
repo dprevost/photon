@@ -20,6 +20,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#include "API/api.h"
 #include "Engine/Engine.h"
 #include "Engine/SessionContext.h"
 #include <vdsf/vdsCommon.h>
@@ -39,6 +40,8 @@ struct vdsProxyObject;
 
 typedef struct vdsaProcess
 {
+   vdsaObjetType type;
+
    /** Pointer to the header of the VDS memory. */
    struct vdseMemoryHeader* pHeader;
 
@@ -62,8 +65,15 @@ typedef struct vdsaProcess
    
 } vdsaProcess;
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 extern vdsaProcess *  g_pProcessInstance;
 extern bool           g_protectionIsNeeded;
+
+/** 
+ * This global mutex is needed for opening and closing sessions in 
+ * a multi-threaded environment.
+ */
 extern vdscThreadLock g_ProcessMutex;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -74,6 +84,28 @@ int vdsaProcessInit( vdsaProcess *pProcess,
 void vdsaProcessFini( vdsaProcess *pProcess );
 
 bool AreWeTerminated();
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static inline
+int vdsaProcessLock()
+{
+   if ( g_protectionIsNeeded )
+   {
+      return vdscTryAcquireThreadLock( &g_ProcessMutex, LOCK_TIMEOUT );
+   }
+   return 0;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/** Unlock the current process. */
+static inline
+void vdsaProcessUnlock()
+{
+   if ( g_protectionIsNeeded )
+      vdscReleaseThreadLock( &g_ProcessMutex );
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
