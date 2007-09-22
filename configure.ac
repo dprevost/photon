@@ -60,9 +60,17 @@ fi
 AC_CHECK_PROG([DOXY_IS_PRESENT], [doxygen], [yes], [no])
 AM_CONDITIONAL([COND_USE_DOXYGEN], [test "$DOXY_IS_PRESENT" = yes])
 
-if test ! -d "$JAVA_HOME" ; then
-  AC_MSG_ERROR([JAVA_HOME env. variable must be set to build the Java API])
+AC_ARG_WITH([java],
+              AC_HELP_STRING([--with-java],
+                             [will build the java API, if included @<:@default=yes@:>@]),
+	      [with_java=$withval],
+	      [with_java=yes])
+if test "$with_java" = "yes"; then
+  if test ! -d "$JAVA_HOME" ; then
+    AC_MSG_ERROR([JAVA_HOME env. variable must be set to build the Java API])
+  fi
 fi
+AM_CONDITIONAL([COND_USE_JAVA], [test "$with_java" = yes])
 
 ##################################
 #                                #

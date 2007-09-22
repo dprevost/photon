@@ -19,10 +19,6 @@ CLEANFILES = *~
 #   n-    ...
 #   Last- Tests
 
-if COND_INCLUDE_DEMO
-  MAYBE_DEMO = Demo
-endif
-
 SUBDIRS =               \
           Locking       \
           Common        \
@@ -31,10 +27,17 @@ SUBDIRS =               \
           API           \
           include       \
           Watchdog      \
-          Java          \
           CrashRecovery \
-          Tests         \
-          $(MAYBE_DEMO)
+          Tests         
+
+if COND_USE_JAVA
+   SUBDIRS += Java
+endif
+
+if COND_INCLUDE_DEMO
+  SUBDIRS += Demo
+endif
+
 
 DIST_SUBDIRS = Locking      
 
