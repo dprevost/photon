@@ -28,10 +28,6 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-//class  vdsSessionHook;
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 /* The necessary information needed for garbage collection is kept */
 /* in a doubly linked list (for fast access). */
 

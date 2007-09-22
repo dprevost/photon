@@ -62,12 +62,13 @@ int main()
    unsigned int randAction;
    enum ListErrors error;
    int errcode, countNext;
+   vdseSessionContext context;
    
    int numInList;
    vdseLinkNode* pNode = NULL;
    dummyStruct*  pDummy;
    
-   initTest( expectedToPass );
+   initTest( expectedToPass, &context );
    InitMem();
 
    /* Initialize the array of dummy structs */

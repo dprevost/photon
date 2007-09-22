@@ -30,8 +30,7 @@ int main()
    size_t allocatedLength = VDSE_BLOCK_SIZE*10;
    unsigned char* newBuff[5];
    
-   initTest( expectedToPass );
-   vdscInitErrorHandler( &context.errorHandler );
+   initTest( expectedToPass, &context );
    
    ptr = malloc( allocatedLength );
    if ( ptr == NULL )

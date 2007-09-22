@@ -27,8 +27,9 @@ int main()
    vdseLinkedList list1;
    vdseLinkedList list2;
    vdseLinkNode node1, node2;
+   vdseSessionContext context;
    
-   initTest( expectedToPass );
+   initTest( expectedToPass, &context );
    InitMem();
    
    vdseLinkNodeInit( &node1 );

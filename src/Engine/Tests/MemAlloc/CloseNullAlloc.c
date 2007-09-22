@@ -29,8 +29,7 @@ int main()
    vdseSessionContext context;
    size_t allocatedLength = VDSE_BLOCK_SIZE*10;
    
-   initTest( expectedToPass );
-   vdscInitErrorHandler( &context.errorHandler );
+   initTest( expectedToPass, &context );
    
    ptr = malloc( allocatedLength );
    if ( ptr == NULL )

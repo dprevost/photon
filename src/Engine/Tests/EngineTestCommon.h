@@ -21,6 +21,7 @@
 #include "Engine/Engine.h"
 #include "Engine/InitEngine.h"
 #include "Tests/PrintError.h"
+#include "Engine/SessionContext.h"
 
 vdscErrMsgHandle g_vdsErrorHandle;
 
@@ -31,9 +32,12 @@ vdscErrMsgHandle g_vdsErrorHandle;
  * errorhandle for the VDS errors tobe initialized. 
  */
  
-void initTest( bool testIsExpectedToSucceed )
+void initTest( bool testIsExpectedToSucceed, vdseSessionContext* pContext )
 {
    int errcode;
+   
+   memset( pContext, 0, sizeof(vdseSessionContext) );
+   pContext->lockValue = getpid();
    
    errcode = vdseInitEngine();
    if ( errcode != 0 )
@@ -41,7 +45,9 @@ void initTest( bool testIsExpectedToSucceed )
       if ( testIsExpectedToSucceed )
          exit(1);
       exit(0);
-   }      
+   }
+   
+   vdscInitErrorHandler( &pContext->errorHandler );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

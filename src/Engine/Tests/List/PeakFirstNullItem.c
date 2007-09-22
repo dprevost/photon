@@ -27,8 +27,9 @@ int main()
    vdseLinkedList list;
    vdseLinkNode node;
    enum ListErrors error;
+   vdseSessionContext context;
    
-   initTest( expectedToPass );
+   initTest( expectedToPass, &context );
    InitMem();
    
    vdseLinkNodeInit( &node );

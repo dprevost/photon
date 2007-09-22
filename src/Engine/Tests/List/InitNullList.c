@@ -24,7 +24,9 @@ const bool expectedToPass = false;
 
 int main()
 {
-   initTest( expectedToPass );
+   vdseSessionContext context;
+
+   initTest( expectedToPass, &context );
    InitMem();
    
    vdseLinkedListInit( NULL );

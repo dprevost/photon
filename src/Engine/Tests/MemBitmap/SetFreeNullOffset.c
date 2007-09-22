@@ -26,8 +26,9 @@ int main()
 {
    vdseMemBitmap *pBitmap;
    unsigned char* ptr;
+   vdseSessionContext context;
    
-   initTest( expectedToPass );
+   initTest( expectedToPass, &context );
 
    ptr = malloc( VDSE_BLOCK_SIZE*10 );
    if (ptr == NULL )

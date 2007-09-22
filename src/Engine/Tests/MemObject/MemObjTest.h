@@ -50,6 +50,8 @@ vdstObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
    vdstObjDummy* pDummy;
    size_t allocatedLength = VDSE_BLOCK_SIZE * 10;
    
+   memset( pContext, 0, sizeof(vdseSessionContext) );
+   pContext->lockValue = getpid();
    errcode = vdseInitEngine();
    if ( errcode != 0 )
    {

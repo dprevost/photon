@@ -56,6 +56,7 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
    vdseMemAlloc*  pAlloc;
    vdstObjDummy* pDummy;
    size_t allocatedLength = VDSE_BLOCK_SIZE * 10;
+   
    errcode = vdseInitEngine();
    if ( errcode != 0 )
    {
@@ -64,6 +65,8 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
          exit(1);
       exit(0);
    }
+   memset(pContext, 0, sizeof(vdseSessionContext) );
+   pContext->lockValue = getpid();
    vdscInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */

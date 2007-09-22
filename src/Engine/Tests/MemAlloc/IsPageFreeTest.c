@@ -30,8 +30,7 @@ int main()
    bool isFree;
    vdseMemBitmap* pBitmap;
    
-   initTest( expectedToPass );
-   vdscInitErrorHandler( &context.errorHandler );
+   initTest( expectedToPass, &context );
 
    ptr = malloc( 51*VDSE_BLOCK_SIZE );
    if ( ptr == NULL )

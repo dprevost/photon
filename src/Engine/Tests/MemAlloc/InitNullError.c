@@ -28,9 +28,9 @@ int main()
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr;
    size_t allocatedLength = VDSE_BLOCK_SIZE*10;
+   vdseSessionContext context;
    
-   initTest( expectedToPass );
-   vdscInitErrorHandler( &error );
+   initTest( expectedToPass, &context );
    
    ptr = malloc( allocatedLength );
    if ( ptr == NULL )

@@ -51,7 +51,7 @@ typedef struct vdseObjectContext
    
    /** Our node in the linked list of the vdseSession object. */
    vdseLinkNode node;
-   
+      
 } vdseObjectContext;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -82,6 +82,12 @@ typedef struct vdseSession
    /** Our own internal list of objects accessed by the current session */
    vdseLinkedList listOfObjects;
 
+   /** our current list of locks */
+   ptrdiff_t lockOffsets[VDSE_MAX_LOCK_DEPTH];
+
+   /** number of locks we are holding */
+   int numLocks;
+   
    /** Variable size struct - always put at the end */
    struct vdseBlockGroup blockGroup;
 

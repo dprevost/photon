@@ -18,13 +18,39 @@
 #ifndef VDSE_MEMORY_OBJECT_H
 #define VDSE_MEMORY_OBJECT_H
 
-#include "Engine.h"
-#include "LinkNode.h"
-#include "LinkedList.h"
-#include "SessionContext.h"
+#include "Engine/Engine.h"
+#include "Engine/LinkNode.h"
+#include "Engine/LinkedList.h"
+#include "Engine/SessionContext.h"
 #include "Engine/BlockGroup.h"
 
 BEGIN_C_DECLS
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * We cannot include Engine/Session.h here since it requires the current
+ * header file (a session is a memory object).
+ *
+ * But this is needed by the lock/unlock functions to save the memory object
+ * being locked in the session object (for recovery reasons). So declare it
+ * here...
+ * 
+ * The only problem is that the functions cannot be inlined inside the
+ * functions vdseLock/Unlock. Oh well. A better solution might be possible,
+ * one of these days...
+ */
+#if 0
+
+struct vdseSession;
+
+void vdseSessionAddLock( struct vdseSession * pSession,
+                         ptrdiff_t            memObjectOffset );
+
+void vdseSessionRemoveLock( struct vdseSession * pSession,
+                            ptrdiff_t            memObjectOffset );
+
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -88,8 +114,9 @@ static inline
 int vdseLock( vdseMemObject*      pMemObj,
               vdseSessionContext* pContext )
 {
-   pContext->lockObject = SET_OFFSET( pMemObj );
-   
+   if ( pContext->lockOffsets != NULL )
+      vdseSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
+
    return vdscTryAcquireProcessLock ( &pMemObj->lock,
                                       pContext->lockValue,
                                       LOCK_TIMEOUT );
@@ -99,7 +126,8 @@ static inline
 void vdseLockNoFailure( vdseMemObject*      pMemObj,
                         vdseSessionContext* pContext )
 {
-   pContext->lockObject = SET_OFFSET( pMemObj );
+   if ( pContext->lockOffsets != NULL )
+      vdseSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
    
    vdscAcquireProcessLock ( &pMemObj->lock, LOCK_TIMEOUT );
 }
@@ -108,8 +136,10 @@ static inline
 void vdseUnlock( vdseMemObject*      pMemObj,
                  vdseSessionContext* pContext  )
 {
+   if ( pContext->lockOffsets != NULL )
+      vdseSessionRemoveLock( pContext, SET_OFFSET( pMemObj ) );
+
    vdscReleaseProcessLock ( &pMemObj->lock );
-   pContext->lockObject = NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

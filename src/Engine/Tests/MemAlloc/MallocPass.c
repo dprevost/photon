@@ -31,9 +31,7 @@ int main()
    unsigned char* newBuff[8];
    int i;
    
-   initTest( expectedToPass );
-   vdscInitErrorHandler( &context.errorHandler );
-   context.lockValue = 0xff;
+   initTest( expectedToPass, &context );
    
    ptr = malloc( allocatedLength );
    if ( ptr == NULL )

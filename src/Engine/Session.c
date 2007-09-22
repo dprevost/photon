@@ -46,8 +46,6 @@ int vdseSessionInit( vdseSession        * pSession,
    else
    {
       pContext->pCurrentMemObject = &pSession->memObject;
-
-      pSession->pApiSession = pApiSession;
    
       vdseLinkedListInit( &pSession->listOfObjects );
 
@@ -58,7 +56,11 @@ int vdseSessionInit( vdseSession        * pSession,
          if ( errcode == 0 )
          {
             pSession->pTransaction = pTx;
-            pContext->pTransaction = (void *) pTx;
+            pContext->pTransaction = (void *) pTx;            
+            pContext->lockOffsets = pSession->lockOffsets;
+            pContext->numLocks = &pSession->numLocks;
+            pSession->pApiSession = pApiSession;
+            
             rc = 0;
          }
          else

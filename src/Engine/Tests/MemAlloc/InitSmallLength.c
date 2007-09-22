@@ -29,8 +29,7 @@ int main()
    unsigned char* ptr;
    size_t allocatedLength = VDSE_BLOCK_SIZE*2 + 1;
    
-   initTest( expectedToPass );
-   vdscInitErrorHandler( &context.errorHandler );
+   initTest( expectedToPass, &context );
    
    ptr = malloc( allocatedLength );
    if ( ptr == NULL )
