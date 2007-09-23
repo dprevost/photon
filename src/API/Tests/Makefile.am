@@ -14,6 +14,8 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
+SUBDIRS =  Process
+
 check_PROGRAMS =                  \
                  SimpleTest1      \
                  TransactionTests 

@@ -21,6 +21,7 @@
 #include "Engine/ProcessManager.h"
 #include "Common/MemoryFile.h"
 #include "API/Session.h"
+#include "Engine/InitEngine.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -32,12 +33,13 @@ vdscThreadLock   g_ProcessMutex;
  */
 bool             g_protectionIsNeeded = false;
 
-static int vdsaOpenVDS( vdsaProcess * process,
-                        const char  * memoryFileName,
-                        size_t        memorySizekb );
+static int vdsaOpenVDS( vdsaProcess        * process,
+                        const char         * memoryFileName,
+                        size_t               memorySizekb,
+                        vdseSessionContext * pSession );
                         
-static void vdsaCloseVDS( vdsaProcess      * process,
-                          vdscErrorHandler * pError );
+static void vdsaCloseVDS( vdsaProcess        * process,
+                          vdseSessionContext * pSession );
                           
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -65,6 +67,12 @@ int vdsaProcessInit( vdsaProcess *process, const char  *wdAddress )
    vdseSessionContext context;
    vdseProcMgr* pCleanupManager;
 
+   VDS_PRE_CONDITION( process   != NULL );
+   VDS_PRE_CONDITION( wdAddress != NULL );
+   
+   if (vdseInitEngine() != 0 )
+      return VDS_INTERNAL_ERROR;
+   
    memset( &context, 0, sizeof context );
    context.lockValue = getpid();
    vdscInitErrorHandler( &context.errorHandler );
@@ -114,7 +122,8 @@ int vdsaProcessInit( vdsaProcess *process, const char  *wdAddress )
    
    errcode = vdsaOpenVDS( process,
                           path,
-                          answer.memorySizekb );
+                          answer.memorySizekb,
+                          &context );
    if ( errcode != VDS_OK )
       goto the_exit;
 
@@ -149,8 +158,15 @@ void vdsaProcessFini( vdsaProcess * process )
    vdseSession * pVdsSession = NULL, * pCurrent;
    int errcode = 0;
 
-   memset( &context, 0, sizeof context );
+   VDS_PRE_CONDITION( process != NULL );
 
+   /* 
+    * This can occurs if the process init (vdsaProcessInit()) 
+    * was not called from the C API and somehow failed. 
+    */
+   if ( process->pHeader == NULL ) return;
+
+   memset( &context, 0, sizeof context );
    context.lockValue = getpid();
    context.pAllocator = GET_PTR( process->pHeader->allocatorOffset, void );
    vdscInitErrorHandler( &context.errorHandler );
@@ -203,7 +219,7 @@ void vdsaProcessFini( vdsaProcess * process )
    /* close our access to the VDS */
    if ( process->pHeader != NULL )
    {
-      vdsaCloseVDS( process, &context.errorHandler );
+      vdsaCloseVDS( process, &context );
       process->pHeader = NULL;
    }
    
@@ -216,18 +232,20 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaOpenVDS( vdsaProcess * process,
-                 const char  * memoryFileName,
-                 size_t        memorySizekb )
+int vdsaOpenVDS( vdsaProcess        * process,
+                 const char         * memoryFileName,
+                 size_t               memorySizekb,
+                 vdseSessionContext * pSession )
 {
    int errcode = 0;
    vdscMemoryFileStatus fileStatus;
-   vdscErrorHandler errorHandler;
    void * ptr;
    
+   VDS_PRE_CONDITION( process        != NULL );
+   VDS_PRE_CONDITION( pSession       != NULL );
+   VDS_PRE_CONDITION( memoryFileName != NULL );
+
    process->pHeader = NULL;
-   
-   vdscInitErrorHandler( &errorHandler );
    
    vdscInitMemoryFile( &process->memoryFile, memorySizekb, memoryFileName );
    
@@ -238,7 +256,9 @@ int vdsaOpenVDS( vdsaProcess * process,
       return VDS_BACKSTORE_FILE_MISSING;
    }
    
-   errcode = vdscOpenMemFile( &process->memoryFile, &ptr, &errorHandler );   
+   errcode = vdscOpenMemFile( &process->memoryFile, 
+                              &ptr, 
+                              &pSession->errorHandler );   
    if ( errcode != 0 )
    {
       fprintf( stderr, "MMAP failure - %d %s\n", errno, memoryFileName );
@@ -259,10 +279,13 @@ int vdsaOpenVDS( vdsaProcess * process,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsaCloseVDS( vdsaProcess      * process,
-                   vdscErrorHandler * pError )
+void vdsaCloseVDS( vdsaProcess        * process,
+                   vdseSessionContext * pSession )
 {
-   vdscCloseMemFile( &process->memoryFile, pError );
+   VDS_PRE_CONDITION( process  != NULL );
+   VDS_PRE_CONDITION( pSession != NULL );
+
+   vdscCloseMemFile( &process->memoryFile, &pSession->errorHandler );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

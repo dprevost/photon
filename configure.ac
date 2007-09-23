@@ -378,6 +378,7 @@ AC_CONFIG_FILES([
    src/Makefile
    src/API/Makefile
    src/API/Tests/Makefile
+   src/API/Tests/Process/Makefile
    src/BuildTools/Makefile
    src/BuildTools/Tests/Makefile
    src/Common/Makefile
