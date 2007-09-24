@@ -47,7 +47,10 @@ AC_MINIX
 ##################################
 
 AC_PROG_CC
+AC_DEFINE_UNQUOTED(MYCC, "$CC", The C Compiler)
 AC_PROG_CXX
+AC_DEFINE_UNQUOTED(MYCXX, "$CXX", The C++ Compiler)
+
 AC_PROG_LIBTOOL
 AC_ARG_VAR([PYTHON], [path to PYTHON])
 AC_PATH_PROG([PYTHON], [python], [no])
@@ -284,6 +287,10 @@ fi
 # Section - checks for system services #
 #                                      #
 ########################################
+
+AC_C_BIGENDIAN
+AC_CANONICAL_HOST
+AC_DEFINE_UNQUOTED(MYCPU, "$host_cpu", The host cpu)
 
 ##################################################
 #                                                #

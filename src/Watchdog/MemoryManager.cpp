@@ -58,6 +58,9 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    vdscMemoryFileStatus fileStatus;
    vdseMemAlloc * pAlloc;
    
+   /* Very uunlikely but just in case... */
+   VDS_PRE_CONDITION( sizeof(vdseMemoryHeader) <= VDSE_BLOCK_SIZE );
+   
    *ppHeader = NULL;
    m_memorySizeKB = memorySizekb;   
 
@@ -167,8 +170,33 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
 
    /* And finish with setting up the version (and eventually some "magic */
    /* cookie" to identify the file?) */
+
+   strcpy( (*ppHeader)->cookie, "VDS" );
    (*ppHeader)->version = MEMORY_VERSION;
 
+#if VDS_SUPPORT_i18n
+   (*ppHeader)->useUnicode = true;
+#else
+   (*ppHeader)->useUnicode = false;
+#endif
+   (*ppHeader)->sizeofPtr = SIZEOF_VOID_P;
+#if WORDS_BIGENDIAN
+   (*ppHeader)->bigEndian = true;
+#else
+   (*ppHeader)->bigEndian = false;
+#endif
+   (*ppHeader)->blockSize = VDSE_BLOCK_SIZE;
+   (*ppHeader)->alignment = VDST_STRUCT_ALIGNMENT;
+#if defined(CONFIG_KERNEL_HEADERS)
+   (*ppHeader)->usingSpinlocks = true;
+#else
+   (*ppHeader)->usingSpinlocks = false;
+#endif
+   (*ppHeader)->allocationUnit = VDSE_ALLOCATION_UNIT;
+   strncpy( (*ppHeader)->cpu_type, MYCPU, 19 );
+   strncpy( (*ppHeader)->compiler, MYCC, 19);
+   strncpy( (*ppHeader)->cxxcompiler, MYCXX, 19);
+   
    return errcode;
 }
 

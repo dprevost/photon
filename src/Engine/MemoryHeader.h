@@ -39,6 +39,7 @@ BEGIN_C_DECLS
  */
 typedef struct vdseMemoryHeader
 {
+   char            cookie[4];
    int             version;
    int             running;  /* flag that will indicates system crashes */
    ptrdiff_t       treeMgrOffset;
@@ -53,10 +54,12 @@ typedef struct vdseMemoryHeader
    bool     bigEndian;
    size_t   blockSize;
    size_t   alignment;
-   size_t   allocationSize;
+   size_t   allocationUnit;
+   bool     usingSpinlocks;
+   
    char     cpu_type[20];
    char     compiler[20];
-   char     compilerVersion[20];
+   char     cxxcompiler[20];
    
 } vdseMemoryHeader;
 
