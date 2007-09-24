@@ -74,8 +74,9 @@ int vdseProcMgrRemoveProcess( vdseProcMgr        * pManager,
                               vdseSessionContext * pContext );
 
 /* Used by the crash recovery process */
-void vdseProcMgrReset( vdseProcMgr        * pManager,
+/*void vdseProcMgrReset( vdseProcMgr        * pManager,
                        vdseSessionContext * pContext );
+*/
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

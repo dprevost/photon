@@ -18,16 +18,17 @@ CLEANFILES = *~ core
 # before the Folder tests or the HashMaps tests since the last two use
 # Hash but the Hash tests are after the memory allocation tests since 
 # Hash uses it..
-SUBDIRS =             \
-          List        \
-          LogFile     \
-          MemAlloc    \
-          MemBitmap   \
-          BlockGroup  \
-          MemObject   \
-          Hash        \
-          Transaction \
-          Folder
+SUBDIRS =                \
+          List           \
+          LogFile        \
+          MemAlloc       \
+          MemBitmap      \
+          BlockGroup     \
+          MemObject      \
+          Hash           \
+          Transaction    \
+          ProcessManager \
+          Folder         
 
 check_PROGRAMS =                  \
                  LinkNodeNULLInit \

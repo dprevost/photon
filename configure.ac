@@ -408,6 +408,7 @@ AC_CONFIG_FILES([
    src/Engine/Tests/MemAlloc/Makefile
    src/Engine/Tests/MemBitmap/Makefile
    src/Engine/Tests/MemObject/Makefile
+   src/Engine/Tests/ProcessManager/Makefile
    src/Engine/Tests/Transaction/Makefile
    src/include/Makefile
    src/Java/Makefile

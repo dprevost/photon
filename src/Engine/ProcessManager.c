@@ -49,17 +49,17 @@ int vdseProcMgrInit( vdseProcMgr        * pManager,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseProcMgrReset( vdseProcMgr        * pManager,
-                       vdseSessionContext * pContext )
-{
-   vdseLinkedListReset( &pManager->listOfProcesses );
+//void vdseProcMgrReset( vdseProcMgr        * pManager,
+//                       vdseSessionContext * pContext )
+//{
+  // vdseLinkedListReset( &pManager->listOfProcesses );
 
 //   if ( vdscIsItLocked( &pManager->lock ) )
-   {
+//   {
 //      vdscReleaseProcessLock( &pManager->lock );
-   }
+  // }
 
-}
+//}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -70,6 +70,11 @@ int vdseProcMgrAddProcess( vdseProcMgr        * pManager,
 {
    int errcode, rc = -1;
    vdseProcess* pCurrentBuffer;
+
+   VDS_PRE_CONDITION( pManager  != NULL );
+   VDS_PRE_CONDITION( pContext  != NULL );
+   VDS_PRE_CONDITION( ppProcess != NULL );
+   VDS_PRE_CONDITION( pid > 0 );
 
    /* For recovery purposes, always lock before doing anything! */
    errcode = vdseLock( &pManager->memObject, pContext );
@@ -122,6 +127,11 @@ int vdseProcMgrFindProcess( vdseProcMgr        * pManager,
    vdseProcess *pCurrent, *pNext;
    vdseLinkNode * pNodeCurrent = NULL, * pNodeNext = NULL;
    vdsErrors errcode = VDS_OK;
+
+   VDS_PRE_CONDITION( pManager  != NULL );
+   VDS_PRE_CONDITION( pContext  != NULL );
+   VDS_PRE_CONDITION( ppProcess != NULL );
+   VDS_PRE_CONDITION( pid > 0 );
    
    *ppProcess = NULL;
    
@@ -157,8 +167,9 @@ int vdseProcMgrFindProcess( vdseProcMgr        * pManager,
    else
       errcode = VDS_ENGINE_BUSY;
 
+   /* Is this possible ? */
    if ( *ppProcess == NULL )
-      errcode = VDS_NO_SUCH_OBJECT;
+      errcode = VDS_INTERNAL_ERROR;
 
    if ( errcode !=VDS_OK )
    {
@@ -178,6 +189,10 @@ int vdseProcMgrRemoveProcess( vdseProcMgr        * pManager,
                               vdseSessionContext * pContext )
 {
    int errcode = 0;
+
+   VDS_PRE_CONDITION( pManager != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pProcess != NULL );
    
    /* For recovery purposes, always lock before doing anything! */
    errcode = vdseLock( &pManager->memObject, pContext );
