@@ -14,18 +14,18 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~
 
-noinst_PROGRAMS = InitCrashDemo \
+#noinst_PROGRAMS = InitCrashDemo \
                   CrashClient   \
                   TMDemo        \
                   TMReadLoop
 
 
-InitCrashDemo_SOURCES = InitCrashDemo.cpp demo.h
-CrashClient_SOURCES   = CrashClient.cpp demo.h
-TMDemo_SOURCES        = TMDemo.cpp
-TMReadLoop_SOURCES    = TMReadLoop.cpp
+#InitCrashDemo_SOURCES = InitCrashDemo.cpp demo.h
+#CrashClient_SOURCES   = CrashClient.cpp demo.h
+#TMDemo_SOURCES        = TMDemo.cpp
+#TMReadLoop_SOURCES    = TMReadLoop.cpp
 
-EXTRA_DIST               =                  \
+#EXTRA_DIST               =                  \
                          CrashClient.sh     \
                          StartCrashDemo.sh  \
                          StartTMDemo.sh     \

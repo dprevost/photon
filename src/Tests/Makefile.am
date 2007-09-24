@@ -24,25 +24,25 @@ CLEANFILES = *~ core
 #          CrashRecovery 
 #          Demo
 
-noinst_PROGRAMS = \
+#noinst_PROGRAMS = \
                   Interrupted
 
 
-check_PROGRAMS = \
+#check_PROGRAMS = \
                  bget             
 
 #DoNothing
 
-bget_SOURCES             = bget.cpp
+#bget_SOURCES             = bget.cpp
 #DoNothing_SOURCES        = DoNothing.cpp
-Interrupted_SOURCES = Interrupted.cpp
+#Interrupted_SOURCES = Interrupted.cpp
 
-EXTRA_DIST =                    \
+#EXTRA_DIST =                    \
              bget.sh            
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
-TESTS =                    \
+#TESTS =                    \
         TimerTest          \
         bget.sh            
 

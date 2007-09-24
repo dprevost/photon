@@ -14,9 +14,9 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~
 
-bin_PROGRAMS = vdscr
+#bin_PROGRAMS = vdscr
 
-vdscr_SOURCES =                         \
+#vdscr_SOURCES =                         \
                 CrashRecovery.cpp       \
                 MemoryRecovery.cpp      \
                 MemoryRecovery.h        \

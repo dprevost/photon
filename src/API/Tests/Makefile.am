@@ -16,14 +16,14 @@ CLEANFILES = *~ core
 
 SUBDIRS =  Process
 
-check_PROGRAMS =                  \
+#check_PROGRAMS =                  \
                  SimpleTest1      \
                  TransactionTests 
 
-SimpleTest1_SOURCES = SimpleTest1.cpp
-TransactionTests_SOURCES = TransactionTests.cpp 
+#SimpleTest1_SOURCES = SimpleTest1.cpp
+#TransactionTests_SOURCES = TransactionTests.cpp 
 
-EXTRA_DIST =                 \
+#EXTRA_DIST =                 \
              Common.py       \
              api_tests.py    \
              transactions.py \
@@ -31,7 +31,7 @@ EXTRA_DIST =                 \
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
-TESTS =                 \
+#TESTS =                 \
         python_tests.sh 
 
 LDADD = $(top_builddir)/src/API/libvdsf.la
