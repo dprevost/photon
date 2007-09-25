@@ -29,6 +29,7 @@ int vdseProcessInit( vdseProcess *        pProcess,
 
    VDS_PRE_CONDITION( pProcess != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pid > 0 );
 
    errcode = vdseMemObjectInit( &pProcess->memObject, 
                                 VDSE_IDENT_CLEAN_PROCESS,
@@ -95,6 +96,11 @@ vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
    int errcode, rc = -1;
    vdseSession* pCurrentBuffer;
 
+   VDS_PRE_CONDITION( pProcess    != NULL );
+   VDS_PRE_CONDITION( pApiSession != NULL );
+   VDS_PRE_CONDITION( ppSession   != NULL );
+   VDS_PRE_CONDITION( pContext    != NULL );
+
    *ppSession = NULL;
    /* For recovery purposes, always lock before doing anything! */
    errcode = vdseLock( &pProcess->memObject, pContext );
@@ -125,6 +131,16 @@ vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
                        g_vdsErrorHandle, 
                        VDS_NOT_ENOUGH_VDS_MEMORY );
       }
+
+      /* 
+       * If the init was a success,  this is now initialized. We must
+       * add the previouslock otherwise... the unlock will fail (segv).
+       */
+      if ( pContext->lockOffsets != NULL )
+      {
+         pContext->lockOffsets[*pContext->numLocks] = SET_OFFSET(&pProcess->memObject);
+         (*pContext->numLocks)++;
+      }
       vdseUnlock( &pProcess->memObject, pContext );
    }
    else
@@ -142,6 +158,10 @@ vdsErrors vdseProcessRemoveSession( vdseProcess        * pProcess,
                                     vdseSessionContext * pContext )
 {
    int errcode = 0;
+
+   VDS_PRE_CONDITION( pProcess != NULL );
+   VDS_PRE_CONDITION( pSession != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
 
    /* For recovery purposes, always lock before doing anything! */
    errcode = vdseLock( &pProcess->memObject, pContext );
@@ -171,6 +191,10 @@ int vdseProcessGetFirstSession( vdseProcess        * pProcess,
    vdseLinkNode * pNode = NULL;
    enum ListErrors err;
    
+   VDS_PRE_CONDITION( pProcess  != NULL );
+   VDS_PRE_CONDITION( ppSession != NULL );
+   VDS_PRE_CONDITION( pContext  != NULL );
+
    err = vdseLinkedListPeakFirst( &pProcess->listOfSessions, &pNode );
    if ( err != LIST_OK )
       return -1;
@@ -191,6 +215,11 @@ int vdseProcessGetNextSession( vdseProcess        * pProcess,
    vdseLinkNode * pNode = NULL;
    enum ListErrors err;
    
+   VDS_PRE_CONDITION( pProcess != NULL );
+   VDS_PRE_CONDITION( pCurrent != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( ppNext   != NULL );
+
    err = vdseLinkedListPeakNext( &pProcess->listOfSessions,
                                  &pCurrent->node,
                                  &pNode );

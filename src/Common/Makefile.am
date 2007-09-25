@@ -34,7 +34,7 @@ libCommon_la_SOURCES =                 \
                        ProcessLock.c   \
                        ProcessLock.h   \
                        ProcessLock.inl \
-                       spinlock.c \
+                       spinlock.c      \
                        ThreadLock.c    \
                        ThreadLock.h    \
                        ThreadLock.inl  \

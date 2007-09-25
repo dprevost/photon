@@ -386,6 +386,7 @@ AC_CONFIG_FILES([
    src/API/Makefile
    src/API/Tests/Makefile
    src/API/Tests/Process/Makefile
+   src/API/Tests/Session/Makefile
    src/BuildTools/Makefile
    src/BuildTools/Tests/Makefile
    src/Common/Makefile
@@ -408,6 +409,7 @@ AC_CONFIG_FILES([
    src/Engine/Tests/MemAlloc/Makefile
    src/Engine/Tests/MemBitmap/Makefile
    src/Engine/Tests/MemObject/Makefile
+   src/Engine/Tests/Process/Makefile
    src/Engine/Tests/ProcessManager/Makefile
    src/Engine/Tests/Transaction/Makefile
    src/include/Makefile

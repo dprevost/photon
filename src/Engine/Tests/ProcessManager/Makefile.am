@@ -33,7 +33,7 @@ check_PROGRAMS =                    \
                  RemoveNullProcess  \
                  RemovePass         
 
-COMMON_HEADER = folderTest.h
+COMMON_HEADER = procMgrTest.h
 
 AddNullContext_SOURCES      = $(COMMON_HEADER) AddNullContext.c
 AddNullManager_SOURCES      = $(COMMON_HEADER) AddNullManager.c

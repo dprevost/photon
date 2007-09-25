@@ -28,6 +28,7 @@ SUBDIRS =                \
           Hash           \
           Transaction    \
           ProcessManager \
+          Process        \
           Folder         
 
 check_PROGRAMS =                  \

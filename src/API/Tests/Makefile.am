@@ -14,7 +14,9 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =  Process
+SUBDIRS =         \
+          Process \
+          Session 
 
 #check_PROGRAMS =                  \
                  SimpleTest1      \
