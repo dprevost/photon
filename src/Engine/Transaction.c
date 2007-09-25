@@ -252,7 +252,6 @@ int vdseTxCommit( vdseTx*             pTx,
 
             /* Remove it from the folder (from the hash list) */
             vdseFolderRemoveObject( parentFolder, 
-                                    pChildMemObject,
                                     GET_PTR(pChildNode->myKeyOffset, vdsChar_T),
                                     pChildNode->myNameLength,
                                     pContext );
@@ -408,7 +407,6 @@ void vdseTxRollback( vdseTx*             pTx,
 
             /* Remove it from the folder (from the hash list) */
             vdseFolderRemoveObject( parentFolder, 
-                                    pChildMemObject,
                                     GET_PTR(pChildNode->myKeyOffset, vdsChar_T),
                                     pChildNode->myNameLength,
                                     pContext );

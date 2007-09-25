@@ -89,13 +89,13 @@ int vdseFolderDeleteObject( vdseFolder*         pFolder,
                             size_t              strLength, 
                             vdseSessionContext* pContext );
                             
-VDSF_ENGINE_EXPORT
-bool vdseFolderDeletable( vdseFolder*         pFolder,
-                          vdseSessionContext* pContext );
-
+/** 
+ * This function does the actual removal of the entry in the list of the
+ * folder object (once there are no pending transactions, no sessions
+ * have this object open, etc...).
+ */
 VDSF_ENGINE_EXPORT
 void vdseFolderRemoveObject( vdseFolder*         pFolder,
-                             vdseMemObject*      pMemObj,
                              const vdsChar_T*    objectName,
                              size_t              nameLength,
                              vdseSessionContext* pContext );
@@ -114,16 +114,7 @@ vdsErrors vdseFolderRollbackDestroy( vdseFolder*         pFolder,
                           ptrdiff_t       childOffset,
                            vdseSessionContext* pContext );
 
-   /** This function does the actual removal of the entry in the list of the
-    *  folder object (once there are no pending transactions, no sessions
-    *  have this object open, etc...).
-    */
-VDSF_ENGINE_EXPORT
-   vdsErrors vdseFolderRemoveObject( vdseFolder*         pFolder,
-                          BaseNode*     pNode,
-                           enum vdsObjectType type,
-                           vdseSessionContext* pContext );
-
+   
 VDSF_ENGINE_EXPORT
    bool vdseFolderSelfTest( vdseFolder*         pFolder,
                           vdseMemAlloc* pAlloc );

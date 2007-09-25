@@ -174,5 +174,47 @@ char* strCheckLow( char* str )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+vdseFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
+                               vdseSessionContext* pContext )
+{
+   int errcode;
+   vdseFolder* pFolder;
+   pFolder = initFolderTest( testIsExpectedToSucceed, pContext );
+   
+   errcode = vdseMemObjectInit( &pFolder->memObject, 
+                                VDSE_IDENT_FOLDER,
+                                &pFolder->blockGroup,
+                                1 );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
+      if ( testIsExpectedToSucceed )
+         exit(1);
+      exit(0);
+   }
+
+   pFolder->nodeObject.txCounter      = 0;
+   pFolder->nodeObject.myNameLength   = 0;
+   pFolder->nodeObject.myNameOffset   = NULL_OFFSET;
+   pFolder->nodeObject.txStatusOffset = NULL_OFFSET;
+   pFolder->nodeObject.myParentOffset = NULL_OFFSET;
+
+   /* Set this so that Hash knows where to allocate memory from */
+   pContext->pCurrentMemObject = (void *) &pFolder->memObject;
+
+   errcode = vdseHashInit( &pFolder->hashObj, 25, pContext );
+   if ( errcode != 0 )
+   {
+      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
+      if ( testIsExpectedToSucceed )
+         exit(1);
+      exit(0);
+   }   
+
+   return pFolder;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 #endif /* VDST_FOLDER_TEST_H */
 

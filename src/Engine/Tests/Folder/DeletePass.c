@@ -17,12 +17,6 @@
 
 #include "folderTest.h"
 
-#if VDS_SUPPORT_i18n
-#  define PREFIX L
-#else
-#  define PREFIX
-#endif
-
 const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

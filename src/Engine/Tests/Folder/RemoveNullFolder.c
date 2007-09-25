@@ -17,7 +17,7 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -47,20 +47,13 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test3"),
-                                     strCheck("Test3"),
-                                     5,
-                                     VDS_FOLDER,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) 
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   vdseFolderRemoveObject( NULL,
+                           strCheckLow("test2"),
+                           5,
+                           &context );
 
-   vdseFolderFini( pFolder, &context );
-   
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

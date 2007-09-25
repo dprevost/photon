@@ -17,50 +17,46 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   vdseFolder* pFolder;
+   vdseFolder * pTopFolder;
    vdseSessionContext context;
    int errcode;
    vdseTxStatus status;
+   vdseObjectDescriptor * pDescriptor = NULL;
    
-   pFolder = initFolderTest( expectedToPass, &context );
+   pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
-   
-   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, strCheck("Test1"), &context );
-   if ( errcode != 0 ) 
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   
-   errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test2"),
-                                     strCheck("Test2"),
-                                     5,
-                                     VDS_FOLDER,
-                                     1,
-                                     0,
-                                     &context );
+   errcode = vdseTopFolderCreateObject( pTopFolder,
+                                        "Test1",
+                                        VDS_FOLDER,
+                                        &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test3"),
-                                     strCheck("Test3"),
-                                     5,
-                                     VDS_FOLDER,
-                                     1,
-                                     0,
-                                     &context );
+   errcode = vdseTopFolderCreateObject( pTopFolder,
+                                        "Test1/Test2",
+                                        VDS_FOLDER,
+                                        &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
-   vdseFolderFini( pFolder, &context );
    
-   return 0;
+   errcode = vdseTopFolderOpenObject( pTopFolder,
+                                      "Test1/Test2",
+                                      &pDescriptor,
+                                      &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   
+   errcode = vdseTopFolderCloseObject( pDescriptor,
+                                       NULL );
+
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

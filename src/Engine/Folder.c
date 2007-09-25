@@ -30,13 +30,15 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static bool ValidateString( const vdsChar_T* objectName,
-                            size_t           strLength, 
-                            size_t*          pPartialLength,
-                            bool*            pLastIteration );
+static 
+bool ValidateString( const vdsChar_T* objectName,
+                     size_t           strLength, 
+                     size_t*          pPartialLength,
+                     bool*            pLastIteration );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static
 bool vdseFolderDeletable( vdseFolder*         pFolder,
                           vdseSessionContext* pContext )
 {
@@ -726,7 +728,6 @@ bool ValidateString( const vdsChar_T* objectName,
  * lock on the folder is the responsability of the caller.
  */
 void vdseFolderRemoveObject( vdseFolder*         pFolder,
-                             vdseMemObject*      pMemObj,
                              const vdsChar_T*    objectName,
                              size_t              nameLength,
                              vdseSessionContext* pContext )
@@ -734,7 +735,6 @@ void vdseFolderRemoveObject( vdseFolder*         pFolder,
    enum ListErrors listErr;
    
    VDS_PRE_CONDITION( pFolder    != NULL );
-   VDS_PRE_CONDITION( pMemObj    != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( nameLength > 0 );
@@ -774,12 +774,17 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
    const char * name = objectName, *lowerName = NULL;
 #endif
 
+   VDS_PRE_CONDITION( pFolder    != NULL );
+   VDS_PRE_CONDITION( objectName != NULL );
+   VDS_PRE_CONDITION( pContext   != NULL );
+   VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
+
 #if VDS_SUPPORT_i18n
    strLength = mbsrtowcs( NULL, &objectName, 0, &ps );
 #else
    strLength = strlen( objectName );
 #endif
-   
+
    if ( strLength > VDS_MAX_NAME_LENGTH )
    {
       errcode = VDS_OBJECT_NAME_TOO_LONG;
@@ -887,6 +892,10 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
 #else
    const char * name = objectName, *lowerName = NULL;
 #endif
+
+   VDS_PRE_CONDITION( pFolder    != NULL );
+   VDS_PRE_CONDITION( objectName != NULL );
+   VDS_PRE_CONDITION( pContext   != NULL );
 
 #if VDS_SUPPORT_i18n
    strLength = mbsrtowcs( NULL, &objectName, 0, &ps );
@@ -1008,6 +1017,11 @@ int vdseTopFolderOpenObject( vdseFolder            * pFolder,
    const char * name = objectName, *lowerName = NULL;
 #endif
 
+   VDS_PRE_CONDITION( pFolder      != NULL );
+   VDS_PRE_CONDITION( ppDescriptor != NULL );
+   VDS_PRE_CONDITION( objectName   != NULL );
+   VDS_PRE_CONDITION( pContext     != NULL );
+
 #if VDS_SUPPORT_i18n
    strLength = mbsrtowcs( NULL, &objectName, 0, &ps );
 #else
@@ -1110,6 +1124,9 @@ int vdseTopFolderCloseObject( vdseObjectDescriptor * pDescriptor,
    vdseFolder * parentFolder;
    vdseTreeNode* pNode;
    vdseTxStatus* pStatus;
+
+   VDS_PRE_CONDITION( pDescriptor != NULL );
+   VDS_PRE_CONDITION( pContext    != NULL );
    
    pNode = GET_PTR( pDescriptor->nodeOffset, vdseTreeNode);
    
