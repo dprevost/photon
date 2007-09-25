@@ -29,6 +29,7 @@ SUBDIRS =                \
           Transaction    \
           ProcessManager \
           Process        \
+          Session        \
           Folder         
 
 check_PROGRAMS =                  \

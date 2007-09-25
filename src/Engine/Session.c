@@ -30,8 +30,9 @@ int vdseSessionInit( vdseSession        * pSession,
    int rc = -1;
    vdseTx *pTx;
    
-   VDS_PRE_CONDITION( pSession  != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
+   VDS_PRE_CONDITION( pSession    != NULL );
+   VDS_PRE_CONDITION( pContext    != NULL );
+   VDS_PRE_CONDITION( pApiSession != NULL );
    
    errcode = vdseMemObjectInit( &pSession->memObject, 
                                 VDSE_IDENT_CLEAN_SESSION,
@@ -130,6 +131,13 @@ int vdseSessionAddObj( vdseSession        * pSession,
    int errcode = 0, rc = -1;
    vdseObjectContext* pCurrentBuffer;
 
+   VDS_PRE_CONDITION( pSession     != NULL );
+   VDS_PRE_CONDITION( pProxyObject != NULL );
+   VDS_PRE_CONDITION( ppObject     != NULL );
+   VDS_PRE_CONDITION( pContext     != NULL );
+   VDS_PRE_CONDITION( objOffset    != NULL_OFFSET );
+   VDS_PRE_CONDITION( objType > 0 && objType < VDS_LAST_OBJECT_TYPE );
+   
    /* For recovery purposes, always lock before doing anything! */
    errcode = vdseLock( &pSession->memObject, pContext );
    if ( errcode == 0 )
@@ -172,6 +180,10 @@ int vdseSessionRemoveObj( vdseSession        * pSession,
 {
    int errcode = VDS_OK;
 
+   VDS_PRE_CONDITION( pSession != NULL );
+   VDS_PRE_CONDITION( pObject  != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+
    /* For recovery purposes, always lock before doing anything! */
    errcode = vdseLock( &pSession->memObject, pContext );
    if ( errcode == 0 )
@@ -205,6 +217,9 @@ int vdseSessionRemoveFirst( vdseSession        * pSession,
    int rc;
    vdseObjectContext * pObject;
    
+   VDS_PRE_CONDITION( pSession != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+
    rc = vdseLinkedListGetFirst( &pSession->listOfObjects, 
                                 &pNode );
    if ( rc == 0 )
@@ -231,6 +246,10 @@ int vdseSessionGetFirst( vdseSession        * pSession,
 {
    vdseLinkNode * pNode = NULL;
    int rc;
+
+   VDS_PRE_CONDITION( pSession != NULL );
+   VDS_PRE_CONDITION( ppObject != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
    
    rc = vdseLinkedListPeakFirst( &pSession->listOfObjects, 
                                  &pNode );
