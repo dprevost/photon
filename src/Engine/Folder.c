@@ -771,7 +771,8 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
    mbstate_t ps;
    wchar_t * name = NULL, *lowerName = NULL;
 #else
-   const char * name = objectName, *lowerName = NULL;
+   const char * name = objectName;
+   char * lowerName = NULL;
 #endif
 
    VDS_PRE_CONDITION( pFolder    != NULL );
@@ -807,7 +808,7 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
    
    mbsrtowcs( name, &objectName, strLength, &ps );
 #else
-   lowerName = (char_t*)malloc( (strLength+1)*sizeof(char_t) );
+   lowerName = (char*)malloc( (strLength+1)*sizeof(char) );
 #endif
    if ( lowerName == NULL ) 
    {
@@ -817,7 +818,7 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
 
    /* lowecase the string */
    for ( i = 0; i < strLength; ++i )
-      lowerName[i] = vds_tolower( name[i] );
+      lowerName[i] = (vdsChar_T) vds_tolower( name[i] );
    
    /* strip the first char if a separator */
    if ( name[0] == VDS_SLASH || name[0] == VDS_BACKSLASH )
@@ -888,9 +889,10 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
    size_t first = 0;
 #if VDS_SUPPORT_i18n
    mbstate_t ps;
-   wchar_t * name = NULL, *lowerName = NULL;
+   wchar_t * name = NULL, * lowerName = NULL;
 #else
-   const char * name = objectName, *lowerName = NULL;
+   const char * name = objectName;
+   char * lowerName = NULL;
 #endif
 
    VDS_PRE_CONDITION( pFolder    != NULL );
@@ -915,17 +917,17 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
    }
 
 #if VDS_SUPPORT_i18n
-   name = (wchar_t*)malloc( (strLength+1)*sizeof(wchar_t) );
+   name = (wchar_t *)malloc( (strLength+1)*sizeof(wchar_t) );
    if ( name == NULL ) 
    {
       errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
       goto error_handler;
    }
-   lowerName = (wchar_t*)malloc( (strLength+1)*sizeof(wchar_t) );
+   lowerName = (wchar_t *) malloc( (strLength+1)*sizeof(wchar_t) );
    
    mbsrtowcs( name, &objectName, strLength, &ps );
 #else
-   lowerName = (char_t*)malloc( (strLength+1)*sizeof(char_t) );
+   lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
 #endif
    if ( lowerName == NULL ) 
    {
@@ -935,7 +937,7 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
 
    /* lowecase the string */
    for ( i = 0; i < strLength; ++i )
-      lowerName[i] = vds_tolower( name[i] );
+      lowerName[i] = (vdsChar_T) vds_tolower( name[i] );
    
    /* strip the first char if a separator */
    if ( name[0] == VDS_SLASH || name[0] == VDS_BACKSLASH )
@@ -956,14 +958,6 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
                                    strLength,
                                    pContext );
 
-//      rc = vdseFolderInsertObject( pFolder,
-//                                   &(lowerName[first]),
-//                                   &(name[first]),
-//                                   strLength, 
-//                                   objectType,
-//                                   1, /* numBlocks, */
-//                                   0, /* expectedNumOfChilds, */
-//                                   pContext );
       vdseUnlock( &pFolder->memObject, pContext );
       if ( rc != 0 ) goto error_handler;
    }
@@ -1012,9 +1006,10 @@ int vdseTopFolderOpenObject( vdseFolder            * pFolder,
    size_t first = 0;
 #if VDS_SUPPORT_i18n
    mbstate_t ps;
-   wchar_t * name = NULL, *lowerName = NULL;
+   wchar_t * name = NULL, * lowerName = NULL;
 #else
-   const char * name = objectName, *lowerName = NULL;
+   const char * name = objectName;
+   char * lowerName = NULL;
 #endif
 
    VDS_PRE_CONDITION( pFolder      != NULL );
@@ -1040,17 +1035,17 @@ int vdseTopFolderOpenObject( vdseFolder            * pFolder,
    }
 
 #if VDS_SUPPORT_i18n
-   name = (wchar_t*)malloc( (strLength+1)*sizeof(wchar_t) );
+   name = (wchar_t *) malloc( (strLength+1)*sizeof(wchar_t) );
    if ( name == NULL ) 
    {
       errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
       goto error_handler;
    }
-   lowerName = (wchar_t*)malloc( (strLength+1)*sizeof(wchar_t) );
+   lowerName = (wchar_t *) malloc( (strLength+1)*sizeof(wchar_t) );
    
    mbsrtowcs( name, &objectName, strLength, &ps );
 #else
-   lowerName = (char_t*)malloc( (strLength+1)*sizeof(char_t) );
+   lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
 #endif
    if ( lowerName == NULL ) 
    {
@@ -1060,7 +1055,7 @@ int vdseTopFolderOpenObject( vdseFolder            * pFolder,
 
    /* lowecase the string */
    for ( i = 0; i < strLength; ++i )
-      lowerName[i] = vds_tolower( name[i] );
+      lowerName[i] = (vdsChar_T) vds_tolower( name[i] );
    
    /* strip the first char if a separator */
    if ( name[0] == VDS_SLASH || name[0] == VDS_BACKSLASH )
@@ -1121,9 +1116,9 @@ error_handler:
 int vdseTopFolderCloseObject( vdseObjectDescriptor * pDescriptor,
                               vdseSessionContext   * pContext )
 {
-   vdseFolder * parentFolder;
-   vdseTreeNode* pNode;
-   vdseTxStatus* pStatus;
+   vdseFolder   * parentFolder;
+   vdseTreeNode * pNode;
+   vdseTxStatus * pStatus;
 
    VDS_PRE_CONDITION( pDescriptor != NULL );
    VDS_PRE_CONDITION( pContext    != NULL );
