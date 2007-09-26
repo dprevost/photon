@@ -26,7 +26,7 @@ int main()
    vdseProcMgr* pManager;
    vdseSessionContext context;
    int errcode;
-   vdseProcess process;
+   vdseProcess * process;
    
    pManager = initProcMgrTest( expectedToPass, &context );
 

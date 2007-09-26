@@ -30,13 +30,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(2)
+Dim failed_tests(24)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(0)
-Dim fail_programs(1)
+Dim ok_programs(5)
+Dim fail_programs(18)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -50,12 +50,34 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0)   = "LinkNodeTestTest"
+ok_programs(0) = "AddPass"
+ok_programs(1) = "FiniPass"
+ok_programs(2) = "GetFirstPass"
+ok_programs(3) = "InitPass"
+ok_programs(4) = "RemovePass"
+ok_programs(5) = "RemoveFirstPass"          
 
-fail_programs(0) = "LinkNodeNULLInit"
-fail_programs(1) = "LinkNodeNULLTest"
+fail_programs(0)  = "AddInvalidType"
+fail_programs(1)  = "AddNullApiObject"
+fail_programs(2)  = "AddNullContext"
+fail_programs(3)  = "AddNullObject"
+fail_programs(4)  = "AddNullOffset"
+fail_programs(5)  = "AddNullSession"
+fail_programs(6)  = "FiniNullContext"
+fail_programs(7)  = "FiniNullSession"
+fail_programs(8)  = "GetFirstNullContext"
+fail_programs(9)  = "GetFirstNullObject"
+fail_programs(10) = "GetFirstNullSession"
+fail_programs(11) = "InitNullApiSession"
+fail_programs(12) = "InitNullContext"
+fail_programs(13) = "InitNullSession"
+fail_programs(14) = "RemoveNullContext"
+fail_programs(15) = "RemoveNullObject"
+fail_programs(16) = "RemoveNullSession"
+fail_programs(17) = "RemoveFirstNullContext"
+fail_programs(18) = "RemoveFirstNullSession"
 
-numTests = 3                ' Sum of length of both arrays 
+numTests = 25                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject

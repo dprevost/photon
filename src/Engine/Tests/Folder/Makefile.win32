@@ -45,7 +45,29 @@ check_PROGRAMS =                                    \
                  .\Release\InsertPass.exe           \
                  .\Release\InsertZeroBlocks.exe     \
                  .\Release\InsertZeroNameLength.exe \
-                 .\Release\Tests.exe
+                 .\Release\Tests.exe                \
+                 .\Release\CloseNullContext.exe     \
+                 .\Release\CloseNullDescriptor.exe  \
+                 .\Release\ClosePass.exe            \
+                 .\Release\CreateNullContext.exe    \
+                 .\Release\CreateNullFolder.exe     \
+                 .\Release\CreateNullName.exe       \
+                 .\Release\CreatePass.exe           \
+                 .\Release\CreateWrongType.exe      \
+                 .\Release\DestroyNullContext.exe   \
+                 .\Release\DestroyNullFolder.exe    \
+                 .\Release\DestroyNullName.exe      \
+                 .\Release\DestroyPass.exe          \
+                 .\Release\OpenNullContext.exe      \
+                 .\Release\OpenNullDescriptor.exe   \
+                 .\Release\OpenNullFolder.exe       \
+                 .\Release\OpenNullName.exe         \
+                 .\Release\OpenPass.exe             \
+                 .\Release\RemoveNullContext.exe    \
+                 .\Release\RemoveNullFolder.exe     \
+                 .\Release\RemoveNullName.exe       \
+                 .\Release\RemovePass.exe           \
+                 .\Release\RemoveZeroLength.exe     
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 #

@@ -24,7 +24,6 @@ const bool expectedToPass = false;
 
 int main()
 {
-   vdscErrorHandler error;
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr;
    size_t allocatedLength = VDSE_BLOCK_SIZE*10;

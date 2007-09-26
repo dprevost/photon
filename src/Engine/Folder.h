@@ -127,20 +127,24 @@ VDSF_ENGINE_EXPORT
  * open or close a memory object.
  */
 
+VDSF_ENGINE_EXPORT
 int vdseTopFolderCreateObject( vdseFolder         * pFolder,
                                const char         * objectName,
                                enum vdsObjectType   objectType,
                                vdseSessionContext * pContext );
 
+VDSF_ENGINE_EXPORT
 int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
                                 const char         * objectName,
                                 vdseSessionContext * pContext );
 
+VDSF_ENGINE_EXPORT
 int vdseTopFolderOpenObject( vdseFolder            * pFolder,
                              const char            * objectName,
                              vdseObjectDescriptor ** ppDescriptor,
                              vdseSessionContext    * pContext );
 
+VDSF_ENGINE_EXPORT
 int vdseTopFolderCloseObject( vdseObjectDescriptor * pDescriptor,
                               vdseSessionContext   * pContext );
 

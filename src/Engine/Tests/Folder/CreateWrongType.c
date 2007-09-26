@@ -23,15 +23,16 @@ const bool expectedToPass = false;
 
 int main()
 {
-   vdseFolder* pFolder;
+   vdseFolder * pTopFolder;
    vdseSessionContext context;
-   vdseTxStatus status;
+   int errcode;
    
-   pFolder = initFolderTest( expectedToPass, &context );
+   pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
-   
-   vdseFolderInit( pFolder, 0, 1, 0, &status, 5, NULL, &context );
+   errcode = vdseTopFolderCreateObject( pTopFolder,
+                                        "Test1",
+                                        0,
+                                        &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

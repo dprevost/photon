@@ -26,7 +26,6 @@ int main()
    vdseProcess * process;
    vdseSessionContext context;
    int errcode;
-   vdseSession * pSession;
    void * pApiSession = (void *) &errcode; /* A dummy pointer */
    
    process = initProcessTest( expectedToPass, &context );

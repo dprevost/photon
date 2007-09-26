@@ -51,6 +51,7 @@ typedef struct vdseProcessManager
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+VDSF_ENGINE_EXPORT
 int vdseProcMgrInit( vdseProcMgr        * pManager,
                      vdseSessionContext * pContext );
 
@@ -59,16 +60,19 @@ void vdseProcMgrFini( vdseProcessManager * pManager,
                       vdseSessionContext * pContext );
 */
 
+VDSF_ENGINE_EXPORT
 int vdseProcMgrAddProcess( vdseProcMgr        * pManager,
                            pid_t                pid, 
                            vdseProcess       ** ppCleanupProcess,
                            vdseSessionContext * pContext );
 
+VDSF_ENGINE_EXPORT
 int vdseProcMgrFindProcess( vdseProcMgr        * pManager,
                             pid_t                pid, 
                             vdseProcess       ** ppCleanupProcess,
                             vdseSessionContext * pContext );
 
+VDSF_ENGINE_EXPORT
 int vdseProcMgrRemoveProcess( vdseProcMgr        * pManager,
                               vdseProcess        * pCleanupProcess,
                               vdseSessionContext * pContext );

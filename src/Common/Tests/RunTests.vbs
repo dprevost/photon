@@ -23,7 +23,7 @@ Option Explicit
 '
 ' ***********************************************************************
 
-Dim rc, numTests, numFailed, verbose
+Dim rc, numTests, numFailed, verbose, status
 Dim objShell
 Dim objWshScriptExec
 Dim fso, stdin, stdout, stderr

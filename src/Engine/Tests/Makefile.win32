@@ -15,8 +15,8 @@ include .\Makefile.inc.Win32
 #
 LDD_FLAGS = $(W32_SYS_LIBS)     vdsfEngine.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Release" 
 LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) vdsfEngine.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Debug" 
-CFLAGS_DEBUG=   /nologo /MDd /W4     /I ".." /I "../.." /I "../../Common" /I "../../Tests" /I "../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
-CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I ".." /I "../.." /I "../../Common" /I "../../Tests" /I "../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
+CFLAGS_DEBUG=   /nologo /MDd /W4     /I "../.." /I "../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
+CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I "../.." /I "../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
 
 all: 
 
@@ -31,38 +31,47 @@ check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 
 check: $(OUTDIR) $(check_PROGRAMS)
 	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
-	cd List        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd LogFile     && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd MemAlloc    && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd MemBitmap   && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd BlockGroup  && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd MemObject   && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Hash        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Folder      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Transaction && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd List           && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd LogFile        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd MemAlloc       && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd MemBitmap      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd BlockGroup     && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd MemObject      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Hash           && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Transaction    && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd ProcessManager && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Process        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Session        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Folder         && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
 	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
-	cd List        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd LogFile     && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd MemAlloc    && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd MemBitmap   && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd BlockGroup  && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd MemObject   && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Hash        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Folder      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Transaction && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd List           && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd LogFile        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd MemAlloc       && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd MemBitmap      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd BlockGroup     && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd MemObject      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Hash           && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Transaction    && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd ProcessManager && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Process        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Session        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Folder         && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 clean: 
-	cd List        && nmake -f Makefile.win32 clean && cd ..
-	cd LogFile     && nmake -f Makefile.win32 clean && cd ..
-	cd MemAlloc    && nmake -f Makefile.win32 clean && cd ..
-	cd MemBitmap   && nmake -f Makefile.win32 clean && cd ..
-	cd MemObject   && nmake -f Makefile.win32 clean && cd ..
-	cd BlockGroup  && nmake -f Makefile.win32 clean && cd ..
-	cd Hash        && nmake -f Makefile.win32 clean && cd ..
-	cd Folder      && nmake -f Makefile.win32 clean && cd ..
-	cd Transaction && nmake -f Makefile.win32 clean && cd ..
+	cd List           && nmake -f Makefile.win32 clean && cd ..
+	cd LogFile        && nmake -f Makefile.win32 clean && cd ..
+	cd MemAlloc       && nmake -f Makefile.win32 clean && cd ..
+	cd MemBitmap      && nmake -f Makefile.win32 clean && cd ..
+	cd MemObject      && nmake -f Makefile.win32 clean && cd ..
+	cd BlockGroup     && nmake -f Makefile.win32 clean && cd ..
+	cd Hash           && nmake -f Makefile.win32 clean && cd ..
+	cd Transaction    && nmake -f Makefile.win32 clean && cd ..
+	cd ProcessManager && nmake -f Makefile.win32 clean && cd ..
+	cd Process        && nmake -f Makefile.win32 clean && cd ..
+	cd Session        && nmake -f Makefile.win32 clean && cd ..
+	cd Folder         && nmake -f Makefile.win32 clean && cd ..
 	-@erase /Q Debug
 	-@rmdir /Q Debug
 	-@erase /Q Release

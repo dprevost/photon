@@ -26,7 +26,6 @@ int main()
    vdseSession * pSession;
    vdseSessionContext context;
    int errcode;
-   void * pApiSession = (void *) &errcode; /* dummy pointer */
    
    pSession = initSessionTest( expectedToPass, &context );
 

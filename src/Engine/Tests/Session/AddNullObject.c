@@ -28,7 +28,6 @@ int main()
    int errcode;
    void * pApiObject = (void *) &errcode; /* dummy pointer */
    ptrdiff_t objOffset;
-   vdseObjectContext * pObject;
    
    pSession = initSessionTest( expectedToPass, &context );
 

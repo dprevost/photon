@@ -26,7 +26,6 @@ int main()
    vdseFolder * pTopFolder;
    vdseSessionContext context;
    int errcode;
-   vdseTxStatus status;
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 

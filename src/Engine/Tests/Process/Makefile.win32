@@ -1,0 +1,57 @@
+# Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+include ..\Makefile.inc.Win32
+
+all: 
+
+check_PROGRAMS =                                   \
+                 .\Release\AddNullApiSession.exe   \
+                 .\Release\AddNullContext.exe      \
+                 .\Release\AddNullProcess.exe      \
+                 .\Release\AddNullSession.exe      \
+                 .\Release\AddPass.exe             \
+                 .\Release\FiniNullContext.exe     \
+                 .\Release\FiniNullProcess.exe     \
+                 .\Release\FiniPass.exe            \
+                 .\Release\GetFirstNullContext.exe \
+                 .\Release\GetFirstNullProcess.exe \
+                 .\Release\GetFirstNullSession.exe \
+                 .\Release\GetFirstPass.exe        \
+                 .\Release\GetNextNullContext.exe  \
+                 .\Release\GetNextNullCurrent.exe  \
+                 .\Release\GetNextNullNext.exe     \
+                 .\Release\GetNextNullProcess.exe  \
+                 .\Release\GetNextPass.exe         \
+                 .\Release\InitNullContext.exe     \
+                 .\Release\InitNullProcess.exe     \
+                 .\Release\InitPass.exe            \
+                 .\Release\InitZeroPid.exe         \
+                 .\Release\RemoveNullContext.exe   \
+                 .\Release\RemoveNullProcess.exe   \
+                 .\Release\RemoveNullSession.exe   \
+                 .\Release\RemovePass.exe          
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+#
+
+check: $(OUTDIR) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+
+checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+
+clean: 
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+

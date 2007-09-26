@@ -30,13 +30,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(32)
+Dim failed_tests(54)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(5)
-Dim fail_programs(26)
+Dim ok_programs(10)
+Dim fail_programs(43)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -50,13 +50,18 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0) = "DeletePass"
-ok_programs(1) = "FiniPass"
-ok_programs(2) = "GetPass"
-ok_programs(3) = "InitPass"
-ok_programs(4) = "InsertPass"
-ok_programs(5) = "Tests"
-
+ok_programs(0)  = "DeletePass"
+ok_programs(1)  = "FiniPass"
+ok_programs(2)  = "GetPass"
+ok_programs(3)  = "InitPass"
+ok_programs(4)  = "InsertPass"
+ok_programs(5)  = "Tests"
+ok_programs(6)  = "ClosePass"
+ok_programs(7)  = "CreatePass"
+ok_programs(8)  = "DestroyPass"
+ok_programs(9)  = "OpenPass"
+ok_programs(10) = "RemovePass"
+        
 fail_programs(0)  = "DeleteInvalidSig"
 fail_programs(1)  = "DeleteNullContext"
 fail_programs(2)  = "DeleteNullFolder"
@@ -84,8 +89,25 @@ fail_programs(23) = "InsertNullName"
 fail_programs(24) = "InsertNullOrigName"
 fail_programs(25) = "InsertZeroBlocks"
 fail_programs(26) = "InsertZeroNameLength"
+fail_programs(27) = "CloseNullContext"
+fail_programs(28) = "CloseNullDescriptor"
+fail_programs(29) = "CreateNullContext"
+fail_programs(30) = "CreateNullFolder"
+fail_programs(31) = "CreateNullName"
+fail_programs(32) = "CreateWrongType"
+fail_programs(33) = "DestroyNullContext"
+fail_programs(34) = "DestroyNullFolder"
+fail_programs(35) = "DestroyNullName"
+fail_programs(36) = "OpenNullContext"
+fail_programs(37) = "OpenNullDescriptor"
+fail_programs(38) = "OpenNullFolder"
+fail_programs(39) = "OpenNullName"
+fail_programs(40) = "RemoveNullContext"
+fail_programs(41) = "RemoveNullFolder"
+fail_programs(42) = "RemoveNullName"
+fail_programs(43) = "RemoveZeroLength"
 
-numTests = 33                 ' Sum of length of both arrays 
+numTests = 55                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject

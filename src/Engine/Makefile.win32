@@ -49,6 +49,9 @@ OBJS_RELEASE= \
 	"$(INTDIR_RELEASE)\MemBitmap.obj" \
 	"$(INTDIR_RELEASE)\MemoryAllocator.obj" \
 	"$(INTDIR_RELEASE)\MemoryObject.obj" \
+	"$(INTDIR_RELEASE)\Process.obj" \
+	"$(INTDIR_RELEASE)\ProcessManager.obj" \
+	"$(INTDIR_RELEASE)\Session.obj" \
 	"$(INTDIR_RELEASE)\Transaction.obj" \
 	"$(INTDIR_RELEASE)\VdsErrorHandler.obj"
 
