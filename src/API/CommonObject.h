@@ -15,22 +15,22 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_OBJECT_H
-#define VDSA_OBJECT_H
+#ifndef VDSA_COMMON_OBJECT_H
+#define VDSA_COMMON_OBJECT_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/ThreadLock.h"
 #include "Engine/TreeNode.h"
+#include "API/Session.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Forward declaration */
-struct vdsaSession;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdsaProxyObject
+typedef struct vdsaCommonObject
 {
    /** 
     * Pointer to our own cleanup object in the VDS. This object is used by 
@@ -40,19 +40,26 @@ typedef struct vdsaProxyObject
    void*  pObjectContext;
 
    /** Pointer to the session we belong to. */
-   vdsaSession* pSession;
+   struct vdsaSession* pSession;
 
-   /** Our copy of the descriptor object. */
-   vdseObjectDescriptor desc;
-
-   void * pIterator;
+  /** A pointer to the descriptor object (in VDS memory). */
+   vdseObjectDescriptor * pDesc;
    
-} vdsaProxyObject;
+} vdsaCommonObject;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdsaCommonObjectOpen( vdsaCommonObject   * pObject,
+                          enum vdsObjectType   objectType, 
+                          const char         * objectName );
+
+int vdsCommonObjectClose( vdsaCommonObject * pObject );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Lock the current object. */
-int vdsaProxyLock( vdsaProxyObject * pObject )
+static inline
+int vdsaCommonLock( vdsaCommonObject * pObject )
 {
    if ( g_protectionIsNeeded )
    {
@@ -65,7 +72,8 @@ int vdsaProxyLock( vdsaProxyObject * pObject )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Lock the current object. */
-void vdsaProxyUnlock( vdsaProxyObject * pObject )
+static inline
+void vdsaCommonUnlock( vdsaCommonObject * pObject )
 {
    if ( g_protectionIsNeeded )
    {
@@ -77,18 +85,19 @@ void vdsaProxyUnlock( vdsaProxyObject * pObject )
 
 /** 
  * Called by the vdsaSession upon session termination. 
- * Setting vdsaProxyObject.pObjectContext to NULL indicates that a 
+ * Setting vdsaCommonObject.pObjectContext to NULL indicates that a 
  * process or a session has terminated and that no further access to 
  * the VDS is allowed/possible!
  *
  * \todo Not sure if this makes sense anymore. Revisit!
  */
-void vdsaProxyCloseObject( vdsaProxyObject * pObject )
+static inline
+void vdsaCommonCloseObject( vdsaCommonObject * pObject )
 {
    pObject->pObjectContext = NULL;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_OBJECT_H */
+#endif /* VDSA_COMMON_OBJECT_H */
 
