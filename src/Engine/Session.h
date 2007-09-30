@@ -47,7 +47,7 @@ typedef struct vdseObjectContext
     * We cannot use the real type since the Engine does not know about
     * the API objects.
     */
-   void * pProxyObject; 
+   void * pCommonObject; 
    
    /** Our node in the linked list of the vdseSession object. */
    vdseLinkNode node;
@@ -108,7 +108,7 @@ VDSF_ENGINE_EXPORT
 int vdseSessionAddObj( vdseSession        * pSession,
                        ptrdiff_t            objOffset, 
                        enum vdsObjectType   objType, 
-                       void *               pProxyObject,
+                       void *               pCommonObject,
                        vdseObjectContext ** ppObject,
                        vdseSessionContext * pContext );
 

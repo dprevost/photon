@@ -19,7 +19,7 @@
 #include <vdsf/vds_c.h>
 #include "API/Session.h"
 #include "API/Process.h"
-#include "API/ProxyObject.h"
+#include "API/CommonObject.h"
 #include "Engine/MemoryHeader.h"
 #include "Engine/Process.h"
 #include "Engine/Session.h"
@@ -152,8 +152,8 @@ error_handler:
 int vdsExitSession( VDS_HANDLE sessionHandle )
 {
    vdsaSession* pSession;
-   vdseObjectContext* pObject = NULL;
-   vdsaProxyObject* pProxyObject = NULL;
+//   vdseObjectContext* pObject = NULL;
+//   vdsaCommonObject* pCommonObject = NULL;
    int errcode = -1;
    
    pSession = (vdsaSession*) sessionHandle;
@@ -340,7 +340,7 @@ int vdsRollback( VDS_HANDLE sessionHandle )
 int vdsaCloseSession( vdsaSession* pSession )
 {
    vdseObjectContext* pObject = NULL;
-   vdsaProxyObject* pProxyObject = NULL;
+   vdsaCommonObject* pCommonObject = NULL;
    int errcode, rc = 0;
    
    if ( vdsaSessionLock( pSession ) == 0 )
@@ -366,13 +366,13 @@ int vdsaCloseSession( vdsaSession* pSession )
                /* This would be an internal error... */
                if ( pObject == NULL ) continue;
             
-               if ( pObject->pProxyObject == NULL ) continue;
+               if ( pObject->pCommonObject == NULL ) continue;
             
-               pProxyObject = (vdsaProxyObject*) pObject->pProxyObject;
+               pCommonObject = (vdsaCommonObject*) pObject->pCommonObject;
             
-               errcode = vdseTopFolderCloseObject( &pProxyObject->desc, 
+               errcode = vdseTopFolderCloseObject( pCommonObject->pDesc, 
                                                    &pSession->context );
-               vdsaProxyCloseObject( pProxyObject );
+               vdsaCommonCloseObject( pCommonObject );
 
                vdseSessionRemoveFirst(pSession->pCleanup, &pSession->context );
             }
@@ -391,6 +391,56 @@ int vdsaCloseSession( vdsaSession* pSession )
       return rc;
    }
    return VDS_SESSION_CANNOT_GET_LOCK;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+
+int vdsaSessionOpenObj( vdsaSession             * pSession,
+                        enum vdsObjectType        objectType, 
+                        const char              * objectName,
+                        struct vdsaCommonObject * pObject )
+{
+   int errcode;
+   vdseObjectDescriptor * pDescriptor;
+   
+   if ( ! pSession->terminated )
+   {
+      errcode = vdseTopFolderOpenObject( 
+         GET_PTR( pSession->pHeader->treeMgrOffset, vdseFolder ),
+         objectName, 
+         &pDescriptor,
+         &pSession->context );
+      if ( errcode != 0 )
+         errcode = vdscGetLastError( &pSession->context.errorHandler );
+   }
+   else
+      errcode = VDS_SESSION_IS_TERMINATED;
+
+   if ( errcode == 0 )
+      pObject->pDesc = pDescriptor;
+
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdsaSessionCloseObj( vdsaSession             * pSession,
+                         struct vdsaCommonObject * pObject )
+{
+   int errcode;
+   
+   if ( ! pSession->terminated )
+   {
+      errcode = vdseTopFolderCloseObject( pObject->pDesc,
+                                          &pSession->context );
+      if ( errcode != 0 )
+         errcode = vdscGetLastError( &pSession->context.errorHandler );
+   }
+   else
+      errcode = VDS_SESSION_IS_TERMINATED;
+
+   return errcode;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -31,8 +31,12 @@ include_HEADERS =
 
 libvdsf_la_SOURCES = api.c            \
                      api.h            \
+                     CommonObject.c   \
+                     CommonObject.h   \
                      Connector.c      \
                      Connector.h      \
+                     Folder.c         \
+                     Folder.h         \
                      Process.c        \
                      Process.h        \
                      Session.c        \

@@ -33,6 +33,7 @@
 
 struct vdseSession;
 struct vdseMemoryHeader;
+struct vdsaCommonObject;
 
 /**
  * This class handles transactions and other session wide concerns. For 
@@ -67,6 +68,14 @@ typedef struct vdsaSession
  * No lock is taken on the vdsaSession.
  */
 int vdsaCloseSession( vdsaSession* pSession );
+
+int vdsaSessionOpenObj( vdsaSession             * pSession,
+                        enum vdsObjectType        objectType, 
+                        const char              * objectName,
+                        struct vdsaCommonObject * pObject );
+
+int vdsaSessionCloseObj( vdsaSession             * pSession,
+                         struct vdsaCommonObject * pObject );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

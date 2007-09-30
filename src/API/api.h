@@ -23,7 +23,8 @@
 typedef enum vdsaObjetType
 {
    VDSA_PROCESS = 0x111,
-   VDSA_SESSION
+   VDSA_SESSION,
+   VDSA_FOLDER
    
 } vdsaObjetType;
 

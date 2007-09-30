@@ -124,18 +124,18 @@ void vdseSessionFini( vdseSession        * pSession,
 int vdseSessionAddObj( vdseSession        * pSession,
                        ptrdiff_t            objOffset, 
                        enum vdsObjectType   objType, 
-                       void *               pProxyObject,
+                       void *               pCommonObject,
                        vdseObjectContext ** ppObject,
                        vdseSessionContext * pContext )
 {
    int errcode = 0, rc = -1;
    vdseObjectContext* pCurrentBuffer;
 
-   VDS_PRE_CONDITION( pSession     != NULL );
-   VDS_PRE_CONDITION( pProxyObject != NULL );
-   VDS_PRE_CONDITION( ppObject     != NULL );
-   VDS_PRE_CONDITION( pContext     != NULL );
-   VDS_PRE_CONDITION( objOffset    != NULL_OFFSET );
+   VDS_PRE_CONDITION( pSession      != NULL );
+   VDS_PRE_CONDITION( pCommonObject != NULL );
+   VDS_PRE_CONDITION( ppObject      != NULL );
+   VDS_PRE_CONDITION( pContext      != NULL );
+   VDS_PRE_CONDITION( objOffset     != NULL_OFFSET );
    VDS_PRE_CONDITION( objType > 0 && objType < VDS_LAST_OBJECT_TYPE );
    
    /* For recovery purposes, always lock before doing anything! */
@@ -148,7 +148,7 @@ int vdseSessionAddObj( vdseSession        * pSession,
       {
          pCurrentBuffer->offset    = objOffset;
          pCurrentBuffer->type      = objType;
-         pCurrentBuffer->pProxyObject = pProxyObject;
+         pCurrentBuffer->pCommonObject = pCommonObject;
 
          vdseLinkedListPutLast( &pSession->listOfObjects, 
                                 &pCurrentBuffer->node );
