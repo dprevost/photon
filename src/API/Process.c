@@ -118,7 +118,6 @@ int vdsaProcessInit( vdsaProcess *process, const char  *wdAddress )
 
    sprintf( path, "%s%s%s", answer.pathname, VDS_DIR_SEPARATOR,
             VDS_MEMFILE_NAME );
-   fprintf( stderr, "path -%s-\n", path );
 
 /*   strcpy( path, "/tmp/vdsf_001/mem_file" ); */
    
@@ -140,6 +139,7 @@ int vdsaProcessInit( vdsaProcess *process, const char  *wdAddress )
    if ( errcode == 0 )
    {
       strcpy( process->logDirName, VDS_LOGDIR_NAME );
+      g_pProcessInstance = process;
    }
    
  the_exit:

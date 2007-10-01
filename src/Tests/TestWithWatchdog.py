@@ -109,7 +109,6 @@ def StartWatchdog():
    global wd_dir, wd_name, cfg_name, wd_pid
 
    path = os.path.join( wd_dir, wd_name )
-   print path, ", ", cfg_name
    try:
       wd_pid = os.spawnl( os.P_NOWAIT, path, path, '--config',  cfg_name )
    except OSError, (errno, strerror):
@@ -218,11 +217,9 @@ def RunTest():
    global test_dir, test_name, tcp_port, errcode
 
    path = os.path.join( test_dir, test_name )
-   print path
    try:
       rc = os.spawnl( os.P_WAIT, path, path, tcp_port )
       if rc != errcode:
-         print 'Invalid return code,', rc, ',',  errcode, ','
          return -1
    except OSError, (errno, strerror):
       print 'Error running the test '
@@ -255,10 +252,10 @@ def Run():
 
 Run()
 StopWatchdog()
-if return_code == 0:
-   print 'PASS:', test_name, '(Python test)'
-else:
-   print 'FAIL:', test_name, '(Python test)'
+#if return_code == 0:
+#   print 'PASS:', test_name, '(Python test)'
+#else:
+#   print 'FAIL:', test_name, '(Python test)'
 
 sys.exit(return_code)
 

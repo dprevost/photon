@@ -842,7 +842,7 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
                                    1, /* numBlocks, */
                                    0, /* expectedNumOfChilds, */
                                    pContext );
-      vdseUnlock( &pFolder->memObject, pContext );
+//      vdseUnlock( &pFolder->memObject, pContext );
       if ( rc != 0 ) goto error_handler;
    }
    else
@@ -958,7 +958,7 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
                                    strLength,
                                    pContext );
 
-      vdseUnlock( &pFolder->memObject, pContext );
+//      vdseUnlock( &pFolder->memObject, pContext );
       if ( rc != 0 ) goto error_handler;
    }
    else

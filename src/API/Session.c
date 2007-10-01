@@ -37,7 +37,7 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
    void* ptr = NULL;
    
    if ( sessionHandle == NULL )
-      return VDS_INVALID_HANDLE;
+      return VDS_NULL_HANDLE;
    
    *sessionHandle = NULL;
 
@@ -154,6 +154,8 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
    vdsaSession* pSession;
 //   vdseObjectContext* pObject = NULL;
 //   vdsaCommonObject* pCommonObject = NULL;
+   vdseSession * pCleanup;
+   
    int errcode = -1;
    
    pSession = (vdsaSession*) sessionHandle;
@@ -172,6 +174,7 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
       if ( ! pSession->terminated )
       {
          /* ok we are still there */
+         pCleanup = pSession->pCleanup;
          errcode = vdsaCloseSession( pSession );
          
          /*
@@ -182,7 +185,7 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
           */
          if ( errcode == 0 )
             vdseProcessRemoveSession( g_pProcessInstance->pCleanup, 
-                                      pSession->pCleanup, 
+                                      pCleanup, 
                                       &pSession->context );
 
       }
@@ -214,6 +217,12 @@ int vdsCreateObject( VDS_HANDLE      sessionHandle,
    if ( pSession->type != VDSA_SESSION )
       return VDS_WRONG_TYPE_HANDLE;
    
+   if ( objectName == NULL )
+      return VDS_INVALID_OBJECT_NAME;
+
+   if ( objectType <= 0 || objectType >= VDS_LAST_OBJECT_TYPE )
+      return VDS_WRONG_OBJECT_TYPE;
+
    if ( vdsaSessionLock( pSession ) == 0 )
    {
       if ( ! pSession->terminated )
@@ -343,6 +352,8 @@ int vdsaCloseSession( vdsaSession* pSession )
    vdsaCommonObject* pCommonObject = NULL;
    int errcode, rc = 0;
    
+   VDS_PRE_CONDITION( pSession != NULL );
+
    if ( vdsaSessionLock( pSession ) == 0 )
    {
       if ( ! pSession->terminated )

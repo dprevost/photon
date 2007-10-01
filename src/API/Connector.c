@@ -71,8 +71,6 @@ int vdsaConnect( vdsaConnector    * pConnector,
       return VDS_INVALID_WATCHDOG_ADDRESS;
    port = (unsigned short) dummy;   
 
-   fprintf( stderr, "Add: %s %d %d\n", address, errcode, port );
-
 #if defined (WIN32) 
    versionRequested = MAKEWORD( 2, 2 );
  
@@ -124,8 +122,6 @@ int vdsaConnect( vdsaConnector    * pConnector,
    errcode = Receive( pConnector, pAnswer, sizeof(struct WDOutput), errorHandler );
    if ( errcode != 0 )
       return VDS_RECEIVE_ERROR;
-
-   fprintf( stderr, "End: %s %d %d\n", pAnswer->pathname, errcode, port );
 
    return 0;
 }

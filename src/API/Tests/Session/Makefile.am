@@ -14,64 +14,57 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-#check_PROGRAMS =                  \
-                 CloseNullContext \
-                 CloseNullProcess \
-                 ClosePass        \
-                 FiniNullProcess  \
-                 FiniPass         \
-                 InitNullAddr     \
-                 InitNullProcess  \
-                 InitPass         \
-                 InitWrongAddr    \
-                 OpenNullContext  \
-                 OpenNullFilename \
-                 OpenNullProcess  \
-                 OpenPass         
+check_PROGRAMS =                    \
+                 CloseNullSession   \
+                 ClosePass          \
+                 CommitNullHandle   \
+                 CommitPass         \
+                 CreateNullHandle   \
+                 CreateNullName     \
+                 CreatePass         \
+                 CreateWrongType    \
+                 ExitNullHandle     \
+                 ExitPass           \
+                 InitNullHandle     \
+                 InitPass           \
+                 RollbackNullHandle \
+                 RollbackPass       
 
-#CloseNullContext_SOURCES = CloseNullContext.c
-#CloseNullProcess_SOURCES = CloseNullProcess.c
-#ClosePass_SOURCES        = ClosePass.c
-#FiniNullProcess_SOURCES  = FiniNullProcess.c
-#FiniPass_SOURCES         = FiniPass.c
-#InitNullAddr_SOURCES     = InitNullAddr.c
-#InitNullProcess_SOURCES  = InitNullProcess.c
-#InitPass_SOURCES         = InitPass.c
-#InitWrongAddr_SOURCES    = InitWrongAddr.c
-#OpenNullContext_SOURCES  = OpenNullContext.c
-#OpenNullFilename_SOURCES = OpenNullFilename.c
-#OpenNullProcess_SOURCES  = OpenNullProcess.c
-#OpenPass_SOURCES         = OpenPass.c
-
+CloseNullSession_SOURCES   = CloseNullSession.c
+ClosePass_SOURCES          = ClosePass.c
+CommitNullHandle_SOURCES   = CommitNullHandle.c
+CommitPass_SOURCES         = CommitPass.c
+CreateNullHandle_SOURCES   = CreateNullHandle.c
+CreateNullName_SOURCES     = CreateNullName.c
+CreatePass_SOURCES         = CreatePass.c
+CreateWrongType_SOURCES    = CreateWrongType.c
+ExitNullHandle_SOURCES     = ExitNullHandle.c
+ExitPass_SOURCES           = ExitPass.c
+InitNullHandle_SOURCES     = InitNullHandle.c
+InitPass_SOURCES           = InitPass.c
+RollbackNullHandle_SOURCES = RollbackNullHandle.c
+RollbackPass_SOURCES       = RollbackPass.c
 EXTRA_DIST =         
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT = top_srcdir=$(top_srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
+TESTS =                       \
+        CloseNullSession.sh   \
+        ClosePass.sh          \
+        CommitNullHandle.sh   \
+        CommitPass.sh         \
+        CreateNullHandle.sh   \
+        CreateNullName.sh     \
+        CreatePass.sh         \
+        CreateWrongType.sh    \
+        ExitNullHandle.sh     \
+        ExitPass.sh           \
+        InitNullHandle.sh     \
+        InitPass.sh           \
+        RollbackNullHandle.sh \
+        RollbackPass.sh          
 
-#TESTS =                 \
-        CloseNullContext \
-        CloseNullProcess \
-        ClosePass        \
-        FiniNullProcess  \
-        FiniPass         \
-        InitNullAddr     \
-        InitNullProcess  \
-        InitPass         \
-        InitWrongAddr    \
-        OpenNullContext  \
-        OpenNullFilename \
-        OpenNullProcess  \
-        OpenPass         
-
-#XFAIL_TESTS =                  \
-              CloseNullContext \
-              CloseNullProcess \
-              FiniNullProcess  \
-              InitNullAddr     \
-              InitNullProcess  \
-              OpenNullContext  \
-              OpenNullFilename \
-              OpenNullProcess  
+XFAIL_TESTS =                  
 
 LDADD = $(top_builddir)/src/API/libvdsf.la      \
         $(top_builddir)/src/Engine/libEngine.la \
