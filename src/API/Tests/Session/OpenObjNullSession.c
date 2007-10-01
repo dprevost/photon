@@ -45,7 +45,7 @@ int main()
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/Test1",
+                              "/asoons",
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {
@@ -55,7 +55,7 @@ int main()
 
    errcode = vdsaSessionOpenObj( NULL,
                                  VDS_FOLDER,
-                                 "/Test1",
+                                 "/asoons",
                                  &object );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

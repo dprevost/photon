@@ -43,7 +43,7 @@ int main()
    }
 
    errcode = vdsDestroyObject( sessionHandle,
-                               "/Test1" );
+                               "/asdnc" );
    if ( errcode != VDS_NO_SUCH_OBJECT )
    {
       fprintf( stderr, "err: %d\n", errcode );

@@ -43,7 +43,7 @@ int main()
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/Test1",
+                              "/asdnn",
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {

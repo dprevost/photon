@@ -43,7 +43,7 @@ int main()
    }
 
    errcode = vdsCreateObject( NULL,
-                              "/Test1",
+                              "/ascnh",
                               VDS_FOLDER );
    if ( errcode != VDS_NULL_HANDLE )
    {

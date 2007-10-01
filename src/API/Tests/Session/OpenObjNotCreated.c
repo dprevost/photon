@@ -46,7 +46,7 @@ int main()
 
    errcode = vdsaSessionOpenObj( (vdsaSession *) sessionHandle,
                                  VDS_FOLDER,
-                                 "/Test1",
+                                 "/asoonc",
                                  &object );
    if ( errcode != VDS_NO_SUCH_OBJECT )
    {

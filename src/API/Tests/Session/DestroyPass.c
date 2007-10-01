@@ -43,7 +43,7 @@ int main()
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/Test1",
+                              "/asdp",
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {
@@ -52,7 +52,7 @@ int main()
    }
 
    errcode = vdsDestroyObject( sessionHandle,
-                               "/Test1" );
+                               "/asdp" );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );

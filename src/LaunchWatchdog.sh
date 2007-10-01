@@ -27,16 +27,18 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+echo "This launch a new watchdog. The vds is removed upon termination."
+echo "You can specify the path to the watchdog executable as the first argument"
 
 if [ "$TMPDIR" = "" ] ; then
    TMPDIR=/tmp
 fi
 BASE_DIR=$TMPDIR/vdsf_001
 
-trap `rm -rf $BASE_DIR; exit 1` 1 2 3 15
+trap 'rm -rf $BASE_DIR; exit 1' 1 2 3 15
 
 if test -z "$1"; then
-  wddir="../Watchdog"
+  wddir="./Watchdog"
 else
   wddir=$1
 fi
@@ -72,11 +74,10 @@ fi
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-$wddir/vdswd  --config $BASE_DIR/cfg.txt
-if [ "$?" = 0 ] ; then
-   exit 1
-fi
+echo " "
+echo "Launching the watchdog..."
 
+$wddir/vdswd  --config $BASE_DIR/cfg.txt
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -85,3 +86,4 @@ rm -rf $BASE_DIR
 exit 0
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

@@ -43,7 +43,7 @@ int main()
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/Test1",
+                              "/ascwt",
                               0 );
    if ( errcode != VDS_WRONG_OBJECT_TYPE )
    {

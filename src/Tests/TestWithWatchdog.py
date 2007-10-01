@@ -60,6 +60,7 @@ return_code = 0
 cfg_suff = 'cfg.txt'
 wd_name = 'vdswd'
 wd_pid = 0
+wd_present = 0
 
 wd_dir = os.path.join( os.path.join( build_dir, 'src' ), 'Watchdog' )
 cfg_name = os.path.join( vds_dir, cfg_suff )
@@ -126,7 +127,7 @@ def StartWatchdog():
 
    count = 0
    while IsWatchdogRunning() == 0:
-      time.sleep(0.01)
+      time.sleep(0.1)
       count = count + 1
       if count > 10:
          print 'The Watchdog refuses to start'
@@ -235,15 +236,17 @@ def RunTest():
 
 def Run():
 
-   global return_code
+   global return_code, wd_present
 
    # We use try:/except blocks to determine our exit code unless the
    # error occurs in the C program.
  
    try:
-      WriteCfg()
-      StartWatchdog()
-      time.sleep(1)
+      wd_present = IsWatchdogRunning()
+      if wd_present == 0:
+         WriteCfg()
+         StartWatchdog()
+#         time.sleep(1)
       return_code = RunTest()
    except:
       return_code = -1
@@ -251,7 +254,8 @@ def Run():
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 Run()
-StopWatchdog()
+if wd_present == 0:
+   StopWatchdog()
 #if return_code == 0:
 #   print 'PASS:', test_name, '(Python test)'
 #else:

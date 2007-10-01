@@ -45,7 +45,7 @@ int main()
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/Test1",
+                              "/ASOOP",
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {
@@ -55,7 +55,7 @@ int main()
 
    errcode = vdsaSessionOpenObj( (vdsaSession *) sessionHandle,
                                  VDS_FOLDER,
-                                 "/Test1",
+                                 "/asoop",
                                  &object );
    if ( errcode != VDS_OK )
    {
