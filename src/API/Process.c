@@ -63,7 +63,7 @@ int vdsaProcessInit( vdsaProcess *process, const char  *wdAddress )
 {
    struct WDOutput answer;
    char path[PATH_MAX];
-   int errcode = VDS_PROCESS_ALREADY_INITIALIZED;
+   int errcode = 0;
    vdseSessionContext context;
    vdseProcMgr* pCleanupManager;
 
@@ -81,7 +81,10 @@ int vdsaProcessInit( vdsaProcess *process, const char  *wdAddress )
       vdscAcquireThreadLock( &g_ProcessMutex );
    
    if ( process->pHeader != NULL )
+   {
+      errcode = VDS_PROCESS_ALREADY_INITIALIZED;
       goto the_exit;
+   }
    
    if ( wdAddress == NULL )
    {
@@ -91,7 +94,6 @@ int vdsaProcessInit( vdsaProcess *process, const char  *wdAddress )
    
    if ( memcmp( wdAddress, "12348", 5 ) == 0 )
    {
-      errcode = 0;
       strcpy( answer.pathname, "/tmp/vdsf_001" );
       answer.memorySizekb = 10000;
    }
@@ -127,7 +129,7 @@ int vdsaProcessInit( vdsaProcess *process, const char  *wdAddress )
    if ( errcode != VDS_OK )
       goto the_exit;
 
-   context.pAllocator = GET_PTR( &process->pHeader->allocatorOffset, void );
+   context.pAllocator = GET_PTR( process->pHeader->allocatorOffset, void );
    
    pCleanupManager = GET_PTR( process->pHeader->cleanupMgrOffset, 
                               vdseProcMgr );

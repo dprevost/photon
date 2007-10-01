@@ -26,19 +26,20 @@ vdscErrMsgHandle g_vdsErrorHandle = VDSC_NO_ERRHANDLER;
 
 int vdseInitEngine()
 {
-   VDS_PRE_CONDITION( g_vdsErrorHandle == VDSC_NO_ERRHANDLER );
-
-   vdscInitErrorDefs();
-
-   g_vdsErrorHandle = vdscAddErrorMsgHandler( "VDSF", vdseErrGetErrMessage );
-
    if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER )
    {
-      fprintf( stderr, "Error registring the error handler for VDS errors\n" );
-      fprintf( stderr, "The problem might be a lack of memory\n" );
-      return -1;
+      vdscInitErrorDefs();
+
+      g_vdsErrorHandle = vdscAddErrorMsgHandler( "VDSF", vdseErrGetErrMessage );
+
+      if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER )
+      {
+         fprintf( stderr, "Error registring the error handler for VDS errors\n" );
+         fprintf( stderr, "The problem might be a lack of memory\n" );
+         return -1;
+      }
    }
-   
+
    return 0;
 }
 

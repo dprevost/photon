@@ -37,10 +37,10 @@ int vdsInit( const char* wdAddress,
              VDS_HANDLE* processHandle )                  
 {
    int errcode = VDS_OK;
-   vdsaProcess* pProcess;
+   vdsaProcess* process;
 
    if ( processHandle == NULL )
-      return VDS_INVALID_HANDLE;
+      return VDS_NULL_HANDLE;
    if ( wdAddress == NULL )
       return VDS_INVALID_WATCHDOG_ADDRESS;
    
@@ -53,18 +53,19 @@ int vdsInit( const char* wdAddress,
          return VDS_NOT_ENOUGH_RESOURCES;
    }
 
-   pProcess = (vdsaProcess*) malloc( sizeof(vdsaProcess) );
-   if ( pProcess == NULL )
+   process = (vdsaProcess*) malloc( sizeof(vdsaProcess) );
+   if ( process == NULL )
       return VDS_NOT_ENOUGH_HEAP_MEMORY;
-   
-   errcode = vdsaProcessInit( pProcess,
+  
+   memset( process, 0, sizeof(vdsaProcess) );
+   errcode = vdsaProcessInit( process,
                               wdAddress );
    if ( errcode == VDS_OK )
    {
-      *processHandle = (VDS_HANDLE) pProcess;
+      *processHandle = (VDS_HANDLE) process;
    }
    else
-      free( pProcess );
+      free( process );
 
    return errcode;
 }
@@ -73,12 +74,12 @@ int vdsInit( const char* wdAddress,
 
 void vdsExit( VDS_HANDLE handle )
 {
-   vdsaProcess* pProcess;
+   vdsaProcess* process;
 
-   pProcess = (vdsaProcess*) handle;
-   if ( pProcess != NULL )
+   process = (vdsaProcess*) handle;
+   if ( process != NULL )
    {
-      vdsaProcessFini( pProcess );
+      vdsaProcessFini( process );
    }
 } 
     

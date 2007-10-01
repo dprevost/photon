@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
 # 
 # This file is part of vdsf (Virtual Data Space Framework).
 #
@@ -57,8 +57,9 @@ fi
 echo "# VDSF Config file             "  >  $BASE_DIR/cfg.txt
 echo "#                              "  >> $BASE_DIR/cfg.txt
 echo "VDSLocation           $BASE_DIR"  >> $BASE_DIR/cfg.txt
+echo "#MemorySize is in kbytes       "  >> $BASE_DIR/cfg.txt
 echo "MemorySize            10000    "  >> $BASE_DIR/cfg.txt
-echo "WatchdogAddress       12345    "  >> $BASE_DIR/cfg.txt
+echo "WatchdogAddress       10701    "  >> $BASE_DIR/cfg.txt
 echo "LogTransaction        0        "  >> $BASE_DIR/cfg.txt
 echo "FilePermissions       0660     "  >> $BASE_DIR/cfg.txt
 echo "DirectoryPermissions  0770     "  >> $BASE_DIR/cfg.txt
@@ -71,7 +72,7 @@ fi
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-$wddir/vdswd  $BASE_DIR/cfg.txt
+$wddir/vdswd  --config $BASE_DIR/cfg.txt
 if [ "$?" = 0 ] ; then
    exit 1
 fi

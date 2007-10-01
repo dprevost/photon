@@ -15,6 +15,7 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES = *~ core
 
 SUBDIRS =         \
+          Api     \
           Process \
           Session 
 
