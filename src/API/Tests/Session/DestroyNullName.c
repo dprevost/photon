@@ -18,9 +18,8 @@
 #include "Common/Common.h"
 #include <vdsf/vds_c.h>
 #include "Tests/PrintError.h"
-#include "API/Session.c"
 
-const bool expectedToPass = false;
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -42,10 +41,25 @@ int main()
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   
-   errcode = vdsaCloseSession( NULL );
 
-   ERROR_EXIT( expectedToPass, NULL, ; );
+   errcode = vdsCreateObject( sessionHandle,
+                              "/Test1",
+                              VDS_FOLDER );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsDestroyObject( sessionHandle,
+                               NULL );
+   if ( errcode != VDS_INVALID_OBJECT_NAME )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

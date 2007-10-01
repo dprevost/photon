@@ -14,55 +14,95 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =                    \
-                 CloseNullSession   \
-                 ClosePass          \
-                 CommitNullHandle   \
-                 CommitPass         \
-                 CreateNullHandle   \
-                 CreateNullName     \
-                 CreatePass         \
-                 CreateWrongType    \
-                 ExitNullHandle     \
-                 ExitPass           \
-                 InitNullHandle     \
-                 InitPass           \
-                 RollbackNullHandle \
-                 RollbackPass       
+check_PROGRAMS =                     \
+                 CloseNullSession    \
+                 ClosePass           \
+                 CloseObjNullObject  \
+                 CloseObjNullSession \
+                 CloseObjPass        \
+                 CommitNullHandle    \
+                 CommitPass          \
+                 CreateNullHandle    \
+                 CreateNullName      \
+                 CreatePass          \
+                 CreateWrongType     \
+                 DestroyNotCreated   \
+                 DestroyNullHandle   \
+                 DestroyNullName     \
+                 DestroyPass         \
+                 ExitNullHandle      \
+                 ExitPass            \
+                 InitNullHandle      \
+                 InitPass            \
+                 OpenObjNotCreated   \
+                 OpenObjNullName     \
+                 OpenObjNullObject   \
+                 OpenObjNullSession  \
+                 OpenObjPass         \
+                 OpenObjWrongType    \
+                 RollbackNullHandle  \
+                 RollbackPass        
 
-CloseNullSession_SOURCES   = CloseNullSession.c
-ClosePass_SOURCES          = ClosePass.c
-CommitNullHandle_SOURCES   = CommitNullHandle.c
-CommitPass_SOURCES         = CommitPass.c
-CreateNullHandle_SOURCES   = CreateNullHandle.c
-CreateNullName_SOURCES     = CreateNullName.c
-CreatePass_SOURCES         = CreatePass.c
-CreateWrongType_SOURCES    = CreateWrongType.c
-ExitNullHandle_SOURCES     = ExitNullHandle.c
-ExitPass_SOURCES           = ExitPass.c
-InitNullHandle_SOURCES     = InitNullHandle.c
-InitPass_SOURCES           = InitPass.c
-RollbackNullHandle_SOURCES = RollbackNullHandle.c
-RollbackPass_SOURCES       = RollbackPass.c
+CloseNullSession_SOURCES    = CloseNullSession.c
+ClosePass_SOURCES           = ClosePass.c
+CloseObjNullObject_SOURCES  = CloseObjNullObject.c
+CloseObjNullSession_SOURCES = CloseObjNullSession.c
+CloseObjPass_SOURCES        = CloseObjPass.c
+CommitNullHandle_SOURCES    = CommitNullHandle.c
+CommitPass_SOURCES          = CommitPass.c
+CreateNullHandle_SOURCES    = CreateNullHandle.c
+CreateNullName_SOURCES      = CreateNullName.c
+CreatePass_SOURCES          = CreatePass.c
+CreateWrongType_SOURCES     = CreateWrongType.c
+DestroyNotCreated_SOURCES   = DestroyNotCreated.c
+DestroyNullHandle_SOURCES   = DestroyNullHandle.c
+DestroyNullName_SOURCES     = DestroyNullName.c
+DestroyPass_SOURCES         = DestroyPass.c
+ExitNullHandle_SOURCES      = ExitNullHandle.c
+ExitPass_SOURCES            = ExitPass.c
+InitNullHandle_SOURCES      = InitNullHandle.c
+InitPass_SOURCES            = InitPass.c
+OpenObjNotCreated_SOURCES   = OpenObjNotCreated.c
+OpenObjNullName_SOURCES     = OpenObjNullName.c
+OpenObjNullObject_SOURCES   = OpenObjNullObject.c
+OpenObjNullSession_SOURCES  = OpenObjNullSession.c
+OpenObjPass_SOURCES         = OpenObjPass.c
+OpenObjWrongType_SOURCES    = OpenObjWrongType.c
+RollbackNullHandle_SOURCES  = RollbackNullHandle.c
+RollbackPass_SOURCES        = RollbackPass.c
+
 EXTRA_DIST =         
 
 TESTS_ENVIRONMENT = top_srcdir=$(top_srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
-TESTS =                       \
-        CloseNullSession.sh   \
-        ClosePass.sh          \
-        CommitNullHandle.sh   \
-        CommitPass.sh         \
-        CreateNullHandle.sh   \
-        CreateNullName.sh     \
-        CreatePass.sh         \
-        CreateWrongType.sh    \
-        ExitNullHandle.sh     \
-        ExitPass.sh           \
-        InitNullHandle.sh     \
-        InitPass.sh           \
-        RollbackNullHandle.sh \
-        RollbackPass.sh          
+TESTS =                        \
+        CloseNullSession.sh    \
+        ClosePass.sh           \
+        CloseObjNullObject.sh  \
+        CloseObjNullSession.sh \
+        CloseObjPass.sh        \
+        CommitNullHandle.sh    \
+        CommitPass.sh          \
+        CreateNullHandle.sh    \
+        CreateNullName.sh      \
+        CreatePass.sh          \
+        CreateWrongType.sh     \
+        DestroyNotCreated.sh   \
+        DestroyNullHandle.sh   \
+        DestroyNullName.sh     \
+        DestroyPass.sh         \
+        ExitNullHandle.sh      \
+        ExitPass.sh            \
+        InitNullHandle.sh      \
+        InitPass.sh            \
+        OpenObjNotCreated.sh   \
+        OpenObjNullName.sh     \
+        OpenObjNullObject.sh   \
+        OpenObjNullSession.sh  \
+        OpenObjPass.sh         \
+        OpenObjWrongType.sh    \
+        RollbackNullHandle.sh  \
+        RollbackPass.sh        
 
 XFAIL_TESTS =                  
 

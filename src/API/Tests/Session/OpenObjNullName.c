@@ -18,7 +18,7 @@
 #include "Common/Common.h"
 #include <vdsf/vds_c.h>
 #include "Tests/PrintError.h"
-#include "API/Session.c"
+#include "API/CommonObject.h"
 
 const bool expectedToPass = false;
 
@@ -28,6 +28,7 @@ int main()
 {
    VDS_HANDLE handle, sessionHandle;
    int errcode;
+   struct vdsaCommonObject object;
    
    errcode = vdsInit( "10701", 0, &handle );
    if ( errcode != VDS_OK )
@@ -42,8 +43,20 @@ int main()
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   
-   errcode = vdsaCloseSession( NULL );
+
+   errcode = vdsCreateObject( sessionHandle,
+                              "/Test1",
+                              VDS_FOLDER );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsaSessionOpenObj( (vdsaSession *) sessionHandle,
+                                 VDS_FOLDER,
+                                 NULL,
+                                 &object );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

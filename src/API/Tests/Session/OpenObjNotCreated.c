@@ -18,9 +18,9 @@
 #include "Common/Common.h"
 #include <vdsf/vds_c.h>
 #include "Tests/PrintError.h"
-#include "API/Session.c"
+#include "API/CommonObject.h"
 
-const bool expectedToPass = false;
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -28,6 +28,7 @@ int main()
 {
    VDS_HANDLE handle, sessionHandle;
    int errcode;
+   struct vdsaCommonObject object;
    
    errcode = vdsInit( "10701", 0, &handle );
    if ( errcode != VDS_OK )
@@ -42,10 +43,18 @@ int main()
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   
-   errcode = vdsaCloseSession( NULL );
 
-   ERROR_EXIT( expectedToPass, NULL, ; );
+   errcode = vdsaSessionOpenObj( (vdsaSession *) sessionHandle,
+                                 VDS_FOLDER,
+                                 "/Test1",
+                                 &object );
+   if ( errcode != VDS_NO_SUCH_OBJECT )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

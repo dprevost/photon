@@ -258,6 +258,9 @@ int vdsDestroyObject( VDS_HANDLE  sessionHandle,
    
    if ( pSession->type != VDSA_SESSION )
       return VDS_WRONG_TYPE_HANDLE;
+
+   if ( objectName == NULL )
+      return VDS_INVALID_OBJECT_NAME;
    
    if ( vdsaSessionLock( pSession ) == 0 )
    {
@@ -414,6 +417,11 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
 {
    int errcode;
    vdseObjectDescriptor * pDescriptor;
+
+   VDS_PRE_CONDITION( pSession   != NULL );
+   VDS_PRE_CONDITION( objectName != NULL );
+   VDS_PRE_CONDITION( pObject    != NULL );
+   VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
    
    if ( ! pSession->terminated )
    {
@@ -441,6 +449,9 @@ int vdsaSessionCloseObj( vdsaSession             * pSession,
 {
    int errcode;
    
+   VDS_PRE_CONDITION( pSession   != NULL );
+   VDS_PRE_CONDITION( pObject    != NULL );
+
    if ( ! pSession->terminated )
    {
       errcode = vdseTopFolderCloseObject( pObject->pDesc,

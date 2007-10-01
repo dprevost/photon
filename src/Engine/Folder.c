@@ -832,6 +832,12 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
       }
    }
 
+   /*
+    * There is no vdseUnlock here - the recursive nature of the 
+    * function vdseFolderInsertObject() means that it will release 
+    * the lock as soon as it can, after locking the
+    * next folder in the chain if needed. 
+    */
    if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
    {
       rc = vdseFolderInsertObject( pFolder,
@@ -842,7 +848,6 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
                                    1, /* numBlocks, */
                                    0, /* expectedNumOfChilds, */
                                    pContext );
-//      vdseUnlock( &pFolder->memObject, pContext );
       if ( rc != 0 ) goto error_handler;
    }
    else
@@ -951,6 +956,12 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
       }
    }
 
+   /*
+    * There is no vdseUnlock here - the recursive nature of the 
+    * function vdseFolderDeleteObject() means that it will release 
+    * the lock as soon as it can, after locking the
+    * next folder in the chain if needed. 
+    */
    if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
    {
       rc = vdseFolderDeleteObject( pFolder,
@@ -958,7 +969,6 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
                                    strLength,
                                    pContext );
 
-//      vdseUnlock( &pFolder->memObject, pContext );
       if ( rc != 0 ) goto error_handler;
    }
    else
@@ -1069,6 +1079,12 @@ int vdseTopFolderOpenObject( vdseFolder            * pFolder,
       }
    }
 
+   /*
+    * There is no vdseUnlock here - the recursive nature of the 
+    * function vdseFolderGetObject() means that it will release 
+    * the lock as soon as it can, after locking the
+    * next folder in the chain if needed. 
+    */
    if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
    {
       rc = vdseFolderGetObject( pFolder,
@@ -1076,7 +1092,6 @@ int vdseTopFolderOpenObject( vdseFolder            * pFolder,
                                 strLength, 
                                 ppDescriptor,
                                 pContext );
-      vdseUnlock( &pFolder->memObject, pContext );
       if ( rc != 0 ) goto error_handler;
    }
    else
@@ -1131,7 +1146,7 @@ int vdseTopFolderCloseObject( vdseObjectDescriptor * pDescriptor,
    if ( vdseLock( &parentFolder->memObject, pContext ) == 0 )
    {
       pStatus = GET_PTR(pNode->txStatusOffset, vdseTxStatus );
-      pStatus->usageCounter++;
+      pStatus->usageCounter--;
       
       vdseUnlock( &parentFolder->memObject, pContext );
       return 0;

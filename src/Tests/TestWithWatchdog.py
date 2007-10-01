@@ -126,7 +126,7 @@ def StartWatchdog():
 
    count = 0
    while IsWatchdogRunning() == 0:
-      time.sleep(1)
+      time.sleep(0.01)
       count = count + 1
       if count > 10:
          print 'The Watchdog refuses to start'
@@ -195,7 +195,7 @@ def WriteCfg():
       cfg_file.write( line )   
       line = 'VDSLocation           ' + vds_dir + '\n'
       cfg_file.write( line )  
-      line = 'MemorySize            10000' + '\n'
+      line = 'MemorySize            100' + '\n'
       cfg_file.write( line )  
       line = 'WatchdogAddress       ' + tcp_port + '\n'
       cfg_file.write( line )  
