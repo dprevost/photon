@@ -19,6 +19,7 @@
 #include <signal.h>
 #include "Watchdog/Watchdog.h"
 #include "Common/ErrorHandler.h"
+#include <new.h>
 
 // This should be more than enough...
 #define LINE_MAX_LEN (2*PATH_MAX)
@@ -328,7 +329,6 @@ int vdswWatchdog::Install()
 
    errcode = RegSetValueEx( hKey, 
                             VDS_USE_LOG,
-                            "MemorySize", 
                             0, 
                             REG_DWORD, 
                             (LPBYTE)&m_params.logOn,
@@ -405,7 +405,7 @@ int vdswWatchdog::ReadRegistry()
 {
    int errcode;
    HKEY hKey;
-   int length;
+   unsigned long length;
    
    errcode = RegOpenKeyEx( HKEY_LOCAL_MACHINE, 
                            "SYSTEM\\CurrentControlSet\\Services\\vdswd",
@@ -534,13 +534,13 @@ void vdswWatchdog::Run()
       // problem is by forcing a crash!!!
       assert( g_pWD != NULL );
 
-      new (g_pWD) vdswWatchdog();
+      g_pWD = new (g_pWD) vdswWatchdog;
 
       deallocWD = true;
       
       // Set the log object to sent messages to the log facility of the OS 
       // instead of sending them to stderr.
-      m_log.StartUsingLogger();
+      g_pWD->m_log.StartUsingLogger();
          
       // We have our object but it is not properly initialized - we need
       // to access the registry (the NT service equivalent of calling 
@@ -584,7 +584,8 @@ void vdswWatchdog::Run()
 
 int vdswWatchdog::SetSigHandler()
 {
-   int errcode;
+   int errcode = 0;
+#if ! defined(WIN32)
    sigset_t old_set, new_set;
    struct sigaction action;
    
@@ -648,6 +649,7 @@ int vdswWatchdog::SetSigHandler()
    if ( errcode != 0 )
       fprintf( stderr, "ok6 %d\n", errno );
 
+#endif
    return 0;
 }
    

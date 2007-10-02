@@ -40,6 +40,10 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+BEGIN_C_DECLS
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /** 
  *  The base address of the shared memory as seen for each process (each 
  *  process having their own copy of this global). This pointer is used
@@ -48,6 +52,7 @@
 VDSF_ENGINE_EXPORT
 extern unsigned char* g_pBaseAddr;
 
+VDSF_ENGINE_EXPORT
 extern vdscErrMsgHandle g_vdsErrorHandle;
 
 #define SET_OFFSET(ptr) ( (ptrdiff_t) ( (unsigned char*)(ptr) - \
@@ -174,4 +179,10 @@ enum ObjectIdentifier
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+END_C_DECLS
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 #endif /* VDSE_ENGINE_H */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

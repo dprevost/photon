@@ -94,7 +94,7 @@ public:
 
    void HandleAbnormalTermination( pid_t pid )
    {
-      return m_vds.HandleCrash( pid );
+      m_vds.HandleCrash( pid );
    }
    
    /**

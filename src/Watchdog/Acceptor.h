@@ -23,7 +23,9 @@
 
 #include "Common/Common.h"
 #if defined (WIN32)
-#  define FD_SETSIZE 100
+#  ifndef FD_SETSIZE
+#    define FD_SETSIZE 100
+#  endif
 #  include <Winsock2.h>
 #endif
 

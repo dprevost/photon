@@ -26,7 +26,7 @@
 // Forward declaration
 struct ConfigParams;
 struct vdseMemoryHeader;
-class  vdseSession;
+struct vdseSession;
 class  vdswMemoryManager;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

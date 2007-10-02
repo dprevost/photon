@@ -15,12 +15,16 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-
 #include "Acceptor.h"
 #include "Watchdog.h"
+
+#if ! defined(WIN32)
+#  include <sys/socket.h>
+#  include <netinet/in.h>
+#  include <arpa/inet.h>
+#else
+#  define MSG_NOSIGNAL 0
+#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -93,7 +97,7 @@ vdswAcceptor::Accept()
     */
 
 #if defined (WIN32)
-   int mode = 1;
+   unsigned long mode = 1;
    errcode = ioctlsocket( newSock, FIONBIO, &mode );
    if ( errcode == SOCKET_ERROR )
    {
@@ -194,7 +198,7 @@ vdswAcceptor::PrepareConnection( vdswWatchdog* pWatchdog )
    }
    
    errcode = setsockopt( m_socketFD, SOL_SOCKET, SO_REUSEADDR, 
-                         &one, sizeof (one) );
+                         (const char *)&one, sizeof (one) );
    if ( errcode != 0 )
    {
       m_pWatchdog->m_log.SendMessage( WD_ERROR, 
@@ -206,7 +210,7 @@ vdswAcceptor::PrepareConnection( vdswWatchdog* pWatchdog )
    // Set the socket in non-blocking mode.
 
 #if defined (WIN32)
-   int mode = 1;
+   unsigned long mode = 1;
    errcode = ioctlsocket( m_socketFD, FIONBIO, &mode );
    if ( errcode == SOCKET_ERROR )
    {
@@ -280,7 +284,7 @@ vdswAcceptor::Receive( int indice )
    do
    {
       errcode = recv( m_dispatch[indice].socketId,
-                      &input,
+                      (char *)&input,
                       sizeof input,
                       MSG_PEEK | MSG_NOSIGNAL );
    } while ( errcode == -1 && errno == EINTR );
@@ -308,7 +312,7 @@ vdswAcceptor::Receive( int indice )
       do
       {
          errcode = recv( m_dispatch[indice].socketId,
-                         &input,
+                         (char *)&input,
                          sizeof input,
                          MSG_NOSIGNAL );
       } while ( errcode == -1 && errno == EINTR );

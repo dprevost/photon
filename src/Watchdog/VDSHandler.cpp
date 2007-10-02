@@ -63,7 +63,7 @@ vdswHandler::CleanSession( vdseSession* pSession )
 void
 vdswHandler::HandleCrash( pid_t pid )
 {
-   int errcode;
+//   int errcode;
 #if 0   
    vdseProcess* pProcess = NULL;
    vdseSessionContext context;

@@ -88,7 +88,7 @@ int main( int argc, char *argv[] )
 #if defined ( WIN32 )
    if ( vdscIsShortOptPresent( optHandle, 'i' ) )
    {
-      errcode = wDog.Instal();
+      errcode = wDog.Install();
       if ( errcode != 0 )
          return errcode;
       return 0;
@@ -96,9 +96,7 @@ int main( int argc, char *argv[] )
    
    if ( vdscIsShortOptPresent( optHandle, 'u' ) )
    {
-      errcode = wDog.Uninstall();
-      if ( errcode != 0 )
-         return errcode;
+      wDog.Uninstall();
       return 0;
    }
 #else

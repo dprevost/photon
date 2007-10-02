@@ -40,7 +40,7 @@
  *
  */
 
-static inline int
+int
 vdscSetReadOnly( vdscMemoryFile*   pMem,
                  vdscErrorHandler* pError )
 {
@@ -110,9 +110,9 @@ vdscSetReadOnly( vdscMemoryFile*   pMem,
  *
  */
 
-static inline int
-vdscSetReadWrite( vdscMemoryFile*   pMem,
-                  vdscErrorHandler* pError )
+int
+vdscSetReadWrite( vdscMemoryFile   * pMem,
+                  vdscErrorHandler * pError )
 {
    int errcode;
 #if defined (WIN32)

@@ -22,17 +22,28 @@
 
 #include "Engine.h"
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT int 
-vdseInitEngine();
+#if defined(WIN32)
+VDSF_ENGINE_EXPORT extern const char * MYCPU;
+VDSF_ENGINE_EXPORT extern const char * MYCC;
+VDSF_ENGINE_EXPORT extern const char * MYCXX;
+#endif
+
+VDSF_ENGINE_EXPORT 
+int vdseInitEngine();
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 #endif /* VDSE_INIT_ENGINE_H */
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

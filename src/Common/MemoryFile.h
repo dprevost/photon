@@ -162,13 +162,13 @@ int vdscSyncMemFile( vdscMemoryFile*   pMem,
 
 /*! \brief Set the shared memory to read-only. */
 static inline
-int vdscSetReadOnly( vdscMemoryFile*   pMem,
-                     vdscErrorHandler* pError );
+int vdscSetReadOnly( vdscMemoryFile   * pMem,
+                     vdscErrorHandler * pError );
 
 /*! \brief Set the shared memory to be writable. */
 static inline
-int vdscSetReadWrite( vdscMemoryFile*   pMem,
-                      vdscErrorHandler* pError );
+int vdscSetReadWrite( vdscMemoryFile   * pMem,
+                      vdscErrorHandler * pError );
 
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

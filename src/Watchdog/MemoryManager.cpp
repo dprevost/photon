@@ -21,6 +21,7 @@
 #include "Engine/MemoryAllocator.h"
 #include "Engine/Folder.h"
 #include "Engine/ProcessManager.h"
+#include "Engine/InitEngine.h"
 
 //#include "TreeManager.h"
 //#include "TransactionManager.h"
@@ -253,6 +254,6 @@ void vdswMemoryManager::Close( vdscErrorHandler* pError )
 {
    vdscCloseMemFile( &m_memory, pError );
 }
-}
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

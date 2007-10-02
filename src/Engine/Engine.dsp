@@ -140,6 +140,18 @@ SOURCE=.\MemoryObject.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\Process.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\ProcessManager.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\Session.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\Transaction.c
 # End Source File
 # Begin Source File
@@ -152,7 +164,15 @@ SOURCE=.\VdsErrorHandler.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=.\BlockGroup.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Engine.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Folder.h
 # End Source File
 # Begin Source File
 
@@ -200,7 +220,15 @@ SOURCE=.\MemoryObject.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\PageGroup.h
+SOURCE=.\Process.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ProcessManager.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Session.h
 # End Source File
 # Begin Source File
 
@@ -208,7 +236,11 @@ SOURCE=.\SessionContext.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\TransactionItem.h
+SOURCE=.\TreeNode.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\TxStatus.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

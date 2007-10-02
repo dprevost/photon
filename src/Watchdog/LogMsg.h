@@ -77,9 +77,10 @@ public:
     *  This is not mandatory but it makes it easier to examine events
     *  using EventViewer.
     */
-   int Install( const char* progName, 
-                const char* msgPathName,
-                DWORD  dwNum );
+   int Install( const char * progName, 
+                const char * msgPathName,
+                int          dwNum );
+
    int Uninstall( const char* progName );
 #endif
 

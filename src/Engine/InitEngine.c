@@ -20,8 +20,13 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdscErrMsgHandle g_vdsErrorHandle = VDSC_NO_ERRHANDLER;
+VDSF_ENGINE_EXPORT vdscErrMsgHandle g_vdsErrorHandle = VDSC_NO_ERRHANDLER;
 
+#if defined(WIN32)
+VDSF_ENGINE_EXPORT const char * MYCPU = "i386";
+VDSF_ENGINE_EXPORT const char * MYCC  = "cl.exe.";
+VDSF_ENGINE_EXPORT const char * MYCXX = "cl.exe";
+#endif
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseInitEngine()

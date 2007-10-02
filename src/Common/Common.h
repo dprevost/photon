@@ -221,6 +221,7 @@ typedef DWORD uint32_t;
 #  endif
 #else
 #  if HAVE__MKDIR   /* plain Windows 32 */
+#    include <direct.h>
 #    define mkdir(a, b) _mkdir(a)
 #  else
 #    error "Don't know how to create a directory on this system."

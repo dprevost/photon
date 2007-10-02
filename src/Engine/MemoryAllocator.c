@@ -127,7 +127,7 @@ typedef struct vdseFreeBlock
  *  process having their own copy of this global). This pointer is used
  *  everywhere to recover the real pointer addresses from our offsets
  */
-unsigned char* g_pBaseAddr = NULL;
+VDSF_ENGINE_EXPORT unsigned char* g_pBaseAddr = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

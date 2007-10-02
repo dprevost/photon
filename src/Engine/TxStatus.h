@@ -22,6 +22,8 @@
 
 #include "Engine.h"       
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -35,8 +37,8 @@ BEGIN_C_DECLS
  * session which access the object (in any form, either a simple close
  * or a rollback or commit ops on the data of the object) will removed it.
  */
-#define MARKED_AS_DESTROYED  1
-#define REMOVE_IS_COMMITTED  2
+#define MARKED_AS_DESTROYED  0x1
+#define REMOVE_IS_COMMITTED  0x2
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -140,7 +142,7 @@ bool vdseTxStatusIsRemoveCommitted( vdseTxStatus* pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   return (pStatus->statusFlag & REMOVE_IS_COMMITTED );
+   return (pStatus->statusFlag & REMOVE_IS_COMMITTED);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -182,11 +184,6 @@ bool vdseTxStatusSelfTest( vdseTxStatus* pStatus )
 
    if ( pStatus->txOffset != NULL_OFFSET )
    {
-#if defined (VDS_DEBUG)
-      fprintf( stderr, "TransactionBase::pStatus->transactionId = %d \n", 
-               pStatus->transactionId );
-      VDS_ASSERT( 0 );
-#endif
       return false;
    }
    return true;
@@ -194,5 +191,10 @@ bool vdseTxStatusSelfTest( vdseTxStatus* pStatus )
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+END_C_DECLS
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 #endif /* VDSE_TX_STATUS_H */
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -153,8 +153,6 @@ extern int g_timeOutinMilliSecs;
 VDSF_COMMON_EXPORT
 extern struct timespec g_timeOut;
 
-typedef int pid_t;
-
 typedef struct vdscProcessLock
 {
    unsigned int initialized;

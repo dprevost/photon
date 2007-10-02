@@ -53,9 +53,9 @@ vdswLogMsg::~vdswLogMsg()
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #if defined ( WIN32 )
-int vdswLogMsg::Install( const char* progName, 
-                        const char* msgPathName,
-                        int   numCategories )
+int vdswLogMsg::Install( const char * progName, 
+                         const char * msgPathName,
+                         int          numCategories )
 {
    HKEY hKey; 
    char buffer[MAX_PATH]; 
@@ -76,7 +76,7 @@ int vdswLogMsg::Install( const char* progName,
                        "EventMessageFile",
                        0,
                        REG_EXPAND_SZ,
-                       msgPathName,
+                       (BYTE*) msgPathName,
                        strlen(msgPathName)+1 ) != ERROR_SUCCESS )
    {
       fprintf( stderr, "Error setting key value for EventLog (error = %d)\n",
@@ -108,7 +108,7 @@ int vdswLogMsg::Install( const char* progName,
                        "CategoryMessageFile",
                        0,
                        REG_EXPAND_SZ,
-                       msgPathName,
+                       (BYTE*) msgPathName,
                        strlen(msgPathName)+1 ) != ERROR_SUCCESS )
    {
       fprintf( stderr, "Error setting key value for EventLog (error = %d)\n",

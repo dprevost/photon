@@ -535,9 +535,9 @@ vdseHashGetNext( vdseHash*  pHash,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum ListErrors 
-vdseHashInit( vdseHash*           pHash,
-              size_t              reservedSize, 
-              vdseSessionContext* pContext )
+vdseHashInit( vdseHash           * pHash,
+              size_t               reservedSize, 
+              vdseSessionContext * pContext )
 {
    enum ListErrors errCode = LIST_OK;
    size_t len, numBuckets;

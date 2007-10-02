@@ -86,7 +86,7 @@
 #define HAVE_MEMSET 1
 
 /* Define to 1 if you have the `mkdir' function. */
-#define HAVE_MKDIR 1
+/* #define HAVE_MKDIR 1 */
 
 /* Define to 1 if you have the `mmap' function. */
 #define HAVE_MMAP 1
@@ -201,7 +201,7 @@
 /* #undef HAVE_VFORK_H */
 
 /* Define to 1 if you have the `vsnprintf' function. */
-#define HAVE_VSNPRINTF 1
+/* #define HAVE_VSNPRINTF 1 */
 
 /* Define to 1 if `fork' works. */
 /* #define HAVE_WORKING_FORK 1 */
@@ -216,7 +216,7 @@
 #define HAVE__GETPID 1
 
 /* Define to 1 if you have the `_mkdir' function. */
-/* #undef HAVE__MKDIR */
+#define HAVE__MKDIR 1
 
 /* Define if mkdir takes only one argument. */
 /* #undef MKDIR_TAKES_ONE_ARG */
@@ -301,6 +301,7 @@
 
 /* Define to `int' if <sys/types.h> does not define. */
 /* #undef pid_t */
+typedef int pid_t;
 
 /* Define to `unsigned' if <sys/types.h> does not define. */
 /* #undef size_t */
