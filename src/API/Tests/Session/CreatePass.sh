@@ -20,28 +20,29 @@
 #
 #  - the path of the top directory of the source
 #  - the path of the top directory of the build
+#  - the tcp port for the watchdog
 #
 # For example: 
 # 
-# ./InitPass.sh /home/dprevost/vdsf/ /home/dprevost/vdsf src/API/Tests/Api
+# ./InitPass.sh /home/dprevost/vdsf/ /home/dprevost/vdsf 10701
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 test_name=CreatePass
 test_dir=src/API/Tests/Session
-tcp_port=10701
 errcode=0
 
-# If the env. variable top_srcdir is not defined... we must have two
+# If the env. variable top_srcdir is not defined... we must have three
 # arguments if we want to be able to run the test.
 if test -z "$top_srcdir"; then
-   if [ "$#" != 2 ] ; then
-      echo "usage: $0 src_dir build_dir"
+   if [ "$#" != 3 ] ; then
+      echo "usage: $0 src_dir build_dir tcp_port"
       exit 1
    fi
 
    top_srcdir=$1
    top_builddir=$2
+   tcp_port=$3
    verbose=1
    PYTHON=python
 fi

@@ -23,7 +23,7 @@ const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+int main( int argc, char * argv[] )
 {
    VDS_HANDLE handle;
    int errcode;
@@ -42,7 +42,10 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsInit( "10701", 0, &handle );
+   if ( argc > 1 )
+      errcode = vdsInit( argv[1], 0, &handle );
+   else
+      errcode = vdsInit( "10701", 0, &handle );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -53,3 +56,4 @@ int main()
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

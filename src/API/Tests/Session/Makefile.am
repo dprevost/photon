@@ -73,7 +73,7 @@ RollbackPass_SOURCES        = RollbackPass.c
 
 EXTRA_DIST =         
 
-TESTS_ENVIRONMENT = top_srcdir=$(top_srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT = tcp_port=10701 top_srcdir=$(top_srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
 TESTS =                        \
         CloseNullSession.sh    \
