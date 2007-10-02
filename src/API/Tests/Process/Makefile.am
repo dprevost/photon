@@ -45,8 +45,13 @@ OpenPass_SOURCES         = OpenPass.c
 
 EXTRA_DIST =         
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
-
+TESTS_ENVIRONMENT =                              \
+                    tcp_port=10701               \
+                    top_srcdir=$(top_srcdir)     \
+                    srcdir=$(srcdir)             \
+                    top_builddir=$(top_builddir) \
+                    verbose=1                    \
+                    PYTHON=$(PYTHON)
 
 TESTS =                 \
         CloseNullContext \

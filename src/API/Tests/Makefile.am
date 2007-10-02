@@ -14,10 +14,11 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =         \
-          Api     \
-          Process \
-          Session 
+SUBDIRS =              \
+          Api          \
+          Process      \
+          Session      \
+          CommonObject 
 
 #check_PROGRAMS =                  \
                  SimpleTest1      \

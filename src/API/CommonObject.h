@@ -61,6 +61,8 @@ int vdsCommonObjectClose( vdsaCommonObject * pObject );
 static inline
 int vdsaCommonLock( vdsaCommonObject * pObject )
 {
+   VDS_PRE_CONDITION( pObject    != NULL );
+
    if ( g_protectionIsNeeded )
    {
       return vdscTryAcquireThreadLock( &pObject->pSession->mutex, 
@@ -75,6 +77,8 @@ int vdsaCommonLock( vdsaCommonObject * pObject )
 static inline
 void vdsaCommonUnlock( vdsaCommonObject * pObject )
 {
+   VDS_PRE_CONDITION( pObject    != NULL );
+
    if ( g_protectionIsNeeded )
    {
       vdscReleaseThreadLock( &pObject->pSession->mutex );
@@ -94,6 +98,8 @@ void vdsaCommonUnlock( vdsaCommonObject * pObject )
 static inline
 void vdsaCommonCloseObject( vdsaCommonObject * pObject )
 {
+   VDS_PRE_CONDITION( pObject    != NULL );
+
    pObject->pObjectContext = NULL;
 }
 
