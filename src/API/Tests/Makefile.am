@@ -18,7 +18,8 @@ SUBDIRS =              \
           Api          \
           Process      \
           Session      \
-          CommonObject 
+          CommonObject \
+          Folder       
 
 #check_PROGRAMS =                  \
                  SimpleTest1      \

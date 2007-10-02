@@ -30,6 +30,7 @@ int vdsFolderOpen( VDS_HANDLE  sessionHandle,
 {
    vdsaSession * pSession;
    vdsaFolder * pFolder = NULL;
+   int errcode;
    
    pSession = (vdsaSession*) sessionHandle;
    if ( pSession == NULL )
@@ -44,6 +45,8 @@ int vdsFolderOpen( VDS_HANDLE  sessionHandle,
    if ( objectHandle == NULL )
       return VDS_NULL_HANDLE;
    
+   *objectHandle = NULL;
+   
    pFolder = (vdsaFolder *) malloc(sizeof(vdsaFolder));
    if (  pFolder == NULL )
       return VDS_NOT_ENOUGH_HEAP_MEMORY;
@@ -52,9 +55,13 @@ int vdsFolderOpen( VDS_HANDLE  sessionHandle,
    pFolder->type = VDSA_FOLDER;
    pFolder->object.pSession = pSession;
 
-   return vdsaCommonObjectOpen( &pFolder->object,
-                                VDS_FOLDER,
-                                folderName );
+   errcode = vdsaCommonObjectOpen( &pFolder->object,
+                                   VDS_FOLDER,
+                                   folderName );
+   if ( errcode == 0 )
+      *objectHandle = (VDS_HANDLE) pFolder;
+
+   return errcode;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
