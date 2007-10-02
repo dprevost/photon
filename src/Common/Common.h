@@ -21,6 +21,8 @@
  *
  */
 
+#define FD_SETSIZE 100
+
 #ifndef VDSC_COMMON_H
 #define VDSC_COMMON_H
 

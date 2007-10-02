@@ -84,8 +84,11 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
    {
       ptr = malloc( sizeof(vdseLogFile) );
       if ( ptr == NULL )
+      {
+         errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
          goto error_handler;
-   
+      }
+
       pSession->context.pLogFile = (vdseLogFile*)ptr;
       errcode = vdseInitLogFile( 
          pSession->context.pLogFile, 
@@ -372,7 +375,7 @@ int vdsaCloseSession( vdsaSession* pSession )
                              &pSession->context);
          if ( errcode == 0 )
          {
-            while ( true )
+            for (;;)
             {
                errcode = vdseSessionGetFirst( pSession->pCleanup, &pObject, &pSession->context );
                if ( errcode != 0 ) break;
@@ -416,7 +419,7 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
                         struct vdsaCommonObject * pObject )
 {
    int errcode;
-   vdseObjectDescriptor * pDescriptor;
+   vdseObjectDescriptor * pDescriptor = NULL;
 
    VDS_PRE_CONDITION( pSession   != NULL );
    VDS_PRE_CONDITION( objectName != NULL );

@@ -56,7 +56,7 @@ typedef struct vdsaFolder
     * (ptrdiff_t) to the real data of type vdseHashItem. Therefore
     * we need both pieces of information to iterate through the hash.
     */
-   void * pItemIterator
+   void * pItemIterator;
    
 } vdsaFolder;
 

@@ -15,9 +15,13 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#if defined(WIN32)
+#  define MSG_NOSIGNAL 0
+#else
+#  include <sys/socket.h>
+#  include <netinet/in.h>
+#  include <arpa/inet.h>
+#endif
 
 #include "API/Connector.h"
 #include <vdsf/vdsErrors.h>
@@ -186,7 +190,7 @@ int Receive( vdsaConnector    * pConnector,
                       MSG_NOSIGNAL );
    } while ( errcode == -1 && errno == EINTR );
    
-   if ( errcode != length )
+   if ( errcode != (int) length )
    {
 #if defined (WIN32)
       vdscSetError( errorHandler, VDSC_SOCKERR_HANDLE, WSAGetLastError() );
@@ -225,7 +229,7 @@ int Send( vdsaConnector    * pConnector,
                       MSG_NOSIGNAL );
    } while ( errcode == -1 && errno == EINTR );
 
-   if ( errcode != length )
+   if ( errcode != (int) length )
    {
 #if defined (WIN32)
       vdscSetError( errorHandler, VDSC_SOCKERR_HANDLE, WSAGetLastError() );

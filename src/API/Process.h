@@ -56,7 +56,7 @@ typedef struct vdsaProcess
    vds_lock_T lockValue;
 
    /** The name of the directory for log files (used by transactions). */
-   char logDirName[MAXPATHLEN];
+   char logDirName[PATH_MAX];
 
    /** This object encapsulates the task of talking with the watchdog. */
    vdsaConnector connector;
