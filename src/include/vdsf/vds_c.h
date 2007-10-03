@@ -47,6 +47,7 @@ typedef void* VDS_HANDLE;
  * Upon successful completion, the process handle is set. Otherwise 
  * the error code is returned.
  */
+VDSF_EXPORT
 int vdsInit( const char* wdAddress,
              int         protectionNeeded,
              VDS_HANDLE* processHandle );
@@ -59,6 +60,7 @@ int vdsInit( const char* wdAddress,
  * This function takes a single argument, the handle to the process object 
  * and always end successfully.
  */
+VDSF_EXPORT
 void vdsExit( VDS_HANDLE processHandle );
 
 
@@ -80,52 +82,65 @@ void vdsExit( VDS_HANDLE processHandle );
  * Upon normal termination, the current transaction is rolled back. You
  * MUST explicitly call vdseCommit to save your changes.
  */
-
+VDSF_EXPORT
 int vdsInitSession( VDS_HANDLE* sessionHandle );
 
+VDSF_EXPORT
 int vdsExitSession( VDS_HANDLE handle );
    
+VDSF_EXPORT
 int vdsCreateObject( VDS_HANDLE handle,
                      const char*   objectName,
                      vdsObjectType objectType );
    
+VDSF_EXPORT
 int vdsDestroyObject( VDS_HANDLE handle,
                       const char* objectName );
 
+VDSF_EXPORT
 int vdsCommit( VDS_HANDLE handle );
    
+VDSF_EXPORT
 int vdsRollback( VDS_HANDLE handle );
 
+VDSF_EXPORT
 int vdsFolderOpen( VDS_HANDLE  sessionHandle,
                    const char* folderName,
                    VDS_HANDLE* objectHandle );
 
+VDSF_EXPORT
 int vdsFolderClose( VDS_HANDLE objectHandle );
 
 
+VDSF_EXPORT
 int vdsQueueOpen(  VDS_HANDLE  sessionHandle,
                    const char* queueName,
                    VDS_HANDLE* objectHandle );
 
+VDSF_EXPORT
 int vdsQueueClose(  VDS_HANDLE objectHandle );
    
 
+VDSF_EXPORT
 int vdsQueueInsertItem( VDS_HANDLE objectHandle, 
                         const void* pItem, 
                         size_t length );
 
+VDSF_EXPORT
 int vdsQueueRemoveItem( VDS_HANDLE objectHandle, 
                         void* pItem, 
                         size_t length );
 
 /* The next function does not remove the items from the queue */
 
+VDSF_EXPORT
 int vdsQueueGetItem( VDS_HANDLE      objectHandle,
                      vdsIteratorType flag, 
                      void*           pItem, 
                      size_t          length );
    
 
+VDSF_EXPORT
 int vdsQueueStatus( VDS_HANDLE objectHandle,
                     size_t *   pNumValidItems,
                     size_t *   pNumTotalItems );

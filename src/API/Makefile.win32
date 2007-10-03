@@ -1,0 +1,99 @@
+###########################################################################
+#
+# Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+###########################################################################
+#
+# Defines the main macros.
+#
+###########################################################################
+
+LINK32=link.exe
+
+OUTDIR_RELEASE = .\Release
+INTDIR_RELEASE = .\Release
+OUTDIR_DEBUG   = .\Debug
+INTDIR_DEBUG   = .\Debug
+
+CLEANFILES = *~ *.dep *.plg vc60.* *.ncb
+
+W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib
+
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfCommon.lib vdsfEngine.lib /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\vdsfAPI.dll" /implib:"$(OUTDIR_RELEASE)\vdsfAPI.lib" /libpath:"..\Release"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfCommon.lib vdsfEngine.lib /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\vdsfAPI.dll"   /implib:"$(OUTDIR_DEBUG)\vdsfAPI.lib"   /libpath:"..\Debug"
+
+CFLAGS_RELEASE=/nologo /MD  /W4 /O2     /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "VDSF_BUILD" /Fo"$(INTDIR_RELEASE)\\"     /c 
+CFLAGS_DEBUG  =/nologo /MDd /W4 /ZI /Od /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "VDSF_BUILD" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
+
+OBJS_RELEASE= \
+	"$(INTDIR_RELEASE)\api.obj" \
+	"$(INTDIR_RELEASE)\CommonObject.obj" \
+	"$(INTDIR_RELEASE)\Connector.obj" \
+	"$(INTDIR_RELEASE)\Folder.obj" \
+	"$(INTDIR_RELEASE)\Process.obj" \
+	"$(INTDIR_RELEASE)\Session.obj"
+
+OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
+
+###########################################################################
+#
+# Defines the rules.
+#
+###########################################################################
+
+.c{$(INTDIR_RELEASE)}.obj::
+	$(CPP) $(CFLAGS_RELEASE) $< 
+
+.c{$(INTDIR_DEBUG)}.obj::
+	$(CPP) $(CFLAGS_DEBUG) $< 
+
+all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdsfAPI.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdsfAPI.dll
+
+"$(OUTDIR_RELEASE)\vdsfAPI.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
+   -del ..\Release\vdsfAPI.dll
+	-del ..\Release\vdsfAPI.lib
+	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
+   copy Release\vdsfAPI.dll ..\Release
+	copy Release\vdsfAPI.lib ..\Release
+
+"$(OUTDIR_DEBUG)\vdsfAPI.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
+   -del ..\Debug\vdsfAPI.dll
+	-del ..\Debug\vdsfAPI.lib
+	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
+   copy debug\vdsfAPI.dll ..\Debug
+	copy debug\vdsfAPI.lib ..\Debug
+
+###########################################################################
+#
+# The targets
+#
+###########################################################################
+
+check: all
+	cd Tests && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+
+checkdebug: all
+	cd Tests && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+
+"$(OUTDIR_RELEASE)" :
+	if not exist "$(OUTDIR_RELEASE)/$(NULL)" mkdir "$(OUTDIR_RELEASE)"
+
+"$(OUTDIR_DEBUG)" :
+	if not exist "$(OUTDIR_DEBUG)/$(NULL)" mkdir "$(OUTDIR_DEBUG)"
+   
+clean: 
+	cd Tests && nmake -f Makefile.win32 clean && cd ..
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+

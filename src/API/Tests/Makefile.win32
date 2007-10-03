@@ -1,0 +1,54 @@
+# Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+include .\Makefile.inc.Win32
+
+#
+# Override the values in Makefile.inc.Win32
+#
+LDD_FLAGS = $(W32_SYS_LIBS)     vdsfAPI.lib vdsfEngine.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Release" 
+LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) vdsfAPI.lib vdsfEngine.lib vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Debug" 
+CFLAGS_DEBUG=   /nologo /MDd /W4     /I "../.." /I "../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
+CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I "../.." /I "../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
+
+all: 
+
+CLEANFILES = *~ 
+
+check_PROGRAMS =                                
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+
+check: $(OUTDIR) $(check_PROGRAMS)
+	cd Api          && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd CommonObject && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Folder       && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Process      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Session      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+
+checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cd Api          && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd CommonObject && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Folder       && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Process      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Session      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+
+clean: 
+	cd Api          && nmake -f Makefile.win32 clean && cd ..
+	cd CommonObject && nmake -f Makefile.win32 clean && cd ..
+	cd Folder       && nmake -f Makefile.win32 clean && cd ..
+	cd Process      && nmake -f Makefile.win32 clean && cd ..
+	cd Session      && nmake -f Makefile.win32 clean && cd ..
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+

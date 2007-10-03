@@ -18,6 +18,20 @@
 #ifndef VDS_COMMON_H
 #define VDS_COMMON_H
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#if defined(WIN32)
+#  ifdef VDSF_BUILD
+#    define VDSF_EXPORT __declspec ( dllexport )
+#  else
+#    define VDSF_EXPORT __declspec ( dllimport )
+#  endif
+#else
+#  define VDSF_EXPORT
+#endif
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

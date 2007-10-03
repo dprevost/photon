@@ -142,7 +142,8 @@ bool vdseTxStatusIsRemoveCommitted( vdseTxStatus* pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   return (pStatus->statusFlag & REMOVE_IS_COMMITTED);
+   if ( pStatus->statusFlag & REMOVE_IS_COMMITTED ) return true;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

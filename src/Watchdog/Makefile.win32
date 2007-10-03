@@ -1,0 +1,98 @@
+###########################################################################
+#
+# Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+###########################################################################
+#
+# Defines the main macros.
+#
+###########################################################################
+
+VBS_VERBOSE = 
+
+LINK32=link.exe
+
+OUTDIR_RELEASE = .\Release
+INTDIR_RELEASE = .\Release
+OUTDIR_DEBUG   = .\Debug
+INTDIR_DEBUG   = .\Debug
+
+CLEANFILES = *~ vdswd.plg vdswd.dep vc60.idb vc60.pdb vdswd.mak BuildTools.ncb
+
+W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib
+
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfEngine.lib vdsfCommon.lib /nologo /version:0.1 /subsystem:console /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\vdswd.exe" /libpath:"..\Release" 
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfEngine.lib vdsfCommon.lib /nologo /version:0.1 /subsystem:console /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\vdswd.exe"   /libpath:"..\Debug" 
+
+CFLAGS_RELEASE = /nologo /MD  /W3 /GX     /O2 /I ".." /I "../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_RELEASE)\\"     /c 
+CFLAGS_DEBUG   = /nologo /MDd /W3 /GX /ZI /Od /I ".." /I "../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" /GZ /c 
+
+OBJS_RELEASE=                            \
+	"$(INTDIR_RELEASE)\Acceptor.obj"      \
+	"$(INTDIR_RELEASE)\LogMsg.obj"        \
+	"$(INTDIR_RELEASE)\MemoryManager.obj" \
+	"$(INTDIR_RELEASE)\VDSHandler.obj"    \
+	"$(INTDIR_RELEASE)\Watchdog.obj"      \
+	"$(INTDIR_RELEASE)\wd.obj"            
+
+OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
+
+###########################################################################
+#
+# Defines the rules.
+#
+###########################################################################
+
+.cpp{$(INTDIR_RELEASE)}.obj::
+	$(CPP) $(CFLAGS_RELEASE) $< 
+
+.cpp{$(INTDIR_DEBUG)}.obj::
+	$(CPP) $(CFLAGS_DEBUG) $< 
+
+all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdswd.exe $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdswd.exe
+
+"$(OUTDIR_RELEASE)\vdswd.exe" : "$(OUTDIR_RELEASE)" $(OBJS_RELEASE)
+   -del ..\Release\vdswd.exe
+	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
+   copy Release\vdswd.exe ..\Release
+
+"$(OUTDIR_DEBUG)\vdswd.exe" : "$(OUTDIR_DEBUG)" $(OBJS_DEBUG)
+   -del ..\Debug\vdswd.exe
+	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
+   copy debug\vdswd.exe ..\Debug
+
+###########################################################################
+#
+# The targets
+#
+###########################################################################
+
+check: all
+	cd Tests && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+
+checkdebug: all
+	cd Tests && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+
+"$(OUTDIR_RELEASE)" :
+	if not exist "$(OUTDIR_RELEASE)/$(NULL)" mkdir "$(OUTDIR_RELEASE)"
+
+"$(OUTDIR_DEBUG)" :
+	if not exist "$(OUTDIR_DEBUG)/$(NULL)" mkdir "$(OUTDIR_DEBUG)"
+   
+clean: 
+	cd Tests && nmake -f Makefile.win32 clean && cd ..
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+
+
