@@ -69,22 +69,15 @@ typedef enum vdseHashResizeEnum
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * The current version of the Hash uses linear probing. This will be
- * modified (in a future version) to use buckets instead. 
-
+ * The current version of the Hash uses buckets (the first version was
+ * built with linear probing).
+ *
  * One of the main advantage of buckets is that it gives us a better 
  * method for controlling when the Hash is reorganized (it have to be 
  * done in sync with a transaction to avoid confusion - with linear probing 
  * there is a hard limit on how long we can wait for a reorganization 
  * (when the array is 100% populated). There is no such limit with buckets 
  * since it is an array of linked lists).
- *
- * \todo The case sensitive/case insensitive stuff needs some rethinking,
- *       specially in view of using Unicode internally to hold string
- *       keys. One solution might be to have 4 data elements instead of
- *       2: the label (user provided key), the character set used for
- *       the label. the key (uppercase and in a standard Unicode character
- *       set [UCS4?]) and the data.
  */
 
 typedef struct vdseHash
@@ -115,59 +108,61 @@ typedef struct vdseHash
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT enum ListErrors 
-vdseHashDelete( vdseHash*            pHash,
-                const unsigned char* pKey, 
-                size_t               keyLength,
-                vdseSessionContext*  pContext );
+VDSF_ENGINE_EXPORT 
+enum ListErrors vdseHashDelete( vdseHash            * pHash,
+                                const unsigned char * pKey, 
+                                size_t                keyLength,
+                                vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT 
-void vdseHashEmpty( vdseHash*           pHash,
-                    vdseSessionContext* pContext );
+void vdseHashEmpty( vdseHash           * pHash,
+                    vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseHashFini( vdseHash*           pHash,
-                   vdseSessionContext* pContext );
+void vdseHashFini( vdseHash           * pHash,
+                   vdseSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT enum ListErrors 
-vdseHashInit( vdseHash*           pHash,
-              size_t              reservedSize, 
-              vdseSessionContext* pContext );
+VDSF_ENGINE_EXPORT 
+enum ListErrors vdseHashInit( vdseHash           * pHash,
+                              size_t               reservedSize, 
+                              vdseSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT enum ListErrors 
-vdseHashGet( vdseHash*            pHash,
-             const unsigned char* pkey,
-             size_t               keyLength,
-             vdseHashItem**       ppItem,
-             vdseSessionContext*  pContext,
-             size_t*              pBucket );
+VDSF_ENGINE_EXPORT 
+enum ListErrors vdseHashGet( vdseHash            * pHash,
+                             const unsigned char * pkey,
+                             size_t                keyLength,
+                             vdseHashItem       ** ppItem,
+                             vdseSessionContext  * pContext,
+                             size_t              * pBucket );
 
-VDSF_ENGINE_EXPORT enum ListErrors 
-vdseHashGetFirst( vdseHash*  pHash,
-                  size_t*    pBucket, 
-                  ptrdiff_t* pFirstItemOffset );
+VDSF_ENGINE_EXPORT 
+enum ListErrors vdseHashGetFirst( vdseHash  * pHash,
+                                  size_t    * pBucket, 
+                                  ptrdiff_t * pFirstItemOffset );
 
-VDSF_ENGINE_EXPORT enum ListErrors 
-vdseHashGetNext( vdseHash*  pHash,
-                 size_t     previousBucket,
-                 ptrdiff_t  previousOffset,
-                 size_t*    pNextBucket, 
-                 ptrdiff_t* pNextItemOffset );
+VDSF_ENGINE_EXPORT
+enum ListErrors vdseHashGetNext( vdseHash  * pHash,
+                                 size_t      previousBucket,
+                                 ptrdiff_t   previousOffset,
+                                 size_t    * pNextBucket, 
+                                 ptrdiff_t * pNextItemOffset );
 
-VDSF_ENGINE_EXPORT enum ListErrors 
-vdseHashInsert( vdseHash*            pHash,
-                const unsigned char* pKey,
-                size_t               keyLength,
-                void*                pData,
-                size_t               dataLength,
-                /* ppNewItem is used to access the original name of 
-                 * objects and the vdseTxStatus by the objects themselves */
-                vdseHashItem**       ppNewItem,
-                vdseSessionContext*  pContext );
+/*
+ * ppNewItem is used to access the original name of 
+ * objects and the vdseTxStatus by the objects themselves 
+ */
+VDSF_ENGINE_EXPORT 
+enum ListErrors vdseHashInsert( vdseHash            * pHash,
+                                const unsigned char * pKey,
+                                size_t                keyLength,
+                                const void          * pData,
+                                size_t                dataLength,
+                                vdseHashItem       ** ppNewItem,
+                                vdseSessionContext  * pContext );
 
-VDSF_ENGINE_EXPORT enum ListErrors 
-vdseHashResize( vdseHash*           pHash,
-                vdseSessionContext* pContext );
+VDSF_ENGINE_EXPORT
+enum ListErrors vdseHashResize( vdseHash           * pHash,
+                                vdseSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -178,3 +173,4 @@ END_C_DECLS
 #endif /* VDSE_HASH_MAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -35,7 +35,7 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseFolderInit( pFolder1, 0, 1, 0, &status, 5, strCheck("Test1"), &context );
+   errcode = vdseFolderInit( pFolder1, 0, 1, 0, &status, 5, strCheck("Test1"), NULL_OFFSET, &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
@@ -186,7 +186,7 @@ fprintf( stderr, "ok 5\n" );
                                      strCheckLow("test2/test4/test5"),
                                      17,
                                      &context );
-   if ( errcode != -0 ) 
+   if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
    vdseTxCommit( context.pTransaction, &context );

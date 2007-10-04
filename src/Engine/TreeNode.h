@@ -84,11 +84,12 @@ typedef struct vdseTreeNode
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void vdseTreeNodeInit( vdseTreeNode* pNode,
-                       ptrdiff_t     txStatusOffset,
-                       size_t        originalNameLength,
-                       ptrdiff_t     originalNameOffset,
-                       ptrdiff_t     parentOffset )
+void vdseTreeNodeInit( vdseTreeNode * pNode,
+                       ptrdiff_t      txStatusOffset,
+                       size_t         originalNameLength,
+                       ptrdiff_t      originalNameOffset,
+                       ptrdiff_t      parentOffset,
+                       ptrdiff_t      keyOffset )
 {
    VDS_PRE_CONDITION( pNode != NULL );
    
@@ -97,6 +98,7 @@ void vdseTreeNodeInit( vdseTreeNode* pNode,
    pNode->myNameOffset   = originalNameOffset;
    pNode->txStatusOffset = txStatusOffset;
    pNode->myParentOffset = parentOffset;
+   pNode->myKeyOffset    = keyOffset;
 }
 
 static inline 
@@ -109,6 +111,7 @@ void vdseTreeNodeFini( vdseTreeNode* pNode )
    pNode->myNameOffset   = NULL_OFFSET;
    pNode->txStatusOffset = NULL_OFFSET;
    pNode->myParentOffset = NULL_OFFSET;
+   pNode->myKeyOffset    = NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

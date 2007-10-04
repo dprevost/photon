@@ -18,6 +18,7 @@
 #include "Transaction.h"
 #include "LogFile.h"
 #include "Folder.h"
+#include "HashMap.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -155,6 +156,7 @@ int vdseTxCommit( vdseTx*             pTx,
    vdseMemObject *pChildMemObject, *pParentMemObject;
    vdseTreeNode  *pChildNode;
    vdseTxStatus  *pChildStatus;
+   vdseHashMap   *pHashMap;
    
    VDS_PRE_CONDITION( pTx      != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -208,6 +210,18 @@ int vdseTxCommit( vdseTx*             pTx,
       {         
       case VDSE_TX_ADD:
          /* We only have one type of objects doing this, currently */
+         if ( pOps->parentType == VDS_HASH_MAP )
+         {
+            pHashMap = GET_PTR( pOps->parentOffset, vdseHashMap );
+            pParentMemObject = &pHashMap->memObject;
+
+            vdseLockNoFailure( pParentMemObject, pContext );
+            vdseHashMapCommitAdd( pHashMap, pOps->childOffset );
+            vdseUnlock( pParentMemObject, pContext );
+         }
+         /* We should not come here */
+         else
+            VDS_POST_CONDITION( 0 == 1 );
 #if 0
          pQueue = GET_PTR( pOps->parentOffset, vdseQueue );
          errcode = pQueue->Lock( pContext->lockValue );
@@ -216,8 +230,9 @@ int vdseTxCommit( vdseTx*             pTx,
             pQueue->RollbackRemove( pOps->childOffset, pContext );
             pQueue->Unlock();
          }
-         break;
 #endif         
+         break;
+
       case VDSE_TX_CREATE:
          
          vdseLockNoFailure( pChildMemObject, pContext );
@@ -270,6 +285,21 @@ int vdseTxCommit( vdseTx*             pTx,
          break;
 
       case VDSE_TX_REMOVE:
+         /* We only have one type of objects doing this, currently */
+         if ( pOps->parentType == VDS_HASH_MAP )
+         {
+            pHashMap = GET_PTR( pOps->parentOffset, vdseHashMap );
+            pParentMemObject = &pHashMap->memObject;
+
+            vdseLockNoFailure( pParentMemObject, pContext );
+            vdseHashMapCommitRemove( pHashMap,
+                                     pOps->childOffset,
+                                     pContext );
+            vdseUnlock( pParentMemObject, pContext );
+         }
+         /* We should not come here */
+         else
+            VDS_POST_CONDITION( 0 == 1 );
 #if 0
          /* We only have one type of objects doing this, currently */
          pQueue =  GET_PTR( pOps->parentOffset, Queue, pContext->pAllocator );
@@ -311,6 +341,7 @@ void vdseTxRollback( vdseTx*             pTx,
    vdseMemObject *pChildMemObject, *pParentMemObject;
    vdseTreeNode  *pChildNode;
    vdseTxStatus  *pChildStatus;
+   vdseHashMap   *pHashMap;
 
    VDS_PRE_CONDITION( pTx != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -364,8 +395,22 @@ void vdseTxRollback( vdseTx*             pTx,
       switch( pOps->transType )
       {            
       case VDSE_TX_ADD:
-#if 0
          /* We only have one type of objects doing this, currently */
+         if ( pOps->parentType == VDS_HASH_MAP )
+         {
+            pHashMap = GET_PTR( pOps->parentOffset, vdseHashMap );
+            pParentMemObject = &pHashMap->memObject;
+
+            vdseLockNoFailure( pParentMemObject, pContext );
+            vdseHashMapRollbackAdd( pHashMap, 
+                                    pOps->childOffset,
+                                    pContext );
+            vdseUnlock( pParentMemObject, pContext );
+         }
+         /* We should not come here */
+         else
+            VDS_POST_CONDITION( 0 == 1 );
+#if 0
          pQueue =  GET_PTR( pOps->parentOffset, Queue, pContext->pAllocator );
          errcode = pQueue->Lock( pContext->lockValue );
          if ( errcode == VDS_OK )
@@ -436,8 +481,21 @@ void vdseTxRollback( vdseTx*             pTx,
          break;
 
       case VDSE_TX_REMOVE:
-#if 0
          /* We only have one type of objects doing this, currently */
+         if ( pOps->parentType == VDS_HASH_MAP )
+         {
+            pHashMap = GET_PTR( pOps->parentOffset, vdseHashMap );
+            pParentMemObject = &pHashMap->memObject;
+
+            vdseLockNoFailure( pParentMemObject, pContext );
+            vdseHashMapRollbackRemove( pHashMap, 
+                                       pOps->childOffset );
+            vdseUnlock( pParentMemObject, pContext );
+         }
+         /* We should not come here */
+         else
+            VDS_POST_CONDITION( 0 == 1 );
+#if 0
          pQueue =  GET_PTR( pOps->parentOffset, Queue, pContext->pAllocator );
          errcode = pQueue->Lock( pContext->lockValue );
          if ( errcode == VDS_OK )

@@ -27,7 +27,7 @@ CLEANFILES = *~
                 TreeRecovery.cpp        \
                 TreeRecovery.h          
 
-vdscr_LDADD = \
+#vdscr_LDADD = \
    $(top_builddir)/src/API/libvdsf.la 
 
 ###   $(top_builddir)/src/Wrappers/libCommon.la

@@ -1,4 +1,4 @@
-.TH "vds_c.h" 3 "21 Sep 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vds_c.h" 3 "3 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -22,55 +22,55 @@ vds_c.h \-
 
 .in +1c
 .ti -1c
-.RI "int \fBvdsInit\fP (const char *wdAddress, int protectionNeeded, \fBVDS_HANDLE\fP *processHandle)"
+.RI "VDSF_EXPORT int \fBvdsInit\fP (const char *wdAddress, int protectionNeeded, \fBVDS_HANDLE\fP *processHandle)"
 .br
 .RI "\fIThis function initializes access to a VDS. \fP"
 .ti -1c
-.RI "void \fBvdsExit\fP (\fBVDS_HANDLE\fP processHandle)"
+.RI "VDSF_EXPORT void \fBvdsExit\fP (\fBVDS_HANDLE\fP processHandle)"
 .br
 .RI "\fIThis function terminates all access to the VDS. \fP"
 .ti -1c
-.RI "int \fBvdsInitSession\fP (\fBVDS_HANDLE\fP *sessionHandle)"
+.RI "VDSF_EXPORT int \fBvdsInitSession\fP (\fBVDS_HANDLE\fP *sessionHandle)"
 .br
 .RI "\fIThis function initializes a session. \fP"
 .ti -1c
-.RI "int \fBvdsExitSession\fP (\fBVDS_HANDLE\fP handle)"
+.RI "VDSF_EXPORT int \fBvdsExitSession\fP (\fBVDS_HANDLE\fP handle)"
 .br
 .ti -1c
-.RI "int \fBvdsCreateObject\fP (\fBVDS_HANDLE\fP handle, const char *objectName, vdsObjectType objectType)"
+.RI "VDSF_EXPORT int \fBvdsCreateObject\fP (\fBVDS_HANDLE\fP handle, const char *objectName, vdsObjectType objectType)"
 .br
 .ti -1c
-.RI "int \fBvdsDestroyObject\fP (\fBVDS_HANDLE\fP handle, const char *objectName)"
+.RI "VDSF_EXPORT int \fBvdsDestroyObject\fP (\fBVDS_HANDLE\fP handle, const char *objectName)"
 .br
 .ti -1c
-.RI "int \fBvdsCommit\fP (\fBVDS_HANDLE\fP handle)"
+.RI "VDSF_EXPORT int \fBvdsCommit\fP (\fBVDS_HANDLE\fP handle)"
 .br
 .ti -1c
-.RI "int \fBvdsRollback\fP (\fBVDS_HANDLE\fP handle)"
+.RI "VDSF_EXPORT int \fBvdsRollback\fP (\fBVDS_HANDLE\fP handle)"
 .br
 .ti -1c
-.RI "int \fBvdsFolderOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *folderName, \fBVDS_HANDLE\fP *objectHandle)"
+.RI "VDSF_EXPORT int \fBvdsFolderOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *folderName, \fBVDS_HANDLE\fP *objectHandle)"
 .br
 .ti -1c
-.RI "int \fBvdsFolderClose\fP (\fBVDS_HANDLE\fP objectHandle)"
+.RI "VDSF_EXPORT int \fBvdsFolderClose\fP (\fBVDS_HANDLE\fP objectHandle)"
 .br
 .ti -1c
-.RI "int \fBvdsQueueOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *queueName, \fBVDS_HANDLE\fP *objectHandle)"
+.RI "VDSF_EXPORT int \fBvdsQueueOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *queueName, \fBVDS_HANDLE\fP *objectHandle)"
 .br
 .ti -1c
-.RI "int \fBvdsQueueClose\fP (\fBVDS_HANDLE\fP objectHandle)"
+.RI "VDSF_EXPORT int \fBvdsQueueClose\fP (\fBVDS_HANDLE\fP objectHandle)"
 .br
 .ti -1c
-.RI "int \fBvdsQueueInsertItem\fP (\fBVDS_HANDLE\fP objectHandle, const void *pItem, size_t length)"
+.RI "VDSF_EXPORT int \fBvdsQueueInsertItem\fP (\fBVDS_HANDLE\fP objectHandle, const void *pItem, size_t length)"
 .br
 .ti -1c
-.RI "int \fBvdsQueueRemoveItem\fP (\fBVDS_HANDLE\fP objectHandle, void *pItem, size_t length)"
+.RI "VDSF_EXPORT int \fBvdsQueueRemoveItem\fP (\fBVDS_HANDLE\fP objectHandle, void *pItem, size_t length)"
 .br
 .ti -1c
-.RI "int \fBvdsQueueGetItem\fP (\fBVDS_HANDLE\fP objectHandle, vdsIteratorType flag, void *pItem, size_t length)"
+.RI "VDSF_EXPORT int \fBvdsQueueGetItem\fP (\fBVDS_HANDLE\fP objectHandle, vdsIteratorType flag, void *pItem, size_t length)"
 .br
 .ti -1c
-.RI "int \fBvdsQueueStatus\fP (\fBVDS_HANDLE\fP objectHandle, size_t *pNumValidItems, size_t *pNumTotalItems)"
+.RI "VDSF_EXPORT int \fBvdsQueueStatus\fP (\fBVDS_HANDLE\fP objectHandle, size_t *pNumValidItems, size_t *pNumTotalItems)"
 .br
 .in -1c
 .SH "Typedef Documentation"
@@ -80,26 +80,26 @@ vds_c.h \-
 Definition at line 28 of file vds_c.h.
 .SH "Function Documentation"
 .PP 
-.SS "int vdsCommit (\fBVDS_HANDLE\fP handle)"
+.SS "VDSF_EXPORT int vdsCommit (\fBVDS_HANDLE\fP handle)"
 .PP
-.SS "int vdsCreateObject (\fBVDS_HANDLE\fP handle, const char * objectName, vdsObjectType objectType)"
+.SS "VDSF_EXPORT int vdsCreateObject (\fBVDS_HANDLE\fP handle, const char * objectName, vdsObjectType objectType)"
 .PP
-.SS "int vdsDestroyObject (\fBVDS_HANDLE\fP handle, const char * objectName)"
+.SS "VDSF_EXPORT int vdsDestroyObject (\fBVDS_HANDLE\fP handle, const char * objectName)"
 .PP
-.SS "void vdsExit (\fBVDS_HANDLE\fP processHandle)"
+.SS "VDSF_EXPORT void vdsExit (\fBVDS_HANDLE\fP processHandle)"
 .PP
 This function terminates all access to the VDS. 
 .PP
 This function will also close all sessions and terminate all accesses to the different objects.
 .PP
 This function takes a single argument, the handle to the process object and always end successfully. 
-.SS "int vdsExitSession (\fBVDS_HANDLE\fP handle)"
+.SS "VDSF_EXPORT int vdsExitSession (\fBVDS_HANDLE\fP handle)"
 .PP
-.SS "int vdsFolderClose (\fBVDS_HANDLE\fP objectHandle)"
+.SS "VDSF_EXPORT int vdsFolderClose (\fBVDS_HANDLE\fP objectHandle)"
 .PP
-.SS "int vdsFolderOpen (\fBVDS_HANDLE\fP sessionHandle, const char * folderName, \fBVDS_HANDLE\fP * objectHandle)"
+.SS "VDSF_EXPORT int vdsFolderOpen (\fBVDS_HANDLE\fP sessionHandle, const char * folderName, \fBVDS_HANDLE\fP * objectHandle)"
 .PP
-.SS "int vdsInit (const char * wdAddress, int protectionNeeded, \fBVDS_HANDLE\fP * processHandle)"
+.SS "VDSF_EXPORT int vdsInit (const char * wdAddress, int protectionNeeded, \fBVDS_HANDLE\fP * processHandle)"
 .PP
 This function initializes access to a VDS. 
 .PP
@@ -108,7 +108,7 @@ It takes 2 input arguments, the address of the watchdog and an integer (used as 
 [Additional note: API objects (or C handles) are just proxies for the real objects sitting in shared memory. Proper synchronization is already done in shared memory and it is best to avoid to synchronize these proxy objects.]
 .PP
 Upon successful completion, the process handle is set. Otherwise the error code is returned. 
-.SS "int vdsInitSession (\fBVDS_HANDLE\fP * sessionHandle)"
+.SS "VDSF_EXPORT int vdsInitSession (\fBVDS_HANDLE\fP * sessionHandle)"
 .PP
 This function initializes a session. 
 .PP
@@ -121,19 +121,19 @@ This function will also initiate a new transaction:
 Contrary to some other transaction management software, almost every call made is part of a transaction. Even viewing data (for example deleting the data by another session will be delayed until the current session terminates its access).
 .PP
 Upon normal termination, the current transaction is rolled back. You MUST explicitly call vdseCommit to save your changes. 
-.SS "int vdsQueueClose (\fBVDS_HANDLE\fP objectHandle)"
+.SS "VDSF_EXPORT int vdsQueueClose (\fBVDS_HANDLE\fP objectHandle)"
 .PP
-.SS "int vdsQueueGetItem (\fBVDS_HANDLE\fP objectHandle, vdsIteratorType flag, void * pItem, size_t length)"
+.SS "VDSF_EXPORT int vdsQueueGetItem (\fBVDS_HANDLE\fP objectHandle, vdsIteratorType flag, void * pItem, size_t length)"
 .PP
-.SS "int vdsQueueInsertItem (\fBVDS_HANDLE\fP objectHandle, const void * pItem, size_t length)"
+.SS "VDSF_EXPORT int vdsQueueInsertItem (\fBVDS_HANDLE\fP objectHandle, const void * pItem, size_t length)"
 .PP
-.SS "int vdsQueueOpen (\fBVDS_HANDLE\fP sessionHandle, const char * queueName, \fBVDS_HANDLE\fP * objectHandle)"
+.SS "VDSF_EXPORT int vdsQueueOpen (\fBVDS_HANDLE\fP sessionHandle, const char * queueName, \fBVDS_HANDLE\fP * objectHandle)"
 .PP
-.SS "int vdsQueueRemoveItem (\fBVDS_HANDLE\fP objectHandle, void * pItem, size_t length)"
+.SS "VDSF_EXPORT int vdsQueueRemoveItem (\fBVDS_HANDLE\fP objectHandle, void * pItem, size_t length)"
 .PP
-.SS "int vdsQueueStatus (\fBVDS_HANDLE\fP objectHandle, size_t * pNumValidItems, size_t * pNumTotalItems)"
+.SS "VDSF_EXPORT int vdsQueueStatus (\fBVDS_HANDLE\fP objectHandle, size_t * pNumValidItems, size_t * pNumTotalItems)"
 .PP
-.SS "int vdsRollback (\fBVDS_HANDLE\fP handle)"
+.SS "VDSF_EXPORT int vdsRollback (\fBVDS_HANDLE\fP handle)"
 .PP
 .SH "Author"
 .PP 

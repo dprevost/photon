@@ -597,13 +597,13 @@ vdseHashInit( vdseHash           * pHash,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum ListErrors 
-vdseHashInsert( vdseHash*            pHash,
-                const unsigned char* pKey,
-                size_t               keyLength,
-                void*                pData,
-                size_t               dataLength,
-                vdseHashItem**       ppNewItem,
-                vdseSessionContext*  pContext )
+vdseHashInsert( vdseHash            * pHash,
+                const unsigned char * pKey,
+                size_t                keyLength,
+                const void          * pData,
+                size_t                dataLength,
+                vdseHashItem       ** ppNewItem,
+                vdseSessionContext  * pContext )
 {
    ptrdiff_t* pArray;   
    size_t bucket = 0;

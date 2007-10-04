@@ -86,14 +86,15 @@ bool vdseFolderDeletable( vdseFolder*         pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseFolderInit( vdseFolder*         pFolder,
-                    ptrdiff_t           parentOffset,
-                    size_t              numberOfBlocks,
-                    size_t              expectedNumOfChilds,
-                    vdseTxStatus*       pTxStatus,
-                    size_t              origNameLength,
-                    vdsChar_T*          origName,
-                    vdseSessionContext* pContext )
+int vdseFolderInit( vdseFolder         * pFolder,
+                    ptrdiff_t            parentOffset,
+                    size_t               numberOfBlocks,
+                    size_t               expectedNumOfChilds,
+                    vdseTxStatus       * pTxStatus,
+                    size_t               origNameLength,
+                    vdsChar_T          * origName,
+                    ptrdiff_t            keyOffset,
+                    vdseSessionContext * pContext )
 {
    vdsErrors errcode;
    enum ListErrors listErr;
@@ -123,7 +124,8 @@ int vdseFolderInit( vdseFolder*         pFolder,
                      SET_OFFSET(pTxStatus),
                      origNameLength,
                      SET_OFFSET(origName),
-                     parentOffset );
+                     parentOffset,
+                     keyOffset );
 
    listErr = vdseHashInit( &pFolder->hashObj, expectedNumOfChilds, pContext );
    if ( listErr != LIST_OK )
@@ -428,6 +430,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
                               objTxStatus,
                               partialLength,
                               pDesc->originalName,
+                              SET_OFFSET(pHashItem->key),
                               pContext );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseFolder,nodeObject);
          break;

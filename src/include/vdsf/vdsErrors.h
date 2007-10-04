@@ -143,12 +143,28 @@ typedef enum vdsErrors
     */
    VDS_SESSION_CANNOT_GET_LOCK     = 36,
    
-   /*
+   /**
     * An attempt was made to use a session object (a session handle)
     * after this session was terminated.
     */
-   VDS_SESSION_IS_TERMINATED       = 37
+   VDS_SESSION_IS_TERMINATED       = 37,
    
+   /**
+    * An item with the same key was found.
+    */
+   VDS_ITEM_ALREADY_PRESENT        = 38,
+   
+   /**
+    * The item was not found in the hash map
+    */
+   VDS_NO_SUCH_ITEM                = 39,
+   
+   /**
+    * The object is scheduled to be deleted soon. Operations on this data
+    * container are not permitted at this time.
+    */
+   VDS_OBJECT_IS_DELETED           = 40     
+
 } vdsErrors;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

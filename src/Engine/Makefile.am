@@ -43,6 +43,8 @@ libEngine_la_SOURCES =                   \
                        LogFile.h         \
                        Hash.c            \
                        Hash.h            \
+                       HashMap.c         \
+                       HashMap.h         \
                        MemoryAllocator.c \
                        MemoryAllocator.h \
                        MemBitmap.c       \

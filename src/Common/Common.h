@@ -21,7 +21,9 @@
  *
  */
 
-#define FD_SETSIZE 100
+#if defined WIN32
+#  define FD_SETSIZE 100
+#endif
 
 #ifndef VDSC_COMMON_H
 #define VDSC_COMMON_H

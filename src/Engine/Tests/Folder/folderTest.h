@@ -124,6 +124,7 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
  *
  */
 #if VDS_SUPPORT_i18n
+
 wchar_t *wcTemp = NULL, *wcTempLowcase = NULL;
 size_t mbsrtowcs(wchar_t *dst, const char **src, size_t len, mbstate_t *ps);
 

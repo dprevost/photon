@@ -55,21 +55,20 @@ typedef struct vdseFolder
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-int vdseFolderInit( vdseFolder*         pFolder,
-                    ptrdiff_t           parentOffset,
-                    size_t              numberOfBlocks,
-                    size_t              expectedNumOfChilds,
-                    vdseTxStatus*       pTxStatus,
-                    size_t              origNameLength,
-                    vdsChar_T*          origName,
-                    vdseSessionContext* pContext );
+int vdseFolderInit( vdseFolder         * pFolder,
+                    ptrdiff_t            parentOffset,
+                    size_t               numberOfBlocks,
+                    size_t               expectedNumOfChilds,
+                    vdseTxStatus       * pTxStatus,
+                    size_t               origNameLength,
+                    vdsChar_T          * origName,
+                    ptrdiff_t            keyOffset,
+                    vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 void vdseFolderFini( vdseFolder*         pFolder,
                      vdseSessionContext* pContext );
 
-
-   
 VDSF_ENGINE_EXPORT
 int vdseFolderGetObject( vdseFolder*            pFolder,
                          const vdsChar_T*       objectName,

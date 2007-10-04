@@ -123,6 +123,7 @@ void vdseTxStatusClearTx( vdseTxStatus* pStatus )
 
    pStatus->txOffset = NULL_OFFSET;
    pStatus->statusFlag = 0;
+   pStatus->usageCounter = 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -174,6 +175,14 @@ void vdseTxStatusUnmarkAsDestroyed( vdseTxStatus* pStatus )
    VDS_PRE_CONDITION( pStatus != NULL );
 
    pStatus->statusFlag = ~(~pStatus->statusFlag | MARKED_AS_DESTROYED);
+   /* 
+    * This function will be called by a rollback. We clear the transaction
+    * itself - obviously. But not the counter (which might be greater than 
+    * one if some other session had access to the data before the data
+    * was marked as removed).
+    */
+   pStatus->txOffset = NULL_OFFSET;
+   pStatus->usageCounter--;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
