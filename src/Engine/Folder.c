@@ -18,6 +18,7 @@
 #include "Folder.h"
 #include "Transaction.h"
 #include "MemoryAllocator.h"
+#include "HashMap.h"
 
 /* To make the code easier to read */
 #define SET_ERROR_RETURN(RC) \
@@ -422,6 +423,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
       {
       case VDS_QUEUE:
          break;
+
       case VDS_FOLDER:
          rc = vdseFolderInit( (vdseFolder*)ptr,
                               SET_OFFSET(pFolder),
@@ -435,6 +437,19 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseFolder,nodeObject);
          break;
       
+      case VDS_HASH_MAP:
+         rc = vdseHashMapInit( (vdseHashMap *)ptr,
+                              SET_OFFSET(pFolder),
+                              numBlocks,
+                              expectedNumOfChilds,
+                              objTxStatus,
+                              partialLength,
+                              pDesc->originalName,
+                              SET_OFFSET(pHashItem->key),
+                              pContext );
+         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseFolder,nodeObject);
+         break;
+
       default:
          errcode = VDS_INTERNAL_ERROR;
          goto the_exit;
