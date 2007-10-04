@@ -19,7 +19,11 @@
 #include <signal.h>
 #include "Watchdog/Watchdog.h"
 #include "Common/ErrorHandler.h"
-#include <new.h>
+#if HAVE_NEW
+#  include <new>
+#else
+#  include <new.h>
+#endif
 
 // This should be more than enough...
 #define LINE_MAX_LEN (2*PATH_MAX)
