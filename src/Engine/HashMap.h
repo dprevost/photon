@@ -61,12 +61,10 @@ int vdseHashMapInit( vdseHashMap        * pHashMap,
                      vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseHashMapFini( vdseHashMap*         pHashMap,
-                     vdseSessionContext* pContext );
+void vdseHashMapFini( vdseHashMap        * pHashMap,
+                      vdseSessionContext * pContext );
 
-
-   
-VDSF_ENGINE_EXPORT
+VDSF_ENGINE_EXPORTVDS_NO_SUCH_ITEM
 int vdseHashMapGetItem( vdseHashMap        * pHashMap,
                         const void         * pKey,
                         size_t               keyLength, 
@@ -104,17 +102,6 @@ void vdseHashMapCommitRemove( vdseHashMap        * pHashMap,
 VDSF_ENGINE_EXPORT
 void vdseHashMapRollbackRemove( vdseHashMap * pHashMap, 
                                 ptrdiff_t     itemOffset );
-
-/** 
- * This function does the actual removal of the entry in the list of the
- * folder object (once there are no pending transactions, no sessions
- * have this object open, etc...).
- */
-//VDSF_ENGINE_EXPORT
-//void vdseHashMapRemoveObject( vdseHashMap*         pHashMap,
-//                             const vdsChar_T*    objectName,
-//                             size_t              nameLength,
-//                             vdseSessionContext* pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

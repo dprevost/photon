@@ -407,6 +407,7 @@ AC_CONFIG_FILES([
    src/Engine/Tests/BlockGroup/Makefile
    src/Engine/Tests/Folder/Makefile
    src/Engine/Tests/Hash/Makefile
+   src/Engine/Tests/HashMap/Makefile
    src/Engine/Tests/List/Makefile
    src/Engine/Tests/LogFile/Makefile
    src/Engine/Tests/MemAlloc/Makefile
