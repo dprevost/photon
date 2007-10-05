@@ -64,7 +64,7 @@ VDSF_ENGINE_EXPORT
 void vdseHashMapFini( vdseHashMap        * pHashMap,
                       vdseSessionContext * pContext );
 
-VDSF_ENGINE_EXPORTVDS_NO_SUCH_ITEM
+VDSF_ENGINE_EXPORT
 int vdseHashMapGetItem( vdseHashMap        * pHashMap,
                         const void         * pKey,
                         size_t               keyLength, 
