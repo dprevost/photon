@@ -56,6 +56,8 @@ libEngine_la_SOURCES =                   \
                        Process.h         \
                        ProcessManager.c  \
                        ProcessManager.h  \
+                       Queue.c           \
+                       Queue.h           \
                        SessionContext.h  \
                        Session.c         \
                        Session.h         \
@@ -67,10 +69,6 @@ libEngine_la_SOURCES =                   \
 #   MemoryManager.c         \
    MemoryManager.h         
 
-#  Queue.cpp               \
-   Queue.h                 
-
-   
 VdsErrorHandler.c VdsErrorHandler.h:
 	$(top_builddir)/src/BuildTools/errorParser -i $(top_srcdir)/src/include/vdsf/vdsErrors.h -o VdsErrorHandler -p vdseErr
 
