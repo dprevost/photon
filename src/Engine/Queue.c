@@ -22,6 +22,50 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * This version of the function is to be used when:
+ *  - you know that the object is in use and should not/cannot be removed
+ *  - the calling function holds the lock
+ */
+static
+void vdseQueueReleaseNoLock( vdseQueue          * pQueue,
+                             vdseQueueItem      * pQueueItem,
+                             vdseSessionContext * pContext )
+{
+   vdseTxStatus * txItemStatus, * txQueueStatus;
+   size_t len;
+   
+   VDS_PRE_CONDITION( pQueue != NULL );
+   VDS_PRE_CONDITION( pQueueItem != NULL );
+   VDS_PRE_CONDITION( pContext   != NULL );
+   VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
+
+   pContext->pCurrentMemObject = &pQueue->memObject;
+
+   txItemStatus = &pQueueItem->txStatus;
+   txQueueStatus = GET_PTR( pQueue->nodeObject.txStatusOffset, vdseTxStatus );
+   
+   txItemStatus->usageCounter--;
+   txQueueStatus->usageCounter--;
+
+   if ( (txItemStatus->usageCounter == 0) && vdseTxStatusIsRemoveCommitted(txItemStatus) )
+   {
+      /* Time to really delete the record! */
+      vdseLinkedListRemoveItem( &pQueue->listOfElements, 
+                                &pQueueItem->node );
+
+      len =  pQueueItem->dataLength + offsetof( vdseQueueItem, data );
+      vdseFree( &pQueue->memObject, 
+                (unsigned char *) pQueueItem, 
+                len, 
+                pContext );
+
+      pQueue->nodeObject.txCounter--;
+   }
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdseQueueInit( vdseQueue          * pQueue,
                    ptrdiff_t            parentOffset,
                    size_t               numberOfBlocks,
@@ -218,8 +262,7 @@ int vdseQueueRemove( vdseQueue          * pQueue,
          txStatus = &pItem->txStatus;
       
          if ( vdseTxStatusIsValid( txStatus, SET_OFFSET(pContext->pTransaction) ) 
-                && ! vdseTxStatusIsMarkedAsDestroyed( txStatus ) 
-                && pItem->txStatus.usageCounter == 0 )
+                && ! vdseTxStatusIsMarkedAsDestroyed( txStatus ) )
          {
             /* Add to current transaction  */
             rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
@@ -276,85 +319,72 @@ the_exit:
 
 int vdseQueueGet( vdseQueue          * pQueue,
                   unsigned int         flag,
-                  void               * pItem,
-                  size_t               length,
-                  void              ** ppIterator,
+                  vdseQueueItem     ** ppIterator,
                   vdseSessionContext * pContext )
 {
-#if 0
-vdsErrors Queue::GetItem( unsigned int    flag,
-                          void          * pItem,
-                          size_t          length,
-                          void         ** ppIterator,
-                          vdseSessionContext* pContext )
-{
-   QueueElement* pElement = NULL;
-   QueueElement* pOldElement = NULL;
-   vdsErrors errCode = VDS_IS_EMPTY;
+   vdseQueueItem* pQueueItem = NULL;
+   vdseQueueItem* pOldItem = NULL;
+   vdsErrors errcode = VDS_IS_EMPTY;
    enum ListErrors listErrCode;
    vdseLinkNode * pNode = NULL;
+   vdseTxStatus * txItemStatus, * txQueueStatus;
+   txQueueStatus = GET_PTR( pQueue->nodeObject.txStatusOffset, vdseTxStatus );
    
-   if ( flag == VDS_NEXT )
+   if ( vdseLock( &pQueue->memObject, pContext ) == 0 )
    {
-      errCode = VDS_REACHED_THE_END;
-      pOldElement = (QueueElement*) *ppIterator;
-      listErrCode =  vdseLinkedListPeakNext( &m_listOfElements, 
-                                             &pOldElement->node, 
-                                             &pNode,
-                                             pContext->pAllocator );
+      if ( flag == VDS_NEXT )
+      {
+         errcode = VDS_REACHED_THE_END;
+         pOldItem = (vdseQueueItem*) *ppIterator;
+         listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                                &pOldItem->node, 
+                                                &pNode );
+      }
+      else
+         /* This call can only fail if the queue is empty. */
+         listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, 
+                                                &pNode );
+
+      while ( listErrCode == LIST_OK )
+      {
+         pQueueItem = (vdseQueueItem*)
+            ((char*)pNode - offsetof( vdseQueueItem, node ));
+         txItemStatus = &pQueueItem->txStatus;
+         if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
+             && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+         {
+            txItemStatus->usageCounter++;
+            txQueueStatus->usageCounter++;
+            *ppIterator = pQueueItem;
+            if ( flag == VDS_NEXT )
+               vdseQueueReleaseNoLock( pQueue, pOldItem, pContext );
+
+            vdseUnlock( &pQueue->memObject, pContext );
+
+            return 0;
+         }
+         listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                                pNode, 
+                                                &pNode );
+      }
    }
    else
-      /* This call can only fail if the queue is empty. */
-      listErrCode = vdseLinkedListPeakFirst( &m_listOfElements, 
-                                             &pNode,
-                                             pContext->pAllocator );
-
-   // BUG remove Transaction cast, eventually
-   Transaction* pTrans = (Transaction*) pContext->pTransaction;
-
-   while ( listErrCode == LIST_OK )
    {
-      pElement = (QueueElement*)
-         ((char*)pNode - offsetof( QueueElement, node ));
-      if ( pElement->
-           IsTransactionValid( pTrans->TransactionId() ) 
-           && ! pElement->IsMarkedAsDestroyed() )
-      {
-         if ( pElement->length > length )
-            return VDS_INVALID_LENGTH_FIELD;
-
-         memcpy( pItem, pElement->data, pElement->length );
-
-         pElement->usageCounter++;
-         *ppIterator = (void *) pElement;
-         if ( flag == VDS_NEXT )
-            ReleaseIterator( pOldElement, pContext );
-
-         return VDS_OK;
-      }
-/*      fprintf(stderr, "pE: %p %d %d \n", pElement, pElement->usageCounter, */
-/*              pElement->bMarkedForDeletion ); */
-      
-      listErrCode =  vdseLinkedListPeakNext( &m_listOfElements, 
-                                             pNode, 
-                                             &pNode,
-                                             pContext->pAllocator );
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      return -1;
    }
+   
+   vdseUnlock( &pQueue->memObject, pContext );
+   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
 
-   /* If we come here, we are in error */
-   if ( flag == VDS_NEXT )
-      ReleaseIterator( *ppIterator, pContext );
-
-   return errCode;
-#endif
-  return 0;
+   return -1;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseQueueReleaseItem( vdseQueue          * pQueue,
-                          vdseQueueItem      * pQueueItem,
-                          vdseSessionContext * pContext )
+int vdseQueueRelease( vdseQueue          * pQueue,
+                      vdseQueueItem      * pQueueItem,
+                      vdseSessionContext * pContext )
 {
    vdseTxStatus * txItemStatus, * txQueueStatus;
    size_t len;
@@ -577,82 +607,6 @@ void vdseQueueRollbackRemove( vdseQueue * pQueue,
     */
    vdseTxStatusUnmarkAsDestroyed(  &pQueueItem->txStatus );
 }
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-#if 0
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-vdsErrors Queue::GetItem( unsigned int    flag,
-                          void          * pItem,
-                          size_t          length,
-                          void         ** ppIterator,
-                          vdseSessionContext* pContext )
-{
-   QueueElement* pElement = NULL;
-   QueueElement* pOldElement = NULL;
-   vdsErrors errCode = VDS_IS_EMPTY;
-   enum ListErrors listErrCode;
-   vdseLinkNode * pNode = NULL;
-   
-   if ( flag == VDS_NEXT )
-   {
-      errCode = VDS_REACHED_THE_END;
-      pOldElement = (QueueElement*) *ppIterator;
-      listErrCode =  vdseLinkedListPeakNext( &m_listOfElements, 
-                                             &pOldElement->node, 
-                                             &pNode,
-                                             pContext->pAllocator );
-   }
-   else
-      /* This call can only fail if the queue is empty. */
-      listErrCode = vdseLinkedListPeakFirst( &m_listOfElements, 
-                                             &pNode,
-                                             pContext->pAllocator );
-
-   // BUG remove Transaction cast, eventually
-   Transaction* pTrans = (Transaction*) pContext->pTransaction;
-
-   while ( listErrCode == LIST_OK )
-   {
-      pElement = (QueueElement*)
-         ((char*)pNode - offsetof( QueueElement, node ));
-      if ( pElement->
-           IsTransactionValid( pTrans->TransactionId() ) 
-           && ! pElement->IsMarkedAsDestroyed() )
-      {
-         if ( pElement->length > length )
-            return VDS_INVALID_LENGTH_FIELD;
-
-         memcpy( pItem, pElement->data, pElement->length );
-
-         pElement->usageCounter++;
-         *ppIterator = (void *) pElement;
-         if ( flag == VDS_NEXT )
-            ReleaseIterator( pOldElement, pContext );
-
-         return VDS_OK;
-      }
-/*      fprintf(stderr, "pE: %p %d %d \n", pElement, pElement->usageCounter, */
-/*              pElement->bMarkedForDeletion ); */
-      
-      listErrCode =  vdseLinkedListPeakNext( &m_listOfElements, 
-                                             pNode, 
-                                             &pNode,
-                                             pContext->pAllocator );
-   }
-
-   /* If we come here, we are in error */
-   if ( flag == VDS_NEXT )
-      ReleaseIterator( *ppIterator, pContext );
-
-   return errCode;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

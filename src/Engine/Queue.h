@@ -113,15 +113,13 @@ int vdseQueueRemove( vdseQueue          * pQueue,
 VDSF_ENGINE_EXPORT
 int vdseQueueGet( vdseQueue          * pQueue,
                   unsigned int         flag,
-                  void               * pItem,
-                  size_t               length,
-                  void              ** ppIterator,
+                  vdseQueueItem     ** ppIterator,
                   vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseQueueRelease( vdseQueue          * pQueue,
-                       vdseQueueItem      * pQueueItem,
-                       vdseSessionContext * pContext );
+int vdseQueueRelease( vdseQueue          * pQueue,
+                      vdseQueueItem      * pQueueItem,
+                      vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseQueueStatus( vdseQueue          * pQueue,
