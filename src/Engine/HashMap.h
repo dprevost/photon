@@ -20,11 +20,11 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine.h"
-#include "MemoryObject.h"
-#include "TreeNode.h"
-#include "BlockGroup.h"
-#include "Hash.h"
+#include "Engine/Engine.h"
+#include "Engine/MemoryObject.h"
+#include "Engine/TreeNode.h"
+#include "Engine/BlockGroup.h"
+#include "Engine/Hash.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -85,6 +85,10 @@ int vdseHashMapDeleteItem( vdseHashMap        * pHashMap,
                            size_t               keyLength, 
                            vdseSessionContext * pContext );
 
+VDSF_ENGINE_EXPORT
+int vdseHashMapReleaseItem( vdseHashMap        * pHashMap,
+                            vdseHashItem       * pHashItem,
+                            vdseSessionContext * pContext );
 VDSF_ENGINE_EXPORT
 void vdseHashMapCommitAdd( vdseHashMap * pHashMap, 
                            ptrdiff_t     itemOffset );

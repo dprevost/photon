@@ -20,12 +20,12 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine.h"      
-#include "MemoryObject.h"
-#include "TreeNode.h"
-#include "BlockGroup.h"
-#include "LinkedList.h"
-#include "TxStatus.h"
+#include "Engine/Engine.h"      
+#include "Engine/MemoryObject.h"
+#include "Engine/TreeNode.h"
+#include "Engine/BlockGroup.h"
+#include "Engine/LinkedList.h"
+#include "Engine/TxStatus.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -124,9 +124,10 @@ void vdseQueueRelease( vdseQueue          * pQueue,
                        vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseQueueStatus( vdseQueue * pQueue,
-                      size_t    * pNumValidItems,
-                      size_t    * pNumTotalItems );
+int vdseQueueStatus( vdseQueue          * pQueue,
+                     size_t             * pNumValidItems,
+                     size_t             * pNumTotalItems,
+                     vdseSessionContext * pContext  );
 
 VDSF_ENGINE_EXPORT
 void vdseQueueCommitAdd( vdseQueue * pQueue, 
