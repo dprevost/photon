@@ -89,6 +89,7 @@ VDSF_ENGINE_EXPORT
 int vdseHashMapReleaseItem( vdseHashMap        * pHashMap,
                             vdseHashItem       * pHashItem,
                             vdseSessionContext * pContext );
+
 VDSF_ENGINE_EXPORT
 void vdseHashMapCommitAdd( vdseHashMap * pHashMap, 
                            ptrdiff_t     itemOffset );
