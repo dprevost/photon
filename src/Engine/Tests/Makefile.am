@@ -31,7 +31,8 @@ SUBDIRS =                \
           Process        \
           Session        \
           Folder         \
-          HashMap        
+          HashMap        \
+          Queue
 
 check_PROGRAMS =                  \
                  LinkNodeNULLInit \

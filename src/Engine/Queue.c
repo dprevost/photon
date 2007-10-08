@@ -144,6 +144,8 @@ int vdseQueueInsert( vdseQueue          * pQueue,
    VDS_PRE_CONDITION( pItem    != NULL )
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( length  > 0 );
+   VDS_PRE_CONDITION( firstOrLast == VDSE_QUEUE_FIRST || 
+      firstOrLast == VDSE_QUEUE_LAST );
    VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
 
    txStatus = GET_PTR( pQueue->nodeObject.txStatusOffset, vdseTxStatus );
@@ -237,6 +239,8 @@ int vdseQueueRemove( vdseQueue          * pQueue,
    VDS_PRE_CONDITION( pQueue      != NULL );
    VDS_PRE_CONDITION( ppQueueItem != NULL );
    VDS_PRE_CONDITION( pContext    != NULL );
+   VDS_PRE_CONDITION( firstOrLast == VDSE_QUEUE_FIRST || 
+      firstOrLast == VDSE_QUEUE_LAST );
    VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
    
    txStatus = GET_PTR( pQueue->nodeObject.txStatusOffset, vdseTxStatus );
@@ -328,6 +332,13 @@ int vdseQueueGet( vdseQueue          * pQueue,
    enum ListErrors listErrCode;
    vdseLinkNode * pNode = NULL;
    vdseTxStatus * txItemStatus, * txQueueStatus;
+   
+   VDS_PRE_CONDITION( pQueue     != NULL );
+   VDS_PRE_CONDITION( ppIterator != NULL );
+   VDS_PRE_CONDITION( pContext   != NULL );
+   VDS_PRE_CONDITION( flag == VDS_FIRST || flag == VDS_NEXT );
+   VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
+   
    txQueueStatus = GET_PTR( pQueue->nodeObject.txStatusOffset, vdseTxStatus );
    
    if ( vdseLock( &pQueue->memObject, pContext ) == 0 )

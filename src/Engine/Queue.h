@@ -35,8 +35,8 @@ BEGIN_C_DECLS
 
 typedef enum vdseQueueEnum
 {
-   VDSE_QUEUE_FIRST = 1,
-   VDSE_QUEUE_LAST  = 2
+   VDSE_QUEUE_FIRST = 101,
+   VDSE_QUEUE_LAST  = 202
    
 } vdseQueueEnum;
 

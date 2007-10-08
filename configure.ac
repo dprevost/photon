@@ -415,6 +415,7 @@ AC_CONFIG_FILES([
    src/Engine/Tests/MemObject/Makefile
    src/Engine/Tests/Process/Makefile
    src/Engine/Tests/ProcessManager/Makefile
+   src/Engine/Tests/Queue/Makefile
    src/Engine/Tests/Session/Makefile
    src/Engine/Tests/Transaction/Makefile
    src/include/Makefile
