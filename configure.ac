@@ -289,8 +289,26 @@ fi
 ########################################
 
 AC_C_BIGENDIAN
+
+if test "$build_alias" != ""; then
+  AC_MSG_ERROR([This version of vdsf does not support cross-compilation])
+fi
+if test "$target_alias" != ""; then
+  AC_MSG_ERROR([This version of vdsf does not support cross-compilation])
+fi
+
 AC_CANONICAL_HOST
 AC_DEFINE_UNQUOTED(MYCPU, "$host_cpu", The host cpu)
+
+case $host_cpu in
+i386 | i486 | i586 | i686 )
+             locking_dir=asm-i386    ;;
+alpha)       locking_dir=asm-alpha   ;;
+sparc)       locking_dir=asm-sparc   ;;
+sparc64)     locking_dir=asm-sparc64 ;;
+*) locking_dir=empty ;;
+
+esac
 
 ##################################################
 #                                                #
@@ -370,8 +388,17 @@ AC_ARG_ENABLE([kernel-headers],
               [use_headers=$enableval],
               [use_headers=yes])
 
-AM_CONDITIONAL([COND_USE_KERNEL_HEADERS], [test "$use_headers" = yes])
-              
+if test "$locking_dir" = "empty"; then
+  AC_MSG_RESULT([Modified kernel headers unsupported on this cpu])
+  AM_CONDITIONAL([COND_USE_KERNEL_HEADERS], [test "$locking_dir" != "empty"])
+  if test "$ac_cv_sem_init_works" != "yes"; then
+    AC_MSG_ERROR([Semaphores are unsupported, don't know how to lock. Sorry!])
+  fi
+else
+  AC_CONFIG_LINKS(src/Locking/asm:src/Locking/$locking_dir)
+  AM_CONDITIONAL([COND_USE_KERNEL_HEADERS], [test "$use_headers" = yes])
+fi
+
 ####################
 #                  #
 # Section - output #
