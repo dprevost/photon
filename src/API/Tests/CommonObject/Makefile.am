@@ -39,7 +39,17 @@ OpenWrongType_SOURCES    = OpenWrongType.c
 UnlockNullObject_SOURCES = UnlockNullObject.c
 UnlockPass_SOURCES       = UnlockPass.c
 
-EXTRA_DIST =         
+EXTRA_DIST =                     \
+             CloseNullObject.sh  \
+             ClosePass.sh        \
+             LockNullObject.sh   \
+             LockPass.sh         \
+             OpenNullName.sh     \
+             OpenNullObject.sh   \
+             OpenPass.sh         \
+             OpenWrongType.sh    \
+             UnlockNullObject.sh \
+             UnlockPass.sh       
 
 TESTS_ENVIRONMENT =                              \
                     tcp_port=10701               \

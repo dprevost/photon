@@ -32,6 +32,10 @@ libEngine_la_SOURCES =                   \
                        Engine.h          \
                        Folder.c          \
                        Folder.h          \
+                       Hash.c            \
+                       Hash.h            \
+                       HashMap.c         \
+                       HashMap.h         \
                        InitEngine.c      \
                        InitEngine.h      \
                        LinkedList.c      \
@@ -41,15 +45,12 @@ libEngine_la_SOURCES =                   \
                        ListErrors.h      \
                        LogFile.c         \
                        LogFile.h         \
-                       Hash.c            \
-                       Hash.h            \
-                       HashMap.c         \
-                       HashMap.h         \
-                       MemoryAllocator.c \
-                       MemoryAllocator.h \
                        MemBitmap.c       \
                        MemBitmap.h       \
                        MemBitmap.inl     \
+                       MemoryAllocator.c \
+                       MemoryAllocator.h \
+                       MemoryHeader.h    \
                        MemoryObject.c    \
                        MemoryObject.h    \
                        Process.c         \
@@ -63,8 +64,8 @@ libEngine_la_SOURCES =                   \
                        Session.h         \
                        Transaction.c     \
                        Transaction.h     \
-                       TxStatus.h        \
-                       TreeNode.h        
+                       TreeNode.h        \
+                       TxStatus.h        
    
 #   MemoryManager.c         \
    MemoryManager.h         

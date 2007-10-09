@@ -39,5 +39,5 @@ if COND_INCLUDE_DEMO
 endif
 
 
-DIST_SUBDIRS = Locking      
+DIST_SUBDIRS = $(SUBDIRS) Java Demo Locking      
 

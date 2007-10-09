@@ -14,7 +14,7 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core MemFile.mem
 
-INCLUDE_FILES = PrintError.h
+INCLUDE_FILES =
 
 check_PROGRAMS =                         \
                  BackStatusInvalidSig    \

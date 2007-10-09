@@ -35,7 +35,7 @@ check_PROGRAMS =                  \
                  MallocPass       \
                  MallocZeroLength
 
-COMMON_ENGINE = EngineTestCommon.h
+COMMON_ENGINE = 
 
 CloseNullAlloc_SOURCES     = $(COMMON_ENGINE) CloseNullAlloc.c
 CloseNullError_SOURCES     = $(COMMON_ENGINE) CloseNullError.c

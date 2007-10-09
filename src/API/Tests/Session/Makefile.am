@@ -71,7 +71,34 @@ OpenObjWrongType_SOURCES    = OpenObjWrongType.c
 RollbackNullHandle_SOURCES  = RollbackNullHandle.c
 RollbackPass_SOURCES        = RollbackPass.c
 
-EXTRA_DIST =         
+EXTRA_DIST =                        \
+             CloseNullSession.sh    \
+             ClosePass.sh           \
+             CloseObjNullObject.sh  \
+             CloseObjNullSession.sh \
+             CloseObjPass.sh        \
+             CommitNullHandle.sh    \
+             CommitPass.sh          \
+             CreateNullHandle.sh    \
+             CreateNullName.sh      \
+             CreatePass.sh          \
+             CreateWrongType.sh     \
+             DestroyNotCreated.sh   \
+             DestroyNullHandle.sh   \
+             DestroyNullName.sh     \
+             DestroyPass.sh         \
+             ExitNullHandle.sh      \
+             ExitPass.sh            \
+             InitNullHandle.sh      \
+             InitPass.sh            \
+             OpenObjNotCreated.sh   \
+             OpenObjNullName.sh     \
+             OpenObjNullObject.sh   \
+             OpenObjNullSession.sh  \
+             OpenObjPass.sh         \
+             OpenObjWrongType.sh    \
+             RollbackNullHandle.sh  \
+             RollbackPass.sh        
 
 TESTS_ENVIRONMENT =                              \
                     tcp_port=10701               \

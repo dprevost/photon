@@ -27,7 +27,10 @@ InitNullAddress_SOURCES = InitNullAddress.c
 InitNullHandle_SOURCES  = InitNullHandle.c
 InitPass_SOURCES        = InitPass.c
 
-EXTRA_DIST =         
+EXTRA_DIST =                   \
+             ExitNullHandle.sh \
+             ExitPass.sh       \
+             InitPass.sh       
 
 TESTS_ENVIRONMENT =                              \
                     tcp_port=10701               \

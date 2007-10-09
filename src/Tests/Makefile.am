@@ -14,31 +14,16 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-#SUBDIRS =          \
-#          Engine   \
-#          API      \
-#          Watchdog
+EXTRA_DIST =                     \
+             PrintError.h        \
+             TestWithWatchdog.py \
+             TestWithWatchdog.sh 
 
-#          include       
-#          java          
-#          CrashRecovery 
-#          Demo
 
 #noinst_PROGRAMS = \
                   Interrupted
 
-
-#check_PROGRAMS = \
-                 bget             
-
-#DoNothing
-
-#bget_SOURCES             = bget.cpp
-#DoNothing_SOURCES        = DoNothing.cpp
 #Interrupted_SOURCES = Interrupted.cpp
-
-#EXTRA_DIST =                    \
-             bget.sh            
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 

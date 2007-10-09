@@ -33,7 +33,15 @@ OpenNullSessHandle_SOURCES  = OpenNullSessHandle.c
 OpenPass_SOURCES            = OpenPass.c
 OpenWrongSessHandle_SOURCES = OpenWrongSessHandle.c
 
-EXTRA_DIST =         
+EXTRA_DIST =                        \
+             CloseNullHandle.sh     \
+             ClosePass.sh           \
+             CloseWrongHandle.sh    \
+             OpenNullName.sh        \
+             OpenNullObjHandle.sh   \
+             OpenNullSessHandle.sh  \
+             OpenPass.sh            \
+             OpenWrongSessHandle.sh 
 
 TESTS_ENVIRONMENT =                              \
                     tcp_port=10701               \
