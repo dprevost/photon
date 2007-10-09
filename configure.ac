@@ -303,9 +303,9 @@ AC_DEFINE_UNQUOTED(MYCPU, "$host_cpu", The host cpu)
 case $host_cpu in
 i386 | i486 | i586 | i686 )
              locking_dir=asm-i386    ;;
-alpha)       locking_dir=asm-alpha   ;;
-sparc)       locking_dir=asm-sparc   ;;
-sparc64)     locking_dir=asm-sparc64 ;;
+#alpha)       locking_dir=asm-alpha   ;;
+#sparc)       locking_dir=asm-sparc   ;;
+#sparc64)     locking_dir=asm-sparc64 ;;
 *) locking_dir=empty ;;
 
 esac
@@ -382,14 +382,16 @@ AM_CONDITIONAL([COND_INCLUDE_DEMO], [test "$want_demo" = yes])
 #                                                          #
 ############################################################
 
-AC_ARG_ENABLE([kernel-headers],
-              AC_HELP_STRING([--enable-kernel-headers],
-                             [Enable the use of the linux-kernel modified headers to implement locking @<:@default=yes@:>@]),
-              [use_headers=$enableval],
-              [use_headers=yes])
+#AC_ARG_ENABLE([kernel-headers],
+#              AC_HELP_STRING([--enable-kernel-headers],
+#                             [Enable the use of the linux-kernel modified headers to implement locking @<:@default=yes@:>@]),
+#              [use_headers=$enableval],
+#              [use_headers=yes])
+use_headers=yes
 
 if test "$locking_dir" = "empty"; then
-  AC_MSG_RESULT([Modified kernel headers unsupported on this cpu])
+#  AC_MSG_RESULT([Modified kernel headers unsupported on this cpu])
+  AC_MSG_ERROR([Modified kernel headers unsupported on this cpu])
   AM_CONDITIONAL([COND_USE_KERNEL_HEADERS], [test "$locking_dir" != "empty"])
   if test "$ac_cv_sem_init_works" != "yes"; then
     AC_MSG_ERROR([Semaphores are unsupported, don't know how to lock. Sorry!])
