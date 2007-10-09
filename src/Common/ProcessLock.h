@@ -167,7 +167,7 @@ typedef struct vdscProcessLock
 #endif
 
 #if defined (VDS_USE_POSIX_SEMAPHORE)
-   sem_align  semaphore;
+   union sem_align  semaphore;
 #endif
 
    /*

@@ -32,13 +32,20 @@ vdscTestLockPidValue( vdscProcessLock* pLock, pid_t pid )
 inline int   
 vdscIsItLocked( vdscProcessLock* pLock )
 {
+#if defined (VDS_USE_POSIX_SEMAPHORE)
+   int rc, val;
+#endif
+
    VDS_PRE_CONDITION( pLock != NULL );
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
 
 #if defined(CONFIG_KERNEL_HEADERS)
    return spin_is_locked( &pLock->lock );
-#else
+#elif defined(WIN32)
    return pLock->lock != 0;
+#elif defined (VDS_USE_POSIX_SEMAPHORE)
+   rc = sem_getvalue( &pLock->semaphore.sem, &val );
+   return val <= 0;
 #endif
 }
 
