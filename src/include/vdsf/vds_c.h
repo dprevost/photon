@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework) Library.
  *
@@ -18,98 +18,19 @@
 #ifndef VDS_C_H
 #define VDS_C_H
 
-#include "vdsf/vdsErrors.h"
-#include "vdsf/vdsCommon.h"
+#include <vdsf/vdsErrors.h>
+#include <vdsf/vdsCommon.h>
+
+#include <vdsf/vdsProcess.h>
+#include <vdsf/vdsSession.h>
+#include <vdsf/vdsFolder.h>
+#include <vdsf/vdsHashMap.h>
+#include <vdsf/vdsQueue.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef void* VDS_HANDLE;
-
-/**
- * This function initializes access to a VDS. It takes 2 input 
- * arguments, the address of the watchdog and an integer (used as 
- * a boolean, 0 for false, 1 for true) to indicate if sessions and 
- * other objects (Queues, etc) are shared amongst threads (in the 
- * current process) and must be protected. Recommendation: always 
- * set protectionNeeded to 0 (false) unless you cannot do it otherwise. 
- * In other words it is recommended to use one session handle for
- * each thread. Also if the same queue needs to be accessed by two 
- * threads it is more efficient to have two different handles instead
- * of sharing a single one.
- * 
- * [Additional note: API objects (or C handles) are just proxies for 
- * the real objects sitting in shared memory. Proper synchronization 
- * is already done in shared memory and it is best to avoid to 
- * synchronize these proxy objects.]
- * 
- * Upon successful completion, the process handle is set. Otherwise 
- * the error code is returned.
- */
-VDSF_EXPORT
-int vdsInit( const char* wdAddress,
-             int         protectionNeeded,
-             VDS_HANDLE* processHandle );
-
-/**
- * This function terminates all access to the VDS. This function 
- * will also close all sessions and terminate all accesses to 
- * the different objects. 
- * 
- * This function takes a single argument, the handle to the process object 
- * and always end successfully.
- */
-VDSF_EXPORT
-void vdsExit( VDS_HANDLE processHandle );
-
-
-/**
- * This function initializes a session. It takes one output argument, 
- * the session handle.
- * 
- * Upon successful completion, the session handle is set and the function
- * returns zero. Otherwise the error code is returned and the handle is set
- * to NULL.
- * 
- * This function will also initiate a new transaction:
- *
- * Contrary to some other transaction management software, almost every 
- * call made is part of a transaction. Even viewing data (for example 
- * deleting the data by another session will be delayed until the current
- * session terminates its access).
- *
- * Upon normal termination, the current transaction is rolled back. You
- * MUST explicitly call vdseCommit to save your changes.
- */
-VDSF_EXPORT
-int vdsInitSession( VDS_HANDLE* sessionHandle );
-
-VDSF_EXPORT
-int vdsExitSession( VDS_HANDLE handle );
-   
-VDSF_EXPORT
-int vdsCreateObject( VDS_HANDLE handle,
-                     const char*   objectName,
-                     vdsObjectType objectType );
-   
-VDSF_EXPORT
-int vdsDestroyObject( VDS_HANDLE handle,
-                      const char* objectName );
-
-VDSF_EXPORT
-int vdsCommit( VDS_HANDLE handle );
-   
-VDSF_EXPORT
-int vdsRollback( VDS_HANDLE handle );
-
-VDSF_EXPORT
-int vdsFolderOpen( VDS_HANDLE  sessionHandle,
-                   const char* folderName,
-                   VDS_HANDLE* objectHandle );
-
-VDSF_EXPORT
-int vdsFolderClose( VDS_HANDLE objectHandle );
 
 
 VDSF_EXPORT
