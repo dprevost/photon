@@ -1,6 +1,5 @@
-/* -*- c++ -*- */
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -14,67 +13,73 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #ifndef VDS_SESSION_H
 #define VDS_SESSION_H
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include <stdlib.h>
 #include <vdsf/vdsCommon.h>
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-// Forward declaration
-class vdsSessionHook;
-class vdsProxyObject;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-class vdsSession
-{
-public:
+/**
+ * This function initializes a session. It takes one output argument, 
+ * the session handle.
+ * 
+ * Upon successful completion, the session handle is set and the function
+ * returns zero. Otherwise the error code is returned and the handle is set
+ * to NULL.
+ * 
+ * This function will also initiate a new transaction:
+ *
+ * Contrary to some other transaction management software, almost every 
+ * call made is part of a transaction. Even viewing data (for example 
+ * deleting the data by another session will be delayed until the current
+ * session terminates its access).
+ *
+ * Upon normal termination, the current transaction is rolled back. You
+ * MUST explicitly call vdseCommit to save your changes.
+ */
+VDSF_EXPORT
+int vdsInitSession( VDS_HANDLE* sessionHandle );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+VDSF_EXPORT
+int vdsExitSession( VDS_HANDLE handle );
    
-   // Two types of transaction management, implicit and explicit.
-   //
-   // - Implicit transactions, as the name indicates, hides all transactions
-   //   from the application. The underlying framework will periodically
-   //   save the current work at predetermined "check points".
-   //   The method Commit can be called to save the current work but 
-   //   Rollback is unavailable.
-   //   Upon normal termination, the current work is automatically saved.
-   //
-   // - Explicit transactions are ideal for real-time processing. Contrary
-   //   to some other transaction management software, every call made 
-   //   in such a session is part of the transaction (in other words a new
-   //   transaction is started immediately after either Commit or RollBack
-   //   was called).
-   //   Upon normal termination, the current transaction is rolled back.
-
-   // For more information, see the user's manual.
-
-   vdsSession( bool explicitTransaction = false );
-
-   virtual ~vdsSession();
-   
-   int CreateObject( const char*   objectName,
+VDSF_EXPORT
+int vdsCreateObject( VDS_HANDLE handle,
+                     const char*   objectName,
                      vdsObjectType objectType );
    
-   int DestroyObject( const char* objectName );
+VDSF_EXPORT
+int vdsDestroyObject( VDS_HANDLE handle,
+                      const char* objectName );
 
-   int Commit();
+VDSF_EXPORT
+int vdsCommit( VDS_HANDLE handle );
    
-   int Rollback();
-   
-private:
+VDSF_EXPORT
+int vdsRollback( VDS_HANDLE handle );
 
-   vdsSessionHook* m_pSessionHook;
-   
-   friend class vdsProxyObject;
-   
-};
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+#ifdef __cplusplus
+}
+#endif
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* VDS_SESSION_H */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

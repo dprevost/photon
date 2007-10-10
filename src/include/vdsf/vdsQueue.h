@@ -1,6 +1,5 @@
-/* -*- c++ -*- */
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -14,58 +13,64 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #ifndef VDS_QUEUE_H
 #define VDS_QUEUE_H
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include <stdlib.h>
 #include <vdsf/vdsCommon.h>
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-// Forward declarations
-class vdsQueueItem;
-class vdsSession;
-class vdsProxyObject;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-class vdsQueue
-{
-public:
-
-   vdsQueue( vdsSession &session );
-
-   virtual ~vdsQueue();
-
-   int Open( const char* queueName );
+VDSF_EXPORT
+int vdsQueueClose(  VDS_HANDLE objectHandle );
    
-   int Close();
-   
-   int InsertItem( const void* pItem, size_t length );
-   
-   int RemoveItem( vdsQueueItem* pQueueItem );
- 
-   int RemoveItem( vdsQueueItem& queueItem );
 
-   int RemoveItem( void* pItem, size_t length );
+VDSF_EXPORT
+int vdsQueueInsertItem( VDS_HANDLE   objectHandle, 
+                        const void * pItem, 
+                        size_t       length );
 
-   /// GetItem does not remove the items from the queue.
-   int GetItem( vdsIteratorType flag, void* pItem, size_t length );
+VDSF_EXPORT
+int vdsQueueOpen(  VDS_HANDLE   sessionHandle,
+                   const char * queueName,
+                   VDS_HANDLE * objectHandle );
 
-   /// A struct might be better here
-   int Status( size_t *pNumValidItems, 
-               size_t *pNumTotalItems );
-   
-private:
+VDSF_EXPORT
+int vdsQueueRemoveItem( VDS_HANDLE   objectHandle, 
+                        void       * pItem, 
+                        size_t       length );
 
-   vdsProxyObject* m_pProxyObject;
-   
-};
+/* The next function does not remove the items from the queue */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+VDSF_EXPORT
+int vdsQueueGetItem( VDS_HANDLE        objectHandle,
+                     vdsIteratorType   flag, 
+                     void            * pItem, 
+                     size_t            length );
+
+VDSF_EXPORT
+int vdsQueueStatus( VDS_HANDLE   objectHandle,
+                    size_t     * pNumValidItems,
+                    size_t     * pNumTotalItems );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#ifdef __cplusplus
+}
+#endif
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* VDS_QUEUE_H */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

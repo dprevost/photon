@@ -18,6 +18,8 @@
 #ifndef VDS_COMMON_H
 #define VDS_COMMON_H
 
+#include <stdlib.h>
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined(WIN32)
@@ -38,9 +40,27 @@ extern "C" {
  
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+typedef void* VDS_HANDLE;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /** 
  * Maximum number of characters (or bytes if not supporting i18n) 
- * of the name of a vds object.
+ * of the name of a vds object (not counting the name of the parent
+ * folder(s)).
+ *
+ * If the software was compiled with i18n, this maximum is the number
+ * of wide characters (4 bytes). Otherwise it is the number of bytes
+ * (which should equal the number of characters unless something funny
+ * is going on like using UTF-8 as locale and using ---disable-i18n with
+ * configure...).
+ */ 
+#define VDS_MAX_NAME_LENGTH 256
+
+/** 
+ * Maximum number of characters (or bytes if not supporting i18n) 
+ * of the fully qualified name of a vds object (including the name(s)
+ * of its parent folder(s)).
  *
  * If the software was compiled with i18n, this maximum is the number
  * of wide characters (4 bytes). Otherwise it is the number of bytes
@@ -52,7 +72,7 @@ extern "C" {
  * heap memory must be allocated to hold the wide characters string 
  * for the duration of the operation (open, close, create or destroy).
  */ 
-#define VDS_MAX_NAME_LENGTH 2000
+#define VDS_MAX_FULL_NAME_LENGTH 1024
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -70,6 +90,18 @@ typedef enum vdsIteratorType
    VDS_NEXT  = 2
    
 } vdsIteratorType;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+typedef struct vdsFolderEntry
+{
+   vdsObjectType type;
+   
+   size_t nameLengthInBytes;
+   
+   char name[VDS_MAX_NAME_LENGTH*4];
+
+} vdsFolderEntry;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

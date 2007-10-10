@@ -133,7 +133,8 @@ typedef enum vdsErrors
 
    /**
     * The name of the object is too long.
-    * The maximum length of a name cannot be over VDS_MAX_NAME_LENGTH.
+    * The maximum length of a name cannot be more than VDS_MAX_NAME_LENGTH
+    * (or VDS_MAX_FULL_NAME_LENGTH for the fully qualified name).
     */
    VDS_OBJECT_NAME_TOO_LONG        = 35,
    

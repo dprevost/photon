@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDS_FOLDER_H
-#define VDS_FOLDER_H
+#ifndef VDS_HASH_MAP_H
+#define VDS_HASH_MAP_H
 
 #include <vdsf/vdsCommon.h>
 
@@ -29,24 +29,24 @@ extern "C" {
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_EXPORT
-int vdsFolderClose( VDS_HANDLE objectHandle );
+int vdsHashMapClose( VDS_HANDLE objectHandle );
 
 VDSF_EXPORT
-int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
+int vdsHashMapGetFirst( VDS_HANDLE       objectHandle,
+                        vdsFolderEntry * pEntry );
+
+VDSF_EXPORT
+int vdsHashMapGetNext( VDS_HANDLE       objectHandle,
                        vdsFolderEntry * pEntry );
 
 VDSF_EXPORT
-int vdsFolderGetNext( VDS_HANDLE       objectHandle,
-                      vdsFolderEntry * pEntry );
+int vdsHashMapOpen( VDS_HANDLE   sessionHandle,
+                    const char * folderName,
+                    VDS_HANDLE * objectHandle );
 
 VDSF_EXPORT
-int vdsFolderOpen( VDS_HANDLE  sessionHandle,
-                   const char* folderName,
-                   VDS_HANDLE* objectHandle );
-
-VDSF_EXPORT
-int vdsFolderStatus( VDS_HANDLE   objectHandle,
-                     size_t     * numChildren );
+int vdsHashMapStatus( VDS_HANDLE   objectHandle,
+                      size_t     * numChildren );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -56,7 +56,7 @@ int vdsFolderStatus( VDS_HANDLE   objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDS_FOLDER_H */
+#endif /* VDS_HASH_MAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
