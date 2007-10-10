@@ -32,6 +32,18 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+typedef struct vdseFolderItem
+{
+   vdseHashItem * pHashItem;
+
+   size_t      bucket;
+
+   ptrdiff_t   itemOffset;
+
+} vdseFolderItem;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /**
  * Wrapper for the container holding the information on the tree of
  * shared objects.
@@ -102,6 +114,16 @@ void vdseFolderRemoveObject( vdseFolder*         pFolder,
                              const vdsChar_T*    objectName,
                              size_t              nameLength,
                              vdseSessionContext* pContext );
+
+VDSF_ENGINE_EXPORT
+int vdseFolderGetFirst( vdseFolder         * pFolder,
+                        vdseFolderItem     * pItem,
+                        vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+int vdseFolderGetNext( vdseFolder         * pFolder,
+                       vdseFolderItem     * pItem,
+                       vdseSessionContext * pContext );
 
 #if 0
 

@@ -160,6 +160,142 @@ void vdseFolderFini( vdseFolder*         pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int vdseFolderGetFirst( vdseFolder         * pFolder,
+                        vdseFolderItem     * pItem,
+                        vdseSessionContext * pContext )
+{
+   enum ListErrors listErr = LIST_OK;
+   vdseHashItem* pHashItem = NULL;
+   vdseTxStatus * txItemStatus;
+   vdseTxStatus * txFolderStatus;
+   size_t     bucket;
+   ptrdiff_t  firstItemOffset;
+
+   VDS_PRE_CONDITION( pFolder  != NULL );
+   VDS_PRE_CONDITION( pItem    != NULL )
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+
+   txFolderStatus = GET_PTR( pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+
+   if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
+   {
+      listErr = vdseHashGetFirst( &pFolder->hashObj, 
+                                  &bucket,
+                                  &firstItemOffset );
+      while ( listErr == LIST_OK )
+      {
+         pHashItem = GET_PTR( firstItemOffset, vdseHashItem );
+         txItemStatus = &pHashItem->txStatus;
+         if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
+             && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+         {
+            txItemStatus->usageCounter++;
+            txFolderStatus->usageCounter++;
+            pItem->pHashItem = pHashItem;
+            pItem->bucket = bucket;
+            pItem->itemOffset = firstItemOffset;
+//            if ( flag == VDS_NEXT )
+//               vdseQueueReleaseNoLock( pQueue, pOldItem, pContext );
+
+            vdseUnlock( &pFolder->memObject, pContext );
+            
+            return 0;
+         }
+  
+         listErr = vdseHashGetNext( &pFolder->hashObj, 
+                                    bucket,
+                                    firstItemOffset,
+                                    &bucket,
+                                    &firstItemOffset );
+      }
+   }
+   else
+   {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      return -1;
+   }
+   
+   vdseUnlock( &pFolder->memObject, pContext );
+   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
+
+   return -1;
+}
+   
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdseFolderGetNext( vdseFolder         * pFolder,
+                       vdseFolderItem     * pItem,
+                       vdseSessionContext * pContext )
+{
+   enum ListErrors listErr = LIST_OK;
+   vdseHashItem * pHashItem = NULL;
+   vdseHashItem * previousHashItem = NULL;
+   vdseTxStatus * txItemStatus;
+   vdseTxStatus * txFolderStatus;
+   size_t     bucket;
+   ptrdiff_t  itemOffset;
+
+   VDS_PRE_CONDITION( pFolder  != NULL );
+   VDS_PRE_CONDITION( pItem    != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( pItem->pHashItem  != NULL );
+   VDS_PRE_CONDITION( pItem->itemOffset != NULL_OFFSET );
+   
+   txFolderStatus = GET_PTR( pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+
+   bucket           = pItem->bucket;
+   itemOffset       = pItem->itemOffset;
+   previousHashItem = pItem->pHashItem;
+   
+   if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
+   {
+      listErr = vdseHashGetNext( &pFolder->hashObj, 
+                                 bucket,
+                                 itemOffset,
+                                 &bucket,
+                                 &itemOffset );
+      while ( listErr == LIST_OK )
+      {
+         pHashItem = GET_PTR( itemOffset, vdseHashItem );
+         txItemStatus = &pHashItem->txStatus;
+         if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
+             && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+         {
+            txItemStatus->usageCounter++;
+            txFolderStatus->usageCounter++;
+            pItem->pHashItem = pHashItem;
+            pItem->bucket = bucket;
+            pItem->itemOffset = itemOffset;
+//               vdseFolderReleaseNoLock( pFolder, previousHashItem, pContext );
+
+            vdseUnlock( &pFolder->memObject, pContext );
+            
+            return 0;
+         }
+  
+         listErr = vdseHashGetNext( &pFolder->hashObj, 
+                                    bucket,
+                                    itemOffset,
+                                    &bucket,
+                                    &itemOffset );
+      }
+   }
+   else
+   {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      return -1;
+   }
+   
+   vdseUnlock( &pFolder->memObject, pContext );
+   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
+
+   return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdseFolderGetObject( vdseFolder*            pFolder,
                          const vdsChar_T*       objectName,
                          size_t                 strLength, 
