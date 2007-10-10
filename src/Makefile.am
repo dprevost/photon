@@ -20,24 +20,53 @@ CLEANFILES = *~
 #   Last- Tests
 
 SUBDIRS =               \
-          Locking       \
           Common        \
           BuildTools    \
           Engine        \
           API           \
           include       \
-          Watchdog      \
-          CrashRecovery \
-          Tests         
+          Watchdog      
 
-if COND_USE_JAVA
-   SUBDIRS += Java
-endif
+#if COND_USE_JAVA
+#   SUBDIRS += Java
+#endif
 
-if COND_INCLUDE_DEMO
-  SUBDIRS += Demo
-endif
+#if COND_INCLUDE_DEMO
+#  SUBDIRS += Demo
+#endif
 
+TEST_FILES =                           \
+             Tests/PrintError.h        \
+             Tests/TestWithWatchdog.py \
+             Tests/TestWithWatchdog.sh 
 
-DIST_SUBDIRS = $(SUBDIRS) Java Demo Locking      
+BASE_LOCK_FILES =                                  \
+                  Locking/linux/autoconf.h         \
+                  Locking/linux/compiler-gcc.h     \
+                  Locking/linux/compiler.h         \
+                  Locking/linux/compiler-intel.h   \
+                  Locking/linux/linkage.h          \
+                  Locking/linux/spinlock_api_smp.h \
+                  Locking/linux/spinlock.h         \
+                  Locking/linux/spinlock_types.h   
+
+I386_FILES =                                   \
+             Locking/asm-i386/alternative.h    \
+             Locking/asm-i386/bitops.h         \
+             Locking/asm-i386/cpufeature.h     \
+             Locking/asm-i386/linkage.h        \
+             Locking/asm-i386/spinlock.h       \
+             Locking/asm-i386/spinlock_types.h \
+             Locking/asm-i386/system.h         
+
+EXTRA_DIST = $(BASE_LOCK_FILES) $(I386_FILES) $(TEST_FILES)
+
+DIST_SUBDIRS = $(SUBDIRS)    
+
+#\
+               Java          \
+               Demo          \
+               Locking       \
+               CrashRecovery \
+               Tests         
 

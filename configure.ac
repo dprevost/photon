@@ -420,7 +420,6 @@ AC_CONFIG_FILES([
    src/API/Tests/Process/Makefile
    src/API/Tests/Session/Makefile
    src/BuildTools/Makefile
-   src/BuildTools/Tests/Makefile
    src/Common/Makefile
    src/Common/Tests/Makefile
    src/Common/Tests/DirAccess/Makefile
@@ -429,8 +428,6 @@ AC_CONFIG_FILES([
    src/Common/Tests/Options/Makefile
    src/Common/Tests/ProcessLock/Makefile
    src/Common/Tests/ThreadLock/Makefile
-   src/CrashRecovery/Makefile
-   src/Demo/Makefile
    src/Engine/Makefile
    src/Engine/Tests/Makefile
    src/Engine/Tests/BlockGroup/Makefile
@@ -448,11 +445,8 @@ AC_CONFIG_FILES([
    src/Engine/Tests/Session/Makefile
    src/Engine/Tests/Transaction/Makefile
    src/include/Makefile
-   src/Java/Makefile
-   src/Locking/Makefile
    src/Watchdog/Makefile
    src/Watchdog/Tests/Makefile
-   src/Tests/Makefile
 ])
 
 AC_OUTPUT

@@ -30,3 +30,6 @@ I386_FILES =                           \
              asm-i386/system.h         
 
 EXTRA_DIST = $(BASE_FILES) $(I386_FILES)
+
+distclean:
+

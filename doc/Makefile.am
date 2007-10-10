@@ -18,4 +18,3 @@ CLEANFILES = *~
 #	doxygen $(top_builddir)/src/include/Doxyfile
 
 install-data-local:
-	qq

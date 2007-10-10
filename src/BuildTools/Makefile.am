@@ -14,7 +14,7 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES        = *~
 
-SUBDIRS = . Tests
+#SUBDIRS = . Tests
 
 bin_PROGRAMS = errorParser
 
@@ -30,4 +30,6 @@ errorParser_SOURCES =                  \
                       outputFiles.h   
 
 errorParser_LDADD = $(top_builddir)/src/Common/libCommon.la 
+
+# DIST_SUBDIRS = Tests  
 
