@@ -18,6 +18,15 @@ check_PROGRAMS =                     \
                  CloseNullHandle     \
                  ClosePass           \
                  CloseWrongHandle    \
+                 GetFirstNullEntry   \
+                 GetFirstNullHandle  \
+                 GetFirstPass        \
+                 GetFirstWrongHandle \
+                 GetNextNoFirst      \
+                 GetNextNullEntry    \
+                 GetNextNullHandle   \
+                 GetNextPass         \
+                 GetNextWrongHandle  \
                  OpenNullName        \
                  OpenNullObjHandle   \
                  OpenNullSessHandle  \
@@ -27,6 +36,11 @@ check_PROGRAMS =                     \
 CloseNullHandle_SOURCES     = CloseNullHandle.c
 ClosePass_SOURCES           = ClosePass.c
 CloseWrongHandle_SOURCES    = CloseWrongHandle.c
+GetFirstNullEntry_SOURCES   = GetFirstNullEntry.c
+GetFirstNullHandle_SOURCES  = GetFirstNullHandle.c
+GetFirstPass_SOURCES        = GetFirstPass.c
+GetFirstWrongHandle_SOURCES = GetFirstWrongHandle.c
+GetNextPass_SOURCES         = GetNextPass.c
 OpenNullName_SOURCES        = OpenNullName.c
 OpenNullObjHandle_SOURCES   = OpenNullObjHandle.c
 OpenNullSessHandle_SOURCES  = OpenNullSessHandle.c
@@ -37,6 +51,15 @@ EXTRA_DIST =                        \
              CloseNullHandle.sh     \
              ClosePass.sh           \
              CloseWrongHandle.sh    \
+             GetFirstNullEntry.sh   \
+             GetFirstNullHandle.sh  \
+             GetFirstPass.sh        \
+             GetFirstWrongHandle.sh \
+             GetNextNoFirst.sh      \
+             GetNextNullEntry.sh    \
+             GetNextNullHandle.sh   \
+             GetNextPass.sh         \
+             GetNextWrongHandle.sh  \
              OpenNullName.sh        \
              OpenNullObjHandle.sh   \
              OpenNullSessHandle.sh  \
@@ -55,6 +78,15 @@ TESTS =                        \
         CloseNullHandle.sh     \
         ClosePass.sh           \
         CloseWrongHandle.sh    \
+        GetFirstNullEntry.sh   \
+        GetFirstNullHandle.sh  \
+        GetFirstPass.sh        \
+        GetFirstWrongHandle.sh \
+        GetNextNoFirst.sh      \
+        GetNextNullEntry.sh    \
+        GetNextNullHandle.sh   \
+        GetNextPass.sh         \
+        GetNextWrongHandle.sh  \
         OpenNullName.sh        \
         OpenNullObjHandle.sh   \
         OpenNullSessHandle.sh  \

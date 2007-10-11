@@ -171,7 +171,7 @@ vdseErrErrMsgStruct vdseErrErrMsg35 =
 
 /* VDS_OBJECT_NAME_TOO_LONG */
 vdseErrErrMsgStruct vdseErrErrMsg36 =
-   { 35, 100, "The name of the object is too long. The maximum length of a name cannot be over VDS_MAX_NAME_LENGTH." };
+   { 35, 164, "The name of the object is too long. The maximum length of a name cannot be more than VDS_MAX_NAME_LENGTH (or VDS_MAX_FULL_NAME_LENGTH for the fully qualified name)." };
 
 /* VDS_SESSION_CANNOT_GET_LOCK */
 vdseErrErrMsgStruct vdseErrErrMsg37 =
@@ -192,6 +192,10 @@ vdseErrErrMsgStruct vdseErrErrMsg40 =
 /* VDS_OBJECT_IS_DELETED */
 vdseErrErrMsgStruct vdseErrErrMsg41 =
    { 40, 109, "The object is scheduled to be deleted soon. Operations on this data container are not permitted at this time." };
+
+/* VDS_NULL_POINTER */
+vdseErrErrMsgStruct vdseErrErrMsg42 =
+   { 41, 67, "One of the arguments of an API function is an invalid NULL pointer." };
 
 vdseErrErrMsgStruct* vdseErrErrMsg[VDSEERR_MAX_ENTRIES] = 
 {
@@ -236,7 +240,8 @@ vdseErrErrMsgStruct* vdseErrErrMsg[VDSEERR_MAX_ENTRIES] =
    &vdseErrErrMsg38,
    &vdseErrErrMsg39,
    &vdseErrErrMsg40,
-   &vdseErrErrMsg41
+   &vdseErrErrMsg41,
+   &vdseErrErrMsg42
 
 };
 

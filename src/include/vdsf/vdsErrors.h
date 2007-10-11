@@ -164,8 +164,13 @@ typedef enum vdsErrors
     * The object is scheduled to be deleted soon. Operations on this data
     * container are not permitted at this time.
     */
-   VDS_OBJECT_IS_DELETED           = 40     
+   VDS_OBJECT_IS_DELETED           = 40,     
 
+   /**
+    * One of the arguments of an API function is an invalid NULL pointer.
+    */
+    VDS_NULL_POINTER               = 41
+  
 } vdsErrors;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

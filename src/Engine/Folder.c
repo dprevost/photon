@@ -513,7 +513,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
       pDesc->offset = SET_OFFSET( ptr );
       pDesc->nameLengthInBytes = partialLength * sizeof(vdsChar_T);
       memcpy( pDesc->originalName, originalName, pDesc->nameLengthInBytes );
-      
+
       listErr = vdseHashInsert( &pFolder->hashObj, 
                                 (unsigned char *)objectName, 
                                 partialLength * sizeof(vdsChar_T), 
@@ -878,6 +878,55 @@ bool ValidateString( const vdsChar_T* objectName,
    return true;
 }
 
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdseFolderRelease( vdseFolder         * pFolder,
+                       vdseFolderItem     * pFolderItem,
+                       vdseSessionContext * pContext )
+{
+   vdseTxStatus * txItemStatus, * txFolderStatus;
+   
+   VDS_PRE_CONDITION( pFolder     != NULL );
+   VDS_PRE_CONDITION( pFolderItem != NULL );
+   VDS_PRE_CONDITION( pContext    != NULL );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+
+   pContext->pCurrentMemObject = &pFolder->memObject;
+
+   txItemStatus = &pFolderItem->pHashItem->txStatus;
+   txFolderStatus = GET_PTR( pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   
+   if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
+   {
+      txItemStatus->usageCounter--;
+      txFolderStatus->usageCounter--;
+
+      if ( (txItemStatus->usageCounter == 0) && vdseTxStatusIsRemoveCommitted(txItemStatus) )
+      {
+         /* 
+          * Time to really delete the record!
+          *
+          * Note: the hash array will release the memory of the hash item.
+          */
+         vdseHashDelete( &pFolder->hashObj, 
+                         pFolderItem->pHashItem->key, 
+                         pFolderItem->pHashItem->keyLength, 
+                         pContext );
+
+         pFolder->nodeObject.txCounter--;
+      }
+      vdseUnlock( &pFolder->memObject, pContext );
+   }
+   else
+   {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      return -1;
+   }
+
+   return 0;
+}
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* 
@@ -926,6 +975,7 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
 #if VDS_SUPPORT_i18n
    mbstate_t ps;
    wchar_t * name = NULL, *lowerName = NULL;
+   const char * strPtr;
 #else
    const char * name = objectName;
    char * lowerName = NULL;
@@ -937,7 +987,9 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
 
 #if VDS_SUPPORT_i18n
-   strLength = mbsrtowcs( NULL, &objectName, 0, &ps );
+   memset( &ps, 0, sizeof(mbstate_t) );
+   strPtr = objectName;
+   strLength = mbsrtowcs( NULL, &strPtr, 0, &ps );
 #else
    strLength = strlen( objectName );
 #endif
@@ -962,7 +1014,8 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
    }
    lowerName = (wchar_t*)malloc( (strLength+1)*sizeof(wchar_t) );
    
-   mbsrtowcs( name, &objectName, strLength, &ps );
+   strPtr = objectName;
+   mbsrtowcs( name, &strPtr, strLength, &ps );
 #else
    lowerName = (char*)malloc( (strLength+1)*sizeof(char) );
 #endif
@@ -1051,6 +1104,7 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
 #if VDS_SUPPORT_i18n
    mbstate_t ps;
    wchar_t * name = NULL, * lowerName = NULL;
+   const char * strPtr;
 #else
    const char * name = objectName;
    char * lowerName = NULL;
@@ -1061,7 +1115,9 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pContext   != NULL );
 
 #if VDS_SUPPORT_i18n
-   strLength = mbsrtowcs( NULL, &objectName, 0, &ps );
+   memset( &ps, 0, sizeof(mbstate_t) );
+   strPtr = objectName;
+   strLength = mbsrtowcs( NULL, &strPtr, 0, &ps );
 #else
    strLength = strlen( objectName );
 #endif
@@ -1086,7 +1142,8 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
    }
    lowerName = (wchar_t *) malloc( (strLength+1)*sizeof(wchar_t) );
    
-   mbsrtowcs( name, &objectName, strLength, &ps );
+   strPtr = objectName;
+   mbsrtowcs( name, &strPtr, strLength, &ps );
 #else
    lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
 #endif
@@ -1173,6 +1230,7 @@ int vdseTopFolderOpenObject( vdseFolder            * pFolder,
 #if VDS_SUPPORT_i18n
    mbstate_t ps;
    wchar_t * name = NULL, * lowerName = NULL;
+   const char * strPtr;
 #else
    const char * name = objectName;
    char * lowerName = NULL;
@@ -1184,7 +1242,9 @@ int vdseTopFolderOpenObject( vdseFolder            * pFolder,
    VDS_PRE_CONDITION( pContext     != NULL );
 
 #if VDS_SUPPORT_i18n
-   strLength = mbsrtowcs( NULL, &objectName, 0, &ps );
+   memset( &ps, 0, sizeof(mbstate_t) );
+   strPtr = objectName;
+   strLength = mbsrtowcs( NULL, &strPtr, 0, &ps );
 #else
    strLength = strlen( objectName );
 #endif
@@ -1209,7 +1269,8 @@ int vdseTopFolderOpenObject( vdseFolder            * pFolder,
    }
    lowerName = (wchar_t *) malloc( (strLength+1)*sizeof(wchar_t) );
    
-   mbsrtowcs( name, &objectName, strLength, &ps );
+   strPtr = objectName;
+   mbsrtowcs( name, &strPtr, strLength, &ps );
 #else
    lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
 #endif

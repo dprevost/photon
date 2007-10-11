@@ -125,6 +125,11 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
                        vdseFolderItem     * pItem,
                        vdseSessionContext * pContext );
 
+VDSF_ENGINE_EXPORT
+int vdseFolderRelease( vdseFolder         * pFolder,
+                       vdseFolderItem     * pItem,
+                       vdseSessionContext * pContext );
+
 #if 0
 
 /** Can be used by both rollback-create and commit-destroy */

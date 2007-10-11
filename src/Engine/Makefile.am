@@ -71,7 +71,7 @@ libEngine_la_SOURCES =                   \
 #   MemoryManager.c         \
    MemoryManager.h         
 
-VdsErrorHandler.c VdsErrorHandler.h:
+VdsErrorHandler.c VdsErrorHandler.h: $(top_srcdir)/src/include/vdsf/vdsErrors.h
 	$(top_builddir)/src/BuildTools/errorParser -i $(top_srcdir)/src/include/vdsf/vdsErrors.h -o VdsErrorHandler -p vdseErr
 
 
