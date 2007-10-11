@@ -1,0 +1,45 @@
+.TH "vdsFolder.h" 3 "11 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+vdsFolder.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <vdsf/vdsCommon.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderClose\fP (\fBVDS_HANDLE\fP objectHandle)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderGetNext\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *folderName, \fBVDS_HANDLE\fP *objectHandle)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderStatus\fP (\fBVDS_HANDLE\fP objectHandle, size_t *numChildren)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "VDSF_EXPORT int vdsFolderClose (\fBVDS_HANDLE\fP objectHandle)"
+.PP
+.SS "VDSF_EXPORT int vdsFolderGetFirst (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP * pEntry)"
+.PP
+.SS "VDSF_EXPORT int vdsFolderGetNext (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP * pEntry)"
+.PP
+.SS "VDSF_EXPORT int vdsFolderOpen (\fBVDS_HANDLE\fP sessionHandle, const char * folderName, \fBVDS_HANDLE\fP * objectHandle)"
+.PP
+.SS "VDSF_EXPORT int vdsFolderStatus (\fBVDS_HANDLE\fP objectHandle, size_t * numChildren)"
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for vdsf C API from the source code.

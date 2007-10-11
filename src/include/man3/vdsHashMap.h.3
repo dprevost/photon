@@ -1,0 +1,45 @@
+.TH "vdsHashMap.h" 3 "11 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+vdsHashMap.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <vdsf/vdsCommon.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapClose\fP (\fBVDS_HANDLE\fP objectHandle)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapGetNext\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *folderName, \fBVDS_HANDLE\fP *objectHandle)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapStatus\fP (\fBVDS_HANDLE\fP objectHandle, size_t *numChildren)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "VDSF_EXPORT int vdsHashMapClose (\fBVDS_HANDLE\fP objectHandle)"
+.PP
+.SS "VDSF_EXPORT int vdsHashMapGetFirst (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP * pEntry)"
+.PP
+.SS "VDSF_EXPORT int vdsHashMapGetNext (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP * pEntry)"
+.PP
+.SS "VDSF_EXPORT int vdsHashMapOpen (\fBVDS_HANDLE\fP sessionHandle, const char * folderName, \fBVDS_HANDLE\fP * objectHandle)"
+.PP
+.SS "VDSF_EXPORT int vdsHashMapStatus (\fBVDS_HANDLE\fP objectHandle, size_t * numChildren)"
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for vdsf C API from the source code.

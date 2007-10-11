@@ -1,0 +1,50 @@
+.TH "vdsQueue.h" 3 "11 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+vdsQueue.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <vdsf/vdsCommon.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsQueueClose\fP (\fBVDS_HANDLE\fP objectHandle)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsQueueInsertItem\fP (\fBVDS_HANDLE\fP objectHandle, const void *pItem, size_t length)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsQueueOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *queueName, \fBVDS_HANDLE\fP *objectHandle)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsQueueRemoveItem\fP (\fBVDS_HANDLE\fP objectHandle, void *pItem, size_t length)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsQueueGetItem\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsIteratorType\fP flag, void *pItem, size_t length)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsQueueStatus\fP (\fBVDS_HANDLE\fP objectHandle, size_t *pNumValidItems, size_t *pNumTotalItems)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "VDSF_EXPORT int vdsQueueClose (\fBVDS_HANDLE\fP objectHandle)"
+.PP
+.SS "VDSF_EXPORT int vdsQueueGetItem (\fBVDS_HANDLE\fP objectHandle, \fBvdsIteratorType\fP flag, void * pItem, size_t length)"
+.PP
+.SS "VDSF_EXPORT int vdsQueueInsertItem (\fBVDS_HANDLE\fP objectHandle, const void * pItem, size_t length)"
+.PP
+.SS "VDSF_EXPORT int vdsQueueOpen (\fBVDS_HANDLE\fP sessionHandle, const char * queueName, \fBVDS_HANDLE\fP * objectHandle)"
+.PP
+.SS "VDSF_EXPORT int vdsQueueRemoveItem (\fBVDS_HANDLE\fP objectHandle, void * pItem, size_t length)"
+.PP
+.SS "VDSF_EXPORT int vdsQueueStatus (\fBVDS_HANDLE\fP objectHandle, size_t * pNumValidItems, size_t * pNumTotalItems)"
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for vdsf C API from the source code.

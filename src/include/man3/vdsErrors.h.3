@@ -1,0 +1,151 @@
+.TH "vdsErrors.h" 3 "11 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+vdsErrors.h \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBvdsErrors\fP { \fBVDS_OK\fP =  0, \fBVDS_INTERNAL_ERROR\fP =  666, \fBVDS_ENGINE_BUSY\fP =  1, \fBVDS_NOT_ENOUGH_VDS_MEMORY\fP =  2, \fBVDS_NOT_ENOUGH_HEAP_MEMORY\fP =  3, \fBVDS_INVALID_OBJECT_NAME\fP =  4, \fBVDS_NO_SUCH_OBJECT\fP =  5, \fBVDS_NO_SUCH_FOLDER\fP =  6, \fBVDS_OBJECT_ALREADY_PRESENT\fP =  7, \fBVDS_OBJECT_IN_USE\fP =  8, \fBVDS_INVALID_LENGTH_FIELD\fP =  9, \fBVDS_IS_EMPTY\fP =  10, \fBVDS_OBJECT_NOT_INITIALIZED\fP =  11, \fBVDS_CONFIG_ERROR\fP =  12, \fBVDS_INVALID_WATCHDOG_ADDRESS\fP =  13, \fBVDS_WRONG_OBJECT_TYPE\fP =  14, \fBVDS_PROCESS_NOT_INITIALIZED\fP =  15, \fBVDS_OBJECT_CANNOT_GET_LOCK\fP =  16, \fBVDS_OBJECT_ALREADY_OPEN\fP =  17, \fBVDS_PROCESS_ALREADY_INITIALIZED\fP =  18, \fBVDS_INCOMPATIBLE_VERSIONS\fP =  19, \fBVDS_NO_ROLLBACK\fP =  20, \fBVDS_LOGFILE_ERROR\fP =  21, \fBVDS_REACHED_THE_END\fP =  22, \fBVDS_INVALID_ITERATOR\fP =  23, \fBVDS_NOT_ENOUGH_RESOURCES\fP =  24, \fBVDS_NO_CONFIG_FILE\fP =  25, \fBVDS_SOCKET_ERROR\fP =  26, \fBVDS_CONNECT_ERROR\fP =  27, \fBVDS_SEND_ERROR\fP =  28, \fBVDS_RECEIVE_ERROR\fP =  29, \fBVDS_BACKSTORE_FILE_MISSING\fP =  30, \fBVDS_ERROR_OPENING_VDS\fP =  31, \fBVDS_FOLDER_IS_NOT_EMPTY\fP =  32, \fBVDS_WRONG_TYPE_HANDLE\fP =  33, \fBVDS_NULL_HANDLE\fP =  34, \fBVDS_OBJECT_NAME_TOO_LONG\fP =  35, \fBVDS_SESSION_CANNOT_GET_LOCK\fP =  36, \fBVDS_SESSION_IS_TERMINATED\fP =  37, \fBVDS_ITEM_ALREADY_PRESENT\fP =  38, \fBVDS_NO_SUCH_ITEM\fP =  39, \fBVDS_OBJECT_IS_DELETED\fP =  40 }"
+.br
+.in -1c
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBvdsErrors\fP"
+.PP
+\fBEnumerator: \fP
+.in +1c
+.TP
+\fB\fIVDS_OK \fP\fP
+No error. 
+.PP
+.. 
+.TP
+\fB\fIVDS_INTERNAL_ERROR \fP\fP
+Abnormal internal error - it should not happen! 
+.TP
+\fB\fIVDS_ENGINE_BUSY \fP\fP
+Cannot get a lock on a system object, the engine is 'busy'. 
+.PP
+This might be the result of either a very busy system where unused cpu cycles are rare or a lock might be held by a crashed process (however the watchdog should catch this one). 
+.TP
+\fB\fIVDS_NOT_ENOUGH_VDS_MEMORY \fP\fP
+Not enough memory in the VDS. 
+.TP
+\fB\fIVDS_NOT_ENOUGH_HEAP_MEMORY \fP\fP
+Not enough heap memory (non-VDS memory). 
+.TP
+\fB\fIVDS_INVALID_OBJECT_NAME \fP\fP
+Permitted characters for names are alphanumerics [a-z,0-9], spaces (' '), dashes ('-') and underlines ('_'). 
+.PP
+The first character must be alphanumeric. 
+.TP
+\fB\fIVDS_NO_SUCH_OBJECT \fP\fP
+The object was not found (but its folder does exist). 
+.TP
+\fB\fIVDS_NO_SUCH_FOLDER \fP\fP
+Invalid folder name. 
+.TP
+\fB\fIVDS_OBJECT_ALREADY_PRESENT \fP\fP
+Attempt to create an object which already exists. 
+.TP
+\fB\fIVDS_OBJECT_IN_USE \fP\fP
+Attempt to delete an object which is currently in use. 
+.PP
+The object might be used either by the current session or by another session. 
+.TP
+\fB\fIVDS_INVALID_LENGTH_FIELD \fP\fP
+.TP
+\fB\fIVDS_IS_EMPTY \fP\fP
+The object (data container) is empty. 
+.TP
+\fB\fIVDS_OBJECT_NOT_INITIALIZED \fP\fP
+Object must be open first before you can access them. 
+.TP
+\fB\fIVDS_CONFIG_ERROR \fP\fP
+.TP
+\fB\fIVDS_INVALID_WATCHDOG_ADDRESS \fP\fP
+.TP
+\fB\fIVDS_WRONG_OBJECT_TYPE \fP\fP
+.TP
+\fB\fIVDS_PROCESS_NOT_INITIALIZED \fP\fP
+.TP
+\fB\fIVDS_OBJECT_CANNOT_GET_LOCK \fP\fP
+.TP
+\fB\fIVDS_OBJECT_ALREADY_OPEN \fP\fP
+.TP
+\fB\fIVDS_PROCESS_ALREADY_INITIALIZED \fP\fP
+You must call vdsProcess::Terminate() before calling vdsProcess::Initialize() a second time. 
+.TP
+\fB\fIVDS_INCOMPATIBLE_VERSIONS \fP\fP
+API - memory-file version mismatch. 
+.TP
+\fB\fIVDS_NO_ROLLBACK \fP\fP
+Rollback operations are not permitted for implicit transactions. 
+.TP
+\fB\fIVDS_LOGFILE_ERROR \fP\fP
+Error opening the log file (used for transactions). 
+.TP
+\fB\fIVDS_REACHED_THE_END \fP\fP
+The search reached the end without finding a new item/record. 
+.TP
+\fB\fIVDS_INVALID_ITERATOR \fP\fP
+An invalid value was used for a vdsIteratorType parameter. 
+.TP
+\fB\fIVDS_NOT_ENOUGH_RESOURCES \fP\fP
+There are not enough resources to correctly process the call. 
+.PP
+This might be due to a lack of POSIX semaphores on systems where locks are implemented that way or a failure in initializing a pthread_mutex (or on Windows, a critical section). 
+.TP
+\fB\fIVDS_NO_CONFIG_FILE \fP\fP
+.TP
+\fB\fIVDS_SOCKET_ERROR \fP\fP
+.TP
+\fB\fIVDS_CONNECT_ERROR \fP\fP
+.TP
+\fB\fIVDS_SEND_ERROR \fP\fP
+.TP
+\fB\fIVDS_RECEIVE_ERROR \fP\fP
+.TP
+\fB\fIVDS_BACKSTORE_FILE_MISSING \fP\fP
+.TP
+\fB\fIVDS_ERROR_OPENING_VDS \fP\fP
+.TP
+\fB\fIVDS_FOLDER_IS_NOT_EMPTY \fP\fP
+.TP
+\fB\fIVDS_WRONG_TYPE_HANDLE \fP\fP
+The provided handle is of the wrong type. 
+.TP
+\fB\fIVDS_NULL_HANDLE \fP\fP
+The provided handle is NULL (zero). 
+.TP
+\fB\fIVDS_OBJECT_NAME_TOO_LONG \fP\fP
+The name of the object is too long. 
+.PP
+The maximum length of a name cannot be more than VDS_MAX_NAME_LENGTH (or VDS_MAX_FULL_NAME_LENGTH for the fully qualified name). 
+.TP
+\fB\fIVDS_SESSION_CANNOT_GET_LOCK \fP\fP
+Cannot get a lock on the session (a pthread_mutex or a critical section on Windows). 
+.TP
+\fB\fIVDS_SESSION_IS_TERMINATED \fP\fP
+An attempt was made to use a session object (a session handle) after this session was terminated. 
+.TP
+\fB\fIVDS_ITEM_ALREADY_PRESENT \fP\fP
+An item with the same key was found. 
+.TP
+\fB\fIVDS_NO_SUCH_ITEM \fP\fP
+The item was not found in the hash map. 
+.TP
+\fB\fIVDS_OBJECT_IS_DELETED \fP\fP
+The object is scheduled to be deleted soon. 
+.PP
+Operations on this data container are not permitted at this time. 
+.PP
+Definition at line 27 of file vdsErrors.h.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for vdsf C API from the source code.

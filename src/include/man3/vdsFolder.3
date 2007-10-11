@@ -1,4 +1,4 @@
-.TH "vdsFolder" 3 "4 Nov 2006" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
+.TH "vdsFolder" 3 "11 Oct 2007" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,9 @@ vdsFolder \-
 .SH SYNOPSIS
 .br
 .PP
-\fC#include <vdsFolder.h>\fP
-.PP
 .SH "Detailed Description"
 .PP 
-Definition at line 31 of file vdsFolder.h.
+Definition at line 33 of file vdsFolder.
 .SS "Public Member Functions"
 
 .in +1c
@@ -27,13 +25,10 @@ Definition at line 31 of file vdsFolder.h.
 .RI "int \fBClose\fP ()"
 .br
 .ti -1c
-.RI "int \fBGetFirstItem\fP (vdsFolderItem *pFolderItem)"
+.RI "int \fBGetFirst\fP (vdsFolderEntry *pEntry)"
 .br
 .ti -1c
-.RI "int \fBGetNextItem\fP (vdsFolderItem *pFolderItem)"
-.br
-.ti -1c
-.RI "int \fBRemoveAll\fP ()"
+.RI "int \fBGetNext\fP (vdsFolderEntry *pEntry)"
 .br
 .in -1c
 .SS "Private Attributes"
@@ -51,21 +46,19 @@ Definition at line 31 of file vdsFolder.h.
 .PP
 .SH "Member Function Documentation"
 .PP 
-.SS "int vdsFolder::Close ()"
-.PP
-.SS "int vdsFolder::GetFirstItem (vdsFolderItem * pFolderItem)"
-.PP
-.SS "int vdsFolder::GetNextItem (vdsFolderItem * pFolderItem)"
-.PP
 .SS "int vdsFolder::Open (const char * folderName)"
 .PP
-.SS "int vdsFolder::RemoveAll ()"
+.SS "int vdsFolder::Close ()"
+.PP
+.SS "int vdsFolder::GetFirst (vdsFolderEntry * pEntry)"
+.PP
+.SS "int vdsFolder::GetNext (vdsFolderEntry * pEntry)"
 .PP
 .SH "Member Data Documentation"
 .PP 
 .SS "vdsProxyObject* \fBvdsFolder::m_pProxyObject\fP\fC [private]\fP"
 .PP
-Definition at line 53 of file vdsFolder.h.
+Definition at line 55 of file vdsFolder.
 
 .SH "Author"
 .PP 

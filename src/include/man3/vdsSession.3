@@ -1,4 +1,4 @@
-.TH "vdsSession" 3 "4 Nov 2006" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
+.TH "vdsSession" 3 "11 Oct 2007" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,9 @@ vdsSession \-
 .SH SYNOPSIS
 .br
 .PP
-\fC#include <vdsSession.h>\fP
-.PP
 .SH "Detailed Description"
 .PP 
-Definition at line 35 of file vdsSession.h.
+Definition at line 35 of file vdsSession.
 .SS "Public Member Functions"
 
 .in +1c
@@ -55,11 +53,11 @@ Definition at line 35 of file vdsSession.h.
 .PP
 .SH "Member Function Documentation"
 .PP 
-.SS "int vdsSession::Commit ()"
-.PP
 .SS "int vdsSession::CreateObject (const char * objectName, vdsObjectType objectType)"
 .PP
 .SS "int vdsSession::DestroyObject (const char * objectName)"
+.PP
+.SS "int vdsSession::Commit ()"
 .PP
 .SS "int vdsSession::Rollback ()"
 .PP
@@ -67,12 +65,12 @@ Definition at line 35 of file vdsSession.h.
 .PP 
 .SS "friend class vdsProxyObject\fC [friend]\fP"
 .PP
-Definition at line 74 of file vdsSession.h.
+Definition at line 74 of file vdsSession.
 .SH "Member Data Documentation"
 .PP 
 .SS "vdsSessionHook* \fBvdsSession::m_pSessionHook\fP\fC [private]\fP"
 .PP
-Definition at line 72 of file vdsSession.h.
+Definition at line 72 of file vdsSession.
 
 .SH "Author"
 .PP 

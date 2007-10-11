@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -11,7 +11,7 @@
 CLEANFILES = *~ vdsf/*~
 
 VDS_C_FILES =                           \
-              man3/vds_c.h.3            \
+              man3/vds.h.3              \
               man3/vdsCommit.3          \
               man3/vdsCreateObject.3    \
               man3/vdsDestroyObject.3   \
@@ -30,11 +30,11 @@ VDS_C_FILES =                           \
               man3/vdsRollback.3
 
 man_MANS =                   \
+           $(VDS_C_FILES)    \
            man3/vdsFolder.3  \
            man3/vdsQueue.3   \
            man3/vdsProcess.3 \
-           man3/vdsSession.3 \
-           $(VDS_C_FILES)
+           man3/vdsSession.3 
 
 EXTRA_DIST =                     \
              Doxyfile.vdsFolder  \
@@ -42,7 +42,10 @@ EXTRA_DIST =                     \
              Doxyfile.vdsProcess \
              Doxyfile.vdsSession \
              Doxyfile.vds_c      \
-             $(man_MANS)
+             man3/*.3
+
+
+#             $(man_MANS)
 
 nobase_include_HEADERS = \
    vdsf/vdsCommon.h      \
@@ -51,7 +54,7 @@ nobase_include_HEADERS = \
    vdsf/vdsProcess.h     \
    vdsf/vdsQueue.h       \
    vdsf/vdsSession.h     \
-   vdsf/vds_c.h
+   vdsf/vds.h            
 
 #   Item.h
 
@@ -60,28 +63,28 @@ nobase_include_HEADERS = \
 #
 if COND_USE_DOXYGEN
 
-man3/vdsFolder.3: vdsf/vdsFolder.h
+man3/vdsFolder.3: vdsf/vdsFolder
 	cd 
 	doxygen $(top_srcdir)/src/include/Doxyfile.vdsFolder
 	cp dummy/man/man3/vdsFolder.3 man3/vdsFolder.3
 	-rm -rf dummy
 
-man3/vdsQueue.3: vdsf/vdsQueue.h
+man3/vdsQueue.3: vdsf/vdsQueue
 	doxygen Doxyfile.vdsQueue
 	cp dummy/man/man3/vdsQueue.3 man3/vdsQueue.3
 	-rm -rf dummy
 
-man3/vdsProcess.3: vdsf/vdsProcess.h
+man3/vdsProcess.3: vdsf/vdsProcess
 	doxygen Doxyfile.vdsProcess
 	cp dummy/man/man3/vdsProcess.3 man3/vdsProcess.3
 	-rm -rf dummy
 
-man3/vdsSession.3: vdsf/vdsSession.h
+man3/vdsSession.3: vdsf/vdsSession
 	doxygen Doxyfile.vdsSession
 	cp dummy/man/man3/vdsSession.3 man3/vdsSession.3
 	-rm -rf dummy
 
-$(VDS_C_FILES): vdsf/vds_c.h
+$(VDS_C_FILES): vdsf/vds.h vdsf/vdsFolder.h vdsf/vdsQueue.h vdsf/vdsProcess.h vdsf/vdsSession.h
 	doxygen Doxyfile.vds_c
 	cp dummy/man/man3/vds* man3/
 	-rm -rf dummy

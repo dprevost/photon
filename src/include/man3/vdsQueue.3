@@ -1,4 +1,4 @@
-.TH "vdsQueue" 3 "4 Nov 2006" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
+.TH "vdsQueue" 3 "11 Oct 2007" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,9 @@ vdsQueue \-
 .SH SYNOPSIS
 .br
 .PP
-\fC#include <vdsQueue.h>\fP
-.PP
 .SH "Detailed Description"
 .PP 
-Definition at line 36 of file vdsQueue.h.
+Definition at line 36 of file vdsQueue.
 .SS "Public Member Functions"
 
 .in +1c
@@ -62,21 +60,21 @@ Definition at line 36 of file vdsQueue.h.
 .PP
 .SH "Member Function Documentation"
 .PP 
+.SS "int vdsQueue::Open (const char * queueName)"
+.PP
 .SS "int vdsQueue::Close ()"
+.PP
+.SS "int vdsQueue::InsertItem (const void * pItem, size_t length)"
+.PP
+.SS "int vdsQueue::RemoveItem (vdsQueueItem * pQueueItem)"
+.PP
+.SS "int vdsQueue::RemoveItem (vdsQueueItem & queueItem)"
+.PP
+.SS "int vdsQueue::RemoveItem (void * pItem, size_t length)"
 .PP
 .SS "int vdsQueue::GetItem (vdsIteratorType flag, void * pItem, size_t length)"
 .PP
 GetItem does not remove the items from the queue. 
-.PP
-.SS "int vdsQueue::InsertItem (const void * pItem, size_t length)"
-.PP
-.SS "int vdsQueue::Open (const char * queueName)"
-.PP
-.SS "int vdsQueue::RemoveItem (void * pItem, size_t length)"
-.PP
-.SS "int vdsQueue::RemoveItem (vdsQueueItem & queueItem)"
-.PP
-.SS "int vdsQueue::RemoveItem (vdsQueueItem * pQueueItem)"
 .PP
 .SS "int vdsQueue::Status (size_t * pNumValidItems, size_t * pNumTotalItems)"
 .PP
@@ -86,7 +84,7 @@ A struct might be better here.
 .PP 
 .SS "vdsProxyObject* \fBvdsQueue::m_pProxyObject\fP\fC [private]\fP"
 .PP
-Definition at line 65 of file vdsQueue.h.
+Definition at line 65 of file vdsQueue.
 
 .SH "Author"
 .PP 
