@@ -42,8 +42,12 @@ typedef struct vdsaCommonObject
    /** Pointer to the session we belong to. */
    struct vdsaSession* pSession;
 
-  /** A pointer to the descriptor object (in VDS memory). */
+   /** A pointer to the descriptor object (in VDS memory). */
    vdseObjectDescriptor * pDesc;
+   
+   /** A pointer to the object in VDS. */
+   
+   void * pMyVdsObject;
    
 } vdsaCommonObject;
 

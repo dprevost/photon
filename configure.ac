@@ -271,7 +271,7 @@ AC_ARG_ENABLE([i18n],
 	      [use_i18n=yes])
 if test "$use_i18n" = "yes"; then
   AC_CHECK_HEADERS([wchar.h wctype.h],,[use_i18n=no])
-  AC_CHECK_FUNCS([mbsrtowcs],,[use_i18n=no])
+  AC_CHECK_FUNCS([mbsrtowcs wcsrtombs],,[use_i18n=no])
 fi
 AC_MSG_CHECKING(if internationalization is supported)
 

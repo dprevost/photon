@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <vdsf/vds_c.h>
+#include <vdsf/vdsSession.h>
 #include "API/Session.h"
 #include "API/Process.h"
 #include "API/CommonObject.h"
@@ -433,7 +433,9 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
          objectName, 
          &pDescriptor,
          &pSession->context );
-      if ( errcode != 0 )
+      if ( errcode == 0 )
+         pObject->pMyVdsObject = GET_PTR( pDescriptor->offset, void );
+      else
          errcode = vdscGetLastError( &pSession->context.errorHandler );
    }
    else

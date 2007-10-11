@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <vdsf/vds_c.h>
+#include <vdsf/vds.h>
 #include "Tests/PrintError.h"
 #include "API/CommonObject.h"
 

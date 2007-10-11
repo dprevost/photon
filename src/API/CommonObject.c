@@ -18,9 +18,9 @@
 #include "Common/Common.h"
 #include "API/CommonObject.h"
 #include "API/Session.h"
-#include <vdsf/vds_c.h>
+#include <vdsf/vds.h>
 #include <vdsf/vdsErrors.h>
-    
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 //void vdsaCommonObjectInit( vdsaCommonObject * pObject,

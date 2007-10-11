@@ -500,7 +500,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
          goto the_exit;
       }
       descLength = offsetof(vdseObjectDescriptor, originalName) + 
-          partialLength * sizeof(vdsChar_T);
+          (partialLength+1) * sizeof(vdsChar_T);
       pDesc = (vdseObjectDescriptor *) malloc( descLength );
       if ( pDesc == NULL )
       {
@@ -508,10 +508,12 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
          errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
          goto the_exit;
       }
+      memset( pDesc, 0, descLength );
       pDesc->type = objectType;
       pDesc->offset = SET_OFFSET( ptr );
       pDesc->nameLengthInBytes = partialLength * sizeof(vdsChar_T);
       memcpy( pDesc->originalName, originalName, pDesc->nameLengthInBytes );
+      
       listErr = vdseHashInsert( &pFolder->hashObj, 
                                 (unsigned char *)objectName, 
                                 partialLength * sizeof(vdsChar_T), 
@@ -940,7 +942,7 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
    strLength = strlen( objectName );
 #endif
 
-   if ( strLength > VDS_MAX_NAME_LENGTH )
+   if ( strLength > VDS_MAX_FULL_NAME_LENGTH )
    {
       errcode = VDS_OBJECT_NAME_TOO_LONG;
       goto error_handler;
@@ -1064,7 +1066,7 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
    strLength = strlen( objectName );
 #endif
    
-   if ( strLength > VDS_MAX_NAME_LENGTH )
+   if ( strLength > VDS_MAX_FULL_NAME_LENGTH )
    {
       errcode = VDS_OBJECT_NAME_TOO_LONG;
       goto error_handler;
@@ -1187,7 +1189,7 @@ int vdseTopFolderOpenObject( vdseFolder            * pFolder,
    strLength = strlen( objectName );
 #endif
    
-   if ( strLength > VDS_MAX_NAME_LENGTH )
+   if ( strLength > VDS_MAX_FULL_NAME_LENGTH )
    {
       errcode = VDS_OBJECT_NAME_TOO_LONG;
       goto error_handler;

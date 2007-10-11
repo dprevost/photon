@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <vdsf/vds_c.h>
+#include <vdsf/vdsFolder.h>
 #include "API/Folder.h"
 #include "API/Session.h"
 #include <vdsf/vdsErrors.h>
@@ -88,22 +88,114 @@ int vdsFolderClose( VDS_HANDLE objectHandle )
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-#if 0
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-int vdsFolderGetFirstItem( vdsFolderItem* pFolderItem )
+int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
+                       vdsFolderEntry * pEntry )
 {
-   return VDS_INTERNAL_ERROR;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-int vdsFolderGetNext( vdsFolderItem * pFolderItem )
-{
-   return VDS_INTERNAL_ERROR;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+   vdsaFolder * pFolder;
+   vdseFolder * pVDSFolder;
+   int errcode = 0;
+   vdseObjectDescriptor * pDescriptor;
+#if VDS_SUPPORT_i18n
+   mbstate_t ps;
+   const wchar_t * name;
 #endif
+
+   pFolder = (vdsaFolder *) objectHandle;
+   if ( pFolder == NULL )
+      return VDS_NULL_HANDLE;
+   
+   if ( pFolder->type != VDSA_FOLDER )
+      return VDS_WRONG_TYPE_HANDLE;
+
+   if ( vdsaCommonLock( &pFolder->object ) == 0 )
+   {
+      pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+
+      errcode = vdseFolderGetFirst( pVDSFolder,
+                                    &pFolder->iterator,
+                                    &pFolder->object.pSession->context );
+      if ( errcode == 0 )
+      {
+         memset( pEntry, 0, sizeof( vdsFolderEntry ) );
+         pDescriptor = GET_PTR( pFolder->iterator.pHashItem->dataOffset, 
+                                vdseObjectDescriptor );
+         pEntry->type = pDescriptor->type;
+#if VDS_SUPPORT_i18n
+         name = pDescriptor->originalName;
+         pEntry->nameLengthInBytes = wcsrtombs( pEntry->name, 
+                                                &name, 
+                                                pDescriptor->nameLengthInBytes,
+                                                &ps );
+#else
+         pEntry->nameLengthInBytes = pDescriptor->nameLengthInBytes;
+         memcpy( pEntry->name, pDescriptor->originalName, pDescriptor->nameLengthInBytes );
+#endif
+      }
+      else
+      {
+         errcode = vdscGetLastError( &pFolder->object.pSession->context.errorHandler );
+      }
+      vdsaCommonUnlock( &pFolder->object );
+   }
+
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdsFolderGetNext( VDS_HANDLE       objectHandle,
+                      vdsFolderEntry * pEntry )
+{
+   vdsaFolder * pFolder;
+   vdseFolder * pVDSFolder;
+   int errcode = 0;
+   vdseObjectDescriptor * pDescriptor;
+#if VDS_SUPPORT_i18n
+   mbstate_t ps;
+   const wchar_t * name;
+#endif
+
+   pFolder = (vdsaFolder *) objectHandle;
+   if ( pFolder == NULL )
+      return VDS_NULL_HANDLE;
+   
+   if ( pFolder->type != VDSA_FOLDER )
+      return VDS_WRONG_TYPE_HANDLE;
+
+   if ( vdsaCommonLock( &pFolder->object ) == 0 )
+   {
+      pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+
+      errcode = vdseFolderGetNext( pVDSFolder,
+                                   &pFolder->iterator,
+                                   &pFolder->object.pSession->context );
+      if ( errcode == 0 )
+      {
+         memset( pEntry, 0, sizeof( vdsFolderEntry ) );
+         pDescriptor = GET_PTR( pFolder->iterator.pHashItem->dataOffset, 
+                                vdseObjectDescriptor );
+         pEntry->type = pDescriptor->type;
+#if VDS_SUPPORT_i18n
+         name = pDescriptor->originalName;
+         pEntry->nameLengthInBytes = wcsrtombs( pEntry->name, 
+                                                &name, 
+                                                pDescriptor->nameLengthInBytes,
+                                                &ps );
+#else
+         pEntry->nameLengthInBytes = pDescriptor->nameLengthInBytes;
+         memcpy( pEntry->name, pDescriptor->originalName, pDescriptor->nameLengthInBytes );
+#endif
+      }
+      else
+      {
+         errcode = vdscGetLastError( &pFolder->object.pSession->context.errorHandler );
+      }
+      vdsaCommonUnlock( &pFolder->object );
+   }
+
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

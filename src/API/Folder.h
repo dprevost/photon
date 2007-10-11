@@ -21,6 +21,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "API/CommonObject.h"
+#include "Engine/Folder.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -38,6 +39,12 @@ typedef struct vdsaFolder
 
    vdsaCommonObject object;
    
+   /**
+    * This struct holds both the result of the iteration (the pointer to
+    * the current vdseHashItem) and the values needed to get the next item.
+    */
+   vdseFolderItem iterator;
+
    /** 
     * The bucket location in the internal array of the hash.
     *

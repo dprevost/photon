@@ -14,8 +14,7 @@
  */
 
 #include "Common/Common.h"
-#include <vdsf/vds_c.h>
-#include <vdsf/vdsCommon.h>
+#include <vdsf/vds.h>
 #include "Process.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
