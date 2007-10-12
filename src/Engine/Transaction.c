@@ -198,7 +198,7 @@ int vdseTxCommit( vdseTx*             pTx,
       
       switch( pOps->transType )
       {         
-      case VDSE_TX_ADD:
+      case VDSE_TX_ADD_DATA:
 
          if ( pOps->parentType == VDS_HASH_MAP )
          {
@@ -224,7 +224,7 @@ int vdseTxCommit( vdseTx*             pTx,
 
          break;
 
-      case VDSE_TX_CREATE:
+      case VDSE_TX_ADD_OBJECT:
 
          VDS_POST_CONDITION( pOps->parentType == VDS_FOLDER );
 
@@ -256,7 +256,7 @@ int vdseTxCommit( vdseTx*             pTx,
          
          break;
 
-      case VDSE_TX_DESTROY:
+      case VDSE_TX_REMOVE_OBJECT:
 
          VDS_POST_CONDITION( pOps->parentType == VDS_FOLDER );
 
@@ -333,7 +333,7 @@ int vdseTxCommit( vdseTx*             pTx,
 
          break;
 
-      case VDSE_TX_REMOVE:
+      case VDSE_TX_REMOVE_DATA:
          if ( pOps->parentType == VDS_HASH_MAP )
          {
             pHashMap = GET_PTR( pOps->parentOffset, vdseHashMap );
@@ -361,7 +361,7 @@ int vdseTxCommit( vdseTx*             pTx,
             VDS_POST_CONDITION( 0 == 1 );
 
          break;
-
+#if 0
       case VDSE_TX_SELECT:
          /* Not yet! */
          break;
@@ -369,6 +369,7 @@ int vdseTxCommit( vdseTx*             pTx,
       case VDSE_TX_UPDATE:
          /* Not yet! */
          break;
+#endif
       } /* end of switch on type of ops */
 
       vdseFree( &pTx->memObject, (unsigned char*) pOps, sizeof(vdseTxOps), 
@@ -448,7 +449,7 @@ void vdseTxRollback( vdseTx*             pTx,
       
       switch( pOps->transType )
       {            
-      case VDSE_TX_ADD:
+      case VDSE_TX_ADD_DATA:
          if ( pOps->parentType == VDS_HASH_MAP )
          {
             pHashMap = GET_PTR( pOps->parentOffset, vdseHashMap );
@@ -477,7 +478,7 @@ void vdseTxRollback( vdseTx*             pTx,
 
          break;
             
-      case VDSE_TX_CREATE:
+      case VDSE_TX_ADD_OBJECT:
 
          VDS_POST_CONDITION( pOps->parentType == VDS_FOLDER );
 
@@ -550,7 +551,7 @@ void vdseTxRollback( vdseTx*             pTx,
 
          break;
 
-      case VDSE_TX_DESTROY:
+      case VDSE_TX_REMOVE_OBJECT:
 
          VDS_POST_CONDITION( pOps->parentType == VDS_FOLDER );
 
@@ -586,7 +587,7 @@ void vdseTxRollback( vdseTx*             pTx,
 
          break;
 
-      case VDSE_TX_REMOVE:
+      case VDSE_TX_REMOVE_DATA:
 
          if ( pOps->parentType == VDS_HASH_MAP )
          {
@@ -614,6 +615,7 @@ void vdseTxRollback( vdseTx*             pTx,
 
          break;
 
+#if 0
       case VDSE_TX_SELECT:
          /* Not yet! */
          break;
@@ -621,7 +623,7 @@ void vdseTxRollback( vdseTx*             pTx,
       case VDSE_TX_UPDATE:
          /* Not yet! */
          break;
-         
+#endif         
       }
 
       vdseFree( &pTx->memObject, (unsigned char*) pOps, sizeof(vdseTxOps), 

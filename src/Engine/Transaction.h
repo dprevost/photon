@@ -33,14 +33,14 @@
 typedef enum vdseTxType
 {
    /* ops on data */
-   VDSE_TX_ADD = 1,
-   VDSE_TX_REMOVE,
-   VDSE_TX_UPDATE,
-   VDSE_TX_SELECT,
+   VDSE_TX_ADD_DATA = 1,
+   VDSE_TX_REMOVE_DATA,
+//   VDSE_TX_UPDATE,
+//   VDSE_TX_SELECT,
 
    /* ops on objects */
-   VDSE_TX_CREATE = 101,
-   VDSE_TX_DESTROY
+   VDSE_TX_ADD_OBJECT = 0x81,
+   VDSE_TX_REMOVE_OBJECT
 
 } vdseTxType;
 

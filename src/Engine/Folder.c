@@ -535,7 +535,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
       }
 
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
-                         VDSE_TX_CREATE,
+                         VDSE_TX_ADD_OBJECT,
                          SET_OFFSET(pFolder),
                          VDS_FOLDER,
                          pDesc->offset,
@@ -767,7 +767,7 @@ int vdseFolderDeleteObject( vdseFolder*         pFolder,
       }
       
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
-                         VDSE_TX_DESTROY,
+                         VDSE_TX_REMOVE_OBJECT,
                          SET_OFFSET(pFolder),
                          VDS_FOLDER,
                          pDesc->offset,

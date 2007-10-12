@@ -35,7 +35,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    errcode = vdseTxAddOps( pTx,
-                           VDSE_TX_ADD,
+                           VDSE_TX_ADD_DATA,
                            parentOffset, 
                            VDS_FOLDER,
                            childOffset,

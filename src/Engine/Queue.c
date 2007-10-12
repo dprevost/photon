@@ -173,7 +173,7 @@ int vdseQueueInsert( vdseQueue          * pQueue,
       memcpy( pQueueItem->data, pItem, length );
    
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
-                         VDSE_TX_ADD,
+                         VDSE_TX_ADD_DATA,
                          SET_OFFSET(pQueue),
                          VDS_HASH_MAP,
                          SET_OFFSET(pQueueItem),
@@ -270,7 +270,7 @@ int vdseQueueRemove( vdseQueue          * pQueue,
          {
             /* Add to current transaction  */
             rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
-                               VDSE_TX_REMOVE,
+                               VDSE_TX_REMOVE_DATA,
                                SET_OFFSET( pQueue ),
                                VDS_QUEUE,
                                SET_OFFSET( pItem ),

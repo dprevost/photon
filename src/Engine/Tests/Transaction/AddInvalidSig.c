@@ -36,7 +36,7 @@ int main()
    
    pTx->signature = 0;
    errcode = vdseTxAddOps( pTx,
-                           VDSE_TX_ADD,
+                           VDSE_TX_ADD_DATA,
                            parentOffset, 
                            VDS_FOLDER,
                            childOffset,

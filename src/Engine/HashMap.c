@@ -334,7 +334,7 @@ int vdseHashMapInsertItem( vdseHashMap        * pHashMap,
       }
 
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
-                         VDSE_TX_ADD,
+                         VDSE_TX_ADD_DATA,
                          SET_OFFSET(pHashMap),
                          VDS_HASH_MAP,
                          SET_OFFSET(pHashItem),
@@ -444,7 +444,7 @@ int vdseHashMapDeleteItem( vdseHashMap        * pHashMap,
       }
    
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
-                         VDSE_TX_REMOVE,
+                         VDSE_TX_REMOVE_DATA,
                          SET_OFFSET(pHashMap),
                          VDS_HASH_MAP,
                          SET_OFFSET( pHashItem),
