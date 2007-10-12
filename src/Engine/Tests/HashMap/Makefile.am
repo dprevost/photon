@@ -30,6 +30,14 @@ check_PROGRAMS =                         \
                  FiniNullContext         \
                  FiniNullHash            \
                  FiniPass                \
+                 GetFirstNullContext     \
+                 GetFirstNullHash        \
+                 GetFirstNullItem        \
+                 GetFirstPass            \
+                 GetNextNullContext      \
+                 GetNextNullHash         \
+                 GetNextNullItem         \
+                 GetNextPass             \
                  GetNullContext          \
                  GetNullHash             \
                  GetNullItem             \
@@ -80,6 +88,14 @@ DeleteZeroKeyLength_SOURCES     = $(COMMON_HEADER) DeleteZeroKeyLength.c
 FiniNullContext_SOURCES         = $(COMMON_HEADER) FiniNullContext.c
 FiniNullHash_SOURCES            = $(COMMON_HEADER) FiniNullHash.c
 FiniPass_SOURCES                = $(COMMON_HEADER) FiniPass.c
+GetFirstNullContext             = $(COMMON_HEADER) GetFirstNullContext.c
+GetFirstNullHash                = $(COMMON_HEADER) GetFirstNullHash.c
+GetFirstNullItem                = $(COMMON_HEADER) GetFirstNullItem.c
+GetFirstPass                    = $(COMMON_HEADER) GetFirstPass.c
+GetNextNullContext              = $(COMMON_HEADER) GetNextNullContext.c
+GetNextNullHash                 = $(COMMON_HEADER) GetNextNullHash.c
+GetNextNullItem                 = $(COMMON_HEADER) GetNextNullItem.c
+GetNextPass                     = $(COMMON_HEADER) GetNextPass.c
 GetNullContext_SOURCES          = $(COMMON_HEADER) GetNullContext.c
 GetNullHash_SOURCES             = $(COMMON_HEADER) GetNullHash.c
 GetNullItem_SOURCES             = $(COMMON_HEADER) GetNullItem.c
@@ -133,6 +149,14 @@ TESTS =                         \
         FiniNullContext         \
         FiniNullHash            \
         FiniPass                \
+        GetFirstNullContext     \
+        GetFirstNullHash        \
+        GetFirstNullItem        \
+        GetFirstPass            \
+        GetNextNullContext      \
+        GetNextNullHash         \
+        GetNextNullItem         \
+        GetNextPass             \
         GetNullContext          \
         GetNullHash             \
         GetNullItem             \
@@ -178,6 +202,12 @@ XFAIL_TESTS =                         \
               DeleteZeroKeyLength     \
               FiniNullContext         \
               FiniNullHash            \
+              GetFirstNullContext     \
+              GetFirstNullHash        \
+              GetFirstNullItem        \
+              GetNextNullContext      \
+              GetNextNullHash         \
+              GetNextNullItem         \
               GetNullContext          \
               GetNullHash             \
               GetNullItem             \
