@@ -21,8 +21,8 @@
 extern "C" {
 #endif
 
-#define VDSEERR_MAX_ENTRIES  43
-#define VDSEERR_MAX_COMMENTS 240
+#define VDSEERR_MAX_ENTRIES  37
+#define VDSEERR_MAX_COMMENTS 349
 
 /*
  * Use this function to access the error messages (generated from the 

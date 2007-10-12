@@ -32,77 +32,29 @@ typedef enum vdsErrors
    /** Abnormal internal error - it should not happen! */
    VDS_INTERNAL_ERROR              = 666,
 
+   /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
+    * 
+    * Generic errors.
+    *
+    * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
    /**
     * Cannot get a lock on a system object, the engine is "busy".
     * This might be the result of either a very busy system where 
     * unused cpu cycles are rare or a lock might be held by a 
-    * crashed process (however the watchdog should catch this one).
+    * crashed process.
     */
    VDS_ENGINE_BUSY                 = 1,
 
-   /** Not enough memory in the VDS. */
+   /** 
+    * Not enough memory in the VDS. 
+    */
    VDS_NOT_ENOUGH_VDS_MEMORY       = 2,
  
-   /** Not enough heap memory (non-VDS memory). */
+   /** 
+    * Not enough heap memory (non-VDS memory). 
+    */
    VDS_NOT_ENOUGH_HEAP_MEMORY      = 3,
-
-   /**
-    * Permitted characters for names are alphanumerics [a-z,0-9], 
-    * spaces (' '), dashes ('-') and underlines ('_'). The first character
-    * must be alphanumeric.
-    */
-   VDS_INVALID_OBJECT_NAME         = 4,
-
-   /** The object was not found (but its folder does exist). */
-   VDS_NO_SUCH_OBJECT              = 5,
-
-   /** Invalid folder name. */
-   VDS_NO_SUCH_FOLDER              = 6,
-
-   /** Attempt to create an object which already exists. */
-   VDS_OBJECT_ALREADY_PRESENT      = 7,
-
-   /**
-    *  Attempt to delete an object which is currently in use. The 
-    * object might be used either by the current session or by 
-    * another session.
-    */
-   VDS_OBJECT_IN_USE               = 8,
-
-   VDS_INVALID_LENGTH_FIELD        = 9,
-   
-   /** The object (data container) is empty. */
-   VDS_IS_EMPTY                    = 10,
-   
-   /** Object must be open first before you can access them. */
-   VDS_OBJECT_NOT_INITIALIZED      = 11,
-   
-   VDS_CONFIG_ERROR                = 12,
-   VDS_INVALID_WATCHDOG_ADDRESS    = 13,
-   VDS_WRONG_OBJECT_TYPE           = 14,
-   VDS_PROCESS_NOT_INITIALIZED     = 15,
-   VDS_OBJECT_CANNOT_GET_LOCK      = 16,
-   VDS_OBJECT_ALREADY_OPEN         = 17,
-   /**
-    * You must call vdsProcess::Terminate() before calling 
-    * vdsProcess::Initialize() a second time. 
-    */
-   VDS_PROCESS_ALREADY_INITIALIZED = 18,
-
-   /** API - memory-file version mismatch. */
-   VDS_INCOMPATIBLE_VERSIONS       = 19,
-
-   /** Rollback operations are not permitted for implicit transactions. */
-   VDS_NO_ROLLBACK                 = 20,
-
-   /** Error opening the log file (used for transactions). */
-   VDS_LOGFILE_ERROR               = 21,
-
-   /** The search reached the end without finding a new item/record. */
-   VDS_REACHED_THE_END             = 22,
-
-   /** An invalid value was used for a vdsIteratorType parameter. */
-   VDS_INVALID_ITERATOR            = 23,
 
    /**
     * There are not enough resources to correctly process the call. 
@@ -110,67 +62,169 @@ typedef enum vdsErrors
     * where locks are implemented that way or a failure in initializing
     * a pthread_mutex (or on Windows, a critical section).
     */
-   VDS_NOT_ENOUGH_RESOURCES        = 24,
+   VDS_NOT_ENOUGH_RESOURCES        = 4,
 
-   VDS_NO_CONFIG_FILE              = 25,
-   VDS_SOCKET_ERROR                = 26,
-   VDS_CONNECT_ERROR               = 27,
-   VDS_SEND_ERROR                  = 28,
-   VDS_RECEIVE_ERROR               = 29,
-   VDS_BACKSTORE_FILE_MISSING      = 30,
-   VDS_ERROR_OPENING_VDS           = 31,
-   VDS_FOLDER_IS_NOT_EMPTY         = 32,
-   
    /**
     * The provided handle is of the wrong type.
     */
-   VDS_WRONG_TYPE_HANDLE           = 33,
+   VDS_WRONG_TYPE_HANDLE           = 5,
    
    /**
     * The provided handle is NULL (zero).
     */
-   VDS_NULL_HANDLE                 = 34,
+   VDS_NULL_HANDLE                 = 6,
+
+   /**
+    * One of the arguments of an API function is an invalid NULL pointer.
+    */
+   VDS_NULL_POINTER                = 7,
+
+   /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
+    * 
+    * Errors which might occur at initialization time or are related to 
+    * the process object/project handle.
+    *
+    * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+    
+   /**
+    * The process was already initialized. Was vdsInit() called for a 
+    * second time?
+    */
+   VDS_PROCESS_ALREADY_INITIALIZED = 21,
+
+   VDS_PROCESS_NOT_INITIALIZED     = 22,
+
+   /** The watchdog address is invalid (empty string, NULL pointer, etc.) */
+   VDS_INVALID_WATCHDOG_ADDRESS    = 23,
+
+   /** API - memory-file version mismatch. */
+   VDS_INCOMPATIBLE_VERSIONS       = 24,
+
+   /** Generic socket error. */
+   VDS_SOCKET_ERROR                = 25,
+   
+   /** Socket error when trying to connect to the watchdog. */
+   VDS_CONNECT_ERROR               = 26,
+
+   /** Socket error when trying to send a request to the watchdog. */
+   VDS_SEND_ERROR                  = 27,
+   
+   /** Socket error when trying to receive a reply from the watchdog. */   
+   VDS_RECEIVE_ERROR               = 28,
+
+   /** 
+    * The vds backstore file is missing (the name of this file is 
+    * provided by the watchdog).
+    */
+   VDS_BACKSTORE_FILE_MISSING      = 29,
+   
+   /** Generic i/o error when attempting to open the vds. */
+   VDS_ERROR_OPENING_VDS           = 30,
+
+   /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
+    * 
+    * Errors which might be related to session objects/session handle.
+    *
+    * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+   /**
+    * Error accessing the directory for the log files or error opening the 
+    * log file itself. */
+   VDS_LOGFILE_ERROR               = 41,
+
+   /**
+    * Cannot get a lock on the session (a pthread_mutex or a critical 
+    * section on Windows). 
+    */
+   VDS_SESSION_CANNOT_GET_LOCK     = 42,
+   
+   /**
+    * An attempt was made to use a session object (a session handle)
+    * after this session was terminated.
+    */
+   VDS_SESSION_IS_TERMINATED       = 43,
+   
+   /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
+    * 
+    * Errors which might be related to session objects/session handle.
+    *
+    * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+   
+   /**
+    * Permitted characters for names are alphanumerics, spaces (' '), 
+    * dashes ('-') and underlines ('_'). The first character
+    * must be alphanumeric.
+    */
+   VDS_INVALID_OBJECT_NAME         = 51,
+
+   /** The object was not found (but its folder does exist). */
+   VDS_NO_SUCH_OBJECT              = 52,
+
+   /** One of the parent folder of an object does not exist. */
+   VDS_NO_SUCH_FOLDER              = 53,
+
+   /** Attempt to create an object which already exists. */
+   VDS_OBJECT_ALREADY_PRESENT      = 54,
+   
+   /** The object (data container) is empty. */
+   VDS_IS_EMPTY                    = 55,
+
+   /** Attempt to create an object of an unknown object type. */
+   VDS_WRONG_OBJECT_TYPE           = 56,
+
+   /**
+    * Cannot get lock on the object.
+    * This might be the result of either a very busy system where 
+    * unused cpu cycles are rare or a lock might be held by a 
+    * crashed process.
+    */
+   VDS_OBJECT_CANNOT_GET_LOCK      = 57,
+
+   /** 
+    * The search/iteration reached the end without finding a new 
+    * item/record. 
+    */
+   VDS_REACHED_THE_END             = 58,
+
+   /** An invalid value was used for a vdsIteratorType parameter. */
+   VDS_INVALID_ITERATOR            = 59,
 
    /**
     * The name of the object is too long.
     * The maximum length of a name cannot be more than VDS_MAX_NAME_LENGTH
     * (or VDS_MAX_FULL_NAME_LENGTH for the fully qualified name).
     */
-   VDS_OBJECT_NAME_TOO_LONG        = 35,
+   VDS_OBJECT_NAME_TOO_LONG        = 60,
    
    /**
-    * Cannot get a lock on the session (a pthread_mutex or a critical 
-    * section on Windows). 
+    * You cannot delete a folder if there are still undeleted objects in
+    * it.
+    *
+    * Technical: a folder does not need to be empty to be deleted but
+    * all objects in it must be "marked as deleted" by the current session.
+    * This enables writing recursive deletions
     */
-   VDS_SESSION_CANNOT_GET_LOCK     = 36,
-   
-   /**
-    * An attempt was made to use a session object (a session handle)
-    * after this session was terminated.
-    */
-   VDS_SESSION_IS_TERMINATED       = 37,
+   VDS_FOLDER_IS_NOT_EMPTY         = 61,
    
    /**
     * An item with the same key was found.
     */
-   VDS_ITEM_ALREADY_PRESENT        = 38,
+   VDS_ITEM_ALREADY_PRESENT        = 62,
    
    /**
     * The item was not found in the hash map
     */
-   VDS_NO_SUCH_ITEM                = 39,
+   VDS_NO_SUCH_ITEM                = 63,
    
    /**
     * The object is scheduled to be deleted soon. Operations on this data
     * container are not permitted at this time.
     */
-   VDS_OBJECT_IS_DELETED           = 40,     
+   VDS_OBJECT_IS_DELETED           = 64,     
 
-   /**
-    * One of the arguments of an API function is an invalid NULL pointer.
-    */
-    VDS_NULL_POINTER               = 41
-  
+    /** Object must be open first before you can access them. */
+   VDS_OBJECT_NOT_INITIALIZED      = 65
+
 } vdsErrors;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -180,3 +234,4 @@ typedef enum vdsErrors
 #endif
  
 #endif /* VDS_ERRORS_H */
+

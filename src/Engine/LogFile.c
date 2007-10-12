@@ -36,7 +36,7 @@ vdsErrors vdseInitLogFile( vdseLogFile*      logFile,
    {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error accessing directoryfor log file = %d\n", errno );
-      return VDS_CONFIG_ERROR;
+      return VDS_LOGFILE_ERROR;
    }
    
    sprintf( logFile->filename, "%s%sLog-%d-%lu.%s", 
