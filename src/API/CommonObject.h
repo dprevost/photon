@@ -21,7 +21,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/ThreadLock.h"
-#include "Engine/TreeNode.h"
+#include "Engine/Folder.h"
 #include "API/Session.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -42,8 +42,8 @@ typedef struct vdsaCommonObject
    /** Pointer to the session we belong to. */
    struct vdsaSession* pSession;
 
-   /** A pointer to the descriptor object (in VDS memory). */
-   vdseObjectDescriptor * pDesc;
+   /** A folder item. It contains a pointer to the hash item in VDS memory. */
+   vdseFolderItem  folderItem;
    
    /** A pointer to the object in VDS. */
    

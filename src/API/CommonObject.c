@@ -37,7 +37,8 @@ int vdsaCommonObjectOpen( vdsaCommonObject   * pObject,
                           const char         * objectName )
 {
    int errcode = VDS_OBJECT_CANNOT_GET_LOCK;
-
+   vdseObjectDescriptor * pDesc;
+   
    VDS_PRE_CONDITION( pObject    != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
@@ -53,6 +54,12 @@ int vdsaCommonObjectOpen( vdsaCommonObject   * pObject,
                                     objectType, 
                                     objectName,
                                     pObject );
+      if ( errcode == 0 )
+      {
+         pDesc = GET_PTR( pObject->folderItem.pHashItem->dataOffset,
+                          vdseObjectDescriptor );
+         pObject->pMyVdsObject = GET_PTR( pDesc->offset, void );
+      }
       vdsaCommonUnlock( pObject );
    }
    

@@ -387,7 +387,7 @@ int vdsaCloseSession( vdsaSession* pSession )
             
                pCommonObject = (vdsaCommonObject*) pObject->pCommonObject;
             
-               errcode = vdseTopFolderCloseObject( pCommonObject->pDesc, 
+               errcode = vdseTopFolderCloseObject( &pCommonObject->folderItem, 
                                                    &pSession->context );
                vdsaCommonCloseObject( pCommonObject );
 
@@ -419,7 +419,6 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
                         struct vdsaCommonObject * pObject )
 {
    int errcode;
-   vdseObjectDescriptor * pDescriptor = NULL;
 
    VDS_PRE_CONDITION( pSession   != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
@@ -431,18 +430,13 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
       errcode = vdseTopFolderOpenObject( 
          GET_PTR( pSession->pHeader->treeMgrOffset, vdseFolder ),
          objectName, 
-         &pDescriptor,
+         &pObject->folderItem,
          &pSession->context );
-      if ( errcode == 0 )
-         pObject->pMyVdsObject = GET_PTR( pDescriptor->offset, void );
-      else
+      if ( errcode != 0 )
          errcode = vdscGetLastError( &pSession->context.errorHandler );
    }
    else
       errcode = VDS_SESSION_IS_TERMINATED;
-
-   if ( errcode == 0 )
-      pObject->pDesc = pDescriptor;
 
    return errcode;
 }
@@ -459,7 +453,7 @@ int vdsaSessionCloseObj( vdsaSession             * pSession,
 
    if ( ! pSession->terminated )
    {
-      errcode = vdseTopFolderCloseObject( pObject->pDesc,
+      errcode = vdseTopFolderCloseObject( &pObject->folderItem,
                                           &pSession->context );
       if ( errcode != 0 )
          errcode = vdscGetLastError( &pSession->context.errorHandler );
