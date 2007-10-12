@@ -31,17 +31,28 @@ typedef struct vdseObjectDescriptor
    /** Offset of the object */
    ptrdiff_t offset;
    
-   /* Offset to the node information */
+   /** Offset to the vdseTreeNode struct. */
    ptrdiff_t nodeOffset;
    
+   /** Offset to the memory object struct. */
+   ptrdiff_t memOffset;
+   
+   /** The object type as seen from the API. */
    enum vdsObjectType type;
    
+   /** 
+    * The length in bytes of the name as originally entered (but stored in
+    * multi-bytes characters, if i18n is supportd).
+    */
    int                nameLengthInBytes;
    
    /** 
     * The original name (not including the parent folder name).
-    * This name does not include the trailing zero ('\0' or L'\0'),
-    * it cannot be used as a valid C string!
+    * This name does include the trailing zero ('\0' or L'\0'),
+    * and can be used as a valid C string!
+    *
+    * Note: it is stored as an array of multi-bytes characters if i18n is
+    * supported.
     */
    vdsChar_T          originalName[1];
    

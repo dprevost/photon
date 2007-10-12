@@ -26,7 +26,7 @@ int main()
    vdseFolder * pTopFolder;
    vdseSessionContext context;
    int errcode;
-   vdseObjectDescriptor * pDescriptor = NULL;
+   vdseFolderItem folderItem;
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
@@ -46,12 +46,12 @@ int main()
    
    errcode = vdseTopFolderOpenObject( pTopFolder,
                                       "Test1/Test2",
-                                      &pDescriptor,
+                                      &folderItem,
                                       &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   errcode = vdseTopFolderCloseObject( pDescriptor,
+   errcode = vdseTopFolderCloseObject( &folderItem,
                                        NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

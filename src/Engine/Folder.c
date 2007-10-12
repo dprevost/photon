@@ -20,15 +20,6 @@
 #include "MemoryAllocator.h"
 #include "HashMap.h"
 
-/* To make the code easier to read */
-#define SET_ERROR_RETURN(RC) \
-{\
-   vdscSetError( &pContext->errorHandler, \
-                 g_vdsErrorHandle, \
-                 RC ); \
-         return -1; \
-}
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static 
@@ -87,59 +78,159 @@ bool vdseFolderDeletable( vdseFolder*         pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseFolderInit( vdseFolder         * pFolder,
-                    ptrdiff_t            parentOffset,
-                    size_t               numberOfBlocks,
-                    size_t               expectedNumOfChilds,
-                    vdseTxStatus       * pTxStatus,
-                    size_t               origNameLength,
-                    vdsChar_T          * origName,
-                    ptrdiff_t            keyOffset,
-                    vdseSessionContext * pContext )
+int vdseFolderDeleteObject( vdseFolder*         pFolder,
+                            const vdsChar_T*    objectName,
+                            size_t              strLength, 
+                            vdseSessionContext* pContext )
 {
-   vdsErrors errcode;
-   enum ListErrors listErr;
+   bool lastIteration = true;
+   size_t partialLength = 0;
+   int rc;
+   vdsErrors errcode = VDS_OK;
+   enum ListErrors listErr = LIST_OK;
+   vdseObjectDescriptor* pDesc = NULL;
+   vdseHashItem* pHashItem = NULL;
+   vdseTxStatus* txStatus;
+   vdseFolder * pNextFolder, *pDeletedFolder;
    
-   VDS_PRE_CONDITION( pFolder   != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pTxStatus != NULL );
-   VDS_PRE_CONDITION( origName  != NULL );
-   VDS_PRE_CONDITION( parentOffset != NULL_OFFSET );
-   VDS_PRE_CONDITION( numberOfBlocks  > 0 );
-   VDS_PRE_CONDITION( origNameLength > 0 );
+   VDS_PRE_CONDITION( pFolder    != NULL );
+   VDS_PRE_CONDITION( objectName != NULL );
+   VDS_PRE_CONDITION( pContext   != NULL );
+   VDS_PRE_CONDITION( strLength > 0 );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
    
-   errcode = vdseMemObjectInit( &pFolder->memObject, 
-                                VDSE_IDENT_FOLDER,
-                                &pFolder->blockGroup,
-                                numberOfBlocks );
-   if ( errcode != VDS_OK )
-   {
-      vdscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
-                    errcode );
-      return -1;
-   }
    pContext->pCurrentMemObject = &pFolder->memObject;
 
-   vdseTreeNodeInit( &pFolder->nodeObject,
-                     SET_OFFSET(pTxStatus),
-                     origNameLength,
-                     SET_OFFSET(origName),
-                     parentOffset,
-                     keyOffset );
-
-   listErr = vdseHashInit( &pFolder->hashObj, expectedNumOfChilds, pContext );
+   if ( ! ValidateString( objectName, 
+                          strLength, 
+                          &partialLength, 
+                          &lastIteration ) )
+   {
+      errcode = VDS_INVALID_OBJECT_NAME;
+      goto the_exit;
+   }
+   listErr = vdseHashGet( &pFolder->hashObj, 
+                          (unsigned char *)objectName, 
+                          partialLength * sizeof(vdsChar_T),
+                          &pHashItem,
+                          pContext,
+                          NULL );
    if ( listErr != LIST_OK )
    {
-      if ( listErr == LIST_NO_MEMORY )
-         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
+      if (lastIteration)
+         errcode = VDS_NO_SUCH_OBJECT;
       else
-         errcode = VDS_INTERNAL_ERROR;
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
-      return -1;
+         errcode = VDS_NO_SUCH_FOLDER;
+      goto the_exit;
+   }
+
+   txStatus = &pHashItem->txStatus;
+   
+   if ( lastIteration )
+   {      
+      /* 
+       * If the object (to delete) transaction id is not either equal to
+       * zero or to the current transaction id, then it belongs to 
+       * another transaction - uncommitted. For the current transaction it
+       * is as if it does not exist.
+       * Similarly, if the object is already marked as destroyed... can't 
+       * remove ourselves twice...
+       */
+      if ( ! vdseTxStatusIsValid( txStatus, SET_OFFSET(pContext->pTransaction) ) 
+         || vdseTxStatusIsMarkedAsDestroyed( txStatus ) )
+      {
+         errcode = VDS_NO_SUCH_OBJECT;
+         goto the_exit;
+      }
+
+      pDesc = GET_PTR( pHashItem->dataOffset, vdseObjectDescriptor );
+      
+      /*
+       * A special case - folders cannot be deleted if they are not empty
+       * (unless all other objects are marked as deleted by the current
+       * transaction).
+       *
+       * Other objects contain data, not objects. 
+       */
+      if ( pDesc->type == VDS_FOLDER )
+      {
+         pDeletedFolder = GET_PTR( pDesc->offset, vdseFolder );
+         if ( ! vdseFolderDeletable( pDeletedFolder, pContext ) )
+         {
+            errcode = VDS_FOLDER_IS_NOT_EMPTY;
+            goto the_exit;
+         }
+      }
+      
+      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
+                         VDSE_TX_REMOVE_OBJECT,
+                         SET_OFFSET(pFolder),
+                         VDS_FOLDER,
+                         pDesc->offset,
+                         pDesc->type,
+                         pContext );
+      if ( rc != 0 )
+         goto the_exit;
+      
+      vdseTxStatusSetTx( txStatus, SET_OFFSET(pContext->pTransaction) );
+      vdseTxStatusMarkAsDestroyed( txStatus );
+      vdseUnlock( &pFolder->memObject, pContext );
+
+      return 0;
+   }
+
+   /* If we come here, this was not the last iteration, so we continue */
+
+   /* This is not the last node. This node must be a folder, otherwise... */
+   pDesc = GET_PTR( pHashItem->dataOffset, vdseObjectDescriptor );
+   if ( pDesc->type != VDS_FOLDER )
+   {
+      errcode = VDS_NO_SUCH_FOLDER;
+      goto the_exit;
+   }
+
+   /* 
+    * If the transaction id of the next folder is not either equal to
+    * zero or to the current transaction id, then it belongs to 
+    * another transaction - uncommitted. For this transaction it is
+    * as if it does not exist.
+    * Similarly, if we are marked as destroyed... can't access that folder
+    * (to have the id as ok and be marked as destroyed is a rare case - 
+    * it would require that the current transaction deleted the folder and 
+    * than tries to access it).
+    */
+   if ( ! vdseTxStatusIsValid( txStatus, SET_OFFSET(pContext->pTransaction)) 
+         || vdseTxStatusIsMarkedAsDestroyed( txStatus ) )
+   {
+      errcode = VDS_NO_SUCH_FOLDER;
+      goto the_exit;
+   }
+
+   pNextFolder = GET_PTR( pDesc->offset, vdseFolder );
+   rc = vdseLock( &pNextFolder->memObject, pContext );
+   if ( rc != 0 )
+   {
+      errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+      goto the_exit;
    }
    
-   return 0;
+   vdseUnlock( &pFolder->memObject, pContext );
+
+   rc = vdseFolderDeleteObject( pNextFolder,
+                                &objectName[partialLength+1],
+                                strLength - partialLength - 1,
+                                pContext );
+   return rc;
+   
+the_exit:
+
+   /* vdscSetError might have been already called by some other function */
+   if ( errcode != VDS_OK )
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+
+   vdseUnlock( &pFolder->memObject, pContext );
+   
+   return -1;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -190,13 +281,11 @@ int vdseFolderGetFirst( vdseFolder         * pFolder,
          if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
              && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
          {
-            txItemStatus->usageCounter++;
+            txItemStatus->parentCounter++;
             txFolderStatus->usageCounter++;
             pItem->pHashItem = pHashItem;
             pItem->bucket = bucket;
             pItem->itemOffset = firstItemOffset;
-//            if ( flag == VDS_NEXT )
-//               vdseQueueReleaseNoLock( pQueue, pOldItem, pContext );
 
             vdseUnlock( &pFolder->memObject, pContext );
             
@@ -263,7 +352,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
          if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
              && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
          {
-            txItemStatus->usageCounter++;
+            txItemStatus->parentCounter++;
             txFolderStatus->usageCounter++;
             pItem->pHashItem = pHashItem;
             pItem->bucket = bucket;
@@ -296,11 +385,11 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseFolderGetObject( vdseFolder*            pFolder,
-                         const vdsChar_T*       objectName,
-                         size_t                 strLength, 
-                         vdseObjectDescriptor** ppDescriptor,
-                         vdseSessionContext*    pContext )
+int vdseFolderGetObject( vdseFolder         * pFolder,
+                         const vdsChar_T    * objectName,
+                         size_t               strLength, 
+                         vdseFolderItem     * pFolderItem,
+                         vdseSessionContext * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0;
@@ -312,11 +401,11 @@ int vdseFolderGetObject( vdseFolder*            pFolder,
    vdseTxStatus* txStatus;
    vdseFolder* pNextFolder;
    
-   VDS_PRE_CONDITION( pFolder != NULL );
-   VDS_PRE_CONDITION( objectName != NULL )
+   VDS_PRE_CONDITION( pFolder     != NULL );
+   VDS_PRE_CONDITION( objectName  != NULL )
+   VDS_PRE_CONDITION( pFolderItem != NULL );
+   VDS_PRE_CONDITION( pContext    != NULL );
    VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( ppDescriptor != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
    pContext->pCurrentMemObject = &pFolder->memObject;
@@ -367,14 +456,11 @@ int vdseFolderGetObject( vdseFolder*            pFolder,
          goto the_exit;
       }
 
-      /*
-       * usageCounter is only modified (or read) when the parent folder
-       * is locked. No need to lock the object itself for this.
-       */
-      txStatus->usageCounter++;
-      *ppDescriptor = pDesc;
+      txStatus->parentCounter++;
+      pFolderItem->pHashItem = pHashItem;
       
       vdseUnlock( &pFolder->memObject, pContext );
+
       return 0;
    }
    
@@ -414,7 +500,7 @@ int vdseFolderGetObject( vdseFolder*            pFolder,
    rc = vdseFolderGetObject( pNextFolder,
                              &objectName[partialLength+1], 
                              strLength - partialLength - 1, 
-                             ppDescriptor,
+                             pFolderItem,
                              pContext );
    
    return rc;
@@ -431,6 +517,63 @@ the_exit:
    vdseUnlock( &pFolder->memObject, pContext );
    
    return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdseFolderInit( vdseFolder         * pFolder,
+                    ptrdiff_t            parentOffset,
+                    size_t               numberOfBlocks,
+                    size_t               expectedNumOfChilds,
+                    vdseTxStatus       * pTxStatus,
+                    size_t               origNameLength,
+                    vdsChar_T          * origName,
+                    ptrdiff_t            keyOffset,
+                    vdseSessionContext * pContext )
+{
+   vdsErrors errcode;
+   enum ListErrors listErr;
+   
+   VDS_PRE_CONDITION( pFolder   != NULL );
+   VDS_PRE_CONDITION( pContext  != NULL );
+   VDS_PRE_CONDITION( pTxStatus != NULL );
+   VDS_PRE_CONDITION( origName  != NULL );
+   VDS_PRE_CONDITION( parentOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( numberOfBlocks  > 0 );
+   VDS_PRE_CONDITION( origNameLength > 0 );
+   
+   errcode = vdseMemObjectInit( &pFolder->memObject, 
+                                VDSE_IDENT_FOLDER,
+                                &pFolder->blockGroup,
+                                numberOfBlocks );
+   if ( errcode != VDS_OK )
+   {
+      vdscSetError( &pContext->errorHandler,
+                    g_vdsErrorHandle,
+                    errcode );
+      return -1;
+   }
+   pContext->pCurrentMemObject = &pFolder->memObject;
+
+   vdseTreeNodeInit( &pFolder->nodeObject,
+                     SET_OFFSET(pTxStatus),
+                     origNameLength,
+                     SET_OFFSET(origName),
+                     parentOffset,
+                     keyOffset );
+
+   listErr = vdseHashInit( &pFolder->hashObj, expectedNumOfChilds, pContext );
+   if ( listErr != LIST_OK )
+   {
+      if ( listErr == LIST_NO_MEMORY )
+         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
+      else
+         errcode = VDS_INTERNAL_ERROR;
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      return -1;
+   }
+   
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -682,163 +825,6 @@ the_exit:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseFolderDeleteObject( vdseFolder*         pFolder,
-                            const vdsChar_T*    objectName,
-                            size_t              strLength, 
-                            vdseSessionContext* pContext )
-{
-   bool lastIteration = true;
-   size_t partialLength = 0;
-   int rc;
-   vdsErrors errcode = VDS_OK;
-   enum ListErrors listErr = LIST_OK;
-   vdseObjectDescriptor* pDesc = NULL;
-   vdseHashItem* pHashItem = NULL;
-   vdseTxStatus* txStatus;
-   vdseFolder * pNextFolder, *pDeletedFolder;
-   
-   VDS_PRE_CONDITION( pFolder    != NULL );
-   VDS_PRE_CONDITION( objectName != NULL );
-   VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
-   
-   pContext->pCurrentMemObject = &pFolder->memObject;
-
-   if ( ! ValidateString( objectName, 
-                          strLength, 
-                          &partialLength, 
-                          &lastIteration ) )
-   {
-      errcode = VDS_INVALID_OBJECT_NAME;
-      goto the_exit;
-   }
-   listErr = vdseHashGet( &pFolder->hashObj, 
-                          (unsigned char *)objectName, 
-                          partialLength * sizeof(vdsChar_T),
-                          &pHashItem,
-                          pContext,
-                          NULL );
-   if ( listErr != LIST_OK )
-   {
-      if (lastIteration)
-         errcode = VDS_NO_SUCH_OBJECT;
-      else
-         errcode = VDS_NO_SUCH_FOLDER;
-      goto the_exit;
-   }
-
-   txStatus = &pHashItem->txStatus;
-   
-   if ( lastIteration )
-   {      
-      /* 
-       * If the object (to delete) transaction id is not either equal to
-       * zero or to the current transaction id, then it belongs to 
-       * another transaction - uncommitted. For the current transaction it
-       * is as if it does not exist.
-       * Similarly, if the object is already marked as destroyed... can't 
-       * remove ourselves twice...
-       */
-      if ( ! vdseTxStatusIsValid( txStatus, SET_OFFSET(pContext->pTransaction) ) 
-         || vdseTxStatusIsMarkedAsDestroyed( txStatus ) )
-      {
-         errcode = VDS_NO_SUCH_OBJECT;
-         goto the_exit;
-      }
-
-      pDesc = GET_PTR( pHashItem->dataOffset, vdseObjectDescriptor );
-      
-      /*
-       * A special case - folders cannot be deleted if they are not empty
-       * (unless all other objects are marked as deleted by the current
-       * transaction).
-       *
-       * Other objects contain data, not objects. 
-       */
-      if ( pDesc->type == VDS_FOLDER )
-      {
-         pDeletedFolder = GET_PTR( pDesc->offset, vdseFolder );
-         if ( ! vdseFolderDeletable( pDeletedFolder, pContext ) )
-         {
-            errcode = VDS_FOLDER_IS_NOT_EMPTY;
-            goto the_exit;
-         }
-      }
-      
-      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
-                         VDSE_TX_REMOVE_OBJECT,
-                         SET_OFFSET(pFolder),
-                         VDS_FOLDER,
-                         pDesc->offset,
-                         pDesc->type,
-                         pContext );
-      if ( rc != 0 )
-         goto the_exit;
-      
-      vdseTxStatusSetTx( txStatus, SET_OFFSET(pContext->pTransaction) );
-      vdseTxStatusMarkAsDestroyed( txStatus );
-      vdseUnlock( &pFolder->memObject, pContext );
-
-      return 0;
-   }
-
-   /* If we come here, this was not the last iteration, so we continue */
-
-   /* This is not the last node. This node must be a folder, otherwise... */
-   pDesc = GET_PTR( pHashItem->dataOffset, vdseObjectDescriptor );
-   if ( pDesc->type != VDS_FOLDER )
-   {
-      errcode = VDS_NO_SUCH_FOLDER;
-      goto the_exit;
-   }
-
-   /* 
-    * If the transaction id of the next folder is not either equal to
-    * zero or to the current transaction id, then it belongs to 
-    * another transaction - uncommitted. For this transaction it is
-    * as if it does not exist.
-    * Similarly, if we are marked as destroyed... can't access that folder
-    * (to have the id as ok and be marked as destroyed is a rare case - 
-    * it would require that the current transaction deleted the folder and 
-    * than tries to access it).
-    */
-   if ( ! vdseTxStatusIsValid( txStatus, SET_OFFSET(pContext->pTransaction)) 
-         || vdseTxStatusIsMarkedAsDestroyed( txStatus ) )
-   {
-      errcode = VDS_NO_SUCH_FOLDER;
-      goto the_exit;
-   }
-
-   pNextFolder = GET_PTR( pDesc->offset, vdseFolder );
-   rc = vdseLock( &pNextFolder->memObject, pContext );
-   if ( rc != 0 )
-   {
-      errcode = VDS_OBJECT_CANNOT_GET_LOCK;
-      goto the_exit;
-   }
-   
-   vdseUnlock( &pFolder->memObject, pContext );
-
-   rc = vdseFolderDeleteObject( pNextFolder,
-                                &objectName[partialLength+1],
-                                strLength - partialLength - 1,
-                                pContext );
-   return rc;
-   
-the_exit:
-
-   /* vdscSetError might have been already called by some other function */
-   if ( errcode != VDS_OK )
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
-
-   vdseUnlock( &pFolder->memObject, pContext );
-   
-   return -1;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 bool ValidateString( const vdsChar_T* objectName,
                      size_t           strLength, 
                      size_t*          pPartialLength,
@@ -899,10 +885,18 @@ int vdseFolderRelease( vdseFolder         * pFolder,
    
    if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
    {
-      txItemStatus->usageCounter--;
+      txItemStatus->parentCounter--;
       txFolderStatus->usageCounter--;
 
-      if ( (txItemStatus->usageCounter == 0) && vdseTxStatusIsRemoveCommitted(txItemStatus) )
+      /* 
+       * if parentCounter is equal to zero, the object is not open. Since 
+       * we hold the lock on the folder, no session can therefore open it
+       * or use it in an iteration. We can remove it without problems if
+       * a remove was indeed committed.
+       */
+      if ( (txItemStatus->parentCounter == 0) && 
+         (txItemStatus->usageCounter == 0) &&
+         vdseTxStatusIsRemoveCommitted(txItemStatus) )
       {
          /* 
           * Time to really delete the record!
@@ -960,6 +954,65 @@ void vdseFolderRemoveObject( vdseFolder*         pFolder,
  * The next 4 functions should only be used by the API, to create, destroy,
  * open or close a memory object.
  */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
+                              vdseSessionContext * pContext )
+{
+   vdseFolder   * parentFolder;
+   vdseTreeNode * pNode;
+   vdseTxStatus * txItemStatus, * txFolderStatus;
+   vdseObjectDescriptor * pDesc;
+   
+   VDS_PRE_CONDITION( pFolderItem != NULL );
+   VDS_PRE_CONDITION( pContext    != NULL );
+
+   pDesc = GET_PTR( pFolderItem->pHashItem->dataOffset, vdseObjectDescriptor );
+   pNode = GET_PTR( pDesc->nodeOffset, vdseTreeNode);
+   
+   parentFolder = GET_PTR( pNode->myParentOffset, vdseFolder );
+   txFolderStatus = GET_PTR( parentFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   
+   pContext->pCurrentMemObject = &parentFolder->memObject;
+
+   if ( vdseLock( &parentFolder->memObject, pContext ) == 0 )
+   {
+      txItemStatus = GET_PTR(pNode->txStatusOffset, vdseTxStatus );
+      txItemStatus->parentCounter--;
+      
+      /* 
+       * if parentCounter is equal to zero, the object is not open. Since 
+       * we hold the lock on the folder, no session can therefore open it
+       * or use it in an iteration. We can remove it without problems if
+       * a remove was indeed committed.
+       */
+      if ( (txItemStatus->parentCounter == 0) && 
+         (txItemStatus->usageCounter == 0) &&
+         vdseTxStatusIsRemoveCommitted(txItemStatus) )
+      {
+         /* 
+          * Time to really delete the record!
+          *
+          * Note: the hash array will release the memory of the hash item.
+          */
+         vdseHashDelete( &parentFolder->hashObj, 
+                         pFolderItem->pHashItem->key, 
+                         pFolderItem->pHashItem->keyLength, 
+                         pContext );
+
+         parentFolder->nodeObject.txCounter--;
+      }      
+
+      vdseUnlock( &parentFolder->memObject, pContext );
+
+      return 0;
+   }
+   
+   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_ENGINE_BUSY );
+   
+   return -1;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -1218,10 +1271,10 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseTopFolderOpenObject( vdseFolder            * pFolder,
-                             const char            * objectName,
-                             vdseObjectDescriptor ** ppDescriptor,
-                             vdseSessionContext    * pContext )
+int vdseTopFolderOpenObject( vdseFolder         * pFolder,
+                             const char         * objectName,
+                             vdseFolderItem     * pFolderItem,
+                             vdseSessionContext * pContext )
 {
    vdsErrors errcode = VDS_OK;
    size_t strLength, i;
@@ -1236,10 +1289,10 @@ int vdseTopFolderOpenObject( vdseFolder            * pFolder,
    char * lowerName = NULL;
 #endif
 
-   VDS_PRE_CONDITION( pFolder      != NULL );
-   VDS_PRE_CONDITION( ppDescriptor != NULL );
-   VDS_PRE_CONDITION( objectName   != NULL );
-   VDS_PRE_CONDITION( pContext     != NULL );
+   VDS_PRE_CONDITION( pFolder     != NULL );
+   VDS_PRE_CONDITION( pFolderItem != NULL );
+   VDS_PRE_CONDITION( objectName  != NULL );
+   VDS_PRE_CONDITION( pContext    != NULL );
 
 #if VDS_SUPPORT_i18n
    memset( &ps, 0, sizeof(mbstate_t) );
@@ -1307,7 +1360,7 @@ int vdseTopFolderOpenObject( vdseFolder            * pFolder,
       rc = vdseFolderGetObject( pFolder,
                                 &(lowerName[first]), 
                                 strLength, 
-                                ppDescriptor,
+                                pFolderItem,
                                 pContext );
       if ( rc != 0 ) goto error_handler;
    }
@@ -1340,37 +1393,6 @@ error_handler:
    if ( errcode != VDS_OK )
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
 
-   return -1;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-int vdseTopFolderCloseObject( vdseObjectDescriptor * pDescriptor,
-                              vdseSessionContext   * pContext )
-{
-   vdseFolder   * parentFolder;
-   vdseTreeNode * pNode;
-   vdseTxStatus * pStatus;
-
-   VDS_PRE_CONDITION( pDescriptor != NULL );
-   VDS_PRE_CONDITION( pContext    != NULL );
-   
-   pNode = GET_PTR( pDescriptor->nodeOffset, vdseTreeNode);
-   
-   parentFolder = (vdseFolder *) GET_PTR( pNode->myParentOffset,
-                                          vdseFolder );
-   
-   if ( vdseLock( &parentFolder->memObject, pContext ) == 0 )
-   {
-      pStatus = GET_PTR(pNode->txStatusOffset, vdseTxStatus );
-      pStatus->usageCounter--;
-      
-      vdseUnlock( &parentFolder->memObject, pContext );
-      return 0;
-   }
-   
-   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_ENGINE_BUSY );
-   
    return -1;
 }
 

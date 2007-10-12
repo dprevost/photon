@@ -51,7 +51,7 @@ typedef struct vdseFolderItem
 
 typedef struct vdseFolder
 {
-   /** Always first */
+   /** The memory object struct. */
    struct vdseMemObject memObject;
 
    /** Basic info for all leaves and branches of our tree. */
@@ -82,21 +82,21 @@ void vdseFolderFini( vdseFolder*         pFolder,
                      vdseSessionContext* pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseFolderGetObject( vdseFolder*            pFolder,
-                         const vdsChar_T*       objectName,
-                         size_t                 strLength, 
-                         vdseObjectDescriptor** ppDescriptor,
-                         vdseSessionContext*    pContext );
+int vdseFolderGetObject( vdseFolder         * pFolder,
+                         const vdsChar_T    * objectName,
+                         size_t               strLength, 
+                         vdseFolderItem     * pFolderItem,
+                         vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseFolderInsertObject( vdseFolder*         pFolder,
-                            const vdsChar_T*    objectName,
-                            const vdsChar_T*    originalName,
-                            size_t              strLength, 
-                            enum vdsObjectType  objectType,
-                            size_t              numBlocks,
-                            size_t              expectedNumOfChilds,
-                            vdseSessionContext* pContext );
+int vdseFolderInsertObject( vdseFolder         * pFolder,
+                            const vdsChar_T    * objectName,
+                            const vdsChar_T    * originalName,
+                            size_t               strLength, 
+                            enum vdsObjectType   objectType,
+                            size_t               numBlocks,
+                            size_t               expectedNumOfChilds,
+                            vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseFolderDeleteObject( vdseFolder*         pFolder,
@@ -169,14 +169,14 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
                                 vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseTopFolderOpenObject( vdseFolder            * pFolder,
-                             const char            * objectName,
-                             vdseObjectDescriptor ** ppDescriptor,
-                             vdseSessionContext    * pContext );
+int vdseTopFolderOpenObject( vdseFolder         * pFolder,
+                             const char         * objectName,
+                             vdseFolderItem     * pFolderItem,
+                             vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseTopFolderCloseObject( vdseObjectDescriptor * pDescriptor,
-                              vdseSessionContext   * pContext );
+int vdseTopFolderCloseObject( vdseFolderItem     * pDescriptor,
+                              vdseSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

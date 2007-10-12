@@ -27,7 +27,7 @@ int main()
    vdseSessionContext context;
    int errcode;
    vdseTxStatus status;
-   vdseObjectDescriptor* pDescriptor = NULL;
+   vdseFolderItem folderItem;
    
    pFolder = initFolderTest( expectedToPass, &context );
 
@@ -51,7 +51,7 @@ int main()
    errcode = vdseFolderGetObject( NULL,
                                   strCheckLow("test2"),
                                   5,
-                                  &pDescriptor,
+                                  &folderItem,
                                   &context );
    
    ERROR_EXIT( expectedToPass, NULL, ; );

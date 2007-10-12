@@ -16,7 +16,7 @@ CLEANFILES = *~ core
 
 check_PROGRAMS =                         \
                  CloseNullContext        \
-                 CloseNullDescriptor     \
+                 CloseNullItem           \
                  ClosePass               \
                  CreateNullContext       \
                  CreateNullFolder        \
@@ -49,7 +49,7 @@ check_PROGRAMS =                         \
                  GetNextNullItem         \
                  GetNextPass             \
                  GetNullContext          \
-                 GetNullDescriptor       \
+                 GetNullItem             \
                  GetNullFolder           \
                  GetNullName             \
                  GetPass                 \
@@ -70,7 +70,7 @@ check_PROGRAMS =                         \
                  InsertZeroBlocks        \
                  InsertZeroNameLength    \
                  OpenNullContext         \
-                 OpenNullDescriptor      \
+                 OpenNullItem            \
                  OpenNullFolder          \
                  OpenNullName            \
                  OpenPass                \
@@ -84,7 +84,7 @@ check_PROGRAMS =                         \
 COMMON_HEADER = folderTest.h
 
 CloseNullContext_SOURCES        = $(COMMON_HEADER) CloseNullContext.c
-CloseNullDescriptor_SOURCES     = $(COMMON_HEADER) CloseNullDescriptor.c
+CloseNullItem_SOURCES           = $(COMMON_HEADER) CloseNullItem.c
 ClosePass_SOURCES               = $(COMMON_HEADER) ClosePass.c
 CreateNullContext_SOURCES       = $(COMMON_HEADER) CreateNullContext.c
 CreateNullFolder_SOURCES        = $(COMMON_HEADER) CreateNullFolder.c
@@ -111,7 +111,7 @@ GetNextNullFolder_SOURCES       = $(COMMON_HEADER) GetNextNullFolder.c
 GetNextNullItem_SOURCES         = $(COMMON_HEADER) GetNextNullItem.c
 GetNextPass_SOURCES             = $(COMMON_HEADER) GetNextPass.c
 GetNullContext_SOURCES          = $(COMMON_HEADER) GetNullContext.c
-GetNullDescriptor_SOURCES       = $(COMMON_HEADER) GetNullDescriptor.c
+GetNullItem_SOURCES             = $(COMMON_HEADER) GetNullItem.c
 GetNullFolder_SOURCES           = $(COMMON_HEADER) GetNullFolder.c
 GetNullName_SOURCES             = $(COMMON_HEADER) GetNullName.c
 GetPass_SOURCES                 = $(COMMON_HEADER) GetPass.c
@@ -132,7 +132,7 @@ InsertPass_SOURCES              = $(COMMON_HEADER) InsertPass.c
 InsertZeroBlocks_SOURCES        = $(COMMON_HEADER) InsertZeroBlocks.c
 InsertZeroNameLength_SOURCES    = $(COMMON_HEADER) InsertZeroNameLength.c
 OpenNullContext_SOURCES         = $(COMMON_HEADER) OpenNullContext.c
-OpenNullDescriptor_SOURCES      = $(COMMON_HEADER) OpenNullDescriptor.c
+OpenNullItem_SOURCES            = $(COMMON_HEADER) OpenNullItem.c
 OpenNullFolder_SOURCES          = $(COMMON_HEADER) OpenNullFolder.c
 OpenNullName_SOURCES            = $(COMMON_HEADER) OpenNullName.c
 OpenPass_SOURCES                = $(COMMON_HEADER) OpenPass.c
@@ -149,7 +149,7 @@ TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTH
 
 TESTS =                         \
         CloseNullContext        \
-        CloseNullDescriptor     \
+        CloseNullItem           \
         ClosePass               \
         CreateNullContext       \
         CreateNullFolder        \
@@ -182,7 +182,7 @@ TESTS =                         \
         GetNextNullItem         \
         GetNextPass             \
         GetNullContext          \
-        GetNullDescriptor       \
+        GetNullItem             \
         GetNullFolder           \
         GetNullName             \
         GetPass                 \
@@ -203,7 +203,7 @@ TESTS =                         \
         InsertZeroBlocks        \
         InsertZeroNameLength    \
         OpenNullContext         \
-        OpenNullDescriptor      \
+        OpenNullItem            \
         OpenNullFolder          \
         OpenNullName            \
         OpenPass                \
@@ -216,7 +216,7 @@ TESTS =                         \
         
 XFAIL_TESTS =                         \
               CloseNullContext        \
-              CloseNullDescriptor     \
+              CloseNullItem           \
               CreateNullContext       \
               CreateNullFolder        \
               CreateNullName          \
@@ -242,7 +242,7 @@ XFAIL_TESTS =                         \
               GetNextNullFolder       \
               GetNextNullItem         \
               GetNullContext          \
-              GetNullDescriptor       \
+              GetNullItem             \
               GetNullFolder           \
               GetNullName             \
               GetZeroNameLength       \
@@ -260,7 +260,7 @@ XFAIL_TESTS =                         \
               InsertZeroBlocks        \
               InsertZeroNameLength    \
               OpenNullContext         \
-              OpenNullDescriptor      \
+              OpenNullItem            \
               OpenNullFolder          \
               OpenNullName            \
               RemoveNullContext       \

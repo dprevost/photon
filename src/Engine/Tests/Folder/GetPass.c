@@ -27,8 +27,9 @@ int main()
    vdseSessionContext context;
    int errcode;
    vdseTxStatus status;
-   vdseObjectDescriptor* pDescriptor = NULL;
-   
+   vdseFolderItem folderItem;
+   vdseObjectDescriptor * pDescriptor;
+
    pFolder = initFolderTest( expectedToPass, &context );
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
@@ -51,17 +52,18 @@ int main()
    errcode = vdseFolderGetObject( pFolder,
                                   strCheckLow("test2"),
                                   5,
-                                  &pDescriptor,
+                                  &folderItem,
                                   &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   pDescriptor = GET_PTR( folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
    if ( memcmp( pDescriptor->originalName, strCheck("Test2"), 5*sizeof(vdsChar_T) ) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    errcode = vdseFolderGetObject( pFolder,
                                   strCheckLow("test3"),
                                   5,
-                                  &pDescriptor,
+                                  &folderItem,
                                   &context );
    if ( errcode != -1 ) 
       ERROR_EXIT( expectedToPass, NULL, ; );

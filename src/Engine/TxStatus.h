@@ -64,6 +64,16 @@ typedef struct vdseTxStatus
     */
    uint32_t usageCounter;
 
+   /** 
+    * Counts access done by the parent folder. We use a different counter 
+    * for efficiency reasons - otherwise we would be forced to lock each 
+    * object in a folder when iterating on it.
+    *
+    * To repeat, this counter should only be used when the parent folder is
+    * locked.
+    */
+   uint32_t parentCounter;
+
 } vdseTxStatus;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

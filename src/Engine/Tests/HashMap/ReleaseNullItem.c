@@ -41,26 +41,26 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   errcode = vdseHashMapInsertItem( pHashMap,
-                                    (const void *) key,
-                                    6,
-                                    (const void *) data,
-                                    7,
-                                    &context );
+   errcode = vdseHashMapInsert( pHashMap,
+                                (const void *) key,
+                                6,
+                                (const void *) data,
+                                7,
+                                &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   errcode = vdseHashMapGetItem( pHashMap,
-                                 (const void *) key,
-                                 6,
-                                 &pItem,
-                                 &context );
+   errcode = vdseHashMapGet( pHashMap,
+                             (const void *) key,
+                             6,
+                             &pItem,
+                             &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   errcode = vdseHashMapReleaseItem( pHashMap,
-                                     NULL,
-                                     &context );
+   errcode = vdseHashMapRelease( pHashMap,
+                                 NULL,
+                                 &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

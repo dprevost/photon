@@ -29,6 +29,7 @@ int main()
    int errcode;
    vdseTxStatus status;
    vdseObjectDescriptor* pDescriptor = NULL;
+   vdseFolderItem folderItem;
    
    /* Create "/" */
    pFolder1 = initFolderTest( expectedToPass, &context );
@@ -84,10 +85,11 @@ fprintf( stderr, "ok 3\n" );
    errcode = vdseFolderGetObject( pFolder1,
                                   strCheckLow("test2"),
                                   5,
-                                  &pDescriptor,
+                                  &folderItem,
                                   &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );   
+   pDescriptor = GET_PTR( folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
    pFolder2 = GET_PTR( pDescriptor->offset, vdseFolder );
 fprintf( stderr, "ok 4\n" );
 
@@ -140,11 +142,12 @@ fprintf( stderr, "ok 5\n" );
    errcode = vdseFolderGetObject( pFolder1,
                                   strCheckLow("test2/test4"),
                                   11,
-                                  &pDescriptor,
+                                  &folderItem,
                                   &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );   
 
+   pDescriptor = GET_PTR( folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
    if ( memcmp( pDescriptor->originalName, strCheck("Test4"), 5*sizeof(vdsChar_T) ) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 

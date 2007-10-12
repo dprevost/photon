@@ -40,12 +40,12 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   errcode = vdseHashMapInsertItem( NULL,
-                                    (const void *) key,
-                                    6,
-                                    (const void *) data,
-                                    7,
-                                    &context );
+   errcode = vdseHashMapInsert( NULL,
+                                (const void *) key,
+                                6,
+                                (const void *) data,
+                                7,
+                                &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

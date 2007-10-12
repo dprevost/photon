@@ -40,19 +40,19 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   errcode = vdseHashMapInsertItem( pHashMap,
-                                    (const void *) key,
-                                    6,
-                                    (const void *) data,
-                                    7,
-                                    &context );
+   errcode = vdseHashMapInsert( pHashMap,
+                                (const void *) key,
+                                6,
+                                (const void *) data,
+                                7,
+                                &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   errcode = vdseHashMapDeleteItem( pHashMap,
-                                    (const void *) key,
-                                    0,
-                                    &context );
+   errcode = vdseHashMapDelete( pHashMap,
+                                (const void *) key,
+                                0,
+                                &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }
