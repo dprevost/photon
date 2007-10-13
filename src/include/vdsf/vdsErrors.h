@@ -79,6 +79,12 @@ typedef enum vdsErrors
     */
    VDS_NULL_POINTER                = 7,
 
+   /**
+    * An invalid length was provided (it will usually indicate that the
+    * length value is set to zero.
+    */
+   VDS_INVALID_LENGTH              = 8,
+   
    /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
     * 
     * Errors which might occur at initialization time or are related to 

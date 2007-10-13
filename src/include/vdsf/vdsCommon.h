@@ -105,6 +105,16 @@ typedef struct vdsFolderEntry
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+typedef struct vdsHashMapEntry
+{
+   size_t length;
+   
+   const void * data;
+
+} vdsHashMapEntry;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 #ifdef __cplusplus
 }
 #endif

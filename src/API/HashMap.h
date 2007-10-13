@@ -15,25 +15,21 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_FOLDER_H
-#define VDSA_FOLDER_H
+#ifndef VDSA_HASH_MAP_H
+#define VDSA_HASH_MAP_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "API/CommonObject.h"
-#include "Engine/Folder.h"
+#include "Engine/HashMap.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/* Forward declarations */
-//struct vdseMemoryHeader;
-//struct vdseProcess;
-//struct vdseObjectContext;
-//struct vdsProxyObject;
+BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdsaFolder
+typedef struct vdsaHashMap
 {
    vdsaObjetType type;
 
@@ -43,7 +39,7 @@ typedef struct vdsaFolder
     * This struct holds both the result of the iteration (the pointer to
     * the current vdseHashItem) and the values needed to get the next item.
     */
-   vdseFolderItem iterator;
+   vdseHashMapItem iterator;
 
    /** 
     * The bucket location in the internal array of the hash.
@@ -53,7 +49,7 @@ typedef struct vdsaFolder
     * (ptrdiff_t) to the real data of type vdseHashItem. Therefore
     * we need both pieces of information to iterate through the hash.
     */
-   size_t  bucketIterator;
+//   size_t  bucketIterator;
    
    /** 
     * The location in the list of the bucket (of the hash).
@@ -63,9 +59,9 @@ typedef struct vdsaFolder
     * (ptrdiff_t) to the real data of type vdseHashItem. Therefore
     * we need both pieces of information to iterate through the hash.
     */
-   void * pItemIterator;
+//   void * pItemIterator;
    
-} vdsaFolder;
+} vdsaHashMap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -73,7 +69,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_FOLDER_H */
+#endif /* VDSA_HASH_MAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

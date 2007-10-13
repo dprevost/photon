@@ -61,116 +61,120 @@ vdseErrErrMsgStruct vdseErrErrMsg7 =
 vdseErrErrMsgStruct vdseErrErrMsg8 =
    { 7, 67, "One of the arguments of an API function is an invalid NULL pointer." };
 
-/* VDS_PROCESS_ALREADY_INITIALIZED */
+/* VDS_INVALID_LENGTH */
 vdseErrErrMsgStruct vdseErrErrMsg9 =
+   { 8, 94, "An invalid length was provided (it will usually indicate that the length value is set to zero." };
+
+/* VDS_PROCESS_ALREADY_INITIALIZED */
+vdseErrErrMsgStruct vdseErrErrMsg10 =
    { 21, 315, "--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- Errors which might occur at initialization time or are related to the process object/project handle. --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- The process was already initialized. Was vdsInit() called for a second time?" };
 
 /* VDS_PROCESS_NOT_INITIALIZED */
-vdseErrErrMsgStruct vdseErrErrMsg10 =
+vdseErrErrMsgStruct vdseErrErrMsg11 =
    { 22, 16, "To be written..." };
 
 /* VDS_INVALID_WATCHDOG_ADDRESS */
-vdseErrErrMsgStruct vdseErrErrMsg11 =
+vdseErrErrMsgStruct vdseErrErrMsg12 =
    { 23, 66, "The watchdog address is invalid (empty string, NULL pointer, etc.)" };
 
 /* VDS_INCOMPATIBLE_VERSIONS */
-vdseErrErrMsgStruct vdseErrErrMsg12 =
+vdseErrErrMsgStruct vdseErrErrMsg13 =
    { 24, 35, "API - memory-file version mismatch." };
 
 /* VDS_SOCKET_ERROR */
-vdseErrErrMsgStruct vdseErrErrMsg13 =
+vdseErrErrMsgStruct vdseErrErrMsg14 =
    { 25, 21, "Generic socket error." };
 
 /* VDS_CONNECT_ERROR */
-vdseErrErrMsgStruct vdseErrErrMsg14 =
+vdseErrErrMsgStruct vdseErrErrMsg15 =
    { 26, 52, "Socket error when trying to connect to the watchdog." };
 
 /* VDS_SEND_ERROR */
-vdseErrErrMsgStruct vdseErrErrMsg15 =
+vdseErrErrMsgStruct vdseErrErrMsg16 =
    { 27, 59, "Socket error when trying to send a request to the watchdog." };
 
 /* VDS_RECEIVE_ERROR */
-vdseErrErrMsgStruct vdseErrErrMsg16 =
+vdseErrErrMsgStruct vdseErrErrMsg17 =
    { 28, 62, "Socket error when trying to receive a reply from the watchdog." };
 
 /* VDS_BACKSTORE_FILE_MISSING */
-vdseErrErrMsgStruct vdseErrErrMsg17 =
+vdseErrErrMsgStruct vdseErrErrMsg18 =
    { 29, 86, "The vds backstore file is missing (the name of this file is provided by the watchdog)." };
 
 /* VDS_ERROR_OPENING_VDS */
-vdseErrErrMsgStruct vdseErrErrMsg18 =
+vdseErrErrMsgStruct vdseErrErrMsg19 =
    { 30, 50, "Generic i/o error when attempting to open the vds." };
 
 /* VDS_LOGFILE_ERROR */
-vdseErrErrMsgStruct vdseErrErrMsg19 =
+vdseErrErrMsgStruct vdseErrErrMsg20 =
    { 41, 288, "--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- Errors which might be related to session objects/session handle. --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- Error accessing the directory for the log files or error opening the log file itself." };
 
 /* VDS_SESSION_CANNOT_GET_LOCK */
-vdseErrErrMsgStruct vdseErrErrMsg20 =
+vdseErrErrMsgStruct vdseErrErrMsg21 =
    { 42, 84, "Cannot get a lock on the session (a pthread_mutex or a critical section on Windows)." };
 
 /* VDS_SESSION_IS_TERMINATED */
-vdseErrErrMsgStruct vdseErrErrMsg21 =
+vdseErrErrMsgStruct vdseErrErrMsg22 =
    { 43, 97, "An attempt was made to use a session object (a session handle) after this session was terminated." };
 
 /* VDS_INVALID_OBJECT_NAME */
-vdseErrErrMsgStruct vdseErrErrMsg22 =
+vdseErrErrMsgStruct vdseErrErrMsg23 =
    { 51, 343, "--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- Errors which might be related to session objects/session handle. --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- Permitted characters for names are alphanumerics, spaces (' '), dashes ('-') and underlines ('_'). The first character must be alphanumeric." };
 
 /* VDS_NO_SUCH_OBJECT */
-vdseErrErrMsgStruct vdseErrErrMsg23 =
+vdseErrErrMsgStruct vdseErrErrMsg24 =
    { 52, 53, "The object was not found (but its folder does exist)." };
 
 /* VDS_NO_SUCH_FOLDER */
-vdseErrErrMsgStruct vdseErrErrMsg24 =
+vdseErrErrMsgStruct vdseErrErrMsg25 =
    { 53, 53, "One of the parent folder of an object does not exist." };
 
 /* VDS_OBJECT_ALREADY_PRESENT */
-vdseErrErrMsgStruct vdseErrErrMsg25 =
+vdseErrErrMsgStruct vdseErrErrMsg26 =
    { 54, 49, "Attempt to create an object which already exists." };
 
 /* VDS_IS_EMPTY */
-vdseErrErrMsgStruct vdseErrErrMsg26 =
+vdseErrErrMsgStruct vdseErrErrMsg27 =
    { 55, 37, "The object (data container) is empty." };
 
 /* VDS_WRONG_OBJECT_TYPE */
-vdseErrErrMsgStruct vdseErrErrMsg27 =
+vdseErrErrMsgStruct vdseErrErrMsg28 =
    { 56, 54, "Attempt to create an object of an unknown object type." };
 
 /* VDS_OBJECT_CANNOT_GET_LOCK */
-vdseErrErrMsgStruct vdseErrErrMsg28 =
+vdseErrErrMsgStruct vdseErrErrMsg29 =
    { 57, 163, "Cannot get lock on the object. This might be the result of either a very busy system where unused cpu cycles are rare or a lock might be held by a crashed process." };
 
 /* VDS_REACHED_THE_END */
-vdseErrErrMsgStruct vdseErrErrMsg29 =
+vdseErrErrMsgStruct vdseErrErrMsg30 =
    { 58, 71, "The search/iteration reached the end without finding a new item/record." };
 
 /* VDS_INVALID_ITERATOR */
-vdseErrErrMsgStruct vdseErrErrMsg30 =
+vdseErrErrMsgStruct vdseErrErrMsg31 =
    { 59, 58, "An invalid value was used for a vdsIteratorType parameter." };
 
 /* VDS_OBJECT_NAME_TOO_LONG */
-vdseErrErrMsgStruct vdseErrErrMsg31 =
+vdseErrErrMsgStruct vdseErrErrMsg32 =
    { 60, 164, "The name of the object is too long. The maximum length of a name cannot be more than VDS_MAX_NAME_LENGTH (or VDS_MAX_FULL_NAME_LENGTH for the fully qualified name)." };
 
 /* VDS_FOLDER_IS_NOT_EMPTY */
-vdseErrErrMsgStruct vdseErrErrMsg32 =
+vdseErrErrMsgStruct vdseErrErrMsg33 =
    { 61, 247, "You cannot delete a folder if there are still undeleted objects in it. Technical: a folder does not need to be empty to be deleted but all objects in it must be \"marked as deleted\" by the current session. This enables writing recursive deletions" };
 
 /* VDS_ITEM_ALREADY_PRESENT */
-vdseErrErrMsgStruct vdseErrErrMsg33 =
+vdseErrErrMsgStruct vdseErrErrMsg34 =
    { 62, 36, "An item with the same key was found." };
 
 /* VDS_NO_SUCH_ITEM */
-vdseErrErrMsgStruct vdseErrErrMsg34 =
+vdseErrErrMsgStruct vdseErrErrMsg35 =
    { 63, 38, "The item was not found in the hash map" };
 
 /* VDS_OBJECT_IS_DELETED */
-vdseErrErrMsgStruct vdseErrErrMsg35 =
+vdseErrErrMsgStruct vdseErrErrMsg36 =
    { 64, 109, "The object is scheduled to be deleted soon. Operations on this data container are not permitted at this time." };
 
 /* VDS_OBJECT_NOT_INITIALIZED */
-vdseErrErrMsgStruct vdseErrErrMsg36 =
+vdseErrErrMsgStruct vdseErrErrMsg37 =
    { 65, 53, "Object must be open first before you can access them." };
 
 vdseErrErrMsgStruct* vdseErrErrMsg[VDSEERR_MAX_ENTRIES] = 
@@ -211,7 +215,8 @@ vdseErrErrMsgStruct* vdseErrErrMsg[VDSEERR_MAX_ENTRIES] =
    &vdseErrErrMsg33,
    &vdseErrErrMsg34,
    &vdseErrErrMsg35,
-   &vdseErrErrMsg36
+   &vdseErrErrMsg36,
+   &vdseErrErrMsg37
 
 };
 

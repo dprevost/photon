@@ -21,7 +21,7 @@
 extern "C" {
 #endif
 
-#define VDSEERR_MAX_ENTRIES  37
+#define VDSEERR_MAX_ENTRIES  38
 #define VDSEERR_MAX_COMMENTS 349
 
 /*

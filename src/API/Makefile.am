@@ -37,20 +37,13 @@ libvdsf_la_SOURCES = api.c            \
                      Connector.h      \
                      Folder.c         \
                      Folder.h         \
+                     HashMap.c        \
+                     HashMap.h        \
                      Process.c        \
                      Process.h        \
                      Session.c        \
                      Session.h        \
                      WatchdogCommon.h
-
-#Connector.cpp    
-#   Connector.h      
-#   Folder.cpp       
-#   ProxyObject.cpp  
-#   ProxyObject.h    
-#   Queue.cpp        
-#   WatchdogCommon.h 
-#   vdsfcapi.cpp
 
 libvdsf_la_LIBADD = \
    $(top_builddir)/src/Engine/libEngine.la \

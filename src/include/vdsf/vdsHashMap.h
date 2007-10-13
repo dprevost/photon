@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -18,6 +18,8 @@
 #ifndef VDS_HASH_MAP_H
 #define VDS_HASH_MAP_H
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 #include <vdsf/vdsCommon.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -32,16 +34,34 @@ VDSF_EXPORT
 int vdsHashMapClose( VDS_HANDLE objectHandle );
 
 VDSF_EXPORT
-int vdsHashMapGetFirst( VDS_HANDLE       objectHandle,
-                        vdsFolderEntry * pEntry );
+int vdsHashMapDelete( VDS_HANDLE   objectHandle,
+                      const void * key,
+                      size_t       keyLength );
 
 VDSF_EXPORT
-int vdsHashMapGetNext( VDS_HANDLE       objectHandle,
-                       vdsFolderEntry * pEntry );
+int vdsHashMapGet( VDS_HANDLE        objectHandle,
+                   const void      * key,
+                   size_t            keyLength,
+                   vdsHashMapEntry * pEntry );
+
+VDSF_EXPORT
+int vdsHashMapGetFirst( VDS_HANDLE        objectHandle,
+                        vdsHashMapEntry * pEntry );
+
+VDSF_EXPORT
+int vdsHashMapGetNext( VDS_HANDLE        objectHandle,
+                       vdsHashMapEntry * pEntry );
+
+VDSF_EXPORT
+int vdsHashMapInsert( VDS_HANDLE   objectHandle,
+                      const void * key,
+                      size_t       keyLength,
+                      const void * data,
+                      size_t       dataLength );
 
 VDSF_EXPORT
 int vdsHashMapOpen( VDS_HANDLE   sessionHandle,
-                    const char * folderName,
+                    const char * hashMapName,
                     VDS_HANDLE * objectHandle );
 
 VDSF_EXPORT
