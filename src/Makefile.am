@@ -67,6 +67,5 @@ DIST_SUBDIRS = $(SUBDIRS)
                Java          \
                Demo          \
                Locking       \
-               CrashRecovery \
                Tests         
 

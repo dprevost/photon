@@ -39,16 +39,6 @@ static int Receive( vdsaConnector    * pConnector,
                     vdscErrorHandler * errorHandler );
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-#if 0
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-Connector::~Connector()
-{
-   Disconnect();
-}
-#endif
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdsaConnect( vdsaConnector    * pConnector,
                  const char       * address,
