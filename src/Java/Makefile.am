@@ -49,7 +49,7 @@ CLEANFILES = *~ ./org/vdsf/*~  $(top_builddir)/src/java/org/vdsf/*.class
 
 #libvdsf_jni_la_LDFLAGS = -version-info 1:0:0
 
-#libvdsf_jni_la_SOURCES = vdsf_jni.cpp
+#libvdsf_jni_la_SOURCES = vdsf_jni.c
 
 #libvdsf_jni_la_LIBADD = \
    $(top_builddir)/src/API/libvdsf.la 
