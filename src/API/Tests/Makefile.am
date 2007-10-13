@@ -19,7 +19,8 @@ SUBDIRS =              \
           Process      \
           Session      \
           CommonObject \
-          Folder       
+          Folder       \
+          HashMap      
 
 #check_PROGRAMS =                  \
                  SimpleTest1      \
