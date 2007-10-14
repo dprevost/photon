@@ -14,15 +14,33 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =                     \
-                 CloseNullHandle     \
-                 ClosePass           \
-                 CloseWrongHandle    \
-                 OpenNullName        \
-                 OpenNullObjHandle   \
-                 OpenNullSessHandle  \
-                 OpenPass            \
-                 OpenWrongSessHandle 
+check_PROGRAMS =                      \
+                 CloseNullHandle      \
+                 ClosePass            \
+                 CloseWrongHandle     \
+                 DeleteNullHandle     \
+                 DeleteNullKey        \
+                 DeletePass           \
+                 DeleteWrongHandle    \
+                 DeleteZeroLength     \
+                 GetNullEntry         \
+                 GetNullHandle        \
+                 GetNullKey           \
+                 GetPass              \
+                 GetWrongHandle       \
+                 GetZeroLength        \ 
+                 InsertNullData       \
+                 InsertNullHandle     \
+                 InsertNullKey        \
+                 InsertPass           \
+                 InsertWrongHandle    \
+                 InsertZeroDataLength \
+                 InsertZeroKeyLength  \
+                 OpenNullName         \
+                 OpenNullObjHandle    \
+                 OpenNullSessHandle   \
+                 OpenPass             \
+                 OpenWrongSessHandle  
 
 #                 GetFirstNullEntry   \
                  GetFirstNullHandle  \
@@ -34,38 +52,74 @@ check_PROGRAMS =                     \
                  GetNextPass         \
                  GetNextWrongHandle  
 
-CloseNullHandle_SOURCES     = CloseNullHandle.c
-ClosePass_SOURCES           = ClosePass.c
-CloseWrongHandle_SOURCES    = CloseWrongHandle.c
-GetFirstNullEntry_SOURCES   = GetFirstNullEntry.c
-GetFirstNullHandle_SOURCES  = GetFirstNullHandle.c
-GetFirstPass_SOURCES        = GetFirstPass.c
-GetFirstWrongHandle_SOURCES = GetFirstWrongHandle.c
-GetNextPass_SOURCES         = GetNextPass.c
-OpenNullName_SOURCES        = OpenNullName.c
-OpenNullObjHandle_SOURCES   = OpenNullObjHandle.c
-OpenNullSessHandle_SOURCES  = OpenNullSessHandle.c
-OpenPass_SOURCES            = OpenPass.c
-OpenWrongSessHandle_SOURCES = OpenWrongSessHandle.c
+CloseNullHandle_SOURCES      = CloseNullHandle.c
+ClosePass_SOURCES            = ClosePass.c
+CloseWrongHandle_SOURCES     = CloseWrongHandle.c
+DeleteNullHandle_SOURCES     = DeleteNullHandle.c
+DeleteNullKey_SOURCES        = DeleteNullKey.c
+DeletePass_SOURCES           = DeletePass.c
+DeleteWrongHandle_SOURCES    = DeleteWrongHandle.c
+DeleteZeroLength_SOURCES     = DeleteZeroLength.c
+GetNullEntry_SOURCES         = GetNullEntry.c
+GetNullHandle_SOURCES        = GetNullHandle.c
+GetNullKey_SOURCES           = GetNullKey.c
+GetPass_SOURCES              = GetPass.c
+GetWrongHandle_SOURCES       = GetWrongHandle.c
+GetZeroLength_SOURCES        = GetZeroLength.c
+GetFirstNullEntry_SOURCES    = GetFirstNullEntry.c
+GetFirstNullHandle_SOURCES   = GetFirstNullHandle.c
+GetFirstPass_SOURCES         = GetFirstPass.c
+GetFirstWrongHandle_SOURCES  = GetFirstWrongHandle.c
+GetNextPass_SOURCES          = GetNextPass.c
+InsertNullData_SOURCES       = InsertNullData.c
+InsertNullHandle_SOURCES     = InsertNullHandle.c
+InsertNullKey_SOURCES        = InsertNullKey.c
+InsertPass_SOURCES           = InsertPass.c
+InsertWrongHandle_SOURCES    = InsertWrongHandle.c
+InsertZeroDataLength_SOURCES = InsertZeroDataLength.c
+InsertZeroKeyLength_SOURCES  = InsertZeroKeyLength.c
+OpenNullName_SOURCES         = OpenNullName.c
+OpenNullObjHandle_SOURCES    = OpenNullObjHandle.c
+OpenNullSessHandle_SOURCES   = OpenNullSessHandle.c
+OpenPass_SOURCES             = OpenPass.c
+OpenWrongSessHandle_SOURCES  = OpenWrongSessHandle.c
 
-EXTRA_DIST =                        \
-             CloseNullHandle.sh     \
-             ClosePass.sh           \
-             CloseWrongHandle.sh    \
-             GetFirstNullEntry.sh   \
-             GetFirstNullHandle.sh  \
-             GetFirstPass.sh        \
-             GetFirstWrongHandle.sh \
-             GetNextNoFirst.sh      \
-             GetNextNullEntry.sh    \
-             GetNextNullHandle.sh   \
-             GetNextPass.sh         \
-             GetNextWrongHandle.sh  \
-             OpenNullName.sh        \
-             OpenNullObjHandle.sh   \
-             OpenNullSessHandle.sh  \
-             OpenPass.sh            \
-             OpenWrongSessHandle.sh 
+EXTRA_DIST =                         \
+             CloseNullHandle.sh      \
+             ClosePass.sh            \
+             CloseWrongHandle.sh     \
+             DeleteNullHandle.sh     \
+             DeleteNullKey.sh        \
+             DeletePass.sh           \
+             DeleteWrongHandle.sh    \
+             DeleteZeroLength.sh     \
+             GetNullEntry.sh         \
+             GetNullHandle.sh        \
+             GetNullKey.sh           \
+             GetPass.sh              \
+             GetWrongHandle.sh       \
+             GetZeroLength.sh        \
+             GetFirstNullEntry.sh    \
+             GetFirstNullHandle.sh   \
+             GetFirstPass.sh         \
+             GetFirstWrongHandle.sh  \
+             GetNextNoFirst.sh       \
+             GetNextNullEntry.sh     \
+             GetNextNullHandle.sh    \
+             GetNextPass.sh          \
+             GetNextWrongHandle.sh   \
+             InsertNullData.sh       \
+             InsertNullHandle.sh     \
+             InsertNullKey.sh        \
+             InsertPass.sh           \
+             InsertWrongHandle.sh    \
+             InsertZeroDataLength.sh \
+             InsertZeroKeyLength.sh  \
+             OpenNullName.sh         \
+             OpenNullObjHandle.sh    \
+             OpenNullSessHandle.sh   \
+             OpenPass.sh             \
+             OpenWrongSessHandle.sh  
 
 TESTS_ENVIRONMENT =                              \
                     tcp_port=10701               \
@@ -75,15 +129,33 @@ TESTS_ENVIRONMENT =                              \
                     verbose=1                    \
                     PYTHON=$(PYTHON)
 
-TESTS =                        \
-        CloseNullHandle.sh     \
-        ClosePass.sh           \
-        CloseWrongHandle.sh    
-#        OpenNullName.sh        \
-        OpenNullObjHandle.sh   \
-        OpenNullSessHandle.sh  \
-        OpenPass.sh            \
-        OpenWrongSessHandle.sh 
+TESTS =                         \
+        CloseNullHandle.sh      \
+        ClosePass.sh            \
+        CloseWrongHandle.sh     \
+        DeleteNullHandle.sh     \
+        DeleteNullKey.sh        \
+        DeletePass.sh           \
+        DeleteWrongHandle.sh    \
+        DeleteZeroLength.sh     \
+        GetNullEntry.sh         \
+        GetNullHandle.sh        \
+        GetNullKey.sh           \
+        GetPass.sh              \
+        GetWrongHandle.sh       \
+        GetZeroLength.sh        \ 
+        InsertNullData.sh       \
+        InsertNullHandle.sh     \
+        InsertNullKey.sh        \
+        InsertPass.sh           \
+        InsertWrongHandle.sh    \
+        InsertZeroDataLength.sh \
+        InsertZeroKeyLength.sh  \
+        OpenNullName.sh         \
+        OpenNullObjHandle.sh    \
+        OpenNullSessHandle.sh   \
+        OpenPass.sh             \
+        OpenWrongSessHandle.sh  
 
 #        GetFirstNullEntry.sh   \
         GetFirstNullHandle.sh  \
