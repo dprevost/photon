@@ -66,8 +66,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsHashMapOpen( sessionHandle,
-                            NULL,
-                            &handle );
+                             NULL,
+                             &handle );
    if ( errcode != VDS_INVALID_OBJECT_NAME )
    {
       fprintf( stderr, "err: %d\n", errcode );

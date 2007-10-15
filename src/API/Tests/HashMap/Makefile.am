@@ -23,6 +23,10 @@ check_PROGRAMS =                      \
                  DeletePass           \
                  DeleteWrongHandle    \
                  DeleteZeroLength     \
+                 FirstNullEntry       \
+                 FirstNullHandle      \
+                 FirstPass            \
+                 FirstWrongHandle     \
                  GetNullEntry         \
                  GetNullHandle        \
                  GetNullKey           \
@@ -36,21 +40,16 @@ check_PROGRAMS =                      \
                  InsertWrongHandle    \
                  InsertZeroDataLength \
                  InsertZeroKeyLength  \
+                 NextNoFirst          \
+                 NextNullEntry        \
+                 NextNullHandle       \
+                 NextPass             \
+                 NextWrongHandle      \
                  OpenNullName         \
                  OpenNullObjHandle    \
                  OpenNullSessHandle   \
                  OpenPass             \
                  OpenWrongSessHandle  
-
-#                 GetFirstNullEntry   \
-                 GetFirstNullHandle  \
-                 GetFirstPass        \
-                 GetFirstWrongHandle \
-                 GetNextNoFirst      \
-                 GetNextNullEntry    \
-                 GetNextNullHandle   \
-                 GetNextPass         \
-                 GetNextWrongHandle  
 
 CloseNullHandle_SOURCES      = CloseNullHandle.c
 ClosePass_SOURCES            = ClosePass.c
@@ -60,17 +59,16 @@ DeleteNullKey_SOURCES        = DeleteNullKey.c
 DeletePass_SOURCES           = DeletePass.c
 DeleteWrongHandle_SOURCES    = DeleteWrongHandle.c
 DeleteZeroLength_SOURCES     = DeleteZeroLength.c
+FirstNullEntry_SOURCES       = FirstNullEntry.c
+FirstNullHandle_SOURCES      = FirstNullHandle.c
+FirstPass_SOURCES            = FirstPass.c
+FirstWrongHandle_SOURCES     = FirstWrongHandle.c
 GetNullEntry_SOURCES         = GetNullEntry.c
 GetNullHandle_SOURCES        = GetNullHandle.c
 GetNullKey_SOURCES           = GetNullKey.c
 GetPass_SOURCES              = GetPass.c
 GetWrongHandle_SOURCES       = GetWrongHandle.c
 GetZeroLength_SOURCES        = GetZeroLength.c
-GetFirstNullEntry_SOURCES    = GetFirstNullEntry.c
-GetFirstNullHandle_SOURCES   = GetFirstNullHandle.c
-GetFirstPass_SOURCES         = GetFirstPass.c
-GetFirstWrongHandle_SOURCES  = GetFirstWrongHandle.c
-GetNextPass_SOURCES          = GetNextPass.c
 InsertNullData_SOURCES       = InsertNullData.c
 InsertNullHandle_SOURCES     = InsertNullHandle.c
 InsertNullKey_SOURCES        = InsertNullKey.c
@@ -78,6 +76,7 @@ InsertPass_SOURCES           = InsertPass.c
 InsertWrongHandle_SOURCES    = InsertWrongHandle.c
 InsertZeroDataLength_SOURCES = InsertZeroDataLength.c
 InsertZeroKeyLength_SOURCES  = InsertZeroKeyLength.c
+NextPass_SOURCES             = NextPass.c
 OpenNullName_SOURCES         = OpenNullName.c
 OpenNullObjHandle_SOURCES    = OpenNullObjHandle.c
 OpenNullSessHandle_SOURCES   = OpenNullSessHandle.c
@@ -93,21 +92,21 @@ EXTRA_DIST =                         \
              DeletePass.sh           \
              DeleteWrongHandle.sh    \
              DeleteZeroLength.sh     \
+             FirstNullEntry.sh       \
+             FirstNullHandle.sh      \
+             FirstPass.sh            \
+             FirstWrongHandle.sh     \
              GetNullEntry.sh         \
              GetNullHandle.sh        \
              GetNullKey.sh           \
              GetPass.sh              \
              GetWrongHandle.sh       \
              GetZeroLength.sh        \
-             GetFirstNullEntry.sh    \
-             GetFirstNullHandle.sh   \
-             GetFirstPass.sh         \
-             GetFirstWrongHandle.sh  \
-             GetNextNoFirst.sh       \
-             GetNextNullEntry.sh     \
-             GetNextNullHandle.sh    \
-             GetNextPass.sh          \
-             GetNextWrongHandle.sh   \
+             NextNoFirst.sh          \
+             NextNullEntry.sh        \
+             NextNullHandle.sh       \
+             NextPass.sh             \
+             NextWrongHandle.sh      \
              InsertNullData.sh       \
              InsertNullHandle.sh     \
              InsertNullKey.sh        \
@@ -138,6 +137,10 @@ TESTS =                         \
         DeletePass.sh           \
         DeleteWrongHandle.sh    \
         DeleteZeroLength.sh     \
+        FirstNullEntry.sh       \
+        FirstNullHandle.sh      \
+        FirstPass.sh            \
+        FirstWrongHandle.sh     \
         GetNullEntry.sh         \
         GetNullHandle.sh        \
         GetNullKey.sh           \
@@ -151,21 +154,16 @@ TESTS =                         \
         InsertWrongHandle.sh    \
         InsertZeroDataLength.sh \
         InsertZeroKeyLength.sh  \
+        NextNoFirst.sh          \
+        NextNullEntry.sh        \
+        NextNullHandle.sh       \
+        NextPass.sh             \
+        NextWrongHandle.sh      \
         OpenNullName.sh         \
         OpenNullObjHandle.sh    \
         OpenNullSessHandle.sh   \
         OpenPass.sh             \
         OpenWrongSessHandle.sh  
-
-#        GetFirstNullEntry.sh   \
-        GetFirstNullHandle.sh  \
-        GetFirstPass.sh        \
-        GetFirstWrongHandle.sh \
-        GetNextNoFirst.sh      \
-        GetNextNullEntry.sh    \
-        GetNextNullHandle.sh   \
-        GetNextPass.sh         \
-        GetNextWrongHandle.sh  
 
 XFAIL_TESTS = 
 

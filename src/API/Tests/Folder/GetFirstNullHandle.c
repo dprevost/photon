@@ -48,7 +48,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/afgfp",
+                              "/afgfnh",
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {
@@ -56,7 +56,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdsCreateObject( sessionHandle,
-                              "/afgfp/f1",
+                              "/afgfnh/f1",
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {
@@ -65,7 +65,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsFolderOpen( sessionHandle,
-                            "/afgfp",
+                            "/afgfnh",
                             &handle );
    if ( errcode != VDS_OK )
    {

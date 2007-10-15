@@ -18,7 +18,7 @@
 #include "Common/Common.h"
 #include <vdsf/vds.h>
 #include "Tests/PrintError.h"
-#include "API/Folder.h"
+#include "API/HashMap.h"
 
 const bool expectedToPass = true;
 
@@ -29,8 +29,10 @@ int main( int argc, char * argv[] )
    VDS_HANDLE handle, sessionHandle;
    int errcode;
    vdsaCommonObject object;
-   vdsFolderEntry entry;
-   
+   const char * key  = "My Key";
+   const char * data = "My Data";
+   vdsHashMapEntry entry;
+
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0, &handle );
    else
@@ -49,23 +51,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/afgnne",
-                              VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   errcode = vdsCreateObject( sessionHandle,
-                              "/afgnne/f1",
-                              VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   errcode = vdsCreateObject( sessionHandle,
-                              "/afgnne/f2",
+                              "/ahfnh",
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {
@@ -73,24 +59,38 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderOpen( sessionHandle,
-                            "/afgnne",
+   errcode = vdsCreateObject( sessionHandle,
+                              "/ahfnh/test",
+                              VDS_HASH_MAP );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsHashMapOpen( sessionHandle,
+                            "/ahfnh/test",
                             &handle );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   
-   errcode = vdsFolderGetFirst( handle, &entry );
+
+   errcode = vdsHashMapInsert( handle,
+                               key,
+                               6,
+                               data,
+                               7 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderGetNext( handle, NULL );
-   if ( errcode != VDS_NULL_POINTER )
+   errcode = vdsHashMapGetFirst( NULL,
+                                 &entry );
+   if ( errcode != VDS_NULL_HANDLE )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
