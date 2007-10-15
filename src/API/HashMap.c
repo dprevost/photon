@@ -295,9 +295,11 @@ int vdsHashMapInsert( VDS_HANDLE   objectHandle,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-int vdsHashMapOpen( VDS_HANDLE  sessionHandle,
-                   const char* folderName,
-                   VDS_HANDLE* objectHandle )
+
+int vdsHashMapOpen( VDS_HANDLE   sessionHandle,
+                    const char * folderName,
+                    size_t       nameLengthInBytes,
+                    VDS_HANDLE * objectHandle )
 {
    vdsaSession * pSession;
    vdsaHashMap * pHashMap = NULL;
@@ -315,6 +317,9 @@ int vdsHashMapOpen( VDS_HANDLE  sessionHandle,
    
    if ( objectHandle == NULL )
       return VDS_NULL_HANDLE;
+
+   if ( nameLengthInBytes == 0 )
+      return VDS_INVALID_LENGTH;
    
    *objectHandle = NULL;
    
@@ -328,7 +333,8 @@ int vdsHashMapOpen( VDS_HANDLE  sessionHandle,
 
    errcode = vdsaCommonObjectOpen( &pHashMap->object,
                                    VDS_FOLDER,
-                                   folderName );
+                                   folderName,
+                                   nameLengthInBytes );
    if ( errcode == 0 )
       *objectHandle = (VDS_HANDLE) pHashMap;
 

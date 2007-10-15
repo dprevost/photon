@@ -55,7 +55,8 @@ typedef struct vdsaCommonObject
 
 int vdsaCommonObjectOpen( vdsaCommonObject   * pObject,
                           enum vdsObjectType   objectType, 
-                          const char         * objectName );
+                          const char         * objectName,
+                          size_t               nameLengthInBytes );
 
 int vdsCommonObjectClose( vdsaCommonObject * pObject );
 

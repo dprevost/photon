@@ -47,6 +47,7 @@ int main( int argc, char * argv[] )
 
    errcode = vdsCreateObject( sessionHandle,
                               NULL,
+                              strlen("/ascnn"),
                               VDS_FOLDER );
    if ( errcode != VDS_INVALID_OBJECT_NAME )
    {

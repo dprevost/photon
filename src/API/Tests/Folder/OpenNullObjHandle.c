@@ -49,6 +49,7 @@ int main( int argc, char * argv[] )
 
    errcode = vdsCreateObject( sessionHandle,
                               "/afonoh",
+                              strlen("/afonoh"),
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {
@@ -58,6 +59,7 @@ int main( int argc, char * argv[] )
 
    errcode = vdsFolderOpen( sessionHandle,
                             "/afonoh",
+                            strlen("/afonoh"),
                             NULL );
    if ( errcode != VDS_NULL_HANDLE )
    {

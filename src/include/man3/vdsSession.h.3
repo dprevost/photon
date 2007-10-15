@@ -1,4 +1,4 @@
-.TH "vdsSession.h" 3 "11 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsSession.h" 3 "15 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,10 +20,10 @@ vdsSession.h \-
 .RI "VDSF_EXPORT int \fBvdsExitSession\fP (\fBVDS_HANDLE\fP handle)"
 .br
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsCreateObject\fP (\fBVDS_HANDLE\fP handle, const char *objectName, \fBvdsObjectType\fP objectType)"
+.RI "VDSF_EXPORT int \fBvdsCreateObject\fP (\fBVDS_HANDLE\fP handle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjectType\fP objectType)"
 .br
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsDestroyObject\fP (\fBVDS_HANDLE\fP handle, const char *objectName)"
+.RI "VDSF_EXPORT int \fBvdsDestroyObject\fP (\fBVDS_HANDLE\fP handle, const char *objectName, size_t nameLengthInBytes)"
 .br
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsCommit\fP (\fBVDS_HANDLE\fP handle)"
@@ -36,9 +36,9 @@ vdsSession.h \-
 .PP 
 .SS "VDSF_EXPORT int vdsCommit (\fBVDS_HANDLE\fP handle)"
 .PP
-.SS "VDSF_EXPORT int vdsCreateObject (\fBVDS_HANDLE\fP handle, const char * objectName, \fBvdsObjectType\fP objectType)"
+.SS "VDSF_EXPORT int vdsCreateObject (\fBVDS_HANDLE\fP handle, const char * objectName, size_t nameLengthInBytes, \fBvdsObjectType\fP objectType)"
 .PP
-.SS "VDSF_EXPORT int vdsDestroyObject (\fBVDS_HANDLE\fP handle, const char * objectName)"
+.SS "VDSF_EXPORT int vdsDestroyObject (\fBVDS_HANDLE\fP handle, const char * objectName, size_t nameLengthInBytes)"
 .PP
 .SS "VDSF_EXPORT int vdsExitSession (\fBVDS_HANDLE\fP handle)"
 .PP

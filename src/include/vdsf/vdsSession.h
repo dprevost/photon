@@ -57,13 +57,15 @@ VDSF_EXPORT
 int vdsExitSession( VDS_HANDLE handle );
    
 VDSF_EXPORT
-int vdsCreateObject( VDS_HANDLE handle,
-                     const char*   objectName,
-                     vdsObjectType objectType );
+int vdsCreateObject( VDS_HANDLE      handle,
+                     const char    * objectName,
+                     size_t          nameLengthInBytes,
+                     vdsObjectType   objectType );
    
 VDSF_EXPORT
-int vdsDestroyObject( VDS_HANDLE handle,
-                      const char* objectName );
+int vdsDestroyObject( VDS_HANDLE   handle,
+                      const char * objectName,
+                      size_t       nameLengthInBytes );
 
 VDSF_EXPORT
 int vdsCommit( VDS_HANDLE handle );

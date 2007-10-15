@@ -76,6 +76,7 @@ int vdsaCloseSession( vdsaSession* pSession );
 int vdsaSessionOpenObj( vdsaSession             * pSession,
                         enum vdsObjectType        objectType, 
                         const char              * objectName,
+                        size_t                    nameLengthInBytes,
                         struct vdsaCommonObject * pObject );
 
 int vdsaSessionCloseObj( vdsaSession             * pSession,

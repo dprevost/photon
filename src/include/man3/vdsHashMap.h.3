@@ -1,4 +1,4 @@
-.TH "vdsHashMap.h" 3 "11 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsHashMap.h" 3 "15 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,13 +16,22 @@ vdsHashMap.h \-
 .RI "VDSF_EXPORT int \fBvdsHashMapClose\fP (\fBVDS_HANDLE\fP objectHandle)"
 .br
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsHashMapGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
+.RI "VDSF_EXPORT int \fBvdsHashMapDelete\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength)"
 .br
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsHashMapGetNext\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
+.RI "VDSF_EXPORT int \fBvdsHashMapGet\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength, \fBvdsHashMapEntry\fP *pEntry)"
 .br
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsHashMapOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *folderName, \fBVDS_HANDLE\fP *objectHandle)"
+.RI "VDSF_EXPORT int \fBvdsHashMapGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsHashMapEntry\fP *pEntry)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapGetNext\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsHashMapEntry\fP *pEntry)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapInsert\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength, const void *data, size_t dataLength)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *hashMapName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP *objectHandle)"
 .br
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsHashMapStatus\fP (\fBVDS_HANDLE\fP objectHandle, size_t *numChildren)"
@@ -32,11 +41,17 @@ vdsHashMap.h \-
 .PP 
 .SS "VDSF_EXPORT int vdsHashMapClose (\fBVDS_HANDLE\fP objectHandle)"
 .PP
-.SS "VDSF_EXPORT int vdsHashMapGetFirst (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP * pEntry)"
+.SS "VDSF_EXPORT int vdsHashMapDelete (\fBVDS_HANDLE\fP objectHandle, const void * key, size_t keyLength)"
 .PP
-.SS "VDSF_EXPORT int vdsHashMapGetNext (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP * pEntry)"
+.SS "VDSF_EXPORT int vdsHashMapGet (\fBVDS_HANDLE\fP objectHandle, const void * key, size_t keyLength, \fBvdsHashMapEntry\fP * pEntry)"
 .PP
-.SS "VDSF_EXPORT int vdsHashMapOpen (\fBVDS_HANDLE\fP sessionHandle, const char * folderName, \fBVDS_HANDLE\fP * objectHandle)"
+.SS "VDSF_EXPORT int vdsHashMapGetFirst (\fBVDS_HANDLE\fP objectHandle, \fBvdsHashMapEntry\fP * pEntry)"
+.PP
+.SS "VDSF_EXPORT int vdsHashMapGetNext (\fBVDS_HANDLE\fP objectHandle, \fBvdsHashMapEntry\fP * pEntry)"
+.PP
+.SS "VDSF_EXPORT int vdsHashMapInsert (\fBVDS_HANDLE\fP objectHandle, const void * key, size_t keyLength, const void * data, size_t dataLength)"
+.PP
+.SS "VDSF_EXPORT int vdsHashMapOpen (\fBVDS_HANDLE\fP sessionHandle, const char * hashMapName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP * objectHandle)"
 .PP
 .SS "VDSF_EXPORT int vdsHashMapStatus (\fBVDS_HANDLE\fP objectHandle, size_t * numChildren)"
 .PP

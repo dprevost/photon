@@ -47,6 +47,7 @@ int main( int argc, char * argv[] )
 
    errcode = vdsCreateObject( sessionHandle,
                               "/asdnh",
+                              strlen("/asdnh"),
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {
@@ -55,7 +56,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsDestroyObject( NULL,
-                               "/asdnh" );
+                               "/asdnh",
+                               strlen("/asdnh") );
    if ( errcode != VDS_NULL_HANDLE )
    {
       fprintf( stderr, "err: %d\n", errcode );

@@ -34,7 +34,8 @@
 
 int vdsaCommonObjectOpen( vdsaCommonObject   * pObject,
                           enum vdsObjectType   objectType, 
-                          const char         * objectName )
+                          const char         * objectName,
+                          size_t               nameLengthInBytes )
 {
    int errcode = VDS_OBJECT_CANNOT_GET_LOCK;
    vdseObjectDescriptor * pDesc;
@@ -43,8 +44,8 @@ int vdsaCommonObjectOpen( vdsaCommonObject   * pObject,
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
    VDS_PRE_CONDITION( pObject->pObjectContext == NULL );
-//      return VDS_OBJECT_ALREADY_OPEN;
-   
+   VDS_PRE_CONDITION( nameLengthInBytes > 0 );
+
    if ( pObject->pSession == NULL )
       return VDS_PROCESS_NOT_INITIALIZED;
 
@@ -53,6 +54,7 @@ int vdsaCommonObjectOpen( vdsaCommonObject   * pObject,
       errcode = vdsaSessionOpenObj( pObject->pSession,
                                     objectType, 
                                     objectName,
+                                    nameLengthInBytes,
                                     pObject );
       if ( errcode == 0 )
       {

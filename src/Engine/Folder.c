@@ -1018,6 +1018,7 @@ int vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
 
 int vdseTopFolderCreateObject( vdseFolder         * pFolder,
                                const char         * objectName,
+                               size_t               nameLengthInBytes,
                                enum vdsObjectType   objectType,
                                vdseSessionContext * pContext )
 {
@@ -1044,7 +1045,7 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
    strPtr = objectName;
    strLength = mbsrtowcs( NULL, &strPtr, 0, &ps );
 #else
-   strLength = strlen( objectName );
+   strLength = nameLengthInBytes;
 #endif
 
    if ( strLength > VDS_MAX_FULL_NAME_LENGTH )
@@ -1148,6 +1149,7 @@ error_handler:
 
 int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
                                 const char         * objectName,
+                                size_t               nameLengthInBytes,
                                 vdseSessionContext * pContext )
 {
    vdsErrors errcode = VDS_OK;
@@ -1172,7 +1174,7 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
    strPtr = objectName;
    strLength = mbsrtowcs( NULL, &strPtr, 0, &ps );
 #else
-   strLength = strlen( objectName );
+   strLength = nameLengthInBytes;
 #endif
    
    if ( strLength > VDS_MAX_FULL_NAME_LENGTH )
@@ -1273,6 +1275,7 @@ error_handler:
 
 int vdseTopFolderOpenObject( vdseFolder         * pFolder,
                              const char         * objectName,
+                             size_t               nameLengthInBytes,
                              vdseFolderItem     * pFolderItem,
                              vdseSessionContext * pContext )
 {
@@ -1299,7 +1302,7 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
    strPtr = objectName;
    strLength = mbsrtowcs( NULL, &strPtr, 0, &ps );
 #else
-   strLength = strlen( objectName );
+   strLength = nameLengthInBytes;
 #endif
    
    if ( strLength > VDS_MAX_FULL_NAME_LENGTH )

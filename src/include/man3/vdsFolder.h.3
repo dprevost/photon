@@ -1,4 +1,4 @@
-.TH "vdsFolder.h" 3 "11 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsFolder.h" 3 "15 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -22,7 +22,7 @@ vdsFolder.h \-
 .RI "VDSF_EXPORT int \fBvdsFolderGetNext\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
 .br
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsFolderOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *folderName, \fBVDS_HANDLE\fP *objectHandle)"
+.RI "VDSF_EXPORT int \fBvdsFolderOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *folderName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP *objectHandle)"
 .br
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsFolderStatus\fP (\fBVDS_HANDLE\fP objectHandle, size_t *numChildren)"
@@ -36,7 +36,7 @@ vdsFolder.h \-
 .PP
 .SS "VDSF_EXPORT int vdsFolderGetNext (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP * pEntry)"
 .PP
-.SS "VDSF_EXPORT int vdsFolderOpen (\fBVDS_HANDLE\fP sessionHandle, const char * folderName, \fBVDS_HANDLE\fP * objectHandle)"
+.SS "VDSF_EXPORT int vdsFolderOpen (\fBVDS_HANDLE\fP sessionHandle, const char * folderName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP * objectHandle)"
 .PP
 .SS "VDSF_EXPORT int vdsFolderStatus (\fBVDS_HANDLE\fP objectHandle, size_t * numChildren)"
 .PP

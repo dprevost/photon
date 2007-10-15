@@ -51,6 +51,7 @@ int main( int argc, char * argv[] )
 
    errcode = vdsCreateObject( sessionHandle,
                               "/ahip",
+                              strlen("/ahip"),
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {
@@ -60,6 +61,7 @@ int main( int argc, char * argv[] )
 
    errcode = vdsCreateObject( sessionHandle,
                               "/ahip/test",
+                              strlen("/ahip/test"),
                               VDS_HASH_MAP );
    if ( errcode != VDS_OK )
    {
@@ -68,8 +70,9 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsHashMapOpen( sessionHandle,
-                            "/ahip/test",
-                            &handle );
+                             "/ahip/test",
+                             strlen("/ahip/test"),
+                             &handle );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );

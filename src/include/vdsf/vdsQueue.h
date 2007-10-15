@@ -42,6 +42,7 @@ int vdsQueueInsertItem( VDS_HANDLE   objectHandle,
 VDSF_EXPORT
 int vdsQueueOpen(  VDS_HANDLE   sessionHandle,
                    const char * queueName,
+                   size_t       nameLengthInBytes,
                    VDS_HANDLE * objectHandle );
 
 VDSF_EXPORT

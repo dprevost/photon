@@ -47,6 +47,7 @@ int main( int argc, char * argv[] )
 
    errcode = vdsCreateObject( NULL,
                               "/ascnh",
+                              strlen("/ascnh"),
                               VDS_FOLDER );
    if ( errcode != VDS_NULL_HANDLE )
    {

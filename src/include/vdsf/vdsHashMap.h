@@ -62,6 +62,7 @@ int vdsHashMapInsert( VDS_HANDLE   objectHandle,
 VDSF_EXPORT
 int vdsHashMapOpen( VDS_HANDLE   sessionHandle,
                     const char * hashMapName,
+                    size_t       nameLengthInBytes,
                     VDS_HANDLE * objectHandle );
 
 VDSF_EXPORT

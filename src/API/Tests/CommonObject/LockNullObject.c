@@ -49,6 +49,7 @@ int main( int argc, char * argv[] )
 
    errcode = vdsCreateObject( sessionHandle,
                               "/aclno",
+                              strlen("/aclno"),
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {
@@ -60,7 +61,8 @@ int main( int argc, char * argv[] )
    object.pSession = (vdsaSession *) sessionHandle;
    errcode = vdsaCommonObjectOpen( &object,
                                    VDS_FOLDER,
-                                   "/aclno" );
+                                   "/aclno",
+                                   strlen("/aclno") );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );

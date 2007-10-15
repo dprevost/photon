@@ -24,9 +24,10 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFolderOpen( VDS_HANDLE  sessionHandle,
-                   const char* folderName,
-                   VDS_HANDLE* objectHandle )
+int vdsFolderOpen( VDS_HANDLE   sessionHandle,
+                   const char * folderName,
+                   size_t       nameLengthInBytes,
+                   VDS_HANDLE * objectHandle )
 {
    vdsaSession * pSession;
    vdsaFolder * pFolder = NULL;
@@ -45,6 +46,9 @@ int vdsFolderOpen( VDS_HANDLE  sessionHandle,
    if ( objectHandle == NULL )
       return VDS_NULL_HANDLE;
    
+   if ( nameLengthInBytes == 0 )
+      return VDS_INVALID_LENGTH;
+   
    *objectHandle = NULL;
    
    pFolder = (vdsaFolder *) malloc(sizeof(vdsaFolder));
@@ -57,7 +61,8 @@ int vdsFolderOpen( VDS_HANDLE  sessionHandle,
 
    errcode = vdsaCommonObjectOpen( &pFolder->object,
                                    VDS_FOLDER,
-                                   folderName );
+                                   folderName,
+                                   nameLengthInBytes );
    if ( errcode == 0 )
       *objectHandle = (VDS_HANDLE) pFolder;
 

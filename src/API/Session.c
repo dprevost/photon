@@ -208,6 +208,7 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
    
 int vdsCreateObject( VDS_HANDLE      sessionHandle,
                      const char    * objectName,
+                     size_t          nameLengthInBytes,
                      vdsObjectType   objectType )
 {
    vdsaSession* pSession;
@@ -223,6 +224,9 @@ int vdsCreateObject( VDS_HANDLE      sessionHandle,
    if ( objectName == NULL )
       return VDS_INVALID_OBJECT_NAME;
 
+   if ( nameLengthInBytes == 0 )
+      return VDS_INVALID_LENGTH;
+   
    if ( objectType <= 0 || objectType >= VDS_LAST_OBJECT_TYPE )
       return VDS_WRONG_OBJECT_TYPE;
 
@@ -232,7 +236,8 @@ int vdsCreateObject( VDS_HANDLE      sessionHandle,
       {
          rc = vdseTopFolderCreateObject( GET_PTR( pSession->pHeader->treeMgrOffset, 
                                                   vdseFolder ),
-                                         objectName, 
+                                         objectName,
+                                         nameLengthInBytes,
                                          objectType,
                                          &pSession->context );
          if ( rc != 0 )
@@ -249,8 +254,9 @@ int vdsCreateObject( VDS_HANDLE      sessionHandle,
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsDestroyObject( VDS_HANDLE  sessionHandle,
-                      const char* objectName )
+int vdsDestroyObject( VDS_HANDLE   sessionHandle,
+                      const char * objectName,
+                      size_t       nameLengthInBytes )
 {
    vdsaSession* pSession;
    int rc = VDS_SESSION_CANNOT_GET_LOCK;
@@ -265,13 +271,17 @@ int vdsDestroyObject( VDS_HANDLE  sessionHandle,
    if ( objectName == NULL )
       return VDS_INVALID_OBJECT_NAME;
    
+   if ( nameLengthInBytes == 0 )
+      return VDS_INVALID_LENGTH;
+   
    if ( vdsaSessionLock( pSession ) == 0 )
    {
       if ( ! pSession->terminated )
       {
          rc = vdseTopFolderDestroyObject( GET_PTR( pSession->pHeader->treeMgrOffset, 
                                                    vdseFolder ),
-                                          objectName, 
+                                          objectName,
+                                          nameLengthInBytes,
                                           &pSession->context );
          if ( rc != 0 )
             rc = vdscGetLastError( &pSession->context.errorHandler );
@@ -412,10 +422,10 @@ int vdsaCloseSession( vdsaSession* pSession )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-
 int vdsaSessionOpenObj( vdsaSession             * pSession,
                         enum vdsObjectType        objectType, 
                         const char              * objectName,
+                        size_t                    nameLengthInBytes,
                         struct vdsaCommonObject * pObject )
 {
    int errcode;
@@ -429,7 +439,8 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
    {
       errcode = vdseTopFolderOpenObject( 
          GET_PTR( pSession->pHeader->treeMgrOffset, vdseFolder ),
-         objectName, 
+         objectName,
+         nameLengthInBytes,
          &pObject->folderItem,
          &pSession->context );
       if ( errcode != 0 )

@@ -160,17 +160,20 @@ VDSF_ENGINE_EXPORT
 VDSF_ENGINE_EXPORT
 int vdseTopFolderCreateObject( vdseFolder         * pFolder,
                                const char         * objectName,
+                               size_t               nameLengthInBytes,
                                enum vdsObjectType   objectType,
                                vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
                                 const char         * objectName,
+                                size_t               nameLengthInBytes,
                                 vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseTopFolderOpenObject( vdseFolder         * pFolder,
                              const char         * objectName,
+                             size_t               nameLengthInBytes,
                              vdseFolderItem     * pFolderItem,
                              vdseSessionContext * pContext );
 

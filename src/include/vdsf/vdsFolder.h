@@ -40,9 +40,10 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
                       vdsFolderEntry * pEntry );
 
 VDSF_EXPORT
-int vdsFolderOpen( VDS_HANDLE  sessionHandle,
-                   const char* folderName,
-                   VDS_HANDLE* objectHandle );
+int vdsFolderOpen( VDS_HANDLE   sessionHandle,
+                   const char * folderName,
+                   size_t       nameLengthInBytes,
+                   VDS_HANDLE * objectHandle );
 
 VDSF_EXPORT
 int vdsFolderStatus( VDS_HANDLE   objectHandle,

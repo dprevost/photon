@@ -47,6 +47,7 @@ int main( int argc, char * argv[] )
 
    errcode = vdsCreateObject( sessionHandle,
                               "/ascp",
+                              strlen("/ascp"),
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {

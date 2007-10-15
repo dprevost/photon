@@ -50,6 +50,7 @@ int main( int argc, char * argv[] )
    errcode = vdsaSessionOpenObj( (vdsaSession *) sessionHandle,
                                  VDS_FOLDER,
                                  "/asoonc",
+                                 strlen("/asoonc"),
                                  &object );
    if ( errcode != VDS_NO_SUCH_OBJECT )
    {

@@ -47,6 +47,7 @@ int main( int argc, char * argv[] )
 
    errcode = vdsCreateObject( sessionHandle,
                               "/ascwt",
+                              strlen("/ascwt"),
                               0 );
    if ( errcode != VDS_WRONG_OBJECT_TYPE )
    {

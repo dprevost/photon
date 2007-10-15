@@ -46,7 +46,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsDestroyObject( sessionHandle,
-                               "/asdnc" );
+                               "/asdnc",
+                               strlen("/asdnc") );
    if ( errcode != VDS_NO_SUCH_OBJECT )
    {
       fprintf( stderr, "err: %d\n", errcode );
