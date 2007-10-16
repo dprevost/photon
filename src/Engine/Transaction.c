@@ -78,13 +78,13 @@ void vdseTxFini( vdseTx*             pTx,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseTxAddOps( vdseTx*             pTx,
-                  vdseTxType          txType,
-                  ptrdiff_t           parentOffset, 
-                  enum vdsObjectType  parentType, 
-                  ptrdiff_t           childOffset,
-                  enum vdsObjectType  childType, 
-                  vdseSessionContext* pContext )
+int vdseTxAddOps( vdseTx             * pTx,
+                  vdseTxType           txType,
+                  ptrdiff_t            parentOffset, 
+                  vdseMemObjIdent      parentType, 
+                  ptrdiff_t            childOffset,
+                  vdseMemObjIdent      childType, 
+                  vdseSessionContext * pContext )
 {
    vdseTxOps* pOps;
    
@@ -200,7 +200,7 @@ int vdseTxCommit( vdseTx*             pTx,
       {         
       case VDSE_TX_ADD_DATA:
 
-         if ( pOps->parentType == VDS_HASH_MAP )
+         if ( pOps->parentType == VDSE_IDENT_HASH_MAP )
          {
             pHashMap = GET_PTR( pOps->parentOffset, vdseHashMap );
             pParentMemObject = &pHashMap->memObject;
@@ -209,8 +209,7 @@ int vdseTxCommit( vdseTx*             pTx,
             vdseHashMapCommitAdd( pHashMap, pOps->childOffset );
             vdseUnlock( pParentMemObject, pContext );
          }
-         /* We should not come here */
-         else if ( pOps->parentType == VDS_QUEUE )
+         else if ( pOps->parentType == VDSE_IDENT_QUEUE )
          {
             pQueue = GET_PTR( pOps->parentOffset, vdseQueue );
             pParentMemObject = &pQueue->memObject;
@@ -219,6 +218,7 @@ int vdseTxCommit( vdseTx*             pTx,
             vdseQueueCommitAdd( pQueue, pOps->childOffset );
             vdseUnlock( pParentMemObject, pContext );
          }
+         /* We should not come here */
          else
             VDS_POST_CONDITION( 0 == 1 );
 
@@ -226,17 +226,17 @@ int vdseTxCommit( vdseTx*             pTx,
 
       case VDSE_TX_ADD_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == VDS_FOLDER );
+         VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
 
          parentFolder = GET_PTR( pOps->parentOffset, vdseFolder );
 
-         if ( pOps->childType == VDS_FOLDER )
+         if ( pOps->childType == VDSE_IDENT_FOLDER )
          {
             pChildFolder = GET_PTR( pOps->childOffset, vdseFolder );
             pChildMemObject = &pChildFolder->memObject;
             pChildNode      = &pChildFolder->nodeObject;
          }
-         else if ( pOps->childType == VDS_HASH_MAP )
+         else if ( pOps->childType == VDSE_IDENT_HASH_MAP )
          {
             pHashMap = GET_PTR( pOps->childOffset, vdseHashMap );
             pChildMemObject = &pHashMap->memObject;
@@ -258,17 +258,17 @@ int vdseTxCommit( vdseTx*             pTx,
 
       case VDSE_TX_REMOVE_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == VDS_FOLDER );
+         VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
 
          parentFolder = GET_PTR( pOps->parentOffset, vdseFolder );
 
-         if ( pOps->childType == VDS_FOLDER )
+         if ( pOps->childType == VDSE_IDENT_FOLDER )
          {
             pChildFolder = GET_PTR( pOps->childOffset, vdseFolder );
             pChildMemObject = &pChildFolder->memObject;
             pChildNode      = &pChildFolder->nodeObject;
          }
-         else if ( pOps->childType == VDS_HASH_MAP )
+         else if ( pOps->childType == VDSE_IDENT_HASH_MAP )
          {
             pHashMap = GET_PTR( pOps->childOffset, vdseHashMap );
             pChildMemObject = &pHashMap->memObject;
@@ -314,15 +314,15 @@ int vdseTxCommit( vdseTx*             pTx,
              * to do is reclaim the memory (which is done in the destructor
              * of the memory object).
              */
-            if ( pOps->childType == VDS_FOLDER )
+            if ( pOps->childType == VDSE_IDENT_FOLDER )
             {
                vdseFolderFini( pChildFolder, pContext );
             }
-            else if ( pOps->childType == VDS_HASH_MAP )
+            else if ( pOps->childType == VDSE_IDENT_HASH_MAP )
             {
                vdseHashMapFini( pHashMap, pContext );
             }
-            else if ( pOps->childType == VDS_QUEUE )
+            else if ( pOps->childType == VDSE_IDENT_QUEUE )
             {
                vdseQueueFini( pQueue, pContext );
             }
@@ -334,7 +334,7 @@ int vdseTxCommit( vdseTx*             pTx,
          break;
 
       case VDSE_TX_REMOVE_DATA:
-         if ( pOps->parentType == VDS_HASH_MAP )
+         if ( pOps->parentType == VDSE_IDENT_HASH_MAP )
          {
             pHashMap = GET_PTR( pOps->parentOffset, vdseHashMap );
             pParentMemObject = &pHashMap->memObject;
@@ -345,7 +345,7 @@ int vdseTxCommit( vdseTx*             pTx,
                                      pContext );
             vdseUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == VDS_QUEUE )
+         else if ( pOps->parentType == VDSE_IDENT_QUEUE )
          {
             pQueue = GET_PTR( pOps->parentOffset, vdseQueue );
             pParentMemObject = &pQueue->memObject;
@@ -434,11 +434,11 @@ void vdseTxRollback( vdseTx*             pTx,
       pOps = (vdseTxOps*)
          ((char*)pLinkNode - offsetof( vdseTxOps, node ));
 
-      if ( pOps->parentType == VDS_FOLDER )
+      if ( pOps->parentType == VDSE_IDENT_FOLDER )
       {
          parentFolder = GET_PTR( pOps->parentOffset, vdseFolder );
 
-         if ( pOps->childType == VDS_FOLDER )
+         if ( pOps->childType == VDSE_IDENT_FOLDER )
          {
             pChildFolder = GET_PTR( pOps->childOffset, vdseFolder );
             pChildMemObject = &pChildFolder->memObject;
@@ -450,7 +450,7 @@ void vdseTxRollback( vdseTx*             pTx,
       switch( pOps->transType )
       {            
       case VDSE_TX_ADD_DATA:
-         if ( pOps->parentType == VDS_HASH_MAP )
+         if ( pOps->parentType == VDSE_IDENT_HASH_MAP )
          {
             pHashMap = GET_PTR( pOps->parentOffset, vdseHashMap );
             pParentMemObject = &pHashMap->memObject;
@@ -461,7 +461,7 @@ void vdseTxRollback( vdseTx*             pTx,
                                     pContext );
             vdseUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == VDS_QUEUE )
+         else if ( pOps->parentType == VDSE_IDENT_QUEUE )
          {
             pQueue = GET_PTR( pOps->parentOffset, vdseQueue );
             pParentMemObject = &pQueue->memObject;
@@ -480,17 +480,17 @@ void vdseTxRollback( vdseTx*             pTx,
             
       case VDSE_TX_ADD_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == VDS_FOLDER );
+         VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
 
          parentFolder = GET_PTR( pOps->parentOffset, vdseFolder );
 
-         if ( pOps->childType == VDS_FOLDER )
+         if ( pOps->childType == VDSE_IDENT_FOLDER )
          {
             pChildFolder = GET_PTR( pOps->childOffset, vdseFolder );
             pChildMemObject = &pChildFolder->memObject;
             pChildNode      = &pChildFolder->nodeObject;
          }
-         else if ( pOps->childType == VDS_HASH_MAP )
+         else if ( pOps->childType == VDSE_IDENT_HASH_MAP )
          {
             pHashMap = GET_PTR( pOps->childOffset, vdseHashMap );
             pChildMemObject = &pHashMap->memObject;
@@ -542,7 +542,7 @@ void vdseTxRollback( vdseTx*             pTx,
              * to do is reclaim the memory (which is done in the destructor
              * of the memory object).
              */
-            if ( pOps->childType == VDS_FOLDER )
+            if ( pOps->childType == VDSE_IDENT_FOLDER )
             {
                vdseFolderFini( pChildFolder, pContext );
             }
@@ -553,17 +553,17 @@ void vdseTxRollback( vdseTx*             pTx,
 
       case VDSE_TX_REMOVE_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == VDS_FOLDER );
+         VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
 
          parentFolder = GET_PTR( pOps->parentOffset, vdseFolder );
 
-         if ( pOps->childType == VDS_FOLDER )
+         if ( pOps->childType == VDSE_IDENT_FOLDER )
          {
             pChildFolder = GET_PTR( pOps->childOffset, vdseFolder );
             pChildMemObject = &pChildFolder->memObject;
             pChildNode      = &pChildFolder->nodeObject;
          }
-         else if ( pOps->childType == VDS_HASH_MAP )
+         else if ( pOps->childType == VDSE_IDENT_HASH_MAP )
          {
             pHashMap = GET_PTR( pOps->childOffset, vdseHashMap );
             pChildMemObject = &pHashMap->memObject;
@@ -589,7 +589,7 @@ void vdseTxRollback( vdseTx*             pTx,
 
       case VDSE_TX_REMOVE_DATA:
 
-         if ( pOps->parentType == VDS_HASH_MAP )
+         if ( pOps->parentType == VDSE_IDENT_HASH_MAP )
          {
             pHashMap = GET_PTR( pOps->parentOffset, vdseHashMap );
             pParentMemObject = &pHashMap->memObject;
@@ -599,7 +599,7 @@ void vdseTxRollback( vdseTx*             pTx,
                                        pOps->childOffset );
             vdseUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == VDS_QUEUE )
+         else if ( pOps->parentType == VDSE_IDENT_QUEUE )
          {
             pQueue = GET_PTR( pOps->parentOffset, vdseQueue );
             pParentMemObject = &pQueue->memObject;

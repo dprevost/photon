@@ -92,6 +92,7 @@ int vdseFolderDeleteObject( vdseFolder*         pFolder,
    vdseHashItem* pHashItem = NULL;
    vdseTxStatus* txStatus;
    vdseFolder * pNextFolder, *pDeletedFolder;
+   vdseMemObject * pMemObj;
    
    VDS_PRE_CONDITION( pFolder    != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
@@ -152,7 +153,7 @@ int vdseFolderDeleteObject( vdseFolder*         pFolder,
        *
        * Other objects contain data, not objects. 
        */
-      if ( pDesc->type == VDS_FOLDER )
+      if ( pDesc->apiType == VDS_FOLDER )
       {
          pDeletedFolder = GET_PTR( pDesc->offset, vdseFolder );
          if ( ! vdseFolderDeletable( pDeletedFolder, pContext ) )
@@ -161,13 +162,14 @@ int vdseFolderDeleteObject( vdseFolder*         pFolder,
             goto the_exit;
          }
       }
+      pMemObj = GET_PTR( pDesc->memOffset, vdseMemObject );
       
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_REMOVE_OBJECT,
                          SET_OFFSET(pFolder),
-                         VDS_FOLDER,
+                         VDSE_IDENT_FOLDER,
                          pDesc->offset,
-                         pDesc->type,
+                         pMemObj->objType,
                          pContext );
       if ( rc != 0 )
          goto the_exit;
@@ -183,7 +185,7 @@ int vdseFolderDeleteObject( vdseFolder*         pFolder,
 
    /* This is not the last node. This node must be a folder, otherwise... */
    pDesc = GET_PTR( pHashItem->dataOffset, vdseObjectDescriptor );
-   if ( pDesc->type != VDS_FOLDER )
+   if ( pDesc->apiType != VDS_FOLDER )
    {
       errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
@@ -465,7 +467,7 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
    }
    
    /* This is not the last node. This node must be a folder, otherwise... */
-   if ( pDesc->type != VDS_FOLDER )
+   if ( pDesc->apiType != VDS_FOLDER )
    {
       errcode = VDS_NO_SUCH_OBJECT;
       goto the_exit;
@@ -598,6 +600,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
    unsigned char* ptr = NULL;
    vdseFolder* pNextFolder;
    vdseTxStatus* objTxStatus;  /* txStatus of the created object */
+   vdseMemObjIdent memObjType;
    
    VDS_PRE_CONDITION( pFolder      != NULL );
    VDS_PRE_CONDITION( objectName   != NULL )
@@ -652,7 +655,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
          goto the_exit;
       }
       memset( pDesc, 0, descLength );
-      pDesc->type = objectType;
+      pDesc->apiType = objectType;
       pDesc->offset = SET_OFFSET( ptr );
       pDesc->nameLengthInBytes = partialLength * sizeof(vdsChar_T);
       memcpy( pDesc->originalName, originalName, pDesc->nameLengthInBytes );
@@ -677,12 +680,27 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
          goto the_exit;
       }
 
+      switch( objectType )
+      {
+      case VDS_FOLDER:
+         memObjType = VDSE_IDENT_FOLDER;
+         break;
+      case VDS_HASH_MAP:
+         memObjType = VDSE_IDENT_HASH_MAP;
+         break;
+      case VDS_QUEUE:
+         memObjType = VDSE_IDENT_QUEUE;
+         break;
+      default:
+         VDS_POST_CONDITION( 0 == 1 );
+      }
+      
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_ADD_OBJECT,
                          SET_OFFSET(pFolder),
-                         VDS_FOLDER,
+                         VDSE_IDENT_FOLDER,
                          pDesc->offset,
-                         pDesc->type,
+                         memObjType,
                          pContext );
       free( pDesc ); 
       pDesc = NULL;
@@ -700,12 +718,12 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
       vdseTxStatusSetTx( objTxStatus, SET_OFFSET(pContext->pTransaction) );
       
       pDesc = GET_PTR(pHashItem->dataOffset, vdseObjectDescriptor );
-      switch ( objectType )
+      switch ( memObjType )
       {
-      case VDS_QUEUE:
+      case VDSE_IDENT_QUEUE:
          break;
 
-      case VDS_FOLDER:
+      case VDSE_IDENT_FOLDER:
          rc = vdseFolderInit( (vdseFolder*)ptr,
                               SET_OFFSET(pFolder),
                               numBlocks,
@@ -716,9 +734,10 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
                               SET_OFFSET(pHashItem->key),
                               pContext );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseFolder,nodeObject);
+         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseFolder,memObject);
          break;
       
-      case VDS_HASH_MAP:
+      case VDSE_IDENT_HASH_MAP:
          rc = vdseHashMapInit( (vdseHashMap *)ptr,
                               SET_OFFSET(pFolder),
                               numBlocks,
@@ -729,6 +748,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
                               SET_OFFSET(pHashItem->key),
                               pContext );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseFolder,nodeObject);
+         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseFolder,memObject);
          break;
 
       default:
@@ -766,7 +786,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
    
    /* This is not the last node. This node must be a folder, otherwise... */
    pDesc = GET_PTR( pHashItem->dataOffset, vdseObjectDescriptor );
-   if ( pDesc->type != VDS_FOLDER )
+   if ( pDesc->apiType != VDS_FOLDER )
    {
       errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;

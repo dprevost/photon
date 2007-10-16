@@ -52,11 +52,11 @@ typedef enum vdseTxType
 
 typedef struct vdseTxOps
 {
-   vdseTxType         transType;
-   ptrdiff_t          parentOffset;  
-   enum vdsObjectType parentType;
-   ptrdiff_t          childOffset;
-   enum vdsObjectType childType;
+   vdseTxType      transType;
+   ptrdiff_t       parentOffset;  
+   vdseMemObjIdent parentType;
+   ptrdiff_t       childOffset;
+   vdseMemObjIdent childType;
 
    vdseLinkNode node;
    
@@ -82,13 +82,13 @@ typedef struct vdseTx
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-int vdseTxAddOps( vdseTx *            pTx,
-                  vdseTxType          txType,
-                  ptrdiff_t           parentOffset, 
-                  enum vdsObjectType  parentType,
-                  ptrdiff_t           childOffset,
-                  enum vdsObjectType  childType,
-                  vdseSessionContext* pContext );
+int vdseTxAddOps( vdseTx             * pTx,
+                  vdseTxType           txType,
+                  ptrdiff_t            parentOffset, 
+                  vdseMemObjIdent      parentType,
+                  ptrdiff_t            childOffset,
+                  vdseMemObjIdent      childType,
+                  vdseSessionContext * pContext );
    
 VDSF_ENGINE_EXPORT
 void vdseTxRemoveLastOps( vdseTx * pTx, vdseSessionContext* pContext );

@@ -35,7 +35,7 @@ int vdseSessionInit( vdseSession        * pSession,
    VDS_PRE_CONDITION( pApiSession != NULL );
    
    errcode = vdseMemObjectInit( &pSession->memObject, 
-                                VDSE_IDENT_CLEAN_SESSION,
+                                VDSE_IDENT_SESSION,
                                 &pSession->blockGroup,
                                 1 ); /* A single block */
    if ( errcode != VDS_OK )
@@ -92,7 +92,7 @@ void vdseSessionFini( vdseSession        * pSession,
 
    VDS_PRE_CONDITION( pSession != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pSession->memObject.objType == VDSE_IDENT_CLEAN_SESSION );
+   VDS_PRE_CONDITION( pSession->memObject.objType == VDSE_IDENT_SESSION );
    
    pContext->pCurrentMemObject = &pSession->memObject;
 

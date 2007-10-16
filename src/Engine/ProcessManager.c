@@ -31,7 +31,7 @@ int vdseProcMgrInit( vdseProcMgr        * pManager,
    VDS_PRE_CONDITION( pContext != NULL );
 
    errcode = vdseMemObjectInit( &pManager->memObject, 
-                                VDSE_IDENT_CLEANUP_MGR,
+                                VDSE_IDENT_PROCESS_MGR,
                                 &pManager->blockGroup,
                                 1 ); /* A single block */
    if ( errcode != VDS_OK )
@@ -46,20 +46,6 @@ int vdseProcMgrInit( vdseProcMgr        * pManager,
       
    return 0;
 }
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-//void vdseProcMgrReset( vdseProcMgr        * pManager,
-//                       vdseSessionContext * pContext )
-//{
-  // vdseLinkedListReset( &pManager->listOfProcesses );
-
-//   if ( vdscIsItLocked( &pManager->lock ) )
-//   {
-//      vdscReleaseProcessLock( &pManager->lock );
-  // }
-
-//}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

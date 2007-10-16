@@ -32,7 +32,7 @@ BEGIN_C_DECLS
 typedef struct vdseBlockGroup
 {
    /** Type of memory object */
-   enum ObjectIdentifier objType;
+   vdseMemObjIdent objType;
 
    /* The linked list itself */
    vdseLinkNode node;
@@ -81,9 +81,10 @@ typedef struct vdseEndBlockGroup
  * Initialize the vdseBlockGroup struct. 
  */
 VDSF_ENGINE_EXPORT
-void vdseBlockGroupInit( vdseBlockGroup* pGroup,
-                         ptrdiff_t       firstBlockOffset,
-                         size_t          numBlocks );
+void vdseBlockGroupInit( vdseBlockGroup  * pGroup,
+                         ptrdiff_t         firstBlockOffset,
+                         size_t            numBlocks,
+                         vdseMemObjIdent   objType );
 
 VDSF_ENGINE_EXPORT
 void vdseBlockGroupFini( vdseBlockGroup* pGroup );

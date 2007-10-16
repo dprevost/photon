@@ -42,7 +42,8 @@ int main()
    
    vdseBlockGroupInit( pGroup, 
                       SET_OFFSET(ptr),
-                      10 );
+                      10,
+                      VDSE_IDENT_QUEUE );
    if ( pGroup->node.nextOffset != NULL_OFFSET )
       ERROR_EXIT( expectedToPass, NULL, ; );
    if ( pGroup->node.previousOffset != NULL_OFFSET )
@@ -63,7 +64,7 @@ int main()
 
    /* A zero offset this time */
    pGroup = (vdseBlockGroup*) ptr;
-   vdseBlockGroupInit( pGroup, SET_OFFSET(ptr), 10 );
+   vdseBlockGroupInit( pGroup, SET_OFFSET(ptr), 10, VDSE_IDENT_QUEUE );
    if ( pGroup->isDeletable == false )
       ERROR_EXIT( expectedToPass, NULL, ; );
 

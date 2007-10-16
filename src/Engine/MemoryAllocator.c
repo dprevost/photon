@@ -116,8 +116,8 @@
 
 typedef struct vdseFreeBlock
 {
-    enum ObjectIdentifier identifier;
-    size_t numBlocks;
+    vdseMemObjIdent identifier;
+    size_t          numBlocks;
 } vdseFreeBlock;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -360,7 +360,7 @@ unsigned char* vdseMallocBlocks( vdseMemAlloc*       pAlloc,
    int errcode = 0;
    size_t newNumBlocks = 0;
    vdseMemBitmap* pBitmap;
-   enum ObjectIdentifier* identifier;
+   vdseMemObjIdent * identifier;
 
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pAlloc != NULL );
@@ -407,7 +407,7 @@ unsigned char* vdseMallocBlocks( vdseMemAlloc*       pAlloc,
       /* Set the first bytes to "allocated" and set the endBlock of the
        * newly allocated blocks.
        */
-      identifier = (enum ObjectIdentifier *) pNode;
+      identifier = (vdseMemObjIdent *) pNode;
       *identifier = VDSE_IDENT_ALLOCATED;
       vdseEndBlockSet( SET_OFFSET(pNode), 
                        requestedBlocks, 
@@ -443,7 +443,7 @@ void vdseFreeBlocks( vdseMemAlloc*       pAlloc,
    vdseMemBitmap* pBitmap;
    vdseEndBlockGroup* endBlock;
    bool isInLimbo;
-   enum ObjectIdentifier ident;
+   vdseMemObjIdent ident;
    vdseFreeBlock* pFreeHeader;
    
    VDS_PRE_CONDITION( pContext != NULL );

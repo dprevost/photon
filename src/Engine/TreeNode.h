@@ -38,7 +38,7 @@ typedef struct vdseObjectDescriptor
    ptrdiff_t memOffset;
    
    /** The object type as seen from the API. */
-   enum vdsObjectType type;
+   enum vdsObjectType apiType;
    
    /** 
     * The length in bytes of the name as originally entered (but stored in

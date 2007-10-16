@@ -32,7 +32,7 @@ int main()
    pObj = &pDummy->memObject;
 
    vdseMemObjectInit( pObj, 
-                      (enum ObjectIdentifier)0,
+                      (vdseMemObjIdent)0,
                       &pDummy->blockGroup,
                       4 );
                       

@@ -43,10 +43,10 @@
  */
 
 enum vdsErrors 
-vdseMemObjectInit( vdseMemObject*        pMemObj,
-                   enum ObjectIdentifier objType,
-                   vdseBlockGroup*       pGroup,
-                   size_t                numBlocks )
+vdseMemObjectInit( vdseMemObject   * pMemObj,
+                   vdseMemObjIdent   objType,
+                   vdseBlockGroup  * pGroup,
+                   size_t            numBlocks )
 {
    int errcode = 0;
    
@@ -68,7 +68,8 @@ vdseMemObjectInit( vdseMemObject*        pMemObj,
    
    vdseBlockGroupInit( pGroup,
                        SET_OFFSET(pMemObj),
-                       numBlocks );
+                       numBlocks,
+                       objType );
    
    /* Add the blockGroup to the list of groups of the memObject */
    vdseLinkedListPutFirst( &pMemObj->listBlockGroup, 
@@ -284,7 +285,10 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
    }
    if ( currentGroup != NULL )
    {
-      vdseBlockGroupInit( currentGroup, SET_OFFSET( currentGroup ), i );
+      vdseBlockGroupInit( currentGroup, 
+                          SET_OFFSET( currentGroup ), 
+                          i, 
+                          pMemObj->objType );
       /* Add the blockGroup to the list of groups of the memObject */
       vdseLinkedListPutLast( &pMemObj->listBlockGroup, &currentGroup->node );
       pMemObj->totalBlocks += i;

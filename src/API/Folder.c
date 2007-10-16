@@ -139,7 +139,7 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
          memset( pEntry, 0, sizeof( vdsFolderEntry ) );
          pDescriptor = GET_PTR( pFolder->iterator.pHashItem->dataOffset, 
                                 vdseObjectDescriptor );
-         pEntry->type = pDescriptor->type;
+         pEntry->type = pDescriptor->apiType;
 #if VDS_SUPPORT_i18n
          memset( &ps, 0, sizeof(mbstate_t) );
          name = pDescriptor->originalName;
@@ -201,7 +201,7 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
          memset( pEntry, 0, sizeof( vdsFolderEntry ) );
          pDescriptor = GET_PTR( pFolder->iterator.pHashItem->dataOffset, 
                                 vdseObjectDescriptor );
-         pEntry->type = pDescriptor->type;
+         pEntry->type = pDescriptor->apiType;
 #if VDS_SUPPORT_i18n
          memset( &ps, 0, sizeof(mbstate_t) );
          name = pDescriptor->originalName;

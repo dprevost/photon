@@ -32,7 +32,7 @@ int vdseProcessInit( vdseProcess *        pProcess,
    VDS_PRE_CONDITION( pid > 0 );
 
    errcode = vdseMemObjectInit( &pProcess->memObject, 
-                                VDSE_IDENT_CLEAN_PROCESS,
+                                VDSE_IDENT_PROCESS,
                                 &pProcess->blockGroup,
                                 1 ); /* A single block */
    if ( errcode != VDS_OK )
@@ -62,7 +62,7 @@ void vdseProcessFini( vdseProcess        * pProcess,
    
    VDS_PRE_CONDITION( pProcess != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pProcess->memObject.objType == VDSE_IDENT_CLEAN_PROCESS );
+   VDS_PRE_CONDITION( pProcess->memObject.objType == VDSE_IDENT_PROCESS );
 
    /*
     * Eliminate all sessions in the list. This is probably not needed

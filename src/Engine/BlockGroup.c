@@ -23,9 +23,10 @@
  * Note: no need to initialize the endBlock struct. It is set by the 
  * memory allocator when calling vdseMallocBlocks().
  */
-void vdseBlockGroupInit( vdseBlockGroup* pGroup,
-                         ptrdiff_t       firstBlockOffset,
-                         size_t          numBlocks )
+void vdseBlockGroupInit( vdseBlockGroup  * pGroup,
+                         ptrdiff_t         firstBlockOffset,
+                         size_t            numBlocks,
+                         vdseMemObjIdent   objType )
 {
    ptrdiff_t groupOffset;
    size_t currentLength;
@@ -36,7 +37,7 @@ void vdseBlockGroupInit( vdseBlockGroup* pGroup,
    VDS_PRE_CONDITION( numBlocks > 0 );
    
    pGroup->numBlocks = numBlocks;
-   pGroup->objType = VDSE_IDENT_PAGE_GROUP;
+   pGroup->objType = VDSE_IDENT_PAGE_GROUP & objType;
    
    vdseLinkNodeInit( &pGroup->node );
    vdseLinkedListInit( &pGroup->freeList );

@@ -42,7 +42,8 @@ int main()
    
    vdseBlockGroupInit( pGroup, 
                       SET_OFFSET(ptr),
-                      10 );
+                      10,
+                      VDSE_IDENT_QUEUE );
 
    vdseBlockGroupFini( NULL );
 

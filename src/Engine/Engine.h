@@ -133,49 +133,34 @@ typedef unsigned int transaction_T;
  * stray pointers/offsets (for debugging, if needed).
  */
 
-enum ObjectIdentifier
+typedef enum vdseMemObjIdentifier
 {
-   VDSE_IDENT_CLEAR           = 0xc1ea9001,
-   VDSE_IDENT_LIMBO           = 0xccaaffee,
    /**
-    * Special identifier - it is set by the allocator when a group of blocks
+    * Special identifiers - it is set by the allocator when a group of blocks
     * is allocated (under lock). An "allocated" group with VDSE_IDENT_LIMBO
     * is a group in limbo while the same group with VDSE_IDENT_ALLOCATED
     * is not.
     */
+   VDSE_IDENT_CLEAR           = 0xc1ea9001,
+   VDSE_IDENT_LIMBO           = 0xccaaffee,
    VDSE_IDENT_ALLOCATED       = 0xeeffaacc,
    
    VDSE_IDENT_FIRST           = 0x34220101,
    VDSE_IDENT_ALLOCATOR       = 0x34220103,
+
    VDSE_IDENT_FOLDER          = 0x34220105,
-   VDSE_IDENT_QUEUE           = 0x34220107,
    VDSE_IDENT_HASH_MAP        = 0x34220109,
-   VDSE_IDENT_OBJECT_CONTEXT  = 0x3422010a,
-   VDSE_IDENT_TRANSACTION_OPS = 0x3422010c,
-   VDSE_IDENT_QUEUE_ELEMENT   = 0x3422010e,
+   VDSE_IDENT_PROCESS         = 0x34220113,
+   VDSE_IDENT_PROCESS_MGR     = 0x3422011a,
+   VDSE_IDENT_QUEUE           = 0x34220107,
+   VDSE_IDENT_SESSION         = 0x34220115,
    VDSE_IDENT_TRANSACTION     = 0x34220111,
-   VDSE_IDENT_CLEAN_PROCESS   = 0x34220113,
-   VDSE_IDENT_CLEAN_SESSION   = 0x34220115,
-   VDSE_IDENT_HASH_LIST       = 0x34220117,
-   VDSE_IDENT_TRANSACTION_MGR = 0x34220119,
-   VDSE_IDENT_CLEANUP_MGR     = 0x3422011a,
-   VDSE_IDENT_HASH_ARRAY      = 0x3422011c,
-   VDSE_IDENT_OBJ_DESC        = 0x3422011e,
-   VDSE_IDENT_ROW_DESC        = 0x34220121,
-   VDSE_IDENT_PAGE_GROUP      = 0x34220123,
-   VDSE_IDENT_LAST            = 0x34220125,
 
-   /** 
-    * Identify a destroyed object. Special identifier used in the 
-    * destructor of the class BaseObject to identify that the 
-    * destructor was called for "this"
-    * 
-    * It might never amount to anything... but it might become
-    * useful for debugging (and it costs nothing to implement).
-    */
-   IDENT_DESTROY         = 0x4300227c   
+   VDSE_IDENT_LAST            = 0x34220125
 
-};
+} vdseMemObjIdent;
+
+#define VDSE_IDENT_PAGE_GROUP   0x80000000
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -74,7 +74,7 @@ void vdseSessionRemoveLock( struct vdseSession * pSession,
 typedef struct vdseMemObject
 {
    /** Type of memory object */
-   enum ObjectIdentifier objType;
+   vdseMemObjIdent objType;
    
    /** The lock... obviously */
    vdscProcessLock lock;
@@ -90,10 +90,10 @@ typedef struct vdseMemObject
 
 VDSF_ENGINE_EXPORT
 enum vdsErrors 
-vdseMemObjectInit( vdseMemObject*        pMemObj,
-                   enum ObjectIdentifier objType,
-                   vdseBlockGroup*       pGroup,
-                   size_t                numBlocks );
+vdseMemObjectInit( vdseMemObject   * pMemObj,
+                   vdseMemObjIdent   objType,
+                   vdseBlockGroup  * pGroup,
+                   size_t            numBlocks );
 
 VDSF_ENGINE_EXPORT
 enum vdsErrors 
