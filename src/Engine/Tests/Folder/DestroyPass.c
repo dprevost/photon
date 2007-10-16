@@ -31,6 +31,7 @@ int main()
 
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1",
+                                        strlen("Test1"),
                                         VDS_FOLDER,
                                         &context );
    if ( errcode != 0 ) 
@@ -38,6 +39,7 @@ int main()
 
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1/Test2",
+                                        strlen("Test1/Test2"),
                                         VDS_FOLDER,
                                         &context );
    if ( errcode != 0 ) 
@@ -45,6 +47,7 @@ int main()
 
    errcode = vdseTopFolderDestroyObject( pTopFolder,
                                          "Test1",
+                                         strlen("Test1"),
                                          &context );
                                          
    if ( vdscGetLastError(&context.errorHandler) != VDS_FOLDER_IS_NOT_EMPTY )
@@ -59,12 +62,14 @@ int main()
 
    errcode = vdseTopFolderDestroyObject( pTopFolder,
                                          "Test1/Test2",
+                                         strlen("Test1/Test2"),
                                          &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    errcode = vdseTopFolderDestroyObject( pTopFolder,
                                          "Test1",
+                                         strlen("Test1"),
                                          &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

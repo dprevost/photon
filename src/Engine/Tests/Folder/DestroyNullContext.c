@@ -31,6 +31,7 @@ int main()
 
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1",
+                                        strlen("Test1"),
                                         VDS_FOLDER,
                                         &context );
    if ( errcode != 0 ) 
@@ -38,6 +39,7 @@ int main()
 
    errcode = vdseTopFolderDestroyObject( pTopFolder,
                                          "Test1",
+                                         strlen("Test1"),
                                          NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

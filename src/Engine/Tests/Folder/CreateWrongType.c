@@ -31,6 +31,7 @@ int main()
 
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1",
+                                        strlen("Test1"),
                                         0,
                                         &context );
 

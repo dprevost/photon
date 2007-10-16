@@ -31,6 +31,7 @@ int main()
 
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1",
+                                        strlen("Test1"),
                                         VDS_FOLDER,
                                         &context );
    if ( errcode != 0 ) 
@@ -38,6 +39,7 @@ int main()
 
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1/Test2",
+                                        strlen("Test1/Test2"),
                                         VDS_FOLDER,
                                         &context );
    if ( errcode != 0 ) 
@@ -45,6 +47,7 @@ int main()
    
    errcode = vdseTopFolderOpenObject( pTopFolder,
                                       "Test1/Test2",
+                                      strlen("Test1/Test2"),
                                       NULL,
                                       &context );
 
