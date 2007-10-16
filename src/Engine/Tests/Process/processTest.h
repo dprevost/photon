@@ -54,7 +54,7 @@ vdseProcess * initProcessTest( bool                testIsExpectedToSucceed,
    size_t allocatedLength = VDSE_BLOCK_SIZE * 25;
 
    memset( pContext, 0, sizeof(vdseSessionContext) );
-   pContext->lockValue = 0xff;
+   pContext->pidLocker = getpid();
    
    errcode = vdseInitEngine();
    if ( errcode != 0 )

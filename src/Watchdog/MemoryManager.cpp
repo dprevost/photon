@@ -136,9 +136,6 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    pFolder->nodeObject.txStatusOffset = NULL_OFFSET;
    pFolder->nodeObject.myParentOffset = NULL_OFFSET;
 
-   /* Set this so that Hash knows where to allocate memory from */
-   pContext->pCurrentMemObject = (void *) &pFolder->memObject;
-
    listErr = vdseHashInit( &pFolder->hashObj, 
                            SET_OFFSET(&pFolder->memObject),
                            25, 

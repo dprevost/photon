@@ -114,9 +114,6 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
          goto the_exit;
       }
    
-      /* set this so that the hash knows which object it must ask for memory */
-      pContext->pCurrentMemObject = &pHashMap->memObject;
-
       /*
        * The first step is to retrieve the item.
        */
@@ -192,8 +189,6 @@ void vdseHashMapFini( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
-   
-   pContext->pCurrentMemObject = &pHashMap->memObject;
 
    vdseHashFini(       &pHashMap->hashObj, pContext );
    vdseTreeNodeFini(   &pHashMap->nodeObject );
@@ -236,7 +231,6 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
          goto the_exit;
       }
 
-      pContext->pCurrentMemObject = &pHashMap->memObject;
       listErr = vdseHashGet( &pHashMap->hashObj, 
                              (unsigned char *)pKey, 
                              keyLength,
@@ -466,7 +460,6 @@ int vdseHashMapInit( vdseHashMap        * pHashMap,
                     errcode );
       return -1;
    }
-   pContext->pCurrentMemObject = &pHashMap->memObject;
 
    vdseTreeNodeInit( &pHashMap->nodeObject,
                      SET_OFFSET(pTxStatus),
@@ -525,9 +518,6 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
          errcode = VDS_OBJECT_IS_DELETED;
          goto the_exit;
       }
-   
-      /* set this so that the hash knows which object it must ask for memory */
-      pContext->pCurrentMemObject = &pHashMap->memObject;
    
       listErr = vdseHashInsert( &pHashMap->hashObj, 
                                 (unsigned char *)pKey, 
@@ -606,8 +596,6 @@ int vdseHashMapRelease( vdseHashMap        * pHashMap,
 
    txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   pContext->pCurrentMemObject = &pHashMap->memObject;
-
    txItemStatus = &pHashItem->txStatus;
    
    if ( vdseLock( &pHashMap->memObject, pContext ) == 0 )
@@ -659,8 +647,6 @@ void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
 
    txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   pContext->pCurrentMemObject = &pHashMap->memObject;
-
    txItemStatus = &pHashItem->txStatus;
    
    txItemStatus->usageCounter--;
@@ -694,12 +680,6 @@ void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
    pHashItem = GET_PTR( itemOffset, vdseHashItem );
-
-   /*
-    * Set this so that the hash knows which object it must ask for all
-    * memory related operations.
-    */
-   pContext->pCurrentMemObject = &pHashMap->memObject;
 
    /* 
     * A new entry that isn't yet committed cannot be accessed by some

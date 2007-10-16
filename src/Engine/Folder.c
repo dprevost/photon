@@ -99,8 +99,6 @@ int vdseFolderDeleteObject( vdseFolder*         pFolder,
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( strLength > 0 );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
-   
-   pContext->pCurrentMemObject = &pFolder->memObject;
 
    if ( ! ValidateString( objectName, 
                           strLength, 
@@ -243,8 +241,6 @@ void vdseFolderFini( vdseFolder*         pFolder,
    VDS_PRE_CONDITION( pFolder  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
-   
-   pContext->pCurrentMemObject = &pFolder->memObject;
 
    vdseHashFini(       &pFolder->hashObj, pContext );
    vdseTreeNodeFini(   &pFolder->nodeObject );
@@ -410,8 +406,6 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( strLength > 0 );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
-   pContext->pCurrentMemObject = &pFolder->memObject;
-
    if ( ! ValidateString( objectName, 
                           strLength, 
                           &partialLength, 
@@ -555,7 +549,6 @@ int vdseFolderInit( vdseFolder         * pFolder,
                     errcode );
       return -1;
    }
-   pContext->pCurrentMemObject = &pFolder->memObject;
 
    vdseTreeNodeInit( &pFolder->nodeObject,
                      SET_OFFSET(pTxStatus),
@@ -611,8 +604,6 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
    VDS_PRE_CONDITION( pContext     != NULL );
    VDS_PRE_CONDITION( strLength > 0 );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
-   
-   pContext->pCurrentMemObject = &pFolder->memObject;
 
    if ( ! ValidateString( objectName, 
                           strLength, 
@@ -901,8 +892,6 @@ int vdseFolderRelease( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pContext    != NULL );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
-   pContext->pCurrentMemObject = &pFolder->memObject;
-
    txItemStatus = &pFolderItem->pHashItem->txStatus;
    txFolderStatus = GET_PTR( pFolder->nodeObject.txStatusOffset, vdseTxStatus );
    
@@ -961,8 +950,6 @@ void vdseFolderRemoveObject( vdseFolder*         pFolder,
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( nameLength > 0 );
 
-   pContext->pCurrentMemObject = &pFolder->memObject;
-
    listErr = vdseHashDelete( &pFolder->hashObj,
                              (unsigned char*)objectName,
                              nameLength * sizeof(vdsChar_T),
@@ -997,8 +984,6 @@ int vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
    parentFolder = GET_PTR( pNode->myParentOffset, vdseFolder );
    txFolderStatus = GET_PTR( parentFolder->nodeObject.txStatusOffset, vdseTxStatus );
    
-   pContext->pCurrentMemObject = &parentFolder->memObject;
-
    if ( vdseLock( &parentFolder->memObject, pContext ) == 0 )
    {
       txItemStatus = GET_PTR(pNode->txStatusOffset, vdseTxStatus );

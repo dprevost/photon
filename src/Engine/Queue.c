@@ -40,8 +40,6 @@ void vdseQueueReleaseNoLock( vdseQueue          * pQueue,
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
 
-   pContext->pCurrentMemObject = &pQueue->memObject;
-
    txItemStatus = &pQueueItem->txStatus;
    txQueueStatus = GET_PTR( pQueue->nodeObject.txStatusOffset, vdseTxStatus );
    
@@ -96,7 +94,6 @@ int vdseQueueInit( vdseQueue          * pQueue,
                     errcode );
       return -1;
    }
-   pContext->pCurrentMemObject = &pQueue->memObject;
 
    vdseTreeNodeInit( &pQueue->nodeObject,
                      SET_OFFSET(pTxStatus),
@@ -118,8 +115,6 @@ void vdseQueueFini( vdseQueue          * pQueue,
    VDS_PRE_CONDITION( pQueue   != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
-
-   pContext->pCurrentMemObject = &pQueue->memObject;
 
    vdseLinkedListFini( &pQueue->listOfElements );
    vdseTreeNodeFini(   &pQueue->nodeObject );
@@ -407,8 +402,6 @@ int vdseQueueRelease( vdseQueue          * pQueue,
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
 
-   pContext->pCurrentMemObject = &pQueue->memObject;
-
    txItemStatus = &pQueueItem->txStatus;
    txQueueStatus = GET_PTR( pQueue->nodeObject.txStatusOffset, vdseTxStatus );
    
@@ -542,10 +535,6 @@ void vdseQueueRollbackAdd( vdseQueue          * pQueue,
    pQueueItem = GET_PTR( itemOffset, vdseQueueItem );
 
    len =  pQueueItem->dataLength + offsetof( vdseQueueItem, data );
-   /*
-    * Needed ? 
-    */
-   pContext->pCurrentMemObject = &pQueue->memObject;
 
    /* 
     * A new entry that isn't yet committed cannot be accessed by some

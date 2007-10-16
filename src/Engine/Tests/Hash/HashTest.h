@@ -67,7 +67,7 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
       exit(0);
    }
    memset(pContext, 0, sizeof(vdseSessionContext) );
-   pContext->lockValue = getpid();
+   pContext->pidLocker = getpid();
    vdscInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */

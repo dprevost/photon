@@ -37,7 +37,7 @@ void initTest( bool testIsExpectedToSucceed, vdseSessionContext* pContext )
    int errcode;
    
    memset( pContext, 0, sizeof(vdseSessionContext) );
-   pContext->lockValue = getpid();
+   pContext->pidLocker = getpid();
    
    errcode = vdseInitEngine();
    if ( errcode != 0 )

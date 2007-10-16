@@ -29,7 +29,7 @@ vdswHandler::vdswHandler()
    : m_pConfig ( NULL )
 {
    memset( &m_context, 0, sizeof(vdseSessionContext) );
-   m_context.lockValue = getpid();
+   m_context.pidLocker = getpid();
    
    int errcode = vdseInitEngine();
    if ( errcode != 0 )

@@ -46,8 +46,6 @@ int vdseSessionInit( vdseSession        * pSession,
    }
    else
    {
-      pContext->pCurrentMemObject = &pSession->memObject;
-   
       vdseLinkedListInit( &pSession->listOfObjects );
 
       pTx = (vdseTx*) vdseMallocBlocks( pContext->pAllocator, 1, pContext );
@@ -94,8 +92,6 @@ void vdseSessionFini( vdseSession        * pSession,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pSession->memObject.objType == VDSE_IDENT_SESSION );
    
-   pContext->pCurrentMemObject = &pSession->memObject;
-
    /*
     * Eliminate all objects in the list. This is probably not needed
     * as we will release the blocks of memory to the allocator as the

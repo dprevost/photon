@@ -120,7 +120,7 @@ int vdseLock( vdseMemObject*      pMemObj,
       vdseSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
 
    return vdscTryAcquireProcessLock ( &pMemObj->lock,
-                                      pContext->lockValue,
+                                      pContext->pidLocker,
                                       LOCK_TIMEOUT );
 }
 

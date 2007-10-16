@@ -74,7 +74,7 @@ int vdsaProcessInit( vdsaProcess *process, const char  *wdAddress )
       return VDS_INTERNAL_ERROR;
    
    memset( &context, 0, sizeof context );
-   context.lockValue = getpid();
+   context.pidLocker = getpid();
    vdscInitErrorHandler( &context.errorHandler );
    
    if ( g_protectionIsNeeded )
@@ -169,7 +169,7 @@ void vdsaProcessFini( vdsaProcess * process )
    if ( process->pHeader == NULL ) return;
 
    memset( &context, 0, sizeof context );
-   context.lockValue = getpid();
+   context.pidLocker = getpid();
    context.pAllocator = GET_PTR( process->pHeader->allocatorOffset, void );
    vdscInitErrorHandler( &context.errorHandler );
 

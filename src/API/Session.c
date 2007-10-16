@@ -52,7 +52,7 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
    pSession->type = VDSA_SESSION;
    pSession->context.pLogFile = NULL;
 
-   pSession->context.lockValue = getpid();
+   pSession->context.pidLocker = getpid();
    vdscInitErrorHandler( &pSession->context.errorHandler );
 
    /*

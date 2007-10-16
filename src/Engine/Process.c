@@ -42,7 +42,6 @@ int vdseProcessInit( vdseProcess *        pProcess,
                     errcode );
       return -1;
    }
-   pContext->pCurrentMemObject = &pProcess->memObject;
 
    pProcess->pid = pid;
    pProcess->processIsTerminating = false;
