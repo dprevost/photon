@@ -564,7 +564,10 @@ int vdseFolderInit( vdseFolder         * pFolder,
                      parentOffset,
                      keyOffset );
 
-   listErr = vdseHashInit( &pFolder->hashObj, expectedNumOfChilds, pContext );
+   listErr = vdseHashInit( &pFolder->hashObj,
+                           SET_OFFSET(&pFolder->memObject),
+                           expectedNumOfChilds, 
+                           pContext );
    if ( listErr != LIST_OK )
    {
       if ( listErr == LIST_NO_MEMORY )

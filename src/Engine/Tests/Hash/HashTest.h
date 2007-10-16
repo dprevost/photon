@@ -27,6 +27,7 @@
 #include "Tests/PrintError.h"
 
 vdscErrMsgHandle g_vdsErrorHandle;
+ptrdiff_t g_memObjOffset = NULL_OFFSET;
 
 typedef struct vdstObjDummy
 {
@@ -102,7 +103,7 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
          exit(1);
       exit(0);
    }
-   pContext->pCurrentMemObject = pDummy;
+   g_memObjOffset = SET_OFFSET(&pDummy->memObject);
    
    /*
     * We do not initialize hash - otherwise we would not be able

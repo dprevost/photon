@@ -200,10 +200,10 @@ vdseFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
    pFolder->nodeObject.txStatusOffset = NULL_OFFSET;
    pFolder->nodeObject.myParentOffset = NULL_OFFSET;
 
-   /* Set this so that Hash knows where to allocate memory from */
-   pContext->pCurrentMemObject = (void *) &pFolder->memObject;
-
-   errcode = vdseHashInit( &pFolder->hashObj, 25, pContext );
+   errcode = vdseHashInit( &pFolder->hashObj, 
+                           SET_OFFSET(&pFolder->memObject),
+                           25, 
+                           pContext );
    if ( errcode != 0 )
    {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );

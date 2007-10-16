@@ -139,7 +139,10 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    /* Set this so that Hash knows where to allocate memory from */
    pContext->pCurrentMemObject = (void *) &pFolder->memObject;
 
-   listErr = vdseHashInit( &pFolder->hashObj, 25, pContext );
+   listErr = vdseHashInit( &pFolder->hashObj, 
+                           SET_OFFSET(&pFolder->memObject),
+                           25, 
+                           pContext );
    if ( listErr != LIST_OK )
    {
       if ( listErr == LIST_NO_MEMORY )

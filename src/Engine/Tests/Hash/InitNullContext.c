@@ -30,7 +30,7 @@ int main()
    
    pHash = initHashTest( expectedToPass, &context );
    
-   listErr = vdseHashInit( pHash, 100, NULL );
+   listErr = vdseHashInit( pHash, g_memObjOffset, 100, NULL );
       
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

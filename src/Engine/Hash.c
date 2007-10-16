@@ -107,7 +107,7 @@ static size_t g_arrayLengths[PRIME_NUMBER_ARRAY_LENGTH] =
    0x0000000080000000 - 1,
    0x0000000100000000 - 5,
    0x0000000200000000 - 9,
-   0x0000000400000000 - 41,
+   0x0000000400000000 - 41,Hash.c
    0x0000000800000000 - 31,
    0x0000001000000000 - 5,
    0x0000002000000000 - 25,
@@ -280,6 +280,7 @@ vdseHashDelete( vdseHash*            pHash,
    bool keyFound = false;
    vdseHashItem* pItem, *previousItem = NULL;
    ptrdiff_t nextOffset;
+   vdseMemObject * pMemObject;
    
    VDS_PRE_CONDITION( pHash != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -290,6 +291,8 @@ vdseHashDelete( vdseHash*            pHash,
    SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
+   pMemObject = GET_PTR( pHash->memObjOffset, vdseMemObject );
+
    keyFound = findKey( pHash, pArray, pKey, keyLength, 
                        &pItem, &previousItem, &bucket );
    if ( keyFound )   
@@ -297,7 +300,7 @@ vdseHashDelete( vdseHash*            pHash,
       nextOffset = pItem->nextItem;
       
       pHash->totalDataSizeInBytes -= pItem->dataLength;
-      vdseFree( (vdseMemObject*)pContext->pCurrentMemObject, 
+      vdseFree( pMemObject, 
                 (unsigned char*)pItem, 
                 calculateItemLength(pItem->keyLength,pItem->dataLength),
                 pContext );
@@ -326,6 +329,7 @@ void vdseHashEmpty( vdseHash*           pHash,
    ptrdiff_t* pArray, currentOffset, nextOffset;
    size_t i;
    vdseHashItem* pItem;
+   vdseMemObject * pMemObject;
    
    VDS_PRE_CONDITION( pHash != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -333,6 +337,8 @@ void vdseHashEmpty( vdseHash*           pHash,
    
    SET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
+
+   pMemObject = GET_PTR( pHash->memObjOffset, vdseMemObject );
 
    for ( i = 0; i < g_arrayLengths[pHash->lengthIndex]; ++i )
    {
@@ -343,7 +349,7 @@ void vdseHashEmpty( vdseHash*           pHash,
          pItem = GET_PTR( currentOffset, vdseHashItem );
          nextOffset = pItem->nextItem;
          
-         vdseFree( (vdseMemObject*)pContext->pCurrentMemObject, 
+         vdseFree( pMemObject, 
                    (unsigned char*) pItem, 
                    calculateItemLength(pItem->keyLength,pItem->dataLength), 
                    pContext );
@@ -368,19 +374,22 @@ void vdseHashFini( vdseHash*           pHash,
                    vdseSessionContext* pContext )
 {
    ptrdiff_t* pArray;
-
+   vdseMemObject * pMemObject;
+   
    VDS_PRE_CONDITION( pHash != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
    vdseHashEmpty( pHash, pContext );
 
+   pMemObject = GET_PTR( pHash->memObjOffset, vdseMemObject );
+
    /* EmptyList deallocates the rows but not the main array of */
    /* RowDescriptor* */
    if ( pHash->arrayOffset != NULL_OFFSET )
    {
       pArray = GET_PTR( pHash->arrayOffset, ptrdiff_t );
-      vdseFree( (vdseMemObject*)pContext->pCurrentMemObject, 
+      vdseFree( pMemObject, 
                 (unsigned char*) pArray,
                 g_arrayLengths[pHash->lengthIndex]*sizeof(ptrdiff_t),
                 pContext );
@@ -536,6 +545,7 @@ vdseHashGetNext( vdseHash*  pHash,
 
 enum ListErrors 
 vdseHashInit( vdseHash           * pHash,
+              ptrdiff_t            memObjOffset,
               size_t               reservedSize, 
               vdseSessionContext * pContext )
 {
@@ -543,6 +553,7 @@ vdseHashInit( vdseHash           * pHash,
    size_t len, numBuckets;
    ptrdiff_t* ptr;
    unsigned int i;
+   vdseMemObject * pMemObject;
    
    VDS_PRE_CONDITION( pHash != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -551,6 +562,7 @@ vdseHashInit( vdseHash           * pHash,
    pHash->totalDataSizeInBytes = 0;
    pHash->enumResize = VDSE_HASH_NO_RESIZE;
    
+   pMemObject = GET_PTR( memObjOffset, vdseMemObject );
    /*
     * reservedSize... In real life what it means is that we cannot shrink 
     * the array to a point where we would need to increase it in order
@@ -577,7 +589,7 @@ vdseHashInit( vdseHash           * pHash,
    len = g_arrayLengths[pHash->lengthIndex] * sizeof(ptrdiff_t);
    
    ptr = (ptrdiff_t*) 
-      vdseMalloc( (vdseMemObject*)pContext->pCurrentMemObject, 
+      vdseMalloc( pMemObject, 
                   len, 
                   pContext );
    if ( ptr == NULL )
@@ -589,6 +601,7 @@ vdseHashInit( vdseHash           * pHash,
       
       pHash->arrayOffset = SET_OFFSET( ptr );
       pHash->initialized = VDSE_HASH_SIGNATURE;
+      pHash->memObjOffset = memObjOffset;
    }
    
    return errCode;
@@ -610,6 +623,7 @@ vdseHashInsert( vdseHash            * pHash,
    bool   keyFound = false;
    vdseHashItem* pItem, *previousItem = NULL;
    size_t itemLength;
+   vdseMemObject * pMemObject;
    
    VDS_PRE_CONDITION( pHash     != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
@@ -630,11 +644,13 @@ vdseHashInsert( vdseHash            * pHash,
    if ( keyFound )
       return LIST_KEY_FOUND;
 
+   pMemObject = GET_PTR( pHash->memObjOffset, vdseMemObject );
+   
    /* The whole item is allocated in one step, header+data, to minimize */
    /* overheads of the memory allocator */
    itemLength = calculateItemLength( keyLength, dataLength );
    pItem = (vdseHashItem*) 
-      vdseMalloc( (vdseMemObject*)pContext->pCurrentMemObject, 
+      vdseMalloc( pMemObject, 
                   itemLength,
                   pContext );
    if ( pItem == NULL ) return LIST_NO_MEMORY;
@@ -675,6 +691,7 @@ vdseHashResize( vdseHash*           pHash,
    size_t len, i;
    ptrdiff_t* pArray, currentOffset, nextOffset, newBucket, newOffset;
    vdseHashItem* pItem, *pNewItem;
+   vdseMemObject * pMemObject;
   
    VDS_PRE_CONDITION( pHash != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -686,6 +703,8 @@ vdseHashResize( vdseHash*           pHash,
    if ( pHash->enumResize == VDSE_HASH_NO_RESIZE )
       return LIST_OK;
 
+   pMemObject = GET_PTR( pHash->memObjOffset, vdseMemObject );
+
    if ( pHash->enumResize == VDSE_HASH_TIME_TO_GROW )
       newIndexLength = pHash->lengthIndex + 1;
    else
@@ -694,7 +713,7 @@ vdseHashResize( vdseHash*           pHash,
    len = g_arrayLengths[newIndexLength] * sizeof(ptrdiff_t);
    
    ptr = (ptrdiff_t*) 
-      vdseMalloc( (vdseMemObject*)pContext->pCurrentMemObject, 
+      vdseMalloc( pMemObject, 
                   len, 
                   pContext );
    if ( ptr == NULL )
@@ -741,7 +760,7 @@ vdseHashResize( vdseHash*           pHash,
    pHash->lengthIndex = newIndexLength;
    pHash->arrayOffset = SET_OFFSET( ptr );
 
-   vdseFree( (vdseMemObject*)pContext->pCurrentMemObject,
+   vdseFree( pMemObject,
              (unsigned char*)pArray,
              len, 
              pContext );

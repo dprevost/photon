@@ -475,7 +475,10 @@ int vdseHashMapInit( vdseHashMap        * pHashMap,
                      parentOffset,
                      keyOffset );
 
-   listErr = vdseHashInit( &pHashMap->hashObj, expectedNumOfItems, pContext );
+   listErr = vdseHashInit( &pHashMap->hashObj, 
+                           SET_OFFSET(&pHashMap->memObject),
+                           expectedNumOfItems, 
+                           pContext );
    if ( listErr != LIST_OK )
    {
       if ( listErr == LIST_NO_MEMORY )

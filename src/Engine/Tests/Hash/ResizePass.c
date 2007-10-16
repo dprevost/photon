@@ -38,7 +38,7 @@ int main()
    pHash = initHashTest( expectedToPass,
                          &context );
    
-   listErr = vdseHashInit( pHash, 10, &context );
+   listErr = vdseHashInit( pHash, g_memObjOffset, 10, &context );
    if ( listErr != LIST_OK )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    

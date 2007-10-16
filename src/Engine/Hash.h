@@ -82,6 +82,9 @@ typedef enum vdseHashResizeEnum
 
 typedef struct vdseHash
 {
+   /** offset of the memory object we need to use for allocating memory. */
+   ptrdiff_t memObjOffset;
+   
    /** Offset to an array of offsets to vdseHashItem objects */
    ptrdiff_t    arrayOffset; 
    
@@ -123,11 +126,6 @@ void vdseHashFini( vdseHash           * pHash,
                    vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT 
-enum ListErrors vdseHashInit( vdseHash           * pHash,
-                              size_t               reservedSize, 
-                              vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT 
 enum ListErrors vdseHashGet( vdseHash            * pHash,
                              const unsigned char * pkey,
                              size_t                keyLength,
@@ -146,6 +144,12 @@ enum ListErrors vdseHashGetNext( vdseHash  * pHash,
                                  ptrdiff_t   previousOffset,
                                  size_t    * pNextBucket, 
                                  ptrdiff_t * pNextItemOffset );
+
+VDSF_ENGINE_EXPORT 
+enum ListErrors vdseHashInit( vdseHash           * pHash,
+                              ptrdiff_t            memObjOffset,
+                              size_t               reservedSize, 
+                              vdseSessionContext * pContext );
 
 /*
  * ppNewItem is used to access the original name of 
