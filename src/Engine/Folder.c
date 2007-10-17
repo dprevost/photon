@@ -23,16 +23,16 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static 
-bool ValidateString( const vdsChar_T* objectName,
-                     size_t           strLength, 
-                     size_t*          pPartialLength,
-                     bool*            pLastIteration );
+bool vdseValidateString( const vdsChar_T * objectName,
+                         size_t            strLength, 
+                         size_t          * pPartialLength,
+                         bool            * pLastIteration );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static
-bool vdseFolderDeletable( vdseFolder*         pFolder,
-                          vdseSessionContext* pContext )
+bool vdseFolderDeletable( vdseFolder         * pFolder,
+                          vdseSessionContext * pContext )
 {
    enum ListErrors listErr;
    size_t bucket, previousBucket;
@@ -43,7 +43,6 @@ bool vdseFolderDeletable( vdseFolder*         pFolder,
    /* The easy case */
    if ( pFolder->hashObj.numberOfItems == 0 )
       return true;
-   
    
    /*
     * We loop on all the hash items until either:
@@ -78,10 +77,10 @@ bool vdseFolderDeletable( vdseFolder*         pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseFolderDeleteObject( vdseFolder*         pFolder,
-                            const vdsChar_T*    objectName,
-                            size_t              strLength, 
-                            vdseSessionContext* pContext )
+int vdseFolderDeleteObject( vdseFolder         * pFolder,
+                            const vdsChar_T    * objectName,
+                            size_t               strLength, 
+                            vdseSessionContext * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0;
@@ -100,7 +99,7 @@ int vdseFolderDeleteObject( vdseFolder*         pFolder,
    VDS_PRE_CONDITION( strLength > 0 );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
-   if ( ! ValidateString( objectName, 
+   if ( ! vdseValidateString( objectName, 
                           strLength, 
                           &partialLength, 
                           &lastIteration ) )
@@ -235,8 +234,8 @@ the_exit:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseFolderFini( vdseFolder*         pFolder,
-                     vdseSessionContext* pContext )
+void vdseFolderFini( vdseFolder         * pFolder,
+                     vdseSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pFolder  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -382,6 +381,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// ici
 
 int vdseFolderGetObject( vdseFolder         * pFolder,
                          const vdsChar_T    * objectName,
@@ -406,7 +406,7 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( strLength > 0 );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
-   if ( ! ValidateString( objectName, 
+   if ( ! vdseValidateString( objectName, 
                           strLength, 
                           &partialLength, 
                           &lastIteration ) )
@@ -576,14 +576,14 @@ int vdseFolderInit( vdseFolder         * pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseFolderInsertObject( vdseFolder*         pFolder,
-                            const vdsChar_T*    objectName,
-                            const vdsChar_T*    originalName,
-                            size_t              strLength, 
-                            enum vdsObjectType  objectType,
-                            size_t              numBlocks,
-                            size_t              expectedNumOfChilds,
-                            vdseSessionContext* pContext )
+int vdseFolderInsertObject( vdseFolder         * pFolder,
+                            const vdsChar_T    * objectName,
+                            const vdsChar_T    * originalName,
+                            size_t               strLength, 
+                            enum vdsObjectType   objectType,
+                            size_t               numBlocks,
+                            size_t               expectedNumOfChilds,
+                            vdseSessionContext * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0;
@@ -605,7 +605,7 @@ int vdseFolderInsertObject( vdseFolder*         pFolder,
    VDS_PRE_CONDITION( strLength > 0 );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
-   if ( ! ValidateString( objectName, 
+   if ( ! vdseValidateString( objectName, 
                           strLength, 
                           &partialLength, 
                           &lastIteration ) )
@@ -839,48 +839,6 @@ the_exit:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool ValidateString( const vdsChar_T* objectName,
-                     size_t           strLength, 
-                     size_t*          pPartialLength,
-                     bool*            pLastIteration )
-{
-   size_t i;
-   *pLastIteration = true;
-   
-   /* The first char is always special - it cannot be '/' */
-   if ( ! vds_isalnum( (int) objectName[0] )  )
-   {
-      return false;
-   }
-   
-   for ( i = 1; i < strLength; ++i )
-   {
-      if ( objectName[i] == VDS_SLASH || objectName[i] == VDS_BACKSLASH )
-      {
-         *pLastIteration = false;
-         /* Strip the last character if it is a separator (in other words */
-         /* we keep lastIteration to true - we have found the end of the */
-         /* "path". */
-         if ( i == (strLength-1) )
-            *pLastIteration = true;
-         break;
-      }
-      if ( !( vds_isalnum( (int) objectName[i] ) 
-              || (objectName[i] == VDS_SPACE) 
-              || (objectName[i] == VDS_UNDERSCORE) 
-              || (objectName[i] == VDS_HYPHEN) ) ) 
-      {
-         return false;
-      }
-   }
-   *pPartialLength = i;
-
-   return true;
-}
-
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 int vdseFolderRelease( vdseFolder         * pFolder,
                        vdseFolderItem     * pFolderItem,
                        vdseSessionContext * pContext )
@@ -938,10 +896,10 @@ int vdseFolderRelease( vdseFolder         * pFolder,
 /* 
  * lock on the folder is the responsability of the caller.
  */
-void vdseFolderRemoveObject( vdseFolder*         pFolder,
-                             const vdsChar_T*    objectName,
-                             size_t              nameLength,
-                             vdseSessionContext* pContext )
+void vdseFolderRemoveObject( vdseFolder         * pFolder,
+                             const vdsChar_T    * objectName,
+                             size_t               nameLength,
+                             vdseSessionContext * pContext )
 {
    enum ListErrors listErr;
    
@@ -1405,6 +1363,47 @@ error_handler:
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
 
    return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+bool vdseValidateString( const vdsChar_T * objectName,
+                         size_t            strLength, 
+                         size_t          * pPartialLength,
+                         bool            * pLastIteration )
+{
+   size_t i;
+   *pLastIteration = true;
+   
+   /* The first char is always special - it cannot be '/' */
+   if ( ! vds_isalnum( (int) objectName[0] )  )
+   {
+      return false;
+   }
+   
+   for ( i = 1; i < strLength; ++i )
+   {
+      if ( objectName[i] == VDS_SLASH || objectName[i] == VDS_BACKSLASH )
+      {
+         *pLastIteration = false;
+         /* Strip the last character if it is a separator (in other words */
+         /* we keep lastIteration to true - we have found the end of the */
+         /* "path". */
+         if ( i == (strLength-1) )
+            *pLastIteration = true;
+         break;
+      }
+      if ( !( vds_isalnum( (int) objectName[i] ) 
+              || (objectName[i] == VDS_SPACE) 
+              || (objectName[i] == VDS_UNDERSCORE) 
+              || (objectName[i] == VDS_HYPHEN) ) ) 
+      {
+         return false;
+      }
+   }
+   *pPartialLength = i;
+
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -14,39 +14,42 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =                \
-                 FiniNullGroup  \
-                 FiniPass       \
-                 InitNullGroup  \
-                 InitNullOffset \
-                 InitPass       \
+check_PROGRAMS =                 \
+                 FiniNullGroup   \
+                 FiniPass        \
+                 InitInvalidType \
+                 InitNullGroup   \
+                 InitNullOffset  \
+                 InitPass        \
                  InitZeroPages   
 
-FiniNullGroup_SOURCES  = FiniNullGroup.c
-FiniPass_SOURCES       = FiniPass.c
-InitNullGroup_SOURCES  = InitNullGroup.c
-InitNullOffset_SOURCES = InitNullOffset.c
-InitPass_SOURCES       = InitPass.c
-InitZeroPages_SOURCES  = InitZeroPages.c
+FiniNullGroup_SOURCES   = FiniNullGroup.c
+FiniPass_SOURCES        = FiniPass.c
+InitInvalidType_SOURCES = InitInvalidType.c
+InitNullGroup_SOURCES   = InitNullGroup.c
+InitNullOffset_SOURCES  = InitNullOffset.c
+InitPass_SOURCES        = InitPass.c
+InitZeroPages_SOURCES   = InitZeroPages.c
 
 EXTRA_DIST =         
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
+TESTS =                 \
+        FiniNullGroup   \
+        FiniPass        \
+        InitInvalidType \
+        InitNullGroup   \
+        InitNullOffset  \
+        InitPass        \
+        InitZeroPages   
 
-TESTS =                \
-        FiniNullGroup  \
-        FiniPass       \
-        InitNullGroup  \
-        InitNullOffset \
-        InitPass       \
-        InitZeroPages  
-
-XFAIL_TESTS =                \
-              FiniNullGroup  \
-              InitNullGroup  \
-              InitNullOffset \
-              InitZeroPages  
+XFAIL_TESTS =                 \
+              FiniNullGroup   \
+              InitInvalidType \
+              InitNullGroup   \
+              InitNullOffset  \
+              InitZeroPages   
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la

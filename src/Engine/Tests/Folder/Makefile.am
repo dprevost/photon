@@ -28,6 +28,7 @@ check_PROGRAMS =                         \
                  DeleteNullFolder        \
                  DeleteNullName          \
                  DeletePass              \
+                 DeleteWrongObjType      \
                  DeleteZeroNameLength    \
                  DestroyNullContext      \
                  DestroyNullFolder       \
@@ -37,10 +38,13 @@ check_PROGRAMS =                         \
                  FiniNullContext         \
                  FiniNullFolder          \
                  FiniPass                \
+                 FiniWrongObjType        \
+                 GetFirstEmpty           \
                  GetFirstNullContext     \
                  GetFirstNullFolder      \
                  GetFirstNullItem        \
                  GetFirstPass            \
+                 GetFirstWrongObjType    \
                  GetInvalidSig           \
                  GetNextItemNullHashItem \
                  GetNextItemNullOffset   \
@@ -48,6 +52,7 @@ check_PROGRAMS =                         \
                  GetNextNullFolder       \
                  GetNextNullItem         \
                  GetNextPass             \
+                 GetNextWrongObjType     \
                  GetNullContext          \
                  GetNullItem             \
                  GetNullFolder           \
@@ -91,6 +96,13 @@ CreateNullFolder_SOURCES        = $(COMMON_HEADER) CreateNullFolder.c
 CreateNullName_SOURCES          = $(COMMON_HEADER) CreateNullName.c
 CreatePass_SOURCES              = $(COMMON_HEADER) CreatePass.c
 CreateWrongType_SOURCES         = $(COMMON_HEADER) CreateWrongType.c
+DeleteInvalidSig_SOURCES        = $(COMMON_HEADER) DeleteInvalidSig.c
+DeleteNullContext_SOURCES       = $(COMMON_HEADER) DeleteNullContext.c
+DeleteNullFolder_SOURCES        = $(COMMON_HEADER) DeleteNullFolder.c
+DeleteNullName_SOURCES          = $(COMMON_HEADER) DeleteNullName.c
+DeletePass_SOURCES              = $(COMMON_HEADER) DeletePass.c
+DeleteWrongObjType_SOURCES      = $(COMMON_HEADER) DeleteWrongObjType.c
+DeleteZeroNameLength_SOURCES    = $(COMMON_HEADER) DeleteZeroNameLength.c
 DestroyNullContext_SOURCES      = $(COMMON_HEADER) DestroyNullContext.c
 DestroyNullFolder_SOURCES       = $(COMMON_HEADER) DestroyNullFolder.c
 DestroyNullName_SOURCES         = $(COMMON_HEADER) DestroyNullName.c
@@ -99,10 +111,13 @@ FiniInvalidSig_SOURCES          = $(COMMON_HEADER) FiniInvalidSig.c
 FiniNullContext_SOURCES         = $(COMMON_HEADER) FiniNullContext.c
 FiniNullFolder_SOURCES          = $(COMMON_HEADER) FiniNullFolder.c
 FiniPass_SOURCES                = $(COMMON_HEADER) FiniPass.c
+FiniWrongObjType_SOURCES        = $(COMMON_HEADER) FiniWrongObjType.c
+GetFirstEmpty_SOURCES           = $(COMMON_HEADER) GetFirstEmpty.c
 GetFirstNullContext_SOURCES     = $(COMMON_HEADER) GetFirstNullContext.c
 GetFirstNullFolder_SOURCES      = $(COMMON_HEADER) GetFirstNullFolder.c
 GetFirstNullItem_SOURCES        = $(COMMON_HEADER) GetFirstNullItem.c
 GetFirstPass_SOURCES            = $(COMMON_HEADER) GetFirstPass.c
+GetFirstWrongObjType_SOURCES    = $(COMMON_HEADER) GetFirstWrongObjType.c
 GetInvalidSig_SOURCES           = $(COMMON_HEADER) GetInvalidSig.c
 GetNextItemNullHashItem_SOURCES = $(COMMON_HEADER) GetNextItemNullHashItem.c
 GetNextItemNullOffset_SOURCES   = $(COMMON_HEADER) GetNextItemNullOffset.c
@@ -110,6 +125,7 @@ GetNextNullContext_SOURCES      = $(COMMON_HEADER) GetNextNullContext.c
 GetNextNullFolder_SOURCES       = $(COMMON_HEADER) GetNextNullFolder.c
 GetNextNullItem_SOURCES         = $(COMMON_HEADER) GetNextNullItem.c
 GetNextPass_SOURCES             = $(COMMON_HEADER) GetNextPass.c
+GetNextWrongObjType_SOURCES     = $(COMMON_HEADER) GetNextWrongObjType.c
 GetNullContext_SOURCES          = $(COMMON_HEADER) GetNullContext.c
 GetNullItem_SOURCES             = $(COMMON_HEADER) GetNullItem.c
 GetNullFolder_SOURCES           = $(COMMON_HEADER) GetNullFolder.c
@@ -161,6 +177,7 @@ TESTS =                         \
         DeleteNullFolder        \
         DeleteNullName          \
         DeletePass              \
+        DeleteWrongObjType      \
         DeleteZeroNameLength    \
         DestroyNullContext      \
         DestroyNullFolder       \
@@ -170,10 +187,13 @@ TESTS =                         \
         FiniNullContext         \
         FiniNullFolder          \
         FiniPass                \
+        FiniWrongObjType        \
+        GetFirstEmpty           \
         GetFirstNullContext     \
         GetFirstNullFolder      \
         GetFirstNullItem        \
         GetFirstPass            \
+        GetFirstWrongObjType    \
         GetInvalidSig           \
         GetNextItemNullHashItem \
         GetNextItemNullOffset   \
@@ -181,6 +201,7 @@ TESTS =                         \
         GetNextNullFolder       \
         GetNextNullItem         \
         GetNextPass             \
+        GetNextWrongObjType     \
         GetNullContext          \
         GetNullItem             \
         GetNullFolder           \
@@ -225,6 +246,7 @@ XFAIL_TESTS =                         \
               DeleteNullContext       \
               DeleteNullFolder        \
               DeleteNullName          \
+              DeleteWrongObjType      \
               DeleteZeroNameLength    \
               DestroyNullContext      \
               DestroyNullFolder       \
@@ -232,15 +254,19 @@ XFAIL_TESTS =                         \
               FiniInvalidSig          \
               FiniNullContext         \
               FiniNullFolder          \
+              FiniWrongObjType        \
+              GetFirstEmpty           \
               GetFirstNullContext     \
               GetFirstNullFolder      \
               GetFirstNullItem        \
+              GetFirstWrongObjType    \
               GetInvalidSig           \
               GetNextItemNullHashItem \
               GetNextItemNullOffset   \
               GetNextNullContext      \
               GetNextNullFolder       \
               GetNextNullItem         \
+              GetNextWrongObjType     \
               GetNullContext          \
               GetNullItem             \
               GetNullFolder           \

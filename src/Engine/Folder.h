@@ -20,11 +20,11 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine.h"
-#include "MemoryObject.h"
-#include "TreeNode.h"
-#include "BlockGroup.h"
-#include "Hash.h"
+#include "Engine/Engine.h"
+#include "Engine/MemoryObject.h"
+#include "Engine/TreeNode.h"
+#include "Engine/BlockGroup.h"
+#include "Engine/Hash.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -66,54 +66,16 @@ typedef struct vdseFolder
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT
-int vdseFolderInit( vdseFolder         * pFolder,
-                    ptrdiff_t            parentOffset,
-                    size_t               numberOfBlocks,
-                    size_t               expectedNumOfChilds,
-                    vdseTxStatus       * pTxStatus,
-                    size_t               origNameLength,
-                    vdsChar_T          * origName,
-                    ptrdiff_t            keyOffset,
-                    vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseFolderFini( vdseFolder*         pFolder,
-                     vdseSessionContext* pContext );
-
-VDSF_ENGINE_EXPORT
-int vdseFolderGetObject( vdseFolder         * pFolder,
-                         const vdsChar_T    * objectName,
-                         size_t               strLength, 
-                         vdseFolderItem     * pFolderItem,
-                         vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
-int vdseFolderInsertObject( vdseFolder         * pFolder,
+int vdseFolderDeleteObject( vdseFolder         * pFolder,
                             const vdsChar_T    * objectName,
-                            const vdsChar_T    * originalName,
                             size_t               strLength, 
-                            enum vdsObjectType   objectType,
-                            size_t               numBlocks,
-                            size_t               expectedNumOfChilds,
                             vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
-int vdseFolderDeleteObject( vdseFolder*         pFolder,
-                            const vdsChar_T*    objectName,
-                            size_t              strLength, 
-                            vdseSessionContext* pContext );
                             
-/** 
- * This function does the actual removal of the entry in the list of the
- * folder object (once there are no pending transactions, no sessions
- * have this object open, etc...).
- */
 VDSF_ENGINE_EXPORT
-void vdseFolderRemoveObject( vdseFolder*         pFolder,
-                             const vdsChar_T*    objectName,
-                             size_t              nameLength,
-                             vdseSessionContext* pContext );
+void vdseFolderFini( vdseFolder         * pFolder,
+                     vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseFolderGetFirst( vdseFolder         * pFolder,
@@ -126,9 +88,48 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
                        vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
+int vdseFolderGetObject( vdseFolder         * pFolder,
+                         const vdsChar_T    * objectName,
+                         size_t               strLength, 
+                         vdseFolderItem     * pFolderItem,
+                         vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+int vdseFolderInit( vdseFolder         * pFolder,
+                    ptrdiff_t            parentOffset,
+                    size_t               numberOfBlocks,
+                    size_t               expectedNumOfChilds,
+                    vdseTxStatus       * pTxStatus,
+                    size_t               origNameLength,
+                    vdsChar_T          * origName,
+                    ptrdiff_t            keyOffset,
+                    vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+int vdseFolderInsertObject( vdseFolder         * pFolder,
+                            const vdsChar_T    * objectName,
+                            const vdsChar_T    * originalName,
+                            size_t               strLength, 
+                            enum vdsObjectType   objectType,
+                            size_t               numBlocks,
+                            size_t               expectedNumOfChilds,
+                            vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
 int vdseFolderRelease( vdseFolder         * pFolder,
                        vdseFolderItem     * pItem,
                        vdseSessionContext * pContext );
+
+/** 
+ * This function does the actual removal of the entry in the list of the
+ * folder object (once there are no pending transactions, no sessions
+ * have this object open, etc...).
+ */
+VDSF_ENGINE_EXPORT
+void vdseFolderRemoveObject( vdseFolder         * pFolder,
+                             const vdsChar_T    * objectName,
+                             size_t               nameLength,
+                             vdseSessionContext * pContext );
 
 #if 0
 
@@ -144,11 +145,6 @@ vdsErrors vdseFolderRollbackDestroy( vdseFolder*         pFolder,
                           ptrdiff_t       childOffset,
                            vdseSessionContext* pContext );
 
-   
-VDSF_ENGINE_EXPORT
-   bool vdseFolderSelfTest( vdseFolder*         pFolder,
-                          vdseMemAlloc* pAlloc );
-   
 #endif
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -156,6 +152,10 @@ VDSF_ENGINE_EXPORT
  * The next 4 functions should only be used by the API, to create, destroy,
  * open or close a memory object.
  */
+
+VDSF_ENGINE_EXPORT
+int vdseTopFolderCloseObject( vdseFolderItem     * pDescriptor,
+                              vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseTopFolderCreateObject( vdseFolder         * pFolder,
@@ -176,10 +176,6 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
                              size_t               nameLengthInBytes,
                              vdseFolderItem     * pFolderItem,
                              vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
-int vdseTopFolderCloseObject( vdseFolderItem     * pDescriptor,
-                              vdseSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

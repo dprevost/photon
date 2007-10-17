@@ -18,10 +18,10 @@
 #ifndef VDSE_BLOCK_GROUP_H
 #define VDSE_BLOCK_GROUP_H
 
-#include "Engine.h"
-#include "MemBitmap.h"
-#include "LinkNode.h"
-#include "LinkedList.h"
+#include "Engine/Engine.h"
+#include "Engine/MemBitmap.h"
+#include "Engine/LinkNode.h"
+#include "Engine/LinkedList.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -51,6 +51,8 @@ typedef struct vdseBlockGroup
    
 } vdseBlockGroup;
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /**
  *  This struct is to be set at the end of a group of blocks.
  *  The exact details of the struct might change - the main constraint
@@ -77,6 +79,9 @@ typedef struct vdseEndBlockGroup
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+VDSF_ENGINE_EXPORT
+void vdseBlockGroupFini( vdseBlockGroup* pGroup );
+
 /** 
  * Initialize the vdseBlockGroup struct. 
  */
@@ -86,8 +91,18 @@ void vdseBlockGroupInit( vdseBlockGroup  * pGroup,
                          size_t            numBlocks,
                          vdseMemObjIdent   objType );
 
-VDSF_ENGINE_EXPORT
-void vdseBlockGroupFini( vdseBlockGroup* pGroup );
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/** This small inline function returns the offset of the end block struct. */
+
+static inline
+ptrdiff_t vdseEndBlockOffset( ptrdiff_t firstBlockOffset, 
+                              size_t    numBlocks )
+{
+   return (firstBlockOffset + 
+      (numBlocks <<  VDSE_BLOCK_SHIFT) -
+      VDSE_ALLOCATION_UNIT);
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -110,20 +125,12 @@ void vdseEndBlockSet( ptrdiff_t firstBlockOffset,
    endBlock->lastBlock = lastBlock;
 }
 
-static inline
-ptrdiff_t vdseEndBlockOffset( ptrdiff_t firstBlockOffset, 
-                              size_t    numBlocks )
-{
-   return (firstBlockOffset + (numBlocks <<  VDSE_BLOCK_SHIFT) -
-                          VDSE_ALLOCATION_UNIT);
-}
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_PAGE_GROUP_H */
+#endif /* VDSE_BLOCK_GROUP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

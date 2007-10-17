@@ -19,6 +19,21 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+void vdseBlockGroupFini( vdseBlockGroup * pGroup )
+{
+   VDS_PRE_CONDITION( pGroup != NULL );
+
+   vdseMemBitmapFini(  &pGroup->bitmap );
+   vdseLinkedListFini( &pGroup->freeList );
+   vdseLinkNodeFini(   &pGroup->node );
+
+   pGroup->numBlocks = 0;
+   pGroup->maxFreeBytes = 0;
+   pGroup->objType = VDSE_IDENT_CLEAR;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /*
  * Note: no need to initialize the endBlock struct. It is set by the 
  * memory allocator when calling vdseMallocBlocks().
@@ -30,12 +45,13 @@ void vdseBlockGroupInit( vdseBlockGroup  * pGroup,
 {
    ptrdiff_t groupOffset;
    size_t currentLength;
-   vdseFreeBufferNode* firstNode;
+   vdseFreeBufferNode * firstNode;
    
    VDS_PRE_CONDITION( pGroup != NULL );
    VDS_PRE_CONDITION( firstBlockOffset != NULL_OFFSET );
    VDS_PRE_CONDITION( numBlocks > 0 );
-   
+   VDS_PRE_CONDITION( objType > VDSE_IDENT_FIRST && objType < VDSE_IDENT_LAST );
+
    pGroup->numBlocks = numBlocks;
    pGroup->objType = VDSE_IDENT_PAGE_GROUP & objType;
    
@@ -95,21 +111,6 @@ void vdseBlockGroupInit( vdseBlockGroup  * pGroup,
    vdseSetBufferAllocated( &pGroup->bitmap, 
                            vdseEndBlockOffset(firstBlockOffset, numBlocks), 
                            VDSE_ALLOCATION_UNIT );
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void vdseBlockGroupFini( vdseBlockGroup* pGroup )
-{
-   VDS_PRE_CONDITION( pGroup != NULL );
-
-   vdseMemBitmapFini(  &pGroup->bitmap );
-   vdseLinkedListFini( &pGroup->freeList );
-   vdseLinkNodeFini(   &pGroup->node );
-
-   pGroup->numBlocks = 0;
-   pGroup->maxFreeBytes = 0;
-   pGroup->objType = VDSE_IDENT_CLEAR;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
