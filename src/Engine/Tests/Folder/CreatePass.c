@@ -45,6 +45,17 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
+   errcode = vdseTopFolderCreateObject( pTopFolder,
+                                        "Test3/Test2",
+                                        strlen("Test3/Test2"),
+                                        VDS_FOLDER,
+                                        &context );
+   if ( errcode != -1 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   errcode = vdscGetLastError( &context.errorHandler );
+   if ( errcode != VDS_NO_SUCH_FOLDER ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   
    return 0;
 }
 

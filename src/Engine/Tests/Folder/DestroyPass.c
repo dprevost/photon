@@ -68,6 +68,37 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    errcode = vdseTopFolderDestroyObject( pTopFolder,
+                                         "Test3/Test2",
+                                         strlen("Test3/Test2"),
+                                         &context );
+   if ( errcode != -1 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   errcode = vdscGetLastError( &context.errorHandler );
+   if ( errcode != VDS_NO_SUCH_FOLDER ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseTopFolderDestroyObject( pTopFolder,
+                                         "Test1/Test5",
+                                         strlen("Test1/Test5"),
+                                         &context );
+   if ( errcode != -1 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   errcode = vdscGetLastError( &context.errorHandler );
+   if ( errcode != VDS_NO_SUCH_OBJECT )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   
+   /* Calling destroy on the same object, twice */
+   errcode = vdseTopFolderDestroyObject( pTopFolder,
+                                         "Test1/Test2",
+                                         strlen("Test1/Test2"),
+                                         &context );
+   if ( errcode != -1 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   errcode = vdscGetLastError( &context.errorHandler );
+   if ( errcode != VDS_NO_SUCH_OBJECT )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseTopFolderDestroyObject( pTopFolder,
                                          "Test1",
                                          strlen("Test1"),
                                          &context );

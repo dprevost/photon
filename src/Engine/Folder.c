@@ -1369,7 +1369,7 @@ vdsErrors vdseValidateString( const vdsChar_T * objectName,
                               bool            * pLastIteration )
 {
    size_t i;
-   *pLastIteration = true;
+   bool last = true;
    
    /* The first char is always special - it cannot be '/' */
    if ( ! vds_isalnum( (int) objectName[0] )  )
@@ -1381,12 +1381,12 @@ vdsErrors vdseValidateString( const vdsChar_T * objectName,
    {
       if ( objectName[i] == VDS_SLASH || objectName[i] == VDS_BACKSLASH )
       {
-         *pLastIteration = false;
+         last = false;
          /* Strip the last character if it is a separator (in other words */
          /* we keep lastIteration to true - we have found the end of the */
          /* "path". */
          if ( i == (strLength-1) )
-            *pLastIteration = true;
+            last = true;
          break;
       }
       if ( !( vds_isalnum( (int) objectName[i] ) 
@@ -1401,6 +1401,7 @@ vdsErrors vdseValidateString( const vdsChar_T * objectName,
       return VDS_OBJECT_NAME_TOO_LONG;
    
    *pPartialLength = i;
+   *pLastIteration = last;
 
    return VDS_OK;
 }

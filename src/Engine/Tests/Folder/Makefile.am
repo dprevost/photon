@@ -94,7 +94,8 @@ check_PROGRAMS =                         \
                  RemovePass              \
                  RemoveWrongObjType      \
                  RemoveZeroLength        \
-                 Tests                   
+                 Tests                   \
+                 ValidatePass            
 
 COMMON_HEADER = folderTest.h
 
@@ -178,6 +179,7 @@ RemovePass_SOURCES              = $(COMMON_HEADER) RemovePass.c
 RemoveWrongObjType_SOURCES      = $(COMMON_HEADER) RemoveWrongObjType.c
 RemoveZeroLength_SOURCES        = $(COMMON_HEADER) RemoveZeroLength.c
 Tests_SOURCES                   = $(COMMON_HEADER) Tests.c
+ValidatePass_SOURCES            = $(COMMON_HEADER) ValidatePass.c
 
 EXTRA_DIST = 
 
@@ -263,8 +265,9 @@ TESTS =                         \
         RemovePass              \
         RemoveWrongObjType      \
         RemoveZeroLength        \
-        Tests                   
-        
+        Tests                   \
+        ValidatePass            
+
 XFAIL_TESTS =                         \
               CloseNullContext        \
               CloseNullItem           \
