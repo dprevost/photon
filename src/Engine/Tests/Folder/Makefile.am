@@ -18,6 +18,7 @@ check_PROGRAMS =                         \
                  CloseNullContext        \
                  CloseNullItem           \
                  ClosePass               \
+                 CreateInvalidNameLength \
                  CreateNullContext       \
                  CreateNullFolder        \
                  CreateNullName          \
@@ -74,6 +75,7 @@ check_PROGRAMS =                         \
                  InsertNullName          \
                  InsertNullOrigName      \
                  InsertPass              \
+                 InsertWrongObjType      \
                  InsertZeroBlocks        \
                  InsertZeroNameLength    \
                  OpenNullContext         \
@@ -81,10 +83,16 @@ check_PROGRAMS =                         \
                  OpenNullFolder          \
                  OpenNullName            \
                  OpenPass                \
+                 ReleaseNullContext      \
+                 ReleaseNullFolder       \
+                 ReleaseNullItem         \
+                 ReleasePass             \
+                 ReleaseWrongObjType     \
                  RemoveNullContext       \
                  RemoveNullFolder        \
                  RemoveNullName          \
                  RemovePass              \
+                 RemoveWrongObjType      \
                  RemoveZeroLength        \
                  Tests                   
 
@@ -93,6 +101,7 @@ COMMON_HEADER = folderTest.h
 CloseNullContext_SOURCES        = $(COMMON_HEADER) CloseNullContext.c
 CloseNullItem_SOURCES           = $(COMMON_HEADER) CloseNullItem.c
 ClosePass_SOURCES               = $(COMMON_HEADER) ClosePass.c
+CreateInvalidNameLength_SOURCES = $(COMMON_HEADER) CreateInvalidNameLength.c
 CreateNullContext_SOURCES       = $(COMMON_HEADER) CreateNullContext.c
 CreateNullFolder_SOURCES        = $(COMMON_HEADER) CreateNullFolder.c
 CreateNullName_SOURCES          = $(COMMON_HEADER) CreateNullName.c
@@ -149,6 +158,7 @@ InsertNullFolder_SOURCES        = $(COMMON_HEADER) InsertNullFolder.c
 InsertNullName_SOURCES          = $(COMMON_HEADER) InsertNullName.c
 InsertNullOrigName_SOURCES      = $(COMMON_HEADER) InsertNullOrigName.c
 InsertPass_SOURCES              = $(COMMON_HEADER) InsertPass.c
+InsertWrongObjType_SOURCES      = $(COMMON_HEADER) InsertWrongObjType.c
 InsertZeroBlocks_SOURCES        = $(COMMON_HEADER) InsertZeroBlocks.c
 InsertZeroNameLength_SOURCES    = $(COMMON_HEADER) InsertZeroNameLength.c
 OpenNullContext_SOURCES         = $(COMMON_HEADER) OpenNullContext.c
@@ -156,10 +166,16 @@ OpenNullItem_SOURCES            = $(COMMON_HEADER) OpenNullItem.c
 OpenNullFolder_SOURCES          = $(COMMON_HEADER) OpenNullFolder.c
 OpenNullName_SOURCES            = $(COMMON_HEADER) OpenNullName.c
 OpenPass_SOURCES                = $(COMMON_HEADER) OpenPass.c
+ReleaseNullContext_SOURCES      = $(COMMON_HEADER) ReleaseNullContext.c
+ReleaseNullFolder_SOURCES       = $(COMMON_HEADER) ReleaseNullFolder.c
+ReleaseNullItem_SOURCES         = $(COMMON_HEADER) ReleaseNullItem.c
+ReleasePass_SOURCES             = $(COMMON_HEADER) ReleasePass.c
+ReleaseWrongObjType_SOURCES     = $(COMMON_HEADER) ReleaseWrongObjType.c
 RemoveNullContext_SOURCES       = $(COMMON_HEADER) RemoveNullContext.c
 RemoveNullFolder_SOURCES        = $(COMMON_HEADER) RemoveNullFolder.c
 RemoveNullName_SOURCES          = $(COMMON_HEADER) RemoveNullName.c
 RemovePass_SOURCES              = $(COMMON_HEADER) RemovePass.c
+RemoveWrongObjType_SOURCES      = $(COMMON_HEADER) RemoveWrongObjType.c
 RemoveZeroLength_SOURCES        = $(COMMON_HEADER) RemoveZeroLength.c
 Tests_SOURCES                   = $(COMMON_HEADER) Tests.c
 
@@ -171,6 +187,7 @@ TESTS =                         \
         CloseNullContext        \
         CloseNullItem           \
         ClosePass               \
+        CreateInvalidNameLength \
         CreateNullContext       \
         CreateNullFolder        \
         CreateNullName          \
@@ -227,6 +244,7 @@ TESTS =                         \
         InsertNullName          \
         InsertNullOrigName      \
         InsertPass              \
+        InsertWrongObjType      \
         InsertZeroBlocks        \
         InsertZeroNameLength    \
         OpenNullContext         \
@@ -234,10 +252,16 @@ TESTS =                         \
         OpenNullFolder          \
         OpenNullName            \
         OpenPass                \
+        ReleaseNullContext      \
+        ReleaseNullFolder       \
+        ReleaseNullItem         \
+        ReleasePass             \
+        ReleaseWrongObjType     \
         RemoveNullContext       \
         RemoveNullFolder        \
         RemoveNullName          \
         RemovePass              \
+        RemoveWrongObjType      \
         RemoveZeroLength        \
         Tests                   
         
@@ -291,15 +315,21 @@ XFAIL_TESTS =                         \
               InsertNullFolder        \
               InsertNullName          \
               InsertNullOrigName      \
+              InsertWrongObjType      \
               InsertZeroBlocks        \
               InsertZeroNameLength    \
               OpenNullContext         \
               OpenNullItem            \
               OpenNullFolder          \
               OpenNullName            \
+              ReleaseNullContext      \
+              ReleaseNullFolder       \
+              ReleaseNullItem         \
+              ReleaseWrongObjType     \
               RemoveNullContext       \
               RemoveNullFolder        \
               RemoveNullName          \
+              RemoveWrongObjType      \
               RemoveZeroLength        
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \

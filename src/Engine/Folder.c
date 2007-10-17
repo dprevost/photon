@@ -23,10 +23,10 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static 
-bool vdseValidateString( const vdsChar_T * objectName,
-                         size_t            strLength, 
-                         size_t          * pPartialLength,
-                         bool            * pLastIteration );
+vdsErrors vdseValidateString( const vdsChar_T * objectName,
+                              size_t            strLength, 
+                              size_t          * pPartialLength,
+                              bool            * pLastIteration );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -99,14 +99,13 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( strLength > 0 );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
-   if ( ! vdseValidateString( objectName, 
-                          strLength, 
-                          &partialLength, 
-                          &lastIteration ) )
-   {
-      errcode = VDS_INVALID_OBJECT_NAME;
+   errcode = vdseValidateString( objectName, 
+                                 strLength, 
+                                 &partialLength, 
+                                 &lastIteration );
+   if ( errcode != VDS_OK )
       goto the_exit;
-   }
+
    listErr = vdseHashGet( &pFolder->hashObj, 
                           (unsigned char *)objectName, 
                           partialLength * sizeof(vdsChar_T),
@@ -405,14 +404,12 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( strLength > 0 );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
-   if ( ! vdseValidateString( objectName, 
-                          strLength, 
-                          &partialLength, 
-                          &lastIteration ) )
-   {
-      errcode = VDS_INVALID_OBJECT_NAME;
+   errcode = vdseValidateString( objectName, 
+                                 strLength, 
+                                 &partialLength, 
+                                 &lastIteration );
+   if ( errcode != VDS_OK )
       goto the_exit;
-   }
    
    listErr = vdseHashGet( &pFolder->hashObj, 
                           (unsigned char *)objectName, 
@@ -575,7 +572,6 @@ int vdseFolderInit( vdseFolder         * pFolder,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-// ici
 
 int vdseFolderInsertObject( vdseFolder         * pFolder,
                             const vdsChar_T    * objectName,
@@ -606,14 +602,12 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( strLength > 0 );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
-   if ( ! vdseValidateString( objectName, 
-                          strLength, 
-                          &partialLength, 
-                          &lastIteration ) )
-   {
-      errcode = VDS_INVALID_OBJECT_NAME;
+   errcode = vdseValidateString( objectName, 
+                                 strLength, 
+                                 &partialLength, 
+                                 &lastIteration );
+   if ( errcode != VDS_OK )
       goto the_exit;
-   }
    
    if ( lastIteration )
    {
@@ -908,6 +902,7 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( nameLength > 0 );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
    listErr = vdseHashDelete( &pFolder->hashObj,
                              (unsigned char*)objectName,
@@ -1368,10 +1363,10 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseValidateString( const vdsChar_T * objectName,
-                         size_t            strLength, 
-                         size_t          * pPartialLength,
-                         bool            * pLastIteration )
+vdsErrors vdseValidateString( const vdsChar_T * objectName,
+                              size_t            strLength, 
+                              size_t          * pPartialLength,
+                              bool            * pLastIteration )
 {
    size_t i;
    *pLastIteration = true;
@@ -1379,7 +1374,7 @@ bool vdseValidateString( const vdsChar_T * objectName,
    /* The first char is always special - it cannot be '/' */
    if ( ! vds_isalnum( (int) objectName[0] )  )
    {
-      return false;
+      return VDS_INVALID_OBJECT_NAME;
    }
    
    for ( i = 1; i < strLength; ++i )
@@ -1399,12 +1394,15 @@ bool vdseValidateString( const vdsChar_T * objectName,
               || (objectName[i] == VDS_UNDERSCORE) 
               || (objectName[i] == VDS_HYPHEN) ) ) 
       {
-         return false;
+         return VDS_INVALID_OBJECT_NAME;
       }
    }
+   if ( i > VDS_MAX_NAME_LENGTH )
+      return VDS_OBJECT_NAME_TOO_LONG;
+   
    *pPartialLength = i;
 
-   return true;
+   return VDS_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
