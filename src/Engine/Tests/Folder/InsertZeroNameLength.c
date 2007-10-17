@@ -39,7 +39,7 @@ int main()
                              &status,
                              5,
                              strCheck("Test1"),
-                             NULL_OFFSET,
+                             1234,
                              &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

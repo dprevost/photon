@@ -381,7 +381,6 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-// ici
 
 int vdseFolderGetObject( vdseFolder         * pFolder,
                          const vdsChar_T    * objectName,
@@ -534,6 +533,7 @@ int vdseFolderInit( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pContext  != NULL );
    VDS_PRE_CONDITION( pTxStatus != NULL );
    VDS_PRE_CONDITION( origName  != NULL );
+   VDS_PRE_CONDITION( keyOffset    != NULL_OFFSET );
    VDS_PRE_CONDITION( parentOffset != NULL_OFFSET );
    VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    VDS_PRE_CONDITION( origNameLength > 0 );
@@ -575,6 +575,7 @@ int vdseFolderInit( vdseFolder         * pFolder,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// ici
 
 int vdseFolderInsertObject( vdseFolder         * pFolder,
                             const vdsChar_T    * objectName,

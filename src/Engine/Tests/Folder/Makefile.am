@@ -58,9 +58,11 @@ check_PROGRAMS =                         \
                  GetNullFolder           \
                  GetNullName             \
                  GetPass                 \
+                 GetWrongObjType         \
                  GetZeroNameLength       \
                  InitNullContext         \
                  InitNullFolder          \
+                 InitNullKeyOffset       \
                  InitNullName            \
                  InitNullParentOffset    \
                  InitPass                \
@@ -131,10 +133,12 @@ GetNullItem_SOURCES             = $(COMMON_HEADER) GetNullItem.c
 GetNullFolder_SOURCES           = $(COMMON_HEADER) GetNullFolder.c
 GetNullName_SOURCES             = $(COMMON_HEADER) GetNullName.c
 GetPass_SOURCES                 = $(COMMON_HEADER) GetPass.c
+GetWrongObjType_SOURCES         = $(COMMON_HEADER) GetWrongObjType.c
 GetZeroNameLength_SOURCES       = $(COMMON_HEADER) GetZeroNameLength.c
 InitNullContext_SOURCES         = $(COMMON_HEADER) InitNullContext.c
 InitNullFolder_SOURCES          = $(COMMON_HEADER) InitNullFolder.c
 InitNullName_SOURCES            = $(COMMON_HEADER) InitNullName.c
+InitNullKeyOffset_SOURCES       = $(COMMON_HEADER) InitNullKeyOffset.c
 InitNullParentOffset_SOURCES    = $(COMMON_HEADER) InitNullParentOffset.c
 InitPass_SOURCES                = $(COMMON_HEADER) InitPass.c
 InitZeroBlocks_SOURCES          = $(COMMON_HEADER) InitZeroBlocks.c
@@ -207,9 +211,11 @@ TESTS =                         \
         GetNullFolder           \
         GetNullName             \
         GetPass                 \
+        GetWrongObjType         \
         GetZeroNameLength       \
         InitNullContext         \
         InitNullFolder          \
+        InitNullKeyOffset       \
         InitNullName            \
         InitNullParentOffset    \
         InitPass                \
@@ -271,9 +277,11 @@ XFAIL_TESTS =                         \
               GetNullItem             \
               GetNullFolder           \
               GetNullName             \
+              GetWrongObjType         \
               GetZeroNameLength       \
               InitNullContext         \
               InitNullFolder          \
+              InitNullKeyOffset       \
               InitNullName            \
               InitNullParentOffset    \
               InitZeroBlocks          \
