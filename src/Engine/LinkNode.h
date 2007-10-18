@@ -67,7 +67,7 @@ typedef struct vdseFreeBufferNode
 
 /** Initialize the elements of the vdseLinkNode to NULL_OFFSET. */
 static inline
-void vdseLinkNodeInit( vdseLinkNode* pNode )
+void vdseLinkNodeInit( vdseLinkNode * pNode )
 {
    VDS_PRE_CONDITION( pNode != NULL );
    
@@ -76,7 +76,7 @@ void vdseLinkNodeInit( vdseLinkNode* pNode )
 }
 
 static inline
-void vdseLinkNodeFini( vdseLinkNode* pNode )
+void vdseLinkNodeFini( vdseLinkNode * pNode )
 {
    vdseLinkNodeInit( pNode );
 }
@@ -86,7 +86,7 @@ void vdseLinkNodeFini( vdseLinkNode* pNode )
  *  and false (0) if one or both are the NULL_OFFSET.
  */
 static inline
-int  vdseLinkNodeTest( vdseLinkNode* pNode )
+int  vdseLinkNodeTest( vdseLinkNode * pNode )
 {
    VDS_PRE_CONDITION( pNode != NULL );
 

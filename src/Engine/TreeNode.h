@@ -112,6 +112,8 @@ void vdseTreeNodeInit( vdseTreeNode * pNode,
    pNode->myKeyOffset    = keyOffset;
 }
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static inline 
 void vdseTreeNodeFini( vdseTreeNode* pNode )
 {

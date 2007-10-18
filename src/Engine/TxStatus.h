@@ -32,27 +32,28 @@ BEGIN_C_DECLS
 /* An object is marked as destroyed as soon as the API call to destroy 
  * it is processed. Once it is marked as destroyed, you can't open it
  * but any sessions using can still continue to use it, without problems.
- * If the call is rollback, the flag MARKED_AS_DESTROYED is removed.
- * However, if committed, the flag REMOVE_IS_COMMITTED is set and the last 
+ * If the call is rollback, the flag VDSE_MARKED_AS_DESTROYED is removed.
+ * However, if committed, the flag VDSE_REMOVE_IS_COMMITTED is set and the last 
  * session which access the object (in any form, either a simple close
  * or a rollback or commit ops on the data of the object) will removed it.
  */
-#define MARKED_AS_DESTROYED  0x1
-#define REMOVE_IS_COMMITTED  0x2
+#define VDSE_MARKED_AS_DESTROYED  0x1
+#define VDSE_REMOVE_IS_COMMITTED  0x2
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 typedef struct vdseTxStatus
 {
-   /* The offset of the current transaction */
+   /** The offset of the current transaction */
    ptrdiff_t txOffset;
 
-   /** An object is marked as destroyed as soon as the API call to destroy 
+   /** 
+    * An object is marked as destroyed as soon as the API call to destroy 
     * it is processed. Once it is marked as destroyed, you can't open it
-    * but any sessions using can still continue to use it, without problems.
-    * If the call is rollback, the flag MARKED_AS_DESTROYED is removed.
-    * However, if committed, the flag REMOVE_IS_COMMITTED is set and the last 
-    * session which access the object (in any form, either a simple close
+    * but any sessions using it can still continue to use it, without problems.
+    * If the call is rollback, the flag VDSE_MARKED_AS_DESTROYED is removed.
+    * However, if committed, the flag VDSE_REMOVE_IS_COMMITTED is set and the 
+    * last session which access the object (in any form, either a simple close
     * or a rollback or commit ops on the data of the object) will removed it.
     */
    uint32_t statusFlag;
@@ -79,7 +80,7 @@ typedef struct vdseTxStatus
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void vdseTxStatusInit( vdseTxStatus* pStatus, ptrdiff_t txOffset )
+void vdseTxStatusInit( vdseTxStatus * pStatus, ptrdiff_t txOffset )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
    
@@ -91,7 +92,7 @@ void vdseTxStatusInit( vdseTxStatus* pStatus, ptrdiff_t txOffset )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusSetTx( vdseTxStatus* pStatus, ptrdiff_t txOffset )
+void vdseTxStatusSetTx( vdseTxStatus * pStatus, ptrdiff_t txOffset )
 {
    pStatus->txOffset = txOffset;
 }
@@ -99,7 +100,7 @@ void vdseTxStatusSetTx( vdseTxStatus* pStatus, ptrdiff_t txOffset )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void vdseTxStatusFini( vdseTxStatus* pStatus )
+void vdseTxStatusFini( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
    VDS_PRE_CONDITION( pStatus->statusFlag   == 0 );
@@ -111,7 +112,7 @@ void vdseTxStatusFini( vdseTxStatus* pStatus )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdseTxStatusIsValid( vdseTxStatus* pStatus, ptrdiff_t txOffset )
+bool vdseTxStatusIsValid( vdseTxStatus * pStatus, ptrdiff_t txOffset )
 {
    VDS_PRE_CONDITION( pStatus  != NULL );
    VDS_PRE_CONDITION( txOffset != NULL_OFFSET );
@@ -126,7 +127,7 @@ bool vdseTxStatusIsValid( vdseTxStatus* pStatus, ptrdiff_t txOffset )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusClearTx( vdseTxStatus* pStatus )
+void vdseTxStatusClearTx( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
    VDS_PRE_CONDITION( pStatus->txOffset != NULL_OFFSET );
@@ -139,52 +140,52 @@ void vdseTxStatusClearTx( vdseTxStatus* pStatus )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
    
 static inline
-bool vdseTxStatusIsMarkedAsDestroyed( vdseTxStatus* pStatus )
+bool vdseTxStatusIsMarkedAsDestroyed( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   return (pStatus->statusFlag & MARKED_AS_DESTROYED);
+   return (pStatus->statusFlag & VDSE_MARKED_AS_DESTROYED);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdseTxStatusIsRemoveCommitted( vdseTxStatus* pStatus )
+bool vdseTxStatusIsRemoveCommitted( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   if ( pStatus->statusFlag & REMOVE_IS_COMMITTED ) return true;
+   if ( pStatus->statusFlag & VDSE_REMOVE_IS_COMMITTED ) return true;
    return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusMarkAsDestroyed( vdseTxStatus* pStatus )
+void vdseTxStatusMarkAsDestroyed( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   pStatus->statusFlag |= MARKED_AS_DESTROYED;
+   pStatus->statusFlag |= VDSE_MARKED_AS_DESTROYED;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusCommitRemove( vdseTxStatus* pStatus )
+void vdseTxStatusCommitRemove( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   pStatus->statusFlag |= REMOVE_IS_COMMITTED;
+   pStatus->statusFlag |= VDSE_REMOVE_IS_COMMITTED;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusUnmarkAsDestroyed( vdseTxStatus* pStatus )
+void vdseTxStatusUnmarkAsDestroyed( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   pStatus->statusFlag = ~(~pStatus->statusFlag | MARKED_AS_DESTROYED);
+   pStatus->statusFlag = ~(~pStatus->statusFlag | VDSE_MARKED_AS_DESTROYED);
    /* 
     * This function will be called by a rollback. We clear the transaction
     * itself - obviously. But not the counter (which might be greater than 
@@ -198,7 +199,7 @@ void vdseTxStatusUnmarkAsDestroyed( vdseTxStatus* pStatus )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdseTxStatusSelfTest( vdseTxStatus* pStatus )
+bool vdseTxStatusSelfTest( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
@@ -218,3 +219,4 @@ END_C_DECLS
 #endif /* VDSE_TX_STATUS_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

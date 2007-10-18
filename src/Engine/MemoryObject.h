@@ -97,24 +97,24 @@ vdseMemObjectInit( vdseMemObject   * pMemObj,
 
 VDSF_ENGINE_EXPORT
 enum vdsErrors 
-vdseMemObjectFini( vdseMemObject*      pMemObj,
-                   vdseSessionContext* pContext );
+vdseMemObjectFini( vdseMemObject      * pMemObj,
+                   vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
-                           size_t              numBytes,
-                           vdseSessionContext* pContext );
+unsigned char* vdseMalloc( vdseMemObject      * pMemObj,
+                           size_t               numBytes,
+                           vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseFree( vdseMemObject*      pMemObj,
-               unsigned char*      ptr, 
-               size_t              numBytes,
-               vdseSessionContext* pContext );
+void vdseFree( vdseMemObject      * pMemObj,
+               unsigned char      * ptr, 
+               size_t               numBytes,
+               vdseSessionContext * pContext );
 
 /** Returns 0 on success, -1 on error */
 static inline
-int vdseLock( vdseMemObject*      pMemObj,
-              vdseSessionContext* pContext )
+int vdseLock( vdseMemObject      * pMemObj,
+              vdseSessionContext * pContext )
 {
    if ( pContext->lockOffsets != NULL )
       vdseSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
@@ -125,8 +125,8 @@ int vdseLock( vdseMemObject*      pMemObj,
 }
 
 static inline
-void vdseLockNoFailure( vdseMemObject*      pMemObj,
-                        vdseSessionContext* pContext )
+void vdseLockNoFailure( vdseMemObject      * pMemObj,
+                        vdseSessionContext * pContext )
 {
    if ( pContext->lockOffsets != NULL )
       vdseSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
@@ -135,8 +135,8 @@ void vdseLockNoFailure( vdseMemObject*      pMemObj,
 }
 
 static inline
-void vdseUnlock( vdseMemObject*      pMemObj,
-                 vdseSessionContext* pContext  )
+void vdseUnlock( vdseMemObject      * pMemObj,
+                 vdseSessionContext * pContext  )
 {
    if ( pContext->lockOffsets != NULL )
       vdseSessionRemoveLock( pContext, SET_OFFSET( pMemObj ) );

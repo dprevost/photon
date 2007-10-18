@@ -22,8 +22,8 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool vdseIsBufferFree( vdseMemBitmap* pBitmap,
-                       ptrdiff_t      offset )
+bool vdseIsBufferFree( vdseMemBitmap * pBitmap,
+                       ptrdiff_t       offset )
 {
    size_t byte, bit;
    size_t inUnitsOfAllocation;
@@ -54,9 +54,9 @@ bool vdseIsBufferFree( vdseMemBitmap* pBitmap,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-void vdseSetBufferAllocated( vdseMemBitmap* pBitmap,
-                             ptrdiff_t      offset,
-                             size_t         length )
+void vdseSetBufferAllocated( vdseMemBitmap * pBitmap,
+                             ptrdiff_t       offset,
+                             size_t          length )
 {
    size_t byte, bit, i;
    size_t inUnitsOfAllocation;
@@ -94,9 +94,9 @@ void vdseSetBufferAllocated( vdseMemBitmap* pBitmap,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-void vdseSetBufferFree( vdseMemBitmap* pBitmap,
-                        ptrdiff_t      offset,
-                        size_t         length )
+void vdseSetBufferFree( vdseMemBitmap * pBitmap,
+                        ptrdiff_t       offset,
+                        size_t          length )
 {
    size_t byte, bit, i;
    size_t inUnitsOfAllocation;

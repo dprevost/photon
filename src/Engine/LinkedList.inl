@@ -18,8 +18,8 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline enum ListErrors 
-vdseLinkedListGetFirst( vdseLinkedList* pList,
-                        vdseLinkNode**  ppItem )
+vdseLinkedListGetFirst( vdseLinkedList  * pList,
+                        vdseLinkNode   ** ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
@@ -50,8 +50,8 @@ vdseLinkedListGetFirst( vdseLinkedList* pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline enum ListErrors 
-vdseLinkedListGetLast( vdseLinkedList* pList,
-                       vdseLinkNode**  ppItem )
+vdseLinkedListGetLast( vdseLinkedList  * pList,
+                       vdseLinkNode   ** ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
@@ -81,8 +81,8 @@ vdseLinkedListGetLast( vdseLinkedList* pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void 
-vdseLinkedListPutLast( vdseLinkedList* pList,
-                       vdseLinkNode *  pNewItem )
+vdseLinkedListPutLast( vdseLinkedList * pList,
+                       vdseLinkNode   * pNewItem )
 {
    ptrdiff_t tmpOffset;
    
@@ -109,8 +109,8 @@ vdseLinkedListPutLast( vdseLinkedList* pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void 
-vdseLinkedListPutFirst( vdseLinkedList* pList,
-                        vdseLinkNode *  pNewItem )
+vdseLinkedListPutFirst( vdseLinkedList * pList,
+                        vdseLinkNode   * pNewItem )
 {
    ptrdiff_t tmpOffset;
    
@@ -138,8 +138,8 @@ vdseLinkedListPutFirst( vdseLinkedList* pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void 
-vdseLinkedListRemoveItem( vdseLinkedList* pList,
-                          vdseLinkNode*   pRemovedItem )
+vdseLinkedListRemoveItem( vdseLinkedList * pList,
+                          vdseLinkNode   * pRemovedItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
@@ -189,8 +189,8 @@ vdseLinkedListRemoveItem( vdseLinkedList* pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline enum ListErrors 
-vdseLinkedListPeakFirst( vdseLinkedList* pList,
-                         vdseLinkNode**  ppItem )
+vdseLinkedListPeakFirst( vdseLinkedList *  pList,
+                         vdseLinkNode   ** ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
@@ -211,8 +211,8 @@ vdseLinkedListPeakFirst( vdseLinkedList* pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline enum ListErrors 
-vdseLinkedListPeakLast( vdseLinkedList* pList,
-                        vdseLinkNode**  ppItem )
+vdseLinkedListPeakLast( vdseLinkedList  * pList,
+                        vdseLinkNode   ** ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
@@ -233,9 +233,9 @@ vdseLinkedListPeakLast( vdseLinkedList* pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline enum ListErrors 
-vdseLinkedListPeakNext( vdseLinkedList* pList,
-                        vdseLinkNode*   pCurrent, 
-                        vdseLinkNode**  ppNext )
+vdseLinkedListPeakNext( vdseLinkedList * pList,
+                        vdseLinkNode   * pCurrent, 
+                        vdseLinkNode  ** ppNext )
 {
    vdseLinkNode* pNext;
 
@@ -286,9 +286,9 @@ vdseLinkedListPeakNext( vdseLinkedList* pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline enum ListErrors 
-vdseLinkedListPeakPrevious( vdseLinkedList* pList,
-                            vdseLinkNode*   pCurrent, 
-                            vdseLinkNode**  ppPrevious )
+vdseLinkedListPeakPrevious( vdseLinkedList * pList,
+                            vdseLinkNode   * pCurrent, 
+                            vdseLinkNode  ** ppPrevious )
 {
    vdseLinkNode* pPrevious;
 
@@ -343,9 +343,9 @@ vdseLinkedListPeakPrevious( vdseLinkedList* pList,
  * assumes that pOldItem is in the list... otherwise big trouble!)
  */
 inline void 
-vdseLinkedListReplaceItem( vdseLinkedList* pList,
-                           vdseLinkNode*   pOldItem,
-                           vdseLinkNode*   pNewItem )
+vdseLinkedListReplaceItem( vdseLinkedList * pList,
+                           vdseLinkNode   * pOldItem,
+                           vdseLinkNode   * pNewItem )
 {
    ptrdiff_t tmpOffset;
 

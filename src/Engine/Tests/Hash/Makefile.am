@@ -42,6 +42,7 @@ check_PROGRAMS =                       \
                  GetNextNullHash       \
                  GetNextNullNextBucket \
                  GetNextNullNextOffset \
+                 GetNextNullPrevOffset \
                  GetNextPass           \
                  GetNullBucket         \
                  GetNullContext        \
@@ -52,6 +53,7 @@ check_PROGRAMS =                       \
                  GetZeroKeyLength      \
                  InitNullContext       \
                  InitNullHash          \
+                 InitNullOffset        \
                  InitPass              \
                  InsertNullContext     \
                  InsertNullData        \
@@ -85,6 +87,7 @@ GetFirstPass_SOURCES          = $(COMMON_HEADER) GetFirstPass.c
 GetNextNullHash_SOURCES       = $(COMMON_HEADER) GetNextNullHash.c
 GetNextNullNextBucket_SOURCES = $(COMMON_HEADER) GetNextNullNextBucket.c
 GetNextNullNextOffset_SOURCES = $(COMMON_HEADER) GetNextNullNextOffset.c
+GetNextNullPrevOffset_SOURCES = $(COMMON_HEADER) GetNextNullPrevOffset.c
 GetNextPass_SOURCES           = $(COMMON_HEADER) GetNextPass.c
 GetNullBucket_SOURCES         = $(COMMON_HEADER) GetNullBucket.c
 GetNullContext_SOURCES        = $(COMMON_HEADER) GetNullContext.c
@@ -95,6 +98,7 @@ GetPass_SOURCES               = $(COMMON_HEADER) GetPass.c
 GetZeroKeyLength_SOURCES      = $(COMMON_HEADER) GetZeroKeyLength.c
 InitNullContext_SOURCES       = $(COMMON_HEADER) InitNullContext.c
 InitNullHash_SOURCES          = $(COMMON_HEADER) InitNullHash.c
+InitNullOffset_SOURCES        = $(COMMON_HEADER) InitNullOffset.c
 InitPass_SOURCES              = $(COMMON_HEADER) InitPass.c
 InsertNullContext_SOURCES     = $(COMMON_HEADER) InsertNullContext.c
 InsertNullData_SOURCES        = $(COMMON_HEADER) InsertNullData.c
@@ -134,6 +138,7 @@ TESTS +=                       \
          GetNextNullHash       \
          GetNextNullNextBucket \
          GetNextNullNextOffset \
+         GetNextNullPrevOffset \
          GetNextPass           \
          GetNullBucket         \
          GetNullContext        \
@@ -144,6 +149,7 @@ TESTS +=                       \
          GetZeroKeyLength      \
          InitNullContext       \
          InitNullHash          \
+         InitNullOffset        \
          InitPass              \
          InsertNullContext     \
          InsertNullData        \
@@ -179,6 +185,7 @@ XFAIL_TESTS =                       \
               GetNextNullHash       \
               GetNextNullNextBucket \
               GetNextNullNextOffset \
+              GetNextNullPrevOffset \
               GetNullContext        \
               GetNullHash           \
               GetNullItem           \
@@ -186,6 +193,7 @@ XFAIL_TESTS =                       \
               GetZeroKeyLength      \
               InitNullContext       \
               InitNullHash          \
+              InitNullOffset        \
               InsertNullContext     \
               InsertNullData        \
               InsertNullHash        \

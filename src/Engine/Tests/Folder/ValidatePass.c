@@ -59,7 +59,7 @@ int main()
                                  VDS_MAX_NAME_LENGTH+9, /* not 10 ! */
                                  &partial,
                                  &last );
-   if ( errcode !=  VDS_OBJECT_NAME_TOO_LONG )
+   if ( errcode != VDS_OBJECT_NAME_TOO_LONG )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    errcode = vdseValidateString( strCheck("Test2/"),
@@ -73,6 +73,31 @@ int main()
    if (! last) 
       ERROR_EXIT( expectedToPass, NULL, ; );
 
+   name[10] = 0;
+   name[4] = '\t';
+   errcode = vdseValidateString( strCheck(name),
+                                 10,
+                                 &partial,
+                                 &last );
+   if ( errcode != VDS_INVALID_OBJECT_NAME )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   name[4] = '=';
+   errcode = vdseValidateString( strCheck(name),
+                                 10,
+                                 &partial,
+                                 &last );
+   if ( errcode != VDS_INVALID_OBJECT_NAME )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   
+   name[4] = ' ';
+   errcode = vdseValidateString( strCheck(name),
+                                 10,
+                                 &partial,
+                                 &last );
+   if ( errcode != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   
    return 0;
 }
 

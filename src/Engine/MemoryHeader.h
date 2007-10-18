@@ -48,7 +48,6 @@ typedef struct vdseMemoryHeader
    ptrdiff_t       transMgrOffset;
    bool            logON;
    
-//   vdseMemAlloc    allocator;
    bool     useUnicode;
    size_t   sizeofPtr;
    bool     bigEndian;
@@ -66,6 +65,8 @@ typedef struct vdseMemoryHeader
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* VDSE_MEMORY_HEADER_H */
 

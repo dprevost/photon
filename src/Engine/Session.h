@@ -41,7 +41,7 @@ BEGIN_C_DECLS
 typedef struct vdseObjectContext
 {
    /** offset to the object pointer in memory */
-   ptrdiff_t          offset;
+   ptrdiff_t offset;
 
    /** object type */
    enum vdsObjectType type;

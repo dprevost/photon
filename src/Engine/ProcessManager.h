@@ -59,11 +59,6 @@ VDSF_ENGINE_EXPORT
 int vdseProcMgrInit( vdseProcMgr        * pManager,
                      vdseSessionContext * pContext );
 
-/*
-void vdseProcMgrFini( vdseProcessManager * pManager,
-                      vdseSessionContext * pContext );
-*/
-
 VDSF_ENGINE_EXPORT
 int vdseProcMgrAddProcess( vdseProcMgr        * pManager,
                            pid_t                pid, 
@@ -80,11 +75,6 @@ VDSF_ENGINE_EXPORT
 int vdseProcMgrRemoveProcess( vdseProcMgr        * pManager,
                               vdseProcess        * pCleanupProcess,
                               vdseSessionContext * pContext );
-
-/* Used by the crash recovery process */
-/*void vdseProcMgrReset( vdseProcMgr        * pManager,
-                       vdseSessionContext * pContext );
-*/
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

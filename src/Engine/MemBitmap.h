@@ -45,27 +45,27 @@ typedef struct vdseMemBitmap
  * Initialize the vdseMemBitmap struct. 
  */
 VDSF_ENGINE_EXPORT
-void vdseMemBitmapInit( vdseMemBitmap* pBitmap,
-                        ptrdiff_t      offset,
-                        size_t         totalLength,
-                        size_t         allocationUnit );
+void vdseMemBitmapInit( vdseMemBitmap * pBitmap,
+                        ptrdiff_t       offset,
+                        size_t          totalLength,
+                        size_t          allocationUnit );
 
 VDSF_ENGINE_EXPORT
-void vdseMemBitmapFini( vdseMemBitmap* pBitmap );
+void vdseMemBitmapFini( vdseMemBitmap * pBitmap );
 
 static inline
-bool vdseIsBufferFree( vdseMemBitmap* pBitmap,
-                       ptrdiff_t      offset );
+bool vdseIsBufferFree( vdseMemBitmap * pBitmap,
+                       ptrdiff_t       offset );
 
 static inline
-void vdseSetBufferAllocated( vdseMemBitmap* pBitmap,
-                             ptrdiff_t      offset,
-                             size_t         length );
+void vdseSetBufferAllocated( vdseMemBitmap * pBitmap,
+                             ptrdiff_t       offset,
+                             size_t          length );
 
 static inline
-void vdseSetBufferFree( vdseMemBitmap* pBitmap,
-                        ptrdiff_t      offset,
-                        size_t         length );
+void vdseSetBufferFree( vdseMemBitmap * pBitmap,
+                        ptrdiff_t       offset,
+                        size_t          length );
 
 static inline
 size_t vdseGetBitmapLengthBytes( size_t length, size_t allocationUnit );

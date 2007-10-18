@@ -30,13 +30,15 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+BEGIN_C_DECLS
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 typedef enum vdseTxType
 {
    /* ops on data */
    VDSE_TX_ADD_DATA = 1,
    VDSE_TX_REMOVE_DATA,
-//   VDSE_TX_UPDATE,
-//   VDSE_TX_SELECT,
 
    /* ops on objects */
    VDSE_TX_ADD_OBJECT = 0x81,
@@ -91,26 +93,32 @@ int vdseTxAddOps( vdseTx             * pTx,
                   vdseSessionContext * pContext );
    
 VDSF_ENGINE_EXPORT
-void vdseTxRemoveLastOps( vdseTx * pTx, vdseSessionContext* pContext );
+void vdseTxRemoveLastOps( vdseTx * pTx, vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseTxInit( vdseTx * pTx,
-                size_t   numberOfBlocks,
-                vdseSessionContext* pContext );
+int vdseTxInit( vdseTx             * pTx,
+                size_t               numberOfBlocks,
+                vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseTxFini( vdseTx*             pTx, 
-                 vdseSessionContext* pContext );
+void vdseTxFini( vdseTx             * pTx, 
+                 vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseTxCommit( vdseTx*             pTx,
-                  vdseSessionContext* pContext );
+int vdseTxCommit( vdseTx             * pTx,
+                  vdseSessionContext * pContext );
                   
 VDSF_ENGINE_EXPORT
-void vdseTxRollback( vdseTx*             pTx,
-                     vdseSessionContext* pContext );
+void vdseTxRollback( vdseTx             * pTx,
+                     vdseSessionContext * pContext );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* VDSE_TX_H */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -64,77 +64,77 @@ typedef struct vdseLinkedList
 
 /** Cleanup the list once we're done with it. */
 VDSF_ENGINE_EXPORT void 
-vdseLinkedListFini( vdseLinkedList* pList );
+vdseLinkedListFini( vdseLinkedList * pList );
 
 /** Removes and returns the first item on the list. */
 static inline enum ListErrors 
-vdseLinkedListGetFirst( vdseLinkedList* pList,
-                        vdseLinkNode**  ppItem );
+vdseLinkedListGetFirst( vdseLinkedList  * pList,
+                        vdseLinkNode   ** ppItem );
 
 /** Removes and returns the last item on the list. */ 
 static inline enum ListErrors 
-vdseLinkedListGetLast( vdseLinkedList* pList,
-                       vdseLinkNode**  ppItem );
+vdseLinkedListGetLast( vdseLinkedList  * pList,
+                       vdseLinkNode   ** ppItem );
 
 /** Initialize the linked list. */
 VDSF_ENGINE_EXPORT void 
-vdseLinkedListInit( vdseLinkedList* pList );
+vdseLinkedListInit( vdseLinkedList * pList );
 
 /** Adds pNewItem to the beginning of the list. */
 static inline void 
-vdseLinkedListPutFirst( vdseLinkedList* pList,
-                        vdseLinkNode *  pNewItem );
+vdseLinkedListPutFirst( vdseLinkedList * pList,
+                        vdseLinkNode   * pNewItem );
 
 /** Adds pNewItem to the tail of the list. */
 static inline void 
-vdseLinkedListPutLast( vdseLinkedList* pList,
-                       vdseLinkNode *  pNewItem );
+vdseLinkedListPutLast( vdseLinkedList * pList,
+                       vdseLinkNode   * pNewItem );
 
 /** Returns the first item on the list. The item is not removed. */
 static inline enum ListErrors 
-vdseLinkedListPeakFirst( vdseLinkedList* pList,
-                         vdseLinkNode**  ppItem );
+vdseLinkedListPeakFirst( vdseLinkedList  * pList,
+                         vdseLinkNode   ** ppItem );
 
 /** Returns the last item on the list. The item is not removed. */
 static inline enum ListErrors 
-vdseLinkedListPeakLast( vdseLinkedList* pList,
-                        vdseLinkNode**  ppItem );
+vdseLinkedListPeakLast( vdseLinkedList  * pList,
+                        vdseLinkNode   ** ppItem );
 
 /** Returns the item just after pCurrent. The item is not removed. */
 static inline enum ListErrors 
-vdseLinkedListPeakNext( vdseLinkedList* pList, 
-                        vdseLinkNode*   pCurrent, 
-                        vdseLinkNode**  ppNext );
+vdseLinkedListPeakNext( vdseLinkedList * pList, 
+                        vdseLinkNode   * pCurrent, 
+                        vdseLinkNode  ** ppNext );
 
 /** Returns the item just before pCurrent. The item is not removed. */
 static inline enum ListErrors 
-vdseLinkedListPeakPrevious( vdseLinkedList* pList,
-                            vdseLinkNode*   pCurrent, 
-                            vdseLinkNode**  ppPrevious );
+vdseLinkedListPeakPrevious( vdseLinkedList * pList,
+                            vdseLinkNode   * pCurrent, 
+                            vdseLinkNode  ** ppPrevious );
 
 /** 
  * Remove the item pointed to by pRemovedItem from the list (this 
  * assumes that pRemovedItem is in the list... otherwise big trouble!)
  */
 static inline void 
-vdseLinkedListRemoveItem( vdseLinkedList* pList,
-                          vdseLinkNode*   pRemovedItem );
+vdseLinkedListRemoveItem( vdseLinkedList * pList,
+                          vdseLinkNode   * pRemovedItem );
 
 /** 
  * Replace the item pointed to by pOldItem with the item pNewItem (this 
  * assumes that pOldItem is in the list... otherwise big trouble!)
  */
 static inline void 
-vdseLinkedListReplaceItem( vdseLinkedList* pList,
-                           vdseLinkNode*   pOldItem,
-                           vdseLinkNode*   pNewItem );
+vdseLinkedListReplaceItem( vdseLinkedList * pList,
+                           vdseLinkNode   * pOldItem,
+                           vdseLinkNode   * pNewItem );
 
 /** Search in the list to see if pUnknown is in it or not - used by the
  *  crash recovery algorithm, vdseFree, etc. 
  */
 VDSF_ENGINE_EXPORT bool 
-vdseLinkedListIsValid( vdseLinkedList* pList,
-                       vdseLinkNode*   pUnknown );
+vdseLinkedListIsValid( vdseLinkedList * pList,
+                       vdseLinkNode   * pUnknown );
 
 /*
  * The next functions are part of the recovery algorithm and should not
@@ -145,7 +145,7 @@ vdseLinkedListIsValid( vdseLinkedList* pList,
  *  crash recovery algorithm
  */
 VDSF_ENGINE_EXPORT void 
-vdseLinkedListReset( vdseLinkedList* pList );
+vdseLinkedListReset( vdseLinkedList * pList );
 
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

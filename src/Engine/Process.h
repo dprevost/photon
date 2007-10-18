@@ -32,14 +32,6 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/* The necessary information needed for garbage collection is kept */
-/* in a doubly linked list (for fast access). */
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-//class  MemoryAllocator;
-//struct vdseSessionContext;
-
 /**
  * This object is part of a group of objects which are used for handling 
  * crashes (process crashes, mainly). They keep track of the current status
@@ -69,7 +61,7 @@ typedef struct vdseProcess
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-int vdseProcessInit( vdseProcess *        pProcess,
+int vdseProcessInit( vdseProcess        * pProcess,
                      pid_t                pid,
                      vdseSessionContext * pContext );
    
@@ -122,3 +114,4 @@ END_C_DECLS
 #endif /* VDSE_PROCESS_CLEANUP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

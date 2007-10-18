@@ -69,7 +69,7 @@ typedef struct vdseSessionContext
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline void
-vdseInitSessionContext( vdseSessionContext* pContext )
+vdseInitSessionContext( vdseSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pContext != NULL );
    

@@ -78,68 +78,51 @@ typedef struct vdseMemAlloc
  */
 VDSF_ENGINE_EXPORT
 enum vdsErrors 
-vdseMemAllocInit( vdseMemAlloc*       pAlloc,
-                  unsigned char*      pBaseAddress, 
-                  size_t              length,
-                  vdseSessionContext* pContext );
+vdseMemAllocInit( vdseMemAlloc       * pAlloc,
+                  unsigned char      * pBaseAddress, 
+                  size_t               length,
+                  vdseSessionContext * pContext );
 
 /**
  * 
  */
 VDSF_ENGINE_EXPORT unsigned char* 
-vdseMallocBlocks( vdseMemAlloc*       pAlloc,
-                  size_t              numBlocks,
-                  vdseSessionContext* pContext );
+vdseMallocBlocks( vdseMemAlloc       * pAlloc,
+                  size_t               numBlocks,
+                  vdseSessionContext * pContext );
 
 /** Free ptr, the memory is returned to the pool. */
 VDSF_ENGINE_EXPORT
-void vdseFreeBlocks( vdseMemAlloc*       pAlloc,
-                     unsigned char*      ptr, 
-                     size_t              numBlocks,
-                     vdseSessionContext* pContext );
+void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
+                     unsigned char      * ptr, 
+                     size_t               numBlocks,
+                     vdseSessionContext * pContext );
 
 static inline
-bool vdseMemAllocLastBlock( vdseMemAlloc* pAlloc,
-                            ptrdiff_t     offset,
-                            size_t        numBlocks )
+bool vdseMemAllocLastBlock( vdseMemAlloc * pAlloc,
+                            ptrdiff_t      offset,
+                            size_t         numBlocks )
 {
    return ( pAlloc->totalLength <= (size_t)offset + (numBlocks << VDSE_BLOCK_SHIFT));
 }
 
 VDSF_ENGINE_EXPORT
-void vdseMemAllocClose( vdseMemAlloc*       pAlloc,
-                        vdseSessionContext* pContext );
+void vdseMemAllocClose( vdseMemAlloc       * pAlloc,
+                        vdseSessionContext * pContext );
 
 /** Returns status and statistics from the memory allocator. Note 
  *  that the number of mallocs/frees are not based on a 64 bits 
  *  integer on 32 bits machine - these numbers might loop around.
  */
 VDSF_ENGINE_EXPORT
-vdsErrors vdseMemAllocStats( vdseMemAlloc*       pAlloc,
-                             size_t *            pCurrentAllocated,
-                             size_t *            pTotalFree,
-                             size_t *            pMaxFree,
-                             size_t *            pNumberOfMallocs,
-                             size_t *            pNumberOfFrees,
-                             vdseSessionContext* pContext  );
+vdsErrors vdseMemAllocStats( vdseMemAlloc       * pAlloc,
+                             size_t             * pCurrentAllocated,
+                             size_t             * pTotalFree,
+                             size_t             * pMaxFree,
+                             size_t             * pNumberOfMallocs,
+                             size_t             * pNumberOfFrees,
+                             vdseSessionContext * pContext  );
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-#if 0
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/** Reset statistics after a crash. */
-void vdseMemAllocResetStats( vdseMemAlloc*    pAlloc,
-                             vdscErrorHandler* pError );
-
-
-/** Validate/test the content of the memory pool. */
-int vdseMemAllocValidate( vdseMemAlloc*     pAlloc,
-                          bool              verbose,
-                          vdscErrorHandler* pError );
-
-#endif
-                          
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS
@@ -149,3 +132,4 @@ END_C_DECLS
 #endif /* VDSE_MEMORY_ALLOCATOR_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -53,6 +53,7 @@ typedef struct vdseQueueItem
    unsigned char data[1];
 
 } vdseQueueItem;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 typedef struct vdseQueue

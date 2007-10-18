@@ -59,13 +59,13 @@ extern vdscErrMsgHandle g_vdsErrorHandle;
        g_pBaseAddr ) )
 
 /* Only use this macro when you know, for a fact, that the offset cannot
- * be the NULL_OFFSET (for example, in the LinkedList class, the links
+ * be the NULL_OFFSET (for example, in the LinkedList "class", the links
  * are never set to NULL_OFFSET...). 
  */
 #define GET_PTR(off,class) ( (class*) (           \
        (unsigned char*) g_pBaseAddr + (ptrdiff_t) (off) ))
 
-#define SET_PTR(target,offset,type)  \
+#define SET_PTR2(target,offset,type)  \
    if ( offset == NULL_OFFSET ) \
       target = NULL; \
    else \

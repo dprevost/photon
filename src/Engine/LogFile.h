@@ -62,8 +62,8 @@ typedef struct vdseLogFile
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-void vdseCloseLogFile( vdseLogFile*      logFile,
-                       vdscErrorHandler* pError );
+void vdseCloseLogFile( vdseLogFile      * logFile,
+                       vdscErrorHandler * pError );
 
 /**
  * Initialize the log file.
@@ -72,15 +72,15 @@ void vdseCloseLogFile( vdseLogFile*      logFile,
  * session of a given process would otherwise have the same name).
  */
 VDSF_ENGINE_EXPORT
-vdsErrors vdseInitLogFile( vdseLogFile*      logFile,
-                           const char*       dirName,
-                           void*             pSession,
-                           vdscErrorHandler* pError );
+vdsErrors vdseInitLogFile( vdseLogFile      * logFile,
+                           const char       * dirName,
+                           void             * pSession,
+                           vdscErrorHandler * pError );
    
 VDSF_ENGINE_EXPORT
-vdsErrors vdseLogTransaction( vdseLogFile*      logFile,
-                              transaction_T     transactionId,
-                              vdscErrorHandler* pError );
+vdsErrors vdseLogTransaction( vdseLogFile      * logFile,
+                              transaction_T      transactionId,
+                              vdscErrorHandler * pError );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -91,3 +91,4 @@ END_C_DECLS
 #endif /* VDSE_LOG_FILE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
