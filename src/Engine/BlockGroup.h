@@ -34,10 +34,10 @@ typedef struct vdseBlockGroup
    /** Type of memory object */
    vdseMemObjIdent objType;
 
-   /* The linked list itself */
+   /** Our own node for the link list of all groups of a memory object */
    vdseLinkNode node;
 
-   /* The number of blocks associated with the current group. */
+   /** The number of blocks associated with the current group. */
    size_t numBlocks;
 
    size_t maxFreeBytes;
@@ -46,7 +46,7 @@ typedef struct vdseBlockGroup
 
    bool isDeletable;
    
-   /* Must be last since this struct contains a "variable-length" array. */
+   /** Must be last since this struct contains a "variable-length" array. */
    vdseMemBitmap bitmap;
    
 } vdseBlockGroup;
@@ -70,9 +70,10 @@ typedef struct vdseEndBlockGroup
    /** The number ofblocks in that group */
    size_t numBlocks;
    
-   /* Set to true when a block is in limbo (free but not in the free list */
+   /** Set to true when a block is in limbo (free but not in the free list */
    bool isInLimbo;
    
+   /** Set to true if the block is the last one in the vds */
    bool lastBlock;
    
 } vdseEndBlockGroup;

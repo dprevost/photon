@@ -434,6 +434,7 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( pObject    != NULL );
    VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
+   VDS_PRE_CONDITION( nameLengthInBytes > 0 );
    
    if ( ! pSession->terminated )
    {

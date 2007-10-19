@@ -15,31 +15,48 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "API/Process.c"
+#include "Common/Common.h"
+#include <vdsf/vds.h>
+#include "Tests/PrintError.h"
+
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+int main( int argc, char * argv[] )
 {
-   vdsaProcess process;
+   VDS_HANDLE handle, sessionHandle;
    int errcode;
-   vdseSessionContext context;
-      
-   errcode = vdsaProcessInit( &process, "12345" );
-   if ( errcode != VDS_CONNECT_ERROR )
+   
+   if ( argc > 1 )
+      errcode = vdsInit( argv[1], 0, &handle );
+   else
+      errcode = vdsInit( "10701", 0, &handle );
+   if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
-      return 0;
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   errcode = vdsInitSession( &sessionHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   memset( &context, 0, sizeof context );
-   context.pidLocker= getpid();
-   vdscInitErrorHandler( &context.errorHandler );
-   
-   errcode = vdsaOpenVDS( &process, NULL, 100, &context );
+   errcode = vdsCreateObject( sessionHandle,
+                              "/asczl",
+                              0,
+                              VDS_FOLDER );
+   if ( errcode != VDS_INVALID_LENGTH )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 
-   /* Should not return */
    return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

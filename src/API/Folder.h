@@ -25,14 +25,6 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/* Forward declarations */
-//struct vdseMemoryHeader;
-//struct vdseProcess;
-//struct vdseObjectContext;
-//struct vdsProxyObject;
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 typedef struct vdsaFolder
 {
    vdsaObjetType type;
@@ -44,26 +36,6 @@ typedef struct vdsaFolder
     * the current vdseHashItem) and the values needed to get the next item.
     */
    vdseFolderItem iterator;
-
-   /** 
-    * The bucket location in the internal array of the hash.
-    *
-    * Used for iterating in a folder. The hash object is made of an
-    * array of buckets - each bucket being a linked list of offsets
-    * (ptrdiff_t) to the real data of type vdseHashItem. Therefore
-    * we need both pieces of information to iterate through the hash.
-    */
-   size_t  bucketIterator;
-   
-   /** 
-    * The location in the list of the bucket (of the hash).
-    *
-    * Used for iterating in a folder. The hash object is made of an
-    * array of buckets - each bucket being a linked list of offsets
-    * (ptrdiff_t) to the real data of type vdseHashItem. Therefore
-    * we need both pieces of information to iterate through the hash.
-    */
-   void * pItemIterator;
    
 } vdsaFolder;
 

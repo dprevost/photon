@@ -15,31 +15,28 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "API/Process.c"
+#include "Common/Common.h"
+#include <vdsf/vds.h>
+#include "Tests/PrintError.h"
+
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+int main( int argc, char * argv[] )
 {
-   vdsaProcess process;
+   VDS_HANDLE handle, sessionHandle;
    int errcode;
-   vdseSessionContext context;
-      
-   errcode = vdsaProcessInit( &process, "12345" );
-   if ( errcode != VDS_CONNECT_ERROR )
+   
+   errcode = vdsInitSession( &sessionHandle );
+   if ( errcode != VDS_PROCESS_NOT_INITIALIZED )
    {
       fprintf( stderr, "err: %d\n", errcode );
-      return 0;
+      ERROR_EXIT( expectedToPass, NULL, ; );
    }
-
-   memset( &context, 0, sizeof context );
-   context.pidLocker= getpid();
-   vdscInitErrorHandler( &context.errorHandler );
    
-   errcode = vdsaOpenVDS( &process, NULL, 100, &context );
-
-   /* Should not return */
    return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

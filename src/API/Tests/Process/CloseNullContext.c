@@ -33,7 +33,7 @@ int main()
    }
 
    memset( &context, 0, sizeof context );
-   context.lockValue = getpid();
+   context.pidLocker= getpid();
    vdscInitErrorHandler( &context.errorHandler );
    
    errcode = vdsaOpenVDS( &process, "dummy", 100, &context );

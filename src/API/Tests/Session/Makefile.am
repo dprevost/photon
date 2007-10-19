@@ -26,12 +26,15 @@ check_PROGRAMS =                     \
                  CreateNullName      \
                  CreatePass          \
                  CreateWrongType     \
+                 CreateZeroLength    \
                  DestroyNotCreated   \
                  DestroyNullHandle   \
                  DestroyNullName     \
                  DestroyPass         \
+                 DestroyZeroLength   \
                  ExitNullHandle      \
                  ExitPass            \
+                 InitNoProcess       \
                  InitNullHandle      \
                  InitPass            \
                  OpenObjNotCreated   \
@@ -40,6 +43,7 @@ check_PROGRAMS =                     \
                  OpenObjNullSession  \
                  OpenObjPass         \
                  OpenObjWrongType    \
+                 OpenObjZeroLength   \
                  RollbackNullHandle  \
                  RollbackPass        
 
@@ -54,12 +58,15 @@ CreateNullHandle_SOURCES    = CreateNullHandle.c
 CreateNullName_SOURCES      = CreateNullName.c
 CreatePass_SOURCES          = CreatePass.c
 CreateWrongType_SOURCES     = CreateWrongType.c
+CreateZeroLength_SOURCES    = CreateZeroLength.c
 DestroyNotCreated_SOURCES   = DestroyNotCreated.c
 DestroyNullHandle_SOURCES   = DestroyNullHandle.c
 DestroyNullName_SOURCES     = DestroyNullName.c
 DestroyPass_SOURCES         = DestroyPass.c
+DestroyZeroLength_SOURCES   = DestroyZeroLength.c
 ExitNullHandle_SOURCES      = ExitNullHandle.c
 ExitPass_SOURCES            = ExitPass.c
+InitNoProcess_SOURCES       = InitNoProcess.c
 InitNullHandle_SOURCES      = InitNullHandle.c
 InitPass_SOURCES            = InitPass.c
 OpenObjNotCreated_SOURCES   = OpenObjNotCreated.c
@@ -68,6 +75,7 @@ OpenObjNullObject_SOURCES   = OpenObjNullObject.c
 OpenObjNullSession_SOURCES  = OpenObjNullSession.c
 OpenObjPass_SOURCES         = OpenObjPass.c
 OpenObjWrongType_SOURCES    = OpenObjWrongType.c
+OpenObjZeroLength_SOURCES   = OpenObjZeroLength.c
 RollbackNullHandle_SOURCES  = RollbackNullHandle.c
 RollbackPass_SOURCES        = RollbackPass.c
 
@@ -83,10 +91,12 @@ EXTRA_DIST =                        \
              CreateNullName.sh      \
              CreatePass.sh          \
              CreateWrongType.sh     \
+             CreateZeroLength.sh    \
              DestroyNotCreated.sh   \
              DestroyNullHandle.sh   \
              DestroyNullName.sh     \
              DestroyPass.sh         \
+             DestroyZeroLength.sh   \
              ExitNullHandle.sh      \
              ExitPass.sh            \
              InitNullHandle.sh      \
@@ -97,6 +107,7 @@ EXTRA_DIST =                        \
              OpenObjNullSession.sh  \
              OpenObjPass.sh         \
              OpenObjWrongType.sh    \
+             OpenObjZeroLength.sh   \
              RollbackNullHandle.sh  \
              RollbackPass.sh        
 
@@ -120,12 +131,15 @@ TESTS =                        \
         CreateNullName.sh      \
         CreatePass.sh          \
         CreateWrongType.sh     \
+        CreateZeroLength.sh    \
         DestroyNotCreated.sh   \
         DestroyNullHandle.sh   \
         DestroyNullName.sh     \
         DestroyPass.sh         \
+        DestroyZeroLength.sh   \
         ExitNullHandle.sh      \
         ExitPass.sh            \
+        InitNoProcess          \
         InitNullHandle.sh      \
         InitPass.sh            \
         OpenObjNotCreated.sh   \
@@ -134,6 +148,7 @@ TESTS =                        \
         OpenObjNullSession.sh  \
         OpenObjPass.sh         \
         OpenObjWrongType.sh    \
+        OpenObjZeroLength.sh   \
         RollbackNullHandle.sh  \
         RollbackPass.sh        
 
