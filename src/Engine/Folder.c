@@ -586,6 +586,13 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
       {
          vdseMemObjectStatus( pMemObject, pStatus );
 
+         switch( pDesc->apiType )
+         {
+         case VDS_FOLDER:
+            vdseFolderStatus( GET_PTR( pDesc->memOffset, vdseFolder ),
+                              pStatus );
+            break;
+         }
          vdseUnlock( pMemObject, pContext );
       }
       else
@@ -1053,6 +1060,17 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
                              pContext );
    
    VDS_POST_CONDITION( listErr == LIST_OK );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void vdseFolderStatus( vdseFolder   * pFolder,
+                       vdsObjStatus * pStatus )
+{
+   VDS_PRE_CONDITION( pFolder != NULL );
+   VDS_PRE_CONDITION( pStatus != NULL );
+
+   pStatus->numDataItem = pFolder->hashObj.numberOfItems;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

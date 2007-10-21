@@ -138,6 +138,10 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
                              size_t               nameLength,
                              vdseSessionContext * pContext );
 
+VDSF_ENGINE_EXPORT
+void vdseFolderStatus( vdseFolder   * pFolder,
+                       vdsObjStatus * pStatus );
+
 #if 0
 
 /** Can be used by both rollback-create and commit-destroy */

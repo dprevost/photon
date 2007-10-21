@@ -59,6 +59,11 @@ check_PROGRAMS =                         \
                  GetNullFolder           \
                  GetNullName             \
                  GetPass                 \
+                 GetStatusNullContext    \
+                 GetStatusNullFolder     \
+                 GetStatusNullName       \
+                 GetStatusPass           \
+                 GetStatusZeroLength     \
                  GetWrongObjType         \
                  GetZeroNameLength       \
                  InitNullContext         \
@@ -94,7 +99,15 @@ check_PROGRAMS =                         \
                  RemovePass              \
                  RemoveWrongObjType      \
                  RemoveZeroLength        \
+                 StatusNullFolder        \
+                 StatusNullStatus        \
+                 StatusPass              \
                  Tests                   \
+                 TopStatusNullContext    \
+                 TopStatusNullFolder     \
+                 TopStatusNullName       \
+                 TopStatusNullStatus     \
+                 TopStatusPass           \
                  ValidatePass            
 
 COMMON_HEADER = folderTest.h
@@ -143,6 +156,11 @@ GetNullItem_SOURCES             = $(COMMON_HEADER) GetNullItem.c
 GetNullFolder_SOURCES           = $(COMMON_HEADER) GetNullFolder.c
 GetNullName_SOURCES             = $(COMMON_HEADER) GetNullName.c
 GetPass_SOURCES                 = $(COMMON_HEADER) GetPass.c
+GetStatusNullContext_SOURCES    = $(COMMON_HEADER) GetStatusNullContext.c
+GetStatusNullFolder_SOURCES     = $(COMMON_HEADER) GetStatusNullFolder.c
+GetStatusNullName_SOURCES       = $(COMMON_HEADER) GetStatusNullName.c
+GetStatusPass_SOURCES           = $(COMMON_HEADER) GetStatusPass.c
+GetStatusZeroLength_SOURCES     = $(COMMON_HEADER) GetStatusZeroLength.c
 GetWrongObjType_SOURCES         = $(COMMON_HEADER) GetWrongObjType.c
 GetZeroNameLength_SOURCES       = $(COMMON_HEADER) GetZeroNameLength.c
 InitNullContext_SOURCES         = $(COMMON_HEADER) InitNullContext.c
@@ -178,7 +196,15 @@ RemoveNullName_SOURCES          = $(COMMON_HEADER) RemoveNullName.c
 RemovePass_SOURCES              = $(COMMON_HEADER) RemovePass.c
 RemoveWrongObjType_SOURCES      = $(COMMON_HEADER) RemoveWrongObjType.c
 RemoveZeroLength_SOURCES        = $(COMMON_HEADER) RemoveZeroLength.c
+StatusNullFolder_SOURCES        = $(COMMON_HEADER) StatusNullFolder.c
+StatusNullStatus_SOURCES        = $(COMMON_HEADER) StatusNullStatus.c
+StatusPass_SOURCES              = $(COMMON_HEADER) StatusPass.c
 Tests_SOURCES                   = $(COMMON_HEADER) Tests.c
+TopStatusNullContext_SOURCES    = $(COMMON_HEADER) TopStatusNullContext.c
+TopStatusNullFolder_SOURCES     = $(COMMON_HEADER) TopStatusNullFolder.c
+TopStatusNullName_SOURCES       = $(COMMON_HEADER) TopStatusNullName.c
+TopStatusNullStatus_SOURCES     = $(COMMON_HEADER) TopStatusNullStatus.c
+TopStatusPass_SOURCES           = $(COMMON_HEADER) TopStatusPass.c
 ValidatePass_SOURCES            = $(COMMON_HEADER) ValidatePass.c
 
 EXTRA_DIST = 
@@ -230,6 +256,11 @@ TESTS =                         \
         GetNullFolder           \
         GetNullName             \
         GetPass                 \
+        GetStatusNullContext    \
+        GetStatusNullFolder     \
+        GetStatusNullName       \
+        GetStatusPass           \
+        GetStatusZeroLength     \
         GetWrongObjType         \
         GetZeroNameLength       \
         InitNullContext         \
@@ -265,7 +296,15 @@ TESTS =                         \
         RemovePass              \
         RemoveWrongObjType      \
         RemoveZeroLength        \
+        StatusNullFolder        \
+        StatusNullStatus        \
+        StatusPass              \
         Tests                   \
+        TopStatusNullContext    \
+        TopStatusNullFolder     \
+        TopStatusNullName       \
+        TopStatusNullStatus     \
+        TopStatusPass           \
         ValidatePass            
 
 XFAIL_TESTS =                         \
@@ -304,6 +343,10 @@ XFAIL_TESTS =                         \
               GetNullItem             \
               GetNullFolder           \
               GetNullName             \
+              GetStatusNullContext    \
+              GetStatusNullFolder     \
+              GetStatusNullName       \
+              GetStatusZeroLength     \
               GetWrongObjType         \
               GetZeroNameLength       \
               InitNullContext         \
@@ -333,7 +376,13 @@ XFAIL_TESTS =                         \
               RemoveNullFolder        \
               RemoveNullName          \
               RemoveWrongObjType      \
-              RemoveZeroLength        
+              RemoveZeroLength        \
+              StatusNullFolder        \
+              StatusNullStatus        \
+              TopStatusNullContext    \
+              TopStatusNullFolder     \
+              TopStatusNullName       \
+              TopStatusNullStatus     
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la
