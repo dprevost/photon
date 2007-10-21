@@ -186,62 +186,69 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
 
       /*
-       * This second loop is done on the list of free chunks in the current
-       * block group.
+       * No point in trying if the amount of free space is less than
+       * the requested size for that group.
        */
-      errNode = vdseLinkedListPeakFirst( &currentGroup->freeList, &dummy );
-      while ( errNode == LIST_OK )
+      if ( currentGroup->freeBytes > requestedChunks *VDSE_ALLOCATION_UNIT )
       {
-         currentNode = (vdseFreeBufferNode*)( 
-            (unsigned char*)dummy - offsetof(vdseFreeBufferNode,node));
-         numChunks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
-//         fprintf(stderr, "chunks: %d %d \n", numChunks, requestedChunks );
-         if ( numChunks >= requestedChunks )
+         /*
+          * This second loop is done on the list of free chunks in the 
+          * current block group.
+          */
+         errNode = vdseLinkedListPeakFirst( &currentGroup->freeList, &dummy );
+         while ( errNode == LIST_OK )
          {
-            /* We got it */
-            remainingChunks = numChunks - requestedChunks;
-            if ( remainingChunks == 0 )
+            currentNode = (vdseFreeBufferNode*)( 
+               (unsigned char*)dummy - offsetof(vdseFreeBufferNode,node));
+            numChunks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
+            if ( numChunks >= requestedChunks )
             {
-               /* Remove the chunk from the list */
-               vdseLinkedListRemoveItem( &currentGroup->freeList, 
-                                         &currentNode->node );
-            }
-            else
-            {
-               newNode = (vdseFreeBufferNode*)
-                         ((unsigned char*) currentNode + 
-                         (requestedChunks*VDSE_ALLOCATION_UNIT));
-               newNode->numBuffers = remainingChunks;
-               vdseLinkedListReplaceItem( &currentGroup->freeList, 
-                                          &currentNode->node, 
-                                          &newNode->node );
-               /*
-                * Put the offset of the first free chunk on the last free 
-                * chunk. This makes it simpler/faster to rejoin groups 
-                * of free chunks. But only if there is more than one free
-                * chunk.
-                */
-               if ( remainingChunks > 1 )
+               /* We got it */
+               remainingChunks = numChunks - requestedChunks;
+               if ( remainingChunks == 0 )
                {
-                  ptr = (unsigned char*) newNode + 
-                     (remainingChunks-1) * VDSE_ALLOCATION_UNIT; 
-                  *((ptrdiff_t *)ptr) = SET_OFFSET(newNode);
+                  /* Remove the chunk from the list */
+                  vdseLinkedListRemoveItem( &currentGroup->freeList, 
+                                            &currentNode->node );
                }
-            }
+               else
+               {
+                  newNode = (vdseFreeBufferNode*)
+                            ((unsigned char*) currentNode + 
+                            (requestedChunks*VDSE_ALLOCATION_UNIT));
+                  newNode->numBuffers = remainingChunks;
+                  vdseLinkedListReplaceItem( &currentGroup->freeList, 
+                                             &currentNode->node, 
+                                             &newNode->node );
+                  /*
+                   * Put the offset of the first free chunk on the last free 
+                   * chunk. This makes it simpler/faster to rejoin groups 
+                   * of free chunks. But only if there is more than one free
+                   * chunk.
+                   */
+                  if ( remainingChunks > 1 )
+                  {
+                     ptr = (unsigned char*) newNode + 
+                        (remainingChunks-1) * VDSE_ALLOCATION_UNIT; 
+                     *((ptrdiff_t *)ptr) = SET_OFFSET(newNode);
+                  }
+               }
 
-            /* Set the bitmap of chunks of the current block group. */
-            vdseSetBufferAllocated( &currentGroup->bitmap, 
-                                    SET_OFFSET(currentNode), 
-                                    requestedChunks*VDSE_ALLOCATION_UNIT );
+               currentGroup->freeBytes -= requestedChunks*VDSE_ALLOCATION_UNIT;
+               /* Set the bitmap of chunks of the current block group. */
+               vdseSetBufferAllocated( &currentGroup->bitmap, 
+                                       SET_OFFSET(currentNode), 
+                                       requestedChunks*VDSE_ALLOCATION_UNIT );
                               
-            return (unsigned char*) currentNode;
-         }
+               return (unsigned char*) currentNode;
+            } /* end if of numChunks >= requestedChunks */
    
-         oldNode = currentNode;
-         errNode = vdseLinkedListPeakNext( &currentGroup->freeList,
-                                           &oldNode->node,
-                                           &dummy );
-      } /* end of second loop on chunks */
+            oldNode = currentNode;
+            errNode = vdseLinkedListPeakNext( &currentGroup->freeList,
+                                              &oldNode->node,
+                                              &dummy );
+         } /* end of second loop on chunks */
+      } /* end of test on freeBytes */
       
       oldGroup = currentGroup;
       errGroup = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
@@ -331,6 +338,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
             }
          }
 
+         currentGroup->freeBytes -= requestedChunks*VDSE_ALLOCATION_UNIT;
          /* Set the bitmap */
          vdseSetBufferAllocated( &currentGroup->bitmap, 
                                  SET_OFFSET(currentNode), 
@@ -401,6 +409,8 @@ void vdseFree( vdseMemObject*      pMemObj,
                                          &dummy );
    }
    VDS_PRE_CONDITION( goodGroup != NULL );
+
+   goodGroup->freeBytes += numBytes;
 
    /* 
     * Check if the chunk before the current chunk (ptr)
@@ -487,6 +497,41 @@ void vdseFree( vdseMemObject*      pMemObj,
              (((vdseFreeBufferNode*)p)->numBuffers-1) * VDSE_ALLOCATION_UNIT; 
           *((ptrdiff_t *)ptr) = SET_OFFSET(p);
       }
+   }
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void vdseMemObjectStatus( vdseMemObject * pMemObj, 
+                          vdsObjStatus  * pStatus )
+{
+   vdseLinkNode* firstNode, *dummy;
+   enum ListErrors errGroup; // , errNode;
+   vdseBlockGroup* pGroup;
+
+   VDS_PRE_CONDITION( pMemObj != NULL );
+   VDS_PRE_CONDITION( pStatus != NULL );
+
+   pStatus->numBlocks = pMemObj->totalBlocks;
+   pStatus->numBlockGroup = pMemObj->listBlockGroup.currentSize;
+   pStatus->freeBytes = 0;
+   
+   /*
+    * We retrieve the first node
+    */
+   errGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup,
+                                       &dummy );
+   VDS_PRE_CONDITION( errGroup == LIST_OK );
+
+   while ( errGroup == LIST_OK )
+   {
+      pGroup = (vdseBlockGroup*)( 
+         (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
+      pStatus->freeBytes += pGroup->freeBytes;
+
+      errGroup = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
+                                         dummy,
+                                         &dummy );
    }
 }
 

@@ -42,6 +42,8 @@ int main()
    buff[0] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
    if ( buff[0] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pDummy->blockGroup.maxFreeBytes != pDummy->blockGroup.freeBytes+VDSE_BLOCK_SIZE )
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    buff[1] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
    if ( buff[1] == NULL )
@@ -52,6 +54,8 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
    /* Needs two new blocks at this point */
+   if ( pDummy->blockGroup.freeBytes >= VDSE_BLOCK_SIZE )
+      ERROR_EXIT( expectedToPass, NULL, ; );
    buff[3] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
    if ( buff[3] == NULL )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

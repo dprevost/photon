@@ -134,6 +134,10 @@ void vdseLockNoFailure( vdseMemObject      * pMemObj,
    vdscAcquireProcessLock ( &pMemObj->lock, LOCK_TIMEOUT );
 }
 
+VDSF_ENGINE_EXPORT
+void vdseMemObjectStatus( vdseMemObject * pMemObject, 
+                          vdsObjStatus  * pStatus );
+
 static inline
 void vdseUnlock( vdseMemObject      * pMemObj,
                  vdseSessionContext * pContext  )

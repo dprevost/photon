@@ -32,7 +32,10 @@ check_PROGRAMS =                   \
                  MallocNullContext \
                  MallocNullObj     \
                  MallocPass        \
-                 MallocZeroBytes   
+                 MallocZeroBytes   \
+                 StatusNullMemObj  \
+                 StatusNullStatus  \
+                 StatusPass        
 
 COMMON_HEADER = MemObjTest.h
 
@@ -54,6 +57,9 @@ MallocNullContext_SOURCES = $(COMMON_HEADER) MallocNullContext.c
 MallocNullObj_SOURCES     = $(COMMON_HEADER) MallocNullObj.c
 MallocPass_SOURCES        = $(COMMON_HEADER) MallocPass.c
 MallocZeroBytes_SOURCES   = $(COMMON_HEADER) MallocZeroBytes.c
+StatusNullMemObj_SOURCES  = $(COMMON_HEADER) StatusNullMemObj.c
+StatusNullStatus_SOURCES  = $(COMMON_HEADER) StatusNullStatus.c
+StatusPass_SOURCES        = $(COMMON_HEADER) StatusPass.c
 
 EXTRA_DIST =         
 
@@ -78,7 +84,10 @@ TESTS =                   \
         MallocNullContext \
         MallocNullObj     \
         MallocPass        \
-        MallocZeroBytes   
+        MallocZeroBytes   \
+        StatusNullMemObj  \
+        StatusNullStatus  \
+        StatusPass        
 
 XFAIL_TESTS =                   \
               FiniNullContext   \
@@ -94,7 +103,9 @@ XFAIL_TESTS =                   \
               InitZeroType      \
               MallocNullContext \
               MallocNullObj     \
-              MallocZeroBytes   
+              MallocZeroBytes   \
+              StatusNullMemObj  \
+              StatusNullStatus  
               
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la

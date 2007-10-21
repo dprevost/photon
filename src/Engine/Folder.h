@@ -95,6 +95,13 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
                          vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
+int vdseFolderGetStatus( vdseFolder         * pFolder,
+                         const vdsChar_T    * objectName,
+                         size_t               strLength, 
+                         vdsObjStatus       * pStatus,
+                         vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
 int vdseFolderInit( vdseFolder         * pFolder,
                     ptrdiff_t            parentOffset,
                     size_t               numberOfBlocks,
@@ -149,8 +156,8 @@ vdsErrors vdseFolderRollbackDestroy( vdseFolder*         pFolder,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * The next 4 functions should only be used by the API, to create, destroy,
- * open or close a memory object.
+ * The next 5 functions should only be used by the API, to create, destroy,
+ * open or close a memory object. Or to obtain its status.
  */
 
 VDSF_ENGINE_EXPORT
@@ -169,6 +176,13 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
                                 const char         * objectName,
                                 size_t               nameLengthInBytes,
                                 vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+int vdseTopFolderGetStatus( vdseFolder         * pFolder,
+                            const char         * objectName,
+                            size_t               nameLengthInBytes,
+                            vdsObjStatus       * pFolderItem,
+                            vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseTopFolderOpenObject( vdseFolder         * pFolder,

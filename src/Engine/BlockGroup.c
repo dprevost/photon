@@ -29,6 +29,7 @@ void vdseBlockGroupFini( vdseBlockGroup * pGroup )
 
    pGroup->numBlocks = 0;
    pGroup->maxFreeBytes = 0;
+   pGroup->freeBytes = 0;
    pGroup->objType = VDSE_IDENT_CLEAR;
 }
 
@@ -95,7 +96,8 @@ void vdseBlockGroupInit( vdseBlockGroup  * pGroup,
    
    /* remove the space required by the vdseEndBlockGroup struct */
    pGroup->maxFreeBytes -= VDSE_ALLOCATION_UNIT;
-
+   pGroup->freeBytes = pGroup->maxFreeBytes;
+   
    /* 
     * So we have one free buffer, starting at offset "currentLength"
     * + firstBlockOffset with length "maxFreeBytes". Insert it in our freeList.

@@ -40,8 +40,13 @@ typedef struct vdseBlockGroup
    /** The number of blocks associated with the current group. */
    size_t numBlocks;
 
+   /** Maximum number of free memory if the block group is not used */
    size_t maxFreeBytes;
    
+   /** Current amount of free memory in the block group */
+   size_t freeBytes;
+   
+   /** Our linked list of free buffers. */
    vdseLinkedList freeList;
 
    bool isDeletable;
