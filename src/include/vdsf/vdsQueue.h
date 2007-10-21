@@ -30,38 +30,58 @@ extern "C" {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/** Close a FIFO queue. */
 VDSF_EXPORT
 int vdsQueueClose(  VDS_HANDLE objectHandle );
    
-
+/** Insert a data element in the queue. */
 VDSF_EXPORT
-int vdsQueueInsertItem( VDS_HANDLE   objectHandle, 
-                        const void * pItem, 
-                        size_t       length );
+int vdsQueuePush( VDS_HANDLE   objectHandle, 
+                  const void * pItem, 
+                  size_t       length );
 
+/** Open a FIFO queue. */
 VDSF_EXPORT
 int vdsQueueOpen(  VDS_HANDLE   sessionHandle,
                    const char * queueName,
                    size_t       nameLengthInBytes,
                    VDS_HANDLE * objectHandle );
 
+/** Remove the first inserted item from a FIFO queue. */
 VDSF_EXPORT
-int vdsQueueRemoveItem( VDS_HANDLE   objectHandle, 
-                        void       * pItem, 
-                        size_t       length );
+int vdsQueuePop( VDS_HANDLE   objectHandle,
+                 vdsDataEntry * pEntry );
 
-/* The next function does not remove the items from the queue */
-
+/** 
+ * Release the "soft lock" on the data - to be used when you're done with 
+ * vdsQueuePop() or vdsQueueGetItem().
+ */
 VDSF_EXPORT
-int vdsQueueGetItem( VDS_HANDLE        objectHandle,
-                     vdsIteratorType   flag, 
-                     void            * pItem, 
-                     size_t            length );
+int vdsQueueRelease( VDS_HANDLE     objectHandle,
+                     vdsDataEntry * pEntry );
 
+/** 
+ * Iterates through the queue - no data items are removed from the queue
+ * by this function.
+ */
+VDSF_EXPORT
+int vdsQueueGetFirst( VDS_HANDLE        objectHandle,
+                      vdsDataEntry    * pEntry );
+
+/** 
+ * Iterates through the queue - no data items are removed from the queue
+ * by this function.
+ */
+VDSF_EXPORT
+int vdsQueueGetNext( VDS_HANDLE        objectHandle,
+                     vdsDataEntry    * pEntry );
+
+#if 0
 VDSF_EXPORT
 int vdsQueueStatus( VDS_HANDLE   objectHandle,
                     size_t     * pNumValidItems,
                     size_t     * pNumTotalItems );
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

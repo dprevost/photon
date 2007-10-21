@@ -15,35 +15,43 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_API_H
-#define VDSA_API_H
+#ifndef VDSA_QUEUE_H
+#define VDSA_QUEUE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef enum vdsaObjetType
+#include "API/CommonObject.h"
+#include "Engine/Queue.h"
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+BEGIN_C_DECLS
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+typedef struct vdsaQueue
 {
-   VDSA_PROCESS = 0x111,
-   VDSA_SESSION,
-   VDSA_FOLDER,
-   VDSA_HASH_MAP,
-   VDSA_QUEUE
+   vdsaObjetType type;
+
+   vdsaCommonObject object;
    
-} vdsaObjetType;
+   /**
+    * This struct holds both the result of the iteration (the pointer to
+    * the current vdseHashItem) and the values needed to get the next item.
+    *
+    * It is also used to hold 
+    */
+   vdseQueueItem * iterator;
+   
+} vdsaQueue;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#if defined(WIN32)
-#  ifdef API_EXPORTS
-#    define VDSF_API_EXPORT __declspec ( dllexport )
-#  else
-#    define VDSF_API_EXPORT __declspec ( dllimport )
-#  endif
-#else
-#  define VDSF_API_EXPORT
-#endif
+END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_API_H */
+#endif /* VDSA_QUEUE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

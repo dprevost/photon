@@ -41,6 +41,8 @@ libvdsf_la_SOURCES = api.c            \
                      HashMap.h        \
                      Process.c        \
                      Process.h        \
+                     Queue.c          \
+                     Queue.h          \
                      Session.c        \
                      Session.h        \
                      WatchdogCommon.h

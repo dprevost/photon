@@ -1,4 +1,4 @@
-.TH "vdsCommon.h" 3 "15 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsCommon.h" 3 "21 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,7 +16,10 @@ vdsCommon.h \-
 .RI "struct \fBvdsFolderEntry\fP"
 .br
 .ti -1c
-.RI "struct \fBvdsHashMapEntry\fP"
+.RI "struct \fBvdsDataEntry\fP"
+.br
+.ti -1c
+.RI "struct \fBvdsObjStatus\fP"
 .br
 .in -1c
 .SS "Defines"
@@ -39,6 +42,9 @@ vdsCommon.h \-
 .in +1c
 .ti -1c
 .RI "typedef void * \fBVDS_HANDLE\fP"
+.br
+.ti -1c
+.RI "typedef \fBvdsDataEntry\fP \fBvdsHashMapEntry\fP"
 .br
 .in -1c
 .SS "Enumerations"
@@ -77,6 +83,9 @@ Definition at line 32 of file vdsCommon.h.
 .SS "typedef void* \fBVDS_HANDLE\fP"
 .PP
 Definition at line 43 of file vdsCommon.h.
+.SS "typedef struct \fBvdsDataEntry\fP \fBvdsHashMapEntry\fP"
+.PP
+Definition at line 116 of file vdsCommon.h.
 .SH "Enumeration Type Documentation"
 .PP 
 .SS "enum \fBvdsIteratorType\fP"

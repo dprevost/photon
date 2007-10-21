@@ -1,4 +1,4 @@
-.TH "vdsQueue.h" 3 "15 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsQueue.h" 3 "21 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,35 +15,61 @@ vdsQueue.h \-
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsQueueClose\fP (\fBVDS_HANDLE\fP objectHandle)"
 .br
+.RI "\fIClose a FIFO queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsQueueInsertItem\fP (\fBVDS_HANDLE\fP objectHandle, const void *pItem, size_t length)"
+.RI "VDSF_EXPORT int \fBvdsQueuePush\fP (\fBVDS_HANDLE\fP objectHandle, const void *pItem, size_t length)"
 .br
+.RI "\fIInsert a data element in the queue. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsQueueOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *queueName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP *objectHandle)"
 .br
+.RI "\fIOpen a FIFO queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsQueueRemoveItem\fP (\fBVDS_HANDLE\fP objectHandle, void *pItem, size_t length)"
+.RI "VDSF_EXPORT int \fBvdsQueuePop\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP *pEntry)"
 .br
+.RI "\fIRemove the first inserted item from a FIFO queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsQueueGetItem\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsIteratorType\fP flag, void *pItem, size_t length)"
+.RI "VDSF_EXPORT int \fBvdsQueueRelease\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP *pEntry)"
 .br
+.RI "\fIRelease the 'soft lock' on the data - to be used when you're done with \fBvdsQueuePop()\fP or vdsQueueGetItem(). \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsQueueStatus\fP (\fBVDS_HANDLE\fP objectHandle, size_t *pNumValidItems, size_t *pNumTotalItems)"
+.RI "VDSF_EXPORT int \fBvdsQueueGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP *pEntry)"
 .br
+.RI "\fIIterates through the queue - no data items are removed from the queue by this function. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsQueueGetNext\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP *pEntry)"
+.br
+.RI "\fIIterates through the queue - no data items are removed from the queue by this function. \fP"
 .in -1c
 .SH "Function Documentation"
 .PP 
 .SS "VDSF_EXPORT int vdsQueueClose (\fBVDS_HANDLE\fP objectHandle)"
 .PP
-.SS "VDSF_EXPORT int vdsQueueGetItem (\fBVDS_HANDLE\fP objectHandle, \fBvdsIteratorType\fP flag, void * pItem, size_t length)"
+Close a FIFO queue. 
 .PP
-.SS "VDSF_EXPORT int vdsQueueInsertItem (\fBVDS_HANDLE\fP objectHandle, const void * pItem, size_t length)"
+.SS "VDSF_EXPORT int vdsQueueGetFirst (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP * pEntry)"
+.PP
+Iterates through the queue - no data items are removed from the queue by this function. 
+.PP
+.SS "VDSF_EXPORT int vdsQueueGetNext (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP * pEntry)"
+.PP
+Iterates through the queue - no data items are removed from the queue by this function. 
 .PP
 .SS "VDSF_EXPORT int vdsQueueOpen (\fBVDS_HANDLE\fP sessionHandle, const char * queueName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP * objectHandle)"
 .PP
-.SS "VDSF_EXPORT int vdsQueueRemoveItem (\fBVDS_HANDLE\fP objectHandle, void * pItem, size_t length)"
+Open a FIFO queue. 
 .PP
-.SS "VDSF_EXPORT int vdsQueueStatus (\fBVDS_HANDLE\fP objectHandle, size_t * pNumValidItems, size_t * pNumTotalItems)"
+.SS "VDSF_EXPORT int vdsQueuePop (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP * pEntry)"
+.PP
+Remove the first inserted item from a FIFO queue. 
+.PP
+.SS "VDSF_EXPORT int vdsQueuePush (\fBVDS_HANDLE\fP objectHandle, const void * pItem, size_t length)"
+.PP
+Insert a data element in the queue. 
+.PP
+.SS "VDSF_EXPORT int vdsQueueRelease (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP * pEntry)"
+.PP
+Release the 'soft lock' on the data - to be used when you're done with \fBvdsQueuePop()\fP or vdsQueueGetItem(). 
 .PP
 .SH "Author"
 .PP 
