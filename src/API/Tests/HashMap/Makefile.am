@@ -50,7 +50,10 @@ check_PROGRAMS =                      \
                  OpenNullSessHandle   \
                  OpenPass             \
                  OpenWrongSessHandle  \
-                 OpenZeroLength       
+                 OpenZeroLength       \
+                 StatusNullHandle     \
+                 StatusNullStatus     \
+                 StatusPass           
 
 CloseNullHandle_SOURCES      = CloseNullHandle.c
 ClosePass_SOURCES            = ClosePass.c
@@ -84,6 +87,9 @@ OpenNullSessHandle_SOURCES   = OpenNullSessHandle.c
 OpenPass_SOURCES             = OpenPass.c
 OpenWrongSessHandle_SOURCES  = OpenWrongSessHandle.c
 OpenZeroLength_SOURCES       = OpenZeroLength.c
+StatusNullHandle_SOURCES     = StatusNullHandle.c
+StatusNullStatus_SOURCES     = StatusNullStatus.c
+StatusPass_SOURCES           = StatusPass.c
 
 EXTRA_DIST =                         \
              CloseNullHandle.sh      \
@@ -121,7 +127,10 @@ EXTRA_DIST =                         \
              OpenNullSessHandle.sh   \
              OpenPass.sh             \
              OpenWrongSessHandle.sh  \
-             OpenZeroLength.sh       
+             OpenZeroLength.sh       \
+             StatusNullHandle.sh     \
+             StatusNullStatus.sh     \
+             StatusPass.sh           
 
 TESTS_ENVIRONMENT =                              \
                     tcp_port=10701               \
@@ -167,7 +176,10 @@ TESTS =                         \
         OpenNullSessHandle.sh   \
         OpenPass.sh             \
         OpenWrongSessHandle.sh  \
-        OpenZeroLength.sh       
+        OpenZeroLength.sh       \
+        StatusNullHandle.sh     \
+        StatusNullStatus.sh     \
+        StatusPass.sh           
 
 XFAIL_TESTS = 
 

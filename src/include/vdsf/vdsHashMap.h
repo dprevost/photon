@@ -66,8 +66,8 @@ int vdsHashMapOpen( VDS_HANDLE   sessionHandle,
                     VDS_HANDLE * objectHandle );
 
 VDSF_EXPORT
-int vdsHashMapStatus( VDS_HANDLE   objectHandle,
-                      size_t     * numChildren );
+int vdsHashMapStatus( VDS_HANDLE     objectHandle,
+                      vdsObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -343,10 +343,49 @@ int vdsHashMapOpen( VDS_HANDLE   sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsHashMapStatus( VDS_HANDLE   objectHandle,
-                      size_t     * numChildren )
+int vdsHashMapStatus( VDS_HANDLE     objectHandle,
+                      vdsObjStatus * pStatus )
 {
-   return VDS_INTERNAL_ERROR;
+   vdsaHashMap * pHashMap;
+   vdseHashMap * pVDSHashMap;
+   int errcode = 0;
+   vdseSessionContext * pContext;
+   
+   pHashMap = (vdsaHashMap *) objectHandle;
+   if ( pHashMap == NULL )
+      return VDS_NULL_HANDLE;
+   
+   if ( pHashMap->type != VDSA_HASH_MAP )
+      return VDS_WRONG_TYPE_HANDLE;
+
+   if ( pStatus == NULL )
+      return VDS_NULL_POINTER;
+
+   if ( vdsaCommonLock( &pHashMap->object ) == 0 )
+   {
+      pVDSHashMap = (vdseHashMap *) pHashMap->object.pMyVdsObject;
+      pContext = &pHashMap->object.pSession->context;
+      
+      if ( vdseLock( &pVDSHashMap->memObject, pContext ) == 0 )
+      {
+         vdseMemObjectStatus( &pVDSHashMap->memObject, pStatus );
+
+         vdseHashMapStatus( pVDSHashMap, pStatus );
+
+         vdseUnlock( &pVDSHashMap->memObject, pContext );
+      }
+      else
+      {
+         errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+         vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      }
+      
+      vdsaCommonUnlock( &pHashMap->object );
+   }
+   else
+      return VDS_SESSION_CANNOT_GET_LOCK;
+   
+   return errcode;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
