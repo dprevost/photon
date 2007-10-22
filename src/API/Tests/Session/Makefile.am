@@ -45,7 +45,8 @@ check_PROGRAMS =                     \
                  OpenObjWrongType    \
                  OpenObjZeroLength   \
                  RollbackNullHandle  \
-                 RollbackPass        
+                 RollbackPass        \
+                 StatusPass          
 
 CloseNullSession_SOURCES    = CloseNullSession.c
 ClosePass_SOURCES           = ClosePass.c
@@ -109,7 +110,8 @@ EXTRA_DIST =                        \
              OpenObjWrongType.sh    \
              OpenObjZeroLength.sh   \
              RollbackNullHandle.sh  \
-             RollbackPass.sh        
+             RollbackPass.sh        \
+             StatusPass.sh          
 
 TESTS_ENVIRONMENT =                              \
                     tcp_port=10701               \
@@ -119,7 +121,8 @@ TESTS_ENVIRONMENT =                              \
                     verbose=1                    \
                     PYTHON=$(PYTHON)
 
-TESTS =                        \
+TESTS = StatusPass.sh
+#TESTS =                        \
         CloseNullSession.sh    \
         ClosePass.sh           \
         CloseObjNullObject.sh  \
@@ -150,7 +153,8 @@ TESTS =                        \
         OpenObjWrongType.sh    \
         OpenObjZeroLength.sh   \
         RollbackNullHandle.sh  \
-        RollbackPass.sh        
+        RollbackPass.sh        \
+        StatusPass.sh          
 
 XFAIL_TESTS =                  
 
