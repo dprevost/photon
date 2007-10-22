@@ -123,12 +123,6 @@ int vdseQueueRelease( vdseQueue          * pQueue,
                       vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseQueueStatus( vdseQueue          * pQueue,
-                     size_t             * pNumValidItems,
-                     size_t             * pNumTotalItems,
-                     vdseSessionContext * pContext  );
-
-VDSF_ENGINE_EXPORT
 void vdseQueueCommitAdd( vdseQueue * pQueue, 
                          ptrdiff_t   itemOffset );
 
@@ -145,6 +139,10 @@ void vdseQueueCommitRemove( vdseQueue          * pQueue,
 VDSF_ENGINE_EXPORT
 void vdseQueueRollbackRemove( vdseQueue * pQueue, 
                               ptrdiff_t   itemOffset );
+
+VDSF_ENGINE_EXPORT
+void vdseQueueStatus( vdseQueue    * pQueue,
+                      vdsObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

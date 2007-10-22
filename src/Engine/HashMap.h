@@ -131,6 +131,10 @@ VDSF_ENGINE_EXPORT
 void vdseHashMapRollbackRemove( vdseHashMap * pHashMap, 
                                 ptrdiff_t     itemOffset );
 
+VDSF_ENGINE_EXPORT
+void vdseHashMapStatus( vdseHashMap  * pHashMap,
+                        vdsObjStatus * pStatus );
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS

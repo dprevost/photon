@@ -48,8 +48,31 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
+   errcode = vdseFolderInsertObject( pFolder,
+                                     strCheckLow("test3"),
+                                     strCheck("Test3"),
+                                     5,
+                                     VDS_FOLDER,
+                                     1,
+                                     0,
+                                     &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseFolderInsertObject( pFolder,
+                                     strCheckLow("test4"),
+                                     strCheck("Test4"),
+                                     5,
+                                     VDS_FOLDER,
+                                     1,
+                                     0,
+                                     &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
    vdseFolderStatus( pFolder, &objStatus );
-   if ( objStatus.numDataItem != 1 )
+
+   if ( objStatus.numDataItem != 3 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    return 0;

@@ -26,26 +26,40 @@ int main()
    vdseQueue * pQueue;
    vdseSessionContext context;
    int errcode;
-   vdseTxStatus status;
-   size_t numValidItems;
-   size_t numTotalItems;
-   
+   vdseTxStatus txStatus;
+   vdsObjStatus status;
+   char * data = "My Data";
+
    pQueue = initQueueTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   vdseTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseQueueInit( pQueue, 
-                            0, 1, &status, 4, 
+                            0, 1, &txStatus, 4, 
                             strCheck("Map1"), NULL_OFFSET, &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   errcode = vdseQueueStatus( pQueue,
-                              &numValidItems,
-                              &numTotalItems,
+   errcode = vdseQueueInsert( pQueue,
+                              data,
+                              8,
+                              VDSE_QUEUE_FIRST,
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseQueueInsert( pQueue,
+                              data,
+                              8,
+                              VDSE_QUEUE_FIRST,
+                              &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   vdseQueueStatus( pQueue, &status );
+
+   if ( status.numDataItem != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    return 0;
 }

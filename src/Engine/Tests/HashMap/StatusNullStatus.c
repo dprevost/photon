@@ -15,7 +15,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "queueTest.h"
+#include "hashMapTest.h"
 
 const bool expectedToPass = false;
 
@@ -23,27 +23,33 @@ const bool expectedToPass = false;
 
 int main()
 {
-   vdseQueue * pQueue;
+   vdseHashMap * pHashMap;
    vdseSessionContext context;
    int errcode;
-   vdseTxStatus status;
-   size_t numValidItems;
-   size_t numTotalItems;
+   vdseTxStatus txStatus;
+   char * key  = "my key";
+   char * data = "my data";
    
-   pQueue = initQueueTest( expectedToPass, &context );
+   pHashMap = initHashMapTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   vdseTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseQueueInit( pQueue, 
-                            0, 1, &status, 4, 
-                            strCheck("Map1"), NULL_OFFSET, &context );
+   errcode = vdseHashMapInit( pHashMap, 
+                              0, 1, 0, &txStatus, 4, 
+                              strCheck("Map1"), NULL_OFFSET, &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   errcode = vdseQueueStatus( pQueue,
-                              NULL,
-                              &numTotalItems,
-                              &context );
+   errcode = vdseHashMapInsert( pHashMap,
+                                (const void *) key,
+                                6,
+                                (const void *) data,
+                                7,
+                                &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   vdseHashMapStatus( pHashMap, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

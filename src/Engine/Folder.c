@@ -15,10 +15,11 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Folder.h"
-#include "Transaction.h"
-#include "MemoryAllocator.h"
-#include "HashMap.h"
+#include "Engine/Folder.h"
+#include "Engine/Transaction.h"
+#include "Engine/MemoryAllocator.h"
+#include "Engine/HashMap.h"
+#include "Engine/Queue.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -592,6 +593,16 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
             vdseFolderStatus( GET_PTR( pDesc->memOffset, vdseFolder ),
                               pStatus );
             break;
+         case VDS_HASH_MAP:
+            vdseHashMapStatus( GET_PTR( pDesc->memOffset, vdseHashMap ),
+                               pStatus );
+            break;
+         case VDS_QUEUE:
+            vdseQueueStatus( GET_PTR( pDesc->memOffset, vdseQueue ),
+                             pStatus );
+            break;
+         default:
+            VDS_INV_CONDITION( 0 == 1 );
          }
          vdseUnlock( pMemObject, pContext );
       }

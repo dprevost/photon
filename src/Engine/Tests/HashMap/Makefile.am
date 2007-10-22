@@ -69,7 +69,10 @@ check_PROGRAMS =                         \
                  RollbackAddPass         \
                  RollbackRemoveNullHash  \
                  RollbackRemoveNullItem  \
-                 RollbackRemovePass      
+                 RollbackRemovePass      \
+                 StatusNullHash          \
+                 StatusNullStatus        \
+                 StatusPass              
 
 COMMON_HEADER = hashMapTest.h
 
@@ -128,6 +131,9 @@ RollbackAddPass_SOURCES         = $(COMMON_HEADER) RollbackAddPass.c
 RollbackRemoveNullHash_SOURCES  = $(COMMON_HEADER) RollbackRemoveNullHash.c
 RollbackRemoveNullItem_SOURCES  = $(COMMON_HEADER) RollbackRemoveNullItem.c
 RollbackRemovePass_SOURCES      = $(COMMON_HEADER) RollbackRemovePass.c
+StatusNullHash_SOURCES          = $(COMMON_HEADER) StatusNullHash.c
+StatusNullStatus_SOURCES        = $(COMMON_HEADER) StatusNullStatus.c
+StatusPass_SOURCES              = $(COMMON_HEADER) StatusPass.c
 
 EXTRA_DIST = 
 
@@ -188,7 +194,10 @@ TESTS =                         \
         RollbackAddPass         \
         RollbackRemoveNullHash  \
         RollbackRemoveNullItem  \
-        RollbackRemovePass      
+        RollbackRemovePass      \
+        StatusNullHash          \
+        StatusNullStatus        \
+        StatusPass              
 
 XFAIL_TESTS =                         \
               CommitAddNullHash       \
@@ -233,7 +242,9 @@ XFAIL_TESTS =                         \
               RollbackAddNullHash     \
               RollbackAddNullItem     \
               RollbackRemoveNullHash  \
-              RollbackRemoveNullItem  
+              RollbackRemoveNullItem  \
+              StatusNullHash          \
+              StatusNullStatus        
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la

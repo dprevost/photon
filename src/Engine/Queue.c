@@ -475,28 +475,15 @@ int vdseQueueRelease( vdseQueue          * pQueue,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseQueueStatus( vdseQueue          * pQueue,
-                     size_t             * pNumValidItems,
-                     size_t             * pNumTotalItems,
-                     vdseSessionContext * pContext )
+void vdseQueueStatus( vdseQueue    * pQueue,
+                      vdsObjStatus * pStatus )
 {
-   VDS_PRE_CONDITION( pQueue         != NULL );
-   VDS_PRE_CONDITION( pNumValidItems != NULL );
-   VDS_PRE_CONDITION( pNumTotalItems != NULL );
-   VDS_PRE_CONDITION( pContext       != NULL );
+   VDS_PRE_CONDITION( pQueue  != NULL );
+   VDS_PRE_CONDITION( pStatus != NULL );
    
-   if ( vdseLock( &pQueue->memObject, pContext ) == 0 )
-   {
-      *pNumTotalItems = pQueue->listOfElements.currentSize;
-      *pNumValidItems = pQueue->numValidItems;
+   pStatus->numDataItem = pQueue->listOfElements.currentSize;
+   //*pNumValidItems = pQueue->numValidItems;
 
-      vdseUnlock( &pQueue->memObject, pContext );
-      
-      return 0;
-   }
-   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
-
-   return -1;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

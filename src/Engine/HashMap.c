@@ -717,4 +717,14 @@ void vdseHashMapRollbackRemove( vdseHashMap * pHashMap,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+void vdseHashMapStatus( vdseHashMap  * pHashMap,
+                        vdsObjStatus * pStatus )
+{
+   VDS_PRE_CONDITION( pHashMap != NULL );
+   VDS_PRE_CONDITION( pStatus  != NULL );
+   
+   pStatus->numDataItem = pHashMap->hashObj.numberOfItems;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
