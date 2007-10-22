@@ -328,7 +328,55 @@ int vdsCommit( VDS_HANDLE sessionHandle )
 }
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdsGetStatus(  VDS_HANDLE     sessionHandle,
+                   const char *   objectName,
+                   size_t         nameLengthInBytes,
+                   vdsObjStatus * pStatus )
+{
+   vdsaSession* pSession;
+   int rc = VDS_SESSION_CANNOT_GET_LOCK;
    
+   pSession = (vdsaSession*) sessionHandle;
+   if ( pSession == NULL )
+      return VDS_NULL_HANDLE;
+   
+   if ( pSession->type != VDSA_SESSION )
+      return VDS_WRONG_TYPE_HANDLE;
+   
+   if ( objectName == NULL )
+      return VDS_INVALID_OBJECT_NAME;
+
+   if ( nameLengthInBytes == 0 )
+      return VDS_INVALID_LENGTH;
+   
+   if ( pStatus == NULL )
+      return VDS_NULL_POINTER;
+
+   if ( vdsaSessionLock( pSession ) == 0 )
+   {
+      if ( ! pSession->terminated )
+      {
+         rc = vdseTopFolderGetStatus( GET_PTR( pSession->pHeader->treeMgrOffset, 
+                                               vdseFolder ),
+                                      objectName,
+                                      nameLengthInBytes,
+                                      pStatus,
+                                      &pSession->context );
+         if ( rc != 0 )
+            rc = vdscGetLastError( &pSession->context.errorHandler );
+      }
+      else
+         rc = VDS_SESSION_IS_TERMINATED;
+
+      vdsaSessionUnlock( pSession );
+   }
+
+   return rc;
+}   
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdsRollback( VDS_HANDLE sessionHandle )
 {
    int rc = VDS_SESSION_CANNOT_GET_LOCK;

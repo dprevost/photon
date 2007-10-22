@@ -54,8 +54,8 @@ int vdsInitSession( VDS_HANDLE* sessionHandle );
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_EXPORT
-int vdsExitSession( VDS_HANDLE handle );
-   
+int vdsCommit( VDS_HANDLE handle );
+
 VDSF_EXPORT
 int vdsCreateObject( VDS_HANDLE      handle,
                      const char    * objectName,
@@ -68,8 +68,14 @@ int vdsDestroyObject( VDS_HANDLE   handle,
                       size_t       nameLengthInBytes );
 
 VDSF_EXPORT
-int vdsCommit( VDS_HANDLE handle );
-   
+int vdsExitSession( VDS_HANDLE handle );
+
+VDSF_EXPORT
+int vdsGetStatus(  VDS_HANDLE     handle,
+                   const char *   objectName,
+                   size_t         nameLengthInBytes,
+                   vdsObjStatus * pStatus );
+
 VDSF_EXPORT
 int vdsRollback( VDS_HANDLE handle );
 

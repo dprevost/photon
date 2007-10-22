@@ -159,9 +159,9 @@ int vdsQueueGetNext( VDS_HANDLE     objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdsQueueOpen( VDS_HANDLE   sessionHandle,
-                    const char * folderName,
-                    size_t       nameLengthInBytes,
-                    VDS_HANDLE * objectHandle )
+                  const char * queueName,
+                  size_t       nameLengthInBytes,
+                  VDS_HANDLE * objectHandle )
 {
    vdsaSession * pSession;
    vdsaQueue * pQueue = NULL;
@@ -174,7 +174,7 @@ int vdsQueueOpen( VDS_HANDLE   sessionHandle,
    if ( pSession->type != VDSA_SESSION )
       return VDS_WRONG_TYPE_HANDLE;
 
-   if ( folderName == NULL )
+   if ( queueName == NULL )
       return VDS_INVALID_OBJECT_NAME;
    
    if ( objectHandle == NULL )
@@ -194,8 +194,8 @@ int vdsQueueOpen( VDS_HANDLE   sessionHandle,
    pQueue->object.pSession = pSession;
 
    errcode = vdsaCommonObjectOpen( &pQueue->object,
-                                   VDS_FOLDER,
-                                   folderName,
+                                   VDS_QUEUE,
+                                   queueName,
                                    nameLengthInBytes );
    if ( errcode == 0 )
       *objectHandle = (VDS_HANDLE) pQueue;
@@ -299,10 +299,49 @@ int vdsQueuePush( VDS_HANDLE   objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsQueueStatus( VDS_HANDLE   objectHandle,
-                      size_t     * numChildren )
+int vdsQueueStatus( VDS_HANDLE     objectHandle,
+                     vdsObjStatus * pStatus )
 {
-   return VDS_INTERNAL_ERROR;
+   vdsaQueue * pQueue;
+   vdseQueue * pVDSQueue;
+   int errcode = 0;
+   vdseSessionContext * pContext;
+   
+   pQueue = (vdsaQueue *) objectHandle;
+   if ( pQueue == NULL )
+      return VDS_NULL_HANDLE;
+   
+   if ( pQueue->type != VDSA_QUEUE )
+      return VDS_WRONG_TYPE_HANDLE;
+
+   if ( pStatus == NULL )
+      return VDS_NULL_POINTER;
+
+   if ( vdsaCommonLock( &pQueue->object ) == 0 )
+   {
+      pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
+      pContext = &pQueue->object.pSession->context;
+      
+      if ( vdseLock( &pVDSQueue->memObject, pContext ) == 0 )
+      {
+         vdseMemObjectStatus( &pVDSQueue->memObject, pStatus );
+
+         vdseQueueStatus( pVDSQueue, pStatus );
+
+         vdseUnlock( &pVDSQueue->memObject, pContext );
+      }
+      else
+      {
+         errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+         vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      }
+      
+      vdsaCommonUnlock( &pQueue->object );
+   }
+   else
+      return VDS_SESSION_CANNOT_GET_LOCK;
+   
+   return errcode;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

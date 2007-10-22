@@ -46,8 +46,8 @@ int vdsFolderOpen( VDS_HANDLE   sessionHandle,
                    VDS_HANDLE * objectHandle );
 
 VDSF_EXPORT
-int vdsFolderStatus( VDS_HANDLE   objectHandle,
-                     size_t     * numChildren );
+int vdsFolderStatus( VDS_HANDLE     objectHandle,
+                     vdsObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

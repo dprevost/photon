@@ -24,53 +24,6 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFolderOpen( VDS_HANDLE   sessionHandle,
-                   const char * folderName,
-                   size_t       nameLengthInBytes,
-                   VDS_HANDLE * objectHandle )
-{
-   vdsaSession * pSession;
-   vdsaFolder * pFolder = NULL;
-   int errcode;
-   
-   pSession = (vdsaSession*) sessionHandle;
-   if ( pSession == NULL )
-      return VDS_NULL_HANDLE;
-   
-   if ( pSession->type != VDSA_SESSION )
-      return VDS_WRONG_TYPE_HANDLE;
-
-   if ( folderName == NULL )
-      return VDS_INVALID_OBJECT_NAME;
-   
-   if ( objectHandle == NULL )
-      return VDS_NULL_HANDLE;
-   
-   if ( nameLengthInBytes == 0 )
-      return VDS_INVALID_LENGTH;
-   
-   *objectHandle = NULL;
-   
-   pFolder = (vdsaFolder *) malloc(sizeof(vdsaFolder));
-   if (  pFolder == NULL )
-      return VDS_NOT_ENOUGH_HEAP_MEMORY;
-   
-   memset( pFolder, 0, sizeof(vdsaFolder) );
-   pFolder->type = VDSA_FOLDER;
-   pFolder->object.pSession = pSession;
-
-   errcode = vdsaCommonObjectOpen( &pFolder->object,
-                                   VDS_FOLDER,
-                                   folderName,
-                                   nameLengthInBytes );
-   if ( errcode == 0 )
-      *objectHandle = (VDS_HANDLE) pFolder;
-
-   return errcode;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 int vdsFolderClose( VDS_HANDLE objectHandle )
 {
    vdsaFolder * pFolder;
@@ -230,6 +183,100 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
       vdsaCommonUnlock( &pFolder->object );
    }
 
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdsFolderOpen( VDS_HANDLE   sessionHandle,
+                   const char * folderName,
+                   size_t       nameLengthInBytes,
+                   VDS_HANDLE * objectHandle )
+{
+   vdsaSession * pSession;
+   vdsaFolder * pFolder = NULL;
+   int errcode;
+   
+   pSession = (vdsaSession*) sessionHandle;
+   if ( pSession == NULL )
+      return VDS_NULL_HANDLE;
+   
+   if ( pSession->type != VDSA_SESSION )
+      return VDS_WRONG_TYPE_HANDLE;
+
+   if ( folderName == NULL )
+      return VDS_INVALID_OBJECT_NAME;
+   
+   if ( objectHandle == NULL )
+      return VDS_NULL_HANDLE;
+   
+   if ( nameLengthInBytes == 0 )
+      return VDS_INVALID_LENGTH;
+   
+   *objectHandle = NULL;
+   
+   pFolder = (vdsaFolder *) malloc(sizeof(vdsaFolder));
+   if (  pFolder == NULL )
+      return VDS_NOT_ENOUGH_HEAP_MEMORY;
+   
+   memset( pFolder, 0, sizeof(vdsaFolder) );
+   pFolder->type = VDSA_FOLDER;
+   pFolder->object.pSession = pSession;
+
+   errcode = vdsaCommonObjectOpen( &pFolder->object,
+                                   VDS_FOLDER,
+                                   folderName,
+                                   nameLengthInBytes );
+   if ( errcode == 0 )
+      *objectHandle = (VDS_HANDLE) pFolder;
+
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdsFolderStatus( VDS_HANDLE     objectHandle,
+                     vdsObjStatus * pStatus )
+{
+   vdsaFolder * pFolder;
+   vdseFolder * pVDSFolder;
+   int errcode = 0;
+   vdseSessionContext * pContext;
+   
+   pFolder = (vdsaFolder *) objectHandle;
+   if ( pFolder == NULL )
+      return VDS_NULL_HANDLE;
+   
+   if ( pFolder->type != VDSA_FOLDER )
+      return VDS_WRONG_TYPE_HANDLE;
+
+   if ( pStatus == NULL )
+      return VDS_NULL_POINTER;
+
+   if ( vdsaCommonLock( &pFolder->object ) == 0 )
+   {
+      pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+      pContext = &pFolder->object.pSession->context;
+      
+      if ( vdseLock( &pVDSFolder->memObject, pContext ) == 0 )
+      {
+         vdseMemObjectStatus( &pVDSFolder->memObject, pStatus );
+
+         vdseFolderStatus( pVDSFolder, pStatus );
+
+         vdseUnlock( &pVDSFolder->memObject, pContext );
+      }
+      else
+      {
+         errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+         vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      }
+      
+      vdsaCommonUnlock( &pFolder->object );
+   }
+   else
+      return VDS_SESSION_CANNOT_GET_LOCK;
+   
    return errcode;
 }
 

@@ -33,32 +33,6 @@ extern "C" {
 /** Close a FIFO queue. */
 VDSF_EXPORT
 int vdsQueueClose(  VDS_HANDLE objectHandle );
-   
-/** Insert a data element in the queue. */
-VDSF_EXPORT
-int vdsQueuePush( VDS_HANDLE   objectHandle, 
-                  const void * pItem, 
-                  size_t       length );
-
-/** Open a FIFO queue. */
-VDSF_EXPORT
-int vdsQueueOpen(  VDS_HANDLE   sessionHandle,
-                   const char * queueName,
-                   size_t       nameLengthInBytes,
-                   VDS_HANDLE * objectHandle );
-
-/** Remove the first inserted item from a FIFO queue. */
-VDSF_EXPORT
-int vdsQueuePop( VDS_HANDLE   objectHandle,
-                 vdsDataEntry * pEntry );
-
-/** 
- * Release the "soft lock" on the data - to be used when you're done with 
- * vdsQueuePop() or vdsQueueGetItem().
- */
-VDSF_EXPORT
-int vdsQueueRelease( VDS_HANDLE     objectHandle,
-                     vdsDataEntry * pEntry );
 
 /** 
  * Iterates through the queue - no data items are removed from the queue
@@ -73,15 +47,38 @@ int vdsQueueGetFirst( VDS_HANDLE        objectHandle,
  * by this function.
  */
 VDSF_EXPORT
-int vdsQueueGetNext( VDS_HANDLE        objectHandle,
-                     vdsDataEntry    * pEntry );
+int vdsQueueGetNext( VDS_HANDLE     objectHandle,
+                     vdsDataEntry * pEntry );
 
-#if 0
+/** Open a FIFO queue. */
 VDSF_EXPORT
-int vdsQueueStatus( VDS_HANDLE   objectHandle,
-                    size_t     * pNumValidItems,
-                    size_t     * pNumTotalItems );
-#endif
+int vdsQueueOpen(  VDS_HANDLE   sessionHandle,
+                   const char * queueName,
+                   size_t       nameLengthInBytes,
+                   VDS_HANDLE * objectHandle );
+
+/** Remove the first inserted item from a FIFO queue. */
+VDSF_EXPORT
+int vdsQueuePop( VDS_HANDLE   objectHandle,
+                 vdsDataEntry * pEntry );
+
+/** Insert a data element in the queue. */
+VDSF_EXPORT
+int vdsQueuePush( VDS_HANDLE   objectHandle, 
+                  const void * pItem, 
+                  size_t       length );
+
+/** 
+ * Release the "soft lock" on the data - to be used when you're done with 
+ * vdsQueuePop() or vdsQueueGetItem().
+ */
+VDSF_EXPORT
+int vdsQueueRelease( VDS_HANDLE     objectHandle,
+                     vdsDataEntry * pEntry );
+
+VDSF_EXPORT
+int vdsQueueStatus( VDS_HANDLE     objectHandle,
+                    vdsObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
