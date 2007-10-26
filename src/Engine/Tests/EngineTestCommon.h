@@ -23,6 +23,7 @@
 #include "Tests/PrintError.h"
 #include "Engine/SessionContext.h"
 
+VDSF_ENGINE_EXPORT
 vdscErrMsgHandle g_vdsErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
