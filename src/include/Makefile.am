@@ -11,23 +11,51 @@
 CLEANFILES = *~ vdsf/*~
 
 VDS_C_FILES =                           \
-              man3/vds.h.3              \
               man3/vdsCommit.3          \
+              man3/vdsCommon.h.3        \
               man3/vdsCreateObject.3    \
+              man3/vdsDataEntry.3       \
               man3/vdsDestroyObject.3   \
+              man3/vdsErrors.3          \
+              man3/vdsErrors.h.3        \
               man3/vdsExit.3            \
               man3/vdsExitSession.3     \
               man3/vdsFolderClose.3     \
+              man3/vdsFolderEntry.3     \
+              man3/vdsFolderGetFirst.3  \
+              man3/vdsFolderGetNext.3   \
+              man3/vdsFolder.h.3        \
               man3/vdsFolderOpen.3      \
+              man3/vdsFolderStatus.3    \
+              man3/vdsGetStatus.3       \
+              man3/vds.h.3              \
+              man3/vdsHashMapClose.3    \
+              man3/vdsHashMapDelete.3   \
+              man3/vdsHashMapEntry.3    \
+              man3/vdsHashMapGet.3      \
+              man3/vdsHashMapGetFirst.3 \
+              man3/vdsHashMapGetNext.3  \
+              man3/vdsHashMap.h.3       \
+              man3/vdsHashMapInsert.3   \
+              man3/vdsHashMapOpen.3     \
+              man3/vdsHashMapStatus.3   \
               man3/vdsInit.3            \
               man3/vdsInitSession.3     \
+              man3/vdsIteratorType.3    \
+              man3/vdsObjectType.3      \
+              man3/vdsObjStatus.3       \
+              man3/vdsProcess.h.3       \
               man3/vdsQueueClose.3      \
-              man3/vdsQueueGetItem.3    \
-              man3/vdsQueueInsertItem.3 \
+              man3/vdsQueueGetFirst.3   \
+              man3/vdsQueueGetNext.3    \
+              man3/vdsQueue.h.3         \
               man3/vdsQueueOpen.3       \
-              man3/vdsQueueRemoveItem.3 \
+              man3/vdsQueuePop.3        \
+              man3/vdsQueuePush.3       \
+              man3/vdsQueueRelease.3    \
               man3/vdsQueueStatus.3     \
-              man3/vdsRollback.3
+              man3/vdsRollback.3        \
+              man3/vdsSession.h.3       
 
 man_MANS =                   \
            $(VDS_C_FILES)    \
