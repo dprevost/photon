@@ -1178,6 +1178,12 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
    memset( &ps, 0, sizeof(mbstate_t) );
    strPtr = objectName;
    strLength = mbsrtowcs( NULL, &strPtr, 0, &ps );
+   if ( strLength == (size_t)-1 )
+   {
+      vdscSetError( &pContext->errorHandler, VDSC_ERRNO_HANDLE, errno );
+      errcode = VDS_INVALID_OBJECT_NAME;
+      goto error_handler;
+   }
 #else
    strLength = nameLengthInBytes;
 #endif
@@ -1307,6 +1313,12 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
    memset( &ps, 0, sizeof(mbstate_t) );
    strPtr = objectName;
    strLength = mbsrtowcs( NULL, &strPtr, 0, &ps );
+   if ( strLength == (size_t)-1 )
+   {
+      vdscSetError( &pContext->errorHandler, VDSC_ERRNO_HANDLE, errno );
+      errcode = VDS_INVALID_OBJECT_NAME;
+      goto error_handler;
+   }
 #else
    strLength = nameLengthInBytes;
 #endif
@@ -1435,6 +1447,12 @@ int vdseTopFolderGetStatus( vdseFolder         * pFolder,
    memset( &ps, 0, sizeof(mbstate_t) );
    strPtr = objectName;
    strLength = mbsrtowcs( NULL, &strPtr, 0, &ps );
+   if ( strLength == (size_t)-1 )
+   {
+      vdscSetError( &pContext->errorHandler, VDSC_ERRNO_HANDLE, errno );
+      errcode = VDS_INVALID_OBJECT_NAME;
+      goto error_handler;
+   }
 #else
    strLength = nameLengthInBytes;
 #endif
@@ -1563,6 +1581,12 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
    memset( &ps, 0, sizeof(mbstate_t) );
    strPtr = objectName;
    strLength = mbsrtowcs( NULL, &strPtr, 0, &ps );
+   if ( strLength == (size_t)-1 )
+   {
+      vdscSetError( &pContext->errorHandler, VDSC_ERRNO_HANDLE, errno );
+      errcode = VDS_INVALID_OBJECT_NAME;
+      goto error_handler;
+   }
 #else
    strLength = nameLengthInBytes;
 #endif
