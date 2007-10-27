@@ -20,7 +20,8 @@ SUBDIRS =              \
           Session      \
           CommonObject \
           Folder       \
-          HashMap      
+          HashMap      \
+          Optional     
 
 #check_PROGRAMS =                  \
                  SimpleTest1      \

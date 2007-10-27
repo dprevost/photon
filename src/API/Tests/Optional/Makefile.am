@@ -30,7 +30,9 @@ TESTS_ENVIRONMENT =                              \
                     verbose=1                    \
                     PYTHON=$(PYTHON)
 
-TESTS = i18nPass.sh
+TESTS = 
+
+# i18nPass.sh
 
 XFAIL_TESTS =                  
 

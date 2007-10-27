@@ -45,7 +45,6 @@ int main( int argc, char * argv[] )
 {
    VDS_HANDLE handle, sessionHandle;
    int errcode;
-   vdsaCommonObject object;
    char nameIso[8];
    char nameUtf8[10];
    

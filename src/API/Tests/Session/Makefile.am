@@ -121,8 +121,7 @@ TESTS_ENVIRONMENT =                              \
                     verbose=1                    \
                     PYTHON=$(PYTHON)
 
-TESTS = StatusPass.sh
-#TESTS =                        \
+TESTS =                        \
         CloseNullSession.sh    \
         ClosePass.sh           \
         CloseObjNullObject.sh  \
