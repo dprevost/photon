@@ -1,0 +1,90 @@
+# Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+include ..\Makefile.inc.Win32
+
+all: 
+
+check_PROGRAMS =                                       \
+                 .\Release\CommitAddNullHash.exe       \
+                 .\Release\CommitAddNullItem.exe       \
+                 .\Release\CommitAddPass.exe           \
+                 .\Release\CommitRemoveNullContext.exe \
+                 .\Release\CommitRemoveNullHash.exe    \
+                 .\Release\CommitRemoveNullItem.exe    \
+                 .\Release\CommitRemovePass.exe        \
+                 .\Release\DeleteNullContext.exe       \
+                 .\Release\DeleteNullHash.exe          \
+                 .\Release\DeleteNullKey.exe           \
+                 .\Release\DeletePass.exe              \
+                 .\Release\DeleteZeroKeyLength.exe     \
+                 .\Release\FiniNullContext.exe         \
+                 .\Release\FiniNullHash.exe            \
+                 .\Release\FiniPass.exe                \
+                 .\Release\GetFirstNullContext.exe     \
+                 .\Release\GetFirstNullHash.exe        \
+                 .\Release\GetFirstNullItem.exe        \
+                 .\Release\GetFirstPass.exe            \
+                 .\Release\GetNextNullContext.exe      \
+                 .\Release\GetNextNullHash.exe         \
+                 .\Release\GetNextNullItem.exe         \
+                 .\Release\GetNextPass.exe             \
+                 .\Release\GetNullContext.exe          \
+                 .\Release\GetNullHash.exe             \
+                 .\Release\GetNullItem.exe             \
+                 .\Release\GetNullKey.exe              \
+                 .\Release\GetPass.exe                 \
+                 .\Release\GetZeroKeyLength.exe        \
+                 .\Release\InitNullContext.exe         \
+                 .\Release\InitNullHash.exe            \
+                 .\Release\InitNullName.exe            \
+                 .\Release\InitNullParent.exe          \
+                 .\Release\InitNullStatus.exe          \
+                 .\Release\InitPass.exe                \
+                 .\Release\InitZeroBlocks.exe          \
+                 .\Release\InitZeroLength.exe          \
+                 .\Release\InsertNullContext.exe       \
+                 .\Release\InsertNullHash.exe          \
+                 .\Release\InsertNullItem.exe          \
+                 .\Release\InsertNullKey.exe           \
+                 .\Release\InsertPass.exe              \
+                 .\Release\InsertZeroLengthItem.exe    \
+                 .\Release\InsertZeroLengthKey.exe     \
+                 .\Release\ReleaseNullContext.exe      \
+                 .\Release\ReleaseNullHash.exe         \
+                 .\Release\ReleaseNullItem.exe         \
+                 .\Release\ReleasePass.exe             \
+                 .\Release\RollbackAddNullContext.exe  \
+                 .\Release\RollbackAddNullHash.exe     \
+                 .\Release\RollbackAddNullItem.exe     \
+                 .\Release\RollbackAddPass.exe         \
+                 .\Release\RollbackRemoveNullHash.exe  \
+                 .\Release\RollbackRemoveNullItem.exe  \
+                 .\Release\RollbackRemovePass.exe      \
+                 .\Release\StatusNullHash.exe          \
+                 .\Release\StatusNullStatus.exe        \
+                 .\Release\StatusPass.exe              
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+#
+
+check: $(OUTDIR) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+
+checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+
+clean: 
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+

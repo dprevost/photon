@@ -24,12 +24,15 @@ check_PROGRAMS =                                   \
                  .\Release\CreateNullName.exe      \
                  .\Release\CreatePass.exe          \
                  .\Release\CreateWrongType.exe     \
+                 .\Release\CreateZeroLength.exe    \
                  .\Release\DestroyNotCreated.exe   \
                  .\Release\DestroyNullHandle.exe   \
                  .\Release\DestroyNullName.exe     \
                  .\Release\DestroyPass.exe         \
+                 .\Release\DestroyZeroLength.exe   \
                  .\Release\ExitNullHandle.exe      \
                  .\Release\ExitPass.exe            \
+                 .\Release\InitNoProcess.exe       \
                  .\Release\InitNullHandle.exe      \
                  .\Release\InitPass.exe            \
                  .\Release\OpenObjNotCreated.exe   \
@@ -38,8 +41,10 @@ check_PROGRAMS =                                   \
                  .\Release\OpenObjNullSession.exe  \
                  .\Release\OpenObjPass.exe         \
                  .\Release\OpenObjWrongType.exe    \
+                 .\Release\OpenObjZeroLength.exe   \
                  .\Release\RollbackNullHandle.exe  \
-                 .\Release\RollbackPass.exe        
+                 .\Release\RollbackPass.exe        \
+                 .\Release\StatusPass              
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

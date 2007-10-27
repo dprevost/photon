@@ -27,6 +27,7 @@
 #include "Engine/Folder.h"
 #include "Tests/PrintError.h"
 
+VDSF_ENGINE_EXPORT
 vdscErrMsgHandle g_vdsErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

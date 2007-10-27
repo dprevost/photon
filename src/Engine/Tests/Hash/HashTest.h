@@ -26,7 +26,9 @@
 #include "Engine/InitEngine.h"
 #include "Tests/PrintError.h"
 
+VDSF_ENGINE_EXPORT
 vdscErrMsgHandle g_vdsErrorHandle;
+
 ptrdiff_t g_memObjOffset = NULL_OFFSET;
 
 typedef struct vdstObjDummy

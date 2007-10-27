@@ -28,6 +28,7 @@
 #include "Engine/HashMap.h"
 #include "Tests/PrintError.h"
 
+VDSF_ENGINE_EXPORT
 vdscErrMsgHandle g_vdsErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

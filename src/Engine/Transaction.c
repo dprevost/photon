@@ -156,7 +156,8 @@ int vdseTxCommit( vdseTx*             pTx,
    vdseTxStatus  * pChildStatus;
    vdseHashMap   * pHashMap;
    vdseQueue     * pQueue;
-   
+   int pOps_invalid_type = 0;
+
    VDS_PRE_CONDITION( pTx      != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pTx->signature == VDSE_TX_SIGNATURE );
@@ -220,7 +221,7 @@ int vdseTxCommit( vdseTx*             pTx,
          }
          /* We should not come here */
          else
-            VDS_POST_CONDITION( 0 == 1 );
+            VDS_POST_CONDITION( pOps_invalid_type );
 
          break;
 
@@ -327,7 +328,7 @@ int vdseTxCommit( vdseTx*             pTx,
                vdseQueueFini( pQueue, pContext );
             }
             else
-               VDS_POST_CONDITION( 0 == 1 );               
+               VDS_POST_CONDITION( pOps_invalid_type );               
          }
          vdseUnlock( &parentFolder->memObject, pContext );
 
@@ -358,7 +359,7 @@ int vdseTxCommit( vdseTx*             pTx,
          }
          /* We should not come here */
          else
-            VDS_POST_CONDITION( 0 == 1 );
+            VDS_POST_CONDITION( pOps_invalid_type );
 
          break;
 #if 0
@@ -394,6 +395,7 @@ void vdseTxRollback( vdseTx*             pTx,
    vdseTxStatus  * pChildStatus;
    vdseHashMap   * pHashMap;
    vdseQueue     * pQueue;
+   int pOps_invalid_type = 0;
 
    VDS_PRE_CONDITION( pTx != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -474,7 +476,7 @@ void vdseTxRollback( vdseTx*             pTx,
          }
          /* We should not come here */
          else
-            VDS_POST_CONDITION( 0 == 1 );
+            VDS_POST_CONDITION( pOps_invalid_type );
 
          break;
             
@@ -611,7 +613,7 @@ void vdseTxRollback( vdseTx*             pTx,
          }
          /* We should not come here */
          else
-            VDS_POST_CONDITION( 0 == 1 );
+            VDS_POST_CONDITION( pOps_invalid_type );
 
          break;
 

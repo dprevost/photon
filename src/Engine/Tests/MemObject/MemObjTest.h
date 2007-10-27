@@ -25,6 +25,7 @@
 #include "Engine/InitEngine.h"
 #include "Tests/PrintError.h"
 
+VDSF_ENGINE_EXPORT
 vdscErrMsgHandle g_vdsErrorHandle;
 
 typedef struct vdstObjDummy

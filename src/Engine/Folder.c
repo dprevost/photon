@@ -530,7 +530,8 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
    vdseTxStatus * txStatus;
    vdseFolder * pNextFolder;
    vdseMemObject * pMemObject;
-   
+   int pDesc_invalid_api_type = 0;
+
    VDS_PRE_CONDITION( pFolder    != NULL );
    VDS_PRE_CONDITION( objectName != NULL )
    VDS_PRE_CONDITION( pStatus    != NULL );
@@ -602,7 +603,7 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
                              pStatus );
             break;
          default:
-            VDS_INV_CONDITION( 0 == 1 );
+            VDS_INV_CONDITION( pDesc_invalid_api_type );
          }
          vdseUnlock( pMemObject, pContext );
       }
@@ -754,8 +755,9 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
    unsigned char* ptr = NULL;
    vdseFolder* pNextFolder;
    vdseTxStatus* objTxStatus;  /* txStatus of the created object */
-   vdseMemObjIdent memObjType;
-   
+   vdseMemObjIdent memObjType = VDSE_IDENT_LAST;
+   int invalid_object_type = 0;
+
    VDS_PRE_CONDITION( pFolder      != NULL );
    VDS_PRE_CONDITION( objectName   != NULL )
    VDS_PRE_CONDITION( originalName != NULL )
@@ -842,7 +844,7 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
          memObjType = VDSE_IDENT_QUEUE;
          break;
       default:
-         VDS_POST_CONDITION( 0 == 1 );
+         VDS_POST_CONDITION( invalid_object_type );
       }
       
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,

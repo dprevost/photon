@@ -505,9 +505,9 @@ void vdseFree( vdseMemObject*      pMemObj,
 void vdseMemObjectStatus( vdseMemObject * pMemObj, 
                           vdsObjStatus  * pStatus )
 {
-   vdseLinkNode* firstNode, *dummy;
+   vdseLinkNode * dummy;
    enum ListErrors errGroup; // , errNode;
-   vdseBlockGroup* pGroup;
+   vdseBlockGroup * pGroup;
 
    VDS_PRE_CONDITION( pMemObj != NULL );
    VDS_PRE_CONDITION( pStatus != NULL );

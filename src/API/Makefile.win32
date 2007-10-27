@@ -38,7 +38,9 @@ OBJS_RELEASE= \
 	"$(INTDIR_RELEASE)\CommonObject.obj" \
 	"$(INTDIR_RELEASE)\Connector.obj" \
 	"$(INTDIR_RELEASE)\Folder.obj" \
+	"$(INTDIR_RELEASE)\HashMap.obj" \
 	"$(INTDIR_RELEASE)\Process.obj" \
+	"$(INTDIR_RELEASE)\Queue.obj" \
 	"$(INTDIR_RELEASE)\Session.obj"
 
 OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)

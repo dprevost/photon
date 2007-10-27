@@ -13,20 +13,32 @@ include ..\Makefile.inc.Win32
 all: 
 
 check_PROGRAMS =                                    \
+                 .\Release\CloseNullContext.exe     \
+                 .\Release\CloseNullItem.exe        \
+                 .\Release\ClosePass.exe            \
+                 .\Release\CreateNullContext.exe    \
+                 .\Release\CreateNullFolder.exe     \
+                 .\Release\CreateNullName.exe       \
+                 .\Release\CreatePass.exe           \
+                 .\Release\CreateWrongType.exe      \
                  .\Release\DeleteInvalidSig.exe     \
                  .\Release\DeleteNullContext.exe    \
                  .\Release\DeleteNullFolder.exe     \
                  .\Release\DeleteNullName.exe       \
                  .\Release\DeletePass.exe           \
                  .\Release\DeleteZeroNameLength.exe \
+                 .\Release\DestroyNullContext.exe   \
+                 .\Release\DestroyNullFolder.exe    \
+                 .\Release\DestroyNullName.exe      \
+                 .\Release\DestroyPass.exe          \
                  .\Release\FiniInvalidSig.exe       \
                  .\Release\FiniNullContext.exe      \
                  .\Release\FiniNullFolder.exe       \
                  .\Release\FiniPass.exe             \
                  .\Release\GetInvalidSig.exe        \
                  .\Release\GetNullContext.exe       \
-                 .\Release\GetNullDescriptor.exe    \
                  .\Release\GetNullFolder.exe        \
+                 .\Release\GetNullItem.exe          \
                  .\Release\GetNullName.exe          \
                  .\Release\GetPass.exe              \
                  .\Release\GetZeroNameLength.exe    \
@@ -45,29 +57,17 @@ check_PROGRAMS =                                    \
                  .\Release\InsertPass.exe           \
                  .\Release\InsertZeroBlocks.exe     \
                  .\Release\InsertZeroNameLength.exe \
-                 .\Release\Tests.exe                \
-                 .\Release\CloseNullContext.exe     \
-                 .\Release\CloseNullDescriptor.exe  \
-                 .\Release\ClosePass.exe            \
-                 .\Release\CreateNullContext.exe    \
-                 .\Release\CreateNullFolder.exe     \
-                 .\Release\CreateNullName.exe       \
-                 .\Release\CreatePass.exe           \
-                 .\Release\CreateWrongType.exe      \
-                 .\Release\DestroyNullContext.exe   \
-                 .\Release\DestroyNullFolder.exe    \
-                 .\Release\DestroyNullName.exe      \
-                 .\Release\DestroyPass.exe          \
                  .\Release\OpenNullContext.exe      \
-                 .\Release\OpenNullDescriptor.exe   \
                  .\Release\OpenNullFolder.exe       \
+                 .\Release\OpenNullItem.exe         \
                  .\Release\OpenNullName.exe         \
                  .\Release\OpenPass.exe             \
                  .\Release\RemoveNullContext.exe    \
                  .\Release\RemoveNullFolder.exe     \
                  .\Release\RemoveNullName.exe       \
                  .\Release\RemovePass.exe           \
-                 .\Release\RemoveZeroLength.exe     
+                 .\Release\RemoveZeroLength.exe     \
+                 .\Release\Tests.exe                
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 #
