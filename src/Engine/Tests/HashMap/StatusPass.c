@@ -31,7 +31,6 @@ int main()
    char * key2  = "my key2";
    char * key3  = "my key3";
    char * data  = "my data";
-   char * ptr;
    vdsObjStatus status;
    
    pHashMap = initHashMapTest( expectedToPass, &context );

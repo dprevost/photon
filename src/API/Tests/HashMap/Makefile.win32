@@ -30,7 +30,7 @@ check_PROGRAMS =                                    \
                  .\Release\GetNullKey.exe           \
                  .\Release\GetPass.exe              \
                  .\Release\GetWrongHandle.exe       \
-                 .\Release\GetZeroLength.exe        \ 
+                 .\Release\GetZeroLength.exe        \
                  .\Release\InsertNullData.exe       \
                  .\Release\InsertNullHandle.exe     \
                  .\Release\InsertNullKey.exe        \

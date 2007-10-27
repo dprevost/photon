@@ -30,7 +30,6 @@ int main()
    char * key  = "my key";
    char * data = "my data";
    vdseHashMapItem item;
-   char * ptr;
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 

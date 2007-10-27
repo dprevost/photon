@@ -16,6 +16,15 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "queueTest.h"
+/*
+ * The pragma is to remove this type of message:
+ * warning C4273: 'vdseQueueInit' : inconsistent dll linkage.  dllexport assumed.
+ *
+ * [These warnings are caused by the direct inclusion of the .c file]
+ */
+#if defined(WIN32)
+#  pragma warning(disable:4273)
+#endif
 #include "Engine/Queue.c"
 
 const bool expectedToPass = true;

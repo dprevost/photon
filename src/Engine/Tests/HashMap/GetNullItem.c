@@ -29,8 +29,6 @@ int main()
    vdseTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   vdseHashItem * pItem;
-   char * ptr;
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 

@@ -27,7 +27,6 @@ int main()
    vdseSessionContext context;
    int errcode;
    vdseTxStatus status;
-   char * key  = "my key";
    char * data = "my data";
    
    pHashMap = initHashMapTest( expectedToPass, &context );

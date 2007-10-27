@@ -28,7 +28,6 @@ int main()
    int errcode;
    vdseTxStatus status;
    char * data = "My Data";
-   vdseQueueItem * pItem = NULL;
    
    pQueue = initQueueTest( expectedToPass, &context );
 
