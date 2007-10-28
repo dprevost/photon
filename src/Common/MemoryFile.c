@@ -322,7 +322,7 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
                                          PAGE_READWRITE,
                                          0,
                                          0,
-                                         pMem->name );
+                                         NULL );
    if ( pMem->mapHandle  == VDS_INVALID_HANDLE )
    {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
