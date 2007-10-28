@@ -23,7 +23,6 @@ check_PROGRAMS =                  \
                  FreeNullPtr      \
                  FreePass         \
                  FreeZeroLength   \
-                 InitBigVDS       \
                  InitNullAddress  \
                  InitNullAlloc    \
                  InitNullError    \
@@ -45,7 +44,6 @@ FreeNullError_SOURCES      = $(COMMON_ENGINE) FreeNullError.c
 FreeNullPtr_SOURCES        = $(COMMON_ENGINE) FreeNullPtr.c
 FreePass_SOURCES           = $(COMMON_ENGINE) FreePass.c
 FreeZeroLength_SOURCES     = $(COMMON_ENGINE) FreeZeroLength.c
-InitBigVDS_SOURCES         = $(COMMON_ENGINE) InitBigVDS.c
 InitNullAddress_SOURCES    = $(COMMON_ENGINE) InitNullAddress.c
 InitNullAlloc_SOURCES      = $(COMMON_ENGINE) InitNullAlloc.c
 InitNullError_SOURCES      = $(COMMON_ENGINE) InitNullError.c
@@ -80,8 +78,6 @@ TESTS =                  \
         MallocNullError  \
         MallocPass       \
         MallocZeroLength
-
-#        InitBigVDS       
 
 XFAIL_TESTS =                  \
               CloseNullAlloc   \
