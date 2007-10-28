@@ -40,18 +40,18 @@ int main( int argc, char *argv[] )
 #if defined (WIN32)
    struct vdscOptStruct opts[4] = 
    { 
-      { 'c', "config",  0, "filename", "Filename for the configuration options" },
-      { 'i', "install", 1, "",         "Install the program as a NT service (Windows only)" },
-      { 't', "test",    1, "",         "Test the config file and exit" },
-      { 'u', "time",    1, "",         "Uninstall the program as a NT service (Windows only)" }
+      { 'c', "config",    0, "filename", "Filename for the configuration options" },
+      { 'i', "install",   1, "",         "Install the program as a NT service (Windows only)" },
+      { 't', "test",      1, "",         "Test the config file and exit" },
+      { 'u', "uninstall", 1, "",         "Uninstall the program as a NT service (Windows only)" }
    };
    errcode = vdscSetSupportedOptions( 4, opts, &optHandle );
 #else
    struct vdscOptStruct opts[3] = 
    { 
       { 'c', "config", 0, "filename", "Filename for the configuration options" },
-      {   'd', "daemon", 1, "",         "Run the program as a Unix daemon (Unix/linux only)" },
-      {'t', "test",   1, "",         "Test the config file and exit" }
+      { 'd', "daemon", 1, "",         "Run the program as a Unix daemon (Unix/linux only)" },
+      { 't', "test",   1, "",         "Test the config file and exit" }
    };
    errcode = vdscSetSupportedOptions( 3, opts, &optHandle );
 #endif
