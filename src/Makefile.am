@@ -11,10 +11,10 @@
 CLEANFILES = *~
 
 # The code have to be build following a certain order:
-#   1-    Locking (???)
-#   2-    Common
-#   3-    BuildTools
-#   4-    Engine
+#   1-    Common
+#   2-    BuildTools
+#   3-    Engine
+#   4-    Watchdog
 #   5-    API
 #   n-    ...
 #   Last- Tests
@@ -23,9 +23,9 @@ SUBDIRS =               \
           Common        \
           BuildTools    \
           Engine        \
+          Watchdog      \
           API           \
-          include       \
-          Watchdog      
+          include       
 
 #if COND_USE_JAVA
 #   SUBDIRS += Java

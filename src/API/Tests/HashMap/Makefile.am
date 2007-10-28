@@ -32,7 +32,7 @@ check_PROGRAMS =                      \
                  GetNullKey           \
                  GetPass              \
                  GetWrongHandle       \
-                 GetZeroLength        \ 
+                 GetZeroLength        \
                  InsertNullData       \
                  InsertNullHandle     \
                  InsertNullKey        \
@@ -158,7 +158,7 @@ TESTS =                         \
         GetNullKey.sh           \
         GetPass.sh              \
         GetWrongHandle.sh       \
-        GetZeroLength.sh        \ 
+        GetZeroLength.sh        \
         InsertNullData.sh       \
         InsertNullHandle.sh     \
         InsertNullKey.sh        \
