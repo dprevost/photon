@@ -21,6 +21,7 @@ SUBDIRS =              \
           CommonObject \
           Folder       \
           HashMap      \
+          Queue        \
           Optional     
 
 #check_PROGRAMS =                  \

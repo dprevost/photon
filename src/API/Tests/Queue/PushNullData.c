@@ -18,7 +18,7 @@
 #include "Common/Common.h"
 #include <vdsf/vds.h>
 #include "Tests/PrintError.h"
-#include "API/HashMap.h"
+#include "API/Queue.h"
 
 const bool expectedToPass = true;
 
@@ -28,10 +28,7 @@ int main( int argc, char * argv[] )
 {
    VDS_HANDLE handle, sessionHandle;
    int errcode;
-   vdsaCommonObject object;
-   const char * key  = "My Key";
-   const char * data = "My Data";
-   vdsHashMapEntry entry;
+   const char * data1 = "My Data1";
 
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0, &handle );
@@ -51,8 +48,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/ahgzl",
-                              strlen("/ahgzl"),
+                              "/aqPushnd",
+                              strlen("/aqPushnd"),
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {
@@ -61,46 +58,32 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/ahgzl/test",
-                              strlen("/ahgzl/test"),
-                              VDS_HASH_MAP );
+                              "/aqPushnd/test",
+                              strlen("/aqPushnd/test"),
+                              VDS_QUEUE );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapOpen( sessionHandle,
-                             "/ahgzl/test",
-                             strlen("/ahgzl/test"),
-                             &handle );
+   errcode = vdsQueueOpen( sessionHandle,
+                           "/aqPushnd/test",
+                           strlen("/aqPushnd/test"),
+                           &handle );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapInsert( handle,
-                               key,
-                               6,
-                               data,
-                               7 );
-   if ( errcode != VDS_OK )
+   errcode = vdsQueuePush( handle, NULL, strlen(data1) );
+   if ( errcode != VDS_NULL_POINTER )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapGet( handle,
-                            key,
-                            0,
-                            &entry );
-   if ( errcode != VDS_INVALID_LENGTH )
-   {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
    return 0;
 }
 

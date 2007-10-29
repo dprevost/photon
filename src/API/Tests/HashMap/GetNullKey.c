@@ -94,7 +94,7 @@ int main( int argc, char * argv[] )
    errcode = vdsHashMapGet( handle,
                             NULL,
                             6,
-                            NULL );
+                            &entry );
    if ( errcode != VDS_NULL_POINTER )
    {
       fprintf( stderr, "err: %d\n", errcode );

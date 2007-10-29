@@ -873,6 +873,16 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
       switch ( memObjType )
       {
       case VDSE_IDENT_QUEUE:
+         rc = vdseQueueInit( (vdseQueue *)ptr,
+                             SET_OFFSET(pFolder),
+                             numBlocks,
+                             objTxStatus,
+                             partialLength,
+                             pDesc->originalName,
+                             SET_OFFSET(pHashItem->key),
+                             pContext );
+         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseQueue,nodeObject);
+         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseQueue,memObject);
          break;
 
       case VDSE_IDENT_FOLDER:
@@ -899,8 +909,8 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
                               pDesc->originalName,
                               SET_OFFSET(pHashItem->key),
                               pContext );
-         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseFolder,nodeObject);
-         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseFolder,memObject);
+         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseHashMap,nodeObject);
+         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseHashMap,memObject);
          break;
 
       default:

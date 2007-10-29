@@ -420,6 +420,7 @@ AC_CONFIG_FILES([
    src/API/Tests/HashMap/Makefile
    src/API/Tests/Optional/Makefile
    src/API/Tests/Process/Makefile
+   src/API/Tests/Queue/Makefile
    src/API/Tests/Session/Makefile
    src/BuildTools/Makefile
    src/Common/Makefile

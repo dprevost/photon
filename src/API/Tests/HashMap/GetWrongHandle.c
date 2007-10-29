@@ -94,7 +94,7 @@ int main( int argc, char * argv[] )
    errcode = vdsHashMapGet( sessionHandle,
                             key,
                             6,
-                            NULL );
+                            &entry );
    if ( errcode != VDS_WRONG_TYPE_HANDLE )
    {
       fprintf( stderr, "err: %d\n", errcode );
