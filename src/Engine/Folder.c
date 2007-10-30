@@ -23,6 +23,11 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static
+void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
+                              vdseHashItem       * pHashItemItem,
+                              vdseSessionContext * pContext );
+
 static 
 vdsErrors vdseValidateString( const vdsChar_T * objectName,
                               size_t            strLength, 
@@ -243,6 +248,8 @@ void vdseFolderFini( vdseFolder         * pFolder,
 
    vdseHashFini(       &pFolder->hashObj, pContext );
    vdseTreeNodeFini(   &pFolder->nodeObject );
+   
+   /* This call must be last - put a barrier here ? */ 
    vdseMemObjectFini(  &pFolder->memObject, pContext );
 }
 
@@ -268,6 +275,11 @@ int vdseFolderGetFirst( vdseFolder         * pFolder,
 
    if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
    {
+      /*
+       * We loop on all data items until we find one which is visible to the
+       * current session (its transaction field equal to zero or to our 
+       * transaction) AND is not marked as destroyed.
+       */
       listErr = vdseHashGetFirst( &pFolder->hashObj, 
                                   &bucket,
                                   &firstItemOffset );
@@ -337,6 +349,11 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
    
    if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
    {
+      /*
+       * We loop on all data items until we find one which is visible to the
+       * current session (its transaction field equal to zero or to our 
+       * transaction) AND is not marked as destroyed.
+       */
       listErr = vdseHashGetNext( &pFolder->hashObj, 
                                  bucket,
                                  itemOffset,
@@ -354,7 +371,8 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
             pItem->pHashItem = pHashItem;
             pItem->bucket = bucket;
             pItem->itemOffset = itemOffset;
-//               vdseFolderReleaseNoLock( pFolder, previousHashItem, pContext );
+
+            vdseFolderReleaseNoLock( pFolder, previousHashItem, pContext );
 
             vdseUnlock( &pFolder->memObject, pContext );
             
@@ -1057,6 +1075,48 @@ int vdseFolderRelease( vdseFolder         * pFolder,
    }
 
    return 0;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
+                              vdseHashItem       * pHashItem,
+                              vdseSessionContext * pContext )
+{
+   vdseTxStatus * txItemStatus, * txFolderStatus;
+   
+   VDS_PRE_CONDITION( pFolder   != NULL );
+   VDS_PRE_CONDITION( pHashItem != NULL );
+   VDS_PRE_CONDITION( pContext  != NULL );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+
+   txItemStatus = &pHashItem->txStatus;
+   txFolderStatus = GET_PTR( pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   
+   txItemStatus->parentCounter--;
+   txFolderStatus->usageCounter--;
+
+   /* 
+    * if parentCounter is equal to zero, the object is not open. Since 
+    * we hold the lock on the folder, no session can therefore open it
+    * or use it in an iteration. We can remove it without problems if
+    * a remove was indeed committed.
+    */
+   if ( (txItemStatus->parentCounter == 0) && 
+      (txItemStatus->usageCounter == 0) &&
+      vdseTxStatusIsRemoveCommitted(txItemStatus) )
+   {
+      /* 
+       * Time to really delete the record!
+       *
+       * Note: the hash array will release the memory of the hash item.
+       */
+      vdseHashDelete( &pFolder->hashObj, 
+                      pHashItem->key, 
+                      pHashItem->keyLength, 
+                      pContext );
+      pFolder->nodeObject.txCounter--;
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

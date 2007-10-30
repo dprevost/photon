@@ -44,7 +44,7 @@ typedef struct vdseObjectDescriptor
     * The length in bytes of the name as originally entered (but stored in
     * multi-bytes characters, if i18n is supportd).
     */
-   int                nameLengthInBytes;
+   int nameLengthInBytes;
    
    /** 
     * The original name (not including the parent folder name).
@@ -54,7 +54,7 @@ typedef struct vdseObjectDescriptor
     * Note: it is stored as an array of multi-bytes characters if i18n is
     * supported.
     */
-   vdsChar_T          originalName[1];
+   vdsChar_T originalName[1];
    
 } vdseObjectDescriptor;
 

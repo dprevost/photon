@@ -60,15 +60,18 @@ typedef struct vdseTxStatus
    
    /** 
     * Counts the number of clients who are accessing either the current
-    * object and or the current data item (this is to prevent the removal
-    * of data/objects while they are used).
+    * object (or one of its data item) and/or the current data item (this 
+    * is to prevent the removal of data/objects while they are used).
     */
    uint32_t usageCounter;
 
    /** 
-    * Counts access done by the parent folder. We use a different counter 
-    * for efficiency reasons - otherwise we would be forced to lock each 
-    * object in a folder when iterating on it.
+    * Counts access done by the parent folder or through the parent folder. 
+    * We use a different counter for efficiency reasons - if we already have
+    * a lock on the parent folder (and no locks on the current object) we
+    * increment/decrement the parentCounter. This counter is use when an
+    * object is open/close or when iterating through all objects in the parent
+    * folder.
     *
     * To repeat, this counter should only be used when the parent folder is
     * locked.
