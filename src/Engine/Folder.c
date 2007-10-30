@@ -178,6 +178,8 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
       
       vdseTxStatusSetTx( txStatus, SET_OFFSET(pContext->pTransaction) );
       vdseTxStatusMarkAsDestroyed( txStatus );
+      pFolder->nodeObject.txCounter++;
+      
       vdseUnlock( &pFolder->memObject, pContext );
 
       return 0;
@@ -413,7 +415,8 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
    vdseHashItem* pHashItem = NULL;
    int rc;
    vdsErrors errcode;
-   vdseTxStatus* txStatus;
+   vdseTxStatus * txItemStatus;
+   vdseTxStatus * txFolderStatus;
    vdseFolder* pNextFolder;
    
    VDS_PRE_CONDITION( pFolder     != NULL );
@@ -444,12 +447,13 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
          errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
    }
-   txStatus = &pHashItem->txStatus;
+   txItemStatus = &pHashItem->txStatus;
 
    pDesc = GET_PTR( pHashItem->dataOffset, vdseObjectDescriptor );
    
    if ( lastIteration )
    {
+      txFolderStatus = GET_PTR( pFolder->nodeObject.txStatusOffset, vdseTxStatus );
       /* 
        * If the transaction id of the object (to retrieve) is not either equal
        * to zero or to the current transaction id, then it belongs to 
@@ -460,16 +464,18 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
        * it would require that the current transaction deleted the folder and 
        * than tries to access it).
        */
-      if ( ! vdseTxStatusIsValid( txStatus, SET_OFFSET(pContext->pTransaction) ) 
-         || vdseTxStatusIsMarkedAsDestroyed( txStatus ) )
+      if ( ! vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
+         || vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
       {
          errcode = VDS_NO_SUCH_OBJECT;
          goto the_exit;
       }
 
-      txStatus->parentCounter++;
+      txFolderStatus->usageCounter++;
+      txItemStatus->parentCounter++;
       pFolderItem->pHashItem = pHashItem;
-      
+      pFolder->nodeObject.txCounter++;
+
       vdseUnlock( &pFolder->memObject, pContext );
 
       return 0;
@@ -492,8 +498,8 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
     * it would require that the current transaction deleted the folder and 
     * than tries to access it).
     */
-   if ( ! vdseTxStatusIsValid( txStatus, SET_OFFSET(pContext->pTransaction) ) 
-         || vdseTxStatusIsMarkedAsDestroyed( txStatus ) )
+   if ( ! vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
+         || vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
    {
       errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
@@ -946,6 +952,7 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
          vdseFreeBlocks( pContext->pAllocator, ptr, numBlocks, pContext );
          goto the_exit;
       }
+      pFolder->nodeObject.txCounter++;
 
       vdseUnlock( &pFolder->memObject, pContext );
       return 0;
@@ -1041,31 +1048,10 @@ int vdseFolderRelease( vdseFolder         * pFolder,
    
    if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
    {
-      txItemStatus->parentCounter--;
-      txFolderStatus->usageCounter--;
+      vdseFolderReleaseNoLock( pFolder,
+                               pFolderItem->pHashItem,
+                               pContext );
 
-      /* 
-       * if parentCounter is equal to zero, the object is not open. Since 
-       * we hold the lock on the folder, no session can therefore open it
-       * or use it in an iteration. We can remove it without problems if
-       * a remove was indeed committed.
-       */
-      if ( (txItemStatus->parentCounter == 0) && 
-         (txItemStatus->usageCounter == 0) &&
-         vdseTxStatusIsRemoveCommitted(txItemStatus) )
-      {
-         /* 
-          * Time to really delete the record!
-          *
-          * Note: the hash array will release the memory of the hash item.
-          */
-         vdseHashDelete( &pFolder->hashObj, 
-                         pFolderItem->pHashItem->key, 
-                         pFolderItem->pHashItem->keyLength, 
-                         pContext );
-
-         pFolder->nodeObject.txCounter--;
-      }
       vdseUnlock( &pFolder->memObject, pContext );
    }
    else
@@ -1079,6 +1065,7 @@ int vdseFolderRelease( vdseFolder         * pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static
 void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
                               vdseHashItem       * pHashItem,
                               vdseSessionContext * pContext )
@@ -1186,6 +1173,7 @@ int vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
    {
       txItemStatus = GET_PTR(pNode->txStatusOffset, vdseTxStatus );
       txItemStatus->parentCounter--;
+      txFolderStatus->usageCounter--;
       
       /* 
        * if parentCounter is equal to zero, the object is not open. Since 
@@ -1208,7 +1196,7 @@ int vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
                          pContext );
 
          parentFolder->nodeObject.txCounter--;
-      }      
+      }
 
       vdseUnlock( &parentFolder->memObject, pContext );
 

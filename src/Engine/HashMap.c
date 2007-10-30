@@ -586,40 +586,24 @@ int vdseHashMapRelease( vdseHashMap        * pHashMap,
                         vdseHashItem       * pHashItem,
                         vdseSessionContext * pContext )
 {
-   enum ListErrors listErr = LIST_OK;
-   vdseTxStatus * txItemStatus, * txHashMapStatus;
-   
    VDS_PRE_CONDITION( pHashMap  != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
 
-   txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
-
-   txItemStatus = &pHashItem->txStatus;
-   
    if ( vdseLock( &pHashMap->memObject, pContext ) == 0 )
    {
-      txItemStatus->usageCounter--;
-      txHashMapStatus->usageCounter--;
+      vdseHashMapReleaseNoLock( pHashMap,
+                                pHashItem,
+                                pContext );
 
-      if ( (txItemStatus->usageCounter == 0) && 
-         vdseTxStatusIsRemoveCommitted(txItemStatus) )
-      {
-         /* Time to really delete the record! */
-         listErr = vdseHashDelete( &pHashMap->hashObj, 
-                                   pHashItem->key,
-                                   pHashItem->keyLength,
-                                   pContext );
-         pHashMap->nodeObject.txCounter--;
-
-         VDS_POST_CONDITION( listErr == LIST_OK );
-      }
       vdseUnlock( &pHashMap->memObject, pContext );
    }
    else
    {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      vdscSetError( &pContext->errorHandler,
+                    g_vdsErrorHandle,
+                    VDS_OBJECT_CANNOT_GET_LOCK );
       return -1;
    }
 
@@ -630,12 +614,12 @@ int vdseHashMapRelease( vdseHashMap        * pHashMap,
 
 /** 
  * This version of Release is only called internally, by the current
- * object. Always use the standard when calling from the API.
+ * object. Always use the standard one when calling from the API.
  */
 static
 void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
-                              vdseHashItem       * pHashItem,
-                              vdseSessionContext * pContext )
+                               vdseHashItem       * pHashItem,
+                               vdseSessionContext * pContext )
 {
    enum ListErrors listErr = LIST_OK;
    vdseTxStatus * txItemStatus, * txHashMapStatus;
@@ -717,6 +701,7 @@ void vdseHashMapRollbackRemove( vdseHashMap * pHashMap,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 void vdseHashMapStatus( vdseHashMap  * pHashMap,
                         vdsObjStatus * pStatus )
 {
