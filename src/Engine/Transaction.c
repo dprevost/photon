@@ -611,14 +611,6 @@ void vdseTxRollback( vdseTx*             pTx,
          vdseUnlock( pChildMemObject, pContext );
          vdseUnlock( &parentFolder->memObject, pContext );
 
-         /*
-          * Tricky: the status of a child is only use in the Folder object,
-          * not in the object itself. So no need to lock the child...
-          */
-//         vdseLockNoFailure( &parentFolder->memObject, pContext );
-//         vdseTxStatusClearTx( pChildStatus );
-//         vdseUnlock( &parentFolder->memObject, pContext );
-
          break;
 
       case VDSE_TX_REMOVE_DATA:

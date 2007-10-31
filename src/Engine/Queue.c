@@ -43,7 +43,7 @@ void vdseQueueCommitAdd( vdseQueue * pQueue,
     * A new entry that isn't yet committed cannot be accessed by some
     * other session. Clearing it is ok.
     */
-   vdseTxStatusClearTx( &pQueueItem->txStatus );
+   vdseTxStatusSetTx( &pQueueItem->txStatus, NULL_OFFSET );
    pQueue->nodeObject.txCounter--;
 }
 
@@ -67,9 +67,7 @@ void vdseQueueCommitRemove( vdseQueue          * pQueue,
     * If it isn't, we can safely remove the entry from the hash, otherwise
     * we mark it as a committed remove
     */
-   if ( pQueueItem->txStatus.usageCounter > 1 )
-      vdseTxStatusCommitRemove( &pQueueItem->txStatus );
-   else
+   if ( pQueueItem->txStatus.usageCounter == 0 )
    {
       len =  pQueueItem->dataLength + offsetof( vdseQueueItem, data );
       
@@ -81,6 +79,10 @@ void vdseQueueCommitRemove( vdseQueue          * pQueue,
                 pContext );
 
       pQueue->nodeObject.txCounter--;
+   }
+   else
+   {
+      vdseTxStatusCommitRemove( &pQueueItem->txStatus );
    }
 }
 
@@ -284,7 +286,7 @@ int vdseQueueInsert( vdseQueue          * pQueue,
          vdseLinkedListPutLast( &pQueue->listOfElements,
                                 &pQueueItem->node );
 
-      vdseTxStatusSetTx( &pQueueItem->txStatus, SET_OFFSET(pContext->pTransaction) );
+      vdseTxStatusInit( &pQueueItem->txStatus, SET_OFFSET(pContext->pTransaction) );
       pQueue->nodeObject.txCounter++;
 
       vdseUnlock( &pQueue->memObject, pContext );
@@ -392,7 +394,7 @@ int vdseQueueRemove( vdseQueue          * pQueue,
    vdsErrors errcode = VDS_OK;
    enum ListErrors listErr = LIST_OK;
    vdseQueueItem * pItem = NULL;
-   vdseTxStatus  * txStatus;
+   vdseTxStatus  * txParentStatus, * txItemStatus;
    vdseLinkNode  * pNode = NULL;
 
    VDS_PRE_CONDITION( pQueue      != NULL );
@@ -402,12 +404,12 @@ int vdseQueueRemove( vdseQueue          * pQueue,
       firstOrLast == VDSE_QUEUE_LAST );
    VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
    
-   txStatus = GET_PTR( pQueue->nodeObject.txStatusOffset, vdseTxStatus );
+   txParentStatus = GET_PTR( pQueue->nodeObject.txStatusOffset, vdseTxStatus );
 
    if ( vdseLock( &pQueue->memObject, pContext ) == 0 )
    {
-      if ( ! vdseTxStatusIsValid( txStatus, SET_OFFSET(pContext->pTransaction) ) 
-         || vdseTxStatusIsMarkedAsDestroyed( txStatus ) )
+      if ( ! vdseTxStatusIsValid( txParentStatus, SET_OFFSET(pContext->pTransaction) ) 
+         || vdseTxStatusIsMarkedAsDestroyed( txParentStatus ) )
       {
          errcode = VDS_OBJECT_IS_DELETED;
          goto the_exit;
@@ -422,10 +424,10 @@ int vdseQueueRemove( vdseQueue          * pQueue,
       while ( listErr == LIST_OK )
       {
          pItem = (vdseQueueItem *) ((char*)pNode - offsetof( vdseQueueItem, node ));
-         txStatus = &pItem->txStatus;
+         txItemStatus = &pItem->txStatus;
       
-         if ( vdseTxStatusIsValid( txStatus, SET_OFFSET(pContext->pTransaction) ) 
-                && ! vdseTxStatusIsMarkedAsDestroyed( txStatus ) )
+         if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
+                && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
          {
             /* Add to current transaction  */
             rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
@@ -438,11 +440,11 @@ int vdseQueueRemove( vdseQueue          * pQueue,
             if ( rc != 0 ) 
                goto the_exit;
       
-            vdseTxStatusSetTx( txStatus, SET_OFFSET(pContext->pTransaction) );
+            vdseTxStatusSetTx( txItemStatus, SET_OFFSET(pContext->pTransaction) );
             pQueue->nodeObject.txCounter++;
-            pItem->txStatus.usageCounter++;
-            txStatus->usageCounter++;
-            vdseTxStatusMarkAsDestroyed( txStatus );
+            txItemStatus->usageCounter++;
+            txParentStatus->usageCounter++;
+            vdseTxStatusMarkAsDestroyed( txItemStatus );
 
             *ppQueueItem = pItem;
 
@@ -487,28 +489,38 @@ void vdseQueueRollbackAdd( vdseQueue          * pQueue,
 {
    vdseQueueItem * pQueueItem;
    size_t len;
+   vdseTxStatus * txStatus;
    
    VDS_PRE_CONDITION( pQueue   != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
    pQueueItem = GET_PTR( itemOffset, vdseQueueItem );
+   txStatus = &pQueueItem->txStatus;
 
    len =  pQueueItem->dataLength + offsetof( vdseQueueItem, data );
 
    /* 
     * A new entry that isn't yet committed cannot be accessed by some
-    * other session. To rollback we need to remove it from the hash.
-    * (this function will also free the memory back to the memory object).
+    * other session. But it could be accessed by the current session,
+    * for example during an iteration. To rollback we need to remove it 
+    * from the linked list and free the memory.
     */
-   vdseLinkedListRemoveItem( &pQueue->listOfElements,
-                             &pQueueItem->node );
-   vdseFree( &pQueue->memObject, 
-             (unsigned char *) pQueueItem, 
-             len, 
-             pContext );
+   if ( txStatus->usageCounter == 0 )
+   {
+      vdseLinkedListRemoveItem( &pQueue->listOfElements,
+                                &pQueueItem->node );
+      vdseFree( &pQueue->memObject, 
+                (unsigned char *) pQueueItem, 
+                len, 
+                pContext );
 
-   pQueue->nodeObject.txCounter--;
+      pQueue->nodeObject.txCounter--;
+   }
+   else
+   {
+      vdseTxStatusCommitRemove( txStatus );
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

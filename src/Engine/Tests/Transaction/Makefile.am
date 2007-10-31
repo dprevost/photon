@@ -42,7 +42,8 @@ check_PROGRAMS =                       \
                  RollbackNullTx        \
                  RollbackPass          \
                  TestFolder            \
-                 TestHashMap           
+                 TestHashMap           \
+                 TestQueue             
 
 COMMON_HEADER = txTest.h
 
@@ -74,6 +75,7 @@ RollbackNullTx_SOURCES        = $(COMMON_HEADER) RollbackNullTx.c
 RollbackPass_SOURCES          = $(COMMON_HEADER) RollbackPass.c
 TestFolder_SOURCES            = $(COMMON_HEADER) TestFolder.c
 TestHashMap_SOURCES           = $(COMMON_HEADER) TestHashMap.c
+TestQueue_SOURCES             = $(COMMON_HEADER) TestQueue.c
 
 EXTRA_DIST = 
 
@@ -107,7 +109,8 @@ TESTS =                       \
         RollbackNullTx        \
         RollbackPass          \
         TestFolder            \
-        TestHashMap           
+        TestHashMap           \
+        TestQueue             
                  
 XFAIL_TESTS =                       \
               AddInvalidSig         \

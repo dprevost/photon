@@ -684,7 +684,7 @@ void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap,
    }
    else
    {
-      vdseTxStatusSetTx( txStatus, SET_OFFSET(pContext->pTransaction) );
+//      vdseTxStatusSetTx( txStatus, SET_OFFSET(pContext->pTransaction) );
       vdseTxStatusCommitRemove( txStatus );
    }
 }
