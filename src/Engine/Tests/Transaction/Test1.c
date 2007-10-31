@@ -29,9 +29,6 @@ int main()
    int errcode;
    vdseFolderItem item;
    vdseTxStatus status;
-   vdseObjectDescriptor * pDescriptor;
-   vdseTxStatus * txItemStatus;
-   vdseTreeNode * pNode;
    
    pFolder = initFolderTest( expectedToPass, &context );
    pTx = context.pTransaction;
@@ -161,6 +158,162 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    errcode = vdseTxCommit( pTx, &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pFolder->nodeObject.txCounter != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pFolder->hashObj.numberOfItems != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   /* Test 3 */
+   errcode = vdseFolderInsertObject( pFolder,
+                                     strCheckLow("test2"),
+                                     strCheck("Test2"),
+                                     5,
+                                     VDS_FOLDER,
+                                     1,
+                                     0,
+                                     &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseFolderInsertObject( pFolder,
+                                     strCheckLow("test3"),
+                                     strCheck("Test3"),
+                                     5,
+                                     VDS_HASH_MAP,
+                                     1,
+                                     0,
+                                     &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseFolderGetObject( pFolder,
+                                  strCheck("test3"),
+                                  5,
+                                  &item,
+                                  &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   vdseTxRollback( pTx, &context );
+   if ( pFolder->nodeObject.txCounter != 1 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pFolder->hashObj.numberOfItems != 1 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   errcode = vdseFolderRelease( pFolder, &item, &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pFolder->nodeObject.txCounter != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pFolder->hashObj.numberOfItems != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   /* Test 4 */
+   errcode = vdseFolderInsertObject( pFolder,
+                                     strCheckLow("test2"),
+                                     strCheck("Test2"),
+                                     5,
+                                     VDS_FOLDER,
+                                     1,
+                                     0,
+                                     &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseFolderInsertObject( pFolder,
+                                     strCheckLow("test3"),
+                                     strCheck("Test3"),
+                                     5,
+                                     VDS_HASH_MAP,
+                                     1,
+                                     0,
+                                     &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseFolderGetObject( pFolder,
+                                  strCheck("test3"),
+                                  5,
+                                  &item,
+                                  &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   vdseTxCommit( pTx, &context );
+   if ( pFolder->nodeObject.txCounter != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pFolder->hashObj.numberOfItems != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   errcode = vdseFolderRelease( pFolder, &item, &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pFolder->nodeObject.txCounter != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pFolder->hashObj.numberOfItems != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   errcode = vdseFolderGetObject( pFolder,
+                                  strCheck("test3"),
+                                  5,
+                                  &item,
+                                  &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseFolderDeleteObject( pFolder,
+                                     strCheckLow("test2"),
+                                     5,
+                                     &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseFolderDeleteObject( pFolder,
+                                     strCheckLow("test3"),
+                                     5,
+                                     &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pFolder->nodeObject.txCounter != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pFolder->hashObj.numberOfItems != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   vdseTxRollback( pTx, &context );
+   if ( pFolder->nodeObject.txCounter != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pFolder->hashObj.numberOfItems != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   errcode = vdseFolderDeleteObject( pFolder,
+                                     strCheckLow("test2"),
+                                     5,
+                                     &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseFolderDeleteObject( pFolder,
+                                     strCheckLow("test3"),
+                                     5,
+                                     &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pFolder->nodeObject.txCounter != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pFolder->hashObj.numberOfItems != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   errcode = vdseTxCommit( pTx, &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pFolder->nodeObject.txCounter != 1 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pFolder->hashObj.numberOfItems != 1 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   errcode = vdseFolderRelease( pFolder, &item, &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    if ( pFolder->nodeObject.txCounter != 0 )
