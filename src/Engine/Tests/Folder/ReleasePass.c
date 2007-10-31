@@ -28,6 +28,9 @@ int main()
    int errcode;
    vdseFolderItem item;
    vdseTxStatus status;
+   vdseObjectDescriptor * pDescriptor;
+   vdseTxStatus * txItemStatus;
+   vdseTreeNode * pNode;
    
    pFolder = initFolderTest( expectedToPass, &context );
 
@@ -70,10 +73,23 @@ int main()
                                 &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   pDescriptor = GET_PTR( item.pHashItem->dataOffset, vdseObjectDescriptor );
+   pNode = GET_PTR( pDescriptor->nodeOffset, vdseTreeNode);
+   txItemStatus = GET_PTR(pNode->txStatusOffset, vdseTxStatus );
+   if ( txItemStatus->parentCounter != 1 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( status.usageCounter != 1 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    errcode = vdseFolderRelease( pFolder, &item, &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( txItemStatus->parentCounter != 0 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( status.usageCounter != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pFolder->nodeObject.txCounter != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    return 0;
 }

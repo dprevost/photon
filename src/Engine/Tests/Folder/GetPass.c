@@ -29,6 +29,8 @@ int main()
    vdseTxStatus status;
    vdseFolderItem folderItem;
    vdseObjectDescriptor * pDescriptor;
+   vdseTxStatus * txItemStatus;
+   vdseTreeNode * pNode;
 
    pFolder = initFolderTest( expectedToPass, &context );
 
@@ -59,6 +61,12 @@ int main()
    pDescriptor = GET_PTR( folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
    if ( memcmp( pDescriptor->originalName, strCheck("Test2"), 5*sizeof(vdsChar_T) ) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
+   pNode = GET_PTR( pDescriptor->nodeOffset, vdseTreeNode);
+   txItemStatus = GET_PTR(pNode->txStatusOffset, vdseTxStatus );
+   if ( txItemStatus->parentCounter != 1 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( status.usageCounter != 1 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    errcode = vdseFolderGetObject( pFolder,
                                   strCheckLow("test3"),
@@ -70,6 +78,36 @@ int main()
    if ( vdscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
+   errcode = vdseFolderInsertObject( pFolder,
+                                     strCheckLow("test4"),
+                                     strCheck("Test4"),
+                                     5,
+                                     VDS_FOLDER,
+                                     1,
+                                     0,
+                                     &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseFolderGetObject( pFolder,
+                                  strCheckLow("test4"),
+                                  5,
+                                  &folderItem,
+                                  &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   pDescriptor = GET_PTR( folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
+   if ( memcmp( pDescriptor->originalName, strCheck("Test4"), 5*sizeof(vdsChar_T) ) != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   pNode = GET_PTR( pDescriptor->nodeOffset, vdseTreeNode);
+   txItemStatus = GET_PTR(pNode->txStatusOffset, vdseTxStatus );
+   if ( txItemStatus->parentCounter != 1 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( status.usageCounter != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pFolder->nodeObject.txCounter != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+      
    vdseFolderFini( pFolder, &context );
    
    return 0;

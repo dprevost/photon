@@ -46,7 +46,9 @@ int main()
                                      &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   if ( pFolder->nodeObject.txCounter != 1 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   
    errcode = vdseFolderInsertObject( pFolder,
                                      strCheckLow("test3"),
                                      strCheck("Test3"),
@@ -57,6 +59,8 @@ int main()
                                      &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pFolder->nodeObject.txCounter != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    vdseFolderFini( pFolder, &context );
    

@@ -251,9 +251,14 @@ int vdseTxCommit( vdseTx*             pTx,
          }
          pChildStatus = GET_PTR( pChildNode->txStatusOffset, vdseTxStatus );
          
+         vdseLockNoFailure( &parentFolder->memObject, pContext );
          vdseLockNoFailure( pChildMemObject, pContext );
+
          vdseTxStatusClearTx( pChildStatus );
+         parentFolder->nodeObject.txCounter--;
+
          vdseUnlock( pChildMemObject, pContext );
+         vdseUnlock( &parentFolder->memObject, pContext );
          
          break;
 
@@ -305,7 +310,10 @@ int vdseTxCommit( vdseTx*             pTx,
              */
             vdseUnlock( pChildMemObject, pContext );
 
-            /* Remove it from the folder (from the hash list) */
+            /* 
+             * Remove it from the folder (from the hash list)
+             * (this function also decrease the txCounter of the parentFolder 
+             */
             vdseFolderRemoveObject( parentFolder, 
                                     GET_PTR(pChildNode->myKeyOffset, vdsChar_T),
                                     pChildNode->myNameLength,
@@ -513,11 +521,14 @@ void vdseTxRollback( vdseTx*             pTx,
          if ( pChildStatus->usageCounter > 0 || pChildNode->txCounter > 0 )
          {
             /*
-             * Can this really happen? No other session is supposed to
+             * Can this really happen? NYes! No other session is supposed to
              * be able to open the object until CREATE is committed but
-             * the current session might still have it open I guess.
+             * the current session might have open it to insert data and... 
+             * (the rollback might be the result of an abnormal error, for
+             * example).
              */
-            /** \todo Revisit this */
+            /** \todo Revisit this. Maybe rolling back a create object should
+             * also automatically close the object if open. */
             /* 
              * We can't "uncreate" it - someone is using it. But we flag it
              * as "Remove is committed" so that the last "user" do delete
@@ -548,6 +559,16 @@ void vdseTxRollback( vdseTx*             pTx,
             {
                vdseFolderFini( pChildFolder, pContext );
             }
+            else if ( pOps->childType == VDSE_IDENT_HASH_MAP )
+            {
+               vdseHashMapFini( pHashMap, pContext );
+            }
+            else if ( pOps->childType == VDSE_IDENT_QUEUE )
+            {
+               vdseQueueFini( pQueue, pContext );
+            }
+            else
+               VDS_POST_CONDITION( pOps_invalid_type );
          }
          vdseUnlock( &parentFolder->memObject, pContext );
 
@@ -579,13 +600,22 @@ void vdseTxRollback( vdseTx*             pTx,
          }
          pChildStatus = GET_PTR( pChildNode->txStatusOffset, vdseTxStatus );
 
+         vdseLockNoFailure( &parentFolder->memObject, pContext );
+         vdseLockNoFailure( pChildMemObject, pContext );
+
+         vdseTxStatusClearTx( pChildStatus );
+         parentFolder->nodeObject.txCounter--;
+
+         vdseUnlock( pChildMemObject, pContext );
+         vdseUnlock( &parentFolder->memObject, pContext );
+
          /*
           * Tricky: the status of a child is only use in the Folder object,
           * not in the object itself. So no need to lock the child...
           */
-         vdseLockNoFailure( pParentMemObject, pContext );
-         vdseTxStatusClearTx( pChildStatus );
-         vdseUnlock( pParentMemObject, pContext );
+//         vdseLockNoFailure( &parentFolder->memObject, pContext );
+//         vdseTxStatusClearTx( pChildStatus );
+//         vdseUnlock( &parentFolder->memObject, pContext );
 
          break;
 

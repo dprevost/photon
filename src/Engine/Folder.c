@@ -474,7 +474,6 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
       txFolderStatus->usageCounter++;
       txItemStatus->parentCounter++;
       pFolderItem->pHashItem = pHashItem;
-      pFolder->nodeObject.txCounter++;
 
       vdseUnlock( &pFolder->memObject, pContext );
 
@@ -891,7 +890,7 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
       }
       
       objTxStatus = &pHashItem->txStatus;
-      vdseTxStatusSetTx( objTxStatus, SET_OFFSET(pContext->pTransaction) );
+      vdseTxStatusInit( objTxStatus, SET_OFFSET(pContext->pTransaction) );
       
       pDesc = GET_PTR(pHashItem->dataOffset, vdseObjectDescriptor );
       switch ( memObjType )
@@ -1128,6 +1127,7 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
                              (unsigned char*)objectName,
                              nameLength * sizeof(vdsChar_T),
                              pContext );
+   pFolder->nodeObject.txCounter--;
    
    VDS_POST_CONDITION( listErr == LIST_OK );
 }

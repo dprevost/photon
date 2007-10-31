@@ -40,7 +40,8 @@ check_PROGRAMS =                       \
                  RollbackInvalidSig    \
                  RollbackNullContext   \
                  RollbackNullTx        \
-                 RollbackPass          
+                 RollbackPass          \
+                 Test1                 
                  
 COMMON_HEADER = txTest.h
 
@@ -101,7 +102,8 @@ TESTS =                       \
         RollbackInvalidSig    \
         RollbackNullContext   \
         RollbackNullTx        \
-        RollbackPass          
+        RollbackPass          \
+        Test1
                  
 XFAIL_TESTS =                       \
               AddInvalidSig         \

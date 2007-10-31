@@ -90,6 +90,7 @@ void vdseTxStatusInit( vdseTxStatus * pStatus, ptrdiff_t txOffset )
    pStatus->txOffset = txOffset;
    pStatus->statusFlag = 0;
    pStatus->usageCounter = 0;
+   pStatus->parentCounter = 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

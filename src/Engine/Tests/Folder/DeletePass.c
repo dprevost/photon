@@ -66,6 +66,8 @@ int main()
                                      &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pFolder->nodeObject.txCounter != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    errcode = vdseFolderDeleteObject( pFolder,
                                      strCheck("test3"),
