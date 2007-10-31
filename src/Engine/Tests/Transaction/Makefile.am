@@ -41,8 +41,9 @@ check_PROGRAMS =                       \
                  RollbackNullContext   \
                  RollbackNullTx        \
                  RollbackPass          \
-                 Test1                 
-                 
+                 TestFolder            \
+                 TestHashMap           
+
 COMMON_HEADER = txTest.h
 
 AddInvalidSig_SOURCES         = $(COMMON_HEADER) AddInvalidSig.c
@@ -71,7 +72,9 @@ RollbackInvalidSig_SOURCES    = $(COMMON_HEADER) RollbackInvalidSig.c
 RollbackNullContext_SOURCES   = $(COMMON_HEADER) RollbackNullContext.c
 RollbackNullTx_SOURCES        = $(COMMON_HEADER) RollbackNullTx.c
 RollbackPass_SOURCES          = $(COMMON_HEADER) RollbackPass.c
-                 
+TestFolder_SOURCES            = $(COMMON_HEADER) TestFolder.c
+TestHashMap_SOURCES           = $(COMMON_HEADER) TestHashMap.c
+
 EXTRA_DIST = 
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
@@ -103,7 +106,8 @@ TESTS =                       \
         RollbackNullContext   \
         RollbackNullTx        \
         RollbackPass          \
-        Test1
+        TestFolder            \
+        TestHashMap           
                  
 XFAIL_TESTS =                       \
               AddInvalidSig         \

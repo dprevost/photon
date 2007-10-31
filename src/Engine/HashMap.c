@@ -41,11 +41,7 @@ void vdseHashMapCommitAdd( vdseHashMap * pHashMap,
 
    pHashItem = GET_PTR( itemOffset, vdseHashItem );
 
-   /* 
-    * A new entry that isn't yet committed cannot be accessed by some
-    * other session. Clearing it is ok.
-    */
-   vdseTxStatusClearTx( &pHashItem->txStatus );
+   vdseTxStatusSetTx( &pHashItem->txStatus, NULL_OFFSET );
    pHashMap->nodeObject.txCounter--;
 }
 
@@ -57,27 +53,31 @@ void vdseHashMapCommitRemove( vdseHashMap        * pHashMap,
 {
    vdseHashItem * pHashItem;
    enum ListErrors errcode =  LIST_OK;
+   vdseTxStatus * txStatus;
    
    VDS_PRE_CONDITION( pHashMap   != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
    pHashItem = GET_PTR( itemOffset, vdseHashItem );
-
+   txStatus = &pHashItem->txStatus;
    /* 
     * If someone is using it, the usageCounter will be greater than zero.
     * If it zero, we can safely remove the entry from the hash, otherwise
     * we mark it as a committed remove
     */
-   if ( pHashItem->txStatus.usageCounter > 0 )
-      vdseTxStatusCommitRemove( &pHashItem->txStatus );
-   else
+   if ( pHashItem->txStatus.usageCounter == 0 )
    {
       errcode = vdseHashDelete( &pHashMap->hashObj, 
                                 pHashItem->key,
                                 pHashItem->keyLength,
                                 pContext );
       pHashMap->nodeObject.txCounter--;
+   }
+   else
+   {
+      vdseTxStatusSetTx( txStatus, SET_OFFSET(pContext->pTransaction) );
+      vdseTxStatusCommitRemove( txStatus );
    }
    
    VDS_POST_CONDITION( errcode == LIST_OK );
@@ -94,7 +94,6 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
    vdsErrors errcode = VDS_OK;
    enum ListErrors listErr = LIST_OK;
    vdseHashItem* pHashItem = NULL;
- //  vdseTxStatus* txStatus;
    vdseTxStatus * txItemStatus, * txHashMapStatus;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
@@ -150,7 +149,7 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_REMOVE_DATA,
                          SET_OFFSET(pHashMap),
-                         VDS_HASH_MAP,
+                         VDSE_IDENT_HASH_MAP,
                          SET_OFFSET( pHashItem),
                          0,
                          pContext );
@@ -243,7 +242,7 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
          goto the_exit;
       }
       txItemStatus = &pHashItem->txStatus;
-   
+  
       /* 
        * If the transaction id of the item (to retrieve) is not either equal
        * to zero or to the current transaction id, then it belongs to 
@@ -540,7 +539,7 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_ADD_DATA,
                          SET_OFFSET(pHashMap),
-                         VDS_HASH_MAP,
+                         VDSE_IDENT_HASH_MAP,
                          SET_OFFSET(pHashItem),
                          0,
                          pContext );
@@ -554,7 +553,7 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
       }
       
       txItemStatus = &pHashItem->txStatus;
-      vdseTxStatusSetTx( txItemStatus, SET_OFFSET(pContext->pTransaction) );
+      vdseTxStatusInit( txItemStatus, SET_OFFSET(pContext->pTransaction) );
       pHashMap->nodeObject.txCounter++;
    
       vdseUnlock( &pHashMap->memObject, pContext );
@@ -658,25 +657,36 @@ void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap,
 {
    vdseHashItem * pHashItem;
    enum ListErrors errcode = LIST_OK;
+   vdseTxStatus * txStatus;
    
    VDS_PRE_CONDITION( pHashMap   != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
    pHashItem = GET_PTR( itemOffset, vdseHashItem );
-
+   txStatus = &pHashItem->txStatus;
    /* 
     * A new entry that isn't yet committed cannot be accessed by some
-    * other session. To rollback we need to remove it from the hash.
-    * (this function will also free the memory back to the memory object).
+    * other session. But it could be accessed by the current session,
+    * for example during an iteration. To rollback we need to remove it 
+    * from the hash (this function will also free the memory back to 
+    * the memory object).
     */
-   errcode = vdseHashDelete( &pHashMap->hashObj, 
-                             pHashItem->key,
-                             pHashItem->keyLength, 
-                             pContext );
-   pHashMap->nodeObject.txCounter--;
-
-   VDS_POST_CONDITION( errcode == LIST_OK );
+   if ( txStatus->usageCounter == 0 )
+   {
+      errcode = vdseHashDelete( &pHashMap->hashObj, 
+                                pHashItem->key,
+                                pHashItem->keyLength, 
+                                pContext );
+      pHashMap->nodeObject.txCounter--;
+   
+      VDS_POST_CONDITION( errcode == LIST_OK );
+   }
+   else
+   {
+      vdseTxStatusSetTx( txStatus, SET_OFFSET(pContext->pTransaction) );
+      vdseTxStatusCommitRemove( txStatus );
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -692,9 +702,8 @@ void vdseHashMapRollbackRemove( vdseHashMap * pHashMap,
    pHashItem = GET_PTR( itemOffset, vdseHashItem );
 
    /*
-    * This call resets the transaction (to "none"), decrement the
-    * counter and remove the bit that flag this data as being in the
-    * process of being removed.
+    * This call resets the transaction (to "none") and remove the 
+    * bit that flag this data as being in the process of being removed.
     */
    vdseTxStatusUnmarkAsDestroyed(  &pHashItem->txStatus );
    pHashMap->nodeObject.txCounter--;

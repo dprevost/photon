@@ -197,7 +197,6 @@ void vdseTxStatusUnmarkAsDestroyed( vdseTxStatus * pStatus )
     * was marked as removed).
     */
    pStatus->txOffset = NULL_OFFSET;
-   pStatus->usageCounter--;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -292,7 +292,8 @@ int vdseTxCommit( vdseTx*             pTx,
 
          vdseLockNoFailure( pChildMemObject, pContext );
 
-         if ( pChildStatus->usageCounter > 0 || pChildNode->txCounter > 0 )
+         if ( pChildStatus->usageCounter > 0 || 
+            pChildNode->txCounter > 0  || pChildStatus->parentCounter > 0 )
          {
             /* 
              * We can't remove it - someone is using it. But we flag it
@@ -518,14 +519,15 @@ void vdseTxRollback( vdseTx*             pTx,
 
          vdseLockNoFailure( pChildMemObject, pContext );
 
-         if ( pChildStatus->usageCounter > 0 || pChildNode->txCounter > 0 )
+         if ( pChildStatus->usageCounter > 0 || 
+            pChildNode->txCounter > 0  || pChildStatus->parentCounter > 0 )
          {
             /*
-             * Can this really happen? NYes! No other session is supposed to
+             * Can this really happen? Yes! No other session is supposed to
              * be able to open the object until CREATE is committed but
              * the current session might have open it to insert data and... 
              * (the rollback might be the result of an abnormal error, for
-             * example).
+             * example or a call to vdsExit() or...).
              */
             /** \todo Revisit this. Maybe rolling back a create object should
              * also automatically close the object if open. */
