@@ -27,8 +27,6 @@ int main()
    vdseSessionContext context;
    int errcode;
    vdseTxStatus status;
-   char * key  = "my key";
-   char * data = "my data";
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
@@ -41,13 +39,28 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    errcode = vdseHashMapInsert( pHashMap,
-                                (const void *) key,
-                                6,
-                                (const void *) data,
-                                7,
+                                "my key 1",
+                                strlen("my key 1"),
+                                "my data 1",
+                                strlen("my data 1"),
                                 &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pHashMap->nodeObject.txCounter != 1 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   errcode = vdseHashMapInsert( pHashMap,
+                                "my key 2",
+                                strlen("my key 2"),
+                                "my data 2",
+                                strlen("my data 2"),
+                                &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pHashMap->nodeObject.txCounter != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pHashMap->hashObj.numberOfItems != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    return 0;
 }

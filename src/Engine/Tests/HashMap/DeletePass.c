@@ -56,6 +56,8 @@ int main()
                                 &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pHashMap->nodeObject.txCounter != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    errcode = vdseHashMapGet( pHashMap,
                              (const void *) key,

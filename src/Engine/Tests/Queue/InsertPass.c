@@ -46,6 +46,8 @@ int main()
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pQueue->nodeObject.txCounter != 1 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    errcode = vdseQueueInsert( pQueue,
                               data,
@@ -54,6 +56,10 @@ int main()
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pQueue->nodeObject.txCounter != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pQueue->listOfElements.currentSize != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    return 0;
 }

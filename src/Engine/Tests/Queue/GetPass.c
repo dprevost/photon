@@ -29,6 +29,7 @@ int main()
    vdseTxStatus status;
    char * data = "My Data";
    vdseQueueItem * pItem = NULL;
+   vdseTxStatus * txItemStatus;
    
    pQueue = initQueueTest( expectedToPass, &context );
 
@@ -64,6 +65,11 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    if ( pItem->dataLength != 8 )
       ERROR_EXIT( expectedToPass, NULL, ; );
+   txItemStatus = &pItem->txStatus;
+   if ( txItemStatus->usageCounter != 1 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( status.usageCounter != 1 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    errcode = vdseQueueGet( pQueue,
                            VDS_NEXT,
@@ -72,6 +78,15 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    if ( pItem->dataLength != 6 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   /* Testing the old record */
+   if ( txItemStatus->usageCounter != 0 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   /* Testing the new record */
+   txItemStatus = &pItem->txStatus;
+   if ( txItemStatus->usageCounter != 1 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( status.usageCounter != 1 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    return 0;

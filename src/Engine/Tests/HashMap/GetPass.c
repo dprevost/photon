@@ -31,6 +31,7 @@ int main()
    char * data = "my data";
    vdseHashItem * pItem;
    char * ptr;
+   vdseTxStatus * txItemStatus;
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
@@ -60,6 +61,11 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    ptr = GET_PTR( pItem->dataOffset, char );
    if (memcmp( data, ptr, 7 ) != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   txItemStatus = &pItem->txStatus;
+   if ( txItemStatus->usageCounter != 1 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( status.usageCounter != 1 )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    return 0;

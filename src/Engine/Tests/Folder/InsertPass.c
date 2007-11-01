@@ -61,6 +61,8 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    if ( pFolder->nodeObject.txCounter != 2 )
       ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pFolder->hashObj.numberOfItems != 2 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    vdseFolderFini( pFolder, &context );
    

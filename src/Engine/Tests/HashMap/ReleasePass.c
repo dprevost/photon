@@ -30,6 +30,7 @@ int main()
    char * key  = "my key";
    char * data = "my data";
    vdseHashItem * pItem;
+   vdseTxStatus * txItemStatus;
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
@@ -57,12 +58,23 @@ int main()
                              &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   txItemStatus = &pItem->txStatus;
+   if ( txItemStatus->usageCounter != 1 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( status.usageCounter != 1 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
    
    errcode = vdseHashMapRelease( pHashMap,
                                  pItem,
                                  &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( txItemStatus->usageCounter != 0 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( status.usageCounter != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( pHashMap->nodeObject.txCounter != 1 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    return 0;
 }

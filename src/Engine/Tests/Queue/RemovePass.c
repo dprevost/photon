@@ -62,6 +62,8 @@ int main()
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pQueue->nodeObject.txCounter != 3 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
 
    return 0;
 }
