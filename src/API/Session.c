@@ -377,6 +377,78 @@ int vdsGetStatus(  VDS_HANDLE     sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int vdsLastError( VDS_HANDLE sessionHandle )
+{
+   vdsaSession* pSession;
+   int rc = VDS_SESSION_CANNOT_GET_LOCK;
+   
+   pSession = (vdsaSession*) sessionHandle;
+   if ( pSession == NULL )
+      return VDS_NULL_HANDLE;
+   
+   if ( pSession->type != VDSA_SESSION )
+      return VDS_WRONG_TYPE_HANDLE;
+
+   if ( vdsaSessionLock( pSession ) == 0 )
+   {
+      if ( ! pSession->terminated )
+         rc = vdscGetLastError( &pSession->context.errorHandler );
+      else
+         rc = VDS_SESSION_IS_TERMINATED;
+
+      vdsaSessionUnlock( pSession );
+   }
+
+   return rc;
+}   
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdsErrorMsg( VDS_HANDLE sessionHandle,
+                 char *     message,
+                 size_t     msgLengthInBytes )
+{
+   vdsaSession* pSession;
+   int rc = VDS_OK;
+   size_t len;
+   
+   pSession = (vdsaSession*) sessionHandle;
+   if ( pSession == NULL )
+      return VDS_NULL_HANDLE;
+   
+   if ( pSession->type != VDSA_SESSION )
+      return VDS_WRONG_TYPE_HANDLE;
+
+   if ( message == NULL )
+      return VDS_NULL_POINTER;
+   
+   if ( msgLengthInBytes < 32 )
+      return VDS_INVALID_LENGTH;
+   
+   if ( vdsaSessionLock( pSession ) == 0 )
+   {
+      if ( ! pSession->terminated )
+      {
+         if ( vdscGetLastError( &pSession->context.errorHandler ) != 0 )
+           len = vdscGetErrorMsg( &pSession->context.errorHandler,
+                                  message, 
+                                  msgLengthInBytes );
+         else
+            strcpy( message, "No Error!" );
+      }
+      else
+         rc = VDS_SESSION_IS_TERMINATED;
+
+      vdsaSessionUnlock( pSession );
+   }
+   else
+      rc = VDS_SESSION_CANNOT_GET_LOCK;
+
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdsRollback( VDS_HANDLE sessionHandle )
 {
    int rc = VDS_SESSION_CANNOT_GET_LOCK;

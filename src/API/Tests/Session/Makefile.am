@@ -32,11 +32,13 @@ check_PROGRAMS =                     \
                  DestroyNullName     \
                  DestroyPass         \
                  DestroyZeroLength   \
+                 ErrorMsg            \
                  ExitNullHandle      \
                  ExitPass            \
                  InitNoProcess       \
                  InitNullHandle      \
                  InitPass            \
+                 LastError           \
                  OpenObjNotCreated   \
                  OpenObjNullName     \
                  OpenObjNullObject   \
@@ -65,11 +67,13 @@ DestroyNullHandle_SOURCES   = DestroyNullHandle.c
 DestroyNullName_SOURCES     = DestroyNullName.c
 DestroyPass_SOURCES         = DestroyPass.c
 DestroyZeroLength_SOURCES   = DestroyZeroLength.c
+ErrorMsg_SOURCES            = ErrorMsg.c
 ExitNullHandle_SOURCES      = ExitNullHandle.c
 ExitPass_SOURCES            = ExitPass.c
 InitNoProcess_SOURCES       = InitNoProcess.c
 InitNullHandle_SOURCES      = InitNullHandle.c
 InitPass_SOURCES            = InitPass.c
+LastError_SOURCES           = LastError.c
 OpenObjNotCreated_SOURCES   = OpenObjNotCreated.c
 OpenObjNullName_SOURCES     = OpenObjNullName.c
 OpenObjNullObject_SOURCES   = OpenObjNullObject.c
@@ -98,10 +102,12 @@ EXTRA_DIST =                        \
              DestroyNullName.sh     \
              DestroyPass.sh         \
              DestroyZeroLength.sh   \
+             ErrorMsg.sh            \
              ExitNullHandle.sh      \
              ExitPass.sh            \
              InitNullHandle.sh      \
              InitPass.sh            \
+             LastError.sh           \
              OpenObjNotCreated.sh   \
              OpenObjNullName.sh     \
              OpenObjNullObject.sh   \
@@ -139,11 +145,13 @@ TESTS =                        \
         DestroyNullName.sh     \
         DestroyPass.sh         \
         DestroyZeroLength.sh   \
+        ErrorMsg.sh            \
         ExitNullHandle.sh      \
         ExitPass.sh            \
         InitNoProcess          \
         InitNullHandle.sh      \
         InitPass.sh            \
+        LastError.sh           \
         OpenObjNotCreated.sh   \
         OpenObjNullName.sh     \
         OpenObjNullObject.sh   \

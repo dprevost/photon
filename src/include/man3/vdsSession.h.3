@@ -1,4 +1,4 @@
-.TH "vdsSession.h" 3 "22 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsSession.h" 3 "1 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -26,10 +26,16 @@ vdsSession.h \-
 .RI "VDSF_EXPORT int \fBvdsDestroyObject\fP (\fBVDS_HANDLE\fP handle, const char *objectName, size_t nameLengthInBytes)"
 .br
 .ti -1c
+.RI "VDSF_EXPORT int \fBvdsErrorMsg\fP (\fBVDS_HANDLE\fP sessionHandle, char *message, size_t msgLengthInBytes)"
+.br
+.ti -1c
 .RI "VDSF_EXPORT int \fBvdsExitSession\fP (\fBVDS_HANDLE\fP handle)"
 .br
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsGetStatus\fP (\fBVDS_HANDLE\fP handle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjStatus\fP *pStatus)"
+.br
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsLastError\fP (\fBVDS_HANDLE\fP sessionHandle)"
 .br
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsRollback\fP (\fBVDS_HANDLE\fP handle)"
@@ -42,6 +48,8 @@ vdsSession.h \-
 .SS "VDSF_EXPORT int vdsCreateObject (\fBVDS_HANDLE\fP handle, const char * objectName, size_t nameLengthInBytes, \fBvdsObjectType\fP objectType)"
 .PP
 .SS "VDSF_EXPORT int vdsDestroyObject (\fBVDS_HANDLE\fP handle, const char * objectName, size_t nameLengthInBytes)"
+.PP
+.SS "VDSF_EXPORT int vdsErrorMsg (\fBVDS_HANDLE\fP sessionHandle, char * message, size_t msgLengthInBytes)"
 .PP
 .SS "VDSF_EXPORT int vdsExitSession (\fBVDS_HANDLE\fP handle)"
 .PP
@@ -60,6 +68,8 @@ This function will also initiate a new transaction:
 Contrary to some other transaction management software, almost every call made is part of a transaction. Even viewing data (for example deleting the data by another session will be delayed until the current session terminates its access).
 .PP
 Upon normal termination, the current transaction is rolled back. You MUST explicitly call vdseCommit to save your changes. 
+.SS "VDSF_EXPORT int vdsLastError (\fBVDS_HANDLE\fP sessionHandle)"
+.PP
 .SS "VDSF_EXPORT int vdsRollback (\fBVDS_HANDLE\fP handle)"
 .PP
 .SH "Author"

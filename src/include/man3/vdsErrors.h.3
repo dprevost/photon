@@ -1,4 +1,4 @@
-.TH "vdsErrors.h" 3 "22 Oct 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsErrors.h" 3 "1 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -62,6 +62,9 @@ The process was already initialized.
 Was \fBvdsInit()\fP called for a second time? 
 .TP
 \fB\fIVDS_PROCESS_NOT_INITIALIZED \fP\fP
+The process was not properly initialized. 
+.PP
+Was \fBvdsInit()\fP called? 
 .TP
 \fB\fIVDS_INVALID_WATCHDOG_ADDRESS \fP\fP
 The watchdog address is invalid (empty string, NULL pointer, etc. 

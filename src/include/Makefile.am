@@ -16,6 +16,7 @@ VDS_C_FILES =                           \
               man3/vdsCreateObject.3    \
               man3/vdsDataEntry.3       \
               man3/vdsDestroyObject.3   \
+              man3/vdsErrorMsg.3        \
               man3/vdsErrors.3          \
               man3/vdsErrors.h.3        \
               man3/vdsExit.3            \
@@ -42,6 +43,7 @@ VDS_C_FILES =                           \
               man3/vdsInit.3            \
               man3/vdsInitSession.3     \
               man3/vdsIteratorType.3    \
+              man3/vdsLastError.3       \
               man3/vdsObjectType.3      \
               man3/vdsObjStatus.3       \
               man3/vdsProcess.h.3       \
