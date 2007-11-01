@@ -32,12 +32,6 @@ typedef enum vdsErrors
    /** Abnormal internal error - it should not happen! */
    VDS_INTERNAL_ERROR              = 666,
 
-   /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
-    * 
-    * Generic errors.
-    *
-    * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
    /**
     * Cannot get a lock on a system object, the engine is "busy".
     * This might be the result of either a very busy system where 
@@ -85,19 +79,15 @@ typedef enum vdsErrors
     */
    VDS_INVALID_LENGTH              = 8,
    
-   /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
-    * 
-    * Errors which might occur at initialization time or are related to 
-    * the process object/project handle.
-    *
-    * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-    
    /**
     * The process was already initialized. Was vdsInit() called for a 
     * second time?
     */
    VDS_PROCESS_ALREADY_INITIALIZED = 21,
 
+   /**
+    * The process was not properly initialized. Was vdsInit() called?
+    */
    VDS_PROCESS_NOT_INITIALIZED     = 22,
 
    /** The watchdog address is invalid (empty string, NULL pointer, etc.) */
@@ -127,12 +117,6 @@ typedef enum vdsErrors
    /** Generic i/o error when attempting to open the vds. */
    VDS_ERROR_OPENING_VDS           = 30,
 
-   /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
-    * 
-    * Errors which might be related to session objects/session handle.
-    *
-    * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
    /**
     * Error accessing the directory for the log files or error opening the 
     * log file itself. */
@@ -149,12 +133,6 @@ typedef enum vdsErrors
     * after this session was terminated.
     */
    VDS_SESSION_IS_TERMINATED       = 43,
-   
-   /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
-    * 
-    * Errors which might be related to session objects/session handle.
-    *
-    * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
    
    /**
     * Permitted characters for names are alphanumerics, spaces (' '), 
