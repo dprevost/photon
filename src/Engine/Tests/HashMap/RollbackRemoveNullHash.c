@@ -72,7 +72,7 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   vdseHashMapRollbackRemove( NULL, SET_OFFSET( pItem ) );
+   vdseHashMapRollbackRemove( NULL, SET_OFFSET(pItem), &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

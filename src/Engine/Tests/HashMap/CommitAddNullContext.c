@@ -55,24 +55,16 @@ int main()
                              6,
                              &pItem,
                              &context );
-
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   
    errcode = vdseHashMapRelease( pHashMap,
                                  pItem,
                                  &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   
-   errcode = vdseHashMapDelete( pHashMap,
-                                (const void *) key,
-                                6,
-                                &context );
-   if ( errcode != 0 ) 
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   vdseHashMapRollbackRemove( pHashMap, NULL_OFFSET, &context );
+   vdseHashMapCommitAdd( pHashMap, SET_OFFSET(  pItem ), NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

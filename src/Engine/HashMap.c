@@ -31,18 +31,41 @@ void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseHashMapCommitAdd( vdseHashMap * pHashMap, 
-                           ptrdiff_t     itemOffset )
+void vdseHashMapCommitAdd( vdseHashMap        * pHashMap, 
+                           ptrdiff_t            itemOffset,
+                           vdseSessionContext * pContext  )
 {
    vdseHashItem * pHashItem;
+   vdseTxStatus * txHashMapStatus;
    
    VDS_PRE_CONDITION( pHashMap   != NULL );
+   VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
    pHashItem = GET_PTR( itemOffset, vdseHashItem );
 
    vdseTxStatusSetTx( &pHashItem->txStatus, NULL_OFFSET );
    pHashMap->nodeObject.txCounter--;
+
+   /*
+    * Do we need to resize? We need both conditions here:
+    *
+    *   - txHashMapStatus->usageCounter someone has a pointer to the data
+    *
+    *   - nodeObject.txCounter: offset to some of our data is part of a
+    *                           transaction.
+    *
+    * Note: we do not check the return value of vdseHashResize since the
+    *       current function returns void. Let's someone else find that 
+    *       we are getting low on memory...
+    */
+   txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   if ( (txHashMapStatus->usageCounter == 0) &&
+      (pHashMap->nodeObject.txCounter == 0 ) )
+   {
+      if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE )
+         vdseHashResize( &pHashMap->hashObj, pContext );
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -53,31 +76,51 @@ void vdseHashMapCommitRemove( vdseHashMap        * pHashMap,
 {
    vdseHashItem * pHashItem;
    enum ListErrors errcode =  LIST_OK;
-   vdseTxStatus * txStatus;
+   vdseTxStatus * txItemStatus;
+   vdseTxStatus * txHashMapStatus;
    
    VDS_PRE_CONDITION( pHashMap   != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
    pHashItem = GET_PTR( itemOffset, vdseHashItem );
-   txStatus = &pHashItem->txStatus;
+   txItemStatus = &pHashItem->txStatus;
    /* 
     * If someone is using it, the usageCounter will be greater than zero.
     * If it zero, we can safely remove the entry from the hash, otherwise
     * we mark it as a committed remove
     */
-   if ( pHashItem->txStatus.usageCounter == 0 )
+   if ( txItemStatus->usageCounter == 0 )
    {
       errcode = vdseHashDelete( &pHashMap->hashObj, 
                                 pHashItem->key,
                                 pHashItem->keyLength,
                                 pContext );
       pHashMap->nodeObject.txCounter--;
+
+      /*
+       * Do we need to resize? We need both conditions here:
+       *
+       *   - txHashMapStatus->usageCounter someone has a pointer to the data
+       *
+       *   - nodeObject.txCounter: offset to some of our data is part of a
+       *                           transaction.
+       *
+       * Note: we do not check the return value of vdseHashResize since the
+       *       current function returns void. Let's someone else find that 
+       *       we are getting low on memory...
+       */
+      txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+      if ( (txHashMapStatus->usageCounter == 0) &&
+         (pHashMap->nodeObject.txCounter == 0 ) )
+      {
+         if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE )
+            vdseHashResize( &pHashMap->hashObj, pContext );
+      }
    }
    else
    {
-      vdseTxStatusSetTx( txStatus, SET_OFFSET(pContext->pTransaction) );
-      vdseTxStatusCommitRemove( txStatus );
+      vdseTxStatusCommitRemove( txItemStatus );
    }
    
    VDS_POST_CONDITION( errcode == LIST_OK );
@@ -647,6 +690,25 @@ void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
 
       VDS_POST_CONDITION( listErr == LIST_OK );
    }
+   
+   /*
+    * Do we need to resize? We need both conditions here:
+    *
+    *   - txHashMapStatus->usageCounter someone has a pointer to the data
+    *
+    *   - nodeObject.txCounter: offset to some of our data is part of a
+    *                           transaction.
+    *
+    * Note: we do not check the return value of vdseHashResize since the
+    *       current function returns void. Let's someone else find that 
+    *       we are getting low on memory...
+    */
+   if ( (txHashMapStatus->usageCounter == 0) &&
+      (pHashMap->nodeObject.txCounter == 0 ) )
+   {
+      if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE )
+         vdseHashResize( &pHashMap->hashObj, pContext );
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -657,14 +719,14 @@ void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap,
 {
    vdseHashItem * pHashItem;
    enum ListErrors errcode = LIST_OK;
-   vdseTxStatus * txStatus;
+   vdseTxStatus * txItemStatus, * txHashMapStatus;
    
    VDS_PRE_CONDITION( pHashMap   != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
    pHashItem = GET_PTR( itemOffset, vdseHashItem );
-   txStatus = &pHashItem->txStatus;
+   txItemStatus = &pHashItem->txStatus;
    /* 
     * A new entry that isn't yet committed cannot be accessed by some
     * other session. But it could be accessed by the current session,
@@ -672,7 +734,7 @@ void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap,
     * from the hash (this function will also free the memory back to 
     * the memory object).
     */
-   if ( txStatus->usageCounter == 0 )
+   if ( txItemStatus->usageCounter == 0 )
    {
       errcode = vdseHashDelete( &pHashMap->hashObj, 
                                 pHashItem->key,
@@ -681,32 +743,75 @@ void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap,
       pHashMap->nodeObject.txCounter--;
    
       VDS_POST_CONDITION( errcode == LIST_OK );
+      
+      /*
+       * Do we need to resize? We need both conditions here:
+       *
+       *   - txHashMapStatus->usageCounter someone has a pointer to the data
+       *
+       *   - nodeObject.txCounter: offset to some of our data is part of a
+       *                           transaction.
+       *
+       * Note: we do not check the return value of vdseHashResize since the
+       *       current function returns void. Let's someone else find that 
+       *       we are getting low on memory...
+       */
+      txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+      if ( (txHashMapStatus->usageCounter == 0) &&
+         (pHashMap->nodeObject.txCounter == 0 ) )
+      {
+         if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE )
+            vdseHashResize( &pHashMap->hashObj, pContext );
+      }
    }
    else
    {
-//      vdseTxStatusSetTx( txStatus, SET_OFFSET(pContext->pTransaction) );
-      vdseTxStatusCommitRemove( txStatus );
+      vdseTxStatusCommitRemove( txItemStatus );
    }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseHashMapRollbackRemove( vdseHashMap * pHashMap, 
-                                ptrdiff_t     itemOffset )
+void vdseHashMapRollbackRemove( vdseHashMap        * pHashMap, 
+                                ptrdiff_t            itemOffset,
+                                vdseSessionContext * pContext  )
 {
    vdseHashItem * pHashItem;
+   vdseTxStatus * txItemStatus, * txHashMapStatus;
    
    VDS_PRE_CONDITION( pHashMap   != NULL );
+   VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
    pHashItem = GET_PTR( itemOffset, vdseHashItem );
+   txItemStatus = &pHashItem->txStatus;
 
    /*
     * This call resets the transaction (to "none") and remove the 
     * bit that flag this data as being in the process of being removed.
     */
-   vdseTxStatusUnmarkAsDestroyed(  &pHashItem->txStatus );
+   vdseTxStatusUnmarkAsDestroyed(  txItemStatus );
    pHashMap->nodeObject.txCounter--;
+   
+   /*
+    * Do we need to resize? We need both conditions here:
+    *
+    *   - txHashMapStatus->usageCounter someone has a pointer to the data
+    *
+    *   - nodeObject.txCounter: offset to some of our data is part of a
+    *                           transaction.
+    *
+    * Note: we do not check the return value of vdseHashResize since the
+    *       current function returns void. Let's someone else find that 
+    *       we are getting low on memory...
+    */
+   txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   if ( (txHashMapStatus->usageCounter == 0) &&
+      (pHashMap->nodeObject.txCounter == 0 ) )
+   {
+      if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE )
+         vdseHashResize( &pHashMap->hashObj, pContext );
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

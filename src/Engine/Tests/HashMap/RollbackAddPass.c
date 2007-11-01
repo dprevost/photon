@@ -64,7 +64,7 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   vdseHashMapRollbackAdd( pHashMap, SET_OFFSET(  pItem ), &context );
+   vdseHashMapRollbackAdd( pHashMap, SET_OFFSET(pItem), &context );
 
    return 0;
 }

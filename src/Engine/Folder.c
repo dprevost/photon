@@ -1134,6 +1134,33 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+void vdseFolderResize( vdseFolder         * pFolder, 
+                       vdseSessionContext * pContext  )
+{
+   vdseTxStatus * txFolderStatus;
+   
+   VDS_PRE_CONDITION( pFolder  != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+
+   /*
+    * Do we need to resize? We need both conditions here:
+    *
+    *   - txStatus->usageCounter: someone has a pointer to the data
+    *
+    *   - nodeObject.txCounter: offset to some of our data is part of a
+    *                           transaction.
+    */
+   txFolderStatus = GET_PTR( pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   if ( (txFolderStatus->usageCounter == 0) &&
+      (pFolder->nodeObject.txCounter == 0 ) )
+   {
+      if ( pFolder->hashObj.enumResize != VDSE_HASH_NO_RESIZE )
+         vdseHashResize( &pFolder->hashObj, pContext );
+   }
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 void vdseFolderStatus( vdseFolder   * pFolder,
                        vdsObjStatus * pStatus )
 {

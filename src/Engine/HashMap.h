@@ -62,8 +62,9 @@ typedef struct vdseHashMap
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-void vdseHashMapCommitAdd( vdseHashMap * pHashMap, 
-                           ptrdiff_t     itemOffset );
+void vdseHashMapCommitAdd( vdseHashMap        * pHashMap, 
+                           ptrdiff_t            itemOffset,
+                           vdseSessionContext * pContext  );
 
 VDSF_ENGINE_EXPORT
 void vdseHashMapCommitRemove( vdseHashMap        * pHashMap, 
@@ -128,8 +129,9 @@ void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap,
                              vdseSessionContext * pContext  );
 
 VDSF_ENGINE_EXPORT
-void vdseHashMapRollbackRemove( vdseHashMap * pHashMap, 
-                                ptrdiff_t     itemOffset );
+void vdseHashMapRollbackRemove( vdseHashMap        * pHashMap, 
+                                ptrdiff_t            itemOffset,
+                                vdseSessionContext * pContext  );
 
 VDSF_ENGINE_EXPORT
 void vdseHashMapStatus( vdseHashMap  * pHashMap,

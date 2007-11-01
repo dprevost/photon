@@ -207,7 +207,7 @@ int vdseTxCommit( vdseTx*             pTx,
             pParentMemObject = &pHashMap->memObject;
 
             vdseLockNoFailure( pParentMemObject, pContext );
-            vdseHashMapCommitAdd( pHashMap, pOps->childOffset );
+            vdseHashMapCommitAdd( pHashMap, pOps->childOffset, pContext );
             vdseUnlock( pParentMemObject, pContext );
          }
          else if ( pOps->parentType == VDSE_IDENT_QUEUE )
@@ -256,6 +256,9 @@ int vdseTxCommit( vdseTx*             pTx,
 
          vdseTxStatusClearTx( pChildStatus );
          parentFolder->nodeObject.txCounter--;
+
+         /* If needed */
+         vdseFolderResize( parentFolder, pContext );
 
          vdseUnlock( pChildMemObject, pContext );
          vdseUnlock( &parentFolder->memObject, pContext );
@@ -319,6 +322,9 @@ int vdseTxCommit( vdseTx*             pTx,
                                     GET_PTR(pChildNode->myKeyOffset, vdsChar_T),
                                     pChildNode->myNameLength,
                                     pContext );
+            /* If needed */
+            vdseFolderResize( parentFolder, pContext );
+
             /*
              * Since the object is now remove from the hash, all we need
              * to do is reclaim the memory (which is done in the destructor
@@ -552,6 +558,9 @@ void vdseTxRollback( vdseTx*             pTx,
                                     GET_PTR(pChildNode->myKeyOffset, vdsChar_T),
                                     pChildNode->myNameLength,
                                     pContext );
+            /* If needed */
+            vdseFolderResize( parentFolder, pContext );
+
             /*
              * Since the object is now remove from the hash, all we need
              * to do is reclaim the memory (which is done in the destructor
@@ -608,6 +617,9 @@ void vdseTxRollback( vdseTx*             pTx,
          vdseTxStatusClearTx( pChildStatus );
          parentFolder->nodeObject.txCounter--;
 
+         /* If needed */
+         vdseFolderResize( parentFolder, pContext );
+         
          vdseUnlock( pChildMemObject, pContext );
          vdseUnlock( &parentFolder->memObject, pContext );
 
@@ -622,7 +634,7 @@ void vdseTxRollback( vdseTx*             pTx,
 
             vdseLockNoFailure( pParentMemObject, pContext );
             vdseHashMapRollbackRemove( pHashMap, 
-                                       pOps->childOffset );
+                                       pOps->childOffset, pContext );
             vdseUnlock( pParentMemObject, pContext );
          }
          else if ( pOps->parentType == VDSE_IDENT_QUEUE )

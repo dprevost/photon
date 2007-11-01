@@ -66,7 +66,6 @@ typedef struct vdseFolder
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-
 VDSF_ENGINE_EXPORT
 int vdseFolderDeleteObject( vdseFolder         * pFolder,
                             const vdsChar_T    * objectName,
@@ -139,24 +138,13 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
                              vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
+void vdseFolderResize( vdseFolder         * pFolder, 
+                       vdseSessionContext * pContext  );
+
+VDSF_ENGINE_EXPORT
 void vdseFolderStatus( vdseFolder   * pFolder,
                        vdsObjStatus * pStatus );
 
-#if 0
-
-/** Can be used by both rollback-create and commit-destroy */
-VDSF_ENGINE_EXPORT
-vdsErrors vdseFolderRollbackCreate( vdseFolder*         pFolder,
-                          ptrdiff_t       childOffset,
-                          enum vdsObjectType type,
-                          vdseSessionContext* pContext );
-   
-VDSF_ENGINE_EXPORT
-vdsErrors vdseFolderRollbackDestroy( vdseFolder*         pFolder,
-                          ptrdiff_t       childOffset,
-                           vdseSessionContext* pContext );
-
-#endif
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
