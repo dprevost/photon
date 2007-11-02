@@ -28,7 +28,6 @@ int main( int argc, char * argv[] )
 {
    VDS_HANDLE handle, sessionHandle;
    int errcode;
-   vdsaCommonObject object;
    
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0, &handle );

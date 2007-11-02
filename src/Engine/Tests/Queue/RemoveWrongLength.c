@@ -17,7 +17,7 @@
 
 #include "queueTest.h"
 
-const bool expectedToPass = false;
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -28,7 +28,7 @@ int main()
    int errcode;
    vdseTxStatus status;
    char * data = "My Data";
-   vdseQueueItem * pItem = NULL;
+   vdseQueueItem * pQueueItem;
    
    pQueue = initQueueTest( expectedToPass, &context );
 
@@ -56,13 +56,18 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   errcode = vdseQueueGet( pQueue,
-                           VDS_FIRST+12345,
-                           &pItem,
-                           20,
-                           &context );
+   errcode = vdseQueueRemove( pQueue,
+                              &pQueueItem,
+                              VDSE_QUEUE_FIRST,
+                              7,
+                              &context );
+   if ( errcode == 0 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   errcode = vdscGetLastError( &context.errorHandler );
+   if ( errcode != VDS_INVALID_LENGTH )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   ERROR_EXIT( expectedToPass, NULL, ; );
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

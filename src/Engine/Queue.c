@@ -105,6 +105,7 @@ void vdseQueueFini( vdseQueue          * pQueue,
 int vdseQueueGet( vdseQueue          * pQueue,
                   unsigned int         flag,
                   vdseQueueItem     ** ppIterator,
+                  size_t               bufferLength,
                   vdseSessionContext * pContext )
 {
    vdseQueueItem* pQueueItem = NULL;
@@ -145,6 +146,20 @@ int vdseQueueGet( vdseQueue          * pQueue,
          if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
              && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
          {
+            /*
+             * This test cannot be done in the API (before calling the current
+             * function) since we do not know the item size. It could be done
+             * after but this way makes the code faster.
+             */
+            if ( bufferLength < pQueueItem->dataLength )
+            {
+               vdseUnlock( &pQueue->memObject, pContext );
+               vdscSetError( &pContext->errorHandler,
+                             g_vdsErrorHandle,
+                             VDS_INVALID_LENGTH );
+                return -1;
+            }
+
             txItemStatus->usageCounter++;
             txQueueStatus->usageCounter++;
             *ppIterator = pQueueItem;
@@ -167,7 +182,7 @@ int vdseQueueGet( vdseQueue          * pQueue,
    }
    
    vdseUnlock( &pQueue->memObject, pContext );
-   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
+   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
 
    return -1;
 }
@@ -388,6 +403,7 @@ void vdseQueueReleaseNoLock( vdseQueue          * pQueue,
 int vdseQueueRemove( vdseQueue          * pQueue,
                      vdseQueueItem     ** ppQueueItem,
                      enum vdseQueueEnum   firstOrLast,
+                     size_t               bufferLength,
                      vdseSessionContext * pContext )
 {
    int rc;
@@ -429,6 +445,17 @@ int vdseQueueRemove( vdseQueue          * pQueue,
          if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
                 && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
          {
+            /*
+             * This test cannot be done in the API (before calling the current
+             * function) since we do not know the item size. It could be done
+             * after but this way makes the code faster.
+             */
+            if ( bufferLength < pItem->dataLength )
+            {
+               errcode = VDS_INVALID_LENGTH;
+               goto the_exit;
+            }
+
             /* Add to current transaction  */
             rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                                VDSE_TX_REMOVE_DATA,

@@ -29,7 +29,7 @@ int main( int argc, char * argv[] )
    VDS_HANDLE handle, sessionHandle;
    int errcode;
    const char * data1 = "My Data1";
-   vdsDataEntry entry;
+   vdsaDataEntry entry;
 
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0, &handle );
@@ -85,15 +85,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueueGetFirst( NULL,
-                               &entry );
-   if ( errcode != VDS_NULL_HANDLE )
-   {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   errcode = vdsaQueueFirst( NULL, &entry );
 
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

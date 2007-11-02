@@ -30,7 +30,7 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * data1 = "My Data1";
    const char * data2 = "My Data2";
-   vdsDataEntry entry;
+   vdsaDataEntry entry;
 
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0, &handle );
@@ -93,8 +93,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueueGetNext( handle,
-                              &entry );
+   errcode = vdsaQueueNext( handle, &entry );
    if ( errcode != VDS_INVALID_ITERATOR )
    {
       fprintf( stderr, "err: %d\n", errcode );

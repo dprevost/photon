@@ -39,8 +39,12 @@ int vdsQueueClose(  VDS_HANDLE objectHandle );
  * by this function.
  */
 VDSF_EXPORT
-int vdsQueueGetFirst( VDS_HANDLE        objectHandle,
-                      vdsDataEntry    * pEntry );
+int vdsQueueGetFirst( VDS_HANDLE   objectHandle,
+                      void       * buffer,
+                      size_t       bufferLength,
+                      size_t     * returnedLength );
+//int vdsQueueGetFirst( VDS_HANDLE        objectHandle,
+//                      vdsDataEntry    * pEntry );
 
 /** 
  * Iterates through the queue - no data items are removed from the queue
@@ -48,7 +52,9 @@ int vdsQueueGetFirst( VDS_HANDLE        objectHandle,
  */
 VDSF_EXPORT
 int vdsQueueGetNext( VDS_HANDLE     objectHandle,
-                     vdsDataEntry * pEntry );
+                     void       * buffer,
+                     size_t       bufferLength,
+                     size_t     * returnedLength );
 
 /** Open a FIFO queue. */
 VDSF_EXPORT
@@ -60,7 +66,9 @@ int vdsQueueOpen(  VDS_HANDLE   sessionHandle,
 /** Remove the first inserted item from a FIFO queue. */
 VDSF_EXPORT
 int vdsQueuePop( VDS_HANDLE   objectHandle,
-                 vdsDataEntry * pEntry );
+                 void       * buffer,
+                 size_t       bufferLength,
+                 size_t     * returnedLength );
 
 /** Insert a data element in the queue. */
 VDSF_EXPORT

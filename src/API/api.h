@@ -18,6 +18,8 @@
 #ifndef VDSA_API_H
 #define VDSA_API_H
 
+#include "Common/Common.h"
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 typedef enum vdsaObjetType
@@ -44,6 +46,19 @@ typedef enum vdsaObjetType
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+typedef struct vdsaDataEntry
+{
+   size_t length;
+   
+   const void * data;
+
+} vdsaDataEntry;
+
+typedef struct vdsaDataEntry vdsaHashMapEntry;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 #endif /* VDSA_API_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -29,6 +29,7 @@ int main( int argc, char * argv[] )
    VDS_HANDLE handle, sessionHandle;
    int errcode;
    const char * data1 = "My Data1";
+   vdsaDataEntry entry;
 
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0, &handle );
@@ -48,8 +49,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/aqpopne",
-                              strlen("/aqpopne"),
+                              "/aqpopwh",
+                              strlen("/aqpopwh"),
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {
@@ -58,8 +59,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/aqpopne/test",
-                              strlen("/aqpopne/test"),
+                              "/aqpopwh/test",
+                              strlen("/aqpopwh/test"),
                               VDS_QUEUE );
    if ( errcode != VDS_OK )
    {
@@ -68,8 +69,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsQueueOpen( sessionHandle,
-                           "/aqpopne/test",
-                           strlen("/aqpopne/test"),
+                           "/aqpopwh/test",
+                           strlen("/aqpopwh/test"),
                            &handle );
    if ( errcode != VDS_OK )
    {
@@ -84,8 +85,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueuePop( handle, NULL );
-   if ( errcode != VDS_NULL_POINTER )
+   errcode = vdsaQueueRemove( sessionHandle, &entry );
+   if ( errcode != VDS_WRONG_TYPE_HANDLE )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

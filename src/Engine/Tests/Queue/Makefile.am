@@ -30,6 +30,7 @@ check_PROGRAMS =                          \
                  GetNullIterator          \
                  GetPass                  \
                  GetWrongFlag             \
+                 GetWrongLength           \
                  InitNullContext          \
                  InitNullQueue            \
                  InitNullName             \
@@ -57,6 +58,7 @@ check_PROGRAMS =                          \
                  RemoveNullQueue          \
                  RemovePass               \
                  RemoveWrongFlag          \
+                 RemoveWrongLength        \
                  RollbackAddNullContext   \
                  RollbackAddNullOffset    \
                  RollbackAddNullQueue     \
@@ -85,6 +87,7 @@ GetNullQueue_SOURCES             = $(COMMON_HEADER) GetNullQueue.c
 GetNullIterator_SOURCES          = $(COMMON_HEADER) GetNullIterator.c
 GetPass_SOURCES                  = $(COMMON_HEADER) GetPass.c
 GetWrongFlag_SOURCES             = $(COMMON_HEADER) GetWrongFlag.c
+GetWrongLength_SOURCES           = $(COMMON_HEADER) GetWrongLength.c
 InitNullContext_SOURCES          = $(COMMON_HEADER) InitNullContext.c
 InitNullQueue_SOURCES            = $(COMMON_HEADER) InitNullQueue.c
 InitNullName_SOURCES             = $(COMMON_HEADER) InitNullName.c
@@ -112,6 +115,7 @@ RemoveNullItem_SOURCES           = $(COMMON_HEADER) RemoveNullItem.c
 RemoveNullQueue_SOURCES          = $(COMMON_HEADER) RemoveNullQueue.c
 RemovePass_SOURCES               = $(COMMON_HEADER) RemovePass.c
 RemoveWrongFlag_SOURCES          = $(COMMON_HEADER) RemoveWrongFlag.c
+RemoveWrongLength_SOURCES        = $(COMMON_HEADER) RemoveWrongLength.c
 RollbackAddNullContext_SOURCES   = $(COMMON_HEADER) RollbackAddNullContext.c
 RollbackAddNullOffset_SOURCES    = $(COMMON_HEADER) RollbackAddNullOffset.c
 RollbackAddNullQueue_SOURCES     = $(COMMON_HEADER) RollbackAddNullQueue.c
@@ -143,6 +147,7 @@ TESTS =                          \
         GetNullIterator          \
         GetPass                  \
         GetWrongFlag             \
+        GetWrongLength           \
         InitNullContext          \
         InitNullQueue            \
         InitNullName             \
@@ -170,6 +175,7 @@ TESTS =                          \
         RemoveNullQueue          \
         RemovePass               \
         RemoveWrongFlag          \
+        RemoveWrongLength        \
         RollbackAddNullContext   \
         RollbackAddNullOffset    \
         RollbackAddNullQueue     \

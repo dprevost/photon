@@ -59,6 +59,7 @@ int main()
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
+                              20,
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

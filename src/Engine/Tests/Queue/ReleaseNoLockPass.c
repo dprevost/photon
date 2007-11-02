@@ -69,6 +69,7 @@ int main()
    errcode = vdseQueueGet( pQueue,
                            VDS_FIRST,
                            &pItem,
+                           20,
                            &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -78,6 +79,7 @@ int main()
    errcode = vdseQueueGet( pQueue,
                            VDS_NEXT,
                            &pItem,
+                           20,
                            &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

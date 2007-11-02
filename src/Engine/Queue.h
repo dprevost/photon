@@ -109,12 +109,14 @@ VDSF_ENGINE_EXPORT
 int vdseQueueRemove( vdseQueue          * pQueue,
                      vdseQueueItem     ** ppQueueItem,
                      enum vdseQueueEnum   firstOrLast,
+                     size_t               bufferLength,
                      vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseQueueGet( vdseQueue          * pQueue,
                   unsigned int         flag,
                   vdseQueueItem     ** ppIterator,
+                  size_t               bufferLength,
                   vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT

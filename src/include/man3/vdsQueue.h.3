@@ -1,4 +1,4 @@
-.TH "vdsQueue.h" 3 "1 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsQueue.h" 3 "2 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,11 +17,11 @@ vdsQueue.h \-
 .br
 .RI "\fIClose a FIFO queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsQueueGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP *pEntry)"
+.RI "VDSF_EXPORT int \fBvdsQueueGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .RI "\fIIterates through the queue - no data items are removed from the queue by this function. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsQueueGetNext\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP *pEntry)"
+.RI "VDSF_EXPORT int \fBvdsQueueGetNext\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .RI "\fIIterates through the queue - no data items are removed from the queue by this function. \fP"
 .ti -1c
@@ -29,7 +29,7 @@ vdsQueue.h \-
 .br
 .RI "\fIOpen a FIFO queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsQueuePop\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP *pEntry)"
+.RI "VDSF_EXPORT int \fBvdsQueuePop\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .RI "\fIRemove the first inserted item from a FIFO queue. \fP"
 .ti -1c
@@ -50,11 +50,11 @@ vdsQueue.h \-
 .PP
 Close a FIFO queue. 
 .PP
-.SS "VDSF_EXPORT int vdsQueueGetFirst (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP * pEntry)"
+.SS "VDSF_EXPORT int vdsQueueGetFirst (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
 .PP
 Iterates through the queue - no data items are removed from the queue by this function. 
 .PP
-.SS "VDSF_EXPORT int vdsQueueGetNext (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP * pEntry)"
+.SS "VDSF_EXPORT int vdsQueueGetNext (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
 .PP
 Iterates through the queue - no data items are removed from the queue by this function. 
 .PP
@@ -62,7 +62,7 @@ Iterates through the queue - no data items are removed from the queue by this fu
 .PP
 Open a FIFO queue. 
 .PP
-.SS "VDSF_EXPORT int vdsQueuePop (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP * pEntry)"
+.SS "VDSF_EXPORT int vdsQueuePop (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
 .PP
 Remove the first inserted item from a FIFO queue. 
 .PP

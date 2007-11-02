@@ -84,15 +84,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueueGetFirst( handle,
-                               NULL );
-   if ( errcode != VDS_NULL_POINTER )
-   {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   errcode = vdsaQueueFirst( handle, NULL );
 
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

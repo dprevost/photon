@@ -30,7 +30,7 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * data1 = "My Data1";
    const char * data2 = "My Data2";
-   vdsDataEntry entry;
+   vdsaDataEntry entry;
 
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0, &handle );
@@ -93,16 +93,14 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueueGetFirst( handle,
-                               &entry );
+   errcode = vdsaQueueFirst( handle, &entry );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueueGetNext( NULL,
-                              &entry );
+   errcode = vdsaQueueNext( NULL, &entry );
    if ( errcode != VDS_NULL_HANDLE )
    {
       fprintf( stderr, "err: %d\n", errcode );

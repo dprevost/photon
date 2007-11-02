@@ -28,7 +28,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=PopPass
+test_name=RemovePass
 test_dir=src/API/Tests/Queue
 errcode=0
 

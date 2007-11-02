@@ -17,7 +17,7 @@
 
 #include "queueTest.h"
 
-const bool expectedToPass = false;
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -57,12 +57,17 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
    errcode = vdseQueueGet( pQueue,
-                           VDS_FIRST+12345,
+                           VDS_FIRST,
                            &pItem,
-                           20,
+                           7,
                            &context );
+   if ( errcode == 0 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   errcode = vdscGetLastError( &context.errorHandler );
+   if ( errcode != VDS_INVALID_LENGTH )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   ERROR_EXIT( expectedToPass, NULL, ; );
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

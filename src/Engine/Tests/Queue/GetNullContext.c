@@ -59,6 +59,7 @@ int main()
    errcode = vdseQueueGet( pQueue,
                            VDS_FIRST,
                            &pItem,
+                           20,
                            NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

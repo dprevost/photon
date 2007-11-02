@@ -22,6 +22,8 @@ check_PROGRAMS =                     \
                  FirstNullHandle     \
                  FirstPass           \
                  FirstWrongHandle    \
+                 GetFirst            \
+                 GetNext             \
                  NextNoFirst         \
                  NextNullEntry       \
                  NextNullHandle      \
@@ -33,15 +35,16 @@ check_PROGRAMS =                     \
                  OpenPass            \
                  OpenWrongSessHandle \
                  OpenZeroLength      \
-                 PopNullEntry        \
-                 PopNullHandle       \
-                 PopPass             \
-                 PopWrongHandle      \
+                 Pop                 \
                  PushNullData        \
                  PushNullHandle      \
                  PushPass            \
                  PushWrongHandle     \
                  PushZeroLength      \
+                 RemoveNullEntry     \
+                 RemoveNullHandle    \
+                 RemovePass          \
+                 RemoveWrongHandle   \
                  StatusNullHandle    \
                  StatusNullStatus    \
                  StatusPass          
@@ -53,6 +56,8 @@ FirstNullEntry_SOURCES      = FirstNullEntry.c
 FirstNullHandle_SOURCES     = FirstNullHandle.c
 FirstPass_SOURCES           = FirstPass.c
 FirstWrongHandle_SOURCES    = FirstWrongHandle.c
+GetFirst_SOURCES            = GetFirst.c
+GetNext_SOURCES             = GetNext.c
 NextNoFirst_SOURCES         = NextNoFirst.c
 NextNullEntry_SOURCES       = NextNullEntry.c
 NextNullHandle_SOURCES      = NextNullHandle.c
@@ -64,15 +69,16 @@ OpenNullSessHandle_SOURCES  = OpenNullSessHandle.c
 OpenPass_SOURCES            = OpenPass.c
 OpenWrongSessHandle_SOURCES = OpenWrongSessHandle.c
 OpenZeroLength_SOURCES      = OpenZeroLength.c
-PopNullEntry_SOURCES        = PopNullEntry.c
-PopNullHandle_SOURCES       = PopNullHandle.c
-PopPass_SOURCES             = PopPass.c
-PopWrongHandle_SOURCES      = PopWrongHandle.c
+Pop_SOURCES                 = Pop.c
 PushNullData_SOURCES        = PushNullData.c
 PushNullHandle_SOURCES      = PushNullHandle.c
 PushPass_SOURCES            = PushPass.c
 PushWrongHandle_SOURCES     = PushWrongHandle.c
 PushZeroLength_SOURCES      = PushZeroLength.c
+RemoveNullEntry_SOURCES     = RemoveNullEntry.c
+RemoveNullHandle_SOURCES    = RemoveNullHandle.c
+RemovePass_SOURCES          = RemovePass.c
+RemoveWrongHandle_SOURCES   = RemoveWrongHandle.c
 StatusNullHandle_SOURCES    = StatusNullHandle.c
 StatusNullStatus_SOURCES    = StatusNullStatus.c
 StatusPass_SOURCES          = StatusPass.c
@@ -85,6 +91,8 @@ EXTRA_DIST =                        \
              FirstNullHandle.sh     \
              FirstPass.sh           \
              FirstWrongHandle.sh    \
+             GetFirst.sh            \
+             GetNext.sh             \
              NextNoFirst.sh         \
              NextNullEntry.sh       \
              NextNullHandle.sh      \
@@ -96,15 +104,16 @@ EXTRA_DIST =                        \
              OpenPass.sh            \
              OpenWrongSessHandle.sh \
              OpenZeroLength.sh      \
-             PopNullEntry.sh        \
-             PopNullHandle.sh       \
-             PopPass.sh             \
-             PopWrongHandle.sh      \
+             Pop.sh                 \
              PushNullData.sh        \
              PushNullHandle.sh      \
              PushPass.sh            \
              PushWrongHandle.sh     \
              PushZeroLength.sh      \
+             RemoveNullEntry.sh     \
+             RemoveNullHandle.sh    \
+             RemovePass.sh          \
+             RemoveWrongHandle.sh   \
              StatusNullHandle.sh    \
              StatusNullStatus.sh    \
              StatusPass.sh          
@@ -125,6 +134,8 @@ TESTS =                        \
         FirstNullHandle.sh     \
         FirstPass.sh           \
         FirstWrongHandle.sh    \
+        GetFirst.sh            \
+        GetNext.sh             \
         NextNoFirst.sh         \
         NextNullEntry.sh       \
         NextNullHandle.sh      \
@@ -136,15 +147,16 @@ TESTS =                        \
         OpenPass.sh            \
         OpenWrongSessHandle.sh \
         OpenZeroLength.sh      \
-        PopNullEntry.sh        \
-        PopNullHandle.sh       \
-        PopPass.sh             \
-        PopWrongHandle.sh      \
+        Pop.sh                 \
         PushNullData.sh        \
         PushNullHandle.sh      \
         PushPass.sh            \
         PushWrongHandle.sh     \
         PushZeroLength.sh      \
+        RemoveNullEntry.sh     \
+        RemoveNullHandle.sh    \
+        RemovePass.sh          \
+        RemoveWrongHandle.sh   \
         StatusNullHandle.sh    \
         StatusNullStatus.sh    \
         StatusPass.sh          

@@ -30,7 +30,10 @@
 
 test_name=NextWrongHandle
 test_dir=src/API/Tests/Queue
-errcode=0
+
+# -6 for SIGABRT (failure of a pre-condition forces a call to abort()).
+# The value "6" might not be always constant across OSes, YMMV.
+errcode=-6
 
 # If the env. variable top_srcdir is not defined... we must have three
 # arguments if we want to be able to run the test.
