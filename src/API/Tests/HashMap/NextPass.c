@@ -33,7 +33,7 @@ int main( int argc, char * argv[] )
    const char * data1 = "My Data1";
    const char * key2  = "My Key2";
    const char * data2 = "My Data2";
-   vdsHashMapEntry entry;
+   vdsaDataEntry entry;
 
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0, &handle );
@@ -104,7 +104,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapGetFirst( handle,
+   errcode = vdsaHashMapFirst( handle,
                                  &entry );
    if ( errcode != VDS_OK )
    {
@@ -112,7 +112,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapGetNext( handle,
+   errcode = vdsaHashMapNext( handle,
                                 &entry );
    if ( errcode != VDS_OK )
    {

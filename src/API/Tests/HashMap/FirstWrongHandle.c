@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
    vdsaCommonObject object;
    const char * key  = "My Key";
    const char * data = "My Data";
-   vdsHashMapEntry entry;
+   vdsaDataEntry entry;
 
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0, &handle );
@@ -91,7 +91,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapGetFirst( sessionHandle,
+   errcode = vdsaHashMapFirst( sessionHandle,
                                  &entry );
    if ( errcode != VDS_WRONG_TYPE_HANDLE )
    {
