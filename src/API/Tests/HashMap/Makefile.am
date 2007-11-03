@@ -27,12 +27,9 @@ check_PROGRAMS =                      \
                  FirstNullHandle      \
                  FirstPass            \
                  FirstWrongHandle     \
-                 GetNullEntry         \
-                 GetNullHandle        \
-                 GetNullKey           \
-                 GetPass              \
-                 GetWrongHandle       \
-                 GetZeroLength        \
+                 Get                  \
+                 GetFirst             \
+                 GetNext              \
                  InsertNullData       \
                  InsertNullHandle     \
                  InsertNullKey        \
@@ -51,6 +48,12 @@ check_PROGRAMS =                      \
                  OpenPass             \
                  OpenWrongSessHandle  \
                  OpenZeroLength       \
+                 RetrieveNullEntry    \
+                 RetrieveNullHandle   \
+                 RetrieveNullKey      \
+                 RetrievePass         \
+                 RetrieveWrongHandle  \
+                 RetrieveZeroLength   \
                  StatusNullHandle     \
                  StatusNullStatus     \
                  StatusPass           
@@ -67,12 +70,9 @@ FirstNullEntry_SOURCES       = FirstNullEntry.c
 FirstNullHandle_SOURCES      = FirstNullHandle.c
 FirstPass_SOURCES            = FirstPass.c
 FirstWrongHandle_SOURCES     = FirstWrongHandle.c
-GetNullEntry_SOURCES         = GetNullEntry.c
-GetNullHandle_SOURCES        = GetNullHandle.c
-GetNullKey_SOURCES           = GetNullKey.c
-GetPass_SOURCES              = GetPass.c
-GetWrongHandle_SOURCES       = GetWrongHandle.c
-GetZeroLength_SOURCES        = GetZeroLength.c
+Get_SOURCES                  = Get.c
+GetFirst_SOURCES             = GetFirst.c
+GetNext_SOURCES              = GetNext.c
 InsertNullData_SOURCES       = InsertNullData.c
 InsertNullHandle_SOURCES     = InsertNullHandle.c
 InsertNullKey_SOURCES        = InsertNullKey.c
@@ -87,6 +87,12 @@ OpenNullSessHandle_SOURCES   = OpenNullSessHandle.c
 OpenPass_SOURCES             = OpenPass.c
 OpenWrongSessHandle_SOURCES  = OpenWrongSessHandle.c
 OpenZeroLength_SOURCES       = OpenZeroLength.c
+RetrieveNullEntry_SOURCES    = RetrieveNullEntry.c
+RetrieveNullHandle_SOURCES   = RetrieveNullHandle.c
+RetrieveNullKey_SOURCES      = RetrieveNullKey.c
+RetrievePass_SOURCES         = RetrievePass.c
+RetrieveWrongHandle_SOURCES  = RetrieveWrongHandle.c
+RetrieveZeroLength_SOURCES   = RetrieveZeroLength.c
 StatusNullHandle_SOURCES     = StatusNullHandle.c
 StatusNullStatus_SOURCES     = StatusNullStatus.c
 StatusPass_SOURCES           = StatusPass.c
@@ -104,12 +110,9 @@ EXTRA_DIST =                         \
              FirstNullHandle.sh      \
              FirstPass.sh            \
              FirstWrongHandle.sh     \
-             GetNullEntry.sh         \
-             GetNullHandle.sh        \
-             GetNullKey.sh           \
-             GetPass.sh              \
-             GetWrongHandle.sh       \
-             GetZeroLength.sh        \
+             Get.sh                  \
+             GetFirst.sh             \
+             GetNext.sh              \
              NextNoFirst.sh          \
              NextNullEntry.sh        \
              NextNullHandle.sh       \
@@ -128,6 +131,12 @@ EXTRA_DIST =                         \
              OpenPass.sh             \
              OpenWrongSessHandle.sh  \
              OpenZeroLength.sh       \
+             RetrieveNullEntry.sh    \
+             RetrieveNullHandle.sh   \
+             RetrieveNullKey.sh      \
+             RetrievePass.sh         \
+             RetrieveWrongHandle.sh  \
+             RetrieveZeroLength.sh   \
              StatusNullHandle.sh     \
              StatusNullStatus.sh     \
              StatusPass.sh           
@@ -153,12 +162,9 @@ TESTS =                         \
         FirstNullHandle.sh      \
         FirstPass.sh            \
         FirstWrongHandle.sh     \
-        GetNullEntry.sh         \
-        GetNullHandle.sh        \
-        GetNullKey.sh           \
-        GetPass.sh              \
-        GetWrongHandle.sh       \
-        GetZeroLength.sh        \
+        Get.sh                  \
+        GetFirst.sh             \
+        GetNext.sh              \
         InsertNullData.sh       \
         InsertNullHandle.sh     \
         InsertNullKey.sh        \
@@ -177,6 +183,12 @@ TESTS =                         \
         OpenPass.sh             \
         OpenWrongSessHandle.sh  \
         OpenZeroLength.sh       \
+        RetrieveNullEntry.sh    \
+        RetrieveNullHandle.sh   \
+        RetrieveNullKey.sh      \
+        RetrievePass.sh         \
+        RetrieveWrongHandle.sh  \
+        RetrieveZeroLength.sh   \
         StatusNullHandle.sh     \
         StatusNullStatus.sh     \
         StatusPass.sh           
