@@ -54,6 +54,7 @@ int main()
                              NULL,
                              6,
                              &pItem,
+                             20,
                              &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

@@ -43,8 +43,6 @@ int vdsQueueGetFirst( VDS_HANDLE   objectHandle,
                       void       * buffer,
                       size_t       bufferLength,
                       size_t     * returnedLength );
-//int vdsQueueGetFirst( VDS_HANDLE        objectHandle,
-//                      vdsDataEntry    * pEntry );
 
 /** 
  * Iterates through the queue - no data items are removed from the queue

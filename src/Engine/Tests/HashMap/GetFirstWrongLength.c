@@ -17,7 +17,7 @@
 
 #include "hashMapTest.h"
 
-const bool expectedToPass = false;
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -29,7 +29,7 @@ int main()
    vdseTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   vdseHashItem * pItem;
+   vdseHashMapItem item;
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
@@ -41,7 +41,7 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   errcode = vdseHashMapInsert( NULL,
+   errcode = vdseHashMapInsert( pHashMap,
                                 (const void *) key,
                                 6,
                                 (const void *) data,
@@ -50,14 +50,17 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   errcode = vdseHashMapGet( pHashMap,
-                             (const void *) key,
-                             6,
-                             &pItem,
-                             20,
-                             &context );
+   errcode = vdseHashMapGetFirst( pHashMap,
+                                  &item,
+                                  6,
+                                  &context );
+   if ( errcode == 0 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   errcode = vdscGetLastError( &context.errorHandler );
+   if ( errcode != VDS_INVALID_LENGTH )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   ERROR_EXIT( expectedToPass, NULL, ; );
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

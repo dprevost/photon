@@ -389,8 +389,8 @@ int vdsaQueueFirst( vdsaQueue     * pQueue,
    int errcode = 0;
 
    VDS_PRE_CONDITION( pQueue != NULL );
-   VDS_PRE_CONDITION( pEntry != NULL )
-   VDS_PRE_CONDITION( pQueue->type == VDSA_QUEUE )
+   VDS_PRE_CONDITION( pEntry != NULL );
+   VDS_PRE_CONDITION( pQueue->type == VDSA_QUEUE );
    
    if ( vdsaCommonLock( &pQueue->object ) == 0 )
    {

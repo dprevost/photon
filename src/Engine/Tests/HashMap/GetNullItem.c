@@ -53,6 +53,7 @@ int main()
                              (const void *) key,
                              6,
                              NULL,
+                             20,
                              &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

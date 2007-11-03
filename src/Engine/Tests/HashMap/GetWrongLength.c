@@ -41,7 +41,7 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   errcode = vdseHashMapInsert( NULL,
+   errcode = vdseHashMapInsert( pHashMap,
                                 (const void *) key,
                                 6,
                                 (const void *) data,
@@ -54,10 +54,15 @@ int main()
                              (const void *) key,
                              6,
                              &pItem,
-                             20,
+                             6,
                              &context );
+   if ( errcode == 0 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   errcode = vdscGetLastError( &context.errorHandler );
+   if ( errcode != VDS_INVALID_LENGTH )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   ERROR_EXIT( expectedToPass, NULL, ; );
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

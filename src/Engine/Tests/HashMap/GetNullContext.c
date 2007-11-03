@@ -54,6 +54,7 @@ int main()
                              (const void *) key,
                              6,
                              &pItem,
+                             20,
                              NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

@@ -248,6 +248,7 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
                     const void         * pKey,
                     size_t               keyLength, 
                     vdseHashItem      ** ppHashItem,
+                    size_t               bufferLength,
                     vdseSessionContext * pContext )
 {
    enum ListErrors listErr = LIST_OK;
@@ -284,6 +285,17 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
          errcode = VDS_NO_SUCH_ITEM;
          goto the_exit;
       }
+      /*
+       * This test cannot be done in the API (before calling the current
+       * function) since we do not know the item size. It could be done
+       * after but this way makes the code faster.
+       */
+      if ( bufferLength < pHashItem->dataLength )
+      {
+         errcode = VDS_INVALID_LENGTH;
+         goto the_exit;
+      }
+      
       txItemStatus = &pHashItem->txStatus;
   
       /* 
@@ -338,6 +350,7 @@ the_exit:
 
 int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
                          vdseHashMapItem    * pItem,
+                         size_t               bufferLength,
                          vdseSessionContext * pContext )
 {
    enum ListErrors listErr = LIST_OK;
@@ -366,6 +379,19 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
          if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
              && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
          {
+            /*
+             * This test cannot be done in the API (before calling the current
+             * function) since we do not know the item size. It could be done
+             * after but this way makes the code faster.
+             */
+            if ( bufferLength < pHashItem->dataLength )
+            {
+               vdseUnlock( &pHashMap->memObject, pContext );
+               vdscSetError( &pContext->errorHandler, 
+                             g_vdsErrorHandle, VDS_INVALID_LENGTH );
+               return -1;
+            }
+
             txItemStatus->usageCounter++;
             txHashMapStatus->usageCounter++;
             pItem->pHashItem = pHashItem;
@@ -400,6 +426,7 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
 
 int vdseHashMapGetNext( vdseHashMap        * pHashMap,
                         vdseHashMapItem    * pItem,
+                        size_t               bufferLength,
                         vdseSessionContext * pContext )
 {
    enum ListErrors listErr = LIST_OK;
@@ -437,6 +464,19 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
          if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
              && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
          {
+            /*
+             * This test cannot be done in the API (before calling the current
+             * function) since we do not know the item size. It could be done
+             * after but this way makes the code faster.
+             */
+            if ( bufferLength < pHashItem->dataLength )
+            {
+               vdseUnlock( &pHashMap->memObject, pContext );
+               vdscSetError( &pContext->errorHandler, 
+                             g_vdsErrorHandle, VDS_INVALID_LENGTH );
+               return -1;
+            }
+
             txItemStatus->usageCounter++;
             txHashMapStatus->usageCounter++;
             pItem->pHashItem = pHashItem;

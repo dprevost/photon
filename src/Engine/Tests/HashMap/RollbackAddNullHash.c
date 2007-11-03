@@ -54,6 +54,7 @@ int main()
                              (const void *) key,
                              6,
                              &pItem,
+                             20,
                              &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

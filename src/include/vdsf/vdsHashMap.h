@@ -39,18 +39,24 @@ int vdsHashMapDelete( VDS_HANDLE   objectHandle,
                       size_t       keyLength );
 
 VDSF_EXPORT
-int vdsHashMapGet( VDS_HANDLE        objectHandle,
-                   const void      * key,
-                   size_t            keyLength,
-                   vdsHashMapEntry * pEntry );
+int vdsHashMapGet( VDS_HANDLE   objectHandle,
+                   const void * key,
+                   size_t       keyLength,
+                   void       * buffer,
+                   size_t       bufferLength,
+                   size_t     * returnedLength );
 
 VDSF_EXPORT
-int vdsHashMapGetFirst( VDS_HANDLE        objectHandle,
-                        vdsHashMapEntry * pEntry );
+int vdsHashMapGetFirst( VDS_HANDLE   objectHandle,
+                        void       * buffer,
+                        size_t       bufferLength,
+                        size_t     * returnedLength );
 
 VDSF_EXPORT
-int vdsHashMapGetNext( VDS_HANDLE        objectHandle,
-                       vdsHashMapEntry * pEntry );
+int vdsHashMapGetNext( VDS_HANDLE   objectHandle,
+                       void       * buffer,
+                       size_t       bufferLength,
+                       size_t     * returnedLength );
 
 VDSF_EXPORT
 int vdsHashMapInsert( VDS_HANDLE   objectHandle,

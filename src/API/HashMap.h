@@ -41,27 +41,23 @@ typedef struct vdsaHashMap
     */
    vdseHashMapItem iterator;
 
-   /** 
-    * The bucket location in the internal array of the hash.
-    *
-    * Used for iterating in a folder. The hash object is made of an
-    * array of buckets - each bucket being a linked list of offsets
-    * (ptrdiff_t) to the real data of type vdseHashItem. Therefore
-    * we need both pieces of information to iterate through the hash.
-    */
-//   size_t  bucketIterator;
-   
-   /** 
-    * The location in the list of the bucket (of the hash).
-    *
-    * Used for iterating in a folder. The hash object is made of an
-    * array of buckets - each bucket being a linked list of offsets
-    * (ptrdiff_t) to the real data of type vdseHashItem. Therefore
-    * we need both pieces of information to iterate through the hash.
-    */
-//   void * pItemIterator;
-   
 } vdsaHashMap;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+VDSF_EXPORT
+int vdsaHashMapFirst( vdsaHashMap   * pHashMap,
+                      vdsaDataEntry * pEntry );
+
+VDSF_EXPORT
+int vdsaHashMapNext( vdsaHashMap   * pHashMap,
+                     vdsaDataEntry * pEntry );
+
+VDSF_EXPORT
+int vdsaHashMapRetrieve( vdsaHashMap   * pHashMap,
+                         const void    * key,
+                         size_t          keyLength,
+                         vdsaDataEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

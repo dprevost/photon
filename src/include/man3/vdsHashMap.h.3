@@ -1,4 +1,4 @@
-.TH "vdsHashMap.h" 3 "2 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsHashMap.h" 3 "3 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -19,13 +19,13 @@ vdsHashMap.h \-
 .RI "VDSF_EXPORT int \fBvdsHashMapDelete\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength)"
 .br
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsHashMapGet\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength, \fBvdsHashMapEntry\fP *pEntry)"
+.RI "VDSF_EXPORT int \fBvdsHashMapGet\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsHashMapGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsHashMapEntry\fP *pEntry)"
+.RI "VDSF_EXPORT int \fBvdsHashMapGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsHashMapGetNext\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsHashMapEntry\fP *pEntry)"
+.RI "VDSF_EXPORT int \fBvdsHashMapGetNext\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsHashMapInsert\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength, const void *data, size_t dataLength)"
@@ -43,11 +43,11 @@ vdsHashMap.h \-
 .PP
 .SS "VDSF_EXPORT int vdsHashMapDelete (\fBVDS_HANDLE\fP objectHandle, const void * key, size_t keyLength)"
 .PP
-.SS "VDSF_EXPORT int vdsHashMapGet (\fBVDS_HANDLE\fP objectHandle, const void * key, size_t keyLength, \fBvdsHashMapEntry\fP * pEntry)"
+.SS "VDSF_EXPORT int vdsHashMapGet (\fBVDS_HANDLE\fP objectHandle, const void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * returnedLength)"
 .PP
-.SS "VDSF_EXPORT int vdsHashMapGetFirst (\fBVDS_HANDLE\fP objectHandle, \fBvdsHashMapEntry\fP * pEntry)"
+.SS "VDSF_EXPORT int vdsHashMapGetFirst (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
 .PP
-.SS "VDSF_EXPORT int vdsHashMapGetNext (\fBVDS_HANDLE\fP objectHandle, \fBvdsHashMapEntry\fP * pEntry)"
+.SS "VDSF_EXPORT int vdsHashMapGetNext (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
 .PP
 .SS "VDSF_EXPORT int vdsHashMapInsert (\fBVDS_HANDLE\fP objectHandle, const void * key, size_t keyLength, const void * data, size_t dataLength)"
 .PP

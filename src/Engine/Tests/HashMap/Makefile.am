@@ -35,15 +35,18 @@ check_PROGRAMS =                           \
                  GetFirstNullHash          \
                  GetFirstNullItem          \
                  GetFirstPass              \
+                 GetFirstWrongLength       \
                  GetNextNullContext        \
                  GetNextNullHash           \
                  GetNextNullItem           \
                  GetNextPass               \
+                 GetNextWrongLength        \
                  GetNullContext            \
                  GetNullHash               \
                  GetNullItem               \
                  GetNullKey                \
                  GetPass                   \
+                 GetWrongLength            \
                  GetZeroKeyLength          \
                  InitNullContext           \
                  InitNullHash              \
@@ -94,19 +97,22 @@ DeleteZeroKeyLength_SOURCES       = $(COMMON_HEADER) DeleteZeroKeyLength.c
 FiniNullContext_SOURCES           = $(COMMON_HEADER) FiniNullContext.c
 FiniNullHash_SOURCES              = $(COMMON_HEADER) FiniNullHash.c
 FiniPass_SOURCES                  = $(COMMON_HEADER) FiniPass.c
-GetFirstNullContext               = $(COMMON_HEADER) GetFirstNullContext.c
-GetFirstNullHash                  = $(COMMON_HEADER) GetFirstNullHash.c
-GetFirstNullItem                  = $(COMMON_HEADER) GetFirstNullItem.c
-GetFirstPass                      = $(COMMON_HEADER) GetFirstPass.c
-GetNextNullContext                = $(COMMON_HEADER) GetNextNullContext.c
-GetNextNullHash                   = $(COMMON_HEADER) GetNextNullHash.c
-GetNextNullItem                   = $(COMMON_HEADER) GetNextNullItem.c
-GetNextPass                       = $(COMMON_HEADER) GetNextPass.c
+GetFirstNullContext_SOURCES       = $(COMMON_HEADER) GetFirstNullContext.c
+GetFirstNullHash_SOURCES          = $(COMMON_HEADER) GetFirstNullHash.c
+GetFirstNullItem_SOURCES          = $(COMMON_HEADER) GetFirstNullItem.c
+GetFirstPass_SOURCES              = $(COMMON_HEADER) GetFirstPass.c
+GetFirstWrongLength_SOURCES       = $(COMMON_HEADER) GetFirstWrongLength.c
+GetNextNullContext_SOURCES        = $(COMMON_HEADER) GetNextNullContext.c
+GetNextNullHash_SOURCES           = $(COMMON_HEADER) GetNextNullHash.c
+GetNextNullItem_SOURCES           = $(COMMON_HEADER) GetNextNullItem.c
+GetNextPass_SOURCES               = $(COMMON_HEADER) GetNextPass.c
+GetNextWrongLength_SOURCES        = $(COMMON_HEADER) GetFirstWrongLength.c
 GetNullContext_SOURCES            = $(COMMON_HEADER) GetNullContext.c
 GetNullHash_SOURCES               = $(COMMON_HEADER) GetNullHash.c
 GetNullItem_SOURCES               = $(COMMON_HEADER) GetNullItem.c
 GetNullKey_SOURCES                = $(COMMON_HEADER) GetNullKey.c
 GetPass_SOURCES                   = $(COMMON_HEADER) GetPass.c
+GetWrongLength_SOURCES            = $(COMMON_HEADER) GetFirstWrongLength.c
 GetZeroKeyLength_SOURCES          = $(COMMON_HEADER) GetZeroKeyLength.c
 InitNullContext_SOURCES           = $(COMMON_HEADER) InitNullContext.c
 InitNullHash_SOURCES              = $(COMMON_HEADER) InitNullHash.c
@@ -164,15 +170,18 @@ TESTS =                           \
         GetFirstNullHash          \
         GetFirstNullItem          \
         GetFirstPass              \
+        GetFirstWrongLength       \
         GetNextNullContext        \
         GetNextNullHash           \
         GetNextNullItem           \
         GetNextPass               \
+        GetNextWrongLength        \
         GetNullContext            \
         GetNullHash               \
         GetNullItem               \
         GetNullKey                \
         GetPass                   \
+        GetWrongLength            \
         GetZeroKeyLength          \
         InitNullContext           \
         InitNullHash              \
