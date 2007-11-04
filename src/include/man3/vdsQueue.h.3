@@ -37,10 +37,6 @@ vdsQueue.h \-
 .br
 .RI "\fIInsert a data element in the queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsQueueRelease\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP *pEntry)"
-.br
-.RI "\fIRelease the 'soft lock' on the data - to be used when you're done with \fBvdsQueuePop()\fP or vdsQueueGetItem(). \fP"
-.ti -1c
 .RI "VDSF_EXPORT int \fBvdsQueueStatus\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP *pStatus)"
 .br
 .in -1c
@@ -69,10 +65,6 @@ Remove the first inserted item from a FIFO queue.
 .SS "VDSF_EXPORT int vdsQueuePush (\fBVDS_HANDLE\fP objectHandle, const void * pItem, size_t length)"
 .PP
 Insert a data element in the queue. 
-.PP
-.SS "VDSF_EXPORT int vdsQueueRelease (\fBVDS_HANDLE\fP objectHandle, \fBvdsDataEntry\fP * pEntry)"
-.PP
-Release the 'soft lock' on the data - to be used when you're done with \fBvdsQueuePop()\fP or vdsQueueGetItem(). 
 .PP
 .SS "VDSF_EXPORT int vdsQueueStatus (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP * pStatus)"
 .PP

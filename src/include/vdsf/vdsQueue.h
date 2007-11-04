@@ -74,14 +74,6 @@ int vdsQueuePush( VDS_HANDLE   objectHandle,
                   const void * pItem, 
                   size_t       length );
 
-/** 
- * Release the "soft lock" on the data - to be used when you're done with 
- * vdsQueuePop() or vdsQueueGetItem().
- */
-VDSF_EXPORT
-int vdsQueueRelease( VDS_HANDLE     objectHandle,
-                     vdsDataEntry * pEntry );
-
 VDSF_EXPORT
 int vdsQueueStatus( VDS_HANDLE     objectHandle,
                     vdsObjStatus * pStatus );

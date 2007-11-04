@@ -143,6 +143,7 @@ int main()
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
+                              (size_t) -1,
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -154,6 +155,7 @@ int main()
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
+                              (size_t) -1,
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -165,6 +167,7 @@ int main()
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
+                              (size_t) -1,
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -188,6 +191,7 @@ int main()
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
+                              (size_t) -1,
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -199,6 +203,7 @@ int main()
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
+                              (size_t) -1,
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -210,6 +215,7 @@ int main()
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
+                              (size_t) -1,
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -258,6 +264,7 @@ int main()
    errcode = vdseQueueGet( pQueue,
                            VDS_FIRST,
                            &pQueueItem,
+                           (size_t) -1,
                            &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -309,6 +316,7 @@ int main()
    errcode = vdseQueueGet( pQueue,
                            VDS_FIRST,
                            &pQueueItem,
+                           (size_t) -1,
                            &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -334,6 +342,7 @@ int main()
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
+                              (size_t) -1,
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -345,6 +354,7 @@ int main()
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
+                              (size_t) -1,
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -356,6 +366,7 @@ int main()
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
+                              (size_t) -1,
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -379,6 +390,7 @@ int main()
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
+                              (size_t) -1,
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -390,6 +402,7 @@ int main()
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
+                              (size_t) -1,
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -401,6 +414,7 @@ int main()
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
+                              (size_t) -1,
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
