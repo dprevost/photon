@@ -14,7 +14,6 @@ VDS_C_FILES =                           \
               man3/vdsCommit.3          \
               man3/vdsCommon.h.3        \
               man3/vdsCreateObject.3    \
-              man3/vdsDataEntry.3       \
               man3/vdsDestroyObject.3   \
               man3/vdsErrorMsg.3        \
               man3/vdsErrors.3          \
@@ -54,7 +53,6 @@ VDS_C_FILES =                           \
               man3/vdsQueueOpen.3       \
               man3/vdsQueuePop.3        \
               man3/vdsQueuePush.3       \
-              man3/vdsQueueRelease.3    \
               man3/vdsQueueStatus.3     \
               man3/vdsRollback.3        \
               man3/vdsSession.h.3       
