@@ -81,7 +81,7 @@ vdseProcMgr* initProcMgrTest( bool                testIsExpectedToSucceed,
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
-   pTx = (vdseTx*)vdseMallocBlocks( pAlloc, 1, pContext );
+   pTx = (vdseTx*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
    if ( pTx == NULL )
    {
       fprintf( stderr, "Abnormal error at line %d in procMgrTest.h\n", __LINE__ );
@@ -100,7 +100,7 @@ vdseProcMgr* initProcMgrTest( bool                testIsExpectedToSucceed,
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the folder object */
-   pManager = (vdseProcMgr *) vdseMallocBlocks( pAlloc, 1, pContext );
+   pManager = (vdseProcMgr *) vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
    if ( pManager == NULL )
    {
       fprintf( stderr, "Abnormal error at line %d in procMgrTest.h\n", __LINE__ );

@@ -77,7 +77,7 @@ vdstObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for our dummy object + initialize it + blockGroup */
-   pDummy = (vdstObjDummy*) vdseMallocBlocks( pAlloc, 4, pContext );
+   pDummy = (vdstObjDummy*) vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 4, pContext );
    if ( pDummy == NULL )
    {
       fprintf( stderr, "Abnormal error at line %d in MemObjTest.h\n", __LINE__ );

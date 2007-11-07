@@ -1,4 +1,4 @@
-.TH "vdsProcess.h" 3 "3 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsProcess.h" 3 "6 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,13 +13,13 @@ vdsProcess.h \-
 
 .in +1c
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsInit\fP (const char *wdAddress, int protectionNeeded, \fBVDS_HANDLE\fP *processHandle)"
-.br
-.RI "\fIThis function initializes access to a VDS. \fP"
-.ti -1c
 .RI "VDSF_EXPORT void \fBvdsExit\fP (\fBVDS_HANDLE\fP processHandle)"
 .br
 .RI "\fIThis function terminates all access to the VDS. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsInit\fP (const char *wdAddress, int protectionNeeded, \fBVDS_HANDLE\fP *processHandle)"
+.br
+.RI "\fIThis function initializes access to a VDS. \fP"
 .in -1c
 .SH "Function Documentation"
 .PP 

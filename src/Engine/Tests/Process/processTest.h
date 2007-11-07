@@ -81,7 +81,7 @@ vdseProcess * initProcessTest( bool                testIsExpectedToSucceed,
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
-   pTx = (vdseTx*)vdseMallocBlocks( pAlloc, 1, pContext );
+   pTx = (vdseTx*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
    if ( pTx == NULL )
    {
       fprintf( stderr, "Abnormal error at line %d in processTest.h\n", __LINE__ );
@@ -100,7 +100,7 @@ vdseProcess * initProcessTest( bool                testIsExpectedToSucceed,
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the folder object */
-   process = (vdseProcess *) vdseMallocBlocks( pAlloc, 1, pContext );
+   process = (vdseProcess *) vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
    if ( process == NULL )
    {
       fprintf( stderr, "Abnormal error at line %d in processTest.h\n", __LINE__ );

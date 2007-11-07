@@ -121,6 +121,26 @@ typedef struct vdsObjStatus
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+typedef struct vdsInfo
+{
+   size_t totalSizeInBytes;
+   
+   size_t allocatedSizeInBytes;
+   
+   size_t numObjects;
+   
+   size_t numGroups;
+   
+   size_t numMallocs;
+   
+   size_t numFrees;
+   
+   size_t largestFreeInBytes;
+   
+} vdsInfo;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 #ifdef __cplusplus
 }
 #endif

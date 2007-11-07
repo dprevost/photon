@@ -48,7 +48,7 @@ int vdseSessionInit( vdseSession        * pSession,
    {
       vdseLinkedListInit( &pSession->listOfObjects );
 
-      pTx = (vdseTx*) vdseMallocBlocks( pContext->pAllocator, 1, pContext );
+      pTx = (vdseTx*) vdseMallocBlocks( pContext->pAllocator, VDSE_ALLOC_ANY, 1, pContext );
       if ( pTx != NULL )
       {
          errcode = vdseTxInit( pTx, 1, pContext );
@@ -65,6 +65,7 @@ int vdseSessionInit( vdseSession        * pSession,
          else
          {
             vdseFreeBlocks( pContext->pAllocator, 
+                            VDSE_ALLOC_ANY,
                             (unsigned char *)pTx, 
                             1, pContext );
          }

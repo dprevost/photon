@@ -106,7 +106,7 @@ vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
    if ( errcode == 0 )
    {
       pCurrentBuffer = (vdseSession*) 
-          vdseMallocBlocks( pContext->pAllocator, 1, pContext );
+          vdseMallocBlocks( pContext->pAllocator, VDSE_ALLOC_ANY, 1, pContext );
       if ( pCurrentBuffer != NULL )
       {
          errcode = vdseSessionInit( pCurrentBuffer, pApiSession, pContext );
@@ -120,6 +120,7 @@ vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
          else
          {
             vdseFreeBlocks( pContext->pAllocator, 
+                            VDSE_ALLOC_ANY,
                             (unsigned char *)pCurrentBuffer, 
                             1, pContext );
          }

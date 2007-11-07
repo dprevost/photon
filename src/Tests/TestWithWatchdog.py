@@ -196,7 +196,7 @@ def WriteCfg():
       cfg_file.write( line )   
       line = 'VDSLocation           ' + vds_dir + '\n'
       cfg_file.write( line )  
-      line = 'MemorySize            100' + '\n'
+      line = 'MemorySize           1000' + '\n'
       cfg_file.write( line )  
       line = 'WatchdogAddress       ' + tcp_port + '\n'
       cfg_file.write( line )  

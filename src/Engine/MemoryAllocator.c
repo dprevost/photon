@@ -195,9 +195,6 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
    if ( errcode != VDS_OK )
       return errcode;
    
-//   vdseBlockGroupInit( &pAlloc->blockGroup,
-//                       VDSE_BLOCK_SIZE, /* offset of the allocator */
-//                       neededBlocks );
    vdseEndBlockSet( SET_OFFSET(pAlloc), 
                     neededBlocks, 
                     false,   /* isInLimbo */
@@ -211,6 +208,8 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
    pAlloc->totalAllocBlocks = neededBlocks+1; 
    pAlloc->numMallocCalls  = 0;
    pAlloc->numFreeCalls    = 0;
+   pAlloc->numApiObjects   = 0;
+   pAlloc->numGroups       = 1;
    pAlloc->totalLength     = length;
 
    /* Initialize the bitmap for the allocator itself */ 
@@ -247,9 +246,9 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
  * tweak it).
  */
 static inline 
-vdseFreeBufferNode* FindBuffer( vdseMemAlloc*     pAlloc,
-                                size_t            requestedBlocks,
-                                vdscErrorHandler* pError )
+vdseFreeBufferNode* FindBuffer( vdseMemAlloc     * pAlloc,
+                                size_t             requestedBlocks,
+                                vdscErrorHandler * pError )
 {
    size_t i;
    /* size_t is unsigned. This is check by autoconf AC_TYPE_SIZE_T */
@@ -351,9 +350,10 @@ vdseFreeBufferNode* FindBuffer( vdseMemAlloc*     pAlloc,
 /**
  * Allocates the blocks of shared memory we need.  
  */
-unsigned char* vdseMallocBlocks( vdseMemAlloc*       pAlloc,
-                                 size_t              requestedBlocks,
-                                 vdseSessionContext* pContext )
+unsigned char* vdseMallocBlocks( vdseMemAlloc       * pAlloc,
+                                 vdseAllocTypeEnum    allocType,
+                                 size_t               requestedBlocks,
+                                 vdseSessionContext * pContext )
 {
    vdseFreeBufferNode* pNode = NULL;
    vdseFreeBufferNode* pNewNode = NULL;
@@ -418,7 +418,10 @@ unsigned char* vdseMallocBlocks( vdseMemAlloc*       pAlloc,
       
       pAlloc->totalAllocBlocks += requestedBlocks;   
       pAlloc->numMallocCalls++;
-
+      pAlloc->numGroups++;
+      if ( allocType == VDSE_ALLOC_API_OBJ )
+         pAlloc->numApiObjects++;
+      
       /* Set the bitmap */
       vdseSetBufferAllocated( pBitmap, SET_OFFSET(pNode), 
                               requestedBlocks << VDSE_BLOCK_SHIFT );
@@ -432,10 +435,11 @@ unsigned char* vdseMallocBlocks( vdseMemAlloc*       pAlloc,
 
 /** Free ptr, the memory is returned to the pool. */
 
-void vdseFreeBlocks( vdseMemAlloc*       pAlloc,
-                     unsigned char *     ptr, 
-                     size_t              numBlocks,
-                     vdseSessionContext* pContext )
+void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
+                     vdseAllocTypeEnum    allocType,
+                     unsigned char      * ptr, 
+                     size_t               numBlocks,
+                     vdseSessionContext * pContext )
 {
    int errcode = 0;
    vdseFreeBufferNode* otherNode, *previousNode = NULL, *newNode = NULL;
@@ -592,6 +596,9 @@ void vdseFreeBlocks( vdseMemAlloc*       pAlloc,
                              
    pAlloc->totalAllocBlocks -= numBlocks;   
    pAlloc->numFreeCalls++;
+   pAlloc->numGroups--;
+   if ( allocType == VDSE_ALLOC_API_OBJ )
+      pAlloc->numApiObjects--;
 
    /* Set the bitmap */
    vdseSetBufferFree( pBitmap, SET_OFFSET(newNode), newNode->numBuffers << VDSE_BLOCK_SHIFT );
@@ -620,12 +627,6 @@ void vdseMemAllocClose( vdseMemAlloc*       pAlloc,
    pAlloc->numMallocCalls  = 0;
    pAlloc->numFreeCalls    = 0;
    pAlloc->totalLength     = 0;
-//   pAlloc-> bitmapLength   = 0;
-//   pAlloc->freeList.bh.prevfree = 0;
-//   pAlloc->freeList.bh.bsize    = 0;
-
-//   g_pBaseAddr = NULL;
-
 }
 
 #if 0
@@ -680,51 +681,52 @@ void vdseMemAllocResetStats( vdseMemAlloc*    pAlloc,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdsErrors vdseMemAllocStats( vdseMemAlloc*       pAlloc,
-                             size_t *            pCurrentAllocated,
-                             size_t *            pTotalFree,
-                             size_t *            pMaxFree,
-                             size_t *            pNumberOfMallocs,
-                             size_t *            pNumberOfFrees,
-                             vdseSessionContext* pContext )
+int vdseMemAllocStats( vdseMemAlloc       * pAlloc,
+                       vdsInfo            * pInfo,
+                       vdseSessionContext * pContext )
 {
    int errcode = 0;
+   size_t numBlocks;
+   vdseLinkNode *oldNode = NULL;
+   vdseLinkNode *currentNode = NULL;
 
-   VDS_PRE_CONDITION( pContext          != NULL );
-   VDS_PRE_CONDITION( pAlloc            != NULL );
-   VDS_PRE_CONDITION( pCurrentAllocated != NULL );
-   VDS_PRE_CONDITION( pTotalFree        != NULL );
-   VDS_PRE_CONDITION( pMaxFree          != NULL );
-   VDS_PRE_CONDITION( pNumberOfMallocs  != NULL );
-   VDS_PRE_CONDITION( pNumberOfFrees    != NULL );
+   VDS_PRE_CONDITION( pAlloc   != NULL );
+   VDS_PRE_CONDITION( pInfo    != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
 
-   errcode = vdscTryAcquireProcessLock( &pAlloc->memObj.lock, 
-                                        getpid(),
-                                        LOCK_TIMEOUT );
+   errcode = vdseLock( &pAlloc->memObj, pContext );
    if ( errcode == 0 )
    {
-      *pNumberOfMallocs  = pAlloc->numMallocCalls;
-      *pNumberOfFrees    = pAlloc->numFreeCalls;
-      *pCurrentAllocated = pAlloc->totalAllocBlocks << VDSE_BLOCK_SHIFT;
-      *pTotalFree        = 0;
-      *pMaxFree          = 0;
-
-/*      struct bfhead * b = GET_FLINK( &pAlloc->freeList );
-      while (b != &pAlloc->freeList)
+      pInfo->totalSizeInBytes     = pAlloc->totalLength;
+      pInfo->allocatedSizeInBytes = pAlloc->totalAllocBlocks << VDSE_BLOCK_SHIFT;
+      pInfo->numObjects           = pAlloc->numApiObjects;
+      pInfo->numGroups            = pAlloc->numGroups;
+      pInfo->numMallocs           = pAlloc->numMallocCalls;
+      pInfo->numFrees             = pAlloc->numFreeCalls;
+      pInfo->largestFreeInBytes   = 0;
+      
+      errcode = vdseLinkedListPeakFirst( &pAlloc->freeList,
+                                         &currentNode );
+      while ( errcode == LIST_OK )
       {
-         VDS_ASSERT_NORETURN( b->bh.bsize > 0, pError );
-         *pTotalFree += b->bh.bsize;
-         if (b->bh.bsize > *pMaxFree)
-            *pMaxFree = b->bh.bsize;
-         b = GET_FLINK( b );
+         numBlocks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
+         if ( numBlocks > pInfo->largestFreeInBytes )
+            pInfo->largestFreeInBytes = numBlocks;
+         
+         oldNode = currentNode;
+         errcode = vdseLinkedListPeakNext( &pAlloc->freeList,
+                                           oldNode,
+                                           &currentNode );
       }
-      */
-      vdscReleaseProcessLock( &pAlloc->memObj.lock );
+      pInfo->largestFreeInBytes = pInfo->largestFreeInBytes << VDSE_BLOCK_SHIFT;
+      
+      vdseUnlock( &pAlloc->memObj, pContext );
 
-      return VDS_OK;
+      return 0;
    }
 
-   return VDS_ENGINE_BUSY;
+   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_ENGINE_BUSY );
+   return -1;
 }
 
 #if 0

@@ -83,7 +83,7 @@ initQueueTest( bool                testIsExpectedToSucceed,
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
-   pTx = (vdseTx*)vdseMallocBlocks( pAlloc, 1, pContext );
+   pTx = (vdseTx*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
    if ( pTx == NULL )
    {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
@@ -101,8 +101,8 @@ initQueueTest( bool                testIsExpectedToSucceed,
    }
    pContext->pTransaction = pTx;
    
-   /* Allocate memory for the hash map object */
-   pQueue = (vdseQueue*)vdseMallocBlocks( pAlloc, 1, pContext );
+   /* Allocate memory for the queue object */
+   pQueue = (vdseQueue*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
    if ( pQueue == NULL )
    {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );

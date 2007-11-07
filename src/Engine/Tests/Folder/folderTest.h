@@ -81,7 +81,7 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
-   pTx = (vdseTx*)vdseMallocBlocks( pAlloc, 1, pContext );
+   pTx = (vdseTx*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
    if ( pTx == NULL )
    {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
@@ -100,7 +100,7 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the folder object */
-   pFolder = (vdseFolder*)vdseMallocBlocks( pAlloc, 1, pContext );
+   pFolder = (vdseFolder*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
    if ( pFolder == NULL )
    {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );

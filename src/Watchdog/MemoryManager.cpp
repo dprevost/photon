@@ -108,7 +108,7 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    }
 
    /* The top folder  */
-   unsigned char* ptr = vdseMallocBlocks( pAlloc, 1, pContext );
+   unsigned char* ptr = vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
    if ( ptr == NULL )
    {
       (*ppHeader) = NULL;
@@ -152,7 +152,7 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    (*ppHeader)->treeMgrOffset = SET_OFFSET( ptr );
       
    /* The Garbage Collection manager */
-   ptr = vdseMallocBlocks( pAlloc, 1, pContext );
+   ptr = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
    if ( ptr == NULL )
    {
       (*ppHeader) = NULL;

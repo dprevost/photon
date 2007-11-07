@@ -31,6 +31,22 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/**
+ * This enum allows to count the number of objects and the number of 
+ * extensions (additional groups of blocks added to an object). 
+ */
+typedef enum vdseAllocTypeEnum
+{
+   /** When allocating/freeing the initial group of blocks of an API object */ 
+   VDSE_ALLOC_API_OBJ,
+   
+   /** Any other group of blocks */
+   VDSE_ALLOC_ANY
+   
+} vdseAllocTypeEnum;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 typedef struct vdseMemAlloc
 {
    /**
@@ -43,14 +59,18 @@ typedef struct vdseMemAlloc
    size_t totalAllocBlocks;   
 
    /** Number of malloc calls */
-   size_t    numMallocCalls;
+   size_t numMallocCalls;
 
    /** Number of free calls */
-   size_t    numFreeCalls;
+   size_t numFreeCalls;
 
-   /**
-    *  Total size of the shared memory.
-    */
+   /** Number of objects (API objects) */
+   size_t numApiObjects;
+
+   /** Number of groups of blocks */
+   size_t numGroups;
+
+   /** Total size of the shared memory. */
    size_t totalLength;
 
    /** Structure used to hold the list of free buffers. */
@@ -88,12 +108,14 @@ vdseMemAllocInit( vdseMemAlloc       * pAlloc,
  */
 VDSF_ENGINE_EXPORT unsigned char* 
 vdseMallocBlocks( vdseMemAlloc       * pAlloc,
+                  vdseAllocTypeEnum    allocType,
                   size_t               numBlocks,
                   vdseSessionContext * pContext );
 
 /** Free ptr, the memory is returned to the pool. */
 VDSF_ENGINE_EXPORT
 void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
+                     vdseAllocTypeEnum    allocType,
                      unsigned char      * ptr, 
                      size_t               numBlocks,
                      vdseSessionContext * pContext );
@@ -115,13 +137,9 @@ void vdseMemAllocClose( vdseMemAlloc       * pAlloc,
  *  integer on 32 bits machine - these numbers might loop around.
  */
 VDSF_ENGINE_EXPORT
-vdsErrors vdseMemAllocStats( vdseMemAlloc       * pAlloc,
-                             size_t             * pCurrentAllocated,
-                             size_t             * pTotalFree,
-                             size_t             * pMaxFree,
-                             size_t             * pNumberOfMallocs,
-                             size_t             * pNumberOfFrees,
-                             vdseSessionContext * pContext  );
+int vdseMemAllocStats( vdseMemAlloc       * pAlloc,
+                       vdsInfo            * pInfo,
+                       vdseSessionContext * pContext  );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

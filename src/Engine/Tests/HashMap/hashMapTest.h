@@ -83,7 +83,7 @@ initHashMapTest( bool                testIsExpectedToSucceed,
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
-   pTx = (vdseTx*)vdseMallocBlocks( pAlloc, 1, pContext );
+   pTx = (vdseTx*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
    if ( pTx == NULL )
    {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
@@ -102,7 +102,7 @@ initHashMapTest( bool                testIsExpectedToSucceed,
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the hash map object */
-   pHashMap = (vdseHashMap*)vdseMallocBlocks( pAlloc, 1, pContext );
+   pHashMap = (vdseHashMap*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
    if ( pHashMap == NULL )
    {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );

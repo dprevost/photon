@@ -86,7 +86,7 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for our dummy object + initialize it + blockGroup */
-   pDummy = (vdstObjDummy*) vdseMallocBlocks( pAlloc, 2, pContext );
+   pDummy = (vdstObjDummy*) vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 2, pContext );
    if ( pDummy == NULL )
    {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );

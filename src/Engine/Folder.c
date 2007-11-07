@@ -813,6 +813,7 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
        */
       
       ptr = (unsigned char*) vdseMallocBlocks( pContext->pAllocator,
+                                               VDSE_ALLOC_API_OBJ,
                                                numBlocks,
                                                pContext );
       if ( ptr == NULL )
@@ -825,7 +826,8 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
       pDesc = (vdseObjectDescriptor *) malloc( descLength );
       if ( pDesc == NULL )
       {
-         vdseFreeBlocks( pContext->pAllocator, ptr, numBlocks, pContext );
+         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+                         ptr, numBlocks, pContext );
          errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
          goto the_exit;
       }
@@ -844,7 +846,8 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
                                 pContext );
       if ( listErr != LIST_OK )
       {
-         vdseFreeBlocks( pContext->pAllocator, ptr, numBlocks, pContext );
+         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+                         ptr, numBlocks, pContext );
          free( pDesc );
          if ( listErr == LIST_KEY_FOUND )
             errcode = VDS_OBJECT_ALREADY_PRESENT;
@@ -885,7 +888,8 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
                          (unsigned char*)objectName, 
                          partialLength * sizeof(vdsChar_T), 
                          pContext );
-         vdseFreeBlocks( pContext->pAllocator, ptr, numBlocks, pContext );
+         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+                         ptr, numBlocks, pContext );
          goto the_exit;
       }
       
@@ -948,7 +952,8 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
                          (unsigned char*)objectName, 
                          partialLength * sizeof(vdsChar_T), 
                          pContext );
-         vdseFreeBlocks( pContext->pAllocator, ptr, numBlocks, pContext );
+         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+                         ptr, numBlocks, pContext );
          goto the_exit;
       }
       pFolder->nodeObject.txCounter++;

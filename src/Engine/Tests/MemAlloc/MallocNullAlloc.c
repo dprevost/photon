@@ -40,7 +40,7 @@ int main()
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
-   newBuff = vdseMallocBlocks( NULL, 2, &context );
+   newBuff = vdseMallocBlocks( NULL, VDSE_ALLOC_ANY, 2, &context );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

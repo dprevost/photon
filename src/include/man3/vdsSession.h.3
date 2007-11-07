@@ -1,4 +1,4 @@
-.TH "vdsSession.h" 3 "3 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsSession.h" 3 "6 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -32,6 +32,9 @@ vdsSession.h \-
 .RI "VDSF_EXPORT int \fBvdsExitSession\fP (\fBVDS_HANDLE\fP handle)"
 .br
 .ti -1c
+.RI "VDSF_EXPORT int \fBvdsGetInfo\fP (\fBVDS_HANDLE\fP sessionHandle, \fBvdsInfo\fP *pInfo)"
+.br
+.ti -1c
 .RI "VDSF_EXPORT int \fBvdsGetStatus\fP (\fBVDS_HANDLE\fP handle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjStatus\fP *pStatus)"
 .br
 .ti -1c
@@ -52,6 +55,8 @@ vdsSession.h \-
 .SS "VDSF_EXPORT int vdsErrorMsg (\fBVDS_HANDLE\fP sessionHandle, char * message, size_t msgLengthInBytes)"
 .PP
 .SS "VDSF_EXPORT int vdsExitSession (\fBVDS_HANDLE\fP handle)"
+.PP
+.SS "VDSF_EXPORT int vdsGetInfo (\fBVDS_HANDLE\fP sessionHandle, \fBvdsInfo\fP * pInfo)"
 .PP
 .SS "VDSF_EXPORT int vdsGetStatus (\fBVDS_HANDLE\fP handle, const char * objectName, size_t nameLengthInBytes, \fBvdsObjStatus\fP * pStatus)"
 .PP

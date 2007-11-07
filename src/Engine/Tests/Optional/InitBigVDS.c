@@ -65,11 +65,11 @@ int main()
    /* Allocate all the blocks, one by one. */
    for ( i = 0; i < 8*VDSE_BLOCK_SIZE-3; ++i )
    {
-      buffer[i] = vdseMallocBlocks( pAlloc, 1, &context );
+      buffer[i] = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, &context );
       if ( buffer[i] == NULL )
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   buffer[8*VDSE_BLOCK_SIZE-3] = vdseMallocBlocks( pAlloc, 1, &context );
+   buffer[8*VDSE_BLOCK_SIZE-3] = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, &context );
    if ( buffer[8*VDSE_BLOCK_SIZE-3] != NULL )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
@@ -87,7 +87,7 @@ int main()
    /* Free 1 block out of two */
    for ( i = 0; i < 8*VDSE_BLOCK_SIZE-3; i += 2 )
    {
-      vdseFreeBlocks( pAlloc, buffer[i], 1, &context );
+      vdseFreeBlocks( pAlloc, VDSE_ALLOC_ANY, buffer[i], 1, &context );
    }
    
    /* Check the bitmap pattern - the first 3 are always busy */

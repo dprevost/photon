@@ -29,6 +29,19 @@ extern "C" {
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
+ * This function terminates all access to the VDS. This function 
+ * will also close all sessions and terminate all accesses to 
+ * the different objects. 
+ * 
+ * This function takes a single argument, the handle to the process object 
+ * and always end successfully.
+ */
+VDSF_EXPORT
+void vdsExit( VDS_HANDLE processHandle );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
  * This function initializes access to a VDS. It takes 2 input 
  * arguments, the address of the watchdog and an integer (used as 
  * a boolean, 0 for false, 1 for true) to indicate if sessions and 
@@ -52,19 +65,6 @@ VDSF_EXPORT
 int vdsInit( const char* wdAddress,
              int         protectionNeeded,
              VDS_HANDLE* processHandle );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/**
- * This function terminates all access to the VDS. This function 
- * will also close all sessions and terminate all accesses to 
- * the different objects. 
- * 
- * This function takes a single argument, the handle to the process object 
- * and always end successfully.
- */
-VDSF_EXPORT
-void vdsExit( VDS_HANDLE processHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

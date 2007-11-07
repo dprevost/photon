@@ -31,7 +31,6 @@ VDS_C_FILES =                           \
               man3/vds.h.3              \
               man3/vdsHashMapClose.3    \
               man3/vdsHashMapDelete.3   \
-              man3/vdsHashMapEntry.3    \
               man3/vdsHashMapGet.3      \
               man3/vdsHashMapGetFirst.3 \
               man3/vdsHashMapGetNext.3  \

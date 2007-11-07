@@ -40,11 +40,11 @@ int main()
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
-   newBuff = vdseMallocBlocks( pAlloc, 2, &context );
+   newBuff = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 2, &context );
    if ( newBuff == NULL ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   vdseFreeBlocks( NULL, newBuff, 2, &context );
+   vdseFreeBlocks( NULL, VDSE_ALLOC_ANY, newBuff, 2, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

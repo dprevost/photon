@@ -124,6 +124,7 @@ vdseMemObjectFini( vdseMemObject*      pMemObj,
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
 
       vdseFreeBlocks( pContext->pAllocator, 
+                      VDSE_ALLOC_ANY,
                       (unsigned char*)pGroup, 
                       pGroup->numBlocks,
                       pContext );
@@ -147,6 +148,7 @@ vdseMemObjectFini( vdseMemObject*      pMemObj,
     * This must be the last access to the memory object.
     */
    vdseFreeBlocks( pContext->pAllocator, 
+                   VDSE_ALLOC_API_OBJ,
                    (unsigned char*)pMemObj, 
                    pGroup->numBlocks,
                    pContext );
@@ -273,6 +275,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
       i = requestedBlocks;
    
    currentGroup = (vdseBlockGroup*) vdseMallocBlocks( pContext->pAllocator,
+                                                      VDSE_ALLOC_ANY,
                                                       i,
                                                       pContext );
    if ( currentGroup == NULL && i > requestedBlocks )
@@ -286,6 +289,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
       {
          i = requestedBlocks;
          currentGroup = (vdseBlockGroup*) vdseMallocBlocks( pContext->pAllocator,
+                                                            VDSE_ALLOC_ANY,
                                                             i,
                                                             pContext );
       }
@@ -476,6 +480,7 @@ void vdseFree( vdseMemObject*      pMemObj,
       vdseBlockGroupFini( goodGroup );
       
       vdseFreeBlocks( pContext->pAllocator,
+                      VDSE_ALLOC_ANY,
                       (unsigned char*)goodGroup,
                       numBlocks,
                       pContext );

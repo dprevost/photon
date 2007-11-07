@@ -22,6 +22,7 @@
 #include "Common/MemoryFile.h"
 #include "API/Session.h"
 #include "Engine/InitEngine.h"
+#include "Engine/MemoryAllocator.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

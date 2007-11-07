@@ -56,24 +56,40 @@ int vdsInitSession( VDS_HANDLE* sessionHandle );
 VDSF_EXPORT
 int vdsCommit( VDS_HANDLE handle );
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 VDSF_EXPORT
 int vdsCreateObject( VDS_HANDLE      handle,
                      const char    * objectName,
                      size_t          nameLengthInBytes,
                      vdsObjectType   objectType );
    
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 VDSF_EXPORT
 int vdsDestroyObject( VDS_HANDLE   handle,
                       const char * objectName,
                       size_t       nameLengthInBytes );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_EXPORT
 int vdsErrorMsg( VDS_HANDLE sessionHandle,
                  char *     message,
                  size_t     msgLengthInBytes );
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 VDSF_EXPORT
 int vdsExitSession( VDS_HANDLE handle );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+VDSF_EXPORT
+int vdsGetInfo( VDS_HANDLE   sessionHandle,
+                vdsInfo    * pInfo );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_EXPORT
 int vdsGetStatus(  VDS_HANDLE     handle,
@@ -81,8 +97,12 @@ int vdsGetStatus(  VDS_HANDLE     handle,
                    size_t         nameLengthInBytes,
                    vdsObjStatus * pStatus );
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 VDSF_EXPORT
 int vdsLastError( VDS_HANDLE sessionHandle );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_EXPORT
 int vdsRollback( VDS_HANDLE handle );
