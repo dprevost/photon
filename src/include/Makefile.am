@@ -10,6 +10,15 @@
 
 CLEANFILES = *~ vdsf/*~
 
+HEADER_FILES =                                 \
+   $(top_srcdir)/src/include/vdsf/vds.h        \
+   $(top_srcdir)/src/include/vdsf/vdsCommon.h  \
+   $(top_srcdir)/src/include/vdsf/vdsFolder.h  \
+   $(top_srcdir)/src/include/vdsf/vdsHashMap.h \
+   $(top_srcdir)/src/include/vdsf/vdsQueue.h   \
+   $(top_srcdir)/src/include/vdsf/vdsProcess.h \
+   $(top_srcdir)/src/include/vdsf/vdsSession.h 
+
 VDS_C_FILES =                           \
               man3/vdsCommit.3          \
               man3/vdsCommon.h.3        \
@@ -27,6 +36,7 @@ VDS_C_FILES =                           \
               man3/vdsFolder.h.3        \
               man3/vdsFolderOpen.3      \
               man3/vdsFolderStatus.3    \
+              man3/vdsGetInfo.3         \
               man3/vdsGetStatus.3       \
               man3/vds.h.3              \
               man3/vdsHashMapClose.3    \
@@ -38,6 +48,7 @@ VDS_C_FILES =                           \
               man3/vdsHashMapInsert.3   \
               man3/vdsHashMapOpen.3     \
               man3/vdsHashMapStatus.3   \
+              man3/vdsInfo.3            \
               man3/vdsInit.3            \
               man3/vdsInitSession.3     \
               man3/vdsIteratorType.3    \
@@ -111,7 +122,7 @@ man3/vdsSession.3: vdsf/vdsSession
 	cp dummy/man/man3/vdsSession.3 man3/vdsSession.3
 	-rm -rf dummy
 
-$(VDS_C_FILES): vdsf/vds.h vdsf/vdsFolder.h vdsf/vdsQueue.h vdsf/vdsProcess.h vdsf/vdsSession.h
+$(VDS_C_FILES): $(HEADER_FILES)
 	doxygen Doxyfile.vds_c
 	cp dummy/man/man3/vds* man3/
 	-rm -rf dummy

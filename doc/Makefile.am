@@ -10,11 +10,37 @@
 
 CLEANFILES = *~
 
-#man_MANS = API/man/man3/vdsQueue.3
+# To debug, uncomment the next line and comment the next after that.
+#VERBOSE =
+VERBOSE = > /dev/null 2>&1
+# A note on VERBOSE: it might be easier to debug by running each program
+# manually... YMMV
 
-#EXTRA_DIST = $(man_MANS)
+#
+# Only rebuild the man pages if doxygen is present.
+#
+if COND_USE_DOXYGEN
 
-#API/man/man3/vdsQueue.3:
-#	doxygen $(top_builddir)/src/include/Doxyfile
+all-local: refman.pdf
+
+#EXTRA_DIST = refman.pdf
+
+HEADER_FILES =                                 \
+   $(top_srcdir)/src/include/vdsf/vds.h        \
+   $(top_srcdir)/src/include/vdsf/vdsCommon.h  \
+   $(top_srcdir)/src/include/vdsf/vdsFolder.h  \
+   $(top_srcdir)/src/include/vdsf/vdsHashMap.h \
+   $(top_srcdir)/src/include/vdsf/vdsQueue.h   \
+   $(top_srcdir)/src/include/vdsf/vdsProcess.h \
+   $(top_srcdir)/src/include/vdsf/vdsSession.h 
+
+refman.pdf: $(HEADER_FILES)
+	doxygen Doxyfile.vds_c $(VERBOSE)
+	cd latex; latex refman.tex $(VERBOSE); cd ..
+	cd latex; latex refman.tex $(VERBOSE); cd ..
+	cd latex; dvipdfm refman.dvi $(VERBOSE); cd ..
+	cp latex/refman.pdf .
+
+endif
 
 install-data-local:

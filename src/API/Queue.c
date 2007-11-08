@@ -188,6 +188,10 @@ int vdsQueueOpen( VDS_HANDLE   sessionHandle,
    vdsaQueue * pQueue = NULL;
    int errcode;
    
+   if ( objectHandle == NULL )
+      return VDS_NULL_HANDLE;
+   *objectHandle = NULL;
+
    pSession = (vdsaSession*) sessionHandle;
    if ( pSession == NULL )
       return VDS_NULL_HANDLE;
@@ -197,15 +201,10 @@ int vdsQueueOpen( VDS_HANDLE   sessionHandle,
 
    if ( queueName == NULL )
       return VDS_INVALID_OBJECT_NAME;
-   
-   if ( objectHandle == NULL )
-      return VDS_NULL_HANDLE;
 
    if ( nameLengthInBytes == 0 )
       return VDS_INVALID_LENGTH;
-   
-   *objectHandle = NULL;
-   
+
    pQueue = (vdsaQueue *) malloc(sizeof(vdsaQueue));
    if (  pQueue == NULL )
       return VDS_NOT_ENOUGH_HEAP_MEMORY;
