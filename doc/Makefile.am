@@ -17,13 +17,14 @@ VERBOSE = > /dev/null 2>&1
 # manually... YMMV
 
 #
-# Only rebuild the man pages if doxygen is present.
+# Only rebuild the ref. manual if both doxygen and latex are present.
 #
-if COND_USE_DOXYGEN
+if COND_USE_DOXYGEN 
+if COND_USE_LATEX
 
 all-local: refman.pdf
 
-#EXTRA_DIST = refman.pdf
+EXTRA_DIST = refman.pdf
 
 HEADER_FILES =                                 \
    $(top_srcdir)/src/include/vdsf/vds.h        \
@@ -34,13 +35,14 @@ HEADER_FILES =                                 \
    $(top_srcdir)/src/include/vdsf/vdsProcess.h \
    $(top_srcdir)/src/include/vdsf/vdsSession.h 
 
-refman.pdf: $(HEADER_FILES)
+refman.pdf: $(HEADER_FILES) Doxyfile.vds_c
+	-rm -rf latex
 	doxygen Doxyfile.vds_c $(VERBOSE)
-	cd latex; latex refman.tex $(VERBOSE); cd ..
-	cd latex; latex refman.tex $(VERBOSE); cd ..
-	cd latex; dvipdfm refman.dvi $(VERBOSE); cd ..
+	cd latex; make refman.pdf; cd ..
+	cd latex; make refman.pdf; cd ..
 	cp latex/refman.pdf .
 
+endif
 endif
 
 install-data-local:

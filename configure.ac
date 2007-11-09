@@ -58,10 +58,12 @@ if test "$PYTHON" = "no"; then
   AC_MSG_ERROR([python is required for the test suite])
 fi
 
-# Tell our makefiles if we can use doxygen to regenarate some of the
-# documentation, as needed.
+# Tell our makefiles if we can use doxygen and latex to regenarate some of 
+# the documentation, as needed.
 AC_CHECK_PROG([DOXY_IS_PRESENT], [doxygen], [yes], [no])
 AM_CONDITIONAL([COND_USE_DOXYGEN], [test "$DOXY_IS_PRESENT" = yes])
+AC_CHECK_PROG([LATEX_IS_PRESENT], [latex], [yes], [no])
+AM_CONDITIONAL([COND_USE_LATEX], [test "$LATEX_IS_PRESENT" = yes])
 
 AC_ARG_WITH([java],
               AC_HELP_STRING([--with-java],
