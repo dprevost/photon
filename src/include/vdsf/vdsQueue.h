@@ -30,8 +30,12 @@ extern "C" {
 
 /**
  * \file
- * This files provides the API to access a VDSF FIFO queue.
+ * This file provides the API to access a VDSF FIFO queue.
  */
+/**
+ * \defgroup Queue API functions for the FIFO queue.
+ */
+/*@{*/
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -61,12 +65,12 @@ int vdsQueueClose(  VDS_HANDLE objectHandle );
  * will not be seen by the iterator. Likewise, destroyed data items (even if
  * not yet committed) are invisible.
  *
- * \param[in]     objectHandle The handle to the queue (see ::vdsQueueOpen).
- * \param[in,out] buffer The buffer provided by the user to hold the content of
- *                the first element. Memory allocation for this buffer is the
- *                responsability of the caller.
- * \param[in]     bufferLength The length of \em buffer (in bytes).
- * \param[out]    returnedLength The actual number of bytes in the data item.
+ * \param[in]   objectHandle The handle to the queue (see ::vdsQueueOpen).
+ * \param[out]  buffer The buffer provided by the user to hold the content of
+ *              the first element. Memory allocation for this buffer is the
+ *              responsability of the caller.
+ * \param[in]   bufferLength The length of \em buffer (in bytes).
+ * \param[out]  returnedLength The actual number of bytes in the data item.
  *
  * \return 0 on success or a ::vdsErrors on error.
  */
@@ -91,12 +95,12 @@ int vdsQueueGetFirst( VDS_HANDLE   objectHandle,
  * last element (they use the same internal storage). If this cause a problem,
  * please let us know.
  *
- * \param[in]     objectHandle The handle to the queue (see ::vdsQueueOpen).
- * \param[in,out] buffer The buffer provided by the user to hold the content of
- *                the first element. Memory allocation for this buffer is the
- *                responsability of the caller.
- * \param[in]     bufferLength The length of \em buffer (in bytes).
- * \param[out]    returnedLength The actual number of bytes in the data item.
+ * \param[in]   objectHandle The handle to the queue (see ::vdsQueueOpen).
+ * \param[out]  buffer The buffer provided by the user to hold the content of
+ *              the first element. Memory allocation for this buffer is the
+ *              responsability of the caller.
+ * \param[in]   bufferLength The length of \em buffer (in bytes).
+ * \param[out]  returnedLength The actual number of bytes in the data item.
  *
  * \return 0 on success or a ::vdsErrors on error.
  */
@@ -188,6 +192,8 @@ int vdsQueueStatus( VDS_HANDLE     objectHandle,
                     vdsObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*@}*/
 
 #ifdef __cplusplus
 }

@@ -1,8 +1,15 @@
-.TH "vdsHashMap.h" 3 "7 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsHashMap.h" 3 "10 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 vdsHashMap.h \- 
+.SH "Detailed Description"
+.PP 
+This file provides the API to access a VDSF hash map. 
+
+Note: this hash map uses unique keys. 
+.PP
+Definition in file \fBvdsHashMap.h\fP.
 .SH SYNOPSIS
 .br
 .PP
@@ -15,46 +22,36 @@ vdsHashMap.h \-
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsHashMapClose\fP (\fBVDS_HANDLE\fP objectHandle)"
 .br
+.RI "\fIClose a Hash Map. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsHashMapDelete\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength)"
 .br
+.RI "\fIRemove the data item identified by the given key from the hash map. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsHashMapGet\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
+.RI "\fIRetrieve the data item identified by the given key from the hash map. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsHashMapGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
+.RI "\fIIterate through the hash map. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsHashMapGetNext\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
+.RI "\fIIterate through the hash map. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsHashMapInsert\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength, const void *data, size_t dataLength)"
 .br
+.RI "\fIInsert a data element in the hash map. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsHashMapOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *hashMapName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP *objectHandle)"
 .br
+.RI "\fIOpen an existing hash map (see \fBvdsCreateObject\fP to create a new object). \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsHashMapStatus\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP *pStatus)"
 .br
+.RI "\fIReturn the status of the hash map. \fP"
 .in -1c
-.SH "Function Documentation"
-.PP 
-.SS "VDSF_EXPORT int vdsHashMapClose (\fBVDS_HANDLE\fP objectHandle)"
-.PP
-.SS "VDSF_EXPORT int vdsHashMapDelete (\fBVDS_HANDLE\fP objectHandle, const void * key, size_t keyLength)"
-.PP
-.SS "VDSF_EXPORT int vdsHashMapGet (\fBVDS_HANDLE\fP objectHandle, const void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * returnedLength)"
-.PP
-.SS "VDSF_EXPORT int vdsHashMapGetFirst (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
-.PP
-.SS "VDSF_EXPORT int vdsHashMapGetNext (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
-.PP
-.SS "VDSF_EXPORT int vdsHashMapInsert (\fBVDS_HANDLE\fP objectHandle, const void * key, size_t keyLength, const void * data, size_t dataLength)"
-.PP
-.SS "VDSF_EXPORT int vdsHashMapOpen (\fBVDS_HANDLE\fP sessionHandle, const char * hashMapName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP * objectHandle)"
-.PP
-.SS "VDSF_EXPORT int vdsHashMapStatus (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP * pStatus)"
-.PP
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for vdsf C API from the source code.

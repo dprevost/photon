@@ -1,11 +1,11 @@
-.TH "vdsQueue.h" 3 "7 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsQueue.h" 3 "10 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 vdsQueue.h \- 
 .SH "Detailed Description"
 .PP 
-This files provides the API to access a VDSF FIFO queue. 
+This file provides the API to access a VDSF FIFO queue. 
 
 
 .PP
@@ -48,162 +48,6 @@ Definition in file \fBvdsQueue.h\fP.
 .br
 .RI "\fIReturn the status of the queue. \fP"
 .in -1c
-.SH "Function Documentation"
-.PP 
-.SS "VDSF_EXPORT int vdsQueueClose (\fBVDS_HANDLE\fP objectHandle)"
-.PP
-Close a FIFO queue. 
-.PP
-This function terminates the current access to the queue in shared memory (the queue itself is untouched).
-.PP
-\fBWarning:\fP
-.RS 4
-Closing an object does not automatically commit or rollback data items that were inserted or removed. You still must use either \fBvdsCommit\fP or \fBvdsRollback\fP to end the current unit of work.
-.RE
-.PP
-\fBParameters:\fP
-.RS 4
-\fIobjectHandle\fP The handle to the queue (see \fBvdsQueueOpen\fP). 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-0 on success or a \fBvdsErrors\fP on error. 
-.RE
-.PP
-
-.SS "VDSF_EXPORT int vdsQueueGetFirst (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
-.PP
-Iterate through the queue - no data items are removed from the queue by this function. 
-.PP
-Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
-.PP
-\fBParameters:\fP
-.RS 4
-\fIobjectHandle\fP The handle to the queue (see \fBvdsQueueOpen\fP). 
-.br
-\fIbuffer\fP The buffer provided by the user to hold the content of the first element. Memory allocation for this buffer is the responsability of the caller. 
-.br
-\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
-.br
-\fIreturnedLength\fP The actual number of bytes in the data item.
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-0 on success or a \fBvdsErrors\fP on error. 
-.RE
-.PP
-
-.SS "VDSF_EXPORT int vdsQueueGetNext (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
-.PP
-Iterate through the queue - no data items are removed from the queue by this function. 
-.PP
-Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
-.PP
-Evidently, you must call \fBvdsQueueGetFirst\fP to initialize the iterator. Not so evident - calling \fBvdsQueuePop\fP will reset the iteration to the last element (they use the same internal storage). If this cause a problem, please let us know.
-.PP
-\fBParameters:\fP
-.RS 4
-\fIobjectHandle\fP The handle to the queue (see \fBvdsQueueOpen\fP). 
-.br
-\fIbuffer\fP The buffer provided by the user to hold the content of the first element. Memory allocation for this buffer is the responsability of the caller. 
-.br
-\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
-.br
-\fIreturnedLength\fP The actual number of bytes in the data item.
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-0 on success or a \fBvdsErrors\fP on error. 
-.RE
-.PP
-
-.SS "VDSF_EXPORT int vdsQueueOpen (\fBVDS_HANDLE\fP sessionHandle, const char * queueName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP * objectHandle)"
-.PP
-Open an existing FIFO queue (see \fBvdsCreateObject\fP to create a new queue). 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIsessionHandle\fP The handle to the current session. 
-.br
-\fIqueueName\fP The fully qualified name of the queue. 
-.br
-\fInameLengthInBytes\fP The length of \fIqueueName\fP (in bytes) not counting the null terminator (null-terminators are not used by the vdsf engine). 
-.br
-\fIobjectHandle\fP The handle to the queue, allowing us access to the queue in shared memory. On error, this handle will be set to zero (NULL) unless the objectHandle pointer itself is NULL.
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-0 on success or a \fBvdsErrors\fP on error. 
-.RE
-.PP
-
-.SS "VDSF_EXPORT int vdsQueuePop (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
-.PP
-Remove the first item from the beginning of a FIFO queue and return it to the caller. 
-.PP
-Data items which were added by another session and are not yet committed will not be seen by this function. Likewise, destroyed data items (even if not yet committed) are invisible.
-.PP
-The removals only become permanent after a call to \fBvdsCommit\fP.
-.PP
-\fBParameters:\fP
-.RS 4
-\fIobjectHandle\fP The handle to the queue (see \fBvdsQueueOpen\fP). 
-.br
-\fIbuffer\fP The buffer provided by the user to hold the content of the data item. Memory allocation for this buffer is the responsability of the caller. 
-.br
-\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
-.br
-\fIreturnedLength\fP The actual number of bytes in the data item.
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-0 on success or a \fBvdsErrors\fP on error. 
-.RE
-.PP
-
-.SS "VDSF_EXPORT int vdsQueuePush (\fBVDS_HANDLE\fP objectHandle, const void * pItem, size_t length)"
-.PP
-Insert a data element at the end of the FIFO queue. 
-.PP
-The additions only become permanent after a call to \fBvdsCommit\fP.
-.PP
-\fBParameters:\fP
-.RS 4
-\fIobjectHandle\fP The handle to the queue (see \fBvdsQueueOpen\fP). 
-.br
-\fIpItem\fP The data item to be inserted. 
-.br
-\fIlength\fP The length of \fIpItem\fP (in bytes).
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-0 on success or a \fBvdsErrors\fP on error. 
-.RE
-.PP
-
-.SS "VDSF_EXPORT int vdsQueueStatus (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP * pStatus)"
-.PP
-Return the status of the queue. 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIobjectHandle\fP The handle to the queue (see \fBvdsQueueOpen\fP). 
-.br
-\fIpStatus\fP A pointer to the status structure.
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-0 on success or a \fBvdsErrors\fP on error. 
-.RE
-.PP
-
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for vdsf C API from the source code.

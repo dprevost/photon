@@ -28,16 +28,80 @@
 extern "C" {
 #endif
 
+/**
+ * \file
+ * This file provides the API to access a VDSF hash map.
+ *
+ * Note: this hash map uses unique keys.
+ */
+
+/**
+ * \defgroup HashMap API functions for the hash map.
+ *
+ * Note: this hash map uses unique keys.
+ */
+/*@{*/
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/**
+ * \brief Close a Hash Map.
+ *
+ * This function terminates the current access to the hash map in shared 
+ * memory (the hash map itself is untouched).
+ *
+ * \warning Closing an object does not automatically commit or rollback 
+ * data items that were inserted or removed. You still must use either 
+ * ::vdsCommit or ::vdsRollback to end the current unit of work.
+ *
+ * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \return 0 on success or a ::vdsErrors on error.
+ */
 VDSF_EXPORT
 int vdsHashMapClose( VDS_HANDLE objectHandle );
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/** 
+ * Remove the data item identified by the given key from the hash map.
+ *
+ * Data items which were added by another session and are not yet committed 
+ * will not be seen by this function and cannot be removed. Likewise, 
+ * destroyed data items (even if not yet committed) are invisible.
+ *
+ * The removals only become permanent after a call to ::vdsCommit.
+ *
+ * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[in]  key The key of the item to be removed.
+ * \param[in]  keyLength The length of the \em key buffer (in bytes).
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
 VDSF_EXPORT
 int vdsHashMapDelete( VDS_HANDLE   objectHandle,
                       const void * key,
                       size_t       keyLength );
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/** 
+ * Retrieve the data item identified by the given key from the hash map.
+ *
+ * Data items which were added by another session and are not yet committed 
+ * will not be seen by this function. Likewise, 
+ * destroyed data items (even if not yet committed) are invisible.
+ *
+ * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[in]  key The key of the item to be retrieved.
+ * \param[in]  keyLength The length of the \em key buffer (in bytes).
+ * \param[out] buffer The buffer provided by the user to hold the content of
+ *             the data item. Memory allocation for this buffer is the
+ *             responsability of the caller.
+ * \param[in]  bufferLength The length of \em buffer (in bytes).
+ * \param[out] returnedLength The actual number of bytes in the data item.
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
 VDSF_EXPORT
 int vdsHashMapGet( VDS_HANDLE   objectHandle,
                    const void * key,
@@ -46,18 +110,78 @@ int vdsHashMapGet( VDS_HANDLE   objectHandle,
                    size_t       bufferLength,
                    size_t     * returnedLength );
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/** 
+ * Iterate through the hash map.
+ *
+ * Data items which were added by another session and are not yet committed 
+ * will not be seen by the iterator. Likewise, destroyed data items (even if
+ * not yet committed) are invisible.
+ *
+ * Data items retrieved this way will not be sorted.
+ *
+ * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[out] buffer The buffer provided by the user to hold the content of
+ *             the first element. Memory allocation for this buffer is the
+ *             responsability of the caller.
+ * \param[in]  bufferLength The length of \em buffer (in bytes).
+ * \param[out] returnedLength The actual number of bytes in the data item.
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
 VDSF_EXPORT
 int vdsHashMapGetFirst( VDS_HANDLE   objectHandle,
                         void       * buffer,
                         size_t       bufferLength,
                         size_t     * returnedLength );
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/** 
+ * Iterate through the hash map.
+ *
+ * Data items which were added by another session and are not yet committed 
+ * will not be seen by the iterator. Likewise, destroyed data items (even if
+ * not yet committed) are invisible.
+ *
+ * Evidently, you must call ::vdsHashMapGetFirst to initialize the iterator. 
+ * Not so evident - calling ::vdsHashMapGet will reset the iteration to the
+ * data item retireved by this function (they use the same internal storage). 
+ * If this cause a problem, please let us know.
+ *
+ * Data items retrieved this way will not be sorted.
+ *
+ * \param[in]   objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[out]  buffer The buffer provided by the user to hold the content of
+ *              the first element. Memory allocation for this buffer is the
+ *              responsability of the caller.
+ * \param[in]   bufferLength The length of \em buffer (in bytes).
+ * \param[out]  returnedLength The actual number of bytes in the data item.
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
 VDSF_EXPORT
 int vdsHashMapGetNext( VDS_HANDLE   objectHandle,
                        void       * buffer,
                        size_t       bufferLength,
                        size_t     * returnedLength );
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
+ * Insert a data element in the hash map.
+ *
+ * The additions only become permanent after a call to ::vdsCommit.
+ *
+ * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[in]  key The key of the item to be inserted.
+ * \param[in]  keyLength The length of the \em key buffer (in bytes).
+ * \param[in]  data  The data item to be inserted.
+ * \param[in]  length The length of \em data (in bytes).
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
 VDSF_EXPORT
 int vdsHashMapInsert( VDS_HANDLE   objectHandle,
                       const void * key,
@@ -65,17 +189,45 @@ int vdsHashMapInsert( VDS_HANDLE   objectHandle,
                       const void * data,
                       size_t       dataLength );
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/** 
+ * Open an existing hash map (see ::vdsCreateObject to create a new object).
+ *
+ * \param[in]  sessionHandle The handle to the current session.
+ * \param[in]  hashMapName The fully qualified name of the hash map. 
+ * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) not
+ *             counting the null terminator (null-terminators are not used by
+ *             the vdsf engine).
+ * \param[out] objectHandle The handle to the hash map, allowing us access to
+ *             the map in shared memory. On error, this handle will be set
+ *             to zero (NULL) unless the objectHandle pointer itself is NULL.
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
 VDSF_EXPORT
 int vdsHashMapOpen( VDS_HANDLE   sessionHandle,
                     const char * hashMapName,
                     size_t       nameLengthInBytes,
                     VDS_HANDLE * objectHandle );
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
+ * Return the status of the hash map.
+ *
+ * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[out] pStatus      A pointer to the status structure.
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
 VDSF_EXPORT
 int vdsHashMapStatus( VDS_HANDLE     objectHandle,
                       vdsObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*@}*/
 
 #ifdef __cplusplus
 }
