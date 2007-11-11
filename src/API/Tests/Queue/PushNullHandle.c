@@ -26,14 +26,14 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE handle, sessionHandle;
+   VDS_HANDLE sessionHandle, objHandle;
    int errcode;
    const char * data1 = "My Data1";
 
    if ( argc > 1 )
-      errcode = vdsInit( argv[1], 0, &handle );
+      errcode = vdsInit( argv[1], 0 );
    else
-      errcode = vdsInit( "10701", 0, &handle );
+      errcode = vdsInit( "10701", 0 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -70,7 +70,7 @@ int main( int argc, char * argv[] )
    errcode = vdsQueueOpen( sessionHandle,
                            "/aqPushnh/test",
                            strlen("/aqPushnh/test"),
-                           &handle );
+                           &objHandle );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );

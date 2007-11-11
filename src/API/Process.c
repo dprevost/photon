@@ -153,14 +153,16 @@ int vdsaProcessInit( vdsaProcess *process, const char  *wdAddress )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsaProcessFini( vdsaProcess * process )
+void vdsaProcessFini()
 {
    vdseProcMgr * processManager = NULL;
    vdseSessionContext context;
    vdsaSession * pApiSession = NULL;
    vdseSession * pVdsSession = NULL, * pCurrent;
    int errcode = 0;
+   vdsaProcess * process;
 
+   process = g_pProcessInstance;
    VDS_PRE_CONDITION( process != NULL );
 
    /* 
@@ -283,12 +285,12 @@ int vdsaOpenVDS( vdsaProcess        * process,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void vdsaCloseVDS( vdsaProcess        * process,
-                   vdseSessionContext * pSession )
+                   vdseSessionContext * pContext )
 {
    VDS_PRE_CONDITION( process  != NULL );
-   VDS_PRE_CONDITION( pSession != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
 
-   vdscCloseMemFile( &process->memoryFile, &pSession->errorHandler );
+   vdscCloseMemFile( &process->memoryFile, &pContext->errorHandler );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

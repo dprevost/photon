@@ -3,6 +3,13 @@
 .nh
 .SH NAME
 vdsFolder.h \- 
+.SH "Detailed Description"
+.PP 
+This file provides the API needed to access a VDSF folder. 
+
+
+.PP
+Definition in file \fBvdsFolder.h\fP.
 .SH SYNOPSIS
 .br
 .PP
@@ -15,31 +22,24 @@ vdsFolder.h \-
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsFolderClose\fP (\fBVDS_HANDLE\fP objectHandle)"
 .br
+.RI "\fIClose a folder. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsFolderGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
 .br
+.RI "\fIIterate through the folder - no data items are removed from the folder by this function. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsFolderGetNext\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
 .br
+.RI "\fIIterate through the folder. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsFolderOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *folderName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP *objectHandle)"
 .br
+.RI "\fIOpen an existing folder (see \fBvdsCreateObject\fP to create a new folder). \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsFolderStatus\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP *pStatus)"
 .br
+.RI "\fIReturn the status of the folder. \fP"
 .in -1c
-.SH "Function Documentation"
-.PP 
-.SS "VDSF_EXPORT int vdsFolderClose (\fBVDS_HANDLE\fP objectHandle)"
-.PP
-.SS "VDSF_EXPORT int vdsFolderGetFirst (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP * pEntry)"
-.PP
-.SS "VDSF_EXPORT int vdsFolderGetNext (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP * pEntry)"
-.PP
-.SS "VDSF_EXPORT int vdsFolderOpen (\fBVDS_HANDLE\fP sessionHandle, const char * folderName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP * objectHandle)"
-.PP
-.SS "VDSF_EXPORT int vdsFolderStatus (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP * pStatus)"
-.PP
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for vdsf C API from the source code.

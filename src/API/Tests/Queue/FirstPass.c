@@ -26,15 +26,15 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE handle, sessionHandle;
+   VDS_HANDLE sessionHandle, objHandle;
    int errcode;
    const char * data1 = "My Data1";
    vdsaDataEntry entry;
 
    if ( argc > 1 )
-      errcode = vdsInit( argv[1], 0, &handle );
+      errcode = vdsInit( argv[1], 0 );
    else
-      errcode = vdsInit( "10701", 0, &handle );
+      errcode = vdsInit( "10701", 0 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -71,21 +71,21 @@ int main( int argc, char * argv[] )
    errcode = vdsQueueOpen( sessionHandle,
                            "/aqfp/test",
                            strlen("/aqfp/test"),
-                           &handle );
+                           &objHandle );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueuePush( handle, data1, strlen(data1) );
+   errcode = vdsQueuePush( objHandle, data1, strlen(data1) );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaQueueFirst( handle, &entry );
+   errcode = vdsaQueueFirst( objHandle, &entry );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );

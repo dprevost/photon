@@ -26,6 +26,15 @@
 extern "C" {
 #endif
 
+/**
+ * \file
+ * This file provides the API functions for vdsf processes.
+ */
+/**
+ * \defgroup Process API functions for vdsf processes.
+ */
+/*@{*/
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
@@ -33,11 +42,11 @@ extern "C" {
  * will also close all sessions and terminate all accesses to 
  * the different objects. 
  * 
- * This function takes a single argument, the handle to the process object 
- * and always end successfully.
+ * This function takes no argument and always end successfully (even
+ * if called twice or if ::vdsInit was not called).
  */
 VDSF_EXPORT
-void vdsExit( VDS_HANDLE processHandle );
+void vdsExit();
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -47,7 +56,7 @@ void vdsExit( VDS_HANDLE processHandle );
  * a boolean, 0 for false, 1 for true) to indicate if sessions and 
  * other objects (Queues, etc) are shared amongst threads (in the 
  * current process) and must be protected. Recommendation: always 
- * set protectionNeeded to 0 (false) unless you cannot do it otherwise. 
+ * set protectionNeeded to 0 (false) unless you cannot do otherwise. 
  * In other words it is recommended to use one session handle for
  * each thread. Also if the same queue needs to be accessed by two 
  * threads it is more efficient to have two different handles instead
@@ -60,13 +69,22 @@ void vdsExit( VDS_HANDLE processHandle );
  * 
  * Upon successful completion, the process handle is set. Otherwise 
  * the error code is returned.
+ *
+ * \param[in] wdAddress The address of the watchdog. Currently a string with 
+ *            the port number ("12345").
+ * \param[in] protectionNeeded A boolean value indicating if multi-threaded
+ *            locks are needed or not.
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+
  */
 VDSF_EXPORT
 int vdsInit( const char* wdAddress,
-             int         protectionNeeded,
-             VDS_HANDLE* processHandle );
+             int         protectionNeeded );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*@}*/
 
 #ifdef __cplusplus
 }

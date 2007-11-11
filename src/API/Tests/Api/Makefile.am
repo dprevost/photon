@@ -15,20 +15,15 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES = *~ core
 
 check_PROGRAMS =                 \
-                 ExitNullHandle  \
                  ExitPass        \
                  InitNullAddress \
-                 InitNullHandle  \
                  InitPass         
 
-ExitNullHandle_SOURCES  = ExitNullHandle.c
 ExitPass_SOURCES        = ExitPass.c
 InitNullAddress_SOURCES = InitNullAddress.c
-InitNullHandle_SOURCES  = InitNullHandle.c
 InitPass_SOURCES        = InitPass.c
 
 EXTRA_DIST =                   \
-             ExitNullHandle.sh \
              ExitPass.sh       \
              InitPass.sh       
 
@@ -41,14 +36,11 @@ TESTS_ENVIRONMENT =                              \
                     PYTHON=$(PYTHON)
 
 TESTS =                   \
-        ExitNullHandle.sh \
         ExitPass.sh       \
         InitNullAddress   \
-        InitNullHandle    \
         InitPass.sh       
 
-XFAIL_TESTS =                 \
-              ExitNullHandle  
+XFAIL_TESTS = 
 
 LDADD = $(top_builddir)/src/API/libvdsf.la      \
         $(top_builddir)/src/Engine/libEngine.la \

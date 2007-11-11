@@ -31,7 +31,7 @@ int main()
       return 0;
    }
    
-   vdsaProcessFini( NULL );
+   vdsaProcessFini();
    
    return 0;
 }

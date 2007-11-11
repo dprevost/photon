@@ -29,11 +29,12 @@ int main( int argc, char * argv[] )
    int errcode;
    vdsInfo info, info2;
    size_t allocSpace;
-
+   int xyz = 12345;
+   
    if ( argc > 1 )
-      errcode = vdsInit( argv[1], 0, &handle );
+      errcode = vdsInit( argv[1], 0 );
    else
-      errcode = vdsInit( "10701", 0, &handle );
+      errcode = vdsInit( "10701", 0 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -61,6 +62,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
+   handle = (VDS_HANDLE) &xyz;
    errcode = vdsGetInfo( handle, &info );
    if ( errcode != VDS_WRONG_TYPE_HANDLE )
    {

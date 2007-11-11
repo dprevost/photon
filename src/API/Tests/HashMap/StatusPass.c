@@ -26,7 +26,7 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE handle, sessionHandle;
+   VDS_HANDLE objHandle, sessionHandle;
    int errcode;
    const char * key1 = "My Key1";
    const char * key2 = "My Key2";
@@ -35,9 +35,9 @@ int main( int argc, char * argv[] )
    vdsObjStatus status;
 
    if ( argc > 1 )
-      errcode = vdsInit( argv[1], 0, &handle );
+      errcode = vdsInit( argv[1], 0 );
    else
-      errcode = vdsInit( "10701", 0, &handle );
+      errcode = vdsInit( "10701", 0 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -74,14 +74,14 @@ int main( int argc, char * argv[] )
    errcode = vdsHashMapOpen( sessionHandle,
                              "/ahsp/test",
                              strlen("/ahsp/test"),
-                             &handle );
+                             &objHandle );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapInsert( handle,
+   errcode = vdsHashMapInsert( objHandle,
                                key1,
                                7,
                                data,
@@ -91,7 +91,7 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsHashMapInsert( handle,
+   errcode = vdsHashMapInsert( objHandle,
                                key2,
                                7,
                                data,
@@ -101,7 +101,7 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsHashMapInsert( handle,
+   errcode = vdsHashMapInsert( objHandle,
                                key3,
                                7,
                                data,
@@ -112,7 +112,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapStatus( handle, &status );
+   errcode = vdsHashMapStatus( objHandle, &status );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );

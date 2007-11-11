@@ -19,19 +19,22 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+int main( int argc, char * argv[] )
 {
    vdsaProcess process;
    int errcode;
    
-   errcode = vdsaProcessInit( &process, "12345" );
-   if ( errcode != VDS_CONNECT_ERROR )
+   if ( argc > 1 )
+      errcode = vdsaProcessInit( &process, argv[1] );
+   else
+      errcode = vdsaProcessInit( &process, "10701" );
+   if ( errcode != VDS_OK)
    {
       fprintf( stderr, "err: %d\n", errcode );
       return -1;
    }
    
-   vdsaProcessFini( &process );
+   vdsaProcessFini();
    
    return 0;
 }

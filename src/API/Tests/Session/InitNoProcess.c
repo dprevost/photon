@@ -25,7 +25,7 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE handle, sessionHandle;
+   VDS_HANDLE sessionHandle;
    int errcode;
    
    errcode = vdsInitSession( &sessionHandle );

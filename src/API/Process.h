@@ -81,7 +81,7 @@ extern vdscThreadLock g_ProcessMutex;
 int vdsaProcessInit( vdsaProcess *pProcess,
                      const char  *wdAddress );
 
-void vdsaProcessFini( vdsaProcess *pProcess );
+void vdsaProcessFini();
 
 bool AreWeTerminated();
 

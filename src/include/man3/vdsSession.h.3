@@ -3,6 +3,13 @@
 .nh
 .SH NAME
 vdsSession.h \- 
+.SH "Detailed Description"
+.PP 
+This file provides the API needed to create and use a session. 
+
+
+.PP
+Definition in file \fBvdsSession.h\fP.
 .SH SYNOPSIS
 .br
 .PP
@@ -13,70 +20,46 @@ vdsSession.h \-
 
 .in +1c
 .ti -1c
+.RI "VDSF_EXPORT int \fBvdsCommit\fP (\fBVDS_HANDLE\fP sessionHandle)"
+.br
+.RI "\fICommit all insertions and deletions (of the current session) executed since the previous call to vdsCommit or vdsRollback. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsCreateObject\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjectType\fP objectType)"
+.br
+.RI "\fICreate a new object in shared memory. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsDestroyObject\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes)"
+.br
+.RI "\fIDestroy an existing object in shared memory. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsErrorMsg\fP (\fBVDS_HANDLE\fP sessionHandle, char *message, size_t msgLengthInBytes)"
+.br
+.RI "\fIReturn the error message associated with the last error(s). \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsExitSession\fP (\fBVDS_HANDLE\fP sessionHandle)"
+.br
+.RI "\fITerminate the current session. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsGetInfo\fP (\fBVDS_HANDLE\fP sessionHandle, \fBvdsInfo\fP *pInfo)"
+.br
+.RI "\fIReturn information on the current status of the VDS (Virtual Data Space). \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsGetStatus\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjStatus\fP *pStatus)"
+.br
+.RI "\fIReturn the status of the named object. \fP"
+.ti -1c
 .RI "VDSF_EXPORT int \fBvdsInitSession\fP (\fBVDS_HANDLE\fP *sessionHandle)"
 .br
 .RI "\fIThis function initializes a session. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsCommit\fP (\fBVDS_HANDLE\fP handle)"
-.br
-.ti -1c
-.RI "VDSF_EXPORT int \fBvdsCreateObject\fP (\fBVDS_HANDLE\fP handle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjectType\fP objectType)"
-.br
-.ti -1c
-.RI "VDSF_EXPORT int \fBvdsDestroyObject\fP (\fBVDS_HANDLE\fP handle, const char *objectName, size_t nameLengthInBytes)"
-.br
-.ti -1c
-.RI "VDSF_EXPORT int \fBvdsErrorMsg\fP (\fBVDS_HANDLE\fP sessionHandle, char *message, size_t msgLengthInBytes)"
-.br
-.ti -1c
-.RI "VDSF_EXPORT int \fBvdsExitSession\fP (\fBVDS_HANDLE\fP handle)"
-.br
-.ti -1c
-.RI "VDSF_EXPORT int \fBvdsGetInfo\fP (\fBVDS_HANDLE\fP sessionHandle, \fBvdsInfo\fP *pInfo)"
-.br
-.ti -1c
-.RI "VDSF_EXPORT int \fBvdsGetStatus\fP (\fBVDS_HANDLE\fP handle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjStatus\fP *pStatus)"
-.br
-.ti -1c
 .RI "VDSF_EXPORT int \fBvdsLastError\fP (\fBVDS_HANDLE\fP sessionHandle)"
 .br
+.RI "\fIReturn the last error seen in previous calls (of the current session). \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsRollback\fP (\fBVDS_HANDLE\fP handle)"
+.RI "VDSF_EXPORT int \fBvdsRollback\fP (\fBVDS_HANDLE\fP sessionHandle)"
 .br
+.RI "\fIRollback all insertions and deletions (of the current session) executed since the previous call to vdsCommit or vdsRollback. \fP"
 .in -1c
-.SH "Function Documentation"
-.PP 
-.SS "VDSF_EXPORT int vdsCommit (\fBVDS_HANDLE\fP handle)"
-.PP
-.SS "VDSF_EXPORT int vdsCreateObject (\fBVDS_HANDLE\fP handle, const char * objectName, size_t nameLengthInBytes, \fBvdsObjectType\fP objectType)"
-.PP
-.SS "VDSF_EXPORT int vdsDestroyObject (\fBVDS_HANDLE\fP handle, const char * objectName, size_t nameLengthInBytes)"
-.PP
-.SS "VDSF_EXPORT int vdsErrorMsg (\fBVDS_HANDLE\fP sessionHandle, char * message, size_t msgLengthInBytes)"
-.PP
-.SS "VDSF_EXPORT int vdsExitSession (\fBVDS_HANDLE\fP handle)"
-.PP
-.SS "VDSF_EXPORT int vdsGetInfo (\fBVDS_HANDLE\fP sessionHandle, \fBvdsInfo\fP * pInfo)"
-.PP
-.SS "VDSF_EXPORT int vdsGetStatus (\fBVDS_HANDLE\fP handle, const char * objectName, size_t nameLengthInBytes, \fBvdsObjStatus\fP * pStatus)"
-.PP
-.SS "VDSF_EXPORT int vdsInitSession (\fBVDS_HANDLE\fP * sessionHandle)"
-.PP
-This function initializes a session. 
-.PP
-It takes one output argument, the session handle.
-.PP
-Upon successful completion, the session handle is set and the function returns zero. Otherwise the error code is returned and the handle is set to NULL.
-.PP
-This function will also initiate a new transaction:
-.PP
-Contrary to some other transaction management software, almost every call made is part of a transaction. Even viewing data (for example deleting the data by another session will be delayed until the current session terminates its access).
-.PP
-Upon normal termination, the current transaction is rolled back. You MUST explicitly call vdseCommit to save your changes. 
-.SS "VDSF_EXPORT int vdsLastError (\fBVDS_HANDLE\fP sessionHandle)"
-.PP
-.SS "VDSF_EXPORT int vdsRollback (\fBVDS_HANDLE\fP handle)"
-.PP
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for vdsf C API from the source code.

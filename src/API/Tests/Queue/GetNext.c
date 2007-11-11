@@ -26,7 +26,7 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE handle, sessionHandle;
+   VDS_HANDLE sessionHandle, objHandle;
    int errcode;
    const char * data1 = "My Data1";
    const char * data2 = "My Data2";
@@ -34,9 +34,9 @@ int main( int argc, char * argv[] )
    size_t length;
 
    if ( argc > 1 )
-      errcode = vdsInit( argv[1], 0, &handle );
+      errcode = vdsInit( argv[1], 0 );
    else
-      errcode = vdsInit( "10701", 0, &handle );
+      errcode = vdsInit( "10701", 0 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -73,28 +73,28 @@ int main( int argc, char * argv[] )
    errcode = vdsQueueOpen( sessionHandle,
                            "/aqnp/test",
                            strlen("/aqnp/test"),
-                           &handle );
+                           &objHandle );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueuePush( handle, data1, strlen(data1) );
+   errcode = vdsQueuePush( objHandle, data1, strlen(data1) );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueuePush( handle, data2, strlen(data2) );
+   errcode = vdsQueuePush( objHandle, data2, strlen(data2) );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueueGetNext( handle,
+   errcode = vdsQueueGetNext( objHandle,
                               buffer,
                               200,
                               &length );
@@ -104,7 +104,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueueGetFirst( handle,
+   errcode = vdsQueueGetFirst( objHandle,
                                buffer,
                                200,
                                &length );
@@ -124,7 +124,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsQueueGetNext( handle,
+   errcode = vdsQueueGetNext( objHandle,
                               NULL,
                               200,
                               &length );
@@ -134,7 +134,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsQueueGetNext( handle,
+   errcode = vdsQueueGetNext( objHandle,
                               buffer,
                               2,
                               &length );
@@ -144,7 +144,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsQueueGetNext( handle,
+   errcode = vdsQueueGetNext( objHandle,
                               buffer,
                               200,
                               NULL );
@@ -154,7 +154,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsQueueGetNext( handle,
+   errcode = vdsQueueGetNext( objHandle,
                               buffer,
                               200,
                               &length );

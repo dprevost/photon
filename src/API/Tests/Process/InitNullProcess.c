@@ -16,8 +16,9 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "API/Process.h"
+#include "Tests/PrintError.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -28,12 +29,7 @@ int main()
    
    errcode = vdsaProcessInit( NULL, "12345" );
 
-   fprintf( stderr, "err: %d\n", errcode );
-   
-//   if ( errcode != 0 ) 
-//      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

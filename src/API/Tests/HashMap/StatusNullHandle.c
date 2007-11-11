@@ -26,16 +26,16 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE handle, sessionHandle;
+   VDS_HANDLE objHandle, sessionHandle;
    int errcode;
    const char * key1 = "My Key1";
    const char * data = "My Data";
    vdsObjStatus status;
 
    if ( argc > 1 )
-      errcode = vdsInit( argv[1], 0, &handle );
+      errcode = vdsInit( argv[1], 0 );
    else
-      errcode = vdsInit( "10701", 0, &handle );
+      errcode = vdsInit( "10701", 0 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -72,14 +72,14 @@ int main( int argc, char * argv[] )
    errcode = vdsHashMapOpen( sessionHandle,
                              "/ahsnh/test",
                              strlen("/ahsnh/test"),
-                             &handle );
+                             &objHandle );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapInsert( handle,
+   errcode = vdsHashMapInsert( objHandle,
                                key1,
                                7,
                                data,

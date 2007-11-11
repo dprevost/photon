@@ -26,15 +26,15 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE handle, sessionHandle;
+   VDS_HANDLE objHandle, sessionHandle;
    int errcode;
    vdsaCommonObject object;
    vdsFolderEntry entry;
    
    if ( argc > 1 )
-      errcode = vdsInit( argv[1], 0, &handle );
+      errcode = vdsInit( argv[1], 0 );
    else
-      errcode = vdsInit( "10701", 0, &handle );
+      errcode = vdsInit( "10701", 0 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -79,21 +79,21 @@ int main( int argc, char * argv[] )
    errcode = vdsFolderOpen( sessionHandle,
                             "/afgnne",
                             strlen("/afgnne"),
-                            &handle );
+                            &objHandle );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsFolderGetFirst( handle, &entry );
+   errcode = vdsFolderGetFirst( objHandle, &entry );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderGetNext( handle, NULL );
+   errcode = vdsFolderGetNext( objHandle, NULL );
    if ( errcode != VDS_NULL_POINTER )
    {
       fprintf( stderr, "err: %d\n", errcode );

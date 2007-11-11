@@ -32,14 +32,11 @@ extern "C" {
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdsInit( const char* wdAddress,
-             int         programIsMultiThreaded,
-             VDS_HANDLE* processHandle )                  
+             int         programIsMultiThreaded )                  
 {
    int errcode = VDS_OK;
    vdsaProcess* process;
 
-   if ( processHandle == NULL )
-      return VDS_NULL_HANDLE;
    if ( wdAddress == NULL )
       return VDS_INVALID_WATCHDOG_ADDRESS;
    
@@ -59,11 +56,7 @@ int vdsInit( const char* wdAddress,
    memset( process, 0, sizeof(vdsaProcess) );
    errcode = vdsaProcessInit( process,
                               wdAddress );
-   if ( errcode == VDS_OK )
-   {
-      *processHandle = (VDS_HANDLE) process;
-   }
-   else
+   if ( errcode != VDS_OK )
       free( process );
 
    return errcode;
@@ -71,15 +64,10 @@ int vdsInit( const char* wdAddress,
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsExit( VDS_HANDLE handle )
+void vdsExit()
 {
-   vdsaProcess* process;
-
-   process = (vdsaProcess*) handle;
-   if ( process != NULL )
-   {
-      vdsaProcessFini( process );
-   }
+   if ( g_pProcessInstance != NULL )
+      vdsaProcessFini();
 } 
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

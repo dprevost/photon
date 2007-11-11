@@ -30,10 +30,13 @@ extern "C" {
 
 /**
  * \file
- * This file provides the API to access a VDSF FIFO queue.
+ * This file provides the API needed to access a VDSF FIFO queue.
  */
 /**
- * \defgroup Queue API functions for the FIFO queue.
+ * \defgroup Queue API functions for vdsf FIFO queues.
+ *
+ * A reminder: FIFO, First In First Out. Data items are placed at the end of
+ * the queue and retrieved from the beginning of the queue.
  */
 /*@{*/
 
@@ -97,7 +100,7 @@ int vdsQueueGetFirst( VDS_HANDLE   objectHandle,
  *
  * \param[in]   objectHandle The handle to the queue (see ::vdsQueueOpen).
  * \param[out]  buffer The buffer provided by the user to hold the content of
- *              the first element. Memory allocation for this buffer is the
+ *              the next element. Memory allocation for this buffer is the
  *              responsability of the caller.
  * \param[in]   bufferLength The length of \em buffer (in bytes).
  * \param[out]  returnedLength The actual number of bytes in the data item.

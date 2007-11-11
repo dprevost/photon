@@ -25,10 +25,9 @@ const bool expectedToPass = true;
 
 int main()
 {
-   VDS_HANDLE handle;
    int errcode;
    
-   errcode = vdsInit( NULL, 1, &handle );
+   errcode = vdsInit( NULL, 1 );
    if ( errcode != VDS_INVALID_WATCHDOG_ADDRESS )
    {
       fprintf( stderr, "err: %d\n", errcode );

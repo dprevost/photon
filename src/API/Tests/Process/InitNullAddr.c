@@ -16,6 +16,9 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "API/Process.h"
+#include "Tests/PrintError.h"
+
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -27,13 +30,7 @@ int main()
    /* First try something junk... */   
    errcode = vdsaProcessInit( &process, NULL );
 
-   if ( errcode != VDS_INVALID_WATCHDOG_ADDRESS )
-   {
-      fprintf( stderr, "err: %d\n", errcode );
-      return -1;
-   }
-   
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, ; );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

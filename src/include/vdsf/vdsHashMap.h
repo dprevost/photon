@@ -30,15 +30,15 @@ extern "C" {
 
 /**
  * \file
- * This file provides the API to access a VDSF hash map.
+ * This file provides the API needed to access a VDSF hash map.
  *
- * Note: this hash map uses unique keys.
+ * Hash maps use unique keys - the data items are not sorted.
  */
 
 /**
- * \defgroup HashMap API functions for the hash map.
+ * \defgroup HashMap API functions for vdsf hash maps.
  *
- * Note: this hash map uses unique keys.
+ * Hash maps use unique keys - the data items are not sorted.
  */
 /*@{*/
 
@@ -178,7 +178,7 @@ int vdsHashMapGetNext( VDS_HANDLE   objectHandle,
  * \param[in]  key The key of the item to be inserted.
  * \param[in]  keyLength The length of the \em key buffer (in bytes).
  * \param[in]  data  The data item to be inserted.
- * \param[in]  length The length of \em data (in bytes).
+ * \param[in]  dataLength The length of \em data (in bytes).
  *
  * \return 0 on success or a ::vdsErrors on error.
  */

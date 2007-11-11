@@ -43,7 +43,7 @@ OpenNullFilename_SOURCES = OpenNullFilename.c
 OpenNullProcess_SOURCES  = OpenNullProcess.c
 OpenPass_SOURCES         = OpenPass.c
 
-EXTRA_DIST =         
+EXTRA_DIST = FiniPass.sh 
 
 TESTS_ENVIRONMENT =                              \
                     tcp_port=10701               \
@@ -58,7 +58,7 @@ TESTS =                 \
         CloseNullProcess \
         ClosePass        \
         FiniNullProcess  \
-        FiniPass         \
+        FiniPass.sh      \
         InitNullAddr     \
         InitNullProcess  \
         InitPass         \

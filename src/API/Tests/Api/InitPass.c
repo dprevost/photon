@@ -25,17 +25,16 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE handle;
    int errcode;
    
-   errcode = vdsInit( "12345", 1, &handle );
+   errcode = vdsInit( "12345", 1 );
    if ( errcode != VDS_CONNECT_ERROR )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsInit( "12345", 0, &handle );
+   errcode = vdsInit( "12345", 0 );
    if ( errcode != VDS_CONNECT_ERROR )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -43,9 +42,9 @@ int main( int argc, char * argv[] )
    }
 
    if ( argc > 1 )
-      errcode = vdsInit( argv[1], 0, &handle );
+      errcode = vdsInit( argv[1], 0 );
    else
-      errcode = vdsInit( "10701", 0, &handle );
+      errcode = vdsInit( "10701", 0 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
