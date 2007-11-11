@@ -1,4 +1,4 @@
-.TH "vdsCommon.h" 3 "10 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsCommon.h" 3 "11 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,12 +15,15 @@ vdsCommon.h \-
 .ti -1c
 .RI "struct \fBvdsFolderEntry\fP"
 .br
+.RI "\fIThis data structure is used to iterate throught all objects in a folder. \fP"
 .ti -1c
 .RI "struct \fBvdsObjStatus\fP"
 .br
+.RI "\fIThis data structure is used to retrieve the status of objects. \fP"
 .ti -1c
 .RI "struct \fBvdsInfo\fP"
 .br
+.RI "\fIThis data structure is used to retrieve the status of the virtual data space. \fP"
 .in -1c
 .SS "Defines"
 
@@ -28,6 +31,7 @@ vdsCommon.h \-
 .ti -1c
 .RI "#define \fBVDSF_EXPORT\fP"
 .br
+.RI "\fIUses to tell the VC++ compiler to export/import a function or variable on Windows (the macro is empty on other platforms). \fP"
 .ti -1c
 .RI "#define \fBVDS_MAX_NAME_LENGTH\fP   256"
 .br
@@ -43,6 +47,7 @@ vdsCommon.h \-
 .ti -1c
 .RI "typedef void * \fBVDS_HANDLE\fP"
 .br
+.RI "\fIVDS_HANDLE is an opaque data type used by the C API to reference objects created in the API module. \fP"
 .in -1c
 .SS "Enumerations"
 
@@ -50,6 +55,7 @@ vdsCommon.h \-
 .ti -1c
 .RI "enum \fBvdsObjectType\fP { \fBVDS_FOLDER\fP =  1, \fBVDS_QUEUE\fP =  2, \fBVDS_HASH_MAP\fP =  3, \fBVDS_LAST_OBJECT_TYPE\fP }"
 .br
+.RI "\fIThe object type as seen from the API. \fP"
 .ti -1c
 .RI "enum \fBvdsIteratorType\fP { \fBVDS_FIRST\fP =  1, \fBVDS_NEXT\fP =  2 }"
 .br
@@ -64,22 +70,26 @@ If the software was compiled with i18n, this maximum is the number of wide chara
 .PP
 Note: setting this value eliminates a possible loophole since some heap memory must be allocated to hold the wide characters string for the duration of the operation (open, close, create or destroy). 
 .PP
-Definition at line 75 of file vdsCommon.h.
+Definition at line 85 of file vdsCommon.h.
 .SS "#define VDS_MAX_NAME_LENGTH   256"
 .PP
 Maximum number of characters (or bytes if not supporting i18n) of the name of a vds object (not counting the name of the parent folder(s)). 
 .PP
 If the software was compiled with i18n, this maximum is the number of wide characters (4 bytes). Otherwise it is the number of bytes (which should equal the number of characters unless something funny is going on like using UTF-8 as locale and using ---disable-i18n with configure...). 
 .PP
-Definition at line 58 of file vdsCommon.h.
+Definition at line 68 of file vdsCommon.h.
 .SS "#define VDSF_EXPORT"
 .PP
-Definition at line 32 of file vdsCommon.h.
+Uses to tell the VC++ compiler to export/import a function or variable on Windows (the macro is empty on other platforms). 
+.PP
+Definition at line 38 of file vdsCommon.h.
 .SH "Typedef Documentation"
 .PP 
 .SS "typedef void* \fBVDS_HANDLE\fP"
 .PP
-Definition at line 43 of file vdsCommon.h.
+VDS_HANDLE is an opaque data type used by the C API to reference objects created in the API module. 
+.PP
+Definition at line 53 of file vdsCommon.h.
 .SH "Enumeration Type Documentation"
 .PP 
 .SS "enum \fBvdsIteratorType\fP"
@@ -92,8 +102,10 @@ Definition at line 43 of file vdsCommon.h.
 \fB\fIVDS_NEXT \fP\fP
 
 .PP
-Definition at line 87 of file vdsCommon.h.
+Definition at line 100 of file vdsCommon.h.
 .SS "enum \fBvdsObjectType\fP"
+.PP
+The object type as seen from the API. 
 .PP
 \fBEnumerator: \fP
 .in +1c
@@ -107,7 +119,7 @@ Definition at line 87 of file vdsCommon.h.
 \fB\fIVDS_LAST_OBJECT_TYPE \fP\fP
 
 .PP
-Definition at line 79 of file vdsCommon.h.
+Definition at line 92 of file vdsCommon.h.
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for vdsf C API from the source code.

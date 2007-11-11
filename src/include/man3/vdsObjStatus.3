@@ -1,4 +1,4 @@
-.TH "vdsObjStatus" 3 "10 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsObjStatus" 3 "11 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,43 +10,60 @@ vdsObjStatus \-
 .PP
 .SH "Detailed Description"
 .PP 
-Definition at line 108 of file vdsCommon.h.
+This data structure is used to retrieve the status of objects. 
+.PP
+Definition at line 137 of file vdsCommon.h.
 .SS "Data Fields"
 
 .in +1c
 .ti -1c
 .RI "\fBvdsObjectType\fP \fBtype\fP"
 .br
+.RI "\fIThe object type. \fP"
 .ti -1c
 .RI "size_t \fBnumBlocks\fP"
 .br
+.RI "\fIThe number of blocks allocated to this object. \fP"
 .ti -1c
 .RI "size_t \fBnumBlockGroup\fP"
 .br
+.RI "\fIThe number of groups of blocks allocated to this object. \fP"
 .ti -1c
 .RI "size_t \fBnumDataItem\fP"
 .br
+.RI "\fIThe number of data items in thisa object. \fP"
 .ti -1c
 .RI "size_t \fBfreeBytes\fP"
 .br
+.RI "\fIThe amount of free space available in the blocks allocated to this object. \fP"
 .in -1c
 .SH "Field Documentation"
 .PP 
 .SS "\fBvdsObjectType\fP \fBvdsObjStatus::type\fP"
 .PP
-Definition at line 110 of file vdsCommon.h.
+The object type. 
+.PP
+Definition at line 140 of file vdsCommon.h.
 .SS "size_t \fBvdsObjStatus::numBlocks\fP"
 .PP
-Definition at line 112 of file vdsCommon.h.
+The number of blocks allocated to this object. 
+.PP
+Definition at line 143 of file vdsCommon.h.
 .SS "size_t \fBvdsObjStatus::numBlockGroup\fP"
 .PP
-Definition at line 114 of file vdsCommon.h.
+The number of groups of blocks allocated to this object. 
+.PP
+Definition at line 146 of file vdsCommon.h.
 .SS "size_t \fBvdsObjStatus::numDataItem\fP"
 .PP
-Definition at line 116 of file vdsCommon.h.
+The number of data items in thisa object. 
+.PP
+Definition at line 149 of file vdsCommon.h.
 .SS "size_t \fBvdsObjStatus::freeBytes\fP"
 .PP
-Definition at line 118 of file vdsCommon.h.
+The amount of free space available in the blocks allocated to this object. 
+.PP
+Definition at line 152 of file vdsCommon.h.
 
 .SH "Author"
 .PP 

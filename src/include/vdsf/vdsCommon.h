@@ -22,6 +22,12 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/**
+ * \def VDSF_EXPORT
+ * 
+ * Uses to tell the VC++ compiler to export/import a function or variable on
+ * Windows (the macro is empty on other platforms).
+ */
 #if defined(WIN32)
 #  ifdef VDSF_BUILD
 #    define VDSF_EXPORT __declspec ( dllexport )
@@ -40,6 +46,10 @@ extern "C" {
  
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/** 
+ * VDS_HANDLE is an opaque data type used by the C API to reference 
+ * objects created in the API module.
+ */
 typedef void* VDS_HANDLE;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -76,6 +86,9 @@ typedef void* VDS_HANDLE;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/**
+ * The object type as seen from the API
+ */
 typedef enum vdsObjectType
 {
    VDS_FOLDER   = 1,
@@ -93,48 +106,79 @@ typedef enum vdsIteratorType
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/* See the discussion on i18n. */
+/** 
+ * \ingroup Folder
+ *
+ * This data structure is used to iterate throught all objects in a folder.
+ *
+ * Note: the actual name of an object (and the length of this name) might 
+ * vary if you are using different locales (internally, names are stored as
+ * wide characters (4 bytes)).
+ */
 typedef struct vdsFolderEntry
 {
+   /** The object type */
    vdsObjectType type;
    
+   /** The actual length of the name of the object. */
    size_t nameLengthInBytes;
    
+   /** The name of the object. */
    char name[VDS_MAX_NAME_LENGTH*4];
 
 } vdsFolderEntry;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/**
+ * This data structure is used to retrieve the status of objects.
+ */
 typedef struct vdsObjStatus
 {
+   /** The object type. */
    vdsObjectType type;
 
+   /** The number of blocks allocated to this object. */
    size_t numBlocks;
 
+   /** The number of groups of blocks allocated to this object. */
    size_t numBlockGroup;
 
+   /** The number of data items in thisa object. */
    size_t numDataItem;
    
+   /** The amount of free space available in the blocks allocated to this object. */
    size_t freeBytes;
 
 } vdsObjStatus;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/**
+ * This data structure is used to retrieve the status of the virtual data space.
+ */
 typedef struct vdsInfo
 {
+   /** Total size of the virtual data space. */
    size_t totalSizeInBytes;
    
+   /** Total size of the allocated blocks. */
    size_t allocatedSizeInBytes;
    
+   /** Number of API objects in the vds (internal objects are not counted). */
    size_t numObjects;
    
+   /** Total number of groups of blocks. */
    size_t numGroups;
    
+   /** Number of calls to allocate groups of blocks. */
    size_t numMallocs;
    
+   /** Number of calls to free groups of blocks. */
    size_t numFrees;
    
+   /** Largest contiguous group of free blocks. */
    size_t largestFreeInBytes;
    
 } vdsInfo;

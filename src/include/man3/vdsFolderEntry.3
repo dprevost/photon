@@ -1,4 +1,4 @@
-.TH "vdsFolderEntry" 3 "10 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
+.TH "vdsFolderEntry" 3 "11 Nov 2007" "Version 0.1" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,31 +10,44 @@ vdsFolderEntry \-
 .PP
 .SH "Detailed Description"
 .PP 
-Definition at line 96 of file vdsCommon.h.
+This data structure is used to iterate throught all objects in a folder. 
+
+Note: the actual name of an object (and the length of this name) might vary if you are using different locales (internally, names are stored as wide characters (4 bytes)). 
+.PP
+Definition at line 119 of file vdsCommon.h.
 .SS "Data Fields"
 
 .in +1c
 .ti -1c
 .RI "\fBvdsObjectType\fP \fBtype\fP"
 .br
+.RI "\fIThe object type. \fP"
 .ti -1c
 .RI "size_t \fBnameLengthInBytes\fP"
 .br
+.RI "\fIThe actual length of the name of the object. \fP"
 .ti -1c
 .RI "char \fBname\fP [VDS_MAX_NAME_LENGTH *4]"
 .br
+.RI "\fIThe name of the object. \fP"
 .in -1c
 .SH "Field Documentation"
 .PP 
 .SS "\fBvdsObjectType\fP \fBvdsFolderEntry::type\fP"
 .PP
-Definition at line 98 of file vdsCommon.h.
+The object type. 
+.PP
+Definition at line 122 of file vdsCommon.h.
 .SS "size_t \fBvdsFolderEntry::nameLengthInBytes\fP"
 .PP
-Definition at line 100 of file vdsCommon.h.
+The actual length of the name of the object. 
+.PP
+Definition at line 125 of file vdsCommon.h.
 .SS "char \fBvdsFolderEntry::name\fP[VDS_MAX_NAME_LENGTH *4]"
 .PP
-Definition at line 102 of file vdsCommon.h.
+The name of the object. 
+.PP
+Definition at line 128 of file vdsCommon.h.
 
 .SH "Author"
 .PP 
