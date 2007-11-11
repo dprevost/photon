@@ -30,12 +30,12 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(4)
+Dim failed_tests(2)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(4)
+Dim ok_programs(2)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -47,20 +47,13 @@ dim strOutput
 ' Initialization of these variables
 '
 ' ***********************************************************************
-                 .\Release\ExitNullHandle.exe  \
-                 .\Release\ExitPass.exe        \
-                 .\Release\InitNullAddress.exe \
-                 .\Release\InitNullHandle.exe  \
-                 .\Release\InitPass.exe         
 
 ' Populate the program lists...
-ok_programs(0) = "ExitNullHandle"
-ok_programs(1) = "ExitPass"
-ok_programs(2) = "InitNullAddress"
-ok_programs(3) = "InitNullHandle"
-ok_programs(4) = "InitPass"
+ok_programs(0) = "ExitPass"
+ok_programs(1) = "InitNullAddress"
+ok_programs(2) = "InitPass"
 
-numTests = 5                 ' Sum of length of both arrays 
+numTests = 3                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject

@@ -588,8 +588,12 @@ void vdswWatchdog::Run()
 
 int vdswWatchdog::SetSigHandler()
 {
+#if defined(WIN32)
+   signal( SIGINT,  sigterm_handler );
+   signal( SIGTERM, sigterm_handler );
+
+#else
    int errcode = 0;
-#if ! defined(WIN32)
    sigset_t old_set, new_set;
    struct sigaction action;
    

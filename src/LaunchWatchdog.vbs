@@ -111,12 +111,26 @@ exeName = ".\debug\vdswd.exe -c " + tmpDir + "\cfg.txt"
 '   end if
 '   rc = objWshScriptExec.ExitCode
 'else
-   rc = objShell.Run("%comspec% /c " & Chr(34) & exeName & Chr(34), 2, true)
-'end if
+'WScript.Sleep 5000
+'rc = objShell.Run("%comspec% /c " & Chr(34) & exeName & Chr(34), 2, true)
+'WScript.Sleep 5000
+'objShell.SendKeys "^C"
+
+dim Success
+Success = False
+
+'Set objShell = WScript.CreateObject("WScript.Shell")
+objShell.Run "%comspec% /k " & Chr(34) & exeName & Chr(34), 2, false
+'Do Until Success = True
+'    Success = objShell.AppActivate("vdswd")
+    Wscript.Sleep 1000
+Wscript.echo "qqq"
+'Loop
+objShell.SendKeys "^C"
+
+   'end if
 'WScript.Echo  rc
 Wscript.quit(0)
-
-'rm -rf $BASE_DIR
 
 ' --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
