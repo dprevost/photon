@@ -13,10 +13,8 @@ include ..\Makefile.inc.Win32
 all: 
 
 check_PROGRAMS =                               \
-                 .\Release\ExitNullHandle.exe  \
                  .\Release\ExitPass.exe        \
                  .\Release\InitNullAddress.exe \
-                 .\Release\InitNullHandle.exe  \
                  .\Release\InitPass.exe         
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
