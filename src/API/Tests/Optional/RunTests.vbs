@@ -30,12 +30,12 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(34)
+Dim failed_tests(0)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(34)
+Dim ok_programs(0)
 
 Dim exe_name, prog_path, program, wd_path, tmpDir, cmdFile, exeName
 Dim consoleMode
@@ -49,43 +49,9 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0) = "CloseNullSession"
-ok_programs(1) = "ClosePass"
-ok_programs(2) = "CloseObjNullObject"
-ok_programs(3) = "CloseObjNullSession"
-ok_programs(4) = "CloseObjPass"
-ok_programs(5) = "CommitNullHandle"
-ok_programs(6) = "CommitPass"
-ok_programs(7) = "CreateNullHandle"
-ok_programs(8) = "CreateNullName"
-ok_programs(9) = "CreatePass"
-ok_programs(10) = "CreateWrongType"
-ok_programs(11) = "CreateZeroLength"
-ok_programs(12) = "DestroyNotCreated"
-ok_programs(13) = "DestroyNullHandle"
-ok_programs(14) = "DestroyNullName"
-ok_programs(15) = "DestroyPass"
-ok_programs(16) = "DestroyZeroLength"
-ok_programs(17) = "ErrorMsg"
-ok_programs(18) = "ExitNullHandle"
-ok_programs(19) = "ExitPass"
-ok_programs(20) = "GetInfo"
-ok_programs(21) = "InitNoProcess"
-ok_programs(22) = "InitNullHandle"
-ok_programs(23) = "InitPass"
-ok_programs(24) = "LastError"
-ok_programs(25) = "OpenObjNotCreated"
-ok_programs(26) = "OpenObjNullName"
-ok_programs(27) = "OpenObjNullObject"
-ok_programs(28) = "OpenObjNullSession"
-ok_programs(29) = "OpenObjPass"
-ok_programs(30) = "OpenObjWrongType"
-ok_programs(31) = "OpenObjZeroLength"
-ok_programs(32) = "RollbackNullHandle"
-ok_programs(33) = "RollbackPass"
-ok_programs(34) = "StatusPass"
+ok_programs(0) = "i18nPass"
 
-numTests  = 35                 ' Sum of length of both arrays 
+numTests  =  1                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject

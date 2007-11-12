@@ -30,12 +30,12 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(34)
+Dim failed_tests(32)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(34)
+Dim ok_programs(32)
 
 Dim exe_name, prog_path, program, wd_path, tmpDir, cmdFile, exeName
 Dim consoleMode
@@ -49,43 +49,41 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0) = "CloseNullSession"
-ok_programs(1) = "ClosePass"
-ok_programs(2) = "CloseObjNullObject"
-ok_programs(3) = "CloseObjNullSession"
-ok_programs(4) = "CloseObjPass"
-ok_programs(5) = "CommitNullHandle"
-ok_programs(6) = "CommitPass"
-ok_programs(7) = "CreateNullHandle"
-ok_programs(8) = "CreateNullName"
-ok_programs(9) = "CreatePass"
-ok_programs(10) = "CreateWrongType"
-ok_programs(11) = "CreateZeroLength"
-ok_programs(12) = "DestroyNotCreated"
-ok_programs(13) = "DestroyNullHandle"
-ok_programs(14) = "DestroyNullName"
-ok_programs(15) = "DestroyPass"
-ok_programs(16) = "DestroyZeroLength"
-ok_programs(17) = "ErrorMsg"
-ok_programs(18) = "ExitNullHandle"
-ok_programs(19) = "ExitPass"
-ok_programs(20) = "GetInfo"
-ok_programs(21) = "InitNoProcess"
-ok_programs(22) = "InitNullHandle"
-ok_programs(23) = "InitPass"
-ok_programs(24) = "LastError"
-ok_programs(25) = "OpenObjNotCreated"
-ok_programs(26) = "OpenObjNullName"
-ok_programs(27) = "OpenObjNullObject"
-ok_programs(28) = "OpenObjNullSession"
-ok_programs(29) = "OpenObjPass"
-ok_programs(30) = "OpenObjWrongType"
-ok_programs(31) = "OpenObjZeroLength"
-ok_programs(32) = "RollbackNullHandle"
-ok_programs(33) = "RollbackPass"
-ok_programs(34) = "StatusPass"
+ok_programs(0)  = "CloseNullHandle"
+ok_programs(1)  = "ClosePass"
+ok_programs(2)  = "CloseWrongHandle"
+ok_programs(3)  = "FirstNullEntry"
+ok_programs(4)  = "FirstNullHandle"
+ok_programs(5)  = "FirstPass"
+ok_programs(6)  = "FirstWrongHandle"
+ok_programs(7)  = "GetFirst"
+ok_programs(8)  = "GetNext"
+ok_programs(9)  = "NextNoFirst"
+ok_programs(10) = "NextNullEntry"
+ok_programs(11) = "NextNullHandle"
+ok_programs(12) = "NextPass"
+ok_programs(13) = "NextWrongHandle"
+ok_programs(14) = "OpenNullName"
+ok_programs(15) = "OpenNullObjHandle"
+ok_programs(16) = "OpenNullSessHandle"
+ok_programs(17) = "OpenPass"
+ok_programs(18) = "OpenWrongSessHandle"
+ok_programs(19) = "OpenZeroLength"
+ok_programs(20) = "Pop"
+ok_programs(21) = "PushNullData"
+ok_programs(22) = "PushNullHandle"
+ok_programs(23) = "PushPass"
+ok_programs(24) = "PushWrongHandle"
+ok_programs(25) = "PushZeroLength"
+ok_programs(26) = "RemoveNullEntry"
+ok_programs(27) = "RemoveNullHandle"
+ok_programs(28) = "RemovePass"
+ok_programs(29) = "RemoveWrongHandle"
+ok_programs(30) = "StatusNullHandle"
+ok_programs(31) = "StatusNullStatus"
+ok_programs(32) = "StatusPass"
 
-numTests  = 35                 ' Sum of length of both arrays 
+numTests  = 33                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject
