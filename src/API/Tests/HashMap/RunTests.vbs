@@ -35,7 +35,8 @@ Dim failed_tests(41)
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(41)
+Dim ok_programs(29)
+Dim fail_programs(11)
 
 Dim exe_name, prog_path, program, wd_path, tmpDir, cmdFile, exeName
 Dim consoleMode
@@ -49,48 +50,49 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0) = "CloseNullHandle"
-ok_programs(1) = "ClosePass"
-ok_programs(2) = "CloseWrongHandle"
-ok_programs(3) = "DeleteNullHandle"
-ok_programs(4) = "DeleteNullKey"
-ok_programs(5) = "DeletePass"
-ok_programs(6) = "DeleteWrongHandle"
-ok_programs(7) = "DeleteZeroLength"
-ok_programs(8) = "FirstNullEntry"
-ok_programs(9) = "FirstNullHandle"
-ok_programs(10) = "FirstPass"
-ok_programs(11) = "FirstWrongHandle"
-ok_programs(12) = "Get"
-ok_programs(13) = "GetFirst"
-ok_programs(14) = "GetNext"
-ok_programs(15) = "InsertNullData"
-ok_programs(16) = "InsertNullHandle"
-ok_programs(17) = "InsertNullKey"
-ok_programs(18) = "InsertPass"
-ok_programs(19) = "InsertWrongHandle"
-ok_programs(20) = "InsertZeroDataLength"
-ok_programs(21) = "InsertZeroKeyLength"
-ok_programs(22) = "NextNoFirst"
-ok_programs(23) = "NextNullEntry"
-ok_programs(24) = "NextNullHandle"
-ok_programs(25) = "NextPass"
-ok_programs(26) = "NextWrongHandle"
-ok_programs(27) = "OpenNullName"
-ok_programs(28) = "OpenNullObjHandle"
-ok_programs(29) = "OpenNullSessHandle"
-ok_programs(30) = "OpenPass"
-ok_programs(31) = "OpenWrongSessHandle"
-ok_programs(32) = "OpenZeroLength"
-ok_programs(33) = "RetrieveNullEntry"
-ok_programs(34) = "RetrieveNullHandle"
-ok_programs(35) = "RetrieveNullKey"
-ok_programs(36) = "RetrievePass"
-ok_programs(37) = "RetrieveWrongHandle"
-ok_programs(38) = "RetrieveZeroLength"
-ok_programs(39) = "StatusNullHandle"
-ok_programs(40) = "StatusNullStatus"
-ok_programs(41) = "StatusPass"
+ok_programs(0)  = "CloseNullHandle"
+ok_programs(1)  = "ClosePass"
+ok_programs(2)  = "CloseWrongHandle"
+ok_programs(3)  = "DeleteNullHandle"
+ok_programs(4)  = "DeleteNullKey"
+ok_programs(5)  = "DeletePass"
+ok_programs(6)  = "DeleteWrongHandle"
+ok_programs(7)  = "DeleteZeroLength"
+ok_programs(8)  = "FirstPass"
+ok_programs(9)  = "Get"
+ok_programs(10) = "GetFirst"
+ok_programs(11) = "GetNext"
+ok_programs(12) = "InsertNullData"
+ok_programs(13) = "InsertNullHandle"
+ok_programs(14) = "InsertNullKey"
+ok_programs(15) = "InsertPass"
+ok_programs(16) = "InsertWrongHandle"
+ok_programs(17) = "InsertZeroDataLength"
+ok_programs(18) = "InsertZeroKeyLength"
+ok_programs(19) = "NextPass"
+ok_programs(20) = "OpenNullName"
+ok_programs(21) = "OpenNullObjHandle"
+ok_programs(22) = "OpenNullSessHandle"
+ok_programs(23) = "OpenPass"
+ok_programs(24) = "OpenWrongSessHandle"
+ok_programs(25) = "OpenZeroLength"
+ok_programs(26) = "RetrievePass"
+ok_programs(27) = "StatusNullHandle"
+ok_programs(28) = "StatusNullStatus"
+ok_programs(29) = "StatusPass"
+
+fail_programs(0)  = "FirstNullEntry"
+fail_programs(1)  = "FirstNullHandle"
+fail_programs(2)  = "FirstWrongHandle"
+fail_programs(3)  = "NextNoFirst"
+fail_programs(4)  = "NextNullEntry"
+fail_programs(5)  = "NextNullHandle"
+fail_programs(6)  = "NextWrongHandle"
+fail_programs(7)  = "RetrieveNullEntry"
+fail_programs(8)  = "RetrieveNullHandle"
+fail_programs(9)  = "RetrieveNullKey"
+fail_programs(10) = "RetrieveWrongHandle"
+fail_programs(11) = "RetrieveZeroLength"
 
 numTests  = 42                 ' Sum of length of both arrays 
 numFailed =  0
@@ -187,6 +189,28 @@ For Each program in ok_programs
    end if
    if rc <> 0 then   
    wscript.echo "rc = " & rc & " " & program
+      failed_tests(numFailed) = program
+      numFailed = numFailed + 1
+   end if
+Next
+For Each program in fail_programs
+   exe_name = prog_path & "\" & program & ".exe"
+   if consoleMode then 
+      WScript.Echo "Running " & exe_name
+      Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exe_name & Chr(34))
+      status = objWshScriptExec.Status
+      Do While objWshScriptExec.Status = 0
+         WScript.Sleep 100
+      Loop
+      strOutput = objWshScriptExec.StdOut.ReadAll
+      if verbose then 
+         WScript.Stdout.Write objWshScriptExec.StdErr.ReadAll
+      end if
+      rc = objWshScriptExec.ExitCode
+   else
+      rc = objShell.Run("%comspec% /c " & Chr(34) & exe_name & Chr(34), 2, true)
+   end if
+   if rc = 0 then
       failed_tests(numFailed) = program
       numFailed = numFailed + 1
    end if

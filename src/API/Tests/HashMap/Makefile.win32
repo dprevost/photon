@@ -25,12 +25,9 @@ check_PROGRAMS =                                    \
                  .\Release\FirstNullHandle.exe      \
                  .\Release\FirstPass.exe            \
                  .\Release\FirstWrongHandle.exe     \
-                 .\Release\GetNullEntry.exe         \
-                 .\Release\GetNullHandle.exe        \
-                 .\Release\GetNullKey.exe           \
-                 .\Release\GetPass.exe              \
-                 .\Release\GetWrongHandle.exe       \
-                 .\Release\GetZeroLength.exe        \
+                 .\Release\Get.exe                  \
+                 .\Release\GetFirst.exe             \
+                 .\Release\GetNext.exe              \
                  .\Release\InsertNullData.exe       \
                  .\Release\InsertNullHandle.exe     \
                  .\Release\InsertNullKey.exe        \
@@ -49,6 +46,12 @@ check_PROGRAMS =                                    \
                  .\Release\OpenPass.exe             \
                  .\Release\OpenWrongSessHandle.exe  \
                  .\Release\OpenZeroLength.exe       \
+                 .\Release\RetrieveNullEntry.exe    \
+                 .\Release\RetrieveNullHandle.exe   \
+                 .\Release\RetrieveNullKey.exe      \
+                 .\Release\RetrievePass.exe         \
+                 .\Release\RetrieveWrongHandle.exe  \
+                 .\Release\RetrieveZeroLength.exe   \
                  .\Release\StatusNullHandle.exe     \
                  .\Release\StatusNullStatus.exe     \
                  .\Release\StatusPass.exe           
