@@ -102,7 +102,7 @@ void vdseBlockGroupInit( vdseBlockGroup  * pGroup,
     * So we have one free buffer, starting at offset "currentLength"
     * + firstBlockOffset with length "maxFreeBytes". Insert it in our freeList.
     */
-   firstNode = GET_PTR( firstBlockOffset+currentLength, vdseFreeBufferNode );
+   GET_PTR( firstNode, firstBlockOffset+currentLength, vdseFreeBufferNode );
    vdseLinkNodeInit( &firstNode->node );
    firstNode->numBuffers = pGroup->maxFreeBytes/VDSE_ALLOCATION_UNIT;
 

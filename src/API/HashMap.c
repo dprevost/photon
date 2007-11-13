@@ -102,6 +102,7 @@ int vdsHashMapGet( VDS_HANDLE   objectHandle,
    vdsaHashMap * pHashMap;
    vdseHashMap * pVDSHashMap;
    int errcode = 0;
+   void * ptr;
    
    pHashMap = (vdsaHashMap *) objectHandle;
    if ( pHashMap == NULL )
@@ -145,9 +146,8 @@ int vdsHashMapGet( VDS_HANDLE   objectHandle,
       if ( errcode == 0 )
       {
          *returnedLength = pHashMap->iterator.pHashItem->dataLength;
-         memcpy( buffer, 
-                 GET_PTR( pHashMap->iterator.pHashItem->dataOffset, void ), 
-                 *returnedLength );
+         GET_PTR( ptr, pHashMap->iterator.pHashItem->dataOffset, void );
+         memcpy( buffer, ptr, *returnedLength );
       }
       else
          errcode = vdscGetLastError( &pHashMap->object.pSession->context.errorHandler );
@@ -170,7 +170,8 @@ int vdsHashMapGetFirst( VDS_HANDLE   objectHandle,
    vdsaHashMap * pHashMap;
    vdseHashMap * pVDSHashMap;
    int errcode = 0;
-
+   void * ptr;
+   
    pHashMap = (vdsaHashMap *) objectHandle;
    if ( pHashMap == NULL )
       return VDS_NULL_HANDLE;
@@ -207,9 +208,8 @@ int vdsHashMapGetFirst( VDS_HANDLE   objectHandle,
       if ( errcode == 0 )
       {
          *returnedLength = pHashMap->iterator.pHashItem->dataLength;
-         memcpy( buffer, 
-                 GET_PTR( pHashMap->iterator.pHashItem->dataOffset, void ), 
-                 *returnedLength );
+         GET_PTR( ptr, pHashMap->iterator.pHashItem->dataOffset, void );
+         memcpy( buffer, ptr, *returnedLength );
       }
       else
          errcode = vdscGetLastError( &pHashMap->object.pSession->context.errorHandler );
@@ -232,7 +232,8 @@ int vdsHashMapGetNext( VDS_HANDLE   objectHandle,
    vdsaHashMap * pHashMap;
    vdseHashMap * pVDSHashMap;
    int errcode = 0;
-
+   void * ptr;
+   
    pHashMap = (vdsaHashMap *) objectHandle;
    if ( pHashMap == NULL )
       return VDS_NULL_HANDLE;
@@ -261,9 +262,8 @@ int vdsHashMapGetNext( VDS_HANDLE   objectHandle,
       if ( errcode == 0 )
       {
          *returnedLength = pHashMap->iterator.pHashItem->dataLength;
-         memcpy( buffer, 
-                 GET_PTR( pHashMap->iterator.pHashItem->dataOffset, void ), 
-                 *returnedLength );
+         GET_PTR( ptr, pHashMap->iterator.pHashItem->dataOffset, void );
+         memcpy( buffer, ptr, *returnedLength );
       }
       else
       {
@@ -470,7 +470,7 @@ int vdsaHashMapFirst( vdsaHashMap   * pHashMap,
                                      &pHashMap->object.pSession->context );
       if ( errcode == 0 )
       {
-         pEntry->data = GET_PTR( pHashMap->iterator.pHashItem->dataOffset, void );
+         GET_PTR( pEntry->data, pHashMap->iterator.pHashItem->dataOffset, void );
          pEntry->length = pHashMap->iterator.pHashItem->dataLength;
       }
       else
@@ -508,7 +508,7 @@ int vdsaHashMapNext( vdsaHashMap   * pHashMap,
                                     &pHashMap->object.pSession->context );
       if ( errcode == 0 )
       {
-         pEntry->data = GET_PTR( pHashMap->iterator.pHashItem->dataOffset, void );
+         GET_PTR( pEntry->data, pHashMap->iterator.pHashItem->dataOffset, void );
          pEntry->length = pHashMap->iterator.pHashItem->dataLength;
       }
       else
@@ -561,7 +561,7 @@ int vdsaHashMapRetrieve( vdsaHashMap   * pHashMap,
                                 &pHashMap->object.pSession->context );
       if ( errcode == 0 )
       {
-         pEntry->data = GET_PTR( pHashItem->dataOffset, void );
+         GET_PTR( pEntry->data, pHashItem->dataOffset, void );
          pEntry->length = pHashItem->dataLength;
       }
       else

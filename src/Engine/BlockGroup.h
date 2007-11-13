@@ -120,10 +120,10 @@ void vdseEndBlockSet( ptrdiff_t firstBlockOffset,
 {
    vdseEndBlockGroup* endBlock;
    
-   endBlock = GET_PTR( firstBlockOffset + 
-                          (numBlocks <<  VDSE_BLOCK_SHIFT) -
-                          VDSE_ALLOCATION_UNIT,
-                       vdseEndBlockGroup );
+   GET_PTR( endBlock, 
+            firstBlockOffset + (numBlocks <<  VDSE_BLOCK_SHIFT) -
+               VDSE_ALLOCATION_UNIT,
+            vdseEndBlockGroup );
                        
    endBlock->firstBlockOffset = firstBlockOffset;
    endBlock->numBlocks = numBlocks;

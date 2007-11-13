@@ -376,7 +376,7 @@ unsigned char* vdseMallocBlocks( vdseMemAlloc       * pAlloc,
       return NULL;
    }
    
-   pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
+   GET_PTR( pBitmap, pAlloc->bitmapOffset, vdseMemBitmap );
    
    pNode = FindBuffer( pAlloc, requestedBlocks, &pContext->errorHandler );
    if ( pNode != NULL )
@@ -477,7 +477,7 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
       return;
    }
 
-   pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
+   GET_PTR( pBitmap, pAlloc->bitmapOffset, vdseMemBitmap );
    newNode = (vdseFreeBufferNode*)ptr;
    newNode->numBuffers = numBlocks;
 
@@ -503,7 +503,7 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
        */
       vdscReadMemoryBarrier();
 
-      previousNode = GET_PTR( endBlock->firstBlockOffset, vdseFreeBufferNode );
+      GET_PTR( previousNode, endBlock->firstBlockOffset, vdseFreeBufferNode );
       otherBufferisFree = vdseIsBufferFree( pBitmap, endBlock->firstBlockOffset );
 
       if ( isInLimbo )

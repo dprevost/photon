@@ -60,7 +60,7 @@ int TestList( vdseLinkedList* pList )
    /* Check the chain going forward. */ 
    while ( testSize > 0 )
    {
-      pItem = GET_PTR( pItem->nextOffset, vdseLinkNode );
+      GET_PTR( pItem, pItem->nextOffset, vdseLinkNode );
       if ( pItem == &pList->head )
       {
          fprintf( stderr, "Error 1\n" );
@@ -69,7 +69,7 @@ int TestList( vdseLinkedList* pList )
       
       testSize--;
    }
-   pItem = GET_PTR( pItem->nextOffset, vdseLinkNode );
+   GET_PTR( pItem, pItem->nextOffset, vdseLinkNode );
    if ( pItem != &pList->head )
    {
       fprintf( stderr, "Error 2\n" );
@@ -82,7 +82,7 @@ int TestList( vdseLinkedList* pList )
 
    while ( testSize > 0 )
    {
-      pItem = GET_PTR( pItem->previousOffset, vdseLinkNode );
+      GET_PTR( pItem, pItem->previousOffset, vdseLinkNode );
       if ( pItem == &pList->head )
       {
          fprintf( stderr, "Error 3\n" );
@@ -90,7 +90,7 @@ int TestList( vdseLinkedList* pList )
       }
       testSize--;
    }
-   pItem = GET_PTR( pItem->previousOffset, vdseLinkNode );
+   GET_PTR( pItem, pItem->previousOffset, vdseLinkNode );
    if ( pItem != &pList->head )
    {
       fprintf( stderr, "Error 4\n" );
@@ -130,12 +130,12 @@ void DumpList( vdseLinkedList* pList )
 
    while ( testSize > 0 )
    {
-      pItem = GET_PTR(pItem->nextOffset,vdseLinkNode );
+      GET_PTR( pItem, pItem->nextOffset, vdseLinkNode );
       fprintf( stderr, " %d = %p %p %p %p \n",
                testSize,
                pItem ,
-               GET_PTR(pItem->nextOffset,vdseLinkNode ),
-               GET_PTR(pItem->previousOffset,vdseLinkNode ),
+               GET_PTR_FAST(pItem->nextOffset,vdseLinkNode ),
+               GET_PTR_FAST(pItem->previousOffset,vdseLinkNode ),
                &pList->head );
       testSize--;
    }

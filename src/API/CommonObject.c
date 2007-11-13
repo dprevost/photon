@@ -58,9 +58,9 @@ int vdsaCommonObjectOpen( vdsaCommonObject   * pObject,
                                     pObject );
       if ( errcode == 0 )
       {
-         pDesc = GET_PTR( pObject->folderItem.pHashItem->dataOffset,
+         GET_PTR( pDesc, pObject->folderItem.pHashItem->dataOffset,
                           vdseObjectDescriptor );
-         pObject->pMyVdsObject = GET_PTR( pDesc->offset, void );
+         GET_PTR( pObject->pMyVdsObject, pDesc->offset, void );
       }
       vdsaCommonUnlock( pObject );
    }

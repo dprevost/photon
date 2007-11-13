@@ -70,8 +70,8 @@ int main()
                                   &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   pDescriptor = GET_PTR( item.pHashItem->dataOffset, vdseObjectDescriptor );
-   pHashMap = GET_PTR( pDescriptor->offset, vdseHashMap );
+   GET_PTR( pDescriptor, item.pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pHashMap, pDescriptor->offset, vdseHashMap );
 
    /* Test 1 */
    errcode = vdseHashMapInsert( pHashMap,

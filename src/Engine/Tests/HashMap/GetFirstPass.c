@@ -57,7 +57,7 @@ int main()
                                   &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   ptr = GET_PTR( item.pHashItem->dataOffset, char );
+   GET_PTR( ptr, item.pHashItem->dataOffset, char );
    if (memcmp( data, ptr, 7 ) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
    

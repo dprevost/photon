@@ -21,11 +21,6 @@ const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdsChar_T* stringTransform( char* s)
-{
-   return s;
-}
-
 int main()
 {
    vdseFolder* pFolder;

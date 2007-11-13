@@ -58,11 +58,11 @@ int main()
                                   &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   pDescriptor = GET_PTR( folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
    if ( memcmp( pDescriptor->originalName, strCheck("Test2"), 5*sizeof(vdsChar_T) ) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
-   pNode = GET_PTR( pDescriptor->nodeOffset, vdseTreeNode);
-   txItemStatus = GET_PTR(pNode->txStatusOffset, vdseTxStatus );
+   GET_PTR( pNode, pDescriptor->nodeOffset, vdseTreeNode);
+   GET_PTR( txItemStatus, pNode->txStatusOffset, vdseTxStatus );
    if ( txItemStatus->parentCounter != 1 ) 
       ERROR_EXIT( expectedToPass, NULL, ; );
    if ( status.usageCounter != 1 )
@@ -96,11 +96,11 @@ int main()
                                   &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   pDescriptor = GET_PTR( folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
    if ( memcmp( pDescriptor->originalName, strCheck("Test4"), 5*sizeof(vdsChar_T) ) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
-   pNode = GET_PTR( pDescriptor->nodeOffset, vdseTreeNode);
-   txItemStatus = GET_PTR(pNode->txStatusOffset, vdseTxStatus );
+   GET_PTR( pNode, pDescriptor->nodeOffset, vdseTreeNode);
+   GET_PTR( txItemStatus, pNode->txStatusOffset, vdseTxStatus );
    if ( txItemStatus->parentCounter != 1 ) 
       ERROR_EXIT( expectedToPass, NULL, ; );
    if ( status.usageCounter != 2 )

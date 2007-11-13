@@ -203,7 +203,7 @@ int vdseTxCommit( vdseTx*             pTx,
 
          if ( pOps->parentType == VDSE_IDENT_HASH_MAP )
          {
-            pHashMap = GET_PTR( pOps->parentOffset, vdseHashMap );
+            GET_PTR( pHashMap, pOps->parentOffset, vdseHashMap );
             pParentMemObject = &pHashMap->memObject;
 
             vdseLockNoFailure( pParentMemObject, pContext );
@@ -212,7 +212,7 @@ int vdseTxCommit( vdseTx*             pTx,
          }
          else if ( pOps->parentType == VDSE_IDENT_QUEUE )
          {
-            pQueue = GET_PTR( pOps->parentOffset, vdseQueue );
+            GET_PTR( pQueue, pOps->parentOffset, vdseQueue );
             pParentMemObject = &pQueue->memObject;
 
             vdseLockNoFailure( pParentMemObject, pContext );
@@ -229,27 +229,27 @@ int vdseTxCommit( vdseTx*             pTx,
 
          VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
 
-         parentFolder = GET_PTR( pOps->parentOffset, vdseFolder );
+         GET_PTR( parentFolder, pOps->parentOffset, vdseFolder );
 
          if ( pOps->childType == VDSE_IDENT_FOLDER )
          {
-            pChildFolder = GET_PTR( pOps->childOffset, vdseFolder );
+            GET_PTR( pChildFolder, pOps->childOffset, vdseFolder );
             pChildMemObject = &pChildFolder->memObject;
             pChildNode      = &pChildFolder->nodeObject;
          }
          else if ( pOps->childType == VDSE_IDENT_HASH_MAP )
          {
-            pHashMap = GET_PTR( pOps->childOffset, vdseHashMap );
+            GET_PTR( pHashMap, pOps->childOffset, vdseHashMap );
             pChildMemObject = &pHashMap->memObject;
             pChildNode      = &pHashMap->nodeObject;
          }
          else
          {
-            pQueue          = GET_PTR( pOps->childOffset, vdseQueue );
+            GET_PTR( pQueue, pOps->childOffset, vdseQueue );
             pChildMemObject = &pQueue->memObject;
             pChildNode      = &pQueue->nodeObject;
          }
-         pChildStatus = GET_PTR( pChildNode->txStatusOffset, vdseTxStatus );
+         GET_PTR( pChildStatus, pChildNode->txStatusOffset, vdseTxStatus );
          
          vdseLockNoFailure( &parentFolder->memObject, pContext );
          vdseLockNoFailure( pChildMemObject, pContext );
@@ -269,27 +269,27 @@ int vdseTxCommit( vdseTx*             pTx,
 
          VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
 
-         parentFolder = GET_PTR( pOps->parentOffset, vdseFolder );
+         GET_PTR( parentFolder, pOps->parentOffset, vdseFolder );
 
          if ( pOps->childType == VDSE_IDENT_FOLDER )
          {
-            pChildFolder = GET_PTR( pOps->childOffset, vdseFolder );
+            GET_PTR( pChildFolder, pOps->childOffset, vdseFolder );
             pChildMemObject = &pChildFolder->memObject;
             pChildNode      = &pChildFolder->nodeObject;
          }
          else if ( pOps->childType == VDSE_IDENT_HASH_MAP )
          {
-            pHashMap = GET_PTR( pOps->childOffset, vdseHashMap );
+            GET_PTR( pHashMap, pOps->childOffset, vdseHashMap );
             pChildMemObject = &pHashMap->memObject;
             pChildNode      = &pHashMap->nodeObject;
          }
          else
          {
-            pQueue          = GET_PTR( pOps->childOffset, vdseQueue );
+            GET_PTR( pQueue, pOps->childOffset, vdseQueue );
             pChildMemObject = &pQueue->memObject;
             pChildNode      = &pQueue->nodeObject;
          }
-         pChildStatus = GET_PTR( pChildNode->txStatusOffset, vdseTxStatus );
+         GET_PTR( pChildStatus, pChildNode->txStatusOffset, vdseTxStatus );
       
          vdseLockNoFailure( &parentFolder->memObject, pContext );
 
@@ -319,7 +319,7 @@ int vdseTxCommit( vdseTx*             pTx,
              * (this function also decrease the txCounter of the parentFolder 
              */
             vdseFolderRemoveObject( parentFolder, 
-                                    GET_PTR(pChildNode->myKeyOffset, vdsChar_T),
+                                    GET_PTR_FAST(pChildNode->myKeyOffset, vdsChar_T),
                                     pChildNode->myNameLength,
                                     pContext );
             /* If needed */
@@ -352,7 +352,7 @@ int vdseTxCommit( vdseTx*             pTx,
       case VDSE_TX_REMOVE_DATA:
          if ( pOps->parentType == VDSE_IDENT_HASH_MAP )
          {
-            pHashMap = GET_PTR( pOps->parentOffset, vdseHashMap );
+            GET_PTR( pHashMap, pOps->parentOffset, vdseHashMap );
             pParentMemObject = &pHashMap->memObject;
 
             vdseLockNoFailure( pParentMemObject, pContext );
@@ -363,7 +363,7 @@ int vdseTxCommit( vdseTx*             pTx,
          }
          else if ( pOps->parentType == VDSE_IDENT_QUEUE )
          {
-            pQueue = GET_PTR( pOps->parentOffset, vdseQueue );
+            GET_PTR( pQueue, pOps->parentOffset, vdseQueue );
             pParentMemObject = &pQueue->memObject;
 
             vdseLockNoFailure( pParentMemObject, pContext );
@@ -453,14 +453,14 @@ void vdseTxRollback( vdseTx*             pTx,
 
       if ( pOps->parentType == VDSE_IDENT_FOLDER )
       {
-         parentFolder = GET_PTR( pOps->parentOffset, vdseFolder );
+         GET_PTR( parentFolder, pOps->parentOffset, vdseFolder );
 
          if ( pOps->childType == VDSE_IDENT_FOLDER )
          {
-            pChildFolder = GET_PTR( pOps->childOffset, vdseFolder );
+            GET_PTR( pChildFolder, pOps->childOffset, vdseFolder );
             pChildMemObject = &pChildFolder->memObject;
             pChildNode      = &pChildFolder->nodeObject;
-            pChildStatus = GET_PTR( pChildNode->txStatusOffset, vdseTxStatus );
+            GET_PTR( pChildStatus, pChildNode->txStatusOffset, vdseTxStatus );
          }
       }
       
@@ -469,7 +469,7 @@ void vdseTxRollback( vdseTx*             pTx,
       case VDSE_TX_ADD_DATA:
          if ( pOps->parentType == VDSE_IDENT_HASH_MAP )
          {
-            pHashMap = GET_PTR( pOps->parentOffset, vdseHashMap );
+            GET_PTR( pHashMap, pOps->parentOffset, vdseHashMap );
             pParentMemObject = &pHashMap->memObject;
 
             vdseLockNoFailure( pParentMemObject, pContext );
@@ -480,7 +480,7 @@ void vdseTxRollback( vdseTx*             pTx,
          }
          else if ( pOps->parentType == VDSE_IDENT_QUEUE )
          {
-            pQueue = GET_PTR( pOps->parentOffset, vdseQueue );
+            GET_PTR( pQueue, pOps->parentOffset, vdseQueue );
             pParentMemObject = &pQueue->memObject;
 
             vdseLockNoFailure( pParentMemObject, pContext );
@@ -499,27 +499,27 @@ void vdseTxRollback( vdseTx*             pTx,
 
          VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
 
-         parentFolder = GET_PTR( pOps->parentOffset, vdseFolder );
+         GET_PTR( parentFolder, pOps->parentOffset, vdseFolder );
 
          if ( pOps->childType == VDSE_IDENT_FOLDER )
          {
-            pChildFolder = GET_PTR( pOps->childOffset, vdseFolder );
+            GET_PTR( pChildFolder, pOps->childOffset, vdseFolder );
             pChildMemObject = &pChildFolder->memObject;
             pChildNode      = &pChildFolder->nodeObject;
          }
          else if ( pOps->childType == VDSE_IDENT_HASH_MAP )
          {
-            pHashMap = GET_PTR( pOps->childOffset, vdseHashMap );
+            GET_PTR( pHashMap, pOps->childOffset, vdseHashMap );
             pChildMemObject = &pHashMap->memObject;
             pChildNode      = &pHashMap->nodeObject;
          }
          else
          {
-            pQueue          = GET_PTR( pOps->childOffset, vdseQueue );
+            GET_PTR( pQueue, pOps->childOffset, vdseQueue );
             pChildMemObject = &pQueue->memObject;
             pChildNode      = &pQueue->nodeObject;
          }
-         pChildStatus = GET_PTR( pChildNode->txStatusOffset, vdseTxStatus );
+         GET_PTR( pChildStatus, pChildNode->txStatusOffset, vdseTxStatus );
 
          vdseLockNoFailure( &parentFolder->memObject, pContext );
 
@@ -555,7 +555,7 @@ void vdseTxRollback( vdseTx*             pTx,
 
             /* Remove it from the folder (from the hash list) */
             vdseFolderRemoveObject( parentFolder, 
-                                    GET_PTR(pChildNode->myKeyOffset, vdsChar_T),
+                                    GET_PTR_FAST(pChildNode->myKeyOffset, vdsChar_T),
                                     pChildNode->myNameLength,
                                     pContext );
             /* If needed */
@@ -589,27 +589,27 @@ void vdseTxRollback( vdseTx*             pTx,
 
          VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
 
-         parentFolder = GET_PTR( pOps->parentOffset, vdseFolder );
+         GET_PTR( parentFolder, pOps->parentOffset, vdseFolder );
 
          if ( pOps->childType == VDSE_IDENT_FOLDER )
          {
-            pChildFolder = GET_PTR( pOps->childOffset, vdseFolder );
+            GET_PTR( pChildFolder, pOps->childOffset, vdseFolder );
             pChildMemObject = &pChildFolder->memObject;
             pChildNode      = &pChildFolder->nodeObject;
          }
          else if ( pOps->childType == VDSE_IDENT_HASH_MAP )
          {
-            pHashMap = GET_PTR( pOps->childOffset, vdseHashMap );
+            GET_PTR( pHashMap, pOps->childOffset, vdseHashMap );
             pChildMemObject = &pHashMap->memObject;
             pChildNode      = &pHashMap->nodeObject;
          }
          else
          {
-            pQueue          = GET_PTR( pOps->childOffset, vdseQueue );
+            GET_PTR( pQueue, pOps->childOffset, vdseQueue );
             pChildMemObject = &pQueue->memObject;
             pChildNode      = &pQueue->nodeObject;
          }
-         pChildStatus = GET_PTR( pChildNode->txStatusOffset, vdseTxStatus );
+         GET_PTR( pChildStatus, pChildNode->txStatusOffset, vdseTxStatus );
 
          vdseLockNoFailure( &parentFolder->memObject, pContext );
          vdseLockNoFailure( pChildMemObject, pContext );
@@ -629,7 +629,7 @@ void vdseTxRollback( vdseTx*             pTx,
 
          if ( pOps->parentType == VDSE_IDENT_HASH_MAP )
          {
-            pHashMap = GET_PTR( pOps->parentOffset, vdseHashMap );
+            GET_PTR( pHashMap, pOps->parentOffset, vdseHashMap );
             pParentMemObject = &pHashMap->memObject;
 
             vdseLockNoFailure( pParentMemObject, pContext );
@@ -639,7 +639,7 @@ void vdseTxRollback( vdseTx*             pTx,
          }
          else if ( pOps->parentType == VDSE_IDENT_QUEUE )
          {
-            pQueue = GET_PTR( pOps->parentOffset, vdseQueue );
+            GET_PTR( pQueue, pOps->parentOffset, vdseQueue );
             pParentMemObject = &pQueue->memObject;
 
             vdseLockNoFailure( pParentMemObject, pContext );

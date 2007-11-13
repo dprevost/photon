@@ -42,7 +42,7 @@ void vdseHashMapCommitAdd( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
-   pHashItem = GET_PTR( itemOffset, vdseHashItem );
+   GET_PTR( pHashItem, itemOffset, vdseHashItem );
 
    vdseTxStatusSetTx( &pHashItem->txStatus, NULL_OFFSET );
    pHashMap->nodeObject.txCounter--;
@@ -59,7 +59,7 @@ void vdseHashMapCommitAdd( vdseHashMap        * pHashMap,
     *       current function returns void. Let's someone else find that 
     *       we are getting low on memory...
     */
-   txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
    if ( (txHashMapStatus->usageCounter == 0) &&
       (pHashMap->nodeObject.txCounter == 0 ) )
    {
@@ -83,7 +83,7 @@ void vdseHashMapCommitRemove( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
-   pHashItem = GET_PTR( itemOffset, vdseHashItem );
+   GET_PTR( pHashItem, itemOffset, vdseHashItem );
    txItemStatus = &pHashItem->txStatus;
    /* 
     * If someone is using it, the usageCounter will be greater than zero.
@@ -110,7 +110,7 @@ void vdseHashMapCommitRemove( vdseHashMap        * pHashMap,
        *       current function returns void. Let's someone else find that 
        *       we are getting low on memory...
        */
-      txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+      GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
       if ( (txHashMapStatus->usageCounter == 0) &&
          (pHashMap->nodeObject.txCounter == 0 ) )
       {
@@ -145,7 +145,7 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( keyLength > 0 );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
    
-   txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
    if ( vdseLock( &pHashMap->memObject, pContext ) == 0 )
    {
@@ -263,7 +263,7 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( keyLength > 0 );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
 
-   txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
    if ( vdseLock( &pHashMap->memObject, pContext ) == 0 )
    {
@@ -365,7 +365,7 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
 
-   txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
    if ( vdseLock( &pHashMap->memObject, pContext ) == 0 )
    {
@@ -374,7 +374,7 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
                                   &firstItemOffset );
       while ( listErr == LIST_OK )
       {
-         pHashItem = GET_PTR( firstItemOffset, vdseHashItem );
+         GET_PTR( pHashItem, firstItemOffset, vdseHashItem );
          txItemStatus = &pHashItem->txStatus;
          if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
              && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
@@ -444,7 +444,7 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( pItem->pHashItem  != NULL );
    VDS_PRE_CONDITION( pItem->itemOffset != NULL_OFFSET );
    
-   txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
    bucket           = pItem->bucket;
    itemOffset       = pItem->itemOffset;
@@ -459,7 +459,7 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
                                  &itemOffset );
       while ( listErr == LIST_OK )
       {
-         pHashItem = GET_PTR( itemOffset, vdseHashItem );
+         GET_PTR( pHashItem, itemOffset, vdseHashItem );
          txItemStatus = &pHashItem->txStatus;
          if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
              && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
@@ -590,7 +590,7 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( itemLength > 0 );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
 
-   txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
    if ( vdseLock( &pHashMap->memObject, pContext ) == 0 )
    {
@@ -711,7 +711,7 @@ void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( pContext  != NULL );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
 
-   txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
    txItemStatus = &pHashItem->txStatus;
    
@@ -765,7 +765,7 @@ void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
-   pHashItem = GET_PTR( itemOffset, vdseHashItem );
+   GET_PTR( pHashItem, itemOffset, vdseHashItem );
    txItemStatus = &pHashItem->txStatus;
    /* 
     * A new entry that isn't yet committed cannot be accessed by some
@@ -796,7 +796,7 @@ void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap,
        *       current function returns void. Let's someone else find that 
        *       we are getting low on memory...
        */
-      txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+      GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
       if ( (txHashMapStatus->usageCounter == 0) &&
          (pHashMap->nodeObject.txCounter == 0 ) )
       {
@@ -823,7 +823,7 @@ void vdseHashMapRollbackRemove( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
-   pHashItem = GET_PTR( itemOffset, vdseHashItem );
+   GET_PTR( pHashItem, itemOffset, vdseHashItem );
    txItemStatus = &pHashItem->txStatus;
 
    /*
@@ -845,7 +845,7 @@ void vdseHashMapRollbackRemove( vdseHashMap        * pHashMap,
     *       current function returns void. Let's someone else find that 
     *       we are getting low on memory...
     */
-   txHashMapStatus = GET_PTR( pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
    if ( (txHashMapStatus->usageCounter == 0) &&
       (pHashMap->nodeObject.txCounter == 0 ) )
    {

@@ -44,6 +44,25 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * How do you identify NULL values using offsets instead of pointers? 
+ * Tricky...
+ * You cannot use the trick SET_OFFSET(NULL) because this set the value
+ * to -base_address - which is only valid for a given process. 
+ * You cannot use the value "0" because it is a valid offset. 
+ * However the offset -1 (or 0xffffffff on 32 bits systems) can never
+ * be reached (if ptrdiff_t is always the same number of bits as
+ * a pointer - which is guaranteed by definition ...).
+ */
+
+ /* MAJOR concern: you cannot check if a reconstructed pointer is
+  * NULL or not - this makes no sense anymore. You have to test 
+  * the offset for NULL_OFFSET !!! 
+  */
+#define NULL_OFFSET ( (ptrdiff_t) -1 )
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /** 
  *  The base address of the shared memory as seen for each process (each 
  *  process having their own copy of this global). This pointer is used
@@ -62,15 +81,24 @@ extern vdscErrMsgHandle g_vdsErrorHandle;
  * be the NULL_OFFSET (for example, in the LinkedList "class", the links
  * are never set to NULL_OFFSET...). 
  */
-#define GET_PTR(off,class) ( (class*) (           \
+#define GET_PTR_FAST(off,class) ( (class*) (           \
        (unsigned char*) g_pBaseAddr + (ptrdiff_t) (off) ))
 
-#define SET_PTR2(target,offset,type)  \
-   if ( offset == NULL_OFFSET ) \
-      target = NULL; \
-   else \
-      target = (type*) (           \
-         (unsigned char*) g_pBaseAddr + (ptrdiff_t) offset );
+#define GET_PTR_OPT(target,offset,type)  \
+{ \
+   target = (type*) ( (unsigned char*) g_pBaseAddr + (ptrdiff_t) offset ); \
+}
+
+#define GET_PTR_DBG(target,offset,type)  \
+{ \
+   ptrdiff_t off = offset; \
+   VDS_INV_CONDITION( off != 0 ); \
+   VDS_INV_CONDITION( off != NULL_OFFSET ); \
+   target = (type*) ( (unsigned char*) g_pBaseAddr + (ptrdiff_t) off ); \
+}
+
+//#define GET_PTR(target,offset,type) GET_PTR_OPT(target,offset,type)
+#define GET_PTR(target,offset,type) GET_PTR_DBG(target,offset,type)
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -79,25 +107,6 @@ extern vdscErrMsgHandle g_vdsErrorHandle;
  * know...
  */
 typedef unsigned int transaction_T;
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/*
- * How do you identify NULL values using offsets instead of pointers? 
- * Tricky...
- * You cannot use the trick SET_OFFSET(NULL) because this set the value
- * to -base_address - which is only valid for a given process. 
- * You cannot use the value "0" because it is a valid offset. 
- * However the offset -1 (or 0xffffffff on 32 bits systems) can never
- * be reached (if ptrdiff_t is always the same number of bits as
- * a pointer - which is guaranteed by definition ...).
- */
-
- /* MAJOR concern: you cannot check if a reconstructed pointer is
-  * NULL or not - this makes no sense anymore. You have to test 
-  * the offset for NULL_OFFSET !!! 
-  */
-#define NULL_OFFSET ( (ptrdiff_t) -1 )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

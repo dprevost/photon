@@ -28,7 +28,6 @@ int main()
    vdsErrors errcode;
    vdstObjDummy *pDummy;
    vdseSessionContext context;
-   vdsObjStatus status;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    

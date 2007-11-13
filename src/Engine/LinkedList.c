@@ -80,7 +80,7 @@ bool vdseLinkedListIsValid( vdseLinkedList* pList,
 
    pItem = &pList->head;
    
-   pItem = GET_PTR( pItem->nextOffset, vdseLinkNode );
+   GET_PTR( pItem, pItem->nextOffset, vdseLinkNode );
    while ( pItem != &pList->head )
    {
       if ( pItem == pUnknown )
@@ -89,7 +89,7 @@ bool vdseLinkedListIsValid( vdseLinkedList* pList,
          break;
       }
       
-      pItem = GET_PTR( pItem->nextOffset, vdseLinkNode );
+      GET_PTR( pItem, pItem->nextOffset, vdseLinkNode );
    }
 
    return valid;

@@ -26,7 +26,7 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE sessionHandle, objHandle;
+   VDS_HANDLE sessionHandle;
    int errcode;
    
    if ( argc > 1 )

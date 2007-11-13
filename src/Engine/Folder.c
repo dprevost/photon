@@ -62,7 +62,7 @@ bool vdseFolderDeletable( vdseFolder         * pFolder,
                                &offset );
    while ( listErr == LIST_OK )
    {
-      pItem = GET_PTR( offset, vdseHashItem );
+      GET_PTR( pItem, offset, vdseHashItem );
       if ( pItem->txStatus.txOffset != txOffset )
          return false;
       if ( ! vdseTxStatusIsMarkedAsDestroyed( &pItem->txStatus ) )
@@ -146,7 +146,7 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
          goto the_exit;
       }
 
-      pDesc = GET_PTR( pHashItem->dataOffset, vdseObjectDescriptor );
+      GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
       
       /*
        * A special case - folders cannot be deleted if they are not empty
@@ -157,14 +157,14 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
        */
       if ( pDesc->apiType == VDS_FOLDER )
       {
-         pDeletedFolder = GET_PTR( pDesc->offset, vdseFolder );
+         GET_PTR( pDeletedFolder, pDesc->offset, vdseFolder );
          if ( ! vdseFolderDeletable( pDeletedFolder, pContext ) )
          {
             errcode = VDS_FOLDER_IS_NOT_EMPTY;
             goto the_exit;
          }
       }
-      pMemObj = GET_PTR( pDesc->memOffset, vdseMemObject );
+      GET_PTR( pMemObj, pDesc->memOffset, vdseMemObject );
       
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_REMOVE_OBJECT,
@@ -188,7 +188,7 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
    /* If we come here, this was not the last iteration, so we continue */
 
    /* This is not the last node. This node must be a folder, otherwise... */
-   pDesc = GET_PTR( pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
    if ( pDesc->apiType != VDS_FOLDER )
    {
       errcode = VDS_NO_SUCH_FOLDER;
@@ -212,7 +212,7 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
       goto the_exit;
    }
 
-   pNextFolder = GET_PTR( pDesc->offset, vdseFolder );
+   GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
    rc = vdseLock( &pNextFolder->memObject, pContext );
    if ( rc != 0 )
    {
@@ -273,7 +273,7 @@ int vdseFolderGetFirst( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
-   txFolderStatus = GET_PTR( pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
 
    if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
    {
@@ -287,7 +287,7 @@ int vdseFolderGetFirst( vdseFolder         * pFolder,
                                   &firstItemOffset );
       while ( listErr == LIST_OK )
       {
-         pHashItem = GET_PTR( firstItemOffset, vdseHashItem );
+         GET_PTR( pHashItem, firstItemOffset, vdseHashItem );
          txItemStatus = &pHashItem->txStatus;
          if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
              && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
@@ -343,7 +343,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pItem->pHashItem  != NULL );
    VDS_PRE_CONDITION( pItem->itemOffset != NULL_OFFSET );
    
-   txFolderStatus = GET_PTR( pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
 
    bucket           = pItem->bucket;
    itemOffset       = pItem->itemOffset;
@@ -363,7 +363,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
                                  &itemOffset );
       while ( listErr == LIST_OK )
       {
-         pHashItem = GET_PTR( itemOffset, vdseHashItem );
+         GET_PTR( pHashItem, itemOffset, vdseHashItem );
          txItemStatus = &pHashItem->txStatus;
          if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
              && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
@@ -449,11 +449,11 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
    }
    txItemStatus = &pHashItem->txStatus;
 
-   pDesc = GET_PTR( pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
    
    if ( lastIteration )
    {
-      txFolderStatus = GET_PTR( pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+      GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
       /* 
        * If the transaction id of the object (to retrieve) is not either equal
        * to zero or to the current transaction id, then it belongs to 
@@ -504,7 +504,7 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
       goto the_exit;
    }
    
-   pNextFolder = GET_PTR( pDesc->offset, vdseFolder );
+   GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
    rc = vdseLock( &pNextFolder->memObject, pContext );
    if ( rc != 0 )
    {
@@ -585,7 +585,7 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
    }
    txStatus = &pHashItem->txStatus;
 
-   pDesc = GET_PTR( pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
    
    if ( lastIteration )
    {
@@ -606,7 +606,7 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
          goto the_exit;
       }
       
-      pMemObject = GET_PTR( pDesc->memOffset, vdseMemObject );
+      GET_PTR( pMemObject, pDesc->memOffset, vdseMemObject );
       if ( vdseLock( pMemObject, pContext ) == 0 )
       {
          vdseMemObjectStatus( pMemObject, pStatus );
@@ -614,15 +614,15 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
          switch( pDesc->apiType )
          {
          case VDS_FOLDER:
-            vdseFolderStatus( GET_PTR( pDesc->memOffset, vdseFolder ),
+            vdseFolderStatus( GET_PTR_FAST( pDesc->memOffset, vdseFolder ),
                               pStatus );
             break;
          case VDS_HASH_MAP:
-            vdseHashMapStatus( GET_PTR( pDesc->memOffset, vdseHashMap ),
+            vdseHashMapStatus( GET_PTR_FAST( pDesc->memOffset, vdseHashMap ),
                                pStatus );
             break;
          case VDS_QUEUE:
-            vdseQueueStatus( GET_PTR( pDesc->memOffset, vdseQueue ),
+            vdseQueueStatus( GET_PTR_FAST( pDesc->memOffset, vdseQueue ),
                              pStatus );
             break;
          default:
@@ -665,7 +665,7 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
       goto the_exit;
    }
    
-   pNextFolder = GET_PTR( pDesc->offset, vdseFolder );
+   GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
    rc = vdseLock( &pNextFolder->memObject, pContext );
    if ( rc != 0 )
    {
@@ -896,7 +896,7 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
       objTxStatus = &pHashItem->txStatus;
       vdseTxStatusInit( objTxStatus, SET_OFFSET(pContext->pTransaction) );
       
-      pDesc = GET_PTR(pHashItem->dataOffset, vdseObjectDescriptor );
+      GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
       switch ( memObjType )
       {
       case VDSE_IDENT_QUEUE:
@@ -976,7 +976,7 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
    }
    
    /* This is not the last node. This node must be a folder, otherwise... */
-   pDesc = GET_PTR( pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
    if ( pDesc->apiType != VDS_FOLDER )
    {
       errcode = VDS_NO_SUCH_FOLDER;
@@ -1000,7 +1000,7 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
       goto the_exit;
    }
    
-   pNextFolder = GET_PTR( pDesc->offset, vdseFolder );   
+   GET_PTR( pNextFolder, pDesc->offset, vdseFolder );   
    rc = vdseLock( &pNextFolder->memObject, pContext );
    if ( rc != 0 )
    {
@@ -1048,7 +1048,7 @@ int vdseFolderRelease( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
    txItemStatus = &pFolderItem->pHashItem->txStatus;
-   txFolderStatus = GET_PTR( pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
    
    if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
    {
@@ -1082,7 +1082,7 @@ void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
    txItemStatus = &pHashItem->txStatus;
-   txFolderStatus = GET_PTR( pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
    
    txItemStatus->parentCounter--;
    txFolderStatus->usageCounter--;
@@ -1155,7 +1155,7 @@ void vdseFolderResize( vdseFolder         * pFolder,
     *   - nodeObject.txCounter: offset to some of our data is part of a
     *                           transaction.
     */
-   txFolderStatus = GET_PTR( pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
    if ( (txFolderStatus->usageCounter == 0) &&
       (pFolder->nodeObject.txCounter == 0 ) )
    {
@@ -1195,15 +1195,15 @@ int vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
    VDS_PRE_CONDITION( pFolderItem != NULL );
    VDS_PRE_CONDITION( pContext    != NULL );
 
-   pDesc = GET_PTR( pFolderItem->pHashItem->dataOffset, vdseObjectDescriptor );
-   pNode = GET_PTR( pDesc->nodeOffset, vdseTreeNode);
+   GET_PTR( pDesc, pFolderItem->pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pNode, pDesc->nodeOffset, vdseTreeNode);
    
-   parentFolder = GET_PTR( pNode->myParentOffset, vdseFolder );
-   txFolderStatus = GET_PTR( parentFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( parentFolder, pNode->myParentOffset, vdseFolder );
+   GET_PTR( txFolderStatus, parentFolder->nodeObject.txStatusOffset, vdseTxStatus );
    
    if ( vdseLock( &parentFolder->memObject, pContext ) == 0 )
    {
-      txItemStatus = GET_PTR(pNode->txStatusOffset, vdseTxStatus );
+      GET_PTR( txItemStatus, pNode->txStatusOffset, vdseTxStatus );
       txItemStatus->parentCounter--;
       txFolderStatus->usageCounter--;
       

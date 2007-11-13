@@ -31,13 +31,13 @@ vdseLinkedListGetFirst( vdseLinkedList  * pList,
       return LIST_EMPTY;
 
    /* Get the pointer to the first node */
-   *ppItem = GET_PTR( pList->head.nextOffset, vdseLinkNode );
+   *ppItem = GET_PTR_FAST( pList->head.nextOffset, vdseLinkNode );
 
    /* Reset the next offset of the head and the previous offset
     * of the item after the item we are removing.
     */
    pList->head.nextOffset = (*ppItem)->nextOffset;
-   GET_PTR( (*ppItem)->nextOffset, vdseLinkNode)->previousOffset = 
+   GET_PTR_FAST( (*ppItem)->nextOffset, vdseLinkNode)->previousOffset = 
       SET_OFFSET( &pList->head );
 
    --pList->currentSize;
@@ -63,12 +63,12 @@ vdseLinkedListGetLast( vdseLinkedList  * pList,
       return LIST_EMPTY;
 
    /* Get the pointer to the last node */
-   *ppItem = GET_PTR( pList->head.previousOffset, vdseLinkNode );
+   *ppItem = GET_PTR_FAST( pList->head.previousOffset, vdseLinkNode );
 
    /* Reset the previous offset of the head and the next offset
     * of the item before the item we are removing.
     */   pList->head.previousOffset = (*ppItem)->previousOffset;
-   GET_PTR( (*ppItem)->previousOffset, vdseLinkNode)->nextOffset = 
+   GET_PTR_FAST( (*ppItem)->previousOffset, vdseLinkNode)->nextOffset = 
       SET_OFFSET( &pList->head );
 
    --pList->currentSize;
@@ -97,7 +97,7 @@ vdseLinkedListPutLast( vdseLinkedList * pList,
    /* The order of the next two is important - don't change it! */
    pNewItem->previousOffset   = pList->head.previousOffset;   
    pList->head.previousOffset = tmpOffset;
-   GET_PTR( pNewItem->previousOffset, vdseLinkNode )->nextOffset = 
+   GET_PTR_FAST( pNewItem->previousOffset, vdseLinkNode )->nextOffset = 
       tmpOffset;
    
    pList->currentSize++;
@@ -126,7 +126,7 @@ vdseLinkedListPutFirst( vdseLinkedList * pList,
    /* The order of the next two is important - don't change it! */
    pNewItem->nextOffset = pList->head.nextOffset;   
    pList->head.nextOffset = tmpOffset;
-   GET_PTR( pNewItem->nextOffset, vdseLinkNode )->previousOffset = 
+   GET_PTR_FAST( pNewItem->nextOffset, vdseLinkNode )->previousOffset = 
       tmpOffset;
    
    pList->currentSize++;
@@ -159,7 +159,7 @@ vdseLinkedListRemoveItem( vdseLinkedList * pList,
       int dbc_ok = 0;
       vdseLinkNode* dbc_ptr;
 
-      dbc_ptr = GET_PTR( pRemovedItem->nextOffset,
+      dbc_ptr = GET_PTR_FAST( pRemovedItem->nextOffset,
                          vdseLinkNode );
       while ( dbc_count > 0 )
       {
@@ -169,7 +169,7 @@ vdseLinkedListRemoveItem( vdseLinkedList * pList,
             break;
          }
          VDS_PRE_CONDITION( dbc_ptr->nextOffset != NULL_OFFSET );
-         dbc_ptr = GET_PTR( dbc_ptr->nextOffset, vdseLinkNode );
+         dbc_ptr = GET_PTR_FAST( dbc_ptr->nextOffset, vdseLinkNode );
          dbc_count--;
          
       }
@@ -177,10 +177,10 @@ vdseLinkedListRemoveItem( vdseLinkedList * pList,
    }
 #endif
 
-   GET_PTR( pRemovedItem->nextOffset, vdseLinkNode )->previousOffset = 
+   GET_PTR_FAST( pRemovedItem->nextOffset, vdseLinkNode )->previousOffset = 
       pRemovedItem->previousOffset;
 
-   GET_PTR( pRemovedItem->previousOffset, vdseLinkNode )->nextOffset = 
+   GET_PTR_FAST( pRemovedItem->previousOffset, vdseLinkNode )->nextOffset = 
       pRemovedItem->nextOffset;
 
    --pList->currentSize;
@@ -201,7 +201,7 @@ vdseLinkedListPeakFirst( vdseLinkedList *  pList,
    if ( pList->currentSize == 0 )
       return LIST_EMPTY;
 
-   *ppItem = GET_PTR( pList->head.nextOffset, vdseLinkNode );
+   *ppItem = GET_PTR_FAST( pList->head.nextOffset, vdseLinkNode );
 
    VDS_POST_CONDITION( *ppItem != NULL );
 
@@ -223,7 +223,7 @@ vdseLinkedListPeakLast( vdseLinkedList  * pList,
    if ( pList->currentSize == 0 )
       return LIST_EMPTY;
 
-   *ppItem = GET_PTR( pList->head.previousOffset, vdseLinkNode );
+   *ppItem = GET_PTR_FAST( pList->head.previousOffset, vdseLinkNode );
 
    VDS_POST_CONDITION( *ppItem != NULL );
 
@@ -257,7 +257,7 @@ vdseLinkedListPeakNext( vdseLinkedList * pList,
       int dbc_ok = 0;
       vdseLinkNode* dbc_ptr;
 
-      dbc_ptr = GET_PTR( pCurrent->nextOffset, vdseLinkNode );
+      dbc_ptr = GET_PTR_FAST( pCurrent->nextOffset, vdseLinkNode );
       while ( dbc_count > 0 )
       {
          if ( dbc_ptr == &pList->head )
@@ -266,14 +266,14 @@ vdseLinkedListPeakNext( vdseLinkedList * pList,
             break;
          }
          VDS_PRE_CONDITION( dbc_ptr->nextOffset != NULL_OFFSET );
-         dbc_ptr = GET_PTR( dbc_ptr->nextOffset, vdseLinkNode );
+         dbc_ptr = GET_PTR_FAST( dbc_ptr->nextOffset, vdseLinkNode );
          dbc_count--;
       }
       VDS_PRE_CONDITION( dbc_ok == 1 );
    }
 #endif
 
-   pNext = GET_PTR( pCurrent->nextOffset, vdseLinkNode );
+   pNext = GET_PTR_FAST( pCurrent->nextOffset, vdseLinkNode );
    if ( pNext == &pList->head )
       return LIST_END_OF_LIST;
    *ppNext = pNext;
@@ -310,7 +310,7 @@ vdseLinkedListPeakPrevious( vdseLinkedList * pList,
       int dbc_ok = 0;
       vdseLinkNode* dbc_ptr;
 
-      dbc_ptr = GET_PTR( pCurrent->nextOffset, vdseLinkNode );
+      dbc_ptr = GET_PTR_FAST( pCurrent->nextOffset, vdseLinkNode );
       while ( dbc_count > 0 )
       {
          if ( dbc_ptr == &pList->head )
@@ -319,14 +319,14 @@ vdseLinkedListPeakPrevious( vdseLinkedList * pList,
             break;
          }
          VDS_PRE_CONDITION( dbc_ptr->nextOffset != NULL_OFFSET );
-         dbc_ptr = GET_PTR( dbc_ptr->nextOffset, vdseLinkNode );
+         dbc_ptr = GET_PTR_FAST( dbc_ptr->nextOffset, vdseLinkNode );
          dbc_count--;
       }
       VDS_PRE_CONDITION( dbc_ok == 1 );
    }
 #endif
 
-   pPrevious = GET_PTR( pCurrent->previousOffset, vdseLinkNode );
+   pPrevious = GET_PTR_FAST( pCurrent->previousOffset, vdseLinkNode );
    if ( pPrevious == &pList->head )
       return LIST_END_OF_LIST;
    *ppPrevious = pPrevious;
@@ -368,7 +368,7 @@ vdseLinkedListReplaceItem( vdseLinkedList * pList,
       int dbc_ok = 0;
       vdseLinkNode* dbc_ptr;
 
-      dbc_ptr = GET_PTR( pOldItem->nextOffset,
+      dbc_ptr = GET_PTR_FAST( pOldItem->nextOffset,
                          vdseLinkNode );
       while ( dbc_count > 0 )
       {
@@ -378,7 +378,7 @@ vdseLinkedListReplaceItem( vdseLinkedList * pList,
             break;
          }
          VDS_PRE_CONDITION( dbc_ptr->nextOffset != NULL_OFFSET );
-         dbc_ptr = GET_PTR( dbc_ptr->nextOffset, vdseLinkNode );
+         dbc_ptr = GET_PTR_FAST( dbc_ptr->nextOffset, vdseLinkNode );
          dbc_count--;
          
       }
@@ -390,10 +390,10 @@ vdseLinkedListReplaceItem( vdseLinkedList * pList,
    pNewItem->nextOffset     = pOldItem->nextOffset;
    pNewItem->previousOffset = pOldItem->previousOffset;
 
-   GET_PTR( pOldItem->nextOffset, vdseLinkNode )->previousOffset = 
+   GET_PTR_FAST( pOldItem->nextOffset, vdseLinkNode )->previousOffset = 
       tmpOffset;
 
-   GET_PTR( pOldItem->previousOffset, vdseLinkNode )->nextOffset = 
+   GET_PTR_FAST( pOldItem->previousOffset, vdseLinkNode )->nextOffset = 
       tmpOffset;
 }
 

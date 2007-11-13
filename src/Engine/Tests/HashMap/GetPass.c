@@ -60,7 +60,7 @@ int main()
                              &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   ptr = GET_PTR( pItem->dataOffset, char );
+   GET_PTR( ptr, pItem->dataOffset, char );
    if (memcmp( data, ptr, 7 ) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
    txItemStatus = &pItem->txStatus;

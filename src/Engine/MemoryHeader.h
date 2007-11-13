@@ -20,7 +20,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine.h"
+#include "Engine/Engine.h"
+#include "Engine/TxStatus.h"
 
 BEGIN_C_DECLS
 
@@ -60,6 +61,8 @@ typedef struct vdseMemoryHeader
    char     compiler[20];
    char     cxxcompiler[20];
    
+   vdseTxStatus topFolderStatus;
+
 } vdseMemoryHeader;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

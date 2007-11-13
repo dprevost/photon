@@ -400,8 +400,8 @@ void vdseFree( vdseMemObject*      pMemObj,
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
 
       offset = currentGroup->bitmap.baseAddressOffset;
-      if ( ptr >= GET_PTR( offset, unsigned char) && 
-           ptr < GET_PTR( offset+ (currentGroup->numBlocks << VDSE_BLOCK_SHIFT), 
+      if ( ptr >= GET_PTR_FAST( offset, unsigned char) && 
+           ptr < GET_PTR_FAST( offset+ (currentGroup->numBlocks << VDSE_BLOCK_SHIFT), 
                           unsigned char ) )
       {
          goodGroup = currentGroup;
@@ -430,7 +430,7 @@ void vdseFree( vdseMemObject*      pMemObj,
       {
          /* The free group has more than one chunk */
          offset = *((ptrdiff_t*)p);
-         p = GET_PTR(offset, unsigned char);
+         GET_PTR( p, offset, unsigned char);
       }
       
       /*

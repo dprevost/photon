@@ -90,7 +90,7 @@ int main()
                              &bucket );
       if ( listErr != LIST_OK )
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-      pData = GET_PTR(pItem->dataOffset, unsigned char);
+      GET_PTR( pData, pItem->dataOffset, unsigned char );
       if ( memcmp( data, pData, strlen(data) ) != 0 )
          ERROR_EXIT( expectedToPass, NULL, ; );
       if ( pItem->dataLength != strlen(data) )

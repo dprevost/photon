@@ -240,7 +240,7 @@ static bool findKey( vdseHash*            pHash,
 
    while ( currentOffset != NULL_OFFSET )
    {
-      pItem = GET_PTR( currentOffset, vdseHashItem );
+      GET_PTR( pItem, currentOffset, vdseHashItem );
       nextOffset = pItem->nextItem;
      
       if ( keyLength == pItem->keyLength )
@@ -288,10 +288,10 @@ vdseHashDelete( vdseHash*            pHash,
    VDS_PRE_CONDITION( keyLength > 0 );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
-   SET_PTR2( pArray, pHash->arrayOffset, ptrdiff_t );
+   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
-   pMemObject = GET_PTR( pHash->memObjOffset, vdseMemObject );
+   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
 
    keyFound = findKey( pHash, pArray, pKey, keyLength, 
                        &pItem, &previousItem, &bucket );
@@ -335,10 +335,10 @@ void vdseHashEmpty( vdseHash*           pHash,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
-   SET_PTR2( pArray, pHash->arrayOffset, ptrdiff_t );
+   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
-   pMemObject = GET_PTR( pHash->memObjOffset, vdseMemObject );
+   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
 
    for ( i = 0; i < g_arrayLengths[pHash->lengthIndex]; ++i )
    {
@@ -346,7 +346,7 @@ void vdseHashEmpty( vdseHash*           pHash,
       
       while ( currentOffset != NULL_OFFSET )
       {
-         pItem = GET_PTR( currentOffset, vdseHashItem );
+         GET_PTR( pItem, currentOffset, vdseHashItem );
          nextOffset = pItem->nextItem;
          
          vdseFree( pMemObject, 
@@ -382,13 +382,13 @@ void vdseHashFini( vdseHash*           pHash,
    
    vdseHashEmpty( pHash, pContext );
 
-   pMemObject = GET_PTR( pHash->memObjOffset, vdseMemObject );
+   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
 
    /* EmptyList deallocates the rows but not the main array of */
    /* RowDescriptor* */
    if ( pHash->arrayOffset != NULL_OFFSET )
    {
-      pArray = GET_PTR( pHash->arrayOffset, ptrdiff_t );
+      GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
       vdseFree( pMemObject, 
                 (unsigned char*) pArray,
                 g_arrayLengths[pHash->lengthIndex]*sizeof(ptrdiff_t),
@@ -420,7 +420,7 @@ vdseHashGet( vdseHash*            pHash,
    VDS_PRE_CONDITION( keyLength > 0 );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
-   SET_PTR2( pArray, pHash->arrayOffset, ptrdiff_t );
+   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
    keyFound = findKey( pHash, pArray, pKey, keyLength, 
@@ -459,7 +459,7 @@ vdseHashGetFirst( vdseHash*  pHash,
    
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
-   SET_PTR2( pArray, pHash->arrayOffset, ptrdiff_t );
+   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
    if ( pHash->numberOfItems == 0 )
@@ -510,10 +510,10 @@ vdseHashGetNext( vdseHash*  pHash,
    VDS_PRE_CONDITION( previousBucket < g_arrayLengths[pHash->lengthIndex]);
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
-   SET_PTR2( pArray, pHash->arrayOffset, ptrdiff_t );
+   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
-   pItem = GET_PTR( previousOffset, vdseHashItem );
+   GET_PTR( pItem, previousOffset, vdseHashItem );
    if ( pItem->nextItem != NULL_OFFSET )
    {
       /* We found the next one in the linked list. */
@@ -562,7 +562,7 @@ vdseHashInit( vdseHash           * pHash,
    pHash->totalDataSizeInBytes = 0;
    pHash->enumResize = VDSE_HASH_NO_RESIZE;
    
-   pMemObject = GET_PTR( memObjOffset, vdseMemObject );
+   GET_PTR( pMemObject, memObjOffset, vdseMemObject );
    /*
     * reservedSize... In real life what it means is that we cannot shrink 
     * the array to a point where we would need to increase it in order
@@ -635,7 +635,7 @@ vdseHashInsert( vdseHash            * pHash,
 
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
-   SET_PTR2( pArray, pHash->arrayOffset, ptrdiff_t );
+   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
    keyFound = findKey( pHash, pArray, pKey, keyLength, 
@@ -644,7 +644,7 @@ vdseHashInsert( vdseHash            * pHash,
    if ( keyFound )
       return LIST_KEY_FOUND;
 
-   pMemObject = GET_PTR( pHash->memObjOffset, vdseMemObject );
+   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
    
    /* The whole item is allocated in one step, header+data, to minimize */
    /* overheads of the memory allocator */
@@ -663,7 +663,7 @@ vdseHashInsert( vdseHash            * pHash,
    pItem->dataOffset = SET_OFFSET(pItem) + itemLength - dataLength;
    
    memcpy( pItem->key,     pKey, keyLength );
-   memcpy( GET_PTR(pItem->dataOffset, unsigned char), pData, dataLength );
+   memcpy( GET_PTR_FAST(pItem->dataOffset, unsigned char), pData, dataLength );
 
    pHash->totalDataSizeInBytes += dataLength;
    pHash->numberOfItems++;
@@ -697,13 +697,13 @@ vdseHashResize( vdseHash*           pHash,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
-   SET_PTR2( pArray, pHash->arrayOffset, ptrdiff_t );
+   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
    if ( pHash->enumResize == VDSE_HASH_NO_RESIZE )
       return LIST_OK;
 
-   pMemObject = GET_PTR( pHash->memObjOffset, vdseMemObject );
+   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
 
    if ( pHash->enumResize == VDSE_HASH_TIME_TO_GROW )
       newIndexLength = pHash->lengthIndex + 1;
@@ -728,7 +728,7 @@ vdseHashResize( vdseHash*           pHash,
       
       while ( currentOffset != NULL_OFFSET )
       {
-         pItem = GET_PTR( currentOffset, vdseHashItem );
+         GET_PTR( pItem, currentOffset, vdseHashItem );
          nextOffset = pItem->nextItem;
          pItem->nextItem = NULL_OFFSET;
          
@@ -741,11 +741,11 @@ vdseHashResize( vdseHash*           pHash,
          else
          {
             newOffset = ptr[newBucket];
-            pNewItem = GET_PTR( newOffset, vdseHashItem );
+            GET_PTR( pNewItem, newOffset, vdseHashItem );
             while ( pNewItem->nextItem != NULL_OFFSET )
             {
                newOffset = pNewItem->nextItem;
-               pNewItem = GET_PTR( newOffset, vdseHashItem );
+               GET_PTR( pNewItem, newOffset, vdseHashItem );
             }
             pNewItem->nextItem = currentOffset;
          }
@@ -795,7 +795,7 @@ vdseHashUpdate( vdseHash*            pHash,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
-   SET_PTR2( pArray, pHash->arrayOffset, ptrdiff_t );
+   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
    keyFound = findKey( pHash, pArray, pKey, keyLength, 
@@ -865,8 +865,7 @@ bool HashList::SelfTest( vdseMemAlloc* pAlloc )
    size_t i, j, bucket, numRows = 0, sum = 0;
    ptrdiff_t* pArray;
    
-   SET_PTR2( pArray, pHash->arrayOffset, ptrdiff_t, pAlloc );
-   VDS_ASSERT( pArray != NULL );
+   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
 
    for ( i = 0; i < pHash->arrayLength; ++i)
    {

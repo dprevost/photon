@@ -89,8 +89,8 @@ fprintf( stderr, "ok 3\n" );
                                   &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );   
-   pDescriptor = GET_PTR( folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
-   pFolder2 = GET_PTR( pDescriptor->offset, vdseFolder );
+   GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pFolder2, pDescriptor->offset, vdseFolder );
 fprintf( stderr, "ok 4\n" );
 
    /* Create "/Test2/Test4" from "/Test2" */   
@@ -147,7 +147,7 @@ fprintf( stderr, "ok 5\n" );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );   
 
-   pDescriptor = GET_PTR( folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
    if ( memcmp( pDescriptor->originalName, strCheck("Test4"), 5*sizeof(vdsChar_T) ) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 

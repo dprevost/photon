@@ -39,7 +39,7 @@ int main()
    g_pBaseAddr = (unsigned char *)((((size_t)ptr - 1)/VDSE_BLOCK_SIZE + 1)*VDSE_BLOCK_SIZE);
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
    vdseMemAllocInit( pAlloc, g_pBaseAddr, 50*VDSE_BLOCK_SIZE, &context );
-   pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
+   GET_PTR( pBitmap, pAlloc->bitmapOffset, vdseMemBitmap );
    
    if ( (pBitmap->lengthInBits-1)/8+1 != 7 )
    {

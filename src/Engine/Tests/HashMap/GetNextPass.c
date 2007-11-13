@@ -67,7 +67,7 @@ int main()
                                   &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   ptr1 = GET_PTR( item.pHashItem->dataOffset, char );
+   GET_PTR( ptr1, item.pHashItem->dataOffset, char );
 
    errcode = vdseHashMapGetNext( pHashMap,
                                  &item,
@@ -75,7 +75,7 @@ int main()
                                  &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   ptr2 = GET_PTR( item.pHashItem->dataOffset, char );
+   GET_PTR( ptr2, item.pHashItem->dataOffset, char );
    if ( ptr1 == ptr2 )
       ERROR_EXIT( expectedToPass, NULL, ; );
    

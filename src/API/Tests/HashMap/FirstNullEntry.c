@@ -28,10 +28,8 @@ int main( int argc, char * argv[] )
 {
    VDS_HANDLE objHandle, sessionHandle;
    int errcode;
-   vdsaCommonObject object;
    const char * key  = "My Key";
    const char * data = "My Data";
-   vdsaDataEntry entry;
 
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0 );

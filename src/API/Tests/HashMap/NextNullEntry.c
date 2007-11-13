@@ -28,7 +28,6 @@ int main( int argc, char * argv[] )
 {
    VDS_HANDLE objHandle, sessionHandle;
    int errcode;
-   vdsaCommonObject object;
    const char * key1  = "My Key1";
    const char * data1 = "My Data1";
    const char * key2  = "My Key2";

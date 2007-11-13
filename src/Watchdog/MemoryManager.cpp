@@ -59,7 +59,7 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    vdscMemoryFileStatus fileStatus;
    vdseMemAlloc * pAlloc;
    
-   /* Very uunlikely but just in case... */
+   /* Very unlikely but just in case... */
    VDS_PRE_CONDITION( sizeof(vdseMemoryHeader) <= VDSE_BLOCK_SIZE );
    
    *ppHeader = NULL;
@@ -129,11 +129,12 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
                     errcode );
       return -1;
    }
+   vdseTxStatusInit( &m_pHeader->topFolderStatus, NULL_OFFSET );
 
    pFolder->nodeObject.txCounter      = 0;
    pFolder->nodeObject.myNameLength   = 0;
    pFolder->nodeObject.myNameOffset   = NULL_OFFSET;
-   pFolder->nodeObject.txStatusOffset = NULL_OFFSET;
+   pFolder->nodeObject.txStatusOffset = SET_OFFSET( &m_pHeader->topFolderStatus );
    pFolder->nodeObject.myParentOffset = NULL_OFFSET;
 
    listErr = vdseHashInit( &pFolder->hashObj, 
@@ -150,7 +151,62 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
       return -1;
    }   
    (*ppHeader)->treeMgrOffset = SET_OFFSET( ptr );
+
+////////////////////////
+#if 0
+      descLength = offsetof(vdseObjectDescriptor, originalName) + 
+          (partialLength+1) * sizeof(vdsChar_T);
+      pDesc = (vdseObjectDescriptor *) malloc( descLength );
+
+      memset( pDesc, 0, descLength );
+      pDesc->apiType = objectType;
+      pDesc->offset = SET_OFFSET( ptr );
+      pDesc->nameLengthInBytes = partialLength * sizeof(vdsChar_T);
+      memcpy( pDesc->originalName, originalName, pDesc->nameLengthInBytes );
+
+      listErr = vdseHashInsert( &pFolder->hashObj, 
+                                (unsigned char *)objectName, 
+                                partialLength * sizeof(vdsChar_T), 
+                                (void*)pDesc, 
+                                descLength,
+                                &pHashItem,
+                                pContext );
+
+      switch( objectType )
+      {
+      case VDS_FOLDER:
+         memObjType = VDSE_IDENT_FOLDER;
+         break;
+
+      free( pDesc ); 
+      pDesc = NULL;
       
+      objTxStatus = &pHashItem->txStatus;
+      vdseTxStatusInit( objTxStatus, SET_OFFSET(pContext->pTransaction) );
+      
+      GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+      switch ( memObjType )
+      {
+      case VDSE_IDENT_FOLDER:
+         rc = vdseFolderInit( (vdseFolder*)ptr,
+                              SET_OFFSET(pFolder),
+                              numBlocks,
+                              expectedNumOfChilds,
+                              objTxStatus,
+                              partialLength,
+                              pDesc->originalName,
+                              SET_OFFSET(pHashItem->key),
+                              pContext );
+         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseFolder,nodeObject);
+         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseFolder,memObject);
+         break;
+      
+      }
+
+#endif
+//////////////////////   
+   
+   
    /* The Garbage Collection manager */
    ptr = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
    if ( ptr == NULL )

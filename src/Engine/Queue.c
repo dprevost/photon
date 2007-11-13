@@ -37,7 +37,7 @@ void vdseQueueCommitAdd( vdseQueue * pQueue,
    VDS_PRE_CONDITION( pQueue   != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
-   pQueueItem = GET_PTR( itemOffset, vdseQueueItem );
+   GET_PTR( pQueueItem, itemOffset, vdseQueueItem );
 
    /* 
     * A new entry that isn't yet committed cannot be accessed by some
@@ -60,7 +60,7 @@ void vdseQueueCommitRemove( vdseQueue          * pQueue,
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
-   pQueueItem = GET_PTR( itemOffset, vdseQueueItem );
+   GET_PTR( pQueueItem, itemOffset, vdseQueueItem );
 
    /* 
     * If someone is using it, the usageCounter will be greater than one.
@@ -121,7 +121,7 @@ int vdseQueueGet( vdseQueue          * pQueue,
    VDS_PRE_CONDITION( flag == VDS_FIRST || flag == VDS_NEXT );
    VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
    
-   txQueueStatus = GET_PTR( pQueue->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
    
    if ( vdseLock( &pQueue->memObject, pContext ) == 0 )
    {
@@ -254,7 +254,7 @@ int vdseQueueInsert( vdseQueue          * pQueue,
       firstOrLast == VDSE_QUEUE_LAST );
    VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
 
-   txQueueStatus = GET_PTR( pQueue->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
 
    if ( vdseLock( &pQueue->memObject, pContext ) == 0 )
    {
@@ -376,7 +376,7 @@ void vdseQueueReleaseNoLock( vdseQueue          * pQueue,
    VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
 
    txItemStatus = &pQueueItem->txStatus;
-   txQueueStatus = GET_PTR( pQueue->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
    
    txItemStatus->usageCounter--;
    txQueueStatus->usageCounter--;
@@ -420,7 +420,7 @@ int vdseQueueRemove( vdseQueue          * pQueue,
       firstOrLast == VDSE_QUEUE_LAST );
    VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
    
-   txParentStatus = GET_PTR( pQueue->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txParentStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
 
    if ( vdseLock( &pQueue->memObject, pContext ) == 0 )
    {
@@ -522,7 +522,7 @@ void vdseQueueRollbackAdd( vdseQueue          * pQueue,
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
-   pQueueItem = GET_PTR( itemOffset, vdseQueueItem );
+   GET_PTR( pQueueItem, itemOffset, vdseQueueItem );
    txStatus = &pQueueItem->txStatus;
 
    len =  pQueueItem->dataLength + offsetof( vdseQueueItem, data );
@@ -560,7 +560,7 @@ void vdseQueueRollbackRemove( vdseQueue * pQueue,
    VDS_PRE_CONDITION( pQueue     != NULL );
    VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
 
-   pQueueItem = GET_PTR( itemOffset, vdseQueueItem );
+   GET_PTR( pQueueItem, itemOffset, vdseQueueItem );
 
    /*
     * This call resets the transaction (to "none"), decrement the

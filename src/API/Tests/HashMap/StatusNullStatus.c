@@ -30,7 +30,6 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * key1 = "My Key1";
    const char * data = "My Data";
-   vdsObjStatus status;
 
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0 );

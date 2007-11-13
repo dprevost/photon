@@ -26,9 +26,8 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE objHandle, sessionHandle;
+   VDS_HANDLE sessionHandle;
    int errcode;
-   vdsaCommonObject object;
    
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0 );

@@ -24,7 +24,6 @@ const bool expectedToPass = false;
 
 int main()
 {
-   vdsaProcess process;
    int errcode;
    
    errcode = vdsaProcessInit( NULL, "12345" );

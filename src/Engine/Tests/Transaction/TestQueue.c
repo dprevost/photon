@@ -67,8 +67,8 @@ int main()
                                   &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   pDescriptor = GET_PTR( item.pHashItem->dataOffset, vdseObjectDescriptor );
-   pQueue = GET_PTR( pDescriptor->offset, vdseQueue );
+   GET_PTR( pDescriptor, item.pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pQueue, pDescriptor->offset, vdseQueue );
 
    /* Test 1 */
    errcode = vdseQueueInsert( pQueue,

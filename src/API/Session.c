@@ -80,6 +80,7 @@ int vdsCreateObject( VDS_HANDLE      sessionHandle,
 {
    vdsaSession* pSession;
    int rc = 0, errcode = 0;
+   vdseFolder * pTree;
    
    pSession = (vdsaSession*) sessionHandle;
    if ( pSession == NULL )
@@ -110,8 +111,8 @@ int vdsCreateObject( VDS_HANDLE      sessionHandle,
    {
       if ( ! pSession->terminated )
       {
-         rc = vdseTopFolderCreateObject( GET_PTR( pSession->pHeader->treeMgrOffset, 
-                                                  vdseFolder ),
+         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder )
+         rc = vdseTopFolderCreateObject( pTree,
                                          objectName,
                                          nameLengthInBytes,
                                          objectType,
@@ -142,6 +143,7 @@ int vdsDestroyObject( VDS_HANDLE   sessionHandle,
 {
    vdsaSession* pSession;
    int rc = 0, errcode = 0;
+   vdseFolder * pTree;
    
    pSession = (vdsaSession*) sessionHandle;
    if ( pSession == NULL )
@@ -166,8 +168,8 @@ int vdsDestroyObject( VDS_HANDLE   sessionHandle,
    {
       if ( ! pSession->terminated )
       {
-         rc = vdseTopFolderDestroyObject( GET_PTR( pSession->pHeader->treeMgrOffset, 
-                                                   vdseFolder ),
+         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder )
+         rc = vdseTopFolderDestroyObject( pTree,
                                           objectName,
                                           nameLengthInBytes,
                                           &pSession->context );
@@ -296,7 +298,8 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
 {
    vdsaSession* pSession;
    int rc = 0, errcode = 0;
-
+   vdseMemAlloc * pAlloc;
+   
    pSession = (vdsaSession*) sessionHandle;
    if ( pSession == NULL )
       return VDS_NULL_HANDLE;
@@ -314,10 +317,8 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
    {
       if ( ! pSession->terminated )
       {
-         rc = vdseMemAllocStats( GET_PTR( pSession->pHeader->allocatorOffset, 
-                                          vdseMemAlloc ),
-                                 pInfo,
-                                 &pSession->context );
+         GET_PTR( pAlloc, pSession->pHeader->allocatorOffset, vdseMemAlloc )
+         rc = vdseMemAllocStats( pAlloc, pInfo, &pSession->context );
       }
       else
          errcode = VDS_SESSION_IS_TERMINATED;
@@ -345,6 +346,7 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
 {
    vdsaSession* pSession;
    int rc = 0, errcode = 0;
+   vdseFolder * pTree;
    
    pSession = (vdsaSession*) sessionHandle;
    if ( pSession == NULL )
@@ -375,8 +377,8 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
    {
       if ( ! pSession->terminated )
       {
-         rc = vdseTopFolderGetStatus( GET_PTR( pSession->pHeader->treeMgrOffset, 
-                                               vdseFolder ),
+         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder )
+         rc = vdseTopFolderGetStatus( pTree, 
                                       objectName,
                                       nameLengthInBytes,
                                       pStatus,
@@ -449,8 +451,7 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
       goto error_handler;
    }
 
-   pSession->context.pAllocator = GET_PTR( pSession->pHeader->allocatorOffset, 
-                                           void );   
+   GET_PTR( pSession->context.pAllocator, pSession->pHeader->allocatorOffset, void );
    if ( pSession->pHeader->logON )
    {
       ptr = malloc( sizeof(vdseLogFile) );
@@ -688,7 +689,8 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
                         struct vdsaCommonObject * pObject )
 {
    int errcode = 0, rc = 0;
-
+   vdseFolder * pTree;
+   
    VDS_PRE_CONDITION( pSession   != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( pObject    != NULL );
@@ -697,7 +699,8 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
    
    if ( ! pSession->terminated )
    {
-      rc = vdseTopFolderOpenObject( GET_PTR( pSession->pHeader->treeMgrOffset, vdseFolder ),
+      GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder );
+      rc = vdseTopFolderOpenObject( pTree,
                                     objectName,
                                     nameLengthInBytes,
                                     &pObject->folderItem,

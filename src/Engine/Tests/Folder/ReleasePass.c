@@ -73,9 +73,9 @@ int main()
                                 &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   pDescriptor = GET_PTR( item.pHashItem->dataOffset, vdseObjectDescriptor );
-   pNode = GET_PTR( pDescriptor->nodeOffset, vdseTreeNode);
-   txItemStatus = GET_PTR(pNode->txStatusOffset, vdseTxStatus );
+   GET_PTR( pDescriptor, item.pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pNode, pDescriptor->nodeOffset, vdseTreeNode);
+   GET_PTR( txItemStatus, pNode->txStatusOffset, vdseTxStatus );
    if ( txItemStatus->parentCounter != 1 ) 
       ERROR_EXIT( expectedToPass, NULL, ; );
    if ( status.usageCounter != 1 )

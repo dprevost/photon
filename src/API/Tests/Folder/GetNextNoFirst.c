@@ -28,7 +28,6 @@ int main( int argc, char * argv[] )
 {
    VDS_HANDLE objHandle, sessionHandle;
    int errcode;
-   vdsaCommonObject object;
    vdsFolderEntry entry;
    
    if ( argc > 1 )

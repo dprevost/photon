@@ -58,7 +58,7 @@ int main()
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
    
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
-   pBitmap = GET_PTR( pAlloc->bitmapOffset, vdseMemBitmap );
+   GET_PTR( pBitmap, pAlloc->bitmapOffset, vdseMemBitmap );
    if ( pBitmap->lengthInBits != 8*VDSE_BLOCK_SIZE )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
