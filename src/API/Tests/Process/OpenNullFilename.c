@@ -16,17 +16,23 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "API/Process.c"
+#include "API/Session.c"
+#include "API/Connector.c"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+int main( int argc, char * argv[] )
 {
    vdsaProcess process;
    int errcode;
    vdseSessionContext context;
       
-   errcode = vdsaProcessInit( &process, "12345" );
-   if ( errcode != VDS_CONNECT_ERROR )
+   memset( &process, 0, sizeof(vdsaProcess) );
+   if ( argc > 1 )
+      errcode = vdsaProcessInit( &process, argv[1] );
+   else
+      errcode = vdsaProcessInit( &process, "10701" );
+   if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       return 0;

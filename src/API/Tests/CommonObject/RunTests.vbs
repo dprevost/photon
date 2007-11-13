@@ -35,7 +35,8 @@ Dim failed_tests(9)
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(9)
+Dim ok_programs(3)
+Dim fail_programs(5)
 
 Dim exe_name, prog_path, program, wd_path, tmpDir, cmdFile, exeName
 Dim consoleMode
@@ -49,16 +50,17 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0) = "CloseNullObject"
-ok_programs(1) = "ClosePass"
-ok_programs(2) = "LockNullObject"
-ok_programs(3) = "LockPass"
-ok_programs(4) = "OpenNullName"
-ok_programs(5) = "OpenNullObject"
-ok_programs(6) = "OpenPass"
-ok_programs(7) = "OpenWrongType"
-ok_programs(8) = "UnlockNullObject"
-ok_programs(9) = "UnlockPass"
+ok_programs(0) = "ClosePass"
+ok_programs(1) = "LockPass"
+ok_programs(2) = "OpenPass"
+ok_programs(3) = "UnlockPass"
+
+fail_programs(0) = "CloseNullObject"
+fail_programs(1) = "LockNullObject"
+fail_programs(2) = "OpenNullName"
+fail_programs(3) = "OpenNullObject"
+fail_programs(4) = "OpenWrongType"
+fail_programs(5) = "UnlockNullObject"
 
 numTests  = 10                 ' Sum of length of both arrays 
 numFailed =  0
@@ -109,7 +111,7 @@ end if
 
 tmpDir = objShell.Environment.item("TMP")
 tmpDir = objShell.ExpandEnvironmentStrings(tmpDir)
-tmpDir = tmpDir + "\vdsf_001"
+tmpDir = tmpDir + "\vdsf_common"
 
 if (fso.FolderExists(tmpDir)) Then
    fso.DeleteFolder(tmpDir)
@@ -159,6 +161,28 @@ For Each program in ok_programs
       numFailed = numFailed + 1
    end if
 Next
+For Each program in fail_programs
+   exe_name = prog_path & "\" & program & ".exe"
+   if consoleMode then 
+      WScript.Echo "Running " & exe_name
+      Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exe_name & Chr(34))
+      status = objWshScriptExec.Status
+      Do While objWshScriptExec.Status = 0
+         WScript.Sleep 100
+      Loop
+      strOutput = objWshScriptExec.StdOut.ReadAll
+      if verbose then 
+         WScript.Stdout.Write objWshScriptExec.StdErr.ReadAll
+      end if
+      rc = objWshScriptExec.ExitCode
+   else
+      rc = objShell.Run("%comspec% /c " & Chr(34) & exe_name & Chr(34), 2, true)
+   end if
+   if rc = 0 then
+      failed_tests(numFailed) = program
+      numFailed = numFailed + 1
+   end if
+Next
 
 objShellwd.AppActivate "vdswd"
 Wscript.Sleep 1000
@@ -170,9 +194,11 @@ if consoleMode then
    For i = 1 to numFailed 
       WScript.StdOut.Write "This test failed: " & failed_tests(i-1) & vbcrlf
    Next
-   WScript.StdOut.Write "Type return to continue"
-   Dim dummy
-   dummy = WScript.StdIn.Read(1)
+   if verbose then
+      WScript.StdOut.Write "Type return to continue"
+      Dim dummy
+      dummy = WScript.StdIn.Read(1)
+   end if
 else                                 
    wscript.echo "Total number of tests: " & numTests & vbcrlf & _
       "Total number of failed tests: " & numFailed

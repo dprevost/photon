@@ -71,14 +71,17 @@ typedef struct vdsaSession
 /*
  * No lock is taken on the vdsaSession.
  */
+VDSF_EXPORT
 int vdsaCloseSession( vdsaSession* pSession );
 
+VDSF_EXPORT
 int vdsaSessionOpenObj( vdsaSession             * pSession,
                         enum vdsObjectType        objectType, 
                         const char              * objectName,
                         size_t                    nameLengthInBytes,
                         struct vdsaCommonObject * pObject );
 
+VDSF_EXPORT
 int vdsaSessionCloseObj( vdsaSession             * pSession,
                          struct vdsaCommonObject * pObject );
 

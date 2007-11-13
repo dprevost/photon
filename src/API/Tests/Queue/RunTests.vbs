@@ -35,7 +35,8 @@ Dim failed_tests(32)
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(32)
+Dim ok_programs(22)
+Dim fail_programs(9)
 
 Dim exe_name, prog_path, program, wd_path, tmpDir, cmdFile, exeName
 Dim consoleMode
@@ -52,37 +53,38 @@ dim strOutput
 ok_programs(0)  = "CloseNullHandle"
 ok_programs(1)  = "ClosePass"
 ok_programs(2)  = "CloseWrongHandle"
-ok_programs(3)  = "FirstNullEntry"
-ok_programs(4)  = "FirstNullHandle"
-ok_programs(5)  = "FirstPass"
-ok_programs(6)  = "FirstWrongHandle"
-ok_programs(7)  = "GetFirst"
-ok_programs(8)  = "GetNext"
-ok_programs(9)  = "NextNoFirst"
-ok_programs(10) = "NextNullEntry"
-ok_programs(11) = "NextNullHandle"
-ok_programs(12) = "NextPass"
-ok_programs(13) = "NextWrongHandle"
-ok_programs(14) = "OpenNullName"
-ok_programs(15) = "OpenNullObjHandle"
-ok_programs(16) = "OpenNullSessHandle"
-ok_programs(17) = "OpenPass"
-ok_programs(18) = "OpenWrongSessHandle"
-ok_programs(19) = "OpenZeroLength"
-ok_programs(20) = "Pop"
-ok_programs(21) = "PushNullData"
-ok_programs(22) = "PushNullHandle"
-ok_programs(23) = "PushPass"
-ok_programs(24) = "PushWrongHandle"
-ok_programs(25) = "PushZeroLength"
-ok_programs(26) = "RemoveNullEntry"
-ok_programs(27) = "RemoveNullHandle"
-ok_programs(28) = "RemovePass"
-ok_programs(29) = "RemoveWrongHandle"
-ok_programs(30) = "StatusNullHandle"
-ok_programs(31) = "StatusNullStatus"
-ok_programs(32) = "StatusPass"
+ok_programs(3)  = "FirstPass"
+ok_programs(4)  = "GetFirst"
+ok_programs(5)  = "GetNext"
+ok_programs(6)  = "NextPass"
+ok_programs(7)  = "OpenNullName"
+ok_programs(8)  = "OpenNullObjHandle"
+ok_programs(9)  = "OpenNullSessHandle"
+ok_programs(10) = "OpenPass"
+ok_programs(11) = "OpenWrongSessHandle"
+ok_programs(12) = "OpenZeroLength"
+ok_programs(13) = "Pop"
+ok_programs(14) = "PushNullData"
+ok_programs(15) = "PushNullHandle"
+ok_programs(16) = "PushPass"
+ok_programs(17) = "PushWrongHandle"
+ok_programs(18) = "PushZeroLength"
+ok_programs(19) = "RemovePass"
+ok_programs(20) = "StatusNullHandle"
+ok_programs(21) = "StatusNullStatus"
+ok_programs(22) = "StatusPass"
 
+fail_programs(0) = "FirstNullEntry.sh"
+fail_programs(1) = "FirstNullHandle.sh"
+fail_programs(2) = "FirstWrongHandle.sh"
+fail_programs(3) = "NextNoFirst.sh"
+fail_programs(4) = "NextNullEntry.sh"
+fail_programs(5) = "NextNullHandle.sh"
+fail_programs(6) = "NextWrongHandle.sh"
+fail_programs(7) = "RemoveNullEntry.sh"
+fail_programs(8) = "RemoveNullHandle.sh"
+fail_programs(9) = "RemoveWrongHandle.sh"
+	
 numTests  = 33                 ' Sum of length of both arrays 
 numFailed =  0
 
@@ -132,7 +134,7 @@ end if
 
 tmpDir = objShell.Environment.item("TMP")
 tmpDir = objShell.ExpandEnvironmentStrings(tmpDir)
-tmpDir = tmpDir + "\vdsf_001"
+tmpDir = tmpDir + "\vdsf_queue"
 
 if (fso.FolderExists(tmpDir)) Then
    fso.DeleteFolder(tmpDir)
@@ -182,10 +184,33 @@ For Each program in ok_programs
       numFailed = numFailed + 1
    end if
 Next
+For Each program in fail_programs
+   exe_name = prog_path & "\" & program & ".exe"
+   if consoleMode then 
+      WScript.Echo "Running " & exe_name
+      Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exe_name & Chr(34))
+      status = objWshScriptExec.Status
+      Do While objWshScriptExec.Status = 0
+         WScript.Sleep 100
+      Loop
+      strOutput = objWshScriptExec.StdOut.ReadAll
+      if verbose then 
+         WScript.Stdout.Write objWshScriptExec.StdErr.ReadAll
+      end if
+      rc = objWshScriptExec.ExitCode
+   else
+      rc = objShell.Run("%comspec% /c " & Chr(34) & exe_name & Chr(34), 2, true)
+   end if
+   if rc = 0 then
+      failed_tests(numFailed) = program
+      numFailed = numFailed + 1
+   end if
+Next
 
 objShellwd.AppActivate "vdswd"
 Wscript.Sleep 1000
 objShellwd.SendKeys "^C"
+Wscript.Sleep 1000
 
 if consoleMode then
    WScript.StdOut.Write vbcrlf & "Total number of tests: " & numTests & vbcrlf
@@ -193,9 +218,11 @@ if consoleMode then
    For i = 1 to numFailed 
       WScript.StdOut.Write "This test failed: " & failed_tests(i-1) & vbcrlf
    Next
-   WScript.StdOut.Write "Type return to continue"
-   Dim dummy
-   dummy = WScript.StdIn.Read(1)
+   if verbose then
+      WScript.StdOut.Write "Type return to continue"
+      Dim dummy
+      dummy = WScript.StdIn.Read(1)
+   end if
 else                                 
    wscript.echo "Total number of tests: " & numTests & vbcrlf & _
       "Total number of failed tests: " & numFailed

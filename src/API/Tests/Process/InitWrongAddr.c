@@ -24,7 +24,8 @@ int main()
    vdsaProcess process;
    int errcode;
 
-   /* First try something junk... */   
+   memset( &process, 0, sizeof(vdsaProcess) );
+   /* try something junk... */   
    errcode = vdsaProcessInit( &process, "abcdef" );
 
    if ( errcode != VDS_INVALID_WATCHDOG_ADDRESS )

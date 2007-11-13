@@ -143,7 +143,7 @@ end if
 
 tmpDir = objShell.Environment.item("TMP")
 tmpDir = objShell.ExpandEnvironmentStrings(tmpDir)
-tmpDir = tmpDir + "\vdsf_001"
+tmpDir = tmpDir + "\vdsf_hash"
 
 if (fso.FolderExists(tmpDir)) Then
    fso.DeleteFolder(tmpDir)
@@ -226,9 +226,11 @@ if consoleMode then
    For i = 1 to numFailed 
       WScript.StdOut.Write "This test failed: " & failed_tests(i-1) & vbcrlf
    Next
-   WScript.StdOut.Write "Type return to continue"
-   Dim dummy
-   dummy = WScript.StdIn.Read(1)
+   if verbose then
+      WScript.StdOut.Write "Type return to continue"
+      Dim dummy
+      dummy = WScript.StdIn.Read(1)
+   end if
 else                                 
    wscript.echo "Total number of tests: " & numTests & vbcrlf & _
       "Total number of failed tests: " & numFailed

@@ -33,14 +33,6 @@ vdscThreadLock   g_ProcessMutex;
  * Set to true if the program is multithreaded.
  */
 bool             g_protectionIsNeeded = false;
-
-static int vdsaOpenVDS( vdsaProcess        * process,
-                        const char         * memoryFileName,
-                        size_t               memorySizekb,
-                        vdseSessionContext * pSession );
-                        
-static void vdsaCloseVDS( vdsaProcess        * process,
-                          vdseSessionContext * pSession );
                           
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -60,7 +52,7 @@ bool AreWeTerminated()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaProcessInit( vdsaProcess *process, const char  *wdAddress )
+int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
 {
    struct WDOutput answer;
    char path[PATH_MAX];

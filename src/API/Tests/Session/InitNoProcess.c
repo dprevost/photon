@@ -23,7 +23,7 @@ const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char * argv[] )
+int main()
 {
    VDS_HANDLE sessionHandle;
    int errcode;

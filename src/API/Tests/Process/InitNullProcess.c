@@ -22,11 +22,14 @@ const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+int main( int argc, char * argv[] )
 {
    int errcode;
    
-   errcode = vdsaProcessInit( NULL, "12345" );
+   if ( argc > 1 )
+      errcode = vdsaProcessInit( NULL, argv[1] );
+   else
+      errcode = vdsaProcessInit( NULL, "10701" );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

@@ -48,8 +48,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/aqpopne",
-                              strlen("/aqpopne"),
+                              "/aqrne",
+                              strlen("/aqrne"),
                               VDS_FOLDER );
    if ( errcode != VDS_OK )
    {
@@ -58,8 +58,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/aqpopne/test",
-                              strlen("/aqpopne/test"),
+                              "/aqrne/test",
+                              strlen("/aqrne/test"),
                               VDS_QUEUE );
    if ( errcode != VDS_OK )
    {
@@ -68,8 +68,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsQueueOpen( sessionHandle,
-                           "/aqpopne/test",
-                           strlen("/aqpopne/test"),
+                           "/aqrne/test",
+                           strlen("/aqrne/test"),
                            &objHandle );
    if ( errcode != VDS_OK )
    {

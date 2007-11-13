@@ -54,6 +54,7 @@ int vdseSessionInit( vdseSession        * pSession,
          errcode = vdseTxInit( pTx, 1, pContext );
          if ( errcode == 0 )
          {
+            pSession->numLocks = 0;
             pSession->pTransaction = pTx;
             pContext->pTransaction = (void *) pTx;            
             pContext->lockOffsets = pSession->lockOffsets;

@@ -1,0 +1,64 @@
+# Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+include ..\Makefile.inc.Win32
+
+all: 
+
+check_PROGRAMS =                                   \
+                 .\Release\CloseNullHandle.exe     \
+                 .\Release\ClosePass.exe           \
+                 .\Release\CloseWrongHandle.exe    \
+                 .\Release\FirstNullEntry.exe      \
+                 .\Release\FirstNullHandle.exe     \
+                 .\Release\FirstPass.exe           \
+                 .\Release\FirstWrongHandle.exe    \
+                 .\Release\GetFirst.exe            \
+                 .\Release\GetNext.exe             \
+                 .\Release\NextNoFirst.exe         \
+                 .\Release\NextNullEntry.exe       \
+                 .\Release\NextNullHandle.exe      \
+                 .\Release\NextPass.exe            \
+                 .\Release\NextWrongHandle.exe     \
+                 .\Release\OpenNullName.exe        \
+                 .\Release\OpenNullObjHandle.exe   \
+                 .\Release\OpenNullSessHandle.exe  \
+                 .\Release\OpenPass.exe            \
+                 .\Release\OpenWrongSessHandle.exe \
+                 .\Release\OpenZeroLength.exe      \
+                 .\Release\Pop.exe                 \
+                 .\Release\PushNullData.exe        \
+                 .\Release\PushNullHandle.exe      \
+                 .\Release\PushPass.exe            \
+                 .\Release\PushWrongHandle.exe     \
+                 .\Release\PushZeroLength.exe      \
+                 .\Release\RemoveNullEntry.exe     \
+                 .\Release\RemoveNullHandle.exe    \
+                 .\Release\RemovePass.exe          \
+                 .\Release\RemoveWrongHandle.exe   \
+                 .\Release\StatusNullHandle.exe    \
+                 .\Release\StatusNullStatus.exe    \
+                 .\Release\StatusPass.exe          
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+
+check: $(OUTDIR) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+
+checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+
+clean: 
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+

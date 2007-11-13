@@ -27,7 +27,7 @@ int main()
    vdsaProcess process;
    int errcode;
    
-   /* First try something junk... */   
+   memset( &process, 0, sizeof(vdsaProcess) );
    errcode = vdsaProcessInit( &process, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

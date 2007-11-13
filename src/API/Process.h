@@ -67,7 +67,10 @@ typedef struct vdsaProcess
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+VDSF_EXPORT
 extern vdsaProcess *  g_pProcessInstance;
+
+VDSF_EXPORT
 extern bool           g_protectionIsNeeded;
 
 /** 
@@ -78,12 +81,25 @@ extern vdscThreadLock g_ProcessMutex;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+VDSF_EXPORT
 int vdsaProcessInit( vdsaProcess *pProcess,
                      const char  *wdAddress );
 
+VDSF_EXPORT
 void vdsaProcessFini();
 
+VDSF_EXPORT
 bool AreWeTerminated();
+
+VDSF_EXPORT
+int vdsaOpenVDS( vdsaProcess        * process,
+                 const char         * memoryFileName,
+                 size_t               memorySizekb,
+                 vdseSessionContext * pSession );
+                        
+VDSF_EXPORT
+void vdsaCloseVDS( vdsaProcess        * process,
+                   vdseSessionContext * pSession );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

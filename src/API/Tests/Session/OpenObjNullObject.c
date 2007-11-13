@@ -19,6 +19,7 @@
 #include <vdsf/vds.h>
 #include "Tests/PrintError.h"
 #include "API/CommonObject.h"
+#include "API/Session.h"
 
 const bool expectedToPass = false;
 

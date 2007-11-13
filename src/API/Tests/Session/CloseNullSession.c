@@ -18,7 +18,7 @@
 #include "Common/Common.h"
 #include <vdsf/vds.h>
 #include "Tests/PrintError.h"
-#include "API/Session.c"
+#include "API/Session.h"
 
 const bool expectedToPass = false;
 
