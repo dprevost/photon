@@ -77,17 +77,13 @@ int vdsCommonObjectClose( vdsaCommonObject * pObject )
    VDS_PRE_CONDITION( pObject != NULL );
 
    if ( pObject->pObjectContext == NULL )
-      errcode = VDS_OBJECT_NOT_INITIALIZED;
+      return VDS_OBJECT_NOT_INITIALIZED;
    
    if ( pObject->pSession == NULL )
       return VDS_PROCESS_NOT_INITIALIZED;
 
-   if ( vdsaCommonLock( pObject ) == 0 )
-   {
-      errcode = vdsaSessionCloseObj( pObject->pSession,
-                                     pObject );
-      vdsaCommonUnlock( pObject );
-   }
+   /* No need to lock the api session. The caller already did it! */
+   errcode = vdsaSessionCloseObj( pObject->pSession, pObject );
    
    return errcode;
 }

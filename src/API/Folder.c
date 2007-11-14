@@ -27,7 +27,8 @@
 int vdsFolderClose( VDS_HANDLE objectHandle )
 {
    vdsaFolder * pFolder;
-   int errcode;
+   vdseFolder * pVDSFolder;
+   int errcode = 0;
    
    pFolder = (vdsaFolder *) objectHandle;
    if ( pFolder == NULL )
@@ -36,7 +37,29 @@ int vdsFolderClose( VDS_HANDLE objectHandle )
    if ( pFolder->type != VDSA_FOLDER )
       return VDS_WRONG_TYPE_HANDLE;
    
-   errcode = vdsCommonObjectClose( &pFolder->object );
+   if ( vdsaCommonLock( &pFolder->object ) == 0 )
+   {
+      pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+
+      /* Reinitialize the iterator, if needed */
+      if ( pFolder->iterator.pHashItem != NULL )
+      {
+         if ( vdseFolderRelease( pVDSFolder,
+                                 &pFolder->iterator,
+                                 &pFolder->object.pSession->context ) == 0 )
+            memset( &pFolder->iterator, 0, sizeof(vdseFolderItem) );
+         else
+            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+      }
+
+      if ( errcode == 0 )
+         errcode = vdsCommonObjectClose( &pFolder->object );
+
+      vdsaCommonUnlock( &pFolder->object );
+   }
+   else
+      return VDS_SESSION_CANNOT_GET_LOCK;
+
    if ( errcode == 0 )
    {
       free( pFolder );

@@ -31,7 +31,8 @@
 int vdsHashMapClose( VDS_HANDLE objectHandle )
 {
    vdsaHashMap * pHashMap;
-   int errcode;
+   vdseHashMap * pVDSHashMap;
+   int errcode = 0;
    
    pHashMap = (vdsaHashMap *) objectHandle;
    if ( pHashMap == NULL )
@@ -40,7 +41,29 @@ int vdsHashMapClose( VDS_HANDLE objectHandle )
    if ( pHashMap->type != VDSA_HASH_MAP )
       return VDS_WRONG_TYPE_HANDLE;
    
-   errcode = vdsCommonObjectClose( &pHashMap->object );
+   if ( vdsaCommonLock( &pHashMap->object ) == 0 )
+   {
+      pVDSHashMap = (vdseHashMap *) pHashMap->object.pMyVdsObject;
+
+      /* Reinitialize the iterator, if needed */
+      if ( pHashMap->iterator.pHashItem != NULL )
+      {
+         if ( vdseHashMapRelease( pVDSHashMap,
+                                  pHashMap->iterator.pHashItem,
+                                  &pHashMap->object.pSession->context ) == 0 )
+            memset( &pHashMap->iterator, 0, sizeof(vdseHashMapItem) );
+         else
+            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+      }
+
+      if ( errcode == 0 )
+         errcode = vdsCommonObjectClose( &pHashMap->object );
+
+      vdsaCommonUnlock( &pHashMap->object );
+   }
+   else
+      return VDS_SESSION_CANNOT_GET_LOCK;
+   
    if ( errcode == 0 )
    {
       free( pHashMap );

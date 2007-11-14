@@ -31,7 +31,8 @@
 int vdsQueueClose( VDS_HANDLE objectHandle )
 {
    vdsaQueue * pQueue;
-   int errcode;
+   vdseQueue * pVDSQueue;
+   int errcode = 0;
    
    pQueue = (vdsaQueue *) objectHandle;
    if ( pQueue == NULL )
@@ -39,8 +40,30 @@ int vdsQueueClose( VDS_HANDLE objectHandle )
    
    if ( pQueue->type != VDSA_QUEUE )
       return VDS_WRONG_TYPE_HANDLE;
-   
-   errcode = vdsCommonObjectClose( &pQueue->object );
+
+   if ( vdsaCommonLock( &pQueue->object ) == 0 )
+   {
+      pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
+
+      /* Reinitialize the iterator, if needed */
+      if ( pQueue->iterator != NULL )
+      {
+         if ( vdseQueueRelease( pVDSQueue,
+                                pQueue->iterator,
+                                &pQueue->object.pSession->context ) == 0 )
+            pQueue->iterator = NULL;
+         else
+            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+      }
+
+      if ( errcode == 0 )
+         errcode = vdsCommonObjectClose( &pQueue->object );
+
+      vdsaCommonUnlock( &pQueue->object );
+   }
+   else
+      return VDS_SESSION_CANNOT_GET_LOCK;
+
    if ( errcode == 0 )
    {
       free( pQueue );
