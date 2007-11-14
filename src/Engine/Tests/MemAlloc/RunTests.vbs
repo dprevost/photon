@@ -35,7 +35,7 @@ Dim failed_tests(18)
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(5)
+Dim ok_programs(4)
 Dim fail_programs(12)
 
 Dim exe_name, prog_path, program
@@ -53,9 +53,8 @@ dim strOutput
 ok_programs(0) = "ClosePass"
 ok_programs(1) = "FreePass"
 ok_programs(2) = "IsPageFreeTest"
-ok_programs(3) = "InitBigVDS"
-ok_programs(4) = "InitPass"
-ok_programs(5) = "MallocPass"
+ok_programs(3) = "InitPass"
+ok_programs(4) = "MallocPass"
 
 fail_programs(0)  = "CloseNullAlloc"
 fail_programs(1)  = "CloseNullError"
@@ -71,7 +70,7 @@ fail_programs(10) = "MallocNullAlloc"
 fail_programs(11) = "MallocNullError"
 fail_programs(12) = "MallocZeroLength"
 
-numTests = 19                 ' Sum of length of both arrays 
+numTests = 18                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject
@@ -159,9 +158,11 @@ if consoleMode then
    For i = 1 to numFailed 
       WScript.StdOut.Write "This test failed: " & failed_tests(i-1) & vbcrlf
    Next
-   WScript.StdOut.Write "Type return to continue"
-   Dim dummy
-   dummy = WScript.StdIn.Read(1)
+   if verbose then
+      WScript.StdOut.Write "Type return to continue"
+      Dim dummy
+      dummy = WScript.StdIn.Read(1)
+   end if
 else
    wscript.echo "Total number of tests: " & numTests & vbcrlf & _
       "Total number of failed tests: " & numFailed

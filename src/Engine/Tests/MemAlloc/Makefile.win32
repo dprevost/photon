@@ -21,7 +21,6 @@ check_PROGRAMS =                                \
                  .\Release\FreeNullPtr.exe      \
                  .\Release\FreePass.exe         \
                  .\Release\FreeZeroLength.exe   \
-                 .\Release\InitBigVDS.exe       \
                  .\Release\InitNullAddress.exe  \
                  .\Release\InitNullAlloc.exe    \
                  .\Release\InitNullError.exe    \
