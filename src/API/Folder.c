@@ -104,36 +104,41 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
                                  &pFolder->object.pSession->context ) == 0 )
             memset( &pFolder->iterator, 0, sizeof(vdseFolderItem) );
          else
-            return VDS_OBJECT_CANNOT_GET_LOCK;
+            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
       }
-         
-      errcode = vdseFolderGetFirst( pVDSFolder,
-                                    &pFolder->iterator,
-                                    &pFolder->object.pSession->context );
       if ( errcode == 0 )
       {
-         memset( pEntry, 0, sizeof( vdsFolderEntry ) );
-         GET_PTR( pDescriptor, pFolder->iterator.pHashItem->dataOffset, 
-                                vdseObjectDescriptor );
-         pEntry->type = pDescriptor->apiType;
+         errcode = vdseFolderGetFirst( pVDSFolder,
+                                       &pFolder->iterator,
+                                       &pFolder->object.pSession->context );
+         if ( errcode == 0 )
+         {
+            memset( pEntry, 0, sizeof( vdsFolderEntry ) );
+            GET_PTR( pDescriptor, pFolder->iterator.pHashItem->dataOffset, 
+                                  vdseObjectDescriptor );
+            pEntry->type = pDescriptor->apiType;
 #if VDS_SUPPORT_i18n
-         memset( &ps, 0, sizeof(mbstate_t) );
-         name = pDescriptor->originalName;
-         pEntry->nameLengthInBytes = wcsrtombs( pEntry->name, 
-                                                &name,
-                                                VDS_MAX_NAME_LENGTH*4,
-                                                &ps );
+            memset( &ps, 0, sizeof(mbstate_t) );
+            name = pDescriptor->originalName;
+            pEntry->nameLengthInBytes = wcsrtombs( pEntry->name, 
+                                                   &name,
+                                                   VDS_MAX_NAME_LENGTH*4,
+                                                   &ps );
 #else
-         pEntry->nameLengthInBytes = pDescriptor->nameLengthInBytes;
-         memcpy( pEntry->name, pDescriptor->originalName, pDescriptor->nameLengthInBytes );
+            pEntry->nameLengthInBytes = pDescriptor->nameLengthInBytes;
+            memcpy( pEntry->name, pDescriptor->originalName, pDescriptor->nameLengthInBytes );
 #endif
+         }
+         else
+         {
+            errcode = vdscGetLastError( &pFolder->object.pSession->context.errorHandler );
+         }
       }
-      else
-      {
-         errcode = vdscGetLastError( &pFolder->object.pSession->context.errorHandler );
-      }
+
       vdsaCommonUnlock( &pFolder->object );
    }
+   else
+      return VDS_SESSION_CANNOT_GET_LOCK;
 
    return errcode;
 }
@@ -205,6 +210,8 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
       
       vdsaCommonUnlock( &pFolder->object );
    }
+   else
+      return VDS_SESSION_CANNOT_GET_LOCK;
 
    return errcode;
 }

@@ -23,15 +23,6 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-//void vdsaCommonObjectInit( vdsaCommonObject * pObject,
-//                           vdsaSession      * pSession )
-//{
-//   memset( pObject, 0, sizeof(vdsaCommonObject) );
-//   pObject->pSession = pSession;
-//}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 int vdsaCommonObjectOpen( vdsaCommonObject   * pObject,
                           enum vdsObjectType   objectType, 
                           const char         * objectName,
