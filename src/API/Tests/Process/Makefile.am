@@ -43,7 +43,17 @@ OpenNullFilename_SOURCES = OpenNullFilename.c
 OpenNullProcess_SOURCES  = OpenNullProcess.c
 OpenPass_SOURCES         = OpenPass.c
 
-EXTRA_DIST = FiniPass.sh 
+EXTRA_DIST =           \
+   CloseNullContext.sh \
+   CloseNullProcess.sh \
+   ClosePass.sh        \
+   FiniNullProcess.sh  \
+   FiniPass.sh         \
+   InitPass.sh         \
+   OpenNullContext.sh  \
+   OpenNullFilename.sh \
+   OpenNullProcess.sh  \
+   OpenPass.sh         
 
 TESTS_ENVIRONMENT =                              \
                     tcp_port=10701               \
@@ -53,30 +63,24 @@ TESTS_ENVIRONMENT =                              \
                     verbose=1                    \
                     PYTHON=$(PYTHON)
 
-TESTS =                 \
-        CloseNullContext \
-        CloseNullProcess \
-        ClosePass        \
-        FiniNullProcess  \
-        FiniPass.sh      \
-        InitNullAddr     \
-        InitNullProcess  \
-        InitPass         \
-        InitWrongAddr    \
-        OpenNullContext  \
-        OpenNullFilename \
-        OpenNullProcess  \
-        OpenPass         
+TESTS =                     \
+        CloseNullContext.sh \
+        CloseNullProcess.sh \
+        ClosePass.sh        \
+        FiniNullProcess.sh  \
+        FiniPass.sh         \
+        InitNullAddr        \
+        InitNullProcess     \
+        InitPass.sh         \
+        InitWrongAddr       \
+        OpenNullContext.sh  \
+        OpenNullFilename.sh \
+        OpenNullProcess.sh  \
+        OpenPass.sh         
 
 XFAIL_TESTS =                  \
-              CloseNullContext \
-              CloseNullProcess \
-              FiniNullProcess  \
               InitNullAddr     \
-              InitNullProcess  \
-              OpenNullContext  \
-              OpenNullFilename \
-              OpenNullProcess  
+              InitNullProcess  
 
 LDADD = $(top_builddir)/src/API/libvdsf.la      \
         $(top_builddir)/src/Engine/libEngine.la \

@@ -231,14 +231,14 @@ error_handler:
 int vdsaOpenVDS( vdsaProcess        * process,
                  const char         * memoryFileName,
                  size_t               memorySizekb,
-                 vdseSessionContext * pSession )
+                 vdseSessionContext * pContext )
 {
    int errcode = 0;
    vdscMemoryFileStatus fileStatus;
    void * ptr;
    
    VDS_PRE_CONDITION( process        != NULL );
-   VDS_PRE_CONDITION( pSession       != NULL );
+   VDS_PRE_CONDITION( pContext       != NULL );
    VDS_PRE_CONDITION( memoryFileName != NULL );
 
    process->pHeader = NULL;
@@ -254,7 +254,7 @@ int vdsaOpenVDS( vdsaProcess        * process,
    
    errcode = vdscOpenMemFile( &process->memoryFile, 
                               &ptr, 
-                              &pSession->errorHandler );   
+                              &pContext->errorHandler );   
    if ( errcode != 0 )
    {
       fprintf( stderr, "MMAP failure - %d %s\n", errno, memoryFileName );
