@@ -72,12 +72,12 @@ int vdsaCommonObjectOpen( vdsaCommonObject   * pObject,
 
 int vdsCommonObjectClose( vdsaCommonObject * pObject )
 {
-   int errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+   int errcode = 0;
 
    VDS_PRE_CONDITION( pObject != NULL );
 
-   if ( pObject->pObjectContext == NULL )
-      return VDS_OBJECT_NOT_INITIALIZED;
+//   if ( pObject->pObjectContext == NULL )
+//      return VDS_OBJECT_NOT_INITIALIZED;
    
    if ( pObject->pSession == NULL )
       return VDS_PROCESS_NOT_INITIALIZED;

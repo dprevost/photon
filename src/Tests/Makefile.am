@@ -17,22 +17,26 @@ CLEANFILES = *~ core
 EXTRA_DIST =                     \
              PrintError.h        \
              TestWithWatchdog.py \
-             TestWithWatchdog.sh 
+             TestWithWatchdog.sh \
+             TransactionQueue.sh 
 
+check_PROGRAMS =                  \
+                 TransactionQueue 
 
-#noinst_PROGRAMS = \
-                  Interrupted
+TransactionQueue_SOURCES = TransactionQueue.c
 
-#Interrupted_SOURCES = Interrupted.cpp
+TESTS_ENVIRONMENT =                              \
+                    tcp_port=10701               \
+                    top_srcdir=$(top_srcdir)     \
+                    srcdir=$(srcdir)             \
+                    top_builddir=$(top_builddir) \
+                    verbose=1                    \
+                    PYTHON=$(PYTHON)
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS =                     \
+        TransactionQueue.sh 
 
-#TESTS =                    \
-        TimerTest          \
-        bget.sh            
-
-LDADD = $(top_builddir)/src/API/libvdsf.la
-
-distclean-local:
-	-rm -rf $(testsubdir)
+LDADD = $(top_builddir)/src/API/libvdsf.la      \
+        $(top_builddir)/src/Engine/libEngine.la \
+        $(top_builddir)/src/Common/libCommon.la
 
