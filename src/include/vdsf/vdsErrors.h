@@ -207,7 +207,13 @@ typedef enum vdsErrors
    VDS_OBJECT_IS_DELETED           = 64,     
 
     /** Object must be open first before you can access them. */
-   VDS_OBJECT_NOT_INITIALIZED      = 65
+   VDS_OBJECT_NOT_INITIALIZED      = 65,
+
+   /**
+    * i18n string conversion error. In other words, the name of the object cannot be
+    * converted to/frm your current locale.
+    */
+   VDS_I18N_CONVERSION_ERROR       = 66
 
 } vdsErrors;
 

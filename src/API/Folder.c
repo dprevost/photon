@@ -58,12 +58,13 @@ int vdsFolderClose( VDS_HANDLE objectHandle )
       vdsaCommonUnlock( &pFolder->object );
    }
    else
-      return VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
 
    if ( errcode == 0 )
-   {
       free( pFolder );
-   }
+   else
+      vdscSetError( &pFolder->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, errcode );
    
    return errcode;
 }
@@ -75,7 +76,7 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
 {
    vdsaFolder * pFolder;
    vdseFolder * pVDSFolder;
-   int errcode = 0;
+   int errcode = 0, rc = 0;
    vdseObjectDescriptor * pDescriptor;
 #if VDS_SUPPORT_i18n
    mbstate_t ps;
@@ -90,55 +91,75 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
       return VDS_WRONG_TYPE_HANDLE;
 
    if ( pEntry == NULL )
-      return VDS_NULL_POINTER;
-   
-   if ( vdsaCommonLock( &pFolder->object ) == 0 )
    {
-      pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
-
-      /* Reinitialize the iterator, if needed */
-      if ( pFolder->iterator.pHashItem != NULL )
-      {
-         if ( vdseFolderRelease( pVDSFolder,
-                                 &pFolder->iterator,
-                                 &pFolder->object.pSession->context ) == 0 )
-            memset( &pFolder->iterator, 0, sizeof(vdseFolderItem) );
-         else
-            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
-      }
-      if ( errcode == 0 )
-      {
-         errcode = vdseFolderGetFirst( pVDSFolder,
-                                       &pFolder->iterator,
-                                       &pFolder->object.pSession->context );
-         if ( errcode == 0 )
-         {
-            memset( pEntry, 0, sizeof( vdsFolderEntry ) );
-            GET_PTR( pDescriptor, pFolder->iterator.pHashItem->dataOffset, 
-                                  vdseObjectDescriptor );
-            pEntry->type = pDescriptor->apiType;
-#if VDS_SUPPORT_i18n
-            memset( &ps, 0, sizeof(mbstate_t) );
-            name = pDescriptor->originalName;
-            pEntry->nameLengthInBytes = wcsrtombs( pEntry->name, 
-                                                   &name,
-                                                   VDS_MAX_NAME_LENGTH*4,
-                                                   &ps );
-#else
-            pEntry->nameLengthInBytes = pDescriptor->nameLengthInBytes;
-            memcpy( pEntry->name, pDescriptor->originalName, pDescriptor->nameLengthInBytes );
-#endif
-         }
-         else
-         {
-            errcode = vdscGetLastError( &pFolder->object.pSession->context.errorHandler );
-         }
-      }
-
-      vdsaCommonUnlock( &pFolder->object );
+      errcode = VDS_NULL_POINTER;
+      goto error_handler;
    }
-   else
-      return VDS_SESSION_CANNOT_GET_LOCK;
+   
+   if ( vdsaCommonLock( &pFolder->object ) != 0 )
+   {
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      goto error_handler;
+   }
+   
+   pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+
+   /* Reinitialize the iterator, if needed */
+   if ( pFolder->iterator.pHashItem != NULL )
+   {
+      rc = vdseFolderRelease( pVDSFolder,
+                              &pFolder->iterator,
+                              &pFolder->object.pSession->context );
+      if ( rc == 0 )
+         memset( &pFolder->iterator, 0, sizeof(vdseFolderItem) );
+      else
+         goto error_handler_unlock;
+   }
+
+   rc = vdseFolderGetFirst( pVDSFolder,
+                            &pFolder->iterator,
+                            &pFolder->object.pSession->context );
+   if ( rc != 0 )
+      goto error_handler_unlock;
+
+   memset( pEntry, 0, sizeof( vdsFolderEntry ) );
+   GET_PTR( pDescriptor, pFolder->iterator.pHashItem->dataOffset, 
+                         vdseObjectDescriptor );
+   pEntry->type = pDescriptor->apiType;
+#if VDS_SUPPORT_i18n
+   memset( &ps, 0, sizeof(mbstate_t) );
+   name = pDescriptor->originalName;
+   pEntry->nameLengthInBytes = wcsrtombs( pEntry->name, 
+                                          &name,
+                                          VDS_MAX_NAME_LENGTH*4,
+                                          &ps );
+   if ( pEntry->nameLengthInBytes == (size_t) -1 )
+   {
+      /* A conversion error */
+      vdscSetError( &pFolder->object.pSession->context.errorHandler, 
+                    VDSC_ERRNO_HANDLE, errno );
+      errcode = VDS_I18N_CONVERSION_ERROR;
+      goto error_handler_unlock;
+   }
+#else
+   pEntry->nameLengthInBytes = pDescriptor->nameLengthInBytes;
+   memcpy( pEntry->name, pDescriptor->originalName, pDescriptor->nameLengthInBytes );
+#endif
+
+   vdsaCommonUnlock( &pFolder->object );
+
+   return 0;
+
+error_handler_unlock:
+   vdsaCommonUnlock( &pFolder->object );
+
+error_handler:
+   if ( errcode != 0 )
+      vdscSetError( &pFolder->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, errcode );
+
+   if ( rc != 0 )
+      errcode = vdscGetLastError( &pFolder->object.pSession->context.errorHandler );
 
    return errcode;
 }
