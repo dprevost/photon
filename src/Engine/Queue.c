@@ -181,6 +181,16 @@ int vdseQueueGet( vdseQueue          * pQueue,
       return -1;
    }
    
+   /* 
+    * If we come here, there are no additional data items to retrieve. As 
+    * long as we clearly say that the internal iterator is reset (in case a 
+    * "Get Previous" is implemented later), we can just release the iterator
+    * at this point.
+    */
+   *ppIterator = NULL;
+   if ( flag == VDS_NEXT )
+      vdseQueueReleaseNoLock( pQueue, pOldItem, pContext );
+
    vdseUnlock( &pQueue->memObject, pContext );
    vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
 

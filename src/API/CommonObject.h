@@ -32,10 +32,20 @@ BEGIN_C_DECLS
 
 typedef struct vdsaCommonObject
 {
+   /**
+    * The type of object (as seen from the API, not the engine).
+    *
+    * Note: always put this first to help debug (for example, in gdb:
+    * "print * (int *) some_vds_handle" will show the object type).
+    */
+   vdsaObjetType type;
+
    /** 
     * Pointer to our own cleanup object in the VDS. This object is used by 
     * the ProcessManager to hold object-specific information that might
     * be needed in case of a crash (current state of transactions, etc.).
+    *
+    * Not used in version 0.1.
     */
    void*  pObjectContext;
 
@@ -44,9 +54,8 @@ typedef struct vdsaCommonObject
 
    /** A folder item. It contains a pointer to the hash item in VDS memory. */
    vdseFolderItem  folderItem;
-   
-   /** A pointer to the object in VDS. */
-   
+
+   /** A pointer to the object in VDS. */   
    void * pMyVdsObject;
    
 } vdsaCommonObject;
@@ -54,13 +63,15 @@ typedef struct vdsaCommonObject
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_EXPORT
-int vdsaCommonObjectOpen( vdsaCommonObject   * pObject,
-                          enum vdsObjectType   objectType, 
-                          const char         * objectName,
-                          size_t               nameLengthInBytes );
+int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
+                       enum vdsObjectType   objectType, 
+                       const char         * objectName,
+                       size_t               nameLengthInBytes );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_EXPORT
-int vdsCommonObjectClose( vdsaCommonObject * pObject );
+int vdsaCommonObjClose( vdsaCommonObject * pObject );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -68,7 +79,7 @@ int vdsCommonObjectClose( vdsaCommonObject * pObject );
 static inline
 int vdsaCommonLock( vdsaCommonObject * pObject )
 {
-   VDS_PRE_CONDITION( pObject    != NULL );
+   VDS_PRE_CONDITION( pObject != NULL );
 
    if ( g_protectionIsNeeded )
    {
@@ -84,7 +95,7 @@ int vdsaCommonLock( vdsaCommonObject * pObject )
 static inline
 void vdsaCommonUnlock( vdsaCommonObject * pObject )
 {
-   VDS_PRE_CONDITION( pObject    != NULL );
+   VDS_PRE_CONDITION( pObject != NULL );
 
    if ( g_protectionIsNeeded )
    {
@@ -105,7 +116,7 @@ void vdsaCommonUnlock( vdsaCommonObject * pObject )
 static inline
 void vdsaCommonCloseObject( vdsaCommonObject * pObject )
 {
-   VDS_PRE_CONDITION( pObject    != NULL );
+   VDS_PRE_CONDITION( pObject != NULL );
 
    pObject->pObjectContext = NULL;
 }

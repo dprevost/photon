@@ -23,7 +23,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaCommonObjectOpen( vdsaCommonObject   * pObject,
+int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
                           enum vdsObjectType   objectType, 
                           const char         * objectName,
                           size_t               nameLengthInBytes )
@@ -34,7 +34,9 @@ int vdsaCommonObjectOpen( vdsaCommonObject   * pObject,
    VDS_PRE_CONDITION( pObject    != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
+#if 0
    VDS_PRE_CONDITION( pObject->pObjectContext == NULL );
+#endif
    VDS_PRE_CONDITION( nameLengthInBytes > 0 );
 
    if ( pObject->pSession == NULL )
@@ -61,14 +63,14 @@ int vdsaCommonObjectOpen( vdsaCommonObject   * pObject,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsCommonObjectClose( vdsaCommonObject * pObject )
+int vdsaCommonObjClose( vdsaCommonObject * pObject )
 {
    int errcode = 0;
 
    VDS_PRE_CONDITION( pObject != NULL );
-
-//   if ( pObject->pObjectContext == NULL )
-//      return VDS_OBJECT_NOT_INITIALIZED;
+#if 0
+   VDS_PRE_CONDITION( pObject->pObjectContext != NULL );
+#endif
    
    if ( pObject->pSession == NULL )
       return VDS_PROCESS_NOT_INITIALIZED;

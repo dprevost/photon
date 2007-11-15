@@ -38,7 +38,7 @@ int vdsQueueClose( VDS_HANDLE objectHandle )
    if ( pQueue == NULL )
       return VDS_NULL_HANDLE;
    
-   if ( pQueue->type != VDSA_QUEUE )
+   if ( pQueue->object.type != VDSA_QUEUE )
       return VDS_WRONG_TYPE_HANDLE;
 
    if ( vdsaCommonLock( &pQueue->object ) == 0 )
@@ -57,18 +57,19 @@ int vdsQueueClose( VDS_HANDLE objectHandle )
       }
 
       if ( errcode == 0 )
-         errcode = vdsCommonObjectClose( &pQueue->object );
+         errcode = vdsaCommonObjClose( &pQueue->object );
 
       vdsaCommonUnlock( &pQueue->object );
    }
    else
-      return VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
 
    if ( errcode == 0 )
-   {
       free( pQueue );
-   }
-   
+   else
+      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, errcode );
+
    return errcode;
 }
 
@@ -81,59 +82,68 @@ int vdsQueueGetFirst( VDS_HANDLE   objectHandle,
 {
    vdsaQueue * pQueue;
    vdseQueue * pVDSQueue;
-   int errcode = 0;
+   int errcode = 0, rc = 0;
 
    pQueue = (vdsaQueue *) objectHandle;
    if ( pQueue == NULL )
       return VDS_NULL_HANDLE;
    
-   if ( pQueue->type != VDSA_QUEUE )
+   if ( pQueue->object.type != VDSA_QUEUE )
       return VDS_WRONG_TYPE_HANDLE;
 
-   if ( buffer == NULL )
-      return VDS_NULL_POINTER;
+   if ( buffer == NULL || returnedLength == NULL )
+   {
+      errcode = VDS_NULL_POINTER;
+      goto error_handler;
+   }
 
-   if ( returnedLength == NULL )
-      return VDS_NULL_POINTER;
    *returnedLength = 0;
 
-   if ( vdsaCommonLock( &pQueue->object ) == 0 )
+   if ( vdsaCommonLock( &pQueue->object ) != 0 )
    {
-      pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
-
-      /* Reinitialize the iterator, if needed */
-      if ( pQueue->iterator != NULL )
-      {
-         if ( vdseQueueRelease( pVDSQueue,
-                                pQueue->iterator,
-                                &pQueue->object.pSession->context ) == 0 )
-            pQueue->iterator = NULL;
-         else
-            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
-      }
-      
-      if ( errcode == 0 )
-      {
-         errcode = vdseQueueGet( pVDSQueue,
-                                 VDS_FIRST,
-                                 &pQueue->iterator,
-                                 bufferLength,
-                                 &pQueue->object.pSession->context );
-         if ( errcode == 0 )
-         {
-            *returnedLength = pQueue->iterator->dataLength;
-            memcpy( buffer, pQueue->iterator->data, *returnedLength );
-         }
-         else
-         {
-            errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
-         }
-      }
-      
-      vdsaCommonUnlock( &pQueue->object );
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      goto error_handler;
    }
-   else
-      return VDS_SESSION_CANNOT_GET_LOCK;
+   
+   pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
+
+   /* Reinitialize the iterator, if needed */
+   if ( pQueue->iterator != NULL )
+   {
+      rc = vdseQueueRelease( pVDSQueue,
+                             pQueue->iterator,
+                             &pQueue->object.pSession->context );
+      if ( rc != 0 )
+         goto error_handler_unlock;
+      
+      pQueue->iterator = NULL;
+   }
+      
+   rc = vdseQueueGet( pVDSQueue,
+                      VDS_FIRST,
+                      &pQueue->iterator,
+                      bufferLength,
+                      &pQueue->object.pSession->context );
+   if ( rc != 0 )
+      goto error_handler_unlock;
+
+   *returnedLength = pQueue->iterator->dataLength;
+   memcpy( buffer, pQueue->iterator->data, *returnedLength );
+
+   vdsaCommonUnlock( &pQueue->object );
+
+   return 0;
+
+error_handler_unlock:
+   vdsaCommonUnlock( &pQueue->object );
+
+error_handler:
+   if ( errcode != 0 )
+      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, errcode );
+
+   if ( rc != 0 )
+      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
 
    return errcode;
 }
@@ -147,59 +157,62 @@ int vdsQueueGetNext( VDS_HANDLE   objectHandle,
 {
    vdsaQueue * pQueue;
    vdseQueue * pVDSQueue;
-   int errcode = 0;
+   int errcode = 0, rc = 0;
 
    pQueue = (vdsaQueue *) objectHandle;
    if ( pQueue == NULL )
       return VDS_NULL_HANDLE;
    
-   if ( pQueue->type != VDSA_QUEUE )
+   if ( pQueue->object.type != VDSA_QUEUE )
       return VDS_WRONG_TYPE_HANDLE;
 
-   if ( buffer == NULL )
-      return VDS_NULL_POINTER;
+   if ( buffer == NULL || returnedLength == NULL )
+   {
+      errcode = VDS_NULL_POINTER;
+      goto error_handler;
+   }
 
-   if ( returnedLength == NULL )
-      return VDS_NULL_POINTER;
    *returnedLength = 0;
 
    if ( pQueue->iterator == NULL )
-      return VDS_INVALID_ITERATOR;
-   
-   if ( vdsaCommonLock( &pQueue->object ) == 0 )
    {
-      pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
-
-      errcode = vdseQueueGet( pVDSQueue,
-                              VDS_NEXT,
-                              &pQueue->iterator,
-                              bufferLength,
-                              &pQueue->object.pSession->context );
-      if ( errcode == 0 )
-      {
-         *returnedLength = pQueue->iterator->dataLength;
-         memcpy( buffer, pQueue->iterator->data, *returnedLength );
-      }
-      else
-      {
-         errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
-      }
-      if ( errcode == VDS_REACHED_THE_END )
-      {
-         /* Reinitialize the iterator, if needed */
-         if ( pQueue->iterator != NULL )
-         {
-            if ( vdseQueueRelease( pVDSQueue,
-                                   pQueue->iterator,
-                                   &pQueue->object.pSession->context ) == 0 )
-            pQueue->iterator = NULL;
-         }
-      }
-      
-      vdsaCommonUnlock( &pQueue->object );
+      errcode = VDS_INVALID_ITERATOR;
+      goto error_handler;
    }
-   else
-      return VDS_SESSION_CANNOT_GET_LOCK;
+   
+   if ( vdsaCommonLock( &pQueue->object ) != 0 )
+   {
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      goto error_handler;
+   }
+
+   pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
+
+   rc = vdseQueueGet( pVDSQueue,
+                      VDS_NEXT,
+                      &pQueue->iterator,
+                      bufferLength,
+                      &pQueue->object.pSession->context );
+   if ( rc != 0 )
+      goto error_handler_unlock;
+   
+   *returnedLength = pQueue->iterator->dataLength;
+   memcpy( buffer, pQueue->iterator->data, *returnedLength );
+
+   vdsaCommonUnlock( &pQueue->object );
+
+   return 0;
+
+error_handler_unlock:
+   vdsaCommonUnlock( &pQueue->object );
+
+error_handler:
+   if ( errcode != 0 )
+      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, errcode );
+
+   if ( rc != 0 )
+      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
 
    return errcode;
 }
@@ -227,23 +240,32 @@ int vdsQueueOpen( VDS_HANDLE   sessionHandle,
       return VDS_WRONG_TYPE_HANDLE;
 
    if ( queueName == NULL )
+   {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
       return VDS_INVALID_OBJECT_NAME;
-
+   }
+   
    if ( nameLengthInBytes == 0 )
+   {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
-
+   }
+   
    pQueue = (vdsaQueue *) malloc(sizeof(vdsaQueue));
    if (  pQueue == NULL )
+   {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
       return VDS_NOT_ENOUGH_HEAP_MEMORY;
+   }
    
    memset( pQueue, 0, sizeof(vdsaQueue) );
-   pQueue->type = VDSA_QUEUE;
+   pQueue->object.type = VDSA_QUEUE;
    pQueue->object.pSession = pSession;
 
-   errcode = vdsaCommonObjectOpen( &pQueue->object,
-                                   VDS_QUEUE,
-                                   queueName,
-                                   nameLengthInBytes );
+   errcode = vdsaCommonObjOpen( &pQueue->object,
+                                VDS_QUEUE,
+                                queueName,
+                                nameLengthInBytes );
    if ( errcode == 0 )
       *objectHandle = (VDS_HANDLE) pQueue;
 
@@ -259,61 +281,68 @@ int vdsQueuePop( VDS_HANDLE   objectHandle,
 {
    vdsaQueue * pQueue;
    vdseQueue * pVDSQueue;
-   int errcode = 0;
+   int errcode = 0, rc = 0;
 
    pQueue = (vdsaQueue *) objectHandle;
    if ( pQueue == NULL )
       return VDS_NULL_HANDLE;
    
-   if ( pQueue->type != VDSA_QUEUE )
+   if ( pQueue->object.type != VDSA_QUEUE )
       return VDS_WRONG_TYPE_HANDLE;
 
-   if ( buffer == NULL )
-      return VDS_NULL_POINTER;
-
-   if ( returnedLength == NULL )
-      return VDS_NULL_POINTER;
+   if ( buffer == NULL || returnedLength == NULL )
+   {
+      errcode = VDS_NULL_POINTER;
+      goto error_handler;
+   }
    *returnedLength = 0;
       
-   if ( vdsaCommonLock( &pQueue->object ) == 0 )
+   if ( vdsaCommonLock( &pQueue->object ) != 0 )
    {
-      pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
-
-      /* Reinitialize the iterator, if needed */
-      if ( pQueue->iterator != NULL )
-      {
-         if ( vdseQueueRelease( pVDSQueue,
-                                pQueue->iterator,
-                                &pQueue->object.pSession->context ) == 0 )
-            pQueue->iterator = NULL;
-         else
-            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
-      }
-      
-      if ( errcode == 0 )
-      {
-         errcode = vdseQueueRemove( pVDSQueue,
-                                    &pQueue->iterator,
-                                    VDSE_QUEUE_FIRST,
-                                    bufferLength,
-                                    &pQueue->object.pSession->context );
-
-         if ( errcode == 0 )
-         {
-            *returnedLength = pQueue->iterator->dataLength;
-            memcpy( buffer, pQueue->iterator->data, *returnedLength );
-         }
-         else
-         {
-            errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
-         }
-      }
-      
-      vdsaCommonUnlock( &pQueue->object );
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      goto error_handler;
    }
-   else
-      return VDS_SESSION_CANNOT_GET_LOCK;
-   
+
+   pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
+
+   /* Reinitialize the iterator, if needed */
+   if ( pQueue->iterator != NULL )
+   {
+      rc = vdseQueueRelease( pVDSQueue,
+                             pQueue->iterator,
+                             &pQueue->object.pSession->context );
+      if ( rc != 0 )
+         goto error_handler_unlock;
+
+      pQueue->iterator = NULL;
+   }
+      
+   rc = vdseQueueRemove( pVDSQueue,
+                         &pQueue->iterator,
+                         VDSE_QUEUE_FIRST,
+                         bufferLength,
+                         &pQueue->object.pSession->context );
+   if ( rc != 0 )
+      goto error_handler_unlock;
+
+   *returnedLength = pQueue->iterator->dataLength;
+   memcpy( buffer, pQueue->iterator->data, *returnedLength );
+
+   vdsaCommonUnlock( &pQueue->object );
+
+   return 0;
+
+error_handler_unlock:
+   vdsaCommonUnlock( &pQueue->object );
+
+error_handler:
+   if ( errcode != 0 )
+      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, errcode );
+
+   if ( rc != 0 )
+      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
+
    return errcode;
 }
 
@@ -325,37 +354,50 @@ int vdsQueuePush( VDS_HANDLE   objectHandle,
 {
    vdsaQueue * pQueue;
    vdseQueue * pVDSQueue;
-   int errcode = 0;
+   int errcode = 0, rc = 0;
 
    pQueue = (vdsaQueue *) objectHandle;
    if ( pQueue == NULL )
       return VDS_NULL_HANDLE;
    
-   if ( pQueue->type != VDSA_QUEUE )
+   if ( pQueue->object.type != VDSA_QUEUE )
       return VDS_WRONG_TYPE_HANDLE;
 
    if ( data == NULL )
+   {
+      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
+   }
    if ( dataLength == 0 )
+   {
+      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
-
+   }
+   
    if ( vdsaCommonLock( &pQueue->object ) == 0 )
    {
       pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
 
-      errcode = vdseQueueInsert( pVDSQueue,
-                                 data,
-                                 dataLength,
-                                 VDSE_QUEUE_LAST,
-                                 &pQueue->object.pSession->context );
-      if ( errcode != 0 )
-         errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      rc = vdseQueueInsert( pVDSQueue,
+                            data,
+                            dataLength,
+                            VDSE_QUEUE_LAST,
+                            &pQueue->object.pSession->context );
 
       vdsaCommonUnlock( &pQueue->object );
    }
    else
-      return VDS_SESSION_CANNOT_GET_LOCK;
-   
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+ 
+   if ( errcode != 0 )
+      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, errcode );
+
+   if ( rc != 0 )
+      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
+
    return errcode;
 }
 
@@ -373,16 +415,20 @@ int vdsQueueStatus( VDS_HANDLE     objectHandle,
    if ( pQueue == NULL )
       return VDS_NULL_HANDLE;
    
-   if ( pQueue->type != VDSA_QUEUE )
+   if ( pQueue->object.type != VDSA_QUEUE )
       return VDS_WRONG_TYPE_HANDLE;
 
+   pContext = &pQueue->object.pSession->context;
+
    if ( pStatus == NULL )
+   {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
+   }
 
    if ( vdsaCommonLock( &pQueue->object ) == 0 )
    {
       pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
-      pContext = &pQueue->object.pSession->context;
       
       if ( vdseLock( &pVDSQueue->memObject, pContext ) == 0 )
       {
@@ -393,15 +439,15 @@ int vdsQueueStatus( VDS_HANDLE     objectHandle,
          vdseUnlock( &pVDSQueue->memObject, pContext );
       }
       else
-      {
          errcode = VDS_OBJECT_CANNOT_GET_LOCK;
-         vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
-      }
       
       vdsaCommonUnlock( &pQueue->object );
    }
    else
-      return VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+
+   if ( errcode != 0 )
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    
    return errcode;
 }
@@ -416,49 +462,57 @@ int vdsaQueueFirst( vdsaQueue     * pQueue,
                     vdsaDataEntry * pEntry )
 {
    vdseQueue * pVDSQueue;
-   int errcode = 0;
+   int errcode = 0, rc = 0;
 
    VDS_PRE_CONDITION( pQueue != NULL );
    VDS_PRE_CONDITION( pEntry != NULL );
-   VDS_PRE_CONDITION( pQueue->type == VDSA_QUEUE );
+   VDS_PRE_CONDITION( pQueue->object.type == VDSA_QUEUE );
    
-   if ( vdsaCommonLock( &pQueue->object ) == 0 )
+   if ( vdsaCommonLock( &pQueue->object ) != 0 )
    {
-      pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
-
-      /* Reinitialize the iterator, if needed */
-      if ( pQueue->iterator != NULL )
-      {
-         if ( vdseQueueRelease( pVDSQueue,
-                                pQueue->iterator,
-                                &pQueue->object.pSession->context ) == 0 )
-            pQueue->iterator = NULL;
-         else
-            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
-      }
-      
-      if ( errcode == 0 )
-      {
-         errcode = vdseQueueGet( pVDSQueue,
-                                 VDS_FIRST,
-                                 &pQueue->iterator,
-                                 (size_t) -1,
-                                 &pQueue->object.pSession->context );
-         if ( errcode == 0 )
-         {
-            pEntry->data = pQueue->iterator->data;
-            pEntry->length = pQueue->iterator->dataLength;
-         }
-         else
-         {
-            errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
-         }
-      }
-      
-      vdsaCommonUnlock( &pQueue->object );
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      goto error_handler;
    }
-   else
-      return VDS_SESSION_CANNOT_GET_LOCK;
+
+   pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
+
+   /* Reinitialize the iterator, if needed */
+   if ( pQueue->iterator != NULL )
+   {
+      rc = vdseQueueRelease( pVDSQueue,
+                             pQueue->iterator,
+                             &pQueue->object.pSession->context );
+      if ( rc != 0 )
+         goto error_handler_unlock;
+      
+      pQueue->iterator = NULL;
+   }
+
+   rc = vdseQueueGet( pVDSQueue,
+                      VDS_FIRST,
+                      &pQueue->iterator,
+                      (size_t) -1,
+                      &pQueue->object.pSession->context );
+   if ( rc != 0 )
+      goto error_handler_unlock;
+
+   pEntry->data = pQueue->iterator->data;
+   pEntry->length = pQueue->iterator->dataLength;
+      
+   vdsaCommonUnlock( &pQueue->object );
+   
+   return 0;
+
+error_handler_unlock:
+   vdsaCommonUnlock( &pQueue->object );
+
+error_handler:
+   if ( errcode != 0 )
+      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, errcode );
+
+   if ( rc != 0 )
+      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
 
    return errcode;
 }
@@ -469,44 +523,46 @@ int vdsaQueueNext( vdsaQueue     * pQueue,
                    vdsaDataEntry * pEntry )
 {
    vdseQueue * pVDSQueue;
-   int errcode = 0;
+   int errcode = 0, rc = 0;
 
    VDS_PRE_CONDITION( pQueue != NULL );
    VDS_PRE_CONDITION( pEntry != NULL );
-   VDS_PRE_CONDITION( pQueue->type == VDSA_QUEUE );
+   VDS_PRE_CONDITION( pQueue->object.type == VDSA_QUEUE );
    VDS_PRE_CONDITION( pQueue->iterator != NULL );
    
-   if ( vdsaCommonLock( &pQueue->object ) == 0 )
+   if ( vdsaCommonLock( &pQueue->object ) != 0 )
    {
-      pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
-
-      errcode = vdseQueueGet( pVDSQueue,
-                              VDS_NEXT,
-                              &pQueue->iterator,
-                              (size_t) -1,
-                              &pQueue->object.pSession->context );
-      if ( errcode == 0 )
-      {
-         pEntry->data = pQueue->iterator->data;
-         pEntry->length = pQueue->iterator->dataLength;
-      }
-      else
-      {
-         errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
-         /* Reinitialize the iterator, if needed */
-         if ( pQueue->iterator != NULL )
-         {
-            if ( vdseQueueRelease( pVDSQueue,
-                                   pQueue->iterator,
-                                   &pQueue->object.pSession->context ) == 0 )
-            pQueue->iterator = NULL;
-         }
-      }
-      
-      vdsaCommonUnlock( &pQueue->object );
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      goto error_handler;
    }
-   else
-      return VDS_SESSION_CANNOT_GET_LOCK;
+
+   pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
+
+   rc = vdseQueueGet( pVDSQueue,
+                      VDS_NEXT,
+                      &pQueue->iterator,
+                      (size_t) -1,
+                      &pQueue->object.pSession->context );
+   if ( rc != 0 )
+      goto error_handler_unlock;
+
+   pEntry->data = pQueue->iterator->data;
+   pEntry->length = pQueue->iterator->dataLength;
+
+   vdsaCommonUnlock( &pQueue->object );
+
+   return 0;
+
+error_handler_unlock:
+   vdsaCommonUnlock( &pQueue->object );
+
+error_handler:
+   if ( errcode != 0 )
+      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, errcode );
+
+   if ( rc != 0 )
+      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
 
    return errcode;
 }
@@ -517,48 +573,58 @@ int vdsaQueueRemove( vdsaQueue     * pQueue,
                      vdsaDataEntry * pEntry )
 {
    vdseQueue * pVDSQueue;
-   int errcode = 0;
+   int errcode = 0, rc = 0;
 
    VDS_PRE_CONDITION( pQueue != NULL );
    VDS_PRE_CONDITION( pEntry != NULL )
-   VDS_PRE_CONDITION( pQueue->type == VDSA_QUEUE )
+   VDS_PRE_CONDITION( pQueue->object.type == VDSA_QUEUE )
 
-   if ( vdsaCommonLock( &pQueue->object ) == 0 )
+   if ( vdsaCommonLock( &pQueue->object ) != 0 )
    {
-      pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
-
-      /* Reinitialize the iterator, if needed */
-      if ( pQueue->iterator != NULL )
-      {
-         if ( vdseQueueRelease( pVDSQueue,
-                                pQueue->iterator,
-                                &pQueue->object.pSession->context ) == 0 )
-            pQueue->iterator = NULL;
-         else
-            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
-      }
-
-      if ( errcode == 0 )
-      {
-         errcode = vdseQueueRemove( pVDSQueue,
-                                    &pQueue->iterator,
-                                    VDSE_QUEUE_FIRST,
-                                    (size_t) -1,
-                                    &pQueue->object.pSession->context );
-         if ( errcode != 0 )
-            errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
-         else
-         {
-            pEntry->data = (const void *) pQueue->iterator->data;
-            pEntry->length = pQueue->iterator->dataLength;
-         }
-      }
-      
-      vdsaCommonUnlock( &pQueue->object );
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      goto error_handler;
    }
-   else
-      return VDS_SESSION_CANNOT_GET_LOCK;
-   
+
+   pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
+
+   /* Reinitialize the iterator, if needed */
+   if ( pQueue->iterator != NULL )
+   {
+      rc = vdseQueueRelease( pVDSQueue,
+                             pQueue->iterator,
+                             &pQueue->object.pSession->context );
+      if ( rc != 0 )
+         goto error_handler_unlock;
+
+      pQueue->iterator = NULL;
+   }
+
+   rc = vdseQueueRemove( pVDSQueue,
+                         &pQueue->iterator,
+                         VDSE_QUEUE_FIRST,
+                         (size_t) -1,
+                         &pQueue->object.pSession->context );
+   if ( rc != 0 )
+      goto error_handler_unlock;
+
+   pEntry->data = (const void *) pQueue->iterator->data;
+   pEntry->length = pQueue->iterator->dataLength;
+      
+   vdsaCommonUnlock( &pQueue->object );
+
+   return 0;
+
+error_handler_unlock:
+   vdsaCommonUnlock( &pQueue->object );
+
+error_handler:
+   if ( errcode != 0 )
+      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, errcode );
+
+   if ( rc != 0 )
+      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
+
    return errcode;
 }
 

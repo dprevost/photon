@@ -99,21 +99,10 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
    if ( errcode != VDS_OK )
       goto the_exit;
    
-/*   fprintf( stderr, "w %s-%s-%s-\n", answer.pathname, VDS_DIR_SEPARATOR, */
-/*            VDS_MEMFILE_NAME ); */
-
-/*   printf( "w %p%p%p", answer.pathname, VDS_DIR_SEPARATOR, */
-/*            VDS_MEMFILE_NAME ); */
-/*   sleep( 1 ); */
-/*   printf( "q %d%d%d", strlen(answer.pathname), strlen(VDS_DIR_SEPARATOR), */
-/*            strlen(VDS_MEMFILE_NAME) ); */
    /* The watchdog already tested that there is no buffer overflow here. */
-
    sprintf( path, "%s%s%s", answer.pathname, VDS_DIR_SEPARATOR,
             VDS_MEMFILE_NAME );
 
-/*   strcpy( path, "/tmp/vdsf_001/mem_file" ); */
-   
    errcode = vdsaOpenVDS( process,
                           path,
                           answer.memorySizekb,
@@ -134,8 +123,8 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
       g_pProcessInstance = process;
    }
    
- the_exit:
-
+the_exit:
+   
    if ( g_protectionIsNeeded )
       vdscReleaseThreadLock( &g_ProcessMutex );
 

@@ -31,15 +31,11 @@ BEGIN_C_DECLS
 
 typedef struct vdsaQueue
 {
-   vdsaObjetType type;
-
    vdsaCommonObject object;
    
    /**
-    * This struct holds both the result of the iteration (the pointer to
-    * the current vdseHashItem) and the values needed to get the next item.
-    *
-    * It is also used to hold 
+    * This pointer holds the result of the iteration (the pointer to
+    * the current vdseQueueItem).
     */
    vdseQueueItem * iterator;
    

@@ -59,17 +59,17 @@ int main( int argc, char * argv[] )
 
    memset( &object, 0, sizeof(vdsaCommonObject) );
    object.pSession = (vdsaSession *) sessionHandle;
-   errcode = vdsaCommonObjectOpen( &object,
-                                   VDS_FOLDER,
-                                   "/accno",
-                                   strlen("/accno") );
+   errcode = vdsaCommonObjOpen( &object,
+                                VDS_FOLDER,
+                                "/accno",
+                                strlen("/accno") );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCommonObjectClose( NULL );
+   errcode = vdsaCommonObjClose( NULL );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );

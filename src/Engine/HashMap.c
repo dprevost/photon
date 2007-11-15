@@ -501,6 +501,17 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return -1;
    }
+
+   /* 
+    * If we come here, there are no additional data items to retrieve. As 
+    * long as we clearly say that the internal iterator is reset (in case a 
+    * "Get Previous" is implemented later), we can just release the iterator
+    * at this point.
+    */
+   pItem->pHashItem = NULL;
+   pItem->bucket = 0;
+   pItem->itemOffset = NULL_OFFSET;
+   vdseHashMapReleaseNoLock( pHashMap, previousHashItem, pContext );
    
    vdseUnlock( &pHashMap->memObject, pContext );
    vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );

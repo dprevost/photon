@@ -22,7 +22,6 @@
 
 #include "Common/Common.h"
 #if defined (WIN32)
-#  define FD_SETSIZE 100
 #  include <Winsock2.h>
 #endif
 
@@ -91,6 +90,8 @@ int vdsaConnect( vdsaConnector    * pConnector,
                  const char       * address,
                  struct WDOutput  * pAnswer,
                  vdscErrorHandler * errorHandler );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Break the connection with the watchdog. */
 void vdsaDisconnect( vdsaConnector    * pConnector,

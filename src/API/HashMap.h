@@ -31,8 +31,6 @@ BEGIN_C_DECLS
 
 typedef struct vdsaHashMap
 {
-   vdsaObjetType type;
-
    vdsaCommonObject object;
    
    /**
