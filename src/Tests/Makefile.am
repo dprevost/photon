@@ -14,16 +14,19 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-EXTRA_DIST =                     \
-             PrintError.h        \
-             TestWithWatchdog.py \
-             TestWithWatchdog.sh \
-             TransactionQueue.sh 
+EXTRA_DIST =             \
+   PrintError.h          \
+   TestWithWatchdog.py   \
+   TestWithWatchdog.sh   \
+   TransactionHashMap.sh \
+   TransactionQueue.sh   
 
-check_PROGRAMS =                  \
-                 TransactionQueue 
+check_PROGRAMS =      \
+   TransactionHashMap \
+   TransactionQueue   
 
-TransactionQueue_SOURCES = TransactionQueue.c
+TransactionHashMap_SOURCES = TransactionHashMap.c
+TransactionQueue_SOURCES   = TransactionQueue.c
 
 TESTS_ENVIRONMENT =                              \
                     tcp_port=10701               \
@@ -33,8 +36,9 @@ TESTS_ENVIRONMENT =                              \
                     verbose=1                    \
                     PYTHON=$(PYTHON)
 
-TESTS =                     \
-        TransactionQueue.sh 
+TESTS =                  \
+   TransactionHashMap.sh \
+   TransactionQueue.sh   
 
 LDADD = $(top_builddir)/src/API/libvdsf.la      \
         $(top_builddir)/src/Engine/libEngine.la \
