@@ -16,7 +16,7 @@ CLEANFILES        = *~
 
 #SUBDIRS = . Tests
 
-bin_PROGRAMS = errorParser
+noinst_PROGRAMS = errorParser
 
 errorParser_SOURCES =                  \
                       analyser.cpp     \

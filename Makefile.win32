@@ -11,12 +11,6 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 
-!IF "$(OS)" == "Windows_NT"
-NULL=
-!ELSE 
-NULL=
-!ENDIF 
-
 ###########################################################################
 #
 # The targets

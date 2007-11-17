@@ -65,17 +65,19 @@ AM_CONDITIONAL([COND_USE_DOXYGEN], [test "$DOXY_IS_PRESENT" = yes])
 AC_CHECK_PROG([LATEX_IS_PRESENT], [latex], [yes], [no])
 AM_CONDITIONAL([COND_USE_LATEX], [test "$LATEX_IS_PRESENT" = yes])
 
-AC_ARG_WITH([java],
-              AC_HELP_STRING([--with-java],
-                             [will build the java API, if included @<:@default=yes@:>@]),
-	      [with_java=$withval],
-	      [with_java=yes])
-if test "$with_java" = "yes"; then
-  if test ! -d "$JAVA_HOME" ; then
-    AC_MSG_ERROR([JAVA_HOME env. variable must be set to build the Java API])
-  fi
-fi
-AM_CONDITIONAL([COND_USE_JAVA], [test "$with_java" = yes])
+# Java is not used yet (version 0.1)
+
+#AC_ARG_WITH([java],
+#              AC_HELP_STRING([--with-java],
+#                             [will build the java API, if included @<:@default=yes@:>@]),
+#	      [with_java=$withval],
+#	      [with_java=yes])
+#if test "$with_java" = "yes"; then
+#  if test ! -d "$JAVA_HOME" ; then
+#    AC_MSG_ERROR([JAVA_HOME env. variable must be set to build the Java API])
+#  fi
+#fi
+#AM_CONDITIONAL([COND_USE_JAVA], [test "$with_java" = yes])
 
 ##################################
 #                                #
@@ -85,9 +87,6 @@ AM_CONDITIONAL([COND_USE_JAVA], [test "$with_java" = yes])
 
 AC_SEARCH_LIBS(sem_init, pthread rt posix4)
 AC_SEARCH_LIBS(nanosleep, rt posix4)
-# The test for bget uses maths functions - on Tru64 explicit linking
-# with the math library is needed (might be true for other platforms).
-AC_SEARCH_LIBS(pow, m)
 
 ACX_PTHREAD(
    [
@@ -97,7 +96,7 @@ ACX_PTHREAD(
       AC_DEFINE(USE_PTHREAD, 1, [Using Posix threads])
 	],
 	[
-	    AC_MSG_ERROR([VDSF requires Posix Threads and I don'k know where it is.])
+	    AC_MSG_ERROR([VDSF requires a Posix Thread library and I don'k know where it is.])
 	])
 
 #####################################
@@ -392,7 +391,6 @@ AM_CONDITIONAL([COND_INCLUDE_DEMO], [test "$want_demo" = yes])
 use_headers=yes
 
 if test "$locking_dir" = "empty"; then
-#  AC_MSG_RESULT([Modified kernel headers unsupported on this cpu])
   AC_MSG_ERROR([Modified kernel headers unsupported on this cpu])
   AM_CONDITIONAL([COND_USE_KERNEL_HEADERS], [test "$locking_dir" != "empty"])
   if test "$ac_cv_sem_init_works" != "yes"; then

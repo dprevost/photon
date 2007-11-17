@@ -1,6 +1,37 @@
 Installation Instructions
 *************************
 
+Some notes specific to vdsf:
+
+ * Doxygen and latex are required if you want to build the documentation. 
+   The graphviz package is also recommended (doxygen uses it to create 
+   graphs).
+
+ * Here is the list of configure options that you might want to use to 
+   tailor the package to your needs:
+
+    * --enable-i18n The engine will use wide character strings internally 
+        for the names of objects. On by default.
+    * --enable-set-block-size=some_value Sets the size of vdsf blocks 
+        (blocks are the basic unit of memory allocation just like pages 
+        are for operating systems - the name is different to avoid 
+        confusion). Legal values for blocks size are 1k, 2k, 4k, 8k or 
+        16k - the default is 8k. You may want to set it at a lower value 
+        if you have many small objects and/or have small amount of RAM.
+    * --enable-dbc Add contract-validation checks to the code. You might 
+        want to disable this on production systems for performance reasons. 
+        It is on by default.
+    * --prefix=PREFIX To change the default installation directory 
+        (/usr/local). It is not recommended to change this since this is 
+        an early alpha release. 
+    
+************************************************************************
+*
+* Generic instructions written by the FSF to build vdsf (or any other 
+* packages) follow:
+*
+************************************************************************
+
 Copyright (C) 1994, 1995, 1996, 1999, 2000, 2001, 2002, 2004, 2005 Free
 Software Foundation, Inc.
 

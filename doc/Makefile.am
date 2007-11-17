@@ -24,7 +24,7 @@ if COND_USE_LATEX
 
 all-local: refman.pdf
 
-EXTRA_DIST = refman.pdf
+EXTRA_DIST = refman.pdf Doxyfile.vds_c
 
 HEADER_FILES =                                 \
    $(top_srcdir)/src/include/vdsf/vds.h        \

@@ -67,60 +67,58 @@ VDS_C_FILES =                           \
               man3/vdsRollback.3        \
               man3/vdsSession.h.3       
 
-man_MANS =                   \
-           $(VDS_C_FILES)    \
-           man3/vdsFolder.3  \
-           man3/vdsQueue.3   \
-           man3/vdsProcess.3 \
-           man3/vdsSession.3 
+man_MANS =                \
+           $(VDS_C_FILES) 
+ 
+#           man3/vdsFolder.3  
+#           man3/vdsQueue.3   
+#           man3/vdsProcess.3 
+#           man3/vdsSession.3 
 
-EXTRA_DIST =                     \
-             Doxyfile.vdsFolder  \
-             Doxyfile.vdsQueue   \
-             Doxyfile.vdsProcess \
-             Doxyfile.vdsSession \
-             Doxyfile.vds_c      \
-             man3/*.3
+EXTRA_DIST =                \
+             Doxyfile.vds_c \
+             $(VDS_C_FILES)
 
-
-#             $(man_MANS)
+#             Doxyfile.vdsFolder  
+#             Doxyfile.vdsQueue   
+#             Doxyfile.vdsProcess 
+#             Doxyfile.vdsSession 
 
 nobase_include_HEADERS = \
    vdsf/vdsCommon.h      \
    vdsf/vdsErrors.h      \
    vdsf/vdsFolder.h      \
+   vdsf/vdsHashMap.h     \
    vdsf/vdsProcess.h     \
    vdsf/vdsQueue.h       \
    vdsf/vdsSession.h     \
    vdsf/vds.h            
-
-#   Item.h
 
 #
 # Only rebuild the man pages if doxygen is present.
 #
 if COND_USE_DOXYGEN
 
-man3/vdsFolder.3: vdsf/vdsFolder
-	cd 
-	doxygen $(top_srcdir)/src/include/Doxyfile.vdsFolder
-	cp dummy/man/man3/vdsFolder.3 man3/vdsFolder.3
-	-rm -rf dummy
+#man3/vdsFolder.3: vdsf/vdsFolder
+#	cd 
+#	doxygen $(top_srcdir)/src/include/Doxyfile.vdsFolder
+#	cp dummy/man/man3/vdsFolder.3 man3/vdsFolder.3
+#	-rm -rf dummy
 
-man3/vdsQueue.3: vdsf/vdsQueue
-	doxygen Doxyfile.vdsQueue
-	cp dummy/man/man3/vdsQueue.3 man3/vdsQueue.3
-	-rm -rf dummy
+#man3/vdsQueue.3: vdsf/vdsQueue
+#	doxygen Doxyfile.vdsQueue
+#	cp dummy/man/man3/vdsQueue.3 man3/vdsQueue.3
+#	-rm -rf dummy
 
-man3/vdsProcess.3: vdsf/vdsProcess
-	doxygen Doxyfile.vdsProcess
-	cp dummy/man/man3/vdsProcess.3 man3/vdsProcess.3
-	-rm -rf dummy
+#man3/vdsProcess.3: vdsf/vdsProcess
+#	doxygen Doxyfile.vdsProcess
+#	cp dummy/man/man3/vdsProcess.3 man3/vdsProcess.3
+#	-rm -rf dummy
 
-man3/vdsSession.3: vdsf/vdsSession
-	doxygen Doxyfile.vdsSession
-	cp dummy/man/man3/vdsSession.3 man3/vdsSession.3
-	-rm -rf dummy
+#man3/vdsSession.3: vdsf/vdsSession
+#	doxygen Doxyfile.vdsSession
+#	cp dummy/man/man3/vdsSession.3 man3/vdsSession.3
+#	-rm -rf dummy
 
 $(VDS_C_FILES): $(HEADER_FILES)
 	doxygen Doxyfile.vds_c

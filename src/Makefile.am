@@ -25,8 +25,9 @@ SUBDIRS =               \
           Engine        \
           Watchdog      \
           API           \
-          include       
-
+          include       \
+          Tests
+          
 #if COND_USE_JAVA
 #   SUBDIRS += Java
 #endif
@@ -35,7 +36,7 @@ SUBDIRS =               \
 #  SUBDIRS += Demo
 #endif
 
-TEST_FILES =                           \
+#TEST_FILES =                           \
              Tests/PrintError.h        \
              Tests/TestWithWatchdog.py \
              Tests/TestWithWatchdog.sh 
