@@ -6,7 +6,7 @@ Architecture: @architecture@
 Depends: libc6
 Suggests: 
 Conflicts: 
-Installed-Size: 2304
+Installed-Size: @SIZE@
 Maintainer: @PACKAGE_BUGREPORT@
 Description: Development tool providing queues, maps in shared memory and more.
  VDSF is a development tool for complex server applications. It provides 

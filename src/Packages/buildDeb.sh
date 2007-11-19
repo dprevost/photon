@@ -17,20 +17,24 @@ if [ "$TMPDIR" = "" ] ; then
    TMPDIR=/tmp
 fi
 
-mkdir -p $TMPDIR/debian/DEBIAN
-cp control $TMPDIR/debian/DEBIAN
+mkdir -p $TMPDIR/debian_vdsf/DEBIAN
 
 cd ../..
-make DESTDIR=/tmp/debian install-strip 
-#prefix=$TMPDIR/debian/usr/local
-mkdir -p $TMPDIR/debian/usr/local/share/doc/vdsf
-install -m 644 README $TMPDIR/debian/usr/local/share/doc/vdsf/README
-install -m 644 COPYING $TMPDIR/debian/usr/local/share/doc/vdsf/copyright
-install -m 644 ChangeLog $TMPDIR/debian/usr/local/share/doc/vdsf/changelog
-install -m 644 ChangeLog $TMPDIR/debian/usr/local/share/doc/vdsf/changelog.Debian
-gzip $TMPDIR/debian/usr/local/share/doc/vdsf/changelog
-gzip $TMPDIR/debian/usr/local/share/doc/vdsf/changelog.Debian
-install -m 644 doc/refman.pdf $TMPDIR/debian/usr/local/share/doc/vdsf/refman.pdf
+make DESTDIR=/tmp/debian_vdsf install-strip 
+mkdir -p $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf
+install -m 644 README $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf/README
+install -m 644 COPYING $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf/copyright
+install -m 644 ChangeLog $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf/changelog
+install -m 644 ChangeLog $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf/changelog.Debian
+gzip $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf/changelog
+gzip $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf/changelog.Debian
+install -m 644 doc/refman.pdf $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf/refman.pdf
+cd -
 
-cd $TMPDIR
-fakeroot dpkg-deb --build debian
+size=`du -sk $TMPDIR/debian_vdsf/usr  | gawk '{ print $1 }'`
+echo $size
+sed "s/@SIZE@/$size/g" < control > $TMPDIR/debian_vdsf/DEBIAN/control
+
+fakeroot dpkg-deb --build $TMPDIR/debian_vdsf
+mv  $TMPDIR/debian_vdsf.deb vdsf-0.1.0.deb
+rm -rf $TMPDIR/debian_vdsf
