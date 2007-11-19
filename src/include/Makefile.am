@@ -121,7 +121,7 @@ if COND_USE_DOXYGEN
 #	-rm -rf dummy
 
 $(VDS_C_FILES): $(HEADER_FILES)
-	doxygen Doxyfile.vds_c
+	doxygen doxyfile.vds_c
 	cp dummy/man/man3/vds* man3/
 	-rm -rf dummy
 

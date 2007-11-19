@@ -26,7 +26,7 @@
 
 AC_INIT([Virtual Data Space Framework],
         [0.1.0],
-        [Daniel Prevost dprevost@users.sourceforge.net],
+        [Daniel Prevost <dprevost@users.sourceforge.net>],
         [vdsf])
 
 AC_PREREQ(2.57)
@@ -407,6 +407,13 @@ fi
 #                  #
 ####################
 
+AC_CONFIG_FILES([
+   src/Packages/control
+   src/Packages/vdsf.spec
+   src/include/doxyfile.vds_c
+   doc/doxyfile.vds_c
+])
+   
 AC_CONFIG_FILES([
    Makefile
    doc/Makefile

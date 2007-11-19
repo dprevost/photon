@@ -1,10 +1,10 @@
 Summary: Provides data containers in shared memory for fast development of complex applications.
-Name: vdsf
-Version: 0.1.0
+Name: @PACKAGE_TARNAME@
+Version: @PACKAGE_VERSION@
 Release: 1
 License: GPL
 Group: Development/Libraries
-Source: vdsf-0.1.0.tar.gz
+Source: @PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.gz
 BuildRoot: /var/tmp/%{name}-buildroot
 Prefix: /usr/local
 
