@@ -301,15 +301,17 @@ fi
 AC_CANONICAL_HOST
 AC_DEFINE_UNQUOTED(MYCPU, "$host_cpu", The host cpu)
 
+architecture=all
 case $host_cpu in
 i386 | i486 | i586 | i686 )
-             locking_dir=asm-i386    ;;
+             locking_dir=asm-i386  
+             architecture=i386        ;;
 #alpha)       locking_dir=asm-alpha   ;;
 #sparc)       locking_dir=asm-sparc   ;;
 #sparc64)     locking_dir=asm-sparc64 ;;
 *) locking_dir=empty ;;
-
 esac
+AC_SUBST(architecture)
 
 ##################################################
 #                                                #

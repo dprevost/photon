@@ -2,7 +2,7 @@ Package: @PACKAGE_TARNAME@
 Version: @PACKAGE_VERSION@
 Section: devel
 Priority: optional
-Architecture: @host_cpu@
+Architecture: @architecture@
 Depends: libc6
 Suggests: 
 Conflicts: 
@@ -17,5 +17,4 @@ Description: Development tool providing queues, maps in shared memory and more.
  application doing multiple tasks, it is much simpler to create a bunch of 
  programs each doing its own single task. All the programs communicate with 
  each other (as needed) using the shared objects in the Virtual Data Space.
-Original-Maintainer: 
 
