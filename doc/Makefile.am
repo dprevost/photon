@@ -35,7 +35,7 @@ HEADER_FILES =                                 \
    $(top_srcdir)/src/include/vdsf/vdsProcess.h \
    $(top_srcdir)/src/include/vdsf/vdsSession.h 
 
-refman.pdf: $(HEADER_FILES) doxyfile.vds_c
+refman.pdf: $(HEADER_FILES)
 	-rm -rf latex
 	doxygen doxyfile.vds_c $(VERBOSE)
 	cd latex; make refman.pdf; cd ..

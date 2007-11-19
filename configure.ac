@@ -410,10 +410,11 @@ fi
 ####################
 
 AC_CONFIG_FILES([
+   doc/doxyfile.vds_c
+   src/include/doxyfile.vds_c
+   src/Packages/buildDeb.sh
    src/Packages/control
    src/Packages/vdsf.spec
-   src/include/doxyfile.vds_c
-   doc/doxyfile.vds_c
 ])
    
 AC_CONFIG_FILES([
