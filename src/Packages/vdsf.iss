@@ -1,13 +1,13 @@
 [Setup]
 MinVersion=0,4.0
 AppName=VDSF
-AppVerName=Virtual Data Space Framework version 0.1
+AppVerName=Virtual Data Space Framework version 0.1.0
 LicenseFile=COPYING
 DefaultDirName={pf}\VDSF
 DefaultGroupName=VDSF
-SourceDir=..
-OutputDir=Installation\Output
-OutputBaseFilename=vdsf-0.1
+SourceDir=..\..
+OutputDir=src\Packages\Output
+OutputBaseFilename=vdsf-0.1.0
 
 [Files]
 Source: src\Release\vdsfAPI.dll; DestDir: {app}\bin
@@ -27,9 +27,9 @@ Source: src\Release\vdswd.exe; DestDir: {app}\bin
 Source: COPYING; DestDir: {app}; DestName: License.txt
 
 [Icons]
-Name: "{group}\Watchdog"; Filename: "{app}\bin\vdswd.EXE"; WorkingDir: "{app}"
-Name: "{group}\Manual"; Filename: "{app}\refman.pdf"
-Name: "{group}\Uninstall My Program"; Filename: "{uninstallexe}"
+;Name: "{group}\Watchdog"; Filename: "{app}\bin\vdswd.EXE"; WorkingDir: "{app}"
+Name: {group}\Manual; Filename: {app}\refman.pdf
+Name: {group}\Uninstall My Program; Filename: {uninstallexe}
 
 [Registry]
 Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdswd.exe; ValueType: string; ValueData: {app}\bin\vdswd.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
@@ -43,4 +43,3 @@ Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdswd.ex
 ;Root: HKLM; SubKey: SOFTWARE\Tigris.org\Subversion; ValueType: string; ValueName: Version; ValueData: {#= svn_version}; Flags: noerror uninsdeletekey
 ;Root: HKLM; SubKey: SOFTWARE\Tigris.org\Subversion; ValueType: string; ValueName: Revision; ValueData: {#= svn_revision}; Flags: uninsdeletevalue noerror uninsdeletekeyifempty
 ;Root: HKLM; Subkey: SYSTEM\CurrentControlSet\Control\Session Manager\Environment; ValueType: string; ValueName: APR_ICONV_PATH; ValueData: {app}\iconv; Flags: uninsdeletevalue noerror
-
