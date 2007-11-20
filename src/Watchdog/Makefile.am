@@ -31,5 +31,5 @@ vdswd_SOURCES =                   \
                 Watchdog.h        \
                 wd.cpp            
 
-vdswd_LDADD = $(top_builddir)/src/Engine/libEngine.la \ 
+vdswd_LDADD = $(top_builddir)/src/Engine/libEngine.la \
               $(top_builddir)/src/Common/libCommon.la

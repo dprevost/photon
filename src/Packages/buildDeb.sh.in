@@ -36,5 +36,5 @@ echo $size
 sed "s/@SIZE@/$size/g" < control > $TMPDIR/debian_vdsf/DEBIAN/control
 
 fakeroot dpkg-deb --build $TMPDIR/debian_vdsf
-mv  $TMPDIR/debian_vdsf.deb vdsf-@PACKAGE_VERSION@.deb
+mv  $TMPDIR/debian_vdsf.deb vdsf_@PACKAGE_VERSION@_@architecture@-1.deb
 rm -rf $TMPDIR/debian_vdsf

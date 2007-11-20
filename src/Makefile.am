@@ -8,7 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-CLEANFILES = *~
+CLEANFILES = *~ Packages\*~
 
 # The code have to be build following a certain order:
 #   1-    Common
@@ -36,11 +36,6 @@ SUBDIRS =               \
 #  SUBDIRS += Demo
 #endif
 
-#TEST_FILES =                           \
-             Tests/PrintError.h        \
-             Tests/TestWithWatchdog.py \
-             Tests/TestWithWatchdog.sh 
-
 BASE_LOCK_FILES =                                  \
                   Locking/linux/autoconf.h         \
                   Locking/linux/compiler-gcc.h     \
@@ -64,9 +59,7 @@ EXTRA_DIST = $(BASE_LOCK_FILES) $(I386_FILES) $(TEST_FILES)
 
 DIST_SUBDIRS = $(SUBDIRS)    
 
-#\
-               Java          \
+#               Java          \
                Demo          \
-               Locking       \
-               Tests         
+               Locking       
 

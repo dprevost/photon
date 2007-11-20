@@ -367,15 +367,6 @@ AM_CONDITIONAL([COND_USE_EXTREME_DBC], [test "$use_extreme_dbc" = yes])
 AM_CONDITIONAL([COND_USE_DBC], 
 	            [test "$use_dbc" = yes || "$use_extreme_dbc" = yes])
 
-#AC_ARG_ENABLE([try-trap-errors],
-#              AC_HELP_STRING([--enable-try-trap-errors],
-#                             [use this to replace some asserts by trapping some internal errors instead of aborting (--enable-assert must be set to yes for this to work) @<:@default=yes@:>@]),
-#              [use_trap_errors=$enableval],
-#              [use_trap_errors=yes])
-
-#AM_CONDITIONAL( [COND_USE_TRAP_ERRORS], 
-#                [test "$use_trap_errors" = yes && test "$use_assert" = "yes"] )
-
 AM_CONDITIONAL([COND_INCLUDE_DEMO], [test "$want_demo" = yes])
 
 ############################################################
