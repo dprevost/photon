@@ -76,7 +76,7 @@ man_MANS =                \
 #           man3/vdsSession.3 
 
 EXTRA_DIST =                \
-             Doxyfile.vds_c \
+             doxyfile.vds_c \
              $(VDS_C_FILES)
 
 #             Doxyfile.vdsFolder  
