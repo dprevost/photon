@@ -16,6 +16,8 @@ VERBOSE = > /dev/null 2>&1
 # A note on VERBOSE: it might be easier to debug by running each program
 # manually... YMMV
 
+EXTRA_DIST = refman.pdf doxyfile.vds_c
+
 #
 # Only rebuild the ref. manual if both doxygen and latex are present.
 #
@@ -23,8 +25,6 @@ if COND_USE_DOXYGEN
 if COND_USE_LATEX
 
 all-local: refman.pdf
-
-EXTRA_DIST = refman.pdf doxyfile.vds_c
 
 HEADER_FILES =                                 \
    $(top_srcdir)/src/include/vdsf/vds.h        \
