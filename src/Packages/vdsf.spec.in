@@ -22,12 +22,12 @@ using the shared objects in the Virtual Data Space.
 %setup
 
 %build
-./configure --prefix=$RPM_BUILD_ROOT/usr/local
+./configure --prefix=/usr/local
 make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install
+make DESTDIR=$RPM_BUILD_ROOT install
 mkdir -p $RPM_BUILD_ROOT/usr/local/share/doc/vdsf
 install -m 644 README $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/README
 install -m 644 COPYING $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/COPYING
