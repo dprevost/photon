@@ -36,6 +36,12 @@ install -m 644 doc/refman.pdf $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/refman.pd
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post 
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
 %files
 %defattr(-,root,root)
 %docdir /usr/local/share/doc/vdsf
