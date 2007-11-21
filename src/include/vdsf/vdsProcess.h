@@ -31,7 +31,7 @@ extern "C" {
  * This file provides the API functions for vdsf processes.
  */
 /**
- * \defgroup Process API functions for vdsf processes.
+ * \defgroup vdsProcess_c API functions for vdsf processes.
  */
 /*@{*/
 

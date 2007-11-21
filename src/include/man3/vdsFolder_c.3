@@ -1,0 +1,127 @@
+.TH "API functions for vdsf folders." 3 "20 Nov 2007" "Version 0.1.0" "vdsf C API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+API functions for vdsf folders. \- 
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderClose\fP (\fBVDS_HANDLE\fP objectHandle)"
+.br
+.RI "\fIClose a folder. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
+.br
+.RI "\fIIterate through the folder - no data items are removed from the folder by this function. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderGetNext\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
+.br
+.RI "\fIIterate through the folder. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *folderName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP *objectHandle)"
+.br
+.RI "\fIOpen an existing folder (see \fBvdsCreateObject\fP to create a new folder). \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderStatus\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP *pStatus)"
+.br
+.RI "\fIReturn the status of the folder. \fP"
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "VDSF_EXPORT int vdsFolderClose (\fBVDS_HANDLE\fP objectHandle)"
+.PP
+Close a folder. 
+.PP
+This function terminates the current access to the folder in shared memory (the folder itself is untouched).
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the folder (see \fBvdsFolderOpen\fP).
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsFolderGetFirst (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP * pEntry)"
+.PP
+Iterate through the folder - no data items are removed from the folder by this function. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the folder (see \fBvdsFolderOpen\fP). 
+.br
+\fIpEntry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsFolderGetNext (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP * pEntry)"
+.PP
+Iterate through the folder. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+Evidently, you must call \fBvdsFolderGetFirst\fP to initialize the iterator.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the folder (see \fBvdsFolderOpen\fP). 
+.br
+\fIpEntry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsFolderOpen (\fBVDS_HANDLE\fP sessionHandle, const char * folderName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP * objectHandle)"
+.PP
+Open an existing folder (see \fBvdsCreateObject\fP to create a new folder). 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsessionHandle\fP The handle to the current session. 
+.br
+\fIfolderName\fP The fully qualified name of the folder. 
+.br
+\fInameLengthInBytes\fP The length of \fIfolderName\fP (in bytes) not counting the null terminator (null-terminators are not used by the vdsf engine). 
+.br
+\fIobjectHandle\fP The handle to the folder, allowing us access to the folder in shared memory. On error, this handle will be set to zero (NULL) unless the objectHandle pointer itself is NULL.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsFolderStatus (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP * pStatus)"
+.PP
+Return the status of the folder. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the folder (see \fBvdsFolderOpen\fP). 
+.br
+\fIpStatus\fP A pointer to the status structure.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+

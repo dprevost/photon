@@ -19,53 +19,58 @@ HEADER_FILES =                                 \
    $(top_srcdir)/src/include/vdsf/vdsProcess.h \
    $(top_srcdir)/src/include/vdsf/vdsSession.h 
 
-VDS_C_FILES =                           \
-              man3/vdsCommit.3          \
-              man3/vdsCommon.h.3        \
-              man3/vdsCreateObject.3    \
-              man3/vdsDestroyObject.3   \
-              man3/vdsErrorMsg.3        \
-              man3/vdsErrors.3          \
-              man3/vdsErrors.h.3        \
-              man3/vdsExit.3            \
-              man3/vdsExitSession.3     \
-              man3/vdsFolderClose.3     \
-              man3/vdsFolderEntry.3     \
-              man3/vdsFolderGetFirst.3  \
-              man3/vdsFolderGetNext.3   \
-              man3/vdsFolder.h.3        \
-              man3/vdsFolderOpen.3      \
-              man3/vdsFolderStatus.3    \
-              man3/vdsGetInfo.3         \
-              man3/vdsGetStatus.3       \
-              man3/vds.h.3              \
-              man3/vdsHashMapClose.3    \
-              man3/vdsHashMapDelete.3   \
-              man3/vdsHashMapGet.3      \
-              man3/vdsHashMapGetFirst.3 \
-              man3/vdsHashMapGetNext.3  \
-              man3/vdsHashMap.h.3       \
-              man3/vdsHashMapInsert.3   \
-              man3/vdsHashMapOpen.3     \
-              man3/vdsHashMapStatus.3   \
-              man3/vdsInfo.3            \
-              man3/vdsInit.3            \
-              man3/vdsInitSession.3     \
-              man3/vdsIteratorType.3    \
-              man3/vdsLastError.3       \
-              man3/vdsObjectType.3      \
-              man3/vdsObjStatus.3       \
-              man3/vdsProcess.h.3       \
-              man3/vdsQueueClose.3      \
-              man3/vdsQueueGetFirst.3   \
-              man3/vdsQueueGetNext.3    \
-              man3/vdsQueue.h.3         \
-              man3/vdsQueueOpen.3       \
-              man3/vdsQueuePop.3        \
-              man3/vdsQueuePush.3       \
-              man3/vdsQueueStatus.3     \
-              man3/vdsRollback.3        \
-              man3/vdsSession.h.3       
+VDS_C_FILES =                \
+   man3/vdsCommit.3          \
+   man3/vdsCommon.h.3        \
+   man3/vdsCreateObject.3    \
+   man3/vdsDestroyObject.3   \
+   man3/vdsErrorMsg.3        \
+   man3/vdsErrors.3          \
+   man3/vdsErrors.h.3        \
+   man3/vdsExit.3            \
+   man3/vdsExitSession.3     \
+   man3/vdsFolder_c.3        \
+   man3/vdsFolderClose.3     \
+   man3/vdsFolderEntry.3     \
+   man3/vdsFolderGetFirst.3  \
+   man3/vdsFolderGetNext.3   \
+   man3/vdsFolder.h.3        \
+   man3/vdsFolderOpen.3      \
+   man3/vdsFolderStatus.3    \
+   man3/vdsGetInfo.3         \
+   man3/vdsGetStatus.3       \
+   man3/vds.h.3              \
+   man3/vdsHashMap_c.3       \
+   man3/vdsHashMapClose.3    \
+   man3/vdsHashMapDelete.3   \
+   man3/vdsHashMapGet.3      \
+   man3/vdsHashMapGetFirst.3 \
+   man3/vdsHashMapGetNext.3  \
+   man3/vdsHashMap.h.3       \
+   man3/vdsHashMapInsert.3   \
+   man3/vdsHashMapOpen.3     \
+   man3/vdsHashMapStatus.3   \
+   man3/vdsInfo.3            \
+   man3/vdsInit.3            \
+   man3/vdsInitSession.3     \
+   man3/vdsIteratorType.3    \
+   man3/vdsLastError.3       \
+   man3/vdsObjectType.3      \
+   man3/vdsObjStatus.3       \
+   man3/vdsProcess_c.3       \
+   man3/vdsProcess.h.3       \
+   man3/vdsQueue_c.3         \
+   man3/vdsQueueClose.3      \
+   man3/vdsQueueGetFirst.3   \
+   man3/vdsQueueGetNext.3    \
+   man3/vdsQueue.h.3         \
+   man3/vdsQueueOpen.3       \
+   man3/vdsQueuePop.3        \
+   man3/vdsQueuePush.3       \
+   man3/vdsQueueStatus.3     \
+   man3/vdsRollback.3        \
+   man3/vdsSession_c.3       \
+   man3/vdsSession.h.3       
 
 man_MANS =                \
            $(VDS_C_FILES) 
@@ -120,9 +125,13 @@ if COND_USE_DOXYGEN
 #	cp dummy/man/man3/vdsSession.3 man3/vdsSession.3
 #	-rm -rf dummy
 
+# Warning: this doxygen run creates many more files which we do
+# not want to distribute (a header file for each error code, for each
+# data field in the data structures, etc.). All these files are links
+# to the "meat" we are keeping anyway!
 $(VDS_C_FILES): $(HEADER_FILES)
 	doxygen doxyfile.vds_c
-	cp dummy/man/man3/vds* man3/
+	cp dummy/man/man3/vds*.3 man3/
 	-rm -rf dummy
 
 endif

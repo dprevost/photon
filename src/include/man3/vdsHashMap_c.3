@@ -1,0 +1,234 @@
+.TH "API functions for vdsf hash maps." 3 "20 Nov 2007" "Version 0.1.0" "vdsf C API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+API functions for vdsf hash maps. \- 
+.SH "Detailed Description"
+.PP 
+Hash maps use unique keys - the data items are not sorted. 
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapClose\fP (\fBVDS_HANDLE\fP objectHandle)"
+.br
+.RI "\fIClose a Hash Map. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapDelete\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength)"
+.br
+.RI "\fIRemove the data item identified by the given key from the hash map. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapGet\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.br
+.RI "\fIRetrieve the data item identified by the given key from the hash map. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.br
+.RI "\fIIterate through the hash map. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapGetNext\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.br
+.RI "\fIIterate through the hash map. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapInsert\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength, const void *data, size_t dataLength)"
+.br
+.RI "\fIInsert a data element in the hash map. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *hashMapName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP *objectHandle)"
+.br
+.RI "\fIOpen an existing hash map (see \fBvdsCreateObject\fP to create a new object). \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapStatus\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP *pStatus)"
+.br
+.RI "\fIReturn the status of the hash map. \fP"
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "VDSF_EXPORT int vdsHashMapClose (\fBVDS_HANDLE\fP objectHandle)"
+.PP
+Close a Hash Map. 
+.PP
+This function terminates the current access to the hash map in shared memory (the hash map itself is untouched).
+.PP
+\fBWarning:\fP
+.RS 4
+Closing an object does not automatically commit or rollback data items that were inserted or removed. You still must use either \fBvdsCommit\fP or \fBvdsRollback\fP to end the current unit of work.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the hash map (see \fBvdsHashMapOpen\fP). 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsHashMapDelete (\fBVDS_HANDLE\fP objectHandle, const void * key, size_t keyLength)"
+.PP
+Remove the data item identified by the given key from the hash map. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by this function and cannot be removed. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+The removals only become permanent after a call to \fBvdsCommit\fP.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the hash map (see \fBvdsHashMapOpen\fP). 
+.br
+\fIkey\fP The key of the item to be removed. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes).
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsHashMapGet (\fBVDS_HANDLE\fP objectHandle, const void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * returnedLength)"
+.PP
+Retrieve the data item identified by the given key from the hash map. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by this function. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the hash map (see \fBvdsHashMapOpen\fP). 
+.br
+\fIkey\fP The key of the item to be retrieved. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIbuffer\fP The buffer provided by the user to hold the content of the data item. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIreturnedLength\fP The actual number of bytes in the data item.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsHashMapGetFirst (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
+.PP
+Iterate through the hash map. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+Data items retrieved this way will not be sorted.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the hash map (see \fBvdsHashMapOpen\fP). 
+.br
+\fIbuffer\fP The buffer provided by the user to hold the content of the first element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIreturnedLength\fP The actual number of bytes in the data item.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsHashMapGetNext (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
+.PP
+Iterate through the hash map. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+Evidently, you must call \fBvdsHashMapGetFirst\fP to initialize the iterator. Not so evident - calling \fBvdsHashMapGet\fP will reset the iteration to the data item retireved by this function (they use the same internal storage). If this cause a problem, please let us know.
+.PP
+Data items retrieved this way will not be sorted.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the hash map (see \fBvdsHashMapOpen\fP). 
+.br
+\fIbuffer\fP The buffer provided by the user to hold the content of the first element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIreturnedLength\fP The actual number of bytes in the data item.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsHashMapInsert (\fBVDS_HANDLE\fP objectHandle, const void * key, size_t keyLength, const void * data, size_t dataLength)"
+.PP
+Insert a data element in the hash map. 
+.PP
+The additions only become permanent after a call to \fBvdsCommit\fP.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the hash map (see \fBvdsHashMapOpen\fP). 
+.br
+\fIkey\fP The key of the item to be inserted. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIdata\fP The data item to be inserted. 
+.br
+\fIdataLength\fP The length of \fIdata\fP (in bytes).
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsHashMapOpen (\fBVDS_HANDLE\fP sessionHandle, const char * hashMapName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP * objectHandle)"
+.PP
+Open an existing hash map (see \fBvdsCreateObject\fP to create a new object). 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsessionHandle\fP The handle to the current session. 
+.br
+\fIhashMapName\fP The fully qualified name of the hash map. 
+.br
+\fInameLengthInBytes\fP The length of \fIhashMapName\fP (in bytes) not counting the null terminator (null-terminators are not used by the vdsf engine). 
+.br
+\fIobjectHandle\fP The handle to the hash map, allowing us access to the map in shared memory. On error, this handle will be set to zero (NULL) unless the objectHandle pointer itself is NULL.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsHashMapStatus (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP * pStatus)"
+.PP
+Return the status of the hash map. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the hash map (see \fBvdsHashMapOpen\fP). 
+.br
+\fIpStatus\fP A pointer to the status structure.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+

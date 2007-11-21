@@ -33,7 +33,7 @@ extern "C" {
  * This file provides the API needed to access a VDSF FIFO queue.
  */
 /**
- * \defgroup Queue API functions for vdsf FIFO queues.
+ * \defgroup vdsQueue_c API functions for vdsf FIFO queues.
  *
  * A reminder: FIFO, First In First Out. Data items are placed at the end of
  * the queue and retrieved from the beginning of the queue.

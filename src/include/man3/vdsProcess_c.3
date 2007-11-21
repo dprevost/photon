@@ -1,0 +1,50 @@
+.TH "API functions for vdsf processes." 3 "20 Nov 2007" "Version 0.1.0" "vdsf C API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+API functions for vdsf processes. \- 
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "VDSF_EXPORT void \fBvdsExit\fP ()"
+.br
+.RI "\fIThis function terminates all access to the VDS. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsInit\fP (const char *wdAddress, int protectionNeeded)"
+.br
+.RI "\fIThis function initializes access to a VDS. \fP"
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "VDSF_EXPORT void vdsExit ()"
+.PP
+This function terminates all access to the VDS. 
+.PP
+This function will also close all sessions and terminate all accesses to the different objects.
+.PP
+This function takes no argument and always end successfully (even if called twice or if \fBvdsInit\fP was not called). 
+.SS "VDSF_EXPORT int vdsInit (const char * wdAddress, int protectionNeeded)"
+.PP
+This function initializes access to a VDS. 
+.PP
+It takes 2 input arguments, the address of the watchdog and an integer (used as a boolean, 0 for false, 1 for true) to indicate if sessions and other objects (Queues, etc) are shared amongst threads (in the current process) and must be protected. Recommendation: always set protectionNeeded to 0 (false) unless you cannot do otherwise. In other words it is recommended to use one session handle for each thread. Also if the same queue needs to be accessed by two threads it is more efficient to have two different handles instead of sharing a single one.
+.PP
+[Additional note: API objects (or C handles) are just proxies for the real objects sitting in shared memory. Proper synchronization is already done in shared memory and it is best to avoid to synchronize these proxy objects.]
+.PP
+Upon successful completion, the process handle is set. Otherwise the error code is returned.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIwdAddress\fP The address of the watchdog. Currently a string with the port number ('12345'). 
+.br
+\fIprotectionNeeded\fP A boolean value indicating if multi-threaded locks are needed or not.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+

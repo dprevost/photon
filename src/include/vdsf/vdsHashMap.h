@@ -36,7 +36,7 @@ extern "C" {
  */
 
 /**
- * \defgroup HashMap API functions for vdsf hash maps.
+ * \defgroup vdsHashMap_c API functions for vdsf hash maps.
  *
  * Hash maps use unique keys - the data items are not sorted.
  */

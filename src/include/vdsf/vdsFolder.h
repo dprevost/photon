@@ -31,7 +31,7 @@ extern "C" {
  * This file provides the API needed to access a VDSF folder.
  */
 /**
- * \defgroup Folder API functions for vdsf folders.
+ * \defgroup vdsFolder_c API functions for vdsf folders.
  *
  * 
  */

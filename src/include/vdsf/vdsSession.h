@@ -33,7 +33,7 @@ extern "C" {
  * This file provides the API needed to create and use a session.
  */
 /**
- * \defgroup Session API functions for vdsf sessions.
+ * \defgroup vdsSession_c API functions for vdsf sessions.
  */
 /*@{*/
 
