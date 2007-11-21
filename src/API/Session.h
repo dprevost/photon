@@ -75,15 +75,15 @@ VDSF_EXPORT
 int vdsaCloseSession( vdsaSession* pSession );
 
 VDSF_EXPORT
+int vdsaSessionCloseObj( vdsaSession             * pSession,
+                         struct vdsaCommonObject * pObject );
+
+VDSF_EXPORT
 int vdsaSessionOpenObj( vdsaSession             * pSession,
                         enum vdsObjectType        objectType, 
                         const char              * objectName,
                         size_t                    nameLengthInBytes,
                         struct vdsaCommonObject * pObject );
-
-VDSF_EXPORT
-int vdsaSessionCloseObj( vdsaSession             * pSession,
-                         struct vdsaCommonObject * pObject );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -98,6 +98,8 @@ int vdsaSessionLock( vdsaSession * pSession )
    return 0;
 }
    
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /** Unlock the current session. */
 static inline
 void vdsaSessionUnlock( vdsaSession* pSession )

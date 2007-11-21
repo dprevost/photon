@@ -23,11 +23,9 @@ SUBDIRS = . Tests
 #  - the version is not in synch with the version of the whole package
 #  - format:  currentversion:revision:age  (age is the tricky one here)
 
-libvdsf_la_LDFLAGS = -version-info 1:0:0
+libvdsf_la_LDFLAGS = -version-info 0:0:0
 
 include_HEADERS = 
-#\
-#   Item.h
 
 libvdsf_la_SOURCES = api.c            \
                      api.h            \

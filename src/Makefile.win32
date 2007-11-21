@@ -11,12 +11,6 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 
-!IF "$(OS)" == "Windows_NT"
-NULL=
-!ELSE 
-NULL=
-!ENDIF 
-
 OUTDIR_RELEASE = .\Release
 OUTDIR_DEBUG   = .\Debug
 
@@ -55,8 +49,8 @@ clean:
 	cd API        && nmake -f Makefile.win32 clean && cd ..
 
 "$(OUTDIR_RELEASE)" :
-	if not exist "$(OUTDIR_RELEASE)/$(NULL)" mkdir "$(OUTDIR_RELEASE)"
+	if not exist "$(OUTDIR_RELEASE)" mkdir "$(OUTDIR_RELEASE)"
 
 "$(OUTDIR_DEBUG)" :
-	if not exist "$(OUTDIR_DEBUG)/$(NULL)" mkdir "$(OUTDIR_DEBUG)"
-   
+	if not exist "$(OUTDIR_DEBUG)" mkdir "$(OUTDIR_DEBUG)"
+

@@ -28,14 +28,6 @@ SUBDIRS =               \
           include       \
           Tests
           
-#if COND_USE_JAVA
-#   SUBDIRS += Java
-#endif
-
-#if COND_INCLUDE_DEMO
-#  SUBDIRS += Demo
-#endif
-
 BASE_LOCK_FILES =                                  \
                   Locking/linux/autoconf.h         \
                   Locking/linux/compiler-gcc.h     \
@@ -55,11 +47,5 @@ I386_FILES =                                   \
              Locking/asm-i386/spinlock_types.h \
              Locking/asm-i386/system.h         
 
-EXTRA_DIST = $(BASE_LOCK_FILES) $(I386_FILES) $(TEST_FILES)
-
-DIST_SUBDIRS = $(SUBDIRS)    
-
-#               Java          \
-               Demo          \
-               Locking       
+EXTRA_DIST = $(BASE_LOCK_FILES) $(I386_FILES)
 

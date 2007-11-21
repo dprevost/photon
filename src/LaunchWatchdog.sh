@@ -27,7 +27,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-echo "This launch a new watchdog. The vds is removed upon termination."
+echo "This launch a new watchdog. Warning: The vds is removed upon termination."
 echo "You can specify the path to the watchdog executable as the first argument"
 
 if [ "$TMPDIR" = "" ] ; then
@@ -50,11 +50,6 @@ mkdir $BASE_DIR
 if [ "$?" != 0 ] ; then
    exit 1
 fi
-
-#mkdir $BASE_DIR/vds
-#if [ "$?" != 0 ] ; then
-#   exit 1
-#fi
 
 echo "# VDSF Config file             "  >  $BASE_DIR/cfg.txt
 echo "#                              "  >> $BASE_DIR/cfg.txt
