@@ -24,9 +24,9 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
-                          enum vdsObjectType   objectType, 
-                          const char         * objectName,
-                          size_t               nameLengthInBytes )
+                       enum vdsObjectType   objectType, 
+                       const char         * objectName,
+                       size_t               nameLengthInBytes )
 {
    int errcode = VDS_OBJECT_CANNOT_GET_LOCK;
    vdseObjectDescriptor * pDesc;

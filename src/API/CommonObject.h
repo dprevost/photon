@@ -23,6 +23,7 @@
 #include "Common/ThreadLock.h"
 #include "Engine/Folder.h"
 #include "API/Session.h"
+#include "Engine/Session.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -47,7 +48,7 @@ typedef struct vdsaCommonObject
     *
     * Not used in version 0.1.
     */
-   void*  pObjectContext;
+   vdseObjectContext *  pObjectContext;
 
    /** Pointer to the session we belong to. */
    struct vdsaSession* pSession;

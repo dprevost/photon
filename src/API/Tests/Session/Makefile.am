@@ -35,6 +35,7 @@ check_PROGRAMS =                     \
                  ErrorMsg            \
                  ExitNullHandle      \
                  ExitPass            \
+                 ExitWithOpenObjects \
                  GetInfo             \
                  InitNoProcess       \
                  InitNullHandle      \
@@ -71,6 +72,7 @@ DestroyZeroLength_SOURCES   = DestroyZeroLength.c
 ErrorMsg_SOURCES            = ErrorMsg.c
 ExitNullHandle_SOURCES      = ExitNullHandle.c
 ExitPass_SOURCES            = ExitPass.c
+ExitWithOpenObjects_SOURCES = ExitWithOpenObjects.c
 GetInfo_SOURCES             = GetInfo.c
 InitNoProcess_SOURCES       = InitNoProcess.c
 InitNullHandle_SOURCES      = InitNullHandle.c
@@ -107,6 +109,7 @@ EXTRA_DIST =                        \
              ErrorMsg.sh            \
              ExitNullHandle.sh      \
              ExitPass.sh            \
+             ExitWithOpenObjects.sh \
              GetInfo.sh             \
              InitNullHandle.sh      \
              InitPass.sh            \
@@ -151,6 +154,7 @@ TESTS =                        \
         ErrorMsg.sh            \
         ExitNullHandle.sh      \
         ExitPass.sh            \
+        ExitWithOpenObjects.sh \
         GetInfo.sh             \
         InitNoProcess          \
         InitNullHandle.sh      \

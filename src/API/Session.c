@@ -602,8 +602,12 @@ int vdsaSessionCloseObj( vdsaSession             * pSession,
 
    if ( ! pSession->terminated )
    {
-      rc = vdseTopFolderCloseObject( &pObject->folderItem,
-                                          &pSession->context );
+      rc = vdseSessionRemoveObj( pSession->pCleanup, 
+                                 pObject->pObjectContext, 
+                                 &pSession->context );
+      if ( rc == 0 )
+         rc = vdseTopFolderCloseObject( &pObject->folderItem,
+                                        &pSession->context );
    }
    else
       errcode = VDS_SESSION_IS_TERMINATED;
@@ -652,7 +656,6 @@ int vdsaCloseSession( vdsaSession* pSession )
                if ( pObject->pCommonObject == NULL ) continue;
             
                pCommonObject = (vdsaCommonObject*) pObject->pCommonObject;
-            
                rc = vdseTopFolderCloseObject( &pCommonObject->folderItem, 
                                               &pSession->context );
                vdsaCommonCloseObject( pCommonObject );
@@ -690,6 +693,7 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
 {
    int errcode = 0, rc = 0;
    vdseFolder * pTree;
+   vdseObjectDescriptor * pDesc;
    
    VDS_PRE_CONDITION( pSession   != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
@@ -705,6 +709,18 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
                                     nameLengthInBytes,
                                     &pObject->folderItem,
                                     &pSession->context );
+      if ( rc == 0 )
+      {
+         GET_PTR( pDesc, pObject->folderItem.pHashItem->dataOffset,
+                          vdseObjectDescriptor );
+
+         rc = vdseSessionAddObj( pSession->pCleanup,
+                                 pDesc->offset,
+                                 pDesc->apiType,
+                                 pObject,
+                                 &pObject->pObjectContext,
+                                 &pSession->context );
+      }
    }
    else
       errcode = VDS_SESSION_IS_TERMINATED;
