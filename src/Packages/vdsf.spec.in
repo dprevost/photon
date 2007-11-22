@@ -62,8 +62,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/lib/libvdsf.a
 /usr/local/lib/libvdsf.la
 /usr/local/lib/libvdsf.so
-/usr/local/lib/libvdsf.so.1
-/usr/local/lib/libvdsf.so.1.0.0
+/usr/local/lib/libvdsf.so.0
+/usr/local/lib/libvdsf.so.0.0.0
 /usr/local/share/man/man3/vds.h.3
 /usr/local/share/man/man3/vdsCommit.3
 /usr/local/share/man/man3/vdsCommon.h.3
