@@ -35,11 +35,13 @@ check_PROGRAMS =                           \
                  GetFirstNullHash          \
                  GetFirstNullItem          \
                  GetFirstPass              \
+                 GetFirstWrongKeyLength    \
                  GetFirstWrongLength       \
                  GetNextNullContext        \
                  GetNextNullHash           \
                  GetNextNullItem           \
                  GetNextPass               \
+                 GetNextWrongKeyLength     \
                  GetNextWrongLength        \
                  GetNullContext            \
                  GetNullHash               \
@@ -101,12 +103,14 @@ GetFirstNullContext_SOURCES       = $(COMMON_HEADER) GetFirstNullContext.c
 GetFirstNullHash_SOURCES          = $(COMMON_HEADER) GetFirstNullHash.c
 GetFirstNullItem_SOURCES          = $(COMMON_HEADER) GetFirstNullItem.c
 GetFirstPass_SOURCES              = $(COMMON_HEADER) GetFirstPass.c
+GetFirstWrongKeyLength_SOURCES    = $(COMMON_HEADER) GetFirstWrongKeyLength.c
 GetFirstWrongLength_SOURCES       = $(COMMON_HEADER) GetFirstWrongLength.c
 GetNextNullContext_SOURCES        = $(COMMON_HEADER) GetNextNullContext.c
 GetNextNullHash_SOURCES           = $(COMMON_HEADER) GetNextNullHash.c
 GetNextNullItem_SOURCES           = $(COMMON_HEADER) GetNextNullItem.c
 GetNextPass_SOURCES               = $(COMMON_HEADER) GetNextPass.c
-GetNextWrongLength_SOURCES        = $(COMMON_HEADER) GetFirstWrongLength.c
+GetNextWrongKeyLength_SOURCES     = $(COMMON_HEADER) GetNextWrongKeyLength.c
+GetNextWrongLength_SOURCES        = $(COMMON_HEADER) GetNextWrongLength.c
 GetNullContext_SOURCES            = $(COMMON_HEADER) GetNullContext.c
 GetNullHash_SOURCES               = $(COMMON_HEADER) GetNullHash.c
 GetNullItem_SOURCES               = $(COMMON_HEADER) GetNullItem.c
@@ -170,11 +174,13 @@ TESTS =                           \
         GetFirstNullHash          \
         GetFirstNullItem          \
         GetFirstPass              \
+        GetFirstWrongKeyLength    \
         GetFirstWrongLength       \
         GetNextNullContext        \
         GetNextNullHash           \
         GetNextNullItem           \
         GetNextPass               \
+        GetNextWrongKeyLength     \
         GetNextWrongLength        \
         GetNullContext            \
         GetNullHash               \

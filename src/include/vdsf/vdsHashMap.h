@@ -122,19 +122,27 @@ int vdsHashMapGet( VDS_HANDLE   objectHandle,
  * Data items retrieved this way will not be sorted.
  *
  * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[out] key The key buffer provided by the user to hold the content of
+ *             the key associated with the first element. Memory allocation 
+ *             for this buffer is the responsability of the caller.
+ * \param[in]  keyLength The length of the \em key buffer (in bytes).
  * \param[out] buffer The buffer provided by the user to hold the content of
  *             the first element. Memory allocation for this buffer is the
  *             responsability of the caller.
  * \param[in]  bufferLength The length of \em buffer (in bytes).
- * \param[out] returnedLength The actual number of bytes in the data item.
+ * \param[out] retKeyLength The actual number of bytes in the key
+ * \param[out] retDataLength The actual number of bytes in the data item.
  *
  * \return 0 on success or a ::vdsErrors on error.
  */
 VDSF_EXPORT
 int vdsHashMapGetFirst( VDS_HANDLE   objectHandle,
+                        void       * key,
+                        size_t       keyLength,
                         void       * buffer,
                         size_t       bufferLength,
-                        size_t     * returnedLength );
+                        size_t     * retKeyLength,
+                        size_t     * retDataLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -152,20 +160,28 @@ int vdsHashMapGetFirst( VDS_HANDLE   objectHandle,
  *
  * Data items retrieved this way will not be sorted.
  *
- * \param[in]   objectHandle The handle to the hash map (see ::vdsHashMapOpen).
- * \param[out]  buffer The buffer provided by the user to hold the content of
- *              the first element. Memory allocation for this buffer is the
- *              responsability of the caller.
- * \param[in]   bufferLength The length of \em buffer (in bytes).
- * \param[out]  returnedLength The actual number of bytes in the data item.
+ * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[out] key The key buffer provided by the user to hold the content of
+ *             the key associated with the data element. Memory allocation 
+ *             for this buffer is the responsability of the caller.
+ * \param[in]  keyLength The length of the \em key buffer (in bytes).
+ * \param[out] buffer The buffer provided by the user to hold the content of
+ *             the data element. Memory allocation for this buffer is the
+ *             responsability of the caller.
+ * \param[in]  bufferLength The length of \em buffer (in bytes).
+ * \param[out] retKeyLength The actual number of bytes in the key
+ * \param[out] retDataLength The actual number of bytes in the data item.
  *
  * \return 0 on success or a ::vdsErrors on error.
  */
 VDSF_EXPORT
 int vdsHashMapGetNext( VDS_HANDLE   objectHandle,
+                       void       * key,
+                       size_t       keyLength,
                        void       * buffer,
                        size_t       bufferLength,
-                       size_t     * returnedLength );
+                       size_t     * retKeyLength,
+                       size_t     * retDataLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -62,6 +62,7 @@ int main()
 
    errcode = vdseHashMapGetFirst( pHashMap,
                                   &item,
+                                  7,
                                   20,
                                   &context );
    if ( errcode != 0 ) 
@@ -69,6 +70,7 @@ int main()
 
    errcode = vdseHashMapGetNext( NULL,
                                  &item,
+                                 7,
                                  20,
                                  &context );
  

@@ -17,7 +17,7 @@
 
 #include "hashMapTest.h"
 
-const bool expectedToPass = false;
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -27,10 +27,8 @@ int main()
    vdseSessionContext context;
    int errcode;
    vdseTxStatus status;
-   char * key1  = "my key1";
-   char * key2  = "my key2";
-   char * data1 = "my data1";
-   char * data2 = "my data2";
+   char * key  = "my key";
+   char * data = "my data";
    vdseHashMapItem item;
    
    pHashMap = initHashMapTest( expectedToPass, &context );
@@ -44,35 +42,19 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
    errcode = vdseHashMapInsert( pHashMap,
-                                (const void *) key1,
+                                (const void *) key,
+                                6,
+                                (const void *) data,
                                 7,
-                                (const void *) data1,
-                                8,
-                                &context );
-   if ( errcode != 0 ) 
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   errcode = vdseHashMapInsert( pHashMap,
-                                (const void *) key2,
-                                7,
-                                (const void *) data2,
-                                8,
                                 &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
    errcode = vdseHashMapGetFirst( pHashMap,
                                   &item,
+                                  5,
                                   7,
-                                  20,
                                   &context );
-   if ( errcode != 0 ) 
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
-   errcode = vdseHashMapGetNext( pHashMap,
-                                 &item,
-                                 7,
-                                 7,
-                                 &context );
    if ( errcode == 0 ) 
       ERROR_EXIT( expectedToPass, NULL, ; );
    errcode = vdscGetLastError( &context.errorHandler );

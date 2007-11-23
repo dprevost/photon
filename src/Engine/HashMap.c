@@ -350,6 +350,7 @@ the_exit:
 
 int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
                          vdseHashMapItem    * pItem,
+                         size_t               keyLength,
                          size_t               bufferLength,
                          vdseSessionContext * pContext )
 {
@@ -380,11 +381,18 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
              && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
          {
             /*
-             * This test cannot be done in the API (before calling the current
-             * function) since we do not know the item size. It could be done
-             * after but this way makes the code faster.
+             * These tests cannot be done in the API (before calling the 
+             * current function) since we do not know the item size. They 
+             * could be done after but this way makes the code faster.
              */
             if ( bufferLength < pHashItem->dataLength )
+            {
+               vdseUnlock( &pHashMap->memObject, pContext );
+               vdscSetError( &pContext->errorHandler, 
+                             g_vdsErrorHandle, VDS_INVALID_LENGTH );
+               return -1;
+            }
+            if ( keyLength < pHashItem->keyLength )
             {
                vdseUnlock( &pHashMap->memObject, pContext );
                vdscSetError( &pContext->errorHandler, 
@@ -426,6 +434,7 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
 
 int vdseHashMapGetNext( vdseHashMap        * pHashMap,
                         vdseHashMapItem    * pItem,
+                        size_t               keyLength,
                         size_t               bufferLength,
                         vdseSessionContext * pContext )
 {
@@ -465,11 +474,18 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
              && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
          {
             /*
-             * This test cannot be done in the API (before calling the current
-             * function) since we do not know the item size. It could be done
-             * after but this way makes the code faster.
+             * These tests cannot be done in the API (before calling the 
+             * current function) since we do not know the item size. They 
+             * could be done after but this way makes the code faster.
              */
             if ( bufferLength < pHashItem->dataLength )
+            {
+               vdseUnlock( &pHashMap->memObject, pContext );
+               vdscSetError( &pContext->errorHandler, 
+                             g_vdsErrorHandle, VDS_INVALID_LENGTH );
+               return -1;
+            }
+            if ( keyLength < pHashItem->keyLength )
             {
                vdseUnlock( &pHashMap->memObject, pContext );
                vdscSetError( &pContext->errorHandler, 

@@ -33,7 +33,8 @@ int main( int argc, char * argv[] )
    const char * key2  = "My Key2";
    const char * data2 = "My Data2";
    char buffer[200];
-   size_t length;
+   char buffKey[50];
+   size_t dataLength, keyLength;
 
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0 );
@@ -105,9 +106,12 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsHashMapGetNext( objHandle,
+                                buffKey,
+                                50,
                                 buffer,
                                 200,
-                                &length );
+                                &keyLength,
+                                &dataLength );
    if ( errcode != VDS_INVALID_ITERATOR )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -115,9 +119,12 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsHashMapGetFirst( objHandle,
+                                 buffKey,
+                                 50,
                                  buffer,
                                  200,
-                                 &length );
+                                 &keyLength,
+                                 &dataLength );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -125,9 +132,12 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsHashMapGetNext( NULL,
+                                buffKey,
+                                50,
                                 buffer,
                                 200,
-                                &length );
+                                &keyLength,
+                                &dataLength );
    if ( errcode != VDS_NULL_HANDLE )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -136,8 +146,11 @@ int main( int argc, char * argv[] )
 
    errcode = vdsHashMapGetNext( objHandle,
                                 NULL,
+                                50,
+                                buffer,
                                 200,
-                                &length );
+                                &keyLength,
+                                &dataLength );
    if ( errcode != VDS_NULL_POINTER )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -145,9 +158,12 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsHashMapGetNext( objHandle,
-                                buffer,
+                                buffKey,
                                 2,
-                                &length );
+                                buffer,
+                                200,
+                                &keyLength,
+                                &dataLength );
    if ( errcode != VDS_INVALID_LENGTH )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -155,8 +171,50 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsHashMapGetNext( objHandle,
+                                buffKey,
+                                50,
+                                NULL,
+                                200,
+                                &keyLength,
+                                &dataLength );
+   if ( errcode != VDS_NULL_POINTER )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsHashMapGetNext( objHandle,
+                                buffKey,
+                                50,
+                                buffer,
+                                2,
+                                &keyLength,
+                                &dataLength );
+   if ( errcode != VDS_INVALID_LENGTH )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsHashMapGetNext( objHandle,
+                                buffKey,
+                                50,
                                 buffer,
                                 200,
+                                NULL,
+                                &dataLength );
+   if ( errcode != VDS_NULL_POINTER )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsHashMapGetNext( objHandle,
+                                buffKey,
+                                50,
+                                buffer,
+                                200,
+                                &keyLength,
                                 NULL );
    if ( errcode != VDS_NULL_POINTER )
    {
@@ -165,9 +223,12 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsHashMapGetNext( objHandle,
+                                buffKey,
+                                50,
                                 buffer,
                                 200,
-                                &length );
+                                &keyLength,
+                                &dataLength );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );

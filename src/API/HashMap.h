@@ -43,13 +43,24 @@ typedef struct vdsaHashMap
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_EXPORT
-int vdsaHashMapFirst( vdsaHashMap   * pHashMap,
-                      vdsaDataEntry * pEntry );
+typedef struct vdsaHashMapEntry
+{
+   size_t keyLength;
+   size_t dataLength;
+   const void * key;
+   const void * data;
+
+} vdsaHashMapEntry;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_EXPORT
-int vdsaHashMapNext( vdsaHashMap   * pHashMap,
-                     vdsaDataEntry * pEntry );
+int vdsaHashMapFirst( vdsaHashMap      * pHashMap,
+                      vdsaHashMapEntry * pEntry );
+
+VDSF_EXPORT
+int vdsaHashMapNext( vdsaHashMap      * pHashMap,
+                     vdsaHashMapEntry * pEntry );
 
 VDSF_EXPORT
 int vdsaHashMapRetrieve( vdsaHashMap   * pHashMap,

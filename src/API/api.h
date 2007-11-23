@@ -54,8 +54,6 @@ typedef struct vdsaDataEntry
 
 } vdsaDataEntry;
 
-typedef struct vdsaDataEntry vdsaHashMapEntry;
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* VDSA_API_H */

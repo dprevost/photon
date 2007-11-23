@@ -1,4 +1,4 @@
-.TH "API functions for vdsf hash maps." 3 "20 Nov 2007" "Version 0.1.0" "vdsf C API" \" -*- nroff -*-
+.TH "API functions for vdsf hash maps." 3 "22 Nov 2007" "Version 0.1.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -23,11 +23,11 @@ Hash maps use unique keys - the data items are not sorted.
 .br
 .RI "\fIRetrieve the data item identified by the given key from the hash map. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsHashMapGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "VDSF_EXPORT int \fBvdsHashMapGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
 .br
 .RI "\fIIterate through the hash map. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsHashMapGetNext\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "VDSF_EXPORT int \fBvdsHashMapGetNext\fP (\fBVDS_HANDLE\fP objectHandle, void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
 .br
 .RI "\fIIterate through the hash map. \fP"
 .ti -1c
@@ -117,7 +117,7 @@ Data items which were added by another session and are not yet committed will no
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsHashMapGetFirst (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "VDSF_EXPORT int vdsHashMapGetFirst (\fBVDS_HANDLE\fP objectHandle, void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
 .PP
 Iterate through the hash map. 
 .PP
@@ -129,11 +129,17 @@ Data items retrieved this way will not be sorted.
 .RS 4
 \fIobjectHandle\fP The handle to the hash map (see \fBvdsHashMapOpen\fP). 
 .br
+\fIkey\fP The key buffer provided by the user to hold the content of the key associated with the first element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
 \fIbuffer\fP The buffer provided by the user to hold the content of the first element. Memory allocation for this buffer is the responsability of the caller. 
 .br
 \fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
 .br
-\fIreturnedLength\fP The actual number of bytes in the data item.
+\fIretKeyLength\fP The actual number of bytes in the key 
+.br
+\fIretDataLength\fP The actual number of bytes in the data item.
 .RE
 .PP
 \fBReturns:\fP
@@ -142,7 +148,7 @@ Data items retrieved this way will not be sorted.
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsHashMapGetNext (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "VDSF_EXPORT int vdsHashMapGetNext (\fBVDS_HANDLE\fP objectHandle, void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
 .PP
 Iterate through the hash map. 
 .PP
@@ -156,11 +162,17 @@ Data items retrieved this way will not be sorted.
 .RS 4
 \fIobjectHandle\fP The handle to the hash map (see \fBvdsHashMapOpen\fP). 
 .br
-\fIbuffer\fP The buffer provided by the user to hold the content of the first element. Memory allocation for this buffer is the responsability of the caller. 
+\fIkey\fP The key buffer provided by the user to hold the content of the key associated with the data element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIbuffer\fP The buffer provided by the user to hold the content of the data element. Memory allocation for this buffer is the responsability of the caller. 
 .br
 \fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
 .br
-\fIreturnedLength\fP The actual number of bytes in the data item.
+\fIretKeyLength\fP The actual number of bytes in the key 
+.br
+\fIretDataLength\fP The actual number of bytes in the data item.
 .RE
 .PP
 \fBReturns:\fP

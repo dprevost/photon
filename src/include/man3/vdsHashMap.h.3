@@ -1,4 +1,4 @@
-.TH "vdsHashMap.h" 3 "20 Nov 2007" "Version 0.1.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsHashMap.h" 3 "22 Nov 2007" "Version 0.1.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -32,11 +32,11 @@ Definition in file \fBvdsHashMap.h\fP.
 .br
 .RI "\fIRetrieve the data item identified by the given key from the hash map. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsHashMapGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "VDSF_EXPORT int \fBvdsHashMapGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
 .br
 .RI "\fIIterate through the hash map. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsHashMapGetNext\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "VDSF_EXPORT int \fBvdsHashMapGetNext\fP (\fBVDS_HANDLE\fP objectHandle, void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
 .br
 .RI "\fIIterate through the hash map. \fP"
 .ti -1c

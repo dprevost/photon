@@ -70,8 +70,8 @@ int main()
 
    errcode = vdseHashMapGetNext( pHashMap,
                                  &item,
-                                 7,
-                                 7,
+                                 6,
+                                 20,
                                  &context );
    if ( errcode == 0 ) 
       ERROR_EXIT( expectedToPass, NULL, ; );

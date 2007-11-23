@@ -32,7 +32,7 @@ int main( int argc, char * argv[] )
    const char * data1 = "My Data1";
    const char * key2  = "My Key2";
    const char * data2 = "My Data2";
-   vdsaDataEntry entry;
+   vdsaHashMapEntry entry;
 
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0 );

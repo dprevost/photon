@@ -92,12 +92,14 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
 VDSF_ENGINE_EXPORT
 int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
                          vdseHashMapItem    * pItem,
+                         size_t               keyLength,
                          size_t               bufferLength,
                          vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseHashMapGetNext( vdseHashMap        * pHashMap,
                         vdseHashMapItem    * pItem,
+                        size_t               keyLength,
                         size_t               bufferLength,
                         vdseSessionContext * pContext );
 

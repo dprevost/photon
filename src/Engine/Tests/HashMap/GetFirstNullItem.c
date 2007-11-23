@@ -51,6 +51,7 @@ int main()
 
    errcode = vdseHashMapGetFirst( pHashMap,
                                   NULL,
+                                  6,
                                   20,
                                   &context );
 

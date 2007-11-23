@@ -30,7 +30,7 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * key  = "My Key";
    const char * data = "My Data";
-   vdsaDataEntry entry;
+   vdsaHashMapEntry entry;
 
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0 );
@@ -91,7 +91,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsaHashMapFirst( objHandle,
-                                 &entry );
+                               &entry );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
