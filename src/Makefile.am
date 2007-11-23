@@ -47,5 +47,14 @@ I386_FILES =                                   \
              Locking/asm-i386/spinlock_types.h \
              Locking/asm-i386/system.h         
 
-EXTRA_DIST = $(BASE_LOCK_FILES) $(I386_FILES)
+EXAMPLES_FILES =                        \
+                 Examples/iso_3166.h    \
+                 Examples/iso_3166.tab  \
+                 Examples/HashMap.c     \
+                 Examples/HashMapLoop.c \
+                 Examples/Makefile      
+
+EXTRA_DIST = $(BASE_LOCK_FILES) $(I386_FILES) $(EXAMPLES_FILES)
+
+nobase_dist_doc_DATA = $(EXAMPLES_FILES)
 
