@@ -349,7 +349,6 @@ void vdseHashDeleteAt( vdseHash           * pHash,
                        vdseHashItem       * pItem,
                        vdseSessionContext * pContext )
 {
-//   size_t bucket = 0;
    ptrdiff_t * pArray;
    bool keyFound = false;
    vdseHashItem * pNewItem = NULL, * previousItem = NULL;
@@ -359,7 +358,7 @@ void vdseHashDeleteAt( vdseHash           * pHash,
    VDS_PRE_CONDITION( pHash    != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pItem    != NULL );
-//   VDS_PRE_CONDITION( bucket > 0 );
+   VDS_PRE_CONDITION( bucket < g_arrayLengths[pHash->lengthIndex] );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
@@ -774,8 +773,6 @@ vdseHashInsertAt( vdseHash            * pHash,
                   vdseSessionContext  * pContext )
 {
    ptrdiff_t* pArray;   
-//   size_t bucket = 0;
-//   bool   keyFound = false;
    vdseHashItem* pItem, *previousItem = NULL;
    size_t itemLength;
    vdseMemObject * pMemObject;
@@ -787,6 +784,7 @@ vdseHashInsertAt( vdseHash            * pHash,
    VDS_PRE_CONDITION( ppNewItem != NULL );
    VDS_PRE_CONDITION( keyLength  > 0 );
    VDS_PRE_CONDITION( dataLength > 0 );
+   VDS_PRE_CONDITION( bucket < g_arrayLengths[pHash->lengthIndex] );
 
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
@@ -822,13 +820,8 @@ vdseHashInsertAt( vdseHash            * pHash,
 
    pHash->totalDataSizeInBytes += dataLength;
    pHash->numberOfItems++;
-
    pHash->enumResize = isItTimeToResize( pHash );
-   
-//   if ( previousItem == NULL )
-//      pArray[bucket] = SET_OFFSET(pItem);
-//   else
-      previousItem->nextItem = SET_OFFSET(pItem);
+   previousItem->nextItem = SET_OFFSET(pItem);
    
    *ppNewItem = pItem;
 

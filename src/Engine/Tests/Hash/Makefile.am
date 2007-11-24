@@ -24,6 +24,10 @@ CLEANFILES = *~ core
 AM_CFLAGS = -Wall
 
 check_PROGRAMS =                        \
+                 DeleteAtNullContext    \
+                 DeleteAtNullHash       \
+                 DeleteAtNullItem       \
+                 DeleteAtPass           \
                  DeleteNullContext      \
                  DeleteNullHash         \
                  DeleteNullKey          \
@@ -78,6 +82,10 @@ check_PROGRAMS =                        \
 
 COMMON_HEADER = HashTest.h
 
+DeleteAtNullContext_SOURCES    = $(COMMON_HEADER) DeleteAtNullContext.c
+DeleteAtNullHash_SOURCES       = $(COMMON_HEADER) DeleteAtNullHash.c
+DeleteAtNullItem_SOURCES       = $(COMMON_HEADER) DeleteAtNullItem.c
+DeleteAtPass_SOURCES           = $(COMMON_HEADER) DeleteAtPass.c
 DeleteNullContext_SOURCES      = $(COMMON_HEADER) DeleteNullContext.c
 DeleteNullHash_SOURCES         = $(COMMON_HEADER) DeleteNullHash.c
 DeleteNullKey_SOURCES          = $(COMMON_HEADER) DeleteNullKey.c
@@ -138,6 +146,10 @@ TESTS =
 
 if COND_USE_DBC
 TESTS +=                        \
+         DeleteAtNullContext    \
+         DeleteAtNullHash       \
+         DeleteAtNullItem       \
+         DeleteAtPass           \
          DeleteNullContext      \
          DeleteNullHash         \
          DeleteNullKey          \
@@ -198,6 +210,9 @@ endif
 TESTS += 
 
 XFAIL_TESTS =                        \
+              DeleteAtNullContext    \
+              DeleteAtNullHash       \
+              DeleteAtNullItem       \
               DeleteNullContext      \
               DeleteNullHash         \
               DeleteNullKey          \
