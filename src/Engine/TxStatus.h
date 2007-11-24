@@ -138,7 +138,6 @@ void vdseTxStatusClearTx( vdseTxStatus * pStatus )
 
    pStatus->txOffset = NULL_OFFSET;
    pStatus->statusFlag = 0;
-   pStatus->usageCounter = 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -497,6 +497,64 @@ int vdsHashMapOpen( VDS_HANDLE   sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int vdsHashMapReplace( VDS_HANDLE   objectHandle,
+                       const void * key,
+                       size_t       keyLength,
+                       const void * data,
+                       size_t       dataLength )
+{
+   vdsaHashMap * pHashMap;
+   vdseHashMap * pVDSHashMap;
+   int errcode = 0, rc = 0;
+
+   pHashMap = (vdsaHashMap *) objectHandle;
+   if ( pHashMap == NULL )
+      return VDS_NULL_HANDLE;
+   
+   if ( pHashMap->object.type != VDSA_HASH_MAP )
+      return VDS_WRONG_TYPE_HANDLE;
+
+   if ( key == NULL || data == NULL )
+   {
+      vdscSetError( &pHashMap->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, VDS_NULL_POINTER );
+      return VDS_NULL_POINTER;
+   }
+   if ( keyLength == 0 || dataLength == 0 )
+   {
+      vdscSetError( &pHashMap->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      return VDS_INVALID_LENGTH;
+   }
+
+   if ( vdsaCommonLock( &pHashMap->object ) == 0 )
+   {
+      pVDSHashMap = (vdseHashMap *) pHashMap->object.pMyVdsObject;
+
+      rc = vdseHashMapReplace( pVDSHashMap,
+                               key,
+                               keyLength,
+                               data,
+                               dataLength,
+                               &pHashMap->object.pSession->context );
+
+      vdsaCommonUnlock( &pHashMap->object );
+   }
+   else
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+
+   if ( errcode != 0 )
+      vdscSetError( &pHashMap->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, errcode );
+
+   if ( rc != 0 )
+         errcode = vdscGetLastError( &pHashMap->object.pSession->context.errorHandler );
+   
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdsHashMapStatus( VDS_HANDLE     objectHandle,
                       vdsObjStatus * pStatus )
 {

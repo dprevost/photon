@@ -129,6 +129,14 @@ int vdseHashMapRelease( vdseHashMap        * pHashMap,
                         vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
+int vdseHashMapReplace( vdseHashMap        * pHashMap,
+                        const void         * pKey,
+                        size_t               keyLength,
+                        const void         * pItem,
+                        size_t               itemLength,
+                        vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
 void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap, 
                              ptrdiff_t            itemOffset,
                              vdseSessionContext * pContext  );

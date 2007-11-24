@@ -263,6 +263,27 @@ static bool findKey( vdseHash*            pHash,
    return false;
 }
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static void findLastItemInBucket( vdseHash     *  pHash,
+                                  ptrdiff_t    *  pArray,
+                                  size_t          bucket,
+                                  vdseHashItem ** ppLastItem )
+{
+   ptrdiff_t currentOffset;
+   vdseHashItem* pItem;
+
+   *ppLastItem = NULL;
+   currentOffset = pArray[bucket];
+
+   while ( currentOffset != NULL_OFFSET )
+   {
+      GET_PTR( pItem, currentOffset, vdseHashItem );
+      currentOffset = pItem->nextItem;     
+      *ppLastItem = pItem;
+   }
+}
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
  *
  * Functions declared in Hash.h (alphabetic order).
@@ -319,6 +340,66 @@ vdseHashDelete( vdseHash*            pHash,
    }
 
    return LIST_KEY_NOT_FOUND;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void vdseHashDeleteAt( vdseHash           * pHash,
+                       size_t               bucket,
+                       vdseHashItem       * pItem,
+                       vdseSessionContext * pContext )
+{
+//   size_t bucket = 0;
+   ptrdiff_t * pArray;
+   bool keyFound = false;
+   vdseHashItem * pNewItem = NULL, * previousItem = NULL;
+   ptrdiff_t nextOffset;
+   vdseMemObject * pMemObject;
+   
+   VDS_PRE_CONDITION( pHash    != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pItem    != NULL );
+//   VDS_PRE_CONDITION( bucket > 0 );
+   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   
+   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
+   VDS_INV_CONDITION( pArray != NULL );
+
+   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
+
+   nextOffset = pArray[bucket];
+   while ( nextOffset != NULL_OFFSET )
+   {
+      previousItem = pNewItem;
+      GET_PTR( pNewItem, nextOffset, vdseHashItem );
+      if ( pNewItem == pItem )
+         break;
+      nextOffset = pNewItem->nextItem;
+   }
+   VDS_INV_CONDITION( pNewItem == pItem );
+
+//   keyFound = findKey( pHash, pArray, pKey, keyLength, 
+//                       &pItem, &previousItem, &bucket );
+//   if ( keyFound )   
+   {
+      nextOffset = pItem->nextItem;
+      
+      pHash->totalDataSizeInBytes -= pItem->dataLength;
+      vdseFree( pMemObject, 
+                (unsigned char*)pItem, 
+                calculateItemLength(pItem->keyLength,pItem->dataLength),
+                pContext );
+                
+      if ( previousItem == NULL )
+         pArray[bucket] = nextOffset;
+      else
+         previousItem->nextItem = nextOffset;
+            
+      pHash->numberOfItems--;
+
+      pHash->enumResize = isItTimeToResize( pHash );
+
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -673,6 +754,80 @@ vdseHashInsert( vdseHash            * pHash,
    if ( previousItem == NULL )
       pArray[bucket] = SET_OFFSET(pItem);
    else
+      previousItem->nextItem = SET_OFFSET(pItem);
+   
+   *ppNewItem = pItem;
+
+   return LIST_OK;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+enum ListErrors 
+vdseHashInsertAt( vdseHash            * pHash,
+                  size_t                bucket,
+                  const unsigned char * pKey,
+                  size_t                keyLength,
+                  const void          * pData,
+                  size_t                dataLength,
+                  vdseHashItem       ** ppNewItem,
+                  vdseSessionContext  * pContext )
+{
+   ptrdiff_t* pArray;   
+//   size_t bucket = 0;
+//   bool   keyFound = false;
+   vdseHashItem* pItem, *previousItem = NULL;
+   size_t itemLength;
+   vdseMemObject * pMemObject;
+   
+   VDS_PRE_CONDITION( pHash     != NULL );
+   VDS_PRE_CONDITION( pContext  != NULL );
+   VDS_PRE_CONDITION( pKey      != NULL );
+   VDS_PRE_CONDITION( pData     != NULL );
+   VDS_PRE_CONDITION( ppNewItem != NULL );
+   VDS_PRE_CONDITION( keyLength  > 0 );
+   VDS_PRE_CONDITION( dataLength > 0 );
+
+   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   
+   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
+   VDS_INV_CONDITION( pArray != NULL );
+
+   findLastItemInBucket( pHash,
+                         pArray,
+                         bucket,
+                         &previousItem );
+   VDS_INV_CONDITION( previousItem != NULL );
+
+   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
+   
+   /* The whole item is allocated in one step, header+data, to minimize */
+   /* overheads of the memory allocator */
+   itemLength = calculateItemLength( keyLength, dataLength );
+   pItem = (vdseHashItem*) 
+      vdseMalloc( pMemObject, 
+                  itemLength,
+                  pContext );
+   if ( pItem == NULL ) return LIST_NO_MEMORY;
+   
+   pItem->nextItem = NULL_OFFSET;
+
+   /* keyLength must be set before calling getData() */   
+   pItem->keyLength = keyLength;
+   pItem->dataLength = dataLength;
+   pItem->dataOffset = SET_OFFSET(pItem) + itemLength - dataLength;
+   
+   memcpy( pItem->key,     pKey, keyLength );
+   memcpy( GET_PTR_FAST(pItem->dataOffset, unsigned char), pData, dataLength );
+
+   pHash->totalDataSizeInBytes += dataLength;
+   pHash->numberOfItems++;
+
+   pHash->enumResize = isItTimeToResize( pHash );
+   
+//   if ( previousItem == NULL )
+//      pArray[bucket] = SET_OFFSET(pItem);
+//   else
       previousItem->nextItem = SET_OFFSET(pItem);
    
    *ppNewItem = pItem;

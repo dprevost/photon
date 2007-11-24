@@ -117,6 +117,13 @@ enum ListErrors vdseHashDelete( vdseHash            * pHash,
                                 size_t                keyLength,
                                 vdseSessionContext  * pContext );
 
+/* Used to delete an hash item when you know its exact position */
+VDSF_ENGINE_EXPORT 
+void vdseHashDeleteAt( vdseHash            * pHash,
+                       size_t                bucket,
+                       vdseHashItem        * pItem,
+                       vdseSessionContext  * pContext );
+
 VDSF_ENGINE_EXPORT 
 void vdseHashEmpty( vdseHash           * pHash,
                     vdseSessionContext * pContext );
@@ -132,6 +139,15 @@ enum ListErrors vdseHashGet( vdseHash            * pHash,
                              vdseHashItem       ** ppItem,
                              vdseSessionContext  * pContext,
                              size_t              * pBucket );
+
+/* Used to get a replacement item - when you have duplicates */
+VDSF_ENGINE_EXPORT 
+enum ListErrors vdseHashGetAt( vdseHash            * pHash,
+                               const unsigned char * pkey,
+                               size_t                keyLength,
+                               vdseHashItem       ** ppItem,
+                               vdseSessionContext  * pContext,
+                               size_t              * pBucket );
 
 VDSF_ENGINE_EXPORT 
 enum ListErrors vdseHashGetFirst( vdseHash  * pHash,
@@ -163,6 +179,21 @@ enum ListErrors vdseHashInsert( vdseHash            * pHash,
                                 size_t                dataLength,
                                 vdseHashItem       ** ppNewItem,
                                 vdseSessionContext  * pContext );
+
+/*
+ * Insert at is used to insert an item in a given bucket, at the end
+ * of the linked list. This is used for adding a replacement item, 
+ * before the change is committed.
+ */
+VDSF_ENGINE_EXPORT 
+enum ListErrors vdseHashInsertAt( vdseHash            * pHash,
+                                  size_t                bucket,
+                                  const unsigned char * pKey,
+                                  size_t                keyLength,
+                                  const void          * pData,
+                                  size_t                dataLength,
+                                  vdseHashItem       ** ppNewItem,
+                                  vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
 enum ListErrors vdseHashResize( vdseHash           * pHash,

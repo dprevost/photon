@@ -1,4 +1,4 @@
-.TH "vdsHashMap.h" 3 "22 Nov 2007" "Version 0.1.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsHashMap.h" 3 "24 Nov 2007" "Version 0.1.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -47,6 +47,10 @@ Definition in file \fBvdsHashMap.h\fP.
 .RI "VDSF_EXPORT int \fBvdsHashMapOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *hashMapName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP *objectHandle)"
 .br
 .RI "\fIOpen an existing hash map (see \fBvdsCreateObject\fP to create a new object). \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapReplace\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength, const void *data, size_t dataLength)"
+.br
+.RI "\fIReplace a data element in the hash map. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsHashMapStatus\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP *pStatus)"
 .br

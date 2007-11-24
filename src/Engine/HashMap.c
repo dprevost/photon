@@ -780,6 +780,136 @@ void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int vdseHashMapReplace( vdseHashMap        * pHashMap,
+                        const void         * pKey,
+                        size_t               keyLength, 
+                        const void         * pItem,
+                        size_t               itemLength,
+                        vdseSessionContext * pContext )
+{
+   enum ListErrors listErr = LIST_OK;
+   vdseHashItem * pHashItem, * pNewHashItem;
+   vdsErrors errcode = VDS_OK;
+   vdseTxStatus * txItemStatus, * txHashMapStatus;
+   int rc;
+   size_t bucket;
+   
+   VDS_PRE_CONDITION( pHashMap != NULL );
+   VDS_PRE_CONDITION( pKey     != NULL )
+   VDS_PRE_CONDITION( pItem    != NULL )
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( keyLength  > 0 );
+   VDS_PRE_CONDITION( itemLength > 0 );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
+
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+
+   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 )
+   {
+      if ( ! vdseTxStatusIsValid( txHashMapStatus, SET_OFFSET(pContext->pTransaction) ) 
+         || vdseTxStatusIsMarkedAsDestroyed( txHashMapStatus ) )
+      {
+         errcode = VDS_OBJECT_IS_DELETED;
+         goto the_exit;
+      }
+
+      listErr = vdseHashGet( &pHashMap->hashObj, 
+                             (unsigned char *)pKey, 
+                             keyLength,
+                             &pHashItem,
+                             pContext,
+                             &bucket );
+      if ( listErr != LIST_OK )
+      {
+         errcode = VDS_NO_SUCH_ITEM;
+         goto the_exit;
+      }
+
+      listErr = vdseHashInsertAt( &pHashMap->hashObj,
+                                  bucket,
+                                  (unsigned char *)pKey, 
+                                  keyLength, 
+                                  pItem, 
+                                  itemLength,
+                                  &pNewHashItem,
+                                  pContext );
+      if ( listErr != LIST_OK )
+      {
+         if ( listErr == LIST_KEY_FOUND )
+            errcode = VDS_ITEM_ALREADY_PRESENT;
+         else if ( listErr == LIST_NO_MEMORY )
+            errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
+         else
+            errcode = VDS_INTERNAL_ERROR;
+         goto the_exit;
+      }
+
+      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
+                         VDSE_TX_REMOVE_DATA,
+                         SET_OFFSET(pHashMap),
+                         VDSE_IDENT_HASH_MAP,
+                         SET_OFFSET(pHashItem),
+                         0,
+                         pContext );
+      if ( rc != 0 )
+      {
+         vdseHashDeleteAt( &pHashMap->hashObj, 
+                           bucket,
+                           pNewHashItem,
+                           pContext );
+         goto the_exit;
+      }
+      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
+                         VDSE_TX_ADD_DATA,
+                         SET_OFFSET(pHashMap),
+                         VDSE_IDENT_HASH_MAP,
+                         SET_OFFSET(pNewHashItem),
+                         0,
+                         pContext );
+      if ( rc != 0 )
+      {
+         vdseHashDeleteAt( &pHashMap->hashObj, 
+                           bucket,
+                           pNewHashItem,
+                           pContext );
+         vdseTxRemoveLastOps( (vdseTx*)pContext->pTransaction, pContext );
+         goto the_exit;
+      }
+      
+      txItemStatus = &pHashItem->txStatus;
+      vdseTxStatusInit( txItemStatus, SET_OFFSET(pContext->pTransaction) );
+      vdseTxStatusMarkAsDestroyed( txItemStatus );
+
+      txItemStatus = &pNewHashItem->txStatus;
+      vdseTxStatusInit( txItemStatus, SET_OFFSET(pContext->pTransaction) );
+
+      pHashMap->nodeObject.txCounter += 2;
+
+      vdseUnlock( &pHashMap->memObject, pContext );
+   }
+   else
+   {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      return -1;
+   }
+
+   return 0;
+
+the_exit:
+
+   vdseUnlock( &pHashMap->memObject, pContext );
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called vdscSetError. 
+    */
+   if ( errcode != VDS_OK )
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+
+   return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap, 
                              ptrdiff_t            itemOffset,
                              vdseSessionContext * pContext )

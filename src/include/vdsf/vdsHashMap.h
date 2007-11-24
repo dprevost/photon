@@ -230,6 +230,28 @@ int vdsHashMapOpen( VDS_HANDLE   sessionHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
+ * Replace a data element in the hash map.
+ *
+ * The replacements only become permanent after a call to ::vdsCommit.
+ *
+ * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[in]  key The key of the item to be replaced.
+ * \param[in]  keyLength The length of the \em key buffer (in bytes).
+ * \param[in]  data  The new data item that will replace the previous data.
+ * \param[in]  dataLength The length of \em data (in bytes).
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
+VDSF_EXPORT
+int vdsHashMapReplace( VDS_HANDLE   objectHandle,
+                       const void * key,
+                       size_t       keyLength,
+                       const void * data,
+                       size_t       dataLength );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
  * Return the status of the hash map.
  *
  * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).

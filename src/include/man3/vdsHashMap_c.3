@@ -1,4 +1,4 @@
-.TH "API functions for vdsf hash maps." 3 "22 Nov 2007" "Version 0.1.0" "vdsf C API" \" -*- nroff -*-
+.TH "API functions for vdsf hash maps." 3 "24 Nov 2007" "Version 0.1.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -38,6 +38,10 @@ Hash maps use unique keys - the data items are not sorted.
 .RI "VDSF_EXPORT int \fBvdsHashMapOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *hashMapName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP *objectHandle)"
 .br
 .RI "\fIOpen an existing hash map (see \fBvdsCreateObject\fP to create a new object). \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapReplace\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength, const void *data, size_t dataLength)"
+.br
+.RI "\fIReplace a data element in the hash map. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsHashMapStatus\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP *pStatus)"
 .br
@@ -219,6 +223,31 @@ Open an existing hash map (see \fBvdsCreateObject\fP to create a new object).
 \fInameLengthInBytes\fP The length of \fIhashMapName\fP (in bytes) not counting the null terminator (null-terminators are not used by the vdsf engine). 
 .br
 \fIobjectHandle\fP The handle to the hash map, allowing us access to the map in shared memory. On error, this handle will be set to zero (NULL) unless the objectHandle pointer itself is NULL.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsHashMapReplace (\fBVDS_HANDLE\fP objectHandle, const void * key, size_t keyLength, const void * data, size_t dataLength)"
+.PP
+Replace a data element in the hash map. 
+.PP
+The replacements only become permanent after a call to \fBvdsCommit\fP.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the hash map (see \fBvdsHashMapOpen\fP). 
+.br
+\fIkey\fP The key of the item to be replaced. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIdata\fP The new data item that will replace the previous data. 
+.br
+\fIdataLength\fP The length of \fIdata\fP (in bytes).
 .RE
 .PP
 \fBReturns:\fP

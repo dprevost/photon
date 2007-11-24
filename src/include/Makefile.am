@@ -49,6 +49,7 @@ VDS_C_FILES =                \
    man3/vdsHashMap.h.3       \
    man3/vdsHashMapInsert.3   \
    man3/vdsHashMapOpen.3     \
+   man3/vdsHashMapReplace.3  \
    man3/vdsHashMapStatus.3   \
    man3/vdsInfo.3            \
    man3/vdsInit.3            \
