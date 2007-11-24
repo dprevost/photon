@@ -29,6 +29,8 @@ int main()
    enum ListErrors listErr;
    char* key = "My Key";
    char* data1 = "My Data 1";
+   size_t bucket;
+   vdseHashItem* pNewItem;
    
    pHash = initHashTest( expectedToPass,
                          &context );
@@ -37,13 +39,37 @@ int main()
    if ( listErr != LIST_OK )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
+   /*
+    * We first insert an item and retrieve to get the exact bucket.
+    * InsertAt() depends on this as you cannot insert in an empty
+    * bucket.
+    */
    listErr = vdseHashInsert( pHash,
                              (unsigned char*)key,
                              strlen(key),
                              data1,
                              strlen(data1),
-                             NULL,
+                             &pNewItem,
                              &context );
+   if ( listErr != LIST_OK )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   listErr = vdseHashGet( pHash,
+                          (unsigned char*)key,
+                          strlen(key),
+                          &pNewItem,
+                          &context,
+                          &bucket );
+   if ( listErr != LIST_OK )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   listErr = vdseHashInsertAt( pHash,
+                               bucket,
+                               (unsigned char*)key,
+                               strlen(key),
+                               data1,
+                               strlen(data1),
+                               NULL,
+                               &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

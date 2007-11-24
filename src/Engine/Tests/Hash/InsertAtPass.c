@@ -27,11 +27,10 @@ int main()
    vdseSessionContext context;
    vdseHash* pHash;
    enum ListErrors listErr;
-   char* key1 = "My Key 1";
-   char* key2 = "My Key 2";
+   char* key = "My Key 1";
    char* data1 = "My Data 1";
-   char* data2 = "My Data 2";
    vdseHashItem* pNewItem;
+   size_t bucket;
    
    pHash = initHashTest( expectedToPass,
                          &context );
@@ -40,36 +39,37 @@ int main()
    if ( listErr != LIST_OK )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
+   /*
+    * We first insert an item and retrieve to get the exact bucket.
+    * InsertAt() depends on this as you cannot insert in an empty
+    * bucket.
+    */
    listErr = vdseHashInsert( pHash,
-                             (unsigned char*)key1,
-                             strlen(key1),
+                             (unsigned char*)key,
+                             strlen(key),
                              data1,
                              strlen(data1),
                              &pNewItem,
                              &context );
    if ( listErr != LIST_OK )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pNewItem == NULL )
-      ERROR_EXIT( expectedToPass, NULL, ; );
+   listErr = vdseHashGet( pHash,
+                          (unsigned char*)key,
+                          strlen(key),
+                          &pNewItem,
+                          &context,
+                          &bucket );
+   if ( listErr != LIST_OK )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   /* A duplicate - not allowed */
-   listErr = vdseHashInsert( pHash,
-                             (unsigned char*)key1,
-                             strlen(key1),
-                             data2,
-                             strlen(data2),
-                             &pNewItem,
-                             &context );
-   if ( listErr != LIST_KEY_FOUND )
-      ERROR_EXIT( expectedToPass, NULL, ; );
-
-   listErr = vdseHashInsert( pHash,
-                             (unsigned char*)key2,
-                             strlen(key2),
-                             data1,
-                             strlen(data1),
-                             &pNewItem,
-                             &context );
+   listErr = vdseHashInsertAt( pHash,
+                               bucket,
+                               (unsigned char*)key,
+                               strlen(key),
+                               data1,
+                               strlen(data1),
+                               &pNewItem,
+                               &context );
    if ( listErr != LIST_OK )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    if ( pNewItem == NULL )

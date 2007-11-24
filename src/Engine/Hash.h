@@ -140,15 +140,6 @@ enum ListErrors vdseHashGet( vdseHash            * pHash,
                              vdseSessionContext  * pContext,
                              size_t              * pBucket );
 
-/* Used to get a replacement item - when you have duplicates */
-VDSF_ENGINE_EXPORT 
-enum ListErrors vdseHashGetAt( vdseHash            * pHash,
-                               const unsigned char * pkey,
-                               size_t                keyLength,
-                               vdseHashItem       ** ppItem,
-                               vdseSessionContext  * pContext,
-                               size_t              * pBucket );
-
 VDSF_ENGINE_EXPORT 
 enum ListErrors vdseHashGetFirst( vdseHash  * pHash,
                                   size_t    * pBucket, 

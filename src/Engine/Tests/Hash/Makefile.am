@@ -55,6 +55,7 @@ check_PROGRAMS =                        \
                  InitNullHash           \
                  InitNullOffset         \
                  InitPass               \
+                 InsertAtEmptyBucket    \
                  InsertAtNullContext    \
                  InsertAtNullData       \
                  InsertAtNullHash       \
@@ -108,6 +109,7 @@ InitNullContext_SOURCES        = $(COMMON_HEADER) InitNullContext.c
 InitNullHash_SOURCES           = $(COMMON_HEADER) InitNullHash.c
 InitNullOffset_SOURCES         = $(COMMON_HEADER) InitNullOffset.c
 InitPass_SOURCES               = $(COMMON_HEADER) InitPass.c
+InsertAtEmptyBucket_SOURCES    = $(COMMON_HEADER) InsertAtEmptyBucket.c
 InsertAtNullContext_SOURCES    = $(COMMON_HEADER) InsertAtNullContext.c
 InsertAtNullData_SOURCES       = $(COMMON_HEADER) InsertAtNullData.c
 InsertAtNullHash_SOURCES       = $(COMMON_HEADER) InsertAtNullHash.c
@@ -167,6 +169,7 @@ TESTS +=                        \
          InitNullHash           \
          InitNullOffset         \
          InitPass               \
+         InsertAtEmptyBucket    \
          InsertAtNullContext    \
          InsertAtNullData       \
          InsertAtNullHash       \
@@ -218,6 +221,7 @@ XFAIL_TESTS =                        \
               InitNullContext        \
               InitNullHash           \
               InitNullOffset         \
+              InsertAtEmptyBucket    \
               InsertAtNullContext    \
               InsertAtNullData       \
               InsertAtNullHash       \

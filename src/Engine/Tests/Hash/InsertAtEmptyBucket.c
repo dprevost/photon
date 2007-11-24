@@ -61,11 +61,16 @@ int main()
                           &bucket );
    if ( listErr != LIST_OK )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   
+   if ( bucket == 0 )
+      bucket++;
+   else
+      bucket--;
+   
    listErr = vdseHashInsertAt( pHash,
                                bucket,
                                (unsigned char*)key,
-                               0,
+                               strlen(key),
                                data1,
                                strlen(data1),
                                &pNewItem,
