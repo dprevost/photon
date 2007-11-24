@@ -10,9 +10,12 @@ LDFLAGS += -lvdsf
 CFLAGS += -g
 
 TARGETS = HashMap     \
-          HashMapLoop 
+          HashMapLoop \
+          QueueIn     \
+          QueueWork   \
+          QueueOut    
 
-all: HashMap HashMapLoop
+all: $(TARGETS)
 
 #HashMap.o: HashMap.c iso_3166.h
 #	$(CC) -g -c HashMap.c

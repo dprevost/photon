@@ -1,0 +1,20 @@
+List of examples in this directory:
+
+1. HashMap.    Generic hash map example
+
+2. HashMapLoop Shows how to loop on a hash map.
+
+3. Queue       Three different programs to show a possible way to use a queue
+  - QueueIn    Reads a file and input data on an input queue
+  - QueueWork  Reads the input queue, do "work" and put results in output queue
+  - QueueOut   Reads output queue and dump data (to /dev/null)
+
+
+How to run these programs:
+
+Lauch the watchdog first
+
+./HashMapLoop iso_3166.tab 10701
+./HashMap     iso_3166.tab 10701
+
+./Runqueue.sh iso_3166.tab 10701 100

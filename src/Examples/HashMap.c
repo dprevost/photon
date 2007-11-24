@@ -42,6 +42,7 @@ void cleanup()
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int createMap()
 {
    int rc;
@@ -145,12 +146,6 @@ int main( int argc, char *argv[] )
       fprintf( stderr, "At line %d, vdsInit error: %d\n", __LINE__, rc );
       return 1;
    }
-   rc = vdsInitSession( &session1 );
-   if ( rc != 0 ) 
-   {
-      fprintf( stderr, "At line %d, vdsInitSession error: %d\n", __LINE__, rc );
-      return 1;
-   }
 
    rc = vdsInitSession( &session1 );
    if ( rc != 0 ) 
@@ -225,3 +220,6 @@ int main( int argc, char *argv[] )
    return 0;
 
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
