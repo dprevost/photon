@@ -121,6 +121,9 @@ typedef struct vdsFolderEntry
    /** The object type */
    vdsObjectType type;
    
+   /** Status (created but not committed, etc.) - not used in version 0.1 */
+   int status;
+   
    /** The actual length of the name of the object. */
    size_t nameLengthInBytes;
    
@@ -138,6 +141,9 @@ typedef struct vdsObjStatus
 {
    /** The object type. */
    vdsObjectType type;
+
+   /** Status (created but not committed, etc.) - not used in version 0.1 */
+   int status;
 
    /** The number of blocks allocated to this object. */
    size_t numBlocks;
