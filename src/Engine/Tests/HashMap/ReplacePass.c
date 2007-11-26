@@ -28,9 +28,12 @@ int main()
    int errcode;
    vdseTxStatus status;
    char * key  = "my key";
-   char * data = "my data";
+   char * data1 = "my data1";
+   char * data2 = "my data2";
    vdseHashItem * pItem;
-
+   vdseTxStatus * txItemStatus;
+   char * ptr;
+   
    pHashMap = initHashMapTest( expectedToPass, &context );
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
@@ -44,38 +47,35 @@ int main()
    errcode = vdseHashMapInsert( pHashMap,
                                 (const void *) key,
                                 6,
-                                (const void *) data,
-                                7,
+                                (const void *) data1,
+                                strlen(data1),
                                 &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-   errcode = vdseHashMapDelete( pHashMap,
-                                (const void *) key,
-                                6,
-                                &context );
+   errcode = vdseHashMapReplace( pHashMap,
+                                 (const void *) key,
+                                 6,
+                                 (const void *) data2,
+                                 strlen(data2),
+                                 &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pHashMap->nodeObject.txCounter != 2 )
-      ERROR_EXIT( expectedToPass, NULL, ; );
 
+#if 0
    errcode = vdseHashMapGet( pHashMap,
                              (const void *) key,
                              6,
                              &pItem,
                              20,
                              &context );
-   if ( errcode == 0 )
-   {
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   GET_PTR( ptr, pItem->dataOffset, char );
+   if ( memcmp( data2, ptr, strlen(data2)) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   else
-   {
-      errcode = vdscGetLastError( &context.errorHandler );
-      if ( errcode != VDS_NO_SUCH_ITEM )
-         ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
+#endif
+
    return 0;
 }
 

@@ -308,7 +308,7 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
        * it would require that the current transaction deleted the item and 
        * than tries to access it).
        */
-      if ( ! vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
+      if ( ! vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) )
          || vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
       {
          errcode = VDS_NO_SUCH_ITEM;

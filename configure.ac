@@ -298,7 +298,9 @@ if test "$target_alias" != ""; then
   AC_MSG_ERROR([This version of vdsf does not support cross-compilation])
 fi
 
-AC_CANONICAL_HOST
+# The ACX_THREAD m4 routine already called AC_CANONICAL_HOST so we can
+# omit it here and remove a warning!
+# AC_CANONICAL_HOST
 AC_DEFINE_UNQUOTED(MYCPU, "$host_cpu", The host cpu)
 
 architecture=all

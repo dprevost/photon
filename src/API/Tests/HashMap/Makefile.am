@@ -48,6 +48,7 @@ check_PROGRAMS =                      \
                  OpenPass             \
                  OpenWrongSessHandle  \
                  OpenZeroLength       \
+                 Replace              \
                  RetrieveNullEntry    \
                  RetrieveNullHandle   \
                  RetrieveNullKey      \
@@ -87,6 +88,7 @@ OpenNullSessHandle_SOURCES   = OpenNullSessHandle.c
 OpenPass_SOURCES             = OpenPass.c
 OpenWrongSessHandle_SOURCES  = OpenWrongSessHandle.c
 OpenZeroLength_SOURCES       = OpenZeroLength.c
+Replace_SOURCES              = Replace.c
 RetrieveNullEntry_SOURCES    = RetrieveNullEntry.c
 RetrieveNullHandle_SOURCES   = RetrieveNullHandle.c
 RetrieveNullKey_SOURCES      = RetrieveNullKey.c
@@ -131,6 +133,7 @@ EXTRA_DIST =                         \
              OpenPass.sh             \
              OpenWrongSessHandle.sh  \
              OpenZeroLength.sh       \
+             Replace.sh              \
              RetrieveNullEntry.sh    \
              RetrieveNullHandle.sh   \
              RetrieveNullKey.sh      \
@@ -149,7 +152,8 @@ TESTS_ENVIRONMENT =                              \
                     verbose=1                    \
                     PYTHON=$(PYTHON)
 
-TESTS =                         \
+TESTS = Replace.sh
+#TESTS =                         \
         CloseNullHandle.sh      \
         ClosePass.sh            \
         CloseWrongHandle.sh     \
@@ -183,6 +187,7 @@ TESTS =                         \
         OpenPass.sh             \
         OpenWrongSessHandle.sh  \
         OpenZeroLength.sh       \
+        Replace.sh              \
         RetrieveNullEntry.sh    \
         RetrieveNullHandle.sh   \
         RetrieveNullKey.sh      \

@@ -69,6 +69,13 @@ check_PROGRAMS =                           \
                  ReleaseNullHash           \
                  ReleaseNullItem           \
                  ReleasePass               \
+                 ReplaceNullContext        \
+                 ReplaceNullHash           \
+                 ReplaceNullItem           \
+                 ReplaceNullKey            \
+                 ReplacePass               \
+                 ReplaceZeroLengthItem     \
+                 ReplaceZeroLengthKey      \
                  RollbackAddNullContext    \
                  RollbackAddNullHash       \
                  RollbackAddNullItem       \
@@ -137,6 +144,13 @@ ReleaseNullContext_SOURCES        = $(COMMON_HEADER) ReleaseNullContext.c
 ReleaseNullHash_SOURCES           = $(COMMON_HEADER) ReleaseNullHash.c
 ReleaseNullItem_SOURCES           = $(COMMON_HEADER) ReleaseNullItem.c
 ReleasePass_SOURCES               = $(COMMON_HEADER) ReleasePass.c
+ReplaceNullContext_SOURCES        = $(COMMON_HEADER) ReplaceNullContext.c
+ReplaceNullHash_SOURCES           = $(COMMON_HEADER) ReplaceNullHash.c
+ReplaceNullItem_SOURCES           = $(COMMON_HEADER) ReplaceNullItem.c
+ReplaceNullKey_SOURCES            = $(COMMON_HEADER) ReplaceNullKey.c
+ReplacePass_SOURCES               = $(COMMON_HEADER) ReplacePass.c
+ReplaceZeroLengthItem_SOURCES     = $(COMMON_HEADER) ReplaceZeroLengthItem.c
+ReplaceZeroLengthKey_SOURCES      = $(COMMON_HEADER) ReplaceZeroLengthKey.c
 RollbackAddNullContext_SOURCES    = $(COMMON_HEADER) RollbackAddNullContext.c
 RollbackAddNullHash_SOURCES       = $(COMMON_HEADER) RollbackAddNullHash.c
 RollbackAddNullItem_SOURCES       = $(COMMON_HEADER) RollbackAddNullItem.c
@@ -153,6 +167,7 @@ EXTRA_DIST =
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
+#TESTS = ReplacePass
 TESTS =                           \
         CommitAddNullContext      \
         CommitAddNullHash         \
@@ -208,6 +223,13 @@ TESTS =                           \
         ReleaseNullHash           \
         ReleaseNullItem           \
         ReleasePass               \
+        ReplaceNullContext        \
+        ReplaceNullHash           \
+        ReplaceNullItem           \
+        ReplaceNullKey            \
+        ReplacePass               \
+        ReplaceZeroLengthItem     \
+        ReplaceZeroLengthKey      \
         RollbackAddNullContext    \
         RollbackAddNullHash       \
         RollbackAddNullItem       \
@@ -260,6 +282,12 @@ XFAIL_TESTS =                           \
               ReleaseNullContext        \
               ReleaseNullHash           \
               ReleaseNullItem           \
+              ReplaceNullContext        \
+              ReplaceNullHash           \
+              ReplaceNullItem           \
+              ReplaceNullKey            \
+              ReplaceZeroLengthItem     \
+              ReplaceZeroLengthKey      \
               RollbackAddNullContext    \
               RollbackAddNullHash       \
               RollbackAddNullItem       \
