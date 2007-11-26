@@ -54,7 +54,5 @@ EXAMPLES_FILES =                        \
                  Examples/HashMapLoop.c \
                  Examples/Makefile      
 
-EXTRA_DIST = $(BASE_LOCK_FILES) $(I386_FILES)
-
-nobase_dist_doc_DATA = $(EXAMPLES_FILES)
+EXTRA_DIST = $(BASE_LOCK_FILES) $(I386_FILES) $(EXAMPLES_FILES)
 

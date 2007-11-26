@@ -16,9 +16,7 @@ VERBOSE = > /dev/null 2>&1
 # A note on VERBOSE: it might be easier to debug by running each program
 # manually... YMMV
 
-EXTRA_DIST =  doxyfile.vds_c
-
-dist_doc_DATA = refman.pdf
+EXTRA_DIST =  doxyfile.vds_c refman.pdf
 
 #
 # Only rebuild the ref. manual if both doxygen and latex are present.
