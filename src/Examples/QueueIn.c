@@ -19,6 +19,7 @@
 
 #include "iso_3166.h"
 #include "Queue.h"
+#include <time.h>
 
 #ifndef PATH_MAX
 #  define PATH_MAX 4096 /* Safe enough on most systems I would think */
@@ -114,8 +115,8 @@ int initObjects()
    }
    /*
     * The next two control items indicate if the other two programs are 
-    * still using the shared objects or not (they use it to store their
-    * pids?).
+    * ready to use the VDS or not (otherwise you can get a bit of a problem
+    * filling up the shared memory.
     */
    controlData = 0;
    rc = vdsHashMapInsert( control, workProcessKey, strlen(workProcessKey), 
@@ -148,21 +149,53 @@ int initObjects()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+void waitForFriends()
+{
+   int rc;
+   int controlData = 0, length;
+   struct timespec req, rem;
+   
+   req.tv_sec = 0;
+   req.tv_nsec = 1000000;
+   do 
+   {
+      rc = vdsHashMapGet( control, workProcessKey, strlen(workProcessKey), 
+      &controlData, sizeof(int), &length );
+
+      nanosleep( &req, &rem );
+      
+   } while ( rc != 0 || controlData == 0 );
+
+   do 
+   {
+      rc = vdsHashMapGet( control, outProcessKey, strlen(outProcessKey), 
+      &controlData, sizeof(int), &length );
+
+      nanosleep( &req, &rem );
+
+   } while ( rc != 0 || controlData == 0 );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int main( int argc, char *argv[] )
 {
    int rc;
-   char countryCode[2];
-   char description[80];
    char msg[256];
    int length;
    vdsObjStatus status;
    int controlData;
+   isoStruct inStruct;
+   int loop = 1, maxLoop;
+   struct timespec req, rem;
    
-   if ( argc < 3 )
+   if ( argc < 4 )
    {
-      fprintf( stderr, "Usage: %s iso_3166_data_file watchdog_address\n", argv[0] );
+      fprintf( stderr, "Usage: %s iso_3166_data_file watchdog_address number_of_iterations\n", argv[0] );
       return 1;
    }
+
+   maxLoop = atoi(argv[3]);
    
    rc = openData( argv[1] );
    if ( rc != 0 ) return 1;
@@ -187,6 +220,8 @@ int main( int argc, char *argv[] )
    if ( rc != 0 ) { cleanup(); return 1; }
    fprintf( stderr, "Objects created\n" );
 
+//   waitForFriends();
+   
    rc = vdsQueueOpen( session, inQueueName, strlen(inQueueName), &inQueue );
    if ( rc != 0 ) 
    {
@@ -195,23 +230,42 @@ int main( int argc, char *argv[] )
       cleanup();
       return -1;
    }
-   
-   
-#if 0      
 
-
-   rc = vdsCommit( session1 );
-   if ( rc != 0 ) 
+   while ( loop < maxLoop )
    {
-      vdsErrorMsg(session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
-      cleanup();
-      return -1;
+      /*
+       * rc < 0 -> error
+       * rc = 0 -> nothing read - EOF
+       * rc > 0 -> new data
+       */
+      rc = readData( inStruct.countryCode, inStruct.description );
+      if ( rc > 0 )
+      {
+         rc = vdsQueuePush( inQueue, &inStruct, 2 + strlen( inStruct.description) );
+         if ( rc != 0 ) 
+         {
+            vdsErrorMsg(session, msg, 256 );
+            fprintf( stderr, "At line %d, vdsQueuePush error: %s\n", __LINE__, msg );
+            cleanup();
+            return -1;
+         }
+
+         if ( (loop %10) == 0 )
+            vdsCommit( session );
+
+//         if ( (loop %10000) == 0 )
+//            nanosleep( &req, &rem );
+
+         loop++;
+      }
+      else if ( rc == 0 )
+         rewind( fp );
+      else
+      {
+         cleanup();
+         return -1;
+      }
    }
-   
-   if ( fp != NULL )
-      fclose( fp );
-#endif
 
    cleanup();
    

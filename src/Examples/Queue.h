@@ -31,6 +31,12 @@ const char * workProcessKey = "Work Queue";
 const char * outProcessKey  = "Out Queue";
 const char * shutdownKey    = "Shutdown now";
 
+typedef struct isoStruct
+{
+   char countryCode[2];
+   char description[80];
+} isoStruct;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* QUEUE_H */
