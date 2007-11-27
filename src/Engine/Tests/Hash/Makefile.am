@@ -36,7 +36,6 @@ check_PROGRAMS =                        \
                  EmptyNullContext       \
                  EmptyNullHash          \
                  EmptyPass              \
-                 FiniNullContext        \
                  FiniNullHash           \
                  FiniPass               \
                  GetFirstNullBucket     \
@@ -94,7 +93,6 @@ DeleteZeroLength_SOURCES       = $(COMMON_HEADER) DeleteZeroLength.c
 EmptyNullContext_SOURCES       = $(COMMON_HEADER) EmptyNullContext.c
 EmptyNullHash_SOURCES          = $(COMMON_HEADER) EmptyNullHash.c
 EmptyPass_SOURCES              = $(COMMON_HEADER) EmptyPass.c
-FiniNullContext_SOURCES        = $(COMMON_HEADER) FiniNullContext.c
 FiniNullHash_SOURCES           = $(COMMON_HEADER) FiniNullHash.c
 FiniPass_SOURCES               = $(COMMON_HEADER) FiniPass.c
 GetFirstNullBucket_SOURCES     = $(COMMON_HEADER) GetFirstNullBucket.c
@@ -158,7 +156,6 @@ TESTS +=                        \
          EmptyNullContext       \
          EmptyNullHash          \
          EmptyPass              \
-         FiniNullContext        \
          FiniNullHash           \
          FiniPass               \
          GetFirstNullBucket     \
@@ -219,7 +216,6 @@ XFAIL_TESTS =                        \
               DeleteZeroLength       \
               EmptyNullContext       \
               EmptyNullHash          \
-              FiniNullContext        \
               FiniNullHash           \
               GetFirstNullBucket     \
               GetFirstNullHash       \

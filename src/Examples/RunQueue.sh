@@ -10,16 +10,18 @@
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-if [ "$#" != 3 ] ; then
-   echo "usage: $0 iso_data_file watchdog_address number_of_iterations"
+if [ "$#" != 5 ] ; then
+   echo "usage: $0 iso_data_file watchdog_address number_of_iterations millisecs iterations_per_cycle"
    exit 1
 fi
 
 iso_file=$1
 wd_addr=$2
 num_iterations=$3
+ms=$4
+cycle=$5
 
-./QueueIn $iso_file $wd_addr $num_iterations &
+./QueueIn $iso_file $wd_addr $num_iterations $ms $cycle &
 sleep 1
 ./QueueWork $wd_addr &
 ./QueueOut  $wd_addr &

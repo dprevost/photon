@@ -248,8 +248,8 @@ void vdseFolderFini( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
-   vdseHashFini(       &pFolder->hashObj, pContext );
-   vdseTreeNodeFini(   &pFolder->nodeObject );
+   vdseHashFini( &pFolder->hashObj );
+   vdseTreeNodeFini( &pFolder->nodeObject );
    
    /* This call must be last - put a barrier here ? */ 
    vdseMemObjectFini(  &pFolder->memObject, pContext );

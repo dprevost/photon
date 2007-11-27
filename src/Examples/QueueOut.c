@@ -10,11 +10,6 @@
 
 /*
  * This program is part of a set of three, showing one possible use of queues.
- * Specific responsabilities:
- *  - Create two queues (input/output) and a hash map (the hash map is used 
- *    to control the other two programs)
- *  - Read data from input file and insert it into the input queue.
- *  - At the end of a specified time, starts the shutdown process.
  */
 
 #include "iso_3166.h"
@@ -88,7 +83,7 @@ int timetoShutdown()
    
    rc = vdsHashMapGet( control, shutdownKey, strlen(shutdownKey), 
       &controlData, sizeof(int), &length );
-   if ( rc == 0 && controlData == 1 )
+   if ( rc == 0 && controlData == 2 )
       return 1;
 
    return 0;
@@ -105,7 +100,7 @@ int main( int argc, char *argv[] )
    int controlData;
    isoStruct outStruct;
    int loop = 1;
-   int boolShutdown = 0;
+   int boolShutdown = 0, okShutdown = 0;
    struct timespec req, rem;
    
    req.tv_sec = 0;
@@ -145,12 +140,20 @@ int main( int argc, char *argv[] )
       return -1;
    }
 
-   while( boolShutdown == 0 )
+   while( 1 )
    {
       rc = vdsQueuePop( outQueue, &outStruct, sizeof(outStruct), &length );
       if ( rc == VDS_IS_EMPTY )
       {
+         /* Nothing to do - might as well commit */
+         vdsCommit( session );
+         if ( boolShutdown )
+            break;
          nanosleep( &req, &rem );
+         /*
+          * We continue after we receive the shutdown to make sure that
+          * there are no data left on the output queue. 
+          */
          boolShutdown = timetoShutdown();
          continue;
       }
@@ -162,14 +165,20 @@ int main( int argc, char *argv[] )
          return -1;
       }
 
+      /* 
+       * Why 10? It could be 100. Or 1. Not sure if it makes a big 
+       * difference performance wise. 
+       */
       if ( (loop %10) == 0 )
          vdsCommit( session );
       loop++;
    }
 
    cleanup();
+   fprintf( stderr, "Done: %s\n", argv[0] );
    
    return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

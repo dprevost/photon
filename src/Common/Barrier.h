@@ -20,6 +20,7 @@
 
 #if defined(CONFIG_KERNEL_HEADERS)
 #  include "Locking/linux/spinlock.h"
+#  include "Locking/linux/compiler.h"
 #endif
 
 /*

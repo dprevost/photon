@@ -232,8 +232,8 @@ void vdseHashMapFini( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
 
-   vdseHashFini(       &pHashMap->hashObj, pContext );
-   vdseTreeNodeFini(   &pHashMap->nodeObject );
+   vdseHashFini( &pHashMap->hashObj );
+   vdseTreeNodeFini( &pHashMap->nodeObject );
    
    /* 
     * Must be the last call since it will release the blocks of

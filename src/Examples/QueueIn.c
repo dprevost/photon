@@ -29,8 +29,29 @@
 
 void cleanup()
 {
+   int controlData = 1, rc;
+   char msg[256];
+   
+   /* 
+    * By setting the shutdown "flag" to 1, we tell the QueueWork program 
+    * that there will be no more data, it can shutdown (the QueueWork program
+    * will then tell the QueueOut program by setting it to two).
+    */
    if ( control != NULL )
+   {
+      /* We flush it all before warning QueueWork to exit. */
+      vdsCommit( session );
+      rc = vdsHashMapReplace( control, shutdownKey, strlen(shutdownKey), 
+         &controlData, sizeof(int) );
+      if ( rc != 0 ) 
+      {
+         vdsErrorMsg(session, msg, 256 );
+         fprintf( stderr, "At line %d, vdsHashMapReplace error: %s\n", __LINE__, msg );
+      }
+      else
+         vdsCommit( session );
       vdsHashMapClose( control );
+   }
    if ( inQueue != NULL )
       vdsQueueClose( inQueue );
    if ( outQueue != NULL )
@@ -53,9 +74,9 @@ int initObjects()
    vdsDestroyObject( session, inQueueName,  strlen(inQueueName)  );
    vdsDestroyObject( session, outQueueName, strlen(outQueueName) );
    vdsDestroyObject( session, controlName,  strlen(controlName)  );
-   /* Folder at the end (must be empty) */
+   /* Remove th folder last (to delete a folder it must be empty) */
    vdsDestroyObject( session, folderName,   strlen(folderName)   );
-   /* Commit the destruction of the objects */
+   /* Commit the destruction of these objects */
    rc = vdsCommit( session );
    if ( rc != 0 ) 
    {
@@ -64,7 +85,7 @@ int initObjects()
       return -1;
    }
 
-   /* Folder must be first */
+   /* Create the folder first, evidently */
    rc = vdsCreateObject( session, folderName, strlen(folderName), VDS_FOLDER );
    if ( rc != 0 ) 
    {
@@ -104,7 +125,7 @@ int initObjects()
       return -1;
    }
    /* Initialize the control object */
-   controlData = 0; /* Will be set to one when it is time to shutdown */
+   controlData = 0; /* Will be set to one/two when it is time to shutdown */
    rc = vdsHashMapInsert( control, shutdownKey, strlen(shutdownKey), 
       &controlData, sizeof(int) );
    if ( rc != 0 ) 
@@ -160,16 +181,16 @@ void waitForFriends()
    do 
    {
       rc = vdsHashMapGet( control, workProcessKey, strlen(workProcessKey), 
-      &controlData, sizeof(int), &length );
-
+         &controlData, sizeof(int), &length );
       nanosleep( &req, &rem );
       
    } while ( rc != 0 || controlData == 0 );
 
+   controlData = 0;
    do 
    {
       rc = vdsHashMapGet( control, outProcessKey, strlen(outProcessKey), 
-      &controlData, sizeof(int), &length );
+         &controlData, sizeof(int), &length );
 
       nanosleep( &req, &rem );
 
@@ -186,16 +207,18 @@ int main( int argc, char *argv[] )
    vdsObjStatus status;
    int controlData;
    isoStruct inStruct;
-   int loop = 1, maxLoop;
+   int loop = 1, maxLoop, cycle, ms;
    struct timespec req, rem;
    
-   if ( argc < 4 )
+   if ( argc < 6 )
    {
-      fprintf( stderr, "Usage: %s iso_3166_data_file watchdog_address number_of_iterations\n", argv[0] );
+      fprintf( stderr, "Usage: %s iso_3166_data_file watchdog_address number_of_iterations milliseconds iterations_per_cycle\n", argv[0] );
       return 1;
    }
 
    maxLoop = atoi(argv[3]);
+   ms = atoi(argv[4]);
+   cycle = atoi(argv[5]);
    
    rc = openData( argv[1] );
    if ( rc != 0 ) return 1;
@@ -220,7 +243,8 @@ int main( int argc, char *argv[] )
    if ( rc != 0 ) { cleanup(); return 1; }
    fprintf( stderr, "Objects created\n" );
 
-//   waitForFriends();
+   /* Wait for the two other programs */
+   waitForFriends();
    
    rc = vdsQueueOpen( session, inQueueName, strlen(inQueueName), &inQueue );
    if ( rc != 0 ) 
@@ -231,6 +255,13 @@ int main( int argc, char *argv[] )
       return -1;
    }
 
+   /* 
+    * We reuse the same data records (from the iso file) to populate our
+    * queue. We could have use random data instead but... the readData()
+    * function wa already written for other examples...
+    */
+   req.tv_sec = 0;
+   req.tv_nsec = ms *1000000; 
    while ( loop < maxLoop )
    {
       /*
@@ -250,11 +281,17 @@ int main( int argc, char *argv[] )
             return -1;
          }
 
+         /* 
+          * Why 10? It could be 100. Or 1. Not sure if it makes a big 
+          * difference performance wise. If this code was reading from
+          * non-blocking sockets in a "select loop", calling vdsCommit for
+          * each iteration of the loop would make sense. YMMV.
+          */
          if ( (loop %10) == 0 )
             vdsCommit( session );
 
-//         if ( (loop %10000) == 0 )
-//            nanosleep( &req, &rem );
+         if ( (loop %cycle) == 0 )
+            nanosleep( &req, &rem );
 
          loop++;
       }
@@ -266,10 +303,13 @@ int main( int argc, char *argv[] )
          return -1;
       }
    }
+   vdsCommit( session );
 
    cleanup();
+   fprintf( stderr, "Done: %s\n", argv[0] );
    
    return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -129,8 +129,7 @@ void vdseHashEmpty( vdseHash           * pHash,
                     vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseHashFini( vdseHash           * pHash,
-                   vdseSessionContext * pContext );
+void vdseHashFini( vdseHash * pHash );
 
 VDSF_ENGINE_EXPORT 
 enum ListErrors vdseHashGet( vdseHash            * pHash,

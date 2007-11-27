@@ -35,7 +35,7 @@ int main()
    if ( listErr != LIST_OK )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   vdseHashFini( NULL, &context );
+   vdseHashFini( NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

@@ -120,6 +120,7 @@ vdswAcceptor::Accept()
    for ( i = 1; i < FD_SETSIZE; ++i )
       if (  m_dispatch[i].socketId == VDS_INVALID_SOCKET )
       {
+//         fprintf(stderr, "accept i, sock: %d %d\n", i, newSock );
          m_dispatch[i].socketId = newSock;
          break;
       }
@@ -472,6 +473,7 @@ vdswAcceptor::WaitForConnections()
       do
       {
          fired = select( maxFD, &readSet, &writeSet, NULL, &timeout );
+//fprintf( stderr, "fired = %d %d\n", fired, maxFD );
       } while ( fired == -1 && errno == EINTR );
       
 
@@ -488,7 +490,6 @@ vdswAcceptor::WaitForConnections()
       /*
        * Start with the socket listening for new connection requests
        */
-
       if ( FD_ISSET( m_socketFD, &readSet ) )
       {
          errcode = Accept();
@@ -505,12 +506,18 @@ vdswAcceptor::WaitForConnections()
       {
          if ( m_dispatch[i].socketId != VDS_INVALID_SOCKET )
          {
-//            fprintf( stderr, " i = %d\n", i );
+//            sleep(1);
+//            fprintf( stderr, " i = %d %d %d \n", i, m_dispatch[i].socketId, m_dispatch[i].dataToBeWritten );
             if ( FD_ISSET( m_dispatch[i].socketId, &writeSet ) )
+            {
                Send( i );
+               fired--;
+            }
             else if ( FD_ISSET( m_dispatch[i].socketId, &readSet ) )
+            {
                Receive( i );
-            fired--;
+               fired--;
+            }
          }
          if ( fired == 0 ) break;
       }

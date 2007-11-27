@@ -11,10 +11,6 @@
 /*
  * This program is part of a set of three, showing one possible use of queues.
  * Specific responsabilities:
- *  - Create two queues (input/output) and a hash map (the hash map is used 
- *    to control the other two programs)
- *  - Read data from input file and insert it into the input queue.
- *  - At the end of a specified time, starts the shutdown process.
  */
 
 #include "iso_3166.h"
@@ -29,8 +25,30 @@
 
 void cleanup()
 {
+   int controlData = 2, rc;
+   char msg[256];
+
+   /* 
+    * By setting the shutdown "flag" to 2, we tell the QueueOut program
+    * that there will be no more data, it can shutdown.
+    */
    if ( control != NULL )
+   {
+      /* We flush it all before warning QueueOut to exit. */
+      vdsCommit( session );
+      rc = vdsHashMapReplace( control, shutdownKey, strlen(shutdownKey), 
+         &controlData, sizeof(int) );
+      if ( rc != 0 ) 
+      {
+         vdsErrorMsg(session, msg, 256 );
+         fprintf( stderr, "At line %d, vdsHashMapReplace error: %s\n", __LINE__, msg );
+      }
+      else
+      /* We commit this update */
+      vdsCommit( session );
       vdsHashMapClose( control );
+   }
+
    if ( inQueue != NULL )
       vdsQueueClose( inQueue );
    if ( outQueue != NULL )
@@ -153,11 +171,19 @@ int main( int argc, char *argv[] )
       return -1;
    }
 
-   while( boolShutdown == 0 )
+   while( 1 )
    {
       rc = vdsQueuePop( inQueue, &workStruct, sizeof(workStruct), &length );
       if ( rc == VDS_IS_EMPTY )
       {
+         /* Nothing to do - might as well commit */
+         vdsCommit( session );
+         if ( boolShutdown )
+            break;
+         /*
+          * We continue after we receive the shutdown to make sure that
+          * there are no data left on the input queue. 
+          */
          nanosleep( &req, &rem );
          boolShutdown = timetoShutdown();
          continue;
@@ -188,6 +214,7 @@ int main( int argc, char *argv[] )
    }
 
    cleanup();
+   fprintf( stderr, "Done: %s\n", argv[0] );
    
    return 0;
 }

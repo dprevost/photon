@@ -350,7 +350,6 @@ void vdseHashDeleteAt( vdseHash           * pHash,
                        vdseSessionContext * pContext )
 {
    ptrdiff_t * pArray;
-   bool keyFound = false;
    vdseHashItem * pNewItem = NULL, * previousItem = NULL;
    ptrdiff_t nextOffset;
    vdseMemObject * pMemObject;
@@ -377,28 +376,22 @@ void vdseHashDeleteAt( vdseHash           * pHash,
    }
    VDS_INV_CONDITION( pNewItem == pItem );
 
-//   keyFound = findKey( pHash, pArray, pKey, keyLength, 
-//                       &pItem, &previousItem, &bucket );
-//   if ( keyFound )   
-   {
-      nextOffset = pItem->nextItem;
+   nextOffset = pItem->nextItem;
       
-      pHash->totalDataSizeInBytes -= pItem->dataLength;
-      vdseFree( pMemObject, 
-                (unsigned char*)pItem, 
-                calculateItemLength(pItem->keyLength,pItem->dataLength),
-                pContext );
+   pHash->totalDataSizeInBytes -= pItem->dataLength;
+   vdseFree( pMemObject, 
+             (unsigned char*)pItem, 
+             calculateItemLength(pItem->keyLength,pItem->dataLength),
+             pContext );
                 
-      if ( previousItem == NULL )
-         pArray[bucket] = nextOffset;
-      else
-         previousItem->nextItem = nextOffset;
+   if ( previousItem == NULL )
+      pArray[bucket] = nextOffset;
+   else
+      previousItem->nextItem = nextOffset;
             
-      pHash->numberOfItems--;
+   pHash->numberOfItems--;
 
-      pHash->enumResize = isItTimeToResize( pHash );
-
-   }
+   pHash->enumResize = isItTimeToResize( pHash );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -450,31 +443,11 @@ void vdseHashEmpty( vdseHash*           pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseHashFini( vdseHash*           pHash,
-                   vdseSessionContext* pContext )
+void vdseHashFini( vdseHash * pHash )
 {
-   ptrdiff_t* pArray;
-   vdseMemObject * pMemObject;
-   
    VDS_PRE_CONDITION( pHash != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
-   vdseHashEmpty( pHash, pContext );
-
-   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
-
-   /* EmptyList deallocates the rows but not the main array of */
-   /* RowDescriptor* */
-   if ( pHash->arrayOffset != NULL_OFFSET )
-   {
-      GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-      vdseFree( pMemObject, 
-                (unsigned char*) pArray,
-                g_arrayLengths[pHash->lengthIndex]*sizeof(ptrdiff_t),
-                pContext );
-      pHash->arrayOffset = NULL_OFFSET;
-   }
    pHash->initialized = 0;
 }
 
