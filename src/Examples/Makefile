@@ -6,8 +6,8 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-LDFLAGS += -lvdsf
-CFLAGS += -g
+LDFLAGS += -L../API/.libs -lvdsf
+CFLAGS += -g -I../include
 
 TARGETS = HashMap     \
           HashMapLoop \

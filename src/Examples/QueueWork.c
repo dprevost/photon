@@ -59,7 +59,7 @@ int initObjects()
    }
 
    controlData = 1;
-   rc = vdsHashMapReplace( control, outProcessKey, strlen(outProcessKey), 
+   rc = vdsHashMapReplace( control, workProcessKey, strlen(workProcessKey),
       &controlData, sizeof(int) );
    if ( rc != 0 ) 
    {
@@ -103,8 +103,8 @@ int main( int argc, char *argv[] )
    int length;
    vdsObjStatus status;
    int controlData;
-   isoStruct outStruct;
-   int loop = 1;
+   isoStruct workStruct;
+   int loop = 1, i;
    int boolShutdown = 0;
    struct timespec req, rem;
    
@@ -144,10 +144,18 @@ int main( int argc, char *argv[] )
       cleanup();
       return -1;
    }
+   rc = vdsQueueOpen( session, inQueueName, strlen(inQueueName), &inQueue );
+   if ( rc != 0 ) 
+   {
+      vdsErrorMsg(session, msg, 256 );
+      fprintf( stderr, "At line %d, vdsQueueOpen error: %s\n", __LINE__, msg );
+      cleanup();
+      return -1;
+   }
 
    while( boolShutdown == 0 )
    {
-      rc = vdsQueuePop( outQueue, &outStruct, sizeof(outStruct), &length );
+      rc = vdsQueuePop( inQueue, &workStruct, sizeof(workStruct), &length );
       if ( rc == VDS_IS_EMPTY )
       {
          nanosleep( &req, &rem );
@@ -155,6 +163,18 @@ int main( int argc, char *argv[] )
          continue;
       }
       else if ( rc != 0 ) 
+      {
+         vdsErrorMsg(session, msg, 256 );
+            fprintf( stderr, "At line %d, vdsQueuePush error: %s\n", __LINE__, msg );
+         cleanup();
+         return -1;
+      }
+
+      for ( i = 0; i < length-2; ++i )
+         workStruct.description[i] = toupper(workStruct.description[i]);
+      
+      rc = vdsQueuePush( outQueue, &workStruct, length );
+      if ( rc != 0 ) 
       {
          vdsErrorMsg(session, msg, 256 );
             fprintf( stderr, "At line %d, vdsQueuePush error: %s\n", __LINE__, msg );

@@ -17,4 +17,4 @@ Lauch the watchdog first
 ./HashMapLoop iso_3166.tab 10701
 ./HashMap     iso_3166.tab 10701
 
-./Runqueue.sh iso_3166.tab 10701 100
+./RunQueue.sh iso_3166.tab 10701 100
