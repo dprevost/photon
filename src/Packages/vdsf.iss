@@ -25,6 +25,17 @@ Source: src\Release\vdsfAPI.lib; DestDir: {app}\lib
 Source: doc\refman.pdf; DestDir: {app}
 Source: src\Release\vdswd.exe; DestDir: {app}\bin
 Source: COPYING; DestDir: {app}; DestName: License.txt
+Source: src\Examples\HashMap.c; DestDir: {app}\Examples
+Source: src\Examples\HashMapLoop.c; DestDir: {app}\Examples
+Source: src\Examples\iso_3166.h; DestDir: {app}\Examples
+Source: src\Examples\iso_3166.tab; DestDir: {app}\Examples
+Source: src\Examples\Makefile; DestDir: {app}\Examples
+Source: src\Examples\Queue.h; DestDir: {app}\Examples
+Source: src\Examples\QueueIn.c; DestDir: {app}\Examples
+Source: src\Examples\QueueOut.c; DestDir: {app}\Examples
+Source: src\Examples\QueueWork.c; DestDir: {app}\Examples
+Source: src\Examples\README; DestDir: {app}\Examples; DestName: README.txt
+Source: src\Examples\RunQueue.sh; DestDir: {app}\Examples
 
 [Icons]
 ;Name: "{group}\Watchdog"; Filename: "{app}\bin\vdswd.EXE"; WorkingDir: "{app}"
@@ -34,12 +45,6 @@ Name: {group}\Uninstall My Program; Filename: {uninstallexe}
 [Registry]
 Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdswd.exe; ValueType: string; ValueData: {app}\bin\vdswd.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
 Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdswd.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
-;Root: HKCU; SubKey: SOFTWARE\Tigris.org\Subversion; ValueType: string; ValueName: Version; ValueData: {#= svn_version}; Flags: uninsdeletekeyifempty uninsdeletevalue
-;Root: HKCU; SubKey: SOFTWARE\Tigris.org\Subversion; ValueType: string; ValueName: Revision; ValueData: {#= svn_revision}; Flags: uninsdeletekeyifempty uninsdeletevalue
-;Root: HKCU; Subkey: Environment; ValueType: string; ValueName: APR_ICONV_PATH; ValueData: {app}\iconv; Flags: uninsdeletevalue noerror
 
 Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdswd.exe; ValueType: string; ValueData: {app}\bin\vdswd.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
 Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdswd.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
-;Root: HKLM; SubKey: SOFTWARE\Tigris.org\Subversion; ValueType: string; ValueName: Version; ValueData: {#= svn_version}; Flags: noerror uninsdeletekey
-;Root: HKLM; SubKey: SOFTWARE\Tigris.org\Subversion; ValueType: string; ValueName: Revision; ValueData: {#= svn_revision}; Flags: uninsdeletevalue noerror uninsdeletekeyifempty
-;Root: HKLM; Subkey: SYSTEM\CurrentControlSet\Control\Session Manager\Environment; ValueType: string; ValueName: APR_ICONV_PATH; ValueData: {app}\iconv; Flags: uninsdeletevalue noerror
