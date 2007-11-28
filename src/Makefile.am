@@ -52,7 +52,12 @@ EXAMPLES_FILES =                        \
                  Examples/iso_3166.tab  \
                  Examples/HashMap.c     \
                  Examples/HashMapLoop.c \
-                 Examples/Makefile      
+                 Examples/Makefile      \
+                 Examples/Queue.h       \
+                 Examples/QueueIn.c     \
+                 Examples/QueueOut.c    \
+                 Examples/QueueWork.c   \
+                 Examples/README        
 
 EXTRA_DIST = $(BASE_LOCK_FILES) $(I386_FILES) $(EXAMPLES_FILES)
 

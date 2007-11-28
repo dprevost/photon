@@ -22,7 +22,7 @@ using the shared objects in the Virtual Data Space.
 %setup
 
 %build
-./configure --prefix=/usr/local
+./configure --prefix=/usr/local --mandir=/usr/local/share/man
 make
 
 %install
@@ -46,9 +46,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %docdir /usr/local/share/doc/vdsf
 /usr/local/share/doc/vdsf
-/usr/local/share/doc/vdsf/README 
-/usr/local/share/doc/vdsf/COPYING 
-/usr/local/share/doc/vdsf/refman.pdf
 
 /usr/local/bin/vdswd
 /usr/local/include/vdsf/vds.h
@@ -91,6 +88,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man3/vdsHashMapGetNext.3
 /usr/local/share/man/man3/vdsHashMapInsert.3
 /usr/local/share/man/man3/vdsHashMapOpen.3
+/usr/local/share/man/man3/vdsHashMapReplace.3
 /usr/local/share/man/man3/vdsHashMapStatus.3
 /usr/local/share/man/man3/vdsInfo.3
 /usr/local/share/man/man3/vdsInit.3
