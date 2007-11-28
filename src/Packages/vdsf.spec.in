@@ -32,6 +32,17 @@ mkdir -p $RPM_BUILD_ROOT/usr/local/share/doc/vdsf
 install -m 644 README $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/README
 install -m 644 COPYING $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/COPYING
 install -m 644 doc/refman.pdf $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/refman.pdf
+install -m 644 src/Examples/HashMap.c     $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/Examples/HashMap.c
+install -m 644 src/Examples/HashMapLoop.c $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/Examples/HashMapLoop.c
+install -m 644 src/Examples/iso_3166.h    $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/Examples/iso_3166.h
+install -m 644 src/Examples/iso_3166.tab  $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/Examples/iso_3166.tab
+install -m 644 src/Examples/Makefile      $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/Examples/Makefile
+install -m 644 src/Examples/Queue.h       $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/Examples/Queue.h
+install -m 644 src/Examples/QueueIn.c     $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/Examples/QueueIn.c
+install -m 644 src/Examples/QueueOut.c    $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/Examples/QueueOut.c
+install -m 644 src/Examples/QueueWork.c   $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/Examples/QueueWork.c
+install -m 644 src/Examples/README        $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/Examples/README
+install -m 644 src/Examples/RunQueue.sh   $RPM_BUILD_ROOT/usr/local/share/doc/vdsf/Examples/RunQueue.sh
 
 %clean
 rm -rf $RPM_BUILD_ROOT
