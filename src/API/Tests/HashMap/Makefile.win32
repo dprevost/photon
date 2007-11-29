@@ -46,6 +46,7 @@ check_PROGRAMS =                                    \
                  .\Release\OpenPass.exe             \
                  .\Release\OpenWrongSessHandle.exe  \
                  .\Release\OpenZeroLength.exe       \
+                 .\Release\Replace.exe              \
                  .\Release\RetrieveNullEntry.exe    \
                  .\Release\RetrieveNullHandle.exe   \
                  .\Release\RetrieveNullKey.exe      \

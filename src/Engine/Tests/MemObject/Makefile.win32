@@ -13,6 +13,7 @@ include ..\Makefile.inc.Win32
 all: 
 
 check_PROGRAMS =                                 \
+                 .\Release\FiniNullContext.exe   \
                  .\Release\FiniNullObj.exe       \
                  .\Release\FiniPass.exe          \
                  .\Release\FreeNullContext.exe   \
@@ -20,15 +21,19 @@ check_PROGRAMS =                                 \
                  .\Release\FreeNullPtr.exe       \
                  .\Release\FreePass.exe          \
                  .\Release\FreeZeroBytes.exe     \
-                 .\Release\InitNullObj.exe       \
                  .\Release\InitInvType.exe       \
+                 .\Release\InitNullGroup.exe     \
+                 .\Release\InitNullObj.exe       \
                  .\Release\InitPass.exe          \
                  .\Release\InitZeroPages.exe     \
                  .\Release\InitZeroType.exe      \
                  .\Release\MallocNullContext.exe \
                  .\Release\MallocNullObj.exe     \
                  .\Release\MallocPass.exe        \
-                 .\Release\MallocZeroBytes.exe   
+                 .\Release\MallocZeroBytes.exe   \
+                 .\Release\StatusNullMemObj.exe  \
+                 .\Release\StatusNullStatus.exe  \
+                 .\Release\StatusPass.exe        
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 #

@@ -30,12 +30,12 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(41)
+Dim failed_tests(42)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(29)
+Dim ok_programs(30)
 Dim fail_programs(11)
 
 Dim exe_name, prog_path, program, wd_path, tmpDir, cmdFile, exeName
@@ -76,10 +76,11 @@ ok_programs(22) = "OpenNullSessHandle"
 ok_programs(23) = "OpenPass"
 ok_programs(24) = "OpenWrongSessHandle"
 ok_programs(25) = "OpenZeroLength"
-ok_programs(26) = "RetrievePass"
-ok_programs(27) = "StatusNullHandle"
-ok_programs(28) = "StatusNullStatus"
-ok_programs(29) = "StatusPass"
+ok_programs(26) = "Replace"
+ok_programs(27) = "RetrievePass"
+ok_programs(28) = "StatusNullHandle"
+ok_programs(29) = "StatusNullStatus"
+ok_programs(30) = "StatusPass"
 
 fail_programs(0)  = "FirstNullEntry"
 fail_programs(1)  = "FirstNullHandle"
@@ -94,7 +95,7 @@ fail_programs(9)  = "RetrieveNullKey"
 fail_programs(10) = "RetrieveWrongHandle"
 fail_programs(11) = "RetrieveZeroLength"
 
-numTests  = 42                 ' Sum of length of both arrays 
+numTests  = 43                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject

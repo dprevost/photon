@@ -115,7 +115,7 @@ fail_programs(44) = "ReplaceNullNew"
 fail_programs(45) = "ReplaceNullOld"
 fail_programs(46) = "ResetInvSig"
 fail_programs(47) = "ResetNullList"
-'fail_programs(48) = "RemoveWrongItem"
+fail_programs(47) = "RemoveWrongItem"
 
 numTests = 64                 ' Sum of length of both arrays 
 numFailed = 0

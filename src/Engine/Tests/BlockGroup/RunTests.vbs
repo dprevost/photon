@@ -36,7 +36,7 @@ Dim failed_tests(5)
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
 Dim ok_programs(1)
-Dim fail_programs(3)
+Dim fail_programs(4)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -54,11 +54,12 @@ ok_programs(0) = "FiniPass"
 ok_programs(1) = "InitPass"
 
 fail_programs(0) = "FiniNullGroup"
-fail_programs(1) = "InitNullGroup"
-fail_programs(2) = "InitNullOffset"
-fail_programs(3) = "InitZeroPages"
+fail_programs(1) = "InitInvalidType"
+fail_programs(2) = "InitNullGroup"
+fail_programs(3) = "InitNullOffset"
+fail_programs(4) = "InitZeroPages"
 
-numTests = 6                 ' Sum of length of both arrays 
+numTests = 7                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject

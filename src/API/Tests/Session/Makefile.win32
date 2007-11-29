@@ -33,6 +33,7 @@ check_PROGRAMS =                                   \
                  .\Release\ErrorMsg.exe            \
                  .\Release\ExitNullHandle.exe      \
                  .\Release\ExitPass.exe            \
+                 .\Release\ExitWithOpenObjects.exe \
                  .\Release\GetInfo.exe             \
                  .\Release\InitNoProcess.exe       \
                  .\Release\InitNullHandle.exe      \

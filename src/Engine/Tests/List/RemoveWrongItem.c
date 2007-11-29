@@ -41,7 +41,8 @@ int main()
    vdseLinkedListPutLast( &list2, &node2 );
 
    /* Remove it from the wrong list */
-   vdseLinkedListRemoveItem( &list1, &node2 );
+   vdseLinkedListRemoveItem( &list2, &node1 );
+   vdseLinkedListRemoveItem( &list2, &node2 );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

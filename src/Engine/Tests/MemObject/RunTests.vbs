@@ -30,13 +30,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(15)
+Dim failed_tests(20)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(3)
-Dim fail_programs(11)
+Dim ok_programs(4)
+Dim fail_programs(15)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -54,21 +54,26 @@ ok_programs(0) = "FiniPass"
 ok_programs(1) = "FreePass"
 ok_programs(2) = "InitPass"
 ok_programs(3) = "MallocPass"
+ok_programs(4) = "StatusPass"
 
-fail_programs(0)  = "FiniNullObj"
-fail_programs(1)  = "FreeNullContext"
-fail_programs(2)  = "FreeNullObj"
-fail_programs(3)  = "FreeNullPtr"
-fail_programs(4)  = "FreeZeroBytes"
-fail_programs(5)  = "InitNullObj"
+fail_programs(0)  = "FiniNullContext"
+fail_programs(1)  = "FiniNullObj"
+fail_programs(2)  = "FreeNullContext"
+fail_programs(3)  = "FreeNullObj"
+fail_programs(4)  = "FreeNullPtr"
+fail_programs(5)  = "FreeZeroBytes"
 fail_programs(6)  = "InitInvType"
-fail_programs(7)  = "InitZeroPages"
-fail_programs(8)  = "InitZeroType"
-fail_programs(9)  = "MallocNullContext"
-fail_programs(10) = "MallocNullObj"
-fail_programs(11) = "MallocZeroBytes"
+fail_programs(7)  = "InitNullGroup"
+fail_programs(8)  = "InitNullObj"
+fail_programs(9)  = "InitZeroPages"
+fail_programs(10) = "InitZeroType"
+fail_programs(11) = "MallocNullContext"
+fail_programs(12) = "MallocNullObj"
+fail_programs(13) = "MallocZeroBytes"
+fail_programs(14) = "StatusNullMemObj"
+fail_programs(15) = "StatusNullStatus"
 
-numTests = 16                 ' Sum of length of both arrays 
+numTests = 21                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject

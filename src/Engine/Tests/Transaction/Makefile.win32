@@ -38,7 +38,10 @@ check_PROGRAMS =                                     \
                  .\Release\RollbackInvalidSig.exe    \
                  .\Release\RollbackNullContext.exe   \
                  .\Release\RollbackNullTx.exe        \
-                 .\Release\RollbackPass.exe          
+                 .\Release\RollbackPass.exe          \
+                 .\Release\TestFolder.exe            \
+                 .\Release\TestHashMap.exe           \
+                 .\Release\TestQueue.exe             
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 #

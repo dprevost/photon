@@ -30,13 +30,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(50)
+Dim failed_tests(53)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(10)
-Dim fail_programs(39)
+Dim ok_programs(11)
+Dim fail_programs(41)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -56,54 +56,57 @@ ok_programs(2)  = "FiniPass"
 ok_programs(3)  = "GetPass"
 ok_programs(4)  = "InitPass"
 ok_programs(5)  = "InsertPass"
-ok_programs(6)  = "ReleasePass"
-ok_programs(7)  = "RemovePass"
-ok_programs(8)  = "RollbackAddPass"
-ok_programs(9)  = "RollbackRemovePass"
-ok_programs(10) = "StatusPass"
+ok_programs(6)  = "ReleaseNoLockPass"
+ok_programs(7)  = "ReleasePass"
+ok_programs(8)  = "RemovePass"
+ok_programs(9)  = "RollbackAddPass"
+ok_programs(10) = "RollbackRemovePass"
+ok_programs(11) = "StatusPass"
 
-fail_programs(0) = "CommitAddNullOffset"
-fail_programs(1) = "CommitAddNullQueue"
-fail_programs(2) = "CommitRemoveNullContext"
-fail_programs(3) = "CommitRemoveNullOffset"
-fail_programs(4) = "CommitRemoveNullQueue"
-fail_programs(5) = "FiniNullContext"
-fail_programs(6) = "FiniNullQueue"
-fail_programs(7) = "GetNullContext"
-fail_programs(8) = "GetNullQueue"
-fail_programs(9) = "GetNullIterator"
+fail_programs(0)  = "CommitAddNullOffset"
+fail_programs(1)  = "CommitAddNullQueue"
+fail_programs(2)  = "CommitRemoveNullContext"
+fail_programs(3)  = "CommitRemoveNullOffset"
+fail_programs(4)  = "CommitRemoveNullQueue"
+fail_programs(5)  = "FiniNullContext"
+fail_programs(6)  = "FiniNullQueue"
+fail_programs(7)  = "GetNullContext"
+fail_programs(8)  = "GetNullQueue"
+fail_programs(9)  = "GetNullIterator"
 fail_programs(10) = "GetWrongFlag"
-fail_programs(11) = "InitNullContext"
-fail_programs(12) = "InitNullQueue"
-fail_programs(13) = "InitNullName"
-fail_programs(14) = "InitNullParent"
-fail_programs(15) = "InitNullStatus"
-fail_programs(16) = "InitZeroBlocks"
-fail_programs(17) = "InitZeroLength"
-fail_programs(18) = "InsertNullContext"
-fail_programs(19) = "InsertNullQueue"
-fail_programs(20) = "InsertNullItem"
-fail_programs(21) = "InsertWrongFlag"
-fail_programs(22) = "InsertZeroLengthItem"
-fail_programs(23) = "ReleaseNullContext"
-fail_programs(24) = "ReleaseNullItem"
-fail_programs(25) = "ReleaseNullQueue"
-fail_programs(26) = "ReleaseNoLockNullContext"
-fail_programs(27) = "ReleaseNoLockNullItem"
-fail_programs(28) = "ReleaseNoLockNullQueue"
-fail_programs(29) = "RemoveNullContext"
-fail_programs(30) = "RemoveNullItem"
-fail_programs(31) = "RemoveNullQueue"
-fail_programs(32) = "RemoveWrongFlag"
-fail_programs(33) = "RollbackAddNullContext"
-fail_programs(34) = "RollbackAddNullOffset"
-fail_programs(35) = "RollbackAddNullQueue"
-fail_programs(36) = "RollbackRemoveNullOffset"
-fail_programs(37) = "RollbackRemoveNullQueue"
-fail_programs(38) = "StatusNullQueue"
-fail_programs(39) = "StatusNullStatus"
+fail_programs(11) = "GetWrongLength"
+fail_programs(12) = "InitNullContext"
+fail_programs(13) = "InitNullQueue"
+fail_programs(14) = "InitNullName"
+fail_programs(15) = "InitNullParent"
+fail_programs(16) = "InitNullStatus"
+fail_programs(17) = "InitZeroBlocks"
+fail_programs(18) = "InitZeroLength"
+fail_programs(19) = "InsertNullContext"
+fail_programs(20) = "InsertNullQueue"
+fail_programs(21) = "InsertNullItem"
+fail_programs(22) = "InsertWrongFlag"
+fail_programs(23) = "InsertZeroLengthItem"
+fail_programs(24) = "ReleaseNullContext"
+fail_programs(25) = "ReleaseNullItem"
+fail_programs(26) = "ReleaseNullQueue"
+fail_programs(27) = "ReleaseNoLockNullContext"
+fail_programs(28) = "ReleaseNoLockNullItem"
+fail_programs(29) = "ReleaseNoLockNullQueue"
+fail_programs(30) = "RemoveNullContext"
+fail_programs(31) = "RemoveNullItem"
+fail_programs(32) = "RemoveNullQueue"
+fail_programs(33) = "RemoveWrongFlag"
+fail_programs(34) = "RemoveWrongLength"
+fail_programs(35) = "RollbackAddNullContext"
+fail_programs(36) = "RollbackAddNullOffset"
+fail_programs(37) = "RollbackAddNullQueue"
+fail_programs(38) = "RollbackRemoveNullOffset"
+fail_programs(39) = "RollbackRemoveNullQueue"
+fail_programs(40) = "StatusNullQueue"
+fail_programs(41) = "StatusNullStatus"
 
-numTests = 51                 ' Sum of length of both arrays 
+numTests = 54                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject
