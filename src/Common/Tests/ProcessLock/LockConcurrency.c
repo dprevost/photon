@@ -199,7 +199,7 @@ int main( int argc, char* argv[] )
                         "-m", strMode,
                         "-t", strTime,
                         NULL );
-         if ( pid < 0 )
+         if ( pid <= 0 )
          {
             fprintf( stderr, "_spawnl failure, errno = %d\n", errno );
             ERROR_EXIT( expectedToPass, NULL, ; );
