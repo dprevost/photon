@@ -124,7 +124,6 @@ int createMap()
 int main( int argc, char *argv[] )
 {
    int rc;
-   char countryCode[2];
    char description[80];
    char msg[256];
    int length;

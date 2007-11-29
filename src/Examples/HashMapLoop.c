@@ -124,7 +124,6 @@ int main( int argc, char *argv[] )
    char description[81];
    char msg[256];
    size_t keyLength, dataLength;
-   vdsObjStatus status;
    
    if ( argc < 3 )
    {

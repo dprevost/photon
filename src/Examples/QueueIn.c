@@ -174,16 +174,21 @@ void waitForFriends()
 {
    int rc;
    int controlData = 0, length;
+#if ! defined(WIN32)
    struct timespec req, rem;
    
    req.tv_sec = 0;
    req.tv_nsec = 1000000;
+#endif
    do 
    {
       rc = vdsHashMapGet( control, workProcessKey, strlen(workProcessKey), 
          &controlData, sizeof(int), &length );
+#if defined(WIN32)
+	  Sleep(1);
+#else
       nanosleep( &req, &rem );
-      
+#endif      
    } while ( rc != 0 || controlData == 0 );
 
    controlData = 0;
@@ -191,9 +196,11 @@ void waitForFriends()
    {
       rc = vdsHashMapGet( control, outProcessKey, strlen(outProcessKey), 
          &controlData, sizeof(int), &length );
-
+#if defined(WIN32)
+	  Sleep(1);
+#else
       nanosleep( &req, &rem );
-
+#endif      
    } while ( rc != 0 || controlData == 0 );
 }
 
@@ -203,12 +210,11 @@ int main( int argc, char *argv[] )
 {
    int rc;
    char msg[256];
-   int length;
-   vdsObjStatus status;
-   int controlData;
    isoStruct inStruct;
    int loop = 1, maxLoop, cycle, ms;
+#if ! defined(WIN32)
    struct timespec req, rem;
+#endif
    
    if ( argc < 6 )
    {
@@ -260,8 +266,10 @@ int main( int argc, char *argv[] )
     * queue. We could have use random data instead but... the readData()
     * function wa already written for other examples...
     */
+#if ! defined(WIN32)
    req.tv_sec = 0;
-   req.tv_nsec = ms *1000000; 
+   req.tv_nsec = ms *1000000;
+#endif
    while ( loop < maxLoop )
    {
       /*
@@ -291,7 +299,13 @@ int main( int argc, char *argv[] )
             vdsCommit( session );
 
          if ( (loop %cycle) == 0 )
+		 {
+#if defined(WIN32)
+	        Sleep(ms);
+#else
             nanosleep( &req, &rem );
+#endif      
+		 }
 
          loop++;
       }
@@ -307,7 +321,7 @@ int main( int argc, char *argv[] )
 
    cleanup();
    fprintf( stderr, "Done: %s\n", argv[0] );
-   
+
    return 0;
 }
 

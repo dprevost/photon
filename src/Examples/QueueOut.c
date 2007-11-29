@@ -96,16 +96,16 @@ int main( int argc, char *argv[] )
    int rc;
    char msg[256];
    int length;
-   vdsObjStatus status;
-   int controlData;
    isoStruct outStruct;
    int loop = 1;
    int boolShutdown = 0, okShutdown = 0;
+#if ! defined(WIN32)
    struct timespec req, rem;
    
    req.tv_sec = 0;
    req.tv_nsec = 1000000;
-   
+#endif
+
    if ( argc < 2 )
    {
       fprintf( stderr, "Usage: %s watchdog_address\n", argv[0] );
@@ -149,7 +149,12 @@ int main( int argc, char *argv[] )
          vdsCommit( session );
          if ( boolShutdown )
             break;
+#if defined(WIN32)
+         Sleep(1);
+#else
          nanosleep( &req, &rem );
+#endif
+
          /*
           * We continue after we receive the shutdown to make sure that
           * there are no data left on the output queue. 

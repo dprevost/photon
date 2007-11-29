@@ -11,6 +11,9 @@
 #ifndef ISO_3166_H
 #define ISO_3166_H
 
+#if defined(WIN32)
+#  include <Windows.h>
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -22,9 +25,7 @@ FILE * fp = NULL;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int openData( const char* filename )
-{
-   int errcode;
-   
+{   
    fp = fopen( filename, "r" );
    if ( fp == NULL )
    {
@@ -40,7 +41,6 @@ int openData( const char* filename )
 
 int readData( char *countryCode, char* description )
 {
-   int errcode;
    char line[80] = "";
    int len;
    
