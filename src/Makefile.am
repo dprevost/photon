@@ -57,7 +57,8 @@ EXAMPLES_FILES =                        \
                  Examples/QueueIn.c     \
                  Examples/QueueOut.c    \
                  Examples/QueueWork.c   \
-                 Examples/README        
+                 Examples/README        \
+                 Examples/RunQueue.sh   
 
 EXTRA_DIST = $(BASE_LOCK_FILES) $(I386_FILES) $(EXAMPLES_FILES)
 
