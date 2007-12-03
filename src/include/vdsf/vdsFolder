@@ -26,7 +26,6 @@
 
 // Forward declarations
 class vdsSession;
-class vdsProxyObject;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -38,22 +37,52 @@ public:
 
    virtual ~vdsFolder();
 
-   int Open( const char* folderName );
+   int Open( const char * folderName,
+             size_t       nameLengthInBytes );
    
    int Close();
 
+   /** 
+    * Iterate through the folder - no data items are removed from the 
+    * folder by this function.
+    *
+    * Data items which were added by another session and are not yet 
+    * committed will not be seen by the iterator. Likewise, destroyed 
+    * data items (even if not yet committed) are invisible.
+    *
+    * \param[out] pEntry The data structure provided by the user to 
+    *             hold the content of each item in the folder. Memory 
+    *             allocation for this buffer is the responsability of 
+    *             the caller.
+    *
+    * \return 0 on success or a ::vdsErrors on error.
+    */
    int GetFirst( vdsFolderEntry * pEntry );
 
+   /** 
+    * Iterate through the folder.
+    *
+    * Data items which were added by another session and are not yet 
+    * committed will not be seen by the iterator. Likewise, destroyed 
+    * data items (even if not yet committed) are invisible.
+    *
+    * Evidently, you must call ::vdsFolderGetFirst to initialize the iterator. 
+    *
+    * \param[out] pEntry The data structure provided by the user to 
+    *             hold the content of each item in the folder. Memory 
+    *             allocation for this buffer is the responsability of 
+    *             the caller.
+    *
+    * \return 0 on success or a ::vdsErrors on error.
+    */
    int GetNext( vdsFolderEntry * pEntry );
 
-//   int RemoveAll();
-   
-//   int ListFolderContent();
+   int Status( vdsObjStatus * pStatus );
 
 private:
 
-   vdsProxyObject* m_pProxyObject;
-   
+   VDS_HANDLE objectHandle;
+
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

@@ -1,7 +1,7 @@
 /* -*- c++ -*- */
 /* :mode=c++:  - For jedit, previous line for emacs */
 /*
- * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -17,8 +17,8 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_QUEUE
-#define VDS_QUEUE
+#ifndef VDS_HASH_MAP
+#define VDS_HASH_MAP
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -40,31 +40,45 @@ public:
 
    virtual ~vdsQueue();
 
-   int Open( const char* queueName
-    size_t       nameLengthInBytes );
+   int Open( const char * queueName
+             size_t       nameLengthInBytes );
    
    int Close();
    
-   int Pop( void       * buffer,
+   int Delete( const void * key,
+               size_t       keyLength );
+
+   int Get( const void * key,
+            size_t       keyLength,
+            void       * buffer,
             size_t       bufferLength,
             size_t     * returnedLength );
 
-   int Push( const void * pItem, 
-             size_t       length );
+   int Insert( const void * key,
+               size_t       keyLength,
+               const void * data,
+               size_t       dataLength );
+
+   int Replace( const void * key,
+                size_t       keyLength,
+                const void * data,
+                size_t       dataLength );
 
    int Status( vdsObjStatus * pStatus );
 
-   int Pop( vdsQueueItem* pQueueItem );
- 
-   int Pop( vdsQueueItem& queueItem );
+   int GetFirst( void       * key,
+                 size_t       keyLength,
+                 void       * buffer,
+                 size_t       bufferLength,
+                 size_t     * retKeyLength,
+                 size_t     * retDataLength );
 
-   int GetFirst( void    * buffer,
-                 size_t    bufferLength,
-                 size_t  * returnedLength );
-
-   int GetNext( void    * buffer,
-                size_t    bufferLength,
-                size_t  * returnedLength );
+   int GetNext( void       * key,
+                size_t       keyLength,
+                void       * buffer,
+                size_t       bufferLength,
+                size_t     * retKeyLength,
+                size_t     * retDataLength );
 
 private:
 
@@ -74,7 +88,7 @@ private:
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_QUEUE */
+#endif /* VDS_HASH_MAP */
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

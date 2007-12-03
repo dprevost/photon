@@ -40,14 +40,10 @@ public:
 
    virtual ~vdsProcess();
    
-   int Initialize( const char* wdAddress,
-                   bool        protectionNeeded = false );
+   int Init( const char* wdAddress,
+             bool        protectionNeeded = false );
 
-   void Terminate();
-   
-private:
-
-   vdsProcessHook* m_pProcessHook;
+   void Exit();
    
 };
 
