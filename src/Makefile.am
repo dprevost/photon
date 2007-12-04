@@ -62,3 +62,17 @@ EXAMPLES_FILES =                        \
 
 EXTRA_DIST = $(BASE_LOCK_FILES) $(I386_FILES) $(EXAMPLES_FILES)
 
+install-data-local:
+	-mkdir -p $(DESTDIR)$(datadir)/doc/vdsf/Examples
+	for f in $(EXAMPLES_FILES); do \
+	     $(install_sh_DATA) $$f $(DESTDIR)$(datadir)/doc/vdsf/$$f ; \
+	done
+
+uninstall-local:
+	for f in $(EXAMPLES_FILES); do \
+     -rm -f $(DESTDIR)$(datadir)/doc/vdsf/$$f ; \
+   done
+	-rm -f $(DESTDIR)$(datadir)/doc/vdsf/refman.pdf
+	-rmdir $(DESTDIR)$(datadir)/doc/vdsf
+	-rmdir $(DESTDIR)$(datadir)/doc
+

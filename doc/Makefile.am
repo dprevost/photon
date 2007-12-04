@@ -46,3 +46,11 @@ endif
 endif
 
 install-data-local:
+	-mkdir -p $(DESTDIR)$(datadir)/doc/vdsf
+	$(install_sh_DATA) refman.pdf $(DESTDIR)$(datadir)/doc/vdsf/refman.pdf
+
+uninstall-local:
+	-rm -f $(DESTDIR)$(datadir)/doc/vdsf/refman.pdf
+	-rmdir $(DESTDIR)$(datadir)/doc/vdsf
+	-rmdir $(DESTDIR)$(datadir)/doc
+

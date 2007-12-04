@@ -27,3 +27,15 @@ EXTRA_DIST =            \
 SUBDIRS = m4 src doc
 
 ACLOCAL_AMFLAGS = -I m4
+
+install-data-local:
+	-mkdir -p $(DESTDIR)$(datadir)/doc/vdsf
+	$(install_sh_DATA) README  $(DESTDIR)$(datadir)/doc/vdsf/README
+	$(install_sh_DATA) COPYING $(DESTDIR)$(datadir)/doc/vdsf/COPYING
+
+uninstall-local:
+	-rm -f $(DESTDIR)$(datadir)/doc/vdsf/README
+	-rm -f $(DESTDIR)$(datadir)/doc/vdsf/COPYING
+	-rmdir $(DESTDIR)$(datadir)/doc/vdsf
+	-rmdir $(DESTDIR)$(datadir)/doc
+
