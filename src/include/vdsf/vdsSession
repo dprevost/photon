@@ -58,8 +58,10 @@ public:
    
 private:
 
-   VDSHANDLE sessionHandle;
-
+   VDS_HANDLE m_sessionHandle;
+   friend class vdsFolder;
+   friend class vdsHashMap;
+   friend class vdsQueue;
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

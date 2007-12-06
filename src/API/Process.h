@@ -28,6 +28,8 @@
 #include "Common/ThreadLock.h"
 #include "Common/MemoryFile.h"
 
+BEGIN_C_DECLS
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Forward declarations */

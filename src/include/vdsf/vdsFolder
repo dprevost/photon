@@ -17,8 +17,8 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_FOLDER
-#define VDS_FOLDER
+#ifndef VDS_FOLDER_H_CPP
+#define VDS_FOLDER_H_CPP
 
 #include <vdsf/vdsCommon.h>
 
@@ -37,10 +37,10 @@ public:
 
    virtual ~vdsFolder();
 
-   int Open( const char * folderName,
-             size_t       nameLengthInBytes );
+   void Open( const char * folderName,
+              size_t       nameLengthInBytes );
    
-   int Close();
+   void Close();
 
    /** 
     * Iterate through the folder - no data items are removed from the 
@@ -77,15 +77,16 @@ public:
     */
    int GetNext( vdsFolderEntry * pEntry );
 
-   int Status( vdsObjStatus * pStatus );
+   void Status( vdsObjStatus * pStatus );
 
 private:
 
-   VDS_HANDLE objectHandle;
+   VDS_HANDLE m_objectHandle;
+   VDS_HANDLE m_sessionHandle;
 
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_FOLDER */
+#endif /* VDS_FOLDER_H_CPP */
 

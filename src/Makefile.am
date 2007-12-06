@@ -25,6 +25,7 @@ SUBDIRS =               \
           Engine        \
           Watchdog      \
           API           \
+          C++           \
           include       \
           Tests
           

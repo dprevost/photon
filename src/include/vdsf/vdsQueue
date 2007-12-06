@@ -17,8 +17,8 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_QUEUE
-#define VDS_QUEUE
+#ifndef VDS_QUEUE_H_CPP
+#define VDS_QUEUE_H_CPP
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -40,41 +40,42 @@ public:
 
    virtual ~vdsQueue();
 
-   int Open( const char* queueName
-    size_t       nameLengthInBytes );
+   void Close();
    
-   int Close();
-   
-   int Pop( void       * buffer,
-            size_t       bufferLength,
-            size_t     * returnedLength );
+   int GetFirst( void   * buffer,
+                 size_t   bufferLength,
+                 size_t * returnedLength );
 
-   int Push( const void * pItem, 
-             size_t       length );
+   int GetNext( void   * buffer,
+                size_t   bufferLength,
+                size_t * returnedLength );
 
-   int Status( vdsObjStatus * pStatus );
+   void Open( const char * queueName,
+              size_t       nameLengthInBytes );
 
-   int Pop( vdsQueueItem* pQueueItem );
- 
-   int Pop( vdsQueueItem& queueItem );
+   int Pop( void   * buffer,
+            size_t   bufferLength,
+            size_t * returnedLength );
 
-   int GetFirst( void    * buffer,
-                 size_t    bufferLength,
-                 size_t  * returnedLength );
+   void Push( const void * pItem, 
+              size_t       length );
 
-   int GetNext( void    * buffer,
-                size_t    bufferLength,
-                size_t  * returnedLength );
+   void Status( vdsObjStatus * pStatus );
+
+//   int Pop( vdsQueueItem* pQueueItem );
+
+//   int Pop( vdsQueueItem& queueItem );
 
 private:
 
-   VDS_HANDLE objectHandle;
-   
+   VDS_HANDLE m_objectHandle;
+   VDS_HANDLE m_sessionHandle;
+
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_QUEUE */
+#endif /* VDS_QUEUE_H_CPP */
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

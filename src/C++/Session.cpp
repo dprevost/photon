@@ -15,36 +15,15 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_FOLDER_H
-#define VDSA_FOLDER_H
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
+#include "Common/Common.h"
+#include <vdsf/vdsFolder.h>
+#include "API/Folder.h"
+#include "API/Session.h"
+#include <vdsf/vdsErrors.h>
 #include "API/CommonObject.h"
-#include "Engine/Folder.h"
-
-BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdsaFolder
-{
-   vdsaCommonObject object;
-   
-   /**
-    * This struct holds the result of the iteration 
-    */
-   vdseFolderItem iterator;
-   
-} vdsaFolder;
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-END_C_DECLS
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-#endif /* VDSA_FOLDER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

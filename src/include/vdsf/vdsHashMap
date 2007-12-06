@@ -17,8 +17,8 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_HASH_MAP
-#define VDS_HASH_MAP
+#ifndef VDS_HASH_MAP_H_CPP
+#define VDS_HASH_MAP_H_CPP
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -27,44 +27,29 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 // Forward declarations
-class vdsQueueItem;
+//class vdsQueueItem;
 class vdsSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class vdsQueue
+class vdsHashMap
 {
 public:
 
-   vdsQueue( vdsSession &session );
+   vdsHashMap( vdsSession &session );
 
-   virtual ~vdsQueue();
+   virtual ~vdsHashMap();
 
-   int Open( const char * queueName
-             size_t       nameLengthInBytes );
+   void Close();
    
-   int Close();
-   
-   int Delete( const void * key,
-               size_t       keyLength );
+   void Delete( const void * key,
+                size_t       keyLength );
 
-   int Get( const void * key,
-            size_t       keyLength,
-            void       * buffer,
-            size_t       bufferLength,
-            size_t     * returnedLength );
-
-   int Insert( const void * key,
-               size_t       keyLength,
-               const void * data,
-               size_t       dataLength );
-
-   int Replace( const void * key,
-                size_t       keyLength,
-                const void * data,
-                size_t       dataLength );
-
-   int Status( vdsObjStatus * pStatus );
+   void Get( const void * key,
+             size_t       keyLength,
+             void       * buffer,
+             size_t       bufferLength,
+             size_t     * returnedLength );
 
    int GetFirst( void       * key,
                  size_t       keyLength,
@@ -80,15 +65,31 @@ public:
                 size_t     * retKeyLength,
                 size_t     * retDataLength );
 
+   void Insert( const void * key,
+                size_t       keyLength,
+                const void * data,
+                size_t       dataLength );
+
+   void Open( const char * hashMapName,
+              size_t       nameLengthInBytes );
+   
+   void Replace( const void * key,
+                 size_t       keyLength,
+                 const void * data,
+                 size_t       dataLength );
+
+   void Status( vdsObjStatus * pStatus );
+
 private:
 
-   VDS_HANDLE objectHandle;
+   VDS_HANDLE m_objectHandle;
+   VDS_HANDLE m_sessionHandle;
    
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_HASH_MAP */
+#endif /* VDS_HASH_MAP_H_CPP */
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
