@@ -437,6 +437,7 @@ AC_CONFIG_FILES([
    src/Common/Tests/Options/Makefile
    src/Common/Tests/ProcessLock/Makefile
    src/Common/Tests/ThreadLock/Makefile
+   src/C++/Makefile
    src/Engine/Makefile
    src/Engine/Tests/Makefile
    src/Engine/Tests/BlockGroup/Makefile
