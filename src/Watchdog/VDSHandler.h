@@ -55,8 +55,6 @@ private:
 
    void CleanSession( vdseSession* pSession );
    
-   int ValidateVDS();
-   
    struct ConfigParams * m_pConfig;
 
    vdswMemoryManager * m_pMemManager;
@@ -64,6 +62,7 @@ private:
    vdseMemoryHeader* m_pMemHeader;
    
    vdseSessionContext m_context;
+   
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

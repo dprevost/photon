@@ -23,11 +23,6 @@
 #include "Engine/ProcessManager.h"
 #include "Engine/InitEngine.h"
 
-//#include "TreeManager.h"
-//#include "TransactionManager.h"
-//#include "CleanupManager.h"
-//#include "SessionContext.h"
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #define MEMORY_HEADER_SPACE 4096
@@ -223,13 +218,14 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
       (*ppHeader) = NULL;
       return errcode;
    }
-   (*ppHeader)->cleanupMgrOffset = SET_OFFSET( pManager );
+   (*ppHeader)->processMgrOffset = SET_OFFSET( pManager );
 
    /* And finish with setting up the version (and eventually some "magic */
    /* cookie" to identify the file?) */
 
    strcpy( (*ppHeader)->cookie, "VDS" );
    (*ppHeader)->version = MEMORY_VERSION;
+   (*ppHeader)->totalLength = m_memorySizeKB*1024;
 
 #if VDS_SUPPORT_i18n
    (*ppHeader)->useUnicode = true;

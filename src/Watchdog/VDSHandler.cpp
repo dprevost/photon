@@ -16,17 +16,23 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Common/Common.h"
-#include "VDSHandler.h"
-#include "MemoryManager.h"
-#include "Watchdog.h"
+#include "Watchdog/VDSHandler.h"
+#include "Watchdog/MemoryManager.h"
+#include "Watchdog/Watchdog.h"
+#include "Watchdog/Validator.h"
 #include "API/WatchdogCommon.h"
-#include "Engine/ProcessManager.h"
+//#include "Engine/ProcessManager.h"
 #include "Engine/SessionContext.h"
 #include "Engine/InitEngine.h"
+//#include "Engine/Folder.h"
+//#include "Engine/MemoryAllocator.h"
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 vdswHandler::vdswHandler()
-   : m_pConfig ( NULL )
+   : m_pConfig     ( NULL ),
+     m_pMemManager ( NULL ),
+     m_pMemHeader  ( NULL )
 {
    memset( &m_context, 0, sizeof(vdseSessionContext) );
    m_context.pidLocker = getpid();
@@ -200,7 +206,8 @@ vdswHandler::Init( struct ConfigParams * pConfig,
                                         pConfig->memorySizekb,
                                         ppMemoryAddress );
       
-      errcode = ValidateVDS();
+      vdsValidator* v = new vdsValidator( *ppMemoryAddress );
+      errcode = v->Validate();
       if ( errcode != 0 )
          return -1;
       
@@ -241,14 +248,6 @@ vdswHandler::Init( struct ConfigParams * pConfig,
 
    m_pMemHeader = *ppMemoryAddress;
    
-   return 0;
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-int
-vdswHandler::ValidateVDS()
-{
    return 0;
 }
 

@@ -44,10 +44,10 @@ typedef struct vdseMemoryHeader
    int             version;
    int             running;  /* flag that will indicates system crashes */
    ptrdiff_t       treeMgrOffset;
-   ptrdiff_t       cleanupMgrOffset;
+   ptrdiff_t       processMgrOffset;
    ptrdiff_t       allocatorOffset;
-   ptrdiff_t       transMgrOffset;
    bool            logON;
+   size_t          totalLength;
    
    bool     useUnicode;
    size_t   sizeofPtr;

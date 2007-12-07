@@ -111,7 +111,7 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
       goto the_exit;
 
    GET_PTR( context.pAllocator, process->pHeader->allocatorOffset, void );
-   GET_PTR( pCleanupManager, process->pHeader->cleanupMgrOffset, vdseProcMgr );
+   GET_PTR( pCleanupManager, process->pHeader->processMgrOffset, vdseProcMgr );
 
    errcode = vdseProcMgrAddProcess( pCleanupManager,
                                     getpid(), 
@@ -159,7 +159,7 @@ void vdsaProcessFini()
    if ( g_protectionIsNeeded )
       vdscAcquireThreadLock( &g_ProcessMutex );
 
-   GET_PTR( processManager, process->pHeader->cleanupMgrOffset, vdseProcMgr );
+   GET_PTR( processManager, process->pHeader->processMgrOffset, vdseProcMgr );
 
    vdseProcessNoMoreSessionAllowed( process->pCleanup,
                                     &context );

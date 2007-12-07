@@ -25,6 +25,8 @@ vdswd_SOURCES =                   \
                 LogMsg.h          \
                 MemoryManager.cpp \
                 MemoryManager.h   \
+                Validator.cpp     \
+                Validator.h       \
                 VDSHandler.cpp    \
                 VDSHandler.h      \
                 Watchdog.cpp      \
