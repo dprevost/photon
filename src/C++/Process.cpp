@@ -13,17 +13,29 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Common/Common.h"
-#include <vdsf/vdsFolder.h>
-#include "API/Folder.h"
-#include "API/Session.h"
+#include <vdsf/vdsProcess>
+#include <vdsf/vdsProcess.h>
 #include <vdsf/vdsErrors.h>
-#include "API/CommonObject.h"
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+vdsProcess::vdsProcess( const char* wdAddress,
+                        bool        protectionNeeded )
+{
+   int rc = vdsInit( wdAddress,
+                     protectionNeeded );
+   if ( rc != 0 ) throw( rc );
+}
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+vdsProcess::~vdsProcess()
+{
+   vdsExit();
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

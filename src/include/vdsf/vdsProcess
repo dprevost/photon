@@ -35,16 +35,12 @@ class vdsProcessHook;
 class vdsProcess
 {
 public:
-   
-   vdsProcess();
+
+   vdsProcess( const char* wdAddress,
+               bool        protectionNeeded = false );
 
    virtual ~vdsProcess();
-   
-   int Init( const char* wdAddress,
-             bool        protectionNeeded = false );
 
-   void Exit();
-   
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

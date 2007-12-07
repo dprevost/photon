@@ -52,4 +52,77 @@ void vdsQueue::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+int vdsQueue::GetFirst( void   * buffer,
+                        size_t   bufferLength,
+                        size_t * returnedLength )
+{
+   int rc = vdsQueueGetFirst( m_objectHandle,
+                              buffer,
+                              bufferLength,
+                              returnedLength );
+   if ( rc != 0 && rc != VDS_IS_EMPTY ) throw( rc );
+   return rc;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+int vdsQueue::GetNext( void   * buffer,
+                       size_t   bufferLength,
+                       size_t * returnedLength )
+{
+   int rc = vdsQueueGetNext( m_objectHandle,
+                             buffer,
+                             bufferLength,
+                             returnedLength );
+   if ( rc != 0 && rc != VDS_REACHED_THE_END ) throw( rc );
+   return rc;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsQueue::Open( const char * queueName,
+                     size_t       nameLengthInBytes )
+{
+   int rc = vdsQueueOpen( m_sessionHandle,
+                          queueName,
+                          nameLengthInBytes,
+                          &m_objectHandle );
+   if ( rc != 0 ) throw( rc );
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+int vdsQueue::Pop( void   * buffer,
+                   size_t   bufferLength,
+                   size_t * returnedLength )
+{
+   int rc = vdsQueuePop( m_objectHandle,
+                         buffer,
+                         bufferLength,
+                         returnedLength );
+   if ( rc != 0 && rc != VDS_IS_EMPTY ) throw( rc );
+   return rc;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsQueue::Push( const void * pItem, 
+                     size_t       length )
+{
+   int rc = vdsQueuePush( m_objectHandle, 
+                          pItem, 
+                          length );
+   if ( rc != 0 ) throw( rc );
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsQueue::Status( vdsObjStatus * pStatus )
+{
+   int rc = vdsQueueStatus( m_objectHandle,
+                            pStatus );
+   if ( rc != 0 ) throw( rc );
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

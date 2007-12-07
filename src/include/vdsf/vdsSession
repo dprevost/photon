@@ -17,8 +17,8 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_SESSION
-#define VDS_SESSION
+#ifndef VDS_SESSION_H_CPP
+#define VDS_SESSION_H_CPP
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -30,31 +30,48 @@ class vdsSession
 {
 public:
    
-   vdsSession( bool explicitTransaction = false );
+   vdsSession();
 
    virtual ~vdsSession();
    
-   int CreateObject( const char *  objectName,
-                     size_t        nameLengthInBytes,
-                     vdsObjectType objectType );
+   void Commit();
    
-   int DestroyObject( const char * objectName,
-                      size_t       nameLengthInBytes );
+   void CreateObject( const char *  objectName,
+                      size_t        nameLengthInBytes,
+                      vdsObjectType objectType );
+   
+   void DestroyObject( const char * objectName,
+                       size_t       nameLengthInBytes );
 
-   int vdsErrorMsg( char   * message,
-                    size_t   msgLengthInBytes );
+   void ErrorMsg( char   * message,
+                  size_t   msgLengthInBytes );
+
+   void GetInfo( vdsInfo * pInfo );
+
+   void GetStatus( const char   * objectName,
+                   size_t         nameLengthInBytes,
+                   vdsObjStatus * pStatus );
 
    int LastError();
 
-   int GetInfo( vdsInfo * pInfo );
-
-   int GetStatus( const char   * objectName,
-                  size_t         nameLengthInBytes,
-                  vdsObjStatus * pStatus );
-
-   int Commit();
-   
-   int Rollback();
+   /**
+    * Rollback all insertions and deletions (of the current session) executed 
+    * since the previous call to vdsCommit or vdsRollback.
+    *
+    * Insertions and deletions subjected to this call include both data items
+    * inserted and deleted from data containers (maps, etc.) and objects 
+    * themselves created with ::CreateObj and/or destroyed with 
+    * ::DestroyObj.
+    *
+    * Note: the internal calls executed by the engine to satisfy this request
+    * cannot fail. As such,
+    * you cannot find yourself with an ugly situation where some operations
+    * were rollbacked and others not. If an error is returned by this function,
+    * nothing was rollbacked.
+    *
+    * \throw vdsErrors An abnormal error occured.
+    */
+   void Rollback();
    
 private:
 
@@ -66,7 +83,7 @@ private:
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_SESSION */
+#endif /* VDS_SESSION_H_CPP */
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
