@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
 # 
 # This file is part of vdsf (Virtual Data Space Framework).
 #
@@ -68,16 +68,16 @@ fi
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-$top_builddir/src/Common/Tests/ThreadLock/LockShouldFail $timer $BASE_DIR
+$top_builddir/src/Common/Tests/Optional/ThreadLockShouldFail $timer $BASE_DIR
 ####>& /dev/null
 if [ "$?" != 0 ] ; then
-#   rm -rf $BASE_DIR
+   rm -rf $BASE_DIR
    exit 1
 fi
 
 echo "Tests terminated successfully"
 
-#rm -rf $BASE_DIR
+rm -rf $BASE_DIR
 
 jobs
 

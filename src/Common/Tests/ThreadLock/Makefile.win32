@@ -29,8 +29,7 @@ check_PROGRAMS =                                    \
                  .\Release\TryAcqInvalidSig.exe     \
                  .\Release\TryAcqNullLock.exe       \
                  .\Release\TryAcqPass.exe           \
-                 .\Release\LockConcurrency.exe      \
-                 .\Release\LockShouldFail.exe       
+                 .\Release\LockConcurrency.exe      
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 
@@ -57,28 +56,18 @@ check: $(OUTDIR) $(check_PROGRAMS)
 .\Debug\LockConcurrency.exe: .\Debug\ThreadWrap.obj .\Debug\Barrier.obj LockConcurrency.c
 	$(CPP) $(CFLAGS_DEBUG) LockConcurrency.c .\Debug\ThreadWrap.obj .\Debug\Barrier.obj /link $(LDD_FLAGS_DEBUG) /out:"$@"
 
-.\Release\LockShouldFail.exe: .\Release\ThreadWrap.obj .\Release\Barrier.obj LockShouldFail.c
-	$(CPP) $(CFLAGS_RELEASE) LockShouldFail.c .\Release\ThreadWrap.obj .\Release\Barrier.obj /link $(LDD_FLAGS) /out:"$@"
-
-.\Debug\LockShouldFail.exe: .\Debug\ThreadWrap.obj .\Debug\Barrier.obj LockShouldFail.c
-	$(CPP) $(CFLAGS_DEBUG) LockShouldFail.c .\Debug\ThreadWrap.obj .\Debug\Barrier.obj /link $(LDD_FLAGS_DEBUG) /out:"$@"
-
 checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
 	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
 
 clean: 
 	-@erase /Q Debug\LockConcurrency
 	-@rmdir /Q Debug\LockConcurrency
-	-@erase /Q Debug\LockShouldFail
-	-@rmdir /Q Debug\LockShouldFail
 	-@erase /Q Debug\LockTests
 	-@rmdir /Q Debug\LockTests
 	-@erase /Q Debug
 	-@rmdir /Q Debug
 	-@erase /Q Release\LockConcurrency
 	-@rmdir /Q Release\LockConcurrency
-	-@erase /Q Release\LockShouldFail
-	-@rmdir /Q Release\LockShouldFail
 	-@erase /Q Release\LockTests
 	-@rmdir /Q Release\LockTests
 	-@erase /Q Release

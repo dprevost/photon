@@ -20,8 +20,8 @@
 #include "Common/Timer.h"
 #include "Common/ThreadLock.h"
 #include "Common/ErrorHandler.h"
-#include "ThreadWrap.h"
-#include "Barrier.h"
+#include "Common/Tests/ThreadLock/ThreadWrap.h"
+#include "Common/Tests/ThreadLock/Barrier.h"
 #include "Tests/PrintError.h"
 #include "Common/Options.h"
 

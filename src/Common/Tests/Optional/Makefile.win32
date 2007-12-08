@@ -1,0 +1,65 @@
+# Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+include ..\Makefile.inc.Win32
+
+all: 
+
+CLEANFILES = *~ 
+check_PROGRAMS =                                     \
+                 .\Release\ProcessLockShouldFail.exe \
+                 .\Release\ThreadLockShouldFail.exe  
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+
+# -----------------------------------------
+
+check: $(OUTDIR) $(check_PROGRAMS) 
+	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+
+.\Release\Barrier.obj: ..\ThreadLock\Barrier.h ..\ThreadLock\Barrier.c
+	$(CPP) /c $(CFLAGS_RELEASE) ..\ThreadLock\Barrier.c 
+   
+.\Release\ThreadWrap.obj: ..\ThreadLock\ThreadWrap.h ..\ThreadLock\ThreadWrap.c
+	$(CPP) /c $(CFLAGS_RELEASE) ..\ThreadLock\ThreadWrap.c 
+
+.\Debug\Barrier.obj: ..\ThreadLock\Barrier.h ..\ThreadLock\Barrier.c
+	$(CPP) /c $(CFLAGS_DEBUG) ..\ThreadLock\Barrier.c 
+   
+.\Debug\ThreadWrap.obj: ..\ThreadLock\ThreadWrap.h ..\ThreadLock\ThreadWrap.c
+	$(CPP) /c $(CFLAGS_DEBUG) ..\ThreadLock\ThreadWrap.c 
+
+.\Release\ThreadLockShouldFail.exe: .\Release\ThreadWrap.obj .\Release\Barrier.obj ThreadLockShouldFail.c
+	$(CPP) $(CFLAGS_RELEASE) ThreadLockShouldFail.c .\Release\ThreadWrap.obj .\Release\Barrier.obj /link $(LDD_FLAGS) /out:"$@"
+
+.\Debug\ThreadLockShouldFail.exe: .\Debug\ThreadWrap.obj .\Debug\Barrier.obj ThreadLockShouldFail.c
+	$(CPP) $(CFLAGS_DEBUG) ThreadLockShouldFail.c .\Debug\ThreadWrap.obj .\Debug\Barrier.obj /link $(LDD_FLAGS_DEBUG) /out:"$@"
+
+checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+
+clean: 
+	-@erase /Q Debug\ProcessLockShouldFail.exe
+	-@rmdir /Q Debug\ProcessLockShouldFail
+	-@erase /Q Debug\ThreadLockShouldFail.exe
+	-@rmdir /Q Debug\ThreadLockShouldFail
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release\ProcessLockShouldFail.exe
+	-@rmdir /Q Release\ProcessLockShouldFail
+	-@erase /Q Release\LockShouldFail.exe
+	-@rmdir /Q Release\LockShouldFail
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q ProjectFiles\*.dep
+	-@erase /Q ProjectFiles\*.plg
+	-@erase /Q ProjectFiles\*.mak
+	-@erase /Q $(CLEANFILES)
+

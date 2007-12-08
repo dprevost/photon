@@ -30,13 +30,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(15)
+Dim failed_tests(1)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(6)
-Dim fail_programs(8)
+Dim ok_programs(1)
+'Dim fail_programs(8)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -50,25 +50,12 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0) = "AcquirePass"
-ok_programs(1) = "FiniPass"
-ok_programs(2) = "InitPass"
-ok_programs(3) = "LockConcurrency"
-ok_programs(4) = "LockTests"
-ok_programs(5) = "ReleasePass"
-ok_programs(6) = "TryAcqPass"
+ok_programs(0) = "ProcessLockShouldFail"
+ok_programs(1) = "ThreadLockShouldFail"
 
-fail_programs(0) = "AcquireInvalidSig"
-fail_programs(1) = "AcquireNullLock"
-fail_programs(2) = "FiniInvalidSig"
-fail_programs(3) = "FiniNullLock"
-fail_programs(4) = "InitNullLock"
-fail_programs(5) = "ReleaseInvalidSig"
-fail_programs(6) = "ReleaseNullLock"
-fail_programs(7) = "TryAcqInvalidSig"
-fail_programs(8) = "TryAcqNullLock"
+'fail_programs(0) = ""
 
-numTests = 16                 ' Sum of length of both arrays 
+numTests  = 2                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject
@@ -127,28 +114,28 @@ For Each program in ok_programs
    end if
 Next
 
-For Each program in fail_programs
-   exe_name = prog_path & "\" & program & ".exe"
-   if consoleMode then 
-      WScript.Echo "Running " & exe_name
-      Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exe_name & Chr(34))
-      status = objWshScriptExec.Status
-      Do While objWshScriptExec.Status = 0
-         WScript.Sleep 100
-      Loop
-      strOutput = objWshScriptExec.StdOut.ReadAll
-      if verbose then 
-         WScript.Stdout.Write objWshScriptExec.StdErr.ReadAll
-      end if
-      rc = objWshScriptExec.ExitCode
-   else
-      rc = objShell.Run("%comspec% /c " & Chr(34) & exe_name & Chr(34), 2, true)
-   end if
-   if rc = 0 then
-      failed_tests(numFailed) = program
-      numFailed = numFailed + 1
-   end if
-Next
+'For Each program in fail_programs
+'   exe_name = prog_path & "\" & program & ".exe"
+'   if consoleMode then 
+'      WScript.Echo "Running " & exe_name
+'      Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exe_name & Chr(34))
+'      status = objWshScriptExec.Status
+'      Do While objWshScriptExec.Status = 0
+'         WScript.Sleep 100
+'      Loop
+'      strOutput = objWshScriptExec.StdOut.ReadAll
+'      if verbose then 
+'         WScript.Stdout.Write objWshScriptExec.StdErr.ReadAll
+'      end if
+'      rc = objWshScriptExec.ExitCode
+'   else
+'      rc = objShell.Run("%comspec% /c " & Chr(34) & exe_name & Chr(34), 2, true)
+'   end if
+'   if rc = 0 then
+'      failed_tests(numFailed) = program
+'      numFailed = numFailed + 1
+'   end if
+'Next
 
 if consoleMode then
    WScript.StdOut.Write vbcrlf & "Total number of tests: " & numTests & vbcrlf

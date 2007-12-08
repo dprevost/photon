@@ -27,7 +27,6 @@ check_PROGRAMS =                                \
                  .\Release\IsItLockedNullLock.exe   \
                  .\Release\IsItLockedPass.exe       \
                  .\Release\LockConcurrency.exe      \
-                 .\Release\LockShouldFail.exe       \
                  .\Release\LockTests.exe            \
                  .\Release\ReleaseInvalidSig.exe    \
                  .\Release\ReleaseNullLock.exe      \
@@ -53,16 +52,12 @@ checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG)
 clean: 
 	-@erase /Q Debug\LockConcurrency
 	-@rmdir /Q Debug\LockConcurrency
-	-@erase /Q Debug\LockShouldFail
-	-@rmdir /Q Debug\LockShouldFail
 	-@erase /Q Debug\LockTests
 	-@rmdir /Q Debug\LockTests
 	-@erase /Q Debug
 	-@rmdir /Q Debug
 	-@erase /Q Release\LockConcurrency
 	-@rmdir /Q Release\LockConcurrency
-	-@erase /Q Release\LockShouldFail
-	-@rmdir /Q Release\LockShouldFail
 	-@erase /Q Release\LockTests
 	-@rmdir /Q Release\LockTests
 	-@erase /Q Release

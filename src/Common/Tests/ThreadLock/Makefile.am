@@ -30,7 +30,6 @@ check_PROGRAMS =                      \
                  InitNullLock         \
                  InitPass             \
                  LockConcurrency      \
-                 LockShouldFail       \
                  LockTests            \
                  ReleaseInvalidSig    \
                  ReleaseNullLock      \
@@ -48,7 +47,6 @@ FiniPass_SOURCES             = FiniPass.c
 InitNullLock_SOURCES         = InitNullLock.c
 InitPass_SOURCES             = InitPass.c
 LockConcurrency_SOURCES      = LockConcurrency.c $(THREAD_TEST_CODE)
-LockShouldFail_SOURCES       = LockShouldFail.c $(THREAD_TEST_CODE)
 LockTests_SOURCES            = LockTests.c
 ReleaseInvalidSig_SOURCES    = ReleaseInvalidSig.c
 ReleaseNullLock_SOURCES      = ReleaseNullLock.c
@@ -59,8 +57,7 @@ TryAcqPass_SOURCES           = TryAcqPass.c
 
 EXTRA_DIST =                       \
              LockConcurrency.sh    \
-             LockConcurrencyTry.sh \
-             LockShouldFail.sh
+             LockConcurrencyTry.sh 
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
@@ -91,7 +88,6 @@ endif
 TESTS +=                       \
          LockConcurrency.sh    \
          LockConcurrencyTry.sh \
-         LockShouldFail.sh     \
          LockTests             
 
 XFAIL_TESTS =                   \

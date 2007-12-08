@@ -434,6 +434,7 @@ AC_CONFIG_FILES([
    src/Common/Tests/DirAccess/Makefile
    src/Common/Tests/Error/Makefile
    src/Common/Tests/MemFile/Makefile
+   src/Common/Tests/Optional/Makefile
    src/Common/Tests/Options/Makefile
    src/Common/Tests/ProcessLock/Makefile
    src/Common/Tests/ThreadLock/Makefile
