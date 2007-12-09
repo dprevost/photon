@@ -307,12 +307,13 @@ architecture=all
 case $host_cpu in
 i386 | i486 | i586 | i686 )
              locking_dir=asm-i386  
-             architecture=i386        ;;
+             architecture=i386      ;;
 x86_64)
           locking_dir=asm-x86_64
-          architecture=x86_64         ;;
+          architecture=x86_64       ;;
 #alpha)       locking_dir=asm-alpha   ;;
-#sparc)       locking_dir=asm-sparc   ;;
+sparc)       locking_dir=asm-sparc   
+             architecture=sparc     ;;
 #sparc64)     locking_dir=asm-sparc64 ;;
 *) locking_dir=empty ;;
 esac
