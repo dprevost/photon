@@ -61,7 +61,7 @@ class fileException
          char dummy[128];
 
          SetMessage( msg );
-         sprintf( dummy, "%s%d%s", 
+         sprintf( dummy, "%s"VDSF_SIZE_T_FORMAT"%s", 
                   "\n(approximate line number of the problem: ",
                   lineNumber,
                   ")" );

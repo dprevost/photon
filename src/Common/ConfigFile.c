@@ -124,7 +124,7 @@ int vdscReadConfig( const char*          cfgname,
                     g_paramNames[eVDS_MEMSIZE], 
                     strlen(g_paramNames[eVDS_MEMSIZE]) ) == 0 )
       {
-         sscanf( line, "%s %d", throwIt, &pConfig->memorySizekb );         
+         sscanf( line, "%s "VDSF_SIZE_T_FORMAT, throwIt, &pConfig->memorySizekb );         
          isPresent[eVDS_MEMSIZE] = 1;
          continue;
       }

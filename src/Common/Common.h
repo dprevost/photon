@@ -471,6 +471,21 @@ struct vdstTestAlignment
 
 #define VDST_STRUCT_ALIGNMENT offsetof(struct vdstTestAlignment, two)
 
+/****************************************************************/
+/*
+ * If non-compliant C99 compilers are used other than VC++ 6.0, an
+ * autoconf test would be helpful here. 
+ *
+ * The WIN32 test should be modified to use the version number of VC++.
+ */
+#if defined(WIN32)
+#  define VDSF_SIZE_T_FORMAT    "%d"
+#  define VDSF_PTRDIFF_T_FORMAT "%d"
+#else
+#  define VDSF_SIZE_T_FORMAT    "%zd"
+#  define VDSF_PTRDIFF_T_FORMAT "%td"
+#endif
+
 END_C_DECLS
 
 #endif /* VDSC_COMMON_H */
