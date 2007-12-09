@@ -10,7 +10,7 @@ OutputDir=src\Packages\Output
 OutputBaseFilename=vdsf-0.1.0
 
 [Files]
-Source: src\Release\vdsfAPI.dll; DestDir: {app}\bin
+Source: src\Release\vdsfAPI.dll; DestDir: {app}\bin; DestName: vdsf.dll
 Source: src\Release\vdsfCommon.dll; DestDir: {app}\bin
 Source: src\Release\vdsfEngine.dll; DestDir: {app}\bin
 Source: src\include\vdsf\vds.h; DestDir: {app}\include
