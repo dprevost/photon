@@ -39,6 +39,7 @@ OBJS_RELEASE=                            \
 	"$(INTDIR_RELEASE)\Acceptor.obj"      \
 	"$(INTDIR_RELEASE)\LogMsg.obj"        \
 	"$(INTDIR_RELEASE)\MemoryManager.obj" \
+	"$(INTDIR_RELEASE)\Validator.obj"     \
 	"$(INTDIR_RELEASE)\VDSHandler.obj"    \
 	"$(INTDIR_RELEASE)\Watchdog.obj"      \
 	"$(INTDIR_RELEASE)\wd.obj"            
