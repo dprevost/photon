@@ -71,7 +71,7 @@ int main()
       
    vdscEndTimer( &timer );
    vdscCalculateTimer( &timer, &sec, &nanoSec );
-   fprintf( stderr, "Calibration: Sec = %u, nanoSec = %u\n", sec, nanoSec );
+   fprintf( stderr, "Calibration: Sec = %lu, nanoSec = %lu\n", sec, nanoSec );
 
    /*
     * Newer version of gcc seem to strip the loop away since dum is not
@@ -131,7 +131,7 @@ int main()
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
       
-      fprintf( stderr, "Sec = %u, nanoSec = %09u\n", sec, nanoSec );
+      fprintf( stderr, "Sec = %lu, nanoSec = %09lu\n", sec, nanoSec );
    }
    
    return 0;
