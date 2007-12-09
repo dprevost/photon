@@ -28,6 +28,10 @@ int main( int argc, char * argv[] )
 {
    VDS_HANDLE sessionHandle, objHandle;
    int errcode;
+   char junk[12];
+   
+   memset( junk, 0, 12 );
+   objHandle = (VDS_HANDLE) junk;
    
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0 );
