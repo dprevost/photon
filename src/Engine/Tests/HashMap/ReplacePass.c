@@ -30,10 +30,12 @@ int main()
    char * key  = "my key";
    char * data1 = "my data1";
    char * data2 = "my data2";
+#if 0
    vdseHashItem * pItem;
    vdseTxStatus * txItemStatus;
    char * ptr;
-   
+#endif
+
    pHashMap = initHashMapTest( expectedToPass, &context );
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
