@@ -43,7 +43,8 @@ int main()
    
    if ( (pBitmap->lengthInBits-1)/8+1 != 7 )
    {
-      fprintf( stderr, "Wrong bitmapLength, got %d, expected %d\n",
+      fprintf( stderr, "Wrong bitmapLength, got "VDSF_SIZE_T_FORMAT
+               ", expected %d\n",
                pBitmap->lengthInBits/8, 7 );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

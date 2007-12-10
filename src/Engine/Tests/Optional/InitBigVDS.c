@@ -78,8 +78,8 @@ int main()
    {
       if (pBitmap->bitmap[i] != 0xff )
       {
-         fprintf( stderr, "Malloc bitmap issue - %d 0x%x\n", i, 
-                  pBitmap->bitmap[i] );
+         fprintf( stderr, "Malloc bitmap issue - "VDSF_SIZE_T_FORMAT" 0x%x\n", 
+                  i, pBitmap->bitmap[i] );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
    }
@@ -93,8 +93,8 @@ int main()
    /* Check the bitmap pattern - the first 3 are always busy */
    if (pBitmap->bitmap[0] != 0xea ) /* 11101010 */
    {
-      fprintf( stderr, "Malloc bitmap issue - %d 0x%x\n", i, 
-               pBitmap->bitmap[i] );
+      fprintf( stderr, "Malloc bitmap issue - "VDSF_SIZE_T_FORMAT" 0x%x\n", 
+               i, pBitmap->bitmap[i] );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
       
@@ -102,8 +102,8 @@ int main()
    {
       if (pBitmap->bitmap[i] != 0xaa ) /* 10101010 */
       {
-         fprintf( stderr, "Malloc bitmap issue - %d 0x%x\n", i, 
-                  pBitmap->bitmap[i] );
+         fprintf( stderr, "Malloc bitmap issue - "VDSF_SIZE_T_FORMAT" 0x%x\n", 
+                  i, pBitmap->bitmap[i] );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
    }

@@ -131,7 +131,7 @@ void DumpList( vdseLinkedList* pList )
    while ( testSize > 0 )
    {
       GET_PTR( pItem, pItem->nextOffset, vdseLinkNode );
-      fprintf( stderr, " %d = %p %p %p %p \n",
+      fprintf( stderr, VDSF_SIZE_T_FORMAT" = %p %p %p %p \n",
                testSize,
                pItem ,
                GET_PTR_FAST(pItem->nextOffset,vdseLinkNode ),

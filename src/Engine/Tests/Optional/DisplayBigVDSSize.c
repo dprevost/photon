@@ -35,9 +35,9 @@ int main()
 
    fprintf( stderr, "Amount of memory needed = \n" );
    
-   fprintf( stderr, "   %d bytes or \n" , allocatedLength );
-   fprintf( stderr, "   %d kbytes or \n", allocatedLength/1024 );
-   fprintf( stderr, "   %d Mbytes  \n"  , allocatedLength/1024/1024 );
+   fprintf( stderr, "   "VDSF_SIZE_T_FORMAT" bytes or \n" , allocatedLength );
+   fprintf( stderr, "   "VDSF_SIZE_T_FORMAT" kbytes or \n", allocatedLength/1024 );
+   fprintf( stderr, "   "VDSF_SIZE_T_FORMAT" Mbytes  \n"  , allocatedLength/1024/1024 );
    
    return 0;
 }
