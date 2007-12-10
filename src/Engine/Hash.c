@@ -15,9 +15,10 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Hash.h"
-#include "SessionContext.h"
-#include "MemoryObject.h"
+#include "Engine/Hash.h"
+#include "Engine/hash_fnv.h"
+#include "Engine/SessionContext.h"
+#include "Engine/MemoryObject.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -180,23 +181,7 @@ unsigned char* getData( vdseHashItem* pItem )
 static inline u_long
 hash_pjw (const unsigned char *str, size_t len)
 {
-   u_long hash = 0, g;
-   size_t i;
-   
-   for ( i = 0; i < len; i++ )
-   {
-      const unsigned char temp = str[i];
-      hash = (hash << 4) + (temp * 13);
-
-      g = hash & 0xf0000000;
-      if (g)
-      {
-         hash ^= (g >> 24);
-         hash ^= g;
-      }
-   }
-
-   return hash;
+   return fnv_buf( (void *)str, len, FNV1_INIT);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

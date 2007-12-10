@@ -35,6 +35,8 @@ libEngine_la_SOURCES =                   \
                        Folder.h          \
                        Hash.c            \
                        Hash.h            \
+                       hash_fnv.c        \
+                       hash_fnv.h        \
                        HashMap.c         \
                        HashMap.h         \
                        InitEngine.c      \
