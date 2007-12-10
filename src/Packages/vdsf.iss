@@ -42,6 +42,7 @@ Source: src\Examples\Project Files\HashMapLoop.dsp; DestDir: {app}\Examples\Proj
 Source: src\Examples\Project Files\QueueIn.dsp; DestDir: {app}\Examples\Project Files
 Source: src\Examples\Project Files\QueueOut.dsp; DestDir: {app}\Examples\Project Files
 Source: src\Examples\Project Files\QueueWork.dsp; DestDir: {app}\Examples\Project Files
+Source: c:\windows\system32\mswinsck.ocx; DestDir: {sys}; Flags: regserver restartreplace sharedfile
 
 [Icons]
 ;Name: "{group}\Watchdog"; Filename: "{app}\bin\vdswd.EXE"; WorkingDir: "{app}"

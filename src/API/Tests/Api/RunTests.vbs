@@ -27,6 +27,7 @@ Dim rc, numTests, numFailed, verbose, status
 Dim objShell, objShellwd
 Dim objWshScriptExec
 Dim fso
+Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
@@ -124,8 +125,37 @@ cmdFile.WriteLine("DirectoryPermissions  0770     ")
 exeName = wd_path + "\vdswd.exe -c " + tmpDir + "\cfg.txt"
 
 objShellwd.Run "%comspec% /c title vdswd | " & exeName, 2, false
-'objShellwd.Run "%comspec% /k " & Chr(34) & exeName & Chr(34), 4, false
-Wscript.Sleep 1000
+
+'Turn on error handling
+On Error Resume Next
+set objSocket=CreateObject("MSWinsock.Winsock.1")
+'Catch error - likely cause: nomswinsck.ocx
+If Err.Number = 0 Then
+   On Error GoTo 0 
+   objSocket.Protocol=0 ' TCP
+   Call objSocket.Close
+   Call objSocket.Connect ("127.0.0.1",10701)
+   while ((objSocket.State=6) or (objSocket.State=3)) 'socket state <> connecting or connection pending
+      'do nothing
+      Wscript.Sleep 10
+      'WScript.Echo objSocket.State
+   wend
+   if(objSocket.State=7) then ' if socket connected
+      'WScript.Echo "Port Open"
+   elseif(objSocket.State=9)then' If Error
+      WScript.Echo "Connection error"
+      wscript.quit(1)
+   elseif(objSocket.State=0)then 'Closed
+      WScript.Echo "Connection refused"
+      wscript.quit(1)
+   end if
+   call objSocket.Close
+   set objSocket = nothing
+else
+   Err.Clear
+   On Error GoTo 0 
+   Wscript.Sleep 2000
+end if
 
 ' Run all Programs
 
