@@ -198,8 +198,8 @@ vdswHandler::Init( struct ConfigParams * pConfig,
    }
    else
    {
-      if ( fileStatus.fileReadable && fileStatus.fileWritable && 
-           fileStatus.lenghtOK )
+      if ( ! fileStatus.fileReadable || ! fileStatus.fileWritable || 
+           ! fileStatus.lenghtOK )
          return -1;
       
       errcode = m_pMemManager->OpenVDS( path,
