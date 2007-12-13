@@ -23,6 +23,7 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include <vdsf/vdsCommon.h>
+#include <string>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -49,6 +50,8 @@ public:
    int GetNext( void   * buffer,
                 size_t   bufferLength,
                 size_t * returnedLength );
+
+   void Open( const std::string & queueName );
 
    void Open( const char * queueName,
               size_t       nameLengthInBytes );

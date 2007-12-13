@@ -25,9 +25,6 @@
 
 vdsSession::vdsSession()
 {
-   int rc = vdsInitSession( &m_sessionHandle );
-
-   if ( rc != 0 ) throw( rc );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -49,9 +46,21 @@ void vdsSession::Commit()
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsSession::CreateObject( const char *  objectName,
-                               size_t        nameLengthInBytes,
-                               vdsObjectType objectType )
+void vdsSession::CreateObject( const std::string & objectName,
+                               vdsObjectType       objectType )
+{
+   int rc = vdsCreateObject( m_sessionHandle,
+                             objectName.c_str(),
+                             objectName.length(),
+                             objectType );
+   if ( rc != 0 ) throw( rc );
+}
+   
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsSession::CreateObject( const char    * objectName,
+                               size_t          nameLengthInBytes,
+                               vdsObjectType   objectType )
 {
    int rc = vdsCreateObject( m_sessionHandle,
                              objectName,
@@ -62,8 +71,18 @@ void vdsSession::CreateObject( const char *  objectName,
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void vdsSession::DestroyObject( const std::string & objectName )
+{
+   int rc = vdsDestroyObject( m_sessionHandle,
+                              objectName.c_str(),
+                              objectName.length() );
+   if ( rc != 0 ) throw( rc );
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void vdsSession::DestroyObject( const char * objectName,
-                               size_t       nameLengthInBytes )
+                                size_t       nameLengthInBytes )
 {
    int rc = vdsDestroyObject( m_sessionHandle,
                               objectName,
@@ -94,6 +113,18 @@ void vdsSession::GetInfo( vdsInfo * pInfo )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void vdsSession::GetStatus( const std::string & objectName,
+                            vdsObjStatus      * pStatus )
+{
+   int rc = vdsGetStatus( m_sessionHandle,
+                          objectName.c_str(),
+                          objectName.length(),
+                          pStatus );
+   if ( rc != 0 ) throw( rc );
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void vdsSession::GetStatus( const char   * objectName,
                             size_t         nameLengthInBytes,
                             vdsObjStatus * pStatus )
@@ -102,6 +133,15 @@ void vdsSession::GetStatus( const char   * objectName,
                           objectName,
                           nameLengthInBytes,
                           pStatus );
+   if ( rc != 0 ) throw( rc );
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsSession::Init()
+{
+   int rc = vdsInitSession( &m_sessionHandle );
+
    if ( rc != 0 ) throw( rc );
 }
 

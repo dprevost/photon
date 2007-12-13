@@ -80,6 +80,17 @@ int vdsQueue::GetNext( void   * buffer,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void vdsQueue::Open( const std::string & queueName )
+{
+   int rc = vdsQueueOpen( m_sessionHandle,
+                          queueName.c_str(),
+                          queueName.length(),
+                          &m_objectHandle );
+   if ( rc != 0 ) throw( rc );
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void vdsQueue::Open( const char * queueName,
                      size_t       nameLengthInBytes )
 {

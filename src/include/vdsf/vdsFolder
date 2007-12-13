@@ -21,6 +21,7 @@
 #define VDS_FOLDER_H_CPP
 
 #include <vdsf/vdsCommon.h>
+#include <string>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -36,6 +37,8 @@ public:
    vdsFolder( vdsSession &session );
 
    virtual ~vdsFolder();
+
+   void Open( const std::string & folderName );
 
    void Open( const char * folderName,
               size_t       nameLengthInBytes );

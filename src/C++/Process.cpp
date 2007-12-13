@@ -22,8 +22,14 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsProcess::vdsProcess( const char* wdAddress,
-                        bool        protectionNeeded )
+vdsProcess::vdsProcess()
+{
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsProcess::Init( const char* wdAddress,
+                       bool        protectionNeeded )
 {
    int rc = vdsInit( wdAddress,
                      protectionNeeded );

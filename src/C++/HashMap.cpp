@@ -137,6 +137,18 @@ void vdsHashMap::Insert( const void * key,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void vdsHashMap::Open( const std::string & hashMapName )
+{
+   int rc = vdsHashMapOpen( m_sessionHandle,
+                            hashMapName.c_str(),
+                            hashMapName.length(),
+                            &m_objectHandle );
+
+   if ( rc != 0 ) throw( rc );
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void vdsHashMap::Open( const char * hashMapName,
                        size_t       nameLengthInBytes )
 {

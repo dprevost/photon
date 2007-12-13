@@ -19,6 +19,8 @@
 #include <iostream>
 
 #include "Watchdog/Validator.h"
+#include "Watchdog/ValidateFolder.h"
+
 #include "Engine/MemoryHeader.h"
 
 #include "Engine/ProcessManager.h"
@@ -58,6 +60,8 @@ int vdsValidator::Validate()
    vdseProcessManager * processMgr;
    vdseFolder * topFolder;
    vdseMemAlloc * memAllocator;
+   enum vdswValidation valid;
+   vdseSessionContext context;
    
    GET_PTR( processMgr, m_pMemoryAddress->processMgrOffset, vdseProcessManager );
    GET_PTR( topFolder, m_pMemoryAddress->treeMgrOffset, vdseFolder );
@@ -71,6 +75,10 @@ int vdsValidator::Validate()
       vdscReleaseProcessLock ( &memAllocator->memObj.lock );
       m_bTestAllocator = true;
    }
+
+   vdseInitSessionContext( &context );
+   context.pAllocator = (void *) memAllocator;
+   valid = vdswValidateFolder( topFolder, 1, &context );
    
    return 0;
 }

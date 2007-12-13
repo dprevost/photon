@@ -23,6 +23,7 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include <vdsf/vdsCommon.h>
+#include <string>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -36,10 +37,15 @@ public:
    
    void Commit();
    
+   void CreateObject( const std::string & objectName,
+                      vdsObjectType       objectType );
+   
    void CreateObject( const char *  objectName,
                       size_t        nameLengthInBytes,
                       vdsObjectType objectType );
    
+   void DestroyObject( const std::string & objectName );
+
    void DestroyObject( const char * objectName,
                        size_t       nameLengthInBytes );
 
@@ -48,10 +54,15 @@ public:
 
    void GetInfo( vdsInfo * pInfo );
 
+   void GetStatus( const std::string & objectName,
+                   vdsObjStatus      * pStatus );
+
    void GetStatus( const char   * objectName,
                    size_t         nameLengthInBytes,
                    vdsObjStatus * pStatus );
 
+   void Init();
+   
    int LastError();
 
    /**

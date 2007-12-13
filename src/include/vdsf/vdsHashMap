@@ -23,6 +23,7 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include <vdsf/vdsCommon.h>
+#include <string>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -70,6 +71,8 @@ public:
                 const void * data,
                 size_t       dataLength );
 
+   void Open( const std::string & hashMapName );
+   
    void Open( const char * hashMapName,
               size_t       nameLengthInBytes );
    

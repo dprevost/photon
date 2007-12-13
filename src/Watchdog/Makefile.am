@@ -25,6 +25,11 @@ vdswd_SOURCES =                   \
                 LogMsg.h          \
                 MemoryManager.cpp \
                 MemoryManager.h   \
+                Validate.h        \
+                ValidateFolder.c  \
+                ValidateFolder.h  \
+                ValidateQueue.c   \
+                ValidateQueue.h   \
                 Validator.cpp     \
                 Validator.h       \
                 VDSHandler.cpp    \

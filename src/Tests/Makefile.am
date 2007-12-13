@@ -23,8 +23,10 @@ EXTRA_DIST =             \
 
 check_PROGRAMS =      \
    TransactionHashMap \
-   TransactionQueue   
+   TransactionQueue   \
+   InjectErrorsVDS    
 
+InjectErrorsVDS_SOURCES    = InjectErrorsVDS.cpp
 TransactionHashMap_SOURCES = TransactionHashMap.c
 TransactionQueue_SOURCES   = TransactionQueue.c
 
@@ -43,4 +45,6 @@ TESTS =                  \
 LDADD = $(top_builddir)/src/API/libvdsf.la      \
         $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la
+
+InjectErrorsVDS_LDADD = $(top_builddir)/src/C++/libvdsfcpp.la 
 

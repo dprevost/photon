@@ -28,7 +28,7 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 // Forward declaration
-class vdsProcessHook;
+class vdsSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -36,8 +36,10 @@ class vdsProcess
 {
 public:
 
-   vdsProcess( const char* wdAddress,
-               bool        protectionNeeded = false );
+   vdsProcess();
+   
+   void Init( const char* wdAddress,
+              bool        protectionNeeded = false );
 
    virtual ~vdsProcess();
 

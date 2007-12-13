@@ -63,7 +63,7 @@ private:
    int ValidateQueue( vdseQueue * pQueue );
    
    int ValidateList( vdseLinkedList * pList );
-   
+
    int ValidateMemObject( vdseMemObject * pMemObject );
 
    // Set but not used yet (if true, the mem allocator is considered suspect
