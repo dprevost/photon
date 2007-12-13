@@ -21,32 +21,22 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswCheckHashMapContent( vdseHashMap * pHashMap, 
-                             int           verbose,
-                             int           spaces )
+int vdswCheckHashMapContent( vdseHashMap        * pHashMap, 
+                             int                  verbose,
+                             int                  spaces,
+                             vdseSessionContext * pContext )
 {
    enum ListErrors listErr;
-   size_t bucket, previousBucket;
+   size_t bucket, previousBucket, deletedBucket = -1;
    ptrdiff_t offset, previousOffset;
-   vdseHashItem * pItem;
-//   vdseObjectDescriptor* pDesc = NULL;
-//   void * pObject;
-//   int pDesc_invalid_api_type = 0;
-//   enum vdswValidation valid;
+   vdseHashItem * pItem, * pDeletedItem = NULL;
    vdseTxStatus * txItemStatus;
-   
-//   ptrdiff_t txOffset = SET_OFFSET( pContext->pTransaction );
    
    /* The easy case */
    if ( pHashMap->hashObj.numberOfItems == 0 )
       return 0;
    
-   /*
-    * We loop on all the hash items until either:
-    * - we find one item which is not marked as deleted by the
-    *   current transaction (we return false)
-    * - or the end (we return true)
-    */
+   spaces += 2;
    
    listErr = vdseHashGetFirst( &pHashMap->hashObj,
                                &bucket, 
@@ -56,27 +46,47 @@ int vdswCheckHashMapContent( vdseHashMap * pHashMap,
       GET_PTR( pItem, offset, vdseHashItem );
       txItemStatus = &pItem->txStatus;
 
-
-#if 0
-      GET_PTR( pDesc, pItem->dataOffset, vdseObjectDescriptor );
-      GET_PTR( pObject, pDesc->offset, void );
-      
-      switch( pDesc->apiType )
+      if ( txItemStatus->txOffset != NULL_OFFSET )
       {
-         case VDS_FOLDER:
-            valid = vdswValidateFolder( (vdseFolder *)pObject, verbose, pContext );
-            break;
-//         case VDS_HASH_MAP:
-//            vdseHashMapStatus( GET_PTR_FAST( pDesc->memOffset, vdseHashMap ),
-//                               pStatus );
-//            break;
-         case VDS_QUEUE:
-            valid = vdswValidateQueue( (struct vdseQueue *)pObject, verbose );
-            break;
-         default:
-            VDS_INV_CONDITION( pDesc_invalid_api_type );
+         /*
+          * So we have an interrupted transaction. What kind? 
+          *   FLAG                 ACTION          Comment
+          *   0                    remove object   Added object non-committed
+          *   MARKED_AS_DESTROYED  reset txStatus  
+          *   REMOVE_IS_COMMITTED  remove object
+          *
+          * Action is the equivalent of what a rollback would do.
+          */
+         if ( txItemStatus->statusFlag == 0 )
+         {
+            if ( verbose )
+               vdswEcho( spaces, "Hash item added but not committed - item removed" );
+            deletedBucket = bucket;
+            pDeletedItem = pItem;
+         }         
+         else if ( txItemStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
+         {
+            if ( verbose )
+               vdswEcho( spaces, "Hash item deleted and committed - item removed" );
+            deletedBucket = bucket;
+            pDeletedItem = pItem;
+         }
+         else if ( txItemStatus->statusFlag == VDSE_MARKED_AS_DESTROYED )
+         {
+            if ( verbose )
+               vdswEcho( spaces, "Hash item deleted but not committed - item is kept" );
+         }
+         
+         txItemStatus->txOffset = NULL_OFFSET;
+         txItemStatus->statusFlag = 0;
       }
-#endif
+
+      if ( pDeletedItem == NULL && txItemStatus->usageCounter != 0 )
+      {
+         if ( verbose )
+            vdswEcho( spaces, "Hash item usage counter set to zero" );
+         txItemStatus->usageCounter = 0;
+      }
       
       previousBucket = bucket;
       previousOffset = offset;
@@ -86,11 +96,19 @@ int vdswCheckHashMapContent( vdseHashMap * pHashMap,
                                  &bucket, 
                                  &offset );
 
-//      if ( valid == VDSW_DELETE_OBJECT )
-//         vdseHashDeleteAt( &pFolder->hashObj,
-//                           previousBucket,
-//                           pItem,
-//                           pContext );
+      /*
+       * We need the old item to be able to get to the next item. That's
+       * why we save the item to be deleted and delete it until after we
+       * retrieve the next item.
+       */
+      if ( pDeletedItem != NULL )
+      {
+         vdseHashDeleteAt( &pHashMap->hashObj,
+                           deletedBucket,
+                           pDeletedItem,
+                           pContext );
+         pDeletedItem = NULL;
+      }
    }
    
    return 0;
@@ -99,18 +117,15 @@ int vdswCheckHashMapContent( vdseHashMap * pHashMap,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum vdswValidation 
-vdswValidateHashMap( vdseHashMap * pHashMap,
-                     int           verbose,
-                     int           spaces )
+vdswValidateHashMap( vdseHashMap        * pHashMap,
+                     int                  verbose,
+                     int                  spaces,
+                     vdseSessionContext * pContext )
 {
    vdseTxStatus * txHashMapStatus;
    int rc;
-   
-   if ( verbose )
-   {
-      fprintf( stderr, "\n" );
-   }
-   
+      
+   spaces += 2;
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
    if ( txHashMapStatus->txOffset != NULL_OFFSET )
@@ -124,21 +139,45 @@ vdswValidateHashMap( vdseHashMap * pHashMap,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txHashMapStatus->statusFlag == 0 ||
-         txHashMapStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
+      if ( txHashMapStatus->statusFlag == 0 )
       {
-         fprintf( stderr, "Object is removed\n" );
+         if ( verbose )
+            vdswEcho( spaces, "Object added but not committed - object removed" );
+         return VDSW_DELETE_OBJECT;
+      }         
+      if ( txHashMapStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
+      {
+         if ( verbose )
+            vdswEcho( spaces, "Object deleted and committed - object removed" );
          return VDSW_DELETE_OBJECT;
       }
+      if ( verbose )
+         vdswEcho( spaces, "Object deleted but not committed - object is kept" );
+
       txHashMapStatus->txOffset = NULL_OFFSET;
       txHashMapStatus->statusFlag = 0;
    }
    
-   txHashMapStatus->usageCounter = 0;
-   txHashMapStatus->parentCounter = 0;
-   pHashMap->nodeObject.txCounter = 0;
+   if ( txHashMapStatus->usageCounter != 0 )
+   {
+      txHashMapStatus->usageCounter = 0;
+      if ( verbose )
+         vdswEcho( spaces, "Usage counter set to zero" );
+   }
+   if ( txHashMapStatus->parentCounter != 0 )
+   {
+      txHashMapStatus->parentCounter = 0;
+      if ( verbose )
+         vdswEcho( spaces, "Parent counter set to zero" );
+   }
+   if ( pHashMap->nodeObject.txCounter != 0 )
+   {
+      pHashMap->nodeObject.txCounter = 0;
+      if ( verbose )
+         vdswEcho( spaces, "Transaction counter set to zero" );
+   }
 
-   rc = vdswCheckHashMapContent( pHashMap, verbose, spaces );
+   rc = vdswCheckHashMapContent( pHashMap, verbose, spaces, pContext );
 
    return VDSW_OK;
 }

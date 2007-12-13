@@ -19,6 +19,7 @@
 #define VDSW_VALIDATE_HASH_MAP_H
 
 #include "Watchdog/Validate.h"
+#include "Engine/SessionContext.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -29,7 +30,10 @@ struct vdseHashMap;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum vdswValidation 
-vdswValidateHashMap( struct vdseHashMap * pHashMap, int verbose,int spaces );
+vdswValidateHashMap( struct vdseHashMap * pHashMap, 
+                     int                  verbose,
+                     int                  spaces,
+                     vdseSessionContext * pContext  );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -62,7 +62,9 @@ int vdsValidator::Validate()
    vdseMemAlloc * memAllocator;
    enum vdswValidation valid;
    vdseSessionContext context;
-   
+   ptrdiff_t  lockOffsets[VDSE_MAX_LOCK_DEPTH];
+   int        numLocks = 0;
+
    GET_PTR( processMgr, m_pMemoryAddress->processMgrOffset, vdseProcessManager );
    GET_PTR( topFolder, m_pMemoryAddress->treeMgrOffset, vdseFolder );
    GET_PTR( memAllocator, m_pMemoryAddress->allocatorOffset, vdseMemAlloc );
@@ -75,9 +77,14 @@ int vdsValidator::Validate()
       vdscReleaseProcessLock ( &memAllocator->memObj.lock );
       m_bTestAllocator = true;
    }
+   
+   cerr << "Object name: /" << endl;
 
    vdseInitSessionContext( &context );
    context.pAllocator = (void *) memAllocator;
+   context.lockOffsets = lockOffsets;
+   context.numLocks = &numLocks;
+   
    valid = vdswValidateFolder( topFolder, 1, 0, &context );
    
    return 0;

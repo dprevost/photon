@@ -21,24 +21,75 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswResetCountersList( struct vdseQueue * pQueue, int verbose, int spaces )
+int vdswCheckQueueContent( struct vdseQueue * pQueue, int verbose, int spaces )
 {
    vdseTxStatus * txItemStatus;
    enum ListErrors listErrCode;
-   vdseLinkNode * pNode = NULL;
+   vdseLinkNode * pNode = NULL, * pDeleteNode = NULL;
    vdseQueueItem* pQueueItem = NULL;
    
+   spaces += 2;
    listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    while ( listErrCode == LIST_OK )
    {
       pQueueItem = (vdseQueueItem*) 
          ((char*)pNode - offsetof( vdseQueueItem, node ));
       txItemStatus = &pQueueItem->txStatus;
-      txItemStatus->usageCounter = 0;
 
+      if ( txItemStatus->txOffset != NULL_OFFSET )
+      {
+         /*
+          * So we have an interrupted transaction. What kind? 
+          *   FLAG                 ACTION          Comment
+          *   0                    remove object   Added object non-committed
+          *   MARKED_AS_DESTROYED  reset txStatus  
+          *   REMOVE_IS_COMMITTED  remove object
+          *
+          * Action is the equivalent of what a rollback would do.
+          */
+         if ( txItemStatus->statusFlag == 0 )
+         {
+            if ( verbose )
+               vdswEcho( spaces, "Queue item added but not committed - item removed" );
+            pDeleteNode = pNode;
+
+         }         
+         else if ( txItemStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
+         {
+            if ( verbose )
+               vdswEcho( spaces, "Queue item deleted and committed - item removed" );
+            pDeleteNode = pNode;
+         }
+         else if ( txItemStatus->statusFlag == VDSE_MARKED_AS_DESTROYED )
+         {
+            if ( verbose )
+               vdswEcho( spaces, "Queue item deleted but not committed - item is kept" );
+         }
+         
+         txItemStatus->txOffset = NULL_OFFSET;
+         txItemStatus->statusFlag = 0;
+      }
+
+      if ( pDeleteNode == NULL && txItemStatus->usageCounter != 0 )
+      {
+         if ( verbose )
+            vdswEcho( spaces, "Queue item usage counter set to zero" );
+         txItemStatus->usageCounter = 0;
+      }
+      
       listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
                                              pNode, 
                                              &pNode );
+      /*
+       * We need the old node to be able to get to the next node. That's
+       * why we save the node to be deleted and delete it until after we
+       * retrieve the next node.
+       */
+      if ( pDeleteNode != NULL )
+      {
+         vdseLinkedListRemoveItem( &pQueue->listOfElements, pDeleteNode );
+         pDeleteNode = NULL;
+      }
    }
 
    if ( listErrCode == LIST_END_OF_LIST || listErrCode == LIST_EMPTY )
@@ -57,10 +108,7 @@ vdswValidateQueue( struct vdseQueue * pQueue, int verbose, int spaces )
    vdseTxStatus * txQueueStatus;
    int rc;
    
-   if ( verbose )
-   {
-      fprintf( stderr, "\n" );
-   }
+   spaces += 2;
    
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
 
@@ -75,21 +123,45 @@ vdswValidateQueue( struct vdseQueue * pQueue, int verbose, int spaces )
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txQueueStatus->statusFlag == 0 ||
-         txQueueStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
+      if ( txQueueStatus->statusFlag == 0 )
       {
-         fprintf( stderr, "Object is removed\n" );
+         if ( verbose )
+            vdswEcho( spaces, "Object added but not committed - object removed" );
+         return VDSW_DELETE_OBJECT;
+      }         
+      if ( txQueueStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
+      {
+         if ( verbose )
+            vdswEcho( spaces, "Object deleted and committed - object removed" );
          return VDSW_DELETE_OBJECT;
       }
+      if ( verbose )
+         vdswEcho( spaces, "Object deleted but not committed - object is kept" );
+
       txQueueStatus->txOffset = NULL_OFFSET;
       txQueueStatus->statusFlag = 0;
    }
    
-   txQueueStatus->usageCounter = 0;
-   txQueueStatus->parentCounter = 0;
-   pQueue->nodeObject.txCounter = 0;
+   if ( txQueueStatus->usageCounter != 0 )
+   {
+      txQueueStatus->usageCounter = 0;
+      if ( verbose )
+         vdswEcho( spaces, "Usage counter set to zero" );
+   }
+   if ( txQueueStatus->parentCounter != 0 )
+   {
+      txQueueStatus->parentCounter = 0;
+      if ( verbose )
+         vdswEcho( spaces, "Parent counter set to zero" );
+   }
+   if ( pQueue->nodeObject.txCounter != 0 )
+   {
+      pQueue->nodeObject.txCounter = 0;
+      if ( verbose )
+         vdswEcho( spaces, "Transaction counter set to zero" );
+   }
 
-   rc = vdswResetCountersList( pQueue, verbose, spaces );
+   rc = vdswCheckQueueContent( pQueue, verbose, spaces );
    
    return VDSW_OK;
 }

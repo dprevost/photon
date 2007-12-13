@@ -26,7 +26,7 @@
 int vdswCheckFolderContent( struct vdseFolder  * pFolder, 
                             int                  verbose,
                             int                  spaces,
-                            vdseSessionContext * pContext)
+                            vdseSessionContext * pContext )
 {
    enum ListErrors listErr;
    size_t bucket, previousBucket;
@@ -36,8 +36,12 @@ int vdswCheckFolderContent( struct vdseFolder  * pFolder,
    void * pObject;
    int pDesc_invalid_api_type = 0;
    enum vdswValidation valid;
-   
-//   ptrdiff_t txOffset = SET_OFFSET( pContext->pTransaction );
+   char message[VDS_MAX_NAME_LENGTH*4 + 30];
+   size_t lengthName;
+#if VDS_SUPPORT_i18n
+   mbstate_t ps;
+   const wchar_t * name;
+#endif
    
    /* The easy case */
    if ( pFolder->hashObj.numberOfItems == 0 )
@@ -50,7 +54,6 @@ int vdswCheckFolderContent( struct vdseFolder  * pFolder,
     * - or the end (we return true)
     */
 
-   spaces += 2;
    listErr = vdseHashGetFirst( &pFolder->hashObj,
                                &bucket, 
                                &offset );
@@ -60,6 +63,27 @@ int vdswCheckFolderContent( struct vdseFolder  * pFolder,
       GET_PTR( pDesc, pItem->dataOffset, vdseObjectDescriptor );
       GET_PTR( pObject, pDesc->offset, void );
       
+      if ( verbose )
+      {
+         memset( message, 0, VDS_MAX_NAME_LENGTH*4+30 );
+         strcpy( message, "Object name: " );
+#if VDS_SUPPORT_i18n
+         memset( &ps, 0, sizeof(mbstate_t) );
+         name = pDesc->originalName;
+         lengthName = wcsrtombs( &message[strlen(message)], 
+                                 &name,
+                                 VDS_MAX_NAME_LENGTH*4,
+                                 &ps );
+         if ( lengthName == (size_t) -1 )
+         {
+            /* A conversion error */
+            strcat( message, " wcsrtombs() conversion error... sorry" );
+         }
+#else
+         strncat( message, pDesc->originalName, pDesc->nameLengthInBytes );
+#endif
+         vdswEcho( spaces, message );
+      }
       switch( pDesc->apiType )
       {
          case VDS_FOLDER:
@@ -68,7 +92,7 @@ int vdswCheckFolderContent( struct vdseFolder  * pFolder,
             break;
          case VDS_HASH_MAP:
             valid = vdswValidateHashMap( (struct vdseHashMap *)pObject, 
-                                         verbose, spaces );
+                                         verbose, spaces, pContext );
             break;
          case VDS_QUEUE:
             valid = vdswValidateQueue( (struct vdseQueue *)pObject, 
@@ -87,13 +111,27 @@ int vdswCheckFolderContent( struct vdseFolder  * pFolder,
                                  &offset );
 
       if ( valid == VDSW_DELETE_OBJECT )
+      {
+         switch( pDesc->apiType )
+         {
+            case VDS_FOLDER:
+               vdseFolderFini( (vdseFolder *)pObject, pContext );
+               break;
+            case VDS_HASH_MAP:
+               vdseHashMapFini( (struct vdseHashMap *)pObject, pContext );
+               break;
+            case VDS_QUEUE:
+               vdseQueueFini( (struct vdseQueue *)pObject, pContext );
+               break;
+            default:
+               VDS_INV_CONDITION( pDesc_invalid_api_type );
+         }
          vdseHashDeleteAt( &pFolder->hashObj,
                            previousBucket,
                            pItem,
                            pContext );
+      }
    }
-
-   spaces -= 2;
 
    return 0;
 }
@@ -108,11 +146,8 @@ vdswValidateFolder( struct vdseFolder  * pFolder,
 {
    vdseTxStatus * txFolderStatus;
    int rc;
-   
-   if ( verbose )
-   {
-      fprintf( stderr, "\n" );
-   }
+      
+   spaces += 2;
    
    GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
 
@@ -127,19 +162,43 @@ vdswValidateFolder( struct vdseFolder  * pFolder,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txFolderStatus->statusFlag == 0 ||
-         txFolderStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
+      if ( txFolderStatus->statusFlag == 0 )
       {
-         fprintf( stderr, "Object is removed\n" );
+         if ( verbose )
+            vdswEcho( spaces, "Object added but not committed - object removed" );
+         return VDSW_DELETE_OBJECT;
+      }         
+      if ( txFolderStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
+      {
+         if ( verbose )
+            vdswEcho( spaces, "Object deleted and committed - object removed" );
          return VDSW_DELETE_OBJECT;
       }
+      if ( verbose )
+         vdswEcho( spaces, "Object deleted but not committed - object is kept" );
+      
       txFolderStatus->txOffset = NULL_OFFSET;
       txFolderStatus->statusFlag = 0;
    }
    
-   txFolderStatus->usageCounter = 0;
-   txFolderStatus->parentCounter = 0;
-   pFolder->nodeObject.txCounter = 0;
+   if ( txFolderStatus->usageCounter != 0 )
+   {
+      txFolderStatus->usageCounter = 0;
+      if ( verbose )
+         vdswEcho( spaces, "Usage counter set to zero" );
+   }
+   if ( txFolderStatus->parentCounter != 0 )
+   {
+      txFolderStatus->parentCounter = 0;
+      if ( verbose )
+         vdswEcho( spaces, "Parent counter set to zero" );
+   }
+   if ( pFolder->nodeObject.txCounter != 0 )
+   {
+      pFolder->nodeObject.txCounter = 0;
+      if ( verbose )
+         vdswEcho( spaces, "Transaction counter set to zero" );
+   }
 
    rc = vdswCheckFolderContent( pFolder, verbose, spaces, pContext );
 
