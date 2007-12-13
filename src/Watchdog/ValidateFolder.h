@@ -32,6 +32,7 @@ struct vdseFolder;
 enum vdswValidation 
 vdswValidateFolder( struct vdseFolder  * pFolder, 
                     int                  verbose, 
+                    int                  spaces,
                     vdseSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

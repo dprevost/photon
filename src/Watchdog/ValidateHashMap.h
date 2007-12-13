@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSW_VALIDATE_QUEUE_H
-#define VDSW_VALIDATE_QUEUE_H
+#ifndef VDSW_VALIDATE_HASH_MAP_H
+#define VDSW_VALIDATE_HASH_MAP_H
 
 #include "Watchdog/Validate.h"
 
@@ -24,12 +24,12 @@
 
 BEGIN_C_DECLS
 
-struct vdseQueue;
+struct vdseHashMap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum vdswValidation 
-vdswValidateQueue( struct vdseQueue * pQueue, int verbose,int spaces );
+vdswValidateHashMap( struct vdseHashMap * pHashMap, int verbose,int spaces );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -37,6 +37,6 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSW_VALIDATE_QUEUE_H */
+#endif /* VDSW_VALIDATE_HASH_MAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -78,7 +78,7 @@ int vdsValidator::Validate()
 
    vdseInitSessionContext( &context );
    context.pAllocator = (void *) memAllocator;
-   valid = vdswValidateFolder( topFolder, 1, &context );
+   valid = vdswValidateFolder( topFolder, 1, 0, &context );
    
    return 0;
 }

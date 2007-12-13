@@ -21,7 +21,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswResetCountersList( struct vdseQueue * pQueue, int verbose )
+int vdswResetCountersList( struct vdseQueue * pQueue, int verbose, int spaces )
 {
    vdseTxStatus * txItemStatus;
    enum ListErrors listErrCode;
@@ -52,7 +52,7 @@ int vdswResetCountersList( struct vdseQueue * pQueue, int verbose )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum vdswValidation 
-vdswValidateQueue( struct vdseQueue * pQueue, int verbose )
+vdswValidateQueue( struct vdseQueue * pQueue, int verbose, int spaces )
 {
    vdseTxStatus * txQueueStatus;
    int rc;
@@ -89,7 +89,7 @@ vdswValidateQueue( struct vdseQueue * pQueue, int verbose )
    txQueueStatus->parentCounter = 0;
    pQueue->nodeObject.txCounter = 0;
 
-   rc = vdswResetCountersList( pQueue, verbose );
+   rc = vdswResetCountersList( pQueue, verbose, spaces );
    
    return VDSW_OK;
 }

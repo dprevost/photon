@@ -16,31 +16,29 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include "Watchdog/ValidateFolder.h"
 #include "Watchdog/ValidateHashMap.h"
-#include "Watchdog/ValidateQueue.h"
-#include "Engine/Folder.h"
+#include "Engine/HashMap.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswCheckFolderContent( struct vdseFolder  * pFolder, 
-                            int                  verbose,
-                            int                  spaces,
-                            vdseSessionContext * pContext)
+int vdswCheckHashMapContent( vdseHashMap * pHashMap, 
+                             int           verbose,
+                             int           spaces )
 {
    enum ListErrors listErr;
    size_t bucket, previousBucket;
    ptrdiff_t offset, previousOffset;
    vdseHashItem * pItem;
-   vdseObjectDescriptor* pDesc = NULL;
-   void * pObject;
-   int pDesc_invalid_api_type = 0;
-   enum vdswValidation valid;
+//   vdseObjectDescriptor* pDesc = NULL;
+//   void * pObject;
+//   int pDesc_invalid_api_type = 0;
+//   enum vdswValidation valid;
+   vdseTxStatus * txItemStatus;
    
 //   ptrdiff_t txOffset = SET_OFFSET( pContext->pTransaction );
    
    /* The easy case */
-   if ( pFolder->hashObj.numberOfItems == 0 )
+   if ( pHashMap->hashObj.numberOfItems == 0 )
       return 0;
    
    /*
@@ -49,64 +47,63 @@ int vdswCheckFolderContent( struct vdseFolder  * pFolder,
     *   current transaction (we return false)
     * - or the end (we return true)
     */
-
-   spaces += 2;
-   listErr = vdseHashGetFirst( &pFolder->hashObj,
+   
+   listErr = vdseHashGetFirst( &pHashMap->hashObj,
                                &bucket, 
                                &offset );
    while ( listErr == LIST_OK )
    {
       GET_PTR( pItem, offset, vdseHashItem );
+      txItemStatus = &pItem->txStatus;
+
+
+#if 0
       GET_PTR( pDesc, pItem->dataOffset, vdseObjectDescriptor );
       GET_PTR( pObject, pDesc->offset, void );
       
       switch( pDesc->apiType )
       {
          case VDS_FOLDER:
-            valid = vdswValidateFolder( (vdseFolder *)pObject, verbose, 
-                                        spaces, pContext );
+            valid = vdswValidateFolder( (vdseFolder *)pObject, verbose, pContext );
             break;
-         case VDS_HASH_MAP:
-            valid = vdswValidateHashMap( (struct vdseHashMap *)pObject, 
-                                         verbose, spaces );
-            break;
+//         case VDS_HASH_MAP:
+//            vdseHashMapStatus( GET_PTR_FAST( pDesc->memOffset, vdseHashMap ),
+//                               pStatus );
+//            break;
          case VDS_QUEUE:
-            valid = vdswValidateQueue( (struct vdseQueue *)pObject, 
-                                       verbose, spaces );
+            valid = vdswValidateQueue( (struct vdseQueue *)pObject, verbose );
             break;
          default:
             VDS_INV_CONDITION( pDesc_invalid_api_type );
       }
+#endif
       
       previousBucket = bucket;
       previousOffset = offset;
-      listErr = vdseHashGetNext( &pFolder->hashObj,
+      listErr = vdseHashGetNext( &pHashMap->hashObj,
                                  previousBucket,
                                  previousOffset,
                                  &bucket, 
                                  &offset );
 
-      if ( valid == VDSW_DELETE_OBJECT )
-         vdseHashDeleteAt( &pFolder->hashObj,
-                           previousBucket,
-                           pItem,
-                           pContext );
+//      if ( valid == VDSW_DELETE_OBJECT )
+//         vdseHashDeleteAt( &pFolder->hashObj,
+//                           previousBucket,
+//                           pItem,
+//                           pContext );
    }
-
-   spaces -= 2;
-
+   
    return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum vdswValidation 
-vdswValidateFolder( struct vdseFolder  * pFolder,
-                    int                  verbose,
-                    int                  spaces,
-                    vdseSessionContext * pContext )
+vdswValidateHashMap( vdseHashMap * pHashMap,
+                     int           verbose,
+                     int           spaces )
 {
-   vdseTxStatus * txFolderStatus;
+   vdseTxStatus * txHashMapStatus;
    int rc;
    
    if ( verbose )
@@ -114,9 +111,9 @@ vdswValidateFolder( struct vdseFolder  * pFolder,
       fprintf( stderr, "\n" );
    }
    
-   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( txFolderStatus->txOffset != NULL_OFFSET )
+   if ( txHashMapStatus->txOffset != NULL_OFFSET )
    {
       /*
        * So we have an interrupted transaction. What kind? 
@@ -127,21 +124,21 @@ vdswValidateFolder( struct vdseFolder  * pFolder,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txFolderStatus->statusFlag == 0 ||
-         txFolderStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
+      if ( txHashMapStatus->statusFlag == 0 ||
+         txHashMapStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
       {
          fprintf( stderr, "Object is removed\n" );
          return VDSW_DELETE_OBJECT;
       }
-      txFolderStatus->txOffset = NULL_OFFSET;
-      txFolderStatus->statusFlag = 0;
+      txHashMapStatus->txOffset = NULL_OFFSET;
+      txHashMapStatus->statusFlag = 0;
    }
    
-   txFolderStatus->usageCounter = 0;
-   txFolderStatus->parentCounter = 0;
-   pFolder->nodeObject.txCounter = 0;
+   txHashMapStatus->usageCounter = 0;
+   txHashMapStatus->parentCounter = 0;
+   pHashMap->nodeObject.txCounter = 0;
 
-   rc = vdswCheckFolderContent( pFolder, verbose, spaces, pContext );
+   rc = vdswCheckHashMapContent( pHashMap, verbose, spaces );
 
    return VDSW_OK;
 }

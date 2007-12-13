@@ -33,6 +33,16 @@ enum vdswValidation
 };
 typedef enum vdswValidation vdswValidation;
 
+static inline
+void vdswEcho( int spaces, char * message )
+{
+   int i;
+   
+   for (i = 0; i < spaces; ++i )
+      fprintf( stderr, " " );
+   fprintf( stderr, "%s\n", message );
+}
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS
