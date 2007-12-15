@@ -68,8 +68,8 @@ VDS_HANDLE g_session1, g_session2;
  *     (should fail - if S1 is implicit, rollback should fail)
  *  -- for 26 to 33, initialize by insert in O1(S1), commit S1
  * 26) remove in O1 (S1), attempt to get data from O1 (S1) (should fail)
- * 27) remove in O1 (S1), attempt to get data from O2 (S1) (  "      "    )
- * 28) remove in O1 (S1), attempt to get data from O2 (S2) (should fail)
+ * 27) remove in O1 (S1), attempt to get data from O2 (S1) (  "      " )
+ * 28) remove in O1 (S1), attempt to get data from O2 (S2) (should succeed)
  * 29) remove in O1 (S1), commit S1, attempt to get data from O2 (S2)
  *     (should fail)
  * 30) remove in O1 (S1), rollback S1, attempt to get data from O1 (S1)
@@ -685,10 +685,10 @@ int Test23()
       goto end;
    
    errcode = vdsHashMapGet( h2, key1, strlen(key1), str, 25, &returnLength );
-   if ( errcode != VDS_NO_SUCH_ITEM )
+   if ( errcode != VDS_ITEM_IS_IN_USE )
    {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_NO_SUCH_ITEM, 
+              VDS_ITEM_IS_IN_USE, 
               errcode );
       errcode = -1;
       goto end;
@@ -840,10 +840,10 @@ int Test26()
 
    // A bit trivial...
    errcode = vdsHashMapGet( h1, key1, strlen(key1), str, 25, &returnLength );
-   if ( errcode != VDS_NO_SUCH_ITEM )
+   if ( errcode != VDS_ITEM_IS_DELETED )
    {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_NO_SUCH_ITEM, 
+              VDS_ITEM_IS_DELETED, 
               errcode );
       errcode = -1;
       goto end;
@@ -893,10 +893,10 @@ int Test27()
       goto end;
    
    errcode = vdsHashMapGet( h2, key1, strlen(key1), str, 25, &returnLength );
-   if ( errcode != VDS_NO_SUCH_ITEM )
+   if ( errcode != VDS_ITEM_IS_DELETED )
    {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_NO_SUCH_ITEM, 
+              VDS_ITEM_IS_DELETED, 
               errcode );
       errcode = -1;
       goto end;
@@ -947,10 +947,10 @@ int Test28()
       goto end;
    
    errcode = vdsHashMapGet( h2, key1, strlen(key1), str, 25, &returnLength );
-   if ( errcode != VDS_NO_SUCH_ITEM )
+   if ( errcode != VDS_OK )
    {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_NO_SUCH_ITEM, 
+              VDS_OK, 
               errcode );
       errcode = -1;
       goto end;

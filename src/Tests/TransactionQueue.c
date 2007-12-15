@@ -59,13 +59,13 @@ VDS_HANDLE g_session1, g_session2;
  * 13) create folder in S1, rollback S1, create object in folder in S2 
  *     (should fail)
  *
- * 21) insert in O1 (S1), attempt to get data from O1 (S1) (should succeed)
- * 22) insert in O1 (S1), attempt to get data from O2 (S1) (  "      "    )
+ * 21) insert in O1 (S1), attempt to get data from O1 (S1) (should fail)
+ * 22) insert in O1 (S1), attempt to get data from O2 (S1) (  "      " )
  * 23) insert in O1 (S1), attempt to get data from O2 (S2) (should fail)
  * 24) insert in O1 (S1), commit S1, attempt to get data from O2 (S2)
  *     (should succeed)
  * 25) insert in O1 (S1), rollback S1, attempt to get data from O1 (S1)
- *     (should fail - if S1 is implicit, rollback should fail)
+ *     (should fail)
  *  -- for 26 to 33, initialize by insert in O1(S1), commit S1
  * 26) remove in O1 (S1), attempt to get data from O1 (S1) (should fail)
  * 27) remove in O1 (S1), attempt to get data from O2 (S1) (  "      "    )
@@ -591,13 +591,14 @@ int Test21()
       goto end;
    
    errcode = vdsQueuePop( q1, str, 25, &returnLength );
-   if ( errcode != VDS_OK )
+   if ( errcode != VDS_ITEM_IS_IN_USE )
    {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OK,
+              VDS_ITEM_IS_IN_USE,
               errcode );
       goto end;
    }
+   errcode = 0;
 
 end:
 
@@ -634,13 +635,14 @@ int Test22()
       goto end;
    
    errcode = vdsQueuePop( q2, str, 25, &returnLength );
-   if ( errcode != VDS_OK )
+   if ( errcode != VDS_ITEM_IS_IN_USE )
    {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OK, 
+              VDS_ITEM_IS_IN_USE, 
               errcode );
       goto end;
    }
+   errcode = 0;
 
 end:
 
@@ -682,10 +684,10 @@ int Test23()
       goto end;
    
    errcode = vdsQueuePop( q2, str, 25, &returnLength );
-   if ( errcode != VDS_IS_EMPTY )
+   if ( errcode != VDS_ITEM_IS_IN_USE )
    {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_IS_EMPTY, 
+              VDS_ITEM_IS_IN_USE, 
               errcode );
       errcode = -1;
       goto end;
@@ -834,10 +836,10 @@ int Test26()
 
    // A bit trivial...
    errcode = vdsQueuePop( q1,  str, 25, &returnLength );
-   if ( errcode != VDS_IS_EMPTY )
+   if ( errcode != VDS_ITEM_IS_IN_USE )
    {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_IS_EMPTY, 
+              VDS_ITEM_IS_IN_USE, 
               errcode );
       errcode = -1;
       goto end;
@@ -886,10 +888,10 @@ int Test27()
       goto end;
    
    errcode = vdsQueuePop( q2, str, 25, &returnLength );
-   if ( errcode != VDS_IS_EMPTY )
+   if ( errcode != VDS_ITEM_IS_IN_USE )
    {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_IS_EMPTY, 
+              VDS_ITEM_IS_IN_USE, 
               errcode );
       errcode = -1;
       goto end;
@@ -939,10 +941,10 @@ int Test28()
       goto end;
    
    errcode = vdsQueuePop( q2, str, 25, &returnLength );
-   if ( errcode != VDS_IS_EMPTY )
+   if ( errcode != VDS_ITEM_IS_IN_USE )
    {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_IS_EMPTY, 
+              VDS_ITEM_IS_IN_USE, 
               errcode );
       errcode = -1;
       goto end;

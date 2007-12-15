@@ -181,9 +181,13 @@ vdseErrErrMsgStruct vdseErrErrMsg37 =
 vdseErrErrMsgStruct vdseErrErrMsg38 =
    { 66, 148, "The data item is scheduled to be deleted soon or was just created and is not committed. Operations on this data item are not permitted at this time." };
 
-/* VDS_I18N_CONVERSION_ERROR */
+/* VDS_ITEM_IS_DELETED */
 vdseErrErrMsgStruct vdseErrErrMsg39 =
-   { 67, 116, "i18n string conversion error. In other words, the name of the object cannot be converted to/frm your current locale." };
+   { 67, 112, "The data item is scheduled to be deleted soon. Operations on this data container are not permitted at this time." };
+
+/* VDS_I18N_CONVERSION_ERROR */
+vdseErrErrMsgStruct vdseErrErrMsg40 =
+   { 68, 116, "i18n string conversion error. In other words, the name of the object cannot be converted to/frm your current locale." };
 
 vdseErrErrMsgStruct* vdseErrErrMsg[VDSEERR_MAX_ENTRIES] = 
 {
@@ -226,7 +230,8 @@ vdseErrErrMsgStruct* vdseErrErrMsg[VDSEERR_MAX_ENTRIES] =
    &vdseErrErrMsg36,
    &vdseErrErrMsg37,
    &vdseErrErrMsg38,
-   &vdseErrErrMsg39
+   &vdseErrErrMsg39,
+   &vdseErrErrMsg40
 
 };
 

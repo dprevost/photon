@@ -533,7 +533,7 @@ int vdseQueueRemove( vdseQueue          * pQueue,
             return 0;
          }
          /* We test the type of flag to return the proper error code (if needed) */
-         if ( txItemStatus->statusFlag != VDSE_REMOVE_IS_COMMITTED )
+         if ( ! vdseTxStatusIsRemoveCommitted(txItemStatus) )
             queueIsEmpty = false;
          
          if ( firstOrLast == VDSE_QUEUE_FIRST )

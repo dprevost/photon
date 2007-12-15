@@ -323,7 +323,7 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
          if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
             vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
          {
-            errcode = VDS_OBJECT_IS_DELETED;
+            errcode = VDS_ITEM_IS_DELETED;
             goto the_exit;
          }
          if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
