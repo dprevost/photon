@@ -152,8 +152,7 @@ TESTS_ENVIRONMENT =                              \
                     verbose=1                    \
                     PYTHON=$(PYTHON)
 
-TESTS = Replace.sh
-#TESTS =                         \
+TESTS =                         \
         CloseNullHandle.sh      \
         ClosePass.sh            \
         CloseWrongHandle.sh     \

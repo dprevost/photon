@@ -698,6 +698,7 @@ vdseHashInsert( vdseHash            * pHash,
    pItem->keyLength = keyLength;
    pItem->dataLength = dataLength;
    pItem->dataOffset = SET_OFFSET(pItem) + itemLength - dataLength;
+   pItem->nextSameKey = NULL_OFFSET;
    
    memcpy( pItem->key,     pKey, keyLength );
    memcpy( GET_PTR_FAST(pItem->dataOffset, unsigned char), pData, dataLength );
@@ -771,7 +772,8 @@ vdseHashInsertAt( vdseHash            * pHash,
    pItem->keyLength = keyLength;
    pItem->dataLength = dataLength;
    pItem->dataOffset = SET_OFFSET(pItem) + itemLength - dataLength;
-   
+   pItem->nextSameKey = NULL_OFFSET;
+    
    memcpy( pItem->key,     pKey, keyLength );
    memcpy( GET_PTR_FAST(pItem->dataOffset, unsigned char), pData, dataLength );
 
@@ -874,88 +876,6 @@ vdseHashResize( vdseHash*           pHash,
 
    return LIST_OK;   
 }
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-#if 0
-
-not sure this function is useful in a transaction environment
-you can't really rollback here
-
-enum ListErrors 
-vdseHashUpdate( vdseHash*            pHash,
-                const unsigned char* pKey,
-                size_t               keyLength,
-                void*                pData,
-                size_t               dataLength,
-                vdseSessionContext*  pContext )
-{
-   size_t bucket = 0;
-   bool keyFound = false;
-   ptrdiff_t* pArray;
-   
-   vdseHashItem* pItem, *previousItem = NULL;
-   
-   VDS_PRE_CONDITION( pHash != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
-   
-   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-   VDS_INV_CONDITION( pArray != NULL );
-
-   keyFound = findKey( pHash, pArray, pKey, keyLength, 
-                       &pItem, &previousItem, &bucket );
-   if ( keyFound )   
-   {
-      RowDescriptor* pOldRow = 
-         GET_PTR( pArray->Get(bucket), 
-                  RowDescriptor, 
-                  (vdseMemObject*)pContext->pCurrentMemObject );
-
-      /* Sadly, if ( dataLength == pOldRow->dataLength )
-       * we cannot just copy the new data into the row - this
-       * is not "crash-recovery safe"!!! */
-
-      /* mem alloc first - the only thing that might fail */
-      RowDescriptor* pRow = (RowDescriptor*) 
-         vdseMalloc( (vdseMemObject*)pContext->pCurrentMemObject, 
-                     sizeof(RowDescriptor) + keyLength + dataLength,
-                     pContext );
-      if ( pRow == NULL )
-         return LIST_NO_MEMORY;
-
-      /* initialize the new row */
-
-      new (pRow) RowDescriptor;
-
-      pRow->dataOffset = SET_OFFSET( (char*)pRow + sizeof(RowDescriptor),
-                                     (vdseMemObject*)pContext->pCurrentMemObject );
-      pRow->keyOffset  = SET_OFFSET( (char*)pRow + sizeof(RowDescriptor) + 
-                                     dataLength,
-                                     (vdseMemObject*)pContext->pCurrentMemObject );
-   
-      memcpy( (char*)pRow + sizeof(RowDescriptor) + dataLength,  pKey,  
-              keyLength );
-      memcpy( (char*)pRow + sizeof(RowDescriptor), pData, dataLength );
-   
-      pRow->keyLength = keyLength;
-      pRow->dataLength = dataLength;
-      
-      /* Eliminate the old row */
-      pHash->totalDataSizeInBytes -= pOldRow->dataLength;
-      pOldRow->~RowDescriptor();
-      vdseFree( (vdseMemObject*)pContext->pCurrentMemObject, pOldRow, pContext );
-
-      pHash->totalDataSizeInBytes += dataLength;
-
-      pArray->Set( bucket, SET_OFFSET( pRow, (vdseMemObject*)pContext->pCurrentMemObject ) );
-
-      return LIST_OK;
-
-   }
-   return LIST_KEY_NOT_FOUND;
-}
-#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -28,6 +28,7 @@ int main()
    int errcode;
    vdseTxStatus status;
    char * data = "My Data";
+   vdseQueueItem * pQueueItem;
    
    pQueue = initQueueTest( expectedToPass, &context );
 
@@ -54,6 +55,12 @@ int main()
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   /* Must commit the insert before we attempt to remove */
+   errcode = vdseQueueGet( pQueue, VDS_FIRST, &pQueueItem, 100, &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   vdseQueueCommitAdd( pQueue, SET_OFFSET(pQueueItem) );
 
    errcode = vdseQueueRemove( pQueue,
                               NULL,

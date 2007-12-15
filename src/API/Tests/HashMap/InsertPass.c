@@ -26,11 +26,14 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE objHandle, sessionHandle;
+   VDS_HANDLE objHandle,  sessionHandle;
+   VDS_HANDLE objHandle2, sessionHandle2;
    int errcode;
    const char * key  = "My Key";
    const char * data = "My Data";
-
+   char buffer[20], keyBuff[20];
+   size_t length, keyLength;
+   
    if ( argc > 1 )
       errcode = vdsInit( argv[1], 0 );
    else
@@ -42,6 +45,12 @@ int main( int argc, char * argv[] )
    }
    
    errcode = vdsInitSession( &sessionHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsInitSession( &sessionHandle2 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -68,10 +77,26 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = vdsCommit( sessionHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
    errcode = vdsHashMapOpen( sessionHandle,
                              "/ahip/test",
                              strlen("/ahip/test"),
                              &objHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsHashMapOpen( sessionHandle2,
+                             "/ahip/test",
+                             strlen("/ahip/test"),
+                             &objHandle2 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -84,6 +109,51 @@ int main( int argc, char * argv[] )
                                data,
                                7 );
    if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /*
+    * Additional stuff to check:
+    *  - cannot get access to the item from second session.
+    *  - can get access to the item from first session.
+    *  - cannot modify it from first session.
+    */
+   errcode = vdsHashMapGet( objHandle2, 
+                            key, 
+                            6,
+                            buffer, 20, &length );
+   if ( errcode != VDS_ITEM_IS_IN_USE )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsHashMapGet( objHandle, 
+                            key, 
+                            6,
+                            buffer, 20, &length );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsHashMapDelete( objHandle, key, 6 );
+   if ( errcode != VDS_ITEM_IS_IN_USE )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsHashMapGetFirst( objHandle, keyBuff, 20, buffer, 20, 
+                                 &keyLength, &length );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsHashMapGetFirst( objHandle2, keyBuff, 20, buffer, 20, 
+                                 &keyLength, &length );
+   if ( errcode != VDS_IS_EMPTY )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

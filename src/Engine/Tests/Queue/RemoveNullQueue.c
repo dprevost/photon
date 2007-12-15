@@ -56,6 +56,12 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
+   /* Must commit the insert before we attempt to remove */
+   errcode = vdseQueueGet( pQueue, VDS_FIRST, &pQueueItem, 100, &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   vdseQueueCommitAdd( pQueue, SET_OFFSET(pQueueItem) );
+
    errcode = vdseQueueRemove( NULL,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,

@@ -60,6 +60,8 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
+   vdseHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
+
    errcode = vdseHashMapRelease( pHashMap,
                                  pItem,
                                  &context );

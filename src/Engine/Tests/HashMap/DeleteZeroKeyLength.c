@@ -29,6 +29,7 @@ int main()
    vdseTxStatus status;
    char * key  = "my key";
    char * data = "my data";
+   vdseHashItem * pItem;
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
@@ -46,6 +47,28 @@ int main()
                                 (const void *) data,
                                 7,
                                 &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   /*
+    * We use get to get to the hash item in order to commit it 
+    * (we need to commit the insertion before deleting it)
+    */
+   errcode = vdseHashMapGet( pHashMap,
+                             (const void *) key,
+                             6,
+                             &pItem,
+                             20,
+                             &context );
+
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   vdseHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
+
+   errcode = vdseHashMapRelease( pHashMap,
+                                 pItem,
+                                 &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 

@@ -56,6 +56,12 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
+   /* Must commit the insert before we attempt to remove */
+   errcode = vdseQueueGet( pQueue, VDS_FIRST, &pQueueItem, 100, &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   vdseQueueCommitAdd( pQueue, SET_OFFSET(pQueueItem) );
+
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
@@ -63,7 +69,7 @@ int main()
                               &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pQueue->nodeObject.txCounter != 3 )
+   if ( pQueue->nodeObject.txCounter != 2 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    return 0;

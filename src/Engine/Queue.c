@@ -110,10 +110,12 @@ int vdseQueueGet( vdseQueue          * pQueue,
 {
    vdseQueueItem* pQueueItem = NULL;
    vdseQueueItem* pOldItem = NULL;
-   vdsErrors errcode = VDS_IS_EMPTY;
+   vdsErrors errcode;
    enum ListErrors listErrCode;
    vdseLinkNode * pNode = NULL;
    vdseTxStatus * txItemStatus, * txQueueStatus;
+   bool isOK;
+   bool queueIsEmpty = true;
    
    VDS_PRE_CONDITION( pQueue     != NULL );
    VDS_PRE_CONDITION( ppIterator != NULL );
@@ -143,8 +145,40 @@ int vdseQueueGet( vdseQueue          * pQueue,
          pQueueItem = (vdseQueueItem*)
             ((char*)pNode - offsetof( vdseQueueItem, node ));
          txItemStatus = &pQueueItem->txStatus;
-         if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
-             && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+         
+         /* 
+          * If the transaction id of the item (to retrieve) is equal to the 
+          * current transaction id AND the object is marked as deleted, we 
+          * go to the next item.
+          *
+          * If the transaction id of the item (to retrieve) is NOT equal to the 
+          * current transaction id AND the object is added... next!
+          *
+          * If the item is flagged as deleted and committed, it does not exists
+          * from the API point of view.
+          */
+         isOK = true;
+         if ( txItemStatus->txOffset != NULL_OFFSET )
+         {
+            if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
+               vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+            {
+               isOK = false;
+               queueIsEmpty = false;
+            }
+            if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
+               txItemStatus->statusFlag == 0 )
+            {
+               isOK = false;
+               queueIsEmpty = false;
+            }
+            if ( vdseTxStatusIsRemoveCommitted(txItemStatus) )
+            {
+               isOK = false;
+            }
+         }
+ 
+         if ( isOK )
          {
             /*
              * This test cannot be done in the API (before calling the current
@@ -181,6 +215,10 @@ int vdseQueueGet( vdseQueue          * pQueue,
       return -1;
    }
    
+   errcode = VDS_ITEM_IS_IN_USE;
+   if ( queueIsEmpty )
+      errcode = VDS_IS_EMPTY;   
+
    /* 
     * If we come here, there are no additional data items to retrieve. As 
     * long as we clearly say that the internal iterator is reset (in case a 
@@ -422,6 +460,7 @@ int vdseQueueRemove( vdseQueue          * pQueue,
    vdseQueueItem * pItem = NULL;
    vdseTxStatus  * txParentStatus, * txItemStatus;
    vdseLinkNode  * pNode = NULL;
+   bool queueIsEmpty = true;
 
    VDS_PRE_CONDITION( pQueue      != NULL );
    VDS_PRE_CONDITION( ppQueueItem != NULL );
@@ -452,8 +491,12 @@ int vdseQueueRemove( vdseQueue          * pQueue,
          pItem = (vdseQueueItem *) ((char*)pNode - offsetof( vdseQueueItem, node ));
          txItemStatus = &pItem->txStatus;
       
-         if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
-                && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+         /* 
+          * If the transaction id of the item is non-zero, a big no-no - 
+          * we do not support two transactions on the same data
+          * (and if remove is committed - the data is "non-existent").
+          */
+         if ( txItemStatus->txOffset == NULL_OFFSET )
          {
             /*
              * This test cannot be done in the API (before calling the current
@@ -489,6 +532,10 @@ int vdseQueueRemove( vdseQueue          * pQueue,
 
             return 0;
          }
+         /* We test the type of flag to return the proper error code (if needed) */
+         if ( txItemStatus->statusFlag != VDSE_REMOVE_IS_COMMITTED )
+            queueIsEmpty = false;
+         
          if ( firstOrLast == VDSE_QUEUE_FIRST )
             listErr = vdseLinkedListPeakNext( &pQueue->listOfElements, 
                                               pNode, 
@@ -506,7 +553,9 @@ int vdseQueueRemove( vdseQueue          * pQueue,
    }
 
    /* Let this falls through the error handler */
-   errcode = VDS_IS_EMPTY;   
+   errcode = VDS_ITEM_IS_IN_USE;
+   if ( queueIsEmpty )
+      errcode = VDS_IS_EMPTY;   
    
 the_exit:
 

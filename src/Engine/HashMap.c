@@ -170,25 +170,27 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
          errcode = VDS_NO_SUCH_ITEM;
          goto the_exit;
       }
-
-      /* txStatus is now for the item to delete, not the hash map */
-      txItemStatus = &pHashItem->txStatus;
-   
-      /* 
-       * If the item (to delete) transaction id is not either equal to
-       * zero or to the current transaction id, then it belongs to 
-       * another transaction - uncommitted. For the current transaction it
-       * is as if it does not exist.
-       * Similarly, if the item is already marked as destroyed... can't 
-       * remove ourselves twice...
-       */
-      if ( ! vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
-            || vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+      while ( pHashItem->nextSameKey != NULL_OFFSET )
       {
-         errcode = VDS_NO_SUCH_ITEM;
+         GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
+      }
+      
+      txItemStatus = &pHashItem->txStatus;
+
+      /* 
+       * If the transaction id of the item is non-zero, a big no-no - 
+       * we do not support two transactions on the same data
+       * (and if remove is committed - the data is "non-existent").
+       */
+      if ( txItemStatus->txOffset != NULL_OFFSET )
+      {
+         if ( vdseTxStatusIsRemoveCommitted(txItemStatus) )
+            errcode = VDS_NO_SUCH_ITEM;
+         else
+            errcode = VDS_ITEM_IS_IN_USE;
          goto the_exit;
       }
-   
+
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_REMOVE_DATA,
                          SET_OFFSET(pHashMap),
@@ -285,6 +287,14 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
          errcode = VDS_NO_SUCH_ITEM;
          goto the_exit;
       }
+      while ( pHashItem->nextSameKey != NULL_OFFSET )
+      {
+//         txItemStatus = &pHashItem->txStatus;
+//         if ( 
+         GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
+      }
+
+
       /*
        * This test cannot be done in the API (before calling the current
        * function) since we do not know the item size. It could be done
@@ -297,24 +307,38 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
       }
       
       txItemStatus = &pHashItem->txStatus;
-  
-      /* 
-       * If the transaction id of the item (to retrieve) is not either equal
-       * to zero or to the current transaction id, then it belongs to 
-       * another transaction - uncommitted. For the current transaction it
-       * is as if it does not exist.
-       * Similarly, if the object is marked as destroyed... we can't access it. 
-       * (to have the id as ok and be marked as destroyed is a rare case - 
-       * it would require that the current transaction deleted the item and 
-       * than tries to access it).
-       */
-      if ( ! vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) )
-         || vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
-      {
-         errcode = VDS_NO_SUCH_ITEM;
-         goto the_exit;
-      }
 
+      /* 
+       * If the transaction id of the item (to retrieve) is equal to the 
+       * current transaction id AND the object is marked as deleted... error.
+       *
+       * If the transaction id of the item (to retrieve) is NOT equal to the 
+       * current transaction id AND the object is added... error.
+       *
+       * If the item is flagged as deleted and committed, it does not exists
+       * from the API point of view.
+       */
+      if ( txItemStatus->txOffset != NULL_OFFSET )
+      {
+         if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
+            vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+         {
+            errcode = VDS_OBJECT_IS_DELETED;
+            goto the_exit;
+         }
+         if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
+            txItemStatus->statusFlag == 0 )
+         {
+            errcode = VDS_ITEM_IS_IN_USE;
+            goto the_exit;
+         }
+         if ( vdseTxStatusIsRemoveCommitted(txItemStatus) )
+         {
+            errcode = VDS_NO_SUCH_ITEM;
+            goto the_exit;
+         }
+      }
+      
       /*
        * We must increment the usage counter since we are passing back
        * a pointer to the data, not a copy. 
@@ -360,7 +384,8 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
    vdseTxStatus * txHashMapStatus;
    size_t     bucket;
    ptrdiff_t  firstItemOffset;
-
+   bool isOK;
+   
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pItem    != NULL )
    VDS_PRE_CONDITION( pContext != NULL );
@@ -377,8 +402,38 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
       {
          GET_PTR( pHashItem, firstItemOffset, vdseHashItem );
          txItemStatus = &pHashItem->txStatus;
-         if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
-             && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+
+         /* 
+          * If the transaction id of the item (to retrieve) is equal to the 
+          * current transaction id AND the object is marked as deleted, we 
+          * go to the next item.
+          *
+          * If the transaction id of the item (to retrieve) is NOT equal to the 
+          * current transaction id AND the object is added... next!
+          *
+          * If the item is flagged as deleted and committed, it does not exists
+          * from the API point of view.
+          */
+         isOK = true;
+         if ( txItemStatus->txOffset != NULL_OFFSET )
+         {
+            if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
+               vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+            {
+               isOK = false;
+            }
+            if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
+               txItemStatus->statusFlag == 0 )
+            {
+               isOK = false;
+            }
+            if ( vdseTxStatusIsRemoveCommitted(txItemStatus) )
+            {
+               isOK = false;
+            }
+         }
+ 
+         if ( isOK )
          {
             /*
              * These tests cannot be done in the API (before calling the 
@@ -445,6 +500,7 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
    vdseTxStatus * txHashMapStatus;
    size_t     bucket;
    ptrdiff_t  itemOffset;
+   bool isOK;
 
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pItem    != NULL );
@@ -470,8 +526,38 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
       {
          GET_PTR( pHashItem, itemOffset, vdseHashItem );
          txItemStatus = &pHashItem->txStatus;
-         if ( vdseTxStatusIsValid( txItemStatus, SET_OFFSET(pContext->pTransaction) ) 
-             && ! vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+
+         /* 
+          * If the transaction id of the item (to retrieve) is equal to the 
+          * current transaction id AND the object is marked as deleted, we 
+          * go to the next item.
+          *
+          * If the transaction id of the item (to retrieve) is NOT equal to the 
+          * current transaction id AND the object is added... next!
+          *
+          * If the item is flagged as deleted and committed, it does not exists
+          * from the API point of view.
+          */
+         isOK = true;
+         if ( txItemStatus->txOffset != NULL_OFFSET )
+         {
+            if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
+               vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+            {
+               isOK = false;
+            }
+            if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
+               txItemStatus->statusFlag == 0 )
+            {
+               isOK = false;
+            }
+            if ( vdseTxStatusIsRemoveCommitted(txItemStatus) )
+            {
+               isOK = false;
+            }
+         }
+ 
+         if ( isOK )
          {
             /*
              * These tests cannot be done in the API (before calling the 
