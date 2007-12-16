@@ -27,6 +27,7 @@ const bool expectedToPass = true;
 int main( int argc, char * argv[] )
 {
    VDS_HANDLE sessionHandle, objHandle;
+   VDS_HANDLE objHandle2, sessionHandle2;
    int errcode;
    const char * data1 = "My Data1";
    char buffer[200];
@@ -43,6 +44,12 @@ int main( int argc, char * argv[] )
    }
    
    errcode = vdsInitSession( &sessionHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsInitSession( &sessionHandle2 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -69,10 +76,26 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = vdsCommit( sessionHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    errcode = vdsQueueOpen( sessionHandle,
                            "/aqpopp/test",
                            strlen("/aqpopp/test"),
                            &objHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsQueueOpen( sessionHandle2,
+                           "/aqpopp/test",
+                           strlen("/aqpopp/test"),
+                           &objHandle2 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -145,6 +168,40 @@ int main( int argc, char * argv[] )
    if ( memcmp( buffer, data1, strlen(data1) ) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
+   /*
+    * Additional stuff to check:
+    *  - cannot get access to the item from first session.
+    *  - can get access to the item from second session.
+    *  - cannot modify it from second session.
+    */
+   errcode = vdsQueueGetFirst( objHandle,
+                               buffer,
+                               200,
+                               &length );
+   if ( errcode != VDS_ITEM_IS_IN_USE )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsQueueGetFirst( objHandle2,
+                               buffer,
+                               200,
+                               &length );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsQueuePop( objHandle2,
+                          buffer,
+                          200,
+                          &length );
+   if ( errcode != VDS_ITEM_IS_IN_USE )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
    return 0;
 }
 
