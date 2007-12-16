@@ -63,6 +63,7 @@ int main()
    listErr = vdseHashDelete( pHash,
                              (unsigned char*)key2,
                              0,
+                             pNewItem,
                              &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

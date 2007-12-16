@@ -206,6 +206,55 @@ vdseHashResizeEnum isItTimeToResize( vdseHash* pHash )
  * 
  * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
+ * 
+ * This function is to be used when you have a pointer to the item but you
+ * don't know in which bucket.
+ *
+ * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static bool findBucket( vdseHash*             pHash,
+                        ptrdiff_t*            pArray,
+                        const unsigned char * pKey,
+                        size_t                keyLength,
+                        vdseHashItem        * pHashItem,
+                        vdseHashItem       ** ppPreviousItem,
+                        vdseHashItem       ** ppPreviousSameKey,    
+                        size_t              * pBucket )
+{
+   ptrdiff_t currentOffset, nextOffset, itemOffset;
+   vdseHashItem* pItem;
+
+   *pBucket = hash_pjw( pKey, keyLength ) % g_arrayLengths[pHash->lengthIndex];
+   currentOffset = pArray[*pBucket];
+   
+   *ppPreviousItem = NULL;
+   *ppPreviousSameKey = NULL;
+   itemOffset = SET_OFFSET( pHashItem );
+   
+   while ( currentOffset != NULL_OFFSET )
+   {
+      GET_PTR( pItem, currentOffset, vdseHashItem );
+      nextOffset = pItem->nextItem;
+
+      if ( pHashItem == pItem )
+      {
+         return true;
+      }
+      if ( pItem->nextSameKey == itemOffset )
+         *ppPreviousSameKey = pItem;
+
+      /* Move to the next item in our bucket */      
+      currentOffset = nextOffset;
+      *ppPreviousItem = pItem;
+   }
+   
+   /* Nothing was found, return false */
+   return false;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static bool findKey( vdseHash*            pHash,
                      ptrdiff_t*           pArray,
                      const unsigned char* pKey,
@@ -278,13 +327,14 @@ enum ListErrors
 vdseHashDelete( vdseHash*            pHash,
                 const unsigned char* pKey, 
                 size_t               keyLength,
-                vdseSessionContext*  pContext  )
+                vdseHashItem       * pHashItem,
+                vdseSessionContext * pContext  )
 {
    size_t bucket = 0;
    ptrdiff_t* pArray;
    bool keyFound = false;
-   vdseHashItem* pItem, *previousItem = NULL;
-   ptrdiff_t nextOffset;
+   vdseHashItem* pItem, *previousItem = NULL, *previousSameKey;
+   ptrdiff_t nextOffset, nextSameKey;
    vdseMemObject * pMemObject;
    
    VDS_PRE_CONDITION( pHash != NULL );
@@ -298,25 +348,72 @@ vdseHashDelete( vdseHash*            pHash,
 
    GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
 
-   keyFound = findKey( pHash, pArray, pKey, keyLength, 
-                       &pItem, &previousItem, &bucket );
+   if ( pHashItem == NULL )
+   {
+      /*
+       * Special case - only use from vdseFolderRemoveObject which is 
+       * called only from Transaction.c
+       *
+       * The two functions vdseTxCommit and vdseTxRollback should be able to
+       * figure out the hash item of the object to delete!!!
+       *
+       * To be worked on later.
+       */
+      keyFound = findKey( pHash, pArray, pKey, keyLength, 
+                          &pItem, &previousItem, &bucket );
+      if ( keyFound )   
+      {
+         nextOffset = pItem->nextItem;
+      
+         pHash->totalDataSizeInBytes -= pItem->dataLength;
+         vdseFree( pMemObject, 
+                   (unsigned char*)pItem, 
+                   calculateItemLength(pItem->keyLength,pItem->dataLength),
+                   pContext );
+
+         if ( previousItem == NULL )
+            pArray[bucket] = nextOffset;
+         else
+            previousItem->nextItem = nextOffset;
+            
+         pHash->numberOfItems--;
+
+         pHash->enumResize = isItTimeToResize( pHash );
+
+         return LIST_OK;
+      }
+
+      return LIST_KEY_NOT_FOUND;
+   }
+   
+   keyFound = findBucket( pHash,
+                          pArray,
+                          pKey,
+                          keyLength,
+                          pHashItem,
+                          &previousItem,
+                          &previousSameKey,
+                          &bucket );
    if ( keyFound )   
    {
-      nextOffset = pItem->nextItem;
+      nextOffset = pHashItem->nextItem;
+      nextSameKey = pHashItem->nextSameKey;
       
-      pHash->totalDataSizeInBytes -= pItem->dataLength;
+      pHash->totalDataSizeInBytes -= pHashItem->dataLength;
       vdseFree( pMemObject, 
-                (unsigned char*)pItem, 
-                calculateItemLength(pItem->keyLength,pItem->dataLength),
+                (unsigned char*)pHashItem, 
+                calculateItemLength(pHashItem->keyLength,pHashItem->dataLength),
                 pContext );
                 
       if ( previousItem == NULL )
          pArray[bucket] = nextOffset;
       else
          previousItem->nextItem = nextOffset;
-            
-      pHash->numberOfItems--;
 
+      if ( previousSameKey != NULL )
+         previousSameKey->nextSameKey = nextSameKey;
+      
+      pHash->numberOfItems--;
       pHash->enumResize = isItTimeToResize( pHash );
 
       return LIST_OK;
@@ -324,6 +421,11 @@ vdseHashDelete( vdseHash*            pHash,
    }
 
    return LIST_KEY_NOT_FOUND;
+
+#if 0
+
+#endif
+
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -462,12 +564,13 @@ vdseHashGet( vdseHash*            pHash,
 
    keyFound = findKey( pHash, pArray, pKey, keyLength, 
                        &pItem, &dummy, &bucket );
+
+   if ( pBucket )
+      *pBucket  = bucket;
+
    if ( keyFound )
    {
       *ppItem = pItem;
-      if ( pBucket )
-         *pBucket  = bucket;
-      
       return LIST_OK;
    }
 
@@ -753,7 +856,6 @@ vdseHashInsertAt( vdseHash            * pHash,
                          pArray,
                          bucket,
                          &previousItem );
-   VDS_INV_CONDITION( previousItem != NULL );
 
    GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
    
@@ -780,7 +882,11 @@ vdseHashInsertAt( vdseHash            * pHash,
    pHash->totalDataSizeInBytes += dataLength;
    pHash->numberOfItems++;
    pHash->enumResize = isItTimeToResize( pHash );
-   previousItem->nextItem = SET_OFFSET(pItem);
+
+   if ( previousItem == NULL )
+      pArray[bucket] = SET_OFFSET(pItem);
+   else
+      previousItem->nextItem = SET_OFFSET(pItem);
    
    *ppNewItem = pItem;
 

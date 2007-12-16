@@ -94,7 +94,7 @@ int main()
    else
    {
       errcode = vdscGetLastError( &context.errorHandler );
-      if ( errcode != VDS_OBJECT_IS_DELETED )
+      if ( errcode != VDS_ITEM_IS_DELETED )
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

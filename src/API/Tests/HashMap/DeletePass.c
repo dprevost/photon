@@ -130,7 +130,7 @@ int main( int argc, char * argv[] )
    }
 
    /*
-    * Additional stuff to check:
+    * Additional stuff to check while the Delete() is uncommitted:
     *  - cannot get access to the item from first session.
     *  - can get access to the item from second session.
     *  - cannot modify it from second session.
@@ -174,6 +174,61 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /*
+    * Additional stuff to check after the commit:
+    *  - cannot get access to the item from first session.( no such item)
+    *  - cannot get access to the item from second session.
+    *  - can insert new item with same key.
+    *
+    * Note to make sure that the deleted item is still in the VDS,
+    * we will act on the first session (the second session holds
+    * an internal pointer to the data record).
+    */
+   errcode = vdsCommit( sessionHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   errcode = vdsHashMapGet( objHandle, 
+                            key, 
+                            6,
+                            buffer, 20, &length );
+   if ( errcode != VDS_NO_SUCH_ITEM )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsHashMapInsert( objHandle,
+                               key,
+                               6,
+                               data,
+                               7 );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   /* rollback to be able to test the Get() with session 2 */
+   errcode = vdsRollback( sessionHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   errcode = vdsHashMapGet( objHandle2, 
+                            key, 
+                            6,
+                            buffer, 20, &length );
+   if ( errcode != VDS_NO_SUCH_ITEM )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
    return 0;
 }
 

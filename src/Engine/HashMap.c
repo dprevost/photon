@@ -95,6 +95,7 @@ void vdseHashMapCommitRemove( vdseHashMap        * pHashMap,
       errcode = vdseHashDelete( &pHashMap->hashObj, 
                                 pHashItem->key,
                                 pHashItem->keyLength,
+                                pHashItem,
                                 pContext );
       pHashMap->nodeObject.txCounter--;
 
@@ -289,8 +290,6 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
       }
       while ( pHashItem->nextSameKey != NULL_OFFSET )
       {
-//         txItemStatus = &pHashItem->txStatus;
-//         if ( 
          GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
       }
 
@@ -307,7 +306,6 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
       }
       
       txItemStatus = &pHashItem->txStatus;
-
       /* 
        * If the transaction id of the item (to retrieve) is equal to the 
        * current transaction id AND the object is marked as deleted... error.
@@ -320,6 +318,11 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
        */
       if ( txItemStatus->txOffset != NULL_OFFSET )
       {
+         if ( vdseTxStatusIsRemoveCommitted(txItemStatus) )
+         {
+            errcode = VDS_NO_SUCH_ITEM;
+            goto the_exit;
+         }
          if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
             vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
          {
@@ -330,11 +333,6 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
             txItemStatus->statusFlag == 0 )
          {
             errcode = VDS_ITEM_IS_IN_USE;
-            goto the_exit;
-         }
-         if ( vdseTxStatusIsRemoveCommitted(txItemStatus) )
-         {
-            errcode = VDS_NO_SUCH_ITEM;
             goto the_exit;
          }
       }
@@ -694,6 +692,7 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
    vdsErrors errcode = VDS_OK;
    vdseTxStatus * txItemStatus, * txHashMapStatus;
    int rc;
+   size_t bucket;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pKey     != NULL )
@@ -714,18 +713,43 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
          goto the_exit;
       }
    
-      listErr = vdseHashInsert( &pHashMap->hashObj, 
-                                (unsigned char *)pKey, 
-                                keyLength, 
-                                pItem, 
-                                itemLength,
-                                &pHashItem,
-                                pContext );
+      listErr = vdseHashGet( &pHashMap->hashObj, 
+                             (unsigned char *)pKey, 
+                             keyLength,
+                             &pHashItem,
+                             pContext,
+                             &bucket );
+      if ( listErr == LIST_OK )
+      {
+         /* Find the last one in the chain of items with same key */
+         while ( pHashItem->nextSameKey != NULL_OFFSET )
+         {
+            GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
+         }
+
+         /* 
+          * Anything othor than a deleted item committed means that the
+          * key exists and that we cannot insert the item
+          */
+         txItemStatus = &pHashItem->txStatus;
+         if ( ! vdseTxStatusIsRemoveCommitted(txItemStatus) )
+         {
+            errcode = VDS_ITEM_ALREADY_PRESENT;
+            goto the_exit;
+         }
+      }
+      
+      listErr = vdseHashInsertAt( &pHashMap->hashObj,
+                                  bucket,
+                                  (unsigned char *)pKey, 
+                                  keyLength, 
+                                  pItem, 
+                                  itemLength,
+                                  &pHashItem,
+                                  pContext );
       if ( listErr != LIST_OK )
       {
-         if ( listErr == LIST_KEY_FOUND )
-            errcode = VDS_ITEM_ALREADY_PRESENT;
-         else if ( listErr == LIST_NO_MEMORY )
+         if ( listErr == LIST_NO_MEMORY )
             errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
          else
             errcode = VDS_INTERNAL_ERROR;
@@ -741,10 +765,10 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
                          pContext );
       if ( rc != 0 )
       {
-         vdseHashDelete( &pHashMap->hashObj, 
-                         (unsigned char*)pKey,
-                         keyLength, 
-                         pContext );
+         vdseHashDeleteAt( &pHashMap->hashObj,
+                           bucket,
+                           pHashItem,
+                           pContext );
          goto the_exit;
       }
       
@@ -838,6 +862,7 @@ void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
       listErr = vdseHashDelete( &pHashMap->hashObj, 
                                 pHashItem->key,
                                 pHashItem->keyLength,
+                                pHashItem,
                                 pContext );
       pHashMap->nodeObject.txCounter--;
 
@@ -1022,6 +1047,7 @@ void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap,
       errcode = vdseHashDelete( &pHashMap->hashObj, 
                                 pHashItem->key,
                                 pHashItem->keyLength, 
+                                pHashItem,
                                 pContext );
       pHashMap->nodeObject.txCounter--;
    

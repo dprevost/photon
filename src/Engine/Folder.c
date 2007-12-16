@@ -897,7 +897,8 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
       {
          vdseHashDelete( &pFolder->hashObj, 
                          (unsigned char*)objectName, 
-                         partialLength * sizeof(vdsChar_T), 
+                         partialLength * sizeof(vdsChar_T),
+                         pHashItem,
                          pContext );
          vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
                          ptr, numBlocks, pContext );
@@ -962,6 +963,7 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
          vdseHashDelete( &pFolder->hashObj, 
                          (unsigned char*)objectName, 
                          partialLength * sizeof(vdsChar_T), 
+                         pHashItem,
                          pContext );
          vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
                          ptr, numBlocks, pContext );
@@ -1116,6 +1118,7 @@ void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
       vdseHashDelete( &pFolder->hashObj, 
                       pHashItem->key, 
                       pHashItem->keyLength, 
+                      pHashItem,
                       pContext );
       pFolder->nodeObject.txCounter--;
    }
@@ -1142,6 +1145,7 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
    listErr = vdseHashDelete( &pFolder->hashObj,
                              (unsigned char*)objectName,
                              nameLength * sizeof(vdsChar_T),
+                             NULL,
                              pContext );
    pFolder->nodeObject.txCounter--;
    
@@ -1236,6 +1240,7 @@ int vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
          vdseHashDelete( &parentFolder->hashObj, 
                          pFolderItem->pHashItem->key, 
                          pFolderItem->pHashItem->keyLength, 
+                         pFolderItem->pHashItem,
                          pContext );
 
          parentFolder->nodeObject.txCounter--;

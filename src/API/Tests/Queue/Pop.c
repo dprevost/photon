@@ -169,7 +169,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    /*
-    * Additional stuff to check:
+    * Additional stuff to check while the Pop is uncommitted:
     *  - cannot get access to the item from first session.
     *  - can get access to the item from second session.
     *  - cannot modify it from second session.
@@ -197,6 +197,53 @@ int main( int argc, char * argv[] )
                           200,
                           &length );
    if ( errcode != VDS_ITEM_IS_IN_USE )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   /*
+    * Additional stuff to check after the commit:
+    *  - cannot get access to the item from first session.
+    *  - cannot get access to the item from second session.
+    *  And that the error is VDS_EMPTY.
+    *
+    * Note to make sure that the deleted item is still in the VDS,
+    * we first call GetFirst to get a pointer to the item from
+    * session 2 (the failed call to Pop just above release that
+    * internal pointer).
+    */
+   errcode = vdsQueueGetFirst( objHandle2,
+                               buffer,
+                               200,
+                               &length );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsCommit( sessionHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsQueueGetFirst( objHandle,
+                               buffer,
+                               200,
+                               &length );
+   if ( errcode != VDS_IS_EMPTY )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   errcode = vdsQueueGetFirst( objHandle2,
+                               buffer,
+                               200,
+                               &length );
+   if ( errcode != VDS_IS_EMPTY )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

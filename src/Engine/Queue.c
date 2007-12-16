@@ -160,24 +160,23 @@ int vdseQueueGet( vdseQueue          * pQueue,
          isOK = true;
          if ( txItemStatus->txOffset != NULL_OFFSET )
          {
-            if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
+            if ( vdseTxStatusIsRemoveCommitted(txItemStatus) )
+            {
+               isOK = false;
+            }
+            else if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
                vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
             {
                isOK = false;
                queueIsEmpty = false;
             }
-            if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
+            else if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
                txItemStatus->statusFlag == 0 )
             {
                isOK = false;
                queueIsEmpty = false;
             }
-            if ( vdseTxStatusIsRemoveCommitted(txItemStatus) )
-            {
-               isOK = false;
-            }
          }
- 
          if ( isOK )
          {
             /*

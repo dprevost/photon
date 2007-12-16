@@ -117,6 +117,7 @@ VDSF_ENGINE_EXPORT
 enum ListErrors vdseHashDelete( vdseHash            * pHash,
                                 const unsigned char * pKey, 
                                 size_t                keyLength,
+                                vdseHashItem        * pHashItem,
                                 vdseSessionContext  * pContext );
 
 /* Used to delete an hash item when you know its exact position */
