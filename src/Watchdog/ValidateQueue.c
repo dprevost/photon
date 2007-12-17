@@ -40,34 +40,34 @@ int vdswCheckQueueContent( struct vdseQueue * pQueue, int verbose, int spaces )
       {
          /*
           * So we have an interrupted transaction. What kind? 
-          *   FLAG                 ACTION          Comment
-          *   0                    remove object   Added object non-committed
-          *   MARKED_AS_DESTROYED  reset txStatus  
-          *   REMOVE_IS_COMMITTED  remove object
+          *   FLAG                      ACTION          
+          *   TXS_ADDED                 remove item
+          *   TXS_DESTROYED             reset txStatus  
+          *   TXS_DESTROYED_COMMITTED   remove item
           *
           * Action is the equivalent of what a rollback would do.
           */
-         if ( txItemStatus->statusFlag == 0 )
+         if ( txItemStatus->enumStatus == VDSE_TXS_ADDED )
          {
             if ( verbose )
                vdswEcho( spaces, "Queue item added but not committed - item removed" );
             pDeleteNode = pNode;
 
          }         
-         else if ( txItemStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
+         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
          {
             if ( verbose )
                vdswEcho( spaces, "Queue item deleted and committed - item removed" );
             pDeleteNode = pNode;
          }
-         else if ( txItemStatus->statusFlag == VDSE_MARKED_AS_DESTROYED )
+         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED )
          {
             if ( verbose )
                vdswEcho( spaces, "Queue item deleted but not committed - item is kept" );
          }
          
          txItemStatus->txOffset = NULL_OFFSET;
-         txItemStatus->statusFlag = 0;
+         txItemStatus->enumStatus = VDSE_TXS_OK;
       }
 
       if ( pDeleteNode == NULL && txItemStatus->usageCounter != 0 )
@@ -116,20 +116,20 @@ vdswValidateQueue( struct vdseQueue * pQueue, int verbose, int spaces )
    {
       /*
        * So we have an interrupted transaction. What kind? 
-       *   FLAG                 ACTION          Comment
-       *   0                    remove object   Added object non-committed
-       *   MARKED_AS_DESTROYED  reset txStatus  
-       *   REMOVE_IS_COMMITTED  remove object
+       *   FLAG                      ACTION          
+       *   TXS_ADDED                 remove object   
+       *   TXS_DESTROYED             reset txStatus  
+       *   TXS_DESTROYED_COMMITTED   remove object
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txQueueStatus->statusFlag == 0 )
+      if ( txQueueStatus->enumStatus == VDSE_TXS_ADDED )
       {
          if ( verbose )
             vdswEcho( spaces, "Object added but not committed - object removed" );
          return VDSW_DELETE_OBJECT;
       }         
-      if ( txQueueStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
+      if ( txQueueStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
       {
          if ( verbose )
             vdswEcho( spaces, "Object deleted and committed - object removed" );
@@ -139,7 +139,7 @@ vdswValidateQueue( struct vdseQueue * pQueue, int verbose, int spaces )
          vdswEcho( spaces, "Object deleted but not committed - object is kept" );
 
       txQueueStatus->txOffset = NULL_OFFSET;
-      txQueueStatus->statusFlag = 0;
+      txQueueStatus->enumStatus = VDSE_TXS_OK;
    }
    
    if ( txQueueStatus->usageCounter != 0 )

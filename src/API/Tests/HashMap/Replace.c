@@ -27,6 +27,7 @@ const bool expectedToPass = true;
 int main( int argc, char * argv[] )
 {
    VDS_HANDLE objHandle, sessionHandle;
+   VDS_HANDLE objHandle2, sessionHandle2;
    int errcode;
    const char * key  = "My Key";
    const char * data1 = "My Data1";
@@ -45,6 +46,12 @@ int main( int argc, char * argv[] )
    }
    
    errcode = vdsInitSession( &sessionHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsInitSession( &sessionHandle2 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -71,10 +78,26 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = vdsCommit( sessionHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    errcode = vdsHashMapOpen( sessionHandle,
                              "/ahrepl/test",
                              strlen("/ahrepl/test"),
                              &objHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsHashMapOpen( sessionHandle2,
+                             "/ahrepl/test",
+                             strlen("/ahrepl/test"),
+                             &objHandle2 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -86,6 +109,25 @@ int main( int argc, char * argv[] )
                                6,
                                data1,
                                strlen(data1) );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /* Must commit the insert before replacing */
+   errcode = vdsHashMapReplace( objHandle,
+                                key,
+                                6,
+                                data2,
+                                strlen(data2) );
+   if ( errcode != VDS_ITEM_IS_IN_USE )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsCommit( sessionHandle );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -158,8 +200,13 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   vdsCommit( sessionHandle );
-
+//   vdsCommit( sessionHandle );
+   /*
+    * Additional stuff to check while the Replace() is uncommitted:
+    *  - first session get new value.
+    *  - second session get old value
+    *  - cannot modify it from any session.
+    */
    errcode = vdsHashMapGet( objHandle,
                             key,
                             6,
@@ -175,6 +222,23 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
       
    if ( memcmp( buffer, data2, length ) != 0 )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+
+   errcode = vdsHashMapGet( objHandle2,
+                            key,
+                            6,
+                            buffer,
+                            20,
+                            &length );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( length != strlen(data1) )
+      ERROR_EXIT( expectedToPass, NULL, ; );
+      
+   if ( memcmp( buffer, data1, length ) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    return 0;

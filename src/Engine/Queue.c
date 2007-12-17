@@ -160,21 +160,30 @@ int vdseQueueGet( vdseQueue          * pQueue,
          isOK = true;
          if ( txItemStatus->txOffset != NULL_OFFSET )
          {
-            if ( vdseTxStatusIsRemoveCommitted(txItemStatus) )
+            switch( txItemStatus->enumStatus )
             {
+            case VDSE_TXS_DESTROYED_COMMITTED:
                isOK = false;
-            }
-            else if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-               vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
-            {
-               isOK = false;
-               queueIsEmpty = false;
-            }
-            else if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-               txItemStatus->statusFlag == 0 )
-            {
-               isOK = false;
-               queueIsEmpty = false;
+               break;
+               
+            case VDSE_TXS_DESTROYED:
+               if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) )
+               {
+                  isOK = false;
+                  queueIsEmpty = false;
+               }
+               break;
+               
+            case VDSE_TXS_ADDED:
+               if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) )
+               {
+                  isOK = false;
+                  queueIsEmpty = false;
+               }
+               break;
+               
+            default:
+               break;
             }
          }
          if ( isOK )
@@ -350,6 +359,7 @@ int vdseQueueInsert( vdseQueue          * pQueue,
 
       vdseTxStatusInit( &pQueueItem->txStatus, SET_OFFSET(pContext->pTransaction) );
       pQueue->nodeObject.txCounter++;
+      pQueueItem->txStatus.enumStatus = VDSE_TXS_ADDED;
 
       vdseUnlock( &pQueue->memObject, pContext );
    }

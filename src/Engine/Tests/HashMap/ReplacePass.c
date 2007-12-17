@@ -30,11 +30,9 @@ int main()
    char * key  = "my key";
    char * data1 = "my data1";
    char * data2 = "my data2";
-#if 0
    vdseHashItem * pItem;
    vdseTxStatus * txItemStatus;
    char * ptr;
-#endif
 
    pHashMap = initHashMapTest( expectedToPass, &context );
 
@@ -55,6 +53,28 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
+   /*
+    * We use get to get to the hash item in order to commit it 
+    * (we need to commit the insertion before replacing it)
+    */
+   errcode = vdseHashMapGet( pHashMap,
+                             (const void *) key,
+                             6,
+                             &pItem,
+                             20,
+                             &context );
+
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   vdseHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
+
+   errcode = vdseHashMapRelease( pHashMap,
+                                 pItem,
+                                 &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
    errcode = vdseHashMapReplace( pHashMap,
                                  (const void *) key,
                                  6,
@@ -64,7 +84,6 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
-#if 0
    errcode = vdseHashMapGet( pHashMap,
                              (const void *) key,
                              6,
@@ -76,7 +95,6 @@ int main()
    GET_PTR( ptr, pItem->dataOffset, char );
    if ( memcmp( data2, ptr, strlen(data2)) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
-#endif
 
    return 0;
 }

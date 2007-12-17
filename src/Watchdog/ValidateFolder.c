@@ -155,20 +155,20 @@ vdswValidateFolder( struct vdseFolder  * pFolder,
    {
       /*
        * So we have an interrupted transaction. What kind? 
-       *   FLAG                 ACTION          Comment
-       *   0                    remove object   Added object non-committed
-       *   MARKED_AS_DESTROYED  reset txStatus  
-       *   REMOVE_IS_COMMITTED  remove object
+       *   FLAG                      ACTION          
+       *   TXS_ADDED                 remove object   
+       *   TXS_DESTROYED             reset txStatus  
+       *   TXS_DESTROYED_COMMITTED   remove object
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txFolderStatus->statusFlag == 0 )
+      if ( txFolderStatus->enumStatus == VDSE_TXS_ADDED )
       {
          if ( verbose )
             vdswEcho( spaces, "Object added but not committed - object removed" );
          return VDSW_DELETE_OBJECT;
       }         
-      if ( txFolderStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
+      if ( txFolderStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
       {
          if ( verbose )
             vdswEcho( spaces, "Object deleted and committed - object removed" );
@@ -178,7 +178,7 @@ vdswValidateFolder( struct vdseFolder  * pFolder,
          vdswEcho( spaces, "Object deleted but not committed - object is kept" );
       
       txFolderStatus->txOffset = NULL_OFFSET;
-      txFolderStatus->statusFlag = 0;
+      txFolderStatus->enumStatus = VDSE_TXS_OK;
    }
    
    if ( txFolderStatus->usageCounter != 0 )

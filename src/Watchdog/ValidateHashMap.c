@@ -50,35 +50,43 @@ int vdswCheckHashMapContent( vdseHashMap        * pHashMap,
       {
          /*
           * So we have an interrupted transaction. What kind? 
-          *   FLAG                 ACTION          Comment
-          *   0                    remove object   Added object non-committed
-          *   MARKED_AS_DESTROYED  reset txStatus  
-          *   REMOVE_IS_COMMITTED  remove object
+          *   FLAG                      ACTION          
+          *   TXS_ADDED                 remove item
+          *   TXS_REPLACED              remove item (the older item is also reset)
+          *   TXS_DESTROYED             reset txStatus  
+          *   TXS_DESTROYED_COMMITTED   remove item
           *
           * Action is the equivalent of what a rollback would do.
           */
-         if ( txItemStatus->statusFlag == 0 )
+         if ( txItemStatus->enumStatus == VDSE_TXS_ADDED )
          {
             if ( verbose )
                vdswEcho( spaces, "Hash item added but not committed - item removed" );
             deletedBucket = bucket;
             pDeletedItem = pItem;
          }         
-         else if ( txItemStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
+         else if ( txItemStatus->enumStatus == VDSE_TXS_REPLACED )
+         {
+            if ( verbose )
+               vdswEcho( spaces, "Hash item replaced but not committed - new item removed" );
+            deletedBucket = bucket;
+            pDeletedItem = pItem;
+         }         
+         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
          {
             if ( verbose )
                vdswEcho( spaces, "Hash item deleted and committed - item removed" );
             deletedBucket = bucket;
             pDeletedItem = pItem;
          }
-         else if ( txItemStatus->statusFlag == VDSE_MARKED_AS_DESTROYED )
+         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED )
          {
             if ( verbose )
                vdswEcho( spaces, "Hash item deleted but not committed - item is kept" );
          }
          
          txItemStatus->txOffset = NULL_OFFSET;
-         txItemStatus->statusFlag = 0;
+         txItemStatus->enumStatus = VDSE_TXS_OK;
       }
 
       if ( pDeletedItem == NULL && txItemStatus->usageCounter != 0 )
@@ -131,21 +139,20 @@ vdswValidateHashMap( vdseHashMap        * pHashMap,
    if ( txHashMapStatus->txOffset != NULL_OFFSET )
    {
       /*
-       * So we have an interrupted transaction. What kind? 
-       *   FLAG                 ACTION          Comment
-       *   0                    remove object   Added object non-committed
-       *   MARKED_AS_DESTROYED  reset txStatus  
-       *   REMOVE_IS_COMMITTED  remove object
+       *   FLAG                      ACTION          
+       *   TXS_ADDED                 remove object   
+       *   TXS_DESTROYED             reset txStatus  
+       *   TXS_DESTROYED_COMMITTED   remove object
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txHashMapStatus->statusFlag == 0 )
+      if ( txHashMapStatus->enumStatus == VDSE_TXS_ADDED)
       {
          if ( verbose )
             vdswEcho( spaces, "Object added but not committed - object removed" );
          return VDSW_DELETE_OBJECT;
       }         
-      if ( txHashMapStatus->statusFlag == VDSE_REMOVE_IS_COMMITTED )
+      if ( txHashMapStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
       {
          if ( verbose )
             vdswEcho( spaces, "Object deleted and committed - object removed" );
@@ -155,7 +162,7 @@ vdswValidateHashMap( vdseHashMap        * pHashMap,
          vdswEcho( spaces, "Object deleted but not committed - object is kept" );
 
       txHashMapStatus->txOffset = NULL_OFFSET;
-      txHashMapStatus->statusFlag = 0;
+      txHashMapStatus->enumStatus = VDSE_TXS_OK;
    }
    
    if ( txHashMapStatus->usageCounter != 0 )

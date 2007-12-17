@@ -44,7 +44,8 @@ void vdseHashMapCommitAdd( vdseHashMap        * pHashMap,
 
    GET_PTR( pHashItem, itemOffset, vdseHashItem );
 
-   vdseTxStatusSetTx( &pHashItem->txStatus, NULL_OFFSET );
+   pHashItem->txStatus.txOffset = NULL_OFFSET;
+   pHashItem->txStatus.enumStatus = VDSE_TXS_OK;
    pHashMap->nodeObject.txCounter--;
 
    /*
@@ -111,18 +112,18 @@ void vdseHashMapCommitRemove( vdseHashMap        * pHashMap,
        *       current function returns void. Let's someone else find that 
        *       we are getting low on memory...
        */
-      GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
-      if ( (txHashMapStatus->usageCounter == 0) &&
-         (pHashMap->nodeObject.txCounter == 0 ) )
+      if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE )
       {
-         if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE )
+         GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+         if ( (txHashMapStatus->usageCounter == 0) &&
+            (pHashMap->nodeObject.txCounter == 0 ) )
+         {
             vdseHashResize( &pHashMap->hashObj, pContext );
+         }
       }
    }
    else
-   {
-      vdseTxStatusCommitRemove( txItemStatus );
-   }
+      txItemStatus->enumStatus = VDSE_TXS_DESTROYED_COMMITTED;
    
    VDS_POST_CONDITION( errcode == LIST_OK );
 }
@@ -185,7 +186,7 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
        */
       if ( txItemStatus->txOffset != NULL_OFFSET )
       {
-         if ( vdseTxStatusIsRemoveCommitted(txItemStatus) )
+         if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
             errcode = VDS_NO_SUCH_ITEM;
          else
             errcode = VDS_ITEM_IS_IN_USE;
@@ -202,8 +203,8 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
       if ( rc != 0 )
          goto the_exit;
       
-      vdseTxStatusSetTx( txItemStatus, SET_OFFSET(pContext->pTransaction) );
-      vdseTxStatusMarkAsDestroyed( txItemStatus );
+      txItemStatus->txOffset = SET_OFFSET(pContext->pTransaction);
+      txItemStatus->enumStatus = VDSE_TXS_DESTROYED;
       pHashMap->nodeObject.txCounter++;
 
       vdseUnlock( &pHashMap->memObject, pContext );
@@ -255,7 +256,7 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
                     vdseSessionContext * pContext )
 {
    enum ListErrors listErr = LIST_OK;
-   vdseHashItem* pHashItem = NULL;
+   vdseHashItem* pHashItem = NULL, * previousItem = NULL;
    vdsErrors errcode;
    vdseTxStatus * txItemStatus, * txHashMapStatus;
    
@@ -290,9 +291,10 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
       }
       while ( pHashItem->nextSameKey != NULL_OFFSET )
       {
+fprintf(stderr, "ok 1 = %p\n", pHashItem );
+         previousItem = pHashItem;
          GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
       }
-
 
       /*
        * This test cannot be done in the API (before calling the current
@@ -313,27 +315,39 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
        * If the transaction id of the item (to retrieve) is NOT equal to the 
        * current transaction id AND the object is added... error.
        *
+       * If the object is replaced, the "right" item depends on the transaction
+       * id.
+       *
        * If the item is flagged as deleted and committed, it does not exists
        * from the API point of view.
        */
       if ( txItemStatus->txOffset != NULL_OFFSET )
       {
-         if ( vdseTxStatusIsRemoveCommitted(txItemStatus) )
+fprintf(stderr, "stat = %d\n", txItemStatus->enumStatus );
+         if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
          {
             errcode = VDS_NO_SUCH_ITEM;
             goto the_exit;
          }
          if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-            vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+            txItemStatus->enumStatus == VDSE_TXS_DESTROYED )
          {
             errcode = VDS_ITEM_IS_DELETED;
             goto the_exit;
          }
          if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-            txItemStatus->statusFlag == 0 )
+            txItemStatus->enumStatus == VDSE_TXS_ADDED )
          {
             errcode = VDS_ITEM_IS_IN_USE;
             goto the_exit;
+         }
+         if ( txItemStatus->enumStatus == VDSE_TXS_REPLACED )
+         {
+            if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) )
+            {
+               pHashItem = previousItem;
+               txItemStatus = &pHashItem->txStatus;
+            }
          }
       }
       
@@ -416,16 +430,16 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
          if ( txItemStatus->txOffset != NULL_OFFSET )
          {
             if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-               vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+               txItemStatus->enumStatus == VDSE_TXS_DESTROYED )
             {
                isOK = false;
             }
             if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-               txItemStatus->statusFlag == 0 )
+               txItemStatus->enumStatus == VDSE_TXS_ADDED )
             {
                isOK = false;
             }
-            if ( vdseTxStatusIsRemoveCommitted(txItemStatus) )
+            if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
             {
                isOK = false;
             }
@@ -540,16 +554,16 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
          if ( txItemStatus->txOffset != NULL_OFFSET )
          {
             if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-               vdseTxStatusIsMarkedAsDestroyed( txItemStatus ) )
+               txItemStatus->enumStatus == VDSE_TXS_DESTROYED )
             {
                isOK = false;
             }
             if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-               txItemStatus->statusFlag == 0 )
+               txItemStatus->enumStatus == VDSE_TXS_ADDED )
             {
                isOK = false;
             }
-            if ( vdseTxStatusIsRemoveCommitted(txItemStatus) )
+            if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
             {
                isOK = false;
             }
@@ -688,7 +702,7 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
                        vdseSessionContext * pContext )
 {
    enum ListErrors listErr = LIST_OK;
-   vdseHashItem* pHashItem;
+   vdseHashItem* pHashItem = NULL;
    vdsErrors errcode = VDS_OK;
    vdseTxStatus * txItemStatus, * txHashMapStatus;
    int rc;
@@ -732,7 +746,7 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
           * key exists and that we cannot insert the item
           */
          txItemStatus = &pHashItem->txStatus;
-         if ( ! vdseTxStatusIsRemoveCommitted(txItemStatus) )
+         if ( txItemStatus->enumStatus != VDSE_TXS_DESTROYED_COMMITTED )
          {
             errcode = VDS_ITEM_ALREADY_PRESENT;
             goto the_exit;
@@ -775,6 +789,7 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
       txItemStatus = &pHashItem->txStatus;
       vdseTxStatusInit( txItemStatus, SET_OFFSET(pContext->pTransaction) );
       pHashMap->nodeObject.txCounter++;
+      txItemStatus->enumStatus = VDSE_TXS_ADDED;
    
       vdseUnlock( &pHashMap->memObject, pContext );
    }
@@ -856,7 +871,7 @@ void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
    txHashMapStatus->usageCounter--;
 
    if ( (txItemStatus->usageCounter == 0) && 
-      vdseTxStatusIsRemoveCommitted(txItemStatus) )
+      txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
    {
       /* Time to really delete the record! */
       listErr = vdseHashDelete( &pHashMap->hashObj, 
@@ -935,7 +950,18 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
          errcode = VDS_NO_SUCH_ITEM;
          goto the_exit;
       }
+      while ( pHashItem->nextSameKey != NULL_OFFSET )
+      {
+         GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
+      }
 
+      txItemStatus = &pHashItem->txStatus;
+      if ( txItemStatus->enumStatus != VDSE_TXS_OK )
+      {
+         errcode = VDS_ITEM_IS_IN_USE;
+         goto the_exit;
+      }
+      
       listErr = vdseHashInsertAt( &pHashMap->hashObj,
                                   bucket,
                                   (unsigned char *)pKey, 
@@ -989,11 +1015,13 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
       
       txItemStatus = &pHashItem->txStatus;
       vdseTxStatusInit( txItemStatus, SET_OFFSET(pContext->pTransaction) );
-      vdseTxStatusMarkAsDestroyed( txItemStatus );
+      txItemStatus->enumStatus = VDSE_TXS_DESTROYED;
 
       txItemStatus = &pNewHashItem->txStatus;
       vdseTxStatusInit( txItemStatus, SET_OFFSET(pContext->pTransaction) );
+      txItemStatus->enumStatus = VDSE_TXS_REPLACED;
 
+      pHashItem->nextSameKey = SET_OFFSET(pNewHashItem);
       pHashMap->nodeObject.txCounter += 2;
 
       vdseUnlock( &pHashMap->memObject, pContext );
@@ -1099,7 +1127,7 @@ void vdseHashMapRollbackRemove( vdseHashMap        * pHashMap,
     * This call resets the transaction (to "none") and remove the 
     * bit that flag this data as being in the process of being removed.
     */
-   vdseTxStatusUnmarkAsDestroyed(  txItemStatus );
+   vdseTxStatusUnmarkAsDestroyed( txItemStatus );
    pHashMap->nodeObject.txCounter--;
    
    /*
