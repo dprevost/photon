@@ -291,7 +291,6 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
       }
       while ( pHashItem->nextSameKey != NULL_OFFSET )
       {
-fprintf(stderr, "ok 1 = %p\n", pHashItem );
          previousItem = pHashItem;
          GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
       }
@@ -323,7 +322,6 @@ fprintf(stderr, "ok 1 = %p\n", pHashItem );
        */
       if ( txItemStatus->txOffset != NULL_OFFSET )
       {
-fprintf(stderr, "stat = %d\n", txItemStatus->enumStatus );
          if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
          {
             errcode = VDS_NO_SUCH_ITEM;

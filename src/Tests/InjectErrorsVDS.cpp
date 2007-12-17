@@ -116,7 +116,7 @@ int AddDefectsHashMaps( vector<vdsHashMap> & h )
    pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
    txHashMapStatus->txOffset = SET_OFFSET( pHashMap ); 
-   txHashMapStatus->statusFlag = 0;
+   txHashMapStatus->enumStatus = VDSE_TXS_ADDED;
 
    // HashMap 2. Defects: 
    //  - Items added (not committed) and items removed (committed + non-comm)
@@ -135,17 +135,17 @@ int AddDefectsHashMaps( vector<vdsHashMap> & h )
       if ( i < 5 ) /* removed committed */
       {
          txItemStatus->txOffset = SET_OFFSET( pHashMap ); 
-         txItemStatus->statusFlag = VDSE_REMOVE_IS_COMMITTED;
+         txItemStatus->enumStatus = VDSE_TXS_DESTROYED_COMMITTED;
       }
       else if ( i < 9 ) /* removed uncommitted */
       {
          txItemStatus->txOffset = SET_OFFSET( pHashMap ); 
-         txItemStatus->statusFlag = VDSE_MARKED_AS_DESTROYED;
+         txItemStatus->enumStatus = VDSE_TXS_DESTROYED;
       }
       else if ( i >= 11 ) /* Added */
       {
          txItemStatus->txOffset = SET_OFFSET( pHashMap ); 
-         txItemStatus->statusFlag = 0;
+         txItemStatus->enumStatus = VDSE_TXS_ADDED;
       }
 
       previousBucket = bucket;
@@ -235,7 +235,7 @@ int AddDefectsQueues( vector<vdsQueue> & q )
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
    txQueueStatus->txOffset = SET_OFFSET( pQueue ); 
-   txQueueStatus->statusFlag = 0;
+   txQueueStatus->enumStatus = VDSE_TXS_ADDED;
 
    // Queue 2. Defects: 
    //  - Items added (not committed) and items removed (committed + non-comm)
@@ -253,17 +253,17 @@ int AddDefectsQueues( vector<vdsQueue> & q )
       if ( i < 5 ) /* removed committed */
       {
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->statusFlag = VDSE_REMOVE_IS_COMMITTED;
+         txItemStatus->enumStatus = VDSE_TXS_DESTROYED_COMMITTED;
       }
       else if ( i < 9 ) /* removed uncommitted */
       {
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->statusFlag = VDSE_MARKED_AS_DESTROYED;
+         txItemStatus->enumStatus = VDSE_TXS_DESTROYED;
       }
       else if ( i >= 11 ) /* Added */
       {
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->statusFlag = 0;
+         txItemStatus->enumStatus = VDSE_TXS_ADDED;
       }
       
       listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
