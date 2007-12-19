@@ -107,9 +107,10 @@ int Test1()
 end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
+   vdsCommit( g_session1 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
    vdsCommit( g_session1 );
-   
+
    if ( errcode != 0 )
       return -1;
    return 0;
@@ -134,10 +135,10 @@ int Test2()
       goto end;
 
    errcode = vdsHashMapOpen( g_session2, "A Map", strlen("A Map"), &h1 );
-   if ( errcode != VDS_NO_SUCH_OBJECT )
+   if ( errcode != VDS_OBJECT_IS_IN_USE )
    {
-      printf( " Expected error = %d, returned error = %d\n", 
-              VDS_NO_SUCH_OBJECT, 
+      printf( "Expected error = %d, returned error = %d\n", 
+              VDS_OBJECT_IS_IN_USE, 
               errcode );
       errcode = -1;
       goto end;
@@ -147,6 +148,7 @@ int Test2()
 end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
+   vdsCommit( g_session1 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
    vdsCommit( g_session1 );
 
@@ -181,6 +183,7 @@ int Test3()
 end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
+   vdsCommit( g_session1 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
    vdsCommit( g_session1 );
 
@@ -217,6 +220,7 @@ int Test4()
 end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
+   vdsCommit( g_session1 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
    vdsCommit( g_session1 );
 
@@ -254,6 +258,7 @@ int Test5()
 end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
+   vdsCommit( g_session1 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
    vdsCommit( g_session1 );
 
@@ -281,10 +286,10 @@ int Test6()
       goto end;
 
    errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
-   if ( errcode != VDS_NO_SUCH_OBJECT )
+   if ( errcode != VDS_OBJECT_IS_DELETED )
    {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_NO_SUCH_OBJECT,
+              VDS_OBJECT_IS_DELETED,
               errcode );
       errcode = -1;
       goto end;
@@ -294,6 +299,7 @@ int Test6()
 end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
+   vdsCommit( g_session1 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
    vdsCommit( g_session1 );
 
@@ -321,19 +327,18 @@ int Test7()
       goto end;
 
    errcode = vdsHashMapOpen( g_session2, "A Map", strlen("A Map"), &h1 );
-   if ( errcode != VDS_NO_SUCH_OBJECT )
+   if ( errcode != VDS_OK )
    {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_NO_SUCH_OBJECT,
+              VDS_OK,
               errcode );
-      errcode = -1;
       goto end;
    }
-   errcode = 0;
    
 end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
+   vdsCommit( g_session1 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
    vdsCommit( g_session1 );
 
@@ -377,6 +382,7 @@ int Test8()
 end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
+   vdsCommit( g_session1 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
    vdsCommit( g_session1 );
 
@@ -418,6 +424,7 @@ int Test9()
 end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
+   vdsCommit( g_session1 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
    vdsCommit( g_session1 );
 
@@ -459,6 +466,7 @@ int Test10()
 end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
+   vdsCommit( g_session1 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
    vdsCommit( g_session1 );
 
@@ -490,6 +498,8 @@ int Test11()
 
 end:
 
+   vdsCommit( g_session1 );
+   vdsCommit( g_session2 );
    vdsDestroyObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue") ); 
    vdsCommit( g_session2 );
    vdsDestroyObject( g_session1, "A Folder", strlen("A Folder") ); 
@@ -524,6 +534,8 @@ int Test12()
 
 end:
 
+   vdsCommit( g_session1 );
+   vdsCommit( g_session2 );
    vdsDestroyObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue") ); 
    vdsCommit( g_session2 );
    vdsDestroyObject( g_session1, "A Folder", strlen("A Folder") ); 
@@ -560,6 +572,8 @@ int Test13()
 
 end:
 
+   vdsCommit( g_session1 );
+   vdsCommit( g_session2 );
    vdsDestroyObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue") ); 
    vdsCommit( g_session2 );
    vdsDestroyObject( g_session1, "A Folder", strlen("A Folder") ); 
@@ -602,6 +616,7 @@ int Test21()
 
 end:
 
+   vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
    vdsCommit( g_session1 );
@@ -646,6 +661,7 @@ int Test22()
 
 end:
 
+   vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
@@ -697,6 +713,7 @@ int Test23()
    
 end:
 
+   vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
@@ -749,6 +766,8 @@ int Test24()
 
 end:
 
+   vdsCommit( g_session1 );
+   vdsCommit( g_session2 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
@@ -801,6 +820,7 @@ int Test25()
    
 end:
 
+   vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
    vdsCommit( g_session1 );
@@ -852,6 +872,7 @@ int Test26()
    
 end:
 
+   vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
    vdsCommit( g_session1 );
@@ -905,6 +926,7 @@ int Test27()
 
 end:
 
+   vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
@@ -959,6 +981,7 @@ int Test28()
 
 end:
 
+   vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
@@ -1016,6 +1039,7 @@ int Test29()
 
 end:
 
+   vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
@@ -1068,6 +1092,7 @@ int Test30()
 
 end:
 
+   vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
    vdsCommit( g_session1 );
@@ -1122,6 +1147,7 @@ int Test31()
 
 end:
 
+   vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
@@ -1177,6 +1203,8 @@ int Test32()
 
 end:
 
+   vdsCommit( g_session1 );
+   vdsCommit( g_session2 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
    vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
