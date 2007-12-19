@@ -114,7 +114,7 @@ void vdseSessionFini( vdseSession        * pSession,
    vdseTxFini( pSession->pTransaction, pContext );
 
    /* This will remove the blocks of allocated memory */
-   vdseMemObjectFini(  &pSession->memObject, pContext );
+   vdseMemObjectFini(  &pSession->memObject, VDSE_ALLOC_ANY, pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -459,6 +459,7 @@ AC_CONFIG_FILES([
    src/Engine/Tests/Transaction/Makefile
    src/include/Makefile
    src/Tests/Makefile
+   src/Tools/Makefile
    src/Watchdog/Makefile
    src/Watchdog/Tests/Makefile
 ])

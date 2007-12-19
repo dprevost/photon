@@ -97,7 +97,7 @@ void vdseQueueFini( vdseQueue          * pQueue,
 
    vdseLinkedListFini( &pQueue->listOfElements );
    vdseTreeNodeFini(   &pQueue->nodeObject );
-   vdseMemObjectFini(  &pQueue->memObject, pContext );
+   vdseMemObjectFini(  &pQueue->memObject, VDSE_ALLOC_API_OBJ, pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

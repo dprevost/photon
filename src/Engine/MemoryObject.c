@@ -97,8 +97,9 @@ vdseMemObjectInit( vdseMemObject   * pMemObj,
  */
 
 enum vdsErrors 
-vdseMemObjectFini( vdseMemObject*      pMemObj,
-                   vdseSessionContext* pContext )
+vdseMemObjectFini( vdseMemObject      * pMemObj,
+                   vdseAllocTypeEnum    allocType,
+                   vdseSessionContext * pContext )
 {
    vdseLinkNode* firstNode, *dummy;
    enum ListErrors errGroup; // , errNode;
@@ -148,7 +149,7 @@ vdseMemObjectFini( vdseMemObject*      pMemObj,
     * This must be the last access to the memory object.
     */
    vdseFreeBlocks( pContext->pAllocator, 
-                   VDSE_ALLOC_API_OBJ,
+                   allocType,
                    (unsigned char*)pMemObj, 
                    pGroup->numBlocks,
                    pContext );

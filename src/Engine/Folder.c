@@ -34,6 +34,11 @@ vdsErrors vdseValidateString( const vdsChar_T * objectName,
                               size_t          * pPartialLength,
                               bool            * pLastIteration );
 
+static
+void vdseFolderRemoveObject2( vdseFolder         * pFolder,
+                              vdseHashItem       * pHashItem,
+                              vdseSessionContext * pContext );
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static
@@ -255,7 +260,7 @@ void vdseFolderFini( vdseFolder         * pFolder,
    vdseTreeNodeFini( &pFolder->nodeObject );
    
    /* This call must be last - put a barrier here ? */ 
-   vdseMemObjectFini(  &pFolder->memObject, pContext );
+   vdseMemObjectFini(  &pFolder->memObject, VDSE_ALLOC_API_OBJ, pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -1313,6 +1318,74 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/* 
+ * lock on the folder is the responsability of the caller.
+ */
+void vdseFolderRemoveObject2( vdseFolder         * pFolder,
+                              vdseHashItem       * pHashItem,
+                              vdseSessionContext * pContext )
+{
+   enum ListErrors listErr;
+   size_t bucket;
+   vdseHashItem * previousItem = NULL;
+   vdseObjectDescriptor * pDesc;
+   void * ptrObject;
+
+   VDS_PRE_CONDITION( pFolder   != NULL );
+   VDS_PRE_CONDITION( pHashItem != NULL );
+   VDS_PRE_CONDITION( pContext  != NULL );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+
+   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( ptrObject, pDesc->offset, void );
+
+   /* We search for the bucket */
+   listErr = vdseHashGet( &pFolder->hashObj, 
+                          pHashItem->key, 
+                          pHashItem->keyLength, 
+                          &previousItem,
+                          pContext,
+                          &bucket );
+   VDS_POST_CONDITION( listErr == LIST_OK );
+
+   /* 
+    * Time to really delete the record!
+    *
+    * Note: the hash array will release the memory of the hash item.
+    */
+   vdseHashDeleteAt( &pFolder->hashObj, 
+                     bucket,
+                     pHashItem,
+                     pContext );
+
+   pFolder->nodeObject.txCounter--;
+
+   /* If needed */
+   vdseFolderResize( pFolder, pContext );
+
+   /*
+    * Since the object is now remove from the hash, all we need
+    * to do is reclaim the memory (which is done in the destructor
+    * of the memory object).
+    */
+   switch ( pDesc->apiType )
+   {
+   case VDS_FOLDER:
+      vdseFolderFini( (vdseFolder*)ptrObject, pContext );
+      break;
+   case VDS_HASH_MAP:
+      vdseHashMapFini( (vdseHashMap *)ptrObject, pContext );
+      break;
+   case VDS_QUEUE:
+      vdseQueueFini( (vdseQueue *)ptrObject, pContext );
+      break;
+   case VDS_LAST_OBJECT_TYPE:
+      ;
+   }        
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 void vdseFolderResize( vdseFolder         * pFolder, 
                        vdseSessionContext * pContext  )
 {
@@ -1391,18 +1464,10 @@ int vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
          (txItemStatus->usageCounter == 0) &&
          vdseTxStatusIsRemoveCommitted(txItemStatus) )
       {
-         /* 
-          * Time to really delete the record!
-          *
-          * Note: the hash array will release the memory of the hash item.
-          */
-         vdseHashDelete( &parentFolder->hashObj, 
-                         pFolderItem->pHashItem->key, 
-                         pFolderItem->pHashItem->keyLength, 
-                         pFolderItem->pHashItem,
-                         pContext );
-
-         parentFolder->nodeObject.txCounter--;
+         /* Time to really delete the record! */
+         vdseFolderRemoveObject2( parentFolder,
+                                  pFolderItem->pHashItem,
+                                  pContext );
       }
 
       vdseUnlock( &parentFolder->memObject, pContext );

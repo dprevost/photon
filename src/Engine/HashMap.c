@@ -243,7 +243,7 @@ void vdseHashMapFini( vdseHashMap        * pHashMap,
     * Must be the last call since it will release the blocks of
     * memory to the allocator.
     */
-   vdseMemObjectFini(  &pHashMap->memObject, pContext );
+   vdseMemObjectFini(  &pHashMap->memObject, VDSE_ALLOC_API_OBJ, pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

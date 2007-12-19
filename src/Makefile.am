@@ -27,7 +27,8 @@ SUBDIRS =               \
           API           \
           C++           \
           include       \
-          Tests
+          Tests         \
+          Tools         
           
 BASE_LOCK_FILES =                                  \
                   Locking/linux/autoconf.h         \

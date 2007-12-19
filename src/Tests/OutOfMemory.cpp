@@ -29,7 +29,7 @@ string queueName2("Out Folder/Queue 2");
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void CleanupPreviousRun( vdsSession & session )
+void Cleanup( vdsSession & session )
 {
    try {
       session.DestroyObject( queueName1 );
@@ -39,7 +39,7 @@ void CleanupPreviousRun( vdsSession & session )
    }
    catch ( int rc )
    {
-      cerr << "Cleanup of previous session failed, error = " << rc << endl;
+      cerr << "Cleanup failed, error = " << rc << endl;
    }
 }
 
@@ -58,7 +58,7 @@ int main()
    try {
       process.Init( "10701" );
       session.Init();
-      CleanupPreviousRun( session );
+      Cleanup( session );
 
       session.CreateObject( folderName, VDS_FOLDER );
       session.CreateObject( queueName1, VDS_QUEUE );
@@ -135,24 +135,28 @@ int main()
       cerr << "Commit error = " << rc << endl;
    }
    
-      session.GetInfo( &info1 );
-     cerr << "Total allocated in vds: " << info1.allocatedSizeInBytes << endl;
- cerr << info1.totalSizeInBytes << endl;
+  
+   session.GetInfo( &info1 );
+   cerr << "Total allocated in vds: " << info1.allocatedSizeInBytes << endl;
+   cerr << info1.totalSizeInBytes << endl;
  
-  vdsObjStatus status;
- q1.Status( &status );
- cout << status.numBlocks << endl;
- cout << status.numBlockGroup << endl;
- cout << status.numDataItem << endl;
- cout << status.freeBytes << endl;
-  q2.Status( &status );
- cout << status.numBlocks << endl;
- cout << status.numBlockGroup << endl;
- cout << status.numDataItem << endl;
- cout << status.freeBytes << endl;
+   vdsObjStatus status;
+
+   q1.Status( &status );
+   cout << status.numBlocks << endl;
+   cout << status.numBlockGroup << endl;
+   cout << status.numDataItem << endl;
+   cout << status.freeBytes << endl;
+   q2.Status( &status );
+   cout << status.numBlocks << endl;
+   cout << status.numBlockGroup << endl;
+   cout << status.numDataItem << endl;
+   cout << status.freeBytes << endl;
  
- q1.Close();
- q2.Close();
+   q1.Close();
+   q2.Close();
+
+   Cleanup( session );
 
    return 0;
 }

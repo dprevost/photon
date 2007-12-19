@@ -82,7 +82,7 @@ void vdseProcessFini( vdseProcess        * pProcess,
     * This will remove the blocks of allocated memory.
     * It must be the last operation on that piece of memory.
     */
-   vdseMemObjectFini(  &pProcess->memObject, pContext );
+   vdseMemObjectFini(  &pProcess->memObject, VDSE_ALLOC_ANY, pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

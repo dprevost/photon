@@ -31,22 +31,6 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/**
- * This enum allows to count the number of objects and the number of 
- * extensions (additional groups of blocks added to an object). 
- */
-typedef enum vdseAllocTypeEnum
-{
-   /** When allocating/freeing the initial group of blocks of an API object */ 
-   VDSE_ALLOC_API_OBJ,
-   
-   /** Any other group of blocks */
-   VDSE_ALLOC_ANY
-   
-} vdseAllocTypeEnum;
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 typedef struct vdseMemAlloc
 {
    /**

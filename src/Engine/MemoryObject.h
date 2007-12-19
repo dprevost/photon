@@ -98,6 +98,7 @@ vdseMemObjectInit( vdseMemObject   * pMemObj,
 VDSF_ENGINE_EXPORT
 enum vdsErrors 
 vdseMemObjectFini( vdseMemObject      * pMemObj,
+                   vdseAllocTypeEnum    allocType,
                    vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT

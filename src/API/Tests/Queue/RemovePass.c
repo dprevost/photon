@@ -101,6 +101,13 @@ int main( int argc, char * argv[] )
    if ( memcmp( entry.data, data1, strlen(data1) ) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
+   /* Cleanup */
+   vdsQueueClose( objHandle );
+   vdsDestroyObject( sessionHandle, "/aqrp/test", strlen("/aqrp/test") );
+   vdsDestroyObject( sessionHandle, "/aqrp", strlen("/aqrp") );
+   vdsCommit( sessionHandle );
+   vdsExit();
+   
    return 0;
 }
 
