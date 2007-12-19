@@ -309,10 +309,10 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
       txItemStatus = &pHashItem->txStatus;
       /* 
        * If the transaction id of the item (to retrieve) is equal to the 
-       * current transaction id AND the object is marked as deleted... error.
+       * current transaction id AND the item is marked as deleted... error.
        *
        * If the transaction id of the item (to retrieve) is NOT equal to the 
-       * current transaction id AND the object is added... error.
+       * current transaction id AND the item is added... error.
        *
        * If the object is replaced, the "right" item depends on the transaction
        * id.

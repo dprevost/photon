@@ -105,6 +105,13 @@ int main( int argc, char * argv[] )
    if ( info.numFrees != info2.numFrees )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
+   errcode = vdsCommit( sessionHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    errcode = vdsDestroyObject( sessionHandle,
                                "/asgi",
                                strlen("/asgi") );

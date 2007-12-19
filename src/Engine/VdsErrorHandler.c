@@ -189,6 +189,10 @@ vdseErrErrMsgStruct vdseErrErrMsg39 =
 vdseErrErrMsgStruct vdseErrErrMsg40 =
    { 68, 116, "i18n string conversion error. In other words, the name of the object cannot be converted to/frm your current locale." };
 
+/* VDS_OBJECT_IS_IN_USE */
+vdseErrErrMsgStruct vdseErrErrMsg41 =
+   { 69, 142, "The object is scheduled to be deleted soon or was just created and is not committed. Operations on this object are not permitted at this time." };
+
 vdseErrErrMsgStruct* vdseErrErrMsg[VDSEERR_MAX_ENTRIES] = 
 {
    &vdseErrErrMsg0,
@@ -231,7 +235,8 @@ vdseErrErrMsgStruct* vdseErrErrMsg[VDSEERR_MAX_ENTRIES] =
    &vdseErrErrMsg37,
    &vdseErrErrMsg38,
    &vdseErrErrMsg39,
-   &vdseErrErrMsg40
+   &vdseErrErrMsg40,
+   &vdseErrErrMsg41
 
 };
 

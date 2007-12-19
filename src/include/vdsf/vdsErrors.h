@@ -226,7 +226,14 @@ typedef enum vdsErrors
     * i18n string conversion error. In other words, the name of the object cannot be
     * converted to/frm your current locale.
     */
-   VDS_I18N_CONVERSION_ERROR       = 68
+   VDS_I18N_CONVERSION_ERROR       = 68,
+
+   /** 
+    * The object is scheduled to be deleted soon or was just created and
+    * is not committed. Operations on this object are not permitted 
+    * at this time.
+    */
+   VDS_OBJECT_IS_IN_USE            = 69
 
 } vdsErrors;
 

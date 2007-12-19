@@ -45,6 +45,10 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
+   errcode = vdseTxCommit( (vdseTx *)context.pTransaction, &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
    errcode = vdseTopFolderDestroyObject( pTopFolder,
                                          "Test1",
                                          strlen("Test1"),
@@ -95,7 +99,7 @@ int main()
    if ( errcode != -1 ) 
       ERROR_EXIT( expectedToPass, NULL, ; );
    errcode = vdscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_NO_SUCH_OBJECT )
+   if ( errcode != VDS_OBJECT_IS_IN_USE )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
    errcode = vdseTopFolderDestroyObject( pTopFolder,

@@ -175,6 +175,7 @@ char* strCheckLow( char* str )
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+vdseTxStatus objTxStatus;
 
 vdseFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
                                vdseSessionContext* pContext )
@@ -195,10 +196,13 @@ vdseFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
       exit(0);
    }
 
+   vdseTxStatusInit( &objTxStatus, SET_OFFSET(pContext->pTransaction) );
+   objTxStatus.enumStatus = VDSE_TXS_ADDED;
+
    pFolder->nodeObject.txCounter      = 0;
    pFolder->nodeObject.myNameLength   = 0;
    pFolder->nodeObject.myNameOffset   = NULL_OFFSET;
-   pFolder->nodeObject.txStatusOffset = NULL_OFFSET;
+   pFolder->nodeObject.txStatusOffset = SET_OFFSET(&objTxStatus);
    pFolder->nodeObject.myParentOffset = NULL_OFFSET;
 
    errcode = vdseHashInit( &pFolder->hashObj, 

@@ -118,6 +118,10 @@ fprintf( stderr, "ok 5\n" );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
+   errcode = vdseTxCommit( (vdseTx *)context.pTransaction, &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
    /* Try to delete "/Test2" - should fail (not empty) */
    errcode = vdseFolderDeleteObject( pFolder1,
                                      strCheckLow("test2"),
@@ -161,6 +165,10 @@ fprintf( stderr, "ok 5\n" );
                                      1,
                                      0,
                                      &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseTxCommit( (vdseTx *)context.pTransaction, &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 

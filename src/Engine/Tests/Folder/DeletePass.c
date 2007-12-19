@@ -59,9 +59,22 @@ int main()
                                      strCheckLow("test2"),
                                      5,
                                      &context );
+   if ( errcode != -1 ) 
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   if ( vdscGetLastError( &context.errorHandler ) != VDS_OBJECT_IS_IN_USE )
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseTxCommit( (vdseTx *)context.pTransaction, &context );
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pFolder->nodeObject.txCounter != 2 )
+
+   errcode = vdseFolderDeleteObject( pFolder,
+                                     strCheckLow("test2"),
+                                     5,
+                                     &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   if ( pFolder->nodeObject.txCounter != 1 )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    errcode = vdseFolderDeleteObject( pFolder,

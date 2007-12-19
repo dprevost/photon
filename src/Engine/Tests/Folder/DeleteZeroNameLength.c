@@ -47,6 +47,10 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
+   errcode = vdseTxCommit( (vdseTx *)context.pTransaction, &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
    errcode = vdseFolderDeleteObject( pFolder,
                                      strCheckLow("test2"),
                                      0,

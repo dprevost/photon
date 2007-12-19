@@ -26,7 +26,8 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE objHandle, sessionHandle;
+   VDS_HANDLE objHandle,  sessionHandle;
+   VDS_HANDLE objHandle2, sessionHandle2;
    int errcode;
    
    if ( argc > 1 )
@@ -40,6 +41,12 @@ int main( int argc, char * argv[] )
    }
    
    errcode = vdsInitSession( &sessionHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsInitSession( &sessionHandle2 );
    if ( errcode != VDS_OK )
    {
       fprintf( stderr, "err: %d\n", errcode );
@@ -71,6 +78,16 @@ int main( int argc, char * argv[] )
                             strlen("/ahop/test"),
                             &objHandle );
    if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsHashMapOpen( sessionHandle2,
+                            "/ahop/test",
+                            strlen("/ahop/test"),
+                            &objHandle2 );
+   if ( errcode != VDS_OBJECT_IS_IN_USE )
    {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
