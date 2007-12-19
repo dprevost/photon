@@ -700,7 +700,7 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
                        vdseSessionContext * pContext )
 {
    enum ListErrors listErr = LIST_OK;
-   vdseHashItem* pHashItem = NULL;
+   vdseHashItem* pHashItem = NULL, * previousHashItem = NULL;
    vdsErrors errcode = VDS_OK;
    vdseTxStatus * txItemStatus, * txHashMapStatus;
    int rc;
@@ -728,22 +728,22 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
       listErr = vdseHashGet( &pHashMap->hashObj, 
                              (unsigned char *)pKey, 
                              keyLength,
-                             &pHashItem,
+                             &previousHashItem,
                              pContext,
                              &bucket );
       if ( listErr == LIST_OK )
       {
          /* Find the last one in the chain of items with same key */
-         while ( pHashItem->nextSameKey != NULL_OFFSET )
+         while ( previousHashItem->nextSameKey != NULL_OFFSET )
          {
-            GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
+            GET_PTR( previousHashItem, previousHashItem->nextSameKey, vdseHashItem );
          }
 
          /* 
           * Anything othor than a deleted item committed means that the
           * key exists and that we cannot insert the item
           */
-         txItemStatus = &pHashItem->txStatus;
+         txItemStatus = &previousHashItem->txStatus;
          if ( txItemStatus->enumStatus != VDSE_TXS_DESTROYED_COMMITTED )
          {
             errcode = VDS_ITEM_ALREADY_PRESENT;
@@ -788,6 +788,8 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
       vdseTxStatusInit( txItemStatus, SET_OFFSET(pContext->pTransaction) );
       pHashMap->nodeObject.txCounter++;
       txItemStatus->enumStatus = VDSE_TXS_ADDED;
+      if ( previousHashItem != NULL )
+         previousHashItem->nextSameKey = SET_OFFSET(pHashItem);
    
       vdseUnlock( &pHashMap->memObject, pContext );
    }

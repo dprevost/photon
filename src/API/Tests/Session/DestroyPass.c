@@ -62,6 +62,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Destroy without a commit - should fail */
    errcode = vdsDestroyObject( sessionHandle,
                                "/asdp",
                                strlen("/asdp") );
@@ -87,6 +88,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Open on the same session - should fail */
    errcode = vdsFolderOpen( sessionHandle,
                             "/asdp",
                             strlen("/asdp"),
@@ -97,6 +99,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Open with a different session - should work */
    errcode = vdsFolderOpen( sessionHandle2,
                             "/asdp",
                             strlen("/asdp"),
@@ -107,6 +110,46 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* 
+    * Commit with session 2 having the object open. The object should 
+    * still be in the VDS but we should be able to create a new one.
+    */
+   errcode = vdsCommit( sessionHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsDestroyObject( sessionHandle,
+                               "/asdp",
+                               strlen("/asdp") );
+   if ( errcode != VDS_NO_SUCH_OBJECT )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsCreateObject( sessionHandle,
+                              "/asdp",
+                              strlen("/asdp"),
+                              VDS_FOLDER );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsFolderOpen( sessionHandle,
+                            "/asdp",
+                            strlen("/asdp"),
+                            &objHandle );
+   if ( errcode != VDS_OK )
+   {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
    return 0;
 }
 

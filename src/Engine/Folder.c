@@ -912,7 +912,7 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
    bool lastIteration = true;
    size_t partialLength = 0;
    enum ListErrors listErr = LIST_OK;
-   vdseHashItem* pHashItem;
+   vdseHashItem * pHashItem, * previousHashItem = NULL;
    int rc;
    vdsErrors errcode = VDS_OK;
    vdseObjectDescriptor* pDesc = NULL;
@@ -959,16 +959,16 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
       listErr = vdseHashGet( &pFolder->hashObj, 
                              (unsigned char *)objectName, 
                              partialLength * sizeof(vdsChar_T), 
-                             &pHashItem,
+                             &previousHashItem,
                              pContext,
                              &bucket );
       if ( listErr == LIST_OK )
       {
-         while ( pHashItem->nextSameKey != NULL_OFFSET )
+         while ( previousHashItem->nextSameKey != NULL_OFFSET )
          {
-            GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
+            GET_PTR( previousHashItem, previousHashItem->nextSameKey, vdseHashItem );
          }
-         objTxStatus = &pHashItem->txStatus;
+         objTxStatus = &previousHashItem->txStatus;
          if ( objTxStatus->enumStatus != VDSE_TXS_DESTROYED_COMMITTED )
          {
             errcode = VDS_OBJECT_ALREADY_PRESENT;
@@ -1124,7 +1124,8 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
          goto the_exit;
       }
       pFolder->nodeObject.txCounter++;
-
+      if ( previousHashItem != NULL )
+         previousHashItem->nextSameKey = SET_OFFSET(pHashItem);
       vdseUnlock( &pFolder->memObject, pContext );
       return 0;
    }
