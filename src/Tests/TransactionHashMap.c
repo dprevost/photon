@@ -1313,12 +1313,16 @@ int main(int argc, char *argv[])
    if ( (errcode = Run()) != 0 ) goto error;
    
    printf( "Terminating normally\n" );
-
+   vdsExitSession( &g_session1 );
+   vdsExitSession( &g_session2 );
+   vdsExit();
+   
    return 0;
 
 error:
    fprintf( stderr, " Error in test %d, Aborting anormally\n", errcode ); 
-
+   vdsExit();
+   
    return -1;
 }
 

@@ -111,7 +111,7 @@ int vdsQueue::Pop( void   * buffer,
                          buffer,
                          bufferLength,
                          returnedLength );
-   if ( rc != 0 && rc != VDS_IS_EMPTY ) throw( rc );
+   if ( rc != 0 && rc != VDS_IS_EMPTY && rc != VDS_ITEM_IS_IN_USE ) throw( rc );
    return rc;
 }
 
