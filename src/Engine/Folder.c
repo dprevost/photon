@@ -34,11 +34,6 @@ vdsErrors vdseValidateString( const vdsChar_T * objectName,
                               size_t          * pPartialLength,
                               bool            * pLastIteration );
 
-static
-void vdseFolderRemoveObject2( vdseFolder         * pFolder,
-                              vdseHashItem       * pHashItem,
-                              vdseSessionContext * pContext );
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static
@@ -178,7 +173,7 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
                          VDSE_TX_REMOVE_OBJECT,
                          SET_OFFSET(pFolder),
                          VDSE_IDENT_FOLDER,
-                         pDesc->offset,
+                         SET_OFFSET(pHashItem),
                          pMemObj->objType,
                          pContext );
       if ( rc != 0 )
@@ -1019,9 +1014,6 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
          vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
                          ptr, numBlocks, pContext );
          free( pDesc );
-//         if ( listErr == LIST_KEY_FOUND )
-//            errcode = VDS_OBJECT_ALREADY_PRESENT;
-//         else 
          if ( listErr == LIST_NO_MEMORY )
             errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
          else
@@ -1048,7 +1040,7 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
                          VDSE_TX_ADD_OBJECT,
                          SET_OFFSET(pFolder),
                          VDSE_IDENT_FOLDER,
-                         pDesc->offset,
+                         SET_OFFSET(pHashItem),
                          memObjType,
                          pContext );
       free( pDesc ); 
@@ -1276,15 +1268,10 @@ void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
    {
       /* 
        * Time to really delete the record!
-       *
-       * Note: the hash array will release the memory of the hash item.
        */
-      vdseHashDelete( &pFolder->hashObj, 
-                      pHashItem->key, 
-                      pHashItem->keyLength, 
-                      pHashItem,
-                      pContext );
-      pFolder->nodeObject.txCounter--;
+      vdseFolderRemoveObject2( pFolder,
+                               pHashItem,
+                               pContext );
    }
 }
 

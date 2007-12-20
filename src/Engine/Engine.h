@@ -112,7 +112,7 @@ typedef unsigned int transaction_T;
 
 #define LOCK_TIMEOUT 10000 /* in milliseconds */
 
-#define VDSE_MAX_LOCK_DEPTH 2
+#define VDSE_MAX_LOCK_DEPTH 3
 
 /** Pages allocations will be done as multiples of VDSE_BLOCK_SIZE. */
 #if ! defined(VDSE_BLOCK_SIZE)

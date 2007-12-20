@@ -38,7 +38,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    
    /* Should crash at this point */
-   vdseMemObjectFini( &pDummy->memObject, NULL );
+   vdseMemObjectFini( &pDummy->memObject, VDSE_ALLOC_ANY, NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 }

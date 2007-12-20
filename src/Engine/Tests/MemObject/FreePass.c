@@ -81,7 +81,7 @@ int main()
    if ( pObj->totalBlocks != 4 )
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    
-   errcode = vdseMemObjectFini( pObj, &context );
+   errcode = vdseMemObjectFini( pObj, VDSE_ALLOC_ANY, &context );
    if ( errcode != VDS_OK )
       ERROR_EXIT( expectedToPass, NULL, ; );
    

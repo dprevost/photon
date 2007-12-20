@@ -138,6 +138,11 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
                              vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
+void vdseFolderRemoveObject2( vdseFolder         * pFolder,
+                              vdseHashItem       * pHashItem,
+                              vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
 void vdseFolderResize( vdseFolder         * pFolder, 
                        vdseSessionContext * pContext  );
 

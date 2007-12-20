@@ -43,7 +43,7 @@ int main()
    if ( pObj->totalBlocks != 4 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
-   vdseMemObjectFini( pObj, &context );
+   vdseMemObjectFini( pObj, VDSE_ALLOC_ANY, &context );
    
    return 0;
 }

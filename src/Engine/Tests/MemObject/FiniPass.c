@@ -37,7 +37,7 @@ int main()
    if ( errcode != VDS_OK ) 
       ERROR_EXIT( expectedToPass, NULL, ; );
    
-   errcode = vdseMemObjectFini( &pDummy->memObject, &context );
+   errcode = vdseMemObjectFini( &pDummy->memObject, VDSE_ALLOC_ANY, &context );
    if ( errcode != VDS_OK ) 
       ERROR_EXIT( expectedToPass, NULL, ; );
 

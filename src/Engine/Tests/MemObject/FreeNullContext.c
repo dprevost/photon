@@ -46,7 +46,7 @@ int main()
    
    vdseFree( pObj, buff[0], VDSE_BLOCK_SIZE, NULL );
    
-   vdseMemObjectFini( pObj, &context );
+   vdseMemObjectFini( pObj, VDSE_ALLOC_ANY, &context );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 }
