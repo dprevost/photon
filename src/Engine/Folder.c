@@ -1269,9 +1269,9 @@ void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
       /* 
        * Time to really delete the record!
        */
-      vdseFolderRemoveObject2( pFolder,
-                               pHashItem,
-                               pContext );
+      vdseFolderRemoveObject( pFolder,
+                              pHashItem,
+                              pContext );
    }
 }
 
@@ -1281,36 +1281,8 @@ void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
  * lock on the folder is the responsability of the caller.
  */
 void vdseFolderRemoveObject( vdseFolder         * pFolder,
-                             const vdsChar_T    * objectName,
-                             size_t               nameLength,
+                             vdseHashItem       * pHashItem,
                              vdseSessionContext * pContext )
-{
-   enum ListErrors listErr;
-   
-   VDS_PRE_CONDITION( pFolder    != NULL );
-   VDS_PRE_CONDITION( objectName != NULL );
-   VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( nameLength > 0 );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
-
-   listErr = vdseHashDelete( &pFolder->hashObj,
-                             (unsigned char*)objectName,
-                             nameLength * sizeof(vdsChar_T),
-                             NULL,
-                             pContext );
-   pFolder->nodeObject.txCounter--;
-   
-   VDS_POST_CONDITION( listErr == LIST_OK );
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/* 
- * lock on the folder is the responsability of the caller.
- */
-void vdseFolderRemoveObject2( vdseFolder         * pFolder,
-                              vdseHashItem       * pHashItem,
-                              vdseSessionContext * pContext )
 {
    enum ListErrors listErr;
    size_t bucket;
@@ -1452,9 +1424,9 @@ int vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
          vdseTxStatusIsRemoveCommitted(txItemStatus) )
       {
          /* Time to really delete the record! */
-         vdseFolderRemoveObject2( parentFolder,
-                                  pFolderItem->pHashItem,
-                                  pContext );
+         vdseFolderRemoveObject( parentFolder,
+                                 pFolderItem->pHashItem,
+                                 pContext );
       }
 
       vdseUnlock( &parentFolder->memObject, pContext );

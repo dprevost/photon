@@ -289,9 +289,9 @@ int vdseTxCommit( vdseTx*             pTx,
              * Remove it from the folder (from the hash list)
              * (this function also decrease the txCounter of the parentFolder 
              */
-            vdseFolderRemoveObject2( parentFolder, 
-                                     pHashItem,
-                                     pContext );
+            vdseFolderRemoveObject( parentFolder, 
+                                    pHashItem,
+                                    pContext );
          }
          vdseUnlock( &parentFolder->memObject, pContext );
 
@@ -476,9 +476,9 @@ void vdseTxRollback( vdseTx*             pTx,
             vdseUnlock( pChildMemObject, pContext );
 
             /* Remove it from the folder (from the hash list) */
-            vdseFolderRemoveObject2( parentFolder,
-                                     pHashItem,
-                                     pContext );
+            vdseFolderRemoveObject( parentFolder,
+                                    pHashItem,
+                                    pContext );
          }
          vdseUnlock( &parentFolder->memObject, pContext );
 

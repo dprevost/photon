@@ -324,22 +324,23 @@ static void findLastItemInBucket( vdseHash     *  pHash,
  * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum ListErrors 
-vdseHashDelete( vdseHash*            pHash,
-                const unsigned char* pKey, 
-                size_t               keyLength,
-                vdseHashItem       * pHashItem,
-                vdseSessionContext * pContext  )
+vdseHashDelete( vdseHash            * pHash,
+                const unsigned char * pKey, 
+                size_t                keyLength,
+                vdseHashItem        * pHashItem,
+                vdseSessionContext  * pContext  )
 {
    size_t bucket = 0;
    ptrdiff_t* pArray;
    bool keyFound = false;
-   vdseHashItem* pItem, *previousItem = NULL, *previousSameKey;
+   vdseHashItem * previousItem = NULL, * previousSameKey = NULL;
    ptrdiff_t nextOffset, nextSameKey;
    vdseMemObject * pMemObject;
    
-   VDS_PRE_CONDITION( pHash != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pKey != NULL );
+   VDS_PRE_CONDITION( pHash     != NULL );
+   VDS_PRE_CONDITION( pContext  != NULL );
+   VDS_PRE_CONDITION( pKey      != NULL );
+   VDS_PRE_CONDITION( pHashItem != NULL );
    VDS_PRE_CONDITION( keyLength > 0 );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
@@ -347,44 +348,6 @@ vdseHashDelete( vdseHash*            pHash,
    VDS_INV_CONDITION( pArray != NULL );
 
    GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
-
-   if ( pHashItem == NULL )
-   {
-      /*
-       * Special case - only use from vdseFolderRemoveObject which is 
-       * called only from Transaction.c
-       *
-       * The two functions vdseTxCommit and vdseTxRollback should be able to
-       * figure out the hash item of the object to delete!!!
-       *
-       * To be worked on later.
-       */
-      keyFound = findKey( pHash, pArray, pKey, keyLength, 
-                          &pItem, &previousItem, &bucket );
-      if ( keyFound )   
-      {
-         nextOffset = pItem->nextItem;
-      
-         pHash->totalDataSizeInBytes -= pItem->dataLength;
-         vdseFree( pMemObject, 
-                   (unsigned char*)pItem, 
-                   calculateItemLength(pItem->keyLength,pItem->dataLength),
-                   pContext );
-
-         if ( previousItem == NULL )
-            pArray[bucket] = nextOffset;
-         else
-            previousItem->nextItem = nextOffset;
-            
-         pHash->numberOfItems--;
-
-         pHash->enumResize = isItTimeToResize( pHash );
-
-         return LIST_OK;
-      }
-
-      return LIST_KEY_NOT_FOUND;
-   }
    
    keyFound = findBucket( pHash,
                           pArray,
@@ -421,11 +384,6 @@ vdseHashDelete( vdseHash*            pHash,
    }
 
    return LIST_KEY_NOT_FOUND;
-
-#if 0
-
-#endif
-
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

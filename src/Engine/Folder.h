@@ -133,14 +133,8 @@ int vdseFolderRelease( vdseFolder         * pFolder,
  */
 VDSF_ENGINE_EXPORT
 void vdseFolderRemoveObject( vdseFolder         * pFolder,
-                             const vdsChar_T    * objectName,
-                             size_t               nameLength,
+                             vdseHashItem       * pHashItem,
                              vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
-void vdseFolderRemoveObject2( vdseFolder         * pFolder,
-                              vdseHashItem       * pHashItem,
-                              vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 void vdseFolderResize( vdseFolder         * pFolder, 
