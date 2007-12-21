@@ -75,6 +75,18 @@ int vdsFolder::GetNext( vdsFolderEntry * pEntry )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void vdsFolder::Open( const std::string & folderName )
+{
+   int rc = vdsFolderOpen( m_sessionHandle,
+                           folderName.c_str(),
+                           folderName.length(),
+                           &m_objectHandle );
+
+   if ( rc != 0 ) throw( rc );
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void vdsFolder::Open( const char * folderName,
                       size_t       nameLengthInBytes )
 {

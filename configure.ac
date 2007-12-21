@@ -460,6 +460,7 @@ AC_CONFIG_FILES([
    src/include/Makefile
    src/Tests/Makefile
    src/Tools/Makefile
+   src/Tools/Shell/Makefile
    src/Watchdog/Makefile
    src/Watchdog/Tests/Makefile
 ])
