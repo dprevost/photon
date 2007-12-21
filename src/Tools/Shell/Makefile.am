@@ -13,13 +13,13 @@
 include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES        = *~
-
-SUBDIRS = . Shell
  
-bin_PROGRAMS = vdsinfo
+bin_PROGRAMS = vdssh
 
-vdsinfo_SOURCES =                   \
-   info.cpp
+vdssh_SOURCES = \
+   shell.cpp    \
+   shell.h      \
+   vdssh.cpp    
 
-vdsinfo_LDADD = $(top_builddir)/src/C++/libvdsfcpp.la 
+vdssh_LDADD = $(top_builddir)/src/C++/libvdsfcpp.la 
 
