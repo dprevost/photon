@@ -20,6 +20,7 @@
 #include "Engine/MemoryAllocator.h"
 #include "Engine/HashMap.h"
 #include "Engine/Queue.h"
+#include "Engine/MemoryHeader.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -738,7 +739,8 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
       if ( vdseLock( pMemObject, pContext ) == 0 )
       {
          vdseMemObjectStatus( pMemObject, pStatus );
-
+         pStatus->type = pDesc->apiType;
+         
          switch( pDesc->apiType )
          {
          case VDS_FOLDER:
@@ -1404,6 +1406,10 @@ int vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
    GET_PTR( pDesc, pFolderItem->pHashItem->dataOffset, vdseObjectDescriptor );
    GET_PTR( pNode, pDesc->nodeOffset, vdseTreeNode);
    
+   /* Special case, the top folder */
+   if ( pNode->myParentOffset == NULL_OFFSET )
+      return 0;
+
    GET_PTR( parentFolder, pNode->myParentOffset, vdseFolder );
    GET_PTR( txFolderStatus, parentFolder->nodeObject.txStatusOffset, vdseTxStatus );
    
@@ -1788,32 +1794,48 @@ int vdseTopFolderGetStatus( vdseFolder         * pFolder,
    {
       first = 1;
       --strLength;
-      if ( strLength == 0 )
+   }
+
+   if ( strLength == 0 )
+   {
+      /* Getting the status of the top folder (special case). */
+      if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
       {
-         errcode = VDS_INVALID_OBJECT_NAME;
+         vdseMemObjectStatus( &pFolder->memObject, pStatus );
+         pStatus->type = VDS_FOLDER;
+         
+         vdseFolderStatus( pFolder, pStatus );
+
+         vdseUnlock( &pFolder->memObject, pContext );
+      }
+      else
+      {
+         errcode = VDS_OBJECT_CANNOT_GET_LOCK;
          goto error_handler;
       }
    }
-
-   /*
-    * There is no vdseUnlock here - the recursive nature of the 
-    * function vdseFolderGetObject() means that it will release 
-    * the lock as soon as it can, after locking the
-    * next folder in the chain if needed. 
-    */
-   if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
-   {
-      rc = vdseFolderGetStatus( pFolder,
-                                &(lowerName[first]), 
-                                strLength, 
-                                pStatus,
-                                pContext );
-      if ( rc != 0 ) goto error_handler;
-   }
    else
    {
-      errcode = VDS_ENGINE_BUSY;
-      goto error_handler;
+      /*
+       * There is no vdseUnlock here - the recursive nature of the 
+       * function vdseFolderGetObject() means that it will release 
+       * the lock as soon as it can, after locking the
+       * next folder in the chain if needed. 
+       */
+      if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
+      {
+         rc = vdseFolderGetStatus( pFolder,
+                                   &(lowerName[first]), 
+                                   strLength, 
+                                   pStatus,
+                                   pContext );
+         if ( rc != 0 ) goto error_handler;
+      }
+      else
+      {
+         errcode = VDS_ENGINE_BUSY;
+         goto error_handler;
+      }
    }
    
 #if VDS_SUPPORT_i18n
@@ -1913,7 +1935,7 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
       goto error_handler;
    }
 
-   /* lowecase the string */
+   /* lowercase the string */
    for ( i = 0; i < strLength; ++i )
       lowerName[i] = (vdsChar_T) vds_tolower( name[i] );
    
@@ -1922,32 +1944,39 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
    {
       first = 1;
       --strLength;
-      if ( strLength == 0 )
-      {
-         errcode = VDS_INVALID_OBJECT_NAME;
-         goto error_handler;
-      }
    }
 
-   /*
-    * There is no vdseUnlock here - the recursive nature of the 
-    * function vdseFolderGetObject() means that it will release 
-    * the lock as soon as it can, after locking the
-    * next folder in the chain if needed. 
-    */
-   if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
+   if ( strLength == 0 )
    {
-      rc = vdseFolderGetObject( pFolder,
-                                &(lowerName[first]), 
-                                strLength, 
-                                pFolderItem,
-                                pContext );
-      if ( rc != 0 ) goto error_handler;
+      /* 
+       * Opening the top folder (special case). No lock is needed here
+       * since all we do is to retrieve the pointer (and we do not 
+       * count access since the object is undeletable).
+       */
+      pFolderItem->pHashItem = &((vdseMemoryHeader *) g_pBaseAddr)->topHashItem;
    }
    else
    {
-      errcode = VDS_ENGINE_BUSY;
-      goto error_handler;
+      /*
+       * There is no vdseUnlock here - the recursive nature of the 
+       * function vdseFolderGetObject() means that it will release 
+       * the lock as soon as it can, after locking the
+       * next folder in the chain if needed. 
+       */
+      if ( vdseLock( &pFolder->memObject, pContext ) == 0 )
+      {
+         rc = vdseFolderGetObject( pFolder,
+                                   &(lowerName[first]), 
+                                   strLength, 
+                                   pFolderItem,
+                                   pContext );
+         if ( rc != 0 ) goto error_handler;
+      }
+      else
+      {
+         errcode = VDS_ENGINE_BUSY;
+         goto error_handler;
+      }
    }
    
 #if VDS_SUPPORT_i18n

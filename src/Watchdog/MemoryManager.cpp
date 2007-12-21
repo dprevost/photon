@@ -124,12 +124,13 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
                     errcode );
       return -1;
    }
-   vdseTxStatusInit( &m_pHeader->topFolderStatus, NULL_OFFSET );
+   vdseTxStatusInit( &m_pHeader->topHashItem.txStatus, NULL_OFFSET );
 
    pFolder->nodeObject.txCounter      = 0;
    pFolder->nodeObject.myNameLength   = 0;
    pFolder->nodeObject.myNameOffset   = NULL_OFFSET;
-   pFolder->nodeObject.txStatusOffset = SET_OFFSET( &m_pHeader->topFolderStatus );
+   pFolder->nodeObject.txStatusOffset = 
+      SET_OFFSET( &m_pHeader->topHashItem.txStatus );
    pFolder->nodeObject.myParentOffset = NULL_OFFSET;
 
    listErr = vdseHashInit( &pFolder->hashObj, 
@@ -146,6 +147,11 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
       return -1;
    }   
    (*ppHeader)->treeMgrOffset = SET_OFFSET( ptr );
+   (*ppHeader)->topHashItem.dataOffset = SET_OFFSET(&(*ppHeader)->topDescriptor);
+   (*ppHeader)->topDescriptor.offset = SET_OFFSET( ptr );
+   (*ppHeader)->topDescriptor.nodeOffset = SET_OFFSET( &pFolder->nodeObject );
+   (*ppHeader)->topDescriptor.memOffset = SET_OFFSET( &pFolder->memObject );
+   (*ppHeader)->topDescriptor.apiType = VDS_FOLDER;
 
 ////////////////////////
 #if 0
