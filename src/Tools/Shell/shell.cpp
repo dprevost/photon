@@ -46,6 +46,10 @@ bool vdsShell::Dispatch()
       if ( tokens.size() > 2 ) throw( 1 );
       cd();
    }
+   else if ( tokens[0] == s.assign("del") ) {
+      if ( tokens.size() != 2 ) throw( 1 );
+      rm();
+   }
    else if ( tokens[0] == s.assign("dir") ) {
       if ( tokens.size() > 2 ) throw( 1 );
       ls();
@@ -74,6 +78,10 @@ bool vdsShell::Dispatch()
    }
    else if ( tokens[0] == s.assign("quit") ) {
       timeToExit = true;
+   }
+   else if ( tokens[0] == s.assign("rm") ) {
+      if ( tokens.size() != 2 ) throw( 1 );
+      rm();
    }
    else if ( tokens[0] == s.assign("rmdir") ) {
       if ( tokens.size() != 2 ) throw( 1 );
@@ -168,7 +176,6 @@ void vdsShell::Run()
 
 string & vdsShell::Trim( string & s )
 {
-//   string s = inStr;
    unsigned i;
 
    for ( i = 0; i < s.length(); ++i )
@@ -300,6 +307,8 @@ void vdsShell::man()
    cout << "cd [folder_name]" << endl;
    cout << "    Without a name, change the current folder to \"/\"." << endl;
    cout << "    Change the current folder to folder_name." << endl;
+   cout << "del/rm object_name" << endl;
+   cout << "    Delete the data container named object_name" << endl;
    cout << "dir/ls [folder_name]" << endl;
    cout << "    Without a name, list the objects of the current folder." << endl;
    cout << "    List the objects of the folder folder_name." << endl;
@@ -345,6 +354,46 @@ void vdsShell::mkdir()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void vdsShell::rm()
+{
+   string objectName;
+   vdsObjStatus status;
+   string msg;
+   
+   if ( tokens[1][0] == '/' )
+      // Absolute path
+      objectName = tokens[1];
+   else
+      objectName = currentLocation + tokens[1];
+
+   // Must check if object exists
+   try {
+      session.GetStatus( objectName, &status );
+   }
+   catch ( int rc )
+   {
+      cerr << "vdssh: rm: " << objectName << ": Invalid object name" << endl;
+      return;
+   }
+   if ( status.type == VDS_FOLDER )
+   {
+      cerr << "vdssh: rm: " << objectName << ": Is a directory/folder" << endl;
+      return;
+   }
+   
+   try {
+      session.DestroyObject( objectName );
+      session.Commit();
+   }
+   catch ( int rc ) {
+      session.ErrorMsg( msg );
+      session.Rollback();  // just in case it's the Commit that fails
+      cerr << "vdssh: rm: " << msg << endl;
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void vdsShell::rmdir()
 {
    string folderName;
@@ -363,12 +412,12 @@ void vdsShell::rmdir()
    }
    catch ( int rc )
    {
-      cerr << "vdssh: cd: " << folderName << ": Invalid folder name" << endl;
+      cerr << "vdssh: rmdir: " << folderName << ": Invalid folder name" << endl;
       return;
    }
    if ( status.type != VDS_FOLDER )
    {
-      cerr << "vdssh: cd: " << folderName << ": Invalid folder name" << endl;
+      cerr << "vdssh: rmdir: " << folderName << ": Not a directory/folder" << endl;
       return;
    }
    
@@ -379,9 +428,10 @@ void vdsShell::rmdir()
    catch ( int rc ) {
       session.ErrorMsg( msg );
       session.Rollback();  // just in case it's the Commit that fails
-      cerr << "vdssh: mkdir: " << msg << endl;
+      cerr << "vdssh: rmdir: " << msg << endl;
    }
 }
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void vdsShell::stat()
@@ -401,7 +451,7 @@ void vdsShell::stat()
    }
    catch ( int rc ) {
       session.ErrorMsg( msg );
-      cerr << "vdssh: cd: " << objectName << ": " << msg << endl;
+      cerr << "vdssh: stat: " << objectName << ": " << msg << endl;
       return;
    }
    cout << "Object full name     : " << objectName << endl;

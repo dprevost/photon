@@ -62,12 +62,14 @@ private:
    
    void mkdir();
    
+   void rm();
+   
    void rmdir();
 
    void stat();
    
    // cp, mv, file cat, history(?), wc, vi/ed(?), chmod
-   // cmp, rm, grep, diff, head, tail, du, df, uname, ln, find, touch,
+   // cmp, grep, diff, head, tail, du, df, uname, ln, find, touch,
    // uptime
 };
 
