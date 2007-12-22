@@ -95,13 +95,36 @@ void vdsShell::Parse( string & inStr )
 {
    istringstream iss( inStr );
    string s;
+   string::size_type len1, len2;
 
    tokens.clear();
-   do
+
+   len1 = inStr.find('"');
+   if ( len1 == string::npos )
    {
-      getline( iss, s, ' ');
-      tokens.push_back( s );
-   } while ( ! iss.eof() );
+      do
+      {
+         getline( iss, s, ' ');
+         tokens.push_back( s );
+      } while ( ! iss.eof() );
+   }
+   else
+   {
+      len2 = inStr.find('"',len1+1);
+      if ( len2 == string::npos || (len2-len1) == 1 )
+         throw(2);
+      do
+      {
+         // Incomplete - options are not taken into account (but we don't
+         // support options yet...)
+         getline( iss, s, '"');
+         Trim(s);
+         if ( s.length() > 0 )
+            tokens.push_back( s );
+      } while ( ! iss.eof() );
+   }
+   if ( tokens.size() == 0 )
+      throw(2);
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -122,17 +145,19 @@ void vdsShell::Run()
          return;
       }
       if ( inStr.length() == 0 ) continue;
-      Parse( Trim(inStr) );
       
       try {
+         Parse( Trim(inStr) );
          timeToExit = Dispatch();
       }
       catch ( int rc )
       {
          if ( rc == 0 )
             cerr << "vdssh: " << tokens[0] << ": command not found" << endl;
-         else
+         else if ( rc == 1 )
             cerr << "vdssh: " << tokens[0] << ": invalid number of arguments" << endl;
+         else
+            cerr << "vdssh: " << "Malformed arguments (missing quote?)" << endl;
       }
       if ( timeToExit )
          return;
@@ -255,7 +280,7 @@ void vdsShell::ls()
       rc = folder.GetFirst( &entry );
       while ( rc == 0 )
       {
-         cout << constants.Type(entry.type) << " " << entry.status << " " << entry.name << endl;
+         cout << constants.Type(entry.type) << " " << constants.Status(entry.status) << " " << entry.name << endl;
          rc = folder.GetNext( &entry );
       }
       folder.Close();
