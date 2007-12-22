@@ -92,6 +92,21 @@ void vdsSession::DestroyObject( const char * objectName,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+std::string & 
+vdsSession::ErrorMsg( std::string & message )
+{
+   char msg[1024];
+   int rc = vdsErrorMsg( m_sessionHandle,
+                         msg,
+                         1024 );
+   if ( rc != 0 ) throw( rc );
+
+   message = msg;
+   return message;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void vdsSession::ErrorMsg( char   * message,
                            size_t   msgLengthInBytes )
 {

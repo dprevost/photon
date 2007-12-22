@@ -16,10 +16,12 @@ CLEANFILES        = *~
  
 bin_PROGRAMS = vdssh
 
-vdssh_SOURCES = \
-   shell.cpp    \
-   shell.h      \
-   vdssh.cpp    
+vdssh_SOURCES =  \
+   constants.cpp \
+   constants.h   \
+   shell.cpp     \
+   shell.h       \
+   vdssh.cpp     
 
 vdssh_LDADD = $(top_builddir)/src/C++/libvdsfcpp.la 
 

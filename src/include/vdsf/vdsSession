@@ -52,6 +52,8 @@ public:
    void ErrorMsg( char   * message,
                   size_t   msgLengthInBytes );
 
+   std::string & ErrorMsg( std::string & message );
+
    void GetInfo( vdsInfo * pInfo );
 
    void GetStatus( const std::string & objectName,

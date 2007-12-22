@@ -65,6 +65,10 @@ bool vdsShell::Dispatch()
    else if ( tokens[0] == s.assign("quit") ) {
       timeToExit = true;
    }
+   else if ( tokens[0] == s.assign("rmdir") ) {
+      if ( tokens.size() != 2 ) throw( 1 );
+      rmdir();
+   }
    else
       throw( 0 );
    
@@ -103,7 +107,8 @@ void vdsShell::Run()
          cout << endl;
          return;
       }
-      Parse( inStr );
+      if ( inStr.length() == 0 ) continue;
+      Parse( Trim(inStr) );
       
       try {
          timeToExit = Dispatch();
@@ -122,9 +127,34 @@ void vdsShell::Run()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+string & vdsShell::Trim( string & s )
+{
+//   string s = inStr;
+   unsigned i;
+
+   for ( i = 0; i < s.length(); ++i )
+      if ( s[i] != ' ' ) break;
+   
+   s = s.assign( s, i, s.length()-i );
+
+   while ( s.length() > 0 ) {
+      if ( s[s.length()-1] == ' ' )
+         s.erase( s.length()-1 );
+      else
+         break;
+   }
+   return s;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+// The "list" of currently implemented pseudo-shell commands starts here.
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void vdsShell::cd()
 {
-   string newLoc, folderName;
+   string newLoc;
    vdsObjStatus status;
 
    if ( tokens.size() == 1 )
@@ -132,32 +162,32 @@ void vdsShell::cd()
       currentLocation = "/";
       return;
    }
-   // Strip leading '/' and check for special case of "/"
-   newLoc = tokens[1];
-   if ( newLoc[0] == '/' )
-      newLoc.erase( 0 );
-   if ( newLoc.length() == 0 )
-   {
-      currentLocation = "/";
-      return;
-   }
+
+   if ( tokens[1][0] == '/' )
+      // Absolute path
+      newLoc = tokens[1];
+   else
+      newLoc = currentLocation + tokens[1];
+
    // Add trailing '/', if needed
    if ( newLoc[newLoc.length()-1] != '/' )
       newLoc += '/';
    
-   folderName = currentLocation;
-   folderName += newLoc;
-
    // Must check if folder exists
    try {
-      session.GetStatus( folderName, &status );
+      session.GetStatus( newLoc, &status );
    }
    catch ( int rc )
    {
-      cerr << "vdsh: cd: " << folderName << ": Invalid folder name" << endl;
+      cerr << "vdsh: cd: " << newLoc << ": Invalid folder name" << endl;
       return;
    }
-   currentLocation = folderName;
+   if ( status.type != VDS_FOLDER )
+   {
+      cerr << "vdsh: cd: " << newLoc << ": Invalid folder name" << endl;
+      return;
+   }
+   currentLocation = newLoc;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -167,21 +197,32 @@ void vdsShell::ls()
    vdsFolder folder( session );
    int rc;
    vdsFolderEntry entry;
-   const string folderName = currentLocation;
+   string folderName = currentLocation;
+   string msg;
+   
+   if ( tokens.size() >= 2 )
+   {
+      if ( tokens[1][0] == '/' )
+         // Absolute path
+         folderName = tokens[1];
+      else
+         folderName = currentLocation + tokens[1];
+   }
    
    try {
-      folder.Open( currentLocation );
+      folder.Open( folderName );
       rc = folder.GetFirst( &entry );
       while ( rc == 0 )
       {
-         cout << entry.type << " " << entry.status << " " << entry.name << endl;
+         cout << constants.Type(entry.type) << " " << entry.status << " " << entry.name << endl;
          rc = folder.GetNext( &entry );
       }
       folder.Close();
    }
    catch( int e )
    {
-      cerr << "vdsh: ls: " << e << endl;
+      session.ErrorMsg( msg );
+      cerr << "vdsh: " << tokens[0] << ": " << msg << endl;
    }
 }
 
@@ -202,7 +243,45 @@ void vdsShell::mkdir()
       session.Commit();
    }
    catch ( int rc ) {
-      session.Rollback();
+      session.Rollback();  // just in case it's the Commit that fails
+      cerr << "vdsh: mkdir: " << rc << endl;
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsShell::rmdir()
+{
+   string folderName;
+   vdsObjStatus status;
+   
+   if ( tokens[1][0] == '/' )
+      // Absolute path
+      folderName = tokens[1];
+   else
+      folderName = currentLocation + tokens[1];
+
+   // Must check if folder exists
+   try {
+      session.GetStatus( folderName, &status );
+   }
+   catch ( int rc )
+   {
+      cerr << "vdsh: cd: " << folderName << ": Invalid folder name" << endl;
+      return;
+   }
+   if ( status.type != VDS_FOLDER )
+   {
+      cerr << "vdsh: cd: " << folderName << ": Invalid folder name" << endl;
+      return;
+   }
+   
+   try {
+      session.DestroyObject( folderName );
+      session.Commit();
+   }
+   catch ( int rc ) {
+      session.Rollback();  // just in case it's the Commit that fails
       cerr << "vdsh: mkdir: " << rc << endl;
    }
 }
