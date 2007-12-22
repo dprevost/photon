@@ -54,13 +54,19 @@ private:
 
    void cd();
    
+   void free();
+   
    void ls();
+   
+   void man();
    
    void mkdir();
    
    void rmdir();
 
-   // cp, mv, file stat, man/help, cat, history(?), wc, vi/ed(?), chmod
+   void stat();
+   
+   // cp, mv, file cat, history(?), wc, vi/ed(?), chmod
    // cmp, rm, grep, diff, head, tail, du, df, uname, ln, find, touch,
    // uptime
 };

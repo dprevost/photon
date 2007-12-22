@@ -740,7 +740,8 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
       {
          vdseMemObjectStatus( pMemObject, pStatus );
          pStatus->type = pDesc->apiType;
-         
+         pStatus->status = txStatus->enumStatus;
+
          switch( pDesc->apiType )
          {
          case VDS_FOLDER:

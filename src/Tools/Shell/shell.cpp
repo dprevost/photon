@@ -47,15 +47,25 @@ bool vdsShell::Dispatch()
       cd();
    }
    else if ( tokens[0] == s.assign("dir") ) {
+      if ( tokens.size() > 2 ) throw( 1 );
       ls();
    }
    else if ( tokens[0] == s.assign("exit") ) {
       timeToExit = true;
    }
+   else if ( tokens[0] == s.assign("free") ) {
+      free();
+   }
+   else if ( tokens[0] == s.assign("help") ) {
+      man();
+   }
    else if ( tokens[0] == s.assign("ls") ) {
       ls();
    }
-   else if ( tokens[0] == s.assign("mkdir") ) {   
+   else if ( tokens[0] == s.assign("man") ) {
+      man();
+   }
+   else if ( tokens[0] == s.assign("mkdir") ) {
       if ( tokens.size() != 2 ) throw( 1 );
       mkdir();
    }
@@ -68,6 +78,10 @@ bool vdsShell::Dispatch()
    else if ( tokens[0] == s.assign("rmdir") ) {
       if ( tokens.size() != 2 ) throw( 1 );
       rmdir();
+   }
+   else if ( tokens[0] == s.assign("stat") ) {
+      if ( tokens.size() != 2 ) throw( 1 );
+      stat();
    }
    else
       throw( 0 );
@@ -179,15 +193,42 @@ void vdsShell::cd()
    }
    catch ( int rc )
    {
-      cerr << "vdsh: cd: " << newLoc << ": Invalid folder name" << endl;
+      cerr << "vdssh: cd: " << newLoc << ": Invalid folder name" << endl;
       return;
    }
    if ( status.type != VDS_FOLDER )
    {
-      cerr << "vdsh: cd: " << newLoc << ": Invalid folder name" << endl;
+      cerr << "vdssh: cd: " << newLoc << ": Invalid folder name" << endl;
       return;
    }
    currentLocation = newLoc;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsShell::free()
+{
+   vdsInfo info;
+   string msg;
+   
+   try {
+      session.GetInfo( &info );
+   }
+   catch( int rc )
+   {
+      session.ErrorMsg( msg );
+      cerr << "vdssh: free: " << msg << endl;
+      return;
+   }
+
+   cout << "vds total size     : " << constants.Bytes(info.totalSizeInBytes) << endl;
+   cout << "allocated memory   : " << constants.Bytes(info.allocatedSizeInBytes) << endl;
+   cout << "number of objects  : " << info.numObjects << endl;
+   cout << "number of groups   : " << info.numGroups << endl;
+   cout << "number of mallocs  : " << info.numMallocs << endl;
+   cout << "number of frees    : " << info.numFrees << endl;
+   cout << "largest free space : " << constants.Bytes(info.largestFreeInBytes) << endl;
+
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -200,7 +241,7 @@ void vdsShell::ls()
    string folderName = currentLocation;
    string msg;
    
-   if ( tokens.size() >= 2 )
+   if ( tokens.size() == 2 )
    {
       if ( tokens[1][0] == '/' )
          // Absolute path
@@ -222,8 +263,35 @@ void vdsShell::ls()
    catch( int e )
    {
       session.ErrorMsg( msg );
-      cerr << "vdsh: " << tokens[0] << ": " << msg << endl;
+      cerr << "vdssh: " << tokens[0] << ": " << msg << endl;
    }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsShell::man()
+{
+   cout << "List of available commands: " << endl << endl;
+   cout << "cd [folder_name]" << endl;
+   cout << "    Without a name, change the current folder to \"/\"." << endl;
+   cout << "    Change the current folder to folder_name." << endl;
+   cout << "dir/ls [folder_name]" << endl;
+   cout << "    Without a name, list the objects of the current folder." << endl;
+   cout << "    List the objects of the folder folder_name." << endl;
+   cout << "exit/quit" << endl;
+   cout << "    exit the program." << endl;
+   cout << "free" << endl;
+   cout << "    display amount of used/free memory (main allocator)" <<endl;
+   cout << "help/man" << endl;
+   cout << "    The current list." << endl;
+   cout << "mkdir folder_name" << endl;
+   cout << "    Create a new folder" << endl;
+   cout << "pwd" << endl;
+   cout << "    Display the current folder." << endl;
+   cout << "rmdir folder_name" << endl;
+   cout << "    Delete the folder folder_name" << endl;
+   cout << "stat object_name" << endl;
+   cout << "    Show the status of the object object_name" << endl;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -231,7 +299,8 @@ void vdsShell::ls()
 void vdsShell::mkdir()
 {
    string folderName;
-   
+   string msg;
+
    if ( tokens[1][0] == '/' )
       // Absolute path
       folderName = tokens[1];
@@ -243,8 +312,9 @@ void vdsShell::mkdir()
       session.Commit();
    }
    catch ( int rc ) {
+      session.ErrorMsg( msg );
       session.Rollback();  // just in case it's the Commit that fails
-      cerr << "vdsh: mkdir: " << rc << endl;
+      cerr << "vdssh: mkdir: " << msg << endl;
    }
 }
 
@@ -254,6 +324,7 @@ void vdsShell::rmdir()
 {
    string folderName;
    vdsObjStatus status;
+   string msg;
    
    if ( tokens[1][0] == '/' )
       // Absolute path
@@ -267,12 +338,12 @@ void vdsShell::rmdir()
    }
    catch ( int rc )
    {
-      cerr << "vdsh: cd: " << folderName << ": Invalid folder name" << endl;
+      cerr << "vdssh: cd: " << folderName << ": Invalid folder name" << endl;
       return;
    }
    if ( status.type != VDS_FOLDER )
    {
-      cerr << "vdsh: cd: " << folderName << ": Invalid folder name" << endl;
+      cerr << "vdssh: cd: " << folderName << ": Invalid folder name" << endl;
       return;
    }
    
@@ -281,9 +352,42 @@ void vdsShell::rmdir()
       session.Commit();
    }
    catch ( int rc ) {
+      session.ErrorMsg( msg );
       session.Rollback();  // just in case it's the Commit that fails
-      cerr << "vdsh: mkdir: " << rc << endl;
+      cerr << "vdssh: mkdir: " << msg << endl;
    }
+}
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsShell::stat()
+{
+   string objectName;
+   vdsObjStatus status;
+   string msg;
+   
+   if ( tokens[1][0] == '/' )
+      // Absolute path
+      objectName = tokens[1];
+   else
+      objectName = currentLocation + tokens[1];
+
+   try {
+      session.GetStatus( objectName, &status );
+   }
+   catch ( int rc ) {
+      session.ErrorMsg( msg );
+      cerr << "vdssh: cd: " << objectName << ": " << msg << endl;
+      return;
+   }
+   cout << "Object full name     : " << objectName << endl;
+   cout << "Object type          : " << constants.Type(status.type)     << endl;
+   cout << "Status               : " << constants.Status(status.status) << endl;
+   cout << "Total size           : " << constants.Bytes(status.numBlocks*VDSE_BLOCK_SIZE) << endl;
+   cout << "Number of blocks     : " << status.numBlocks << endl;
+   cout << "# of group of blocks : " << status.numBlockGroup << endl;
+   cout << "Number of data items : " << status.numDataItem << endl;
+   cout << "Free space           : " << constants.Bytes(status.freeBytes) << endl;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

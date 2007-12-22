@@ -21,6 +21,13 @@
 #include <iostream>
 #include <vector>
 
+#define KILO_INT          1024
+#define KILO_DOUBLE       1024.0
+#define MEGA_INT       1048576
+#define MEGA_DOUBLE    1048576.0
+#define GIGA_INT    1073741824
+#define GIGA_DOUBLE 1073741824.0
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 vdsConstants::vdsConstants()
@@ -31,6 +38,12 @@ vdsConstants::vdsConstants()
    types.push_back( "Queue   " );
    types.push_back( "Hash Map" );
    
+   stats.push_back( "Normal " );
+   stats.push_back( "Deleted" );
+   stats.push_back( "Added  " );
+//   stats.push_back( "Replaced" );
+//   VDSE_TXS_DESTROYED_COMMITTED
+   stats.push_back( "Unknown" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -41,6 +54,35 @@ vdsConstants::~vdsConstants()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+const string &
+vdsConstants::Bytes( long numBytes )
+{
+   double d = numBytes;
+   ostringstream oss;
+   
+   oss.precision(2);
+   if ( numBytes > GIGA_INT )
+   {
+      d = d / GIGA_DOUBLE;
+      oss << fixed << d << " Gbytes";
+   }
+   else if ( numBytes > MEGA_INT )
+   {
+      d = d / MEGA_DOUBLE;
+      oss << fixed << d << " Mbytes";
+   }
+   else if ( numBytes > 10*KILO_INT )
+   {
+      d = d / KILO_DOUBLE;
+      oss << fixed << d << " Kbytes";
+   }
+   else
+      oss << numBytes << " bytes";
+
+   return strSize = oss.str();
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 const string &
 vdsConstants::Type( vdsObjectType type )
 {
@@ -53,3 +95,15 @@ vdsConstants::Type( vdsObjectType type )
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+const string &
+vdsConstants::Status( int status )
+{
+   if ( status < 0 || status > 2 )
+      status = 3;
+   
+   return stats[status];
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

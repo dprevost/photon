@@ -39,10 +39,16 @@ public:
    
    const string & Type( vdsObjectType type );
    
+   const string & Status( int status );
+
+   const string & Bytes( long );
+   
 private:
 
    vector<string> types;
+   vector<string> stats;
    
+   string strSize;
 };
 #endif // VDSTOOLS_CONSTANTS_H
 
