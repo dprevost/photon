@@ -30,6 +30,8 @@ vdswd_SOURCES =                   \
                 ValidateFolder.h  \
                 ValidateHashMap.c \
                 ValidateHashMap.h \
+                ValidateList.c    \
+                ValidateList.h    \
                 ValidateQueue.c   \
                 ValidateQueue.h   \
                 Validator.cpp     \

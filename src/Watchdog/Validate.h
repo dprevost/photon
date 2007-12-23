@@ -18,6 +18,8 @@
 #ifndef VDSW_VALIDATE_H
 #define VDSW_VALIDATE_H
 
+#include "Engine/MemoryHeader.h"
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 BEGIN_C_DECLS
@@ -41,6 +43,14 @@ void vdswEcho( int spaces, char * message )
    for (i = 0; i < spaces; ++i )
       fprintf( stderr, " " );
    fprintf( stderr, "%s\n", message );
+}
+
+extern vdseMemoryHeader * g_pMemoryAddress;
+
+static inline
+bool vdswValidateOffset( ptrdiff_t offset )
+{
+   return (offset > 0 && offset < (ptrdiff_t)g_pMemoryAddress->totalLength );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

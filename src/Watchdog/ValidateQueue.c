@@ -110,6 +110,15 @@ vdswValidateQueue( struct vdseQueue * pQueue, int verbose, int spaces )
    
    spaces += 2;
    
+   if ( vdscIsItLocked( &pQueue->memObject.lock ) )
+   {
+      vdscReleaseProcessLock ( &pQueue->memObject.lock );
+   
+      rc = vdswValidateList( &pQueue->memObject.listBlockGroup );
+   //   rc = ValidateMemObject( &pQueue->memObject );
+      rc = vdswValidateList( &pQueue->listOfElements );
+   }
+
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
 
    if ( txQueueStatus->txOffset != NULL_OFFSET )

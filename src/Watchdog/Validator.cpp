@@ -20,6 +20,7 @@
 
 #include "Watchdog/Validator.h"
 #include "Watchdog/ValidateFolder.h"
+#include "Watchdog/Validate.h"
 
 #include "Engine/MemoryHeader.h"
 
@@ -30,6 +31,8 @@
 #include "Engine/MemoryAllocator.h"
 #include "Engine/Queue.h"
 
+vdseMemoryHeader * g_pMemoryAddress = NULL;
+
 using namespace std;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -38,6 +41,7 @@ vdsValidator::vdsValidator( vdseMemoryHeader * pMemoryAddress )
    : m_bTestAllocator( false ),
      m_pMemoryAddress( pMemoryAddress )
 {
+   g_pMemoryAddress = pMemoryAddress;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
