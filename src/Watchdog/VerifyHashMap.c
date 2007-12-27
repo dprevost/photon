@@ -16,14 +16,13 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include "Watchdog/ValidateHashMap.h"
+#include "Watchdog/VerifyCommon.h"
 #include "Engine/HashMap.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswCheckHashMapContent( vdseHashMap        * pHashMap, 
-                             int                  verbose,
-                             int                  spaces,
+int vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
+                             vdseHashMap        * pHashMap, 
                              vdseSessionContext * pContext )
 {
    enum ListErrors listErr;
@@ -36,7 +35,7 @@ int vdswCheckHashMapContent( vdseHashMap        * pHashMap,
    if ( pHashMap->hashObj.numberOfItems == 0 )
       return 0;
    
-   spaces += 2;
+   pVerify->spaces += 2;
    
    listErr = vdseHashGetFirst( &pHashMap->hashObj,
                                &bucket, 
@@ -60,29 +59,25 @@ int vdswCheckHashMapContent( vdseHashMap        * pHashMap,
           */
          if ( txItemStatus->enumStatus == VDSE_TXS_ADDED )
          {
-            if ( verbose )
-               vdswEcho( spaces, "Hash item added but not committed - item removed" );
+            vdswEcho( pVerify, "Hash item added but not committed - item removed" );
             deletedBucket = bucket;
             pDeletedItem = pItem;
          }         
          else if ( txItemStatus->enumStatus == VDSE_TXS_REPLACED )
          {
-            if ( verbose )
-               vdswEcho( spaces, "Hash item replaced but not committed - new item removed" );
+            vdswEcho( pVerify, "Hash item replaced but not committed - new item removed" );
             deletedBucket = bucket;
             pDeletedItem = pItem;
          }         
          else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
          {
-            if ( verbose )
-               vdswEcho( spaces, "Hash item deleted and committed - item removed" );
+            vdswEcho( pVerify, "Hash item deleted and committed - item removed" );
             deletedBucket = bucket;
             pDeletedItem = pItem;
          }
          else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED )
          {
-            if ( verbose )
-               vdswEcho( spaces, "Hash item deleted but not committed - item is kept" );
+            vdswEcho( pVerify, "Hash item deleted but not committed - item is kept" );
          }
          
          txItemStatus->txOffset = NULL_OFFSET;
@@ -91,8 +86,7 @@ int vdswCheckHashMapContent( vdseHashMap        * pHashMap,
 
       if ( pDeletedItem == NULL && txItemStatus->usageCounter != 0 )
       {
-         if ( verbose )
-            vdswEcho( spaces, "Hash item usage counter set to zero" );
+         vdswEcho( pVerify, "Hash item usage counter set to zero" );
          txItemStatus->usageCounter = 0;
       }
       
@@ -125,15 +119,14 @@ int vdswCheckHashMapContent( vdseHashMap        * pHashMap,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum vdswValidation 
-vdswValidateHashMap( vdseHashMap        * pHashMap,
-                     int                  verbose,
-                     int                  spaces,
-                     vdseSessionContext * pContext )
+vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
+                   vdseHashMap        * pHashMap,
+                   vdseSessionContext * pContext )
 {
    vdseTxStatus * txHashMapStatus;
    int rc;
       
-   spaces += 2;
+   pVerify->spaces += 2;
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
    if ( txHashMapStatus->txOffset != NULL_OFFSET )
@@ -148,18 +141,15 @@ vdswValidateHashMap( vdseHashMap        * pHashMap,
        */
       if ( txHashMapStatus->enumStatus == VDSE_TXS_ADDED)
       {
-         if ( verbose )
-            vdswEcho( spaces, "Object added but not committed - object removed" );
+         vdswEcho( pVerify, "Object added but not committed - object removed" );
          return VDSW_DELETE_OBJECT;
       }         
       if ( txHashMapStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
       {
-         if ( verbose )
-            vdswEcho( spaces, "Object deleted and committed - object removed" );
+         vdswEcho( pVerify, "Object deleted and committed - object removed" );
          return VDSW_DELETE_OBJECT;
       }
-      if ( verbose )
-         vdswEcho( spaces, "Object deleted but not committed - object is kept" );
+      vdswEcho( pVerify, "Object deleted but not committed - object is kept" );
 
       txHashMapStatus->txOffset = NULL_OFFSET;
       txHashMapStatus->enumStatus = VDSE_TXS_OK;
@@ -168,23 +158,21 @@ vdswValidateHashMap( vdseHashMap        * pHashMap,
    if ( txHashMapStatus->usageCounter != 0 )
    {
       txHashMapStatus->usageCounter = 0;
-      if ( verbose )
-         vdswEcho( spaces, "Usage counter set to zero" );
+      vdswEcho( pVerify, "Usage counter set to zero" );
    }
    if ( txHashMapStatus->parentCounter != 0 )
    {
       txHashMapStatus->parentCounter = 0;
-      if ( verbose )
-         vdswEcho( spaces, "Parent counter set to zero" );
+      vdswEcho( pVerify, "Parent counter set to zero" );
    }
    if ( pHashMap->nodeObject.txCounter != 0 )
    {
       pHashMap->nodeObject.txCounter = 0;
-      if ( verbose )
-         vdswEcho( spaces, "Transaction counter set to zero" );
+      vdswEcho( pVerify, "Transaction counter set to zero" );
    }
 
-   rc = vdswCheckHashMapContent( pHashMap, verbose, spaces, pContext );
+   rc = vdswCheckHashMapContent( pVerify, pHashMap, pContext );
+   pVerify->spaces -= 2;
 
    return VDSW_OK;
 }

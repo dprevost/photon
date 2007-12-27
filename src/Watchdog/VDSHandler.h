@@ -49,7 +49,8 @@ public:
    void HandleCrash( pid_t pid );
 
    int Init( struct ConfigParams      * pConfig,
-             struct vdseMemoryHeader ** ppMemoryAddress );
+             struct vdseMemoryHeader ** ppMemoryAddress,
+             bool                       verifyVDSOnly );
    
 private:   
 

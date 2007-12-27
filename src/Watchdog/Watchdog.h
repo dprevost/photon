@@ -109,7 +109,7 @@ public:
     */
    int InitializeVDS()
    {
-      return m_vds.Init( &m_params, &m_pMemoryAddress );
+      return m_vds.Init( &m_params, &m_pMemoryAddress, m_verifyVDSOnly );
    }   
 
    int SetSigHandler();
@@ -152,10 +152,13 @@ public:
    vdswHandler m_vds;
 
    vdscErrorHandler m_errorHandler;
+
+   bool m_verifyVDSOnly;
    
 private:
 
    char m_errorMsg[WD_MSG_LEN];
+   
    
 };
 

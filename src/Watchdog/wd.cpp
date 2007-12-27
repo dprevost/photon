@@ -38,22 +38,24 @@ int main( int argc, char *argv[] )
    vdscOptionHandle optHandle;
    char *optArgument;
 #if defined (WIN32)
-   struct vdscOptStruct opts[4] = 
-   { 
+   struct vdscOptStruct opts[5] = 
+   {
       { 'c', "config",    0, "filename", "Filename for the configuration options" },
       { 'i', "install",   1, "",         "Install the program as a NT service (Windows only)" },
       { 't', "test",      1, "",         "Test the config file and exit" },
-      { 'u', "uninstall", 1, "",         "Uninstall the program as a NT service (Windows only)" }
+      { 'u', "uninstall", 1, "",         "Uninstall the program as a NT service (Windows only)" },
+      { 'v', "verify",    1, "",         "Verify the VDS and exit" }
    };
-   errcode = vdscSetSupportedOptions( 4, opts, &optHandle );
+   errcode = vdscSetSupportedOptions( 5, opts, &optHandle );
 #else
-   struct vdscOptStruct opts[3] = 
-   { 
+   struct vdscOptStruct opts[4] = 
+   {
       { 'c', "config", 0, "filename", "Filename for the configuration options" },
       { 'd', "daemon", 1, "",         "Run the program as a Unix daemon (Unix/linux only)" },
-      { 't', "test",   1, "",         "Test the config file and exit" }
+      { 't', "test",   1, "",         "Test the config file and exit" },
+      { 'v', "verify", 1, "",         "Verify the VDS and exit" }
    };
-   errcode = vdscSetSupportedOptions( 3, opts, &optHandle );
+   errcode = vdscSetSupportedOptions( 4, opts, &optHandle );
 #endif
    if ( errcode != 0 )
       return 1;
@@ -100,11 +102,18 @@ int main( int argc, char *argv[] )
       return 0;
    }
 #else
-   if ( vdscIsShortOptPresent( optHandle, 'd' ) )
+   if ( vdscIsShortOptPresent( optHandle, 'v' ) )
    {
-      errcode = wDog.Daemon();
-      if ( errcode != 0 )
-         return errcode;
+      wDog.m_verifyVDSOnly = true;
+   }
+   else
+   {
+      if ( vdscIsShortOptPresent( optHandle, 'd' ) )
+      {
+         errcode = wDog.Daemon();
+         if ( errcode != 0 )
+            return errcode;
+      }
    }
 #endif
 
@@ -118,7 +127,8 @@ int main( int argc, char *argv[] )
     * This is the main loop. If using Windows NT services, this loop
     * is called by the Service Control Manager (SCM) directly.
     */
-   vdswWatchdog::Run();
+   if ( ! wDog.m_verifyVDSOnly )
+      vdswWatchdog::Run();
    
    return 0;
 }

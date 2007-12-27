@@ -66,7 +66,8 @@ END_C_DECLS
 vdswWatchdog::vdswWatchdog()
    : m_pMemoryAddress ( NULL      ),
      m_controlWord    ( 0         ),
-     m_log            ( PROG_NAME )
+     m_log            ( PROG_NAME ),
+     m_verifyVDSOnly  ( false     )
 {
    memset( &m_params, 0, sizeof m_params );
 

@@ -16,16 +16,15 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include "Watchdog/ValidateFolder.h"
-#include "Watchdog/ValidateHashMap.h"
-#include "Watchdog/ValidateQueue.h"
+#include "Watchdog/VerifyCommon.h"
 #include "Engine/Folder.h"
+#include "Engine/HashMap.h"
+#include "Engine/Queue.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswCheckFolderContent( struct vdseFolder  * pFolder, 
-                            int                  verbose,
-                            int                  spaces,
+int vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
+                            struct vdseFolder  * pFolder, 
                             vdseSessionContext * pContext )
 {
    enum ListErrors listErr;
@@ -46,57 +45,45 @@ int vdswCheckFolderContent( struct vdseFolder  * pFolder,
    /* The easy case */
    if ( pFolder->hashObj.numberOfItems == 0 )
       return 0;
-   
-   /*
-    * We loop on all the hash items until either:
-    * - we find one item which is not marked as deleted by the
-    *   current transaction (we return false)
-    * - or the end (we return true)
-    */
 
    listErr = vdseHashGetFirst( &pFolder->hashObj,
                                &bucket, 
                                &offset );
-   while ( listErr == LIST_OK )
-   {
+   while ( listErr == LIST_OK ) {
       GET_PTR( pItem, offset, vdseHashItem );
       GET_PTR( pDesc, pItem->dataOffset, vdseObjectDescriptor );
       GET_PTR( pObject, pDesc->offset, void );
       
-      if ( verbose )
-      {
-         memset( message, 0, VDS_MAX_NAME_LENGTH*4+30 );
-         strcpy( message, "Object name: " );
+      memset( message, 0, VDS_MAX_NAME_LENGTH*4+30 );
+      strcpy( message, "Object name: " );
 #if VDS_SUPPORT_i18n
-         memset( &ps, 0, sizeof(mbstate_t) );
-         name = pDesc->originalName;
-         lengthName = wcsrtombs( &message[strlen(message)], 
-                                 &name,
-                                 VDS_MAX_NAME_LENGTH*4,
-                                 &ps );
-         if ( lengthName == (size_t) -1 )
-         {
-            /* A conversion error */
-            strcat( message, " wcsrtombs() conversion error... sorry" );
-         }
-#else
-         strncat( message, pDesc->originalName, pDesc->nameLengthInBytes );
-#endif
-         vdswEcho( spaces, message );
+      memset( &ps, 0, sizeof(mbstate_t) );
+      name = pDesc->originalName;
+      lengthName = wcsrtombs( &message[strlen(message)], 
+                              &name,
+                              VDS_MAX_NAME_LENGTH*4,
+                              &ps );
+      if ( lengthName == (size_t) -1 ) {
+         /* A conversion error */
+         strcat( message, " wcsrtombs() conversion error... sorry" );
       }
-      switch( pDesc->apiType )
-      {
+#else
+      strncat( message, pDesc->originalName, pDesc->nameLengthInBytes );
+#endif
+      vdswEcho( pVerify, message );
+      switch( pDesc->apiType ) {
          case VDS_FOLDER:
-            valid = vdswValidateFolder( (vdseFolder *)pObject, verbose, 
-                                        spaces, pContext );
+            valid = vdswVerifyFolder( pVerify,
+                                      (vdseFolder *)pObject, 
+                                      pContext );
             break;
          case VDS_HASH_MAP:
-            valid = vdswValidateHashMap( (struct vdseHashMap *)pObject, 
-                                         verbose, spaces, pContext );
+            valid = vdswVerifyHashMap( pVerify,
+                                       (struct vdseHashMap *)pObject, 
+                                       pContext );
             break;
          case VDS_QUEUE:
-            valid = vdswValidateQueue( (struct vdseQueue *)pObject, 
-                                       verbose, spaces );
+            valid = vdswVerifyQueue( pVerify, (struct vdseQueue *)pObject ); 
             break;
          default:
             VDS_INV_CONDITION( pDesc_invalid_api_type );
@@ -110,10 +97,8 @@ int vdswCheckFolderContent( struct vdseFolder  * pFolder,
                                  &bucket, 
                                  &offset );
 
-      if ( valid == VDSW_DELETE_OBJECT )
-      {
-         switch( pDesc->apiType )
-         {
+      if ( valid == VDSW_DELETE_OBJECT && pVerify->doRepair ) {
+         switch( pDesc->apiType ) {
             case VDS_FOLDER:
                vdseFolderFini( (vdseFolder *)pObject, pContext );
                break;
@@ -139,20 +124,29 @@ int vdswCheckFolderContent( struct vdseFolder  * pFolder,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum vdswValidation 
-vdswValidateFolder( struct vdseFolder  * pFolder,
-                    int                  verbose,
-                    int                  spaces,
-                    vdseSessionContext * pContext )
+vdswVerifyFolder( vdswVerifyStruct   * pVerify,
+                  struct vdseFolder  * pFolder,
+                  vdseSessionContext * pContext )
 {
    vdseTxStatus * txFolderStatus;
    int rc;
-      
-   spaces += 2;
+   bool bTestObject = false;
    
+   pVerify->spaces += 2;
+   
+   /* Is the object lock ? */
+   if ( vdscIsItLocked( &pFolder->memObject.lock ) ) {
+      vdswEcho( pVerify, "The object is locked - it might be corrupted" );
+      if ( pVerify->doRepair ) {
+         vdswEcho( pVerify, "Trying to reset the lock..." );
+         vdscReleaseProcessLock ( &pFolder->memObject.lock );
+      }
+      bTestObject = true;
+   }
+
    GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( txFolderStatus->txOffset != NULL_OFFSET )
-   {
+   if ( txFolderStatus->txOffset != NULL_OFFSET ) {
       /*
        * So we have an interrupted transaction. What kind? 
        *   FLAG                      ACTION          
@@ -162,45 +156,42 @@ vdswValidateFolder( struct vdseFolder  * pFolder,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txFolderStatus->enumStatus == VDSE_TXS_ADDED )
-      {
-         if ( verbose )
-            vdswEcho( spaces, "Object added but not committed - object removed" );
+      if ( txFolderStatus->enumStatus == VDSE_TXS_ADDED ) {
+         vdswEcho( pVerify, "Object added but not committed - object removed" );
          return VDSW_DELETE_OBJECT;
       }         
-      if ( txFolderStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
-      {
-         if ( verbose )
-            vdswEcho( spaces, "Object deleted and committed - object removed" );
+      if ( txFolderStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+         vdswEcho( pVerify, "Object deleted and committed - object removed" );
          return VDSW_DELETE_OBJECT;
       }
-      if ( verbose )
-         vdswEcho( spaces, "Object deleted but not committed - object is kept" );
+      vdswEcho( pVerify, "Object deleted but not committed - object is kept" );
       
-      txFolderStatus->txOffset = NULL_OFFSET;
-      txFolderStatus->enumStatus = VDSE_TXS_OK;
+      if ( pVerify->doRepair) {
+         txFolderStatus->txOffset = NULL_OFFSET;
+         txFolderStatus->enumStatus = VDSE_TXS_OK;
+      }
    }
    
-   if ( txFolderStatus->usageCounter != 0 )
-   {
-      txFolderStatus->usageCounter = 0;
-      if ( verbose )
-         vdswEcho( spaces, "Usage counter set to zero" );
+   if ( txFolderStatus->usageCounter != 0 ) {
+      if (pVerify->doRepair) txFolderStatus->usageCounter = 0;
+      vdswEcho( pVerify, "Usage counter set to zero" );
    }
-   if ( txFolderStatus->parentCounter != 0 )
-   {
-      txFolderStatus->parentCounter = 0;
-      if ( verbose )
-         vdswEcho( spaces, "Parent counter set to zero" );
+   if ( txFolderStatus->parentCounter != 0 ) {
+      if (pVerify->doRepair) txFolderStatus->parentCounter = 0;
+      vdswEcho( pVerify, "Parent counter set to zero" );
    }
-   if ( pFolder->nodeObject.txCounter != 0 )
-   {
-      pFolder->nodeObject.txCounter = 0;
-      if ( verbose )
-         vdswEcho( spaces, "Transaction counter set to zero" );
+   if ( pFolder->nodeObject.txCounter != 0 ) {
+      if (pVerify->doRepair) pFolder->nodeObject.txCounter = 0;
+      vdswEcho( pVerify, "Transaction counter set to zero" );
    }
 
-   rc = vdswCheckFolderContent( pFolder, verbose, spaces, pContext );
+   if ( bTestObject )
+      vdswVerifyHash( pVerify, 
+                      &pFolder->hashObj, 
+                      SET_OFFSET(&pFolder->memObject) );
+   
+   rc = vdswCheckFolderContent( pVerify, pFolder, pContext );
+   pVerify->spaces -= 2;
 
    return VDSW_OK;
 }

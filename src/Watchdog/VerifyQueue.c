@@ -16,19 +16,20 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include "Watchdog/ValidateQueue.h"
+#include "Watchdog/VerifyCommon.h"
 #include "Engine/Queue.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswCheckQueueContent( struct vdseQueue * pQueue, int verbose, int spaces )
+int vdswCheckQueueContent( vdswVerifyStruct * pVerify,
+                           struct vdseQueue * pQueue )
 {
    vdseTxStatus * txItemStatus;
    enum ListErrors listErrCode;
    vdseLinkNode * pNode = NULL, * pDeleteNode = NULL;
    vdseQueueItem* pQueueItem = NULL;
    
-   spaces += 2;
+   pVerify->spaces += 2;
    listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    while ( listErrCode == LIST_OK )
    {
@@ -49,21 +50,18 @@ int vdswCheckQueueContent( struct vdseQueue * pQueue, int verbose, int spaces )
           */
          if ( txItemStatus->enumStatus == VDSE_TXS_ADDED )
          {
-            if ( verbose )
-               vdswEcho( spaces, "Queue item added but not committed - item removed" );
+            vdswEcho( pVerify, "Queue item added but not committed - item removed" );
             pDeleteNode = pNode;
 
          }         
          else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
          {
-            if ( verbose )
-               vdswEcho( spaces, "Queue item deleted and committed - item removed" );
+            vdswEcho( pVerify, "Queue item deleted and committed - item removed" );
             pDeleteNode = pNode;
          }
          else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED )
          {
-            if ( verbose )
-               vdswEcho( spaces, "Queue item deleted but not committed - item is kept" );
+            vdswEcho( pVerify, "Queue item deleted but not committed - item is kept" );
          }
          
          txItemStatus->txOffset = NULL_OFFSET;
@@ -72,8 +70,7 @@ int vdswCheckQueueContent( struct vdseQueue * pQueue, int verbose, int spaces )
 
       if ( pDeleteNode == NULL && txItemStatus->usageCounter != 0 )
       {
-         if ( verbose )
-            vdswEcho( spaces, "Queue item usage counter set to zero" );
+         vdswEcho( pVerify, "Queue item usage counter set to zero" );
          txItemStatus->usageCounter = 0;
       }
       
@@ -103,20 +100,21 @@ int vdswCheckQueueContent( struct vdseQueue * pQueue, int verbose, int spaces )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum vdswValidation 
-vdswValidateQueue( struct vdseQueue * pQueue, int verbose, int spaces )
+vdswVerifyQueue( vdswVerifyStruct * pVerify,
+                 struct vdseQueue * pQueue )
 {
    vdseTxStatus * txQueueStatus;
    int rc;
    
-   spaces += 2;
+   pVerify->spaces += 2;
    
    if ( vdscIsItLocked( &pQueue->memObject.lock ) )
    {
       vdscReleaseProcessLock ( &pQueue->memObject.lock );
    
-      rc = vdswValidateList( &pQueue->memObject.listBlockGroup );
-   //   rc = ValidateMemObject( &pQueue->memObject );
-      rc = vdswValidateList( &pQueue->listOfElements );
+      rc = vdswVerifyList( pVerify, &pQueue->memObject.listBlockGroup );
+   //   rc = VerifyMemObject( &pQueue->memObject );
+      rc = vdswVerifyList( pVerify, &pQueue->listOfElements );
    }
 
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
@@ -134,18 +132,15 @@ vdswValidateQueue( struct vdseQueue * pQueue, int verbose, int spaces )
        */
       if ( txQueueStatus->enumStatus == VDSE_TXS_ADDED )
       {
-         if ( verbose )
-            vdswEcho( spaces, "Object added but not committed - object removed" );
+         vdswEcho( pVerify, "Object added but not committed - object removed" );
          return VDSW_DELETE_OBJECT;
       }         
       if ( txQueueStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
       {
-         if ( verbose )
-            vdswEcho( spaces, "Object deleted and committed - object removed" );
+         vdswEcho( pVerify, "Object deleted and committed - object removed" );
          return VDSW_DELETE_OBJECT;
       }
-      if ( verbose )
-         vdswEcho( spaces, "Object deleted but not committed - object is kept" );
+      vdswEcho( pVerify, "Object deleted but not committed - object is kept" );
 
       txQueueStatus->txOffset = NULL_OFFSET;
       txQueueStatus->enumStatus = VDSE_TXS_OK;
@@ -154,25 +149,24 @@ vdswValidateQueue( struct vdseQueue * pQueue, int verbose, int spaces )
    if ( txQueueStatus->usageCounter != 0 )
    {
       txQueueStatus->usageCounter = 0;
-      if ( verbose )
-         vdswEcho( spaces, "Usage counter set to zero" );
+      vdswEcho( pVerify, "Usage counter set to zero" );
    }
    if ( txQueueStatus->parentCounter != 0 )
    {
       txQueueStatus->parentCounter = 0;
-      if ( verbose )
-         vdswEcho( spaces, "Parent counter set to zero" );
+      vdswEcho( pVerify, "Parent counter set to zero" );
    }
    if ( pQueue->nodeObject.txCounter != 0 )
    {
       pQueue->nodeObject.txCounter = 0;
-      if ( verbose )
-         vdswEcho( spaces, "Transaction counter set to zero" );
+      vdswEcho( pVerify, "Transaction counter set to zero" );
    }
 
-   rc = vdswCheckQueueContent( pQueue, verbose, spaces );
-   
+   rc = vdswCheckQueueContent( pVerify, pQueue );
+   pVerify->spaces -= 2;
+
    return VDSW_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

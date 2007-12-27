@@ -18,29 +18,32 @@ SUBDIRS = . Tests
  
 bin_PROGRAMS = vdswd
 
-vdswd_SOURCES =                   \
-                Acceptor.cpp      \
-                Acceptor.h        \
-                LogMsg.cpp        \
-                LogMsg.h          \
-                MemoryManager.cpp \
-                MemoryManager.h   \
-                Validate.h        \
-                ValidateFolder.c  \
-                ValidateFolder.h  \
-                ValidateHashMap.c \
-                ValidateHashMap.h \
-                ValidateList.c    \
-                ValidateList.h    \
-                ValidateQueue.c   \
-                ValidateQueue.h   \
-                Validator.cpp     \
-                Validator.h       \
-                VDSHandler.cpp    \
-                VDSHandler.h      \
-                Watchdog.cpp      \
-                Watchdog.h        \
-                wd.cpp            
+noinst_LIBRARIES = libVerifyVDS.a
 
-vdswd_LDADD = $(top_builddir)/src/Engine/libEngine.la \
-              $(top_builddir)/src/Common/libCommon.la
+vdswd_SOURCES =      \
+   Acceptor.cpp      \
+   Acceptor.h        \
+   LogMsg.cpp        \
+   LogMsg.h          \
+   MemoryManager.cpp \
+   MemoryManager.h   \
+   VDSHandler.cpp    \
+   VDSHandler.h      \
+   Watchdog.cpp      \
+   Watchdog.h        \
+   wd.cpp            
+
+libVerifyVDS_a_SOURCES = \
+   VerifyCommon.h        \
+   VerifyFolder.c        \
+   VerifyHash.c          \
+   VerifyHashMap.c       \
+   VerifyList.c          \
+   VerifyQueue.c         \
+   VerifyVDS.c           \
+   VerifyVDS.h           
+
+vdswd_LDADD = $(top_builddir)/src/Engine/libEngine.la    \
+              $(top_builddir)/src/Common/libCommon.la    \
+              $(top_builddir)/src/Watchdog/libVerifyVDS.a 
+

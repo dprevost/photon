@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSW_VALIDATE_H
-#define VDSW_VALIDATE_H
+#ifndef VDSW_VERIFY_VDS_H
+#define VDSW_VERIFY_VDS_H
 
 #include "Engine/MemoryHeader.h"
 
@@ -26,39 +26,16 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswValidation 
-{
-   VDSW_OK = 0,
-   VDSW_DELETE_OBJECT,
-   VDSW_UNHANDLE_ERROR
-   
-};
-typedef enum vdswValidation vdswValidation;
-
-static inline
-void vdswEcho( int spaces, char * message )
-{
-   int i;
-   
-   for (i = 0; i < spaces; ++i )
-      fprintf( stderr, " " );
-   fprintf( stderr, "%s\n", message );
-}
-
-extern vdseMemoryHeader * g_pMemoryAddress;
-
-static inline
-bool vdswValidateOffset( ptrdiff_t offset )
-{
-   return (offset > 0 && offset < (ptrdiff_t)g_pMemoryAddress->totalLength );
-}
-
+int vdswVerify( vdseMemoryHeader * pMemoryAddress );
+int vdswRepair( vdseMemoryHeader * pMemoryAddress );
+     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSW_VALIDATE_H */
+#endif /* VDSW_VERIFY_VDS_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

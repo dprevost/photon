@@ -19,13 +19,10 @@
 #include "Watchdog/VDSHandler.h"
 #include "Watchdog/MemoryManager.h"
 #include "Watchdog/Watchdog.h"
-#include "Watchdog/Validator.h"
+#include "Watchdog/VerifyVDS.h"
 #include "API/WatchdogCommon.h"
-//#include "Engine/ProcessManager.h"
 #include "Engine/SessionContext.h"
 #include "Engine/InitEngine.h"
-//#include "Engine/Folder.h"
-//#include "Engine/MemoryAllocator.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -149,7 +146,8 @@ vdswHandler::HandleCrash( pid_t pid )
 
 int 
 vdswHandler::Init( struct ConfigParams * pConfig,
-                  vdseMemoryHeader   ** ppMemoryAddress )
+                   vdseMemoryHeader   ** ppMemoryAddress,
+                   bool                  verifyVDSOnly )
 {
    int errcode = 0;
    char path[PATH_MAX];
@@ -175,6 +173,12 @@ vdswHandler::Init( struct ConfigParams * pConfig,
 
    if ( ! fileStatus.fileExist )
    {
+      if ( verifyVDSOnly )
+      {
+         fprintf( stderr, 
+            "Error - the VDS does not exist - no verification possible\n" );
+         return -1;
+      }
       errcode = m_pMemManager->CreateVDS( path,
                                           pConfig->memorySizekb,
                                           pConfig->filePerms,
@@ -206,8 +210,10 @@ vdswHandler::Init( struct ConfigParams * pConfig,
                                         pConfig->memorySizekb,
                                         ppMemoryAddress );
       
-      vdsValidator* v = new vdsValidator( *ppMemoryAddress );
-      errcode = v->Validate();
+      if ( verifyVDSOnly )
+         return vdswVerify(*ppMemoryAddress);
+      
+      errcode = vdswRepair(*ppMemoryAddress);
       if ( errcode != 0 )
          return -1;
       
