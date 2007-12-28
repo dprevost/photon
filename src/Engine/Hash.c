@@ -22,6 +22,120 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * The array length (for the hash) will double or shrink by a factor two
+ * using precomputed lengths (all the lengths are prime numbers - using
+ * prime numbers help reduces the risk of collision.
+ *
+ * To make it simple, we use the first prime number less than 2^n (except 
+ * for 29 to make the jump from 13 to 61 smoother).
+ *
+ * The list of prime numbers was obtained from http://primes.utm.edu/,
+ * specifically the page http://primes.utm.edu/lists/2small/0bit.html
+ * (which list the first 10 prime numbers less than 2^n for n up to 400).
+ */
+#if SIZEOF_VOID_P == 4
+size_t g_vdseArrayLengths[VDSE_PRIME_NUMBER_ARRAY_LENGTH] = 
+{
+   13,     
+   29,
+   61,
+   127,
+   251,
+   509,
+   1021,
+   2039,
+   4093,
+   8191,
+   0x00004000 - 3,  /* 2^14 - 3  */
+   0x00008000 - 19, /* 2^15 - 19 */
+   0x00010000 - 15, /* etc...    */
+   0x00020000 - 1,
+   0x00040000 - 5,
+   0x00080000 - 1,
+   0x00100000 - 3,
+   0x00200000 - 9,
+   0x00400000 - 3,
+   0x00800000 - 15,
+   0x01000000 - 3,
+   0x02000000 - 39,
+   0x04000000 - 5,
+   0x08000000 - 39,
+   0x10000000 - 57,
+   0x20000000 - 3,
+   0x40000000 - 35,
+   0x80000000 - 1
+};
+#else
+size_t g_vdseArrayLengths[VDSE_PRIME_NUMBER_ARRAY_LENGTH] = 
+{
+   13,     
+   29,
+   61,
+   127,
+   251,
+   509,
+   1021,
+   2039,
+   4093,
+   8191,
+   0x0000000000004000 - 3,  /* 2^14 - 3 */
+   0x0000000000008000 - 19,
+   0x0000000000010000 - 15,
+   0x0000000000020000 - 1,
+   0x0000000000040000 - 5,
+   0x0000000000080000 - 1,
+   0x0000000000100000 - 3,
+   0x0000000000200000 - 9,
+   0x0000000000400000 - 3,
+   0x0000000000800000 - 15,
+   0x0000000001000000 - 3,
+   0x0000000002000000 - 39,
+   0x0000000004000000 - 5,
+   0x0000000008000000 - 39,
+   0x0000000010000000 - 57,
+   0x0000000020000000 - 3,
+   0x0000000040000000 - 35,
+   0x0000000080000000 - 1,
+   0x0000000100000000 - 5,
+   0x0000000200000000 - 9,
+   0x0000000400000000 - 41,
+   0x0000000800000000 - 31,
+   0x0000001000000000 - 5,
+   0x0000002000000000 - 25,
+   0x0000004000000000 - 45,
+   0x0000008000000000 - 7,
+   0x0000010000000000 - 87,
+   0x0000020000000000 - 21,
+   0x0000040000000000 - 11,
+   0x0000080000000000 - 57,
+   0x0000100000000000 - 17,
+   0x0000200000000000 - 55,
+   0x0000400000000000 - 21,
+   0x0000800000000000 - 115,
+   0x0001000000000000 - 59,
+   0x0002000000000000 - 81,
+   0x0004000000000000 - 27,
+   0x0008000000000000 - 129,
+   0x0010000000000000 - 47,
+   0x0020000000000000 - 111,
+   0x0040000000000000 - 33,
+   0x0080000000000000 - 55,
+   0x0100000000000000 - 5,
+   0x0200000000000000 - 13,
+   0x0400000000000000 - 27,
+   0x0800000000000000 - 55,
+   0x1000000000000000 - 93,
+   0x2000000000000000 - 1,
+   0x4000000000000000 - 57,
+   0x8000000000000000 - 25,
+
+};
+
+#endif
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 #define HASH_ARRAY_MIN_SIZE 13   /* a prime number */
 
 /** In % */
@@ -75,7 +189,7 @@ static inline
 vdseHashResizeEnum isItTimeToResize( vdseHash* pHash )
 {
    unsigned int loadFactor = 100 * pHash->numberOfItems / 
-      g_arrayLengths[pHash->lengthIndex];
+      g_vdseArrayLengths[pHash->lengthIndex];
 
   if ( loadFactor >= g_maxLoadFactor )
      return VDSE_HASH_TIME_TO_GROW;
@@ -110,7 +224,7 @@ static bool findBucket( vdseHash*             pHash,
    ptrdiff_t currentOffset, nextOffset, itemOffset;
    vdseHashItem* pItem;
 
-   *pBucket = hash_pjw( pKey, keyLength ) % g_arrayLengths[pHash->lengthIndex];
+   *pBucket = hash_pjw( pKey, keyLength ) % g_vdseArrayLengths[pHash->lengthIndex];
    currentOffset = pArray[*pBucket];
    
    *ppPreviousItem = NULL;
@@ -151,7 +265,7 @@ static bool findKey( vdseHash*            pHash,
    ptrdiff_t currentOffset, nextOffset;
    vdseHashItem* pItem;
 
-   *pBucket = hash_pjw( pKey, keyLength ) % g_arrayLengths[pHash->lengthIndex];
+   *pBucket = hash_pjw( pKey, keyLength ) % g_vdseArrayLengths[pHash->lengthIndex];
    currentOffset = pArray[*pBucket];
    
    *ppPreviousItem = NULL;
@@ -286,7 +400,7 @@ void vdseHashDeleteAt( vdseHash           * pHash,
    VDS_PRE_CONDITION( pHash    != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pItem    != NULL );
-   VDS_PRE_CONDITION( bucket < g_arrayLengths[pHash->lengthIndex] );
+   VDS_PRE_CONDITION( bucket < g_vdseArrayLengths[pHash->lengthIndex] );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
@@ -342,7 +456,7 @@ void vdseHashEmpty( vdseHash*           pHash,
 
    GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
 
-   for ( i = 0; i < g_arrayLengths[pHash->lengthIndex]; ++i )
+   for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i )
    {
       currentOffset = pArray[i];
       
@@ -452,7 +566,7 @@ vdseHashGetFirst( vdseHash*  pHash,
     * Note: the first item has to be the first non-empty pArray[i],
     * this makes the search easier.
     */
-   for ( i = 0; i < g_arrayLengths[pHash->lengthIndex]; ++i )
+   for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i )
    {
       currentOffset = pArray[i];
       
@@ -490,7 +604,7 @@ vdseHashGetNext( vdseHash*  pHash,
    VDS_PRE_CONDITION( pNextBucket != NULL );
    VDS_PRE_CONDITION( pNextItemOffset != NULL );
    VDS_PRE_CONDITION( previousOffset != NULL_OFFSET );
-   VDS_PRE_CONDITION( previousBucket < g_arrayLengths[pHash->lengthIndex]);
+   VDS_PRE_CONDITION( previousBucket < g_vdseArrayLengths[pHash->lengthIndex]);
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
@@ -509,7 +623,7 @@ vdseHashGetNext( vdseHash*  pHash,
     * Note: the next item has to be the first non-empty pArray[i] beyond
     * the current bucket (previousBucket). 
     */
-   for ( i = previousBucket+1; i < g_arrayLengths[pHash->lengthIndex]; ++i )
+   for ( i = previousBucket+1; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i )
    {
       currentOffset = pArray[i];
       
@@ -559,9 +673,9 @@ vdseHashInit( vdseHash           * pHash,
    
    /* Which one of our lengths is closer but larger than numBuckets? */
    pHash->lengthIndex = pHash->lengthIndexMinimum = 0;
-   for ( i = 1; i < PRIME_NUMBER_ARRAY_LENGTH; ++i )
+   for ( i = 1; i < VDSE_PRIME_NUMBER_ARRAY_LENGTH; ++i )
    {
-      if ( g_arrayLengths[i] > numBuckets )
+      if ( g_vdseArrayLengths[i] > numBuckets )
       {
          pHash->lengthIndex = i - 1;
          pHash->lengthIndexMinimum = i - 1;
@@ -569,7 +683,7 @@ vdseHashInit( vdseHash           * pHash,
       }
    }
    
-   len = g_arrayLengths[pHash->lengthIndex] * sizeof(ptrdiff_t);
+   len = g_vdseArrayLengths[pHash->lengthIndex] * sizeof(ptrdiff_t);
    
    ptr = (ptrdiff_t*) 
       vdseMalloc( pMemObject, 
@@ -579,7 +693,7 @@ vdseHashInit( vdseHash           * pHash,
       errCode = LIST_NO_MEMORY;
    else
    {
-      for ( i = 0; i < g_arrayLengths[pHash->lengthIndex]; ++i)
+      for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i)
          ptr[i] = NULL_OFFSET;
       
       pHash->arrayOffset = SET_OFFSET( ptr );
@@ -688,7 +802,7 @@ vdseHashInsertAt( vdseHash            * pHash,
    VDS_PRE_CONDITION( ppNewItem != NULL );
    VDS_PRE_CONDITION( keyLength  > 0 );
    VDS_PRE_CONDITION( dataLength > 0 );
-   VDS_PRE_CONDITION( bucket < g_arrayLengths[pHash->lengthIndex] );
+   VDS_PRE_CONDITION( bucket < g_vdseArrayLengths[pHash->lengthIndex] );
 
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
@@ -766,7 +880,7 @@ vdseHashResize( vdseHash*           pHash,
    else
       newIndexLength = pHash->lengthIndex - 1;     
 
-   len = g_arrayLengths[newIndexLength] * sizeof(ptrdiff_t);
+   len = g_vdseArrayLengths[newIndexLength] * sizeof(ptrdiff_t);
    
    ptr = (ptrdiff_t*) 
       vdseMalloc( pMemObject, 
@@ -775,10 +889,10 @@ vdseHashResize( vdseHash*           pHash,
    if ( ptr == NULL )
       return LIST_NO_MEMORY;
 
-   for ( i = 0; i < g_arrayLengths[newIndexLength]; ++i)
+   for ( i = 0; i < g_vdseArrayLengths[newIndexLength]; ++i)
       ptr[i] = NULL_OFFSET;
       
-   for ( i = 0; i < g_arrayLengths[pHash->lengthIndex]; ++i )
+   for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i )
    {
       currentOffset = pArray[i];
       
@@ -789,7 +903,7 @@ vdseHashResize( vdseHash*           pHash,
          pItem->nextItem = NULL_OFFSET;
          
          newBucket = hash_pjw( pItem->key, pItem->keyLength ) % 
-                     g_arrayLengths[newIndexLength];
+                     g_vdseArrayLengths[newIndexLength];
          if ( ptr[newBucket] == NULL_OFFSET )
          {
             ptr[newBucket] = currentOffset;
@@ -811,7 +925,7 @@ vdseHashResize( vdseHash*           pHash,
       }
    }
    
-   len = g_arrayLengths[pHash->lengthIndex]*sizeof(ptrdiff_t);
+   len = g_vdseArrayLengths[pHash->lengthIndex]*sizeof(ptrdiff_t);
 
    pHash->lengthIndex = newIndexLength;
    pHash->arrayOffset = SET_OFFSET( ptr );

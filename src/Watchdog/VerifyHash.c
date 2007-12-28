@@ -111,7 +111,7 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
    }
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
 
-   if ( pHash->lengthIndex >= PRIME_NUMBER_ARRAY_LENGTH ) {
+   if ( pHash->lengthIndex >= VDSE_PRIME_NUMBER_ARRAY_LENGTH ) {
       vdswEcho( pVerify, 
          "Hash::lengthIndex is invalid - aborting the hash verification" );
       return -1;
@@ -120,7 +120,7 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
     *  the reservedSize argument of vdseHashInit() ) */
    int lengthIndexMinimum;
   
-   for ( i = 0; i < g_arrayLengths[pHash->lengthIndex]; ++i )
+   for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i )
    {
       currentOffset = pArray[i];
       
@@ -138,7 +138,7 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
          nextOffset = pItem->nextItem;
          
          bucket = fnv_buf( (void *)pItem->key, pItem->keyLength, FNV1_INIT) %
-                     g_arrayLengths[pHash->lengthIndex];
+                     g_vdseArrayLengths[pHash->lengthIndex];
          if ( bucket != i ) {
             vdswEcho( pVerify, "Hash item - invalid bucket" );
             invalidBuckets++;
@@ -146,18 +146,19 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
          
          // test the hash item
          
-         if ( pItem->nextSameItem != NULL_OFFSET ) {
-            if ( ! vdswVerifyOffset( pVerify, pItem->nextSameItem ) ) {
-               vdswEcho( pVerify, "Hash item next-same offset is invalid" );
+         if ( pItem->nextSameKey != NULL_OFFSET ) {
+            if ( ! vdswVerifyOffset( pVerify, pItem->nextSameKey ) ) {
+               vdswEcho( pVerify, "HashItem::nextSameKey is invalid" );
                if ( pVerify->doRepair )
-                  pItem->nextSameItem = NULL_OFFSET;
+                  pItem->nextSameKey = NULL_OFFSET;
             }
          }
          if ( pItem->dataOffset != NULL_OFFSET ) {
             if ( ! vdswVerifyOffset( pVerify, pItem->dataOffset ) ) {
                vdswEcho( pVerify, "HashItem::dataOffset is invalid" );
                if ( pVerify->doRepair )
-//                  pItem->nextSameItem = NULL_OFFSET;
+                  ;
+//                  pItem->nextSameKey = NULL_OFFSET;
             }
          }
 
@@ -188,7 +189,7 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
    }
 
    if ( pVerify->doRepair ) {
-      for ( i = 0; i < g_arrayLengths[pHash->lengthIndex]; ++i ) {
+      for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
          currentOffset = pArray[i];
       
          while ( currentOffset != NULL_OFFSET ) {
@@ -199,7 +200,7 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
   loop on all other members in bucket to find record with same key
             // test the hash item
          
-            if ( pItem->nextSameItem != NULL_OFFSET ) {
+            if ( pItem->nextSameKey != NULL_OFFSET ) {
             }
 
             /* Move to the next item in our bucket */
