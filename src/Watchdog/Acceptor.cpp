@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -133,12 +133,58 @@ vdswAcceptor::Accept()
 void 
 vdswAcceptor::HandleAbnormalTermination( pid_t pid )
 {
+   fprintf( stderr, "pid: %d\n", pid );
    m_pWatchdog->m_log.SendMessage( WD_ERROR, 
                                    "Abnormal termination of process %d %s",
                                    pid,
                                    " - attempting to recover." );
 
    m_pWatchdog->HandleAbnormalTermination( pid );
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+bool 
+vdswAcceptor::IsconnectionAlive(  int indice )
+{
+   int errcode;
+   
+   /* 
+    * We test to see if the other process is alive by:
+    *
+    *   on linux/unix, sending a NOOP signal to the process and ...
+    *
+    *   on windows, by opening the process with as limited access as
+    *   possible and ...
+    */
+
+#if defined(WIN32)
+   return true;
+#else
+   errcode = kill( m_dispatch[indice].socketId, 0 );
+   if ( errcode == -1 )
+   {
+//      ESRCH
+   }
+   return true;
+#endif
+
+#if 0   
+   if ( errcode <= 0 )
+   {
+      // Abnormal termination of the connection
+#if defined (WIN32)
+      closesocket( m_dispatch[indice].socketId );
+#else
+      close( m_dispatch[indice].socketId );
+#endif
+      m_dispatch[indice].socketId = VDS_INVALID_SOCKET;
+
+      if ( m_dispatch[indice].pid > 0 )
+         HandleAbnormalTermination( m_dispatch[indice].pid );
+      m_dispatch[indice].pid = -1;
+   }
+#endif
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -446,6 +492,7 @@ vdswAcceptor::WaitForConnections()
 
    while ( true ) 
    {
+      int zzz = 0;
 //      fprintf( stderr, "%d\n", vdswWatchdog::g_pWD->m_controlWord );
       if ( vdswWatchdog::g_pWD->m_controlWord & WD_SHUTDOWN_REQUEST )
          break;
@@ -459,10 +506,14 @@ vdswAcceptor::WaitForConnections()
       {
          if ( m_dispatch[i].socketId != VDS_INVALID_SOCKET)
          {
-            if ( m_dispatch[i].dataToBeWritten == 0 ) 
+            if ( m_dispatch[i].dataToBeWritten == 0 ) {
                FD_SET( m_dispatch[i].socketId, &readSet);
-            else
+               zzz++;
+            }
+            else {
                FD_SET( m_dispatch[i].socketId, &writeSet);
+               zzz++;
+            }
 #if ! defined (WIN32)
             if ( m_dispatch[i].socketId+1 > maxFD )
                maxFD = m_dispatch[i].socketId+1;
@@ -473,7 +524,7 @@ vdswAcceptor::WaitForConnections()
       do
       {
          fired = select( maxFD, &readSet, &writeSet, NULL, &timeout );
-//fprintf( stderr, "fired = %d %d\n", fired, maxFD );
+fprintf( stderr, "fired = %d %d\n", fired, zzz );
       } while ( fired == -1 && errno == EINTR );
       
 
