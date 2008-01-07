@@ -1,7 +1,7 @@
 /* -*- c -*- */
 /* :mode=c:  - For jedit, previous line for emacs */
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
