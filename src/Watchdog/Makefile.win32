@@ -1,6 +1,6 @@
 ###########################################################################
 #
-# Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -35,12 +35,17 @@ LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfEngine.lib vdsfCommon.lib /nologo /versi
 CFLAGS_RELEASE = /nologo /MD  /W3 /GX     /O2 /I ".." /I "../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_RELEASE)\\"     /c 
 CFLAGS_DEBUG   = /nologo /MDd /W3 /GX /ZI /Od /I ".." /I "../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" /GZ /c 
 
-OBJS_RELEASE=                            \
+OBJS_RELEASE=                                 \
 	"$(INTDIR_RELEASE)\Acceptor.obj"      \
 	"$(INTDIR_RELEASE)\LogMsg.obj"        \
 	"$(INTDIR_RELEASE)\MemoryManager.obj" \
-	"$(INTDIR_RELEASE)\Validator.obj"     \
 	"$(INTDIR_RELEASE)\VDSHandler.obj"    \
+	"$(INTDIR_RELEASE)\VerifyFolder.obj"  \
+	"$(INTDIR_RELEASE)\VerifyHash.obj"    \
+	"$(INTDIR_RELEASE)\VerifyHashMap.obj" \
+	"$(INTDIR_RELEASE)\VerifyList.obj"    \
+	"$(INTDIR_RELEASE)\VerifyQueue.obj"   \
+	"$(INTDIR_RELEASE)\VerifyVDS.obj"     \
 	"$(INTDIR_RELEASE)\Watchdog.obj"      \
 	"$(INTDIR_RELEASE)\wd.obj"            
 
@@ -55,7 +60,12 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 .cpp{$(INTDIR_RELEASE)}.obj::
 	$(CPP) $(CFLAGS_RELEASE) $< 
 
+.c{$(INTDIR_RELEASE)}.obj::
+	$(CPP) $(CFLAGS_RELEASE) $< 
+
 .cpp{$(INTDIR_DEBUG)}.obj::
+	$(CPP) $(CFLAGS_DEBUG) $< 
+.c{$(INTDIR_DEBUG)}.obj::
 	$(CPP) $(CFLAGS_DEBUG) $< 
 
 all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdswd.exe $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdswd.exe

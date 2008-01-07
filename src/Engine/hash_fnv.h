@@ -70,6 +70,8 @@
 #if !defined(__FNV_H__)
 #define __FNV_H__
 
+#include "Engine/Engine.h"
+
 #if SIZEOF_VOID_P == 4
 
 /*
@@ -109,6 +111,7 @@ extern size_t fnv_32_buf(void *buf, size_t len, size_t hashval);
 /*
  * external functions
  */
+VDSF_ENGINE_EXPORT
 extern size_t fnv_buf(void *buf, size_t len, size_t hashval);
 
 #endif /* __FNV_H__ */

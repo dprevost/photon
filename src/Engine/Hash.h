@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -209,9 +209,11 @@ enum ListErrors vdseHashResize( vdseHash           * pHash,
  
 #if SIZEOF_VOID_P == 4
 #  define VDSE_PRIME_NUMBER_ARRAY_LENGTH 28
+VDSF_ENGINE_EXPORT
 extern size_t g_vdseArrayLengths[VDSE_PRIME_NUMBER_ARRAY_LENGTH];
 #else
 #  define VDSE_PRIME_NUMBER_ARRAY_LENGTH 60
+VDSF_ENGINE_EXPORT
 extern size_t g_vdseArrayLengths[VDSE_PRIME_NUMBER_ARRAY_LENGTH];
 #endif
 

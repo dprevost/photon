@@ -1,6 +1,6 @@
 ###########################################################################
 #
-# Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -43,6 +43,7 @@ OBJS_RELEASE= \
 	"$(INTDIR_RELEASE)\BlockGroup.obj" \
 	"$(INTDIR_RELEASE)\Folder.obj" \
 	"$(INTDIR_RELEASE)\Hash.obj" \
+	"$(INTDIR_RELEASE)\hash_fnv.obj" \
 	"$(INTDIR_RELEASE)\HashMap.obj" \
 	"$(INTDIR_RELEASE)\InitEngine.obj" \
 	"$(INTDIR_RELEASE)\LinkedList.obj" \

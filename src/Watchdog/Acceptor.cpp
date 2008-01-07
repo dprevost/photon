@@ -524,7 +524,7 @@ vdswAcceptor::WaitForConnections()
       do
       {
          fired = select( maxFD, &readSet, &writeSet, NULL, &timeout );
-fprintf( stderr, "fired = %d %d\n", fired, zzz );
+if ( zzz != 1 ) fprintf( stderr, "fired = %d %d\n", fired, zzz );
       } while ( fired == -1 && errno == EINTR );
       
 
