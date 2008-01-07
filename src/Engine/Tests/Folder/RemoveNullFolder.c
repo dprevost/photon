@@ -27,6 +27,7 @@ int main()
    vdseSessionContext context;
    int errcode;
    vdseTxStatus status;
+   vdseFolderItem folderItem;
    
    pFolder = initFolderTest( expectedToPass, &context );
 
@@ -47,9 +48,24 @@ int main()
    if ( errcode != 0 ) 
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 
+   errcode = vdseFolderGetObject( pFolder,
+                                  strCheckLow("test2"),
+                                  5,
+                                  &folderItem,
+                                  &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
+   errcode = vdseFolderGetObject( pFolder,
+                                  strCheckLow("test2"),
+                                  5,
+                                  &folderItem,
+                                  &context );
+   if ( errcode != 0 ) 
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+
    vdseFolderRemoveObject( NULL,
-                           strCheckLow("test2"),
-                           5,
+                           folderItem.pHashItem,
                            &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

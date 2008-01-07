@@ -95,10 +95,9 @@ check_PROGRAMS =                         \
                  ReleaseWrongObjType     \
                  RemoveNullContext       \
                  RemoveNullFolder        \
-                 RemoveNullName          \
+                 RemoveNullItem          \
                  RemovePass              \
                  RemoveWrongObjType      \
-                 RemoveZeroLength        \
                  StatusNullFolder        \
                  StatusNullStatus        \
                  StatusPass              \
@@ -192,10 +191,9 @@ ReleasePass_SOURCES             = $(COMMON_HEADER) ReleasePass.c
 ReleaseWrongObjType_SOURCES     = $(COMMON_HEADER) ReleaseWrongObjType.c
 RemoveNullContext_SOURCES       = $(COMMON_HEADER) RemoveNullContext.c
 RemoveNullFolder_SOURCES        = $(COMMON_HEADER) RemoveNullFolder.c
-RemoveNullName_SOURCES          = $(COMMON_HEADER) RemoveNullName.c
+RemoveNullItem_SOURCES          = $(COMMON_HEADER) RemoveNullItem.c
 RemovePass_SOURCES              = $(COMMON_HEADER) RemovePass.c
 RemoveWrongObjType_SOURCES      = $(COMMON_HEADER) RemoveWrongObjType.c
-RemoveZeroLength_SOURCES        = $(COMMON_HEADER) RemoveZeroLength.c
 StatusNullFolder_SOURCES        = $(COMMON_HEADER) StatusNullFolder.c
 StatusNullStatus_SOURCES        = $(COMMON_HEADER) StatusNullStatus.c
 StatusPass_SOURCES              = $(COMMON_HEADER) StatusPass.c
@@ -292,10 +290,9 @@ TESTS =                         \
         ReleaseWrongObjType     \
         RemoveNullContext       \
         RemoveNullFolder        \
-        RemoveNullName          \
+        RemoveNullItem          \
         RemovePass              \
         RemoveWrongObjType      \
-        RemoveZeroLength        \
         StatusNullFolder        \
         StatusNullStatus        \
         StatusPass              \
@@ -374,9 +371,8 @@ XFAIL_TESTS =                         \
               ReleaseWrongObjType     \
               RemoveNullContext       \
               RemoveNullFolder        \
-              RemoveNullName          \
+              RemoveNullItem          \
               RemoveWrongObjType      \
-              RemoveZeroLength        \
               StatusNullFolder        \
               StatusNullStatus        \
               TopStatusNullContext    \
