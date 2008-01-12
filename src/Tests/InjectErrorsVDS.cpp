@@ -33,6 +33,9 @@
 
 using namespace std;
 
+#define NUM_MAPS   4
+#define NUM_QUEUES 5
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 struct myQueue
@@ -78,6 +81,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    // Using a (void *) cast to eliminate a gcc warning (dereferencing 
    // type-punned pointer will break strict-aliasing rules)
    apiObj = (unsigned long **) ( (void *) &h[0].map );
+
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table (true for g++)
    for ( i = 0; i < sizeof(vdsHashMap)/sizeof(void*); ++i, apiObj++ )
@@ -296,6 +300,14 @@ int AddDefectsQueues( vector<myQueue> & q )
       return -1;
    }
    
+   cout << "Defect for " << q[4].name << ": object locked" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[4].queue + api_offset );
+   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
+   if ( vdscTryAcquireProcessLock ( &pQueue->memObject.lock, getpid(), 0 ) ) {
+      cerr << "Error - cannot lock the object" << endl;
+      return -1;
+   }
+   
    return 0;
 }
 
@@ -334,7 +346,7 @@ void PopulateHashMaps( vdsSession & session, vector<myMap> & h )
    string data, key;
    char s[4];
    
-   for ( i = 0; i < 4; ++i )
+   for ( i = 0; i < NUM_MAPS; ++i )
    {
       session.CreateObject( h[i].name, VDS_HASH_MAP );
       h[i].map.Open( h[i].name );
@@ -361,7 +373,7 @@ void PopulateQueues( vdsSession & session, vector<myQueue> & q )
    string data;
    char s[4];
    
-   for ( i = 0; i < 4; ++i )
+   for ( i = 0; i < NUM_QUEUES; ++i )
    {
       session.CreateObject( q[i].name, VDS_QUEUE );
       q[i].queue.Open( q[i].name );
@@ -385,6 +397,7 @@ int main()
 {
    vdsProcess process;
    vdsSession session;
+   int i;
    
    try {
       process.Init( "10701" );
@@ -405,12 +418,12 @@ int main()
    cout << " ------- VDSF defects injector ------- " << endl << endl;
    cout << " This program will inject pseudo-random defects in a VDS." << endl << endl;
 
-   vector<myQueue> q( 4, myQueue(session) );
-   vector<myMap>   h( 4, myMap(session) );
-   for ( int i = 0; i < 4; ++i ) {
+   vector<myQueue> q( NUM_QUEUES, myQueue(session) );
+   vector<myMap>   h( NUM_MAPS,   myMap(session) );
+   for ( i = 0; i < NUM_QUEUES; ++i )
       q[i].name += ('0' + i );
+   for ( i = 0; i < NUM_MAPS; ++i )
       h[i].name += ('0' + i );
-   }
    
    try {
       PopulateQueues( session, q );

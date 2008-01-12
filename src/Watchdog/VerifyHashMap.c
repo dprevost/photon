@@ -21,7 +21,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
+void vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
                              vdseHashMap        * pHashMap, 
                              vdseSessionContext * pContext )
 {
@@ -33,20 +33,18 @@ int vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
    
    /* The easy case */
    if ( pHashMap->hashObj.numberOfItems == 0 )
-      return 0;
+      return;
    
 //   pVerify->spaces += 2;
    
    listErr = vdseHashGetFirst( &pHashMap->hashObj,
                                &bucket, 
                                &offset );
-   while ( listErr == LIST_OK )
-   {
+   while ( listErr == LIST_OK ) {
       GET_PTR( pItem, offset, vdseHashItem );
       txItemStatus = &pItem->txStatus;
 
-      if ( txItemStatus->txOffset != NULL_OFFSET )
-      {
+      if ( txItemStatus->txOffset != NULL_OFFSET ) {
          /*
           * So we have an interrupted transaction. What kind? 
           *   FLAG                      ACTION          
@@ -57,37 +55,38 @@ int vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
           *
           * Action is the equivalent of what a rollback would do.
           */
-         if ( txItemStatus->enumStatus == VDSE_TXS_ADDED )
-         {
-            vdswEcho( pVerify, "Hash item added but not committed - item removed" );
+         if ( txItemStatus->enumStatus == VDSE_TXS_ADDED ) {
+            vdswEcho( pVerify, "Hash item added but not committed" );
             deletedBucket = bucket;
             pDeletedItem = pItem;
          }         
-         else if ( txItemStatus->enumStatus == VDSE_TXS_REPLACED )
-         {
-            vdswEcho( pVerify, "Hash item replaced but not committed - new item removed" );
-            deletedBucket = bucket;
-            pDeletedItem = pItem;
-         }         
-         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
-         {
-            vdswEcho( pVerify, "Hash item deleted and committed - item removed" );
+         else if ( txItemStatus->enumStatus == VDSE_TXS_REPLACED ) {
+            vdswEcho( pVerify, "Hash item replaced but not committed" );
             deletedBucket = bucket;
             pDeletedItem = pItem;
          }
-         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED )
-         {
-            vdswEcho( pVerify, "Hash item deleted but not committed - item is kept" );
+         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+            vdswEcho( pVerify, "Hash item deleted and committed" );
+            deletedBucket = bucket;
+            pDeletedItem = pItem;
+         }
+         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
+            vdswEcho( pVerify, "Hash item deleted but not committed" );
          }
          
-         txItemStatus->txOffset = NULL_OFFSET;
-         txItemStatus->enumStatus = VDSE_TXS_OK;
+         if ( pDeletedItem == NULL && pVerify->doRepair ) {
+            txItemStatus->txOffset = NULL_OFFSET;
+            txItemStatus->enumStatus = VDSE_TXS_OK;
+            vdswEcho( pVerify, "Hash item status fields reset to zero" );
+         }
       }
-
-      if ( pDeletedItem == NULL && txItemStatus->usageCounter != 0 )
-      {
-         vdswEcho( pVerify, "Hash item usage counter set to zero" );
-         txItemStatus->usageCounter = 0;
+      
+      if ( pDeletedItem == NULL && txItemStatus->usageCounter != 0 ) {
+         vdswEcho( pVerify, "Hash item usage counter is not zero" );
+         if (pVerify->doRepair) {
+            txItemStatus->usageCounter = 0;
+            vdswEcho( pVerify, "Hash item usage counter set to zero" );
+         }
       }
       
       previousBucket = bucket;
@@ -103,17 +102,15 @@ int vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
        * why we save the item to be deleted and delete it until after we
        * retrieve the next item.
        */
-      if ( pDeletedItem != NULL )
-      {
+      if ( pDeletedItem != NULL && pVerify->doRepair ) {
          vdseHashDeleteAt( &pHashMap->hashObj,
                            deletedBucket,
                            pDeletedItem,
                            pContext );
-         pDeletedItem = NULL;
+         vdswEcho( pVerify, "Hash item removed from the VDS" );
       }
+      pDeletedItem = NULL;
    }
-   
-   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -125,12 +122,23 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
 {
    vdseTxStatus * txHashMapStatus;
    int rc;
+   bool bTestObject = false;
       
    pVerify->spaces += 2;
+
+   /* Is the object lock ? */
+   if ( vdscIsItLocked( &pHashMap->memObject.lock ) ) {
+      vdswEcho( pVerify, "The object is locked - it might be corrupted" );
+      if ( pVerify->doRepair ) {
+         vdswEcho( pVerify, "Trying to reset the lock..." );
+         vdscReleaseProcessLock ( &pHashMap->memObject.lock );
+      }
+      bTestObject = true;
+   }
+
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( txHashMapStatus->txOffset != NULL_OFFSET )
-   {
+   if ( txHashMapStatus->txOffset != NULL_OFFSET ) {
       /*
        *   FLAG                      ACTION          
        *   TXS_ADDED                 remove object   
@@ -139,41 +147,53 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txHashMapStatus->enumStatus == VDSE_TXS_ADDED)
-      {
-         vdswEcho( pVerify, "Object added but not committed - object removed" );
-         pVerify->spaces -= 2;
-         return VDSW_DELETE_OBJECT;
-      }         
-      if ( txHashMapStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
-      {
-         vdswEcho( pVerify, "Object deleted and committed - object removed" );
+      if ( txHashMapStatus->enumStatus == VDSE_TXS_ADDED) {
+         vdswEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
          return VDSW_DELETE_OBJECT;
       }
-      vdswEcho( pVerify, "Object deleted but not committed - object is kept" );
-
-      txHashMapStatus->txOffset = NULL_OFFSET;
-      txHashMapStatus->enumStatus = VDSE_TXS_OK;
-   }
-   
-   if ( txHashMapStatus->usageCounter != 0 )
-   {
-      txHashMapStatus->usageCounter = 0;
-      vdswEcho( pVerify, "Usage counter set to zero" );
-   }
-   if ( txHashMapStatus->parentCounter != 0 )
-   {
-      txHashMapStatus->parentCounter = 0;
-      vdswEcho( pVerify, "Parent counter set to zero" );
-   }
-   if ( pHashMap->nodeObject.txCounter != 0 )
-   {
-      pHashMap->nodeObject.txCounter = 0;
-      vdswEcho( pVerify, "Transaction counter set to zero" );
+      if ( txHashMapStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+         vdswEcho( pVerify, "Object deleted and committed" );
+         pVerify->spaces -= 2;
+         return VDSW_DELETE_OBJECT;
+      }
+      
+      vdswEcho( pVerify, "Object deleted but not committed" );
+      if ( pVerify->doRepair) {
+         vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
+         txHashMapStatus->txOffset = NULL_OFFSET;
+         txHashMapStatus->enumStatus = VDSE_TXS_OK;
+      }
    }
 
-   rc = vdswCheckHashMapContent( pVerify, pHashMap, pContext );
+   if ( txHashMapStatus->usageCounter != 0 ) {
+      vdswEcho( pVerify, "Usage counter is not zero" );
+      if (pVerify->doRepair) {
+         txHashMapStatus->usageCounter = 0;
+         vdswEcho( pVerify, "Usage counter set to zero" );
+      }
+   }
+   if ( txHashMapStatus->parentCounter != 0 ) {
+      vdswEcho( pVerify, "Parent counter is not zero" );
+      if (pVerify->doRepair) {
+         txHashMapStatus->parentCounter = 0;
+         vdswEcho( pVerify, "Parent counter set to zero" );
+      }
+   }
+   if ( pHashMap->nodeObject.txCounter != 0 ) {
+      vdswEcho( pVerify, "Transaction counter is not zero" );
+      if (pVerify->doRepair) {
+         pHashMap->nodeObject.txCounter = 0;
+         vdswEcho( pVerify, "Transaction counter set to zero" );
+      }
+   }
+
+   if ( bTestObject )
+      rc = vdswVerifyHash( pVerify, 
+                           &pHashMap->hashObj, 
+                           SET_OFFSET(&pHashMap->memObject) );
+
+   vdswCheckHashMapContent( pVerify, pHashMap, pContext );
    pVerify->spaces -= 2;
 
    return VDSW_OK;

@@ -26,19 +26,16 @@ int vdswCheckQueueContent( vdswVerifyStruct * pVerify,
 {
    vdseTxStatus * txItemStatus;
    enum ListErrors listErrCode;
-   vdseLinkNode * pNode = NULL, * pDeleteNode = NULL;
+   vdseLinkNode * pNode = NULL, * pDeletedNode = NULL;
    vdseQueueItem* pQueueItem = NULL;
    
-//   pVerify->spaces += 2;
    listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
-   while ( listErrCode == LIST_OK )
-   {
+   while ( listErrCode == LIST_OK ) {
       pQueueItem = (vdseQueueItem*) 
          ((char*)pNode - offsetof( vdseQueueItem, node ));
       txItemStatus = &pQueueItem->txStatus;
 
-      if ( txItemStatus->txOffset != NULL_OFFSET )
-      {
+      if ( txItemStatus->txOffset != NULL_OFFSET ) {
          /*
           * So we have an interrupted transaction. What kind? 
           *   FLAG                      ACTION          
@@ -48,30 +45,31 @@ int vdswCheckQueueContent( vdswVerifyStruct * pVerify,
           *
           * Action is the equivalent of what a rollback would do.
           */
-         if ( txItemStatus->enumStatus == VDSE_TXS_ADDED )
-         {
-            vdswEcho( pVerify, "Queue item added but not committed - item removed" );
-            pDeleteNode = pNode;
-
+         if ( txItemStatus->enumStatus == VDSE_TXS_ADDED ) {
+            vdswEcho( pVerify, "Queue item added but not committed" );
+            pDeletedNode = pNode;
          }         
-         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
-         {
-            vdswEcho( pVerify, "Queue item deleted and committed - item removed" );
-            pDeleteNode = pNode;
+         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+            vdswEcho( pVerify, "Queue item deleted and committed" );
+            pDeletedNode = pNode;
          }
-         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED )
-         {
-            vdswEcho( pVerify, "Queue item deleted but not committed - item is kept" );
+         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
+            vdswEcho( pVerify, "Queue item deleted but not committed" );
          }
          
-         txItemStatus->txOffset = NULL_OFFSET;
-         txItemStatus->enumStatus = VDSE_TXS_OK;
+         if ( pDeletedNode == NULL && pVerify->doRepair ) {
+            txItemStatus->txOffset = NULL_OFFSET;
+            txItemStatus->enumStatus = VDSE_TXS_OK;
+            vdswEcho( pVerify, "Queue item status fields reset to zero" );
+         }
       }
 
-      if ( pDeleteNode == NULL && txItemStatus->usageCounter != 0 )
-      {
-         vdswEcho( pVerify, "Queue item usage counter set to zero" );
-         txItemStatus->usageCounter = 0;
+      if ( pDeletedNode == NULL && txItemStatus->usageCounter != 0 ) {
+         vdswEcho( pVerify, "Queue item usage counter is not zero" );
+         if (pVerify->doRepair) {
+            vdswEcho( pVerify, "Queue item usage counter set to zero" );
+            txItemStatus->usageCounter = 0;
+         }
       }
       
       listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
@@ -82,11 +80,11 @@ int vdswCheckQueueContent( vdswVerifyStruct * pVerify,
        * why we save the node to be deleted and delete it until after we
        * retrieve the next node.
        */
-      if ( pDeleteNode != NULL )
-      {
-         vdseLinkedListRemoveItem( &pQueue->listOfElements, pDeleteNode );
-         pDeleteNode = NULL;
+      if ( pDeletedNode != NULL && pVerify->doRepair ) {
+         vdseLinkedListRemoveItem( &pQueue->listOfElements, pDeletedNode );
+         vdswEcho( pVerify, "Queue item removed from the VDS" );
       }
+      pDeletedNode = NULL;
    }
 
    if ( listErrCode == LIST_END_OF_LIST || listErrCode == LIST_EMPTY )
@@ -105,22 +103,24 @@ vdswVerifyQueue( vdswVerifyStruct * pVerify,
 {
    vdseTxStatus * txQueueStatus;
    int rc;
+   bool bTestObject = false;
    
    pVerify->spaces += 2;
    
-   if ( vdscIsItLocked( &pQueue->memObject.lock ) )
-   {
-      vdscReleaseProcessLock ( &pQueue->memObject.lock );
-   
+   if ( vdscIsItLocked( &pQueue->memObject.lock ) ) {
+      vdswEcho( pVerify, "The object is locked - it might be corrupted" );
+      if ( pVerify->doRepair ) {
+         vdswEcho( pVerify, "Trying to reset the lock..." );
+         vdscReleaseProcessLock ( &pQueue->memObject.lock );
+      }
       rc = vdswVerifyList( pVerify, &pQueue->memObject.listBlockGroup );
    //   rc = VerifyMemObject( &pQueue->memObject );
-      rc = vdswVerifyList( pVerify, &pQueue->listOfElements );
+      bTestObject = true;
    }
 
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( txQueueStatus->txOffset != NULL_OFFSET )
-   {
+   if ( txQueueStatus->txOffset != NULL_OFFSET ) {
       /*
        * So we have an interrupted transaction. What kind? 
        *   FLAG                      ACTION          
@@ -130,39 +130,50 @@ vdswVerifyQueue( vdswVerifyStruct * pVerify,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txQueueStatus->enumStatus == VDSE_TXS_ADDED )
-      {
-         vdswEcho( pVerify, "Object added but not committed - object removed" );
+      if ( txQueueStatus->enumStatus == VDSE_TXS_ADDED ) {
+         vdswEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
          return VDSW_DELETE_OBJECT;
       }         
-      if ( txQueueStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
-      {
-         vdswEcho( pVerify, "Object deleted and committed - object removed" );
+      if ( txQueueStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+         vdswEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
          return VDSW_DELETE_OBJECT;
       }
-      vdswEcho( pVerify, "Object deleted but not committed - object is kept" );
 
-      txQueueStatus->txOffset = NULL_OFFSET;
-      txQueueStatus->enumStatus = VDSE_TXS_OK;
+      vdswEcho( pVerify, "Object deleted but not committed" );
+
+      if ( pVerify->doRepair) {
+         vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
+         txQueueStatus->txOffset = NULL_OFFSET;
+         txQueueStatus->enumStatus = VDSE_TXS_OK;
+      }
    }
    
-   if ( txQueueStatus->usageCounter != 0 )
-   {
-      txQueueStatus->usageCounter = 0;
-      vdswEcho( pVerify, "Usage counter set to zero" );
+   if ( txQueueStatus->usageCounter != 0 ) {
+      vdswEcho( pVerify, "Usage counter is not zero" );
+      if (pVerify->doRepair) {
+         txQueueStatus->usageCounter = 0;
+         vdswEcho( pVerify, "Usage counter set to zero" );
+      }
    }
-   if ( txQueueStatus->parentCounter != 0 )
-   {
-      txQueueStatus->parentCounter = 0;
-      vdswEcho( pVerify, "Parent counter set to zero" );
+   if ( txQueueStatus->parentCounter != 0 ) {
+      vdswEcho( pVerify, "Parent counter is not zero" );
+      if (pVerify->doRepair) {
+         txQueueStatus->parentCounter = 0;
+         vdswEcho( pVerify, "Parent counter set to zero" );
+      }
    }
-   if ( pQueue->nodeObject.txCounter != 0 )
-   {
-      pQueue->nodeObject.txCounter = 0;
-      vdswEcho( pVerify, "Transaction counter set to zero" );
+   if ( pQueue->nodeObject.txCounter != 0 ) {
+      vdswEcho( pVerify, "Transaction counter is not zero" );
+      if (pVerify->doRepair) {
+         pQueue->nodeObject.txCounter = 0;
+         vdswEcho( pVerify, "Transaction counter set to zero" );
+      }
    }
+   
+   if ( bTestObject )
+      rc = vdswVerifyList( pVerify, &pQueue->listOfElements );
 
    rc = vdswCheckQueueContent( pVerify, pQueue );
    pVerify->spaces -= 2;

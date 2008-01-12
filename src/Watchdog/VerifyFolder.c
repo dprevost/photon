@@ -98,6 +98,9 @@ int vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
                                  &offset );
 
       if ( valid == VDSW_DELETE_OBJECT && pVerify->doRepair ) {
+         pVerify->spaces += 2;
+         vdswEcho( pVerify, "Removing the object from the VDS" );
+         pVerify->spaces -= 2;
          switch( pDesc->apiType ) {
             case VDS_FOLDER:
                vdseFolderFini( (vdseFolder *)pObject, pContext );
@@ -157,34 +160,44 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
        * Action is the equivalent of what a rollback would do.
        */
       if ( txFolderStatus->enumStatus == VDSE_TXS_ADDED ) {
-         vdswEcho( pVerify, "Object added but not committed - object removed" );
+         vdswEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
          return VDSW_DELETE_OBJECT;
       }
       if ( txFolderStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
-         vdswEcho( pVerify, "Object deleted and committed - object removed" );
+         vdswEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
          return VDSW_DELETE_OBJECT;
       }
-      vdswEcho( pVerify, "Object deleted but not committed - object is kept" );
-      
+
+      vdswEcho( pVerify, "Object deleted but not committed" );      
       if ( pVerify->doRepair) {
+         vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
          txFolderStatus->txOffset = NULL_OFFSET;
          txFolderStatus->enumStatus = VDSE_TXS_OK;
       }
    }
    
    if ( txFolderStatus->usageCounter != 0 ) {
-      if (pVerify->doRepair) txFolderStatus->usageCounter = 0;
-      vdswEcho( pVerify, "Usage counter set to zero" );
+      vdswEcho( pVerify, "Usage counter is not zero" );
+      if (pVerify->doRepair) {
+         txFolderStatus->usageCounter = 0;
+         vdswEcho( pVerify, "Usage counter set to zero" );
+      }
    }
    if ( txFolderStatus->parentCounter != 0 ) {
-      if (pVerify->doRepair) txFolderStatus->parentCounter = 0;
-      vdswEcho( pVerify, "Parent counter set to zero" );
+      vdswEcho( pVerify, "Parent counter is not zero" );
+      if (pVerify->doRepair) {
+         txFolderStatus->parentCounter = 0;
+         vdswEcho( pVerify, "Parent counter set to zero" );
+      }
    }
    if ( pFolder->nodeObject.txCounter != 0 ) {
-      if (pVerify->doRepair) pFolder->nodeObject.txCounter = 0;
-      vdswEcho( pVerify, "Transaction counter set to zero" );
+      vdswEcho( pVerify, "Transaction counter is not zero" );
+      if (pVerify->doRepair) {
+         pFolder->nodeObject.txCounter = 0;
+         vdswEcho( pVerify, "Transaction counter set to zero" );
+      }
    }
 
    if ( bTestObject )

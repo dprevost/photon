@@ -93,10 +93,8 @@ int vdsValidator::ValidateMemObject( vdseMemObject * pMemObject )
    size_t numBlocks = 0;
    
    rc = ValidateList( &pMemObject->listBlockGroup );
-   if ( rc == 0 )
-   {
-      if ( pMemObject->listBlockGroup.currentSize == 0 )
-      {
+   if ( rc == 0 ) {
+      if ( pMemObject->listBlockGroup.currentSize == 0 ) {
          echo("listBlockGroup with zero size!");
          return -1;
       }
@@ -105,9 +103,7 @@ int vdsValidator::ValidateMemObject( vdseMemObject * pMemObject )
 
       headOffset = SET_OFFSET( &pMemObject->listBlockGroup.head );
       next = &pMemObject->listBlockGroup.head;
-      while ( next->nextOffset != headOffset )
-      {
-         
+      while ( next->nextOffset != headOffset ) {
          numBlocks += ;
          GET_PTR( next, next->nextOffset, vdseLinkNode );
       }

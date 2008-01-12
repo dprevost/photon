@@ -59,12 +59,10 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
    // We loop forward until we come back to head or until we clearly have
    // a discontinuity in the chain.
    next = &pList->head;
-   while ( next->nextOffset != headOffset )
-   {
+   while ( next->nextOffset != headOffset ) {
       if ( vdswVerifyOffset( pVerify, next->nextOffset ) )
          kit.forwardChainLen++;
-      else
-      {
+      else {
          next->nextOffset = headOffset;
          kit.breakInForwardChain = true;
          break;
@@ -74,12 +72,10 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
 
    // Same as before but we loop backward.
    next = &pList->head;
-   while ( next->previousOffset != headOffset )
-   {
+   while ( next->previousOffset != headOffset ) {
       if ( vdswVerifyOffset( pVerify, next->previousOffset ) )
          kit.backwardChainLen++;
-      else
-      {
+      else {
          next->previousOffset = headOffset;
          kit.breakInBackwardChain = true;
          break;
