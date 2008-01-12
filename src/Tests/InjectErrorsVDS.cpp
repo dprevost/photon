@@ -35,20 +35,35 @@ using namespace std;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-string foldername("Test Folder");
-string queueName0("Test Folder/Queue 0");
-string queueName1("Test Folder/Queue 1");
-string queueName2("Test Folder/Queue 2");
-string queueName3("Test Folder/Queue 3");
-string hashMapName0("Test Folder/HashMap 0");
-string hashMapName1("Test Folder/HashMap 1");
-string hashMapName2("Test Folder/HashMap 2");
-string hashMapName3("Test Folder/HashMap 3");
+struct myQueue
+{
+   myQueue( vdsSession & session )
+      : queue ( session ),
+        name  ( "Test Folder/Queue " ) {}
 
+   vdsQueue queue;
+   string   name;
+};
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int AddDefectsHashMaps( vector<vdsHashMap> & h )
+struct myMap
+{
+   myMap( vdsSession & session )
+      : map  ( session ),
+        name ( "Test Folder/HashMap " ) {}
+
+   vdsHashMap map;
+   string     name;
+};
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+string foldername("Test Folder");
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+int AddDefectsHashMaps( vector<myMap> & h )
 {
    int api_offset = -1;
    struct vdsaHashMap ** apiHashMap;
@@ -60,10 +75,12 @@ int AddDefectsHashMaps( vector<vdsHashMap> & h )
    ptrdiff_t offset, previousOffset;
    vdseHashItem * pItem;
    
+   // Using a (void *) cast to eliminate a gcc warning (dereferencing 
+   // type-punned pointer will break strict-aliasing rules)
+   apiObj = (unsigned long **) ( (void *) &h[0].map );
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table (true for g++)
-   for ( i = 0, apiObj = (unsigned long **) &h[0]; 
-      i < sizeof(vdsHashMap)/sizeof(void*); ++i, apiObj++ )
+   for ( i = 0; i < sizeof(vdsHashMap)/sizeof(void*); ++i, apiObj++ )
    {
       if ( **apiObj == VDSA_HASH_MAP )
       {
@@ -77,9 +94,10 @@ int AddDefectsHashMaps( vector<vdsHashMap> & h )
       return -1;
    }
    
-   // HashMap 0. Defects: 
-   //  - ref counters 
-   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[0] + api_offset );
+   cout << "Defect for " << h[0].name << ": None" << endl;
+
+   cout << "Defect for " << h[1].name << ": 3 ref. couters" << endl;
+   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[1].map + api_offset );
    pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
    pHashMap->nodeObject.txCounter++;
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
@@ -103,24 +121,24 @@ int AddDefectsHashMaps( vector<vdsHashMap> & h )
    }
    if ( listErrCode != LIST_OK )
    {
-      cerr << "Iteration error in hashMap 0, list err = " << listErrCode << endl;
+      cerr << "Iteration error in " << h[1].name << ", list err = " << listErrCode << endl;
       return -1;
    }
    GET_PTR( pItem, offset, vdseHashItem );
    txItemStatus = &pItem->txStatus;
    txItemStatus->usageCounter++;
 
-   // HashMap 1. Defects: 
-   //  - added - not committed
-   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[1] + api_offset );
+   cout << "Defect for " << h[2].name << ": object added - not committed" << endl;
+   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[2].map + api_offset );
    pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
    txHashMapStatus->txOffset = SET_OFFSET( pHashMap ); 
    txHashMapStatus->enumStatus = VDSE_TXS_ADDED;
 
-   // HashMap 2. Defects: 
-   //  - Items added (not committed) and items removed (committed + non-comm)
-   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[2] + api_offset );
+   cout << "Defect for " << h[3].name << ": 5 items removed-committed," << endl;
+   cout << "                                  4 items removed - not committed," << endl;
+   cout << "                                  9 items added - not committed" << endl;
+   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[3].map + api_offset );
    pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
 
    listErrCode = vdseHashGetFirst( &pHashMap->hashObj,
@@ -160,7 +178,7 @@ int AddDefectsHashMaps( vector<vdsHashMap> & h )
    }
    if ( listErrCode != LIST_END_OF_LIST )
    {
-      cerr << "Iteration error in queue 2, list err = " << listErrCode << endl;
+      cerr << "Iteration error in " << h[3].name << ", list err = " << listErrCode << endl;
       return -1;
    }
    
@@ -169,7 +187,7 @@ int AddDefectsHashMaps( vector<vdsHashMap> & h )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int AddDefectsQueues( vector<vdsQueue> & q )
+int AddDefectsQueues( vector<myQueue> & q )
 {
    int api_offset = -1;
    struct vdsaQueue ** apiQueue;
@@ -180,10 +198,12 @@ int AddDefectsQueues( vector<vdsQueue> & q )
    vdseLinkNode * pNode = NULL;
    vdseQueueItem* pQueueItem = NULL;
    
+   // Using a (void *) cast to eliminate a gcc warning (dereferencing 
+   // type-punned pointer will break strict-aliasing rules)
+   apiObj = (unsigned long **) ( (void *) &q[0].queue );
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table
-   for ( i = 0, apiObj = (unsigned long **) &q[0]; 
-      i < sizeof(vdsQueue)/sizeof(void*); ++i, apiObj++ )
+   for ( i = 0; i < sizeof(vdsQueue)/sizeof(void*); ++i, apiObj++ )
    {
       if ( **apiObj == VDSA_QUEUE )
       {
@@ -196,15 +216,12 @@ int AddDefectsQueues( vector<vdsQueue> & q )
       cerr << "Can't calculate offset!" << endl;
       return -1;
    }
-   else
-      cout << "Offset = " << api_offset << endl;
    
-   // Queue 0. Defects: 
-   //  - ref counters 
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[0] + api_offset );
-   cout << apiQueue << endl;
+   cout << "Defect for " << q[0].name << ": None" << endl;
+
+   cout << "Defect for " << q[1].name << ": 3 ref. couters" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[1].queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
-   cout << pQueue << endl;
    pQueue->nodeObject.txCounter++;
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
    txQueueStatus->usageCounter++;
@@ -221,7 +238,7 @@ int AddDefectsQueues( vector<vdsQueue> & q )
    }
    if ( listErrCode != LIST_OK )
    {
-      cerr << "Iteration error in queue 0, list err = " << listErrCode << endl;
+      cerr << "Iteration error in " << q[1].name << ", list err = " << listErrCode << endl;
       return -1;
    }
    pQueueItem = (vdseQueueItem*) 
@@ -229,9 +246,8 @@ int AddDefectsQueues( vector<vdsQueue> & q )
    txItemStatus = &pQueueItem->txStatus;
    txItemStatus->usageCounter++;
 
-   // Queue 1. Defects: 
-   //  - added - not committed
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[1] + api_offset );
+   cout << "Defect for " << q[2].name << ": object added - not committed" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[2].queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
    txQueueStatus->txOffset = SET_OFFSET( pQueue ); 
@@ -239,7 +255,10 @@ int AddDefectsQueues( vector<vdsQueue> & q )
 
    // Queue 2. Defects: 
    //  - Items added (not committed) and items removed (committed + non-comm)
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[2] + api_offset );
+   cout << "Defect for " << q[3].name << ": 5 items removed-committed," << endl;
+   cout << "                                  4 items removed - not committed," << endl;
+   cout << "                                  9 items added - not committed" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[3].queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
 
    listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
@@ -273,7 +292,7 @@ int AddDefectsQueues( vector<vdsQueue> & q )
    }
    if ( listErrCode != LIST_END_OF_LIST )
    {
-      cerr << "Iteration error in queue 2, list err = " << listErrCode << endl;
+      cerr << "Iteration error in " << q[3].name << ", list err = " << listErrCode << endl;
       return -1;
    }
    
@@ -284,13 +303,19 @@ int AddDefectsQueues( vector<vdsQueue> & q )
 
 void CleanupPreviousRun( vdsSession & session )
 {
+   vdsFolder folder( session );
+   vdsFolderEntry entry;
+   int ok;
+   string s;
+   
    try {
-      session.DestroyObject( queueName0 );
-      session.DestroyObject( queueName2 );
-      session.DestroyObject( queueName3 );
-      session.DestroyObject( hashMapName0 );
-      session.DestroyObject( hashMapName2 );
-      session.DestroyObject( hashMapName3 );
+      folder.Open( foldername );
+      ok = folder.GetFirst( &entry );
+      while ( ok == 0 ) {
+         s = foldername + "/" + entry.name;
+         session.DestroyObject( s );
+         ok = folder.GetNext( &entry );
+      }
       session.Commit();
    }
    catch ( int rc )
@@ -303,23 +328,17 @@ void CleanupPreviousRun( vdsSession & session )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void PopulateHashMaps( vdsSession & session, vector<vdsHashMap> & h )
+void PopulateHashMaps( vdsSession & session, vector<myMap> & h )
 {
    int i, j;
    string data, key;
    char s[4];
    
-   session.CreateObject( hashMapName0, VDS_HASH_MAP );
-   session.CreateObject( hashMapName1, VDS_HASH_MAP );
-   session.CreateObject( hashMapName2, VDS_HASH_MAP );
-   session.CreateObject( hashMapName3, VDS_HASH_MAP );
-   h[0].Open( hashMapName0 );
-   h[1].Open( hashMapName1 );
-   h[2].Open( hashMapName2 );
-   h[3].Open( hashMapName3 );
-
    for ( i = 0; i < 4; ++i )
    {
+      session.CreateObject( h[i].name, VDS_HASH_MAP );
+      h[i].map.Open( h[i].name );
+
       for ( j = 0; j < 20; ++j )
       {
          sprintf(s, "%d", j);
@@ -327,7 +346,7 @@ void PopulateHashMaps( vdsSession & session, vector<vdsHashMap> & h )
          data = string("Inserted data item = ") + s;
          sprintf(s, "%d", i);
          data += string(" in hashMap = ") + s;
-         h[i].Insert( key.c_str(), key.length(), data.c_str(), data.length() );
+         h[i].map.Insert( key.c_str(), key.length(), data.c_str(), data.length() );
       }
    }
 
@@ -336,30 +355,24 @@ void PopulateHashMaps( vdsSession & session, vector<vdsHashMap> & h )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void PopulateQueues( vdsSession & session, vector<vdsQueue> & q )
+void PopulateQueues( vdsSession & session, vector<myQueue> & q )
 {
    int i, j;
    string data;
    char s[4];
    
-   session.CreateObject( queueName0, VDS_QUEUE );
-   session.CreateObject( queueName1, VDS_QUEUE );
-   session.CreateObject( queueName2, VDS_QUEUE );
-   session.CreateObject( queueName3, VDS_QUEUE );
-   q[0].Open( queueName0 );
-   q[1].Open( queueName1 );
-   q[2].Open( queueName2 );
-   q[3].Open( queueName3 );
-
    for ( i = 0; i < 4; ++i )
    {
+      session.CreateObject( q[i].name, VDS_QUEUE );
+      q[i].queue.Open( q[i].name );
+
       for ( j = 0; j < 20; ++j )
       {
          sprintf(s, "%d", j);
          data = string("Inserted data item = ") + s;
          sprintf(s, "%d", i);
          data += string(" in queue = ") + s;
-         q[i].Push( data.c_str(), data.length() );
+         q[i].queue.Push( data.c_str(), data.length() );
       }
    }
 
@@ -379,12 +392,10 @@ int main()
       session.CreateObject( foldername, VDS_FOLDER );
    }
    catch( int rc ) {
-      if ( rc == VDS_OBJECT_ALREADY_PRESENT )
-      {
+      if ( rc == VDS_OBJECT_ALREADY_PRESENT ) {
          CleanupPreviousRun( session );
       }
-      else
-      {
+      else {
          cerr << "Init VDSF failed, error = " << rc << endl;
          cerr << "Is the watchdog running?" << endl;
          return 1;
@@ -394,9 +405,13 @@ int main()
    cout << " ------- VDSF defects injector ------- " << endl << endl;
    cout << " This program will inject pseudo-random defects in a VDS." << endl << endl;
 
-   vector<vdsQueue> q( 4, vdsQueue(session) );
-   vector<vdsHashMap> h( 4, vdsHashMap(session) );
-
+   vector<myQueue> q( 4, myQueue(session) );
+   vector<myMap>   h( 4, myMap(session) );
+   for ( int i = 0; i < 4; ++i ) {
+      q[i].name += ('0' + i );
+      h[i].name += ('0' + i );
+   }
+   
    try {
       PopulateQueues( session, q );
       PopulateHashMaps( session, h );
@@ -405,23 +420,21 @@ int main()
       cerr << "Creating and populating the queues failed, error = " << rc << endl;
       return 1;
    }
-   cout << "Queues are created and populated." << endl;
+   cout << "Queues are created and populated." << endl << endl;
 
    int rc = AddDefectsQueues( q );
-   if ( rc != 0 )
-   {
+   if ( rc != 0 ) {
       cerr << "Adding defect to queues failed!" << endl;
       return 1;
    }
-   cout << "Defects were added to queues." << endl;
+   cout << "All defects were added to queues." << endl << endl;
 
    rc = AddDefectsHashMaps( h );
-   if ( rc != 0 )
-   {
+   if ( rc != 0 ) {
       cerr << "Adding defect to hash maps failed!" << endl;
       return 1;
    }
-   cout << "Defects were added to hash maps." << endl;
+   cout << "All defects were added to hash maps." << endl << endl;
    
    return 0;
 }

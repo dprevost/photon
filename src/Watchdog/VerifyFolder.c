@@ -158,10 +158,12 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
        */
       if ( txFolderStatus->enumStatus == VDSE_TXS_ADDED ) {
          vdswEcho( pVerify, "Object added but not committed - object removed" );
+         pVerify->spaces -= 2;
          return VDSW_DELETE_OBJECT;
-      }         
+      }
       if ( txFolderStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
          vdswEcho( pVerify, "Object deleted and committed - object removed" );
+         pVerify->spaces -= 2;
          return VDSW_DELETE_OBJECT;
       }
       vdswEcho( pVerify, "Object deleted but not committed - object is kept" );

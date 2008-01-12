@@ -29,7 +29,7 @@ int vdswCheckQueueContent( vdswVerifyStruct * pVerify,
    vdseLinkNode * pNode = NULL, * pDeleteNode = NULL;
    vdseQueueItem* pQueueItem = NULL;
    
-   pVerify->spaces += 2;
+//   pVerify->spaces += 2;
    listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    while ( listErrCode == LIST_OK )
    {
@@ -133,11 +133,13 @@ vdswVerifyQueue( vdswVerifyStruct * pVerify,
       if ( txQueueStatus->enumStatus == VDSE_TXS_ADDED )
       {
          vdswEcho( pVerify, "Object added but not committed - object removed" );
+         pVerify->spaces -= 2;
          return VDSW_DELETE_OBJECT;
       }         
       if ( txQueueStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
       {
          vdswEcho( pVerify, "Object deleted and committed - object removed" );
+         pVerify->spaces -= 2;
          return VDSW_DELETE_OBJECT;
       }
       vdswEcho( pVerify, "Object deleted but not committed - object is kept" );
