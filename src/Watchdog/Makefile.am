@@ -20,6 +20,10 @@ bin_PROGRAMS = vdswd
 
 noinst_LIBRARIES = libVerifyVDS.a
 
+man_MANS = vdswd.1
+
+EXTRA_DIST=$(man_MANS)
+
 vdswd_SOURCES =      \
    Acceptor.cpp      \
    Acceptor.h        \

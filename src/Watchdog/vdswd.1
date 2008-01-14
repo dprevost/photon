@@ -1,0 +1,77 @@
+.\" --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+.\" 
+.\" Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
+.\" 
+.\" This file is part of the vdsf (Virtual Data Space Framework) Library.
+.\" 
+.\" This file may be distributed and/or modified under the terms of the
+.\" GNU General Public License version 2 as published by the Free Software
+.\" Foundation and appearing in the file COPYING included in the
+.\" packaging of this library.
+.\" 
+.\" This library is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+.\" 
+.\" --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+.\" 
+.TH VDSWD "1" "January 2008 (version 0.2)" VDSF
+.SH NAME
+vdswd \- starts the vdsf watchdog
+.SH SYNOPSIS
+.SS "Testing the configuration file (and exit):"
+\fBvdswd -c|--config\fR \fIconfig_filename \fB-t|--test\fR
+.SS "Verifying the VDS (and exit):"
+\fBvdswd -c|--config\fR \fIconfig_filename \fB-v|--verify\fR
+.SS "Getting (minimal) help:"
+\fBvdswd -h|--help|-?\fR 
+.SS "Running normally:"
+\fBvdswd -c|--config\fR \fIconfig_filename \fR[\fB-d|--daemon\fR]
+.SH DESCRIPTION
+vdswd is the crash-recovery daemon (the watchdog) of the Virtual Data Space
+Framework (VDSF). Currently, crash recovery is only done when this program is 
+started.
+.SH OPTIONS
+.TP
+\fB-c\fR, \fB--config\fR \fIconfig_filename\fR
+The name of the configuration file (see 
+.B CONFIGURATION 
+below).
+.TP
+\fB-d\fR, \fB--daemon\fR
+Become a Unix daemon. Error reporting is done using the system logger (syslog).
+This option is not available on Windows.
+.TP
+\fB-h\fR, \fB--help\fR, \fB-?\fR
+Display minimal usage information.
+.TP
+\fB-t\fR, \fB--test\fR
+Test the configuration file and exit.
+.TP
+\fB-v\fR, \fB--verify\fR
+Verify the content of the shared-memory file (VDS) without modifying it 
+and exit.
+.SH CONFIGURATION
+The syntax of the configuration file is very simple, pairs of keys and values.
+Lines starting with # are comments.
+.TP
+\fBVDSLocation\fR
+The path of the directory where the watchdog will find the shared-memory file
+and auxiliary files (these files will be created if they do not exist).
+.TP
+\fBMemorySize\fR
+The total size of the shared memory in units of kiloBytes.
+.TP
+\fBWatchdogAddress\fR
+The local TCP/IP port the watchdog will use to listen for new connection 
+requests.
+.TP
+\fBFilePermissions\fR
+The file permissions used for the shared-memory file.
+.TP
+\fBDirectoryPermissions\fR
+The file permissions used for the directory holding the shared-memory file.
+.SH "REPORTING BUGS"
+Report bugs to <dprevost@users.sourceforge.net>.
+.SH COPYRIGHT
+Copyright \(co 2008 Daniel Prévost.
