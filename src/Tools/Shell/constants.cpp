@@ -63,18 +63,15 @@ vdsConstants::Bytes( long numBytes )
    ostringstream oss;
    
    oss.precision(2);
-   if ( numBytes > GIGA_INT )
-   {
+   if ( numBytes > GIGA_INT ) {
       d = d / GIGA_DOUBLE;
       oss << fixed << d << " Gbytes";
    }
-   else if ( numBytes > MEGA_INT )
-   {
+   else if ( numBytes > MEGA_INT ) {
       d = d / MEGA_DOUBLE;
       oss << fixed << d << " Mbytes";
    }
-   else if ( numBytes > 10*KILO_INT )
-   {
+   else if ( numBytes > 10*KILO_INT ) {
       d = d / KILO_DOUBLE;
       oss << fixed << d << " Kbytes";
    }
@@ -85,6 +82,7 @@ vdsConstants::Bytes( long numBytes )
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 const string &
 vdsConstants::Type( vdsObjectType type )
 {

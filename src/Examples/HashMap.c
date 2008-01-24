@@ -81,7 +81,6 @@ int createMap()
          fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
          return -1;
       }
-
       rc = vdsHashMapOpen( session1, mapName, strlen(mapName), &map1 );
       if ( rc != 0 )
       {
@@ -181,7 +180,7 @@ int main( int argc, char *argv[] )
       cleanup();
       return -1;
    }
-   if ( rc != VDS_NO_SUCH_ITEM )
+   if ( rc != VDS_ITEM_IS_IN_USE )
    {
       vdsErrorMsg(session2, msg, 256 );
       fprintf( stderr, "At line %d, vdsHashMapGet error: %s\n", __LINE__, msg );

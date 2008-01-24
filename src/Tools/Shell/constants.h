@@ -53,9 +53,11 @@ private:
    vector<string> stats;
    string headerType;
    string headerStatus;
-   
    string strSize;
+
 };
+
 #endif // VDSTOOLS_CONSTANTS_H
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

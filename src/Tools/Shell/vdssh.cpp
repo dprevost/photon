@@ -34,22 +34,20 @@ int main( int argc, char *argv[] )
    
    vdscOptionHandle optHandle;
    char *optArgument;
-   struct vdscOptStruct opts[1] = 
-   { 
+   struct vdscOptStruct opts[1] = { 
       { 'a', "address", 0, "watchdog_address", "The address of the VDSF watchdog" }
    };
+
    errcode = vdscSetSupportedOptions( 1, opts, &optHandle );
    if ( errcode != 0 )
       return 1;
 
    errcode = vdscValidateUserOptions( optHandle, argc, argv, 1 );
-   if ( errcode < 0 )
-   {
+   if ( errcode < 0 ) {
       vdscShowUsage( optHandle, argv[0], "" );
       return 1;
    }
-   if ( errcode > 0 )
-   {
+   if ( errcode > 0 ) {
       vdscShowUsage( optHandle, argv[0], "" );
       cout << endl;
       sh.man();

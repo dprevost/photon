@@ -42,7 +42,11 @@ bool vdsShell::Dispatch()
    bool timeToExit = false;
    string s;
    
-   if ( tokens[0] == s.assign("cd") ) {
+   if ( tokens[0] == s.assign("cat") ) {
+      if ( tokens.size() != 2 ) throw( 1 );
+      cat();
+   }
+   else if ( tokens[0] == s.assign("cd") ) {
       if ( tokens.size() > 2 ) throw( 1 );
       cd();
    }
@@ -172,8 +176,8 @@ void vdsShell::Run()
    string inStr;
    bool timeToExit = false;
    
-   while ( true )
-   {
+   while ( true ) {
+      
       cout << "vds$ "; // << endl;
       getline( cin, inStr );
       if ( cin.eof() ) { // Control-d was used on a unix shell
@@ -188,8 +192,7 @@ void vdsShell::Run()
          Parse( Trim(inStr) );
          timeToExit = Dispatch();
       }
-      catch ( int rc )
-      {
+      catch ( int rc ) {
          if ( rc == 0 )
             cerr << "vdssh: " << tokens[0] << ": command not found" << endl;
          else if ( rc == 1 )
@@ -248,11 +251,11 @@ void vdsShell::cat()
       session.GetStatus( objectName, &status );
    }
    catch ( int rc ) {
-      cerr << "vdssh: cp: " << objectName << ": Invalid object name" << endl;
+      cerr << "vdssh: cat: " << objectName << ": Invalid object name" << endl;
       return;
    }
    if ( status.type == VDS_FOLDER ) {
-      cerr << "vdssh: cp: " << objectName << ": Is a directory/folder" << endl;
+      cerr << "vdssh: cat: " << objectName << ": Is a directory/folder" << endl;
       return;
    }
    
@@ -270,12 +273,16 @@ void vdsShell::cat()
          
             hashMap.Open( objectName );
          
+            memset( key, 0, status.maxKeyLength );
+            memset( buffer, 0, status.maxDataLength );
             rc = hashMap.GetFirst( key, status.maxKeyLength, 
                                    buffer, status.maxDataLength,
                                    &keyLength, &dataLength );
             while ( rc == 0 ) {
                cout << "key : " << key << endl;
                cout << "data: " << buffer << endl;
+               memset( key, 0, status.maxKeyLength );
+               memset( buffer, 0, status.maxDataLength );
                rc = hashMap.GetNext( key, status.maxKeyLength, 
                                      buffer, status.maxDataLength,
                                      &keyLength, &dataLength );
@@ -311,8 +318,7 @@ void vdsShell::cd()
    string newLoc;
    vdsObjStatus status;
 
-   if ( tokens.size() == 1 )
-   {
+   if ( tokens.size() == 1 ) {
       currentLocation = "/";
       return;
    }
@@ -331,13 +337,11 @@ void vdsShell::cd()
    try {
       session.GetStatus( newLoc, &status );
    }
-   catch ( int rc )
-   {
+   catch ( int rc ) {
       cerr << "vdssh: cd: " << newLoc << ": Invalid folder name" << endl;
       return;
    }
-   if ( status.type != VDS_FOLDER )
-   {
+   if ( status.type != VDS_FOLDER ) {
       cerr << "vdssh: cd: " << newLoc << ": Invalid folder name" << endl;
       return;
    }
@@ -443,8 +447,7 @@ void vdsShell::free()
    try {
       session.GetInfo( &info );
    }
-   catch( int rc )
-   {
+   catch( int rc ) {
       session.ErrorMsg( msg );
       cerr << "vdssh: free: " << msg << endl;
       return;
@@ -470,8 +473,7 @@ void vdsShell::ls()
    string folderName = currentLocation;
    string msg;
    
-   if ( tokens.size() == 2 )
-   {
+   if ( tokens.size() == 2 ) {
       if ( tokens[1][0] == '/' )
          // Absolute path
          folderName = tokens[1];
@@ -484,15 +486,13 @@ void vdsShell::ls()
       
       rc = folder.GetFirst( &entry );
       cout << constants.TypeHeader() << " " << constants.StatusHeader() << " Name" << endl;
-      while ( rc == 0 )
-      {
+      while ( rc == 0 ) {
          cout << constants.Type(entry.type) << " " << constants.Status(entry.status) << " " << entry.name << endl;
          rc = folder.GetNext( &entry );
       }
       folder.Close();
    }
-   catch( int e )
-   {
+   catch( int e ) {
       session.ErrorMsg( msg );
       cerr << "vdssh: " << tokens[0] << ": " << msg << endl;
    }
@@ -503,9 +503,15 @@ void vdsShell::ls()
 void vdsShell::man()
 {
    cout << "List of available commands: " << endl << endl;
+   cout << "cat object_name" << endl;
+   cout << "    Display the content of object named object_name." << endl;
+   cout << "    Warning: print the output as strings." << endl;
    cout << "cd [folder_name]" << endl;
    cout << "    Without a name, change the current folder to \"/\"." << endl;
    cout << "    Change the current folder to folder_name." << endl;
+   cout << "cp source_name dest_name" << endl;
+   cout << "    Copy the source_name object to the dest_name object." << endl;
+   cout << "    Warning: dest_name is not overwritten if it already exists." << endl;
    cout << "del/rm object_name" << endl;
    cout << "    Delete the data container named object_name" << endl;
    cout << "dir/ls [folder_name]" << endl;
@@ -575,13 +581,11 @@ void vdsShell::rm()
    try {
       session.GetStatus( objectName, &status );
    }
-   catch ( int rc )
-   {
+   catch ( int rc ) {
       cerr << "vdssh: rm: " << objectName << ": Invalid object name" << endl;
       return;
    }
-   if ( status.type == VDS_FOLDER )
-   {
+   if ( status.type == VDS_FOLDER ) {
       cerr << "vdssh: rm: " << objectName << ": Is a directory/folder" << endl;
       return;
    }
@@ -615,13 +619,11 @@ void vdsShell::rmdir()
    try {
       session.GetStatus( folderName, &status );
    }
-   catch ( int rc )
-   {
+   catch ( int rc ) {
       cerr << "vdssh: rmdir: " << folderName << ": Invalid folder name" << endl;
       return;
    }
-   if ( status.type != VDS_FOLDER )
-   {
+   if ( status.type != VDS_FOLDER ) {
       cerr << "vdssh: rmdir: " << folderName << ": Not a directory/folder" << endl;
       return;
    }

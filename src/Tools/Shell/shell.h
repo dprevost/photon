@@ -78,7 +78,7 @@ private:
    
    void touch();
       
-   // cp, mv, file, cat, history(?), wc, vi/ed(?), chmod
+   // mv, file, history(?), wc, vi/ed(?), chmod
    // cmp, grep, diff, head, tail, du, df, uname, ln, find,
    // uptime
 };
