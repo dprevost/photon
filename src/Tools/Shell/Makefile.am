@@ -16,6 +16,10 @@ CLEANFILES        = *~
  
 bin_PROGRAMS = vdssh
 
+man_MANS = vdssh.1
+
+EXTRA_DIST=$(man_MANS)
+
 vdssh_SOURCES =  \
    constants.cpp \
    constants.h   \

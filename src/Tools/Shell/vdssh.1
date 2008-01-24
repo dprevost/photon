@@ -1,0 +1,98 @@
+.\" --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+.\" 
+.\" Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
+.\" 
+.\" This file is part of the vdsf (Virtual Data Space Framework) Library.
+.\" 
+.\" This file may be distributed and/or modified under the terms of the
+.\" GNU General Public License version 2 as published by the Free Software
+.\" Foundation and appearing in the file COPYING included in the
+.\" packaging of this library.
+.\" 
+.\" This library is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+.\" 
+.\" --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+.\" 
+.TH VDSSH "1" "January 2008 (version 0.2)" VDSF
+.SH NAME
+vdssh \- starts a pseudo-shell to access VDSF data.
+.SH SYNOPSIS
+.SS "Getting (minimal) help:"
+\fBvdssh -h|--help|-?\fR 
+.SS "Running normally:"
+\fBvdssh -a|--address\fR \fIwatchdog_address
+.SH DESCRIPTION
+vdssh is a pseudo-shell allowing access to the data in the VDS (shared-memory 
+used by the VDSF software).
+.PP
+This program supports a very limited number of standard Bourne shell commands 
+(and a few equivalent DOS commands). See the section
+.B COMMANDS
+for a list of supported commands (and syntax).
+.SH OPTIONS
+.TP
+\fB-a\fR, \fB--address\fR \fIwatchdog_address\fR
+The TCP port for the VDSF watchdog (the program vdswd).
+.TP
+\fB-h\fR, \fB-?\fR, \fB--help\fR 
+Minimal help including a list of supported commands.
+.SH COMMANDS
+The syntax of the commands is simpler than the equivalent Bourne shell 
+commands - most commands take no options.
+.PP
+Names of objects (data containers) can be either absolute (starting with /)
+or relative to the current folder (see the 
+.B cd
+command for an explanation on how to change the current folder).
+.TP
+\fBcat object_name\fR
+Display the content of object named object_name.
+Warning: print the output as strings.
+.TP
+\fBcd [folder_name]\fR
+Without a name, change the current folder to "/". Change the current folder 
+to folder_name.
+.TP
+\fBcp source_name dest_name\fR
+Copy the source_name object to the dest_name object.
+
+Warning: dest_name is not overwritten if it already exists.
+.TP
+\fBdel/rm object_name\fR
+Delete the data container named object_name
+.TP
+\fBdir/ls [folder_name]\fR
+Without a name, list the objects of the current folder. List the objects 
+of the folder folder_name.
+.TP
+\fBexit/quit\fR
+Exit the program.
+.TP
+\fBfree\fR
+Display the amount of used/free memory (main allocator).
+.TP
+\fBhelp/man\fR
+Display the current list of commands.
+.TP
+\fBmkdir folder_name\fR
+Create a new folder.
+.TP
+\fBpwd \fR
+Display the current folder.
+.TP
+\fBrmdir folder_name\fR
+Delete the folder folder_name
+.TP
+\fBstat object_name\fR
+Show the status of the object object_name
+.TP
+\fBtouch -h|-q object_name\fR
+Create a new object named object_name of the specified type:
+    -h or --hashmap: a hash map
+    -q or --queue  : a FIFO queue
+.SH "REPORTING BUGS"
+Report bugs to <dprevost@users.sourceforge.net>.
+.SH COPYRIGHT
+Copyright \(co 2008 Daniel Prévost.
