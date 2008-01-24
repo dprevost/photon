@@ -37,10 +37,12 @@ vdsConstants::vdsConstants()
    types.push_back( "Folder  " );
    types.push_back( "Queue   " );
    types.push_back( "Hash Map" );
-   
+   headerType =     "Type    ";
+
    stats.push_back( "Normal " );
    stats.push_back( "Deleted" );
    stats.push_back( "Added  " );
+   headerStatus =   "Status ";
 //   stats.push_back( "Replaced" );
 //   VDSE_TXS_DESTROYED_COMMITTED
    stats.push_back( "Unknown" );

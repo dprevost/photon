@@ -1156,10 +1156,37 @@ void vdseHashMapRollbackRemove( vdseHashMap        * pHashMap,
 void vdseHashMapStatus( vdseHashMap  * pHashMap,
                         vdsObjStatus * pStatus )
 {
+   enum ListErrors listErr = LIST_OK;
+   vdseHashItem* pHashItem = NULL;
+   size_t     bucket;
+   ptrdiff_t  firstItemOffset;
+
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pStatus  != NULL );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
    
    pStatus->numDataItem = pHashMap->hashObj.numberOfItems;
+   pStatus->maxDataLength = 0;
+   pStatus->maxKeyLength  = 0;
+   if ( pStatus->numDataItem == 0 ) return;
+
+   listErr = vdseHashGetFirst( &pHashMap->hashObj, 
+                               &bucket,
+                               &firstItemOffset );
+   while ( listErr == LIST_OK )
+   {
+      GET_PTR( pHashItem, firstItemOffset, vdseHashItem );
+      if ( pHashItem->dataLength > pStatus->maxDataLength )
+         pStatus->maxDataLength = pHashItem->dataLength;
+      if ( pHashItem->keyLength > pStatus->maxKeyLength )
+         pStatus->maxKeyLength = pHashItem->keyLength;
+
+      listErr = vdseHashGetNext( &pHashMap->hashObj, 
+                                 bucket,
+                                 firstItemOffset,
+                                 &bucket,
+                                 &firstItemOffset );
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

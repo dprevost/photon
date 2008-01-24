@@ -52,14 +52,22 @@ private:
    
    // The "list" of currently implemented pseudo-shell commands starts here.
 
+   void cat();
+   
    void cd();
+
+   void cp();
    
    void free();
    
    void ls();
    
+public:
+   // man is public so that it can be use if the user do vdssh --help (or
+   // variants).
    void man();
    
+private:
    void mkdir();
    
    void rm();
@@ -68,8 +76,10 @@ private:
 
    void stat();
    
-   // cp, mv, file cat, history(?), wc, vi/ed(?), chmod
-   // cmp, grep, diff, head, tail, du, df, uname, ln, find, touch,
+   void touch();
+      
+   // cp, mv, file, cat, history(?), wc, vi/ed(?), chmod
+   // cmp, grep, diff, head, tail, du, df, uname, ln, find,
    // uptime
 };
 

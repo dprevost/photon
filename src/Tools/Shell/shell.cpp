@@ -46,6 +46,10 @@ bool vdsShell::Dispatch()
       if ( tokens.size() > 2 ) throw( 1 );
       cd();
    }
+   else if ( tokens[0] == s.assign("cp") ) {
+      if ( tokens.size() != 3 ) throw( 1 );
+      cp();
+   }
    else if ( tokens[0] == s.assign("del") ) {
       if ( tokens.size() != 2 ) throw( 1 );
       rm();
@@ -91,6 +95,10 @@ bool vdsShell::Dispatch()
       if ( tokens.size() != 2 ) throw( 1 );
       stat();
    }
+   else if ( tokens[0] == s.assign("touch") ) {
+      if ( tokens.size() != 3 ) throw( 1 );
+      touch();
+   }
    else
       throw( 0 );
    
@@ -103,36 +111,58 @@ void vdsShell::Parse( string & inStr )
 {
    istringstream iss( inStr );
    string s;
-   string::size_type len1, len2;
-
+   string::size_type len;
+   int count = 0;
+   
    tokens.clear();
 
-   len1 = inStr.find('"');
-   if ( len1 == string::npos )
-   {
-      do
-      {
+   // Cannot start with a "
+   if ( inStr[0] == '"' ) throw(2);
+
+   len = inStr.find('"');
+   if ( len == string::npos ) {
+      // Simpler case, no quotes
+      do {
          getline( iss, s, ' ');
          tokens.push_back( s );
       } while ( ! iss.eof() );
+      
+      return;
    }
-   else
-   {
-      len2 = inStr.find('"',len1+1);
-      if ( len2 == string::npos || (len2-len1) == 1 )
-         throw(2);
-      do
-      {
-         // Incomplete - options are not taken into account (but we don't
-         // support options yet...)
-         getline( iss, s, '"');
-         Trim(s);
-         if ( s.length() > 0 )
+   
+   // We have to handle multiple formats, for example:
+   //   touch -q "My QUeue"
+   //   touch "My Queue" -q
+   //   cp "My Q 1" "My Q 2"
+   //
+   // The trick we can use: when we break the string using the '"' delimiter,
+   // odd segments are what is quoted and even segments are what must be
+   // further break down using the ' ' delimiter.
+   
+   do {
+      getline( iss, s, '"');
+      Trim(s);
+      if ( s.length() > 0 ) {
+         if ( (count % 2) == 0 ) {
+            istringstream iss2( s );
+            string s2;
+
+            do {
+               getline( iss2, s2, ' ');
+               tokens.push_back( s2 );
+            } while ( ! iss2.eof() );
+         }
+         else
             tokens.push_back( s );
-      } while ( ! iss.eof() );
-   }
-   if ( tokens.size() == 0 )
-      throw(2);
+      }
+      else
+         // Error - a pair of " with no data
+         if ( (count % 2) == 1 ) throw(2);
+         
+      count++;
+   } while ( ! iss.eof() );
+   
+   if ( (count % 2) == 0 ) throw(2);
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -198,6 +228,84 @@ string & vdsShell::Trim( string & s )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void vdsShell::cat()
+{
+   string objectName;
+   vdsObjStatus status;
+   string msg;
+   unsigned char * key, * buffer;
+   int rc;
+   size_t keyLength, dataLength;
+   
+   if ( tokens[1][0] == '/' )
+      // Absolute path
+      objectName = tokens[1];
+   else
+      objectName = currentLocation + tokens[1];
+
+   // Must check if object exists (and its type)
+   try {
+      session.GetStatus( objectName, &status );
+   }
+   catch ( int rc ) {
+      cerr << "vdssh: cp: " << objectName << ": Invalid object name" << endl;
+      return;
+   }
+   if ( status.type == VDS_FOLDER ) {
+      cerr << "vdssh: cp: " << objectName << ": Is a directory/folder" << endl;
+      return;
+   }
+   
+   try {
+      // Do we have some data to copy?
+      if ( status.numDataItem > 0 ) {
+         
+         buffer = new unsigned char[status.maxDataLength];
+
+         if ( status.type == VDS_HASH_MAP ) {
+         
+            vdsHashMap hashMap(session);
+         
+            key = new unsigned char[status.maxKeyLength];
+         
+            hashMap.Open( objectName );
+         
+            rc = hashMap.GetFirst( key, status.maxKeyLength, 
+                                   buffer, status.maxDataLength,
+                                   &keyLength, &dataLength );
+            while ( rc == 0 ) {
+               cout << "key : " << key << endl;
+               cout << "data: " << buffer << endl;
+               rc = hashMap.GetNext( key, status.maxKeyLength, 
+                                     buffer, status.maxDataLength,
+                                     &keyLength, &dataLength );
+            }
+            hashMap.Close();
+         }
+         else if ( status.type == VDS_QUEUE ) {
+
+            vdsQueue queue(session);
+         
+            queue.Open( objectName );
+         
+            rc = queue.GetFirst( buffer, status.maxDataLength, &dataLength );
+            while ( rc == 0 ) {
+               cout << buffer << endl;
+               rc = queue.GetNext( buffer, status.maxDataLength, &dataLength );
+            }
+            queue.Close();
+         }
+      }
+   }
+   catch ( int rc ) {
+      session.ErrorMsg( msg );
+      cerr << "vdssh: cat: " << msg << endl;
+   }
+
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void vdsShell::cd()
 {
    string newLoc;
@@ -234,6 +342,95 @@ void vdsShell::cd()
       return;
    }
    currentLocation = newLoc;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsShell::cp()
+{
+   string srcName, destName;
+   vdsObjStatus status;
+   string msg;
+   unsigned char * key, * buffer;
+   int rc;
+   size_t keyLength, dataLength;
+   
+   if ( tokens[1][0] == '/' )
+      // Absolute path
+      srcName = tokens[1];
+   else
+      srcName = currentLocation + tokens[1];
+
+   if ( tokens[2][0] == '/' )
+      // Absolute path
+      destName = tokens[2];
+   else
+      destName = currentLocation + tokens[2];
+
+   // Must check if source object exists
+   try {
+      session.GetStatus( srcName, &status );
+   }
+   catch ( int rc ) {
+      cerr << "vdssh: cp: " << srcName << ": Invalid object name" << endl;
+      return;
+   }
+   if ( status.type == VDS_FOLDER ) {
+      cerr << "vdssh: cp: " << srcName << ": Is a directory/folder" << endl;
+      return;
+   }
+   
+   try {
+      session.CreateObject( destName, status.type );
+      // Do we have some data to copy?
+      if ( status.numDataItem > 0 ) {
+         
+         buffer = new unsigned char[status.maxDataLength];
+
+         if ( status.type == VDS_HASH_MAP ) {
+         
+            vdsHashMap srcHash(session), destHash(session);
+         
+            key = new unsigned char[status.maxKeyLength];
+         
+            srcHash.Open( srcName );
+            destHash.Open( destName );
+         
+            rc = srcHash.GetFirst( key, status.maxKeyLength, 
+                                   buffer, status.maxDataLength,
+                                   &keyLength, &dataLength );
+            while ( rc == 0 ) {
+               destHash.Insert( key, keyLength, buffer, dataLength );
+               rc = srcHash.GetNext( key, status.maxKeyLength, 
+                                     buffer, status.maxDataLength,
+                                     &keyLength, &dataLength );
+            }
+            srcHash.Close();
+            destHash.Close();
+         }
+         else if ( status.type == VDS_QUEUE ) {
+
+            vdsQueue srcQueue(session), destQueue(session);
+         
+            srcQueue.Open( srcName );
+            destQueue.Open( destName );
+         
+            rc = srcQueue.GetFirst( buffer, status.maxDataLength, &dataLength );
+            while ( rc == 0 ) {               
+               destQueue.Push( buffer, dataLength );
+               rc = srcQueue.GetNext( buffer, status.maxDataLength, &dataLength );
+            }
+            srcQueue.Close();
+            destQueue.Close();
+         }
+      }
+      session.Commit();
+   }
+   catch ( int rc ) {
+      session.ErrorMsg( msg );
+      session.Rollback();  // just in case it's the Commit that fails
+      cerr << "vdssh: cp: " << msg << endl;
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -284,7 +481,9 @@ void vdsShell::ls()
    
    try {
       folder.Open( folderName );
+      
       rc = folder.GetFirst( &entry );
+      cout << constants.TypeHeader() << " " << constants.StatusHeader() << " Name" << endl;
       while ( rc == 0 )
       {
          cout << constants.Type(entry.type) << " " << constants.Status(entry.status) << " " << entry.name << endl;
@@ -326,6 +525,12 @@ void vdsShell::man()
    cout << "    Delete the folder folder_name" << endl;
    cout << "stat object_name" << endl;
    cout << "    Show the status of the object object_name" << endl;
+   cout << "touch -h|-q object_name" << endl;
+   cout << "    Create a new object named object_name of the specified type:" << endl;
+   cout << "    -h or --hashmap: a hash map" << endl;
+   cout << "    -q or --queue  : a FIFO queue" << endl;
+   cout << endl;
+   cout << "Note: use a pair of \" to include white spaces in names." << endl;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -465,4 +670,53 @@ void vdsShell::stat()
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsShell::touch()
+{
+   string objectName;
+   string msg;
+   string option, filename;
+   vdsObjectType flag = VDS_LAST_OBJECT_TYPE;
+   
+   if ( tokens[1][0] == '-' ) {
+      option   = tokens[1];
+      filename = tokens[2];
+   }
+   else if ( tokens[2][0] == '-' ) {
+      option   = tokens[2];
+      filename = tokens[1];
+   }
+   else {
+      cerr << "vdssh: touch: " << "Usage: touch -h|-q object_name" << endl;
+      return;
+   }
+   
+   if ( option == "-q" || option == "--queue" )
+      flag = VDS_QUEUE;
+   else if ( option == "-h" || option == "--hashmap" )
+      flag = VDS_HASH_MAP;
+   else {
+      cerr << "vdssh: touch: " << "invalid option (" << option << ")" << endl;
+      return;
+   }
+   
+   if ( filename[0] == '/' )
+      // Absolute path
+      objectName = filename;
+   else
+      objectName = currentLocation + filename;
+
+   try {
+      session.CreateObject( objectName, flag );
+      session.Commit();
+   }
+   catch ( int rc ) {
+      session.ErrorMsg( msg );
+      session.Rollback();  // just in case it's the Commit that fails
+      cerr << "vdssh: touch: " << msg << endl;
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 

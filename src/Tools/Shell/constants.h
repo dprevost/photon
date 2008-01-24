@@ -38,8 +38,12 @@ public:
    ~vdsConstants();
    
    const string & Type( vdsObjectType type );
+   const string & TypeHeader()
+      { return headerType; }
    
    const string & Status( int status );
+   const string & StatusHeader()
+      { return headerStatus; }
 
    const string & Bytes( long );
    
@@ -47,6 +51,8 @@ private:
 
    vector<string> types;
    vector<string> stats;
+   string headerType;
+   string headerStatus;
    
    string strSize;
 };

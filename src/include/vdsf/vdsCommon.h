@@ -157,6 +157,12 @@ typedef struct vdsObjStatus
    /** The amount of free space available in the blocks allocated to this object. */
    size_t freeBytes;
 
+   /** Maximum data length (in bytes). */
+   size_t maxDataLength;
+   
+   /** Maximum key length (in bytes) if keys are supported - zero otherwise */
+   size_t maxKeyLength;
+
 } vdsObjStatus;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

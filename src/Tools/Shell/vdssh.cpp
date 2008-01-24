@@ -34,13 +34,11 @@ int main( int argc, char *argv[] )
    
    vdscOptionHandle optHandle;
    char *optArgument;
-   struct vdscOptStruct opts[3] = 
+   struct vdscOptStruct opts[1] = 
    { 
-      { 'a', "address", 0, "watchdog_address", "The address of the VDSF watchdog" },
-      { 'd', "daemon", 1, "",         "Run the program as a Unix daemon (Unix/linux only)" },
-      { 't', "test",   1, "",         "Test the config file and exit" }
+      { 'a', "address", 0, "watchdog_address", "The address of the VDSF watchdog" }
    };
-   errcode = vdscSetSupportedOptions( 3, opts, &optHandle );
+   errcode = vdscSetSupportedOptions( 1, opts, &optHandle );
    if ( errcode != 0 )
       return 1;
 
@@ -53,6 +51,9 @@ int main( int argc, char *argv[] )
    if ( errcode > 0 )
    {
       vdscShowUsage( optHandle, argv[0], "" );
+      cout << endl;
+      sh.man();
+      
       return 0;
    }
 

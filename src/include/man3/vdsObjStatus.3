@@ -1,4 +1,4 @@
-.TH "vdsObjStatus" 3 "26 Nov 2007" "Version 0.1.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsObjStatus" 3 "23 Jan 2008" "Version 0.1.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -40,6 +40,14 @@ Definition at line 140 of file vdsCommon.h.
 .RI "size_t \fBfreeBytes\fP"
 .br
 .RI "\fIThe amount of free space available in the blocks allocated to this object. \fP"
+.ti -1c
+.RI "size_t \fBmaxDataLength\fP"
+.br
+.RI "\fIMaximum data length (in bytes). \fP"
+.ti -1c
+.RI "size_t \fBmaxKeyLength\fP"
+.br
+.RI "\fIMaximum key length (in bytes) if keys are supported - zero otherwise. \fP"
 .in -1c
 .SH "Field Documentation"
 .PP 
@@ -48,6 +56,16 @@ Definition at line 140 of file vdsCommon.h.
 The amount of free space available in the blocks allocated to this object. 
 .PP
 Definition at line 158 of file vdsCommon.h.
+.SS "size_t \fBvdsObjStatus::maxDataLength\fP"
+.PP
+Maximum data length (in bytes). 
+.PP
+Definition at line 161 of file vdsCommon.h.
+.SS "size_t \fBvdsObjStatus::maxKeyLength\fP"
+.PP
+Maximum key length (in bytes) if keys are supported - zero otherwise. 
+.PP
+Definition at line 164 of file vdsCommon.h.
 .SS "size_t \fBvdsObjStatus::numBlockGroup\fP"
 .PP
 The number of groups of blocks allocated to this object. 

@@ -1382,6 +1382,8 @@ void vdseFolderStatus( vdseFolder   * pFolder,
    VDS_PRE_CONDITION( pStatus != NULL );
 
    pStatus->numDataItem = pFolder->hashObj.numberOfItems;
+   pStatus->maxDataLength = 0;
+   pStatus->maxKeyLength  = 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

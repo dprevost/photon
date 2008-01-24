@@ -645,12 +645,33 @@ void vdseQueueRollbackRemove( vdseQueue * pQueue,
 void vdseQueueStatus( vdseQueue    * pQueue,
                       vdsObjStatus * pStatus )
 {
+   vdseQueueItem * pQueueItem = NULL;
+   enum ListErrors listErrCode;
+   vdseLinkNode * pNode = NULL;
+
    VDS_PRE_CONDITION( pQueue  != NULL );
    VDS_PRE_CONDITION( pStatus != NULL );
    
    pStatus->numDataItem = pQueue->listOfElements.currentSize;
-   //*pNumValidItems = pQueue->numValidItems;
+   pStatus->maxDataLength = 0;
+   pStatus->maxKeyLength  = 0;
+   if ( pStatus->numDataItem == 0 ) return;
+   
+   /* This call can only fail if the queue is empty. */
+   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, 
+                                          &pNode );
 
+   while ( listErrCode == LIST_OK )
+   {
+      pQueueItem = (vdseQueueItem*)
+         ((char*)pNode - offsetof( vdseQueueItem, node ));
+      if ( pQueueItem->dataLength > pStatus->maxDataLength )
+         pStatus->maxDataLength = pQueueItem->dataLength;
+      
+      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                             pNode, 
+                                             &pNode );
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
