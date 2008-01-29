@@ -15,6 +15,12 @@
 
 package org.vdsf;
 
+class VdsFolderEntry {
+   
+   private int type;
+   private String name;
+   private int status;
+}
 
 /**
  * Folder class for the vdsf library.
@@ -22,4 +28,16 @@ package org.vdsf;
 
 class VdsFolder {
 
+   /** To save the native pointer/handle. */
+   private long handle = 0;
+   
+   public VdsFolder( VdsSession session, String name ) throws VdsException {
+
+      handle = init( session.Handle(), name );
+   }
+
+   private native long fini( long h, String s ) throws VdsException ;
+   private native long init( long h, String s ) throws VdsException ;
+   private native VdsFolderEntry getFirst( long h );
 }
+

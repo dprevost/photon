@@ -20,13 +20,11 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-
 /*
- * Class:     org_vdsf_VdsSession
- * Method:    initSession
- * Signature: (Z)J
+ * Class:     org_vdsf_VdsFolder
+ * Method:    Close
  */
-JNIEXPORT jlong JNICALL Java_org_vdsf_VdsSession_initSession (
+JNIEXPORT jlong JNICALL Java_org_vdsf_VdsFolder_Close (
    JNIEnv * env, 
    jobject  obj )
 {
@@ -35,7 +33,7 @@ JNIEXPORT jlong JNICALL Java_org_vdsf_VdsSession_initSession (
    char msg[100];
    VDS_HANDLE handle;
    
-   errcode = vdsInitSession( &handle );
+   errcode = vdsFolderClose( handle );
 
    // Normal return
    if ( errcode == VDS_OK )
@@ -53,5 +51,47 @@ JNIEXPORT jlong JNICALL Java_org_vdsf_VdsSession_initSession (
    return (jlong) NULL; 
 }
    
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * Class:     org_vdsf_VdsFolder
+ * Method:    init
+ * Signature: (JLjava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_org_vdsf_VdsFolder_init(
+   JNIEnv * env, 
+   jobject  obj, 
+   jlong    sessionHandle, 
+   jstring  jstr )
+{
+   int errcode;
+   jclass exc;
+   char msg[100];
+   VDS_HANDLE handle;
+   const char *folderName = (*env)->GetStringUTFChars( env, jstr, NULL );
+   if ( folderName == NULL )
+      return (jlong) NULL; // out-of-memory exception by the JVM
+   
+   errcode = vdsFolderOpen( (VDS_HANDLE) sessionHandle,
+                            folderName,
+                            strlen(folderName),
+                            &handle );
+  (*env)->ReleaseStringUTFChars( env, jstr, folderName );   
+
+   // Normal return
+   if ( errcode == VDS_OK )
+      return (jlong) handle;
+   
+   // Throw a java exception
+   exc = (*env)->FindClass( env, "org/vdsf/VdsException" );
+   if ( exc  != NULL )
+   {
+      sprintf( msg, "vdsf Error = %d", errcode );
+      (*env)->ThrowNew( env, exc, msg );
+   }
+
+   return (jlong) NULL; 
+}
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

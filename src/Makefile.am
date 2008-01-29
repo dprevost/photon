@@ -19,6 +19,10 @@ CLEANFILES = *~ Packages\*~
 #   n-    ...
 #   Last- Tests
 
+if COND_USE_JAVA
+  MAYBE_Java = Java
+endif
+
 SUBDIRS =               \
           Common        \
           BuildTools    \
@@ -26,9 +30,13 @@ SUBDIRS =               \
           Watchdog      \
           API           \
           C++           \
+          $(MAYBE_Java) \
           include       \
           Tests         \
           Tools         
+
+# To be added after the C++ subdir
+# $(MAYBE_Java) 
           
 BASE_LOCK_FILES =                                  \
                   Locking/linux/autoconf.h         \

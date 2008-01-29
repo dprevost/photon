@@ -39,7 +39,7 @@ CLEANFILES = *~ ./org/vdsf/*~  $(top_builddir)/src/java/org/vdsf/*.class
 
 #all-local: $(Java_Classes)
 
-#lib_LTLIBRARIES = libvdsf_jni.la
+lib_LTLIBRARIES = libvdsf_jni.la
 
 # See http://www.gnu.org/software/libtool/manual.html#SEC34
 # for more info on version-info. 
@@ -47,10 +47,16 @@ CLEANFILES = *~ ./org/vdsf/*~  $(top_builddir)/src/java/org/vdsf/*.class
 #  - the version is not in synch with the version of the whole package
 #  - format:  currentversion:revision:age  (age is the tricky one here)
 
-#libvdsf_jni_la_LDFLAGS = -version-info 1:0:0
+libvdsf_jni_la_LDFLAGS = -version-info 1:0:0
+AM_CPPFLAGS += $(JNI_CPPFLAGS)
 
-#libvdsf_jni_la_SOURCES = vdsf_jni.c
+libvdsf_jni_la_SOURCES = \
+   jni_folder.c  \
+   jni_hashmap.c \
+   jni_process.c \
+   jni_queue.c   \
+   jni_session.c 
 
-#libvdsf_jni_la_LIBADD = \
+libvdsf_jni_la_LIBADD = \
    $(top_builddir)/src/API/libvdsf.la 
 

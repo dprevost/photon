@@ -25,7 +25,7 @@
 #############################################################################
 
 AC_INIT([Virtual Data Space Framework],
-        [0.1.0],
+        [0.2.0],
         [Daniel Prevost <dprevost@users.sourceforge.net>],
         [vdsf])
 
@@ -65,19 +65,24 @@ AM_CONDITIONAL([COND_USE_DOXYGEN], [test "$DOXY_IS_PRESENT" = yes])
 AC_CHECK_PROG([LATEX_IS_PRESENT], [latex], [yes], [no])
 AM_CONDITIONAL([COND_USE_LATEX], [test "$LATEX_IS_PRESENT" = yes])
 
-# Java is not used yet (version 0.1)
-
 #AC_ARG_WITH([java],
-#              AC_HELP_STRING([--with-java],
-#                             [will build the java API, if included @<:@default=yes@:>@]),
-#	      [with_java=$withval],
-#	      [with_java=yes])
+#             AC_HELP_STRING([--with-java],
+#                            [will build the java API, if included @<:@default=yes@:>@]),
+#                            [with_java=$withval],
+#                            [with_java=yes])
 #if test "$with_java" = "yes"; then
 #  if test ! -d "$JAVA_HOME" ; then
 #    AC_MSG_ERROR([JAVA_HOME env. variable must be set to build the Java API])
 #  fi
+#  JAVAC=javac
+#  AC_JNI_INCLUDE_DIR
+#  for JNI_INCLUDE_DIR in $JNI_INCLUDE_DIRS
+#    do
+#      JNI_CPPFLAGS="$JNI_CPPFLAGS -I$JNI_INCLUDE_DIR"
+#    done
+#  AC_SUBST(JNI_CPPFLAGS)
 #fi
-#AM_CONDITIONAL([COND_USE_JAVA], [test "$with_java" = yes])
+AM_CONDITIONAL([COND_USE_JAVA], [test "$with_java" = yes])
 
 ##################################
 #                                #
@@ -457,6 +462,7 @@ AC_CONFIG_FILES([
    src/Engine/Tests/Queue/Makefile
    src/Engine/Tests/Session/Makefile
    src/Engine/Tests/Transaction/Makefile
+   src/Java/Makefile
    src/include/Makefile
    src/Tests/Makefile
    src/Tools/Makefile

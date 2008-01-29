@@ -22,11 +22,11 @@
 
 
 /*
- * Class:     org_vdsf_VdsSession
+ * Class:     org_vdsf_VdsQueue
  * Method:    initSession
  * Signature: (Z)J
  */
-JNIEXPORT jlong JNICALL Java_org_vdsf_VdsSession_initSession (
+JNIEXPORT jlong JNICALL Java_org_vdsf_VdsQueue_initSession (
    JNIEnv * env, 
    jobject  obj )
 {

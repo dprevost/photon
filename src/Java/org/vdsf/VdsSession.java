@@ -31,4 +31,7 @@ class VdsSession {
 
    private native long initSession() throws VdsException ;
    
+   public long Handle() {
+      return handle;
+   }
 }
