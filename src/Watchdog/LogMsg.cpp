@@ -40,8 +40,7 @@ vdswLogMsg::vdswLogMsg( const char* progName )
 vdswLogMsg::~vdswLogMsg()
 {
 #if defined ( WIN32 )
-   if ( m_handle != NULL )
-   {
+   if ( m_handle != NULL ) {
       DeregisterEventSource( m_handle );
       m_handle = NULL;
    }
@@ -65,8 +64,7 @@ int vdswLogMsg::Install( const char * progName,
    sprintf( buffer, 
             "SYSTEM\\CurrentControlSet\\Services\\EventLog\\Application\\%s",
             progName );
-   if ( RegCreateKey( HKEY_LOCAL_MACHINE, buffer, &hKey ) != ERROR_SUCCESS ) 
-   {
+   if ( RegCreateKey( HKEY_LOCAL_MACHINE, buffer, &hKey ) != ERROR_SUCCESS ) {
       fprintf( stderr, "Error creating key for EventLog (error = %d)\n",
                GetLastError() ); 
       return -1;
@@ -77,8 +75,7 @@ int vdswLogMsg::Install( const char * progName,
                        0,
                        REG_EXPAND_SZ,
                        (BYTE*) msgPathName,
-                       strlen(msgPathName)+1 ) != ERROR_SUCCESS )
-   {
+                       strlen(msgPathName)+1 ) != ERROR_SUCCESS ) {
       fprintf( stderr, "Error setting key value for EventLog (error = %d)\n",
                GetLastError() ); 
       RegCloseKey( hKey ); 
@@ -96,8 +93,7 @@ int vdswLogMsg::Install( const char * progName,
                        0,
                        REG_DWORD,
                        (BYTE*) &eventType,
-                       sizeof(int) ) != ERROR_SUCCESS )
-   {
+                       sizeof(int) ) != ERROR_SUCCESS ) {
       fprintf( stderr, "Error setting key value for EventLog (error = %d)\n",
                GetLastError() ); 
       RegCloseKey( hKey ); 
@@ -109,8 +105,7 @@ int vdswLogMsg::Install( const char * progName,
                        0,
                        REG_EXPAND_SZ,
                        (BYTE*) msgPathName,
-                       strlen(msgPathName)+1 ) != ERROR_SUCCESS )
-   {
+                       strlen(msgPathName)+1 ) != ERROR_SUCCESS ) {
       fprintf( stderr, "Error setting key value for EventLog (error = %d)\n",
                GetLastError() ); 
       RegCloseKey( hKey ); 
@@ -122,8 +117,7 @@ int vdswLogMsg::Install( const char * progName,
                        0,
                        REG_DWORD,
                        (BYTE*) &numCategories,
-                       sizeof(int) ) != ERROR_SUCCESS )
-   {
+                       sizeof(int) ) != ERROR_SUCCESS ) {
       fprintf( stderr, "Error setting key value for EventLog (error = %d)\n",
                GetLastError() ); 
       RegCloseKey( hKey ); 
@@ -154,8 +148,7 @@ vdswLogMsg::SendMessage( enum wdMsgSeverity severity,
 #endif
    va_end( args );
 
-   if ( m_useLog )
-   {
+   if ( m_useLog ) {
 #ifdef WIN32
       ReportEvent( m_handle, 
                    severity, 
@@ -168,10 +161,8 @@ vdswLogMsg::SendMessage( enum wdMsgSeverity severity,
       syslog( severity, "%s", message );
 #endif
    }
-   else
-   {
-      switch ( severity )
-      {
+   else {
+      switch ( severity ) {
       case WD_INFO:
          fprintf( stderr, "Severity: INFO\nMessage: %s\n", message );
          break;
@@ -210,15 +201,13 @@ int vdswLogMsg::Uninstall( const char* progName )
                       buffer,
                       0,
                       KEY_ALL_ACCESS,
-                      &hKey ) != ERROR_SUCCESS )
-   {
+                      &hKey ) != ERROR_SUCCESS ) {
       fprintf( stderr, "Error opening key for EventLog (error = %d)\n",
                GetLastError() ); 
       return -1;
    }
 
-   if ( RegDeleteKey( hKey, progName ) != ERROR_SUCCESS )
-   {
+   if ( RegDeleteKey( hKey, progName ) != ERROR_SUCCESS ) {
       fprintf( stderr, "Error deleting key for EventLog (error = %d)\n",
                GetLastError() ); 
       RegCloseKey( hKey );
@@ -231,3 +220,4 @@ int vdswLogMsg::Uninstall( const char* progName )
 #endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

@@ -106,16 +106,14 @@ int vdswWatchdog::Daemon()
     * We do it in two steps to help "end-users" recover from errors.
     */
    errcode = access( m_params.wdLocation, F_OK );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Invalid directory for VDS, error = %d\n", 
                LastError() );
       return -1;
    }
    
    errcode = access( m_params.wdLocation, R_OK | W_OK | X_OK );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Invalid file permissions on the %s%d\n", 
                "VDS directory, error = ",
                LastError() );
@@ -145,8 +143,7 @@ int vdswWatchdog::Daemon()
 
    pid = fork();
 
-   if ( pid == -1 )
-   {
+   if ( pid == -1 ) {
       fprintf( stderr, "Fork failed, error = %d\n", LastError() );
       return -1;
    }
@@ -160,8 +157,7 @@ int vdswWatchdog::Daemon()
    m_log.StartUsingLogger();
    
    errcode = setsid();
-   if ( errcode == -1 )
-   {
+   if ( errcode == -1 ) {
       // The only way setsid() can fail is if we are already a group process
       // leader (our group ID == our pid). But this test does not cost 
       // anything and may detect attempts at "enhancing" the code in this
@@ -173,8 +169,7 @@ int vdswWatchdog::Daemon()
    }
    pid = fork();
 
-   if ( pid == -1 )
-   {
+   if ( pid == -1 ) {
       m_log.SendMessage( WD_ERROR,
                          "Fork error in Daemon() (errno = %d)",
                          errno );
@@ -186,8 +181,7 @@ int vdswWatchdog::Daemon()
       exit(0);
 
    errcode = chdir( m_params.wdLocation );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       m_log.SendMessage( WD_ERROR,
                          "chdir() error in Daemon() (errno = %d)",
                          errno );
@@ -236,8 +230,7 @@ int vdswWatchdog::Install()
    HKEY hKey;
 
    memset( progPath, 0, PATH_MAX );
-   if ( GetModuleFileName( NULL, progPath, PATH_MAX ) == 0 )
-   {
+   if ( GetModuleFileName( NULL, progPath, PATH_MAX ) == 0 ) {
       fprintf( stderr, "GetModuleFileName error = %d\n", GetLastError() );
       return -1;
    }
@@ -245,8 +238,7 @@ int vdswWatchdog::Install()
    hManager = OpenSCManager( NULL,
                              NULL,
                              SC_MANAGER_ALL_ACCESS );
-   if ( hManager == NULL )
-   {
+   if ( hManager == NULL ) {
       fprintf( stderr, "OpenSCManager error = %d\n", GetLastError() );
       return -1;
    }
@@ -265,8 +257,7 @@ int vdswWatchdog::Install()
                              NULL,
                              NULL );
     
-   if ( hService == NULL )
-   {
+   if ( hService == NULL ) {
       fprintf( stderr, "CreateService error = %d\n", GetLastError() );
       CloseServiceHandle(hManager);
       return -1;
@@ -287,8 +278,7 @@ int vdswWatchdog::Install()
                            NULL,
                            KEY_SET_VALUE,
                            &hKey );
-   if ( errcode != ERROR_SUCCESS )
-   {
+   if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegOpenKeyEx error = %d\n", GetLastError() );
       return -1;
    }
@@ -299,8 +289,7 @@ int vdswWatchdog::Install()
                             REG_SZ,
                             (LPBYTE)m_params.wdLocation, 
                             strlen(m_params.wdLocation)+1 );
-   if ( errcode != ERROR_SUCCESS )
-   {
+   if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
       RegCloseKey( hKey );
       return -1;
@@ -312,8 +301,7 @@ int vdswWatchdog::Install()
                             REG_SZ,
                             (LPBYTE)m_params.wdAddress,
                             strlen(m_params.wdAddress)+1 );
-   if ( errcode != ERROR_SUCCESS )
-   {
+   if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
       RegCloseKey( hKey );
       return -1;
@@ -325,8 +313,7 @@ int vdswWatchdog::Install()
                             REG_DWORD, 
                             (LPBYTE)&m_params.memorySizekb,
                             sizeof(size_t) );
-   if ( errcode != ERROR_SUCCESS )
-   {
+   if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
       RegCloseKey( hKey );
       return -1;
@@ -338,8 +325,7 @@ int vdswWatchdog::Install()
                             REG_DWORD, 
                             (LPBYTE)&m_params.logOn,
                             sizeof(bool) );
-   if ( errcode != ERROR_SUCCESS )
-   {
+   if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
       RegCloseKey( hKey );
       return -1;
@@ -351,8 +337,7 @@ int vdswWatchdog::Install()
                             REG_DWORD, 
                             (LPBYTE)&m_params.filePerms,
                             sizeof(int) );
-   if ( errcode != ERROR_SUCCESS )
-   {
+   if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
       RegCloseKey( hKey );
       return -1;
@@ -364,8 +349,7 @@ int vdswWatchdog::Install()
                             REG_DWORD, 
                             (LPBYTE)&m_params.dirPerms,
                             sizeof(int) );
-   if ( errcode != ERROR_SUCCESS )
-   {
+   if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
       RegCloseKey( hKey );
       return -1;
@@ -384,11 +368,9 @@ int vdswWatchdog::ReadConfig( const char* cfgname )
    const char* missing;
 
    errcode = vdscReadConfig( cfgname, &m_params, &missing, &m_errorHandler );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       memset( m_errorMsg, 0, WD_MSG_LEN );
-      if ( missing == NULL )
-      {
+      if ( missing == NULL ) {
          sprintf( m_errorMsg, "%s%d%s",
                   "Error reading config file, error code = ", 
                   vdscGetLastError( &m_errorHandler ),
@@ -417,8 +399,7 @@ int vdswWatchdog::ReadRegistry()
                            NULL,
                            KEY_QUERY_VALUE,
                            &hKey );
-   if ( errcode != ERROR_SUCCESS )
-   {
+   if ( errcode != ERROR_SUCCESS ) {
       m_log.SendMessage( WD_ERROR, 
                          "RegOpenKeyEx error = %d", 
                          GetLastError() );
@@ -432,8 +413,7 @@ int vdswWatchdog::ReadRegistry()
                               NULL, 
                               (LPBYTE)m_params.wdLocation, 
                               &length );
-   if ( errcode != ERROR_SUCCESS )
-   {
+   if ( errcode != ERROR_SUCCESS ) {
       m_log.SendMessage( WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
@@ -447,8 +427,7 @@ int vdswWatchdog::ReadRegistry()
                               NULL, 
                               (LPBYTE)&m_params.memorySizekb, 
                               &length );
-   if ( errcode != ERROR_SUCCESS )
-   {
+   if ( errcode != ERROR_SUCCESS ) {
       m_log.SendMessage( WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
@@ -462,8 +441,7 @@ int vdswWatchdog::ReadRegistry()
                               NULL, 
                               (LPBYTE)m_params.wdAddress,
                               &length );
-   if ( errcode != ERROR_SUCCESS )
-   {
+   if ( errcode != ERROR_SUCCESS ) {
       m_log.SendMessage( WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
@@ -477,8 +455,7 @@ int vdswWatchdog::ReadRegistry()
                               NULL, 
                               (LPBYTE)&m_params.logOn, 
                               &length );
-   if ( errcode != ERROR_SUCCESS )
-   {
+   if ( errcode != ERROR_SUCCESS ) {
       m_log.SendMessage( WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
@@ -492,8 +469,7 @@ int vdswWatchdog::ReadRegistry()
                               NULL, 
                               (LPBYTE)&m_params.filePerms, 
                               &length );
-   if ( errcode != ERROR_SUCCESS )
-   {
+   if ( errcode != ERROR_SUCCESS ) {
       m_log.SendMessage( WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
@@ -507,8 +483,7 @@ int vdswWatchdog::ReadRegistry()
                               NULL, 
                               (LPBYTE)&m_params.dirPerms, 
                               &length );
-   if ( errcode != ERROR_SUCCESS )
-   {
+   if ( errcode != ERROR_SUCCESS ) {
       m_log.SendMessage( WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
@@ -528,8 +503,7 @@ void vdswWatchdog::Run()
    
 #if defined ( WIN32 )
    bool deallocWD = false;
-   if ( g_pWD == NULL )
-   {
+   if ( g_pWD == NULL ) {
       // This condition is possible if run is called by the NT SCM (Service
       // Control Manager) instead of being called from main().
       g_pWD = (vdswWatchdog*) malloc( sizeof(vdswWatchdog) );
@@ -551,8 +525,7 @@ void vdswWatchdog::Run()
       // to access the registry (the NT service equivalent of calling 
       // ReadConfig() from main().
       errcode = g_pWD->ReadRegistry();
-      if ( errcode != 0 )
-      {
+      if ( errcode != 0 ) {
          g_pWD->m_log.SendMessage( WD_ERROR, 
                                    "ReadRegistry failed - aborting..." );
          return;
@@ -561,8 +534,7 @@ void vdswWatchdog::Run()
 #endif
    
    errcode = g_pWD->SetSigHandler();
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       g_pWD->m_log.SendMessage( WD_ERROR,
                                 "Signal Handler Installation error %d",
                                 g_pWD->LastError() );
@@ -576,8 +548,7 @@ void vdswWatchdog::Run()
    g_pWD->m_acceptor.WaitForConnections();
    
 #if defined ( WIN32 )
-   if ( deallocWD )
-   {
+   if ( deallocWD ) {
       g_pWD->~vdswWatchdog();
       free( g_pWD );
       g_pWD = NULL;
@@ -691,8 +662,7 @@ void vdswWatchdog::Uninstall()
                            &hKey );
    if ( errcode != ERROR_SUCCESS )
       fprintf( stderr, "RegOpenKeyEx error = %d\n", GetLastError() );
-   else
-   {
+   else {
       errcode = RegDeleteValue( hKey, VDS_LOCATION );
       if ( errcode != ERROR_SUCCESS )
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
@@ -722,8 +692,7 @@ void vdswWatchdog::Uninstall()
    hManager = OpenSCManager( NULL,
                              NULL,
                              SC_MANAGER_ALL_ACCESS );
-   if ( hManager == NULL )
-   {
+   if ( hManager == NULL ) {
       // Nothing more can be done at this point...
       fprintf( stderr, "OpenSCManager error = %d\n", GetLastError() );
       return;
@@ -732,8 +701,7 @@ void vdswWatchdog::Uninstall()
    hService = OpenService( hManager,
                            "vdswc",
                            SERVICE_ALL_ACCESS );
-   if ( hService == NULL )
-   {
+   if ( hService == NULL ) {
       // Nothing more can be done at this point...
       fprintf( stderr, "OpenService error = %d\n", GetLastError() );
       CloseServiceHandle(hManager);
@@ -742,27 +710,23 @@ void vdswWatchdog::Uninstall()
    
    errcode = QueryServiceStatus( hService,
                                  &status );
-   if ( errcode == 0 )
-   {
+   if ( errcode == 0 ) {
       fprintf( stderr, "QueryServiceStatus error = %d\n", GetLastError() );
       fprintf( stderr, "Will attempt to remove the service anyway...\n" );
    }  
 
-   if ( errcode != 0 && status.dwCurrentState != SERVICE_STOPPED )
-   {
+   if ( errcode != 0 && status.dwCurrentState != SERVICE_STOPPED ) {
       // stop that service (or at least try)
       errcode = ControlService( hService, SERVICE_CONTROL_STOP, &status );
-      if ( errcode == 0 )
-      {
+      if ( errcode == 0 ) {
          fprintf( stderr, "ControlService (stop) error = %d\n", 
                   GetLastError() );
          fprintf( stderr, "Will attempt to remove the service anyway...\n" );
       }
-      else
-      {
+      else {
          int loop = 0;
-         do 
-         {
+         do  {
+            
             Sleep( 1000 ); // reminder: this is in millisecs (I always forget)
             
             errcode = QueryServiceStatus( hService, &status );
@@ -776,8 +740,7 @@ void vdswWatchdog::Uninstall()
             
          } while ( errcode != 0 && loop < 30 );
          
-         if ( status.dwCurrentState != SERVICE_STOPPED )
-         {
+         if ( status.dwCurrentState != SERVICE_STOPPED ) {
             fprintf( stderr, "It seems the service was not stopped...\n");
             fprintf( stderr, "Will attempt to remove the service anyway...\n");
          }
@@ -793,3 +756,4 @@ void vdswWatchdog::Uninstall()
 #endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

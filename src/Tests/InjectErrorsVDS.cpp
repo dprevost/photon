@@ -24,17 +24,10 @@
 #include "API/HashMap.h"
 #include "API/Queue.h"
 
-//#include "Engine/ProcessManager.h"
-//#include "Engine/SessionContext.h"
-//#include "Engine/InitEngine.h"
-//#include "Engine/Folder.h"
-//#include "Engine/MemoryAllocator.h"
-//#include "Engine/Queue.h"
-
 using namespace std;
 
 #define NUM_MAPS   4
-#define NUM_QUEUES 5
+#define NUM_QUEUES 7
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -307,6 +300,52 @@ int AddDefectsQueues( vector<myQueue> & q )
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
+
+   cout << "Defect for " << q[5].name << ": broken forward link" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[5].queue + api_offset );
+   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
+   if ( vdscTryAcquireProcessLock ( &pQueue->memObject.lock, getpid(), 0 ) ) {
+      cerr << "Error - cannot lock the object" << endl;
+      return -1;
+   }
+
+   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   i = 0;
+   while ( listErrCode == LIST_OK ) {
+      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                             pNode, 
+                                             &pNode );
+      i++;
+      if ( i == 9 ) break;
+   }
+   if ( listErrCode != LIST_OK ) {
+      cerr << "Iteration error in " << q[5].name << ", list err = " << listErrCode << endl;
+      return -1;
+   }
+   pNode->nextOffset = 0;
+
+   cout << "Defect for " << q[6].name << ": broken backward link" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[6].queue + api_offset );
+   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
+   if ( vdscTryAcquireProcessLock ( &pQueue->memObject.lock, getpid(), 0 ) ) {
+      cerr << "Error - cannot lock the object" << endl;
+      return -1;
+   }
+
+   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   i = 0;
+   while ( listErrCode == LIST_OK ) {
+      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                             pNode, 
+                                             &pNode );
+      i++;
+      if ( i == 9 ) break;
+   }
+   if ( listErrCode != LIST_OK ) {
+      cerr << "Iteration error in " << q[6].name << ", list err = " << listErrCode << endl;
+      return -1;
+   }
+   pNode->previousOffset = 0;
    
    return 0;
 }

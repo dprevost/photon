@@ -13,14 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-/* 
- * "design":
- *
- * 1 - read configuration parameters - 
- *
- */
-
-
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "API/WatchdogCommon.h"
@@ -61,24 +53,21 @@ int main( int argc, char *argv[] )
       return 1;
 
    errcode = vdscValidateUserOptions( optHandle, argc, argv, 1 );
-   if ( errcode < 0 )
-   {
+   if ( errcode < 0 ) {
       vdscShowUsage( optHandle, argv[0], "" );
       return 1;
    }
-   if ( errcode > 0 )
-   {
+   
+   if ( errcode > 0 ) {
       vdscShowUsage( optHandle, argv[0], "" );
       return 0;
    }
 
-   if ( vdscGetShortOptArgument( optHandle, 'c', &optArgument ) )
-   {
+   if ( vdscGetShortOptArgument( optHandle, 'c', &optArgument ) ) {
       errcode = wDog.ReadConfig( optArgument );
-      if ( errcode != 0 )
-      {
+      if ( errcode != 0 ) {
+         
          fprintf( stderr, "%s\n", wDog.GetErrorMsg() );
-
          return errcode;
       }
    }
@@ -88,28 +77,23 @@ int main( int argc, char *argv[] )
       return 0;
    
 #if defined ( WIN32 )
-   if ( vdscIsShortOptPresent( optHandle, 'i' ) )
-   {
+   if ( vdscIsShortOptPresent( optHandle, 'i' ) ) {
       errcode = wDog.Install();
       if ( errcode != 0 )
          return errcode;
       return 0;
    }
    
-   if ( vdscIsShortOptPresent( optHandle, 'u' ) )
-   {
+   if ( vdscIsShortOptPresent( optHandle, 'u' ) ) {
       wDog.Uninstall();
       return 0;
    }
 #else
-   if ( vdscIsShortOptPresent( optHandle, 'v' ) )
-   {
+   if ( vdscIsShortOptPresent( optHandle, 'v' ) ) {
       wDog.m_verifyVDSOnly = true;
    }
-   else
-   {
-      if ( vdscIsShortOptPresent( optHandle, 'd' ) )
-      {
+   else {
+      if ( vdscIsShortOptPresent( optHandle, 'd' ) ) {
          errcode = wDog.Daemon();
          if ( errcode != 0 )
             return errcode;
@@ -118,8 +102,7 @@ int main( int argc, char *argv[] )
 #endif
 
    errcode = wDog.InitializeVDS();
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       return errcode;
    }
 

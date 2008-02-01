@@ -107,13 +107,13 @@ private:
 #endif
 
    int GetSockError()
-   {
+      {
 #if defined (WIN32)
-      return WSAGetLastError();
+         return WSAGetLastError();
 #else
-      return errno;
+         return errno;
 #endif
-   }
+      }
 
    int Accept();
    
@@ -130,3 +130,4 @@ private:
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #endif /* VDSW_ACCEPTOR_H */
+

@@ -40,8 +40,7 @@ vdswAcceptor::vdswAcceptor()
 
 vdswAcceptor::~vdswAcceptor()
 {
-   if ( m_socketFD != VDS_INVALID_SOCKET )
-   {
+   if ( m_socketFD != VDS_INVALID_SOCKET ) {
 #if defined (WIN32) 
       closesocket( m_socketFD );
 #else
@@ -65,18 +64,14 @@ vdswAcceptor::Accept()
    int errcode, i;
    
 #if ! defined (WIN32) 
-   do 
-   {
+   do {
 #endif
       newSock = accept( m_socketFD, NULL, 0 );
 #if ! defined (WIN32)
    } while ( newSock == VDS_INVALID_SOCKET && errno == EINTR );
 #endif
   
-//   fprintf( stderr, "WD accept, newSock= %d errno = %d\n", newSock, errno );
-
-   if ( newSock == VDS_INVALID_SOCKET )
-   {
+   if ( newSock == VDS_INVALID_SOCKET ) {
       errcode = GetSockError();
 #if defined (WIN32) 
       if ( errcode == WSAEWOULDBLOCK )
@@ -99,8 +94,7 @@ vdswAcceptor::Accept()
 #if defined (WIN32)
    unsigned long mode = 1;
    errcode = ioctlsocket( newSock, FIONBIO, &mode );
-   if ( errcode == SOCKET_ERROR )
-   {
+   if ( errcode == SOCKET_ERROR ) {
       m_pWatchdog->m_log.SendMessage( WD_ERROR, 
                                     "In function ioctlsocket(), error = %d",
                                     GetSockError() );
@@ -108,8 +102,7 @@ vdswAcceptor::Accept()
    }
 #else
    errcode = fcntl( newSock, F_SETFL, O_NONBLOCK);
-   if ( errcode < 0 )
-   {
+   if ( errcode < 0 ) {
       m_pWatchdog->m_log.SendMessage( WD_ERROR, 
                                     "In function fcntl(), error = %d",
                                     GetSockError() );
@@ -117,13 +110,12 @@ vdswAcceptor::Accept()
    }
 #endif
 
-   for ( i = 1; i < FD_SETSIZE; ++i )
-      if (  m_dispatch[i].socketId == VDS_INVALID_SOCKET )
-      {
-//         fprintf(stderr, "accept i, sock: %d %d\n", i, newSock );
+   for ( i = 1; i < FD_SETSIZE; ++i ) {
+      if (  m_dispatch[i].socketId == VDS_INVALID_SOCKET ) {
          m_dispatch[i].socketId = newSock;
          break;
       }
+   }
    
    return 0;
 }
@@ -133,7 +125,6 @@ vdswAcceptor::Accept()
 void 
 vdswAcceptor::HandleAbnormalTermination( pid_t pid )
 {
-   fprintf( stderr, "pid: %d\n", pid );
    m_pWatchdog->m_log.SendMessage( WD_ERROR, 
                                    "Abnormal termination of process %d %s",
                                    pid,
@@ -162,16 +153,14 @@ vdswAcceptor::IsconnectionAlive(  int indice )
    return true;
 #else
    errcode = kill( m_dispatch[indice].socketId, 0 );
-   if ( errcode == -1 )
-   {
+   if ( errcode == -1 ) {
 //      ESRCH
    }
    return true;
 #endif
 
 #if 0   
-   if ( errcode <= 0 )
-   {
+   if ( errcode <= 0 ) {
       // Abnormal termination of the connection
 #if defined (WIN32)
       closesocket( m_dispatch[indice].socketId );
@@ -203,8 +192,7 @@ vdswAcceptor::PrepareConnection( vdswWatchdog* pWatchdog )
    m_answer.memorySizekb = m_pWatchdog->m_params.memorySizekb;
 
    dummy = strtol( m_pWatchdog->m_params.wdAddress, NULL, 10 );
-   if ( dummy <= 0 || dummy > 65535 )
-   {
+   if ( dummy <= 0 || dummy > 65535 ) {
       m_pWatchdog->m_log.SendMessage( WD_ERROR, "Error getting port number" );
       return -1;
    }
@@ -224,8 +212,7 @@ vdswAcceptor::PrepareConnection( vdswWatchdog* pWatchdog )
    versionRequested = MAKEWORD( 2, 2 );
  
    errcode = WSAStartup( versionRequested, &wsaData );
-   if ( errcode != 0 ) 
-   {
+   if ( errcode != 0 ) {
       m_pWatchdog->m_log.SendMessage( WD_ERROR, 
                                     "In function WSAStartup(), error = %d",
                                     errcode );
@@ -236,8 +223,7 @@ vdswAcceptor::PrepareConnection( vdswWatchdog* pWatchdog )
 #endif
 
    m_socketFD = socket( PF_INET, SOCK_STREAM, 0 );
-   if ( m_socketFD == VDS_INVALID_SOCKET )
-   {
+   if ( m_socketFD == VDS_INVALID_SOCKET ) {
       m_pWatchdog->m_log.SendMessage( WD_ERROR, 
                                     "In function socket(), error = %d",
                                     GetSockError() );
@@ -246,8 +232,7 @@ vdswAcceptor::PrepareConnection( vdswWatchdog* pWatchdog )
    
    errcode = setsockopt( m_socketFD, SOL_SOCKET, SO_REUSEADDR, 
                          (const char *)&one, sizeof (one) );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       m_pWatchdog->m_log.SendMessage( WD_ERROR, 
                                     "In function setsockopt(), error = %d",
                                     GetSockError() );
@@ -259,8 +244,7 @@ vdswAcceptor::PrepareConnection( vdswWatchdog* pWatchdog )
 #if defined (WIN32)
    unsigned long mode = 1;
    errcode = ioctlsocket( m_socketFD, FIONBIO, &mode );
-   if ( errcode == SOCKET_ERROR )
-   {
+   if ( errcode == SOCKET_ERROR ) {
       m_pWatchdog->m_log.SendMessage( WD_ERROR, 
                                     "In function ioctlsocket(), error = %d",
                                     GetSockError() );
@@ -268,8 +252,7 @@ vdswAcceptor::PrepareConnection( vdswWatchdog* pWatchdog )
    }
 #else
    errcode = fcntl( m_socketFD, F_SETFL, O_NONBLOCK);
-   if ( errcode < 0 )
-   {
+   if ( errcode < 0 ) {
       m_pWatchdog->m_log.SendMessage( WD_ERROR, 
                                     "In function fcntl(), error = %d",
                                     GetSockError() );
@@ -287,8 +270,7 @@ vdswAcceptor::PrepareConnection( vdswWatchdog* pWatchdog )
    errcode = bind( m_socketFD, 
                    (sockaddr *) &addr,
                    sizeof(sockaddr_in) );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       m_pWatchdog->m_log.SendMessage( WD_ERROR, 
                                     "In function bind(), error = %d",
                                     GetSockError() );
@@ -296,8 +278,7 @@ vdswAcceptor::PrepareConnection( vdswWatchdog* pWatchdog )
    }
 
    errcode = listen( m_socketFD, 5 );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       m_pWatchdog->m_log.SendMessage( WD_ERROR, 
                                     "In function listen(), error = %d",
                                     GetSockError() );
@@ -328,19 +309,14 @@ vdswAcceptor::Receive( int indice )
     * it is impossible (I think) to get the data truncated.
     */
 
-   do
-   {
+   do {
       errcode = recv( m_dispatch[indice].socketId,
                       (char *)&input,
                       sizeof input,
                       MSG_PEEK | MSG_NOSIGNAL );
    } while ( errcode == -1 && errno == EINTR );
 
-//   fprintf( stderr, "WD recv, sock = %d %d %d\n", 
-//            m_dispatch[indice].socketId, errcode, errno );
-   
-   if ( errcode <= 0 )
-   {
+   if ( errcode <= 0 ) {
       // Abnormal termination of the connection
 #if defined (WIN32)
       closesocket( m_dispatch[indice].socketId );
@@ -353,21 +329,16 @@ vdswAcceptor::Receive( int indice )
          HandleAbnormalTermination( m_dispatch[indice].pid );
       m_dispatch[indice].pid = -1;
    }
-   else
-   {
+   else {
       // Read the input data
-      do
-      {
+      do {
          errcode = recv( m_dispatch[indice].socketId,
                          (char *)&input,
                          sizeof input,
                          MSG_NOSIGNAL );
       } while ( errcode == -1 && errno == EINTR );
 
-//      fprintf( stderr, "WD recv2, %d %d\n", errcode, errno );
-
-      if ( errcode != sizeof input )
-      {
+      if ( errcode != sizeof input ) {
          // Abnormal termination of the connection
 #if defined (WIN32)
          closesocket( m_dispatch[indice].socketId );
@@ -379,15 +350,12 @@ vdswAcceptor::Receive( int indice )
             HandleAbnormalTermination( m_dispatch[indice].pid );
          m_dispatch[indice].pid = -1;
       }
-      else
-      {
-         if ( input.opcode == WD_CONNECT )
-         {
+      else {
+         if ( input.opcode == WD_CONNECT ) {
             m_dispatch[indice].pid = input.processId;
             m_dispatch[indice].dataToBeWritten = sizeof m_answer;
          }
-         else
-         {
+         else {
             // normal termination      
 #if defined (WIN32)
             shutdown( m_dispatch[indice].socketId, SD_BOTH );      
@@ -413,19 +381,14 @@ vdswAcceptor::Send( int indice )
    char* ptr = (char*) &m_answer;
    int offset = sizeof m_answer - m_dispatch[indice].dataToBeWritten;
    
-   do
-   {
+   do {
       errcode = send( m_dispatch[indice].socketId, 
                       &ptr[offset], 
                       m_dispatch[indice].dataToBeWritten, 
                       MSG_NOSIGNAL );
    } while ( errcode == -1 && errno == EINTR );
 
-//   fprintf( stderr, "WD send, sock = %d %d %d\n", 
-//            m_dispatch[indice].socketId, errcode, errno );
-   
-   if ( errcode == -1 )
-   {
+   if ( errcode == -1 ) {
       m_pWatchdog->m_log.SendMessage( WD_ERROR, 
                                       "In function send(), error = %d",
                                        GetSockError() );
@@ -444,8 +407,7 @@ vdswAcceptor::Send( int indice )
       shutdown( m_dispatch[indice].socketId, SD_BOTH );      
       closesocket( m_dispatch[indice].socketId );
 #else
-      if ( errno != EPIPE )
-      {
+      if ( errno != EPIPE ) {
          shutdown( m_dispatch[indice].socketId, 2 );      
          close( m_dispatch[indice].socketId );
       }
@@ -483,17 +445,14 @@ vdswAcceptor::WaitForConnections()
    m_dispatch[0].pid = 0;
    m_dispatch[0].dataToBeWritten = false;
    
-   for ( i = 1; i < FD_SETSIZE; ++i )
-   {
+   for ( i = 1; i < FD_SETSIZE; ++i ) {
       m_dispatch[i].socketId = VDS_INVALID_SOCKET;
       m_dispatch[i].pid = -1;
       m_dispatch[i].dataToBeWritten = false;
    }   
 
-   while ( true ) 
-   {
+   while ( true ) {
       int zzz = 0;
-//      fprintf( stderr, "%d\n", vdswWatchdog::g_pWD->m_controlWord );
       if ( vdswWatchdog::g_pWD->m_controlWord & WD_SHUTDOWN_REQUEST )
          break;
       
@@ -502,10 +461,9 @@ vdswAcceptor::WaitForConnections()
       FD_ZERO( &readSet  );
       FD_ZERO( &writeSet );
       maxFD = 0;
-      for ( i = 0; i < FD_SETSIZE; ++i )
-      {
-         if ( m_dispatch[i].socketId != VDS_INVALID_SOCKET)
-         {
+      for ( i = 0; i < FD_SETSIZE; ++i ) {
+         
+         if ( m_dispatch[i].socketId != VDS_INVALID_SOCKET) {
             if ( m_dispatch[i].dataToBeWritten == 0 ) {
                FD_SET( m_dispatch[i].socketId, &readSet);
                zzz++;
@@ -521,15 +479,12 @@ vdswAcceptor::WaitForConnections()
          }
       }
 
-      do
-      {
+      do {
          fired = select( maxFD, &readSet, &writeSet, NULL, &timeout );
-if ( zzz != 1 ) fprintf( stderr, "fired = %d %d\n", fired, zzz );
       } while ( fired == -1 && errno == EINTR );
       
 
-      if ( fired == -1 ) 
-      {
+      if ( fired == -1 ) {
          m_pWatchdog->m_log.SendMessage( WD_ERROR, 
                                        "In function select(), error = %d",
                                        GetSockError() );
@@ -541,8 +496,7 @@ if ( zzz != 1 ) fprintf( stderr, "fired = %d %d\n", fired, zzz );
       /*
        * Start with the socket listening for new connection requests
        */
-      if ( FD_ISSET( m_socketFD, &readSet ) )
-      {
+      if ( FD_ISSET( m_socketFD, &readSet ) ) {
          errcode = Accept();
          if ( errcode != 0 )
             break;
@@ -553,19 +507,14 @@ if ( zzz != 1 ) fprintf( stderr, "fired = %d %d\n", fired, zzz );
       /*
        * Process all open sockets 
        */
-      for ( i = 1; i < FD_SETSIZE; ++i )
-      {
-         if ( m_dispatch[i].socketId != VDS_INVALID_SOCKET )
-         {
-//            sleep(1);
-//            fprintf( stderr, " i = %d %d %d \n", i, m_dispatch[i].socketId, m_dispatch[i].dataToBeWritten );
-            if ( FD_ISSET( m_dispatch[i].socketId, &writeSet ) )
-            {
+      for ( i = 1; i < FD_SETSIZE; ++i ) {
+
+         if ( m_dispatch[i].socketId != VDS_INVALID_SOCKET ) {
+            if ( FD_ISSET( m_dispatch[i].socketId, &writeSet ) ) {
                Send( i );
                fired--;
             }
-            else if ( FD_ISSET( m_dispatch[i].socketId, &readSet ) )
-            {
+            else if ( FD_ISSET( m_dispatch[i].socketId, &readSet ) ) {
                Receive( i );
                fired--;
             }
@@ -575,10 +524,8 @@ if ( zzz != 1 ) fprintf( stderr, "fired = %d %d\n", fired, zzz );
    }
 
    // Cleanup (close all sockets)
-   for ( i = 0; i < FD_SETSIZE; ++i )
-   {
-      if ( m_dispatch[i].socketId != VDS_INVALID_SOCKET )
-      {
+   for ( i = 0; i < FD_SETSIZE; ++i ) {
+      if ( m_dispatch[i].socketId != VDS_INVALID_SOCKET ) {
 #if defined (WIN32) 
          shutdown( m_dispatch[i].socketId, SD_BOTH );      
          closesocket( m_dispatch[i].socketId );
@@ -593,3 +540,4 @@ if ( zzz != 1 ) fprintf( stderr, "fired = %d %d\n", fired, zzz );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

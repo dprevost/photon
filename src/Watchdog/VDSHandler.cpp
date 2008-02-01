@@ -35,8 +35,7 @@ vdswHandler::vdswHandler()
    m_context.pidLocker = getpid();
    
    int errcode = vdseInitEngine();
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Abnormal error at line %d in VdsHandler.cpp\n", __LINE__ );
          exit(1);
    }
@@ -101,8 +100,7 @@ vdswHandler::HandleCrash( pid_t pid )
    
    fprintf( stderr, "Abnormal %d %d %p %p\n", pid, errcode, pCleanupManager, pProcess );
 
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       // log it
       return;
    }
@@ -113,15 +111,13 @@ vdswHandler::HandleCrash( pid_t pid )
     */
    errcode = pProcess->GetFirstSession( &pCurrSession, &context );
    fprintf( stderr, "Errcode %d %p \n", errcode, pCurrSession );
-   if ( errcode == 0 )
-   {
+   if ( errcode == 0 ) {
       CleanSession( pCurrSession );
 
       errcode = pProcess->GetNextSession( pCurrSession, 
                                           &pNextSession,
                                           &context );
-      while ( errcode == 0 )
-      {
+      while ( errcode == 0 ) {
          CleanSession( pNextSession );
          pCurrSession = pNextSession;
          errcode = pProcess->GetNextSession( pCurrSession, 
@@ -135,8 +131,7 @@ vdswHandler::HandleCrash( pid_t pid )
     * its "children").
     */
    errcode = pCleanupManager->RemoveProcess( pProcess, &context );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       // log it
    }
 #endif // #if 0
@@ -171,10 +166,8 @@ vdswHandler::Init( struct ConfigParams * pConfig,
    vdscInitMemoryFile ( &memFile, pConfig->memorySizekb, path );
    vdscBackStoreStatus( &memFile, &fileStatus );
 
-   if ( ! fileStatus.fileExist )
-   {
-      if ( verifyVDSOnly )
-      {
+   if ( ! fileStatus.fileExist ) {
+      if ( verifyVDSOnly ) {
          fprintf( stderr, 
             "Error - the VDS does not exist - no verification possible\n" );
          return -1;
@@ -184,14 +177,13 @@ vdswHandler::Init( struct ConfigParams * pConfig,
                                           pConfig->filePerms,
                                           ppMemoryAddress,
                                           &m_context );
-      if ( errcode != 0 )
-      {
+      if ( errcode != 0 ) {
          return -1;
       }
       
       (*ppMemoryAddress)->logON = false;
-      if ( pConfig->logOn )
-      {
+      if ( pConfig->logOn ) {
+         
          sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
                   VDS_LOGDIR_NAME );
          errcode = mkdir( path, pConfig->dirPerms );
@@ -200,8 +192,7 @@ vdswHandler::Init( struct ConfigParams * pConfig,
          (*ppMemoryAddress)->logON = true;
       }
    }
-   else
-   {
+   else {
       if ( ! fileStatus.fileReadable || ! fileStatus.fileWritable || 
            ! fileStatus.lenghtOK )
          return -1;
@@ -221,8 +212,7 @@ vdswHandler::Init( struct ConfigParams * pConfig,
        * We validate the VDS first since the config file can set/unset the  
        * logging of transactions on an existing VDS.
        */
-      if ( pConfig->logOn )
-      {
+      if ( pConfig->logOn ) {
          /*
           * It is possible that logging was not on the last time the
           * program was run but is on now. Or that the directory was
@@ -239,8 +229,7 @@ vdswHandler::Init( struct ConfigParams * pConfig,
          else
             fclose( fp );        
 #endif
-         if ( errcode == -1 )
-         {
+         if ( errcode == -1 ) {
             errcode = mkdir( path, pConfig->dirPerms );
             if ( errcode != 0 )
                return -1;

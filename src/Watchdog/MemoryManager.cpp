@@ -65,14 +65,12 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    vdscBackStoreStatus( &m_memory, &fileStatus );
    
    errcode = vdscCreateBackstore( &m_memory, filePerms, &pContext->errorHandler );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       return VDS_INTERNAL_ERROR;
    }
 
    errcode = vdscOpenMemFile( &m_memory, &m_pMemoryAddress, &pContext->errorHandler );   
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
 /*#if defined (VDS_DEBUG) */
 /*        fprintf( stderr, "MMAP failure - %d\n", errno ); */
 /*#endif */
@@ -96,16 +94,14 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
                                g_pBaseAddr,
                                m_memorySizeKB*1024,
                                pContext );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       (*ppHeader) = NULL;
       return errcode;
    }
 
    /* The top folder  */
    unsigned char* ptr = vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
-   if ( ptr == NULL )
-   {
+   if ( ptr == NULL ) {
       (*ppHeader) = NULL;
       return VDS_NOT_ENOUGH_VDS_MEMORY;
    }
@@ -117,8 +113,7 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
                                 VDSE_IDENT_FOLDER,
                                 &pFolder->blockGroup,
                                 1 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
@@ -137,8 +132,7 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
                            SET_OFFSET(&pFolder->memObject),
                            25, 
                            pContext );
-   if ( listErr != LIST_OK )
-   {
+   if ( listErr != LIST_OK ) {
       if ( listErr == LIST_NO_MEMORY )
          errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
       else
@@ -173,8 +167,7 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
                                 &pHashItem,
                                 pContext );
 
-      switch( objectType )
-      {
+      switch( objectType ) {
       case VDS_FOLDER:
          memObjType = VDSE_IDENT_FOLDER;
          break;
@@ -186,8 +179,7 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
       vdseTxStatusInit( objTxStatus, SET_OFFSET(pContext->pTransaction) );
       
       GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
-      switch ( memObjType )
-      {
+      switch ( memObjType ) {
       case VDSE_IDENT_FOLDER:
          rc = vdseFolderInit( (vdseFolder*)ptr,
                               SET_OFFSET(pFolder),
@@ -210,8 +202,7 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    
    /* The Garbage Collection manager */
    ptr = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
-   if ( ptr == NULL )
-   {
+   if ( ptr == NULL ) {
       (*ppHeader) = NULL;
       return VDS_NOT_ENOUGH_VDS_MEMORY;
    }
@@ -219,8 +210,7 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    vdseProcMgr * pManager = (vdseProcMgr *) ptr;
    
    errcode = vdseProcMgrInit( pManager, pContext );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       (*ppHeader) = NULL;
       return errcode;
    }
@@ -278,14 +268,12 @@ int vdswMemoryManager::OpenVDS( const char        * memoryFileName,
    
    vdscBackStoreStatus( &m_memory, &fileStatus );
    
-   if ( ! fileStatus.fileExist )
-   {
+   if ( ! fileStatus.fileExist ) {
       return VDS_BACKSTORE_FILE_MISSING;
    }
    
    errcode = vdscOpenMemFile( &m_memory, &m_pMemoryAddress, &errorHandler );   
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
 /*#if defined (VDS_DEBUG) */
       fprintf( stderr, "MMAP failure - %d %s\n", errno, memoryFileName );
 /*#endif */
@@ -294,8 +282,7 @@ int vdswMemoryManager::OpenVDS( const char        * memoryFileName,
    
    m_pHeader = *ppHeader = (vdseMemoryHeader*) m_pMemoryAddress;
 
-   if ( (*ppHeader)->version != MEMORY_VERSION )
-   {
+   if ( (*ppHeader)->version != MEMORY_VERSION ) {
       (*ppHeader) = NULL;
       return VDS_INCOMPATIBLE_VERSIONS;
    }

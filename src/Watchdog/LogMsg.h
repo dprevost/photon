@@ -63,9 +63,9 @@ public:
    ~vdswLogMsg();   
    
    void StartUsingLogger()
-   {
-      m_useLog = true;
-   }
+      {
+         m_useLog = true;
+      }
    
    void SendMessage( enum wdMsgSeverity,
                      const char* format, 
@@ -84,7 +84,7 @@ public:
    int Uninstall( const char* progName );
 #endif
 
- private:
+private:
 
    /// True if we are a daemon or an NT service, false otherwise
    bool m_useLog;
