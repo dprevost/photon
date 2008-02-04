@@ -27,7 +27,8 @@
 using namespace std;
 
 #define NUM_MAPS   4
-#define NUM_QUEUES 7
+#define NUM_QUEUES 10
+here (changed 9 to 10)
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -192,7 +193,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    vdseTxStatus * txItemStatus, * txQueueStatus;
    unsigned long i, ** apiObj;
    enum ListErrors listErrCode;
-   vdseLinkNode * pNode = NULL;
+   vdseLinkNode * pNode = NULL, *pSavedNode = NULL;
    vdseQueueItem* pQueueItem = NULL;
    
    // Using a (void *) cast to eliminate a gcc warning (dereferencing 
@@ -316,13 +317,15 @@ int AddDefectsQueues( vector<myQueue> & q )
                                              pNode, 
                                              &pNode );
       i++;
-      if ( i == 9 ) break;
+      if ( i == 9 ) {
+         pNode->nextOffset = 0;
+         break;
+      }
    }
    if ( listErrCode != LIST_OK ) {
       cerr << "Iteration error in " << q[5].name << ", list err = " << listErrCode << endl;
       return -1;
    }
-   pNode->nextOffset = 0;
 
    cout << "Defect for " << q[6].name << ": broken backward link" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[6].queue + api_offset );
@@ -339,14 +342,70 @@ int AddDefectsQueues( vector<myQueue> & q )
                                              pNode, 
                                              &pNode );
       i++;
-      if ( i == 9 ) break;
+      if ( i == 9 ) {
+         pNode->previousOffset = 0;
+         break;
+      }
    }
    if ( listErrCode != LIST_OK ) {
       cerr << "Iteration error in " << q[6].name << ", list err = " << listErrCode << endl;
       return -1;
    }
-   pNode->previousOffset = 0;
    
+   cout << "Defect for " << q[7].name << ": 2 broken forward links" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[7].queue + api_offset );
+   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
+   if ( vdscTryAcquireProcessLock ( &pQueue->memObject.lock, getpid(), 0 ) ) {
+      cerr << "Error - cannot lock the object" << endl;
+      return -1;
+   }
+
+   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   i = 0;
+   while ( listErrCode == LIST_OK ) {
+      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                             pNode, 
+                                             &pNode );
+      i++;
+      if ( i == 9 ) pSavedNode = pNode;
+      if ( i == 13 ) {
+         pSavedNode->nextOffset = 0;
+         pNode->nextOffset = -1;
+         break;
+      }
+   }
+   if ( listErrCode != LIST_OK ) {
+      cerr << "Iteration error in " << q[7].name << ", list err = " << listErrCode << endl;
+      return -1;
+   }
+
+   cout << "Defect for " << q[8].name << ": 2 broken backward links" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[8].queue + api_offset );
+   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
+   if ( vdscTryAcquireProcessLock ( &pQueue->memObject.lock, getpid(), 0 ) ) {
+      cerr << "Error - cannot lock the object" << endl;
+      return -1;
+   }
+
+   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   i = 0;
+   while ( listErrCode == LIST_OK ) {
+      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                             pNode, 
+                                             &pNode );
+      i++;
+      if ( i == 9 ) pSavedNode = pNode;
+      if ( i == 13 ) {
+         pSavedNode->previousOffset = 0;
+         pNode->previousOffset = -1;
+         break;
+      }
+   }
+   if ( listErrCode != LIST_OK ) {
+      cerr << "Iteration error in " << q[8].name << ", list err = " << listErrCode << endl;
+      return -1;
+   }
+
    return 0;
 }
 
