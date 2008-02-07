@@ -94,8 +94,11 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
    // So how did it go?... we have multiple possibilities here.
    if ( kit.breakInForwardChain && kit.breakInBackwardChain ) {
       vdswEcho( pVerify, "Both chains broken" );
+fprintf( stderr, "breaks = %p %p\n", kit.nextBreak, kit.previousBreak );
       if ( kit.nextBreak == kit.previousBreak )
          kit.mode = REPAIR_WITH_BOTH_EQUAL;
+      else
+         kit.mode = REPAIR_WITH_BOTH_FW_FIRST;
    }
    else if ( kit.breakInForwardChain && ! kit.breakInBackwardChain ) {
       kit.mode = REPAIR_WITH_BW;
@@ -185,7 +188,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
       
    case REPAIR_WITH_BOTH_EQUAL:
    
-      vdswEcho( pVerify, "Both chains broken - don't know how to repair" );
+      vdswEcho( pVerify, "Both chains broken at same node" );
       
       // We loop forward until we find the broken link
       previous = &pList->head;
@@ -217,6 +220,8 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
    case REPAIR_WITH_BOTH_FW_FIRST:
    
       vdswEcho( pVerify, "Both chains broken - don't know how to repair" );
+//      return -1;
+//break;
 
       // We loop forward until we find the broken link      
       previous = &pList->head;
