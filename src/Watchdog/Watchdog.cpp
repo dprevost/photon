@@ -92,7 +92,7 @@ vdswWatchdog::~vdswWatchdog()
 #if !defined ( WIN32 )
 int vdswWatchdog::Daemon()
 {
-   pid_t pid;
+   pid_t pid = 0;
    int errcode;
    
    /*
@@ -160,8 +160,7 @@ int vdswWatchdog::Daemon()
    if ( errcode == -1 ) {
       // The only way setsid() can fail is if we are already a group process
       // leader (our group ID == our pid). But this test does not cost 
-      // anything and may detect attempts at "enhancing" the code in this
-      // method...
+      // anything and may detect attempts at "enhancing" the code ...
       m_log.SendMessage( WD_ERROR,
                          "setsid() error in Daemon() (errno = %d)",
                          errno );
@@ -542,8 +541,11 @@ void vdswWatchdog::Run()
    }
 
    errcode = g_pWD->m_acceptor.PrepareConnection( g_pWD );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
+      g_pWD->m_log.SendMessage( WD_ERROR,
+         "Error in PrepareConnection() - aborting..." );
       return;
+   }
    
    g_pWD->m_acceptor.WaitForConnections();
    
@@ -576,9 +578,11 @@ int vdswWatchdog::SetSigHandler()
    sigemptyset( &new_set );
 
    errcode = sigprocmask( SIG_BLOCK, &new_set, &old_set ); 
-   if ( errcode != 0 )
-      fprintf( stderr, "ok1 %d\n", errno );
-
+   if ( errcode != 0 ) {
+      g_pWD->m_log.SendMessage( WD_ERROR, "%s%d\n",
+         "sigprocmask error, errno = ", errno );
+      return -1;
+   }
    /*
     * Remove the signals we want from old_set and add to it the signal we  
     * don't care for. This is probably a useless task since the signals of 
@@ -598,8 +602,11 @@ int vdswWatchdog::SetSigHandler()
     *  Set the new process mask
     */
    errcode = sigprocmask( SIG_SETMASK, &old_set, &new_set );
-   if ( errcode != 0 )
-      fprintf( stderr, "ok2 %d\n", errno );
+   if ( errcode != 0 ) {
+      g_pWD->m_log.SendMessage( WD_ERROR, "%s%d\n",
+         "sigprocmask error, errno = ", errno );
+      return -1;
+   }
 
    /*
     * Time to setup our signal handlers. Note that we block SIGPIPE from
@@ -612,22 +619,33 @@ int vdswWatchdog::SetSigHandler()
 
    action.sa_handler = sigterm_handler;
    errcode = sigaction( SIGTERM, &action, NULL );
-   if ( errcode != 0 )
-      fprintf( stderr, "ok3 %d\n", errno );
+   if ( errcode != 0 ) {
+      g_pWD->m_log.SendMessage( WD_ERROR, "%s%d\n",
+         "sigaction (SIGTERM) error, errno = ", errno );
+      return -1;
+   }
    errcode = sigaction( SIGINT,  &action, NULL );
-   if ( errcode != 0 )
-      fprintf( stderr, "ok4 %d\n", errno );
-
+   if ( errcode != 0 ) {
+      g_pWD->m_log.SendMessage( WD_ERROR, "%s%d\n",
+         "sigaction (SIGINT) error, errno = ", errno );
+      return -1;
+   }
    action.sa_handler = sighup_handler;
    errcode = sigaction( SIGHUP, &action, NULL );
-   if ( errcode != 0 )
-      fprintf( stderr, "ok5 %d\n", errno );
+   if ( errcode != 0 ) {
+      g_pWD->m_log.SendMessage( WD_ERROR, "%s%d\n",
+         "sigaction (SIGHUP) error, errno = ", errno );
+      return -1;
+   }
 
    sigemptyset( &action.sa_mask );   
    action.sa_handler = sigpipe_handler;
    errcode = sigaction( SIGPIPE, &action, NULL );
-   if ( errcode != 0 )
-      fprintf( stderr, "ok6 %d\n", errno );
+   if ( errcode != 0 ) {
+      g_pWD->m_log.SendMessage( WD_ERROR, "%s%d\n",
+         "sigaction (SIGPIPE) error, errno = ", errno );
+      return -1;
+   }
 
 #endif
    return 0;

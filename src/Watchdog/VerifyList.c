@@ -22,6 +22,35 @@
 #include "Engine/LinkedList.h"
 #include "Engine/LinkNode.h"
 
+/*
+ * What could possibly go wrong when a crash occurs during a call to the 
+ * linked list?
+ *
+ *  - GetFirst/Last/RemoveItem
+ *      The chains are not broken - one of the chain might be longer than
+ *      the other (using the longest chain will recover the removed node).
+ *  - PutFirst/Last
+ *      The chains are not broken - one of the chain might be longer than
+ *      the other (using the longest chain will recover the added node).
+ *      
+ *      However, if the load and stores are reordered by the cpu or the
+ *      compiler... things can be different. Looking at all possible 
+ *      scenarios, you could have one of the chains broken. The only
+ *      scenario with both chains broken: the end of the chain is always
+ *      the new node.
+ *  - ReplaceItem
+ *      This function is only called from the allocator part of the 
+ *      memory object. Since the map and linked list of the allocator must
+ *      be reset from scratch anyway...
+ *
+ * Additional notes:
+ *  - the recovery might loose a new node when using the unbroken chain
+ *    to recover the broken chain. Not really an issue as that change was
+ *    not committed yet!
+ *  - We need a way to examine the whole object and try to recover the
+ *    data in case something really bad happen (a stray pointer in the 
+ *    application programs overwriting part of the data could do that).
+ */
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum repairMode

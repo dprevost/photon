@@ -62,10 +62,7 @@ public:
    
    ~vdswLogMsg();   
    
-   void StartUsingLogger()
-      {
-         m_useLog = true;
-      }
+   void StartUsingLogger();
    
    void SendMessage( enum wdMsgSeverity,
                      const char* format, 
@@ -93,6 +90,8 @@ private:
    HANDLE m_handle;
 #endif
 
+   char* m_name;
+   
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

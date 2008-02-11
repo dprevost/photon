@@ -126,9 +126,9 @@ void
 vdswAcceptor::HandleAbnormalTermination( pid_t pid )
 {
    m_pWatchdog->m_log.SendMessage( WD_ERROR, 
-                                   "Abnormal termination of process %d %s",
-                                   pid,
-                                   " - attempting to recover." );
+                                   "Abnormal termination of process %d",
+                                   pid );
+//                                   " - attempting to recover." );
 
    m_pWatchdog->HandleAbnormalTermination( pid );
 }

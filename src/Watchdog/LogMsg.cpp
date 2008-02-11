@@ -23,30 +23,34 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 vdswLogMsg::vdswLogMsg( const char* progName )
-   : m_useLog ( true )
+   : m_useLog ( false ),
 #if defined ( WIN32 )
-      , m_handle ( NULL )
+     m_handle ( NULL ),
 #endif
+     m_name ( NULL )
 {
-#if defined ( WIN32 )
-   m_handle = RegisterEventSource( NULL, progName );
-#else
-   openlog( progName, LOG_PID, LOG_USER );
-#endif
+   int len = strlen( progName );
+   m_name = new char [len+1];
+   strcpy( m_name, progName );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 vdswLogMsg::~vdswLogMsg()
 {
+   if (m_useLog) {
 #if defined ( WIN32 )
-   if ( m_handle != NULL ) {
-      DeregisterEventSource( m_handle );
-      m_handle = NULL;
-   }
+      if ( m_handle != NULL ) {
+         DeregisterEventSource( m_handle );
+         m_handle = NULL;
+      }
 #else
-   closelog();
+      closelog();
 #endif
+   }
+   if ( m_name )
+      delete m_name;
+   m_name = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -179,6 +183,18 @@ vdswLogMsg::SendMessage( enum wdMsgSeverity severity,
          break;
       }
    }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+   
+void vdswLogMsg::StartUsingLogger()
+{
+   m_useLog = true;
+#if defined ( WIN32 )
+   m_handle = RegisterEventSource( NULL, m_name );
+#else
+   openlog( m_name, LOG_PID, LOG_USER );
+#endif
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

@@ -49,9 +49,13 @@ int main( int argc, char *argv[] )
    };
    errcode = vdscSetSupportedOptions( 4, opts, &optHandle );
 #endif
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
+      fprintf( stderr, 
+         "Internal error in vdscSetSupportedOptions, error code = %d\n",
+         errcode );
       return 1;
-
+   }
+   
    errcode = vdscValidateUserOptions( optHandle, argc, argv, 1 );
    if ( errcode < 0 ) {
       vdscShowUsage( optHandle, argv[0], "" );
@@ -67,7 +71,8 @@ int main( int argc, char *argv[] )
       errcode = wDog.ReadConfig( optArgument );
       if ( errcode != 0 ) {
          
-         fprintf( stderr, "%s\n", wDog.GetErrorMsg() );
+         fprintf( stderr, "Error reading config file, error = %s\n",
+            wDog.GetErrorMsg() );
          return errcode;
       }
    }
@@ -103,6 +108,8 @@ int main( int argc, char *argv[] )
 
    errcode = wDog.InitializeVDS();
    if ( errcode != 0 ) {
+      wDog.m_log.SendMessage( WD_ERROR, 
+                              "VDS initialization error  - aborting..." );
       return errcode;
    }
 
@@ -117,3 +124,4 @@ int main( int argc, char *argv[] )
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
