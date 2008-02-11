@@ -331,6 +331,7 @@ int vdseQueueInsert( vdseQueue          * pQueue,
          goto the_exit;
       }
    
+      vdseLinkNodeInit( &pQueueItem->node );
       pQueueItem->dataLength = length;
       memcpy( pQueueItem->data, pItem, length );
    

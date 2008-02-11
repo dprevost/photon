@@ -67,7 +67,8 @@ vdseLinkedListGetLast( vdseLinkedList  * pList,
 
    /* Reset the previous offset of the head and the next offset
     * of the item before the item we are removing.
-    */   pList->head.previousOffset = (*ppItem)->previousOffset;
+    */   
+   pList->head.previousOffset = (*ppItem)->previousOffset;
    GET_PTR_FAST( (*ppItem)->previousOffset, vdseLinkNode)->nextOffset = 
       SET_OFFSET( &pList->head );
 
@@ -95,8 +96,9 @@ vdseLinkedListPutLast( vdseLinkedList * pList,
 
    pNewItem->nextOffset     = SET_OFFSET( &pList->head );
    /* The order of the next two is important - don't change it! */
-   pNewItem->previousOffset   = pList->head.previousOffset;   
+   pNewItem->previousOffset   = pList->head.previousOffset;
    pList->head.previousOffset = tmpOffset;
+
    GET_PTR_FAST( pNewItem->previousOffset, vdseLinkNode )->nextOffset = 
       tmpOffset;
    
@@ -126,6 +128,7 @@ vdseLinkedListPutFirst( vdseLinkedList * pList,
    /* The order of the next two is important - don't change it! */
    pNewItem->nextOffset = pList->head.nextOffset;   
    pList->head.nextOffset = tmpOffset;
+
    GET_PTR_FAST( pNewItem->nextOffset, vdseLinkNode )->previousOffset = 
       tmpOffset;
    
