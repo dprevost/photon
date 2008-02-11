@@ -26,8 +26,8 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswVerify( vdseMemoryHeader * pMemoryAddress );
-int vdswRepair( vdseMemoryHeader * pMemoryAddress );
+int vdswVerify( vdseMemoryHeader * pMemoryAddress, FILE * fp );
+int vdswRepair( vdseMemoryHeader * pMemoryAddress, FILE * fp );
      
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

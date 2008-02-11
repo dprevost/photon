@@ -29,10 +29,13 @@
 
 vdseMemoryHeader * g_pMemoryAddress = NULL;
 bool               g_bTestAllocator = false;
+FILE *             g_fp = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswValidate( vdseMemoryHeader * pMemoryAddress, bool doRepair )
+int vdswValidate( vdseMemoryHeader * pMemoryAddress, 
+                  FILE * fp,
+                  bool   doRepair )
 {
    struct vdseProcessManager * processMgr;
    vdseFolder * topFolder;
@@ -42,7 +45,26 @@ int vdswValidate( vdseMemoryHeader * pMemoryAddress, bool doRepair )
    ptrdiff_t  lockOffsets[VDSE_MAX_LOCK_DEPTH];
    int        numLocks = 0;
    struct vdswVerifyStruct verifyStruct = { 1, 0, stderr, doRepair };
+   char timeBuf[30];
+//#if defined (WIN32)
+//   char tmpTime[9];
+//#else
+   time_t t;
+   struct tm formattedTime;
 
+   verifyStruct.fp = fp;
+   
+   t = time(NULL);
+   localtime_r( &t, &formattedTime );
+
+   memset( timeBuf, '\0', 30 );
+   strftime( timeBuf, 30, "%B %d, %Y", &formattedTime );
+   fprintf( fp, "Current date: %s\n", timeBuf );
+
+   memset( timeBuf, '\0', 30 );
+   strftime( timeBuf, 30, "%H:%M:%S", &formattedTime );
+   fprintf( fp, "Current time: %s\n\n", timeBuf );
+   
    GET_PTR( processMgr, pMemoryAddress->processMgrOffset, struct vdseProcessManager );
    GET_PTR( topFolder, pMemoryAddress->treeMgrOffset, vdseFolder );
    GET_PTR( memAllocator, pMemoryAddress->allocatorOffset, vdseMemAlloc );
@@ -72,16 +94,20 @@ int vdswValidate( vdseMemoryHeader * pMemoryAddress, bool doRepair )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswVerify( vdseMemoryHeader * pMemoryAddress )
+int vdswVerify( vdseMemoryHeader * pMemoryAddress, FILE * fp )
 {
-   return vdswValidate( pMemoryAddress, false );
+   fprintf( fp, "Verification of VDS (no repair) is starting\n" );
+   
+   return vdswValidate( pMemoryAddress, fp, false );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswRepair( vdseMemoryHeader * pMemoryAddress )
+int vdswRepair( vdseMemoryHeader * pMemoryAddress, FILE * fp )
 {
-   return vdswValidate( pMemoryAddress, true );
+   fprintf( fp, "Verification and repair (if needed) of VDS is starting\n" );
+   
+   return vdswValidate( pMemoryAddress, fp, true );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

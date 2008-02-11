@@ -146,10 +146,19 @@ vdswHandler::Init( struct ConfigParams * pConfig,
 {
    int errcode = 0;
    char path[PATH_MAX];
+   char logFile[PATH_MAX];
    int path_len;
    vdscMemoryFileStatus fileStatus;
    vdscMemoryFile memFile;
-
+   FILE * fp = NULL;
+   char timeBuf[30];
+//#if defined (WIN32)
+//   char tmpTime[9];
+//#else
+   time_t t;
+   struct tm formattedTime;
+//#endif
+   
    if ( pConfig == NULL )
       return -1;
    m_pConfig = pConfig;
@@ -194,19 +203,51 @@ vdswHandler::Init( struct ConfigParams * pConfig,
    }
    else {
       if ( ! fileStatus.fileReadable || ! fileStatus.fileWritable || 
-           ! fileStatus.lenghtOK )
+         ! fileStatus.lenghtOK ) {
          return -1;
-      
+      }
+
       errcode = m_pMemManager->OpenVDS( path,
                                         pConfig->memorySizekb,
                                         ppMemoryAddress );
       
-      if ( verifyVDSOnly )
-         return vdswVerify(*ppMemoryAddress);
+      // Open the validation log
+      memset( logFile, '\0', PATH_MAX );
+      memset( timeBuf, '\0', 30 );
+
+//#if defined (WIN32)
+//      _strdate( timeBuf );
+//      _strtime( tmpTime );
+//      strcat( timeBuf, " " );
+//      strcat( timeBuf, tmpTime );
+//#else
+      t = time(NULL);
+      localtime_r( &t, &formattedTime );
+      strftime( timeBuf, 30, "%Y_%m_%d_%H_%M_%S", &formattedTime );
+//#endif
+
+      path_len = strlen( pConfig->wdLocation ) + strlen( VDS_DIR_SEPARATOR ) +
+      strlen("Verify_") + strlen(timeBuf) + strlen(".log");
+      if ( path_len < PATH_MAX ) {
+         sprintf( logFile, "%s%s%s%s%s", 
+            pConfig->wdLocation, 
+            VDS_DIR_SEPARATOR,
+            "Verify_",
+            timeBuf,
+            ".log" );
       
-      errcode = vdswRepair(*ppMemoryAddress);
-      if ( errcode != 0 )
-         return -1;
+         fp = fopen( logFile, "w" );
+      }
+      if ( fp == NULL ) fp = stderr;
+
+      if ( verifyVDSOnly ) {
+         errcode = vdswVerify( *ppMemoryAddress, fp );
+         if ( fp != stderr ) fclose( fp );
+         return errcode;
+      }
+      errcode = vdswRepair( *ppMemoryAddress, fp );
+      if ( fp != stderr ) fclose( fp );
+      if ( errcode != 0 ) return -1;
       
       /*
        * We validate the VDS first since the config file can set/unset the  
