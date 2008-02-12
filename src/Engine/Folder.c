@@ -332,7 +332,8 @@ int vdseFolderGetFirst( vdseFolder         * pFolder,
             pItem->pHashItem = pHashItem;
             pItem->bucket = bucket;
             pItem->itemOffset = firstItemOffset;
-
+            pItem->status = txItemStatus->enumStatus;
+            
             vdseUnlock( &pFolder->memObject, pContext );
             
             return 0;
@@ -439,6 +440,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
             pItem->pHashItem = pHashItem;
             pItem->bucket = bucket;
             pItem->itemOffset = itemOffset;
+            pItem->status = txItemStatus->enumStatus;
 
             vdseFolderReleaseNoLock( pFolder, previousHashItem, pContext );
 
@@ -1378,9 +1380,14 @@ void vdseFolderResize( vdseFolder         * pFolder,
 void vdseFolderStatus( vdseFolder   * pFolder,
                        vdsObjStatus * pStatus )
 {
+   vdseTxStatus  * txStatus;
+
    VDS_PRE_CONDITION( pFolder != NULL );
    VDS_PRE_CONDITION( pStatus != NULL );
 
+   GET_PTR( txStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+
+   pStatus->status = txStatus->enumStatus;
    pStatus->numDataItem = pFolder->hashObj.numberOfItems;
    pStatus->maxDataLength = 0;
    pStatus->maxKeyLength  = 0;

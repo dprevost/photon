@@ -649,10 +649,14 @@ void vdseQueueStatus( vdseQueue    * pQueue,
    vdseQueueItem * pQueueItem = NULL;
    enum ListErrors listErrCode;
    vdseLinkNode * pNode = NULL;
+   vdseTxStatus  * txStatus;
 
    VDS_PRE_CONDITION( pQueue  != NULL );
    VDS_PRE_CONDITION( pStatus != NULL );
    
+   GET_PTR( txStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
+
+   pStatus->status = txStatus->enumStatus;
    pStatus->numDataItem = pQueue->listOfElements.currentSize;
    pStatus->maxDataLength = 0;
    pStatus->maxKeyLength  = 0;

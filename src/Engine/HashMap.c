@@ -1160,11 +1160,15 @@ void vdseHashMapStatus( vdseHashMap  * pHashMap,
    vdseHashItem* pHashItem = NULL;
    size_t     bucket;
    ptrdiff_t  firstItemOffset;
+   vdseTxStatus  * txStatus;
 
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pStatus  != NULL );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
    
+   GET_PTR( txStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+
+   pStatus->status = txStatus->enumStatus;
    pStatus->numDataItem = pHashMap->hashObj.numberOfItems;
    pStatus->maxDataLength = 0;
    pStatus->maxKeyLength  = 0;

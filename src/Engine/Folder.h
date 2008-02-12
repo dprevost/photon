@@ -40,6 +40,8 @@ typedef struct vdseFolderItem
 
    ptrdiff_t   itemOffset;
 
+   int status;
+   
 } vdseFolderItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
