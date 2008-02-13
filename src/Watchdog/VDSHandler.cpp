@@ -147,6 +147,7 @@ vdswHandler::Init( struct ConfigParams * pConfig,
    int errcode = 0;
    char path[PATH_MAX];
    char logFile[PATH_MAX];
+   char cmd[20+2*PATH_MAX];
    int path_len;
    vdscMemoryFileStatus fileStatus;
    vdscMemoryFile memFile;
@@ -207,11 +208,7 @@ vdswHandler::Init( struct ConfigParams * pConfig,
          return -1;
       }
 
-      errcode = m_pMemManager->OpenVDS( path,
-                                        pConfig->memorySizekb,
-                                        ppMemoryAddress );
       
-      // Open the validation log
       memset( logFile, '\0', PATH_MAX );
       memset( timeBuf, '\0', 30 );
 
@@ -240,6 +237,22 @@ vdswHandler::Init( struct ConfigParams * pConfig,
       }
       if ( fp == NULL ) fp = stderr;
 
+      if ( ! verifyVDSOnly ) {
+         sprintf( cmd, "%s%s%s%s%s", "cp -f ", path, " ", path, ".bak" );
+         errcode = system( cmd );
+         if ( errcode != 0 ) {
+            fprintf( stderr, "Copy (backup) operation failed\n" );
+            return -1;
+         }
+      }
+      
+      errcode = m_pMemManager->OpenVDS( path,
+                                        pConfig->memorySizekb,
+                                        ppMemoryAddress );
+      if ( errcode != 0 ) {
+         return errcode;
+      }
+      
       if ( verifyVDSOnly ) {
          errcode = vdswVerify( *ppMemoryAddress, fp );
          if ( fp != stderr ) fclose( fp );
@@ -247,8 +260,15 @@ vdswHandler::Init( struct ConfigParams * pConfig,
       }
       errcode = vdswRepair( *ppMemoryAddress, fp );
       if ( fp != stderr ) fclose( fp );
-      if ( errcode != 0 ) return -1;
-      
+      if ( errcode != 0 ) {
+         fprintf( stderr, "Failure repairing the vds (see log for details)\n" );
+         fprintf( stderr, "Please save the backup (%s%s) \n%s\n",
+            path, ".bak",
+            "before running this program a second time." );
+         return -1;
+      }
+
+#if 0
       /*
        * We validate the VDS first since the config file can set/unset the  
        * logging of transactions on an existing VDS.
@@ -278,6 +298,7 @@ vdswHandler::Init( struct ConfigParams * pConfig,
          (*ppMemoryAddress)->logON = true;
       }
       else
+#endif
          (*ppMemoryAddress)->logON = false;
       
    }

@@ -93,18 +93,10 @@ int main( int argc, char *argv[] )
       wDog.Uninstall();
       return 0;
    }
-#else
+#endif
    if ( vdscIsShortOptPresent( optHandle, 'v' ) ) {
       wDog.m_verifyVDSOnly = true;
    }
-   else {
-      if ( vdscIsShortOptPresent( optHandle, 'd' ) ) {
-         errcode = wDog.Daemon();
-         if ( errcode != 0 )
-            return errcode;
-      }
-   }
-#endif
 
    errcode = wDog.InitializeVDS();
    if ( errcode != 0 ) {
@@ -113,12 +105,22 @@ int main( int argc, char *argv[] )
       return errcode;
    }
 
+   if ( wDog.m_verifyVDSOnly )
+      return 0;
+   
+#if ! defined ( WIN32 )
+   if ( vdscIsShortOptPresent( optHandle, 'd' ) ) {
+      errcode = wDog.Daemon();
+      if ( errcode != 0 )
+         return errcode;
+   }
+#endif
+
    /*
     * This is the main loop. If using Windows NT services, this loop
     * is called by the Service Control Manager (SCM) directly.
     */
-   if ( ! wDog.m_verifyVDSOnly )
-      vdswWatchdog::Run();
+   vdswWatchdog::Run();
    
    return 0;
 }
