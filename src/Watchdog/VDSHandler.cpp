@@ -224,10 +224,25 @@ vdswHandler::Init( struct ConfigParams * pConfig,
 //#endif
 
       path_len = strlen( pConfig->wdLocation ) + strlen( VDS_DIR_SEPARATOR ) +
+      strlen("Logs") + strlen( VDS_DIR_SEPARATOR ) +
       strlen("Verify_") + strlen(timeBuf) + strlen(".log");
       if ( path_len < PATH_MAX ) {
-         sprintf( logFile, "%s%s%s%s%s", 
+        sprintf( logFile, "%s%s%s", 
             pConfig->wdLocation, 
+            VDS_DIR_SEPARATOR,
+            "Logs" );
+      
+         errcode = mkdir( logFile, pConfig->dirPerms );
+         if ( errcode != 0 ) {
+            if ( errno != EEXIST ) {
+               fprintf( stderr, "Making a directory for log files failed, errno = %d\n", errno );
+               return -1;
+            }
+         }
+         sprintf( logFile, "%s%s%s%s%s%s%s", 
+            pConfig->wdLocation, 
+            VDS_DIR_SEPARATOR,
+            "Logs",
             VDS_DIR_SEPARATOR,
             "Verify_",
             timeBuf,
