@@ -29,7 +29,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined(WIN32)
-#  ifdef ENGINE_EXPORTS
+#  ifdef BUILD_VDSF_ENGINE
 #    define VDSF_ENGINE_EXPORT __declspec ( dllexport )
 #  else
 #    define VDSF_ENGINE_EXPORT __declspec ( dllimport )

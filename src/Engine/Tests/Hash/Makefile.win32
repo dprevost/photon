@@ -47,7 +47,6 @@ check_PROGRAMS =                                      \
                  .\Release\InitNullHash.exe           \
                  .\Release\InitNullOffset.exe         \
                  .\Release\InitPass.exe               \
-                 .\Release\InsertAtEmptyBucket.exe    \
                  .\Release\InsertAtNullContext.exe    \
                  .\Release\InsertAtNullData.exe       \
                  .\Release\InsertAtNullHash.exe       \

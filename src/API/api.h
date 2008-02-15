@@ -35,7 +35,7 @@ typedef enum vdsaObjetType
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined(WIN32)
-#  ifdef API_EXPORTS
+#  ifdef BUILD_VDSF_API
 #    define VDSF_API_EXPORT __declspec ( dllexport )
 #  else
 #    define VDSF_API_EXPORT __declspec ( dllimport )

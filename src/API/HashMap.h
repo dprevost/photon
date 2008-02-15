@@ -54,15 +54,15 @@ typedef struct vdsaHashMapEntry
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_EXPORT
+VDSF_API_EXPORT
 int vdsaHashMapFirst( vdsaHashMap      * pHashMap,
                       vdsaHashMapEntry * pEntry );
 
-VDSF_EXPORT
+VDSF_API_EXPORT
 int vdsaHashMapNext( vdsaHashMap      * pHashMap,
                      vdsaHashMapEntry * pEntry );
 
-VDSF_EXPORT
+VDSF_API_EXPORT
 int vdsaHashMapRetrieve( vdsaHashMap   * pHashMap,
                          const void    * key,
                          size_t          keyLength,

@@ -63,7 +63,7 @@ typedef struct vdsaCommonObject
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_EXPORT
+VDSF_API_EXPORT
 int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
                        enum vdsObjectType   objectType, 
                        const char         * objectName,
@@ -71,7 +71,7 @@ int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_EXPORT
+VDSF_API_EXPORT
 int vdsaCommonObjClose( vdsaCommonObject * pObject );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

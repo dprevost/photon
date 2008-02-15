@@ -32,7 +32,7 @@ class vdsSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class vdsProcess
+class VDSF_EXPORT vdsProcess
 {
 public:
 

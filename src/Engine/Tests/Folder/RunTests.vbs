@@ -30,13 +30,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(93)
+Dim failed_tests(91)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
 Dim ok_programs(18)
-Dim fail_programs(74)
+Dim fail_programs(72)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -136,17 +136,15 @@ fail_programs(62) = "ReleaseNullItem"
 fail_programs(63) = "ReleaseWrongObjType"
 fail_programs(64) = "RemoveNullContext"
 fail_programs(65) = "RemoveNullFolder"
-fail_programs(66) = "RemoveNullName"
-fail_programs(67) = "RemoveWrongObjType"
-fail_programs(68) = "RemoveZeroLength"
-fail_programs(69) = "StatusNullFolder"
-fail_programs(70) = "StatusNullStatus"
-fail_programs(71) = "TopStatusNullContext"
-fail_programs(72) = "TopStatusNullFolder"
-fail_programs(73) = "TopStatusNullName"
-fail_programs(74) = "TopStatusNullStatus"
+fail_programs(66) = "RemoveWrongObjType"
+fail_programs(67) = "StatusNullFolder"
+fail_programs(68) = "StatusNullStatus"
+fail_programs(69) = "TopStatusNullContext"
+fail_programs(70) = "TopStatusNullFolder"
+fail_programs(71) = "TopStatusNullName"
+fail_programs(72) = "TopStatusNullStatus"
 
-numTests = 94                 ' Sum of length of both arrays 
+numTests = 92                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject

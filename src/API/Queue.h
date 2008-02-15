@@ -47,7 +47,7 @@ typedef struct vdsaQueue
  * Iterates through the queue - no data items are removed from the queue
  * by this function.
  */
-VDSF_EXPORT
+VDSF_API_EXPORT
 int vdsaQueueFirst( vdsaQueue     * pQueue,
                     vdsaDataEntry * pEntry );
 
@@ -55,12 +55,12 @@ int vdsaQueueFirst( vdsaQueue     * pQueue,
  * Iterates through the queue - no data items are removed from the queue
  * by this function.
  */
-VDSF_EXPORT
+VDSF_API_EXPORT
 int vdsaQueueNext( vdsaQueue     * pQueue,
                    vdsaDataEntry * pEntry );
 
 /** Remove the first inserted item from a FIFO queue. */
-VDSF_EXPORT
+VDSF_API_EXPORT
 int vdsaQueueRemove( vdsaQueue     * pQueue,
                      vdsaDataEntry * pEntry );
 

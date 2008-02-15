@@ -30,7 +30,7 @@ class vdsSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class vdsFolder
+class VDSF_EXPORT vdsFolder
 {
 public:
 

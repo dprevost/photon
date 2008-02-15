@@ -29,7 +29,7 @@
  * Windows (the macro is empty on other platforms).
  */
 #if defined(WIN32)
-#  ifdef VDSF_BUILD
+#  ifdef BUILD_VDSF
 #    define VDSF_EXPORT __declspec ( dllexport )
 #  else
 #    define VDSF_EXPORT __declspec ( dllimport )

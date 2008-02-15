@@ -27,7 +27,7 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class vdsSession
+class VDSF_EXPORT vdsSession
 {
 public:
    

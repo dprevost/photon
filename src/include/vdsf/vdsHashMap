@@ -33,7 +33,7 @@ class vdsSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class vdsHashMap
+class VDSF_EXPORT vdsHashMap
 {
 public:
 

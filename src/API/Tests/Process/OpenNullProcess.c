@@ -15,9 +15,14 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#if defined WIN32
+#  pragma warning(disable:4273)
+#endif
 #include "API/Process.c"
-#include "API/Session.c"
 #include "API/Connector.c"
+#if defined WIN32
+#  pragma warning(default:4273)
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

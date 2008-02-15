@@ -16,7 +16,13 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "folderTest.h"
+#if defined WIN32
+#  pragma warning(disable:4273)
+#endif
 #include "Engine/Folder.c"
+#if defined WIN32
+#  pragma warning(default:4273)
+#endif
 
 const bool expectedToPass = true;
 

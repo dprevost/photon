@@ -33,7 +33,7 @@ class vdsSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class vdsQueue
+class VDSF_EXPORT vdsQueue
 {
 public:
 
