@@ -24,8 +24,9 @@ all: "$(OUTDIR_RELEASE)" "$(OUTDIR_DEBUG)"
 	cd Common     && nmake -f Makefile.win32 && cd ..
 	cd BuildTools && nmake -f Makefile.win32 && cd ..
 	cd Engine     && nmake -f Makefile.win32 && cd ..
-   cd Watchdog   && nmake -f Makefile.win32 && cd ..
-   cd API        && nmake -f Makefile.win32 && cd ..
+	cd Watchdog   && nmake -f Makefile.win32 && cd ..
+	cd API        && nmake -f Makefile.win32 && cd ..
+	cd C++        && nmake -f Makefile.win32 && cd ..
    
 check:
 	cd Common     && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -33,6 +34,7 @@ check:
 	cd Engine     && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Watchdog   && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd API        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd C++        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 checkdebug: 
 	cd Common     && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -40,6 +42,7 @@ checkdebug:
 	cd Engine     && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Watchdog   && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd API        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd C++        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 clean: 
 	cd Common     && nmake -f Makefile.win32 clean && cd ..
@@ -47,6 +50,7 @@ clean:
 	cd Engine     && nmake -f Makefile.win32 clean && cd ..
 	cd Watchdog   && nmake -f Makefile.win32 clean && cd ..
 	cd API        && nmake -f Makefile.win32 clean && cd ..
+	cd C++        && nmake -f Makefile.win32 clean && cd ..
 
 "$(OUTDIR_RELEASE)" :
 	if not exist "$(OUTDIR_RELEASE)" mkdir "$(OUTDIR_RELEASE)"

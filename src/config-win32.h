@@ -123,7 +123,7 @@
 #define HAVE_LIMITS_H 1
 
 /* Define to 1 if you have the `localtime_r' function. */
-#define HAVE_LOCALTIME_R 1
+/* #define HAVE_LOCALTIME_R 1 */
 
 /* Define to 1 if you have the `memcpy' function. */
 #define HAVE_MEMCPY 1

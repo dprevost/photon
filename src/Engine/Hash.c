@@ -297,8 +297,7 @@ static bool findKey( vdseHash*            pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static void findLastItemInBucket( vdseHash     *  pHash,
-                                  ptrdiff_t    *  pArray,
+static void findLastItemInBucket( ptrdiff_t    *  pArray,
                                   size_t          bucket,
                                   vdseHashItem ** ppLastItem )
 {
@@ -809,8 +808,7 @@ vdseHashInsertAt( vdseHash            * pHash,
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
-   findLastItemInBucket( pHash,
-                         pArray,
+   findLastItemInBucket( pArray,
                          bucket,
                          &previousItem );
 

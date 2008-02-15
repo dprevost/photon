@@ -39,8 +39,8 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
                 ptrdiff_t          offset )
 {
    ptrdiff_t * pArray;
-   size_t i;
-   ptrdiff_t previousOffset, currentOffset, nextOffset, bucket;
+   size_t i, bucket;
+   ptrdiff_t previousOffset, currentOffset, nextOffset;
    vdseHashItem * pItem, * previousItem;
    size_t invalidBuckets = 0;
    size_t numberOfItems = 0;
@@ -197,8 +197,8 @@ vdswVerifyHashContent( vdswVerifyStruct * pVerify,
                        struct vdseHash  * pHash )
 {
    ptrdiff_t * pArray;
-   size_t i;
-   ptrdiff_t previousOffset, currentOffset, nextOffset, bucket;
+   size_t i, bucket;
+   ptrdiff_t previousOffset, currentOffset, nextOffset;
    vdseHashItem * pItem, * previousItem;
    size_t invalidBuckets = 0;
    size_t numberOfItems = 0;

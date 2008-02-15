@@ -105,7 +105,10 @@ void vdsaCloseVDS( vdsaProcess        * process,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline
+#ifndef __cplusplus
+static 
+#endif
+__inline
 int vdsaProcessLock()
 {
    if ( g_protectionIsNeeded )
@@ -118,7 +121,10 @@ int vdsaProcessLock()
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Unlock the current process. */
-static inline
+#ifndef __cplusplus
+static 
+#endif
+__inline
 void vdsaProcessUnlock()
 {
    if ( g_protectionIsNeeded )

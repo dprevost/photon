@@ -87,7 +87,10 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline
+//#ifndef __cplusplus
+static 
+//#endif
+__inline
 int vdsaSessionLock( vdsaSession * pSession )
 {
    if ( g_protectionIsNeeded )
@@ -101,7 +104,10 @@ int vdsaSessionLock( vdsaSession * pSession )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Unlock the current session. */
-static inline
+//#ifndef __cplusplus
+static 
+//#endif
+__inline
 void vdsaSessionUnlock( vdsaSession* pSession )
 {
    if ( g_protectionIsNeeded )

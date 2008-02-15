@@ -36,8 +36,8 @@ int vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
    int pDesc_invalid_api_type = 0;
    enum vdswValidation valid;
    char message[VDS_MAX_NAME_LENGTH*4 + 30];
-   size_t lengthName;
 #if VDS_SUPPORT_i18n
+   size_t lengthName;
    mbstate_t ps;
    const wchar_t * name;
 #endif

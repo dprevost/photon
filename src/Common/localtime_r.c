@@ -18,8 +18,9 @@
 ** (guy@auspex.com).
 */
 
-#include "private.h"
-#include "tzfile.h"
+#include "Common/Common.h"
+#include "Common/private.h"
+#include "Common/tzfile.h"
 
 #ifndef WILDABBR
 /*
@@ -87,8 +88,11 @@ struct state {
 ** Prototypes for static functions.
 */
 
-static void timesub P((const time_t * timep, long offset,
-                       const struct state * sp, struct tm * tmp));
+static void 
+timesub( const time_t * const		timep,
+         const long			offset,
+         const struct state * const	sp,
+         struct tm * const		tmp );
 
 static struct state	lclmem;
 #define lclptr		(&lclmem)
@@ -101,10 +105,13 @@ static char		lcl_TZname[TZ_STRLEN_MAX + 1];
 static int		lcl_is_set;
 static int		gmt_is_set;
 
-char *			tzname[2] = {
-	wildabbr,
-	wildabbr
+/* Already defined by the VC++ crt library */
+#if ! defined(WIN32)
+char * tzname[2] = {
+   wildabbr,
+   wildabbr
 };
+#endif
 
 /*
 ** Section 4.12.3 of X3.159-1989 requires that
@@ -143,16 +150,17 @@ static const int	year_lengths[2] = {
 
 /*ARGSUSED*/
 static void
-localsub(timep, offset, tmp)
-const time_t * const	timep;
-const long		offset;
-struct tm * const	tmp;
+localsub( const time_t * const	timep,
+          const long		offset,
+          struct tm * const	tmp )
 {
 	register struct state *		sp;
 	register const struct ttinfo *	ttisp;
 	register int			i;
 	const time_t			t = *timep;
-
+        long useless;
+	
+	useless = offset; /* Removes a warning */
 	sp = lclptr;
 	if (sp->timecnt == 0 || t < sp->ats[0]) {
 		i = 0;
@@ -186,21 +194,20 @@ struct tm * const	tmp;
 ** Re-entrant version of localtime.
 */
 
+VDSF_COMMON_EXPORT
 struct tm *
-localtime_r(timep, tm)
-const time_t * const	timep;
-struct tm *		tm;
+localtime_r( const time_t * 	timep,
+             struct tm *	tm )
 {
 	localsub(timep, 0L, tm);
 	return tm;
 }
 
 static void
-timesub(timep, offset, sp, tmp)
-const time_t * const			timep;
-const long				offset;
-register const struct state * const	sp;
-register struct tm * const		tmp;
+timesub( const time_t * const		timep,
+         const long			offset,
+         const struct state * const	sp,
+         struct tm * const		tmp )
 {
 	register const struct lsinfo *	lp;
 	register long			days;

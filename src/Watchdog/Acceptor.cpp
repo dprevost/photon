@@ -138,7 +138,7 @@ vdswAcceptor::HandleAbnormalTermination( pid_t pid )
 bool 
 vdswAcceptor::IsconnectionAlive(  int indice )
 {
-   int errcode;
+   int errcode = 0;
    
    /* 
     * We test to see if the other process is alive by:

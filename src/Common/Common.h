@@ -365,6 +365,7 @@ extern int nanosleep(const struct timespec * pRequest,
 #endif
 
 #ifndef HAVE_LOCALTIME_R
+VDSF_COMMON_EXPORT
 extern struct tm *localtime_r( const time_t * timep,
                                struct tm *		tm );
 #endif
@@ -439,8 +440,11 @@ extern char *new_ctime_r( const time_t *timep, char *buf, int buflen );
 
 #ifndef __cplusplus
 #  if !defined (HAVE__BOOL)
-enum boolvals { false, true };
-typedef enum boolvals bool;
+//enum boolvals { false, true };
+//typedef enum boolvals bool;
+#    define false 0
+#    define true  1
+typedef int bool;
 #  endif
 #endif
 
