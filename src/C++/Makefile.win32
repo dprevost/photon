@@ -77,10 +77,12 @@ all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdsfcpp.dll $(OUTDIR_DEBUG) $(OUTDIR_DE
 ###########################################################################
 
 check: all
-	cd Tests && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+
+#	cd Tests && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 checkdebug: all
-	cd Tests && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+
+#	cd Tests && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 "$(OUTDIR_RELEASE)" :
 	if not exist "$(OUTDIR_RELEASE)/$(NULL)" mkdir "$(OUTDIR_RELEASE)"

@@ -27,6 +27,8 @@ all: "$(OUTDIR_RELEASE)" "$(OUTDIR_DEBUG)"
 	cd Watchdog   && nmake -f Makefile.win32 && cd ..
 	cd API        && nmake -f Makefile.win32 && cd ..
 	cd C++        && nmake -f Makefile.win32 && cd ..
+	cd Tests      && nmake -f Makefile.win32 && cd ..
+	cd Tools      && nmake -f Makefile.win32 && cd ..
    
 check:
 	cd Common     && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
