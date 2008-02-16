@@ -27,8 +27,8 @@ CLEANFILES = *~ *.dep *.plg vc60.* *.ncb
 
 W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfCommon.lib vdsfEngine.lib /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\vdsfAPI.dll" /implib:"$(OUTDIR_RELEASE)\vdsfAPI.lib" /libpath:"..\Release"
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfCommon.lib vdsfEngine.lib /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\vdsfAPI.dll"   /implib:"$(OUTDIR_DEBUG)\vdsfAPI.lib"   /libpath:"..\Debug"
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfCommon.lib vdsfEngine.lib /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\vdsf.dll" /implib:"$(OUTDIR_RELEASE)\vdsf.lib" /libpath:"..\Release"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfCommon.lib vdsfEngine.lib /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\vdsf.dll"   /implib:"$(OUTDIR_DEBUG)\vdsf.lib"   /libpath:"..\Debug"
 
 CFLAGS_RELEASE=/nologo /MD  /W4 /O2     /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF_API" /D "BUILD_VDSF" /Fo"$(INTDIR_RELEASE)\\"     /c 
 CFLAGS_DEBUG  =/nologo /MDd /W4 /ZI /Od /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF_API" /D "BUILD_VDSF" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
@@ -57,21 +57,21 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 .c{$(INTDIR_DEBUG)}.obj::
 	$(CPP) $(CFLAGS_DEBUG) $< 
 
-all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdsfAPI.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdsfAPI.dll
+all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdsf.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdsf.dll
 
-"$(OUTDIR_RELEASE)\vdsfAPI.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
-   -del ..\Release\vdsfAPI.dll
-	-del ..\Release\vdsfAPI.lib
+"$(OUTDIR_RELEASE)\vdsf.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
+   -del ..\Release\vdsf.dll
+	-del ..\Release\vdsf.lib
 	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
-   copy Release\vdsfAPI.dll ..\Release
-	copy Release\vdsfAPI.lib ..\Release
+   copy Release\vdsf.dll ..\Release
+	copy Release\vdsf.lib ..\Release
 
-"$(OUTDIR_DEBUG)\vdsfAPI.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
-   -del ..\Debug\vdsfAPI.dll
-	-del ..\Debug\vdsfAPI.lib
+"$(OUTDIR_DEBUG)\vdsf.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
+   -del ..\Debug\vdsf.dll
+	-del ..\Debug\vdsf.lib
 	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
-   copy debug\vdsfAPI.dll ..\Debug
-	copy debug\vdsfAPI.lib ..\Debug
+   copy debug\vdsf.dll ..\Debug
+	copy debug\vdsf.lib ..\Debug
 
 ###########################################################################
 #

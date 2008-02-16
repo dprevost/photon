@@ -10,7 +10,7 @@ OutputDir=src\Packages\Output
 OutputBaseFilename=vdsf-0.2.0
 
 [Files]
-Source: src\Release\vdsfAPI.dll; DestDir: {app}\bin; DestName: vdsf.dll
+Source: src\Release\vdsf.dll; DestDir: {app}\bin
 Source: src\Release\vdsfCommon.dll; DestDir: {app}\bin
 Source: src\Release\vdsfEngine.dll; DestDir: {app}\bin
 Source: src\include\vdsf\vds.h; DestDir: {app}\include
@@ -21,7 +21,7 @@ Source: src\include\vdsf\vdsHashMap.h; DestDir: {app}\include
 Source: src\include\vdsf\vdsProcess.h; DestDir: {app}\include
 Source: src\include\vdsf\vdsQueue.h; DestDir: {app}\include
 Source: src\include\vdsf\vdsSession.h; DestDir: {app}\include
-Source: src\Release\vdsfAPI.lib; DestDir: {app}\lib
+Source: src\Release\vdsf.lib; DestDir: {app}\lib
 Source: doc\refman.pdf; DestDir: {app}
 Source: src\Release\vdswd.exe; DestDir: {app}\bin
 Source: COPYING; DestDir: {app}; DestName: License.txt
@@ -42,7 +42,7 @@ Source: src\Examples\Project Files\HashMapLoop.dsp; DestDir: {app}\Examples\Proj
 Source: src\Examples\Project Files\QueueIn.dsp; DestDir: {app}\Examples\Project Files
 Source: src\Examples\Project Files\QueueOut.dsp; DestDir: {app}\Examples\Project Files
 Source: src\Examples\Project Files\QueueWork.dsp; DestDir: {app}\Examples\Project Files
-Source: c:\windows\system32\mswinsck.ocx; DestDir: {sys}; Flags: regserver restartreplace sharedfile
+;Source: c:\windows\system32\mswinsck.ocx; DestDir: {sys}; Flags: regserver restartreplace sharedfile
 Source: src\Release\vdsfcpp.lib; DestDir: {app}\lib
 Source: src\Release\vdsfcpp.dll; DestDir: {app}\bin
 Source: src\Release\vdsInfo.exe; DestDir: {sys}\bin
@@ -71,4 +71,3 @@ Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdsinfo.
 
 Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdsinfo.exe; ValueType: string; ValueData: {app}\bin\vdsinfo.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
 Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdsinfo.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
-
