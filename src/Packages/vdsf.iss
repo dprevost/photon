@@ -1,13 +1,13 @@
 [Setup]
 MinVersion=0,4.0
 AppName=VDSF
-AppVerName=Virtual Data Space Framework version 0.1.0
+AppVerName=Virtual Data Space Framework version 0.2.0
 LicenseFile=COPYING
 DefaultDirName={pf}\VDSF
 DefaultGroupName=VDSF
 SourceDir=..\..
 OutputDir=src\Packages\Output
-OutputBaseFilename=vdsf-0.1.0
+OutputBaseFilename=vdsf-0.2.0
 
 [Files]
 Source: src\Release\vdsfAPI.dll; DestDir: {app}\bin; DestName: vdsf.dll
@@ -43,6 +43,10 @@ Source: src\Examples\Project Files\QueueIn.dsp; DestDir: {app}\Examples\Project 
 Source: src\Examples\Project Files\QueueOut.dsp; DestDir: {app}\Examples\Project Files
 Source: src\Examples\Project Files\QueueWork.dsp; DestDir: {app}\Examples\Project Files
 Source: c:\windows\system32\mswinsck.ocx; DestDir: {sys}; Flags: regserver restartreplace sharedfile
+Source: src\Release\vdsfcpp.lib; DestDir: {app}\lib
+Source: src\Release\vdsfcpp.dll; DestDir: {app}\bin
+Source: src\Release\vdsInfo.exe; DestDir: {sys}\bin
+Source: src\Release\vdssh.exe; DestDir: {app}\bin
 
 [Icons]
 ;Name: "{group}\Watchdog"; Filename: "{app}\bin\vdswd.EXE"; WorkingDir: "{app}"
@@ -55,3 +59,16 @@ Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdswd.ex
 
 Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdswd.exe; ValueType: string; ValueData: {app}\bin\vdswd.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
 Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdswd.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
+
+Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdssh.exe; ValueType: string; ValueData: {app}\bin\vdssh.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdssh.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
+
+Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdssh.exe; ValueType: string; ValueData: {app}\bin\vdssh.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdssh.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
+
+Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdsinfo.exe; ValueType: string; ValueData: {app}\bin\vdsinfo.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdsinfo.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
+
+Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdsinfo.exe; ValueType: string; ValueData: {app}\bin\vdsinfo.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdsinfo.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
+
