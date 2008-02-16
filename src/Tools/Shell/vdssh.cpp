@@ -50,7 +50,7 @@ int main( int argc, char *argv[] )
    if ( errcode > 0 ) {
       vdscShowUsage( optHandle, argv[0], "" );
       cout << endl;
-      sh.man();
+      sh.Man();
       
       return 0;
    }

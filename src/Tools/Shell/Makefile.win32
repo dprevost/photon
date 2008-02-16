@@ -1,0 +1,86 @@
+###########################################################################
+#
+# Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+
+VBS_VERBOSE=
+
+LINK32=link.exe
+
+OUTDIR_RELEASE = .\Release
+INTDIR_RELEASE = .\Release
+OUTDIR_DEBUG   = .\Debug
+INTDIR_DEBUG   = .\Debug
+
+CLEANFILES = *~  vc60.pdb
+
+W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfcpp.lib vdsfAPI.lib vdsfEngine.lib vdsfCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../Release" 
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfcpp.lib vdsfAPI.lib vdsfEngine.lib vdsfCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../Debug" 
+
+CFLAGS_DEBUG=   /nologo /MDd /W3 /Zi /I "../.." /I "../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\"   /c /GX
+CFLAGS_RELEASE= /nologo /MD  /W3 /O2 /I "../.." /I "../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_RELEASE)\\" /c /GX
+
+OBJS_RELEASE= \
+	"$(INTDIR_RELEASE)\constants.obj" \
+	"$(INTDIR_RELEASE)\shell.obj" \
+	"$(INTDIR_RELEASE)\vdssh.obj"
+
+OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
+
+###########################################################################
+#
+# Defines the rules.
+#
+###########################################################################
+
+.cpp{$(INTDIR_RELEASE)}.obj::
+	$(CPP) $(CFLAGS_RELEASE) $< 
+
+.cpp{$(INTDIR_DEBUG)}.obj::
+	$(CPP) $(CFLAGS_DEBUG) $< 
+
+###########################################################################
+#
+# The targets
+#
+###########################################################################
+
+all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdssh.exe $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdssh.exe
+
+"$(OUTDIR_RELEASE)\vdssh.exe" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
+   -del ..\..\Release\vdssh.exe
+	$(LINK32) $(LDD_FLAGS_RELEASE) /out:"$(OUTDIR_RELEASE)\vdssh.exe" $(OBJS_RELEASE)
+   copy Release\vdssh.exe ..\..\Release
+
+"$(OUTDIR_DEBUG)\vdssh.exe" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
+   -del ..\..\Debug\vdssh.exe
+	$(LINK32) $(LDD_FLAGS_DEBUG) /out:"$(OUTDIR_DEBUG)\vdssh.exe" $(OBJS_DEBUG)
+   copy debug\vdssh.exe ..\..\Debug
+
+check: all
+
+checkdebug: all
+
+"$(OUTDIR_RELEASE)" :
+	if not exist "$(OUTDIR_RELEASE)/$(NULL)" mkdir "$(OUTDIR_RELEASE)"
+
+"$(OUTDIR_DEBUG)" :
+	if not exist "$(OUTDIR_DEBUG)/$(NULL)" mkdir "$(OUTDIR_DEBUG)"
+   
+clean: 
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)
+
+

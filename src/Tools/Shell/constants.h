@@ -20,6 +20,7 @@
 
 #include "Common/Common.h"
 #include <vdsf/vds>
+#pragma warning(disable: 4786)
 #include <string>
 #include <iostream>
 #include <vector>

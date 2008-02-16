@@ -44,42 +44,42 @@ bool vdsShell::Dispatch()
    
    if ( tokens[0] == s.assign("cat") ) {
       if ( tokens.size() != 2 ) throw( 1 );
-      cat();
+      Cat();
    }
    else if ( tokens[0] == s.assign("cd") ) {
       if ( tokens.size() > 2 ) throw( 1 );
-      cd();
+      Cd();
    }
    else if ( tokens[0] == s.assign("cp") ) {
       if ( tokens.size() != 3 ) throw( 1 );
-      cp();
+      Cp();
    }
    else if ( tokens[0] == s.assign("del") ) {
       if ( tokens.size() != 2 ) throw( 1 );
-      rm();
+      Rm();
    }
    else if ( tokens[0] == s.assign("dir") ) {
       if ( tokens.size() > 2 ) throw( 1 );
-      ls();
+      Ls();
    }
    else if ( tokens[0] == s.assign("exit") ) {
       timeToExit = true;
    }
    else if ( tokens[0] == s.assign("free") ) {
-      free();
+      Free();
    }
    else if ( tokens[0] == s.assign("help") ) {
-      man();
+      Man();
    }
    else if ( tokens[0] == s.assign("ls") ) {
-      ls();
+      Ls();
    }
    else if ( tokens[0] == s.assign("man") ) {
-      man();
+      Man();
    }
    else if ( tokens[0] == s.assign("mkdir") ) {
       if ( tokens.size() != 2 ) throw( 1 );
-      mkdir();
+      Mkdir();
    }
    else if ( tokens[0] == s.assign("pwd") ) {
       cerr << currentLocation << endl;
@@ -89,19 +89,19 @@ bool vdsShell::Dispatch()
    }
    else if ( tokens[0] == s.assign("rm") ) {
       if ( tokens.size() != 2 ) throw( 1 );
-      rm();
+      Rm();
    }
    else if ( tokens[0] == s.assign("rmdir") ) {
       if ( tokens.size() != 2 ) throw( 1 );
-      rmdir();
+      Rmdir();
    }
    else if ( tokens[0] == s.assign("stat") ) {
       if ( tokens.size() != 2 ) throw( 1 );
-      stat();
+      Stat();
    }
    else if ( tokens[0] == s.assign("touch") ) {
       if ( tokens.size() != 3 ) throw( 1 );
-      touch();
+      Touch();
    }
    else
       throw( 0 );
@@ -231,7 +231,7 @@ string & vdsShell::Trim( string & s )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::cat()
+void vdsShell::Cat()
 {
    string objectName;
    vdsObjStatus status;
@@ -250,7 +250,8 @@ void vdsShell::cat()
    try {
       session.GetStatus( objectName, &status );
    }
-   catch ( int rc ) {
+   catch ( int exc ) {
+      exc = exc; // Avoid a warning
       cerr << "vdssh: cat: " << objectName << ": Invalid object name" << endl;
       return;
    }
@@ -304,7 +305,8 @@ void vdsShell::cat()
          }
       }
    }
-   catch ( int rc ) {
+   catch ( int exc ) {
+      exc = exc; // Avoid a warning
       session.ErrorMsg( msg );
       cerr << "vdssh: cat: " << msg << endl;
    }
@@ -313,7 +315,7 @@ void vdsShell::cat()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::cd()
+void vdsShell::Cd()
 {
    string newLoc;
    vdsObjStatus status;
@@ -337,7 +339,8 @@ void vdsShell::cd()
    try {
       session.GetStatus( newLoc, &status );
    }
-   catch ( int rc ) {
+   catch ( int exc ) {
+      exc = exc; // Avoid a warning
       cerr << "vdssh: cd: " << newLoc << ": Invalid folder name" << endl;
       return;
    }
@@ -350,7 +353,7 @@ void vdsShell::cd()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::cp()
+void vdsShell::Cp()
 {
    string srcName, destName;
    vdsObjStatus status;
@@ -375,7 +378,8 @@ void vdsShell::cp()
    try {
       session.GetStatus( srcName, &status );
    }
-   catch ( int rc ) {
+   catch ( int exc ) {
+      exc = exc; // Avoid a warning
       cerr << "vdssh: cp: " << srcName << ": Invalid object name" << endl;
       return;
    }
@@ -430,7 +434,8 @@ void vdsShell::cp()
       }
       session.Commit();
    }
-   catch ( int rc ) {
+   catch ( int exc ) {
+      exc = exc; // Avoid a warning
       session.ErrorMsg( msg );
       session.Rollback();  // just in case it's the Commit that fails
       cerr << "vdssh: cp: " << msg << endl;
@@ -439,7 +444,7 @@ void vdsShell::cp()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::free()
+void vdsShell::Free()
 {
    vdsInfo info;
    string msg;
@@ -447,7 +452,8 @@ void vdsShell::free()
    try {
       session.GetInfo( &info );
    }
-   catch( int rc ) {
+   catch( int exc ) {
+      exc = exc; // Avoid a warning
       session.ErrorMsg( msg );
       cerr << "vdssh: free: " << msg << endl;
       return;
@@ -465,7 +471,7 @@ void vdsShell::free()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::ls()
+void vdsShell::Ls()
 {
    vdsFolder folder( session );
    int rc;
@@ -492,7 +498,8 @@ void vdsShell::ls()
       }
       folder.Close();
    }
-   catch( int e ) {
+   catch( int exc ) {
+      exc = exc; // Avoid a warning
       session.ErrorMsg( msg );
       cerr << "vdssh: " << tokens[0] << ": " << msg << endl;
    }
@@ -500,7 +507,7 @@ void vdsShell::ls()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::man()
+void vdsShell::Man()
 {
    cout << "List of available commands: " << endl << endl;
    cout << "cat object_name" << endl;
@@ -541,7 +548,7 @@ void vdsShell::man()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::mkdir()
+void vdsShell::Mkdir()
 {
    string folderName;
    string msg;
@@ -556,7 +563,8 @@ void vdsShell::mkdir()
       session.CreateObject( folderName, VDS_FOLDER );
       session.Commit();
    }
-   catch ( int rc ) {
+   catch ( int exc ) {
+      exc = exc; // Avoid a warning
       session.ErrorMsg( msg );
       session.Rollback();  // just in case it's the Commit that fails
       cerr << "vdssh: mkdir: " << msg << endl;
@@ -565,7 +573,7 @@ void vdsShell::mkdir()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::rm()
+void vdsShell::Rm()
 {
    string objectName;
    vdsObjStatus status;
@@ -581,7 +589,8 @@ void vdsShell::rm()
    try {
       session.GetStatus( objectName, &status );
    }
-   catch ( int rc ) {
+   catch ( int exc ) {
+      exc = exc; // Avoid a warning
       cerr << "vdssh: rm: " << objectName << ": Invalid object name" << endl;
       return;
    }
@@ -594,7 +603,8 @@ void vdsShell::rm()
       session.DestroyObject( objectName );
       session.Commit();
    }
-   catch ( int rc ) {
+   catch ( int exc ) {
+      exc = exc; // Avoid a warning
       session.ErrorMsg( msg );
       session.Rollback();  // just in case it's the Commit that fails
       cerr << "vdssh: rm: " << msg << endl;
@@ -603,7 +613,7 @@ void vdsShell::rm()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::rmdir()
+void vdsShell::Rmdir()
 {
    string folderName;
    vdsObjStatus status;
@@ -619,7 +629,8 @@ void vdsShell::rmdir()
    try {
       session.GetStatus( folderName, &status );
    }
-   catch ( int rc ) {
+   catch ( int exc ) {
+      exc = exc; // Avoid a warning
       cerr << "vdssh: rmdir: " << folderName << ": Invalid folder name" << endl;
       return;
    }
@@ -632,7 +643,8 @@ void vdsShell::rmdir()
       session.DestroyObject( folderName );
       session.Commit();
    }
-   catch ( int rc ) {
+   catch ( int exc ) {
+      exc = exc; // Avoid a warning
       session.ErrorMsg( msg );
       session.Rollback();  // just in case it's the Commit that fails
       cerr << "vdssh: rmdir: " << msg << endl;
@@ -641,7 +653,7 @@ void vdsShell::rmdir()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::stat()
+void vdsShell::Stat()
 {
    string objectName;
    vdsObjStatus status;
@@ -656,7 +668,8 @@ void vdsShell::stat()
    try {
       session.GetStatus( objectName, &status );
    }
-   catch ( int rc ) {
+   catch ( int exc ) {
+      exc = exc; // Avoid a warning
       session.ErrorMsg( msg );
       cerr << "vdssh: stat: " << objectName << ": " << msg << endl;
       return;
@@ -673,7 +686,7 @@ void vdsShell::stat()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::touch()
+void vdsShell::Touch()
 {
    string objectName;
    string msg;
@@ -712,7 +725,8 @@ void vdsShell::touch()
       session.CreateObject( objectName, flag );
       session.Commit();
    }
-   catch ( int rc ) {
+   catch ( int exc ) {
+      exc = exc; // Avoid a warning
       session.ErrorMsg( msg );
       session.Rollback();  // just in case it's the Commit that fails
       cerr << "vdssh: touch: " << msg << endl;

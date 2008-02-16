@@ -20,6 +20,7 @@
 
 #include "Common/Common.h"
 #include <vdsf/vds>
+#pragma warning(disable: 4786)
 #include <string>
 #include <iostream>
 #include <vector>
@@ -52,31 +53,31 @@ private:
    
    // The "list" of currently implemented pseudo-shell commands starts here.
 
-   void cat();
+   void Cat();
    
-   void cd();
+   void Cd();
 
-   void cp();
+   void Cp();
    
-   void free();
+   void Free();
    
-   void ls();
+   void Ls();
    
 public:
    // man is public so that it can be use if the user do vdssh --help (or
    // variants).
-   void man();
+   void Man();
    
 private:
-   void mkdir();
+   void Mkdir();
    
-   void rm();
+   void Rm();
    
-   void rmdir();
+   void Rmdir();
 
-   void stat();
+   void Stat();
    
-   void touch();
+   void Touch();
       
    // mv, file, history(?), wc, vi/ed(?), chmod
    // cmp, grep, diff, head, tail, du, df, uname, ln, find,

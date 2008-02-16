@@ -10,7 +10,6 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
-###########################################################################
 
 VBS_VERBOSE=
 
@@ -28,44 +27,42 @@ INTDIR_DEBUG=.\Debug
 CFLAGS_DEBUG=   /nologo /MDd /W3 /Zi /I ".." /I "../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
 CFLAGS_RELEASE= /nologo /MD  /W3 /O2 /I ".." /I "../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
 
-.c{$(OUTDIR)}.exe:
-	$(CPP) $(CFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"
-
 .cpp{$(OUTDIR)}.exe:
 	$(CPP) $(CFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"
 
-.c{$(OUTDIR_DEBUG)}.exe:
+.cpp{$(OUTDIR_DEBUG)}.exe:
 	$(CPP) $(CFLAGS_DEBUG) $< /link $(LDD_FLAGS_DEBUG) /out:"$@"
 
-"$(OUTDIR)" :
-	if not exist "$(OUTDIR)/" mkdir "$(OUTDIR)"
-
-"$(OUTDIR_DEBUG)" :
-	if not exist "$(OUTDIR_DEBUG)/" mkdir "$(OUTDIR_DEBUG)"
+bin_PROGRAMS =      \
+   "$(OUTDIR)\info.exe"
+   
+bin_PROGRAMS_DEBUG = $(bin_PROGRAMS:.\Release\=.\Debug\)
 
 ###########################################################################
-
-all: 
-
-check_PROGRAMS =      \
-   .\Release\TransactionHashMap.exe \
-   .\Release\TransactionQueue.exe   \
-   .\Release\InjectErrorsVDS.exe    \
-   .\Release\OutOfMemory.exe        
-
-check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 #
+# The targets
+#
+###########################################################################
 
-check: $(OUTDIR) $(check_PROGRAMS)
-	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+all: "$(OUTDIR)" "$(OUTDIR_DEBUG)" $(bin_PROGRAMS) $(bin_PROGRAMS_DEBUG)
+   -del ..\Release\vdsInfo.exe
+	-del ..\Debug\vdsInfo.exe
+   copy "$(OUTDIR)\info.exe" ..\Release\vdsInfo.exe
+   copy "$(OUTDIR_DEBUG)\info.exe" ..\Debug\vdsInfo.exe
+	cd Shell && nmake -f Makefile.win32 && cd ..
+   
+check: all
+	cd Shell && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
-checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+checkdebug: all
+	cd Shell && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 clean: 
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release
-	-@rmdir /Q Release
-	-@erase /Q $(CLEANFILES)
+	cd Shell && nmake -f Makefile.win32 clean && cd ..
+
+"$(OUTDIR)" :
+	if not exist "$(OUTDIR)" mkdir "$(OUTDIR)"
+
+"$(OUTDIR_DEBUG)" :
+	if not exist "$(OUTDIR_DEBUG)" mkdir "$(OUTDIR_DEBUG)"
 
