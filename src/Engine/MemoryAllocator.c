@@ -201,6 +201,7 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
                     false ); /* is at the end of the VDS */
                                               
    /* Add the blockGroup to the list of groups of the memObject */
+   vdseLinkNodeInit( &pAlloc->blockGroup.node );
    vdseLinkedListPutFirst( &pAlloc->memObj.listBlockGroup, 
                            &pAlloc->blockGroup.node );
 
@@ -229,6 +230,7 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
    /* Now put the rest of the free blocks in our free list */
    pNode = (vdseFreeBufferNode*)(pBaseAddress + ((neededBlocks+1) << VDSE_BLOCK_SHIFT));
    pNode->numBuffers = (length >> VDSE_BLOCK_SHIFT) - (neededBlocks+1);
+   vdseLinkNodeInit( &pNode->node );
    vdseLinkedListPutFirst( &pAlloc->freeList, &pNode->node );   
    
    vdseEndBlockSet( SET_OFFSET(pNode), pNode->numBuffers, false, true );
@@ -392,6 +394,7 @@ unsigned char* vdseMallocBlocks( vdseMemAlloc       * pAlloc,
          pNewNode = (vdseFreeBufferNode*)
                     ((unsigned char*) pNode + (requestedBlocks << VDSE_BLOCK_SHIFT));
          pNewNode->numBuffers = newNumBlocks;
+         vdseLinkNodeInit( &pNewNode->node );
          vdseLinkedListReplaceItem( &pAlloc->freeList, 
                                     &pNode->node, 
                                     &pNewNode->node );
@@ -592,6 +595,7 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
     * All consolidation done. Complete the job by putting the group in the
     * free list and setting the bitmap.
     */
+   vdseLinkNodeInit( &newNode->node );
    vdseLinkedListPutLast( &pAlloc->freeList, &newNode->node );
                              
    pAlloc->totalAllocBlocks -= numBlocks;   

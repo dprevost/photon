@@ -56,6 +56,7 @@ int main()
 
    /* Test 2 - replace at tail */
    vdseLinkedListPutFirst( &list, &node1 );
+   vdseLinkNodeInit( &oldNode );
    vdseLinkedListReplaceItem( &list, &newNode, &oldNode );
 
    if ( list.currentSize != 2 )
@@ -70,6 +71,7 @@ int main()
    
    /* Test 3 - replace in the middle */
    vdseLinkedListPutLast( &list, &node2 );
+   vdseLinkNodeInit( &newNode );
    vdseLinkedListReplaceItem( &list, &oldNode, &newNode );
 
    if ( list.currentSize != 3 )
@@ -83,6 +85,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    /* Test 4 - replace at head */
+   vdseLinkNodeInit( &oldNode );
    vdseLinkedListReplaceItem( &list, &node1, &oldNode );
 
    if ( list.currentSize != 3 )

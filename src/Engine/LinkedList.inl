@@ -91,6 +91,8 @@ vdseLinkedListPutLast( vdseLinkedList * pList,
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pNewItem   != NULL );
+   VDS_PRE_CONDITION( pNewItem->previousOffset == NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->nextOffset     == NULL_OFFSET );
 
    tmpOffset = SET_OFFSET( pNewItem );
 
@@ -120,6 +122,8 @@ vdseLinkedListPutFirst( vdseLinkedList * pList,
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pNewItem   != NULL );
+   VDS_PRE_CONDITION( pNewItem->previousOffset == NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->nextOffset     == NULL_OFFSET );
 
    tmpOffset = SET_OFFSET( pNewItem );
 
@@ -359,6 +363,8 @@ vdseLinkedListReplaceItem( vdseLinkedList * pList,
    VDS_PRE_CONDITION( pOldItem->previousOffset != NULL_OFFSET );
    VDS_PRE_CONDITION( pOldItem->nextOffset     != NULL_OFFSET );
    VDS_PRE_CONDITION( pNewItem != NULL );
+   VDS_PRE_CONDITION( pNewItem->previousOffset == NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->nextOffset     == NULL_OFFSET );
    VDS_PRE_CONDITION( pList->currentSize > 0 );
 
 #ifdef USE_EXTREME_DBC

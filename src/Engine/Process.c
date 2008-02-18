@@ -112,6 +112,7 @@ vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
          errcode = vdseSessionInit( pCurrentBuffer, pApiSession, pContext );
          if ( errcode == 0 )
          {
+            vdseLinkNodeInit( &pCurrentBuffer->node );
             vdseLinkedListPutLast( &pProcess->listOfSessions, 
                                    &pCurrentBuffer->node );
             *ppSession = pCurrentBuffer;

@@ -148,6 +148,7 @@ int vdseSessionAddObj( vdseSession        * pSession,
          pCurrentBuffer->type      = objType;
          pCurrentBuffer->pCommonObject = pCommonObject;
 
+         vdseLinkNodeInit( &pCurrentBuffer->node );
          vdseLinkedListPutLast( &pSession->listOfObjects, 
                                 &pCurrentBuffer->node );
          *ppObject = pCurrentBuffer;

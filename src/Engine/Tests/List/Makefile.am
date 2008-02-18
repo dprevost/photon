@@ -64,10 +64,14 @@ check_PROGRAMS =                            \
                  PutFirstInvSig             \
                  PutFirstNullList           \
                  PutFirstNullNewItem        \
+                 PutFirstNullNewNext        \
+                 PutFirstNullNewPrevious    \
                  PutFirstPass               \
                  PutLastInvSig              \
                  PutLastNullList            \
                  PutLastNullNewItem         \
+                 PutLastNullNewNext         \
+                 PutLastNullNewPrevious     \
                  PutLastPass                \
                  RemoveInvSig               \
                  RemoveAbsent               \
@@ -80,6 +84,8 @@ check_PROGRAMS =                            \
                  ReplaceInvSig              \
                  ReplaceNullList            \
                  ReplaceNullNew             \
+                 ReplaceNullNewNext         \
+                 ReplaceNullNewPrevious     \
                  ReplaceNullOld             \
                  ReplacePass                \
                  ResetInvSig                \
@@ -132,10 +138,14 @@ PeakPreviousPass_SOURCES           = $(LIST_H) PeakPreviousPass.c
 PutFirstInvSig_SOURCES             = $(LIST_H) PutFirstInvSig.c
 PutFirstNullList_SOURCES           = $(LIST_H) PutFirstNullList.c
 PutFirstNullNewItem_SOURCES        = $(LIST_H) PutFirstNullNewItem.c
+PutFirstNullNewNext_SOURCES        = $(LIST_H) PutFirstNullNewNext.c
+PutFirstNullNewPrevious_SOURCES    = $(LIST_H) PutFirstNullNewPrevious.c
 PutFirstPass_SOURCES               = $(LIST_H) PutFirstPass.c
 PutLastInvSig_SOURCES              = $(LIST_H) PutLastInvSig.c
 PutLastNullList_SOURCES            = $(LIST_H) PutLastNullList.c
 PutLastNullNewItem_SOURCES         = $(LIST_H) PutLastNullNewItem.c
+PutLastNullNewNext_SOURCES         = $(LIST_H) PutLastNullNewNext.c
+PutLastNullNewPrevious_SOURCES     = $(LIST_H) PutLastNullNewPrevious.c
 PutLastPass_SOURCES                = $(LIST_H) PutLastPass.c
 RemoveInvSig_SOURCES               = $(LIST_H) RemoveInvSig.c
 RemoveNullItem_SOURCES             = $(LIST_H) RemoveNullItem.c
@@ -148,6 +158,8 @@ RemovePass_SOURCES                 = $(LIST_H) RemovePass.c
 ReplaceInvSig_SOURCES              = $(LIST_H) ReplaceInvSig.c
 ReplaceNullList_SOURCES            = $(LIST_H) ReplaceNullList.c
 ReplaceNullNew_SOURCES             = $(LIST_H) ReplaceNullNew.c
+ReplaceNullNewNext_SOURCES         = $(LIST_H) ReplaceNullNewNext.c
+ReplaceNullNewPrevious_SOURCES     = $(LIST_H) ReplaceNullNewPrevious.c
 ReplaceNullOld_SOURCES             = $(LIST_H) ReplaceNullOld.c
 ReplacePass_SOURCES                = $(LIST_H) ReplacePass.c
 ResetInvSig_SOURCES                = $(LIST_H) ResetInvSig.c
@@ -206,10 +218,14 @@ TESTS +=                            \
          PutFirstInvSig             \
          PutFirstNullList           \
          PutFirstNullNewItem        \
+         PutFirstNullNewNext        \
+         PutFirstNullNewPrevious    \
          PutFirstPass               \
          PutLastInvSig              \
          PutLastNullList            \
          PutLastNullNewItem         \
+         PutLastNullNewNext         \
+         PutLastNullNewPrevious     \
          PutLastPass                \
          RemoveInvSig               \
          RemoveNullItem             \
@@ -221,6 +237,8 @@ TESTS +=                            \
          ReplaceInvSig              \
          ReplaceNullList            \
          ReplaceNullNew             \
+         ReplaceNullNewNext         \
+         ReplaceNullNewPrevious     \
          ReplaceNullOld             \
          ReplacePass                \
          ResetInvSig                \
@@ -271,9 +289,13 @@ XFAIL_TESTS =                            \
               PutFirstInvSig             \
               PutFirstNullList           \
               PutFirstNullNewItem        \
+              PutFirstNullNewNext        \
+              PutFirstNullNewPrevious    \
               PutLastInvSig              \
               PutLastNullList            \
               PutLastNullNewItem         \
+              PutLastNullNewNext         \
+              PutLastNullNewPrevious     \
               RemoveInvSig               \
               RemoveNullItem             \
               RemoveNullNextOffset       \
@@ -284,6 +306,8 @@ XFAIL_TESTS =                            \
               ReplaceInvSig              \
               ReplaceNullList            \
               ReplaceNullNew             \
+              ReplaceNullNewNext         \
+              ReplaceNullNewPrevious     \
               ReplaceNullOld             \
               ResetInvSig                \
               ResetNullList 

@@ -55,10 +55,14 @@ check_PROGRAMS =                                          \
                  .\Release\PutFirstInvSig.exe             \
                  .\Release\PutFirstNullList.exe           \
                  .\Release\PutFirstNullNewItem.exe        \
+                 .\Release\PutFirstNullNewNext.exe        \
+                 .\Release\PutFirstNullNewPrevious.exe    \
                  .\Release\PutFirstPass.exe               \
                  .\Release\PutLastInvSig.exe              \
                  .\Release\PutLastNullList.exe            \
                  .\Release\PutLastNullNewItem.exe         \
+                 .\Release\PutLastNullNewNext.exe         \
+                 .\Release\PutLastNullNewPrevious.exe     \
                  .\Release\PutLastPass.exe                \
                  .\Release\RemoveInvSig.exe               \
                  .\Release\RemoveAbsent.exe               \
@@ -71,6 +75,8 @@ check_PROGRAMS =                                          \
                  .\Release\ReplaceInvSig.exe              \
                  .\Release\ReplaceNullList.exe            \
                  .\Release\ReplaceNullNew.exe             \
+                 .\Release\ReplaceNullNewNext.exe         \
+                 .\Release\ReplaceNullNewPrevious.exe     \
                  .\Release\ReplaceNullOld.exe             \
                  .\Release\ReplacePass.exe                \
                  .\Release\ResetInvSig.exe                \

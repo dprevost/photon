@@ -30,13 +30,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(63)
+Dim failed_tests(70)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
 Dim ok_programs(15)
-Dim fail_programs(47)
+Dim fail_programs(54)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -100,24 +100,30 @@ fail_programs(29) = "PeakPreviousNullPrevious"
 fail_programs(30) = "PutFirstInvSig"
 fail_programs(31) = "PutFirstNullList"
 fail_programs(32) = "PutFirstNullNewItem"
-fail_programs(33) = "PutLastInvSig"
-fail_programs(34) = "PutLastNullList"
-fail_programs(35) = "PutLastNullNewItem"
-fail_programs(36) = "RemoveInvSig"
-fail_programs(37) = "RemoveNullItem"
-fail_programs(38) = "RemoveNullNextOffset"
-fail_programs(39) = "RemoveNullPrevOffset"
-fail_programs(40) = "RemoveNullList"
-fail_programs(41) = "RemoveAbsent"
-fail_programs(42) = "ReplaceInvSig"
-fail_programs(43) = "ReplaceNullList"
-fail_programs(44) = "ReplaceNullNew"
-fail_programs(45) = "ReplaceNullOld"
-fail_programs(46) = "ResetInvSig"
-fail_programs(47) = "ResetNullList"
-fail_programs(47) = "RemoveWrongItem"
+fail_programs(33) = "PutFirstNullNewNext"
+fail_programs(34) = "PutFirstNullNewPrevious"
+fail_programs(35) = "PutLastInvSig"
+fail_programs(36) = "PutLastNullList"
+fail_programs(37) = "PutLastNullNewItem"
+fail_programs(38) = "PutLastNullNewNext"
+fail_programs(39) = "PutLastNullNewPrevious"
+fail_programs(40) = "RemoveInvSig"
+fail_programs(41) = "RemoveNullItem"
+fail_programs(42) = "RemoveNullNextOffset"
+fail_programs(43) = "RemoveNullPrevOffset"
+fail_programs(44) = "RemoveNullList"
+fail_programs(45) = "RemoveAbsent"
+fail_programs(46) = "ReplaceInvSig"
+fail_programs(47) = "ReplaceNullList"
+fail_programs(48) = "ReplaceNullNew"
+fail_programs(49) = "ReplaceNullNewNext"
+fail_programs(50) = "ReplaceNullNewPrevious"
+fail_programs(51) = "ReplaceNullOld"
+fail_programs(52) = "ResetInvSig"
+fail_programs(53) = "ResetNullList"
+fail_programs(54) = "RemoveWrongItem"
 
-numTests = 64                 ' Sum of length of both arrays 
+numTests = 71                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject

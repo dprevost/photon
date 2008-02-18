@@ -73,6 +73,7 @@ int vdseProcMgrAddProcess( vdseProcMgr        * pManager,
          errcode = vdseProcessInit( pCurrentBuffer, pid, pContext );
          if ( errcode == 0 )
          {
+            vdseLinkNodeInit( &pCurrentBuffer->node );
             vdseLinkedListPutLast( &pManager->listOfProcesses, 
                                    &pCurrentBuffer->node );
             *ppProcess = pCurrentBuffer;

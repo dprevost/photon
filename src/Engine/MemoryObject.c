@@ -72,6 +72,7 @@ vdseMemObjectInit( vdseMemObject   * pMemObj,
                        objType );
    
    /* Add the blockGroup to the list of groups of the memObject */
+   vdseLinkNodeInit( &pGroup->node );
    vdseLinkedListPutFirst( &pMemObj->listBlockGroup, 
                            &pGroup->node );
                            
@@ -220,6 +221,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
                             ((unsigned char*) currentNode + 
                             (requestedChunks*VDSE_ALLOCATION_UNIT));
                   newNode->numBuffers = remainingChunks;
+                  vdseLinkNodeInit( &newNode->node );
                   vdseLinkedListReplaceItem( &currentGroup->freeList, 
                                              &currentNode->node, 
                                              &newNode->node );
@@ -302,6 +304,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
                           i, 
                           pMemObj->objType );
       /* Add the blockGroup to the list of groups of the memObject */
+      vdseLinkNodeInit( &currentGroup->node );
       vdseLinkedListPutLast( &pMemObj->listBlockGroup, &currentGroup->node );
       pMemObj->totalBlocks += i;
       
@@ -326,6 +329,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
                       ((unsigned char*) currentNode + 
                       (requestedChunks*VDSE_ALLOCATION_UNIT));
             newNode->numBuffers = remainingChunks;
+            vdseLinkNodeInit( &newNode->node );
             vdseLinkedListReplaceItem( &currentGroup->freeList, 
                                        &currentNode->node, 
                                        &newNode->node );
@@ -448,6 +452,7 @@ void vdseFree( vdseMemObject*      pMemObj,
        */
       p = ptr; /* This is needed further down */
       ((vdseFreeBufferNode*)p)->numBuffers = numBytes/VDSE_ALLOCATION_UNIT;
+      vdseLinkNodeInit( &((vdseFreeBufferNode*)p)->node );
       vdseLinkedListPutLast( &goodGroup->freeList, 
                              &((vdseFreeBufferNode*)p)->node );
    }

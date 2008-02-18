@@ -85,6 +85,7 @@ int main()
 
    for ( i = 0; i < INITIAL_LIST_SIZE; ++i )
    {
+      vdseLinkNodeInit( &dummy[i].node );
       vdseLinkedListPutLast( &list, &dummy[i].node );
       dummy[i].isInUse = 1;
    }
@@ -140,6 +141,7 @@ int main()
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
          
+         vdseLinkNodeInit( &dummy[k].node );
          vdseLinkedListPutFirst( &list, &dummy[k].node );
 
          dummy[k].isInUse = 1;
@@ -181,6 +183,7 @@ int main()
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
 
+         vdseLinkNodeInit( &dummy[k].node );
          vdseLinkedListPutLast( &list, &dummy[k].node );
 
          dummy[k].isInUse = 1;
