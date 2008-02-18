@@ -44,14 +44,12 @@ int vdswValidate( vdseMemoryHeader * pMemoryAddress,
    vdseSessionContext context;
    ptrdiff_t  lockOffsets[VDSE_MAX_LOCK_DEPTH];
    int        numLocks = 0;
-   struct vdswVerifyStruct verifyStruct = { 1, 0, stderr, doRepair };
+   struct vdswVerifyStruct verifyStruct = { 1, 0, stderr, doRepair, NULL };
    char timeBuf[30];
-//#if defined (WIN32)
-//   char tmpTime[9];
-//#else
    time_t t;
    struct tm formattedTime;
-
+   size_t bitmapLength = 0;
+   
    verifyStruct.fp = fp;
    
    t = time(NULL);
@@ -68,6 +66,15 @@ int vdswValidate( vdseMemoryHeader * pMemoryAddress,
    GET_PTR( processMgr, pMemoryAddress->processMgrOffset, struct vdseProcessManager );
    GET_PTR( topFolder, pMemoryAddress->treeMgrOffset, vdseFolder );
    GET_PTR( memAllocator, pMemoryAddress->allocatorOffset, vdseMemAlloc );
+
+   /* allocate the bitmap */
+   bitmapLength = offsetof( vdseMemBitmap, bitmap ) + 
+      vdseGetBitmapLengthBytes( memAllocator->totalLength, VDSE_BLOCK_SIZE );
+   verifyStruct.pBitmap = (vdseMemBitmap *) malloc(bitmapLength);
+   vdseMemBitmapInit( verifyStruct.pBitmap,
+                      0,
+                      memAllocator->totalLength,
+                      VDSE_BLOCK_SIZE );
 
    // Test the lock of the allocator
    if ( vdscIsItLocked( &memAllocator->memObj.lock ) ) {

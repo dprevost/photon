@@ -19,6 +19,7 @@
 #define VDSW_VERIFY_COMMON_H
 
 #include "Engine/MemoryHeader.h"
+#include "Engine/MemBitmap.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,6 +34,7 @@ struct vdseLinkedList;
 struct vdseFolder;
 struct vdseHashMap;
 struct vdseQueue;
+struct vdseMemObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -53,6 +55,7 @@ struct vdswVerifyStruct
    int    spaces;
    FILE * fp;
    bool   doRepair;
+   vdseMemBitmap * pBitmap;
 };
 typedef struct vdswVerifyStruct vdswVerifyStruct;
 
@@ -68,6 +71,17 @@ void vdswEcho( vdswVerifyStruct * pVerify, char * message )
          fprintf( pVerify->fp, " " );
       fprintf( pVerify->fp, "%s\n", message );
    }
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static inline
+void vdswResetBitmap( vdseMemBitmap * pBitmap )
+{
+   size_t length;
+   
+   length = ( (pBitmap->lengthInBits - 1 ) >> 3 ) + 1;
+   memset( pBitmap->bitmap, 0, length );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -97,8 +111,13 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
                    struct vdseHashMap * pHashMap, 
                    vdseSessionContext * pContext  );
 enum vdswValidation 
-vdswVerifyQueue( vdswVerifyStruct * pVerify,
-                 struct vdseQueue * pQueue );
+vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
+                     struct vdseMemObject      * pMemObj,
+                     struct vdseSessionContext * pContext );
+enum vdswValidation 
+vdswVerifyQueue( vdswVerifyStruct   * pVerify,
+                 struct vdseQueue   * pQueue, 
+                 vdseSessionContext * pContext  );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

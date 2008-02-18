@@ -83,7 +83,9 @@ int vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
                                        pContext );
             break;
          case VDS_QUEUE:
-            valid = vdswVerifyQueue( pVerify, (struct vdseQueue *)pObject ); 
+            valid = vdswVerifyQueue( pVerify, 
+                                     (struct vdseQueue *)pObject,
+                                     pContext ); 
             break;
          default:
             VDS_INV_CONDITION( pDesc_invalid_api_type );

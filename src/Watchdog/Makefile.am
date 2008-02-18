@@ -43,6 +43,7 @@ libVerifyVDS_a_SOURCES = \
    VerifyHash.c          \
    VerifyHashMap.c       \
    VerifyList.c          \
+   VerifyMemObj.c        \
    VerifyQueue.c         \
    VerifyVDS.c           \
    VerifyVDS.h           

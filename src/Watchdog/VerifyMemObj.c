@@ -17,91 +17,55 @@
 
 #include "Common/Common.h"
 #include "Watchdog/VerifyCommon.h"
-#include "Engine/Queue.h"
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-int vdswCheckQueueContent( vdswVerifyStruct * pVerify,
-                           struct vdseQueue * pQueue )
-{
-   vdseTxStatus * txItemStatus;
-   enum ListErrors listErrCode;
-   vdseLinkNode * pNode = NULL, * pDeletedNode = NULL;
-   vdseQueueItem* pQueueItem = NULL;
-   
-   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
-   while ( listErrCode == LIST_OK ) {
-      pQueueItem = (vdseQueueItem*) 
-         ((char*)pNode - offsetof( vdseQueueItem, node ));
-      txItemStatus = &pQueueItem->txStatus;
-
-      if ( txItemStatus->txOffset != NULL_OFFSET ) {
-         /*
-          * So we have an interrupted transaction. What kind? 
-          *   FLAG                      ACTION          
-          *   TXS_ADDED                 remove item
-          *   TXS_DESTROYED             reset txStatus  
-          *   TXS_DESTROYED_COMMITTED   remove item
-          *
-          * Action is the equivalent of what a rollback would do.
-          */
-         if ( txItemStatus->enumStatus == VDSE_TXS_ADDED ) {
-            vdswEcho( pVerify, "Queue item added but not committed" );
-            pDeletedNode = pNode;
-         }         
-         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
-            vdswEcho( pVerify, "Queue item deleted and committed" );
-            pDeletedNode = pNode;
-         }
-         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
-            vdswEcho( pVerify, "Queue item deleted but not committed" );
-         }
-         
-         if ( pDeletedNode == NULL && pVerify->doRepair ) {
-            txItemStatus->txOffset = NULL_OFFSET;
-            txItemStatus->enumStatus = VDSE_TXS_OK;
-            vdswEcho( pVerify, "Queue item status fields reset to zero" );
-         }
-      }
-
-      if ( pDeletedNode == NULL && txItemStatus->usageCounter != 0 ) {
-         vdswEcho( pVerify, "Queue item usage counter is not zero" );
-         if (pVerify->doRepair) {
-            vdswEcho( pVerify, "Queue item usage counter set to zero" );
-            txItemStatus->usageCounter = 0;
-         }
-      }
-      
-      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
-                                             pNode, 
-                                             &pNode );
-      /*
-       * We need the old node to be able to get to the next node. That's
-       * why we save the node to be deleted and delete it until after we
-       * retrieve the next node.
-       */
-      if ( pDeletedNode != NULL && pVerify->doRepair ) {
-         vdseLinkedListRemoveItem( &pQueue->listOfElements, pDeletedNode );
-         vdswEcho( pVerify, "Queue item removed from the VDS" );
-      }
-      pDeletedNode = NULL;
-   }
-
-   if ( listErrCode == LIST_END_OF_LIST || listErrCode == LIST_EMPTY )
-      return 0;
-   
-   fprintf( stderr, "Abnormal error in list, list error code = %d\n", 
-      listErrCode );
-   return -1;
-}
+#include "Engine/MemoryObject.h"
+#include "Engine/MemoryAllocator.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum vdswValidation 
-vdswVerifyQueue( vdswVerifyStruct   * pVerify,
-                 struct vdseQueue   * pQueue,
-                 vdseSessionContext * pContext )
+vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
+                     struct vdseMemObject      * pMemObj,
+                     struct vdseSessionContext * pContext )
 {
+   vdseLinkNode * dummy;
+   enum ListErrors errGroup;
+   vdseBlockGroup * pGroup;
+   int rc;
+   struct vdseMemAlloc * pAlloc = (vdseMemAlloc *) pContext->pAllocator;
+
+   /*
+    * Reset the bitmap and the the list of groups.
+    */
+   vdswResetBitmap( pVerify->pBitmap );
+   vdseSetBufferAllocated( pVerify->pBitmap, 0, pAlloc->totalLength );
+
+   rc = vdswVerifyList( pVerify, &pMemObj->listBlockGroup );
+   if ( rc != 0 ) return rc;
+   
+   /*
+    * The list is ok (or repaired), use it to populate the bitmap for
+    * validating the content of the object itself.
+    */
+   vdswResetBitmap( pVerify->pBitmap );
+   /*
+    * We retrieve the first node
+    */
+   errGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup,
+                                       &dummy );
+   VDS_PRE_CONDITION( errGroup == LIST_OK );
+
+   while ( errGroup == LIST_OK )
+   {
+      pGroup = (vdseBlockGroup*)( 
+         (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
+      
+
+      errGroup = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
+                                         dummy,
+                                         &dummy );
+   }
+   
+#if 0
    vdseTxStatus * txQueueStatus;
    int rc;
    bool bTestObject = false;
@@ -114,8 +78,8 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
          vdswEcho( pVerify, "Trying to reset the lock..." );
          vdscReleaseProcessLock ( &pQueue->memObject.lock );
       }
-   //   rc = vdswVerifyList( pVerify, &pQueue->memObject.listBlockGroup );
-      rc = VerifyMemObject( pVerify, &pQueue->memObject, pContext );
+      rc = vdswVerifyList( pVerify, &pQueue->memObject.listBlockGroup );
+   //   rc = VerifyMemObject( &pQueue->memObject );
       bTestObject = true;
    }
 
@@ -178,9 +142,9 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
 
    rc = vdswCheckQueueContent( pVerify, pQueue );
    pVerify->spaces -= 2;
+#endif
 
    return VDSW_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
