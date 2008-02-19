@@ -44,6 +44,7 @@ OBJS_RELEASE=                                 \
 	"$(INTDIR_RELEASE)\VerifyHash.obj"    \
 	"$(INTDIR_RELEASE)\VerifyHashMap.obj" \
 	"$(INTDIR_RELEASE)\VerifyList.obj"    \
+	"$(INTDIR_RELEASE)\VerifyMemObj.obj"  \
 	"$(INTDIR_RELEASE)\VerifyQueue.obj"   \
 	"$(INTDIR_RELEASE)\VerifyVDS.obj"     \
 	"$(INTDIR_RELEASE)\Watchdog.obj"      \
