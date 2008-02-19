@@ -59,7 +59,7 @@ vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
       pGroup = (vdseBlockGroup*)( 
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
       
-
+      fprintf( stderr, "pGroup: %p %d\n", pGroup, pGroup->numBlocks );
       errGroup = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
                                          dummy,
                                          &dummy );

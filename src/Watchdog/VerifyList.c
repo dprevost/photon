@@ -88,6 +88,15 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
    ptrdiff_t headOffset;
    struct repairKit kit = { NO_REPAIR, pList, 0, 0, false, false, false, NULL, NULL };
    
+   /*
+    * Do not add a test for the size of the list here (as in 
+    *    if ( currentSize == 0 ) return 0; ).
+    *
+    * The size of the list might not be accurate if the cpu can reorder
+    * instructions - the real size could be one higher than the value of
+    * pList->currentSize.
+    */
+   
    headOffset = SET_OFFSET( &pList->head );
 
    // We loop forward until we come back to head or until we clearly have

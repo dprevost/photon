@@ -115,7 +115,8 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
          vdscReleaseProcessLock ( &pQueue->memObject.lock );
       }
    //   rc = vdswVerifyList( pVerify, &pQueue->memObject.listBlockGroup );
-      rc = VerifyMemObject( pVerify, &pQueue->memObject, pContext );
+      rc = vdswVerifyMemObject( pVerify, &pQueue->memObject, pContext );
+      if ( rc != 0 ) return rc;
       bTestObject = true;
    }
 
