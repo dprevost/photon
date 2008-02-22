@@ -114,11 +114,17 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
          vdswEcho( pVerify, "Trying to reset the lock..." );
          vdscReleaseProcessLock ( &pQueue->memObject.lock );
       }
-   //   rc = vdswVerifyList( pVerify, &pQueue->memObject.listBlockGroup );
       rc = vdswVerifyMemObject( pVerify, &pQueue->memObject, pContext );
       if ( rc != 0 ) return rc;
       bTestObject = true;
    }
+   
+   /*
+    * Currently, the bitmap is only use if the object was locked. This might
+    * change (as it is the case for other types of objects) so populate the 
+    * bitmap in all cases to be safe.
+    */
+   vdswPopulateBitmap( pVerify, &pQueue->memObject, pContext );
 
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
 

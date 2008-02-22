@@ -81,7 +81,7 @@ void vdswResetBitmap( vdseMemBitmap * pBitmap )
    size_t length;
    
    length = ( (pBitmap->lengthInBits - 1 ) >> 3 ) + 1;
-   memset( pBitmap->bitmap, 0, length );
+   memset( pBitmap->bitmap, 1, length );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -89,8 +89,7 @@ void vdswResetBitmap( vdseMemBitmap * pBitmap )
 static inline
 bool vdswVerifyOffset( vdswVerifyStruct * pVerify, ptrdiff_t offset )
 {
-   return (offset > 0 && 
-      offset < (ptrdiff_t)((vdseMemoryHeader *)g_pBaseAddr)->totalLength );
+   return vdseIsBufferFree( pVerify->pBitmap, offset );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -208,6 +208,8 @@ void vdsaProcessFini()
       process->pHeader = NULL;
    }
    
+   vdsaDisconnect( &process->connector, &context.errorHandler );
+
 error_handler:
 
    if ( g_protectionIsNeeded )

@@ -27,7 +27,7 @@
 using namespace std;
 
 #define NUM_MAPS   4
-#define NUM_QUEUES 12
+#define NUM_QUEUES 10
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -317,7 +317,7 @@ int AddDefectsQueues( vector<myQueue> & q )
                                              &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->nextOffset = 0;
+         pNode->nextOffset = NULL_OFFSET;
          break;
       }
    }
@@ -342,7 +342,7 @@ int AddDefectsQueues( vector<myQueue> & q )
                                              &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->previousOffset = 0;
+         pNode->previousOffset = NULL_OFFSET;
          break;
       }
    }
@@ -368,8 +368,8 @@ int AddDefectsQueues( vector<myQueue> & q )
       i++;
       if ( i == 9 ) pSavedNode = pNode;
       if ( i == 13 ) {
-         pSavedNode->nextOffset = 0;
-         pNode->nextOffset = -1;
+         pSavedNode->nextOffset = NULL_OFFSET;
+         pNode->nextOffset = NULL_OFFSET;
          break;
       }
    }
@@ -395,8 +395,8 @@ int AddDefectsQueues( vector<myQueue> & q )
       i++;
       if ( i == 9 ) pSavedNode = pNode;
       if ( i == 13 ) {
-         pSavedNode->previousOffset = 0;
-         pNode->previousOffset = -1;
+         pSavedNode->previousOffset = NULL_OFFSET;
+         pNode->previousOffset = NULL_OFFSET;
          break;
       }
    }
@@ -421,67 +421,13 @@ int AddDefectsQueues( vector<myQueue> & q )
                                              &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->previousOffset = 0;
-         pNode->nextOffset = 0;
+         pNode->previousOffset = NULL_OFFSET;
+         pNode->nextOffset = NULL_OFFSET;
          break;
       }
    }
    if ( listErrCode != LIST_OK ) {
       cerr << "Iteration error in " << q[9].name << ", list err = " << listErrCode << endl;
-      return -1;
-   }
-
-   cout << "Defect for " << q[10].name << ": broken bw+fw (gt)" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[10].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
-   if ( vdscTryAcquireProcessLock ( &pQueue->memObject.lock, getpid(), 0 ) ) {
-      cerr << "Error - cannot lock the object" << endl;
-      return -1;
-   }
-
-   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
-   i = 0;
-   while ( listErrCode == LIST_OK ) {
-      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
-                                             pNode, 
-                                             &pNode );
-      i++;
-      if ( i == 9 ) pSavedNode = pNode;
-      if ( i == 10 ) {
-         pSavedNode->nextOffset = 0;
-         pNode->previousOffset  = 0;
-         break;
-      }
-   }
-   if ( listErrCode != LIST_OK ) {
-      cerr << "Iteration error in " << q[10].name << ", list err = " << listErrCode << endl;
-      return -1;
-   }
-
-   cout << "Defect for " << q[11].name << ": broken bw+fw links (lt)" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[11].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
-   if ( vdscTryAcquireProcessLock ( &pQueue->memObject.lock, getpid(), 0 ) ) {
-      cerr << "Error - cannot lock the object" << endl;
-      return -1;
-   }
-
-   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
-   i = 0;
-   while ( listErrCode == LIST_OK ) {
-      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
-                                             pNode, 
-                                             &pNode );
-      i++;
-      if ( i == 9 ) pSavedNode = pNode;
-      if ( i == 10 ) {
-         pSavedNode->previousOffset = 0;
-         pNode->nextOffset = 0;
-         break;
-      }
-   }
-   if ( listErrCode != LIST_OK ) {
-      cerr << "Iteration error in " << q[11].name << ", list err = " << listErrCode << endl;
       return -1;
    }
 

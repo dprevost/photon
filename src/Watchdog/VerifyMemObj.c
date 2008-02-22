@@ -27,24 +27,61 @@ vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
                      struct vdseMemObject      * pMemObj,
                      struct vdseSessionContext * pContext )
 {
+   int rc;
+   struct vdseMemAlloc * pAlloc = (vdseMemAlloc *) pContext->pAllocator;
    vdseLinkNode * dummy;
    enum ListErrors errGroup;
    vdseBlockGroup * pGroup;
-   int rc;
-   struct vdseMemAlloc * pAlloc = (vdseMemAlloc *) pContext->pAllocator;
-
+   size_t numBlocks = 0;
+   
    /*
     * Reset the bitmap and the the list of groups.
     */
    vdswResetBitmap( pVerify->pBitmap );
-   vdseSetBufferAllocated( pVerify->pBitmap, 0, pAlloc->totalLength );
+   vdseSetBufferFree( pVerify->pBitmap, 0, pAlloc->totalLength );
 
    rc = vdswVerifyList( pVerify, &pMemObj->listBlockGroup );
    if ( rc != 0 ) return rc;
    
    /*
-    * The list is ok (or repaired), use it to populate the bitmap for
-    * validating the content of the object itself.
+    * We retrieve the first node
+    */
+   errGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup,
+                                       &dummy );
+   while ( errGroup == LIST_OK ) {
+      
+      pGroup = (vdseBlockGroup*)( 
+         (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
+      numBlocks += pGroup->numBlocks;
+      
+      errGroup = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
+                                         dummy,
+                                         &dummy );
+   }
+   if ( numBlocks != pMemObj->totalBlocks ) {
+      vdswEcho( pVerify, "Number of blocks is wrong" );
+      if (pVerify->doRepair) {
+         pMemObj->totalBlocks = numBlocks;
+         vdswEcho( pVerify, "Number of blocks set to proper value" );
+      }
+   }
+   
+   return 0;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void vdswPopulateBitmap( struct vdswVerifyStruct   * pVerify,
+                         struct vdseMemObject      * pMemObj,
+                         struct vdseSessionContext * pContext )
+{
+   vdseLinkNode * dummy;
+   enum ListErrors errGroup;
+   vdseBlockGroup * pGroup;
+
+   /*
+    * Reset the bitmap and populate it for validating the content of the 
+    * object itself.
     */
    vdswResetBitmap( pVerify->pBitmap );
    /*
@@ -52,99 +89,20 @@ vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
     */
    errGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup,
                                        &dummy );
-   VDS_PRE_CONDITION( errGroup == LIST_OK );
-
    while ( errGroup == LIST_OK )
    {
       pGroup = (vdseBlockGroup*)( 
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
+
+      vdseSetBufferFree( pVerify->pBitmap, 
+         SET_OFFSET( pGroup )/VDSE_BLOCK_SIZE*VDSE_BLOCK_SIZE, 
+         pGroup->numBlocks*VDSE_BLOCK_SIZE );
       
-      fprintf( stderr, "pGroup: %p %d\n", pGroup, pGroup->numBlocks );
       errGroup = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
                                          dummy,
                                          &dummy );
    }
-   
-#if 0
-   vdseTxStatus * txQueueStatus;
-   int rc;
-   bool bTestObject = false;
-   
-   pVerify->spaces += 2;
-   
-   if ( vdscIsItLocked( &pQueue->memObject.lock ) ) {
-      vdswEcho( pVerify, "The object is locked - it might be corrupted" );
-      if ( pVerify->doRepair ) {
-         vdswEcho( pVerify, "Trying to reset the lock..." );
-         vdscReleaseProcessLock ( &pQueue->memObject.lock );
-      }
-      rc = vdswVerifyList( pVerify, &pQueue->memObject.listBlockGroup );
-   //   rc = VerifyMemObject( &pQueue->memObject );
-      bTestObject = true;
-   }
-
-   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
-
-   if ( txQueueStatus->txOffset != NULL_OFFSET ) {
-      /*
-       * So we have an interrupted transaction. What kind? 
-       *   FLAG                      ACTION          
-       *   TXS_ADDED                 remove object   
-       *   TXS_DESTROYED             reset txStatus  
-       *   TXS_DESTROYED_COMMITTED   remove object
-       *
-       * Action is the equivalent of what a rollback would do.
-       */
-      if ( txQueueStatus->enumStatus == VDSE_TXS_ADDED ) {
-         vdswEcho( pVerify, "Object added but not committed" );
-         pVerify->spaces -= 2;
-         return VDSW_DELETE_OBJECT;
-      }         
-      if ( txQueueStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
-         vdswEcho( pVerify, "Object deleted and committed" );
-         pVerify->spaces -= 2;
-         return VDSW_DELETE_OBJECT;
-      }
-
-      vdswEcho( pVerify, "Object deleted but not committed" );
-
-      if ( pVerify->doRepair) {
-         vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
-         txQueueStatus->txOffset = NULL_OFFSET;
-         txQueueStatus->enumStatus = VDSE_TXS_OK;
-      }
-   }
-   
-   if ( txQueueStatus->usageCounter != 0 ) {
-      vdswEcho( pVerify, "Usage counter is not zero" );
-      if (pVerify->doRepair) {
-         txQueueStatus->usageCounter = 0;
-         vdswEcho( pVerify, "Usage counter set to zero" );
-      }
-   }
-   if ( txQueueStatus->parentCounter != 0 ) {
-      vdswEcho( pVerify, "Parent counter is not zero" );
-      if (pVerify->doRepair) {
-         txQueueStatus->parentCounter = 0;
-         vdswEcho( pVerify, "Parent counter set to zero" );
-      }
-   }
-   if ( pQueue->nodeObject.txCounter != 0 ) {
-      vdswEcho( pVerify, "Transaction counter is not zero" );
-      if (pVerify->doRepair) {
-         pQueue->nodeObject.txCounter = 0;
-         vdswEcho( pVerify, "Transaction counter set to zero" );
-      }
-   }
-   
-   if ( bTestObject )
-      rc = vdswVerifyList( pVerify, &pQueue->listOfElements );
-
-   rc = vdswCheckQueueContent( pVerify, pQueue );
-   pVerify->spaces -= 2;
-#endif
-
-   return VDSW_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

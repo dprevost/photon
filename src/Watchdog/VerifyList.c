@@ -57,11 +57,13 @@ enum repairMode
 {
    NO_REPAIR,
    REPAIR_LENGTH,
-   REPAIR_WITH_FW,
-   REPAIR_WITH_BW,
-   REPAIR_WITH_BOTH_EQUAL,
+   REPAIR_WITH_FW_BREAK,
+   REPAIR_WITH_BW_BREAK,
+   REPAIR_WITH_FW_NO_BREAK,
+   REPAIR_WITH_BW_NO_BREAK,
+   REPAIR_WITH_BOTH_EQUAL /*,
    REPAIR_WITH_BOTH_FW_FIRST,
-   REPAIR_WITH_BOTH_BW_FIRST
+   REPAIR_WITH_BOTH_BW_FIRST */
 };
 
 struct repairKit
@@ -73,8 +75,14 @@ struct repairKit
    bool breakInForwardChain;
    bool breakInBackwardChain;
    bool foundNextBreak;
+   /* The last valid node before the break */
    vdseLinkNode * nextBreak;
+   /* The node before the last valid node before the break */
+   vdseLinkNode * nextBreakPrevious;
+   /* The last valid node before the break */
    vdseLinkNode * previousBreak;
+   /* The node before the last valid node before the break */
+   vdseLinkNode * previousBreakPrevious;
 
 };
 
@@ -86,7 +94,9 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
 {
    vdseLinkNode * next, * previous;
    ptrdiff_t headOffset;
-   struct repairKit kit = { NO_REPAIR, pList, 0, 0, false, false, false, NULL, NULL };
+   struct repairKit kit = { \
+      NO_REPAIR, pList, 0, 0, false, false, false, NULL, NULL, NULL, NULL };
+   bool foundNode;
    
    /*
     * Do not add a test for the size of the list here (as in 
@@ -102,48 +112,65 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
    // We loop forward until we come back to head or until we clearly have
    // a discontinuity in the chain.
    next = &pList->head;
+   previous = next;
    while ( next->nextOffset != headOffset ) {
-      if ( vdswVerifyOffset( pVerify, next->nextOffset ) )
-         kit.forwardChainLen++;
-      else {
+      if ( next->nextOffset == NULL_OFFSET ) {
          kit.nextBreak = next;
+         kit.nextBreakPrevious = previous;
          kit.breakInForwardChain = true;
          break;
       }
+      else {
+         if ( vdswVerifyOffset( pVerify, next->nextOffset ) )
+            kit.forwardChainLen++;
+         else {
+            vdswEcho( pVerify, "Invalid offset - cannot repair" );
+            return VDSW_UNHANDLE_ERROR;
+         }
+      }
+      previous = next;
       GET_PTR( next, next->nextOffset, vdseLinkNode );
    }
 
    // Same as before but we loop backward.
    next = &pList->head;
+   previous = next;
    while ( next->previousOffset != headOffset ) {
-      if ( vdswVerifyOffset( pVerify, next->previousOffset ) ) {
-         kit.backwardChainLen++;
-      }
-      else {
+      if ( next->previousOffset == NULL_OFFSET ) {
          kit.previousBreak = next;
+         kit.previousBreakPrevious = previous;
          kit.breakInBackwardChain = true;
          break;
       }
+      else {
+         if ( vdswVerifyOffset( pVerify, next->previousOffset ) ) {
+            kit.backwardChainLen++;
+         }
+         else {
+            vdswEcho( pVerify, "Invalid offset - cannot repair" );
+            return VDSW_UNHANDLE_ERROR;
+         }
+      }
+      previous = next;
       GET_PTR( next, next->previousOffset, vdseLinkNode );
-      if ( kit.nextBreak == next )
-         kit.foundNextBreak = true;
    }
    
    // So how did it go?... we have multiple possibilities here.
    if ( kit.breakInForwardChain && kit.breakInBackwardChain ) {
       vdswEcho( pVerify, "Both chains broken" );
-fprintf( stderr, "breaks = %p %p\n", kit.nextBreak, kit.previousBreak );
       if ( kit.nextBreak == kit.previousBreak )
          kit.mode = REPAIR_WITH_BOTH_EQUAL;
-      else
-         kit.mode = REPAIR_WITH_BOTH_FW_FIRST;
+      else {
+         vdswEcho( pVerify, "Chains broken at different places - cannot repair" );
+         return VDSW_UNHANDLE_ERROR;
+      }
    }
    else if ( kit.breakInForwardChain && ! kit.breakInBackwardChain ) {
-      kit.mode = REPAIR_WITH_BW;
+      kit.mode = REPAIR_WITH_BW_BREAK;
       vdswEcho( pVerify, "Forward chain broken" );
    }
    else if ( ! kit.breakInForwardChain && kit.breakInBackwardChain ) {
-      kit.mode = REPAIR_WITH_FW;
+      kit.mode = REPAIR_WITH_FW_BREAK;
       vdswEcho( pVerify, "Backward chain broken" );
    }
    else {
@@ -157,9 +184,9 @@ fprintf( stderr, "breaks = %p %p\n", kit.nextBreak, kit.previousBreak );
          vdswEcho( pVerify, "Warning - counts in foward and backward chains differ:" );
          vdswEcho( pVerify, "          using the longest chain to rebuild" );
          if ( kit.backwardChainLen > kit.forwardChainLen )
-            kit.mode = REPAIR_WITH_BW;
+            kit.mode = REPAIR_WITH_BW_NO_BREAK;
          else
-            kit.mode = REPAIR_WITH_FW;
+            kit.mode = REPAIR_WITH_FW_NO_BREAK;
       }
    }
    
@@ -175,23 +202,20 @@ fprintf( stderr, "breaks = %p %p\n", kit.nextBreak, kit.previousBreak );
       pList->currentSize = kit.forwardChainLen;
       break;
          
-   case REPAIR_WITH_FW:
+   case REPAIR_WITH_FW_NO_BREAK:
    
       vdswEcho( pVerify, "Repairing list using forward chain" );
-      // We loop forward until we come back to head.
       
+      /*
+       * We loop forward until we come back to head. We reset the bw chain
+       * using brute force (finding which node is present in one chain and
+       * missing in the other one would likely consume more cpu cycles...).
+       */
       previous = &pList->head;
       do {
          GET_PTR( next, previous->nextOffset, vdseLinkNode );
-         if ( kit.previousBreak == NULL || kit.previousBreak == next )
-            next->previousOffset = SET_OFFSET( previous );
-         else {
-            if ( next->previousOffset != SET_OFFSET( previous ) ) {
-               vdswEcho( pVerify, "Found another abnormal break in backward chain, repairing..." );
-               next->previousOffset = SET_OFFSET( previous );
-            }
-         }
-         // prepare for next round
+         next->previousOffset = SET_OFFSET( previous );
+         /* prepare for next round */
          previous = next;
          
       } while ( next != &pList->head );
@@ -199,24 +223,21 @@ fprintf( stderr, "breaks = %p %p\n", kit.nextBreak, kit.previousBreak );
       pList->currentSize = kit.forwardChainLen;
       break;
       
-   case REPAIR_WITH_BW:
+   case REPAIR_WITH_BW_NO_BREAK:
       
       vdswEcho( pVerify, "Repairing list using backward chain" );
-      // We loop backward until we come back to head.
       
+      /*
+       * We loop backward until we come back to head. We reset the fw chain
+       * using brute force (finding which node is present in one chain and
+       * missing in the other one would likely consume more cpu cycles...).
+       */
       previous = &pList->head;
       do {
          GET_PTR( next, previous->previousOffset, vdseLinkNode );
+         next->nextOffset = SET_OFFSET( previous );
 
-         if ( kit.nextBreak == NULL || kit.nextBreak == next )
-            next->nextOffset = SET_OFFSET( previous );
-         else {
-            if ( next->nextOffset != SET_OFFSET( previous ) ) {
-               vdswEcho( pVerify, "Found another abnormal break in forward chain, repairing..." );
-               next->nextOffset = SET_OFFSET( previous );
-            }
-         }
-         // prepare for next round
+         /* prepare for next round */
          previous = next;
          
       } while ( next != &pList->head );
@@ -224,71 +245,113 @@ fprintf( stderr, "breaks = %p %p\n", kit.nextBreak, kit.previousBreak );
       pList->currentSize = kit.backwardChainLen;
       break;
       
-   case REPAIR_WITH_BOTH_EQUAL:
+   case REPAIR_WITH_FW_BREAK:
    
-      vdswEcho( pVerify, "Both chains broken at same node" );
+      vdswEcho( pVerify, "Repairing list using forward chain" );
+      foundNode = false;
       
-      // We loop forward until we find the broken link
+      /*
+       * We loop forward until we come back to head. We reset the bw chain
+       * using brute force (there is a small probability that the break node
+       * is not in the valid chain - we can't just look for it and repair
+       * the chain at that location).
+       *
+       * Warning: If the recovery is interrupted, we might loose the lost node.
+       * \todo dump the data before proceeding.
+       */
       previous = &pList->head;
       do {
          GET_PTR( next, previous->nextOffset, vdseLinkNode );
-         if ( kit.previousBreak == next ) {
-            next->previousOffset = SET_OFFSET( previous );
-         }
-         // prepare for next round
-         previous = next;
-         
-      } while ( next != kit.previousBreak );
-      
-      // We loop backward until we find the broken link 
-      previous = &pList->head;
-      do {
-         GET_PTR( next, previous->previousOffset, vdseLinkNode );
-         if ( kit.nextBreak == next ) {
-            next->nextOffset = SET_OFFSET( previous );
-         }
-         // prepare for next round
-         previous = next;
-         
-      } while ( next != kit.nextBreak );
-
-      pList->currentSize = kit.forwardChainLen + kit.backwardChainLen - 1;
-      break;
-
-   case REPAIR_WITH_BOTH_FW_FIRST:
-   
-      vdswEcho( pVerify, "Both chains broken - don't know how to repair" );
-//      return -1;
-//break;
-
-      // We loop forward until we find the broken link      
-      previous = &pList->head;
-      do {
-         GET_PTR( next, previous->nextOffset, vdseLinkNode );
-         if ( kit.nextBreak == next ) {
-            /*
-             * We just find our break point but we did not find the break
-             * point 
-             */
-         }
-         if ( kit.previousBreak == next ) {
-         }
-
- //        next->previousOffset = SET_OFFSET( previous );
-         else {
-            if ( next->previousOffset != SET_OFFSET( previous ) ) {
-               vdswEcho( pVerify, "Found another abnormal break in backward chain, repairing..." );
-               next->previousOffset = SET_OFFSET( previous );
-            }
-         }
-         // prepare for next round
+         next->previousOffset = SET_OFFSET( previous );
+         if ( kit.previousBreak == next )
+            foundNode = true;
+         /* prepare for next round */
          previous = next;
          
       } while ( next != &pList->head );
 
+      if ( foundNode ) 
+         pList->currentSize = kit.forwardChainLen;
+      else {
+         /* 
+          * We need to add it to the chain - at its proper place. Don't
+          * forget that the previous loop did "incorrectly" reset the 
+          * value of kit.previousBreakPrevious->previousOffset (we use it to 
+          * recover the value of previous but we also need to reset it).
+          */
+         GET_PTR( previous, kit.previousBreakPrevious->previousOffset, vdseLinkNode );
+         
+         kit.previousBreak->nextOffset = SET_OFFSET( kit.previousBreakPrevious );
+         kit.previousBreak->previousOffset = SET_OFFSET( previous );
+         previous->nextOffset = SET_OFFSET( kit.previousBreak );
+         kit.previousBreakPrevious->previousOffset = SET_OFFSET( kit.previousBreak );
+         
+         pList->currentSize = kit.forwardChainLen + 1;
+      }
+      
+      break;
+      
+   case REPAIR_WITH_BW_BREAK:
+      
+      vdswEcho( pVerify, "Repairing list using backward chain" );
+      foundNode = false;
+      
+      /*
+       * We loop backward until we come back to head. We reset the fw chain
+       * using brute force (there is a small probability that the break node
+       * is not in the valid chain - we can't just look for it and repair
+       * the chain at that location).
+       *
+       * Warning: If the recovery is interrupted, we might loose the lost node.
+       * \todo dump the data before proceeding.
+       */
+      previous = &pList->head;
+      do {
+         GET_PTR( next, previous->previousOffset, vdseLinkNode );
+         next->nextOffset = SET_OFFSET( previous );
+         if ( kit.nextBreak == next )
+            foundNode = true;
+         /* prepare for next round */
+         previous = next;
+         
+      } while ( next != &pList->head );
 
-      return -1;
+      
+      if ( foundNode ) 
+         pList->currentSize = kit.backwardChainLen;
+      else { 
+         /* 
+          * We need to add it to the chain - at its proper place. Don't
+          * forget that the previous loop did "incorrectly" reset the 
+          * value of kit.nextBreakPrevious->nextOffset (we use it to recover
+          * the value of next but we also need to reset it).
+          */
+         GET_PTR( next, kit.nextBreakPrevious->nextOffset, vdseLinkNode );
+         
+         kit.nextBreak->previousOffset = SET_OFFSET( kit.nextBreakPrevious );
+         kit.nextBreak->nextOffset = SET_OFFSET( next );
+         next->previousOffset = SET_OFFSET( kit.nextBreak );
+         kit.nextBreakPrevious->nextOffset = SET_OFFSET( kit.nextBreak );
+         
+         pList->currentSize = kit.backwardChainLen + 1;
+      }
+      
+      break;
+      
+   case REPAIR_WITH_BOTH_EQUAL:
+   
+      vdswEcho( pVerify, "Repairing both chains" );
+      
+      /*
+       * No loop needed here - we are just missing the links of the
+       * new node.
+       */
+      kit.nextBreak->nextOffset = SET_OFFSET( kit.previousBreakPrevious );
+      kit.nextBreak->previousOffset = SET_OFFSET( kit.nextBreakPrevious );
+      
+      pList->currentSize = kit.forwardChainLen + kit.backwardChainLen - 1;
 
+      break;
    }
    
    return 0;
