@@ -150,7 +150,6 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
       }
 
       vdswEcho( pVerify, "Object deleted but not committed" );
-
       if ( pVerify->doRepair) {
          vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
          txQueueStatus->txOffset = NULL_OFFSET;
@@ -180,13 +179,15 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
       }
    }
    
-   if ( bTestObject )
+   if ( bTestObject ) {
       rc = vdswVerifyList( pVerify, &pQueue->listOfElements );
-
+      if ( rc != 0 ) return rc;
+   }
+   
    rc = vdswCheckQueueContent( pVerify, pQueue );
    pVerify->spaces -= 2;
 
-   return VDSW_OK;
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -133,8 +133,17 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
          vdswEcho( pVerify, "Trying to reset the lock..." );
          vdscReleaseProcessLock ( &pHashMap->memObject.lock );
       }
+      rc = vdswVerifyMemObject( pVerify, &pHashMap->memObject, pContext );
+      if ( rc != 0 ) return rc;
       bTestObject = true;
    }
+
+   /*
+    * Currently, the bitmap is only use if the object was locked. This might
+    * change (as it is the case for other types of objects) so populate the 
+    * bitmap in all cases to be safe.
+    */
+   vdswPopulateBitmap( pVerify, &pHashMap->memObject, pContext );
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
@@ -188,10 +197,12 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
       }
    }
 
-   if ( bTestObject )
+   if ( bTestObject ) {
       rc = vdswVerifyHash( pVerify, 
                            &pHashMap->hashObj, 
                            SET_OFFSET(&pHashMap->memObject) );
+      if ( rc != 0 ) return rc;
+   }
 
    vdswCheckHashMapContent( pVerify, pHashMap, pContext );
    pVerify->spaces -= 2;

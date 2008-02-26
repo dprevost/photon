@@ -40,7 +40,7 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
 {
    ptrdiff_t * pArray;
    size_t i, bucket;
-   ptrdiff_t previousOffset, currentOffset, nextOffset;
+   ptrdiff_t previousOffset, currentOffset, nextOffset, tmpOffset;
    vdseHashItem * pItem, * previousItem;
    size_t invalidBuckets = 0;
    size_t numberOfItems = 0;
@@ -109,40 +109,33 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
             removeItem = true;
          }
          else {
-            bucket = fnv_buf( (void *)pItem->key, pItem->keyLength, FNV1_INIT) %
-                        g_vdseArrayLengths[pHash->lengthIndex];
-            if ( bucket != i ) {
-               vdswEcho( pVerify, "Hash item - invalid bucket" );
-               invalidBuckets++;
+            /* test the hash item itself */
+            if ( pItem->nextSameKey != NULL_OFFSET ) {
+               if ( ! vdswVerifyOffset( pVerify, pItem->nextSameKey ) ) {
+                  vdswEcho( pVerify, "HashItem::nextSameKey is invalid" );
+                  if ( pVerify->doRepair )
+                     pItem->nextSameKey = NULL_OFFSET;
+               }
             }
-         }
-         // test the hash item
-         
-         if ( pItem->nextSameKey != NULL_OFFSET ) {
-            if ( ! vdswVerifyOffset( pVerify, pItem->nextSameKey ) ) {
-               vdswEcho( pVerify, "HashItem::nextSameKey is invalid" );
-               if ( pVerify->doRepair )
-                  pItem->nextSameKey = NULL_OFFSET;
-            }
-         }
-         if ( pItem->dataOffset == NULL_OFFSET ) {
-            vdswEcho( pVerify, "HashItem::dataOffset is NULL" );
-            removeItem = true;
-         }
-         else {
-            if ( ! vdswVerifyOffset( pVerify, pItem->dataOffset ) ) {
-               vdswEcho( pVerify, "HashItem::dataOffset is invalid" );
+            if ( pItem->dataOffset == NULL_OFFSET ) {
+               vdswEcho( pVerify, "HashItem::dataOffset is NULL" );
                removeItem = true;
             }
             else {
-               if ( ! vdswVerifyOffset( pVerify, 
-                                 pItem->dataOffset + pItem->dataLength ) ) {
+               if ( ! vdswVerifyOffset( pVerify, pItem->dataOffset ) ) {
                   vdswEcho( pVerify, "HashItem::dataOffset is invalid" );
                   removeItem = true;
                }
+               else {
+                  if ( ! vdswVerifyOffset( pVerify, 
+                                    pItem->dataOffset + pItem->dataLength ) ) {
+                     vdswEcho( pVerify, "HashItem::dataOffset is invalid" );
+                     removeItem = true;
+                  }
+               }
             }
          }
-
+         
          if ( ! removeItem ) {
             numberOfItems++;
             totalDataSizeInBytes += pItem->dataLength;
@@ -187,11 +180,50 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
       }
    }
 
+   /*
+    * Next iteration - are the keys in the right bucket? 
+    */
+   for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
+
+      currentOffset = pArray[i];
+      
+      while ( currentOffset != NULL_OFFSET ) {
+      
+         removeItem = false;
+         
+         GET_PTR( pItem, currentOffset, vdseHashItem );
+         nextOffset = pItem->nextItem;
+         
+         bucket = fnv_buf( (void *)pItem->key, pItem->keyLength, FNV1_INIT) %
+                     g_vdseArrayLengths[pHash->lengthIndex];
+         if ( bucket != i ) {
+            vdswEcho( pVerify, "Hash item - invalid bucket" );
+            invalidBuckets++;
+            if ( pVerify->doRepair ) {
+               if ( pArray[bucket] == NULL_OFFSET )
+                  pArray[bucket] = currentOffset;
+               else {
+                  tmpOffset = pArray[bucket];
+                  do {
+                     GET_PTR( pItem, tmpOffset, vdseHashItem );
+                     tmpOffset = pItem->nextItem;
+                  } while ( tmpOffset != NULL_OFFSET );
+                  pItem->nextItem = currentOffset;
+               }
+            }
+         }
+
+         /* Move to the next item in our bucket. */
+         currentOffset = nextOffset;
+      }
+   }
+
    return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#if 0
 int
 vdswVerifyHashContent( vdswVerifyStruct * pVerify,
                        struct vdseHash  * pHash )
@@ -238,40 +270,33 @@ vdswVerifyHashContent( vdswVerifyStruct * pVerify,
             removeItem = true;
          }
          else {
-            bucket = fnv_buf( (void *)pItem->key, pItem->keyLength, FNV1_INIT) %
-                        g_vdseArrayLengths[pHash->lengthIndex];
-            if ( bucket != i ) {
-               vdswEcho( pVerify, "Hash item - invalid bucket" );
-               invalidBuckets++;
+            /* test the hash item itself */
+            if ( pItem->nextSameKey != NULL_OFFSET ) {
+               if ( ! vdswVerifyOffset( pVerify, pItem->nextSameKey ) ) {
+                  vdswEcho( pVerify, "HashItem::nextSameKey is invalid" );
+                  if ( pVerify->doRepair )
+                     pItem->nextSameKey = NULL_OFFSET;
+               }
             }
-         }
-         // test the hash item
-         
-         if ( pItem->nextSameKey != NULL_OFFSET ) {
-            if ( ! vdswVerifyOffset( pVerify, pItem->nextSameKey ) ) {
-               vdswEcho( pVerify, "HashItem::nextSameKey is invalid" );
-               if ( pVerify->doRepair )
-                  pItem->nextSameKey = NULL_OFFSET;
-            }
-         }
-         if ( pItem->dataOffset == NULL_OFFSET ) {
-            vdswEcho( pVerify, "HashItem::dataOffset is NULL" );
-            removeItem = true;
-         }
-         else {
-            if ( ! vdswVerifyOffset( pVerify, pItem->dataOffset ) ) {
-               vdswEcho( pVerify, "HashItem::dataOffset is invalid" );
+            if ( pItem->dataOffset == NULL_OFFSET ) {
+               vdswEcho( pVerify, "HashItem::dataOffset is NULL" );
                removeItem = true;
             }
             else {
-               if ( ! vdswVerifyOffset( pVerify, 
-                                 pItem->dataOffset + pItem->dataLength ) ) {
+               if ( ! vdswVerifyOffset( pVerify, pItem->dataOffset ) ) {
                   vdswEcho( pVerify, "HashItem::dataOffset is invalid" );
                   removeItem = true;
                }
+               else {
+                  if ( ! vdswVerifyOffset( pVerify, 
+                                    pItem->dataOffset + pItem->dataLength ) ) {
+                     vdswEcho( pVerify, "HashItem::dataOffset is invalid" );
+                     removeItem = true;
+                  }
+               }
             }
          }
-
+         
          if ( ! removeItem ) {
             numberOfItems++;
             totalDataSizeInBytes += pItem->dataLength;
@@ -298,7 +323,7 @@ vdswVerifyHashContent( vdswVerifyStruct * pVerify,
          currentOffset = nextOffset;
       }
    }
-
+   
    if ( pHash->numberOfItems != numberOfItems ) {
       vdswEcho( pVerify, 
          "Hash::numberOfItems is invalid" );
@@ -313,6 +338,40 @@ vdswVerifyHashContent( vdswVerifyStruct * pVerify,
       if ( pVerify->doRepair ) {
          pHash->totalDataSizeInBytes = totalDataSizeInBytes;
          vdswEcho( pVerify, "Resetting Hash::totalDataSizeInBytes" );
+      }
+   }
+
+   /*
+    * Next iteration - are the keys in the right bucket? 
+    */
+   for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
+
+      currentOffset = pArray[i];
+      previousOffset = NULL_OFFSET;
+      
+      while ( currentOffset != NULL_OFFSET ) {
+      
+         removeItem = false;
+         
+         GET_PTR( pItem, currentOffset, vdseHashItem );
+         nextOffset = pItem->nextItem;
+         
+         bucket = fnv_buf( (void *)pItem->key, pItem->keyLength, FNV1_INIT) %
+                     g_vdseArrayLengths[pHash->lengthIndex];
+         if ( bucket != i ) {
+            vdswEcho( pVerify, "Hash item - invalid bucket" );
+            invalidBuckets++;
+            if ( pVerify->doRepair ) {
+               if ( pArray[bucket] == NULL_OFFSET )
+                  pArray[bucket] = currentOffset;
+               else
+                  previousItem->nextItem = currentOffset;
+            }
+         }
+
+         /* Move to the next item in our bucket. */
+         previousOffset = currentOffset; 
+         currentOffset = nextOffset;
       }
    }
 
@@ -343,6 +402,7 @@ vdswVerifyHashContent( vdswVerifyStruct * pVerify,
 
    return 0;
 }
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
