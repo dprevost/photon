@@ -101,6 +101,7 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
             break; /* of the while loop */
          }
 
+fprintf( stderr, "%d\n", currentOffset );
          GET_PTR( pItem, currentOffset, vdseHashItem );
          nextOffset = pItem->nextItem;
          
@@ -142,6 +143,7 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
          }
          
          if ( pVerify->doRepair && removeItem ) {
+            vdswEcho( pVerify, "HashItem is removed" );
             if ( previousOffset == NULL_OFFSET )
                pArray[i] = nextOffset;
             else {
@@ -182,6 +184,7 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
 
    /*
     * Next iteration - are the keys in the right bucket? 
+    * Question: can this really happen?
     */
    for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
 
@@ -189,8 +192,6 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
       
       while ( currentOffset != NULL_OFFSET ) {
       
-         removeItem = false;
-         
          GET_PTR( pItem, currentOffset, vdseHashItem );
          nextOffset = pItem->nextItem;
          
@@ -218,141 +219,16 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
       }
    }
 
-   return 0;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 #if 0
-int
-vdswVerifyHashContent( vdswVerifyStruct * pVerify,
-                       struct vdseHash  * pHash )
-{
-   ptrdiff_t * pArray;
-   size_t i, bucket;
-   ptrdiff_t previousOffset, currentOffset, nextOffset;
-   vdseHashItem * pItem, * previousItem;
-   size_t invalidBuckets = 0;
-   size_t numberOfItems = 0;
-   size_t totalDataSizeInBytes = 0;
-   bool removeItem;
-   
-   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-
-   for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
-
-      previousOffset = NULL_OFFSET;
-      currentOffset = pArray[i];
-      
-      while ( currentOffset != NULL_OFFSET ) {
-      
-         removeItem = false;
-         
-         if ( ! vdswVerifyOffset( pVerify, currentOffset ) ) {
-            vdswEcho( pVerify, 
-               "Hash item offset is invalid - jumping to next offset" );
-            if ( pVerify->doRepair ) {
-               if ( previousOffset == NULL_OFFSET )
-                  pArray[i] = NULL_OFFSET;
-               else {
-                  GET_PTR( previousItem, previousOffset, vdseHashItem );
-                  previousItem->nextItem = NULL_OFFSET;
-               }
-            }
-            break; /* of the while loop */
-         }
-
-         GET_PTR( pItem, currentOffset, vdseHashItem );
-         nextOffset = pItem->nextItem;
-         
-         if ( pItem->keyLength == 0 ) {
-            vdswEcho( pVerify, "HashItem::keyLength is invalid" );
-            removeItem = true;
-         }
-         else {
-            /* test the hash item itself */
-            if ( pItem->nextSameKey != NULL_OFFSET ) {
-               if ( ! vdswVerifyOffset( pVerify, pItem->nextSameKey ) ) {
-                  vdswEcho( pVerify, "HashItem::nextSameKey is invalid" );
-                  if ( pVerify->doRepair )
-                     pItem->nextSameKey = NULL_OFFSET;
-               }
-            }
-            if ( pItem->dataOffset == NULL_OFFSET ) {
-               vdswEcho( pVerify, "HashItem::dataOffset is NULL" );
-               removeItem = true;
-            }
-            else {
-               if ( ! vdswVerifyOffset( pVerify, pItem->dataOffset ) ) {
-                  vdswEcho( pVerify, "HashItem::dataOffset is invalid" );
-                  removeItem = true;
-               }
-               else {
-                  if ( ! vdswVerifyOffset( pVerify, 
-                                    pItem->dataOffset + pItem->dataLength ) ) {
-                     vdswEcho( pVerify, "HashItem::dataOffset is invalid" );
-                     removeItem = true;
-                  }
-               }
-            }
-         }
-         
-         if ( ! removeItem ) {
-            numberOfItems++;
-            totalDataSizeInBytes += pItem->dataLength;
-         }
-         
-         if ( pVerify->doRepair && removeItem ) {
-            if ( previousOffset == NULL_OFFSET )
-               pArray[i] = nextOffset;
-            else {
-               GET_PTR(previousItem, previousOffset, vdseHashItem );
-               previousItem->nextItem = nextOffset;
-            }
-            
-         }
-
-         /*
-          * Obviously, if the current item was remove, previousOffset must
-          * be left unchanged 
-          */
-         if ( ! removeItem ) 
-            previousOffset = currentOffset; 
-         
-         /* Move to the next item in our bucket. */
-         currentOffset = nextOffset;
-      }
-   }
-   
-   if ( pHash->numberOfItems != numberOfItems ) {
-      vdswEcho( pVerify, 
-         "Hash::numberOfItems is invalid" );
-      if ( pVerify->doRepair ) {
-         pHash->numberOfItems = numberOfItems;
-         vdswEcho( pVerify, "Resetting Hash::numberOfItems" );
-      }
-   }
-   if ( pHash->totalDataSizeInBytes != totalDataSizeInBytes ) {
-      vdswEcho( pVerify, 
-         "Hash::totalDataSizeInBytes is invalid" );
-      if ( pVerify->doRepair ) {
-         pHash->totalDataSizeInBytes = totalDataSizeInBytes;
-         vdswEcho( pVerify, "Resetting Hash::totalDataSizeInBytes" );
-      }
-   }
-
    /*
-    * Next iteration - are the keys in the right bucket? 
+    * Next iteration - are identical keys properly arranged?
     */
    for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
 
       currentOffset = pArray[i];
-      previousOffset = NULL_OFFSET;
       
       while ( currentOffset != NULL_OFFSET ) {
       
-         removeItem = false;
-         
          GET_PTR( pItem, currentOffset, vdseHashItem );
          nextOffset = pItem->nextItem;
          
@@ -364,45 +240,25 @@ vdswVerifyHashContent( vdswVerifyStruct * pVerify,
             if ( pVerify->doRepair ) {
                if ( pArray[bucket] == NULL_OFFSET )
                   pArray[bucket] = currentOffset;
-               else
-                  previousItem->nextItem = currentOffset;
+               else {
+                  tmpOffset = pArray[bucket];
+                  do {
+                     GET_PTR( pItem, tmpOffset, vdseHashItem );
+                     tmpOffset = pItem->nextItem;
+                  } while ( tmpOffset != NULL_OFFSET );
+                  pItem->nextItem = currentOffset;
+               }
             }
          }
 
          /* Move to the next item in our bucket. */
-         previousOffset = currentOffset; 
          currentOffset = nextOffset;
-      }
-   }
-
-#if 0
-\todo:   loop on all other members in a bucket to find record with same key
-         and fix the chain of same-key records if needed.
-         
-   if ( pVerify->doRepair ) {
-      for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
-         currentOffset = pArray[i];
-      
-         while ( currentOffset != NULL_OFFSET ) {
-
-            GET_PTR( pItem, currentOffset, vdseHashItem );
-            nextOffset = pItem->nextItem;
-         
-            // test the hash item
-         
-            if ( pItem->nextSameKey != NULL_OFFSET ) {
-            }
-
-            /* Move to the next item in our bucket */
-            currentOffset = nextOffset;
-         }
       }
    }
 #endif
 
    return 0;
 }
-#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

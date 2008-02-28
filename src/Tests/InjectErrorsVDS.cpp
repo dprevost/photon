@@ -26,7 +26,7 @@
 
 using namespace std;
 
-#define NUM_MAPS   4
+#define NUM_MAPS   7
 #define NUM_QUEUES 10
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -70,7 +70,8 @@ int AddDefectsHashMaps( vector<myMap> & h )
    size_t bucket, previousBucket;
    ptrdiff_t offset, previousOffset;
    vdseHashItem * pItem;
-   
+   ptrdiff_t* pArray;   
+
    // Using a (void *) cast to eliminate a gcc warning (dereferencing 
    // type-punned pointer will break strict-aliasing rules)
    apiObj = (unsigned long **) ( (void *) &h[0].map );
@@ -178,6 +179,58 @@ int AddDefectsHashMaps( vector<myMap> & h )
       cerr << "Iteration error in " << h[3].name << ", list err = " << listErrCode << endl;
       return -1;
    }
+   
+   cout << "Defect for " << h[4].name << ": object locked" << endl;
+   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[4].map + api_offset );
+   pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
+   if ( vdscTryAcquireProcessLock ( &pHashMap->memObject.lock, getpid(), 0 ) ) {
+      cerr << "Error - cannot lock the object" << endl;
+      return -1;
+   }
+
+   cout << "Defect for " << h[5].name << ": items - invalid offset" << endl;
+   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[5].map + api_offset );
+   pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
+   if ( vdscTryAcquireProcessLock ( &pHashMap->memObject.lock, getpid(), 0 ) ) {
+      cerr << "Error - cannot lock the object" << endl;
+      return -1;
+   }
+
+   GET_PTR( pArray, pHashMap->hashObj.arrayOffset, ptrdiff_t );
+
+   for ( i = 0; i < g_vdseArrayLengths[pHashMap->hashObj.lengthIndex]; ++i )
+      if ( pArray[i] != NULL_OFFSET ) pArray[i] = 0;
+
+   cout << "Defect for " << h[6].name << ": item - invalid key length" << endl;
+   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[6].map + api_offset );
+   pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
+   if ( vdscTryAcquireProcessLock ( &pHashMap->memObject.lock, getpid(), 0 ) ) {
+      cerr << "Error - cannot lock the object" << endl;
+      return -1;
+   }
+   listErrCode = vdseHashGetFirst( &pHashMap->hashObj,
+                                   &bucket, 
+                                   &offset );
+   i = 0;
+   while ( listErrCode == LIST_OK )
+   {
+      previousBucket = bucket;
+      previousOffset = offset;
+      listErrCode = vdseHashGetNext( &pHashMap->hashObj,
+                                     previousBucket,
+                                     previousOffset,
+                                     &bucket, 
+                                     &offset );
+      i++;
+      if ( i >= 6 ) break;
+   }
+   if ( listErrCode != LIST_OK )
+   {
+      cerr << "Iteration error in " << h[6].name << ", list err = " << listErrCode << endl;
+      return -1;
+   }
+   GET_PTR( pItem, offset, vdseHashItem );
+   pItem->keyLength = 0;
    
    return 0;
 }

@@ -146,8 +146,12 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
          vdswEcho( pVerify, "Trying to reset the lock..." );
          vdscReleaseProcessLock ( &pFolder->memObject.lock );
       }
+      rc = vdswVerifyMemObject( pVerify, &pFolder->memObject, pContext );
+      if ( rc != 0 ) return rc;
       bTestObject = true;
    }
+
+   vdswPopulateBitmap( pVerify, &pFolder->memObject, pContext );
 
    GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
 

@@ -81,7 +81,7 @@ void vdswResetBitmap( vdseMemBitmap * pBitmap )
    size_t length;
    
    length = ( (pBitmap->lengthInBits - 1 ) >> 3 ) + 1;
-   memset( pBitmap->bitmap, 1, length );
+   memset( pBitmap->bitmap, -1, length );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -93,6 +93,11 @@ bool vdswVerifyOffset( vdswVerifyStruct * pVerify, ptrdiff_t offset )
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void 
+vdswPopulateBitmap( struct vdswVerifyStruct   * pVerify,
+                    struct vdseMemObject      * pMemObj,
+                    struct vdseSessionContext * pContext );
 
 enum vdswValidation 
 vdswVerifyFolder( vdswVerifyStruct   * pVerify,
