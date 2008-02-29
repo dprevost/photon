@@ -23,9 +23,10 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
-                            struct vdseFolder  * pFolder, 
-                            vdseSessionContext * pContext )
+enum vdswRecoverError
+vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
+                        struct vdseFolder  * pFolder, 
+                        vdseSessionContext * pContext )
 {
    enum ListErrors listErr;
    size_t bucket, previousBucket;
@@ -34,17 +35,17 @@ int vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
    vdseObjectDescriptor* pDesc = NULL;
    void * pObject;
    int pDesc_invalid_api_type = 0;
-   enum vdswValidation valid;
    char message[VDS_MAX_NAME_LENGTH*4 + 30];
 #if VDS_SUPPORT_i18n
    size_t lengthName;
    mbstate_t ps;
    const wchar_t * name;
 #endif
+   enum vdswRecoverError rc = VDSWR_OK, valid;
    
    /* The easy case */
    if ( pFolder->hashObj.numberOfItems == 0 )
-      return 0;
+      return rc;
 
    listErr = vdseHashGetFirst( &pFolder->hashObj,
                                &bucket, 
@@ -99,7 +100,23 @@ int vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
                                  &bucket, 
                                  &offset );
 
-      if ( valid == VDSW_DELETE_OBJECT && pVerify->doRepair ) {
+      switch ( valid ) {
+      case VDSWR_OK:
+         pVerify->numObjectsOK++;
+         break;
+      case VDSWR_CHANGES:
+         pVerify->numObjectsRepaired++;
+         break;
+      case VDSWR_DELETED_OBJECT:
+         pVerify->numObjectsDeleted++;
+         break;
+      default: /* other errors */
+         pVerify->numObjectsError++;
+         break;
+      }
+
+      if ( valid == VDSWR_DELETED_OBJECT && pVerify->doRepair ) {
+         rc = VDSWR_CHANGES;
          pVerify->spaces += 2;
          vdswEcho( pVerify, "Removing the object from the VDS" );
          pVerify->spaces -= 2;
@@ -123,18 +140,18 @@ int vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
       }
    }
 
-   return 0;
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswValidation 
+enum vdswRecoverError
 vdswVerifyFolder( vdswVerifyStruct   * pVerify,
                   struct vdseFolder  * pFolder,
                   vdseSessionContext * pContext )
 {
    vdseTxStatus * txFolderStatus;
-   int rc;
+   enum vdswRecoverError rc = VDSWR_OK;
    bool bTestObject = false;
    
    pVerify->spaces += 2;
@@ -147,7 +164,7 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
          vdscReleaseProcessLock ( &pFolder->memObject.lock );
       }
       rc = vdswVerifyMemObject( pVerify, &pFolder->memObject, pContext );
-      if ( rc != 0 ) return rc;
+      if ( rc > VDSWR_START_ERRORS ) return rc;
       bTestObject = true;
    }
 
@@ -168,15 +185,16 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
       if ( txFolderStatus->enumStatus == VDSE_TXS_ADDED ) {
          vdswEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
-         return VDSW_DELETE_OBJECT;
+         return VDSWR_DELETED_OBJECT;
       }
       if ( txFolderStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
          vdswEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
-         return VDSW_DELETE_OBJECT;
+         return VDSWR_DELETED_OBJECT;
       }
 
       vdswEcho( pVerify, "Object deleted but not committed" );      
+      rc = VDSWR_CHANGES;
       if ( pVerify->doRepair) {
          vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
          txFolderStatus->txOffset = NULL_OFFSET;
@@ -185,6 +203,7 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
    }
    
    if ( txFolderStatus->usageCounter != 0 ) {
+      rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Usage counter is not zero" );
       if (pVerify->doRepair) {
          txFolderStatus->usageCounter = 0;
@@ -192,6 +211,7 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
       }
    }
    if ( txFolderStatus->parentCounter != 0 ) {
+      rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Parent counter is not zero" );
       if (pVerify->doRepair) {
          txFolderStatus->parentCounter = 0;
@@ -199,6 +219,7 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
       }
    }
    if ( pFolder->nodeObject.txCounter != 0 ) {
+      rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Transaction counter is not zero" );
       if (pVerify->doRepair) {
          pFolder->nodeObject.txCounter = 0;
@@ -206,15 +227,20 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
       }
    }
 
-   if ( bTestObject )
-      vdswVerifyHash( pVerify, 
-                      &pFolder->hashObj, 
-                      SET_OFFSET(&pFolder->memObject) );
+   if ( bTestObject ) {
+      rc = vdswVerifyHash( pVerify, 
+                           &pFolder->hashObj, 
+                           SET_OFFSET(&pFolder->memObject) );
+      if ( rc > VDSWR_START_ERRORS ) {
+         pVerify->spaces -= 2;
+         return rc;
+      }
+   }
    
    rc = vdswCheckFolderContent( pVerify, pFolder, pContext );
    pVerify->spaces -= 2;
 
-   return VDSW_OK;
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

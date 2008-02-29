@@ -21,21 +21,21 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
-                             vdseHashMap        * pHashMap, 
-                             vdseSessionContext * pContext )
+enum vdswRecoverError
+vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
+                         vdseHashMap        * pHashMap, 
+                         vdseSessionContext * pContext )
 {
    enum ListErrors listErr;
    size_t bucket, previousBucket, deletedBucket = -1;
    ptrdiff_t offset, previousOffset;
    vdseHashItem * pItem, * pDeletedItem = NULL;
    vdseTxStatus * txItemStatus;
-   
+   enum vdswRecoverError rc = VDSWR_OK;
+
    /* The easy case */
    if ( pHashMap->hashObj.numberOfItems == 0 )
-      return;
-   
-//   pVerify->spaces += 2;
+      return rc;
    
    listErr = vdseHashGetFirst( &pHashMap->hashObj,
                                &bucket, 
@@ -79,9 +79,11 @@ void vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
             txItemStatus->enumStatus = VDSE_TXS_OK;
             vdswEcho( pVerify, "Hash item status fields reset to zero" );
          }
+         rc = VDSWR_CHANGES;
       }
       
       if ( pDeletedItem == NULL && txItemStatus->usageCounter != 0 ) {
+         rc = VDSWR_CHANGES;
          vdswEcho( pVerify, "Hash item usage counter is not zero" );
          if (pVerify->doRepair) {
             txItemStatus->usageCounter = 0;
@@ -111,17 +113,19 @@ void vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
       }
       pDeletedItem = NULL;
    }
+   
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswValidation 
+enum vdswRecoverError 
 vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
                    vdseHashMap        * pHashMap,
                    vdseSessionContext * pContext )
 {
    vdseTxStatus * txHashMapStatus;
-   int rc;
+   enum vdswRecoverError rc = VDSWR_OK;
    bool bTestObject = false;
       
    pVerify->spaces += 2;
@@ -134,7 +138,7 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
          vdscReleaseProcessLock ( &pHashMap->memObject.lock );
       }
       rc = vdswVerifyMemObject( pVerify, &pHashMap->memObject, pContext );
-      if ( rc != 0 ) return rc;
+      if ( rc > VDSWR_START_ERRORS ) return rc;
       bTestObject = true;
    }
 
@@ -159,15 +163,16 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
       if ( txHashMapStatus->enumStatus == VDSE_TXS_ADDED) {
          vdswEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
-         return VDSW_DELETE_OBJECT;
+         return VDSWR_DELETED_OBJECT;
       }
       if ( txHashMapStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
          vdswEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
-         return VDSW_DELETE_OBJECT;
+         return VDSWR_DELETED_OBJECT;
       }
       
       vdswEcho( pVerify, "Object deleted but not committed" );
+      rc = VDSWR_CHANGES;
       if ( pVerify->doRepair) {
          vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
          txHashMapStatus->txOffset = NULL_OFFSET;
@@ -176,6 +181,7 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
    }
 
    if ( txHashMapStatus->usageCounter != 0 ) {
+      rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Usage counter is not zero" );
       if (pVerify->doRepair) {
          txHashMapStatus->usageCounter = 0;
@@ -183,6 +189,7 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
       }
    }
    if ( txHashMapStatus->parentCounter != 0 ) {
+      rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Parent counter is not zero" );
       if (pVerify->doRepair) {
          txHashMapStatus->parentCounter = 0;
@@ -190,6 +197,7 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
       }
    }
    if ( pHashMap->nodeObject.txCounter != 0 ) {
+      rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Transaction counter is not zero" );
       if (pVerify->doRepair) {
          pHashMap->nodeObject.txCounter = 0;
@@ -201,13 +209,16 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
       rc = vdswVerifyHash( pVerify, 
                            &pHashMap->hashObj, 
                            SET_OFFSET(&pHashMap->memObject) );
-      if ( rc != 0 ) return rc;
+      if ( rc > VDSWR_START_ERRORS ) {
+         pVerify->spaces -= 2;
+         return rc;
+      }
    }
 
-   vdswCheckHashMapContent( pVerify, pHashMap, pContext );
+   rc = vdswCheckHashMapContent( pVerify, pHashMap, pContext );
    pVerify->spaces -= 2;
 
-   return VDSW_OK;
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

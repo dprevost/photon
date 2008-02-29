@@ -88,7 +88,7 @@ struct repairKit
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswValidation 
+enum vdswRecoverError 
 vdswVerifyList( vdswVerifyStruct      * pVerify,
                 struct vdseLinkedList * pList )
 {
@@ -97,10 +97,11 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
    struct repairKit kit = { \
       NO_REPAIR, pList, 0, 0, false, false, false, NULL, NULL, NULL, NULL };
    bool foundNode;
+   enum vdswRecoverError rc = VDSWR_OK;
    
    /*
     * Do not add a test for the size of the list here (as in 
-    *    if ( currentSize == 0 ) return 0; ).
+    *    if ( currentSize == 0 ) return rc; ).
     *
     * The size of the list might not be accurate if the cpu can reorder
     * instructions - the real size could be one higher than the value of
@@ -125,7 +126,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
             kit.forwardChainLen++;
          else {
             vdswEcho( pVerify, "Invalid offset - cannot repair" );
-            return VDSW_UNHANDLE_ERROR;
+            return VDSWR_UNRECOVERABLE_ERROR;
          }
       }
       previous = next;
@@ -148,7 +149,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
          }
          else {
             vdswEcho( pVerify, "Invalid offset - cannot repair" );
-            return VDSW_UNHANDLE_ERROR;
+            return VDSWR_UNRECOVERABLE_ERROR;
          }
       }
       previous = next;
@@ -157,25 +158,29 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
    
    // So how did it go?... we have multiple possibilities here.
    if ( kit.breakInForwardChain && kit.breakInBackwardChain ) {
+      rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Both chains broken" );
       if ( kit.nextBreak == kit.previousBreak )
          kit.mode = REPAIR_WITH_BOTH_EQUAL;
       else {
          vdswEcho( pVerify, "Chains broken at different places - cannot repair" );
-         return VDSW_UNHANDLE_ERROR;
+         return VDSWR_UNRECOVERABLE_ERROR;
       }
    }
    else if ( kit.breakInForwardChain && ! kit.breakInBackwardChain ) {
+      rc = VDSWR_CHANGES;
       kit.mode = REPAIR_WITH_BW_BREAK;
       vdswEcho( pVerify, "Forward chain broken" );
    }
    else if ( ! kit.breakInForwardChain && kit.breakInBackwardChain ) {
+      rc = VDSWR_CHANGES;
       kit.mode = REPAIR_WITH_FW_BREAK;
       vdswEcho( pVerify, "Backward chain broken" );
    }
    else {
       if ( kit.backwardChainLen == kit.forwardChainLen ) {// all is well !
          if ( pList->currentSize != kit.forwardChainLen ) {
+            rc = VDSWR_CHANGES;
             kit.mode = REPAIR_LENGTH;
             vdswEcho( pVerify, "Invalid number of elements in linked list");
          }
@@ -183,6 +188,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
       else {
          vdswEcho( pVerify, "Warning - counts in foward and backward chains differ:" );
          vdswEcho( pVerify, "          using the longest chain to rebuild" );
+         rc = VDSWR_CHANGES;
          if ( kit.backwardChainLen > kit.forwardChainLen )
             kit.mode = REPAIR_WITH_BW_NO_BREAK;
          else
@@ -190,7 +196,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
       }
    }
    
-   if ( ! pVerify->doRepair ) return 0;
+   if ( ! pVerify->doRepair ) return rc;
    
    switch( kit.mode ) {
    
@@ -354,7 +360,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
       break;
    }
    
-   return 0;
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

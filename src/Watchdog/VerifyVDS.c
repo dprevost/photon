@@ -40,11 +40,12 @@ int vdswValidate( vdseMemoryHeader * pMemoryAddress,
    struct vdseProcessManager * processMgr;
    vdseFolder * topFolder;
    vdseMemAlloc * memAllocator;
-   enum vdswValidation valid;
+   enum vdswRecoverError valid;
    vdseSessionContext context;
    ptrdiff_t  lockOffsets[VDSE_MAX_LOCK_DEPTH];
    int        numLocks = 0;
-   struct vdswVerifyStruct verifyStruct = { 1, 0, stderr, doRepair, NULL };
+   struct vdswVerifyStruct verifyStruct = { 
+      1, 0, stderr, doRepair, 0, 0, 0, 0, NULL };
    char timeBuf[30];
    time_t t;
    struct tm formattedTime;
@@ -95,7 +96,21 @@ int vdswValidate( vdseMemoryHeader * pMemoryAddress,
    context.numLocks = &numLocks;
    
    valid = vdswVerifyFolder( &verifyStruct, topFolder, &context );
-   
+   switch ( valid ) {
+   case VDSWR_OK:
+      verifyStruct.numObjectsOK++;
+      break;
+   case VDSWR_CHANGES:
+      verifyStruct.numObjectsRepaired++;
+      break;
+   case VDSWR_DELETED_OBJECT:
+      verifyStruct.numObjectsDeleted++;
+      break;
+   default: /* other errors */
+      verifyStruct.numObjectsError++;
+      break;
+   }
+
    return 0;
 }
 

@@ -26,7 +26,7 @@
 
 using namespace std;
 
-#define NUM_MAPS   7
+#define NUM_MAPS    8
 #define NUM_QUEUES 10
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -232,6 +232,37 @@ int AddDefectsHashMaps( vector<myMap> & h )
    GET_PTR( pItem, offset, vdseHashItem );
    pItem->keyLength = 0;
    
+   cout << "Defect for " << h[7].name << ": item - invalid data offset" << endl;
+   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[7].map + api_offset );
+   pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
+   if ( vdscTryAcquireProcessLock ( &pHashMap->memObject.lock, getpid(), 0 ) ) {
+      cerr << "Error - cannot lock the object" << endl;
+      return -1;
+   }
+   listErrCode = vdseHashGetFirst( &pHashMap->hashObj,
+                                   &bucket, 
+                                   &offset );
+   i = 0;
+   while ( listErrCode == LIST_OK )
+   {
+      previousBucket = bucket;
+      previousOffset = offset;
+      listErrCode = vdseHashGetNext( &pHashMap->hashObj,
+                                     previousBucket,
+                                     previousOffset,
+                                     &bucket, 
+                                     &offset );
+      i++;
+      if ( i >= 6 ) break;
+   }
+   if ( listErrCode != LIST_OK )
+   {
+      cerr << "Iteration error in " << h[7].name << ", list err = " << listErrCode << endl;
+      return -1;
+   }
+   GET_PTR( pItem, offset, vdseHashItem );
+   pItem->dataOffset = 0;
+
    return 0;
 }
 

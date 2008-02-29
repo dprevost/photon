@@ -22,12 +22,12 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswValidation 
+enum vdswRecoverError
 vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
                      struct vdseMemObject      * pMemObj,
                      struct vdseSessionContext * pContext )
 {
-   int rc;
+   enum vdswRecoverError rc = VDSWR_OK;
    struct vdseMemAlloc * pAlloc = (vdseMemAlloc *) pContext->pAllocator;
    vdseLinkNode * dummy;
    enum ListErrors errGroup;
@@ -41,7 +41,7 @@ vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
    vdseSetBufferFree( pVerify->pBitmap, 0, pAlloc->totalLength );
 
    rc = vdswVerifyList( pVerify, &pMemObj->listBlockGroup );
-   if ( rc != 0 ) return rc;
+   if ( rc > VDSWR_START_ERRORS ) return rc;
    
    /*
     * We retrieve the first node
@@ -59,6 +59,7 @@ vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
                                          &dummy );
    }
    if ( numBlocks != pMemObj->totalBlocks ) {
+      rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Number of blocks is wrong" );
       if (pVerify->doRepair) {
          pMemObj->totalBlocks = numBlocks;
@@ -66,7 +67,7 @@ vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
       }
    }
    
-   return 0;
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

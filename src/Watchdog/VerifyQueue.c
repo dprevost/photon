@@ -21,13 +21,15 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswCheckQueueContent( vdswVerifyStruct * pVerify,
-                           struct vdseQueue * pQueue )
+enum vdswRecoverError
+vdswCheckQueueContent( vdswVerifyStruct * pVerify,
+                       struct vdseQueue * pQueue )
 {
    vdseTxStatus * txItemStatus;
    enum ListErrors listErrCode;
    vdseLinkNode * pNode = NULL, * pDeletedNode = NULL;
    vdseQueueItem* pQueueItem = NULL;
+   enum vdswRecoverError rc = VDSWR_OK;
    
    listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    while ( listErrCode == LIST_OK ) {
@@ -62,9 +64,11 @@ int vdswCheckQueueContent( vdswVerifyStruct * pVerify,
             txItemStatus->enumStatus = VDSE_TXS_OK;
             vdswEcho( pVerify, "Queue item status fields reset to zero" );
          }
+         rc = VDSWR_CHANGES;
       }
 
       if ( pDeletedNode == NULL && txItemStatus->usageCounter != 0 ) {
+         rc = VDSWR_CHANGES;
          vdswEcho( pVerify, "Queue item usage counter is not zero" );
          if (pVerify->doRepair) {
             vdswEcho( pVerify, "Queue item usage counter set to zero" );
@@ -88,22 +92,22 @@ int vdswCheckQueueContent( vdswVerifyStruct * pVerify,
    }
 
    if ( listErrCode == LIST_END_OF_LIST || listErrCode == LIST_EMPTY )
-      return 0;
+      return rc;
    
    fprintf( stderr, "Abnormal error in list, list error code = %d\n", 
       listErrCode );
-   return -1;
+   return VDSWR_UNHANDLED_ERROR;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswValidation 
+enum vdswRecoverError 
 vdswVerifyQueue( vdswVerifyStruct   * pVerify,
                  struct vdseQueue   * pQueue,
                  vdseSessionContext * pContext )
 {
    vdseTxStatus * txQueueStatus;
-   int rc;
+   enum vdswRecoverError rc = VDSWR_OK;
    bool bTestObject = false;
    
    pVerify->spaces += 2;
@@ -115,7 +119,7 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
          vdscReleaseProcessLock ( &pQueue->memObject.lock );
       }
       rc = vdswVerifyMemObject( pVerify, &pQueue->memObject, pContext );
-      if ( rc != 0 ) return rc;
+      if ( rc > VDSWR_START_ERRORS ) return rc;
       bTestObject = true;
    }
    
@@ -141,15 +145,16 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
       if ( txQueueStatus->enumStatus == VDSE_TXS_ADDED ) {
          vdswEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
-         return VDSW_DELETE_OBJECT;
-      }         
+         return VDSWR_DELETED_OBJECT;
+      }
       if ( txQueueStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
          vdswEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
-         return VDSW_DELETE_OBJECT;
+         return VDSWR_DELETED_OBJECT;
       }
 
       vdswEcho( pVerify, "Object deleted but not committed" );
+      rc = VDSWR_CHANGES;
       if ( pVerify->doRepair) {
          vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
          txQueueStatus->txOffset = NULL_OFFSET;
@@ -158,6 +163,7 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
    }
    
    if ( txQueueStatus->usageCounter != 0 ) {
+      rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Usage counter is not zero" );
       if (pVerify->doRepair) {
          txQueueStatus->usageCounter = 0;
@@ -165,6 +171,7 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
       }
    }
    if ( txQueueStatus->parentCounter != 0 ) {
+      rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Parent counter is not zero" );
       if (pVerify->doRepair) {
          txQueueStatus->parentCounter = 0;
@@ -172,6 +179,7 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
       }
    }
    if ( pQueue->nodeObject.txCounter != 0 ) {
+      rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Transaction counter is not zero" );
       if (pVerify->doRepair) {
          pQueue->nodeObject.txCounter = 0;
@@ -181,7 +189,10 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
    
    if ( bTestObject ) {
       rc = vdswVerifyList( pVerify, &pQueue->listOfElements );
-      if ( rc != 0 ) return rc;
+      if ( rc > VDSWR_START_ERRORS ) {
+         pVerify->spaces -= 2;
+         return rc;
+      }
    }
    
    rc = vdswCheckQueueContent( pVerify, pQueue );

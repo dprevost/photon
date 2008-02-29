@@ -38,14 +38,17 @@ struct vdseMemObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswValidation 
+enum vdswRecoverError 
 {
-   VDSW_OK = 0,
-   VDSW_DELETE_OBJECT,
-   VDSW_UNHANDLE_ERROR
-   
+   VDSWR_OK = 0,
+   VDSWR_CHANGES,
+   VDSWR_START_ERRORS = 100,
+   /* Object added but not committed or object deleted and committed */
+   VDSWR_DELETED_OBJECT,
+   VDSWR_UNHANDLED_ERROR,
+   VDSWR_UNRECOVERABLE_ERROR
 };
-typedef enum vdswValidation vdswValidation;
+typedef enum vdswRecoverError vdswRecoverError;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -55,6 +58,10 @@ struct vdswVerifyStruct
    int    spaces;
    FILE * fp;
    bool   doRepair;
+   size_t numObjectsOK;
+   size_t numObjectsRepaired;
+   size_t numObjectsDeleted;
+   size_t numObjectsError;
    vdseMemBitmap * pBitmap;
 };
 typedef struct vdswVerifyStruct vdswVerifyStruct;
@@ -99,26 +106,31 @@ vdswPopulateBitmap( struct vdswVerifyStruct   * pVerify,
                     struct vdseMemObject      * pMemObj,
                     struct vdseSessionContext * pContext );
 
-enum vdswValidation 
+enum vdswRecoverError
 vdswVerifyFolder( vdswVerifyStruct   * pVerify,
                   struct vdseFolder  * pFolder,
                   vdseSessionContext * pContext );
-int
+
+enum vdswRecoverError
 vdswVerifyHash( vdswVerifyStruct * pVerify,
                 struct vdseHash  * pHash,
                 ptrdiff_t          memObjOffset );
-enum vdswValidation 
+
+enum vdswRecoverError
 vdswVerifyList( vdswVerifyStruct      * pVerify,
                 struct vdseLinkedList * pList );
-enum vdswValidation 
+
+enum vdswRecoverError
 vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
                    struct vdseHashMap * pHashMap, 
                    vdseSessionContext * pContext  );
-enum vdswValidation 
+
+enum vdswRecoverError
 vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
                      struct vdseMemObject      * pMemObj,
                      struct vdseSessionContext * pContext );
-enum vdswValidation 
+
+enum vdswRecoverError
 vdswVerifyQueue( vdswVerifyStruct   * pVerify,
                  struct vdseQueue   * pQueue, 
                  vdseSessionContext * pContext  );
