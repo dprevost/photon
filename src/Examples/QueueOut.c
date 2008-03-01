@@ -79,7 +79,8 @@ int initObjects()
 int timetoShutdown()
 {
    int rc;
-   int controlData = 0, length;
+   int controlData = 0;
+   size_t length;
    
    rc = vdsHashMapGet( control, shutdownKey, strlen(shutdownKey), 
       &controlData, sizeof(int), &length );
@@ -95,10 +96,10 @@ int main( int argc, char *argv[] )
 {
    int rc;
    char msg[256];
-   int length;
+   size_t length;
    isoStruct outStruct;
    int loop = 1;
-   int boolShutdown = 0, okShutdown = 0;
+   int boolShutdown = 0;
 #if ! defined(WIN32)
    struct timespec req, rem;
    

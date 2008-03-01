@@ -173,7 +173,8 @@ int initObjects()
 void waitForFriends()
 {
    int rc;
-   int controlData = 0, length;
+   int controlData = 0;
+   size_t length;
 #if ! defined(WIN32)
    struct timespec req, rem;
    

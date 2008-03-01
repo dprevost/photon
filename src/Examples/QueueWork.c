@@ -13,9 +13,11 @@
  * Specific responsabilities:
  */
 
+#include <time.h>
+#include <ctype.h>
+
 #include "iso_3166.h"
 #include "Queue.h"
-#include <time.h>
 
 #ifndef PATH_MAX
 #  define PATH_MAX 4096 /* Safe enough on most systems I would think */
@@ -102,7 +104,8 @@ int initObjects()
 int timetoShutdown()
 {
    int rc;
-   int controlData = 0, length;
+   int controlData = 0;
+   size_t length;
    
    rc = vdsHashMapGet( control, shutdownKey, strlen(shutdownKey), 
       &controlData, sizeof(int), &length );
@@ -118,9 +121,9 @@ int main( int argc, char *argv[] )
 {
    int rc;
    char msg[256];
-   int length;
+   size_t length;
    isoStruct workStruct;
-   int loop = 1, i;
+   unsigned int loop = 1, i;
    int boolShutdown = 0;
 #if ! defined(WIN32)
    struct timespec req, rem;

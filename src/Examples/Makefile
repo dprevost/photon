@@ -7,7 +7,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 LDFLAGS += -L../API/.libs -lvdsf
-CFLAGS += -g -I../include
+CFLAGS += -g -I../include -Wall
 
 TARGETS = HashMap     \
           HashMapLoop \
