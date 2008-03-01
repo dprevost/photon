@@ -159,7 +159,11 @@ vdswHandler::Init( struct ConfigParams * pConfig,
    time_t t;
    struct tm formattedTime;
 //#endif
-   
+   size_t numObjectsOK = 0;
+   size_t numObjectsRepaired = 0;
+   size_t numObjectsDeleted = 0;
+   size_t numObjectsError = 0;
+
    if ( pConfig == NULL )
       return -1;
    m_pConfig = pConfig;
@@ -268,13 +272,29 @@ vdswHandler::Init( struct ConfigParams * pConfig,
          return errcode;
       }
       
+      fprintf( stderr, "Starting the recovery of the VDS, please be patient\n" );
       if ( verifyVDSOnly ) {
-         errcode = vdswVerify( *ppMemoryAddress, fp );
+         errcode = vdswVerify( *ppMemoryAddress, 
+                               &numObjectsOK,
+                               &numObjectsRepaired,
+                               &numObjectsDeleted,
+                               &numObjectsError,
+                               fp );
          if ( fp != stderr ) fclose( fp );
          return errcode;
       }
-      errcode = vdswRepair( *ppMemoryAddress, fp );
+      errcode = vdswRepair( *ppMemoryAddress, 
+                            &numObjectsOK,
+                            &numObjectsRepaired,
+                            &numObjectsDeleted,
+                            &numObjectsError,
+                            fp );
       if ( fp != stderr ) fclose( fp );
+
+      fprintf( stderr, "Number of objects with no defects: %d\n", numObjectsOK );
+      fprintf( stderr, "Number of objects with small defects: %d\n", numObjectsRepaired );
+      fprintf( stderr, "Number of deleted objects (added but not committed, etc.): %d\n", numObjectsDeleted );
+      fprintf( stderr, "Number of objects with errors: %d\n", numObjectsError );
       if ( errcode != 0 ) {
          fprintf( stderr, "Failure repairing the vds (see log for details)\n" );
          fprintf( stderr, "Please save the backup (%s%s) \n%s\n",

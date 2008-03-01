@@ -151,7 +151,7 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
                   vdseSessionContext * pContext )
 {
    vdseTxStatus * txFolderStatus;
-   enum vdswRecoverError rc = VDSWR_OK;
+   enum vdswRecoverError rc = VDSWR_OK, rc2;
    bool bTestObject = false;
    
    pVerify->spaces += 2;
@@ -164,7 +164,11 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
          vdscReleaseProcessLock ( &pFolder->memObject.lock );
       }
       rc = vdswVerifyMemObject( pVerify, &pFolder->memObject, pContext );
-      if ( rc > VDSWR_START_ERRORS ) return rc;
+      if ( rc > VDSWR_START_ERRORS ) {
+         pVerify->spaces -= 2;
+         return rc;
+      }
+      rc = VDSWR_CHANGES;
       bTestObject = true;
    }
 
@@ -228,16 +232,20 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
    }
 
    if ( bTestObject ) {
-      rc = vdswVerifyHash( pVerify, 
-                           &pFolder->hashObj, 
-                           SET_OFFSET(&pFolder->memObject) );
-      if ( rc > VDSWR_START_ERRORS ) {
+      rc2 = vdswVerifyHash( pVerify, 
+                            &pFolder->hashObj, 
+                            SET_OFFSET(&pFolder->memObject) );
+      if ( rc2 > VDSWR_START_ERRORS ) {
          pVerify->spaces -= 2;
-         return rc;
+         return rc2;
       }
+      /* At this point rc is either 0 or VDSWR_CHANGES - same for rc2 */
+      if ( rc2 > rc ) rc = rc2;
    }
    
-   rc = vdswCheckFolderContent( pVerify, pFolder, pContext );
+   rc2 = vdswCheckFolderContent( pVerify, pFolder, pContext );
+   /* At this point rc is either 0 or VDSWR_CHANGES */
+   if ( rc2 > rc ) rc = rc2;
    pVerify->spaces -= 2;
 
    return rc;

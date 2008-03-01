@@ -107,7 +107,7 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
                  vdseSessionContext * pContext )
 {
    vdseTxStatus * txQueueStatus;
-   enum vdswRecoverError rc = VDSWR_OK;
+   enum vdswRecoverError rc = VDSWR_OK, rc2;
    bool bTestObject = false;
    
    pVerify->spaces += 2;
@@ -119,7 +119,11 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
          vdscReleaseProcessLock ( &pQueue->memObject.lock );
       }
       rc = vdswVerifyMemObject( pVerify, &pQueue->memObject, pContext );
-      if ( rc > VDSWR_START_ERRORS ) return rc;
+      if ( rc > VDSWR_START_ERRORS ) {
+         pVerify->spaces -= 2;
+         return rc;
+      }
+      rc = VDSWR_CHANGES; 
       bTestObject = true;
    }
    
@@ -188,14 +192,18 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
    }
    
    if ( bTestObject ) {
-      rc = vdswVerifyList( pVerify, &pQueue->listOfElements );
-      if ( rc > VDSWR_START_ERRORS ) {
+      rc2 = vdswVerifyList( pVerify, &pQueue->listOfElements );
+      if ( rc2 > VDSWR_START_ERRORS ) {
          pVerify->spaces -= 2;
-         return rc;
+         return rc2;
       }
+      /* At this point rc is either 0 or VDSWR_CHANGES - same for rc2 */
+      if ( rc2 > rc ) rc = rc2;
    }
    
-   rc = vdswCheckQueueContent( pVerify, pQueue );
+   rc2 = vdswCheckQueueContent( pVerify, pQueue );
+   /* At this point rc is either 0 or VDSWR_CHANGES */
+   if ( rc2 > rc ) rc = rc2;
    pVerify->spaces -= 2;
 
    return rc;

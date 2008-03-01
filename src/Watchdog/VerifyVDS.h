@@ -26,8 +26,19 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswVerify( vdseMemoryHeader * pMemoryAddress, FILE * fp );
-int vdswRepair( vdseMemoryHeader * pMemoryAddress, FILE * fp );
+int vdswVerify( vdseMemoryHeader * pMemoryAddress, 
+                size_t           * pNumObjectsOK,
+                size_t           * pNumObjectsRepaired,
+                size_t           * pNumObjectsDeleted,
+                size_t           * pNumObjectsError,
+                FILE             * fp );
+
+int vdswRepair( vdseMemoryHeader * pMemoryAddress,
+                size_t           * pNumObjectsOK,
+                size_t           * pNumObjectsRepaired,
+                size_t           * pNumObjectsDeleted,
+                size_t           * pNumObjectsError,
+                FILE             * fp );
      
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
