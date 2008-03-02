@@ -144,7 +144,7 @@ int main( int argc, char *argv[] )
    while( 1 )
    {
       rc = vdsQueuePop( outQueue, &outStruct, sizeof(outStruct), &length );
-      if ( rc == VDS_IS_EMPTY )
+      if ( rc == VDS_IS_EMPTY || rc == VDS_ITEM_IS_IN_USE )
       {
          /* Nothing to do - might as well commit */
          vdsCommit( session );
@@ -166,7 +166,7 @@ int main( int argc, char *argv[] )
       else if ( rc != 0 ) 
       {
          vdsErrorMsg(session, msg, 256 );
-            fprintf( stderr, "At line %d, vdsQueuePush error: %s\n", __LINE__, msg );
+            fprintf( stderr, "At line %d, vdsQueuePop error: %s\n", __LINE__, msg );
          cleanup();
          return -1;
       }

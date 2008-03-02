@@ -6,8 +6,12 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-LDFLAGS += -L../API/.libs -lvdsf
-CFLAGS += -g -I../include -Wall
+# The additional library path is for vdsf developers (who may not have
+# installed vdsf).
+LDFLAGS += -L../../API/.libs -lvdsf
+# The additional include path is for vdsf developers (who may not have
+# installed vdsf).
+CFLAGS += -g -I../../include -Wall
 
 TARGETS = HashMap     \
           HashMapLoop \
@@ -16,12 +20,6 @@ TARGETS = HashMap     \
           QueueOut    
 
 all: $(TARGETS)
-
-#HashMap.o: HashMap.c iso_3166.h
-#	$(CC) -g -c HashMap.c
-
-#HashMap: HashMap.o
-#	$(LD) -o HashMap HashMap.o -lvdsf
 
 clean:
 	rm -f *.o $(TARGETS) *~ core
