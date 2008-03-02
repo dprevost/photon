@@ -20,10 +20,12 @@
 #include <vdsf/vdsSession.h>
 #include <vdsf/vdsErrors.h>
 #include "API/Session.h"
+#include <vdsf/vdsException>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 vdsSession::vdsSession()
+   : m_sessionHandle ( NULL )
 {
 }
 
@@ -41,7 +43,8 @@ void vdsSession::Commit()
 {
    int rc = vdsCommit( m_sessionHandle );
 
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsSession::Commit" );
 }
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -53,7 +56,8 @@ void vdsSession::CreateObject( const std::string & objectName,
                              objectName.c_str(),
                              objectName.length(),
                              objectType );
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsSession::CreateObject" );
 }
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -66,7 +70,8 @@ void vdsSession::CreateObject( const char    * objectName,
                              objectName,
                              nameLengthInBytes,
                              objectType );
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsSession::CreateObject" );
 }
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -76,7 +81,8 @@ void vdsSession::DestroyObject( const std::string & objectName )
    int rc = vdsDestroyObject( m_sessionHandle,
                               objectName.c_str(),
                               objectName.length() );
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsSession::DestroyObject" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -87,7 +93,8 @@ void vdsSession::DestroyObject( const char * objectName,
    int rc = vdsDestroyObject( m_sessionHandle,
                               objectName,
                               nameLengthInBytes );
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsSession::DestroyObject" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -99,7 +106,8 @@ vdsSession::ErrorMsg( std::string & message )
    int rc = vdsErrorMsg( m_sessionHandle,
                          msg,
                          1024 );
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsSession::ErrorMsg" );
 
    message = msg;
    return message;
@@ -114,7 +122,8 @@ void vdsSession::ErrorMsg( char   * message,
    int rc = vdsErrorMsg( m_sessionHandle,
                          message,
                          msgLengthInBytes );
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsSession::ErrorMsg" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -123,7 +132,8 @@ void vdsSession::GetInfo( vdsInfo * pInfo )
 {
    int rc = vdsGetInfo( m_sessionHandle, pInfo );
 
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsSession::GetInfo" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -135,7 +145,8 @@ void vdsSession::GetStatus( const std::string & objectName,
                           objectName.c_str(),
                           objectName.length(),
                           pStatus );
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsSession::GetStatus" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -148,7 +159,8 @@ void vdsSession::GetStatus( const char   * objectName,
                           objectName,
                           nameLengthInBytes,
                           pStatus );
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsSession::GetStatus" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -157,7 +169,7 @@ void vdsSession::Init()
 {
    int rc = vdsInitSession( &m_sessionHandle );
 
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) throw vdsException( rc, NULL, "vdsSession::Init" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -187,7 +199,8 @@ int vdsSession::LastError()
    else
       rc = VDS_SESSION_CANNOT_GET_LOCK;
 
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsSession::ErrorMsg" );
 
    return lastErr;
 }
@@ -198,7 +211,8 @@ void vdsSession::Rollback()
 {
    int rc = vdsRollback( m_sessionHandle );
 
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsSession::Rollback" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

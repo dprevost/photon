@@ -28,11 +28,12 @@ libvdsfcpp_la_LDFLAGS = -version-info 0:0:0
 include_HEADERS = 
 
 libvdsfcpp_la_SOURCES = \
-   Folder.cpp          \
-   HashMap.cpp         \
-   Process.cpp         \
-   Queue.cpp           \
-   Session.cpp         
+   Exception.cpp        \
+   Folder.cpp           \
+   HashMap.cpp          \
+   Process.cpp          \
+   Queue.cpp            \
+   Session.cpp          
 
 libvdsfcpp_la_LIBADD = \
    $(top_builddir)/src/API/libvdsf.la      \

@@ -20,6 +20,7 @@
 #include <vdsf/vdsHashMap.h>
 #include <vdsf/vdsSession>
 #include <vdsf/vdsErrors.h>
+#include <vdsf/vdsException>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -27,7 +28,7 @@ vdsHashMap::vdsHashMap( vdsSession &session )
    : m_objectHandle ( NULL )
 {
    if ( session.m_sessionHandle == NULL )
-      throw( VDS_NULL_HANDLE );
+      throw vdsException( VDS_NULL_HANDLE, NULL, "vdsHashMap::vdsHashMap" );
    m_sessionHandle = session.m_sessionHandle;
 }
 
@@ -46,7 +47,8 @@ void vdsHashMap::Close()
 {
    int rc = vdsHashMapClose( m_objectHandle );
 
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Close" );
    m_objectHandle = NULL;   
 }
 
@@ -58,7 +60,8 @@ void vdsHashMap::Delete( const void * key,
    int rc = vdsHashMapDelete( m_objectHandle,
                               key,
                               keyLength );
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Delete" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -75,7 +78,7 @@ void vdsHashMap::Get( const void * key,
                            buffer,
                            bufferLength,
                            returnedLength );
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) throw vdsException( rc, m_sessionHandle, "vdsHashMap::Get" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -94,7 +97,8 @@ int vdsHashMap::GetFirst( void       * key,
                                 bufferLength,
                                 retKeyLength,
                                 retDataLength );
-   if ( rc != 0 && rc != VDS_IS_EMPTY ) throw( rc );
+   if ( rc != 0 && rc != VDS_IS_EMPTY ) 
+      throw vdsException( rc, m_sessionHandle, "vdsHashMap::GetFirst" );
    
    return rc;
 }
@@ -115,7 +119,8 @@ int vdsHashMap::GetNext( void       * key,
                                bufferLength,
                                retKeyLength,
                                retDataLength );
-   if ( rc != 0 && rc != VDS_REACHED_THE_END ) throw( rc );
+   if ( rc != 0 && rc != VDS_REACHED_THE_END ) 
+      throw vdsException( rc, m_sessionHandle, "vdsHashMap::GetNext" );
    
    return rc;
 }
@@ -132,7 +137,8 @@ void vdsHashMap::Insert( const void * key,
                               keyLength,
                               data,
                               dataLength );
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Insert" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -144,7 +150,7 @@ void vdsHashMap::Open( const std::string & hashMapName )
                             hashMapName.length(),
                             &m_objectHandle );
 
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) throw vdsException( rc, m_sessionHandle, "vdsHashMap::Open" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -157,7 +163,7 @@ void vdsHashMap::Open( const char * hashMapName,
                             nameLengthInBytes,
                             &m_objectHandle );
 
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) throw vdsException( rc, m_sessionHandle, "vdsHashMap::Open" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -172,7 +178,8 @@ void vdsHashMap::Replace( const void * key,
                                keyLength,
                                data,
                                dataLength );
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Replace" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -180,7 +187,8 @@ void vdsHashMap::Replace( const void * key,
 void vdsHashMap::Status( vdsObjStatus * pStatus )
 {
    int rc = vdsHashMapStatus( m_objectHandle, pStatus );
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) 
+      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Status" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
