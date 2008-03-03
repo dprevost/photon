@@ -28,13 +28,14 @@ int main()
    vdsProcess process;
    vdsSession session;
    vdsInfo info;
+   string msg;
    
    try {
       process.Init( "10701" );
       session.Init();
    }
-   catch( int rc ) {
-      cerr << "Init VDSF failed, error = " << rc << endl;
+   catch( vdsException exc ) {
+      cerr << "Init VDSF failed, error = " << exc.Message( msg ) << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
    }
@@ -42,9 +43,9 @@ int main()
    try {
       session.GetInfo( &info );
    }
-   catch( int rc )
+   catch( vdsException exc )
    {
-      cerr << "GetInfo failed, error = " << rc << endl;
+      cerr << exc.Message( msg ) << endl; 
       return 1;
    }
 

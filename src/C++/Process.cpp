@@ -19,6 +19,7 @@
 #include <vdsf/vdsProcess>
 #include <vdsf/vdsProcess.h>
 #include <vdsf/vdsErrors.h>
+#include <vdsf/vdsException>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -33,7 +34,7 @@ void vdsProcess::Init( const char* wdAddress,
 {
    int rc = vdsInit( wdAddress,
                      protectionNeeded );
-   if ( rc != 0 ) throw( rc );
+   if ( rc != 0 ) throw vdsException( rc, NULL, "vdsProcess::Init" );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

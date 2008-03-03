@@ -42,7 +42,7 @@ vdsException::vdsException( int          theErrorCode,
       // We build our own message
       sprintf(s, "%s exception: %s%d",
          functionName,
-         "Cannot retrieve the error message - the errcode is ",
+         "Cannot retrieve the error message - the error code is ",
          theErrorCode );
       msg = s;
    }

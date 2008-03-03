@@ -30,6 +30,7 @@
 #include <vdsf/vdsFolder>
 #include <vdsf/vdsHashMap>
 #include <vdsf/vdsQueue>
+#include <vdsf/vdsException>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
