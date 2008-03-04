@@ -537,10 +537,9 @@ void CleanupPreviousRun( vdsSession & session )
       }
       session.Commit();
    }
-   catch ( int rc )
+   catch ( vdsException exc )
    {
-      cerr << "Cleanup of previous session failed, error = " << rc << endl;
-      cerr << "Is the watchdog running?" << endl;
+      cerr << "Cleanup of previous session failed, error = " << exc.Message() << endl;
       exit(1);
    }
 }
@@ -604,19 +603,20 @@ int main()
 {
    vdsProcess process;
    vdsSession session;
-   int i;
+   int i, rc;
    
    try {
       process.Init( "10701" );
       session.Init();
       session.CreateObject( foldername, VDS_FOLDER );
    }
-   catch( int rc ) {
+   catch( vdsException exc ) {
+      rc = exc.ErrorCode();
       if ( rc == VDS_OBJECT_ALREADY_PRESENT ) {
          CleanupPreviousRun( session );
       }
       else {
-         cerr << "Init VDSF failed, error = " << rc << endl;
+         cerr << "Init VDSF failed, error = " << exc.Message() << endl;
          cerr << "Is the watchdog running?" << endl;
          return 1;
       }
@@ -640,13 +640,13 @@ int main()
       PopulateQueues( session, q );
       PopulateHashMaps( session, h );
    }
-   catch( int rc ) {
-      cerr << "Creating and populating the queues failed, error = " << rc << endl;
+   catch( vdsException exc ) {
+      cerr << "Creating and populating the objects failed, error = " << exc.Message() << endl;
       return 1;
    }
    cout << "Queues are created and populated." << endl << endl;
 
-   int rc = AddDefectsQueues( q );
+   rc = AddDefectsQueues( q );
    if ( rc != 0 ) {
       cerr << "Adding defect to queues failed!" << endl;
       return 1;

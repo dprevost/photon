@@ -235,7 +235,6 @@ void vdsShell::Cat()
 {
    string objectName;
    vdsObjStatus status;
-   string msg;
    unsigned char * key, * buffer;
    int rc;
    size_t keyLength, dataLength;
@@ -250,7 +249,7 @@ void vdsShell::Cat()
    try {
       session.GetStatus( objectName, &status );
    }
-   catch ( int exc ) {
+   catch ( vdsException exc ) {
       exc = exc; // Avoid a warning
       cerr << "vdssh: cat: " << objectName << ": Invalid object name" << endl;
       return;
@@ -264,26 +263,26 @@ void vdsShell::Cat()
       // Do we have some data to copy?
       if ( status.numDataItem > 0 ) {
          
-         buffer = new unsigned char[status.maxDataLength];
+         buffer = new unsigned char[status.maxDataLength+1];
 
          if ( status.type == VDS_HASH_MAP ) {
          
             vdsHashMap hashMap(session);
          
-            key = new unsigned char[status.maxKeyLength];
+            key = new unsigned char[status.maxKeyLength+1];
          
             hashMap.Open( objectName );
          
-            memset( key, 0, status.maxKeyLength );
-            memset( buffer, 0, status.maxDataLength );
+            memset( key, 0, status.maxKeyLength+1 );
+            memset( buffer, 0, status.maxDataLength+1 );
             rc = hashMap.GetFirst( key, status.maxKeyLength, 
                                    buffer, status.maxDataLength,
                                    &keyLength, &dataLength );
             while ( rc == 0 ) {
                cout << "key : " << key << endl;
                cout << "data: " << buffer << endl;
-               memset( key, 0, status.maxKeyLength );
-               memset( buffer, 0, status.maxDataLength );
+               memset( key, 0, status.maxKeyLength+1 );
+               memset( buffer, 0, status.maxDataLength+1 );
                rc = hashMap.GetNext( key, status.maxKeyLength, 
                                      buffer, status.maxDataLength,
                                      &keyLength, &dataLength );
@@ -296,19 +295,19 @@ void vdsShell::Cat()
          
             queue.Open( objectName );
          
+            memset( buffer, 0, status.maxDataLength+1 );
             rc = queue.GetFirst( buffer, status.maxDataLength, &dataLength );
             while ( rc == 0 ) {
                cout << buffer << endl;
+               memset( buffer, 0, status.maxDataLength+1 );
                rc = queue.GetNext( buffer, status.maxDataLength, &dataLength );
             }
             queue.Close();
          }
       }
    }
-   catch ( int exc ) {
-      exc = exc; // Avoid a warning
-      session.ErrorMsg( msg );
-      cerr << "vdssh: cat: " << msg << endl;
+   catch ( vdsException exc ) {
+      cerr << "vdssh: cat: " << exc.Message() << endl;
    }
 
 }
@@ -339,7 +338,7 @@ void vdsShell::Cd()
    try {
       session.GetStatus( newLoc, &status );
    }
-   catch ( int exc ) {
+   catch ( vdsException exc ) {
       exc = exc; // Avoid a warning
       cerr << "vdssh: cd: " << newLoc << ": Invalid folder name" << endl;
       return;
@@ -357,7 +356,6 @@ void vdsShell::Cp()
 {
    string srcName, destName;
    vdsObjStatus status;
-   string msg;
    unsigned char * key, * buffer;
    int rc;
    size_t keyLength, dataLength;
@@ -378,7 +376,7 @@ void vdsShell::Cp()
    try {
       session.GetStatus( srcName, &status );
    }
-   catch ( int exc ) {
+   catch ( vdsException exc ) {
       exc = exc; // Avoid a warning
       cerr << "vdssh: cp: " << srcName << ": Invalid object name" << endl;
       return;
@@ -434,11 +432,9 @@ void vdsShell::Cp()
       }
       session.Commit();
    }
-   catch ( int exc ) {
-      exc = exc; // Avoid a warning
-      session.ErrorMsg( msg );
+   catch ( vdsException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
-      cerr << "vdssh: cp: " << msg << endl;
+      cerr << "vdssh: cp: " << exc.Message() << endl;
    }
 }
 
@@ -447,15 +443,12 @@ void vdsShell::Cp()
 void vdsShell::Free()
 {
    vdsInfo info;
-   string msg;
    
    try {
       session.GetInfo( &info );
    }
-   catch( int exc ) {
-      exc = exc; // Avoid a warning
-      session.ErrorMsg( msg );
-      cerr << "vdssh: free: " << msg << endl;
+   catch( vdsException exc ) {
+      cerr << "vdssh: free: " << exc.Message() << endl;
       return;
    }
 
@@ -477,7 +470,6 @@ void vdsShell::Ls()
    int rc;
    vdsFolderEntry entry;
    string folderName = currentLocation;
-   string msg;
    
    if ( tokens.size() == 2 ) {
       if ( tokens[1][0] == '/' )
@@ -498,10 +490,12 @@ void vdsShell::Ls()
       }
       folder.Close();
    }
-   catch( int exc ) {
-      exc = exc; // Avoid a warning
-      session.ErrorMsg( msg );
-      cerr << "vdssh: " << tokens[0] << ": " << msg << endl;
+   catch( vdsException exc ) {
+      if ( exc.ErrorCode() == VDS_NO_SUCH_OBJECT || 
+         exc.ErrorCode() == VDS_NO_SUCH_FOLDER ) 
+         cerr << "vdssh: " << tokens[0] << ": " << "No such file or directory" << endl;
+      else
+         cerr << "vdssh: " << tokens[0] << ": " << exc.Message() << endl;
    }
 }
 
@@ -551,7 +545,6 @@ void vdsShell::Man()
 void vdsShell::Mkdir()
 {
    string folderName;
-   string msg;
 
    if ( tokens[1][0] == '/' )
       // Absolute path
@@ -563,11 +556,9 @@ void vdsShell::Mkdir()
       session.CreateObject( folderName, VDS_FOLDER );
       session.Commit();
    }
-   catch ( int exc ) {
-      exc = exc; // Avoid a warning
-      session.ErrorMsg( msg );
+   catch ( vdsException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
-      cerr << "vdssh: mkdir: " << msg << endl;
+      cerr << "vdssh: mkdir: " << exc.Message() << endl;
    }
 }
 
@@ -577,7 +568,6 @@ void vdsShell::Rm()
 {
    string objectName;
    vdsObjStatus status;
-   string msg;
    
    if ( tokens[1][0] == '/' )
       // Absolute path
@@ -589,7 +579,7 @@ void vdsShell::Rm()
    try {
       session.GetStatus( objectName, &status );
    }
-   catch ( int exc ) {
+   catch ( vdsException exc ) {
       exc = exc; // Avoid a warning
       cerr << "vdssh: rm: " << objectName << ": Invalid object name" << endl;
       return;
@@ -603,11 +593,9 @@ void vdsShell::Rm()
       session.DestroyObject( objectName );
       session.Commit();
    }
-   catch ( int exc ) {
-      exc = exc; // Avoid a warning
-      session.ErrorMsg( msg );
+   catch ( vdsException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
-      cerr << "vdssh: rm: " << msg << endl;
+      cerr << "vdssh: rm: " << exc.Message() << endl;
    }
 }
 
@@ -617,7 +605,6 @@ void vdsShell::Rmdir()
 {
    string folderName;
    vdsObjStatus status;
-   string msg;
    
    if ( tokens[1][0] == '/' )
       // Absolute path
@@ -629,7 +616,7 @@ void vdsShell::Rmdir()
    try {
       session.GetStatus( folderName, &status );
    }
-   catch ( int exc ) {
+   catch ( vdsException exc ) {
       exc = exc; // Avoid a warning
       cerr << "vdssh: rmdir: " << folderName << ": Invalid folder name" << endl;
       return;
@@ -643,11 +630,9 @@ void vdsShell::Rmdir()
       session.DestroyObject( folderName );
       session.Commit();
    }
-   catch ( int exc ) {
-      exc = exc; // Avoid a warning
-      session.ErrorMsg( msg );
+   catch ( vdsException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
-      cerr << "vdssh: rmdir: " << msg << endl;
+      cerr << "vdssh: rmdir: " << exc.Message() << endl;
    }
 }
 
@@ -657,7 +642,6 @@ void vdsShell::Stat()
 {
    string objectName;
    vdsObjStatus status;
-   string msg;
    
    if ( tokens[1][0] == '/' )
       // Absolute path
@@ -668,10 +652,8 @@ void vdsShell::Stat()
    try {
       session.GetStatus( objectName, &status );
    }
-   catch ( int exc ) {
-      exc = exc; // Avoid a warning
-      session.ErrorMsg( msg );
-      cerr << "vdssh: stat: " << objectName << ": " << msg << endl;
+   catch ( vdsException exc ) {
+      cerr << "vdssh: stat: " << objectName << ": " << exc.Message() << endl;
       return;
    }
    cout << "Object full name     : " << objectName << endl;
@@ -689,7 +671,6 @@ void vdsShell::Stat()
 void vdsShell::Touch()
 {
    string objectName;
-   string msg;
    string option, filename;
    vdsObjectType flag = VDS_LAST_OBJECT_TYPE;
    
@@ -725,11 +706,9 @@ void vdsShell::Touch()
       session.CreateObject( objectName, flag );
       session.Commit();
    }
-   catch ( int exc ) {
-      exc = exc; // Avoid a warning
-      session.ErrorMsg( msg );
+   catch ( vdsException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
-      cerr << "vdssh: touch: " << msg << endl;
+      cerr << "vdssh: touch: " << exc.Message() << endl;
    }
 }
 

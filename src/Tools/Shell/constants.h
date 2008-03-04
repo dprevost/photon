@@ -20,7 +20,9 @@
 
 #include "Common/Common.h"
 #include <vdsf/vds>
-#pragma warning(disable: 4786)
+#if defined(WIN32)
+#  pragma warning(disable: 4786)
+#endif
 #include <string>
 #include <iostream>
 #include <vector>

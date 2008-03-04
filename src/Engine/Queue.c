@@ -224,9 +224,11 @@ int vdseQueueGet( vdseQueue          * pQueue,
    }
    
    errcode = VDS_ITEM_IS_IN_USE;
-   if ( queueIsEmpty )
+   if ( queueIsEmpty ) {
       errcode = VDS_IS_EMPTY;   
-
+      if ( flag == VDS_NEXT ) errcode = VDS_REACHED_THE_END;
+   }
+   
    /* 
     * If we come here, there are no additional data items to retrieve. As 
     * long as we clearly say that the internal iterator is reset (in case a 

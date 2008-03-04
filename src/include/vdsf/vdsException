@@ -46,6 +46,8 @@ public:
    virtual ~vdsException();
 
    std::string & Message( std::string & errorMessage );
+
+   std::string & Message();
    
    // Some times, just getting the errcode is allwe care about...
    int ErrorCode() { return errcode; }

@@ -60,8 +60,8 @@ int main( int argc, char *argv[] )
       process.Init( optArgument );
       session.Init();
    }
-   catch( int rc ) {
-      cerr << "Init VDSF failed, error = " << rc << endl;
+   catch( vdsException exc ) {
+      cerr << "Init VDSF failed, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
    }

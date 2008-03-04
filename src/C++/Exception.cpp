@@ -34,7 +34,7 @@ vdsException::vdsException( int          theErrorCode,
    if ( sessionHandle != NULL ) {
       rc = vdsErrorMsg( sessionHandle, s, 1024 );
       msg = functionName;
-      msg += "exception: ";
+      msg += " exception: ";
       msg += s;
    }
    
@@ -63,3 +63,11 @@ string & vdsException::Message( string & errorMessage )
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+string & vdsException::Message()
+{
+   return msg;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
