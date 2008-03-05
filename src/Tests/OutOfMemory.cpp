@@ -37,9 +37,8 @@ void Cleanup( vdsSession & session )
       session.DestroyObject( folderName );
       session.Commit();
    }
-   catch ( int rc )
-   {
-      cerr << "Cleanup failed, error = " << rc << endl;
+   catch ( vdsException exc ) {
+      cerr << "Cleanup failed, error = " << exc.Message() << endl;
    }
 }
 
@@ -54,6 +53,7 @@ int main()
    char dataOut[50];
    size_t length;
    int countIn = 0, countOut = 0, errcode;
+   vdsQueue q1(session), q2(session);
    
    try {
       process.Init( "10701" );
@@ -65,39 +65,37 @@ int main()
       session.CreateObject( queueName2, VDS_QUEUE );
       session.GetInfo( &info1 );
    }
-   catch( int rc ) {
-      cerr << "Init VDSF failed, error = " << rc << endl;
+   catch( vdsException exc ) {
+      cerr << "Init VDSF failed, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
    }
    cerr << "Total allocated in vds: " << info1.allocatedSizeInBytes << endl;
    cerr << "                        " << info1.totalSizeInBytes << endl;
 
-   vdsQueue q1(session), q2(session);
    try {
       q1.Open( queueName1 );
       q2.Open( queueName2 );
    }
-   catch( int rc ) {
-      cerr << "Error opening queues, error = " << rc << endl;
+   catch( vdsException exc ) {
+      cerr << "Error opening queues, error = " << exc.Message() << endl;
       return 1;
    }
    
    try {
-      while ( true )
-      {
+      while ( true ) {
          q1.Push( dataIn, strlen(dataIn) );
          countIn++;
          q2.Push( dataIn, strlen(dataIn) );
          countIn++;
       }
    }
-   catch( int rc ) {
-      if ( rc == VDS_NOT_ENOUGH_VDS_MEMORY )
+   catch( vdsException exc ) {
+      if ( exc.ErrorCode() == VDS_NOT_ENOUGH_VDS_MEMORY )
          cout << "Number of inserted records: " << countIn << endl;
       else
       {
-         cerr << "Error inserting data, error = " << rc << endl;
+         cerr << "Error inserting data, error = " << exc.Message() << endl;
          return 1;
       }
    }
@@ -105,8 +103,8 @@ int main()
    try {
       session.Commit();
    }
-   catch ( int rc ) {
-      cerr << "Commit error = " << rc << endl;
+   catch ( vdsException exc ) {
+      cerr << "Commit error = " << exc.Message() << endl;
    }
    
    try {
@@ -119,20 +117,19 @@ int main()
          if ( errcode == 0 ) countOut++;
       } while ( errcode == 0 );
    }
-   catch( int rc ) {
-      cerr << "Error retrieving data, error = " << rc << endl;
+   catch( vdsException exc ) {
+      cerr << "Error retrieving data, error = " << exc.Message() << endl;
       return 1;
    }
-   if ( countIn != countOut )
-   {
+   if ( countIn != countOut ) {
       cerr << "Number of retrieved records: " << countOut << endl;
    }
 
    try {
       session.Commit();
    }
-   catch ( int rc ) {
-      cerr << "Commit error = " << rc << endl;
+   catch ( vdsException exc ) {
+      cerr << "Commit error = " << exc.Message() << endl;
    }
    
   
@@ -160,3 +157,4 @@ int main()
 
    return 0;
 }
+
