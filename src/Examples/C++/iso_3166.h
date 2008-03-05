@@ -25,7 +25,6 @@
 #endif
 #include <string>
 #include <iostream>
-//#include <vector>
 
 using namespace std;
 
@@ -33,34 +32,30 @@ using namespace std;
 
 FILE * fp = NULL;
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int openData( const char* filename )
 {   
    fp = fopen( filename, "r" );
-   if ( fp == NULL )
-   {
-      fprintf(stderr, "Error opening the file %s, error = %s\n", 
-         filename, strerror(errno) );
+   if ( fp == NULL ) {
+      cerr << "Error opening the file " << filename << 
+         ", error = " << strerror(errno) << endl;
       return -1;
    }
    
    return 0;
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int readData( char *countryCode, char* description )
 {
    char line[80] = "";
    int len;
    
-   if ( fgets( line, 80, fp ) == NULL )
-   {
-      if ( ferror(fp) )
-      {
-         fprintf( stderr, "Error reading the file, error = %s\n", 
-            strerror(errno) );
+   if ( fgets( line, 80, fp ) == NULL ) {
+      if ( ferror(fp) ) {
+         cerr << "Error reading the file, error = " << strerror(errno) << endl;
          return -1;
       }
       return 0;
@@ -76,7 +71,7 @@ int readData( char *countryCode, char* description )
    return 1;
 }
    
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* ISO_3166_H */
+#endif // ISO_3166_H
 

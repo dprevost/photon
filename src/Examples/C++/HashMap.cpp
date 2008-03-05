@@ -8,25 +8,23 @@
  * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-/*
- * This example: 
- *   We create a hash map and play with it. We do it using two sessions to
- *   show the idea behind sessions.
- */
+// This example: 
+//    We create a hash map and play with it. We do it using two sessions to
+//    show the idea behind sessions.
 
 #include "iso_3166.h"
 
 #ifndef PATH_MAX
-#  define PATH_MAX 4096 /* Safe enough on most systems I would think */
+#  define PATH_MAX 4096 // Safe enough on most systems I would think
 #endif
 
-/* Some globals to make our life simpler */
+// Some globals to make our life simpler
 vdsProcess process;
 vdsSession session1, session2;
 vdsHashMap * map1 = NULL, *map2 = NULL;
 string mapName = "My Hash Map";
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void cleanup()
 {
@@ -42,7 +40,7 @@ void cleanup()
    }
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int createMap()
 {
@@ -72,8 +70,7 @@ int createMap()
        * rc > 0 -> new data
        */
       rc = readData( countryCode, description );
-      while ( rc > 0 )
-      {
+      while ( rc > 0 ) {
          map1->Insert( countryCode, 2, description, strlen(description) );
 
          rc = readData( countryCode, description );
@@ -87,7 +84,7 @@ int createMap()
    return 0;
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int main( int argc, char *argv[] )
 {
@@ -96,16 +93,15 @@ int main( int argc, char *argv[] )
    size_t length;
    vdsObjStatus status;
    
-   if ( argc < 3 )
-   {
-      fprintf( stderr, "Usage: %s iso_3166_data_file watchdog_address\n", argv[0] );
+   if ( argc < 3 ) {
+      cerr << "Usage: " << argv[0] << " iso_3166_data_file watchdog_address" << endl;
       return 1;
    }
    
    rc = openData( argv[1] );
    if ( rc != 0 ) return 1;
    
-   /* Initialize vds and create our session */
+   // Initialize vds and create our session
    try {
       process.Init( argv[2] );
       session1.Init();
@@ -118,7 +114,7 @@ int main( int argc, char *argv[] )
    map1 = new vdsHashMap( session1 );
    map2 = new vdsHashMap( session2 );
    
-   /* Create a hash map object */
+   // Create a hash map object (and populate it)
    rc = createMap();
    if ( rc != 0 ) { cleanup(); return 1; }
    cout << "Map created" << endl;
@@ -130,7 +126,7 @@ int main( int argc, char *argv[] )
       return -1;
    }
 
-   /* The data is inserted but not committed yet - failure is expected */
+   // The data is inserted but not committed yet - failure is expected
    rc = 0;
    try { map2->Get("FM", 2, description, 80, &length ); }
    catch( vdsException exc ) {
@@ -171,5 +167,5 @@ int main( int argc, char *argv[] )
 
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

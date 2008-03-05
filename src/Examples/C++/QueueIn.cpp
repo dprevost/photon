@@ -22,10 +22,10 @@
 #include <time.h>
 
 #ifndef PATH_MAX
-#  define PATH_MAX 4096 /* Safe enough on most systems I would think */
+#  define PATH_MAX 4096 // Safe enough on most systems I would think
 #endif
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void cleanup()
 {
@@ -37,7 +37,7 @@ void cleanup()
       // that there will be no more data, it can shutdown (the QueueWork 
       // program will then tell the QueueOut program by setting it to two).
       if ( control != NULL ) {
-         // We flush it all before warning QueueOut to exit.
+         // We flush it all before warning QueueWork to exit.
          session.Commit();
          control->Replace( shutdownKey, strlen(shutdownKey), 
                                 &controlData, sizeof(int) );
@@ -59,7 +59,7 @@ void cleanup()
    }
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void initObjects()
 {
@@ -89,11 +89,10 @@ void initObjects()
    controlData = 0; // Will be set to one/two when it is time to shutdown
    control->Insert( shutdownKey, strlen(shutdownKey), 
                     &controlData, sizeof(int) );
-   /*
-    * The next two control items indicate if the other two programs are 
-    * ready to use the VDS or not (otherwise you can get a bit of a problem
-    * filling up the shared memory.
-    */
+
+   // The next two control items indicate if the other two programs are 
+   // ready to use the VDS or not (otherwise you can get a bit of a problem
+   // filling up the shared memory.
    controlData = 0;
    control->Insert( workProcessKey, strlen(workProcessKey), 
                     &controlData, sizeof(int) );
@@ -103,7 +102,7 @@ void initObjects()
    session.Commit();
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void waitForFriends()
 {
@@ -146,7 +145,7 @@ void waitForFriends()
    } while ( controlData == 0 );
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int main( int argc, char *argv[] )
 {
@@ -157,8 +156,7 @@ int main( int argc, char *argv[] )
    struct timespec req, rem;
 #endif
    
-   if ( argc < 6 )
-   {
+   if ( argc < 6 ) {
       cerr << "Usage: " << argv[0] << " iso_3166_data_file watchdog_address" <<
          "number_of_iterations milliseconds iterations_per_cycle" << endl;
       return 1;
@@ -258,5 +256,5 @@ int main( int argc, char *argv[] )
    return 0;
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

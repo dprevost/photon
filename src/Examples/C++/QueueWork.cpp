@@ -8,10 +8,7 @@
  * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-/*
- * This program is part of a set of three, showing one possible use of queues.
- * Specific responsabilities:
- */
+// This program is part of a set of three, showing one possible use of queues.
 
 #include <time.h>
 #include <ctype.h>
@@ -20,10 +17,10 @@
 #include "Queue.h"
 
 #ifndef PATH_MAX
-#  define PATH_MAX 4096 /* Safe enough on most systems I would think */
+#  define PATH_MAX 4096 // Safe enough on most systems I would think
 #endif
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void cleanup()
 {
@@ -61,7 +58,7 @@ void cleanup()
    }
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void initObjects()
 {
@@ -76,7 +73,7 @@ void initObjects()
    session.Commit();
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 bool timetoShutdown()
 {
@@ -93,7 +90,7 @@ bool timetoShutdown()
    return false;
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int main( int argc, char *argv[] )
 {
@@ -109,8 +106,7 @@ int main( int argc, char *argv[] )
    req.tv_nsec = 1000000;
 #endif
    
-   if ( argc < 2 )
-   {
+   if ( argc < 2 ) {
       cerr << "Usage: " << argv[0] << " watchdog_address" << endl;
       return 1;
    }
@@ -144,20 +140,18 @@ int main( int argc, char *argv[] )
       while( 1 ) {
          rc = inQueue->Pop( &workStruct, sizeof(workStruct), &length );
          if ( rc != VDS_OK ) {
-            /* Nothing to do - might as well commit */
+            // Nothing to do - might as well commit
             session.Commit();
             if ( bShutdown )
                break;
-            /*
-             * We continue after we receive the shutdown to make sure that
-             * there are no data left on the input queue. 
-             */
 #if defined(WIN32)
    		   Sleep( 1 );
 #else
             nanosleep( &req, &rem );
 #endif
             bShutdown = timetoShutdown();
+            // We continue (for one loop) after we receive the shutdown to 
+            // make sure that there are no data left on the input queue.
             continue;
          }
 
@@ -183,4 +177,5 @@ int main( int argc, char *argv[] )
    return 0;
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
+

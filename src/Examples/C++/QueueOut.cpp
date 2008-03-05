@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
  * 
  * This code is in the public domain.
  * 
@@ -8,19 +8,17 @@
  * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-/*
- * This program is part of a set of three, showing one possible use of queues.
- */
+// This program is part of a set of three, showing one possible use of queues.
 
 #include "iso_3166.h"
 #include "Queue.h"
 #include <time.h>
 
 #ifndef PATH_MAX
-#  define PATH_MAX 4096 /* Safe enough on most systems I would think */
+#  define PATH_MAX 4096 // Safe enough on most systems I would think
 #endif
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void cleanup()
 {
@@ -42,7 +40,7 @@ void cleanup()
    }
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void initObjects()
 {
@@ -56,7 +54,7 @@ void initObjects()
    session.Commit();
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 bool timetoShutdown()
 {
@@ -73,7 +71,7 @@ bool timetoShutdown()
    return false;
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int main( int argc, char *argv[] )
 {
@@ -121,7 +119,7 @@ int main( int argc, char *argv[] )
       while( 1 ) {
          rc = outQueue->Pop( &outStruct, sizeof(outStruct), &length );
          if ( rc != VDS_OK ) {
-            /* Nothing to do - might as well commit */
+            // Nothing to do - might as well commit
             session.Commit();
             if ( bShutdown )
                break;
@@ -130,18 +128,14 @@ int main( int argc, char *argv[] )
 #else
             nanosleep( &req, &rem );
 #endif
-            /*
-             * We continue after we receive the shutdown to make sure that
-             * there are no data left on the output queue. 
-             */
             bShutdown = timetoShutdown();
+            // We continue (for one loop) after we receive the shutdown to 
+            // make sure that there are no data left on the output queue.
             continue;
          }
 
-         /* 
-          * Why 10? It could be 100. Or 1. Not sure if it makes a big 
-          * difference performance wise. 
-          */
+         // Why 10? It could be 100. Or 1. Not sure if it makes a big 
+         // difference performance wise. 
          if ( (loop %10) == 0 )
             session.Commit();
          loop++;
@@ -159,5 +153,5 @@ int main( int argc, char *argv[] )
    return 0;
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

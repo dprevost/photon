@@ -14,12 +14,11 @@
 #include <string>
 #include <vdsf/vds>
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-/* 
- * Folder separators can either be Unix style or Windows style:
- *   "fold\\object" or "fold/object"
- */
+// Folder separators can either be Unix style or Windows style:
+//    "fold\\object" or "fold/object"
+
 const std::string inQueueName  = "Queue Example/Input Queue";
 const std::string outQueueName = "Queue Example\\Output Queue";
 const std::string folderName   = "Queue Example";
@@ -30,7 +29,7 @@ vdsSession session;
 vdsQueue   * inQueue = NULL, * outQueue = NULL;
 vdsHashMap * control = NULL;
 
-/* Keys for the control */
+// Keys for the control
 const char * workProcessKey = "Work Queue";
 const char * outProcessKey  = "Out Queue";
 const char * shutdownKey    = "Shutdown now";
@@ -41,9 +40,9 @@ typedef struct isoStruct
    char description[80];
 } isoStruct;
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* QUEUE_H */
+#endif // QUEUE_H
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

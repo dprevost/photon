@@ -8,24 +8,22 @@
  * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-/*
- * This example: 
- *   We create a hash map and show how to iterate through it.
- */
+// This example: 
+//    We create a hash map and show how to iterate through it.
 
 #include "iso_3166.h"
 
 #ifndef PATH_MAX
-#  define PATH_MAX 4096 /* Safe enough on most systems I would think */
+#  define PATH_MAX 4096 // Safe enough on most systems I would think
 #endif
 
-/* Some globals to make our life simpler */
+// Some globals to make our life simpler
 vdsProcess process;
 vdsSession session;
 vdsHashMap * theMap = NULL;
 string mapName = "My Hash Map Loop";
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void cleanup()
 {
@@ -36,7 +34,7 @@ void cleanup()
    }
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int createMap()
 {
@@ -66,8 +64,7 @@ int createMap()
        * rc > 0 -> new data
        */
       rc = readData( countryCode, description );
-      while ( rc > 0 )
-      {
+      while ( rc > 0 ) {
          theMap->Insert( countryCode, 2, description, strlen(description) );
 
          rc = readData( countryCode, description );
@@ -81,7 +78,7 @@ int createMap()
    return 0;
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int main( int argc, char *argv[] )
 {
@@ -90,16 +87,15 @@ int main( int argc, char *argv[] )
    char description[81];
    size_t keyLength, dataLength;
    
-   if ( argc < 3 )
-   {
-      fprintf( stderr, "Usage: %s iso_3166_data_file watchdog_address\n", argv[0] );
+   if ( argc < 3 ) {
+      cerr << "Usage: " << argv[0] << " iso_3166_data_file watchdog_address" << endl;
       return 1;
    }
    
    rc = openData( argv[1] );
    if ( rc != 0 ) return 1;
    
-   /* Initialize vds and create our session */
+   // Initialize the vds and create our session
    try {
       process.Init( argv[2] );
       session.Init();
@@ -110,7 +106,7 @@ int main( int argc, char *argv[] )
    }
    theMap = new vdsHashMap( session );
    
-   /* Create a hash map object */
+   // Create a hash map object (and populate it)
    rc = createMap();
    if ( rc != 0 ) { cleanup(); return 1; }
    cout << "Map created" << endl;
@@ -118,8 +114,7 @@ int main( int argc, char *argv[] )
    try {
       rc = theMap->GetFirst( countryCode, 2, description, 80, 
                              &keyLength, &dataLength );
-      while ( rc == VDS_OK )
-      {
+      while ( rc == VDS_OK ) {
          countryCode[keyLength] = 0;
          description[dataLength] = 0;
          cout << "Country code: " << countryCode << ", country: " << 
@@ -128,8 +123,7 @@ int main( int argc, char *argv[] )
          rc = theMap->GetNext( countryCode, 2, description, 80, 
                                &keyLength, &dataLength );
       }
-      if ( rc != VDS_REACHED_THE_END ) 
-      {
+      if ( rc != VDS_REACHED_THE_END ) {
          cerr << "At line " << __LINE__ << ", Hash Map loop abnormal error: " <<
             rc << endl;
          cleanup();
@@ -149,5 +143,5 @@ int main( int argc, char *argv[] )
    return 0;
 }
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
