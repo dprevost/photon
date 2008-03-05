@@ -15,7 +15,7 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES = *~
 lib_LTLIBRARIES = libvdsfcpp.la
 
-#SUBDIRS = . Tests
+SUBDIRS = . Tests
           
 # See http://www.gnu.org/software/libtool/manual.html#SEC34
 # for more info on version-info. 
