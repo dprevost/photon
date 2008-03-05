@@ -86,7 +86,7 @@ public:
 private:
 
    VDS_HANDLE m_objectHandle;
-   VDS_HANDLE m_sessionHandle;
+   VDS_HANDLE & m_sessionHandle;
    
 };
 

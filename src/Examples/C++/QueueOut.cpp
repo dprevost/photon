@@ -24,16 +24,9 @@ void cleanup()
 {
    // Error recovery: we do nothing except writing an error message. 
    try {
-      if ( control != NULL ) {
-         control->Close();
-         delete control;
-         control = NULL;
-      }
-      if ( outQueue != NULL ) {
-         outQueue->Close();
-         delete outQueue;
-         outQueue = NULL;
-      }
+      // Close them explicitly (or we could let the destructor do it for us). 
+      control.Close();
+      outQueue.Close();
    }
    catch( vdsException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
@@ -46,11 +39,11 @@ void initObjects()
 {
    int controlData;
 
-   control->Open( controlName );
+   control.Open( controlName );
 
    controlData = 1;
-   control->Replace( outProcessKey, strlen(outProcessKey), 
-                     &controlData, sizeof(int) );
+   control.Replace( outProcessKey, strlen(outProcessKey), 
+                    &controlData, sizeof(int) );
    session.Commit();
 }
 
@@ -62,8 +55,8 @@ bool timetoShutdown()
    size_t length;
    
    try {
-      control->Get( shutdownKey, strlen(shutdownKey), 
-                    &controlData, sizeof(int), &length );
+      control.Get( shutdownKey, strlen(shutdownKey), 
+                   &controlData, sizeof(int), &length );
    }
    catch(...) { return false; }
 
@@ -101,13 +94,11 @@ int main( int argc, char *argv[] )
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
-   control  = new vdsHashMap( session );
-   outQueue = new vdsQueue  ( session );
 
    // Initialize objects
    try {
       initObjects();
-      outQueue->Open( outQueueName );
+      outQueue.Open( outQueueName );
    }
    catch( vdsException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
@@ -117,7 +108,7 @@ int main( int argc, char *argv[] )
 
    try {
       while( 1 ) {
-         rc = outQueue->Pop( &outStruct, sizeof(outStruct), &length );
+         rc = outQueue.Pop( &outStruct, sizeof(outStruct), &length );
          if ( rc != VDS_OK ) {
             // Nothing to do - might as well commit
             session.Commit();

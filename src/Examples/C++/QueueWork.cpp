@@ -30,28 +30,18 @@ void cleanup()
    try {
       // By setting the shutdown "flag" to 2, we tell the QueueOut program
       // that there will be no more data, it can shutdown.
-      if ( control != NULL ) {
-         // We flush it all before warning QueueOut to exit.
-         session.Commit();
-         control->Replace( shutdownKey, strlen(shutdownKey), 
-                                &controlData, sizeof(int) );
-         // We commit this update and cleanup
-         session.Commit();
-         control->Close();
-         delete control;
-         control = NULL;
-      }
-   
-      if ( inQueue != NULL ) {
-         inQueue->Close();
-         delete inQueue;
-         inQueue = NULL;
-      }
-      if ( outQueue != NULL ) {
-         outQueue->Close();
-         delete outQueue;
-         outQueue = NULL;
-      }
+
+      // We flush it all before warning QueueOut to exit.
+      session.Commit();
+      control.Replace( shutdownKey, strlen(shutdownKey), 
+                       &controlData, sizeof(int) );
+      // We commit this update and cleanup
+      session.Commit();
+
+      // Close them explicitly (or we could let the destructor do it for us). 
+      control.Close();
+      inQueue.Close();
+      outQueue.Close();
    }
    catch( vdsException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
@@ -64,11 +54,11 @@ void initObjects()
 {
    int controlData;
 
-   control->Open( controlName );
+   control.Open( controlName );
 
    controlData = 1;
-   control->Replace( workProcessKey, strlen(workProcessKey),
-                     &controlData, sizeof(int) );
+   control.Replace( workProcessKey, strlen(workProcessKey),
+                    &controlData, sizeof(int) );
 
    session.Commit();
 }
@@ -81,8 +71,8 @@ bool timetoShutdown()
    size_t length;
    
    try {
-      control->Get( shutdownKey, strlen(shutdownKey), 
-                    &controlData, sizeof(int), &length );
+      control.Get( shutdownKey, strlen(shutdownKey), 
+                   &controlData, sizeof(int), &length );
    }
    catch(...) { return false; }
 
@@ -120,15 +110,12 @@ int main( int argc, char *argv[] )
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
-   control  = new vdsHashMap( session );
-   inQueue  = new vdsQueue  ( session );
-   outQueue = new vdsQueue  ( session );
 
    // Initialize objects
    try {
       initObjects();
-      outQueue->Open( outQueueName );
-      inQueue->Open( inQueueName );
+      outQueue.Open( outQueueName );
+      inQueue.Open( inQueueName );
    }
    catch( vdsException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
@@ -138,7 +125,7 @@ int main( int argc, char *argv[] )
 
    try {
       while( 1 ) {
-         rc = inQueue->Pop( &workStruct, sizeof(workStruct), &length );
+         rc = inQueue.Pop( &workStruct, sizeof(workStruct), &length );
          if ( rc != VDS_OK ) {
             // Nothing to do - might as well commit
             session.Commit();
@@ -158,7 +145,7 @@ int main( int argc, char *argv[] )
          for ( i = 0; i < length-2; ++i )
             workStruct.description[i] = toupper(workStruct.description[i]);
       
-         outQueue->Push( &workStruct, length );
+         outQueue.Push( &workStruct, length );
 
          if ( (loop %10) == 0 )
             session.Commit();

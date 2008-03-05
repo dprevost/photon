@@ -26,8 +26,8 @@ const std::string controlName  = "Queue Example/Queue Control";
 
 vdsProcess process;
 vdsSession session;
-vdsQueue   * inQueue = NULL, * outQueue = NULL;
-vdsHashMap * control = NULL;
+vdsQueue   inQueue(session), outQueue(session);
+vdsHashMap control(session);
 
 // Keys for the control
 const char * workProcessKey = "Work Queue";

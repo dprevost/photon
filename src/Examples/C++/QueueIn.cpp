@@ -36,23 +36,17 @@ void cleanup()
       // By setting the shutdown "flag" to 1, we tell the QueueWork program 
       // that there will be no more data, it can shutdown (the QueueWork 
       // program will then tell the QueueOut program by setting it to two).
-      if ( control != NULL ) {
-         // We flush it all before warning QueueWork to exit.
-         session.Commit();
-         control->Replace( shutdownKey, strlen(shutdownKey), 
-                                &controlData, sizeof(int) );
-         // We commit this update and cleanup
-         session.Commit();
-         control->Close();
-         delete control;
-         control = NULL;
-      }
-   
-      if ( inQueue != NULL ) {
-         inQueue->Close();
-         delete inQueue;
-         inQueue = NULL;
-      }
+
+      // We flush it all before warning QueueWork to exit.
+      session.Commit();
+      control.Replace( shutdownKey, strlen(shutdownKey), 
+                       &controlData, sizeof(int) );
+      // We commit this update and cleanup
+      session.Commit();
+      
+      // Close them explicitly (or we could let the destructor do it for us). 
+      control.Close();
+      inQueue.Close();
    }
    catch( vdsException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
@@ -84,20 +78,20 @@ void initObjects()
    session.CreateObject( inQueueName, VDS_QUEUE );
    session.CreateObject( outQueueName, VDS_QUEUE );
 
-   control->Open( controlName );
+   control.Open( controlName );
    // Initialize the control object
    controlData = 0; // Will be set to one/two when it is time to shutdown
-   control->Insert( shutdownKey, strlen(shutdownKey), 
-                    &controlData, sizeof(int) );
+   control.Insert( shutdownKey, strlen(shutdownKey), 
+                   &controlData, sizeof(int) );
 
    // The next two control items indicate if the other two programs are 
    // ready to use the VDS or not (otherwise you can get a bit of a problem
    // filling up the shared memory.
    controlData = 0;
-   control->Insert( workProcessKey, strlen(workProcessKey), 
-                    &controlData, sizeof(int) );
-   control->Insert( outProcessKey, strlen(outProcessKey), 
-                    &controlData, sizeof(int) );
+   control.Insert( workProcessKey, strlen(workProcessKey), 
+                   &controlData, sizeof(int) );
+   control.Insert( outProcessKey, strlen(outProcessKey), 
+                   &controlData, sizeof(int) );
 
    session.Commit();
 }
@@ -117,8 +111,8 @@ void waitForFriends()
 
    do {
       try {
-         control->Get( workProcessKey, strlen(workProcessKey), 
-                       &controlData, sizeof(int), &length );
+         control.Get( workProcessKey, strlen(workProcessKey), 
+                      &controlData, sizeof(int), &length );
       }
       catch(...) {}
 
@@ -132,8 +126,8 @@ void waitForFriends()
    controlData = 0;
    do {
       try {
-         control->Get( outProcessKey, strlen(outProcessKey), 
-                       &controlData, sizeof(int), &length );
+         control.Get( outProcessKey, strlen(outProcessKey), 
+                      &controlData, sizeof(int), &length );
       }
       catch(...) {}
 
@@ -178,13 +172,11 @@ int main( int argc, char *argv[] )
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
-   control  = new vdsHashMap( session );
-   inQueue  = new vdsQueue  ( session );
 
    // Create and initialize objects
    try {
       initObjects();
-      inQueue->Open( inQueueName );
+      inQueue.Open( inQueueName );
    }
    catch( vdsException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
@@ -216,7 +208,7 @@ int main( int argc, char *argv[] )
          rc = readData( inStruct.countryCode, inStruct.description );
          if ( rc > 0 ) {
 
-            inQueue->Push( &inStruct, 2 + strlen( inStruct.description) );
+            inQueue.Push( &inStruct, 2 + strlen( inStruct.description) );
             /* 
              * Why 10? It could be 100. Or 1. Not sure if it makes a big 
              * difference performance wise. If this code was reading from

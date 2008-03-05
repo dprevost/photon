@@ -25,11 +25,9 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 vdsFolder::vdsFolder( vdsSession &session )
-   : m_objectHandle ( NULL )
+   : m_objectHandle  ( NULL ),
+     m_sessionHandle ( session.m_sessionHandle )
 {
-   if ( session.m_sessionHandle == NULL )
-      throw vdsException( VDS_NULL_HANDLE, NULL, "vdsFolder::vdsFolder" );
-   m_sessionHandle = session.m_sessionHandle;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
