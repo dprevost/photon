@@ -34,11 +34,12 @@ CFLAGS_RELEASE=/nologo /MD  /W3 /O2     /I "..\Common" /I "..\include" /I ".." /
 CFLAGS_DEBUG  =/nologo /MDd /W3 /ZI /Od /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c /GX
 
 OBJS_RELEASE= \
-	"$(INTDIR_RELEASE)\Folder.obj" \
-	"$(INTDIR_RELEASE)\HashMap.obj" \
-	"$(INTDIR_RELEASE)\Process.obj" \
-	"$(INTDIR_RELEASE)\Queue.obj" \
-	"$(INTDIR_RELEASE)\Session.obj"
+	"$(INTDIR_RELEASE)\Exception.obj" \
+	"$(INTDIR_RELEASE)\Folder.obj"    \
+	"$(INTDIR_RELEASE)\HashMap.obj"   \
+	"$(INTDIR_RELEASE)\Process.obj"   \
+	"$(INTDIR_RELEASE)\Queue.obj"     \
+	"$(INTDIR_RELEASE)\Session.obj"   
 
 OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 
