@@ -25,23 +25,39 @@ Source: src\Release\vdsf.lib; DestDir: {app}\lib
 Source: doc\refman.pdf; DestDir: {app}
 Source: src\Release\vdswd.exe; DestDir: {app}\bin
 Source: COPYING; DestDir: {app}; DestName: License.txt
-Source: src\Examples\Examples.dsw; DestDir: {app}\Examples
-Source: src\Examples\HashMap.c; DestDir: {app}\Examples
-Source: src\Examples\HashMapLoop.c; DestDir: {app}\Examples
-Source: src\Examples\iso_3166.h; DestDir: {app}\Examples
 Source: src\Examples\iso_3166.tab; DestDir: {app}\Examples
-Source: src\Examples\Makefile; DestDir: {app}\Examples
-Source: src\Examples\Queue.h; DestDir: {app}\Examples
-Source: src\Examples\QueueIn.c; DestDir: {app}\Examples
-Source: src\Examples\QueueOut.c; DestDir: {app}\Examples
-Source: src\Examples\QueueWork.c; DestDir: {app}\Examples
-Source: src\Examples\README; DestDir: {app}\Examples; DestName: README.txt
-Source: src\Examples\RunQueue.vbs; DestDir: {app}\Examples
-Source: src\Examples\Project Files\HashMap.dsp; DestDir: {app}\Examples\Project Files
-Source: src\Examples\Project Files\HashMapLoop.dsp; DestDir: {app}\Examples\Project Files
-Source: src\Examples\Project Files\QueueIn.dsp; DestDir: {app}\Examples\Project Files
-Source: src\Examples\Project Files\QueueOut.dsp; DestDir: {app}\Examples\Project Files
-Source: src\Examples\Project Files\QueueWork.dsp; DestDir: {app}\Examples\Project Files
+Source: src\Examples\C\Examples.dsw; DestDir: {app}\Examples\C
+Source: src\Examples\C\HashMap.c; DestDir: {app}\Examples\C
+Source: src\Examples\C\HashMapLoop.c; DestDir: {app}\Examples\C
+Source: src\Examples\C\iso_3166.h; DestDir: {app}\Examples\C
+Source: src\Examples\C\Makefile; DestDir: {app}\Examples\C
+Source: src\Examples\C\Queue.h; DestDir: {app}\Examples\C
+Source: src\Examples\C\QueueIn.c; DestDir: {app}\Examples\C
+Source: src\Examples\C\QueueOut.c; DestDir: {app}\Examples\C
+Source: src\Examples\C\QueueWork.c; DestDir: {app}\Examples\C
+Source: src\Examples\C\README; DestDir: {app}\Examples\C; DestName: README.txt
+Source: src\Examples\C\RunQueue.vbs; DestDir: {app}\Examples\C
+Source: src\Examples\C\Project Files\HashMap.dsp; DestDir: {app}\Examples\C\Project Files
+Source: src\Examples\C\Project Files\HashMapLoop.dsp; DestDir: {app}\Examples\C\Project Files
+Source: src\Examples\C\Project Files\QueueIn.dsp; DestDir: {app}\Examples\C\Project Files
+Source: src\Examples\C\Project Files\QueueOut.dsp; DestDir: {app}\Examples\C\Project Files
+Source: src\Examples\C\Project Files\QueueWork.dsp; DestDir: {app}\Examples\C\Project Files
+Source: src\Examples\C++\Examples.dsw; DestDir: {app}\Examples\C++
+Source: src\Examples\C++\HashMap.cpp; DestDir: {app}\Examples\C++
+Source: src\Examples\C++\HashMapLoop.cpp; DestDir: {app}\Examples\C++
+Source: src\Examples\C++\iso_3166.h; DestDir: {app}\Examples\C++
+Source: src\Examples\C++\Makefile; DestDir: {app}\Examples\C++
+Source: src\Examples\C++\Queue.h; DestDir: {app}\Examples\C++
+Source: src\Examples\C++\QueueIn.cpp; DestDir: {app}\Examples\C++
+Source: src\Examples\C++\QueueOut.cpp; DestDir: {app}\Examples\C++
+Source: src\Examples\C++\QueueWork.cpp; DestDir: {app}\Examples\C++
+Source: src\Examples\C++\README.txt; DestDir: {app}\Examples\C++
+Source: src\Examples\C++\RunQueue.vbs; DestDir: {app}\Examples\C++
+Source: src\Examples\C++\Project Files\HashMap.dsp; DestDir: {app}\Examples\C++\Project Files
+Source: src\Examples\C++\Project Files\HashMapLoop.dsp; DestDir: {app}\Examples\C++\Project Files
+Source: src\Examples\C++\Project Files\QueueIn.dsp; DestDir: {app}\Examples\C++\Project Files
+Source: src\Examples\C++\Project Files\QueueOut.dsp; DestDir: {app}\Examples\C++\Project Files
+Source: src\Examples\C++\Project Files\QueueWork.dsp; DestDir: {app}\Examples\C++\Project Files
 ;Source: c:\windows\system32\mswinsck.ocx; DestDir: {sys}; Flags: regserver restartreplace sharedfile
 Source: src\Release\vdsfcpp.lib; DestDir: {app}\lib
 Source: src\Release\vdsfcpp.dll; DestDir: {app}\bin
