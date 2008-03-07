@@ -477,10 +477,11 @@ struct vdstTestAlignment
 
 /****************************************************************/
 /*
- * If non-compliant C99 compilers are used other than VC++ 6.0, an
+ * If non-compliant C99 compilers are used other than VC++, an
  * autoconf test would be helpful here. 
  *
- * The WIN32 test should be modified to use the version number of VC++.
+ * The online documentation for VS 2008 does not mention support
+ * for these format.
  */
 #if defined(WIN32)
 #  define VDSF_SIZE_T_FORMAT    "%d"

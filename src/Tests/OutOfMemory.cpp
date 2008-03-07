@@ -48,7 +48,7 @@ int main()
 {
    vdsProcess process;
    vdsSession session;
-   vdsInfo info1, info2;
+   vdsInfo info1; 
    const char * dataIn = "1234567890123456789012345";
    char dataOut[50];
    size_t length;

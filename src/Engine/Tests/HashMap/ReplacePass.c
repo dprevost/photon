@@ -31,7 +31,6 @@ int main()
    char * data1 = "my data1";
    char * data2 = "my data2";
    vdseHashItem * pItem;
-   vdseTxStatus * txItemStatus;
    char * ptr;
 
    pHashMap = initHashMapTest( expectedToPass, &context );
