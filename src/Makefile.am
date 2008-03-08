@@ -57,18 +57,29 @@ I386_FILES =                                   \
              Locking/asm-i386/spinlock_types.h \
              Locking/asm-i386/system.h         
 
-EXAMPLES_FILES =                        \
-                 Examples/iso_3166.h    \
-                 Examples/iso_3166.tab  \
-                 Examples/HashMap.c     \
-                 Examples/HashMapLoop.c \
-                 Examples/Makefile      \
-                 Examples/Queue.h       \
-                 Examples/QueueIn.c     \
-                 Examples/QueueOut.c    \
-                 Examples/QueueWork.c   \
-                 Examples/README        \
-                 Examples/RunQueue.sh   
+EXAMPLES_FILES =                              \
+                 Examples/iso_3166.tab        \
+                 Examples/README.txt          \
+                 Examples/C/iso_3166.h        \
+                 Examples/C/HashMap.c         \
+                 Examples/C/HashMapLoop.c     \
+                 Examples/C/Makefile          \
+                 Examples/C/Queue.h           \
+                 Examples/C/QueueIn.c         \
+                 Examples/C/QueueOut.c        \
+                 Examples/C/QueueWork.c       \
+                 Examples/C/README.txt        \
+                 Examples/C/RunQueue.sh       \
+                 Examples/C++/iso_3166.h      \
+                 Examples/C++/HashMap.cpp     \
+                 Examples/C++/HashMapLoop.cpp \
+                 Examples/C++/Makefile        \
+                 Examples/C++/Queue.h         \
+                 Examples/C++/QueueIn.cpp     \
+                 Examples/C++/QueueOut.cpp    \
+                 Examples/C++/QueueWork.cpp   \
+                 Examples/C++/README.txt      \
+                 Examples/C++/RunQueue.sh     
 
 EXTRA_DIST = $(BASE_LOCK_FILES) $(I386_FILES) $(EXAMPLES_FILES)
 
