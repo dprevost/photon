@@ -29,7 +29,18 @@ check_PROGRAMS =               \
 nanosleepTest_SOURCES = nanosleepTest.c
 TimerTest_SOURCES     = TimerTest.c
 
-EXTRA_DIST = 
+EXTRA_DIST =                         \
+   Makefile.inc.win32                \
+   Makefile.win32                    \
+   RunTests.vbs                      \
+   Optional/Makefile.am              \
+   Optional/Makefile.in              \
+   Optional/Makefile.win32           \
+   Optional/ProcessLockShouldFail.c  \
+   Optional/ProcessLockShouldFail.sh \
+   Optional/RunTests.vbs             \
+   Optional/ThreadLockShouldFail.c   \
+   Optional/ThreadLockShouldFail.sh  
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
@@ -40,4 +51,9 @@ TESTS =               \
 XFAIL_TESTS = 
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
+
+distclean-local:
+	-rm -f $(top_builddir)/src/Common/Tests/Optional/Makefile
+	-rm -f $(top_builddir)/src/Common/Tests/Optional/.deps/*
+	-rmdir $(top_builddir)/src/Common/Tests/Optional/.deps
 

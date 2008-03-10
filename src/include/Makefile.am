@@ -91,14 +91,21 @@ EXTRA_DIST =                \
 #             Doxyfile.vdsSession 
 
 nobase_include_HEADERS = \
-   vdsf/vdsCommon.h      \
-   vdsf/vdsErrors.h      \
-   vdsf/vdsFolder.h      \
-   vdsf/vdsHashMap.h     \
-   vdsf/vdsProcess.h     \
-   vdsf/vdsQueue.h       \
-   vdsf/vdsSession.h     \
-   vdsf/vds.h            
+   vdsf/vdsCommon.h  \
+   vdsf/vdsErrors.h  \
+   vdsf/vdsFolder.h  \
+   vdsf/vdsHashMap.h \
+   vdsf/vdsProcess.h \
+   vdsf/vdsQueue.h   \
+   vdsf/vdsSession.h \
+   vdsf/vds.h        \
+   vdsf/vds          \
+   vdsf/vdsException \
+   vdsf/vdsFolder    \
+   vdsf/vdsHashMap   \
+   vdsf/vdsProcess   \
+   vdsf/vdsQueue     \
+   vdsf/vdsSession   
 
 #
 # Only rebuild the man pages if doxygen is present.

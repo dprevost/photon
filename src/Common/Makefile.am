@@ -42,16 +42,17 @@ libCommon_la_SOURCES =                 \
                        Timer.c         \
                        Timer.h
 
-EXTRA_DIST =               \
-             asctime_r.c   \
-             ctime_r.c     \
-             localtime_r.c \
-             memcmp.c      \
-             memset.c      \
-             nanosleep.c   \
-             private.h     \
-             strnlen.c     \
-             tzfile.h    
+EXTRA_DIST =                \
+             asctime_r.c    \
+             ctime_r.c      \
+             localtime_r.c  \
+             memcmp.c       \
+             memset.c       \
+             nanosleep.c    \
+             private.h      \
+             strnlen.c      \
+             tzfile.h       \
+             Makefile.win32 
 
 libCommon_la_LIBADD = @LTLIBOBJS@
 

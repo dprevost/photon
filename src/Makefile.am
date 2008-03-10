@@ -81,19 +81,22 @@ EXAMPLES_FILES =                              \
                  Examples/C++/README.txt      \
                  Examples/C++/RunQueue.sh     
 
-EXTRA_DIST = $(BASE_LOCK_FILES) $(I386_FILES) $(EXAMPLES_FILES)
+EXTRA_DIST =          \
+   $(BASE_LOCK_FILES) \
+   $(I386_FILES)      \
+   $(EXAMPLES_FILES)  \
+   Makefile.win32     
 
 install-data-local:
 	-mkdir -p $(DESTDIR)$(datadir)/doc/vdsf/Examples
 	for f in $(EXAMPLES_FILES); do \
-	     $(install_sh_DATA) $$f $(DESTDIR)$(datadir)/doc/vdsf/$$f ; \
+		$(install_sh_DATA) $(top_srcdir)/src/$$f $(DESTDIR)$(datadir)/doc/vdsf/$$f ; \
 	done
 
 uninstall-local:
-	for f in $(EXAMPLES_FILES); do \
-     -rm -f $(DESTDIR)$(datadir)/doc/vdsf/$$f ; \
-   done
-	-rm -f $(DESTDIR)$(datadir)/doc/vdsf/refman.pdf
+	-for f in $(EXAMPLES_FILES); do \
+		rm -f $(DESTDIR)$(datadir)/doc/vdsf/$$f ; \
+	done
 	-rmdir $(DESTDIR)$(datadir)/doc/vdsf
 	-rmdir $(DESTDIR)$(datadir)/doc
 

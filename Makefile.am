@@ -17,7 +17,8 @@ EXTRA_DIST =            \
    Config/install-sh    \
    Config/ltmain.sh     \
    Config/missing       \
-   Config/mkinstalldirs
+   Config/mkinstalldirs \
+   Makefile.win32
 
 # The 'doc' subdir must be placed after 'src' since some of the 
 # documentation and man pages are generated automatically when
@@ -30,8 +31,8 @@ ACLOCAL_AMFLAGS = -I m4
 
 install-data-local:
 	-mkdir -p $(DESTDIR)$(datadir)/doc/vdsf
-	$(install_sh_DATA) README  $(DESTDIR)$(datadir)/doc/vdsf/README
-	$(install_sh_DATA) COPYING $(DESTDIR)$(datadir)/doc/vdsf/COPYING
+	$(install_sh_DATA) $(top_srcdir)/README  $(DESTDIR)$(datadir)/doc/vdsf/README
+	$(install_sh_DATA) $(top_srcdir)/COPYING $(DESTDIR)$(datadir)/doc/vdsf/COPYING
 
 uninstall-local:
 	-rm -f $(DESTDIR)$(datadir)/doc/vdsf/README

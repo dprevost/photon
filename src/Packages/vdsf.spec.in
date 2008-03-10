@@ -43,6 +43,8 @@ rm -rf $RPM_BUILD_ROOT
 %docdir /usr/local/share/doc/vdsf
 /usr/local/share/doc/vdsf
 
+/usr/local/bin/vdsinfo
+/usr/local/bin/vdssh
 /usr/local/bin/vdswd
 /usr/local/include/vdsf/vds.h
 /usr/local/include/vdsf/vdsCommon.h
@@ -52,11 +54,24 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/include/vdsf/vdsProcess.h
 /usr/local/include/vdsf/vdsQueue.h
 /usr/local/include/vdsf/vdsSession.h
+/usr/local/include/vdsf/vds
+/usr/local/include/vdsf/vdsException
+/usr/local/include/vdsf/vdsFolder
+/usr/local/include/vdsf/vdsHashMap
+/usr/local/include/vdsf/vdsProcess
+/usr/local/include/vdsf/vdsQueue
+/usr/local/include/vdsf/vdsSession
 /usr/local/lib/libvdsf.a
 /usr/local/lib/libvdsf.la
 /usr/local/lib/libvdsf.so
 /usr/local/lib/libvdsf.so.0
 /usr/local/lib/libvdsf.so.0.0.0
+/usr/local/lib/libvdsfcpp.a
+/usr/local/lib/libvdsfcpp.la
+/usr/local/lib/libvdsfcpp.so
+/usr/local/lib/libvdsfcpp.so.0
+/usr/local/lib/libvdsfcpp.so.0.0.0
+/usr/local/share/man/man1/vdssh.1
 /usr/local/share/man/man1/vdswd.1
 /usr/local/share/man/man3/vds.h.3
 /usr/local/share/man/man3/vdsCommit.3
