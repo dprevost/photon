@@ -79,7 +79,9 @@ SetErrorInvalidValue_SOURCES  = $(INCLUDE_FILES) SetErrorInvalidValue.c
 SetErrorNullError_SOURCES     = $(INCLUDE_FILES) SetErrorNullError.c
 Tests_SOURCES                 = $(INCLUDE_FILES) Tests.c
 
-EXTRA_DIST = 
+EXTRA_DIST =      \
+   Makefile.win32 \
+   RunTests.vbs   
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 

@@ -55,9 +55,11 @@ TryAcqInvalidSig_SOURCES     = TryAcqInvalidSig.c
 TryAcqNullLock_SOURCES       = TryAcqNullLock.c
 TryAcqPass_SOURCES           = TryAcqPass.c
 
-EXTRA_DIST =                       \
-             LockConcurrency.sh    \
-             LockConcurrencyTry.sh 
+EXTRA_DIST =             \
+   LockConcurrency.sh    \
+   LockConcurrencyTry.sh \
+   Makefile.win32        \
+   RunTests.vbs          
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 

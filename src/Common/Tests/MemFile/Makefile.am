@@ -123,7 +123,9 @@ SynchPass_SOURCES               = $(INCLUDE_FILES) SynchPass.c
 Tests_SOURCES                   = $(INCLUDE_FILES) Tests.c
 
 
-EXTRA_DIST =                     
+EXTRA_DIST =      \
+   Makefile.win32 \
+   RunTests.vbs   
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=0 PYTHON=$(PYTHON)
 

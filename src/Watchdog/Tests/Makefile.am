@@ -14,11 +14,12 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES        = *~ core
 
-EXTRA_DIST        = \
-                    wdTests.sh
+EXTRA_DIST =      \
+   Makefile.win32 \
+   RunTests.vbs   \
+   wdTests.sh     
 
 TESTS_ENVIRONMENT = top_builddir=$(top_builddir) verbose=0
 
-TESTS             = \
-                    wdTests.sh
+TESTS = wdTests.sh
 

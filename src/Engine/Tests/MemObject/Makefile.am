@@ -61,7 +61,9 @@ StatusNullMemObj_SOURCES  = $(COMMON_HEADER) StatusNullMemObj.c
 StatusNullStatus_SOURCES  = $(COMMON_HEADER) StatusNullStatus.c
 StatusPass_SOURCES        = $(COMMON_HEADER) StatusPass.c
 
-EXTRA_DIST =         
+EXTRA_DIST =      \
+   Makefile.win32 \
+   RunTests.vbs   
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 

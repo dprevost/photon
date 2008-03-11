@@ -19,8 +19,10 @@ check_PROGRAMS =          \
 
 i18nPass_SOURCES = i18nPass.c
 
-EXTRA_DIST =             \
-             i18nPass.sh 
+EXTRA_DIST =      \
+   i18nPass.sh    \
+   Makefile.win32 \
+   RunTests.vbs   
 
 TESTS_ENVIRONMENT =                              \
                     tcp_port=10701               \

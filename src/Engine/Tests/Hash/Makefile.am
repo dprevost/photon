@@ -134,7 +134,9 @@ ResizeNullContext_SOURCES      = $(COMMON_HEADER) ResizeNullContext.c
 ResizeNullHash_SOURCES         = $(COMMON_HEADER) ResizeNullHash.c
 ResizePass_SOURCES             = $(COMMON_HEADER) ResizePass.c
 
-EXTRA_DIST =
+EXTRA_DIST =      \
+   Makefile.win32 \
+   RunTests.vbs   
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 

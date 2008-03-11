@@ -70,8 +70,7 @@ libEngine_la_SOURCES =                   \
                        TreeNode.h        \
                        TxStatus.h        
    
-#   MemoryManager.c         \
-   MemoryManager.h         
+EXTRA_DIST = Makefile.win32
 
 VdsErrorHandler.c VdsErrorHandler.h: $(top_srcdir)/src/include/vdsf/vdsErrors.h
 	$(top_builddir)/src/BuildTools/errorParser -i $(top_srcdir)/src/include/vdsf/vdsErrors.h -o VdsErrorHandler -p vdseErr

@@ -18,8 +18,9 @@ SUBDIRS = . Shell
  
 bin_PROGRAMS = vdsinfo
 
-vdsinfo_SOURCES =                   \
-   info.cpp
+vdsinfo_SOURCES = info.cpp
+
+EXTRA_DIST = Makefile.win32
 
 vdsinfo_LDADD = $(top_builddir)/src/C++/libvdsfcpp.la 
 

@@ -31,7 +31,9 @@ InitNullOffset_SOURCES  = InitNullOffset.c
 InitPass_SOURCES        = InitPass.c
 InitZeroPages_SOURCES   = InitZeroPages.c
 
-EXTRA_DIST =         
+EXTRA_DIST =      \
+   Makefile.win32 \
+   RunTests.vbs   
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 

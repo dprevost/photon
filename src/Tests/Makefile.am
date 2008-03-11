@@ -15,6 +15,7 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES = *~ core
 
 EXTRA_DIST =             \
+   Makefile.Win32        \
    PrintError.h          \
    OutOfMemory.sh        \
    TestWithWatchdog.py   \

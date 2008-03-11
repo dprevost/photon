@@ -26,8 +26,6 @@ check_PROGRAMS =                  \
                  UnlockNullObject \
                  UnlockPass       
 
-#void vdsaCommonCloseObject( vdsaCommonObject * pObject )????????????????
-
 CloseNullObject_SOURCES  = CloseNullObject.c
 ClosePass_SOURCES        = ClosePass.c
 LockNullObject_SOURCES   = LockNullObject.c
@@ -39,17 +37,19 @@ OpenWrongType_SOURCES    = OpenWrongType.c
 UnlockNullObject_SOURCES = UnlockNullObject.c
 UnlockPass_SOURCES       = UnlockPass.c
 
-EXTRA_DIST =                     \
-             CloseNullObject.sh  \
-             ClosePass.sh        \
-             LockNullObject.sh   \
-             LockPass.sh         \
-             OpenNullName.sh     \
-             OpenNullObject.sh   \
-             OpenPass.sh         \
-             OpenWrongType.sh    \
-             UnlockNullObject.sh \
-             UnlockPass.sh       
+EXTRA_DIST =           \
+   CloseNullObject.sh  \
+   ClosePass.sh        \
+   LockNullObject.sh   \
+   LockPass.sh         \
+   Makefile.win32      \
+   OpenNullName.sh     \
+   OpenNullObject.sh   \
+   OpenPass.sh         \
+   OpenWrongType.sh    \
+   RunTests.vbs        \
+   UnlockNullObject.sh \
+   UnlockPass.sh       
 
 TESTS_ENVIRONMENT =                              \
                     tcp_port=10701               \

@@ -50,10 +50,12 @@ EXTRA_DIST =           \
    FiniNullProcess.sh  \
    FiniPass.sh         \
    InitPass.sh         \
+   Makefile.win32      \
    OpenNullContext.sh  \
    OpenNullFilename.sh \
    OpenNullProcess.sh  \
-   OpenPass.sh         
+   OpenPass.sh         \
+   RunTests.vbs        
 
 TESTS_ENVIRONMENT =                              \
                     tcp_port=10701               \

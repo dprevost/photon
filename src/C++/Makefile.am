@@ -35,6 +35,8 @@ libvdsfcpp_la_SOURCES = \
    Queue.cpp            \
    Session.cpp          
 
+EXTRA_DIST = Makefile.win32
+
 libvdsfcpp_la_LIBADD = \
    $(top_builddir)/src/API/libvdsf.la      \
    $(top_builddir)/src/Engine/libEngine.la \

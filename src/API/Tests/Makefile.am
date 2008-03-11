@@ -24,26 +24,11 @@ SUBDIRS =              \
           Queue        \
           Optional     
 
-#check_PROGRAMS =                  \
-                 SimpleTest1      \
-                 TransactionTests 
-
-#SimpleTest1_SOURCES = SimpleTest1.cpp
-#TransactionTests_SOURCES = TransactionTests.cpp 
-
-#EXTRA_DIST =                 \
-             Common.py       \
-             api_tests.py    \
-             transactions.py \
-             python_tests.sh 
+EXTRA_DIST =          \
+   Makefile.inc.win32 \
+   Makefile.win32     
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
-#TESTS =                 \
-        python_tests.sh 
-
 LDADD = $(top_builddir)/src/API/libvdsf.la
-
-distclean-local:
-	-rm -rf $(testsubdir)
 

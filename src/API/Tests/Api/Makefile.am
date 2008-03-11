@@ -23,9 +23,11 @@ ExitPass_SOURCES        = ExitPass.c
 InitNullAddress_SOURCES = InitNullAddress.c
 InitPass_SOURCES        = InitPass.c
 
-EXTRA_DIST =                   \
-             ExitPass.sh       \
-             InitPass.sh       
+EXTRA_DIST =      \
+   ExitPass.sh    \
+   InitPass.sh    \
+   Makefile.win32 \
+   RunTests.vbs   
 
 TESTS_ENVIRONMENT =                              \
                     tcp_port=10701               \

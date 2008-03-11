@@ -23,8 +23,10 @@ testParser.c: genError.h
 genError.h genError.c: testError.h 
 	$(top_builddir)/src/BuildTools/errorParser -i testError.h -o genError -p myErr
 
-EXTRA_DIST =             \
-             selfTest.sh 
+EXTRA_DIST =      \
+   Makefile.win32 \
+   RunTests.vbs   \
+   selfTest.sh    
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 

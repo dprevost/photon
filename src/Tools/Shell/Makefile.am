@@ -18,7 +18,9 @@ bin_PROGRAMS = vdssh
 
 man_MANS = vdssh.1
 
-EXTRA_DIST=$(man_MANS)
+EXTRA_DIST =      \
+   $(man_MANS)    \
+   Makefile.win32 
 
 vdssh_SOURCES =  \
    constants.cpp \

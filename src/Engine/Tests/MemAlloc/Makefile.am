@@ -55,7 +55,9 @@ MallocNullError_SOURCES    = $(COMMON_ENGINE) MallocNullError.c
 MallocPass_SOURCES         = $(COMMON_ENGINE) MallocPass.c
 MallocZeroLength_SOURCES   = $(COMMON_ENGINE) MallocZeroLength.c
 
-EXTRA_DIST =         
+EXTRA_DIST =      \
+   Makefile.win32 \
+   RunTests.vbs   
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 

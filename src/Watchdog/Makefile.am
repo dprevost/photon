@@ -22,7 +22,9 @@ noinst_LIBRARIES = libVerifyVDS.a
 
 man_MANS = vdswd.1
 
-EXTRA_DIST=$(man_MANS)
+EXTRA_DIST =      \
+   $(man_MANS)    \
+   Makefile.win32 
 
 vdswd_SOURCES =      \
    Acceptor.cpp      \

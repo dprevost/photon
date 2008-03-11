@@ -168,7 +168,10 @@ ResetPass_SOURCES                  = $(LIST_H) ResetPass.c
 TestSmall_SOURCES                  = $(LIST_H) TestSmall.c
 TestBig_SOURCES                    = $(LIST_H) TestBig.c
 
-EXTRA_DIST = $(LIST_H)
+EXTRA_DIST =      \
+   $(LIST_H)      \
+   Makefile.win32 \
+   RunTests.vbs   
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 

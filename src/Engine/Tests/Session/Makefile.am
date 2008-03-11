@@ -69,7 +69,9 @@ RemoveFirstNullContext_SOURCES = $(COMMON_HEADER) RemoveFirstNullContext.c
 RemoveFirstNullSession_SOURCES = $(COMMON_HEADER) RemoveFirstNullSession.c
 RemoveFirstPass_SOURCES        = $(COMMON_HEADER) RemoveFirstPass.c
 
-EXTRA_DIST = 
+EXTRA_DIST =      \
+   Makefile.win32 \
+   RunTests.vbs   
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 

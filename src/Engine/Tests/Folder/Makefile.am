@@ -205,7 +205,9 @@ TopStatusNullStatus_SOURCES     = $(COMMON_HEADER) TopStatusNullStatus.c
 TopStatusPass_SOURCES           = $(COMMON_HEADER) TopStatusPass.c
 ValidatePass_SOURCES            = $(COMMON_HEADER) ValidatePass.c
 
-EXTRA_DIST = 
+EXTRA_DIST =      \
+   Makefile.win32 \
+   RunTests.vbs   
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 

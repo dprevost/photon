@@ -77,7 +77,9 @@ TestFolder_SOURCES            = $(COMMON_HEADER) TestFolder.c
 TestHashMap_SOURCES           = $(COMMON_HEADER) TestHashMap.c
 TestQueue_SOURCES             = $(COMMON_HEADER) TestQueue.c
 
-EXTRA_DIST = 
+EXTRA_DIST =      \
+   Makefile.win32 \
+   RunTests.vbs   
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
