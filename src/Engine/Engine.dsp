@@ -57,7 +57,7 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /dll /machine:I386 /out:"Release/vdsfEngine.dll" /libpath:"..\Release"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PreLink_Cmds=del ..\Release\vdsfEngine.lib	del ..\Release\vdsfEngine.dll
+PreLink_Cmds=if not exist ..\Release\ mkdir ..\Release	if exist ..\Release\vdsfEngine.lib del ..\Release\vdsfEngine.lib	if exist ..\Release\vdsfEngine.dll del ..\Release\vdsfEngine.dll
 PostBuild_Cmds=copy Release\vdsfEngine.lib ..\Release	copy Release\vdsfEngine.dll ..\Release
 # End Special Build Tool
 
@@ -89,7 +89,7 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /dll /debug /machine:I386 /out:"Debug/vdsfEngine.dll" /pdbtype:sept /libpath:"..\Debug"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PreLink_Cmds=del ..\Debug\vdsfEngine.lib	del ..\Debug\vdsfEngine.dll
+PreLink_Cmds=if not exist ..\Debug\ mkdir ..\Debug	if exist ..\Debug\vdsfEngine.lib del ..\Debug\vdsfEngine.lib	if exist ..\Debug\vdsfEngine.dll del ..\Debug\vdsfEngine.dll
 PostBuild_Cmds=copy Debug\vdsfEngine.lib ..\Debug	copy Debug\vdsfEngine.dll ..\Debug
 # End Special Build Tool
 
@@ -113,6 +113,14 @@ SOURCE=.\Folder.c
 # Begin Source File
 
 SOURCE=.\Hash.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\hash_fnv.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\HashMap.c
 # End Source File
 # Begin Source File
 
@@ -148,6 +156,10 @@ SOURCE=.\ProcessManager.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\Queue.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\Session.c
 # End Source File
 # Begin Source File
@@ -177,6 +189,14 @@ SOURCE=.\Folder.h
 # Begin Source File
 
 SOURCE=.\Hash.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\hash_fnv.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\HashMap.h
 # End Source File
 # Begin Source File
 
@@ -216,6 +236,10 @@ SOURCE=.\MemoryAllocator.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\MemoryHeader.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\MemoryObject.h
 # End Source File
 # Begin Source File
@@ -228,11 +252,19 @@ SOURCE=.\ProcessManager.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Queue.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Session.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\SessionContext.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Transaction.h
 # End Source File
 # Begin Source File
 

@@ -57,7 +57,7 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib /nologo /dll /machine:I386 /out:"Release/vdsfCommon.dll"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PreLink_Cmds=if not exist ..\Release\ mkdir ..\Release	del ..\Release\vdsfCommon.dll	del ..\Release\vdsfCommon.lib
+PreLink_Cmds=if not exist ..\Release\ mkdir ..\Release	if exist ..\Release\vdsfCommon.dll del ..\Release\vdsfCommon.dll	if exist ..\Release\vdsfCommon.lib del ..\Release\vdsfCommon.lib
 PostBuild_Cmds=copy Release\vdsfCommon.dll ..\Release	copy Release\vdsfCommon.lib ..\Release
 # End Special Build Tool
 
@@ -89,7 +89,7 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib /nologo /dll /debug /machine:I386 /out:"Debug/vdsfCommon.dll" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PreLink_Cmds=if not exist ..\Debug\ mkdir ..\Debug	del ..\Debug\vdsfCommon.dll	del ..\Debug\vdsfCommon.lib
+PreLink_Cmds=if not exist ..\Debug\ mkdir ..\Debug	if exist ..\Debug\vdsfCommon.dll del ..\Debug\vdsfCommon.dll	if exist ..\Debug\vdsfCommon.lib del ..\Debug\vdsfCommon.lib
 PostBuild_Cmds=copy debug\vdsfCommon.dll ..\Debug	copy debug\vdsfCommon.lib ..\Debug
 # End Special Build Tool
 
@@ -113,6 +113,10 @@ SOURCE=.\DirAccess.c
 # Begin Source File
 
 SOURCE=.\ErrorHandler.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\localtime_r.c
 # End Source File
 # Begin Source File
 
@@ -172,6 +176,10 @@ SOURCE=.\Options.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\private.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ProcessLock.h
 # End Source File
 # Begin Source File
@@ -189,6 +197,10 @@ SOURCE=.\ThreadLock.inl
 # Begin Source File
 
 SOURCE=.\Timer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\tzfile.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

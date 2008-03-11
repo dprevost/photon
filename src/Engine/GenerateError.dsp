@@ -65,6 +65,7 @@ SOURCE=..\include\vdsf\vdsErrors.h
 
 !IF  "$(CFG)" == "GenerateError - Win32 Release"
 
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=..\include\vdsf\vdsErrors.h
 
@@ -76,17 +77,13 @@ InputPath=..\include\vdsf\vdsErrors.h
 !ELSEIF  "$(CFG)" == "GenerateError - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
+USERDEP__VDSER="VdsErrorHandler.c: $(InputPath)"	"VdsErrorHandler.h: $(InputPath)"	
 # Begin Custom Build
 InputPath=..\include\vdsf\vdsErrors.h
 
-BuildCmds= \
+"qqq" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	..\Debug\errorParser -i $(InputPath) -o VdsErrorHandler -p vdseErr
 
-"VdsErrorHandler.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"VdsErrorHandler.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
 # End Custom Build
 
 !ENDIF 
