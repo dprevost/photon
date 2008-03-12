@@ -113,6 +113,34 @@ SOURCE=.\VDSHandler.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\VerifyFolder.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\VerifyHash.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\VerifyHashMap.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\VerifyList.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\VerifyMemObj.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\VerifyQueue.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\VerifyVDS.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\Watchdog.cpp
 # End Source File
 # Begin Source File
