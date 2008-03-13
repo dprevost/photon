@@ -49,5 +49,7 @@ libvdsf_la_LIBADD = \
    $(top_builddir)/src/Engine/libEngine.la \
    $(top_builddir)/src/Common/libCommon.la
 
-EXTRA_DIST = Makefile.win32 
+EXTRA_DIST =      \
+   API.dsp        \
+   Makefile.win32 
 

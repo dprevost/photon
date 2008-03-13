@@ -83,7 +83,9 @@ ValidateNULLArgvi_SOURCES          = $(INCLUDE_FILES) ValidateNULLArgvi.c
 ValidateNullHandle_SOURCES         = $(INCLUDE_FILES) ValidateNullHandle.c
 ValidatePass_SOURCES               = $(INCLUDE_FILES) ValidatePass.c
 
-EXTRA_DIST = 
+EXTRA_DIST =      \
+   Makefile.win32 \
+   RunTests.vbs   
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 

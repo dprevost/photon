@@ -122,7 +122,6 @@ SynchMemNull_SOURCES            = $(INCLUDE_FILES) SynchMemNull.c
 SynchPass_SOURCES               = $(INCLUDE_FILES) SynchPass.c
 Tests_SOURCES                   = $(INCLUDE_FILES) Tests.c
 
-
 EXTRA_DIST =      \
    Makefile.win32 \
    RunTests.vbs   

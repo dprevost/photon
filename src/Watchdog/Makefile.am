@@ -24,7 +24,8 @@ man_MANS = vdswd.1
 
 EXTRA_DIST =      \
    $(man_MANS)    \
-   Makefile.win32 
+   Makefile.win32 \
+   Watchdog.dsp   
 
 vdswd_SOURCES =      \
    Acceptor.cpp      \

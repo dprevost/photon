@@ -27,7 +27,8 @@ vdssh_SOURCES =  \
    constants.h   \
    shell.cpp     \
    shell.h       \
-   vdssh.cpp     
+   vdssh.cpp     \
+   vdssh.dsp     
 
 vdssh_LDADD = $(top_builddir)/src/C++/libvdsfcpp.la 
 

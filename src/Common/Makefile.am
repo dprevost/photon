@@ -44,15 +44,16 @@ libCommon_la_SOURCES =                 \
 
 EXTRA_DIST =                \
              asctime_r.c    \
+             Common.dsp     \
              ctime_r.c      \
              localtime_r.c  \
+             Makefile.win32 \
              memcmp.c       \
              memset.c       \
              nanosleep.c    \
              private.h      \
              strnlen.c      \
-             tzfile.h       \
-             Makefile.win32 
+             tzfile.h       
 
 libCommon_la_LIBADD = @LTLIBOBJS@
 

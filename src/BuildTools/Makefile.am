@@ -31,7 +31,9 @@ errorParser_SOURCES =                  \
 
 errorParser_LDADD = $(top_builddir)/src/Common/libCommon.la 
 
-EXTRA_DIST = Makefile.win32
+EXTRA_DIST =       \
+   errorParser.dsp \
+   Makefile.win32  
 
 # DIST_SUBDIRS = Tests  
 
