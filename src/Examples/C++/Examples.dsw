@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "HashMap"=".\PROJECT FILES\HashMap.dsp" - Package Owner=<4>
+Project: "HashMap"=".\PROJECT_FILES\HashMap.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "HashMapLoop"=".\PROJECT FILES\HashMapLoop.dsp" - Package Owner=<4>
+Project: "HashMapLoop"=".\PROJECT_FILES\HashMapLoop.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -27,7 +27,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "QueueIn"=".\PROJECT FILES\QueueIn.dsp" - Package Owner=<4>
+Project: "QueueIn"=".\PROJECT_FILES\QueueIn.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -39,7 +39,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "QueueOut"=".\Project Files\QueueOut.dsp" - Package Owner=<4>
+Project: "QueueOut"=".\PROJECT_FILES\QueueOut.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -51,7 +51,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "QueueWork"=".\Project Files\QueueWork.dsp" - Package Owner=<4>
+Project: "QueueWork"=".\PROJECT_FILES\QueueWork.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
