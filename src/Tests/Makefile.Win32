@@ -17,8 +17,8 @@ VBS_VERBOSE=
 CLEANFILES = *~  vc60.pdb
 
 W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
-LDD_FLAGS = $(W32_SYS_LIBS)     vdsfcpp.lib vdsfAPI.lib vdsfEngine.lib vdsfCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../Release" 
-LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) vdsfcpp.lib vdsfAPI.lib vdsfEngine.lib vdsfCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../Debug" 
+LDD_FLAGS = $(W32_SYS_LIBS)     vdsfcpp.lib vdsf.lib vdsfEngine.lib vdsfCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../Release" 
+LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) vdsfcpp.lib vdsf.lib vdsfEngine.lib vdsfCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../Debug" 
 
 OUTDIR=.\Release
 INTDIR=.\Release
@@ -27,15 +27,20 @@ INTDIR_DEBUG=.\Debug
 
 CFLAGS_DEBUG=   /nologo /MDd /W3 /Zi /I ".." /I "../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
 CFLAGS_RELEASE= /nologo /MD  /W3 /O2 /I ".." /I "../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
+CPPFLAGS_DEBUG=   $(CFLAGS_DEBUG)   /GX
+CPPFLAGS_RELEASE= $(CFLAGS_RELEASE) /GX
 
 .c{$(OUTDIR)}.exe:
 	$(CPP) $(CFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"
 
 .cpp{$(OUTDIR)}.exe:
-	$(CPP) $(CFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"
+	$(CPP) $(CPPFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"
 
 .c{$(OUTDIR_DEBUG)}.exe:
 	$(CPP) $(CFLAGS_DEBUG) $< /link $(LDD_FLAGS_DEBUG) /out:"$@"
+
+.cpp{$(OUTDIR_DEBUG)}.exe:
+	$(CPP) $(CPPFLAGS_DEBUG) $< /link $(LDD_FLAGS_DEBUG) /out:"$@"
 
 "$(OUTDIR)" :
 	if not exist "$(OUTDIR)/" mkdir "$(OUTDIR)"

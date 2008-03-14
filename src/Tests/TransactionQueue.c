@@ -1274,13 +1274,10 @@ int main(int argc, char *argv[])
 {
    int errcode = 0;
 
-   if ( argc != 2 )
-   {
-      printf( " Usage: %sWatchdogAddress \n", argv[0] );
-      return -1;
-   }
-
-   errcode = vdsInit( argv[1], 0 );   
+   if ( argc > 1 )
+      errcode = vdsInit( argv[1], 0 );
+   else
+      errcode = vdsInit( "10701", 0 );
    if ( errcode != VDS_OK )
    {
       printf( " Error opening VDS = %d\n", errcode );
