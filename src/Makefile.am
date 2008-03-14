@@ -57,6 +57,18 @@ I386_FILES =                                   \
              Locking/asm-i386/spinlock_types.h \
              Locking/asm-i386/system.h         
 
+SPARC_FILES =                         \
+   Locking/asm-sparc/linkage.h        \
+   Locking/asm-sparc/spinlock.h       \
+   Locking/asm-sparc/spinlock_types.h \
+   Locking/asm-sparc/system.h         
+
+X86_64_FILES =                         \
+   Locking/asm-x86_64/linkage.h        \
+   Locking/asm-x86_64/spinlock.h       \
+   Locking/asm-x86_64/spinlock_types.h \
+   Locking/asm-x86_64/system.h         
+
 EXAMPLES_FILES =                              \
    Examples/iso_3166.tab                      \
    Examples/README.txt                        \
@@ -101,7 +113,9 @@ EXTRA_DIST =          \
    $(EXAMPLES_FILES)  \
    config-win32.h     \
    Makefile.win32     \
-   vdsf.dsw           
+   vdsf.dsw           \
+   $(SPARC_FILES)     \
+   $(X86_64_FILES)    
 
 install-data-local:
 	-mkdir -p $(DESTDIR)$(datadir)/doc/vdsf/Examples
