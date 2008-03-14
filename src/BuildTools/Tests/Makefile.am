@@ -8,6 +8,10 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+# Include this at the beginning to allow the current Makefile.am to
+# overwrite any macros set in the common file
+include $(top_srcdir)/src/Makefile.Common.am
+
 CLEANFILES = *~ genError.c genError.h
 
 #
@@ -18,10 +22,10 @@ check_PROGRAMS = testParser
 testParser_SOURCES = testParser.c testError.h
 nodist_testParser_SOURCES = genError.c genError.h
 
-testParser.c: genError.h
+testParser.o: genError.h
 
 genError.h genError.c: testError.h 
-	$(top_builddir)/src/BuildTools/errorParser -i testError.h -o genError -p myErr
+	$(top_builddir)/src/BuildTools/errorParser -i $(srcdir)/testError.h -o genError -p myErr
 
 EXTRA_DIST =      \
    Makefile.win32 \
@@ -30,34 +34,13 @@ EXTRA_DIST =      \
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
-TESTS =
-
-if COND_USE_DBC
-TESTS += 
-#         TryAcqZeroValue 
-endif
-
-if COND_USE_EXTREME_DBC
-TESTS += 
-endif
-
-TESTS +=             \
-         selfTest.sh \
-         testParser
+TESTS =        \
+   selfTest.sh \
+   testParser  
 
 XFAIL_TESTS = 
 
+AM_CPPFLAGS += -I$(top_builddir)/src/BuildTools/Tests
+
 LDADD = $(top_builddir)/src/Common/libCommon.la
-
-AM_CPPFLAGS = -I$(top_srcdir)/src/Common  \
-              -I$(top_srcdir)/src/Tests   \
-              -I$(top_srcdir)/src/include
-
-
-if COND_USE_DBC
-   AM_CPPFLAGS += -DUSE_DBC
-endif
-if COND_USE_EXTREME_DBC
-   AM_CPPFLAGS += -DUSE_EXTREME_DBC
-endif
 

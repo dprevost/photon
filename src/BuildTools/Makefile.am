@@ -14,7 +14,7 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES        = *~
 
-#SUBDIRS = . Tests
+SUBDIRS = . Tests
 
 noinst_PROGRAMS = errorParser
 

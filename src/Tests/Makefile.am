@@ -18,6 +18,7 @@ EXTRA_DIST =             \
    Makefile.Win32        \
    PrintError.h          \
    OutOfMemory.sh        \
+   RunTests.vbs          \
    TestWithWatchdog.py   \
    TestWithWatchdog.sh   \
    TransactionHashMap.sh \
