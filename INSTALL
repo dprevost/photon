@@ -3,7 +3,15 @@ Installation Instructions
 
 Some notes specific to vdsf:
 
- * Doxygen and latex are required if you want to build the documentation. 
+ * To build and install from source, the "standard" method should be
+   used:
+    * ./configure (or ./configure --prefix=/usr)
+    * make (see the note below on compilers)
+    * make install (from an account with the required privileges, of course).
+    * On Windows, use "nmake -f makefile.win32" to build vdsf (see the web
+      site for additional explanations).
+
+ * Doxygen and latex are required if you want to rebuild the documentation. 
    The graphviz package is also recommended (doxygen uses it to create 
    graphs).
 
@@ -22,9 +30,11 @@ Some notes specific to vdsf:
         want to disable this on production systems for performance reasons. 
         It is on by default.
     * --prefix=PREFIX To change the default installation directory 
-        (/usr/local). It is not recommended to change this since this is 
-        an early alpha release. 
-    
+        (/usr/local).  
+
+ * Compilers: gcc is recommended but any compiler that accepts gcc 
+   inline-assembly syntax should work.
+
 ************************************************************************
 *
 * Generic instructions written by the FSF to build vdsf (or any other 

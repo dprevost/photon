@@ -1,6 +1,6 @@
 vdsf -- History of visible changes.
 
-Copyright (C) 2006-2007, Daniel Prevost <dprevost@users.sourceforge.net>
+Copyright (C) 2006-2008, Daniel Prevost <dprevost@users.sourceforge.net>
 See the end for copying conditions.
 
 Please send vdsf bug reports to dprevost@users.sourceforge.net.
@@ -18,11 +18,18 @@ Version 0.1
     * Man pages for the C API
     * i18n (internationalization)
 
+Version 0.2
+
+    * C++ API
+    * Some crash-recovery features at startup
+    * Better isolation policy at startup
+    * A pseudo-shell utility (vdssh)
+    
 -------------------------------------------------------
 
 Copying information:
 
-Copyright (C) 2006-2007, Daniel Prevost <dprevost@users.sourceforge.net>
+Copyright (C) 2006-2008, Daniel Prevost <dprevost@users.sourceforge.net>
 
    Permission is granted to anyone to make or distribute verbatim copies
    of this document as received, in any medium, provided that the
