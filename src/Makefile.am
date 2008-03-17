@@ -72,6 +72,7 @@ X86_64_FILES =                         \
 EXAMPLES_FILES =                              \
    Examples/iso_3166.tab                      \
    Examples/README.txt                        \
+   Examples/vdswd-config.example              \
    Examples/C/Examples.dsw                    \
    Examples/C/HashMap.c                       \
    Examples/C/HashMapLoop.c                   \

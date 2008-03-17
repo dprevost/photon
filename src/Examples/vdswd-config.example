@@ -1,0 +1,48 @@
+############################################################
+#
+# Example of a config file for the vdsf watchdog (vdswd)
+#
+############################################################
+
+# Everything following a '#' is a comment
+
+# Directory for the vds (the shared-memory file) and support 
+# files. The files will be created if needed.
+# Note: this example use /tmp but this might not be a good idea 
+# if /tmp is clean on reboot.
+
+VDSLocation   /tmp/vdsf
+
+# MemorySize is in kbytes. In this example, 10 Megabytes.
+# On many modern systems, only the actual pages in use will
+# be loaded - therefore this parameter can be quite large 
+# (you'll need the space on disk however - in fact twice as
+# large to accomodate a backup of the memory file).
+MemorySize            10240
+
+# The tcp/ip port used by the API clients and the watchdog to
+# communicate. The port is bind to a local address (127.0.0.1)
+# and cannot be accessed from a different computer for obvious
+# security reasons.
+WatchdogAddress       10701
+
+# Unused field - always set to zero.
+LogTransaction        0  
+
+# Unix only - the file permissions for the vds and support files. 
+# The most likely options are 0660 and 0600 (these numbers start
+# with a zero and are therefore interpreted as octal numbers).
+# 0660: everyone in the group is allowed full access to the vdsf.
+# 0600: only the user who creates the vdsf can access it.
+#
+# Note: this is mainly for future development, for example if you
+# want the web server (or a database or...) to access the vds,
+# you can create a group, vdsf, and add the user apache (or
+# equivalent) to this group.
+FilePermissions       0660  
+
+# Unix only: the directory permissions for vdsf. If you use 0600
+# for the previous parameter, use 0700 here. Use 0770 if you set
+# the FilePermissions to 0660.
+DirectoryPermissions  0770  
+
