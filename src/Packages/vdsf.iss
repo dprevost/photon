@@ -12,7 +12,11 @@ OutputBaseFilename=vdsf-0.2.0
 [Files]
 Source: src\Release\vdsf.dll; DestDir: {app}\bin
 Source: src\Release\vdsfCommon.dll; DestDir: {app}\bin
+Source: src\Release\vdsfcpp.dll; DestDir: {app}\bin
 Source: src\Release\vdsfEngine.dll; DestDir: {app}\bin
+Source: src\Release\vdsInfo.exe; DestDir: {sys}\bin
+Source: src\Release\vdssh.exe; DestDir: {app}\bin
+Source: src\Release\vdswd.exe; DestDir: {app}\bin
 Source: src\include\vdsf\vds.h; DestDir: {app}\include
 Source: src\include\vdsf\vdsCommon.h; DestDir: {app}\include
 Source: src\include\vdsf\vdsErrors.h; DestDir: {app}\include
@@ -21,11 +25,21 @@ Source: src\include\vdsf\vdsHashMap.h; DestDir: {app}\include
 Source: src\include\vdsf\vdsProcess.h; DestDir: {app}\include
 Source: src\include\vdsf\vdsQueue.h; DestDir: {app}\include
 Source: src\include\vdsf\vdsSession.h; DestDir: {app}\include
+Source: src\include\vdsf\vds; DestDir: {app}\include
+Source: src\include\vdsf\vdsException; DestDir: {app}\include
+Source: src\include\vdsf\vdsFolder; DestDir: {app}\include
+Source: src\include\vdsf\vdsHashMap; DestDir: {app}\include
+Source: src\include\vdsf\vdsProcess; DestDir: {app}\include
+Source: src\include\vdsf\vdsQueue; DestDir: {app}\include
+Source: src\include\vdsf\vdsSession; DestDir: {app}\include
 Source: src\Release\vdsf.lib; DestDir: {app}\lib
-Source: doc\refman.pdf; DestDir: {app}
-Source: src\Release\vdswd.exe; DestDir: {app}\bin
+Source: src\Release\vdsfcpp.lib; DestDir: {app}\lib
+Source: doc\refman_c.pdf; DestDir: {app}
+Source: doc\refman_c++.pdf; DestDir: {app}
 Source: COPYING; DestDir: {app}; DestName: License.txt
 Source: src\Examples\iso_3166.tab; DestDir: {app}\Examples
+Source: src\Examples\vdswd-config.example; DestDir: {app}\Examples
+Source: src\Examples\README.txt; DestDir: {app}\Examples
 Source: src\Examples\C\Examples.dsw; DestDir: {app}\Examples\C
 Source: src\Examples\C\HashMap.c; DestDir: {app}\Examples\C
 Source: src\Examples\C\HashMapLoop.c; DestDir: {app}\Examples\C
@@ -35,13 +49,13 @@ Source: src\Examples\C\Queue.h; DestDir: {app}\Examples\C
 Source: src\Examples\C\QueueIn.c; DestDir: {app}\Examples\C
 Source: src\Examples\C\QueueOut.c; DestDir: {app}\Examples\C
 Source: src\Examples\C\QueueWork.c; DestDir: {app}\Examples\C
-Source: src\Examples\C\README; DestDir: {app}\Examples\C; DestName: README.txt
+Source: src\Examples\C\README.txt; DestDir: {app}\Examples\C
 Source: src\Examples\C\RunQueue.vbs; DestDir: {app}\Examples\C
-Source: src\Examples\C\Project Files\HashMap.dsp; DestDir: {app}\Examples\C\Project Files
-Source: src\Examples\C\Project Files\HashMapLoop.dsp; DestDir: {app}\Examples\C\Project Files
-Source: src\Examples\C\Project Files\QueueIn.dsp; DestDir: {app}\Examples\C\Project Files
-Source: src\Examples\C\Project Files\QueueOut.dsp; DestDir: {app}\Examples\C\Project Files
-Source: src\Examples\C\Project Files\QueueWork.dsp; DestDir: {app}\Examples\C\Project Files
+Source: src\Examples\C\Project_Files\HashMap.dsp; DestDir: {app}\Examples\C\Project_Files
+Source: src\Examples\C\Project_Files\HashMapLoop.dsp; DestDir: {app}\Examples\C\Project_Files
+Source: src\Examples\C\Project_Files\QueueIn.dsp; DestDir: {app}\Examples\C\Project_Files
+Source: src\Examples\C\Project_Files\QueueOut.dsp; DestDir: {app}\Examples\C\Project_Files
+Source: src\Examples\C\Project_Files\QueueWork.dsp; DestDir: {app}\Examples\C\Project_Files
 Source: src\Examples\C++\Examples.dsw; DestDir: {app}\Examples\C++
 Source: src\Examples\C++\HashMap.cpp; DestDir: {app}\Examples\C++
 Source: src\Examples\C++\HashMapLoop.cpp; DestDir: {app}\Examples\C++
@@ -53,20 +67,17 @@ Source: src\Examples\C++\QueueOut.cpp; DestDir: {app}\Examples\C++
 Source: src\Examples\C++\QueueWork.cpp; DestDir: {app}\Examples\C++
 Source: src\Examples\C++\README.txt; DestDir: {app}\Examples\C++
 Source: src\Examples\C++\RunQueue.vbs; DestDir: {app}\Examples\C++
-Source: src\Examples\C++\Project Files\HashMap.dsp; DestDir: {app}\Examples\C++\Project Files
-Source: src\Examples\C++\Project Files\HashMapLoop.dsp; DestDir: {app}\Examples\C++\Project Files
-Source: src\Examples\C++\Project Files\QueueIn.dsp; DestDir: {app}\Examples\C++\Project Files
-Source: src\Examples\C++\Project Files\QueueOut.dsp; DestDir: {app}\Examples\C++\Project Files
-Source: src\Examples\C++\Project Files\QueueWork.dsp; DestDir: {app}\Examples\C++\Project Files
+Source: src\Examples\C++\Project_Files\HashMap.dsp; DestDir: {app}\Examples\C++\Project_Files
+Source: src\Examples\C++\Project_Files\HashMapLoop.dsp; DestDir: {app}\Examples\C++\Project_Files
+Source: src\Examples\C++\Project_Files\QueueIn.dsp; DestDir: {app}\Examples\C++\Project_Files
+Source: src\Examples\C++\Project_Files\QueueOut.dsp; DestDir: {app}\Examples\C++\Project_Files
+Source: src\Examples\C++\Project_Files\QueueWork.dsp; DestDir: {app}\Examples\C++\Project_Files
 ;Source: c:\windows\system32\mswinsck.ocx; DestDir: {sys}; Flags: regserver restartreplace sharedfile
-Source: src\Release\vdsfcpp.lib; DestDir: {app}\lib
-Source: src\Release\vdsfcpp.dll; DestDir: {app}\bin
-Source: src\Release\vdsInfo.exe; DestDir: {sys}\bin
-Source: src\Release\vdssh.exe; DestDir: {app}\bin
 
 [Icons]
 ;Name: "{group}\Watchdog"; Filename: "{app}\bin\vdswd.EXE"; WorkingDir: "{app}"
-Name: {group}\Manual; Filename: {app}\refman.pdf
+Name: {group}\Ref. Manual C API; Filename: {app}\refman_c.pdf
+Name: {group}\Ref. Manual C++ API; Filename: {app}\refman_c++.pdf
 Name: {group}\Uninstall My Program; Filename: {uninstallexe}
 
 [Registry]
