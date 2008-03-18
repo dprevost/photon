@@ -1,7 +1,7 @@
 /* -*- c++ -*- */
 /* :mode=c++:  - For jedit, previous line for emacs */
 /*
- * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -38,11 +38,14 @@ public:
 
    virtual ~vdsFolder();
 
-   void Open( const std::string & folderName );
-
-   void Open( const char * folderName,
-              size_t       nameLengthInBytes );
-   
+   /**
+    * \brief Close a folder.
+    *
+    * This function terminates the current access to the folder in shared memory
+    * (the folder itself is untouched).
+    *
+    * \exception vdsException An abnormal error occured.
+    */
    void Close();
 
    /** 
@@ -58,7 +61,9 @@ public:
     *             allocation for this buffer is the responsability of 
     *             the caller.
     *
-    * \return 0 on success or a ::vdsErrors on error.
+    * \return 0 on success or VDS_IS_EMPTY if the folder is empty.
+    *
+    * \exception vdsException An abnormal error occured.
     */
    int GetFirst( vdsFolderEntry * pEntry );
 
@@ -69,22 +74,58 @@ public:
     * committed will not be seen by the iterator. Likewise, destroyed 
     * data items (even if not yet committed) are invisible.
     *
-    * Evidently, you must call ::vdsFolderGetFirst to initialize the iterator. 
+    * Evidently, you must call vdsFolder::GetFirst to initialize the iterator. 
     *
     * \param[out] pEntry The data structure provided by the user to 
     *             hold the content of each item in the folder. Memory 
     *             allocation for this buffer is the responsability of 
     *             the caller.
     *
-    * \return 0 on success or a ::vdsErrors on error.
+    * \return 0 on success or VDS_REACHED_THE_END when the iteration reaches
+    *           the end of the folder.
+    *
+    * \exception vdsException An abnormal error occured.
     */
    int GetNext( vdsFolderEntry * pEntry );
 
+   /** 
+    * Open an existing folder (see vdsSession::CreateObject to create a new 
+    * folder).
+    *
+    * \param[in]  folderName The fully qualified name of the folder. 
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Open( const std::string & folderName );
+
+   /** 
+    * Open an existing folder (see vdsSession::CreateObject to create a new 
+    * folder).
+    *
+    * \param[in]  folderName The fully qualified name of the folder. 
+    * \param[in]  nameLengthInBytes The length of \em folderName (in bytes) not
+    *             counting the null terminator.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Open( const char * folderName,
+              size_t       nameLengthInBytes );
+   
+   /**
+    * Return the status of the folder.
+    *
+    * \param[out] pStatus      A pointer to the status structure.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
    void Status( vdsObjStatus * pStatus );
 
 private:
 
+   /// Pointer to the vdsaFolder struct.
    VDS_HANDLE m_objectHandle;
+
+   /// Reference to the vdsaSession struct (we belong to).
    VDS_HANDLE & m_sessionHandle;
 
 };

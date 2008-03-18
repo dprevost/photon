@@ -41,17 +41,85 @@ public:
 
    virtual ~vdsHashMap();
 
+   /**
+    * \brief Close a Hash Map.
+    *
+    * This function terminates the current access to the hash map in shared 
+    * memory (the hash map itself is untouched).
+    *
+    * \warning Closing an object does not automatically commit or rollback 
+    * data items that were inserted or removed. You still must use either 
+    * vdsSession::Commit or vdsSession::Rollback to end the current unit of 
+    * work.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
    void Close();
    
+   /** 
+    * Remove the data item identified by the given key from the hash map.
+    *
+    * Data items which were added by another session and are not yet committed 
+    * will not be seen by this function and cannot be removed. Likewise, 
+    * destroyed data items (even if not yet committed) are invisible.
+    *
+    * The removals only become permanent after a call to vdsSession::Commit.
+    *
+    * \param[in]  key The key of the item to be removed.
+    * \param[in]  keyLength The length of the \em key buffer (in bytes).
+    *
+    * \exception vdsException An abnormal error occured.
+    */
    void Delete( const void * key,
                 size_t       keyLength );
 
+   /** 
+    * Retrieve the data item identified by the given key from the hash map.
+    *
+    * Data items which were added by another session and are not yet committed 
+    * will not be seen by this function. Likewise, 
+    * destroyed data items (even if not yet committed) are invisible.
+    *
+    * \param[in]  key The key of the item to be retrieved.
+    * \param[in]  keyLength The length of the \em key buffer (in bytes).
+    * \param[out] buffer The buffer provided by the user to hold the content of
+    *             the data item. Memory allocation for this buffer is the
+    *             responsability of the caller.
+    * \param[in]  bufferLength The length of \em buffer (in bytes).
+    * \param[out] returnedLength The actual number of bytes in the data item.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
    void Get( const void * key,
              size_t       keyLength,
              void       * buffer,
              size_t       bufferLength,
              size_t     * returnedLength );
 
+   /** 
+    * Iterate through the hash map.
+    *
+    * Data items which were added by another session and are not yet committed 
+    * will not be seen by the iterator. Likewise, destroyed data items (even if
+    * not yet committed) are invisible.
+    *
+    * Data items retrieved this way will not be sorted.
+    *
+    * \param[out] key The key buffer provided by the user to hold the content of
+    *             the key associated with the first element. Memory allocation 
+    *             for this buffer is the responsability of the caller.
+    * \param[in]  keyLength The length of the \em key buffer (in bytes).
+    * \param[out] buffer The buffer provided by the user to hold the content of
+    *             the first element. Memory allocation for this buffer is the
+    *             responsability of the caller.
+    * \param[in]  bufferLength The length of \em buffer (in bytes).
+    * \param[out] retKeyLength The actual number of bytes in the key
+    * \param[out] retDataLength The actual number of bytes in the data item.
+    *
+    * \return 0 on success or VDS_IS_EMPTY if the hash map is empty.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
    int GetFirst( void       * key,
                  size_t       keyLength,
                  void       * buffer,
@@ -59,6 +127,36 @@ public:
                  size_t     * retKeyLength,
                  size_t     * retDataLength );
 
+   /** 
+    * Iterate through the hash map.
+    *
+    * Data items which were added by another session and are not yet committed 
+    * will not be seen by the iterator. Likewise, destroyed data items (even if
+    * not yet committed) are invisible.
+    *
+    * Evidently, you must call vdsHashMap::GetFirst to initialize the iterator. 
+    * Not so evident - calling vdsHashMap::Get will reset the iteration to the
+    * data item retrieved by this function (they use the same internal storage). 
+    * If this cause a problem, please let us know.
+    *
+    * Data items retrieved this way will not be sorted.
+    *
+    * \param[out] key The key buffer provided by the user to hold the content of
+    *             the key associated with the data element. Memory allocation 
+    *             for this buffer is the responsability of the caller.
+    * \param[in]  keyLength The length of the \em key buffer (in bytes).
+    * \param[out] buffer The buffer provided by the user to hold the content of
+    *             the data element. Memory allocation for this buffer is the
+    *             responsability of the caller.
+    * \param[in]  bufferLength The length of \em buffer (in bytes).
+    * \param[out] retKeyLength The actual number of bytes in the key
+    * \param[out] retDataLength The actual number of bytes in the data item.
+    *
+    * \return 0 on success or VDS_REACHED_THE_END when the iteration reaches
+    *           the end of the hash map.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
    int GetNext( void       * key,
                 size_t       keyLength,
                 void       * buffer,
@@ -66,26 +164,78 @@ public:
                 size_t     * retKeyLength,
                 size_t     * retDataLength );
 
+   /**
+    * Insert a data element in the hash map.
+    *
+    * The additions only become permanent after a call to vdsSession::Commit.
+    *
+    * \param[in]  key The key of the item to be inserted.
+    * \param[in]  keyLength The length of the \em key buffer (in bytes).
+    * \param[in]  data  The data item to be inserted.
+    * \param[in]  dataLength The length of \em data (in bytes).
+    *
+    * \exception vdsException An abnormal error occured.
+    */
    void Insert( const void * key,
                 size_t       keyLength,
                 const void * data,
                 size_t       dataLength );
 
+   /** 
+    * Open an existing hash map (see vdsSession::CreateObject to create a new 
+    * object).
+    *
+    * \param[in]  hashMapName The fully qualified name of the hash map. 
+    *
+    * \exception vdsException An abnormal error occured.
+    */
    void Open( const std::string & hashMapName );
    
+   /** 
+    * Open an existing hash map (see vdsSession::CreateObject to create a new 
+    * object).
+    *
+    * \param[in]  hashMapName The fully qualified name of the hash map. 
+    * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) 
+    *             not counting the null terminator.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
    void Open( const char * hashMapName,
               size_t       nameLengthInBytes );
    
+   /**
+    * Replace a data element in the hash map.
+    *
+    * The replacements only become permanent after a call to vdsSession::Commit.
+    *
+    * \param[in]  key The key of the item to be replaced.
+    * \param[in]  keyLength The length of the \em key buffer (in bytes).
+    * \param[in]  data  The new data item that will replace the previous data.
+    * \param[in]  dataLength The length of \em data (in bytes).
+    *
+    * \exception vdsException An abnormal error occured.
+    */
    void Replace( const void * key,
                  size_t       keyLength,
                  const void * data,
                  size_t       dataLength );
 
+   /**
+    * Return the status of the hash map.
+    *
+    * \param[out] pStatus      A pointer to the status structure.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
    void Status( vdsObjStatus * pStatus );
 
 private:
 
+   /// Pointer to the vdsaHashMap struct.
    VDS_HANDLE m_objectHandle;
+
+   /// Reference to the vdsaSession struct (we belong to).
    VDS_HANDLE & m_sessionHandle;
    
 };

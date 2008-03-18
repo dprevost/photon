@@ -155,7 +155,7 @@ int vdsHashMapGetFirst( VDS_HANDLE   objectHandle,
  *
  * Evidently, you must call ::vdsHashMapGetFirst to initialize the iterator. 
  * Not so evident - calling ::vdsHashMapGet will reset the iteration to the
- * data item retireved by this function (they use the same internal storage). 
+ * data item retrieved by this function (they use the same internal storage). 
  * If this cause a problem, please let us know.
  *
  * Data items retrieved this way will not be sorted.

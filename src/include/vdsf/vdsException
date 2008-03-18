@@ -40,17 +40,21 @@ class VDSF_EXPORT vdsException
 {
 public:
 
+   /// Construct a vdsf exception using the return code from the C function
+   /// and the name of the function throwing it.
    vdsException( int          theErrorCode, 
                  VDS_HANDLE   sessionHandle, 
                  const char * functionName );
    
    virtual ~vdsException();
 
+   /// Return the error message.
    std::string & Message( std::string & errorMessage );
 
+   /// Return the error message.
    std::string & Message();
    
-   // Some times, just getting the errcode is allwe care about...
+   /// Return the error code associated with the exception.
    int ErrorCode() { return errcode; }
    
 private:

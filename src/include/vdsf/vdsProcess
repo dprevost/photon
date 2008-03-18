@@ -1,7 +1,7 @@
 /* -*- c++ -*- */
 /* :mode=c++:  - For jedit, previous line for emacs */
 /*
- * Copyright (C) 2006-2007 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -38,9 +38,38 @@ public:
 
    vdsProcess();
    
+   /**
+    * This function initializes access to a VDS. It takes 2 input 
+    * arguments, the address of the watchdog and a boolean value. 
+    * This last one indicates if sessions and 
+    * other objects (Queues, etc) are shared amongst threads (in the 
+    * current process) and must be protected. Recommendation: always 
+    * set protectionNeeded to false unless you cannot do otherwise. 
+    * In other words it is recommended to use one session object for
+    * each thread. Also if the same queue needs to be accessed by two 
+    * threads it is more efficient to have two different objects instead
+    * of sharing a single one.
+    * 
+    * [Additional note: API objects (or C handles) are just proxies for 
+    * the real objects sitting in shared memory. Proper synchronization 
+    * is already done in shared memory and it is best to avoid to 
+    * synchronize these proxy objects.]
+    * 
+    * \param[in] wdAddress The address of the watchdog. Currently a string with 
+    *            the port number ("12345").
+    * \param[in] protectionNeeded A boolean value indicating if multi-threaded
+    *            locks are needed or not.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
    void Init( const char* wdAddress,
               bool        protectionNeeded = false );
 
+   /**
+    * The destructor terminates all access to the VDS. This function 
+    * will also close all sessions and terminate all accesses to 
+    * the different objects.
+    */
    virtual ~vdsProcess();
 
 };

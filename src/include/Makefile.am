@@ -73,22 +73,24 @@ VDS_C_FILES =                \
    man3/vdsSession_c.3       \
    man3/vdsSession.h.3       
 
-man_MANS =                \
-           $(VDS_C_FILES) 
- 
-#           man3/vdsFolder.3  
-#           man3/vdsQueue.3   
-#           man3/vdsProcess.3 
-#           man3/vdsSession.3 
+man_MANS =             \
+   $(VDS_C_FILES)      \
+   man3/vdsException.3 \
+   man3/vdsFolder.3    \
+   man3/vdsHashMap.3   \
+   man3/vdsProcess.3   \
+   man3/vdsQueue.3     \
+   man3/vdsSession.3   
 
-EXTRA_DIST =                \
-             doxyfile.vds_c \
-             $(VDS_C_FILES)
-
-#             Doxyfile.vdsFolder  
-#             Doxyfile.vdsQueue   
-#             Doxyfile.vdsProcess 
-#             Doxyfile.vdsSession 
+EXTRA_DIST =             \
+   doxyfile.vds_c        \
+   $(VDS_C_FILES)        \
+   Doxyfile.vdsException \
+   Doxyfile.vdsFolder    \
+   Doxyfile.vdsHashMap   \
+   Doxyfile.vdsProcess   \
+   Doxyfile.vdsQueue     \
+   Doxyfile.vdsSession   
 
 nobase_include_HEADERS = \
    vdsf/vdsCommon.h  \
@@ -112,26 +114,35 @@ nobase_include_HEADERS = \
 #
 if COND_USE_DOXYGEN
 
-#man3/vdsFolder.3: vdsf/vdsFolder
-#	cd 
-#	doxygen $(top_srcdir)/src/include/Doxyfile.vdsFolder
-#	cp dummy/man/man3/vdsFolder.3 man3/vdsFolder.3
-#	-rm -rf dummy
+man3/vdsException.3: vdsf/vdsException
+	doxygen $(top_srcdir)/src/include/Doxyfile.vdsException
+	cp dummy/man/man3/vdsException.3 man3/vdsException.3
+	-rm -rf dummy
 
-#man3/vdsQueue.3: vdsf/vdsQueue
-#	doxygen Doxyfile.vdsQueue
-#	cp dummy/man/man3/vdsQueue.3 man3/vdsQueue.3
-#	-rm -rf dummy
+man3/vdsFolder.3: vdsf/vdsFolder
+	doxygen $(top_srcdir)/src/include/Doxyfile.vdsFolder
+	cp dummy/man/man3/vdsFolder.3 man3/vdsFolder.3
+	-rm -rf dummy
 
-#man3/vdsProcess.3: vdsf/vdsProcess
-#	doxygen Doxyfile.vdsProcess
-#	cp dummy/man/man3/vdsProcess.3 man3/vdsProcess.3
-#	-rm -rf dummy
+man3/vdsHashMap.3: vdsf/vdsHashMap
+	doxygen $(top_srcdir)/src/include/Doxyfile.vdsHashMap
+	cp dummy/man/man3/vdsHashMap.3 man3/vdsHashMap.3
+	-rm -rf dummy
 
-#man3/vdsSession.3: vdsf/vdsSession
-#	doxygen Doxyfile.vdsSession
-#	cp dummy/man/man3/vdsSession.3 man3/vdsSession.3
-#	-rm -rf dummy
+man3/vdsProcess.3: vdsf/vdsProcess
+	doxygen Doxyfile.vdsProcess
+	cp dummy/man/man3/vdsProcess.3 man3/vdsProcess.3
+	-rm -rf dummy
+
+man3/vdsQueue.3: vdsf/vdsQueue
+	doxygen Doxyfile.vdsQueue
+	cp dummy/man/man3/vdsQueue.3 man3/vdsQueue.3
+	-rm -rf dummy
+
+man3/vdsSession.3: vdsf/vdsSession
+	doxygen Doxyfile.vdsSession
+	cp dummy/man/man3/vdsSession.3 man3/vdsSession.3
+	-rm -rf dummy
 
 # Warning: this doxygen run creates many more files which we do
 # not want to distribute (a header file for each error code, for each
@@ -156,3 +167,4 @@ maintainer-clean-local:
 	-rm -f man3/*.3
 
 endif
+
