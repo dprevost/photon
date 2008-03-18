@@ -1,0 +1,254 @@
+.TH "vdsQueue" 3 "18 Mar 2008" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+vdsQueue \- 
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+Definition at line 35 of file vdsQueue.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBvdsQueue\fP (vdsSession &session)"
+.br
+.ti -1c
+.RI "virtual \fB~vdsQueue\fP ()"
+.br
+.ti -1c
+.RI "void \fBClose\fP ()"
+.br
+.RI "\fIClose a FIFO queue. \fP"
+.ti -1c
+.RI "int \fBGetFirst\fP (void *buffer, size_t bufferLength, size_t *returnedLength)"
+.br
+.RI "\fIIterate through the queue - no data items are removed from the queue by this function. \fP"
+.ti -1c
+.RI "int \fBGetNext\fP (void *buffer, size_t bufferLength, size_t *returnedLength)"
+.br
+.RI "\fIIterate through the queue - no data items are removed from the queue by this function. \fP"
+.ti -1c
+.RI "void \fBOpen\fP (const std::string &queueName)"
+.br
+.RI "\fIOpen an existing FIFO queue (see Session::CreateObject to create a new queue). \fP"
+.ti -1c
+.RI "void \fBOpen\fP (const char *queueName, size_t nameLengthInBytes)"
+.br
+.RI "\fIOpen an existing FIFO queue (see Session::CreateObject to create a new queue). \fP"
+.ti -1c
+.RI "int \fBPop\fP (void *buffer, size_t bufferLength, size_t *returnedLength)"
+.br
+.RI "\fIRemove the first item from the beginning of a FIFO queue and return it to the caller. \fP"
+.ti -1c
+.RI "void \fBPush\fP (const void *pItem, size_t length)"
+.br
+.RI "\fIInsert a data element at the end of the FIFO queue. \fP"
+.ti -1c
+.RI "void \fBStatus\fP (vdsObjStatus *pStatus)"
+.br
+.RI "\fIReturn the status of the queue. \fP"
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "VDS_HANDLE \fBm_objectHandle\fP"
+.br
+.RI "\fIPointer to the vdsaQueue struct. \fP"
+.ti -1c
+.RI "VDS_HANDLE & \fBm_sessionHandle\fP"
+.br
+.RI "\fIReference to the vdsaSession struct (we belong to). \fP"
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "vdsQueue::vdsQueue (vdsSession & session)"
+.PP
+.SS "virtual vdsQueue::~vdsQueue ()\fC [virtual]\fP"
+.PP
+.SH "Member Function Documentation"
+.PP 
+.SS "void vdsQueue::Close ()"
+.PP
+Close a FIFO queue. 
+.PP
+This function terminates the current access to the queue in shared memory (the queue itself, in shared memory is untouched).
+.PP
+\fBWarning:\fP
+.RS 4
+Closing an object does not automatically commit or rollback data items that were inserted or removed. You still must use either vdsSession::Commit or vdsSession::Rollback to end the current unit of work.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "int vdsQueue::GetFirst (void * buffer, size_t bufferLength, size_t * returnedLength)"
+.PP
+Iterate through the queue - no data items are removed from the queue by this function. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIbuffer\fP The buffer provided by the user to hold the content of the first element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIreturnedLength\fP The actual number of bytes in the data item.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or VDS_IS_EMPTY if the queue is empty.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "int vdsQueue::GetNext (void * buffer, size_t bufferLength, size_t * returnedLength)"
+.PP
+Iterate through the queue - no data items are removed from the queue by this function. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+Evidently, you must call GetFirst to initialize the iterator. Not so evident - calling Pop will reset the iteration to the last element (they use the same internal storage). If this cause a problem, please let us know.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIbuffer\fP The buffer provided by the user to hold the content of the next element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIreturnedLength\fP The actual number of bytes in the data item.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or VDS_REACHED_THE_END when the iteration reaches the end of the queue.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsQueue::Open (const char * queueName, size_t nameLengthInBytes)"
+.PP
+Open an existing FIFO queue (see Session::CreateObject to create a new queue). 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIqueueName\fP The fully qualified name of the queue. 
+.br
+\fInameLengthInBytes\fP The length of \fIqueueName\fP (in bytes) not counting the null terminator.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsQueue::Open (const std::string & queueName)"
+.PP
+Open an existing FIFO queue (see Session::CreateObject to create a new queue). 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIqueueName\fP The fully qualified name of the queue.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "int vdsQueue::Pop (void * buffer, size_t bufferLength, size_t * returnedLength)"
+.PP
+Remove the first item from the beginning of a FIFO queue and return it to the caller. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by this function. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+The removals only become permanent after a call to vdsSession::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIbuffer\fP The buffer provided by the user to hold the content of the data item. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIreturnedLength\fP The actual number of bytes in the data item.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or VDS_IS_EMPTY if the queue is empty or VDS_ITEM_IS_IN_USE if all existing items are 'invisible'.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsQueue::Push (const void * pItem, size_t length)"
+.PP
+Insert a data element at the end of the FIFO queue. 
+.PP
+The additions only become permanent after a call to vdsSession::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpItem\fP The data item to be inserted. 
+.br
+\fIlength\fP The length of \fIpItem\fP (in bytes).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsQueue::Status (vdsObjStatus * pStatus)"
+.PP
+Return the status of the queue. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpStatus\fP A pointer to the status structure.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "VDS_HANDLE \fBvdsQueue::m_objectHandle\fP\fC [private]\fP"
+.PP
+Pointer to the vdsaQueue struct. 
+.PP
+Definition at line 181 of file vdsQueue.
+.SS "VDS_HANDLE& \fBvdsQueue::m_sessionHandle\fP\fC [private]\fP"
+.PP
+Reference to the vdsaSession struct (we belong to). 
+.PP
+Definition at line 184 of file vdsQueue.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for vdsf C++ API from the source code.

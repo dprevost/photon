@@ -1,4 +1,4 @@
-.TH "vdsObjStatus" 3 "16 Feb 2008" "Version 0.2.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsObjStatus" 3 "18 Mar 2008" "Version 0.2.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -51,33 +51,6 @@ Definition at line 140 of file vdsCommon.h.
 .in -1c
 .SH "Field Documentation"
 .PP 
-.SS "\fBvdsObjectType\fP \fBvdsObjStatus::type\fP"
-.PP
-The object type. 
-.PP
-Definition at line 143 of file vdsCommon.h.
-.SS "int \fBvdsObjStatus::status\fP"
-.PP
-Status (created but not committed, etc. 
-.PP
-) - not used in version 0.1 
-.PP
-Definition at line 146 of file vdsCommon.h.
-.SS "size_t \fBvdsObjStatus::numBlocks\fP"
-.PP
-The number of blocks allocated to this object. 
-.PP
-Definition at line 149 of file vdsCommon.h.
-.SS "size_t \fBvdsObjStatus::numBlockGroup\fP"
-.PP
-The number of groups of blocks allocated to this object. 
-.PP
-Definition at line 152 of file vdsCommon.h.
-.SS "size_t \fBvdsObjStatus::numDataItem\fP"
-.PP
-The number of data items in thisa object. 
-.PP
-Definition at line 155 of file vdsCommon.h.
 .SS "size_t \fBvdsObjStatus::freeBytes\fP"
 .PP
 The amount of free space available in the blocks allocated to this object. 
@@ -93,6 +66,33 @@ Definition at line 161 of file vdsCommon.h.
 Maximum key length (in bytes) if keys are supported - zero otherwise. 
 .PP
 Definition at line 164 of file vdsCommon.h.
+.SS "size_t \fBvdsObjStatus::numBlockGroup\fP"
+.PP
+The number of groups of blocks allocated to this object. 
+.PP
+Definition at line 152 of file vdsCommon.h.
+.SS "size_t \fBvdsObjStatus::numBlocks\fP"
+.PP
+The number of blocks allocated to this object. 
+.PP
+Definition at line 149 of file vdsCommon.h.
+.SS "size_t \fBvdsObjStatus::numDataItem\fP"
+.PP
+The number of data items in thisa object. 
+.PP
+Definition at line 155 of file vdsCommon.h.
+.SS "int \fBvdsObjStatus::status\fP"
+.PP
+Status (created but not committed, etc. 
+.PP
+) - not used in version 0.1 
+.PP
+Definition at line 146 of file vdsCommon.h.
+.SS "\fBvdsObjectType\fP \fBvdsObjStatus::type\fP"
+.PP
+The object type. 
+.PP
+Definition at line 143 of file vdsCommon.h.
 
 .SH "Author"
 .PP 

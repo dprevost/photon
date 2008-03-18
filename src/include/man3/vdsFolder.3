@@ -1,0 +1,186 @@
+.TH "vdsFolder" 3 "18 Mar 2008" "Version 0.2" "vdsf C++ API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+vdsFolder \- 
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+Definition at line 33 of file vdsFolder.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBvdsFolder\fP (vdsSession &session)"
+.br
+.ti -1c
+.RI "virtual \fB~vdsFolder\fP ()"
+.br
+.ti -1c
+.RI "void \fBClose\fP ()"
+.br
+.RI "\fIClose a folder. \fP"
+.ti -1c
+.RI "int \fBGetFirst\fP (vdsFolderEntry *pEntry)"
+.br
+.RI "\fIIterate through the folder - no data items are removed from the folder by this function. \fP"
+.ti -1c
+.RI "int \fBGetNext\fP (vdsFolderEntry *pEntry)"
+.br
+.RI "\fIIterate through the folder. \fP"
+.ti -1c
+.RI "void \fBOpen\fP (const std::string &folderName)"
+.br
+.RI "\fIOpen an existing folder (see vdsSession::CreateObject to create a new folder). \fP"
+.ti -1c
+.RI "void \fBOpen\fP (const char *folderName, size_t nameLengthInBytes)"
+.br
+.RI "\fIOpen an existing folder (see vdsSession::CreateObject to create a new folder). \fP"
+.ti -1c
+.RI "void \fBStatus\fP (vdsObjStatus *pStatus)"
+.br
+.RI "\fIReturn the status of the folder. \fP"
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "VDS_HANDLE \fBm_objectHandle\fP"
+.br
+.RI "\fIPointer to the vdsaFolder struct. \fP"
+.ti -1c
+.RI "VDS_HANDLE & \fBm_sessionHandle\fP"
+.br
+.RI "\fIReference to the vdsaSession struct (we belong to). \fP"
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "vdsFolder::vdsFolder (vdsSession & session)"
+.PP
+.SS "virtual vdsFolder::~vdsFolder ()\fC [virtual]\fP"
+.PP
+.SH "Member Function Documentation"
+.PP 
+.SS "void vdsFolder::Close ()"
+.PP
+Close a folder. 
+.PP
+This function terminates the current access to the folder in shared memory (the folder itself is untouched).
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "int vdsFolder::GetFirst (vdsFolderEntry * pEntry)"
+.PP
+Iterate through the folder - no data items are removed from the folder by this function. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpEntry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or VDS_IS_EMPTY if the folder is empty.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "int vdsFolder::GetNext (vdsFolderEntry * pEntry)"
+.PP
+Iterate through the folder. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+Evidently, you must call \fBvdsFolder::GetFirst\fP to initialize the iterator.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpEntry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or VDS_REACHED_THE_END when the iteration reaches the end of the folder.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsFolder::Open (const char * folderName, size_t nameLengthInBytes)"
+.PP
+Open an existing folder (see vdsSession::CreateObject to create a new folder). 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfolderName\fP The fully qualified name of the folder. 
+.br
+\fInameLengthInBytes\fP The length of \fIfolderName\fP (in bytes) not counting the null terminator.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsFolder::Open (const std::string & folderName)"
+.PP
+Open an existing folder (see vdsSession::CreateObject to create a new folder). 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfolderName\fP The fully qualified name of the folder.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsFolder::Status (vdsObjStatus * pStatus)"
+.PP
+Return the status of the folder. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpStatus\fP A pointer to the status structure.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "VDS_HANDLE \fBvdsFolder::m_objectHandle\fP\fC [private]\fP"
+.PP
+Pointer to the vdsaFolder struct. 
+.PP
+Definition at line 126 of file vdsFolder.
+.SS "VDS_HANDLE& \fBvdsFolder::m_sessionHandle\fP\fC [private]\fP"
+.PP
+Reference to the vdsaSession struct (we belong to). 
+.PP
+Definition at line 129 of file vdsFolder.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for vdsf C++ API from the source code.

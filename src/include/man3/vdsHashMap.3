@@ -1,0 +1,323 @@
+.TH "vdsHashMap" 3 "18 Mar 2008" "Version 0.2" "vdsf C++ API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+vdsHashMap \- 
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+Definition at line 36 of file vdsHashMap.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBvdsHashMap\fP (vdsSession &session)"
+.br
+.ti -1c
+.RI "virtual \fB~vdsHashMap\fP ()"
+.br
+.ti -1c
+.RI "void \fBClose\fP ()"
+.br
+.RI "\fIClose a Hash Map. \fP"
+.ti -1c
+.RI "void \fBDelete\fP (const void *key, size_t keyLength)"
+.br
+.RI "\fIRemove the data item identified by the given key from the hash map. \fP"
+.ti -1c
+.RI "void \fBGet\fP (const void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.br
+.RI "\fIRetrieve the data item identified by the given key from the hash map. \fP"
+.ti -1c
+.RI "int \fBGetFirst\fP (void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
+.br
+.RI "\fIIterate through the hash map. \fP"
+.ti -1c
+.RI "int \fBGetNext\fP (void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
+.br
+.RI "\fIIterate through the hash map. \fP"
+.ti -1c
+.RI "void \fBInsert\fP (const void *key, size_t keyLength, const void *data, size_t dataLength)"
+.br
+.RI "\fIInsert a data element in the hash map. \fP"
+.ti -1c
+.RI "void \fBOpen\fP (const std::string &hashMapName)"
+.br
+.RI "\fIOpen an existing hash map (see vdsSession::CreateObject to create a new object). \fP"
+.ti -1c
+.RI "void \fBOpen\fP (const char *hashMapName, size_t nameLengthInBytes)"
+.br
+.RI "\fIOpen an existing hash map (see vdsSession::CreateObject to create a new object). \fP"
+.ti -1c
+.RI "void \fBReplace\fP (const void *key, size_t keyLength, const void *data, size_t dataLength)"
+.br
+.RI "\fIReplace a data element in the hash map. \fP"
+.ti -1c
+.RI "void \fBStatus\fP (vdsObjStatus *pStatus)"
+.br
+.RI "\fIReturn the status of the hash map. \fP"
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "VDS_HANDLE \fBm_objectHandle\fP"
+.br
+.RI "\fIPointer to the vdsaHashMap struct. \fP"
+.ti -1c
+.RI "VDS_HANDLE & \fBm_sessionHandle\fP"
+.br
+.RI "\fIReference to the vdsaSession struct (we belong to). \fP"
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "vdsHashMap::vdsHashMap (vdsSession & session)"
+.PP
+.SS "virtual vdsHashMap::~vdsHashMap ()\fC [virtual]\fP"
+.PP
+.SH "Member Function Documentation"
+.PP 
+.SS "void vdsHashMap::Close ()"
+.PP
+Close a Hash Map. 
+.PP
+This function terminates the current access to the hash map in shared memory (the hash map itself is untouched).
+.PP
+\fBWarning:\fP
+.RS 4
+Closing an object does not automatically commit or rollback data items that were inserted or removed. You still must use either vdsSession::Commit or vdsSession::Rollback to end the current unit of work.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsHashMap::Delete (const void * key, size_t keyLength)"
+.PP
+Remove the data item identified by the given key from the hash map. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by this function and cannot be removed. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+The removals only become permanent after a call to vdsSession::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key of the item to be removed. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsHashMap::Get (const void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * returnedLength)"
+.PP
+Retrieve the data item identified by the given key from the hash map. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by this function. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key of the item to be retrieved. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIbuffer\fP The buffer provided by the user to hold the content of the data item. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIreturnedLength\fP The actual number of bytes in the data item.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "int vdsHashMap::GetFirst (void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
+.PP
+Iterate through the hash map. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+Data items retrieved this way will not be sorted.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key buffer provided by the user to hold the content of the key associated with the first element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIbuffer\fP The buffer provided by the user to hold the content of the first element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIretKeyLength\fP The actual number of bytes in the key 
+.br
+\fIretDataLength\fP The actual number of bytes in the data item.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or VDS_IS_EMPTY if the hash map is empty.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "int vdsHashMap::GetNext (void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
+.PP
+Iterate through the hash map. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+Evidently, you must call \fBvdsHashMap::GetFirst\fP to initialize the iterator. Not so evident - calling \fBvdsHashMap::Get\fP will reset the iteration to the data item retrieved by this function (they use the same internal storage). If this cause a problem, please let us know.
+.PP
+Data items retrieved this way will not be sorted.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key buffer provided by the user to hold the content of the key associated with the data element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIbuffer\fP The buffer provided by the user to hold the content of the data element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIretKeyLength\fP The actual number of bytes in the key 
+.br
+\fIretDataLength\fP The actual number of bytes in the data item.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or VDS_REACHED_THE_END when the iteration reaches the end of the hash map.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsHashMap::Insert (const void * key, size_t keyLength, const void * data, size_t dataLength)"
+.PP
+Insert a data element in the hash map. 
+.PP
+The additions only become permanent after a call to vdsSession::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key of the item to be inserted. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIdata\fP The data item to be inserted. 
+.br
+\fIdataLength\fP The length of \fIdata\fP (in bytes).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsHashMap::Open (const char * hashMapName, size_t nameLengthInBytes)"
+.PP
+Open an existing hash map (see vdsSession::CreateObject to create a new object). 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIhashMapName\fP The fully qualified name of the hash map. 
+.br
+\fInameLengthInBytes\fP The length of \fIhashMapName\fP (in bytes) not counting the null terminator.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsHashMap::Open (const std::string & hashMapName)"
+.PP
+Open an existing hash map (see vdsSession::CreateObject to create a new object). 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIhashMapName\fP The fully qualified name of the hash map.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsHashMap::Replace (const void * key, size_t keyLength, const void * data, size_t dataLength)"
+.PP
+Replace a data element in the hash map. 
+.PP
+The replacements only become permanent after a call to vdsSession::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key of the item to be replaced. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIdata\fP The new data item that will replace the previous data. 
+.br
+\fIdataLength\fP The length of \fIdata\fP (in bytes).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsHashMap::Status (vdsObjStatus * pStatus)"
+.PP
+Return the status of the hash map. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpStatus\fP A pointer to the status structure.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "VDS_HANDLE \fBvdsHashMap::m_objectHandle\fP\fC [private]\fP"
+.PP
+Pointer to the vdsaHashMap struct. 
+.PP
+Definition at line 236 of file vdsHashMap.
+.SS "VDS_HANDLE& \fBvdsHashMap::m_sessionHandle\fP\fC [private]\fP"
+.PP
+Reference to the vdsaSession struct (we belong to). 
+.PP
+Definition at line 239 of file vdsHashMap.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for vdsf C++ API from the source code.

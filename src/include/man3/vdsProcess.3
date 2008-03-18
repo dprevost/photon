@@ -1,0 +1,62 @@
+.TH "vdsProcess" 3 "18 Mar 2008" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+vdsProcess \- 
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+Definition at line 35 of file vdsProcess.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBvdsProcess\fP ()"
+.br
+.ti -1c
+.RI "void \fBInit\fP (const char *wdAddress, bool protectionNeeded=false)"
+.br
+.RI "\fIThis function initializes access to a VDS. \fP"
+.ti -1c
+.RI "virtual \fB~vdsProcess\fP ()"
+.br
+.RI "\fIThe destructor terminates all access to the VDS. \fP"
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "vdsProcess::vdsProcess ()"
+.PP
+.SS "virtual vdsProcess::~vdsProcess ()\fC [virtual]\fP"
+.PP
+The destructor terminates all access to the VDS. 
+.PP
+This function will also close all sessions and terminate all accesses to the different objects. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void vdsProcess::Init (const char * wdAddress, bool protectionNeeded = \fCfalse\fP)"
+.PP
+This function initializes access to a VDS. 
+.PP
+It takes 2 input arguments, the address of the watchdog and a boolean value. This last one indicates if sessions and other objects (Queues, etc) are shared amongst threads (in the current process) and must be protected. Recommendation: always set protectionNeeded to false unless you cannot do otherwise. In other words it is recommended to use one session object for each thread. Also if the same queue needs to be accessed by two threads it is more efficient to have two different objects instead of sharing a single one.
+.PP
+[Additional note: API objects (or C handles) are just proxies for the real objects sitting in shared memory. Proper synchronization is already done in shared memory and it is best to avoid to synchronize these proxy objects.]
+.PP
+\fBParameters:\fP
+.RS 4
+\fIwdAddress\fP The address of the watchdog. Currently a string with the port number ('12345'). 
+.br
+\fIprotectionNeeded\fP A boolean value indicating if multi-threaded locks are needed or not.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for vdsf C++ API from the source code.
