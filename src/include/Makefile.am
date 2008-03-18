@@ -90,7 +90,13 @@ EXTRA_DIST =             \
    Doxyfile.vdsHashMap   \
    Doxyfile.vdsProcess   \
    Doxyfile.vdsQueue     \
-   Doxyfile.vdsSession   
+   Doxyfile.vdsSession   \
+   man3/vdsException.3   \
+   man3/vdsFolder.3      \
+   man3/vdsHashMap.3     \
+   man3/vdsProcess.3     \
+   man3/vdsQueue.3       \
+   man3/vdsSession.3     
 
 nobase_include_HEADERS = \
    vdsf/vdsCommon.h  \

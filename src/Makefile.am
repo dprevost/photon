@@ -108,6 +108,10 @@ EXAMPLES_FILES =                              \
    Examples/C++/Project_Files/QueueOut.dsp    \
    Examples/C++/Project_Files/QueueWork.dsp   
 
+PACKAGES_FILES =         \
+   Packages/vdsf.iss     \
+   Packages/vdsf.spec.in 
+
 EXTRA_DIST =          \
    $(BASE_LOCK_FILES) \
    $(I386_FILES)      \
@@ -116,7 +120,8 @@ EXTRA_DIST =          \
    Makefile.win32     \
    vdsf.dsw           \
    $(SPARC_FILES)     \
-   $(X86_64_FILES)    
+   $(X86_64_FILES)    \
+   $(PACKAGES_FILES)  
 
 install-data-local:
 	-mkdir -p $(DESTDIR)$(datadir)/doc/vdsf/Examples

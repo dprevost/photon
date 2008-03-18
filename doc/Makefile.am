@@ -49,7 +49,7 @@ refman_c.pdf: $(HEADER_FILES)
 	doxygen doxyfile.vds_c $(VERBOSE)
 	cd c/latex; make refman.pdf; cd ../..
 	cd c/latex; make refman.pdf; cd ../..
-	cp c/latex/refman.pdf .
+	cp c/latex/refman.pdf refman_c.pdf
 
 refman_c++.pdf: $(CPP_HEADER_FILES)
 	-rm -rf c++
