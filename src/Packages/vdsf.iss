@@ -2,6 +2,9 @@
 MinVersion=0,4.0
 AppName=VDSF
 AppVerName=Virtual Data Space Framework version 0.2.0
+AppVersion=0.2.0
+AppSupportURL=http://vdsf.sourceforge.net/
+AppId=VDSF_V0
 LicenseFile=COPYING
 DefaultDirName={pf}\VDSF
 DefaultGroupName=VDSF
@@ -98,3 +101,61 @@ Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdsinfo.
 
 Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdsinfo.exe; ValueType: string; ValueData: {app}\bin\vdsinfo.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
 Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdsinfo.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
+[Code]
+
+function InitializeSetup(): Boolean;
+
+var
+  installedVersion: String;
+  removeOld: Boolean;
+  strUninstall: String;
+  errcode: Integer;
+
+begin
+  removeOld := False;
+  Result := True;
+  // Check for version 0.1 - we remove it if we see it without
+  // asking (so few were downloaded - no point in being too careful...)
+  if RegKeyExists(HKEY_LOCAL_MACHINE,
+    'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VDSF_is1') then
+  begin
+    removeOld := True;
+    RegQueryStringValue(HKEY_LOCAL_MACHINE,
+      'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VDSF_is1',
+      'UninstallString', strUninstall);
+  end;
+
+  // Version 0.2 and beyond.
+  if RegKeyExists(HKEY_LOCAL_MACHINE,
+    'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VDSF_V0_is1') then
+  begin
+    RegQueryStringValue(HKEY_LOCAL_MACHINE,
+      'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VDSF_V0_is1',
+      'DisplayVersion', installedVersion);
+
+
+    if MsgBox('VDSF version ' + installedVersion + ' is already installed. Continue with the installation?',
+      mbConfirmation, MB_YESNO) = IDYES then
+    begin
+      removeOld := True;
+      RegQueryStringValue(HKEY_LOCAL_MACHINE,
+        'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VDSF_V0_is1',
+        'UninstallString', strUninstall);
+    end
+    else
+    begin
+      Result := False;
+    end;
+  end;
+
+  if removeOld = True then
+  begin
+    ShellExec('', strUninstall, '/SILENT', '', SW_HIDE, ewWaitUntilTerminated, errcode);
+    if errcode <> 0 then
+    begin
+      MsgBox('Failure when attempting to uninstall the previous version - aborting the installation.',
+        mbInformation, MB_OK);
+      Result := False;
+    end;
+  end;
+end;
