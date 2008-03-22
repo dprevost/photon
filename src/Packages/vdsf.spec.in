@@ -125,5 +125,11 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man3/vdsProcess_c.3
 /usr/local/share/man/man3/vdsQueue_c.3
 /usr/local/share/man/man3/vdsSession_c.3
+/usr/local/share/man/man3/vdsException.3
+/usr/local/share/man/man3/vdsFolder.3
+/usr/local/share/man/man3/vdsHashMap.3
+/usr/local/share/man/man3/vdsProcess.3
+/usr/local/share/man/man3/vdsQueue.3
+/usr/local/share/man/man3/vdsSession.3
 
 %changelog
