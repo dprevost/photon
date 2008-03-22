@@ -17,7 +17,7 @@ Source: src\Release\vdsf.dll; DestDir: {app}\bin
 Source: src\Release\vdsfCommon.dll; DestDir: {app}\bin
 Source: src\Release\vdsfcpp.dll; DestDir: {app}\bin
 Source: src\Release\vdsfEngine.dll; DestDir: {app}\bin
-Source: src\Release\vdsInfo.exe; DestDir: {sys}\bin
+Source: src\Release\vdsInfo.exe; DestDir: {app}\bin
 Source: src\Release\vdssh.exe; DestDir: {app}\bin
 Source: src\Release\vdswd.exe; DestDir: {app}\bin
 Source: src\include\vdsf\vds.h; DestDir: {app}\include
