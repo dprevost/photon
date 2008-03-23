@@ -29,8 +29,7 @@ int main()
    char dummyArgs[100];
    char *dummyPtrs[10];
 
-   struct vdscOptStruct opts[5] = 
-   {
+   struct vdscOptStruct opts[5] = {
       { '3', "three",   1, "", "repeat the loop three times" },
       { 'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog" },
       { 'x', "",        1, "DISPLAY", "X display to use" },
@@ -55,10 +54,8 @@ int main()
    strcpy( dummyArgs, "OptionTest2 -a 12345" );
    dummyPtrs[1] = &dummyArgs[12];
    dummyPtrs[2] = &dummyArgs[15];
-//   dummyPtrs[3] = &dummyArgs[21];
    dummyArgs[11] = 0;
    dummyArgs[14] = 0;   
-//   dummyArgs[20] = 0;
 
    errcode = vdscValidateUserOptions( handle, 3, dummyPtrs, 1 );
    if ( errcode != 0 )

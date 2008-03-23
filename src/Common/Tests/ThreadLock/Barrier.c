@@ -85,7 +85,6 @@ int vdstInitBarrier( vdstBarrier *     pBarrier,
    
 #endif
 
-//   pBarrier->pCurrentSub = pBarrier->subBarrier[0];
    pBarrier->numThreads = numThreads;
    pBarrier->subBarrier[0].numRunners = numThreads;
    pBarrier->subBarrier[1].numRunners = numThreads;
@@ -185,8 +184,7 @@ void vdstBarrierWait( vdstBarrier * pBarrier )
    LeaveCriticalSection( &pCurrentSub->waitLock );
 #endif
 
-   if ( pCurrentSub->numRunners == 0 )
-   {
+   if ( pCurrentSub->numRunners == 0 ) {
       /* All done, we're the last thread to reach the barrier */
       
       /* Reset everything */
@@ -210,8 +208,7 @@ void vdstBarrierWait( vdstBarrier * pBarrier )
       VDS_POST_CONDITION( status == 0 );
 #endif
    }
-   else
-   {
+   else {
 #if defined (WIN32)
       WaitForSingleObject(pBarrier->subBarrier[pBarrier->currentSubBarrier].waitEvent, INFINITE);
 #else

@@ -48,8 +48,7 @@ int main()
 
    fprintf( stderr, "Sec = %u, uSec = %u\n", (unsigned int)sec, 
                                              (unsigned int)(nanoSec/1000) );
-   if ( sec == 0 && nanoSec < 10000 )
-   {
+   if ( sec == 0 && nanoSec < 10000 ) {
       fprintf( stderr, "Timer returns invalid time!\n" );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

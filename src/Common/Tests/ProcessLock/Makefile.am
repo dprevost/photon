@@ -16,32 +16,32 @@ CLEANFILES = *~ core
 
 INCLUDE_FILES = 
 
-check_PROGRAMS =                      \
-                 AcquireInvalidSig    \
-                 AcquireNullLock      \
-                 AcquirePass          \
-                 AcquireZeroValue     \
-                 FiniInvalidSig       \
-                 FiniNullLock         \
-                 FiniPass             \
-                 InitNullLock         \
-                 InitPass             \
-                 IsItLockedInvalidSig \
-                 IsItLockedNullLock   \
-                 IsItLockedPass       \
-                 LockConcurrency      \
-                 LockTests            \
-                 ReleaseInvalidSig    \
-                 ReleaseNullLock      \
-                 ReleasePass          \
-                 TestPidInvalidSig    \
-                 TestPidNullLock      \
-                 TestPidPass          \
-                 TestPidZeroPid       \
-                 TryAcqInvalidSig     \
-                 TryAcqNullLock       \
-                 TryAcqPass           \
-                 TryAcqZeroValue 
+check_PROGRAMS =        \
+   AcquireInvalidSig    \
+   AcquireNullLock      \
+   AcquirePass          \
+   AcquireZeroValue     \
+   FiniInvalidSig       \
+   FiniNullLock         \
+   FiniPass             \
+   InitNullLock         \
+   InitPass             \
+   IsItLockedInvalidSig \
+   IsItLockedNullLock   \
+   IsItLockedPass       \
+   LockConcurrency      \
+   LockTests            \
+   ReleaseInvalidSig    \
+   ReleaseNullLock      \
+   ReleasePass          \
+   TestPidInvalidSig    \
+   TestPidNullLock      \
+   TestPidPass          \
+   TestPidZeroPid       \
+   TryAcqInvalidSig     \
+   TryAcqNullLock       \
+   TryAcqPass           \
+   TryAcqZeroValue 
 
 AcquireInvalidSig_SOURCES    = $(INCLUDE_FILES) AcquireInvalidSig.c
 AcquireNullLock_SOURCES      = $(INCLUDE_FILES) AcquireNullLock.c
@@ -81,58 +81,58 @@ TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTH
 TESTS =
 
 if COND_USE_DBC
-TESTS +=                      \
-         AcquireInvalidSig    \
-         AcquireNullLock      \
-         AcquirePass          \
-         AcquireZeroValue     \
-         FiniInvalidSig       \
-         FiniNullLock         \
-         FiniPass             \
-         InitNullLock         \
-         InitPass             \
-         IsItLockedInvalidSig \
-         IsItLockedNullLock   \
-         IsItLockedPass       \
-         ReleaseInvalidSig    \
-         ReleaseNullLock      \
-         ReleasePass          \
-         TestPidInvalidSig    \
-         TestPidNullLock      \
-         TestPidPass          \
-         TestPidZeroPid       \
-         TryAcqInvalidSig     \
-         TryAcqNullLock       \
-         TryAcqPass           \
-         TryAcqZeroValue 
+TESTS +=                \
+   AcquireInvalidSig    \
+   AcquireNullLock      \
+   AcquirePass          \
+   AcquireZeroValue     \
+   FiniInvalidSig       \
+   FiniNullLock         \
+   FiniPass             \
+   InitNullLock         \
+   InitPass             \
+   IsItLockedInvalidSig \
+   IsItLockedNullLock   \
+   IsItLockedPass       \
+   ReleaseInvalidSig    \
+   ReleaseNullLock      \
+   ReleasePass          \
+   TestPidInvalidSig    \
+   TestPidNullLock      \
+   TestPidPass          \
+   TestPidZeroPid       \
+   TryAcqInvalidSig     \
+   TryAcqNullLock       \
+   TryAcqPass           \
+   TryAcqZeroValue 
 endif
 
 if COND_USE_EXTREME_DBC
 TESTS += 
 endif
 
-TESTS +=                       \
-         LockConcurrency.sh    \
-         LockConcurrencyTry.sh \
-         LockTests             
+TESTS +=                 \
+   LockConcurrency.sh    \
+   LockConcurrencyTry.sh \
+   LockTests             
 
-XFAIL_TESTS =                      \
-              AcquireInvalidSig    \
-              AcquireNullLock      \
-              AcquireZeroValue     \
-              FiniInvalidSig       \
-              FiniNullLock         \
-              InitNullLock         \
-              IsItLockedInvalidSig \
-              IsItLockedNullLock   \
-              ReleaseInvalidSig    \
-              ReleaseNullLock      \
-              TestPidInvalidSig    \
-              TestPidNullLock      \
-              TestPidZeroPid       \
-              TryAcqInvalidSig     \
-              TryAcqNullLock       \
-              TryAcqZeroValue 
+XFAIL_TESTS =           \
+   AcquireInvalidSig    \
+   AcquireNullLock      \
+   AcquireZeroValue     \
+   FiniInvalidSig       \
+   FiniNullLock         \
+   InitNullLock         \
+   IsItLockedInvalidSig \
+   IsItLockedNullLock   \
+   ReleaseInvalidSig    \
+   ReleaseNullLock      \
+   TestPidInvalidSig    \
+   TestPidNullLock      \
+   TestPidZeroPid       \
+   TryAcqInvalidSig     \
+   TryAcqNullLock       \
+   TryAcqZeroValue      
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
 

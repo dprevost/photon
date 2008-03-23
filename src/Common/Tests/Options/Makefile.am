@@ -16,39 +16,39 @@ CLEANFILES = *~ core
 
 INCLUDE_FILES = 
 
-check_PROGRAMS =                            \
-                 GetLongOptNullHandle       \
-                 GetLongOptNullOpt          \
-                 GetLongOptNullValue        \
-                 GetLongOptPass             \
-                 GetShortOptNullHandle      \
-                 GetShortOptNullValue       \
-                 GetShortOptPass            \
-                 IsLongPresentNullHandle    \
-                 IsLongPresentNullOpt       \
-                 IsLongPresentPass          \
-                 IsShortPresentNullHandle   \
-                 IsShortPresentPass         \
-                 SetOptionsNullHandle       \
-                 SetOptionsNullOpts         \
-                 SetOptionsNullEndedOpt     \
-                 SetOptionsNullEndedComment \
-                 SetOptionsNullEndedValue   \
-                 SetOptionsNumOptsZero      \
-                 SetOptionsPass             \
-                 SetOptionsRepeatedLong     \
-                 SetOptionsRepeatedShort    \
-                 ShowUsageNullAddArgs       \
-                 ShowUsageNullHandle        \
-                 ShowUsageNullProgName      \
-                 ShowUsagePass              \
-                 Tests                      \
-                 UnsetOptNullHandle         \
-                 ValidateArgcZero           \
-                 ValidateNullArgv           \
-                 ValidateNULLArgvi          \
-                 ValidateNullHandle         \
-                 ValidatePass               
+check_PROGRAMS =              \
+   GetLongOptNullHandle       \
+   GetLongOptNullOpt          \
+   GetLongOptNullValue        \
+   GetLongOptPass             \
+   GetShortOptNullHandle      \
+   GetShortOptNullValue       \
+   GetShortOptPass            \
+   IsLongPresentNullHandle    \
+   IsLongPresentNullOpt       \
+   IsLongPresentPass          \
+   IsShortPresentNullHandle   \
+   IsShortPresentPass         \
+   SetOptionsNullHandle       \
+   SetOptionsNullOpts         \
+   SetOptionsNullEndedOpt     \
+   SetOptionsNullEndedComment \
+   SetOptionsNullEndedValue   \
+   SetOptionsNumOptsZero      \
+   SetOptionsPass             \
+   SetOptionsRepeatedLong     \
+   SetOptionsRepeatedShort    \
+   ShowUsageNullAddArgs       \
+   ShowUsageNullHandle        \
+   ShowUsageNullProgName      \
+   ShowUsagePass              \
+   Tests                      \
+   UnsetOptNullHandle         \
+   ValidateArgcZero           \
+   ValidateNullArgv           \
+   ValidateNULLArgvi          \
+   ValidateNullHandle         \
+   ValidatePass               
 
 GetLongOptNullHandle_SOURCES       = $(INCLUDE_FILES) GetLongOptNullHandle.c
 GetLongOptNullOpt_SOURCES          = $(INCLUDE_FILES) GetLongOptNullOpt.c
@@ -93,37 +93,37 @@ TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTH
 TESTS = 
 
 if COND_USE_DBC
-TESTS +=                            \
-         GetLongOptNullHandle       \
-         GetLongOptNullOpt          \
-         GetLongOptNullValue        \
-         GetLongOptPass             \
-         GetShortOptNullHandle      \
-         GetShortOptNullValue       \
-         GetShortOptPass            \
-         IsLongPresentNullHandle    \
-         IsLongPresentNullOpt       \
-         IsLongPresentPass          \
-         IsShortPresentNullHandle   \
-         IsShortPresentPass         \
-         SetOptionsNullHandle       \
-         SetOptionsNullOpts         \
-         SetOptionsNullEndedOpt     \
-         SetOptionsNullEndedComment \
-         SetOptionsNullEndedValue   \
-         SetOptionsNumOptsZero      \
-         SetOptionsPass             \
-         SetOptionsRepeatedLong     \
-         SetOptionsRepeatedShort    \
-         ShowUsageNullAddArgs       \
-         ShowUsageNullHandle        \
-         ShowUsageNullProgName      \
-         ShowUsagePass              \
-         ValidateArgcZero           \
-         ValidateNullArgv           \
-         ValidateNULLArgvi          \
-         ValidateNullHandle         \
-         ValidatePass
+TESTS +=                      \
+   GetLongOptNullHandle       \
+   GetLongOptNullOpt          \
+   GetLongOptNullValue        \
+   GetLongOptPass             \
+   GetShortOptNullHandle      \
+   GetShortOptNullValue       \
+   GetShortOptPass            \
+   IsLongPresentNullHandle    \
+   IsLongPresentNullOpt       \
+   IsLongPresentPass          \
+   IsShortPresentNullHandle   \
+   IsShortPresentPass         \
+   SetOptionsNullHandle       \
+   SetOptionsNullOpts         \
+   SetOptionsNullEndedOpt     \
+   SetOptionsNullEndedComment \
+   SetOptionsNullEndedValue   \
+   SetOptionsNumOptsZero      \
+   SetOptionsPass             \
+   SetOptionsRepeatedLong     \
+   SetOptionsRepeatedShort    \
+   ShowUsageNullAddArgs       \
+   ShowUsageNullHandle        \
+   ShowUsageNullProgName      \
+   ShowUsagePass              \
+   ValidateArgcZero           \
+   ValidateNullArgv           \
+   ValidateNULLArgvi          \
+   ValidateNullHandle         \
+   ValidatePass
 endif
 
 if COND_USE_EXTREME_DBC
@@ -132,30 +132,30 @@ endif
 
 TESTS += Tests  
 
-XFAIL_TESTS =                       \
-         GetLongOptNullHandle       \
-         GetLongOptNullOpt          \
-         GetLongOptNullValue        \
-         GetShortOptNullHandle      \
-         GetShortOptNullValue       \
-         IsLongPresentNullHandle    \
-         IsLongPresentNullOpt       \
-         IsShortPresentNullHandle   \
-         SetOptionsNullHandle       \
-         SetOptionsNullOpts         \
-         SetOptionsNullEndedOpt     \
-         SetOptionsNullEndedComment \
-         SetOptionsNullEndedValue   \
-         SetOptionsNumOptsZero      \
-         SetOptionsRepeatedLong     \
-         SetOptionsRepeatedShort    \
-         ShowUsageNullAddArgs       \
-         ShowUsageNullHandle        \
-         ShowUsageNullProgName      \
-         ValidateArgcZero           \
-         ValidateNullArgv           \
-         ValidateNULLArgvi          \
-         ValidateNullHandle         
+XFAIL_TESTS =                 \
+   GetLongOptNullHandle       \
+   GetLongOptNullOpt          \
+   GetLongOptNullValue        \
+   GetShortOptNullHandle      \
+   GetShortOptNullValue       \
+   IsLongPresentNullHandle    \
+   IsLongPresentNullOpt       \
+   IsShortPresentNullHandle   \
+   SetOptionsNullHandle       \
+   SetOptionsNullOpts         \
+   SetOptionsNullEndedOpt     \
+   SetOptionsNullEndedComment \
+   SetOptionsNullEndedValue   \
+   SetOptionsNumOptsZero      \
+   SetOptionsRepeatedLong     \
+   SetOptionsRepeatedShort    \
+   ShowUsageNullAddArgs       \
+   ShowUsageNullHandle        \
+   ShowUsageNullProgName      \
+   ValidateArgcZero           \
+   ValidateNullArgv           \
+   ValidateNULLArgvi          \
+   ValidateNullHandle         
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
 

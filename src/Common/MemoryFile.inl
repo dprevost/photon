@@ -127,6 +127,7 @@ vdscSetReadWrite( vdscMemoryFile   * pMem,
 
 #if defined (WIN32)
 
+   errcode = 0;
    err = VirtualProtect( pMem->baseAddr, 
                          pMem->length, 
                          PAGE_READWRITE, 
@@ -135,8 +136,6 @@ vdscSetReadWrite( vdscMemoryFile   * pMem,
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );      
       errcode = -1;
    }
-   else
-      errcode = 0;
 
 #elif HAVE_MPROTECT
 

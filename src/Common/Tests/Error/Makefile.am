@@ -16,37 +16,37 @@ CLEANFILES = *~ core
 
 INCLUDE_FILES =
 
-check_PROGRAMS =                       \
-                 AddHandlerNullDef     \
-                 AddHandlerNullHandler \
-                 AddHandlerNullName    \
-                 AddHandlerPass        \
-                 AnyErrorNullError     \
-                 AnyErrorPass          \
-                 ChainErrorNullDef     \
-                 ChainErrorNullHandler \
-                 ChainErrorInvalidSig  \
-                 ChainErrorNoSetError  \
-                 ChainErrorTooMany     \
-                 ChainErrorPass        \
-                 FiniInvalidSig        \
-                 FiniNullError         \
-                 FiniPass              \
-                 GetErrorInvalidSig    \
-                 GetErrorNullError     \
-                 GetErrorNullMsg       \
-                 GetErrorZeroLength    \
-                 GetLastNullError      \
-                 GetLastPass           \
-                 GetLengthNullError    \
-                 GetLengthPass         \
-                 InitNoInitDefs        \
-                 InitNullError         \
-                 InitPass              \
-                 SetErrorInvalidSig    \
-                 SetErrorInvalidValue  \
-                 SetErrorNullError     \
-                 Tests 
+check_PROGRAMS =         \
+   AddHandlerNullDef     \
+   AddHandlerNullHandler \
+   AddHandlerNullName    \
+   AddHandlerPass        \
+   AnyErrorNullError     \
+   AnyErrorPass          \
+   ChainErrorNullDef     \
+   ChainErrorNullHandler \
+   ChainErrorInvalidSig  \
+   ChainErrorNoSetError  \
+   ChainErrorTooMany     \
+   ChainErrorPass        \
+   FiniInvalidSig        \
+   FiniNullError         \
+   FiniPass              \
+   GetErrorInvalidSig    \
+   GetErrorNullError     \
+   GetErrorNullMsg       \
+   GetErrorZeroLength    \
+   GetLastNullError      \
+   GetLastPass           \
+   GetLengthNullError    \
+   GetLengthPass         \
+   InitNoInitDefs        \
+   InitNullError         \
+   InitPass              \
+   SetErrorInvalidSig    \
+   SetErrorInvalidValue  \
+   SetErrorNullError     \
+   Tests 
 
 AddHandlerNullDef_SOURCES     = $(INCLUDE_FILES) AddHandlerNullDef.c
 AddHandlerNullHandler_SOURCES = $(INCLUDE_FILES) AddHandlerNullHandler.c
@@ -88,68 +88,67 @@ TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTH
 TESTS = 
 
 if COND_USE_DBC
-TESTS +=                       \
-         AddHandlerNullDef     \
-         AddHandlerNullHandler \
-         AddHandlerNullName    \
-         AddHandlerPass        \
-         AnyErrorNullError     \
-         AnyErrorPass          \
-         ChainErrorNullDef     \
-         ChainErrorNullHandler \
-         ChainErrorInvalidSig  \
-         ChainErrorNoSetError  \
-         ChainErrorTooMany     \
-         ChainErrorPass        \
-         FiniInvalidSig        \
-         FiniNullError         \
-         FiniPass              \
-         GetErrorInvalidSig    \
-         GetErrorNullError     \
-         GetErrorNullMsg       \
-         GetErrorZeroLength    \
-         GetLastNullError      \
-         GetLastPass           \
-         GetLengthNullError    \
-         GetLengthPass         \
-         InitNoInitDefs        \
-         InitNullError         \
-         InitPass              \
-         SetErrorInvalidSig    \
-         SetErrorInvalidValue  \
-         SetErrorNullError 
+TESTS +=                 \
+   AddHandlerNullDef     \
+   AddHandlerNullHandler \
+   AddHandlerNullName    \
+   AddHandlerPass        \
+   AnyErrorNullError     \
+   AnyErrorPass          \
+   ChainErrorNullDef     \
+   ChainErrorNullHandler \
+   ChainErrorInvalidSig  \
+   ChainErrorNoSetError  \
+   ChainErrorTooMany     \
+   ChainErrorPass        \
+   FiniInvalidSig        \
+   FiniNullError         \
+   FiniPass              \
+   GetErrorInvalidSig    \
+   GetErrorNullError     \
+   GetErrorNullMsg       \
+   GetErrorZeroLength    \
+   GetLastNullError      \
+   GetLastPass           \
+   GetLengthNullError    \
+   GetLengthPass         \
+   InitNoInitDefs        \
+   InitNullError         \
+   InitPass              \
+   SetErrorInvalidSig    \
+   SetErrorInvalidValue  \
+   SetErrorNullError     
 endif
 
 if COND_USE_EXTREME_DBC
 TESTS += 
 endif
 
-TESTS +=       \
-         Tests  
+TESTS += Tests  
 
-XFAIL_TESTS =                       \
-              AddHandlerNullDef     \
-              AddHandlerNullHandler \
-              AddHandlerNullName    \
-              AnyErrorNullError     \
-              ChainErrorNullDef     \
-              ChainErrorNullHandler \
-              ChainErrorInvalidSig  \
-              ChainErrorNoSetError  \
-              ChainErrorTooMany     \
-              FiniInvalidSig        \
-              FiniNullError         \
-              GetErrorInvalidSig    \
-              GetErrorNullError     \
-              GetErrorNullMsg       \
-              GetErrorZeroLength    \
-              GetLastNullError      \
-              GetLengthNullError    \
-              InitNoInitDefs        \
-              InitNullError         \
-              SetErrorInvalidSig    \
-              SetErrorInvalidValue  \
-              SetErrorNullError 
+XFAIL_TESTS =            \
+   AddHandlerNullDef     \
+   AddHandlerNullHandler \
+   AddHandlerNullName    \
+   AnyErrorNullError     \
+   ChainErrorNullDef     \
+   ChainErrorNullHandler \
+   ChainErrorInvalidSig  \
+   ChainErrorNoSetError  \
+   ChainErrorTooMany     \
+   FiniInvalidSig        \
+   FiniNullError         \
+   GetErrorInvalidSig    \
+   GetErrorNullError     \
+   GetErrorNullMsg       \
+   GetErrorZeroLength    \
+   GetLastNullError      \
+   GetLengthNullError    \
+   InitNoInitDefs        \
+   InitNullError         \
+   SetErrorInvalidSig    \
+   SetErrorInvalidValue  \
+   SetErrorNullError     
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
 

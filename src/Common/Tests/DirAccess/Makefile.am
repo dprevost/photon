@@ -16,31 +16,31 @@ CLEANFILES = *~ core
 
 INCLUDE_FILES =
 
-check_PROGRAMS =                   \
-                 CloseInvalidSig   \
-                 CloseNullDir      \
-                 ClosePass         \
-                 FiniInvalidSig    \
-                 FiniNullDir       \
-                 FiniPass          \
-                 GetNextInvalidSig \
-                 GetNextNoOpen     \
-                 GetNextNoSuchDir  \
-                 GetNextNullDir    \
-                 GetNextNullError  \
-                 GetNextNullpDir   \
-                 GetNextPass       \
-                 InitNullDir       \
-                 InitPass          \
-                 OpenCallTwice     \
-                 OpenInvalidSig    \
-                 OpenNoInit        \
-                 OpenNoSuchDir     \
-                 OpenNullDir       \
-                 OpenNullDirname   \
-                 OpenNullError     \
-                 OpenPass          \
-                 Tests             
+check_PROGRAMS =     \
+   CloseInvalidSig   \
+   CloseNullDir      \
+   ClosePass         \
+   FiniInvalidSig    \
+   FiniNullDir       \
+   FiniPass          \
+   GetNextInvalidSig \
+   GetNextNoOpen     \
+   GetNextNoSuchDir  \
+   GetNextNullDir    \
+   GetNextNullError  \
+   GetNextNullpDir   \
+   GetNextPass       \
+   InitNullDir       \
+   InitPass          \
+   OpenCallTwice     \
+   OpenInvalidSig    \
+   OpenNoInit        \
+   OpenNoSuchDir     \
+   OpenNullDir       \
+   OpenNullDirname   \
+   OpenNullError     \
+   OpenPass          \
+   Tests             
 
 CloseInvalidSig_SOURCES   = $(INCLUDE_FILES) CloseInvalidSig.c
 CloseNullDir_SOURCES      = $(INCLUDE_FILES) CloseNullDir.c
@@ -76,30 +76,30 @@ TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTH
 TESTS = 
 
 if COND_USE_DBC
-TESTS +=                  \
-        CloseInvalidSig   \
-        CloseNullDir      \
-        ClosePass         \
-        FiniInvalidSig    \
-        FiniNullDir       \
-        FiniPass          \
-        GetNextInvalidSig \
-        GetNextNoOpen     \
-        GetNextNoSuchDir  \
-        GetNextNullDir    \
-        GetNextNullError  \
-        GetNextNullpDir   \
-        GetNextPass       \
-        InitNullDir       \
-        InitPass          \
-        OpenCallTwice     \
-        OpenInvalidSig    \
-        OpenNoInit        \
-        OpenNoSuchDir     \
-        OpenNullDir       \
-        OpenNullDirname   \
-        OpenNullError     \
-        OpenPass
+TESTS +=             \
+   CloseInvalidSig   \
+   CloseNullDir      \
+   ClosePass         \
+   FiniInvalidSig    \
+   FiniNullDir       \
+   FiniPass          \
+   GetNextInvalidSig \
+   GetNextNoOpen     \
+   GetNextNoSuchDir  \
+   GetNextNullDir    \
+   GetNextNullError  \
+   GetNextNullpDir   \
+   GetNextPass       \
+   InitNullDir       \
+   InitPass          \
+   OpenCallTwice     \
+   OpenInvalidSig    \
+   OpenNoInit        \
+   OpenNoSuchDir     \
+   OpenNullDir       \
+   OpenNullDirname   \
+   OpenNullError     \
+   OpenPass
 endif
 
 if COND_USE_EXTREME_DBC
@@ -108,23 +108,23 @@ endif
 
 TESTS += Tests 
 
-XFAIL_TESTS =                   \
-              CloseInvalidSig   \
-              CloseNullDir      \
-              FiniInvalidSig    \
-              FiniNullDir       \
-              GetNextInvalidSig \
-              GetNextNoOpen     \
-              GetNextNullDir    \
-              GetNextNullError  \
-              GetNextNullpDir   \
-              InitNullDir       \
-              OpenCallTwice     \
-              OpenInvalidSig    \
-              OpenNoInit        \
-              OpenNullDir       \
-              OpenNullDirname   \
-              OpenNullError
+XFAIL_TESTS =        \
+   CloseInvalidSig   \
+   CloseNullDir      \
+   FiniInvalidSig    \
+   FiniNullDir       \
+   GetNextInvalidSig \
+   GetNextNoOpen     \
+   GetNextNullDir    \
+   GetNextNullError  \
+   GetNextNullpDir   \
+   InitNullDir       \
+   OpenCallTwice     \
+   OpenInvalidSig    \
+   OpenNoInit        \
+   OpenNullDir       \
+   OpenNullDirname   \
+   OpenNullError     
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
 

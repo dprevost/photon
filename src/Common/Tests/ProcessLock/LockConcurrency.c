@@ -90,22 +90,18 @@ int main( int argc, char* argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    errcode = vdscValidateUserOptions( handle, argc, argv, 1 );
-   if ( errcode < 0 )
-   {
+   if ( errcode < 0 ) {
       vdscShowUsage( handle, "LockConcurrency", "" );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( errcode > 0 )
-   {
+   if ( errcode > 0 ) {
       vdscShowUsage( handle, "LockConcurrency", "" );
       return 0;
    }
    
-   if ( vdscGetShortOptArgument( handle, 'c', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 'c', &argument ) ) {
       numChilds = atoi( argument );
-      if ( numChilds < 2 )
-      {
+      if ( numChilds < 2 ) {
          fprintf( stderr, "Number of childs must be >= to two\n" );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
@@ -113,11 +109,9 @@ int main( int argc, char* argv[] )
    else
       numChilds = DEFAULT_NUM_CHILDREN;
 
-   if ( vdscGetShortOptArgument( handle, 'i', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 'i', &argument ) ) {
       identifier = atoi( argument );
-      if ( identifier > numChilds )
-      {
+      if ( identifier > numChilds ) {
          fprintf( stderr, "Identifier must be between 0 and number of childs\n" );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
@@ -125,11 +119,9 @@ int main( int argc, char* argv[] )
    else
       identifier = 0;
 
-   if ( vdscGetShortOptArgument( handle, 't', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 't', &argument ) ) {
       maxTime = strtol( argument, NULL, 0 );
-      if ( maxTime < 1 )
-      {
+      if ( maxTime < 1 ) {
          fprintf( stderr, "Time of test must be positive\n" );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
@@ -137,17 +129,14 @@ int main( int argc, char* argv[] )
    else
       maxTime = DEFAULT_TIME; /* in seconds */
   
-   if ( vdscGetShortOptArgument( handle, 'm', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 'm', &argument ) ) {
       if ( strcmp( argument, "try" ) == 0 )
          tryMode = true;
    }
    
-   if ( vdscGetShortOptArgument( handle, 'f', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 'f', &argument ) ) {
       strncpy( filename, argument, PATH_MAX );
-      if ( filename[0] == '\0' )
-      {
+      if ( filename[0] == '\0' ) {
          fprintf( stderr, "Empty memfile name\n" );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
@@ -157,8 +146,7 @@ int main( int argc, char* argv[] )
    
    vdscInitMemoryFile( &memFile, 10, filename );
    
-   if ( identifier == 0 )
-   {
+   if ( identifier == 0 ) {
       /* The master process */
       
       childPid = malloc( numChilds*sizeof(pid_t) );
@@ -188,8 +176,7 @@ int main( int argc, char* argv[] )
          strcpy( strMode, "lock" );
       
       /* Launch the childs */
-      for ( i = 0; i < numChilds; ++i )
-      {
+      for ( i = 0; i < numChilds; ++i ) {
          sprintf( strId, "%d", i+1 );
 #if defined (WIN32)
          pid = _spawnl( _P_NOWAIT, argv[0], argv[0], 
@@ -199,16 +186,14 @@ int main( int argc, char* argv[] )
                         "-m", strMode,
                         "-t", strTime,
                         NULL );
-         if ( pid <= 0 )
-         {
+         if ( pid <= 0 ) {
             fprintf( stderr, "_spawnl failure, errno = %d\n", errno );
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
          childPid[i] = pid;
 #else
          pid = fork();
-         if ( pid == 0 )
-         {
+         if ( pid == 0 ) {
             execl( argv[0], argv[0],
                    "-c", strNumChilds,
                    "-f", filename,
@@ -219,13 +204,11 @@ int main( int argc, char* argv[] )
             /* If we come here, something is wrong ! */
             ERROR_EXIT( childExpectedToPass, NULL, ; );
          }
-         else if ( pid > 0 )
-         {
+         else if ( pid > 0 ) {
             childPid[i] = pid;
             fprintf( stderr, "Launched child, pid = %d\n", pid );
          }
-         else
-         {
+         else {
             fprintf( stderr, "Fork failure, errno = %d\n", errno );
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
@@ -233,8 +216,7 @@ int main( int argc, char* argv[] )
       } /* for loop launching child processes */
       
       /* Now wait for the child processes to end */
-      for ( i = 0; i < numChilds; ++i )
-      {
+      for ( i = 0; i < numChilds; ++i ) {
 #if defined(WIN32)
          _cwait( &childStatus, childPid[i], _WAIT_CHILD );
          if ( childStatus != 0 )
@@ -245,8 +227,7 @@ int main( int argc, char* argv[] )
             foundError = true;
 #endif
       }
-      if ( foundError )
-      {
+      if ( foundError ) {
          vdscFiniErrorHandler( &errorHandler );
          vdscFiniErrorDefs();
          ERROR_EXIT( expectedToPass, NULL, ; );
@@ -256,8 +237,7 @@ int main( int argc, char* argv[] )
    /*
     * Code for the child process(es) starts here
     */
-   else
-   {
+   else {
       maxTime *= US_PER_SEC;
 
       errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
@@ -270,10 +250,8 @@ int main( int argc, char* argv[] )
 
       pid = getpid();
    
-      for (;;)
-      {      
-         if ( tryMode )
-         {
+      for (;;) {      
+         if ( tryMode ) {
             int err = vdscTryAcquireProcessLock( &data->lock, pid, 10000 );
             if ( err != 0 )
                continue;
@@ -285,8 +263,7 @@ int main( int argc, char* argv[] )
          memcpy( data->dum1, data->dum2, 100 );
 
          sscanf( data->dum1, "%s %d", dum3, &dumId );
-         if ( dumId != identifier+1 )
-         {
+         if ( dumId != identifier+1 ) {
             fprintf( stderr, "Wrong... %d %d %s-%s\n", identifier+1, 
                      dumId, data->dum1, data->dum2 );
             data->exitFlag = 1;
@@ -301,8 +278,7 @@ int main( int argc, char* argv[] )
 
          loop++;
 
-         if ( (loop % CHECK_TIMER ) == 0 )
-         {
+         if ( (loop % CHECK_TIMER ) == 0 ) {
             vdscEndTimer( &timer );
             vdscCalculateTimer( &timer, &sec, &nanoSec );
 

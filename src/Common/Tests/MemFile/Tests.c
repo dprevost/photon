@@ -80,12 +80,12 @@ int main()
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    
    str = (unsigned char*) pAddr;
-   for ( i = 0; i < 10*1024; ++i )
-      if ( str[i] != (unsigned char)(i % 256) )
-      {
+   for ( i = 0; i < 10*1024; ++i ) {
+      if ( str[i] != (unsigned char)(i % 256) ) {
          ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
       }
-
+   }
+   
    vdscCloseMemFile( &mem2, &errorHandler );
 
    unlink( "MemFile.mem" );

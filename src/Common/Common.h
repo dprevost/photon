@@ -405,32 +405,27 @@ extern char *new_ctime_r( const time_t *timep, char *buf, int buflen );
 #    define ABORT() abort()
 #  endif
 #  define VDS_PRE_CONDITION(x) \
-   if ( ! (x) ) \
-   { \
+   if ( ! (x) ) { \
       fprintf( stderr, "%s (\"%s\") failed in file %s at line %d\n", \
          "DBC: precondition", #x, __FILE__, __LINE__ ); \
       ABORT(); \
    }
 #  define VDS_POST_CONDITION(x) \
-   if ( ! (x) ) \
-   { \
+   if ( ! (x) ) { \
       fprintf( stderr, "%s (\"%s\") failed in file %s at line %d\n", \
          "DBC: postcondition", #x, __FILE__, __LINE__ ); \
       ABORT(); \
    }
 #  define VDS_INV_CONDITION(x) \
-   if ( ! (x) ) \
-   { \
+   if ( ! (x) ) { \
       fprintf( stderr, "%s (\"%s\") failed in file %s at line %d\n", \
          "DBC: invariant", #x, __FILE__, __LINE__ ); \
       ABORT(); \
    }
-//#  define VDS_INTEGRITY_TEST(p)
 #else
 #  define VDS_PRE_CONDITION(x) 
 #  define VDS_POST_CONDITION(x)
 #  define VDS_INV_CONDITION(x)
-//#  define VDS_INTEGRITY_TEST(p) 
 #endif
 
 /**

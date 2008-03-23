@@ -64,8 +64,7 @@ int vdstCreateThread( vdstThreadWrap* pThread,
                                      (void*)pThread,
                                      0, /* Thread does not start suspended */
                                      &threadId );
-   if ( handle == NULL )
-   {
+   if ( handle == NULL ) {
       /* _beginthreadex does indeed set errno. */
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
       return -1;
@@ -76,8 +75,7 @@ int vdstCreateThread( vdstThreadWrap* pThread,
    errcode = pthread_create ( &pThread->threadId, 
                               NULL, vdstStartRoutine, (void*)pThread );
 
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       if ( errcode > 0 )
          vdscSetError( pError, VDSC_ERRNO_HANDLE, errcode );
       else
@@ -99,10 +97,8 @@ int vdstJoinThread( vdstThreadWrap* pThread,
    DWORD err;
 
    err = WaitForSingleObject( pThread->hThread, INFINITE );
-   if ( err == WAIT_OBJECT_0 )
-   {
-//      if ( GetExitCodeThread( pThread->hThread, &value ) == TRUE )
-//      {
+   if ( err == WAIT_OBJECT_0 ) {
+//      if ( GetExitCodeThread( pThread->hThread, &value ) == TRUE ) {
          CloseHandle( pThread->hThread );
 //         if ( retValue != NULL )
 //            *(void *)retValue = value;
@@ -117,8 +113,7 @@ int vdstJoinThread( vdstThreadWrap* pThread,
    int errcode;
    
    errcode = pthread_join( pThread->threadId, NULL ); // &retValue
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       if ( errcode > 0 )
          vdscSetError( pError, VDSC_ERRNO_HANDLE, errcode );
       else

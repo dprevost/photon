@@ -29,8 +29,7 @@ int main()
    char *dummyPtrs[10];
    vdscOptionHandle handle;
  
-   struct vdscOptStruct opts[5] = 
-   { 
+   struct vdscOptStruct opts[5] = { 
       { '3', "three",   1, "", "repeat the loop three times" },
       { 'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog" },
       { 'x', "",        1, "DISPLAY", "X display to use" },

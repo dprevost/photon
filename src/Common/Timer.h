@@ -42,7 +42,7 @@ BEGIN_C_DECLS
  * might be preferable (and be more accurate?).
  */
 
-typedef struct vdscTimer
+struct vdscTimer
 {
    struct timeval timeBegin;
    struct timeval timeEnd;
@@ -60,7 +60,9 @@ typedef struct vdscTimer
 
 #endif
 
-} vdscTimer;
+};
+
+typedef struct vdscTimer vdscTimer;
 
 #if defined(WIN32)
 static inline int gettimeofday( struct timeval *tv, void* tz )

@@ -14,17 +14,17 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =             \
-          DirAccess   \
-          Error       \
-          MemFile     \
-          Options     \
-          ProcessLock \
-          ThreadLock
+SUBDIRS =      \
+   DirAccess   \
+   Error       \
+   MemFile     \
+   Options     \
+   ProcessLock \
+   ThreadLock  
 
-check_PROGRAMS =               \
-                 nanosleepTest \
-                 TimerTest
+check_PROGRAMS = \
+   nanosleepTest \
+   TimerTest     
 
 nanosleepTest_SOURCES = nanosleepTest.c
 TimerTest_SOURCES     = TimerTest.c
@@ -44,9 +44,9 @@ EXTRA_DIST =                         \
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
-TESTS =               \
-        nanosleepTest \
-        TimerTest
+TESTS =          \
+   nanosleepTest \
+   TimerTest     
 
 XFAIL_TESTS = 
 

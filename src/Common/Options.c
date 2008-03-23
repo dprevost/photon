@@ -175,7 +175,7 @@ int vdscSetSupportedOptions( int               numOpts,
       /* Repeated options */
       for ( k = 0; k < i; ++k ) {
          if ( opts[i].shortOpt != '\0' &&
-              opts[i].shortOpt != ' ' )
+              opts[i].shortOpt != ' ' ) 
             VDS_PRE_CONDITION( opts[i].shortOpt != opts[k].shortOpt );
          if ( opts[i].longOpt[0] != '\0' &&
               opts[i].longOpt[0] != ' ' )

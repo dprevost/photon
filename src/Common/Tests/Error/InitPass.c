@@ -31,8 +31,7 @@ int main()
    vdscInitErrorDefs();
    vdscInitErrorHandler( &errorHandler );   
    
-   for ( i = 0; i < VDSC_ERROR_CHAIN_LENGTH; ++i )
-   {
+   for ( i = 0; i < VDSC_ERROR_CHAIN_LENGTH; ++i ) {
       if ( errorHandler.errorCode[0]   != 0 )
          ERROR_EXIT( expectedToPass, NULL, ; );
       if ( errorHandler.errorHandle[0] != VDSC_NO_ERRHANDLER )

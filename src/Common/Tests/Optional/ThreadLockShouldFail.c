@@ -93,8 +93,7 @@ int worker( void* arg )
    vdstBarrierWait( &g_barrier );
    vdscBeginTimer( &timer );
   
-   while ( 1 )
-   {      
+   while ( 1 ) {      
       if ( (loop%DEFAULT_FAILURE_RATE) != 0 )
          vdscAcquireThreadLock( &g_data->lock );
   
@@ -102,8 +101,7 @@ int worker( void* arg )
       memcpy( g_data->dum1, g_data->dum2, 100 );
 
       sscanf( g_data->dum1, "%s %d", dum3, &dumId );
-      if ( dumId != identifier )
-      {
+      if ( dumId != identifier ) {
          vdscEndTimer( &timer );
          vdscCalculateTimer( &timer, &sec, &nanoSec );
 
@@ -127,8 +125,7 @@ int worker( void* arg )
       
       loop++;
       
-      if ( (loop%CHECK_TIMER) != 0 )
-      {
+      if ( (loop%CHECK_TIMER) != 0 ) {
          vdscEndTimer( &timer );
          vdscCalculateTimer( &timer, &sec, &nanoSec );
 
@@ -156,14 +153,13 @@ int main( int argc, char* argv[] )
    bool foundError = false;
    vdscOptionHandle handle;
    char *argument;
-   struct vdscOptStruct opts[5] = 
-      { 
-         { 'f', "filename",   1, "memoryFile",    "Filename for shared memory" },
-         { 'm', "mode",       1, "lockMode",      "Set this to 'try' for testing TryAcquire" },
-         { 'n', "numThreads", 1, "numThreads",    "Number of threads" },
-         { 'r', "rate",       1, "rateOfFailure", "Inverse rate: 1000 means a rate of 0.1%" },
-         { 't', "time",       1, "timeInSecs",    "Time to run the tests" }
-      };
+   struct vdscOptStruct opts[5] = { 
+      { 'f', "filename",   1, "memoryFile",    "Filename for shared memory" },
+      { 'm', "mode",       1, "lockMode",      "Set this to 'try' for testing TryAcquire" },
+      { 'n', "numThreads", 1, "numThreads",    "Number of threads" },
+      { 'r', "rate",       1, "rateOfFailure", "Inverse rate: 1000 means a rate of 0.1%" },
+      { 't', "time",       1, "timeInSecs",    "Time to run the tests" }
+   };
    
    vdscInitErrorDefs();
    vdscInitErrorHandler( &errorHandler );
@@ -173,22 +169,18 @@ int main( int argc, char* argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    errcode = vdscValidateUserOptions( handle, argc, argv, 1 );
-   if ( errcode < 0 )
-   {
+   if ( errcode < 0 ) {
       vdscShowUsage( handle, "LockConcurrency", "" );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( errcode > 0 )
-   {
+   if ( errcode > 0 ) {
       vdscShowUsage( handle, "LockConcurrency", "" );
       return 0;
    }
 
-   if ( vdscGetShortOptArgument( handle, 'n', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 'n', &argument ) ) {
       numThreads = atoi( argument );
-      if ( numThreads < 2 )
-      {
+      if ( numThreads < 2 ) {
          fprintf( stderr, "Number of childs must be >= to two\n" );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
@@ -196,11 +188,9 @@ int main( int argc, char* argv[] )
    else
       numThreads = DEFAULT_NUM_THREADS;
 
-   if ( vdscGetShortOptArgument( handle, 'r', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 'r', &argument ) ) {
       g_failureRate = strtol( argument, NULL, 0 );
-      if ( g_failureRate < 1 )
-      {
+      if ( g_failureRate < 1 ) {
          fprintf( stderr, "Failure rate must be positive\n" );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
@@ -208,11 +198,9 @@ int main( int argc, char* argv[] )
    else
       g_failureRate = DEFAULT_FAILURE_RATE;
 
-   if ( vdscGetShortOptArgument( handle, 't', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 't', &argument ) ) {
       g_maxTime = strtol( argument, NULL, 0 );
-      if ( g_maxTime < 1 )
-      {
+      if ( g_maxTime < 1 ) {
          fprintf( stderr, "Time of test must be positive\n" );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
@@ -220,17 +208,14 @@ int main( int argc, char* argv[] )
    else
       g_maxTime = DEFAULT_TIME; /* in seconds */
   
-   if ( vdscGetShortOptArgument( handle, 'm', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 'm', &argument ) ) {
       if ( strcmp( argument, "try" ) == 0 )
          g_tryMode = true;
    }
    
-   if ( vdscGetShortOptArgument( handle, 'f', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 'f', &argument ) ) {
       strncpy( filename, argument, PATH_MAX );
-      if ( filename[0] == '\0' )
-      {
+      if ( filename[0] == '\0' ) {
          fprintf( stderr, "Empty memfile name\n" );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
@@ -269,8 +254,7 @@ int main( int argc, char* argv[] )
    if ( errcode < 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
-   for ( i = 0; i < numThreads; ++i )
-   {
+   for ( i = 0; i < numThreads; ++i ) {
       identifier[i] = i+1;
       errcode = vdstCreateThread( &threadWrap[i], 
                                   &worker,
@@ -280,8 +264,7 @@ int main( int argc, char* argv[] )
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
 
-   for ( i = 0; i < numThreads; ++i )
-   {
+   for ( i = 0; i < numThreads; ++i ) {
       errcode = vdstJoinThread( &threadWrap[i], &errorHandler );
       if ( errcode < 0 )
          ERROR_EXIT( expectedToPass, &errorHandler, ; );

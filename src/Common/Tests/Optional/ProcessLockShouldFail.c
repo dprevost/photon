@@ -96,15 +96,14 @@ int main( int argc, char* argv[] )
    vdscOptionHandle handle;
    char *argument;
    char strId[10], strNumChilds[10], strTime[10], strMode[5], strRate[10];
-   struct vdscOptStruct opts[6] = 
-      { 
-         { 'c', "child",      1, "numChilds",     "Number of child processes" },
-         { 'f', "filename",   1, "memoryFile",    "Filename for shared memory" },
-         { 'i', "identifier", 1, "identifier",    "Identifier for the process (do not used)" },
-         { 'm', "mode",       1, "lockMode",      "Set this to 'try' for testing TryAcquire" },
-         { 'r', "rate",       1, "rateOfFailure", "Inverse rate: 1000 means a rate of 0.1%" },
-         { 't', "time",       1, "timeInSecs",    "Time to run the tests" }
-      };
+   struct vdscOptStruct opts[6] = { 
+      { 'c', "child",      1, "numChilds",     "Number of child processes" },
+      { 'f', "filename",   1, "memoryFile",    "Filename for shared memory" },
+      { 'i', "identifier", 1, "identifier",    "Identifier for the process (do not used)" },
+      { 'm', "mode",       1, "lockMode",      "Set this to 'try' for testing TryAcquire" },
+      { 'r', "rate",       1, "rateOfFailure", "Inverse rate: 1000 means a rate of 0.1%" },
+      { 't', "time",       1, "timeInSecs",    "Time to run the tests" }
+   };
 
    vdscInitErrorDefs();
    vdscInitErrorHandler( &errorHandler );
@@ -115,22 +114,18 @@ int main( int argc, char* argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
    errcode = vdscValidateUserOptions( handle, argc, argv, 1 );
-   if ( errcode < 0 )
-   {
+   if ( errcode < 0 ) {
       vdscShowUsage( handle, "LockShouldFail", "" );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( errcode > 0 )
-   {
+   if ( errcode > 0 ) {
       vdscShowUsage( handle, "LockShouldFail", "" );
       return 0;
    }
    
-   if ( vdscGetShortOptArgument( handle, 'c', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 'c', &argument ) ) {
       numChilds = atoi( argument );
-      if ( numChilds < 2 )
-      {
+      if ( numChilds < 2 ) {
          fprintf( stderr, "Number of childs must be >= to two\n" );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
@@ -138,11 +133,9 @@ int main( int argc, char* argv[] )
    else
       numChilds = DEFAULT_NUM_CHILDREN;
    
-   if ( vdscGetShortOptArgument( handle, 'i', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 'i', &argument ) ) {
       identifier = atoi( argument );
-      if ( identifier > numChilds )
-      {
+      if ( identifier > numChilds ) {
          fprintf( stderr, "Identifier must be between 0 and number of childs\n" );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
@@ -150,11 +143,9 @@ int main( int argc, char* argv[] )
    else
       identifier = 0;
 
-   if ( vdscGetShortOptArgument( handle, 't', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 't', &argument ) ) {
       maxTime = strtol( argument, NULL, 0 );
-      if ( maxTime < 1 )
-      {
+      if ( maxTime < 1 ) {
          fprintf( stderr, "Time of test must be positive\n" );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
@@ -162,14 +153,12 @@ int main( int argc, char* argv[] )
    else
       maxTime = DEFAULT_TIME; /* in seconds */
   
-   if ( vdscGetShortOptArgument( handle, 'm', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 'm', &argument ) ) {
       if ( strcmp( argument, "try" ) == 0 )
          tryMode = true;
    }
    
-   if ( vdscGetShortOptArgument( handle, 'f', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 'f', &argument ) ) {
       strncpy( filename, argument, PATH_MAX );
       if ( filename[0] == '\0' )
       {
@@ -180,11 +169,9 @@ int main( int argc, char* argv[] )
    else
       strcpy( filename, "Memfile.mem" );
 
-   if ( vdscGetShortOptArgument( handle, 'r', &argument ) )
-   {
+   if ( vdscGetShortOptArgument( handle, 'r', &argument ) ) {
       failureRate = strtol( argument, NULL, 0 );
-      if ( failureRate < 1 )
-      {
+      if ( failureRate < 1 ) {
          fprintf( stderr, "Failure rate must be positive\n" );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
@@ -194,8 +181,7 @@ int main( int argc, char* argv[] )
 
    vdscInitMemoryFile( &memFile, 10, filename );
    
-   if ( identifier == 0 )
-   {
+   if ( identifier == 0 ) {
       /*
        * This is the parent!
        */
@@ -231,8 +217,7 @@ int main( int argc, char* argv[] )
       else
          strcpy( strMode, "lock" );
       
-      for ( i = 0; i < numChilds; ++i )
-      {
+      for ( i = 0; i < numChilds; ++i ) {
          sprintf( strId, "%d", i+1 );
 #if defined (WIN32)
          pid = _spawnl( _P_NOWAIT, argv[0], argv[0], 
@@ -243,16 +228,14 @@ int main( int argc, char* argv[] )
                         "-r", strRate,
                         "-t", strTime,
                         NULL );
-         if ( pid < 0 )
-         {
+         if ( pid < 0 ) {
             fprintf( stderr, "_spawnl failure, errno = %d\n", errno );
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
          childPid[i] = pid;
 #else
          pid = fork();
-         if ( pid == 0 )
-         {
+         if ( pid == 0 ) {
             execl( argv[0], argv[0],
                    "-c", strNumChilds,
                    "-f", filename,
@@ -264,13 +247,11 @@ int main( int argc, char* argv[] )
             /* If we come here, something is wrong ! */
             ERROR_EXIT( childExpectedToPass, NULL, ; );
          }
-         else if ( pid > 0 )
-         {
+         else if ( pid > 0 ) {
             childPid[i] = pid;
             fprintf( stderr, "Launched child, pid = %d\n", pid );
          }
-         else
-         {
+         else {
             fprintf( stderr, "Fork failure, errno = %d\n", errno );
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
@@ -278,8 +259,7 @@ int main( int argc, char* argv[] )
       } /* for loop launching child processes */
       
       /* We now wait for the children to exit */
-      for ( i = 0; i < numChilds; ++i )
-      {
+      for ( i = 0; i < numChilds; ++i ) {
 #if defined(WIN32)
          _cwait( &childStatus, childPid[i], _WAIT_CHILD );
          if ( childStatus == 0 )
@@ -290,16 +270,14 @@ int main( int argc, char* argv[] )
             foundError = true;
 #endif
       }
-      if ( ! foundError )
-      {
+      if ( ! foundError ) {
          fprintf( stderr, "Wrong... no error was caught!\n" );
          vdscFiniErrorHandler( &errorHandler );
          vdscFiniErrorDefs();
-          ERROR_EXIT( expectedToPass, NULL, ; );
+         ERROR_EXIT( expectedToPass, NULL, ; );
       }
    }
-   else
-   {
+   else {
       /*
        * A child - we only get out of this loop when an error is 
        * encountered (or if the timer expires)
@@ -313,8 +291,7 @@ int main( int argc, char* argv[] )
          ERROR_EXIT( childExpectedToPass, NULL, ; );
       data = (struct localData*) ptr;
    
-      for (;;)
-      {            
+      for (;;) {
          if ( (loop%failureRate) != 0 )
             vdscAcquireProcessLock( &data->lock, mypid );
          
@@ -323,8 +300,8 @@ int main( int argc, char* argv[] )
             
          sscanf( data->dum1, "%s %d", dum3, &dumId );
 
-         if ( dumId != mypid )
-         {
+         if ( dumId != mypid ) {
+
             vdscEndTimer( &timer );
             vdscCalculateTimer( &timer, &sec, &nanoSec );
 
@@ -348,14 +325,12 @@ int main( int argc, char* argv[] )
    
          loop++;
 
-         if ( (loop%CHECK_TIMER) != 0 )
-         {
+         if ( (loop%CHECK_TIMER) != 0 ) {
             vdscEndTimer( &timer );
             vdscCalculateTimer( &timer, &sec, &nanoSec );
          
             elapsedTime = sec*US_PER_SEC + nanoSec/1000;
-            if ( elapsedTime > maxTime )
-            {
+            if ( elapsedTime > maxTime ) {
                vdscFiniErrorHandler( &errorHandler );
                vdscFiniErrorDefs();
                return 1;

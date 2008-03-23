@@ -166,6 +166,7 @@ VDSF_COMMON_EXPORT
 void vdscSetError( vdscErrorHandler *  pErrorHandler, 
                    vdscErrMsgHandle    handle,
                    int                 errorCode );   
+
 /*! \brief
  * Adds the error code and the handler for the error message to an 
  * existing chain.
@@ -197,3 +198,4 @@ int vdscGetLastError( vdscErrorHandler * pErrorHandler )
 END_C_DECLS
 
 #endif /* VDSC_ERROR_HANDLER_H */
+

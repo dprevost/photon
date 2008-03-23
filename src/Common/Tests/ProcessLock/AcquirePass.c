@@ -32,9 +32,7 @@ int main()
    if ( errcode != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
    
-fprintf(stderr, "ok 1\n");
    vdscAcquireProcessLock( &lock, 0xff );
-fprintf(stderr, "ok 2\n");
 
    if ( ! vdscIsItLocked( &lock ) )
       ERROR_EXIT( expectedToPass, NULL, ; );

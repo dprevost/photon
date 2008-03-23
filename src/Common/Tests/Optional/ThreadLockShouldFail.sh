@@ -61,10 +61,6 @@ mkdir $TMPDIR/vdsf
 if [ "$?" != 0 ] ; then
    exit 1
 fi
-#mkdir $BASE_DIR
-#if [ "$?" != 0 ] ; then
-#   exit 1
-#fi
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -79,7 +75,5 @@ echo "Tests terminated successfully"
 
 rm -rf $BASE_DIR
 
-jobs
-
-
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

@@ -89,14 +89,12 @@ int vdscReadConfig( const char*          cfgname,
       isPresent[i] = 0;
 
    fp = fopen( cfgname, "r" );
-   if ( fp == NULL )
-   {
+   if ( fp == NULL ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
       return -1;
    }
    
-   for (;;)
-   {
+   for (;;) {
       memset( line, 0, LINE_MAX_LEN );
 
       /* We've reach the end of file */
@@ -114,48 +112,42 @@ int vdscReadConfig( const char*          cfgname,
 
       if ( strncmp( line, 
                     g_paramNames[eVDS_LOCATION], 
-                    strlen(g_paramNames[eVDS_LOCATION]) ) == 0 )
-      {
+                    strlen(g_paramNames[eVDS_LOCATION]) ) == 0 ) {
          sscanf( line, "%s %s", throwIt, pConfig->wdLocation );         
          isPresent[eVDS_LOCATION] = 1;
          continue;
       }
       if ( strncmp( line, 
                     g_paramNames[eVDS_MEMSIZE], 
-                    strlen(g_paramNames[eVDS_MEMSIZE]) ) == 0 )
-      {
+                    strlen(g_paramNames[eVDS_MEMSIZE]) ) == 0 ) {
          sscanf( line, "%s "VDSF_SIZE_T_FORMAT, throwIt, &pConfig->memorySizekb );         
          isPresent[eVDS_MEMSIZE] = 1;
          continue;
       }
       if ( strncmp( line, 
                     g_paramNames[VDS_WDADDRESS], 
-                    strlen(g_paramNames[VDS_WDADDRESS]) ) == 0 )
-      {
+                    strlen(g_paramNames[VDS_WDADDRESS]) ) == 0 ) {
          sscanf( line, "%s %s", throwIt, pConfig->wdAddress );
          isPresent[VDS_WDADDRESS] = 1;
          continue;
       }
       if ( strncmp( line, 
                     g_paramNames[eVDS_USE_LOG], 
-                    strlen(g_paramNames[eVDS_USE_LOG]) ) == 0 )
-      {
+                    strlen(g_paramNames[eVDS_USE_LOG]) ) == 0 ) {
          sscanf( line, "%s %d", throwIt, &pConfig->logOn );         
          isPresent[eVDS_USE_LOG] = 1;
          continue;
       }
       if ( strncmp( line, 
                     g_paramNames[eVDS_FILEPERMS], 
-                    strlen(g_paramNames[eVDS_FILEPERMS]) ) == 0 )
-      {
+                    strlen(g_paramNames[eVDS_FILEPERMS]) ) == 0 ) {
          sscanf( line, "%s %i", throwIt, &pConfig->filePerms );         
          isPresent[eVDS_FILEPERMS] = 1;
          continue;
       }
       if ( strncmp( line, 
                     g_paramNames[eVDS_DIRPERMS], 
-                    strlen(g_paramNames[eVDS_DIRPERMS]) ) == 0 )
-      {
+                    strlen(g_paramNames[eVDS_DIRPERMS]) ) == 0 ) {
          sscanf( line, "%s %i", throwIt, &pConfig->dirPerms );         
          isPresent[eVDS_DIRPERMS] = 1;
       }
@@ -163,10 +155,8 @@ int vdscReadConfig( const char*          cfgname,
 
    fclose( fp );
 
-   for ( i = 0; i < eVDS_NUM_CFG_PARAMS; ++i )
-   {
-      if ( isPresent[i] == 0 )
-      {
+   for ( i = 0; i < eVDS_NUM_CFG_PARAMS; ++i ) {
+      if ( isPresent[i] == 0 ) {
          *pMissing = g_paramNames[i];
          return -1;
       }
@@ -176,3 +166,4 @@ int vdscReadConfig( const char*          cfgname,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

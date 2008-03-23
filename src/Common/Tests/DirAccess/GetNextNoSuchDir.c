@@ -44,8 +44,7 @@ int main()
    vdscInitErrorHandler( &errorHandler );
    
    errcode = vdscOpenDir( &iterator, "abc123", &errorHandler );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       /* OpenDir cannot fail on Win32 but someone might update
        * the code eventually...
        */

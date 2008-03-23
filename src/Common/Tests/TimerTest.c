@@ -61,8 +61,7 @@ int main()
     */
    vdscBeginTimer( &timer );
 
-   while ( loop < innerLoop )
-   {
+   while ( loop < innerLoop ) {
       dum = (dum+1)*loop;
       dum = dum - loop;
       dum = dum + 2 - dum /2;
@@ -80,8 +79,7 @@ int main()
    if (dum == 0 )
       fprintf(stderr, "%d\n", dum );
    
-   if ( sec == 0 && nanoSec == 0 )
-   {
+   if ( sec == 0 && nanoSec == 0 ) {
       fprintf( stderr, "Timer returns invalid time!\n" );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -98,8 +96,7 @@ int main()
 
    /* The test itself */
 
-   for ( i = 0; i < outerLoop; ++i )
-   {
+   for ( i = 0; i < outerLoop; ++i ) {
       sec = 0;
       nanoSec = 0;
       loop = 0;
@@ -107,8 +104,7 @@ int main()
       
       vdscBeginTimer( &timer );
 
-      while ( loop < innerLoop*(i+1) )
-      {
+      while ( loop < innerLoop*(i+1) ) {
          dum = (dum+1)*loop;
          dum = dum - loop;
          dum = dum + 2 - dum /2;
@@ -125,8 +121,7 @@ int main()
       if (dum == 0 )
          fprintf(stderr, "%d\n", dum );
 
-      if ( sec == 0 && nanoSec == 0 )
-      {
+      if ( sec == 0 && nanoSec == 0 ) {
          fprintf( stderr, "Timer returns invalid time!\n" );
          ERROR_EXIT( expectedToPass, NULL, ; );
       }

@@ -14,29 +14,29 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core Memfile.mem
 
-THREAD_TEST_CODE =              \
-                   Barrier.c    \
-                   Barrier.h    \
-                   ThreadWrap.c \
-                   ThreadWrap.h
+THREAD_TEST_CODE = \
+   Barrier.c    \
+   Barrier.h    \
+   ThreadWrap.c \
+   ThreadWrap.h
 
-check_PROGRAMS =                      \
-                 AcquireInvalidSig    \
-                 AcquireNullLock      \
-                 AcquirePass          \
-                 FiniInvalidSig       \
-                 FiniNullLock         \
-                 FiniPass             \
-                 InitNullLock         \
-                 InitPass             \
-                 LockConcurrency      \
-                 LockTests            \
-                 ReleaseInvalidSig    \
-                 ReleaseNullLock      \
-                 ReleasePass          \
-                 TryAcqInvalidSig     \
-                 TryAcqNullLock       \
-                 TryAcqPass           
+check_PROGRAMS =     \
+   AcquireInvalidSig \
+   AcquireNullLock   \
+   AcquirePass       \
+   FiniInvalidSig    \
+   FiniNullLock      \
+   FiniPass          \
+   InitNullLock      \
+   InitPass          \
+   LockConcurrency   \
+   LockTests         \
+   ReleaseInvalidSig \
+   ReleaseNullLock   \
+   ReleasePass       \
+   TryAcqInvalidSig  \
+   TryAcqNullLock    \
+   TryAcqPass        
 
 AcquireInvalidSig_SOURCES    = AcquireInvalidSig.c
 AcquireNullLock_SOURCES      = AcquireNullLock.c
@@ -66,43 +66,43 @@ TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTH
 TESTS =
 
 if COND_USE_DBC
-TESTS +=                      \
-         AcquireInvalidSig    \
-         AcquireNullLock      \
-         AcquirePass          \
-         FiniInvalidSig       \
-         FiniNullLock         \
-         FiniPass             \
-         InitNullLock         \
-         InitPass             \
-         ReleaseInvalidSig    \
-         ReleaseNullLock      \
-         ReleasePass          \
-         TryAcqInvalidSig     \
-         TryAcqNullLock       \
-         TryAcqPass           
+TESTS +=                \
+   AcquireInvalidSig    \
+   AcquireNullLock      \
+   AcquirePass          \
+   FiniInvalidSig       \
+   FiniNullLock         \
+   FiniPass             \
+   InitNullLock         \
+   InitPass             \
+   ReleaseInvalidSig    \
+   ReleaseNullLock      \
+   ReleasePass          \
+   TryAcqInvalidSig     \
+   TryAcqNullLock       \
+   TryAcqPass           
 endif
 
 if COND_USE_EXTREME_DBC
 TESTS += 
 endif
 
-TESTS +=                       \
-         LockConcurrency.sh    \
-         LockConcurrencyTry.sh \
-         LockTests             
+TESTS +=                 \
+   LockConcurrency.sh    \
+   LockConcurrencyTry.sh \
+   LockTests             
 
-XFAIL_TESTS =                   \
-              AcquireInvalidSig \
-              AcquireNullLock   \
-              FiniInvalidSig    \
-              FiniNullLock      \
-              InitNullLock      \
-              ReleaseInvalidSig \
-              ReleaseNullLock   \
-              TryAcqInvalidSig  \
-              TryAcqNullLock    \
-              TryAcqZeroValue 
+XFAIL_TESTS =        \
+   AcquireInvalidSig \
+   AcquireNullLock   \
+   FiniInvalidSig    \
+   FiniNullLock      \
+   InitNullLock      \
+   ReleaseInvalidSig \
+   ReleaseNullLock   \
+   TryAcqInvalidSig  \
+   TryAcqNullLock    \
+   TryAcqZeroValue 
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
 

@@ -385,7 +385,6 @@ int vdscInitErrorDefs()
                g_definition->next        = NULL;
                strcpy( g_definition->name, "errno" );
 #if defined (WIN32 )
-            
                length = offsetof(vdscErrorDefinition,name) + 
                   strlen("Windows error") + 1;
          
