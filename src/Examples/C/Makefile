@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
 # 
 # This code is in the public domain.
 # 

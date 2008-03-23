@@ -25,7 +25,7 @@
 #############################################################################
 
 AC_INIT([Virtual Data Space Framework],
-        [0.2.0],
+        [0.3.0],
         [Daniel Prevost <dprevost@users.sourceforge.net>],
         [vdsf])
 
