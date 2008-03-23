@@ -58,22 +58,19 @@ const char* vdscDirGetNextFileName( vdscDirIterator*  pIterator,
 #endif
 
 #if defined (WIN32)
-   if ( pIterator->handle == VDS_INVALID_HANDLE )
-   {
+   if ( pIterator->handle == VDS_INVALID_HANDLE ) {
       pIterator->handle = 
          FindFirstFile( pIterator->dirName, &pIterator->data );
    }
-   if ( pIterator->handle == VDS_INVALID_HANDLE )
-   {
+   if ( pIterator->handle == VDS_INVALID_HANDLE ) {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
       return NULL;
    }
    
-   for ( ;; )
-   {
+   for ( ;; ) {
+
       int err = FindNextFile( pIterator->handle, &pIterator->data );
-      if ( err == 0 )
-      {
+      if ( err == 0 ) {
          if ( GetLastError() != ERROR_NO_MORE_FILES )
             vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
          return NULL;
@@ -93,12 +90,10 @@ const char* vdscDirGetNextFileName( vdscDirIterator*  pIterator,
    }
 
 #else
-   for ( ;; )
-   {
+   for ( ;; ) {
       errno = 0; /* To be safe */
       pEntry = readdir( pIterator->pDir );
-      if ( pEntry == NULL )
-      {
+      if ( pEntry == NULL ) {
          if ( errno != 0 )
             vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
          break;
@@ -254,8 +249,7 @@ int vdscOpenDir( vdscDirIterator * pIterator,
 
 #else
    pIterator->pDir = opendir( dirName );
-   if ( pIterator->pDir == NULL )
-   {
+   if ( pIterator->pDir == NULL ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
       return -1;
    }

@@ -136,8 +136,7 @@ int vdscSetSupportedOptions( int               numOpts,
    VDS_PRE_CONDITION( pHandle != NULL );
 
    /* Test the integrity of the options */
-   for ( i = 0; i < numOpts; ++i )
-   {
+   for ( i = 0; i < numOpts; ++i ) {
       /* Both short and long are empty */
       VDS_PRE_CONDITION( 
          ( opts[i].shortOpt   != '\0' && 
@@ -151,17 +150,15 @@ int vdscSetSupportedOptions( int               numOpts,
        */
       nullTerminatedString = false;
       for ( k = 0; k < VDSC_OPT_LONG_OPT_LENGTH; ++k )
-         if ( opts[i].longOpt[k] == '\0' )
-         {
+         if ( opts[i].longOpt[k] == '\0' ) {
             nullTerminatedString = true;
             break;
          }
       VDS_PRE_CONDITION( nullTerminatedString == true );
 
       nullTerminatedString = false;
-      for ( k = 0; k < VDSC_OPT_ARGUMENT_MSG_LENGTH; ++k )
-         if ( opts[i].argumentMessage[k] == '\0' )
-         {
+      for ( k = 0; k < VDSC_OPT_ARGUMENT_MSG_LENGTH; ++k ) 
+         if ( opts[i].argumentMessage[k] == '\0' ) {
             nullTerminatedString = true;
             break;
          }
@@ -169,16 +166,14 @@ int vdscSetSupportedOptions( int               numOpts,
 
       nullTerminatedString = false;
       for ( k = 0; k < VDSC_OPT_COMMENT_LENGTH; ++k )
-         if ( opts[i].comment[k] == '\0' )
-         {
+         if ( opts[i].comment[k] == '\0' ) {
             nullTerminatedString = true;
             break;
          }
       VDS_PRE_CONDITION( nullTerminatedString == true );
       
       /* Repeated options */
-      for ( k = 0; k < i; ++k )
-      {
+      for ( k = 0; k < i; ++k ) {
          if ( opts[i].shortOpt != '\0' &&
               opts[i].shortOpt != ' ' )
             VDS_PRE_CONDITION( opts[i].shortOpt != opts[k].shortOpt );
@@ -197,8 +192,7 @@ int vdscSetSupportedOptions( int               numOpts,
       return -1;
    
    optStruct->pArray = (vdscOptArray *)malloc(numOpts*sizeof(vdscOptArray));
-   if ( optStruct->pArray == NULL )
-   {
+   if ( optStruct->pArray == NULL ) {
       free( optStruct );
       return -1;
    }
@@ -265,22 +259,18 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
    for ( i = 0; i < argc; ++i )
       VDS_PRE_CONDITION( argv[i] != NULL );
    
-   if ( optStruct->validated )
-   {
+   if ( optStruct->validated ) {
       /* So we were called before... better clear some stuff before
        * it leads to confusion. */
-      for ( i = 0; i < optStruct->numOpt; ++i )
-      {
+      for ( i = 0; i < optStruct->numOpt; ++i ) {
          optStruct->pArray[i].optionLocation = 0;
          optStruct->pArray[i].argumentLocation = 0;
       }
    }
    
    i = 1;
-   while ( i < argc )
-   {
-      if (argv[i][0] == '-' )
-      {
+   while ( i < argc ) {
+      if (argv[i][0] == '-' ) {
          /* We found an option! Test the length to know
           * if it is a long or short one (or a single dash).
           * (don't use strlen - this is directly from the user
@@ -288,52 +278,43 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
           */
          
          for ( j = 1, len = 0; j < VDSC_OPT_LONG_OPT_LENGTH; ++j )
-            if ( argv[i][j] == '\0' )
-            {
+            if ( argv[i][j] == '\0' ) {
                len = j;
                break;
             }
          
-         if ( len < 2 )
-         {
+         if ( len < 2 ) {
             if ( printError )
                fprintf( stderr, "Unrecognized option: %s\n", argv[i] );
             returnCode = -1;
             break;
          }
-         if ( len == 2 )
-         {
+         if ( len == 2 ) {
             /* Possibly, a short option */
 
-            if ( argv[i][1] == '?' || argv[i][1] == 'h' )
-            {
+            if ( argv[i][1] == '?' || argv[i][1] == 'h' ) {
                returnCode = 1;
                break;
             }
             found = 0;
-            for ( j = 0; j < optStruct->numOpt; ++j )
-            {
+            for ( j = 0; j < optStruct->numOpt; ++j ) {
                /* A long option with no equivalent short option
                 * is a possibility (and the other way around)
                 */
                if ( optStruct->pArray[j].opt.shortOpt == '\0' ) continue;
                if ( optStruct->pArray[j].opt.shortOpt == ' '  ) continue;
 
-               if ( argv[i][1] == optStruct->pArray[j].opt.shortOpt )
-               {
+               if ( argv[i][1] == optStruct->pArray[j].opt.shortOpt ) {
                   found = 1;
                   optStruct->pArray[j].optionLocation = i;
                   
                   if ( optStruct->pArray[j].opt.argumentMessage[0] != '\0' &&
-                       optStruct->pArray[j].opt.argumentMessage[0] != ' ' )
-                  {
-                     if ( i == argc-1 )
-                     {
+                       optStruct->pArray[j].opt.argumentMessage[0] != ' ' ) {
+                     if ( i == argc-1 ) {
                         returnCode = -1;
                         break;
                      }
-                     if ( argv[i+1][0] == '-' )
-                     {
+                     if ( argv[i+1][0] == '-' ) {
                         returnCode = -1;
                         break;
                      }
@@ -344,8 +325,7 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
                   }
                }
             }
-            if ( returnCode == 0 && found == 1 )
-            {
+            if ( returnCode == 0 && found == 1 ) {
                ++i;
                continue;
             }
@@ -361,47 +341,38 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
             break;
             
          } /* end if - len == 2 */
-         else
-         {
+         else {
             /* A long option then... */
 
-            if ( len == 6 )
-            {
-               if ( memcmp(argv[i], "--help", 6) == 0 )
-               {
+            if ( len == 6 ) {
+               if ( memcmp(argv[i], "--help", 6) == 0 ) {
                   returnCode = 1;
                   break;
                }
             }
             
             found = 0;
-            for ( j = 0; j < optStruct->numOpt; ++j )
-            {
+            for ( j = 0; j < optStruct->numOpt; ++j ) {
                /* A short option with no equivalent long option
                 * is a possibility (and the other way around)
                 */
                if ( optStruct->pArray[j].opt.longOpt[0] == '\0' ) continue;
                if ( optStruct->pArray[j].opt.longOpt[0] == ' '  ) continue;
                
-               if ( len == (strlen(optStruct->pArray[j].opt.longOpt) + 2) )
-               {
+               if ( len == (strlen(optStruct->pArray[j].opt.longOpt) + 2) ) {
                   if ( memcmp( &argv[i][2], 
                                optStruct->pArray[j].opt.longOpt, 
-                               len-2 ) == 0 )
-                  {
+                               len-2 ) == 0 ) {
                      found = 1;
                      optStruct->pArray[j].optionLocation = i;
                   
                      if ( optStruct->pArray[j].opt.argumentMessage[0] != '\0' &&
-                          optStruct->pArray[j].opt.argumentMessage[0] != ' ' )
-                     {
-                        if ( i == argc-1 )
-                        {
+                          optStruct->pArray[j].opt.argumentMessage[0] != ' ' ) {
+                        if ( i == argc-1 ) {
                            returnCode = -1;
                            break;
                         }
-                        if ( argv[i+1][0] == '-' )
-                        {
+                        if ( argv[i+1][0] == '-' ) {
                            returnCode = -1;
                            break;
                         }
@@ -414,8 +385,7 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
                   } /* end if - check that the content is equal */
                } /* end if - check that lenghts are equal */
             }
-            if ( returnCode == 0 && found == 1 )
-            {
+            if ( returnCode == 0 && found == 1 ) {
                ++i;
                continue;
             }   
@@ -439,10 +409,8 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
    } /* end of while on argc */
       
    /* Make sure all mandatory options are present */
-   if ( returnCode == 0 )
-   {
-      for ( j = 0; j < optStruct->numOpt; ++j )
-      {
+   if ( returnCode == 0 ) {
+      for ( j = 0; j < optStruct->numOpt; ++j ) {
          /* Mandatory? */
          if ( optStruct->pArray[j].opt.isOptionel == 1 )
             continue;
@@ -450,18 +418,15 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
          if ( optStruct->pArray[j].optionLocation > 0 )
             continue;
          
-         if ( printError )
-         {
+         if ( printError ) {
             if ( optStruct->pArray[j].opt.shortOpt == '\0' ||
-                 optStruct->pArray[j].opt.shortOpt == ' '  ) 
-            {
+                 optStruct->pArray[j].opt.shortOpt == ' '  ) {
                fprintf( stderr, "%s: Missing option (--%s)\n",
                         argv[0], 
                         optStruct->pArray[j].opt.longOpt );
             }
             else if ( optStruct->pArray[j].opt.longOpt[0] == '\0' ||
-                      optStruct->pArray[j].opt.longOpt[0] == ' '  ) 
-            {
+                      optStruct->pArray[j].opt.longOpt[0] == ' '  ) {
                fprintf( stderr, "%s: Missing option (-%c)\n",
                         argv[0], 
                         optStruct->pArray[j].opt.shortOpt );
@@ -478,16 +443,13 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
       }
    }
    
-   if ( returnCode == 0 )
-   {
+   if ( returnCode == 0 ) {
       optStruct->argv = argv;
       optStruct->validated = 1;
    }
-   else
-   {
+   else {
       /* Better clear some stuff before it leads to confusion. */
-      for ( i = 0; i < optStruct->numOpt; ++i )
-      {
+      for ( i = 0; i < optStruct->numOpt; ++i ) {
          optStruct->pArray[i].optionLocation = 0;
          optStruct->pArray[i].argumentLocation = 0;
       }
@@ -543,12 +505,9 @@ bool vdscGetShortOptArgument( vdscOptionHandle handle,
    *argument = NULL;
    if ( opt == ' ' || opt == '\0' ) return false;
    
-   for ( i = 0; i < optStruct->numOpt; ++i )
-   {
-      if ( optStruct->pArray[i].opt.shortOpt == opt )
-      {
-         if ( optStruct->pArray[i].argumentLocation != 0 )
-         {
+   for ( i = 0; i < optStruct->numOpt; ++i ) {
+      if ( optStruct->pArray[i].opt.shortOpt == opt ) {
+         if ( optStruct->pArray[i].argumentLocation != 0 ) {
             *argument = optStruct->argv[optStruct->pArray[i].argumentLocation];
             return true;
          }
@@ -611,22 +570,17 @@ bool vdscGetLongOptArgument( vdscOptionHandle handle,
 
    /* Make sure we were passed a null-terminated string */
    nullTerminatedString = false;
-   for ( i = 0; i < VDSC_OPT_LONG_OPT_LENGTH; ++i )
-   {
-      if ( opt[i] == '\0' )
-      {
+   for ( i = 0; i < VDSC_OPT_LONG_OPT_LENGTH; ++i ) {
+      if ( opt[i] == '\0' ) {
          nullTerminatedString = true;
          break;
       }
    }
    if ( ! nullTerminatedString ) return false;   
 
-   for ( i = 0; i < optStruct->numOpt; ++i )
-   {
-      if ( strcmp( optStruct->pArray[i].opt.longOpt, opt ) == 0 )
-      {
-         if ( optStruct->pArray[i].argumentLocation != 0 )
-         {
+   for ( i = 0; i < optStruct->numOpt; ++i ) {
+      if ( strcmp( optStruct->pArray[i].opt.longOpt, opt ) == 0 ) {
+         if ( optStruct->pArray[i].argumentLocation != 0 ) {
             *argument = optStruct->argv[optStruct->pArray[i].argumentLocation];
             return true;
          }
@@ -677,10 +631,8 @@ bool vdscIsShortOptPresent( vdscOptionHandle handle,
    
    if ( opt == ' ' || opt == '\0' ) return false;
    
-   for ( i = 0; i < optStruct->numOpt; ++i )
-   {
-      if ( optStruct->pArray[i].opt.shortOpt == opt )
-      {
+   for ( i = 0; i < optStruct->numOpt; ++i ) {
+      if ( optStruct->pArray[i].opt.shortOpt == opt ) {
          if ( optStruct->pArray[i].optionLocation != 0 )
             return true;
          break;
@@ -736,20 +688,16 @@ bool vdscIsLongOptPresent( vdscOptionHandle handle,
 
    /* Make sure we were passed a null-terminated string */
    nullTerminatedString = false;
-   for ( i = 0; i < VDSC_OPT_LONG_OPT_LENGTH; ++i )
-   {
-      if ( opt[i] == '\0' )
-      {
+   for ( i = 0; i < VDSC_OPT_LONG_OPT_LENGTH; ++i ) {
+      if ( opt[i] == '\0' ) {
          nullTerminatedString = true;
          break;
       }
    }
    if ( ! nullTerminatedString ) return false;   
 
-   for ( i = 0; i < optStruct->numOpt; ++i )
-   {
-      if ( strcmp( optStruct->pArray[i].opt.longOpt, opt ) == 0 )
-      {
+   for ( i = 0; i < optStruct->numOpt; ++i ) {
+      if ( strcmp( optStruct->pArray[i].opt.longOpt, opt ) == 0 ) {
          if ( optStruct->pArray[i].optionLocation != 0 )
             return true;
          break;
@@ -800,16 +748,13 @@ void vdscShowUsage( vdscOptionHandle handle,
    VDS_PRE_CONDITION( addArguments != NULL );
 
    max_len = 0;
-   for ( i = 0; i < optStruct->numOpt; ++i )
-   {
+   for ( i = 0; i < optStruct->numOpt; ++i ) {
       len = strlen( optStruct->pArray[i].opt.longOpt ) + 
          strlen( optStruct->pArray[i].opt.argumentMessage ) + 3;
       if ( len > max_len )
          max_len = len;
    }
    
-//   fprintf( stderr, "len = %d \n", max_len );
-
    if ( progName[0] == '\0' && optStruct->argv != NULL )
       fprintf( stderr, "usage: %s options %s\n\n", 
                optStruct->argv[0], 
@@ -817,33 +762,28 @@ void vdscShowUsage( vdscOptionHandle handle,
    else
       fprintf( stderr, "usage: %s options %s\n\n", progName, addArguments );
 
-   for ( i = 0; i < optStruct->numOpt; ++i )
-   {
+   for ( i = 0; i < optStruct->numOpt; ++i ) {
       memset( shortOpt, 0, 3 );
       memset( longOpt, 0, 
               VDSC_OPT_LONG_OPT_LENGTH+VDSC_OPT_ARGUMENT_MSG_LENGTH+3 );
       memset( comment, 0, VDSC_OPT_COMMENT_LENGTH );
       openBracket = closeBracket = ' ';
       
-      if ( optStruct->pArray[i].opt.isOptionel )
-      {
+      if ( optStruct->pArray[i].opt.isOptionel ) {
          openBracket  = '[';
          closeBracket = ']';
       }
       
       if ( optStruct->pArray[i].opt.shortOpt != '\0' &&
-           optStruct->pArray[i].opt.shortOpt != ' '  )
-      {
+           optStruct->pArray[i].opt.shortOpt != ' '  ) {
          shortOpt[0] = '-';
          shortOpt[1] = optStruct->pArray[i].opt.shortOpt;
       }
       if ( optStruct->pArray[i].opt.longOpt[0] == '\0' ||
-           optStruct->pArray[i].opt.longOpt[0] == ' '  )
-      {
+           optStruct->pArray[i].opt.longOpt[0] == ' '  ) {
          sprintf( longOpt, "%s", optStruct->pArray[i].opt.argumentMessage );
       }
-      else
-      {
+      else {
          sprintf( longOpt, "--%s %s", 
                   optStruct->pArray[i].opt.longOpt,
                   optStruct->pArray[i].opt.argumentMessage );
@@ -886,3 +826,4 @@ void vdscUnsetSupportedOptions( vdscOptionHandle handle )
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

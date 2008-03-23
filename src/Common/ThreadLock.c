@@ -19,13 +19,6 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-//int g_timeOutinMilliSecs = 5;
-
-//struct timespec g_timeOut = { 0, 5000000 };
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-
 int vdscInitThreadLock( vdscThreadLock* pLock )
 {
 #if defined (WIN32)

@@ -65,10 +65,8 @@ vdscAcquireProcessLock( vdscProcessLock* pLock,
    spin_lock(&pLock->lock);
    isItLocked = 0;
 #elif defined(WIN32)
-   for (;;)
-   {
-      if ( pLock->lock == 0 )
-      {
+   for (;;) {
+      if ( pLock->lock == 0 ) {
          isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, 0xff );
       }
       if ( isItLocked == 0 )
@@ -76,8 +74,7 @@ vdscAcquireProcessLock( vdscProcessLock* pLock,
       Sleep( g_timeOutinMilliSecs );
    }
 #elif defined (VDS_USE_POSIX_SEMAPHORE)
-   do
-   {
+   do {
       /* We restart on interrupts. */
       isItLocked = sem_wait( &pLock->semaphore.sem );
    } while ( isItLocked == -1 && errno == EINTR );
@@ -107,68 +104,58 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
    VDS_PRE_CONDITION( pid_locker != 0 );
 
 #if defined(CONFIG_KERNEL_HEADERS)
-   if ( spin_can_lock( &pLock->lock ) )
-   {
+   if ( spin_can_lock( &pLock->lock ) ) {
       isItLocked = spin_trylock( &pLock->lock );
       isItLocked--;
    }
 #elif defined (WIN32)
-   if ( pLock->lock == 0 )
-   {
+   if ( pLock->lock == 0 ) {
       isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, 0xff );
    }
 #elif defined (VDS_USE_POSIX_SEMAPHORE)
    errno = 0;
-   do
-   {
+   do {
       /* We restart on interrupts. */
       isItLocked = sem_trywait( &pLock->semaphore.sem );
       if ( isItLocked == -1 && errno == EINTR)
          fprintf( stderr, "acquire 2\n" ); 
    } while ( isItLocked == -1 && errno == EINTR );
-   if (  isItLocked == -1 && errno != EAGAIN )
-   {
+   if (  isItLocked == -1 && errno != EAGAIN ) {
       fprintf( stderr, "Lock:trywait failed with errno = %d\n", errno );
       return -1;
    }
 #endif
 
-   if ( isItLocked != 0 )
-   {
+   if ( isItLocked != 0 ) {
       int iterations = milliSecs/g_timeOutinMilliSecs;
       int i;
       
-      for ( i = 0; i < iterations; ++i )
-      {
+      for ( i = 0; i < iterations; ++i ) {
 #if defined (WIN32)
          Sleep( g_timeOutinMilliSecs );
 #else
          nanosleep( &g_timeOut, NULL );
 #endif
 #if defined(CONFIG_KERNEL_HEADERS)
-         if ( spin_can_lock( &pLock->lock ) )
-         {
+         if ( spin_can_lock( &pLock->lock ) ) {
             isItLocked = spin_trylock( &pLock->lock );
             isItLocked--;
          }
 #elif defined (WIN32)
-         if ( pLock->lock == 0 )
-         {
+         if ( pLock->lock == 0 ) {
             isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, 0xff );
          }
 #elif defined (VDS_USE_POSIX_SEMAPHORE)
-         do
-         {
+         do {
             /* We restart on interrupts. */
             isItLocked = sem_trywait( &pLock->semaphore.sem );
          } while ( isItLocked == -1 && errno == EINTR );
-         if (  isItLocked == -1 && errno != EAGAIN )
-         {
+
+         if (  isItLocked == -1 && errno != EAGAIN ) {
             fprintf( stderr, "Lock:trywait failed with errno = %d\n", errno );
             return -1;
          }
-         if ( i > 25 )
-         {
+         if ( i > 25 ) {
             int val;
             int ok = sem_getvalue( &pLock->semaphore.sem, &val ); 
             fprintf( stderr, "sem_getvalue = %d %d %d\n", val, ok, errno );
@@ -179,8 +166,7 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
       } /* end of for loop */
       
       /* We come here - the time slice was not enough, no luck getting the lock */
-      if ( isItLocked != 0 )
-      {
+      if ( isItLocked != 0 ) {
          return -1;   
       }
    }
@@ -217,8 +203,7 @@ vdscReleaseProcessLock( vdscProcessLock* pLock )
          fprintf( stderr, "release 2 %d\n", errno ); 
 
    int isItLocked = -1;
-   do
-   {
+   do {
       /* We restart on interrupts. */
       isItLocked = sem_post( &pLock->semaphore.sem );
       if ( isItLocked == -1 )

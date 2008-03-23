@@ -42,8 +42,8 @@
  */
 
 int
-vdscSetReadOnly( vdscMemoryFile*   pMem,
-                 vdscErrorHandler* pError )
+vdscSetReadOnly( vdscMemoryFile   * pMem,
+                 vdscErrorHandler * pError )
 {
    int errcode;
 #if defined (WIN32)
@@ -62,8 +62,7 @@ vdscSetReadOnly( vdscMemoryFile*   pMem,
                          pMem->length, 
                          PAGE_READONLY, 
                          &oldProt );
-   if ( err == 0 )
-   {
+   if ( err == 0 ) {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );      
       errcode = -1;
    }
@@ -132,8 +131,7 @@ vdscSetReadWrite( vdscMemoryFile   * pMem,
                          pMem->length, 
                          PAGE_READWRITE, 
                          &oldProt );
-   if ( err == 0 )
-   {
+   if ( err == 0 ) {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );      
       errcode = -1;
    }
@@ -156,3 +154,4 @@ vdscSetReadWrite( vdscMemoryFile   * pMem,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -47,8 +47,7 @@ vdscCalculateTimer( vdscTimer *pTimer,
 #if defined (WIN32)
    double d;
    
-   if ( pTimer->highResolution == TRUE )
-   {
+   if ( pTimer->highResolution == TRUE ) {
       *pSecs = (unsigned long)( 
          (pTimer->endCount.QuadPart-pTimer->beginCount.QuadPart) / pTimer->frequency.QuadPart );
       *pnanoSecs = (unsigned long)((pTimer->endCount.QuadPart-pTimer->beginCount.QuadPart)

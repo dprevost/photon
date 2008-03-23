@@ -56,12 +56,11 @@ int vdscInitProcessLock( vdscProcessLock* pLock )
    pLock->initialized = VDSC_LOCK_SIGNATURE;
 
 #if defined (VDS_USE_POSIX_SEMAPHORE)
-   do
-   {
+   do {
       err = sem_init( &pLock->semaphore.sem, pshared, 1 );
    } while ( err == -1 && errno == EINTR );
-   if ( err != 0 ) 
-   {
+
+   if ( err != 0 ) {
       pLock->initialized = 0;
       fprintf( stderr, "Lock:Init failed with errno = %d\n", errno );
    }
@@ -81,8 +80,7 @@ int vdscFiniProcessLock( vdscProcessLock* pLock )
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
 
 #if defined (VDS_USE_POSIX_SEMAPHORE)
-   do
-   {
+   do {
       err = sem_destroy( &pLock->semaphore.sem );
    } while ( err == -1 && errno == EINTR );
 #endif

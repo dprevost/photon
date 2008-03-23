@@ -69,13 +69,11 @@ vdscTryAcquireThreadLock( vdscThreadLock* pLock,
 
    if ( status == TRUE )
       return 0;
-   else
-   {
+   else {
       int iterations = milliSecs/g_timeOutinMilliSecs;
       int i;
       
-      for ( i = 0; i < iterations; ++i )
-      {
+      for ( i = 0; i < iterations; ++i ) {
          Sleep( g_timeOutinMilliSecs );
 
          status = TryEnterCriticalSection( &pLock->mutex );
@@ -89,13 +87,11 @@ vdscTryAcquireThreadLock( vdscThreadLock* pLock,
 #else
    status = pthread_mutex_trylock( &pLock->mutex );
 
-   if ( status == EBUSY ) /* or EAGAIN ? */
-   {
+   if ( status == EBUSY ) { /* or EAGAIN ? */
       int iterations = milliSecs/g_timeOutinMilliSecs;
       int i;
       
-      for ( i = 0; i < iterations; ++i )
-      {
+      for ( i = 0; i < iterations; ++i ) {
          nanosleep( &g_timeOut, NULL );
 
          status = pthread_mutex_trylock( &pLock->mutex );

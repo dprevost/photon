@@ -36,3 +36,4 @@ new_ctime_r (const time_t *timep, char *buf, int buflen)
 	buf = new_asctime_r(localtime_r(timep, &tm), buf, buflen );
    return buf;
 }
+

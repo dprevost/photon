@@ -49,7 +49,7 @@ static char		wildabbr[] = "WILDABBR";
 
 static const char	gmt[] = "GMT";
 
-struct ttinfo {				/* time type information */
+struct ttinfo {			/* time type information */
 	long		tt_gmtoff;	/* UTC offset in seconds */
 	int		tt_isdst;	/* used to set tm_isdst */
 	int		tt_abbrind;	/* abbreviation list index */
@@ -59,7 +59,7 @@ struct ttinfo {				/* time type information */
 
 struct lsinfo {				/* leap second information */
 	time_t		ls_trans;	/* transition time */
-	long		ls_corr;	/* correction to apply */
+	long		ls_corr;	      /* correction to apply */
 };
 
 #define BIGGEST(a, b)	(((a) > (b)) ? (a) : (b))
@@ -297,3 +297,4 @@ timesub( const time_t * const		timep,
 	tmp->TM_GMTOFF = offset;
 #endif /* defined TM_GMTOFF */
 }
+

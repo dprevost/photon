@@ -18,42 +18,42 @@ SUBDIRS = . Tests
 
 noinst_LTLIBRARIES   = libCommon.la
 
-libCommon_la_SOURCES =                 \
-                       Barrier.h       \
-                       Common.h        \
-                       ConfigFile.c    \
-                       ConfigFile.h    \
-                       DirAccess.c     \
-                       DirAccess.h     \
-                       ErrorHandler.c  \
-                       ErrorHandler.h  \
-                       MemoryFile.c    \
-                       MemoryFile.h    \
-                       MemoryFile.inl  \
-                       Options.c       \
-                       Options.h       \
-                       ProcessLock.c   \
-                       ProcessLock.h   \
-                       ProcessLock.inl \
-                       spinlock.c      \
-                       ThreadLock.c    \
-                       ThreadLock.h    \
-                       ThreadLock.inl  \
-                       Timer.c         \
-                       Timer.h
+libCommon_la_SOURCES = \
+   Barrier.h       \
+   Common.h        \
+   ConfigFile.c    \
+   ConfigFile.h    \
+   DirAccess.c     \
+   DirAccess.h     \
+   ErrorHandler.c  \
+   ErrorHandler.h  \
+   MemoryFile.c    \
+   MemoryFile.h    \
+   MemoryFile.inl  \
+   Options.c       \
+   Options.h       \
+   ProcessLock.c   \
+   ProcessLock.h   \
+   ProcessLock.inl \
+   spinlock.c      \
+   ThreadLock.c    \
+   ThreadLock.h    \
+   ThreadLock.inl  \
+   Timer.c         \
+   Timer.h         
 
-EXTRA_DIST =                \
-             asctime_r.c    \
-             Common.dsp     \
-             ctime_r.c      \
-             localtime_r.c  \
-             Makefile.win32 \
-             memcmp.c       \
-             memset.c       \
-             nanosleep.c    \
-             private.h      \
-             strnlen.c      \
-             tzfile.h       
+EXTRA_DIST =      \
+   asctime_r.c    \
+   Common.dsp     \
+   ctime_r.c      \
+   localtime_r.c  \
+   Makefile.win32 \
+   memcmp.c       \
+   memset.c       \
+   nanosleep.c    \
+   private.h      \
+   strnlen.c      \
+   tzfile.h       
 
 libCommon_la_LIBADD = @LTLIBOBJS@
 

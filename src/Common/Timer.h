@@ -86,8 +86,7 @@ static inline void
 vdscBeginTimer( vdscTimer* pTimer )
 {
 #if defined (WIN32)
-   if ( pTimer->highResolution == TRUE )
-   {
+   if ( pTimer->highResolution == TRUE ) {
       QueryPerformanceCounter( &pTimer->beginCount );
       return;
    }
@@ -103,8 +102,7 @@ static inline
 void vdscEndTimer( vdscTimer* pTimer )
 {
 #if defined (WIN32)
-   if ( pTimer->highResolution == TRUE )
-   {
+   if ( pTimer->highResolution == TRUE ) {
       QueryPerformanceCounter( &pTimer->endCount );
       return;
    }

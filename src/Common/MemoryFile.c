@@ -200,8 +200,6 @@ vdscCreateBackstore( vdscMemoryFile*   pMem,
    int errcode = 0, fd;
    char buf[1];
 
-//   fprintf( stderr, "fp: %d (%d)\n", filePerms & 0600, filePerms );
-   
    VDS_PRE_CONDITION( pMem    != NULL );
    VDS_INV_CONDITION( pMem->initialized == VDSC_MEMFILE_SIGNATURE );
    VDS_INV_CONDITION( pMem->name[0] != '\0' );
@@ -211,8 +209,7 @@ vdscCreateBackstore( vdscMemoryFile*   pMem,
    
    /* Create the file with the right permissions */
    fd = creat( pMem->name, filePerms );
-   if ( fd < 0 )
-   {
+   if ( fd < 0 ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );      
       return -1;
    }
@@ -225,15 +222,13 @@ vdscCreateBackstore( vdscMemoryFile*   pMem,
     * use, lseek or lseek64.
     */
    fp = fopen( pMem->name, "wb" );
-   if ( fp == NULL ) 
-   {
+   if ( fp == NULL ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );      
       return -1;
    }
    
    errcode = fseek( fp, pMem->length-1, SEEK_SET );
-   if ( errcode == 0 )
-   {
+   if ( errcode == 0 ) {
       buf[0] = 0;
       numWritten = fwrite( buf, 1, 1, fp );
       if ( numWritten != 1 )
@@ -311,8 +306,7 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
       OPEN_EXISTING,
       0,
       0 );
-   if ( pMem->fileHandle == VDS_INVALID_HANDLE )
-   {
+   if ( pMem->fileHandle == VDS_INVALID_HANDLE ) {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
       return -1;
    }
@@ -323,8 +317,7 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
                                          0,
                                          0,
                                          NULL );
-   if ( pMem->mapHandle  == VDS_INVALID_HANDLE )
-   {
+   if ( pMem->mapHandle  == VDS_INVALID_HANDLE ) {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
       return -1;
    }
@@ -336,8 +329,7 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
                                      0,
                                      NULL );
 
-   if ( pMem->baseAddr == VDS_MAP_FAILED )
-   {
+   if ( pMem->baseAddr == VDS_MAP_FAILED ) {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
       return -1;
    }
@@ -347,8 +339,7 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
 #else /* WIN32 */
 
    pMem->fileHandle = open( pMem->name, O_RDWR );
-   if ( pMem->fileHandle == VDS_INVALID_HANDLE )
-   {
+   if ( pMem->fileHandle == VDS_INVALID_HANDLE ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
       return -1;
    }
@@ -360,8 +351,7 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
                           pMem->fileHandle,
                           0 );
 
-   if ( pMem->baseAddr == VDS_MAP_FAILED )
-   {
+   if ( pMem->baseAddr == VDS_MAP_FAILED ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
       return -1;
    }
@@ -454,8 +444,7 @@ vdscSyncMemFile( vdscMemoryFile*   pMem,
 #if defined (WIN32)
 
    errcode = FlushViewOfFile( pMem->baseAddr, 0 );
-   if ( errcode == 0 )
-   {
+   if ( errcode == 0 ) {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
       errcode = -1;
    }
@@ -471,3 +460,4 @@ vdscSyncMemFile( vdscMemoryFile*   pMem,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

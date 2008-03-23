@@ -23,23 +23,6 @@
 #if defined WIN32
 #  include <winsock2.h>
 #endif
-/*
-#include <stdio.h>
-#if HAVE_SYS_TYPES_H
-#  include <sys/types.h>
-#endif
-#if STDC_HEADERS
-#  include <stdlib.h>
-#  include <stddef.h>
-#else
-#  if HAVE_STDLIB_H
-#    include <stdlib.h>
-#  endif
-#endif
-#if HAVE_UNISTD_H
-#  include <unistd.h>
-#endif
-*/
 
 /*
  * Note: this version of nanosleep is fundamentally incorrect since the
@@ -57,7 +40,7 @@
  */
 int  
 nanosleep( const struct timespec * pRequest, 
-           struct timespec * pRemain )
+           struct timespec       * pRemain )
 {
    struct timeval req;
    int ret;
@@ -66,8 +49,7 @@ nanosleep( const struct timespec * pRequest,
    req.tv_sec  = pRequest->tv_sec;
    req.tv_usec = pRequest->tv_nsec / 1000;
    if ( req.tv_sec *1000000 + req.tv_usec < 0  ||
-      req.tv_sec *1000000 + req.tv_usec >= 1000000000 )
-   {
+      req.tv_sec *1000000 + req.tv_usec >= 1000000000 ) {
       fprintf( stderr, "%u %u\n", req.tv_sec, req.tv_usec );
       errno = EINVAL;
       return -1;
@@ -75,7 +57,7 @@ nanosleep( const struct timespec * pRequest,
    
    
    ret = select (1, 0, 0, 0, &req );
-fprintf( stderr, "ret = %d %d\n", ret, WSAGetLastError() );
 
    return ret;
 }
+

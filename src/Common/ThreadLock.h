@@ -42,7 +42,6 @@ typedef struct vdscThreadLock
    CRITICAL_SECTION mutex;
 #else
    pthread_mutex_t mutex;
-//   pthread_mutexattr_t attr;
 #endif
 
 } vdscThreadLock;
@@ -91,3 +90,4 @@ END_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* VDSC_THREAD_LOCK_H */
+
