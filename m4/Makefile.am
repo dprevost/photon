@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -14,12 +14,14 @@ CLEANFILES = *~
 #m4datadir = $(datadir)/aclocal
 
 # List your m4 macros here
-m4macros =             \
-   ac_cxx_bool.m4      \
-   ac_func_mkdir.m4    \
-   ac_func_sem_init.m4 \
-   acx_pthread.m4      \
-   etr_struct_semun.m4
+m4macros =                  \
+   ac_c_printf_ptrdiff_t.m4 \
+   ac_c_printf_size_t.m4    \
+   ac_cxx_bool.m4           \
+   ac_func_mkdir.m4         \
+   ac_func_sem_init.m4      \
+   acx_pthread.m4           \
+   etr_struct_semun.m4      
 
 # The following is boilerplate
 #m4data_DATA = $(m4macros) 
