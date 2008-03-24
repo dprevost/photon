@@ -157,6 +157,8 @@ AC_CHECK_SIZEOF(void *)
 
 AC_C_VOLATILE 
 AC_C_INLINE 
+AC_C_PRINTF_SIZE_T
+AC_C_PRINTF_PTRDIFF_T
 
 ##################################
 #                                #

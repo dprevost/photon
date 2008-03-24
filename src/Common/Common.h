@@ -428,15 +428,16 @@ extern char *new_ctime_r( const time_t *timep, char *buf, int buflen );
 #  define VDS_INV_CONDITION(x)
 #endif
 
-/**
- *  Define our own boolean type. This might be overkill to some extent
- *  since many C compilers will handle the new bool type of C. But...
+/*
+ * Define our own boolean type. This might be overkill to some extent
+ * since many C compilers will handle the new bool type of C. But...
+ *
+ * Note: the bool used to be defined as an enum. But... this created a 
+ * conflict for c++ code. Using defines and a typedef eliminated this issue.
  */
 
 #ifndef __cplusplus
 #  if !defined (HAVE__BOOL)
-//enum boolvals { false, true };
-//typedef enum boolvals bool;
 #    define false 0
 #    define true  1
 typedef int bool;
@@ -472,18 +473,30 @@ struct vdstTestAlignment
 
 /****************************************************************/
 /*
- * If non-compliant C99 compilers are used other than VC++, an
- * autoconf test would be helpful here. 
+ * Some compilers might not support the C99 specs for printf (for size_t
+ * and ptrdiff_t) so a m4 macro was written to test for this.
  *
  * The online documentation for VS 2008 does not mention support
- * for these format.
+ * for these format so I can't based
  */
-#if defined(WIN32)
-#  define VDSF_SIZE_T_FORMAT    "%d"
-#  define VDSF_PTRDIFF_T_FORMAT "%d"
-#else
+#if HAVE_PRINTF_SIZE_T
 #  define VDSF_SIZE_T_FORMAT    "%zd"
+#else
+#  if SIZEOF_VOID_P == 4
+#    define VDSF_SIZE_T_FORMAT    "%d"
+#  else
+#    define VDSF_SIZE_T_FORMAT    "%ld"
+#  endif
+#endif
+
+#if HAVE_PRINTF_PTRDIFF_T
 #  define VDSF_PTRDIFF_T_FORMAT "%td"
+#else
+#  if SIZEOF_VOID_P == 4
+#    define VDSF_PTRDIFF_T_FORMAT "%d"
+#  else
+#    define VDSF_PTRDIFF_T_FORMAT "%ld"
+#  endif
 #endif
 
 END_C_DECLS

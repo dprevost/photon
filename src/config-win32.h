@@ -336,3 +336,13 @@ typedef int pid_t;
    code using `volatile' can become incorrect without. Disable with care. */
 /* #undef volatile */
 
+/*
+ * VC++ 6 does not support the C99 specs for printf (for size_t
+ * and ptrdiff_t). Quite normal since this compiler is quite old.
+ *
+ * The online documentation for VS 2008 does not mention support
+ * for these 2 formats either. This is stranger but oh well...
+ */
+/* # define HAVE_PRINTF_SIZE_T 1 */
+/* # define HAVE_PRINTF_PTRDIFF_T 1 */
+

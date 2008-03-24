@@ -28,6 +28,8 @@ extern struct tm *
 localtime_r( const time_t * const timep,
              struct tm *          tm );
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 char *
 new_ctime_r (const time_t *timep, char *buf, int buflen)
 {
@@ -36,4 +38,6 @@ new_ctime_r (const time_t *timep, char *buf, int buflen)
 	buf = new_asctime_r(localtime_r(timep, &tm), buf, buflen );
    return buf;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
