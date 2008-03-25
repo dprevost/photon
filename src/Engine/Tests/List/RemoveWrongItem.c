@@ -22,6 +22,13 @@ const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * The following test is pretty weak. Removing an item from the wrong list
+ * has one consequence - the list counter becomes wrong. Otherwise all is
+ * well (the call vdseLinkedListRemoveItem() does remove the link from its
+ * linked list since it uses the previous and next members of the removed
+ * node.
+ */
 int main()
 {
    vdseLinkedList list1;
@@ -40,8 +47,10 @@ int main()
    vdseLinkedListPutLast( &list1, &node1 );
    vdseLinkedListPutLast( &list2, &node2 );
 
-   /* Remove it from the wrong list */
+   /* Remove it from the wrong list - should work but... */
    vdseLinkedListRemoveItem( &list2, &node1 );
+
+   /* Should crash since the number of items in list2 is zero */
    vdseLinkedListRemoveItem( &list2, &node2 );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

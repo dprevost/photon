@@ -237,6 +237,7 @@ TESTS +=                            \
          RemoveNullList             \
          RemoveAbsent               \
          RemovePass                 \
+         RemoveWrongItem            \
          ReplaceInvSig              \
          ReplaceNullList            \
          ReplaceNullNew             \
