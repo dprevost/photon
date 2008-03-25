@@ -199,10 +199,6 @@ TESTS +=                        \
          ResizePass             
 endif
 
-if COND_USE_EXTREME_DBC
-TESTS += 
-endif
-
 TESTS += 
 
 XFAIL_TESTS =                        \

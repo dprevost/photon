@@ -156,34 +156,6 @@ vdseLinkedListRemoveItem( vdseLinkedList * pList,
    VDS_PRE_CONDITION( pRemovedItem->nextOffset     != NULL_OFFSET );
    VDS_PRE_CONDITION( pList->currentSize > 0 );
 
-#ifdef USE_EXTREME_DBC
-   /* A more complex precondition, that the removed buffer is indeed
-    * in the list... (it is also like that a memory violation will 
-    * occur if the buffer is indeed not in the list).
-    */
-   {
-      int dbc_count = pList->currentSize;
-      int dbc_ok = 0;
-      vdseLinkNode* dbc_ptr;
-
-      dbc_ptr = GET_PTR_FAST( pRemovedItem->nextOffset,
-                         vdseLinkNode );
-      while ( dbc_count > 0 )
-      {
-         if ( dbc_ptr == &pList->head )
-         {
-            dbc_ok = 1;
-            break;
-         }
-         VDS_PRE_CONDITION( dbc_ptr->nextOffset != NULL_OFFSET );
-         dbc_ptr = GET_PTR_FAST( dbc_ptr->nextOffset, vdseLinkNode );
-         dbc_count--;
-         
-      }
-      VDS_PRE_CONDITION( dbc_ok == 1 );
-   }
-#endif
-
    GET_PTR_FAST( pRemovedItem->nextOffset, vdseLinkNode )->previousOffset = 
       pRemovedItem->previousOffset;
 
@@ -254,32 +226,6 @@ vdseLinkedListPeakNext( vdseLinkedList * pList,
    VDS_PRE_CONDITION( pCurrent->previousOffset != NULL_OFFSET );
    VDS_PRE_CONDITION( pCurrent->nextOffset     != NULL_OFFSET );
 
-#ifdef USE_EXTREME_DBC
-   /* A more complex precondition, that the current buffer is indeed
-    * in the list... (it is also like that a memory violation will 
-    * occur if the buffer is not in the list).
-    */
-   {
-      int dbc_count = pList->currentSize;
-      int dbc_ok = 0;
-      vdseLinkNode* dbc_ptr;
-
-      dbc_ptr = GET_PTR_FAST( pCurrent->nextOffset, vdseLinkNode );
-      while ( dbc_count > 0 )
-      {
-         if ( dbc_ptr == &pList->head )
-         {
-            dbc_ok = 1;
-            break;
-         }
-         VDS_PRE_CONDITION( dbc_ptr->nextOffset != NULL_OFFSET );
-         dbc_ptr = GET_PTR_FAST( dbc_ptr->nextOffset, vdseLinkNode );
-         dbc_count--;
-      }
-      VDS_PRE_CONDITION( dbc_ok == 1 );
-   }
-#endif
-
    pNext = GET_PTR_FAST( pCurrent->nextOffset, vdseLinkNode );
    if ( pNext == &pList->head )
       return LIST_END_OF_LIST;
@@ -306,32 +252,6 @@ vdseLinkedListPeakPrevious( vdseLinkedList * pList,
    VDS_PRE_CONDITION( ppPrevious != NULL );
    VDS_PRE_CONDITION( pCurrent->previousOffset != NULL_OFFSET );
    VDS_PRE_CONDITION( pCurrent->nextOffset     != NULL_OFFSET );
-
-#ifdef USE_EXTREME_DBC
-   /* A more complex precondition, that the current buffer is indeed
-    * in the list... (it is also like that a memory violation will 
-    * occur if the buffer is not in the list).
-    */
-   {
-      int dbc_count = pList->currentSize;
-      int dbc_ok = 0;
-      vdseLinkNode* dbc_ptr;
-
-      dbc_ptr = GET_PTR_FAST( pCurrent->nextOffset, vdseLinkNode );
-      while ( dbc_count > 0 )
-      {
-         if ( dbc_ptr == &pList->head )
-         {
-            dbc_ok = 1;
-            break;
-         }
-         VDS_PRE_CONDITION( dbc_ptr->nextOffset != NULL_OFFSET );
-         dbc_ptr = GET_PTR_FAST( dbc_ptr->nextOffset, vdseLinkNode );
-         dbc_count--;
-      }
-      VDS_PRE_CONDITION( dbc_ok == 1 );
-   }
-#endif
 
    pPrevious = GET_PTR_FAST( pCurrent->previousOffset, vdseLinkNode );
    if ( pPrevious == &pList->head )
@@ -366,34 +286,6 @@ vdseLinkedListReplaceItem( vdseLinkedList * pList,
    VDS_PRE_CONDITION( pNewItem->previousOffset == NULL_OFFSET );
    VDS_PRE_CONDITION( pNewItem->nextOffset     == NULL_OFFSET );
    VDS_PRE_CONDITION( pList->currentSize > 0 );
-
-#ifdef USE_EXTREME_DBC
-   /* A more complex precondition, that the removed buffer is indeed
-    * in the list... (it is also likely that a memory violation will 
-    * occur if the buffer is indeed not in the list).
-    */
-   {
-      int dbc_count = pList->currentSize;
-      int dbc_ok = 0;
-      vdseLinkNode* dbc_ptr;
-
-      dbc_ptr = GET_PTR_FAST( pOldItem->nextOffset,
-                         vdseLinkNode );
-      while ( dbc_count > 0 )
-      {
-         if ( dbc_ptr == &pList->head )
-         {
-            dbc_ok = 1;
-            break;
-         }
-         VDS_PRE_CONDITION( dbc_ptr->nextOffset != NULL_OFFSET );
-         dbc_ptr = GET_PTR_FAST( dbc_ptr->nextOffset, vdseLinkNode );
-         dbc_count--;
-         
-      }
-      VDS_PRE_CONDITION( dbc_ok == 1 );
-   }
-#endif
 
    tmpOffset = SET_OFFSET( pNewItem );
    pNewItem->nextOffset     = pOldItem->nextOffset;

@@ -384,12 +384,6 @@ extern char *new_ctime_r( const time_t *timep, char *buf, int buflen );
 
 /****************************************************************/
 
-#ifdef USE_EXTREME_DBC
-#  ifndef USE_DBC
-#    define USE_DBC
-#  endif
-#endif
-
 #ifdef USE_DBC
 #  if !HAVE_ASSERT_H
 #    error "assert.h is needed to implement Design By Contract"

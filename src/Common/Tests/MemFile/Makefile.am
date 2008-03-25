@@ -184,10 +184,6 @@ TESTS +=                   \
    SynchPass               
 endif
 
-if COND_USE_EXTREME_DBC
-TESTS += 
-endif
-
 TESTS += Tests 
 
 XFAIL_TESTS =              \

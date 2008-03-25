@@ -249,10 +249,7 @@ TESTS +=                            \
          ResetPass 
 endif
 
-if COND_USE_EXTREME_DBC
-TESTS +=                     \
-         RemoveWrongItem
-endif
+# RemoveWrongItem
 
 TESTS +=           \
          TestSmall \

@@ -370,16 +370,6 @@ AC_ARG_ENABLE([dbc],
 
 AM_CONDITIONAL([COND_USE_DBC], [test "$use_dbc" = yes])
 
-AC_ARG_ENABLE([extreme-dbc],
-              AC_HELP_STRING([--enable-extreme-dbc],
-                             [add even more contract-validation checks to the code. You might want to enable this to resolve a hard-to-find bug @<:@default=no@:>@]),
-	           [use_extreme_dbc=$enableval],
-	           [use_extreme_dbc=no])
-
-AM_CONDITIONAL([COND_USE_EXTREME_DBC], [test "$use_extreme_dbc" = yes])
-AM_CONDITIONAL([COND_USE_DBC], 
-	            [test "$use_dbc" = yes || "$use_extreme_dbc" = yes])
-
 AM_CONDITIONAL([COND_INCLUDE_DEMO], [test "$want_demo" = yes])
 
 ############################################################
