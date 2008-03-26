@@ -14,21 +14,21 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core *.tlog
 
-check_PROGRAMS =                 \
-                 CloseNoInit     \
-                 CloseNULLLog    \
-                 CloseNULLError  \
-                 ClosePass       \
-                 InitNULLDir     \
-                 InitNULLError   \
-                 InitNULLLog     \
-                 InitNULLSession \
-                 InitPass        \
-                 LogNoInit       \
-                 LogNULLError    \
-                 LogNULLLog      \
-                 LogPass         \
-                 LogFileTest
+check_PROGRAMS =   \
+   CloseNoInit     \
+   CloseNULLLog    \
+   CloseNULLError  \
+   ClosePass       \
+   InitNULLDir     \
+   InitNULLError   \
+   InitNULLLog     \
+   InitNULLSession \
+   InitPass        \
+   LogNoInit       \
+   LogNULLError    \
+   LogNULLLog      \
+   LogPass         \
+   LogFileTest     
 
 CloseNoInit_SOURCES     = CloseNoInit.c
 CloseNULLLog_SOURCES    = CloseNULLLog.c
@@ -51,33 +51,35 @@ EXTRA_DIST =      \
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
-TESTS =                 \
-        CloseNoInit     \
-        CloseNULLLog    \
-        CloseNULLError  \
-        ClosePass       \
-        InitNULLDir     \
-        InitNULLError   \
-        InitNULLLog     \
-        InitNULLSession \
-        InitPass        \
-        LogNoInit       \
-        LogNULLError    \
-        LogNULLLog      \
-        LogPass         \
-        LogFileTest
+TESTS = 
 
-XFAIL_TESTS =                 \
-              CloseNoInit     \
-              CloseNULLLog    \
-              CloseNULLError  \
-              InitNULLDir     \
-              InitNULLError   \
-              InitNULLLog     \
-              InitNULLSession \
-              LogNoInit       \
-              LogNULLError    \
-              LogNULLLog      
+TESTS +=           \
+   CloseNoInit     \
+   CloseNULLLog    \
+   CloseNULLError  \
+   ClosePass       \
+   InitNULLDir     \
+   InitNULLError   \
+   InitNULLLog     \
+   InitNULLSession \
+   InitPass        \
+   LogNoInit       \
+   LogNULLError    \
+   LogNULLLog      \
+   LogPass         \
+   LogFileTest     
+
+XFAIL_TESTS =      \
+   CloseNoInit     \
+   CloseNULLLog    \
+   CloseNULLError  \
+   InitNULLDir     \
+   InitNULLError   \
+   InitNULLLog     \
+   InitNULLSession \
+   LogNoInit       \
+   LogNULLError    \
+   LogNULLLog      
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la

@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseBlockGroup *pGroup;
    unsigned char* ptr;
    vdseSessionContext context;
@@ -48,6 +49,9 @@ int main()
    vdseBlockGroupFini( NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

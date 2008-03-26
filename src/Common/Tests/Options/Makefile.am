@@ -89,7 +89,6 @@ EXTRA_DIST =      \
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
 
-
 TESTS = 
 
 if COND_USE_DBC
@@ -97,36 +96,37 @@ TESTS +=                      \
    GetLongOptNullHandle       \
    GetLongOptNullOpt          \
    GetLongOptNullValue        \
-   GetLongOptPass             \
    GetShortOptNullHandle      \
    GetShortOptNullValue       \
-   GetShortOptPass            \
    IsLongPresentNullHandle    \
    IsLongPresentNullOpt       \
-   IsLongPresentPass          \
    IsShortPresentNullHandle   \
-   IsShortPresentPass         \
    SetOptionsNullHandle       \
    SetOptionsNullOpts         \
    SetOptionsNullEndedOpt     \
    SetOptionsNullEndedComment \
    SetOptionsNullEndedValue   \
    SetOptionsNumOptsZero      \
-   SetOptionsPass             \
    SetOptionsRepeatedLong     \
    SetOptionsRepeatedShort    \
    ShowUsageNullAddArgs       \
    ShowUsageNullHandle        \
    ShowUsageNullProgName      \
-   ShowUsagePass              \
    ValidateArgcZero           \
    ValidateNullArgv           \
    ValidateNULLArgvi          \
-   ValidateNullHandle         \
-   ValidatePass
+   ValidateNullHandle         
 endif
 
-TESTS += Tests  
+TESTS +=              \
+   GetLongOptPass     \
+   GetShortOptPass    \
+   IsLongPresentPass  \
+   IsShortPresentPass \
+   SetOptionsPass     \
+   ShowUsagePass      \
+   ValidatePass       \
+   Tests              
 
 XFAIL_TESTS =                 \
    GetLongOptNullHandle       \

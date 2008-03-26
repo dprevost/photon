@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseLogFile logfile;
    vdscErrorHandler errorHandler;
    vdsErrors error;
@@ -34,6 +35,9 @@ int main()
    error = vdseLogTransaction( &logfile, 1, &errorHandler );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

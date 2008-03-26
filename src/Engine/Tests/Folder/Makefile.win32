@@ -60,6 +60,7 @@ check_PROGRAMS =                                       \
                  .\Release\GetStatusNullContext.exe    \
                  .\Release\GetStatusNullFolder.exe     \
                  .\Release\GetStatusNullName.exe       \
+                 .\Release\GetStatusNullStatus.exe     \
                  .\Release\GetStatusPass.exe           \
                  .\Release\GetStatusZeroLength.exe     \
                  .\Release\GetWrongObjType.exe         \
@@ -69,6 +70,7 @@ check_PROGRAMS =                                       \
                  .\Release\InitNullKeyOffset.exe       \
                  .\Release\InitNullName.exe            \
                  .\Release\InitNullParentOffset.exe    \
+                 .\Release\InitNullStatus.exe          \
                  .\Release\InitPass.exe                \
                  .\Release\InitZeroBlocks.exe          \
                  .\Release\InitZeroNameLength.exe      \
