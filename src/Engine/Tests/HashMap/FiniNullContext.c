@@ -17,7 +17,7 @@
 
 #include "hashMapTest.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

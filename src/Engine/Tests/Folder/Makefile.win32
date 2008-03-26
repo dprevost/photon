@@ -95,6 +95,7 @@ check_PROGRAMS =                                       \
                  .\Release\ReleaseWrongObjType.exe     \
                  .\Release\RemoveNullContext.exe       \
                  .\Release\RemoveNullFolder.exe        \
+                 .\Release\RemoveNullItem.exe          \
                  .\Release\RemovePass.exe              \
                  .\Release\RemoveWrongObjType.exe      \
                  .\Release\StatusNullFolder.exe        \

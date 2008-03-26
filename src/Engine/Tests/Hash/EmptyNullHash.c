@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseSessionContext context;
    vdseHash* pHash;
    enum ListErrors listErr;
@@ -63,6 +64,9 @@ int main()
    vdseHashEmpty( NULL, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
