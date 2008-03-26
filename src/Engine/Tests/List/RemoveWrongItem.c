@@ -31,6 +31,7 @@ const bool expectedToPass = false;
  */
 int main()
 {
+#if defined(USE_DBC)
    vdseLinkedList list1;
    vdseLinkedList list2;
    vdseLinkNode node1, node2;
@@ -54,6 +55,9 @@ int main()
    vdseLinkedListRemoveItem( &list2, &node2 );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

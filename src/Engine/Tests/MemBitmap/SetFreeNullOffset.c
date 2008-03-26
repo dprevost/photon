@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseMemBitmap *pBitmap;
    unsigned char* ptr;
    vdseSessionContext context;
@@ -52,7 +53,10 @@ int main()
    
    vdseMemBitmapFini( pBitmap );
 
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseLinkedList list;
    vdseLinkNode node;
    vdseSessionContext context;
@@ -37,6 +38,9 @@ int main()
    vdseLinkedListPutLast( NULL, &node );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

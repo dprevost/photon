@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseSessionContext context;
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr;
@@ -47,6 +48,9 @@ int main()
    vdseFreeBlocks( pAlloc, VDSE_ALLOC_ANY, newBuff, 2, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

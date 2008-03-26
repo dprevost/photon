@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseLinkedList list;
    vdseLinkNode node1, node2;
    enum ListErrors error;
@@ -42,6 +43,9 @@ int main()
    error = vdseLinkedListPeakNext( &list, &node1, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

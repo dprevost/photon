@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseMemBitmap *pBitmap;
    unsigned char* ptr;
    vdseSessionContext context;
@@ -47,6 +48,9 @@ int main()
                            VDSE_BLOCK_SIZE/4 ); /* length */
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

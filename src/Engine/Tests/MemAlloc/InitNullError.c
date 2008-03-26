@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseMemAlloc*     pAlloc;
    unsigned char* ptr;
    size_t allocatedLength = VDSE_BLOCK_SIZE*10;
@@ -40,6 +41,9 @@ int main()
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

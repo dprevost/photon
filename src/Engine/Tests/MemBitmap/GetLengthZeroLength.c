@@ -24,11 +24,15 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    size_t calculatedSize;
    
    calculatedSize = vdseGetBitmapLengthBytes( 0, 8 );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

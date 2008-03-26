@@ -12,18 +12,16 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-check_PROGRAMS =                               \
-                 .\Release\FiniNullGroup.exe   \
-                 .\Release\FiniPass.exe        \
-                 .\Release\InitInvalidType.exe \
-                 .\Release\InitNullGroup.exe   \
-                 .\Release\InitNullOffset.exe  \
-                 .\Release\InitPass.exe        \
-                 .\Release\InitZeroPages.exe   
-
+check_PROGRAMS =                 \
+   .\Release\FiniNullGroup.exe   \
+   .\Release\FiniPass.exe        \
+   .\Release\InitInvalidType.exe \
+   .\Release\InitNullGroup.exe   \
+   .\Release\InitNullOffset.exe  \
+   .\Release\InitPass.exe        \
+   .\Release\InitZeroPages.exe   
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
-#
 
 check: $(OUTDIR) $(check_PROGRAMS)
 	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)

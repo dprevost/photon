@@ -49,11 +49,13 @@ EXTRA_DIST =      \
    Makefile.win32 \
    RunTests.vbs   
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =             \
+   srcdir=$(srcdir)             \
+   top_builddir=$(top_builddir) \
+   verbose=1                    \
+   PYTHON=$(PYTHON)             
 
-TESTS = 
-
-TESTS +=           \
+TESTS =            \
    CloseNoInit     \
    CloseNULLLog    \
    CloseNULLError  \

@@ -14,87 +14,89 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =                  \
-                 CloseNullAlloc   \
-                 CloseNullError   \
-                 ClosePass        \
-                 FreeNullAlloc    \
-                 FreeNullError    \
-                 FreeNullPtr      \
-                 FreePass         \
-                 FreeZeroLength   \
-                 InitNullAddress  \
-                 InitNullAlloc    \
-                 InitNullError    \
-                 InitPass         \
-                 InitSmallLength  \
-                 IsPageFreeTest   \
-                 MallocNullAlloc  \
-                 MallocNullError  \
-                 MallocPass       \
-                 MallocZeroLength
+check_PROGRAMS =    \
+   CloseNullAlloc   \
+   CloseNullError   \
+   ClosePass        \
+   FreeNullAlloc    \
+   FreeNullError    \
+   FreeNullPtr      \
+   FreePass         \
+   FreeZeroLength   \
+   InitNullAddress  \
+   InitNullAlloc    \
+   InitNullError    \
+   InitPass         \
+   InitSmallLength  \
+   IsPageFreeTest   \
+   MallocNullAlloc  \
+   MallocNullError  \
+   MallocPass       \
+   MallocZeroLength
 
-COMMON_ENGINE = 
-
-CloseNullAlloc_SOURCES     = $(COMMON_ENGINE) CloseNullAlloc.c
-CloseNullError_SOURCES     = $(COMMON_ENGINE) CloseNullError.c
-ClosePass_SOURCES          = $(COMMON_ENGINE) ClosePass.c
-FreeNullAlloc_SOURCES      = $(COMMON_ENGINE) FreeNullAlloc.c
-FreeNullError_SOURCES      = $(COMMON_ENGINE) FreeNullError.c
-FreeNullPtr_SOURCES        = $(COMMON_ENGINE) FreeNullPtr.c
-FreePass_SOURCES           = $(COMMON_ENGINE) FreePass.c
-FreeZeroLength_SOURCES     = $(COMMON_ENGINE) FreeZeroLength.c
-InitNullAddress_SOURCES    = $(COMMON_ENGINE) InitNullAddress.c
-InitNullAlloc_SOURCES      = $(COMMON_ENGINE) InitNullAlloc.c
-InitNullError_SOURCES      = $(COMMON_ENGINE) InitNullError.c
-InitPass_SOURCES           = $(COMMON_ENGINE) InitPass.c
-InitSmallLength_SOURCES    = $(COMMON_ENGINE) InitSmallLength.c
-IsPageFreeTest_SOURCES     = $(COMMON_ENGINE) IsPageFreeTest.c
-MallocNullAlloc_SOURCES    = $(COMMON_ENGINE) MallocNullAlloc.c
-MallocNullError_SOURCES    = $(COMMON_ENGINE) MallocNullError.c
-MallocPass_SOURCES         = $(COMMON_ENGINE) MallocPass.c
-MallocZeroLength_SOURCES   = $(COMMON_ENGINE) MallocZeroLength.c
+CloseNullAlloc_SOURCES   = CloseNullAlloc.c
+CloseNullError_SOURCES   = CloseNullError.c
+ClosePass_SOURCES        = ClosePass.c
+FreeNullAlloc_SOURCES    = FreeNullAlloc.c
+FreeNullError_SOURCES    = FreeNullError.c
+FreeNullPtr_SOURCES      = FreeNullPtr.c
+FreePass_SOURCES         = FreePass.c
+FreeZeroLength_SOURCES   = FreeZeroLength.c
+InitNullAddress_SOURCES  = InitNullAddress.c
+InitNullAlloc_SOURCES    = InitNullAlloc.c
+InitNullError_SOURCES    = InitNullError.c
+InitPass_SOURCES         = InitPass.c
+InitSmallLength_SOURCES  = InitSmallLength.c
+IsPageFreeTest_SOURCES   = IsPageFreeTest.c
+MallocNullAlloc_SOURCES  = MallocNullAlloc.c
+MallocNullError_SOURCES  = MallocNullError.c
+MallocPass_SOURCES       = MallocPass.c
+MallocZeroLength_SOURCES = MallocZeroLength.c
 
 EXTRA_DIST =      \
    Makefile.win32 \
    RunTests.vbs   
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =             \
+   srcdir=$(srcdir)             \
+   top_builddir=$(top_builddir) \
+   verbose=1                    \
+   PYTHON=$(PYTHON)             
 
-TESTS =                  \
-        CloseNullAlloc   \
-        CloseNullError   \
-        ClosePass        \
-        FreeNullAlloc    \
-        FreeNullError    \
-        FreeNullPtr      \
-        FreePass         \
-        FreeZeroLength   \
-        InitNullAddress  \
-        InitNullAlloc    \
-        InitNullError    \
-        InitPass         \
-        InitSmallLength  \
-        IsPageFreeTest   \
-        MallocNullAlloc  \
-        MallocNullError  \
-        MallocPass       \
-        MallocZeroLength
+TESTS =             \
+   CloseNullAlloc   \
+   CloseNullError   \
+   ClosePass        \
+   FreeNullAlloc    \
+   FreeNullError    \
+   FreeNullPtr      \
+   FreePass         \
+   FreeZeroLength   \
+   InitNullAddress  \
+   InitNullAlloc    \
+   InitNullError    \
+   InitPass         \
+   InitSmallLength  \
+   IsPageFreeTest   \
+   MallocNullAlloc  \
+   MallocNullError  \
+   MallocPass       \
+   MallocZeroLength
 
-XFAIL_TESTS =                  \
-              CloseNullAlloc   \
-              CloseNullError   \
-              FreeNullAlloc    \
-              FreeNullError    \
-              FreeNullPtr      \
-              FreeZeroLength   \
-              InitNullAddress  \
-              InitNullAlloc    \
-              InitNullError    \
-              InitSmallLength  \
-              MallocNullAlloc  \
-              MallocNullError  \
-              MallocZeroLength
+XFAIL_TESTS =       \
+   CloseNullAlloc   \
+   CloseNullError   \
+   FreeNullAlloc    \
+   FreeNullError    \
+   FreeNullPtr      \
+   FreeZeroLength   \
+   InitNullAddress  \
+   InitNullAlloc    \
+   InitNullError    \
+   InitSmallLength  \
+   MallocNullAlloc  \
+   MallocNullError  \
+   MallocZeroLength
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la
