@@ -12,27 +12,26 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-check_PROGRAMS =                                 \
-                 .\Release\AddNullContext.exe    \
-                 .\Release\AddNullManager.exe    \
-                 .\Release\AddNullProcess.exe    \
-                 .\Release\AddPass.exe           \
-                 .\Release\AddZeroPid.exe        \
-                 .\Release\FindNullContext.exe   \
-                 .\Release\FindNullManager.exe   \
-                 .\Release\FindNullProcess.exe   \
-                 .\Release\FindPass.exe          \
-                 .\Release\FindZeroPid.exe       \
-                 .\Release\InitNullContext.exe   \
-                 .\Release\InitNullManager.exe   \
-                 .\Release\InitPass.exe          \
-                 .\Release\RemoveNullContext.exe \
-                 .\Release\RemoveNullManager.exe \
-                 .\Release\RemoveNullProcess.exe \
-                 .\Release\RemovePass.exe        
+check_PROGRAMS =                   \
+   .\Release\AddNullContext.exe    \
+   .\Release\AddNullManager.exe    \
+   .\Release\AddNullProcess.exe    \
+   .\Release\AddPass.exe           \
+   .\Release\AddZeroPid.exe        \
+   .\Release\FindNullContext.exe   \
+   .\Release\FindNullManager.exe   \
+   .\Release\FindNullProcess.exe   \
+   .\Release\FindPass.exe          \
+   .\Release\FindZeroPid.exe       \
+   .\Release\InitNullContext.exe   \
+   .\Release\InitNullManager.exe   \
+   .\Release\InitPass.exe          \
+   .\Release\RemoveNullContext.exe \
+   .\Release\RemoveNullManager.exe \
+   .\Release\RemoveNullProcess.exe \
+   .\Release\RemovePass.exe        
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
-#
 
 check: $(OUTDIR) $(check_PROGRAMS)
 	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)

@@ -14,32 +14,32 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =                     \
-                 AddNullApiSession   \
-                 AddNullContext      \
-                 AddNullProcess      \
-                 AddNullSession      \
-                 AddPass             \
-                 FiniNullContext     \
-                 FiniNullProcess     \
-                 FiniPass            \
-                 GetFirstNullContext \
-                 GetFirstNullProcess \
-                 GetFirstNullSession \
-                 GetFirstPass        \
-                 GetNextNullContext  \
-                 GetNextNullCurrent  \
-                 GetNextNullNext     \
-                 GetNextNullProcess  \
-                 GetNextPass         \
-                 InitNullContext     \
-                 InitNullProcess     \
-                 InitPass            \
-                 InitZeroPid         \
-                 RemoveNullContext   \
-                 RemoveNullProcess   \
-                 RemoveNullSession   \
-                 RemovePass          
+check_PROGRAMS =       \
+   AddNullApiSession   \
+   AddNullContext      \
+   AddNullProcess      \
+   AddNullSession      \
+   AddPass             \
+   FiniNullContext     \
+   FiniNullProcess     \
+   FiniPass            \
+   GetFirstNullContext \
+   GetFirstNullProcess \
+   GetFirstNullSession \
+   GetFirstPass        \
+   GetNextNullContext  \
+   GetNextNullCurrent  \
+   GetNextNullNext     \
+   GetNextNullProcess  \
+   GetNextPass         \
+   InitNullContext     \
+   InitNullProcess     \
+   InitPass            \
+   InitZeroPid         \
+   RemoveNullContext   \
+   RemoveNullProcess   \
+   RemoveNullSession   \
+   RemovePass          
 
 COMMON_HEADER = processTest.h
 
@@ -73,55 +73,59 @@ EXTRA_DIST =      \
    Makefile.win32 \
    RunTests.vbs   
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =             \
+   srcdir=$(srcdir)             \
+   top_builddir=$(top_builddir) \
+   verbose=1                    \
+   PYTHON=$(PYTHON)             
 
-TESTS =                     \
-        AddNullApiSession   \
-        AddNullContext      \
-        AddNullProcess      \
-        AddNullSession      \
-        AddPass             \
-        FiniNullContext     \
-        FiniNullProcess     \
-        FiniPass            \
-        GetFirstNullContext \
-        GetFirstNullProcess \
-        GetFirstNullSession \
-        GetFirstPass        \
-        GetNextNullContext  \
-        GetNextNullCurrent  \
-        GetNextNullNext     \
-        GetNextNullProcess  \
-        GetNextPass         \
-        InitNullContext     \
-        InitNullProcess     \
-        InitPass            \
-        InitZeroPid         \
-        RemoveNullContext   \
-        RemoveNullProcess   \
-        RemoveNullSession   \
-        RemovePass          
+TESTS =                \
+   AddNullApiSession   \
+   AddNullContext      \
+   AddNullProcess      \
+   AddNullSession      \
+   AddPass             \
+   FiniNullContext     \
+   FiniNullProcess     \
+   FiniPass            \
+   GetFirstNullContext \
+   GetFirstNullProcess \
+   GetFirstNullSession \
+   GetFirstPass        \
+   GetNextNullContext  \
+   GetNextNullCurrent  \
+   GetNextNullNext     \
+   GetNextNullProcess  \
+   GetNextPass         \
+   InitNullContext     \
+   InitNullProcess     \
+   InitPass            \
+   InitZeroPid         \
+   RemoveNullContext   \
+   RemoveNullProcess   \
+   RemoveNullSession   \
+   RemovePass          
 
-XFAIL_TESTS =                     \
-              AddNullApiSession   \
-              AddNullContext      \
-              AddNullProcess      \
-              AddNullSession      \
-              FiniNullContext     \
-              FiniNullProcess     \
-              GetFirstNullContext \
-              GetFirstNullProcess \
-              GetFirstNullSession \
-              GetNextNullContext  \
-              GetNextNullCurrent  \
-              GetNextNullNext     \
-              GetNextNullProcess  \
-              InitNullContext     \
-              InitNullProcess     \
-              InitZeroPid         \
-              RemoveNullContext   \
-              RemoveNullProcess   \
-              RemoveNullSession   
+XFAIL_TESTS =          \
+   AddNullApiSession   \
+   AddNullContext      \
+   AddNullProcess      \
+   AddNullSession      \
+   FiniNullContext     \
+   FiniNullProcess     \
+   GetFirstNullContext \
+   GetFirstNullProcess \
+   GetFirstNullSession \
+   GetNextNullContext  \
+   GetNextNullCurrent  \
+   GetNextNullNext     \
+   GetNextNullProcess  \
+   InitNullContext     \
+   InitNullProcess     \
+   InitZeroPid         \
+   RemoveNullContext   \
+   RemoveNullProcess   \
+   RemoveNullSession   
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la

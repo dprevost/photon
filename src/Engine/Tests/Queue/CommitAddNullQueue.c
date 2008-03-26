@@ -23,6 +23,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseQueue * pQueue;
    vdseSessionContext context;
    int errcode;
@@ -67,6 +68,9 @@ int main()
    vdseQueueCommitAdd( NULL, SET_OFFSET( pItem ) );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

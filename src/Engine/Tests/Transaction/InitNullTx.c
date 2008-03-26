@@ -23,6 +23,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseTx* pTx;
    vdseSessionContext context;
    
@@ -31,6 +32,9 @@ int main()
    vdseTxInit( NULL, 1, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

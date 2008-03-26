@@ -14,32 +14,32 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =                        \
-                 AddInvalidType         \
-                 AddNullApiObject       \
-                 AddNullContext         \
-                 AddNullObject          \
-                 AddNullOffset          \
-                 AddNullSession         \
-                 AddPass                \
-                 FiniNullContext        \
-                 FiniNullSession        \
-                 FiniPass               \
-                 GetFirstNullContext    \
-                 GetFirstNullObject     \
-                 GetFirstNullSession    \
-                 GetFirstPass           \
-                 InitNullApiSession     \
-                 InitNullContext        \
-                 InitNullSession        \
-                 InitPass               \
-                 RemoveNullContext      \
-                 RemoveNullObject       \
-                 RemoveNullSession      \
-                 RemovePass             \
-                 RemoveFirstNullContext \
-                 RemoveFirstNullSession \
-                 RemoveFirstPass        
+check_PROGRAMS =          \
+   AddInvalidType         \
+   AddNullApiObject       \
+   AddNullContext         \
+   AddNullObject          \
+   AddNullOffset          \
+   AddNullSession         \
+   AddPass                \
+   FiniNullContext        \
+   FiniNullSession        \
+   FiniPass               \
+   GetFirstNullContext    \
+   GetFirstNullObject     \
+   GetFirstNullSession    \
+   GetFirstPass           \
+   InitNullApiSession     \
+   InitNullContext        \
+   InitNullSession        \
+   InitPass               \
+   RemoveNullContext      \
+   RemoveNullObject       \
+   RemoveNullSession      \
+   RemovePass             \
+   RemoveFirstNullContext \
+   RemoveFirstNullSession \
+   RemoveFirstPass        
 
 COMMON_HEADER = sessionTest.h
        
@@ -73,55 +73,59 @@ EXTRA_DIST =      \
    Makefile.win32 \
    RunTests.vbs   
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =             \
+   srcdir=$(srcdir)             \
+   top_builddir=$(top_builddir) \
+   verbose=1                    \
+   PYTHON=$(PYTHON)             
 
-TESTS =                        \
-        AddInvalidType         \
-        AddNullApiObject       \
-        AddNullContext         \
-        AddNullObject          \
-        AddNullOffset          \
-        AddNullSession         \
-        AddPass                \
-        FiniNullContext        \
-        FiniNullSession        \
-        FiniPass               \
-        GetFirstNullContext    \
-        GetFirstNullObject     \
-        GetFirstNullSession    \
-        GetFirstPass           \
-        InitNullApiSession     \
-        InitNullContext        \
-        InitNullSession        \
-        InitPass               \
-        RemoveNullContext      \
-        RemoveNullObject       \
-        RemoveNullSession      \
-        RemovePass             \
-        RemoveFirstNullContext \
-        RemoveFirstNullSession \
-        RemoveFirstPass         
+TESTS =                   \
+   AddInvalidType         \
+   AddNullApiObject       \
+   AddNullContext         \
+   AddNullObject          \
+   AddNullOffset          \
+   AddNullSession         \
+   AddPass                \
+   FiniNullContext        \
+   FiniNullSession        \
+   FiniPass               \
+   GetFirstNullContext    \
+   GetFirstNullObject     \
+   GetFirstNullSession    \
+   GetFirstPass           \
+   InitNullApiSession     \
+   InitNullContext        \
+   InitNullSession        \
+   InitPass               \
+   RemoveNullContext      \
+   RemoveNullObject       \
+   RemoveNullSession      \
+   RemovePass             \
+   RemoveFirstNullContext \
+   RemoveFirstNullSession \
+   RemoveFirstPass        
 
-XFAIL_TESTS =                        \
-              AddInvalidType         \
-              AddNullApiObject       \
-              AddNullContext         \
-              AddNullObject          \
-              AddNullOffset          \
-              AddNullSession         \
-              FiniNullContext        \
-              FiniNullSession        \
-              GetFirstNullContext    \
-              GetFirstNullObject     \
-              GetFirstNullSession    \
-              InitNullApiSession     \
-              InitNullContext        \
-              InitNullSession        \
-              RemoveNullContext      \
-              RemoveNullObject       \
-              RemoveNullSession      \
-              RemoveFirstNullContext \
-              RemoveFirstNullSession 
+XFAIL_TESTS =             \
+   AddInvalidType         \
+   AddNullApiObject       \
+   AddNullContext         \
+   AddNullObject          \
+   AddNullOffset          \
+   AddNullSession         \
+   FiniNullContext        \
+   FiniNullSession        \
+   GetFirstNullContext    \
+   GetFirstNullObject     \
+   GetFirstNullSession    \
+   InitNullApiSession     \
+   InitNullContext        \
+   InitNullSession        \
+   RemoveNullContext      \
+   RemoveNullObject       \
+   RemoveNullSession      \
+   RemoveFirstNullContext \
+   RemoveFirstNullSession 
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la

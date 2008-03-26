@@ -23,6 +23,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseProcess * process;
    vdseSessionContext context;
    int errcode;
@@ -36,6 +37,9 @@ int main()
    vdseProcessFini( NULL, &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

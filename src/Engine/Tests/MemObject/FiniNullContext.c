@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdsErrors errcode;
    vdstObjDummy *pDummy;
    vdseSessionContext context;
@@ -41,6 +42,9 @@ int main()
    vdseMemObjectFini( &pDummy->memObject, VDSE_ALLOC_ANY, NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

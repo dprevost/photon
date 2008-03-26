@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseMemObject* pObj;
    vdsErrors errcode;
    vdseSessionContext context;
@@ -43,6 +44,9 @@ int main()
    buff[0] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

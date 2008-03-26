@@ -14,28 +14,28 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =                   \
-                 FiniNullContext   \
-                 FiniNullObj       \
-                 FiniPass          \
-                 FreeNullContext   \
-                 FreeNullObj       \
-                 FreeNullPtr       \
-                 FreePass          \
-                 FreeZeroBytes     \
-                 InitInvType       \
-                 InitNullGroup     \
-                 InitNullObj       \
-                 InitPass          \
-                 InitZeroPages     \
-                 InitZeroType      \
-                 MallocNullContext \
-                 MallocNullObj     \
-                 MallocPass        \
-                 MallocZeroBytes   \
-                 StatusNullMemObj  \
-                 StatusNullStatus  \
-                 StatusPass        
+check_PROGRAMS =     \
+   FiniNullContext   \
+   FiniNullObj       \
+   FiniPass          \
+   FreeNullContext   \
+   FreeNullObj       \
+   FreeNullPtr       \
+   FreePass          \
+   FreeZeroBytes     \
+   InitInvType       \
+   InitNullGroup     \
+   InitNullObj       \
+   InitPass          \
+   InitZeroPages     \
+   InitZeroType      \
+   MallocNullContext \
+   MallocNullObj     \
+   MallocPass        \
+   MallocZeroBytes   \
+   StatusNullMemObj  \
+   StatusNullStatus  \
+   StatusPass        
 
 COMMON_HEADER = MemObjTest.h
 
@@ -65,50 +65,53 @@ EXTRA_DIST =      \
    Makefile.win32 \
    RunTests.vbs   
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =             \
+   srcdir=$(srcdir)             \
+   top_builddir=$(top_builddir) \
+   verbose=1                    \
+   PYTHON=$(PYTHON)             
 
+TESTS =              \
+   FiniNullContext   \
+   FiniNullObj       \
+   FiniPass          \
+   FreeNullContext   \
+   FreeNullObj       \
+   FreeNullPtr       \
+   FreePass          \
+   FreeZeroBytes     \
+   InitInvType       \
+   InitNullGroup     \
+   InitNullObj       \
+   InitPass          \
+   InitZeroPages     \
+   InitZeroType      \
+   MallocNullContext \
+   MallocNullObj     \
+   MallocPass        \
+   MallocZeroBytes   \
+   StatusNullMemObj  \
+   StatusNullStatus  \
+   StatusPass        
 
-TESTS =                   \
-        FiniNullContext   \
-        FiniNullObj       \
-        FiniPass          \
-        FreeNullContext   \
-        FreeNullObj       \
-        FreeNullPtr       \
-        FreePass          \
-        FreeZeroBytes     \
-        InitInvType       \
-        InitNullGroup     \
-        InitNullObj       \
-        InitPass          \
-        InitZeroPages     \
-        InitZeroType      \
-        MallocNullContext \
-        MallocNullObj     \
-        MallocPass        \
-        MallocZeroBytes   \
-        StatusNullMemObj  \
-        StatusNullStatus  \
-        StatusPass        
+XFAIL_TESTS =        \
+   FiniNullContext   \
+   FiniNullObj       \
+   FreeNullContext   \
+   FreeNullObj       \
+   FreeNullPtr       \
+   FreeZeroBytes     \
+   InitInvType       \
+   InitNullGroup     \
+   InitNullObj       \
+   InitZeroPages     \
+   InitZeroType      \
+   MallocNullContext \
+   MallocNullObj     \
+   MallocZeroBytes   \
+   StatusNullMemObj  \
+   StatusNullStatus  
 
-XFAIL_TESTS =                   \
-              FiniNullContext   \
-              FiniNullObj       \
-              FreeNullContext   \
-              FreeNullObj       \
-              FreeNullPtr       \
-              FreeZeroBytes     \
-              InitInvType       \
-              InitNullGroup     \
-              InitNullObj       \
-              InitZeroPages     \
-              InitZeroType      \
-              MallocNullContext \
-              MallocNullObj     \
-              MallocZeroBytes   \
-              StatusNullMemObj  \
-              StatusNullStatus  
-              
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la
 

@@ -23,6 +23,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseQueue * pQueue;
    vdseSessionContext context;
    int errcode;
@@ -74,6 +75,9 @@ int main()
    vdseQueueRollbackRemove( NULL, SET_OFFSET( pQueueItem ) );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

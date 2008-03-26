@@ -22,10 +22,10 @@ all:
 
 CLEANFILES = *~ 
 
-check_PROGRAMS =                                \
-                 .\Release\LinkNodeNULLInit.exe \
-                 .\Release\LinkNodeNULLTest.exe \
-                 .\Release\LinkNodeTestTest.exe 
+check_PROGRAMS =                  \
+   .\Release\LinkNodeNULLInit.exe \
+   .\Release\LinkNodeNULLTest.exe \
+   .\Release\LinkNodeTestTest.exe 
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

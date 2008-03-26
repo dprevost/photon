@@ -12,32 +12,32 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-check_PROGRAMS =                                   \
-                 .\Release\AddNullApiSession.exe   \
-                 .\Release\AddNullContext.exe      \
-                 .\Release\AddNullProcess.exe      \
-                 .\Release\AddNullSession.exe      \
-                 .\Release\AddPass.exe             \
-                 .\Release\FiniNullContext.exe     \
-                 .\Release\FiniNullProcess.exe     \
-                 .\Release\FiniPass.exe            \
-                 .\Release\GetFirstNullContext.exe \
-                 .\Release\GetFirstNullProcess.exe \
-                 .\Release\GetFirstNullSession.exe \
-                 .\Release\GetFirstPass.exe        \
-                 .\Release\GetNextNullContext.exe  \
-                 .\Release\GetNextNullCurrent.exe  \
-                 .\Release\GetNextNullNext.exe     \
-                 .\Release\GetNextNullProcess.exe  \
-                 .\Release\GetNextPass.exe         \
-                 .\Release\InitNullContext.exe     \
-                 .\Release\InitNullProcess.exe     \
-                 .\Release\InitPass.exe            \
-                 .\Release\InitZeroPid.exe         \
-                 .\Release\RemoveNullContext.exe   \
-                 .\Release\RemoveNullProcess.exe   \
-                 .\Release\RemoveNullSession.exe   \
-                 .\Release\RemovePass.exe          
+check_PROGRAMS =                     \
+   .\Release\AddNullApiSession.exe   \
+   .\Release\AddNullContext.exe      \
+   .\Release\AddNullProcess.exe      \
+   .\Release\AddNullSession.exe      \
+   .\Release\AddPass.exe             \
+   .\Release\FiniNullContext.exe     \
+   .\Release\FiniNullProcess.exe     \
+   .\Release\FiniPass.exe            \
+   .\Release\GetFirstNullContext.exe \
+   .\Release\GetFirstNullProcess.exe \
+   .\Release\GetFirstNullSession.exe \
+   .\Release\GetFirstPass.exe        \
+   .\Release\GetNextNullContext.exe  \
+   .\Release\GetNextNullCurrent.exe  \
+   .\Release\GetNextNullNext.exe     \
+   .\Release\GetNextNullProcess.exe  \
+   .\Release\GetNextPass.exe         \
+   .\Release\InitNullContext.exe     \
+   .\Release\InitNullProcess.exe     \
+   .\Release\InitPass.exe            \
+   .\Release\InitZeroPid.exe         \
+   .\Release\RemoveNullContext.exe   \
+   .\Release\RemoveNullProcess.exe   \
+   .\Release\RemoveNullSession.exe   \
+   .\Release\RemovePass.exe          
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 #
