@@ -23,6 +23,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseHashMap * pHashMap;
    vdseSessionContext context;
    int errcode;
@@ -78,6 +79,9 @@ int main()
    vdseHashMapRollbackRemove( pHashMap, NULL_OFFSET, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

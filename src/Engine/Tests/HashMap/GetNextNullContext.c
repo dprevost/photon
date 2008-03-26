@@ -23,6 +23,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdseHashMap * pHashMap;
    vdseSessionContext context;
    int errcode;
@@ -75,6 +76,9 @@ int main()
                                  NULL );
  
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
