@@ -22,9 +22,9 @@ all:
 
 CLEANFILES = *~ TestsCommon.ncb
 
-check_PROGRAMS =                             \
-                 .\Release\nanosleepTest.exe \
-                 .\Release\TimerTest.exe     
+check_PROGRAMS =               \
+   .\Release\nanosleepTest.exe \
+   .\Release\TimerTest.exe     
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

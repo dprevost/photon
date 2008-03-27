@@ -25,6 +25,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    int errcode;
    vdscDirIterator iterator;
    const char* str;
@@ -41,6 +42,9 @@ int main()
    str = vdscDirGetNextFileName( &iterator, NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

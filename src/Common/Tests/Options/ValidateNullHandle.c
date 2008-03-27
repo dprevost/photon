@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    int errcode = 0;
    char dummyArgs[100];
    char *dummyPtrs[10];
@@ -58,6 +59,9 @@ int main()
    errcode = vdscValidateUserOptions( NULL, 5, dummyPtrs, 1 );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

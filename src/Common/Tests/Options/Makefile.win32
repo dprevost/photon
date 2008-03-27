@@ -15,41 +15,40 @@ all:
 CLEANFILES = *~ 
 
 check_PROGRAMS =                            \
-                 .\Release\GetLongOptNullHandle.exe       \
-                 .\Release\GetLongOptNullOpt.exe          \
-                 .\Release\GetLongOptNullValue.exe        \
-                 .\Release\GetLongOptPass.exe             \
-                 .\Release\GetShortOptNullHandle.exe      \
-                 .\Release\GetShortOptNullValue.exe       \
-                 .\Release\GetShortOptPass.exe            \
-                 .\Release\IsLongPresentNullHandle.exe    \
-                 .\Release\IsLongPresentNullOpt.exe       \
-                 .\Release\IsLongPresentPass.exe          \
-                 .\Release\IsShortPresentNullHandle.exe   \
-                 .\Release\IsShortPresentPass.exe         \
-                 .\Release\SetOptionsNullHandle.exe       \
-                 .\Release\SetOptionsNullOpts.exe         \
-                 .\Release\SetOptionsNullEndedOpt.exe     \
-                 .\Release\SetOptionsNullEndedComment.exe \
-                 .\Release\SetOptionsNullEndedValue.exe   \
-                 .\Release\SetOptionsNumOptsZero.exe      \
-                 .\Release\SetOptionsPass.exe             \
-                 .\Release\SetOptionsRepeatedLong.exe     \
-                 .\Release\SetOptionsRepeatedShort.exe    \
-                 .\Release\ShowUsageNullAddArgs.exe       \
-                 .\Release\ShowUsageNullHandle.exe        \
-                 .\Release\ShowUsageNullProgName.exe      \
-                 .\Release\ShowUsagePass.exe              \
-                 .\Release\Tests.exe                      \
-                 .\Release\UnsetOptNullHandle.exe         \
-                 .\Release\ValidateArgcZero.exe           \
-                 .\Release\ValidateNullArgv.exe           \
-                 .\Release\ValidateNULLArgvi.exe          \
-                 .\Release\ValidateNullHandle.exe         \
-                 .\Release\ValidatePass.exe               
+   .\Release\GetLongOptNullHandle.exe       \
+   .\Release\GetLongOptNullOpt.exe          \
+   .\Release\GetLongOptNullValue.exe        \
+   .\Release\GetLongOptPass.exe             \
+   .\Release\GetShortOptNullHandle.exe      \
+   .\Release\GetShortOptNullValue.exe       \
+   .\Release\GetShortOptPass.exe            \
+   .\Release\IsLongPresentNullHandle.exe    \
+   .\Release\IsLongPresentNullOpt.exe       \
+   .\Release\IsLongPresentPass.exe          \
+   .\Release\IsShortPresentNullHandle.exe   \
+   .\Release\IsShortPresentPass.exe         \
+   .\Release\SetOptionsNullHandle.exe       \
+   .\Release\SetOptionsNullOpts.exe         \
+   .\Release\SetOptionsNullEndedOpt.exe     \
+   .\Release\SetOptionsNullEndedComment.exe \
+   .\Release\SetOptionsNullEndedValue.exe   \
+   .\Release\SetOptionsNumOptsZero.exe      \
+   .\Release\SetOptionsPass.exe             \
+   .\Release\SetOptionsRepeatedLong.exe     \
+   .\Release\SetOptionsRepeatedShort.exe    \
+   .\Release\ShowUsageNullAddArgs.exe       \
+   .\Release\ShowUsageNullHandle.exe        \
+   .\Release\ShowUsageNullProgName.exe      \
+   .\Release\ShowUsagePass.exe              \
+   .\Release\Tests.exe                      \
+   .\Release\UnsetOptNullHandle.exe         \
+   .\Release\ValidateArgcZero.exe           \
+   .\Release\ValidateNullArgv.exe           \
+   .\Release\ValidateNULLArgvi.exe          \
+   .\Release\ValidateNullHandle.exe         \
+   .\Release\ValidatePass.exe               
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
-#
 
 check: $(OUTDIR) $(check_PROGRAMS)
 	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)

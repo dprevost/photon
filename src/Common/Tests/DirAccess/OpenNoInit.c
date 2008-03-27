@@ -25,6 +25,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    int errcode;
    vdscDirIterator* pIterator;
    vdscErrorHandler errorHandler;
@@ -46,6 +47,9 @@ int main()
    vdscFiniErrorDefs();
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

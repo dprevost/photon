@@ -25,6 +25,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    /* 
     * This test handles the precondition that pDir must be NULL on 
     * entry to the Open function. This is done so that we don't 
@@ -52,6 +53,9 @@ int main()
    errcode = vdscOpenDir( &iterator, "..", &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

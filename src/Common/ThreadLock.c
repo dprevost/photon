@@ -68,7 +68,6 @@ void vdscFiniThreadLock( vdscThreadLock* pLock )
 #else
    err = pthread_mutex_destroy( &pLock->mutex );
    
-   fprintf( stderr, "err = %d\n", err );
    VDS_POST_CONDITION( err == 0 );
 #endif
    pLock->initialized = 0;

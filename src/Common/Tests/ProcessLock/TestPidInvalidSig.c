@@ -30,6 +30,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    int errcode;
    vdscProcessLock lock;
 
@@ -43,6 +44,9 @@ int main()
    vdscTestLockPidValue( &lock, 0xff );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -15,10 +15,10 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES = *~ core Memfile.mem
 
 THREAD_TEST_CODE = \
-   Barrier.c    \
-   Barrier.h    \
-   ThreadWrap.c \
-   ThreadWrap.h
+   Barrier.c       \
+   Barrier.h       \
+   ThreadWrap.c    \
+   ThreadWrap.h    
 
 check_PROGRAMS =     \
    AcquireInvalidSig \
@@ -61,29 +61,27 @@ EXTRA_DIST =             \
    Makefile.win32        \
    RunTests.vbs          
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =             \
+   srcdir=$(srcdir)             \
+   top_builddir=$(top_builddir) \
+   verbose=1                    \
+   PYTHON=$(PYTHON)             
 
-TESTS =
-
-if COND_USE_DBC
-TESTS +=                \
-   AcquireInvalidSig    \
-   AcquireNullLock      \
-   AcquirePass          \
-   FiniInvalidSig       \
-   FiniNullLock         \
-   FiniPass             \
-   InitNullLock         \
-   InitPass             \
-   ReleaseInvalidSig    \
-   ReleaseNullLock      \
-   ReleasePass          \
-   TryAcqInvalidSig     \
-   TryAcqNullLock       \
-   TryAcqPass           
-endif
-
-TESTS +=                 \
+TESTS =                  \
+   AcquireInvalidSig     \
+   AcquireNullLock       \
+   AcquirePass           \
+   FiniInvalidSig        \
+   FiniNullLock          \
+   FiniPass              \
+   InitNullLock          \
+   InitPass              \
+   ReleaseInvalidSig     \
+   ReleaseNullLock       \
+   ReleasePass           \
+   TryAcqInvalidSig      \
+   TryAcqNullLock        \
+   TryAcqPass            \
    LockConcurrency.sh    \
    LockConcurrencyTry.sh \
    LockTests             
@@ -97,8 +95,7 @@ XFAIL_TESTS =        \
    ReleaseInvalidSig \
    ReleaseNullLock   \
    TryAcqInvalidSig  \
-   TryAcqNullLock    \
-   TryAcqZeroValue 
+   TryAcqNullLock    
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
 

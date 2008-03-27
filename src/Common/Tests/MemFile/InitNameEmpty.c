@@ -24,11 +24,15 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdscMemoryFile mem;
    
    vdscInitMemoryFile( &mem, 10, "" );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

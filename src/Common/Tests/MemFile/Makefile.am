@@ -126,12 +126,13 @@ EXTRA_DIST =      \
    Makefile.win32 \
    RunTests.vbs   
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=0 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =             \
+   srcdir=$(srcdir)             \
+   top_builddir=$(top_builddir) \
+   verbose=0                    \
+   PYTHON=$(PYTHON)             
 
-TESTS = 
-
-if COND_USE_DBC
-TESTS +=                   \
+TESTS =                    \
    BackStatusInvalidSig    \
    BackStatusMemNull       \
    BackStatusNameEmpty     \
@@ -181,10 +182,8 @@ TESTS +=                   \
    SynchInvalidBaseAddr    \
    SynchInvalidSig         \
    SynchMemNull            \
-   SynchPass               
-endif
-
-TESTS += Tests 
+   SynchPass               \
+   Tests                   
 
 XFAIL_TESTS =              \
    BackStatusInvalidSig    \
@@ -227,7 +226,7 @@ XFAIL_TESTS =              \
    SynchNullError          \
    SynchInvalidBaseAddr    \
    SynchInvalidSig         \
-   SynchMemNull             
+   SynchMemNull            
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
 

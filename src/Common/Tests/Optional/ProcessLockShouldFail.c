@@ -64,11 +64,11 @@ struct localData
  * switches are done and with time slices of 1/1000 sec. (on many
  * modern OSes), it would force us to run the test for a lot longer).
  *
- * [DEFAULT_FAILURE_RATE 500 --> 0.2% failure]
+ * [DEFAULT_FAILURE_RATE 1000000 --> 0.0001% failure]
  */
-#define DEFAULT_FAILURE_RATE 500
-#define DEFAULT_NUM_CHILDREN   4
-#define DEFAULT_TIME         300
+#define DEFAULT_FAILURE_RATE 1000000
+#define DEFAULT_NUM_CHILDREN       4
+#define DEFAULT_TIME             300
 
 #define CHECK_TIMER 1345 /* Check the time every CHECK_TIMER loops */
 

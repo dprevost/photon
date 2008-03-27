@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
    void*           pAddr = NULL;
@@ -58,6 +59,9 @@ int main()
    vdscFiniErrorDefs();
    
    ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

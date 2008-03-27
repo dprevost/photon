@@ -31,7 +31,11 @@ EXTRA_DIST =                \
    ProcessLockShouldFail.sh \
    ThreadLockShouldFail.sh  
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =             \
+   srcdir=$(srcdir)             \
+   top_builddir=$(top_builddir) \
+   verbose=1                    \
+   PYTHON=$(PYTHON)             
 
 TESTS =                     \
    ProcessLockShouldFail.sh \

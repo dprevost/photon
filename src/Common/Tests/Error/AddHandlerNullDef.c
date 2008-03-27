@@ -37,6 +37,7 @@ int errorHandler( int errorCode, char* msg, unsigned int msgLength )
 
 int main()
 {
+#if defined(USE_DBC)
    vdscErrMsgHandle handle;
    
 /*   vdscInitErrorDefs(); */
@@ -44,6 +45,9 @@ int main()
    handle = vdscAddErrorMsgHandler( "Dummy", &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

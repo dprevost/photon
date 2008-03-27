@@ -29,7 +29,7 @@ void signalHandler(int s)
    /* A fprintf... probably not a good idea usually but we know where
     * the memory violation is so there is no issue in this case.
     */
-   fprintf( stderr, "Failed in signal handler - all ok!\n" );
+   fprintf( stderr, "Signal handler was called - all ok!\n" );
 
    unlink( "MemFile.mem" );
    

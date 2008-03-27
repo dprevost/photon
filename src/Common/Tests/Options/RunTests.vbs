@@ -84,7 +84,7 @@ fail_programs(21) = "ValidateNullArgv"
 fail_programs(22) = "ValidateNULLArgvi"
 fail_programs(23) = "ValidateNullHandle"
 
-numTests = 33                 ' Sum of length of both arrays 
+numTests = 32                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject

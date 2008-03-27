@@ -14,8 +14,6 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-INCLUDE_FILES =
-
 check_PROGRAMS =         \
    AddHandlerNullDef     \
    AddHandlerNullHandler \
@@ -46,49 +44,50 @@ check_PROGRAMS =         \
    SetErrorInvalidSig    \
    SetErrorInvalidValue  \
    SetErrorNullError     \
-   Tests 
+   Tests                 
 
-AddHandlerNullDef_SOURCES     = $(INCLUDE_FILES) AddHandlerNullDef.c
-AddHandlerNullHandler_SOURCES = $(INCLUDE_FILES) AddHandlerNullHandler.c
-AddHandlerNullName_SOURCES    = $(INCLUDE_FILES) AddHandlerNullName.c
-AddHandlerPass_SOURCES        = $(INCLUDE_FILES) AddHandlerPass.c
-AnyErrorNullError_SOURCES     = $(INCLUDE_FILES) AnyErrorNullError.c
-AnyErrorPass_SOURCES          = $(INCLUDE_FILES) AnyErrorPass.c
-ChainErrorNullDef_SOURCES     = $(INCLUDE_FILES) ChainErrorNullDef.c
-ChainErrorNullHandler_SOURCES = $(INCLUDE_FILES) ChainErrorNullHandler.c
-ChainErrorInvalidSig_SOURCES  = $(INCLUDE_FILES) ChainErrorInvalidSig.c
-ChainErrorNoSetError_SOURCES  = $(INCLUDE_FILES) ChainErrorNoSetError.c
-ChainErrorTooMany_SOURCES     = $(INCLUDE_FILES) ChainErrorTooMany.c
-ChainErrorPass_SOURCES        = $(INCLUDE_FILES) ChainErrorPass.c
-FiniInvalidSig_SOURCES        = $(INCLUDE_FILES) FiniInvalidSig.c
-FiniNullError_SOURCES         = $(INCLUDE_FILES) FiniNullError.c
-FiniPass_SOURCES              = $(INCLUDE_FILES) FiniPass.c
-GetErrorInvalidSig_SOURCES    = $(INCLUDE_FILES) GetErrorInvalidSig.c
-GetErrorNullError_SOURCES     = $(INCLUDE_FILES) GetErrorNullError.c
-GetErrorNullMsg_SOURCES       = $(INCLUDE_FILES) GetErrorNullMsg.c
-GetErrorZeroLength_SOURCES    = $(INCLUDE_FILES) GetErrorZeroLength.c
-GetLastNullError_SOURCES      = $(INCLUDE_FILES) GetLastNullError.c
-GetLastPass_SOURCES           = $(INCLUDE_FILES) GetLastPass.c
-GetLengthNullError_SOURCES    = $(INCLUDE_FILES) GetLengthNullError.c
-GetLengthPass_SOURCES         = $(INCLUDE_FILES) GetLengthPass.c
-InitNoInitDefs_SOURCES        = $(INCLUDE_FILES) InitNoInitDefs.c
-InitNullError_SOURCES         = $(INCLUDE_FILES) InitNullError.c
-InitPass_SOURCES              = $(INCLUDE_FILES) InitPass.c
-SetErrorInvalidSig_SOURCES    = $(INCLUDE_FILES) SetErrorInvalidSig.c
-SetErrorInvalidValue_SOURCES  = $(INCLUDE_FILES) SetErrorInvalidValue.c
-SetErrorNullError_SOURCES     = $(INCLUDE_FILES) SetErrorNullError.c
-Tests_SOURCES                 = $(INCLUDE_FILES) Tests.c
+AddHandlerNullDef_SOURCES     = AddHandlerNullDef.c
+AddHandlerNullHandler_SOURCES = AddHandlerNullHandler.c
+AddHandlerNullName_SOURCES    = AddHandlerNullName.c
+AddHandlerPass_SOURCES        = AddHandlerPass.c
+AnyErrorNullError_SOURCES     = AnyErrorNullError.c
+AnyErrorPass_SOURCES          = AnyErrorPass.c
+ChainErrorNullDef_SOURCES     = ChainErrorNullDef.c
+ChainErrorNullHandler_SOURCES = ChainErrorNullHandler.c
+ChainErrorInvalidSig_SOURCES  = ChainErrorInvalidSig.c
+ChainErrorNoSetError_SOURCES  = ChainErrorNoSetError.c
+ChainErrorTooMany_SOURCES     = ChainErrorTooMany.c
+ChainErrorPass_SOURCES        = ChainErrorPass.c
+FiniInvalidSig_SOURCES        = FiniInvalidSig.c
+FiniNullError_SOURCES         = FiniNullError.c
+FiniPass_SOURCES              = FiniPass.c
+GetErrorInvalidSig_SOURCES    = GetErrorInvalidSig.c
+GetErrorNullError_SOURCES     = GetErrorNullError.c
+GetErrorNullMsg_SOURCES       = GetErrorNullMsg.c
+GetErrorZeroLength_SOURCES    = GetErrorZeroLength.c
+GetLastNullError_SOURCES      = GetLastNullError.c
+GetLastPass_SOURCES           = GetLastPass.c
+GetLengthNullError_SOURCES    = GetLengthNullError.c
+GetLengthPass_SOURCES         = GetLengthPass.c
+InitNoInitDefs_SOURCES        = InitNoInitDefs.c
+InitNullError_SOURCES         = InitNullError.c
+InitPass_SOURCES              = InitPass.c
+SetErrorInvalidSig_SOURCES    = SetErrorInvalidSig.c
+SetErrorInvalidValue_SOURCES  = SetErrorInvalidValue.c
+SetErrorNullError_SOURCES     = SetErrorNullError.c
+Tests_SOURCES                 = Tests.c
 
 EXTRA_DIST =      \
    Makefile.win32 \
    RunTests.vbs   
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =             \
+   srcdir=$(srcdir)             \
+   top_builddir=$(top_builddir) \
+   verbose=1                    \
+   PYTHON=$(PYTHON)             
 
-TESTS = 
-
-if COND_USE_DBC
-TESTS +=                 \
+TESTS =                  \
    AddHandlerNullDef     \
    AddHandlerNullHandler \
    AddHandlerNullName    \
@@ -117,10 +116,8 @@ TESTS +=                 \
    InitPass              \
    SetErrorInvalidSig    \
    SetErrorInvalidValue  \
-   SetErrorNullError     
-endif
-
-TESTS += Tests  
+   SetErrorNullError     \
+   Tests                 
 
 XFAIL_TESTS =            \
    AddHandlerNullDef     \

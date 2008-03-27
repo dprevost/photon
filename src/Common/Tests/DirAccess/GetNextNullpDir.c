@@ -25,11 +25,12 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    /* pDir () is used in Unix/linux, not on Windows. */
-#if defined(WIN32)
+#  if defined(WIN32)
    Sleep( 10 );
    return 1;
-#else
+#  else
 
    int errcode;
    vdscDirIterator iterator;
@@ -49,6 +50,9 @@ int main()
    
    ERROR_EXIT( expectedToPass, NULL, );
    
+#  endif
+#else
+   return 1;
 #endif
 }
 

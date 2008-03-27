@@ -25,10 +25,14 @@ const bool expectedToPass = false;
 
 int main()
 {   
+#if defined(USE_DBC)
    vdscInitErrorDefs();
    vdscInitErrorHandler( NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

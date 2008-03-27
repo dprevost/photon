@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdscMemoryFile  mem;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete
@@ -37,6 +38,9 @@ int main()
    vdscFiniMemoryFile( NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

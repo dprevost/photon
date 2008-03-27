@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
    int errcode = 0;
@@ -42,6 +43,9 @@ int main()
    errcode = vdscCreateBackstore( &mem, 0600, &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
