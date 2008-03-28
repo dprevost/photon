@@ -20,12 +20,13 @@
 #include "Tests/PrintError.h"
 #include "API/HashMap.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
+#if defined(USE_DBC)
    VDS_HANDLE objHandle, sessionHandle;
    int errcode;
    const char * key1  = "My Key1";
@@ -112,6 +113,13 @@ int main( int argc, char * argv[] )
    }
 
    return 0;
+#else
+#  if defined(WIN32)
+   exit(3);
+#  else
+   abort();
+#  endif
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

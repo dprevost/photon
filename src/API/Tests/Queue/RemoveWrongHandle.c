@@ -20,12 +20,13 @@
 #include "Tests/PrintError.h"
 #include "API/Queue.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
+#if defined(USE_DBC)
    VDS_HANDLE sessionHandle, objHandle;
    int errcode;
    const char * data1 = "My Data1";
@@ -100,13 +101,15 @@ int main( int argc, char * argv[] )
    }
    
    errcode = vdsaQueueRemove( sessionHandle, &entry );
-   if ( errcode != VDS_WRONG_TYPE_HANDLE )
-   {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
    
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+#  if defined(WIN32)
+   exit(3);
+#  else
+   abort();
+#  endif
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

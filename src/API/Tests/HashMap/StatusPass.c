@@ -128,6 +128,8 @@ int main( int argc, char * argv[] )
    if ( status.freeBytes == 0 || status.freeBytes >=VDSE_BLOCK_SIZE ) 
       ERROR_EXIT( expectedToPass, NULL, ; );
    
+   vdsExit();
+
    return 0;
 }
 

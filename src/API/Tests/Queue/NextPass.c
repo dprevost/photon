@@ -108,8 +108,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-//   if ( memcmp( entry.data, data, 7 ) != 0 )
-//      ERROR_EXIT( expectedToPass, NULL, ; );
+   vdsExit();
 
    return 0;
 }

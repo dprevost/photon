@@ -152,8 +152,11 @@ void vdsaDisconnect( vdsaConnector    * pConnector,
    }
    
 #if defined (WIN32) 
-   if ( pConnector->cleanupNeeded )
+   if ( pConnector->cleanupNeeded ) {
       WSACleanup ();
+      /* To make sure we don't call WSACleanup twice */
+      pConnector->cleanupNeeded = false;
+   }
 #endif
 
    return;

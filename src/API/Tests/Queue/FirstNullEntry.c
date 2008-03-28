@@ -20,12 +20,13 @@
 #include "Tests/PrintError.h"
 #include "API/Queue.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
+#if defined(USE_DBC)
    VDS_HANDLE sessionHandle, objHandle;
    int errcode;
    const char * data1 = "My Data1";
@@ -87,6 +88,13 @@ int main( int argc, char * argv[] )
    errcode = vdsaQueueFirst( objHandle, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+#  if defined(WIN32)
+   exit(3);
+#  else
+   abort();
+#  endif
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -20,12 +20,13 @@
 #include "Tests/PrintError.h"
 #include "API/HashMap.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
+#if defined(USE_DBC)
    VDS_HANDLE objHandle, sessionHandle;
    int errcode;
    const char * key  = "My Key";
@@ -91,16 +92,18 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsaHashMapRetrieve( NULL,
-                            key,
-                            6,
-                            &entry );
-   if ( errcode != VDS_NULL_HANDLE )
-   {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   return 0;
+                                  key,
+                                  6,
+                                  &entry );
+
+   ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+#  if defined(WIN32)
+   exit(3);
+#  else
+   abort();
+#  endif
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

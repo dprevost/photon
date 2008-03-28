@@ -81,6 +81,8 @@ int main( int argc, char * argv[] )
    
    vdsRollback( sessionHandle );
 
+   vdsExit();
+   
    return 0;
 }
 

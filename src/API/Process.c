@@ -147,10 +147,13 @@ void vdsaProcessFini()
 
    /* 
     * This can occurs if the process init (vdsaProcessInit()) 
-    * was not called from the C API and somehow failed. 
+    * was not called from the C API and somehow failed.
     */
-   if ( process->pHeader == NULL ) return;
-
+   if ( process->pHeader == NULL ) {
+      vdsaDisconnect( &process->connector, &context.errorHandler );
+      return;
+   }
+   
    memset( &context, 0, sizeof context );
    context.pidLocker = getpid();
    GET_PTR( context.pAllocator, process->pHeader->allocatorOffset, void );
@@ -208,9 +211,9 @@ void vdsaProcessFini()
       process->pHeader = NULL;
    }
    
-   vdsaDisconnect( &process->connector, &context.errorHandler );
-
 error_handler:
+
+   vdsaDisconnect( &process->connector, &context.errorHandler );
 
    if ( g_protectionIsNeeded )
       vdscReleaseThreadLock( &g_ProcessMutex );

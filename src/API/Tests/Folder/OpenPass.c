@@ -83,6 +83,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
+   vdsExit();
+
    return 0;
 }
 

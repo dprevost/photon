@@ -16,11 +16,15 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "API/Process.h"
+#include "Tests/PrintError.h"
+
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
+#if defined(USE_DBC)
    vdsaProcess process;
    int errcode;
    
@@ -38,7 +42,14 @@ int main( int argc, char * argv[] )
    g_pProcessInstance = NULL;
    vdsaProcessFini();
    
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+#  if defined(WIN32)
+   exit(3);
+#  else
+   abort();
+#  endif
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -102,6 +102,8 @@ int main( int argc, char * argv[] )
    if ( memcmp( entry.data, data, 7 ) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
+   vdsExit();
+
    return 0;
 }
 

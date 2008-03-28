@@ -49,11 +49,13 @@ int main( int argc, char * argv[] )
    
    errcode = vdsaOpenVDS( &process, "dummy", 100, &context );
 
-   if ( errcode != VDS_BACKSTORE_FILE_MISSING )
+  if ( errcode != VDS_BACKSTORE_FILE_MISSING )
    {
       fprintf( stderr, "err: %d\n", errcode );
       return -1;
    }
+
+   vdsaProcessFini();
 
    return 0;
 }

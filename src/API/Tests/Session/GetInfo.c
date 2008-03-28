@@ -155,6 +155,8 @@ int main( int argc, char * argv[] )
    if ( info.numFrees+1 != info2.numFrees )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
+   vdsExit();
+   
    return 0;
 }
 

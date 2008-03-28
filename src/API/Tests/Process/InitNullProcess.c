@@ -24,6 +24,7 @@ const bool expectedToPass = false;
 
 int main( int argc, char * argv[] )
 {
+#if defined(USE_DBC)
    int errcode;
    
    if ( argc > 1 )
@@ -32,6 +33,9 @@ int main( int argc, char * argv[] )
       errcode = vdsaProcessInit( NULL, "10701" );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

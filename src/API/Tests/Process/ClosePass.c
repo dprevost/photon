@@ -42,6 +42,9 @@ int main( int argc, char * argv[] )
    
    vdsaCloseVDS( &process, &context );
 
+   /* Cannot call vdsaProcessFini since it calls CloseVDS()  */
+   vdsaDisconnect( &process.connector, &context.errorHandler );
+
    return 0;
 }
 

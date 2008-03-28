@@ -166,6 +166,8 @@ int main( int argc, char * argv[] )
    if ( memcmp( buffer, data2, strlen(data2) ) != 0 )
       ERROR_EXIT( expectedToPass, NULL, ; );
 
+   vdsExit();
+   
    return 0;
 }
 

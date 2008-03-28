@@ -35,6 +35,8 @@ int main( int argc, char * argv[] )
       return -1;
    }
    
+   vdsaProcessFini();
+
    return 0;
 }
 

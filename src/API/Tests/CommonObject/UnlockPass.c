@@ -78,6 +78,8 @@ int main( int argc, char * argv[] )
 
    vdsaCommonUnlock( &object );
    
+   vdsExit();
+   
    return 0;
 }
 

@@ -27,6 +27,7 @@ const bool expectedToPass = false;
 
 int main( int argc, char * argv[] )
 {
+#if defined(USE_DBC)
    VDS_HANDLE sessionHandle;
    int errcode;
    struct vdsaCommonObject object;
@@ -73,6 +74,13 @@ int main( int argc, char * argv[] )
                                   NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+#  if defined(WIN32)
+   exit(3);
+#  else
+   abort();
+#  endif
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

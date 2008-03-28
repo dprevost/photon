@@ -24,10 +24,15 @@
 #  pragma warning(default:4273)
 #endif
 
+#include "Tests/PrintError.h"
+
+const bool expectedToPass = false;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
+#if defined(USE_DBC)
    vdsaProcess process;
    int errcode;
    vdseSessionContext context;
@@ -50,7 +55,14 @@ int main( int argc, char * argv[] )
    errcode = vdsaOpenVDS( &process, NULL, 100, &context );
 
    /* Should not return */
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+#  if defined(WIN32)
+   exit(3);
+#  else
+   abort();
+#  endif
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

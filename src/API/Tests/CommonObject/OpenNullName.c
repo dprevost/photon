@@ -20,12 +20,13 @@
 #include "Tests/PrintError.h"
 #include "API/CommonObject.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
+#if defined(USE_DBC)
    VDS_HANDLE sessionHandle;
    int errcode;
    vdsaCommonObject object;
@@ -63,13 +64,15 @@ int main( int argc, char * argv[] )
                                 VDS_FOLDER,
                                 NULL,
                                 strlen("/aconn") );
-   if ( errcode != VDS_OK )
-   {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
 
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+#  if defined(WIN32)
+   exit(3);
+#  else
+   abort();
+#  endif
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
