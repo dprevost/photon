@@ -14,25 +14,25 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =    \
-   CloseNullAlloc   \
-   CloseNullError   \
-   ClosePass        \
-   FreeNullAlloc    \
-   FreeNullError    \
-   FreeNullPtr      \
-   FreePass         \
-   FreeZeroLength   \
-   InitNullAddress  \
-   InitNullAlloc    \
-   InitNullError    \
-   InitPass         \
-   InitSmallLength  \
-   IsPageFreeTest   \
-   MallocNullAlloc  \
-   MallocNullError  \
-   MallocPass       \
-   MallocZeroLength
+check_PROGRAMS =         \
+        CloseNullAlloc   \
+        CloseNullError   \
+        ClosePass        \
+        FreeNullAlloc    \
+        FreeNullError    \
+        FreeNullPtr      \
+        FreePass         \
+        FreeZeroLength   \
+        InitNullAddress  \
+        InitNullAlloc    \
+        InitNullError    \
+        InitPass         \
+        InitSmallLength  \
+        IsPageFreeTest   \
+        MallocNullAlloc  \
+        MallocNullError  \
+        MallocPass       \
+        MallocZeroLength
 
 CloseNullAlloc_SOURCES   = CloseNullAlloc.c
 CloseNullError_SOURCES   = CloseNullError.c
@@ -53,50 +53,50 @@ MallocNullError_SOURCES  = MallocNullError.c
 MallocPass_SOURCES       = MallocPass.c
 MallocZeroLength_SOURCES = MallocZeroLength.c
 
-EXTRA_DIST =      \
-   Makefile.win32 \
-   RunTests.vbs   
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.vbs   
 
-TESTS_ENVIRONMENT =             \
-   srcdir=$(srcdir)             \
-   top_builddir=$(top_builddir) \
-   verbose=1                    \
-   PYTHON=$(PYTHON)             
+TESTS_ENVIRONMENT =                  \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
-TESTS =             \
-   CloseNullAlloc   \
-   CloseNullError   \
-   ClosePass        \
-   FreeNullAlloc    \
-   FreeNullError    \
-   FreeNullPtr      \
-   FreePass         \
-   FreeZeroLength   \
-   InitNullAddress  \
-   InitNullAlloc    \
-   InitNullError    \
-   InitPass         \
-   InitSmallLength  \
-   IsPageFreeTest   \
-   MallocNullAlloc  \
-   MallocNullError  \
-   MallocPass       \
-   MallocZeroLength
+TESTS =                  \
+        CloseNullAlloc   \
+        CloseNullError   \
+        ClosePass        \
+        FreeNullAlloc    \
+        FreeNullError    \
+        FreeNullPtr      \
+        FreePass         \
+        FreeZeroLength   \
+        InitNullAddress  \
+        InitNullAlloc    \
+        InitNullError    \
+        InitPass         \
+        InitSmallLength  \
+        IsPageFreeTest   \
+        MallocNullAlloc  \
+        MallocNullError  \
+        MallocPass       \
+        MallocZeroLength
 
-XFAIL_TESTS =       \
-   CloseNullAlloc   \
-   CloseNullError   \
-   FreeNullAlloc    \
-   FreeNullError    \
-   FreeNullPtr      \
-   FreeZeroLength   \
-   InitNullAddress  \
-   InitNullAlloc    \
-   InitNullError    \
-   InitSmallLength  \
-   MallocNullAlloc  \
-   MallocNullError  \
-   MallocZeroLength
+XFAIL_TESTS =            \
+        CloseNullAlloc   \
+        CloseNullError   \
+        FreeNullAlloc    \
+        FreeNullError    \
+        FreeNullPtr      \
+        FreeZeroLength   \
+        InitNullAddress  \
+        InitNullAlloc    \
+        InitNullError    \
+        InitSmallLength  \
+        MallocNullAlloc  \
+        MallocNullError  \
+        MallocZeroLength
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la

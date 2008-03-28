@@ -14,20 +14,20 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =     \
-   DisplayBigVDSSize \
-   InitBigVDS        
+check_PROGRAMS =          \
+        DisplayBigVDSSize \
+        InitBigVDS        
 
 DisplayBigVDSSize_SOURCES = DisplayBigVDSSize.c
 InitBigVDS_SOURCES        = InitBigVDS.c
 
 EXTRA_DIST = 
 
-TESTS_ENVIRONMENT =             \
-   srcdir=$(srcdir)             \
-   top_builddir=$(top_builddir) \
-   verbose=1                    \
-   PYTHON=$(PYTHON)             
+TESTS_ENVIRONMENT =                  \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
 TESTS = 
 

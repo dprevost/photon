@@ -14,32 +14,32 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core Memfile.mem
 
-THREAD_TEST_CODE =            \
-   ../ThreadLock/Barrier.c    \
-   ../ThreadLock/Barrier.h    \
-   ../ThreadLock/ThreadWrap.c \
-   ../ThreadLock/ThreadWrap.h 
+THREAD_TEST_CODE =                 \
+        ../ThreadLock/Barrier.c    \
+        ../ThreadLock/Barrier.h    \
+        ../ThreadLock/ThreadWrap.c \
+        ../ThreadLock/ThreadWrap.h 
 
-check_PROGRAMS =         \
-   ProcessLockShouldFail \
-   ThreadLockShouldFail  
+check_PROGRAMS =              \
+        ProcessLockShouldFail \
+        ThreadLockShouldFail  
 
 ProcessLockShouldFail_SOURCES = ProcessLockShouldFail.c
 ThreadLockShouldFail_SOURCES  = ThreadLockShouldFail.c $(THREAD_TEST_CODE)
 
-EXTRA_DIST =                \
-   ProcessLockShouldFail.sh \
-   ThreadLockShouldFail.sh  
+EXTRA_DIST =                     \
+        ProcessLockShouldFail.sh \
+        ThreadLockShouldFail.sh  
 
-TESTS_ENVIRONMENT =             \
-   srcdir=$(srcdir)             \
-   top_builddir=$(top_builddir) \
-   verbose=1                    \
-   PYTHON=$(PYTHON)             
+TESTS_ENVIRONMENT =                  \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
-TESTS =                     \
-   ProcessLockShouldFail.sh \
-   ThreadLockShouldFail.sh  
+TESTS =                          \
+        ProcessLockShouldFail.sh \
+        ThreadLockShouldFail.sh  
 
 # ProcessLockShouldFail.sh won't
 # work on a uniprocessor if the kernel was built

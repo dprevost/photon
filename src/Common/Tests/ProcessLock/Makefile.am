@@ -14,32 +14,32 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =        \
-   AcquireInvalidSig    \
-   AcquireNullLock      \
-   AcquirePass          \
-   AcquireZeroValue     \
-   FiniInvalidSig       \
-   FiniNullLock         \
-   FiniPass             \
-   InitNullLock         \
-   InitPass             \
-   IsItLockedInvalidSig \
-   IsItLockedNullLock   \
-   IsItLockedPass       \
-   LockConcurrency      \
-   LockTests            \
-   ReleaseInvalidSig    \
-   ReleaseNullLock      \
-   ReleasePass          \
-   TestPidInvalidSig    \
-   TestPidNullLock      \
-   TestPidPass          \
-   TestPidZeroPid       \
-   TryAcqInvalidSig     \
-   TryAcqNullLock       \
-   TryAcqPass           \
-   TryAcqZeroValue 
+check_PROGRAMS =             \
+        AcquireInvalidSig    \
+        AcquireNullLock      \
+        AcquirePass          \
+        AcquireZeroValue     \
+        FiniInvalidSig       \
+        FiniNullLock         \
+        FiniPass             \
+        InitNullLock         \
+        InitPass             \
+        IsItLockedInvalidSig \
+        IsItLockedNullLock   \
+        IsItLockedPass       \
+        LockConcurrency      \
+        LockTests            \
+        ReleaseInvalidSig    \
+        ReleaseNullLock      \
+        ReleasePass          \
+        TestPidInvalidSig    \
+        TestPidNullLock      \
+        TestPidPass          \
+        TestPidZeroPid       \
+        TryAcqInvalidSig     \
+        TryAcqNullLock       \
+        TryAcqPass           \
+        TryAcqZeroValue 
 
 AcquireInvalidSig_SOURCES    = AcquireInvalidSig.c
 AcquireNullLock_SOURCES      = AcquireNullLock.c
@@ -67,63 +67,63 @@ TryAcqNullLock_SOURCES       = TryAcqNullLock.c
 TryAcqPass_SOURCES           = TryAcqPass.c
 TryAcqZeroValue_SOURCES      = TryAcqZeroValue.c
 
-EXTRA_DIST =             \
-   LockConcurrency.sh    \
-   LockConcurrencyTry.sh \
-   Makefile.win32        \
-   RunTests.vbs          
+EXTRA_DIST =                  \
+        LockConcurrency.sh    \
+        LockConcurrencyTry.sh \
+        Makefile.win32        \
+        RunTests.vbs          
 
-TESTS_ENVIRONMENT =             \
-   srcdir=$(srcdir)             \
-   top_builddir=$(top_builddir) \
-   verbose=1                    \
-   PYTHON=$(PYTHON)             
+TESTS_ENVIRONMENT =                  \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
-TESTS =                  \
-   AcquireInvalidSig     \
-   AcquireNullLock       \
-   AcquirePass           \
-   AcquireZeroValue      \
-   FiniInvalidSig        \
-   FiniNullLock          \
-   FiniPass              \
-   InitNullLock          \
-   InitPass              \
-   IsItLockedInvalidSig  \
-   IsItLockedNullLock    \
-   IsItLockedPass        \
-   LockConcurrency.sh    \
-   LockConcurrencyTry.sh \
-   LockTests             \
-   ReleaseInvalidSig     \
-   ReleaseNullLock       \
-   ReleasePass           \
-   TestPidInvalidSig     \
-   TestPidNullLock       \
-   TestPidPass           \
-   TestPidZeroPid        \
-   TryAcqInvalidSig      \
-   TryAcqNullLock        \
-   TryAcqPass            \
-   TryAcqZeroValue       
+TESTS =                       \
+        AcquireInvalidSig     \
+        AcquireNullLock       \
+        AcquirePass           \
+        AcquireZeroValue      \
+        FiniInvalidSig        \
+        FiniNullLock          \
+        FiniPass              \
+        InitNullLock          \
+        InitPass              \
+        IsItLockedInvalidSig  \
+        IsItLockedNullLock    \
+        IsItLockedPass        \
+        LockConcurrency.sh    \
+        LockConcurrencyTry.sh \
+        LockTests             \
+        ReleaseInvalidSig     \
+        ReleaseNullLock       \
+        ReleasePass           \
+        TestPidInvalidSig     \
+        TestPidNullLock       \
+        TestPidPass           \
+        TestPidZeroPid        \
+        TryAcqInvalidSig      \
+        TryAcqNullLock        \
+        TryAcqPass            \
+        TryAcqZeroValue       
 
-XFAIL_TESTS =           \
-   AcquireInvalidSig    \
-   AcquireNullLock      \
-   AcquireZeroValue     \
-   FiniInvalidSig       \
-   FiniNullLock         \
-   InitNullLock         \
-   IsItLockedInvalidSig \
-   IsItLockedNullLock   \
-   ReleaseInvalidSig    \
-   ReleaseNullLock      \
-   TestPidInvalidSig    \
-   TestPidNullLock      \
-   TestPidZeroPid       \
-   TryAcqInvalidSig     \
-   TryAcqNullLock       \
-   TryAcqZeroValue      
+XFAIL_TESTS =                \
+        AcquireInvalidSig    \
+        AcquireNullLock      \
+        AcquireZeroValue     \
+        FiniInvalidSig       \
+        FiniNullLock         \
+        InitNullLock         \
+        IsItLockedInvalidSig \
+        IsItLockedNullLock   \
+        ReleaseInvalidSig    \
+        ReleaseNullLock      \
+        TestPidInvalidSig    \
+        TestPidNullLock      \
+        TestPidZeroPid       \
+        TryAcqInvalidSig     \
+        TryAcqNullLock       \
+        TryAcqZeroValue      
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
 

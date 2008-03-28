@@ -12,8 +12,8 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-check_PROGRAMS =                        \
-                 .\Release\i18nPass.exe 
+check_PROGRAMS =               \
+        .\Release\i18nPass.exe 
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

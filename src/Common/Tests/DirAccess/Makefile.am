@@ -14,31 +14,31 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =     \
-   CloseInvalidSig   \
-   CloseNullDir      \
-   ClosePass         \
-   FiniInvalidSig    \
-   FiniNullDir       \
-   FiniPass          \
-   GetNextInvalidSig \
-   GetNextNoOpen     \
-   GetNextNoSuchDir  \
-   GetNextNullDir    \
-   GetNextNullError  \
-   GetNextNullpDir   \
-   GetNextPass       \
-   InitNullDir       \
-   InitPass          \
-   OpenCallTwice     \
-   OpenInvalidSig    \
-   OpenNoInit        \
-   OpenNoSuchDir     \
-   OpenNullDir       \
-   OpenNullDirname   \
-   OpenNullError     \
-   OpenPass          \
-   Tests             
+check_PROGRAMS =          \
+        CloseInvalidSig   \
+        CloseNullDir      \
+        ClosePass         \
+        FiniInvalidSig    \
+        FiniNullDir       \
+        FiniPass          \
+        GetNextInvalidSig \
+        GetNextNoOpen     \
+        GetNextNoSuchDir  \
+        GetNextNullDir    \
+        GetNextNullError  \
+        GetNextNullpDir   \
+        GetNextPass       \
+        InitNullDir       \
+        InitPass          \
+        OpenCallTwice     \
+        OpenInvalidSig    \
+        OpenNoInit        \
+        OpenNoSuchDir     \
+        OpenNullDir       \
+        OpenNullDirname   \
+        OpenNullError     \
+        OpenPass          \
+        Tests             
 
 CloseInvalidSig_SOURCES   = CloseInvalidSig.c
 CloseNullDir_SOURCES      = CloseNullDir.c
@@ -65,59 +65,59 @@ OpenNullError_SOURCES     = OpenNullError.c
 OpenPass_SOURCES          = OpenPass.c
 Tests_SOURCES             = Tests.c
 
-EXTRA_DIST =      \
-   Makefile.win32 \
-   RunTests.vbs   
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.vbs   
 
-TESTS_ENVIRONMENT =             \
-   srcdir=$(srcdir)             \
-   top_builddir=$(top_builddir) \
-   verbose=1                    \
-   PYTHON=$(PYTHON)             
+TESTS_ENVIRONMENT =                  \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
-TESTS =              \
-   CloseInvalidSig   \
-   CloseNullDir      \
-   ClosePass         \
-   FiniInvalidSig    \
-   FiniNullDir       \
-   FiniPass          \
-   GetNextInvalidSig \
-   GetNextNoOpen     \
-   GetNextNoSuchDir  \
-   GetNextNullDir    \
-   GetNextNullError  \
-   GetNextNullpDir   \
-   GetNextPass       \
-   InitNullDir       \
-   InitPass          \
-   OpenCallTwice     \
-   OpenInvalidSig    \
-   OpenNoInit        \
-   OpenNoSuchDir     \
-   OpenNullDir       \
-   OpenNullDirname   \
-   OpenNullError     \
-   OpenPass          \
-   Tests             
+TESTS =                   \
+        CloseInvalidSig   \
+        CloseNullDir      \
+        ClosePass         \
+        FiniInvalidSig    \
+        FiniNullDir       \
+        FiniPass          \
+        GetNextInvalidSig \
+        GetNextNoOpen     \
+        GetNextNoSuchDir  \
+        GetNextNullDir    \
+        GetNextNullError  \
+        GetNextNullpDir   \
+        GetNextPass       \
+        InitNullDir       \
+        InitPass          \
+        OpenCallTwice     \
+        OpenInvalidSig    \
+        OpenNoInit        \
+        OpenNoSuchDir     \
+        OpenNullDir       \
+        OpenNullDirname   \
+        OpenNullError     \
+        OpenPass          \
+        Tests             
 
-XFAIL_TESTS =        \
-   CloseInvalidSig   \
-   CloseNullDir      \
-   FiniInvalidSig    \
-   FiniNullDir       \
-   GetNextInvalidSig \
-   GetNextNoOpen     \
-   GetNextNullDir    \
-   GetNextNullError  \
-   GetNextNullpDir   \
-   InitNullDir       \
-   OpenCallTwice     \
-   OpenInvalidSig    \
-   OpenNoInit        \
-   OpenNullDir       \
-   OpenNullDirname   \
-   OpenNullError     
+XFAIL_TESTS =             \
+        CloseInvalidSig   \
+        CloseNullDir      \
+        FiniInvalidSig    \
+        FiniNullDir       \
+        GetNextInvalidSig \
+        GetNextNoOpen     \
+        GetNextNullDir    \
+        GetNextNullError  \
+        GetNextNullpDir   \
+        InitNullDir       \
+        OpenCallTwice     \
+        OpenInvalidSig    \
+        OpenNoInit        \
+        OpenNullDir       \
+        OpenNullDirname   \
+        OpenNullError     
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
 

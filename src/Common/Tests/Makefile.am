@@ -14,39 +14,43 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =      \
-   DirAccess   \
-   Error       \
-   MemFile     \
-   Options     \
-   ProcessLock \
-   ThreadLock  
+SUBDIRS =           \
+        DirAccess   \
+        Error       \
+        MemFile     \
+        Options     \
+        ProcessLock \
+        ThreadLock  
 
-check_PROGRAMS = \
-   nanosleepTest \
-   TimerTest     
+check_PROGRAMS =      \
+        nanosleepTest \
+        TimerTest     
 
 nanosleepTest_SOURCES = nanosleepTest.c
 TimerTest_SOURCES     = TimerTest.c
 
-EXTRA_DIST =                         \
-   Makefile.inc.win32                \
-   Makefile.win32                    \
-   RunTests.vbs                      \
-   Optional/Makefile.am              \
-   Optional/Makefile.in              \
-   Optional/Makefile.win32           \
-   Optional/ProcessLockShouldFail.c  \
-   Optional/ProcessLockShouldFail.sh \
-   Optional/RunTests.vbs             \
-   Optional/ThreadLockShouldFail.c   \
-   Optional/ThreadLockShouldFail.sh  
+EXTRA_DIST =                              \
+        Makefile.inc.win32                \
+        Makefile.win32                    \
+        RunTests.vbs                      \
+        Optional/Makefile.am              \
+        Optional/Makefile.in              \
+        Optional/Makefile.win32           \
+        Optional/ProcessLockShouldFail.c  \
+        Optional/ProcessLockShouldFail.sh \
+        Optional/RunTests.vbs             \
+        Optional/ThreadLockShouldFail.c   \
+        Optional/ThreadLockShouldFail.sh  
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =                  \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
-TESTS =          \
-   nanosleepTest \
-   TimerTest     
+TESTS =               \
+        nanosleepTest \
+        TimerTest     
 
 XFAIL_TESTS = 
 

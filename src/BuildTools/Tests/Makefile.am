@@ -14,12 +14,9 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ genError.c genError.h
 
-#
-# 
-#
 check_PROGRAMS = testParser
 
-testParser_SOURCES = testParser.c testError.h
+testParser_SOURCES        = testParser.c testError.h
 nodist_testParser_SOURCES = genError.c genError.h
 
 testParser.o: genError.h
@@ -27,16 +24,20 @@ testParser.o: genError.h
 genError.h genError.c: testError.h 
 	$(top_builddir)/src/BuildTools/errorParser -i $(srcdir)/testError.h -o genError -p myErr
 
-EXTRA_DIST =      \
-   Makefile.win32 \
-   RunTests.vbs   \
-   selfTest.sh    
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.vbs   \
+        selfTest.sh    
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =                  \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
-TESTS =        \
-   selfTest.sh \
-   testParser  
+TESTS =             \
+        selfTest.sh \
+        testParser  
 
 XFAIL_TESTS = 
 

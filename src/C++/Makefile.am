@@ -27,20 +27,20 @@ libvdsfcpp_la_LDFLAGS = -version-info 0:0:0
 
 include_HEADERS = 
 
-libvdsfcpp_la_SOURCES = \
-   Exception.cpp        \
-   Folder.cpp           \
-   HashMap.cpp          \
-   Process.cpp          \
-   Queue.cpp            \
-   Session.cpp          
+libvdsfcpp_la_SOURCES =      \
+        Exception.cpp        \
+        Folder.cpp           \
+        HashMap.cpp          \
+        Process.cpp          \
+        Queue.cpp            \
+        Session.cpp          
 
-EXTRA_DIST =      \
-   CPP.dsp        \
-   Makefile.win32 
+EXTRA_DIST =           \
+        CPP.dsp        \
+        Makefile.win32 
 
-libvdsfcpp_la_LIBADD = \
-   $(top_builddir)/src/API/libvdsf.la      \
-   $(top_builddir)/src/Engine/libEngine.la \
-   $(top_builddir)/src/Common/libCommon.la 
+libvdsfcpp_la_LIBADD =                          \
+        $(top_builddir)/src/API/libvdsf.la      \
+        $(top_builddir)/src/Engine/libEngine.la \
+        $(top_builddir)/src/Common/libCommon.la 
 

@@ -14,19 +14,19 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ ./org/vdsf/*~  $(top_builddir)/src/java/org/vdsf/*.class
 
-#Java_Source =                 \
-   org/vdsf/VdsException.java \
-   org/vdsf/VdsFolder.java    \
-   org/vdsf/VdsProcess.java   \
-   org/vdsf/VdsQueue.java     \
-   org/vdsf/VdsSession.java
+#Java_Source =                      \
+        org/vdsf/VdsException.java \
+        org/vdsf/VdsFolder.java    \
+        org/vdsf/VdsProcess.java   \
+        org/vdsf/VdsQueue.java     \
+        org/vdsf/VdsSession.java
 
-#Java_Classes =                 \
-   org/vdsf/VdsException.class \
-   org/vdsf/VdsFolder.class    \
-   org/vdsf/VdsProcess.class   \
-   org/vdsf/VdsQueue.class     \
-   org/vdsf/VdsSession.class
+#Java_Classes =                      \
+        org/vdsf/VdsException.class \
+        org/vdsf/VdsFolder.class    \
+        org/vdsf/VdsProcess.class   \
+        org/vdsf/VdsQueue.class     \
+        org/vdsf/VdsSession.class
 
 #%.class: %.java
 #	javac -d $(top_builddir)/src/java $?
@@ -51,11 +51,11 @@ libvdsf_jni_la_LDFLAGS = -version-info 1:0:0
 AM_CPPFLAGS += $(JNI_CPPFLAGS)
 
 libvdsf_jni_la_SOURCES = \
-   jni_folder.c  \
-   jni_hashmap.c \
-   jni_process.c \
-   jni_queue.c   \
-   jni_session.c 
+        jni_folder.c  \
+        jni_hashmap.c \
+        jni_process.c \
+        jni_queue.c   \
+        jni_session.c 
 
 libvdsf_jni_la_LIBADD = \
    $(top_builddir)/src/API/libvdsf.la 

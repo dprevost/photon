@@ -14,32 +14,32 @@ all:
 
 CLEANFILES = *~ 
 
-check_PROGRAMS =                      \
-   .\Release\AcquireInvalidSig.exe    \
-   .\Release\AcquireNullLock.exe      \
-   .\Release\AcquirePass.exe          \
-   .\Release\AcquireZeroValue.exe     \
-   .\Release\FiniInvalidSig.exe       \
-   .\Release\FiniNullLock.exe         \
-   .\Release\FiniPass.exe             \
-   .\Release\InitNullLock.exe         \
-   .\Release\InitPass.exe             \
-   .\Release\IsItLockedInvalidSig.exe \
-   .\Release\IsItLockedNullLock.exe   \
-   .\Release\IsItLockedPass.exe       \
-   .\Release\LockConcurrency.exe      \
-   .\Release\LockTests.exe            \
-   .\Release\ReleaseInvalidSig.exe    \
-   .\Release\ReleaseNullLock.exe      \
-   .\Release\ReleasePass.exe          \
-   .\Release\TestPidInvalidSig.exe    \
-   .\Release\TestPidNullLock.exe      \
-   .\Release\TestPidPass.exe          \
-   .\Release\TestPidZeroPid.exe       \
-   .\Release\TryAcqInvalidSig.exe     \
-   .\Release\TryAcqNullLock.exe       \
-   .\Release\TryAcqPass.exe           \
-   .\Release\TryAcqZeroValue.exe      
+check_PROGRAMS =                           \
+        .\Release\AcquireInvalidSig.exe    \
+        .\Release\AcquireNullLock.exe      \
+        .\Release\AcquirePass.exe          \
+        .\Release\AcquireZeroValue.exe     \
+        .\Release\FiniInvalidSig.exe       \
+        .\Release\FiniNullLock.exe         \
+        .\Release\FiniPass.exe             \
+        .\Release\InitNullLock.exe         \
+        .\Release\InitPass.exe             \
+        .\Release\IsItLockedInvalidSig.exe \
+        .\Release\IsItLockedNullLock.exe   \
+        .\Release\IsItLockedPass.exe       \
+        .\Release\LockConcurrency.exe      \
+        .\Release\LockTests.exe            \
+        .\Release\ReleaseInvalidSig.exe    \
+        .\Release\ReleaseNullLock.exe      \
+        .\Release\ReleasePass.exe          \
+        .\Release\TestPidInvalidSig.exe    \
+        .\Release\TestPidNullLock.exe      \
+        .\Release\TestPidPass.exe          \
+        .\Release\TestPidZeroPid.exe       \
+        .\Release\TryAcqInvalidSig.exe     \
+        .\Release\TryAcqNullLock.exe       \
+        .\Release\TryAcqPass.exe           \
+        .\Release\TryAcqZeroValue.exe      
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

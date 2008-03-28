@@ -14,39 +14,39 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =              \
-   GetLongOptNullHandle       \
-   GetLongOptNullOpt          \
-   GetLongOptNullValue        \
-   GetLongOptPass             \
-   GetShortOptNullHandle      \
-   GetShortOptNullValue       \
-   GetShortOptPass            \
-   IsLongPresentNullHandle    \
-   IsLongPresentNullOpt       \
-   IsLongPresentPass          \
-   IsShortPresentNullHandle   \
-   IsShortPresentPass         \
-   SetOptionsNullHandle       \
-   SetOptionsNullOpts         \
-   SetOptionsNullEndedOpt     \
-   SetOptionsNullEndedComment \
-   SetOptionsNullEndedValue   \
-   SetOptionsNumOptsZero      \
-   SetOptionsPass             \
-   SetOptionsRepeatedLong     \
-   SetOptionsRepeatedShort    \
-   ShowUsageNullAddArgs       \
-   ShowUsageNullHandle        \
-   ShowUsageNullProgName      \
-   ShowUsagePass              \
-   Tests                      \
-   UnsetOptNullHandle         \
-   ValidateArgcZero           \
-   ValidateNullArgv           \
-   ValidateNULLArgvi          \
-   ValidateNullHandle         \
-   ValidatePass               
+check_PROGRAMS =                   \
+        GetLongOptNullHandle       \
+        GetLongOptNullOpt          \
+        GetLongOptNullValue        \
+        GetLongOptPass             \
+        GetShortOptNullHandle      \
+        GetShortOptNullValue       \
+        GetShortOptPass            \
+        IsLongPresentNullHandle    \
+        IsLongPresentNullOpt       \
+        IsLongPresentPass          \
+        IsShortPresentNullHandle   \
+        IsShortPresentPass         \
+        SetOptionsNullHandle       \
+        SetOptionsNullOpts         \
+        SetOptionsNullEndedOpt     \
+        SetOptionsNullEndedComment \
+        SetOptionsNullEndedValue   \
+        SetOptionsNumOptsZero      \
+        SetOptionsPass             \
+        SetOptionsRepeatedLong     \
+        SetOptionsRepeatedShort    \
+        ShowUsageNullAddArgs       \
+        ShowUsageNullHandle        \
+        ShowUsageNullProgName      \
+        ShowUsagePass              \
+        Tests                      \
+        UnsetOptNullHandle         \
+        ValidateArgcZero           \
+        ValidateNullArgv           \
+        ValidateNULLArgvi          \
+        ValidateNullHandle         \
+        ValidatePass               
 
 GetLongOptNullHandle_SOURCES       = GetLongOptNullHandle.c
 GetLongOptNullOpt_SOURCES          = GetLongOptNullOpt.c
@@ -81,75 +81,75 @@ ValidateNULLArgvi_SOURCES          = ValidateNULLArgvi.c
 ValidateNullHandle_SOURCES         = ValidateNullHandle.c
 ValidatePass_SOURCES               = ValidatePass.c
 
-EXTRA_DIST =      \
-   Makefile.win32 \
-   RunTests.vbs   
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.vbs   
 
-TESTS_ENVIRONMENT =             \
-   srcdir=$(srcdir)             \
-   top_builddir=$(top_builddir) \
-   verbose=1                    \
-   PYTHON=$(PYTHON)             
+TESTS_ENVIRONMENT =                  \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
-TESTS =                       \
-   GetLongOptNullHandle       \
-   GetLongOptNullOpt          \
-   GetLongOptNullValue        \
-   GetLongOptPass             \
-   GetShortOptNullHandle      \
-   GetShortOptNullValue       \
-   GetShortOptPass            \
-   IsLongPresentNullHandle    \
-   IsLongPresentNullOpt       \
-   IsLongPresentPass          \
-   IsShortPresentNullHandle   \
-   IsShortPresentPass         \
-   SetOptionsNullHandle       \
-   SetOptionsNullOpts         \
-   SetOptionsNullEndedOpt     \
-   SetOptionsNullEndedComment \
-   SetOptionsNullEndedValue   \
-   SetOptionsNumOptsZero      \
-   SetOptionsPass             \
-   SetOptionsRepeatedLong     \
-   SetOptionsRepeatedShort    \
-   ShowUsageNullAddArgs       \
-   ShowUsageNullHandle        \
-   ShowUsageNullProgName      \
-   ShowUsagePass              \
-   Tests                      \
-   UnsetOptNullHandle         \
-   ValidateArgcZero           \
-   ValidateNullArgv           \
-   ValidateNULLArgvi          \
-   ValidateNullHandle         \
-   ValidatePass               
+TESTS =                            \
+        GetLongOptNullHandle       \
+        GetLongOptNullOpt          \
+        GetLongOptNullValue        \
+        GetLongOptPass             \
+        GetShortOptNullHandle      \
+        GetShortOptNullValue       \
+        GetShortOptPass            \
+        IsLongPresentNullHandle    \
+        IsLongPresentNullOpt       \
+        IsLongPresentPass          \
+        IsShortPresentNullHandle   \
+        IsShortPresentPass         \
+        SetOptionsNullHandle       \
+        SetOptionsNullOpts         \
+        SetOptionsNullEndedOpt     \
+        SetOptionsNullEndedComment \
+        SetOptionsNullEndedValue   \
+        SetOptionsNumOptsZero      \
+        SetOptionsPass             \
+        SetOptionsRepeatedLong     \
+        SetOptionsRepeatedShort    \
+        ShowUsageNullAddArgs       \
+        ShowUsageNullHandle        \
+        ShowUsageNullProgName      \
+        ShowUsagePass              \
+        Tests                      \
+        UnsetOptNullHandle         \
+        ValidateArgcZero           \
+        ValidateNullArgv           \
+        ValidateNULLArgvi          \
+        ValidateNullHandle         \
+        ValidatePass               
 
-XFAIL_TESTS =                 \
-   GetLongOptNullHandle       \
-   GetLongOptNullOpt          \
-   GetLongOptNullValue        \
-   GetShortOptNullHandle      \
-   GetShortOptNullValue       \
-   IsLongPresentNullHandle    \
-   IsLongPresentNullOpt       \
-   IsShortPresentNullHandle   \
-   SetOptionsNullHandle       \
-   SetOptionsNullOpts         \
-   SetOptionsNullEndedOpt     \
-   SetOptionsNullEndedComment \
-   SetOptionsNullEndedValue   \
-   SetOptionsNumOptsZero      \
-   SetOptionsRepeatedLong     \
-   SetOptionsRepeatedShort    \
-   ShowUsageNullAddArgs       \
-   ShowUsageNullHandle        \
-   ShowUsageNullProgName      \
-   UnsetOptNullHandle         \
-   ValidateArgcZero           \
-   ValidateNullArgv           \
-   ValidateNULLArgvi          \
-   ValidateNullHandle         
+XFAIL_TESTS =                      \
+        GetLongOptNullHandle       \
+        GetLongOptNullOpt          \
+        GetLongOptNullValue        \
+        GetShortOptNullHandle      \
+        GetShortOptNullValue       \
+        IsLongPresentNullHandle    \
+        IsLongPresentNullOpt       \
+        IsShortPresentNullHandle   \
+        SetOptionsNullHandle       \
+        SetOptionsNullOpts         \
+        SetOptionsNullEndedOpt     \
+        SetOptionsNullEndedComment \
+        SetOptionsNullEndedValue   \
+        SetOptionsNumOptsZero      \
+        SetOptionsRepeatedLong     \
+        SetOptionsRepeatedShort    \
+        ShowUsageNullAddArgs       \
+        ShowUsageNullHandle        \
+        ShowUsageNullProgName      \
+        UnsetOptNullHandle         \
+        ValidateArgcZero           \
+        ValidateNullArgv           \
+        ValidateNULLArgvi          \
+        ValidateNullHandle         
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
 

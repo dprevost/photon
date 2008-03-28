@@ -12,29 +12,29 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-check_PROGRAMS =                                   \
-                 .\Release\CloseNullHandle.exe     \
-                 .\Release\ClosePass.exe           \
-                 .\Release\CloseWrongHandle.exe    \
-                 .\Release\GetFirstNullEntry.exe   \
-                 .\Release\GetFirstNullHandle.exe  \
-                 .\Release\GetFirstPass.exe        \
-                 .\Release\GetFirstWrongHandle.exe \
-                 .\Release\GetNextNoFirst.exe      \
-                 .\Release\GetNextNullEntry.exe    \
-                 .\Release\GetNextNullHandle.exe   \
-                 .\Release\GetNextPass.exe         \
-                 .\Release\GetNextWrongHandle.exe  \
-                 .\Release\OpenNullName.exe        \
-                 .\Release\OpenNullObjHandle.exe   \
-                 .\Release\OpenNullSessHandle.exe  \
-                 .\Release\OpenPass.exe            \
-                 .\Release\OpenWrongSessHandle.exe \
-                 .\Release\OpenZeroLength.exe      \
-                 .\Release\StatusNullFolder.exe    \
-                 .\Release\StatusNullStatus.exe    \
-                 .\Release\StatusPass.exe          \
-                 .\Release\StatusWrongHandle.exe   
+check_PROGRAMS =                          \
+        .\Release\CloseNullHandle.exe     \
+        .\Release\ClosePass.exe           \
+        .\Release\CloseWrongHandle.exe    \
+        .\Release\GetFirstNullEntry.exe   \
+        .\Release\GetFirstNullHandle.exe  \
+        .\Release\GetFirstPass.exe        \
+        .\Release\GetFirstWrongHandle.exe \
+        .\Release\GetNextNoFirst.exe      \
+        .\Release\GetNextNullEntry.exe    \
+        .\Release\GetNextNullHandle.exe   \
+        .\Release\GetNextPass.exe         \
+        .\Release\GetNextWrongHandle.exe  \
+        .\Release\OpenNullName.exe        \
+        .\Release\OpenNullObjHandle.exe   \
+        .\Release\OpenNullSessHandle.exe  \
+        .\Release\OpenPass.exe            \
+        .\Release\OpenWrongSessHandle.exe \
+        .\Release\OpenZeroLength.exe      \
+        .\Release\StatusNullFolder.exe    \
+        .\Release\StatusNullStatus.exe    \
+        .\Release\StatusPass.exe          \
+        .\Release\StatusWrongHandle.exe   
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

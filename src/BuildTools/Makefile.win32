@@ -35,12 +35,12 @@ LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfCommon.lib /nologo /version:0.1 /subsyst
 CFLAGS_RELEASE = /nologo /MD  /W3 /GX     /O2 /I "..\Common" /I ".." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_RELEASE)\\"     /c 
 CFLAGS_DEBUG   = /nologo /MDd /W3 /GX /ZI /Od /I "..\Common" /I ".." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" /GZ /c 
 
-OBJS_RELEASE= \
-	"$(INTDIR_RELEASE)\analyser.obj" \
-	"$(INTDIR_RELEASE)\analyserTest.obj" \
-	"$(INTDIR_RELEASE)\errorParser.obj" \
-	"$(INTDIR_RELEASE)\inputHeader.obj" \
-	"$(INTDIR_RELEASE)\outputFiles.obj"
+OBJS_RELEASE=                                \
+        "$(INTDIR_RELEASE)\analyser.obj"     \
+        "$(INTDIR_RELEASE)\analyserTest.obj" \
+        "$(INTDIR_RELEASE)\errorParser.obj"  \
+        "$(INTDIR_RELEASE)\inputHeader.obj"  \
+        "$(INTDIR_RELEASE)\outputFiles.obj"  
 
 OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 

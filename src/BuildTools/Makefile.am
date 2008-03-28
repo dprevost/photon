@@ -12,28 +12,26 @@
 # overwrite any macros set in the common file
 include $(top_srcdir)/src/Makefile.Common.am
 
-CLEANFILES        = *~
+CLEANFILES = *~
 
 SUBDIRS = . Tests
 
 noinst_PROGRAMS = errorParser
 
-errorParser_SOURCES =                  \
-                      analyser.cpp     \
-                      analyser.h       \
-                      analyserTest.cpp \
-                      analyserTest.h   \
-                      errorParser.cpp  \
-                      inputHeader.cpp  \
-                      inputHeader.h    \
-                      outputFiles.cpp  \
-                      outputFiles.h   
+errorParser_SOURCES =    \
+        analyser.cpp     \
+        analyser.h       \
+        analyserTest.cpp \
+        analyserTest.h   \
+        errorParser.cpp  \
+        inputHeader.cpp  \
+        inputHeader.h    \
+        outputFiles.cpp  \
+        outputFiles.h   
 
 errorParser_LDADD = $(top_builddir)/src/Common/libCommon.la 
 
-EXTRA_DIST =       \
-   errorParser.dsp \
-   Makefile.win32  
-
-# DIST_SUBDIRS = Tests  
+EXTRA_DIST =            \
+        errorParser.dsp \
+        Makefile.win32  
 

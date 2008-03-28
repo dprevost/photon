@@ -14,12 +14,6 @@
 #
 ###########################################################################
 
-!IF "$(OS)" == "Windows_NT"
-NULL=
-!ELSE 
-NULL=nul
-!ENDIF 
-
 LINK32=link.exe
 
 OUTDIR_RELEASE = .\Release
@@ -37,9 +31,9 @@ LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfCommon.lib /nologo /subsystem:console /m
 CFLAGS_DEBUG   = /nologo /MDd /W4     /I "..\..\Common" /I "..\.." /I "..\..\Tests" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\"   /c
 CFLAGS_RELEASE = /nologo /MD  /W4 /O2 /I "..\..\Common" /I "..\.." /I "..\..\Tests" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_RELEASE)\\" /c
 
-OBJS_RELEASE= \
-	"$(INTDIR_RELEASE)\genError.obj" \
-	"$(INTDIR_RELEASE)\testParser.obj" 
+OBJS_RELEASE=                              \
+        "$(INTDIR_RELEASE)\genError.obj"   \
+        "$(INTDIR_RELEASE)\testParser.obj" 
 
 OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 
@@ -77,10 +71,10 @@ checkdebug: $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\testParser.exe
 	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
 
 "$(OUTDIR_RELEASE)" :
-	if not exist "$(OUTDIR_RELEASE)/$(NULL)" mkdir "$(OUTDIR_RELEASE)"
+	if not exist "$(OUTDIR_RELEASE))" mkdir "$(OUTDIR_RELEASE)"
 
 "$(OUTDIR_DEBUG)" :
-	if not exist "$(OUTDIR_DEBUG)/$(NULL)" mkdir "$(OUTDIR_DEBUG)"
+	if not exist "$(OUTDIR_DEBUG))" mkdir "$(OUTDIR_DEBUG)"
    
 clean: 
 	-@erase /Q Debug

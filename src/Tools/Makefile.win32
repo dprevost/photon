@@ -33,8 +33,7 @@ CFLAGS_RELEASE= /nologo /MD  /W3 /O2 /I ".." /I "../include" /D "WIN32" /D "NDEB
 .cpp{$(OUTDIR_DEBUG)}.exe:
 	$(CPP) $(CFLAGS_DEBUG) $< /link $(LDD_FLAGS_DEBUG) /out:"$@"
 
-bin_PROGRAMS =      \
-   "$(OUTDIR)\info.exe"
+bin_PROGRAMS = "$(OUTDIR)\info.exe"
    
 bin_PROGRAMS_DEBUG = $(bin_PROGRAMS:.\Release\=.\Debug\)
 

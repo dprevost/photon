@@ -14,29 +14,29 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =          \
-                 i18nPass 
+check_PROGRAMS = \
+        i18nPass 
 
 i18nPass_SOURCES = i18nPass.c
 
-EXTRA_DIST =      \
-   i18nPass.sh    \
-   Makefile.win32 \
-   RunTests.vbs   
+EXTRA_DIST =           \
+        i18nPass.sh    \
+        Makefile.win32 \
+        RunTests.vbs   
 
-TESTS_ENVIRONMENT =                              \
-                    tcp_port=10701               \
-                    top_srcdir=$(top_srcdir)     \
-                    srcdir=$(srcdir)             \
-                    top_builddir=$(top_builddir) \
-                    verbose=1                    \
-                    PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =                  \
+        tcp_port=10701               \
+        top_srcdir=$(top_srcdir)     \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
 TESTS = 
 
 # i18nPass.sh
 
-XFAIL_TESTS =                  
+XFAIL_TESTS = 
 
 LDADD = $(top_builddir)/src/API/libvdsf.la      \
         $(top_builddir)/src/Engine/libEngine.la \

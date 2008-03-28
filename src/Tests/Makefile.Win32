@@ -52,14 +52,13 @@ CPPFLAGS_RELEASE= $(CFLAGS_RELEASE) /GX
 
 all: 
 
-check_PROGRAMS =      \
-   .\Release\TransactionHashMap.exe \
-   .\Release\TransactionQueue.exe   \
-   .\Release\InjectErrorsVDS.exe    \
-   .\Release\OutOfMemory.exe        
+check_PROGRAMS =                         \
+        .\Release\TransactionHashMap.exe \
+        .\Release\TransactionQueue.exe   \
+        .\Release\InjectErrorsVDS.exe    \
+        .\Release\OutOfMemory.exe        
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
-#
 
 check: $(OUTDIR) $(check_PROGRAMS)
 	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)

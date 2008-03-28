@@ -14,31 +14,31 @@ all:
 
 CLEANFILES = *~ 
 
-check_PROGRAMS =                      \
-   .\Release\FiniNullBitmap.exe       \
-   .\Release\FiniPass.exe             \
-   .\Release\GetLengthPass.exe        \
-   .\Release\GetLengthPowerOfTwo7.exe \
-   .\Release\GetLengthPowerOfTwo9.exe \
-   .\Release\GetLengthZeroLength.exe  \
-   .\Release\GetLengthZeroGranu.exe   \
-   .\Release\InitNullBitmap.exe       \
-   .\Release\InitNullOffset.exe       \
-   .\Release\InitPass.exe             \
-   .\Release\InitPowerOfTwo7.exe      \
-   .\Release\InitPowerOfTwo9.exe      \
-   .\Release\InitZeroGranu.exe        \
-   .\Release\InitZeroLength.exe       \
-   .\Release\IsFreeNullBitmap.exe     \
-   .\Release\IsFreeNullOffset.exe     \
-   .\Release\IsFreePass.exe           \
-   .\Release\SetAllocNullBitmap.exe   \
-   .\Release\SetAllocNullOffset.exe   \
-   .\Release\SetAllocPass.exe         \
-   .\Release\SetAllocZeroLength.exe   \
-   .\Release\SetFreeNullBitmap.exe    \
-   .\Release\SetFreeNullOffset.exe    \
-   .\Release\SetFreePass.exe          
+check_PROGRAMS =                           \
+        .\Release\FiniNullBitmap.exe       \
+        .\Release\FiniPass.exe             \
+        .\Release\GetLengthPass.exe        \
+        .\Release\GetLengthPowerOfTwo7.exe \
+        .\Release\GetLengthPowerOfTwo9.exe \
+        .\Release\GetLengthZeroLength.exe  \
+        .\Release\GetLengthZeroGranu.exe   \
+        .\Release\InitNullBitmap.exe       \
+        .\Release\InitNullOffset.exe       \
+        .\Release\InitPass.exe             \
+        .\Release\InitPowerOfTwo7.exe      \
+        .\Release\InitPowerOfTwo9.exe      \
+        .\Release\InitZeroGranu.exe        \
+        .\Release\InitZeroLength.exe       \
+        .\Release\IsFreeNullBitmap.exe     \
+        .\Release\IsFreeNullOffset.exe     \
+        .\Release\IsFreePass.exe           \
+        .\Release\SetAllocNullBitmap.exe   \
+        .\Release\SetAllocNullOffset.exe   \
+        .\Release\SetAllocPass.exe         \
+        .\Release\SetAllocZeroLength.exe   \
+        .\Release\SetFreeNullBitmap.exe    \
+        .\Release\SetFreeNullOffset.exe    \
+        .\Release\SetFreePass.exe          
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

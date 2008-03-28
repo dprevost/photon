@@ -16,12 +16,6 @@
 #
 ###########################################################################
 
-!IF "$(OS)" == "Windows_NT"
-NULL=
-!ELSE 
-NULL=nul
-!ENDIF 
-
 LINK32=link.exe
 
 OUTDIR_RELEASE = .\Release
@@ -39,17 +33,17 @@ LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) /nologo /dll /incremental:yes /debug /machin
 CFLAGS_RELEASE=/nologo /MD  /W4 /O2     /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF_COMMON" /Fo"$(INTDIR_RELEASE)\\"     /c 
 CFLAGS_DEBUG  =/nologo /MDd /W4 /ZI /Od /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF_COMMON" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
 
-OBJS_RELEASE= \
-	"$(INTDIR_RELEASE)\ConfigFile.obj" \
-	"$(INTDIR_RELEASE)\DirAccess.obj" \
-	"$(INTDIR_RELEASE)\ErrorHandler.obj" \
-	"$(INTDIR_RELEASE)\localtime_r.obj" \
-	"$(INTDIR_RELEASE)\MemoryFile.obj" \
-	"$(INTDIR_RELEASE)\Options.obj" \
-	"$(INTDIR_RELEASE)\ProcessLock.obj" \
-	"$(INTDIR_RELEASE)\strnlen.obj" \
-	"$(INTDIR_RELEASE)\ThreadLock.obj" \
-	"$(INTDIR_RELEASE)\Timer.obj"
+OBJS_RELEASE=                                \
+        "$(INTDIR_RELEASE)\ConfigFile.obj"   \
+        "$(INTDIR_RELEASE)\DirAccess.obj"    \
+        "$(INTDIR_RELEASE)\ErrorHandler.obj" \
+        "$(INTDIR_RELEASE)\localtime_r.obj"  \
+        "$(INTDIR_RELEASE)\MemoryFile.obj"   \
+        "$(INTDIR_RELEASE)\Options.obj"      \
+        "$(INTDIR_RELEASE)\ProcessLock.obj"  \
+        "$(INTDIR_RELEASE)\strnlen.obj"      \
+        "$(INTDIR_RELEASE)\ThreadLock.obj"   \
+        "$(INTDIR_RELEASE)\Timer.obj"        
 
 OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 
@@ -94,10 +88,10 @@ checkdebug: all
 	cd Tests && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 "$(OUTDIR_RELEASE)" :
-	if not exist "$(OUTDIR_RELEASE)/$(NULL)" mkdir "$(OUTDIR_RELEASE)"
+	if not exist "$(OUTDIR_RELEASE)" mkdir "$(OUTDIR_RELEASE)"
 
 "$(OUTDIR_DEBUG)" :
-	if not exist "$(OUTDIR_DEBUG)/$(NULL)" mkdir "$(OUTDIR_DEBUG)"
+	if not exist "$(OUTDIR_DEBUG)" mkdir "$(OUTDIR_DEBUG)"
    
 clean: 
 	cd Tests && nmake -f Makefile.win32 clean && cd ..

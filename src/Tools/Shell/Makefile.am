@@ -12,23 +12,23 @@
 # overwrite any macros set in the common file
 include $(top_srcdir)/src/Makefile.Common.am
 
-CLEANFILES        = *~
+CLEANFILES = *~
  
 bin_PROGRAMS = vdssh
 
 man_MANS = vdssh.1
 
-EXTRA_DIST =      \
-   $(man_MANS)    \
-   Makefile.win32 
+EXTRA_DIST =           \
+        $(man_MANS)    \
+        Makefile.win32 
 
-vdssh_SOURCES =  \
-   constants.cpp \
-   constants.h   \
-   shell.cpp     \
-   shell.h       \
-   vdssh.cpp     \
-   vdssh.dsp     
+vdssh_SOURCES =       \
+        constants.cpp \
+        constants.h   \
+        shell.cpp     \
+        shell.h       \
+        vdssh.cpp     \
+        vdssh.dsp     
 
 vdssh_LDADD = $(top_builddir)/src/C++/libvdsfcpp.la 
 

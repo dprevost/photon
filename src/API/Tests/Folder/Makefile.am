@@ -14,29 +14,29 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =                     \
-                 CloseNullHandle     \
-                 ClosePass           \
-                 CloseWrongHandle    \
-                 GetFirstNullEntry   \
-                 GetFirstNullHandle  \
-                 GetFirstPass        \
-                 GetFirstWrongHandle \
-                 GetNextNoFirst      \
-                 GetNextNullEntry    \
-                 GetNextNullHandle   \
-                 GetNextPass         \
-                 GetNextWrongHandle  \
-                 OpenNullName        \
-                 OpenNullObjHandle   \
-                 OpenNullSessHandle  \
-                 OpenPass            \
-                 OpenWrongSessHandle \
-                 OpenZeroLength      \
-                 StatusNullFolder    \
-                 StatusNullStatus    \
-                 StatusPass          \
-                 StatusWrongHandle   
+check_PROGRAMS =            \
+        CloseNullHandle     \
+        ClosePass           \
+        CloseWrongHandle    \
+        GetFirstNullEntry   \
+        GetFirstNullHandle  \
+        GetFirstPass        \
+        GetFirstWrongHandle \
+        GetNextNoFirst      \
+        GetNextNullEntry    \
+        GetNextNullHandle   \
+        GetNextPass         \
+        GetNextWrongHandle  \
+        OpenNullName        \
+        OpenNullObjHandle   \
+        OpenNullSessHandle  \
+        OpenPass            \
+        OpenWrongSessHandle \
+        OpenZeroLength      \
+        StatusNullFolder    \
+        StatusNullStatus    \
+        StatusPass          \
+        StatusWrongHandle   
 
 CloseNullHandle_SOURCES     = CloseNullHandle.c
 ClosePass_SOURCES           = ClosePass.c
@@ -57,39 +57,39 @@ StatusNullStatus_SOURCES    = StatusNullStatus.c
 StatusPass_SOURCES          = StatusPass.c
 StatusWrongHandle_SOURCES   = StatusWrongHandle.c
 
-EXTRA_DIST =              \
-   CloseNullHandle.sh     \
-   ClosePass.sh           \
-   CloseWrongHandle.sh    \
-   GetFirstNullEntry.sh   \
-   GetFirstNullHandle.sh  \
-   GetFirstPass.sh        \
-   GetFirstWrongHandle.sh \
-   GetNextNoFirst.sh      \
-   GetNextNullEntry.sh    \
-   GetNextNullHandle.sh   \
-   GetNextPass.sh         \
-   GetNextWrongHandle.sh  \
-   Makefile.win32         \
-   OpenNullName.sh        \
-   OpenNullObjHandle.sh   \
-   OpenNullSessHandle.sh  \
-   OpenPass.sh            \
-   OpenWrongSessHandle.sh \
-   OpenZeroLength.sh      \
-   RunTests.vbs           \
-   StatusNullFolder.sh    \
-   StatusNullStatus.sh    \
-   StatusPass.sh          \
-   StatusWrongHandle.sh   
+EXTRA_DIST =                   \
+        CloseNullHandle.sh     \
+        ClosePass.sh           \
+        CloseWrongHandle.sh    \
+        GetFirstNullEntry.sh   \
+        GetFirstNullHandle.sh  \
+        GetFirstPass.sh        \
+        GetFirstWrongHandle.sh \
+        GetNextNoFirst.sh      \
+        GetNextNullEntry.sh    \
+        GetNextNullHandle.sh   \
+        GetNextPass.sh         \
+        GetNextWrongHandle.sh  \
+        Makefile.win32         \
+        OpenNullName.sh        \
+        OpenNullObjHandle.sh   \
+        OpenNullSessHandle.sh  \
+        OpenPass.sh            \
+        OpenWrongSessHandle.sh \
+        OpenZeroLength.sh      \
+        RunTests.vbs           \
+        StatusNullFolder.sh    \
+        StatusNullStatus.sh    \
+        StatusPass.sh          \
+        StatusWrongHandle.sh   
 
-TESTS_ENVIRONMENT =                              \
-                    tcp_port=10701               \
-                    top_srcdir=$(top_srcdir)     \
-                    srcdir=$(srcdir)             \
-                    top_builddir=$(top_builddir) \
-                    verbose=1                    \
-                    PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =                  \
+        tcp_port=10701               \
+        top_srcdir=$(top_srcdir)     \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)
 
 TESTS =                        \
         CloseNullHandle.sh     \

@@ -22,34 +22,34 @@ noinst_LIBRARIES = libVerifyVDS.a
 
 man_MANS = vdswd.1
 
-EXTRA_DIST =      \
-   $(man_MANS)    \
-   Makefile.win32 \
-   Watchdog.dsp   
+EXTRA_DIST =           \
+        $(man_MANS)    \
+        Makefile.win32 \
+        Watchdog.dsp   
 
-vdswd_SOURCES =      \
-   Acceptor.cpp      \
-   Acceptor.h        \
-   LogMsg.cpp        \
-   LogMsg.h          \
-   MemoryManager.cpp \
-   MemoryManager.h   \
-   VDSHandler.cpp    \
-   VDSHandler.h      \
-   Watchdog.cpp      \
-   Watchdog.h        \
-   wd.cpp            
+vdswd_SOURCES =           \
+        Acceptor.cpp      \
+        Acceptor.h        \
+        LogMsg.cpp        \
+        LogMsg.h          \
+        MemoryManager.cpp \
+        MemoryManager.h   \
+        VDSHandler.cpp    \
+        VDSHandler.h      \
+        Watchdog.cpp      \
+        Watchdog.h        \
+        wd.cpp            
 
-libVerifyVDS_a_SOURCES = \
-   VerifyCommon.h        \
-   VerifyFolder.c        \
-   VerifyHash.c          \
-   VerifyHashMap.c       \
-   VerifyList.c          \
-   VerifyMemObj.c        \
-   VerifyQueue.c         \
-   VerifyVDS.c           \
-   VerifyVDS.h           
+libVerifyVDS_a_SOURCES =      \
+        VerifyCommon.h        \
+        VerifyFolder.c        \
+        VerifyHash.c          \
+        VerifyHashMap.c       \
+        VerifyList.c          \
+        VerifyMemObj.c        \
+        VerifyQueue.c         \
+        VerifyVDS.c           \
+        VerifyVDS.h           
 
 vdswd_LDADD = $(top_builddir)/src/Engine/libEngine.la    \
               $(top_builddir)/src/Common/libCommon.la    \

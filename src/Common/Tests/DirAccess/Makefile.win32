@@ -14,31 +14,31 @@ all:
 
 CLEANFILES = *~ 
 
-check_PROGRAMS =                   \
-   .\Release\CloseInvalidSig.exe   \
-   .\Release\CloseNullDir.exe      \
-   .\Release\ClosePass.exe         \
-   .\Release\FiniInvalidSig.exe    \
-   .\Release\FiniNullDir.exe       \
-   .\Release\FiniPass.exe          \
-   .\Release\GetNextInvalidSig.exe \
-   .\Release\GetNextNoOpen.exe     \
-   .\Release\GetNextNoSuchDir.exe  \
-   .\Release\GetNextNullDir.exe    \
-   .\Release\GetNextNullError.exe  \
-   .\Release\GetNextNullpDir.exe   \
-   .\Release\GetNextPass.exe       \
-   .\Release\InitNullDir.exe       \
-   .\Release\InitPass.exe          \
-   .\Release\OpenCallTwice.exe     \
-   .\Release\OpenInvalidSig.exe    \
-   .\Release\OpenNoInit.exe        \
-   .\Release\OpenNoSuchDir.exe     \
-   .\Release\OpenNullDir.exe       \
-   .\Release\OpenNullDirname.exe   \
-   .\Release\OpenNullError.exe     \
-   .\Release\OpenPass.exe          \
-   .\Release\Tests.exe             
+check_PROGRAMS =                        \
+        .\Release\CloseInvalidSig.exe   \
+        .\Release\CloseNullDir.exe      \
+        .\Release\ClosePass.exe         \
+        .\Release\FiniInvalidSig.exe    \
+        .\Release\FiniNullDir.exe       \
+        .\Release\FiniPass.exe          \
+        .\Release\GetNextInvalidSig.exe \
+        .\Release\GetNextNoOpen.exe     \
+        .\Release\GetNextNoSuchDir.exe  \
+        .\Release\GetNextNullDir.exe    \
+        .\Release\GetNextNullError.exe  \
+        .\Release\GetNextNullpDir.exe   \
+        .\Release\GetNextPass.exe       \
+        .\Release\InitNullDir.exe       \
+        .\Release\InitPass.exe          \
+        .\Release\OpenCallTwice.exe     \
+        .\Release\OpenInvalidSig.exe    \
+        .\Release\OpenNoInit.exe        \
+        .\Release\OpenNoSuchDir.exe     \
+        .\Release\OpenNullDir.exe       \
+        .\Release\OpenNullDirname.exe   \
+        .\Release\OpenNullError.exe     \
+        .\Release\OpenPass.exe          \
+        .\Release\Tests.exe             
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

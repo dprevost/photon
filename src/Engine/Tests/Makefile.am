@@ -18,52 +18,52 @@ CLEANFILES = *~ core
 # before the Folder tests or the HashMaps tests since the last two use
 # Hash but the Hash tests are after the memory allocation tests since 
 # Hash uses it..
-SUBDIRS =         \
-   List           \
-   LogFile        \
-   MemAlloc       \
-   MemBitmap      \
-   BlockGroup     \
-   MemObject      \
-   Hash           \
-   Transaction    \
-   ProcessManager \
-   Process        \
-   Session        \
-   Folder         \
-   HashMap        \
-   Queue          \
-   Optional       
+SUBDIRS =              \
+        List           \
+        LogFile        \
+        MemAlloc       \
+        MemBitmap      \
+        BlockGroup     \
+        MemObject      \
+        Hash           \
+        Transaction    \
+        ProcessManager \
+        Process        \
+        Session        \
+        Folder         \
+        HashMap        \
+        Queue          \
+        Optional       
 
-check_PROGRAMS =    \
-   LinkNodeNULLInit \
-   LinkNodeNULLTest \
-   LinkNodeTestTest 
+check_PROGRAMS =         \
+        LinkNodeNULLInit \
+        LinkNodeNULLTest \
+        LinkNodeTestTest 
 
 LinkNodeNULLInit_SOURCES = LinkNodeNULLInit.c
 LinkNodeNULLTest_SOURCES = LinkNodeNULLTest.c
 LinkNodeTestTest_SOURCES = LinkNodeTestTest.c
 
-EXTRA_DIST =          \
-   EngineTestCommon.h \
-   Makefile.win32     \
-   Makefile.inc.win32 \
-   RunTests.vbs       
+EXTRA_DIST =               \
+        EngineTestCommon.h \
+        Makefile.win32     \
+        Makefile.inc.win32 \
+        RunTests.vbs       
 
-TESTS_ENVIRONMENT =             \
-   srcdir=$(srcdir)             \
-   top_builddir=$(top_builddir) \
-   verbose=1                    \
-   PYTHON=$(PYTHON)             
+TESTS_ENVIRONMENT =                  \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
-TESTS =             \
-   LinkNodeNULLInit \
-   LinkNodeNULLTest \
-   LinkNodeTestTest 
+TESTS =                  \
+        LinkNodeNULLInit \
+        LinkNodeNULLTest \
+        LinkNodeTestTest 
 
-XFAIL_TESTS =       \
-   LinkNodeNULLInit \
-   LinkNodeNULLTest 
+XFAIL_TESTS =            \
+        LinkNodeNULLInit \
+        LinkNodeNULLTest 
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la

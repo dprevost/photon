@@ -14,21 +14,25 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =              \
-          Api          \
-          Process      \
-          Session      \
-          CommonObject \
-          Folder       \
-          HashMap      \
-          Queue        \
-          Optional     
+SUBDIRS =            \
+        Api          \
+        Process      \
+        Session      \
+        CommonObject \
+        Folder       \
+        HashMap      \
+        Queue        \
+        Optional     
 
-EXTRA_DIST =          \
-   Makefile.inc.win32 \
-   Makefile.win32     
+EXTRA_DIST =               \
+        Makefile.inc.win32 \
+        Makefile.win32     
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =                  \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
 LDADD = $(top_builddir)/src/API/libvdsf.la
 

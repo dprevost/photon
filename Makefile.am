@@ -10,15 +10,15 @@
 
 CLEANFILES = *~
 
-EXTRA_DIST =            \
-   configure            \
-   Config/config.guess  \
-   Config/config.sub    \
-   Config/install-sh    \
-   Config/ltmain.sh     \
-   Config/missing       \
-   Config/mkinstalldirs \
-   Makefile.win32
+EXTRA_DIST =                 \
+        configure            \
+        Config/config.guess  \
+        Config/config.sub    \
+        Config/install-sh    \
+        Config/ltmain.sh     \
+        Config/missing       \
+        Config/mkinstalldirs \
+        Makefile.win32       
 
 # The 'doc' subdir must be placed after 'src' since some of the 
 # documentation and man pages are generated automatically when

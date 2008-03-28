@@ -14,21 +14,21 @@ all:
 
 CLEANFILES = $(CLEANFILES) *.tlog
 
-check_PROGRAMS =                 \
-   .\Release\CloseNoInit.exe     \
-   .\Release\CloseNULLLog.exe    \
-   .\Release\CloseNULLError.exe  \
-   .\Release\ClosePass.exe       \
-   .\Release\InitNULLDir.exe     \
-   .\Release\InitNULLError.exe   \
-   .\Release\InitNULLLog.exe     \
-   .\Release\InitNULLSession.exe \
-   .\Release\InitPass.exe        \
-   .\Release\LogNoInit.exe       \
-   .\Release\LogNULLError.exe    \
-   .\Release\LogNULLLog.exe      \
-   .\Release\LogPass.exe         \
-   .\Release\LogFileTest.exe
+check_PROGRAMS =                      \
+        .\Release\CloseNoInit.exe     \
+        .\Release\CloseNULLLog.exe    \
+        .\Release\CloseNULLError.exe  \
+        .\Release\ClosePass.exe       \
+        .\Release\InitNULLDir.exe     \
+        .\Release\InitNULLError.exe   \
+        .\Release\InitNULLLog.exe     \
+        .\Release\InitNULLSession.exe \
+        .\Release\InitPass.exe        \
+        .\Release\LogNoInit.exe       \
+        .\Release\LogNULLError.exe    \
+        .\Release\LogNULLLog.exe      \
+        .\Release\LogPass.exe         \
+        .\Release\LogFileTest.exe
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

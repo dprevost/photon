@@ -10,24 +10,24 @@
 
 CLEANFILES = *~
 
-BASE_FILES =                          \
-             linux/autoconf.h         \
-             linux/compiler-gcc.h     \
-             linux/compiler.h         \
-             linux/compiler-intel.h   \
-             linux/linkage.h          \
-             linux/spinlock_api_smp.h \
-             linux/spinlock.h         \
-             linux/spinlock_types.h   
+BASE_FILES =                     \
+        linux/autoconf.h         \
+        linux/compiler-gcc.h     \
+        linux/compiler.h         \
+        linux/compiler-intel.h   \
+        linux/linkage.h          \
+        linux/spinlock_api_smp.h \
+        linux/spinlock.h         \
+        linux/spinlock_types.h   
 
-I386_FILES =                           \
-             asm-i386/alternative.h    \
-             asm-i386/bitops.h         \
-             asm-i386/cpufeature.h     \
-             asm-i386/linkage.h        \
-             asm-i386/spinlock.h       \
-             asm-i386/spinlock_types.h \
-             asm-i386/system.h         
+I386_FILES =                      \
+        asm-i386/alternative.h    \
+        asm-i386/bitops.h         \
+        asm-i386/cpufeature.h     \
+        asm-i386/linkage.h        \
+        asm-i386/spinlock.h       \
+        asm-i386/spinlock_types.h \
+        asm-i386/system.h         
 
 EXTRA_DIST = $(BASE_FILES) $(I386_FILES)
 

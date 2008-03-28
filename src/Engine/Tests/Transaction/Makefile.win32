@@ -12,36 +12,36 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-check_PROGRAMS =                       \
-   .\Release\AddInvalidSig.exe         \
-   .\Release\AddNullChildOffset.exe    \
-   .\Release\AddNullContext.exe        \
-   .\Release\AddNullParentOffset.exe   \
-   .\Release\AddNullTx.exe             \
-   .\Release\AddPass.exe               \
-   .\Release\CommitInvalidSig.exe      \
-   .\Release\CommitNullContext.exe     \
-   .\Release\CommitNullTx.exe          \
-   .\Release\CommitPass.exe            \
-   .\Release\FiniInvalidSig.exe        \
-   .\Release\FiniNullContext.exe       \
-   .\Release\FiniNullTx.exe            \
-   .\Release\FiniPass.exe              \
-   .\Release\InitNullContext.exe       \
-   .\Release\InitNullTx.exe            \
-   .\Release\InitPass.exe              \
-   .\Release\InitZeroBlocks.exe        \
-   .\Release\RemoveLastInvalidSig.exe  \
-   .\Release\RemoveLastNullContext.exe \
-   .\Release\RemoveLastNullTx.exe      \
-   .\Release\RemoveLastPass.exe        \
-   .\Release\RollbackInvalidSig.exe    \
-   .\Release\RollbackNullContext.exe   \
-   .\Release\RollbackNullTx.exe        \
-   .\Release\RollbackPass.exe          \
-   .\Release\TestFolder.exe            \
-   .\Release\TestHashMap.exe           \
-   .\Release\TestQueue.exe             
+check_PROGRAMS =                            \
+        .\Release\AddInvalidSig.exe         \
+        .\Release\AddNullChildOffset.exe    \
+        .\Release\AddNullContext.exe        \
+        .\Release\AddNullParentOffset.exe   \
+        .\Release\AddNullTx.exe             \
+        .\Release\AddPass.exe               \
+        .\Release\CommitInvalidSig.exe      \
+        .\Release\CommitNullContext.exe     \
+        .\Release\CommitNullTx.exe          \
+        .\Release\CommitPass.exe            \
+        .\Release\FiniInvalidSig.exe        \
+        .\Release\FiniNullContext.exe       \
+        .\Release\FiniNullTx.exe            \
+        .\Release\FiniPass.exe              \
+        .\Release\InitNullContext.exe       \
+        .\Release\InitNullTx.exe            \
+        .\Release\InitPass.exe              \
+        .\Release\InitZeroBlocks.exe        \
+        .\Release\RemoveLastInvalidSig.exe  \
+        .\Release\RemoveLastNullContext.exe \
+        .\Release\RemoveLastNullTx.exe      \
+        .\Release\RemoveLastPass.exe        \
+        .\Release\RollbackInvalidSig.exe    \
+        .\Release\RollbackNullContext.exe   \
+        .\Release\RollbackNullTx.exe        \
+        .\Release\RollbackPass.exe          \
+        .\Release\TestFolder.exe            \
+        .\Release\TestHashMap.exe           \
+        .\Release\TestQueue.exe             
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

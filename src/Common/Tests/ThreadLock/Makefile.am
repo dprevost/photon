@@ -14,29 +14,29 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core Memfile.mem
 
-THREAD_TEST_CODE = \
-   Barrier.c       \
-   Barrier.h       \
-   ThreadWrap.c    \
-   ThreadWrap.h    
+THREAD_TEST_CODE =   \
+        Barrier.c    \
+        Barrier.h    \
+        ThreadWrap.c \
+        ThreadWrap.h 
 
-check_PROGRAMS =     \
-   AcquireInvalidSig \
-   AcquireNullLock   \
-   AcquirePass       \
-   FiniInvalidSig    \
-   FiniNullLock      \
-   FiniPass          \
-   InitNullLock      \
-   InitPass          \
-   LockConcurrency   \
-   LockTests         \
-   ReleaseInvalidSig \
-   ReleaseNullLock   \
-   ReleasePass       \
-   TryAcqInvalidSig  \
-   TryAcqNullLock    \
-   TryAcqPass        
+check_PROGRAMS =          \
+        AcquireInvalidSig \
+        AcquireNullLock   \
+        AcquirePass       \
+        FiniInvalidSig    \
+        FiniNullLock      \
+        FiniPass          \
+        InitNullLock      \
+        InitPass          \
+        LockConcurrency   \
+        LockTests         \
+        ReleaseInvalidSig \
+        ReleaseNullLock   \
+        ReleasePass       \
+        TryAcqInvalidSig  \
+        TryAcqNullLock    \
+        TryAcqPass        
 
 AcquireInvalidSig_SOURCES    = AcquireInvalidSig.c
 AcquireNullLock_SOURCES      = AcquireNullLock.c
@@ -55,47 +55,47 @@ TryAcqInvalidSig_SOURCES     = TryAcqInvalidSig.c
 TryAcqNullLock_SOURCES       = TryAcqNullLock.c
 TryAcqPass_SOURCES           = TryAcqPass.c
 
-EXTRA_DIST =             \
-   LockConcurrency.sh    \
-   LockConcurrencyTry.sh \
-   Makefile.win32        \
-   RunTests.vbs          
+EXTRA_DIST =                  \
+        LockConcurrency.sh    \
+        LockConcurrencyTry.sh \
+        Makefile.win32        \
+        RunTests.vbs          
 
-TESTS_ENVIRONMENT =             \
-   srcdir=$(srcdir)             \
-   top_builddir=$(top_builddir) \
-   verbose=1                    \
-   PYTHON=$(PYTHON)             
+TESTS_ENVIRONMENT =                  \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
-TESTS =                  \
-   AcquireInvalidSig     \
-   AcquireNullLock       \
-   AcquirePass           \
-   FiniInvalidSig        \
-   FiniNullLock          \
-   FiniPass              \
-   InitNullLock          \
-   InitPass              \
-   ReleaseInvalidSig     \
-   ReleaseNullLock       \
-   ReleasePass           \
-   TryAcqInvalidSig      \
-   TryAcqNullLock        \
-   TryAcqPass            \
-   LockConcurrency.sh    \
-   LockConcurrencyTry.sh \
-   LockTests             
+TESTS =                       \
+        AcquireInvalidSig     \
+        AcquireNullLock       \
+        AcquirePass           \
+        FiniInvalidSig        \
+        FiniNullLock          \
+        FiniPass              \
+        InitNullLock          \
+        InitPass              \
+        ReleaseInvalidSig     \
+        ReleaseNullLock       \
+        ReleasePass           \
+        TryAcqInvalidSig      \
+        TryAcqNullLock        \
+        TryAcqPass            \
+        LockConcurrency.sh    \
+        LockConcurrencyTry.sh \
+        LockTests             
 
-XFAIL_TESTS =        \
-   AcquireInvalidSig \
-   AcquireNullLock   \
-   FiniInvalidSig    \
-   FiniNullLock      \
-   InitNullLock      \
-   ReleaseInvalidSig \
-   ReleaseNullLock   \
-   TryAcqInvalidSig  \
-   TryAcqNullLock    
+XFAIL_TESTS =             \
+        AcquireInvalidSig \
+        AcquireNullLock   \
+        FiniInvalidSig    \
+        FiniNullLock      \
+        InitNullLock      \
+        ReleaseInvalidSig \
+        ReleaseNullLock   \
+        TryAcqInvalidSig  \
+        TryAcqNullLock    
 
 LDADD = $(top_builddir)/src/Common/libCommon.la
 

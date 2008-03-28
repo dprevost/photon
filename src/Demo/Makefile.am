@@ -14,10 +14,11 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~
 
-#noinst_PROGRAMS = InitCrashDemo \
-                  CrashClient   \
-                  TMDemo        \
-                  TMReadLoop
+#noinst_PROGRAMS =     \
+        InitCrashDemo \
+        CrashClient   \
+        TMDemo        \
+        TMReadLoop    
 
 
 #InitCrashDemo_SOURCES = InitCrashDemo.cpp demo.h
@@ -25,12 +26,12 @@ CLEANFILES = *~
 #TMDemo_SOURCES        = TMDemo.cpp
 #TMReadLoop_SOURCES    = TMReadLoop.cpp
 
-#EXTRA_DIST               =                  \
-                         CrashClient.sh     \
-                         StartCrashDemo.sh  \
-                         StartTMDemo.sh     \
-                         TMDemo.sh          \
-                         TMReadLoop.sh 
+#EXTRA_DIST =               \
+        CrashClient.sh     \
+        StartCrashDemo.sh  \
+        StartTMDemo.sh     \
+        TMDemo.sh          \
+        TMReadLoop.sh 
 
 
 LDADD = $(top_builddir)/src/API/libvdsf.la

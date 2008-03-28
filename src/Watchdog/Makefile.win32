@@ -36,19 +36,19 @@ CFLAGS_RELEASE = /nologo /MD  /W3 /GX     /O2 /I ".." /I "../include" /D "WIN32"
 CFLAGS_DEBUG   = /nologo /MDd /W3 /GX /ZI /Od /I ".." /I "../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" /GZ /c 
 
 OBJS_RELEASE=                                 \
-	"$(INTDIR_RELEASE)\Acceptor.obj"      \
-	"$(INTDIR_RELEASE)\LogMsg.obj"        \
-	"$(INTDIR_RELEASE)\MemoryManager.obj" \
-	"$(INTDIR_RELEASE)\VDSHandler.obj"    \
-	"$(INTDIR_RELEASE)\VerifyFolder.obj"  \
-	"$(INTDIR_RELEASE)\VerifyHash.obj"    \
-	"$(INTDIR_RELEASE)\VerifyHashMap.obj" \
-	"$(INTDIR_RELEASE)\VerifyList.obj"    \
-	"$(INTDIR_RELEASE)\VerifyMemObj.obj"  \
-	"$(INTDIR_RELEASE)\VerifyQueue.obj"   \
-	"$(INTDIR_RELEASE)\VerifyVDS.obj"     \
-	"$(INTDIR_RELEASE)\Watchdog.obj"      \
-	"$(INTDIR_RELEASE)\wd.obj"            
+        "$(INTDIR_RELEASE)\Acceptor.obj"      \
+        "$(INTDIR_RELEASE)\LogMsg.obj"        \
+        "$(INTDIR_RELEASE)\MemoryManager.obj" \
+        "$(INTDIR_RELEASE)\VDSHandler.obj"    \
+        "$(INTDIR_RELEASE)\VerifyFolder.obj"  \
+        "$(INTDIR_RELEASE)\VerifyHash.obj"    \
+        "$(INTDIR_RELEASE)\VerifyHashMap.obj" \
+        "$(INTDIR_RELEASE)\VerifyList.obj"    \
+        "$(INTDIR_RELEASE)\VerifyMemObj.obj"  \
+        "$(INTDIR_RELEASE)\VerifyQueue.obj"   \
+        "$(INTDIR_RELEASE)\VerifyVDS.obj"     \
+        "$(INTDIR_RELEASE)\Watchdog.obj"      \
+        "$(INTDIR_RELEASE)\wd.obj"            
 
 OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 

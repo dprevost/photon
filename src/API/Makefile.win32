@@ -33,15 +33,15 @@ LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfCommon.lib vdsfEngine.lib /nologo /dll /
 CFLAGS_RELEASE=/nologo /MD  /W4 /O2     /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF_API" /D "BUILD_VDSF" /Fo"$(INTDIR_RELEASE)\\"     /c 
 CFLAGS_DEBUG  =/nologo /MDd /W4 /ZI /Od /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF_API" /D "BUILD_VDSF" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
 
-OBJS_RELEASE= \
-	"$(INTDIR_RELEASE)\api.obj" \
-	"$(INTDIR_RELEASE)\CommonObject.obj" \
-	"$(INTDIR_RELEASE)\Connector.obj" \
-	"$(INTDIR_RELEASE)\Folder.obj" \
-	"$(INTDIR_RELEASE)\HashMap.obj" \
-	"$(INTDIR_RELEASE)\Process.obj" \
-	"$(INTDIR_RELEASE)\Queue.obj" \
-	"$(INTDIR_RELEASE)\Session.obj"
+OBJS_RELEASE=                                \
+        "$(INTDIR_RELEASE)\api.obj"          \
+        "$(INTDIR_RELEASE)\CommonObject.obj" \
+        "$(INTDIR_RELEASE)\Connector.obj"    \
+        "$(INTDIR_RELEASE)\Folder.obj"       \
+        "$(INTDIR_RELEASE)\HashMap.obj"      \
+        "$(INTDIR_RELEASE)\Process.obj"      \
+        "$(INTDIR_RELEASE)\Queue.obj"        \
+        "$(INTDIR_RELEASE)\Session.obj"      
 
 OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 

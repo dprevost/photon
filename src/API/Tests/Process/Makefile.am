@@ -14,20 +14,20 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =                  \
-                 CloseNullContext \
-                 CloseNullProcess \
-                 ClosePass        \
-                 FiniNullProcess  \
-                 FiniPass         \
-                 InitNullAddr     \
-                 InitNullProcess  \
-                 InitPass         \
-                 InitWrongAddr    \
-                 OpenNullContext  \
-                 OpenNullFilename \
-                 OpenNullProcess  \
-                 OpenPass         
+check_PROGRAMS =         \
+        CloseNullContext \
+        CloseNullProcess \
+        ClosePass        \
+        FiniNullProcess  \
+        FiniPass         \
+        InitNullAddr     \
+        InitNullProcess  \
+        InitPass         \
+        InitWrongAddr    \
+        OpenNullContext  \
+        OpenNullFilename \
+        OpenNullProcess  \
+        OpenPass         
 
 CloseNullContext_SOURCES = CloseNullContext.c
 CloseNullProcess_SOURCES = CloseNullProcess.c
@@ -43,27 +43,27 @@ OpenNullFilename_SOURCES = OpenNullFilename.c
 OpenNullProcess_SOURCES  = OpenNullProcess.c
 OpenPass_SOURCES         = OpenPass.c
 
-EXTRA_DIST =           \
-   CloseNullContext.sh \
-   CloseNullProcess.sh \
-   ClosePass.sh        \
-   FiniNullProcess.sh  \
-   FiniPass.sh         \
-   InitPass.sh         \
-   Makefile.win32      \
-   OpenNullContext.sh  \
-   OpenNullFilename.sh \
-   OpenNullProcess.sh  \
-   OpenPass.sh         \
-   RunTests.vbs        
+EXTRA_DIST =                \
+        CloseNullContext.sh \
+        CloseNullProcess.sh \
+        ClosePass.sh        \
+        FiniNullProcess.sh  \
+        FiniPass.sh         \
+        InitPass.sh         \
+        Makefile.win32      \
+        OpenNullContext.sh  \
+        OpenNullFilename.sh \
+        OpenNullProcess.sh  \
+        OpenPass.sh         \
+        RunTests.vbs        
 
-TESTS_ENVIRONMENT =                              \
-                    tcp_port=10701               \
-                    top_srcdir=$(top_srcdir)     \
-                    srcdir=$(srcdir)             \
-                    top_builddir=$(top_builddir) \
-                    verbose=1                    \
-                    PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =                  \
+        tcp_port=10701               \
+        top_srcdir=$(top_srcdir)     \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
 TESTS =                     \
         CloseNullContext.sh \
@@ -80,9 +80,9 @@ TESTS =                     \
         OpenNullProcess.sh  \
         OpenPass.sh         
 
-XFAIL_TESTS =                  \
-              InitNullAddr     \
-              InitNullProcess  
+XFAIL_TESTS =            \
+        InitNullAddr     \
+        InitNullProcess  
 
 LDADD = $(top_builddir)/src/API/libvdsf.la      \
         $(top_builddir)/src/Engine/libEngine.la \

@@ -12,20 +12,20 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-check_PROGRAMS =                                \
-                 .\Release\CloseNullContext.exe \
-                 .\Release\CloseNullProcess.exe \
-                 .\Release\ClosePass.exe        \
-                 .\Release\FiniNullProcess.exe  \
-                 .\Release\FiniPass.exe         \
-                 .\Release\InitNullAddr.exe     \
-                 .\Release\InitNullProcess.exe  \
-                 .\Release\InitPass.exe         \
-                 .\Release\InitWrongAddr.exe    \
-                 .\Release\OpenNullContext.exe  \
-                 .\Release\OpenNullFilename.exe \
-                 .\Release\OpenNullProcess.exe  \
-                 .\Release\OpenPass.exe         
+check_PROGRAMS =                       \
+        .\Release\CloseNullContext.exe \
+        .\Release\CloseNullProcess.exe \
+        .\Release\ClosePass.exe        \
+        .\Release\FiniNullProcess.exe  \
+        .\Release\FiniPass.exe         \
+        .\Release\InitNullAddr.exe     \
+        .\Release\InitNullProcess.exe  \
+        .\Release\InitPass.exe         \
+        .\Release\InitWrongAddr.exe    \
+        .\Release\OpenNullContext.exe  \
+        .\Release\OpenNullFilename.exe \
+        .\Release\OpenNullProcess.exe  \
+        .\Release\OpenPass.exe         
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

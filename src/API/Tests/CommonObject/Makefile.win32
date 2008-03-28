@@ -12,17 +12,17 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-check_PROGRAMS =                                \
-                 .\Release\CloseNullObject.exe  \
-                 .\Release\ClosePass.exe        \
-                 .\Release\LockNullObject.exe   \
-                 .\Release\LockPass.exe         \
-                 .\Release\OpenNullName.exe     \
-                 .\Release\OpenNullObject.exe   \
-                 .\Release\OpenPass.exe         \
-                 .\Release\OpenWrongType.exe    \
-                 .\Release\UnlockNullObject.exe \
-                 .\Release\UnlockPass.exe       
+check_PROGRAMS =                       \
+        .\Release\CloseNullObject.exe  \
+        .\Release\ClosePass.exe        \
+        .\Release\LockNullObject.exe   \
+        .\Release\LockPass.exe         \
+        .\Release\OpenNullName.exe     \
+        .\Release\OpenNullObject.exe   \
+        .\Release\OpenPass.exe         \
+        .\Release\OpenWrongType.exe    \
+        .\Release\UnlockNullObject.exe \
+        .\Release\UnlockPass.exe       
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

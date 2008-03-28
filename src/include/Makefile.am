@@ -10,110 +10,110 @@
 
 CLEANFILES = *~ vdsf/*~
 
-HEADER_FILES =                                 \
-   $(top_srcdir)/src/include/vdsf/vds.h        \
-   $(top_srcdir)/src/include/vdsf/vdsCommon.h  \
-   $(top_srcdir)/src/include/vdsf/vdsFolder.h  \
-   $(top_srcdir)/src/include/vdsf/vdsHashMap.h \
-   $(top_srcdir)/src/include/vdsf/vdsQueue.h   \
-   $(top_srcdir)/src/include/vdsf/vdsProcess.h \
-   $(top_srcdir)/src/include/vdsf/vdsSession.h 
+HEADER_FILES =                                      \
+        $(top_srcdir)/src/include/vdsf/vds.h        \
+        $(top_srcdir)/src/include/vdsf/vdsCommon.h  \
+        $(top_srcdir)/src/include/vdsf/vdsFolder.h  \
+        $(top_srcdir)/src/include/vdsf/vdsHashMap.h \
+        $(top_srcdir)/src/include/vdsf/vdsQueue.h   \
+        $(top_srcdir)/src/include/vdsf/vdsProcess.h \
+        $(top_srcdir)/src/include/vdsf/vdsSession.h 
 
-VDS_C_FILES =                \
-   man3/vdsCommit.3          \
-   man3/vdsCommon.h.3        \
-   man3/vdsCreateObject.3    \
-   man3/vdsDestroyObject.3   \
-   man3/vdsErrorMsg.3        \
-   man3/vdsErrors.3          \
-   man3/vdsErrors.h.3        \
-   man3/vdsExit.3            \
-   man3/vdsExitSession.3     \
-   man3/vdsFolder_c.3        \
-   man3/vdsFolderClose.3     \
-   man3/vdsFolderEntry.3     \
-   man3/vdsFolderGetFirst.3  \
-   man3/vdsFolderGetNext.3   \
-   man3/vdsFolder.h.3        \
-   man3/vdsFolderOpen.3      \
-   man3/vdsFolderStatus.3    \
-   man3/vdsGetInfo.3         \
-   man3/vdsGetStatus.3       \
-   man3/vds.h.3              \
-   man3/vdsHashMap_c.3       \
-   man3/vdsHashMapClose.3    \
-   man3/vdsHashMapDelete.3   \
-   man3/vdsHashMapGet.3      \
-   man3/vdsHashMapGetFirst.3 \
-   man3/vdsHashMapGetNext.3  \
-   man3/vdsHashMap.h.3       \
-   man3/vdsHashMapInsert.3   \
-   man3/vdsHashMapOpen.3     \
-   man3/vdsHashMapReplace.3  \
-   man3/vdsHashMapStatus.3   \
-   man3/vdsInfo.3            \
-   man3/vdsInit.3            \
-   man3/vdsInitSession.3     \
-   man3/vdsIteratorType.3    \
-   man3/vdsLastError.3       \
-   man3/vdsObjectType.3      \
-   man3/vdsObjStatus.3       \
-   man3/vdsProcess_c.3       \
-   man3/vdsProcess.h.3       \
-   man3/vdsQueue_c.3         \
-   man3/vdsQueueClose.3      \
-   man3/vdsQueueGetFirst.3   \
-   man3/vdsQueueGetNext.3    \
-   man3/vdsQueue.h.3         \
-   man3/vdsQueueOpen.3       \
-   man3/vdsQueuePop.3        \
-   man3/vdsQueuePush.3       \
-   man3/vdsQueueStatus.3     \
-   man3/vdsRollback.3        \
-   man3/vdsSession_c.3       \
-   man3/vdsSession.h.3       
+VDS_C_FILES =                     \
+        man3/vdsCommit.3          \
+        man3/vdsCommon.h.3        \
+        man3/vdsCreateObject.3    \
+        man3/vdsDestroyObject.3   \
+        man3/vdsErrorMsg.3        \
+        man3/vdsErrors.3          \
+        man3/vdsErrors.h.3        \
+        man3/vdsExit.3            \
+        man3/vdsExitSession.3     \
+        man3/vdsFolder_c.3        \
+        man3/vdsFolderClose.3     \
+        man3/vdsFolderEntry.3     \
+        man3/vdsFolderGetFirst.3  \
+        man3/vdsFolderGetNext.3   \
+        man3/vdsFolder.h.3        \
+        man3/vdsFolderOpen.3      \
+        man3/vdsFolderStatus.3    \
+        man3/vdsGetInfo.3         \
+        man3/vdsGetStatus.3       \
+        man3/vds.h.3              \
+        man3/vdsHashMap_c.3       \
+        man3/vdsHashMapClose.3    \
+        man3/vdsHashMapDelete.3   \
+        man3/vdsHashMapGet.3      \
+        man3/vdsHashMapGetFirst.3 \
+        man3/vdsHashMapGetNext.3  \
+        man3/vdsHashMap.h.3       \
+        man3/vdsHashMapInsert.3   \
+        man3/vdsHashMapOpen.3     \
+        man3/vdsHashMapReplace.3  \
+        man3/vdsHashMapStatus.3   \
+        man3/vdsInfo.3            \
+        man3/vdsInit.3            \
+        man3/vdsInitSession.3     \
+        man3/vdsIteratorType.3    \
+        man3/vdsLastError.3       \
+        man3/vdsObjectType.3      \
+        man3/vdsObjStatus.3       \
+        man3/vdsProcess_c.3       \
+        man3/vdsProcess.h.3       \
+        man3/vdsQueue_c.3         \
+        man3/vdsQueueClose.3      \
+        man3/vdsQueueGetFirst.3   \
+        man3/vdsQueueGetNext.3    \
+        man3/vdsQueue.h.3         \
+        man3/vdsQueueOpen.3       \
+        man3/vdsQueuePop.3        \
+        man3/vdsQueuePush.3       \
+        man3/vdsQueueStatus.3     \
+        man3/vdsRollback.3        \
+        man3/vdsSession_c.3       \
+        man3/vdsSession.h.3       
 
-man_MANS =             \
-   $(VDS_C_FILES)      \
-   man3/vdsException.3 \
-   man3/vdsFolder.3    \
-   man3/vdsHashMap.3   \
-   man3/vdsProcess.3   \
-   man3/vdsQueue.3     \
-   man3/vdsSession.3   
+man_MANS =                  \
+        $(VDS_C_FILES)      \
+        man3/vdsException.3 \
+        man3/vdsFolder.3    \
+        man3/vdsHashMap.3   \
+        man3/vdsProcess.3   \
+        man3/vdsQueue.3     \
+        man3/vdsSession.3   
 
-EXTRA_DIST =             \
-   doxyfile.vds_c        \
-   $(VDS_C_FILES)        \
-   Doxyfile.vdsException \
-   Doxyfile.vdsFolder    \
-   Doxyfile.vdsHashMap   \
-   Doxyfile.vdsProcess   \
-   Doxyfile.vdsQueue     \
-   Doxyfile.vdsSession   \
-   man3/vdsException.3   \
-   man3/vdsFolder.3      \
-   man3/vdsHashMap.3     \
-   man3/vdsProcess.3     \
-   man3/vdsQueue.3       \
-   man3/vdsSession.3     
+EXTRA_DIST =                  \
+        doxyfile.vds_c        \
+        $(VDS_C_FILES)        \
+        Doxyfile.vdsException \
+        Doxyfile.vdsFolder    \
+        Doxyfile.vdsHashMap   \
+        Doxyfile.vdsProcess   \
+        Doxyfile.vdsQueue     \
+        Doxyfile.vdsSession   \
+        man3/vdsException.3   \
+        man3/vdsFolder.3      \
+        man3/vdsHashMap.3     \
+        man3/vdsProcess.3     \
+        man3/vdsQueue.3       \
+        man3/vdsSession.3     
 
-nobase_include_HEADERS = \
-   vdsf/vdsCommon.h  \
-   vdsf/vdsErrors.h  \
-   vdsf/vdsFolder.h  \
-   vdsf/vdsHashMap.h \
-   vdsf/vdsProcess.h \
-   vdsf/vdsQueue.h   \
-   vdsf/vdsSession.h \
-   vdsf/vds.h        \
-   vdsf/vds          \
-   vdsf/vdsException \
-   vdsf/vdsFolder    \
-   vdsf/vdsHashMap   \
-   vdsf/vdsProcess   \
-   vdsf/vdsQueue     \
-   vdsf/vdsSession   
+nobase_include_HEADERS =  \
+        vdsf/vdsCommon.h  \
+        vdsf/vdsErrors.h  \
+        vdsf/vdsFolder.h  \
+        vdsf/vdsHashMap.h \
+        vdsf/vdsProcess.h \
+        vdsf/vdsQueue.h   \
+        vdsf/vdsSession.h \
+        vdsf/vds.h        \
+        vdsf/vds          \
+        vdsf/vdsException \
+        vdsf/vdsFolder    \
+        vdsf/vdsHashMap   \
+        vdsf/vdsProcess   \
+        vdsf/vdsQueue     \
+        vdsf/vdsSession   
 
 #
 # Only rebuild the man pages if doxygen is present.

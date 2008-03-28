@@ -27,29 +27,30 @@ libvdsf_la_LDFLAGS = -version-info 0:0:0
 
 include_HEADERS = 
 
-libvdsf_la_SOURCES = api.c            \
-                     api.h            \
-                     CommonObject.c   \
-                     CommonObject.h   \
-                     Connector.c      \
-                     Connector.h      \
-                     Folder.c         \
-                     Folder.h         \
-                     HashMap.c        \
-                     HashMap.h        \
-                     Process.c        \
-                     Process.h        \
-                     Queue.c          \
-                     Queue.h          \
-                     Session.c        \
-                     Session.h        \
-                     WatchdogCommon.h
+libvdsf_la_SOURCES =     \
+        api.c            \
+        api.h            \
+        CommonObject.c   \
+        CommonObject.h   \
+        Connector.c      \
+        Connector.h      \
+        Folder.c         \
+        Folder.h         \
+        HashMap.c        \
+        HashMap.h        \
+        Process.c        \
+        Process.h        \
+        Queue.c          \
+        Queue.h          \
+        Session.c        \
+        Session.h        \
+        WatchdogCommon.h 
 
-libvdsf_la_LIBADD = \
-   $(top_builddir)/src/Engine/libEngine.la \
-   $(top_builddir)/src/Common/libCommon.la
+libvdsf_la_LIBADD =                             \
+        $(top_builddir)/src/Engine/libEngine.la \
+        $(top_builddir)/src/Common/libCommon.la 
 
-EXTRA_DIST =      \
-   API.dsp        \
-   Makefile.win32 
+EXTRA_DIST =           \
+        API.dsp        \
+        Makefile.win32 
 

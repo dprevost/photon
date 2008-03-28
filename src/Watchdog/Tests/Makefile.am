@@ -12,14 +12,16 @@
 # overwrite any macros set in the common file
 include $(top_srcdir)/src/Makefile.Common.am
 
-CLEANFILES        = *~ core
+CLEANFILES = *~ core
 
-EXTRA_DIST =      \
-   Makefile.win32 \
-   RunTests.vbs   \
-   wdTests.sh     
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.vbs   \
+        wdTests.sh     
 
-TESTS_ENVIRONMENT = top_builddir=$(top_builddir) verbose=0
+TESTS_ENVIRONMENT =                  \
+        top_builddir=$(top_builddir) \
+        verbose=0                    
 
 TESTS = wdTests.sh
 

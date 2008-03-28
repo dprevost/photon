@@ -14,37 +14,37 @@ all:
 
 CLEANFILES = *~ 
 
-check_PROGRAMS =                       \
-   .\Release\AddHandlerNullDef.exe     \
-   .\Release\AddHandlerNullHandler.exe \
-   .\Release\AddHandlerNullName.exe    \
-   .\Release\AddHandlerPass.exe        \
-   .\Release\AnyErrorNullError.exe     \
-   .\Release\AnyErrorPass.exe          \
-   .\Release\ChainErrorNullDef.exe     \
-   .\Release\ChainErrorNullHandler.exe \
-   .\Release\ChainErrorInvalidSig.exe  \
-   .\Release\ChainErrorNoSetError.exe  \
-   .\Release\ChainErrorTooMany.exe     \
-   .\Release\ChainErrorPass.exe        \
-   .\Release\FiniInvalidSig.exe        \
-   .\Release\FiniNullError.exe         \
-   .\Release\FiniPass.exe              \
-   .\Release\GetErrorInvalidSig.exe    \
-   .\Release\GetErrorNullError.exe     \
-   .\Release\GetErrorNullMsg.exe       \
-   .\Release\GetErrorZeroLength.exe    \
-   .\Release\GetLastNullError.exe      \
-   .\Release\GetLastPass.exe           \
-   .\Release\GetLengthNullError.exe    \
-   .\Release\GetLengthPass.exe         \
-   .\Release\InitNoInitDefs.exe        \
-   .\Release\InitNullError.exe         \
-   .\Release\InitPass.exe              \
-   .\Release\SetErrorInvalidSig.exe    \
-   .\Release\SetErrorInvalidValue.exe  \
-   .\Release\SetErrorNullError.exe     \
-   .\Release\Tests.exe                 
+check_PROGRAMS =                            \
+        .\Release\AddHandlerNullDef.exe     \
+        .\Release\AddHandlerNullHandler.exe \
+        .\Release\AddHandlerNullName.exe    \
+        .\Release\AddHandlerPass.exe        \
+        .\Release\AnyErrorNullError.exe     \
+        .\Release\AnyErrorPass.exe          \
+        .\Release\ChainErrorNullDef.exe     \
+        .\Release\ChainErrorNullHandler.exe \
+        .\Release\ChainErrorInvalidSig.exe  \
+        .\Release\ChainErrorNoSetError.exe  \
+        .\Release\ChainErrorTooMany.exe     \
+        .\Release\ChainErrorPass.exe        \
+        .\Release\FiniInvalidSig.exe        \
+        .\Release\FiniNullError.exe         \
+        .\Release\FiniPass.exe              \
+        .\Release\GetErrorInvalidSig.exe    \
+        .\Release\GetErrorNullError.exe     \
+        .\Release\GetErrorNullMsg.exe       \
+        .\Release\GetErrorZeroLength.exe    \
+        .\Release\GetLastNullError.exe      \
+        .\Release\GetLastPass.exe           \
+        .\Release\GetLengthNullError.exe    \
+        .\Release\GetLengthPass.exe         \
+        .\Release\InitNoInitDefs.exe        \
+        .\Release\InitNullError.exe         \
+        .\Release\InitPass.exe              \
+        .\Release\SetErrorInvalidSig.exe    \
+        .\Release\SetErrorInvalidValue.exe  \
+        .\Release\SetErrorNullError.exe     \
+        .\Release\Tests.exe                 
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

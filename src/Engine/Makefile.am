@@ -13,7 +13,6 @@
 include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ 
-# VdsErrorHandler.c VdsErrorHandler.h
 
 SUBDIRS = . Tests
  
@@ -25,56 +24,55 @@ noinst_LTLIBRARIES   = libEngine.la
 # remove the dependency files - the dependencies could have been written
 # by hand but... this would defeat the whole idea of automated tools!).
 
-libEngine_la_SOURCES =                   \
-                       VdsErrorHandler.c \
-                       VdsErrorHandler.h \
-                       BlockGroup.c      \
-                       BlockGroup.h      \
-                       Engine.h          \
-                       Folder.c          \
-                       Folder.h          \
-                       Hash.c            \
-                       Hash.h            \
-                       hash_fnv.c        \
-                       hash_fnv.h        \
-                       HashMap.c         \
-                       HashMap.h         \
-                       InitEngine.c      \
-                       InitEngine.h      \
-                       LinkedList.c      \
-                       LinkedList.h      \
-                       LinkedList.inl    \
-                       LinkNode.h        \
-                       ListErrors.h      \
-                       LogFile.c         \
-                       LogFile.h         \
-                       MemBitmap.c       \
-                       MemBitmap.h       \
-                       MemBitmap.inl     \
-                       MemoryAllocator.c \
-                       MemoryAllocator.h \
-                       MemoryHeader.h    \
-                       MemoryObject.c    \
-                       MemoryObject.h    \
-                       Process.c         \
-                       Process.h         \
-                       ProcessManager.c  \
-                       ProcessManager.h  \
-                       Queue.c           \
-                       Queue.h           \
-                       SessionContext.h  \
-                       Session.c         \
-                       Session.h         \
-                       Transaction.c     \
-                       Transaction.h     \
-                       TreeNode.h        \
-                       TxStatus.h        
+libEngine_la_SOURCES =    \
+        VdsErrorHandler.c \
+        VdsErrorHandler.h \
+        BlockGroup.c      \
+        BlockGroup.h      \
+        Engine.h          \
+        Folder.c          \
+        Folder.h          \
+        Hash.c            \
+        Hash.h            \
+        hash_fnv.c        \
+        hash_fnv.h        \
+        HashMap.c         \
+        HashMap.h         \
+        InitEngine.c      \
+        InitEngine.h      \
+        LinkedList.c      \
+        LinkedList.h      \
+        LinkedList.inl    \
+        LinkNode.h        \
+        ListErrors.h      \
+        LogFile.c         \
+        LogFile.h         \
+        MemBitmap.c       \
+        MemBitmap.h       \
+        MemBitmap.inl     \
+        MemoryAllocator.c \
+        MemoryAllocator.h \
+        MemoryHeader.h    \
+        MemoryObject.c    \
+        MemoryObject.h    \
+        Process.c         \
+        Process.h         \
+        ProcessManager.c  \
+        ProcessManager.h  \
+        Queue.c           \
+        Queue.h           \
+        SessionContext.h  \
+        Session.c         \
+        Session.h         \
+        Transaction.c     \
+        Transaction.h     \
+        TreeNode.h        \
+        TxStatus.h        
    
-EXTRA_DIST =      \
-   Engine.dsp     \
-   Makefile.win32 
+EXTRA_DIST =           \
+        Engine.dsp     \
+        Makefile.win32 
 
 VdsErrorHandler.c VdsErrorHandler.h: $(top_srcdir)/src/include/vdsf/vdsErrors.h
 	$(top_builddir)/src/BuildTools/errorParser -i $(top_srcdir)/src/include/vdsf/vdsErrors.h -o VdsErrorHandler -p vdseErr
-
 

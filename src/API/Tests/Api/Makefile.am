@@ -14,33 +14,33 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =                 \
-                 ExitPass        \
-                 InitNullAddress \
-                 InitPass         
+check_PROGRAMS =        \
+        ExitPass        \
+        InitNullAddress \
+        InitPass        
 
 ExitPass_SOURCES        = ExitPass.c
 InitNullAddress_SOURCES = InitNullAddress.c
 InitPass_SOURCES        = InitPass.c
 
-EXTRA_DIST =      \
-   ExitPass.sh    \
-   InitPass.sh    \
-   Makefile.win32 \
-   RunTests.vbs   
+EXTRA_DIST =           \
+        ExitPass.sh    \
+        InitPass.sh    \
+        Makefile.win32 \
+        RunTests.vbs   
 
-TESTS_ENVIRONMENT =                              \
-                    tcp_port=10701               \
-                    top_srcdir=$(top_srcdir)     \
-                    srcdir=$(srcdir)             \
-                    top_builddir=$(top_builddir) \
-                    verbose=1                    \
-                    PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =                  \
+        tcp_port=10701               \
+        top_srcdir=$(top_srcdir)     \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)
 
-TESTS =                   \
-        ExitPass.sh       \
-        InitNullAddress   \
-        InitPass.sh       
+TESTS =                 \
+        ExitPass.sh     \
+        InitNullAddress \
+        InitPass.sh     
 
 XFAIL_TESTS = 
 

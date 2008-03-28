@@ -14,17 +14,17 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =                  \
-                 CloseNullObject  \
-                 ClosePass        \
-                 LockNullObject   \
-                 LockPass         \
-                 OpenNullName     \
-                 OpenNullObject   \
-                 OpenPass         \
-                 OpenWrongType    \
-                 UnlockNullObject \
-                 UnlockPass       
+check_PROGRAMS =         \
+        CloseNullObject  \
+        ClosePass        \
+        LockNullObject   \
+        LockPass         \
+        OpenNullName     \
+        OpenNullObject   \
+        OpenPass         \
+        OpenWrongType    \
+        UnlockNullObject \
+        UnlockPass       
 
 CloseNullObject_SOURCES  = CloseNullObject.c
 ClosePass_SOURCES        = ClosePass.c
@@ -37,27 +37,27 @@ OpenWrongType_SOURCES    = OpenWrongType.c
 UnlockNullObject_SOURCES = UnlockNullObject.c
 UnlockPass_SOURCES       = UnlockPass.c
 
-EXTRA_DIST =           \
-   CloseNullObject.sh  \
-   ClosePass.sh        \
-   LockNullObject.sh   \
-   LockPass.sh         \
-   Makefile.win32      \
-   OpenNullName.sh     \
-   OpenNullObject.sh   \
-   OpenPass.sh         \
-   OpenWrongType.sh    \
-   RunTests.vbs        \
-   UnlockNullObject.sh \
-   UnlockPass.sh       
+EXTRA_DIST =                \
+        CloseNullObject.sh  \
+        ClosePass.sh        \
+        LockNullObject.sh   \
+        LockPass.sh         \
+        Makefile.win32      \
+        OpenNullName.sh     \
+        OpenNullObject.sh   \
+        OpenPass.sh         \
+        OpenWrongType.sh    \
+        RunTests.vbs        \
+        UnlockNullObject.sh \
+        UnlockPass.sh       
 
-TESTS_ENVIRONMENT =                              \
-                    tcp_port=10701               \
-                    top_srcdir=$(top_srcdir)     \
-                    srcdir=$(srcdir)             \
-                    top_builddir=$(top_builddir) \
-                    verbose=1                    \
-                    PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =                  \
+        tcp_port=10701               \
+        top_srcdir=$(top_srcdir)     \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)
 
 TESTS =                     \
         CloseNullObject.sh  \

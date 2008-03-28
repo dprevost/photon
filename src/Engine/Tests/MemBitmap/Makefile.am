@@ -14,31 +14,31 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =        \
-   FiniNullBitmap       \
-   FiniPass             \
-   GetLengthPass        \
-   GetLengthPowerOfTwo7 \
-   GetLengthPowerOfTwo9 \
-   GetLengthZeroLength  \
-   GetLengthZeroGranu   \
-   InitNullBitmap       \
-   InitNullOffset       \
-   InitPass             \
-   InitPowerOfTwo7      \
-   InitPowerOfTwo9      \
-   InitZeroGranu        \
-   InitZeroLength       \
-   IsFreeNullBitmap     \
-   IsFreeNullOffset     \
-   IsFreePass           \
-   SetAllocNullBitmap   \
-   SetAllocNullOffset   \
-   SetAllocPass         \
-   SetAllocZeroLength   \
-   SetFreeNullBitmap    \
-   SetFreeNullOffset    \
-   SetFreePass          
+check_PROGRAMS =             \
+        FiniNullBitmap       \
+        FiniPass             \
+        GetLengthPass        \
+        GetLengthPowerOfTwo7 \
+        GetLengthPowerOfTwo9 \
+        GetLengthZeroLength  \
+        GetLengthZeroGranu   \
+        InitNullBitmap       \
+        InitNullOffset       \
+        InitPass             \
+        InitPowerOfTwo7      \
+        InitPowerOfTwo9      \
+        InitZeroGranu        \
+        InitZeroLength       \
+        IsFreeNullBitmap     \
+        IsFreeNullOffset     \
+        IsFreePass           \
+        SetAllocNullBitmap   \
+        SetAllocNullOffset   \
+        SetAllocPass         \
+        SetAllocZeroLength   \
+        SetFreeNullBitmap    \
+        SetFreeNullOffset    \
+        SetFreePass          
 
 FiniNullBitmap_SOURCES       = FiniNullBitmap.c
 FiniPass_SOURCES             = FiniPass.c
@@ -65,61 +65,61 @@ SetFreeNullBitmap_SOURCES    = SetFreeNullBitmap.c
 SetFreeNullOffset_SOURCES    = SetFreeNullOffset.c
 SetFreePass_SOURCES          = SetFreePass.c
 
-EXTRA_DIST =      \
-   Makefile.win32 \
-   RunTests.vbs   
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.vbs   
 
-TESTS_ENVIRONMENT =             \
-   srcdir=$(srcdir)             \
-   top_builddir=$(top_builddir) \
-   verbose=1                    \
-   PYTHON=$(PYTHON)             
+TESTS_ENVIRONMENT =                  \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
-TESTS =                 \
-   FiniNullBitmap       \
-   FiniPass             \
-   GetLengthPass        \
-   GetLengthPowerOfTwo7 \
-   GetLengthPowerOfTwo9 \
-   GetLengthZeroGranu   \
-   GetLengthZeroLength  \
-   InitNullBitmap       \
-   InitNullOffset       \
-   InitPass             \
-   InitPowerOfTwo7      \
-   InitPowerOfTwo9      \
-   InitZeroGranu        \
-   InitZeroLength       \
-   IsFreeNullBitmap     \
-   IsFreeNullOffset     \
-   IsFreePass           \
-   SetAllocNullBitmap   \
-   SetAllocNullOffset   \
-   SetAllocPass         \
-   SetAllocZeroLength   \
-   SetFreeNullBitmap    \
-   SetFreeNullOffset    \
-   SetFreePass          
+TESTS =                      \
+        FiniNullBitmap       \
+        FiniPass             \
+        GetLengthPass        \
+        GetLengthPowerOfTwo7 \
+        GetLengthPowerOfTwo9 \
+        GetLengthZeroGranu   \
+        GetLengthZeroLength  \
+        InitNullBitmap       \
+        InitNullOffset       \
+        InitPass             \
+        InitPowerOfTwo7      \
+        InitPowerOfTwo9      \
+        InitZeroGranu        \
+        InitZeroLength       \
+        IsFreeNullBitmap     \
+        IsFreeNullOffset     \
+        IsFreePass           \
+        SetAllocNullBitmap   \
+        SetAllocNullOffset   \
+        SetAllocPass         \
+        SetAllocZeroLength   \
+        SetFreeNullBitmap    \
+        SetFreeNullOffset    \
+        SetFreePass          
 
-XFAIL_TESTS =           \
-   FiniNullBitmap       \
-   GetLengthPowerOfTwo7 \
-   GetLengthPowerOfTwo9 \
-   GetLengthZeroGranu   \
-   GetLengthZeroLength  \
-   InitNullBitmap       \
-   InitNullOffset       \
-   InitPowerOfTwo7      \
-   InitPowerOfTwo9      \
-   InitZeroGranu        \
-   InitZeroLength       \
-   IsFreeNullBitmap     \
-   IsFreeNullOffset     \
-   SetAllocNullBitmap   \
-   SetAllocNullOffset   \
-   SetAllocZeroLength   \
-   SetFreeNullBitmap    \
-   SetFreeNullOffset    
+XFAIL_TESTS =                \
+        FiniNullBitmap       \
+        GetLengthPowerOfTwo7 \
+        GetLengthPowerOfTwo9 \
+        GetLengthZeroGranu   \
+        GetLengthZeroLength  \
+        InitNullBitmap       \
+        InitNullOffset       \
+        InitPowerOfTwo7      \
+        InitPowerOfTwo9      \
+        InitZeroGranu        \
+        InitZeroLength       \
+        IsFreeNullBitmap     \
+        IsFreeNullOffset     \
+        SetAllocNullBitmap   \
+        SetAllocNullOffset   \
+        SetAllocZeroLength   \
+        SetFreeNullBitmap    \
+        SetFreeNullOffset    
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la

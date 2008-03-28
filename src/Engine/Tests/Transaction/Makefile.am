@@ -14,36 +14,36 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =                       \
-                 AddInvalidSig         \
-                 AddNullChildOffset    \
-                 AddNullContext        \
-                 AddNullParentOffset   \
-                 AddNullTx             \
-                 AddPass               \
-                 CommitInvalidSig      \
-                 CommitNullContext     \
-                 CommitNullTx          \
-                 CommitPass            \
-                 FiniInvalidSig        \
-                 FiniNullContext       \
-                 FiniNullTx            \
-                 FiniPass              \
-                 InitNullContext       \
-                 InitNullTx            \
-                 InitPass              \
-                 InitZeroBlocks        \
-                 RemoveLastInvalidSig  \
-                 RemoveLastNullContext \
-                 RemoveLastNullTx      \
-                 RemoveLastPass        \
-                 RollbackInvalidSig    \
-                 RollbackNullContext   \
-                 RollbackNullTx        \
-                 RollbackPass          \
-                 TestFolder            \
-                 TestHashMap           \
-                 TestQueue             
+check_PROGRAMS =              \
+        AddInvalidSig         \
+        AddNullChildOffset    \
+        AddNullContext        \
+        AddNullParentOffset   \
+        AddNullTx             \
+        AddPass               \
+        CommitInvalidSig      \
+        CommitNullContext     \
+        CommitNullTx          \
+        CommitPass            \
+        FiniInvalidSig        \
+        FiniNullContext       \
+        FiniNullTx            \
+        FiniPass              \
+        InitNullContext       \
+        InitNullTx            \
+        InitPass              \
+        InitZeroBlocks        \
+        RemoveLastInvalidSig  \
+        RemoveLastNullContext \
+        RemoveLastNullTx      \
+        RemoveLastPass        \
+        RollbackInvalidSig    \
+        RollbackNullContext   \
+        RollbackNullTx        \
+        RollbackPass          \
+        TestFolder            \
+        TestHashMap           \
+        TestQueue             
 
 COMMON_HEADER = txTest.h
 
@@ -77,11 +77,15 @@ TestFolder_SOURCES            = $(COMMON_HEADER) TestFolder.c
 TestHashMap_SOURCES           = $(COMMON_HEADER) TestHashMap.c
 TestQueue_SOURCES             = $(COMMON_HEADER) TestQueue.c
 
-EXTRA_DIST =      \
-   Makefile.win32 \
-   RunTests.vbs   
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.vbs   
 
-TESTS_ENVIRONMENT = srcdir=$(srcdir) top_builddir=$(top_builddir) verbose=1 PYTHON=$(PYTHON)
+TESTS_ENVIRONMENT =                  \
+        srcdir=$(srcdir)             \
+        top_builddir=$(top_builddir) \
+        verbose=1                    \
+        PYTHON=$(PYTHON)             
 
 TESTS =                       \
         AddInvalidSig         \
@@ -113,28 +117,28 @@ TESTS =                       \
         TestFolder            \
         TestHashMap           \
         TestQueue             
-                 
-XFAIL_TESTS =                       \
-              AddInvalidSig         \
-              AddNullChildOffset    \
-              AddNullContext        \
-              AddNullParentOffset   \
-              AddNullTx             \
-              CommitInvalidSig      \
-              CommitNullContext     \
-              CommitNullTx          \
-              FiniInvalidSig        \
-              FiniNullContext       \
-              FiniNullTx            \
-              InitNullContext       \
-              InitNullTx            \
-              InitZeroBlocks        \
-              RemoveLastInvalidSig  \
-              RemoveLastNullContext \
-              RemoveLastNullTx      \
-              RollbackInvalidSig    \
-              RollbackNullContext   \
-              RollbackNullTx        
+
+XFAIL_TESTS =                 \
+        AddInvalidSig         \
+        AddNullChildOffset    \
+        AddNullContext        \
+        AddNullParentOffset   \
+        AddNullTx             \
+        CommitInvalidSig      \
+        CommitNullContext     \
+        CommitNullTx          \
+        FiniInvalidSig        \
+        FiniNullContext       \
+        FiniNullTx            \
+        InitNullContext       \
+        InitNullTx            \
+        InitZeroBlocks        \
+        RemoveLastInvalidSig  \
+        RemoveLastNullContext \
+        RemoveLastNullTx      \
+        RollbackInvalidSig    \
+        RollbackNullContext   \
+        RollbackNullTx        
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la

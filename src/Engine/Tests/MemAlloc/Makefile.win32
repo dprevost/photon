@@ -12,25 +12,25 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-check_PROGRAMS =                  \
-   .\Release\CloseNullAlloc.exe   \
-   .\Release\CloseNullError.exe   \
-   .\Release\ClosePass.exe        \
-   .\Release\FreeNullAlloc.exe    \
-   .\Release\FreeNullError.exe    \
-   .\Release\FreeNullPtr.exe      \
-   .\Release\FreePass.exe         \
-   .\Release\FreeZeroLength.exe   \
-   .\Release\InitNullAddress.exe  \
-   .\Release\InitNullAlloc.exe    \
-   .\Release\InitNullError.exe    \
-   .\Release\InitPass.exe         \
-   .\Release\InitSmallLength.exe  \
-   .\Release\IsPageFreeTest.exe   \
-   .\Release\MallocNullAlloc.exe  \
-   .\Release\MallocNullError.exe  \
-   .\Release\MallocPass.exe       \
-   .\Release\MallocZeroLength.exe
+check_PROGRAMS =                       \
+        .\Release\CloseNullAlloc.exe   \
+        .\Release\CloseNullError.exe   \
+        .\Release\ClosePass.exe        \
+        .\Release\FreeNullAlloc.exe    \
+        .\Release\FreeNullError.exe    \
+        .\Release\FreeNullPtr.exe      \
+        .\Release\FreePass.exe         \
+        .\Release\FreeZeroLength.exe   \
+        .\Release\InitNullAddress.exe  \
+        .\Release\InitNullAlloc.exe    \
+        .\Release\InitNullError.exe    \
+        .\Release\InitPass.exe         \
+        .\Release\InitSmallLength.exe  \
+        .\Release\IsPageFreeTest.exe   \
+        .\Release\MallocNullAlloc.exe  \
+        .\Release\MallocNullError.exe  \
+        .\Release\MallocPass.exe       \
+        .\Release\MallocZeroLength.exe
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

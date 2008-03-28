@@ -13,23 +13,24 @@ include ..\Makefile.inc.Win32
 all: 
 
 CLEANFILES = *~ 
-check_PROGRAMS =                      \
-   .\Release\AcquireInvalidSig.exe    \
-   .\Release\AcquireNullLock.exe      \
-   .\Release\AcquirePass.exe          \
-   .\Release\FiniInvalidSig.exe       \
-   .\Release\FiniNullLock.exe         \
-   .\Release\FiniPass.exe             \
-   .\Release\InitNullLock.exe         \
-   .\Release\InitPass.exe             \
-   .\Release\LockTests.exe            \
-   .\Release\ReleaseInvalidSig.exe    \
-   .\Release\ReleaseNullLock.exe      \
-   .\Release\ReleasePass.exe          \
-   .\Release\TryAcqInvalidSig.exe     \
-   .\Release\TryAcqNullLock.exe       \
-   .\Release\TryAcqPass.exe           \
-   .\Release\LockConcurrency.exe      
+
+check_PROGRAMS =                        \
+        .\Release\AcquireInvalidSig.exe \
+        .\Release\AcquireNullLock.exe   \
+        .\Release\AcquirePass.exe       \
+        .\Release\FiniInvalidSig.exe    \
+        .\Release\FiniNullLock.exe      \
+        .\Release\FiniPass.exe          \
+        .\Release\InitNullLock.exe      \
+        .\Release\InitPass.exe          \
+        .\Release\LockTests.exe         \
+        .\Release\ReleaseInvalidSig.exe \
+        .\Release\ReleaseNullLock.exe   \
+        .\Release\ReleasePass.exe       \
+        .\Release\TryAcqInvalidSig.exe  \
+        .\Release\TryAcqNullLock.exe    \
+        .\Release\TryAcqPass.exe        \
+        .\Release\LockConcurrency.exe   
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

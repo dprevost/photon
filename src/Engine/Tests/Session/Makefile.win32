@@ -12,32 +12,32 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-check_PROGRAMS =                        \
-   .\Release\AddInvalidType.exe         \
-   .\Release\AddNullApiObject.exe       \
-   .\Release\AddNullContext.exe         \
-   .\Release\AddNullObject.exe          \
-   .\Release\AddNullOffset.exe          \
-   .\Release\AddNullSession.exe         \
-   .\Release\AddPass.exe                \
-   .\Release\FiniNullContext.exe        \
-   .\Release\FiniNullSession.exe        \
-   .\Release\FiniPass.exe               \
-   .\Release\GetFirstNullContext.exe    \
-   .\Release\GetFirstNullObject.exe     \
-   .\Release\GetFirstNullSession.exe    \
-   .\Release\GetFirstPass.exe           \
-   .\Release\InitNullApiSession.exe     \
-   .\Release\InitNullContext.exe        \
-   .\Release\InitNullSession.exe        \
-   .\Release\InitPass.exe               \
-   .\Release\RemoveNullContext.exe      \
-   .\Release\RemoveNullObject.exe       \
-   .\Release\RemoveNullSession.exe      \
-   .\Release\RemovePass.exe             \
-   .\Release\RemoveFirstNullContext.exe \
-   .\Release\RemoveFirstNullSession.exe \
-   .\Release\RemoveFirstPass.exe        
+check_PROGRAMS =                             \
+        .\Release\AddInvalidType.exe         \
+        .\Release\AddNullApiObject.exe       \
+        .\Release\AddNullContext.exe         \
+        .\Release\AddNullObject.exe          \
+        .\Release\AddNullOffset.exe          \
+        .\Release\AddNullSession.exe         \
+        .\Release\AddPass.exe                \
+        .\Release\FiniNullContext.exe        \
+        .\Release\FiniNullSession.exe        \
+        .\Release\FiniPass.exe               \
+        .\Release\GetFirstNullContext.exe    \
+        .\Release\GetFirstNullObject.exe     \
+        .\Release\GetFirstNullSession.exe    \
+        .\Release\GetFirstPass.exe           \
+        .\Release\InitNullApiSession.exe     \
+        .\Release\InitNullContext.exe        \
+        .\Release\InitNullSession.exe        \
+        .\Release\InitPass.exe               \
+        .\Release\RemoveNullContext.exe      \
+        .\Release\RemoveNullObject.exe       \
+        .\Release\RemoveNullSession.exe      \
+        .\Release\RemovePass.exe             \
+        .\Release\RemoveFirstNullContext.exe \
+        .\Release\RemoveFirstNullSession.exe \
+        .\Release\RemoveFirstPass.exe        
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 
