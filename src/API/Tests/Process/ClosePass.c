@@ -16,6 +16,15 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "API/Process.h"
+/*
+ * On Windows, we either must include Connector.c or... we must export 
+ * the function. Exporting the function for a single test? Not worth it.
+ */
+#if defined WIN32
+#  pragma warning(disable:4273)
+#  include "API/Connector.c"
+#  pragma warning(default:4273)
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
