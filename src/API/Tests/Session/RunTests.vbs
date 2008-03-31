@@ -31,12 +31,12 @@ Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(35)
+Dim failed_tests(22)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(26)
+Dim ok_programs(13)
 Dim fail_programs(8)
 
 Dim exe_name, prog_path, program, wd_path, tmpDir, cmdFile, exeName
@@ -53,31 +53,18 @@ dim strOutput
 ' Populate the program lists...
 ok_programs(0)  = "ClosePass"
 ok_programs(1)  = "CloseObjPass"
-ok_programs(2)  = "CommitNullHandle"
-ok_programs(3)  = "CommitPass"
-ok_programs(4)  = "CreateNullHandle"
-ok_programs(5)  = "CreateNullName"
-ok_programs(6)  = "CreatePass"
-ok_programs(7)  = "CreateWrongType"
-ok_programs(8)  = "CreateZeroLength"
-ok_programs(9)  = "DestroyNotCreated"
-ok_programs(10) = "DestroyNullHandle"
-ok_programs(11) = "DestroyNullName"
-ok_programs(12) = "DestroyPass"
-ok_programs(13) = "DestroyZeroLength"
-ok_programs(14) = "ErrorMsg"
-ok_programs(15) = "ExitNullHandle"
-ok_programs(16) = "ExitPass"
-ok_programs(17) = "ExitWithOpenObjects"
-ok_programs(18) = "GetInfo"
-ok_programs(19) = "InitNoProcess"
-ok_programs(20) = "InitNullHandle"
-ok_programs(21) = "InitPass"
-ok_programs(22) = "LastError"
-ok_programs(23) = "OpenObjPass"
-ok_programs(24) = "RollbackNullHandle"
-ok_programs(25) = "RollbackPass"
-ok_programs(26) = "StatusPass"
+ok_programs(2)  = "CommitPass"
+ok_programs(3)  = "CreatePass"
+ok_programs(4)  = "DestroyPass"
+ok_programs(5)  = "ErrorMsg"
+ok_programs(6)  = "ExitPass"
+ok_programs(7)  = "ExitWithOpenObjects"
+ok_programs(8)  = "GetInfo"
+ok_programs(9)  = "InitPass"
+ok_programs(10) = "LastError"
+ok_programs(11) = "OpenObjPass"
+ok_programs(12) = "RollbackPass"
+ok_programs(13) = "StatusPass"
 
 fail_programs(0) = "CloseNullSession"
 fail_programs(1) = "CloseObjNullObject"
@@ -89,7 +76,7 @@ fail_programs(6) = "OpenObjNullSession"
 fail_programs(7) = "OpenObjWrongType"
 fail_programs(8) = "OpenObjZeroLength"
 
-numTests  = 36                 ' Sum of length of both arrays 
+numTests  = 23                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject

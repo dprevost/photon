@@ -96,6 +96,33 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Invalid arguments to tested function. */
+
+   errcode = vdsQueuePush( NULL, data1, strlen(data1) );
+   if ( errcode != VDS_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsQueuePush( sessionHandle, data1, strlen(data1) );
+   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsQueuePush( objHandle, NULL, strlen(data1) );
+   if ( errcode != VDS_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsQueuePush( objHandle, data1, 0 );
+   if ( errcode != VDS_INVALID_LENGTH ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /* End of invalid args. This call should succeed. */
    errcode = vdsQueuePush( objHandle, data1, strlen(data1) );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

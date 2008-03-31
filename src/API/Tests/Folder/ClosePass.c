@@ -64,6 +64,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Invalid arguments to tested function. */
+
    errcode = vdsFolderClose( NULL );
    if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -76,6 +78,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* End of invalid args. This call should succeed. */
    errcode = vdsFolderClose( objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

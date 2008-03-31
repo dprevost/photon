@@ -82,6 +82,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Invalid arguments to tested function. */
+
    errcode = vdsQueueGetFirst( NULL,
                                buffer,
                                200,
@@ -118,6 +120,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
+   /* End of invalid args. This call should succeed. */
    errcode = vdsQueueGetFirst( objHandle,
                                buffer,
                                200,

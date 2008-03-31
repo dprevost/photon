@@ -20,25 +20,13 @@ check_PROGRAMS =            \
         CloseObjNullObject  \
         CloseObjNullSession \
         CloseObjPass        \
-        CommitNullHandle    \
         CommitPass          \
-        CreateNullHandle    \
-        CreateNullName      \
         CreatePass          \
-        CreateWrongType     \
-        CreateZeroLength    \
-        DestroyNotCreated   \
-        DestroyNullHandle   \
-        DestroyNullName     \
         DestroyPass         \
-        DestroyZeroLength   \
         ErrorMsg            \
-        ExitNullHandle      \
         ExitPass            \
         ExitWithOpenObjects \
         GetInfo             \
-        InitNoProcess       \
-        InitNullHandle      \
         InitPass            \
         LastError           \
         OpenObjNotCreated   \
@@ -48,7 +36,6 @@ check_PROGRAMS =            \
         OpenObjPass         \
         OpenObjWrongType    \
         OpenObjZeroLength   \
-        RollbackNullHandle  \
         RollbackPass        \
         StatusPass          
 
@@ -57,25 +44,13 @@ ClosePass_SOURCES           = ClosePass.c
 CloseObjNullObject_SOURCES  = CloseObjNullObject.c
 CloseObjNullSession_SOURCES = CloseObjNullSession.c
 CloseObjPass_SOURCES        = CloseObjPass.c
-CommitNullHandle_SOURCES    = CommitNullHandle.c
 CommitPass_SOURCES          = CommitPass.c
-CreateNullHandle_SOURCES    = CreateNullHandle.c
-CreateNullName_SOURCES      = CreateNullName.c
 CreatePass_SOURCES          = CreatePass.c
-CreateWrongType_SOURCES     = CreateWrongType.c
-CreateZeroLength_SOURCES    = CreateZeroLength.c
-DestroyNotCreated_SOURCES   = DestroyNotCreated.c
-DestroyNullHandle_SOURCES   = DestroyNullHandle.c
-DestroyNullName_SOURCES     = DestroyNullName.c
 DestroyPass_SOURCES         = DestroyPass.c
-DestroyZeroLength_SOURCES   = DestroyZeroLength.c
 ErrorMsg_SOURCES            = ErrorMsg.c
-ExitNullHandle_SOURCES      = ExitNullHandle.c
 ExitPass_SOURCES            = ExitPass.c
 ExitWithOpenObjects_SOURCES = ExitWithOpenObjects.c
 GetInfo_SOURCES             = GetInfo.c
-InitNoProcess_SOURCES       = InitNoProcess.c
-InitNullHandle_SOURCES      = InitNullHandle.c
 InitPass_SOURCES            = InitPass.c
 LastError_SOURCES           = LastError.c
 OpenObjNotCreated_SOURCES   = OpenObjNotCreated.c
@@ -85,7 +60,6 @@ OpenObjNullSession_SOURCES  = OpenObjNullSession.c
 OpenObjPass_SOURCES         = OpenObjPass.c
 OpenObjWrongType_SOURCES    = OpenObjWrongType.c
 OpenObjZeroLength_SOURCES   = OpenObjZeroLength.c
-RollbackNullHandle_SOURCES  = RollbackNullHandle.c
 RollbackPass_SOURCES        = RollbackPass.c
 
 EXTRA_DIST =                   \
@@ -94,24 +68,13 @@ EXTRA_DIST =                   \
         CloseObjNullObject.sh  \
         CloseObjNullSession.sh \
         CloseObjPass.sh        \
-        CommitNullHandle.sh    \
         CommitPass.sh          \
-        CreateNullHandle.sh    \
-        CreateNullName.sh      \
         CreatePass.sh          \
-        CreateWrongType.sh     \
-        CreateZeroLength.sh    \
-        DestroyNotCreated.sh   \
-        DestroyNullHandle.sh   \
-        DestroyNullName.sh     \
         DestroyPass.sh         \
-        DestroyZeroLength.sh   \
         ErrorMsg.sh            \
-        ExitNullHandle.sh      \
         ExitPass.sh            \
         ExitWithOpenObjects.sh \
         GetInfo.sh             \
-        InitNullHandle.sh      \
         InitPass.sh            \
         LastError.sh           \
         Makefile.win32         \
@@ -122,7 +85,6 @@ EXTRA_DIST =                   \
         OpenObjPass.sh         \
         OpenObjWrongType.sh    \
         OpenObjZeroLength.sh   \
-        RollbackNullHandle.sh  \
         RollbackPass.sh        \
         RunTests.vbs           \
         StatusPass.sh          
@@ -141,25 +103,13 @@ TESTS =                        \
         CloseObjNullObject.sh  \
         CloseObjNullSession.sh \
         CloseObjPass.sh        \
-        CommitNullHandle.sh    \
         CommitPass.sh          \
-        CreateNullHandle.sh    \
-        CreateNullName.sh      \
         CreatePass.sh          \
-        CreateWrongType.sh     \
-        CreateZeroLength.sh    \
-        DestroyNotCreated.sh   \
-        DestroyNullHandle.sh   \
-        DestroyNullName.sh     \
         DestroyPass.sh         \
-        DestroyZeroLength.sh   \
         ErrorMsg.sh            \
-        ExitNullHandle.sh      \
         ExitPass.sh            \
         ExitWithOpenObjects.sh \
         GetInfo.sh             \
-        InitNoProcess          \
-        InitNullHandle.sh      \
         InitPass.sh            \
         LastError.sh           \
         OpenObjNotCreated.sh   \
@@ -169,7 +119,6 @@ TESTS =                        \
         OpenObjPass.sh         \
         OpenObjWrongType.sh    \
         OpenObjZeroLength.sh   \
-        RollbackNullHandle.sh  \
         RollbackPass.sh        \
         StatusPass.sh          
 

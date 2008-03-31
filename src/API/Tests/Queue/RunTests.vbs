@@ -31,12 +31,12 @@ Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(32)
+Dim failed_tests(19)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(22)
+Dim ok_programs(9)
 Dim fail_programs(9)
 
 Dim exe_name, prog_path, program, wd_path, tmpDir, cmdFile, exeName
@@ -51,29 +51,16 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0)  = "CloseNullHandle"
-ok_programs(1)  = "ClosePass"
-ok_programs(2)  = "CloseWrongHandle"
-ok_programs(3)  = "FirstPass"
-ok_programs(4)  = "GetFirst"
-ok_programs(5)  = "GetNext"
-ok_programs(6)  = "NextPass"
-ok_programs(7)  = "OpenNullName"
-ok_programs(8)  = "OpenNullObjHandle"
-ok_programs(9)  = "OpenNullSessHandle"
-ok_programs(10) = "OpenPass"
-ok_programs(11) = "OpenWrongSessHandle"
-ok_programs(12) = "OpenZeroLength"
-ok_programs(13) = "Pop"
-ok_programs(14) = "PushNullData"
-ok_programs(15) = "PushNullHandle"
-ok_programs(16) = "PushPass"
-ok_programs(17) = "PushWrongHandle"
-ok_programs(18) = "PushZeroLength"
-ok_programs(19) = "RemovePass"
-ok_programs(20) = "StatusNullHandle"
-ok_programs(21) = "StatusNullStatus"
-ok_programs(22) = "StatusPass"
+ok_programs(0) = "ClosePass"
+ok_programs(1) = "FirstPass"
+ok_programs(2) = "GetFirst"
+ok_programs(3) = "GetNext"
+ok_programs(4) = "NextPass"
+ok_programs(5) = "OpenPass"
+ok_programs(6) = "Pop"
+ok_programs(7) = "PushPass"
+ok_programs(8) = "RemovePass"
+ok_programs(9) = "StatusPass"
 
 fail_programs(0) = "FirstNullEntry.sh"
 fail_programs(1) = "FirstNullHandle.sh"
@@ -86,7 +73,7 @@ fail_programs(7) = "RemoveNullEntry.sh"
 fail_programs(8) = "RemoveNullHandle.sh"
 fail_programs(9) = "RemoveWrongHandle.sh"
 	
-numTests  = 33                 ' Sum of length of both arrays 
+numTests  = 20                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject

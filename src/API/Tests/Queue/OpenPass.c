@@ -29,7 +29,10 @@ int main( int argc, char * argv[] )
    VDS_HANDLE objHandle,  sessionHandle;
    VDS_HANDLE objHandle2, sessionHandle2;
    int errcode;
+   char junk[12];
    
+   memset( junk, 0, 12 );
+
    if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
    }
@@ -70,6 +73,55 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Invalid arguments to tested function. */
+
+   errcode = vdsQueueOpen( NULL,
+                           "/aqop/test",
+                           strlen("/aqop/test"),
+                           &objHandle );
+   if ( errcode != VDS_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   objHandle = (VDS_HANDLE) junk;
+   errcode = vdsQueueOpen( objHandle,
+                           "/aqop/test",
+                           strlen("/aqop/test"),
+                           &objHandle );
+   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsQueueOpen( sessionHandle,
+                           NULL,
+                           strlen("/aqop/test"),
+                           &objHandle );
+   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsQueueOpen( sessionHandle,
+                           "/aqop/test",
+                           0,
+                           &objHandle );
+   if ( errcode != VDS_INVALID_LENGTH ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsQueueOpen( sessionHandle,
+                             "/aqop/test",
+                             strlen("/aqop/test"),
+                             NULL );
+   if ( errcode != VDS_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /* End of invalid args. This call should succeed. */
    errcode = vdsQueueOpen( sessionHandle,
                             "/aqop/test",
                             strlen("/aqop/test"),

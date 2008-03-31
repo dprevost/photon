@@ -46,6 +46,15 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
+   /* Invalid arguments to tested function. */
+
+   errcode = vdsCommit( NULL );
+   if ( errcode != VDS_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   /* End of invalid args. This call should succeed. */
    errcode = vdsCommit( sessionHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

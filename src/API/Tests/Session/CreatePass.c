@@ -45,6 +45,45 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Invalid arguments to tested function. */
+
+   errcode = vdsCreateObject( NULL,
+                              "/ascp",
+                              strlen("/ascp"),
+                              VDS_FOLDER );
+   if ( errcode != VDS_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsCreateObject( sessionHandle,
+                              NULL,
+                              strlen("/ascp"),
+                              VDS_FOLDER );
+   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsCreateObject( sessionHandle,
+                              "/ascp",
+                              0,
+                              VDS_FOLDER );
+   if ( errcode != VDS_INVALID_LENGTH ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsCreateObject( sessionHandle,
+                              "/ascp",
+                              strlen("/ascp"),
+                              0 );
+   if ( errcode != VDS_WRONG_OBJECT_TYPE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /* End of invalid args. This call should succeed. */
    errcode = vdsCreateObject( sessionHandle,
                               "/ascp",
                               strlen("/ascp"),

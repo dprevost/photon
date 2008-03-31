@@ -89,6 +89,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* No GetFirst */
    errcode = vdsQueueGetNext( objHandle,
                               buffer,
                               200,
@@ -106,6 +107,8 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+
+   /* Invalid arguments to tested function. */
 
    errcode = vdsQueueGetNext( NULL,
                               buffer,
@@ -143,6 +146,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
+   /* End of invalid args. This call should succeed. */
    errcode = vdsQueueGetNext( objHandle,
                               buffer,
                               200,

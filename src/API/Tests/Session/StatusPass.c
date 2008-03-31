@@ -56,6 +56,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Invalid arguments to tested function. */
+
    errcode = vdsGetStatus( NULL,
                            "/ASSP",
                            strlen("/assp"),
@@ -92,6 +94,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* End of invalid args. This call should succeed. */
    errcode = vdsGetStatus( sessionHandle,
                            "/ASSP",
                            strlen("/assp"),

@@ -27,6 +27,13 @@ int main( int argc, char * argv[] )
 {
    VDS_HANDLE sessionHandle;
    int errcode;
+
+   /* internal process object not initialized */
+   errcode = vdsInitSession( &sessionHandle );
+   if ( errcode != VDS_PROCESS_NOT_INITIALIZED ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
@@ -39,6 +46,15 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
+   /* Invalid arguments to tested function. */
+
+   errcode = vdsInitSession( NULL );
+   if ( errcode != VDS_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   /* End of invalid args. This call should succeed. */
    errcode = vdsInitSession( &sessionHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

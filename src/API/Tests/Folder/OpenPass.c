@@ -64,23 +64,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderOpen( sessionHandle,
-                            NULL,
-                            strlen("/afop"),
-                            &objHandle );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = vdsFolderOpen( sessionHandle,
-                            "/afop",
-                            strlen("/afop"),
-                            NULL );
-   if ( errcode != VDS_NULL_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   /* Invalid arguments to tested function. */
 
    errcode = vdsFolderOpen( NULL,
                             "/afop",
@@ -102,6 +86,15 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsFolderOpen( sessionHandle,
+                            NULL,
+                            strlen("/afop"),
+                            &objHandle );
+   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsFolderOpen( sessionHandle,
                             "/afop",
                             0,
                             &objHandle );
@@ -110,6 +103,16 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = vdsFolderOpen( sessionHandle,
+                            "/afop",
+                            strlen("/afop"),
+                            NULL );
+   if ( errcode != VDS_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /* End of invalid args. This call should succeed. */
    errcode = vdsFolderOpen( sessionHandle,
                             "/afop",
                             strlen("/afop"),

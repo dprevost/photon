@@ -81,6 +81,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
+   /* No GetFirst */
    errcode = vdsFolderGetNext( objHandle, &entry );
    if ( errcode != VDS_INVALID_ITERATOR ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -93,14 +94,10 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Invalid arguments to tested function. */
+
    errcode = vdsFolderGetNext( NULL, &entry );
    if ( errcode != VDS_NULL_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = vdsFolderGetNext( objHandle, NULL );
-   if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -111,6 +108,13 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = vdsFolderGetNext( objHandle, NULL );
+   if ( errcode != VDS_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /* End of invalid args. This call should succeed. */
    errcode = vdsFolderGetNext( objHandle, &entry );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

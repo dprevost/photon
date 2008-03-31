@@ -65,6 +65,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Invalid arguments to tested function. */
+
    errcode = vdsFolderStatus( sessionHandle, &status );
    if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -83,6 +85,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* End of invalid args. This call should succeed. */
    errcode = vdsFolderStatus( objHandle, &status );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

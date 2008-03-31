@@ -51,6 +51,15 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Destroy non-existing object. */
+   errcode = vdsDestroyObject( sessionHandle,
+                               "/asdp",
+                               strlen("/asdp") );
+   if ( errcode != VDS_NO_SUCH_OBJECT ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    errcode = vdsCreateObject( sessionHandle,
                               "/asdp",
                               strlen("/asdp"),
@@ -75,6 +84,33 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
+   /* Invalid arguments to tested function. */
+
+   errcode = vdsDestroyObject( NULL,
+                               "/asdp",
+                               strlen("/asdp") );
+   if ( errcode != VDS_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsDestroyObject( sessionHandle,
+                               NULL,
+                               strlen("/asdp") );
+   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsDestroyObject( sessionHandle,
+                               "/asdp",
+                               0 );
+   if ( errcode != VDS_INVALID_LENGTH) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /* End of invalid args. This call should succeed. */
    errcode = vdsDestroyObject( sessionHandle,
                                "/asdp",
                                strlen("/asdp") );
