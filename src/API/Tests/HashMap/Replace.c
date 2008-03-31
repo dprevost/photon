@@ -125,6 +125,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Invalid arguments to tested function. */
+
    errcode = vdsHashMapReplace( NULL,
                                 key,
                                 6,
@@ -175,6 +177,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* End of invalid args. This call should succeed. */
    errcode = vdsHashMapReplace( objHandle,
                                 key,
                                 6,

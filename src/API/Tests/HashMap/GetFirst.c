@@ -88,6 +88,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Invalid arguments to tested function. */
+
    errcode = vdsHashMapGetFirst( NULL,
                                  buffKey,
                                  50,
@@ -172,6 +174,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* End of invalid args. This call should succeed. */
    errcode = vdsHashMapGetFirst( objHandle,
                                  buffKey,
                                  50,

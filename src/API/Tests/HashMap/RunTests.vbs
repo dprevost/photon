@@ -31,12 +31,12 @@ Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(42)
+Dim failed_tests(23)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(30)
+Dim ok_programs(11)
 Dim fail_programs(11)
 
 Dim exe_name, prog_path, program, wd_path, tmpDir, cmdFile, exeName
@@ -51,37 +51,18 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0)  = "CloseNullHandle"
-ok_programs(1)  = "ClosePass"
-ok_programs(2)  = "CloseWrongHandle"
-ok_programs(3)  = "DeleteNullHandle"
-ok_programs(4)  = "DeleteNullKey"
-ok_programs(5)  = "DeletePass"
-ok_programs(6)  = "DeleteWrongHandle"
-ok_programs(7)  = "DeleteZeroLength"
-ok_programs(8)  = "FirstPass"
-ok_programs(9)  = "Get"
-ok_programs(10) = "GetFirst"
-ok_programs(11) = "GetNext"
-ok_programs(12) = "InsertNullData"
-ok_programs(13) = "InsertNullHandle"
-ok_programs(14) = "InsertNullKey"
-ok_programs(15) = "InsertPass"
-ok_programs(16) = "InsertWrongHandle"
-ok_programs(17) = "InsertZeroDataLength"
-ok_programs(18) = "InsertZeroKeyLength"
-ok_programs(19) = "NextPass"
-ok_programs(20) = "OpenNullName"
-ok_programs(21) = "OpenNullObjHandle"
-ok_programs(22) = "OpenNullSessHandle"
-ok_programs(23) = "OpenPass"
-ok_programs(24) = "OpenWrongSessHandle"
-ok_programs(25) = "OpenZeroLength"
-ok_programs(26) = "Replace"
-ok_programs(27) = "RetrievePass"
-ok_programs(28) = "StatusNullHandle"
-ok_programs(29) = "StatusNullStatus"
-ok_programs(30) = "StatusPass"
+ok_programs(0)  = "ClosePass"
+ok_programs(1)  = "DeletePass"
+ok_programs(2)  = "FirstPass"
+ok_programs(3)  = "Get"
+ok_programs(4)  = "GetFirst"
+ok_programs(5)  = "GetNext"
+ok_programs(6)  = "InsertPass"
+ok_programs(7)  = "NextPass"
+ok_programs(8)  = "OpenPass"
+ok_programs(9)  = "Replace"
+ok_programs(10) = "RetrievePass"
+ok_programs(11) = "StatusPass"
 
 fail_programs(0)  = "FirstNullEntry"
 fail_programs(1)  = "FirstNullHandle"
@@ -96,7 +77,7 @@ fail_programs(9)  = "RetrieveNullKey"
 fail_programs(10) = "RetrieveWrongHandle"
 fail_programs(11) = "RetrieveZeroLength"
 
-numTests  = 43                 ' Sum of length of both arrays 
+numTests  = 24                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject

@@ -101,12 +101,8 @@ int main( int argc, char * argv[] )
 
    errcode = vdsaHashMapNext( objHandle,
                                 &entry );
-   if ( errcode != VDS_INVALID_ITERATOR ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
 
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, ; );
 #else
 #  if defined(WIN32)
    exit(3);

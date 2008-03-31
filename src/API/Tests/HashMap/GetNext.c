@@ -100,6 +100,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* No GetFirst... */
    errcode = vdsHashMapGetNext( objHandle,
                                 buffKey,
                                 50,
@@ -123,6 +124,8 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+
+   /* Invalid arguments to tested function. */
 
    errcode = vdsHashMapGetNext( NULL,
                                 buffKey,
@@ -208,6 +211,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* End of invalid args. This call should succeed. */
    errcode = vdsHashMapGetNext( objHandle,
                                 buffKey,
                                 50,

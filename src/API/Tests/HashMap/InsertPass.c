@@ -97,6 +97,69 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Invalid arguments to tested function. */
+
+   errcode = vdsHashMapInsert( NULL,
+                               key,
+                               6,
+                               data,
+                               7 );
+   if ( errcode != VDS_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsHashMapInsert( sessionHandle,
+                               key,
+                               6,
+                               data,
+                               7 );
+   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsHashMapInsert( objHandle,
+                               NULL,
+                               6,
+                               data,
+                               7 );
+   if ( errcode != VDS_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsHashMapInsert( objHandle,
+                               key,
+                               0,
+                               data,
+                               7 );
+   if ( errcode != VDS_INVALID_LENGTH ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsHashMapInsert( objHandle,
+                               key,
+                               6,
+                               NULL,
+                               7 );
+   if ( errcode != VDS_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsHashMapInsert( objHandle,
+                               key,
+                               6,
+                               data,
+                               0 );
+   if ( errcode != VDS_INVALID_LENGTH ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /* End of invalid args. This call should succeed. */
    errcode = vdsHashMapInsert( objHandle,
                                key,
                                6,
