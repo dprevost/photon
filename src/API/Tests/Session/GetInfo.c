@@ -31,48 +31,44 @@ int main( int argc, char * argv[] )
    size_t allocSpace;
    int xyz = 12345;
    
-   if ( argc > 1 )
+   if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
-   else
+   }
+   else {
       errcode = vdsInit( "10701", 0 );
-   if ( errcode != VDS_OK )
-   {
+   }
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsGetInfo( NULL, &info );
-   if ( errcode != VDS_NULL_HANDLE )
-   {
+   if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsGetInfo( sessionHandle, NULL );
-   if ( errcode != VDS_NULL_POINTER )
-   {
+   if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    handle = (VDS_HANDLE) &xyz;
    errcode = vdsGetInfo( handle, &info );
-   if ( errcode != VDS_WRONG_TYPE_HANDLE )
-   {
+   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsGetInfo( sessionHandle, &info );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -82,32 +78,34 @@ int main( int argc, char * argv[] )
                               "/asgi",
                               strlen("/asgi"),
                               VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsGetInfo( sessionHandle, &info2 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( info.allocatedSizeInBytes >= info2.allocatedSizeInBytes )
+   if ( info.allocatedSizeInBytes >= info2.allocatedSizeInBytes ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( info.numObjects+1 != info2.numObjects )
+   }
+   if ( info.numObjects+1 != info2.numObjects ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( info.numGroups+1 != info2.numGroups )
+   }
+   if ( info.numGroups+1 != info2.numGroups ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( info.numMallocs+1 != info2.numMallocs )
+   }
+   if ( info.numMallocs+1 != info2.numMallocs ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( info.numFrees != info2.numFrees )
+   }
+   if ( info.numFrees != info2.numFrees ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdsCommit( sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -115,46 +113,53 @@ int main( int argc, char * argv[] )
    errcode = vdsDestroyObject( sessionHandle,
                                "/asgi",
                                strlen("/asgi") );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdsGetInfo( sessionHandle, &info );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( info.allocatedSizeInBytes < info2.allocatedSizeInBytes )
+   if ( info.allocatedSizeInBytes < info2.allocatedSizeInBytes ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( info.numObjects != info2.numObjects )
+   }
+   if ( info.numObjects != info2.numObjects ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( info.numGroups != info2.numGroups )
+   }
+   if ( info.numGroups != info2.numGroups ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( info.numMallocs != info2.numMallocs )
+   }
+   if ( info.numMallocs != info2.numMallocs ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( info.numFrees != info2.numFrees )
+   }
+   if ( info.numFrees != info2.numFrees ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    vdsCommit( sessionHandle );
    errcode = vdsGetInfo( sessionHandle, &info2 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( info2.allocatedSizeInBytes != allocSpace )
+   if ( info2.allocatedSizeInBytes != allocSpace ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( info.numObjects != info2.numObjects+1 )
+   }
+   if ( info.numObjects != info2.numObjects+1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( info.numGroups != info2.numGroups+1 )
+   }
+   if ( info.numGroups != info2.numGroups+1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( info.numMallocs != info2.numMallocs )
+   }
+   if ( info.numMallocs != info2.numMallocs ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( info.numFrees+1 != info2.numFrees )
+   }
+   if ( info.numFrees+1 != info2.numFrees ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    vdsExit();
    
    return 0;

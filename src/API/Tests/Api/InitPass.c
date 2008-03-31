@@ -27,26 +27,31 @@ int main( int argc, char * argv[] )
 {
    int errcode;
    
+   errcode = vdsInit( NULL, 1 );
+   if ( errcode != VDS_INVALID_WATCHDOG_ADDRESS ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    errcode = vdsInit( "12345", 1 );
-   if ( errcode != VDS_CONNECT_ERROR )
-   {
+   if ( errcode != VDS_CONNECT_ERROR ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsInit( "12345", 0 );
-   if ( errcode != VDS_CONNECT_ERROR )
-   {
+   if ( errcode != VDS_CONNECT_ERROR ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   if ( argc > 1 )
+   if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
-   else
+   }
+   else {
       errcode = vdsInit( "10701", 0 );
-   if ( errcode != VDS_OK )
-   {
+   }
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

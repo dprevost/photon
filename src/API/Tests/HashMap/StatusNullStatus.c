@@ -31,19 +31,19 @@ int main( int argc, char * argv[] )
    const char * key1 = "My Key1";
    const char * data = "My Data";
 
-   if ( argc > 1 )
+   if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
-   else
+   }
+   else {
       errcode = vdsInit( "10701", 0 );
-   if ( errcode != VDS_OK )
-   {
+   }
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -52,8 +52,7 @@ int main( int argc, char * argv[] )
                               "/ahsns",
                               strlen("/ahsns"),
                               VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -62,8 +61,7 @@ int main( int argc, char * argv[] )
                               "/ahsns/test",
                               strlen("/ahsns/test"),
                               VDS_HASH_MAP );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -72,8 +70,7 @@ int main( int argc, char * argv[] )
                              "/ahsns/test",
                              strlen("/ahsns/test"),
                              &objHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -83,15 +80,13 @@ int main( int argc, char * argv[] )
                                7,
                                data,
                                7 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsHashMapStatus( objHandle, NULL );
-   if ( errcode != VDS_NULL_POINTER )
-   {
+   if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

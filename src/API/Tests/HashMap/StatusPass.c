@@ -34,19 +34,19 @@ int main( int argc, char * argv[] )
    const char * data = "My Data";
    vdsObjStatus status;
 
-   if ( argc > 1 )
+   if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
-   else
+   }
+   else {
       errcode = vdsInit( "10701", 0 );
-   if ( errcode != VDS_OK )
-   {
+   }
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -55,8 +55,7 @@ int main( int argc, char * argv[] )
                               "/ahsp",
                               strlen("/ahsp"),
                               VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -65,8 +64,7 @@ int main( int argc, char * argv[] )
                               "/ahsp/test",
                               strlen("/ahsp/test"),
                               VDS_HASH_MAP );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -75,8 +73,7 @@ int main( int argc, char * argv[] )
                              "/ahsp/test",
                              strlen("/ahsp/test"),
                              &objHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -86,8 +83,7 @@ int main( int argc, char * argv[] )
                                7,
                                data,
                                7 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -96,8 +92,7 @@ int main( int argc, char * argv[] )
                                7,
                                data,
                                7 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -106,27 +101,29 @@ int main( int argc, char * argv[] )
                                7,
                                data,
                                7 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsHashMapStatus( objHandle, &status );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   if ( status.numDataItem != 3 )
+   if ( status.numDataItem != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.numBlocks != 1 ) 
+   }
+   if ( status.numBlocks != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.numBlockGroup != 1 ) 
+   }
+   if ( status.numBlockGroup != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.freeBytes == 0 || status.freeBytes >=VDSE_BLOCK_SIZE ) 
+   }
+   if ( status.freeBytes == 0 || status.freeBytes >=VDSE_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdsExit();
 

@@ -33,19 +33,19 @@ int main( int argc, char * argv[] )
    const char * data3 = "My Data3";
    vdsObjStatus status;
 
-   if ( argc > 1 )
+   if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
-   else
+   }
+   else {
       errcode = vdsInit( "10701", 0 );
-   if ( errcode != VDS_OK )
-   {
+   }
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -54,8 +54,7 @@ int main( int argc, char * argv[] )
                               "/aqsp",
                               strlen("/aqsp"),
                               VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -64,8 +63,7 @@ int main( int argc, char * argv[] )
                               "/aqsp/test",
                               strlen("/aqsp/test"),
                               VDS_QUEUE );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -74,46 +72,45 @@ int main( int argc, char * argv[] )
                            "/aqsp/test",
                            strlen("/aqsp/test"),
                            &objHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsQueuePush( objHandle, data1, strlen(data1) );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdsQueuePush( objHandle, data2, strlen(data2) );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdsQueuePush( objHandle, data3, strlen(data3) );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsQueueStatus( objHandle, &status );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   if ( status.numDataItem != 3 )
+   if ( status.numDataItem != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.numBlocks != 1 ) 
+   }
+   if ( status.numBlocks != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.numBlockGroup != 1 ) 
+   }
+   if ( status.numBlockGroup != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.freeBytes == 0 || status.freeBytes >=VDSE_BLOCK_SIZE ) 
+   }
+   if ( status.freeBytes == 0 || status.freeBytes >=VDSE_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdsExit();
    

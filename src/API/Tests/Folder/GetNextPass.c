@@ -30,19 +30,19 @@ int main( int argc, char * argv[] )
    int errcode;
    vdsFolderEntry entry;
    
-   if ( argc > 1 )
+   if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
-   else
+   }
+   else {
       errcode = vdsInit( "10701", 0 );
-   if ( errcode != VDS_OK )
-   {
+   }
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -51,8 +51,7 @@ int main( int argc, char * argv[] )
                               "/afgnp",
                               strlen("/afgnp"),
                               VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -60,8 +59,7 @@ int main( int argc, char * argv[] )
                               "/afgnp/f1",
                               strlen("/afgnp/f1"),
                               VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -69,8 +67,7 @@ int main( int argc, char * argv[] )
                               "/afgnp/f2",
                               strlen("/afgnp/f2"),
                               VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -79,29 +76,25 @@ int main( int argc, char * argv[] )
                             "/afgnp",
                             strlen("/afgnp"),
                             &objHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsFolderGetFirst( objHandle, &entry );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsFolderGetNext( objHandle, &entry );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsFolderGetNext( objHandle, &entry );
-   if ( errcode != VDS_REACHED_THE_END )
-   {
+   if ( errcode != VDS_REACHED_THE_END ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

@@ -29,25 +29,24 @@ int main( int argc, char * argv[] )
    VDS_HANDLE objHandle, sessionHandle2;
    int errcode;
    
-   if ( argc > 1 )
+   if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
-   else
+   }
+   else {
       errcode = vdsInit( "10701", 0 );
-   if ( errcode != VDS_OK )
-   {
+   }
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdsInitSession( &sessionHandle2 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -56,8 +55,7 @@ int main( int argc, char * argv[] )
                               "/asdp",
                               strlen("/asdp"),
                               VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -66,15 +64,13 @@ int main( int argc, char * argv[] )
    errcode = vdsDestroyObject( sessionHandle,
                                "/asdp",
                                strlen("/asdp") );
-   if ( errcode != VDS_OBJECT_IS_IN_USE )
-   {
+   if ( errcode != VDS_OBJECT_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsCommit( sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -82,8 +78,7 @@ int main( int argc, char * argv[] )
    errcode = vdsDestroyObject( sessionHandle,
                                "/asdp",
                                strlen("/asdp") );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -93,8 +88,7 @@ int main( int argc, char * argv[] )
                             "/asdp",
                             strlen("/asdp"),
                             &objHandle );
-   if ( errcode != VDS_OBJECT_IS_DELETED )
-   {
+   if ( errcode != VDS_OBJECT_IS_DELETED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -104,8 +98,7 @@ int main( int argc, char * argv[] )
                             "/asdp",
                             strlen("/asdp"),
                             &objHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -115,8 +108,7 @@ int main( int argc, char * argv[] )
     * still be in the VDS but we should be able to create a new one.
     */
    errcode = vdsCommit( sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -124,8 +116,7 @@ int main( int argc, char * argv[] )
    errcode = vdsDestroyObject( sessionHandle,
                                "/asdp",
                                strlen("/asdp") );
-   if ( errcode != VDS_NO_SUCH_OBJECT )
-   {
+   if ( errcode != VDS_NO_SUCH_OBJECT ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -134,8 +125,7 @@ int main( int argc, char * argv[] )
                               "/asdp",
                               strlen("/asdp"),
                               VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -144,8 +134,7 @@ int main( int argc, char * argv[] )
                             "/asdp",
                             strlen("/asdp"),
                             &objHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

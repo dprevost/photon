@@ -28,8 +28,7 @@ int main()
    int errcode;
    
    errcode = vdsInit( NULL, 1 );
-   if ( errcode != VDS_INVALID_WATCHDOG_ADDRESS )
-   {
+   if ( errcode != VDS_INVALID_WATCHDOG_ADDRESS ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

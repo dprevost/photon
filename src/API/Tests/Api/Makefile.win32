@@ -14,7 +14,6 @@ all:
 
 check_PROGRAMS =                      \
         .\Release\ExitPass.exe        \
-        .\Release\InitNullAddress.exe \
         .\Release\InitPass.exe        
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)

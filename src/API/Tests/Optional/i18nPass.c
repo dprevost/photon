@@ -48,29 +48,35 @@ int main( int argc, char * argv[] )
    char nameIso[8];
    char nameUtf8[10];
    
-   if ( argc > 1 )
+   if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
-   else
+   }
+   else {
       errcode = vdsInit( "10701", 0 );
-   if ( errcode != VDS_OK )
-   {
+   }
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Set the locale */
-   if ( setlocale( LC_ALL, "en_US.ISO-8859-1" ) == NULL )
-   {
+   if ( setlocale( LC_ALL, "en_US.ISO-8859-1" ) == NULL ) {
       fprintf(stderr, "error in setlocale, errno = %d\n", errno );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+   
+   /*
+    * These 2 characters, ç and é have a different encoding in ISO-8859-1
+    * and UTF-8 (where they use 2 bytes instead of 1). 
+    *
+    * Perfect for our test...
+    */
    strcpy( nameIso, "faconne" );
    nameIso[2] = 0xe7; /* ç */
    nameIso[6] = 0xe9; /* é */
@@ -80,15 +86,13 @@ int main( int argc, char * argv[] )
                               nameIso,
                               strlen(nameIso),
                               VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Set a different locale */
-   if ( setlocale( LC_ALL, "en_US.utf8" ) == NULL )
-   {
+   if ( setlocale( LC_ALL, "en_US.utf8" ) == NULL ) {
       fprintf(stderr, "error in setlocale, errno = %d\n", errno );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -107,8 +111,7 @@ int main( int argc, char * argv[] )
                             nameUtf8,
                             9,
                             &handle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -129,8 +132,7 @@ int main( int argc, char * argv[] )
                             nameIso,
                             7,
                             &handle );
-   if ( errcode == VDS_OK )
-   {
+   if ( errcode == VDS_OK ) {
       fprintf( stderr, "err (should never be zero): %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

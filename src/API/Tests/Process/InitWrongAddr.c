@@ -28,8 +28,7 @@ int main()
    /* try something junk... */   
    errcode = vdsaProcessInit( &process, "abcdef" );
 
-   if ( errcode != VDS_INVALID_WATCHDOG_ADDRESS )
-   {
+   if ( errcode != VDS_INVALID_WATCHDOG_ADDRESS ) {
       fprintf( stderr, "err: %d\n", errcode );
       return -1;
    }
@@ -38,3 +37,4 @@ int main()
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

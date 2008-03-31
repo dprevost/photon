@@ -16,11 +16,9 @@ CLEANFILES = *~ core
 
 check_PROGRAMS =        \
         ExitPass        \
-        InitNullAddress \
         InitPass        
 
 ExitPass_SOURCES        = ExitPass.c
-InitNullAddress_SOURCES = InitNullAddress.c
 InitPass_SOURCES        = InitPass.c
 
 EXTRA_DIST =           \
@@ -39,7 +37,6 @@ TESTS_ENVIRONMENT =                  \
 
 TESTS =                 \
         ExitPass.sh     \
-        InitNullAddress \
         InitPass.sh     
 
 XFAIL_TESTS = 

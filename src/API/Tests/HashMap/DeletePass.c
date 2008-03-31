@@ -34,25 +34,24 @@ int main( int argc, char * argv[] )
    size_t length, keyLength;
    char buffer[20], keyBuff[20];
 
-   if ( argc > 1 )
+   if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
-   else
+   }
+   else {
       errcode = vdsInit( "10701", 0 );
-   if ( errcode != VDS_OK )
-   {
+   }
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdsInitSession( &sessionHandle2 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -61,8 +60,7 @@ int main( int argc, char * argv[] )
                               "/ahdp",
                               strlen("/ahdp"),
                               VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -71,15 +69,13 @@ int main( int argc, char * argv[] )
                               "/ahdp/test",
                               strlen("/ahdp/test"),
                               VDS_HASH_MAP );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsCommit( sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -88,8 +84,7 @@ int main( int argc, char * argv[] )
                              "/ahdp/test",
                              strlen("/ahdp/test"),
                              &objHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -97,8 +92,7 @@ int main( int argc, char * argv[] )
                              "/ahdp/test",
                              strlen("/ahdp/test"),
                              &objHandle2 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -108,14 +102,12 @@ int main( int argc, char * argv[] )
                                6,
                                data,
                                7 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdsCommit( sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -123,8 +115,7 @@ int main( int argc, char * argv[] )
    errcode = vdsHashMapDelete( objHandle,
                                key,
                                6 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -139,8 +130,7 @@ int main( int argc, char * argv[] )
                             key, 
                             6,
                             buffer, 20, &length );
-   if ( errcode != VDS_ITEM_IS_DELETED )
-   {
+   if ( errcode != VDS_ITEM_IS_DELETED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -148,28 +138,24 @@ int main( int argc, char * argv[] )
                             key, 
                             6,
                             buffer, 20, &length );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdsHashMapDelete( objHandle2, key, 6 );
-   if ( errcode != VDS_ITEM_IS_IN_USE )
-   {
+   if ( errcode != VDS_ITEM_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdsHashMapGetFirst( objHandle2, keyBuff, 20, buffer, 20, 
                                  &keyLength, &length );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdsHashMapGetFirst( objHandle, keyBuff, 20, buffer, 20, 
                                  &keyLength, &length );
-   if ( errcode != VDS_IS_EMPTY )
-   {
+   if ( errcode != VDS_IS_EMPTY ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -185,8 +171,7 @@ int main( int argc, char * argv[] )
     * an internal pointer to the data record).
     */
    errcode = vdsCommit( sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -195,8 +180,7 @@ int main( int argc, char * argv[] )
                             key, 
                             6,
                             buffer, 20, &length );
-   if ( errcode != VDS_NO_SUCH_ITEM )
-   {
+   if ( errcode != VDS_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -205,16 +189,14 @@ int main( int argc, char * argv[] )
                                6,
                                data,
                                7 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* rollback to be able to test the Get() with session 2 */
    errcode = vdsRollback( sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -223,8 +205,7 @@ int main( int argc, char * argv[] )
                             key, 
                             6,
                             buffer, 20, &length );
-   if ( errcode != VDS_NO_SUCH_ITEM )
-   {
+   if ( errcode != VDS_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

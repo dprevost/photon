@@ -30,19 +30,19 @@ int main( int argc, char * argv[] )
    int errcode;
    vdsObjStatus status;
 
-   if ( argc > 1 )
+   if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
-   else
+   }
+   else {
       errcode = vdsInit( "10701", 0 );
-   if ( errcode != VDS_OK )
-   {
+   }
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -51,8 +51,7 @@ int main( int argc, char * argv[] )
                               "/ASSP",
                               strlen("/assp"),
                               VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -61,8 +60,7 @@ int main( int argc, char * argv[] )
                            "/ASSP",
                            strlen("/assp"),
                            &status );
-   if ( errcode != VDS_NULL_HANDLE )
-   {
+   if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -71,8 +69,7 @@ int main( int argc, char * argv[] )
                            NULL,
                            strlen("/assp"),
                            &status );
-   if ( errcode != VDS_INVALID_OBJECT_NAME )
-   {
+   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -81,8 +78,7 @@ int main( int argc, char * argv[] )
                            "/ASSP",
                            0,
                            &status );
-   if ( errcode != VDS_INVALID_LENGTH )
-   {
+   if ( errcode != VDS_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -91,8 +87,7 @@ int main( int argc, char * argv[] )
                            "/ASSP",
                            strlen("/assp"),
                            NULL );
-   if ( errcode != VDS_NULL_POINTER )
-   {
+   if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -101,8 +96,7 @@ int main( int argc, char * argv[] )
                            "/ASSP",
                            strlen("/assp"),
                            &status );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

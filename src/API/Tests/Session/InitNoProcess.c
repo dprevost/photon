@@ -29,8 +29,7 @@ int main()
    int errcode;
    
    errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_PROCESS_NOT_INITIALIZED )
-   {
+   if ( errcode != VDS_PROCESS_NOT_INITIALIZED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

@@ -27,11 +27,13 @@ int main( int argc, char * argv[] )
 #if defined(USE_DBC)
    int errcode;
    
-   if ( argc > 1 )
+   if ( argc > 1 ) {
       errcode = vdsaProcessInit( NULL, argv[1] );
-   else
+   }
+   else {
       errcode = vdsaProcessInit( NULL, "10701" );
-
+   }
+   
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else
    return 1;
@@ -39,3 +41,4 @@ int main( int argc, char * argv[] )
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

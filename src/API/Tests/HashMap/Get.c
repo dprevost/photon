@@ -33,19 +33,19 @@ int main( int argc, char * argv[] )
    char buffer[200];
    size_t length;
 
-   if ( argc > 1 )
+   if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
-   else
+   }
+   else {
       errcode = vdsInit( "10701", 0 );
-   if ( errcode != VDS_OK )
-   {
+   }
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -54,8 +54,7 @@ int main( int argc, char * argv[] )
                               "/ahgp",
                               strlen("/ahgp"),
                               VDS_FOLDER );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -64,8 +63,7 @@ int main( int argc, char * argv[] )
                               "/ahgp/test",
                               strlen("/ahgp/test"),
                               VDS_HASH_MAP );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -74,8 +72,7 @@ int main( int argc, char * argv[] )
                              "/ahgp/test",
                              strlen("/ahgp/test"),
                              &objHandle );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -85,8 +82,7 @@ int main( int argc, char * argv[] )
                                6,
                                data,
                                7 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -97,8 +93,7 @@ int main( int argc, char * argv[] )
                             buffer,
                             200,
                             &length );
-   if ( errcode != VDS_NULL_HANDLE )
-   {
+   if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -109,8 +104,7 @@ int main( int argc, char * argv[] )
                             buffer,
                             200,
                             &length );
-   if ( errcode != VDS_NULL_POINTER )
-   {
+   if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -121,8 +115,7 @@ int main( int argc, char * argv[] )
                             buffer,
                             200,
                             &length );
-   if ( errcode != VDS_INVALID_LENGTH )
-   {
+   if ( errcode != VDS_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -133,8 +126,7 @@ int main( int argc, char * argv[] )
                             NULL,
                             200,
                             &length );
-   if ( errcode != VDS_NULL_POINTER )
-   {
+   if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -145,8 +137,7 @@ int main( int argc, char * argv[] )
                             buffer,
                             2,
                             &length );
-   if ( errcode != VDS_INVALID_LENGTH )
-   {
+   if ( errcode != VDS_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -157,8 +148,7 @@ int main( int argc, char * argv[] )
                             buffer,
                             200,
                             NULL );
-   if ( errcode != VDS_NULL_POINTER )
-   {
+   if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -169,14 +159,14 @@ int main( int argc, char * argv[] )
                             buffer,
                             200,
                             &length );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( memcmp( buffer, data, 7 ) != 0 )
+   if ( memcmp( buffer, data, 7 ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    vdsExit();
 
    return 0;

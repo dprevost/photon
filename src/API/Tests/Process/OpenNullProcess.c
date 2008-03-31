@@ -38,12 +38,13 @@ int main( int argc, char * argv[] )
    vdseSessionContext context;
       
    memset( &process, 0, sizeof(vdsaProcess) );
-   if ( argc > 1 )
+   if ( argc > 1 ) {
       errcode = vdsaProcessInit( &process, argv[1] );
-   else
+   }
+   else {
       errcode = vdsaProcessInit( &process, "10701" );
-   if ( errcode != VDS_OK )
-   {
+   }
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       return 0;
    }
