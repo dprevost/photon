@@ -22,7 +22,13 @@
 #include <vdsf/vdsErrors.h>
 #include "API/CommonObject.h"
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+ * 
+ * This file contains the source code for some functions of the C API. 
+ * For documentation for these functions, please see the distributed
+ * header files.
+ * 
+ * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdsFolderClose( VDS_HANDLE objectHandle )
 {
@@ -37,13 +43,11 @@ int vdsFolderClose( VDS_HANDLE objectHandle )
    if ( pFolder->object.type != VDSA_FOLDER )
       return VDS_WRONG_TYPE_HANDLE;
    
-   if ( vdsaCommonLock( &pFolder->object ) == 0 )
-   {
+   if ( vdsaCommonLock( &pFolder->object ) == 0 ) {
       pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
 
       /* Reinitialize the iterator, if needed */
-      if ( pFolder->iterator.pHashItem != NULL )
-      {
+      if ( pFolder->iterator.pHashItem != NULL ) {
          if ( vdseFolderRelease( pVDSFolder,
                                  &pFolder->iterator,
                                  &pFolder->object.pSession->context ) == 0 )
@@ -90,14 +94,12 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
    if ( pFolder->object.type != VDSA_FOLDER )
       return VDS_WRONG_TYPE_HANDLE;
 
-   if ( pEntry == NULL )
-   {
+   if ( pEntry == NULL ) {
       errcode = VDS_NULL_POINTER;
       goto error_handler;
    }
    
-   if ( vdsaCommonLock( &pFolder->object ) != 0 )
-   {
+   if ( vdsaCommonLock( &pFolder->object ) != 0 ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -105,8 +107,7 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
    pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
 
    /* Reinitialize the iterator, if needed */
-   if ( pFolder->iterator.pHashItem != NULL )
-   {
+   if ( pFolder->iterator.pHashItem != NULL ) {
       rc = vdseFolderRelease( pVDSFolder,
                               &pFolder->iterator,
                               &pFolder->object.pSession->context );
@@ -134,8 +135,7 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
                                           &name,
                                           VDS_MAX_NAME_LENGTH*4,
                                           &ps );
-   if ( pEntry->nameLengthInBytes == (size_t) -1 )
-   {
+   if ( pEntry->nameLengthInBytes == (size_t) -1 ) {
       /* A conversion error */
       vdscSetError( &pFolder->object.pSession->context.errorHandler, 
                     VDSC_ERRNO_HANDLE, errno );
@@ -186,20 +186,17 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
    if ( pFolder->object.type != VDSA_FOLDER )
       return VDS_WRONG_TYPE_HANDLE;
 
-   if ( pEntry == NULL )
-   {
+   if ( pEntry == NULL ) {
       errcode = VDS_NULL_POINTER;
       goto error_handler;
    }
 
-   if ( pFolder->iterator.pHashItem == NULL )
-   {
+   if ( pFolder->iterator.pHashItem == NULL ) {
       errcode = VDS_INVALID_ITERATOR;
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pFolder->object ) != 0 )
-   {
+   if ( vdsaCommonLock( &pFolder->object ) != 0 ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -224,8 +221,7 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
                                           &name, 
                                           VDS_MAX_NAME_LENGTH*4,
                                           &ps );
-   if ( pEntry->nameLengthInBytes == (size_t) -1 )
-   {
+   if ( pEntry->nameLengthInBytes == (size_t) -1 ) {
       /* A conversion error */
       vdscSetError( &pFolder->object.pSession->context.errorHandler, 
                     VDSC_ERRNO_HANDLE, errno );
@@ -277,21 +273,18 @@ int vdsFolderOpen( VDS_HANDLE   sessionHandle,
    if ( pSession->type != VDSA_SESSION )
       return VDS_WRONG_TYPE_HANDLE;
 
-   if ( folderName == NULL )
-   {
+   if ( folderName == NULL ) {
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
       return VDS_INVALID_OBJECT_NAME;
    }
    
-   if ( nameLengthInBytes == 0 )
-   {
+   if ( nameLengthInBytes == 0 ) {
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
    }
    
    pFolder = (vdsaFolder *) malloc(sizeof(vdsaFolder));
-   if (  pFolder == NULL )
-   {
+   if (  pFolder == NULL ) {
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
       return VDS_NOT_ENOUGH_HEAP_MEMORY;
    }
@@ -329,18 +322,17 @@ int vdsFolderStatus( VDS_HANDLE     objectHandle,
 
    pContext = &pFolder->object.pSession->context;
 
-   if ( pStatus == NULL )
-   {
+   if ( pStatus == NULL ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
    
-   if ( vdsaCommonLock( &pFolder->object ) == 0 )
-   {
+   if ( vdsaCommonLock( &pFolder->object ) == 0 ) {
+
       pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
       
-      if ( vdseLock( &pVDSFolder->memObject, pContext ) == 0 )
-      {
+      if ( vdseLock( &pVDSFolder->memObject, pContext ) == 0 ) {
+
          vdseMemObjectStatus( &pVDSFolder->memObject, pStatus );
 
          vdseFolderStatus( pVDSFolder, pStatus );

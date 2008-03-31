@@ -31,6 +31,9 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/** 
+ * Data common to all api objects (for data containers). 
+ */
 typedef struct vdsaCommonObject
 {
    /**
@@ -46,7 +49,7 @@ typedef struct vdsaCommonObject
     * the ProcessManager to hold object-specific information that might
     * be needed in case of a crash (current state of transactions, etc.).
     *
-    * Not used in version 0.1.
+    * Not used yet.
     */
    vdseObjectContext *  pObjectContext;
 
@@ -63,6 +66,7 @@ typedef struct vdsaCommonObject
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/** Common function for opening data containers. */
 VDSF_API_EXPORT
 int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
                        enum vdsObjectType   objectType, 
@@ -71,19 +75,23 @@ int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/** Common function for closing data containers. */
 VDSF_API_EXPORT
 int vdsaCommonObjClose( vdsaCommonObject * pObject );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** Lock the current object. */
+/**
+ * Lock the current object. 
+ *
+ * \param[in] pObject Pointer to the object to lock.
+*/
 static inline
 int vdsaCommonLock( vdsaCommonObject * pObject )
 {
    VDS_PRE_CONDITION( pObject != NULL );
 
-   if ( g_protectionIsNeeded )
-   {
+   if ( g_protectionIsNeeded ) {
       return vdscTryAcquireThreadLock( &pObject->pSession->mutex, 
                                        LOCK_TIMEOUT );
    }
@@ -92,14 +100,17 @@ int vdsaCommonLock( vdsaCommonObject * pObject )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** Lock the current object. */
+/** 
+ * Unlock the current object.
+ *
+ * \param[in] pObject Pointer to the object to unlock.
+ */
 static inline
 void vdsaCommonUnlock( vdsaCommonObject * pObject )
 {
    VDS_PRE_CONDITION( pObject != NULL );
 
-   if ( g_protectionIsNeeded )
-   {
+   if ( g_protectionIsNeeded ) {
       vdscReleaseThreadLock( &pObject->pSession->mutex );
    }
 }
@@ -107,10 +118,13 @@ void vdsaCommonUnlock( vdsaCommonObject * pObject )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Called by the vdsaSession upon session termination. 
- * Setting vdsaCommonObject.pObjectContext to NULL indicates that a 
- * process or a session has terminated and that no further access to 
+ * Called by the vdsaSession upon session termination.
+ *
+ * Setting vdsaCommonObject::pObjectContext to NULL indicates that a
+ * process or a session has terminated and that no further access to
  * the VDS is allowed/possible!
+ *
+ * \param[in] pObject Pointer to the object to close.
  *
  * \todo Not sure if this makes sense anymore. Revisit!
  */

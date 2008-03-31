@@ -19,16 +19,16 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
  * 
- * This file contains the source code for the C API, For a
- * description of the functions, please see the relevant header 
- * file.
+ * This file contains the source code for some functions of the C API. 
+ * For documentation for these functions, please see the distributed
+ * header files.
  * 
  * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-  
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdsInit( const char* wdAddress,
@@ -37,42 +37,40 @@ int vdsInit( const char* wdAddress,
    int errcode = VDS_OK;
    vdsaProcess* process;
 
-   if ( wdAddress == NULL )
-      return VDS_INVALID_WATCHDOG_ADDRESS;
+   if ( wdAddress == NULL ) return VDS_INVALID_WATCHDOG_ADDRESS;
    
    g_protectionIsNeeded = programIsMultiThreaded;
    
-   if ( g_protectionIsNeeded )
-   {
+   if ( g_protectionIsNeeded ) {
       errcode = vdscInitThreadLock( &g_ProcessMutex );
-      if ( errcode != 0 )
-         return VDS_NOT_ENOUGH_RESOURCES;
+      if ( errcode != 0 ) return VDS_NOT_ENOUGH_RESOURCES;
    }
 
    process = (vdsaProcess*) malloc( sizeof(vdsaProcess) );
-   if ( process == NULL )
-      return VDS_NOT_ENOUGH_HEAP_MEMORY;
+   if ( process == NULL ) return VDS_NOT_ENOUGH_HEAP_MEMORY;
   
    memset( process, 0, sizeof(vdsaProcess) );
-   errcode = vdsaProcessInit( process,
-                              wdAddress );
-   if ( errcode != VDS_OK )
-      free( process );
+   errcode = vdsaProcessInit( process, wdAddress );
+
+   if ( errcode != VDS_OK ) free( process );
 
    return errcode;
 }
-    
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void vdsExit()
 {
-   if ( g_pProcessInstance != NULL )
+   if ( g_pProcessInstance != NULL ) {
       vdsaProcessFini();
-} 
-    
+   }
+}
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #ifdef __cplusplus
 }
 #endif
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

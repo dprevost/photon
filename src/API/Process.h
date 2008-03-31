@@ -111,10 +111,10 @@ static
 __inline
 int vdsaProcessLock()
 {
-   if ( g_protectionIsNeeded )
-   {
+   if ( g_protectionIsNeeded ) {
       return vdscTryAcquireThreadLock( &g_ProcessMutex, LOCK_TIMEOUT );
    }
+   
    return 0;
 }
 
@@ -127,8 +127,9 @@ static
 __inline
 void vdsaProcessUnlock()
 {
-   if ( g_protectionIsNeeded )
+   if ( g_protectionIsNeeded ) {
       vdscReleaseThreadLock( &g_ProcessMutex );
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -69,8 +69,7 @@ int vdsaConnect( vdsaConnector    * pConnector,
    versionRequested = MAKEWORD( 2, 2 );
  
    errcode = WSAStartup( versionRequested, &wsaData );
-   if ( errcode != 0 ) 
-   {
+   if ( errcode != 0 ) {
       vdscSetError( errorHandler, VDSC_SOCKERR_HANDLE, WSAGetLastError() );
       return VDS_SOCKET_ERROR;
    }
@@ -78,8 +77,7 @@ int vdsaConnect( vdsaConnector    * pConnector,
 #endif
 
    pConnector->socketFD = socket( PF_INET, SOCK_STREAM, 0 );
-   if ( pConnector->socketFD == VDS_INVALID_SOCKET )
-   {
+   if ( pConnector->socketFD == VDS_INVALID_SOCKET ) {
 #if defined (WIN32) 
       vdscSetError( errorHandler, VDSC_SOCKERR_HANDLE, WSAGetLastError() );
 #else
@@ -96,8 +94,7 @@ int vdsaConnect( vdsaConnector    * pConnector,
    errcode = connect( pConnector->socketFD, 
                       (const struct sockaddr *)&addr,
                       sizeof addr );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
 #if defined (WIN32) 
       vdscSetError( errorHandler, VDSC_SOCKERR_HANDLE, WSAGetLastError() );
 #else
@@ -132,20 +129,22 @@ void vdsaDisconnect( vdsaConnector    * pConnector,
    input.opcode = WD_DISCONNECT;
    input.processId = getpid();
 
-   if ( pConnector->socketFD != VDS_INVALID_SOCKET )
-   {
+   if ( pConnector->socketFD != VDS_INVALID_SOCKET ) {
+
       errcode = Send( pConnector, &input, sizeof(struct WDInput), errorHandler );
-      /* \todo Remove this debug info when we are sure it is ok (?)
-       * or maybe replace it with an assert? */
+      /**
+       * \todo Remove this debug info when we are sure it is ok (?)
+       * or maybe replace it with an assert? 
+       */
       if ( errcode != 0 )
          fprintf( stderr, "Error in Connector::Disconnect Send(): %d\n",
                   errcode );
       
 #if defined (WIN32)
-      shutdown( pConnector->socketFD, SD_BOTH );      
+      shutdown( pConnector->socketFD, SD_BOTH );
       closesocket( pConnector->socketFD );
 #else
-      shutdown( pConnector->socketFD, 2 );      
+      shutdown( pConnector->socketFD, 2 );
       close( pConnector->socketFD );
 #endif
       pConnector->socketFD = VDS_INVALID_SOCKET;
@@ -175,16 +174,14 @@ int Receive( vdsaConnector    * pConnector,
     * The do while loop is useless on Win32 but it does not hurt either...
     */
    errno = 0;
-   do
-   {
+   do {
       errcode = recv( pConnector->socketFD,
                       ptr,
                       length,
                       MSG_NOSIGNAL );
    } while ( errcode == -1 && errno == EINTR );
    
-   if ( errcode != (int) length )
-   {
+   if ( errcode != (int) length ) {
 #if defined (WIN32)
       vdscSetError( errorHandler, VDSC_SOCKERR_HANDLE, WSAGetLastError() );
       shutdown( pConnector->socketFD, SD_BOTH );      
@@ -214,16 +211,14 @@ int Send( vdsaConnector    * pConnector,
     * The do while loop is useless on Win32 but it does not hurt either...
     */
    errno = 0;
-   do
-   {
+   do {
       errcode = send( pConnector->socketFD, 
                       ptr, 
                       length,
                       MSG_NOSIGNAL );
    } while ( errcode == -1 && errno == EINTR );
 
-   if ( errcode != (int) length )
-   {
+   if ( errcode != (int) length ) {
 #if defined (WIN32)
       vdscSetError( errorHandler, VDSC_SOCKERR_HANDLE, WSAGetLastError() );
       shutdown( pConnector->socketFD, SD_BOTH );      
@@ -241,5 +236,4 @@ int Send( vdsaConnector    * pConnector,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 

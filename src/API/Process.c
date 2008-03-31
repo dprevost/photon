@@ -73,29 +73,20 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
    if ( g_protectionIsNeeded )
       vdscAcquireThreadLock( &g_ProcessMutex );
    
-   if ( process->pHeader != NULL )
-   {
+   if ( process->pHeader != NULL ) {
       errcode = VDS_PROCESS_ALREADY_INITIALIZED;
       goto the_exit;
    }
    
-   if ( wdAddress == NULL )
-   {
+   if ( wdAddress == NULL ) {
       errcode = VDS_INVALID_WATCHDOG_ADDRESS;
       goto the_exit;
    }
    
-   if ( memcmp( wdAddress, "12348", 5 ) == 0 )
-   {
-      strcpy( answer.pathname, "/tmp/vdsf_001" );
-      answer.memorySizekb = 10000;
-   }
-   else
-      errcode = vdsaConnect( &process->connector, 
-                             wdAddress, 
-                             &answer, 
-                             &context.errorHandler );
-   
+   errcode = vdsaConnect( &process->connector, 
+                          wdAddress, 
+                          &answer, 
+                          &context.errorHandler );
    if ( errcode != VDS_OK )
       goto the_exit;
    
@@ -117,8 +108,7 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
                                     getpid(), 
                                     &process->pCleanup,
                                     &context );
-   if ( errcode == 0 )
-   {
+   if ( errcode == 0 ) {
       strcpy( process->logDirName, VDS_LOGDIR_NAME );
       g_pProcessInstance = process;
    }
@@ -168,18 +158,15 @@ void vdsaProcessFini()
                                     &context );
 
    errcode = vdseLock( &process->pCleanup->memObject, &context );
-   if ( errcode == 0 )
-   {
+   if ( errcode == 0 ) {
       errcode = vdseProcessGetFirstSession( process->pCleanup, 
                                             &pVdsSession, 
                                             &context );
-      while ( errcode == 0 )
-      {
+      while ( errcode == 0 ) {
          pApiSession = pVdsSession->pApiSession;
-         if ( pApiSession != NULL ) 
-         {
+         if ( pApiSession != NULL ) {
             errcode = vdsaCloseSession( pApiSession );
-            /* \todo */
+            /** \todo handle error here */
          }
 
          pCurrent = pVdsSession;
@@ -191,8 +178,7 @@ void vdsaProcessFini()
       
       vdseUnlock( &process->pCleanup->memObject, &context );
    }
-   else
-   {
+   else {
       errcode = VDS_INTERNAL_ERROR;
       goto error_handler;
    }
@@ -205,8 +191,7 @@ void vdsaProcessFini()
    process->pCleanup = NULL;
    
    /* close our access to the VDS */
-   if ( process->pHeader != NULL )
-   {
+   if ( process->pHeader != NULL ) {
       vdsaCloseVDS( process, &context );
       process->pHeader = NULL;
    }
@@ -241,16 +226,14 @@ int vdsaOpenVDS( vdsaProcess        * process,
    
    vdscBackStoreStatus( &process->memoryFile, &fileStatus );
    
-   if ( ! fileStatus.fileExist )
-   {
+   if ( ! fileStatus.fileExist ) {
       return VDS_BACKSTORE_FILE_MISSING;
    }
    
    errcode = vdscOpenMemFile( &process->memoryFile, 
                               &ptr, 
                               &pContext->errorHandler );   
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "MMAP failure - %d %s\n", errno, memoryFileName );
       return VDS_ERROR_OPENING_VDS;
    }
@@ -258,8 +241,7 @@ int vdsaOpenVDS( vdsaProcess        * process,
    g_pBaseAddr = (unsigned char * ) ptr;
    process->pHeader = (vdseMemoryHeader*) g_pBaseAddr;
 
-   if ( process->pHeader->version != MEMORY_VERSION )
-   {
+   if ( process->pHeader->version != MEMORY_VERSION ) {
       process->pHeader = NULL;
       return VDS_INCOMPATIBLE_VERSIONS;
    }

@@ -22,15 +22,19 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef enum vdsaObjetType
+/**
+ * The type of object (as seen from the API, not the engine).
+ */
+enum vdsaObjetType
 {
    VDSA_PROCESS = 0x111,
    VDSA_SESSION,
    VDSA_FOLDER,
    VDSA_HASH_MAP,
    VDSA_QUEUE
-   
-} vdsaObjetType;
+};
+
+typedef enum vdsaObjetType vdsaObjetType;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -46,13 +50,18 @@ typedef enum vdsaObjetType
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdsaDataEntry
+/** A simple struct to simplify arguments to a few functions. */
+struct vdsaDataEntry
 {
+   /** Length of the data in bytes. */
    size_t length;
    
+   /** Pointer to the data. */
    const void * data;
 
-} vdsaDataEntry;
+};
+
+typedef struct vdsaDataEntry vdsaDataEntry;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

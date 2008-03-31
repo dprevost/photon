@@ -23,6 +23,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/** */
 int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
                        enum vdsObjectType   objectType, 
                        const char         * objectName,
@@ -42,15 +43,13 @@ int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
    if ( pObject->pSession == NULL )
       return VDS_PROCESS_NOT_INITIALIZED;
 
-   if ( vdsaCommonLock( pObject ) == 0 )
-   {
+   if ( vdsaCommonLock( pObject ) == 0 ) {
       errcode = vdsaSessionOpenObj( pObject->pSession,
                                     objectType, 
                                     objectName,
                                     nameLengthInBytes,
                                     pObject );
-      if ( errcode == 0 )
-      {
+      if ( errcode == 0 ) {
          GET_PTR( pDesc, pObject->folderItem.pHashItem->dataOffset,
                           vdseObjectDescriptor );
          GET_PTR( pObject->pMyVdsObject, pDesc->offset, void );

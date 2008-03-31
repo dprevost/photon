@@ -93,8 +93,7 @@ static
 __inline
 int vdsaSessionLock( vdsaSession * pSession )
 {
-   if ( g_protectionIsNeeded )
-   {
+   if ( g_protectionIsNeeded ) {
       return vdscTryAcquireThreadLock( &pSession->mutex, 
                                        LOCK_TIMEOUT );
    }
@@ -110,8 +109,9 @@ static
 __inline
 void vdsaSessionUnlock( vdsaSession* pSession )
 {
-   if ( g_protectionIsNeeded )
+   if ( g_protectionIsNeeded ) {
       vdscReleaseThreadLock( &pSession->mutex );
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
