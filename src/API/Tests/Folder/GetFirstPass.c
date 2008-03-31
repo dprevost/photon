@@ -73,6 +73,24 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
+   errcode = vdsFolderGetFirst( NULL, &entry );
+   if ( errcode != VDS_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsFolderGetFirst( objHandle, NULL );
+   if ( errcode != VDS_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsFolderGetFirst( sessionHandle, &entry );
+   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    errcode = vdsFolderGetFirst( objHandle, &entry );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

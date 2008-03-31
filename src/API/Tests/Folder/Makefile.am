@@ -14,74 +14,27 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =            \
-        CloseNullHandle     \
-        ClosePass           \
-        CloseWrongHandle    \
-        GetFirstNullEntry   \
-        GetFirstNullHandle  \
-        GetFirstPass        \
-        GetFirstWrongHandle \
-        GetNextNoFirst      \
-        GetNextNullEntry    \
-        GetNextNullHandle   \
-        GetNextPass         \
-        GetNextWrongHandle  \
-        OpenNullName        \
-        OpenNullObjHandle   \
-        OpenNullSessHandle  \
-        OpenPass            \
-        OpenWrongSessHandle \
-        OpenZeroLength      \
-        StatusNullFolder    \
-        StatusNullStatus    \
-        StatusPass          \
-        StatusWrongHandle   
+check_PROGRAMS =     \
+        ClosePass    \
+        GetFirstPass \
+        GetNextPass  \
+        OpenPass     \
+        StatusPass   
 
-CloseNullHandle_SOURCES     = CloseNullHandle.c
-ClosePass_SOURCES           = ClosePass.c
-CloseWrongHandle_SOURCES    = CloseWrongHandle.c
-GetFirstNullEntry_SOURCES   = GetFirstNullEntry.c
-GetFirstNullHandle_SOURCES  = GetFirstNullHandle.c
-GetFirstPass_SOURCES        = GetFirstPass.c
-GetFirstWrongHandle_SOURCES = GetFirstWrongHandle.c
-GetNextPass_SOURCES         = GetNextPass.c
-OpenNullName_SOURCES        = OpenNullName.c
-OpenNullObjHandle_SOURCES   = OpenNullObjHandle.c
-OpenNullSessHandle_SOURCES  = OpenNullSessHandle.c
-OpenPass_SOURCES            = OpenPass.c
-OpenWrongSessHandle_SOURCES = OpenWrongSessHandle.c
-OpenZeroLength_SOURCES      = OpenZeroLength.c
-StatusNullFolder_SOURCES    = StatusNullFolder.c
-StatusNullStatus_SOURCES    = StatusNullStatus.c
-StatusPass_SOURCES          = StatusPass.c
-StatusWrongHandle_SOURCES   = StatusWrongHandle.c
+ClosePass_SOURCES    = ClosePass.c
+GetFirstPass_SOURCES = GetFirstPass.c
+GetNextPass_SOURCES  = GetNextPass.c
+OpenPass_SOURCES     = OpenPass.c
+StatusPass_SOURCES   = StatusPass.c
 
-EXTRA_DIST =                   \
-        CloseNullHandle.sh     \
-        ClosePass.sh           \
-        CloseWrongHandle.sh    \
-        GetFirstNullEntry.sh   \
-        GetFirstNullHandle.sh  \
-        GetFirstPass.sh        \
-        GetFirstWrongHandle.sh \
-        GetNextNoFirst.sh      \
-        GetNextNullEntry.sh    \
-        GetNextNullHandle.sh   \
-        GetNextPass.sh         \
-        GetNextWrongHandle.sh  \
-        Makefile.win32         \
-        OpenNullName.sh        \
-        OpenNullObjHandle.sh   \
-        OpenNullSessHandle.sh  \
-        OpenPass.sh            \
-        OpenWrongSessHandle.sh \
-        OpenZeroLength.sh      \
-        RunTests.vbs           \
-        StatusNullFolder.sh    \
-        StatusNullStatus.sh    \
-        StatusPass.sh          \
-        StatusWrongHandle.sh   
+EXTRA_DIST =            \
+        ClosePass.sh    \
+        GetFirstPass.sh \
+        GetNextPass.sh  \
+        Makefile.win32  \
+        OpenPass.sh     \
+        RunTests.vbs    \
+        StatusPass.sh   
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -91,29 +44,12 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-TESTS =                        \
-        CloseNullHandle.sh     \
-        ClosePass.sh           \
-        CloseWrongHandle.sh    \
-        GetFirstNullEntry.sh   \
-        GetFirstNullHandle.sh  \
-        GetFirstPass.sh        \
-        GetFirstWrongHandle.sh \
-        GetNextNoFirst.sh      \
-        GetNextNullEntry.sh    \
-        GetNextNullHandle.sh   \
-        GetNextPass.sh         \
-        GetNextWrongHandle.sh  \
-        OpenNullName.sh        \
-        OpenNullObjHandle.sh   \
-        OpenNullSessHandle.sh  \
-        OpenPass.sh            \
-        OpenWrongSessHandle.sh \
-        OpenZeroLength.sh      \
-        StatusNullFolder.sh    \
-        StatusNullStatus.sh    \
-        StatusPass.sh          \
-        StatusWrongHandle.sh   
+TESTS =                 \
+        ClosePass.sh    \
+        GetFirstPass.sh \
+        GetNextPass.sh  \
+        OpenPass.sh     \
+        StatusPass.sh   
 
 XFAIL_TESTS = 
 

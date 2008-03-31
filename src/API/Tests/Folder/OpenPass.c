@@ -29,6 +29,9 @@ int main( int argc, char * argv[] )
    VDS_HANDLE objHandle,  sessionHandle;
    VDS_HANDLE objHandle2, sessionHandle2;
    int errcode;
+   char junk[12];
+   
+   memset( junk, 0, 12 );
    
    if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
@@ -57,6 +60,52 @@ int main( int argc, char * argv[] )
                               strlen("/afop"),
                               VDS_FOLDER );
    if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsFolderOpen( sessionHandle,
+                            NULL,
+                            strlen("/afop"),
+                            &objHandle );
+   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsFolderOpen( sessionHandle,
+                            "/afop",
+                            strlen("/afop"),
+                            NULL );
+   if ( errcode != VDS_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsFolderOpen( NULL,
+                            "/afop",
+                            strlen("/afop"),
+                            &objHandle );
+   if ( errcode != VDS_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   objHandle = (VDS_HANDLE) junk;
+   errcode = vdsFolderOpen( objHandle,
+                            "/afop",
+                            strlen("/afop"),
+                            &objHandle );
+   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsFolderOpen( sessionHandle,
+                            "/afop",
+                            0,
+                            &objHandle );
+   if ( errcode != VDS_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

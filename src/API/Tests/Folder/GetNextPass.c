@@ -81,8 +81,32 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
+   errcode = vdsFolderGetNext( objHandle, &entry );
+   if ( errcode != VDS_INVALID_ITERATOR ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    errcode = vdsFolderGetFirst( objHandle, &entry );
    if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsFolderGetNext( NULL, &entry );
+   if ( errcode != VDS_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsFolderGetNext( objHandle, NULL );
+   if ( errcode != VDS_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsFolderGetNext( sessionHandle, &entry );
+   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
