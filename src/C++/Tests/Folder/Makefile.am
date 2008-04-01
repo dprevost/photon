@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -14,15 +14,27 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =      \
-        Folder 
+check_PROGRAMS =     \
+        ClosePass    \
+        GetFirstPass \
+        GetNextPass  \
+        OpenPass     \
+        StatusPass   
 
-check_PROGRAMS =    
-#        SessionHandle 
+ClosePass_SOURCES    = ClosePass.cpp
+GetFirstPass_SOURCES = GetFirstPass.cpp
+GetNextPass_SOURCES  = GetNextPass.cpp
+OpenPass_SOURCES     = OpenPass.cpp
+StatusPass_SOURCES   = StatusPass.cpp
 
-SessionHandle_SOURCES = SessionHandle.cpp
-
-EXTRA_DIST = 
+EXTRA_DIST =            \
+        ClosePass.sh    \
+        GetFirstPass.sh \
+        GetNextPass.sh  \
+        Makefile.win32  \
+        OpenPass.sh     \
+        RunTests.vbs    \
+        StatusPass.sh   
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -30,15 +42,19 @@ TESTS_ENVIRONMENT =                  \
         srcdir=$(srcdir)             \
         top_builddir=$(top_builddir) \
         verbose=1                    \
-        PYTHON=$(PYTHON)             
+        PYTHON=$(PYTHON)
 
-TESTS = 
-#SessionHandle
+TESTS =                 \
+        ClosePass.sh    \
+        GetFirstPass.sh \
+        GetNextPass.sh  \
+        OpenPass.sh     \
+        StatusPass.sh   
 
 XFAIL_TESTS = 
 
-LDADD = $(top_builddir)/src/C++/libvdsfcpp.la   \
-        $(top_builddir)/src/API/libvdsf.la      \
+LDADD = $(top_builddir)/src/C++/libvdsfcpp.la 
+#$(top_builddir)/src/API/libvdsf.la      \
         $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la
 
