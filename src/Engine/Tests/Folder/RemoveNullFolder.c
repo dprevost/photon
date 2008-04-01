@@ -52,6 +52,7 @@ int main()
    errcode = vdseFolderGetObject( pFolder,
                                   strCheckLow("test2"),
                                   5,
+                                  VDS_FOLDER,
                                   &folderItem,
                                   &context );
    if ( errcode != 0 ) 
@@ -60,6 +61,7 @@ int main()
    errcode = vdseFolderGetObject( pFolder,
                                   strCheckLow("test2"),
                                   5,
+                                  VDS_FOLDER,
                                   &folderItem,
                                   &context );
    if ( errcode != 0 ) 

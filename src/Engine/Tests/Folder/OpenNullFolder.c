@@ -50,6 +50,7 @@ int main()
    errcode = vdseTopFolderOpenObject( NULL,
                                       "Test1/Test2",
                                       strlen("Test1/Test2"),
+                                      VDS_FOLDER,
                                       &folderItem,
                                       &context );
 

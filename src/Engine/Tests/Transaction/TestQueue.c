@@ -63,6 +63,7 @@ int main()
    errcode = vdseFolderGetObject( pFolder,
                                   strCheck("test2"),
                                   5,
+                                  VDS_QUEUE,
                                   &item,
                                   &context );
    if ( errcode != 0 ) 

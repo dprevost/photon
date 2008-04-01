@@ -483,7 +483,8 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
 
 int vdseFolderGetObject( vdseFolder         * pFolder,
                          const vdsChar_T    * objectName,
-                         size_t               strLength, 
+                         size_t               strLength,
+                         enum vdsObjectType   objectType,
                          vdseFolderItem     * pFolderItem,
                          vdseSessionContext * pContext )
 {
@@ -504,6 +505,7 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pContext    != NULL );
    VDS_PRE_CONDITION( strLength > 0 );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
 
    errcode = vdseValidateString( objectName, 
                                  strLength, 
@@ -568,6 +570,10 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
             goto the_exit;
          }
       }
+      if ( objectType != pDesc->apiType ) {
+         errcode = VDS_WRONG_OBJECT_TYPE;
+         goto the_exit;
+      }
 
       txFolderStatus->usageCounter++;
       txStatus->parentCounter++;
@@ -628,6 +634,7 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
    rc = vdseFolderGetObject( pNextFolder,
                              &objectName[partialLength+1], 
                              strLength - partialLength - 1, 
+                             objectType,
                              pFolderItem,
                              pContext );
    
@@ -1879,6 +1886,7 @@ error_handler:
 int vdseTopFolderOpenObject( vdseFolder         * pFolder,
                              const char         * objectName,
                              size_t               nameLengthInBytes,
+                             enum vdsObjectType   objectType, 
                              vdseFolderItem     * pFolderItem,
                              vdseSessionContext * pContext )
 {
@@ -1899,6 +1907,7 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pFolderItem != NULL );
    VDS_PRE_CONDITION( objectName  != NULL );
    VDS_PRE_CONDITION( pContext    != NULL );
+   VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
 
 #if VDS_SUPPORT_i18n
    memset( &ps, 0, sizeof(mbstate_t) );
@@ -1963,6 +1972,10 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
        * since all we do is to retrieve the pointer (and we do not 
        * count access since the object is undeletable).
        */
+      if ( objectType != VDS_FOLDER ) {
+         errcode = VDS_WRONG_OBJECT_TYPE;
+         goto error_handler;
+      }
       pFolderItem->pHashItem = &((vdseMemoryHeader *) g_pBaseAddr)->topHashItem;
    }
    else
@@ -1978,6 +1991,7 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
          rc = vdseFolderGetObject( pFolder,
                                    &(lowerName[first]), 
                                    strLength, 
+                                   objectType,
                                    pFolderItem,
                                    pContext );
          if ( rc != 0 ) goto error_handler;

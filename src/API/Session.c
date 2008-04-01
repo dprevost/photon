@@ -681,6 +681,7 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
       rc = vdseTopFolderOpenObject( pTree,
                                     objectName,
                                     nameLengthInBytes,
+                                    objectType,
                                     &pObject->folderItem,
                                     &pSession->context );
       if ( rc == 0 ) {

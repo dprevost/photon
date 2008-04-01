@@ -92,6 +92,7 @@ VDSF_ENGINE_EXPORT
 int vdseFolderGetObject( vdseFolder         * pFolder,
                          const vdsChar_T    * objectName,
                          size_t               strLength, 
+                         enum vdsObjectType   objectType, 
                          vdseFolderItem     * pFolderItem,
                          vdseSessionContext * pContext );
 
@@ -181,6 +182,7 @@ VDSF_ENGINE_EXPORT
 int vdseTopFolderOpenObject( vdseFolder         * pFolder,
                              const char         * objectName,
                              size_t               nameLengthInBytes,
+                             enum vdsObjectType   objectType, 
                              vdseFolderItem     * pFolderItem,
                              vdseSessionContext * pContext );
 

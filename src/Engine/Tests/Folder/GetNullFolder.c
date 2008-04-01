@@ -52,6 +52,7 @@ int main()
    errcode = vdseFolderGetObject( NULL,
                                   strCheckLow("test2"),
                                   5,
+                                  VDS_FOLDER,
                                   &folderItem,
                                   &context );
    

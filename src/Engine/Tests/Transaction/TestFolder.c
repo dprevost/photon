@@ -191,6 +191,7 @@ int main()
    errcode = vdseFolderGetObject( pFolder,
                                   strCheck("test3"),
                                   5,
+                                  VDS_HASH_MAP,
                                   &item,
                                   &context );
    if ( errcode != 0 ) 
@@ -236,6 +237,7 @@ int main()
    errcode = vdseFolderGetObject( pFolder,
                                   strCheck("test3"),
                                   5,
+                                  VDS_HASH_MAP,
                                   &item,
                                   &context );
    if ( errcode != 0 ) 
@@ -258,6 +260,7 @@ int main()
    errcode = vdseFolderGetObject( pFolder,
                                   strCheck("test3"),
                                   5,
+                                  VDS_HASH_MAP,
                                   &item,
                                   &context );
    if ( errcode != 0 ) 

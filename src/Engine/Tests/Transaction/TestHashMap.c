@@ -66,6 +66,7 @@ int main()
    errcode = vdseFolderGetObject( pFolder,
                                   strCheck("test2"),
                                   5,
+                                  VDS_HASH_MAP,
                                   &item,
                                   &context );
    if ( errcode != 0 ) 

@@ -49,6 +49,7 @@ int main()
    errcode = vdseTopFolderOpenObject( pTopFolder,
                                       "Test1/Test2",
                                       strlen("Test1/Test2"),
+                                      VDS_FOLDER,
                                       &folderItem,
                                       &context );
    if ( errcode != 0 ) 
@@ -57,6 +58,7 @@ int main()
    errcode = vdseTopFolderOpenObject( pTopFolder,
                                       "Test3/Test2",
                                       strlen("Test3/Test2"),
+                                      VDS_FOLDER,
                                       &folderItem,
                                       &context );
    if ( errcode != -1 ) 
@@ -68,6 +70,7 @@ int main()
    errcode = vdseTopFolderOpenObject( pTopFolder,
                                       "Test1/Test5",
                                       strlen("Test1/Test5"),
+                                      VDS_FOLDER,
                                       &folderItem,
                                       &context );
    if ( errcode != -1 ) 

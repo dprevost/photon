@@ -153,7 +153,10 @@ typedef enum vdsErrors
    /** The object (data container) is empty. */
    VDS_IS_EMPTY                    = 55,
 
-   /** Attempt to create an object of an unknown object type. */
+   /** 
+    * Attempt to create an object of an unknown object type or to open
+    * an object of the wrong type. 
+    */
    VDS_WRONG_OBJECT_TYPE           = 56,
 
    /**

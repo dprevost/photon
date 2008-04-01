@@ -463,7 +463,7 @@ int vdsHashMapOpen( VDS_HANDLE   sessionHandle,
    pHashMap->object.pSession = pSession;
 
    errcode = vdsaCommonObjOpen( &pHashMap->object,
-                                VDS_FOLDER,
+                                VDS_HASH_MAP,
                                 hashMapName,
                                 nameLengthInBytes );
    if ( errcode == 0 )

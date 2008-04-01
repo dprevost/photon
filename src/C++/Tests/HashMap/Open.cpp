@@ -79,13 +79,13 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Open( fname );
+      map1.Open( fname ); // Name of the folder
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
    catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_INVALID_LENGTH ) {
+      if ( exc.ErrorCode() != VDS_WRONG_OBJECT_TYPE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -114,12 +114,17 @@ int main( int argc, char * argv[] )
    }
    try {
       map2.Open( c_name, strlen(c_name) );
-   }
-   catch( vdsException exc ) {
-      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-
+   catch( vdsException exc ) {
+      if ( exc.ErrorCode() != VDS_OBJECT_IS_IN_USE ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
+   
    try {
       session1.Commit();
       map2.Open( c_name, strlen(c_name) );

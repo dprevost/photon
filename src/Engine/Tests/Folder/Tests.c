@@ -85,6 +85,7 @@ fprintf( stderr, "ok 3\n" );
    errcode = vdseFolderGetObject( pFolder1,
                                   strCheckLow("test2"),
                                   5,
+                                  VDS_FOLDER,
                                   &folderItem,
                                   &context );
    if ( errcode != 0 ) 
@@ -146,6 +147,7 @@ fprintf( stderr, "ok 5\n" );
    errcode = vdseFolderGetObject( pFolder1,
                                   strCheckLow("test2/test4"),
                                   11,
+                                  VDS_FOLDER,
                                   &folderItem,
                                   &context );
    if ( errcode != 0 ) 
