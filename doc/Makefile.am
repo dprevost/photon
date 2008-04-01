@@ -26,23 +26,23 @@ if COND_USE_LATEX
 
 all-local: refman_c.pdf refman_c++.pdf
 
-HEADER_FILES =                                 \
-   $(top_srcdir)/src/include/vdsf/vds.h        \
-   $(top_srcdir)/src/include/vdsf/vdsCommon.h  \
-   $(top_srcdir)/src/include/vdsf/vdsFolder.h  \
-   $(top_srcdir)/src/include/vdsf/vdsHashMap.h \
-   $(top_srcdir)/src/include/vdsf/vdsQueue.h   \
-   $(top_srcdir)/src/include/vdsf/vdsProcess.h \
-   $(top_srcdir)/src/include/vdsf/vdsSession.h 
+HEADER_FILES =                                      \
+        $(top_srcdir)/src/include/vdsf/vds.h        \
+        $(top_srcdir)/src/include/vdsf/vdsCommon.h  \
+        $(top_srcdir)/src/include/vdsf/vdsFolder.h  \
+        $(top_srcdir)/src/include/vdsf/vdsHashMap.h \
+        $(top_srcdir)/src/include/vdsf/vdsQueue.h   \
+        $(top_srcdir)/src/include/vdsf/vdsProcess.h \
+        $(top_srcdir)/src/include/vdsf/vdsSession.h 
 
-CPP_HEADER_FILES =                             \
-   $(top_srcdir)/src/include/vdsf/vds          \
-   $(top_srcdir)/src/include/vdsf/vdsException \
-   $(top_srcdir)/src/include/vdsf/vdsFolder    \
-   $(top_srcdir)/src/include/vdsf/vdsHashMap   \
-   $(top_srcdir)/src/include/vdsf/vdsQueue     \
-   $(top_srcdir)/src/include/vdsf/vdsProcess   \
-   $(top_srcdir)/src/include/vdsf/vdsSession   
+CPP_HEADER_FILES =                                  \
+        $(top_srcdir)/src/include/vdsf/vds          \
+        $(top_srcdir)/src/include/vdsf/vdsException \
+        $(top_srcdir)/src/include/vdsf/vdsFolder    \
+        $(top_srcdir)/src/include/vdsf/vdsHashMap   \
+        $(top_srcdir)/src/include/vdsf/vdsQueue     \
+        $(top_srcdir)/src/include/vdsf/vdsProcess   \
+        $(top_srcdir)/src/include/vdsf/vdsSession   
 
 refman_c.pdf: $(HEADER_FILES)
 	-rm -rf c

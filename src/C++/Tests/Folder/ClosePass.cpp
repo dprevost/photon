@@ -47,6 +47,7 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
+   // Closing when not open...
    try {
       folder.Close();
    }
