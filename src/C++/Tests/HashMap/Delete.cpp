@@ -63,6 +63,9 @@ int main( int argc, char * argv[] )
 
    try {
       map1.Delete( NULL, 6 );
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
    }
    catch( vdsException exc ) {
       if ( exc.ErrorCode() != VDS_NULL_POINTER ) {
@@ -73,6 +76,9 @@ int main( int argc, char * argv[] )
 
    try {
       map1.Delete( key, 0 );
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
    }
    catch( vdsException exc ) {
       if ( exc.ErrorCode() != VDS_INVALID_LENGTH ) {

@@ -51,6 +51,9 @@ int main( int argc, char * argv[] )
    // Closing when not open...
    try {
       hashmap.Close();
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
    }
    catch( vdsException exc ) {
       if ( exc.ErrorCode() != VDS_NULL_HANDLE ) {
