@@ -61,7 +61,15 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
+   /* Close the process and try to act on the session */
+
    vdsExit();
+
+   errcode = vdsInitSession( &sessionHandle );
+   if ( errcode != VDS_PROCESS_NOT_INITIALIZED ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    return 0;
 }

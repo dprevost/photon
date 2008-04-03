@@ -80,7 +80,15 @@ int main( int argc, char * argv[] )
    
    vdsRollback( sessionHandle );
 
+   /* Close the process and try to act on the session */
+
    vdsExit();
+
+   errcode = vdsErrorMsg( sessionHandle, msg, 255 );
+   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 
    return 0;
 }

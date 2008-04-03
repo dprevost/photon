@@ -238,7 +238,7 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
    vdsaSession * pSession;
    vdseSession * pCleanup;
    
-   int errcode = -1;
+   int errcode = 0;
    
    pSession = (vdsaSession*) sessionHandle;
    if ( pSession == NULL )
@@ -268,6 +268,9 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
                                       pCleanup, 
                                       &pSession->context );
           }
+      }
+      else {
+         errcode = VDS_SESSION_IS_TERMINATED;
       }
       
       vdsaProcessUnlock();

@@ -104,8 +104,19 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Close the process and try to act on the session */
+
    vdsExit();
    
+   errcode = vdsGetStatus( sessionHandle,
+                           "/ASSP",
+                           strlen("/assp"),
+                           &status );
+   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    return 0;
 }
 

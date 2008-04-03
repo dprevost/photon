@@ -60,8 +60,22 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
+   /* Close the process and try to act on the session */
+
+   errcode = vdsInitSession( &sessionHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    vdsExit();
    
+   errcode = vdsExitSession( sessionHandle );
+   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    return 0;
 }
 

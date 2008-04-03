@@ -28,7 +28,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=OpenNoSess
+test_name=OpenNoSession
 test_dir=src/API/Tests/HashMap
 
 # -6 for SIGABRT (failure of a pre-condition forces a call to abort()).
