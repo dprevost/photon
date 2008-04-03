@@ -12,27 +12,28 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-check_PROGRAMS =                          \
-        .\Release\ClosePass.exe           \
-        .\Release\FirstNullEntry.exe      \
-        .\Release\FirstNullHandle.exe     \
-        .\Release\FirstPass.exe           \
-        .\Release\FirstWrongHandle.exe    \
-        .\Release\GetFirst.exe            \
-        .\Release\GetNext.exe             \
-        .\Release\NextNoFirst.exe         \
-        .\Release\NextNullEntry.exe       \
-        .\Release\NextNullHandle.exe      \
-        .\Release\NextPass.exe            \
-        .\Release\NextWrongHandle.exe     \
-        .\Release\OpenPass.exe            \
-        .\Release\Pop.exe                 \
-        .\Release\PushPass.exe            \
-        .\Release\RemoveNullEntry.exe     \
-        .\Release\RemoveNullHandle.exe    \
-        .\Release\RemovePass.exe          \
-        .\Release\RemoveWrongHandle.exe   \
-        .\Release\StatusPass.exe          
+check_PROGRAMS =                        \
+        .\Release\ClosePass.exe         \
+        .\Release\FirstNullEntry.exe    \
+        .\Release\FirstNullHandle.exe   \
+        .\Release\FirstPass.exe         \
+        .\Release\FirstWrongHandle.exe  \
+        .\Release\GetFirst.exe          \
+        .\Release\GetNext.exe           \
+        .\Release\NextNoFirst.exe       \
+        .\Release\NextNullEntry.exe     \
+        .\Release\NextNullHandle.exe    \
+        .\Release\NextPass.exe          \
+        .\Release\NextWrongHandle.exe   \
+        .\Release\OpenNoSession.exe     \
+        .\Release\OpenPass.exe          \
+        .\Release\Pop.exe               \
+        .\Release\PushPass.exe          \
+        .\Release\RemoveNullEntry.exe   \
+        .\Release\RemoveNullHandle.exe  \
+        .\Release\RemovePass.exe        \
+        .\Release\RemoveWrongHandle.exe \
+        .\Release\StatusPass.exe        
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

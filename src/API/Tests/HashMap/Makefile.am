@@ -30,6 +30,7 @@ check_PROGRAMS =            \
         NextNullHandle      \
         NextPass            \
         NextWrongHandle     \
+        OpenNoSession       \
         OpenPass            \
         Replace             \
         RetrieveNullEntry   \
@@ -55,6 +56,7 @@ NextNullEntry_SOURCES       = NextNullEntry.c
 NextNullHandle_SOURCES      = NextNullHandle.c
 NextPass_SOURCES            = NextPass.c
 NextWrongHandle_SOURCES     = NextWrongHandle.c
+OpenNoSession_SOURCES       = OpenNoSession.c
 OpenPass_SOURCES            = OpenPass.c
 Replace_SOURCES             = Replace.c
 RetrieveNullEntry_SOURCES   = RetrieveNullEntry.c
@@ -82,6 +84,7 @@ EXTRA_DIST =                   \
         NextWrongHandle.sh     \
         InsertPass.sh          \
         Makefile.win32         \
+        OpenNoSession.sh       \
         OpenPass.sh            \
         Replace.sh             \
         RetrieveNullEntry.sh   \
@@ -117,6 +120,7 @@ TESTS =                        \
         NextNullHandle.sh      \
         NextPass.sh            \
         NextWrongHandle.sh     \
+        OpenNoSession.sh       \
         OpenPass.sh            \
         Replace.sh             \
         RetrieveNullEntry.sh   \

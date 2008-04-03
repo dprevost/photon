@@ -37,7 +37,7 @@ Dim failed_tests(19)
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
 Dim ok_programs(9)
-Dim fail_programs(9)
+Dim fail_programs(10)
 
 Dim exe_name, prog_path, program, wd_path, tmpDir, cmdFile, exeName
 Dim consoleMode
@@ -62,18 +62,19 @@ ok_programs(7) = "PushPass"
 ok_programs(8) = "RemovePass"
 ok_programs(9) = "StatusPass"
 
-fail_programs(0) = "FirstNullEntry.sh"
-fail_programs(1) = "FirstNullHandle.sh"
-fail_programs(2) = "FirstWrongHandle.sh"
-fail_programs(3) = "NextNoFirst.sh"
-fail_programs(4) = "NextNullEntry.sh"
-fail_programs(5) = "NextNullHandle.sh"
-fail_programs(6) = "NextWrongHandle.sh"
-fail_programs(7) = "RemoveNullEntry.sh"
-fail_programs(8) = "RemoveNullHandle.sh"
-fail_programs(9) = "RemoveWrongHandle.sh"
+fail_programs(0)  = "FirstNullEntry"
+fail_programs(1)  = "FirstNullHandle"
+fail_programs(2)  = "FirstWrongHandle"
+fail_programs(3)  = "NextNoFirst"
+fail_programs(4)  = "NextNullEntry"
+fail_programs(5)  = "NextNullHandle"
+fail_programs(6)  = "NextWrongHandle"
+fail_programs(7)  = "OpenNoSession"
+fail_programs(8)  = "RemoveNullEntry"
+fail_programs(9)  = "RemoveNullHandle"
+fail_programs(10) = "RemoveWrongHandle"
 	
-numTests  = 20                 ' Sum of length of both arrays 
+numTests  = 21                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject

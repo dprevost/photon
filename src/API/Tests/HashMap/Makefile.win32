@@ -28,6 +28,7 @@ check_PROGRAMS =                           \
         .\Release\NextNullHandle.exe       \
         .\Release\NextPass.exe             \
         .\Release\NextWrongHandle.exe      \
+        .\Release\OpenNoSession.exe        \
         .\Release\OpenPass.exe             \
         .\Release\Replace.exe              \
         .\Release\RetrieveNullEntry.exe    \

@@ -18,15 +18,15 @@
 #include "Common/Common.h"
 #include <vdsf/vds.h>
 #include "Tests/PrintError.h"
-#include "API/Queue.h"
+#include "API/HashMap.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE sessionHandle, objHandle;
+   VDS_HANDLE objHandle,  sessionHandle;
    int errcode;
    
    if ( argc > 1 ) {
@@ -47,8 +47,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/aqcp",
-                              strlen("/aqcp"),
+                              "/ahons",
+                              strlen("/ahons"),
                               VDS_FOLDER );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -56,39 +56,9 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/aqcp/test",
-                              strlen("/aqcp/test"),
-                              VDS_QUEUE );
-   if ( errcode != VDS_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = vdsQueueOpen( sessionHandle,
-                           "/aqcp/test",
-                           strlen("/aqcp/test"),
-                           &objHandle );
-   if ( errcode != VDS_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* Invalid arguments to tested function. */
-
-   errcode = vdsQueueClose( NULL );
-   if ( errcode != VDS_NULL_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = vdsQueueClose( sessionHandle );
-   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* End of invalid args. This call should succeed. */
-   errcode = vdsQueueClose( objHandle );
+                              "/ahons/test",
+                              strlen("/ahons/test"),
+                              VDS_HASH_MAP );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -96,30 +66,38 @@ int main( int argc, char * argv[] )
 
    /* Close the session and try to act on the object */
 
-   errcode = vdsQueueOpen( sessionHandle,
-                           "/aqcp/test",
-                           strlen("/aqcp/test"),
-                           &objHandle );
+   errcode = vdsCommit( sessionHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-
+   
    errcode = vdsExitSession( sessionHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueueClose( objHandle );
-   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+   /*
+    * sessionHandle is a pointer to deallocated memory. We either get the
+    * error or we crash!
+    */
+   errcode = vdsHashMapOpen( sessionHandle,
+                            "/ahons/test",
+                            strlen("/ahons/test"),
+                            &objHandle );
+   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    vdsExit();
-   
-   return 0;
+
+#if defined(WIN32)
+   exit(3);
+#else
+   abort();
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
