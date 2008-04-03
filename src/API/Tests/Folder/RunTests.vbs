@@ -31,12 +31,13 @@ Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(4)
+Dim failed_tests(5)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
 Dim ok_programs(4)
+Dim fail_programs(0)
 
 Dim exe_name, prog_path, program, wd_path, tmpDir, cmdFile, exeName
 Dim consoleMode
@@ -56,7 +57,9 @@ ok_programs(2) = "GetNextPass"
 ok_programs(3) = "OpenPass"
 ok_programs(4) = "StatusPass"
 
-numTests  =  5                 ' Sum of length of both arrays 
+fail_programs(0)  = "OpenNoSess"
+
+numTests  =  6                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject
@@ -180,6 +183,28 @@ For Each program in ok_programs
    end if
    if rc <> 0 then   
    wscript.echo "rc = " & rc & " " & program
+      failed_tests(numFailed) = program
+      numFailed = numFailed + 1
+   end if
+Next
+For Each program in fail_programs
+   exe_name = prog_path & "\" & program & ".exe"
+   if consoleMode then 
+      WScript.Echo "Running " & exe_name
+      Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exe_name & Chr(34))
+      status = objWshScriptExec.Status
+      Do While objWshScriptExec.Status = 0
+         WScript.Sleep 100
+      Loop
+      strOutput = objWshScriptExec.StdOut.ReadAll
+      if verbose then 
+         WScript.Stdout.Write objWshScriptExec.StdErr.ReadAll
+      end if
+      rc = objWshScriptExec.ExitCode
+   else
+      rc = objShell.Run("%comspec% /c " & Chr(34) & exe_name & Chr(34), 2, true)
+   end if
+   if rc = 0 then
       failed_tests(numFailed) = program
       numFailed = numFailed + 1
    end if

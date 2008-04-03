@@ -276,7 +276,21 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
    }
    
+   /* 
+    * This is a likely memory leak. But if we remove the session and there
+    * are still objects open... we might have random crashes instead
+    * (depending on what happen to the release memory - still attached to
+    * the process or not - which is something that depends on the OS and
+    * possibly other factors). 
+    */
    if ( errcode == 0 && pSession->numberOfObjects == 0 ) {
+      /* 
+       * If someone tries to use the session handle after closing the
+       * session, setting the type to zero is safer (if the free memory
+       * is still attached to the process - which is often the case in
+       * Unix to avoid going to the system for every malloc/free).
+       */
+      pSession->type = 0;
       free( pSession );
    }
    
@@ -582,6 +596,7 @@ int vdsaSessionCloseObj( vdsaSession             * pSession,
       if ( rc == 0 ) {
          rc = vdseTopFolderCloseObject( &pObject->folderItem,
                                         &pSession->context );
+         if ( rc == 0 ) pSession->numberOfObjects--;
       }
    }
    else {
@@ -694,6 +709,7 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
                                  pObject,
                                  &pObject->pObjectContext,
                                  &pSession->context );
+         pSession->numberOfObjects++;
       }
    }
    else {

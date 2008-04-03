@@ -18,12 +18,14 @@ check_PROGRAMS =     \
         ClosePass    \
         GetFirstPass \
         GetNextPass  \
+        OpenNoSess   \
         OpenPass     \
         StatusPass   
 
 ClosePass_SOURCES    = ClosePass.c
 GetFirstPass_SOURCES = GetFirstPass.c
 GetNextPass_SOURCES  = GetNextPass.c
+OpenNoSess_SOURCES   = OpenNoSess.c
 OpenPass_SOURCES     = OpenPass.c
 StatusPass_SOURCES   = StatusPass.c
 
@@ -32,6 +34,7 @@ EXTRA_DIST =            \
         GetFirstPass.sh \
         GetNextPass.sh  \
         Makefile.win32  \
+        OpenNoSess.sh   \
         OpenPass.sh     \
         RunTests.vbs    \
         StatusPass.sh   
@@ -48,6 +51,7 @@ TESTS =                 \
         ClosePass.sh    \
         GetFirstPass.sh \
         GetNextPass.sh  \
+        OpenNoSess.sh   \
         OpenPass.sh     \
         StatusPass.sh   
 

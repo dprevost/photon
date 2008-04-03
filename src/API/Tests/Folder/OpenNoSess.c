@@ -18,15 +18,15 @@
 #include "Common/Common.h"
 #include <vdsf/vds.h>
 #include "Tests/PrintError.h"
-#include "API/HashMap.h"
+#include "API/Folder.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE objHandle, sessionHandle;
+   VDS_HANDLE objHandle,  sessionHandle;
    int errcode;
    
    if ( argc > 1 ) {
@@ -47,79 +47,48 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/ahcp",
-                              strlen("/ahcp"),
+                              "/afons",
+                              strlen("/afons"),
                               VDS_FOLDER );
-   if ( errcode != VDS_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = vdsCreateObject( sessionHandle,
-                              "/ahcp/test",
-                              strlen("/ahcp/test"),
-                              VDS_HASH_MAP );
-   if ( errcode != VDS_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = vdsHashMapOpen( sessionHandle,
-                             "/ahcp/test",
-                             strlen("/ahcp/test"),
-                             &objHandle );
-   if ( errcode != VDS_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* Invalid arguments to tested function. */
-
-   errcode = vdsHashMapClose( NULL );
-   if ( errcode != VDS_NULL_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = vdsHashMapClose( sessionHandle );
-   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* End of invalid args. This call should succeed. */
-   errcode = vdsHashMapClose( objHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != VDS_OK && errcode != VDS_OBJECT_ALREADY_PRESENT ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Close the session and try to act on the object */
 
-   errcode = vdsHashMapOpen( sessionHandle,
-                             "/ahcp/test",
-                             strlen("/ahcp/test"),
-                             &objHandle );
+   errcode = vdsCommit( sessionHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-
+   
    errcode = vdsExitSession( sessionHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapClose( objHandle );
-   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+   /*
+    * sessionHandle is a pointer to deallocated memory. We either get the
+    * error or we crash!
+    */
+   errcode = vdsFolderOpen( sessionHandle,
+                            "/afop",
+                            strlen("/afop"),
+                            &objHandle );
+   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    vdsExit();
 
-   return 0;
+#if defined(WIN32)
+   exit(3);
+#else
+   abort();
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

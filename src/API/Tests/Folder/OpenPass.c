@@ -131,6 +131,33 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
+   /* Close the session and try to act on the object */
+
+   errcode = vdsFolderClose( objHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsExitSession( sessionHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /*
+    * Warning: sessionHandle is a pointer to deallocated memory. It is
+    * a bit dangerous to use it.
+    */
+   errcode = vdsFolderOpen( sessionHandle,
+                            "/afop",
+                            strlen("/afop"),
+                            &objHandle );
+   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    vdsExit();
 
    return 0;

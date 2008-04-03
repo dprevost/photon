@@ -14,8 +14,11 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =      \
-        Folder 
+SUBDIRS =       \
+        Folder  \
+        HashMap \
+        Queue   \
+        Session 
 
 check_PROGRAMS =    
 #        SessionHandle 

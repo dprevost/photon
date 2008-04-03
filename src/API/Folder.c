@@ -43,27 +43,33 @@ int vdsFolderClose( VDS_HANDLE objectHandle )
    if ( pFolder->object.type != VDSA_FOLDER )
       return VDS_WRONG_TYPE_HANDLE;
    
-   if ( vdsaCommonLock( &pFolder->object ) == 0 ) {
-      pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+   if ( ! pFolder->object.pSession->terminated ) {
 
-      /* Reinitialize the iterator, if needed */
-      if ( pFolder->iterator.pHashItem != NULL ) {
-         if ( vdseFolderRelease( pVDSFolder,
-                                 &pFolder->iterator,
-                                 &pFolder->object.pSession->context ) == 0 )
-            memset( &pFolder->iterator, 0, sizeof(vdseFolderItem) );
-         else
-            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
-      }
+      if ( vdsaCommonLock( &pFolder->object ) == 0 ) {
+        pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
 
-      if ( errcode == 0 )
-         errcode = vdsaCommonObjClose( &pFolder->object );
+         /* Reinitialize the iterator, if needed */
+         if ( pFolder->iterator.pHashItem != NULL ) {
+            if ( vdseFolderRelease( pVDSFolder,
+                                    &pFolder->iterator,
+                                    &pFolder->object.pSession->context ) == 0 )
+               memset( &pFolder->iterator, 0, sizeof(vdseFolderItem) );
+            else
+               errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+         }
 
-      vdsaCommonUnlock( &pFolder->object );
+         if ( errcode == 0 )
+            errcode = vdsaCommonObjClose( &pFolder->object );
+
+         vdsaCommonUnlock( &pFolder->object );
+     }
+      else
+         errcode = VDS_SESSION_CANNOT_GET_LOCK;
    }
-   else
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
-
+   else {
+      errcode = VDS_SESSION_IS_TERMINATED;
+   }
+   
    if ( errcode == 0 )
       free( pFolder );
    else
@@ -96,6 +102,11 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
 
    if ( pEntry == NULL ) {
       errcode = VDS_NULL_POINTER;
+      goto error_handler;
+   }
+
+   if ( pFolder->object.pSession->terminated ) {
+      errcode = VDS_SESSION_IS_TERMINATED;
       goto error_handler;
    }
    
@@ -196,6 +207,11 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
       goto error_handler;
    }
 
+   if ( pFolder->object.pSession->terminated ) {
+      errcode = VDS_SESSION_IS_TERMINATED;
+      goto error_handler;
+   }
+   
    if ( vdsaCommonLock( &pFolder->object ) != 0 ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
@@ -293,13 +309,19 @@ int vdsFolderOpen( VDS_HANDLE   sessionHandle,
    pFolder->object.type = VDSA_FOLDER;
    pFolder->object.pSession = pSession;
 
-   errcode = vdsaCommonObjOpen( &pFolder->object,
-                                VDS_FOLDER,
-                                folderName,
-                                nameLengthInBytes );
-   if ( errcode == 0 )
-      *objectHandle = (VDS_HANDLE) pFolder;
+   if ( ! pFolder->object.pSession->terminated ) {
 
+      errcode = vdsaCommonObjOpen( &pFolder->object,
+                                   VDS_FOLDER,
+                                   folderName,
+                                   nameLengthInBytes );
+      if ( errcode == 0 )
+         *objectHandle = (VDS_HANDLE) pFolder;
+   }
+   else {
+      errcode = VDS_SESSION_IS_TERMINATED;
+   }
+   
    return errcode;
 }
 
@@ -327,26 +349,33 @@ int vdsFolderStatus( VDS_HANDLE     objectHandle,
       return VDS_NULL_POINTER;
    }
    
-   if ( vdsaCommonLock( &pFolder->object ) == 0 ) {
+   if ( ! pFolder->object.pSession->terminated ) {
 
-      pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+      if ( vdsaCommonLock( &pFolder->object ) == 0 ) {
+
+         pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
       
-      if ( vdseLock( &pVDSFolder->memObject, pContext ) == 0 ) {
+         if ( vdseLock( &pVDSFolder->memObject, pContext ) == 0 ) {
 
-         vdseMemObjectStatus( &pVDSFolder->memObject, pStatus );
+            vdseMemObjectStatus( &pVDSFolder->memObject, pStatus );
 
-         vdseFolderStatus( pVDSFolder, pStatus );
+            vdseFolderStatus( pVDSFolder, pStatus );
 
-         vdseUnlock( &pVDSFolder->memObject, pContext );
+            vdseUnlock( &pVDSFolder->memObject, pContext );
+         }
+         else
+            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+      
+         vdsaCommonUnlock( &pFolder->object );
       }
-      else
-         errcode = VDS_OBJECT_CANNOT_GET_LOCK;
-      
-      vdsaCommonUnlock( &pFolder->object );
+      else {
+         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      }
    }
-   else
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
-   
+   else {
+      errcode = VDS_SESSION_IS_TERMINATED;
+   }
+      
    if ( errcode != 0 )
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
 

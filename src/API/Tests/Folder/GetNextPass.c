@@ -127,6 +127,26 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Close the session and try to act on the object */
+
+   errcode = vdsFolderGetFirst( objHandle, &entry );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsExitSession( sessionHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsFolderGetNext( objHandle, &entry );
+   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    vdsExit();
 
    return 0;

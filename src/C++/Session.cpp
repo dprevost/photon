@@ -35,6 +35,7 @@ vdsSession::~vdsSession()
 {
    vdsExitSession( m_sessionHandle );
    m_sessionHandle = NULL;
+   fprintf( stderr, " h : %p \n", m_sessionHandle );
 }
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
