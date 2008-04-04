@@ -14,14 +14,14 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =       \
-        Folder  \
-        HashMap \
-        Queue   \
-        Process \
-        Session 
+check_PROGRAMS = Init
 
-EXTRA_DIST = 
+Init_SOURCES = Init.cpp
+
+EXTRA_DIST =           \
+        Init.sh        \
+        Makefile.win32 \
+        RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -29,7 +29,11 @@ TESTS_ENVIRONMENT =                  \
         srcdir=$(srcdir)             \
         top_builddir=$(top_builddir) \
         verbose=1                    \
-        PYTHON=$(PYTHON)             
+        PYTHON=$(PYTHON)
+
+TESTS = Init.sh 
+
+XFAIL_TESTS = 
 
 LDADD = $(top_builddir)/src/C++/libvdsfcpp.la
 
