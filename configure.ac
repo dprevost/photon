@@ -443,6 +443,7 @@ AC_CONFIG_FILES([
    src/C++/Tests/Folder/Makefile
    src/C++/Tests/HashMap/Makefile
    src/C++/Tests/Queue/Makefile
+   src/C++/Tests/Session/Makefile
    src/Engine/Makefile
    src/Engine/Tests/Makefile
    src/Engine/Tests/BlockGroup/Makefile
