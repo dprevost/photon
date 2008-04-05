@@ -42,8 +42,7 @@ void inputHeader::GetData( std::string& s )
 
    s.resize(0); // Just to be safe.
    
-   while ( true )
-   {
+   while ( true ) {
       lineCounter++;
       tmp.resize(0);
 #if defined (WIN32)
@@ -52,18 +51,16 @@ void inputHeader::GetData( std::string& s )
 #else
       std::getline( m_stream, tmp );
 #endif
-      if ( ! m_stream.good() )
-      {
-         if ( m_stream.eof() )
+      if ( ! m_stream.good() ) {
+         if ( m_stream.eof() ) {
             return;
-         else
-         {
+         }
+         else {
             m_exception.SetMessage( "Error reading input file", lineCounter );
             throw m_exception;
          }
       }
-      if ( tmp.length() > 0 )
-      {
+      if ( tmp.length() > 0 ) {
          s += tmp;
          // Needed for analysing comments (they are the terminators of c++
          // style comments, for example).
@@ -77,8 +74,7 @@ void inputHeader::GetData( std::string& s )
 void inputHeader::OpenFile( const char* filename )
 {
    m_stream.open( filename );
-   if ( ! m_stream.is_open() )
-   {
+   if ( ! m_stream.is_open() ) {
       m_exception.SetMessage( "Error opening file" );
       throw m_exception;
    }

@@ -34,8 +34,9 @@ vdsFolder::vdsFolder( vdsSession &session )
 
 vdsFolder::~vdsFolder()
 {
-   if ( m_objectHandle != NULL )
+   if ( m_objectHandle != NULL ) {
       vdsFolderClose( m_objectHandle );
+   }
    m_sessionHandle = m_objectHandle = NULL;
 }
 
@@ -45,8 +46,9 @@ void vdsFolder::Close()
 {
    int rc = vdsFolderClose( m_objectHandle );
 
-   if ( rc != 0 ) 
+   if ( rc != 0 ) {
       throw vdsException( rc, m_sessionHandle, "vdsFolder::Close" );
+   }
    m_objectHandle = NULL;   
 }
 
@@ -58,9 +60,9 @@ void vdsFolder::Close()
 int vdsFolder::GetFirst( vdsFolderEntry * pEntry )
 {
    int rc = vdsFolderGetFirst( m_objectHandle, pEntry );
-   if ( rc != 0 && rc != VDS_IS_EMPTY ) 
+   if ( rc != 0 && rc != VDS_IS_EMPTY ) {
       throw vdsException( rc, m_sessionHandle, "vdsFolder::GetFirst" );
-   
+   }
    return rc;
 }
 
@@ -69,9 +71,9 @@ int vdsFolder::GetFirst( vdsFolderEntry * pEntry )
 int vdsFolder::GetNext( vdsFolderEntry * pEntry )
 {
    int rc = vdsFolderGetNext( m_objectHandle, pEntry );
-   if ( rc != 0 && rc != VDS_REACHED_THE_END ) 
+   if ( rc != 0 && rc != VDS_REACHED_THE_END ) {
       throw vdsException( rc, m_sessionHandle, "vdsFolder::GetNext" );
-   
+   }
    return rc;
 }
 
@@ -84,7 +86,9 @@ void vdsFolder::Open( const std::string & folderName )
                            folderName.length(),
                            &m_objectHandle );
 
-   if ( rc != 0 ) throw vdsException( rc, m_sessionHandle, "vdsFolder::Open" );
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsFolder::Open" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -97,7 +101,9 @@ void vdsFolder::Open( const char * folderName,
                            nameLengthInBytes,
                            &m_objectHandle );
 
-   if ( rc != 0 ) throw vdsException( rc, m_sessionHandle, "vdsFolder::Open" );
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsFolder::Open" );
+   }
 }
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -105,8 +111,9 @@ void vdsFolder::Open( const char * folderName,
 void vdsFolder::Status( vdsObjStatus * pStatus )
 {
    int rc = vdsFolderStatus( m_objectHandle, pStatus );
-   if ( rc != 0 ) 
+   if ( rc != 0 ) {
       throw vdsException( rc, m_sessionHandle, "vdsFolder::Status" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

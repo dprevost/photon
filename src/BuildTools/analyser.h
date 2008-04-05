@@ -35,50 +35,44 @@ class analyseException: public std::exception
 
 class noEnumException: public analyseException
 {
-   virtual const char* what() const throw()
-      {
-         return "The keyword \"enum\" was not found.";
-      }
+   virtual const char* what() const throw() {
+      return "The keyword \"enum\" was not found.";
+   }
 };
 
 class noNameException: public analyseException
 {
-   virtual const char* what() const throw()
-      {
-         return "The name of the enum was not found.";
-      }
+   virtual const char* what() const throw() {
+      return "The name of the enum was not found.";
+   }
 };
 
 class noOpenCurlyException: public analyseException
 {
-   virtual const char* what() const throw()
-      {
-         return "The open curly bracket, \"{\", was not found.";
-      }
+   virtual const char* what() const throw() {
+      return "The open curly bracket, \"{\", was not found.";
+   }
 };
 
 class emptyEnumException: public analyseException
 {
-   virtual const char* what() const throw()
-      {
-         return "The enum data structure is empty.";
-      }
+   virtual const char* what() const throw() {
+      return "The enum data structure is empty.";
+   }
 };
 
 class noCloseCurlyException: public analyseException
 {
-   virtual const char* what() const throw()
-      {
-         return "The close curly bracket, \"}\", was not found.";
-      }
+   virtual const char* what() const throw() {
+      return "The close curly bracket, \"}\", was not found.";
+   }
 };
 
 class formatErrorException: public analyseException
 {
-   virtual const char* what() const throw()
-      {
-         return "Format error - enum token not found.";
-      }
+   virtual const char* what() const throw() {
+      return "Format error - enum token not found.";
+   }
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -165,3 +159,4 @@ class analyser
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #endif // ANALYSER_H
+

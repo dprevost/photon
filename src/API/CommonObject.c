@@ -40,8 +40,7 @@ int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
 #endif
    VDS_PRE_CONDITION( nameLengthInBytes > 0 );
 
-   if ( pObject->pSession == NULL )
-      return VDS_PROCESS_NOT_INITIALIZED;
+   if ( pObject->pSession == NULL ) return VDS_PROCESS_NOT_INITIALIZED;
 
    if ( vdsaCommonLock( pObject ) == 0 ) {
       errcode = vdsaSessionOpenObj( pObject->pSession,
@@ -71,8 +70,7 @@ int vdsaCommonObjClose( vdsaCommonObject * pObject )
    VDS_PRE_CONDITION( pObject->pObjectContext != NULL );
 #endif
    
-   if ( pObject->pSession == NULL )
-      return VDS_PROCESS_NOT_INITIALIZED;
+   if ( pObject->pSession == NULL ) return VDS_PROCESS_NOT_INITIALIZED;
 
    /* No need to lock the api session. The caller already did it! */
    errcode = vdsaSessionCloseObj( pObject->pSession, pObject );

@@ -39,40 +39,33 @@ class fileException
 {
  public:
 
-   fileException() 
-      {
-      }
+   fileException() {}
    
-   virtual ~fileException() 
-      {
-      }
+   virtual ~fileException() {}
    
-   virtual void SetMessage( const char* msg ) 
-      {
-         s = msg;
-         if ( errno != 0 )
-         {
-            s += ": ";
-            s += strerror(errno);
-         }
+   virtual void SetMessage( const char* msg ) {
+      s = msg;
+      if ( errno != 0 ) {
+         s += ": ";
+         s += strerror(errno);
       }
-   virtual void SetMessage( const char* msg, size_t lineNumber ) 
-      {
-         char dummy[128];
+   }
+      
+   virtual void SetMessage( const char* msg, size_t lineNumber ) {
+      char dummy[128];
 
-         SetMessage( msg );
-         sprintf( dummy, "%s"VDSF_SIZE_T_FORMAT"%s", 
-                  "\n(approximate line number of the problem: ",
-                  lineNumber,
-                  ")" );
-         
-         s += dummy;
-      }
+      SetMessage( msg );
+      sprintf( dummy, "%s"VDSF_SIZE_T_FORMAT"%s", 
+               "\n(approximate line number of the problem: ",
+               lineNumber,
+               ")" );
+      
+      s += dummy;
+   }
    
-   virtual const std::string& what() const throw()
-      {
-         return s; // strerror(errno);
-      }
+   virtual const std::string& what() const throw() {
+      return s; // strerror(errno);
+   }
 
  private:
    std::string s;
@@ -105,3 +98,4 @@ class inputHeader
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #endif // INPUT_HEADER_H
+

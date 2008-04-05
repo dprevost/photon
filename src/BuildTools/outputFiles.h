@@ -29,10 +29,9 @@
 
 class outfileException: public std::exception
 {
-   virtual const char* what() const throw()
-      {
-         return strerror(errno);
-      }
+   virtual const char* what() const throw() {
+      return strerror(errno);
+   }
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -49,11 +48,10 @@ class outputFiles
 
    void OpenFiles( const char* filenamePrefix, const char* dataPrefix );
 
-   void CloseFiles() throw()
-      {
-         m_stream_c.close();
-         m_stream_h.close();
-      }   
+   void CloseFiles() throw() {
+      m_stream_c.close();
+      m_stream_h.close();
+   }   
 
    void AddEntry( int value, std::string& comment, std::string& enumName );
    
@@ -79,9 +77,6 @@ class outputFiles
    
    std::ofstream m_stream_c;
    std::ofstream m_stream_h;
-   
-   /// If the status is false, the output file is removed by the destructor.
-//   bool m_status;
    
    /// The name of this code generator.
    static const char* m_programName;

@@ -34,7 +34,9 @@ void vdsProcess::Init( const char* wdAddress,
 {
    int rc = vdsInit( wdAddress,
                      protectionNeeded );
-   if ( rc != 0 ) throw vdsException( rc, NULL, "vdsProcess::Init" );
+   if ( rc != 0 ) {
+      throw vdsException( rc, NULL, "vdsProcess::Init" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

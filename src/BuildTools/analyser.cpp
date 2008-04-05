@@ -52,31 +52,25 @@ string analyser::GetComment( string::size_type startComment,
    string::size_type i;
    string s, s1;
    
-   if ( startComment == string::npos )
-      return s;
+   if ( startComment == string::npos ) return s;
    
-   for ( i = startComment; i < endComment; ++i )
-   {
-      if ( m_pattern[i] == 'c' || m_pattern[i] == '+' )
-      {
+   for ( i = startComment; i < endComment; ++i ) {
+      if ( m_pattern[i] == 'c' || m_pattern[i] == '+' ) {
          // A spacial case, '"' needs to be escaped. 
-         if ( m_inputData[i] == '"' )
-            s += '\\';
+         if ( m_inputData[i] == '"' ) s += '\\';
          s += m_inputData[i];
       }
 
       // A \n at the beginning would not be inside a comment so we can 
       // skip that one. Note also that we don't care about c++ comments,
       // only c comments. See next loop for the why...
-      if ( m_pattern[i] == 'n' && i > startComment )
-      {
-         if (  m_pattern[i-1] == 'c' )
+      if ( m_pattern[i] == 'n' && i > startComment ) {
+         if (  m_pattern[i-1] == 'c' ) {
             s += m_inputData[i];
+         }
          // A limit case where \n is just after a /*
-         else if ( i < endComment-1 && m_pattern[i-1] == 's' )
-         {
-            if (  m_pattern[i+1] == 'c' )
-               s += m_inputData[i];
+         else if ( i < endComment-1 && m_pattern[i-1] == 's' ) {
+            if (  m_pattern[i+1] == 'c' ) s += m_inputData[i];
          }
       }
    }
@@ -88,33 +82,28 @@ string analyser::GetComment( string::size_type startComment,
     */
    // We want to return "Example..." not "* Example..."
    i = 0;
-   while ( i < s.length() )
-   {
-      if ( s[i] == '\n' )
-      {
+   while ( i < s.length() ) {
+      if ( s[i] == '\n' ) {
          s1 += ' ';
          
          i++;
-         while ( i < s.length()-1 )
-         {
-            if ( s[i] == '*' )
-            {
+         while ( i < s.length()-1 ) {
+            if ( s[i] == '*' ) {
                // We only skip if the following character is a space
-               if ( ! isspace(s[i+1]) )
-                  s1 += s[i];
+               if ( ! isspace(s[i+1]) ) s1 += s[i];
                break;
             }
             s1 += s[i];
             
-            if ( ! isspace(s[i]) )
-               break;
+            if ( ! isspace(s[i]) ) break;
             
             i++;
          }         
       }
-      else
+      else {
          s1 += s[i];
-
+      }
+      
       i++;
    }
    
@@ -123,23 +112,18 @@ string analyser::GetComment( string::size_type startComment,
    // Trim white space (remove it from the beginning the end and everywhere
    // there is more than one occurence).
    bool starting = true;
-   for ( i = 0; i < s1.length()-1; ++i )
-   {
-      if ( isspace(s1[i]) )
-      {
+   for ( i = 0; i < s1.length()-1; ++i ) {
+      if ( isspace(s1[i]) ) {
          if ( starting ) continue;
 
-         if ( ! isspace(s1[i+1]) )
-              s += s1[i];
+         if ( ! isspace(s1[i+1]) ) s += s1[i];
       }
-      else
-      {
+      else {
          s += s1[i];
          starting = false;
       }
    }
-   if ( ! isspace(s1[s1.length()-1]) )
-      s += s1[i];
+   if ( ! isspace(s1[s1.length()-1]) ) s += s1[i];
 
    return s;
 }
@@ -160,25 +144,23 @@ void analyser::GetEnumValue( string::size_type startToken,
 
    equalLocation = m_stripData.find( '=', startToken );
 
-   if ( equalLocation > endToken )
-      equalLocation = string::npos;
+   if ( equalLocation > endToken ) equalLocation = string::npos;
    
-   if ( equalLocation == string::npos )
-   {
+   if ( equalLocation == string::npos ) {
       m_enumNumericalValue++;
    }
-   else
-   {
+   else {
       valueLocation = GetNextToken( equalLocation+1, s );
-      if ( valueLocation == string::npos )
+      if ( valueLocation == string::npos ) {
          throw m_formatErrorException;
-   
+      }
+      
       str = m_stripData.c_str();
       m_enumNumericalValue = strtol( &str[valueLocation], &endStr, 0 );
-      if ( endStr == &str[valueLocation] )
+      if ( endStr == &str[valueLocation] ) {
          throw m_formatErrorException;
+      }
    }
-
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -194,23 +176,21 @@ string::size_type analyser::GetEnumKeyword() throw(noEnumException)
    // We need to make sure that we found the real enum keyword, not
    // something like "#define MY_ENUM my_enum"... it probably won't
    // happen but...
-   while ( ! found )
-   {
+   while ( ! found ) {
       enumLocation = m_stripData.find( "enum", currentLocation );
-      if ( enumLocation == string::npos )
-      {
+      if ( enumLocation == string::npos ) {
          // Not a valid header file
          throw m_noEnumException;
       }
       found = true;
       
-      if ( enumLocation > 0 )
-         if ( ! isspace(m_stripData[enumLocation-1]) )
-            found = false;
-      if ( enumLocation+4 < m_stripData.length() )
-         if ( ! isspace(m_stripData[enumLocation+4]) )
-            found = false;
-
+      if ( enumLocation > 0 ) {
+         if ( ! isspace(m_stripData[enumLocation-1]) ) found = false;
+      }
+      if ( enumLocation+4 < m_stripData.length() ) {
+         if ( ! isspace(m_stripData[enumLocation+4]) ) found = false;
+      }
+      
       currentLocation = enumLocation + 4;      
    }
 
@@ -229,24 +209,22 @@ string::size_type analyser::GetNextToken(
    tokenString.resize(0);
    
    // Find the first "non-space" character.
-   for ( i = startSearch; i < m_stripData.length(); ++i )
-   {
-      if ( ! isspace(m_stripData[i]) ) 
-      {
+   for ( i = startSearch; i < m_stripData.length(); ++i ) {
+      if ( ! isspace(m_stripData[i]) ) {
          beginToken = i;
          break;
       }
    }
    
    // Stop processing when we see a white space. Of course...
-   if ( beginToken != string::npos )
-   {
-      for ( i = beginToken; i < m_stripData.length(); ++i )
-      {
-         if ( ! isspace(m_stripData[i]) ) 
+   if ( beginToken != string::npos ) {
+      for ( i = beginToken; i < m_stripData.length(); ++i ) {
+         if ( ! isspace(m_stripData[i]) ) {
             tokenString += m_stripData[i];
-         else
+         }
+         else {
             break;
+         }
       }
    }
 
@@ -263,7 +241,6 @@ void analyser::ProcessInput()
    string::size_type location;
    
    string s;
-//   bool found = false;
    
    CreatePattern(  m_inputData, m_pattern )  ;
 
@@ -276,8 +253,7 @@ void analyser::ProcessInput()
    currentLocation = location + 4;
    
    location = GetNextToken( currentLocation + 4, s );
-   if ( location == string::npos )
-   {
+   if ( location == string::npos ) {
       // Not a valid header file
       throw m_noNameException;      
    }
@@ -286,29 +262,28 @@ void analyser::ProcessInput()
    // We do it that way to avoid giving an invalid position to the
    // call to string::find() (which would throw an exception). This
    // way the diagnostic is easier.
-   if ( currentLocation >= m_stripData.length() )
+   if ( currentLocation >= m_stripData.length() ) {
       throw m_noOpenCurlyException;
-
+   }
+   
    location = m_stripData.find( '{', currentLocation );
-   if ( location == string::npos )
-   {
+   if ( location == string::npos ) {
       throw m_noOpenCurlyException;
    }
    currentLocation = location + 1;
 
-   if ( currentLocation >= m_stripData.length() )
+   if ( currentLocation >= m_stripData.length() ) {
       throw m_noCloseCurlyException;
-
+   }
+   
    location = m_stripData.find( '}', currentLocation );
-   if ( location == string::npos )
-   {
+   if ( location == string::npos ) {
       throw m_noCloseCurlyException;
    }
 
    m_commentsBeforeCode = AreCommentsBeforeCode( currentLocation, location );
  
    ParseEnum( currentLocation, location );
-
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -360,37 +335,34 @@ void analyser::CreatePattern( const string& line,
    // c comments can be in cpp comments and the other way around.
    // We must determine which came first.
    if ( findStartCComment != string::npos && 
-        findStartCppComment != string::npos )
-   {
-      if ( findStartCComment < findStartCppComment )
+        findStartCppComment != string::npos ) {
+      if ( findStartCComment < findStartCppComment ) {
          findStartCppComment = string::npos;
-      else
+      }
+      else {
          findStartCComment = string::npos;
+      }
    }
    
-   if ( findStartCComment != string::npos )
-   {
+   if ( findStartCComment != string::npos ) {
       /* We have a C comment */
       
       startText    = 0;
       endText = findStartCComment;
       startComment = findStartCComment + 2 ;
       
-      for ( i = startText; i < endText; ++i )
-         pattern[i] = 't';
+      for ( i = startText; i < endText; ++i ) pattern[i] = 't';
       pattern[endText]   = 's';
       pattern[endText+1] = 's';
 
       /* look for an end comment here */
       findEndComment = line.find( "*/", startComment );
-      if ( findEndComment ==  string::npos )
-      {
+      if ( findEndComment ==  string::npos ) {
          cerr << " oh oh 1" << endl;
          
          endComment = len;
       }
-      else
-      {
+      else {
          endComment = findEndComment;
          
          pattern[endComment]   = 'e';
@@ -399,15 +371,13 @@ void analyser::CreatePattern( const string& line,
             
          // We recursively called ourselves (at the end of this function)
          // until we've analysed the whole string.
-         if ( endComment+2 < len )
-            unfinished = endComment+2;
+         if ( endComment+2 < len ) unfinished = endComment+2;
       }
-      for ( i = startComment; i < endComment; ++i )
+      for ( i = startComment; i < endComment; ++i ) {
          pattern[i] = 'c';
-      
+      }
    }
-   else if ( findStartCppComment != string::npos )
-   {
+   else if ( findStartCppComment != string::npos ) {
       // We have a C++ comment
       
       startText    = 0;
@@ -415,84 +385,71 @@ void analyser::CreatePattern( const string& line,
       startComment = findStartCppComment + 2 ;
       cppComment = true;
       
-      for ( i = startText; i < endText; ++i )
-         pattern[i] = 't';
+      for ( i = startText; i < endText; ++i ) pattern[i] = 't';
       pattern[endText]   = 's';
       pattern[endText+1] = 's';
 
       /* look for an end comment here */
       findEndComment = line.find( '\n', startComment );
-      if ( findEndComment ==  string::npos )
-      {
+      if ( findEndComment ==  string::npos ) {
          endComment = len;
       }
-      else
-      {
+      else {
          endComment = findEndComment;
 
          pattern[endComment]   = 'n';
 
          // We recursively called ourselves (at the end of this function)
          // until we've analysed the whole string.
-         if ( endComment+1 < len )
-            unfinished = endComment+1;
+         if ( endComment+1 < len ) unfinished = endComment+1;
       }
 
-      for ( i = startComment; i < endComment; ++i )
+      for ( i = startComment; i < endComment; ++i ) {
          pattern[i] = '+';
-
+      }
    }
-   else
-   {
+   else {
       // Just plain regular code.
       startText    = 0;
       endText      = len;
       startComment = 0;
       endComment   = 0;
 
-      for ( i = startText; i < endText; ++i )
+      for ( i = startText; i < endText; ++i ) {
          pattern[i] = 't';
+      }
    }
       
-   for ( i = startText; i < endText; ++i )
-   {
-      if ( line[i] == '\n' )
-      {
+   for ( i = startText; i < endText; ++i ) {
+      if ( line[i] == '\n' ) {
          pattern[i] = 'n';
       }
    }
    
    // Strip doxygen tags and white space from comments.
-   if ( startComment < endComment )
-   {
-      if ( cppComment )
-      {
-         if ( line[startComment] == '/' )
-         {
+   if ( startComment < endComment ) {
+      if ( cppComment ) {
+         if ( line[startComment] == '/' ) {
             pattern[startComment] = 's';
             (startComment)++;
          }
       }
-      else
-      {
-         if ( line[startComment] == '*' || 
-              line[startComment] == '!' )
-         {
+      else {
+         if ( line[startComment] == '*' || line[startComment] == '!' ) {
             pattern[startComment] = 's';
             (startComment)++;
          }
       }
    }
 
-   for ( i = startComment; i < endComment; ++i )
-      if ( line[i] == '\n' )
-      {
+   for ( i = startComment; i < endComment; ++i ) {
+      if ( line[i] == '\n' ) {
          pattern[i] = 'n';
       }
+   }
    
    // We recursively called ourselves until we've analysed the whole string.
-   if ( unfinished != string::npos )
-   {
+   if ( unfinished != string::npos ) {
       string tmp1( line,    unfinished, line.length()-unfinished );
       string tmp2( pattern, unfinished, line.length()-unfinished );
       CreatePattern( tmp1, tmp2 );
@@ -527,14 +484,10 @@ string::size_type analyser::IdentifyElements(
    // might be (if the comments are after the token).
    
    comma = m_stripData.find( ',', currentLocation );
-   if ( comma != string::npos )
-   {
-      for ( i = comma+1; i < endSearch; ++i )
-      {
-         if ( isspace(m_inputData[i]) )
-            continue;
-         if ( m_pattern[i] == 't' )
-         {
+   if ( comma != string::npos ) {
+      for ( i = comma+1; i < endSearch; ++i ) {
+         if ( isspace(m_inputData[i]) ) continue;
+         if ( m_pattern[i] == 't' ) {
             nextToken = i;
             break;
          }
@@ -544,75 +497,65 @@ string::size_type analyser::IdentifyElements(
    // Where is our token?
    endLoop = endSearch;
    if ( comma != string::npos ) endLoop = comma;
-   for ( i = currentLocation; i < endLoop; ++i )
-   {
-      if ( isspace(m_inputData[i]) )
-         continue;
-      if ( m_pattern[i] == 't' )
-      {
+   for ( i = currentLocation; i < endLoop; ++i ) {
+      if ( isspace(m_inputData[i]) ) continue;
+      if ( m_pattern[i] == 't' ) {
          startTokenLocation = i;
          break;
       }
    }
-   if ( startTokenLocation == string::npos )
+   if ( startTokenLocation == string::npos ) {
       throw m_formatErrorException;
-   for ( i = endLoop-1; i > startTokenLocation; --i )
-   {
-      if ( isspace(m_inputData[i]) )
-         continue;
-      if ( m_pattern[i] == 't' )
-      {
+   }
+
+   for ( i = endLoop-1; i > startTokenLocation; --i ) {
+      if ( isspace(m_inputData[i]) ) continue;
+      if ( m_pattern[i] == 't' ) {
          endTokenLocation = i;
          break;
       }
    }
-   
-   if ( endTokenLocation == string::npos )
+   if ( endTokenLocation == string::npos ) {
       throw m_formatErrorException;
-
+   }
+   
    // Where is the beginning of that comment? 
-   if ( m_commentsBeforeCode )
-   {
+   if ( m_commentsBeforeCode ) {
       startLoop = currentLocation;
       endLoop   = startTokenLocation;
    }
-   else
-   {
+   else {
       startLoop = endTokenLocation+1;
       endLoop = endSearch;
       if ( nextToken != string::npos ) endLoop = nextToken;
    }
    
-   for ( i = startLoop; i < endLoop; ++i )
-   {
-      if ( m_pattern[i] == 's' )
-      {
+   for ( i = startLoop; i < endLoop; ++i ) {
+      if ( m_pattern[i] == 's' ) {
          startCommentLocation = i;
          break;
       }
    }
 
    // And where is the end of that comment (if any)?
-   if ( startCommentLocation != string::npos )
-   {
-      if ( m_commentsBeforeCode )
+   if ( startCommentLocation != string::npos ) {
+      if ( m_commentsBeforeCode ) {
          startLoop = startTokenLocation;
-      else
-      {
+      }
+      else {
          startLoop = endSearch;
          if ( nextToken != string::npos ) startLoop = nextToken;
       }
       
-      for ( i = startLoop-1; i > startCommentLocation; --i )
-      {
-         if ( m_pattern[i] == 'e' || m_pattern[i] == '+' )
-         {
+      for ( i = startLoop-1; i > startCommentLocation; --i ) {
+         if ( m_pattern[i] == 'e' || m_pattern[i] == '+' ) {
             endCommentLocation = i;
             break;
          }
       }
-      if ( endCommentLocation == string::npos )
+      if ( endCommentLocation == string::npos ) {
          throw m_formatErrorException;
+      }
    }
 
    return comma;
@@ -625,14 +568,10 @@ bool analyser::AreCommentsBeforeCode( string::size_type currentLocation,
 {
    string::size_type i;
    
-   for ( i = currentLocation; i < endSearch; ++i )
-   {
-      if ( isspace(m_inputData[i]) )
-         continue;
-      if ( m_pattern[i] == 't' )
-         return false;
-      if ( m_pattern[i] == 's' )
-         return true;
+   for ( i = currentLocation; i < endSearch; ++i ) {
+      if ( isspace(m_inputData[i]) ) continue;
+      if ( m_pattern[i] == 't' ) return false;
+      if ( m_pattern[i] == 's' ) return true;
 
       fprintf( stderr, "Pattern error = %c \n", m_pattern[i] );
       break;
@@ -655,8 +594,7 @@ void analyser::ParseEnum( string::size_type startSearch,
    string s;
    string enumName;
    
-   for ( ;; )
-   {
+   for ( ;; ) {
       nextLocation = IdentifyElements( currentLocation,
                                        endSearch,
                                        startToken,
@@ -667,8 +605,7 @@ void analyser::ParseEnum( string::size_type startSearch,
       GetEnumValue( startToken, endToken, enumName );
 
       s = GetComment( startComment, endComment );
-      if ( s.length() == 0 )
-      {
+      if ( s.length() == 0 ) {
          cerr << "Warning - no valid comments were found for error " << 
             m_enumNumericalValue << " (" << enumName << ")" << endl;
          cerr << "The following will be inserted instead: " <<
@@ -678,8 +615,7 @@ void analyser::ParseEnum( string::size_type startSearch,
       
       m_pOutput->AddEntry( m_enumNumericalValue, s, enumName );
       
-      if ( nextLocation == string::npos )
-         break;
+      if ( nextLocation == string::npos ) break;
 
       currentLocation = nextLocation+1;
    }
@@ -701,39 +637,35 @@ void analyser::StripComments()
       textMode = false;
       
    i = 0;
-   while ( i < m_pattern.length() )
-   {
-      if ( textMode )
-      {
+   while ( i < m_pattern.length() ) {
+      if ( textMode ) {
          if ( m_pattern[i] == 't' || 
-              m_pattern[i] == 'n' )
-         {
+              m_pattern[i] == 'n' ) {
             m_stripData += m_inputData[i];
          }
-         else 
-         {
+         else {
             // Add spaces where comments used to be to make sure
             // tokens are nicely separated.
             m_stripData += ' ';
-            if ( m_pattern[i] == 's' )
-               textMode = false;
+            if ( m_pattern[i] == 's' ) textMode = false;
          }
       }
-      else
-      {
-         if (  m_pattern[i] == 'n' )
+      else {
+         if (  m_pattern[i] == 'n' ) {
             m_stripData += m_inputData[i];
-         else
+         }
+         else {
             m_stripData += ' ';
-
-         // For C comments
-         if ( m_pattern[i] == 'e' )
-            textMode = true;
-         // For C++ comments
-         if (  m_pattern[i] == 'n' && i > 0 )
-            if ( m_pattern[i-1] == '+' )
-               textMode = true;
+         }
          
+         // For C comments
+         if ( m_pattern[i] == 'e' ) textMode = true;
+         // For C++ comments
+         if (  m_pattern[i] == 'n' && i > 0 ) {
+            if ( m_pattern[i-1] == '+' ) {
+               textMode = true;
+            }
+         }
       }
       ++i;
    }
@@ -742,3 +674,4 @@ void analyser::StripComments()
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

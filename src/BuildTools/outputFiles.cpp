@@ -23,8 +23,6 @@ const char* outputFiles::m_programName = "errorParser";
 
 outputFiles::outputFiles() throw()
    : m_longestString ( 0 )
-//,
-//     m_status        ( false )
 {
 }
 
@@ -44,8 +42,9 @@ void outputFiles::AddEntry( int          value,
    
    e.value = value;
    e.comment = comment;
-   if ( e.comment.length() > m_longestString )
+   if ( e.comment.length() > m_longestString ) {
       m_longestString = e.comment.length();
+   }
    e.enumName = enumName;
    
    m_list.push_back( e );
@@ -63,15 +62,17 @@ void outputFiles::OpenFiles( const char* filenamePrefix,
    s = filenamePrefix;
    s += ".h";
    m_stream_h.open( s.c_str(), std::ios::trunc | std::ios::out );
-   if ( ! m_stream_h.is_open() )
+   if ( ! m_stream_h.is_open() ) {
       throw m_exception;
+   }
    
    s = filenamePrefix;
    s += ".c";
    m_stream_c.open( s.c_str(), std::ios::trunc | std::ios::out );
-   if ( ! m_stream_c.is_open() )
+   if ( ! m_stream_c.is_open() ) {
       throw m_exception;
-
+   }
+   
    // As long as we have the name of the output header file, use it to
    // generate the standard "#ifndef XXX \n#define XXX ... #endif".
    m_ifdefname  = "";
@@ -80,26 +81,25 @@ void outputFiles::OpenFiles( const char* filenamePrefix,
    // Remove the directory name if present.
    s = filenamePrefix;
    offset = s.rfind( '/');
-   if ( offset == string::npos )
-      offset = s.rfind( '\\'); // Win32
-   if ( offset == string::npos )
+   if ( offset == string::npos ) offset = s.rfind( '\\'); // Win32
+   if ( offset == string::npos ) {
       offset = 0;
-   else 
+   }
+   else {
       offset++;
+   }
    
-   for ( unsigned int i = offset; i < strlen( filenamePrefix ); ++i )
-   {
-      if ( isalnum(filenamePrefix[i]) )
+   for ( unsigned int i = offset; i < strlen( filenamePrefix ); ++i ) {
+      if ( isalnum(filenamePrefix[i]) ) {
          m_ifdefname += toupper(filenamePrefix[i]);
-      else
+      }
+      else {
          m_ifdefname += '_';
-
+      }
       m_headerName += filenamePrefix[i];
    }
    m_ifdefname  += "_H";
    m_headerName += ".h";
-   
-//   cerr << "#ifdef name: " << m_ifdefname << endl;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -114,8 +114,9 @@ void outputFiles::Write( const char* inFilename, const char* prefix )
    WriteHeader( m_stream_h, inFilename );
    WriteHeader( m_stream_c, inFilename );
    
-   for ( string::size_type j = 0; j < stringPrefix.length(); ++j )
+   for ( string::size_type j = 0; j < stringPrefix.length(); ++j ) {
       upperPrefix += toupper(stringPrefix[j]);
+   }
    
    //
    // Write a few basic things to the generated header file
@@ -200,8 +201,7 @@ void outputFiles::Write( const char* inFilename, const char* prefix )
    
 //    m_stream_c << endl << "};" << endl;
    
-   for ( i = 0; i < num; ++i )
-   {
+   for ( i = 0; i < num; ++i ) {
       entry e = m_list.front();
       m_stream_c << "/* " << e.enumName << " */" << endl;
       m_stream_c << stringPrefix << "ErrMsgStruct " << stringPrefix << 
@@ -228,9 +228,10 @@ void outputFiles::Write( const char* inFilename, const char* prefix )
       "ErrMsg[" << upperPrefix << "_MAX_ENTRIES] = ";
    m_stream_c << endl << "{" << endl;
 
-   for ( i = 0; i < num-1; ++i )
+   for ( i = 0; i < num-1; ++i ) {
       m_stream_c << "   &" << stringPrefix << "ErrMsg" << i << "," << endl;
-
+   }
+   
    m_stream_c << "   &" << stringPrefix << "ErrMsg" << num-1 << endl;
    m_stream_c << endl << "};" << endl << endl;
 
@@ -257,8 +258,6 @@ void outputFiles::Write( const char* inFilename, const char* prefix )
    m_stream_c << "   }" << endl << endl;
    m_stream_c << "   return -1;" << endl;
    m_stream_c << "}" << endl;
-
-   
 }
 
 

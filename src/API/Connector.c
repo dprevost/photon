@@ -61,9 +61,8 @@ int vdsaConnect( vdsaConnector    * pConnector,
 #endif
 
    dummy = strtol( address, NULL, 10 );
-   if ( dummy <= 0 || dummy > 65535 )
-      return VDS_INVALID_WATCHDOG_ADDRESS;
-   port = (unsigned short) dummy;   
+   if ( dummy <= 0 || dummy > 65535 ) return VDS_INVALID_WATCHDOG_ADDRESS;
+   port = (unsigned short) dummy;
 
 #if defined (WIN32) 
    versionRequested = MAKEWORD( 2, 2 );
@@ -107,16 +106,13 @@ int vdsaConnect( vdsaConnector    * pConnector,
    input.processId = getpid();
 
    errcode = Send( pConnector, &input, sizeof(struct WDInput), errorHandler );
-   if ( errcode != 0 )
-      return VDS_SEND_ERROR;
+   if ( errcode != 0 ) return VDS_SEND_ERROR;
 
    errcode = Receive( pConnector, pAnswer, sizeof(struct WDOutput), errorHandler );
-   if ( errcode != 0 )
-      return VDS_RECEIVE_ERROR;
+   if ( errcode != 0 ) return VDS_RECEIVE_ERROR;
 
    return 0;
 }
-
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -136,9 +132,10 @@ void vdsaDisconnect( vdsaConnector    * pConnector,
        * \todo Remove this debug info when we are sure it is ok (?)
        * or maybe replace it with an assert? 
        */
-      if ( errcode != 0 )
+      if ( errcode != 0 ) {
          fprintf( stderr, "Error in Connector::Disconnect Send(): %d\n",
                   errcode );
+      }
       
 #if defined (WIN32)
       shutdown( pConnector->socketFD, SD_BOTH );

@@ -42,8 +42,7 @@ int analyserTest::TestCreatePattern()
 
    pattern.resize( line.length() );
    m_a.CreatePattern( line, pattern );
-   if ( pattern != expectedPattern )
-      return 1;
+   if ( pattern != expectedPattern ) return 1;
 
    line             = "  abc  /*    some text here  \n";
    expectedPattern  = "tttttttssccccccccccccccccccccn";
@@ -53,8 +52,7 @@ int analyserTest::TestCreatePattern()
    expectedPattern += "cccccccccccceetttt";
    pattern.resize( line.length() );
    m_a.CreatePattern( line, pattern );
-   if ( pattern != expectedPattern )
-      return 2;
+   if ( pattern != expectedPattern ) return 2;
 
    line             = "  abc  /*    some text here  \n";
    expectedPattern  = "tttttttssccccccccccccccccccccn";
@@ -64,15 +62,13 @@ int analyserTest::TestCreatePattern()
    expectedPattern += "cccccccccccceetttttttt";
    pattern.resize( line.length() );
    m_a.CreatePattern( line, pattern );
-   if ( pattern != expectedPattern )
-      return 3;
+   if ( pattern != expectedPattern ) return 3;
  
    line            = "Z/*\n  */";
    expectedPattern = "tssnccee";
    pattern.resize( line.length() );
    m_a.CreatePattern( line, pattern );
-   if ( pattern != expectedPattern )
-      return 4;
+   if ( pattern != expectedPattern ) return 4;
  
    line             = "   /**    some text here  \n";
    expectedPattern  = "tttsssccccccccccccccccccccn";
@@ -84,36 +80,31 @@ int analyserTest::TestCreatePattern()
    m_a.CreatePattern( line, pattern );
 //    cerr << pattern << endl;
 //    cerr << expectedPattern << endl;
-   if ( pattern != expectedPattern )
-      return 5;
+   if ( pattern != expectedPattern ) return 5;
  
    line            = "/*! How about this */";
    expectedPattern = "sssccccccccccccccccee";
    pattern.resize( line.length() );
    m_a.CreatePattern( line, pattern );
-   if ( pattern != expectedPattern )
-      return 6;
+   if ( pattern != expectedPattern ) return 6;
  
    line            = "/* How about this #2 */ azerty /// querty ";
    expectedPattern = "ssccccccccccccccccccceettttttttsss++++++++";
    pattern.resize( line.length() );
    m_a.CreatePattern( line, pattern );
-   if ( pattern != expectedPattern )
-      return 7;
+   if ( pattern != expectedPattern ) return 7;
  
    line            = "/* Will it see // this */ ";
    expectedPattern = "ssccccccccccccccccccccceet";
    pattern.resize( line.length() );
    m_a.CreatePattern( line, pattern );
-   if ( pattern != expectedPattern )
-      return 8;
+   if ( pattern != expectedPattern ) return 8;
  
    line            = "// Will it see /* this */ (well both) ";
    expectedPattern = "ss++++++++++++++++++++++++++++++++++++";
    pattern.resize( line.length() );
    m_a.CreatePattern( line, pattern );
-   if ( pattern != expectedPattern )
-      return 9;
+   if ( pattern != expectedPattern ) return 9;
    
    line             = " First  /*  comment 1  */  Second/* comment   2 ";
    expectedPattern  = "ttttttttssccccccccccccceettttttttssccccccccccccc";
@@ -121,8 +112,7 @@ int analyserTest::TestCreatePattern()
    expectedPattern += "eettttttss+++++++++++";
    pattern.resize( line.length() );
    m_a.CreatePattern( line, pattern );
-   if ( pattern != expectedPattern )
-      return 10;
+   if ( pattern != expectedPattern ) return 10;
  
    line             = " First  /*  comment 1  *//* comment   2 */";
    expectedPattern  = "ttttttttssccccccccccccceesscccccccccccccee";
@@ -130,8 +120,7 @@ int analyserTest::TestCreatePattern()
    expectedPattern += "ttttttss+++++++++++";
    pattern.resize( line.length() );
    m_a.CreatePattern( line, pattern );
-   if ( pattern != expectedPattern )
-      return 11;
+   if ( pattern != expectedPattern ) return 11;
  
    line             = " First  /*  comment 1  *//* comment   2 */";
    expectedPattern  = "ttttttttssccccccccccccceesscccccccccccccee";
@@ -141,15 +130,13 @@ int analyserTest::TestCreatePattern()
    expectedPattern += "ccccccccccccccccccccceetttttsss++++++++++";
    pattern.resize( line.length() );
    m_a.CreatePattern( line, pattern );
-   if ( pattern != expectedPattern )
-      return 12;
+   if ( pattern != expectedPattern ) return 12;
  
    line             = " First // blah blah\n Blah Blah\n//\n // \nz/* zut */";
    expectedPattern  = "tttttttss++++++++++nttttttttttnssntss+ntsscccccee";
    pattern.resize( line.length() );
    m_a.CreatePattern( line, pattern );
-   if ( pattern != expectedPattern )
-      return 13;
+   if ( pattern != expectedPattern ) return 13;
 
    return 0;
 }
@@ -164,8 +151,7 @@ int analyserTest::TestStripComments()
    m_a.m_pattern     = "";
    expectedStrip = "";
    m_a.StripComments();
-   if ( m_a.m_stripData != expectedStrip )
-      return 1;
+   if ( m_a.m_stripData != expectedStrip ) return 1;
 
    m_a.m_inputData      = "  abc  /*    some text here  \n";
    m_a.m_pattern        = "tttttttssccccccccccccccccccccn";
@@ -177,8 +163,7 @@ int analyserTest::TestStripComments()
    expectedStrip   += "                                  \n";
    expectedStrip   += "                  ";
    m_a.StripComments();
-   if ( m_a.m_stripData != expectedStrip )
-      return 2;
+   if ( m_a.m_stripData != expectedStrip ) return 2;
 
    m_a.m_inputData    = "  abc  /*    some text here  \n";
    m_a.m_pattern      = "tttttttssccccccccccccccccccccn";
@@ -190,15 +175,13 @@ int analyserTest::TestStripComments()
    expectedStrip += "                                  \n";
    expectedStrip += "                  www ";
    m_a.StripComments();
-   if ( m_a.m_stripData != expectedStrip )
-      return 3;
+   if ( m_a.m_stripData != expectedStrip ) return 3;
  
    m_a.m_inputData   = "Z/*\n  */";
    m_a.m_pattern     = "tssnccee";
    expectedStrip = "Z  \n    ";
    m_a.StripComments();
-   if ( m_a.m_stripData != expectedStrip )
-      return 4;
+   if ( m_a.m_stripData != expectedStrip ) return 4;
  
    m_a.m_inputData    = "   /**    some text here  \n";
    m_a.m_pattern      = "tttsssccccccccccccccccccccn";
@@ -212,36 +195,31 @@ int analyserTest::TestStripComments()
    m_a.StripComments();
 //    cerr << pattern << endl;
 //    cerr << expectedStrip << endl;
-   if ( m_a.m_stripData != expectedStrip )
-      return 5;
+   if ( m_a.m_stripData != expectedStrip ) return 5;
  
    m_a.m_inputData   = "/*! How about this */";
    m_a.m_pattern     = "sssccccccccccccccccee";
    expectedStrip = "                     ";
    m_a.StripComments();
-   if ( m_a.m_stripData != expectedStrip )
-      return 6;
+   if ( m_a.m_stripData != expectedStrip ) return 6;
  
    m_a.m_inputData   = "/* How about this #2 */ azerty /// querty ";
    m_a.m_pattern     = "ssccccccccccccccccccceettttttttsss++++++++";
    expectedStrip = "                        azerty            ";
    m_a.StripComments();
-   if ( m_a.m_stripData != expectedStrip )
-      return 7;
+   if ( m_a.m_stripData != expectedStrip ) return 7;
  
    m_a.m_inputData   = "/* Will it see // this */ ";
    m_a.m_pattern     = "ssccccccccccccccccccccceet";
    expectedStrip = "                          ";
    m_a.StripComments();
-   if ( m_a.m_stripData != expectedStrip )
-      return 8;
+   if ( m_a.m_stripData != expectedStrip ) return 8;
  
    m_a.m_inputData   = "// Will it see /* this */ (well both) ";
    m_a.m_pattern     = "ss++++++++++++++++++++++++++++++++++++";
    expectedStrip = "                                      ";
    m_a.StripComments();
-   if ( m_a.m_stripData != expectedStrip )
-      return 9;
+   if ( m_a.m_stripData != expectedStrip ) return 9;
    
    m_a.m_inputData    = " First  /*  comment 1  */  Second/* comment   2 ";
    m_a.m_pattern      = "ttttttttssccccccccccccceettttttttssccccccccccccc";
@@ -250,8 +228,7 @@ int analyserTest::TestStripComments()
    expectedStrip  = " First                     Second               ";
    expectedStrip += "  Third              ";
    m_a.StripComments();
-   if ( m_a.m_stripData != expectedStrip )
-      return 10;
+   if ( m_a.m_stripData != expectedStrip ) return 10;
  
    m_a.m_inputData    = " First  /*  comment 1  *//* comment   2 */";
    m_a.m_pattern      = "ttttttttssccccccccccccceesscccccccccccccee";
@@ -260,8 +237,7 @@ int analyserTest::TestStripComments()
    expectedStrip  = " First                                    ";
    expectedStrip += "Third              ";
    m_a.StripComments();
-   if ( m_a.m_stripData != expectedStrip )
-      return 11;
+   if ( m_a.m_stripData != expectedStrip ) return 11;
  
    m_a.m_inputData    = " First  /*  comment 1  *//* comment   2 */";
    m_a.m_pattern      = "ttttttttssccccccccccccceesscccccccccccccee";
@@ -273,15 +249,13 @@ int analyserTest::TestStripComments()
    expectedStrip += "Third              \n";
    expectedStrip += "                        Four             ";
    m_a.StripComments();
-   if ( m_a.m_stripData != expectedStrip )
-      return 12;
+   if ( m_a.m_stripData != expectedStrip ) return 12;
  
    m_a.m_inputData   = " First // blah blah\n Blah Blah\n//\n // \nz/* zut */";
    m_a.m_pattern     = "tttttttss++++++++++nttttttttttnssntss+ntsscccccee";
    expectedStrip = " First             \n Blah Blah\n  \n    \nz         ";
    m_a.StripComments();
-   if ( m_a.m_stripData != expectedStrip )
-      return 13;
+   if ( m_a.m_stripData != expectedStrip ) return 13;
 
    return 0;
 }
@@ -299,73 +273,57 @@ int analyserTest::TestGetToken()
    expectedToken = "token";
    expectedLocation = 1;
    location = m_a.GetNextToken( 0, token );
-   if ( location != expectedLocation )
-      return 1;
-   if ( token != expectedToken )
-      return 2;
+   if ( location != expectedLocation ) return 1;
+   if ( token != expectedToken ) return 2;
    
    m_a.m_stripData = "\n\ntoken aaa";
    expectedToken = "token";
    expectedLocation = 2;
    location = m_a.GetNextToken( 0, token );
-   if ( location != expectedLocation )
-      return 3;
-   if ( token != expectedToken )
-      return 4;
+   if ( location != expectedLocation ) return 3;
+   if ( token != expectedToken ) return 4;
 
    m_a.m_stripData = "\n\n token\n aaa";
    expectedToken = "token";
    expectedLocation = 3;
    location = m_a.GetNextToken( 0, token );
-   if ( location != expectedLocation )
-      return 5;
-   if ( token != expectedToken )
-      return 6;
+   if ( location != expectedLocation ) return 5;
+   if ( token != expectedToken ) return 6;
 
    m_a.m_stripData = "\t\t token\t aaa";
    expectedToken = "token";
    expectedLocation = 3;
    location = m_a.GetNextToken( 0, token );
-   if ( location != expectedLocation )
-      return 7;
-   if ( token != expectedToken )
-      return 8;
+   if ( location != expectedLocation ) return 7;
+   if ( token != expectedToken ) return 8;
 
    m_a.m_stripData = "\t\t token\t aaa     \n  \n";
    expectedToken = "";
    expectedLocation = string::npos;
    location = m_a.GetNextToken( 15, token );
-   if ( location != expectedLocation )
-      return 9;
-   if ( token != expectedToken )
-      return 10;
+   if ( location != expectedLocation ) return 9;
+   if ( token != expectedToken ) return 10;
 
    m_a.m_stripData = "\t\t token\t aaa     \n  \nZ";
    expectedToken = "";
    expectedLocation = string::npos;
    location = m_a.GetNextToken( m_a.m_stripData.length(), token );
-   if ( location != expectedLocation )
-      return 11;
-   if ( token != expectedToken )
-      return 12;
+   if ( location != expectedLocation ) return 11;
+   if ( token != expectedToken ) return 12;
 
    m_a.m_stripData = "\t\t token\t aaa     \n  \nZ";
    expectedToken = "";
    expectedLocation = string::npos;
    location = m_a.GetNextToken( m_a.m_stripData.length()+1, token );
-   if ( location != expectedLocation )
-      return 13;
-   if ( token != expectedToken )
-      return 14;
+   if ( location != expectedLocation ) return 13;
+   if ( token != expectedToken ) return 14;
 
    m_a.m_stripData = "\n\n token\n aaa";
    expectedToken = "aaa";
    expectedLocation = 10;
    location = m_a.GetNextToken( 8, token );
-   if ( location != expectedLocation )
-      return 15;
-   if ( token != expectedToken )
-      return 16;
+   if ( location != expectedLocation ) return 15;
+   if ( token != expectedToken ) return 16;
 
    return 0;
 }
@@ -379,98 +337,79 @@ int analyserTest::TestGetEnum()
    bool coughtIt;
 
    m_a.m_stripData = "enum";
-   try
-   {
+   try {
       location = m_a.GetEnumKeyword();
    }
-   catch ( noEnumException e )
-   {
+   catch ( noEnumException e ) {
       return 1;
    }
    if ( location != 0 ) return 2;
    
    m_a.m_stripData = "  enum";
-   try
-   {
+   try {
       location = m_a.GetEnumKeyword();
    }
-   catch ( noEnumException e )
-   {
+   catch ( noEnumException e ) {
       return 3;
    }
    if ( location != 2 ) return 4;
 
    m_a.m_stripData = "  \nenum";
-   try
-   {
+   try {
       location = m_a.GetEnumKeyword();
    }
-   catch ( noEnumException e )
-   {
+   catch ( noEnumException e ) {
       return 5;
    }
    if ( location != 3 ) return 6;
 
    m_a.m_stripData = "  \nenum\n";
-   try
-   {
+   try {
       location = m_a.GetEnumKeyword();
    }
-   catch ( noEnumException e )
-   {
+   catch ( noEnumException e ) {
       return 7;
    }
    if ( location != 3 ) return 8;
 
    m_a.m_stripData = "  \nenum\n1 \n";
-   try
-   {
+   try {
       location = m_a.GetEnumKeyword();
    }
-   catch ( noEnumException e )
-   {
+   catch ( noEnumException e ) {
       return 9;
    }
    if ( location != 3 ) return 10;
 
    coughtIt = false;
    m_a.m_stripData = "";
-   try
-   {
+   try {
       location = m_a.GetEnumKeyword();
    }
-   catch ( noEnumException e )
-   {
+   catch ( noEnumException e ) {
       coughtIt = true;
    }
-   if ( ! coughtIt )
-      return 11;
+   if ( ! coughtIt ) return 11;
    
    coughtIt = false;
    m_a.m_stripData = " enum1";
-   try
-   {
+   try {
       location = m_a.GetEnumKeyword();
    }
-   catch ( noEnumException e )
-   {
+   catch ( noEnumException e ) {
       coughtIt = true;
    }
-   if ( ! coughtIt )
-      return 12;
+   if ( ! coughtIt ) return 12;
    
    coughtIt = false;
    m_a.m_stripData = " myenum ";
-   try
-   {
+   try {
       location = m_a.GetEnumKeyword();
    }
-   catch ( noEnumException e )
-   {
+   catch ( noEnumException e ) {
       coughtIt = true;
    }
-   if ( ! coughtIt )
-      return 13;   
+   if ( ! coughtIt ) return 13;   
 
    return 0;
 }
@@ -485,81 +424,66 @@ int analyserTest::TestProcessInput()
    m_a.m_inputData = "  \n  \n";
    m_a.m_stripData.reserve( m_a.m_inputData.length() );
    m_a.m_pattern.resize   ( m_a.m_inputData.length() );
-   try
-   {
+   try {
       m_a.ProcessInput();
    }
-   catch ( noEnumException e )
-   {
+   catch ( noEnumException e ) {
       coughtIt = true;
    }
    catch(...) {}   
-   if ( ! coughtIt )
-      return 1;
+   if ( ! coughtIt ) return 1;
 
    coughtIt = false;
    m_a.m_inputData = " enum \n \n \n";
    m_a.m_stripData.reserve( m_a.m_inputData.length() );
    m_a.m_pattern.resize   ( m_a.m_inputData.length() );
-   try
-   {
+   try {
       m_a.ProcessInput();
    }
-   catch ( noNameException e )
-   {
+   catch ( noNameException e ) {
       coughtIt = true;
    }
    catch(...) {}
-   if ( ! coughtIt )
-      return 2;
+   if ( ! coughtIt ) return 2;
    
    coughtIt = false;
    m_a.m_inputData = " enum      my_errors\n";
    m_a.m_stripData.reserve( m_a.m_inputData.length() );
    m_a.m_pattern.resize   ( m_a.m_inputData.length() );
-   try
-   {
+   try {
       m_a.ProcessInput();
    }
-   catch ( noOpenCurlyException e )
-   {
+   catch ( noOpenCurlyException e ) {
       coughtIt = true;
    }
    catch(...) {}
-   if ( ! coughtIt )
-      return 3;
+   if ( ! coughtIt ) return 3;
 
    coughtIt = false;
    m_a.m_inputData = " enum \n \n my_errors \n";
    m_a.m_stripData.reserve( m_a.m_inputData.length() );
    m_a.m_pattern.resize   ( m_a.m_inputData.length() );
-   try
-   {
+   try {
       m_a.ProcessInput();
    }
-   catch ( noOpenCurlyException e )
-   {
+   catch ( noOpenCurlyException e ) {
       coughtIt = true;
    }
    catch(...) {}
-   if ( ! coughtIt )
-      return 4;
+   if ( ! coughtIt ) return 4;
    
    coughtIt = false;
    m_a.m_inputData = " enum \n \n my_errors \n \n \n \n{\n\n";
    m_a.m_stripData.reserve( m_a.m_inputData.length() );
    m_a.m_pattern.resize   ( m_a.m_inputData.length() );
-   try
-   {
+   try {
       m_a.ProcessInput();
    }
-   catch ( noCloseCurlyException e )
-   {
+   catch ( noCloseCurlyException e ) {
       coughtIt = true;
    }
    catch(...) {}
-   if ( ! coughtIt )
-      return 5;
+   if ( ! coughtIt ) return 5;
 
    return 0;
 }
@@ -580,14 +504,15 @@ int analyserTest::TestIdentifyElements()
    m_a.m_inputData = "  /* */ EEE = 4  \n";
    m_a.m_stripData = "        EEE = 4  \n";
    m_a.m_pattern   = "ttssceettttttttttn";
-   try
-   {
-      next = m_a.IdentifyElements( 0, m_a.m_inputData.length(), 
-                               startTokenLocation, endTokenLocation, 
-                               startCommentLocation, endCommentLocation );
+   try {
+      next = m_a.IdentifyElements( 0, 
+                                   m_a.m_inputData.length(), 
+                                   startTokenLocation, 
+                                   endTokenLocation, 
+                                   startCommentLocation, 
+                                   endCommentLocation );
    }
-   catch(...)
-   {
+   catch(...) {
       return 1;
    }
    if ( startTokenLocation   != 8 )  return 2;
@@ -601,14 +526,15 @@ int analyserTest::TestIdentifyElements()
    m_a.m_inputData = "  /* */ EEE = 4, \n";
    m_a.m_stripData = "        EEE = 4, \n";
    m_a.m_pattern   = "ttssceettttttttttn";
-   try
-   {
-      next = m_a.IdentifyElements( 0, m_a.m_inputData.length(), 
-                               startTokenLocation, endTokenLocation, 
-                               startCommentLocation, endCommentLocation );
+   try {
+      next = m_a.IdentifyElements( 0, 
+                                   m_a.m_inputData.length(), 
+                                   startTokenLocation, 
+                                   endTokenLocation, 
+                                   startCommentLocation, 
+                                   endCommentLocation );
    }
-   catch(...)
-   {
+   catch(...) {
       return 11;
    }
    if ( startTokenLocation   != 8 )  return 12;
@@ -623,14 +549,15 @@ int analyserTest::TestIdentifyElements()
    m_a.m_inputData = "  /* */ EEE = 4, \n";
    m_a.m_stripData = "        EEE = 4, \n";
    m_a.m_pattern   = "ttssceettttttttttn";
-   try
-   {
-      next = m_a.IdentifyElements( 0, m_a.m_inputData.length(), 
-                               startTokenLocation, endTokenLocation, 
-                               startCommentLocation, endCommentLocation );
+   try {
+      next = m_a.IdentifyElements( 0, 
+                                   m_a.m_inputData.length(), 
+                                   startTokenLocation, 
+                                   endTokenLocation, 
+                                   startCommentLocation,
+                                   endCommentLocation );
    }
-   catch(...)
-   {
+   catch(...) {
       return 21;
    }
    if ( startTokenLocation   != 8 )  return 22;
@@ -644,14 +571,15 @@ int analyserTest::TestIdentifyElements()
    m_a.m_inputData = "   EEE = 4, // A comment \n FFF, ";
    m_a.m_stripData = "   EEE = 4,              \n FFF, ";
    m_a.m_pattern   = "ttttttttttttss+++++++++++ntttttt";
-   try
-   {
-      next = m_a.IdentifyElements( 0, m_a.m_inputData.length(), 
-                               startTokenLocation, endTokenLocation, 
-                               startCommentLocation, endCommentLocation );
+   try {
+      next = m_a.IdentifyElements( 0, 
+                                   m_a.m_inputData.length(), 
+                                   startTokenLocation, 
+                                   endTokenLocation, 
+                                   startCommentLocation, 
+                                   endCommentLocation );
    }
-   catch(...)
-   {
+   catch(...) {
       return 31;
    }
 //   cerr << startCommentLocation << endl;
@@ -668,36 +596,36 @@ int analyserTest::TestIdentifyElements()
    m_a.m_inputData = "  ";
    m_a.m_stripData = "  ";
    m_a.m_pattern   = "tt";
-   try
-   {
-      next = m_a.IdentifyElements( 0, m_a.m_inputData.length(), 
-                               startTokenLocation, endTokenLocation, 
-                               startCommentLocation, endCommentLocation );
+   try {
+      next = m_a.IdentifyElements( 0, 
+                                   m_a.m_inputData.length(), 
+                                   startTokenLocation, 
+                                   endTokenLocation, 
+                                   startCommentLocation, 
+                                   endCommentLocation );
    }
-   catch(formatErrorException)
-   {
+   catch(formatErrorException) {
       coughtIt = true;
    }
-   catch(...)
-   {
+   catch(...) {
       return 41;
    }
-   if ( ! coughtIt )
-      return 42;
+   if ( ! coughtIt ) return 42;
 
    //
 
    m_a.m_inputData = "   EEE = 4 /* */, /* */\n";
    m_a.m_stripData = "   EEE = 4      ,      \n";
    m_a.m_pattern   = "tttttttttttssceettssceen";
-   try
-   {
-      next = m_a.IdentifyElements( 0, m_a.m_inputData.length(), 
-                               startTokenLocation, endTokenLocation, 
-                               startCommentLocation, endCommentLocation );
+   try {
+      next = m_a.IdentifyElements( 0, 
+                                   m_a.m_inputData.length(), 
+                                   startTokenLocation, 
+                                   endTokenLocation, 
+                                   startCommentLocation, 
+                                   endCommentLocation );
    }
-   catch(...)
-   {
+   catch(...) {
       return 51;
    }
    
@@ -717,43 +645,37 @@ int analyserTest::Run()
    int errcode;
    
    errcode = TestCreatePattern();
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Failed in TestCreatePattern(), test # %d\n", errcode );
       return -1;
    }
 
    errcode = TestStripComments();
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Failed in StripComments(), test # %d\n", errcode );
       return -1;
    }
 
    errcode = TestGetToken();
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Failed in GetNextToken(), test # %d\n", errcode );
       return -1;
    }
    
    errcode = TestGetEnum();
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Failed in GetEnumKeyword(), test # %d\n", errcode );
       return -1;
    }
 
    errcode = TestProcessInput();
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Failed in ProcessInput(), test # %d\n", errcode );
       return -1;
    }
 
    errcode = TestIdentifyElements();
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Failed in IdentifyElements(), test # %d\n", errcode );
       return -1;
    }

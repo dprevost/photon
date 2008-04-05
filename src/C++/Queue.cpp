@@ -34,8 +34,9 @@ vdsQueue::vdsQueue( vdsSession &session )
 
 vdsQueue::~vdsQueue()
 {
-   if ( m_objectHandle != NULL )
+   if ( m_objectHandle != NULL ) {
       vdsQueueClose( m_objectHandle );
+   }
    m_sessionHandle = m_objectHandle = NULL;
 }
 
@@ -44,8 +45,10 @@ vdsQueue::~vdsQueue()
 void vdsQueue::Close()
 {
    int rc = vdsQueueClose( m_objectHandle );
-
-   if ( rc != 0 ) throw vdsException( rc, m_sessionHandle, "vdsQueue::Close" );
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsQueue::Close" );
+   }
+   
    m_objectHandle = NULL;   
 }
 
@@ -59,8 +62,9 @@ int vdsQueue::GetFirst( void   * buffer,
                               buffer,
                               bufferLength,
                               returnedLength );
-   if ( rc != 0 && rc != VDS_IS_EMPTY ) 
+   if ( rc != 0 && rc != VDS_IS_EMPTY ) {
       throw vdsException( rc, m_sessionHandle, "vdsQueue::GetFirst" );
+   }
    return rc;
 }
 
@@ -74,8 +78,9 @@ int vdsQueue::GetNext( void   * buffer,
                              buffer,
                              bufferLength,
                              returnedLength );
-   if ( rc != 0 && rc != VDS_REACHED_THE_END ) 
+   if ( rc != 0 && rc != VDS_REACHED_THE_END ) {
       throw vdsException( rc, m_sessionHandle, "vdsQueue::GetNext" );
+   }
    return rc;
 }
 
@@ -87,7 +92,9 @@ void vdsQueue::Open( const std::string & queueName )
                           queueName.c_str(),
                           queueName.length(),
                           &m_objectHandle );
-   if ( rc != 0 ) throw vdsException( rc, m_sessionHandle, "vdsQueue::Open" );
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsQueue::Open" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -99,7 +106,9 @@ void vdsQueue::Open( const char * queueName,
                           queueName,
                           nameLengthInBytes,
                           &m_objectHandle );
-   if ( rc != 0 ) throw vdsException( rc, m_sessionHandle, "vdsQueue::Open" );
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsQueue::Open" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -112,9 +121,9 @@ int vdsQueue::Pop( void   * buffer,
                          buffer,
                          bufferLength,
                          returnedLength );
-   if ( rc != 0 && rc != VDS_IS_EMPTY && rc != VDS_ITEM_IS_IN_USE ) 
+   if ( rc != 0 && rc != VDS_IS_EMPTY && rc != VDS_ITEM_IS_IN_USE ) {
       throw vdsException( rc, m_sessionHandle, "vdsQueue::Pop" );
-   
+   }
    return rc;
 }
 
@@ -126,7 +135,9 @@ void vdsQueue::Push( const void * pItem,
    int rc = vdsQueuePush( m_objectHandle, 
                           pItem, 
                           length );
-   if ( rc != 0 ) throw vdsException( rc, m_sessionHandle, "vdsQueue::Push" );
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsQueue::Push" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -135,7 +146,9 @@ void vdsQueue::Status( vdsObjStatus * pStatus )
 {
    int rc = vdsQueueStatus( m_objectHandle,
                             pStatus );
-   if ( rc != 0 ) throw vdsException( rc, m_sessionHandle, "vdsQueue::Status" );
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsQueue::Status" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

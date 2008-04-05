@@ -42,8 +42,7 @@ bool AreWeTerminated()
    
    vdscAcquireThreadLock( &g_ProcessMutex );
 
-   if ( g_pProcessInstance->pHeader != NULL )
-      ret = false;
+   if ( g_pProcessInstance->pHeader != NULL ) ret = false;
    
    vdscReleaseThreadLock( &g_ProcessMutex );
 
@@ -63,15 +62,15 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
    VDS_PRE_CONDITION( process   != NULL );
    VDS_PRE_CONDITION( wdAddress != NULL );
    
-   if (vdseInitEngine() != 0 )
-      return VDS_INTERNAL_ERROR;
+   if (vdseInitEngine() != 0 ) return VDS_INTERNAL_ERROR;
    
    memset( &context, 0, sizeof context );
    context.pidLocker = getpid();
    vdscInitErrorHandler( &context.errorHandler );
    
-   if ( g_protectionIsNeeded )
+   if ( g_protectionIsNeeded ) {
       vdscAcquireThreadLock( &g_ProcessMutex );
+   }
    
    if ( process->pHeader != NULL ) {
       errcode = VDS_PROCESS_ALREADY_INITIALIZED;
@@ -87,8 +86,7 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
                           wdAddress, 
                           &answer, 
                           &context.errorHandler );
-   if ( errcode != VDS_OK )
-      goto the_exit;
+   if ( errcode != VDS_OK ) goto the_exit;
    
    /* The watchdog already tested that there is no buffer overflow here. */
    sprintf( path, "%s%s%s", answer.pathname, VDS_DIR_SEPARATOR,
@@ -98,8 +96,7 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
                           path,
                           answer.memorySizekb,
                           &context );
-   if ( errcode != VDS_OK )
-      goto the_exit;
+   if ( errcode != VDS_OK ) goto the_exit;
 
    GET_PTR( context.pAllocator, process->pHeader->allocatorOffset, void );
    GET_PTR( pCleanupManager, process->pHeader->processMgrOffset, vdseProcMgr );
@@ -115,9 +112,10 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
    
 the_exit:
    
-   if ( g_protectionIsNeeded )
+   if ( g_protectionIsNeeded ) {
       vdscReleaseThreadLock( &g_ProcessMutex );
-
+   }
+   
    return errcode;
 }
 
@@ -149,9 +147,10 @@ void vdsaProcessFini()
    GET_PTR( context.pAllocator, process->pHeader->allocatorOffset, void );
    vdscInitErrorHandler( &context.errorHandler );
 
-   if ( g_protectionIsNeeded )
+   if ( g_protectionIsNeeded ) {
       vdscAcquireThreadLock( &g_ProcessMutex );
-
+   }
+   
    GET_PTR( processManager, process->pHeader->processMgrOffset, vdseProcMgr );
 
    vdseProcessNoMoreSessionAllowed( process->pCleanup,
@@ -200,9 +199,9 @@ error_handler:
 
    vdsaDisconnect( &process->connector, &context.errorHandler );
 
-   if ( g_protectionIsNeeded )
+   if ( g_protectionIsNeeded ) {
       vdscReleaseThreadLock( &g_ProcessMutex );
-
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

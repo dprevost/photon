@@ -35,11 +35,11 @@ int vdsHashMapClose( VDS_HANDLE objectHandle )
    int errcode = 0;
    
    pHashMap = (vdsaHashMap *) objectHandle;
-   if ( pHashMap == NULL )
-      return VDS_NULL_HANDLE;
+   if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pHashMap->object.type != VDSA_HASH_MAP )
+   if ( pHashMap->object.type != VDSA_HASH_MAP ) {
       return VDS_WRONG_TYPE_HANDLE;
+   }
    
    if ( ! pHashMap->object.pSession->terminated ) {
 
@@ -724,8 +724,7 @@ int vdsaHashMapNext( vdsaHashMap   * pHashMap,
                             (size_t) -1,
                             (size_t) -1,
                             &pHashMap->object.pSession->context );
-   if ( rc != 0 )
-      goto error_handler_unlock;
+   if ( rc != 0 ) goto error_handler_unlock;
    
    GET_PTR( pEntry->data, pHashMap->iterator.pHashItem->dataOffset, void );
    pEntry->dataLength = pHashMap->iterator.pHashItem->dataLength;

@@ -64,146 +64,125 @@ int main( int argc, char* argv[] )
    char* outputRoot = NULL;
    char* prefix = NULL;
    
-   struct vdscOptStruct opts[3] = 
-      { 
-         { 'i', "input",  0, "INPUT_HEADER_FILE", "The input header file" },
-         { 'o', "output", 0, "OUTPUT_ROOT_NAME", "The root name use for output files" },
-         { 'p', "prefix", 0, "PREFIX", "Prefix used for names (output files)" }
-      };
+   struct vdscOptStruct opts[3] = { 
+      { 'i', "input",  0, "INPUT_HEADER_FILE", "The input header file" },
+      { 'o', "output", 0, "OUTPUT_ROOT_NAME", "The root name use for output files" },
+      { 'p', "prefix", 0, "PREFIX", "Prefix used for names (output files)" }
+   };
 
    errcode = vdscSetSupportedOptions( 3, opts, &handle );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       cerr << "Unexpected error in vdscSetSupportedOptions" << endl;
       return -1;
    }
    
-   if ( argc == 2 )
-   {
-      if ( strcmp( argv[1], "--test" ) == 0 )
-      {
+   if ( argc == 2 ) {
+      if ( strcmp( argv[1], "--test" ) == 0 ) {
          analyserTest tester( parser );
          errcode = tester.Run();
-         if ( errcode == 0 )
+         if ( errcode == 0 ) {
             cerr << "Internal tests succeeded" << endl;
-         else
+         }
+         else {
             cerr << "Internal tests failed" << endl;
+         }
          return errcode;
       }
    }
    
    errcode = vdscValidateUserOptions( handle, argc, argv, 1 );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       vdscShowUsage( handle, "errorParser", "" );
-      if ( errcode == 1 )
-         return 0;
+      if ( errcode == 1 ) return 0;
       return -1;
    }
 
    optionOK = vdscGetShortOptArgument( handle, 'i', &inputFilename );
-   if ( ! optionOK )
-   {
+   if ( ! optionOK ) {
       cerr << " Problem in vdscGetShortOptArgument" << endl;
       goto the_exit;
    }
    optionOK = vdscGetShortOptArgument( handle, 'o', &outputRoot );
-   if ( ! optionOK )
-   {
+   if ( ! optionOK ) {
       cerr << " Problem in vdscGetShortOptArgument" << endl;
       goto the_exit;
    }
    optionOK = vdscGetShortOptArgument( handle, 'p', &prefix );
-   if ( ! optionOK )
-   {
+   if ( ! optionOK ) {
       cerr << " Problem in vdscGetShortOptArgument" << endl;
       goto the_exit;
    }
    
-   try
-   {
+   try {
       input.OpenFile( inputFilename );
    }
-   catch( fileException& ex )
-   {
+   catch( fileException& ex ) {
       cerr << ex.what() << endl;
       goto the_exit;
    }   
-   catch( exception& ex )
-   {
+   catch( exception& ex ) {
       cerr << "Error opening input file, error = " << ex.what() << endl;
       goto the_exit;
    }
-   catch(...)
-   {
+   catch(...) {
       cerr << "Error opening input file, unhandled exception!" << endl;
       throw;
    }
    
-   try
-   {
+   try {
       output.OpenFiles( outputRoot, prefix );
    }
-   catch( exception& ex )
-   {
+   catch( exception& ex ) {
       cerr << "Error opening one of the output files, error = " 
            << ex.what() << endl;
       goto the_exit;
    }
-   catch(...)
-   {
+   catch(...) {
       cerr << "Error opening one of the output files, unhandled exception!" 
            << endl;
       throw;
    }
 
-   try
-   {
+   try {
       parser.ReadInput();
    }
-   catch( exception& ex )
-   {
+   catch( exception& ex ) {
       cerr << "Error reading the input data, error = " << ex.what() << endl;
       goto the_exit;
    }
-   catch(...)
-   {
+   catch(...) {
       cerr << "Error reading the input data, unhandled exception!" << endl;
       throw;
    }
    
-   try
-   {
+   try {
       parser.ProcessInput();
    }
-   catch( analyseException& ex )
-   {
+   catch( analyseException& ex ) {
       cerr << "Error analysing the input data, error = " << ex.what() << endl;
       goto the_exit;
    }
-   catch(...)
-   {
+   catch(...) {
       cerr << "Error analysing the input data, unhandled exception!" << endl;
       throw;
    }
    
-   try
-   {
+   try {
       output.Write( inputFilename, prefix );
    }
-   catch(...)
-   {
+   catch(...) {
       cerr << "Error writing the output, unhandled exception!" << endl;
       throw;
    }
    
-   
  the_exit:
 
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       fprintf( stderr, "Exiting with an error\n" );
-
+   }
+   
    return errcode;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
