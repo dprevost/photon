@@ -35,8 +35,9 @@ int main()
    vdscProcessLock lock;
 
    errcode = vdscInitProcessLock( &lock );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    lock.initialized = 0;
    vdscTryAcquireProcessLock( &lock, 0xff, 100 );

@@ -19,8 +19,10 @@
 
 int __lockfunc _spin_trylock(spinlock_t *lock)
 {
-   if (_raw_spin_trylock(lock))
+   if (_raw_spin_trylock(lock)) {
       return 1;
+   }
+   
 	return 0;
 }
 

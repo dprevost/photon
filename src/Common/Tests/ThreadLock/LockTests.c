@@ -29,35 +29,41 @@ int main()
    vdscThreadLock lock;
    
    errcode = vdscInitThreadLock( &lock );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    errcode = vdscTryAcquireThreadLock( &lock, 0 );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    /* 
     * On Windows, Critical Sections are recursives (for the calling thread,
     * obviously...) while the simplest Posix locks are not.
     *
-    * Quite frankly, this test seems useless but it does not hurt so...
+    * Quite frankly, in retrospect this test seems quite useless but it 
+    * does not hurt so...
     */
    errcode = vdscTryAcquireThreadLock( &lock, 1000 );
 #if defined (WIN32)
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    vdscReleaseThreadLock( &lock );
 #else
-   if ( errcode == 0 )
+   if ( errcode == 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 #endif
 
    vdscReleaseThreadLock( &lock );
 
    errcode = vdscTryAcquireThreadLock( &lock, 1000 );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    vdscReleaseThreadLock( &lock );
 
    vdscFiniThreadLock( &lock );

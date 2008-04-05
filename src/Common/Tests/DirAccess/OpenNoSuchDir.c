@@ -44,11 +44,13 @@ int main()
    vdscInitErrorHandler( &errorHandler );
    
    errcode = vdscOpenDir( &iterator, "abc123", &errorHandler );
-   if ( errcode == 0 )
+   if ( errcode == 0 ) {
       ERROR_EXIT( expectedToPass, NULL, );
-   if ( ! vdscAnyErrors( &errorHandler ) )
+   }
+   if ( ! vdscAnyErrors( &errorHandler ) ) {
       ERROR_EXIT( expectedToPass, NULL, );
-
+   }
+   
    vdscCloseDir( &iterator );
 
    vdscFiniDir( &iterator );

@@ -69,8 +69,8 @@ vdscAcquireProcessLock( vdscProcessLock* pLock,
       if ( pLock->lock == 0 ) {
          isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, 0xff );
       }
-      if ( isItLocked == 0 )
-         break;
+      if ( isItLocked == 0 ) break;
+
       Sleep( g_timeOutinMilliSecs );
    }
 #elif defined (VDS_USE_POSIX_SEMAPHORE)
@@ -117,8 +117,9 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
    do {
       /* We restart on interrupts. */
       isItLocked = sem_trywait( &pLock->semaphore.sem );
-      if ( isItLocked == -1 && errno == EINTR)
+      if ( isItLocked == -1 && errno == EINTR) {
          fprintf( stderr, "acquire 2\n" ); 
+      }
    } while ( isItLocked == -1 && errno == EINTR );
    if (  isItLocked == -1 && errno != EAGAIN ) {
       fprintf( stderr, "Lock:trywait failed with errno = %d\n", errno );
@@ -161,8 +162,7 @@ vdscTryAcquireProcessLock( vdscProcessLock* pLock,
             fprintf( stderr, "sem_getvalue = %d %d %d\n", val, ok, errno );
          }
 #endif
-         if ( isItLocked == 0 )
-            break;
+         if ( isItLocked == 0 ) break;
       } /* end of for loop */
       
       /* We come here - the time slice was not enough, no luck getting the lock */
@@ -199,19 +199,22 @@ vdscReleaseProcessLock( vdscProcessLock* pLock )
    errno = 0;
    int val;
    int ok = sem_getvalue( &pLock->semaphore.sem, &val ); 
-   if ( ok == 0 && val > 0 )
-         fprintf( stderr, "release 2 %d\n", errno ); 
-
+   if ( ok == 0 && val > 0 ) {
+      fprintf( stderr, "release 2 %d\n", errno ); 
+   }
+   
    int isItLocked = -1;
    do {
       /* We restart on interrupts. */
       isItLocked = sem_post( &pLock->semaphore.sem );
-      if ( isItLocked == -1 )
+      if ( isItLocked == -1 ) {
          fprintf( stderr, "release 1 %d\n", errno ); 
+      }
    } while ( isItLocked == -1 && errno == EINTR );
 
-   if (  isItLocked == -1 )
+   if (  isItLocked == -1 ) {
       fprintf( stderr, "Lock:post failed with errno = %d\n", errno );
+   }
 #endif
 }
 

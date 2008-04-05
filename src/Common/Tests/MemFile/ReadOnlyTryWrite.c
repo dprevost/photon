@@ -19,7 +19,7 @@
 #include <signal.h>
 #include "Tests/PrintError.h"
 
-const bool expectedToPass = false;
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,7 +33,7 @@ void signalHandler(int s)
 
    unlink( "MemFile.mem" );
    
-   exit(1);
+   exit(0);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -59,19 +59,22 @@ int main()
    vdscInitMemoryFile( &mem, 10, "MemFile.mem" );
 
    errcode = vdscCreateBackstore( &mem, 0755, &errorHandler );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
-
-   errcode = vdscOpenMemFile( &mem, &pAddr, &errorHandler );
-   if ( errcode != 0 ) 
-      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
-
-   errcode = vdscSetReadOnly( &mem, &errorHandler );
-   if ( errcode != 0 ) 
-      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
+   }
    
-   /* This should crash the whole thing. We intercept it with a signal
-    * handler to make the output look cleaner.
+   errcode = vdscOpenMemFile( &mem, &pAddr, &errorHandler );
+   if ( errcode != 0 ) {
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
+   }
+   
+   errcode = vdscSetReadOnly( &mem, &errorHandler );
+   if ( errcode != 0 ) {
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
+   }
+   
+   /* This should crash the whole thing. We intercept it with a signal.
+    * This way, if there is no memory violation, we will know.
     */
 #if defined(WIN32)
    signal(SIGSEGV, signalHandler );

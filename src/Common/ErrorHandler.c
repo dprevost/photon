@@ -498,8 +498,7 @@ vdscErrMsgHandle vdscAddErrorMsgHandler( const char*         name,
    length = offsetof(vdscErrorDefinition,name) + strlen( name ) + 1;
          
    pDefinition = malloc( length );
-   if ( pDefinition == NULL )
-      return handle;
+   if ( pDefinition == NULL ) return handle;
    
    pDefinition->initialized = VDSC_ERROR_DEFINITION_SIGNATURE;
    pDefinition->next = NULL;
@@ -612,8 +611,7 @@ vdscGetErrorMsg( vdscErrorHandler * pErrorHandler,
    VDS_PRE_CONDITION( msg != NULL );
    VDS_PRE_CONDITION( maxLength > 0 );   
    
-   if ( vdscTryAcquireThreadLock( &g_lock, 100 ) != 0 )
-      return 0;
+   if ( vdscTryAcquireThreadLock( &g_lock, 100 ) != 0 ) return 0;
 
    for ( k = 0; k < pErrorHandler->chainLength; ++k ) {
       nextAvailable = g_definition;
@@ -635,10 +633,12 @@ vdscGetErrorMsg( vdscErrorHandler * pErrorHandler,
                               length );
       /* Just in case */
       len = strnlen( &msg[msgStart], length );
-      if ( len > length )
+      if ( len > length ) {
          length = 0;
-      else
+      }
+      else {
          length -= len;
+      }
       msgStart += len;
    }
    
@@ -676,8 +676,7 @@ vdscGetErrorMsgLength( vdscErrorHandler * pErrorHandler )
    VDS_INV_CONDITION( 
       pErrorHandler->initialized == VDSC_ERROR_HANDLER_SIGNATURE );
    
-   if ( vdscTryAcquireThreadLock( &g_lock, 100 ) != 0 )
-      return 0;
+   if ( vdscTryAcquireThreadLock( &g_lock, 100 ) != 0 ) return 0;
 
    for ( k = 0; k < pErrorHandler->chainLength; ++k ) {
       nextAvailable = g_definition;

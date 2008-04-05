@@ -72,23 +72,23 @@ int main( int argc, char* argv[] )
    vdscOptionHandle handle;
    char *argument;
    char strId[10], strNumChilds[10], strTime[10], strMode[5];
-   struct vdscOptStruct opts[5] = 
-      { 
-         { 'c', "child",      1, "numChilds",  "Number of child processes" },
-         { 'f', "filename",   1, "memoryFile", "Filename for shared memory" },
-         { 'i', "identifier", 1, "identifier", "Identifier for the process" },
-         { 'm', "mode",       1, "lockMode",   "Are we testing Acquire or TryAcquire" },
-         { 't', "time",       1, "timeInSecs", "Time to run the tests" }
-      };
+   struct vdscOptStruct opts[5] = {
+      { 'c', "child",      1, "numChilds",  "Number of child processes" },
+      { 'f', "filename",   1, "memoryFile", "Filename for shared memory" },
+      { 'i', "identifier", 1, "identifier", "Identifier for the process" },
+      { 'm', "mode",       1, "lockMode",   "Are we testing Acquire or TryAcquire" },
+      { 't', "time",       1, "timeInSecs", "Time to run the tests" }
+   };
 
    vdscInitErrorDefs();
    vdscInitErrorHandler( &errorHandler );
    vdscInitTimer( &timer );
 
    errcode = vdscSetSupportedOptions( 5, opts, &handle );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdscValidateUserOptions( handle, argc, argv, 1 );
    if ( errcode < 0 ) {
       vdscShowUsage( handle, "LockConcurrency", "" );
@@ -106,9 +106,10 @@ int main( int argc, char* argv[] )
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
    }
-   else
+   else {
       numChilds = DEFAULT_NUM_CHILDREN;
-
+   }
+   
    if ( vdscGetShortOptArgument( handle, 'i', &argument ) ) {
       identifier = atoi( argument );
       if ( identifier > numChilds ) {
@@ -116,9 +117,10 @@ int main( int argc, char* argv[] )
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
    }
-   else
+   else {
       identifier = 0;
-
+   }
+   
    if ( vdscGetShortOptArgument( handle, 't', &argument ) ) {
       maxTime = strtol( argument, NULL, 0 );
       if ( maxTime < 1 ) {
@@ -126,12 +128,12 @@ int main( int argc, char* argv[] )
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
    }
-   else
+   else {
       maxTime = DEFAULT_TIME; /* in seconds */
-  
+   }
+   
    if ( vdscGetShortOptArgument( handle, 'm', &argument ) ) {
-      if ( strcmp( argument, "try" ) == 0 )
-         tryMode = true;
+      if ( strcmp( argument, "try" ) == 0 ) tryMode = true;
    }
    
    if ( vdscGetShortOptArgument( handle, 'f', &argument ) ) {
@@ -141,8 +143,9 @@ int main( int argc, char* argv[] )
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
    }
-   else
+   else {
       strcpy( filename, "Memfile.mem" );
+   }
    
    vdscInitMemoryFile( &memFile, 10, filename );
    
@@ -150,30 +153,36 @@ int main( int argc, char* argv[] )
       /* The master process */
       
       childPid = malloc( numChilds*sizeof(pid_t) );
-      if ( childPid == NULL )
+      if ( childPid == NULL ) {
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
-         
+      }
+      
       errcode = vdscCreateBackstore( &memFile, 0644, &errorHandler );
-      if ( errcode < 0 )
+      if ( errcode < 0 ) {
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
+      }
       
       errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
-      if ( errcode < 0 )
+      if ( errcode < 0 ) {
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
+      }
+      
       memset( ptr, 0, 10000 );
       data = (struct localData*) ptr;
    
       errcode = vdscInitProcessLock( &data->lock );
-      if ( errcode < 0 )
+      if ( errcode < 0 ) {
          ERROR_EXIT( expectedToPass, NULL, ; );
+      }
       
       sprintf( strNumChilds, "%d", numChilds );
       sprintf( strTime, "%u", (unsigned int)maxTime );
-      if ( tryMode )
+      if ( tryMode ) {
          strcpy( strMode, "try" );
-      else
+      }
+      else {
          strcpy( strMode, "lock" );
+      }
       
       /* Launch the childs */
       for ( i = 0; i < numChilds; ++i ) {
@@ -219,12 +228,10 @@ int main( int argc, char* argv[] )
       for ( i = 0; i < numChilds; ++i ) {
 #if defined(WIN32)
          _cwait( &childStatus, childPid[i], _WAIT_CHILD );
-         if ( childStatus != 0 )
-            foundError = true;
+         if ( childStatus != 0 ) foundError = true;
 #else
          waitpid( childPid[i], &childStatus, 0 );
-         if ( WEXITSTATUS(childStatus) != 0 )
-            foundError = true;
+         if ( WEXITSTATUS(childStatus) != 0 ) foundError = true;
 #endif
       }
       if ( foundError ) {
@@ -241,9 +248,10 @@ int main( int argc, char* argv[] )
       maxTime *= US_PER_SEC;
 
       errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
-      if ( errcode < 0 )
+      if ( errcode < 0 ) {
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
+      }
+      
       data = (struct localData*) ptr;
    
       vdscBeginTimer( &timer );
@@ -253,12 +261,12 @@ int main( int argc, char* argv[] )
       for (;;) {      
          if ( tryMode ) {
             int err = vdscTryAcquireProcessLock( &data->lock, pid, 10000 );
-            if ( err != 0 )
-               continue;
+            if ( err != 0 ) continue;
          }
-         else
+         else {
             vdscAcquireProcessLock( &data->lock, pid );
-
+         }
+         
          sprintf( data->dum2, "dumStr2 %d  ", identifier+1 );
          memcpy( data->dum1, data->dum2, 100 );
 
@@ -273,8 +281,7 @@ int main( int argc, char* argv[] )
       
          vdscReleaseProcessLock( &data->lock );
       
-         if ( data->exitFlag == 1 )
-            break;
+         if ( data->exitFlag == 1 ) break;
 
          loop++;
 
@@ -283,14 +290,14 @@ int main( int argc, char* argv[] )
             vdscCalculateTimer( &timer, &sec, &nanoSec );
 
             elapsedTime = sec*US_PER_SEC + nanoSec/1000;
-            if ( elapsedTime > maxTime )
-               break;
+            if ( elapsedTime > maxTime ) break;
          }
       }
    }
    
-   if ( identifier != 0 )
+   if ( identifier != 0 ) {
       printf( "Program #%d Number of loops = %lu\n", identifier, loop );
+   }
    
    unlink( filename );
    vdscFiniErrorHandler( &errorHandler );

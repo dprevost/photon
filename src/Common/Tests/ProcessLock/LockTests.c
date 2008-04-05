@@ -30,33 +30,39 @@ int main()
    pid_t pid = getpid();
    
    errcode = vdscInitProcessLock( &lock );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    errcode = vdscTryAcquireProcessLock( &lock, pid, 0 );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdscTryAcquireProcessLock( &lock, pid, 1000 );
-   if ( errcode == 0 )
+   if ( errcode == 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdscIsItLocked( &lock );   
-   if ( errcode == 0 ) 
+   if ( errcode == 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    errcode = vdscTestLockPidValue( &lock, pid );
-   if ( errcode == 0 )
+   if ( errcode == 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-      
+   }
+   
    vdscReleaseProcessLock( &lock );
 
    /* Calling it a second time should do nothing */
    vdscReleaseProcessLock( &lock );
 
    errcode = vdscTryAcquireProcessLock( &lock, pid, 1000 );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 
    vdscReleaseProcessLock( &lock );
 

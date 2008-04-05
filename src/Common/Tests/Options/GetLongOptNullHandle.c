@@ -31,8 +31,7 @@ int main()
    char *value = NULL;
    vdscOptionHandle handle;
    
-   struct vdscOptStruct opts[5] = 
-   { 
+   struct vdscOptStruct opts[5] = { 
       { '3', "three",   1, "", "repeat the loop three times" },
       { 'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog" },
       { 'x', "",        1, "DISPLAY", "X display to use" },
@@ -41,8 +40,9 @@ int main()
    };
    
    errcode = vdscSetSupportedOptions( 5, opts, &handle );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    strcpy( dummyArgs, "OptionTest2 --address 12345 -v --zzz" );
    /*                  012345678901234567890123456789012345 */
@@ -58,8 +58,9 @@ int main()
    dummyArgs[30] = 0;
 
    errcode = vdscValidateUserOptions( handle, 5, dummyPtrs, 1 );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdscGetLongOptArgument( NULL, "address", &value );
 

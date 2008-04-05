@@ -35,8 +35,8 @@ Dim failed_tests(50)
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(9)
-Dim fail_programs(40)
+Dim ok_programs(10)
+Dim fail_programs(39)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -50,16 +50,17 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0) = "BackStatusPass"
-ok_programs(1) = "ClosePass"
-ok_programs(2) = "CreateBackPass"
-ok_programs(3) = "FiniPass"
-ok_programs(4) = "InitPass"
-ok_programs(5) = "OpenPass"
-ok_programs(6) = "ReadOnlyPass"
-ok_programs(7) = "ReadWritePass"
-ok_programs(8) = "SynchPass"
-ok_programs(9) = "Tests"
+ok_programs(0)  = "BackStatusPass"
+ok_programs(1)  = "ClosePass"
+ok_programs(2)  = "CreateBackPass"
+ok_programs(3)  = "FiniPass"
+ok_programs(4)  = "InitPass"
+ok_programs(5)  = "OpenPass"
+ok_programs(6)  = "ReadOnlyPass"
+ok_programs(7)  = "ReadOnlyTryWrite"
+ok_programs(8)  = "ReadWritePass"
+ok_programs(9)  = "SynchPass"
+ok_programs(10) = "Tests"
 
 fail_programs(0)  = "BackStatusInvalidSig"
 fail_programs(1)  = "BackStatusMemNull"
@@ -93,15 +94,14 @@ fail_programs(28) = "ReadOnlyNullError"
 fail_programs(29) = "ReadOnlyInvalidBaseAddr"
 fail_programs(30) = "ReadOnlyInvalidSig"
 fail_programs(31) = "ReadOnlyMemNull"
-fail_programs(32) = "ReadOnlyTryWrite"
-fail_programs(33) = "ReadWriteNullError"
-fail_programs(34) = "ReadWriteInvalidSig"
-fail_programs(35) = "ReadWriteInvBaseAddr"
-fail_programs(36) = "ReadWriteMemNull"
-fail_programs(37) = "SynchNullError"
-fail_programs(38) = "SynchInvalidBaseAddr"
-fail_programs(39) = "SynchInvalidSig"
-fail_programs(40) = "SynchMemNull"
+fail_programs(32) = "ReadWriteNullError"
+fail_programs(33) = "ReadWriteInvalidSig"
+fail_programs(34) = "ReadWriteInvBaseAddr"
+fail_programs(35) = "ReadWriteMemNull"
+fail_programs(36) = "SynchNullError"
+fail_programs(37) = "SynchInvalidBaseAddr"
+fail_programs(38) = "SynchInvalidSig"
+fail_programs(39) = "SynchMemNull"
 
 numTests = 51                 ' Sum of length of both arrays 
 numFailed = 0

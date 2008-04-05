@@ -85,9 +85,10 @@ int vdscReadConfig( const char*          cfgname,
 
    *pMissing = NULL;
 
-   for ( i = 0; i < eVDS_NUM_CFG_PARAMS; ++i )
+   for ( i = 0; i < eVDS_NUM_CFG_PARAMS; ++i ) {
       isPresent[i] = 0;
-
+   }
+   
    fp = fopen( cfgname, "r" );
    if ( fp == NULL ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
@@ -98,8 +99,7 @@ int vdscReadConfig( const char*          cfgname,
       memset( line, 0, LINE_MAX_LEN );
 
       /* We've reach the end of file */
-      if ( fgets ( line, LINE_MAX_LEN, fp ) == NULL )
-         break;
+      if ( fgets ( line, LINE_MAX_LEN, fp ) == NULL ) break;
       
       /* Comment delimiter */
       if ( line[0] == '#' ) continue;

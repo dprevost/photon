@@ -29,13 +29,15 @@ int main()
    vdscProcessLock lock;
 
    errcode = vdscInitProcessLock( &lock );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    errcode = vdscTryAcquireProcessLock( &lock, 0xff, 100 );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    vdscReleaseProcessLock( &lock );
 
    vdscFiniProcessLock( &lock );

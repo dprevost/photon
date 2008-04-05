@@ -24,6 +24,8 @@
 #  include <winsock2.h>
 #endif
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /*
  * Note: this version of nanosleep is fundamentally incorrect since the
  * the remaining time is not calculated... but for our purposes, it 
@@ -35,8 +37,6 @@
     The rqtp argument specified a nanosecond value less than zero or greater than or equal to 1000 million. 
 [ENOSYS]
     The nanosleep() function is not supported by this implementation.
-
-
  */
 int  
 nanosleep( const struct timespec * pRequest, 
@@ -60,4 +60,6 @@ nanosleep( const struct timespec * pRequest,
 
    return ret;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

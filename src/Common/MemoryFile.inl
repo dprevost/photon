@@ -66,15 +66,16 @@ vdscSetReadOnly( vdscMemoryFile   * pMem,
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );      
       errcode = -1;
    }
-   else
+   else {
       errcode = 0;
-
+   }
+   
 #elif HAVE_MPROTECT
 
    errcode = mprotect( pMem->baseAddr, pMem->length, PROT_READ );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );      
-
+   }
 #else
 
    errcode = -1;
@@ -140,9 +141,9 @@ vdscSetReadWrite( vdscMemoryFile   * pMem,
 #elif HAVE_MPROTECT
 
    errcode = mprotect( pMem->baseAddr, pMem->length, PROT_READ | PROT_WRITE );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );      
-
+   }
 #else
 
    errcode = -1;

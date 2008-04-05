@@ -40,54 +40,70 @@ int main()
    vdscInitMemoryFile( &mem, 10, "MemFile.mem" );
 
    errcode = vdscCreateBackstore( &mem, 0644, &errorHandler );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
+   }
    
    vdscBackStoreStatus( &mem, &status );
-   if ( status.fileExist != 1 )
+   if ( status.fileExist != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   if ( status.fileReadable != 1 )
+   }
+   if ( status.fileReadable != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   if ( status.fileWritable != 1 )
+   }
+   if ( status.fileWritable != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   if ( status.lenghtOK != 1 )
+   }
+   if ( status.lenghtOK != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   if ( status.actualLLength != 10*1024 )
+   }
+   if ( status.actualLLength != 10*1024 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-
+   }
+   
    errcode = unlink( "MemFile.mem" );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdscCreateBackstore( &mem, 0600, &errorHandler );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
+   }
    
    vdscBackStoreStatus( &mem, &status );
-   if ( status.fileExist != 1 )
+   if ( status.fileExist != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   if ( status.fileReadable != 1 )
+   }
+   if ( status.fileReadable != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   if ( status.fileWritable != 1 )
+   }
+   if ( status.fileWritable != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-
+   }
+   
    errcode = unlink( "MemFile.mem" );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdscCreateBackstore( &mem, 0660, &errorHandler );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
+   }
    
    vdscBackStoreStatus( &mem, &status );
 
-   if ( status.fileExist != 1 )
+   if ( status.fileExist != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   if ( status.fileReadable != 1 )
+   }
+   if ( status.fileReadable != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   if ( status.fileWritable != 1 )
+   }
+   if ( status.fileWritable != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-
+   }
+   
    unlink( "MemFile.mem" );
    
    vdscFiniMemoryFile( &mem );

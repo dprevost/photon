@@ -40,8 +40,9 @@ int main()
    vdscBeginTimer( &timer );
 
    errCode = nanosleep( &sleepTime, NULL );
-   if ( errCode != 0 )
+   if ( errCode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdscEndTimer( &timer );
    vdscCalculateTimer( &timer, &sec, &nanoSec );

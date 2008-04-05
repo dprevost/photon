@@ -71,19 +71,21 @@ const char* vdscDirGetNextFileName( vdscDirIterator*  pIterator,
 
       int err = FindNextFile( pIterator->handle, &pIterator->data );
       if ( err == 0 ) {
-         if ( GetLastError() != ERROR_NO_MORE_FILES )
+         if ( GetLastError() != ERROR_NO_MORE_FILES ) {
             vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
+         }
          return NULL;
       }
       
       if ( strlen( pIterator->data.cFileName ) == 1 && 
-           pIterator->data.cFileName[0] == '.' )
+           pIterator->data.cFileName[0] == '.' ) {
          continue;
+      }
       if ( strlen( pIterator->data.cFileName ) == 2 && 
            pIterator->data.cFileName[0] == '.' && 
-           pIterator->data.cFileName[1] == '.' )
+           pIterator->data.cFileName[1] == '.' ) {
          continue;
-
+      }
       VDS_POST_CONDITION( pIterator->data.cFileName  != NULL );
 
       return pIterator->data.cFileName;
@@ -94,16 +96,19 @@ const char* vdscDirGetNextFileName( vdscDirIterator*  pIterator,
       errno = 0; /* To be safe */
       pEntry = readdir( pIterator->pDir );
       if ( pEntry == NULL ) {
-         if ( errno != 0 )
+         if ( errno != 0 ) {
             vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+         }
          break;
       }
       
-      if ( strlen( pEntry->d_name ) == 1 && pEntry->d_name[0] == '.' )
+      if ( strlen( pEntry->d_name ) == 1 && pEntry->d_name[0] == '.' ) {
          continue;
+      }
       if ( strlen( pEntry->d_name ) == 2 && 
-           pEntry->d_name[0] == '.' && pEntry->d_name[1] == '.' )
+           pEntry->d_name[0] == '.' && pEntry->d_name[1] == '.' ) {
          continue;
+      }
       
       VDS_POST_CONDITION( pEntry->d_name != NULL );
 
@@ -180,13 +185,15 @@ void vdscCloseDir( vdscDirIterator * pIterator )
    VDS_INV_CONDITION( pIterator->initialized == VDSC_DIR_ACCESS_SIGNATURE );
 
 #if defined (WIN32)
-   if ( pIterator->handle != VDS_INVALID_HANDLE )
+   if ( pIterator->handle != VDS_INVALID_HANDLE ) {
       FindClose( pIterator->handle );
+   }
    pIterator->handle = VDS_INVALID_HANDLE;
    memset( pIterator->dirName, 0, PATH_MAX);
 #else
-   if ( pIterator->pDir != NULL )
-      closedir (pIterator->pDir);   
+   if ( pIterator->pDir != NULL ) {
+      closedir (pIterator->pDir);
+   }
    pIterator->pDir = NULL;
 #endif
 }
@@ -239,14 +246,15 @@ int vdscOpenDir( vdscDirIterator * pIterator,
 #if defined (WIN32)
    pError = pError; /* Avoid a warning */
    i = strlen( dirName );
-   if ( i > PATH_MAX - 3 )
-      return -1;
+   if ( i > PATH_MAX - 3 ) return -1;
 
-   if ( dirName[i-1] == '/' || dirName[i-1] == '\\' )
+   if ( dirName[i-1] == '/' || dirName[i-1] == '\\' ) {
       sprintf( pIterator->dirName, "%s*", dirName );
-   else
+   }
+   else {
       sprintf( pIterator->dirName, "%s/*", dirName );
-
+   }
+   
 #else
    pIterator->pDir = opendir( dirName );
    if ( pIterator->pDir == NULL ) {

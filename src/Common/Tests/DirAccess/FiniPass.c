@@ -31,17 +31,21 @@ int main()
 
    vdscFiniDir( &iterator );
 
-   if ( iterator.initialized == VDSC_DIR_ACCESS_SIGNATURE )
+   if ( iterator.initialized == VDSC_DIR_ACCESS_SIGNATURE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
 #if defined(WIN32)
-   if ( iterator.handle != VDS_INVALID_HANDLE )
+   if ( iterator.handle != VDS_INVALID_HANDLE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( iterator.dirName[0] != '\0' )
+   }
+   if ( iterator.dirName[0] != '\0' ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 #else
-   if ( iterator.pDir != NULL )
+   if ( iterator.pDir != NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 #endif
 
    return 0;

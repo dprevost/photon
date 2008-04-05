@@ -67,8 +67,9 @@ vdscTryAcquireThreadLock( vdscThreadLock* pLock,
 #if defined (WIN32)
    status = TryEnterCriticalSection( &pLock->mutex );
 
-   if ( status == TRUE )
+   if ( status == TRUE ) {
       return 0;
+   }
    else {
       int iterations = milliSecs/g_timeOutinMilliSecs;
       int i;
@@ -77,8 +78,7 @@ vdscTryAcquireThreadLock( vdscThreadLock* pLock,
          Sleep( g_timeOutinMilliSecs );
 
          status = TryEnterCriticalSection( &pLock->mutex );
-         if ( status == TRUE )
-            return 0;
+         if ( status == TRUE ) return 0;
       }
    }
 
@@ -96,13 +96,11 @@ vdscTryAcquireThreadLock( vdscThreadLock* pLock,
 
          status = pthread_mutex_trylock( &pLock->mutex );
 
-         if ( status != EBUSY )
-            break;
+         if ( status != EBUSY ) break;
       }
    }
 
-   if ( status == EBUSY )
-      return -1;
+   if ( status == EBUSY ) return -1;
       
    VDS_POST_CONDITION( status == 0 );
 

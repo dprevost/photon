@@ -36,20 +36,26 @@ int main()
 
    vdscFiniMemoryFile( &mem );
 
-   if ( mem.initialized != 0 )
+   if ( mem.initialized != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   if ( mem.name[0] != 0 )
+   }
+   if ( mem.name[0] != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );   
-   if ( mem.length  != 0 )
+   }
+   if ( mem.length  != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   if ( mem.baseAddr != VDS_MAP_FAILED )
+   }
+   if ( mem.baseAddr != VDS_MAP_FAILED ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   if ( mem.fileHandle != VDS_INVALID_HANDLE )
+   }
+   if ( mem.fileHandle != VDS_INVALID_HANDLE ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-
+   }
+   
 #if defined (WIN32)
-   if ( mem.mapHandle != VDS_INVALID_HANDLE )
+   if ( mem.mapHandle != VDS_INVALID_HANDLE ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
+   }
 #endif
    
    return 0;

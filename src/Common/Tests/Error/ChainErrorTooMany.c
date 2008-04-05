@@ -34,9 +34,10 @@ int main()
    
    vdscSetError( &errorHandler, VDSC_ERRNO_HANDLE, ENOENT );
 
-   for ( i = 0; i < VDSC_ERROR_CHAIN_LENGTH; ++i )
+   for ( i = 0; i < VDSC_ERROR_CHAIN_LENGTH; ++i ) {
       vdscChainError( &errorHandler, VDSC_ERRNO_HANDLE, ENOENT );
-
+   }
+   
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else
    return 1;

@@ -34,17 +34,20 @@ int main()
    vdscInitErrorHandler( &errorHandler );
    
    errcode = vdscOpenDir( &iterator, "..", &errorHandler );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
+   }
+   
    vdscCloseDir( &iterator );
 
 #if defined (WIN32)
-   if ( iterator.handle != VDS_INVALID_HANDLE ) 
+   if ( iterator.handle != VDS_INVALID_HANDLE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 #else
-   if ( iterator.pDir != NULL )
+   if ( iterator.pDir != NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 #endif
 
    vdscFiniDir( &iterator );

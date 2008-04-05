@@ -30,8 +30,9 @@ int main()
    vdscProcessLock lock;
 
    errcode = vdscInitProcessLock( &lock );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( 0, NULL, ; );
+   }
    
    vdscFiniProcessLock( NULL );
 

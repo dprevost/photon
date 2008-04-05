@@ -30,8 +30,9 @@ int main()
    vdscThreadLock lock;
 
    errcode = vdscInitThreadLock( &lock );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdscFiniThreadLock( NULL );
 

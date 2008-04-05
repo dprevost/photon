@@ -50,34 +50,41 @@ int main()
    vdscInitMemoryFile( &mem2, 10, "MemFile.mem" );
    
    errcode = vdscCreateBackstore( &mem1, 0600, &errorHandler );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
-
-   errcode = vdscOpenMemFile( &mem1, &pAddr, &errorHandler );
-   if ( errcode != 0 )
-      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
+   }
    
-   if ( mem1.fileHandle == VDS_INVALID_HANDLE )
+   errcode = vdscOpenMemFile( &mem1, &pAddr, &errorHandler );
+   if ( errcode != 0 ) {
+      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
+   }
+   
+   if ( mem1.fileHandle == VDS_INVALID_HANDLE ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   if ( mem1.baseAddr == VDS_MAP_FAILED )
+   }
+   if ( mem1.baseAddr == VDS_MAP_FAILED ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
+   }
    
 #if defined (WIN32)
-   if ( mem1.mapHandle == VDS_INVALID_HANDLE )
+   if ( mem1.mapHandle == VDS_INVALID_HANDLE ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
+   }
 #endif
 
    str = (unsigned char*) pAddr;
    
-   for ( i = 0; i < 10*1024; ++i )
+   for ( i = 0; i < 10*1024; ++i ) {
       str[i] = (unsigned char) (i % 256);
-
+   }
+   
    vdscSyncMemFile( &mem1, &errorHandler );
    vdscCloseMemFile( &mem1, &errorHandler );
 
    errcode = vdscOpenMemFile( &mem2, &pAddr, &errorHandler );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
+   }
    
    str = (unsigned char*) pAddr;
    for ( i = 0; i < 10*1024; ++i ) {

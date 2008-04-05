@@ -71,3 +71,4 @@ static inline void vdscWriteMemoryBarrier()
 }
 
 #endif /* VDSC_BARRIER_H */
+

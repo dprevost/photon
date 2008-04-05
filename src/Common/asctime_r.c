@@ -34,11 +34,13 @@ new_asctime_r(const struct tm *timeptr, char *buf, int buflen )
 	register const char *	wn;
 	register const char *	mn;
 
-	if (timeptr->tm_wday < 0 || timeptr->tm_wday >= DAYSPERWEEK)
+	if (timeptr->tm_wday < 0 || timeptr->tm_wday >= DAYSPERWEEK) {
 		wn = "???";
+   }
 	else	wn = wday_name[timeptr->tm_wday];
-	if (timeptr->tm_mon < 0 || timeptr->tm_mon >= MONSPERYEAR)
+	if (timeptr->tm_mon < 0 || timeptr->tm_mon >= MONSPERYEAR) {
 		mn = "???";
+   }
 	else	mn = mon_name[timeptr->tm_mon];
 	/*
 	** The X3J11-suggested format is
@@ -52,3 +54,4 @@ new_asctime_r(const struct tm *timeptr, char *buf, int buflen )
 		TM_YEAR_BASE + timeptr->tm_year);
 	return buf;
 }
+

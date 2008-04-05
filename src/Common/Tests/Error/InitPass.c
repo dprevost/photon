@@ -32,13 +32,16 @@ int main()
    vdscInitErrorHandler( &errorHandler );   
    
    for ( i = 0; i < VDSC_ERROR_CHAIN_LENGTH; ++i ) {
-      if ( errorHandler.errorCode[0]   != 0 )
+      if ( errorHandler.errorCode[0]   != 0 ) {
          ERROR_EXIT( expectedToPass, NULL, ; );
-      if ( errorHandler.errorHandle[0] != VDSC_NO_ERRHANDLER )
+      }
+      if ( errorHandler.errorHandle[0] != VDSC_NO_ERRHANDLER ) {
          ERROR_EXIT( expectedToPass, NULL, ; );
+      }
    }
-   if ( errorHandler.initialized != VDSC_ERROR_HANDLER_SIGNATURE )
+   if ( errorHandler.initialized != VDSC_ERROR_HANDLER_SIGNATURE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();

@@ -164,15 +164,17 @@ localsub( const time_t * const	timep,
 	sp = lclptr;
 	if (sp->timecnt == 0 || t < sp->ats[0]) {
 		i = 0;
-		while (sp->ttis[i].tt_isdst)
+		while (sp->ttis[i].tt_isdst) {
 			if (++i >= sp->typecnt) {
 				i = 0;
 				break;
 			}
-	} else {
-		for (i = 1; i < sp->timecnt; ++i)
-			if (t < sp->ats[i])
-				break;
+      }
+	} 
+   else {
+		for (i = 1; i < sp->timecnt; ++i) {
+			if (t < sp->ats[i]) break;
+      }
 		i = sp->types[i - 1];
 	}
 	ttisp = &sp->ttis[i];
@@ -228,7 +230,7 @@ timesub( const time_t * const		timep,
 			if (*timep == lp->ls_trans) {
 				hit = ((i == 0 && lp->ls_corr > 0) ||
 					lp->ls_corr > sp->lsis[i - 1].ls_corr);
-				if (hit)
+				if (hit) {
 					while (i > 0 &&
 						sp->lsis[i].ls_trans ==
 						sp->lsis[i - 1].ls_trans + 1 &&
@@ -237,6 +239,7 @@ timesub( const time_t * const		timep,
 							++hit;
 							--i;
 					}
+            }
 			}
 			corr = lp->ls_corr;
 			break;
@@ -271,16 +274,16 @@ timesub( const time_t * const		timep,
 	*/
 	tmp->tm_sec = (int) (rem % SECSPERMIN) + hit;
 	tmp->tm_wday = (int) ((EPOCH_WDAY + days) % DAYSPERWEEK);
-	if (tmp->tm_wday < 0)
+	if (tmp->tm_wday < 0) {
 		tmp->tm_wday += DAYSPERWEEK;
+   }
 	y = EPOCH_YEAR;
 #define LEAPS_THRU_END_OF(y)	((y) / 4 - (y) / 100 + (y) / 400)
 	while (days < 0 || days >= (long) year_lengths[yleap = isleap(y)]) {
 		register int	newy;
 
 		newy = y + days / DAYSPERNYEAR;
-		if (days < 0)
-			--newy;
+		if (days < 0) --newy;
 		days -= (newy - y) * DAYSPERNYEAR +
 			LEAPS_THRU_END_OF(newy - 1) -
 			LEAPS_THRU_END_OF(y - 1);
@@ -289,8 +292,9 @@ timesub( const time_t * const		timep,
 	tmp->tm_year = y - TM_YEAR_BASE;
 	tmp->tm_yday = (int) days;
 	ip = mon_lengths[yleap];
-	for (tmp->tm_mon = 0; days >= (long) ip[tmp->tm_mon]; ++(tmp->tm_mon))
+	for (tmp->tm_mon = 0; days >= (long) ip[tmp->tm_mon]; ++(tmp->tm_mon)) {
 		days = days - (long) ip[tmp->tm_mon];
+   }
 	tmp->tm_mday = (int) (days + 1);
 	tmp->tm_isdst = 0;
 #ifdef TM_GMTOFF

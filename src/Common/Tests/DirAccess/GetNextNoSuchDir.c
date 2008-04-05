@@ -53,11 +53,13 @@ int main()
 
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
 
-   if ( str != NULL )
+   if ( str != NULL ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   if ( ! vdscAnyErrors( &errorHandler ) )
+   }
+   if ( ! vdscAnyErrors( &errorHandler ) ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
+   }
+   
    vdscCloseDir( &iterator );
 
    vdscFiniDir( &iterator );

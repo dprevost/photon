@@ -76,8 +76,7 @@ int main()
     * Newer version of gcc seem to strip the loop away since dum is not
     * used anywhere. This seems to fix the problem.
     */
-   if (dum == 0 )
-      fprintf(stderr, "%d\n", dum );
+   if (dum == 0 ) fprintf(stderr, "%d\n", dum );
    
    if ( sec == 0 && nanoSec == 0 ) {
       fprintf( stderr, "Timer returns invalid time!\n" );
@@ -118,8 +117,7 @@ int main()
        * Newer version of gcc seem to strip the loop away since dum is not
        * used anywhere. This seems to fix the problem.
        */
-      if (dum == 0 )
-         fprintf(stderr, "%d\n", dum );
+      if (dum == 0 ) fprintf(stderr, "%d\n", dum );
 
       if ( sec == 0 && nanoSec == 0 ) {
          fprintf( stderr, "Timer returns invalid time!\n" );

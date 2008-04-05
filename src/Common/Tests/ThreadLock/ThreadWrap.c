@@ -76,10 +76,12 @@ int vdstCreateThread( vdstThreadWrap* pThread,
                               NULL, vdstStartRoutine, (void*)pThread );
 
    if ( errcode != 0 ) {
-      if ( errcode > 0 )
+      if ( errcode > 0 ) {
          vdscSetError( pError, VDSC_ERRNO_HANDLE, errcode );
-      else
+      }
+      else {
          vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      }
       return -1;
    }
 #endif
@@ -114,10 +116,12 @@ int vdstJoinThread( vdstThreadWrap* pThread,
    
    errcode = pthread_join( pThread->threadId, NULL ); // &retValue
    if ( errcode != 0 ) {
-      if ( errcode > 0 )
+      if ( errcode > 0 ) {
          vdscSetError( pError, VDSC_ERRNO_HANDLE, errcode );
-      else
+      }
+      else {
          vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      }
       return -1;
    }
    return 0;

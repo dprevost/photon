@@ -40,16 +40,18 @@ int main()
    dummyPtrs[0] = dummyArgs;
    
    errcode = vdscSetSupportedOptions( 5, opts, &handle );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    strcpy( dummyArgs, "OptionTest2 -?" );
    dummyPtrs[1] = &dummyArgs[12];
    dummyArgs[11] = 0;
    
    errcode = vdscValidateUserOptions( handle, 2, dummyPtrs, 1 );
-   if ( errcode != 1 )
+   if ( errcode != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    strcpy( dummyArgs, "OptionTest2 -a 12345" );
    dummyPtrs[1] = &dummyArgs[12];
@@ -58,8 +60,9 @@ int main()
    dummyArgs[14] = 0;   
 
    errcode = vdscValidateUserOptions( handle, 3, dummyPtrs, 1 );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    return 0;
 }

@@ -35,36 +35,42 @@ int main()
    vdscInitErrorHandler( &errorHandler );
    
    errcode = vdscOpenDir( &iterator, ".", &errorHandler );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
+   }
+   
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
-   if ( str == NULL ) 
+   if ( str == NULL ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
+   }
    
    /* Close and reopen */
    vdscCloseDir( &iterator );
 
    errcode = vdscOpenDir( &iterator, ".", &errorHandler );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
+   }
+   
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
-   if ( str == NULL )
+   if ( str == NULL ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
+   }
    
    /* Close twice and reopen - should work */
    vdscCloseDir( &iterator );
    vdscCloseDir( &iterator );
 
    errcode = vdscOpenDir( &iterator, ".", &errorHandler );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
+   }
+   
    str = vdscDirGetNextFileName( &iterator, &errorHandler );
-   if ( str == NULL )
+   if ( str == NULL ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
+   }
+   
    vdscCloseDir( &iterator );
 
    vdscFiniDir( &iterator );

@@ -41,8 +41,7 @@ int vdscInitProcessLock( vdscProcessLock* pLock )
 
    VDS_PRE_CONDITION( pLock != NULL );
 
-   if ( pLock->initialized == VDSC_LOCK_SIGNATURE )
-      return 0;
+   if ( pLock->initialized == VDSC_LOCK_SIGNATURE ) return 0;
    
 #if defined(CONFIG_KERNEL_HEADERS)
    spin_lock_init(&pLock->lock);
@@ -87,8 +86,7 @@ int vdscFiniProcessLock( vdscProcessLock* pLock )
 
    pLock->pid = 0;
    
-   if ( err == 0 )
-      pLock->initialized = 0;
+   if ( err == 0 ) pLock->initialized = 0;
    
    return err;
 }

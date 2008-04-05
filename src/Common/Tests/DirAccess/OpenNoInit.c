@@ -37,8 +37,9 @@ int main()
    vdscInitErrorHandler( &errorHandler );
    
    errcode = vdscOpenDir( pIterator, "..", &errorHandler );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
+   }
    
    vdscCloseDir( pIterator );
 

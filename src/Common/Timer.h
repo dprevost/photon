@@ -65,7 +65,7 @@ struct vdscTimer
 typedef struct vdscTimer vdscTimer;
 
 #if defined(WIN32)
-static inline int gettimeofday( struct timeval *tv, void* tz )
+static inline int gettimeofday( struct timeval * tv, void * tz )
 {
    union timeUnion
    {
@@ -85,44 +85,46 @@ static inline int gettimeofday( struct timeval *tv, void* tz )
 
 /** Start the timer */
 static inline void 
-vdscBeginTimer( vdscTimer* pTimer )
+vdscBeginTimer( vdscTimer * pTimer )
 {
 #if defined (WIN32)
    if ( pTimer->highResolution == TRUE ) {
       QueryPerformanceCounter( &pTimer->beginCount );
       return;
    }
-   else
+   else {
 #endif
-   {
       gettimeofday( &pTimer->timeBegin, NULL );
+#if defined (WIN32)
    }
+#endif
 }
 
 /** Stop the timer */
 static inline
-void vdscEndTimer( vdscTimer* pTimer )
+void vdscEndTimer( vdscTimer * pTimer )
 {
 #if defined (WIN32)
    if ( pTimer->highResolution == TRUE ) {
       QueryPerformanceCounter( &pTimer->endCount );
       return;
    }
-   else
+   else {
 #endif
-   {
       gettimeofday( &pTimer->timeEnd, NULL );
+#if defined (WIN32)
    }
+#endif
 }
    
 /** Calculates - returns the time to the caller in seconds and nanosecs. */
 VDSF_COMMON_EXPORT
-void vdscCalculateTimer( vdscTimer* pTimer,
-                         unsigned long *pSecs,
-                         unsigned long *pnanoSecs );
+void vdscCalculateTimer( vdscTimer     * pTimer,
+                         unsigned long * pSecs,
+                         unsigned long * pnanoSecs );
    
 VDSF_COMMON_EXPORT
-void vdscInitTimer( vdscTimer* pTimer );
+void vdscInitTimer( vdscTimer * pTimer );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -45,11 +45,13 @@ int main()
    
    errcode = vdscOpenDir( &iterator, "..", &errorHandler );
 
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   if ( vdscAnyErrors( &errorHandler ) ) 
+   }
+   if ( vdscAnyErrors( &errorHandler ) ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
+   }
+   
    errcode = vdscOpenDir( &iterator, "..", &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

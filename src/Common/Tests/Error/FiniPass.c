@@ -34,13 +34,16 @@ int main()
    vdscFiniErrorHandler( &errorHandler );
    
    for ( i = 0; i < VDSC_ERROR_CHAIN_LENGTH; ++i ) {
-      if ( errorHandler.errorCode[0]   != 0 )
+      if ( errorHandler.errorCode[0]   != 0 ) {
          ERROR_EXIT( expectedToPass, NULL, ; );
-      if ( errorHandler.errorHandle[0] != VDSC_NO_ERRHANDLER )
+      }
+      if ( errorHandler.errorHandle[0] != VDSC_NO_ERRHANDLER ) {
          ERROR_EXIT( expectedToPass, NULL, ; );
+      }
    }
-   if ( errorHandler.initialized != 0 )
+   if ( errorHandler.initialized != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdscFiniErrorDefs();
    

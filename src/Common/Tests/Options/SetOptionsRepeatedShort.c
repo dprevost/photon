@@ -27,8 +27,7 @@ int main()
 #if defined(USE_DBC)
    vdscOptionHandle handle;
 
-   struct vdscOptStruct opts[3] = 
-   {
+   struct vdscOptStruct opts[3] = {
       { 'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog" },
       { 'a', "verbose", 1, "", "try to explain what is going on" },
       { 'z', "zzz",     1, "", "sleep" }

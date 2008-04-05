@@ -149,47 +149,49 @@ int vdscSetSupportedOptions( int               numOpts,
        * function in that test).
        */
       nullTerminatedString = false;
-      for ( k = 0; k < VDSC_OPT_LONG_OPT_LENGTH; ++k )
+      for ( k = 0; k < VDSC_OPT_LONG_OPT_LENGTH; ++k ) {
          if ( opts[i].longOpt[k] == '\0' ) {
             nullTerminatedString = true;
             break;
          }
+      }
       VDS_PRE_CONDITION( nullTerminatedString == true );
 
       nullTerminatedString = false;
-      for ( k = 0; k < VDSC_OPT_ARGUMENT_MSG_LENGTH; ++k ) 
+      for ( k = 0; k < VDSC_OPT_ARGUMENT_MSG_LENGTH; ++k ) {
          if ( opts[i].argumentMessage[k] == '\0' ) {
             nullTerminatedString = true;
             break;
          }
+      }
       VDS_PRE_CONDITION( nullTerminatedString == true );
 
       nullTerminatedString = false;
-      for ( k = 0; k < VDSC_OPT_COMMENT_LENGTH; ++k )
+      for ( k = 0; k < VDSC_OPT_COMMENT_LENGTH; ++k ) {
          if ( opts[i].comment[k] == '\0' ) {
             nullTerminatedString = true;
             break;
          }
+      }
       VDS_PRE_CONDITION( nullTerminatedString == true );
       
       /* Repeated options */
       for ( k = 0; k < i; ++k ) {
-         if ( opts[i].shortOpt != '\0' &&
-              opts[i].shortOpt != ' ' ) 
+         if ( opts[i].shortOpt != '\0' && opts[i].shortOpt != ' ' ) {
             VDS_PRE_CONDITION( opts[i].shortOpt != opts[k].shortOpt );
-         if ( opts[i].longOpt[0] != '\0' &&
-              opts[i].longOpt[0] != ' ' )
-            if ( strlen(opts[i].longOpt) == 
-                 strlen(opts[i].longOpt) )
+         }
+         if ( opts[i].longOpt[0] != '\0' && opts[i].longOpt[0] != ' ' ) {
+            if ( strlen(opts[i].longOpt) == strlen(opts[i].longOpt) ) {
                VDS_PRE_CONDITION( strcmp( opts[i].longOpt, 
                                           opts[k].longOpt ) != 0 );
+            }
+         }
       }
 
    } /* end of loop for preconditions */
    
    optStruct = (vdscInternalOpt *)malloc( sizeof(vdscInternalOpt) );
-   if ( optStruct == NULL )
-      return -1;
+   if ( optStruct == NULL ) return -1;
    
    optStruct->pArray = (vdscOptArray *)malloc(numOpts*sizeof(vdscOptArray));
    if ( optStruct->pArray == NULL ) {
@@ -202,8 +204,9 @@ int vdscSetSupportedOptions( int               numOpts,
    optStruct->argv = NULL;
    optStruct->validated = 0;
    
-   for ( i = 0; i < numOpts; ++i )
+   for ( i = 0; i < numOpts; ++i ) {
       memcpy( &optStruct->pArray[i].opt, &opts[i], sizeof(vdscOptStruct) );
+   }
    
    *pHandle = (void*) optStruct;
 
@@ -256,8 +259,9 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
    
    VDS_PRE_CONDITION( argc > 0 );
    VDS_PRE_CONDITION( argv != NULL );
-   for ( i = 0; i < argc; ++i )
+   for ( i = 0; i < argc; ++i ) {
       VDS_PRE_CONDITION( argv[i] != NULL );
+   }
    
    if ( optStruct->validated ) {
       /* So we were called before... better clear some stuff before
@@ -277,15 +281,17 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
           * and we want to make sure there are no buffer overflow).
           */
          
-         for ( j = 1, len = 0; j < VDSC_OPT_LONG_OPT_LENGTH; ++j )
+         for ( j = 1, len = 0; j < VDSC_OPT_LONG_OPT_LENGTH; ++j ) {
             if ( argv[i][j] == '\0' ) {
                len = j;
                break;
             }
+         }
          
          if ( len < 2 ) {
-            if ( printError )
+            if ( printError ) {
                fprintf( stderr, "Unrecognized option: %s\n", argv[i] );
+            }
             returnCode = -1;
             break;
          }
@@ -330,13 +336,15 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
                continue;
             }
             
-            if ( printError && found == 0 )
+            if ( printError && found == 0 ) {
                fprintf( stderr, "Unrecognized option: %s\n", argv[i] );
-
-            if ( printError && found == 1 )
+            }
+            
+            if ( printError && found == 1 ) {
                fprintf( stderr, "Missing or illegal argument to option: %s\n", 
                         argv[i] );
-
+            }
+            
             returnCode = -1;
             break;
             
@@ -390,33 +398,33 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
                continue;
             }   
 
-            if ( printError && found == 0 )
+            if ( printError && found == 0 ) {
                fprintf( stderr, "Unrecognized option: %s\n", argv[i] );
-
-            if ( printError && found == 1 )
+            }
+            
+            if ( printError && found == 1 ) {
                fprintf( stderr, "Missing or illegal argument to option: %s\n", 
                         argv[i] );
-
+            }
+            
             returnCode = -1;
             break;
 
          } /* end of else - has a long option */
          
       } /* end if - found an option */
-      else
+      else {
          i++; 
-
+      }
    } /* end of while on argc */
       
    /* Make sure all mandatory options are present */
    if ( returnCode == 0 ) {
       for ( j = 0; j < optStruct->numOpt; ++j ) {
          /* Mandatory? */
-         if ( optStruct->pArray[j].opt.isOptionel == 1 )
-            continue;
+         if ( optStruct->pArray[j].opt.isOptionel == 1 ) continue;
          /* Is it there? */
-         if ( optStruct->pArray[j].optionLocation > 0 )
-            continue;
+         if ( optStruct->pArray[j].optionLocation > 0 ) continue;
          
          if ( printError ) {
             if ( optStruct->pArray[j].opt.shortOpt == '\0' ||
@@ -431,11 +439,12 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
                         argv[0], 
                         optStruct->pArray[j].opt.shortOpt );
             }
-            else
+            else {
                fprintf( stderr, "%s: Missing option (either -%c or --%s)\n",
                         argv[0], 
                         optStruct->pArray[j].opt.shortOpt, 
                         optStruct->pArray[j].opt.longOpt );
+            }
          }
          
          returnCode = -1;
@@ -633,8 +642,9 @@ bool vdscIsShortOptPresent( vdscOptionHandle handle,
    
    for ( i = 0; i < optStruct->numOpt; ++i ) {
       if ( optStruct->pArray[i].opt.shortOpt == opt ) {
-         if ( optStruct->pArray[i].optionLocation != 0 )
+         if ( optStruct->pArray[i].optionLocation != 0 ) {
             return true;
+         }
          break;
       }
    }
@@ -698,8 +708,9 @@ bool vdscIsLongOptPresent( vdscOptionHandle handle,
 
    for ( i = 0; i < optStruct->numOpt; ++i ) {
       if ( strcmp( optStruct->pArray[i].opt.longOpt, opt ) == 0 ) {
-         if ( optStruct->pArray[i].optionLocation != 0 )
+         if ( optStruct->pArray[i].optionLocation != 0 ) {
             return true;
+         }
          break;
       }
    }
@@ -751,17 +762,18 @@ void vdscShowUsage( vdscOptionHandle handle,
    for ( i = 0; i < optStruct->numOpt; ++i ) {
       len = strlen( optStruct->pArray[i].opt.longOpt ) + 
          strlen( optStruct->pArray[i].opt.argumentMessage ) + 3;
-      if ( len > max_len )
-         max_len = len;
+      if ( len > max_len ) max_len = len;
    }
    
-   if ( progName[0] == '\0' && optStruct->argv != NULL )
+   if ( progName[0] == '\0' && optStruct->argv != NULL ) {
       fprintf( stderr, "usage: %s options %s\n\n", 
                optStruct->argv[0], 
                addArguments );
-   else
+   }
+   else {
       fprintf( stderr, "usage: %s options %s\n\n", progName, addArguments );
-
+   }
+   
    for ( i = 0; i < optStruct->numOpt; ++i ) {
       memset( shortOpt, 0, 3 );
       memset( longOpt, 0, 
@@ -814,8 +826,7 @@ void vdscUnsetSupportedOptions( vdscOptionHandle handle )
    VDS_PRE_CONDITION( handle != NULL );
    VDS_INV_CONDITION( optStruct->initialized == VDSC_OPTION_SIGNATURE );
 
-   if ( optStruct->pArray != NULL )
-      free( optStruct->pArray );
+   if ( optStruct->pArray != NULL ) free( optStruct->pArray );
    
    /* We zero the struct, just in case someone tries to reuse
     * the handle (and somehow the preconditions do not catch it).

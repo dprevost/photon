@@ -218,7 +218,6 @@ XFAIL_TESTS =                   \
         ReadOnlyInvalidBaseAddr \
         ReadOnlyInvalidSig      \
         ReadOnlyMemNull         \
-        ReadOnlyTryWrite        \
         ReadWriteNullError      \
         ReadWriteInvalidSig     \
         ReadWriteInvBaseAddr    \

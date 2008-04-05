@@ -93,10 +93,11 @@ int worker( void* arg )
    vdstBarrierWait( &g_barrier );
    vdscBeginTimer( &timer );
   
-   while ( 1 ) {      
-      if ( (loop%DEFAULT_FAILURE_RATE) != 0 )
+   while ( 1 ) {
+      if ( (loop%DEFAULT_FAILURE_RATE) != 0 ) {
          vdscAcquireThreadLock( &g_data->lock );
-  
+      }
+      
       sprintf( g_data->dum2, "dumStr2 %d  ", identifier );
       memcpy( g_data->dum1, g_data->dum2, 100 );
 
@@ -110,19 +111,19 @@ int worker( void* arg )
                   (unsigned int)sec,
                   (unsigned int)(nanoSec/1000/1000) );
          g_data->exitFlag = 1;
-         if ( (loop%DEFAULT_FAILURE_RATE) != 0 )
+         if ( (loop%DEFAULT_FAILURE_RATE) != 0 ) {
             vdscReleaseThreadLock( &g_data->lock );
+         }
          fprintf( stderr, "Thread #%d, Number of loops = %lu\n", 
                   identifier, loop );
          return 1;
       }
       
-      if ( (loop%DEFAULT_FAILURE_RATE) != 0 )
+      if ( (loop%DEFAULT_FAILURE_RATE) != 0 ) {
          vdscReleaseThreadLock( &g_data->lock );
+      }
 
-      if ( g_data->exitFlag == 1 )
-         break;
-      
+      if ( g_data->exitFlag == 1 ) break;      
       loop++;
       
       if ( (loop%CHECK_TIMER) != 0 ) {
@@ -130,8 +131,7 @@ int worker( void* arg )
          vdscCalculateTimer( &timer, &sec, &nanoSec );
 
          elapsedTime = sec*US_PER_SEC + nanoSec/1000;
-         if ( elapsedTime > g_maxTime )
-            break;
+         if ( elapsedTime > g_maxTime ) break;
       }
    }
    
@@ -165,9 +165,10 @@ int main( int argc, char* argv[] )
    vdscInitErrorHandler( &errorHandler );
 
    errcode = vdscSetSupportedOptions( 5, opts, &handle );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdscValidateUserOptions( handle, argc, argv, 1 );
    if ( errcode < 0 ) {
       vdscShowUsage( handle, "LockConcurrency", "" );
@@ -185,9 +186,10 @@ int main( int argc, char* argv[] )
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
    }
-   else
+   else {
       numThreads = DEFAULT_NUM_THREADS;
-
+   }
+   
    if ( vdscGetShortOptArgument( handle, 'r', &argument ) ) {
       g_failureRate = strtol( argument, NULL, 0 );
       if ( g_failureRate < 1 ) {
@@ -195,9 +197,10 @@ int main( int argc, char* argv[] )
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
    }
-   else
+   else {
       g_failureRate = DEFAULT_FAILURE_RATE;
-
+   }
+   
    if ( vdscGetShortOptArgument( handle, 't', &argument ) ) {
       g_maxTime = strtol( argument, NULL, 0 );
       if ( g_maxTime < 1 ) {
@@ -205,12 +208,12 @@ int main( int argc, char* argv[] )
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
    }
-   else
+   else {
       g_maxTime = DEFAULT_TIME; /* in seconds */
-  
+   }
+   
    if ( vdscGetShortOptArgument( handle, 'm', &argument ) ) {
-      if ( strcmp( argument, "try" ) == 0 )
-         g_tryMode = true;
+      if ( strcmp( argument, "try" ) == 0 ) g_tryMode = true;
    }
    
    if ( vdscGetShortOptArgument( handle, 'f', &argument ) ) {
@@ -220,39 +223,47 @@ int main( int argc, char* argv[] )
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
    }
-   else
+   else {
       strcpy( filename, "Memfile.mem" );
-
+   }
+   
    g_maxTime *= US_PER_SEC;
    identifier = (int*) malloc( numThreads*sizeof(int));
-   if ( identifier == NULL )
+   if ( identifier == NULL ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
+   }
    memset( identifier, 0, numThreads*sizeof(int) );
+
    threadWrap = (vdstThreadWrap*) malloc(numThreads*sizeof(vdstThreadWrap));
-   if ( threadWrap == NULL )
+   if ( threadWrap == NULL ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
+   }
    memset( threadWrap, 0, numThreads*sizeof(vdstThreadWrap) );
    
    errcode = vdstInitBarrier( &g_barrier, numThreads, &errorHandler );
-   if ( errcode < 0 )
+   if ( errcode < 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
+   }
    
    vdscInitMemoryFile( &g_memFile, 10, filename );
 
    errcode = vdscCreateBackstore( &g_memFile, 0644, &errorHandler );
-   if ( errcode < 0 )
+   if ( errcode < 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
+   }
+   
    errcode = vdscOpenMemFile( &g_memFile, &ptr, &errorHandler );
-   if ( errcode < 0 )
+   if ( errcode < 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
+   }
+   
    memset( ptr, 0, 10000 );
    g_data = (struct localData*) ptr;
    
    errcode = vdscInitThreadLock( &g_data->lock );
-   if ( errcode < 0 )
+   if ( errcode < 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    for ( i = 0; i < numThreads; ++i ) {
       identifier[i] = i+1;
@@ -260,21 +271,23 @@ int main( int argc, char* argv[] )
                                   &worker,
                                   (void*)&identifier[i],
                                   &errorHandler );
-      if ( errcode < 0 )
+      if ( errcode < 0 ) {
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
+      }
    }
 
    for ( i = 0; i < numThreads; ++i ) {
       errcode = vdstJoinThread( &threadWrap[i], &errorHandler );
-      if ( errcode < 0 )
+      if ( errcode < 0 ) {
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
-      if ( threadWrap[i].returnCode != 0 )
-         foundError = true;
+      }
+      if ( threadWrap[i].returnCode != 0 ) foundError = true;
    }
    
-   if ( ! foundError )
+   if ( ! foundError ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
+   }
+   
    vdscFiniMemoryFile( &g_memFile );
    vdstFiniBarrier( &g_barrier );
    vdscFiniErrorHandler( &errorHandler );

@@ -36,9 +36,10 @@ int main()
    vdscInitErrorHandler( &errorHandler );
 
    errcode = vdscOpenDir( &iterator, "..", &errorHandler );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
+   }
+   
    str = vdscDirGetNextFileName( NULL, &errorHandler );
    
    ERROR_EXIT( expectedToPass, NULL, ; );

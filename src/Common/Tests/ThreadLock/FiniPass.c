@@ -29,13 +29,15 @@ int main()
    vdscThreadLock lock;
 
    errcode = vdscInitThreadLock( &lock );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdscFiniThreadLock( &lock );
 
-   if ( lock.initialized != 0 )
+   if ( lock.initialized != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    return 0;
 }

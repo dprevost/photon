@@ -19,7 +19,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdscInitTimer( vdscTimer* pTimer )
+void vdscInitTimer( vdscTimer * pTimer )
 {
 #if defined (WIN32)
    pTimer->highResolution = TRUE;
@@ -38,9 +38,9 @@ void vdscInitTimer( vdscTimer* pTimer )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void 
-vdscCalculateTimer( vdscTimer *pTimer,
-                    unsigned long *pSecs,
-                    unsigned long *pnanoSecs )
+vdscCalculateTimer( vdscTimer     * pTimer,
+                    unsigned long * pSecs,
+                    unsigned long * pnanoSecs )
 {
    unsigned long tmp;
    
@@ -55,15 +55,16 @@ vdscCalculateTimer( vdscTimer *pTimer,
       d = (*pnanoSecs * 1000000000.0)/pTimer->frequency.QuadPart;
       *pnanoSecs = (unsigned long) d;
    }
-   else
+   else {
 #endif
-   {
       tmp = (pTimer->timeEnd.tv_sec - pTimer->timeBegin.tv_sec) * 1000000 + 
          pTimer->timeEnd.tv_usec - pTimer->timeBegin.tv_usec;
       
       *pSecs = tmp/ 1000000;
       *pnanoSecs = (tmp - *pSecs * 1000000)* 1000;
+#if defined (WIN32)
    }
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

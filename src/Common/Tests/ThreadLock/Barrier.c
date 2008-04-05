@@ -100,10 +100,12 @@ end_on_error:
    /* Some old versions of pthread used to returned -1 instead of
     * returning the error code. We check for this just in case.
     */
-   if ( status > 0 )
+   if ( status > 0 ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, status );
-   else
+   }
+   else {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+   }
 #endif
    return -1;
 }

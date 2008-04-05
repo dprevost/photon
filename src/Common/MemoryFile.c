@@ -153,14 +153,15 @@ vdscBackStoreStatus( vdscMemoryFile*       pMem,
 #else
    fp = fopen( pMem->name, "rb" );
    if ( fp == NULL ) goto error;
-   if (fseek(fp, 0, SEEK_END) == 0 )
+   if (fseek(fp, 0, SEEK_END) == 0 ) {
       pStatus->actualLLength = ftell(fp);
+   }
    fclose(fp);
-   if ( pStatus->actualLLength == EOF )
+   if ( pStatus->actualLLength == EOF ) {
       pStatus->actualLLength = 0;
+   }
 #endif
-   if ( pStatus->actualLLength != pMem->length )
-      goto error;
+   if ( pStatus->actualLLength != pMem->length ) goto error;
    pStatus->lenghtOK = 1;
 
  error:
@@ -231,8 +232,7 @@ vdscCreateBackstore( vdscMemoryFile*   pMem,
    if ( errcode == 0 ) {
       buf[0] = 0;
       numWritten = fwrite( buf, 1, 1, fp );
-      if ( numWritten != 1 )
-         errcode = -1;
+      if ( numWritten != 1 ) errcode = -1;
    }
    
    fclose( fp );
@@ -333,9 +333,10 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
       return -1;
    }
-   else
+   else {
       *ppAddr = pMem->baseAddr;
-
+   }
+   
 #else /* WIN32 */
 
    pMem->fileHandle = open( pMem->name, O_RDWR );
@@ -355,9 +356,10 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
       return -1;
    }
-   else
+   else {
       *ppAddr = pMem->baseAddr;
-
+   }
+   
 #endif /* WIN32 */
    
    /* Just in case */
@@ -391,22 +393,28 @@ vdscCloseMemFile( vdscMemoryFile*   pMem,
    VDS_INV_CONDITION( pMem->initialized == VDSC_MEMFILE_SIGNATURE );
    VDS_PRE_CONDITION( pError != NULL );
 
-   if ( pMem->baseAddr != VDS_MAP_FAILED )
+   if ( pMem->baseAddr != VDS_MAP_FAILED ) {
       vdscSyncMemFile( pMem, pError );
+   }
    
 #if defined (WIN32)
-   if (pMem->baseAddr != VDS_MAP_FAILED)
+   if (pMem->baseAddr != VDS_MAP_FAILED) {
       UnmapViewOfFile( pMem->baseAddr );
-   if ( pMem->mapHandle != VDS_INVALID_HANDLE )
+   }
+   if ( pMem->mapHandle != VDS_INVALID_HANDLE ) {
       CloseHandle( pMem->mapHandle );
-   if ( pMem->fileHandle != VDS_INVALID_HANDLE )
+   }
+   if ( pMem->fileHandle != VDS_INVALID_HANDLE ) {
       CloseHandle( pMem->fileHandle );
+   }
    pMem->mapHandle = VDS_INVALID_HANDLE;
 #else
-   if ( pMem->baseAddr != VDS_MAP_FAILED )
+   if ( pMem->baseAddr != VDS_MAP_FAILED ) {
       munmap( pMem->baseAddr, pMem->length );
-   if ( pMem->fileHandle != VDS_INVALID_HANDLE )
+   }
+   if ( pMem->fileHandle != VDS_INVALID_HANDLE ) {
       close( pMem->fileHandle );
+   }
 #endif
 
    pMem->fileHandle = VDS_INVALID_HANDLE;
@@ -448,8 +456,9 @@ vdscSyncMemFile( vdscMemoryFile*   pMem,
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
       errcode = -1;
    }
-   else
+   else {
       errcode = 0;
+   }
 #elif HAVE_MSYNC
    errcode = msync( pMem->baseAddr, pMem->length, MS_SYNC );
 #else
