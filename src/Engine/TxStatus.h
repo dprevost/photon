@@ -52,7 +52,7 @@ typedef enum vdseTxStatusEnum vdseTxStatusEnum;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdseTxStatus
+struct vdseTxStatus
 {
    /** The offset of the current transaction */
    ptrdiff_t txOffset;
@@ -88,7 +88,9 @@ typedef struct vdseTxStatus
     */
    uint32_t parentCounter;
 
-} vdseTxStatus;
+};
+
+typedef struct vdseTxStatus vdseTxStatus;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

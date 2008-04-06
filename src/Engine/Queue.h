@@ -33,16 +33,18 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef enum vdseQueueEnum
+enum vdseQueueEnum
 {
    VDSE_QUEUE_FIRST = 101,
    VDSE_QUEUE_LAST  = 202
    
-} vdseQueueEnum;
+};
+
+typedef enum vdseQueueEnum vdseQueueEnum;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdseQueueItem
+struct vdseQueueItem
 {
    vdseTxStatus  txStatus;
 
@@ -52,11 +54,13 @@ typedef struct vdseQueueItem
    
    unsigned char data[1];
 
-} vdseQueueItem;
+};
+
+typedef struct vdseQueueItem vdseQueueItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdseQueue
+struct vdseQueue
 {
    /** Always first */
    struct vdseMemObject memObject;
@@ -80,7 +84,9 @@ typedef struct vdseQueue
    /** Variable size struct - always put at the end */
    struct vdseBlockGroup blockGroup;
 
-} vdseQueue;
+};
+
+typedef struct vdseQueue vdseQueue;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

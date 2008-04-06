@@ -37,8 +37,7 @@ int vdseTxInit( vdseTx *            pTx,
                                 VDSE_IDENT_TRANSACTION,
                                 &pTx->blockGroup,
                                 numberOfBlocks );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return -1;
    }
@@ -66,8 +65,9 @@ void vdseTxFini( vdseTx*             pTx,
 #endif
 
    /* Close and unlink the log file */
-   if ( pContext->pLogFile != NULL )
+   if ( pContext->pLogFile != NULL ) {
       vdseCloseLogFile( pContext->pLogFile, &pContext->errorHandler );
+   }
    
    vdseLinkedListFini( &pTx->listOfOps );
    pTx->signature = 0;
@@ -97,8 +97,7 @@ int vdseTxAddOps( vdseTx             * pTx,
    pOps = (vdseTxOps *) vdseMalloc( &pTx->memObject,
                                     sizeof(vdseTxOps), 
                                     pContext );
-   if ( pOps != NULL )
-   {
+   if ( pOps != NULL ) {
       pOps->transType    = txType;
       pOps->parentOffset = parentOffset;
       pOps->parentType   = parentType;
@@ -170,25 +169,23 @@ int vdseTxCommit( vdseTx*             pTx,
 #endif
 
    /* Write to the log file */
-   if ( pContext->pLogFile != NULL )
-   {
+   if ( pContext->pLogFile != NULL ) {
       errcode = vdseLogTransaction( pContext->pLogFile, 
                                     SET_OFFSET(pTx), 
                                     &pContext->errorHandler );
-      if ( errcode != VDS_OK )
-      {
+      if ( errcode != VDS_OK ) {
          fprintf(stderr, "Transaction::Commit err1 \n" );
          return -1;
       }
    }
 
-   if ( pTx->listOfOps.currentSize == 0 )
+   if ( pTx->listOfOps.currentSize == 0 ) {
       /* All is well - nothing to commit */
       return 0;
+   }
    
    while ( vdseLinkedListGetFirst( &pTx->listOfOps, 
-                                   &pLinkNode ) == LIST_OK )
-   {
+                                   &pLinkNode ) == LIST_OK ) {
       parentFolder = pChildFolder = NULL;
       pChildMemObject = pParentMemObject = NULL;
       pChildNode = NULL;
@@ -199,12 +196,11 @@ int vdseTxCommit( vdseTx*             pTx,
       pOps = (vdseTxOps*)
          ((char*)pLinkNode - offsetof( vdseTxOps, node ));
       
-      switch( pOps->transType )
-      {         
+      switch( pOps->transType ) {
+
       case VDSE_TX_ADD_DATA:
 
-         if ( pOps->parentType == VDSE_IDENT_HASH_MAP )
-         {
+         if ( pOps->parentType == VDSE_IDENT_HASH_MAP ) {
             GET_PTR( pHashMap, pOps->parentOffset, vdseHashMap );
             pParentMemObject = &pHashMap->memObject;
 
@@ -212,8 +208,7 @@ int vdseTxCommit( vdseTx*             pTx,
             vdseHashMapCommitAdd( pHashMap, pOps->childOffset, pContext );
             vdseUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == VDSE_IDENT_QUEUE )
-         {
+         else if ( pOps->parentType == VDSE_IDENT_QUEUE ) {
             GET_PTR( pQueue, pOps->parentOffset, vdseQueue );
             pParentMemObject = &pQueue->memObject;
 
@@ -222,9 +217,10 @@ int vdseTxCommit( vdseTx*             pTx,
             vdseUnlock( pParentMemObject, pContext );
          }
          /* We should not come here */
-         else
+         else {
             VDS_POST_CONDITION( pOps_invalid_type );
-
+         }
+         
          break;
 
       case VDSE_TX_ADD_OBJECT:
@@ -267,8 +263,7 @@ int vdseTxCommit( vdseTx*             pTx,
          vdseLockNoFailure( pChildMemObject, pContext );
 
          if ( pChildStatus->usageCounter > 0 || 
-            pChildNode->txCounter > 0  || pChildStatus->parentCounter > 0 )
-         {
+            pChildNode->txCounter > 0  || pChildStatus->parentCounter > 0 ) {
             /* 
              * We can't remove it - someone is using it. But we flag it
              * as "Remove is committed" so that the last "user" do delete
@@ -277,8 +272,7 @@ int vdseTxCommit( vdseTx*             pTx,
             vdseTxStatusCommitRemove( pChildStatus );
             vdseUnlock( pChildMemObject, pContext );
          }
-         else
-         {
+         else {
             /* 
              * No one uses the object to remove and no one can access it
              * since we have a lock on its parent. We can safely unlock it.
@@ -298,8 +292,7 @@ int vdseTxCommit( vdseTx*             pTx,
          break;
 
       case VDSE_TX_REMOVE_DATA:
-         if ( pOps->parentType == VDSE_IDENT_HASH_MAP )
-         {
+         if ( pOps->parentType == VDSE_IDENT_HASH_MAP ) {
             GET_PTR( pHashMap, pOps->parentOffset, vdseHashMap );
             pParentMemObject = &pHashMap->memObject;
 
@@ -309,8 +302,7 @@ int vdseTxCommit( vdseTx*             pTx,
                                      pContext );
             vdseUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == VDSE_IDENT_QUEUE )
-         {
+         else if ( pOps->parentType == VDSE_IDENT_QUEUE ) {
             GET_PTR( pQueue, pOps->parentOffset, vdseQueue );
             pParentMemObject = &pQueue->memObject;
 
@@ -321,9 +313,10 @@ int vdseTxCommit( vdseTx*             pTx,
             vdseUnlock( pParentMemObject, pContext );
          }
          /* We should not come here */
-         else
+         else {
             VDS_POST_CONDITION( pOps_invalid_type );
-
+         }
+         
          break;
 #if 0
       case VDSE_TX_SELECT:
@@ -372,25 +365,23 @@ void vdseTxRollback( vdseTx*             pTx,
 #endif
 
    /* Write to the log file */
-   if ( pContext->pLogFile != NULL )
-   {
+   if ( pContext->pLogFile != NULL ) {
       errcode = vdseLogTransaction( pContext->pLogFile, 
                                     SET_OFFSET(pTx), 
                                     &pContext->errorHandler );
-      if ( errcode != VDS_OK )
-      {
+      if ( errcode != VDS_OK ) {
          fprintf(stderr, "Transaction::Rollback err1 \n" );
          return;
       }
    }
 
-   if ( pTx->listOfOps.currentSize == 0 )
+   if ( pTx->listOfOps.currentSize == 0 ) {
       /* All is well - nothing to rollback */
       return;
+   }
    
    while ( vdseLinkedListGetLast( &pTx->listOfOps, 
-                                  &pLinkNode ) == LIST_OK )
-   {
+                                  &pLinkNode ) == LIST_OK ) {
       parentFolder = pChildFolder = NULL;
       pChildMemObject = pParentMemObject = NULL;
       pChildNode   = NULL;
@@ -401,11 +392,10 @@ void vdseTxRollback( vdseTx*             pTx,
       pOps = (vdseTxOps*)
          ((char*)pLinkNode - offsetof( vdseTxOps, node ));
 
-      switch( pOps->transType )
-      {            
+      switch( pOps->transType ) {
+
       case VDSE_TX_ADD_DATA:
-         if ( pOps->parentType == VDSE_IDENT_HASH_MAP )
-         {
+         if ( pOps->parentType == VDSE_IDENT_HASH_MAP ) {
             GET_PTR( pHashMap, pOps->parentOffset, vdseHashMap );
             pParentMemObject = &pHashMap->memObject;
 
@@ -415,8 +405,7 @@ void vdseTxRollback( vdseTx*             pTx,
                                     pContext );
             vdseUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == VDSE_IDENT_QUEUE )
-         {
+         else if ( pOps->parentType == VDSE_IDENT_QUEUE ) {
             GET_PTR( pQueue, pOps->parentOffset, vdseQueue );
             pParentMemObject = &pQueue->memObject;
 
@@ -427,9 +416,10 @@ void vdseTxRollback( vdseTx*             pTx,
             vdseUnlock( pParentMemObject, pContext );
          }
          /* We should not come here */
-         else
+         else {
             VDS_POST_CONDITION( pOps_invalid_type );
-
+         }
+         
          break;
             
       case VDSE_TX_ADD_OBJECT:
@@ -448,8 +438,7 @@ void vdseTxRollback( vdseTx*             pTx,
          vdseLockNoFailure( pChildMemObject, pContext );
 
          if ( pChildStatus->usageCounter > 0 || 
-            pChildNode->txCounter > 0  || pChildStatus->parentCounter > 0 )
-         {
+            pChildNode->txCounter > 0  || pChildStatus->parentCounter > 0 ) {
             /*
              * Can this really happen? Yes! No other session is supposed to
              * be able to open the object until CREATE is committed but
@@ -467,8 +456,7 @@ void vdseTxRollback( vdseTx*             pTx,
             vdseTxStatusCommitRemove( pChildStatus );
             vdseUnlock( pChildMemObject, pContext );
          }
-         else
-         {
+         else {
             /* 
              * No one uses the object to remove and no one can access it
              * since we have a lock on its parent. We can safely unlock it.
@@ -510,8 +498,7 @@ void vdseTxRollback( vdseTx*             pTx,
 
       case VDSE_TX_REMOVE_DATA:
 
-         if ( pOps->parentType == VDSE_IDENT_HASH_MAP )
-         {
+         if ( pOps->parentType == VDSE_IDENT_HASH_MAP ) {
             GET_PTR( pHashMap, pOps->parentOffset, vdseHashMap );
             pParentMemObject = &pHashMap->memObject;
 
@@ -520,8 +507,7 @@ void vdseTxRollback( vdseTx*             pTx,
                                        pOps->childOffset, pContext );
             vdseUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == VDSE_IDENT_QUEUE )
-         {
+         else if ( pOps->parentType == VDSE_IDENT_QUEUE ) {
             GET_PTR( pQueue, pOps->parentOffset, vdseQueue );
             pParentMemObject = &pQueue->memObject;
 
@@ -531,9 +517,10 @@ void vdseTxRollback( vdseTx*             pTx,
             vdseUnlock( pParentMemObject, pContext );
          }
          /* We should not come here */
-         else
+         else {
             VDS_POST_CONDITION( pOps_invalid_type );
-
+         }
+         
          break;
 
 #if 0
@@ -554,3 +541,4 @@ void vdseTxRollback( vdseTx*             pTx,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

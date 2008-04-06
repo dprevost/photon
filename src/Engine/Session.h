@@ -38,7 +38,7 @@ BEGIN_C_DECLS
  * The context information for each object accessed by a session is 
  * kept in a doubly linked list (for fast access). 
  */
-typedef struct vdseObjectContext
+struct vdseObjectContext
 {
    /** offset to the object pointer in memory */
    ptrdiff_t offset;
@@ -56,7 +56,9 @@ typedef struct vdseObjectContext
    /** Our node in the linked list of the vdseSession object. */
    vdseLinkNode node;
       
-} vdseObjectContext;
+};
+
+typedef struct vdseObjectContext vdseObjectContext;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

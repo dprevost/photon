@@ -66,8 +66,7 @@ void vdseBlockGroupInit( vdseBlockGroup  * pGroup,
    
    /* Is the blockGroup struct at the beginning of the group ? */
    groupOffset = SET_OFFSET(pGroup);
-   if ( SET_OFFSET(pGroup) == firstBlockOffset )
-   {
+   if ( SET_OFFSET(pGroup) == firstBlockOffset ) {
       /* 
        * Yes, we are. This blockGroup is therefore NOT the blockGroup 
        * initially allocated when an object is first allocated.
@@ -75,8 +74,7 @@ void vdseBlockGroupInit( vdseBlockGroup  * pGroup,
       pGroup->isDeletable = true;
       currentLength = 0;
    }
-   else
-   {
+   else {
       /*
        * No, we're not. Can't deallocate this groupBlock when empty!
        * The offset of "this" (pGroup) tells us how much memory was

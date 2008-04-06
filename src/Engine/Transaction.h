@@ -34,7 +34,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef enum vdseTxType
+enum vdseTxType
 {
    /* ops on data */
    VDSE_TX_ADD_DATA = 1,
@@ -45,15 +45,16 @@ typedef enum vdseTxType
    VDSE_TX_ADD_OBJECT = 0x81,
    VDSE_TX_REMOVE_OBJECT
 
-} vdseTxType;
+};
+
+typedef enum vdseTxType vdseTxType;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Each element of a transaction is kept in a doubly linked list
  * (for fast access). 
  */
-
-typedef struct vdseTxOps
+struct vdseTxOps
 {
    vdseTxType      transType;
    ptrdiff_t       parentOffset;  
@@ -63,11 +64,13 @@ typedef struct vdseTxOps
 
    vdseLinkNode node;
    
-} vdseTxOps;
+};
+
+typedef struct vdseTxOps vdseTxOps;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdseTx
+struct vdseTx
 {
    /** Always first */
    struct vdseMemObject memObject;
@@ -80,7 +83,9 @@ typedef struct vdseTx
    /** Variable size struct - always put at the end */
    struct vdseBlockGroup blockGroup;
 
-} vdseTx;
+};
+
+typedef struct vdseTx vdseTx;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

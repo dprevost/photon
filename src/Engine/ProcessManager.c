@@ -34,8 +34,7 @@ int vdseProcMgrInit( vdseProcMgr        * pManager,
                                 VDSE_IDENT_PROCESS_MGR,
                                 &pManager->blockGroup,
                                 1 ); /* A single block */
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
@@ -64,45 +63,40 @@ int vdseProcMgrAddProcess( vdseProcMgr        * pManager,
 
    /* For recovery purposes, always lock before doing anything! */
    errcode = vdseLock( &pManager->memObject, pContext );
-   if ( errcode == 0 )
-   {
+   if ( errcode == 0 ) {
       pCurrentBuffer = (vdseProcess*)
          vdseMallocBlocks( pContext->pAllocator, VDSE_ALLOC_ANY, 1, pContext );
-      if ( pCurrentBuffer != NULL )
-      {
+      if ( pCurrentBuffer != NULL ) {
          errcode = vdseProcessInit( pCurrentBuffer, pid, pContext );
-         if ( errcode == 0 )
-         {
+         if ( errcode == 0 ) {
             vdseLinkNodeInit( &pCurrentBuffer->node );
             vdseLinkedListPutLast( &pManager->listOfProcesses, 
                                    &pCurrentBuffer->node );
             *ppProcess = pCurrentBuffer;
             rc = 0;
          }
-         else
-         {
+         else {
             vdseFreeBlocks( pContext->pAllocator, 
                             VDSE_ALLOC_ANY,
                             (unsigned char *)pCurrentBuffer, 
                             1, pContext );
          }
       }
-      else
-      {
+      else {
          vdscSetError( &pContext->errorHandler, 
                        g_vdsErrorHandle, 
                        VDS_NOT_ENOUGH_VDS_MEMORY );
       }
       vdseUnlock( &pManager->memObject, pContext );
    }
-   else
+   else {
       vdscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     VDS_ENGINE_BUSY );
-
+   }
+   
    return rc;
 }
-
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -124,43 +118,38 @@ int vdseProcMgrFindProcess( vdseProcMgr        * pManager,
    *ppProcess = NULL;
    
    /* For recovery purposes, always lock before doing anything! */
-   if ( vdseLock( &pManager->memObject, pContext ) == 0 )
-   {
+   if ( vdseLock( &pManager->memObject, pContext ) == 0 ) {
       err = vdseLinkedListPeakFirst( &pManager->listOfProcesses, 
                                      &pNodeCurrent );
-      if ( err == LIST_OK )
-      {
+      if ( err == LIST_OK ) {
          pCurrent = (vdseProcess*)
             ((char*)pNodeCurrent - offsetof( vdseProcess, node ));
-         if ( pCurrent->pid == pid )
-            *ppProcess = pCurrent;
+         if ( pCurrent->pid == pid ) *ppProcess = pCurrent;
       
          while ( (*ppProcess == NULL) &&
                  (vdseLinkedListPeakNext( &pManager->listOfProcesses, 
                                           pNodeCurrent, 
-                                          &pNodeNext ) == LIST_OK) )
-         {
+                                          &pNodeNext ) == LIST_OK) ) {
             pNext = (vdseProcess*)
                ((char*)pNodeNext - offsetof( vdseProcess, node ));
-            if ( pNext->pid == pid )
-               *ppProcess = pNext;
+            if ( pNext->pid == pid ) *ppProcess = pNext;
             pNodeCurrent = pNodeNext;
          }
       }
-      else
+      else {
          errcode = VDS_INTERNAL_ERROR;
+      }
       
       vdseUnlock( &pManager->memObject, pContext );
    }
-   else
+   else {
       errcode = VDS_ENGINE_BUSY;
-
+   }
+   
    /* Is this possible ? */
-   if ( *ppProcess == NULL )
-      errcode = VDS_INTERNAL_ERROR;
+   if ( *ppProcess == NULL ) errcode = VDS_INTERNAL_ERROR;
 
-   if ( errcode !=VDS_OK )
-   {
+   if ( errcode !=VDS_OK ) {
       vdscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     errcode );
@@ -184,8 +173,7 @@ int vdseProcMgrRemoveProcess( vdseProcMgr        * pManager,
    
    /* For recovery purposes, always lock before doing anything! */
    errcode = vdseLock( &pManager->memObject, pContext );
-   if ( errcode == 0 )
-   {
+   if ( errcode == 0 ) {
       vdseLinkedListRemoveItem( &pManager->listOfProcesses, 
                                 &pProcess->node );
    
@@ -193,10 +181,11 @@ int vdseProcMgrRemoveProcess( vdseProcMgr        * pManager,
                       
       vdseUnlock( &pManager->memObject, pContext );
    }
-   else
+   else {
       vdscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     VDS_ENGINE_BUSY );
+   }
    
    return errcode;
 }

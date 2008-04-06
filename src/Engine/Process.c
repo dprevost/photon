@@ -35,8 +35,7 @@ int vdseProcessInit( vdseProcess *        pProcess,
                                 VDSE_IDENT_PROCESS,
                                 &pProcess->blockGroup,
                                 1 ); /* A single block */
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
@@ -70,8 +69,7 @@ void vdseProcessFini( vdseProcess        * pProcess,
     */
 
    while ( vdseLinkedListPeakFirst( &pProcess->listOfSessions, 
-                                    &pNode ) == LIST_OK )
-   {
+                                    &pNode ) == LIST_OK ) {
       pSession = (vdseSession*)
          ((char*)pNode - offsetof( vdseSession, node ));
 
@@ -103,31 +101,26 @@ vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
    *ppSession = NULL;
    /* For recovery purposes, always lock before doing anything! */
    errcode = vdseLock( &pProcess->memObject, pContext );
-   if ( errcode == 0 )
-   {
+   if ( errcode == 0 ) {
       pCurrentBuffer = (vdseSession*) 
           vdseMallocBlocks( pContext->pAllocator, VDSE_ALLOC_ANY, 1, pContext );
-      if ( pCurrentBuffer != NULL )
-      {
+      if ( pCurrentBuffer != NULL ) {
          errcode = vdseSessionInit( pCurrentBuffer, pApiSession, pContext );
-         if ( errcode == 0 )
-         {
+         if ( errcode == 0 ) {
             vdseLinkNodeInit( &pCurrentBuffer->node );
             vdseLinkedListPutLast( &pProcess->listOfSessions, 
                                    &pCurrentBuffer->node );
             *ppSession = pCurrentBuffer;
             rc = 0;
          }
-         else
-         {
+         else {
             vdseFreeBlocks( pContext->pAllocator, 
                             VDSE_ALLOC_ANY,
                             (unsigned char *)pCurrentBuffer, 
                             1, pContext );
          }
       }
-      else
-      {
+      else {
          vdscSetError( &pContext->errorHandler, 
                        g_vdsErrorHandle, 
                        VDS_NOT_ENOUGH_VDS_MEMORY );
@@ -137,18 +130,18 @@ vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
        * If the init was a success,  this is now initialized. We must
        * add the previouslock otherwise... the unlock will fail (segv).
        */
-      if ( pContext->lockOffsets != NULL )
-      {
+      if ( pContext->lockOffsets != NULL ) {
          pContext->lockOffsets[*pContext->numLocks] = SET_OFFSET(&pProcess->memObject);
          (*pContext->numLocks)++;
       }
       vdseUnlock( &pProcess->memObject, pContext );
    }
-   else
+   else {
       vdscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     VDS_ENGINE_BUSY );
-
+   }
+   
    return rc;
 }
 
@@ -166,8 +159,7 @@ vdsErrors vdseProcessRemoveSession( vdseProcess        * pProcess,
 
    /* For recovery purposes, always lock before doing anything! */
    errcode = vdseLock( &pProcess->memObject, pContext );
-   if ( errcode == 0 )
-   {
+   if ( errcode == 0 ) {
       vdseLinkedListRemoveItem( &pProcess->listOfSessions, 
                                 &pSession->node );
       
@@ -175,11 +167,12 @@ vdsErrors vdseProcessRemoveSession( vdseProcess        * pProcess,
 
       vdseUnlock( &pProcess->memObject, pContext );
    }
-   else
+   else {
       vdscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     VDS_ENGINE_BUSY );
-
+   }
+   
    return errcode;
 }
 
@@ -197,8 +190,7 @@ int vdseProcessGetFirstSession( vdseProcess        * pProcess,
    VDS_PRE_CONDITION( pContext  != NULL );
 
    err = vdseLinkedListPeakFirst( &pProcess->listOfSessions, &pNode );
-   if ( err != LIST_OK )
-      return -1;
+   if ( err != LIST_OK ) return -1;
 
    *ppSession = (vdseSession *)
       ((char*)pNode - offsetof( vdseSession, node ));
@@ -224,8 +216,7 @@ int vdseProcessGetNextSession( vdseProcess        * pProcess,
    err = vdseLinkedListPeakNext( &pProcess->listOfSessions,
                                  &pCurrent->node,
                                  &pNode );
-   if ( err != LIST_OK )
-      return -1;
+   if ( err != LIST_OK ) return -1;
 
    *ppNext = (vdseSession*)
       ((char*)pNode - offsetof( vdseSession, node ));

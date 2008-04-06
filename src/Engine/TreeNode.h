@@ -26,7 +26,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 	
-typedef struct vdseObjectDescriptor
+struct vdseObjectDescriptor
 {
    /** Offset of the object */
    ptrdiff_t offset;
@@ -56,7 +56,9 @@ typedef struct vdseObjectDescriptor
     */
    vdsChar_T originalName[1];
    
-} vdseObjectDescriptor;
+};
+
+typedef struct vdseObjectDescriptor vdseObjectDescriptor;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -64,8 +66,7 @@ typedef struct vdseObjectDescriptor
  * This structure contains the information needed for all the leaves and
  * the branches of the tree of objects/containers visible from the API.
  */
-
-typedef struct vdseTreeNode
+struct vdseTreeNode
 {
    /** Count the number of uncommitted/unrollbacked transaction ops are
     * still to be processed on this object (or more exactly on its data).
@@ -90,7 +91,9 @@ typedef struct vdseTreeNode
    /* NULL_OFFSET for top folder ("/") */
    ptrdiff_t myParentOffset;
    
-} vdseTreeNode;
+};
+
+typedef struct vdseTreeNode vdseTreeNode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

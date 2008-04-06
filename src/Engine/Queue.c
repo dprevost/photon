@@ -67,8 +67,7 @@ void vdseQueueCommitRemove( vdseQueue          * pQueue,
     * If it isn't, we can safely remove the entry from the hash, otherwise
     * we mark it as a committed remove
     */
-   if ( pQueueItem->txStatus.usageCounter == 0 )
-   {
+   if ( pQueueItem->txStatus.usageCounter == 0 ) {
       len =  pQueueItem->dataLength + offsetof( vdseQueueItem, data );
       
       vdseLinkedListRemoveItem( &pQueue->listOfElements,
@@ -80,8 +79,7 @@ void vdseQueueCommitRemove( vdseQueue          * pQueue,
 
       pQueue->nodeObject.txCounter--;
    }
-   else
-   {
+   else {
       vdseTxStatusCommitRemove( &pQueueItem->txStatus );
    }
 }
@@ -125,23 +123,22 @@ int vdseQueueGet( vdseQueue          * pQueue,
    
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
    
-   if ( vdseLock( &pQueue->memObject, pContext ) == 0 )
-   {
-      if ( flag == VDS_NEXT )
-      {
+   if ( vdseLock( &pQueue->memObject, pContext ) == 0 ) {
+      if ( flag == VDS_NEXT ) {
+         
          errcode = VDS_REACHED_THE_END;
          pOldItem = (vdseQueueItem*) *ppIterator;
          listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
                                                 &pOldItem->node, 
                                                 &pNode );
       }
-      else
+      else {
          /* This call can only fail if the queue is empty. */
          listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, 
                                                 &pNode );
-
-      while ( listErrCode == LIST_OK )
-      {
+      }
+      
+      while ( listErrCode == LIST_OK ) {
          pQueueItem = (vdseQueueItem*)
             ((char*)pNode - offsetof( vdseQueueItem, node ));
          txItemStatus = &pQueueItem->txStatus;
@@ -158,25 +155,22 @@ int vdseQueueGet( vdseQueue          * pQueue,
           * from the API point of view.
           */
          isOK = true;
-         if ( txItemStatus->txOffset != NULL_OFFSET )
-         {
-            switch( txItemStatus->enumStatus )
-            {
+         if ( txItemStatus->txOffset != NULL_OFFSET ) {
+            switch( txItemStatus->enumStatus ) {
+
             case VDSE_TXS_DESTROYED_COMMITTED:
                isOK = false;
                break;
                
             case VDSE_TXS_DESTROYED:
-               if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) )
-               {
+               if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) ) {
                   isOK = false;
                   queueIsEmpty = false;
                }
                break;
                
             case VDSE_TXS_ADDED:
-               if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) )
-               {
+               if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) ) {
                   isOK = false;
                   queueIsEmpty = false;
                }
@@ -186,15 +180,13 @@ int vdseQueueGet( vdseQueue          * pQueue,
                break;
             }
          }
-         if ( isOK )
-         {
+         if ( isOK ) {
             /*
              * This test cannot be done in the API (before calling the current
              * function) since we do not know the item size. It could be done
              * after but this way makes the code faster.
              */
-            if ( bufferLength < pQueueItem->dataLength )
-            {
+            if ( bufferLength < pQueueItem->dataLength ) {
                vdseUnlock( &pQueue->memObject, pContext );
                vdscSetError( &pContext->errorHandler,
                              g_vdsErrorHandle,
@@ -205,9 +197,10 @@ int vdseQueueGet( vdseQueue          * pQueue,
             txItemStatus->usageCounter++;
             txQueueStatus->usageCounter++;
             *ppIterator = pQueueItem;
-            if ( flag == VDS_NEXT )
+            if ( flag == VDS_NEXT ) {
                vdseQueueReleaseNoLock( pQueue, pOldItem, pContext );
-
+            }
+            
             vdseUnlock( &pQueue->memObject, pContext );
 
             return 0;
@@ -217,8 +210,7 @@ int vdseQueueGet( vdseQueue          * pQueue,
                                                 &pNode );
       }
    }
-   else
-   {
+   else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return -1;
    }
@@ -236,9 +228,10 @@ int vdseQueueGet( vdseQueue          * pQueue,
     * at this point.
     */
    *ppIterator = NULL;
-   if ( flag == VDS_NEXT )
+   if ( flag == VDS_NEXT ) {
       vdseQueueReleaseNoLock( pQueue, pOldItem, pContext );
-
+   }
+   
    vdseUnlock( &pQueue->memObject, pContext );
    vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
 
@@ -270,8 +263,7 @@ int vdseQueueInit( vdseQueue          * pQueue,
                                 VDSE_IDENT_QUEUE,
                                 &pQueue->blockGroup,
                                 numberOfBlocks );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
@@ -314,11 +306,9 @@ int vdseQueueInsert( vdseQueue          * pQueue,
 
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pQueue->memObject, pContext ) == 0 )
-   {
+   if ( vdseLock( &pQueue->memObject, pContext ) == 0 ) {
       if ( ! vdseTxStatusIsValid( txQueueStatus, SET_OFFSET(pContext->pTransaction) ) 
-         || vdseTxStatusIsMarkedAsDestroyed( txQueueStatus ) )
-      {
+         || vdseTxStatusIsMarkedAsDestroyed( txQueueStatus ) ) {
          errcode = VDS_OBJECT_IS_DELETED;
          goto the_exit;
       }
@@ -327,8 +317,7 @@ int vdseQueueInsert( vdseQueue          * pQueue,
       pQueueItem = (vdseQueueItem *) vdseMalloc( &pQueue->memObject,
                                                  allocLength,
                                                  pContext );
-      if ( pQueueItem == NULL )
-      {
+      if ( pQueueItem == NULL ) {
          errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
          goto the_exit;
       }
@@ -344,8 +333,7 @@ int vdseQueueInsert( vdseQueue          * pQueue,
                          SET_OFFSET(pQueueItem),
                          0,
                          pContext );
-      if ( rc != 0 )
-      {
+      if ( rc != 0 ) {
          vdseFree( &pQueue->memObject, 
                    (unsigned char * )pQueueItem,
                    allocLength,
@@ -353,21 +341,22 @@ int vdseQueueInsert( vdseQueue          * pQueue,
          goto the_exit;
       }
 
-      if ( firstOrLast == VDSE_QUEUE_FIRST )
+      if ( firstOrLast == VDSE_QUEUE_FIRST ) {
          vdseLinkedListPutFirst( &pQueue->listOfElements,
                                  &pQueueItem->node );
-      else
+      }
+      else {
          vdseLinkedListPutLast( &pQueue->listOfElements,
                                 &pQueueItem->node );
-
+      }
+      
       vdseTxStatusInit( &pQueueItem->txStatus, SET_OFFSET(pContext->pTransaction) );
       pQueue->nodeObject.txCounter++;
       pQueueItem->txStatus.enumStatus = VDSE_TXS_ADDED;
 
       vdseUnlock( &pQueue->memObject, pContext );
    }
-   else
-   {
+   else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return -1;
    }
@@ -381,9 +370,10 @@ the_exit:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called vdscSetError. 
     */
-   if ( errcode != VDS_OK )
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
-
+   }
+    
    return -1;
 }
 
@@ -398,16 +388,14 @@ int vdseQueueRelease( vdseQueue          * pQueue,
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
 
-   if ( vdseLock( &pQueue->memObject, pContext ) == 0 )
-   {
+   if ( vdseLock( &pQueue->memObject, pContext ) == 0 ) {
       vdseQueueReleaseNoLock( pQueue,
                               pQueueItem,
                               pContext );
                              
       vdseUnlock( &pQueue->memObject, pContext );
    }
-   else
-   {
+   else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return -1;
    }
@@ -442,8 +430,7 @@ void vdseQueueReleaseNoLock( vdseQueue          * pQueue,
    txQueueStatus->usageCounter--;
 
    if ( (txItemStatus->usageCounter == 0) && 
-      vdseTxStatusIsRemoveCommitted(txItemStatus) )
-   {
+      vdseTxStatusIsRemoveCommitted(txItemStatus) ) {
       /* Time to really delete the record! */
       vdseLinkedListRemoveItem( &pQueue->listOfElements, 
                                 &pQueueItem->node );
@@ -483,23 +470,22 @@ int vdseQueueRemove( vdseQueue          * pQueue,
    
    GET_PTR( txParentStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pQueue->memObject, pContext ) == 0 )
-   {
+   if ( vdseLock( &pQueue->memObject, pContext ) == 0 ) {
       if ( ! vdseTxStatusIsValid( txParentStatus, SET_OFFSET(pContext->pTransaction) ) 
-         || vdseTxStatusIsMarkedAsDestroyed( txParentStatus ) )
-      {
+         || vdseTxStatusIsMarkedAsDestroyed( txParentStatus ) ) {
          errcode = VDS_OBJECT_IS_DELETED;
          goto the_exit;
       }
    
       /* This call can only fail if the queue is empty. */
-      if ( firstOrLast == VDSE_QUEUE_FIRST )
+      if ( firstOrLast == VDSE_QUEUE_FIRST ) {
          listErr = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
-      else
+      }
+      else {
          listErr = vdseLinkedListPeakLast( &pQueue->listOfElements, &pNode );
-
-      while ( listErr == LIST_OK )
-      {
+      }
+      
+      while ( listErr == LIST_OK ) {
          pItem = (vdseQueueItem *) ((char*)pNode - offsetof( vdseQueueItem, node ));
          txItemStatus = &pItem->txStatus;
       
@@ -508,15 +494,13 @@ int vdseQueueRemove( vdseQueue          * pQueue,
           * we do not support two transactions on the same data
           * (and if remove is committed - the data is "non-existent").
           */
-         if ( txItemStatus->txOffset == NULL_OFFSET )
-         {
+         if ( txItemStatus->txOffset == NULL_OFFSET ) {
             /*
              * This test cannot be done in the API (before calling the current
              * function) since we do not know the item size. It could be done
              * after but this way makes the code faster.
              */
-            if ( bufferLength < pItem->dataLength )
-            {
+            if ( bufferLength < pItem->dataLength ) {
                errcode = VDS_INVALID_LENGTH;
                goto the_exit;
             }
@@ -529,8 +513,7 @@ int vdseQueueRemove( vdseQueue          * pQueue,
                                SET_OFFSET( pItem ),
                                0, /* irrelevant */
                                pContext );
-            if ( rc != 0 ) 
-               goto the_exit;
+            if ( rc != 0 ) goto the_exit;
       
             vdseTxStatusSetTx( txItemStatus, SET_OFFSET(pContext->pTransaction) );
             pQueue->nodeObject.txCounter++;
@@ -545,37 +528,39 @@ int vdseQueueRemove( vdseQueue          * pQueue,
             return 0;
          }
          /* We test the type of flag to return the proper error code (if needed) */
-         if ( ! vdseTxStatusIsRemoveCommitted(txItemStatus) )
+         if ( ! vdseTxStatusIsRemoveCommitted(txItemStatus) ) {
             queueIsEmpty = false;
+         }
          
-         if ( firstOrLast == VDSE_QUEUE_FIRST )
+         if ( firstOrLast == VDSE_QUEUE_FIRST ) {
             listErr = vdseLinkedListPeakNext( &pQueue->listOfElements, 
                                               pNode, 
                                               &pNode );
-         else
+         }
+         else {
             listErr = vdseLinkedListPeakPrevious( &pQueue->listOfElements, 
                                                   pNode, 
                                                   &pNode );
+         }
       }
    }
-   else
-   {
+   else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return -1;
    }
 
    /* Let this falls through the error handler */
    errcode = VDS_ITEM_IS_IN_USE;
-   if ( queueIsEmpty )
-      errcode = VDS_IS_EMPTY;   
+   if ( queueIsEmpty ) errcode = VDS_IS_EMPTY;   
    
 the_exit:
 
    vdseUnlock( &pQueue->memObject, pContext );
    /* vdscSetError might have been already called by some other function */
-   if ( errcode != VDS_OK )
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
-
+   }
+   
    return -1;
 }
 
@@ -604,8 +589,7 @@ void vdseQueueRollbackAdd( vdseQueue          * pQueue,
     * for example during an iteration. To rollback we need to remove it 
     * from the linked list and free the memory.
     */
-   if ( txStatus->usageCounter == 0 )
-   {
+   if ( txStatus->usageCounter == 0 ) {
       vdseLinkedListRemoveItem( &pQueue->listOfElements,
                                 &pQueueItem->node );
       vdseFree( &pQueue->memObject, 
@@ -615,8 +599,7 @@ void vdseQueueRollbackAdd( vdseQueue          * pQueue,
 
       pQueue->nodeObject.txCounter--;
    }
-   else
-   {
+   else {
       vdseTxStatusCommitRemove( txStatus );
    }
 }
@@ -668,12 +651,12 @@ void vdseQueueStatus( vdseQueue    * pQueue,
    listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, 
                                           &pNode );
 
-   while ( listErrCode == LIST_OK )
-   {
+   while ( listErrCode == LIST_OK ) {
       pQueueItem = (vdseQueueItem*)
          ((char*)pNode - offsetof( vdseQueueItem, node ));
-      if ( pQueueItem->dataLength > pStatus->maxDataLength )
+      if ( pQueueItem->dataLength > pStatus->maxDataLength ) {
          pStatus->maxDataLength = pQueueItem->dataLength;
+      }
       
       listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
                                              pNode, 

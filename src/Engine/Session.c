@@ -38,22 +38,18 @@ int vdseSessionInit( vdseSession        * pSession,
                                 VDSE_IDENT_SESSION,
                                 &pSession->blockGroup,
                                 1 ); /* A single block */
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
    }
-   else
-   {
+   else {
       vdseLinkedListInit( &pSession->listOfObjects );
 
       pTx = (vdseTx*) vdseMallocBlocks( pContext->pAllocator, VDSE_ALLOC_ANY, 1, pContext );
-      if ( pTx != NULL )
-      {
+      if ( pTx != NULL ) {
          errcode = vdseTxInit( pTx, 1, pContext );
-         if ( errcode == 0 )
-         {
+         if ( errcode == 0 ) {
             pSession->numLocks = 0;
             pSession->pTransaction = pTx;
             pContext->pTransaction = (void *) pTx;            
@@ -63,16 +59,14 @@ int vdseSessionInit( vdseSession        * pSession,
             
             rc = 0;
          }
-         else
-         {
+         else {
             vdseFreeBlocks( pContext->pAllocator, 
                             VDSE_ALLOC_ANY,
                             (unsigned char *)pTx, 
                             1, pContext );
          }
       }
-      else
-      {
+      else {
          vdscSetError( &pContext->errorHandler, 
                        g_vdsErrorHandle, 
                        VDS_NOT_ENOUGH_VDS_MEMORY );
@@ -101,8 +95,7 @@ void vdseSessionFini( vdseSession        * pSession,
     */
 
    while ( vdseLinkedListPeakFirst( &pSession->listOfObjects, 
-                                    &pNode ) == LIST_OK )
-   {
+                                    &pNode ) == LIST_OK ) {
       pObject = (vdseObjectContext*)
          ((char*)pNode - offsetof( vdseObjectContext, node ));
       vdseSessionRemoveObj( pSession, pObject, pContext );
@@ -138,12 +131,10 @@ int vdseSessionAddObj( vdseSession        * pSession,
    
    /* For recovery purposes, always lock before doing anything! */
    errcode = vdseLock( &pSession->memObject, pContext );
-   if ( errcode == 0 )
-   {
+   if ( errcode == 0 ) {
       pCurrentBuffer = (vdseObjectContext *)
          vdseMalloc( &pSession->memObject, sizeof(vdseObjectContext), pContext );
-      if ( pCurrentBuffer != NULL )
-      {
+      if ( pCurrentBuffer != NULL ) {
          pCurrentBuffer->offset    = objOffset;
          pCurrentBuffer->type      = objType;
          pCurrentBuffer->pCommonObject = pCommonObject;
@@ -154,8 +145,7 @@ int vdseSessionAddObj( vdseSession        * pSession,
          *ppObject = pCurrentBuffer;
          rc = 0;
       }
-      else
-      {
+      else {
          vdscSetError( &pContext->errorHandler,
                        g_vdsErrorHandle,
                        VDS_NOT_ENOUGH_VDS_MEMORY );
@@ -163,11 +153,12 @@ int vdseSessionAddObj( vdseSession        * pSession,
       
       vdseUnlock( &pSession->memObject, pContext );
    }
-   else
+   else {
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     VDS_ENGINE_BUSY );
-
+   }
+   
    return rc;
 }
 
@@ -185,8 +176,7 @@ int vdseSessionRemoveObj( vdseSession        * pSession,
 
    /* For recovery purposes, always lock before doing anything! */
    errcode = vdseLock( &pSession->memObject, pContext );
-   if ( errcode == 0 )
-   {
+   if ( errcode == 0 ) {
       vdseLinkedListRemoveItem( &pSession->listOfObjects, 
                                 &pObject->node );
       vdseFree( &pSession->memObject, 
@@ -196,8 +186,7 @@ int vdseSessionRemoveObj( vdseSession        * pSession,
 
       vdseUnlock( &pSession->memObject, pContext );
    }
-   else
-   {
+   else {
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     VDS_ENGINE_BUSY );
@@ -221,8 +210,7 @@ int vdseSessionRemoveFirst( vdseSession        * pSession,
 
    rc = vdseLinkedListGetFirst( &pSession->listOfObjects, 
                                 &pNode );
-   if ( rc == 0 )
-   {
+   if ( rc == 0 ) {
       pObject = (vdseObjectContext*)
          ((char*)pNode - offsetof( vdseObjectContext, node ));
 
@@ -252,9 +240,10 @@ int vdseSessionGetFirst( vdseSession        * pSession,
    
    rc = vdseLinkedListPeakFirst( &pSession->listOfObjects, 
                                  &pNode );
-   if ( rc == 0 )
+   if ( rc == 0 ) {
       *ppObject = (vdseObjectContext*)
          ((char*)pNode - offsetof( vdseObjectContext, node ));
+   }
    
    return rc;
 }

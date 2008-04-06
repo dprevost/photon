@@ -40,7 +40,7 @@ BEGIN_C_DECLS
  * closed objects (->decrease access counter), unlocked objects, etc.
  *
  */
-typedef struct vdseProcessManager
+struct vdseProcessManager
 {
    /** Always first */
    struct vdseMemObject memObject;
@@ -51,7 +51,9 @@ typedef struct vdseProcessManager
    /** Variable size struct - always put at the end */
    struct vdseBlockGroup blockGroup;
 
-} vdseProcMgr;
+};
+
+typedef struct vdseProcessManager vdseProcMgr;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -38,8 +38,7 @@ BEGIN_C_DECLS
  *
  * The pointers are to void* to avoid problems of circular dependency.
  */
-
-typedef struct vdseSessionContext
+struct vdseSessionContext
 {
    vdscErrorHandler errorHandler;
    
@@ -64,7 +63,9 @@ typedef struct vdseSessionContext
    
    void* pLogFile;
    
-} vdseSessionContext;
+};
+
+typedef struct vdseSessionContext vdseSessionContext;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -110,14 +111,13 @@ void vdseSessionRemoveLock( vdseSessionContext * pSession,
    
    n = *pSession->numLocks;
 
-   for ( i = 0; i < *pSession->numLocks; ++i )
-   {
-      if ( pSession->lockOffsets[i] == memObjectOffset )
-      {
+   for ( i = 0; i < *pSession->numLocks; ++i ) {
+      if ( pSession->lockOffsets[i] == memObjectOffset ) {
          /* Shift the following pointers */
-         for ( j = i+1; j < *pSession->numLocks; ++j )
+         for ( j = i+1; j < *pSession->numLocks; ++j ) {
             pSession->lockOffsets[j-1] = pSession->lockOffsets[j];
-
+         }
+         
          pSession->lockOffsets[*pSession->numLocks-1] = NULL_OFFSET;         
          (*pSession->numLocks)--;
       }
@@ -136,3 +136,4 @@ END_C_DECLS
 #endif /* VDSE_SESSION_CONTEXT_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

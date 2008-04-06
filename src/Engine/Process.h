@@ -40,7 +40,7 @@ BEGIN_C_DECLS
  * closed objects (->decrease access counter), unlocked objects, etc.
  *
  */
-typedef struct vdseProcess
+struct vdseProcess
 {
    /** Always first */
    struct vdseMemObject memObject;
@@ -56,7 +56,9 @@ typedef struct vdseProcess
    /** Variable size struct - always put at the end */
    struct vdseBlockGroup blockGroup;
 
-} vdseProcess;
+};
+
+typedef struct vdseProcess vdseProcess;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -98,8 +100,7 @@ static inline
 void vdseProcessNoMoreSessionAllowed( vdseProcess        * pProcess,
                                       vdseSessionContext * pContext )
 {
-   if ( vdseLock( &pProcess->memObject, pContext ) == 0 )
-   {
+   if ( vdseLock( &pProcess->memObject, pContext ) == 0 ) {
       pProcess->processIsTerminating = true;
       vdseUnlock( &pProcess->memObject, pContext );
    }
