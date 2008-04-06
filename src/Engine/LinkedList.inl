@@ -27,8 +27,7 @@ vdseLinkedListGetFirst( vdseLinkedList  * pList,
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty queue. */
-   if ( pList->currentSize == 0 )
-      return LIST_EMPTY;
+   if ( pList->currentSize == 0 ) return LIST_EMPTY;
 
    /* Get the pointer to the first node */
    *ppItem = GET_PTR_FAST( pList->head.nextOffset, vdseLinkNode );
@@ -59,8 +58,7 @@ vdseLinkedListGetLast( vdseLinkedList  * pList,
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
-   if ( pList->currentSize == 0 )
-      return LIST_EMPTY;
+   if ( pList->currentSize == 0 ) return LIST_EMPTY;
 
    /* Get the pointer to the last node */
    *ppItem = GET_PTR_FAST( pList->head.previousOffset, vdseLinkNode );
@@ -177,8 +175,7 @@ vdseLinkedListPeakFirst( vdseLinkedList *  pList,
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
-   if ( pList->currentSize == 0 )
-      return LIST_EMPTY;
+   if ( pList->currentSize == 0 ) return LIST_EMPTY;
 
    *ppItem = GET_PTR_FAST( pList->head.nextOffset, vdseLinkNode );
 
@@ -199,8 +196,7 @@ vdseLinkedListPeakLast( vdseLinkedList  * pList,
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
-   if ( pList->currentSize == 0 )
-      return LIST_EMPTY;
+   if ( pList->currentSize == 0 ) return LIST_EMPTY;
 
    *ppItem = GET_PTR_FAST( pList->head.previousOffset, vdseLinkNode );
 
@@ -227,8 +223,8 @@ vdseLinkedListPeakNext( vdseLinkedList * pList,
    VDS_PRE_CONDITION( pCurrent->nextOffset     != NULL_OFFSET );
 
    pNext = GET_PTR_FAST( pCurrent->nextOffset, vdseLinkNode );
-   if ( pNext == &pList->head )
-      return LIST_END_OF_LIST;
+   if ( pNext == &pList->head ) return LIST_END_OF_LIST;
+
    *ppNext = pNext;
    
    VDS_POST_CONDITION( *ppNext != NULL );
@@ -254,8 +250,8 @@ vdseLinkedListPeakPrevious( vdseLinkedList * pList,
    VDS_PRE_CONDITION( pCurrent->nextOffset     != NULL_OFFSET );
 
    pPrevious = GET_PTR_FAST( pCurrent->previousOffset, vdseLinkNode );
-   if ( pPrevious == &pList->head )
-      return LIST_END_OF_LIST;
+   if ( pPrevious == &pList->head ) return LIST_END_OF_LIST;
+
    *ppPrevious = pPrevious;
 
    VDS_POST_CONDITION( *ppPrevious != NULL );

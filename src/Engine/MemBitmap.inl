@@ -33,12 +33,10 @@ bool vdseIsBufferFree( vdseMemBitmap * pBitmap,
    VDS_PRE_CONDITION( offset  != NULL_OFFSET );
 
    localOffset = offset - pBitmap->baseAddressOffset;
-   if ( localOffset < 0 )
-      return false;
+   if ( localOffset < 0 ) return false;
 
    inUnitsOfAllocation = localOffset / pBitmap->allocGranularity;
-   if ( inUnitsOfAllocation >= pBitmap->lengthInBits )
-      return false;
+   if ( inUnitsOfAllocation >= pBitmap->lengthInBits ) return false;
 
    byte = inUnitsOfAllocation >> 3; /* Equivalent to divide by  8  */
 
@@ -78,12 +76,10 @@ void vdseSetBufferAllocated( vdseMemBitmap * pBitmap,
     */
    bit = 7 - (inUnitsOfAllocation & 7);
 
-   for ( i = 0; i < length; ++i )
-   {
+   for ( i = 0; i < length; ++i ) {
       /* Setting the bit to one */
       pBitmap->bitmap[byte] |= (unsigned char)(1 << bit);
-      if ( bit == 0 )
-      {
+      if ( bit == 0 ) {
          bit = 8;
          byte++;
       }
@@ -118,12 +114,10 @@ void vdseSetBufferFree( vdseMemBitmap * pBitmap,
     */
    bit = 7 - (inUnitsOfAllocation & 7);
    
-   for ( i = 0; i < length; ++i )
-   {
+   for ( i = 0; i < length; ++i ) {
       /* Setting the bit to zero */
       pBitmap->bitmap[byte] &= (unsigned char)(~(1 << bit));
-      if ( bit == 0 )
-      {
+      if ( bit == 0 ) {
          bit = 8;
          byte++;
       }

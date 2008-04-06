@@ -46,8 +46,7 @@ BEGIN_C_DECLS
  * 2) They will not do synchronisation (locking). Again, this task is left
  *    to the object owning/using the list.
  */	
-
-typedef struct vdseLinkedList
+struct vdseLinkedList
 {
    /** The dummy node of the circular linked list. */
    vdseLinkNode head;
@@ -58,7 +57,9 @@ typedef struct vdseLinkedList
    /** Set to VDSE_LIST_SIGNATURE at initialization. */
    unsigned int initialized;
    
-} vdseLinkedList;
+};
+
+typedef struct vdseLinkedList vdseLinkedList;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -161,3 +162,4 @@ END_C_DECLS
 #endif /* VDSE_DLINKED_LIST_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

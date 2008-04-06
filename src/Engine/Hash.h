@@ -42,7 +42,7 @@ BEGIN_C_DECLS
  * aligned if we eventually allow direct access to the data (from the 
  * API) or even to be able to use it easily internally. 
  */
-typedef struct vdseHashItem
+struct vdseHashItem
 {
    vdseTxStatus  txStatus;
    
@@ -56,17 +56,21 @@ typedef struct vdseHashItem
    size_t        dataLength;
    unsigned char key[1];
    
-} vdseHashItem;
+};
+
+typedef struct vdseHashItem vdseHashItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef enum vdseHashResizeEnum
+enum vdseHashResizeEnum
 {
    VDSE_HASH_NO_RESIZE,
    VDSE_HASH_TIME_TO_GROW,
    VDSE_HASH_TIME_TO_SHRINK
    
-} vdseHashResizeEnum;
+};
+
+typedef enum vdseHashResizeEnum vdseHashResizeEnum;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -81,8 +85,7 @@ typedef enum vdseHashResizeEnum
  * (when the array is 100% populated). There is no such limit with buckets 
  * since it is an array of linked lists).
  */
-
-typedef struct vdseHash
+struct vdseHash
 {
    /** offset of the memory object we need to use for allocating memory. */
    ptrdiff_t memObjOffset;
@@ -109,7 +112,9 @@ typedef struct vdseHash
    /** Set to VDSE_HASH_SIGNATURE at initialization. */
    unsigned int initialized;
 
-} vdseHash;
+};
+
+typedef struct vdseHash vdseHash;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

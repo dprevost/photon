@@ -84,13 +84,11 @@ extern vdscErrMsgHandle g_vdsErrorHandle;
 #define GET_PTR_FAST(off,class) ( (class*) (           \
        (unsigned char*) g_pBaseAddr + (ptrdiff_t) (off) ))
 
-#define GET_PTR_OPT(target,offset,type)  \
-{ \
+#define GET_PTR_OPT(target,offset,type) { \
    target = (type*) ( (unsigned char*) g_pBaseAddr + (ptrdiff_t) offset ); \
 }
 
-#define GET_PTR_DBG(target,offset,type)  \
-{ \
+#define GET_PTR_DBG(target,offset,type) { \
    ptrdiff_t off = offset; \
    VDS_INV_CONDITION( off != 0 ); \
    VDS_INV_CONDITION( off != NULL_OFFSET ); \
@@ -142,7 +140,7 @@ typedef unsigned int transaction_T;
  * stray pointers/offsets (for debugging, if needed).
  */
 
-typedef enum vdseMemObjIdentifier
+enum vdseMemObjIdentifier
 {
    /**
     * Special identifiers - it is set by the allocator when a group of blocks
@@ -167,7 +165,9 @@ typedef enum vdseMemObjIdentifier
 
    VDSE_IDENT_LAST            = 0x34220125
 
-} vdseMemObjIdent;
+};
+
+typedef enum vdseMemObjIdentifier vdseMemObjIdent;
 
 #define VDSE_IDENT_PAGE_GROUP   0x80000000
 
@@ -177,7 +177,7 @@ typedef enum vdseMemObjIdentifier
  * This enum allows to count the number of objects and the number of 
  * extensions (additional groups of blocks added to an object). 
  */
-typedef enum vdseAllocTypeEnum
+enum vdseAllocTypeEnum
 {
    /** When allocating/freeing the initial group of blocks of an API object */ 
    VDSE_ALLOC_API_OBJ,
@@ -185,7 +185,9 @@ typedef enum vdseAllocTypeEnum
    /** Any other group of blocks */
    VDSE_ALLOC_ANY
    
-} vdseAllocTypeEnum;
+};
+
+typedef enum vdseAllocTypeEnum vdseAllocTypeEnum;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -196,3 +198,4 @@ END_C_DECLS
 #endif /* VDSE_ENGINE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

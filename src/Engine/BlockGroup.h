@@ -29,7 +29,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdseBlockGroup
+struct vdseBlockGroup
 {
    /** Type of memory object */
    vdseMemObjIdent objType;
@@ -54,7 +54,9 @@ typedef struct vdseBlockGroup
    /** Must be last since this struct contains a "variable-length" array. */
    vdseMemBitmap bitmap;
    
-} vdseBlockGroup;
+};
+
+typedef struct vdseBlockGroup vdseBlockGroup;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -67,7 +69,7 @@ typedef struct vdseBlockGroup
  *  (a group of free blocks, for example). It should make no reference to
  *  that struct, obviously.
  */
-typedef struct vdseEndBlockGroup
+struct vdseEndBlockGroup
 {
    /** The offset to the start of the group of blocks */
    ptrdiff_t firstBlockOffset;
@@ -81,7 +83,9 @@ typedef struct vdseEndBlockGroup
    /** Set to true if the block is the last one in the vds */
    bool lastBlock;
    
-} vdseEndBlockGroup;
+};
+
+typedef struct vdseEndBlockGroup vdseEndBlockGroup;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -140,3 +144,4 @@ END_C_DECLS
 #endif /* VDSE_BLOCK_GROUP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

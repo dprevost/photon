@@ -32,8 +32,7 @@ vdsErrors vdseInitLogFile( vdseLogFile*      logFile,
    memset( logFile->filename, '\0', PATH_MAX );
    logFile->handle = -1;
 
-   if ( access( dirName, F_OK ) != 0 )
-   {
+   if ( access( dirName, F_OK ) != 0 ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error accessing directoryfor log file = %d\n", errno );
       return VDS_LOGFILE_ERROR;
@@ -49,8 +48,7 @@ vdsErrors vdseInitLogFile( vdseLogFile*      logFile,
    logFile->handle = open( logFile->filename, 
                            O_RDWR | O_CREAT | O_APPEND , 
                            0755 );
-   if ( logFile->handle == -1 )
-   {
+   if ( logFile->handle == -1 ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error opening log = %d\n", errno );
       return VDS_LOGFILE_ERROR;
@@ -102,16 +100,14 @@ vdsErrors vdseLogTransaction( vdseLogFile*      logFile,
    sprintf( msg, "Committed  %d %s", transactionId, timeBuf );
    
    err = write( logFile->handle, msg, strlen(msg) );
-   if ( err <= 0 )
-   {
+   if ( err <= 0 ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error write log = %d\n", errno );
       return VDS_LOGFILE_ERROR;
    }
    
    err = fdatasync( logFile->handle );
-   if ( err < 0 )
-   {
+   if ( err < 0 ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error fdatasync log = %d\n", errno );
       return VDS_LOGFILE_ERROR;
@@ -131,13 +127,11 @@ void vdseCloseLogFile( vdseLogFile*     logFile,
    VDS_PRE_CONDITION( logFile != NULL );
    VDS_INV_CONDITION( logFile->initialized == VDSE_LOGFILE_SIGNATURE );
    
-   if ( logFile->handle != -1 )
-   {
+   if ( logFile->handle != -1 ) {
       close( logFile->handle );
       logFile->handle = -1;
       err = unlink( logFile->filename );
-      if ( err != 0 )
-         fprintf( stderr, "Unlink error %d\n", errno );
+      if ( err != 0 ) fprintf( stderr, "Unlink error %d\n", errno );
    }
 
    logFile->initialized = 0;

@@ -46,7 +46,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdseLogFile
+struct vdseLogFile
 {
    /** File handle as returned by open() */
    int handle;
@@ -57,7 +57,9 @@ typedef struct vdseLogFile
    /** File name (the full path) */
    char filename[PATH_MAX];
    
-} vdseLogFile;
+};
+
+typedef struct vdseLogFile vdseLogFile;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

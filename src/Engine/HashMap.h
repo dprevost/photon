@@ -32,7 +32,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdseHashMapItem
+struct vdseHashMapItem
 {
    vdseHashItem * pHashItem;
 
@@ -40,11 +40,13 @@ typedef struct vdseHashMapItem
 
    ptrdiff_t   itemOffset;
 
-} vdseHashMapItem;
+};
+
+typedef struct vdseHashMapItem vdseHashMapItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdseHashMap
+struct vdseHashMap
 {
    /** Always first */
    struct vdseMemObject memObject;
@@ -57,8 +59,10 @@ typedef struct vdseHashMap
    /** Variable size struct - always put at the end */
    struct vdseBlockGroup blockGroup;
 
-} vdseHashMap;
-   
+};
+
+typedef struct vdseHashMap vdseHashMap;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT

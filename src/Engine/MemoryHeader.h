@@ -39,7 +39,7 @@ BEGIN_C_DECLS
  * we can modify VDS on the fly if this structure is changed in future
  * releases.
  */
-typedef struct vdseMemoryHeader
+struct vdseMemoryHeader
 {
    char            cookie[4];
    int             version;
@@ -66,7 +66,9 @@ typedef struct vdseMemoryHeader
    vdseHashItem topHashItem;
    vdseObjectDescriptor topDescriptor;
    
-} vdseMemoryHeader;
+};
+
+typedef struct vdseMemoryHeader vdseMemoryHeader;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

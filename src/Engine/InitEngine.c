@@ -31,14 +31,12 @@ VDSF_ENGINE_EXPORT const char * MYCXX = "cl.exe";
 
 int vdseInitEngine()
 {
-   if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER )
-   {
+   if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER ) {
       vdscInitErrorDefs();
 
       g_vdsErrorHandle = vdscAddErrorMsgHandler( "VDSF", vdseErrGetErrMessage );
 
-      if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER )
-      {
+      if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER ) {
          fprintf( stderr, "Error registring the error handler for VDS errors\n" );
          fprintf( stderr, "The problem might be a lack of memory\n" );
          return -1;
@@ -49,3 +47,4 @@ int vdseInitEngine()
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

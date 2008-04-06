@@ -26,7 +26,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdseMemBitmap
+struct vdseMemBitmap
 {
    size_t lengthInBits;
    
@@ -37,7 +37,9 @@ typedef struct vdseMemBitmap
    
    unsigned char bitmap[1];
    
-} vdseMemBitmap;
+};
+
+typedef struct vdseMemBitmap vdseMemBitmap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

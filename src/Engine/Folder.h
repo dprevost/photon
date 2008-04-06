@@ -32,7 +32,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdseFolderItem
+struct vdseFolderItem
 {
    vdseHashItem * pHashItem;
 
@@ -42,16 +42,17 @@ typedef struct vdseFolderItem
 
    int status;
    
-} vdseFolderItem;
+};
+
+typedef struct vdseFolderItem vdseFolderItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  * Wrapper for the container holding the information on the tree of
  * shared objects.
- */	
-
-typedef struct vdseFolder
+ */
+struct vdseFolder
 {
    /** The memory object struct. */
    struct vdseMemObject memObject;
@@ -64,8 +65,10 @@ typedef struct vdseFolder
    /** Variable size struct - always put at the end */
    struct vdseBlockGroup blockGroup;
 
-} vdseFolder;
-   
+};
+
+typedef struct vdseFolder vdseFolder;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT

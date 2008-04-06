@@ -133,10 +133,9 @@ bool vdseTxStatusIsValid( vdseTxStatus * pStatus, ptrdiff_t txOffset )
    VDS_PRE_CONDITION( pStatus  != NULL );
    VDS_PRE_CONDITION( txOffset != NULL_OFFSET );
 
-   if ( pStatus->txOffset == NULL_OFFSET )
-      return true;
-   if ( pStatus->txOffset == txOffset )
-      return true;
+   if ( pStatus->txOffset == NULL_OFFSET ) return true;
+   if ( pStatus->txOffset == txOffset ) return true;
+
    return false;
 }
 
@@ -216,10 +215,8 @@ bool vdseTxStatusSelfTest( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   if ( pStatus->txOffset != NULL_OFFSET )
-   {
-      return false;
-   }
+   if ( pStatus->txOffset != NULL_OFFSET ) return false;
+
    return true;
 }
    

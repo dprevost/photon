@@ -38,8 +38,9 @@ void vdseMemBitmapInit( vdseMemBitmap* pBitmap,
    pBitmap->baseAddressOffset = baseAddressOffset;
    
    len = ( (pBitmap->lengthInBits - 1 ) >> 3 ) + 1;
-   for ( i = 0; i < len; ++i )
+   for ( i = 0; i < len; ++i ) {
       pBitmap->bitmap[i] = 0;
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -50,9 +51,10 @@ void vdseMemBitmapFini( vdseMemBitmap* pBitmap )
    VDS_PRE_CONDITION( pBitmap != NULL );
    
    len = ( (pBitmap->lengthInBits - 1 ) >> 3 ) + 1;
-   for ( i = 0; i < len; ++i )
+   for ( i = 0; i < len; ++i ) {
       pBitmap->bitmap[i] = 0;
-
+   }
+   
    pBitmap->lengthInBits = 0;
    pBitmap->allocGranularity = 0;
    pBitmap->baseAddressOffset = NULL_OFFSET;

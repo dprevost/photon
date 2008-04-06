@@ -60,8 +60,7 @@ vdseMemObjectInit( vdseMemObject   * pMemObj,
    pMemObj->objType = VDSE_IDENT_CLEAR;
    
    errcode =  vdscInitProcessLock( &pMemObj->lock );
-   if ( errcode != 0 )
-      return VDS_NOT_ENOUGH_RESOURCES;
+   if ( errcode != 0 ) return VDS_NOT_ENOUGH_RESOURCES;
    
    pMemObj->objType = objType;
    vdseLinkedListInit( &pMemObj->listBlockGroup );
@@ -120,8 +119,7 @@ vdseMemObjectFini( vdseMemObject      * pMemObj,
 
    errGroup = vdseLinkedListGetFirst( &pMemObj->listBlockGroup,
                                       &dummy );
-   while ( errGroup == LIST_OK )
-   {
+   while ( errGroup == LIST_OK ) {
       pGroup = (vdseBlockGroup*)( 
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
 
@@ -140,9 +138,10 @@ vdseMemObjectFini( vdseMemObject      * pMemObj,
 
    vdseLinkedListFini( &pMemObj->listBlockGroup );
 
-   if ( vdscFiniProcessLock( &pMemObj->lock ) != 0 )
+   if ( vdscFiniProcessLock( &pMemObj->lock ) != 0 ) {
       return VDS_NOT_ENOUGH_RESOURCES;
-
+   }
+   
    pGroup = (vdseBlockGroup*)(
       (unsigned char*)firstNode - offsetof(vdseBlockGroup,node));
 
@@ -184,8 +183,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
     */
    errGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup,
                                        &dummy );
-   while ( errGroup == LIST_OK )
-   {
+   while ( errGroup == LIST_OK ) {
       currentGroup = (vdseBlockGroup*)( 
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
 
@@ -193,30 +191,25 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
        * No point in trying if the amount of free space is less than
        * the requested size for that group.
        */
-      if ( currentGroup->freeBytes > requestedChunks *VDSE_ALLOCATION_UNIT )
-      {
+      if ( currentGroup->freeBytes > requestedChunks *VDSE_ALLOCATION_UNIT ) {
          /*
           * This second loop is done on the list of free chunks in the 
           * current block group.
           */
          errNode = vdseLinkedListPeakFirst( &currentGroup->freeList, &dummy );
-         while ( errNode == LIST_OK )
-         {
+         while ( errNode == LIST_OK ) {
             currentNode = (vdseFreeBufferNode*)( 
                (unsigned char*)dummy - offsetof(vdseFreeBufferNode,node));
             numChunks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
-            if ( numChunks >= requestedChunks )
-            {
+            if ( numChunks >= requestedChunks ) {
                /* We got it */
                remainingChunks = numChunks - requestedChunks;
-               if ( remainingChunks == 0 )
-               {
+               if ( remainingChunks == 0 ) {
                   /* Remove the chunk from the list */
                   vdseLinkedListRemoveItem( &currentGroup->freeList, 
                                             &currentNode->node );
                }
-               else
-               {
+               else {
                   newNode = (vdseFreeBufferNode*)
                             ((unsigned char*) currentNode + 
                             (requestedChunks*VDSE_ALLOCATION_UNIT));
@@ -231,8 +224,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
                    * of free chunks. But only if there is more than one free
                    * chunk.
                    */
-                  if ( remainingChunks > 1 )
-                  {
+                  if ( remainingChunks > 1 ) {
                      ptr = (unsigned char*) newNode + 
                         (remainingChunks-1) * VDSE_ALLOCATION_UNIT; 
                      *((ptrdiff_t *)ptr) = SET_OFFSET(newNode);
@@ -274,22 +266,20 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
    requestedBlocks = (((requestedChunks+i)*VDSE_ALLOCATION_UNIT - 1) >> VDSE_BLOCK_SHIFT) + 1;
    /* We increment the size by 3%, if 3% is bigger than the request */
    i = 3 * pMemObj->totalBlocks / 100;
-   if ( i < requestedBlocks )
-      i = requestedBlocks;
+   if ( i < requestedBlocks ) i = requestedBlocks;
    
    currentGroup = (vdseBlockGroup*) vdseMallocBlocks( pContext->pAllocator,
                                                       VDSE_ALLOC_ANY,
                                                       i,
                                                       pContext );
-   if ( currentGroup == NULL && i > requestedBlocks )
-   {
+   if ( currentGroup == NULL && i > requestedBlocks ) {
       /* 
        * We retry again with a smaller number, the minimal increase needed
        * to satisfy the original request.
        */
       if ( vdscGetLastError( &pContext->errorHandler ) == 
-         VDS_NOT_ENOUGH_VDS_MEMORY )
-      {
+         VDS_NOT_ENOUGH_VDS_MEMORY ) {
+
          i = requestedBlocks;
          currentGroup = (vdseBlockGroup*) vdseMallocBlocks( pContext->pAllocator,
                                                             VDSE_ALLOC_ANY,
@@ -297,8 +287,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
                                                             pContext );
       }
    }
-   if ( currentGroup != NULL )
-   {
+   if ( currentGroup != NULL ) {
       vdseBlockGroupInit( currentGroup, 
                           SET_OFFSET( currentGroup ), 
                           i, 
@@ -310,21 +299,18 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
       
       /* Allocate the memory (the chunks) needed to satisfy the request. */
       errNode = vdseLinkedListPeakFirst( &currentGroup->freeList, &dummy );
-      if ( errNode == LIST_OK )
-      {
+      if ( errNode == LIST_OK ) {
          currentNode = (vdseFreeBufferNode*)( 
             (unsigned char*)dummy + offsetof(vdseFreeBufferNode,node));
          numChunks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
          remainingChunks = numChunks - requestedChunks;
          
-         if ( remainingChunks == 0 )
-         {
+         if ( remainingChunks == 0 ) {
             /* Remove the node from the list */
             vdseLinkedListRemoveItem( &currentGroup->freeList, 
                                       &currentNode->node );
          }
-         else
-         {
+         else {
             newNode = (vdseFreeBufferNode*)
                       ((unsigned char*) currentNode + 
                       (requestedChunks*VDSE_ALLOCATION_UNIT));
@@ -339,8 +325,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
              * of free chunks. But only if there is more than one free
              * chunk.
              */
-            if ( remainingChunks > 1 )
-            {
+            if ( remainingChunks > 1 ) {
                ptr = (unsigned char*) newNode + 
                   (remainingChunks-1) * VDSE_ALLOCATION_UNIT; 
                *((ptrdiff_t *)ptr) = SET_OFFSET(newNode);
@@ -399,16 +384,14 @@ void vdseFree( vdseMemObject*      pMemObj,
    /* Find to which blockgroup ptr belongs to */
    errGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup,
                                        &dummy );
-   while ( errGroup == LIST_OK )
-   {
+   while ( errGroup == LIST_OK ) {
       currentGroup = (vdseBlockGroup*)( 
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
 
       offset = currentGroup->bitmap.baseAddressOffset;
       if ( ptr >= GET_PTR_FAST( offset, unsigned char) && 
            ptr < GET_PTR_FAST( offset+ (currentGroup->numBlocks << VDSE_BLOCK_SHIFT), 
-                          unsigned char ) )
-      {
+                          unsigned char ) ) {
          goodGroup = currentGroup;
          break;
       }
@@ -427,12 +410,10 @@ void vdseFree( vdseMemObject*      pMemObj,
     */
    p = ptr - VDSE_ALLOCATION_UNIT;
    otherBufferisFree = vdseIsBufferFree( &goodGroup->bitmap, SET_OFFSET(p) );
-   if ( otherBufferisFree )
-   {
+   if ( otherBufferisFree ) {
       /* Find the start of that free group of chunks */
       if ( vdseIsBufferFree( &goodGroup->bitmap, 
-         SET_OFFSET( ptr - 2*VDSE_ALLOCATION_UNIT ) ) )
-      {
+         SET_OFFSET( ptr - 2*VDSE_ALLOCATION_UNIT ) ) ) {
          /* The free group has more than one chunk */
          offset = *((ptrdiff_t*)p);
          GET_PTR( p, offset, unsigned char);
@@ -444,8 +425,7 @@ void vdseFree( vdseMemObject*      pMemObj,
        */
       ((vdseFreeBufferNode*)p)->numBuffers += (numBytes/VDSE_ALLOCATION_UNIT);
    }
-   else
-   {
+   else {
       /*
        * The previous buffer is not free, so we need to insert our released
        * buffer as a new node in the list.
@@ -467,8 +447,7 @@ void vdseFree( vdseMemObject*      pMemObj,
    otherNode = (vdseFreeBufferNode*)( ptr + numBytes);
    otherBufferisFree = vdseIsBufferFree( &goodGroup->bitmap, 
                                          SET_OFFSET(otherNode) );
-   if ( otherBufferisFree )
-   {
+   if ( otherBufferisFree ) {
       ((vdseFreeBufferNode*)p)->numBuffers += otherNode->numBuffers;
       vdseLinkedListRemoveItem( &goodGroup->freeList, 
                                 &otherNode->node );
@@ -476,8 +455,8 @@ void vdseFree( vdseMemObject*      pMemObj,
    }
 
    if ( ((vdseFreeBufferNode*)p)->numBuffers*VDSE_ALLOCATION_UNIT == 
-      goodGroup->maxFreeBytes && goodGroup->isDeletable )
-   {
+      goodGroup->maxFreeBytes && goodGroup->isDeletable ) {
+
       numBlocks = goodGroup->numBlocks;
       pMemObj->totalBlocks -= numBlocks;
       /* Remove the blockGroup to the list of groups of the memObject */
@@ -491,8 +470,7 @@ void vdseFree( vdseMemObject*      pMemObj,
                       numBlocks,
                       pContext );
    }
-   else
-   {
+   else {
       /* Set the bitmap */
       vdseSetBufferFree( &goodGroup->bitmap, SET_OFFSET(ptr), numBytes );
    
@@ -501,8 +479,7 @@ void vdseFree( vdseMemObject*      pMemObj,
        * This makes it simpler/faster to rejoin groups of free blocks. But 
        * only if the number of blocks in the group > 1.
        */
-      if ( ((vdseFreeBufferNode*)p)->numBuffers > 1 )
-      {
+      if ( ((vdseFreeBufferNode*)p)->numBuffers > 1 ) {
          /* Warning - we reuse ptr here */
           ptr = p + 
              (((vdseFreeBufferNode*)p)->numBuffers-1) * VDSE_ALLOCATION_UNIT; 
@@ -534,8 +511,7 @@ void vdseMemObjectStatus( vdseMemObject * pMemObj,
                                        &dummy );
    VDS_PRE_CONDITION( errGroup == LIST_OK );
 
-   while ( errGroup == LIST_OK )
-   {
+   while ( errGroup == LIST_OK ) {
       pGroup = (vdseBlockGroup*)( 
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
       pStatus->freeBytes += pGroup->freeBytes;

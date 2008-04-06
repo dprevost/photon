@@ -62,10 +62,10 @@ void vdseHashMapCommitAdd( vdseHashMap        * pHashMap,
     */
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
    if ( (txHashMapStatus->usageCounter == 0) &&
-      (pHashMap->nodeObject.txCounter == 0 ) )
-   {
-      if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE )
+                   (pHashMap->nodeObject.txCounter == 0 ) ) {
+      if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE ) { 
          vdseHashResize( &pHashMap->hashObj, pContext );
+      }
    }
 }
 
@@ -91,8 +91,7 @@ void vdseHashMapCommitRemove( vdseHashMap        * pHashMap,
     * If it zero, we can safely remove the entry from the hash, otherwise
     * we mark it as a committed remove
     */
-   if ( txItemStatus->usageCounter == 0 )
-   {
+   if ( txItemStatus->usageCounter == 0 ) {
       errcode = vdseHashDelete( &pHashMap->hashObj, 
                                 pHashItem->key,
                                 pHashItem->keyLength,
@@ -112,18 +111,17 @@ void vdseHashMapCommitRemove( vdseHashMap        * pHashMap,
        *       current function returns void. Let's someone else find that 
        *       we are getting low on memory...
        */
-      if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE )
-      {
+      if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE ) {
          GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
          if ( (txHashMapStatus->usageCounter == 0) &&
-            (pHashMap->nodeObject.txCounter == 0 ) )
-         {
+            (pHashMap->nodeObject.txCounter == 0 ) ) {
             vdseHashResize( &pHashMap->hashObj, pContext );
          }
       }
    }
-   else
+   else {
       txItemStatus->enumStatus = VDSE_TXS_DESTROYED_COMMITTED;
+   }
    
    VDS_POST_CONDITION( errcode == LIST_OK );
 }
@@ -149,11 +147,9 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
    
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 )
-   {
+   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 ) {
       if ( ! vdseTxStatusIsValid( txHashMapStatus, SET_OFFSET(pContext->pTransaction) ) 
-         || vdseTxStatusIsMarkedAsDestroyed( txHashMapStatus ) )
-      {
+         || vdseTxStatusIsMarkedAsDestroyed( txHashMapStatus ) ) {
          errcode = VDS_OBJECT_IS_DELETED;
          goto the_exit;
       }
@@ -167,13 +163,11 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
                              &pHashItem,
                              pContext,
                              NULL );
-      if ( listErr != LIST_OK )
-      {
+      if ( listErr != LIST_OK ) {
          errcode = VDS_NO_SUCH_ITEM;
          goto the_exit;
       }
-      while ( pHashItem->nextSameKey != NULL_OFFSET )
-      {
+      while ( pHashItem->nextSameKey != NULL_OFFSET ) {
          GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
       }
       
@@ -184,12 +178,13 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
        * we do not support two transactions on the same data
        * (and if remove is committed - the data is "non-existent").
        */
-      if ( txItemStatus->txOffset != NULL_OFFSET )
-      {
-         if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
+      if ( txItemStatus->txOffset != NULL_OFFSET ) {
+         if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
             errcode = VDS_NO_SUCH_ITEM;
-         else
+         }
+         else {
             errcode = VDS_ITEM_IS_IN_USE;
+         }
          goto the_exit;
       }
 
@@ -200,8 +195,7 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
                          SET_OFFSET( pHashItem),
                          0,
                          pContext );
-      if ( rc != 0 )
-         goto the_exit;
+      if ( rc != 0 ) goto the_exit;
       
       txItemStatus->txOffset = SET_OFFSET(pContext->pTransaction);
       txItemStatus->enumStatus = VDSE_TXS_DESTROYED;
@@ -209,8 +203,7 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
 
       vdseUnlock( &pHashMap->memObject, pContext );
    }
-   else
-   {
+   else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return -1;
    }
@@ -221,9 +214,10 @@ the_exit:
 
    vdseUnlock( &pHashMap->memObject, pContext );
    /* vdscSetError might have been already called by some other function */
-   if ( errcode != VDS_OK )
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
-
+   }
+   
    return -1;
 }
 
@@ -269,11 +263,9 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 )
-   {
+   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 ) {
       if ( ! vdseTxStatusIsValid( txHashMapStatus, SET_OFFSET(pContext->pTransaction) ) 
-         || vdseTxStatusIsMarkedAsDestroyed( txHashMapStatus ) )
-      {
+         || vdseTxStatusIsMarkedAsDestroyed( txHashMapStatus ) ) {
          errcode = VDS_OBJECT_IS_DELETED;
          goto the_exit;
       }
@@ -284,13 +276,11 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
                              &pHashItem,
                              pContext,
                              NULL );
-      if ( listErr != LIST_OK )
-      {
+      if ( listErr != LIST_OK ) {
          errcode = VDS_NO_SUCH_ITEM;
          goto the_exit;
       }
-      while ( pHashItem->nextSameKey != NULL_OFFSET )
-      {
+      while ( pHashItem->nextSameKey != NULL_OFFSET ) {
          previousItem = pHashItem;
          GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
       }
@@ -300,8 +290,7 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
        * function) since we do not know the item size. It could be done
        * after but this way makes the code faster.
        */
-      if ( bufferLength < pHashItem->dataLength )
-      {
+      if ( bufferLength < pHashItem->dataLength ) {
          errcode = VDS_INVALID_LENGTH;
          goto the_exit;
       }
@@ -320,29 +309,23 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
        * If the item is flagged as deleted and committed, it does not exists
        * from the API point of view.
        */
-      if ( txItemStatus->txOffset != NULL_OFFSET )
-      {
-         if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
-         {
+      if ( txItemStatus->txOffset != NULL_OFFSET ) {
+         if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
             errcode = VDS_NO_SUCH_ITEM;
             goto the_exit;
          }
          if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-            txItemStatus->enumStatus == VDSE_TXS_DESTROYED )
-         {
+            txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
             errcode = VDS_ITEM_IS_DELETED;
             goto the_exit;
          }
          if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-            txItemStatus->enumStatus == VDSE_TXS_ADDED )
-         {
+            txItemStatus->enumStatus == VDSE_TXS_ADDED ) {
             errcode = VDS_ITEM_IS_IN_USE;
             goto the_exit;
          }
-         if ( txItemStatus->enumStatus == VDSE_TXS_REPLACED )
-         {
-            if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) )
-            {
+         if ( txItemStatus->enumStatus == VDSE_TXS_REPLACED ) {
+            if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) ) {
                pHashItem = previousItem;
                txItemStatus = &pHashItem->txStatus;
             }
@@ -359,8 +342,7 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
 
       vdseUnlock( &pHashMap->memObject, pContext );
    }
-   else
-   {
+   else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return -1;
    }
@@ -374,9 +356,10 @@ the_exit:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called vdscSetError. 
     */
-   if ( errcode != VDS_OK )
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
-
+   }
+   
    return -1;
 }
 
@@ -403,13 +386,11 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 )
-   {
+   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 ) {
       listErr = vdseHashGetFirst( &pHashMap->hashObj, 
                                   &bucket,
                                   &firstItemOffset );
-      while ( listErr == LIST_OK )
-      {
+      while ( listErr == LIST_OK ) {
          GET_PTR( pHashItem, firstItemOffset, vdseHashItem );
          txItemStatus = &pHashItem->txStatus;
 
@@ -425,40 +406,33 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
           * from the API point of view.
           */
          isOK = true;
-         if ( txItemStatus->txOffset != NULL_OFFSET )
-         {
+         if ( txItemStatus->txOffset != NULL_OFFSET ) {
             if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-               txItemStatus->enumStatus == VDSE_TXS_DESTROYED )
-            {
+               txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
                isOK = false;
             }
             if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-               txItemStatus->enumStatus == VDSE_TXS_ADDED )
-            {
+               txItemStatus->enumStatus == VDSE_TXS_ADDED ) {
                isOK = false;
             }
-            if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
-            {
+            if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
                isOK = false;
             }
          }
  
-         if ( isOK )
-         {
+         if ( isOK ) {
             /*
              * These tests cannot be done in the API (before calling the 
              * current function) since we do not know the item size. They 
              * could be done after but this way makes the code faster.
              */
-            if ( bufferLength < pHashItem->dataLength )
-            {
+            if ( bufferLength < pHashItem->dataLength ) {
                vdseUnlock( &pHashMap->memObject, pContext );
                vdscSetError( &pContext->errorHandler, 
                              g_vdsErrorHandle, VDS_INVALID_LENGTH );
                return -1;
             }
-            if ( keyLength < pHashItem->keyLength )
-            {
+            if ( keyLength < pHashItem->keyLength ) {
                vdseUnlock( &pHashMap->memObject, pContext );
                vdscSetError( &pContext->errorHandler, 
                              g_vdsErrorHandle, VDS_INVALID_LENGTH );
@@ -483,8 +457,7 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
                                     &firstItemOffset );
       }
    }
-   else
-   {
+   else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return -1;
    }
@@ -525,15 +498,13 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
    itemOffset       = pItem->itemOffset;
    previousHashItem = pItem->pHashItem;
    
-   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 )
-   {
+   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 ) {
       listErr = vdseHashGetNext( &pHashMap->hashObj, 
                                  bucket,
                                  itemOffset,
                                  &bucket,
                                  &itemOffset );
-      while ( listErr == LIST_OK )
-      {
+      while ( listErr == LIST_OK ) {
          GET_PTR( pHashItem, itemOffset, vdseHashItem );
          txItemStatus = &pHashItem->txStatus;
 
@@ -549,40 +520,33 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
           * from the API point of view.
           */
          isOK = true;
-         if ( txItemStatus->txOffset != NULL_OFFSET )
-         {
+         if ( txItemStatus->txOffset != NULL_OFFSET ) {
             if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-               txItemStatus->enumStatus == VDSE_TXS_DESTROYED )
-            {
+               txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
                isOK = false;
             }
             if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-               txItemStatus->enumStatus == VDSE_TXS_ADDED )
-            {
+               txItemStatus->enumStatus == VDSE_TXS_ADDED ) {
                isOK = false;
             }
-            if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
-            {
+            if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
                isOK = false;
             }
          }
  
-         if ( isOK )
-         {
+         if ( isOK ) {
             /*
              * These tests cannot be done in the API (before calling the 
              * current function) since we do not know the item size. They 
              * could be done after but this way makes the code faster.
              */
-            if ( bufferLength < pHashItem->dataLength )
-            {
+            if ( bufferLength < pHashItem->dataLength ) {
                vdseUnlock( &pHashMap->memObject, pContext );
                vdscSetError( &pContext->errorHandler, 
                              g_vdsErrorHandle, VDS_INVALID_LENGTH );
                return -1;
             }
-            if ( keyLength < pHashItem->keyLength )
-            {
+            if ( keyLength < pHashItem->keyLength ) {
                vdseUnlock( &pHashMap->memObject, pContext );
                vdscSetError( &pContext->errorHandler, 
                              g_vdsErrorHandle, VDS_INVALID_LENGTH );
@@ -608,8 +572,7 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
                                     &itemOffset );
       }
    }
-   else
-   {
+   else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return -1;
    }
@@ -658,8 +621,7 @@ int vdseHashMapInit( vdseHashMap        * pHashMap,
                                 VDSE_IDENT_HASH_MAP,
                                 &pHashMap->blockGroup,
                                 numberOfBlocks );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
@@ -677,12 +639,13 @@ int vdseHashMapInit( vdseHashMap        * pHashMap,
                            SET_OFFSET(&pHashMap->memObject),
                            expectedNumOfItems, 
                            pContext );
-   if ( listErr != LIST_OK )
-   {
-      if ( listErr == LIST_NO_MEMORY )
+   if ( listErr != LIST_OK ) {
+      if ( listErr == LIST_NO_MEMORY ) {
          errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
-      else
+      }
+      else {
          errcode = VDS_INTERNAL_ERROR;
+      }
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return -1;
    }
@@ -716,11 +679,9 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 )
-   {
+   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 ) {
       if ( ! vdseTxStatusIsValid( txHashMapStatus, SET_OFFSET(pContext->pTransaction) ) 
-         || vdseTxStatusIsMarkedAsDestroyed( txHashMapStatus ) )
-      {
+         || vdseTxStatusIsMarkedAsDestroyed( txHashMapStatus ) ) {
          errcode = VDS_OBJECT_IS_DELETED;
          goto the_exit;
       }
@@ -731,11 +692,9 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
                              &previousHashItem,
                              pContext,
                              &bucket );
-      if ( listErr == LIST_OK )
-      {
+      if ( listErr == LIST_OK ) {
          /* Find the last one in the chain of items with same key */
-         while ( previousHashItem->nextSameKey != NULL_OFFSET )
-         {
+         while ( previousHashItem->nextSameKey != NULL_OFFSET ) {
             GET_PTR( previousHashItem, previousHashItem->nextSameKey, vdseHashItem );
          }
 
@@ -744,8 +703,7 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
           * key exists and that we cannot insert the item
           */
          txItemStatus = &previousHashItem->txStatus;
-         if ( txItemStatus->enumStatus != VDSE_TXS_DESTROYED_COMMITTED )
-         {
+         if ( txItemStatus->enumStatus != VDSE_TXS_DESTROYED_COMMITTED ) {
             errcode = VDS_ITEM_ALREADY_PRESENT;
             goto the_exit;
          }
@@ -759,12 +717,13 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
                                   itemLength,
                                   &pHashItem,
                                   pContext );
-      if ( listErr != LIST_OK )
-      {
-         if ( listErr == LIST_NO_MEMORY )
+      if ( listErr != LIST_OK ) {
+         if ( listErr == LIST_NO_MEMORY ) {
             errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
-         else
+         }
+         else {
             errcode = VDS_INTERNAL_ERROR;
+         }
          goto the_exit;
       }
 
@@ -775,8 +734,7 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
                          SET_OFFSET(pHashItem),
                          0,
                          pContext );
-      if ( rc != 0 )
-      {
+      if ( rc != 0 ) {
          vdseHashDeleteAt( &pHashMap->hashObj,
                            bucket,
                            pHashItem,
@@ -788,13 +746,13 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
       vdseTxStatusInit( txItemStatus, SET_OFFSET(pContext->pTransaction) );
       pHashMap->nodeObject.txCounter++;
       txItemStatus->enumStatus = VDSE_TXS_ADDED;
-      if ( previousHashItem != NULL )
+      if ( previousHashItem != NULL ) {
          previousHashItem->nextSameKey = SET_OFFSET(pHashItem);
-   
+      }
+      
       vdseUnlock( &pHashMap->memObject, pContext );
    }
-   else
-   {
+   else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return -1;
    }
@@ -808,9 +766,10 @@ the_exit:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called vdscSetError. 
     */
-   if ( errcode != VDS_OK )
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
-
+   }
+   
    return -1;
 }
 
@@ -825,16 +784,14 @@ int vdseHashMapRelease( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( pContext  != NULL );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
 
-   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 )
-   {
+   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 ) {
       vdseHashMapReleaseNoLock( pHashMap,
                                 pHashItem,
                                 pContext );
 
       vdseUnlock( &pHashMap->memObject, pContext );
    }
-   else
-   {
+   else {
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     VDS_OBJECT_CANNOT_GET_LOCK );
@@ -871,8 +828,7 @@ void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
    txHashMapStatus->usageCounter--;
 
    if ( (txItemStatus->usageCounter == 0) && 
-      txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED )
-   {
+      txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
       /* Time to really delete the record! */
       listErr = vdseHashDelete( &pHashMap->hashObj, 
                                 pHashItem->key,
@@ -897,10 +853,10 @@ void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
     *       we are getting low on memory...
     */
    if ( (txHashMapStatus->usageCounter == 0) &&
-      (pHashMap->nodeObject.txCounter == 0 ) )
-   {
-      if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE )
+      (pHashMap->nodeObject.txCounter == 0 ) ) {
+      if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE ) {
          vdseHashResize( &pHashMap->hashObj, pContext );
+      }
    }
 }
 
@@ -930,11 +886,9 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 )
-   {
+   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 ) {
       if ( ! vdseTxStatusIsValid( txHashMapStatus, SET_OFFSET(pContext->pTransaction) ) 
-         || vdseTxStatusIsMarkedAsDestroyed( txHashMapStatus ) )
-      {
+         || vdseTxStatusIsMarkedAsDestroyed( txHashMapStatus ) ) {
          errcode = VDS_OBJECT_IS_DELETED;
          goto the_exit;
       }
@@ -945,19 +899,16 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
                              &pHashItem,
                              pContext,
                              &bucket );
-      if ( listErr != LIST_OK )
-      {
+      if ( listErr != LIST_OK ) {
          errcode = VDS_NO_SUCH_ITEM;
          goto the_exit;
       }
-      while ( pHashItem->nextSameKey != NULL_OFFSET )
-      {
+      while ( pHashItem->nextSameKey != NULL_OFFSET ) {
          GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
       }
 
       txItemStatus = &pHashItem->txStatus;
-      if ( txItemStatus->enumStatus != VDSE_TXS_OK )
-      {
+      if ( txItemStatus->enumStatus != VDSE_TXS_OK ) {
          errcode = VDS_ITEM_IS_IN_USE;
          goto the_exit;
       }
@@ -970,14 +921,16 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
                                   itemLength,
                                   &pNewHashItem,
                                   pContext );
-      if ( listErr != LIST_OK )
-      {
-         if ( listErr == LIST_KEY_FOUND )
+      if ( listErr != LIST_OK ) {
+         if ( listErr == LIST_KEY_FOUND ) {
             errcode = VDS_ITEM_ALREADY_PRESENT;
-         else if ( listErr == LIST_NO_MEMORY )
+         }
+         else if ( listErr == LIST_NO_MEMORY ) {
             errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
-         else
+         }
+         else {
             errcode = VDS_INTERNAL_ERROR;
+         }
          goto the_exit;
       }
 
@@ -988,8 +941,7 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
                          SET_OFFSET(pHashItem),
                          0,
                          pContext );
-      if ( rc != 0 )
-      {
+      if ( rc != 0 ) {
          vdseHashDeleteAt( &pHashMap->hashObj, 
                            bucket,
                            pNewHashItem,
@@ -1003,8 +955,7 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
                          SET_OFFSET(pNewHashItem),
                          0,
                          pContext );
-      if ( rc != 0 )
-      {
+      if ( rc != 0 ) {
          vdseHashDeleteAt( &pHashMap->hashObj, 
                            bucket,
                            pNewHashItem,
@@ -1026,8 +977,7 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
 
       vdseUnlock( &pHashMap->memObject, pContext );
    }
-   else
-   {
+   else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return -1;
    }
@@ -1041,9 +991,10 @@ the_exit:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called vdscSetError. 
     */
-   if ( errcode != VDS_OK )
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
-
+   }
+   
    return -1;
 }
 
@@ -1070,8 +1021,7 @@ void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap,
     * from the hash (this function will also free the memory back to 
     * the memory object).
     */
-   if ( txItemStatus->usageCounter == 0 )
-   {
+   if ( txItemStatus->usageCounter == 0 ) {
       errcode = vdseHashDelete( &pHashMap->hashObj, 
                                 pHashItem->key,
                                 pHashItem->keyLength, 
@@ -1095,14 +1045,13 @@ void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap,
        */
       GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
       if ( (txHashMapStatus->usageCounter == 0) &&
-         (pHashMap->nodeObject.txCounter == 0 ) )
-      {
-         if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE )
+                     (pHashMap->nodeObject.txCounter == 0 ) ) {
+         if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE ) {
             vdseHashResize( &pHashMap->hashObj, pContext );
+         }
       }
    }
-   else
-   {
+   else {
       vdseTxStatusCommitRemove( txItemStatus );
    }
 }
@@ -1144,10 +1093,10 @@ void vdseHashMapRollbackRemove( vdseHashMap        * pHashMap,
     */
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
    if ( (txHashMapStatus->usageCounter == 0) &&
-      (pHashMap->nodeObject.txCounter == 0 ) )
-   {
-      if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE )
+      (pHashMap->nodeObject.txCounter == 0 ) ) {
+      if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE ) {
          vdseHashResize( &pHashMap->hashObj, pContext );
+      }
    }
 }
 
@@ -1177,13 +1126,14 @@ void vdseHashMapStatus( vdseHashMap  * pHashMap,
    listErr = vdseHashGetFirst( &pHashMap->hashObj, 
                                &bucket,
                                &firstItemOffset );
-   while ( listErr == LIST_OK )
-   {
+   while ( listErr == LIST_OK ) {
       GET_PTR( pHashItem, firstItemOffset, vdseHashItem );
-      if ( pHashItem->dataLength > pStatus->maxDataLength )
+      if ( pHashItem->dataLength > pStatus->maxDataLength ) {
          pStatus->maxDataLength = pHashItem->dataLength;
-      if ( pHashItem->keyLength > pStatus->maxKeyLength )
+      }
+      if ( pHashItem->keyLength > pStatus->maxKeyLength ) {
          pStatus->maxKeyLength = pHashItem->keyLength;
+      }
 
       listErr = vdseHashGetNext( &pHashMap->hashObj, 
                                  bucket,

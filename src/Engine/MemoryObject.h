@@ -71,7 +71,7 @@ void vdseSessionRemoveLock( struct vdseSession * pSession,
  * contains a variable array size. The vdseBlockGroup struct should be
  * put at the end of the container that owns a vdseMemObject.
  */
-typedef struct vdseMemObject
+struct vdseMemObject
 {
    /** Type of memory object */
    vdseMemObjIdent objType;
@@ -84,7 +84,9 @@ typedef struct vdseMemObject
    
    vdseLinkedList listBlockGroup;
    
-} vdseMemObject;
+};
+
+typedef struct vdseMemObject vdseMemObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -117,9 +119,10 @@ static inline
 int vdseLock( vdseMemObject      * pMemObj,
               vdseSessionContext * pContext )
 {
-   if ( pContext->lockOffsets != NULL )
+   if ( pContext->lockOffsets != NULL ) {
       vdseSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
-
+   }
+   
    return vdscTryAcquireProcessLock ( &pMemObj->lock,
                                       pContext->pidLocker,
                                       LOCK_TIMEOUT );
@@ -129,8 +132,9 @@ static inline
 void vdseLockNoFailure( vdseMemObject      * pMemObj,
                         vdseSessionContext * pContext )
 {
-   if ( pContext->lockOffsets != NULL )
+   if ( pContext->lockOffsets != NULL ) {
       vdseSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
+   }
    
    vdscAcquireProcessLock ( &pMemObj->lock, LOCK_TIMEOUT );
 }
@@ -143,9 +147,10 @@ static inline
 void vdseUnlock( vdseMemObject      * pMemObj,
                  vdseSessionContext * pContext  )
 {
-   if ( pContext->lockOffsets != NULL )
+   if ( pContext->lockOffsets != NULL ) {
       vdseSessionRemoveLock( pContext, SET_OFFSET( pMemObj ) );
-
+   }
+   
    vdscReleaseProcessLock ( &pMemObj->lock );
 }
 

@@ -31,7 +31,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdseMemAlloc
+struct vdseMemAlloc
 {
    /**
     * The vdseMemAlloc is itself a memory object and "inherits" from
@@ -68,7 +68,9 @@ typedef struct vdseMemAlloc
     */
    vdseBlockGroup blockGroup;
    
-} vdseMemAlloc;
+};
+
+typedef struct vdseMemAlloc vdseMemAlloc;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

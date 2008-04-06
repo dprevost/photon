@@ -40,12 +40,13 @@ BEGIN_C_DECLS
  * 64bits machines - this type of error/bug is difficult to find, better
  * not make it in the first place...).
  */
-typedef struct	vdseLinkNode
+struct vdseLinkNode
 {
    ptrdiff_t nextOffset;
    ptrdiff_t previousOffset;
+};
 
-} vdseLinkNode;
+typedef struct	vdseLinkNode vdseLinkNode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -53,7 +54,7 @@ typedef struct	vdseLinkNode
  * A "specialized" version of vdseLinkNode. It is used in many places
  * and was put here to avoid circular dependencies...
  */
-typedef struct vdseFreeBufferNode
+struct vdseFreeBufferNode
 {
    /* The linked node itself */
    vdseLinkNode node;
@@ -61,7 +62,9 @@ typedef struct vdseFreeBufferNode
    /* The number of buffers associate with each member of the list. */
    size_t numBuffers;
    
-} vdseFreeBufferNode;
+};
+
+typedef struct vdseFreeBufferNode vdseFreeBufferNode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -91,8 +94,7 @@ int  vdseLinkNodeTest( vdseLinkNode * pNode )
    VDS_PRE_CONDITION( pNode != NULL );
 
    if ( pNode->nextOffset     == NULL_OFFSET || 
-        pNode->previousOffset == NULL_OFFSET )
-   {
+        pNode->previousOffset == NULL_OFFSET ) {
       return 0;
    }
    return 1;

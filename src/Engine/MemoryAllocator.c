@@ -113,12 +113,13 @@
  *    VDSE_IDENT_LIMBO or isInLimbo.
  *
  */
-
-typedef struct vdseFreeBlock
+struct vdseFreeBlock
 {
     vdseMemObjIdent identifier;
     size_t          numBlocks;
-} vdseFreeBlock;
+};
+
+typedef struct vdseFreeBlock vdseFreeBlock;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -185,15 +186,15 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
                  VDSE_ALLOCATION_UNIT;
 
    /* So, enough space or not ? */
-   if ( (neededBlocks << VDSE_BLOCK_SHIFT) < (neededBytes + bitmapLength) )
+   if ( (neededBlocks << VDSE_BLOCK_SHIFT) < (neededBytes + bitmapLength) ) {
       neededBlocks++;
-
+   }
+   
    errcode = vdseMemObjectInit( &pAlloc->memObj,                         
                                 VDSE_IDENT_ALLOCATOR,
                                 &pAlloc->blockGroup,
                                 neededBlocks );
-   if ( errcode != VDS_OK )
-      return errcode;
+   if ( errcode != VDS_OK ) return errcode;
    
    vdseEndBlockSet( SET_OFFSET(pAlloc), 
                     neededBlocks, 
@@ -271,44 +272,35 @@ vdseFreeBufferNode* FindBuffer( vdseMemAlloc     * pAlloc,
     */
    errcode = vdseLinkedListPeakFirst( &pAlloc->freeList,
                                       &oldNode );
-   if ( errcode != LIST_OK )
-      goto error_exit;
+   if ( errcode != LIST_OK ) goto error_exit;
 
    numBlocks = ((vdseFreeBufferNode*)oldNode)->numBuffers;
-   if ( numBlocks == requestedBlocks )
-   {
+   if ( numBlocks == requestedBlocks ) {
       /* Special case - perfect match */
       return (void*) oldNode;
    }
-   if ( numBlocks > requestedBlocks )
-   {
-      if ( (numBlocks - requestedBlocks) < diff )
-      {
+   if ( numBlocks > requestedBlocks ) {
+      if ( (numBlocks - requestedBlocks) < diff ) {
          diff = numBlocks - requestedBlocks;
          bestNode = oldNode;
       }
    }
    
-   for ( i = 0; i < BEST_FIT_MAX_LOOP; ++i )
-   {
+   for ( i = 0; i < BEST_FIT_MAX_LOOP; ++i ) {
       errcode = vdseLinkedListPeakNext( &pAlloc->freeList,
                                         oldNode,
                                         &currentNode );
-      if ( errcode != LIST_OK ) 
-      {
+      if ( errcode != LIST_OK ) {
          if ( bestNode == NULL ) goto error_exit;
          break;
       }
       numBlocks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
-      if ( numBlocks == requestedBlocks )
-      {
+      if ( numBlocks == requestedBlocks ) {
          /* Special case - perfect match */
          return (void*) currentNode;
       }
-      if ( numBlocks > requestedBlocks )
-      {
-         if ( (numBlocks - requestedBlocks) < diff )
-         {
+      if ( numBlocks > requestedBlocks ) {
+         if ( (numBlocks - requestedBlocks) < diff ) {
             diff = numBlocks - requestedBlocks;
             bestNode = currentNode;
          }
@@ -316,18 +308,15 @@ vdseFreeBufferNode* FindBuffer( vdseMemAlloc     * pAlloc,
       oldNode = currentNode;
    }
    
-   while ( bestNode == NULL )
-   {
+   while ( bestNode == NULL ) {
       errcode = vdseLinkedListPeakNext( &pAlloc->freeList,
                                         oldNode,
                                         &currentNode );
-      if ( errcode != LIST_OK ) 
-      {
+      if ( errcode != LIST_OK ) {
          goto error_exit;
       }
       numBlocks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
-      if ( numBlocks >= requestedBlocks )
-      {
+      if ( numBlocks >= requestedBlocks ) {
          bestNode = currentNode;
       }
       oldNode = currentNode;
@@ -372,8 +361,7 @@ unsigned char* vdseMallocBlocks( vdseMemAlloc       * pAlloc,
    errcode = vdscTryAcquireProcessLock( &pAlloc->memObj.lock, 
                                         getpid(),
                                         LOCK_TIMEOUT );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return NULL;
    }
@@ -381,16 +369,13 @@ unsigned char* vdseMallocBlocks( vdseMemAlloc       * pAlloc,
    GET_PTR( pBitmap, pAlloc->bitmapOffset, vdseMemBitmap );
    
    pNode = FindBuffer( pAlloc, requestedBlocks, &pContext->errorHandler );
-   if ( pNode != NULL )
-   {
+   if ( pNode != NULL ) {
       newNumBlocks = pNode->numBuffers - requestedBlocks;
-      if ( newNumBlocks == 0 )
-      {
+      if ( newNumBlocks == 0 ) {
          /* Remove the node from the list */
          vdseLinkedListRemoveItem( &pAlloc->freeList, &pNode->node );
       }
-      else
-      {
+      else {
          pNewNode = (vdseFreeBufferNode*)
                     ((unsigned char*) pNode + (requestedBlocks << VDSE_BLOCK_SHIFT));
          pNewNode->numBuffers = newNumBlocks;
@@ -422,8 +407,7 @@ unsigned char* vdseMallocBlocks( vdseMemAlloc       * pAlloc,
       pAlloc->totalAllocBlocks += requestedBlocks;   
       pAlloc->numMallocCalls++;
       pAlloc->numGroups++;
-      if ( allocType == VDSE_ALLOC_API_OBJ )
-         pAlloc->numApiObjects++;
+      if ( allocType == VDSE_ALLOC_API_OBJ ) pAlloc->numApiObjects++;
       
       /* Set the bitmap */
       vdseSetBufferAllocated( pBitmap, SET_OFFSET(pNode), 
@@ -459,8 +443,7 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
    VDS_PRE_CONDITION( numBlocks > 0 );
 
    errcode = vdseLock( &pAlloc->memObj, pContext );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       /* 
        * Potential race conditions here if the memory is accessed beyond
        * this point. Setting the field isInLimbo and VDSE_IDENT_LIMBO
@@ -495,8 +478,7 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
     * for the shared-memory header - no chance of going beyond the allocated
     * memory.
     */
-   do
-   {
+   do {
       endBlock = (vdseEndBlockGroup*)((unsigned char*)newNode-VDSE_ALLOCATION_UNIT);
       isInLimbo = endBlock->isInLimbo;
       
@@ -509,13 +491,11 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
       GET_PTR( previousNode, endBlock->firstBlockOffset, vdseFreeBufferNode );
       otherBufferisFree = vdseIsBufferFree( pBitmap, endBlock->firstBlockOffset );
 
-      if ( isInLimbo )
-      {
+      if ( isInLimbo ) {
          previousNode->numBuffers = newNode->numBuffers + endBlock->numBlocks;
          newNode = previousNode;
       }
-      else if ( otherBufferisFree )
-      {
+      else if ( otherBufferisFree ) {
          /*
           * It might be better to remove this check later when the system
           * is all working and stable.
@@ -556,17 +536,14 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
     */
    endBlock = (vdseEndBlockGroup*)((unsigned char*)otherNode-VDSE_ALLOCATION_UNIT);
       
-   while ( ! endBlock->lastBlock )
-   {
+   while ( ! endBlock->lastBlock ) {
       otherBufferisFree = vdseIsBufferFree( pBitmap, SET_OFFSET(otherNode) );
-      if ( otherBufferisFree )
-      {
+      if ( otherBufferisFree ) {
          newNode->numBuffers += otherNode->numBuffers;
          vdseLinkedListRemoveItem( &pAlloc->freeList, 
                                    &otherNode->node );
       }
-      else
-      {
+      else {
          ident = pFreeHeader->identifier;
 
          /* 
@@ -575,10 +552,12 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
           */
          vdscReadMemoryBarrier();
          
-         if ( ident == VDSE_IDENT_LIMBO )
+         if ( ident == VDSE_IDENT_LIMBO ) {
             newNode->numBuffers += pFreeHeader->numBlocks;
-         else
+         }
+         else {
             break;
+         }
       }
 
       otherNode = (vdseFreeBufferNode*)
@@ -601,8 +580,7 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
    pAlloc->totalAllocBlocks -= numBlocks;   
    pAlloc->numFreeCalls++;
    pAlloc->numGroups--;
-   if ( allocType == VDSE_ALLOC_API_OBJ )
-      pAlloc->numApiObjects--;
+   if ( allocType == VDSE_ALLOC_API_OBJ ) pAlloc->numApiObjects--;
 
    /* Set the bitmap */
    vdseSetBufferFree( pBitmap, SET_OFFSET(newNode), newNode->numBuffers << VDSE_BLOCK_SHIFT );
@@ -655,15 +633,13 @@ void vdseMemAllocResetStats( vdseMemAlloc*    pAlloc,
    b = GET_PTR( pAlloc->poolOffset, struct bfhead );
    bufsize_T size = b->bh.bsize;
    
-   while ( size != ESENT )
-   {
-      if ( size > 0 ) /* free buffer */
-      {
+   while ( size != ESENT ) {
+      if ( size > 0 ) { /* free buffer */
          /* Calculate where the next buffer is */
          bn =  BFH(((unsigned char *) b) + b->bh.bsize);
       }
-      else /* used buffer */
-      {
+      else { /* used buffer */
+         
          /* Increment pAlloc->numMalloc so that the difference between  */
          /* # of malloc and # of free == the number of allocated buffers! */
          pAlloc->numMalloc++; 
@@ -699,8 +675,7 @@ int vdseMemAllocStats( vdseMemAlloc       * pAlloc,
    VDS_PRE_CONDITION( pContext != NULL );
 
    errcode = vdseLock( &pAlloc->memObj, pContext );
-   if ( errcode == 0 )
-   {
+   if ( errcode == 0 ) {
       pInfo->totalSizeInBytes     = pAlloc->totalLength;
       pInfo->allocatedSizeInBytes = pAlloc->totalAllocBlocks << VDSE_BLOCK_SHIFT;
       pInfo->numObjects           = pAlloc->numApiObjects;
@@ -711,11 +686,11 @@ int vdseMemAllocStats( vdseMemAlloc       * pAlloc,
       
       errcode = vdseLinkedListPeakFirst( &pAlloc->freeList,
                                          &currentNode );
-      while ( errcode == LIST_OK )
-      {
+      while ( errcode == LIST_OK ) {
          numBlocks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
-         if ( numBlocks > pInfo->largestFreeInBytes )
+         if ( numBlocks > pInfo->largestFreeInBytes ) {
             pInfo->largestFreeInBytes = numBlocks;
+         }
          
          oldNode = currentNode;
          errcode = vdseLinkedListPeakNext( &pAlloc->freeList,
