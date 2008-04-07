@@ -36,8 +36,9 @@ int main()
                                 VDSE_IDENT_FOLDER,
                                 &pDummy->blockGroup,
                                 1 );
-   if ( errcode != VDS_OK ) 
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdseMemObjectStatus( &pDummy->memObject, NULL );
 

@@ -33,16 +33,15 @@ int main()
    vdseHashItem* pNewItem;
    int i;
    
-   pHash = initHashTest( expectedToPass,
-                         &context );
+   pHash = initHashTest( expectedToPass, &context );
    
    listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    /* A loop to 500 with our low initial size will provoke 4 resizes. */
-   for ( i = 0; i < 500; ++i )
-   {
+   for ( i = 0; i < 500; ++i ) {
       sprintf( key,  "My Key %d", i );
       sprintf( data, "My Data %d", i );
       listErr = vdseHashInsert( pHash,
@@ -52,13 +51,11 @@ int main()
                                 strlen(data),
                                 &pNewItem,
                                 &context );
-      if ( listErr != LIST_OK )
-      {
+      if ( listErr != LIST_OK ) {
          fprintf( stderr, "i = %d %d\n", i, pHash->enumResize );
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }
-      if ( pHash->enumResize == VDSE_HASH_TIME_TO_GROW )
-      {
+      if ( pHash->enumResize == VDSE_HASH_TIME_TO_GROW ) {
          listErr = vdseHashResize( pHash, NULL );
 
          /* We should never come here! */

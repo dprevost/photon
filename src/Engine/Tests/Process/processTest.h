@@ -58,22 +58,18 @@ vdseProcess * initProcessTest( bool                testIsExpectedToSucceed,
    pContext->pidLocker = getpid();
    
    errcode = vdseInitEngine();
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Abnormal error at line %d in processTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    vdscInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
-   if (ptr == NULL )
-   {
+   if (ptr == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in processTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    g_pBaseAddr = ptr;
@@ -82,30 +78,24 @@ vdseProcess * initProcessTest( bool                testIsExpectedToSucceed,
    
    /* Allocate memory for the tx object and initialize it */
    pTx = (vdseTx*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
-   if ( pTx == NULL )
-   {
+   if ( pTx == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in processTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    errcode = vdseTxInit( pTx, 1, pContext );
-   if ( errcode != 0 ) 
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Abnormal error at line %d in processTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the folder object */
    process = (vdseProcess *) vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
-   if ( process == NULL )
-   {
+   if ( process == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in processTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    

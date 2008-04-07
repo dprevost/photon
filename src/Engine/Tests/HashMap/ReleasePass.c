@@ -39,8 +39,9 @@ int main()
    errcode = vdseHashMapInit( pHashMap, 
                               0, 1, 0, &status, 4, 
                               strCheck("Map1"), NULL_OFFSET, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseHashMapInsert( pHashMap,
                                 (const void *) key,
@@ -48,35 +49,43 @@ int main()
                                 (const void *) data,
                                 7,
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseHashMapGet( pHashMap,
                              (const void *) key,
                              6,
                              &pItem,
                              20,
                              &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    txItemStatus = &pItem->txStatus;
-   if ( txItemStatus->usageCounter != 1 ) 
+   if ( txItemStatus->usageCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.usageCounter != 1 )
+   }
+   if ( status.usageCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    errcode = vdseHashMapRelease( pHashMap,
                                  pItem,
                                  &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( txItemStatus->usageCounter != 0 ) 
+   }
+   if ( txItemStatus->usageCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.usageCounter != 0 )
+   }
+   if ( status.usageCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pHashMap->nodeObject.txCounter != 1 )
+   }
+   if ( pHashMap->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    return 0;
 }
 

@@ -37,30 +37,34 @@ int main()
    errcode = vdseQueueInit( pQueue, 
                             0, 1, &txStatus, 4, 
                             strCheck("Map1"), NULL_OFFSET, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseQueueInsert( pQueue,
                               data,
                               8,
                               VDSE_QUEUE_FIRST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseQueueInsert( pQueue,
                               data,
                               8,
                               VDSE_QUEUE_FIRST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    vdseQueueStatus( pQueue, &status );
 
-   if ( status.numDataItem != 2 )
+   if ( status.numDataItem != 2 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    return 0;
 }
 

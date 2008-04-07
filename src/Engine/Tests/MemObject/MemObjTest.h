@@ -28,12 +28,14 @@
 VDSF_ENGINE_EXPORT
 vdscErrMsgHandle g_vdsErrorHandle;
 
-typedef struct vdstObjDummy
+struct vdstObjDummy
 {
    struct vdseMemObject memObject;
    /* Variable size struct - always put at the end */
    struct vdseBlockGroup blockGroup;
-} vdstObjDummy;
+};
+
+typedef struct vdstObjDummy vdstObjDummy;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -54,22 +56,18 @@ vdstObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
    memset( pContext, 0, sizeof(vdseSessionContext) );
    pContext->pidLocker = getpid();
    errcode = vdseInitEngine();
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Abnormal error at line %d in MemObjTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    vdscInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
-   if (ptr == NULL )
-   {
+   if (ptr == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in MemObjTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    g_pBaseAddr = ptr;
@@ -78,11 +76,9 @@ vdstObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
    
    /* Allocate memory for our dummy object + initialize it + blockGroup */
    pDummy = (vdstObjDummy*) vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 4, pContext );
-   if ( pDummy == NULL )
-   {
+   if ( pDummy == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in MemObjTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
 
@@ -92,3 +88,4 @@ vdstObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* MEM_OBJ_TEST_COMMON_H */
+

@@ -34,42 +34,48 @@ int main()
    initTest( expectedToPass, &context );
    
    ptr = malloc( allocatedLength );
-   if ( ptr == NULL )
+   if ( ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
    newBuff[0] = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 2, &context );
-   if ( newBuff[0] == NULL )
+   if ( newBuff[0] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    /* 6 blocks remaining */
    newBuff[1] = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 6, &context );
-   if ( newBuff[1] == NULL )
+   if ( newBuff[1] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    /* No blocks remaining */
    newBuff[2] = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 6, &context );
-   if ( newBuff[2] != NULL )
+   if ( newBuff[2] != NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdseFreeBlocks( pAlloc, VDSE_ALLOC_ANY, newBuff[0], 2, &context );
    vdseFreeBlocks( pAlloc, VDSE_ALLOC_ANY, newBuff[1], 6, &context );
    /* 8 blocks remaining */
    
-   for ( i = 0; i < 8; ++i )
-   {
+   for ( i = 0; i < 8; ++i ) {
       newBuff[i] = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, &context );
-      if ( newBuff[i] == NULL )
+      if ( newBuff[i] == NULL ) {
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+      }
    }
-   for ( i = 0; i < 8; i += 2 )
+   for ( i = 0; i < 8; i += 2 ) {
       vdseFreeBlocks( pAlloc, VDSE_ALLOC_ANY, newBuff[i], 1, &context );
+   }
    
    /* 4 blocks remaining - fragmented. This new alloc should fail! */
    newBuff[0] = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 2, &context );
-   if ( newBuff[0] != NULL )
+   if ( newBuff[0] != NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    return 0;
 }

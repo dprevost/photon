@@ -36,8 +36,7 @@ int main()
    vdseHashItem* pItem = NULL;
    size_t bucket;
    
-   pHash = initHashTest( expectedToPass,
-                         &context );
+   pHash = initHashTest( expectedToPass, &context );
    
    listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
    if ( listErr != LIST_OK ) {

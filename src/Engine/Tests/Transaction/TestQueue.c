@@ -44,9 +44,10 @@ int main()
    
    errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, strCheck("Test1"), 
                              1234, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseFolderInsertObject( pFolder,
                                      strCheckLow("test2"),
                                      strCheck("Test2"),
@@ -55,19 +56,22 @@ int main()
                                      1,
                                      0,
                                      &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseTxCommit( pTx, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseFolderGetObject( pFolder,
                                   strCheck("test2"),
                                   5,
                                   VDS_QUEUE,
                                   &item,
                                   &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    GET_PTR( pDescriptor, item.pHashItem->dataOffset, vdseObjectDescriptor );
    GET_PTR( pQueue, pDescriptor->offset, vdseQueue );
 
@@ -77,367 +81,445 @@ int main()
                               strlen(data1),
                               VDSE_QUEUE_LAST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueInsert( pQueue,
                               data2,
                               strlen(data2),
                               VDSE_QUEUE_LAST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueInsert( pQueue,
                               data3,
                               strlen(data3),
                               VDSE_QUEUE_LAST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
-   if ( pQueue->nodeObject.txCounter != 3 )
+   }
+   
+   if ( pQueue->nodeObject.txCounter != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 3 )
+   }
+   if ( pQueue->listOfElements.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    vdseTxRollback( pTx, &context );
-   if ( pQueue->nodeObject.txCounter != 0 )
+   if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 0 )
+   }
+   if ( pQueue->listOfElements.currentSize != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    /* Test 2 */
    errcode = vdseQueueInsert( pQueue,
                               data1,
                               strlen(data1),
                               VDSE_QUEUE_LAST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueInsert( pQueue,
                               data2,
                               strlen(data2),
                               VDSE_QUEUE_LAST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueInsert( pQueue,
                               data3,
                               strlen(data3),
                               VDSE_QUEUE_LAST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
-   if ( pQueue->nodeObject.txCounter != 3 )
+   }
+   
+   if ( pQueue->nodeObject.txCounter != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 3 )
+   }
+   if ( pQueue->listOfElements.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdseTxCommit( pTx, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pQueue->nodeObject.txCounter != 0 )
+   }
+   if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 3 )
+   }
+   if ( pQueue->listOfElements.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
                               (size_t) -1,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRelease( pQueue,
                                pQueueItem,
                                &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
                               (size_t) -1,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRelease( pQueue,
                                pQueueItem,
                                &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
                               (size_t) -1,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRelease( pQueue,
                                pQueueItem,
                                &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
-   if ( pQueue->nodeObject.txCounter != 3 )
+   }
+   
+   if ( pQueue->nodeObject.txCounter != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 3 )
+   }
+   if ( pQueue->listOfElements.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    vdseTxRollback( pTx, &context );
-   if ( pQueue->nodeObject.txCounter != 0 )
+   if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 3 )
+   }
+   if ( pQueue->listOfElements.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
                               (size_t) -1,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRelease( pQueue,
                                pQueueItem,
                                &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
                               (size_t) -1,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRelease( pQueue,
                                pQueueItem,
                                &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
                               (size_t) -1,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRelease( pQueue,
                                pQueueItem,
                                &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
-   if ( pQueue->nodeObject.txCounter != 3 )
+   }
+   
+   if ( pQueue->nodeObject.txCounter != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 3 )
+   }
+   if ( pQueue->listOfElements.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdseTxCommit( pTx, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pQueue->nodeObject.txCounter != 0 )
+   }
+   if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 0 )
+   }
+   if ( pQueue->listOfElements.currentSize != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    /* Test 3 */
    errcode = vdseQueueInsert( pQueue,
                               data1,
                               strlen(data1),
                               VDSE_QUEUE_LAST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueInsert( pQueue,
                               data2,
                               strlen(data2),
                               VDSE_QUEUE_LAST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueInsert( pQueue,
                               data3,
                               strlen(data3),
                               VDSE_QUEUE_LAST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseQueueGet( pQueue,
                            VDS_FIRST,
                            &pQueueItem,
                            (size_t) -1,
                            &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
-   if ( pQueue->nodeObject.txCounter != 3 )
+   }
+   
+   if ( pQueue->nodeObject.txCounter != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 3 )
+   }
+   if ( pQueue->listOfElements.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    vdseTxRollback( pTx, &context );
-   if ( pQueue->nodeObject.txCounter != 1 )
+   if ( pQueue->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 1 )
+   }
+   if ( pQueue->listOfElements.currentSize != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdseQueueRelease( pQueue,
                                pQueueItem,
                                &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pQueue->nodeObject.txCounter != 0 )
+   }
+   if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 0 )
+   }
+   if ( pQueue->listOfElements.currentSize != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    /* Test 4 */
    errcode = vdseQueueInsert( pQueue,
                               data1,
                               strlen(data1),
                               VDSE_QUEUE_LAST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueInsert( pQueue,
                               data2,
                               strlen(data2),
                               VDSE_QUEUE_LAST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueInsert( pQueue,
                               data3,
                               strlen(data3),
                               VDSE_QUEUE_LAST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseQueueGet( pQueue,
                            VDS_FIRST,
                            &pQueueItem,
                            (size_t) -1,
                            &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseTxCommit( pTx, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pQueue->nodeObject.txCounter != 0 )
+   }
+   if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 3 )
+   }
+   if ( pQueue->listOfElements.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 
    errcode = vdseQueueRelease( pQueue,
                                pQueueItem,
                                &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pQueue->nodeObject.txCounter != 0 )
+   }
+   if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 3 )
+   }
+   if ( pQueue->listOfElements.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
                               (size_t) -1,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRelease( pQueue,
                                pQueueItem,
                                &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
                               (size_t) -1,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRelease( pQueue,
                                pQueueItem,
                                &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
                               (size_t) -1,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    vdseTxRollback( pTx, &context );
-   if ( pQueue->nodeObject.txCounter != 0 )
+   if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 3 )
+   }
+   if ( pQueue->listOfElements.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdseQueueRelease( pQueue,
                                pQueueItem,
                                &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pQueue->nodeObject.txCounter != 0 )
+   }
+   if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 3 )
+   }
+   if ( pQueue->listOfElements.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
                               (size_t) -1,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRelease( pQueue,
                                pQueueItem,
                                &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
                               (size_t) -1,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRelease( pQueue,
                                pQueueItem,
                                &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseQueueRemove( pQueue,
                               &pQueueItem,
                               VDSE_QUEUE_FIRST,
                               (size_t) -1,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseTxCommit( pTx, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pQueue->nodeObject.txCounter != 1 )
+   }
+   if ( pQueue->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 1 )
+   }
+   if ( pQueue->listOfElements.currentSize != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdseQueueRelease( pQueue,
                                pQueueItem,
                                &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pQueue->nodeObject.txCounter != 0 )
+   }
+   if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pQueue->listOfElements.currentSize != 0 )
+   }
+   if ( pQueue->listOfElements.currentSize != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    return 0;
 }
 

@@ -37,8 +37,9 @@ int main()
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, strCheck("Test1"), 1234, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseFolderInsertObject( pFolder,
                                      strCheckLow("test2"),
@@ -48,9 +49,10 @@ int main()
                                      1,
                                      0,
                                      &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseFolderInsertObject( pFolder,
                                      strCheckLow("test3"),
                                      strCheck("Test3"),
@@ -59,37 +61,46 @@ int main()
                                      1,
                                      0,
                                      &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseFolderGetFirst( pFolder,
                                  &item,
                                  &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseFolderGetNext( pFolder,
                                 &item,
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    GET_PTR( pDescriptor, item.pHashItem->dataOffset, vdseObjectDescriptor );
    GET_PTR( pNode, pDescriptor->nodeOffset, vdseTreeNode);
    GET_PTR( txItemStatus, pNode->txStatusOffset, vdseTxStatus );
-   if ( txItemStatus->parentCounter != 1 ) 
+   if ( txItemStatus->parentCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.usageCounter != 1 )
+   }
+   if ( status.usageCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    errcode = vdseFolderRelease( pFolder, &item, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( txItemStatus->parentCounter != 0 ) 
+   }
+   if ( txItemStatus->parentCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.usageCounter != 0 )
+   }
+   if ( status.usageCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pFolder->nodeObject.txCounter != 2 )
+   }
+   if ( pFolder->nodeObject.txCounter != 2 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    return 0;
 }

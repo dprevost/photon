@@ -36,42 +36,50 @@ int main()
                                         strlen("Test1"),
                                         VDS_FOLDER,
                                         &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1/Test2",
                                         strlen("Test1/Test2"),
                                         VDS_FOLDER,
                                         &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1/Test3",
                                         strlen("Test1/Test3"),
                                         VDS_FOLDER,
                                         &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseTopFolderGetStatus( pTopFolder,
                                      "Test1",
                                      strlen("Test1"),
                                      &status,
                                      &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
-   if ( status.numBlocks != 1 ) 
+   }
+   
+   if ( status.numBlocks != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.numBlockGroup != 1 ) 
+   }
+   if ( status.numBlockGroup != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.freeBytes == 0 || status.freeBytes >=VDSE_BLOCK_SIZE ) 
+   }
+   if ( status.freeBytes == 0 || status.freeBytes >=VDSE_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.numDataItem != 2 ) 
+   }
+   if ( status.numDataItem != 2 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    return 0;
 }
 

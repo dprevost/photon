@@ -34,9 +34,10 @@ int main()
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, strCheck("Test1"), 1234, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   
+   }
+
    errcode = vdseFolderInsertObject( pFolder,
                                      strCheckLow("test2"),
                                      strCheck("Test2"),
@@ -45,26 +46,30 @@ int main()
                                      1,
                                      0,
                                      &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pFolder->nodeObject.txCounter != 1 )
+   }
+   if ( pFolder->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdseFolderGetObject( pFolder,
                                   strCheckLow("test2"),
                                   5,
                                   VDS_FOLDER,
                                   &folderItem,
                                   &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    vdseFolderRemoveObject( pFolder,
                            folderItem.pHashItem,
                            &context );
-   if ( pFolder->nodeObject.txCounter != 0 )
+   if ( pFolder->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    return 0;
 }
 

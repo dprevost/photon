@@ -40,8 +40,9 @@ int main()
    errcode = vdseHashMapInit( pHashMap, 
                               0, 1, 0, &status, 4, 
                               strCheck("Map1"), NULL_OFFSET, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseHashMapInsert( pHashMap,
                                 (const void *) key,
@@ -49,9 +50,10 @@ int main()
                                 (const void *) data1,
                                 strlen(data1),
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    /*
     * We use get to get to the hash item in order to commit it 
     * (we need to commit the insertion before replacing it)
@@ -63,38 +65,43 @@ int main()
                              20,
                              &context );
 
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    vdseHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
 
    errcode = vdseHashMapRelease( pHashMap,
                                  pItem,
                                  &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseHashMapReplace( pHashMap,
                                  (const void *) key,
                                  6,
                                  (const void *) data2,
                                  strlen(data2),
                                  &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseHashMapGet( pHashMap,
                              (const void *) key,
                              6,
                              &pItem,
                              20,
                              &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    GET_PTR( ptr, pItem->dataOffset, char );
-   if ( memcmp( data2, ptr, strlen(data2)) != 0 )
+   if ( memcmp( data2, ptr, strlen(data2)) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    return 0;
 }
 

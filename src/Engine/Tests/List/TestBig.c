@@ -64,7 +64,6 @@ int main()
    unsigned int randAction;
    enum ListErrors error;
    vdseSessionContext context;
-//   int jj, kk;
    
    int numInList;
    vdseLinkNode* pNode = NULL;
@@ -76,8 +75,7 @@ int main()
    /* Initialize the array of dummy structs */
    memset( dummy, 0, sizeof(dummyStruct)*MAX_ELEMENTS );
    
-   for ( i = 0; i < MAX_ELEMENTS; ++i )
-   {
+   for ( i = 0; i < MAX_ELEMENTS; ++i ) {
       dummy[i].dummy1 = i;
       vdseLinkNodeInit( &dummy[i].node );
    }
@@ -85,55 +83,47 @@ int main()
    /* Initialize the list */
    vdseLinkedListInit( &list );
 
-   for ( i = 0; i < INITIAL_LIST_SIZE; ++i )
-   {
+   for ( i = 0; i < INITIAL_LIST_SIZE; ++i ) {
       vdseLinkNodeInit( &dummy[i].node );
       vdseLinkedListPutLast( &list, &dummy[i].node );
       dummy[i].isInUse = 1;
    }
    numInList = INITIAL_LIST_SIZE;
 
-   if ( TestList( &list ) != 0 )
+   if ( TestList( &list ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    /* Initialize the random generator */
    mysrand( 0x130bc9 );
    
    /* Start the real work */
-   for ( i = 0; i < MAX_LOOP; ++i )
-   {
+   for ( i = 0; i < MAX_LOOP; ++i ) {
       randAction =  (int) (6.0*myrand()/(MY_RAND_MAX+1.0));
 
       randElement = (int) ((MAX_ELEMENTS*myrand()*1.0)/(MY_RAND_MAX+1.0));
       
       k = randElement;
       
-      switch ( randAction )
-      {
+      switch ( randAction ) {
       case 0:
          
          /* Find a random element to insert */
-         for ( j = randElement+1; j < MAX_ELEMENTS; ++j )
-         {
-            if ( dummy[j].isInUse == 0 )
-            {
+         for ( j = randElement+1; j < MAX_ELEMENTS; ++j ) {
+            if ( dummy[j].isInUse == 0 ) {
                k = j;
                break;
             }
          }
-         if ( k == randElement )
-         {
-            for ( j = 0; j < randElement; ++j )
-            {
-               if ( dummy[j].isInUse == 0 )
-               {
+         if ( k == randElement ) {
+            for ( j = 0; j < randElement; ++j ) {
+               if ( dummy[j].isInUse == 0 ) {
                   k = j;
                   break;
                }
             }
          }
-         if ( k == randElement )
-         {
+         if ( k == randElement ) {
             fprintf( stderr, "Case 0, did not found a free element\n" );
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
@@ -149,27 +139,21 @@ int main()
       case 1:
       case 5:         
          /* Find a random element to insert */
-         for ( j = randElement+1; j < MAX_ELEMENTS; ++j )
-         {
-            if ( dummy[j].isInUse == 0 )
-            {
+         for ( j = randElement+1; j < MAX_ELEMENTS; ++j ) {
+            if ( dummy[j].isInUse == 0 ) {
                k = j;
                break;
             }
-         }         
-         if ( k == randElement )
-         {
-            for ( j = 0; j < randElement; ++j )
-            {
-               if ( dummy[j].isInUse == 0 )
-               {
+         }
+         if ( k == randElement ) {
+            for ( j = 0; j < randElement; ++j ) {
+               if ( dummy[j].isInUse == 0 ) {
                   k = j;
                   break;
                }
             }
          }
-         if ( k == randElement )
-         {
+         if ( k == randElement ) {
             fprintf( stderr, "Case 1 or 5, did not found a free element\n" );
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
@@ -183,9 +167,10 @@ int main()
          
       case 2:
          error = vdseLinkedListGetFirst( &list, &pNode );
-         if ( error == LIST_INTERNAL_ERROR ) 
+         if ( error == LIST_INTERNAL_ERROR ) {
             ERROR_EXIT( expectedToPass, NULL, ; );
-
+         }
+         
          pDummy = (dummyStruct* )
             ((char*)pNode - offsetof(dummyStruct, node ));
          
@@ -195,9 +180,10 @@ int main()
          
       case 3:
          error = vdseLinkedListGetLast( &list, &pNode );
-         if ( error == LIST_INTERNAL_ERROR ) 
+         if ( error == LIST_INTERNAL_ERROR ) {
             ERROR_EXIT( expectedToPass, NULL, ; );
-
+         }
+         
          pDummy = (dummyStruct* )
             ((char*)pNode - offsetof(dummyStruct, node ));
 
@@ -207,27 +193,21 @@ int main()
          
       case 4:
          /* Find a random element to remove */
-         for ( j = randElement+1; j < MAX_ELEMENTS; ++j )
-         {
-            if ( dummy[j].isInUse == 1 )
-            {
+         for ( j = randElement+1; j < MAX_ELEMENTS; ++j ) {
+            if ( dummy[j].isInUse == 1 ) {
                k = j;
                break;
             }
          }
-         if ( k == randElement )
-         {
-            for ( j = 0; j < randElement; ++j )
-            {
-               if ( dummy[j].isInUse == 1 )
-               {
+         if ( k == randElement ) {
+            for ( j = 0; j < randElement; ++j ) {
+               if ( dummy[j].isInUse == 1 ) {
                   k = j;
                   break;
                }
             }
          }
-         if ( k == randElement )
-         {
+         if ( k == randElement ) {
             fprintf( stderr, "Case 4, did not found a used element\n" );
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
@@ -240,8 +220,7 @@ int main()
          
       } /* End switch statement */
 
-      if ( (size_t)numInList != list.currentSize )
-      {
+      if ( (size_t)numInList != list.currentSize ) {
          fprintf( stderr, "Discrepency in list size (%d "VDSF_SIZE_T_FORMAT
                   "), action = %d\n", 
                   numInList, list.currentSize, randAction%6 );
@@ -249,38 +228,38 @@ int main()
       }
 
       /* Test the iterators */
-      if ( ((i+1)%GET_NEXT_LOOP ) == 0 )
-      {
+      if ( ((i+1)%GET_NEXT_LOOP ) == 0 ) {
          error = vdseLinkedListPeakFirst( &list, &pNode );
-         if ( error == LIST_INTERNAL_ERROR ) 
+         if ( error == LIST_INTERNAL_ERROR ) {
             ERROR_EXIT( expectedToPass, NULL, ; );
+         }
          
-         while ( error == LIST_OK )
-         {
+         while ( error == LIST_OK ) {
             error = vdseLinkedListPeakNext( &list, pNode, &pNode );
-            if ( error == LIST_INTERNAL_ERROR ) 
+            if ( error == LIST_INTERNAL_ERROR ) {
                ERROR_EXIT( expectedToPass, NULL, ; );
+            }
          }
 
          error = vdseLinkedListPeakLast( &list, &pNode );
-         if ( error == LIST_INTERNAL_ERROR ) 
+         if ( error == LIST_INTERNAL_ERROR ) {
             ERROR_EXIT( expectedToPass, NULL, ; );
+         }
          
-         while ( error == LIST_OK )
-         {
+         while ( error == LIST_OK ) {
             error = vdseLinkedListPeakPrevious( &list, 
                                                 pNode, 
                                                 &pNode );
-            if ( error == LIST_INTERNAL_ERROR ) 
+            if ( error == LIST_INTERNAL_ERROR ) {
                ERROR_EXIT( expectedToPass, NULL, ; );
+            }
          }
       } /* End of if ((i+1)%GET_NEXT_LOOP ) == 0 */
 
    } /* End of for loop */
 
    errcode = TestList( &list );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "TestList failed, error = %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

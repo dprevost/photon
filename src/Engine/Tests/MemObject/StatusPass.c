@@ -36,18 +36,22 @@ int main()
                                 VDSE_IDENT_FOLDER,
                                 &pDummy->blockGroup,
                                 1 );
-   if ( errcode != VDS_OK ) 
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdseMemObjectStatus( &pDummy->memObject, &status );
 
-   if ( status.numBlocks != 1 ) 
+   if ( status.numBlocks != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.numBlockGroup != 1 ) 
+   }
+   if ( status.numBlockGroup != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( status.freeBytes == 0 || status.freeBytes >=VDSE_BLOCK_SIZE ) 
+   }
+   if ( status.freeBytes == 0 || status.freeBytes >=VDSE_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    return 0;
 }
 

@@ -39,8 +39,9 @@ int main()
    errcode = vdseHashMapInit( pHashMap, 
                               0, 1, 0, &status, 4, 
                               strCheck("Map1"), NULL_OFFSET, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseHashMapInsert( pHashMap,
                                 (const void *) key,
@@ -48,9 +49,10 @@ int main()
                                 (const void *) data1,
                                 strlen(data1),
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseHashMapReplace( pHashMap,
                                  (const void *) key,
                                  6,

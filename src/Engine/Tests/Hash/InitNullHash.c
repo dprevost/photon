@@ -29,8 +29,7 @@ int main()
    vdseHash* pHash;
    enum ListErrors listErr;
    
-   pHash = initHashTest( expectedToPass,
-                         &context );
+   pHash = initHashTest( expectedToPass, &context );
    
    listErr = vdseHashInit( NULL, g_memObjOffset, 100, &context );
       

@@ -40,12 +40,15 @@ int main()
    vdseLinkedListPutLast( &list, &node2 );
    
    error = vdseLinkedListPeakPrevious( &list, &node2, &pNode );
-   if ( error != LIST_OK )
+   if ( error != LIST_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pNode != &node1 ) 
+   }
+   if ( pNode != &node1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( list.currentSize != 2 )
+   }
+   if ( list.currentSize != 2 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdseLinkedListFini( &list );
 

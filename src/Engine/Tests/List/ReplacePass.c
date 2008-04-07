@@ -44,59 +44,68 @@ int main()
 
    vdseLinkedListReplaceItem( &list, &oldNode, &newNode );
 
-   if ( list.currentSize != 1 ) 
+   if ( list.currentSize != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdseLinkedListPeakFirst( &list, &pDummy );
-   if ( pDummy != &newNode ) 
+   if ( pDummy != &newNode ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
-   if ( TestList( &list ) != 0 )
+   if ( TestList( &list ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    /* Test 2 - replace at tail */
    vdseLinkedListPutFirst( &list, &node1 );
    vdseLinkNodeInit( &oldNode );
    vdseLinkedListReplaceItem( &list, &newNode, &oldNode );
 
-   if ( list.currentSize != 2 )
+   if ( list.currentSize != 2 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdseLinkedListPeakLast( &list, &pDummy );
-   if ( pDummy != &oldNode )
+   if ( pDummy != &oldNode ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   
-   if ( TestList( &list ) != 0 )
+   }
+   if ( TestList( &list ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    /* Test 3 - replace in the middle */
    vdseLinkedListPutLast( &list, &node2 );
    vdseLinkNodeInit( &newNode );
    vdseLinkedListReplaceItem( &list, &oldNode, &newNode );
 
-   if ( list.currentSize != 3 )
+   if ( list.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdseLinkedListPeakNext( &list, &node1, &pDummy );
-   if ( pDummy != &newNode )
+   if ( pDummy != &newNode ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( TestList( &list ) != 0 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
-   if ( TestList( &list ) != 0 )
-      ERROR_EXIT( expectedToPass, NULL, ; );
-
    /* Test 4 - replace at head */
    vdseLinkNodeInit( &oldNode );
    vdseLinkedListReplaceItem( &list, &node1, &oldNode );
 
-   if ( list.currentSize != 3 )
+   if ( list.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdseLinkedListPeakFirst( &list, &pDummy );
-   if ( pDummy != &oldNode )
+   if ( pDummy != &oldNode ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   
-   if ( TestList( &list ) != 0 )
+   }
+   if ( TestList( &list ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdseLinkedListFini( &list );
    

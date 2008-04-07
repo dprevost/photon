@@ -41,8 +41,9 @@ int main()
    vdseLinkedListPutLast( &list, &node2 );
 
    error = vdseLinkedListPeakLast( &list, &pNode );
-   if ( error != LIST_OK )
+   if ( error != LIST_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    pNode->previousOffset = NULL_OFFSET;
    

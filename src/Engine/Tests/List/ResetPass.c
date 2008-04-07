@@ -36,15 +36,18 @@ int main()
    
    vdseLinkedListReset( &list );
 
-   if ( list.initialized != VDSE_LIST_SIGNATURE )
+   if ( list.initialized != VDSE_LIST_SIGNATURE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( list.currentSize != 0 )
+   }
+   if ( list.currentSize != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    error = vdseLinkedListGetFirst( &list, &pNode );
-   if ( error != LIST_EMPTY ) 
+   if ( error != LIST_EMPTY ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    vdseLinkedListFini( &list );
 
    return 0;

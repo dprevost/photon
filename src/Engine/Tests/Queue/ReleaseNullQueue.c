@@ -38,45 +38,52 @@ int main()
    errcode = vdseQueueInit( pQueue, 
                             0, 1, &status, 4, 
                             strCheck("Map1"), NULL_OFFSET, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseQueueInsert( pQueue,
                               data,
                               8,
                               VDSE_QUEUE_FIRST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseQueueInsert( pQueue,
                               data,
                               6,
                               VDSE_QUEUE_LAST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseQueueGet( pQueue,
                            VDS_FIRST,
                            &pItem,
                            20,
                            &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pItem->dataLength != 8 )
+   }
+   if ( pItem->dataLength != 8 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 
    errcode = vdseQueueGet( pQueue,
                            VDS_NEXT,
                            &pItem,
                            20,
                            &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pItem->dataLength != 6 )
+   }
+   if ( pItem->dataLength != 6 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdseQueueRelease( NULL,
                                pItem,
                                &context );

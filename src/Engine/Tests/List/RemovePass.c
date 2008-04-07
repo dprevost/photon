@@ -38,8 +38,9 @@ int main()
    
    vdseLinkedListRemoveItem( &list, &node );
 
-   if ( list.currentSize != 0 )
+   if ( list.currentSize != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdseLinkedListFini( &list );
 

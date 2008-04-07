@@ -38,8 +38,9 @@ int main()
                                 VDSE_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
-   if ( errcode != VDS_OK )
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    buff[0] = vdseMalloc( pObj, 0, &context );
 

@@ -32,8 +32,7 @@ int main()
    char* data1 = "My Data 1";
    vdseHashItem* pNewItem;
    
-   pHash = initHashTest( expectedToPass,
-                         &context );
+   pHash = initHashTest( expectedToPass, &context );
    
    listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
    if ( listErr != LIST_OK ) {

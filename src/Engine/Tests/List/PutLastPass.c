@@ -35,9 +35,10 @@ int main()
    vdseLinkedListInit( &list );
 
    vdseLinkedListPutLast( &list, &node );
-   if ( list.currentSize != 1 )
+   if ( list.currentSize != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    vdseLinkedListFini( &list );
 
    return 0;

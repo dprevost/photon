@@ -36,9 +36,10 @@ int main()
                                         strlen("Test1"),
                                         VDS_FOLDER,
                                         &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseTopFolderGetStatus( pTopFolder,
                                      "Test1",
                                      strlen("Test1"),

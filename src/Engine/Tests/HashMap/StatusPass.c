@@ -40,8 +40,9 @@ int main()
    errcode = vdseHashMapInit( pHashMap, 
                               0, 1, 0, &txStatus, 4, 
                               strCheck("Map1"), NULL_OFFSET, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseHashMapInsert( pHashMap,
                                 (const void *) key1,
@@ -49,32 +50,36 @@ int main()
                                 (const void *) data,
                                 7,
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseHashMapInsert( pHashMap,
                                 (const void *) key2,
                                 7,
                                 (const void *) data,
                                 7,
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseHashMapInsert( pHashMap,
                                 (const void *) key3,
                                 7,
                                 (const void *) data,
                                 7,
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    vdseHashMapStatus( pHashMap, &status );
 
-   if ( status.numDataItem != 3 )
+   if ( status.numDataItem != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    return 0;
 }
 
