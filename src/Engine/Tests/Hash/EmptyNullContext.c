@@ -34,12 +34,12 @@ int main()
    char* data2 = "My Data 2";
    vdseHashItem* pNewItem;
 
-   pHash = initHashTest( expectedToPass,
-                         &context );
+   pHash = initHashTest( expectedToPass, &context );
    
    listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    listErr = vdseHashInsert( pHash,
                              (unsigned char*)key1,
@@ -48,9 +48,10 @@ int main()
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    listErr = vdseHashInsert( pHash,
                              (unsigned char*)key2,
                              strlen(key2),
@@ -58,9 +59,10 @@ int main()
                              strlen(data2),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    vdseHashEmpty( pHash, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

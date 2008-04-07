@@ -31,8 +31,9 @@ int main()
    initTest( expectedToPass, &context );
 
    ptr = malloc( VDSE_BLOCK_SIZE*10 );
-   if (ptr == NULL )
+   if (ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    g_pBaseAddr = ptr;
    
    /* This "100" (non-zero) offset should mark this block group 
@@ -46,18 +47,24 @@ int main()
                       VDSE_IDENT_QUEUE );
    vdseBlockGroupFini( pGroup );
    
-   if ( pGroup->node.nextOffset != NULL_OFFSET )
+   if ( pGroup->node.nextOffset != NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pGroup->node.previousOffset != NULL_OFFSET )
+   }
+   if ( pGroup->node.previousOffset != NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pGroup->numBlocks != 0 )
+   }
+   if ( pGroup->numBlocks != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pGroup->maxFreeBytes != 0 )
+   }
+   if ( pGroup->maxFreeBytes != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if (pGroup->freeList.initialized != 0 )
+   }
+   if (pGroup->freeList.initialized != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pGroup->bitmap.baseAddressOffset != NULL_OFFSET )
+   }
+   if ( pGroup->bitmap.baseAddressOffset != NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    return 0;
 }

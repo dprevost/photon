@@ -35,12 +35,12 @@ int main()
    vdseHashItem* pNewItem;
    size_t bucketFirst = (size_t) -1, bucketNext = (size_t) -1;
    
-   pHash = initHashTest( expectedToPass,
-                         &context );
+   pHash = initHashTest( expectedToPass, &context );
    
    listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    listErr = vdseHashInsert( pHash,
                              (unsigned char*)key1,
@@ -49,9 +49,10 @@ int main()
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    listErr = vdseHashInsert( pHash,
                              (unsigned char*)key2,
                              strlen(key2),
@@ -59,36 +60,42 @@ int main()
                              strlen(data2),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    listErr = vdseHashGetFirst( pHash,
                                &bucketFirst,
                                &offsetFirstItem );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    listErr = vdseHashGetNext( pHash,
                               bucketFirst,
                               offsetFirstItem,
                               &bucketNext,
                               &offsetNextItem );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( bucketNext == (size_t) -1 )
+   }
+   if ( bucketNext == (size_t) -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( offsetNextItem == NULL_OFFSET )
+   }
+   if ( offsetNextItem == NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    /* Only 2 items - should fail gracefully ! */
    listErr = vdseHashGetNext( pHash,
                               bucketNext,
                               offsetNextItem,
                               &bucketNext,
                               &offsetNextItem );
-   if ( listErr != LIST_END_OF_LIST )
+   if ( listErr != LIST_END_OF_LIST ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    return 0;
 }
 

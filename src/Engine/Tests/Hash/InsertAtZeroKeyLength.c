@@ -37,8 +37,9 @@ int main()
                          &context );
    
    listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    /*
     * We first insert an item and retrieve to get the exact bucket.
@@ -52,17 +53,19 @@ int main()
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    listErr = vdseHashGet( pHash,
                           (unsigned char*)key,
                           strlen(key),
                           &pNewItem,
                           &context,
                           &bucket );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    listErr = vdseHashInsertAt( pHash,
                                bucket,
                                (unsigned char*)key,

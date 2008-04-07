@@ -40,8 +40,9 @@ int main()
                          &context );
    
    listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    listErr = vdseHashInsert( pHash,
                              (unsigned char*)key1,
@@ -50,9 +51,10 @@ int main()
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    listErr = vdseHashInsert( pHash,
                              (unsigned char*)key2,
                              strlen(key2),
@@ -60,33 +62,39 @@ int main()
                              strlen(data2),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    listErr = vdseHashGet( pHash,
                           (unsigned char*)key2,
                           strlen(key2),
                           &pItem,
                           &context,
                           &bucket );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    GET_PTR( pData, pItem->dataOffset, unsigned char );
-   if ( pData == NULL )
+   if ( pData == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pItem->dataLength == 0 )
+   }
+   if ( pItem->dataLength == 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( bucket == (size_t) -1 )
+   }
+   if ( bucket == (size_t) -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    listErr = vdseHashGet( pHash,
                           (unsigned char*)"My Key 3",
                           strlen("My Key 3"),
                           &pItem,
                           &context,
                           &bucket );
-   if ( listErr != LIST_KEY_NOT_FOUND )
+   if ( listErr != LIST_KEY_NOT_FOUND ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    return 0;
 }

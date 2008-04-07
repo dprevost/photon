@@ -32,7 +32,7 @@ int main()
 
    errcode = vdseProcessInit( process, 12345, NULL );
 
-   ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   ERROR_EXIT( expectedToPass, NULL, ; );
 #else
    return 1;
 #endif

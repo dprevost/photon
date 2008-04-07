@@ -58,22 +58,18 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
    pContext->pidLocker = getpid();
    
    errcode = vdseInitEngine();
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    vdscInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
-   if (ptr == NULL )
-   {
+   if (ptr == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    g_pBaseAddr = ptr;
@@ -82,30 +78,24 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
    
    /* Allocate memory for the tx object and initialize it */
    pTx = (vdseTx*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
-   if ( pTx == NULL )
-   {
+   if ( pTx == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    errcode = vdseTxInit( pTx, 1, pContext );
-   if ( errcode != 0 ) 
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the folder object */
    pFolder = (vdseFolder*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
-   if ( pFolder == NULL )
-   {
+   if ( pFolder == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    
@@ -134,8 +124,7 @@ wchar_t* strCheck( const char* str )
    mbstate_t ps;
    size_t len;
    
-   if ( wcTemp != NULL )
-      free( wcTemp );
+   if ( wcTemp != NULL ) free( wcTemp );
    
    len = mbsrtowcs( NULL, &str, 0, &ps );
    wcTemp = (wchar_t*)malloc( (len+1)*sizeof(wchar_t) );
@@ -150,8 +139,7 @@ wchar_t* strCheckLow( const char* str )
    mbstate_t ps;
    size_t len;
    
-   if ( wcTempLowcase != NULL )
-      free( wcTempLowcase );
+   if ( wcTempLowcase != NULL ) free( wcTempLowcase );
 
    len = mbsrtowcs( NULL, &str, 0, &ps );
    wcTempLowcase = (wchar_t*)malloc( (len+1)*sizeof(wchar_t) );
@@ -188,11 +176,9 @@ vdseFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
                                 VDSE_IDENT_FOLDER,
                                 &pFolder->blockGroup,
                                 1 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
 
@@ -209,11 +195,9 @@ vdseFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
                            SET_OFFSET(&pFolder->memObject),
                            25, 
                            pContext );
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }   
 

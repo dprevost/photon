@@ -31,8 +31,9 @@ int main()
    pTx = initTxTest( expectedToPass, &context );
 
    errcode = vdseTxInit( pTx, 1, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseTxAddOps( pTx,
                            VDSE_TX_ADD_DATA,
@@ -41,9 +42,10 @@ int main()
                            childOffset,
                            VDS_FOLDER,
                            &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    return 0;
 }
 

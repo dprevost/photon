@@ -41,8 +41,9 @@ int main()
                              strCheck("Test1"),
                              1234,
                              &context );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseFolderInsertObject( pFolder,
                                      strCheckLow("test2"),
@@ -52,40 +53,48 @@ int main()
                                      1,
                                      0,
                                      &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseFolderDeleteObject( pFolder,
                                      strCheckLow("test2"),
                                      5,
                                      &context );
-   if ( errcode != -1 ) 
+   if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( vdscGetLastError( &context.errorHandler ) != VDS_OBJECT_IS_IN_USE )
+   }
+   if ( vdscGetLastError( &context.errorHandler ) != VDS_OBJECT_IS_IN_USE ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseTxCommit( (vdseTx *)context.pTransaction, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseFolderDeleteObject( pFolder,
                                      strCheckLow("test2"),
                                      5,
                                      &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pFolder->nodeObject.txCounter != 1 )
+   }
+   if ( pFolder->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    errcode = vdseFolderDeleteObject( pFolder,
                                      strCheck("test3"),
                                      5,
                                      &context );
-   if ( errcode != -1 ) 
+   if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( vdscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT )
+   }
+   if ( vdscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    vdseFolderFini( pFolder, &context );
    
    return 0;

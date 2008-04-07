@@ -33,8 +33,9 @@ int main()
    pSession = initSessionTest( expectedToPass, &context );
 
    errcode = vdseSessionInit( pSession, pApiObject, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    objOffset = SET_OFFSET( pSession ); /* Dummy offset */
    
@@ -44,9 +45,10 @@ int main()
                                 pApiObject,
                                 &pObject,
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-                       
+   }
+   
    return 0;
 }
 

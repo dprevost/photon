@@ -31,8 +31,9 @@ int main()
    pSession = initSessionTest( expectedToPass, &context );
 
    errcode = vdseSessionInit( pSession, pApiSession, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    vdseSessionFini( pSession, &context );
    

@@ -35,8 +35,9 @@ int main()
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, strCheck("Test1"), 1234, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseFolderInsertObject( pFolder,
                                      strCheckLow("test2"),
@@ -46,9 +47,10 @@ int main()
                                      1,
                                      0,
                                      &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseFolderGetObject( pFolder,
                                   NULL,
                                   5,

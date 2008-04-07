@@ -32,37 +32,41 @@ int main()
    process = initProcessTest( expectedToPass, &context );
 
    errcode = vdseProcessInit( process, 12345, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseProcessAddSession( process,
                                     pApiSession,
                                     &pSession1,
                                     &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseProcessAddSession( process,
                                     pApiSession,
                                     &pSession1,
                                     &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseProcessGetFirstSession( process,
                                          &pSession1,
                                          &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseProcessGetNextSession( process,
                                         pSession1,
                                         &pSession2,
                                         &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pSession1 == pSession2 )
-      return -1;
+   }
+   if ( pSession1 == pSession2 ) return -1;
    
    vdseProcessFini( process, &context );
                                  

@@ -34,18 +34,20 @@ int main()
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, strCheck("Test1"), 1234, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseFolderGetFirst( pFolder,
                                  &item,
                                  &context );
-   if ( errcode == 0 )
+   if ( errcode == 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-      
-   if ( vdscGetLastError( &context.errorHandler ) != VDS_IS_EMPTY ) 
+   }
+   if ( vdscGetLastError( &context.errorHandler ) != VDS_IS_EMPTY ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    return 0;
 }
 

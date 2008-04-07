@@ -31,9 +31,10 @@ int main()
    pTx = initTxTest( expectedToPass, &context );
 
    errcode = vdseTxInit( pTx, 1, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    vdseTxCommit( pTx, NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );

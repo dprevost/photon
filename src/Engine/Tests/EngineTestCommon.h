@@ -41,10 +41,8 @@ void initTest( bool testIsExpectedToSucceed, vdseSessionContext* pContext )
    pContext->pidLocker = getpid();
    
    errcode = vdseInitEngine();
-   if ( errcode != 0 )
-   {
-      if ( testIsExpectedToSucceed )
-         exit(1);
+   if ( errcode != 0 ) {
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    

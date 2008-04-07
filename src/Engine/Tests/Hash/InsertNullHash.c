@@ -36,8 +36,9 @@ int main()
                          &context );
    
    listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    listErr = vdseHashInsert( NULL,
                              (unsigned char*)key,

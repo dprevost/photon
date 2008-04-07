@@ -40,8 +40,9 @@ int main()
    errcode = vdseHashMapInit( pHashMap, 
                               0, 1, 0, &status, 4, 
                               strCheck("Map1"), NULL_OFFSET, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseHashMapInsert( pHashMap,
                                 (const void *) key1,
@@ -49,36 +50,40 @@ int main()
                                 (const void *) data1,
                                 8,
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseHashMapInsert( pHashMap,
                                 (const void *) key2,
                                 7,
                                 (const void *) data2,
                                 8,
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
    errcode = vdseHashMapGetFirst( pHashMap,
                                   &item,
                                   7,
                                   20,
                                   &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseHashMapGetNext( pHashMap,
                                  &item,
                                  6,
                                  20,
                                  &context );
-   if ( errcode == 0 ) 
+   if ( errcode == 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    errcode = vdscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_INVALID_LENGTH )
+   if ( errcode != VDS_INVALID_LENGTH ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    return 0;
 }
 

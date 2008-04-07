@@ -34,27 +34,31 @@ int main()
                                         strlen("Test1"),
                                         VDS_FOLDER,
                                         &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1/Test2",
                                         strlen("Test1/Test2"),
                                         VDS_FOLDER,
                                         &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test3/Test2",
                                         strlen("Test3/Test2"),
                                         VDS_FOLDER,
                                         &context );
-   if ( errcode != -1 ) 
+   if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    errcode = vdscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_NO_SUCH_FOLDER ) 
+   if ( errcode != VDS_NO_SUCH_FOLDER ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    return 0;
 }

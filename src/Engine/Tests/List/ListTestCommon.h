@@ -40,15 +40,16 @@ void InitMem()
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Used by the regression tests (ListTestSmall and ListTestBig) */
-typedef struct dummyStruct
+struct dummyStruct
 {
    int dummy1;
    char dummy2[7];
    vdseLinkNode node;
    int isInUse;
    char dummy3[3];
-   
-} dummyStruct;
+};
+
+typedef struct dummyStruct dummyStruct;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -58,11 +59,9 @@ int TestList( vdseLinkedList* pList )
    vdseLinkNode* pItem = (vdseLinkNode*) &pList->head;
 
    /* Check the chain going forward. */ 
-   while ( testSize > 0 )
-   {
+   while ( testSize > 0 ) {
       GET_PTR( pItem, pItem->nextOffset, vdseLinkNode );
-      if ( pItem == &pList->head )
-      {
+      if ( pItem == &pList->head ) {
          fprintf( stderr, "Error 1\n" );
          return -1;
       }
@@ -70,8 +69,7 @@ int TestList( vdseLinkedList* pList )
       testSize--;
    }
    GET_PTR( pItem, pItem->nextOffset, vdseLinkNode );
-   if ( pItem != &pList->head )
-   {
+   if ( pItem != &pList->head ) {
       fprintf( stderr, "Error 2\n" );
       return -2;
    }   
@@ -80,19 +78,16 @@ int TestList( vdseLinkedList* pList )
    testSize = pList->currentSize;
    pItem =  (vdseLinkNode*) &pList->head; 
 
-   while ( testSize > 0 )
-   {
+   while ( testSize > 0 ) {
       GET_PTR( pItem, pItem->previousOffset, vdseLinkNode );
-      if ( pItem == &pList->head )
-      {
+      if ( pItem == &pList->head ) {
          fprintf( stderr, "Error 3\n" );
          return -3;
       }
       testSize--;
    }
    GET_PTR( pItem, pItem->previousOffset, vdseLinkNode );
-   if ( pItem != &pList->head )
-   {
+   if ( pItem != &pList->head ) {
       fprintf( stderr, "Error 4\n" );
       return -4;
    }   
@@ -128,8 +123,7 @@ void DumpList( vdseLinkedList* pList )
    size_t testSize = pList->currentSize;
    vdseLinkNode* pItem = &pList->head;
 
-   while ( testSize > 0 )
-   {
+   while ( testSize > 0 ) {
       GET_PTR( pItem, pItem->nextOffset, vdseLinkNode );
       fprintf( stderr, VDSF_SIZE_T_FORMAT" = %p %p %p %p \n",
                testSize,
@@ -144,3 +138,4 @@ void DumpList( vdseLinkedList* pList )
 #endif /* LIST_TEST_COMMON_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

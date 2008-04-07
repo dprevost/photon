@@ -41,8 +41,9 @@ int main()
    errcode = vdseHashMapInit( pHashMap, 
                               0, 1, 0, &status, 4, 
                               strCheck("Map1"), NULL_OFFSET, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseHashMapInsert( pHashMap,
                                 (const void *) key1,
@@ -50,24 +51,26 @@ int main()
                                 (const void *) data1,
                                 8,
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = vdseHashMapInsert( pHashMap,
                                 (const void *) key2,
                                 7,
                                 (const void *) data2,
                                 8,
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
    errcode = vdseHashMapGetFirst( pHashMap,
                                   &item,
                                   7,
                                   20,
                                   &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    GET_PTR( ptr1, item.pHashItem->dataOffset, char );
 
    errcode = vdseHashMapGetNext( pHashMap,
@@ -75,23 +78,26 @@ int main()
                                  7,
                                  20,
                                  &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   GET_PTR( ptr2, item.pHashItem->dataOffset, char );
-   if ( ptr1 == ptr2 )
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   
-   if (memcmp( data1, ptr1, 8 ) == 0 )
-   {
-      if (memcmp( data2, ptr2, 8 ) != 0 )
-         ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   else
-   {
-      if (memcmp( data1, ptr2, 8 ) != 0 )
+   GET_PTR( ptr2, item.pHashItem->dataOffset, char );
+   if ( ptr1 == ptr2 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   if (memcmp( data1, ptr1, 8 ) == 0 ) {
+      if (memcmp( data2, ptr2, 8 ) != 0 ) {
          ERROR_EXIT( expectedToPass, NULL, ; );
-      if (memcmp( data2, ptr1, 8 ) != 0 )
+      }
+   }
+   else {
+      if (memcmp( data1, ptr2, 8 ) != 0 ) {
          ERROR_EXIT( expectedToPass, NULL, ; );
+      }
+      if (memcmp( data2, ptr1, 8 ) != 0 ) {
+         ERROR_EXIT( expectedToPass, NULL, ; );
+      }
    }
    
    return 0;

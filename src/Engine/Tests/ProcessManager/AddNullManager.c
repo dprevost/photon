@@ -32,8 +32,9 @@ int main()
    pManager = initProcMgrTest( expectedToPass, &context );
 
    errcode = vdseProcMgrInit( pManager, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseProcMgrAddProcess( NULL, 
                                     12345, 

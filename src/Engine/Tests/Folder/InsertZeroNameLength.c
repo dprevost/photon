@@ -42,8 +42,9 @@ int main()
                              strCheck("Test1"),
                              1234,
                              &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseFolderInsertObject( pFolder,
                                      strCheckLow("test2"),

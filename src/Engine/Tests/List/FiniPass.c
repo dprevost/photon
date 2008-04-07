@@ -34,10 +34,12 @@ int main()
    
    vdseLinkedListFini( &list );
 
-   if ( list.initialized != 0 )
+   if ( list.initialized != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( list.currentSize != 0 )
+   }
+   if ( list.currentSize != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    return 0;
 }

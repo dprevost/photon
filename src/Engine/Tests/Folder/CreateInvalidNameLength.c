@@ -39,14 +39,17 @@ int main()
                                         VDS_FOLDER,
                                         &context );
 #if VDS_SUPPORT_i18n
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
 #else
-   if ( errcode != -1 )
+   if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    errcode = vdscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) 
+   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
 #endif
 
    errcode = vdseTopFolderCreateObject( pTopFolder,
@@ -55,14 +58,17 @@ int main()
                                         VDS_FOLDER,
                                         &context );
 #if VDS_SUPPORT_i18n
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
 #else
-   if ( errcode != -1 )
+   if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    errcode = vdscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) 
+   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
 #endif
 
    errcode = vdseTopFolderCreateObject( pTopFolder,
@@ -70,12 +76,14 @@ int main()
                                         VDS_MAX_FULL_NAME_LENGTH+1,
                                         VDS_FOLDER,
                                         &context );
-   if ( errcode != -1 )
+   if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    errcode = vdscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_OBJECT_NAME_TOO_LONG ) 
+   if ( errcode != VDS_OBJECT_NAME_TOO_LONG ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    memset( name, 0, VDS_MAX_FULL_NAME_LENGTH+100 );
    memset( name, 't', VDS_MAX_NAME_LENGTH+1 );
 
@@ -84,12 +92,14 @@ int main()
                                         VDS_MAX_NAME_LENGTH+1,
                                         VDS_FOLDER,
                                         &context );
-   if ( errcode != -1 )
+   if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    errcode = vdscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_OBJECT_NAME_TOO_LONG ) 
+   if ( errcode != VDS_OBJECT_NAME_TOO_LONG ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    return 0;
 }
 

@@ -31,13 +31,15 @@ vdscErrMsgHandle g_vdsErrorHandle;
 
 ptrdiff_t g_memObjOffset = NULL_OFFSET;
 
-typedef struct vdstObjDummy
+struct vdstObjDummy
 {
    struct vdseMemObject memObject;
    struct vdseHash      hashObj;
    /* Variable size struct - always put at the end */
    struct vdseBlockGroup blockGroup;
-} vdstObjDummy;
+};
+
+typedef struct vdstObjDummy vdstObjDummy;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -61,11 +63,9 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
    size_t allocatedLength = VDSE_BLOCK_SIZE * 10;
    
    errcode = vdseInitEngine();
-   if ( errcode != 0 )
-   {
+   if ( errcode != 0 ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    memset(pContext, 0, sizeof(vdseSessionContext) );
@@ -74,11 +74,9 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
-   if (ptr == NULL )
-   {
+   if (ptr == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    g_pBaseAddr = ptr;
@@ -87,22 +85,18 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
    
    /* Allocate memory for our dummy object + initialize it + blockGroup */
    pDummy = (vdstObjDummy*) vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 2, pContext );
-   if ( pDummy == NULL )
-   {
+   if ( pDummy == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    errcode = vdseMemObjectInit( &pDummy->memObject, 
                                 VDSE_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 2 );
-   if ( errcode != VDS_OK )
-   {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed )
-         exit(1);
+      if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    g_memObjOffset = SET_OFFSET(&pDummy->memObject);

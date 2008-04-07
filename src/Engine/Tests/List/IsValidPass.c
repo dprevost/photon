@@ -39,11 +39,15 @@ int main()
    vdseLinkedListPutLast( &list, &node );
    
    valid = vdseLinkedListIsValid( &list, &node );
-   if ( ! valid ) ERROR_EXIT( expectedToPass, NULL, ; );
-
+   if ( ! valid ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
    valid = vdseLinkedListIsValid( &list, &node2 );
-   if ( valid ) ERROR_EXIT( expectedToPass, NULL, ; );
-
+   if ( valid ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
    vdseLinkedListFini( &list );
 
    return 0;

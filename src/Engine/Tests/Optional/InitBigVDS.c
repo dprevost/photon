@@ -51,33 +51,34 @@ int main()
    allocatedLength = 8*VDSE_BLOCK_SIZE*VDSE_BLOCK_SIZE;
 
    ptr = malloc( allocatedLength );
-   if ( ptr == NULL )
+   if ( ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
    
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    GET_PTR( pBitmap, pAlloc->bitmapOffset, vdseMemBitmap );
-   if ( pBitmap->lengthInBits != 8*VDSE_BLOCK_SIZE )
+   if ( pBitmap->lengthInBits != 8*VDSE_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    /* Allocate all the blocks, one by one. */
-   for ( i = 0; i < 8*VDSE_BLOCK_SIZE-3; ++i )
-   {
+   for ( i = 0; i < 8*VDSE_BLOCK_SIZE-3; ++i ) {
       buffer[i] = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, &context );
-      if ( buffer[i] == NULL )
+      if ( buffer[i] == NULL ) {
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+      }
    }
    buffer[8*VDSE_BLOCK_SIZE-3] = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, &context );
-   if ( buffer[8*VDSE_BLOCK_SIZE-3] != NULL )
+   if ( buffer[8*VDSE_BLOCK_SIZE-3] != NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    /* Check the bitmap pattern */
-   for (i = 0; i < pBitmap->lengthInBits/8; ++i )
-   {
-      if (pBitmap->bitmap[i] != 0xff )
-      {
+   for (i = 0; i < pBitmap->lengthInBits/8; ++i ) {
+      if (pBitmap->bitmap[i] != 0xff ) {
          fprintf( stderr, "Malloc bitmap issue - "VDSF_SIZE_T_FORMAT" 0x%x\n", 
                   i, pBitmap->bitmap[i] );
          ERROR_EXIT( expectedToPass, NULL, ; );
@@ -85,23 +86,19 @@ int main()
    }
    
    /* Free 1 block out of two */
-   for ( i = 0; i < 8*VDSE_BLOCK_SIZE-3; i += 2 )
-   {
+   for ( i = 0; i < 8*VDSE_BLOCK_SIZE-3; i += 2 ) {
       vdseFreeBlocks( pAlloc, VDSE_ALLOC_ANY, buffer[i], 1, &context );
    }
    
    /* Check the bitmap pattern - the first 3 are always busy */
-   if (pBitmap->bitmap[0] != 0xea ) /* 11101010 */
-   {
+   if (pBitmap->bitmap[0] != 0xea ) { /* 11101010 */
       fprintf( stderr, "Malloc bitmap issue - "VDSF_SIZE_T_FORMAT" 0x%x\n", 
                i, pBitmap->bitmap[i] );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
       
-   for (i = 1; i < pBitmap->lengthInBits/8; ++i )
-   {
-      if (pBitmap->bitmap[i] != 0xaa ) /* 10101010 */
-      {
+   for (i = 1; i < pBitmap->lengthInBits/8; ++i ) {
+      if (pBitmap->bitmap[i] != 0xaa ) { /* 10101010 */
          fprintf( stderr, "Malloc bitmap issue - "VDSF_SIZE_T_FORMAT" 0x%x\n", 
                   i, pBitmap->bitmap[i] );
          ERROR_EXIT( expectedToPass, NULL, ; );

@@ -38,8 +38,9 @@ int main()
                          &context );
    
    listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    /*
     * We first insert an item and retrieve to get the exact bucket.
@@ -53,16 +54,18 @@ int main()
                              strlen(data2),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    listErr = vdseHashGet( pHash,
                           (unsigned char*)key1,
                           strlen(key1),
                           &pNewItem,
                           &context,
                           &bucket );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    listErr = vdseHashInsertAt( pHash,
                                bucket,
                                (unsigned char*)key1,
@@ -71,25 +74,28 @@ int main()
                                strlen(data1),
                                &pNewItem,
                                &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    vdseHashDeleteAt( pHash,
                      bucket,
                      pNewItem,
                      &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    listErr = vdseHashGet( pHash,
                           (unsigned char*)key1,
                           strlen(key1),
                           &pItem,
                           &context,
                           &bucket );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    return 0;
 }
 

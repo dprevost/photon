@@ -33,8 +33,9 @@ int main()
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, strCheck("Test1"), 1234, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseFolderInsertObject( pFolder,
                                      strCheckLow("test2"),
@@ -44,10 +45,12 @@ int main()
                                      1,
                                      0,
                                      &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pFolder->nodeObject.txCounter != 1 )
+   }
+   if ( pFolder->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    errcode = vdseFolderInsertObject( pFolder,
                                      strCheckLow("test3"),
@@ -57,13 +60,16 @@ int main()
                                      1,
                                      0,
                                      &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pFolder->nodeObject.txCounter != 2 )
+   }
+   if ( pFolder->nodeObject.txCounter != 2 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pFolder->hashObj.numberOfItems != 2 )
+   }
+   if ( pFolder->hashObj.numberOfItems != 2 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    vdseFolderFini( pFolder, &context );
    
    return 0;

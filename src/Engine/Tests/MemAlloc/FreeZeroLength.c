@@ -34,17 +34,19 @@ int main()
    initTest( expectedToPass, &context );
    
    ptr = malloc( allocatedLength );
-   if ( ptr == NULL )
+   if ( ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    g_pBaseAddr = ptr;
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
    vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
    newBuff = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 2, &context );
-   if ( newBuff == NULL )
+   if ( newBuff == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    vdseFreeBlocks( pAlloc, VDSE_ALLOC_ANY, newBuff, 0, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

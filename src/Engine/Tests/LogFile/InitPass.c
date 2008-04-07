@@ -32,9 +32,10 @@ int main()
    vdscInitErrorHandler( &errorHandler );
 
    error = vdseInitLogFile( &logfile, ".", (void*)0x1234, &errorHandler );
-   if ( error != VDS_OK )
+   if ( error != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
-
+   }
+   
    vdscFiniErrorHandler( &errorHandler );
    vdscFiniErrorDefs();
    

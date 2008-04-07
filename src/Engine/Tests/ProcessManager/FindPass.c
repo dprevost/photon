@@ -31,35 +31,41 @@ int main()
    pManager = initProcMgrTest( expectedToPass, &context );
 
    errcode = vdseProcMgrInit( pManager, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseProcMgrAddProcess( pManager, 
                                     12345, 
                                     &process,
                                     &context );
 
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseProcMgrFindProcess( pManager, 
                                      12345, 
                                      &process,
                                      &context );
 
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseProcMgrFindProcess( pManager, 
                                      12378,
                                      &process,
                                      &context );
-   if ( errcode == 0 ) 
+   if ( errcode == 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( vdscGetLastError( &context.errorHandler ) != VDS_INTERNAL_ERROR )
+   }
+   if ( vdscGetLastError( &context.errorHandler ) != VDS_INTERNAL_ERROR ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-      
+   }
+   
    return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

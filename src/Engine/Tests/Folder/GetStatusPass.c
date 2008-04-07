@@ -34,8 +34,9 @@ int main()
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, strCheck("Test1"), 1234, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseFolderInsertObject( pFolder,
                                      strCheckLow("test2"),
@@ -45,9 +46,10 @@ int main()
                                      1,
                                      0,
                                      &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseFolderInsertObject( pFolder,
                                      strCheckLow("test2/test3"),
                                      strCheck("Test2/test3"),
@@ -56,26 +58,32 @@ int main()
                                      1,
                                      0,
                                      &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseFolderGetStatus( pFolder,
                                   strCheck("test2"),
                                   5,
                                   &objStatus,
                                   &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
-   if ( objStatus.numDataItem != 1 )
+   }
+   
+   if ( objStatus.numDataItem != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( objStatus.numBlocks != 1 ) 
+   }
+   if ( objStatus.numBlocks != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( objStatus.numBlockGroup != 1 ) 
+   }
+   if ( objStatus.numBlockGroup != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( objStatus.freeBytes == 0 || objStatus.freeBytes >=VDSE_BLOCK_SIZE ) 
+   }
+   if ( objStatus.freeBytes == 0 || objStatus.freeBytes >=VDSE_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    return 0;
 }
 

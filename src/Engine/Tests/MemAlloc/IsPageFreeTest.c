@@ -33,44 +33,47 @@ int main()
    initTest( expectedToPass, &context );
 
    ptr = malloc( 51*VDSE_BLOCK_SIZE );
-   if ( ptr == NULL )
+   if ( ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    g_pBaseAddr = (unsigned char *)((((size_t)ptr - 1)/VDSE_BLOCK_SIZE + 1)*VDSE_BLOCK_SIZE);
    pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
    vdseMemAllocInit( pAlloc, g_pBaseAddr, 50*VDSE_BLOCK_SIZE, &context );
    GET_PTR( pBitmap, pAlloc->bitmapOffset, vdseMemBitmap );
    
-   if ( (pBitmap->lengthInBits-1)/8+1 != 7 )
-   {
+   if ( (pBitmap->lengthInBits-1)/8+1 != 7 ) {
       fprintf( stderr, "Wrong bitmapLength, got "VDSF_SIZE_T_FORMAT
                ", expected %d\n",
                pBitmap->lengthInBits/8, 7 );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pBitmap->bitmap[0] != 0xc0 )
-   {
+   if ( pBitmap->bitmap[0] != 0xc0 ) {
       fprintf( stderr, "Wrong bitmap[0], got 0x%x, expected 0x%x\n", 
                pBitmap->bitmap[0], 0xc0 );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    isFree = vdseIsBufferFree( pBitmap, 0 );
-   if ( isFree )
+   if ( isFree ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    isFree = vdseIsBufferFree( pBitmap, 2*VDSE_BLOCK_SIZE );
-   if ( ! isFree )
+   if ( ! isFree ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    isFree = vdseIsBufferFree( pBitmap, -VDSE_BLOCK_SIZE );
-   if ( isFree )
+   if ( isFree ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    isFree = vdseIsBufferFree( pBitmap, 50*VDSE_BLOCK_SIZE );
-   if ( isFree )
+   if ( isFree ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-      
+   }
+   
    return 0;
 }
 

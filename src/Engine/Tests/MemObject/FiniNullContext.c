@@ -35,8 +35,9 @@ int main()
                                 VDSE_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
-   if ( errcode != VDS_OK ) 
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    /* Should crash at this point */
    vdseMemObjectFini( &pDummy->memObject, VDSE_ALLOC_ANY, NULL );

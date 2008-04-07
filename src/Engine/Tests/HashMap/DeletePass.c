@@ -38,8 +38,9 @@ int main()
    errcode = vdseHashMapInit( pHashMap, 
                               0, 1, 0, &status, 4, 
                               strCheck("Map1"), NULL_OFFSET, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseHashMapInsert( pHashMap,
                                 (const void *) key,
@@ -47,9 +48,10 @@ int main()
                                 (const void *) data,
                                 7,
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    /*
     * We use get to get to the hash item in order to commit it 
     * (we need to commit the insertion before deleting it)
@@ -61,41 +63,44 @@ int main()
                              20,
                              &context );
 
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    vdseHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
 
    errcode = vdseHashMapRelease( pHashMap,
                                  pItem,
                                  &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseHashMapDelete( pHashMap,
                                 (const void *) key,
                                 6,
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pHashMap->nodeObject.txCounter != 1 )
+   }
+   if ( pHashMap->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdseHashMapGet( pHashMap,
                              (const void *) key,
                              6,
                              &pItem,
                              20,
                              &context );
-   if ( errcode == 0 )
-   {
+   if ( errcode == 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   else
-   {
+   else {
       errcode = vdscGetLastError( &context.errorHandler );
-      if ( errcode != VDS_ITEM_IS_DELETED )
+      if ( errcode != VDS_ITEM_IS_DELETED ) {
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+      }
    }
    
    return 0;

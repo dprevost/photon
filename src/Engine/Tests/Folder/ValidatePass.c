@@ -39,70 +39,84 @@ int main()
                                  5,
                                  &partial,
                                  &last );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( partial != 5 )
+   }
+   if ( partial != 5 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if (! last) 
+   }
+   if (! last) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdseValidateString( strCheck("Test2/Test555"),
                                  13,
                                  &partial,
                                  &last );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( partial != 5 )
+   }
+   if ( partial != 5 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if (last) 
+   }
+   if (last) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    /* Must be null-terminated for mbsrtowcs */
-   for ( i = 0; i < VDS_MAX_NAME_LENGTH+9; ++i )
+   for ( i = 0; i < VDS_MAX_NAME_LENGTH+9; ++i ) {
       name[i] = 't';
+   }
    name[VDS_MAX_NAME_LENGTH+9] = 0;
    errcode = vdseValidateString( strCheck(name),
                                  VDS_MAX_NAME_LENGTH+9, /* not 10 ! */
                                  &partial,
                                  &last );
-   if ( errcode != VDS_OBJECT_NAME_TOO_LONG )
+   if ( errcode != VDS_OBJECT_NAME_TOO_LONG ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdseValidateString( strCheck("Test2/"),
                                  6,
                                  &partial,
                                  &last );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( partial != 5 )
+   }
+   if ( partial != 5 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if (! last) 
+   }
+   if (! last) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    name[10] = 0;
    name[4] = '\t';
    errcode = vdseValidateString( strCheck(name),
                                  10,
                                  &partial,
                                  &last );
-   if ( errcode != VDS_INVALID_OBJECT_NAME )
+   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    name[4] = '=';
    errcode = vdseValidateString( strCheck(name),
                                  10,
                                  &partial,
                                  &last );
-   if ( errcode != VDS_INVALID_OBJECT_NAME )
+   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    name[4] = ' ';
    errcode = vdseValidateString( strCheck(name),
                                  10,
                                  &partial,
                                  &last );
-   if ( errcode != 0 )
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    return 0;
 }

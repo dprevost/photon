@@ -35,8 +35,9 @@ int main()
    errcode = vdseHashMapInit( pHashMap, 
                               0, 1, 0, &status, 4, 
                               strCheck("Map1"), NULL_OFFSET, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseHashMapInsert( pHashMap,
                                 "my key 1",
@@ -44,24 +45,29 @@ int main()
                                 "my data 1",
                                 strlen("my data 1"),
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pHashMap->nodeObject.txCounter != 1 )
+   }
+   if ( pHashMap->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    errcode = vdseHashMapInsert( pHashMap,
                                 "my key 2",
                                 strlen("my key 2"),
                                 "my data 2",
                                 strlen("my data 2"),
                                 &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pHashMap->nodeObject.txCounter != 2 )
+   }
+   if ( pHashMap->nodeObject.txCounter != 2 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pHashMap->hashObj.numberOfItems != 2 )
+   }
+   if ( pHashMap->hashObj.numberOfItems != 2 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    return 0;
 }
 

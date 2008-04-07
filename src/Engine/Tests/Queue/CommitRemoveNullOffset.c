@@ -38,29 +38,33 @@ int main()
    errcode = vdseQueueInit( pQueue, 
                             0, 1, &status, 4, 
                             strCheck("Map1"), NULL_OFFSET, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseQueueInsert( pQueue,
                               data,
                               8,
                               VDSE_QUEUE_FIRST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    errcode = vdseQueueInsert( pQueue,
                               data,
                               6,
                               VDSE_QUEUE_LAST,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    /* Must commit the insert before we attempt to remove */
    errcode = vdseQueueGet( pQueue, VDS_FIRST, &pQueueItem, 100, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    vdseQueueCommitAdd( pQueue, SET_OFFSET(pQueueItem) );
 
    errcode = vdseQueueRemove( pQueue,
@@ -68,9 +72,10 @@ int main()
                               VDSE_QUEUE_FIRST,
                               20,
                               &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    vdseQueueCommitRemove( pQueue, 
                           NULL_OFFSET,
                           &context );

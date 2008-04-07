@@ -32,8 +32,9 @@ int main()
    initTest( expectedToPass, &context );
 
    ptr = malloc( VDSE_BLOCK_SIZE*10 );
-   if (ptr == NULL )
+   if (ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    g_pBaseAddr = ptr;
    
    /* This "100" (non-zero) offset should mark this block group 

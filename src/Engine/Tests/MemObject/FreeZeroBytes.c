@@ -38,12 +38,14 @@ int main()
                                 VDSE_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
-   if ( errcode != VDS_OK )
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    buff[0] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
-   if ( buff[0] == NULL )
+   if ( buff[0] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    vdseFree( pObj, buff[0], 0, &context );
    

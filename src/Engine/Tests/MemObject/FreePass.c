@@ -37,53 +37,68 @@ int main()
                                 VDSE_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
-   if ( errcode != VDS_OK )
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    buff[0] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
-   if ( buff[0] == NULL ) 
+   if ( buff[0] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    buff[1] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
-   if ( buff[1] == NULL )
+   if ( buff[1] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    buff[2] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
-   if ( buff[2] == NULL )
+   if ( buff[2] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    vdseFree( pObj, buff[1], VDSE_BLOCK_SIZE, &context );
-   if ( pDummy->blockGroup.maxFreeBytes != pDummy->blockGroup.freeBytes+2*VDSE_BLOCK_SIZE )
+   if ( pDummy->blockGroup.maxFreeBytes != 
+        pDummy->blockGroup.freeBytes+2*VDSE_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    vdseFree( pObj, buff[2], VDSE_BLOCK_SIZE, &context );
    vdseFree( pObj, buff[0], VDSE_BLOCK_SIZE, &context );
-   if ( pObj->totalBlocks != 4 ) 
+   if ( pObj->totalBlocks != 4 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-   if ( pDummy->blockGroup.maxFreeBytes != pDummy->blockGroup.freeBytes )
+   }
+   if ( pDummy->blockGroup.maxFreeBytes != pDummy->blockGroup.freeBytes ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    buff[0] = vdseMalloc( pObj, 3*VDSE_BLOCK_SIZE, &context );
-   if ( buff[0] == NULL )
+   if ( buff[0] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pObj->totalBlocks != 4 )
+   }
+   if ( pObj->totalBlocks != 4 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    /* Needs two new blocks at this point */
-   if ( pDummy->blockGroup.freeBytes >= VDSE_BLOCK_SIZE )
+   if ( pDummy->blockGroup.freeBytes >= VDSE_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    buff[3] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
-   if ( buff[3] == NULL )
+   if ( buff[3] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   if ( pObj->totalBlocks != 6 )
+   }
+   if ( pObj->totalBlocks != 6 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    vdseFree( pObj, buff[3], VDSE_BLOCK_SIZE, &context );
-   if ( pObj->totalBlocks != 4 )
+   if ( pObj->totalBlocks != 4 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    errcode = vdseMemObjectFini( pObj, VDSE_ALLOC_ANY, &context );
-   if ( errcode != VDS_OK )
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    return 0;
 }

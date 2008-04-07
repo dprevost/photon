@@ -31,8 +31,9 @@ int main()
    process = initProcessTest( expectedToPass, &context );
 
    errcode = vdseProcessInit( process, 12345, &context );
-   if ( errcode != 0 ) 
+   if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    vdseProcessFini( process, NULL );
 

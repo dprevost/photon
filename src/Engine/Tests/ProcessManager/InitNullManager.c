@@ -31,10 +31,9 @@ int main()
    pManager = initProcMgrTest( expectedToPass, &context );
 
    errcode = vdseProcMgrInit( NULL, &context );
-   if ( errcode != 0 ) 
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   
-   return 0;
+
+   ERROR_EXIT( expectedToPass, NULL, ; );
+
 #else
    return 1;
 #endif

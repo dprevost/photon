@@ -35,12 +35,12 @@ int main()
    vdseHashItem* pNewItem;
    size_t bucket;
    
-   pHash = initHashTest( expectedToPass,
-                         &context );
+   pHash = initHashTest( expectedToPass, &context );
    
    listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    
    listErr = vdseHashInsert( pHash,
                              (unsigned char*)key1,
@@ -49,9 +49,10 @@ int main()
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    listErr = vdseHashInsert( pHash,
                              (unsigned char*)key2,
                              strlen(key2),
@@ -59,17 +60,19 @@ int main()
                              strlen(data2),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK )
+   if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-
+   }
+   
    vdseHashEmpty( pHash, &context );
    
    listErr = vdseHashGetFirst( pHash,
                                &bucket,
                                &offsetFirstItem );
-   if ( listErr != LIST_EMPTY )
+   if ( listErr != LIST_EMPTY ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
-
+   }
+   
    return 0;
 }
 
