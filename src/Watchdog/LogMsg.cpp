@@ -48,8 +48,7 @@ vdswLogMsg::~vdswLogMsg()
       closelog();
 #endif
    }
-   if ( m_name )
-      delete m_name;
+   if ( m_name ) delete m_name;
    m_name = NULL;
 }
 

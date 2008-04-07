@@ -27,8 +27,7 @@ FILE * fp = NULL;
 int openData( const char* filename )
 {   
    fp = fopen( filename, "r" );
-   if ( fp == NULL )
-   {
+   if ( fp == NULL ) {
       fprintf(stderr, "Error opening the file %s, error = %s\n", 
          filename, strerror(errno) );
       return -1;
@@ -44,10 +43,8 @@ int readData( char *countryCode, char* description )
    char line[80] = "";
    int len;
    
-   if ( fgets( line, 80, fp ) == NULL )
-   {
-      if ( ferror(fp) )
-      {
+   if ( fgets( line, 80, fp ) == NULL ) {
+      if ( ferror(fp) ) {
          fprintf( stderr, "Error reading the file, error = %s\n", 
             strerror(errno) );
          return -1;
@@ -68,3 +65,4 @@ int readData( char *countryCode, char* description )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* ISO_3166_H */
+

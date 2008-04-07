@@ -133,10 +133,12 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
                            25, 
                            pContext );
    if ( listErr != LIST_OK ) {
-      if ( listErr == LIST_NO_MEMORY )
+      if ( listErr == LIST_NO_MEMORY ) {
          errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
-      else
+      }
+      else {
          errcode = VDS_INTERNAL_ERROR;
+      }
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return -1;
    }   

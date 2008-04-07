@@ -38,14 +38,12 @@ JNIEXPORT jlong JNICALL Java_org_vdsf_VdsHashmap_initSession (
    errcode = vdsInitSession( &handle );
 
    // Normal return
-   if ( errcode == VDS_OK )
-      return (jlong) handle;
+   if ( errcode == VDS_OK ) return (jlong) handle;
    
    // Throw a java exception
 
    exc = (*env)->FindClass( env, "org/vdsf/VdsException" );
-   if ( exc  != NULL )
-   {
+   if ( exc  != NULL ) {
       sprintf( msg, "vdsf Error = %d", errcode );
       (*env)->ThrowNew( env, exc, msg );
    }

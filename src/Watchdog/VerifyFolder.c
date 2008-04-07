@@ -44,8 +44,7 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
    enum vdswRecoverError rc = VDSWR_OK, valid;
    
    /* The easy case */
-   if ( pFolder->hashObj.numberOfItems == 0 )
-      return rc;
+   if ( pFolder->hashObj.numberOfItems == 0 ) return rc;
 
    listErr = vdseHashGetFirst( &pFolder->hashObj,
                                &bucket, 

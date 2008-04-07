@@ -24,24 +24,22 @@ void printError( vdscErrorHandler* pError )
    char* msg = NULL;
    size_t length = 0;
 
-   if ( pError == NULL )
+   if ( pError == NULL ) {
       fprintf( stderr, "Null ErrorHandler...can't help you!\n" );
-   else
-   {
-      if ( vdscAnyErrors( pError ) )
-      {
+   }
+   else {
+      if ( vdscAnyErrors( pError ) ) {
+
          length = vdscGetErrorMsgLength( pError );
-         if ( length == 0 )
+         if ( length == 0 ) {
             fprintf( stderr, "Error in errorHandler... a bit ironic!\n" );
-         else
-         {
+         }
+         else {
             msg = (char*)malloc( length+1 );
-            if ( msg == NULL )
-            {
+            if ( msg == NULL ) {
                fprintf( stderr, "Malloc error in printError\n" );
             }
-            else
-            {
+            else {
                vdscGetErrorMsg( pError, msg, length+1 );
                fprintf( stderr, "Error message: %s\n", msg );
             }
@@ -61,13 +59,16 @@ void printError( vdscErrorHandler* pError )
 #define ERROR_EXIT(EXPECTED_TO_PASS,PERROR,SPECIAL_CLEANUP_CODE) \
 {\
    fprintf( stderr, "Abnormal error at line %d\n", __LINE__ );\
-   if ( PERROR != NULL )\
+   if ( PERROR != NULL ) {\
       printError(PERROR);\
+   }\
    SPECIAL_CLEANUP_CODE;\
-   if (EXPECTED_TO_PASS)\
+   if (EXPECTED_TO_PASS) {\
       return 1;\
-   else\
+   }\
+   else {\
       return 0;\
+   }\
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

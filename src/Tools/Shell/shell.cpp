@@ -103,8 +103,9 @@ bool vdsShell::Dispatch()
       if ( tokens.size() != 3 ) throw( 1 );
       Touch();
    }
-   else
+   else {
       throw( 0 );
+   }
    
    return timeToExit;
 }
@@ -156,13 +157,15 @@ void vdsShell::Parse( string & inStr )
                tokens.push_back( s2 );
             } while ( ! iss2.eof() );
          }
-         else
+         else {
             tokens.push_back( s );
+         }
       }
-      else
+      else {
          // Error - a pair of " with no data
          if ( (count % 2) == 1 ) throw(2);
-         
+      }
+      
       count++;
    } while ( ! iss.eof() );
    
@@ -193,15 +196,17 @@ void vdsShell::Run()
          timeToExit = Dispatch();
       }
       catch ( int rc ) {
-         if ( rc == 0 )
+         if ( rc == 0 ) {
             cerr << "vdssh: " << tokens[0] << ": command not found" << endl;
-         else if ( rc == 1 )
+         }
+         else if ( rc == 1 ) {
             cerr << "vdssh: " << tokens[0] << ": invalid number of arguments" << endl;
-         else
+         }
+         else {
             cerr << "vdssh: " << "Malformed arguments (missing quote?)" << endl;
+         }
       }
-      if ( timeToExit )
-         return;
+      if ( timeToExit ) return;
    }
 }
 
@@ -211,16 +216,17 @@ string & vdsShell::Trim( string & s )
 {
    unsigned i;
 
-   for ( i = 0; i < s.length(); ++i )
+   for ( i = 0; i < s.length(); ++i ) {
       if ( s[i] != ' ' ) break;
+   }
    
    s = s.assign( s, i, s.length()-i );
 
    while ( s.length() > 0 ) {
-      if ( s[s.length()-1] == ' ' )
+      if ( s[s.length()-1] == ' ' ) {
          s.erase( s.length()-1 );
-      else
-         break;
+      }
+      else break;
    }
    return s;
 }
@@ -239,12 +245,14 @@ void vdsShell::Cat()
    int rc;
    size_t keyLength, dataLength;
    
-   if ( tokens[1][0] == '/' )
+   if ( tokens[1][0] == '/' ) {
       // Absolute path
       objectName = tokens[1];
-   else
+   }
+   else {
       objectName = currentLocation + tokens[1];
-
+   }
+   
    // Must check if object exists (and its type)
    try {
       session.GetStatus( objectName, &status );
@@ -324,15 +332,16 @@ void vdsShell::Cd()
       return;
    }
 
-   if ( tokens[1][0] == '/' )
+   if ( tokens[1][0] == '/' ) {
       // Absolute path
       newLoc = tokens[1];
-   else
+   }
+   else {
       newLoc = currentLocation + tokens[1];
-
+   }
+   
    // Add trailing '/', if needed
-   if ( newLoc[newLoc.length()-1] != '/' )
-      newLoc += '/';
+   if ( newLoc[newLoc.length()-1] != '/' ) newLoc += '/';
    
    // Must check if folder exists
    try {
@@ -360,18 +369,22 @@ void vdsShell::Cp()
    int rc;
    size_t keyLength, dataLength;
    
-   if ( tokens[1][0] == '/' )
+   if ( tokens[1][0] == '/' ) {
       // Absolute path
       srcName = tokens[1];
-   else
+   }
+   else {
       srcName = currentLocation + tokens[1];
-
-   if ( tokens[2][0] == '/' )
+   }
+   
+   if ( tokens[2][0] == '/' ) {
       // Absolute path
       destName = tokens[2];
-   else
+   }
+   else {
       destName = currentLocation + tokens[2];
-
+   }
+   
    // Must check if source object exists
    try {
       session.GetStatus( srcName, &status );
@@ -472,11 +485,13 @@ void vdsShell::Ls()
    string folderName = currentLocation;
    
    if ( tokens.size() == 2 ) {
-      if ( tokens[1][0] == '/' )
+      if ( tokens[1][0] == '/' ) {
          // Absolute path
          folderName = tokens[1];
-      else
+      }
+      else {
          folderName = currentLocation + tokens[1];
+      }
    }
    
    try {
@@ -492,10 +507,12 @@ void vdsShell::Ls()
    }
    catch( vdsException exc ) {
       if ( exc.ErrorCode() == VDS_NO_SUCH_OBJECT || 
-         exc.ErrorCode() == VDS_NO_SUCH_FOLDER ) 
+         exc.ErrorCode() == VDS_NO_SUCH_FOLDER ) {
          cerr << "vdssh: " << tokens[0] << ": " << "No such file or directory" << endl;
-      else
+      }
+      else {
          cerr << "vdssh: " << tokens[0] << ": " << exc.Message() << endl;
+      }
    }
 }
 
@@ -546,12 +563,14 @@ void vdsShell::Mkdir()
 {
    string folderName;
 
-   if ( tokens[1][0] == '/' )
+   if ( tokens[1][0] == '/' ) {
       // Absolute path
       folderName = tokens[1];
-   else
+   }
+   else {
       folderName = currentLocation + tokens[1];
-
+   }
+   
    try {
       session.CreateObject( folderName, VDS_FOLDER );
       session.Commit();
@@ -569,12 +588,14 @@ void vdsShell::Rm()
    string objectName;
    vdsObjStatus status;
    
-   if ( tokens[1][0] == '/' )
+   if ( tokens[1][0] == '/' ) {
       // Absolute path
       objectName = tokens[1];
-   else
+   }
+   else {
       objectName = currentLocation + tokens[1];
-
+   }
+   
    // Must check if object exists
    try {
       session.GetStatus( objectName, &status );
@@ -606,12 +627,14 @@ void vdsShell::Rmdir()
    string folderName;
    vdsObjStatus status;
    
-   if ( tokens[1][0] == '/' )
+   if ( tokens[1][0] == '/' ) {
       // Absolute path
       folderName = tokens[1];
-   else
+   }
+   else {
       folderName = currentLocation + tokens[1];
-
+   }
+   
    // Must check if folder exists
    try {
       session.GetStatus( folderName, &status );
@@ -643,12 +666,14 @@ void vdsShell::Stat()
    string objectName;
    vdsObjStatus status;
    
-   if ( tokens[1][0] == '/' )
+   if ( tokens[1][0] == '/' ) {
       // Absolute path
       objectName = tokens[1];
-   else
+   }
+   else {
       objectName = currentLocation + tokens[1];
-
+   }
+   
    try {
       session.GetStatus( objectName, &status );
    }
@@ -687,21 +712,25 @@ void vdsShell::Touch()
       return;
    }
    
-   if ( option == "-q" || option == "--queue" )
+   if ( option == "-q" || option == "--queue" ) {
       flag = VDS_QUEUE;
-   else if ( option == "-h" || option == "--hashmap" )
+   }
+   else if ( option == "-h" || option == "--hashmap" ) {
       flag = VDS_HASH_MAP;
+   }
    else {
       cerr << "vdssh: touch: " << "invalid option (" << option << ")" << endl;
       return;
    }
    
-   if ( filename[0] == '/' )
+   if ( filename[0] == '/' ) {
       // Absolute path
       objectName = filename;
-   else
+   }
+   else {
       objectName = currentLocation + filename;
-
+   }
+   
    try {
       session.CreateObject( objectName, flag );
       session.Commit();

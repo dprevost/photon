@@ -36,6 +36,7 @@
 #define WD_SHUTDOWN_REQUEST 0X001
 
 #define WD_MSG_LEN 512
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 // Forward declaration(s)
@@ -77,24 +78,19 @@ public:
    
    void Help( const char* progName ) const;
    
-   int LastError() 
-      {
+   int LastError() {
 #if defined ( WIN32 )
-         return GetLastError();
+      return GetLastError();
 #else
-         return errno;
+      return errno;
 #endif
-      }
+   }
    
-   const char* GetErrorMsg() 
-      {
-         return m_errorMsg;
-      }
+   const char* GetErrorMsg() { return m_errorMsg; }
 
-   void HandleAbnormalTermination( pid_t pid )
-      {
-         m_vds.HandleCrash( pid );
-      }
+   void HandleAbnormalTermination( pid_t pid ) {
+      m_vds.HandleCrash( pid );
+   }
    
    /**
     *  This function is going to validate the VDS or create it if it does 
@@ -106,10 +102,9 @@ public:
     *  reported to the terminal (easier to debug/see problems immediately
     *  than having to search in the EventLog/syslog facility).
     */
-   int InitializeVDS()
-      {
-         return m_vds.Init( &m_params, &m_pMemoryAddress, m_verifyVDSOnly );
-      }   
+   int InitializeVDS() {
+      return m_vds.Init( &m_params, &m_pMemoryAddress, m_verifyVDSOnly );
+   }   
 
    int SetSigHandler();
 
@@ -157,7 +152,6 @@ public:
 private:
 
    char m_errorMsg[WD_MSG_LEN];
-   
    
 };
 

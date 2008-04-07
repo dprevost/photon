@@ -50,8 +50,7 @@ vdswAcceptor::~vdswAcceptor()
    }
    
 #if defined (WIN32) 
-   if ( m_cleanupNeeded )
-      WSACleanup ();
+   if ( m_cleanupNeeded ) WSACleanup ();
 #endif
 }
 
@@ -325,8 +324,9 @@ vdswAcceptor::Receive( int indice )
 #endif
       m_dispatch[indice].socketId = VDS_INVALID_SOCKET;
 
-      if ( m_dispatch[indice].pid > 0 )
+      if ( m_dispatch[indice].pid > 0 ) {
          HandleAbnormalTermination( m_dispatch[indice].pid );
+      }
       m_dispatch[indice].pid = -1;
    }
    else {
@@ -346,8 +346,9 @@ vdswAcceptor::Receive( int indice )
          close( m_dispatch[indice].socketId );
 #endif
          m_dispatch[indice].socketId = VDS_INVALID_SOCKET;
-         if ( m_dispatch[indice].pid > 0 )
+         if ( m_dispatch[indice].pid > 0 ) {
             HandleAbnormalTermination( m_dispatch[indice].pid );
+         }
          m_dispatch[indice].pid = -1;
       }
       else {
@@ -453,8 +454,9 @@ vdswAcceptor::WaitForConnections()
 
    while ( true ) {
       int zzz = 0;
-      if ( vdswWatchdog::g_pWD->m_controlWord & WD_SHUTDOWN_REQUEST )
+      if ( vdswWatchdog::g_pWD->m_controlWord & WD_SHUTDOWN_REQUEST ) {
          break;
+      }
       
       timeout.tv_sec = 1;
       timeout.tv_usec = 0;
@@ -473,8 +475,9 @@ vdswAcceptor::WaitForConnections()
                zzz++;
             }
 #if ! defined (WIN32)
-            if ( m_dispatch[i].socketId+1 > maxFD )
+            if ( m_dispatch[i].socketId+1 > maxFD ) {
                maxFD = m_dispatch[i].socketId+1;
+            }
 #endif
          }
       }
@@ -498,8 +501,7 @@ vdswAcceptor::WaitForConnections()
        */
       if ( FD_ISSET( m_socketFD, &readSet ) ) {
          errcode = Accept();
-         if ( errcode != 0 )
-            break;
+         if ( errcode != 0 ) break;
          fired--;
       }
       if ( fired == 0 ) continue;
@@ -508,7 +510,6 @@ vdswAcceptor::WaitForConnections()
        * Process all open sockets 
        */
       for ( i = 1; i < FD_SETSIZE; ++i ) {
-
          if ( m_dispatch[i].socketId != VDS_INVALID_SOCKET ) {
             if ( FD_ISSET( m_dispatch[i].socketId, &writeSet ) ) {
                Send( i );
@@ -533,7 +534,7 @@ vdswAcceptor::WaitForConnections()
          shutdown( m_dispatch[i].socketId, 2 );      
          close( m_dispatch[i].socketId );
 #endif
-      }      
+      }
    }
    m_socketFD = VDS_INVALID_SOCKET;
 

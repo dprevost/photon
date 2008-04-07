@@ -34,8 +34,7 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
    enum vdswRecoverError rc = VDSWR_OK;
 
    /* The easy case */
-   if ( pHashMap->hashObj.numberOfItems == 0 )
-      return rc;
+   if ( pHashMap->hashObj.numberOfItems == 0 ) return rc;
    
    listErr = vdseHashGetFirst( &pHashMap->hashObj,
                                &bucket, 

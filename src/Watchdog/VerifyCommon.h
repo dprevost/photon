@@ -74,8 +74,9 @@ void vdswEcho( vdswVerifyStruct * pVerify, char * message )
    int i;
    
    if ( pVerify->verbose ) {
-      for ( i = 0; i < pVerify->spaces; ++i )
+      for ( i = 0; i < pVerify->spaces; ++i ) {
          fprintf( pVerify->fp, " " );
+      }
       fprintf( pVerify->fp, "%s\n", message );
    }
 }

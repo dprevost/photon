@@ -36,14 +36,12 @@ JNIEXPORT jlong JNICALL Java_org_vdsf_VdsFolder_Close (
    errcode = vdsFolderClose( handle );
 
    // Normal return
-   if ( errcode == VDS_OK )
-      return (jlong) handle;
+   if ( errcode == VDS_OK ) return (jlong) handle;
    
    // Throw a java exception
 
    exc = (*env)->FindClass( env, "org/vdsf/VdsException" );
-   if ( exc  != NULL )
-   {
+   if ( exc  != NULL ) {
       sprintf( msg, "vdsf Error = %d", errcode );
       (*env)->ThrowNew( env, exc, msg );
    }
@@ -69,8 +67,9 @@ JNIEXPORT jlong JNICALL Java_org_vdsf_VdsFolder_init(
    char msg[100];
    VDS_HANDLE handle;
    const char *folderName = (*env)->GetStringUTFChars( env, jstr, NULL );
-   if ( folderName == NULL )
+   if ( folderName == NULL ) {
       return (jlong) NULL; // out-of-memory exception by the JVM
+   }
    
    errcode = vdsFolderOpen( (VDS_HANDLE) sessionHandle,
                             folderName,
@@ -79,13 +78,11 @@ JNIEXPORT jlong JNICALL Java_org_vdsf_VdsFolder_init(
   (*env)->ReleaseStringUTFChars( env, jstr, folderName );   
 
    // Normal return
-   if ( errcode == VDS_OK )
-      return (jlong) handle;
+   if ( errcode == VDS_OK ) return (jlong) handle;
    
    // Throw a java exception
    exc = (*env)->FindClass( env, "org/vdsf/VdsException" );
-   if ( exc  != NULL )
-   {
+   if ( exc  != NULL ) {
       sprintf( msg, "vdsf Error = %d", errcode );
       (*env)->ThrowNew( env, exc, msg );
    }

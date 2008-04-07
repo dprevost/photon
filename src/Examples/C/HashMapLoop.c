@@ -29,11 +29,10 @@ const char* mapName = "My Hash Map Loop";
 
 void cleanup()
 {
-   if ( map1 != NULL )
-      vdsHashMapClose( map1 );
+   if ( map1 != NULL ) vdsHashMapClose( map1 );
    
-   if ( session1 != NULL )
-      vdsExitSession( session1 );
+   if ( session1 != NULL ) vdsExitSession( session1 );
+
    vdsExit();
 }
 
@@ -48,39 +47,34 @@ int createMap()
   
    /* If the map already exists, we remove it. */
    rc = vdsDestroyObject( session1, mapName, strlen(mapName) );
-   if ( rc == VDS_NO_SUCH_OBJECT || rc == VDS_OK )
-   {
+   if ( rc == VDS_NO_SUCH_OBJECT || rc == VDS_OK ) {
       /*
        * We must commit the change if we just destroyed it otherwise it
        * will still exist! 
        */
       rc = vdsCommit( session1 );
-      if ( rc != 0 ) 
-      {
+      if ( rc != 0 ) {
          vdsErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
          return -1;
       }
       
       rc = vdsCreateObject( session1, mapName, strlen(mapName), VDS_HASH_MAP );
-      if ( rc != 0 ) 
-      {
+      if ( rc != 0 ) {
          vdsErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
          return -1;
       }
       /* Commit the creation of the object */
       rc = vdsCommit( session1 );
-      if ( rc != 0 ) 
-      {
+      if ( rc != 0 ) {
          vdsErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
          return -1;
       }
 
       rc = vdsHashMapOpen( session1, mapName, strlen(mapName), &map1 );
-      if ( rc != 0 )
-      {
+      if ( rc != 0 ) {
          vdsErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, vdsHashMapOpen error: %s\n", __LINE__, msg );
          return -1;
@@ -91,12 +85,10 @@ int createMap()
        * rc > 0 -> new data
        */
       rc = readData( countryCode, description );
-      while ( rc > 0 )
-      {
+      while ( rc > 0 ) {
          rc = vdsHashMapInsert( map1, countryCode, 2, 
             description, strlen(description) );
-         if ( rc != 0 ) 
-         {
+         if ( rc != 0 ) {
             vdsErrorMsg(session1, msg, 256 );
             fprintf( stderr, "At line %d, vdsHashMapInsert error: %s\n", __LINE__, msg );
             return -1;
@@ -105,8 +97,8 @@ int createMap()
          rc = readData( countryCode, description );
       }
    }
-   else /* A problem when calling destroy */
-   {
+   else { /* A problem when calling destroy */
+
       vdsErrorMsg(session1, msg, 256 );
       fprintf( stderr, "At line %d, vdsDestroyObject error: %s\n", __LINE__, msg );
       return -1;
@@ -125,8 +117,7 @@ int main( int argc, char *argv[] )
    char msg[256];
    size_t keyLength, dataLength;
    
-   if ( argc < 3 )
-   {
+   if ( argc < 3 ) {
       fprintf( stderr, "Usage: %s iso_3166_data_file watchdog_address\n", argv[0] );
       return 1;
    }
@@ -136,15 +127,13 @@ int main( int argc, char *argv[] )
    
    /* Initialize vds and create our session */
    rc = vdsInit( argv[2], 0 );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       fprintf( stderr, "At line %d, vdsInit error: %d\n", __LINE__, rc );
       return 1;
    }
 
    rc = vdsInitSession( &session1 );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       fprintf( stderr, "At line %d, vdsInitSession error: %d\n", __LINE__, rc );
       return 1;
    }
@@ -156,8 +145,7 @@ int main( int argc, char *argv[] )
    
    rc = vdsHashMapGetFirst( map1, countryCode, 2, description, 80, 
                             &keyLength, &dataLength );
-   while ( rc == VDS_OK )
-   {
+   while ( rc == VDS_OK ) {
       countryCode[keyLength] = 0;
       description[dataLength] = 0;
       fprintf( stderr, "Country code: %s, country: %s\n", countryCode,
@@ -167,16 +155,14 @@ int main( int argc, char *argv[] )
                               &keyLength, &dataLength );
    }
 
-   if ( rc != VDS_REACHED_THE_END ) 
-   {
+   if ( rc != VDS_REACHED_THE_END ) {
       vdsErrorMsg(session1, msg, 256 );
       fprintf( stderr, "At line %d, Hash Map loop abnormal error: %s\n", __LINE__, msg );
       cleanup();
       return 1;
    }
 
-   if ( fp != NULL )
-      fclose( fp );
+   if ( fp != NULL ) fclose( fp );
 
    cleanup();
    

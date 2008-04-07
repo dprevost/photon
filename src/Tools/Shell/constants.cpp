@@ -75,9 +75,10 @@ vdsConstants::Bytes( long numBytes )
       d = d / KILO_DOUBLE;
       oss << fixed << d << " Kbytes";
    }
-   else
+   else {
       oss << numBytes << " bytes";
-
+   }
+   
    return strSize = oss.str();
 }
 
@@ -88,8 +89,7 @@ vdsConstants::Type( vdsObjectType type )
 {
    int i = type;
    
-   if ( type < VDS_FOLDER || type >= VDS_LAST_OBJECT_TYPE )
-      i = 0;
+   if ( type < VDS_FOLDER || type >= VDS_LAST_OBJECT_TYPE ) i = 0;
    
    return types[i];
 }
@@ -99,8 +99,7 @@ vdsConstants::Type( vdsObjectType type )
 const string &
 vdsConstants::Status( int status )
 {
-   if ( status < 0 || status > 2 )
-      status = 3;
+   if ( status < 0 || status > 2 ) status = 3;
    
    return stats[status];
 }

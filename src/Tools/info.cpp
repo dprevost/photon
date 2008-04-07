@@ -42,8 +42,7 @@ int main()
    try {
       session.GetInfo( &info );
    }
-   catch( vdsException exc )
-   {
+   catch( vdsException exc ) {
       cerr << exc.Message( msg ) << endl; 
       return 1;
    }

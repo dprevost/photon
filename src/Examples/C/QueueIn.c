@@ -37,28 +37,24 @@ void cleanup()
     * that there will be no more data, it can shutdown (the QueueWork program
     * will then tell the QueueOut program by setting it to two).
     */
-   if ( control != NULL )
-   {
+   if ( control != NULL ) {
       /* We flush it all before warning QueueWork to exit. */
       vdsCommit( session );
       rc = vdsHashMapReplace( control, shutdownKey, strlen(shutdownKey), 
          &controlData, sizeof(int) );
-      if ( rc != 0 ) 
-      {
+      if ( rc != 0 ) {
          vdsErrorMsg(session, msg, 256 );
          fprintf( stderr, "At line %d, vdsHashMapReplace error: %s\n", __LINE__, msg );
       }
-      else
+      else {
          vdsCommit( session );
+      }
       vdsHashMapClose( control );
    }
-   if ( inQueue != NULL )
-      vdsQueueClose( inQueue );
-   if ( outQueue != NULL )
-      vdsQueueClose( outQueue );
-   
-   if ( session != NULL )
-      vdsExitSession( session );
+   if ( inQueue != NULL )  vdsQueueClose( inQueue );
+   if ( outQueue != NULL ) vdsQueueClose( outQueue );
+   if ( session != NULL )  vdsExitSession( session );
+
    vdsExit();
 }
 
@@ -78,8 +74,7 @@ int initObjects()
    vdsDestroyObject( session, folderName,   strlen(folderName)   );
    /* Commit the destruction of these objects */
    rc = vdsCommit( session );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
       return -1;
@@ -87,38 +82,33 @@ int initObjects()
 
    /* Create the folder first, evidently */
    rc = vdsCreateObject( session, folderName, strlen(folderName), VDS_FOLDER );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
 
    rc = vdsCreateObject( session, controlName, strlen(controlName), VDS_HASH_MAP );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
    rc = vdsCreateObject( session, inQueueName, strlen(inQueueName), VDS_QUEUE );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
    rc = vdsCreateObject( session, outQueueName, strlen(outQueueName), VDS_QUEUE );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
 
    rc = vdsHashMapOpen( session, controlName, strlen(controlName), &control );
-   if ( rc != 0 )
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg(session, msg, 256 );
       fprintf( stderr, "At line %d, vdsHashMapOpen error: %s\n", __LINE__, msg );
       cleanup();
@@ -128,8 +118,7 @@ int initObjects()
    controlData = 0; /* Will be set to one/two when it is time to shutdown */
    rc = vdsHashMapInsert( control, shutdownKey, strlen(shutdownKey), 
       &controlData, sizeof(int) );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg(session, msg, 256 );
       fprintf( stderr, "At line %d, vdsHashMapInsert error: %s\n", __LINE__, msg );
       return -1;
@@ -142,24 +131,21 @@ int initObjects()
    controlData = 0;
    rc = vdsHashMapInsert( control, workProcessKey, strlen(workProcessKey), 
       &controlData, sizeof(int) );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg(session, msg, 256 );
       fprintf( stderr, "At line %d, vdsHashMapInsert error: %s\n", __LINE__, msg );
       return -1;
    }
    rc = vdsHashMapInsert( control, outProcessKey, strlen(outProcessKey), 
       &controlData, sizeof(int) );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg(session, msg, 256 );
       fprintf( stderr, "At line %d, vdsHashMapInsert error: %s\n", __LINE__, msg );
       return -1;
    }
 
    rc = vdsCommit( session );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
       return -1;
@@ -181,24 +167,22 @@ void waitForFriends()
    req.tv_sec = 0;
    req.tv_nsec = 1000000;
 #endif
-   do 
-   {
+   do {
       rc = vdsHashMapGet( control, workProcessKey, strlen(workProcessKey), 
          &controlData, sizeof(int), &length );
 #if defined(WIN32)
-	  Sleep(1);
+      Sleep(1);
 #else
       nanosleep( &req, &rem );
 #endif      
    } while ( rc != 0 || controlData == 0 );
 
    controlData = 0;
-   do 
-   {
+   do {
       rc = vdsHashMapGet( control, outProcessKey, strlen(outProcessKey), 
          &controlData, sizeof(int), &length );
 #if defined(WIN32)
-	  Sleep(1);
+      Sleep(1);
 #else
       nanosleep( &req, &rem );
 #endif      
@@ -217,8 +201,7 @@ int main( int argc, char *argv[] )
    struct timespec req, rem;
 #endif
    
-   if ( argc < 6 )
-   {
+   if ( argc < 6 ) {
       fprintf( stderr, "Usage: %s iso_3166_data_file watchdog_address number_of_iterations milliseconds iterations_per_cycle\n", argv[0] );
       return 1;
    }
@@ -232,15 +215,13 @@ int main( int argc, char *argv[] )
    
    /* Initialize vds and create our session */
    rc = vdsInit( argv[2], 0 );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       fprintf( stderr, "At line %d, vdsInit error: %d\n", __LINE__, rc );
       return 1;
    }
 
    rc = vdsInitSession( &session );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       fprintf( stderr, "At line %d, vdsInitSession error: %d\n", __LINE__, rc );
       return 1;
    }
@@ -254,8 +235,7 @@ int main( int argc, char *argv[] )
    waitForFriends();
    
    rc = vdsQueueOpen( session, inQueueName, strlen(inQueueName), &inQueue );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg(session, msg, 256 );
       fprintf( stderr, "At line %d, vdsQueueOpen error: %s\n", __LINE__, msg );
       cleanup();
@@ -271,19 +251,16 @@ int main( int argc, char *argv[] )
    req.tv_sec = 0;
    req.tv_nsec = ms *1000000;
 #endif
-   while ( loop < maxLoop )
-   {
+   while ( loop < maxLoop ) {
       /*
        * rc < 0 -> error
        * rc = 0 -> nothing read - EOF
        * rc > 0 -> new data
        */
       rc = readData( inStruct.countryCode, inStruct.description );
-      if ( rc > 0 )
-      {
+      if ( rc > 0 ) {
          rc = vdsQueuePush( inQueue, &inStruct, 2 + strlen( inStruct.description) );
-         if ( rc != 0 ) 
-         {
+         if ( rc != 0 ) {
             vdsErrorMsg(session, msg, 256 );
             fprintf( stderr, "At line %d, vdsQueuePush error: %s\n", __LINE__, msg );
             cleanup();
@@ -296,24 +273,22 @@ int main( int argc, char *argv[] )
           * non-blocking sockets in a "select loop", calling vdsCommit for
           * each iteration of the loop would make sense. YMMV.
           */
-         if ( (loop %10) == 0 )
-            vdsCommit( session );
+         if ( (loop %10) == 0 ) vdsCommit( session );
 
-         if ( (loop %cycle) == 0 )
-		 {
+         if ( (loop % cycle) == 0 ) {
 #if defined(WIN32)
-	        Sleep(ms);
+            Sleep(ms);
 #else
             nanosleep( &req, &rem );
 #endif      
-		 }
+		   }
 
          loop++;
       }
-      else if ( rc == 0 )
+      else if ( rc == 0 ) {
          rewind( fp );
-      else
-      {
+      }
+      else {
          cleanup();
          return -1;
       }

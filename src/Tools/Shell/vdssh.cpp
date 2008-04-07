@@ -39,8 +39,7 @@ int main( int argc, char *argv[] )
    };
 
    errcode = vdscSetSupportedOptions( 1, opts, &optHandle );
-   if ( errcode != 0 )
-      return 1;
+   if ( errcode != 0 ) return 1;
 
    errcode = vdscValidateUserOptions( optHandle, argc, argv, 1 );
    if ( errcode < 0 ) {

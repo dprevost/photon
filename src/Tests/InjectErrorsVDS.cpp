@@ -78,16 +78,13 @@ int AddDefectsHashMaps( vector<myMap> & h )
 
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table (true for g++)
-   for ( i = 0; i < sizeof(vdsHashMap)/sizeof(void*); ++i, apiObj++ )
-   {
-      if ( **apiObj == VDSA_HASH_MAP )
-      {
+   for ( i = 0; i < sizeof(vdsHashMap)/sizeof(void*); ++i, apiObj++ ) {
+      if ( **apiObj == VDSA_HASH_MAP ) {
          api_offset = i * sizeof(void*);
          break;
       }
    }
-   if ( api_offset == -1 )
-   {
+   if ( api_offset == -1 ) {
       cerr << "Can't calculate offset!" << endl;
       return -1;
    }
@@ -105,8 +102,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
                                    &bucket, 
                                    &offset );
    i = 0;
-   while ( listErrCode == LIST_OK )
-   {
+   while ( listErrCode == LIST_OK ) {
       previousBucket = bucket;
       previousOffset = offset;
       listErrCode = vdseHashGetNext( &pHashMap->hashObj,
@@ -117,8 +113,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
       i++;
       if ( i >= 6 ) break;
    }
-   if ( listErrCode != LIST_OK )
-   {
+   if ( listErrCode != LIST_OK ) {
       cerr << "Iteration error in " << h[1].name << ", list err = " << listErrCode << endl;
       return -1;
    }
@@ -143,23 +138,19 @@ int AddDefectsHashMaps( vector<myMap> & h )
                                    &bucket, 
                                    &offset );
    i = 0;
-   while ( listErrCode == LIST_OK )
-   {      
+   while ( listErrCode == LIST_OK ) {      
       GET_PTR( pItem, offset, vdseHashItem );
       txItemStatus = &pItem->txStatus;
 
-      if ( i < 5 ) /* removed committed */
-      {
+      if ( i < 5 ) { /* removed committed */
          txItemStatus->txOffset = SET_OFFSET( pHashMap ); 
          txItemStatus->enumStatus = VDSE_TXS_DESTROYED_COMMITTED;
       }
-      else if ( i < 9 ) /* removed uncommitted */
-      {
+      else if ( i < 9 ) { /* removed uncommitted */
          txItemStatus->txOffset = SET_OFFSET( pHashMap ); 
          txItemStatus->enumStatus = VDSE_TXS_DESTROYED;
       }
-      else if ( i >= 11 ) /* Added */
-      {
+      else if ( i >= 11 ) { /* Added */
          txItemStatus->txOffset = SET_OFFSET( pHashMap ); 
          txItemStatus->enumStatus = VDSE_TXS_ADDED;
       }
@@ -174,8 +165,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
       i++;
 
    }
-   if ( listErrCode != LIST_END_OF_LIST )
-   {
+   if ( listErrCode != LIST_END_OF_LIST ) {
       cerr << "Iteration error in " << h[3].name << ", list err = " << listErrCode << endl;
       return -1;
    }
@@ -198,9 +188,10 @@ int AddDefectsHashMaps( vector<myMap> & h )
 
    GET_PTR( pArray, pHashMap->hashObj.arrayOffset, ptrdiff_t );
 
-   for ( i = 0; i < g_vdseArrayLengths[pHashMap->hashObj.lengthIndex]; ++i )
+   for ( i = 0; i < g_vdseArrayLengths[pHashMap->hashObj.lengthIndex]; ++i ) {
       if ( pArray[i] != NULL_OFFSET ) pArray[i] = 0;
-
+   }
+   
    cout << "Defect for " << h[6].name << ": item - invalid key length" << endl;
    apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[6].map + api_offset );
    pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
@@ -212,8 +203,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
                                    &bucket, 
                                    &offset );
    i = 0;
-   while ( listErrCode == LIST_OK )
-   {
+   while ( listErrCode == LIST_OK ) {
       previousBucket = bucket;
       previousOffset = offset;
       listErrCode = vdseHashGetNext( &pHashMap->hashObj,
@@ -224,8 +214,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
       i++;
       if ( i >= 6 ) break;
    }
-   if ( listErrCode != LIST_OK )
-   {
+   if ( listErrCode != LIST_OK ) {
       cerr << "Iteration error in " << h[6].name << ", list err = " << listErrCode << endl;
       return -1;
    }
@@ -243,8 +232,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
                                    &bucket, 
                                    &offset );
    i = 0;
-   while ( listErrCode == LIST_OK )
-   {
+   while ( listErrCode == LIST_OK ) {
       previousBucket = bucket;
       previousOffset = offset;
       listErrCode = vdseHashGetNext( &pHashMap->hashObj,
@@ -255,8 +243,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
       i++;
       if ( i >= 6 ) break;
    }
-   if ( listErrCode != LIST_OK )
-   {
+   if ( listErrCode != LIST_OK ) {
       cerr << "Iteration error in " << h[7].name << ", list err = " << listErrCode << endl;
       return -1;
    }
@@ -284,16 +271,13 @@ int AddDefectsQueues( vector<myQueue> & q )
    apiObj = (unsigned long **) ( (void *) &q[0].queue );
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table
-   for ( i = 0; i < sizeof(vdsQueue)/sizeof(void*); ++i, apiObj++ )
-   {
-      if ( **apiObj == VDSA_QUEUE )
-      {
+   for ( i = 0; i < sizeof(vdsQueue)/sizeof(void*); ++i, apiObj++ ) {
+      if ( **apiObj == VDSA_QUEUE ) {
          api_offset = i * sizeof(void*);
          break;
       }
    }
-   if ( api_offset == -1 )
-   {
+   if ( api_offset == -1 ) {
       cerr << "Can't calculate offset!" << endl;
       return -1;
    }
@@ -309,16 +293,14 @@ int AddDefectsQueues( vector<myQueue> & q )
    
    listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
-   while ( listErrCode == LIST_OK )
-   {
+   while ( listErrCode == LIST_OK ) {
       listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
                                              pNode, 
                                              &pNode );
       i++;
       if ( i >= 6 ) break;
    }
-   if ( listErrCode != LIST_OK )
-   {
+   if ( listErrCode != LIST_OK ) {
       cerr << "Iteration error in " << q[1].name << ", list err = " << listErrCode << endl;
       return -1;
    }
@@ -344,24 +326,20 @@ int AddDefectsQueues( vector<myQueue> & q )
 
    listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
-   while ( listErrCode == LIST_OK )
-   {      
+   while ( listErrCode == LIST_OK ) {
       pQueueItem = (vdseQueueItem*) 
          ((char*)pNode - offsetof( vdseQueueItem, node ));
       txItemStatus = &pQueueItem->txStatus;
 
-      if ( i < 5 ) /* removed committed */
-      {
+      if ( i < 5 ) { /* removed committed */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
          txItemStatus->enumStatus = VDSE_TXS_DESTROYED_COMMITTED;
       }
-      else if ( i < 9 ) /* removed uncommitted */
-      {
+      else if ( i < 9 ) { /* removed uncommitted */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
          txItemStatus->enumStatus = VDSE_TXS_DESTROYED;
       }
-      else if ( i >= 11 ) /* Added */
-      {
+      else if ( i >= 11 ) { /* Added */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
          txItemStatus->enumStatus = VDSE_TXS_ADDED;
       }
@@ -371,8 +349,7 @@ int AddDefectsQueues( vector<myQueue> & q )
                                              &pNode );
       i++;
    }
-   if ( listErrCode != LIST_END_OF_LIST )
-   {
+   if ( listErrCode != LIST_END_OF_LIST ) {
       cerr << "Iteration error in " << q[3].name << ", list err = " << listErrCode << endl;
       return -1;
    }
@@ -537,8 +514,7 @@ void CleanupPreviousRun( vdsSession & session )
       }
       session.Commit();
    }
-   catch ( vdsException exc )
-   {
+   catch ( vdsException exc ) {
       cerr << "Cleanup of previous session failed, error = " << exc.Message() << endl;
       exit(1);
    }
@@ -552,13 +528,11 @@ void PopulateHashMaps( vdsSession & session, vector<myMap> & h )
    string data, key;
    char s[4];
    
-   for ( i = 0; i < NUM_MAPS; ++i )
-   {
+   for ( i = 0; i < NUM_MAPS; ++i ) {
       session.CreateObject( h[i].name, VDS_HASH_MAP );
       h[i].map.Open( h[i].name );
 
-      for ( j = 0; j < 20; ++j )
-      {
+      for ( j = 0; j < 20; ++j ) {
          sprintf(s, "%d", j);
          key = string("Key ") + s;
          data = string("Inserted data item = ") + s;
@@ -579,13 +553,11 @@ void PopulateQueues( vdsSession & session, vector<myQueue> & q )
    string data;
    char s[4];
    
-   for ( i = 0; i < NUM_QUEUES; ++i )
-   {
+   for ( i = 0; i < NUM_QUEUES; ++i ) {
       session.CreateObject( q[i].name, VDS_QUEUE );
       q[i].queue.Open( q[i].name );
 
-      for ( j = 0; j < 20; ++j )
-      {
+      for ( j = 0; j < 20; ++j ) {
          sprintf(s, "%d", j);
          data = string("Inserted data item = ") + s;
          sprintf(s, "%d", i);

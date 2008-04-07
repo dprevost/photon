@@ -106,14 +106,13 @@ private:
    bool m_cleanupNeeded;
 #endif
 
-   int GetSockError()
-      {
+   int GetSockError() {
 #if defined (WIN32)
-         return WSAGetLastError();
+      return WSAGetLastError();
 #else
-         return errno;
+      return errno;
 #endif
-      }
+   }
 
    int Accept();
    

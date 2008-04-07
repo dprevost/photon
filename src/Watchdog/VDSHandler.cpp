@@ -37,7 +37,7 @@ vdswHandler::vdswHandler()
    int errcode = vdseInitEngine();
    if ( errcode != 0 ) {
       fprintf( stderr, "Abnormal error at line %d in VdsHandler.cpp\n", __LINE__ );
-         exit(1);
+      exit(1);
    }
    vdscInitErrorHandler( &m_context.errorHandler );
 }
@@ -164,16 +164,15 @@ vdswHandler::Init( struct ConfigParams * pConfig,
    size_t numObjectsDeleted = 0;
    size_t numObjectsError = 0;
 
-   if ( pConfig == NULL )
-      return -1;
+   if ( pConfig == NULL ) return -1;
    m_pConfig = pConfig;
 
    m_pMemManager = new vdswMemoryManager();
    
    path_len = strlen( pConfig->wdLocation ) + strlen( VDS_DIR_SEPARATOR ) +
       strlen( VDS_MEMFILE_NAME )  + strlen( ".bak" );
-   if ( path_len >= PATH_MAX )
-      return -1;
+   if ( path_len >= PATH_MAX ) return -1;
+   
    sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
             VDS_MEMFILE_NAME );
    
@@ -191,9 +190,7 @@ vdswHandler::Init( struct ConfigParams * pConfig,
                                           pConfig->filePerms,
                                           ppMemoryAddress,
                                           &m_context );
-      if ( errcode != 0 ) {
-         return -1;
-      }
+      if ( errcode != 0 ) return -1;
       
       (*ppMemoryAddress)->logON = false;
       if ( pConfig->logOn ) {
@@ -201,8 +198,7 @@ vdswHandler::Init( struct ConfigParams * pConfig,
          sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
                   VDS_LOGDIR_NAME );
          errcode = mkdir( path, pConfig->dirPerms );
-         if ( errcode != 0 )
-            return -1;
+         if ( errcode != 0 ) return -1;
          (*ppMemoryAddress)->logON = true;
       }
    }
@@ -268,9 +264,7 @@ vdswHandler::Init( struct ConfigParams * pConfig,
       errcode = m_pMemManager->OpenVDS( path,
                                         pConfig->memorySizekb,
                                         ppMemoryAddress );
-      if ( errcode != 0 ) {
-         return errcode;
-      }
+      if ( errcode != 0 ) return errcode;
       
       fprintf( stderr, "Starting the recovery of the VDS, please be patient\n" );
       if ( verifyVDSOnly ) {
@@ -320,10 +314,12 @@ vdswHandler::Init( struct ConfigParams * pConfig,
          errcode = access( path, F_OK );
 #else
          FILE* fp = fopen( path, "r" );
-         if ( fp == NULL )
+         if ( fp == NULL ) {
             errcode = -1;
-         else
-            fclose( fp );        
+         }
+         else {
+            fclose( fp );
+         }
 #endif
          if ( errcode == -1 ) {
             errcode = mkdir( path, pConfig->dirPerms );

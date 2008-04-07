@@ -122,8 +122,9 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
          break;
       }
       else {
-         if ( vdswVerifyOffset( pVerify, next->nextOffset ) )
+         if ( vdswVerifyOffset( pVerify, next->nextOffset ) ) {
             kit.forwardChainLen++;
+         }
          else {
             vdswEcho( pVerify, "Invalid offset - cannot repair" );
             return VDSWR_UNRECOVERABLE_ERROR;
@@ -160,8 +161,9 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
    if ( kit.breakInForwardChain && kit.breakInBackwardChain ) {
       rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Both chains broken" );
-      if ( kit.nextBreak == kit.previousBreak )
+      if ( kit.nextBreak == kit.previousBreak ) {
          kit.mode = REPAIR_WITH_BOTH_EQUAL;
+      }
       else {
          vdswEcho( pVerify, "Chains broken at different places - cannot repair" );
          return VDSWR_UNRECOVERABLE_ERROR;
@@ -178,7 +180,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
       vdswEcho( pVerify, "Backward chain broken" );
    }
    else {
-      if ( kit.backwardChainLen == kit.forwardChainLen ) {// all is well !
+      if ( kit.backwardChainLen == kit.forwardChainLen ) { /* all is well ! */
          if ( pList->currentSize != kit.forwardChainLen ) {
             rc = VDSWR_CHANGES;
             kit.mode = REPAIR_LENGTH;
@@ -189,10 +191,12 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
          vdswEcho( pVerify, "Warning - counts in foward and backward chains differ:" );
          vdswEcho( pVerify, "          using the longest chain to rebuild" );
          rc = VDSWR_CHANGES;
-         if ( kit.backwardChainLen > kit.forwardChainLen )
+         if ( kit.backwardChainLen > kit.forwardChainLen ) {
             kit.mode = REPAIR_WITH_BW_NO_BREAK;
-         else
+         }
+         else {
             kit.mode = REPAIR_WITH_FW_NO_BREAK;
+         }
       }
    }
    
@@ -276,8 +280,9 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
          
       } while ( next != &pList->head );
 
-      if ( foundNode ) 
+      if ( foundNode ) {
          pList->currentSize = kit.forwardChainLen;
+      }
       else {
          /* 
           * We need to add it to the chain - at its proper place. Don't
@@ -323,8 +328,9 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
       } while ( next != &pList->head );
 
       
-      if ( foundNode ) 
+      if ( foundNode ) {
          pList->currentSize = kit.backwardChainLen;
+      }
       else { 
          /* 
           * We need to add it to the chain - at its proper place. Don't

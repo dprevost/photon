@@ -49,7 +49,6 @@ vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
    errGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup,
                                        &dummy );
    while ( errGroup == LIST_OK ) {
-      
       pGroup = (vdseBlockGroup*)( 
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
       numBlocks += pGroup->numBlocks;
@@ -90,8 +89,7 @@ void vdswPopulateBitmap( struct vdswVerifyStruct   * pVerify,
     */
    errGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup,
                                        &dummy );
-   while ( errGroup == LIST_OK )
-   {
+   while ( errGroup == LIST_OK ) {
       pGroup = (vdseBlockGroup*)( 
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
 

@@ -89,20 +89,23 @@ typedef void* VDS_HANDLE;
 /**
  * The object type as seen from the API
  */
-typedef enum vdsObjectType
+enum vdsObjectType
 {
    VDS_FOLDER   = 1,
    VDS_QUEUE    = 2,
    VDS_HASH_MAP = 3,
    VDS_LAST_OBJECT_TYPE
-} vdsObjectType;
+};
 
-typedef enum vdsIteratorType
+typedef enum vdsObjectType vdsObjectType;
+
+enum vdsIteratorType
 {
    VDS_FIRST = 1,
    VDS_NEXT  = 2
-   
-} vdsIteratorType;
+};
+
+typedef enum vdsIteratorType vdsIteratorType;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -116,7 +119,7 @@ typedef enum vdsIteratorType
  * vary if you are using different locales (internally, names are stored as
  * wide characters (4 bytes)).
  */
-typedef struct vdsFolderEntry
+struct vdsFolderEntry
 {
    /** The object type */
    vdsObjectType type;
@@ -129,15 +132,16 @@ typedef struct vdsFolderEntry
    
    /** The name of the object. */
    char name[VDS_MAX_NAME_LENGTH*4];
+};
 
-} vdsFolderEntry;
+typedef struct vdsFolderEntry vdsFolderEntry;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  * This data structure is used to retrieve the status of objects.
  */
-typedef struct vdsObjStatus
+struct vdsObjStatus
 {
    /** The object type. */
    vdsObjectType type;
@@ -163,14 +167,16 @@ typedef struct vdsObjStatus
    /** Maximum key length (in bytes) if keys are supported - zero otherwise */
    size_t maxKeyLength;
 
-} vdsObjStatus;
+};
+
+typedef struct vdsObjStatus vdsObjStatus;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  * This data structure is used to retrieve the status of the virtual data space.
  */
-typedef struct vdsInfo
+struct vdsInfo
 {
    /** Total size of the virtual data space. */
    size_t totalSizeInBytes;
@@ -193,7 +199,9 @@ typedef struct vdsInfo
    /** Largest contiguous group of free blocks. */
    size_t largestFreeInBytes;
    
-} vdsInfo;
+};
+
+typedef struct vdsInfo vdsInfo;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

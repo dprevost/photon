@@ -91,10 +91,10 @@ int main()
       }
    }
    catch( vdsException exc ) {
-      if ( exc.ErrorCode() == VDS_NOT_ENOUGH_VDS_MEMORY )
+      if ( exc.ErrorCode() == VDS_NOT_ENOUGH_VDS_MEMORY ) {
          cout << "Number of inserted records: " << countIn << endl;
-      else
-      {
+      }
+      else {
          cerr << "Error inserting data, error = " << exc.Message() << endl;
          return 1;
       }

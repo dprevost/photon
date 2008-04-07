@@ -34,30 +34,26 @@ void cleanup()
     * By setting the shutdown "flag" to 2, we tell the QueueOut program
     * that there will be no more data, it can shutdown.
     */
-   if ( control != NULL )
-   {
+   if ( control != NULL ) {
       /* We flush it all before warning QueueOut to exit. */
       vdsCommit( session );
       rc = vdsHashMapReplace( control, shutdownKey, strlen(shutdownKey), 
          &controlData, sizeof(int) );
-      if ( rc != 0 ) 
-      {
+      if ( rc != 0 ) {
          vdsErrorMsg(session, msg, 256 );
          fprintf( stderr, "At line %d, vdsHashMapReplace error: %s\n", __LINE__, msg );
       }
-      else
-      /* We commit this update */
-      vdsCommit( session );
+      else {
+         /* We commit this update */
+         vdsCommit( session );
+      }
       vdsHashMapClose( control );
    }
 
-   if ( inQueue != NULL )
-      vdsQueueClose( inQueue );
-   if ( outQueue != NULL )
-      vdsQueueClose( outQueue );
+   if ( inQueue != NULL )  vdsQueueClose( inQueue );
+   if ( outQueue != NULL ) vdsQueueClose( outQueue );
    
-   if ( session != NULL )
-      vdsExitSession( session );
+   if ( session != NULL ) vdsExitSession( session );
    vdsExit();
 }
 
@@ -70,8 +66,7 @@ int initObjects()
    int controlData;
 
    rc = vdsHashMapOpen( session, controlName, strlen(controlName), &control );
-   if ( rc != 0 )
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg(session, msg, 256 );
       fprintf( stderr, "At line %d, vdsHashMapOpen error: %s\n", __LINE__, msg );
       cleanup();
@@ -81,16 +76,14 @@ int initObjects()
    controlData = 1;
    rc = vdsHashMapReplace( control, workProcessKey, strlen(workProcessKey),
       &controlData, sizeof(int) );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg(session, msg, 256 );
       fprintf( stderr, "At line %d, vdsHashMapInsert error: %s\n", __LINE__, msg );
       return -1;
    }
 
    rc = vdsCommit( session );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
       return -1;
@@ -109,8 +102,7 @@ int timetoShutdown()
    
    rc = vdsHashMapGet( control, shutdownKey, strlen(shutdownKey), 
       &controlData, sizeof(int), &length );
-   if ( rc == 0 && controlData == 1 )
-      return 1;
+   if ( rc == 0 && controlData == 1 ) return 1;
 
    return 0;
 }
@@ -132,23 +124,20 @@ int main( int argc, char *argv[] )
    req.tv_nsec = 1000000;
 #endif
    
-   if ( argc < 2 )
-   {
+   if ( argc < 2 ) {
       fprintf( stderr, "Usage: %s watchdog_address\n", argv[0] );
       return 1;
    }
 
    /* Initialize vds and create our session */
    rc = vdsInit( argv[1], 0 );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       fprintf( stderr, "At line %d, vdsInit error: %d\n", __LINE__, rc );
       return 1;
    }
 
    rc = vdsInitSession( &session );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       fprintf( stderr, "At line %d, vdsInitSession error: %d\n", __LINE__, rc );
       return 1;
    }
@@ -158,65 +147,58 @@ int main( int argc, char *argv[] )
    if ( rc != 0 ) { cleanup(); return 1; }
    
    rc = vdsQueueOpen( session, outQueueName, strlen(outQueueName), &outQueue );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg(session, msg, 256 );
       fprintf( stderr, "At line %d, vdsQueueOpen error: %s\n", __LINE__, msg );
       cleanup();
       return -1;
    }
    rc = vdsQueueOpen( session, inQueueName, strlen(inQueueName), &inQueue );
-   if ( rc != 0 ) 
-   {
+   if ( rc != 0 ) {
       vdsErrorMsg(session, msg, 256 );
       fprintf( stderr, "At line %d, vdsQueueOpen error: %s\n", __LINE__, msg );
       cleanup();
       return -1;
    }
 
-   while( 1 )
-   {
+   while( 1 ) {
       rc = vdsQueuePop( inQueue, &workStruct, sizeof(workStruct), &length );
-      if ( rc == VDS_IS_EMPTY || rc == VDS_ITEM_IS_IN_USE )
-      {
+      if ( rc == VDS_IS_EMPTY || rc == VDS_ITEM_IS_IN_USE ) {
          /* Nothing to do - might as well commit */
          vdsCommit( session );
-         if ( boolShutdown )
-            break;
+         if ( boolShutdown ) break;
          /*
           * We continue after we receive the shutdown to make sure that
           * there are no data left on the input queue. 
           */
 #if defined(WIN32)
-		 Sleep( 1 );
+		   Sleep( 1 );
 #else
          nanosleep( &req, &rem );
 #endif
          boolShutdown = timetoShutdown();
          continue;
       }
-      else if ( rc != 0 ) 
-      {
+      else if ( rc != 0 ) {
          vdsErrorMsg(session, msg, 256 );
             fprintf( stderr, "At line %d, vdsQueuePop error: %s\n", __LINE__, msg );
          cleanup();
          return -1;
       }
 
-      for ( i = 0; i < length-2; ++i )
+      for ( i = 0; i < length-2; ++i ) {
          workStruct.description[i] = toupper(workStruct.description[i]);
+      }
       
       rc = vdsQueuePush( outQueue, &workStruct, length );
-      if ( rc != 0 ) 
-      {
+      if ( rc != 0 ) {
          vdsErrorMsg(session, msg, 256 );
-            fprintf( stderr, "At line %d, vdsQueuePush error: %s\n", __LINE__, msg );
+         fprintf( stderr, "At line %d, vdsQueuePush error: %s\n", __LINE__, msg );
          cleanup();
          return -1;
       }
 
-      if ( (loop %10) == 0 )
-         vdsCommit( session );
+      if ( (loop %10) == 0 ) vdsCommit( session );
       loop++;
    }
 
@@ -227,3 +209,4 @@ int main( int argc, char *argv[] )
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

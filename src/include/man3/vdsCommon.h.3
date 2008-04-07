@@ -1,4 +1,4 @@
-.TH "vdsCommon.h" 3 "18 Mar 2008" "Version 0.2.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsCommon.h" 3 "7 Apr 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -48,6 +48,21 @@ vdsCommon.h \-
 .RI "typedef void * \fBVDS_HANDLE\fP"
 .br
 .RI "\fIVDS_HANDLE is an opaque data type used by the C API to reference objects created in the API module. \fP"
+.ti -1c
+.RI "typedef enum \fBvdsObjectType\fP \fBvdsObjectType\fP"
+.br
+.ti -1c
+.RI "typedef enum \fBvdsIteratorType\fP \fBvdsIteratorType\fP"
+.br
+.ti -1c
+.RI "typedef \fBvdsFolderEntry\fP \fBvdsFolderEntry\fP"
+.br
+.ti -1c
+.RI "typedef \fBvdsObjStatus\fP \fBvdsObjStatus\fP"
+.br
+.ti -1c
+.RI "typedef \fBvdsInfo\fP \fBvdsInfo\fP"
+.br
 .in -1c
 .SS "Enumerations"
 
@@ -90,6 +105,21 @@ Definition at line 38 of file vdsCommon.h.
 VDS_HANDLE is an opaque data type used by the C API to reference objects created in the API module. 
 .PP
 Definition at line 53 of file vdsCommon.h.
+.SS "typedef struct \fBvdsFolderEntry\fP \fBvdsFolderEntry\fP"
+.PP
+Definition at line 137 of file vdsCommon.h.
+.SS "typedef struct \fBvdsInfo\fP \fBvdsInfo\fP"
+.PP
+Definition at line 204 of file vdsCommon.h.
+.SS "typedef enum \fBvdsIteratorType\fP \fBvdsIteratorType\fP"
+.PP
+Definition at line 108 of file vdsCommon.h.
+.SS "typedef enum \fBvdsObjectType\fP \fBvdsObjectType\fP"
+.PP
+Definition at line 100 of file vdsCommon.h.
+.SS "typedef struct \fBvdsObjStatus\fP \fBvdsObjStatus\fP"
+.PP
+Definition at line 172 of file vdsCommon.h.
 .SH "Enumeration Type Documentation"
 .PP 
 .SS "enum \fBvdsIteratorType\fP"
@@ -102,7 +132,7 @@ Definition at line 53 of file vdsCommon.h.
 \fB\fIVDS_NEXT \fP\fP
 
 .PP
-Definition at line 100 of file vdsCommon.h.
+Definition at line 102 of file vdsCommon.h.
 .SS "enum \fBvdsObjectType\fP"
 .PP
 The object type as seen from the API. 

@@ -91,8 +91,9 @@ vdswCheckQueueContent( vdswVerifyStruct * pVerify,
       pDeletedNode = NULL;
    }
 
-   if ( listErrCode == LIST_END_OF_LIST || listErrCode == LIST_EMPTY )
+   if ( listErrCode == LIST_END_OF_LIST || listErrCode == LIST_EMPTY ) {
       return rc;
+   }
    
    fprintf( stderr, "Abnormal error in list, list error code = %d\n", 
       listErrCode );

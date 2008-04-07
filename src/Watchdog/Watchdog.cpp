@@ -149,8 +149,7 @@ int vdswWatchdog::Daemon()
    }
    
    // We are the parent
-   if ( pid != 0 )
-      exit(0);
+   if ( pid != 0 ) exit(0);
 
    // Set the log object to sent messages to the log facility of the OS 
    // instead of sending them to stderr.
@@ -176,8 +175,7 @@ int vdswWatchdog::Daemon()
    }
    
    // We are the parent
-   if ( pid != 0 )
-      exit(0);
+   if ( pid != 0 ) exit(0);
 
    errcode = chdir( m_params.wdLocation );
    if ( errcode != 0 ) {
@@ -255,7 +253,6 @@ int vdswWatchdog::Install()
                              NULL,
                              NULL,
                              NULL );
-    
    if ( hService == NULL ) {
       fprintf( stderr, "CreateService error = %d\n", GetLastError() );
       CloseServiceHandle(hManager);
@@ -376,10 +373,11 @@ int vdswWatchdog::ReadConfig( const char* cfgname )
                   ", error message = " );
          vdscGetErrorMsg( &m_errorHandler, m_errorMsg, WD_MSG_LEN );
       }  
-      else
+      else {
          sprintf( m_errorMsg, "%s%s",
                   missing,
                   " parameter is missing from config file" );
+      }
    }
    return errcode;
 }
@@ -678,27 +676,34 @@ void vdswWatchdog::Uninstall()
                            NULL,
                            KEY_SET_VALUE,
                            &hKey );
-   if ( errcode != ERROR_SUCCESS )
+   if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegOpenKeyEx error = %d\n", GetLastError() );
+   }
    else {
       errcode = RegDeleteValue( hKey, VDS_LOCATION );
-      if ( errcode != ERROR_SUCCESS )
+      if ( errcode != ERROR_SUCCESS ) {
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
+      }
       errcode = RegDeleteValue( hKey, VDS_WDADDRESS );
-      if ( errcode != ERROR_SUCCESS )
+      if ( errcode != ERROR_SUCCESS ) {
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
+      }
       errcode = RegDeleteValue( hKey, VDS_MEMSIZE );
-      if ( errcode != ERROR_SUCCESS )
+      if ( errcode != ERROR_SUCCESS ) {
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
+      }
       errcode = RegDeleteValue( hKey,  VDS_USE_LOG);
-      if ( errcode != ERROR_SUCCESS )
+      if ( errcode != ERROR_SUCCESS ) {
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
+      }
       errcode = RegDeleteValue( hKey, VDS_FILEPERMS );
-      if ( errcode != ERROR_SUCCESS )
+      if ( errcode != ERROR_SUCCESS ) {
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
+      }
       errcode = RegDeleteValue( hKey, VDS_DIRPERMS );
-      if ( errcode != ERROR_SUCCESS )
+      if ( errcode != ERROR_SUCCESS ) {
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
+      }
    }
    
    /*
@@ -726,8 +731,7 @@ void vdswWatchdog::Uninstall()
       return;
    }
    
-   errcode = QueryServiceStatus( hService,
-                                 &status );
+   errcode = QueryServiceStatus( hService, &status );
    if ( errcode == 0 ) {
       fprintf( stderr, "QueryServiceStatus error = %d\n", GetLastError() );
       fprintf( stderr, "Will attempt to remove the service anyway...\n" );
@@ -765,9 +769,10 @@ void vdswWatchdog::Uninstall()
       }
    }
    errcode = DeleteService( hService );
-   if ( errcode == 0 )
+   if ( errcode == 0 ) {
       fprintf( stderr, "DeleteService error = %d\n", GetLastError() );
-
+   }
+   
    CloseServiceHandle( hService );
    CloseServiceHandle( hManager );
 }

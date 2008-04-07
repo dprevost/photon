@@ -30,8 +30,7 @@ int main( int argc, char *argv[] )
    vdscOptionHandle optHandle;
    char *optArgument;
 #if defined (WIN32)
-   struct vdscOptStruct opts[5] = 
-   {
+   struct vdscOptStruct opts[5] = {
       { 'c', "config",    0, "filename", "Filename for the configuration options" },
       { 'i', "install",   1, "",         "Install the program as a NT service (Windows only)" },
       { 't', "test",      1, "",         "Test the config file and exit" },
@@ -40,8 +39,7 @@ int main( int argc, char *argv[] )
    };
    errcode = vdscSetSupportedOptions( 5, opts, &optHandle );
 #else
-   struct vdscOptStruct opts[4] = 
-   {
+   struct vdscOptStruct opts[4] = {
       { 'c', "config", 0, "filename", "Filename for the configuration options" },
       { 'd', "daemon", 1, "",         "Run the program as a Unix daemon (Unix/linux only)" },
       { 't', "test",   1, "",         "Test the config file and exit" },
@@ -78,14 +76,12 @@ int main( int argc, char *argv[] )
    }
 
    // In test mode, we test the config file and exit.
-   if ( vdscIsShortOptPresent( optHandle, 't' ) )
-      return 0;
+   if ( vdscIsShortOptPresent( optHandle, 't' ) ) return 0;
    
 #if defined ( WIN32 )
    if ( vdscIsShortOptPresent( optHandle, 'i' ) ) {
       errcode = wDog.Install();
-      if ( errcode != 0 )
-         return errcode;
+      if ( errcode != 0 ) return errcode;
       return 0;
    }
    
@@ -105,14 +101,12 @@ int main( int argc, char *argv[] )
       return errcode;
    }
 
-   if ( wDog.m_verifyVDSOnly )
-      return 0;
+   if ( wDog.m_verifyVDSOnly ) return 0;
    
 #if ! defined ( WIN32 )
    if ( vdscIsShortOptPresent( optHandle, 'd' ) ) {
       errcode = wDog.Daemon();
-      if ( errcode != 0 )
-         return errcode;
+      if ( errcode != 0 ) return errcode;
    }
 #endif
 
