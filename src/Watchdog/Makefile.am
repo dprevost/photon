@@ -21,6 +21,16 @@ bin_PROGRAMS = vdswd
 noinst_LIBRARIES = libVerifyVDS.a
 
 man_MANS = vdswd.1
+info_TEXINFOS = vdswd.texi
+
+if COND_USE_DOCBOOK2TEXI
+vdswd.texi: vdswd.xml
+	docbook2x-texi --encoding=utf-8 vdswd.xml
+endif
+if COND_USE_DOCBOOK2MAN
+vdswd.1: vdswd.xml
+	docbook2x-man --encoding=utf-8 vdswd.xml
+endif
 
 EXTRA_DIST =           \
         $(man_MANS)    \

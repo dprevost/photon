@@ -1,0 +1,119 @@
+\input texinfo
+@setfilename vdswd.info
+@documentencoding utf-8
+@settitle vdswd
+@direntry
+* vdswd: (vdswd).               starts the vdsf watchdog
+@end direntry
+
+@node Top
+@top vdswd
+
+@noindent
+@anchor{name}
+@chapheading Name
+
+vdswd — starts the vdsf watchdog
+
+@noindent
+@anchor{synopsis}
+@chapheading Synopsis
+
+@noindent
+@anchor{Testing the configuration file [and exit];}
+@heading Testing the configuration file (and exit):
+
+@samp{vdswd -c|--config} @emph{config_filename }@code{-t|--test}
+
+@noindent
+@anchor{Verifying the VDS [and exit];}
+@heading Verifying the VDS (and exit):
+
+@samp{vdswd -c|--config} @emph{config_filename }@code{-v|--verify}
+
+@noindent
+@anchor{Getting [minimal] help;}
+@heading Getting (minimal) help:
+
+@samp{vdswd -h|--help|-?}
+
+@noindent
+@anchor{Running normally;}
+@heading Running normally:
+
+@samp{vdswd -c|--config} @emph{config_filename }[@code{-d|--daemon}]
+
+@noindent
+@anchor{DESCRIPTION}
+@chapheading DESCRIPTION
+
+vdswd is the crash-recovery daemon (the watchdog) of the Virtual Data Space
+Framework (VDSF). Currently, crash recovery is only done when this program is 
+started.
+
+@noindent
+@anchor{OPTIONS}
+@chapheading OPTIONS
+
+@table @asis
+
+@item @code{-c}, @code{--config} @var{config_filename}
+The name of the configuration file (see 
+CONFIGURATION (@pxref{CONFIGURATION})
+below).
+
+@item @code{-d}, @code{--daemon}
+Become a Unix daemon. Error reporting is done using the system logger (syslog).
+This option is not available on Windows.
+
+@item @code{-h}, @code{--help}, @code{-?}
+Display minimal usage information.
+
+@item @code{-t}, @code{--test}
+Test the configuration file and exit.
+
+@item @code{-v}, @code{--verify}
+Verify the content of the shared-memory file (VDS) without modifying it 
+and exit.
+@end table
+
+@noindent
+@anchor{CONFIGURATION}
+@chapheading CONFIGURATION
+
+The syntax of the configuration file is very simple, pairs of keys and values.
+Lines starting with # are comments.
+
+@table @asis
+
+@item @emph{VDSLocation}
+The path of the directory where the watchdog will find the shared-memory file
+and auxiliary files (these files will be created if they do not exist).
+
+@item @emph{MemorySize}
+The total size of the shared memory in units of kiloBytes.
+
+@item @emph{WatchdogAddress}
+The local TCP/IP port the watchdog will use to listen for new connection 
+requests.
+
+@item @emph{FilePermissions}
+The file permissions used for the shared-memory file.
+
+@item @emph{DirectoryPermissions}
+The file permissions used for the directory holding the shared-memory file.
+@end table
+
+@noindent
+@anchor{REPORTING BUGS}
+@chapheading REPORTING BUGS
+
+Report bugs to <dprevost@@users.sourceforge.net>.
+
+@noindent
+@anchor{COPYRIGHT}
+@chapheading COPYRIGHT
+
+Copyright © 2008 Daniel Prévost.
+
+@bye

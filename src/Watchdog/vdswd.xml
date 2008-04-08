@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+                   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<refentry id='vdswd1'>
+<!--  
+  Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
+
+  This file is part of the vdsf (Virtual Data Space Framework) Library.
+
+  This file may be distributed and/or modified under the terms of the
+  GNU General Public License version 2 as published by the Free Software
+  Foundation and appearing in the file COPYING included in the 
+  packaging of this library.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+-->
+<refmeta>
+  <refentrytitle>vdswd</refentrytitle>
+  <manvolnum>1</manvolnum>
+  <refmiscinfo class='source'>VDSF</refmiscinfo>
+  <refmiscinfo class='manual'>User Commands</refmiscinfo>
+  <refmiscinfo class='version'>0.3.0</refmiscinfo>
+</refmeta>
+<refnamediv id='name'>
+  <refname>vdswd</refname>
+  <refpurpose>starts the vdsf watchdog</refpurpose>
+</refnamediv>
+<refsynopsisdiv id='synopsis'>
+
+<refsect2 id='testing_the_configuration_file'><title>Testing the configuration file (and exit):</title>
+<para><userinput>vdswd -c|--config</userinput> <emphasis remap='I'>config_filename </emphasis><option>-t|--test</option></para>
+</refsect2>
+
+<refsect2 id='verifying_the_vds'><title>Verifying the VDS (and exit):</title>
+<para><userinput>vdswd -c|--config</userinput> <emphasis remap='I'>config_filename </emphasis><option>-v|--verify</option></para>
+</refsect2>
+
+<refsect2 id='getting_help'><title>Getting (minimal) help:</title>
+<para><userinput>vdswd -h|--help|-?</userinput></para> 
+</refsect2>
+
+<refsect2 id='running_normally'><title>Running normally:</title>
+<para><userinput>vdswd -c|--config</userinput> <emphasis remap='I'>config_filename </emphasis>[<option>-d|--daemon</option>]</para>
+</refsect2>
+</refsynopsisdiv>
+
+<!-- body begins here -->
+
+<refsect1 id='description'><title>DESCRIPTION</title>
+<para>vdswd is the crash-recovery daemon (the watchdog) of the Virtual Data Space
+Framework (VDSF). Currently, crash recovery is only done when this program is 
+started.</para>
+</refsect1>
+
+<refsect1 id='options'><title>OPTIONS</title>
+<variablelist remap='TP'>
+  <varlistentry>
+  <term><option>-c</option>, <option>--config</option> <replaceable>config_filename</replaceable></term>
+  <listitem>
+<para>The name of the configuration file (see 
+<link linkend="configuration">CONFIGURATION</link>
+below).</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>-d</option>, <option>--daemon</option></term>
+  <listitem>
+<para>Become a Unix daemon. Error reporting is done using the system logger (syslog).
+This option is not available on Windows.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>-h</option>, <option>--help</option>, <option>-?</option></term>
+  <listitem>
+<para>Display minimal usage information.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>-t</option>, <option>--test</option></term>
+  <listitem>
+<para>Test the configuration file and exit.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>-v</option>, <option>--verify</option></term>
+  <listitem>
+<para>Verify the content of the shared-memory file (VDS) without modifying it 
+and exit.</para>
+  </listitem>
+  </varlistentry>
+</variablelist>
+</refsect1>
+
+<refsect1 id='configuration'><title>CONFIGURATION</title>
+<para>The syntax of the configuration file is very simple, pairs of keys and values.
+Lines starting with # are comments.</para>
+<variablelist remap='TP'>
+  <varlistentry>
+  <term><emphasis remap='B'>VDSLocation</emphasis></term>
+  <listitem>
+<para>The path of the directory where the watchdog will find the shared-memory file
+and auxiliary files (these files will be created if they do not exist).</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><emphasis remap='B'>MemorySize</emphasis></term>
+  <listitem>
+<para>The total size of the shared memory in units of kiloBytes.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><emphasis remap='B'>WatchdogAddress</emphasis></term>
+  <listitem>
+<para>The local TCP/IP port the watchdog will use to listen for new connection 
+requests.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><emphasis remap='B'>FilePermissions</emphasis></term>
+  <listitem>
+<para>The file permissions used for the shared-memory file.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><emphasis remap='B'>DirectoryPermissions</emphasis></term>
+  <listitem>
+<para>The file permissions used for the directory holding the shared-memory file.</para>
+  </listitem>
+  </varlistentry>
+</variablelist>
+</refsect1>
+
+<refsect1 id='reporting_bugs'><title>REPORTING BUGS</title>
+<para>Report bugs to &lt;dprevost@users.sourceforge.net&gt;.</para>
+</refsect1>
+
+<refsect1 id='copyright'><title>COPYRIGHT</title>
+<para>Copyright © 2008 Daniel Prévost.</para>
+  <!--   <para>Copyright &copy; 2008 Daniel PrÃ©vost.</para>   -->
+</refsect1>
+</refentry>
+

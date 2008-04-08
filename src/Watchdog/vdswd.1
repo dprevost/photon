@@ -1,77 +1,67 @@
-.\" --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-.\" 
-.\" Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
-.\" 
-.\" This file is part of the vdsf (Virtual Data Space Framework) Library.
-.\" 
-.\" This file may be distributed and/or modified under the terms of the
-.\" GNU General Public License version 2 as published by the Free Software
-.\" Foundation and appearing in the file COPYING included in the
-.\" packaging of this library.
-.\" 
-.\" This library is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-.\" 
-.\" --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-.\" 
-.TH VDSWD "1" "January 2008 (version 0.2)" VDSF
+'\" -*- coding: utf-8 -*-
+.if \n(.g .ds T< \\FC
+.if \n(.g .ds T> \\F[\n[.fam]]
+.de URL
+\\$2 \(la\\$1\(ra\\$3
+..
+.if \n(.g .mso www.tmac
+.TH vdswd 1 "8 April 2008" VDSF "User Commands"
 .SH NAME
 vdswd \- starts the vdsf watchdog
 .SH SYNOPSIS
-.SS "Testing the configuration file (and exit):"
-\fBvdswd -c|--config\fR \fIconfig_filename \fB-t|--test\fR
-.SS "Verifying the VDS (and exit):"
-\fBvdswd -c|--config\fR \fIconfig_filename \fB-v|--verify\fR
-.SS "Getting (minimal) help:"
-\fBvdswd -h|--help|-?\fR 
-.SS "Running normally:"
-\fBvdswd -c|--config\fR \fIconfig_filename \fR[\fB-d|--daemon\fR]
+.SS "TESTING THE CONFIGURATION FILE (AND EXIT):"
+\*(T<\fBvdswd \-c|\-\-config\fR\*(T> \fIconfig_filename \fR\*(T<\fB\-t|\-\-test\fR\*(T>
+.SS "VERIFYING THE VDS (AND EXIT):"
+\*(T<\fBvdswd \-c|\-\-config\fR\*(T> \fIconfig_filename \fR\*(T<\fB\-v|\-\-verify\fR\*(T>
+.SS "GETTING (MINIMAL) HELP:"
+\*(T<\fBvdswd \-h|\-\-help|\-?\fR\*(T>
+.SS "RUNNING NORMALLY:"
+\*(T<\fBvdswd \-c|\-\-config\fR\*(T> \fIconfig_filename \fR[\*(T<\fB\-d|\-\-daemon\fR\*(T>]
 .SH DESCRIPTION
 vdswd is the crash-recovery daemon (the watchdog) of the Virtual Data Space
 Framework (VDSF). Currently, crash recovery is only done when this program is 
 started.
 .SH OPTIONS
-.TP
-\fB-c\fR, \fB--config\fR \fIconfig_filename\fR
+.TP 
+\*(T<\fB\-c\fR\*(T>, \*(T<\fB\-\-config\fR\*(T> \fIconfig_filename\fR
 The name of the configuration file (see 
-.B CONFIGURATION 
+CONFIGURATION [\fBvdswd\fR(1)]
 below).
-.TP
-\fB-d\fR, \fB--daemon\fR
+.TP 
+\*(T<\fB\-d\fR\*(T>, \*(T<\fB\-\-daemon\fR\*(T>
 Become a Unix daemon. Error reporting is done using the system logger (syslog).
 This option is not available on Windows.
-.TP
-\fB-h\fR, \fB--help\fR, \fB-?\fR
+.TP 
+\*(T<\fB\-h\fR\*(T>, \*(T<\fB\-\-help\fR\*(T>, \*(T<\fB\-?\fR\*(T>
 Display minimal usage information.
-.TP
-\fB-t\fR, \fB--test\fR
+.TP 
+\*(T<\fB\-t\fR\*(T>, \*(T<\fB\-\-test\fR\*(T>
 Test the configuration file and exit.
-.TP
-\fB-v\fR, \fB--verify\fR
+.TP 
+\*(T<\fB\-v\fR\*(T>, \*(T<\fB\-\-verify\fR\*(T>
 Verify the content of the shared-memory file (VDS) without modifying it 
 and exit.
 .SH CONFIGURATION
 The syntax of the configuration file is very simple, pairs of keys and values.
 Lines starting with # are comments.
-.TP
-\fBVDSLocation\fR
+.TP 
+\fIVDSLocation\fR
 The path of the directory where the watchdog will find the shared-memory file
 and auxiliary files (these files will be created if they do not exist).
-.TP
-\fBMemorySize\fR
+.TP 
+\fIMemorySize\fR
 The total size of the shared memory in units of kiloBytes.
-.TP
-\fBWatchdogAddress\fR
+.TP 
+\fIWatchdogAddress\fR
 The local TCP/IP port the watchdog will use to listen for new connection 
 requests.
-.TP
-\fBFilePermissions\fR
+.TP 
+\fIFilePermissions\fR
 The file permissions used for the shared-memory file.
-.TP
-\fBDirectoryPermissions\fR
+.TP 
+\fIDirectoryPermissions\fR
 The file permissions used for the directory holding the shared-memory file.
 .SH "REPORTING BUGS"
 Report bugs to <dprevost@users.sourceforge.net>.
 .SH COPYRIGHT
-Copyright \(co 2008 Daniel Prévost.
+Copyright © 2008 Daniel Prévost.

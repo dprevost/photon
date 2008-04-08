@@ -1,0 +1,140 @@
+This is vdswd.info, produced by makeinfo version 4.8 from vdswd.texi.
+
+START-INFO-DIR-ENTRY
+* vdswd: (vdswd).               starts the vdsf watchdog
+END-INFO-DIR-ENTRY
+
+
+File: vdswd.info,  Node: Top,  Up: (dir)
+
+vdswd
+*****
+
+
+
+Name
+****
+
+vdswd — starts the vdsf watchdog
+
+
+
+Synopsis
+********
+
+
+
+Testing the configuration file (and exit):
+==========================================
+
+`vdswd -c|--config' _config_filename _`-t|--test'
+
+
+
+Verifying the VDS (and exit):
+=============================
+
+`vdswd -c|--config' _config_filename _`-v|--verify'
+
+
+
+Getting (minimal) help:
+=======================
+
+`vdswd -h|--help|-?'
+
+
+
+Running normally:
+=================
+
+`vdswd -c|--config' _config_filename _[`-d|--daemon']
+
+
+
+DESCRIPTION
+***********
+
+vdswd is the crash-recovery daemon (the watchdog) of the Virtual Data
+Space Framework (VDSF). Currently, crash recovery is only done when
+this program is started.
+
+
+
+OPTIONS
+*******
+
+`-c', `--config' CONFIG_FILENAME
+     The name of the configuration file (see CONFIGURATION (*note
+     CONFIGURATION::) below).
+
+`-d', `--daemon'
+     Become a Unix daemon. Error reporting is done using the system
+     logger (syslog).  This option is not available on Windows.
+
+`-h', `--help', `-?'
+     Display minimal usage information.
+
+`-t', `--test'
+     Test the configuration file and exit.
+
+`-v', `--verify'
+     Verify the content of the shared-memory file (VDS) without
+     modifying it and exit.
+
+
+CONFIGURATION
+*************
+
+The syntax of the configuration file is very simple, pairs of keys and
+values.  Lines starting with # are comments.
+
+_VDSLocation_
+     The path of the directory where the watchdog will find the
+     shared-memory file and auxiliary files (these files will be
+     created if they do not exist).
+
+_MemorySize_
+     The total size of the shared memory in units of kiloBytes.
+
+_WatchdogAddress_
+     The local TCP/IP port the watchdog will use to listen for new
+     connection requests.
+
+_FilePermissions_
+     The file permissions used for the shared-memory file.
+
+_DirectoryPermissions_
+     The file permissions used for the directory holding the
+     shared-memory file.
+
+
+REPORTING BUGS
+**************
+
+Report bugs to <dprevost@users.sourceforge.net>.
+
+
+
+COPYRIGHT
+*********
+
+Copyright © 2008 Daniel Prévost.
+
+
+
+Tag Table:
+Node: Top169
+Ref: name226
+Ref: synopsis275
+Ref: Testing the configuration file [and exit];296
+Ref: Verifying the VDS [and exit];436
+Ref: Getting [minimal] help;552
+Ref: Running normally;625
+Ref: DESCRIPTION719
+Ref: OPTIONS910
+Ref: CONFIGURATION1440
+Ref: REPORTING BUGS2145
+Ref: COPYRIGHT2227
+
+End Tag Table
