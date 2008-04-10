@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+                   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<refentry id='vdssh1'>
+<!--  
+  Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
+
+  This file is part of the vdsf (Virtual Data Space Framework) Library.
+
+  This file may be distributed and/or modified under the terms of the
+  GNU General Public License version 2 as published by the Free Software
+  Foundation and appearing in the file COPYING included in the 
+  packaging of this library.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+-->
+<refmeta>
+  <refentrytitle>vdssh</refentrytitle>
+  <manvolnum>1</manvolnum>
+  <refmiscinfo class='source'>VDSF</refmiscinfo>
+  <refmiscinfo class='manual'>User Commands</refmiscinfo>
+  <refmiscinfo class='version'>0.3.0</refmiscinfo>
+</refmeta>
+<refnamediv id='name'>
+  <refname>vdssh</refname>
+  <refpurpose>starts a pseudo-shell to access VDSF data</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id='synopsis'>
+  <refsect2 id='getting_help'><title>Getting (minimal) help:</title>
+  <para><userinput>vdssh -h|--help|-?</userinput></para> 
+  </refsect2>
+
+  <refsect2 id='running_normally'><title>Running normally:</title>
+  <para><userinput>vdssh -a|--address</userinput> <emphasis remap='I'>watchdog_address </emphasis></para>
+  </refsect2>
+</refsynopsisdiv>
+
+<!-- body begins here -->
+
+<refsect1 id='description'><title>DESCRIPTION</title>
+  <para> 
+    vdssh is a pseudo-shell allowing access to the data in the VDS 
+    (shared-memory used by the VDSF software).
+  </para>
+  <para>
+    This program supports a very limited number of standard Bourne shell commands 
+    (and a few equivalent DOS commands). See the section 
+    <emphasis role="bold">COMMANDS</emphasis>
+    for a list of supported commands (and syntax).
+  </para>
+</refsect1>
+
+<refsect1 id='options'><title>OPTIONS</title>
+<variablelist remap='TP'>
+  <varlistentry>
+    <term><option>-a</option>, <option>--address</option> <replaceable>watchdog_address</replaceable></term>
+    <listitem>
+      <para>
+        The TCP port for the VDSF watchdog (the program vdswd).
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><option>-h</option>, <option>-?</option>, <option>--help</option></term>
+    <listitem>
+      <para>
+        Minimal help including a list of supported commands.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+</refsect1>
+
+<refsect1 id='commands'><title>Commands</title>
+  <para>
+    The syntax of the commands is simpler than the equivalent Bourne shell 
+    commands - most commands take no options.
+  </para>
+  <para>
+    Names of objects (data containers) can be either absolute (starting with /)
+    or relative to the current folder (see the <emphasis role="bold">cd
+    </emphasis> command for an explanation on how to change the current folder).
+  </para>
+
+  <variablelist >
+    <varlistentry>
+      <term><emphasis role="bold">cat</emphasis> <replaceable>object_name</replaceable></term>
+      <listitem>
+        <para>
+          Display the content of the object named object_name.
+        </para>
+        <para>
+          <emphasis role="bold">Warning: </emphasis>cat will print the output as strings.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><emphasis role="bold">cd</emphasis> <replaceable><optional>folder_name</optional></replaceable></term>
+      <listitem>
+        <para>
+          Without a name, change the current folder to "/". Change the current 
+          folder to folder_name.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><emphasis role="bold">cp</emphasis> <replaceable> source_name dest_name</replaceable></term>
+      <listitem>
+        <para>
+          Copy the source_name object to the dest_name object.
+        </para>
+        <para>
+          <emphasis role="bold">Warning:  </emphasis>
+          dest_name is not overwritten if it already exists.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><emphasis role="bold">del/rm</emphasis> <replaceable> object_name</replaceable></term>
+      <listitem>
+        <para>
+          Delete the data container named object_name.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><emphasis role="bold">dir/ls</emphasis> <replaceable><optional>folder_name</optional></replaceable></term>
+      <listitem>
+        <para>
+          Without a name, list the objects of the current folder. List the 
+          objects of the folder folder_name.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><emphasis role="bold">exit/quit</emphasis></term>
+      <listitem>
+        <para>
+          Exit the program.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><emphasis role="bold">free</emphasis></term>
+      <listitem>
+        <para>
+          Display the amount of used/free memory (main allocator).
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><emphasis role="bold">help/man</emphasis></term>
+      <listitem>
+        <para>
+          Display the current list of commands.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><emphasis role="bold">mkdir</emphasis> <replaceable> folder_name</replaceable></term>
+      <listitem>
+        <para>
+          Create a new folder.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><emphasis role="bold">pwd</emphasis></term>
+      <listitem>
+        <para>
+          Display the current folder.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><emphasis role="bold">rmdir</emphasis> <replaceable> folder_name</replaceable></term>
+      <listitem>
+        <para>
+          Delete the folder named folder_name.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><emphasis role="bold">stat</emphasis> <replaceable> object_name</replaceable></term>
+      <listitem>
+        <para>
+          Show the status of the object named <emphasis>object_name</emphasis>.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><emphasis role="bold">touch -h|-q</emphasis> <replaceable> object_name</replaceable></term>
+      <listitem>
+        <para>
+          Create a new object named object_name of the specified type:
+          <simplelist type='vert' columns='1'>
+            <member>-h or --hashmap: a hash map</member>
+            <member>-q or --queue: a FIFO queue</member>
+          </simplelist>
+        </para>
+      </listitem>
+    </varlistentry>
+  </variablelist>  
+</refsect1>
+
+<refsect1 id='reporting_bugs'><title>REPORTING BUGS</title>
+  <para>Report bugs to &lt;dprevost@users.sourceforge.net&gt;.</para>
+</refsect1>
+
+<refsect1 id='copyright'><title>COPYRIGHT</title>
+  <para>Copyright © 2008 Daniel Prévost.</para>
+</refsect1>
+</refentry>

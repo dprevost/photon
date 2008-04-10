@@ -1,6 +1,6 @@
 \input texinfo
 @setfilename vdswd.info
-@documentencoding utf-8
+@documentencoding iso-8859-1
 @settitle vdswd
 @direntry
 * vdswd: (vdswd).               starts the vdsf watchdog
@@ -13,7 +13,7 @@
 @anchor{name}
 @chapheading Name
 
-vdswd — starts the vdsf watchdog
+vdswd --- starts the vdsf watchdog
 
 @noindent
 @anchor{synopsis}
@@ -114,6 +114,6 @@ Report bugs to <dprevost@@users.sourceforge.net>.
 @anchor{COPYRIGHT}
 @chapheading COPYRIGHT
 
-Copyright © 2008 Daniel Prévost.
+Copyright @copyright{} 2008 Daniel Pr@'evost.
 
 @bye

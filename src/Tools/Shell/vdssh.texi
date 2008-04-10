@@ -1,0 +1,138 @@
+\input texinfo
+@setfilename vdssh.info
+@documentencoding iso-8859-1
+@settitle vdssh
+@direntry
+* vdssh: (vdssh).               starts a pseudo-shell to access VDSF data
+@end direntry
+
+@node Top
+@top vdssh
+
+@noindent
+@anchor{name}
+@chapheading Name
+
+vdssh --- starts a pseudo-shell to access VDSF data
+
+@noindent
+@anchor{synopsis}
+@chapheading Synopsis
+
+@noindent
+@anchor{Getting [minimal] help;}
+@heading Getting (minimal) help:
+
+@samp{vdssh -h|--help|-?}
+
+@noindent
+@anchor{Running normally;}
+@heading Running normally:
+
+@samp{vdssh -a|--address} @emph{watchdog_address }
+
+@noindent
+@anchor{DESCRIPTION}
+@chapheading DESCRIPTION
+
+vdssh is a pseudo-shell allowing access to the data in the VDS 
+(shared-memory used by the VDSF software).
+
+This program supports a very limited number of standard Bourne shell commands 
+(and a few equivalent DOS commands). See the section 
+@strong{COMMANDS}
+for a list of supported commands (and syntax).
+
+@noindent
+@anchor{OPTIONS}
+@chapheading OPTIONS
+
+@table @asis
+
+@item @code{-a}, @code{--address} @var{watchdog_address}
+The TCP port for the VDSF watchdog (the program vdswd).
+
+@item @code{-h}, @code{-?}, @code{--help}
+Minimal help including a list of supported commands.
+@end table
+
+@noindent
+@anchor{Commands}
+@chapheading Commands
+
+The syntax of the commands is simpler than the equivalent Bourne shell 
+commands - most commands take no options.
+
+Names of objects (data containers) can be either absolute (starting with /)
+or relative to the current folder (see the @strong{cd
+} command for an explanation on how to change the current folder).
+
+@table @asis
+
+@item @strong{cat} @var{object_name}
+Display the content of the object named object_name.
+
+@strong{Warning: }cat will print the output as strings.
+
+@item @strong{cd} @var{}
+Without a name, change the current folder to "/". Change the current 
+folder to folder_name.
+
+@item @strong{cp} @var{ source_name dest_name}
+Copy the source_name object to the dest_name object.
+
+@strong{Warning:  }
+dest_name is not overwritten if it already exists.
+
+@item @strong{del/rm} @var{ object_name}
+Delete the data container named object_name.
+
+@item @strong{dir/ls} @var{}
+Without a name, list the objects of the current folder. List the 
+objects of the folder folder_name.
+
+@item @strong{exit/quit}
+Exit the program.
+
+@item @strong{free}
+Display the amount of used/free memory (main allocator).
+
+@item @strong{help/man}
+Display the current list of commands.
+
+@item @strong{mkdir} @var{ folder_name}
+Create a new folder.
+
+@item @strong{pwd}
+Display the current folder.
+
+@item @strong{rmdir} @var{ folder_name}
+Delete the folder named folder_name.
+
+@item @strong{stat} @var{ object_name}
+Show the status of the object named @emph{object_name}.
+
+@item @strong{touch -h|-q} @var{ object_name}
+Create a new object named object_name of the specified type:
+
+@multitable @columnfractions 1
+@item
+-h or --hashmap: a hash map
+@item
+-q or --queue: a FIFO queue
+@end multitable
+@end table
+
+@noindent
+@anchor{REPORTING BUGS}
+@chapheading REPORTING BUGS
+
+Report bugs to <dprevost@@users.sourceforge.net>.
+
+@noindent
+@anchor{COPYRIGHT}
+@chapheading COPYRIGHT
+
+Copyright @copyright{} 2008 Daniel Pr@'evost.
+
+@bye

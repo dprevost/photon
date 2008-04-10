@@ -1,0 +1,148 @@
+This is vdssh.info, produced by makeinfo version 4.8 from vdssh.texi.
+
+START-INFO-DIR-ENTRY
+* vdssh: (vdssh).               starts a pseudo-shell to access VDSF data
+END-INFO-DIR-ENTRY
+
+
+File: vdssh.info,  Node: Top,  Up: (dir)
+
+vdssh
+*****
+
+
+
+Name
+****
+
+vdssh -- starts a pseudo-shell to access VDSF data
+
+
+
+Synopsis
+********
+
+
+
+Getting (minimal) help:
+=======================
+
+`vdssh -h|--help|-?'
+
+
+
+Running normally:
+=================
+
+`vdssh -a|--address' _watchdog_address _
+
+
+
+DESCRIPTION
+***********
+
+vdssh is a pseudo-shell allowing access to the data in the VDS
+(shared-memory used by the VDSF software).
+
+   This program supports a very limited number of standard Bourne shell
+commands (and a few equivalent DOS commands). See the section *COMMANDS*
+for a list of supported commands (and syntax).
+
+
+
+OPTIONS
+*******
+
+`-a', `--address' WATCHDOG_ADDRESS
+     The TCP port for the VDSF watchdog (the program vdswd).
+
+`-h', `-?', `--help'
+     Minimal help including a list of supported commands.
+
+
+Commands
+********
+
+The syntax of the commands is simpler than the equivalent Bourne shell
+commands - most commands take no options.
+
+   Names of objects (data containers) can be either absolute (starting
+with /) or relative to the current folder (see the *cd * command for an
+explanation on how to change the current folder).
+
+*cat* OBJECT_NAME
+     Display the content of the object named object_name.
+
+     *Warning: *cat will print the output as strings.
+
+*cd*
+     Without a name, change the current folder to "/". Change the
+     current folder to folder_name.
+
+*cp*  SOURCE_NAME DEST_NAME
+     Copy the source_name object to the dest_name object.
+
+     *Warning:  * dest_name is not overwritten if it already exists.
+
+*del/rm*  OBJECT_NAME
+     Delete the data container named object_name.
+
+*dir/ls*
+     Without a name, list the objects of the current folder. List the
+     objects of the folder folder_name.
+
+*exit/quit*
+     Exit the program.
+
+*free*
+     Display the amount of used/free memory (main allocator).
+
+*help/man*
+     Display the current list of commands.
+
+*mkdir*  FOLDER_NAME
+     Create a new folder.
+
+*pwd*
+     Display the current folder.
+
+*rmdir*  FOLDER_NAME
+     Delete the folder named folder_name.
+
+*stat*  OBJECT_NAME
+     Show the status of the object named _object_name_.
+
+*touch -h|-q*  OBJECT_NAME
+     Create a new object named object_name of the specified type:
+
+     -h or -hashmap: a hash map
+     -q or -queue: a FIFO queue
+
+
+REPORTING BUGS
+**************
+
+Report bugs to <dprevost@users.sourceforge.net>.
+
+
+
+COPYRIGHT
+*********
+
+Copyright (C) 2008 Daniel Pre'vost.
+
+
+
+Tag Table:
+Node: Top186
+Ref: name243
+Ref: synopsis308
+Ref: Getting [minimal] help;329
+Ref: Running normally;402
+Ref: DESCRIPTION483
+Ref: OPTIONS810
+Ref: Commands1006
+Ref: REPORTING BUGS2473
+Ref: COPYRIGHT2555
+
+End Tag Table

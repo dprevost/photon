@@ -17,6 +17,16 @@ CLEANFILES = *~
 bin_PROGRAMS = vdssh
 
 man_MANS = vdssh.1
+info_TEXINFOS = vdssh.texi
+
+if COND_USE_DOCBOOK2TEXI
+vdssh.texi: vdssh.xml
+	docbook2x-texi --encoding=iso-8859-1 vdssh.xml
+endif
+if COND_USE_DOCBOOK2MAN
+vdssh.1: vdssh.xml
+	docbook2x-man --encoding=iso-8859-1 vdssh.xml
+endif
 
 EXTRA_DIST =           \
         $(man_MANS)    \
@@ -30,5 +40,5 @@ vdssh_SOURCES =       \
         vdssh.cpp     \
         vdssh.dsp     
 
-vdssh_LDADD = $(top_builddir)/src/C++/libvdsfcpp.la 
+vdssh_LDADD = $(top_builddir)/src/C++/libvdsfcpp.la
 

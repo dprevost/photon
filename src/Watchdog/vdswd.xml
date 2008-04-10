@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
                    "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
 <refentry id='vdswd1'>
@@ -137,8 +137,8 @@ requests.</para>
 </refsect1>
 
 <refsect1 id='copyright'><title>COPYRIGHT</title>
-<para>Copyright � 2008 Daniel Pr�vost.</para>
-  <!--   <para>Copyright &copy; 2008 Daniel Prévost.</para>   -->
+<para>Copyright © 2008 Daniel Prévost.</para>
+  <!--   <para>Copyright &copy; 2008 Daniel PrÃ©vost.</para>   -->
 </refsect1>
 </refentry>
 
