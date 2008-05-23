@@ -73,6 +73,3 @@ EXTRA_DIST =           \
         Engine.dsp     \
         Makefile.win32 
 
-VdsErrorHandler.c VdsErrorHandler.h: $(top_srcdir)/src/include/vdsf/vdsErrors.h
-	$(top_builddir)/src/BuildTools/errorParser -i $(top_srcdir)/src/include/vdsf/vdsErrors.h -o VdsErrorHandler -p vdseErr
-

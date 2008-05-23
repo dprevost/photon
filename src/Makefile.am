@@ -11,8 +11,8 @@
 CLEANFILES = *~ Packages\*~
 
 # The code have to be build following a certain order:
-#   1-    Common
-#   2-    BuildTools
+#   1-    Errors
+#   2-    Common
 #   3-    Engine
 #   4-    Watchdog
 #   5-    API
@@ -24,8 +24,8 @@ if COND_USE_JAVA
 endif
 
 SUBDIRS =             \
+        Errors        \
         Common        \
-        BuildTools    \
         Engine        \
         Watchdog      \
         API           \

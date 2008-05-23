@@ -34,7 +34,7 @@ int vdseInitEngine()
    if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER ) {
       vdscInitErrorDefs();
 
-      g_vdsErrorHandle = vdscAddErrorMsgHandler( "VDSF", vdseErrGetErrMessage );
+      g_vdsErrorHandle = vdscAddErrorMsgHandler( "VDSF", vdse_ErrorMessage );
 
       if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER ) {
          fprintf( stderr, "Error registring the error handler for VDS errors\n" );

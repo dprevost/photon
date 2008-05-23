@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE errorlist PUBLIC "-//Error Parser project//DTD Error Parser XML V1.2//EN"
+             "http://errorparser.sourceforge.net/xml/errorParser12.dtd"> 
+<!-- 
+    This example is going to be used for an existing project, VDSF 
+    (http://sourceforge.net/projects/vdsf), once Error Parser is able
+    to create code to retrieve error messages using the error number.
+
+    You can replace the DOCTYPE with this, if you prefer:
+<!DOCTYPE errorlist SYSTEM 
+             "/usr/local/share/xml/errorParser/DTD/errorParser12.dtd">
+    
+-->
+
+<!-- VDSF next version is 0.3 -->
+<errorlist version="0.3">
+  <!-- Copyright information and any additional info that will appear at 
+       the top of the generated files. This is optional. -->
+  <copyright_group>
+    <copyright>
+      <years>2006-2008</years>
+      <authors>Daniel Prevost</authors>
+      <!-- Each <notice> is mapped to a paragraph (easier to read) -->
+      <notice>
+        This file is part of the vdsf library (Virtual Data Space Framework).
+      </notice>
+      <!-- The GPL license is of course for VDSF, not for Error Parser... -->
+      <notice>
+        This file may be distributed and/or modified under the terms of the
+        GNU General Public License version 2 as published by the Free Software
+        Foundation and appearing in the file COPYING included in the
+        packaging of this library.
+      </notice>
+      <notice>
+        This library is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+      </notice>
+    </copyright>
+  </copyright_group>
+  <errgroup>
+    <error>
+      <errnumber> 0 </errnumber>
+      <errname> OK </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>No error...</errormsg>
+          <errordoc>No error...</errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 666 </errnumber>
+      <errname> INTERNAL_ERROR </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Abnormal internal error.</errormsg>
+          <errordoc>
+            Abnormal internal error. It should not happen!
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 1 </errnumber>
+      <errname> ENGINE_BUSY </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Cannot get a lock on a system object, the engine is "busy".
+          </errormsg>
+          <errordoc>
+            Cannot get a lock on a system object, the engine is "busy".
+          </errordoc>
+          <errordoc>
+            This might be the result of either a very busy system where 
+            unused cpu cycles are rare or a lock might be held by a 
+            crashed process.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 2 </errnumber>
+      <errname> NOT_ENOUGH_VDS_MEMORY </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Not enough memory in the VDS.</errormsg>
+          <errordoc>Not enough memory in the VDS.</errordoc>
+        </message>
+      </message_group>
+    </error>
+ 
+    <error>
+      <errnumber> 3 </errnumber>
+      <errname> NOT_ENOUGH_HEAP_MEMORY </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Not enough heap memory (non-VDS memory). 
+          </errormsg>
+          <errordoc>
+            Not enough heap memory (non-VDS memory).
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 4 </errnumber>
+      <errname> NOT_ENOUGH_RESOURCES </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            There are not enough resources to correctly process the call.
+          </errormsg>
+          <errordoc>
+            There are not enough resources to correctly process the call.
+          </errordoc>
+          <errordoc>
+            There are not enough resources to correctly process the call. 
+            This might be due to a lack of POSIX semaphores on systems 
+            where locks are implemented that way or a failure in initializing
+            a pthread_mutex (or on Windows, a critical section).
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 5 </errnumber>
+      <errname> WRONG_TYPE_HANDLE </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The provided handle is of the wrong type.
+          </errormsg>
+          <errordoc>
+            The provided handle is of the wrong type (C API). This could
+            happen if you provide a queue handle to access a hash map or
+            something similar.
+          </errordoc>
+          <errordoc>
+            If you are seeing this error for the C++ API (or some other
+            object-oriented interface), you've just found an internal
+            error... (the handle is encapsulated and cannot be modified
+            using the public interface).
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+   
+    <error>
+      <errnumber> 6 </errnumber>
+      <errname> NULL_HANDLE </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The provided handle is NULL.
+          </errormsg>
+          <errordoc>
+            The provided handle is NULL.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 7 </errnumber>
+      <errname> NULL_POINTER </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            One of the arguments of an API function is an invalid NULL pointer.
+          </errormsg>
+          <errordoc>
+            One of the arguments of an API function is an invalid NULL pointer.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 8 </errnumber>
+      <errname> INVALID_LENGTH </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            An invalid length was provided.
+          </errormsg>
+          <errordoc>
+            An invalid length was provided as an argument to an API function.
+          </errordoc>
+          <errordoc>
+            This invalid length will usually indicate that the
+            length value is set to zero.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+   
+    <error>
+      <errnumber> 21 </errnumber>
+      <errname> PROCESS_ALREADY_INITIALIZED </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The process was already initialized.
+          </errormsg>
+          <errordoc>
+            The process was already initialized. 
+            One possibility: was vdsInit() called for a second time?
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 22 </errnumber>
+      <errname> PROCESS_NOT_INITIALIZED </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The process was not properly initialized.
+          </errormsg>
+          <errordoc>
+            The process was not properly initialized. One possibility: was vdsInit() called?
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 23 </errnumber>
+      <errname> INVALID_WATCHDOG_ADDRESS </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The watchdog address is invalid (empty string, NULL pointer, etc.).
+          </errormsg>
+          <errordoc>
+            The watchdog address is invalid (empty string, NULL pointer, etc.).
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 24 </errnumber>
+      <errname> INCOMPATIBLE_VERSIONS </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            API - memory-file version mismatch.
+          </errormsg>
+          <errordoc>
+            API - memory-file version mismatch. 
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 25 </errnumber>
+      <errname> SOCKET_ERROR </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Generic socket error.
+          </errormsg>
+          <errordoc>
+            Generic socket error.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+   
+    <error>
+      <errnumber> 26 </errnumber>
+      <errname> CONNECT_ERROR </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Socket error when trying to connect to the watchdog.
+          </errormsg>
+          <errordoc>
+            Socket error when trying to connect to the watchdog.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 27 </errnumber>
+      <errname> SEND_ERROR </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Socket error when trying to send a request to the watchdog.
+          </errormsg>
+          <errordoc>
+            Socket error when trying to send a request to the watchdog.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+   
+    <error>
+      <errnumber> 28 </errnumber>
+      <errname> RECEIVE_ERROR </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Socket error when trying to receive a reply from the watchdog.
+          </errormsg>
+          <errordoc>
+            Socket error when trying to receive a reply from the watchdog.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 29 </errnumber>
+      <errname> BACKSTORE_FILE_MISSING </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The vds backstore file is missing.
+          </errormsg>
+          <errordoc>
+            The vds backstore file is missing. The name of this file is 
+            provided by the watchdog - if it is missing, something really
+            weird is going on.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+   
+    <error>
+      <errnumber> 30 </errnumber>
+      <errname> ERROR_OPENING_VDS </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Generic i/o error when attempting to open the vds.
+          </errormsg>
+          <errordoc>
+            Generic i/o error when attempting to open the vds.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 41 </errnumber>
+      <errname> LOGFILE_ERROR </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Error accessing the directory for the log files or error opening the 
+            log file itself.
+          </errormsg>
+          <errordoc>
+            Error accessing the directory for the log files or error opening 
+            the log file itself.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 42 </errnumber>
+      <errname> SESSION_CANNOT_GET_LOCK </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Cannot get a lock on the session (a pthread_mutex or a critical 
+            section on Windows). 
+          </errormsg>
+          <errordoc>
+            Cannot get a lock on the session (a pthread_mutex or a critical 
+            section on Windows). 
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+   
+    <error>
+      <errnumber> 43 </errnumber>
+      <errname> SESSION_IS_TERMINATED </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            An attempt was made to use a session object (a session handle)
+            after this session was terminated.
+          </errormsg>
+          <errordoc>
+            An attempt was made to use a session object (a session handle)
+            after this session was terminated.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+   
+    <error>
+      <errnumber> 51 </errnumber>
+      <errname> INVALID_OBJECT_NAME </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Permitted characters for names are alphanumerics, spaces (' '), 
+            dashes ('-') and underlines ('_'). The first character
+            must be alphanumeric.
+          </errormsg>
+          <errordoc>
+            Permitted characters for names are alphanumerics, spaces (' '), 
+            dashes ('-') and underlines ('_'). The first character
+            must be alphanumeric.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 52 </errnumber>
+      <errname> NO_SUCH_OBJECT </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The object was not found (but its folder does exist).
+          </errormsg>
+          <errordoc>
+            The object was not found (but its folder does exist).
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 53 </errnumber>
+      <errname> NO_SUCH_FOLDER </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            One of the parent folder of an object does not exist.
+          </errormsg>
+          <errordoc>
+            One of the parent folder of an object does not exist.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 54 </errnumber>
+      <errname> OBJECT_ALREADY_PRESENT </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Attempt to create an object which already exists.
+          </errormsg>
+          <errordoc>
+            Attempt to create an object which already exists.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+   
+    <error>
+      <errnumber> 55 </errnumber>
+      <errname> IS_EMPTY </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The object (data container) is empty.
+          </errormsg>
+          <errordoc>
+            The object (data container) is empty.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 56 </errnumber>
+      <errname> WRONG_OBJECT_TYPE </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Attempt to create an object of an unknown object type or to open
+            an object of the wrong type. 
+          </errormsg>
+          <errordoc>
+            Attempt to create an object of an unknown object type or to open
+            an object of the wrong type. 
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 57 </errnumber>
+      <errname> OBJECT_CANNOT_GET_LOCK </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Cannot get lock on the object.
+            This might be the result of either a very busy system where 
+            unused cpu cycles are rare or a lock might be held by a 
+            crashed process.
+          </errormsg>
+          <errordoc>
+            Cannot get lock on the object.
+            This might be the result of either a very busy system where 
+            unused cpu cycles are rare or a lock might be held by a 
+            crashed process.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 58 </errnumber>
+      <errname> REACHED_THE_END </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The search/iteration reached the end without finding a new 
+            item/record. 
+          </errormsg>
+          <errordoc>
+            The search/iteration reached the end without finding a new 
+            item/record. 
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 59 </errnumber>
+      <errname> INVALID_ITERATOR </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            An invalid value was used for a vdsIteratorType parameter.
+          </errormsg>
+          <errordoc>
+            An invalid value was used for a vdsIteratorType parameter.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 60 </errnumber>
+      <errname> OBJECT_NAME_TOO_LONG </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The name of the object is too long.
+            The maximum length of a name cannot be more than VDS_MAX_NAME_LENGTH
+            (or VDS_MAX_FULL_NAME_LENGTH for the fully qualified name).
+          </errormsg>
+          <errordoc>
+            The name of the object is too long.
+            The maximum length of a name cannot be more than VDS_MAX_NAME_LENGTH
+            (or VDS_MAX_FULL_NAME_LENGTH for the fully qualified name).
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+   
+    <error>
+      <errnumber> 61 </errnumber>
+      <errname> FOLDER_IS_NOT_EMPTY </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            You cannot delete a folder if there are still undeleted objects in
+            it.
+          </errormsg>
+          <errordoc>
+            You cannot delete a folder if there are still undeleted objects in
+            it.
+          </errordoc>
+          <errordoc>
+            Technical: a folder does not need to be empty to be deleted but
+            all objects in it must be "marked as deleted" by the current session.
+            This enables writing recursive deletions
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+   
+    <error>
+      <errnumber> 62 </errnumber>
+      <errname> ITEM_ALREADY_PRESENT </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            An item with the same key was found.
+          </errormsg>
+          <errordoc>
+            An item with the same key was found.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+   
+    <error>
+      <errnumber> 63 </errnumber>
+      <errname> NO_SUCH_ITEM </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The item was not found in the hash map.
+          </errormsg>
+          <errordoc>
+            The item was not found in the hash map.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+   
+    <error>
+      <errnumber> 64 </errnumber>    
+      <errname> OBJECT_IS_DELETED </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The object is scheduled to be deleted soon. Operations on this data
+            container are not permitted at this time.
+          </errormsg>
+          <errordoc>
+            The object is scheduled to be deleted soon. Operations on this data
+            container are not permitted at this time.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 65 </errnumber>
+      <errname> OBJECT_NOT_INITIALIZED </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Object must be open first before you can access them.
+          </errormsg>
+          <errordoc>
+            Object must be open first before you can access them.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 66 </errnumber>
+      <errname> ITEM_IS_IN_USE </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The data item is scheduled to be deleted soon or was just created and
+            is not committed. Operations on this data item are not permitted 
+            at this time.
+          </errormsg>
+          <errordoc>
+            The data item is scheduled to be deleted soon or was just created and
+            is not committed. Operations on this data item are not permitted 
+            at this time.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+   
+    <error>
+      <errnumber> 67 </errnumber>
+      <errname> ITEM_IS_DELETED </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The data item is scheduled to be deleted soon. Operations on this data
+            container are not permitted at this time.
+          </errormsg>
+          <errordoc>
+            The data item is scheduled to be deleted soon. Operations on this data
+            container are not permitted at this time.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 68 </errnumber>
+      <errname> I18N_CONVERSION_ERROR </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            i18n string conversion error. In other words, the name of the object cannot be
+            converted to/from your current locale.
+          </errormsg>
+          <errordoc>
+            i18n string conversion error. In other words, the name of the 
+            object cannot be converted to/from your current locale.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 69 </errnumber>
+      <errname> OBJECT_IS_IN_USE </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The object is scheduled to be deleted soon or was just created and
+            is not committed. Operations on this object are not permitted 
+            at this time.
+          </errormsg>
+          <errordoc>
+            The object is scheduled to be deleted soon or was just created and
+            is not committed. Operations on this object are not permitted 
+            at this time.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+  </errgroup>
+    
+</errorlist>
+

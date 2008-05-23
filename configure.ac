@@ -439,8 +439,6 @@ AC_CONFIG_FILES([
    src/API/Tests/Process/Makefile
    src/API/Tests/Queue/Makefile
    src/API/Tests/Session/Makefile
-   src/BuildTools/Makefile
-   src/BuildTools/Tests/Makefile
    src/Common/Makefile
    src/Common/Tests/Makefile
    src/Common/Tests/DirAccess/Makefile
@@ -474,6 +472,7 @@ AC_CONFIG_FILES([
    src/Engine/Tests/Queue/Makefile
    src/Engine/Tests/Session/Makefile
    src/Engine/Tests/Transaction/Makefile
+   src/Errors/Makefile
    src/Java/Makefile
    src/include/Makefile
    src/Tests/Makefile
