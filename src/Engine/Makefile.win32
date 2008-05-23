@@ -68,9 +68,6 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 
 all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdsfEngine.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdsfEngine.dll
 
-VdsErrorHandler.c VdsErrorHandler.h : ..\include\vdsf\vdsErrors.h
-	..\Release\errorParser -i ..\include\vdsf\vdsErrors.h -o VdsErrorHandler -p vdseErr
-
 "$(OUTDIR_RELEASE)\vdsfEngine.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
    -del ..\Release\vdsfEngine.dll
 	-del ..\Release\vdsfEngine.lib
@@ -110,6 +107,5 @@ clean:
 	-@erase /Q Release
 	-@rmdir /Q Release
 	-@erase /Q $(CLEANFILES)
-   -@erase VdsErrorHandler.c VdsErrorHandler.h
 
 
