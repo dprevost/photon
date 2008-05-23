@@ -30,6 +30,7 @@ endif
 
 EXTRA_DIST =           \
         $(man_MANS)    \
+        vdssh.xml      \
         Makefile.win32 
 
 vdssh_SOURCES =       \

@@ -35,6 +35,7 @@ endif
 EXTRA_DIST =           \
         $(man_MANS)    \
         Makefile.win32 \
+        vdswd.xml      \
         Watchdog.dsp   
 
 vdswd_SOURCES =           \
