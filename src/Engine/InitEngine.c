@@ -27,6 +27,20 @@ VDSF_ENGINE_EXPORT const char * MYCPU = "i386";
 VDSF_ENGINE_EXPORT const char * MYCC  = "cl.exe.";
 VDSF_ENGINE_EXPORT const char * MYCXX = "cl.exe";
 #endif
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static int vdseGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
+{
+   const char * theMsg = vdse_ErrorMessage( errnum );
+   if ( theMsg == NULL ) return -1;
+   if ( strlen(theMsg) >= msgLength ) return -1;
+   
+   strcpy( msg, theMsg );
+
+   return 0;
+}
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseInitEngine()
@@ -34,7 +48,7 @@ int vdseInitEngine()
    if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER ) {
       vdscInitErrorDefs();
 
-      g_vdsErrorHandle = vdscAddErrorMsgHandler( "VDSF", vdse_ErrorMessage );
+      g_vdsErrorHandle = vdscAddErrorMsgHandler( "VDSF", vdseGetErrorMsg );
 
       if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER ) {
          fprintf( stderr, "Error registring the error handler for VDS errors\n" );
