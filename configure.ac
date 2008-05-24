@@ -71,6 +71,10 @@ AC_CHECK_PROG([DOCBOOK2MAN_IS_PRESENT], [docbook2x-man], [yes], [no])
 AM_CONDITIONAL([COND_USE_DOCBOOK2MAN], [test "$DOCBOOK2MAN_IS_PRESENT" = yes])
 AC_CHECK_PROG([DOCBOOK2TEXI_IS_PRESENT], [docbook2x-texi], [yes], [no])
 AM_CONDITIONAL([COND_USE_DOCBOOK2TEXI], [test "$DOCBOOK2TEXI_IS_PRESENT" = yes])
+# Tell our makefiles if we can use db2pdf to regenerate some 
+# of the documentation, as needed.
+AC_CHECK_PROG([DB2PDF_IS_PRESENT], [db2pdf], [yes], [no])
+AM_CONDITIONAL([COND_USE_DB2PDF], [test "$DB2PDF_IS_PRESENT" = yes])
 
 # Tell our makefiles that we can use errorParser to regenerate the error
 # handling code, as needed.
@@ -115,6 +119,11 @@ ACX_PTHREAD(
 	[
 	    AC_MSG_ERROR([VDSF requires a Posix Thread library and I don'k know where it is.])
 	])
+
+PKG_CHECK_MODULES(LIBXML2, libxml-2.0,,
+                  AC_MSG_ERROR([VDSF requires libxml2]))
+AC_SUBST(LIBXML2_CFLAGS)
+AC_SUBST(LIBXML2_LIBS)
 
 #####################################
 #                                   #

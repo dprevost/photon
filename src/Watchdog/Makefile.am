@@ -14,6 +14,9 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES        = *~
 
+AM_CPPFLAGS += @LIBXML2_CFLAGS@
+vdswd_LDFLAGS = @LIBXML2_LIBS@
+
 SUBDIRS = . Tests
  
 bin_PROGRAMS = vdswd
