@@ -26,7 +26,7 @@
 #include "Acceptor.h"
 #include "VDSHandler.h"
 #include "LogMsg.h"
-#include "Common/ConfigFile.h"
+#include "Config.h"
 #include "Common/ErrorHandler.h"
 
 #define PROG_NAME "vdswd"

@@ -44,6 +44,8 @@ EXTRA_DIST =           \
 vdswd_SOURCES =           \
         Acceptor.cpp      \
         Acceptor.h        \
+        Config.h          \
+        Config.c          \
         LogMsg.cpp        \
         LogMsg.h          \
         MemoryManager.cpp \

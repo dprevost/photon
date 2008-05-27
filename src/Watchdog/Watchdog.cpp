@@ -363,7 +363,7 @@ int vdswWatchdog::ReadConfig( const char* cfgname )
    int errcode;
    const char* missing;
 
-   errcode = vdscReadConfig( cfgname, &m_params, &missing, &m_errorHandler );
+   errcode = vdswReadConfig( cfgname, &m_params, &missing, &m_errorHandler );
    if ( errcode != 0 ) {
       memset( m_errorMsg, 0, WD_MSG_LEN );
       if ( missing == NULL ) {

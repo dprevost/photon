@@ -21,8 +21,6 @@ noinst_LTLIBRARIES   = libCommon.la
 libCommon_la_SOURCES =  \
         Barrier.h       \
         Common.h        \
-        ConfigFile.c    \
-        ConfigFile.h    \
         DirAccess.c     \
         DirAccess.h     \
         ErrorHandler.c  \
