@@ -63,6 +63,9 @@ if [ "$?" != 0 ] ; then
 fi
 
 cp $srcdir/../../XML/wd_config.xsd $BASE_DIR
+if [ "$?" != 0 ] ; then
+   exit 1
+fi
 
 if [ $verbose = 1 ] ; then
    verb=

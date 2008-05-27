@@ -57,7 +57,7 @@ errcode   = int(sys.argv[6])
 vds_dir   = sys.argv[7]
 
 return_code = 0
-cfg_suff = 'cfg.txt'
+cfg_suff = 'cfg.xml'
 wd_name = 'vdswd'
 wd_pid = 0
 wd_present = 0
@@ -192,20 +192,24 @@ def WriteCfg():
       raise
 
    try:
-      line = '# VDSF Config file' + '\n' + '#\n'
+      line = '<?xml version=\"1.0\"?>'
       cfg_file.write( line )   
-      line = 'VDSLocation           ' + vds_dir + '\n'
-      cfg_file.write( line )  
-      line = 'MemorySize           1000' + '\n'
-      cfg_file.write( line )  
-      line = 'WatchdogAddress       ' + tcp_port + '\n'
-      cfg_file.write( line )  
-      line = 'LogTransaction        0' + '\n'
-      cfg_file.write( line )  
-      line = 'FilePermissions       0660' + '\n'
-      cfg_file.write( line )  
-      line = 'DirectoryPermissions  0770' + '\n'  
-      cfg_file.write( line )  
+      line = '<vdsf_config xmlns=\"http://vdsf.sourceforge.net/Config\"'
+      cfg_file.write( line )   
+      line = 'xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"'
+      cfg_file.write( line )   
+      line = 'xsi:schemaLocation=\"http://vdsf.sourceforge.net/Config ' + os.path.join( vds_dir, 'wd_config.xsd' ) + '\"> '
+      cfg_file.write( line )   
+      line = '  <vds_location>' + vds_dir + '</vds_location>'
+      cfg_file.write( line )   
+      line = '  <mem_size size=\"10240\" units=\"kb\" />'
+      cfg_file.write( line )   
+      line = '  <watchdog_address>10701</watchdog_address>'
+      cfg_file.write( line )   
+      line = '  <file_access access=\"group\" />'
+      cfg_file.write( line )   
+      line = '</vdsf_config>'
+      cfg_file.write( line )   
       cfg_file.close()
    except:
       print 'Error in WriteCfg()'

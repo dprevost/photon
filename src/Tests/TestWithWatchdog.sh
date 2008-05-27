@@ -58,6 +58,11 @@ if [ "$?" != 0 ] ; then
    exit 1
 fi
 
+cp $src_dir/src/XML/wd_config.xsd $BASE_DIR
+if [ "$?" != 0 ] ; then
+   exit 1
+fi
+
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 if [ $verbose = 1 ] ; then
@@ -66,16 +71,9 @@ else
    $PYTHON $src_dir/src/Tests/TestWithWatchdog.py $src_dir $top_build_dir $test_dir $test_name $port $errcode $BASE_DIR >/dev/null 2>&1
 fi
 if [ "$?" != 0 ] ; then
-#   if [ $verbose = 1 ] ; then
-#      echo "FAIL: $test_name (Python test)"
-#   fi
    rm -rf $BASE_DIR
    exit 1
 fi
-
-#if [ $verbose = 1 ] ; then
-#   echo "PASS: $test_name (Python test)"
-#fi
 
 rm -rf $BASE_DIR
 exit 0

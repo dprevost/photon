@@ -51,15 +51,20 @@ if [ "$?" != 0 ] ; then
    exit 1
 fi
 
-echo "# VDSF Config file             "  >  $BASE_DIR/cfg.txt
-echo "#                              "  >> $BASE_DIR/cfg.txt
-echo "VDSLocation           $BASE_DIR"  >> $BASE_DIR/cfg.txt
-echo "#MemorySize is in kbytes       "  >> $BASE_DIR/cfg.txt
-echo "MemorySize            10000    "  >> $BASE_DIR/cfg.txt
-echo "WatchdogAddress       10701    "  >> $BASE_DIR/cfg.txt
-echo "LogTransaction        0        "  >> $BASE_DIR/cfg.txt
-echo "FilePermissions       0660     "  >> $BASE_DIR/cfg.txt
-echo "DirectoryPermissions  0770     "  >> $BASE_DIR/cfg.txt
+cp $wddir/../XML/wd_config.xsd $BASE_DIR
+if [ "$?" != 0 ] ; then
+   exit 1
+fi
+
+echo "<?xml version=\"1.0\"?>                                   " >> $BASE_DIR/cfg.xml
+echo "<vdsf_config xmlns=\"http://vdsf.sourceforge.net/Config\" " >> $BASE_DIR/cfg.xml
+echo "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"   " >> $BASE_DIR/cfg.xml
+echo "xsi:schemaLocation=\"http://vdsf.sourceforge.net/Config $BASE_DIR/wd_config.xsd\"> " >> $BASE_DIR/cfg.xml
+echo "  <vds_location>$BASE_DIR</vds_location>                  " >> $BASE_DIR/cfg.xml
+echo "  <mem_size size=\"10240\" units=\"kb\" />                " >> $BASE_DIR/cfg.xml
+echo "  <watchdog_address>10701</watchdog_address>              " >> $BASE_DIR/cfg.xml
+echo "  <file_access access=\"group\" />                        " >> $BASE_DIR/cfg.xml
+echo "</vdsf_config>                                            " >> $BASE_DIR/cfg.xml
 
 if [ $verbose = 1 ] ; then
    verb=
@@ -72,7 +77,7 @@ fi
 echo " "
 echo "Launching the watchdog..."
 
-$wddir/vdswd  --config $BASE_DIR/cfg.txt
+$wddir/vdswd  --config $BASE_DIR/cfg.xml
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
