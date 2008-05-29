@@ -217,16 +217,16 @@ int vdswReadConfig( const char*          cfgname,
          if ( xmlStrcmp( node->name, BAD_CAST "mem_size") == 0 ) {
             prop = xmlGetProp( node, BAD_CAST "size" );
             if ( prop == NULL ) {
-               fprintf( stderr, "Error: missing \"size\" in config file\n" );
-               return -1;
+               errcode = VDSW_CFG_SIZE_IS_MISSING;
+               goto cleanup;
             }
             pConfig->memorySizekb = atoi((char*)prop);
             xmlFree(prop);
 
             prop = xmlGetProp( node, BAD_CAST "units" );
             if ( prop == NULL ) {
-               fprintf( stderr, "Error: missing \"units\" in config file\n" );
-               return -1;
+               errcode = VDSW_CFG_UNITS_IS_MISSING;
+               goto cleanup;
             }
             if ( xmlStrcmp( prop, BAD_CAST "mb") == 0 ) {
                pConfig->memorySizekb *= 1024;
@@ -240,8 +240,8 @@ int vdswReadConfig( const char*          cfgname,
             node = node->next;
             break;
          }
-         fprintf( stderr, "Error: missing <mem_size> in config file\n" );
-         return -1;
+         errcode = VDSW_CFG_MEM_SIZE_IS_MISSING;
+         goto cleanup;
       }
       node = node->next;
    }
@@ -253,8 +253,8 @@ int vdswReadConfig( const char*          cfgname,
             node = node->next;
             break;
          }
-         fprintf( stderr, "Error: missing <watchdog_address> in config file\n" );
-         return -1;
+         errcode = VDSW_CFG_WATCHDOG_ADDRESS_IS_MISSING;
+         goto cleanup;
       }
       node = node->next;
    }
@@ -264,8 +264,8 @@ int vdswReadConfig( const char*          cfgname,
          if ( xmlStrcmp( node->name, BAD_CAST "file_access") == 0 ) {
             prop = xmlGetProp( node, BAD_CAST "access" );
             if ( prop == NULL ) {
-               fprintf( stderr, "Error: missing \"access\" in config file\n" );
-               return -1;
+               errcode = VDSW_CFG_ACCESS_IS_MISSING;
+               goto cleanup;
             }
             
             if ( xmlStrcmp( prop, BAD_CAST "group") == 0 ) {
@@ -286,8 +286,8 @@ int vdswReadConfig( const char*          cfgname,
             node = node->next;
             break;
          }
-         fprintf( stderr, "Error: missing <file_access> in config file\n" );
-         return -1;
+         errcode = VDSW_CFG_FILE_ACCESS_IS_MISSING;
+         goto cleanup;
       }
       node = node->next;
    }

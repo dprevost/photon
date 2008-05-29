@@ -231,7 +231,119 @@
       </message_group>
     </error>
 
+    <error>
+      <errnumber> 111 </errnumber>
+      <errname> CFG_VDS_LOCATION_IS_MISSING</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Config: vds_location is missing.</errormsg>
+          <errordoc>
+            The tag &lt;vds_location&gt; is missing. This would normally
+            be caught when the configuration is validated using the schema 
+            unless of course there is a bug in the code or the schema
+            itself was modified.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 112 </errnumber>
+      <errname> CFG_MEM_SIZE_IS_MISSING</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Config: mem_size is missing.</errormsg>
+          <errordoc>
+            The tag &lt;mem_size&gt; is missing. This would normally
+            be caught when the configuration is validated using the schema 
+            unless of course there is a bug in the code or the schema
+            itself was modified.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 113 </errnumber>
+      <errname> CFG_SIZE_IS_MISSING</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Config: mem_size:size is missing.</errormsg>
+          <errordoc>
+            The attribute "size" of the tag &lt;mem_size&gt; is missing. 
+            This would normally be caught when the configuration is 
+            validated using the schema unless of course there is a bug 
+            in the code or the schema itself was modified.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 114 </errnumber>
+      <errname> CFG_UNITS_IS_MISSING</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Config: mem_size:units is missing.</errormsg>
+          <errordoc>
+            The attribute "units" of the tag &lt;mem_size&gt; is missing. 
+            This would normally be caught when the configuration is 
+            validated using the schema unless of course there is a bug 
+            in the code or the schema itself was modified.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 115 </errnumber>
+      <errname> CFG_WATCHDOG_ADDRESS_IS_MISSING</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Config: watchdog_address is missing.</errormsg>
+          <errordoc>
+            The tag &lt;watchdog_address&gt; is missing. This would normally
+            be caught when the configuration is validated using the schema 
+            unless of course there is a bug in the code or the schema
+            itself was modified.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 116 </errnumber>
+      <errname> CFG_FILE_ACCESS_IS_MISSING</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Config: file_access is missing.</errormsg>
+          <errordoc>
+            The tag &lt;file_access&gt; is missing. This would normally
+            be caught when the configuration is validated using the schema 
+            unless of course there is a bug in the code or the schema
+            itself was modified.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 117 </errnumber>
+      <errname> CFG_ACCESS_IS_MISSING</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Config: file_access:access is missing.</errormsg>
+          <errordoc>
+            The attribute "access" of the tag &lt;file_access&gt; is missing. 
+            This would normally be caught when the configuration is 
+            validated using the schema unless of course there is a bug 
+            in the code or the schema itself was modified.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
 
   </errgroup>
+
 </errorlist>
 
