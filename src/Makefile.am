@@ -121,7 +121,8 @@ EXTRA_DIST =               \
         vdsf.dsw           \
         $(SPARC_FILES)     \
         $(X86_64_FILES)    \
-        $(PACKAGES_FILES)  
+        $(PACKAGES_FILES)  \
+        XML/wd_config.xsd  
 
 install-data-local:
 	-mkdir -p $(DESTDIR)$(datadir)/doc/vdsf/Examples
