@@ -380,25 +380,19 @@ int vdswWatchdog::Install()
 
 int vdswWatchdog::ReadConfig( const char* cfgname )
 {
-   int errcode;
-   const char* missing;
-
+   int errcode, len;
+   
    errcode = vdswReadConfig( cfgname, &m_params, 0, &m_errorHandler );
    if ( errcode != 0 ) {
       memset( m_errorMsg, 0, WD_MSG_LEN );
-      if ( missing == NULL ) {
-         sprintf( m_errorMsg, "%s%d%s",
-                  "Error reading config file, error code = ", 
+      sprintf( m_errorMsg, "%s%d%s",
+                  "Config error, error code = ", 
                   vdscGetLastError( &m_errorHandler ),
                   ", error message = " );
-         vdscGetErrorMsg( &m_errorHandler, m_errorMsg, WD_MSG_LEN );
-      }  
-      else {
-         sprintf( m_errorMsg, "%s%s",
-                  missing,
-                  " parameter is missing from config file" );
-      }
+      len = strlen(m_errorMsg);
+      vdscGetErrorMsg( &m_errorHandler, &m_errorMsg[len], WD_MSG_LEN-len );
    }
+
    return errcode;
 }
 

@@ -68,9 +68,7 @@ int main( int argc, char *argv[] )
    if ( vdscGetShortOptArgument( optHandle, 'c', &optArgument ) ) {
       errcode = wDog.ReadConfig( optArgument );
       if ( errcode != 0 ) {
-         
-         fprintf( stderr, "Error reading config file, error = %s\n",
-            wDog.GetErrorMsg() );
+         fprintf( stderr, "%s\n", wDog.GetErrorMsg() );
          return errcode;
       }
    }
