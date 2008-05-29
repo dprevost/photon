@@ -15,9 +15,13 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Config.h"
 #include <libxml/xmlschemas.h>
 #include <libxml/xmlschemastypes.h>
+
+#include "Watchdog/Config.h"
+#include "Watchdog/wdErrors.h"
+
+extern vdscErrMsgHandle g_wdErrorHandle;
 
 enum ECFG_PARAMS
 {
@@ -30,12 +34,6 @@ enum ECFG_PARAMS
    eVDS_NUM_CFG_PARAMS
 };
 
-/*!
- * \todo Eliminate this. It would be better to read the file until an EOL
- *       is found.
- */
-#define LINE_MAX_LEN (2*PATH_MAX+2)
-
 const char g_paramNames[eVDS_NUM_CFG_PARAMS][64] = { 
    "WatchdogAddress", 
    "VDSLocation", 
@@ -46,13 +44,19 @@ const char g_paramNames[eVDS_NUM_CFG_PARAMS][64] = {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static void dummyErrorFunc( void * ctx, const char * msg, ...)
+{
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /*!
  *
  * \param[in]  cfgname  The name of the configuration file.
  * \param[out] pConfig  A pointer to the struct holding the value of the 
  *                      parameters (once read).
- * \param[out] pMissing A pointer to the name of the first missing parameter
- *                      (if one or more are missing). NULL if all is ok.
+ * \param[in]  debug    Set to one to get additional debug information on 
+ *                      the terminal. Or zero for no additional information.
  * \param[in,out] pError A pointer to a vdscErrorHandler struct.
  *
  * \retval 0 on success
@@ -60,74 +64,126 @@ const char g_paramNames[eVDS_NUM_CFG_PARAMS][64] = {
  *
  * \pre \em cfgname cannot be NULL.
  * \pre \em pConfig cannot be NULL.
- * \pre \em pMissing cannot be NULL.
  * \pre \em pError cannot be NULL.
  
  */
  
 int vdswReadConfig( const char*          cfgname,
                     struct ConfigParams* pConfig,
-                    const char**         pMissing,
+                    int                  debug,
                     vdscErrorHandler*    pError  )
 {
    xmlSchemaPtr schema = NULL;
    xmlSchemaValidCtxtPtr  validCtxt = NULL;
    xmlSchemaParserCtxtPtr parserCtxt = NULL;
    xmlNode * root = NULL, * node;
-   xmlDoc  * doc;
-   xmlChar * prop;
-   int i;
+   xmlDoc  * doc = NULL;
+   xmlChar * prop = NULL;
+   int i, j, fd = -1, separator = -1;
+   enum vdswErrors errcode = VDSW_OK;
    
    /* These are to make sure we have read all parameters */
    int isPresent[eVDS_NUM_CFG_PARAMS];
    
    VDS_PRE_CONDITION( cfgname  != NULL );
    VDS_PRE_CONDITION( pConfig  != NULL );
-   VDS_PRE_CONDITION( pMissing != NULL );
-   VDS_PRE_CONDITION( pError    != NULL );
+   VDS_PRE_CONDITION( pError   != NULL );
 
    memset( pConfig, 0, sizeof(struct ConfigParams) );
-
-   *pMissing = NULL;
 
    for ( i = 0; i < eVDS_NUM_CFG_PARAMS; ++i ) {
       isPresent[i] = 0;
    }
 
-   doc = xmlReadFile( cfgname, NULL, 0 );
-   if ( doc == NULL ) return -1;
+   fd = open( cfgname, O_RDONLY );
+   if ( fd == -1 ) {
+      vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      return -1;
+   }
+   if ( debug ) {
+      doc = xmlReadFd( fd, NULL, NULL, 0 );
+   }
+   else {
+      doc = xmlReadFd( fd, NULL, NULL, XML_PARSE_NOERROR | XML_PARSE_NOWARNING );
+   }
+   if ( doc == NULL ) {
+      errcode = VDSW_XML_READ_ERROR;
+      goto cleanup;
+   }
    
    root = xmlDocGetRootElement( doc );
+   if ( root == NULL ) {
+      errcode = VDSW_XML_NO_ROOT;
+      goto cleanup;
+   }
+   if ( xmlStrcmp( root->name, BAD_CAST "vdsf_config") != 0 ) {
+      errcode = VDSW_XML_INVALID_ROOT;
+      goto cleanup;
+   }
+   
    prop = xmlGetProp( root, BAD_CAST "schemaLocation" );
-   if ( prop == NULL ) return -1;
+   if ( prop == NULL ) {
+      errcode = VDSW_XML_NO_SCHEMA_LOCATION;
+      goto cleanup;
+   }
+   
    
    for ( i = 0; i < xmlStrlen(prop)-1; ++i ) {
-      if ( prop[i] == ' ' ) parserCtxt = xmlSchemaNewParserCtxt( (char*)&prop[i+1] );
+      if ( isspace(prop[i]) ) {
+         for ( j = i+1; j < xmlStrlen(prop)-1; ++j ) {
+            if ( isspace(prop[j]) == 0 ) {
+               separator = j;
+               break;
+            }
+         }
+         break;
+      }
    }
-   xmlFree( prop );
-   if ( parserCtxt == NULL ) return -1;
+   if ( separator == -1 ) {
+      errcode = VDSW_XML_NO_SCHEMA_LOCATION;
+      goto cleanup;
+   }
+   
+   parserCtxt = xmlSchemaNewParserCtxt( (char*)&prop[separator] );
+   if ( parserCtxt == NULL ) {
+      errcode = VDSW_XML_PARSER_CONTEXT_FAILED;
+      goto cleanup;
+   }
    
    schema = xmlSchemaParse( parserCtxt );
-   xmlSchemaFreeParserCtxt( parserCtxt );
+   if ( schema == NULL ) {
+      errcode = VDSW_XML_PARSE_SCHEMA_FAILED;
+      goto cleanup;
+   }
+   
+   xmlFree( prop );
+   prop = NULL;
 
    validCtxt = xmlSchemaNewValidCtxt( schema );
-
-   xmlSchemaSetValidErrors( validCtxt,
-                            (xmlSchemaValidityErrorFunc) fprintf,
-                            (xmlSchemaValidityWarningFunc) fprintf,
-                            stderr );
+   if ( validCtxt == NULL ) {
+      errcode = VDSW_XML_VALID_CONTEXT_FAILED;
+      goto cleanup;
+   }
+   
+   if ( debug ) {
+      xmlSchemaSetValidErrors( validCtxt,
+                               (xmlSchemaValidityErrorFunc) fprintf,
+                               (xmlSchemaValidityWarningFunc) fprintf,
+                               stderr );
+   }
+   else {
+      xmlSchemaSetValidErrors( validCtxt,
+                               (xmlSchemaValidityErrorFunc) dummyErrorFunc,
+                               (xmlSchemaValidityWarningFunc) dummyErrorFunc,
+                               stderr );
+   }
+   
    if ( xmlSchemaValidateDoc( validCtxt, doc ) != 0 ) {
-      fprintf( stderr, "Error: document validation (for config) failed\n" );
-      return -1;
+      errcode = VDSW_XML_VALIDATION_FAILED;
+      goto cleanup;
    }
    
-   root = xmlDocGetRootElement( doc );
-   /* With schemas, the root element might not be what we expect. Check it. */
-   if ( xmlStrcmp( root->name, BAD_CAST "vdsf_config") != 0 ) {
-      fprintf( stderr, "Error: missing <vdsf_config> in config file\n" );
-      return -1;
-   }
-   
+   /* All is well - start the extraction of our data */   
    node = root->children;
 
    while ( node != NULL ) {
@@ -145,6 +201,8 @@ int vdswReadConfig( const char*          cfgname,
                node = node->next;
                break;
             }
+            errcode = VDSW_CFG_VDS_LOCATION_TOO_LONG;
+            goto cleanup;
             fprintf( stderr, "Error: vds_location is too long\n" );
             return -1;
          }
@@ -177,7 +235,8 @@ int vdswReadConfig( const char*          cfgname,
                pConfig->memorySizekb *= 1024*1024;
             }
             xmlFree(prop);
-
+            prop = NULL;
+            
             node = node->next;
             break;
          }
@@ -222,6 +281,7 @@ int vdswReadConfig( const char*          cfgname,
                pConfig->dirPerms = 0700;
             }
             xmlFree(prop);
+            prop = NULL;
             
             node = node->next;
             break;
@@ -232,9 +292,18 @@ int vdswReadConfig( const char*          cfgname,
       node = node->next;
    }
 
-   xmlSchemaFreeValidCtxt( validCtxt );
-   xmlFreeDoc( doc );
+cleanup:
+   
+   if ( parserCtxt ) xmlSchemaFreeParserCtxt( parserCtxt );
+   if ( schema ) xmlSchemaFree( schema );
+   if ( validCtxt ) xmlSchemaFreeValidCtxt( validCtxt );
+   if ( prop ) xmlFree( prop );
+   if ( doc ) xmlFreeDoc( doc );
 
+   if ( errcode != VDSW_OK ) {
+      vdscSetError( pError, g_wdErrorHandle, errcode );
+      return -1;
+   }
    return 0;
 }
 

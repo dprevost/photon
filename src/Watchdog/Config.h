@@ -90,7 +90,7 @@ struct ConfigParams
 VDSF_COMMON_EXPORT
 int vdswReadConfig( const char*          cfgname,
                     struct ConfigParams* pConfig,
-                    const char**         pMissing,
+                    int                  debug,
                     vdscErrorHandler*    pError  );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

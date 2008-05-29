@@ -42,6 +42,8 @@
 // Forward declaration(s)
 struct vdseMemoryHeader;
 
+extern vdscErrMsgHandle g_wdErrorHandle;
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #define VDS_LOCATION  "VDSLocation"

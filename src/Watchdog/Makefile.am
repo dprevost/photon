@@ -26,6 +26,11 @@ noinst_LIBRARIES = libVerifyVDS.a
 man_MANS = vdswd.1
 info_TEXINFOS = vdswd.texi
 
+OUTPUT_FILES =           \
+        wdErrors.h       \
+        wdErrorHandler.c \
+        wdErrorHandler.h 
+
 if COND_USE_DOCBOOK2TEXI
 vdswd.texi: vdswd.xml
 	docbook2x-texi --encoding=iso-8859-1 vdswd.xml
@@ -35,13 +40,25 @@ vdswd.1: vdswd.xml
 	docbook2x-man --encoding=iso-8859-1 vdswd.xml
 endif
 
+if COND_USE_ERRORPARSER
+##all-local: $(OUTPUT_FILES)
+
+$(OUTPUT_FILES): wdOptions.xml wdErrors.xml
+	errorParser --options wdOptions.xml wdErrors.xml
+endif
+
 EXTRA_DIST =           \
         $(man_MANS)    \
         Makefile.win32 \
         vdswd.xml      \
-        Watchdog.dsp   
+        Watchdog.dsp   \
+        wdErrors.xml   \
+        wdOptions.xml  
 
 vdswd_SOURCES =           \
+        wdErrorHandler.c  \
+        wdErrorHandler.h  \
+        wdErrors.h        \
         Acceptor.cpp      \
         Acceptor.h        \
         Config.h          \

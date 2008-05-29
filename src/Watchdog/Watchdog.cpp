@@ -19,6 +19,8 @@
 #include <signal.h>
 #include "Watchdog/Watchdog.h"
 #include "Common/ErrorHandler.h"
+#include "Watchdog/wdErrorHandler.h"
+
 #if HAVE_NEW
 #  include <new>
 #else
@@ -29,6 +31,7 @@
 #define LINE_MAX_LEN (2*PATH_MAX)
 
 vdswWatchdog* vdswWatchdog::g_pWD = NULL;
+vdscErrMsgHandle g_wdErrorHandle = -1;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -59,6 +62,17 @@ RETSIGTYPE sigpipe_handler( int s )
    fprintf( stderr, "sigpipe_handler was called \n" );
 }
 
+int vdswGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
+{
+   const char * theMsg = vdsw_ErrorMessage( errnum );
+   if ( theMsg == NULL ) return -1;
+   if ( strlen(theMsg) >= msgLength ) return -1;
+
+   strcpy( msg, theMsg );
+
+   return 0;
+}
+
 END_C_DECLS
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -73,6 +87,12 @@ vdswWatchdog::vdswWatchdog()
 
    vdscInitErrorDefs();
    vdscInitErrorHandler( &m_errorHandler );
+   
+   g_wdErrorHandle = vdscAddErrorMsgHandler( "VDSWD", vdswGetErrorMsg );
+   if ( g_wdErrorHandle == VDSC_NO_ERRHANDLER ) {
+      fprintf( stderr, "Error registring the error handler for VDSWD errors\n" );
+      fprintf( stderr, "The problem might be a lack of memory\n" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -363,7 +383,7 @@ int vdswWatchdog::ReadConfig( const char* cfgname )
    int errcode;
    const char* missing;
 
-   errcode = vdswReadConfig( cfgname, &m_params, &missing, &m_errorHandler );
+   errcode = vdswReadConfig( cfgname, &m_params, 0, &m_errorHandler );
    if ( errcode != 0 ) {
       memset( m_errorMsg, 0, WD_MSG_LEN );
       if ( missing == NULL ) {
