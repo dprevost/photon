@@ -489,6 +489,8 @@ AC_CONFIG_FILES([
    src/Tools/Shell/Makefile
    src/Watchdog/Makefile
    src/Watchdog/Tests/Makefile
+   src/XML/Makefile
+   src/XML/Tests/Makefile
 ])
 
 AC_OUTPUT

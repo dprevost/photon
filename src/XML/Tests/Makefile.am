@@ -12,28 +12,12 @@
 # overwrite any macros set in the common file
 include $(top_srcdir)/src/Makefile.Common.am
 
-CLEANFILES = *~ core
+CLEANFILES = *~ core md/*~
 
-EXTRA_DIST =                  \
-        Makefile.Win32        \
-        PrintError.h          \
-        OutOfMemory.sh        \
-        RunTests.vbs          \
-        TestWithWatchdog.py   \
-        TestWithWatchdog.sh   \
-        TransactionHashMap.sh \
-        TransactionQueue.sh   
-
-check_PROGRAMS =           \
-        TransactionHashMap \
-        TransactionQueue   \
-        InjectErrorsVDS    \
-        OutOfMemory        
-
-InjectErrorsVDS_SOURCES    = InjectErrorsVDS.cpp
-OutOfMemory_SOURCES        = OutOfMemory.cpp
-TransactionHashMap_SOURCES = TransactionHashMap.c
-TransactionQueue_SOURCES   = TransactionQueue.c
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.sh    \
+        RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -43,15 +27,6 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)             
 
-TESTS =                       \
-        TransactionHashMap.sh \
-        TransactionQueue.sh   \
-        OutOfMemory.sh        
-
-LDADD = $(top_builddir)/src/API/libvdsf.la      \
-        $(top_builddir)/src/Engine/libEngine.la \
-        $(top_builddir)/src/Common/libCommon.la
-
-InjectErrorsVDS_LDADD = $(top_builddir)/src/C++/libvdsfcpp.la 
-OutOfMemory_LDADD     = $(top_builddir)/src/C++/libvdsfcpp.la 
+TESTS =             \
+        RunTests.sh 
 

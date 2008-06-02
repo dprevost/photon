@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<queue xmlns="http://vdsf.sourceforge.net/vdsf_md"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://vdsf.sourceforge.net/vdsf_md vdsf_md10.xsd"
+  objName="A_queue" >
+
+</queue>
+
+

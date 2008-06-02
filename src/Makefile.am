@@ -32,6 +32,7 @@ SUBDIRS =             \
         C++           \
         $(MAYBE_Java) \
         include       \
+        XML           \
         Tests         \
         Tools         
 
