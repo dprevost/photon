@@ -188,8 +188,8 @@ Next
 dim z
 z = false
 while z <> true 
-   Wscript.Sleep 100
    z = objShellwd.AppActivate( "vdswd" )
+   Wscript.Sleep 100
 wend
 objShellwd.SendKeys "^C"
 
@@ -209,6 +209,10 @@ else
       "Total number of failed tests: " & numFailed
 end if
 
+if (fso.FolderExists(tmpDir)) Then
+   On Error Resume Next
+   fso.DeleteFolder(tmpDir)
+end if
 if numFailed > 0 then wscript.quit(1)
 wscript.quit(0)
 

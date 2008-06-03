@@ -187,8 +187,9 @@ Next
 dim z
 z = false
 while z <> true 
-   Wscript.Sleep 100
    z = objShellwd.AppActivate( "vdswd" )
+   Wscript.Sleep 100
+'   wscript.echo "z = : ", z
 wend
 objShellwd.SendKeys "^C"
 
