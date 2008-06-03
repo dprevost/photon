@@ -104,10 +104,6 @@ PostBuild_Cmds=copy debug\vdsfCommon.dll ..\Debug	copy debug\vdsfCommon.lib ..\D
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\ConfigFile.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\DirAccess.c
 # End Source File
 # Begin Source File
@@ -149,10 +145,6 @@ SOURCE=.\Timer.c
 # Begin Source File
 
 SOURCE=.\Common.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ConfigFile.h
 # End Source File
 # Begin Source File
 

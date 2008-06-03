@@ -118,18 +118,20 @@ end if
 
 fso.CreateFolder(tmpDir)
 
-Set cmdFile = fso.CreateTextFile(tmpDir + "\cfg.txt", True)
-cmdFile.WriteLine("# VDSF Config file             ")
-cmdFile.WriteLine("#                              ")
-cmdFile.WriteLine("VDSLocation           " + tmpDir)
-cmdFile.WriteLine("#MemorySize is in kbytes       ")
-cmdFile.WriteLine("MemorySize            10000    ")
-cmdFile.WriteLine("WatchdogAddress       10701    ")
-cmdFile.WriteLine("LogTransaction        0        ")
-cmdFile.WriteLine("FilePermissions       0660     ")
-cmdFile.WriteLine("DirectoryPermissions  0770     ")
+fso.Copyfile "..\..\..\XML\\wd_config.xsd", tmpDir + "\wd_config.xsd"
 
-exeName = wd_path + "\vdswd.exe -c " + tmpDir + "\cfg.txt"
+Set cmdFile = fso.CreateTextFile(tmpDir + "\cfg.xml", True)
+cmdFile.WriteLine("<?xml version=""1.0""?>")
+cmdFile.WriteLine("<vdsf_config xmlns=""http://vdsf.sourceforge.net/Config""")
+cmdFile.WriteLine("xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""")
+cmdFile.WriteLine("xsi:schemaLocation=""http://vdsf.sourceforge.net/Config " + tmpDir + "\wd_config.xsd""> ")
+cmdFile.WriteLine("  <vds_location>" + tmpDir + "</vds_location>")
+cmdFile.WriteLine("  <mem_size size=""10240"" units=""kb"" />")
+cmdFile.WriteLine("  <watchdog_address>10701</watchdog_address>")
+cmdFile.WriteLine("  <file_access access=""group"" />")
+cmdFile.WriteLine("</vdsf_config>")
+
+exeName = wd_path + "\vdswd.exe -c " + tmpDir + "\cfg.xml"
 
 objShellwd.Run "%comspec% /c title vdswd | " & exeName, 2, false
 
@@ -190,10 +192,13 @@ For Each program in ok_programs
    end if
 Next
 
-objShellwd.AppActivate "vdswd"
-Wscript.Sleep 1000
+dim z
+z = false
+while z <> true 
+   Wscript.Sleep 100
+   z = objShellwd.AppActivate( "vdswd" )
+wend
 objShellwd.SendKeys "^C"
-Wscript.Sleep 1000
 
 if consoleMode then
    WScript.StdOut.Write vbcrlf & "Total number of tests: " & numTests & vbcrlf

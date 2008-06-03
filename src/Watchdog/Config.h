@@ -87,7 +87,6 @@ struct ConfigParams
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Read the configuration file from disk. */
-VDSF_COMMON_EXPORT
 int vdswReadConfig( const char*          cfgname,
                     struct ConfigParams* pConfig,
                     int                  debug,

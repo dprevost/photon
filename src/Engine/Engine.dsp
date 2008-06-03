@@ -169,13 +169,6 @@ SOURCE=.\Transaction.c
 # Begin Source File
 
 SOURCE=.\VdsErrorHandler.c
-
-!IF  "$(CFG)" == "Engine - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Engine - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -284,22 +277,6 @@ SOURCE=.\TxStatus.h
 # Begin Source File
 
 SOURCE=.\VdsErrorHandler.h
-
-!IF  "$(CFG)" == "Engine - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Engine - Win32 Debug"
-
-USERDEP__VDSER="..\include\vdsf\vdsErrors.h"	
-# Begin Custom Build
-InputPath=.\VdsErrorHandler.h
-
-"junk" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	..\Debug\errorParser -i ..\include\vdsf\vdsErrors.h -o VdsErrorHandler -p vdseErr
-
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # End Group
 # Begin Group "Resource Files"

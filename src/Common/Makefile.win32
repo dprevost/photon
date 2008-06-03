@@ -34,7 +34,6 @@ CFLAGS_RELEASE=/nologo /MD  /W4 /O2     /I ".." /D "WIN32" /D "NDEBUG" /D "_WIND
 CFLAGS_DEBUG  =/nologo /MDd /W4 /ZI /Od /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF_COMMON" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
 
 OBJS_RELEASE=                                \
-        "$(INTDIR_RELEASE)\ConfigFile.obj"   \
         "$(INTDIR_RELEASE)\DirAccess.obj"    \
         "$(INTDIR_RELEASE)\ErrorHandler.obj" \
         "$(INTDIR_RELEASE)\localtime_r.obj"  \

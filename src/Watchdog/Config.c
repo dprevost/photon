@@ -81,7 +81,8 @@ int vdswReadConfig( const char*          cfgname,
    xmlChar * prop = NULL;
    int i, j, fd = -1, separator = -1;
    enum vdswErrors errcode = VDSW_OK;
-   
+   char buf[10000];
+
    /* These are to make sure we have read all parameters */
    int isPresent[eVDS_NUM_CFG_PARAMS];
    
@@ -100,11 +101,16 @@ int vdswReadConfig( const char*          cfgname,
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
       return -1;
    }
+   i = read( fd, buf, 10000 );
+   if ( i < 1 ) {
+      return -1;
+   }
+
    if ( debug ) {
-      doc = xmlReadFd( fd, NULL, NULL, 0 );
+      doc = xmlReadMemory( buf, i, NULL, NULL, 0 );
    }
    else {
-      doc = xmlReadFd( fd, NULL, NULL, XML_PARSE_NOERROR | XML_PARSE_NOWARNING );
+      doc = xmlReadMemory( buf, i, NULL, NULL, XML_PARSE_NOERROR | XML_PARSE_NOWARNING );
    }
    if ( doc == NULL ) {
       errcode = VDSW_XML_READ_ERROR;
