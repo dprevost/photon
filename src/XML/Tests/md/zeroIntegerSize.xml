@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<queue xmlns="http://vdsf.sourceforge.net/vdsf_md"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://vdsf.sourceforge.net/vdsf_md vdsf_md10.xsd"
+  objName="A_queue" >
+
+  <field name="customer_id"><integer size="0"/></field>
+  <field name="order_id"><integer size="4"/></field>
+  <field name="ordered_item"><string length="20"/></field>
+  <field name="send_invoice_now"><boolean/></field>
+  <field name="number_of_items"><integer size="4"/></field>
+  <field name="cost_per_item"><decimal precision="8" scale ="2" /></field>
+  <lastField name="comments"><varBinary /></lastField>
+</queue>
+
+
