@@ -33,14 +33,14 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, strCheck("Test1"), 1234, &context );
+   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test2"),
-                                     strCheck("Test2"),
+                                     "test2",
+                                     "Test2",
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -51,8 +51,8 @@ int main()
    }
    
    errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test3"),
-                                     strCheck("Test3"),
+                                     "test3",
+                                     "Test3",
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -73,3 +73,4 @@ int main()
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

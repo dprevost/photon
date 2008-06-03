@@ -47,7 +47,7 @@ int main()
    
    errcode = vdseQueueInit( pQueue, 
                             0, 1, &status, 4, 
-                            strCheck("Map1"), NULL_OFFSET, &context );
+                            "Map1", NULL_OFFSET, &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

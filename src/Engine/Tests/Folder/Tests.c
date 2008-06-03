@@ -36,15 +36,15 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseFolderInit( pFolder1, 0, 1, 0, &status, 5, strCheck("Test1"), 1234, &context );
+   errcode = vdseFolderInit( pFolder1, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    /* Create "/Test2" */   
    errcode = vdseFolderInsertObject( pFolder1,
-                                     strCheckLow("test2"),
-                                     strCheck("Test2"),
+                                     "test2",
+                                     "Test2",
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -56,8 +56,8 @@ int main()
 
    /* Try to create "/Test2" again - must fail */   
    errcode = vdseFolderInsertObject( pFolder1,
-                                     strCheckLow("test2"),
-                                     strCheck("Test5"),
+                                     "test2",
+                                     "Test5",
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -72,8 +72,8 @@ int main()
    
    /* Create "/Test3" */   
    errcode = vdseFolderInsertObject( pFolder1,
-                                     strCheckLow("test3"),
-                                     strCheck("Test3"),
+                                     "test3",
+                                     "Test3",
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -85,7 +85,7 @@ int main()
 
    /* Get "/Test2" */   
    errcode = vdseFolderGetObject( pFolder1,
-                                  strCheckLow("test2"),
+                                  "test2",
                                   5,
                                   VDS_FOLDER,
                                   &folderItem,
@@ -98,8 +98,8 @@ int main()
 
    /* Create "/Test2/Test4" from "/Test2" */   
    errcode = vdseFolderInsertObject( pFolder2,
-                                     strCheckLow("test4"),
-                                     strCheck("Test4"),
+                                     "test4",
+                                     "Test4",
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -111,8 +111,8 @@ int main()
 
    /* Create "/Test2/Test2" */   
    errcode = vdseFolderInsertObject( pFolder2,
-                                     strCheckLow("test2"),
-                                     strCheck("Test2"),
+                                     "test2",
+                                     "Test2",
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -129,7 +129,7 @@ int main()
    
    /* Try to delete "/Test2" - should fail (not empty) */
    errcode = vdseFolderDeleteObject( pFolder1,
-                                     strCheckLow("test2"),
+                                     "test2",
                                      5,
                                      &context );
    if ( errcode != -1 ) {
@@ -141,7 +141,7 @@ int main()
    
    /* Try to delete "/Test55" - should fail (no such object) */
    errcode = vdseFolderDeleteObject( pFolder1,
-                                     strCheckLow("test55"),
+                                     "test55",
                                      6,
                                      &context );
    if ( errcode != -1 ) {
@@ -153,7 +153,7 @@ int main()
    
    /* Get "/Test2/Test4" from "/" */   
    errcode = vdseFolderGetObject( pFolder1,
-                                  strCheckLow("test2/test4"),
+                                  "test2/test4",
                                   11,
                                   VDS_FOLDER,
                                   &folderItem,
@@ -164,7 +164,7 @@ int main()
    
    GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
    if ( memcmp( pDescriptor->originalName, 
-                strCheck("Test4"), 
+                "Test4", 
                 5*sizeof(vdsChar_T) ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -172,8 +172,8 @@ int main()
    /* Create "/Test2/Test4/Test5 from "/" */
    
    errcode = vdseFolderInsertObject( pFolder1,
-                                     strCheckLow("test2/test4/test5"),
-                                     strCheck("Test2/Test4/Test5"),
+                                     "test2/test4/test5",
+                                     "Test2/Test4/Test5",
                                      17,
                                      VDS_FOLDER,
                                      1,
@@ -190,7 +190,7 @@ int main()
    
    /* Delete "/Test2/Test4/Test6" - must fail (no such object) */
    errcode = vdseFolderDeleteObject( pFolder1,
-                                     strCheckLow("test2/test4/test6"),
+                                     "test2/test4/test6",
                                      17,
                                      &context );
    if ( errcode != -1 ) {
@@ -202,7 +202,7 @@ int main()
    
    /* Delete "/Test2/Test5/Test5" - must fail (no such folder) */
    errcode = vdseFolderDeleteObject( pFolder1,
-                                     strCheckLow("test2/test5/test5"),
+                                     "test2/test5/test5",
                                      17,
                                      &context );
    if ( errcode != -1 ) {
@@ -214,7 +214,7 @@ int main()
    
    /* Delete "/Test2/Test4/Test5" */
    errcode = vdseFolderDeleteObject( pFolder1,
-                                     strCheckLow("test2/test4/test5"),
+                                     "test2/test4/test5",
                                      17,
                                      &context );
    if ( errcode != 0 ) {

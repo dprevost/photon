@@ -18,8 +18,6 @@ Some notes specific to vdsf:
  * Here is the list of configure options that you might want to use to 
    tailor the package to your needs:
 
-    * --enable-i18n The engine will use wide character strings internally 
-        for the names of objects. On by default.
     * --enable-set-block-size=some_value Sets the size of vdsf blocks 
         (blocks are the basic unit of memory allocation just like pages 
         are for operating systems - the name is different to avoid 

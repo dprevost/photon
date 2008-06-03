@@ -33,13 +33,13 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, strCheck("Test1"), 1234, &context );
+   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test2"),
+                                     "test2",
                                      NULL,
                                      5,
                                      VDS_FOLDER,

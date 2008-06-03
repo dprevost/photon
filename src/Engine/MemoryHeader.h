@@ -50,7 +50,6 @@ struct vdseMemoryHeader
    bool            logON;
    size_t          totalLength;
    
-   bool     useUnicode;
    size_t   sizeofPtr;
    bool     bigEndian;
    size_t   blockSize;

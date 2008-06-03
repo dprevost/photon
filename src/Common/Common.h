@@ -289,24 +289,6 @@ typedef size_t ptrdiff_t;
  * option was not turned off when running configure... we have i18n! 
  */
 
-#if VDS_SUPPORT_i18n
-
-#  include <wchar.h>
-#  include <wctype.h>
-
-typedef wchar_t vdsChar_T;
-
-#  define vds_isalnum(c) iswalnum(c)
-#  define vds_tolower(c) towlower(c)
-
-#  define VDS_BACKSLASH  L'\\'
-#  define VDS_SLASH      L'/'
-#  define VDS_SPACE      L' '
-#  define VDS_UNDERSCORE L'_'
-#  define VDS_HYPHEN     L'-'
-
-#else /* VDS_SUPPORT I18N */
-
 typedef char vdsChar_T;
 
 #  define vds_isalnum(c) isalnum(c)
@@ -317,8 +299,6 @@ typedef char vdsChar_T;
 #  define VDS_SPACE      ' '
 #  define VDS_UNDERSCORE '_'
 #  define VDS_HYPHEN     '-'
-
-#endif /* VDS_SUPPORT I18N */
 
 BEGIN_C_DECLS
 

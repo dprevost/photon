@@ -36,11 +36,6 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
    void * pObject;
    int pDesc_invalid_api_type = 0;
    char message[VDS_MAX_NAME_LENGTH*4 + 30];
-#if VDS_SUPPORT_i18n
-   size_t lengthName;
-   mbstate_t ps;
-   const wchar_t * name;
-#endif
    enum vdswRecoverError rc = VDSWR_OK, valid;
    
    /* The easy case */
@@ -56,20 +51,7 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
       
       memset( message, 0, VDS_MAX_NAME_LENGTH*4+30 );
       strcpy( message, "Object name: " );
-#if VDS_SUPPORT_i18n
-      memset( &ps, 0, sizeof(mbstate_t) );
-      name = pDesc->originalName;
-      lengthName = wcsrtombs( &message[strlen(message)], 
-                              &name,
-                              VDS_MAX_NAME_LENGTH*4,
-                              &ps );
-      if ( lengthName == (size_t) -1 ) {
-         /* A conversion error */
-         strcat( message, " wcsrtombs() conversion error... sorry" );
-      }
-#else
       strncat( message, pDesc->originalName, pDesc->nameLengthInBytes );
-#endif
       vdswEcho( pVerify, message );
       switch( pDesc->apiType ) {
          case VDS_FOLDER:

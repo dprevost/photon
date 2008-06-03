@@ -225,11 +225,6 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    (*ppHeader)->version = MEMORY_VERSION;
    (*ppHeader)->totalLength = m_memorySizeKB*1024;
 
-#if VDS_SUPPORT_i18n
-   (*ppHeader)->useUnicode = true;
-#else
-   (*ppHeader)->useUnicode = false;
-#endif
    (*ppHeader)->sizeofPtr = SIZEOF_VOID_P;
 #if WORDS_BIGENDIAN
    (*ppHeader)->bigEndian = true;

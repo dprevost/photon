@@ -35,7 +35,7 @@ int main()
    
    errcode = vdseQueueInit( pQueue, 
                             0, 1, &status, 4, 
-                            strCheck("Map1"), NULL_OFFSET, NULL );
+                            "Map1", NULL_OFFSET, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

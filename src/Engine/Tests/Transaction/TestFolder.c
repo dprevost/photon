@@ -35,15 +35,15 @@ int main()
    
    vdseTxStatusInit( &status, SET_OFFSET( pTx ) );
    
-   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, strCheck("Test1"), 1234, &context );
+   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    /* Test 1 */
    errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test2"),
-                                     strCheck("Test2"),
+                                     "test2",
+                                     "Test2",
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -54,8 +54,8 @@ int main()
    }
    
    errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test3"),
-                                     strCheck("Test3"),
+                                     "test3",
+                                     "Test3",
                                      5,
                                      VDS_HASH_MAP,
                                      1,
@@ -92,8 +92,8 @@ int main()
    
    /* Test 2 */
    errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test2"),
-                                     strCheck("Test2"),
+                                     "test2",
+                                     "Test2",
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -104,8 +104,8 @@ int main()
    }
    
    errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test3"),
-                                     strCheck("Test3"),
+                                     "test3",
+                                     "Test3",
                                      5,
                                      VDS_HASH_MAP,
                                      1,
@@ -133,7 +133,7 @@ int main()
    }
    
    errcode = vdseFolderDeleteObject( pFolder,
-                                     strCheckLow("test2"),
+                                     "test2",
                                      5,
                                      &context );
    if ( errcode != 0 ) {
@@ -141,7 +141,7 @@ int main()
    }
    
    errcode = vdseFolderDeleteObject( pFolder,
-                                     strCheckLow("test3"),
+                                     "test3",
                                      5,
                                      &context );
    if ( errcode != 0 ) {
@@ -163,7 +163,7 @@ int main()
    }
    
    errcode = vdseFolderDeleteObject( pFolder,
-                                     strCheckLow("test2"),
+                                     "test2",
                                      5,
                                      &context );
    if ( errcode != 0 ) {
@@ -171,7 +171,7 @@ int main()
    }
    
    errcode = vdseFolderDeleteObject( pFolder,
-                                     strCheckLow("test3"),
+                                     "test3",
                                      5,
                                      &context );
    if ( errcode != 0 ) {
@@ -197,8 +197,8 @@ int main()
    
    /* Test 3 */
    errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test2"),
-                                     strCheck("Test2"),
+                                     "test2",
+                                     "Test2",
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -209,8 +209,8 @@ int main()
    }
    
    errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test3"),
-                                     strCheck("Test3"),
+                                     "test3",
+                                     "Test3",
                                      5,
                                      VDS_HASH_MAP,
                                      1,
@@ -221,7 +221,7 @@ int main()
    }
    
    errcode = vdseFolderGetObject( pFolder,
-                                  strCheck("test3"),
+                                  "test3",
                                   5,
                                   VDS_HASH_MAP,
                                   &item,
@@ -251,8 +251,8 @@ int main()
    
    /* Test 4 */
    errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test2"),
-                                     strCheck("Test2"),
+                                     "test2",
+                                     "Test2",
                                      5,
                                      VDS_FOLDER,
                                      1,
@@ -263,8 +263,8 @@ int main()
    }
    
    errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test3"),
-                                     strCheck("Test3"),
+                                     "test3",
+                                     "Test3",
                                      5,
                                      VDS_HASH_MAP,
                                      1,
@@ -275,7 +275,7 @@ int main()
    }
    
    errcode = vdseFolderGetObject( pFolder,
-                                  strCheck("test3"),
+                                  "test3",
                                   5,
                                   VDS_HASH_MAP,
                                   &item,
@@ -304,7 +304,7 @@ int main()
    }
    
    errcode = vdseFolderGetObject( pFolder,
-                                  strCheck("test3"),
+                                  "test3",
                                   5,
                                   VDS_HASH_MAP,
                                   &item,
@@ -314,7 +314,7 @@ int main()
    }
    
    errcode = vdseFolderDeleteObject( pFolder,
-                                     strCheckLow("test2"),
+                                     "test2",
                                      5,
                                      &context );
    if ( errcode != 0 ) {
@@ -322,7 +322,7 @@ int main()
    }
    
    errcode = vdseFolderDeleteObject( pFolder,
-                                     strCheckLow("test3"),
+                                     "test3",
                                      5,
                                      &context );
    if ( errcode != 0 ) {
@@ -344,7 +344,7 @@ int main()
    }
    
    errcode = vdseFolderDeleteObject( pFolder,
-                                     strCheckLow("test2"),
+                                     "test2",
                                      5,
                                      &context );
    if ( errcode != 0 ) {
@@ -352,7 +352,7 @@ int main()
    }
    
    errcode = vdseFolderDeleteObject( pFolder,
-                                     strCheckLow("test3"),
+                                     "test3",
                                      5,
                                      &context );
    if ( errcode != 0 ) {

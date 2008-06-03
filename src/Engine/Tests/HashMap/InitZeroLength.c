@@ -39,7 +39,7 @@ int main()
                               0, 
                               &status, 
                               0, /* zero name length */
-                              strCheck("Map1"), 
+                              "Map1", 
                               NULL_OFFSET, 
                               &context );
 

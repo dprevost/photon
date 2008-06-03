@@ -1407,32 +1407,15 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
    size_t strLength, i;
    int rc;
    size_t first = 0;
-#if VDS_SUPPORT_i18n
-   mbstate_t ps;
-   wchar_t * name = NULL, *lowerName = NULL;
-   const char * strPtr;
-#else
    const char * name = objectName;
    char * lowerName = NULL;
-#endif
 
    VDS_PRE_CONDITION( pFolder    != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
 
-#if VDS_SUPPORT_i18n
-   memset( &ps, 0, sizeof(mbstate_t) );
-   strPtr = objectName;
-   strLength = mbsrtowcs( NULL, &strPtr, 0, &ps );
-   if ( strLength == (size_t)-1 ) {
-      vdscSetError( &pContext->errorHandler, VDSC_ERRNO_HANDLE, errno );
-      errcode = VDS_INVALID_OBJECT_NAME;
-      goto error_handler;
-   }
-#else
    strLength = nameLengthInBytes;
-#endif
 
    if ( strLength > VDS_MAX_FULL_NAME_LENGTH ) {
       errcode = VDS_OBJECT_NAME_TOO_LONG;
@@ -1443,19 +1426,7 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
       goto error_handler;
    }
 
-#if VDS_SUPPORT_i18n
-   name = (wchar_t*)malloc( (strLength+1)*sizeof(wchar_t) );
-   if ( name == NULL ) {
-      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
-      goto error_handler;
-   }
-   lowerName = (wchar_t*)malloc( (strLength+1)*sizeof(wchar_t) );
-   
-   strPtr = objectName;
-   mbsrtowcs( name, &strPtr, strLength, &ps );
-#else
    lowerName = (char*)malloc( (strLength+1)*sizeof(char) );
-#endif
    if ( lowerName == NULL ) {
       errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
       goto error_handler;
@@ -1498,18 +1469,12 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
       goto error_handler;
    }
    
-#if VDS_SUPPORT_i18n
-   free( name );
-#endif
    free( lowerName );
    
    return 0;
 
 error_handler:
 
-#if VDS_SUPPORT_i18n
-   if ( name != NULL ) free( name );
-#endif
    if ( lowerName != NULL ) free( lowerName );
 
    /*
@@ -1534,31 +1499,14 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
    size_t strLength, i;
    int rc;
    size_t first = 0;
-#if VDS_SUPPORT_i18n
-   mbstate_t ps;
-   wchar_t * name = NULL, * lowerName = NULL;
-   const char * strPtr;
-#else
    const char * name = objectName;
    char * lowerName = NULL;
-#endif
 
    VDS_PRE_CONDITION( pFolder    != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
 
-#if VDS_SUPPORT_i18n
-   memset( &ps, 0, sizeof(mbstate_t) );
-   strPtr = objectName;
-   strLength = mbsrtowcs( NULL, &strPtr, 0, &ps );
-   if ( strLength == (size_t)-1 ) {
-      vdscSetError( &pContext->errorHandler, VDSC_ERRNO_HANDLE, errno );
-      errcode = VDS_INVALID_OBJECT_NAME;
-      goto error_handler;
-   }
-#else
    strLength = nameLengthInBytes;
-#endif
    
    if ( strLength > VDS_MAX_FULL_NAME_LENGTH ) {
       errcode = VDS_OBJECT_NAME_TOO_LONG;
@@ -1569,19 +1517,7 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
       goto error_handler;
    }
 
-#if VDS_SUPPORT_i18n
-   name = (wchar_t *)malloc( (strLength+1)*sizeof(wchar_t) );
-   if ( name == NULL ) {
-      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
-      goto error_handler;
-   }
-   lowerName = (wchar_t *) malloc( (strLength+1)*sizeof(wchar_t) );
-   
-   strPtr = objectName;
-   mbsrtowcs( name, &strPtr, strLength, &ps );
-#else
    lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
-#endif
    if ( lowerName == NULL ) {
       errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
       goto error_handler;
@@ -1621,18 +1557,12 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
       goto error_handler;
    }
    
-#if VDS_SUPPORT_i18n
-   free( name );
-#endif
    free( lowerName );
    
    return 0;
 
 error_handler:
 
-#if VDS_SUPPORT_i18n
-   if ( name != NULL ) free( name );
-#endif
    if ( lowerName != NULL ) free( lowerName );
 
    /*
@@ -1658,32 +1588,16 @@ int vdseTopFolderGetStatus( vdseFolder         * pFolder,
    size_t strLength, i;
    int rc;
    size_t first = 0;
-#if VDS_SUPPORT_i18n
-   mbstate_t ps;
-   wchar_t * name = NULL, * lowerName = NULL;
-   const char * strPtr;
-#else
+
    const char * name = objectName;
    char * lowerName = NULL;
-#endif
 
    VDS_PRE_CONDITION( pFolder    != NULL );
    VDS_PRE_CONDITION( pStatus    != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
 
-#if VDS_SUPPORT_i18n
-   memset( &ps, 0, sizeof(mbstate_t) );
-   strPtr = objectName;
-   strLength = mbsrtowcs( NULL, &strPtr, 0, &ps );
-   if ( strLength == (size_t)-1 ) {
-      vdscSetError( &pContext->errorHandler, VDSC_ERRNO_HANDLE, errno );
-      errcode = VDS_INVALID_OBJECT_NAME;
-      goto error_handler;
-   }
-#else
    strLength = nameLengthInBytes;
-#endif
    
    if ( strLength > VDS_MAX_FULL_NAME_LENGTH ) {
       errcode = VDS_OBJECT_NAME_TOO_LONG;
@@ -1694,19 +1608,7 @@ int vdseTopFolderGetStatus( vdseFolder         * pFolder,
       goto error_handler;
    }
 
-#if VDS_SUPPORT_i18n
-   name = (wchar_t *) malloc( (strLength+1)*sizeof(wchar_t) );
-   if ( name == NULL ) {
-      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
-      goto error_handler;
-   }
-   lowerName = (wchar_t *) malloc( (strLength+1)*sizeof(wchar_t) );
-   
-   strPtr = objectName;
-   mbsrtowcs( name, &strPtr, strLength, &ps );
-#else
    lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
-#endif
    if ( lowerName == NULL ) {
       errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
       goto error_handler;
@@ -1759,18 +1661,12 @@ int vdseTopFolderGetStatus( vdseFolder         * pFolder,
       }
    }
    
-#if VDS_SUPPORT_i18n
-   free( name );
-#endif
    free( lowerName );
    
    return 0;
 
 error_handler:
 
-#if VDS_SUPPORT_i18n
-   if ( name != NULL ) free( name );
-#endif
    if ( lowerName != NULL ) free( lowerName );
 
    /*
@@ -1797,14 +1693,8 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
    size_t strLength, i;
    int rc;
    size_t first = 0;
-#if VDS_SUPPORT_i18n
-   mbstate_t ps;
-   wchar_t * name = NULL, * lowerName = NULL;
-   const char * strPtr;
-#else
    const char * name = objectName;
    char * lowerName = NULL;
-#endif
 
    VDS_PRE_CONDITION( pFolder     != NULL );
    VDS_PRE_CONDITION( pFolderItem != NULL );
@@ -1812,19 +1702,7 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pContext    != NULL );
    VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
 
-#if VDS_SUPPORT_i18n
-   memset( &ps, 0, sizeof(mbstate_t) );
-   strPtr = objectName;
-   strLength = mbsrtowcs( NULL, &strPtr, 0, &ps );
-   if ( strLength == (size_t)-1 ) {
-      vdscSetError( &pContext->errorHandler, VDSC_ERRNO_HANDLE, errno );
-      errcode = VDS_INVALID_OBJECT_NAME;
-      goto error_handler;
-   }
-#else
    strLength = nameLengthInBytes;
-#endif
-   
    if ( strLength > VDS_MAX_FULL_NAME_LENGTH ) {
       errcode = VDS_OBJECT_NAME_TOO_LONG;
       goto error_handler;
@@ -1834,19 +1712,7 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
       goto error_handler;
    }
 
-#if VDS_SUPPORT_i18n
-   name = (wchar_t *) malloc( (strLength+1)*sizeof(wchar_t) );
-   if ( name == NULL ) {
-      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
-      goto error_handler;
-   }
-   lowerName = (wchar_t *) malloc( (strLength+1)*sizeof(wchar_t) );
-   
-   strPtr = objectName;
-   mbsrtowcs( name, &strPtr, strLength, &ps );
-#else
    lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
-#endif
    if ( lowerName == NULL ) {
       errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
       goto error_handler;
@@ -1897,18 +1763,12 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
       }
    }
    
-#if VDS_SUPPORT_i18n
-   free( name );
-#endif
    free( lowerName );
    
    return 0;
 
 error_handler:
 
-#if VDS_SUPPORT_i18n
-   if ( name != NULL ) free( name );
-#endif
    if ( lowerName != NULL ) free( lowerName );
 
    /*

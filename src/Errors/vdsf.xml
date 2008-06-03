@@ -695,23 +695,6 @@
     </error>
 
     <error>
-      <errnumber> 68 </errnumber>
-      <errname> I18N_CONVERSION_ERROR </errname>
-      <message_group>
-        <message xml:lang="en">
-          <errormsg>
-            i18n string conversion error. In other words, the name of the object cannot be
-            converted to/from your current locale.
-          </errormsg>
-          <errordoc>
-            i18n string conversion error. In other words, the name of the 
-            object cannot be converted to/from your current locale.
-          </errordoc>
-        </message>
-      </message_group>
-    </error>
-
-    <error>
       <errnumber> 69 </errnumber>
       <errname> OBJECT_IS_IN_USE </errname>
       <message_group>

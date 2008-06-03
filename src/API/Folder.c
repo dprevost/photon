@@ -93,10 +93,6 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
    vdseFolder * pVDSFolder;
    int errcode = 0, rc = 0;
    vdseObjectDescriptor * pDescriptor;
-#if VDS_SUPPORT_i18n
-   mbstate_t ps;
-   const wchar_t * name;
-#endif
 
    pFolder = (vdsaFolder *) objectHandle;
    if ( pFolder == NULL ) return VDS_NULL_HANDLE;
@@ -145,24 +141,8 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
                          vdseObjectDescriptor );
    pEntry->type = pDescriptor->apiType;
    pEntry->status = pFolder->iterator.status;
-#if VDS_SUPPORT_i18n
-   memset( &ps, 0, sizeof(mbstate_t) );
-   name = pDescriptor->originalName;
-   pEntry->nameLengthInBytes = wcsrtombs( pEntry->name, 
-                                          &name,
-                                          VDS_MAX_NAME_LENGTH*4,
-                                          &ps );
-   if ( pEntry->nameLengthInBytes == (size_t) -1 ) {
-      /* A conversion error */
-      vdscSetError( &pFolder->object.pSession->context.errorHandler, 
-                    VDSC_ERRNO_HANDLE, errno );
-      errcode = VDS_I18N_CONVERSION_ERROR;
-      goto error_handler_unlock;
-   }
-#else
    pEntry->nameLengthInBytes = pDescriptor->nameLengthInBytes;
    memcpy( pEntry->name, pDescriptor->originalName, pDescriptor->nameLengthInBytes );
-#endif
 
    vdsaCommonUnlock( &pFolder->object );
 
@@ -192,10 +172,6 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
    vdseFolder * pVDSFolder;
    int errcode = 0, rc = 0;
    vdseObjectDescriptor * pDescriptor;
-#if VDS_SUPPORT_i18n
-   mbstate_t ps;
-   const wchar_t * name;
-#endif
 
    pFolder = (vdsaFolder *) objectHandle;
    if ( pFolder == NULL ) return VDS_NULL_HANDLE;
@@ -236,24 +212,8 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
                          vdseObjectDescriptor );
    pEntry->type = pDescriptor->apiType;
    pEntry->status = pFolder->iterator.status;
-#if VDS_SUPPORT_i18n
-   memset( &ps, 0, sizeof(mbstate_t) );
-   name = pDescriptor->originalName;
-   pEntry->nameLengthInBytes = wcsrtombs( pEntry->name, 
-                                          &name, 
-                                          VDS_MAX_NAME_LENGTH*4,
-                                          &ps );
-   if ( pEntry->nameLengthInBytes == (size_t) -1 ) {
-      /* A conversion error */
-      vdscSetError( &pFolder->object.pSession->context.errorHandler, 
-                    VDSC_ERRNO_HANDLE, errno );
-      errcode = VDS_I18N_CONVERSION_ERROR;
-      goto error_handler_unlock;
-   }
-#else
    pEntry->nameLengthInBytes = pDescriptor->nameLengthInBytes;
    memcpy( pEntry->name, pDescriptor->originalName, pDescriptor->nameLengthInBytes );
-#endif
 
    vdsaCommonUnlock( &pFolder->object );
 

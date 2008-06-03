@@ -41,8 +41,7 @@ struct vdseObjectDescriptor
    enum vdsObjectType apiType;
    
    /** 
-    * The length in bytes of the name as originally entered (but stored in
-    * multi-bytes characters, if i18n is supportd).
+    * The length in bytes of the name as originally entered.
     */
    int nameLengthInBytes;
    
@@ -50,9 +49,6 @@ struct vdseObjectDescriptor
     * The original name (not including the parent folder name).
     * This name does include the trailing zero ('\0' or L'\0'),
     * and can be used as a valid C string!
-    *
-    * Note: it is stored as an array of multi-bytes characters if i18n is
-    * supported.
     */
    vdsChar_T originalName[1];
    

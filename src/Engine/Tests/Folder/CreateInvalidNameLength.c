@@ -38,11 +38,6 @@ int main()
                                         0,
                                         VDS_FOLDER,
                                         &context );
-#if VDS_SUPPORT_i18n
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-#else
    if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -50,18 +45,12 @@ int main()
    if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-#endif
 
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "/Test2",
                                         1,
                                         VDS_FOLDER,
                                         &context );
-#if VDS_SUPPORT_i18n
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-#else
    if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -69,7 +58,6 @@ int main()
    if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-#endif
 
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         name,

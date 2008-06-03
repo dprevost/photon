@@ -293,23 +293,23 @@ fi
 #                                       #
 #########################################
 
-AC_ARG_ENABLE([i18n],
-              AC_HELP_STRING([--enable-i18n],
-                             [use unicode internally to store names of objects @<:@default=yes@:>@]),
-	      [use_i18n=$enableval],
-	      [use_i18n=yes])
-if test "$use_i18n" = "yes"; then
-  AC_CHECK_HEADERS([wchar.h wctype.h],,[use_i18n=no])
-  AC_CHECK_FUNCS([mbsrtowcs wcsrtombs],,[use_i18n=no])
-fi
-AC_MSG_CHECKING(if internationalization is supported)
+#AC_ARG_ENABLE([i18n],
+#              AC_HELP_STRING([--enable-i18n],
+#                             [use unicode internally to store names of objects @<:@default=yes@:>@]),
+#	      [use_i18n=$enableval],
+#	      [use_i18n=yes])
+#if test "$use_i18n" = "yes"; then
+#  AC_CHECK_HEADERS([wchar.h wctype.h],,[use_i18n=no])
+#  AC_CHECK_FUNCS([mbsrtowcs wcsrtombs],,[use_i18n=no])
+#fi
+#AC_MSG_CHECKING(if internationalization is supported)
 
-if test "$use_i18n" = "yes"; then
-  AC_DEFINE(VDS_SUPPORT_i18n, 1, [internationalization is supported])
-  AC_MSG_RESULT(yes)
-else
-  AC_MSG_RESULT(no)
-fi
+#if test "$use_i18n" = "yes"; then
+#  AC_DEFINE(VDS_SUPPORT_i18n, 1, [internationalization is supported])
+#  AC_MSG_RESULT(yes)
+#else
+#  AC_MSG_RESULT(no)
+#fi
 
 ########################################
 #                                      #
@@ -494,3 +494,4 @@ AC_CONFIG_FILES([
 ])
 
 AC_OUTPUT
+

@@ -106,66 +106,6 @@ initQueueTest( bool                testIsExpectedToSucceed,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/*
- * The problem: if we use unicode, litterals like "string" must be defined
- * as L"string".
- *
- * One solution is to encode the strings on the fly. 
- *
- * Only problem is that this requires allocating memory for the new array
- * of wchar_t (and also for the second - lowecase - array, when needed.
- *
- */
-#if VDS_SUPPORT_i18n
-
-wchar_t *wcTemp = NULL, *wcTempLowcase = NULL;
-size_t mbsrtowcs(wchar_t *dst, const char **src, size_t len, mbstate_t *ps);
-
-wchar_t* strCheck( const char* str )
-{
-   mbstate_t ps;
-   size_t len;
-   
-   if ( wcTemp != NULL ) free( wcTemp );
-   
-   len = mbsrtowcs( NULL, &str, 0, &ps );
-   wcTemp = (wchar_t*)malloc( (len+1)*sizeof(wchar_t) );
-   
-   mbsrtowcs( wcTemp, &str, len, &ps );
-   
-   return wcTemp;
-}
-
-wchar_t* strCheckLow( const char* str )
-{
-   mbstate_t ps;
-   size_t len;
-   
-   if ( wcTempLowcase != NULL ) free( wcTempLowcase );
-
-   len = mbsrtowcs( NULL, &str, 0, &ps );
-   wcTempLowcase = (wchar_t*)malloc( (len+1)*sizeof(wchar_t) );
-
-   mbsrtowcs( wcTempLowcase, &str, len, &ps );
-   return wcTempLowcase;
-}
-
-#else
-
-char* strCheck( char* str )
-{
-   return str;
-}
-
-char* strCheckLow( char* str )
-{
-   return str;
-}
-
-#endif
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 #endif /* VDST_QUEUE_TEST_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

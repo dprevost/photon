@@ -38,7 +38,7 @@ int main()
    
    errcode = vdseHashMapInit( pHashMap, 
                               0, 1, 0, &status, 4, 
-                              strCheck("Map1"), NULL_OFFSET, &context );
+                              "Map1", NULL_OFFSET, &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

@@ -39,7 +39,7 @@ int main()
                              0,
                              &status,
                              5,
-                             strCheck("Test1"),
+                             "Test1",
                              1234,
                              &context );
    if ( errcode != 0 ) {
@@ -47,8 +47,8 @@ int main()
    }
    
    errcode = vdseFolderInsertObject( pFolder,
-                                     strCheckLow("test2"),
-                                     strCheck("Test2"),
+                                     "test2",
+                                     "Test2",
                                      0,
                                      VDS_FOLDER,
                                      1,
