@@ -31,7 +31,9 @@
 #define LINE_MAX_LEN (2*PATH_MAX)
 
 vdswWatchdog* vdswWatchdog::g_pWD = NULL;
+BEGIN_C_DECLS
 vdscErrMsgHandle g_wdErrorHandle = -1;
+END_C_DECLS
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

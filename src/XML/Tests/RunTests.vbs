@@ -23,25 +23,22 @@ Option Explicit
 '
 ' ***********************************************************************
 
-Dim rc, numTests, numFailed, verbose, status
+Dim numTests, xmlTest, verbose, rc, numFailed, testExec, status
 Dim objShell
 Dim objWshScriptExec
-Dim fso
-Dim objSocket
+Dim exeName
+Dim consoleMode
+Dim objArgs, strArg, i
+Dim strOutput
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(11)
+Dim failedTests(11)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(11)
-
-Dim exe_name, prog_path, program, wd_path, tmpDir, cmdFile, exeName
-Dim consoleMode
-Dim objArgs, strArg, i
-dim strOutput
+Dim okTests(11)
 
 ' ***********************************************************************
 '
@@ -50,24 +47,21 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0)  = "dupFieldName.xml"
-ok_programs(1)  = "invalidDataType.xml"
-ok_programs(2)  = "invalidIntegerSize.xml"
-ok_programs(3)  = "invalidObjType.xml"
-ok_programs(4)  = "invalidPrecision.xml"
-ok_programs(5)  = "invalidScale.xml"
-ok_programs(6)  = "noLastField.xml"
-ok_programs(7)  = "noMD.xml"
-ok_programs(8)  = "twoLastField.xml"
-ok_programs(9)  = "zeroIntegerSize.xml"
-ok_programs(10) = "zeroPrecision.xml"
-ok_programs(11) = "zeroStringLength.xml"
+okTests(0)  = "dupFieldName.xml"
+okTests(1)  = "invalidDataType.xml"
+okTests(2)  = "invalidIntegerSize.xml"
+okTests(3)  = "invalidObjType.xml"
+okTests(4)  = "invalidPrecision.xml"
+okTests(5)  = "invalidScale.xml"
+okTests(6)  = "noLastField.xml"
+okTests(7)  = "noMD.xml"
+okTests(8)  = "twoLastField.xml"
+okTests(9)  = "zeroIntegerSize.xml"
+okTests(10) = "zeroPrecision.xml"
+okTests(11) = "zeroStringLength.xml"
 
 numTests = 12 
 numFailed = 0
-
-' Create the FileSystemObject
-Set fso = CreateObject ("Scripting.FileSystemObject")
 
 consoleMode = True
 If Right(LCase(Wscript.FullName), 11) = "wscript.exe" Then
@@ -77,7 +71,6 @@ End If
 Set objShell = CreateObject("WScript.Shell")
 verbose = False
 
-prog_path = "Release"
 Set objArgs = WScript.Arguments
 
 ' ***********************************************************************
@@ -87,9 +80,6 @@ Set objArgs = WScript.Arguments
 ' ***********************************************************************
 
 For Each strArg in objArgs
-   If Left(LCase(strArg), 6) = "--path" AND Len(strArg) > 6 Then
-      prog_path = Right(strArg, Len(strArg)-7)
-   end if
    if LCase(strArg) = "--verbose" then 
       verbose = True
    end if
@@ -99,16 +89,16 @@ if Not consoleMode then
    wscript.echo "Be patient - running the tests in batch mode - click ok to start"
 end if
 
-exeName = "xmllint --noout --schema ..\vdsf_md10.xml md\"
+exeName = "xmllint --noout --schema ..\vdsf_md10.xsd md\"
 
 ' Run all tests
 
-For Each xml_test in ok_tests
-   test_exec = exe_name & xml_test
-   WScript.Echo test_exec
+For Each xmlTest in okTests
+   testExec = exeName & xmlTest
+   WScript.Echo testExec
    if consoleMode then 
-      WScript.Echo "Running " & test
-      Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & test_exec & Chr(34))
+      WScript.Echo "Running " & xmlTest
+      Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & testExec & Chr(34))
       status = objWshScriptExec.Status
       Do While objWshScriptExec.Status = 0
          WScript.Sleep 100
@@ -119,11 +109,11 @@ For Each xml_test in ok_tests
 '      end if
       rc = objWshScriptExec.ExitCode
    else
-      rc = objShell.Run("%comspec% /c " & Chr(34) & test_exec & Chr(34), 2, true)
+      rc = objShell.Run("%comspec% /c " & Chr(34) & testExec & Chr(34), 2, true)
    end if
    if rc = 0 then   
    wscript.echo "rc = " & rc & " " & test
-      failed_tests(numFailed) = test
+      failedTests(numFailed) = test
       numFailed = numFailed + 1
    end if
 Next
@@ -132,7 +122,7 @@ if consoleMode then
    WScript.StdOut.Write vbcrlf & "Total number of tests: " & numTests & vbcrlf
    WScript.StdOut.Write "Total number of failed tests: " & numFailed & vbcrlf & vbcrlf
    For i = 1 to numFailed 
-      WScript.StdOut.Write "This test failed: " & failed_tests(i-1) & vbcrlf
+      WScript.StdOut.Write "This test failed: " & failedTests(i-1) & vbcrlf
    Next
    if verbose then
       WScript.StdOut.Write "Type return to continue"

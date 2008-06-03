@@ -42,7 +42,9 @@
 // Forward declaration(s)
 struct vdseMemoryHeader;
 
+BEGIN_C_DECLS
 extern vdscErrMsgHandle g_wdErrorHandle;
+END_C_DECLS
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
