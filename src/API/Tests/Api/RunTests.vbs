@@ -122,6 +122,7 @@ cmdFile.WriteLine("  <mem_size size=""10240"" units=""kb"" />")
 cmdFile.WriteLine("  <watchdog_address>10701</watchdog_address>")
 cmdFile.WriteLine("  <file_access access=""group"" />")
 cmdFile.WriteLine("</vdsf_config>")
+cmdFile.Close
 
 exeName = wd_path + "\vdswd.exe -c " + tmpDir + "\cfg.xml"
 
@@ -189,7 +190,6 @@ z = false
 while z <> true 
    z = objShellwd.AppActivate( "vdswd" )
    Wscript.Sleep 100
-'   wscript.echo "z = : ", z
 wend
 objShellwd.SendKeys "^C"
 
@@ -210,6 +210,7 @@ else
 end if
 
 if (fso.FolderExists(tmpDir)) Then
+   Wscript.Sleep 1000
    On Error Resume Next
    fso.DeleteFolder(tmpDir)
 end if

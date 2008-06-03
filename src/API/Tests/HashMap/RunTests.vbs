@@ -147,6 +147,7 @@ cmdFile.WriteLine("  <mem_size size=""10240"" units=""kb"" />")
 cmdFile.WriteLine("  <watchdog_address>10701</watchdog_address>")
 cmdFile.WriteLine("  <file_access access=""group"" />")
 cmdFile.WriteLine("</vdsf_config>")
+cmdFile.Close
 
 exeName = wd_path + "\vdswd.exe -c " + tmpDir + "\cfg.xml"
 
@@ -256,6 +257,7 @@ else
 end if
 
 if (fso.FolderExists(tmpDir)) Then
+   Wscript.Sleep 1000
    On Error Resume Next
    fso.DeleteFolder(tmpDir)
 end if
