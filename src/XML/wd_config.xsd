@@ -10,6 +10,7 @@
 <xs:simpleType name="pathString">
   <xs:restriction base="xs:token">
     <xs:maxLength value="1024"/>
+    <xs:whiteSpace value='collapse'/>
   </xs:restriction>
 </xs:simpleType>
 
@@ -38,6 +39,7 @@
     <xs:enumeration value="user"/>
     <xs:enumeration value="group"/>
     <xs:enumeration value="world"/>
+    <xs:whiteSpace value='collapse'/>
   </xs:restriction>
 </xs:simpleType>
 
