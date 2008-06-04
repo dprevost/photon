@@ -96,7 +96,7 @@ int vdseQueueInit( vdseQueue          * pQueue,
                    size_t               numberOfBlocks,
                    vdseTxStatus       * pTxStatus,
                    size_t               origNameLength,
-                   vdsChar_T          * origName,
+                   char          * origName,
                    ptrdiff_t            keyOffset,
                    vdseSessionContext * pContext );
 

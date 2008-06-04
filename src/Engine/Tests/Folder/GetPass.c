@@ -64,7 +64,7 @@ int main()
    }
    GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
    if ( memcmp( pDescriptor->originalName, 
-                "Test2", 5*sizeof(vdsChar_T) ) != 0 ) {
+                "Test2", 5*sizeof(char) ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    GET_PTR( pNode, pDescriptor->nodeOffset, vdseTreeNode);
@@ -112,7 +112,7 @@ int main()
    }
    GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
    if ( memcmp( pDescriptor->originalName, 
-                "Test4", 5*sizeof(vdsChar_T) ) != 0 ) {
+                "Test4", 5*sizeof(char) ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    GET_PTR( pNode, pDescriptor->nodeOffset, vdseTreeNode);

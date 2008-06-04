@@ -272,34 +272,6 @@ typedef DWORD uint32_t;
 typedef size_t ptrdiff_t;
 #endif
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- *
- *
- * i18n - internationalization is optional (it can be suppressed when
- *        running configure by using --disable-i18n) and will default to 
- *        single byte chars if some features are missing.
- *
- *        configure will check for missing header files and missing 
- *        functions. As additional functions will be used, they must
- *        be added to configure.ac in the i18n section.
- *
- * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/*
- * Simple if. If all the functions/headers we need are present AND the 
- * option was not turned off when running configure... we have i18n! 
- */
-
-typedef char vdsChar_T;
-
-#  define vds_isalnum(c) isalnum(c)
-#  define vds_tolower(c) tolower(c)
-
-#  define VDS_BACKSLASH  '\\'
-#  define VDS_SLASH      '/'
-#  define VDS_SPACE      ' '
-#  define VDS_UNDERSCORE '_'
-#  define VDS_HYPHEN     '-'
-
 BEGIN_C_DECLS
 
 /*

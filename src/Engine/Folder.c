@@ -30,7 +30,7 @@ void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
                               vdseSessionContext * pContext );
 
 static 
-vdsErrors vdseValidateString( const vdsChar_T * objectName,
+vdsErrors vdseValidateString( const char * objectName,
                               size_t            strLength, 
                               size_t          * pPartialLength,
                               bool            * pLastIteration );
@@ -83,7 +83,7 @@ bool vdseFolderDeletable( vdseFolder         * pFolder,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseFolderDeleteObject( vdseFolder         * pFolder,
-                            const vdsChar_T    * objectName,
+                            const char    * objectName,
                             size_t               strLength, 
                             vdseSessionContext * pContext )
 {
@@ -112,7 +112,7 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
 
    listErr = vdseHashGet( &pFolder->hashObj, 
                           (unsigned char *)objectName, 
-                          partialLength * sizeof(vdsChar_T),
+                          partialLength * sizeof(char),
                           &pHashItem,
                           pContext,
                           NULL );
@@ -458,7 +458,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseFolderGetObject( vdseFolder         * pFolder,
-                         const vdsChar_T    * objectName,
+                         const char    * objectName,
                          size_t               strLength,
                          enum vdsObjectType   objectType,
                          vdseFolderItem     * pFolderItem,
@@ -491,7 +491,7 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
    
    listErr = vdseHashGet( &pFolder->hashObj, 
                           (unsigned char *)objectName, 
-                          partialLength * sizeof(vdsChar_T), 
+                          partialLength * sizeof(char), 
                           &pHashItem,
                           pContext,
                           NULL );
@@ -622,7 +622,7 @@ the_exit:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseFolderGetStatus( vdseFolder         * pFolder,
-                         const vdsChar_T    * objectName,
+                         const char    * objectName,
                          size_t               strLength, 
                          vdsObjStatus       * pStatus,
                          vdseSessionContext * pContext )
@@ -654,7 +654,7 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
    
    listErr = vdseHashGet( &pFolder->hashObj, 
                           (unsigned char *)objectName, 
-                          partialLength * sizeof(vdsChar_T), 
+                          partialLength * sizeof(char), 
                           &pHashItem,
                           pContext,
                           NULL );
@@ -810,7 +810,7 @@ int vdseFolderInit( vdseFolder         * pFolder,
                     size_t               expectedNumOfChilds,
                     vdseTxStatus       * pTxStatus,
                     size_t               origNameLength,
-                    vdsChar_T          * origName,
+                    char          * origName,
                     ptrdiff_t            keyOffset,
                     vdseSessionContext * pContext )
 {
@@ -865,8 +865,8 @@ int vdseFolderInit( vdseFolder         * pFolder,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseFolderInsertObject( vdseFolder         * pFolder,
-                            const vdsChar_T    * objectName,
-                            const vdsChar_T    * originalName,
+                            const char    * objectName,
+                            const char    * originalName,
                             size_t               strLength, 
                             enum vdsObjectType   objectType,
                             size_t               numBlocks,
@@ -920,7 +920,7 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
 
       listErr = vdseHashGet( &pFolder->hashObj, 
                              (unsigned char *)objectName, 
-                             partialLength * sizeof(vdsChar_T), 
+                             partialLength * sizeof(char), 
                              &previousHashItem,
                              pContext,
                              &bucket );
@@ -944,7 +944,7 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
          goto the_exit;
       }
       descLength = offsetof(vdseObjectDescriptor, originalName) + 
-          (partialLength+1) * sizeof(vdsChar_T);
+          (partialLength+1) * sizeof(char);
       pDesc = (vdseObjectDescriptor *) malloc( descLength );
       if ( pDesc == NULL ) {
          vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
@@ -955,13 +955,13 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
       memset( pDesc, 0, descLength );
       pDesc->apiType = objectType;
       pDesc->offset = SET_OFFSET( ptr );
-      pDesc->nameLengthInBytes = partialLength * sizeof(vdsChar_T);
+      pDesc->nameLengthInBytes = partialLength * sizeof(char);
       memcpy( pDesc->originalName, originalName, pDesc->nameLengthInBytes );
 
       listErr = vdseHashInsertAt( &pFolder->hashObj, 
                                   bucket,
                                   (unsigned char *)objectName, 
-                                  partialLength * sizeof(vdsChar_T), 
+                                  partialLength * sizeof(char), 
                                   (void*)pDesc, 
                                   descLength,
                                   &pHashItem,
@@ -1087,7 +1087,7 @@ int vdseFolderInsertObject( vdseFolder         * pFolder,
    /* If we come here, this was not the last iteration, so we continue */
    listErr = vdseHashGet( &pFolder->hashObj, 
                           (unsigned char *)objectName, 
-                          partialLength * sizeof(vdsChar_T), 
+                          partialLength * sizeof(char), 
                           &pHashItem,
                           pContext,
                           NULL );
@@ -1434,11 +1434,11 @@ int vdseTopFolderCreateObject( vdseFolder         * pFolder,
 
    /* lowecase the string */
    for ( i = 0; i < strLength; ++i ) {
-      lowerName[i] = (vdsChar_T) vds_tolower( name[i] );
+      lowerName[i] = (char) tolower( name[i] );
    }
    
    /* strip the first char if a separator */
-   if ( name[0] == VDS_SLASH || name[0] == VDS_BACKSLASH ) {
+   if ( name[0] == '/' || name[0] == '\\' ) {
       first = 1;
       --strLength;
       if ( strLength == 0 ) {
@@ -1525,11 +1525,11 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
 
    /* lowecase the string */
    for ( i = 0; i < strLength; ++i ) {
-      lowerName[i] = (vdsChar_T) vds_tolower( name[i] );
+      lowerName[i] = (char) tolower( name[i] );
    }
    
    /* strip the first char if a separator */
-   if ( name[0] == VDS_SLASH || name[0] == VDS_BACKSLASH ) {
+   if ( name[0] == '/' || name[0] == '\\' ) {
       first = 1;
       --strLength;
       if ( strLength == 0 ) {
@@ -1616,11 +1616,11 @@ int vdseTopFolderGetStatus( vdseFolder         * pFolder,
 
    /* lowecase the string */
    for ( i = 0; i < strLength; ++i ) {
-      lowerName[i] = (vdsChar_T) vds_tolower( name[i] );
+      lowerName[i] = (char) tolower( name[i] );
    }
    
    /* strip the first char if a separator */
-   if ( name[0] == VDS_SLASH || name[0] == VDS_BACKSLASH ) {
+   if ( name[0] == '/' || name[0] == '\\' ) {
       first = 1;
       --strLength;
    }
@@ -1720,11 +1720,11 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
 
    /* lowercase the string */
    for ( i = 0; i < strLength; ++i ) {
-      lowerName[i] = (vdsChar_T) vds_tolower( name[i] );
+      lowerName[i] = (char) tolower( name[i] );
    }
    
    /* strip the first char if a separator */
-   if ( name[0] == VDS_SLASH || name[0] == VDS_BACKSLASH ) {
+   if ( name[0] == '/' || name[0] == '\\' ) {
       first = 1;
       --strLength;
    }
@@ -1784,7 +1784,7 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdsErrors vdseValidateString( const vdsChar_T * objectName,
+vdsErrors vdseValidateString( const char * objectName,
                               size_t            strLength, 
                               size_t          * pPartialLength,
                               bool            * pLastIteration )
@@ -1793,12 +1793,12 @@ vdsErrors vdseValidateString( const vdsChar_T * objectName,
    bool last = true;
    
    /* The first char is always special - it cannot be '/' */
-   if ( ! vds_isalnum( (int) objectName[0] )  ) {
+   if ( ! isalnum( (int) objectName[0] )  ) {
       return VDS_INVALID_OBJECT_NAME;
    }
    
    for ( i = 1; i < strLength; ++i ) {
-      if ( objectName[i] == VDS_SLASH || objectName[i] == VDS_BACKSLASH ) {
+      if ( objectName[i] == '/' || objectName[i] == '\\' ) {
          last = false;
          /* Strip the last character if it is a separator (in other words */
          /* we keep lastIteration to true - we have found the end of the */
@@ -1806,10 +1806,10 @@ vdsErrors vdseValidateString( const vdsChar_T * objectName,
          if ( i == (strLength-1) ) last = true;
          break;
       }
-      if ( !( vds_isalnum( (int) objectName[i] ) 
-              || (objectName[i] == VDS_SPACE) 
-              || (objectName[i] == VDS_UNDERSCORE) 
-              || (objectName[i] == VDS_HYPHEN) ) ) {
+      if ( !( isalnum( (int) objectName[i] ) 
+              || (objectName[i] == ' ') 
+              || (objectName[i] == '_') 
+              || (objectName[i] == '-') ) ) {
          return VDS_INVALID_OBJECT_NAME;
       }
    }

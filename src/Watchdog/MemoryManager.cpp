@@ -152,18 +152,18 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
 ////////////////////////
 #if 0
       descLength = offsetof(vdseObjectDescriptor, originalName) + 
-          (partialLength+1) * sizeof(vdsChar_T);
+          (partialLength+1) * sizeof(char);
       pDesc = (vdseObjectDescriptor *) malloc( descLength );
 
       memset( pDesc, 0, descLength );
       pDesc->apiType = objectType;
       pDesc->offset = SET_OFFSET( ptr );
-      pDesc->nameLengthInBytes = partialLength * sizeof(vdsChar_T);
+      pDesc->nameLengthInBytes = partialLength * sizeof(char);
       memcpy( pDesc->originalName, originalName, pDesc->nameLengthInBytes );
 
       listErr = vdseHashInsert( &pFolder->hashObj, 
                                 (unsigned char *)objectName, 
-                                partialLength * sizeof(vdsChar_T), 
+                                partialLength * sizeof(char), 
                                 (void*)pDesc, 
                                 descLength,
                                 &pHashItem,

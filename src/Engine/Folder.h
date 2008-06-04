@@ -73,7 +73,7 @@ typedef struct vdseFolder vdseFolder;
 
 VDSF_ENGINE_EXPORT
 int vdseFolderDeleteObject( vdseFolder         * pFolder,
-                            const vdsChar_T    * objectName,
+                            const char    * objectName,
                             size_t               strLength, 
                             vdseSessionContext * pContext );
                             
@@ -93,7 +93,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
 
 VDSF_ENGINE_EXPORT
 int vdseFolderGetObject( vdseFolder         * pFolder,
-                         const vdsChar_T    * objectName,
+                         const char    * objectName,
                          size_t               strLength, 
                          enum vdsObjectType   objectType, 
                          vdseFolderItem     * pFolderItem,
@@ -101,7 +101,7 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
 
 VDSF_ENGINE_EXPORT
 int vdseFolderGetStatus( vdseFolder         * pFolder,
-                         const vdsChar_T    * objectName,
+                         const char    * objectName,
                          size_t               strLength, 
                          vdsObjStatus       * pStatus,
                          vdseSessionContext * pContext );
@@ -113,14 +113,14 @@ int vdseFolderInit( vdseFolder         * pFolder,
                     size_t               expectedNumOfChilds,
                     vdseTxStatus       * pTxStatus,
                     size_t               origNameLength,
-                    vdsChar_T          * origName,
+                    char          * origName,
                     ptrdiff_t            keyOffset,
                     vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseFolderInsertObject( vdseFolder         * pFolder,
-                            const vdsChar_T    * objectName,
-                            const vdsChar_T    * originalName,
+                            const char    * objectName,
+                            const char    * originalName,
                             size_t               strLength, 
                             enum vdsObjectType   objectType,
                             size_t               numBlocks,

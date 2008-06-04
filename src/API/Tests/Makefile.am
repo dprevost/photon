@@ -21,8 +21,7 @@ SUBDIRS =            \
         CommonObject \
         Folder       \
         HashMap      \
-        Queue        \
-        Optional     
+        Queue        
 
 EXTRA_DIST =               \
         Makefile.inc.win32 \

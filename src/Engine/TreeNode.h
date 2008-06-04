@@ -47,10 +47,10 @@ struct vdseObjectDescriptor
    
    /** 
     * The original name (not including the parent folder name).
-    * This name does include the trailing zero ('\0' or L'\0'),
+    * This name does include the trailing zero ('\0'),
     * and can be used as a valid C string!
     */
-   vdsChar_T originalName[1];
+   char originalName[1];
    
 };
 
@@ -71,7 +71,7 @@ struct vdseTreeNode
     */
    size_t txCounter;
   
-   /** In units of vdsChar_T, not bytes. */
+   /** In units of char, not bytes. */
    size_t myNameLength;
    
    /** Offset to the original string naming this object. */
