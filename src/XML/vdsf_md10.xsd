@@ -40,6 +40,18 @@ elementFormDefault="qualified">
   </xs:restriction>
 </xs:simpleType>
 
+<xs:simpleType name="lengthTypeAttr">
+  <xs:restriction base="xs:positiveInteger">
+    <xs:maxInclusive value="4294967295"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="varLengthTypeAttr">
+  <xs:restriction base="xs:nonNegativeInteger">
+    <xs:maxInclusive value="4294967295"/>
+  </xs:restriction>
+</xs:simpleType>
+
 <xs:simpleType name="precisionTypeAttr">
   <xs:restriction base="xs:positiveInteger">
     <xs:maxInclusive value="31"/>
@@ -76,11 +88,11 @@ elementFormDefault="qualified">
 </xs:complexType>
 
 <xs:complexType name="stringType">
-  <xs:attribute name="length" type="xs:positiveInteger" use="required"/>
+  <xs:attribute name="length" type="lengthTypeAttr" use="required"/>
 </xs:complexType>
 
 <xs:complexType name="binaryType">
-  <xs:attribute name="length" type="xs:positiveInteger" use="required"/>
+  <xs:attribute name="length" type="lengthTypeAttr" use="required"/>
 </xs:complexType>
 
 <!-- For the next two types, when the attribute "maxLength" is set to zero,
@@ -92,13 +104,13 @@ elementFormDefault="qualified">
      be accepted and a maximum length of zero is non sense.] -->
 
 <xs:complexType name="varBinaryType">
-  <xs:attribute name="minLength" type="xs:nonNegativeInteger" default="0"/>
-  <xs:attribute name="maxLength" type="xs:nonNegativeInteger" default="0"/>
+  <xs:attribute name="minLength" type="varLengthTypeAttr" default="0"/>
+  <xs:attribute name="maxLength" type="varLengthTypeAttr" default="0"/>
 </xs:complexType>
 
 <xs:complexType name="varStringType">
-  <xs:attribute name="minLength" type="xs:nonNegativeInteger" default="0"/>
-  <xs:attribute name="maxLength" type="xs:nonNegativeInteger" default="0"/>
+  <xs:attribute name="minLength" type="varLengthTypeAttr" default="0"/>
+  <xs:attribute name="maxLength" type="varLengthTypeAttr" default="0"/>
 </xs:complexType>
 
 <xs:complexType name="fieldType">
@@ -143,7 +155,7 @@ elementFormDefault="qualified">
 
 <xs:complexType name="queueType">
   <xs:sequence>
-    <xs:element ref="field" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element ref="field" minOccurs="0" maxOccurs="65534"/>
     <xs:element ref="lastField" minOccurs="1" maxOccurs="1"/>
   </xs:sequence>
   <xs:attribute name="objName" type="objString" use="required"/>
@@ -159,7 +171,7 @@ elementFormDefault="qualified">
 <xs:complexType name="hashmapType">
   <xs:sequence>
     <xs:element ref="key"   minOccurs="1" maxOccurs="1"/>
-    <xs:element ref="field" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element ref="field" minOccurs="0" maxOccurs="65534"/>
     <xs:element ref="lastField" minOccurs="1" maxOccurs="1"/>
   </xs:sequence>
   <xs:attribute name="objName" type="objString" use="required"/>
