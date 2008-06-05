@@ -34,6 +34,10 @@ int main( int argc, char * argv[] )
    string sub2name = name + "/f2";
    vdsFolderEntry entry;
    int rc;
+   vdsObjectDefinition def; 
+
+   memset( &def, 0, sizeof def );
+   def.type = VDS_FOLDER;
    
    try {
       if ( argc > 1 ) {
@@ -43,9 +47,9 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( name, VDS_FOLDER );
-      session.CreateObject( sub1name, VDS_FOLDER );
-      session.CreateObject( sub2name, VDS_FOLDER );
+      session.CreateObject( name, &def );
+      session.CreateObject( sub1name, &def );
+      session.CreateObject( sub2name, &def );
       folder.Open( name );
    }
    catch( vdsException exc ) {

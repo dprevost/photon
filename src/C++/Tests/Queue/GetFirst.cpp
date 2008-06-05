@@ -33,6 +33,16 @@ int main( int argc, char * argv[] )
    const char * data1 = "My Data1";
    char buffer[50];
    size_t length;
+   vdsObjectDefinition folderDef;
+   vdsObjectDefinition queueDef = { 
+      VDS_QUEUE,
+      1, 
+      { "", VDS_VAR_BINARY, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+   };
+
+   memset( &folderDef, 0, sizeof folderDef );
+   folderDef.type = VDS_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -42,8 +52,8 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, VDS_FOLDER );
-      session.CreateObject( qname, VDS_QUEUE );
+      session.CreateObject( fname, &folderDef );
+      session.CreateObject( qname, &queueDef );
       queue.Open( qname );
       queue.Push( data1, strlen(data1) );
    }

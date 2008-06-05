@@ -30,6 +30,16 @@ int main( int argc, char * argv[] )
    vdsQueue queue(session);
    string fname = "/cpp_queue_close";
    string qname = fname + "/test";
+   vdsObjectDefinition folderDef;
+   vdsObjectDefinition queueDef = { 
+      VDS_QUEUE,
+      1, 
+      { "", VDS_VAR_BINARY, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+   };
+
+   memset( &folderDef, 0, sizeof folderDef );
+   folderDef.type = VDS_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -39,8 +49,8 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, VDS_FOLDER );
-      session.CreateObject( qname, VDS_QUEUE );
+      session.CreateObject( fname, &folderDef );
+      session.CreateObject( qname, &queueDef );
    }
    catch( vdsException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

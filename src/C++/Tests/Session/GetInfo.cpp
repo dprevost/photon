@@ -30,6 +30,10 @@ int main( int argc, char * argv[] )
    string name = "/cpp_session_getinfo", msg;
    vdsInfo info, info2;
    size_t allocSpace;
+   vdsObjectDefinition folderDef;
+
+   memset( &folderDef, 0, sizeof folderDef );
+   folderDef.type = VDS_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -74,7 +78,7 @@ int main( int argc, char * argv[] )
    allocSpace = info.allocatedSizeInBytes;
 
    try {
-      session.CreateObject( name, VDS_FOLDER );
+      session.CreateObject( name, &folderDef );
    }
    catch( vdsException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

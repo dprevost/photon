@@ -32,6 +32,16 @@ int main( int argc, char * argv[] )
    
    string name = "/cpp_session_destroy";
    const char * c_name = "/cpp_session_destroy";
+   vdsObjectDefinition folderDef;
+   vdsObjectDefinition queueDef = { 
+      VDS_QUEUE,
+      1, 
+      { "", VDS_VAR_BINARY, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+   };
+
+   memset( &folderDef, 0, sizeof folderDef );
+   folderDef.type = VDS_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -64,7 +74,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      session1.CreateObject( name, VDS_FOLDER );
+      session1.CreateObject( name, &folderDef );
    }
    catch( vdsException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -193,7 +203,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      session1.CreateObject( name, VDS_QUEUE );
+      session1.CreateObject( name, &queueDef );
    }
    catch( vdsException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

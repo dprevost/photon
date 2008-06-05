@@ -30,6 +30,10 @@ int main( int argc, char * argv[] )
    vdsObjStatus status;
    string fname = "/cpp_session_status";
    const char * c_name = "/cpp_session_status";
+   vdsObjectDefinition folderDef;
+
+   memset( &folderDef, 0, sizeof folderDef );
+   folderDef.type = VDS_FOLDER;
    
    try {
       if ( argc > 1 ) {
@@ -39,7 +43,7 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, VDS_FOLDER );
+      session.CreateObject( fname, &folderDef );
    }
    catch( vdsException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

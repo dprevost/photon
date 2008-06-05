@@ -29,6 +29,10 @@ int main( int argc, char * argv[] )
    vdsSession session;
    int errcode;
    string name = "/cpp_session_last_error";
+   vdsObjectDefinition folderDef;
+
+   memset( &folderDef, 0, sizeof folderDef );
+   folderDef.type = VDS_FOLDER;
    
    try {
       if ( argc > 1 ) {
@@ -45,7 +49,7 @@ int main( int argc, char * argv[] )
          return 1;
       }
       // Our first "test call"
-      session.CreateObject( name, VDS_FOLDER );
+      session.CreateObject( name, &folderDef );
    }
    catch( vdsException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -68,7 +72,7 @@ int main( int argc, char * argv[] )
    // Create the same object a second time and check that last error is
    // the one we expect.
    try {
-      session.CreateObject( name, VDS_FOLDER );
+      session.CreateObject( name, &folderDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;

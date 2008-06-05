@@ -36,6 +36,16 @@ int main( int argc, char * argv[] )
    char buffer[50];
    char buffKey[50];
    size_t dataLength, keyLength;
+   vdsObjectDefinition folderDef;
+   vdsObjectDefinition mapDef = { 
+      VDS_HASH_MAP,
+      1, 
+      { "", VDS_VAR_BINARY, 1, 20, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+   };
+
+   memset( &folderDef, 0, sizeof folderDef );
+   folderDef.type = VDS_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -45,8 +55,8 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, VDS_FOLDER );
-      session.CreateObject( hname, VDS_HASH_MAP );
+      session.CreateObject( fname, &folderDef );
+      session.CreateObject( hname, &mapDef );
       hashmap.Open( hname );
       hashmap.Insert( key, 6, data, 7 );
    }

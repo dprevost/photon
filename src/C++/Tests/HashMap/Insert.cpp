@@ -36,7 +36,17 @@ int main( int argc, char * argv[] )
    char buffer[20], keyBuff[20];
    size_t length, keyLength;
    int rc;
-   
+   vdsObjectDefinition folderDef;
+   vdsObjectDefinition mapDef = { 
+      VDS_HASH_MAP,
+      1, 
+      { "", VDS_VAR_BINARY, 1, 20, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+   };
+
+   memset( &folderDef, 0, sizeof folderDef );
+   folderDef.type = VDS_FOLDER;
+
    try {
       if ( argc > 1 ) {
          process.Init( argv[1] );
@@ -46,8 +56,8 @@ int main( int argc, char * argv[] )
       }
       session1.Init();
       session2.Init();
-      session1.CreateObject( fname, VDS_FOLDER );
-      session1.CreateObject( hname, VDS_HASH_MAP );
+      session1.CreateObject( fname, &folderDef );
+      session1.CreateObject( hname, &mapDef );
       session1.Commit();
       map1.Open( hname );
       map2.Open( hname );

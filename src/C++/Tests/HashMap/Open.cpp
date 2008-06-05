@@ -31,6 +31,16 @@ int main( int argc, char * argv[] )
    string fname = "/cpp_hashmap_open";
    string hname = fname + "/test";
    const char * c_name = "/cpp_hashmap_open/test";
+   vdsObjectDefinition folderDef;
+   vdsObjectDefinition mapDef = { 
+      VDS_HASH_MAP,
+      1, 
+      { "", VDS_VAR_BINARY, 1, 20, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+   };
+
+   memset( &folderDef, 0, sizeof folderDef );
+   folderDef.type = VDS_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -41,8 +51,8 @@ int main( int argc, char * argv[] )
       }
       session1.Init();
       session2.Init();
-      session1.CreateObject( fname, VDS_FOLDER );
-      session1.CreateObject( hname, VDS_HASH_MAP );
+      session1.CreateObject( fname, &folderDef );
+      session1.CreateObject( hname, &mapDef );
    }
    catch( vdsException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

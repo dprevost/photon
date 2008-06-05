@@ -32,6 +32,10 @@ int main( int argc, char * argv[] )
    string name = "/cpp_folder_getfirst";
    string subname = name + "/f1";
    vdsFolderEntry entry;
+   vdsObjectDefinition def; 
+
+   memset( &def, 0, sizeof def );
+   def.type = VDS_FOLDER;
    
    try {
       if ( argc > 1 ) {
@@ -41,8 +45,8 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( name, VDS_FOLDER );
-      session.CreateObject( subname, VDS_FOLDER );
+      session.CreateObject( name, &def );
+      session.CreateObject( subname, &def );
       folder.Open( name );
    }
    catch( vdsException exc ) {

@@ -45,6 +45,10 @@ int main( int argc, char * argv[] )
    vdsFolder * folder = NULL;
    string name = "/cpp_session_exit";
    vdsObjStatus status;
+   vdsObjectDefinition folderDef;
+
+   memset( &folderDef, 0, sizeof folderDef );
+   folderDef.type = VDS_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -65,7 +69,7 @@ int main( int argc, char * argv[] )
       folder = new vdsFolder(*session);
       
       session->Init();
-      session->CreateObject( name, VDS_FOLDER );
+      session->CreateObject( name, &folderDef );
       folder->Open( name );
       
       delete session;
@@ -108,7 +112,7 @@ int main( int argc, char * argv[] )
    }
 
    /* */
-   errcode = vdsCreateObject( sessionHandle, "test1", 5, VDS_FOLDER );
+   errcode = vdsCreateObject( sessionHandle, "test1", 5, &folderDef );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

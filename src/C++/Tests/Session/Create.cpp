@@ -29,6 +29,10 @@ int main( int argc, char * argv[] )
    vdsSession session;
    string name = "/cpp_session_create";
    const char * c_name = "/cpp_session_create";
+   vdsObjectDefinition folderDef;
+
+   memset( &folderDef, 0, sizeof folderDef );
+   folderDef.type = VDS_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -48,7 +52,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      session.CreateObject( NULL, strlen(c_name), VDS_FOLDER );
+      session.CreateObject( NULL, strlen(c_name), &folderDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -61,7 +65,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      session.CreateObject( c_name, 0, VDS_FOLDER );
+      session.CreateObject( c_name, 0, &folderDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -74,7 +78,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      session.CreateObject( "", VDS_FOLDER );
+      session.CreateObject( "", &folderDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -87,7 +91,8 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      session.CreateObject( name, (vdsObjectType)0 );
+      folderDef.type = (vdsObjectType)0;
+      session.CreateObject( name, &folderDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -98,10 +103,24 @@ int main( int argc, char * argv[] )
          return 1;
       }
    }
+   folderDef.type = VDS_FOLDER;
+
+   try {
+      session.CreateObject( name, NULL );
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( vdsException exc ) {
+      if ( exc.ErrorCode() != VDS_NULL_POINTER ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
 
    // End of invalid args. This call should succeed.
    try {
-      session.CreateObject( name, VDS_FOLDER );
+      session.CreateObject( name, &folderDef );
    }
    catch( vdsException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

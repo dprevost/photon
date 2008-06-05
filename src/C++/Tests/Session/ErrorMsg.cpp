@@ -28,6 +28,10 @@ int main( int argc, char * argv[] )
    vdsProcess process;
    vdsSession session;
    string name = "/cpp_session_errormsg", msg;
+   vdsObjectDefinition folderDef;
+
+   memset( &folderDef, 0, sizeof folderDef );
+   folderDef.type = VDS_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -46,7 +50,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      session.CreateObject( name, VDS_FOLDER );
+      session.CreateObject( name, &folderDef );
       session.ErrorMsg( msg );
    }
    catch( vdsException exc ) {
@@ -56,7 +60,7 @@ int main( int argc, char * argv[] )
    cout << "Message 1 (no error): " << msg  << endl;
 
    try {
-      session.CreateObject( name, VDS_FOLDER );
+      session.CreateObject( name, &folderDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;

@@ -31,6 +31,10 @@ int main( int argc, char * argv[] )
    vdsFolder folder1(session1), folder2(session2);
    string name = "/cpp_folder_open";
    const char * c_name = "/cpp_folder_open";
+   vdsObjectDefinition def; 
+
+   memset( &def, 0, sizeof def );
+   def.type = VDS_FOLDER;
    
    try {
       if ( argc > 1 ) {
@@ -41,7 +45,7 @@ int main( int argc, char * argv[] )
       }
       session1.Init();
       session2.Init();
-      session1.CreateObject( name, VDS_FOLDER );
+      session1.CreateObject( name, &def );
    }
    catch( vdsException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

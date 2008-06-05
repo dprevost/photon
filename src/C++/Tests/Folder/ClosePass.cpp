@@ -30,6 +30,10 @@ int main( int argc, char * argv[] )
    vdsSession session;
    vdsFolder folder(session);
    string name = "/cpp_folder_close";
+   vdsObjectDefinition def; 
+
+   memset( &def, 0, sizeof def );
+   def.type = VDS_FOLDER;
    
    try {
       if ( argc > 1 ) {
@@ -39,7 +43,7 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( name, VDS_FOLDER );
+      session.CreateObject( name, &def );
    }
    catch( vdsException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

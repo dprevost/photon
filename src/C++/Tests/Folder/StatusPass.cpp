@@ -31,6 +31,10 @@ int main( int argc, char * argv[] )
    vdsFolder folder(session);
    string name = "/cpp_folder_status";
    vdsObjStatus status;
+   vdsObjectDefinition def; 
+
+   memset( &def, 0, sizeof def );
+   def.type = VDS_FOLDER;
    
    try {
       if ( argc > 1 ) {
@@ -40,7 +44,7 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( name, VDS_FOLDER );
+      session.CreateObject( name, &def );
       folder.Open( name );
    }
    catch( vdsException exc ) {
