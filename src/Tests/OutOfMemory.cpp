@@ -54,15 +54,26 @@ int main()
    size_t length;
    int countIn = 0, countOut = 0, errcode;
    vdsQueue q1(session), q2(session);
+
+   vdsObjectDefinition queueDef = { 
+      VDS_QUEUE,
+      1, 
+      { "", VDS_INTEGER, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 1, 100, 0, 0 } } 
+   };
+   vdsObjectDefinition folderDef;
+
+   memset( &folderDef, 0, sizeof folderDef );
+   folderDef.type = VDS_FOLDER;
    
    try {
       process.Init( "10701" );
       session.Init();
       Cleanup( session );
 
-      session.CreateObject( folderName, VDS_FOLDER );
-      session.CreateObject( queueName1, VDS_QUEUE );
-      session.CreateObject( queueName2, VDS_QUEUE );
+      session.CreateObject( folderName, &folderDef );
+      session.CreateObject( queueName1, &queueDef );
+      session.CreateObject( queueName2, &queueDef );
       session.GetInfo( &info1 );
    }
    catch( vdsException exc ) {

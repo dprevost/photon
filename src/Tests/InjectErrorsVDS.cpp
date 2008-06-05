@@ -527,9 +527,15 @@ void PopulateHashMaps( vdsSession & session, vector<myMap> & h )
    int i, j;
    string data, key;
    char s[4];
+   vdsObjectDefinition mapDef = { 
+      VDS_HASH_MAP,
+      1, 
+      { "", VDS_VAR_STRING, 1, 200, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 1, 200, 0, 0 } } 
+   };
    
    for ( i = 0; i < NUM_MAPS; ++i ) {
-      session.CreateObject( h[i].name, VDS_HASH_MAP );
+      session.CreateObject( h[i].name, &mapDef );
       h[i].map.Open( h[i].name );
 
       for ( j = 0; j < 20; ++j ) {
@@ -552,9 +558,15 @@ void PopulateQueues( vdsSession & session, vector<myQueue> & q )
    int i, j;
    string data;
    char s[4];
+   vdsObjectDefinition queueDef = { 
+      VDS_QUEUE,
+      1, 
+      { "", VDS_INTEGER, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+   };
    
    for ( i = 0; i < NUM_QUEUES; ++i ) {
-      session.CreateObject( q[i].name, VDS_QUEUE );
+      session.CreateObject( q[i].name, &queueDef );
       q[i].queue.Open( q[i].name );
 
       for ( j = 0; j < 20; ++j ) {
@@ -576,11 +588,15 @@ int main()
    vdsProcess process;
    vdsSession session;
    int i, rc;
+   vdsObjectDefinition folderDef;
+
+   memset( &folderDef, 0, sizeof folderDef );
+   folderDef.type = VDS_FOLDER;
    
    try {
       process.Init( "10701" );
       session.Init();
-      session.CreateObject( foldername, VDS_FOLDER );
+      session.CreateObject( foldername, &folderDef );
    }
    catch( vdsException exc ) {
       rc = exc.ErrorCode();

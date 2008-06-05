@@ -23,6 +23,19 @@
 
 VDS_HANDLE g_session1, g_session2;
 
+vdsObjectDefinition g_mapDef = { 
+   VDS_HASH_MAP,
+   1, 
+   { "", VDS_VAR_STRING, 1, 200, 0, 0}, 
+   { { "Field_1", VDS_VAR_STRING, 1, 200, 0, 0 } } 
+};
+vdsObjectDefinition g_folderDef = { 
+   VDS_FOLDER,
+   0, 
+   {   "", VDS_VAR_STRING, 0, 0, 0, 0}, 
+   { { "", VDS_VAR_STRING, 0, 0, 0, 0 } } 
+};
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 /* 
@@ -91,7 +104,7 @@ int Test1()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
@@ -120,7 +133,7 @@ int Test2()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_OK,
@@ -157,7 +170,7 @@ int Test3()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
@@ -189,7 +202,7 @@ int Test4()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsRollback( g_session1 );
@@ -223,7 +236,7 @@ int Test5()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
@@ -258,7 +271,7 @@ int Test6()
    int errcode = 0;
    VDS_HANDLE h1 = NULL; 
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
@@ -295,7 +308,7 @@ int Test7()
    int errcode = 0;
    VDS_HANDLE h1 = NULL; 
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
@@ -330,7 +343,7 @@ int Test8()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
@@ -370,7 +383,7 @@ int Test9()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
@@ -408,7 +421,7 @@ int Test10()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
@@ -445,10 +458,10 @@ int Test11()
 {
    int errcode = 0;
 
-   errcode = vdsCreateObject( g_session1, "A Folder", strlen("A Folder"), VDS_FOLDER );
+   errcode = vdsCreateObject( g_session1, "A Folder", strlen("A Folder"), &g_folderDef );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsCreateObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue"), &g_mapDef );
    if ( errcode != VDS_NO_SUCH_FOLDER ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_NO_SUCH_FOLDER,
@@ -477,13 +490,13 @@ int Test12()
 {
    int errcode = 0;
 
-   errcode = vdsCreateObject( g_session1, "A Folder", strlen("A Folder"), VDS_FOLDER );
+   errcode = vdsCreateObject( g_session1, "A Folder", strlen("A Folder"), &g_folderDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsCreateObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue"), &g_mapDef );
    if ( errcode != VDS_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_OK,
@@ -510,13 +523,13 @@ int Test13()
 {
    int errcode = 0;
 
-   errcode = vdsCreateObject( g_session1, "A Folder", strlen("A Folder"), VDS_FOLDER );
+   errcode = vdsCreateObject( g_session1, "A Folder", strlen("A Folder"), &g_folderDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsRollback( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsCreateObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue"), &g_mapDef );
    if ( errcode != VDS_NO_SUCH_FOLDER ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_NO_SUCH_FOLDER,
@@ -549,7 +562,7 @@ int Test21()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
    errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
@@ -587,7 +600,7 @@ int Test22()
    size_t returnLength;
    char * key1 = "Key 1";
 
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
    errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
@@ -629,7 +642,7 @@ int Test23()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    // So that the object can be open by session 2
@@ -677,7 +690,7 @@ int Test24()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    // So that the object can be open by session 2
@@ -728,7 +741,7 @@ int Test25()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );   
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );   
    if ( errcode != VDS_OK ) goto end;
 
    // So that the object can be open by session 2
@@ -775,7 +788,7 @@ int Test26()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
    errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
@@ -822,7 +835,7 @@ int Test27()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
    errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
@@ -872,7 +885,7 @@ int Test28()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
    errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
@@ -922,7 +935,7 @@ int Test29()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
    errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
@@ -975,7 +988,7 @@ int Test30()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
    errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
@@ -1022,7 +1035,7 @@ int Test31()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
    errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
@@ -1073,7 +1086,7 @@ int Test32()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), VDS_HASH_MAP );
+   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
    errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
