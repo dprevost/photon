@@ -31,6 +31,12 @@ int main()
    vdseObjectDescriptor * pDescriptor;
    vdseTxStatus * txItemStatus;
    vdseTreeNode * pNode;
+   vdsObjectDefinition def = { 
+      VDS_FOLDER, 
+      0, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0} } 
+   };
    
    pFolder = initFolderTest( expectedToPass, &context );
 
@@ -45,10 +51,8 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     VDS_FOLDER,
+                                     &def,
                                      1,
-                                     0,
-                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {
@@ -59,10 +63,8 @@ int main()
                                      "test3",
                                      "Test3",
                                      5,
-                                     VDS_FOLDER,
+                                     &def,
                                      1,
-                                     0,
-                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {

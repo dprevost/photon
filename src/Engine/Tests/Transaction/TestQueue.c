@@ -36,7 +36,12 @@ int main()
    char * data2 = "My data2";
    char * data3 = "My data3";
    vdseQueueItem * pQueueItem;
-   struct vdseFieldDef def[1] = { { "Field_1", 4, 10, VDSE_VAR_STRING } };
+   vdsObjectDefinition def = { 
+      VDS_QUEUE, 
+      1, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+   };
 
    pFolder = initFolderTest( expectedToPass, &context );
    pTx = context.pTransaction;
@@ -53,11 +58,9 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     VDS_QUEUE,
+                                     &def,
                                      1,
                                      0,
-                                     def,
-                                     1,
                                      &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

@@ -29,7 +29,18 @@ int main()
    int errcode;
    vdseFolderItem item;
    vdseTxStatus status;
-   struct vdseFieldDef def[1] = { { "Field_1", 4, 10, VDSE_VAR_STRING } };
+   vdsObjectDefinition defMap = { 
+      VDS_HASH_MAP, 
+      1, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+   };
+   vdsObjectDefinition defFolder = { 
+      VDS_FOLDER, 
+      1, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0} } 
+   };
    
    pFolder = initFolderTest( expectedToPass, &context );
    pTx = context.pTransaction;
@@ -46,10 +57,8 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     VDS_FOLDER,
+                                     &defFolder,
                                      1,
-                                     0,
-                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {
@@ -60,11 +69,9 @@ int main()
                                      "test3",
                                      "Test3",
                                      5,
-                                     VDS_HASH_MAP,
+                                     &defMap,
                                      1,
                                      0,
-                                     def,
-                                     1,
                                      &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -100,10 +107,8 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     VDS_FOLDER,
+                                     &defFolder,
                                      1,
-                                     0,
-                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {
@@ -114,11 +119,9 @@ int main()
                                      "test3",
                                      "Test3",
                                      5,
-                                     VDS_HASH_MAP,
+                                     &defMap,
                                      1,
                                      0,
-                                     def,
-                                     1,
                                      &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -209,10 +212,8 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     VDS_FOLDER,
+                                     &defFolder,
                                      1,
-                                     0,
-                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {
@@ -223,11 +224,9 @@ int main()
                                      "test3",
                                      "Test3",
                                      5,
-                                     VDS_HASH_MAP,
+                                     &defMap,
                                      1,
                                      0,
-                                     def,
-                                     1,
                                      &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -267,10 +266,8 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     VDS_FOLDER,
+                                     &defFolder,
                                      1,
-                                     0,
-                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {
@@ -281,11 +278,9 @@ int main()
                                      "test3",
                                      "Test3",
                                      5,
-                                     VDS_HASH_MAP,
+                                     &defMap,
                                      1,
                                      0,
-                                     def,
-                                     1,
                                      &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

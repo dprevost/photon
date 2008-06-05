@@ -28,15 +28,19 @@ int main()
    vdseSessionContext context;
    int errcode;
    vdsObjStatus status;
+   vdsObjectDefinition def = { 
+      VDS_FOLDER, 
+      0, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0} } 
+   };
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1",
                                         strlen("Test1"),
-                                        VDS_FOLDER,
-                                        NULL,
-                                        0,
+                                        &def,
                                         &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -45,9 +49,7 @@ int main()
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1/Test2",
                                         strlen("Test1/Test2"),
-                                        VDS_FOLDER,
-                                        NULL,
-                                        0,
+                                        &def,
                                         &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -56,9 +58,7 @@ int main()
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1/Test3",
                                         strlen("Test1/Test3"),
-                                        VDS_FOLDER,
-                                        NULL,
-                                        0,
+                                        &def,
                                         &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

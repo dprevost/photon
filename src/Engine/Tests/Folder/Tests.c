@@ -30,6 +30,12 @@ int main()
    vdseTxStatus status;
    vdseObjectDescriptor* pDescriptor = NULL;
    vdseFolderItem folderItem;
+   vdsObjectDefinition def = { 
+      VDS_FOLDER, 
+      0, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0} } 
+   };
    
    /* Create "/" */
    pFolder1 = initFolderTest( expectedToPass, &context );
@@ -46,10 +52,8 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     VDS_FOLDER,
+                                     &def,
                                      1,
-                                     0,
-                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {
@@ -61,10 +65,8 @@ int main()
                                      "test2",
                                      "Test5",
                                      5,
-                                     VDS_FOLDER,
+                                     &def,
                                      1,
-                                     0,
-                                     NULL,
                                      0,
                                      &context );
    if ( errcode != -1 ) {
@@ -79,10 +81,8 @@ int main()
                                      "test3",
                                      "Test3",
                                      5,
-                                     VDS_FOLDER,
+                                     &def,
                                      1,
-                                     0,
-                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {
@@ -107,10 +107,8 @@ int main()
                                      "test4",
                                      "Test4",
                                      5,
-                                     VDS_FOLDER,
+                                     &def,
                                      1,
-                                     0,
-                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {
@@ -122,10 +120,8 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     VDS_FOLDER,
+                                     &def,
                                      1,
-                                     0,
-                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {
@@ -185,10 +181,8 @@ int main()
                                      "test2/test4/test5",
                                      "Test2/Test4/Test5",
                                      17,
-                                     VDS_FOLDER,
+                                     &def,
                                      1,
-                                     0,
-                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {

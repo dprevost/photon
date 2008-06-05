@@ -127,9 +127,22 @@ struct vdsFieldDefinition
    size_t precision;
 };
 
+typedef struct vdsFieldDefinition vdsFieldDefinition;
+
+/**
+ * This struct has a variable length.
+ */
 struct vdsObjectDefinition
 {
    enum vdsObjectType type;
+
+   unsigned int numFields;
+   
+   /** The data definition of the key (hash map only) */
+   vdsFieldDefinition key;
+
+   /** The data definition of the fields */
+   vdsFieldDefinition fields[1];
 };
 
 typedef struct vdsObjectDefinition vdsObjectDefinition;

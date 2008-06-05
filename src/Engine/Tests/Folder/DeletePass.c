@@ -27,6 +27,12 @@ int main()
    vdseSessionContext context;
    int errcode;
    vdseTxStatus status;
+   vdsObjectDefinition def = { 
+      VDS_FOLDER, 
+      0, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0} } 
+   };
    
    pFolder = initFolderTest( expectedToPass, &context );
 
@@ -49,10 +55,8 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     VDS_FOLDER,
+                                     &def,
                                      1,
-                                     0,
-                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {

@@ -27,6 +27,12 @@ int main()
    vdseSessionContext context;
    int errcode;
    char name[VDS_MAX_FULL_NAME_LENGTH+100];
+   vdsObjectDefinition def = { 
+      VDS_FOLDER, 
+      0, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0} } 
+   };
    
    memset( name, 't', VDS_MAX_FULL_NAME_LENGTH+99 );
    name[VDS_MAX_FULL_NAME_LENGTH+99] = 0;
@@ -36,9 +42,7 @@ int main()
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1",
                                         0,
-                                        VDS_FOLDER,
-                                        NULL,
-                                        0,
+                                        &def,
                                         &context );
    if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -51,9 +55,7 @@ int main()
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "/Test2",
                                         1,
-                                        VDS_FOLDER,
-                                        NULL,
-                                        0,
+                                        &def,
                                         &context );
    if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -66,9 +68,7 @@ int main()
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         name,
                                         VDS_MAX_FULL_NAME_LENGTH+1,
-                                        VDS_FOLDER,
-                                        NULL,
-                                        0,
+                                        &def,
                                         &context );
    if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -84,9 +84,7 @@ int main()
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         name,
                                         VDS_MAX_NAME_LENGTH+1,
-                                        VDS_FOLDER,
-                                        NULL,
-                                        0,
+                                        &def,
                                         &context );
    if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
