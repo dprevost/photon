@@ -37,6 +37,8 @@ int main()
                                         "Test1",
                                         0,
                                         VDS_FOLDER,
+                                        NULL,
+                                        0,
                                         &context );
    if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -50,6 +52,8 @@ int main()
                                         "/Test2",
                                         1,
                                         VDS_FOLDER,
+                                        NULL,
+                                        0,
                                         &context );
    if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -63,6 +67,8 @@ int main()
                                         name,
                                         VDS_MAX_FULL_NAME_LENGTH+1,
                                         VDS_FOLDER,
+                                        NULL,
+                                        0,
                                         &context );
    if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -79,6 +85,8 @@ int main()
                                         name,
                                         VDS_MAX_NAME_LENGTH+1,
                                         VDS_FOLDER,
+                                        NULL,
+                                        0,
                                         &context );
    if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );

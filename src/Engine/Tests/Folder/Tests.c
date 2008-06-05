@@ -49,6 +49,8 @@ int main()
                                      VDS_FOLDER,
                                      1,
                                      0,
+                                     NULL,
+                                     0,
                                      &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -61,6 +63,8 @@ int main()
                                      5,
                                      VDS_FOLDER,
                                      1,
+                                     0,
+                                     NULL,
                                      0,
                                      &context );
    if ( errcode != -1 ) {
@@ -77,6 +81,8 @@ int main()
                                      5,
                                      VDS_FOLDER,
                                      1,
+                                     0,
+                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {
@@ -104,6 +110,8 @@ int main()
                                      VDS_FOLDER,
                                      1,
                                      0,
+                                     NULL,
+                                     0,
                                      &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -116,6 +124,8 @@ int main()
                                      5,
                                      VDS_FOLDER,
                                      1,
+                                     0,
+                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {
@@ -177,6 +187,8 @@ int main()
                                      17,
                                      VDS_FOLDER,
                                      1,
+                                     0,
+                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {

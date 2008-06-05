@@ -28,6 +28,7 @@ int main()
    vdseSessionContext context;
    int errcode;
    vdseTxStatus status;
+   struct vdseFieldDef def[1] = { { "Field_1", 4, 10, VDSE_VAR_STRING } };
    
    pQueue = initQueueTest( expectedToPass, &context );
 
@@ -35,7 +36,7 @@ int main()
    
    errcode = vdseQueueInit( pQueue, 
                             0, 1, &status, 4, 
-                            "Map1", NULL_OFFSET, NULL );
+                            "Map1", NULL_OFFSET, def, 1, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -21,6 +21,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Engine/Engine.h"      
+#include "Engine/DataType.h"
 #include "Engine/MemoryObject.h"
 #include "Engine/TreeNode.h"
 #include "Engine/BlockGroup.h"
@@ -74,6 +75,9 @@ struct vdseQueue
    /** Our own doubly-linked list, to hold the data. */
    vdseLinkedList listOfElements;
 
+   /** Offset to the data definition */
+   ptrdiff_t  dataDefOffset;
+
    /**
     * Number of valid items. Valid items are the number of items NOT counting
     * items that might be added (but not committed) - also, items which are
@@ -96,8 +100,10 @@ int vdseQueueInit( vdseQueue          * pQueue,
                    size_t               numberOfBlocks,
                    vdseTxStatus       * pTxStatus,
                    size_t               origNameLength,
-                   char          * origName,
+                   char               * origName,
                    ptrdiff_t            keyOffset,
+                   vdseFieldDef       * pDefinition,
+                   int                  numFields,
                    vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT

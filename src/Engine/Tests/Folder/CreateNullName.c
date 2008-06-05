@@ -34,6 +34,8 @@ int main()
                                         NULL,
                                         4,
                                         VDS_FOLDER,
+                                        NULL,
+                                        0,
                                         &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

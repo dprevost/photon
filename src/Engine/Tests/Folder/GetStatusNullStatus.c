@@ -28,7 +28,6 @@ int main()
    vdseSessionContext context;
    int errcode;
    vdseTxStatus status;
-   vdsObjStatus objStatus;
    
    pFolder = initFolderTest( expectedToPass, &context );
 
@@ -45,6 +44,8 @@ int main()
                                      5,
                                      VDS_FOLDER,
                                      1,
+                                     0,
+                                     NULL,
                                      0,
                                      &context );
    if ( errcode != 0 ) {

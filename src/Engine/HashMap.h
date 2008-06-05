@@ -21,6 +21,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Engine/Engine.h"
+#include "Engine/DataType.h"
 #include "Engine/MemoryObject.h"
 #include "Engine/TreeNode.h"
 #include "Engine/BlockGroup.h"
@@ -56,6 +57,9 @@ struct vdseHashMap
 
    struct vdseHash      hashObj;
 
+   /** Offset to the data definition */
+   ptrdiff_t            dataDefOffset;
+   
    /** Variable size struct - always put at the end */
    struct vdseBlockGroup blockGroup;
 
@@ -114,7 +118,7 @@ int vdseHashMapInit( vdseHashMap        * pHashMap,
                      size_t               expectedNumOfChilds,
                      vdseTxStatus       * pTxStatus,
                      size_t               origNameLength,
-                     char          * origName,
+                     char               * origName,
                      ptrdiff_t            keyOffset,
                      vdseSessionContext * pContext );
 

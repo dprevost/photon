@@ -45,6 +45,8 @@ int main()
                                      VDS_FOLDER,
                                      1,
                                      0,
+                                     NULL,
+                                     1,
                                      &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

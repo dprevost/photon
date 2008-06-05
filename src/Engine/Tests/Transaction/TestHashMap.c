@@ -39,6 +39,7 @@ int main()
    char * data2 = "My data2";
    char * data3 = "My data3";
    vdseHashItem * pHashItem;
+   struct vdseFieldDef def[1] = { { "Field_1", 4, 10, VDSE_VAR_STRING } };
 
    pFolder = initFolderTest( expectedToPass, &context );
    pTx = context.pTransaction;
@@ -58,6 +59,8 @@ int main()
                                      VDS_HASH_MAP,
                                      1,
                                      0,
+                                     def,
+                                     1,
                                      &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
