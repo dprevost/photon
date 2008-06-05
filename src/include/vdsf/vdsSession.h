@@ -77,16 +77,42 @@ int vdsCommit( VDS_HANDLE sessionHandle );
  * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
  *             the vdsf engine).
- * \param[in]  objectType The type of object to create (folder, queue, etc.).
+ * \param[in]  pDefinition The type of object to create (folder, queue, etc.)
+ *             and the optional definitions (as needed).
  *
  * \return 0 on success or a ::vdsErrors on error.
  */
 VDSF_EXPORT
-int vdsCreateObject( VDS_HANDLE      sessionHandle,
-                     const char    * objectName,
-                     size_t          nameLengthInBytes,
-                     vdsObjectType   objectType );
-   
+int vdsCreateObject( VDS_HANDLE            sessionHandle,
+                     const char    *       objectName,
+                     size_t                nameLengthInBytes,
+                     vdsObjectDefinition * pDefinition );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
+ * Create one or more new objects in shared memory. All parent folders will be 
+ * created if they do not exist.
+ *
+ * The creation of the objects only becomes permanent after a call to 
+ * ::vdsCommit.
+ *
+ * This function does not provide a handle to the newly created objects. Use
+ * vdsQueueOpen and similar functions to get the handles.
+ *
+ * \param[in] sessionHandle Handle to the current session.
+ * \param[in] xmlBuffer     The XML buffer containing all the required
+ *                          information. 
+ * \param[in] lengthInBytes The length of \em xmlBuffer (in bytes) not
+ *                          counting the null terminator.
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
+VDSF_EXPORT
+int vdsCreateObjectXML( VDS_HANDLE   sessionHandle,
+                        const char * xmlBuffer,
+                        size_t       lengthInBytes );
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**

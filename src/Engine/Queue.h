@@ -21,7 +21,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Engine/Engine.h"      
-#include "Engine/DataType.h"
+//#include "Engine/DataType.h"
 #include "Engine/MemoryObject.h"
 #include "Engine/TreeNode.h"
 #include "Engine/BlockGroup.h"
@@ -95,16 +95,16 @@ typedef struct vdseQueue vdseQueue;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-int vdseQueueInit( vdseQueue          * pQueue,
-                   ptrdiff_t            parentOffset,
-                   size_t               numberOfBlocks,
-                   vdseTxStatus       * pTxStatus,
-                   size_t               origNameLength,
-                   char               * origName,
-                   ptrdiff_t            keyOffset,
-                   vdseFieldDef       * pDefinition,
-                   int                  numFields,
-                   vdseSessionContext * pContext );
+int vdseQueueInit( vdseQueue           * pQueue,
+                   ptrdiff_t             parentOffset,
+                   size_t                numberOfBlocks,
+                   vdseTxStatus        * pTxStatus,
+                   size_t                origNameLength,
+                   char                * origName,
+                   ptrdiff_t             keyOffset,
+                   vdsObjectDefinition * pDefinition,
+//                   int                   numFields,
+                   vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
 void vdseQueueFini( vdseQueue          * pQueue,

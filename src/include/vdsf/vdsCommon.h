@@ -55,34 +55,25 @@ typedef void* VDS_HANDLE;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Maximum number of characters (or bytes if not supporting i18n) 
- * of the name of a vds object (not counting the name of the parent
- * folder(s)).
- *
- * If the software was compiled with i18n, this maximum is the number
- * of wide characters (4 bytes). Otherwise it is the number of bytes
- * (which should equal the number of characters unless something funny
- * is going on like using UTF-8 as locale and using ---disable-i18n with
- * configure...).
+ * Maximum number of bytes of the name of a vds object (not counting the 
+ * name of the parent folder(s)).
  */ 
 #define VDS_MAX_NAME_LENGTH 256
 
 /** 
- * Maximum number of characters (or bytes if not supporting i18n) 
- * of the fully qualified name of a vds object (including the name(s)
- * of its parent folder(s)).
- *
- * If the software was compiled with i18n, this maximum is the number
- * of wide characters (4 bytes). Otherwise it is the number of bytes
- * (which should equal the number of characters unless something funny
- * is going on like using UTF-8 as locale and using ---disable-i18n with
- * configure...).
+ * Maximum number of bytes of the fully qualified name of a vds object 
+ * (including the name(s) of its parent folder(s)).
  *
  * Note: setting this value eliminates a possible loophole since some
  * heap memory must be allocated to hold the wide characters string 
  * for the duration of the operation (open, close, create or destroy).
  */ 
 #define VDS_MAX_FULL_NAME_LENGTH 1024
+
+/** 
+ * Maximum number of bytes of the name of a field of a vds object.
+ */
+#define VDS_MAX_FIELD_LENGTH 32
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -109,7 +100,42 @@ typedef enum vdsIteratorType vdsIteratorType;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/* See the discussion on i18n. */
+/**
+ * VDSF supported data types.
+ */
+enum vdsFieldType
+{
+   VDS_INTEGER = 1,
+   VDS_BINARY,
+   VDS_STRING,
+   VDS_DECIMAL,
+   VDS_BOOLEAN,
+   VDS_VAR_BINARY,
+   VDS_VAR_STRING
+};
+
+/**
+ * Description of the structure of the data (if any).
+ */
+struct vdsFieldDefinition
+{
+   char name[VDS_MAX_FIELD_LENGTH];
+   enum vdsFieldType type;
+   size_t minLength;
+   size_t maxLength;
+   size_t scale;
+   size_t precision;
+};
+
+struct vdsObjectDefinition
+{
+   enum vdsObjectType type;
+};
+
+typedef struct vdsObjectDefinition vdsObjectDefinition;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /** 
  * \ingroup Folder
  *
@@ -131,7 +157,7 @@ struct vdsFolderEntry
    size_t nameLengthInBytes;
    
    /** The name of the object. */
-   char name[VDS_MAX_NAME_LENGTH*4];
+   char name[VDS_MAX_NAME_LENGTH];
 };
 
 typedef struct vdsFolderEntry vdsFolderEntry;

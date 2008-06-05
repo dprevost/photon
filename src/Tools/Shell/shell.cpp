@@ -368,6 +368,7 @@ void vdsShell::Cp()
    unsigned char * key, * buffer;
    int rc;
    size_t keyLength, dataLength;
+   vdsObjectDefinition definition;
    
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -400,7 +401,8 @@ void vdsShell::Cp()
    }
    
    try {
-      session.CreateObject( destName, status.type );
+      definition.type = status.type;
+      session.CreateObject( destName, &definition );
       // Do we have some data to copy?
       if ( status.numDataItem > 0 ) {
          
@@ -562,6 +564,7 @@ void vdsShell::Man()
 void vdsShell::Mkdir()
 {
    string folderName;
+   vdsObjectDefinition definition;
 
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -572,7 +575,8 @@ void vdsShell::Mkdir()
    }
    
    try {
-      session.CreateObject( folderName, VDS_FOLDER );
+      definition.type = VDS_FOLDER;
+      session.CreateObject( folderName, &definition );
       session.Commit();
    }
    catch ( vdsException exc ) {
@@ -697,7 +701,9 @@ void vdsShell::Touch()
 {
    string objectName;
    string option, filename;
-   vdsObjectType flag = VDS_LAST_OBJECT_TYPE;
+   vdsObjectDefinition definition;
+
+   definition.type = VDS_LAST_OBJECT_TYPE;
    
    if ( tokens[1][0] == '-' ) {
       option   = tokens[1];
@@ -713,10 +719,10 @@ void vdsShell::Touch()
    }
    
    if ( option == "-q" || option == "--queue" ) {
-      flag = VDS_QUEUE;
+      definition.type = VDS_QUEUE;
    }
    else if ( option == "-h" || option == "--hashmap" ) {
-      flag = VDS_HASH_MAP;
+      definition.type = VDS_HASH_MAP;
    }
    else {
       cerr << "vdssh: touch: " << "invalid option (" << option << ")" << endl;
@@ -732,7 +738,7 @@ void vdsShell::Touch()
    }
    
    try {
-      session.CreateObject( objectName, flag );
+      session.CreateObject( objectName, &definition );
       session.Commit();
    }
    catch ( vdsException exc ) {

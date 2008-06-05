@@ -72,10 +72,11 @@ int vdsCommit( VDS_HANDLE sessionHandle )
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
    
-int vdsCreateObject( VDS_HANDLE      sessionHandle,
-                     const char    * objectName,
-                     size_t          nameLengthInBytes,
-                     vdsObjectType   objectType )
+int vdsCreateObject( VDS_HANDLE            sessionHandle,
+                     const char          * objectName,
+                     size_t                nameLengthInBytes,
+                     vdsObjectDefinition * pDefinition )
+// vdsObjectType   objectType )
 {
    vdsaSession* pSession;
    int rc = 0, errcode = 0;
@@ -96,7 +97,12 @@ int vdsCreateObject( VDS_HANDLE      sessionHandle,
       return VDS_INVALID_LENGTH;
    }
    
-   if ( objectType <= 0 || objectType >= VDS_LAST_OBJECT_TYPE ) {
+   if ( pDefinition == NULL ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      return VDS_NULL_POINTER;
+   }
+
+   if ( pDefinition->type <= 0 || pDefinition->type >= VDS_LAST_OBJECT_TYPE ) {
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_WRONG_OBJECT_TYPE );
       return VDS_WRONG_OBJECT_TYPE;
    }
@@ -107,7 +113,7 @@ int vdsCreateObject( VDS_HANDLE      sessionHandle,
          rc = vdseTopFolderCreateObject( pTree,
                                          objectName,
                                          nameLengthInBytes,
-                                         objectType,
+                                         pDefinition,
                                          &pSession->context );
       }
       else {

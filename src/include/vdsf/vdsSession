@@ -65,12 +65,13 @@ public:
     * ::Commit.
     *
     * \param[in]  objectName The fully qualified name of the object. 
-    * \param[in]  objectType The type of object to create (folder, queue, etc.).
+    * \param[in]  pDefinition The type of object to create (folder, queue, etc.)
+    *             and the optional definitions (as needed).
     *
     * \exception vdsException An abnormal error occured.
     */
-   void CreateObject( const std::string & objectName,
-                      vdsObjectType       objectType );
+   void CreateObject( const std::string   & objectName,
+                      vdsObjectDefinition * pDefinition );
    
    /**
     * Create a new object in shared memory.
@@ -81,13 +82,14 @@ public:
     * \param[in]  objectName The fully qualified name of the object. 
     * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
     *             counting the null terminator.
-    * \param[in]  objectType The type of object to create (folder, queue, etc.).
+    * \param[in]  pDefinition The type of object to create (folder, queue, etc.)
+    *             and the optional definitions (as needed).
     *
     * \exception vdsException An abnormal error occured.
     */
-   void CreateObject( const char  * objectName,
-                      size_t        nameLengthInBytes,
-                      vdsObjectType objectType );
+   void CreateObject( const char          * objectName,
+                      size_t                nameLengthInBytes,
+                      vdsObjectDefinition * pDefinition );
    
    /**
     * Destroy an existing object in shared memory.

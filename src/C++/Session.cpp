@@ -50,13 +50,13 @@ void vdsSession::Commit()
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsSession::CreateObject( const std::string & objectName,
-                               vdsObjectType       objectType )
+void vdsSession::CreateObject( const std::string   & objectName,
+                               vdsObjectDefinition * pDefinition )
 {
    int rc = vdsCreateObject( m_sessionHandle,
                              objectName.c_str(),
                              objectName.length(),
-                             objectType );
+                             pDefinition );
    if ( rc != 0 ) {
       throw vdsException( rc, m_sessionHandle, "vdsSession::CreateObject" );
    }
@@ -64,14 +64,14 @@ void vdsSession::CreateObject( const std::string & objectName,
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsSession::CreateObject( const char    * objectName,
-                               size_t          nameLengthInBytes,
-                               vdsObjectType   objectType )
+void vdsSession::CreateObject( const char          * objectName,
+                               size_t                nameLengthInBytes,
+                               vdsObjectDefinition * pDefinition )
 {
    int rc = vdsCreateObject( m_sessionHandle,
                              objectName,
                              nameLengthInBytes,
-                             objectType );
+                             pDefinition );
    if ( rc != 0 ) {
       throw vdsException( rc, m_sessionHandle, "vdsSession::CreateObject" );
    }
