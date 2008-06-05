@@ -30,6 +30,12 @@ int main( int argc, char * argv[] )
    VDS_HANDLE sessionHandle;
    int errcode;
    vdsaCommonObject object;
+   vdsObjectDefinition def = { 
+      VDS_FOLDER, 
+      0, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0} } 
+   };
    
    if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
@@ -51,7 +57,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/aclno",
                               strlen("/aclno"),
-                              VDS_FOLDER );
+                              &def );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

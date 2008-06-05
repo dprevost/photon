@@ -28,6 +28,18 @@ int main( int argc, char * argv[] )
 {
    VDS_HANDLE objHandle,  sessionHandle;
    int errcode;
+   vdsObjectDefinition defMap = { 
+      VDS_HASH_MAP, 
+      1, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+   };
+    vdsObjectDefinition defFolder = { 
+      VDS_FOLDER, 
+      0, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0} } 
+   };
    
    if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
@@ -49,7 +61,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/ahons",
                               strlen("/ahons"),
-                              VDS_FOLDER );
+                              &defFolder );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -58,7 +70,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/ahons/test",
                               strlen("/ahons/test"),
-                              VDS_HASH_MAP );
+                              &defMap );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -32,6 +32,18 @@ int main( int argc, char * argv[] )
    const char * data1 = "My Data1";
    char buffer[200];
    size_t length;
+   vdsObjectDefinition defQueue = { 
+      VDS_QUEUE,
+      1, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+   };
+    vdsObjectDefinition defFolder = { 
+      VDS_FOLDER, 
+      0, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0} } 
+   };
 
    if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
@@ -58,7 +70,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/aqpopp",
                               strlen("/aqpopp"),
-                              VDS_FOLDER );
+                              &defFolder );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -67,7 +79,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/aqpopp/test",
                               strlen("/aqpopp/test"),
-                              VDS_QUEUE );
+                              &defQueue );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

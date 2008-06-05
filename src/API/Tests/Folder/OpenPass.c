@@ -30,6 +30,12 @@ int main( int argc, char * argv[] )
    VDS_HANDLE objHandle2, sessionHandle2;
    int errcode;
    char junk[12];
+   vdsObjectDefinition def = { 
+      VDS_FOLDER, 
+      0, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0} } 
+   };
    
    memset( junk, 0, 12 );
    
@@ -58,7 +64,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/afop",
                               strlen("/afop"),
-                              VDS_FOLDER );
+                              &def );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

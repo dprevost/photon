@@ -28,6 +28,18 @@ int main( int argc, char * argv[] )
 {
    VDS_HANDLE sessionHandle, objHandle;
    int errcode;
+   vdsObjectDefinition defQueue = { 
+      VDS_QUEUE,
+      1, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+   };
+    vdsObjectDefinition defFolder = { 
+      VDS_FOLDER, 
+      0, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0} } 
+   };
    
    if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
@@ -49,7 +61,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/aqcp",
                               strlen("/aqcp"),
-                              VDS_FOLDER );
+                              &defFolder );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -58,7 +70,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/aqcp/test",
                               strlen("/aqcp/test"),
-                              VDS_QUEUE );
+                              &defQueue );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

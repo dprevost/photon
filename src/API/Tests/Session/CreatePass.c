@@ -27,6 +27,12 @@ int main( int argc, char * argv[] )
 {
    VDS_HANDLE sessionHandle;
    int errcode;
+   vdsObjectDefinition def = { 
+      VDS_FOLDER, 
+      0, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0} } 
+   };
    
    if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
@@ -50,7 +56,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( NULL,
                               "/ascp",
                               strlen("/ascp"),
-                              VDS_FOLDER );
+                              &def );
    if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -59,7 +65,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               NULL,
                               strlen("/ascp"),
-                              VDS_FOLDER );
+                              &def );
    if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -68,17 +74,28 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/ascp",
                               0,
-                              VDS_FOLDER );
+                              &def );
    if ( errcode != VDS_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   def.type = 0;
    errcode = vdsCreateObject( sessionHandle,
                               "/ascp",
                               strlen("/ascp"),
-                              0 );
+                              &def );
    if ( errcode != VDS_WRONG_OBJECT_TYPE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   def.type = VDS_FOLDER;
+   
+   errcode = vdsCreateObject( sessionHandle,
+                              "/ascp",
+                              strlen("/ascp"),
+                              NULL );
+   if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -87,7 +104,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/ascp",
                               strlen("/ascp"),
-                              VDS_FOLDER );
+                              &def );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -100,7 +117,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/ascp",
                               strlen("/ascp"),
-                              VDS_FOLDER );
+                              &def );
    if ( errcode != VDS_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -31,6 +31,18 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * data1 = "My Data1";
    vdsaDataEntry entry;
+   vdsObjectDefinition defQueue = { 
+      VDS_QUEUE,
+      1, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+   };
+    vdsObjectDefinition defFolder = { 
+      VDS_FOLDER, 
+      0, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0} } 
+   };
 
    if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
@@ -52,7 +64,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/aqrnh",
                               strlen("/aqrnh"),
-                              VDS_FOLDER );
+                              &defFolder );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -61,7 +73,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/aqrnh/test",
                               strlen("/aqrnh/test"),
-                              VDS_QUEUE );
+                              &defQueue );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -29,6 +29,12 @@ int main( int argc, char * argv[] )
    VDS_HANDLE sessionHandle;
    int errcode;
    char msg[256];
+   vdsObjectDefinition def = { 
+      VDS_FOLDER, 
+      0, 
+      { "", 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0} } 
+   };
    
    if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
@@ -50,7 +56,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/asem",
                               strlen("/asem"),
-                              VDS_FOLDER );
+                              &def );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -66,7 +72,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/asem",
                               strlen("/asem"),
-                              VDS_FOLDER );
+                              &def );
    if ( errcode == VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
