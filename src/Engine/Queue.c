@@ -248,7 +248,6 @@ int vdseQueueInit( vdseQueue           * pQueue,
                    char                * origName,
                    ptrdiff_t             keyOffset,
                    vdsObjectDefinition * pDefinition,
-//                   int                  numFields,
                    vdseSessionContext  * pContext )
 {
    vdsErrors errcode;
@@ -261,7 +260,7 @@ int vdseQueueInit( vdseQueue           * pQueue,
    VDS_PRE_CONDITION( parentOffset != NULL_OFFSET );
    VDS_PRE_CONDITION( numberOfBlocks > 0 );
    VDS_PRE_CONDITION( origNameLength > 0 );
-//   VDS_PRE_CONDITION( numFields      > 0 );
+   VDS_PRE_CONDITION( pDefinition->numFields > 0 );
    
    errcode = vdseMemObjectInit( &pQueue->memObject, 
                                 VDSE_IDENT_QUEUE,

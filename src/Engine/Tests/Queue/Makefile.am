@@ -32,6 +32,7 @@ check_PROGRAMS =                 \
         GetWrongFlag             \
         GetWrongLength           \
         InitNullContext          \
+        InitNullDefinition       \
         InitNullQueue            \
         InitNullName             \
         InitNullParent           \
@@ -39,6 +40,7 @@ check_PROGRAMS =                 \
         InitPass                 \
         InitZeroBlocks           \
         InitZeroLength           \
+        InitZeroNumFields        \
         InsertNullContext        \
         InsertNullQueue          \
         InsertNullItem           \
@@ -89,6 +91,7 @@ GetPass_SOURCES                  = $(COMMON_HEADER) GetPass.c
 GetWrongFlag_SOURCES             = $(COMMON_HEADER) GetWrongFlag.c
 GetWrongLength_SOURCES           = $(COMMON_HEADER) GetWrongLength.c
 InitNullContext_SOURCES          = $(COMMON_HEADER) InitNullContext.c
+InitNullDefinition_SOURCES       = $(COMMON_HEADER) InitNullDefinition.c
 InitNullQueue_SOURCES            = $(COMMON_HEADER) InitNullQueue.c
 InitNullName_SOURCES             = $(COMMON_HEADER) InitNullName.c
 InitNullParent_SOURCES           = $(COMMON_HEADER) InitNullParent.c
@@ -96,6 +99,7 @@ InitNullStatus_SOURCES           = $(COMMON_HEADER) InitNullStatus.c
 InitPass_SOURCES                 = $(COMMON_HEADER) InitPass.c
 InitZeroBlocks_SOURCES           = $(COMMON_HEADER) InitZeroBlocks.c
 InitZeroLength_SOURCES           = $(COMMON_HEADER) InitZeroLength.c
+InitZeroNumFields_SOURCES        = $(COMMON_HEADER) InitZeroNumFields.c
 InsertNullContext_SOURCES        = $(COMMON_HEADER) InsertNullContext.c
 InsertNullQueue_SOURCES          = $(COMMON_HEADER) InsertNullQueue.c
 InsertNullItem_SOURCES           = $(COMMON_HEADER) InsertNullItem.c
@@ -155,6 +159,7 @@ TESTS =                          \
         GetWrongFlag             \
         GetWrongLength           \
         InitNullContext          \
+        InitNullDefinition       \
         InitNullQueue            \
         InitNullName             \
         InitNullParent           \
@@ -162,6 +167,7 @@ TESTS =                          \
         InitPass                 \
         InitZeroBlocks           \
         InitZeroLength           \
+        InitZeroNumFields        \
         InsertNullContext        \
         InsertNullQueue          \
         InsertNullItem           \
@@ -206,12 +212,14 @@ XFAIL_TESTS =                    \
         GetNullIterator          \
         GetWrongFlag             \
         InitNullContext          \
+        InitNullDefinition       \
         InitNullQueue            \
         InitNullName             \
         InitNullParent           \
         InitNullStatus           \
         InitZeroBlocks           \
         InitZeroLength           \
+        InitZeroNumFields        \
         InsertNullContext        \
         InsertNullQueue          \
         InsertNullItem           \
