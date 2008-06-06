@@ -42,8 +42,8 @@ int main()
    vdsObjectDefinition def = { 
       VDS_HASH_MAP, 
       1, 
-      { "", 0, 0, 0, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+      { "", 0, 0, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
 
    pFolder = initFolderTest( expectedToPass, &context );

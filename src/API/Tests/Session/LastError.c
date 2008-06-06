@@ -31,8 +31,8 @@ int main( int argc, char * argv[] )
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
-      { "", 0, 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0} } 
+      { "", 0, 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0, 0} } 
    };
 
    if ( argc > 1 ) {

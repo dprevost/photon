@@ -30,17 +30,17 @@ int main( int argc, char * argv[] )
    VDS_HANDLE objHandle2, sessionHandle2;
    int errcode;
    char junk[12];
-   vdsObjectDefinition defMap = { 
+   vdsObjectDefinition mapDef = { 
       VDS_HASH_MAP, 
       1, 
-      { "", 0, 0, 0, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+      { "", VDS_VAR_STRING, 0, 4, 10, 0, 0 }, 
+      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
-    vdsObjectDefinition defFolder = { 
+   vdsObjectDefinition folderDef = { 
       VDS_FOLDER, 
       0, 
-      { "", 0, 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0} } 
+      { "", 0, 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
    memset( junk, 0, 12 );
@@ -70,7 +70,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/ahop",
                               strlen("/ahop"),
-                              &defFolder );
+                              &folderDef );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -79,7 +79,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/ahop/test",
                               strlen("/ahop/test"),
-                              &defMap );
+                              &mapDef );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

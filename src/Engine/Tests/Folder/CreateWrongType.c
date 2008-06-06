@@ -30,8 +30,8 @@ int main()
    vdsObjectDefinition def = { 
       0, 
       0, 
-      { "", 0, 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0} } 
+      { "", 0, 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );

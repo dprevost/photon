@@ -29,17 +29,17 @@ int main()
    int errcode;
    vdseFolderItem item;
    vdseTxStatus status;
-   vdsObjectDefinition defMap = { 
+   vdsObjectDefinition mapDef = { 
       VDS_HASH_MAP, 
       1, 
-      { "", 0, 0, 0, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+      { "", 0, 0, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
-   vdsObjectDefinition defFolder = { 
+   vdsObjectDefinition folderDef = { 
       VDS_FOLDER, 
       1, 
-      { "", 0, 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0} } 
+      { "", 0, 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
    pFolder = initFolderTest( expectedToPass, &context );
@@ -57,7 +57,7 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     &defFolder,
+                                     &folderDef,
                                      1,
                                      0,
                                      &context );
@@ -69,7 +69,7 @@ int main()
                                      "test3",
                                      "Test3",
                                      5,
-                                     &defMap,
+                                     &mapDef,
                                      1,
                                      0,
                                      &context );
@@ -107,7 +107,7 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     &defFolder,
+                                     &folderDef,
                                      1,
                                      0,
                                      &context );
@@ -119,7 +119,7 @@ int main()
                                      "test3",
                                      "Test3",
                                      5,
-                                     &defMap,
+                                     &mapDef,
                                      1,
                                      0,
                                      &context );
@@ -212,7 +212,7 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     &defFolder,
+                                     &folderDef,
                                      1,
                                      0,
                                      &context );
@@ -224,7 +224,7 @@ int main()
                                      "test3",
                                      "Test3",
                                      5,
-                                     &defMap,
+                                     &mapDef,
                                      1,
                                      0,
                                      &context );
@@ -266,7 +266,7 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     &defFolder,
+                                     &folderDef,
                                      1,
                                      0,
                                      &context );
@@ -278,7 +278,7 @@ int main()
                                      "test3",
                                      "Test3",
                                      5,
-                                     &defMap,
+                                     &mapDef,
                                      1,
                                      0,
                                      &context );

@@ -251,6 +251,8 @@ int vdseQueueInit( vdseQueue           * pQueue,
                    vdseSessionContext  * pContext )
 {
    vdsErrors errcode;
+   vdseFieldDef * ptr;
+   int i;
    
    VDS_PRE_CONDITION( pQueue       != NULL );
    VDS_PRE_CONDITION( pContext     != NULL );
@@ -281,7 +283,37 @@ int vdseQueueInit( vdseQueue           * pQueue,
                      keyOffset );
 
    vdseLinkedListInit( &pQueue->listOfElements );
-   
+
+   ptr = (vdseFieldDef*) vdseMalloc( &pQueue->memObject, 
+                                     pDefinition->numFields* sizeof(vdseFieldDef),
+                                     pContext );
+   if ( ptr == NULL ) {
+      return -1;
+   }
+
+   for ( i = 0; i < pDefinition->numFields; ++i) {
+      memcpy( ptr[i].name, pDefinition->fields[i].name, VDS_MAX_FIELD_LENGTH );
+      ptr[i].type = pDefinition->fields[i].type;
+      switch( ptr[i].type ) {
+      case VDS_INTEGER:
+      case VDS_BINARY:
+      case VDS_STRING:
+         ptr[i].length1 = pDefinition->fields[i].length;
+         break;
+      case VDS_DECIMAL:
+         ptr[i].length1 = pDefinition->fields[i].precision;
+         ptr[i].length2 = pDefinition->fields[i].scale;         
+         break;
+      case VDS_BOOLEAN:
+         break;
+      case VDS_VAR_BINARY:
+      case VDS_VAR_STRING:
+         ptr[i].length1 = pDefinition->fields[i].minLength;
+         ptr[i].length2 = pDefinition->fields[i].maxLength;
+         
+      }
+   }
+
    return 0;
 }
 

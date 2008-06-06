@@ -29,10 +29,10 @@ int main()
    int errcode;
    vdseTxStatus status;
    vdsObjectDefinition def = { 
-      VDS_QUEUE,
-      0,
-      { "", 0, 0, 0, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+      VDS_QUEUE, 
+      0, 
+      { "", 0, 0, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
    
    pQueue = initQueueTest( expectedToPass, &context );

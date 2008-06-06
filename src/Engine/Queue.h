@@ -78,6 +78,8 @@ struct vdseQueue
    /** Offset to the data definition */
    ptrdiff_t  dataDefOffset;
 
+   uint16_t numFields;
+
    /**
     * Number of valid items. Valid items are the number of items NOT counting
     * items that might be added (but not committed) - also, items which are

@@ -116,15 +116,22 @@ enum vdsFieldType
 
 /**
  * Description of the structure of the data (if any).
+ *
+ * This structure is aligned in such a way that you can do:
+ *
+ *    malloc( offsetof(vdsObjectDefinition, fields) +
+ *            numFields * sizeof(vdsFieldDefinition) );
+ *
  */
 struct vdsFieldDefinition
 {
    char name[VDS_MAX_FIELD_LENGTH];
    enum vdsFieldType type;
+   size_t length;
    size_t minLength;
    size_t maxLength;
-   size_t scale;
    size_t precision;
+   size_t scale;
 };
 
 typedef struct vdsFieldDefinition vdsFieldDefinition;

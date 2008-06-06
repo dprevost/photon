@@ -30,8 +30,8 @@ int main()
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
-      { "", 0, 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0} } 
+      { "", 0, 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
    memset( name, 't', VDS_MAX_FULL_NAME_LENGTH+99 );

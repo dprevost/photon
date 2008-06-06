@@ -29,6 +29,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
 enum vdseDataTypeEnum
 {
    VDSE_INTEGER,
@@ -40,6 +41,7 @@ enum vdseDataTypeEnum
    VDES_VAR_BINARY
    
 };
+*/
 
 typedef enum vdseDataTypeEnum vdseDataTypeEnum;
 
@@ -48,12 +50,12 @@ typedef enum vdseDataTypeEnum vdseDataTypeEnum;
  */
 struct vdseFieldDef
 {
+   enum vdsFieldType type;
+
    char name[VDS_MAX_FIELD_LENGTH];
 
    uint32_t length1;
    uint32_t length2;
-
-   vdseDataTypeEnum type;
 
 };
 

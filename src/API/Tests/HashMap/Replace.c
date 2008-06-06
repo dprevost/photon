@@ -34,17 +34,17 @@ int main( int argc, char * argv[] )
    const char * data2 = "My Data 2";
    char buffer[20];
    size_t length;
-   vdsObjectDefinition defMap = { 
+   vdsObjectDefinition mapDef = { 
       VDS_HASH_MAP, 
       1, 
-      { "", 0, 0, 0, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+      { "", VDS_VAR_STRING, 0, 4, 10, 0, 0 }, 
+      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
-    vdsObjectDefinition defFolder = { 
+   vdsObjectDefinition folderDef = { 
       VDS_FOLDER, 
       0, 
-      { "", 0, 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0} } 
+      { "", 0, 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0, 0} } 
    };
 
    if ( argc > 1 ) {
@@ -72,7 +72,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/ahrepl",
                               strlen("/ahrepl"),
-                              &defFolder );
+                              &folderDef );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -81,7 +81,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/ahrepl/test",
                               strlen("/ahrepl/test"),
-                              &defMap );
+                              &mapDef );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

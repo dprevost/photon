@@ -31,14 +31,14 @@ int main( int argc, char * argv[] )
    vdsObjectDefinition defQueue = { 
       VDS_QUEUE,
       1, 
-      { "", 0, 0, 0, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+      { "", 0, 0, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
-    vdsObjectDefinition defFolder = { 
+   vdsObjectDefinition folderDef = { 
       VDS_FOLDER, 
       0, 
-      { "", 0, 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0} } 
+      { "", 0, 0, 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
    if ( argc > 1 ) {
@@ -61,7 +61,7 @@ int main( int argc, char * argv[] )
    errcode = vdsCreateObject( sessionHandle,
                               "/aqons",
                               strlen("/aqons"),
-                              &defFolder );
+                              &folderDef );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
