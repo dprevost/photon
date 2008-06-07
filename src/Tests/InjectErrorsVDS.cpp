@@ -530,8 +530,8 @@ void PopulateHashMaps( vdsSession & session, vector<myMap> & h )
    vdsObjectDefinition mapDef = { 
       VDS_HASH_MAP,
       1, 
-      { "", VDS_VAR_STRING, 1, 200, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 1, 200, 0, 0 } } 
+      { "", VDS_VAR_STRING, 0, 1, 200, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 0, 1, 200, 0, 0 } } 
    };
    
    for ( i = 0; i < NUM_MAPS; ++i ) {
@@ -561,8 +561,8 @@ void PopulateQueues( vdsSession & session, vector<myQueue> & q )
    vdsObjectDefinition queueDef = { 
       VDS_QUEUE,
       1, 
-      { "", VDS_INTEGER, 0, 0, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+      { "", VDS_INTEGER, 0, 0, 0, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
    
    for ( i = 0; i < NUM_QUEUES; ++i ) {
