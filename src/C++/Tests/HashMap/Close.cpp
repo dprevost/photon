@@ -34,8 +34,8 @@ int main( int argc, char * argv[] )
    vdsObjectDefinition mapDef = { 
       VDS_HASH_MAP,
       1, 
-      { "", VDS_VAR_BINARY, 1, 20, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 4, 10, 0, 0 } } 
+      { "", VDS_VAR_BINARY, 0, 1, 20, 0, 0}, 
+      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
 
    memset( &folderDef, 0, sizeof folderDef );

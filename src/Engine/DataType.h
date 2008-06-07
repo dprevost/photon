@@ -43,8 +43,6 @@ enum vdseDataTypeEnum
 };
 */
 
-typedef enum vdseDataTypeEnum vdseDataTypeEnum;
-
 /**
  * Structure used to describe the data.
  */
