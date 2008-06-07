@@ -20,6 +20,7 @@ check_PROGRAMS =                \
         ClosePass               \
         CreateInvalidNameLength \
         CreateNullContext       \
+        CreateNullDefinition    \
         CreateNullFolder        \
         CreateNullName          \
         CreatePass              \
@@ -118,6 +119,7 @@ CloseNullItem_SOURCES           = $(COMMON_HEADER) CloseNullItem.c
 ClosePass_SOURCES               = $(COMMON_HEADER) ClosePass.c
 CreateInvalidNameLength_SOURCES = $(COMMON_HEADER) CreateInvalidNameLength.c
 CreateNullContext_SOURCES       = $(COMMON_HEADER) CreateNullContext.c
+CreateNullDefinition_SOURCES    = $(COMMON_HEADER) CreateNullDefinition.c
 CreateNullFolder_SOURCES        = $(COMMON_HEADER) CreateNullFolder.c
 CreateNullName_SOURCES          = $(COMMON_HEADER) CreateNullName.c
 CreatePass_SOURCES              = $(COMMON_HEADER) CreatePass.c
@@ -225,6 +227,7 @@ TESTS =                         \
         ClosePass               \
         CreateInvalidNameLength \
         CreateNullContext       \
+        CreateNullDefinition    \
         CreateNullFolder        \
         CreateNullName          \
         CreatePass              \
@@ -320,6 +323,7 @@ XFAIL_TESTS =                   \
         CloseNullContext        \
         CloseNullItem           \
         CreateNullContext       \
+        CreateNullDefinition    \
         CreateNullFolder        \
         CreateNullName          \
         CreateWrongType         \

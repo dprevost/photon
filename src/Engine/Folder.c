@@ -869,12 +869,9 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
                             const char          * originalName,
                             size_t                strLength, 
                             vdsObjectDefinition * pDefinition,
-//                            enum vdsObjectType   objectType,
-                            size_t               numBlocks,
-                            size_t               expectedNumOfChilds,
-//                            vdseFieldDef       * pDefinition,
-//                            int                  numFields,
-                            vdseSessionContext * pContext )
+                            size_t                numBlocks,
+                            size_t                expectedNumOfChilds,
+                            vdseSessionContext  * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0;
@@ -898,9 +895,6 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
    VDS_PRE_CONDITION( pDefinition  != NULL );
    VDS_PRE_CONDITION( strLength > 0 );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
-//   if ( objectType != VDS_FOLDER ) {
-//      VDS_PRE_CONDITION( numFields > 0 );
-//   }
 
    errcode = vdseValidateString( objectName, 
                                  strLength, 
@@ -1035,7 +1029,6 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
                              pDesc->originalName,
                              SET_OFFSET(pHashItem->key),
                              pDefinition,
-//                             numFields,
                              pContext );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseQueue,nodeObject);
          pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseQueue,memObject);
@@ -1145,11 +1138,8 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
                                 &originalName[partialLength+1],
                                 strLength - partialLength - 1,
                                 pDefinition,
-//                                objectType,
                                 numBlocks,
                                 expectedNumOfChilds,
-//                                pDefinition,
-//                                numFields,
                                 pContext );
    return rc;
    
@@ -1413,10 +1403,7 @@ int vdseTopFolderCreateObject( vdseFolder          * pFolder,
                                const char          * objectName,
                                size_t                nameLengthInBytes,
                                vdsObjectDefinition * pDefinition,
-//                               enum vdsObjectType   objectType,
-//                               vdseFieldDef       * pDefinition,
-//                               int                  numFields,
-                               vdseSessionContext * pContext )
+                               vdseSessionContext  * pContext )
 {
    vdsErrors errcode = VDS_OK;
    size_t strLength, i;
@@ -1431,9 +1418,6 @@ int vdseTopFolderCreateObject( vdseFolder          * pFolder,
    VDS_PRE_CONDITION( pDefinition != NULL );
    VDS_PRE_CONDITION( pDefinition->type > 0 && 
                       pDefinition->type < VDS_LAST_OBJECT_TYPE );
-//   if ( objectType != VDS_FOLDER ) {
-//      VDS_PRE_CONDITION( numFields > 0 );
-//   }
    
    strLength = nameLengthInBytes;
 
@@ -1479,10 +1463,8 @@ int vdseTopFolderCreateObject( vdseFolder          * pFolder,
                                    &(name[first]),
                                    strLength, 
                                    pDefinition,
-//                                   objectType,
                                    1, /* numBlocks, */
                                    0, /* expectedNumOfChilds, */
-//                                   numFields,
                                    pContext );
       if ( rc != 0 ) goto error_handler;
    }
