@@ -1,0 +1,35 @@
+locking implementation - ideas
+
+------------------------------------------
+
+xlc (ibm compiler) has primitive like __isynch 
+and __stwcx
+
+static inline int try_lock( int * pLock )
+{
+   int out;
+   
+   if ( __lwarx( pLock ) == 0 ) {
+      out = __stwcx( pLock, 1 );
+   }
+   // __isync() as recommended by IBM manuals
+   if ( out == 1 ) __isync();
+   
+   return out;
+}
+
+static inline void unlock( int * lock )
+{
+   // __eieio make sures that all changes (stores) are complete before
+   // we reset the lock.
+	__eieio();
+   *pLock = 0;
+}
+
+// __eieio is an exact match for the definition of a write memory barrier
+#define wmb __eieio();
+#define mb  __sync();
+// __sync is overkill could __lwsync be used? (not a load barrier)
+#define rmb __lwsync();
+
+-----------------------------------------------------------
