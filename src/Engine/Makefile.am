@@ -29,6 +29,7 @@ libEngine_la_SOURCES =    \
         VdsErrorHandler.h \
         BlockGroup.c      \
         BlockGroup.h      \
+        DataType.h        \
         Engine.h          \
         Folder.c          \
         Folder.h          \
