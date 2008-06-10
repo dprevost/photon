@@ -284,14 +284,20 @@ int vdseQueueInit( vdseQueue           * pQueue,
 
    vdseLinkedListInit( &pQueue->listOfElements );
 
+      /** Offset to the data definition */
+   ptrdiff_t  dataDefOffset;
+
+   pQueue->numFields = pDefinition->numFields;
+
    ptr = (vdseFieldDef*) vdseMalloc( &pQueue->memObject, 
-                                     pDefinition->numFields* sizeof(vdseFieldDef),
+                                     pQueue->numFields* sizeof(vdseFieldDef),
                                      pContext );
    if ( ptr == NULL ) {
       return -1;
    }
+   pQueue->dataDefOffset = SET_OFFSET(ptr);
 
-   for ( i = 0; i < pDefinition->numFields; ++i) {
+   for ( i = 0; i < pQueue->numFields; ++i) {
       memcpy( ptr[i].name, pDefinition->fields[i].name, VDS_MAX_FIELD_LENGTH );
       ptr[i].type = pDefinition->fields[i].type;
       switch( ptr[i].type ) {

@@ -232,7 +232,7 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    (*ppHeader)->bigEndian = false;
 #endif
    (*ppHeader)->blockSize = VDSE_BLOCK_SIZE;
-   (*ppHeader)->alignment = VDST_STRUCT_ALIGNMENT;
+   (*ppHeader)->alignment = VDSC_STRUCT_ALIGNMENT;
 #if defined(CONFIG_KERNEL_HEADERS)
    (*ppHeader)->usingSpinlocks = true;
 #else

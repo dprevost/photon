@@ -44,7 +44,9 @@ enum vdseDataTypeEnum
 */
 
 /**
- * Structure used to describe the data.
+ * Structure used to describe the data. If you modify this struct and its
+ * length is not a multiple of sizeof(void*), you might have an alignment
+ * problem on some hardware.
  */
 struct vdseFieldDef
 {

@@ -406,16 +406,16 @@ typedef int bool;
 #  define VDS_MAP_FAILED MAP_FAILED
 #endif
 
-struct vdstTestAlignment
+struct vdscTestAlignment
 {
    unsigned char c;
-   struct vdstTestAlignment2
+   struct vdscTestAlignment2
    {
       double d;
    } two;
 };
 
-#define VDST_STRUCT_ALIGNMENT offsetof(struct vdstTestAlignment, two)
+#define VDSC_STRUCT_ALIGNMENT offsetof(struct vdscTestAlignment, two)
 
 /****************************************************************/
 /*
