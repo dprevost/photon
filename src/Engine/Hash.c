@@ -155,7 +155,7 @@ size_t calculateItemLength( size_t keyLength,
    size_t len;
    
    len = offsetof(vdseHashItem, key) + keyLength;
-   len = ((len-1)/VDSC_STRUCT_ALIGNMENT + 1)*VDSC_STRUCT_ALIGNMENT;
+   len = ((len-1)/VDSC_ALIGNMENT_STRUCT + 1)*VDSC_ALIGNMENT_STRUCT;
    
    len += dataLength;
    
@@ -170,7 +170,7 @@ unsigned char* getData( vdseHashItem* pItem )
    size_t len;
    
    len = offsetof(vdseHashItem, key) + pItem->keyLength;
-   len = ((len-1)/VDSC_STRUCT_ALIGNMENT + 1)*VDSC_STRUCT_ALIGNMENT;
+   len = ((len-1)/VDSC_ALIGNMENT_STRUCT + 1)*VDSC_ALIGNMENT_STRUCT;
    
    return (unsigned char*)pItem + len;
 }

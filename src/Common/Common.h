@@ -406,7 +406,7 @@ typedef int bool;
 #  define VDS_MAP_FAILED MAP_FAILED
 #endif
 
-struct vdscTestAlignment
+struct vdscTestAlignmentStruct
 {
    unsigned char c;
    struct vdscTestAlignment2
@@ -415,7 +415,55 @@ struct vdscTestAlignment
    } two;
 };
 
-#define VDSC_STRUCT_ALIGNMENT offsetof(struct vdscTestAlignment, two)
+#define VDSC_ALIGNMENT_STRUCT offsetof(struct vdscTestAlignmentStruct, two)
+
+struct vdscTestAlignmentChar
+{
+   unsigned char c1;
+   unsigned char c2;
+};
+
+#define VDSC_ALIGNMENT_CHAR offsetof(struct vdscTestAlignmentChar, c2)
+
+struct vdscTestAlignmentCharArray
+{
+   unsigned char c1;
+   unsigned char array[11];
+};
+
+#define VDSC_ALIGNMENT_CHAR_ARRAY offsetof(struct vdscTestAlignmentCharArray, array)
+
+struct vdscTestAlignmentInt16
+{
+   unsigned char c;
+   uint16_t i16;
+};
+
+#define VDSC_ALIGNMENT_INT16 offsetof(struct vdscTestAlignmentInt16, i16)
+
+struct vdscTestAlignmentInt32
+{
+   unsigned char c;
+   uint32_t i32;
+};
+
+#define VDSC_ALIGNMENT_INT32 offsetof(struct vdscTestAlignmentInt32, i32)
+
+struct vdscTestAlignmentInt64
+{
+   unsigned char c;
+   uint64_t i64;
+};
+
+#define VDSC_ALIGNMENT_INT64 offsetof(struct vdscTestAlignmentInt64, i64)
+
+struct vdscTestAlignmentBool
+{
+   unsigned char c;
+   bool b;
+};
+
+#define VDSC_ALIGNMENT_BOOL offsetof(struct vdscTestAlignmentBool, b)
 
 /****************************************************************/
 /*

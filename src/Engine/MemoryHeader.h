@@ -53,7 +53,11 @@ struct vdseMemoryHeader
    size_t   sizeofPtr;
    bool     bigEndian;
    size_t   blockSize;
-   size_t   alignment;
+   size_t   alignmentStruct;
+   size_t   alignmentChar;
+   size_t   alignmentInt16;
+   size_t   alignmentInt32;
+   size_t   alignmentInt64;
    size_t   allocationUnit;
    bool     usingSpinlocks;
    

@@ -232,7 +232,19 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    (*ppHeader)->bigEndian = false;
 #endif
    (*ppHeader)->blockSize = VDSE_BLOCK_SIZE;
-   (*ppHeader)->alignment = VDSC_STRUCT_ALIGNMENT;
+   (*ppHeader)->alignmentStruct = VDSC_ALIGNMENT_STRUCT;
+   (*ppHeader)->alignmentChar   = VDSC_ALIGNMENT_CHAR;
+   (*ppHeader)->alignmentInt16  = VDSC_ALIGNMENT_INT16;
+   (*ppHeader)->alignmentInt32  = VDSC_ALIGNMENT_INT32;
+   (*ppHeader)->alignmentInt64  = VDSC_ALIGNMENT_INT64;
+   fprintf(stderr, "%d %d %d %d %d %d %d\n",
+ VDSC_ALIGNMENT_STRUCT,
+ VDSC_ALIGNMENT_CHAR,
+ VDSC_ALIGNMENT_INT16,
+ VDSC_ALIGNMENT_INT32,
+ VDSC_ALIGNMENT_INT64,
+ VDSC_ALIGNMENT_CHAR_ARRAY,
+ VDSC_ALIGNMENT_BOOL );
 #if defined(CONFIG_KERNEL_HEADERS)
    (*ppHeader)->usingSpinlocks = true;
 #else
