@@ -20,6 +20,7 @@
 #include "API/Session.h"
 #include "API/Process.h"
 #include "API/CommonObject.h"
+#include "API/DataDefinition.h"
 #include "Engine/MemoryHeader.h"
 #include "Engine/MemoryAllocator.h"
 #include "Engine/Process.h"
@@ -76,7 +77,6 @@ int vdsCreateObject( VDS_HANDLE            sessionHandle,
                      const char          * objectName,
                      size_t                nameLengthInBytes,
                      vdsObjectDefinition * pDefinition )
-// vdsObjectType   objectType )
 {
    vdsaSession* pSession;
    int rc = 0, errcode = 0;
@@ -102,11 +102,12 @@ int vdsCreateObject( VDS_HANDLE            sessionHandle,
       return VDS_NULL_POINTER;
    }
 
-   if ( pDefinition->type <= 0 || pDefinition->type >= VDS_LAST_OBJECT_TYPE ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_WRONG_OBJECT_TYPE );
-      return VDS_WRONG_OBJECT_TYPE;
+   errcode = vdsaValidateDefinition( pDefinition );
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      return errcode;
    }
-
+   
    if ( vdsaSessionLock( pSession ) == 0 ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder )

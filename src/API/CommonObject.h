@@ -61,7 +61,7 @@ typedef struct vdsaCommonObject
 
    /** A pointer to the object in VDS. */   
    void * pMyVdsObject;
-   
+
 } vdsaCommonObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

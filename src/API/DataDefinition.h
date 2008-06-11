@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -15,13 +15,14 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_QUEUE_H
-#define VDSA_QUEUE_H
+#ifndef VDSA_DATA_DEFINITION_H
+#define VDSA_DATA_DEFINITION_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "API/CommonObject.h"
-#include "Engine/Queue.h"
+#include <vdsf/vdsCommon.h>
+#include "Engine/DataType.h"
+#include "API/api.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -29,43 +30,25 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdsaQueue
-{
-   vdsaCommonObject object;
-   
-   /**
-    * This pointer holds the result of the iteration (the pointer to
-    * the current vdseQueueItem).
-    */
-   vdseQueueItem * iterator;
-   
-   /** A pointer to the data definition of the queue. */
-   vdseFieldDef * pDefinition;
-   
-} vdsaQueue;
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/** 
- * Iterates through the queue - no data items are removed from the queue
- * by this function.
+/**
+ * Extract the definition from the internal definition.
+ *
+ * Explanation: the internal representation is more compact to minimize
+ * the footprint in shared memory.
+ * 
+ * The memory must be free by the calling program.
  */
 VDSF_API_EXPORT
-int vdsaQueueFirst( vdsaQueue     * pQueue,
-                    vdsaDataEntry * pEntry );
-
-/** 
- * Iterates through the queue - no data items are removed from the queue
- * by this function.
- */
+void vdsaGetDefinition( vdseFieldDef         * pInternalDef,
+                        vdsObjectDefinition ** ppDefinition );
+   
 VDSF_API_EXPORT
-int vdsaQueueNext( vdsaQueue     * pQueue,
-                   vdsaDataEntry * pEntry );
+void vdsaGetLimits( vdseFieldDef * pDefinition,
+                    size_t         minLength,
+                    size_t         maxLength );
 
-/** Remove the first inserted item from a FIFO queue. */
 VDSF_API_EXPORT
-int vdsaQueueRemove( vdsaQueue     * pQueue,
-                     vdsaDataEntry * pEntry );
+int vdsaValidateDefinition( vdsObjectDefinition * pDefinition );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -73,7 +56,6 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_QUEUE_H */
+#endif /* VDSA_DATA_DEFINITION_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-

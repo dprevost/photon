@@ -1,4 +1,4 @@
-.TH "vdsSession.h" 3 "7 Apr 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsSession.h" 3 "11 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -24,9 +24,13 @@ Definition in file \fBvdsSession.h\fP.
 .br
 .RI "\fICommit all insertions and deletions (of the current session) executed since the previous call to vdsCommit or vdsRollback. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsCreateObject\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjectType\fP objectType)"
+.RI "VDSF_EXPORT int \fBvdsCreateObject\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjectDefinition\fP *pDefinition)"
 .br
 .RI "\fICreate a new object in shared memory. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsCreateObjectXML\fP (\fBVDS_HANDLE\fP sessionHandle, const char *xmlBuffer, size_t lengthInBytes)"
+.br
+.RI "\fICreate one or more new objects in shared memory. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsDestroyObject\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes)"
 .br

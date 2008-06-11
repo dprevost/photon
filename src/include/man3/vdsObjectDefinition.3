@@ -1,0 +1,55 @@
+.TH "vdsObjectDefinition" 3 "11 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+vdsObjectDefinition \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <vdsCommon.h>\fP
+.PP
+.SH "Detailed Description"
+.PP 
+This struct has a variable length. 
+.PP
+Definition at line 149 of file vdsCommon.h.
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "enum \fBvdsObjectType\fP \fBtype\fP"
+.br
+.ti -1c
+.RI "unsigned int \fBnumFields\fP"
+.br
+.ti -1c
+.RI "\fBvdsFieldDefinition\fP \fBkey\fP"
+.br
+.RI "\fIThe data definition of the key (hash map only). \fP"
+.ti -1c
+.RI "\fBvdsFieldDefinition\fP \fBfields\fP [1]"
+.br
+.RI "\fIThe data definition of the fields. \fP"
+.in -1c
+.SH "Field Documentation"
+.PP 
+.SS "\fBvdsFieldDefinition\fP \fBvdsObjectDefinition::fields\fP[1]"
+.PP
+The data definition of the fields. 
+.PP
+Definition at line 159 of file vdsCommon.h.
+.SS "\fBvdsFieldDefinition\fP \fBvdsObjectDefinition::key\fP"
+.PP
+The data definition of the key (hash map only). 
+.PP
+Definition at line 156 of file vdsCommon.h.
+.SS "unsigned int \fBvdsObjectDefinition::numFields\fP"
+.PP
+Definition at line 153 of file vdsCommon.h.
+.SS "enum \fBvdsObjectType\fP \fBvdsObjectDefinition::type\fP"
+.PP
+Definition at line 151 of file vdsCommon.h.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for vdsf C API from the source code.

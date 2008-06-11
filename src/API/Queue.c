@@ -57,6 +57,7 @@ int vdsQueueClose( VDS_HANDLE objectHandle )
 
          if ( errcode == 0 ) {
             errcode = vdsaCommonObjClose( &pQueue->object );
+            pQueue->pDefinition = NULL;
          }
          vdsaCommonUnlock( &pQueue->object );
       }
@@ -268,7 +269,12 @@ int vdsQueueOpen( VDS_HANDLE   sessionHandle,
                                    VDS_QUEUE,
                                    queueName,
                                    nameLengthInBytes );
-      if ( errcode == 0 ) *objectHandle = (VDS_HANDLE) pQueue;
+      if ( errcode == 0 ) {
+         *objectHandle = (VDS_HANDLE) pQueue;
+         GET_PTR( pQueue->pDefinition, 
+                  ((vdseQueue*)pQueue->object.pMyVdsObject)->dataDefOffset,
+                  vdseFieldDef );
+      }
    }
    else {
       errcode = VDS_SESSION_IS_TERMINATED;
@@ -413,7 +419,7 @@ int vdsQueuePush( VDS_HANDLE   objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdsQueueStatus( VDS_HANDLE     objectHandle,
-                     vdsObjStatus * pStatus )
+                    vdsObjStatus * pStatus )
 {
    vdsaQueue * pQueue;
    vdseQueue * pVDSQueue;

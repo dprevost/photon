@@ -54,13 +54,13 @@ elementFormDefault="qualified">
 
 <xs:simpleType name="precisionTypeAttr">
   <xs:restriction base="xs:positiveInteger">
-    <xs:maxInclusive value="31"/>
+    <xs:maxInclusive value="30"/>
   </xs:restriction>
 </xs:simpleType>
 
 <xs:simpleType name="scaleTypeAttr">
   <xs:restriction base="xs:nonNegativeInteger">
-    <xs:maxInclusive value="31"/>
+    <xs:maxInclusive value="30"/>
   </xs:restriction>
 </xs:simpleType>
 
@@ -96,7 +96,8 @@ elementFormDefault="qualified">
 </xs:complexType>
 
 <!-- For the next two types, when the attribute "maxLength" is set to zero,
-     it indicates that there is no limits to the string or binary data 
+     it indicates that there is no limits to the string or binary data up
+     to 4 Gigabytes
      (other than the usual constraints of the VDS, the computer itself, 
      etc.). This is the default.
      

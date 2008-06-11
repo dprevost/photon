@@ -1,4 +1,4 @@
-.TH "vdsInfo" 3 "7 Apr 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsInfo" 3 "11 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,7 +12,7 @@ vdsInfo \-
 .PP 
 This data structure is used to retrieve the status of the virtual data space. 
 .PP
-Definition at line 179 of file vdsCommon.h.
+Definition at line 232 of file vdsCommon.h.
 .SS "Data Fields"
 
 .in +1c
@@ -51,37 +51,37 @@ Definition at line 179 of file vdsCommon.h.
 .PP
 Total size of the allocated blocks. 
 .PP
-Definition at line 185 of file vdsCommon.h.
+Definition at line 238 of file vdsCommon.h.
 .SS "size_t \fBvdsInfo::largestFreeInBytes\fP"
 .PP
 Largest contiguous group of free blocks. 
 .PP
-Definition at line 200 of file vdsCommon.h.
+Definition at line 253 of file vdsCommon.h.
 .SS "size_t \fBvdsInfo::numFrees\fP"
 .PP
 Number of calls to free groups of blocks. 
 .PP
-Definition at line 197 of file vdsCommon.h.
+Definition at line 250 of file vdsCommon.h.
 .SS "size_t \fBvdsInfo::numGroups\fP"
 .PP
 Total number of groups of blocks. 
 .PP
-Definition at line 191 of file vdsCommon.h.
+Definition at line 244 of file vdsCommon.h.
 .SS "size_t \fBvdsInfo::numMallocs\fP"
 .PP
 Number of calls to allocate groups of blocks. 
 .PP
-Definition at line 194 of file vdsCommon.h.
+Definition at line 247 of file vdsCommon.h.
 .SS "size_t \fBvdsInfo::numObjects\fP"
 .PP
 Number of API objects in the vds (internal objects are not counted). 
 .PP
-Definition at line 188 of file vdsCommon.h.
+Definition at line 241 of file vdsCommon.h.
 .SS "size_t \fBvdsInfo::totalSizeInBytes\fP"
 .PP
 Total size of the virtual data space. 
 .PP
-Definition at line 182 of file vdsCommon.h.
+Definition at line 235 of file vdsCommon.h.
 
 .SH "Author"
 .PP 

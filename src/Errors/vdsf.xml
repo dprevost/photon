@@ -712,7 +712,154 @@
         </message>
       </message_group>
     </error>
+
+    <error>
+      <errnumber> 101 </errnumber>
+      <errname> INVALID_NUM_FIELDS </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The number of fields in the data definition is invalid.
+          </errormsg>
+          <errordoc>
+            The number of fields in the data definition is invalid - either 
+            zero or greater than VDS_MAX_FIELDS (defined in vdsf/vdsCommon.h).
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 102 </errnumber>
+      <errname> INVALID_FIELD_TYPE </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The data type of the field definition is invalid.
+          </errormsg>
+          <errordoc>
+            The data type of the field definition does not correspond to one of
+            the data type defined in the enum vdsFieldType (vdsf/vdsCommon.h).
+            or you've used VDS_VAR_STRING or VDS_VAR_BINARY 
+          </errordoc>
+          <errordoc> 
+            Do not forget that VDS_VAR_STRING and VDS_VAR_BINAR can only be
+            used for the last field of your data definition.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 103 </errnumber>
+      <errname> INVALID_FIELD_LENGTH_INT </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The length of an integer field (VDS_INTEGER) is invalid.
+          </errormsg>
+          <errordoc>
+            The length of an integer field (VDS_INTEGER) is invalid. Valid
+            values are 1, 2, 4 and 8.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 104 </errnumber>
+      <errname> INVALID_FIELD_LENGTH </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The length of a field (string or binary) is invalid.
+          </errormsg>
+          <errordoc>
+            The length of a field (string or binary) is invalid. Valid
+            values are all numbers greater than zero and less than 
+            4294967296 (4 Giga).
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 105 </errnumber>
+      <errname> INVALID_FIELD_NAME </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The name of the field contains invalid characters.
+          </errormsg>
+          <errordoc>
+            The name of the field contains invalid characters. Valid
+            characters are the standard ASCII alphanumerics ([a-zA-Z0-9])
+            and the underscore ('_'). 
+            The first character of the name must be letter.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 106 </errnumber>
+      <errname> DUPLICATE_FIELD_NAME </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The name of the field is already used by another field in the
+            current definition.
+          </errormsg>
+          <errordoc>
+            The name of the field is already used by another field in the
+            current definition.
+          </errordoc>
+          <errordoc>
+            Note: at the moment field names are case sensitive (for
+            example "account_id" and "Account_Id" are considered different).
+            This might be changed eventually so this practice should
+            be avoided.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 107 </errnumber>
+      <errname> INVALID_PRECISION </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The precision of a VDS_DECIMAL field is invalid.
+          </errormsg>
+          <errordoc>
+            The precision of a VDS_DECIMAL field is either zero or over the 
+            limit for this type (set at 30 currently). Note: precision 
+            is the number of digits in a number.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 108 </errnumber>
+      <errname> INVALID_SCALE </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The scale of a VDS_DECIMAL field is invalid.
+          </errormsg>
+          <errordoc>
+            The scale of a VDS_DECIMAL field is invalid (greater than the
+            value of precision. Note: scale is the number of digits to the 
+            right of the decimal separator in a number.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
   </errgroup>
     
+  
 </errorlist>
 

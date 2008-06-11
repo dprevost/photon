@@ -1,4 +1,4 @@
-.TH "API functions for vdsf sessions." 3 "7 Apr 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "API functions for vdsf sessions." 3 "11 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,9 +12,13 @@ API functions for vdsf sessions. \-
 .br
 .RI "\fICommit all insertions and deletions (of the current session) executed since the previous call to vdsCommit or vdsRollback. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsCreateObject\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjectType\fP objectType)"
+.RI "VDSF_EXPORT int \fBvdsCreateObject\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjectDefinition\fP *pDefinition)"
 .br
 .RI "\fICreate a new object in shared memory. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsCreateObjectXML\fP (\fBVDS_HANDLE\fP sessionHandle, const char *xmlBuffer, size_t lengthInBytes)"
+.br
+.RI "\fICreate one or more new objects in shared memory. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsDestroyObject\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes)"
 .br
@@ -69,7 +73,7 @@ Note: the internal calls executed by the engine to satisfy this request cannot f
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsCreateObject (\fBVDS_HANDLE\fP sessionHandle, const char * objectName, size_t nameLengthInBytes, \fBvdsObjectType\fP objectType)"
+.SS "VDSF_EXPORT int vdsCreateObject (\fBVDS_HANDLE\fP sessionHandle, const char * objectName, size_t nameLengthInBytes, \fBvdsObjectDefinition\fP * pDefinition)"
 .PP
 Create a new object in shared memory. 
 .PP
@@ -85,7 +89,32 @@ This function does not provide a handle to the newly created object. Use vdsQueu
 .br
 \fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the vdsf engine). 
 .br
-\fIobjectType\fP The type of object to create (folder, queue, etc.).
+\fIpDefinition\fP The type of object to create (folder, queue, etc.) and the optional definitions (as needed).
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsCreateObjectXML (\fBVDS_HANDLE\fP sessionHandle, const char * xmlBuffer, size_t lengthInBytes)"
+.PP
+Create one or more new objects in shared memory. 
+.PP
+All parent folders will be created if they do not exist.
+.PP
+The creation of the objects only becomes permanent after a call to \fBvdsCommit\fP.
+.PP
+This function does not provide a handle to the newly created objects. Use vdsQueueOpen and similar functions to get the handles.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsessionHandle\fP Handle to the current session. 
+.br
+\fIxmlBuffer\fP The XML buffer containing all the required information. 
+.br
+\fIlengthInBytes\fP The length of \fIxmlBuffer\fP (in bytes) not counting the null terminator.
 .RE
 .PP
 \fBReturns:\fP

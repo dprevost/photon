@@ -34,6 +34,8 @@ libvdsf_la_SOURCES =     \
         CommonObject.h   \
         Connector.c      \
         Connector.h      \
+        DataDefinition.c \
+        DataDefinition.h \
         Folder.c         \
         Folder.h         \
         HashMap.c        \

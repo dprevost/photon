@@ -75,6 +75,11 @@ typedef void* VDS_HANDLE;
  */
 #define VDS_MAX_FIELD_LENGTH 32
 
+/** 
+ * Maximum number of fields (including the last one).
+ */
+#define VDS_MAX_FIELDS 65535
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
@@ -110,7 +115,9 @@ enum vdsFieldType
    VDS_STRING,
    VDS_DECIMAL,
    VDS_BOOLEAN,
+   /** Only valid for the last field of the data definition */
    VDS_VAR_BINARY,
+   /** Only valid for the last field of the data definition */
    VDS_VAR_STRING
 };
 
