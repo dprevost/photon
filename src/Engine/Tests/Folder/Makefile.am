@@ -79,6 +79,7 @@ check_PROGRAMS =                \
         InitZeroNameLength      \
         InsertInvalidSig        \
         InsertNullContext       \
+        InsertNullDefinition    \
         InsertNullFolder        \
         InsertNullName          \
         InsertNullOrigName      \
@@ -178,6 +179,7 @@ InitZeroBlocks_SOURCES          = $(COMMON_HEADER) InitZeroBlocks.c
 InitZeroNameLength_SOURCES      = $(COMMON_HEADER) InitZeroNameLength.c
 InsertInvalidSig_SOURCES        = $(COMMON_HEADER) InsertInvalidSig.c
 InsertNullContext_SOURCES       = $(COMMON_HEADER) InsertNullContext.c
+InsertNullDefinition_SOURCES    = $(COMMON_HEADER) InsertNullDefinition.c
 InsertNullFolder_SOURCES        = $(COMMON_HEADER) InsertNullFolder.c
 InsertNullName_SOURCES          = $(COMMON_HEADER) InsertNullName.c
 InsertNullOrigName_SOURCES      = $(COMMON_HEADER) InsertNullOrigName.c
@@ -286,6 +288,7 @@ TESTS =                         \
         InitZeroNameLength      \
         InsertInvalidSig        \
         InsertNullContext       \
+        InsertNullDefinition    \
         InsertNullFolder        \
         InsertNullName          \
         InsertNullOrigName      \
@@ -372,6 +375,7 @@ XFAIL_TESTS =                   \
         InitZeroNameLength      \
         InsertInvalidSig        \
         InsertNullContext       \
+        InsertNullDefinition    \
         InsertNullFolder        \
         InsertNullName          \
         InsertNullOrigName      \

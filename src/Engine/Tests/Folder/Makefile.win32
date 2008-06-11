@@ -18,6 +18,7 @@ check_PROGRAMS =                              \
         .\Release\ClosePass.exe               \
         .\Release\CreateInvalidNameLength.exe \
         .\Release\CreateNullContext.exe       \
+        .\Release\CreateNullDefinition.exe    \
         .\Release\CreateNullFolder.exe        \
         .\Release\CreateNullName.exe          \
         .\Release\CreatePass.exe              \
@@ -76,6 +77,7 @@ check_PROGRAMS =                              \
         .\Release\InitZeroNameLength.exe      \
         .\Release\InsertInvalidSig.exe        \
         .\Release\InsertNullContext.exe       \
+        .\Release\InsertNullDefinition.exe    \
         .\Release\InsertNullFolder.exe        \
         .\Release\InsertNullName.exe          \
         .\Release\InsertNullOrigName.exe      \

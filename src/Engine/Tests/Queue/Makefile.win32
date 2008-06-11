@@ -30,6 +30,7 @@ check_PROGRAMS =                               \
         .\Release\GetWrongFlag.exe             \
         .\Release\GetWrongLength.exe           \
         .\Release\InitNullContext.exe          \
+        .\Release\InitNullDefinition.exe       \
         .\Release\InitNullQueue.exe            \
         .\Release\InitNullName.exe             \
         .\Release\InitNullParent.exe           \
@@ -37,6 +38,7 @@ check_PROGRAMS =                               \
         .\Release\InitPass.exe                 \
         .\Release\InitZeroBlocks.exe           \
         .\Release\InitZeroLength.exe           \
+        .\Release\InitZeroNumFields.exe        \
         .\Release\InsertNullContext.exe        \
         .\Release\InsertNullQueue.exe          \
         .\Release\InsertNullItem.exe           \

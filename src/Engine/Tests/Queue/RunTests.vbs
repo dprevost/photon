@@ -30,13 +30,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(53)
+Dim failed_tests(55)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
 Dim ok_programs(13)
-Dim fail_programs(39)
+Dim fail_programs(41)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -105,8 +105,10 @@ fail_programs(36) = "RollbackRemoveNullOffset"
 fail_programs(37) = "RollbackRemoveNullQueue"
 fail_programs(38) = "StatusNullQueue"
 fail_programs(39) = "StatusNullStatus"
+fail_programs(40) = "InitNullDefinition"
+fail_programs(41) = "InitZeroNumFields"
 
-numTests = 54                 ' Sum of length of both arrays 
+numTests = 56                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject
