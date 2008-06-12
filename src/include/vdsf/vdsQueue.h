@@ -56,12 +56,32 @@ extern "C" {
  * \return 0 on success or a ::vdsErrors on error.
  */
 VDSF_EXPORT
-int vdsQueueClose(  VDS_HANDLE objectHandle );
+int vdsQueueClose( VDS_HANDLE objectHandle );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
+ * \brief Retrieve the data definition of the queue.
+ *
+ * \warning This function allocates a buffer to hold the definition (using 
+ * malloc()). You must free it (with free()) when you no longer need the
+ * definition.
+ *
+ * \param[in]   objectHandle The handle to the queue (see ::vdsQueueOpen).
+ * \param[out]  definition The buffer allocated by the API to hold the content 
+ *              of the object definition. Freeing the memory (with free())
+ *              is the responsability of the caller.
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
+VDSF_EXPORT
+int vdsQueueDefinition( VDS_HANDLE             objectHandle, 
+                        vdsObjectDefinition ** ppDefinition );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Iterate through the queue - no data items are removed from the queue
+ * \brief Iterate through the queue - no data items are removed from the queue
  * by this function.
  *
  * Data items which were added by another session and are not yet committed 

@@ -83,6 +83,53 @@ int vdsQueueClose( VDS_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int vdsQueueDefinition( VDS_HANDLE             objectHandle,
+                        vdsObjectDefinition ** ppDefinition )
+{
+   vdsaQueue * pQueue;
+   vdseQueue * pVDSQueue;
+   int errcode = 0;
+   vdseSessionContext * pContext;
+   
+   pQueue = (vdsaQueue *) objectHandle;
+   if ( pQueue == NULL ) return VDS_NULL_HANDLE;
+   
+   if ( pQueue->object.type != VDSA_QUEUE ) return VDS_WRONG_TYPE_HANDLE;
+
+   pContext = &pQueue->object.pSession->context;
+
+   if ( ppDefinition == NULL ) {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      return VDS_NULL_POINTER;
+   }
+
+   if ( ! pQueue->object.pSession->terminated ) {
+      if ( vdsaCommonLock( &pQueue->object ) == 0 ) {
+         pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
+      
+         errcode = vdsaGetDefinition( pQueue->pDefinition,
+                                      pVDSQueue->numFields,
+                                      ppDefinition );
+         if ( errcode == 0 ) (*ppDefinition)->type = VDS_QUEUE;
+         vdsaCommonUnlock( &pQueue->object );
+      }
+      else {
+         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      }
+   }
+   else {
+      errcode = VDS_SESSION_IS_TERMINATED;
+   }
+   
+   if ( errcode != 0 ) {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   }
+   
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdsQueueGetFirst( VDS_HANDLE   objectHandle,
                       void       * buffer,
                       size_t       bufferLength,

@@ -39,9 +39,10 @@ BEGIN_C_DECLS
  * The memory must be free by the calling program.
  */
 VDSF_API_EXPORT
-void vdsaGetDefinition( vdseFieldDef         * pInternalDef,
-                        vdsObjectDefinition ** ppDefinition );
-   
+int vdsaGetDefinition( vdseFieldDef         * pInternalDef,
+                       uint16_t               numFields,
+                       vdsObjectDefinition ** ppDefinition );
+
 VDSF_API_EXPORT
 void vdsaGetLimits( vdseFieldDef * pDefinition,
                     uint16_t       numFields,

@@ -16,6 +16,7 @@ CLEANFILES = *~ core
 
 check_PROGRAMS =          \
         ClosePass         \
+        Definition        \
         FirstNullEntry    \
         FirstNullHandle   \
         FirstPass         \
@@ -38,6 +39,7 @@ check_PROGRAMS =          \
         StatusPass        
 
 ClosePass_SOURCES         = ClosePass.c
+Definition_SOURCES        = Definition.c
 FirstNullEntry_SOURCES    = FirstNullEntry.c
 FirstNullHandle_SOURCES   = FirstNullHandle.c
 FirstPass_SOURCES         = FirstPass.c
@@ -61,6 +63,7 @@ StatusPass_SOURCES        = StatusPass.c
 
 EXTRA_DIST =                 \
         ClosePass.sh         \
+        Definition.sh        \
         FirstNullEntry.sh    \
         FirstNullHandle.sh   \
         FirstPass.sh         \
@@ -94,6 +97,7 @@ TESTS_ENVIRONMENT =                  \
 
 TESTS =                      \
         ClosePass.sh         \
+        Definition.sh        \
         FirstNullEntry.sh    \
         FirstNullHandle.sh   \
         FirstPass.sh         \

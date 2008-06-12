@@ -18,7 +18,62 @@
 #include "Common/Common.h"
 #include "API/DataDefinition.h"
 
+/* 
+ * Note: the type of object must be filled by the caller.
+ */
+int vdsaGetDefinition( vdseFieldDef         * pInternalDef,
+                       uint16_t               numFields,
+                       vdsObjectDefinition ** ppDefinition )
+{
+   unsigned int i;
+   vdsObjectDefinition * ptr;
+   
+   ptr = (vdsObjectDefinition *)calloc( offsetof(vdsObjectDefinition,fields) +
+      numFields * sizeof(vdsFieldDefinition), 1 );
+   if ( ptr == NULL ) return VDS_NOT_ENOUGH_HEAP_MEMORY;
+
+   ptr->numFields = numFields;
+
+   for ( i = 0; i < numFields; ++i ) {
+
+      ptr->fields[i].type = pInternalDef[i].type;
+      memcpy( ptr->fields[i].name, pInternalDef[i].name, VDS_MAX_FIELD_LENGTH );
+
+      switch( pInternalDef[i].type ) {
+
+      case VDS_BINARY:
+      case VDS_STRING:
+      case VDS_INTEGER:
+         ptr->fields[i].length = pInternalDef[i].length1;
+         
+         break;
+
+      case VDS_DECIMAL:
+         ptr->fields[i].precision = pInternalDef[i].length1;
+         ptr->fields[i].scale     = pInternalDef[i].length2;
+
+         break;
+
+      case VDS_BOOLEAN:
+
+         break;
+
+      case VDS_VAR_BINARY:
+      case VDS_VAR_STRING:
+
+         ptr->fields[i].minLength = pInternalDef[i].length1;
+         ptr->fields[i].maxLength = pInternalDef[i].length2;
+
+         break;
+      }
+   }
+
+   *ppDefinition = ptr;
+   return 0;
+}
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 
 void vdsaGetLimits( vdseFieldDef * pDefinition,
                     uint16_t       numFields,
