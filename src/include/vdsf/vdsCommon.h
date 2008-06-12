@@ -80,6 +80,8 @@ typedef void* VDS_HANDLE;
  */
 #define VDS_MAX_FIELDS 65535
 
+#define VDS_FIELD_MAX_PRECISION 30
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**

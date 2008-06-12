@@ -20,6 +20,7 @@ check_PROGRAMS =                          \
         .\Release\CloseObjPass.exe        \
         .\Release\CommitPass.exe          \
         .\Release\CreatePass.exe          \
+        .\Release\CreateQueue.exe         \
         .\Release\DestroyPass.exe         \
         .\Release\ErrorMsg.exe            \
         .\Release\ExitPass.exe            \
