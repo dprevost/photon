@@ -21,6 +21,7 @@
 #include "API/Session.h"
 #include <vdsf/vdsErrors.h>
 #include "API/CommonObject.h"
+#include "API/DataDefinition.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -234,6 +235,7 @@ int vdsQueueOpen( VDS_HANDLE   sessionHandle,
 {
    vdsaSession * pSession;
    vdsaQueue * pQueue = NULL;
+   vdseQueue * pVDSQueue;
    int errcode;
    
    if ( objectHandle == NULL ) return VDS_NULL_HANDLE;
@@ -271,9 +273,14 @@ int vdsQueueOpen( VDS_HANDLE   sessionHandle,
                                    nameLengthInBytes );
       if ( errcode == 0 ) {
          *objectHandle = (VDS_HANDLE) pQueue;
+         pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
          GET_PTR( pQueue->pDefinition, 
-                  ((vdseQueue*)pQueue->object.pMyVdsObject)->dataDefOffset,
+                  pVDSQueue->dataDefOffset,
                   vdseFieldDef );
+         vdsaGetLimits( pQueue->pDefinition,
+                        pVDSQueue->numFields,
+                        &pQueue->minLength,
+                        &pQueue->maxLength );
       }
    }
    else {
@@ -378,7 +385,7 @@ int vdsQueuePush( VDS_HANDLE   objectHandle,
       return VDS_NULL_POINTER;
    }
    
-   if ( dataLength == 0 ) {
+   if ( dataLength < pQueue->minLength || dataLength > pQueue->maxLength ) {
       vdscSetError( &pQueue->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;

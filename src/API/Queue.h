@@ -42,6 +42,9 @@ typedef struct vdsaQueue
    /** A pointer to the data definition of the queue. */
    vdseFieldDef * pDefinition;
    
+   size_t minLength;
+   size_t maxLength;
+   
 } vdsaQueue;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

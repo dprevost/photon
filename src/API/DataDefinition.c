@@ -20,6 +20,109 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+void vdsaGetLimits( vdseFieldDef * pDefinition,
+                    uint16_t       numFields,
+                    size_t       * pMinLength,
+                    size_t       * pMaxLength )
+{
+   unsigned int i;
+   size_t minLength = 0, maxLength = 0;
+   
+   /*
+    * The first field is special - the alignment offset is always zero
+    * since we just started.
+    */
+   switch( pDefinition[0].type ) {
+
+   case VDS_INTEGER:
+      minLength = pDefinition[0].length1;
+      break;
+
+   case VDS_BINARY:
+   case VDS_STRING:
+      minLength = pDefinition[0].length1;
+      break;
+
+   case VDS_DECIMAL:
+      minLength = pDefinition[0].length1 + 2;
+      break;
+
+   case VDS_BOOLEAN:
+      minLength = sizeof(bool);
+      break;
+
+   case VDS_VAR_BINARY:
+   case VDS_VAR_STRING:
+      minLength = pDefinition[0].length1;
+      maxLength = pDefinition[0].length2;
+      if ( maxLength == 0 ) maxLength = 4294967295UL;
+      break;
+   }
+   
+   for ( i = 1; i < numFields; ++i ) {
+
+      switch( pDefinition[i].type ) {
+
+      case VDS_INTEGER:
+         if ( pDefinition[i].length1 == 1 ) {
+            minLength = ((minLength-1)/VDSC_ALIGNMENT_CHAR + 1)*VDSC_ALIGNMENT_CHAR;
+         }
+         else if ( pDefinition[i].length1 == 2 ) {
+            minLength = ((minLength-1)/VDSC_ALIGNMENT_INT16 + 1)*VDSC_ALIGNMENT_INT16;
+         }
+         else if ( pDefinition[i].length1 == 4 ) {
+            minLength = ((minLength-1)/VDSC_ALIGNMENT_INT32 + 1)*VDSC_ALIGNMENT_INT32;
+         }
+         else {
+            minLength = ((minLength-1)/VDSC_ALIGNMENT_INT64 + 1)*VDSC_ALIGNMENT_INT64;
+         }
+         
+         minLength += pDefinition[i].length1;
+
+         break;
+
+      case VDS_BINARY:
+      case VDS_STRING:
+         minLength = ((minLength-1)/VDSC_ALIGNMENT_CHAR + 1)*VDSC_ALIGNMENT_CHAR;
+         minLength += pDefinition[i].length1;
+
+         break;
+
+      case VDS_DECIMAL:
+         minLength = ((minLength-1)/VDSC_ALIGNMENT_CHAR + 1)*VDSC_ALIGNMENT_CHAR;
+         minLength += pDefinition[i].length1 + 2;
+
+         break;
+
+      case VDS_BOOLEAN:
+         minLength = ((minLength-1)/VDSC_ALIGNMENT_BOOL + 1)*VDSC_ALIGNMENT_BOOL;
+         minLength += sizeof(bool);
+         break;
+
+      case VDS_VAR_BINARY:
+      case VDS_VAR_STRING:
+         minLength = ((minLength-1)/VDSC_ALIGNMENT_CHAR + 1)*VDSC_ALIGNMENT_CHAR;
+         minLength += pDefinition[i].length1;
+
+         if ( pDefinition[i].length2 == 0 ||
+            pDefinition[i].length2 >= 4294967295UL - minLength ) {
+            maxLength = 4294967295UL;
+         }
+         else {
+            maxLength = minLength + pDefinition[i].length2;
+         }
+         
+         break;
+      }
+   }
+   
+   if ( maxLength == 0 ) maxLength = minLength;
+   *pMinLength = minLength;
+   *pMaxLength = maxLength;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdsaValidateDefinition( vdsObjectDefinition * pDefinition )
 {
    int i, j;
@@ -65,7 +168,7 @@ int vdsaValidateDefinition( vdsObjectDefinition * pDefinition )
 
          case VDS_DECIMAL:
             if ( pDefinition->fields[i].precision == 0 ||
-               pDefinition->fields[i].precision > 30 ) {
+               pDefinition->fields[i].precision > VDS_FIELD_MAX_PRECISION ) {
                return VDS_INVALID_PRECISION;
             }
             if ( pDefinition->fields[i].scale > 

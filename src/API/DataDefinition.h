@@ -44,8 +44,9 @@ void vdsaGetDefinition( vdseFieldDef         * pInternalDef,
    
 VDSF_API_EXPORT
 void vdsaGetLimits( vdseFieldDef * pDefinition,
-                    size_t         minLength,
-                    size_t         maxLength );
+                    uint16_t       numFields,
+                    size_t       * pMinLength,
+                    size_t       * pMaxLength );
 
 VDSF_API_EXPORT
 int vdsaValidateDefinition( vdsObjectDefinition * pDefinition );
