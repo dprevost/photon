@@ -124,6 +124,33 @@ enum vdsFieldType
 };
 
 /**
+ * VDSF supported data types for keys.
+ */
+enum vdsKeyType
+{
+   VDS_KEY_INTEGER = 101,
+   VDS_KEY_BINARY,
+   VDS_KEY_STRING,
+   /** Only valid for the last field of the data definition */
+   VDS_KEY_VAR_BINARY,
+   /** Only valid for the last field of the data definition */
+   VDS_KEY_VAR_STRING
+};
+
+/**
+ * Description of the structure of the hash map key.
+ */
+struct vdsKeyDefinition
+{
+   enum vdsKeyType type;
+   size_t length;
+   size_t minLength;
+   size_t maxLength;
+};
+
+typedef struct vdsKeyDefinition vdsKeyDefinition;
+
+/**
  * Description of the structure of the data (if any).
  *
  * This structure is aligned in such a way that you can do:
@@ -155,7 +182,7 @@ struct vdsObjectDefinition
    unsigned int numFields;
    
    /** The data definition of the key (hash map only) */
-   vdsFieldDefinition key;
+   vdsKeyDefinition key;
 
    /** The data definition of the fields */
    vdsFieldDefinition fields[1];

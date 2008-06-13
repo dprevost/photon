@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
    vdsObjectDefinition folderDef = { 
       VDS_FOLDER, 
       0, 
-      { "", 0, 0, 0, 0, 0, 0}, 
+      { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    vdsObjectDefinition * pDefinition = NULL;

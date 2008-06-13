@@ -58,7 +58,7 @@ int main()
    vdsObjectDefinition queueDef = { 
       VDS_QUEUE,
       1, 
-      { "", VDS_INTEGER, 0, 0, 0, 0, 0}, 
+      { VDS_KEY_INTEGER, 0, 0, 0 }, 
       { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
    };
    vdsObjectDefinition folderDef;

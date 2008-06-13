@@ -29,7 +29,7 @@ int main()
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
-      { "", 0, 0, 0, 0, 0, 0}, 
+      { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    

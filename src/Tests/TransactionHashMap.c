@@ -26,13 +26,13 @@ VDS_HANDLE g_session1, g_session2;
 vdsObjectDefinition g_mapDef = { 
    VDS_HASH_MAP,
    1, 
-   { "", VDS_VAR_STRING, 0, 1, 200, 0, 0}, 
+   { VDS_KEY_VAR_STRING, 0, 1, 200 }, 
    { { "Field_1", VDS_VAR_STRING, 0, 1, 200, 0, 0 } } 
 };
 vdsObjectDefinition g_folderDef = { 
    VDS_FOLDER,
    0, 
-   {   "", VDS_VAR_STRING, 0, 0, 0, 0, 0}, 
+   {  VDS_KEY_VAR_STRING, 0, 0, 0 }, 
    { { "", VDS_VAR_STRING, 0, 0, 0, 0, 0 } } 
 };
 

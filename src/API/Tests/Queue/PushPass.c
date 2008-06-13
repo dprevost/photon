@@ -35,13 +35,13 @@ int main( int argc, char * argv[] )
    vdsObjectDefinition defQueue = { 
       VDS_QUEUE,
       1, 
-      { "", 0, 0, 0, 0, 0, 0}, 
+      { 0, 0, 0, 0}, 
       { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
    vdsObjectDefinition folderDef = { 
       VDS_FOLDER, 
       0, 
-      { "", 0, 0, 0, 0, 0, 0}, 
+      { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    

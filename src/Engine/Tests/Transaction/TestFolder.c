@@ -32,13 +32,13 @@ int main()
    vdsObjectDefinition mapDef = { 
       VDS_HASH_MAP, 
       1, 
-      { "", 0, 0, 0, 0, 0, 0}, 
+      { 0, 0, 0, 0}, 
       { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
    vdsObjectDefinition folderDef = { 
       VDS_FOLDER, 
       1, 
-      { "", 0, 0, 0, 0, 0, 0}, 
+      { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
