@@ -1057,6 +1057,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
                               partialLength,
                               pDesc->originalName,
                               SET_OFFSET(pHashItem->key),
+                              pDefinition,
                               pContext );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseHashMap,nodeObject);
          pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseHashMap,memObject);

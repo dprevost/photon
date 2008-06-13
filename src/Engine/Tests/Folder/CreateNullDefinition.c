@@ -27,12 +27,6 @@ int main()
    vdseFolder * pTopFolder;
    vdseSessionContext context;
    int errcode;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
-   };
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 

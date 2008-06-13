@@ -1,4 +1,4 @@
-.TH "vdsHashMap.h" 3 "11 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsHashMap.h" 3 "13 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -23,6 +23,10 @@ Definition in file \fBvdsHashMap.h\fP.
 .RI "VDSF_EXPORT int \fBvdsHashMapClose\fP (\fBVDS_HANDLE\fP objectHandle)"
 .br
 .RI "\fIClose a Hash Map. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapDefinition\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjectDefinition\fP **definition)"
+.br
+.RI "\fIRetrieve the data definition of the hash map. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsHashMapDelete\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength)"
 .br

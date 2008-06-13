@@ -596,26 +596,31 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseHashMapInit( vdseHashMap        * pHashMap,
-                     ptrdiff_t            parentOffset,
-                     size_t               numberOfBlocks,
-                     size_t               expectedNumOfItems,
-                     vdseTxStatus       * pTxStatus,
-                     size_t               origNameLength,
-                     char          * origName,
-                     ptrdiff_t            keyOffset,
-                     vdseSessionContext * pContext )
+int vdseHashMapInit( vdseHashMap         * pHashMap,
+                     ptrdiff_t             parentOffset,
+                     size_t                numberOfBlocks,
+                     size_t                expectedNumOfItems,
+                     vdseTxStatus        * pTxStatus,
+                     size_t                origNameLength,
+                     char                * origName,
+                     ptrdiff_t             keyOffset,
+                     vdsObjectDefinition * pDefinition,
+                     vdseSessionContext  * pContext )
 {
    vdsErrors errcode;
    enum ListErrors listErr;
+   vdseFieldDef * ptr;
+   unsigned int i;
    
-   VDS_PRE_CONDITION( pHashMap  != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pTxStatus != NULL );
-   VDS_PRE_CONDITION( origName  != NULL );
+   VDS_PRE_CONDITION( pHashMap     != NULL );
+   VDS_PRE_CONDITION( pContext     != NULL );
+   VDS_PRE_CONDITION( pTxStatus    != NULL );
+   VDS_PRE_CONDITION( origName     != NULL );
+   VDS_PRE_CONDITION( pDefinition  != NULL );
    VDS_PRE_CONDITION( parentOffset != NULL_OFFSET );
    VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    VDS_PRE_CONDITION( origNameLength > 0 );
+   VDS_PRE_CONDITION( pDefinition->numFields > 0 );
    
    errcode = vdseMemObjectInit( &pHashMap->memObject, 
                                 VDSE_IDENT_HASH_MAP,
@@ -650,6 +655,42 @@ int vdseHashMapInit( vdseHashMap        * pHashMap,
       return -1;
    }
    
+   pHashMap->numFields = pDefinition->numFields;
+
+   ptr = (vdseFieldDef*) vdseMalloc( &pHashMap->memObject, 
+                                     pHashMap->numFields* sizeof(vdseFieldDef),
+                                     pContext );
+   if ( ptr == NULL ) {
+      vdscSetError( &pContext->errorHandler, 
+                    g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
+      return -1;
+   }
+   pHashMap->dataDefOffset = SET_OFFSET(ptr);
+
+   for ( i = 0; i < pHashMap->numFields; ++i) {
+      memcpy( ptr[i].name, pDefinition->fields[i].name, VDS_MAX_FIELD_LENGTH );
+      ptr[i].type = pDefinition->fields[i].type;
+      switch( ptr[i].type ) {
+      case VDS_INTEGER:
+      case VDS_BINARY:
+      case VDS_STRING:
+         ptr[i].length1 = pDefinition->fields[i].length;
+         break;
+      case VDS_DECIMAL:
+         ptr[i].length1 = pDefinition->fields[i].precision;
+         ptr[i].length2 = pDefinition->fields[i].scale;         
+         break;
+      case VDS_BOOLEAN:
+         break;
+      case VDS_VAR_BINARY:
+      case VDS_VAR_STRING:
+         ptr[i].length1 = pDefinition->fields[i].minLength;
+         ptr[i].length2 = pDefinition->fields[i].maxLength;
+         
+      }
+   }
+   memcpy( &pHashMap->keyDef, &pDefinition->key, sizeof(vdsKeyDefinition) );
+
    return 0;
 }
 

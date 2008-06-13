@@ -28,45 +28,23 @@ int main()
    vdseSessionContext context;
    int errcode;
    vdseTxStatus status;
-   char * key  = "my key";
-   char * data1 = "my data1";
-   char * data2 = "my data2";
-   vdsObjectDefinition def = { 
-      VDS_HASH_MAP, 
-      1, 
-      { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
-   };
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseHashMapInit( pHashMap, 
-                              0, 1, 0, &status, 4, 
-                              "Map1", NULL_OFFSET, &def, &context );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   errcode = vdseHashMapInsert( pHashMap,
-                                (const void *) key,
-                                6,
-                                (const void *) data1,
-                                strlen(data1),
-                                &context );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   errcode = vdseHashMapReplace( pHashMap,
-                                 (const void *) key,
-                                 6,
-                                 (const void *) data2,
-                                 strlen(data2),
-                                 NULL );
+                              0, 
+                              1, 
+                              0, 
+                              &status, 
+                              4, 
+                              "Map1", 
+                              NULL_OFFSET,
+                              NULL,
+                              &context );
 
-   ERROR_EXIT( expectedToPass, NULL, ; );
+   ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else
    return 1;
 #endif

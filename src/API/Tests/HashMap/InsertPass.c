@@ -171,6 +171,50 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* 1 under the data minimum length */
+   errcode = vdsHashMapInsert( objHandle,
+                               key,
+                               6,
+                               data,
+                               3 );
+   if ( errcode != VDS_INVALID_LENGTH ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /* 1 over the data maximum length */
+   errcode = vdsHashMapInsert( objHandle,
+                               key,
+                               6,
+                               "12345678901", 
+                               11 );
+   if ( errcode != VDS_INVALID_LENGTH ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   // 1 under the key minimum length
+   errcode = vdsHashMapInsert( objHandle,
+                               key,
+                               3,
+                               data,
+                               7 );
+   if ( errcode != VDS_INVALID_LENGTH ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /* 1 over the key maximum length */
+   errcode = vdsHashMapInsert( objHandle,
+                               "12345678901",
+                               11,
+                               data, 
+                               7 );
+   if ( errcode != VDS_INVALID_LENGTH ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    /* End of invalid args. This call should succeed. */
    errcode = vdsHashMapInsert( objHandle,
                                key,

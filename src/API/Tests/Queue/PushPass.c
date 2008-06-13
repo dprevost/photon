@@ -134,7 +134,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   // 1 under the minimum length
+   /* 1 under the minimum length */
    errcode = vdsQueuePush( objHandle, data1, 3 );
    if ( errcode != VDS_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );

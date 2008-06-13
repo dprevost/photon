@@ -21,6 +21,7 @@
 #include "API/Session.h"
 #include <vdsf/vdsErrors.h>
 #include "API/CommonObject.h"
+#include "API/DataDefinition.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -77,6 +78,58 @@ int vdsHashMapClose( VDS_HANDLE objectHandle )
    else {
       vdscSetError( &pHashMap->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
+   }
+   
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdsHashMapDefinition( VDS_HANDLE             objectHandle,
+                          vdsObjectDefinition ** ppDefinition )
+{
+   vdsaHashMap * pHashMap;
+   vdseHashMap * pVDSHashMap;
+   int errcode = 0;
+   vdseSessionContext * pContext;
+   
+   pHashMap = (vdsaHashMap *) objectHandle;
+   if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
+   
+   if ( pHashMap->object.type != VDSA_HASH_MAP ) return VDS_WRONG_TYPE_HANDLE;
+
+   pContext = &pHashMap->object.pSession->context;
+
+   if ( ppDefinition == NULL ) {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      return VDS_NULL_POINTER;
+   }
+
+   if ( ! pHashMap->object.pSession->terminated ) {
+      if ( vdsaCommonLock( &pHashMap->object ) == 0 ) {
+         pVDSHashMap = (vdseHashMap *) pHashMap->object.pMyVdsObject;
+      
+         errcode = vdsaGetDefinition( pHashMap->pDefinition,
+                                      pVDSHashMap->numFields,
+                                      ppDefinition );
+         if ( errcode == 0 ) {
+            (*ppDefinition)->type = VDS_HASH_MAP;
+            memcpy( &(*ppDefinition)->key, 
+                    &pVDSHashMap->keyDef, 
+                    sizeof(vdsKeyDefinition) );
+         }
+         vdsaCommonUnlock( &pHashMap->object );
+      }
+      else {
+         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      }
+   }
+   else {
+      errcode = VDS_SESSION_IS_TERMINATED;
+   }
+   
+   if ( errcode != 0 ) {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return errcode;
@@ -414,7 +467,18 @@ int vdsHashMapInsert( VDS_HANDLE   objectHandle,
          g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
-   if ( keyLength == 0 || dataLength == 0 ) {
+   if ( keyLength == 0 ) {
+      vdscSetError( &pHashMap->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      return VDS_INVALID_LENGTH;
+   }
+   if ( keyLength < pHashMap->minKeyLength || keyLength > pHashMap->maxKeyLength ) {
+      vdscSetError( &pHashMap->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      return VDS_INVALID_LENGTH;
+   }
+
+   if ( dataLength < pHashMap->minLength || dataLength > pHashMap->maxLength ) {
       vdscSetError( &pHashMap->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
@@ -462,6 +526,7 @@ int vdsHashMapOpen( VDS_HANDLE   sessionHandle,
 {
    vdsaSession * pSession;
    vdsaHashMap * pHashMap = NULL;
+   vdseHashMap * pVDSHashMap;
    int errcode;
    
    if ( objectHandle == NULL ) return VDS_NULL_HANDLE;
@@ -498,7 +563,20 @@ int vdsHashMapOpen( VDS_HANDLE   sessionHandle,
                                    VDS_HASH_MAP,
                                    hashMapName,
                                    nameLengthInBytes );
-      if ( errcode == 0 ) *objectHandle = (VDS_HANDLE) pHashMap;
+      if ( errcode == 0 ) {
+         *objectHandle = (VDS_HANDLE) pHashMap;
+         pVDSHashMap = (vdseHashMap *) pHashMap->object.pMyVdsObject;
+         GET_PTR( pHashMap->pDefinition, 
+                  pVDSHashMap->dataDefOffset,
+                  vdseFieldDef );
+         vdsaGetLimits( pHashMap->pDefinition,
+                        pVDSHashMap->numFields,
+                        &pHashMap->minLength,
+                        &pHashMap->maxLength );
+         vdsaGetKeyLimits( &pVDSHashMap->keyDef,
+                           &pHashMap->minKeyLength,
+                           &pHashMap->maxKeyLength );
+      }
    }
    else {
       errcode = VDS_SESSION_IS_TERMINATED;

@@ -44,6 +44,11 @@ int vdsaGetDefinition( vdseFieldDef         * pInternalDef,
                        vdsObjectDefinition ** ppDefinition );
 
 VDSF_API_EXPORT
+void vdsaGetKeyLimits( vdsKeyDefinition * pKeyDef,
+                       size_t           * pMinLength,
+                       size_t           * pMaxLength );
+
+VDSF_API_EXPORT
 void vdsaGetLimits( vdseFieldDef * pDefinition,
                     uint16_t       numFields,
                     size_t       * pMinLength,

@@ -252,7 +252,7 @@ int vdseQueueInit( vdseQueue           * pQueue,
 {
    vdsErrors errcode;
    vdseFieldDef * ptr;
-   int i;
+   unsigned int i;
    
    VDS_PRE_CONDITION( pQueue       != NULL );
    VDS_PRE_CONDITION( pContext     != NULL );
@@ -284,15 +284,14 @@ int vdseQueueInit( vdseQueue           * pQueue,
 
    vdseLinkedListInit( &pQueue->listOfElements );
 
-      /** Offset to the data definition */
-   ptrdiff_t  dataDefOffset;
-
    pQueue->numFields = pDefinition->numFields;
 
    ptr = (vdseFieldDef*) vdseMalloc( &pQueue->memObject, 
                                      pQueue->numFields* sizeof(vdseFieldDef),
                                      pContext );
    if ( ptr == NULL ) {
+      vdscSetError( &pContext->errorHandler, 
+                    g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
       return -1;
    }
    pQueue->dataDefOffset = SET_OFFSET(ptr);

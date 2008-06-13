@@ -49,6 +49,7 @@ check_PROGRAMS =                                \
         .\Release\GetWrongLength.exe            \
         .\Release\GetZeroKeyLength.exe          \
         .\Release\InitNullContext.exe           \
+        .\Release\InitNullDefinition.exe        \
         .\Release\InitNullHash.exe              \
         .\Release\InitNullName.exe              \
         .\Release\InitNullParent.exe            \

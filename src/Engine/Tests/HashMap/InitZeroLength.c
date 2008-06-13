@@ -28,6 +28,12 @@ int main()
    vdseSessionContext context;
    int errcode;
    vdseTxStatus status;
+   vdsObjectDefinition def = { 
+      VDS_HASH_MAP, 
+      1, 
+      { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
+      { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
+   };
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
@@ -40,7 +46,8 @@ int main()
                               &status, 
                               0, /* zero name length */
                               "Map1", 
-                              NULL_OFFSET, 
+                              NULL_OFFSET,
+                              &def,
                               &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

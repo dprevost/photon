@@ -1,4 +1,4 @@
-.TH "vdsFieldDefinition" 3 "11 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsFieldDefinition" 3 "13 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,7 +16,7 @@ This structure is aligned in such a way that you can do:
 .PP
 malloc( offsetof(vdsObjectDefinition, fields) + numFields * sizeof(vdsFieldDefinition) ); 
 .PP
-Definition at line 133 of file vdsCommon.h.
+Definition at line 162 of file vdsCommon.h.
 .SS "Data Fields"
 
 .in +1c
@@ -46,25 +46,25 @@ Definition at line 133 of file vdsCommon.h.
 .PP 
 .SS "size_t \fBvdsFieldDefinition::length\fP"
 .PP
-Definition at line 137 of file vdsCommon.h.
+Definition at line 166 of file vdsCommon.h.
 .SS "size_t \fBvdsFieldDefinition::maxLength\fP"
 .PP
-Definition at line 139 of file vdsCommon.h.
+Definition at line 168 of file vdsCommon.h.
 .SS "size_t \fBvdsFieldDefinition::minLength\fP"
 .PP
-Definition at line 138 of file vdsCommon.h.
+Definition at line 167 of file vdsCommon.h.
 .SS "char \fBvdsFieldDefinition::name\fP[VDS_MAX_FIELD_LENGTH]"
 .PP
-Definition at line 135 of file vdsCommon.h.
+Definition at line 164 of file vdsCommon.h.
 .SS "size_t \fBvdsFieldDefinition::precision\fP"
 .PP
-Definition at line 140 of file vdsCommon.h.
+Definition at line 169 of file vdsCommon.h.
 .SS "size_t \fBvdsFieldDefinition::scale\fP"
 .PP
-Definition at line 141 of file vdsCommon.h.
+Definition at line 170 of file vdsCommon.h.
 .SS "enum \fBvdsFieldType\fP \fBvdsFieldDefinition::type\fP"
 .PP
-Definition at line 136 of file vdsCommon.h.
+Definition at line 165 of file vdsCommon.h.
 
 .SH "Author"
 .PP 

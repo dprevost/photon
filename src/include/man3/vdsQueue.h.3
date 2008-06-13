@@ -1,4 +1,4 @@
-.TH "vdsQueue.h" 3 "11 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsQueue.h" 3 "13 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -23,6 +23,10 @@ Definition in file \fBvdsQueue.h\fP.
 .RI "VDSF_EXPORT int \fBvdsQueueClose\fP (\fBVDS_HANDLE\fP objectHandle)"
 .br
 .RI "\fIClose a FIFO queue. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsQueueDefinition\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjectDefinition\fP **definition)"
+.br
+.RI "\fIRetrieve the data definition of the queue. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsQueueGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br

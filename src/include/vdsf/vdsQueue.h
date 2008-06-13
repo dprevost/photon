@@ -76,7 +76,7 @@ int vdsQueueClose( VDS_HANDLE objectHandle );
  */
 VDSF_EXPORT
 int vdsQueueDefinition( VDS_HANDLE             objectHandle, 
-                        vdsObjectDefinition ** ppDefinition );
+                        vdsObjectDefinition ** definition );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

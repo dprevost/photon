@@ -31,12 +31,12 @@ Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(24)
+Dim failed_tests(25)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(11)
+Dim ok_programs(12)
 Dim fail_programs(12)
 
 Dim exe_name, prog_path, program, wd_path, tmpDir, cmdFile, exeName
@@ -53,16 +53,17 @@ dim strOutput
 ' Populate the program lists...
 ok_programs(0)  = "ClosePass"
 ok_programs(1)  = "DeletePass"
-ok_programs(2)  = "FirstPass"
-ok_programs(3)  = "Get"
-ok_programs(4)  = "GetFirst"
-ok_programs(5)  = "GetNext"
-ok_programs(6)  = "InsertPass"
-ok_programs(7)  = "NextPass"
-ok_programs(8)  = "OpenPass"
-ok_programs(9)  = "Replace"
-ok_programs(10) = "RetrievePass"
-ok_programs(11) = "StatusPass"
+ok_programs(2)  = "Definition"
+ok_programs(3)  = "FirstPass"
+ok_programs(4)  = "Get"
+ok_programs(5)  = "GetFirst"
+ok_programs(6)  = "GetNext"
+ok_programs(7)  = "InsertPass"
+ok_programs(8)  = "NextPass"
+ok_programs(9)  = "OpenPass"
+ok_programs(10) = "Replace"
+ok_programs(11) = "RetrievePass"
+ok_programs(12) = "StatusPass"
 
 fail_programs(0)  = "FirstNullEntry"
 fail_programs(1)  = "FirstNullHandle"
@@ -78,7 +79,7 @@ fail_programs(10) = "RetrieveNullKey"
 fail_programs(11) = "RetrieveWrongHandle"
 fail_programs(12) = "RetrieveZeroLength"
 
-numTests  = 25                 ' Sum of length of both arrays 
+numTests  = 26                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject

@@ -57,8 +57,12 @@ struct vdseHashMap
 
    struct vdseHash      hashObj;
 
+   struct vdsKeyDefinition keyDef;
+   
    /** Offset to the data definition */
    ptrdiff_t            dataDefOffset;
+
+   uint16_t numFields;
    
    /** Variable size struct - always put at the end */
    struct vdseBlockGroup blockGroup;
@@ -112,15 +116,16 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
                         vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseHashMapInit( vdseHashMap        * pHashMap,
-                     ptrdiff_t            parentOffset,
-                     size_t               numberOfBlocks,
-                     size_t               expectedNumOfChilds,
-                     vdseTxStatus       * pTxStatus,
-                     size_t               origNameLength,
-                     char               * origName,
-                     ptrdiff_t            keyOffset,
-                     vdseSessionContext * pContext );
+int vdseHashMapInit( vdseHashMap         * pHashMap,
+                     ptrdiff_t             parentOffset,
+                     size_t                numberOfBlocks,
+                     size_t                expectedNumOfChilds,
+                     vdseTxStatus        * pTxStatus,
+                     size_t                origNameLength,
+                     char                * origName,
+                     ptrdiff_t             keyOffset,
+                     vdsObjectDefinition * pDefinition,
+                     vdseSessionContext  * pContext );
 
 
 VDSF_ENGINE_EXPORT

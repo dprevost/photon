@@ -1,4 +1,4 @@
-.TH "vdsFolderEntry" 3 "11 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsFolderEntry" 3 "13 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -14,7 +14,7 @@ This data structure is used to iterate throught all objects in a folder.
 
 Note: the actual name of an object (and the length of this name) might vary if you are using different locales (internally, names are stored as wide characters (4 bytes)). 
 .PP
-Definition at line 175 of file vdsCommon.h.
+Definition at line 204 of file vdsCommon.h.
 .SS "Data Fields"
 
 .in +1c
@@ -41,24 +41,24 @@ Definition at line 175 of file vdsCommon.h.
 .PP
 The name of the object. 
 .PP
-Definition at line 187 of file vdsCommon.h.
+Definition at line 216 of file vdsCommon.h.
 .SS "size_t \fBvdsFolderEntry::nameLengthInBytes\fP"
 .PP
 The actual length of the name of the object. 
 .PP
-Definition at line 184 of file vdsCommon.h.
+Definition at line 213 of file vdsCommon.h.
 .SS "int \fBvdsFolderEntry::status\fP"
 .PP
 Status (created but not committed, etc. 
 .PP
 ) - not used in version 0.1 
 .PP
-Definition at line 181 of file vdsCommon.h.
+Definition at line 210 of file vdsCommon.h.
 .SS "\fBvdsObjectType\fP \fBvdsFolderEntry::type\fP"
 .PP
 The object type. 
 .PP
-Definition at line 178 of file vdsCommon.h.
+Definition at line 207 of file vdsCommon.h.
 
 .SH "Author"
 .PP 

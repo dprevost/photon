@@ -74,6 +74,24 @@ int vdsaGetDefinition( vdseFieldDef         * pInternalDef,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+void vdsaGetKeyLimits( vdsKeyDefinition * pKeyDef,
+                       size_t           * pMinLength,
+                       size_t           * pMaxLength )
+{
+   if ( pKeyDef->type == VDS_KEY_INTEGER ||
+      pKeyDef->type == VDS_KEY_BINARY ||
+      pKeyDef->type == VDS_KEY_STRING ) {
+      *pMinLength = *pMaxLength = pKeyDef->length;
+   }
+   else {
+      /* VDS_KEY_VAR_BINARY || VDS_VAR_STRING */
+      *pMinLength = pKeyDef->minLength;
+      *pMaxLength = pKeyDef->maxLength;
+      if ( *pMaxLength == 0 ) *pMaxLength = 4294967295UL;
+   }
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void vdsaGetLimits( vdseFieldDef * pDefinition,
                     uint16_t       numFields,
@@ -188,7 +206,62 @@ int vdsaValidateDefinition( vdsObjectDefinition * pDefinition )
       return 0;
 
    case VDS_HASH_MAP:
-      return 0;
+      
+      /* We do the key and let the queue case test the rest */
+      switch( pDefinition->key.type ) {
+
+      case VDS_KEY_INTEGER:
+         if ( pDefinition->key.length != 1 &&
+              pDefinition->key.length != 2 &&
+              pDefinition->key.length != 4 &&
+              pDefinition->key.length != 8 ) {
+            return VDS_INVALID_FIELD_LENGTH_INT;
+         }
+         break;
+
+      case VDS_KEY_BINARY:
+      case VDS_KEY_STRING:
+         if ( pDefinition->key.length == 0 ) {
+            return VDS_INVALID_FIELD_LENGTH;
+         }
+#if SIZEOF_VOID_P > 4
+         /* For 64 bits processors */
+         if ( pDefinition->key.length > 4294967295 ) {
+            return VDS_INVALID_FIELD_LENGTH;
+         }
+#endif
+         break;
+
+      case VDS_KEY_VAR_BINARY:
+      case VDS_KEY_VAR_STRING:
+         if ( pDefinition->key.minLength == 0 ) {
+            return VDS_INVALID_FIELD_LENGTH;
+         }
+         /*
+          * Reminder: maxLength set to zero indicates the maximum value
+          * allowed which is 4294967295.
+          */
+#if SIZEOF_VOID_P > 4
+         /* For 64 bits processors */
+         if ( pDefinition->key.maxLength > 4294967295 ) {
+            return VDS_INVALID_FIELD_LENGTH;
+         }
+         /* in case maxLength = 0 */
+         if ( pDefinition->key.minLength > 4294967295 ) {
+            return VDS_INVALID_FIELD_LENGTH;
+         }
+#endif
+         if ( pDefinition->key.maxLength != 0 ) {
+            if ( pDefinition->key.minLength > 
+                 pDefinition->key.maxLength ) {
+               return VDS_INVALID_FIELD_LENGTH;
+            }
+         }
+         break;
+
+      default:
+         return VDS_INVALID_FIELD_TYPE;
+      }
 
    case VDS_QUEUE:
       if ( pDefinition->numFields < 0 || 
@@ -239,6 +312,12 @@ int vdsaValidateDefinition( vdsObjectDefinition * pDefinition )
          case VDS_VAR_STRING:
             /* These 2 types are only valid for the last field. */
             if ( i != (pDefinition->numFields-1) ) return VDS_INVALID_FIELD_TYPE;
+
+            /* BIG WARNING: this rule is not captured by the XML schema */
+            if ( pDefinition->numFields == 1 && 
+                 pDefinition->fields[i].minLength == 0 ) {
+               return VDS_INVALID_FIELD_LENGTH;
+            }
             /*
              * Reminder: maxLength set to zero indicates the maximum value
              * allowed which is 4294967295.

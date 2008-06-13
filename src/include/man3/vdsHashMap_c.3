@@ -1,4 +1,4 @@
-.TH "API functions for vdsf hash maps." 3 "11 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "API functions for vdsf hash maps." 3 "13 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -14,6 +14,10 @@ Hash maps use unique keys - the data items are not sorted.
 .RI "VDSF_EXPORT int \fBvdsHashMapClose\fP (\fBVDS_HANDLE\fP objectHandle)"
 .br
 .RI "\fIClose a Hash Map. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsHashMapDefinition\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjectDefinition\fP **definition)"
+.br
+.RI "\fIRetrieve the data definition of the hash map. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsHashMapDelete\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength)"
 .br
@@ -63,6 +67,28 @@ Closing an object does not automatically commit or rollback data items that were
 \fBParameters:\fP
 .RS 4
 \fIobjectHandle\fP The handle to the hash map (see \fBvdsHashMapOpen\fP). 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsHashMapDefinition (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjectDefinition\fP ** definition)"
+.PP
+Retrieve the data definition of the hash map. 
+.PP
+\fBWarning:\fP
+.RS 4
+This function allocates a buffer to hold the definition (using malloc()). You must free it (with free()) when you no longer need the definition.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the hash map (see \fBvdsHashMapOpen\fP). 
+.br
+\fIdefinition\fP The buffer allocated by the API to hold the content of the object definition. Freeing the memory (with free()) is the responsability of the caller.
 .RE
 .PP
 \fBReturns:\fP

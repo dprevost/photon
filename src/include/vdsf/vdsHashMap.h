@@ -62,6 +62,26 @@ int vdsHashMapClose( VDS_HANDLE objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/**
+ * \brief Retrieve the data definition of the hash map.
+ *
+ * \warning This function allocates a buffer to hold the definition (using 
+ * malloc()). You must free it (with free()) when you no longer need the
+ * definition.
+ *
+ * \param[in]   objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[out]  definition The buffer allocated by the API to hold the content 
+ *              of the object definition. Freeing the memory (with free())
+ *              is the responsability of the caller.
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
+VDSF_EXPORT
+int vdsHashMapDefinition( VDS_HANDLE             objectHandle, 
+                          vdsObjectDefinition ** definition );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /** 
  * Remove the data item identified by the given key from the hash map.
  *

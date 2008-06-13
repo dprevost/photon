@@ -51,6 +51,7 @@ check_PROGRAMS =                  \
         GetWrongLength            \
         GetZeroKeyLength          \
         InitNullContext           \
+        InitNullDefinition        \
         InitNullHash              \
         InitNullName              \
         InitNullParent            \
@@ -126,6 +127,7 @@ GetPass_SOURCES                   = $(COMMON_HEADER) GetPass.c
 GetWrongLength_SOURCES            = $(COMMON_HEADER) GetFirstWrongLength.c
 GetZeroKeyLength_SOURCES          = $(COMMON_HEADER) GetZeroKeyLength.c
 InitNullContext_SOURCES           = $(COMMON_HEADER) InitNullContext.c
+InitNullDefinition_SOURCES        = $(COMMON_HEADER) InitNullDefinition.c
 InitNullHash_SOURCES              = $(COMMON_HEADER) InitNullHash.c
 InitNullName_SOURCES              = $(COMMON_HEADER) InitNullName.c
 InitNullParent_SOURCES            = $(COMMON_HEADER) InitNullParent.c
@@ -210,6 +212,7 @@ TESTS =                           \
         GetWrongLength            \
         GetZeroKeyLength          \
         InitNullContext           \
+        InitNullDefinition        \
         InitNullHash              \
         InitNullName              \
         InitNullParent            \
@@ -272,6 +275,7 @@ XFAIL_TESTS =                     \
         GetNullKey                \
         GetZeroKeyLength          \
         InitNullContext           \
+        InitNullDefinition        \
         InitNullHash              \
         InitNullName              \
         InitNullParent            \

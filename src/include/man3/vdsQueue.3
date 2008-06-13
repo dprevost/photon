@@ -1,4 +1,4 @@
-.TH "vdsQueue" 3 "18 Mar 2008" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
+.TH "vdsQueue" 3 "13 Jun 2008" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -22,6 +22,10 @@ Definition at line 35 of file vdsQueue.
 .RI "void \fBClose\fP ()"
 .br
 .RI "\fIClose a FIFO queue. \fP"
+.ti -1c
+.RI "void \fBDefinition\fP (vdsObjectDefinition **definition)"
+.br
+.RI "\fIRetrieve the data definition of the queue. \fP"
 .ti -1c
 .RI "int \fBGetFirst\fP (void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
@@ -80,6 +84,26 @@ This function terminates the current access to the queue in shared memory (the q
 \fBWarning:\fP
 .RS 4
 Closing an object does not automatically commit or rollback data items that were inserted or removed. You still must use either vdsSession::Commit or vdsSession::Rollback to end the current unit of work.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsQueue::Definition (vdsObjectDefinition ** definition)"
+.PP
+Retrieve the data definition of the queue. 
+.PP
+\fBWarning:\fP
+.RS 4
+This function allocates a buffer to hold the definition (using malloc()). You must free it (with free()) when you no longer need the definition.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdefinition\fP The buffer allocated by the API to hold the content of the object definition. Freeing the memory (with free()) is the responsability of the caller.
 .RE
 .PP
 \fBExceptions:\fP
@@ -242,12 +266,12 @@ Return the status of the queue.
 .PP
 Pointer to the vdsaQueue struct. 
 .PP
-Definition at line 181 of file vdsQueue.
+Definition at line 196 of file vdsQueue.
 .SS "VDS_HANDLE& \fBvdsQueue::m_sessionHandle\fP\fC [private]\fP"
 .PP
 Reference to the vdsaSession struct (we belong to). 
 .PP
-Definition at line 184 of file vdsQueue.
+Definition at line 199 of file vdsQueue.
 
 .SH "Author"
 .PP 

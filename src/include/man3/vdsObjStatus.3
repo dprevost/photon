@@ -1,4 +1,4 @@
-.TH "vdsObjStatus" 3 "11 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsObjStatus" 3 "13 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,7 +12,7 @@ vdsObjStatus \-
 .PP 
 This data structure is used to retrieve the status of objects. 
 .PP
-Definition at line 197 of file vdsCommon.h.
+Definition at line 226 of file vdsCommon.h.
 .SS "Data Fields"
 
 .in +1c
@@ -55,44 +55,44 @@ Definition at line 197 of file vdsCommon.h.
 .PP
 The amount of free space available in the blocks allocated to this object. 
 .PP
-Definition at line 215 of file vdsCommon.h.
+Definition at line 244 of file vdsCommon.h.
 .SS "size_t \fBvdsObjStatus::maxDataLength\fP"
 .PP
 Maximum data length (in bytes). 
 .PP
-Definition at line 218 of file vdsCommon.h.
+Definition at line 247 of file vdsCommon.h.
 .SS "size_t \fBvdsObjStatus::maxKeyLength\fP"
 .PP
 Maximum key length (in bytes) if keys are supported - zero otherwise. 
 .PP
-Definition at line 221 of file vdsCommon.h.
+Definition at line 250 of file vdsCommon.h.
 .SS "size_t \fBvdsObjStatus::numBlockGroup\fP"
 .PP
 The number of groups of blocks allocated to this object. 
 .PP
-Definition at line 209 of file vdsCommon.h.
+Definition at line 238 of file vdsCommon.h.
 .SS "size_t \fBvdsObjStatus::numBlocks\fP"
 .PP
 The number of blocks allocated to this object. 
 .PP
-Definition at line 206 of file vdsCommon.h.
+Definition at line 235 of file vdsCommon.h.
 .SS "size_t \fBvdsObjStatus::numDataItem\fP"
 .PP
 The number of data items in thisa object. 
 .PP
-Definition at line 212 of file vdsCommon.h.
+Definition at line 241 of file vdsCommon.h.
 .SS "int \fBvdsObjStatus::status\fP"
 .PP
 Status (created but not committed, etc. 
 .PP
 ) - not used in version 0.1 
 .PP
-Definition at line 203 of file vdsCommon.h.
+Definition at line 232 of file vdsCommon.h.
 .SS "\fBvdsObjectType\fP \fBvdsObjStatus::type\fP"
 .PP
 The object type. 
 .PP
-Definition at line 200 of file vdsCommon.h.
+Definition at line 229 of file vdsCommon.h.
 
 .SH "Author"
 .PP 

@@ -1,4 +1,4 @@
-.TH "vdsHashMap" 3 "18 Mar 2008" "Version 0.2" "vdsf C++ API" \" -*- nroff -*-
+.TH "vdsHashMap" 3 "13 Jun 2008" "Version 0.2" "vdsf C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -21,7 +21,11 @@ Definition at line 36 of file vdsHashMap.
 .ti -1c
 .RI "void \fBClose\fP ()"
 .br
-.RI "\fIClose a Hash Map. \fP"
+.RI "\fIClose a hash map. \fP"
+.ti -1c
+.RI "void \fBDefinition\fP (vdsObjectDefinition **definition)"
+.br
+.RI "\fIRetrieve the data definition of the hash map. \fP"
 .ti -1c
 .RI "void \fBDelete\fP (const void *key, size_t keyLength)"
 .br
@@ -81,13 +85,33 @@ Definition at line 36 of file vdsHashMap.
 .PP 
 .SS "void vdsHashMap::Close ()"
 .PP
-Close a Hash Map. 
+Close a hash map. 
 .PP
 This function terminates the current access to the hash map in shared memory (the hash map itself is untouched).
 .PP
 \fBWarning:\fP
 .RS 4
 Closing an object does not automatically commit or rollback data items that were inserted or removed. You still must use either vdsSession::Commit or vdsSession::Rollback to end the current unit of work.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void vdsHashMap::Definition (vdsObjectDefinition ** definition)"
+.PP
+Retrieve the data definition of the hash map. 
+.PP
+\fBWarning:\fP
+.RS 4
+This function allocates a buffer to hold the definition (using malloc()). You must free it (with free()) when you no longer need the definition.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdefinition\fP The buffer allocated by the API to hold the content of the object definition. Freeing the memory (with free()) is the responsability of the caller.
 .RE
 .PP
 \fBExceptions:\fP
@@ -311,12 +335,12 @@ Return the status of the hash map.
 .PP
 Pointer to the vdsaHashMap struct. 
 .PP
-Definition at line 236 of file vdsHashMap.
+Definition at line 251 of file vdsHashMap.
 .SS "VDS_HANDLE& \fBvdsHashMap::m_sessionHandle\fP\fC [private]\fP"
 .PP
 Reference to the vdsaSession struct (we belong to). 
 .PP
-Definition at line 239 of file vdsHashMap.
+Definition at line 254 of file vdsHashMap.
 
 .SH "Author"
 .PP 

@@ -39,6 +39,14 @@ typedef struct vdsaHashMap
     */
    vdseHashMapItem iterator;
 
+   /** A pointer to the data definition of the queue. */
+   vdseFieldDef * pDefinition;
+   
+   size_t minLength;
+   size_t maxLength;
+   size_t minKeyLength;
+   size_t maxKeyLength;
+
 } vdsaHashMap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

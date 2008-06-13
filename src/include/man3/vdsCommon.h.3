@@ -1,4 +1,4 @@
-.TH "vdsCommon.h" 3 "11 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsCommon.h" 3 "13 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,6 +12,10 @@ vdsCommon.h \-
 .SS "Data Structures"
 
 .in +1c
+.ti -1c
+.RI "struct \fBvdsKeyDefinition\fP"
+.br
+.RI "\fIDescription of the structure of the hash map key. \fP"
 .ti -1c
 .RI "struct \fBvdsFieldDefinition\fP"
 .br
@@ -56,6 +60,9 @@ vdsCommon.h \-
 .RI "#define \fBVDS_MAX_FIELDS\fP   65535"
 .br
 .RI "\fIMaximum number of fields (including the last one). \fP"
+.ti -1c
+.RI "#define \fBVDS_FIELD_MAX_PRECISION\fP   30"
+.br
 .in -1c
 .SS "Typedefs"
 
@@ -69,6 +76,9 @@ vdsCommon.h \-
 .br
 .ti -1c
 .RI "typedef enum \fBvdsIteratorType\fP \fBvdsIteratorType\fP"
+.br
+.ti -1c
+.RI "typedef \fBvdsKeyDefinition\fP \fBvdsKeyDefinition\fP"
 .br
 .ti -1c
 .RI "typedef \fBvdsFieldDefinition\fP \fBvdsFieldDefinition\fP"
@@ -100,9 +110,16 @@ vdsCommon.h \-
 .RI "enum \fBvdsFieldType\fP { \fBVDS_INTEGER\fP =  1, \fBVDS_BINARY\fP, \fBVDS_STRING\fP, \fBVDS_DECIMAL\fP, \fBVDS_BOOLEAN\fP, \fBVDS_VAR_BINARY\fP, \fBVDS_VAR_STRING\fP }"
 .br
 .RI "\fIVDSF supported data types. \fP"
+.ti -1c
+.RI "enum \fBvdsKeyType\fP { \fBVDS_KEY_INTEGER\fP =  101, \fBVDS_KEY_BINARY\fP, \fBVDS_KEY_STRING\fP, \fBVDS_KEY_VAR_BINARY\fP, \fBVDS_KEY_VAR_STRING\fP }"
+.br
+.RI "\fIVDSF supported data types for keys. \fP"
 .in -1c
 .SH "Define Documentation"
 .PP 
+.SS "#define VDS_FIELD_MAX_PRECISION   30"
+.PP
+Definition at line 83 of file vdsCommon.h.
 .SS "#define VDS_MAX_FIELD_LENGTH   32"
 .PP
 Maximum number of bytes of the name of a field of a vds object. 
@@ -139,25 +156,28 @@ VDS_HANDLE is an opaque data type used by the C API to reference objects created
 Definition at line 53 of file vdsCommon.h.
 .SS "typedef struct \fBvdsFieldDefinition\fP \fBvdsFieldDefinition\fP"
 .PP
-Definition at line 144 of file vdsCommon.h.
+Definition at line 173 of file vdsCommon.h.
 .SS "typedef struct \fBvdsFolderEntry\fP \fBvdsFolderEntry\fP"
 .PP
-Definition at line 190 of file vdsCommon.h.
+Definition at line 219 of file vdsCommon.h.
 .SS "typedef struct \fBvdsInfo\fP \fBvdsInfo\fP"
 .PP
-Definition at line 257 of file vdsCommon.h.
+Definition at line 286 of file vdsCommon.h.
 .SS "typedef enum \fBvdsIteratorType\fP \fBvdsIteratorType\fP"
 .PP
-Definition at line 104 of file vdsCommon.h.
+Definition at line 106 of file vdsCommon.h.
+.SS "typedef struct \fBvdsKeyDefinition\fP \fBvdsKeyDefinition\fP"
+.PP
+Definition at line 151 of file vdsCommon.h.
 .SS "typedef struct \fBvdsObjectDefinition\fP \fBvdsObjectDefinition\fP"
 .PP
-Definition at line 162 of file vdsCommon.h.
+Definition at line 191 of file vdsCommon.h.
 .SS "typedef enum \fBvdsObjectType\fP \fBvdsObjectType\fP"
 .PP
-Definition at line 96 of file vdsCommon.h.
+Definition at line 98 of file vdsCommon.h.
 .SS "typedef struct \fBvdsObjStatus\fP \fBvdsObjStatus\fP"
 .PP
-Definition at line 225 of file vdsCommon.h.
+Definition at line 254 of file vdsCommon.h.
 .SH "Enumeration Type Documentation"
 .PP 
 .SS "enum \fBvdsFieldType\fP"
@@ -183,7 +203,7 @@ Only valid for the last field of the data definition.
 \fB\fIVDS_VAR_STRING \fP\fP
 Only valid for the last field of the data definition. 
 .PP
-Definition at line 111 of file vdsCommon.h.
+Definition at line 113 of file vdsCommon.h.
 .SS "enum \fBvdsIteratorType\fP"
 .PP
 \fBEnumerator: \fP
@@ -194,7 +214,27 @@ Definition at line 111 of file vdsCommon.h.
 \fB\fIVDS_NEXT \fP\fP
 
 .PP
-Definition at line 98 of file vdsCommon.h.
+Definition at line 100 of file vdsCommon.h.
+.SS "enum \fBvdsKeyType\fP"
+.PP
+VDSF supported data types for keys. 
+.PP
+\fBEnumerator: \fP
+.in +1c
+.TP
+\fB\fIVDS_KEY_INTEGER \fP\fP
+.TP
+\fB\fIVDS_KEY_BINARY \fP\fP
+.TP
+\fB\fIVDS_KEY_STRING \fP\fP
+.TP
+\fB\fIVDS_KEY_VAR_BINARY \fP\fP
+Only valid for the last field of the data definition. 
+.TP
+\fB\fIVDS_KEY_VAR_STRING \fP\fP
+Only valid for the last field of the data definition. 
+.PP
+Definition at line 129 of file vdsCommon.h.
 .SS "enum \fBvdsObjectType\fP"
 .PP
 The object type as seen from the API. 
@@ -211,7 +251,7 @@ The object type as seen from the API.
 \fB\fIVDS_LAST_OBJECT_TYPE \fP\fP
 
 .PP
-Definition at line 88 of file vdsCommon.h.
+Definition at line 90 of file vdsCommon.h.
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for vdsf C API from the source code.

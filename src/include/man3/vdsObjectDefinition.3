@@ -1,4 +1,4 @@
-.TH "vdsObjectDefinition" 3 "11 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsObjectDefinition" 3 "13 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,7 +12,7 @@ vdsObjectDefinition \-
 .PP 
 This struct has a variable length. 
 .PP
-Definition at line 149 of file vdsCommon.h.
+Definition at line 178 of file vdsCommon.h.
 .SS "Data Fields"
 
 .in +1c
@@ -23,7 +23,7 @@ Definition at line 149 of file vdsCommon.h.
 .RI "unsigned int \fBnumFields\fP"
 .br
 .ti -1c
-.RI "\fBvdsFieldDefinition\fP \fBkey\fP"
+.RI "\fBvdsKeyDefinition\fP \fBkey\fP"
 .br
 .RI "\fIThe data definition of the key (hash map only). \fP"
 .ti -1c
@@ -37,18 +37,18 @@ Definition at line 149 of file vdsCommon.h.
 .PP
 The data definition of the fields. 
 .PP
-Definition at line 159 of file vdsCommon.h.
-.SS "\fBvdsFieldDefinition\fP \fBvdsObjectDefinition::key\fP"
+Definition at line 188 of file vdsCommon.h.
+.SS "\fBvdsKeyDefinition\fP \fBvdsObjectDefinition::key\fP"
 .PP
 The data definition of the key (hash map only). 
 .PP
-Definition at line 156 of file vdsCommon.h.
+Definition at line 185 of file vdsCommon.h.
 .SS "unsigned int \fBvdsObjectDefinition::numFields\fP"
 .PP
-Definition at line 153 of file vdsCommon.h.
+Definition at line 182 of file vdsCommon.h.
 .SS "enum \fBvdsObjectType\fP \fBvdsObjectDefinition::type\fP"
 .PP
-Definition at line 151 of file vdsCommon.h.
+Definition at line 180 of file vdsCommon.h.
 
 .SH "Author"
 .PP 

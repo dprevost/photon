@@ -42,7 +42,7 @@ public:
    virtual ~vdsHashMap();
 
    /**
-    * \brief Close a Hash Map.
+    * \brief Close a hash map.
     *
     * This function terminates the current access to the hash map in shared 
     * memory (the hash map itself is untouched).
@@ -56,6 +56,21 @@ public:
     */
    void Close();
    
+   /**
+    * \brief Retrieve the data definition of the hash map.
+    *
+    * \warning This function allocates a buffer to hold the definition (using 
+    * malloc()). You must free it (with free()) when you no longer need the
+    * definition.
+    *
+    * \param[out]  definition The buffer allocated by the API to hold the content 
+    *              of the object definition. Freeing the memory (with free())
+    *              is the responsability of the caller.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Definition( vdsObjectDefinition ** definition );
+
    /** 
     * Remove the data item identified by the given key from the hash map.
     *
