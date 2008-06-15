@@ -181,6 +181,8 @@ AC_C_INLINE
 AC_C_PRINTF_SIZE_T
 AC_C_PRINTF_PTRDIFF_T
 
+TEST_ASM
+
 ##################################
 #                                #
 # Section - checks for functions #
