@@ -16,6 +16,8 @@ CLEANFILES = *~ core
 
 check_PROGRAMS =     \
         ClosePass    \
+        Create       \
+        Destroy      \
         GetFirstPass \
         GetNextPass  \
         OpenNoSess   \
@@ -23,6 +25,8 @@ check_PROGRAMS =     \
         StatusPass   
 
 ClosePass_SOURCES    = ClosePass.c
+Create_SOURCES       = Create.c
+Destroy_SOURCES      = Destroy.c
 GetFirstPass_SOURCES = GetFirstPass.c
 GetNextPass_SOURCES  = GetNextPass.c
 OpenNoSess_SOURCES   = OpenNoSess.c
@@ -31,6 +35,8 @@ StatusPass_SOURCES   = StatusPass.c
 
 EXTRA_DIST =            \
         ClosePass.sh    \
+        Create.sh       \
+        Destroy.sh      \
         GetFirstPass.sh \
         GetNextPass.sh  \
         Makefile.win32  \
@@ -49,6 +55,8 @@ TESTS_ENVIRONMENT =                  \
 
 TESTS =                 \
         ClosePass.sh    \
+        Create.sh       \
+        Destroy.sh      \
         GetFirstPass.sh \
         GetNextPass.sh  \
         OpenNoSess.sh   \

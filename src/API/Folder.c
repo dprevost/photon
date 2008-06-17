@@ -21,6 +21,7 @@
 #include "API/Session.h"
 #include <vdsf/vdsErrors.h>
 #include "API/CommonObject.h"
+#include "API/DataDefinition.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
  * 
@@ -84,6 +85,137 @@ int vdsFolderClose( VDS_HANDLE objectHandle )
    return errcode;
 }
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdsFolderCreateObject( VDS_HANDLE            objectHandle,
+                           const char          * objectName,
+                           size_t                nameLengthInBytes,
+                           vdsObjectDefinition * pDefinition )
+{
+   vdsaFolder * pFolder;
+   vdseFolder * pVDSFolder;
+   int errcode = 0, rc = 0;
+   vdsaSession* pSession;
+
+   pFolder = (vdsaFolder *) objectHandle;
+   if ( pFolder == NULL ) return VDS_NULL_HANDLE;
+   
+   if ( pFolder->object.type != VDSA_FOLDER ) {
+      return VDS_WRONG_TYPE_HANDLE;
+   }
+   pSession = pFolder->object.pSession;
+
+   if ( objectName == NULL ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
+      return VDS_INVALID_OBJECT_NAME;
+   }
+   
+   if ( nameLengthInBytes == 0 ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      return VDS_INVALID_LENGTH;
+   }
+   
+   if ( pDefinition == NULL ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      return VDS_NULL_POINTER;
+   }
+
+   errcode = vdsaValidateDefinition( pDefinition );
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      return errcode;
+   }
+
+   if ( ! pSession->terminated ) {
+      if ( vdsaCommonLock( &pFolder->object ) == 0 ) {
+         pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+
+         rc = vdseFolderCreateObject( pVDSFolder,
+                                      objectName,
+                                      nameLengthInBytes,
+                                      pDefinition,
+                                      &pSession->context );
+
+         vdsaCommonUnlock( &pFolder->object );
+      }
+      else {
+         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      }
+   }
+   else {
+      errcode = VDS_SESSION_IS_TERMINATED;
+   }
+
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   }
+   
+   if ( rc != 0 ) {
+      errcode = vdscGetLastError( &pSession->context.errorHandler );
+   }
+   
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdsFolderDestroyObject( VDS_HANDLE   objectHandle,
+                            const char * objectName,
+                            size_t       nameLengthInBytes )
+{
+   vdsaFolder * pFolder;
+   vdseFolder * pVDSFolder;
+   int errcode = 0, rc = 0;
+   vdsaSession* pSession;
+   
+   pFolder = (vdsaFolder *) objectHandle;
+   if ( pFolder == NULL ) return VDS_NULL_HANDLE;
+   
+   if ( pFolder->object.type != VDSA_FOLDER ) {
+      return VDS_WRONG_TYPE_HANDLE;
+   }
+   pSession = pFolder->object.pSession;
+
+   if ( objectName == NULL ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
+      return VDS_INVALID_OBJECT_NAME;
+   }
+   
+   if ( nameLengthInBytes == 0 ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      return VDS_INVALID_LENGTH;
+   }
+   
+   if ( ! pSession->terminated ) {
+      if ( vdsaCommonLock( &pFolder->object ) == 0 ) {
+         pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+
+         rc = vdseFolderDestroyObject( pVDSFolder,
+                                       objectName,
+                                       nameLengthInBytes,
+                                       &pSession->context );
+
+         vdsaCommonUnlock( &pFolder->object );
+      }
+      else {
+         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      }
+   }
+   else {
+      errcode = VDS_SESSION_IS_TERMINATED;
+   }
+
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   }
+   
+   if ( rc != 0 ) {
+      errcode = vdscGetLastError( &pSession->context.errorHandler );
+   }
+   
+   return errcode;
+}
+    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdsFolderGetFirst( VDS_HANDLE       objectHandle,

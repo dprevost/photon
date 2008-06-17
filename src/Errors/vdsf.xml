@@ -141,7 +141,8 @@
           <errordoc>
             The provided handle is of the wrong type (C API). This could
             happen if you provide a queue handle to access a hash map or
-            something similar.
+            something similar. It can also occur if you try to access an
+            object after closing it.
           </errordoc>
           <errordoc>
             If you are seeing this error for the C++ API (or some other

@@ -105,6 +105,27 @@ int vdsFolderCreateObjectXML( VDS_HANDLE   folderHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/**
+ * Destroy an object, child of the current folder, in shared memory.
+ *
+ * The destruction of the object only becomes permanent after a call to 
+ * ::vdsCommit.
+ *
+ * \param[in]  folderHandle Handle to the current folder.
+ * \param[in]  objectName The name of the object. 
+ * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
+ *             counting the null terminator (null-terminators are not used by
+ *             the vdsf engine).
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
+VDSF_EXPORT
+int vdsFolderDestroyObject( VDS_HANDLE   folderHandle,
+                            const char * objectName,
+                            size_t       nameLengthInBytes );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /** 
  * Iterate through the folder - no data items are removed from the folder
  * by this function.
