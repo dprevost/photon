@@ -111,6 +111,10 @@ check_PROGRAMS =                                 \
         .\Release\TopCreateNullName.exe          \
         .\Release\TopCreatePass.exe              \
         .\Release\TopCreateWrongType.exe         \
+        .\Release\TopDestroyNullContext.exe      \
+        .\Release\TopDestroyNullFolder.exe       \
+        .\Release\TopDestroyNullName.exe         \
+        .\Release\TopDestroyPass.exe             \
         .\Release\TopStatusNullContext.exe       \
         .\Release\TopStatusNullFolder.exe        \
         .\Release\TopStatusNullName.exe          \

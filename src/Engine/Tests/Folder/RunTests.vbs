@@ -30,13 +30,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(103)
+Dim failed_tests(107)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(21)
-Dim fail_programs(81)
+Dim ok_programs(22)
+Dim fail_programs(84)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -70,8 +70,9 @@ ok_programs(16) = "StatusPass"
 ok_programs(17) = "Tests"
 ok_programs(18) = "TopCreateInvalidNameLength"
 ok_programs(19) = "TopCreatePass"
-ok_programs(20) = "TopStatusPass"
-ok_programs(21) = "ValidatePass"
+ok_programs(20) = "TopDestroyPass"
+ok_programs(21) = "TopStatusPass"
+ok_programs(22) = "ValidatePass"
 
 fail_programs(0)  = "CloseNullContext"
 fail_programs(1)  = "CloseNullItem"
@@ -151,12 +152,15 @@ fail_programs(74) = "TopCreateNullDefinition"
 fail_programs(75) = "TopCreateNullFolder"
 fail_programs(76) = "TopCreateNullName"
 fail_programs(77) = "TopCreateWrongType"
-fail_programs(78) = "TopStatusNullContext"
-fail_programs(79) = "TopStatusNullFolder"
-fail_programs(80) = "TopStatusNullName"
-fail_programs(81) = "TopStatusNullStatus"
+fail_programs(78) = "TopDestroyNullContext"
+fail_programs(79) = "TopDestroyNullFolder"
+fail_programs(80) = "TopDestroyNullName"
+fail_programs(81) = "TopStatusNullContext"
+fail_programs(82) = "TopStatusNullFolder"
+fail_programs(83) = "TopStatusNullName"
+fail_programs(84) = "TopStatusNullStatus"
 
-numTests = 104                 ' Sum of length of both arrays 
+numTests = 108                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject

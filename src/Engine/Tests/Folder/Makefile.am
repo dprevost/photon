@@ -113,6 +113,10 @@ check_PROGRAMS =                   \
         TopCreateNullName          \
         TopCreatePass              \
         TopCreateWrongType         \
+        TopDestroyNullContext      \
+        TopDestroyNullFolder       \
+        TopDestroyNullName         \
+        TopDestroyPass             \
         TopStatusNullContext       \
         TopStatusNullFolder        \
         TopStatusNullName          \
@@ -220,6 +224,10 @@ TopCreateNullFolder_SOURCES        = $(COMMON_HEADER) TopCreateNullFolder.c
 TopCreateNullName_SOURCES          = $(COMMON_HEADER) TopCreateNullName.c
 TopCreatePass_SOURCES              = $(COMMON_HEADER) TopCreatePass.c
 TopCreateWrongType_SOURCES         = $(COMMON_HEADER) TopCreateWrongType.c
+TopDestroyNullContext_SOURCES      = $(COMMON_HEADER) TopDestroyNullContext.c
+TopDestroyNullFolder_SOURCES       = $(COMMON_HEADER) TopDestroyNullFolder.c
+TopDestroyNullName_SOURCES         = $(COMMON_HEADER) TopDestroyNullName.c
+TopDestroyPass_SOURCES             = $(COMMON_HEADER) TopDestroyPass.c
 TopStatusNullContext_SOURCES       = $(COMMON_HEADER) TopStatusNullContext.c
 TopStatusNullFolder_SOURCES        = $(COMMON_HEADER) TopStatusNullFolder.c
 TopStatusNullName_SOURCES          = $(COMMON_HEADER) TopStatusNullName.c
@@ -336,6 +344,10 @@ TESTS =                            \
         TopCreateNullName          \
         TopCreatePass              \
         TopCreateWrongType         \
+        TopDestroyNullContext      \
+        TopDestroyNullFolder       \
+        TopDestroyNullName         \
+        TopDestroyPass             \
         TopStatusNullContext       \
         TopStatusNullFolder        \
         TopStatusNullName          \
@@ -422,6 +434,9 @@ XFAIL_TESTS =                      \
         TopCreateNullFolder        \
         TopCreateNullName          \
         TopCreateWrongType         \
+        TopDestroyNullContext      \
+        TopDestroyNullFolder       \
+        TopDestroyNullName         \
         TopStatusNullContext       \
         TopStatusNullFolder        \
         TopStatusNullName          \

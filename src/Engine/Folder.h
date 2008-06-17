@@ -72,12 +72,34 @@ typedef struct vdseFolder vdseFolder;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/**
+ * Creates an immediate child of the folder.
+ */
+VDSF_ENGINE_EXPORT
+int vdseFolderCreateObject( vdseFolder          * pFolder,
+                            const char          * objectName,
+                            size_t                nameLengthInBytes,
+                            vdsObjectDefinition * pDefinition,
+                            vdseSessionContext  * pContext );
+
+/**
+ * Delete an object, recursively.
+ */ 
 VDSF_ENGINE_EXPORT
 int vdseFolderDeleteObject( vdseFolder         * pFolder,
                             const char         * objectName,
                             size_t               strLength, 
                             vdseSessionContext * pContext );
-                            
+
+/**
+ * Destroy an immediate child of the folder.
+ */
+VDSF_ENGINE_EXPORT
+int vdseFolderDestroyObject( vdseFolder         * pFolder,
+                             const char         * objectName,
+                             size_t               nameLengthInBytes,
+                             vdseSessionContext * pContext );
+
 VDSF_ENGINE_EXPORT
 void vdseFolderFini( vdseFolder         * pFolder,
                      vdseSessionContext * pContext );
@@ -124,11 +146,8 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
                             const char          * originalName,
                             size_t                strLength,
                             vdsObjectDefinition * pDefinition,
-//                            enum vdsObjectType   objectType,
                             size_t                numBlocks,
                             size_t                expectedNumOfChilds,
-//                            vdseFieldDef       * pDefinition,
-//                            int                  numFields,
                             vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
@@ -170,9 +189,6 @@ int vdseTopFolderCreateObject( vdseFolder          * pFolder,
                                const char          * objectName,
                                size_t                nameLengthInBytes,
                                vdsObjectDefinition * pDefinition,
-//                               enum vdsObjectType   objectType,
-//                               vdseFieldDef       * pDefinition,
-//                               int                  numFields,
                                vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT

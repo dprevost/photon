@@ -24,7 +24,7 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseFolder * pTopFolder;
+   vdseFolder * pFolder;
    vdseSessionContext context;
    int errcode;
    vdsObjectDefinition def = { 
@@ -34,13 +34,13 @@ int main()
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
-   pTopFolder = initTopFolderTest( expectedToPass, &context );
+   pFolder = initTopFolderTest( expectedToPass, &context );
 
-   errcode = vdseTopFolderCreateObject( pTopFolder,
-                                        "Test1",
-                                        strlen("Test1"),
-                                        &def,
-                                        &context );
+   errcode = vdseFolderCreateObject( pFolder,
+                                     "Test1",
+                                     strlen("Test1"),
+                                     &def,
+                                     &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -50,10 +50,10 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseTopFolderDestroyObject( NULL,
-                                         "Test1",
-                                         strlen("Test1"),
-                                         &context );
+   errcode = vdseFolderDestroyObject( NULL,
+                                      "Test1",
+                                      strlen("Test1"),
+                                      &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else
