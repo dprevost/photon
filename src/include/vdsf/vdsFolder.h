@@ -54,6 +54,57 @@ int vdsFolderClose( VDS_HANDLE objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/**
+ * Create a new object in shared memory as a child of the current folder.
+ *
+ * The creation of the object only becomes permanent after a call to 
+ * ::vdsCommit.
+ *
+ * This function does not provide a handle to the newly created object. Use
+ * vdsQueueOpen and similar functions to get the handle.
+ *
+ * \param[in] folderHandle Handle to the current folder.
+ * \param[in] objectName The name of the object. 
+ * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
+ *            counting the null terminator (null-terminators are not used by
+ *            the vdsf engine).
+ * \param[in] pDefinition The type of object to create (folder, queue, etc.)
+ *            and the "optional" definition.
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
+VDSF_EXPORT
+int vdsFolderCreateObject( VDS_HANDLE            folderHandle,
+                           const char    *       objectName,
+                           size_t                nameLengthInBytes,
+                           vdsObjectDefinition * pDefinition );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
+ * Create a new object in shared memory as a child of the current folder.
+ *
+ * The creation of the object only becomes permanent after a call to 
+ * ::vdsCommit.
+ *
+ * This function does not provide a handle to the newly created object. Use
+ * vdsQueueOpen and similar functions to get the handle.
+ *
+ * \param[in] folderHandle Handle to the current folder.
+ * \param[in] xmlBuffer    The XML buffer (string) containing all the required
+ *                         information. 
+ * \param[in] lengthInBytes The length of \em xmlBuffer (in bytes) not
+ *                          counting the null terminator.
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
+VDSF_EXPORT
+int vdsFolderCreateObjectXML( VDS_HANDLE   folderHandle,
+                              const char * xmlBuffer,
+                              size_t       lengthInBytes );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /** 
  * Iterate through the folder - no data items are removed from the folder
  * by this function.
