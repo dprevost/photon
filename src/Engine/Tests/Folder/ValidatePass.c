@@ -63,11 +63,11 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   /* Must be null-terminated for mbsrtowcs */
    for ( i = 0; i < VDS_MAX_NAME_LENGTH+9; ++i ) {
       name[i] = 't';
    }
    name[VDS_MAX_NAME_LENGTH+9] = 0;
+
    errcode = vdseValidateString( name,
                                  VDS_MAX_NAME_LENGTH+9, /* not 10 ! */
                                  &partial,
@@ -108,8 +108,37 @@ int main()
    if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+
+   name[0] = '3';
+   name[4] = 't';
+   errcode = vdseValidateString( name,
+                                 10,
+                                 &partial,
+                                 &last );
+   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   name[0] = '_';
+   errcode = vdseValidateString( name,
+                                 10,
+                                 &partial,
+                                 &last );
+   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
-   name[4] = ' ';
+   name[0] = 't';
+   name[4] = '_';
+   errcode = vdseValidateString( name,
+                                 10,
+                                 &partial,
+                                 &last );
+   if ( errcode != 0 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   name[4] = '3';
    errcode = vdseValidateString( name,
                                  10,
                                  &partial,
