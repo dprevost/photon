@@ -23,10 +23,10 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseFolder * pFolder;
+   vdseFolder * pTopFolder;
    vdseSessionContext context;
    int errcode;
-   char name[VDS_MAX_NAME_LENGTH+100];
+   char name[VDS_MAX_FULL_NAME_LENGTH+100];
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
@@ -34,16 +34,16 @@ int main()
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
-   memset( name, 't', VDS_MAX_NAME_LENGTH+99 );
-   name[VDS_MAX_NAME_LENGTH+99] = 0;
+   memset( name, 't', VDS_MAX_FULL_NAME_LENGTH+99 );
+   name[VDS_MAX_FULL_NAME_LENGTH+99] = 0;
    
-   pFolder = initTopFolderTest( expectedToPass, &context );
+   pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   errcode = vdseFolderCreateObject( pFolder,
-                                     "Test1",
-                                     0,
-                                     &def,
-                                     &context );
+   errcode = vdseTopFolderCreateObject( pTopFolder,
+                                        "Test1",
+                                        0,
+                                        &def,
+                                        &context );
    if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -52,11 +52,11 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   errcode = vdseFolderCreateObject( pFolder,
-                                     "/Test2",
-                                     strlen("/Test2"),
-                                     &def,
-                                     &context );
+   errcode = vdseTopFolderCreateObject( pTopFolder,
+                                        "/Test2",
+                                        1,
+                                        &def,
+                                        &context );
    if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -65,11 +65,27 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   errcode = vdseFolderCreateObject( pFolder,
-                                     name,
-                                     VDS_MAX_NAME_LENGTH+1,
-                                     &def,
-                                     &context );
+   errcode = vdseTopFolderCreateObject( pTopFolder,
+                                        name,
+                                        VDS_MAX_FULL_NAME_LENGTH+1,
+                                        &def,
+                                        &context );
+   if ( errcode != -1 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdscGetLastError( &context.errorHandler );
+   if ( errcode != VDS_OBJECT_NAME_TOO_LONG ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+   
+   memset( name, 0, VDS_MAX_FULL_NAME_LENGTH+100 );
+   memset( name, 't', VDS_MAX_NAME_LENGTH+1 );
+
+   errcode = vdseTopFolderCreateObject( pTopFolder,
+                                        name,
+                                        VDS_MAX_NAME_LENGTH+1,
+                                        &def,
+                                        &context );
    if ( errcode != -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

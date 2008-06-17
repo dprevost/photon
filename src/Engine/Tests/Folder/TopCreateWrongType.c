@@ -17,43 +17,36 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   vdseFolder * pFolder;
+#if defined(USE_DBC)
+   vdseFolder * pTopFolder;
    vdseSessionContext context;
    int errcode;
    vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+      0, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
-   pFolder = initTopFolderTest( expectedToPass, &context );
+   pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   errcode = vdseFolderCreateObject( pFolder,
-                                     "Test1",
-                                     strlen("Test1"),
-                                     &def,
-                                     &context );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   errcode = vdseFolderCreateObject( pFolder,
-                                     "Test2",
-                                     strlen("Test2"),
-                                     &def,
-                                     &context );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   return 0;
+   errcode = vdseTopFolderCreateObject( pTopFolder,
+                                        "Test1",
+                                        strlen("Test1"),
+                                        &def,
+                                        &context );
+
+   ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

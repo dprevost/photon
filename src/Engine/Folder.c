@@ -37,6 +37,98 @@ vdsErrors vdseValidateString( const char * objectName,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * The new object created by this function is a child of the folder 
+ */
+int vdseFolderCreateObject( vdseFolder          * pFolder,
+                            const char          * objectName,
+                            size_t                nameLengthInBytes,
+                            vdsObjectDefinition * pDefinition,
+                            vdseSessionContext  * pContext )
+{
+   vdsErrors errcode = VDS_OK;
+   size_t strLength, i;
+   int rc;
+   size_t first = 0;
+   const char * name = objectName;
+   char * lowerName = NULL;
+
+   VDS_PRE_CONDITION( pFolder     != NULL );
+   VDS_PRE_CONDITION( objectName  != NULL );
+   VDS_PRE_CONDITION( pContext    != NULL );
+   VDS_PRE_CONDITION( pDefinition != NULL );
+   VDS_PRE_CONDITION( pDefinition->type > 0 && 
+                      pDefinition->type < VDS_LAST_OBJECT_TYPE );
+   
+   strLength = nameLengthInBytes;
+
+   if ( strLength > VDS_MAX_NAME_LENGTH ) {
+      errcode = VDS_OBJECT_NAME_TOO_LONG;
+      goto error_handler;
+   }
+   if ( strLength == 0 ) {
+      errcode = VDS_INVALID_OBJECT_NAME;
+      goto error_handler;
+   }
+
+   lowerName = (char*)malloc( (strLength+1)*sizeof(char) );
+   if ( lowerName == NULL ) {
+      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      goto error_handler;
+   }
+
+   /* lowecase the string and check for separators */
+   for ( i = 0; i < strLength; ++i ) {
+      if ( name[i] == '/' || name[i] == '\\' ) {
+         errcode = VDS_INVALID_OBJECT_NAME;
+         goto error_handler;
+      }
+      lowerName[i] = (char) tolower( name[i] );
+   }
+   
+   /*
+    * There is no vdseUnlock here - the recursive nature of the 
+    * function vdseFolderInsertObject() means that it will release 
+    * the lock as soon as it can, after locking the
+    * next folder in the chain if needed. 
+    */
+   if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+      rc = vdseFolderInsertObject( pFolder,
+                                   &(lowerName[first]),
+                                   &(name[first]),
+                                   strLength, 
+                                   pDefinition,
+                                   1, /* numBlocks, */
+                                   0, /* expectedNumOfChilds, */
+                                   pContext );
+      if ( rc != 0 ) goto error_handler;
+   }
+   else {
+      errcode = VDS_ENGINE_BUSY;
+      goto error_handler;
+   }
+   
+   free( lowerName );
+   
+   return 0;
+
+error_handler:
+
+   if ( lowerName != NULL ) free( lowerName );
+
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called vdscSetError. 
+    */
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   }
+   
+   return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static
 bool vdseFolderDeletable( vdseFolder         * pFolder,
                           vdseSessionContext * pContext )
@@ -1790,9 +1882,9 @@ error_handler:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 vdsErrors vdseValidateString( const char * objectName,
-                              size_t            strLength, 
-                              size_t          * pPartialLength,
-                              bool            * pLastIteration )
+                              size_t       strLength, 
+                              size_t     * pPartialLength,
+                              bool       * pLastIteration )
 {
    size_t i;
    bool last = true;
