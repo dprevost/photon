@@ -1972,7 +1972,7 @@ vdsErrors vdseValidateString( const char * objectName,
    bool last = true;
    
    /* The first char is always special - it cannot be '/' */
-   if ( ! isalnum( (int) objectName[0] )  ) {
+   if ( ! isalpha( (int) objectName[0] )  ) {
       return VDS_INVALID_OBJECT_NAME;
    }
    
@@ -1985,10 +1985,7 @@ vdsErrors vdseValidateString( const char * objectName,
          if ( i == (strLength-1) ) last = true;
          break;
       }
-      if ( !( isalnum( (int) objectName[i] ) 
-              || (objectName[i] == ' ') 
-              || (objectName[i] == '_') 
-              || (objectName[i] == '-') ) ) {
+      if ( !( isalnum((int) objectName[i]) || (objectName[i] == '_') ) ) {
          return VDS_INVALID_OBJECT_NAME;
       }
    }

@@ -14,6 +14,8 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES        = *~
 
+AM_LDFLAGS = @LIBXML2_LIBS@
+
 SUBDIRS = . Shell
  
 bin_PROGRAMS = vdsinfo

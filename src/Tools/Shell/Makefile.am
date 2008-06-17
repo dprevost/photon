@@ -13,7 +13,9 @@
 include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~
- 
+
+AM_LDFLAGS = @LIBXML2_LIBS@
+
 bin_PROGRAMS = vdssh
 
 man_MANS = vdssh.1
