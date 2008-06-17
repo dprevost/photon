@@ -57,6 +57,13 @@ void vdsaGetLimits( vdseFieldDef * pDefinition,
 VDSF_API_EXPORT
 int vdsaValidateDefinition( vdsObjectDefinition * pDefinition );
 
+VDSF_API_EXPORT
+int vdsaXmlToDefinition( const char           * xmlBuffer,
+                         size_t                 lengthInBytes,
+                         vdsObjectDefinition ** ppDefinition,
+                         char                ** objectName,
+                         size_t               * nameLengthInBytes );
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS

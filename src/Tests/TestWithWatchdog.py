@@ -219,11 +219,11 @@ def WriteCfg():
 
 def RunTest():
 
-   global test_dir, test_name, tcp_port, errcode
+   global test_dir, test_name, tcp_port, errcode, src_dir
 
    path = os.path.join( test_dir, test_name )
    try:
-      rc = os.spawnl( os.P_WAIT, path, path, tcp_port )
+      rc = os.spawnl( os.P_WAIT, path, path, tcp_port, src_dir )
       if rc != errcode:
          return -1
    except OSError, (errno, strerror):

@@ -14,9 +14,12 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
+AM_LDFLAGS = @LIBXML2_LIBS@
+
 check_PROGRAMS =     \
         ClosePass    \
         Create       \
+        CreateXML    \
         Destroy      \
         GetFirstPass \
         GetNextPass  \
@@ -26,6 +29,7 @@ check_PROGRAMS =     \
 
 ClosePass_SOURCES    = ClosePass.c
 Create_SOURCES       = Create.c
+CreateXML_SOURCES    = CreateXML.c
 Destroy_SOURCES      = Destroy.c
 GetFirstPass_SOURCES = GetFirstPass.c
 GetNextPass_SOURCES  = GetNextPass.c
@@ -36,6 +40,7 @@ StatusPass_SOURCES   = StatusPass.c
 EXTRA_DIST =            \
         ClosePass.sh    \
         Create.sh       \
+        CreateXML.sh    \
         Destroy.sh      \
         GetFirstPass.sh \
         GetNextPass.sh  \
@@ -56,6 +61,7 @@ TESTS_ENVIRONMENT =                  \
 TESTS =                 \
         ClosePass.sh    \
         Create.sh       \
+        CreateXML.sh    \
         Destroy.sh      \
         GetFirstPass.sh \
         GetNextPass.sh  \

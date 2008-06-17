@@ -16,7 +16,10 @@ CLEANFILES = *~
 lib_LTLIBRARIES = libvdsf.la
 
 SUBDIRS = . Tests
-          
+
+AM_CPPFLAGS += @LIBXML2_CFLAGS@
+libvdsf_la_LDFLAGS = @LIBXML2_LIBS@
+
 # See http://www.gnu.org/software/libtool/manual.html#SEC34
 # for more info on version-info. 
 # Hints:

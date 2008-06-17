@@ -18,6 +18,9 @@
 #include "Common/Common.h"
 #include "API/DataDefinition.h"
 
+#include <libxml/xmlschemas.h>
+#include <libxml/xmlschemastypes.h>
+
 /* 
  * Note: the type of object must be filled by the caller.
  */
@@ -382,3 +385,267 @@ int vdsaValidateDefinition( vdsObjectDefinition * pDefinition )
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#define VDS_XML_READ_ERROR 1001
+#define VDS_XML_INVALID_ROOT 1002
+#define VDS_XML_VALIDATION_FAILED 1003
+#define VDS_XML_NO_SCHEMA_LOCATION 1004
+#define VDS_XML_PARSER_CONTEXT_FAILED 1005
+#define VDS_XML_PARSE_SCHEMA_FAILED 1006
+#define VDS_XML_VALID_CONTEXT_FAILED  1007
+
+int vdsaXmlToDefinition( const char           * xmlBuffer,
+                         size_t                 lengthInBytes,
+                         vdsObjectDefinition ** ppDefinition,
+                         char                ** objectName,
+                         size_t               * nameLengthInBytes )
+{
+   xmlSchemaPtr schema = NULL;
+   xmlSchemaValidCtxtPtr  validCtxt = NULL;
+   xmlSchemaParserCtxtPtr parserCtxt = NULL;
+   xmlNode * root = NULL, * node;
+   xmlDoc  * doc = NULL;
+   xmlChar * prop = NULL;
+   int errcode = 0;
+   int i, j, separator = -1;
+
+//   if ( debug ) {
+      doc = xmlReadMemory( xmlBuffer, lengthInBytes, NULL, NULL, 0 );
+//   }
+//   else {
+//      doc = xmlReadMemory( buf, i, NULL, NULL, XML_PARSE_NOERROR | XML_PARSE_NOWARNING );
+//   }
+   if ( doc == NULL ) {
+      errcode = VDS_XML_READ_ERROR;
+      goto cleanup;
+   }
+   
+   root = xmlDocGetRootElement( doc );
+   if ( root == NULL ) {
+      errcode = VDS_XML_INVALID_ROOT;
+      goto cleanup;
+   }
+   if ( xmlStrcmp( root->name, BAD_CAST "folder") == 0 ) {
+      fprintf( stderr, "got folder\n" );
+   }
+   else {
+      errcode = VDS_XML_INVALID_ROOT;
+      goto cleanup;
+   }
+
+   prop = xmlGetProp( root, BAD_CAST "schemaLocation" );
+   if ( prop == NULL ) {
+      errcode = VDS_XML_NO_SCHEMA_LOCATION;
+      goto cleanup;
+   }
+   
+   
+   for ( i = 0; i < xmlStrlen(prop)-1; ++i ) {
+      if ( isspace(prop[i]) ) {
+         for ( j = i+1; j < xmlStrlen(prop)-1; ++j ) {
+            if ( isspace(prop[j]) == 0 ) {
+               separator = j;
+               break;
+            }
+         }
+         break;
+      }
+   }
+   if ( separator == -1 ) {
+      errcode = VDS_XML_NO_SCHEMA_LOCATION;
+      goto cleanup;
+   }
+   
+   parserCtxt = xmlSchemaNewParserCtxt( (char*)&prop[separator] );
+   if ( parserCtxt == NULL ) {
+      errcode = VDS_XML_PARSER_CONTEXT_FAILED;
+      goto cleanup;
+   }
+   
+   schema = xmlSchemaParse( parserCtxt );
+   if ( schema == NULL ) {
+      errcode = VDS_XML_PARSE_SCHEMA_FAILED;
+      goto cleanup;
+   }
+   
+   xmlFree( prop );
+   prop = NULL;
+
+   validCtxt = xmlSchemaNewValidCtxt( schema );
+   if ( validCtxt == NULL ) {
+      errcode = VDS_XML_VALID_CONTEXT_FAILED;
+      goto cleanup;
+   }
+   
+//   if ( debug ) {
+      xmlSchemaSetValidErrors( validCtxt,
+                               (xmlSchemaValidityErrorFunc) fprintf,
+                               (xmlSchemaValidityWarningFunc) fprintf,
+                               stderr );
+//   }
+//   else {
+//      xmlSchemaSetValidErrors( validCtxt,
+//                               (xmlSchemaValidityErrorFunc) dummyErrorFunc,
+//                               (xmlSchemaValidityWarningFunc) dummyErrorFunc,
+//                               stderr );
+//   }
+   
+   if ( xmlSchemaValidateDoc( validCtxt, doc ) != 0 ) {
+      errcode = VDS_XML_VALIDATION_FAILED;
+      goto cleanup;
+   }
+
+   prop = xmlGetProp( root, BAD_CAST "objName" );
+   if ( prop == NULL ) {
+      errcode = VDS_INVALID_OBJECT_NAME;
+      goto cleanup;
+   }
+   *objectName = (char*)malloc( xmlStrlen(prop) + 1 );
+   if ( *objectName == NULL ) {
+      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      goto cleanup;
+   }
+   strcpy( *objectName, (char *)prop );
+   *nameLengthInBytes = strlen( *objectName );
+   xmlFree( prop );
+   prop = NULL;
+   
+   if ( xmlStrcmp( root->name, BAD_CAST "folder") == 0 ) {
+      *ppDefinition = (vdsObjectDefinition *)
+                      calloc( sizeof(vdsObjectDefinition), 1 );
+      if (*ppDefinition == NULL ) {
+         errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+         goto cleanup;
+      }
+      (*ppDefinition)->type = VDS_FOLDER;
+      /* No fields to process. Go directly to the exit, error or not. */
+      goto cleanup;
+   }
+#if 0   
+   /* All is well - start the extraction of our data */   
+   node = root->children;
+
+   while ( node != NULL ) {
+      if ( node->type == XML_ELEMENT_NODE ) {
+         if ( xmlStrcmp( node->name, BAD_CAST "vds_location") == 0 ) {
+            /* 
+             * The schema should normally resolved this by imposing a 
+             * limit which is less than PATH_MAX on most systems but...
+             * (to test for this we would need to read the pattern restriction
+             * on the schema itself - more work than just checking the length
+             * of the provided string).
+             */
+            if ( xmlStrlen(node->children->content) < PATH_MAX ) {
+               strcpy( pConfig->wdLocation, (char*)node->children->content );
+               node = node->next;
+               break;
+            }
+            errcode = VDSW_CFG_VDS_LOCATION_TOO_LONG;
+            goto cleanup;
+            fprintf( stderr, "Error: vds_location is too long\n" );
+            return -1;
+         }
+         fprintf( stderr, "Error: missing <vds_location> in config file\n" );
+         return -1;
+      }
+      node = node->next;
+   }
+
+   while ( node != NULL ) {
+      if ( node->type == XML_ELEMENT_NODE ) {
+         if ( xmlStrcmp( node->name, BAD_CAST "mem_size") == 0 ) {
+            prop = xmlGetProp( node, BAD_CAST "size" );
+            if ( prop == NULL ) {
+               errcode = VDSW_CFG_SIZE_IS_MISSING;
+               goto cleanup;
+            }
+            pConfig->memorySizekb = atoi((char*)prop);
+            xmlFree(prop);
+
+            prop = xmlGetProp( node, BAD_CAST "units" );
+            if ( prop == NULL ) {
+               errcode = VDSW_CFG_UNITS_IS_MISSING;
+               goto cleanup;
+            }
+            if ( xmlStrcmp( prop, BAD_CAST "mb") == 0 ) {
+               pConfig->memorySizekb *= 1024;
+            }
+            if ( xmlStrcmp( prop, BAD_CAST "gb") == 0 ) {
+               pConfig->memorySizekb *= 1024*1024;
+            }
+            xmlFree(prop);
+            prop = NULL;
+            
+            node = node->next;
+            break;
+         }
+         errcode = VDSW_CFG_MEM_SIZE_IS_MISSING;
+         goto cleanup;
+      }
+      node = node->next;
+   }
+
+   while ( node != NULL ) {
+      if ( node->type == XML_ELEMENT_NODE ) {
+         if ( xmlStrcmp( node->name, BAD_CAST "watchdog_address") == 0 ) {
+            strcpy( pConfig->wdAddress, (char*)node->children->content );
+            node = node->next;
+            break;
+         }
+         errcode = VDSW_CFG_WATCHDOG_ADDRESS_IS_MISSING;
+         goto cleanup;
+      }
+      node = node->next;
+   }
+
+   while ( node != NULL ) {
+      if ( node->type == XML_ELEMENT_NODE ) {
+         if ( xmlStrcmp( node->name, BAD_CAST "file_access") == 0 ) {
+            prop = xmlGetProp( node, BAD_CAST "access" );
+            if ( prop == NULL ) {
+               errcode = VDSW_CFG_ACCESS_IS_MISSING;
+               goto cleanup;
+            }
+            
+            if ( xmlStrcmp( prop, BAD_CAST "group") == 0 ) {
+               pConfig->filePerms = 0660;
+               pConfig->dirPerms = 0770;
+            }
+            else if ( xmlStrcmp( prop, BAD_CAST "world") == 0 ) {
+               pConfig->filePerms = 0666;
+               pConfig->dirPerms = 0777;
+            }
+            else {
+               pConfig->filePerms = 0600;
+               pConfig->dirPerms = 0700;
+            }
+            xmlFree(prop);
+            prop = NULL;
+            
+            node = node->next;
+            break;
+         }
+         errcode = VDSW_CFG_FILE_ACCESS_IS_MISSING;
+         goto cleanup;
+      }
+      node = node->next;
+   }
+#endif
+
+cleanup:
+   
+   if ( parserCtxt ) xmlSchemaFreeParserCtxt( parserCtxt );
+   if ( schema ) xmlSchemaFree( schema );
+   if ( validCtxt ) xmlSchemaFreeValidCtxt( validCtxt );
+   if ( prop ) xmlFree( prop );
+   if ( doc ) xmlFreeDoc( doc );
+
+//   if ( errcode != VDSW_OK ) {
+//      vdscSetError( pError, g_wdErrorHandle, errcode );
+//      return -1;
+//   }
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

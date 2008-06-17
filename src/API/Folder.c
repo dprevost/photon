@@ -159,6 +159,39 @@ int vdsFolderCreateObject( VDS_HANDLE            objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int vdsFolderCreateObjectXML( VDS_HANDLE   objectHandle,
+                              const char * xmlBuffer,
+                              size_t       lengthInBytes )
+{
+   vdsObjectDefinition * pDefinition = NULL;
+   int errcode = 0;
+   char * objectName = NULL;
+   size_t nameLengthInBytes = 0;
+   
+   if ( xmlBuffer == NULL ) return VDS_NULL_POINTER;
+//   if ( lengthInBytes
+
+   errcode = vdsaXmlToDefinition( xmlBuffer,
+                                  lengthInBytes,
+                                  &pDefinition,
+                                  &objectName,
+                                  &nameLengthInBytes );
+fprintf( stderr, "errcode = %d\n", errcode );
+   if ( errcode == 0 ) {
+      errcode = vdsFolderCreateObject( objectHandle,
+                                       objectName,
+                                       nameLengthInBytes,
+                                       pDefinition );
+   }
+   
+   if ( pDefinition != NULL ) free(pDefinition);
+   if ( objectName != NULL ) free(objectName);
+   
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdsFolderDestroyObject( VDS_HANDLE   objectHandle,
                             const char * objectName,
                             size_t       nameLengthInBytes )
