@@ -23,9 +23,9 @@ using namespace std;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-string folderName("Out Folder");
-string queueName1("Out Folder/Queue 1");
-string queueName2("Out Folder/Queue 2");
+string folderName("Out_Folder");
+string queueName1("Out_Folder/Queue_1");
+string queueName2("Out_Folder/Queue_2");
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -69,7 +69,14 @@ int main()
    try {
       process.Init( "10701" );
       session.Init();
-      Cleanup( session );
+
+      try {
+         session.DestroyObject( queueName1 );
+         session.DestroyObject( queueName2 );
+         session.DestroyObject( folderName );
+         session.Commit();
+      }
+      catch ( vdsException exc ) {}
 
       session.CreateObject( folderName, &folderDef );
       session.CreateObject( queueName1, &queueDef );

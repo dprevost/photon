@@ -14,6 +14,8 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
+AM_LDFLAGS = @LIBXML2_LIBS@
+
 check_PROGRAMS = Init
 
 Init_SOURCES = Init.cpp

@@ -104,10 +104,10 @@ int Test1()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_OK,
@@ -119,7 +119,7 @@ end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
    vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -1;
@@ -133,7 +133,7 @@ int Test2()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_OK,
@@ -142,7 +142,7 @@ int Test2()
    }
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session2, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OBJECT_IS_IN_USE ) {
       printf( "Expected error = %d, returned error = %d\n", 
               VDS_OBJECT_IS_IN_USE, 
@@ -156,7 +156,7 @@ end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
    vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -2;
@@ -170,13 +170,13 @@ int Test3()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session2, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_OK, 
@@ -188,7 +188,7 @@ end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
    vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -3;
@@ -202,13 +202,13 @@ int Test4()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsRollback( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_NO_SUCH_OBJECT ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_NO_SUCH_OBJECT, 
@@ -222,7 +222,7 @@ end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
    vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -4;
@@ -236,16 +236,16 @@ int Test5()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session2, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   errcode = vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    if ( errcode != VDS_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_OK,
@@ -257,7 +257,7 @@ end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
    vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -5;
@@ -271,16 +271,16 @@ int Test6()
    int errcode = 0;
    VDS_HANDLE h1 = NULL; 
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsDestroyObject( g_session1, "A Map", strlen("A Map") );
+   errcode = vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OBJECT_IS_DELETED ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_OBJECT_IS_DELETED,
@@ -294,7 +294,7 @@ end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
    vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -6;
@@ -308,16 +308,16 @@ int Test7()
    int errcode = 0;
    VDS_HANDLE h1 = NULL; 
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsDestroyObject( g_session1, "A Map", strlen("A Map") );
+   errcode = vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session2, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_OK,
@@ -329,7 +329,7 @@ end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
    vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -7;
@@ -343,19 +343,19 @@ int Test8()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsDestroyObject( g_session1, "A Map", strlen("A Map") );
+   errcode = vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session2, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_NO_SUCH_OBJECT ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_NO_SUCH_OBJECT,
@@ -369,7 +369,7 @@ end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
    vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -8;
@@ -383,19 +383,19 @@ int Test9()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsDestroyObject( g_session1, "A Map", strlen("A Map") );
+   errcode = vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsRollback( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_OK,
@@ -407,7 +407,7 @@ end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
    vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -9;
@@ -421,19 +421,19 @@ int Test10()
    int errcode = 0;
    VDS_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsDestroyObject( g_session1, "A Map", strlen("A Map") );
+   errcode = vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsRollback( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session2, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_OK,
@@ -445,7 +445,7 @@ end:
 
    if ( h1 != NULL ) vdsHashMapClose( h1 );
    vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -10;
@@ -458,10 +458,10 @@ int Test11()
 {
    int errcode = 0;
 
-   errcode = vdsCreateObject( g_session1, "A Folder", strlen("A Folder"), &g_folderDef );
+   errcode = vdsCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsCreateObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue"), &g_mapDef );
+   errcode = vdsCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_mapDef );
    if ( errcode != VDS_NO_SUCH_FOLDER ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_NO_SUCH_FOLDER,
@@ -475,9 +475,9 @@ end:
 
    vdsCommit( g_session1 );
    vdsCommit( g_session2 );
-   vdsDestroyObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue") ); 
+   vdsDestroyObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue") ); 
    vdsCommit( g_session2 );
-   vdsDestroyObject( g_session1, "A Folder", strlen("A Folder") ); 
+   vdsDestroyObject( g_session1, "A_Folder", strlen("A_Folder") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -11;
@@ -490,13 +490,13 @@ int Test12()
 {
    int errcode = 0;
 
-   errcode = vdsCreateObject( g_session1, "A Folder", strlen("A Folder"), &g_folderDef );
+   errcode = vdsCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsCreateObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue"), &g_mapDef );
+   errcode = vdsCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_mapDef );
    if ( errcode != VDS_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_OK,
@@ -508,9 +508,9 @@ end:
 
    vdsCommit( g_session1 );
    vdsCommit( g_session2 );
-   vdsDestroyObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue") ); 
+   vdsDestroyObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue") ); 
    vdsCommit( g_session2 );
-   vdsDestroyObject( g_session1, "A Folder", strlen("A Folder") ); 
+   vdsDestroyObject( g_session1, "A_Folder", strlen("A_Folder") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -12;
@@ -523,13 +523,13 @@ int Test13()
 {
    int errcode = 0;
 
-   errcode = vdsCreateObject( g_session1, "A Folder", strlen("A Folder"), &g_folderDef );
+   errcode = vdsCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsRollback( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsCreateObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue"), &g_mapDef );
+   errcode = vdsCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_mapDef );
    if ( errcode != VDS_NO_SUCH_FOLDER ) {
       printf( " Expected error = %d, returned error = %d\n", 
               VDS_NO_SUCH_FOLDER,
@@ -543,9 +543,9 @@ end:
 
    vdsCommit( g_session1 );
    vdsCommit( g_session2 );
-   vdsDestroyObject( g_session2, "A Folder/A Queue", strlen("A Folder/A Queue") ); 
+   vdsDestroyObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue") ); 
    vdsCommit( g_session2 );
-   vdsDestroyObject( g_session1, "A Folder", strlen("A Folder") ); 
+   vdsDestroyObject( g_session1, "A_Folder", strlen("A_Folder") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -13;
@@ -562,10 +562,10 @@ int Test21()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
@@ -583,7 +583,7 @@ end:
 
    vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -21;
@@ -600,13 +600,13 @@ int Test22()
    size_t returnLength;
    char * key1 = "Key 1";
 
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h2 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h2 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
@@ -625,7 +625,7 @@ end:
    vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -22;
@@ -642,17 +642,17 @@ int Test23()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    // So that the object can be open by session 2
    errcode = vdsCommit( g_session1 ); 
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session2, "A Map", strlen("A Map"), &h2 );
+   errcode = vdsHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h2 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
@@ -673,7 +673,7 @@ end:
    vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -23;
@@ -690,17 +690,17 @@ int Test24()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
 
    // So that the object can be open by session 2
    errcode = vdsCommit( g_session1 ); 
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session2, "A Map", strlen("A Map"), &h2 );
+   errcode = vdsHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h2 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
@@ -723,7 +723,7 @@ end:
    vdsCommit( g_session2 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session2 );
    vdsCommit( g_session1 );
 
@@ -741,14 +741,14 @@ int Test25()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );   
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );   
    if ( errcode != VDS_OK ) goto end;
 
    // So that the object can be open by session 2
    errcode = vdsCommit( g_session1 ); 
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
@@ -771,7 +771,7 @@ end:
 
    vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -25;
@@ -788,10 +788,10 @@ int Test26()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
@@ -818,7 +818,7 @@ end:
 
    vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -26;
@@ -835,13 +835,13 @@ int Test27()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h2 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h2 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
@@ -868,7 +868,7 @@ end:
    vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -27;
@@ -885,10 +885,10 @@ int Test28()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
@@ -897,7 +897,7 @@ int Test28()
    errcode = vdsCommit( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session2, "A Map", strlen("A Map"), &h2 );
+   errcode = vdsHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h2 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapDelete( h1, key1, strlen(key1) );
@@ -918,7 +918,7 @@ end:
    vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -28;
@@ -935,10 +935,10 @@ int Test29()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
@@ -947,7 +947,7 @@ int Test29()
    errcode = vdsCommit( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session2, "A Map", strlen("A Map"), &h2 );
+   errcode = vdsHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h2 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapDelete( h1, key1, strlen(key1) );
@@ -971,7 +971,7 @@ end:
    vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -29;
@@ -988,10 +988,10 @@ int Test30()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
@@ -1018,7 +1018,7 @@ end:
 
    vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -30;
@@ -1035,10 +1035,10 @@ int Test31()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
@@ -1047,7 +1047,7 @@ int Test31()
    errcode = vdsCommit( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h2 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h2 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapDelete( h1, key1, strlen(key1) );
@@ -1069,7 +1069,7 @@ end:
    vdsCommit( g_session1 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
 
    if ( errcode != 0 ) return -31;
@@ -1086,10 +1086,10 @@ int Test32()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A Map", strlen("A Map"), &g_mapDef );
+   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != VDS_OK ) goto end;
    
-   errcode = vdsHashMapOpen( g_session1, "A Map", strlen("A Map"), &h1 );
+   errcode = vdsHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
@@ -1098,7 +1098,7 @@ int Test32()
    errcode = vdsCommit( g_session1 );
    if ( errcode != VDS_OK ) goto end;
 
-   errcode = vdsHashMapOpen( g_session2, "A Map", strlen("A Map"), &h2 );
+   errcode = vdsHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h2 );
    if ( errcode != VDS_OK ) goto end;
 
    errcode = vdsHashMapDelete( h1, key1, strlen(key1) );
@@ -1121,7 +1121,7 @@ end:
    vdsCommit( g_session2 );
    vdsHashMapClose( h1 );
    vdsHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A Map", strlen("A Map") ); 
+   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    vdsCommit( g_session1 );
    vdsCommit( g_session2 );
 
