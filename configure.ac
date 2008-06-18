@@ -181,7 +181,13 @@ AC_C_INLINE
 AC_C_PRINTF_SIZE_T
 AC_C_PRINTF_PTRDIFF_T
 
-TEST_ASM
+AC_C_ASM
+
+AC_C_CC_TYPE
+if test "$ac_cv_compiler_name" = "unknown"; then
+  AC_MSG_NOTICE([This version of VDSF does not for support your compiler])
+  AC_MSG_ERROR([So, please contact us to add support for your compiler])
+fi
 
 ##################################
 #                                #
@@ -288,30 +294,6 @@ else
     AC_DEFINE(HAVE_CTIME_R_OK, 1, ctime_r is ok)
   fi
 fi
-
-#########################################
-#                                       #
-# Section - i18n (internationalization) #
-#                                       #
-#########################################
-
-#AC_ARG_ENABLE([i18n],
-#              AC_HELP_STRING([--enable-i18n],
-#                             [use unicode internally to store names of objects @<:@default=yes@:>@]),
-#	      [use_i18n=$enableval],
-#	      [use_i18n=yes])
-#if test "$use_i18n" = "yes"; then
-#  AC_CHECK_HEADERS([wchar.h wctype.h],,[use_i18n=no])
-#  AC_CHECK_FUNCS([mbsrtowcs wcsrtombs],,[use_i18n=no])
-#fi
-#AC_MSG_CHECKING(if internationalization is supported)
-
-#if test "$use_i18n" = "yes"; then
-#  AC_DEFINE(VDS_SUPPORT_i18n, 1, [internationalization is supported])
-#  AC_MSG_RESULT(yes)
-#else
-#  AC_MSG_RESULT(no)
-#fi
 
 ########################################
 #                                      #
