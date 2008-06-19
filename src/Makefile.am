@@ -39,37 +39,6 @@ SUBDIRS =             \
 # To be added after the C++ subdir
 # $(MAYBE_Java) 
 
-BASE_LOCK_FILES =                        \
-        Locking/linux/autoconf.h         \
-        Locking/linux/compiler-gcc.h     \
-        Locking/linux/compiler.h         \
-        Locking/linux/compiler-intel.h   \
-        Locking/linux/linkage.h          \
-        Locking/linux/spinlock_api_smp.h \
-        Locking/linux/spinlock.h         \
-        Locking/linux/spinlock_types.h   
-
-I386_FILES =                              \
-        Locking/asm-i386/alternative.h    \
-        Locking/asm-i386/bitops.h         \
-        Locking/asm-i386/cpufeature.h     \
-        Locking/asm-i386/linkage.h        \
-        Locking/asm-i386/spinlock.h       \
-        Locking/asm-i386/spinlock_types.h \
-        Locking/asm-i386/system.h         
-
-SPARC_FILES =                              \
-        Locking/asm-sparc/linkage.h        \
-        Locking/asm-sparc/spinlock.h       \
-        Locking/asm-sparc/spinlock_types.h \
-        Locking/asm-sparc/system.h         
-
-X86_64_FILES =                              \
-        Locking/asm-x86_64/linkage.h        \
-        Locking/asm-x86_64/spinlock.h       \
-        Locking/asm-x86_64/spinlock_types.h \
-        Locking/asm-x86_64/system.h         
-
 EXAMPLES_FILES =                                   \
         Examples/iso_3166.tab                      \
         Examples/README.txt                        \
@@ -114,14 +83,10 @@ PACKAGES_FILES =              \
         Packages/vdsf.spec.in 
 
 EXTRA_DIST =               \
-        $(BASE_LOCK_FILES) \
-        $(I386_FILES)      \
         $(EXAMPLES_FILES)  \
         config-win32.h     \
         Makefile.win32     \
         vdsf.dsw           \
-        $(SPARC_FILES)     \
-        $(X86_64_FILES)    \
         $(PACKAGES_FILES)  \
         XML/wd_config.xsd  
 

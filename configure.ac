@@ -416,28 +416,6 @@ if test "$arch_include" = "empty"; then
   AC_MSG_ERROR([No locking primitives, don't know how to lock. Sorry!])
 fi
 
-#AC_SUBST(arch_include)
-#AC_DEFINE()
-#AC_DEFINE_UNQUOTED("$arch_include",1)
-
-#AC_ARG_ENABLE([kernel-headers],
-#              AC_HELP_STRING([--enable-kernel-headers],
-#                             [Enable the use of the linux-kernel modified headers to implement locking @<:@default=yes@:>@]),
-#              [use_headers=$enableval],
-#              [use_headers=yes])
-use_headers=no
-
-if test "$locking_dir" = "empty"; then
-  AC_MSG_ERROR([Modified kernel headers unsupported on this cpu])
-  AM_CONDITIONAL([COND_USE_KERNEL_HEADERS], [test "$locking_dir" != "empty"])
-  if test "$ac_cv_sem_init_works" != "yes"; then
-    AC_MSG_ERROR([Semaphores are unsupported, don't know how to lock. Sorry!])
-  fi
-else
-  AC_CONFIG_LINKS(src/Locking/asm:src/Locking/$locking_dir)
-  AM_CONDITIONAL([COND_USE_KERNEL_HEADERS], [test "$use_headers" = yes])
-fi
-
 ####################
 #                  #
 # Section - output #
