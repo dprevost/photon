@@ -284,7 +284,7 @@ int vdseQueueInit( vdseQueue           * pQueue,
 
    vdseLinkedListInit( &pQueue->listOfElements );
 
-   pQueue->numFields = pDefinition->numFields;
+   pQueue->numFields = (uint16_t) pDefinition->numFields;
 
    ptr = (vdseFieldDef*) vdseMalloc( &pQueue->memObject, 
                                      pQueue->numFields* sizeof(vdseFieldDef),

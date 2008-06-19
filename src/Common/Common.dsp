@@ -176,10 +176,6 @@ SOURCE=.\ProcessLock.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ProcessLock.inl
-# End Source File
-# Begin Source File
-
 SOURCE=.\ThreadLock.h
 # End Source File
 # Begin Source File

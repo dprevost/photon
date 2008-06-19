@@ -201,7 +201,7 @@ void vdsaGetLimits( vdseFieldDef * pDefinition,
 
 int vdsaValidateDefinition( vdsObjectDefinition * pDefinition )
 {
-   int i, j;
+   unsigned int i, j;
    
    switch( pDefinition->type ) {
 

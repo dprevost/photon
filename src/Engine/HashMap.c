@@ -655,7 +655,7 @@ int vdseHashMapInit( vdseHashMap         * pHashMap,
       return -1;
    }
    
-   pHashMap->numFields = pDefinition->numFields;
+   pHashMap->numFields = (uint16_t) pDefinition->numFields;
 
    ptr = (vdseFieldDef*) vdseMalloc( &pHashMap->memObject, 
                                      pHashMap->numFields* sizeof(vdseFieldDef),
