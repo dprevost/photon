@@ -384,12 +384,48 @@ AM_CONDITIONAL([COND_INCLUDE_DEMO], [test "$want_demo" = yes])
 #                                                          #
 ############################################################
 
+arch_include=empty
+
+case $ac_cv_compiler_name in
+GCC)
+  case $host_cpu in
+  i386 | i486 | i586 | i686 )
+    arch_include=ok 
+    AC_DEFINE(VDS_USE_I386_GCC, 1, Using a gcc-like compiler on a i386) ;;
+  x86_64)
+    arch_include=ok 
+    AC_DEFINE(VDS_USE_X86_64_GCC, 1, Using a gcc-like compiler on a x86_64) ;;
+  #alpha)          ;;
+  sparc)
+    arch_include=ok
+    AC_DEFINE(VDS_USE_SPARC_GCC, 1, Using a gcc-like compiler on a sparc) ;;
+  #sparc64)      ;;
+  esac ;;
+XLC)
+  if test "$host_cpu" = "ppc"; then
+    arch_include=ok
+    AC_DEFINE(VDS_USE_PPC_XLC, 1, Using the xlc compiler on a Power PC)
+  fi ;;
+*) ;;
+esac
+
+if test "$arch_include" = "empty"; then
+#  if test "$ac_cv_sem_init_works" != "yes"; then
+# AC_MSG_ERROR([Semaphores are unsupported and no locking primitives, don't know how to lock. Sorry!])
+#  fi
+  AC_MSG_ERROR([No locking primitives, don't know how to lock. Sorry!])
+fi
+
+#AC_SUBST(arch_include)
+#AC_DEFINE()
+#AC_DEFINE_UNQUOTED("$arch_include",1)
+
 #AC_ARG_ENABLE([kernel-headers],
 #              AC_HELP_STRING([--enable-kernel-headers],
 #                             [Enable the use of the linux-kernel modified headers to implement locking @<:@default=yes@:>@]),
 #              [use_headers=$enableval],
 #              [use_headers=yes])
-use_headers=yes
+use_headers=no
 
 if test "$locking_dir" = "empty"; then
   AC_MSG_ERROR([Modified kernel headers unsupported on this cpu])

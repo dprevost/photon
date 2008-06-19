@@ -90,9 +90,9 @@ union semun {
  * Choose how we will implement our locking.
  */
 
-#if !defined(CONFIG_KERNEL_HEADERS) && ! defined (WIN32)
-#  define VDS_USE_POSIX_SEMAPHORE
-#endif
+//#if !defined(CONFIG_KERNEL_HEADERS) && ! defined (WIN32)
+//#  define VDS_USE_POSIX_SEMAPHORE
+//#endif
 
 /* Override the macro for testing purposes. Change the #if 0 to
  * # if 1 to uncomment and replace the macro
@@ -129,21 +129,9 @@ union sem_align
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/* unsigned long is ok for all OSes so far... but ... */
+/* unsigned int is ok for all OSes so far... but ... */
 
 typedef volatile unsigned int vds_lock_T;
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/* This value is perfectly alright for locks allocated on the stack 
- * or on the heap. It is therefore perfect for the "os monitor lock"
- * (to make non-reentrant calls reentrant), for the signal handler 
- * classes, etc.
- * However it should not be used for shared memory. The lockValue 
- * used in shared memory must be distinctive enough to enable a cleanup
- * if a process crashes.
- */
-#define VDS_LOCK_VALUE ( (vds_lock_T) 0xff )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -187,50 +175,66 @@ typedef struct vdscProcessLock
  * may return an error.
  */
 VDSF_COMMON_EXPORT
-int vdscInitProcessLock( vdscProcessLock* pLock );
+int vdscInitProcessLock( vdscProcessLock * pLock );
 
 /**
  *  Uninitialize the lock (it will remove the lock for POSIX semaphores).
  */
 VDSF_COMMON_EXPORT
-int vdscFiniProcessLock( vdscProcessLock* pLock );
+int vdscFiniProcessLock( vdscProcessLock * pLock );
 
 /** Acquire lock ownership (loop forever) - this is dangerous for
  * deadlocks.
  */
 static inline
-void vdscAcquireProcessLock( vdscProcessLock* pLock,
-                             pid_t            pidLocker );
+void vdscAcquireProcessLock( vdscProcessLock * pLock,
+                             pid_t             pidLocker );
 
 /** Attempt to acquire the lock for nMilliSecs - fails if it can't 
  *  Returns -1 on failure.  
  */
 static inline
-int vdscTryAcquireProcessLock ( vdscProcessLock* pLock,
+int vdscTryAcquireProcessLock( vdscProcessLock * pLock,
                                 pid_t            pidLocker,
                                 unsigned int     milliSecs );   
 
 /** Release lock. */
 static inline
-void vdscReleaseProcessLock ( vdscProcessLock* pLock );
+void vdscReleaseProcessLock( vdscProcessLock * pLock );
 
 /**
  * Test the underlying value of the pid.
  * Returns a boolean value (1 if the pids are the same, 0 otherwise).
  */
-static inline
-int vdscTestLockPidValue( vdscProcessLock* pLock, pid_t pid );
+VDSF_COMMON_EXPORT
+int vdscTestLockPidValue( vdscProcessLock * pLock, pid_t pid );
 
 /**
  * Test to see if the lock is on.
  * Returns a boolean value (1 if the lock is indeed locked, 0 otherwise).
  */
-static inline
-int vdscIsItLocked( vdscProcessLock* pLock );
+VDSF_COMMON_EXPORT
+int vdscIsItLocked( vdscProcessLock * pLock );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "ProcessLock.inl"
+#if defined (VDS_USE_POSIX_SEMAPHORE)
+#  include "Common/arch/Lock-semaphore.h"
+#elif defined (WIN32)
+#  include "Common/arch/Lock-win32.h"
+#elif defined (VDS_USE_I386_GCC)
+#  include "Common/arch/Lock-i386-gcc.h"
+#elif defined (VDS_USE_X86_64_GCC)
+#  include "Common/arch/Lock-x86_64-gcc.h"
+#elif defined (VDS_USE_SPARC_GCC)
+#  include "Common/arch/Lock-sparc-gcc.h"
+#elif defined (VDS_USE_PPC_GCC)
+#  include "Common/arch/Lock-ppc-gcc.h"
+#elif defined(VDS_USE_PPC_XLC)
+#  include "Common/arch/Lock-ppc-xlc.h"
+#else
+#  error "Not implemented yet!"
+#endif
 
 END_C_DECLS
 

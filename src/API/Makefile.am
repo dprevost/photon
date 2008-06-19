@@ -18,7 +18,6 @@ lib_LTLIBRARIES = libvdsf.la
 SUBDIRS = . Tests
 
 AM_CPPFLAGS += @LIBXML2_CFLAGS@
-libvdsf_la_LDFLAGS = @LIBXML2_LIBS@
 
 # See http://www.gnu.org/software/libtool/manual.html#SEC34
 # for more info on version-info. 
@@ -26,7 +25,7 @@ libvdsf_la_LDFLAGS = @LIBXML2_LIBS@
 #  - the version is not in synch with the version of the whole package
 #  - format:  currentversion:revision:age  (age is the tricky one here)
 
-libvdsf_la_LDFLAGS = -version-info 0:0:0
+libvdsf_la_LDFLAGS = @LIBXML2_LIBS@ -version-info 0:0:0
 
 include_HEADERS = 
 

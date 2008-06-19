@@ -52,8 +52,8 @@ struct localData
 {
    vdscProcessLock lock;
    int exitFlag;
-   char dum1[150];
-   char dum2[250];
+   volatile char dum1[150];
+   volatile char dum2[250];
 };
 
 /*
@@ -66,7 +66,7 @@ struct localData
  *
  * [DEFAULT_FAILURE_RATE 1000000 --> 0.0001% failure]
  */
-#define DEFAULT_FAILURE_RATE 1000000
+#define DEFAULT_FAILURE_RATE   10000
 #define DEFAULT_NUM_CHILDREN       4
 #define DEFAULT_TIME             300
 
@@ -305,10 +305,10 @@ int main( int argc, char* argv[] )
             vdscAcquireProcessLock( &data->lock, mypid );
          }
          
-         sprintf( data->dum2, "dumStr2 %d  ", mypid );
-         memcpy( data->dum1, data->dum2, 100 );
+         sprintf( (char *)data->dum2, "dumStr2 %d  ", mypid );
+         memcpy( (void *)data->dum1, (void *)data->dum2, 100 );
             
-         sscanf( data->dum1, "%s %d", dum3, &dumId );
+         sscanf( (char *)data->dum1, "%s %d", dum3, &dumId );
 
          if ( dumId != mypid ) {
 

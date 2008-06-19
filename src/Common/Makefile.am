@@ -12,7 +12,7 @@
 # overwrite any macros set in the common file
 include $(top_srcdir)/src/Makefile.Common.am
 
-CLEANFILES = *~
+CLEANFILES = *~ arch/*~
 
 SUBDIRS = . Tests
 
@@ -32,8 +32,6 @@ libCommon_la_SOURCES =  \
         Options.h       \
         ProcessLock.c   \
         ProcessLock.h   \
-        ProcessLock.inl \
-        spinlock.c      \
         ThreadLock.c    \
         ThreadLock.h    \
         ThreadLock.inl  \

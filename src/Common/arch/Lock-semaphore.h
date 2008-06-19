@@ -1,5 +1,3 @@
-/* -*- c -*- */
-/* :mode=c:  - For jedit, previous line for emacs */
 /*
  * Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
@@ -17,80 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#if defined ( __GNUC__ )
-   /*
-    * With gcc, inline assembler provides the locking
-    */
-#  if defined (__i386) || defined (__i386__) 
-#    define TRY_ACQUIRE( LOCK, ISITLOCKED ) \
-   unsigned int out = 0xff;                 \
-   __asm__ __volatile__ (                   \
-         "xchgl %0, (%1)"                   \
-         : "=r"(out)                        \
-         : "r"(&LOCK), "0"(out)             \
-         : "memory" );                      \
-   if ( out  == 0 )                         \
-      ISITLOCKED = 0; 
-
-   /* 
-    * We might need to change the template to "lock; movl $0, %0" on 
-    * some cpus (erratum of some Pentium PRO (1995-1997)) and the 
-    * Winchips (1997 to 1999). 
-    */ 
-#    define UNLOCK( LOCK ) \
-   __asm__ __volatile__ (  \
-      "movl $0, %0 "       \
-      :"=m"(LOCK)          \
-      :                    \
-      :"memory" );
-
-#  elif defined(__sparc) 
-#    define TRY_ACQUIRE( LOCK, ISITLOCKED ) \
-   unsigned int out;                        \
-   __asm__ __volatile__(                    \
-      "ldstub [%1], %0"                     \
-      : "=r" (out)                          \
-      : "r" (&LOCK)                         \
-      : "memory" );                         \
-   if ( out  == 0 )                         \
-      ISITLOCKED = 0;
-
-#  endif /* on the cpu types */
-#endif
-
-inline int  
-vdscTestLockPidValue( vdscProcessLock* pLock, pid_t pid )
-{
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
-   VDS_PRE_CONDITION( pid != 0 );
-
-   return pLock->pid == pid;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-inline int   
-vdscIsItLocked( vdscProcessLock * pLock )
-{
-#if defined (VDS_USE_POSIX_SEMAPHORE)
-   int rc, val;
-#endif
-
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
-
-#if defined(CONFIG_KERNEL_HEADERS)
-   return spin_is_locked( &pLock->lock );
-#elif defined(WIN32)
-   return pLock->lock != 0;
-#elif defined (VDS_USE_POSIX_SEMAPHORE)
-   rc = sem_getvalue( &pLock->semaphore.sem, &val );
-   return val <= 0;
-#else
-   return pLock->lock != 0;
-#endif
-}
+#ifndef VDSC_ARCH_PROCESS_LOCK_H
+#define VDSC_ARCH_PROCESS_LOCK_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -104,32 +30,10 @@ vdscAcquireProcessLock( vdscProcessLock * pLock,
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( pid_locker != 0 );
 
-#if defined(CONFIG_KERNEL_HEADERS)
-   spin_lock(&pLock->lock);
-   isItLocked = 0;
-#elif defined(WIN32)
-   for (;;) {
-      if ( pLock->lock == 0 ) {
-         isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, 0xff );
-      }
-      if ( isItLocked == 0 ) break;
-
-      Sleep( g_timeOutinMilliSecs );
-   }
-#elif defined (VDS_USE_POSIX_SEMAPHORE)
    do {
       /* We restart on interrupts. */
       isItLocked = sem_wait( &pLock->semaphore.sem );
    } while ( isItLocked == -1 && errno == EINTR );
-#else
-   for (;;) {
-      if ( pLock->lock == 0 ) {
-         TRY_ACQUIRE( pLock->lock, isItLocked );
-      }
-      if ( isItLocked == 0 ) break;
-      nanosleep( &g_timeOut, NULL );
-   }
-#endif
 
    /* Failure to get the lock should not occured!!! */
    VDS_POST_CONDITION( isItLocked == 0 );
@@ -143,7 +47,7 @@ vdscAcquireProcessLock( vdscProcessLock * pLock,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline int
+inline int
 vdscTryAcquireProcessLock( vdscProcessLock * pLock,
                            pid_t             pid_locker,
                            unsigned int      milliSecs )
@@ -154,16 +58,6 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( pid_locker != 0 );
 
-#if defined(CONFIG_KERNEL_HEADERS)
-   if ( spin_can_lock( &pLock->lock ) ) {
-      isItLocked = spin_trylock( &pLock->lock );
-      isItLocked--;
-   }
-#elif defined (WIN32)
-   if ( pLock->lock == 0 ) {
-      isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, 0xff );
-   }
-#elif defined (VDS_USE_POSIX_SEMAPHORE)
    errno = 0;
    do {
       /* We restart on interrupts. */
@@ -176,32 +70,13 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
       fprintf( stderr, "Lock:trywait failed with errno = %d\n", errno );
       return -1;
    }
-#else
-   if ( pLock->lock == 0 ) {
-      TRY_ACQUIRE( pLock->lock, isItLocked );
-   }
-#endif
 
    if ( isItLocked != 0 ) {
       int iterations = milliSecs/g_timeOutinMilliSecs;
       int i;
       
       for ( i = 0; i < iterations; ++i ) {
-#if defined (WIN32)
-         Sleep( g_timeOutinMilliSecs );
-#else
          nanosleep( &g_timeOut, NULL );
-#endif
-#if defined(CONFIG_KERNEL_HEADERS)
-         if ( spin_can_lock( &pLock->lock ) ) {
-            isItLocked = spin_trylock( &pLock->lock );
-            isItLocked--;
-         }
-#elif defined (WIN32)
-         if ( pLock->lock == 0 ) {
-            isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, 0xff );
-         }
-#elif defined (VDS_USE_POSIX_SEMAPHORE)
          do {
             /* We restart on interrupts. */
             isItLocked = sem_trywait( &pLock->semaphore.sem );
@@ -216,11 +91,6 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
             int ok = sem_getvalue( &pLock->semaphore.sem, &val ); 
             fprintf( stderr, "sem_getvalue = %d %d %d\n", val, ok, errno );
          }
-#else
-         if ( pLock->lock == 0 ) {
-            TRY_ACQUIRE( pLock->lock, isItLocked );
-         }
-#endif
          if ( isItLocked == 0 ) break;
       } /* end of for loop */
       
@@ -249,12 +119,6 @@ vdscReleaseProcessLock( vdscProcessLock * pLock )
 
    pLock->pid = 0;
 
-#if defined(CONFIG_KERNEL_HEADERS)
-   spin_unlock( &pLock->lock );
-#elif defined (WIN32)
-   InterlockedExchange( (LPLONG)&pLock->lock, 0 );
-#elif defined (VDS_USE_POSIX_SEMAPHORE)
-
    errno = 0;
    int val;
    int ok = sem_getvalue( &pLock->semaphore.sem, &val ); 
@@ -274,10 +138,11 @@ vdscReleaseProcessLock( vdscProcessLock * pLock )
    if (  isItLocked == -1 ) {
       fprintf( stderr, "Lock:post failed with errno = %d\n", errno );
    }
-#else
-   UNLOCK( pLock->lock );
-#endif
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#endif /* VDSC_ARCH_PROCESS_LOCK_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
