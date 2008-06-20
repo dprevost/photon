@@ -859,6 +859,125 @@
       </message_group>
     </error>
 
+    <error>
+      <errnumber> 201 </errnumber>
+      <errname> XML_READ_ERROR</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Error reading the XML buffer.</errormsg>
+          <errordoc>Error reading the XML buffer stream.</errordoc>
+          <errordoc>
+            No validation is done at this point. Therefore the error is likely
+            something like a missing end-tag or some other non-conformance to 
+            the XML's syntax rules. 
+          </errordoc>
+          <errordoc>
+            A simple Google search for "well-formed xml" returns many web sites 
+            that describe the syntax rules for XML. You can also use the 
+            program xmllint (included in the distribution of libxm2) to
+            pinpoint the issue.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 202 </errnumber>
+      <errname> XML_INVALID_ROOT</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>The root element is not the expected root.</errormsg>
+          <errordoc>
+            The root element is not the expected root, &lt;folder&gt; and
+            similar.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 203 </errnumber>
+      <errname> XML_NO_SCHEMA_LOCATION</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The attribute xsi:schemaLocation was not found or is invalid.
+          </errormsg>
+          <errordoc>
+            The root element must have an attribute named schemaLocation (in 
+            the namespace "http://www.w3.org/2001/XMLSchema-instance") to
+            point to the schema use for the xml buffer stream.
+          </errordoc>
+          <errordoc>
+            This attribute is in two parts separated by a space. The code
+            expects the file name of the schema in the second element of
+            this attribute.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 204 </errnumber>
+      <errname> XML_PARSER_CONTEXT_FAILED</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>The creation of a new schema parser context failed.</errormsg>
+          <errordoc>
+            The creation of a new schema parser context failed. There might
+            be multiple reasons for this, for example, a memory-allocation
+            failure in libxml2. However, the most likely reason is that the
+            schema file is not at the location indicated by the attribute 
+            schemaLocation of the root element of the buffer stream.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 205 </errnumber>
+      <errname> XML_PARSE_SCHEMA_FAILED</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Failure when parsing the XML schema.</errormsg>
+          <errordoc>
+            The parse operation of the schema failed. Most likely, there
+            is an error in the schema. To debug this
+            you can use xmllint (part of the libxml2 package).
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 206 </errnumber>
+      <errname> XML_VALID_CONTEXT_FAILED</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>The creation of a new XML Schemas validation context failed.</errormsg>
+          <errordoc>
+            The creation of a new schema validation context failed. There might
+            be multiple reasons for this, for example, a memory-allocation
+            failure in libxml2.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 207 </errnumber>
+      <errname> XML_VALIDATION_FAILED</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Document validation for the xml buffer failed.</errormsg>
+          <errordoc>
+            Document validation for the xml buffer failed. To debug this
+            problem you can use xmllint (part of the libxml2 package).
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
   </errgroup>
     
   

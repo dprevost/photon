@@ -21,6 +21,14 @@
 #include <libxml/xmlschemas.h>
 #include <libxml/xmlschemastypes.h>
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static void dummyErrorFunc( void * ctx, const char * msg, ...)
+{
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /* 
  * Note: the type of object must be filled by the caller.
  */
@@ -386,14 +394,6 @@ int vdsaValidateDefinition( vdsObjectDefinition * pDefinition )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define VDS_XML_READ_ERROR 1001
-#define VDS_XML_INVALID_ROOT 1002
-#define VDS_XML_VALIDATION_FAILED 1003
-#define VDS_XML_NO_SCHEMA_LOCATION 1004
-#define VDS_XML_PARSER_CONTEXT_FAILED 1005
-#define VDS_XML_PARSE_SCHEMA_FAILED 1006
-#define VDS_XML_VALID_CONTEXT_FAILED  1007
-
 int vdsaXmlToDefinition( const char           * xmlBuffer,
                          size_t                 lengthInBytes,
                          vdsObjectDefinition ** ppDefinition,
@@ -409,12 +409,12 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
    int errcode = 0;
    int i, j, separator = -1;
 
-//   if ( debug ) {
-      doc = xmlReadMemory( xmlBuffer, lengthInBytes, NULL, NULL, 0 );
-//   }
-//   else {
-//      doc = xmlReadMemory( buf, i, NULL, NULL, XML_PARSE_NOERROR | XML_PARSE_NOWARNING );
-//   }
+   /*
+    * for debugging, I could use this instead:
+    * doc = xmlReadMemory( buf, i, NULL, NULL, 0 );
+    */
+   doc = xmlReadMemory( xmlBuffer, lengthInBytes, NULL, NULL, 
+                        XML_PARSE_NOERROR | XML_PARSE_NOWARNING );
    if ( doc == NULL ) {
       errcode = VDS_XML_READ_ERROR;
       goto cleanup;
@@ -477,18 +477,18 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
       goto cleanup;
    }
    
-//   if ( debug ) {
-      xmlSchemaSetValidErrors( validCtxt,
-                               (xmlSchemaValidityErrorFunc) fprintf,
-                               (xmlSchemaValidityWarningFunc) fprintf,
-                               stderr );
-//   }
-//   else {
-//      xmlSchemaSetValidErrors( validCtxt,
-//                               (xmlSchemaValidityErrorFunc) dummyErrorFunc,
-//                               (xmlSchemaValidityWarningFunc) dummyErrorFunc,
-//                               stderr );
-//   }
+   /*
+    * for debugging, I could use this instead:
+    *
+    *  xmlSchemaSetValidErrors( validCtxt,
+    *                           (xmlSchemaValidityErrorFunc) fprintf,
+    *                           (xmlSchemaValidityWarningFunc) fprintf,
+    *                           stderr );
+    */
+   xmlSchemaSetValidErrors( validCtxt,
+                            (xmlSchemaValidityErrorFunc) dummyErrorFunc,
+                            (xmlSchemaValidityWarningFunc) dummyErrorFunc,
+                            stderr );
    
    if ( xmlSchemaValidateDoc( validCtxt, doc ) != 0 ) {
       errcode = VDS_XML_VALIDATION_FAILED;
