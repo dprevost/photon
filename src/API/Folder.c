@@ -169,8 +169,8 @@ int vdsFolderCreateObjectXML( VDS_HANDLE   objectHandle,
    size_t nameLengthInBytes = 0;
    
    if ( xmlBuffer == NULL ) return VDS_NULL_POINTER;
-//   if ( lengthInBytes
-
+   if ( lengthInBytes == 0 ) return VDS_INVALID_LENGTH;
+   
    errcode = vdsaXmlToDefinition( xmlBuffer,
                                   lengthInBytes,
                                   &pDefinition,

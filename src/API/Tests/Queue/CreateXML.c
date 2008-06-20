@@ -58,8 +58,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/afcx",
-                              strlen("/afcx"),
+                              "/aqcx",
+                              strlen("/aqcx"),
                               &def );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -67,8 +67,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsFolderOpen( sessionHandle,
-                            "/afcx",
-                            strlen("/afcx"),
+                            "/aqcx",
+                            strlen("/aqcx"),
                             &folderHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -78,13 +78,13 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    strcpy( buff, "<?xml version=\"1.0\"?>\n"
-      "<folder xmlns=\"http://vdsf.sourceforge.net/vdsf_md\""
+      "<queue xmlns=\"http://vdsf.sourceforge.net/vdsf_md\""
       "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
       "xsi:schemaLocation=\"http://vdsf.sourceforge.net/vdsf_md ");
    strcat( buff, src_path);
    strcat( buff, "\" "
-      "objName=\"My_name\" >"
-      "</folder2>" );
+      "objName=\"My_Queue\" >"
+      "</queue>" );
 //fprintf( stderr, "%s\n", buff );
 
    errcode = vdsFolderCreateObjectXML( folderHandle,
@@ -98,53 +98,79 @@ int main( int argc, char * argv[] )
    errcode = vdsFolderCreateObjectXML( folderHandle,
                                        buff,
                                        0 );
-   if ( errcode != VDS_INVALID_LENGTH ) { // 
+   if ( errcode != VDS_INVALID_LENGTH ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   /* The closing tag is </folder2> instead of folder. */
-   errcode = vdsFolderCreateObjectXML( folderHandle,
-                                       buff,
-                                       strlen(buff) );
-   if ( errcode != VDS_XML_READ_ERROR ) {
+   
+#if 0
+   def.type = 0;
+   errcode = vdsFolderCreateObject( folderHandle,
+                                    "afcr",
+                                    strlen("afcr"),
+                                    &def );
+   if ( errcode != VDS_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-
-   /* <lastField> is, of course, irrelevant for folders */
-   strcpy( buff, "<?xml version=\"1.0\"?>\n"
-      "<folder xmlns=\"http://vdsf.sourceforge.net/vdsf_md\""
-      "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-      "xsi:schemaLocation=\"http://vdsf.sourceforge.net/vdsf_md ");
-   strcat( buff, src_path);
-   strcat( buff, "\" "
-      "objName=\"My_name\" >"
-      "  <lastField name=\"junk\"><Boolean /></lastField>"
-      "</folder>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
-                                       buff,
-                                       strlen(buff) );
-   if ( errcode != VDS_XML_VALIDATION_FAILED ) {
+   def.type = VDS_FOLDER;
+   
+   errcode = vdsFolderCreateObject( folderHandle,
+                                    "afcr",
+                                    strlen("afcr"),
+                                    NULL );
+   if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-
-   strcpy( buff, "<?xml version=\"1.0\"?>\n"
-      "<folder xmlns=\"http://vdsf.sourceforge.net/vdsf_md\""
-      "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-      "xsi:schemaLocation=\"http://vdsf.sourceforge.net/vdsf_md ");
-   strcat( buff, src_path);
-   strcat( buff, "\" "
-      "objName=\"My_name\" >"
-      "</folder>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
-                                       buff,
-                                       strlen(buff) );
+   
+   /* End of invalid args. This call should succeed. */
+   errcode = vdsFolderCreateObject( folderHandle,
+                                    "afcr",
+                                    strlen("afcr"),
+                                    &def );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+
+   /* Close the folder and try to act on it */
+   
+   errcode = vdsFolderClose( folderHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsFolderCreateObject( folderHandle,
+                                    "afcr2",
+                                    strlen("afcr2"),
+                                    &def );
+   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /* Reopen the folder, close the process and try to act on the session */
+
+   errcode = vdsFolderOpen( sessionHandle,
+                            "/afcr",
+                            strlen("/afcr"),
+                            &folderHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   errcode = vdsFolderCreateObject( folderHandle,
+                                    "afcr3",
+                                    strlen("afcr3"),
+                                    &def );
+   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+#endif
 
    vdsExit();
 

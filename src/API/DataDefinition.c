@@ -425,10 +425,8 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
       errcode = VDS_XML_INVALID_ROOT;
       goto cleanup;
    }
-   if ( xmlStrcmp( root->name, BAD_CAST "folder") == 0 ) {
-      fprintf( stderr, "got folder\n" );
-   }
-   else {
+   if ( (xmlStrcmp(root->name, BAD_CAST "folder") != 0) &&
+        (xmlStrcmp(root->name, BAD_CAST "queue")  != 0) ) {
       errcode = VDS_XML_INVALID_ROOT;
       goto cleanup;
    }

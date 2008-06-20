@@ -18,6 +18,7 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 
 check_PROGRAMS =          \
         ClosePass         \
+        CreateXML         \
         Definition        \
         FirstNullEntry    \
         FirstNullHandle   \
@@ -41,6 +42,7 @@ check_PROGRAMS =          \
         StatusPass        
 
 ClosePass_SOURCES         = ClosePass.c
+CreateXML_SOURCES         = CreateXML.c
 Definition_SOURCES        = Definition.c
 FirstNullEntry_SOURCES    = FirstNullEntry.c
 FirstNullHandle_SOURCES   = FirstNullHandle.c
@@ -65,6 +67,7 @@ StatusPass_SOURCES        = StatusPass.c
 
 EXTRA_DIST =                 \
         ClosePass.sh         \
+        CreateXML.sh         \
         Definition.sh        \
         FirstNullEntry.sh    \
         FirstNullHandle.sh   \
@@ -99,6 +102,7 @@ TESTS_ENVIRONMENT =                  \
 
 TESTS =                      \
         ClosePass.sh         \
+        CreateXML.sh         \
         Definition.sh        \
         FirstNullEntry.sh    \
         FirstNullHandle.sh   \
