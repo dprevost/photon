@@ -120,13 +120,13 @@ ACX_PTHREAD(
 	    AC_MSG_ERROR([VDSF requires a Posix Thread library and I don'k know where it is.])
 	])
 
-AC_CHECK_PROG(HAVE_PKG_CONFIG, pkg-config, yes)
-if test "x$HAVE_PKG_CONFIG" = "xyes" ; then
-  PKG_CHECK_MODULES(LIBXML2, libxml-2.0,,
-                    AC_MSG_ERROR([VDSF requires libxml2])) 
-else
+AC_CHECK_PROG(found_pkg_config, pkg-config, [yes], [no] )
+if test "x$found_pkg_config" != "xyes" ; then
   AC_MSG_ERROR([VDSF requires pkg-config])
 fi
+
+PKG_CHECK_MODULES(LIBXML2, libxml-2.0,,
+                    AC_MSG_ERROR([VDSF requires libxml2])) 
 
 AC_SUBST(LIBXML2_CFLAGS)
 AC_SUBST(LIBXML2_LIBS)
