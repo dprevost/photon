@@ -176,7 +176,6 @@ int vdsFolderCreateObjectXML( VDS_HANDLE   objectHandle,
                                   &pDefinition,
                                   &objectName,
                                   &nameLengthInBytes );
-fprintf( stderr, "errcode = %d\n", errcode );
    if ( errcode == 0 ) {
       errcode = vdsFolderCreateObject( objectHandle,
                                        objectName,
@@ -185,7 +184,7 @@ fprintf( stderr, "errcode = %d\n", errcode );
    }
    
    if ( pDefinition != NULL ) free(pDefinition);
-   if ( objectName != NULL ) free(objectName);
+   if ( objectName != NULL )  free(objectName);
    
    return errcode;
 }
