@@ -85,6 +85,7 @@ int main( int argc, char * argv[] )
    strcat( buff, "\" "
       "objName=\"My_Queue\" >"
       "  <field name=\"junk1\"><boolean /></field>"
+      "  <field name=\"junk3\"><string length=\"100\"/></field>"
       "  <lastField name=\"junk2\"><integer size=\"4\" /></lastField>"
       "</queue>" );
 fprintf( stderr, "%s\n", buff );
@@ -112,74 +113,6 @@ fprintf( stderr, "%s\n", buff );
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   
-#if 0
-   def.type = 0;
-   errcode = vdsFolderCreateObject( folderHandle,
-                                    "afcr",
-                                    strlen("afcr"),
-                                    &def );
-   if ( errcode != VDS_WRONG_OBJECT_TYPE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   def.type = VDS_FOLDER;
-   
-   errcode = vdsFolderCreateObject( folderHandle,
-                                    "afcr",
-                                    strlen("afcr"),
-                                    NULL );
-   if ( errcode != VDS_NULL_POINTER ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   /* End of invalid args. This call should succeed. */
-   errcode = vdsFolderCreateObject( folderHandle,
-                                    "afcr",
-                                    strlen("afcr"),
-                                    &def );
-   if ( errcode != VDS_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* Close the folder and try to act on it */
-   
-   errcode = vdsFolderClose( folderHandle );
-   if ( errcode != VDS_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   errcode = vdsFolderCreateObject( folderHandle,
-                                    "afcr2",
-                                    strlen("afcr2"),
-                                    &def );
-   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* Reopen the folder, close the process and try to act on the session */
-
-   errcode = vdsFolderOpen( sessionHandle,
-                            "/afcr",
-                            strlen("/afcr"),
-                            &folderHandle );
-   if ( errcode != VDS_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   errcode = vdsFolderCreateObject( folderHandle,
-                                    "afcr3",
-                                    strlen("afcr3"),
-                                    &def );
-   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-#endif
 
    vdsExit();
 

@@ -741,7 +741,7 @@
           <errordoc>
             The data type of the field definition does not correspond to one of
             the data type defined in the enum vdsFieldType (vdsf/vdsCommon.h).
-            or you've used VDS_VAR_STRING or VDS_VAR_BINARY 
+            or you've used VDS_VAR_STRING or VDS_VAR_BINARY at the wrong place.
           </errordoc>
           <errordoc> 
             Do not forget that VDS_VAR_STRING and VDS_VAR_BINAR can only be

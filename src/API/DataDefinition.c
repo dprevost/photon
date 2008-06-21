@@ -574,7 +574,6 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
                }
                (*ppDefinition)->key.type = VDS_KEY_INTEGER;
                sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.length );
-//               atoi(prop);
                xmlFree(prop);
                prop = NULL;
             }
@@ -586,16 +585,60 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
                }
                (*ppDefinition)->key.type = VDS_KEY_STRING;
                sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.length );
-//               atoi(prop);
                xmlFree(prop);
                prop = NULL;
             }
-            //            else if () {
-//            }
-//    <xs:element name="string"    type="stringType"/>
-//    <xs:element name="binary"    type="binaryType"/>
-//    <xs:element name="varString" type="varStringType"/>
-//    <xs:element name="varBinary" type="varBinaryType"/>
+            else if ( xmlStrcmp( nodeType->name, BAD_CAST "binary") == 0 ) {
+               prop = xmlGetProp( nodeType, BAD_CAST "length" );
+               if ( prop == NULL ) {
+                  errcode = VDS_INVALID_KEY_DEF;
+                  goto cleanup;
+               }
+               (*ppDefinition)->key.type = VDS_KEY_BINARY;
+               sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.length );
+               xmlFree(prop);
+               prop = NULL;
+            }
+            else if ( xmlStrcmp( nodeType->name, BAD_CAST "varString") == 0 ) {
+               prop = xmlGetProp( nodeType, BAD_CAST "minLength" );
+               if ( prop == NULL ) {
+                  errcode = VDS_INVALID_KEY_DEF;
+                  goto cleanup;
+               }
+               sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.minLength );
+               xmlFree(prop);
+               prop = xmlGetProp( nodeType, BAD_CAST "maxLength" );
+               if ( prop == NULL ) {
+                  errcode = VDS_INVALID_KEY_DEF;
+                  goto cleanup;
+               }
+               sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.maxLength );
+               xmlFree(prop);               
+               prop = NULL;
+               (*ppDefinition)->key.type = VDS_KEY_VAR_STRING;
+            }
+            else if ( xmlStrcmp( nodeType->name, BAD_CAST "varBinary") == 0 ) {
+               prop = xmlGetProp( nodeType, BAD_CAST "minLength" );
+               if ( prop == NULL ) {
+                  errcode = VDS_INVALID_KEY_DEF;
+                  goto cleanup;
+               }
+               sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.minLength );
+               xmlFree(prop);
+               prop = xmlGetProp( nodeType, BAD_CAST "maxLength" );
+               if ( prop == NULL ) {
+                  errcode = VDS_INVALID_KEY_DEF;
+                  goto cleanup;
+               }
+               sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.maxLength );
+               xmlFree(prop);               
+               prop = NULL;
+               (*ppDefinition)->key.type = VDS_KEY_VAR_BINARY;
+            }
+            else {
+               errcode = VDS_INVALID_KEY_DEF;
+               goto cleanup;
+            }
             
             break;
          }
@@ -634,18 +677,93 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
                if ( xmlStrcmp( nodeType->name, BAD_CAST "integer") == 0 ) {
                   prop = xmlGetProp( nodeType, BAD_CAST "size" );
                   if ( prop == NULL ) {
-                     errcode = VDS_INVALID_KEY_DEF;
+                     errcode = VDS_INVALID_FIELD_LENGTH_INT;
                      goto cleanup;
                   }
-                  (*ppDefinition)->fields[numFields].type = VDS_INTEGER;
                   sscanf( (char*)prop, "%ud", 
                      &(*ppDefinition)->fields[numFields].length );
                   xmlFree(prop);
                   prop = NULL;
-         //         fprintf(stderr, "prop: %s\n", prop );
+
+                  (*ppDefinition)->fields[numFields].type = VDS_INTEGER;
                }
-               if ( xmlStrcmp( nodeType->name, BAD_CAST "boolean") == 0 ) {
+               else if ( xmlStrcmp( nodeType->name, BAD_CAST "boolean") == 0 ) {
                   (*ppDefinition)->fields[numFields].type = VDS_BOOLEAN;
+               }
+               else if ( (xmlStrcmp(nodeType->name, BAD_CAST "string") == 0) ||
+                         (xmlStrcmp(nodeType->name, BAD_CAST "binary") == 0) ) {
+                  prop = xmlGetProp( nodeType, BAD_CAST "length" );
+                  if ( prop == NULL ) {
+                     errcode = VDS_INVALID_FIELD_LENGTH;
+                     goto cleanup;
+                  }
+                  sscanf( (char*)prop, "%ud", 
+                     &(*ppDefinition)->fields[numFields].length );
+                  xmlFree(prop);
+                  prop = NULL;
+                  
+                  if ( xmlStrcmp( nodeType->name, BAD_CAST "string") == 0 ) {
+                     (*ppDefinition)->fields[numFields].type = VDS_STRING;
+                  }
+                  else {
+                     (*ppDefinition)->fields[numFields].type = VDS_BINARY;
+                  }
+               }
+               else if ( (xmlStrcmp(nodeType->name, BAD_CAST "varString") == 0) ||
+                         (xmlStrcmp(nodeType->name, BAD_CAST "varBinary") == 0) ) {
+                  if ( xmlStrcmp(nodeField->name, BAD_CAST "lastField") != 0 ) {
+                     errcode = VDS_INVALID_FIELD_TYPE;
+                     goto cleanup;
+                  }
+                  prop = xmlGetProp( nodeType, BAD_CAST "minLength" );
+                  if ( prop == NULL ) {
+                     errcode = VDS_INVALID_FIELD_LENGTH;
+                     goto cleanup;
+                  }
+                  sscanf( (char*)prop, "%ud", 
+                     &(*ppDefinition)->fields[numFields].minLength );
+                  xmlFree(prop);
+                  prop = xmlGetProp( nodeType, BAD_CAST "maxLength" );
+                  if ( prop == NULL ) {
+                     errcode = VDS_INVALID_FIELD_LENGTH;
+                     goto cleanup;
+                  }
+                  sscanf( (char*)prop, "%ud", 
+                     &(*ppDefinition)->fields[numFields].maxLength );
+                  xmlFree(prop);
+                  prop = NULL;
+                  
+                  if ( xmlStrcmp( nodeType->name, BAD_CAST "varString") == 0 ) {
+                     (*ppDefinition)->fields[numFields].type = VDS_VAR_STRING;
+                  }
+                  else {
+                     (*ppDefinition)->fields[numFields].type = VDS_VAR_BINARY;
+                  }
+               }
+               else if ( xmlStrcmp(nodeType->name, BAD_CAST "decimal") == 0 ) {
+                  prop = xmlGetProp( nodeType, BAD_CAST "precision" );
+                  if ( prop == NULL ) {
+                     errcode = VDS_INVALID_PRECISION;
+                     goto cleanup;
+                  }
+                  sscanf( (char*)prop, "%ud", 
+                     &(*ppDefinition)->fields[numFields].precision );
+                  xmlFree(prop);
+                  prop = xmlGetProp( nodeType, BAD_CAST "scale" );
+                  if ( prop == NULL ) {
+                     errcode = VDS_INVALID_SCALE;
+                     goto cleanup;
+                  }
+                  sscanf( (char*)prop, "%ud", 
+                     &(*ppDefinition)->fields[numFields].scale );
+                  xmlFree(prop);
+                  prop = NULL;
+                  
+                  (*ppDefinition)->fields[numFields].type = VDS_DECIMAL;
+               }
+               else {
+                  errcode = VDS_INVALID_FIELD_TYPE;
+                  goto cleanup;
                }
                
                numFields++;
@@ -658,134 +776,6 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
       nodeField = nodeField->next;
    }
 
-#if 0
-   
-   while ( nodeField != NULL ) {
-      
-
-
-
-         nodeType = nodeField->children;
-         
-         while ( nodeType != NULL ) {
-            if ( nodeType->type == XML_ELEMENT_NODE ) {
-               if ( xmlStrcmp( nodeType->name, BAD_CAST "boolean") == 0 ) {
-               }
-            }
-            nodeType = nodeType->next;
-         }
-
-
-               
-         if ( xmlStrcmp( node->name, BAD_CAST "field") == 0 ) {
-            fprintf( stderr, "children->name = %s\n", node->children->name );
-            /* 
-             * The schema should normally resolved this by imposing a 
-             * limit which is less than PATH_MAX on most systems but...
-             * (to test for this we would need to read the pattern restriction
-             * on the schema itself - more work than just checking the length
-             * of the provided string).
-             */
-            if ( xmlStrlen(node->children->content) < PATH_MAX ) {
-               strcpy( pConfig->wdLocation, (char*)node->children->content );
-               node = node->next;
-               break;
-            }
-            errcode = VDSW_CFG_VDS_LOCATION_TOO_LONG;
-            goto cleanup;
-            fprintf( stderr, "Error: vds_location is too long\n" );
-            return -1;
-
-//         }
-//         fprintf( stderr, "Error: missing <vds_location> in config file\n" );
-//         return -1;
-      }
-      nodeField = nodeField->next;
-   }
-#endif
-
-#if 0
-   while ( node != NULL ) {
-      if ( node->type == XML_ELEMENT_NODE ) {
-         if ( xmlStrcmp( node->name, BAD_CAST "mem_size") == 0 ) {
-            prop = xmlGetProp( node, BAD_CAST "size" );
-            if ( prop == NULL ) {
-               errcode = VDSW_CFG_SIZE_IS_MISSING;
-               goto cleanup;
-            }
-            pConfig->memorySizekb = atoi((char*)prop);
-            xmlFree(prop);
-
-            prop = xmlGetProp( node, BAD_CAST "units" );
-            if ( prop == NULL ) {
-               errcode = VDSW_CFG_UNITS_IS_MISSING;
-               goto cleanup;
-            }
-            if ( xmlStrcmp( prop, BAD_CAST "mb") == 0 ) {
-               pConfig->memorySizekb *= 1024;
-            }
-            if ( xmlStrcmp( prop, BAD_CAST "gb") == 0 ) {
-               pConfig->memorySizekb *= 1024*1024;
-            }
-            xmlFree(prop);
-            prop = NULL;
-            
-            node = node->next;
-            break;
-         }
-         errcode = VDSW_CFG_MEM_SIZE_IS_MISSING;
-         goto cleanup;
-      }
-      node = node->next;
-   }
-
-   while ( node != NULL ) {
-      if ( node->type == XML_ELEMENT_NODE ) {
-         if ( xmlStrcmp( node->name, BAD_CAST "watchdog_address") == 0 ) {
-            strcpy( pConfig->wdAddress, (char*)node->children->content );
-            node = node->next;
-            break;
-         }
-         errcode = VDSW_CFG_WATCHDOG_ADDRESS_IS_MISSING;
-         goto cleanup;
-      }
-      node = node->next;
-   }
-
-   while ( node != NULL ) {
-      if ( node->type == XML_ELEMENT_NODE ) {
-         if ( xmlStrcmp( node->name, BAD_CAST "file_access") == 0 ) {
-            prop = xmlGetProp( node, BAD_CAST "access" );
-            if ( prop == NULL ) {
-               errcode = VDSW_CFG_ACCESS_IS_MISSING;
-               goto cleanup;
-            }
-            
-            if ( xmlStrcmp( prop, BAD_CAST "group") == 0 ) {
-               pConfig->filePerms = 0660;
-               pConfig->dirPerms = 0770;
-            }
-            else if ( xmlStrcmp( prop, BAD_CAST "world") == 0 ) {
-               pConfig->filePerms = 0666;
-               pConfig->dirPerms = 0777;
-            }
-            else {
-               pConfig->filePerms = 0600;
-               pConfig->dirPerms = 0700;
-            }
-            xmlFree(prop);
-            prop = NULL;
-            
-            node = node->next;
-            break;
-         }
-         errcode = VDSW_CFG_FILE_ACCESS_IS_MISSING;
-         goto cleanup;
-      }
-      node = node->next;
-   }
-#endif
-
 cleanup:
    
    if ( parserCtxt ) xmlSchemaFreeParserCtxt( parserCtxt );
@@ -794,10 +784,6 @@ cleanup:
    if ( prop ) xmlFree( prop );
    if ( doc ) xmlFreeDoc( doc );
 
-//   if ( errcode != VDSW_OK ) {
-//      vdscSetError( pError, g_wdErrorHandle, errcode );
-//      return -1;
-//   }
    return errcode;
 }
 
