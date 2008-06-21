@@ -78,14 +78,16 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    strcpy( buff, "<?xml version=\"1.0\"?>\n"
-      "<queue xmlns=\"http://vdsf.sourceforge.net/vdsf_md\""
-      "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+      "<queue xmlns=\"http://vdsf.sourceforge.net/vdsf_md\" "
+      "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
       "xsi:schemaLocation=\"http://vdsf.sourceforge.net/vdsf_md ");
    strcat( buff, src_path);
    strcat( buff, "\" "
       "objName=\"My_Queue\" >"
+      "  <field name=\"junk1\"><boolean /></field>"
+      "  <lastField name=\"junk2\"><integer size=\"4\" /></lastField>"
       "</queue>" );
-//fprintf( stderr, "%s\n", buff );
+fprintf( stderr, "%s\n", buff );
 
    errcode = vdsFolderCreateObjectXML( folderHandle,
                                        NULL,
@@ -103,6 +105,13 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = vdsFolderCreateObjectXML( folderHandle,
+                                       buff,
+                                       strlen(buff) );
+   if ( errcode != VDS_OK ) { 
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
 #if 0
    def.type = 0;

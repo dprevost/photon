@@ -403,12 +403,13 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
    xmlSchemaPtr schema = NULL;
    xmlSchemaValidCtxtPtr  validCtxt = NULL;
    xmlSchemaParserCtxtPtr parserCtxt = NULL;
-   xmlNode * root = NULL, * node;
+   xmlNode * root = NULL, * nodeField, * nodeType, *nodeKey = NULL;
    xmlDoc  * doc = NULL;
    xmlChar * prop = NULL;
    int errcode = 0;
    int i, j, separator = -1;
-
+   uint16_t numFields;
+   
    /*
     * for debugging, I could use this instead:
     * doc = xmlReadMemory( buf, i, NULL, NULL, 0 );
@@ -436,7 +437,6 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
       errcode = VDS_XML_NO_SCHEMA_LOCATION;
       goto cleanup;
    }
-   
    
    for ( i = 0; i < xmlStrlen(prop)-1; ++i ) {
       if ( isspace(prop[i]) ) {
@@ -519,13 +519,166 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
       /* No fields to process. Go directly to the exit, error or not. */
       goto cleanup;
    }
-#if 0   
-   /* All is well - start the extraction of our data */   
-   node = root->children;
 
-   while ( node != NULL ) {
-      if ( node->type == XML_ELEMENT_NODE ) {
-         if ( xmlStrcmp( node->name, BAD_CAST "vds_location") == 0 ) {
+   /* All seems ok with validation - start the extraction of our data */   
+   nodeField = root->children;
+
+   /*
+    * Hash map definition starts with a single key field at the beginning 
+    * but we have to wait until the definition is allocated before we can 
+    * process it.
+    */
+   if ( xmlStrcmp( root->name, BAD_CAST "hashmap") == 0 ) {
+      while ( nodeField != NULL ) {
+         if ( nodeField->type == XML_ELEMENT_NODE ) {
+            if ( xmlStrcmp( nodeField->name, BAD_CAST "key") == 0 ) {
+               nodeKey = nodeField;
+            }
+            else {
+               errcode = VDS_INVALID_KEY_DEF;
+               goto cleanup;
+            }
+            break;
+         }
+         nodeField = nodeField->next;
+      }
+   }
+
+   /* Prepare the memory allocation */
+   numFields = 0;
+   while ( nodeField != NULL ) {
+      if ( nodeField->type == XML_ELEMENT_NODE ) numFields++;
+      nodeField = nodeField->next;
+   }
+
+   *ppDefinition = (vdsObjectDefinition *)
+      calloc( offsetof(vdsObjectDefinition,fields) +
+              numFields * sizeof(vdsFieldDefinition), 1 );
+   if (*ppDefinition == NULL ) {
+      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      goto cleanup;
+   }
+   (*ppDefinition)->numFields = numFields;
+
+   /* Extract the key, if any */
+   if ( nodeKey != NULL ) {
+      (*ppDefinition)->type = VDS_HASH_MAP;
+      nodeType = nodeField->children;
+      while ( nodeType != NULL ) {
+         if ( nodeType->type == XML_ELEMENT_NODE ) {
+            if ( xmlStrcmp( nodeType->name, BAD_CAST "integer") == 0 ) {
+               prop = xmlGetProp( nodeType, BAD_CAST "size" );
+               if ( prop == NULL ) {
+                  errcode = VDS_INVALID_KEY_DEF;
+                  goto cleanup;
+               }
+               (*ppDefinition)->key.type = VDS_KEY_INTEGER;
+               sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.length );
+//               atoi(prop);
+               xmlFree(prop);
+               prop = NULL;
+            }
+            else if ( xmlStrcmp( nodeType->name, BAD_CAST "string") == 0 ) {
+               prop = xmlGetProp( nodeType, BAD_CAST "length" );
+               if ( prop == NULL ) {
+                  errcode = VDS_INVALID_KEY_DEF;
+                  goto cleanup;
+               }
+               (*ppDefinition)->key.type = VDS_KEY_STRING;
+               sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.length );
+//               atoi(prop);
+               xmlFree(prop);
+               prop = NULL;
+            }
+            //            else if () {
+//            }
+//    <xs:element name="string"    type="stringType"/>
+//    <xs:element name="binary"    type="binaryType"/>
+//    <xs:element name="varString" type="varStringType"/>
+//    <xs:element name="varBinary" type="varBinaryType"/>
+            
+            break;
+         }
+         nodeType = nodeType->next;
+      }
+      nodeField = nodeKey->next;
+   }
+   else {
+      nodeField = root->children;
+      if ( xmlStrcmp( root->name, BAD_CAST "queue") == 0 ) {
+         (*ppDefinition)->type = VDS_QUEUE;
+      }
+      else {
+         errcode = VDS_WRONG_OBJECT_TYPE;
+         goto cleanup;
+      }
+   }
+
+   numFields = 0;
+   while ( nodeField != NULL ) {
+      if ( nodeField->type == XML_ELEMENT_NODE ) {
+         prop = xmlGetProp( nodeField, BAD_CAST "name" );
+         if ( prop == NULL ) {
+            errcode = VDS_INVALID_FIELD_NAME;
+            goto cleanup;
+         }
+         strncpy( (*ppDefinition)->fields[numFields].name, 
+            (char*)prop, VDS_MAX_FIELD_LENGTH );
+         xmlFree(prop);
+         prop = NULL;
+         
+         nodeType = nodeField->children;
+         while ( nodeType != NULL ) {
+            if ( nodeType->type == XML_ELEMENT_NODE ) {
+               
+               if ( xmlStrcmp( nodeType->name, BAD_CAST "integer") == 0 ) {
+                  prop = xmlGetProp( nodeType, BAD_CAST "size" );
+                  if ( prop == NULL ) {
+                     errcode = VDS_INVALID_KEY_DEF;
+                     goto cleanup;
+                  }
+                  (*ppDefinition)->fields[numFields].type = VDS_INTEGER;
+                  sscanf( (char*)prop, "%ud", 
+                     &(*ppDefinition)->fields[numFields].length );
+                  xmlFree(prop);
+                  prop = NULL;
+         //         fprintf(stderr, "prop: %s\n", prop );
+               }
+               if ( xmlStrcmp( nodeType->name, BAD_CAST "boolean") == 0 ) {
+                  (*ppDefinition)->fields[numFields].type = VDS_BOOLEAN;
+               }
+               
+               numFields++;
+               break;
+            }
+            nodeType = nodeType->next;
+         }
+
+      }
+      nodeField = nodeField->next;
+   }
+
+#if 0
+   
+   while ( nodeField != NULL ) {
+      
+
+
+
+         nodeType = nodeField->children;
+         
+         while ( nodeType != NULL ) {
+            if ( nodeType->type == XML_ELEMENT_NODE ) {
+               if ( xmlStrcmp( nodeType->name, BAD_CAST "boolean") == 0 ) {
+               }
+            }
+            nodeType = nodeType->next;
+         }
+
+
+               
+         if ( xmlStrcmp( node->name, BAD_CAST "field") == 0 ) {
+            fprintf( stderr, "children->name = %s\n", node->children->name );
             /* 
              * The schema should normally resolved this by imposing a 
              * limit which is less than PATH_MAX on most systems but...
@@ -542,13 +695,16 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
             goto cleanup;
             fprintf( stderr, "Error: vds_location is too long\n" );
             return -1;
-         }
-         fprintf( stderr, "Error: missing <vds_location> in config file\n" );
-         return -1;
-      }
-      node = node->next;
-   }
 
+//         }
+//         fprintf( stderr, "Error: missing <vds_location> in config file\n" );
+//         return -1;
+      }
+      nodeField = nodeField->next;
+   }
+#endif
+
+#if 0
    while ( node != NULL ) {
       if ( node->type == XML_ELEMENT_NODE ) {
          if ( xmlStrcmp( node->name, BAD_CAST "mem_size") == 0 ) {

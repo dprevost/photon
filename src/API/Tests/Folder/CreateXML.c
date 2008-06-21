@@ -78,12 +78,12 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    strcpy( buff, "<?xml version=\"1.0\"?>\n"
-      "<folder xmlns=\"http://vdsf.sourceforge.net/vdsf_md\""
-      "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+      "<folder xmlns=\"http://vdsf.sourceforge.net/vdsf_md\" "
+      "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
       "xsi:schemaLocation=\"http://vdsf.sourceforge.net/vdsf_md ");
    strcat( buff, src_path);
    strcat( buff, "\" "
-      "objName=\"My_name\" >"
+      "objName=\"My_name\" > "
       "</folder2>" );
 //fprintf( stderr, "%s\n", buff );
 
@@ -112,27 +112,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   /* <lastField> is, of course, irrelevant for folders */
    strcpy( buff, "<?xml version=\"1.0\"?>\n"
-      "<folder xmlns=\"http://vdsf.sourceforge.net/vdsf_md\""
-      "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-      "xsi:schemaLocation=\"http://vdsf.sourceforge.net/vdsf_md ");
-   strcat( buff, src_path);
-   strcat( buff, "\" "
-      "objName=\"My_name\" >"
-      "  <lastField name=\"junk\"><Boolean /></lastField>"
-      "</folder>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
-                                       buff,
-                                       strlen(buff) );
-   if ( errcode != VDS_XML_VALIDATION_FAILED ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   strcpy( buff, "<?xml version=\"1.0\"?>\n"
-      "<folder xmlns=\"http://vdsf.sourceforge.net/vdsf_md\""
-      "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+      "<folder xmlns=\"http://vdsf.sourceforge.net/vdsf_md\" "
+      "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
       "xsi:schemaLocation=\"http://vdsf.sourceforge.net/vdsf_md ");
    strcat( buff, src_path);
    strcat( buff, "\" "

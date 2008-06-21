@@ -860,6 +860,21 @@
     </error>
 
     <error>
+      <errnumber> 109 </errnumber>
+      <errname> INVALID_KEY_DEF </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The key definition is invalid or missing.
+          </errormsg>
+          <errordoc>
+            The key definition for a hash map is either invalid or missing.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
       <errnumber> 201 </errnumber>
       <errname> XML_READ_ERROR</errname>
       <message_group>
