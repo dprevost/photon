@@ -426,8 +426,9 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
       errcode = VDS_XML_INVALID_ROOT;
       goto cleanup;
    }
-   if ( (xmlStrcmp(root->name, BAD_CAST "folder") != 0) &&
-        (xmlStrcmp(root->name, BAD_CAST "queue")  != 0) ) {
+   if ( (xmlStrcmp(root->name, BAD_CAST "folder")  != 0) &&
+        (xmlStrcmp(root->name, BAD_CAST "queue")   != 0) &&
+        (xmlStrcmp(root->name, BAD_CAST "hashmap") != 0) ) {
       errcode = VDS_XML_INVALID_ROOT;
       goto cleanup;
    }
@@ -533,6 +534,8 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
          if ( nodeField->type == XML_ELEMENT_NODE ) {
             if ( xmlStrcmp( nodeField->name, BAD_CAST "key") == 0 ) {
                nodeKey = nodeField;
+               /* Advance one so that the key is not counted in numFields */
+               nodeField = nodeField->next;
             }
             else {
                errcode = VDS_INVALID_KEY_DEF;
@@ -563,7 +566,7 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
    /* Extract the key, if any */
    if ( nodeKey != NULL ) {
       (*ppDefinition)->type = VDS_HASH_MAP;
-      nodeType = nodeField->children;
+      nodeType = nodeKey->children;
       while ( nodeType != NULL ) {
          if ( nodeType->type == XML_ELEMENT_NODE ) {
             if ( xmlStrcmp( nodeType->name, BAD_CAST "integer") == 0 ) {
