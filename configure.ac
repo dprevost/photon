@@ -125,8 +125,8 @@ if test "x$found_pkg_config" != "xyes" ; then
   AC_MSG_ERROR([VDSF requires pkg-config])
 fi
 
-PKG_CHECK_MODULES(LIBXML2, libxml-2.0,,
-                    AC_MSG_ERROR([VDSF requires libxml2])) 
+PKG_CHECK_MODULES(LIBXML2, [libxml-2.0],,
+   AC_MSG_ERROR([VDSF requires libxml2 (including the development environment)])) 
 
 AC_SUBST(LIBXML2_CFLAGS)
 AC_SUBST(LIBXML2_LIBS)
