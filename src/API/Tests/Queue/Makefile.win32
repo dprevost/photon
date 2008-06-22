@@ -14,6 +14,8 @@ all:
 
 check_PROGRAMS =                        \
         .\Release\ClosePass.exe         \
+        .\Release\Create.exe            \
+        .\Release\CreateXML.exe         \
         .\Release\Definition.exe        \
         .\Release\FirstNullEntry.exe    \
         .\Release\FirstNullHandle.exe   \

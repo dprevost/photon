@@ -18,6 +18,7 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 
 check_PROGRAMS =            \
         ClosePass           \
+        Create              \
         CreateXML           \
         DeletePass          \
         Definition          \
@@ -46,6 +47,7 @@ check_PROGRAMS =            \
         StatusPass          
 
 ClosePass_SOURCES           = ClosePass.c
+Create_SOURCES              = Create.c
 CreateXML_SOURCES           = CreateXML.c
 DeletePass_SOURCES          = DeletePass.c
 Definition_SOURCES          = Definition.c
@@ -75,6 +77,7 @@ StatusPass_SOURCES          = StatusPass.c
 
 EXTRA_DIST =                   \
         ClosePass.sh           \
+        Create.sh              \
         CreateXML.sh           \
         DeletePass.sh          \
         Definition.sh          \
@@ -114,6 +117,7 @@ TESTS_ENVIRONMENT =                  \
 
 TESTS =                        \
         ClosePass.sh           \
+        Create.sh              \
         CreateXML.sh           \
         DeletePass.sh          \
         Definition.sh          \
