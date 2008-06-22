@@ -275,7 +275,7 @@ int vdsaValidateDefinition( vdsObjectDefinition * pDefinition )
       }
 
    case VDS_QUEUE:
-      if ( pDefinition->numFields < 0 || 
+      if ( pDefinition->numFields <= 0 || 
            pDefinition->numFields > VDS_MAX_FIELDS ) {
          return VDS_INVALID_NUM_FIELDS;
       }
