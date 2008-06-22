@@ -73,6 +73,11 @@ int vdsHashMapClose( VDS_HANDLE objectHandle )
    }
    
    if ( errcode == 0 ) {
+      /*
+       * Memory might still be around even after it is released, so we make 
+       * sure future access with the handle fails by setting the type wrong!
+       */
+      pHashMap->object.type = 0; 
       free( pHashMap );
    }
    else {
