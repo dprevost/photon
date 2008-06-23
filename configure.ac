@@ -407,6 +407,16 @@ GCC)
     AC_DEFINE(VDS_USE_SPARC_GCC, 1, Using a gcc-like compiler on a sparc) ;;
   #sparc64)      ;;
   esac ;;
+ICC)
+  # Intel compiler on x86 (32 and 64 bits) understands gcc inline
+  case $host_cpu in
+  i386 | i486 | i586 | i686 )
+    arch_include=ok 
+    AC_DEFINE(VDS_USE_I386_GCC, 1, Using a gcc-like compiler on a i386) ;;
+  x86_64)
+    arch_include=ok 
+    AC_DEFINE(VDS_USE_X86_64_GCC, 1, Using a gcc-like compiler on a x86_64) ;;
+  esac ;;
 XLC)
   if test "$host_cpu" = "ppc"; then
     arch_include=ok
