@@ -37,7 +37,7 @@ vdscAcquireProcessLock( vdscProcessLock * pLock,
    for (;;) {
       if ( pLock->lock == 0 ) {
          __asm__ __volatile__(
-            "ldstub (%1), %0"
+            "ldstub [%1], %0"
             : "=r"(out)
             : "r"(&pLock->lock)
             : "memory" );
@@ -65,7 +65,7 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
 
    if ( pLock->lock == 0 ) {
       __asm__ __volatile__(
-         "ldstub (%1), %0"
+         "ldstub [%1], %0"
          : "=r"(out)
          : "r"(&pLock->lock)
          : "memory" );
@@ -79,7 +79,7 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
          nanosleep( &g_timeOut, NULL );
          if ( pLock->lock == 0 ) {
             __asm__ __volatile__(
-               "ldstub (%1), %0"
+               "ldstub [%1], %0"
                : "=r"(out)
                : "r"(&pLock->lock)
                : "memory" );
