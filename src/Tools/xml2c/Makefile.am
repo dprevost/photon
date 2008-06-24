@@ -36,8 +36,12 @@ bin_PROGRAMS = vdsxml2c
         vdssh.xml      \
         Makefile.win32 
 
-vdsxml2c_SOURCES =       \
-        main.c
+vdsxml2c_SOURCES = \
+        common.c   \
+        folder.c   \
+        hashmap.c  \
+        main.c     \
+        queue.c    
         
-#vdssh_LDADD = $(top_builddir)/src/C++/libvdsfcpp.la
+vdsxml2c_LDADD = $(top_builddir)/src/Common/libCommon.la
 
