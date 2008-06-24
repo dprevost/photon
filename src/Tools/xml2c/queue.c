@@ -22,13 +22,16 @@
 
 void writeHeader( FILE * fp, const char * name ) ;
 void writeTrailer( FILE * fp, const char * name ) ;
+int doDefinition( FILE * fp, xmlNode * node );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int doQueue( xmlNode * queueNode, const char * name )
+int doHashMap( xmlNode * queueNode, const char * name )
 {
    FILE* fp = NULL;
    char * str;
+   xmlNode * node;
+   int rc;
    
    str = calloc( strlen(name) + strlen(".h") + 1, 1 );
    if ( str == NULL ) {
@@ -48,9 +51,59 @@ int doQueue( xmlNode * queueNode, const char * name )
    
    writeHeader( fp, name );
    
-   writeTrailer( fp, name );
+   fprintf( fp, "struct %s {\n", name );
    
-   return 0;
+   node = queueNode->children;
+   
+   rc = doDefinition( fp, node );
+   
+   if ( rc == 0 ) {
+      fprintf( fp, "};\n\n" );
+      writeTrailer( fp, name );
+   }
+   
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int doQueue( xmlNode * queueNode, const char * name )
+{
+   FILE* fp = NULL;
+   char * str;
+   xmlNode * node;
+   int rc;
+   
+   str = calloc( strlen(name) + strlen(".h") + 1, 1 );
+   if ( str == NULL ) {
+      fprintf( stderr, "Error allocing memory\n" );
+      return -1;
+   }
+   strcpy( str, name );
+   strcat( str, ".h" );
+   
+   fp = fopen( str, "w" );
+   if ( fp == NULL ) {
+      fprintf( stderr, "Error opening file %s\n", str );
+      free( str );
+      return -1;
+   }
+   free( str );
+   
+   writeHeader( fp, name );
+   
+   fprintf( fp, "struct %s {\n", name );
+   
+   node = queueNode->children;
+   
+   rc = doDefinition( fp, node );
+   
+   if ( rc == 0 ) {
+      fprintf( fp, "};\n\n" );
+      writeTrailer( fp, name );
+   }
+   
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
