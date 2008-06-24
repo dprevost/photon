@@ -26,12 +26,13 @@ AC_DEFUN([AC_C_CC_TYPE],[
     fi
   fi
 
-  if test $ac_cv_compiler_name = unknown; then
-    _AC_C_COMPILER_TEST(__ghs__)
-    if test $ac_cv___ghs__ = yes; then
-      ac_cv_compiler_name=GHS
-    fi
-  fi
+# no inline assembly + this is an embedded C compiler
+#  if test $ac_cv_compiler_name = unknown; then
+#    _AC_C_COMPILER_TEST(__ghs__)
+#    if test $ac_cv___ghs__ = yes; then
+#      ac_cv_compiler_name=GHS
+#    fi
+#  fi
 
   if test $ac_cv_compiler_name = unknown; then
     _AC_C_COMPILER_TEST(__PATHCC__)
@@ -40,12 +41,13 @@ AC_DEFUN([AC_C_CC_TYPE],[
     fi
   fi
 
-  if test $ac_cv_compiler_name = unknown; then
-    _AC_C_COMPILER_TEST(__COMO__)
-    if test $ac_cv___COMO__ = yes; then
-      ac_cv_compiler_name = Comeau
-    fi
-  fi
+#  Comeau is pure c++, not c. 
+#  if test $ac_cv_compiler_name = unknown; then
+#    _AC_C_COMPILER_TEST(__COMO__)
+#    if test $ac_cv___COMO__ = yes; then
+#      ac_cv_compiler_name = Comeau
+#    fi
+#  fi
 
   # The test for gcc must come after the tests for some other
   # compilers since some defined __GNUC__ (Intel for example). 

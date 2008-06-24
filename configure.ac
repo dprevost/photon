@@ -422,6 +422,15 @@ XLC)
     arch_include=ok
     AC_DEFINE(VDS_USE_PPC_XLC, 1, Using the xlc compiler on a Power PC)
   fi ;;
+PathScale)
+  case $host_cpu in
+  i386 | i486 | i586 | i686 )
+    arch_include=ok 
+    AC_DEFINE(VDS_USE_I386_GCC, 1, Using a gcc-like compiler on a i386) ;;
+  x86_64)
+    arch_include=ok 
+    AC_DEFINE(VDS_USE_X86_64_GCC, 1, Using a gcc-like compiler on a x86_64) ;;
+  esac ;;
 *) ;;
 esac
 
