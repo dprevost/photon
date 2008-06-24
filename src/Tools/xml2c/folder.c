@@ -22,6 +22,7 @@
 
 int doHashMap( xmlNode * hashmapNode, const char * name );
 int doQueue(   xmlNode * queueNode,   const char * name );
+int validateName( xmlChar * name );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

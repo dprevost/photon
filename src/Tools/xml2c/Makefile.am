@@ -39,9 +39,8 @@ bin_PROGRAMS = vdsxml2c
 vdsxml2c_SOURCES = \
         common.c   \
         folder.c   \
-        hashmap.c  \
         main.c     \
-        queue.c    
+        objects.c    
         
 vdsxml2c_LDADD = $(top_builddir)/src/Common/libCommon.la
 

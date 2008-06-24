@@ -74,8 +74,8 @@ int validateName( xmlChar * name )
    
    /* The first char is always special - it cannot be '/' */
    if ( ! isalpha( (int) objectName[0] )  ) {
+      fprintf( stderr, "Invalid object name: %s\n", objectName );
       return -1;
-      //VDS_INVALID_OBJECT_NAME;
    }
    
    for ( i = 1; i < strlen(objectName ); ++i ) {
@@ -84,11 +84,144 @@ int validateName( xmlChar * name )
       }
    }
    if ( i > VDS_MAX_NAME_LENGTH ) {
+      fprintf( stderr, "Object name is too long: %s\n", objectName );
       return -1;
-      //VDS_OBJECT_NAME_TOO_LONG;
    }
    
    return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int doDefinition( FILE * fp, xmlNode * node )
+{
+   xmlNode * nodeType;
+   xmlChar * prop = NULL, * propName = NULL;
+   size_t length;
+   
+   while ( node != NULL ) {
+      if ( node->type == XML_ELEMENT_NODE ) {
+
+         /* Extract the name of the field */
+         propName = xmlGetProp( node, BAD_CAST "name" );
+         if ( propName == NULL ) {
+            fprintf( stderr, "Cannot extract the name of the field\n" );
+            goto cleanup;
+         }
+         
+         nodeType = node->children;
+         while ( nodeType != NULL ) {
+            if ( nodeType->type == XML_ELEMENT_NODE ) break;
+            nodeType = nodeType->next;
+         }
+         if ( nodeType == NULL ) {
+            fprintf( stderr, "Invalid field type (NULL)\n" );
+            goto cleanup;
+         }
+         
+         if ( xmlStrcmp( nodeType->name, BAD_CAST "integer") == 0 ) {
+            prop = xmlGetProp( nodeType, BAD_CAST "size" );
+            if ( prop == NULL ) {
+               fprintf( stderr, "Invalid integer length\n" );
+               goto cleanup;
+            }
+            sscanf( (char*)prop, VDSF_SIZE_T_FORMAT, &length );
+            xmlFree(prop);
+            prop = NULL;
+
+            switch( length ) {
+            case 1:
+               fprintf( fp, "    int8_t %s;\n", (char *)propName );
+               break;
+            case 2:
+               fprintf( fp, "    int16_t %s;\n", (char *)propName );
+               break;
+            case 4:
+               fprintf( fp, "    int32_t %s;\n", (char *)propName );
+               break;
+            case 8:
+               fprintf( fp, "    int64_t %s;\n", (char *)propName );
+               break;
+            default:
+               fprintf( stderr, "Invalid integer length\n" );
+               goto cleanup;
+            }
+         }
+         else if ( xmlStrcmp( nodeType->name, BAD_CAST "boolean") == 0 ) {
+            fprintf( fp, "    bool %s;\n", (char *)propName );
+         }
+         else if ( xmlStrcmp(nodeType->name, BAD_CAST "string") == 0 ) {
+            prop = xmlGetProp( nodeType, BAD_CAST "length" );
+            if ( prop == NULL ) {
+               fprintf( stderr, "Invalid integer length\n" );
+               goto cleanup;
+            }
+            sscanf( (char*)prop, VDSF_SIZE_T_FORMAT, &length );
+            xmlFree(prop);
+            prop = NULL;
+
+            fprintf( fp, "    char %s[%d];\n", (char *)propName, length );
+         }
+         else if ( xmlStrcmp(nodeType->name, BAD_CAST "binary") == 0 ) {
+            prop = xmlGetProp( nodeType, BAD_CAST "length" );
+            if ( prop == NULL ) {
+               fprintf( stderr, "Invalid integer length\n" );
+               goto cleanup;
+            }
+            sscanf( (char*)prop, VDSF_SIZE_T_FORMAT, &length );
+            xmlFree(prop);
+            prop = NULL;
+
+            fprintf( fp, "    unsigned char %s[%d];\n", (char *)propName, length );
+         }
+
+         else if ( (xmlStrcmp(nodeType->name, BAD_CAST "varString") == 0) ||
+                   (xmlStrcmp(nodeType->name, BAD_CAST "varBinary") == 0) ) {
+            if ( xmlStrcmp(node->name, BAD_CAST "lastField") != 0 ) {
+               fprintf( stderr, "Invalid field type\n" );
+               goto cleanup;
+            }
+            if ( xmlStrcmp( nodeType->name, BAD_CAST "varString") == 0 ) {
+               fprintf( fp, "    char %s[1];\n", (char *)propName );
+            }
+            else {
+               fprintf( fp, "    unsigned char %s[1];\n", (char *)propName );
+            }
+         }
+
+         else if ( xmlStrcmp(nodeType->name, BAD_CAST "decimal") == 0 ) {
+            prop = xmlGetProp( nodeType, BAD_CAST "precision" );
+            if ( prop == NULL ) {
+               fprintf( stderr, "Invalid precision\n" );
+               goto cleanup;
+            }
+
+            sscanf( (char*)prop, VDSF_SIZE_T_FORMAT, &length );
+            xmlFree(prop);
+            prop = NULL;
+
+            fprintf( fp, "    char %s[%d];\n", (char *)propName, length+2 );
+         }
+               
+         else {
+            fprintf( stderr, "Invalid field type\n" );
+            goto cleanup;
+         }
+
+         if ( xmlStrcmp( node->name, BAD_CAST "lastfield") == 0 ) break;
+      }
+      node = node->next;
+   }
+   
+   return 0;
+   
+cleanup:
+   
+   if ( propName ) xmlFree(propName);
+   if ( prop ) xmlFree(prop);
+   
+   return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
