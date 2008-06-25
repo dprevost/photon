@@ -31,6 +31,7 @@ enum vdsaObjetType
    VDSA_SESSION,
    VDSA_FOLDER,
    VDSA_HASH_MAP,
+   VDSA_MAP,
    VDSA_QUEUE
 };
 

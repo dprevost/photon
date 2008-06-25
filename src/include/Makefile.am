@@ -56,6 +56,19 @@ VDS_C_FILES =                     \
         man3/vdsInitSession.3     \
         man3/vdsIteratorType.3    \
         man3/vdsLastError.3       \
+        man3/vdsMap_c.3           \
+        man3/vdsMapClose.3        \
+        man3/vdsMapDefinition.3   \
+        man3/vdsMapDelete.3       \
+        man3/vdsMapEdit.3         \
+        man3/vdsMapGet.3          \
+        man3/vdsMapGetFirst.3     \
+        man3/vdsMapGetNext.3      \
+        man3/vdsMap.h.3           \
+        man3/vdsMapInsert.3       \
+        man3/vdsMapOpen.3         \
+        man3/vdsMapReplace.3      \
+        man3/vdsMapStatus.3       \
         man3/vdsObjectType.3      \
         man3/vdsObjStatus.3       \
         man3/vdsProcess_c.3       \
@@ -103,6 +116,7 @@ nobase_include_HEADERS =  \
         vdsf/vdsErrors.h  \
         vdsf/vdsFolder.h  \
         vdsf/vdsHashMap.h \
+        vdsf/vdsMap.h     \
         vdsf/vdsProcess.h \
         vdsf/vdsQueue.h   \
         vdsf/vdsSession.h \

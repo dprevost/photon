@@ -42,6 +42,8 @@ libvdsf_la_SOURCES =     \
         Folder.h         \
         HashMap.c        \
         HashMap.h        \
+        Map.c            \
+        Map.h            \
         Process.c        \
         Process.h        \
         Queue.c          \

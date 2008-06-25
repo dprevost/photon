@@ -715,6 +715,24 @@
     </error>
 
     <error>
+      <errnumber> 70 </errnumber>
+      <errname> OBJECT_IS_READ_ONLY </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The object is read-only and update operations on it are not 
+            permitted.
+          </errormsg>
+          <errordoc>
+            The object is read-only and update operations (delete/insert/replace)
+            on it are not permitted.
+            at this time.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
       <errnumber> 101 </errnumber>
       <errname> INVALID_NUM_FIELDS </errname>
       <message_group>
