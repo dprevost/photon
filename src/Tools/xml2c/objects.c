@@ -54,6 +54,15 @@ int doHashMap( xmlNode * queueNode, const char * name )
    fprintf( fp, "struct %s {\n", name );
    
    node = queueNode->children;
+
+   /* Jump past the key */
+   while ( node != NULL ) {
+      if ( node->type == XML_ELEMENT_NODE ) {
+         node = node->next;
+         break;
+      }
+      node = node->next;
+   }
    
    rc = doDefinition( fp, node );
    
