@@ -26,7 +26,15 @@
 #include <vdsf/vdsProcess.h>
 #include <vdsf/vdsSession.h>
 #include <vdsf/vdsFolder.h>
+/*
+ * Hash maps and maps implements the same data container but differs with 
+ * respect to transactions. 
+ * 
+ * Hash maps are read-write and locks are used to insure data integrity.
+ * Maps are read-only (with an update procedure) and no locks are required.
+ */
 #include <vdsf/vdsHashMap.h>
+#include <vdsf/vdsMap.h>
 #include <vdsf/vdsQueue.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

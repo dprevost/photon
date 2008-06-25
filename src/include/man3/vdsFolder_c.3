@@ -1,4 +1,4 @@
-.TH "API functions for vdsf folders." 3 "13 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "API functions for vdsf folders." 3 "25 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -11,6 +11,18 @@ API functions for vdsf folders. \-
 .RI "VDSF_EXPORT int \fBvdsFolderClose\fP (\fBVDS_HANDLE\fP objectHandle)"
 .br
 .RI "\fIClose a folder. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderCreateObject\fP (\fBVDS_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjectDefinition\fP *pDefinition)"
+.br
+.RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderCreateObjectXML\fP (\fBVDS_HANDLE\fP folderHandle, const char *xmlBuffer, size_t lengthInBytes)"
+.br
+.RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderDestroyObject\fP (\fBVDS_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes)"
+.br
+.RI "\fIDestroy an object, child of the current folder, in shared memory. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsFolderGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
 .br
@@ -39,6 +51,75 @@ This function terminates the current access to the folder in shared memory (the 
 \fBParameters:\fP
 .RS 4
 \fIobjectHandle\fP The handle to the folder (see \fBvdsFolderOpen\fP).
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsFolderCreateObject (\fBVDS_HANDLE\fP folderHandle, const char * objectName, size_t nameLengthInBytes, \fBvdsObjectDefinition\fP * pDefinition)"
+.PP
+Create a new object in shared memory as a child of the current folder. 
+.PP
+The creation of the object only becomes permanent after a call to \fBvdsCommit\fP.
+.PP
+This function does not provide a handle to the newly created object. Use vdsQueueOpen and similar functions to get the handle.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfolderHandle\fP Handle to the current folder. 
+.br
+\fIobjectName\fP The name of the object. 
+.br
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the vdsf engine). 
+.br
+\fIpDefinition\fP The type of object to create (folder, queue, etc.) and the 'optional' definition.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsFolderCreateObjectXML (\fBVDS_HANDLE\fP folderHandle, const char * xmlBuffer, size_t lengthInBytes)"
+.PP
+Create a new object in shared memory as a child of the current folder. 
+.PP
+The creation of the object only becomes permanent after a call to \fBvdsCommit\fP.
+.PP
+This function does not provide a handle to the newly created object. Use vdsQueueOpen and similar functions to get the handle.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfolderHandle\fP Handle to the current folder. 
+.br
+\fIxmlBuffer\fP The XML buffer (string) containing all the required information. 
+.br
+\fIlengthInBytes\fP The length of \fIxmlBuffer\fP (in bytes) not counting the null terminator.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsFolderDestroyObject (\fBVDS_HANDLE\fP folderHandle, const char * objectName, size_t nameLengthInBytes)"
+.PP
+Destroy an object, child of the current folder, in shared memory. 
+.PP
+The destruction of the object only becomes permanent after a call to \fBvdsCommit\fP.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfolderHandle\fP Handle to the current folder. 
+.br
+\fIobjectName\fP The name of the object. 
+.br
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the vdsf engine).
 .RE
 .PP
 \fBReturns:\fP

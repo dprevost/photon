@@ -1,4 +1,4 @@
-.TH "vdsFolder.h" 3 "13 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsFolder.h" 3 "25 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -23,6 +23,18 @@ Definition in file \fBvdsFolder.h\fP.
 .RI "VDSF_EXPORT int \fBvdsFolderClose\fP (\fBVDS_HANDLE\fP objectHandle)"
 .br
 .RI "\fIClose a folder. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderCreateObject\fP (\fBVDS_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjectDefinition\fP *pDefinition)"
+.br
+.RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderCreateObjectXML\fP (\fBVDS_HANDLE\fP folderHandle, const char *xmlBuffer, size_t lengthInBytes)"
+.br
+.RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFolderDestroyObject\fP (\fBVDS_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes)"
+.br
+.RI "\fIDestroy an object, child of the current folder, in shared memory. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsFolderGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
 .br

@@ -1,4 +1,4 @@
-.TH "vdsErrors.h" 3 "13 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsErrors.h" 3 "25 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,14 +17,14 @@ vdsErrors.h \-
 
 .in +1c
 .ti -1c
-.RI "enum \fBvdsErrors\fP { \fBVDS_OK\fP =  0, \fBVDS_INTERNAL_ERROR\fP =  666, \fBVDS_ENGINE_BUSY\fP =  1, \fBVDS_NOT_ENOUGH_VDS_MEMORY\fP =  2, \fBVDS_NOT_ENOUGH_HEAP_MEMORY\fP =  3, \fBVDS_NOT_ENOUGH_RESOURCES\fP =  4, \fBVDS_WRONG_TYPE_HANDLE\fP =  5, \fBVDS_NULL_HANDLE\fP =  6, \fBVDS_NULL_POINTER\fP =  7, \fBVDS_INVALID_LENGTH\fP =  8, \fBVDS_PROCESS_ALREADY_INITIALIZED\fP =  21, \fBVDS_PROCESS_NOT_INITIALIZED\fP =  22, \fBVDS_INVALID_WATCHDOG_ADDRESS\fP =  23, \fBVDS_INCOMPATIBLE_VERSIONS\fP =  24, \fBVDS_SOCKET_ERROR\fP =  25, \fBVDS_CONNECT_ERROR\fP =  26, \fBVDS_SEND_ERROR\fP =  27, \fBVDS_RECEIVE_ERROR\fP =  28, \fBVDS_BACKSTORE_FILE_MISSING\fP =  29, \fBVDS_ERROR_OPENING_VDS\fP =  30, \fBVDS_LOGFILE_ERROR\fP =  41, \fBVDS_SESSION_CANNOT_GET_LOCK\fP =  42, \fBVDS_SESSION_IS_TERMINATED\fP =  43, \fBVDS_INVALID_OBJECT_NAME\fP =  51, \fBVDS_NO_SUCH_OBJECT\fP =  52, \fBVDS_NO_SUCH_FOLDER\fP =  53, \fBVDS_OBJECT_ALREADY_PRESENT\fP =  54, \fBVDS_IS_EMPTY\fP =  55, \fBVDS_WRONG_OBJECT_TYPE\fP =  56, \fBVDS_OBJECT_CANNOT_GET_LOCK\fP =  57, \fBVDS_REACHED_THE_END\fP =  58, \fBVDS_INVALID_ITERATOR\fP =  59, \fBVDS_OBJECT_NAME_TOO_LONG\fP =  60, \fBVDS_FOLDER_IS_NOT_EMPTY\fP =  61, \fBVDS_ITEM_ALREADY_PRESENT\fP =  62, \fBVDS_NO_SUCH_ITEM\fP =  63, \fBVDS_OBJECT_IS_DELETED\fP =  64, \fBVDS_OBJECT_NOT_INITIALIZED\fP =  65, \fBVDS_ITEM_IS_IN_USE\fP =  66, \fBVDS_ITEM_IS_DELETED\fP =  67, \fBVDS_OBJECT_IS_IN_USE\fP =  69, \fBVDS_INVALID_NUM_FIELDS\fP =  101, \fBVDS_INVALID_FIELD_TYPE\fP =  102, \fBVDS_INVALID_FIELD_LENGTH_INT\fP =  103, \fBVDS_INVALID_FIELD_LENGTH\fP =  104, \fBVDS_INVALID_FIELD_NAME\fP =  105, \fBVDS_DUPLICATE_FIELD_NAME\fP =  106, \fBVDS_INVALID_PRECISION\fP =  107, \fBVDS_INVALID_SCALE\fP =  108 }"
+.RI "enum \fBvdsErrors\fP { \fBVDS_OK\fP =  0, \fBVDS_INTERNAL_ERROR\fP =  666, \fBVDS_ENGINE_BUSY\fP =  1, \fBVDS_NOT_ENOUGH_VDS_MEMORY\fP =  2, \fBVDS_NOT_ENOUGH_HEAP_MEMORY\fP =  3, \fBVDS_NOT_ENOUGH_RESOURCES\fP =  4, \fBVDS_WRONG_TYPE_HANDLE\fP =  5, \fBVDS_NULL_HANDLE\fP =  6, \fBVDS_NULL_POINTER\fP =  7, \fBVDS_INVALID_LENGTH\fP =  8, \fBVDS_PROCESS_ALREADY_INITIALIZED\fP =  21, \fBVDS_PROCESS_NOT_INITIALIZED\fP =  22, \fBVDS_INVALID_WATCHDOG_ADDRESS\fP =  23, \fBVDS_INCOMPATIBLE_VERSIONS\fP =  24, \fBVDS_SOCKET_ERROR\fP =  25, \fBVDS_CONNECT_ERROR\fP =  26, \fBVDS_SEND_ERROR\fP =  27, \fBVDS_RECEIVE_ERROR\fP =  28, \fBVDS_BACKSTORE_FILE_MISSING\fP =  29, \fBVDS_ERROR_OPENING_VDS\fP =  30, \fBVDS_LOGFILE_ERROR\fP =  41, \fBVDS_SESSION_CANNOT_GET_LOCK\fP =  42, \fBVDS_SESSION_IS_TERMINATED\fP =  43, \fBVDS_INVALID_OBJECT_NAME\fP =  51, \fBVDS_NO_SUCH_OBJECT\fP =  52, \fBVDS_NO_SUCH_FOLDER\fP =  53, \fBVDS_OBJECT_ALREADY_PRESENT\fP =  54, \fBVDS_IS_EMPTY\fP =  55, \fBVDS_WRONG_OBJECT_TYPE\fP =  56, \fBVDS_OBJECT_CANNOT_GET_LOCK\fP =  57, \fBVDS_REACHED_THE_END\fP =  58, \fBVDS_INVALID_ITERATOR\fP =  59, \fBVDS_OBJECT_NAME_TOO_LONG\fP =  60, \fBVDS_FOLDER_IS_NOT_EMPTY\fP =  61, \fBVDS_ITEM_ALREADY_PRESENT\fP =  62, \fBVDS_NO_SUCH_ITEM\fP =  63, \fBVDS_OBJECT_IS_DELETED\fP =  64, \fBVDS_OBJECT_NOT_INITIALIZED\fP =  65, \fBVDS_ITEM_IS_IN_USE\fP =  66, \fBVDS_ITEM_IS_DELETED\fP =  67, \fBVDS_OBJECT_IS_IN_USE\fP =  69, \fBVDS_INVALID_NUM_FIELDS\fP =  101, \fBVDS_INVALID_FIELD_TYPE\fP =  102, \fBVDS_INVALID_FIELD_LENGTH_INT\fP =  103, \fBVDS_INVALID_FIELD_LENGTH\fP =  104, \fBVDS_INVALID_FIELD_NAME\fP =  105, \fBVDS_DUPLICATE_FIELD_NAME\fP =  106, \fBVDS_INVALID_PRECISION\fP =  107, \fBVDS_INVALID_SCALE\fP =  108, \fBVDS_INVALID_KEY_DEF\fP =  109, \fBVDS_XML_READ_ERROR\fP =  201, \fBVDS_XML_INVALID_ROOT\fP =  202, \fBVDS_XML_NO_SCHEMA_LOCATION\fP =  203, \fBVDS_XML_PARSER_CONTEXT_FAILED\fP =  204, \fBVDS_XML_PARSE_SCHEMA_FAILED\fP =  205, \fBVDS_XML_VALID_CONTEXT_FAILED\fP =  206, \fBVDS_XML_VALIDATION_FAILED\fP =  207 }"
 .br
 .in -1c
 .SH "Typedef Documentation"
 .PP 
 .SS "typedef enum \fBvdsErrors\fP \fBvdsErrors\fP"
 .PP
-Definition at line 353 of file vdsErrors.h.
+Definition at line 419 of file vdsErrors.h.
 .SH "Enumeration Type Documentation"
 .PP 
 .SS "enum \fBvdsErrors\fP"
@@ -61,7 +61,7 @@ There are not enough resources to correctly process the call. This might be due 
 \fB\fIVDS_WRONG_TYPE_HANDLE \fP\fP
 The provided handle is of the wrong type (C API). 
 .PP
-This could happen if you provide a queue handle to access a hash map or something similar.
+This could happen if you provide a queue handle to access a hash map or something similar. It can also occur if you try to access an object after closing it.
 .PP
 If you are seeing this error for the C++ API (or some other object-oriented interface), you've just found an internal error... (the handle is encapsulated and cannot be modified using the public interface). 
 .TP
@@ -199,7 +199,7 @@ The number of fields in the data definition is invalid - either zero or greater 
 \fB\fIVDS_INVALID_FIELD_TYPE \fP\fP
 The data type of the field definition does not correspond to one of the data type defined in the enum vdsFieldType (\fBvdsf/vdsCommon.h\fP). 
 .PP
-or you've used VDS_VAR_STRING or VDS_VAR_BINARY
+or you've used VDS_VAR_STRING or VDS_VAR_BINARY at the wrong place.
 .PP
 Do not forget that VDS_VAR_STRING and VDS_VAR_BINAR can only be used for the last field of your data definition. 
 .TP
@@ -232,6 +232,44 @@ Note: precision is the number of digits in a number.
 The scale of a VDS_DECIMAL field is invalid (greater than the value of precision. 
 .PP
 Note: scale is the number of digits to the right of the decimal separator in a number. 
+.TP
+\fB\fIVDS_INVALID_KEY_DEF \fP\fP
+The key definition for a hash map is either invalid or missing. 
+.TP
+\fB\fIVDS_XML_READ_ERROR \fP\fP
+Error reading the XML buffer stream. 
+.PP
+No validation is done at this point. Therefore the error is likely something like a missing end-tag or some other non-conformance to the XML's syntax rules.
+.PP
+A simple Google search for 'well-formed xml' returns many web sites that describe the syntax rules for XML. You can also use the program xmllint (included in the distribution of libxm2) to pinpoint the issue. 
+.TP
+\fB\fIVDS_XML_INVALID_ROOT \fP\fP
+The root element is not the expected root, <folder> and similar. 
+.TP
+\fB\fIVDS_XML_NO_SCHEMA_LOCATION \fP\fP
+The root element must have an attribute named schemaLocation (in the namespace 'http://www.w3.org/2001/XMLSchema-instance') to point to the schema use for the xml buffer stream. 
+.PP
+This attribute is in two parts separated by a space. The code expects the file name of the schema in the second element of this attribute. 
+.TP
+\fB\fIVDS_XML_PARSER_CONTEXT_FAILED \fP\fP
+The creation of a new schema parser context failed. 
+.PP
+There might be multiple reasons for this, for example, a memory-allocation failure in libxml2. However, the most likely reason is that the schema file is not at the location indicated by the attribute schemaLocation of the root element of the buffer stream. 
+.TP
+\fB\fIVDS_XML_PARSE_SCHEMA_FAILED \fP\fP
+The parse operation of the schema failed. 
+.PP
+Most likely, there is an error in the schema. To debug this you can use xmllint (part of the libxml2 package). 
+.TP
+\fB\fIVDS_XML_VALID_CONTEXT_FAILED \fP\fP
+The creation of a new schema validation context failed. 
+.PP
+There might be multiple reasons for this, for example, a memory-allocation failure in libxml2. 
+.TP
+\fB\fIVDS_XML_VALIDATION_FAILED \fP\fP
+Document validation for the xml buffer failed. 
+.PP
+To debug this problem you can use xmllint (part of the libxml2 package). 
 .PP
 Definition at line 34 of file vdsErrors.h.
 .SH "Author"
