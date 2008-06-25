@@ -90,7 +90,9 @@ int vdsCreateObject( VDS_HANDLE            sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/**
+#if 0
+Not sure yet how this will be implemented. If at all...
+/*
  * Create one or more new objects in shared memory. All parent folders will be 
  * created if they do not exist.
  *
@@ -112,6 +114,7 @@ VDSF_EXPORT
 int vdsCreateObjectXML( VDS_HANDLE   sessionHandle,
                         const char * xmlBuffer,
                         size_t       lengthInBytes );
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
