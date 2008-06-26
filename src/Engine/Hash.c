@@ -890,8 +890,8 @@ vdseHashInsertAt( vdseHash            * pHash,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum ListErrors 
-vdseHashResize( vdseHash*           pHash,
-                vdseSessionContext* pContext )
+vdseHashResize( vdseHash           * pHash,
+                vdseSessionContext * pContext )
 {
    int newIndexLength;
    ptrdiff_t* ptr;
@@ -971,6 +971,89 @@ vdseHashResize( vdseHash*           pHash,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * Warning: this function should only be used when working with a temp copy
+ * of read-only maps. For read-write containers, do not use as you cannot
+ * rollback!
+ */
+
+enum ListErrors
+vdseHashUpdate( vdseHash            * pHash,
+                const unsigned char * pKey,
+                size_t                keyLength,
+                const void          * pData,
+                size_t                dataLength,
+                vdseSessionContext  * pContext )
+{
+   size_t bucket = 0;
+   bool keyFound = false;
+   ptrdiff_t * pArray;
+   size_t newItemLength, oldItemLength;
+   vdseHashItem * pOldItem, * previousItem = NULL, * pNewItem = NULL;
+   vdseMemObject * pMemObject;
+
+   VDS_PRE_CONDITION( pHash    != NULL );
+   VDS_PRE_CONDITION( pKey     != NULL );
+   VDS_PRE_CONDITION( pData    != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( keyLength  > 0 );
+   VDS_PRE_CONDITION( dataLength > 0 );
+   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+
+   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
+   VDS_INV_CONDITION( pArray != NULL );
+
+   keyFound = findKey( pHash, pArray, pKey, keyLength,
+                       &pOldItem, &previousItem, &bucket );
+
+   if ( ! keyFound ) return LIST_KEY_NOT_FOUND;
+
+   newItemLength = calculateItemLength( keyLength, dataLength );
+   oldItemLength = calculateItemLength( keyLength, pOldItem->dataLength );
+
+   if ( newItemLength == oldItemLength ) {
+      /*
+       * Less work! We can just copy the data. We do not care about crash 
+       * recovery -> this a temp copy and it will be removed if the program
+       * crashes.
+       */
+      memcpy( GET_PTR_FAST(pOldItem->dataOffset, void), pData, dataLength );
+      pHash->totalDataSizeInBytes += (dataLength - pOldItem->dataLength);
+      pOldItem->dataLength = dataLength;
+   }
+   else {
+      pMemObject = GET_PTR_FAST( pHash->memObjOffset, vdseMemObject );
+      pNewItem = (vdseHashItem*) 
+         vdseMalloc( pMemObject, newItemLength, pContext );
+      if ( pNewItem == NULL ) return LIST_NO_MEMORY;
+      
+      /* initialize the new record */
+      pNewItem->nextItem = pOldItem->nextItem;
+
+      pNewItem->keyLength = keyLength;
+      pNewItem->dataLength = dataLength;
+      pNewItem->dataOffset = SET_OFFSET(pNewItem) + newItemLength - dataLength;
+      pNewItem->nextSameKey = NULL_OFFSET;
+   
+      memcpy( pNewItem->key, pKey, keyLength );
+      memcpy( GET_PTR_FAST(pNewItem->dataOffset, unsigned char), pData, dataLength );
+
+      pHash->totalDataSizeInBytes += (dataLength - pOldItem->dataLength);
+
+      if ( previousItem == NULL ) {
+         pArray[bucket] = SET_OFFSET(pNewItem);
+      }
+      else {
+         previousItem->nextItem = SET_OFFSET(pNewItem);
+      }
+      
+      /* Eliminate the old record */
+      vdseFree( pMemObject, (unsigned char*)pOldItem, oldItemLength, pContext );
+   }
+   
+    return LIST_OK;
+}
 
 #if 0
 

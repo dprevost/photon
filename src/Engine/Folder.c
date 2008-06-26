@@ -633,7 +633,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseFolderGetObject( vdseFolder         * pFolder,
-                         const char    * objectName,
+                         const char         * objectName,
                          size_t               strLength,
                          enum vdsObjectType   objectType,
                          vdseFolderItem     * pFolderItem,
