@@ -92,6 +92,7 @@ enum vdsObjectType
    VDS_FOLDER   = 1,
    VDS_QUEUE    = 2,
    VDS_HASH_MAP = 3,
+   VDS_MAP      = 4,
    VDS_LAST_OBJECT_TYPE
 };
 

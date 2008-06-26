@@ -217,7 +217,8 @@ int vdsaValidateDefinition( vdsObjectDefinition * pDefinition )
       return 0;
 
    case VDS_HASH_MAP:
-      
+   case VDS_MAP:
+
       /* We do the key and let the queue case test the rest */
       switch( pDefinition->key.type ) {
 

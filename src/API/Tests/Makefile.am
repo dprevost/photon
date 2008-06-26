@@ -21,6 +21,7 @@ SUBDIRS =            \
         CommonObject \
         Folder       \
         HashMap      \
+        Map          \
         Queue        
 
 EXTRA_DIST =               \
