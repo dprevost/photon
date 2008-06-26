@@ -406,6 +406,9 @@ GCC)
     arch_include=ok
     AC_DEFINE(VDS_USE_SPARC_GCC, 1, Using a gcc-like compiler on a sparc) ;;
   #sparc64)      ;;
+  powerpc)
+    arch_include=ok
+    AC_DEFINE(VDS_USE_PPC_GCC, 1, Using a gcc-like compiler on a PowerPC) ;;
   esac ;;
 ICC)
   # Intel compiler on x86 (32 and 64 bits) understands gcc inline
