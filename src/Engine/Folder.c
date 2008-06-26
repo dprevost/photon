@@ -19,6 +19,7 @@
 #include "Engine/Transaction.h"
 #include "Engine/MemoryAllocator.h"
 #include "Engine/HashMap.h"
+#include "Engine/Map.h"
 #include "Engine/Queue.h"
 #include "Engine/MemoryHeader.h"
 
@@ -1161,6 +1162,9 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
       case VDS_HASH_MAP:
          memObjType = VDSE_IDENT_HASH_MAP;
          break;
+      case VDS_MAP:
+         memObjType = VDSE_IDENT_MAP;
+         break;
       case VDS_QUEUE:
          memObjType = VDSE_IDENT_QUEUE;
          break;
@@ -1233,6 +1237,21 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
                               SET_OFFSET(pHashItem->key),
                               pDefinition,
                               pContext );
+         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseHashMap,nodeObject);
+         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseHashMap,memObject);
+         break;
+
+      case VDSE_IDENT_MAP:
+         rc = vdseMapInit( (vdseMap *)ptr,
+                           SET_OFFSET(pFolder),
+                           numBlocks,
+                           expectedNumOfChilds,
+                           objTxStatus,
+                           partialLength,
+                           pDesc->originalName,
+                           SET_OFFSET(pHashItem->key),
+                           pDefinition,
+                           pContext );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseHashMap,nodeObject);
          pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseHashMap,memObject);
          break;
@@ -1463,6 +1482,9 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
       break;
    case VDS_QUEUE:
       vdseQueueFini( (vdseQueue *)ptrObject, pContext );
+      break;
+   case VDS_MAP:
+      vdseMapFini( (vdseMap *)ptrObject, pContext );
       break;
    case VDS_LAST_OBJECT_TYPE:
       ;

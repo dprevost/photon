@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -69,8 +69,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/ahip",
-                              strlen("/ahip"),
+                              "/amip",
+                              strlen("/amip"),
                               &folderDef );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -78,8 +78,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/ahip/test",
-                              strlen("/ahip/test"),
+                              "/amip/test",
+                              strlen("/amip/test"),
                               &mapDef );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -93,16 +93,16 @@ int main( int argc, char * argv[] )
    }
    
    errcode = vdsMapOpen( sessionHandle,
-                             "/ahip/test",
-                             strlen("/ahip/test"),
+                             "/amip/test",
+                             strlen("/amip/test"),
                              &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdsMapOpen( sessionHandle2,
-                             "/ahip/test",
-                             strlen("/ahip/test"),
+                             "/amip/test",
+                             strlen("/amip/test"),
                              &objHandle2 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

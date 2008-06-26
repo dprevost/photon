@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -65,8 +65,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/ahnnh",
-                              strlen("/ahnnh"),
+                              "/amnnh",
+                              strlen("/amnnh"),
                               &folderDef );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -74,8 +74,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/ahnnh/test",
-                              strlen("/ahnnh/test"),
+                              "/amnnh/test",
+                              strlen("/amnnh/test"),
                               &mapDef );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -83,8 +83,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsMapOpen( sessionHandle,
-                             "/ahnnh/test",
-                             strlen("/ahnnh/test"),
+                             "/amnnh/test",
+                             strlen("/amnnh/test"),
                              &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

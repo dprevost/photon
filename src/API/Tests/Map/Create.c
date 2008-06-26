@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -53,8 +53,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/ahmcr",
-                              strlen("/ahmcr"),
+                              "/ammcr",
+                              strlen("/ammcr"),
                               &def );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -62,8 +62,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsFolderOpen( sessionHandle,
-                            "/ahmcr",
-                            strlen("/ahmcr"),
+                            "/ammcr",
+                            strlen("/ammcr"),
                             &folderHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -324,8 +324,8 @@ int main( int argc, char * argv[] )
    /* Reopen the folder, close the process and try to act on the session */
 
    errcode = vdsFolderOpen( sessionHandle,
-                            "/ahmcr",
-                            strlen("/ahmcr"),
+                            "/ammcr",
+                            strlen("/ammcr"),
                             &folderHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

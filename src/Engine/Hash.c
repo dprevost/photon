@@ -431,6 +431,69 @@ void vdseHashDeleteAt( vdseHash           * pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * Note: there is no "same key" here since this function is used for doing
+ * changes to a temp. copy of read-only objects - no transaction.
+ */
+enum ListErrors 
+vdseHashDeleteRaw( vdseHash            * pHash,
+                   const unsigned char * pKey, 
+                   size_t                keyLength,
+                   vdseSessionContext  * pContext  )
+{
+   size_t bucket = 0;
+   ptrdiff_t * pArray;
+   bool keyFound = false;
+   vdseHashItem * previousItem = NULL, * pItem = NULL;
+   ptrdiff_t nextOffset;
+   vdseMemObject * pMemObject;
+  
+   VDS_PRE_CONDITION( pHash     != NULL );
+   VDS_PRE_CONDITION( pContext  != NULL );
+   VDS_PRE_CONDITION( pKey      != NULL );
+   VDS_PRE_CONDITION( keyLength > 0 );
+   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   
+   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
+   VDS_INV_CONDITION( pArray != NULL );
+
+   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
+   
+   keyFound = findKey( pHash, 
+                       pArray, 
+                       pKey, 
+                       keyLength, 
+                       &pItem, 
+                       &previousItem, 
+                       &bucket );
+
+   if ( keyFound ) {
+      nextOffset  = pItem->nextItem;
+      
+      pHash->totalDataSizeInBytes -= pItem->dataLength;
+      vdseFree( pMemObject, 
+                (unsigned char*)pItem, 
+                calculateItemLength(pItem->keyLength,pItem->dataLength),
+                pContext );
+                
+      if ( previousItem == NULL ) {
+         pArray[bucket] = nextOffset;
+      }
+      else {
+         previousItem->nextItem = nextOffset;
+      }
+      
+      pHash->numberOfItems--;
+      pHash->enumResize = isItTimeToResize( pHash );
+
+      return LIST_OK;
+   }
+
+   return LIST_KEY_NOT_FOUND;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 void vdseHashEmpty( vdseHash*           pHash,
                     vdseSessionContext* pContext )
 {

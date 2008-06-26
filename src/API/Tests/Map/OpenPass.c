@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of vdsf (Virtual Data Space Framework).
  *
@@ -68,8 +68,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/ahop",
-                              strlen("/ahop"),
+                              "/amop",
+                              strlen("/amop"),
                               &folderDef );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -77,8 +77,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsCreateObject( sessionHandle,
-                              "/ahop/test",
-                              strlen("/ahop/test"),
+                              "/amop/test",
+                              strlen("/amop/test"),
                               &mapDef );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -88,8 +88,8 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = vdsMapOpen( NULL,
-                             "/ahop/test",
-                             strlen("/ahop/test"),
+                             "/amop/test",
+                             strlen("/amop/test"),
                              &objHandle );
    if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -98,8 +98,8 @@ int main( int argc, char * argv[] )
 
    objHandle = (VDS_HANDLE) junk;
    errcode = vdsMapOpen( objHandle,
-                             "/ahop/test",
-                             strlen("/ahop/test"),
+                             "/amop/test",
+                             strlen("/amop/test"),
                              &objHandle );
    if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -108,7 +108,7 @@ int main( int argc, char * argv[] )
 
    errcode = vdsMapOpen( sessionHandle,
                              NULL,
-                             strlen("/ahop/test"),
+                             strlen("/amop/test"),
                              &objHandle );
    if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -116,7 +116,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsMapOpen( sessionHandle,
-                             "/ahop/test",
+                             "/amop/test",
                              0,
                              &objHandle );
    if ( errcode != VDS_INVALID_LENGTH ) {
@@ -125,8 +125,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsMapOpen( sessionHandle,
-                             "/ahop/test",
-                             strlen("/ahop/test"),
+                             "/amop/test",
+                             strlen("/amop/test"),
                              NULL );
    if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -135,8 +135,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = vdsMapOpen( sessionHandle,
-                            "/ahop/test",
-                            strlen("/ahop/test"),
+                            "/amop/test",
+                            strlen("/amop/test"),
                             &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -144,8 +144,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsMapOpen( sessionHandle2,
-                            "/ahop/test",
-                            strlen("/ahop/test"),
+                            "/amop/test",
+                            strlen("/amop/test"),
                             &objHandle2 );
    if ( errcode != VDS_OBJECT_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );

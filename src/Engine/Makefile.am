@@ -48,6 +48,8 @@ libEngine_la_SOURCES =    \
         ListErrors.h      \
         LogFile.c         \
         LogFile.h         \
+        Map.c             \
+        Map.h             \
         MemBitmap.c       \
         MemBitmap.h       \
         MemBitmap.inl     \

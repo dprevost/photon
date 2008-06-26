@@ -118,6 +118,10 @@ typedef struct vdseHash vdseHash;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * Used to delete an item when you already have a pointer to it 
+ * (pHashItem) but the exact position is unknown.
+ */
 VDSF_ENGINE_EXPORT 
 enum ListErrors vdseHashDelete( vdseHash            * pHash,
                                 const unsigned char * pKey, 
@@ -131,6 +135,13 @@ void vdseHashDeleteAt( vdseHash            * pHash,
                        size_t                bucket,
                        vdseHashItem        * pItem,
                        vdseSessionContext  * pContext );
+
+/* Direct delete using the key and nothing else. */
+VDSF_ENGINE_EXPORT 
+enum ListErrors vdseHashDeleteRaw( vdseHash            * pHash,
+                                   const unsigned char * pKey, 
+                                   size_t                keyLength,
+                                   vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT 
 void vdseHashEmpty( vdseHash           * pHash,

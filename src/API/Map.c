@@ -247,7 +247,7 @@ int vdsMapEdit( VDS_HANDLE   sessionHandle,
    if ( ! pHashMap->object.pSession->terminated ) {
 
       errcode = vdsaCommonObjOpen( &pHashMap->object,
-                                   VDS_HASH_MAP,
+                                   VDS_MAP,
                                    hashMapName,
                                    nameLengthInBytes );
       if ( errcode == 0 ) {
@@ -646,7 +646,7 @@ int vdsMapOpen( VDS_HANDLE   sessionHandle,
    if ( ! pHashMap->object.pSession->terminated ) {
 
       errcode = vdsaCommonObjOpen( &pHashMap->object,
-                                   VDS_HASH_MAP,
+                                   VDS_MAP,
                                    hashMapName,
                                    nameLengthInBytes );
       if ( errcode == 0 ) {
