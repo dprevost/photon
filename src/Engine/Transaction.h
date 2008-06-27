@@ -43,7 +43,8 @@ enum vdseTxType
 
    /* ops on objects */
    VDSE_TX_ADD_OBJECT = 0x81,
-   VDSE_TX_REMOVE_OBJECT
+   VDSE_TX_REMOVE_OBJECT,
+   VDSE_TX_ADD_EDIT_OBJECT
 
 };
 

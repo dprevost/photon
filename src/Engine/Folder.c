@@ -420,15 +420,19 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
                           vdseSessionContext * pContext )
 {
    bool lastIteration = true;
-   size_t partialLength = 0;
+   size_t partialLength = 0, descLength, bucket = 0;
    enum ListErrors listErr = LIST_OK;
-   vdseObjectDescriptor * pDesc = NULL;
-   vdseHashItem * pHashItem = NULL;
+   vdseObjectDescriptor * pDescNew = NULL, * pDescOld = NULL;
+   vdseHashItem * pHashItemOld = NULL, *pHashItemNew = NULL;
    int rc;
    vdsErrors errcode;
    vdseTxStatus * txStatus;
    vdseTxStatus * txFolderStatus;
    vdseFolder * pNextFolder;
+   vdseMemObject * pMemObject;
+   unsigned char * ptr;
+   vdseMemObjIdent memObjType = VDSE_IDENT_LAST;
+   vdseTxStatus* objTxStatus;  /* txStatus of the created object */
    
    VDS_PRE_CONDITION( pFolder     != NULL );
    VDS_PRE_CONDITION( objectName  != NULL )
@@ -447,9 +451,9 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
    listErr = vdseHashGet( &pFolder->hashObj, 
                           (unsigned char *)objectName, 
                           partialLength * sizeof(char), 
-                          &pHashItem,
+                          &pHashItemOld,
                           pContext,
-                          NULL );
+                          &bucket );
    if ( listErr != LIST_OK ) {
       if (lastIteration) {
          errcode = VDS_NO_SUCH_OBJECT;
@@ -459,13 +463,13 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
       }
       goto the_exit;
    }
-   while ( pHashItem->nextSameKey != NULL_OFFSET ) {
-      GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
+   while ( pHashItemOld->nextSameKey != NULL_OFFSET ) {
+      GET_PTR( pHashItemOld, pHashItemOld->nextSameKey, vdseHashItem );
    }
 
-   txStatus = &pHashItem->txStatus;
+   txStatus = &pHashItemOld->txStatus;
 
-   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDescOld, pHashItemOld->dataOffset, vdseObjectDescriptor );
    
    if ( lastIteration ) {
       GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
@@ -495,14 +499,122 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
             goto the_exit;
          }
       }
-      if ( objectType != pDesc->apiType ) {
+      if ( (objectType != VDS_MAP) || (objectType != pDescOld->apiType) ) {
          errcode = VDS_WRONG_OBJECT_TYPE;
          goto the_exit;
       }
+      pMemObject = GET_PTR_FAST( pDescOld->memOffset, vdseMemObject );
+      
+      ptr = (unsigned char*) vdseMallocBlocks( pContext->pAllocator,
+                                               VDSE_ALLOC_API_OBJ,
+                                               pMemObject->totalBlocks,
+                                               pContext );
+      if ( ptr == NULL ) {
+         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
+         goto the_exit;
+      }
 
+      descLength = offsetof(vdseObjectDescriptor, originalName) + 
+          (partialLength+1) * sizeof(char);
+      pDescNew = (vdseObjectDescriptor *) malloc( descLength );
+      if ( pDescNew == NULL ) {
+         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+                         ptr, pMemObject->totalBlocks, pContext );
+         errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+         goto the_exit;
+      }
+      memset( pDescNew, 0, descLength );
+      pDescNew->apiType = pDescOld->apiType;
+      pDescNew->offset = SET_OFFSET( ptr );
+      pDescNew->nameLengthInBytes = partialLength * sizeof(char);
+      memcpy( pDescNew->originalName, pDescOld->originalName, 
+              pDescNew->nameLengthInBytes );
+
+      listErr = vdseHashInsertAt( &pFolder->hashObj, 
+                                  bucket,
+                                  (unsigned char *)objectName, 
+                                  partialLength * sizeof(char), 
+                                  (void*)pDescNew,
+                                  descLength,
+                                  &pHashItemNew,
+                                  pContext );
+      if ( listErr != LIST_OK ) {
+         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+                         ptr, pMemObject->totalBlocks, pContext );
+         free( pDescNew );
+         if ( listErr == LIST_NO_MEMORY ) {
+            errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
+         }
+         else {
+            errcode = VDS_INTERNAL_ERROR;
+         }
+         goto the_exit;
+      }
+
+      switch( pDescOld->apiType ) {
+      case VDS_MAP:
+         memObjType = VDSE_IDENT_MAP;
+         break;
+      default:
+         errcode = VDS_INTERNAL_ERROR;
+         goto the_exit;
+      }
+      
+      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
+                         VDSE_TX_ADD_EDIT_OBJECT,
+                         SET_OFFSET(pFolder),
+                         VDSE_IDENT_FOLDER,
+                         SET_OFFSET(pHashItemNew),
+                         memObjType,
+                         pContext );
+      free( pDescNew ); 
+      pDescNew = NULL;
+      if ( rc != 0 ) {
+         vdseHashDeleteAt( &pFolder->hashObj, 
+                           bucket,
+                           pHashItemNew,
+                           pContext );
+         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+                         ptr, pMemObject->totalBlocks, pContext );
+         goto the_exit;
+      }
+      
+      objTxStatus = &pHashItemNew->txStatus;
+      vdseTxStatusInit( objTxStatus, SET_OFFSET(pContext->pTransaction) );
+      objTxStatus->enumStatus = VDSE_TX_EDIT;
+      
+      pDescNew = GET_PTR_FAST( pHashItemNew->dataOffset, vdseObjectDescriptor );
+
+      switch ( memObjType ) {
+      case VDSE_IDENT_MAP:
+         rc = vdseMapCopy( (vdseMap *)ptr, /* old, */
+                           (vdseMap *)ptr,
+                           pContext );
+         pDescNew->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseHashMap,nodeObject);
+         pDescNew->memOffset  = SET_OFFSET(ptr) + offsetof(vdseHashMap,memObject);
+         break;
+
+      default:
+         errcode = VDS_INTERNAL_ERROR;
+         goto the_exit;
+      }
+
+      if ( rc != 0 ) {
+         vdseTxRemoveLastOps( (vdseTx*)pContext->pTransaction, pContext );
+         vdseHashDeleteAt( &pFolder->hashObj,
+                           bucket,
+                           pHashItemNew,
+                           pContext );
+         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+                         ptr, pMemObject->totalBlocks, pContext );
+         goto the_exit;
+      }
+
+      pFolder->nodeObject.txCounter++;
       txFolderStatus->usageCounter++;
       txStatus->parentCounter++;
-//      pFolderItem->pHashItem = pHashItem;
+      pHashItemOld->nextSameKey = SET_OFFSET(pHashItemNew);
+      pFolderItem->pHashItem = pHashItemNew;
 
       vdseUnlock( &pFolder->memObject, pContext );
 
@@ -510,7 +622,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
    }
    
    /* This is not the last node. This node must be a folder, otherwise... */
-   if ( pDesc->apiType != VDS_FOLDER ) {
+   if ( pDescOld->apiType != VDS_FOLDER ) {
       errcode = VDS_NO_SUCH_OBJECT;
       goto the_exit;
    }
@@ -542,7 +654,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
       }
    }
 
-   GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
+   GET_PTR( pNextFolder, pDescOld->offset, vdseFolder );
    rc = vdseLock( &pNextFolder->memObject, pContext );
    if ( rc != 0 ) {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
