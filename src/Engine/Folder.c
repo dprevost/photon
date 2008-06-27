@@ -422,13 +422,13 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
    bool lastIteration = true;
    size_t partialLength = 0;
    enum ListErrors listErr = LIST_OK;
-   vdseObjectDescriptor* pDesc = NULL;
-   vdseHashItem* pHashItem = NULL;
+   vdseObjectDescriptor * pDesc = NULL;
+   vdseHashItem * pHashItem = NULL;
    int rc;
    vdsErrors errcode;
    vdseTxStatus * txStatus;
    vdseTxStatus * txFolderStatus;
-   vdseFolder* pNextFolder;
+   vdseFolder * pNextFolder;
    
    VDS_PRE_CONDITION( pFolder     != NULL );
    VDS_PRE_CONDITION( objectName  != NULL )
@@ -502,7 +502,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
 
       txFolderStatus->usageCounter++;
       txStatus->parentCounter++;
-      pFolderItem->pHashItem = pHashItem;
+//      pFolderItem->pHashItem = pHashItem;
 
       vdseUnlock( &pFolder->memObject, pContext );
 

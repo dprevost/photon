@@ -49,6 +49,8 @@ struct vdseMap
    /** Offset to the data definition */
    ptrdiff_t            dataDefOffset;
 
+   ptrdiff_t latestVersion;
+   
    uint16_t numFields;
    
    /** Variable size struct - always put at the end */
@@ -69,6 +71,11 @@ VDSF_ENGINE_EXPORT
 void vdseMapCommitRemove( vdseMap            * pHashMap, 
                           ptrdiff_t            itemOffset,
                           vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+int vdseMapCopy( vdseMap            * pHashMap, 
+                 vdseMap            * pNewMap,
+                 vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseMapDelete( vdseMap            * pHashMap,

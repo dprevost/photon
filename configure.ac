@@ -498,6 +498,7 @@ AC_CONFIG_FILES([
    src/Engine/Tests/HashMap/Makefile
    src/Engine/Tests/List/Makefile
    src/Engine/Tests/LogFile/Makefile
+   src/Engine/Tests/Map/Makefile
    src/Engine/Tests/MemAlloc/Makefile
    src/Engine/Tests/MemBitmap/Makefile
    src/Engine/Tests/MemObject/Makefile

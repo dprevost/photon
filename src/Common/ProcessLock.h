@@ -145,14 +145,7 @@ typedef struct vdscProcessLock
 {
    unsigned int initialized;
 
-#if defined(CONFIG_KERNEL_HEADERS)
-
-   spinlock_t lock;
-   
-#else
-   /** Might be used to hold the pid and not for locking */
    vds_lock_T lock;
-#endif
 
 #if defined (VDS_USE_POSIX_SEMAPHORE)
    union sem_align  semaphore;

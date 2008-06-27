@@ -128,6 +128,32 @@ void vdseMapCommitRemove( vdseMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int vdseMapCopy( vdseMap            * pHashMap, 
+                 vdseMap            * pNewMap,
+                 vdseSessionContext * pContext )
+{
+   int errcode;
+   
+   VDS_PRE_CONDITION( pHashMap != NULL );
+   VDS_PRE_CONDITION( pNewMap  != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   
+   errcode = vdseMemObjectInit( &pNewMap->memObject, 
+                                VDSE_IDENT_MAP,
+                                &pNewMap->blockGroup,
+                                pHashMap->memObject.totalBlocks );
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pContext->errorHandler,
+                    g_vdsErrorHandle,
+                    errcode );
+      return -1;
+   }
+   
+   return 0;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdseMapDelete( vdseMap            * pHashMap,
                    const void         * pKey,
                    size_t               keyLength, 
@@ -506,6 +532,8 @@ int vdseMapInit( vdseMap             * pHashMap,
    }
    memcpy( &pHashMap->keyDef, &pDefinition->key, sizeof(vdsKeyDefinition) );
 
+   pHashMap->latestVersion = SET_OFFSET( pHashMap );
+   
    return 0;
 }
 

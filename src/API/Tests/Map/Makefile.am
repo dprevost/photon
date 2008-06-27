@@ -47,7 +47,7 @@ check_PROGRAMS =            \
         RetrieveZeroLength  \
         Status              
 
-ClosePass_SOURCES           = ClosePass.c
+Close_SOURCES               = Close.c
 Create_SOURCES              = Create.c
 CreateXML_SOURCES           = CreateXML.c
 Delete_SOURCES              = Delete.c
