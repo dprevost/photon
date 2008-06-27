@@ -66,6 +66,7 @@ int main( int argc, char * argv[] )
    object.pSession = (vdsaSession *) sessionHandle;
    errcode = vdsaCommonObjOpen( &object,
                                 VDS_FOLDER,
+                                false,
                                 "/aclp",
                                 strlen("/aclp") );
    if ( errcode != VDS_OK ) {

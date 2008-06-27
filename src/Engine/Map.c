@@ -133,17 +133,17 @@ int vdseMapDelete( vdseMap            * pHashMap,
                    size_t               keyLength, 
                    vdseSessionContext * pContext )
 {
-   int rc;
-   vdsErrors errcode = VDS_OK;
+//   int rc;
+//   vdsErrors errcode = VDS_OK;
    enum ListErrors listErr = LIST_OK;
-   vdseHashItem* pHashItem = NULL;
-   vdseTxStatus * txItemStatus, * txHashMapStatus;
+//   vdseHashItem* pHashItem = NULL;
+//   vdseTxStatus * txItemStatus, * txHashMapStatus;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pKey     != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( keyLength > 0 );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
    
    listErr = vdseHashDeleteRaw( &pHashMap->hashObj, 
                                 (unsigned char *)pKey,
@@ -174,7 +174,7 @@ void vdseMapFini( vdseMap        * pHashMap,
 {
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
 
    vdseHashFini( &pHashMap->hashObj );
    vdseTreeNodeFini( &pHashMap->nodeObject );
@@ -196,7 +196,7 @@ int vdseMapGet( vdseMap            * pHashMap,
                 vdseSessionContext * pContext )
 {
    enum ListErrors listErr = LIST_OK;
-   vdseHashItem* pHashItem = NULL, * previousItem = NULL;
+   vdseHashItem* pHashItem = NULL; //, * previousItem = NULL;
    vdsErrors errcode;
    vdseTxStatus * txItemStatus, * txHashMapStatus;
    
@@ -205,7 +205,7 @@ int vdseMapGet( vdseMap            * pHashMap,
    VDS_PRE_CONDITION( ppHashItem != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( keyLength > 0 );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
@@ -275,12 +275,11 @@ int vdseMapGetFirst( vdseMap            * pHashMap,
    vdseTxStatus * txHashMapStatus;
    size_t     bucket;
    ptrdiff_t  firstItemOffset;
-   bool isOK;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pItem    != NULL )
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
@@ -341,12 +340,11 @@ int vdseMapGetNext( vdseMap            * pHashMap,
    vdseTxStatus * txHashMapStatus;
    size_t     bucket;
    ptrdiff_t  itemOffset;
-   bool isOK;
 
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pItem    != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
    VDS_PRE_CONDITION( pItem->pHashItem  != NULL );
    VDS_PRE_CONDITION( pItem->itemOffset != NULL_OFFSET );
    
@@ -440,7 +438,7 @@ int vdseMapInit( vdseMap             * pHashMap,
    VDS_PRE_CONDITION( pDefinition->numFields > 0 );
    
    errcode = vdseMemObjectInit( &pHashMap->memObject, 
-                                VDSE_IDENT_HASH_MAP,
+                                VDSE_IDENT_MAP,
                                 &pHashMap->blockGroup,
                                 numberOfBlocks );
    if ( errcode != VDS_OK ) {
@@ -521,11 +519,11 @@ int vdseMapInsert( vdseMap            * pHashMap,
                    vdseSessionContext * pContext )
 {
    enum ListErrors listErr = LIST_OK;
-   vdseHashItem* pHashItem = NULL, * previousHashItem = NULL;
-   vdsErrors errcode = VDS_OK;
-   vdseTxStatus * txItemStatus, * txHashMapStatus;
-   int rc;
-   size_t bucket;
+   vdseHashItem* pHashItem = NULL; //, * previousHashItem = NULL;
+//   vdsErrors errcode = VDS_OK;
+//   vdseTxStatus * txItemStatus, * txHashMapStatus;
+//   int rc;
+//   size_t bucket;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pKey     != NULL )
@@ -533,9 +531,9 @@ int vdseMapInsert( vdseMap            * pHashMap,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( keyLength  > 0 );
    VDS_PRE_CONDITION( itemLength > 0 );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
 
-   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+//   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
    listErr = vdseHashInsert( &pHashMap->hashObj, 
                              (unsigned char *)pKey, 
@@ -568,7 +566,7 @@ int vdseMapRelease( vdseMap            * pHashMap,
    VDS_PRE_CONDITION( pHashMap  != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
 
    vdseMapReleaseNoLock( pHashMap,
                          pHashItem,
@@ -592,7 +590,7 @@ void vdseMapReleaseNoLock( vdseMap            * pHashMap,
    VDS_PRE_CONDITION( pHashMap  != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
@@ -639,7 +637,7 @@ int vdseMapReplace( vdseMap            * pHashMap,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( keyLength  > 0 );
    VDS_PRE_CONDITION( dataLength > 0 );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
 
    listErr = vdseHashUpdate( &pHashMap->hashObj, 
                              (unsigned char *)pKey, 
@@ -779,7 +777,7 @@ void vdseMapStatus( vdseMap      * pHashMap,
 
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pStatus  != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
    
    GET_PTR( txStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 

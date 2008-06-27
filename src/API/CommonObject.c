@@ -25,7 +25,8 @@
 
 /** */
 int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
-                       enum vdsObjectType   objectType, 
+                       enum vdsObjectType   objectType,
+                       bool                 editMode,
                        const char         * objectName,
                        size_t               nameLengthInBytes )
 {
@@ -44,7 +45,8 @@ int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
 
    if ( vdsaCommonLock( pObject ) == 0 ) {
       errcode = vdsaSessionOpenObj( pObject->pSession,
-                                    objectType, 
+                                    objectType,
+                                    editMode,
                                     objectName,
                                     nameLengthInBytes,
                                     pObject );

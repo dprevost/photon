@@ -46,6 +46,12 @@ int vdsCommit( VDS_HANDLE sessionHandle )
    
    if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
+   if ( pSession->numberOfEdits > 0 ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, 
+         VDS_NOT_ALL_EDIT_ARE_CLOSED );
+      return VDS_NOT_ALL_EDIT_ARE_CLOSED;
+   }
+   
    if ( vdsaSessionLock( pSession ) == 0 ) {
       if ( ! pSession->terminated ) {
          rc = vdseTxCommit( (vdseTx*)pSession->context.pTransaction, 
@@ -675,7 +681,8 @@ int vdsaCloseSession( vdsaSession* pSession )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdsaSessionOpenObj( vdsaSession             * pSession,
-                        enum vdsObjectType        objectType, 
+                        enum vdsObjectType        objectType,
+                        bool                      editMode,
                         const char              * objectName,
                         size_t                    nameLengthInBytes,
                         struct vdsaCommonObject * pObject )
@@ -692,12 +699,22 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
    
    if ( ! pSession->terminated ) {
       GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder );
-      rc = vdseTopFolderOpenObject( pTree,
-                                    objectName,
-                                    nameLengthInBytes,
-                                    objectType,
-                                    &pObject->folderItem,
-                                    &pSession->context );
+      if ( editMode ) {
+         rc = vdseTopFolderEditObject( pTree,
+                                       objectName,
+                                       nameLengthInBytes,
+                                       objectType,
+                                       &pObject->folderItem,
+                                       &pSession->context );
+      }
+      else {
+         rc = vdseTopFolderOpenObject( pTree,
+                                       objectName,
+                                       nameLengthInBytes,
+                                       objectType,
+                                       &pObject->folderItem,
+                                       &pSession->context );
+      }
       if ( rc == 0 ) {
          GET_PTR( pDesc, pObject->folderItem.pHashItem->dataOffset,
                           vdseObjectDescriptor );

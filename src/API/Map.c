@@ -74,6 +74,10 @@ int vdsMapClose( VDS_HANDLE objectHandle )
    
    if ( errcode == 0 ) {
       /*
+       *
+       */
+      if ( pHashMap->editMode ) pHashMap->object.pSession->numberOfEdits--;
+      /*
        * Memory might still be around even after it is released, so we make 
        * sure future access with the handle fails by setting the type wrong!
        */
@@ -248,6 +252,7 @@ int vdsMapEdit( VDS_HANDLE   sessionHandle,
 
       errcode = vdsaCommonObjOpen( &pHashMap->object,
                                    VDS_MAP,
+                                   true,
                                    hashMapName,
                                    nameLengthInBytes );
       if ( errcode == 0 ) {
@@ -265,6 +270,7 @@ int vdsMapEdit( VDS_HANDLE   sessionHandle,
          vdsaGetKeyLimits( &pVDSHashMap->keyDef,
                            &pHashMap->minKeyLength,
                            &pHashMap->maxKeyLength );
+         pSession->numberOfEdits++;
       }
    }
    else {
@@ -647,6 +653,7 @@ int vdsMapOpen( VDS_HANDLE   sessionHandle,
 
       errcode = vdsaCommonObjOpen( &pHashMap->object,
                                    VDS_MAP,
+                                   false,
                                    hashMapName,
                                    nameLengthInBytes );
       if ( errcode == 0 ) {

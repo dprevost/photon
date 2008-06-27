@@ -733,6 +733,22 @@
     </error>
 
     <error>
+      <errnumber> 71 </errnumber>
+      <errname> NOT_ALL_EDIT_ARE_CLOSED </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            All edits must be closed before a commit. 
+          </errormsg>
+          <errordoc>
+            All read-only objects open for updates (as temporary objects)
+            must be closed prior to doing a commit on the session.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
       <errnumber> 101 </errnumber>
       <errname> INVALID_NUM_FIELDS </errname>
       <message_group>

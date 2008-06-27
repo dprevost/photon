@@ -208,6 +208,14 @@ VDSF_ENGINE_EXPORT
 enum ListErrors vdseHashResize( vdseHash           * pHash,
                                 vdseSessionContext * pContext );
 
+VDSF_ENGINE_EXPORT
+enum ListErrors vdseHashUpdate( vdseHash            * pHash,
+                                const unsigned char * pKey,
+                                size_t                keyLength,
+                                const void          * pData,
+                                size_t                dataLength,
+                                vdseSessionContext  * pContext );
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**

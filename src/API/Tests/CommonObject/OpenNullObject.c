@@ -67,6 +67,7 @@ int main( int argc, char * argv[] )
    object.pSession = (vdsaSession *) sessionHandle;
    errcode = vdsaCommonObjOpen( NULL,
                                 VDS_FOLDER,
+                                false,
                                 "/acono",
                                 strlen("/acono") );
 

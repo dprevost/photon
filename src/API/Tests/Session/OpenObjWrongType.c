@@ -66,6 +66,7 @@ int main( int argc, char * argv[] )
 
    errcode = vdsaSessionOpenObj( (vdsaSession *) sessionHandle,
                                  0,
+                                 false,
                                  "/asoowt",
                                  strlen("/asoowt"),
                                  &object );

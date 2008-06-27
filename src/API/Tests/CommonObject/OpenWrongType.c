@@ -67,6 +67,7 @@ int main( int argc, char * argv[] )
    object.pSession = (vdsaSession *) sessionHandle;
    errcode = vdsaCommonObjOpen( &object,
                                 0,
+                                false,
                                 "/acowt",
                                 strlen("/acowt") );
    

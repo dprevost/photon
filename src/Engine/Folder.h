@@ -101,6 +101,14 @@ int vdseFolderDestroyObject( vdseFolder         * pFolder,
                              vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
+int vdseFolderEditObject( vdseFolder         * pFolder,
+                          const char         * objectName,
+                          size_t               strLength, 
+                          enum vdsObjectType   objectType, 
+                          vdseFolderItem     * pFolderItem,
+                          vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
 void vdseFolderFini( vdseFolder         * pFolder,
                      vdseSessionContext * pContext );
 
@@ -196,6 +204,14 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
                                 const char         * objectName,
                                 size_t               nameLengthInBytes,
                                 vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+int vdseTopFolderEditObject( vdseFolder         * pFolder,
+                             const char         * objectName,
+                             size_t               nameLengthInBytes,
+                             enum vdsObjectType   objectType, 
+                             vdseFolderItem     * pFolderItem,
+                             vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseTopFolderGetStatus( vdseFolder         * pFolder,

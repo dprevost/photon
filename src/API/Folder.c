@@ -448,6 +448,7 @@ int vdsFolderOpen( VDS_HANDLE   sessionHandle,
 
       errcode = vdsaCommonObjOpen( &pFolder->object,
                                    VDS_FOLDER,
+                                   false,
                                    folderName,
                                    nameLengthInBytes );
       if ( errcode == 0 ) *objectHandle = (VDS_HANDLE) pFolder;

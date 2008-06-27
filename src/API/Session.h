@@ -60,6 +60,8 @@ typedef struct vdsaSession
    
    int numberOfObjects;
    
+   int numberOfEdits;
+   
    /** Our lock to serialize access to this object, if needed. */
    vdscThreadLock  mutex;
    
@@ -80,7 +82,8 @@ int vdsaSessionCloseObj( vdsaSession             * pSession,
 
 VDSF_API_EXPORT
 int vdsaSessionOpenObj( vdsaSession             * pSession,
-                        enum vdsObjectType        objectType, 
+                        enum vdsObjectType        objectType,
+                        bool                      editMode,
                         const char              * objectName,
                         size_t                    nameLengthInBytes,
                         struct vdsaCommonObject * pObject );

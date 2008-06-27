@@ -66,6 +66,7 @@ int main( int argc, char * argv[] )
 
    errcode = vdsaSessionOpenObj( NULL,
                                  VDS_FOLDER,
+                                 false,
                                  "/asoons",
                                  strlen("/asoons"),
                                  &object );
