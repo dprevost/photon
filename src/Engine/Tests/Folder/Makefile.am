@@ -92,6 +92,9 @@ check_PROGRAMS =                   \
         OpenNullFolder             \
         OpenNullName               \
         OpenPass                   \
+        OpenWrongLength            \
+        OpenWrongType              \
+        OpenZeroLength             \
         ReleaseNullContext         \
         ReleaseNullFolder          \
         ReleaseNullItem            \
@@ -117,6 +120,14 @@ check_PROGRAMS =                   \
         TopDestroyNullFolder       \
         TopDestroyNullName         \
         TopDestroyPass             \
+        TopEditNullContext         \
+        TopEditNullFolder          \
+        TopEditNullItem            \
+        TopEditNullName            \
+        TopEditPass                \
+        TopEditWrongLength         \
+        TopEditWrongType           \
+        TopEditZeroLength          \
         TopStatusNullContext       \
         TopStatusNullFolder        \
         TopStatusNullName          \
@@ -203,6 +214,9 @@ OpenNullItem_SOURCES               = $(COMMON_HEADER) OpenNullItem.c
 OpenNullFolder_SOURCES             = $(COMMON_HEADER) OpenNullFolder.c
 OpenNullName_SOURCES               = $(COMMON_HEADER) OpenNullName.c
 OpenPass_SOURCES                   = $(COMMON_HEADER) OpenPass.c
+OpenWrongLength_SOURCES            = $(COMMON_HEADER) OpenWrongLength.c
+OpenWrongType_SOURCES              = $(COMMON_HEADER) OpenWrongType.c
+OpenZeroLength_SOURCES             = $(COMMON_HEADER) OpenZeroLength.c
 ReleaseNullContext_SOURCES         = $(COMMON_HEADER) ReleaseNullContext.c
 ReleaseNullFolder_SOURCES          = $(COMMON_HEADER) ReleaseNullFolder.c
 ReleaseNullItem_SOURCES            = $(COMMON_HEADER) ReleaseNullItem.c
@@ -228,6 +242,14 @@ TopDestroyNullContext_SOURCES      = $(COMMON_HEADER) TopDestroyNullContext.c
 TopDestroyNullFolder_SOURCES       = $(COMMON_HEADER) TopDestroyNullFolder.c
 TopDestroyNullName_SOURCES         = $(COMMON_HEADER) TopDestroyNullName.c
 TopDestroyPass_SOURCES             = $(COMMON_HEADER) TopDestroyPass.c
+TopEditNullContext_SOURCES         = $(COMMON_HEADER) TopEditNullContext.c
+TopEditNullFolder_SOURCES          = $(COMMON_HEADER) TopEditNullFolder.c
+TopEditNullItem_SOURCES            = $(COMMON_HEADER) TopEditNullItem.c
+TopEditNullName_SOURCES            = $(COMMON_HEADER) TopEditNullName.c
+TopEditPass_SOURCES                = $(COMMON_HEADER) TopEditPass.c
+TopEditWrongLength_SOURCES         = $(COMMON_HEADER) TopEditWrongLength.c
+TopEditWrongType_SOURCES           = $(COMMON_HEADER) TopEditWrongType.c
+TopEditZeroLength_SOURCES          = $(COMMON_HEADER) TopEditZeroLength.c
 TopStatusNullContext_SOURCES       = $(COMMON_HEADER) TopStatusNullContext.c
 TopStatusNullFolder_SOURCES        = $(COMMON_HEADER) TopStatusNullFolder.c
 TopStatusNullName_SOURCES          = $(COMMON_HEADER) TopStatusNullName.c
@@ -323,6 +345,9 @@ TESTS =                            \
         OpenNullFolder             \
         OpenNullName               \
         OpenPass                   \
+        OpenWrongLength            \
+        OpenWrongType              \
+        OpenZeroLength             \
         ReleaseNullContext         \
         ReleaseNullFolder          \
         ReleaseNullItem            \
@@ -348,6 +373,14 @@ TESTS =                            \
         TopDestroyNullFolder       \
         TopDestroyNullName         \
         TopDestroyPass             \
+        TopEditNullContext         \
+        TopEditNullFolder          \
+        TopEditNullItem            \
+        TopEditNullName            \
+        TopEditPass                \
+        TopEditWrongLength         \
+        TopEditWrongType           \
+        TopEditZeroLength          \
         TopStatusNullContext       \
         TopStatusNullFolder        \
         TopStatusNullName          \
@@ -419,6 +452,7 @@ XFAIL_TESTS =                      \
         OpenNullItem               \
         OpenNullFolder             \
         OpenNullName               \
+        OpenWrongType              \
         ReleaseNullContext         \
         ReleaseNullFolder          \
         ReleaseNullItem            \
@@ -437,6 +471,11 @@ XFAIL_TESTS =                      \
         TopDestroyNullContext      \
         TopDestroyNullFolder       \
         TopDestroyNullName         \
+        TopEditNullContext         \
+        TopEditNullFolder          \
+        TopEditNullItem            \
+        TopEditNullName            \
+        TopEditWrongType           \
         TopStatusNullContext       \
         TopStatusNullFolder        \
         TopStatusNullName          \
