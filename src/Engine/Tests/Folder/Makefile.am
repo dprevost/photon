@@ -36,6 +36,13 @@ check_PROGRAMS =                   \
         DestroyNullFolder          \
         DestroyNullName            \
         DestroyPass                \
+        EditNullContext            \
+        EditNullFolder             \
+        EditNullItem               \
+        EditNullName               \
+        EditPass                   \
+        EditWrongObjectType        \
+        EditZeroNameLength         \
         FiniInvalidSig             \
         FiniNullContext            \
         FiniNullFolder             \
@@ -158,6 +165,13 @@ DestroyNullContext_SOURCES         = $(COMMON_HEADER) DestroyNullContext.c
 DestroyNullFolder_SOURCES          = $(COMMON_HEADER) DestroyNullFolder.c
 DestroyNullName_SOURCES            = $(COMMON_HEADER) DestroyNullName.c
 DestroyPass_SOURCES                = $(COMMON_HEADER) DestroyPass.c
+EditNullContext_SOURCES            = $(COMMON_HEADER) EditNullContext,c
+EditNullFolder_SOURCES             = $(COMMON_HEADER) EditNullFolder.c
+EditNullItem_SOURCES               = $(COMMON_HEADER) EditNullItem.c
+EditNullName_SOURCES               = $(COMMON_HEADER) EditNullName.c
+EditPass_SOURCES                   = $(COMMON_HEADER) EditPass.c
+EditWrongObjectType_SOURCES        = $(COMMON_HEADER) EditWrongObjectType.c
+EditZeroNameLength_SOURCES         = $(COMMON_HEADER) EditZeroNameLength.c
 FiniInvalidSig_SOURCES             = $(COMMON_HEADER) FiniInvalidSig.c
 FiniNullContext_SOURCES            = $(COMMON_HEADER) FiniNullContext.c
 FiniNullFolder_SOURCES             = $(COMMON_HEADER) FiniNullFolder.c
@@ -289,6 +303,13 @@ TESTS =                            \
         DestroyNullFolder          \
         DestroyNullName            \
         DestroyPass                \
+        EditNullContext            \
+        EditNullFolder             \
+        EditNullItem               \
+        EditNullName               \
+        EditPass                   \
+        EditWrongObjectType        \
+        EditZeroNameLength         \
         FiniInvalidSig             \
         FiniNullContext            \
         FiniNullFolder             \
@@ -405,6 +426,12 @@ XFAIL_TESTS =                      \
         DestroyNullContext         \
         DestroyNullFolder          \
         DestroyNullName            \
+        EditNullContext            \
+        EditNullFolder             \
+        EditNullItem               \
+        EditNullName               \
+        EditWrongObjectType        \
+        EditZeroNameLength         \
         FiniInvalidSig             \
         FiniNullContext            \
         FiniNullFolder             \
