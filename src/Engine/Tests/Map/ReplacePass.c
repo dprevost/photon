@@ -33,7 +33,7 @@ int main()
    vdseHashItem * pItem;
    char * ptr;
    vdsObjectDefinition def = { 
-      VDS_HASH_MAP, 
+      VDS_MAP, 
       1, 
       { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
       { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
@@ -44,62 +44,49 @@ int main()
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseMapInit( pHashMap, 
-                              0, 1, 0, &status, 4, 
-                              "Map1", NULL_OFFSET, &def, &context );
+                          0, 1, 0, &status, 4, 
+                          "Map1", NULL_OFFSET, &def, &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    errcode = vdseMapInsert( pHashMap,
-                                (const void *) key,
-                                6,
-                                (const void *) data1,
-                                strlen(data1),
-                                &context );
+                            (const void *) key,
+                            6,
+                            (const void *) data1,
+                            strlen(data1),
+                            &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   /*
-    * We use get to get to the hash item in order to commit it 
-    * (we need to commit the insertion before replacing it)
-    */
    errcode = vdseMapGet( pHashMap,
-                             (const void *) key,
-                             6,
-                             &pItem,
-                             20,
-                             &context );
+                         (const void *) key,
+                         6,
+                         &pItem,
+                         20,
+                         &context );
 
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   vdseMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
-
-   errcode = vdseMapRelease( pHashMap,
-                                 pItem,
-                                 &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    errcode = vdseMapReplace( pHashMap,
-                                 (const void *) key,
-                                 6,
-                                 (const void *) data2,
-                                 strlen(data2),
-                                 &context );
+                             (const void *) key,
+                             6,
+                             (const void *) data2,
+                             strlen(data2),
+                             &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    errcode = vdseMapGet( pHashMap,
-                             (const void *) key,
-                             6,
-                             &pItem,
-                             20,
-                             &context );
+                         (const void *) key,
+                         6,
+                         &pItem,
+                         20,
+                         &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

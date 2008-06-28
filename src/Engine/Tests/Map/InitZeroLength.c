@@ -29,7 +29,7 @@ int main()
    int errcode;
    vdseTxStatus status;
    vdsObjectDefinition def = { 
-      VDS_HASH_MAP, 
+      VDS_MAP, 
       1, 
       { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
       { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
@@ -40,15 +40,15 @@ int main()
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseMapInit( pHashMap, 
-                              0, 
-                              1, 
-                              0, 
-                              &status, 
-                              0, /* zero name length */
-                              "Map1", 
-                              NULL_OFFSET,
-                              &def,
-                              &context );
+                          0, 
+                          1, 
+                          0, 
+                          &status, 
+                          0, /* zero name length */
+                          "Map1", 
+                          NULL_OFFSET,
+                          &def,
+                          &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

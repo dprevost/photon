@@ -53,6 +53,10 @@ int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
       if ( errcode == 0 ) {
          GET_PTR( pDesc, pObject->folderItem.pHashItem->dataOffset,
                           vdseObjectDescriptor );
+         /*
+          * Note: this needs to be overwritten for read-only object open
+          * in edit mode.
+          */
          GET_PTR( pObject->pMyVdsObject, pDesc->offset, void );
       }
       vdsaCommonUnlock( pObject );

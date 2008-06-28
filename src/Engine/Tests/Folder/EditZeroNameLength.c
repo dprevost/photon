@@ -29,11 +29,11 @@ int main()
    int errcode;
    vdseTxStatus status;
    vdseFolderItem folderItem;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+   vdsObjectDefinition mapDef = { 
+      VDS_MAP, 
+      1, 
+      { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
+      { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
    };
    
    pFolder = initFolderTest( expectedToPass, &context );
@@ -49,7 +49,7 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     &def,
+                                     &mapDef,
                                      1,
                                      0,
                                      &context );
@@ -60,7 +60,7 @@ int main()
    errcode = vdseFolderEditObject( pFolder,
                                   "test2",
                                   0,
-                                  VDS_FOLDER,
+                                  VDS_MAP,
                                   &folderItem,
                                   &context );
    

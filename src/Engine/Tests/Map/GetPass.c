@@ -33,7 +33,7 @@ int main()
    char * ptr;
    vdseTxStatus * txItemStatus;
    vdsObjectDefinition def = { 
-      VDS_HASH_MAP, 
+      VDS_MAP, 
       1, 
       { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
       { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
@@ -44,28 +44,28 @@ int main()
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseMapInit( pHashMap, 
-                              0, 1, 0, &status, 4, 
-                              "Map1", NULL_OFFSET, &def, &context );
+                          0, 1, 0, &status, 4, 
+                          "Map1", NULL_OFFSET, &def, &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    errcode = vdseMapInsert( pHashMap,
-                                (const void *) key,
-                                6,
-                                (const void *) data,
-                                7,
-                                &context );
+                            (const void *) key,
+                            6,
+                            (const void *) data,
+                            7,
+                            &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    errcode = vdseMapGet( pHashMap,
-                             (const void *) key,
-                             6,
-                             &pItem,
-                             20,
-                             &context );
+                         (const void *) key,
+                         6,
+                         &pItem,
+                         20,
+                         &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -73,11 +73,8 @@ int main()
    if (memcmp( data, ptr, 7 ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   txItemStatus = &pItem->txStatus;
-   if ( txItemStatus->usageCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
    if ( status.usageCounter != 1 ) {
+      fprintf( stderr, "usage counter = %d\n", status.usageCounter );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

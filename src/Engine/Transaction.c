@@ -192,7 +192,7 @@ int vdseTxCommit( vdseTx*             pTx,
       pChildStatus = NULL;
       pHashMap = NULL;
       pQueue   = NULL;
-
+      
       pOps = (vdseTxOps*)
          ((char*)pLinkNode - offsetof( vdseTxOps, node ));
       
@@ -243,6 +243,31 @@ int vdseTxCommit( vdseTx*             pTx,
          vdseFolderResize( parentFolder, pContext );
 
          vdseUnlock( pChildMemObject, pContext );
+         vdseUnlock( &parentFolder->memObject, pContext );
+         
+         break;
+
+      case VDSE_TX_ADD_EDIT_OBJECT:
+
+         VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
+
+         GET_PTR( parentFolder, pOps->parentOffset, vdseFolder );
+         GET_PTR( pHashItem, pOps->childOffset, vdseHashItem );
+         GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+//         GET_PTR( pChildMemObject, pDesc->memOffset, vdseMemObject );
+//         pChildStatus = &pHashItem->txStatus;
+         
+         vdseLockNoFailure( &parentFolder->memObject, pContext );
+
+ //        vdseTxStatusClearTx( pChildStatus );
+         vdseFolderCommitEdit( parentFolder, 
+                               pHashItem, pOps->childType, pcontext );
+         
+         parentFolder->nodeObject.txCounter--;
+
+         /* If needed */
+         vdseFolderResize( parentFolder, pContext );
+
          vdseUnlock( &parentFolder->memObject, pContext );
          
          break;

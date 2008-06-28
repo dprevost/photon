@@ -31,11 +31,11 @@ int main()
    vdseObjectDescriptor * pDescriptor;
    vdseTxStatus * txItemStatus;
    vdseTreeNode * pNode;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+   vdsObjectDefinition mapDef = { 
+      VDS_MAP, 
+      1, 
+      { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
+      { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
    };
 
    pFolder = initFolderTest( expectedToPass, &context );
@@ -51,7 +51,7 @@ int main()
                                      "test2",
                                      "Test2",
                                      5,
-                                     &def,
+                                     &mapDef,
                                      1,
                                      0,
                                      &context );
@@ -62,7 +62,7 @@ int main()
    errcode = vdseFolderEditObject( pFolder,
                                   "test2",
                                   5,
-                                  VDS_FOLDER,
+                                  VDS_MAP,
                                   &folderItem,
                                   &context );
    if ( errcode != 0 ) {
@@ -85,7 +85,7 @@ int main()
    errcode = vdseFolderEditObject( pFolder,
                                   "test3",
                                   5,
-                                  VDS_FOLDER,
+                                  VDS_MAP,
                                   &folderItem,
                                   &context );
    if ( errcode != -1 ) {
@@ -99,7 +99,7 @@ int main()
                                      "test4",
                                      "Test4",
                                      5,
-                                     &def,
+                                     &mapDef,
                                      1,
                                      0,
                                      &context );
@@ -110,7 +110,7 @@ int main()
    errcode = vdseFolderEditObject( pFolder,
                                   "test4",
                                   5,
-                                  VDS_FOLDER,
+                                  VDS_MAP,
                                   &folderItem,
                                   &context );
    if ( errcode != 0 ) {
@@ -129,7 +129,8 @@ int main()
    if ( status.usageCounter != 2 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pFolder->nodeObject.txCounter != 2 ) {
+   if ( pFolder->nodeObject.txCounter != 4 ) {
+      fprintf( stderr, "txCounter = %d\n", pFolder->nodeObject.txCounter );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

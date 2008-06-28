@@ -34,15 +34,15 @@ int main()
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseMapInit( pHashMap, 
-                              0, 
-                              1, 
-                              0, 
-                              &status, 
-                              4, 
-                              "Map1", 
-                              NULL_OFFSET,
-                              NULL,
-                              &context );
+                          0, 
+                          1, 
+                          0, 
+                          &status, 
+                          4, 
+                          "Map1", 
+                          NULL_OFFSET,
+                          NULL,
+                          &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

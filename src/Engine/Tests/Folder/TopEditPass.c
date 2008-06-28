@@ -27,11 +27,17 @@ int main()
    vdseSessionContext context;
    int errcode;
    vdseFolderItem folderItem;
-   vdsObjectDefinition def = { 
+   vdsObjectDefinition folderDef = { 
       VDS_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
+   };
+   vdsObjectDefinition mapDef = { 
+      VDS_MAP, 
+      1, 
+      { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
+      { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
    };
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
@@ -39,7 +45,7 @@ int main()
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1",
                                         strlen("Test1"),
-                                        &def,
+                                        &folderDef,
                                         &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -48,7 +54,7 @@ int main()
    errcode = vdseTopFolderCreateObject( pTopFolder,
                                         "Test1/Test2",
                                         strlen("Test1/Test2"),
-                                        &def,
+                                        &mapDef,
                                         &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -57,7 +63,7 @@ int main()
    errcode = vdseTopFolderEditObject( pTopFolder,
                                       "Test1/Test2",
                                       strlen("Test1/Test2"),
-                                      VDS_FOLDER,
+                                      VDS_MAP,
                                       &folderItem,
                                       &context );
    if ( errcode != 0 ) {
@@ -67,7 +73,7 @@ int main()
    errcode = vdseTopFolderEditObject( pTopFolder,
                                       "Test3/Test2",
                                       strlen("Test3/Test2"),
-                                      VDS_FOLDER,
+                                      VDS_MAP,
                                       &folderItem,
                                       &context );
    if ( errcode != -1 ) {
@@ -81,7 +87,7 @@ int main()
    errcode = vdseTopFolderEditObject( pTopFolder,
                                       "Test1/Test5",
                                       strlen("Test1/Test5"),
-                                      VDS_FOLDER,
+                                      VDS_MAP,
                                       &folderItem,
                                       &context );
    if ( errcode != -1 ) {

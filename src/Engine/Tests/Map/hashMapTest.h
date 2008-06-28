@@ -61,7 +61,7 @@ initHashMapTest( bool                testIsExpectedToSucceed,
    
    errcode = vdseInitEngine();
    if ( errcode != 0 ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
+      fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
@@ -70,7 +70,7 @@ initHashMapTest( bool                testIsExpectedToSucceed,
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
    if (ptr == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
+      fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
@@ -81,13 +81,13 @@ initHashMapTest( bool                testIsExpectedToSucceed,
    /* Allocate memory for the tx object and initialize it */
    pTx = (vdseTx*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
    if ( pTx == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
+      fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    errcode = vdseTxInit( pTx, 1, pContext );
    if ( errcode != 0 ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
+      fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
@@ -96,7 +96,7 @@ initHashMapTest( bool                testIsExpectedToSucceed,
    /* Allocate memory for the hash map object */
    pHashMap = (vdseMap*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
    if ( pHashMap == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
+      fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }

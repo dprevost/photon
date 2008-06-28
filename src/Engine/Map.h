@@ -65,16 +65,6 @@ typedef struct vdseMap vdseMap;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-void vdseMapCommitAdd( vdseMap            * pHashMap, 
-                       ptrdiff_t            itemOffset,
-                       vdseSessionContext * pContext  );
-
-VDSF_ENGINE_EXPORT
-void vdseMapCommitRemove( vdseMap            * pHashMap, 
-                          ptrdiff_t            itemOffset,
-                          vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
 int vdseMapCopy( vdseMap            * pHashMap, 
                  vdseMap            * pNewMap,
                  vdseSessionContext * pContext );
@@ -144,16 +134,6 @@ int vdseMapReplace( vdseMap            * pHashMap,
                     const void         * pItem,
                     size_t               itemLength,
                     vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
-void vdseMapRollbackAdd( vdseMap            * pHashMap, 
-                         ptrdiff_t            itemOffset,
-                         vdseSessionContext * pContext  );
-
-VDSF_ENGINE_EXPORT
-void vdseMapRollbackRemove( vdseMap            * pHashMap, 
-                            ptrdiff_t            itemOffset,
-                            vdseSessionContext * pContext  );
 
 VDSF_ENGINE_EXPORT
 void vdseMapStatus( vdseMap  * pHashMap,

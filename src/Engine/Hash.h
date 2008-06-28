@@ -119,6 +119,14 @@ typedef struct vdseHash vdseHash;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
+ * Used to create a copy of a read-only hash map for editing (updates)
+ */
+VDSF_ENGINE_EXPORT
+enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
+                              vdseHash           * pNewHash,
+                              vdseSessionContext * pContext );
+
+/*
  * Used to delete an item when you already have a pointer to it 
  * (pHashItem) but the exact position is unknown.
  */

@@ -32,6 +32,7 @@ SUBDIRS =              \
         Session        \
         Folder         \
         HashMap        \
+        Map            \
         Queue          \
         Optional       
 

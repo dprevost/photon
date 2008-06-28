@@ -313,6 +313,74 @@ static void findLastItemInBucket( ptrdiff_t    *  pArray,
  * 
  * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
+                              vdseHash           * pNewHash,
+                              vdseSessionContext * pContext )
+{
+   ptrdiff_t * pOldArray, * pNewArray;
+   size_t i;
+   ptrdiff_t currentOffset, previousOffset;
+//   ptrdiff_t bucket, newBucket;
+   vdseHashItem * pOldItem, * pNewItem;
+   vdseMemObject * pMemObject;
+   size_t itemLength;
+   
+   VDS_PRE_CONDITION( pOldHash != NULL );
+   VDS_PRE_CONDITION( pNewHash != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_INV_CONDITION( pOldHash->initialized == VDSE_HASH_SIGNATURE );
+   VDS_INV_CONDITION( pNewHash->initialized == VDSE_HASH_SIGNATURE );
+
+   GET_PTR( pOldArray, pOldHash->arrayOffset, ptrdiff_t );
+   VDS_INV_CONDITION( pOldArray != NULL );
+   GET_PTR( pNewArray, pNewHash->arrayOffset, ptrdiff_t );
+   VDS_INV_CONDITION( pNewArray != NULL );
+
+   GET_PTR( pMemObject, pNewHash->memObjOffset, vdseMemObject );
+
+   if ( pOldHash->lengthIndex == pNewHash->lengthIndex ) {
+      /* Much simpler path... hashing is done for us */
+      for ( i = 0; i < g_vdseArrayLengths[pOldHash->lengthIndex]; ++i ) {
+
+         currentOffset = pOldArray[i];
+         previousOffset = NULL_OFFSET;
+         while ( currentOffset != NULL_OFFSET ) {
+            GET_PTR( pOldItem, currentOffset, vdseHashItem );
+
+            itemLength = calculateItemLength( pOldItem->keyLength,
+                                              pOldItem->dataLength );
+            pNewItem = (vdseHashItem*) vdseMalloc( pMemObject, 
+                                                   itemLength, 
+                                                   pContext );
+            if ( pNewItem == NULL ) return LIST_NO_MEMORY;
+
+            /*
+             * We copy everything and we reset the two offsets of interest
+             * to proper values (the nextSameKey offset should always be 
+             * NULL_OFFSET since the oldHash is for a read-only object).
+             */
+            memcpy( pNewItem, pOldItem, itemLength );
+            pNewItem->dataOffset = SET_OFFSET(pNewItem) + itemLength - 
+                                   pOldItem->dataLength;
+            pNewItem->nextItem = previousOffset;
+            
+            currentOffset = pOldItem->nextItem;
+         }
+      }
+   }
+   else {
+      assert( 0 );
+   }
+
+   pNewHash->totalDataSizeInBytes = pOldHash->totalDataSizeInBytes;
+   pNewHash->numberOfItems        = pOldHash->numberOfItems;
+   pNewHash->enumResize           = pOldHash->enumResize;
+
+   return 0;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 enum ListErrors 
 vdseHashDelete( vdseHash            * pHash,
                 const unsigned char * pKey, 
@@ -894,10 +962,10 @@ vdseHashResize( vdseHash           * pHash,
                 vdseSessionContext * pContext )
 {
    int newIndexLength;
-   ptrdiff_t* ptr;
+   ptrdiff_t * ptr, * pArray;
    size_t len, i;
-   ptrdiff_t* pArray, currentOffset, nextOffset, newBucket, newOffset;
-   vdseHashItem* pItem, *pNewItem;
+   ptrdiff_t currentOffset, nextOffset, newBucket, newOffset;
+   vdseHashItem * pItem, * pNewItem;
    vdseMemObject * pMemObject;
   
    VDS_PRE_CONDITION( pHash != NULL );
