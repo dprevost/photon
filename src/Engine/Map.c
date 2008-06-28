@@ -533,6 +533,7 @@ int vdseMapInit( vdseMap             * pHashMap,
    memcpy( &pHashMap->keyDef, &pDefinition->key, sizeof(vdsKeyDefinition) );
 
    pHashMap->latestVersion = SET_OFFSET( pHashMap );
+   pHashMap->editVersion = NULL_OFFSET;
    
    return 0;
 }

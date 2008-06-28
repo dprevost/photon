@@ -50,6 +50,8 @@ struct vdseMap
    ptrdiff_t            dataDefOffset;
 
    ptrdiff_t latestVersion;
+
+   ptrdiff_t editVersion;
    
    uint16_t numFields;
    
