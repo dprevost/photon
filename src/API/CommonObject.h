@@ -70,7 +70,7 @@ typedef struct vdsaCommonObject
 VDSF_API_EXPORT
 int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
                        enum vdsObjectType   objectType, 
-                       bool                 editMode,
+                       vdsaEditMode         editMode,
                        const char         * objectName,
                        size_t               nameLengthInBytes );
 

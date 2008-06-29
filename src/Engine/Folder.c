@@ -43,9 +43,10 @@ void vdseFolderCommitEdit( vdseFolder          * pFolder,
                            enum vdsObjectType    objectType,
                            vdseSessionContext  * pContext )
 {
-   vdseObjectDescriptor * pDesc;
+   vdseObjectDescriptor * pDesc, * pDescLatest;
    vdseMap * pMapLatest, * pMapEdit;
    int errcode;
+   vdseHashItem * pHashItemLatest;
    
    VDS_PRE_CONDITION( pFolder   != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
@@ -55,11 +56,24 @@ void vdseFolderCommitEdit( vdseFolder          * pFolder,
    switch( pDesc->apiType ) {
    case VDS_MAP:
       pMapEdit = GET_PTR_FAST( pDesc->offset, vdseMap );
+fprintf( stderr, "W %d %d\n", pMapEdit->latestVersion, pMapEdit->editVersion );
       if ( pMapEdit->editVersion != SET_OFFSET(pHashItem) ) {
          errcode = VDS_INTERNAL_ERROR;
          assert(0);
       }
-//      pMapEdit = GET_PTR_FAST( pMapEdit->editVersion, vdseMap );
+      pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, vdseHashItem );
+      pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
+                                  vdseObjectDescriptor );
+      pMapLatest = GET_PTR_FAST( pDescLatest->offset, vdseMap );
+fprintf( stderr, "#6 blocks = %d\n", pMapEdit->memObject.totalBlocks );
+fprintf( stderr, "#7 blocks = %d\n", pMapLatest->memObject.totalBlocks );
+
+fprintf( stderr, "Q %d %d\n", pMapLatest->latestVersion, pMapLatest->editVersion );
+      pHashItemLatest->nextSameKey = SET_OFFSET(pHashItem);
+      pMapLatest->editVersion = NULL_OFFSET;
+      pMapEdit->editVersion   = NULL_OFFSET;
+      pMapLatest->latestVersion = SET_OFFSET(pHashItem);
+      pMapEdit->latestVersion = SET_OFFSET(pHashItem);
       break;
    default:
       assert(0);
@@ -539,6 +553,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
       }
       pMemObject = GET_PTR_FAST( pDescOld->memOffset, vdseMemObject );
       
+fprintf( stderr, "# blocks = %d\n", pMemObject->totalBlocks );
       ptr = (unsigned char*) vdseMallocBlocks( pContext->pAllocator,
                                                VDSE_ALLOC_API_OBJ,
                                                pMemObject->totalBlocks,
@@ -590,7 +605,8 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
          }
          goto the_exit;
       }
-
+      free( pDescNew );
+      pDescNew = NULL;
 
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_ADD_EDIT_OBJECT,
@@ -600,6 +616,10 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
                          memObjType,
                          pContext );
       if ( rc != 0 ) {
+         vdseHashDeleteAt( &pFolder->hashObj, 
+                           bucket,
+                           pHashItemNew,
+                           pContext );
          vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
                          ptr, pMemObject->totalBlocks, pContext );
          goto the_exit;
@@ -625,6 +645,11 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
       }
 
       if ( rc != 0 ) {
+         vdseTxRemoveLastOps( (vdseTx*)pContext->pTransaction, pContext );
+         vdseHashDeleteAt( &pFolder->hashObj, 
+                           bucket,
+                           pHashItemNew,
+                           pContext );
          vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
                          ptr, pMemObject->totalBlocks, pContext );
          goto the_exit;
@@ -634,6 +659,8 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
       txFolderStatus->usageCounter++;
       txStatus->parentCounter++;
       pFolderItem->pHashItem = pHashItemNew;
+
+      fprintf( stderr, "#4 blocks = %d\n", ((vdseMap*)ptr)->memObject.totalBlocks );
 
       vdseUnlock( &pFolder->memObject, pContext );
 

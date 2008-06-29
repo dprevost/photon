@@ -57,6 +57,20 @@ int vdseMapCopy( vdseMap            * pOldMap,
 
    memcpy( &pNewMap->nodeObject, &pOldMap->nodeObject, sizeof(vdseTreeNode) );
 
+   pNewMap->numFields = pOldMap->numFields;
+   newDef = (vdseFieldDef *) vdseMalloc( &pNewMap->memObject, 
+                                         pNewMap->numFields* sizeof(vdseFieldDef),
+                                         pContext );
+   if ( newDef == NULL ) {
+      vdscSetError( &pContext->errorHandler, 
+                    g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
+      return -1;
+   }
+   pNewMap->dataDefOffset = SET_OFFSET(newDef);
+   oldDef = GET_PTR_FAST( pOldMap->dataDefOffset, vdseFieldDef );
+   memcpy( newDef, oldDef, pNewMap->numFields* sizeof(vdseFieldDef) );
+   memcpy( &pNewMap->keyDef, &pOldMap->keyDef, sizeof(vdsKeyDefinition) );
+
    listErr = vdseHashInit( &pNewMap->hashObj,
                            SET_OFFSET(&pNewMap->memObject),
                            pOldMap->hashObj.numberOfItems,
@@ -71,24 +85,21 @@ int vdseMapCopy( vdseMap            * pOldMap,
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return -1;
    }
-   
-   pNewMap->numFields = pOldMap->numFields;
 
-   newDef = (vdseFieldDef *) vdseMalloc( &pNewMap->memObject, 
-                                         pNewMap->numFields* sizeof(vdseFieldDef),
-                                         pContext );
-   if ( newDef == NULL ) {
-      vdscSetError( &pContext->errorHandler, 
-                    g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
+   listErr = vdseHashCopy( &pOldMap->hashObj, &pNewMap->hashObj, pContext );
+   if ( listErr != LIST_OK ) {
+      if ( listErr == LIST_NO_MEMORY ) {
+         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
+      }
+      else {
+         errcode = VDS_INTERNAL_ERROR;
+      }
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return -1;
    }
-   pNewMap->dataDefOffset = SET_OFFSET(newDef);
-
-   oldDef = GET_PTR_FAST( pOldMap->dataDefOffset, vdseFieldDef );
-   memcpy( newDef, oldDef, pNewMap->numFields* sizeof(vdseFieldDef) );
-   
-   memcpy( &pNewMap->keyDef, &pOldMap->keyDef, sizeof(vdsKeyDefinition) );
-
+   fprintf( stderr, "Y: %d %d %d\n", pNewMap->hashObj.totalDataSizeInBytes, 
+      pNewMap->hashObj.numberOfItems,
+      pNewMap->hashObj.enumResize );
    pNewMap->latestVersion = pOldMap->latestVersion;
    pOldMap->editVersion = SET_OFFSET( pHashItem );
    pNewMap->editVersion = SET_OFFSET( pHashItem );
@@ -468,7 +479,7 @@ int vdseMapInit( vdseMap             * pHashMap,
    }
    memcpy( &pHashMap->keyDef, &pDefinition->key, sizeof(vdsKeyDefinition) );
 
-   pHashMap->latestVersion = SET_OFFSET( pHashMap );
+   pHashMap->latestVersion = hashItemOffset;
    pHashMap->editVersion = NULL_OFFSET;
    
    return 0;

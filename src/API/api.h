@@ -39,6 +39,17 @@ typedef enum vdsaObjetType vdsaObjetType;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+enum vdsaEditMode
+{
+   VDSA_READ_WRITE = 0,
+   VDSA_READ_ONLY,
+   VDSA_UPDATE_RO
+};
+
+typedef enum vdsaEditMode vdsaEditMode;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 #if defined(WIN32)
 #  ifdef BUILD_VDSF_API
 #    define VDSF_API_EXPORT __declspec ( dllexport )

@@ -321,7 +321,7 @@ enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
    size_t i;
    ptrdiff_t currentOffset, previousOffset;
 //   ptrdiff_t bucket, newBucket;
-   vdseHashItem * pOldItem, * pNewItem;
+   vdseHashItem * pOldItem, * pNewItem, * previousItem;
    vdseMemObject * pMemObject;
    size_t itemLength;
    
@@ -343,7 +343,7 @@ enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
       for ( i = 0; i < g_vdseArrayLengths[pOldHash->lengthIndex]; ++i ) {
 
          currentOffset = pOldArray[i];
-         previousOffset = NULL_OFFSET;
+         previousItem = NULL;
          while ( currentOffset != NULL_OFFSET ) {
             GET_PTR( pOldItem, currentOffset, vdseHashItem );
 
@@ -355,14 +355,21 @@ enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
             if ( pNewItem == NULL ) return LIST_NO_MEMORY;
 
             /*
-             * We copy everything and we reset the two offsets of interest
+             * We copy everything and we reset the offset of interest
              * to proper values (the nextSameKey offset should always be 
              * NULL_OFFSET since the oldHash is for a read-only object).
              */
             memcpy( pNewItem, pOldItem, itemLength );
             pNewItem->dataOffset = SET_OFFSET(pNewItem) + itemLength - 
                                    pOldItem->dataLength;
-            pNewItem->nextItem = previousOffset;
+            /* Set the chain */
+            if ( previousItem == NULL ) {
+               pNewArray[i] = SET_OFFSET(pNewItem);
+            }
+            else {
+               previousItem->nextItem = SET_OFFSET(pNewItem);
+            }
+            previousItem = pNewItem;
             
             currentOffset = pOldItem->nextItem;
          }
@@ -534,7 +541,8 @@ vdseHashDeleteRaw( vdseHash            * pHash,
                        &pItem, 
                        &previousItem, 
                        &bucket );
-
+   fprintf( stderr, "Q1: %d %s %d %d %p\n", keyFound, pKey, keyLength, bucket, pItem );
+   
    if ( keyFound ) {
       nextOffset  = pItem->nextItem;
       

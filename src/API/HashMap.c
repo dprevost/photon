@@ -566,7 +566,7 @@ int vdsHashMapOpen( VDS_HANDLE   sessionHandle,
 
       errcode = vdsaCommonObjOpen( &pHashMap->object,
                                    VDS_HASH_MAP,
-                                   false,
+                                   VDSA_READ_WRITE,
                                    hashMapName,
                                    nameLengthInBytes );
       if ( errcode == 0 ) {

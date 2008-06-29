@@ -76,7 +76,13 @@ int vdsMapClose( VDS_HANDLE objectHandle )
       /*
        *
        */
-      if ( pHashMap->editMode ) pHashMap->object.pSession->numberOfEdits--;
+      if ( pHashMap->editMode ) {
+         pHashMap->object.pSession->numberOfEdits--;
+      }
+      else {
+         vdsaListReadersRemove( &pHashMap->object.pSession->listReaders, 
+                                &pHashMap->reader );
+      }
       /*
        * Memory might still be around even after it is released, so we make 
        * sure future access with the handle fails by setting the type wrong!
@@ -252,7 +258,7 @@ int vdsMapEdit( VDS_HANDLE   sessionHandle,
 
       errcode = vdsaCommonObjOpen( &pHashMap->object,
                                    VDS_MAP,
-                                   true,
+                                   VDSA_UPDATE_RO,
                                    hashMapName,
                                    nameLengthInBytes );
       if ( errcode == 0 ) {
@@ -260,10 +266,7 @@ int vdsMapEdit( VDS_HANDLE   sessionHandle,
          pHashMap->editMode = 1;
          
          pVDSHashMap = (vdseMap *) pHashMap->object.pMyVdsObject;
-         pHashMap->object.pMyVdsObject = 
-            GET_PTR_FAST( pVDSHashMap->editVersion, void );
-         pVDSHashMap = (vdseMap *) pHashMap->object.pMyVdsObject;
-
+         fprintf( stderr, "edit: %p\n", pVDSHashMap );
          GET_PTR( pHashMap->pDefinition, 
                   pVDSHashMap->dataDefOffset,
                   vdseFieldDef );
@@ -657,7 +660,7 @@ int vdsMapOpen( VDS_HANDLE   sessionHandle,
 
       errcode = vdsaCommonObjOpen( &pHashMap->object,
                                    VDS_MAP,
-                                   false,
+                                   VDSA_READ_ONLY,
                                    hashMapName,
                                    nameLengthInBytes );
       if ( errcode == 0 ) {
@@ -665,6 +668,11 @@ int vdsMapOpen( VDS_HANDLE   sessionHandle,
          pHashMap->editMode = 0;
          
          pVDSHashMap = (vdseMap *) pHashMap->object.pMyVdsObject;
+         fprintf( stderr, "edit: %p\n", pVDSHashMap );
+         pHashMap->reader.type = VDSA_MAP;
+         pHashMap->reader.address = pHashMap;
+         vdsaListReadersPut( &pHashMap->object.pSession->listReaders, 
+                             &pHashMap->reader );
          GET_PTR( pHashMap->pDefinition, 
                   pVDSHashMap->dataDefOffset,
                   vdseFieldDef );
@@ -936,7 +944,41 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaMapRetrieve( vdsaMap   * pHashMap,
+/*
+ * This function is called when a session is committed or rollbacked.
+ * The local lock on the session (if any) is already taken.
+ */
+void vdsaMapResetReader( void * map )
+{
+   vdsaMap * pHashMap = map;
+   vdseMap * pVDSHashMap, * pMapLatest;
+
+   vdseHashItem * pHashItemLatest;
+   vdseObjectDescriptor * pDesc;
+
+   pVDSHashMap = (vdseMap *) pHashMap->object.pMyVdsObject;
+   pHashItemLatest = GET_PTR_FAST( pVDSHashMap->latestVersion, vdseHashItem );
+   pDesc = GET_PTR_FAST( pHashItemLatest->dataOffset, 
+                         vdseObjectDescriptor );
+   pMapLatest = GET_PTR_FAST( pDesc->offset, vdseMap );
+   if ( pMapLatest == pVDSHashMap ) {
+      fprintf( stderr, "Equal\n" );
+   }
+   else {
+      fprintf( stderr, "Not Equal\n" );
+      if ( pHashMap->iterator.pHashItem != NULL ) {
+         vdseMapRelease( pVDSHashMap,
+                         pHashMap->iterator.pHashItem,
+                         &pHashMap->object.pSession->context );
+         memset( &pHashMap->iterator, 0, sizeof(vdseHashMapItem) );
+      }
+      pHashMap->object.pMyVdsObject = pMapLatest;
+   }
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdsaMapRetrieve( vdsaMap       * pHashMap,
                      const void    * key,
                      size_t          keyLength,
                      vdsaDataEntry * pEntry )

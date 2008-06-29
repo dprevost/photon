@@ -32,6 +32,26 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+void vdsaMapResetReader( void * map );
+
+static inline
+void vdsaResetReaders( vdsaSession * pSession )
+{
+   vdsaReader * reader = NULL;
+   
+   if ( vdsaListReadersPeakFirst( &pSession->listReaders, &reader ) ) {
+      do {
+         if ( reader->type == VDSA_MAP ) {
+            vdsaMapResetReader( reader->address );
+            fprintf( stderr, "Here !!!!!\n" );
+         }
+         else fprintf( stderr, "Bad Bad Here !!!!!\n" );
+      } while (vdsaListReadersPeakNext(&pSession->listReaders, reader, &reader) );
+   }
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /* The API functions are first, in alphabetic order */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -56,6 +76,9 @@ int vdsCommit( VDS_HANDLE sessionHandle )
       if ( ! pSession->terminated ) {
          rc = vdseTxCommit( (vdseTx*)pSession->context.pTransaction, 
                             &pSession->context );
+         if ( rc == 0 ) {
+            vdsaResetReaders( pSession );
+         }
       }
       else {
          errcode = VDS_SESSION_IS_TERMINATED;
@@ -299,6 +322,8 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
        * Unix to avoid going to the system for every malloc/free).
        */
       pSession->type = 0;
+      /* Reset the list to spot logic errors (illegal accesses) with DBC */
+      vdsaListReadersFini( &pSession->listReaders );
       free( pSession );
    }
    
@@ -471,6 +496,8 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
       if ( errcode != VDS_OK ) goto error_handler;
    }
    
+   vdsaListReadersInit( &pSession->listReaders );
+   
    /*
     * Once a session is added, it can be accessed by other threads
     * in the process (exiting, for example). So we must lock the
@@ -562,6 +589,7 @@ int vdsRollback( VDS_HANDLE sessionHandle )
       if ( ! pSession->terminated ) {
          vdseTxRollback( (vdseTx*)pSession->context.pTransaction, 
                          &pSession->context );
+         vdsaResetReaders( pSession );
       }
       else {
          errcode = VDS_SESSION_IS_TERMINATED;
@@ -682,7 +710,7 @@ int vdsaCloseSession( vdsaSession* pSession )
 
 int vdsaSessionOpenObj( vdsaSession             * pSession,
                         enum vdsObjectType        objectType,
-                        bool                      editMode,
+                        vdsaEditMode              editMode,
                         const char              * objectName,
                         size_t                    nameLengthInBytes,
                         struct vdsaCommonObject * pObject )
@@ -699,7 +727,7 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
    
    if ( ! pSession->terminated ) {
       GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder );
-      if ( editMode ) {
+      if ( editMode == VDSA_UPDATE_RO ) {
          rc = vdseTopFolderEditObject( pTree,
                                        objectName,
                                        nameLengthInBytes,

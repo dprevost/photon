@@ -321,7 +321,7 @@ int vdsQueueOpen( VDS_HANDLE   sessionHandle,
    if ( ! pQueue->object.pSession->terminated ) {
       errcode = vdsaCommonObjOpen( &pQueue->object,
                                    VDS_QUEUE,
-                                   false,
+                                   VDSA_READ_WRITE,
                                    queueName,
                                    nameLengthInBytes );
       if ( errcode == 0 ) {

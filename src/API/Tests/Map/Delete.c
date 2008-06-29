@@ -26,7 +26,7 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE objHandle, sessionHandle;
+   VDS_HANDLE objHandle1, sessionHandle1;
    VDS_HANDLE objHandle2, sessionHandle2;
    int errcode;
    const char * key1  = "My Key1";
@@ -58,7 +58,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
+   errcode = vdsInitSession( &sessionHandle1 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -69,7 +69,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = vdsCreateObject( sessionHandle1,
                               "/amdp",
                               strlen("/amdp"),
                               &folderDef );
@@ -81,7 +81,7 @@ int main( int argc, char * argv[] )
    /*
     * Create and populate the map.
     */
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = vdsCreateObject( sessionHandle1,
                               "/amdp/test",
                               strlen("/amdp/test"),
                               &mapDef );
@@ -90,22 +90,16 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-//   errcode = vdsCommit( sessionHandle );
-//   if ( errcode != VDS_OK ) {
-//      fprintf( stderr, "err: %d\n", errcode );
-//      ERROR_EXIT( expectedToPass, NULL, ; );
-//   }
-
-   errcode = vdsMapEdit( sessionHandle,
+   errcode = vdsMapEdit( sessionHandle1,
                          "/amdp/test",
                          strlen("/amdp/test"),
-                         &objHandle );
+                         &objHandle1 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapInsert( objHandle,
+   errcode = vdsMapInsert( objHandle1,
                            key1,
                            strlen(key1),
                            data,
@@ -114,7 +108,7 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapInsert( objHandle,
+   errcode = vdsMapInsert( objHandle1,
                            key2,
                            strlen(key2),
                            data,
@@ -124,23 +118,23 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapClose( objHandle );
+   errcode = vdsMapClose( objHandle1 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsCommit( sessionHandle );
+   errcode = vdsCommit( sessionHandle1 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* Get both handles and do a sanity check */
-   errcode = vdsMapOpen( sessionHandle,
+   errcode = vdsMapOpen( sessionHandle1,
                          "/amdp/test",
                          strlen("/amdp/test"),
-                         &objHandle );
+                         &objHandle1 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -154,7 +148,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapGet( objHandle, 
+   errcode = vdsMapGet( objHandle1, 
                         key1, 
                         strlen(key1),
                         buffer, 20, &length );
@@ -165,7 +159,7 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsMapDelete( objHandle, /* read-only handle */
+   errcode = vdsMapDelete( objHandle1, /* read-only handle */
                            key1,
                            strlen(key1) );
    if ( errcode != VDS_OBJECT_IS_READ_ONLY ) {
@@ -181,7 +175,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapDelete( sessionHandle,
+   errcode = vdsMapDelete( sessionHandle1,
                            key1,
                            strlen(key1) );
    if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
@@ -228,7 +222,7 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapGet( objHandle, 
+   errcode = vdsMapGet( objHandle1, 
                         key1, 
                         strlen(key1),
                         buffer, 20, &length );
@@ -237,30 +231,11 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-#if 0
-
    /*
-    * Additional stuff to check while the Delete() is uncommitted:
-    *  - cannot get access to the item from first session.
-    *  - can get access to the item from second session.
-    *  - cannot modify it from second session.
-    */
-   
-   errcode = vdsMapDelete( objHandle2, key1, strlen(key1) );
-   if ( errcode != VDS_NO_SUCH_ITEM ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   /*
-    * Additional stuff to check after the commit:
-    *  - cannot get access to the item from first session.( no such item)
-    *  - cannot get access to the item from second session.
-    *  - can insert new item with same key.
-    *
-    * Note to make sure that the deleted item is still in the VDS,
-    * we will act on the first session (the second session holds
-    * an internal pointer to the data record).
+    * Commit session2 but not session 1:
+    *   - the new reader (objHandle2) does not see it (it is gone)
+    *   - the old reader (   "     ) - nothing has changed. 
+    * Furthermore, a new reader on session 1 should also not see it.
     */
    errcode = vdsMapClose( objHandle2 );
    if ( errcode != VDS_OK ) {
@@ -268,6 +243,79 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdsCommit( sessionHandle2 );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsMapOpen( sessionHandle2,
+                         "/amdp/test",
+                         strlen("/amdp/test"),
+                         &objHandle2 );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsMapGet( objHandle2, 
+                        key1, 
+                        strlen(key1),
+                        buffer, 20, &length );
+   if ( errcode != VDS_NO_SUCH_ITEM ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsMapGet( objHandle1, 
+                        key1, 
+                        strlen(key1),
+                        buffer, 20, &length );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsMapClose( objHandle2 );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsMapOpen( sessionHandle1,
+                         "/amdp/test",
+                         strlen("/amdp/test"),
+                         &objHandle2 );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsMapGet( objHandle2, 
+                        key1, 
+                        strlen(key1),
+                        buffer, 20, &length );
+   if ( errcode != VDS_NO_SUCH_ITEM ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   /*
+    * Commit session1 - the old reader should not see it now.
+    */
+   errcode = vdsCommit( sessionHandle1 );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsMapGet( objHandle1, 
+                        key1, 
+                        strlen(key1),
+                        buffer, 20, &length );
+   if ( errcode != VDS_NO_SUCH_ITEM ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   /*
+    * We repeat the process with the second key but this time, we'll 
+    * use rollback on session 1 instead of commit. The result should
+    * be identical.
+    */
+   errcode = vdsMapClose( objHandle2 ); /* not in edit mode and with session 1 */
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -280,44 +328,48 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   
-   errcode = vdsMapGet( objHandle, 
-                        key, 
-                        strlen(key1),
-                        buffer, 20, &length );
-   if ( errcode != VDS_NO_SUCH_ITEM ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   errcode = vdsMapGet( objHandle, 
-                        key, 
-                        strlen(key1),
-                        buffer, 20, &length );
-   if ( errcode != VDS_NO_SUCH_ITEM ) {
+   errcode = vdsMapDelete( objHandle2,
+                           key2,
+                           strlen(key2) );
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapInsert( objHandle2,
-                           key1,
-                           strlen(key1),
-                           data,
-                           7 );
-   if ( errcode != VDS_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   /* rollback to be able to test the Get() with session 2 */
-   errcode = vdsRollback( sessionHandle2 );
-   if ( errcode != VDS_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
    errcode = vdsMapGet( objHandle2, 
-                        key, 
-                        strlen(key1),
+                        key2, 
+                        strlen(key2),
+                        buffer, 20, &length );
+   if ( errcode != VDS_NO_SUCH_ITEM ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsMapGet( objHandle1, 
+                        key2, 
+                        strlen(key2),
+                        buffer, 20, &length );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsMapClose( objHandle2 );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsCommit( sessionHandle2 );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsRollback( sessionHandle1 );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsMapGet( objHandle1, 
+                        key2, 
+                        strlen(key2),
                         buffer, 20, &length );
    if ( errcode != VDS_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -325,6 +377,14 @@ int main( int argc, char * argv[] )
    }
    
    /* Close the session and try to act on the object */
+   errcode = vdsMapEdit( sessionHandle2,
+                         "/amdp/test",
+                         strlen("/amdp/test"),
+                         &objHandle2 );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 
    errcode = vdsExitSession( sessionHandle2 );
    if ( errcode != VDS_OK ) {
@@ -332,14 +392,13 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapDelete( objHandle,
+   errcode = vdsMapDelete( objHandle2,
                            key1,
                            strlen(key1) );
    if ( errcode != VDS_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-#endif
 
    vdsExit();
 

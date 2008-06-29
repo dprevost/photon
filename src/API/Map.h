@@ -50,6 +50,8 @@ typedef struct vdsaMap
 
    int editMode;
 
+   vdsaReader reader;
+   
 } vdsaMap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

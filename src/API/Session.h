@@ -24,6 +24,7 @@
 #include "Common/ThreadLock.h"
 #include "Engine/SessionContext.h"
 #include "API/Process.h"
+#include "API/ListReaders.h"
 
 #if !defined(LOCK_TIMEOUT)
 # define LOCK_TIMEOUT 10000 
@@ -65,6 +66,8 @@ typedef struct vdsaSession
    /** Our lock to serialize access to this object, if needed. */
    vdscThreadLock  mutex;
    
+   vdsaListReaders listReaders;
+   
 } vdsaSession;
 
 
@@ -82,8 +85,8 @@ int vdsaSessionCloseObj( vdsaSession             * pSession,
 
 VDSF_API_EXPORT
 int vdsaSessionOpenObj( vdsaSession             * pSession,
-                        enum vdsObjectType        objectType,
-                        bool                      editMode,
+                        vdsObjectType             objectType,
+                        vdsaEditMode              editMode,
                         const char              * objectName,
                         size_t                    nameLengthInBytes,
                         struct vdsaCommonObject * pObject );
