@@ -41,7 +41,7 @@ int main()
    
    errcode = vdseQueueInit( pQueue, 
                             0, 0, &status, 4, 
-                            "Map1", NULL_OFFSET, &def, &context );
+                            "Queue1", SET_OFFSET(pQueue), &def, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

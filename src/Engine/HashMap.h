@@ -123,7 +123,7 @@ int vdseHashMapInit( vdseHashMap         * pHashMap,
                      vdseTxStatus        * pTxStatus,
                      size_t                origNameLength,
                      char                * origName,
-                     ptrdiff_t             keyOffset,
+                     ptrdiff_t             hashItemOffset,
                      vdsObjectDefinition * pDefinition,
                      vdseSessionContext  * pContext );
 

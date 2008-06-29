@@ -102,9 +102,8 @@ int vdseQueueInit( vdseQueue           * pQueue,
                    vdseTxStatus        * pTxStatus,
                    size_t                origNameLength,
                    char                * origName,
-                   ptrdiff_t             keyOffset,
+                   ptrdiff_t             hashItemOffset,
                    vdsObjectDefinition * pDefinition,
-//                   int                   numFields,
                    vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT

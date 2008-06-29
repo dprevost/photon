@@ -72,6 +72,12 @@ typedef struct vdseFolder vdseFolder;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+VDSF_ENGINE_EXPORT
+void vdseFolderCommitEdit( vdseFolder          * pFolder,
+                           vdseHashItem        * pHashItem, 
+                           enum vdsObjectType    objectType,
+                           vdseSessionContext  * pContext );
+
 /**
  * Creates an immediate child of the folder.
  */
@@ -145,7 +151,7 @@ int vdseFolderInit( vdseFolder         * pFolder,
                     vdseTxStatus       * pTxStatus,
                     size_t               origNameLength,
                     char               * origName,
-                    ptrdiff_t            keyOffset,
+                    ptrdiff_t            hashItemOffset,
                     vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT

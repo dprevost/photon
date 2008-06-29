@@ -46,7 +46,7 @@ int main()
                               &status, 
                               4, 
                               NULL, /* Null name */ 
-                              NULL_OFFSET,
+                              SET_OFFSET(pHashMap),
                               &def,
                               &context );
 

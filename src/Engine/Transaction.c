@@ -261,7 +261,7 @@ int vdseTxCommit( vdseTx*             pTx,
 
  //        vdseTxStatusClearTx( pChildStatus );
          vdseFolderCommitEdit( parentFolder, 
-                               pHashItem, pOps->childType, pcontext );
+                               pHashItem, pOps->childType, pContext );
          
          parentFolder->nodeObject.txCounter--;
 

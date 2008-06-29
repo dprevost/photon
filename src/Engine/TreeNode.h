@@ -78,7 +78,8 @@ struct vdseTreeNode
    ptrdiff_t myNameOffset;
 
    /** Offset to the string used for the key (lowercase of the original). */
-   ptrdiff_t myKeyOffset;
+//   ptrdiff_t myKeyOffset;
+   ptrdiff_t myHashItem;
    
    /** Offset to the transaction info (vdseTxStatus). */
    ptrdiff_t txStatusOffset;
@@ -99,7 +100,7 @@ void vdseTreeNodeInit( vdseTreeNode * pNode,
                        size_t         originalNameLength,
                        ptrdiff_t      originalNameOffset,
                        ptrdiff_t      parentOffset,
-                       ptrdiff_t      keyOffset )
+                       ptrdiff_t      hashItemOffset )
 {
    VDS_PRE_CONDITION( pNode != NULL );
    
@@ -108,7 +109,7 @@ void vdseTreeNodeInit( vdseTreeNode * pNode,
    pNode->myNameOffset   = originalNameOffset;
    pNode->txStatusOffset = txStatusOffset;
    pNode->myParentOffset = parentOffset;
-   pNode->myKeyOffset    = keyOffset;
+   pNode->myHashItem     = hashItemOffset;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -123,7 +124,7 @@ void vdseTreeNodeFini( vdseTreeNode* pNode )
    pNode->myNameOffset   = NULL_OFFSET;
    pNode->txStatusOffset = NULL_OFFSET;
    pNode->myParentOffset = NULL_OFFSET;
-   pNode->myKeyOffset    = NULL_OFFSET;
+   pNode->myHashItem     = NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

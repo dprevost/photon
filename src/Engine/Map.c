@@ -33,6 +33,7 @@ void vdseMapReleaseNoLock( vdseMap            * pHashMap,
 
 int vdseMapCopy( vdseMap            * pOldMap, 
                  vdseMap            * pNewMap,
+                 vdseHashItem       * pHashItem,
                  vdseSessionContext * pContext )
 {
    int errcode;
@@ -88,10 +89,9 @@ int vdseMapCopy( vdseMap            * pOldMap,
    
    memcpy( &pNewMap->keyDef, &pOldMap->keyDef, sizeof(vdsKeyDefinition) );
 
-   pNewMap->latestVersion = SET_OFFSET( pOldMap );
-   pOldMap->editVersion = SET_OFFSET( pNewMap );
-   pNewMap->editVersion = SET_OFFSET( pNewMap );
-   
+   pNewMap->latestVersion = pOldMap->latestVersion;
+   pOldMap->editVersion = SET_OFFSET( pHashItem );
+   pNewMap->editVersion = SET_OFFSET( pHashItem );
    
    return 0;
 }
@@ -379,7 +379,7 @@ int vdseMapInit( vdseMap             * pHashMap,
                  vdseTxStatus        * pTxStatus,
                  size_t                origNameLength,
                  char                * origName,
-                 ptrdiff_t             keyOffset,
+                 ptrdiff_t             hashItemOffset,
                  vdsObjectDefinition * pDefinition,
                  vdseSessionContext  * pContext )
 {
@@ -393,7 +393,8 @@ int vdseMapInit( vdseMap             * pHashMap,
    VDS_PRE_CONDITION( pTxStatus    != NULL );
    VDS_PRE_CONDITION( origName     != NULL );
    VDS_PRE_CONDITION( pDefinition  != NULL );
-   VDS_PRE_CONDITION( parentOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( hashItemOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( parentOffset   != NULL_OFFSET );
    VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    VDS_PRE_CONDITION( origNameLength > 0 );
    VDS_PRE_CONDITION( pDefinition->numFields > 0 );
@@ -414,7 +415,7 @@ int vdseMapInit( vdseMap             * pHashMap,
                      origNameLength,
                      SET_OFFSET(origName),
                      parentOffset,
-                     keyOffset );
+                     hashItemOffset );
 
    listErr = vdseHashInit( &pHashMap->hashObj, 
                            SET_OFFSET(&pHashMap->memObject),

@@ -603,7 +603,7 @@ int vdseHashMapInit( vdseHashMap         * pHashMap,
                      vdseTxStatus        * pTxStatus,
                      size_t                origNameLength,
                      char                * origName,
-                     ptrdiff_t             keyOffset,
+                     ptrdiff_t             hashItemOffset,
                      vdsObjectDefinition * pDefinition,
                      vdseSessionContext  * pContext )
 {
@@ -617,7 +617,8 @@ int vdseHashMapInit( vdseHashMap         * pHashMap,
    VDS_PRE_CONDITION( pTxStatus    != NULL );
    VDS_PRE_CONDITION( origName     != NULL );
    VDS_PRE_CONDITION( pDefinition  != NULL );
-   VDS_PRE_CONDITION( parentOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( hashItemOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( parentOffset   != NULL_OFFSET );
    VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    VDS_PRE_CONDITION( origNameLength > 0 );
    VDS_PRE_CONDITION( pDefinition->numFields > 0 );
@@ -638,7 +639,7 @@ int vdseHashMapInit( vdseHashMap         * pHashMap,
                      origNameLength,
                      SET_OFFSET(origName),
                      parentOffset,
-                     keyOffset );
+                     hashItemOffset );
 
    listErr = vdseHashInit( &pHashMap->hashObj, 
                            SET_OFFSET(&pHashMap->memObject),

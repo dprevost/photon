@@ -67,6 +67,7 @@ typedef struct vdseMap vdseMap;
 VDSF_ENGINE_EXPORT
 int vdseMapCopy( vdseMap            * pHashMap, 
                  vdseMap            * pNewMap,
+                 vdseHashItem       * pHashItem,
                  vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
@@ -109,7 +110,7 @@ int vdseMapInit( vdseMap             * pHashMap,
                  vdseTxStatus        * pTxStatus,
                  size_t                origNameLength,
                  char                * origName,
-                 ptrdiff_t             keyOffset,
+                 ptrdiff_t             hashItemOffset,
                  vdsObjectDefinition * pDefinition,
                  vdseSessionContext  * pContext );
 

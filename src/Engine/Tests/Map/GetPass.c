@@ -31,7 +31,6 @@ int main()
    char * data = "my data";
    vdseHashItem * pItem;
    char * ptr;
-   vdseTxStatus * txItemStatus;
    vdsObjectDefinition def = { 
       VDS_MAP, 
       1, 
@@ -45,7 +44,7 @@ int main()
    
    errcode = vdseMapInit( pHashMap, 
                           0, 1, 0, &status, 4, 
-                          "Map1", NULL_OFFSET, &def, &context );
+                          "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
