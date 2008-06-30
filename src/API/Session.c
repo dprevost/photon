@@ -43,9 +43,7 @@ void vdsaResetReaders( vdsaSession * pSession )
       do {
          if ( reader->type == VDSA_MAP ) {
             vdsaMapResetReader( reader->address );
-            fprintf( stderr, "Here !!!!!\n" );
          }
-         else fprintf( stderr, "Bad Bad Here !!!!!\n" );
       } while (vdsaListReadersPeakNext(&pSession->listReaders, reader, &reader) );
    }
 }

@@ -97,9 +97,6 @@ int vdseMapCopy( vdseMap            * pOldMap,
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return -1;
    }
-   fprintf( stderr, "Y: %d %d %d\n", pNewMap->hashObj.totalDataSizeInBytes, 
-      pNewMap->hashObj.numberOfItems,
-      pNewMap->hashObj.enumResize );
    pNewMap->latestVersion = pOldMap->latestVersion;
    pOldMap->editVersion = SET_OFFSET( pHashItem );
    pNewMap->editVersion = SET_OFFSET( pHashItem );

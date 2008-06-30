@@ -541,7 +541,6 @@ vdseHashDeleteRaw( vdseHash            * pHash,
                        &pItem, 
                        &previousItem, 
                        &bucket );
-   fprintf( stderr, "Q1: %d %s %d %d %p\n", keyFound, pKey, keyLength, bucket, pItem );
    
    if ( keyFound ) {
       nextOffset  = pItem->nextItem;

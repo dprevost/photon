@@ -708,17 +708,5 @@ int vdseMemAllocStats( vdseMemAlloc       * pAlloc,
    return -1;
 }
 
-#if 0
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-int vdseMemAllocValidate( vdseMemAlloc*     pAlloc,
-                          bool              verbose,
-                          vdscErrorHandler* pError )
-{
-   fprintf( stderr, "Validate ok !\n" );
-   return 0;
-}
-
-#endif
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

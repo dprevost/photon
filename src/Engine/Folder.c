@@ -56,7 +56,6 @@ void vdseFolderCommitEdit( vdseFolder          * pFolder,
    switch( pDesc->apiType ) {
    case VDS_MAP:
       pMapEdit = GET_PTR_FAST( pDesc->offset, vdseMap );
-fprintf( stderr, "W %d %d\n", pMapEdit->latestVersion, pMapEdit->editVersion );
       if ( pMapEdit->editVersion != SET_OFFSET(pHashItem) ) {
          errcode = VDS_INTERNAL_ERROR;
          assert(0);
@@ -65,10 +64,7 @@ fprintf( stderr, "W %d %d\n", pMapEdit->latestVersion, pMapEdit->editVersion );
       pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
                                   vdseObjectDescriptor );
       pMapLatest = GET_PTR_FAST( pDescLatest->offset, vdseMap );
-fprintf( stderr, "#6 blocks = %d\n", pMapEdit->memObject.totalBlocks );
-fprintf( stderr, "#7 blocks = %d\n", pMapLatest->memObject.totalBlocks );
 
-fprintf( stderr, "Q %d %d\n", pMapLatest->latestVersion, pMapLatest->editVersion );
       pHashItemLatest->nextSameKey = SET_OFFSET(pHashItem);
       pMapLatest->editVersion = NULL_OFFSET;
       pMapEdit->editVersion   = NULL_OFFSET;
@@ -547,29 +543,33 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
             goto the_exit;
          }
       }
-      if ( (objectType != VDS_MAP) || (objectType != pDescOld->apiType) ) {
+      if ( objectType != pDescOld->apiType ) {
          errcode = VDS_WRONG_OBJECT_TYPE;
-         goto the_exit;
-      }
-      pMemObject = GET_PTR_FAST( pDescOld->memOffset, vdseMemObject );
-      
-fprintf( stderr, "# blocks = %d\n", pMemObject->totalBlocks );
-      ptr = (unsigned char*) vdseMallocBlocks( pContext->pAllocator,
-                                               VDSE_ALLOC_API_OBJ,
-                                               pMemObject->totalBlocks,
-                                               pContext );
-      if ( ptr == NULL ) {
-         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
          goto the_exit;
       }
 
       switch( pDescOld->apiType ) {
       case VDS_MAP:
          pMap = GET_PTR_FAST( pDescOld->offset, vdseMap );
+         if ( pMap->editVersion != NULL_OFFSET ) {
+            errcode = VDS_A_SINGLE_UPDATER_IS_ALLOWED;
+            goto the_exit;
+         }
          memObjType = VDSE_IDENT_MAP;
          break;
       default:
          errcode = VDS_INTERNAL_ERROR;
+         goto the_exit;
+      }
+
+      pMemObject = GET_PTR_FAST( pDescOld->memOffset, vdseMemObject );
+      
+      ptr = (unsigned char*) vdseMallocBlocks( pContext->pAllocator,
+                                               VDSE_ALLOC_API_OBJ,
+                                               pMemObject->totalBlocks,
+                                               pContext );
+      if ( ptr == NULL ) {
+         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
          goto the_exit;
       }
       
@@ -659,8 +659,6 @@ fprintf( stderr, "# blocks = %d\n", pMemObject->totalBlocks );
       txFolderStatus->usageCounter++;
       txStatus->parentCounter++;
       pFolderItem->pHashItem = pHashItemNew;
-
-      fprintf( stderr, "#4 blocks = %d\n", ((vdseMap*)ptr)->memObject.totalBlocks );
 
       vdseUnlock( &pFolder->memObject, pContext );
 

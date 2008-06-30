@@ -118,13 +118,13 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-TESTS = Delete.sh
+TESTS = Edit.sh
 #TESTS =                        \
         Close.sh               \
         Create.sh              \
         CreateXML.sh           \
-        Delete.sh              \
         Definition.sh          \
+        Delete.sh              \
         Edit.sh                \
         FirstNullEntry.sh      \
         FirstNullHandle.sh     \

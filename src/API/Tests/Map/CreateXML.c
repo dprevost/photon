@@ -42,7 +42,7 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE sessionHandle, folderHandle;
+   VDS_HANDLE sessionHandle, folderHandle, mapHandle;
    int errcode;
    char buff[1000];
    char src_path[PATH_MAX] = {"../../../XML/vdsf_md10.xsd"};
@@ -313,6 +313,15 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = vdsMapOpen( sessionHandle,
+                         "/ammcx/My_Map",
+                         strlen("/ammcx/My_Map"),
+                         &mapHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
    vdsExit();
 
    return 0;

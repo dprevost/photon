@@ -77,9 +77,9 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsMapOpen( sessionHandle,
-                             "/amcp/test",
-                             strlen("/amcp/test"),
-                             &objHandle );
+                         "/amcp/test",
+                         strlen("/amcp/test"),
+                         &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -106,12 +106,27 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Open with edit instead of open */
+   errcode = vdsMapEdit( sessionHandle,
+                         "/amcp/test",
+                         strlen("/amcp/test"),
+                         &objHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsMapClose( objHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    /* Close the session and try to act on the object */
 
    errcode = vdsMapOpen( sessionHandle,
-                             "/amcp/test",
-                             strlen("/amcp/test"),
-                             &objHandle );
+                         "/amcp/test",
+                         strlen("/amcp/test"),
+                         &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

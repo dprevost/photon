@@ -749,6 +749,24 @@
     </error>
 
     <error>
+      <errnumber> 72 </errnumber>
+      <errname> A_SINGLE_UPDATER_IS_ALLOWED </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Read-only objects can only have one updater at a time.
+          </errormsg>
+          <errordoc>
+            Read-only objects are not updated very frequently and therefore
+            only a single editing copy is allowed. To allow concurrent editors
+            (either all working on the same copy or each working with its 
+            own copy would have been be possible but was deemed unnecessary.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
       <errnumber> 101 </errnumber>
       <errname> INVALID_NUM_FIELDS </errname>
       <message_group>

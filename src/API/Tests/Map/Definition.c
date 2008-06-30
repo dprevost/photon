@@ -112,15 +112,22 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapOpen( sessionHandle,
-                           "/ammd/test",
-                           strlen("/ammd/test"),
-                           &objHandle );
+   errcode = vdsMapEdit( sessionHandle,
+                         "/ammd/test",
+                         strlen("/ammd/test"),
+                         &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Test of the data definition with inserts . */
+   errcode = vdsMapInsert( objHandle, key, strlen(key), data1, 
+      offsetof(struct dummy, bin)-1 );
+   if ( errcode != VDS_INVALID_LENGTH ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    errcode = vdsMapInsert( objHandle, key, strlen(key), data1, lenData );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

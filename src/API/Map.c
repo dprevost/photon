@@ -101,7 +101,7 @@ int vdsMapClose( VDS_HANDLE objectHandle )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdsMapDefinition( VDS_HANDLE             objectHandle,
-                          vdsObjectDefinition ** ppDefinition )
+                      vdsObjectDefinition ** ppDefinition )
 {
    vdsaMap * pHashMap;
    vdseMap * pVDSHashMap;
@@ -128,7 +128,7 @@ int vdsMapDefinition( VDS_HANDLE             objectHandle,
                                       pVDSHashMap->numFields,
                                       ppDefinition );
          if ( errcode == 0 ) {
-            (*ppDefinition)->type = VDS_HASH_MAP;
+            (*ppDefinition)->type = VDS_MAP;
             memcpy( &(*ppDefinition)->key, 
                     &pVDSHashMap->keyDef, 
                     sizeof(vdsKeyDefinition) );
@@ -266,7 +266,6 @@ int vdsMapEdit( VDS_HANDLE   sessionHandle,
          pHashMap->editMode = 1;
          
          pVDSHashMap = (vdseMap *) pHashMap->object.pMyVdsObject;
-         fprintf( stderr, "edit: %p\n", pVDSHashMap );
          GET_PTR( pHashMap->pDefinition, 
                   pVDSHashMap->dataDefOffset,
                   vdseFieldDef );
@@ -668,7 +667,6 @@ int vdsMapOpen( VDS_HANDLE   sessionHandle,
          pHashMap->editMode = 0;
          
          pVDSHashMap = (vdseMap *) pHashMap->object.pMyVdsObject;
-         fprintf( stderr, "edit: %p\n", pVDSHashMap );
          pHashMap->reader.type = VDSA_MAP;
          pHashMap->reader.address = pHashMap;
          vdsaListReadersPut( &pHashMap->object.pSession->listReaders, 
@@ -961,11 +959,7 @@ void vdsaMapResetReader( void * map )
    pDesc = GET_PTR_FAST( pHashItemLatest->dataOffset, 
                          vdseObjectDescriptor );
    pMapLatest = GET_PTR_FAST( pDesc->offset, vdseMap );
-   if ( pMapLatest == pVDSHashMap ) {
-      fprintf( stderr, "Equal\n" );
-   }
-   else {
-      fprintf( stderr, "Not Equal\n" );
+   if ( pMapLatest != pVDSHashMap ) {
       if ( pHashMap->iterator.pHashItem != NULL ) {
          vdseMapRelease( pVDSHashMap,
                          pHashMap->iterator.pHashItem,
