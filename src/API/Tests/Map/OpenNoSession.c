@@ -95,9 +95,9 @@ int main( int argc, char * argv[] )
     * error or we crash!
     */
    errcode = vdsMapOpen( sessionHandle,
-                            "/amons/test",
-                            strlen("/amons/test"),
-                            &objHandle );
+                         "/amons/test",
+                         strlen("/amons/test"),
+                         &objHandle );
    if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

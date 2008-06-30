@@ -76,6 +76,13 @@ elementFormDefault="qualified">
   </xs:restriction>
 </xs:simpleType>
 
+<xs:simpleType name="objectAccessMode">
+  <xs:restriction base="xs:string">
+    <xs:enumeration value="dynamic"/>
+    <xs:enumeration value="static"/>
+  </xs:restriction>
+</xs:simpleType>
+
 <!-- Definition of complex types starts here -->
 
 <xs:complexType name="integerType">
@@ -176,6 +183,8 @@ elementFormDefault="qualified">
     <xs:element ref="lastField" minOccurs="1" maxOccurs="1"/>
   </xs:sequence>
   <xs:attribute name="objName" type="objString" use="required"/>
+  <xs:attribute name="mode" type="objectAccessMode" use="required"/>
+
 </xs:complexType>
 
 <xs:element name="hashmap" type="hashmapType">

@@ -34,7 +34,7 @@ const bool expectedToPass = true;
       "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n"  \
       "xsi:schemaLocation=\"http://vdsf.sourceforge.net/vdsf_md "); \
    strcat( buff, SRC_PATH);                                         \
-   strcat( buff, "\"\n objName=\"My_Map\" >\n" );                   \
+   strcat( buff, "\"\n objName=\"My_Map\" mode=\"dynamic\">\n" );                   \
    strcat( buff, TRAILER );                                         \
    strcat( buff, "\n</hashmap>" );
 

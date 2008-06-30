@@ -118,8 +118,7 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-TESTS = Edit.sh
-#TESTS =                        \
+TESTS =                        \
         Close.sh               \
         Create.sh              \
         CreateXML.sh           \

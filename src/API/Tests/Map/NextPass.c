@@ -81,44 +81,42 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapOpen( sessionHandle,
-                            "/amnp/test",
-                             strlen("/amnp/test"),
-                            &objHandle );
+   errcode = vdsMapEdit( sessionHandle,
+                         "/amnp/test",
+                         strlen("/amnp/test"),
+                         &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapInsert( objHandle,
-                               key1,
-                               7,
-                               data1,
-                               8 );
+                           key1,
+                           7,
+                           data1,
+                           8 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapInsert( objHandle,
-                               key2,
-                               7,
-                               data2,
-                               8 );
+                           key2,
+                           7,
+                           data2,
+                           8 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaHashMapFirst( objHandle,
-                                 &entry );
+   errcode = vdsaMapFirst( objHandle, &entry );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaHashMapNext( objHandle,
-                                &entry );
+   errcode = vdsaMapNext( objHandle, &entry );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

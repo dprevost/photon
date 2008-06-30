@@ -93,40 +93,27 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapOpen( sessionHandle,
-                             "/amrepl/test",
-                             strlen("/amrepl/test"),
-                             &objHandle );
-   if ( errcode != VDS_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   errcode = vdsMapOpen( sessionHandle2,
-                             "/amrepl/test",
-                             strlen("/amrepl/test"),
-                             &objHandle2 );
+   errcode = vdsMapEdit( sessionHandle,
+                         "/amrepl/test",
+                         strlen("/amrepl/test"),
+                         &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapInsert( objHandle,
-                               key,
-                               6,
-                               data1,
-                               strlen(data1) );
+                           key,
+                           6,
+                           data1,
+                           strlen(data1) );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   /* Must commit the insert before replacing */
-   errcode = vdsMapReplace( objHandle,
-                                key,
-                                6,
-                                data2,
-                                strlen(data2) );
-   if ( errcode != VDS_ITEM_IS_IN_USE ) {
+   errcode = vdsMapClose( objHandle );
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -137,53 +124,70 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = vdsMapEdit( sessionHandle,
+                         "/amrepl/test",
+                         strlen("/amrepl/test"),
+                         &objHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsMapOpen( sessionHandle2,
+                         "/amrepl/test",
+                         strlen("/amrepl/test"),
+                         &objHandle2 );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    /* Invalid arguments to tested function. */
 
    errcode = vdsMapReplace( NULL,
-                                key,
-                                6,
-                                data2,
-                                strlen(data2) );
+                            key,
+                            6,
+                            data2,
+                            strlen(data2) );
    if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapReplace( objHandle,
-                                NULL,
-                                6,
-                                data2,
-                                strlen(data2) );
+                            NULL,
+                            6,
+                            data2,
+                            strlen(data2) );
    if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapReplace( objHandle,
-                                key,
-                                0,
-                                data2,
-                                strlen(data2) );
+                            key,
+                            0,
+                            data2,
+                            strlen(data2) );
    if ( errcode != VDS_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapReplace( objHandle,
-                                key,
-                                6,
-                                NULL,
-                                strlen(data2) );
+                            key,
+                            6,
+                            NULL,
+                            strlen(data2) );
    if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapReplace( objHandle,
-                                key,
-                                6,
-                                data2,
-                                0 );
+                            key,
+                            6,
+                            data2,
+                            0 );
    if ( errcode != VDS_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -191,10 +195,10 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = vdsMapReplace( objHandle,
-                                key,
-                                6,
-                                data2,
-                                strlen(data2) );
+                            key,
+                            6,
+                            data2,
+                            strlen(data2) );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -207,11 +211,11 @@ int main( int argc, char * argv[] )
     *  - cannot modify it from any session.
     */
    errcode = vdsMapGet( objHandle,
-                            key,
-                            6,
-                            buffer,
-                            20,
-                            &length );
+                        key,
+                        6,
+                        buffer,
+                        20,
+                        &length );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -224,11 +228,11 @@ int main( int argc, char * argv[] )
    }
    
    errcode = vdsMapGet( objHandle2,
-                            key,
-                            6,
-                            buffer,
-                            20,
-                            &length );
+                        key,
+                        6,
+                        buffer,
+                        20,
+                        &length );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -240,7 +244,66 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = vdsMapClose( objHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsCommit( sessionHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsMapGet( objHandle2,
+                        key,
+                        6,
+                        buffer,
+                        20,
+                        &length );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( length != strlen(data1) ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( memcmp( buffer, data1, length ) != 0 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsCommit( sessionHandle2 );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsMapGet( objHandle2,
+                        key,
+                        6,
+                        buffer,
+                        20,
+                        &length );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( length != strlen(data2) ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( memcmp( buffer, data2, length ) != 0 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    /* Close the session and try to act on the object */
+
+   errcode = vdsMapEdit( sessionHandle,
+                         "/amrepl/test",
+                         strlen("/amrepl/test"),
+                         &objHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 
    errcode = vdsExitSession( sessionHandle );
    if ( errcode != VDS_OK ) {
@@ -249,10 +312,10 @@ int main( int argc, char * argv[] )
    }
 
    errcode = vdsMapReplace( objHandle,
-                                key,
-                                6,
-                                data2,
-                                strlen(data2) );
+                            key,
+                            6,
+                            data2,
+                            strlen(data2) );
    if ( errcode != VDS_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

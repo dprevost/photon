@@ -410,6 +410,7 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
    int errcode = 0;
    int i, j, separator = -1;
    uint16_t numFields;
+   bool dynamicMode;
    
    /*
     * for debugging, I could use this instead:
@@ -522,6 +523,21 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
       goto cleanup;
    }
 
+   /* A dynamic or static hash map ? */
+   dynamicMode = false;
+   if ( xmlStrcmp( root->name, BAD_CAST "hashmap") == 0 ) {
+      prop = xmlGetProp( root, BAD_CAST "mode" );
+      if ( prop == NULL ) {
+         errcode = VDS_WRONG_OBJECT_TYPE;
+         goto cleanup;
+      }
+      if ( xmlStrcmp( prop, BAD_CAST "dynamic" ) == 0 ) {
+         dynamicMode = true;
+      }
+      xmlFree( prop );
+      prop = NULL;
+   }
+   
    /* All seems ok with validation - start the extraction of our data */   
    nodeField = root->children;
 
@@ -566,7 +582,8 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
 
    /* Extract the key, if any */
    if ( nodeKey != NULL ) {
-      (*ppDefinition)->type = VDS_HASH_MAP;
+      (*ppDefinition)->type = VDS_MAP;
+      if ( dynamicMode ) (*ppDefinition)->type = VDS_HASH_MAP;
       nodeType = nodeKey->children;
       while ( nodeType != NULL ) {
          if ( nodeType->type == XML_ELEMENT_NODE ) {

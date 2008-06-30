@@ -79,29 +79,29 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapOpen( sessionHandle,
-                             "/amgne/test",
-                             strlen("/amgne/test"),
-                             &objHandle );
+   errcode = vdsMapEdit( sessionHandle,
+                         "/amgne/test",
+                         strlen("/amgne/test"),
+                         &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapInsert( objHandle,
-                               key,
-                               6,
-                               data,
-                               7 );
+                           key,
+                           6,
+                           data,
+                           7 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaHashMapRetrieve( objHandle,
-                                  key,
-                                  6,
-                                  NULL );
+   errcode = vdsaMapRetrieve( objHandle,
+                              key,
+                              6,
+                              NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

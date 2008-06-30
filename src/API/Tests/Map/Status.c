@@ -81,38 +81,38 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapOpen( sessionHandle,
-                             "/amsp/test",
-                             strlen("/amsp/test"),
-                             &objHandle );
+   errcode = vdsMapEdit( sessionHandle,
+                         "/amsp/test",
+                         strlen("/amsp/test"),
+                         &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapInsert( objHandle,
-                               key1,
-                               7,
-                               data,
-                               7 );
+                           key1,
+                           7,
+                           data,
+                           7 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdsMapInsert( objHandle,
-                               key2,
-                               7,
-                               data,
-                               7 );
+                           key2,
+                           7,
+                           data,
+                           7 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdsMapInsert( objHandle,
-                               key3,
-                               7,
-                               data,
-                               7 );
+                           key3,
+                           7,
+                           data,
+                           7 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

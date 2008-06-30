@@ -26,7 +26,7 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE objHandle, sessionHandle;
+   VDS_HANDLE objHandle, sessionHandle, objHandle2;
    int errcode;
    const char * key  = "My Key";
    const char * data = "My Data";
@@ -79,29 +79,70 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = vdsMapEdit( sessionHandle,
+                         "/amrp/test",
+                         strlen("/amrp/test"),
+                         &objHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    errcode = vdsMapOpen( sessionHandle,
-                             "/amrp/test",
-                             strlen("/amrp/test"),
-                             &objHandle );
+                         "/amrp/test",
+                         strlen("/amrp/test"),
+                         &objHandle2 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapInsert( objHandle,
-                               key,
-                               6,
-                               data,
-                               7 );
+                           key,
+                           6,
+                           data,
+                           7 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaHashMapRetrieve( objHandle,
-                            key,
-                            6,
-                            &entry );
+   errcode = vdsaMapRetrieve( objHandle2,
+                              key,
+                              6,
+                              &entry );
+   if ( errcode != VDS_NO_SUCH_ITEM ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = vdsaMapRetrieve( objHandle,
+                              key,
+                              6,
+                              &entry );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( memcmp( entry.data, data, 7 ) != 0 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   errcode = vdsMapClose( objHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsCommit( sessionHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   errcode = vdsaMapRetrieve( objHandle2,
+                              key,
+                              6,
+                              &entry );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

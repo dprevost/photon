@@ -88,9 +88,9 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = vdsMapOpen( NULL,
-                             "/amop/test",
-                             strlen("/amop/test"),
-                             &objHandle );
+                         "/amop/test",
+                         strlen("/amop/test"),
+                         &objHandle );
    if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -98,36 +98,36 @@ int main( int argc, char * argv[] )
 
    objHandle = (VDS_HANDLE) junk;
    errcode = vdsMapOpen( objHandle,
-                             "/amop/test",
-                             strlen("/amop/test"),
-                             &objHandle );
+                         "/amop/test",
+                         strlen("/amop/test"),
+                         &objHandle );
    if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapOpen( sessionHandle,
-                             NULL,
-                             strlen("/amop/test"),
-                             &objHandle );
+                         NULL,
+                         strlen("/amop/test"),
+                         &objHandle );
    if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapOpen( sessionHandle,
-                             "/amop/test",
-                             0,
-                             &objHandle );
+                         "/amop/test",
+                         0,
+                         &objHandle );
    if ( errcode != VDS_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapOpen( sessionHandle,
-                             "/amop/test",
-                             strlen("/amop/test"),
-                             NULL );
+                         "/amop/test",
+                         strlen("/amop/test"),
+                         NULL );
    if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -135,18 +135,18 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = vdsMapOpen( sessionHandle,
-                            "/amop/test",
-                            strlen("/amop/test"),
-                            &objHandle );
+                         "/amop/test",
+                         strlen("/amop/test"),
+                         &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapOpen( sessionHandle2,
-                            "/amop/test",
-                            strlen("/amop/test"),
-                            &objHandle2 );
+                         "/amop/test",
+                         strlen("/amop/test"),
+                         &objHandle2 );
    if ( errcode != VDS_OBJECT_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

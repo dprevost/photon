@@ -26,7 +26,7 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE objHandle, sessionHandle;
+   VDS_HANDLE objHandle, sessionHandle, objHandle2;
    int errcode;
    const char * key  = "My Key";
    const char * data = "My Data";
@@ -81,20 +81,29 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = vdsMapEdit( sessionHandle,
+                         "/amgf/test",
+                         strlen("/amgf/test"),
+                         &objHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    errcode = vdsMapOpen( sessionHandle,
-                             "/amgf/test",
-                             strlen("/amgf/test"),
-                             &objHandle );
+                         "/amgf/test",
+                         strlen("/amgf/test"),
+                         &objHandle2 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapInsert( objHandle,
-                               key,
-                               6,
-                               data,
-                               7 );
+                           key,
+                           6,
+                           data,
+                           7 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -103,97 +112,109 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = vdsMapGetFirst( NULL,
-                                 buffKey,
-                                 50,
-                                 buffer,
-                                 200,
-                                 &keyLength,
-                                 &dataLength );
+                             buffKey,
+                             50,
+                             buffer,
+                             200,
+                             &keyLength,
+                             &dataLength );
    if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapGetFirst( objHandle,
-                                 NULL,
-                                 50,
-                                 buffer,
-                                 200,
-                                 &keyLength,
-                                 &dataLength );
+                             NULL,
+                             50,
+                             buffer,
+                             200,
+                             &keyLength,
+                             &dataLength );
    if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapGetFirst( objHandle,
-                                 buffKey,
-                                 2,
-                                 buffer,
-                                 200,
-                                 &keyLength,
-                                 &dataLength );
+                             buffKey,
+                             2,
+                             buffer,
+                             200,
+                             &keyLength,
+                             &dataLength );
    if ( errcode != VDS_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapGetFirst( objHandle,
-                                 buffKey,
-                                 50,
-                                 NULL,
-                                 200,
-                                 &keyLength,
-                                 &dataLength );
+                             buffKey,
+                             50,
+                             NULL,
+                             200,
+                             &keyLength,
+                             &dataLength );
    if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapGetFirst( objHandle,
-                                 buffKey,
-                                 50,
-                                 buffer,
-                                 2,
-                                 &keyLength,
-                                 &dataLength );
+                             buffKey,
+                             50,
+                             buffer,
+                             2,
+                             &keyLength,
+                             &dataLength );
    if ( errcode != VDS_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapGetFirst( objHandle,
-                                 buffKey,
-                                 50,
-                                 buffer,
-                                 200,
-                                 NULL,
-                                 &dataLength );
+                             buffKey,
+                             50,
+                             buffer,
+                             200,
+                             NULL,
+                             &dataLength );
    if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapGetFirst( objHandle,
-                                 buffKey,
-                                 50,
-                                 buffer,
-                                 200,
-                                 &keyLength,
-                                 NULL );
+                             buffKey,
+                             50,
+                             buffer,
+                             200,
+                             &keyLength,
+                             NULL );
    if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = vdsMapGetFirst( objHandle2,
+                             buffKey,
+                             50,
+                             buffer,
+                             200,
+                             &keyLength,
+                             &dataLength );
+   if ( errcode != VDS_IS_EMPTY ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
    /* End of invalid args. This call should succeed. */
    errcode = vdsMapGetFirst( objHandle,
-                                 buffKey,
-                                 50,
-                                 buffer,
-                                 200,
-                                 &keyLength,
-                                 &dataLength );
+                             buffKey,
+                             50,
+                             buffer,
+                             200,
+                             &keyLength,
+                             &dataLength );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -202,6 +223,29 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
+   errcode = vdsMapClose( objHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdsCommit( sessionHandle );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   errcode = vdsMapGetFirst( objHandle2,
+                             buffKey,
+                             50,
+                             buffer,
+                             200,
+                             &keyLength,
+                             &dataLength );
+   if ( errcode != VDS_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    /* Close the session and try to act on the object */
 
    errcode = vdsExitSession( sessionHandle );
@@ -210,13 +254,13 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapGetFirst( objHandle,
-                                 buffKey,
-                                 50,
-                                 buffer,
-                                 200,
-                                 &keyLength,
-                                 &dataLength );
+   errcode = vdsMapGetFirst( objHandle2,
+                             buffKey,
+                             50,
+                             buffer,
+                             200,
+                             &keyLength,
+                             &dataLength );
    if ( errcode != VDS_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -80,29 +80,29 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapOpen( sessionHandle,
-                             "/amgwh/test",
-                             strlen("/amgwh/test"),
-                             &objHandle );
+   errcode = vdsMapEdit( sessionHandle,
+                         "/amgwh/test",
+                         strlen("/amgwh/test"),
+                         &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsMapInsert( objHandle,
-                               key,
-                               6,
-                               data,
-                               7 );
+                           key,
+                           6,
+                           data,
+                           7 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaHashMapRetrieve( sessionHandle,
-                                  key,
-                                  6,
-                                  &entry );
+   errcode = vdsaMapRetrieve( sessionHandle,
+                              key,
+                              6,
+                              &entry );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else
