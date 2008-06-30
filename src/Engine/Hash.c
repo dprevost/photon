@@ -165,7 +165,7 @@ size_t calculateItemLength( size_t keyLength,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-unsigned char* getData( vdseHashItem* pItem )
+unsigned char * getData( vdseHashItem * pItem )
 {
    size_t len;
    
@@ -178,15 +178,15 @@ unsigned char* getData( vdseHashItem* pItem )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline u_long
-hash_pjw (const unsigned char *str, size_t len)
+hash_pjw (const unsigned char * str, size_t len)
 {
-   return fnv_buf( (void *)str, len, FNV1_INIT);
+   return fnv_buf( (void *)str, len, FNV1_INIT );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-vdseHashResizeEnum isItTimeToResize( vdseHash* pHash )
+vdseHashResizeEnum isItTimeToResize( vdseHash * pHash )
 {
    unsigned int loadFactor = 100 * pHash->numberOfItems / 
       g_vdseArrayLengths[pHash->lengthIndex];
@@ -212,8 +212,8 @@ vdseHashResizeEnum isItTimeToResize( vdseHash* pHash )
  *
  * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static bool findBucket( vdseHash*             pHash,
-                        ptrdiff_t*            pArray,
+static bool findBucket( vdseHash            * pHash,
+                        ptrdiff_t           * pArray,
                         const unsigned char * pKey,
                         size_t                keyLength,
                         vdseHashItem        * pHashItem,
@@ -250,13 +250,13 @@ static bool findBucket( vdseHash*             pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static bool findKey( vdseHash*            pHash,
-                     ptrdiff_t*           pArray,
-                     const unsigned char* pKey,
-                     size_t               keyLength,
-                     vdseHashItem**       ppItem,
-                     vdseHashItem**       ppPreviousItem,
-                     size_t*              pBucket )
+static bool findKey( vdseHash            * pHash,
+                     ptrdiff_t           * pArray,
+                     const unsigned char * pKey,
+                     size_t                keyLength,
+                     vdseHashItem       ** ppItem,
+                     vdseHashItem       ** ppPreviousItem,
+                     size_t              * pBucket )
 {
    ptrdiff_t currentOffset, nextOffset;
    vdseHashItem* pItem;
@@ -290,7 +290,7 @@ static bool findKey( vdseHash*            pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static void findLastItemInBucket( ptrdiff_t    *  pArray,
+static void findLastItemInBucket( ptrdiff_t     * pArray,
                                   size_t          bucket,
                                   vdseHashItem ** ppLastItem )
 {
@@ -320,7 +320,6 @@ enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
    ptrdiff_t * pOldArray, * pNewArray;
    size_t i;
    ptrdiff_t currentOffset, previousOffset;
-//   ptrdiff_t bucket, newBucket;
    vdseHashItem * pOldItem, * pNewItem, * previousItem;
    vdseMemObject * pMemObject;
    size_t itemLength;
@@ -569,8 +568,8 @@ vdseHashDeleteRaw( vdseHash            * pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseHashEmpty( vdseHash*           pHash,
-                    vdseSessionContext* pContext )
+void vdseHashEmpty( vdseHash           * pHash,
+                    vdseSessionContext * pContext )
 {
    ptrdiff_t* pArray, currentOffset, nextOffset;
    size_t i;
@@ -625,12 +624,12 @@ void vdseHashFini( vdseHash * pHash )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum ListErrors 
-vdseHashGet( vdseHash*            pHash,
-             const unsigned char* pKey,
-             size_t               keyLength,
-             vdseHashItem**       ppItem,
-             vdseSessionContext*  pContext,
-             size_t*              pBucket )
+vdseHashGet( vdseHash            * pHash,
+             const unsigned char * pKey,
+             size_t                keyLength,
+             vdseHashItem       ** ppItem,
+             vdseSessionContext  * pContext,
+             size_t              * pBucket )
 {
    size_t bucket;
    bool   keyFound = false;
@@ -668,9 +667,9 @@ vdseHashGet( vdseHash*            pHash,
 #endif
 
 enum ListErrors 
-vdseHashGetFirst( vdseHash*  pHash,
-                  size_t*    pBucket, 
-                  ptrdiff_t* pFirstItemOffset )
+vdseHashGetFirst( vdseHash  * pHash,
+                  size_t    * pBucket, 
+                  ptrdiff_t * pFirstItemOffset )
 {
    ptrdiff_t* pArray, currentOffset;
    bool SHOULD_NOT_REACHED_THIS = true;
@@ -713,11 +712,11 @@ vdseHashGetFirst( vdseHash*  pHash,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum ListErrors 
-vdseHashGetNext( vdseHash*  pHash,
-                 size_t     previousBucket,
-                 ptrdiff_t  previousOffset,
-                 size_t*    pNextBucket, 
-                 ptrdiff_t* pNextItemOffset )
+vdseHashGetNext( vdseHash  * pHash,
+                 size_t      previousBucket,
+                 ptrdiff_t   previousOffset,
+                 size_t    * pNextBucket, 
+                 ptrdiff_t * pNextItemOffset )
 {
    ptrdiff_t* pArray, currentOffset;
    size_t i;
@@ -1129,66 +1128,6 @@ vdseHashUpdate( vdseHash            * pHash,
    
     return LIST_OK;
 }
-
-#if 0
-
-   bool SelfTest( vdseMemAlloc* pAlloc );
-   
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-bool HashList::SelfTest( vdseMemAlloc* pAlloc )
-{
-   size_t i, j, bucket, numRows = 0, sum = 0;
-   ptrdiff_t* pArray;
-   
-   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-
-   for ( i = 0; i < pHash->arrayLength; ++i) {
-      if ( pArray->Get(i) != NULL_OFFSET ) {
-         RowDescriptor* pRow = GET_PTR( pArray->Get(i), 
-                                        RowDescriptor,
-                                        pAlloc );
-         char* pKey = GET_PTR( pRow->keyOffset, char, pAlloc );
-      
-         numRows++;
-         sum += pRow->dataLength;
-         
-         /* Check the key */
-         bucket =  hash_pjw( pKey, pRow->keyLength ) % pHash->arrayLength;
-         
-         if ( bucket == i ) continue;
-         
-         /* The row is at "i" but the key hashes to "bucket" - which means */
-         /* that there was something at bucket already if all is well (and */
-         /* at bucket+1, bucket+2, etc. if it applies) */
-         /* Let's see... */
-
-         j = bucket;
-         while ( j != i ) {
-            if ( pArray->Get(j) == NULL_OFFSET ) {
-               fprintf( stderr, "Key at wrong place in hash list\n" );
-               VDS_ASSERT( 0 );
-               return false;
-            }
-            j++;
-            if ( j == pHash->arrayLength ) j = 0;
-         }
-      }
-   }
-   if ( numRows != pHash->numberOfItems ) {
-      fprintf( stderr, "Invalid number of rows %d %d\n", numRows, pHash->numberOfItems );
-   }
-   if ( sum != pHash->totalDataSizeInBytes ) {
-      fprintf( stderr, "Invalid total sum %d %d \n", sum, pHash->totalDataSizeInBytes );
-   }
-   
-   pHash->numberOfItems = numRows;
-   pHash->totalDataSizeInBytes = sum;
-   
-   return BaseObject::SelfTest();
-}
-
-#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

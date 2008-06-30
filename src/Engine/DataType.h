@@ -29,20 +29,6 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/*
-enum vdseDataTypeEnum
-{
-   VDSE_INTEGER,
-   VDSE_STRING,
-   VDSE_DECIMAL,
-   VDSE_BINARY,
-   VDSE_BOOLEAN,
-   VDSE_VAR_STRING,
-   VDES_VAR_BINARY
-   
-};
-*/
-
 /**
  * Structure used to describe the data. If you modify this struct and its
  * length is not a multiple of sizeof(void*), you might have an alignment
@@ -56,16 +42,12 @@ struct vdseFieldDef
 
    uint32_t length1;
    uint32_t length2;
-
 };
 
 typedef struct vdseFieldDef vdseFieldDef;
 
 #define VDSE_GET_SCALE(ptr,i) (ptr[i].length2)
 #define VDSE_GET_PRECISION(ptr,i) (ptr[i].length1)
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

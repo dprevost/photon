@@ -18,6 +18,11 @@ check_PROGRAMS =                   \
         CloseNullContext           \
         CloseNullItem              \
         ClosePass                  \
+        CommitEditNullContext      \
+        CommitEditNullFolder       \
+        CommitEditNullItem         \
+        CommitEditPass             \
+        CommitEditWrongObjType     \
         CreateInvalidNameLength    \
         CreateNullContext          \
         CreateNullDefinition       \

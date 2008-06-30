@@ -1117,7 +1117,7 @@ the_exit:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseFolderGetStatus( vdseFolder         * pFolder,
-                         const char    * objectName,
+                         const char         * objectName,
                          size_t               strLength, 
                          vdsObjStatus       * pStatus,
                          vdseSessionContext * pContext )
