@@ -38,6 +38,23 @@ libCommon_la_SOURCES =  \
         Timer.c         \
         Timer.h         
 
+LOCK_FILES =                      \
+        arch/Barrier-i386-gcc.h   \
+        arch/Barrier-ia64-gcc.h   \
+        arch/Barrier-ia64-icc.h   \
+        arch/Barrier-ppc-gcc.h    \
+        arch/Barrier-ppc-xlc.h    \
+        arch/Barrier-sparc-gcc.h  \
+        arch/Barrier-win32.h      \
+        arch/Barrier-x86_64-gcc.h \
+        arch/Lock-i386-gcc.h      \
+        arch/Lock-ppc-gcc.h       \
+        arch/Lock-ppc-xlc.h       \
+        arch/Lock-semaphore.h     \
+        arch/Lock-sparc-gcc.h     \
+        arch/Lock-win32.h         \
+        arch/Lock-x86_64-gcc.h    
+
 EXTRA_DIST =           \
         asctime_r.c    \
         Common.dsp     \
@@ -49,7 +66,8 @@ EXTRA_DIST =           \
         nanosleep.c    \
         private.h      \
         strnlen.c      \
-        tzfile.h       
+        tzfile.h       \
+        $(LOCK_FILES)  
 
 libCommon_la_LIBADD = @LTLIBOBJS@
 
