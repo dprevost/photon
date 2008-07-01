@@ -49,7 +49,7 @@ typedef struct vdsaCommonObject
     * the ProcessManager to hold object-specific information that might
     * be needed in case of a crash (current state of transactions, etc.).
     *
-    * Not used yet.
+    * Not used often, yet.
     */
    vdseObjectContext *  pObjectContext;
 

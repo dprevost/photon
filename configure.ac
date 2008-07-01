@@ -514,12 +514,13 @@ AC_CONFIG_FILES([
    src/Tests/Makefile
    src/Tools/Makefile
    src/Tools/Shell/Makefile
-   src/Tools/xml2c/Makefile
    src/Watchdog/Makefile
    src/Watchdog/Tests/Makefile
    src/XML/Makefile
    src/XML/Tests/Makefile
 ])
+
+# src/Tools/xml2c/Makefile
 
 AC_OUTPUT
 

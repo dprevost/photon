@@ -36,9 +36,7 @@ int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
    VDS_PRE_CONDITION( pObject    != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
-#if 0
    VDS_PRE_CONDITION( pObject->pObjectContext == NULL );
-#endif
    VDS_PRE_CONDITION( nameLengthInBytes > 0 );
 
    if ( pObject->pSession == NULL ) return VDS_PROCESS_NOT_INITIALIZED;
@@ -68,9 +66,7 @@ int vdsaCommonObjClose( vdsaCommonObject * pObject )
    int errcode = 0;
 
    VDS_PRE_CONDITION( pObject != NULL );
-#if 0
    VDS_PRE_CONDITION( pObject->pObjectContext != NULL );
-#endif
    
    if ( pObject->pSession == NULL ) return VDS_PROCESS_NOT_INITIALIZED;
 
