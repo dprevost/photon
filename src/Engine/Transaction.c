@@ -23,13 +23,13 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseTxInit( vdseTx *            pTx,
-                size_t              numberOfBlocks,
-                vdseSessionContext* pContext )
+int vdseTxInit( vdseTx             * pTx,
+                size_t               numberOfBlocks,
+                vdseSessionContext * pContext )
 {
    vdsErrors errcode;
    
-   VDS_PRE_CONDITION( pTx != NULL );
+   VDS_PRE_CONDITION( pTx      != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    
@@ -51,8 +51,8 @@ int vdseTxInit( vdseTx *            pTx,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseTxFini( vdseTx*             pTx, 
-                 vdseSessionContext* pContext )
+void vdseTxFini( vdseTx             * pTx, 
+                 vdseSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pTx      != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -86,7 +86,7 @@ int vdseTxAddOps( vdseTx             * pTx,
                   vdseMemObjIdent      childType, 
                   vdseSessionContext * pContext )
 {
-   vdseTxOps* pOps;
+   vdseTxOps * pOps;
    
    VDS_PRE_CONDITION( pTx      != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -119,11 +119,12 @@ int vdseTxAddOps( vdseTx             * pTx,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseTxRemoveLastOps( vdseTx* pTx, vdseSessionContext* pContext )
+void vdseTxRemoveLastOps( vdseTx             * pTx, 
+                          vdseSessionContext * pContext )
 {
    enum ListErrors listErr;
-   vdseLinkNode* pDummy = NULL;
-   vdseTxOps* pOps;
+   vdseLinkNode * pDummy = NULL;
+   vdseTxOps * pOps;
 
    VDS_PRE_CONDITION( pTx != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -133,24 +134,24 @@ void vdseTxRemoveLastOps( vdseTx* pTx, vdseSessionContext* pContext )
 
    VDS_POST_CONDITION( listErr == LIST_OK );
    
-   pOps = (vdseTxOps*)((char*)pDummy - offsetof( vdseTxOps, node ));
+   pOps = (vdseTxOps *)((char *)pDummy - offsetof( vdseTxOps, node ));
    
    vdseFree( &pTx->memObject,
-             (unsigned char*) pOps,
+             (unsigned char *) pOps,
              sizeof(vdseTxOps), 
              pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseTxCommit( vdseTx*             pTx,
-                  vdseSessionContext* pContext )
+int vdseTxCommit( vdseTx             * pTx,
+                  vdseSessionContext * pContext )
 {
    int errcode = VDS_OK;
    vdseTxOps     * pOps = NULL;
    vdseLinkNode  * pLinkNode = NULL;
-   vdseFolder    * parentFolder,    *pChildFolder;
-   vdseMemObject * pChildMemObject, *pParentMemObject;
+   vdseFolder    * parentFolder,    * pChildFolder;
+   vdseMemObject * pChildMemObject, * pParentMemObject;
    vdseTreeNode  * pChildNode;
    vdseTxStatus  * pChildStatus;
    vdseHashMap   * pHashMap;
@@ -254,12 +255,9 @@ int vdseTxCommit( vdseTx*             pTx,
          GET_PTR( parentFolder, pOps->parentOffset, vdseFolder );
          GET_PTR( pHashItem, pOps->childOffset, vdseHashItem );
          GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
-//         GET_PTR( pChildMemObject, pDesc->memOffset, vdseMemObject );
-//         pChildStatus = &pHashItem->txStatus;
          
          vdseLockNoFailure( &parentFolder->memObject, pContext );
 
- //        vdseTxStatusClearTx( pChildStatus );
          vdseFolderCommitEdit( parentFolder, 
                                pHashItem, pOps->childType, pContext );
          
@@ -364,14 +362,14 @@ int vdseTxCommit( vdseTx*             pTx,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseTxRollback( vdseTx*             pTx,
-                     vdseSessionContext* pContext )
+void vdseTxRollback( vdseTx             * pTx,
+                     vdseSessionContext * pContext )
 {
    int errcode = VDS_OK;
    vdseTxOps     * pOps = NULL;
    vdseLinkNode  * pLinkNode = NULL;
-   vdseFolder    * parentFolder,    *pChildFolder;
-   vdseMemObject * pChildMemObject, *pParentMemObject;
+   vdseFolder    * parentFolder,    * pChildFolder;
+   vdseMemObject * pChildMemObject, * pParentMemObject;
    vdseTreeNode  * pChildNode;
    vdseTxStatus  * pChildStatus;
    vdseHashMap   * pHashMap;
@@ -380,7 +378,7 @@ void vdseTxRollback( vdseTx*             pTx,
    vdseObjectDescriptor * pDesc;
    int pOps_invalid_type = 0;
 
-   VDS_PRE_CONDITION( pTx != NULL );
+   VDS_PRE_CONDITION( pTx      != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pTx->signature == VDSE_TX_SIGNATURE );
 

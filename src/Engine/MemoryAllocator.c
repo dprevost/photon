@@ -128,20 +128,20 @@ typedef struct vdseFreeBlock vdseFreeBlock;
  *  process having their own copy of this global). This pointer is used
  *  everywhere to recover the real pointer addresses from our offsets
  */
-VDSF_ENGINE_EXPORT unsigned char* g_pBaseAddr = NULL;
+VDSF_ENGINE_EXPORT unsigned char * g_pBaseAddr = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum vdsErrors 
-vdseMemAllocInit( vdseMemAlloc*       pAlloc,
-                  unsigned char*      pBaseAddress,
-                  size_t              length,
-                  vdseSessionContext* pContext )
+vdseMemAllocInit( vdseMemAlloc       * pAlloc,
+                  unsigned char      * pBaseAddress,
+                  size_t               length,
+                  vdseSessionContext * pContext )
 {
    enum vdsErrors errcode;
-   vdseFreeBufferNode* pNode;
+   vdseFreeBufferNode * pNode;
    size_t neededBlocks, neededBytes, bitmapLength;
-   vdseMemBitmap* pBitmap = NULL;
+   vdseMemBitmap * pBitmap = NULL;
    
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pAlloc   != NULL );
@@ -149,7 +149,7 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
    VDS_PRE_CONDITION( length >= (3 << VDSE_BLOCK_SHIFT) );
    VDS_INV_CONDITION( g_pBaseAddr != NULL );
 
-   pContext->pAllocator = (void*) pAlloc;
+   pContext->pAllocator = (void *) pAlloc;
    /*
     * We need to calculate the following:
     *  1) the length of the allocator bitmap.bitmap which depends on the 
@@ -249,17 +249,17 @@ vdseMemAllocInit( vdseMemAlloc*       pAlloc,
  * tweak it).
  */
 static inline 
-vdseFreeBufferNode* FindBuffer( vdseMemAlloc     * pAlloc,
-                                size_t             requestedBlocks,
-                                vdscErrorHandler * pError )
+vdseFreeBufferNode * FindBuffer( vdseMemAlloc     * pAlloc,
+                                 size_t             requestedBlocks,
+                                 vdscErrorHandler * pError )
 {
    size_t i;
    /* size_t is unsigned. This is check by autoconf AC_TYPE_SIZE_T */
    size_t diff = (size_t) -1;
    size_t numBlocks;
-   vdseLinkNode *oldNode = NULL;
-   vdseLinkNode *currentNode = NULL;
-   vdseLinkNode *bestNode = NULL;
+   vdseLinkNode * oldNode = NULL;
+   vdseLinkNode * currentNode = NULL;
+   vdseLinkNode * bestNode = NULL;
    enum ListErrors errcode;
 
    /* 
@@ -341,20 +341,20 @@ vdseFreeBufferNode* FindBuffer( vdseMemAlloc     * pAlloc,
 /**
  * Allocates the blocks of shared memory we need.  
  */
-unsigned char* vdseMallocBlocks( vdseMemAlloc       * pAlloc,
-                                 vdseAllocTypeEnum    allocType,
-                                 size_t               requestedBlocks,
-                                 vdseSessionContext * pContext )
+unsigned char * vdseMallocBlocks( vdseMemAlloc       * pAlloc,
+                                  vdseAllocTypeEnum    allocType,
+                                  size_t               requestedBlocks,
+                                  vdseSessionContext * pContext )
 {
-   vdseFreeBufferNode* pNode = NULL;
-   vdseFreeBufferNode* pNewNode = NULL;
+   vdseFreeBufferNode * pNode = NULL;
+   vdseFreeBufferNode * pNewNode = NULL;
    int errcode = 0;
    size_t newNumBlocks = 0;
-   vdseMemBitmap* pBitmap;
+   vdseMemBitmap * pBitmap;
    vdseMemObjIdent * identifier;
 
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pAlloc != NULL );
+   VDS_PRE_CONDITION( pAlloc   != NULL );
    VDS_PRE_CONDITION( requestedBlocks > 0 );
    VDS_INV_CONDITION( g_pBaseAddr != NULL );
 
@@ -429,13 +429,13 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
                      vdseSessionContext * pContext )
 {
    int errcode = 0;
-   vdseFreeBufferNode* otherNode, *previousNode = NULL, *newNode = NULL;
+   vdseFreeBufferNode * otherNode, * previousNode = NULL, * newNode = NULL;
    bool otherBufferisFree = false;
-   vdseMemBitmap* pBitmap;
-   vdseEndBlockGroup* endBlock;
+   vdseMemBitmap * pBitmap;
+   vdseEndBlockGroup * endBlock;
    bool isInLimbo;
    vdseMemObjIdent ident;
-   vdseFreeBlock* pFreeHeader;
+   vdseFreeBlock * pFreeHeader;
    
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pAlloc   != NULL );
@@ -599,65 +599,17 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
   
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseMemAllocClose( vdseMemAlloc*       pAlloc,
-                        vdseSessionContext* pContext )
+void vdseMemAllocClose( vdseMemAlloc       * pAlloc,
+                        vdseSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pAlloc   != NULL );
 
    pAlloc->totalAllocBlocks = 0;
-   pAlloc->numMallocCalls  = 0;
-   pAlloc->numFreeCalls    = 0;
-   pAlloc->totalLength     = 0;
+   pAlloc->numMallocCalls   = 0;
+   pAlloc->numFreeCalls     = 0;
+   pAlloc->totalLength      = 0;
 }
-
-#if 0
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/* Reset statistics after a crash */
-void vdseMemAllocResetStats( vdseMemAlloc*    pAlloc,
-                             vdscErrorHandler* pError )
-{
-   struct bfhead *b = NULL, *bn = NULL;
-
-   VDS_PRE_CONDITION( pError != NULL );
-   VDS_PRE_CONDITION( pAlloc != NULL, pError );
-
-   pAlloc->totalAlloc = 0;
-   pAlloc->numMalloc = 0;
-   pAlloc->numFree = 0;
-  
-   /* Loop on each buffer */
-
-   b = GET_PTR( pAlloc->poolOffset, struct bfhead );
-   bufsize_T size = b->bh.bsize;
-   
-   while ( size != ESENT ) {
-      if ( size > 0 ) { /* free buffer */
-         /* Calculate where the next buffer is */
-         bn =  BFH(((unsigned char *) b) + b->bh.bsize);
-      }
-      else { /* used buffer */
-         
-         /* Increment pAlloc->numMalloc so that the difference between  */
-         /* # of malloc and # of free == the number of allocated buffers! */
-         pAlloc->numMalloc++; 
-         
-         pAlloc->totalAlloc-= size;
-         
-         /* Calculate where the next buffer is */
-         bn =  BFH(((unsigned char *) b) - b->bh.bsize);         
-      }
-      b = bn;
-      size = b->bh.bsize;
-   }
-
-   /* Add the dummy buffer to the sum of allocated space */
-   pAlloc->totalAlloc += sizeof(struct bhead);
-}
-
-#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

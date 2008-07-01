@@ -137,7 +137,7 @@ int vdseMapReplace( vdseMap            * pHashMap,
                     vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseMapStatus( vdseMap  * pHashMap,
+void vdseMapStatus( vdseMap      * pHashMap,
                     vdsObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

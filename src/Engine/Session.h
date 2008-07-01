@@ -114,7 +114,7 @@ VDSF_ENGINE_EXPORT
 int vdseSessionAddObj( vdseSession        * pSession,
                        ptrdiff_t            objOffset, 
                        enum vdsObjectType   objType, 
-                       void *               pCommonObject,
+                       void               * pCommonObject,
                        vdseObjectContext ** ppObject,
                        vdseSessionContext * pContext );
 

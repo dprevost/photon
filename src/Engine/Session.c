@@ -28,7 +28,7 @@ int vdseSessionInit( vdseSession        * pSession,
 {
    vdsErrors errcode;
    int rc = -1;
-   vdseTx *pTx;
+   vdseTx * pTx;
    
    VDS_PRE_CONDITION( pSession    != NULL );
    VDS_PRE_CONDITION( pContext    != NULL );
@@ -81,7 +81,7 @@ int vdseSessionInit( vdseSession        * pSession,
 void vdseSessionFini( vdseSession        * pSession,
                       vdseSessionContext * pContext )
 {
-   vdseObjectContext* pObject = NULL;
+   vdseObjectContext * pObject = NULL;
    vdseLinkNode * pNode = NULL;
 
    VDS_PRE_CONDITION( pSession != NULL );
@@ -115,12 +115,12 @@ void vdseSessionFini( vdseSession        * pSession,
 int vdseSessionAddObj( vdseSession        * pSession,
                        ptrdiff_t            objOffset, 
                        enum vdsObjectType   objType, 
-                       void *               pCommonObject,
+                       void               * pCommonObject,
                        vdseObjectContext ** ppObject,
                        vdseSessionContext * pContext )
 {
    int errcode = 0, rc = -1;
-   vdseObjectContext* pCurrentBuffer;
+   vdseObjectContext * pCurrentBuffer;
 
    VDS_PRE_CONDITION( pSession      != NULL );
    VDS_PRE_CONDITION( pCommonObject != NULL );

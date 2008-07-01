@@ -73,7 +73,7 @@ void vdseProcessFini( vdseProcess        * pProcess,
 
 VDSF_ENGINE_EXPORT
 vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
-                                 void *               pApiSession,
+                                 void               * pApiSession,
                                  vdseSession       ** pSession,
                                  vdseSessionContext * pContext );
 

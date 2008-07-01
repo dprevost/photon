@@ -115,7 +115,7 @@ void vdseTreeNodeInit( vdseTreeNode * pNode,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void vdseTreeNodeFini( vdseTreeNode* pNode )
+void vdseTreeNodeFini( vdseTreeNode * pNode )
 {
    VDS_PRE_CONDITION( pNode != NULL );
    

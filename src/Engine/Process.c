@@ -21,7 +21,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseProcessInit( vdseProcess *        pProcess,
+int vdseProcessInit( vdseProcess        * pProcess,
                      pid_t                pid,
                      vdseSessionContext * pContext )
 {
@@ -86,12 +86,12 @@ void vdseProcessFini( vdseProcess        * pProcess,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
-                                 void *               pApiSession,
+                                 void               * pApiSession,
                                  vdseSession       ** ppSession,
                                  vdseSessionContext * pContext )
 {
    int errcode, rc = -1;
-   vdseSession* pCurrentBuffer;
+   vdseSession * pCurrentBuffer;
 
    VDS_PRE_CONDITION( pProcess    != NULL );
    VDS_PRE_CONDITION( pApiSession != NULL );

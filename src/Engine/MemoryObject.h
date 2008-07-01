@@ -30,34 +30,6 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/*
- * We cannot include Engine/Session.h here since it requires the current
- * header file (a session is a memory object).
- *
- * But this is needed by the lock/unlock functions to save the memory object
- * being locked in the session object (for recovery reasons). So declare it
- * here...
- * 
- * The only problem is that the functions cannot be inlined inside the
- * functions vdseLock/Unlock. Oh well. A better solution might be possible,
- * one of these days...
- */
-#if 0
-
-struct vdseSession;
-
-void vdseSessionAddLock( struct vdseSession * pSession,
-                         ptrdiff_t            memObjectOffset );
-
-void vdseSessionRemoveLock( struct vdseSession * pSession,
-                            ptrdiff_t            memObjectOffset );
-
-#endif
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-#define VDSE_MEM_ALIGNMENT 4
-
 /**
  * Memory objects include all the data containers (queues, etc.), the folders
  * and all "hidden" top level objects (the allocator, the sessions recovery

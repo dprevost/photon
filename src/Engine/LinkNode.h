@@ -81,6 +81,8 @@ void vdseLinkNodeInit( vdseLinkNode * pNode )
 static inline
 void vdseLinkNodeFini( vdseLinkNode * pNode )
 {
+   VDS_PRE_CONDITION( pNode != NULL );
+
    vdseLinkNodeInit( pNode );
 }
 
