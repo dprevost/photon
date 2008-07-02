@@ -52,7 +52,6 @@ clean:
 	cd Folder       && nmake -f Makefile.win32 clean && cd ..
 	cd HashMap      && nmake -f Makefile.win32 clean && cd ..
 	cd Map          && nmake -f Makefile.win32 clean && cd ..
-	cd Optional     && nmake -f Makefile.win32 clean && cd ..
 	cd Process      && nmake -f Makefile.win32 clean && cd ..
 	cd Queue        && nmake -f Makefile.win32 clean && cd ..
 	cd Session      && nmake -f Makefile.win32 clean && cd ..
