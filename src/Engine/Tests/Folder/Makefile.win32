@@ -16,6 +16,11 @@ check_PROGRAMS =                                 \
         .\Release\CloseNullContext.exe           \
         .\Release\CloseNullItem.exe              \
         .\Release\ClosePass.exe                  \
+        .\Release\CommitEditNullContext.exe      \
+        .\Release\CommitEditNullFolder.exe       \
+        .\Release\CommitEditNullItem.exe         \
+        .\Release\CommitEditPass.exe             \
+        .\Release\CommitEditWrongObjType.exe     \
         .\Release\CreateInvalidNameLength.exe    \
         .\Release\CreateNullContext.exe          \
         .\Release\CreateNullDefinition.exe       \
@@ -34,6 +39,13 @@ check_PROGRAMS =                                 \
         .\Release\DestroyNullFolder.exe          \
         .\Release\DestroyNullName.exe            \
         .\Release\DestroyPass.exe                \
+        .\Release\EditNullContext.exe            \
+        .\Release\EditNullFolder.exe             \
+        .\Release\EditNullItem.exe               \
+        .\Release\EditNullName.exe               \
+        .\Release\EditPass.exe                   \
+        .\Release\EditWrongObjectType.exe        \
+        .\Release\EditZeroNameLength.exe         \
         .\Release\FiniInvalidSig.exe             \
         .\Release\FiniNullContext.exe            \
         .\Release\FiniNullFolder.exe             \
@@ -90,6 +102,9 @@ check_PROGRAMS =                                 \
         .\Release\OpenNullFolder.exe             \
         .\Release\OpenNullName.exe               \
         .\Release\OpenPass.exe                   \
+        .\Release\OpenWrongLength.exe            \
+        .\Release\OpenWrongType.exe              \
+        .\Release\OpenZeroLength.exe             \
         .\Release\ReleaseNullContext.exe         \
         .\Release\ReleaseNullFolder.exe          \
         .\Release\ReleaseNullItem.exe            \
@@ -115,6 +130,14 @@ check_PROGRAMS =                                 \
         .\Release\TopDestroyNullFolder.exe       \
         .\Release\TopDestroyNullName.exe         \
         .\Release\TopDestroyPass.exe             \
+        .\Release\TopEditNullContext.exe         \
+        .\Release\TopEditNullFolder.exe          \
+        .\Release\TopEditNullItem.exe            \
+        .\Release\TopEditNullName.exe            \
+        .\Release\TopEditPass.exe                \
+        .\Release\TopEditWrongLength.exe         \
+        .\Release\TopEditWrongType.exe           \
+        .\Release\TopEditZeroLength.exe          \
         .\Release\TopStatusNullContext.exe       \
         .\Release\TopStatusNullFolder.exe        \
         .\Release\TopStatusNullName.exe          \

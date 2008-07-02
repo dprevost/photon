@@ -18,6 +18,11 @@ check_PROGRAMS =                   \
         CloseNullContext           \
         CloseNullItem              \
         ClosePass                  \
+        CommitEditNullContext      \
+        CommitEditNullFolder       \
+        CommitEditNullItem         \
+        CommitEditPass             \
+        CommitEditWrongObjType     \
         CreateInvalidNameLength    \
         CreateNullContext          \
         CreateNullDefinition       \
@@ -141,12 +146,6 @@ check_PROGRAMS =                   \
         TopStatusNullStatus        \
         TopStatusPass              \
         ValidatePass               
-
-#        CommitEditNullContext      \
-        CommitEditNullFolder       \
-        CommitEditNullItem         \
-        CommitEditPass             \
-        CommitEditWrongObjType     
 
 COMMON_HEADER = folderTest.h
 
@@ -291,6 +290,11 @@ TESTS =                            \
         CloseNullContext           \
         CloseNullItem              \
         ClosePass                  \
+        CommitEditNullContext      \
+        CommitEditNullFolder       \
+        CommitEditNullItem         \
+        CommitEditPass             \
+        CommitEditWrongObjType     \
         CreateInvalidNameLength    \
         CreateNullContext          \
         CreateNullDefinition       \
@@ -418,6 +422,10 @@ TESTS =                            \
 XFAIL_TESTS =                      \
         CloseNullContext           \
         CloseNullItem              \
+        CommitEditNullContext      \
+        CommitEditNullFolder       \
+        CommitEditNullItem         \
+        CommitEditWrongObjType     \
         CreateNullContext          \
         CreateNullDefinition       \
         CreateNullFolder           \

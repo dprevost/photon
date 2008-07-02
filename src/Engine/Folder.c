@@ -53,8 +53,8 @@ void vdseFolderCommitEdit( vdseFolder          * pFolder,
    VDS_PRE_CONDITION( pContext  != NULL );
 
    GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
-   switch( pDesc->apiType ) {
-   case VDS_MAP:
+   switch( objectType ) {
+   case VDSE_IDENT_MAP:
       pMapEdit = GET_PTR_FAST( pDesc->offset, vdseMap );
       if ( pMapEdit->editVersion != SET_OFFSET(pHashItem) ) {
          errcode = VDS_INTERNAL_ERROR;
