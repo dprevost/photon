@@ -42,6 +42,7 @@ OBJS_RELEASE=                                   \
         "$(INTDIR_RELEASE)\InitEngine.obj"      \
         "$(INTDIR_RELEASE)\LinkedList.obj"      \
         "$(INTDIR_RELEASE)\LogFile.obj"         \
+        "$(INTDIR_RELEASE)\Map.obj"             \
         "$(INTDIR_RELEASE)\MemBitmap.obj"       \
         "$(INTDIR_RELEASE)\MemoryAllocator.obj" \
         "$(INTDIR_RELEASE)\MemoryObject.obj"    \

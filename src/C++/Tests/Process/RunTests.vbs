@@ -50,7 +50,7 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0) = "InitPass"
+ok_programs(0) = "Init"
 
 numTests =  1
 numFailed = 0

@@ -43,6 +43,7 @@ OBJS_RELEASE=                                  \
 	"$(INTDIR_RELEASE)\DataDefinition.obj" \
         "$(INTDIR_RELEASE)\Folder.obj"         \
         "$(INTDIR_RELEASE)\HashMap.obj"        \
+        "$(INTDIR_RELEASE)\Map.obj"            \
         "$(INTDIR_RELEASE)\Process.obj"        \
         "$(INTDIR_RELEASE)\Queue.obj"          \
         "$(INTDIR_RELEASE)\Session.obj"        

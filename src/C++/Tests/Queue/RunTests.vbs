@@ -50,13 +50,13 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0) = "ClosePass"
+ok_programs(0) = "Close"
 ok_programs(1) = "GetFirst"
 ok_programs(2) = "GetNext"
-ok_programs(3) = "OpenPass"
+ok_programs(3) = "Open"
 ok_programs(4) = "Pop"
-ok_programs(5) = "PushPass"
-ok_programs(6) = "StatusPass"
+ok_programs(5) = "Push"
+ok_programs(6) = "Status"
 
 numTests  =  7                
 numFailed =  0
