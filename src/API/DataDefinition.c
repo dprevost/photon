@@ -25,6 +25,8 @@
 
 static void dummyErrorFunc( void * ctx, const char * msg, ...)
 {
+   ctx = ctx;
+   msg = msg;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

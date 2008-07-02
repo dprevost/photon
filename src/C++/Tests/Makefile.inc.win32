@@ -29,8 +29,8 @@ INTDIR=.\Release
 OUTDIR_DEBUG=.\Debug
 INTDIR_DEBUG=.\Debug
 
-CFLAGS_DEBUG=   /nologo /MDd /W4 /Zi /I "../../.." /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
-CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I "../../.." /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
+CFLAGS_DEBUG=   /nologo /MDd /W3 /Zi /I "../../.." /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" /GX
+CFLAGS_RELEASE= /nologo /MD  /W3 /O2 /I "../../.." /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\"       /GX
 
 .cpp{$(OUTDIR)}.exe:
 	$(CPP) $(CFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"

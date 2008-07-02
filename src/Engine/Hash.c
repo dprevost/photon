@@ -319,7 +319,7 @@ enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
 {
    ptrdiff_t * pOldArray, * pNewArray;
    size_t i;
-   ptrdiff_t currentOffset, previousOffset;
+   ptrdiff_t currentOffset;
    vdseHashItem * pOldItem, * pNewItem, * previousItem;
    vdseMemObject * pMemObject;
    size_t itemLength;
