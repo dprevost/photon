@@ -38,46 +38,36 @@ vdsErrors vdseValidateString( const char * objectName,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseFolderCommitEdit( vdseFolder          * pFolder,
-                           vdseHashItem        * pHashItem, 
-                           enum vdsObjectType    objectType,
-                           vdseSessionContext  * pContext )
+void vdseFolderCommitEdit( vdseFolder         * pFolder,
+                           vdseHashItem       * pHashItem, 
+                           enum vdsObjectType   objectType,
+                           vdseSessionContext * pContext )
 {
    vdseObjectDescriptor * pDesc, * pDescLatest;
    vdseMap * pMapLatest, * pMapEdit;
-   int errcode;
    vdseHashItem * pHashItemLatest;
    
    VDS_PRE_CONDITION( pFolder   != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
+   VDS_PRE_CONDITION( objectType == VDSE_IDENT_MAP );
 
    GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
-   switch( objectType ) {
-   case VDSE_IDENT_MAP:
-      pMapEdit = GET_PTR_FAST( pDesc->offset, vdseMap );
-      if ( pMapEdit->editVersion != SET_OFFSET(pHashItem) ) {
-         errcode = VDS_INTERNAL_ERROR;
-         assert(0);
-      }
-      pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, vdseHashItem );
-      pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
-                                  vdseObjectDescriptor );
-      pMapLatest = GET_PTR_FAST( pDescLatest->offset, vdseMap );
 
-      pHashItemLatest->nextSameKey = SET_OFFSET(pHashItem);
-      pMapLatest->editVersion = NULL_OFFSET;
-      pMapEdit->editVersion   = NULL_OFFSET;
-      pMapLatest->latestVersion = SET_OFFSET(pHashItem);
-      pMapEdit->latestVersion = SET_OFFSET(pHashItem);
-      break;
-   default:
-      assert(0);
-//      errcode = VDS_INTERNAL_ERROR;
-//      goto the_exit;
-   }
+   pMapEdit = GET_PTR_FAST( pDesc->offset, vdseMap );
+   
+   VDS_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
+   
+   pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, vdseHashItem );
+   pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
+                               vdseObjectDescriptor );
+   pMapLatest = GET_PTR_FAST( pDescLatest->offset, vdseMap );
 
-  // return 0;
+   pHashItemLatest->nextSameKey = SET_OFFSET(pHashItem);
+   pMapLatest->editVersion = NULL_OFFSET;
+   pMapEdit->editVersion   = NULL_OFFSET;
+   pMapLatest->latestVersion = SET_OFFSET(pHashItem);
+   pMapEdit->latestVersion = SET_OFFSET(pHashItem);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
