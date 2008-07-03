@@ -24,6 +24,11 @@ CLEANFILES = *~ core
 AM_CFLAGS = -Wall
 
 check_PROGRAMS =               \
+        CopyNullContext        \
+        CopyNullNewHash        \
+        CopyNullOldHash        \
+        CopyPass               \
+        CopyPassSameLength     \
         DeleteAtNullContext    \
         DeleteAtNullHash       \
         DeleteAtNullItem       \
@@ -80,6 +85,11 @@ check_PROGRAMS =               \
 
 COMMON_HEADER = HashTest.h
 
+CopyNullContext_SOURCES        = $(COMMON_HEADER) CopyNullContext.c
+CopyNullNewHash_SOURCES        = $(COMMON_HEADER) CopyNullNewHash.c
+CopyNullOldHash_SOURCES        = $(COMMON_HEADER) CopyNullOldHash.c
+CopyPass_SOURCES               = $(COMMON_HEADER) CopyPass.c
+CopyPassSameLength_SOURCES     = $(COMMON_HEADER) CopyPassSameLength.c
 DeleteAtNullContext_SOURCES    = $(COMMON_HEADER) DeleteAtNullContext.c
 DeleteAtNullHash_SOURCES       = $(COMMON_HEADER) DeleteAtNullHash.c
 DeleteAtNullItem_SOURCES       = $(COMMON_HEADER) DeleteAtNullItem.c
@@ -145,6 +155,11 @@ TESTS_ENVIRONMENT =                  \
         PYTHON=$(PYTHON)             
 
 TESTS =                        \
+        CopyNullContext        \
+        CopyNullNewHash        \
+        CopyNullOldHash        \
+        CopyPass               \
+        CopyPassSameLength     \
         DeleteAtNullContext    \
         DeleteAtNullHash       \
         DeleteAtNullItem       \
@@ -200,6 +215,9 @@ TESTS =                        \
         ResizePass             
 
 XFAIL_TESTS =                  \
+        CopyNullContext        \
+        CopyNullNewHash        \
+        CopyNullOldHash        \
         DeleteAtNullContext    \
         DeleteAtNullHash       \
         DeleteAtNullItem       \

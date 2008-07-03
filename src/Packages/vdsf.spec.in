@@ -131,5 +131,22 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man3/vdsProcess.3
 /usr/local/share/man/man3/vdsQueue.3
 /usr/local/share/man/man3/vdsSession.3
+/usr/local/include/vdsf/vdsMap.h
+/usr/local/info/dir
+/usr/local/info/vdssh.info
+/usr/local/info/vdswd.info
+/usr/local/share/man/man3/vdsMap.h.3
+/usr/local/share/man/man3/vdsMapClose.3
+/usr/local/share/man/man3/vdsMapDefinition.3
+/usr/local/share/man/man3/vdsMapDelete.3
+/usr/local/share/man/man3/vdsMapEdit.3
+/usr/local/share/man/man3/vdsMapGet.3
+/usr/local/share/man/man3/vdsMapGetFirst.3
+/usr/local/share/man/man3/vdsMapGetNext.3
+/usr/local/share/man/man3/vdsMapInsert.3
+/usr/local/share/man/man3/vdsMapOpen.3
+/usr/local/share/man/man3/vdsMapReplace.3
+/usr/local/share/man/man3/vdsMapStatus.3
+/usr/local/share/man/man3/vdsMap_c.3
 
 %changelog
