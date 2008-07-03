@@ -29,13 +29,13 @@ Dim objWshScriptExec
 Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
-' while running the tests
-Dim failed_tests(24)
+' while running the tests (two tests are not counted in the ok_programs)
+Dim failed_tests(25)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(8)
+Dim ok_programs(7)
 Dim fail_programs(15)
 
 Dim exe_name, prog_path, program
@@ -54,11 +54,10 @@ ok_programs(0) = "AcquirePass"
 ok_programs(1) = "FiniPass"
 ok_programs(2) = "InitPass"
 ok_programs(3) = "IsItLockedPass"
-ok_programs(4) = "LockConcurrency"
-ok_programs(5) = "LockTests"
-ok_programs(6) = "ReleasePass"
-ok_programs(7) = "TestPidPass"
-ok_programs(8) = "TryAcqPass"
+ok_programs(4) = "LockTests"
+ok_programs(5) = "ReleasePass"
+ok_programs(6) = "TestPidPass"
+ok_programs(7) = "TryAcqPass"
 
 fail_programs(0)  = "AcquireInvalidSig"
 fail_programs(1)  = "AcquireNullLock"
@@ -77,7 +76,7 @@ fail_programs(13) = "TryAcqInvalidSig"
 fail_programs(14) = "TryAcqNullLock"
 fail_programs(15) = "TryAcqZeroValue"
 
-numTests = 25                 ' Sum of length of both arrays 
+numTests = 26                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject
@@ -135,6 +134,48 @@ For Each program in ok_programs
       numFailed = numFailed + 1
    end if
 Next
+
+exe_name = prog_path & "\LockConcurrency.exe -c 4 -i 0 -t 25 -f ./Memfile.mem -m try"
+if consoleMode then 
+   WScript.Echo "Running " & exe_name
+   Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exe_name & Chr(34))
+   status = objWshScriptExec.Status
+   Do While objWshScriptExec.Status = 0
+      WScript.Sleep 100
+   Loop
+   strOutput = objWshScriptExec.StdOut.ReadAll
+   if verbose then 
+      WScript.Stdout.Write objWshScriptExec.StdErr.ReadAll
+   end if
+   rc = objWshScriptExec.ExitCode
+else
+   rc = objShell.Run("%comspec% /c " & Chr(34) & exe_name & Chr(34), 2, true)
+end if
+if rc <> 0 then
+   failed_tests(numFailed) = "LockConcurrencyTry"
+   numFailed = numFailed + 1
+end if
+exe_name = prog_path & "\LockConcurrency.exe -c 4 -i 0 -t 25 -f ./Memfile.mem"
+if consoleMode then 
+   WScript.Echo "Running " & exe_name
+   Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exe_name & Chr(34))
+   status = objWshScriptExec.Status
+   Do While objWshScriptExec.Status = 0
+      WScript.Sleep 100
+   Loop
+   strOutput = objWshScriptExec.StdOut.ReadAll
+   if verbose then 
+      WScript.Stdout.Write objWshScriptExec.StdErr.ReadAll
+   end if
+   rc = objWshScriptExec.ExitCode
+else
+   rc = objShell.Run("%comspec% /c " & Chr(34) & exe_name & Chr(34), 2, true)
+end if
+if rc <> 0 then
+   failed_tests(numFailed) = "LockConcurrency"
+   numFailed = numFailed + 1
+end if
+fso.DeleteFile("Memfile.mem")
 
 For Each program in fail_programs
    exe_name = prog_path & "\" & program & ".exe"
