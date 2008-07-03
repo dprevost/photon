@@ -317,7 +317,7 @@ int vdseMapGetNext( vdseMap            * pHashMap,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
    VDS_PRE_CONDITION( pItem->pHashItem  != NULL );
-   VDS_PRE_CONDITION( pItem->itemOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( pItem->itemOffset != VDSE_NULL_OFFSET );
    
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
@@ -345,7 +345,7 @@ int vdseMapGetNext( vdseMap            * pHashMap,
        */
       pItem->pHashItem = NULL;
       pItem->bucket = 0;
-      pItem->itemOffset = NULL_OFFSET;
+      pItem->itemOffset = VDSE_NULL_OFFSET;
       vdseMapReleaseNoLock( pHashMap, previousHashItem, pContext );
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
       return -1;
@@ -401,8 +401,8 @@ int vdseMapInit( vdseMap             * pHashMap,
    VDS_PRE_CONDITION( pTxStatus    != NULL );
    VDS_PRE_CONDITION( origName     != NULL );
    VDS_PRE_CONDITION( pDefinition  != NULL );
-   VDS_PRE_CONDITION( hashItemOffset != NULL_OFFSET );
-   VDS_PRE_CONDITION( parentOffset   != NULL_OFFSET );
+   VDS_PRE_CONDITION( hashItemOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( parentOffset   != VDSE_NULL_OFFSET );
    VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    VDS_PRE_CONDITION( origNameLength > 0 );
    VDS_PRE_CONDITION( pDefinition->numFields > 0 );
@@ -477,7 +477,7 @@ int vdseMapInit( vdseMap             * pHashMap,
    memcpy( &pHashMap->keyDef, &pDefinition->key, sizeof(vdsKeyDefinition) );
 
    pHashMap->latestVersion = hashItemOffset;
-   pHashMap->editVersion = NULL_OFFSET;
+   pHashMap->editVersion = VDSE_NULL_OFFSET;
    
    return 0;
 }

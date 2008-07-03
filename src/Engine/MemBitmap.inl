@@ -30,7 +30,7 @@ bool vdseIsBufferFree( vdseMemBitmap * pBitmap,
    ptrdiff_t localOffset;
    
    VDS_PRE_CONDITION( pBitmap != NULL );
-   VDS_PRE_CONDITION( offset  != NULL_OFFSET );
+   VDS_PRE_CONDITION( offset  != VDSE_NULL_OFFSET );
 
    localOffset = offset - pBitmap->baseAddressOffset;
    if ( localOffset < 0 ) return false;
@@ -61,7 +61,7 @@ void vdseSetBufferAllocated( vdseMemBitmap * pBitmap,
    ptrdiff_t localOffset;
    
    VDS_PRE_CONDITION( pBitmap != NULL );
-   VDS_PRE_CONDITION( offset  != NULL_OFFSET );
+   VDS_PRE_CONDITION( offset  != VDSE_NULL_OFFSET );
    VDS_PRE_CONDITION( length > 0 );
    
    localOffset = offset - pBitmap->baseAddressOffset;
@@ -99,7 +99,7 @@ void vdseSetBufferFree( vdseMemBitmap * pBitmap,
    ptrdiff_t localOffset;
 
    VDS_PRE_CONDITION( pBitmap != NULL );
-   VDS_PRE_CONDITION( offset  != NULL_OFFSET );
+   VDS_PRE_CONDITION( offset  != VDSE_NULL_OFFSET );
    VDS_PRE_CONDITION( length > 0 );
 
    localOffset = offset - pBitmap->baseAddressOffset;

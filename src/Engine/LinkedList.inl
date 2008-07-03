@@ -89,8 +89,8 @@ vdseLinkedListPutLast( vdseLinkedList * pList,
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pNewItem   != NULL );
-   VDS_PRE_CONDITION( pNewItem->previousOffset == NULL_OFFSET );
-   VDS_PRE_CONDITION( pNewItem->nextOffset     == NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->previousOffset == VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->nextOffset     == VDSE_NULL_OFFSET );
 
    tmpOffset = SET_OFFSET( pNewItem );
 
@@ -104,8 +104,8 @@ vdseLinkedListPutLast( vdseLinkedList * pList,
    
    pList->currentSize++;
 
-   VDS_POST_CONDITION( pNewItem->previousOffset != NULL_OFFSET );
-   VDS_POST_CONDITION( pNewItem->nextOffset     != NULL_OFFSET );
+   VDS_POST_CONDITION( pNewItem->previousOffset != VDSE_NULL_OFFSET );
+   VDS_POST_CONDITION( pNewItem->nextOffset     != VDSE_NULL_OFFSET );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -120,8 +120,8 @@ vdseLinkedListPutFirst( vdseLinkedList * pList,
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pNewItem   != NULL );
-   VDS_PRE_CONDITION( pNewItem->previousOffset == NULL_OFFSET );
-   VDS_PRE_CONDITION( pNewItem->nextOffset     == NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->previousOffset == VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->nextOffset     == VDSE_NULL_OFFSET );
 
    tmpOffset = SET_OFFSET( pNewItem );
 
@@ -136,8 +136,8 @@ vdseLinkedListPutFirst( vdseLinkedList * pList,
    
    pList->currentSize++;
 
-   VDS_POST_CONDITION( pNewItem->previousOffset != NULL_OFFSET );
-   VDS_POST_CONDITION( pNewItem->nextOffset     != NULL_OFFSET );
+   VDS_POST_CONDITION( pNewItem->previousOffset != VDSE_NULL_OFFSET );
+   VDS_POST_CONDITION( pNewItem->nextOffset     != VDSE_NULL_OFFSET );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -150,8 +150,8 @@ vdseLinkedListRemoveItem( vdseLinkedList * pList,
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pRemovedItem != NULL );
-   VDS_PRE_CONDITION( pRemovedItem->previousOffset != NULL_OFFSET );
-   VDS_PRE_CONDITION( pRemovedItem->nextOffset     != NULL_OFFSET );
+   VDS_PRE_CONDITION( pRemovedItem->previousOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pRemovedItem->nextOffset     != VDSE_NULL_OFFSET );
    VDS_PRE_CONDITION( pList->currentSize > 0 );
 
    GET_PTR_FAST( pRemovedItem->nextOffset, vdseLinkNode )->previousOffset = 
@@ -219,8 +219,8 @@ vdseLinkedListPeakNext( vdseLinkedList * pList,
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pCurrent   != NULL );
    VDS_PRE_CONDITION( ppNext     != NULL );
-   VDS_PRE_CONDITION( pCurrent->previousOffset != NULL_OFFSET );
-   VDS_PRE_CONDITION( pCurrent->nextOffset     != NULL_OFFSET );
+   VDS_PRE_CONDITION( pCurrent->previousOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pCurrent->nextOffset     != VDSE_NULL_OFFSET );
 
    pNext = GET_PTR_FAST( pCurrent->nextOffset, vdseLinkNode );
    if ( pNext == &pList->head ) return LIST_END_OF_LIST;
@@ -246,8 +246,8 @@ vdseLinkedListPeakPrevious( vdseLinkedList * pList,
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pCurrent   != NULL );
    VDS_PRE_CONDITION( ppPrevious != NULL );
-   VDS_PRE_CONDITION( pCurrent->previousOffset != NULL_OFFSET );
-   VDS_PRE_CONDITION( pCurrent->nextOffset     != NULL_OFFSET );
+   VDS_PRE_CONDITION( pCurrent->previousOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pCurrent->nextOffset     != VDSE_NULL_OFFSET );
 
    pPrevious = GET_PTR_FAST( pCurrent->previousOffset, vdseLinkNode );
    if ( pPrevious == &pList->head ) return LIST_END_OF_LIST;
@@ -276,11 +276,11 @@ vdseLinkedListReplaceItem( vdseLinkedList * pList,
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pOldItem != NULL );
-   VDS_PRE_CONDITION( pOldItem->previousOffset != NULL_OFFSET );
-   VDS_PRE_CONDITION( pOldItem->nextOffset     != NULL_OFFSET );
+   VDS_PRE_CONDITION( pOldItem->previousOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pOldItem->nextOffset     != VDSE_NULL_OFFSET );
    VDS_PRE_CONDITION( pNewItem != NULL );
-   VDS_PRE_CONDITION( pNewItem->previousOffset == NULL_OFFSET );
-   VDS_PRE_CONDITION( pNewItem->nextOffset     == NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->previousOffset == VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->nextOffset     == VDSE_NULL_OFFSET );
    VDS_PRE_CONDITION( pList->currentSize > 0 );
 
    tmpOffset = SET_OFFSET( pNewItem );

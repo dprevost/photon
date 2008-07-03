@@ -64,8 +64,8 @@ void vdseFolderCommitEdit( vdseFolder         * pFolder,
    pMapLatest = GET_PTR_FAST( pDescLatest->offset, vdseMap );
 
    pHashItemLatest->nextSameKey = SET_OFFSET(pHashItem);
-   pMapLatest->editVersion = NULL_OFFSET;
-   pMapEdit->editVersion   = NULL_OFFSET;
+   pMapLatest->editVersion = VDSE_NULL_OFFSET;
+   pMapEdit->editVersion   = VDSE_NULL_OFFSET;
    pMapLatest->latestVersion = SET_OFFSET(pHashItem);
    pMapEdit->latestVersion = SET_OFFSET(pHashItem);
 }
@@ -252,7 +252,7 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
       }
       goto the_exit;
    }
-   while ( pHashItem->nextSameKey != NULL_OFFSET ) {
+   while ( pHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
       GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
    }
 
@@ -264,7 +264,7 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
        * we do not support two transactions on the same data
        * (and if remove is committed - the data is "non-existent").
        */
-      if ( txStatus->txOffset != NULL_OFFSET ) {
+      if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
          if ( txStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
             errcode = VDS_NO_SUCH_OBJECT;
          }
@@ -497,7 +497,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
       }
       goto the_exit;
    }
-   while ( pHashItemOld->nextSameKey != NULL_OFFSET ) {
+   while ( pHashItemOld->nextSameKey != VDSE_NULL_OFFSET ) {
       GET_PTR( pHashItemOld, pHashItemOld->nextSameKey, vdseHashItem );
    }
 
@@ -517,7 +517,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
        * If the object is flagged as deleted and committed, it does not exists
        * from the API point of view.
        */
-      if ( txStatus->txOffset != NULL_OFFSET ) {
+      if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
          if ( txStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
             errcode = VDS_NO_SUCH_OBJECT;
             goto the_exit;
@@ -541,7 +541,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
       switch( pDescOld->apiType ) {
       case VDS_MAP:
          pMap = GET_PTR_FAST( pDescOld->offset, vdseMap );
-         if ( pMap->editVersion != NULL_OFFSET ) {
+         if ( pMap->editVersion != VDSE_NULL_OFFSET ) {
             errcode = VDS_A_SINGLE_UPDATER_IS_ALLOWED;
             goto the_exit;
          }
@@ -671,7 +671,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
     * If the folder is flagged as deleted and committed, it does not exists
     * from the API point of view.
     */
-   if ( txStatus->txOffset != NULL_OFFSET ) {
+   if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
       if ( txStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
          errcode = VDS_NO_SUCH_FOLDER;
          goto the_exit;
@@ -782,7 +782,7 @@ int vdseFolderGetFirst( vdseFolder         * pFolder,
           * from the API point of view.
           */
          isOK = true;
-         if ( txItemStatus->txOffset != NULL_OFFSET ) {
+         if ( txItemStatus->txOffset != VDSE_NULL_OFFSET ) {
             if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
                txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
                isOK = false;
@@ -847,7 +847,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
    VDS_PRE_CONDITION( pItem->pHashItem  != NULL );
-   VDS_PRE_CONDITION( pItem->itemOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( pItem->itemOffset != VDSE_NULL_OFFSET );
    
    GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
 
@@ -882,7 +882,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
           * from the API point of view.
           */
          isOK = true;
-         if ( txItemStatus->txOffset != NULL_OFFSET ) {
+         if ( txItemStatus->txOffset != VDSE_NULL_OFFSET ) {
             if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
                txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
                isOK = false;
@@ -931,7 +931,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
     */
    pItem->pHashItem = NULL;
    pItem->bucket = 0;
-   pItem->itemOffset = NULL_OFFSET;
+   pItem->itemOffset = VDSE_NULL_OFFSET;
    vdseFolderReleaseNoLock( pFolder, previousHashItem, pContext );
     
    vdseUnlock( &pFolder->memObject, pContext );
@@ -989,7 +989,7 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
       }
       goto the_exit;
    }
-   while ( pHashItem->nextSameKey != NULL_OFFSET ) {
+   while ( pHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
       GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
    }
 
@@ -1009,7 +1009,7 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
        * If the object is flagged as deleted and committed, it does not exists
        * from the API point of view.
        */
-      if ( txStatus->txOffset != NULL_OFFSET ) {
+      if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
          if ( txStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
             errcode = VDS_NO_SUCH_OBJECT;
             goto the_exit;
@@ -1055,7 +1055,7 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
     * If the folder is flagged as deleted and committed, it does not exists
     * from the API point of view.
     */
-   if ( txStatus->txOffset != NULL_OFFSET ) {
+   if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
       if ( txStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
          errcode = VDS_NO_SUCH_FOLDER;
          goto the_exit;
@@ -1152,7 +1152,7 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
       }
       goto the_exit;
    }
-   while ( pHashItem->nextSameKey != NULL_OFFSET ) {
+   while ( pHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
       GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
    }
 
@@ -1171,7 +1171,7 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
        * If the object is flagged as deleted and committed, it does not exists
        * from the API point of view.
        */
-      if ( txStatus->txOffset != NULL_OFFSET ) {
+      if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
          if ( txStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
             errcode = VDS_NO_SUCH_OBJECT;
             goto the_exit;
@@ -1239,7 +1239,7 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
     * If the folder is flagged as deleted and committed, it does not exists
     * from the API point of view.
     */
-   if ( txStatus->txOffset != NULL_OFFSET ) {
+   if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
       if ( txStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
          errcode = VDS_NO_SUCH_FOLDER;
          goto the_exit;
@@ -1306,8 +1306,8 @@ int vdseFolderInit( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pContext  != NULL );
    VDS_PRE_CONDITION( pTxStatus != NULL );
    VDS_PRE_CONDITION( origName  != NULL );
-   VDS_PRE_CONDITION( hashItemOffset != NULL_OFFSET );
-   VDS_PRE_CONDITION( parentOffset   != NULL_OFFSET );
+   VDS_PRE_CONDITION( hashItemOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( parentOffset   != VDSE_NULL_OFFSET );
    VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    VDS_PRE_CONDITION( origNameLength > 0 );
    
@@ -1411,7 +1411,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
                              pContext,
                              &bucket );
       if ( listErr == LIST_OK ) {
-         while ( previousHashItem->nextSameKey != NULL_OFFSET ) {
+         while ( previousHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
             GET_PTR( previousHashItem, previousHashItem->nextSameKey, vdseHashItem );
          }
          objTxStatus = &previousHashItem->txStatus;
@@ -1601,7 +1601,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
       errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
    }
-   while ( pHashItem->nextSameKey != NULL_OFFSET ) {
+   while ( pHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
       GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
    }
    
@@ -1869,7 +1869,7 @@ int vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
    GET_PTR( pNode, pDesc->nodeOffset, vdseTreeNode);
    
    /* Special case, the top folder */
-   if ( pNode->myParentOffset == NULL_OFFSET ) return 0;
+   if ( pNode->myParentOffset == VDSE_NULL_OFFSET ) return 0;
 
    GET_PTR( parentFolder, pNode->myParentOffset, vdseFolder );
    GET_PTR( txFolderStatus, parentFolder->nodeObject.txStatusOffset, vdseTxStatus );

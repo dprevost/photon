@@ -90,8 +90,8 @@ int vdseTxAddOps( vdseTx             * pTx,
    
    VDS_PRE_CONDITION( pTx      != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( parentOffset != NULL_OFFSET );
-   VDS_PRE_CONDITION( childOffset  != NULL_OFFSET );
+   VDS_PRE_CONDITION( parentOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( childOffset  != VDSE_NULL_OFFSET );
    VDS_PRE_CONDITION( pTx->signature == VDSE_TX_SIGNATURE );
 
    pOps = (vdseTxOps *) vdseMalloc( &pTx->memObject,

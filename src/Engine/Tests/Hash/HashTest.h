@@ -29,7 +29,7 @@
 VDSF_ENGINE_EXPORT
 vdscErrMsgHandle g_vdsErrorHandle;
 
-ptrdiff_t g_memObjOffset = NULL_OFFSET;
+ptrdiff_t g_memObjOffset = VDSE_NULL_OFFSET;
 
 struct vdstObjDummy
 {

@@ -45,7 +45,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pNode->nextOffset = NULL_OFFSET;
+   pNode->nextOffset = VDSE_NULL_OFFSET;
    
    error = vdseLinkedListPeakPrevious( &list, pNode, &pNode );
 

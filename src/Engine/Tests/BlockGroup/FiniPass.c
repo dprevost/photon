@@ -47,10 +47,10 @@ int main()
                       VDSE_IDENT_QUEUE );
    vdseBlockGroupFini( pGroup );
    
-   if ( pGroup->node.nextOffset != NULL_OFFSET ) {
+   if ( pGroup->node.nextOffset != VDSE_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pGroup->node.previousOffset != NULL_OFFSET ) {
+   if ( pGroup->node.previousOffset != VDSE_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pGroup->numBlocks != 0 ) {
@@ -62,7 +62,7 @@ int main()
    if (pGroup->freeList.initialized != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pGroup->bitmap.baseAddressOffset != NULL_OFFSET ) {
+   if ( pGroup->bitmap.baseAddressOffset != VDSE_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

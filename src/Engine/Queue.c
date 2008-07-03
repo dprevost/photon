@@ -35,7 +35,7 @@ void vdseQueueCommitAdd( vdseQueue * pQueue,
    vdseQueueItem * pQueueItem;
    
    VDS_PRE_CONDITION( pQueue   != NULL );
-   VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( itemOffset != VDSE_NULL_OFFSET );
 
    GET_PTR( pQueueItem, itemOffset, vdseQueueItem );
 
@@ -43,7 +43,7 @@ void vdseQueueCommitAdd( vdseQueue * pQueue,
     * A new entry that isn't yet committed cannot be accessed by some
     * other session. Clearing it is ok.
     */
-   vdseTxStatusSetTx( &pQueueItem->txStatus, NULL_OFFSET );
+   vdseTxStatusSetTx( &pQueueItem->txStatus, VDSE_NULL_OFFSET );
    pQueue->nodeObject.txCounter--;
 }
 
@@ -58,7 +58,7 @@ void vdseQueueCommitRemove( vdseQueue          * pQueue,
    
    VDS_PRE_CONDITION( pQueue   != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( itemOffset != VDSE_NULL_OFFSET );
 
    GET_PTR( pQueueItem, itemOffset, vdseQueueItem );
 
@@ -155,7 +155,7 @@ int vdseQueueGet( vdseQueue          * pQueue,
           * from the API point of view.
           */
          isOK = true;
-         if ( txItemStatus->txOffset != NULL_OFFSET ) {
+         if ( txItemStatus->txOffset != VDSE_NULL_OFFSET ) {
             switch( txItemStatus->enumStatus ) {
 
             case VDSE_TXS_DESTROYED_COMMITTED:
@@ -259,8 +259,8 @@ int vdseQueueInit( vdseQueue           * pQueue,
    VDS_PRE_CONDITION( pTxStatus    != NULL );
    VDS_PRE_CONDITION( origName     != NULL );
    VDS_PRE_CONDITION( pDefinition  != NULL );
-   VDS_PRE_CONDITION( hashItemOffset != NULL_OFFSET );
-   VDS_PRE_CONDITION( parentOffset   != NULL_OFFSET );
+   VDS_PRE_CONDITION( hashItemOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( parentOffset   != VDSE_NULL_OFFSET );
    VDS_PRE_CONDITION( numberOfBlocks > 0 );
    VDS_PRE_CONDITION( origNameLength > 0 );
    VDS_PRE_CONDITION( pDefinition->numFields > 0 );
@@ -535,7 +535,7 @@ int vdseQueueRemove( vdseQueue          * pQueue,
           * we do not support two transactions on the same data
           * (and if remove is committed - the data is "non-existent").
           */
-         if ( txItemStatus->txOffset == NULL_OFFSET ) {
+         if ( txItemStatus->txOffset == VDSE_NULL_OFFSET ) {
             /*
              * This test cannot be done in the API (before calling the current
              * function) since we do not know the item size. It could be done
@@ -617,7 +617,7 @@ void vdseQueueRollbackAdd( vdseQueue          * pQueue,
    
    VDS_PRE_CONDITION( pQueue   != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( itemOffset != VDSE_NULL_OFFSET );
 
    GET_PTR( pQueueItem, itemOffset, vdseQueueItem );
    txStatus = &pQueueItem->txStatus;
@@ -653,7 +653,7 @@ void vdseQueueRollbackRemove( vdseQueue * pQueue,
    vdseQueueItem * pQueueItem;
    
    VDS_PRE_CONDITION( pQueue     != NULL );
-   VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( itemOffset != VDSE_NULL_OFFSET );
 
    GET_PTR( pQueueItem, itemOffset, vdseQueueItem );
 

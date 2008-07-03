@@ -31,7 +31,7 @@ int main()
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
-   ptrdiff_t offsetFirstItem = NULL_OFFSET;
+   ptrdiff_t offsetFirstItem = VDSE_NULL_OFFSET;
    vdseHashItem* pNewItem;
    size_t bucket = (size_t) -1;
    
@@ -72,7 +72,7 @@ int main()
    if ( bucket == (size_t) -1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( offsetFirstItem == NULL_OFFSET ) {
+   if ( offsetFirstItem == VDSE_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

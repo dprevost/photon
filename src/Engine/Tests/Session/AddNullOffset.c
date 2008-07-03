@@ -41,7 +41,7 @@ int main()
    objOffset = SET_OFFSET( pSession ); /* Dummy offset */
    
    errcode = vdseSessionAddObj( pSession,
-                                NULL_OFFSET, 
+                                VDSE_NULL_OFFSET, 
                                 VDS_FOLDER,
                                 pApiObject,
                                 &pObject,

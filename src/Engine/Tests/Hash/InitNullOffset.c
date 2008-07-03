@@ -31,7 +31,7 @@ int main()
    
    pHash = initHashTest( expectedToPass, &context );
    
-   listErr = vdseHashInit( pHash, NULL_OFFSET, 100, &context );
+   listErr = vdseHashInit( pHash, VDSE_NULL_OFFSET, 100, &context );
       
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

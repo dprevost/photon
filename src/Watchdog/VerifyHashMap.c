@@ -43,7 +43,7 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
       GET_PTR( pItem, offset, vdseHashItem );
       txItemStatus = &pItem->txStatus;
 
-      if ( txItemStatus->txOffset != NULL_OFFSET ) {
+      if ( txItemStatus->txOffset != VDSE_NULL_OFFSET ) {
          /*
           * So we have an interrupted transaction. What kind? 
           *   FLAG                      ACTION          
@@ -74,7 +74,7 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
          }
          
          if ( pDeletedItem == NULL && pVerify->doRepair ) {
-            txItemStatus->txOffset = NULL_OFFSET;
+            txItemStatus->txOffset = VDSE_NULL_OFFSET;
             txItemStatus->enumStatus = VDSE_TXS_OK;
             vdswEcho( pVerify, "Hash item status fields reset to zero" );
          }
@@ -154,7 +154,7 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( txHashMapStatus->txOffset != NULL_OFFSET ) {
+   if ( txHashMapStatus->txOffset != VDSE_NULL_OFFSET ) {
       /*
        *   FLAG                      ACTION          
        *   TXS_ADDED                 remove object   
@@ -178,7 +178,7 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
       rc = VDSWR_CHANGES;
       if ( pVerify->doRepair) {
          vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
-         txHashMapStatus->txOffset = NULL_OFFSET;
+         txHashMapStatus->txOffset = VDSE_NULL_OFFSET;
          txHashMapStatus->enumStatus = VDSE_TXS_OK;
       }
    }

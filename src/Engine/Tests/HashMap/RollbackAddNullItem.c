@@ -76,7 +76,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseHashMapRollbackAdd( pHashMap, NULL_OFFSET, &context );
+   vdseHashMapRollbackAdd( pHashMap, VDSE_NULL_OFFSET, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

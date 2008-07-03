@@ -43,7 +43,7 @@ int main()
    pGroup = (vdseBlockGroup*) (ptr + 100);
    
    vdseBlockGroupInit( pGroup, 
-                      NULL_OFFSET,
+                      VDSE_NULL_OFFSET,
                       10,
                       VDSE_IDENT_QUEUE );
 

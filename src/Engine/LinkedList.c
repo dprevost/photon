@@ -26,7 +26,7 @@ void vdseLinkedListFini( vdseLinkedList* pList )
    /* Test to see if the list is initialized */
    VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
    
-   /* We reset the node element to NULL_OFFSET. */
+   /* We reset the node element to VDSE_NULL_OFFSET. */
    vdseLinkNodeInit( &pList->head );
 
    pList->currentSize    = 0;

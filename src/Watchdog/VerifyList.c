@@ -115,7 +115,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
    next = &pList->head;
    previous = next;
    while ( next->nextOffset != headOffset ) {
-      if ( next->nextOffset == NULL_OFFSET ) {
+      if ( next->nextOffset == VDSE_NULL_OFFSET ) {
          kit.nextBreak = next;
          kit.nextBreakPrevious = previous;
          kit.breakInForwardChain = true;
@@ -138,7 +138,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
    next = &pList->head;
    previous = next;
    while ( next->previousOffset != headOffset ) {
-      if ( next->previousOffset == NULL_OFFSET ) {
+      if ( next->previousOffset == VDSE_NULL_OFFSET ) {
          kit.previousBreak = next;
          kit.previousBreakPrevious = previous;
          kit.breakInBackwardChain = true;

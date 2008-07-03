@@ -44,7 +44,7 @@ int main()
                       10*VDSE_BLOCK_SIZE,
                       8 );
 
-   vdseIsBufferFree( pBitmap, NULL_OFFSET );
+   vdseIsBufferFree( pBitmap, VDSE_NULL_OFFSET );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

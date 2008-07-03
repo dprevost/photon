@@ -85,7 +85,7 @@ struct vdseTreeNode
    ptrdiff_t txStatusOffset;
 
    /** Offset to the parent of this object. */
-   /* NULL_OFFSET for top folder ("/") */
+   /* VDSE_NULL_OFFSET for top folder ("/") */
    ptrdiff_t myParentOffset;
    
 };
@@ -121,10 +121,10 @@ void vdseTreeNodeFini( vdseTreeNode * pNode )
    
    pNode->txCounter      = 0;
    pNode->myNameLength   = 0;
-   pNode->myNameOffset   = NULL_OFFSET;
-   pNode->txStatusOffset = NULL_OFFSET;
-   pNode->myParentOffset = NULL_OFFSET;
-   pNode->myHashItem     = NULL_OFFSET;
+   pNode->myNameOffset   = VDSE_NULL_OFFSET;
+   pNode->txStatusOffset = VDSE_NULL_OFFSET;
+   pNode->myParentOffset = VDSE_NULL_OFFSET;
+   pNode->myHashItem     = VDSE_NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

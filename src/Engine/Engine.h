@@ -57,9 +57,9 @@ BEGIN_C_DECLS
 
  /* MAJOR concern: you cannot check if a reconstructed pointer is
   * NULL or not - this makes no sense anymore. You have to test 
-  * the offset for NULL_OFFSET !!! 
+  * the offset for VDSE_NULL_OFFSET !!! 
   */
-#define NULL_OFFSET ( (ptrdiff_t) -1 )
+#define VDSE_NULL_OFFSET ( (ptrdiff_t) -1 )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -78,8 +78,8 @@ extern vdscErrMsgHandle g_vdsErrorHandle;
        g_pBaseAddr ) )
 
 /* Only use this macro when you know, for a fact, that the offset cannot
- * be the NULL_OFFSET (for example, in the LinkedList "class", the links
- * are never set to NULL_OFFSET...). 
+ * be the VDSE_NULL_OFFSET (for example, in the LinkedList "class", the links
+ * are never set to VDSE_NULL_OFFSET...). 
  */
 #define GET_PTR_FAST(off,class) ( (class*) (           \
        (unsigned char*) g_pBaseAddr + (ptrdiff_t) (off) ))
@@ -91,7 +91,7 @@ extern vdscErrMsgHandle g_vdsErrorHandle;
 #define GET_PTR_DBG(target,offset,type) { \
    ptrdiff_t off = offset; \
    VDS_INV_CONDITION( off != 0 ); \
-   VDS_INV_CONDITION( off != NULL_OFFSET ); \
+   VDS_INV_CONDITION( off != VDSE_NULL_OFFSET ); \
    target = (type*) ( (unsigned char*) g_pBaseAddr + (ptrdiff_t) off ); \
 }
 

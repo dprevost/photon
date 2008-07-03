@@ -49,7 +49,7 @@ int main()
                            VDSE_BLOCK_SIZE*2 ); /* length */
 
    vdseSetBufferFree( pBitmap,
-                      NULL_OFFSET, /* offset */
+                      VDSE_NULL_OFFSET, /* offset */
                       VDSE_BLOCK_SIZE/4 ); /* length */
    
    vdseMemBitmapFini( pBitmap );

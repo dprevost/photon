@@ -126,7 +126,7 @@ int vdseSessionAddObj( vdseSession        * pSession,
    VDS_PRE_CONDITION( pCommonObject != NULL );
    VDS_PRE_CONDITION( ppObject      != NULL );
    VDS_PRE_CONDITION( pContext      != NULL );
-   VDS_PRE_CONDITION( objOffset     != NULL_OFFSET );
+   VDS_PRE_CONDITION( objOffset     != VDSE_NULL_OFFSET );
    VDS_PRE_CONDITION( objType > 0 && objType < VDS_LAST_OBJECT_TYPE );
    
    /* For recovery purposes, always lock before doing anything! */

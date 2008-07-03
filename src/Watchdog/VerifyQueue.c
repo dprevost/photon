@@ -37,7 +37,7 @@ vdswCheckQueueContent( vdswVerifyStruct * pVerify,
          ((char*)pNode - offsetof( vdseQueueItem, node ));
       txItemStatus = &pQueueItem->txStatus;
 
-      if ( txItemStatus->txOffset != NULL_OFFSET ) {
+      if ( txItemStatus->txOffset != VDSE_NULL_OFFSET ) {
          /*
           * So we have an interrupted transaction. What kind? 
           *   FLAG                      ACTION          
@@ -60,7 +60,7 @@ vdswCheckQueueContent( vdswVerifyStruct * pVerify,
          }
          
          if ( pDeletedNode == NULL && pVerify->doRepair ) {
-            txItemStatus->txOffset = NULL_OFFSET;
+            txItemStatus->txOffset = VDSE_NULL_OFFSET;
             txItemStatus->enumStatus = VDSE_TXS_OK;
             vdswEcho( pVerify, "Queue item status fields reset to zero" );
          }
@@ -137,7 +137,7 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
 
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( txQueueStatus->txOffset != NULL_OFFSET ) {
+   if ( txQueueStatus->txOffset != VDSE_NULL_OFFSET ) {
       /*
        * So we have an interrupted transaction. What kind? 
        *   FLAG                      ACTION          
@@ -162,7 +162,7 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
       rc = VDSWR_CHANGES;
       if ( pVerify->doRepair) {
          vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
-         txQueueStatus->txOffset = NULL_OFFSET;
+         txQueueStatus->txOffset = VDSE_NULL_OFFSET;
          txQueueStatus->enumStatus = VDSE_TXS_OK;
       }
    }

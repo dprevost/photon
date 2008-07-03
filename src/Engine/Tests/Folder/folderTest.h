@@ -128,9 +128,9 @@ vdseFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
 
    pFolder->nodeObject.txCounter      = 0;
    pFolder->nodeObject.myNameLength   = 0;
-   pFolder->nodeObject.myNameOffset   = NULL_OFFSET;
+   pFolder->nodeObject.myNameOffset   = VDSE_NULL_OFFSET;
    pFolder->nodeObject.txStatusOffset = SET_OFFSET(&objTxStatus);
-   pFolder->nodeObject.myParentOffset = NULL_OFFSET;
+   pFolder->nodeObject.myParentOffset = VDSE_NULL_OFFSET;
 
    errcode = vdseHashInit( &pFolder->hashObj, 
                            SET_OFFSET(&pFolder->memObject),

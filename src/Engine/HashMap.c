@@ -40,11 +40,11 @@ void vdseHashMapCommitAdd( vdseHashMap        * pHashMap,
    
    VDS_PRE_CONDITION( pHashMap   != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( itemOffset != VDSE_NULL_OFFSET );
 
    GET_PTR( pHashItem, itemOffset, vdseHashItem );
 
-   pHashItem->txStatus.txOffset = NULL_OFFSET;
+   pHashItem->txStatus.txOffset = VDSE_NULL_OFFSET;
    pHashItem->txStatus.enumStatus = VDSE_TXS_OK;
    pHashMap->nodeObject.txCounter--;
 
@@ -82,7 +82,7 @@ void vdseHashMapCommitRemove( vdseHashMap        * pHashMap,
    
    VDS_PRE_CONDITION( pHashMap   != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( itemOffset != VDSE_NULL_OFFSET );
 
    GET_PTR( pHashItem, itemOffset, vdseHashItem );
    txItemStatus = &pHashItem->txStatus;
@@ -167,7 +167,7 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
          errcode = VDS_NO_SUCH_ITEM;
          goto the_exit;
       }
-      while ( pHashItem->nextSameKey != NULL_OFFSET ) {
+      while ( pHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
          GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
       }
       
@@ -178,7 +178,7 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
        * we do not support two transactions on the same data
        * (and if remove is committed - the data is "non-existent").
        */
-      if ( txItemStatus->txOffset != NULL_OFFSET ) {
+      if ( txItemStatus->txOffset != VDSE_NULL_OFFSET ) {
          if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
             errcode = VDS_NO_SUCH_ITEM;
          }
@@ -280,7 +280,7 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
          errcode = VDS_NO_SUCH_ITEM;
          goto the_exit;
       }
-      while ( pHashItem->nextSameKey != NULL_OFFSET ) {
+      while ( pHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
          previousItem = pHashItem;
          GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
       }
@@ -309,7 +309,7 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
        * If the item is flagged as deleted and committed, it does not exists
        * from the API point of view.
        */
-      if ( txItemStatus->txOffset != NULL_OFFSET ) {
+      if ( txItemStatus->txOffset != VDSE_NULL_OFFSET ) {
          if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
             errcode = VDS_NO_SUCH_ITEM;
             goto the_exit;
@@ -406,7 +406,7 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
           * from the API point of view.
           */
          isOK = true;
-         if ( txItemStatus->txOffset != NULL_OFFSET ) {
+         if ( txItemStatus->txOffset != VDSE_NULL_OFFSET ) {
             if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
                txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
                isOK = false;
@@ -490,7 +490,7 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
    VDS_PRE_CONDITION( pItem->pHashItem  != NULL );
-   VDS_PRE_CONDITION( pItem->itemOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( pItem->itemOffset != VDSE_NULL_OFFSET );
    
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
@@ -520,7 +520,7 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
           * from the API point of view.
           */
          isOK = true;
-         if ( txItemStatus->txOffset != NULL_OFFSET ) {
+         if ( txItemStatus->txOffset != VDSE_NULL_OFFSET ) {
             if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
                txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
                isOK = false;
@@ -585,7 +585,7 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
     */
    pItem->pHashItem = NULL;
    pItem->bucket = 0;
-   pItem->itemOffset = NULL_OFFSET;
+   pItem->itemOffset = VDSE_NULL_OFFSET;
    vdseHashMapReleaseNoLock( pHashMap, previousHashItem, pContext );
    
    vdseUnlock( &pHashMap->memObject, pContext );
@@ -617,8 +617,8 @@ int vdseHashMapInit( vdseHashMap         * pHashMap,
    VDS_PRE_CONDITION( pTxStatus    != NULL );
    VDS_PRE_CONDITION( origName     != NULL );
    VDS_PRE_CONDITION( pDefinition  != NULL );
-   VDS_PRE_CONDITION( hashItemOffset != NULL_OFFSET );
-   VDS_PRE_CONDITION( parentOffset   != NULL_OFFSET );
+   VDS_PRE_CONDITION( hashItemOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( parentOffset   != VDSE_NULL_OFFSET );
    VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    VDS_PRE_CONDITION( origNameLength > 0 );
    VDS_PRE_CONDITION( pDefinition->numFields > 0 );
@@ -736,7 +736,7 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
                              &bucket );
       if ( listErr == LIST_OK ) {
          /* Find the last one in the chain of items with same key */
-         while ( previousHashItem->nextSameKey != NULL_OFFSET ) {
+         while ( previousHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
             GET_PTR( previousHashItem, previousHashItem->nextSameKey, vdseHashItem );
          }
 
@@ -945,7 +945,7 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
          errcode = VDS_NO_SUCH_ITEM;
          goto the_exit;
       }
-      while ( pHashItem->nextSameKey != NULL_OFFSET ) {
+      while ( pHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
          GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
       }
 
@@ -1052,7 +1052,7 @@ void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap,
    
    VDS_PRE_CONDITION( pHashMap   != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( itemOffset != VDSE_NULL_OFFSET );
 
    GET_PTR( pHashItem, itemOffset, vdseHashItem );
    txItemStatus = &pHashItem->txStatus;
@@ -1109,7 +1109,7 @@ void vdseHashMapRollbackRemove( vdseHashMap        * pHashMap,
    
    VDS_PRE_CONDITION( pHashMap   != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( itemOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( itemOffset != VDSE_NULL_OFFSET );
 
    GET_PTR( pHashItem, itemOffset, vdseHashItem );
    txItemStatus = &pHashItem->txStatus;

@@ -157,7 +157,7 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
 
    GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( txFolderStatus->txOffset != NULL_OFFSET ) {
+   if ( txFolderStatus->txOffset != VDSE_NULL_OFFSET ) {
       /*
        * So we have an interrupted transaction. What kind? 
        *   FLAG                      ACTION          
@@ -182,7 +182,7 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
       rc = VDSWR_CHANGES;
       if ( pVerify->doRepair) {
          vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
-         txFolderStatus->txOffset = NULL_OFFSET;
+         txFolderStatus->txOffset = VDSE_NULL_OFFSET;
          txFolderStatus->enumStatus = VDSE_TXS_OK;
       }
    }

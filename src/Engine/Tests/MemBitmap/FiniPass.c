@@ -57,7 +57,7 @@ int main()
    if ( pBitmap->allocGranularity != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pBitmap->baseAddressOffset != NULL_OFFSET ) {
+   if ( pBitmap->baseAddressOffset != VDSE_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    for ( i = 0; i < pBitmap->lengthInBits / 8; ++i ) {

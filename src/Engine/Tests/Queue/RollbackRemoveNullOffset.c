@@ -82,7 +82,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseQueueRollbackRemove( pQueue, NULL_OFFSET );
+   vdseQueueRollbackRemove( pQueue, VDSE_NULL_OFFSET );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

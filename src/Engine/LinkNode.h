@@ -68,14 +68,14 @@ typedef struct vdseFreeBufferNode vdseFreeBufferNode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** Initialize the elements of the vdseLinkNode to NULL_OFFSET. */
+/** Initialize the elements of the vdseLinkNode to VDSE_NULL_OFFSET. */
 static inline
 void vdseLinkNodeInit( vdseLinkNode * pNode )
 {
    VDS_PRE_CONDITION( pNode != NULL );
    
-   pNode->nextOffset     = NULL_OFFSET;
-   pNode->previousOffset = NULL_OFFSET;
+   pNode->nextOffset     = VDSE_NULL_OFFSET;
+   pNode->previousOffset = VDSE_NULL_OFFSET;
 }
 
 static inline
@@ -87,16 +87,16 @@ void vdseLinkNodeFini( vdseLinkNode * pNode )
 }
 
 /** Test the values of the elements of the vdseLinkNode.
- *  Return true (1) if both elements are not the NULL_OFFSET
- *  and false (0) if one or both are the NULL_OFFSET.
+ *  Return true (1) if both elements are not the VDSE_NULL_OFFSET
+ *  and false (0) if one or both are the VDSE_NULL_OFFSET.
  */
 static inline
 int  vdseLinkNodeTest( vdseLinkNode * pNode )
 {
    VDS_PRE_CONDITION( pNode != NULL );
 
-   if ( pNode->nextOffset     == NULL_OFFSET || 
-        pNode->previousOffset == NULL_OFFSET ) {
+   if ( pNode->nextOffset     == VDSE_NULL_OFFSET || 
+        pNode->previousOffset == VDSE_NULL_OFFSET ) {
       return 0;
    }
    return 1;

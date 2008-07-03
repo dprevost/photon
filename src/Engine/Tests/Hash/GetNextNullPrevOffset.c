@@ -74,7 +74,7 @@ int main()
    
    listErr = vdseHashGetNext( pHash,
                               bucketFirst,
-                              NULL_OFFSET,
+                              VDSE_NULL_OFFSET,
                               &bucketNext,
                               &offsetFirstItem );
 

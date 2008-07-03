@@ -76,7 +76,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseHashMapCommitAdd( pHashMap, NULL_OFFSET, &context );
+   vdseHashMapCommitAdd( pHashMap, VDSE_NULL_OFFSET, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

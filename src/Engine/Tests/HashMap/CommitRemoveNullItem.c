@@ -88,7 +88,7 @@ int main()
    }
    
    vdseHashMapCommitRemove( pHashMap, 
-                            NULL_OFFSET,
+                            VDSE_NULL_OFFSET,
                             &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

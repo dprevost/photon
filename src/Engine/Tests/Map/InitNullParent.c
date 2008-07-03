@@ -40,7 +40,7 @@ int main()
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseMapInit( pHashMap, 
-                          NULL_OFFSET, 
+                          VDSE_NULL_OFFSET, 
                           1, 
                           0, 
                           &status, 

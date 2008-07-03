@@ -76,7 +76,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   item.itemOffset = NULL_OFFSET;
+   item.itemOffset = VDSE_NULL_OFFSET;
    errcode = vdseFolderGetNext( pFolder,
                                 &item,
                                 &context );

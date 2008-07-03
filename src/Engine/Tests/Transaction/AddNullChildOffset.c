@@ -27,7 +27,7 @@ int main()
    vdseTx* pTx;
    vdseSessionContext context;
    int errcode;
-   ptrdiff_t parentOffset = 0x1010, childOffset = NULL_OFFSET;
+   ptrdiff_t parentOffset = 0x1010, childOffset = VDSE_NULL_OFFSET;
    
    pTx = initTxTest( expectedToPass, &context );
 

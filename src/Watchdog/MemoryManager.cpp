@@ -119,14 +119,14 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
                     errcode );
       return -1;
    }
-   vdseTxStatusInit( &m_pHeader->topHashItem.txStatus, NULL_OFFSET );
+   vdseTxStatusInit( &m_pHeader->topHashItem.txStatus, VDSE_NULL_OFFSET );
 
    pFolder->nodeObject.txCounter      = 0;
    pFolder->nodeObject.myNameLength   = 0;
-   pFolder->nodeObject.myNameOffset   = NULL_OFFSET;
+   pFolder->nodeObject.myNameOffset   = VDSE_NULL_OFFSET;
    pFolder->nodeObject.txStatusOffset = 
       SET_OFFSET( &m_pHeader->topHashItem.txStatus );
-   pFolder->nodeObject.myParentOffset = NULL_OFFSET;
+   pFolder->nodeObject.myParentOffset = VDSE_NULL_OFFSET;
 
    listErr = vdseHashInit( &pFolder->hashObj, 
                            SET_OFFSET(&pFolder->memObject),

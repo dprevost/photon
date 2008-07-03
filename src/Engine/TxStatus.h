@@ -123,7 +123,7 @@ void vdseTxStatusFini( vdseTxStatus * pStatus )
    VDS_PRE_CONDITION( pStatus->enumStatus   == VDSE_TXS_OK );
    VDS_PRE_CONDITION( pStatus->usageCounter == 0 );
 
-   pStatus->txOffset = NULL_OFFSET;
+   pStatus->txOffset = VDSE_NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -132,9 +132,9 @@ static inline
 bool vdseTxStatusIsValid( vdseTxStatus * pStatus, ptrdiff_t txOffset )
 {
    VDS_PRE_CONDITION( pStatus  != NULL );
-   VDS_PRE_CONDITION( txOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( txOffset != VDSE_NULL_OFFSET );
 
-   if ( pStatus->txOffset == NULL_OFFSET ) return true;
+   if ( pStatus->txOffset == VDSE_NULL_OFFSET ) return true;
    if ( pStatus->txOffset == txOffset ) return true;
 
    return false;
@@ -146,9 +146,9 @@ static inline
 void vdseTxStatusClearTx( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( pStatus->txOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( pStatus->txOffset != VDSE_NULL_OFFSET );
 
-   pStatus->txOffset = NULL_OFFSET;
+   pStatus->txOffset = VDSE_NULL_OFFSET;
    pStatus->enumStatus = VDSE_TXS_OK;
 }
 
@@ -206,7 +206,7 @@ void vdseTxStatusUnmarkAsDestroyed( vdseTxStatus * pStatus )
     * one if some other session had access to the data before the data
     * was marked as removed).
     */
-   pStatus->txOffset = NULL_OFFSET;
+   pStatus->txOffset = VDSE_NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -216,7 +216,7 @@ bool vdseTxStatusSelfTest( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   if ( pStatus->txOffset != NULL_OFFSET ) return false;
+   if ( pStatus->txOffset != VDSE_NULL_OFFSET ) return false;
 
    return true;
 }

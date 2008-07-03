@@ -45,7 +45,7 @@ int main()
                       8 );
 
    vdseSetBufferAllocated( pBitmap,
-                           NULL_OFFSET, /* offset */
+                           VDSE_NULL_OFFSET, /* offset */
                            VDSE_BLOCK_SIZE/4 ); /* length */
 
    ERROR_EXIT( expectedToPass, NULL, ; );

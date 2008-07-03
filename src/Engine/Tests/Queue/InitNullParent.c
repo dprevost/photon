@@ -40,7 +40,7 @@ int main()
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseQueueInit( pQueue, 
-                            NULL_OFFSET, 1, &status, 4, 
+                            VDSE_NULL_OFFSET, 1, &status, 4, 
                             "Queue1", SET_OFFSET(pQueue), &def, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

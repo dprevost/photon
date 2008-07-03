@@ -45,10 +45,10 @@ int main()
                       SET_OFFSET(ptr),
                       10,
                       VDSE_IDENT_QUEUE );
-   if ( pGroup->node.nextOffset != NULL_OFFSET ) {
+   if ( pGroup->node.nextOffset != VDSE_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pGroup->node.previousOffset != NULL_OFFSET ) {
+   if ( pGroup->node.previousOffset != VDSE_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pGroup->numBlocks != 10 ) {

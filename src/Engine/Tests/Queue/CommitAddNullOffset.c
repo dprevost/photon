@@ -77,7 +77,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseQueueCommitAdd( pQueue, NULL_OFFSET );
+   vdseQueueCommitAdd( pQueue, VDSE_NULL_OFFSET );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

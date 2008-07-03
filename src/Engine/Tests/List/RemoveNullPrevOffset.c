@@ -37,7 +37,7 @@ int main()
    
    vdseLinkedListPutLast( &list, &node );
 
-   node.previousOffset = NULL_OFFSET;
+   node.previousOffset = VDSE_NULL_OFFSET;
    vdseLinkedListRemoveItem( &list, &node );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

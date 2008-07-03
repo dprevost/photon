@@ -49,7 +49,7 @@ void vdseBlockGroupInit( vdseBlockGroup  * pGroup,
    vdseFreeBufferNode * firstNode;
    
    VDS_PRE_CONDITION( pGroup != NULL );
-   VDS_PRE_CONDITION( firstBlockOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( firstBlockOffset != VDSE_NULL_OFFSET );
    VDS_PRE_CONDITION( numBlocks > 0 );
    VDS_PRE_CONDITION( objType > VDSE_IDENT_FIRST && objType < VDSE_IDENT_LAST );
 

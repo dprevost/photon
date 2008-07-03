@@ -77,7 +77,7 @@ vdseInitSessionContext( vdseSessionContext * pContext )
    vdscInitErrorHandler( &pContext->errorHandler );
    
    pContext->pidLocker    = getpid();
-   pContext->lockObject   = NULL_OFFSET;
+   pContext->lockObject   = VDSE_NULL_OFFSET;
    pContext->pTransaction = NULL;
    pContext->pAllocator   = NULL;
    pContext->pLogFile     = NULL;
@@ -91,7 +91,7 @@ void vdseSessionAddLock( vdseSessionContext * pSession,
 {
    VDS_PRE_CONDITION( pSession != NULL );
    VDS_PRE_CONDITION( *pSession->numLocks < VDSE_MAX_LOCK_DEPTH );
-   VDS_PRE_CONDITION( memObjectOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( memObjectOffset != VDSE_NULL_OFFSET );
    
    pSession->lockOffsets[*pSession->numLocks] = memObjectOffset;
    (*pSession->numLocks)++;
@@ -107,7 +107,7 @@ void vdseSessionRemoveLock( vdseSessionContext * pSession,
    
    VDS_PRE_CONDITION( pSession != NULL );
    VDS_PRE_CONDITION( *pSession->numLocks > 0 );
-   VDS_PRE_CONDITION( memObjectOffset != NULL_OFFSET );
+   VDS_PRE_CONDITION( memObjectOffset != VDSE_NULL_OFFSET );
    
    n = *pSession->numLocks;
 
@@ -118,7 +118,7 @@ void vdseSessionRemoveLock( vdseSessionContext * pSession,
             pSession->lockOffsets[j-1] = pSession->lockOffsets[j];
          }
          
-         pSession->lockOffsets[*pSession->numLocks-1] = NULL_OFFSET;         
+         pSession->lockOffsets[*pSession->numLocks-1] = VDSE_NULL_OFFSET;         
          (*pSession->numLocks)--;
       }
    }

@@ -189,7 +189,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    GET_PTR( pArray, pHashMap->hashObj.arrayOffset, ptrdiff_t );
 
    for ( i = 0; i < g_vdseArrayLengths[pHashMap->hashObj.lengthIndex]; ++i ) {
-      if ( pArray[i] != NULL_OFFSET ) pArray[i] = 0;
+      if ( pArray[i] != VDSE_NULL_OFFSET ) pArray[i] = 0;
    }
    
    cout << "Defect for " << h[6].name << ": item - invalid key length" << endl;
@@ -378,7 +378,7 @@ int AddDefectsQueues( vector<myQueue> & q )
                                              &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->nextOffset = NULL_OFFSET;
+         pNode->nextOffset = VDSE_NULL_OFFSET;
          break;
       }
    }
@@ -403,7 +403,7 @@ int AddDefectsQueues( vector<myQueue> & q )
                                              &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->previousOffset = NULL_OFFSET;
+         pNode->previousOffset = VDSE_NULL_OFFSET;
          break;
       }
    }
@@ -429,8 +429,8 @@ int AddDefectsQueues( vector<myQueue> & q )
       i++;
       if ( i == 9 ) pSavedNode = pNode;
       if ( i == 13 ) {
-         pSavedNode->nextOffset = NULL_OFFSET;
-         pNode->nextOffset = NULL_OFFSET;
+         pSavedNode->nextOffset = VDSE_NULL_OFFSET;
+         pNode->nextOffset = VDSE_NULL_OFFSET;
          break;
       }
    }
@@ -456,8 +456,8 @@ int AddDefectsQueues( vector<myQueue> & q )
       i++;
       if ( i == 9 ) pSavedNode = pNode;
       if ( i == 13 ) {
-         pSavedNode->previousOffset = NULL_OFFSET;
-         pNode->previousOffset = NULL_OFFSET;
+         pSavedNode->previousOffset = VDSE_NULL_OFFSET;
+         pNode->previousOffset = VDSE_NULL_OFFSET;
          break;
       }
    }
@@ -482,8 +482,8 @@ int AddDefectsQueues( vector<myQueue> & q )
                                              &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->previousOffset = NULL_OFFSET;
-         pNode->nextOffset = NULL_OFFSET;
+         pNode->previousOffset = VDSE_NULL_OFFSET;
+         pNode->nextOffset = VDSE_NULL_OFFSET;
          break;
       }
    }

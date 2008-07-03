@@ -40,7 +40,7 @@ int main()
    pBitmap = (vdseMemBitmap*) ptr;
    
    vdseMemBitmapInit( pBitmap, 
-                      NULL_OFFSET,
+                      VDSE_NULL_OFFSET,
                       10*VDSE_BLOCK_SIZE,
                       8 );
 
