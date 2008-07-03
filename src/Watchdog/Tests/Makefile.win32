@@ -17,10 +17,10 @@ check_PROGRAMS =
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 
 check: $(OUTDIR) $(check_PROGRAMS)
-	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+	cscript wdTests.vbs --path=..\Release $(VBS_VERBOSE)
 
 checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+	cscript wdTests.vbs --path=..\Debug $(VBS_VERBOSE)
 
 clean: 
 	-@erase /Q Debug
