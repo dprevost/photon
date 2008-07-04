@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <vdsf/vdsMap.h>
+#include <vdsf/vdsFastMap.h>
 #include "API/Map.h"
 #include "API/Session.h"
 #include <vdsf/vdsErrors.h>
