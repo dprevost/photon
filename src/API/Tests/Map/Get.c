@@ -33,7 +33,7 @@ int main( int argc, char * argv[] )
    char buffer[200];
    size_t length;
    vdsObjectDefinition mapDef = { 
-      VDS_MAP, 
+      VDS_FAST_MAP, 
       1, 
       { VDS_KEY_VAR_STRING, 0, 4, 10 }, 
       { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 

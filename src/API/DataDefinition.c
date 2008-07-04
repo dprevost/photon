@@ -219,7 +219,7 @@ int vdsaValidateDefinition( vdsObjectDefinition * pDefinition )
       return 0;
 
    case VDS_HASH_MAP:
-   case VDS_MAP:
+   case VDS_FAST_MAP:
 
       /* We do the key and let the queue case test the rest */
       switch( pDefinition->key.type ) {
@@ -584,7 +584,7 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
 
    /* Extract the key, if any */
    if ( nodeKey != NULL ) {
-      (*ppDefinition)->type = VDS_MAP;
+      (*ppDefinition)->type = VDS_FAST_MAP;
       if ( dynamicMode ) (*ppDefinition)->type = VDS_HASH_MAP;
       nodeType = nodeKey->children;
       while ( nodeType != NULL ) {

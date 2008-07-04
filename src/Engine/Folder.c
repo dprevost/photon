@@ -539,7 +539,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
       }
 
       switch( pDescOld->apiType ) {
-      case VDS_MAP:
+      case VDS_FAST_MAP:
          pMap = GET_PTR_FAST( pDescOld->offset, vdseMap );
          if ( pMap->editVersion != VDSE_NULL_OFFSET ) {
             errcode = VDS_A_SINGLE_UPDATER_IS_ALLOWED;
@@ -1472,7 +1472,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
       case VDS_HASH_MAP:
          memObjType = VDSE_IDENT_HASH_MAP;
          break;
-      case VDS_MAP:
+      case VDS_FAST_MAP:
          memObjType = VDSE_IDENT_MAP;
          break;
       case VDS_QUEUE:
@@ -1793,7 +1793,7 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
    case VDS_QUEUE:
       vdseQueueFini( (vdseQueue *)ptrObject, pContext );
       break;
-   case VDS_MAP:
+   case VDS_FAST_MAP:
       vdseMapFini( (vdseMap *)ptrObject, pContext );
       break;
    case VDS_LAST_OBJECT_TYPE:

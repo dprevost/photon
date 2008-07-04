@@ -29,7 +29,7 @@ int main()
    vdseTxStatus status;
    vdseFolderItem folderItem;
    vdsObjectDefinition mapDef = { 
-      VDS_MAP, 
+      VDS_FAST_MAP, 
       1, 
       { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
       { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
@@ -59,7 +59,7 @@ int main()
    errcode = vdseFolderEditObject( pFolder,
                                   "test2",
                                   5,
-                                  VDS_MAP,
+                                  VDS_FAST_MAP,
                                   &folderItem,
                                   &context );
    if ( errcode != 0 ) {

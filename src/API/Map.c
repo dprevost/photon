@@ -128,7 +128,7 @@ int vdsMapDefinition( VDS_HANDLE             objectHandle,
                                       pVDSHashMap->numFields,
                                       ppDefinition );
          if ( errcode == 0 ) {
-            (*ppDefinition)->type = VDS_MAP;
+            (*ppDefinition)->type = VDS_FAST_MAP;
             memcpy( &(*ppDefinition)->key, 
                     &pVDSHashMap->keyDef, 
                     sizeof(vdsKeyDefinition) );
@@ -257,7 +257,7 @@ int vdsMapEdit( VDS_HANDLE   sessionHandle,
    if ( ! pHashMap->object.pSession->terminated ) {
 
       errcode = vdsaCommonObjOpen( &pHashMap->object,
-                                   VDS_MAP,
+                                   VDS_FAST_MAP,
                                    VDSA_UPDATE_RO,
                                    hashMapName,
                                    nameLengthInBytes );
@@ -658,7 +658,7 @@ int vdsMapOpen( VDS_HANDLE   sessionHandle,
    if ( ! pHashMap->object.pSession->terminated ) {
 
       errcode = vdsaCommonObjOpen( &pHashMap->object,
-                                   VDS_MAP,
+                                   VDS_FAST_MAP,
                                    VDSA_READ_ONLY,
                                    hashMapName,
                                    nameLengthInBytes );

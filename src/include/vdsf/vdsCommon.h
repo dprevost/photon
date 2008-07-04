@@ -90,9 +90,10 @@ typedef void* VDS_HANDLE;
 enum vdsObjectType
 {
    VDS_FOLDER   = 1,
-   VDS_QUEUE    = 2,
-   VDS_HASH_MAP = 3,
-   VDS_MAP      = 4,
+   VDS_HASH_MAP = 2,
+   VDS_LIFO     = 3,  /* A LIFO queue aka a stack */
+   VDS_FAST_MAP = 4,  /* A read-only hash map */
+   VDS_QUEUE    = 5,  /* A FIFO queue */
    VDS_LAST_OBJECT_TYPE
 };
 

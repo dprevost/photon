@@ -34,7 +34,7 @@
  * Maps are read-only (with an update procedure) and no locks are required.
  */
 #include <vdsf/vdsHashMap.h>
-#include <vdsf/vdsMap.h>
+#include <vdsf/vdsFastMap.h>
 #include <vdsf/vdsQueue.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

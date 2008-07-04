@@ -32,7 +32,7 @@ int main( int argc, char * argv[] )
    const char * data = "My Data";
    vdsaHashMapEntry entry;
    vdsObjectDefinition mapDef = { 
-      VDS_MAP, 
+      VDS_FAST_MAP, 
       1, 
       { VDS_KEY_VAR_STRING, 0, 4, 10 }, 
       { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 

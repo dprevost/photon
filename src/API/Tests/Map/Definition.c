@@ -54,7 +54,7 @@ int main( int argc, char * argv[] )
    len = offsetof( vdsObjectDefinition, fields ) + 
       5 * sizeof(vdsFieldDefinition);
    pDefHashMap = (vdsObjectDefinition *)calloc( len, 1 );
-   pDefHashMap->type = VDS_MAP;
+   pDefHashMap->type = VDS_FAST_MAP;
    pDefHashMap->numFields = 5;
    pDefHashMap->fields[0].type = VDS_INTEGER;
    pDefHashMap->fields[1].type = VDS_INTEGER;

@@ -90,7 +90,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->type = VDS_MAP;   
+   pDefinition->type = VDS_FAST_MAP;   
    errcode = vdsFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
