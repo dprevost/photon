@@ -319,8 +319,8 @@ enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
 {
    ptrdiff_t * pOldArray, * pNewArray;
    size_t i;
-   ptrdiff_t currentOffset;
-   vdseHashItem * pOldItem, * pNewItem, * previousItem;
+   ptrdiff_t currentOffset, tempOffset, newBucket;
+   vdseHashItem * pOldItem, * pNewItem, * previousItem, * tempItem;
    vdseMemObject * pMemObject;
    size_t itemLength;
    
@@ -375,7 +375,48 @@ enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
       }
    }
    else {
-      assert( 0 );
+      for ( i = 0; i < g_vdseArrayLengths[pOldHash->lengthIndex]; ++i ) {
+         currentOffset = pOldArray[i];
+      
+         while ( currentOffset != VDSE_NULL_OFFSET ) {
+            GET_PTR( pOldItem, currentOffset, vdseHashItem );
+
+            itemLength = calculateItemLength( pOldItem->keyLength,
+                                              pOldItem->dataLength );
+            pNewItem = (vdseHashItem*) vdseMalloc( pMemObject, 
+                                                   itemLength, 
+                                                   pContext );
+            if ( pNewItem == NULL ) return LIST_NO_MEMORY;
+
+            /*
+             * We copy everything and we reset the offset of interest
+             * to proper values (the nextSameKey offset should always be 
+             * VDSE_NULL_OFFSET since the oldHash is for a read-only object).
+             */
+            memcpy( pNewItem, pOldItem, itemLength );
+            pNewItem->dataOffset = SET_OFFSET(pNewItem) + itemLength - 
+                                   pOldItem->dataLength;
+
+            /* Set the chain */
+            newBucket = hash_pjw( pNewItem->key, pNewItem->keyLength ) % 
+                        g_vdseArrayLengths[pNewHash->lengthIndex];
+            if ( pNewArray[newBucket] == VDSE_NULL_OFFSET ) {
+               pNewArray[newBucket] = SET_OFFSET(pNewItem);
+            }
+            else {
+               tempOffset = pNewArray[newBucket];
+               GET_PTR( tempItem, tempOffset, vdseHashItem );
+               while ( tempItem->nextItem != VDSE_NULL_OFFSET ) {
+                  tempOffset = tempItem->nextItem;
+                  GET_PTR( tempItem, tempOffset, vdseHashItem );
+               }
+               tempItem->nextItem = SET_OFFSET(pNewItem);
+            }
+            
+            /* Move to the next item in our bucket */
+            currentOffset = pOldItem->nextItem;
+         }
+      }
    }
 
    pNewHash->totalDataSizeInBytes = pOldHash->totalDataSizeInBytes;
