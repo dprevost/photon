@@ -24,6 +24,7 @@ check_PROGRAMS =                             \
         .\Release\DeleteAtPass.exe           \
         .\Release\DeleteNullContext.exe      \
         .\Release\DeleteNullHash.exe         \
+        .\Release\DeleteNullItem.exe         \
         .\Release\DeleteNullKey.exe          \
         .\Release\DeletePass.exe             \
         .\Release\DeleteZeroLength.exe       \

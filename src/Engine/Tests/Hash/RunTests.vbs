@@ -30,13 +30,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(57)
+Dim failed_tests(58)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
 Dim ok_programs(13)
-Dim fail_programs(43)
+Dim fail_programs(44)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -73,44 +73,45 @@ fail_programs(4)  = "DeleteAtNullHash"
 fail_programs(5)  = "DeleteAtNullItem"
 fail_programs(6)  = "DeleteNullContext"
 fail_programs(7)  = "DeleteNullHash"
-fail_programs(8)  = "DeleteNullKey"
-fail_programs(9)  = "DeleteZeroLength"
-fail_programs(10) = "EmptyNullContext"
-fail_programs(11) = "EmptyNullHash"
-fail_programs(12) = "FiniNullHash"
-fail_programs(13) = "GetFirstNullBucket"
-fail_programs(14) = "GetFirstNullHash"
-fail_programs(15) = "GetFirstNullOffset"
-fail_programs(16) = "GetNextNullHash"
-fail_programs(17) = "GetNextNullNextBucket"
-fail_programs(18) = "GetNextNullNextOffset"
-fail_programs(19) = "GetNextNullPrevOffset"
-fail_programs(20) = "GetNullContext"
-fail_programs(21) = "GetNullHash"
-fail_programs(22) = "GetNullItem"
-fail_programs(23) = "GetNullKey"
-fail_programs(24) = "GetZeroKeyLength"
-fail_programs(25) = "InitNullContext"
-fail_programs(26) = "InitNullHash"
-fail_programs(27) = "InitNullOffset"
-fail_programs(28) = "InsertAtNullContext"
-fail_programs(29) = "InsertAtNullData"
-fail_programs(30) = "InsertAtNullHash"
-fail_programs(31) = "InsertAtNullKey"
-fail_programs(32) = "InsertAtNullNewItem"
-fail_programs(33) = "InsertAtZeroDataLength"
-fail_programs(34) = "InsertAtZeroKeyLength"
-fail_programs(35) = "InsertNullContext"
-fail_programs(36) = "InsertNullData"
-fail_programs(37) = "InsertNullHash"
-fail_programs(38) = "InsertNullKey"
-fail_programs(39) = "InsertNullNewItem"
-fail_programs(40) = "InsertZeroDataLength"
-fail_programs(41) = "InsertZeroKeyLength"
-fail_programs(42) = "ResizeNullContext"
-fail_programs(43) = "ResizeNullHash"
+fail_programs(8)  = "DeleteNullItem"
+fail_programs(9)  = "DeleteNullKey"
+fail_programs(10) = "DeleteZeroLength"
+fail_programs(11) = "EmptyNullContext"
+fail_programs(12) = "EmptyNullHash"
+fail_programs(13) = "FiniNullHash"
+fail_programs(14) = "GetFirstNullBucket"
+fail_programs(15) = "GetFirstNullHash"
+fail_programs(16) = "GetFirstNullOffset"
+fail_programs(17) = "GetNextNullHash"
+fail_programs(18) = "GetNextNullNextBucket"
+fail_programs(19) = "GetNextNullNextOffset"
+fail_programs(20) = "GetNextNullPrevOffset"
+fail_programs(21) = "GetNullContext"
+fail_programs(22) = "GetNullHash"
+fail_programs(23) = "GetNullItem"
+fail_programs(24) = "GetNullKey"
+fail_programs(25) = "GetZeroKeyLength"
+fail_programs(26) = "InitNullContext"
+fail_programs(27) = "InitNullHash"
+fail_programs(28) = "InitNullOffset"
+fail_programs(29) = "InsertAtNullContext"
+fail_programs(30) = "InsertAtNullData"
+fail_programs(31) = "InsertAtNullHash"
+fail_programs(32) = "InsertAtNullKey"
+fail_programs(33) = "InsertAtNullNewItem"
+fail_programs(34) = "InsertAtZeroDataLength"
+fail_programs(35) = "InsertAtZeroKeyLength"
+fail_programs(36) = "InsertNullContext"
+fail_programs(37) = "InsertNullData"
+fail_programs(38) = "InsertNullHash"
+fail_programs(39) = "InsertNullKey"
+fail_programs(40) = "InsertNullNewItem"
+fail_programs(41) = "InsertZeroDataLength"
+fail_programs(42) = "InsertZeroKeyLength"
+fail_programs(43) = "ResizeNullContext"
+fail_programs(44) = "ResizeNullHash"
 
-numTests = 58                 ' Sum of length of both arrays 
+numTests = 59                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject

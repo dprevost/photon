@@ -35,6 +35,7 @@ check_PROGRAMS =               \
         DeleteAtPass           \
         DeleteNullContext      \
         DeleteNullHash         \
+        DeleteNullItem         \
         DeleteNullKey          \
         DeletePass             \
         DeleteZeroLength       \
@@ -96,6 +97,7 @@ DeleteAtNullItem_SOURCES       = $(COMMON_HEADER) DeleteAtNullItem.c
 DeleteAtPass_SOURCES           = $(COMMON_HEADER) DeleteAtPass.c
 DeleteNullContext_SOURCES      = $(COMMON_HEADER) DeleteNullContext.c
 DeleteNullHash_SOURCES         = $(COMMON_HEADER) DeleteNullHash.c
+DeleteNullItem_SOURCES         = $(COMMON_HEADER) DeleteNullItem.c
 DeleteNullKey_SOURCES          = $(COMMON_HEADER) DeleteNullKey.c
 DeletePass_SOURCES             = $(COMMON_HEADER) DeletePass.c
 DeleteZeroLength_SOURCES       = $(COMMON_HEADER) DeleteZeroLength.c
@@ -166,6 +168,7 @@ TESTS =                        \
         DeleteAtPass           \
         DeleteNullContext      \
         DeleteNullHash         \
+        DeleteNullItem         \
         DeleteNullKey          \
         DeletePass             \
         DeleteZeroLength       \
@@ -223,6 +226,7 @@ XFAIL_TESTS =                  \
         DeleteAtNullItem       \
         DeleteNullContext      \
         DeleteNullHash         \
+        DeleteNullItem         \
         DeleteNullKey          \
         DeleteZeroLength       \
         EmptyNullContext       \
