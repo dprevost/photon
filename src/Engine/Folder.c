@@ -1205,6 +1205,7 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
                                pStatus );
             break;
          case VDS_QUEUE:
+         case VDS_LIFO:
             vdseQueueStatus( GET_PTR_FAST( pDesc->memOffset, vdseQueue ),
                              pStatus );
             break;
@@ -1476,6 +1477,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
          memObjType = VDSE_IDENT_MAP;
          break;
       case VDS_QUEUE:
+      case VDS_LIFO:
          memObjType = VDSE_IDENT_QUEUE;
          break;
       default:
@@ -1791,6 +1793,7 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
       vdseHashMapFini( (vdseHashMap *)ptrObject, pContext );
       break;
    case VDS_QUEUE:
+   case VDS_LIFO:
       vdseQueueFini( (vdseQueue *)ptrObject, pContext );
       break;
    case VDS_FAST_MAP:

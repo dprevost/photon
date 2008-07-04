@@ -176,6 +176,13 @@ elementFormDefault="qualified">
   </xs:unique>
 </xs:element>
 
+<xs:element name="lifo" type="queueType">
+  <xs:unique name="lifoUnique">
+    <xs:selector xpath="*"/>
+    <xs:field xpath="@name"/>
+  </xs:unique>
+</xs:element>
+
 <xs:complexType name="hashmapType">
   <xs:sequence>
     <xs:element ref="key"   minOccurs="1" maxOccurs="1"/>
@@ -217,6 +224,7 @@ elementFormDefault="qualified">
     <xs:choice minOccurs="0" maxOccurs="unbounded">
       <xs:element ref="folder"/>
       <xs:element ref="queue"/>
+      <xs:element ref="lifo"/>
       <xs:element ref="hashmap"/>
     </xs:choice>
   </xs:sequence>

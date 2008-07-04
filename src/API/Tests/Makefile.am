@@ -16,13 +16,14 @@ CLEANFILES = *~ core
 
 SUBDIRS =            \
         Api          \
-        Process      \
-        Session      \
         CommonObject \
         Folder       \
         HashMap      \
+        Lifo         \
         Map          \
-        Queue        
+        Process      \
+        Queue        \
+        Session      
 
 EXTRA_DIST =               \
         Makefile.inc.win32 \

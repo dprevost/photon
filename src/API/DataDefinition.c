@@ -278,6 +278,7 @@ int vdsaValidateDefinition( vdsObjectDefinition * pDefinition )
       }
 
    case VDS_QUEUE:
+   case VDS_LIFO:
       if ( pDefinition->numFields <= 0 || 
            pDefinition->numFields > VDS_MAX_FIELDS ) {
          return VDS_INVALID_NUM_FIELDS;
@@ -432,6 +433,7 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
    }
    if ( (xmlStrcmp(root->name, BAD_CAST "folder")  != 0) &&
         (xmlStrcmp(root->name, BAD_CAST "queue")   != 0) &&
+        (xmlStrcmp(root->name, BAD_CAST "lifo")    != 0) &&
         (xmlStrcmp(root->name, BAD_CAST "hashmap") != 0) ) {
       errcode = VDS_XML_INVALID_ROOT;
       goto cleanup;
@@ -673,6 +675,9 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
       nodeField = root->children;
       if ( xmlStrcmp( root->name, BAD_CAST "queue") == 0 ) {
          (*ppDefinition)->type = VDS_QUEUE;
+      }
+      else if ( xmlStrcmp( root->name, BAD_CAST "lifo") == 0 ) {
+         (*ppDefinition)->type = VDS_LIFO;
       }
       else {
          errcode = VDS_WRONG_OBJECT_TYPE;

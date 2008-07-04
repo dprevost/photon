@@ -42,6 +42,8 @@ libvdsf_la_SOURCES =     \
         Folder.h         \
         HashMap.c        \
         HashMap.h        \
+        Lifo.c           \
+        Lifo.h           \
         ListReaders.h    \
         Map.c            \
         Map.h            \

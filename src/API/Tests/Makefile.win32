@@ -31,6 +31,7 @@ check: $(OUTDIR) $(check_PROGRAMS)
 	cd CommonObject && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Folder       && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd HashMap      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Lifo         && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Map          && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Process      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Queue        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -41,6 +42,7 @@ checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG)
 	cd CommonObject && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Folder       && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd HashMap      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Lifo         && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Map          && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Process      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Queue        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -51,6 +53,7 @@ clean:
 	cd CommonObject && nmake -f Makefile.win32 clean && cd ..
 	cd Folder       && nmake -f Makefile.win32 clean && cd ..
 	cd HashMap      && nmake -f Makefile.win32 clean && cd ..
+	cd Lifo         && nmake -f Makefile.win32 clean && cd ..
 	cd Map          && nmake -f Makefile.win32 clean && cd ..
 	cd Process      && nmake -f Makefile.win32 clean && cd ..
 	cd Queue        && nmake -f Makefile.win32 clean && cd ..

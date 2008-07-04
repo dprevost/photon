@@ -36,6 +36,7 @@
 #include <vdsf/vdsHashMap.h>
 #include <vdsf/vdsFastMap.h>
 #include <vdsf/vdsQueue.h>
+#include <vdsf/vdsLifo.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

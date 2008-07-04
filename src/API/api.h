@@ -32,7 +32,8 @@ enum vdsaObjetType
    VDSA_FOLDER,
    VDSA_HASH_MAP,
    VDSA_MAP,
-   VDSA_QUEUE
+   VDSA_QUEUE,
+   VDSA_LIFO
 };
 
 typedef enum vdsaObjetType vdsaObjetType;
