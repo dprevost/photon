@@ -76,10 +76,10 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapOpen( sessionHandle,
-                         "/amcp/test",
-                         strlen("/amcp/test"),
-                         &objHandle );
+   errcode = vdsFastMapOpen( sessionHandle,
+                             "/amcp/test",
+                             strlen("/amcp/test"),
+                             &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -87,35 +87,35 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsMapClose( NULL );
+   errcode = vdsFastMapClose( NULL );
    if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapClose( sessionHandle );
+   errcode = vdsFastMapClose( sessionHandle );
    if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = vdsMapClose( objHandle );
+   errcode = vdsFastMapClose( objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Open with edit instead of open */
-   errcode = vdsMapEdit( sessionHandle,
-                         "/amcp/test",
-                         strlen("/amcp/test"),
-                         &objHandle );
+   errcode = vdsFastMapEdit( sessionHandle,
+                             "/amcp/test",
+                             strlen("/amcp/test"),
+                             &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapClose( objHandle );
+   errcode = vdsFastMapClose( objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -123,10 +123,10 @@ int main( int argc, char * argv[] )
 
    /* Close the session and try to act on the object */
 
-   errcode = vdsMapOpen( sessionHandle,
-                         "/amcp/test",
-                         strlen("/amcp/test"),
-                         &objHandle );
+   errcode = vdsFastMapOpen( sessionHandle,
+                             "/amcp/test",
+                             strlen("/amcp/test"),
+                             &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -138,7 +138,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapClose( objHandle );
+   errcode = vdsFastMapClose( objHandle );
    if ( errcode != VDS_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

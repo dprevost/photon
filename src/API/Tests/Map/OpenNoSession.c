@@ -94,10 +94,10 @@ int main( int argc, char * argv[] )
     * sessionHandle is a pointer to deallocated memory. We either get the
     * error or we crash!
     */
-   errcode = vdsMapOpen( sessionHandle,
-                         "/amons/test",
-                         strlen("/amons/test"),
-                         &objHandle );
+   errcode = vdsFastMapOpen( sessionHandle,
+                             "/amons/test",
+                             strlen("/amons/test"),
+                             &objHandle );
    if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

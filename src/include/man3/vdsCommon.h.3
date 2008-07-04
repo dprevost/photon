@@ -1,4 +1,4 @@
-.TH "vdsCommon.h" 3 "26 Jun 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsCommon.h" 3 "4 Jul 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -100,7 +100,7 @@ vdsCommon.h \-
 
 .in +1c
 .ti -1c
-.RI "enum \fBvdsObjectType\fP { \fBVDS_FOLDER\fP =  1, \fBVDS_QUEUE\fP =  2, \fBVDS_HASH_MAP\fP =  3, \fBVDS_MAP\fP =  4, \fBVDS_LAST_OBJECT_TYPE\fP }"
+.RI "enum \fBvdsObjectType\fP { \fBVDS_FOLDER\fP =  1, \fBVDS_HASH_MAP\fP =  2, \fBVDS_LIFO\fP =  3, \fBVDS_FAST_MAP\fP =  4, \fBVDS_QUEUE\fP =  5, \fBVDS_LAST_OBJECT_TYPE\fP }"
 .br
 .RI "\fIThe object type as seen from the API. \fP"
 .ti -1c
@@ -156,28 +156,28 @@ VDS_HANDLE is an opaque data type used by the C API to reference objects created
 Definition at line 53 of file vdsCommon.h.
 .SS "typedef struct \fBvdsFieldDefinition\fP \fBvdsFieldDefinition\fP"
 .PP
-Definition at line 174 of file vdsCommon.h.
+Definition at line 175 of file vdsCommon.h.
 .SS "typedef struct \fBvdsFolderEntry\fP \fBvdsFolderEntry\fP"
 .PP
-Definition at line 220 of file vdsCommon.h.
+Definition at line 221 of file vdsCommon.h.
 .SS "typedef struct \fBvdsInfo\fP \fBvdsInfo\fP"
 .PP
-Definition at line 287 of file vdsCommon.h.
+Definition at line 288 of file vdsCommon.h.
 .SS "typedef enum \fBvdsIteratorType\fP \fBvdsIteratorType\fP"
 .PP
-Definition at line 107 of file vdsCommon.h.
+Definition at line 108 of file vdsCommon.h.
 .SS "typedef struct \fBvdsKeyDefinition\fP \fBvdsKeyDefinition\fP"
 .PP
-Definition at line 152 of file vdsCommon.h.
+Definition at line 153 of file vdsCommon.h.
 .SS "typedef struct \fBvdsObjectDefinition\fP \fBvdsObjectDefinition\fP"
 .PP
-Definition at line 192 of file vdsCommon.h.
+Definition at line 193 of file vdsCommon.h.
 .SS "typedef enum \fBvdsObjectType\fP \fBvdsObjectType\fP"
 .PP
-Definition at line 99 of file vdsCommon.h.
+Definition at line 100 of file vdsCommon.h.
 .SS "typedef struct \fBvdsObjStatus\fP \fBvdsObjStatus\fP"
 .PP
-Definition at line 255 of file vdsCommon.h.
+Definition at line 256 of file vdsCommon.h.
 .SH "Enumeration Type Documentation"
 .PP 
 .SS "enum \fBvdsFieldType\fP"
@@ -203,7 +203,7 @@ Only valid for the last field of the data definition.
 \fB\fIVDS_VAR_STRING \fP\fP
 Only valid for the last field of the data definition. 
 .PP
-Definition at line 114 of file vdsCommon.h.
+Definition at line 115 of file vdsCommon.h.
 .SS "enum \fBvdsIteratorType\fP"
 .PP
 \fBEnumerator: \fP
@@ -214,7 +214,7 @@ Definition at line 114 of file vdsCommon.h.
 \fB\fIVDS_NEXT \fP\fP
 
 .PP
-Definition at line 101 of file vdsCommon.h.
+Definition at line 102 of file vdsCommon.h.
 .SS "enum \fBvdsKeyType\fP"
 .PP
 VDSF supported data types for keys. 
@@ -234,7 +234,7 @@ Only valid for the last field of the data definition.
 \fB\fIVDS_KEY_VAR_STRING \fP\fP
 Only valid for the last field of the data definition. 
 .PP
-Definition at line 130 of file vdsCommon.h.
+Definition at line 131 of file vdsCommon.h.
 .SS "enum \fBvdsObjectType\fP"
 .PP
 The object type as seen from the API. 
@@ -244,11 +244,13 @@ The object type as seen from the API.
 .TP
 \fB\fIVDS_FOLDER \fP\fP
 .TP
-\fB\fIVDS_QUEUE \fP\fP
-.TP
 \fB\fIVDS_HASH_MAP \fP\fP
 .TP
-\fB\fIVDS_MAP \fP\fP
+\fB\fIVDS_LIFO \fP\fP
+.TP
+\fB\fIVDS_FAST_MAP \fP\fP
+.TP
+\fB\fIVDS_QUEUE \fP\fP
 .TP
 \fB\fIVDS_LAST_OBJECT_TYPE \fP\fP
 

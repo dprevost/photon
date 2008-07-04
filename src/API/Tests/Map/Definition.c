@@ -112,23 +112,23 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapEdit( sessionHandle,
-                         "/ammd/test",
-                         strlen("/ammd/test"),
-                         &objHandle );
+   errcode = vdsFastMapEdit( sessionHandle,
+                             "/ammd/test",
+                             strlen("/ammd/test"),
+                             &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Test of the data definition with inserts . */
-   errcode = vdsMapInsert( objHandle, key, strlen(key), data1, 
+   errcode = vdsFastMapInsert( objHandle, key, strlen(key), data1, 
       offsetof(struct dummy, bin)-1 );
    if ( errcode != VDS_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapInsert( objHandle, key, strlen(key), data1, lenData );
+   errcode = vdsFastMapInsert( objHandle, key, strlen(key), data1, lenData );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -136,20 +136,20 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsMapDefinition( NULL, &pDef );
+   errcode = vdsFastMapDefinition( NULL, &pDef );
    if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapDefinition( objHandle, NULL );
+   errcode = vdsFastMapDefinition( objHandle, NULL );
    if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = vdsMapDefinition( objHandle, &pDef );
+   errcode = vdsFastMapDefinition( objHandle, &pDef );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -167,7 +167,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapDefinition( objHandle, &pDef );
+   errcode = vdsFastMapDefinition( objHandle, &pDef );
    if ( errcode != VDS_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

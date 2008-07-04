@@ -82,30 +82,30 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapEdit( sessionHandle,
-                         "/amnnf/test",
-                         strlen("/amnnf/test"),
-                         &objHandle );
+   errcode = vdsFastMapEdit( sessionHandle,
+                             "/amnnf/test",
+                             strlen("/amnnf/test"),
+                             &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapInsert( objHandle,
-                           key1,
-                           7,
-                           data1,
-                           8 );
+   errcode = vdsFastMapInsert( objHandle,
+                               key1,
+                               7,
+                               data1,
+                               8 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapInsert( objHandle,
-                           key2,
-                           7,
-                           data2,
-                           8 );
+   errcode = vdsFastMapInsert( objHandle,
+                               key2,
+                               7,
+                               data2,
+                               8 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

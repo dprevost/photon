@@ -90,35 +90,35 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapEdit( sessionHandle1,
-                         "/amdp/test",
-                         strlen("/amdp/test"),
-                         &objHandle1 );
+   errcode = vdsFastMapEdit( sessionHandle1,
+                             "/amdp/test",
+                             strlen("/amdp/test"),
+                             &objHandle1 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapInsert( objHandle1,
-                           key1,
-                           strlen(key1),
-                           data,
-                           7 );
+   errcode = vdsFastMapInsert( objHandle1,
+                               key1,
+                               strlen(key1),
+                               data,
+                               7 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapInsert( objHandle1,
-                           key2,
-                           strlen(key2),
-                           data,
-                           7 );
+   errcode = vdsFastMapInsert( objHandle1,
+                               key2,
+                               strlen(key2),
+                               data,
+                               7 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapClose( objHandle1 );
+   errcode = vdsFastMapClose( objHandle1 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -131,27 +131,27 @@ int main( int argc, char * argv[] )
    }
    
    /* Get both handles and do a sanity check */
-   errcode = vdsMapOpen( sessionHandle1,
-                         "/amdp/test",
-                         strlen("/amdp/test"),
-                         &objHandle1 );
+   errcode = vdsFastMapOpen( sessionHandle1,
+                             "/amdp/test",
+                             strlen("/amdp/test"),
+                             &objHandle1 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapEdit( sessionHandle2,
-                         "/amdp/test",
-                         strlen("/amdp/test"),
-                         &objHandle2 );
+   errcode = vdsFastMapEdit( sessionHandle2,
+                             "/amdp/test",
+                             strlen("/amdp/test"),
+                             &objHandle2 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapGet( objHandle1, 
-                        key1, 
-                        strlen(key1),
-                        buffer, 20, &length );
+   errcode = vdsFastMapGet( objHandle1, 
+                            key1, 
+                            strlen(key1),
+                            buffer, 20, &length );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -159,41 +159,41 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsMapDelete( objHandle1, /* read-only handle */
-                           key1,
-                           strlen(key1) );
+   errcode = vdsFastMapDelete( objHandle1, /* read-only handle */
+                               key1,
+                               strlen(key1) );
    if ( errcode != VDS_OBJECT_IS_READ_ONLY ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapDelete( NULL,
-                           key1,
-                           strlen(key1) );
+   errcode = vdsFastMapDelete( NULL,
+                               key1,
+                               strlen(key1) );
    if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapDelete( sessionHandle1,
-                           key1,
-                           strlen(key1) );
+   errcode = vdsFastMapDelete( sessionHandle1,
+                               key1,
+                               strlen(key1) );
    if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapDelete( objHandle2,
-                           NULL,
-                           strlen(key1) );
+   errcode = vdsFastMapDelete( objHandle2,
+                               NULL,
+                               strlen(key1) );
    if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapDelete( objHandle2,
-                           key1,
-                           0 );
+   errcode = vdsFastMapDelete( objHandle2,
+                               key1,
+                               0 );
    if ( errcode != VDS_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -206,26 +206,26 @@ int main( int argc, char * argv[] )
     *   - the editor (objHandle2) does not see it (it is gone)
     *   - the reader (   "     ) - nothing has changed. 
     */
-   errcode = vdsMapDelete( objHandle2,
-                           key1,
-                           strlen(key1) );
+   errcode = vdsFastMapDelete( objHandle2,
+                               key1,
+                               strlen(key1) );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapGet( objHandle2, 
-                        key1, 
-                        strlen(key1),
-                        buffer, 20, &length );
+   errcode = vdsFastMapGet( objHandle2, 
+                            key1, 
+                            strlen(key1),
+                            buffer, 20, &length );
    if ( errcode != VDS_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapGet( objHandle1, 
-                        key1, 
-                        strlen(key1),
-                        buffer, 20, &length );
+   errcode = vdsFastMapGet( objHandle1, 
+                            key1, 
+                            strlen(key1),
+                            buffer, 20, &length );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -237,7 +237,7 @@ int main( int argc, char * argv[] )
     *   - the old reader (   "     ) - nothing has changed. 
     * Furthermore, a new reader on session 1 should also not see it.
     */
-   errcode = vdsMapClose( objHandle2 );
+   errcode = vdsFastMapClose( objHandle2 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -247,48 +247,48 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapOpen( sessionHandle2,
-                         "/amdp/test",
-                         strlen("/amdp/test"),
-                         &objHandle2 );
+   errcode = vdsFastMapOpen( sessionHandle2,
+                             "/amdp/test",
+                             strlen("/amdp/test"),
+                             &objHandle2 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapGet( objHandle2, 
-                        key1, 
-                        strlen(key1),
-                        buffer, 20, &length );
+   errcode = vdsFastMapGet( objHandle2, 
+                            key1, 
+                            strlen(key1),
+                            buffer, 20, &length );
    if ( errcode != VDS_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapGet( objHandle1, 
-                        key1, 
-                        strlen(key1),
-                        buffer, 20, &length );
+   errcode = vdsFastMapGet( objHandle1, 
+                            key1, 
+                            strlen(key1),
+                            buffer, 20, &length );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapClose( objHandle2 );
+   errcode = vdsFastMapClose( objHandle2 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapOpen( sessionHandle1,
-                         "/amdp/test",
-                         strlen("/amdp/test"),
-                         &objHandle2 );
+   errcode = vdsFastMapOpen( sessionHandle1,
+                             "/amdp/test",
+                             strlen("/amdp/test"),
+                             &objHandle2 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapGet( objHandle2, 
-                        key1, 
-                        strlen(key1),
-                        buffer, 20, &length );
+   errcode = vdsFastMapGet( objHandle2, 
+                            key1, 
+                            strlen(key1),
+                            buffer, 20, &length );
    if ( errcode != VDS_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -301,10 +301,10 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapGet( objHandle1, 
-                        key1, 
-                        strlen(key1),
-                        buffer, 20, &length );
+   errcode = vdsFastMapGet( objHandle1, 
+                            key1, 
+                            strlen(key1),
+                            buffer, 20, &length );
    if ( errcode != VDS_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -315,44 +315,44 @@ int main( int argc, char * argv[] )
     * use rollback on session 1 instead of commit. The result should
     * be identical.
     */
-   errcode = vdsMapClose( objHandle2 ); /* not in edit mode and with session 1 */
+   errcode = vdsFastMapClose( objHandle2 ); /* not in edit mode and with session 1 */
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapEdit( sessionHandle2,
-                         "/amdp/test",
-                         strlen("/amdp/test"),
-                         &objHandle2 );
+   errcode = vdsFastMapEdit( sessionHandle2,
+                             "/amdp/test",
+                             strlen("/amdp/test"),
+                             &objHandle2 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapDelete( objHandle2,
-                           key2,
-                           strlen(key2) );
+   errcode = vdsFastMapDelete( objHandle2,
+                               key2,
+                               strlen(key2) );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapGet( objHandle2, 
-                        key2, 
-                        strlen(key2),
-                        buffer, 20, &length );
+   errcode = vdsFastMapGet( objHandle2, 
+                            key2, 
+                            strlen(key2),
+                            buffer, 20, &length );
    if ( errcode != VDS_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapGet( objHandle1, 
-                        key2, 
-                        strlen(key2),
-                        buffer, 20, &length );
+   errcode = vdsFastMapGet( objHandle1, 
+                            key2, 
+                            strlen(key2),
+                            buffer, 20, &length );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapClose( objHandle2 );
+   errcode = vdsFastMapClose( objHandle2 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -367,20 +367,20 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapGet( objHandle1, 
-                        key2, 
-                        strlen(key2),
-                        buffer, 20, &length );
+   errcode = vdsFastMapGet( objHandle1, 
+                            key2, 
+                            strlen(key2),
+                            buffer, 20, &length );
    if ( errcode != VDS_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* Close the session and try to act on the object */
-   errcode = vdsMapEdit( sessionHandle2,
-                         "/amdp/test",
-                         strlen("/amdp/test"),
-                         &objHandle2 );
+   errcode = vdsFastMapEdit( sessionHandle2,
+                             "/amdp/test",
+                             strlen("/amdp/test"),
+                             &objHandle2 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -392,9 +392,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapDelete( objHandle2,
-                           key1,
-                           strlen(key1) );
+   errcode = vdsFastMapDelete( objHandle2,
+                               key1,
+                               strlen(key1) );
    if ( errcode != VDS_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

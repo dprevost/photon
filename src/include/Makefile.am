@@ -13,78 +13,79 @@ CLEANFILES = *~ vdsf/*~
 HEADER_FILES =                                      \
         $(top_srcdir)/src/include/vdsf/vds.h        \
         $(top_srcdir)/src/include/vdsf/vdsCommon.h  \
+        $(top_srcdir)/src/include/vdsf/vdsFastMap.h \
         $(top_srcdir)/src/include/vdsf/vdsFolder.h  \
         $(top_srcdir)/src/include/vdsf/vdsHashMap.h \
         $(top_srcdir)/src/include/vdsf/vdsQueue.h   \
         $(top_srcdir)/src/include/vdsf/vdsProcess.h \
         $(top_srcdir)/src/include/vdsf/vdsSession.h 
 
-VDS_C_FILES =                     \
-        man3/vdsCommit.3          \
-        man3/vdsCommon.h.3        \
-        man3/vdsCreateObject.3    \
-        man3/vdsDestroyObject.3   \
-        man3/vdsErrorMsg.3        \
-        man3/vdsErrors.3          \
-        man3/vdsErrors.h.3        \
-        man3/vdsExit.3            \
-        man3/vdsExitSession.3     \
-        man3/vdsFolder_c.3        \
-        man3/vdsFolderClose.3     \
-        man3/vdsFolderEntry.3     \
-        man3/vdsFolderGetFirst.3  \
-        man3/vdsFolderGetNext.3   \
-        man3/vdsFolder.h.3        \
-        man3/vdsFolderOpen.3      \
-        man3/vdsFolderStatus.3    \
-        man3/vdsGetInfo.3         \
-        man3/vdsGetStatus.3       \
-        man3/vds.h.3              \
-        man3/vdsHashMap_c.3       \
-        man3/vdsHashMapClose.3    \
-        man3/vdsHashMapDelete.3   \
-        man3/vdsHashMapGet.3      \
-        man3/vdsHashMapGetFirst.3 \
-        man3/vdsHashMapGetNext.3  \
-        man3/vdsHashMap.h.3       \
-        man3/vdsHashMapInsert.3   \
-        man3/vdsHashMapOpen.3     \
-        man3/vdsHashMapReplace.3  \
-        man3/vdsHashMapStatus.3   \
-        man3/vdsInfo.3            \
-        man3/vdsInit.3            \
-        man3/vdsInitSession.3     \
-        man3/vdsIteratorType.3    \
-        man3/vdsLastError.3       \
-        man3/vdsMap_c.3           \
-        man3/vdsMapClose.3        \
-        man3/vdsMapDefinition.3   \
-        man3/vdsMapDelete.3       \
-        man3/vdsMapEdit.3         \
-        man3/vdsMapGet.3          \
-        man3/vdsMapGetFirst.3     \
-        man3/vdsMapGetNext.3      \
-        man3/vdsMap.h.3           \
-        man3/vdsMapInsert.3       \
-        man3/vdsMapOpen.3         \
-        man3/vdsMapReplace.3      \
-        man3/vdsMapStatus.3       \
-        man3/vdsObjectType.3      \
-        man3/vdsObjStatus.3       \
-        man3/vdsProcess_c.3       \
-        man3/vdsProcess.h.3       \
-        man3/vdsQueue_c.3         \
-        man3/vdsQueueClose.3      \
-        man3/vdsQueueGetFirst.3   \
-        man3/vdsQueueGetNext.3    \
-        man3/vdsQueue.h.3         \
-        man3/vdsQueueOpen.3       \
-        man3/vdsQueuePop.3        \
-        man3/vdsQueuePush.3       \
-        man3/vdsQueueStatus.3     \
-        man3/vdsRollback.3        \
-        man3/vdsSession_c.3       \
-        man3/vdsSession.h.3       
+VDS_C_FILES =                       \
+        man3/vdsCommit.3            \
+        man3/vdsCommon.h.3          \
+        man3/vdsCreateObject.3      \
+        man3/vdsDestroyObject.3     \
+        man3/vdsErrorMsg.3          \
+        man3/vdsErrors.3            \
+        man3/vdsErrors.h.3          \
+        man3/vdsExit.3              \
+        man3/vdsExitSession.3       \
+        man3/vdsFastMap_c.3         \
+        man3/vdsFastMapClose.3      \
+        man3/vdsFastMapDefinition.3 \
+        man3/vdsFastMapDelete.3     \
+        man3/vdsFastMapEdit.3       \
+        man3/vdsFastMapGet.3        \
+        man3/vdsFastMapGetFirst.3   \
+        man3/vdsFastMapGetNext.3    \
+        man3/vdsFastMap.h.3         \
+        man3/vdsFastMapInsert.3     \
+        man3/vdsFastMapOpen.3       \
+        man3/vdsFastMapReplace.3    \
+        man3/vdsFastMapStatus.3     \
+        man3/vdsFolder_c.3          \
+        man3/vdsFolderClose.3       \
+        man3/vdsFolderEntry.3       \
+        man3/vdsFolderGetFirst.3    \
+        man3/vdsFolderGetNext.3     \
+        man3/vdsFolder.h.3          \
+        man3/vdsFolderOpen.3        \
+        man3/vdsFolderStatus.3      \
+        man3/vdsGetInfo.3           \
+        man3/vdsGetStatus.3         \
+        man3/vds.h.3                \
+        man3/vdsHashMap_c.3         \
+        man3/vdsHashMapClose.3      \
+        man3/vdsHashMapDelete.3     \
+        man3/vdsHashMapGet.3        \
+        man3/vdsHashMapGetFirst.3   \
+        man3/vdsHashMapGetNext.3    \
+        man3/vdsHashMap.h.3         \
+        man3/vdsHashMapInsert.3     \
+        man3/vdsHashMapOpen.3       \
+        man3/vdsHashMapReplace.3    \
+        man3/vdsHashMapStatus.3     \
+        man3/vdsInfo.3              \
+        man3/vdsInit.3              \
+        man3/vdsInitSession.3       \
+        man3/vdsIteratorType.3      \
+        man3/vdsLastError.3         \
+        man3/vdsObjectType.3        \
+        man3/vdsObjStatus.3         \
+        man3/vdsProcess_c.3         \
+        man3/vdsProcess.h.3         \
+        man3/vdsQueue_c.3           \
+        man3/vdsQueueClose.3        \
+        man3/vdsQueueGetFirst.3     \
+        man3/vdsQueueGetNext.3      \
+        man3/vdsQueue.h.3           \
+        man3/vdsQueueOpen.3         \
+        man3/vdsQueuePop.3          \
+        man3/vdsQueuePush.3         \
+        man3/vdsQueueStatus.3       \
+        man3/vdsRollback.3          \
+        man3/vdsSession_c.3         \
+        man3/vdsSession.h.3         
 
 man_MANS =                  \
         $(VDS_C_FILES)      \
@@ -114,9 +115,9 @@ EXTRA_DIST =                  \
 nobase_include_HEADERS =  \
         vdsf/vdsCommon.h  \
         vdsf/vdsErrors.h  \
+        vdsf/vdsFastMap.h \
         vdsf/vdsFolder.h  \
         vdsf/vdsHashMap.h \
-        vdsf/vdsMap.h     \
         vdsf/vdsProcess.h \
         vdsf/vdsQueue.h   \
         vdsf/vdsSession.h \

@@ -93,75 +93,75 @@ int main( int argc, char * argv[] )
    
    /* Invalid arguments to tested function. */
 
-   errcode = vdsMapEdit( NULL,
-                         "/api_map_edit/test",
-                         strlen("/api_map_edit/test"),
-                         &objHandle );
+   errcode = vdsFastMapEdit( NULL,
+                             "/api_map_edit/test",
+                             strlen("/api_map_edit/test"),
+                             &objHandle );
    if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    objHandle = (VDS_HANDLE) junk;
-   errcode = vdsMapEdit( objHandle,
-                         "/api_map_edit/test",
-                         strlen("/api_map_edit/test"),
-                         &objHandle );
+   errcode = vdsFastMapEdit( objHandle,
+                             "/api_map_edit/test",
+                             strlen("/api_map_edit/test"),
+                             &objHandle );
    if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapEdit( sessionHandle,
-                         NULL,
-                         strlen("/api_map_edit/test"),
-                         &objHandle );
+   errcode = vdsFastMapEdit( sessionHandle,
+                             NULL,
+                             strlen("/api_map_edit/test"),
+                             &objHandle );
    if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapEdit( sessionHandle,
-                         "/api_map_edit/test",
-                         0,
-                         &objHandle );
+   errcode = vdsFastMapEdit( sessionHandle,
+                             "/api_map_edit/test",
+                             0,
+                             &objHandle );
    if ( errcode != VDS_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapEdit( sessionHandle,
-                         "/api_map_edit/test",
-                         strlen("/api_map_edit/test"),
-                         NULL );
+   errcode = vdsFastMapEdit( sessionHandle,
+                             "/api_map_edit/test",
+                             strlen("/api_map_edit/test"),
+                             NULL );
    if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = vdsMapEdit( sessionHandle,
-                         "/api_map_edit/test",
-                         strlen("/api_map_edit/test"),
-                         &objHandle );
+   errcode = vdsFastMapEdit( sessionHandle,
+                             "/api_map_edit/test",
+                             strlen("/api_map_edit/test"),
+                             &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* A second edit session ? */
-   errcode = vdsMapEdit( sessionHandle,
-                         "/api_map_edit/test",
-                         strlen("/api_map_edit/test"),
-                         &objHandle2 );
+   errcode = vdsFastMapEdit( sessionHandle,
+                             "/api_map_edit/test",
+                             strlen("/api_map_edit/test"),
+                             &objHandle2 );
    if ( errcode != VDS_A_SINGLE_UPDATER_IS_ALLOWED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapEdit( sessionHandle2,
-                         "/api_map_edit/test",
-                         strlen("/api_map_edit/test"),
-                         &objHandle2 );
+   errcode = vdsFastMapEdit( sessionHandle2,
+                             "/api_map_edit/test",
+                             strlen("/api_map_edit/test"),
+                             &objHandle2 );
    if ( errcode != VDS_A_SINGLE_UPDATER_IS_ALLOWED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

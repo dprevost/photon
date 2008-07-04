@@ -81,38 +81,38 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapEdit( sessionHandle,
-                         "/amsp/test",
-                         strlen("/amsp/test"),
-                         &objHandle );
+   errcode = vdsFastMapEdit( sessionHandle,
+                             "/amsp/test",
+                             strlen("/amsp/test"),
+                             &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapInsert( objHandle,
-                           key1,
-                           7,
-                           data,
-                           7 );
+   errcode = vdsFastMapInsert( objHandle,
+                               key1,
+                               7,
+                               data,
+                               7 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapInsert( objHandle,
-                           key2,
-                           7,
-                           data,
-                           7 );
+   errcode = vdsFastMapInsert( objHandle,
+                               key2,
+                               7,
+                               data,
+                               7 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsMapInsert( objHandle,
-                           key3,
-                           7,
-                           data,
-                           7 );
+   errcode = vdsFastMapInsert( objHandle,
+                               key3,
+                               7,
+                               data,
+                               7 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -120,20 +120,20 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsMapStatus( NULL, &status );
+   errcode = vdsFastMapStatus( NULL, &status );
    if ( errcode != VDS_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapStatus( objHandle, NULL );
+   errcode = vdsFastMapStatus( objHandle, NULL );
    if ( errcode != VDS_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = vdsMapStatus( objHandle, &status );
+   errcode = vdsFastMapStatus( objHandle, &status );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

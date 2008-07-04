@@ -313,10 +313,10 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapOpen( sessionHandle,
-                         "/ammcx/My_Map",
-                         strlen("/ammcx/My_Map"),
-                         &mapHandle );
+   errcode = vdsFastMapOpen( sessionHandle,
+                             "/ammcx/My_Map",
+                             strlen("/ammcx/My_Map"),
+                             &mapHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

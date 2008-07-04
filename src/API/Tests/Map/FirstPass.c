@@ -79,20 +79,20 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapEdit( sessionHandle,
-                         "/amfp/test",
-                         strlen("/amfp/test"),
-                         &objHandle );
+   errcode = vdsFastMapEdit( sessionHandle,
+                             "/amfp/test",
+                             strlen("/amfp/test"),
+                             &objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsMapInsert( objHandle,
-                           key,
-                           6,
-                           data,
-                           7 );
+   errcode = vdsFastMapInsert( objHandle,
+                               key,
+                               6,
+                               data,
+                               7 );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -108,10 +108,10 @@ int main( int argc, char * argv[] )
    }
 
    /* Try it with read-only handle */
-   errcode = vdsMapOpen( sessionHandle,
-                         "/amfp/test",
-                         strlen("/amfp/test"),
-                         &roHandle );
+   errcode = vdsFastMapOpen( sessionHandle,
+                             "/amfp/test",
+                             strlen("/amfp/test"),
+                             &roHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -123,7 +123,7 @@ int main( int argc, char * argv[] )
    }
 
    /* Commit the edit */
-   errcode = vdsMapClose( objHandle );
+   errcode = vdsFastMapClose( objHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

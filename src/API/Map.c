@@ -29,7 +29,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsMapClose( VDS_HANDLE objectHandle )
+int vdsFastMapClose( VDS_HANDLE objectHandle )
 {
    vdsaMap * pHashMap;
    vdseMap * pVDSHashMap;
@@ -100,8 +100,8 @@ int vdsMapClose( VDS_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsMapDefinition( VDS_HANDLE             objectHandle,
-                      vdsObjectDefinition ** ppDefinition )
+int vdsFastMapDefinition( VDS_HANDLE             objectHandle,
+                          vdsObjectDefinition ** ppDefinition )
 {
    vdsaMap * pHashMap;
    vdseMap * pVDSHashMap;
@@ -152,7 +152,7 @@ int vdsMapDefinition( VDS_HANDLE             objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsMapDelete( VDS_HANDLE   objectHandle,
+int vdsFastMapDelete( VDS_HANDLE   objectHandle,
                       const void * key,
                       size_t       keyLength )
 {
@@ -216,10 +216,10 @@ int vdsMapDelete( VDS_HANDLE   objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsMapEdit( VDS_HANDLE   sessionHandle,
-                const char * hashMapName,
-                size_t       nameLengthInBytes,
-                VDS_HANDLE * objectHandle )
+int vdsFastMapEdit( VDS_HANDLE   sessionHandle,
+                    const char * hashMapName,
+                    size_t       nameLengthInBytes,
+                    VDS_HANDLE * objectHandle )
 {
    vdsaSession * pSession;
    vdsaMap * pHashMap = NULL;
@@ -288,7 +288,7 @@ int vdsMapEdit( VDS_HANDLE   sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsMapGet( VDS_HANDLE   objectHandle,
+int vdsFastMapGet( VDS_HANDLE   objectHandle,
                    const void * key,
                    size_t       keyLength,
                    void       * buffer,
@@ -372,7 +372,7 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsMapGetFirst( VDS_HANDLE   objectHandle,
+int vdsFastMapGetFirst( VDS_HANDLE   objectHandle,
                         void       * key,
                         size_t       keyLength,
                         void       * buffer,
@@ -458,7 +458,7 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsMapGetNext( VDS_HANDLE   objectHandle,
+int vdsFastMapGetNext( VDS_HANDLE   objectHandle,
                        void       * key,
                        size_t       keyLength,
                        void       * buffer,
@@ -539,7 +539,7 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsMapInsert( VDS_HANDLE   objectHandle,
+int vdsFastMapInsert( VDS_HANDLE   objectHandle,
                       const void * key,
                       size_t       keyLength,
                       const void * data,
@@ -617,7 +617,7 @@ int vdsMapInsert( VDS_HANDLE   objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsMapOpen( VDS_HANDLE   sessionHandle,
+int vdsFastMapOpen( VDS_HANDLE   sessionHandle,
                     const char * hashMapName,
                     size_t       nameLengthInBytes,
                     VDS_HANDLE * objectHandle )
@@ -692,7 +692,7 @@ int vdsMapOpen( VDS_HANDLE   sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsMapReplace( VDS_HANDLE   objectHandle,
+int vdsFastMapReplace( VDS_HANDLE   objectHandle,
                        const void * key,
                        size_t       keyLength,
                        const void * data,
@@ -759,7 +759,7 @@ int vdsMapReplace( VDS_HANDLE   objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsMapStatus( VDS_HANDLE     objectHandle,
+int vdsFastMapStatus( VDS_HANDLE     objectHandle,
                       vdsObjStatus * pStatus )
 {
    vdsaMap * pHashMap;
