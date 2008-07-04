@@ -71,7 +71,14 @@ check_PROGRAMS =                             \
         .\Release\InsertZeroKeyLength.exe    \
         .\Release\ResizeNullContext.exe      \
         .\Release\ResizeNullHash.exe         \
-        .\Release\ResizePass.exe             
+        .\Release\ResizePass.exe             \
+        .\Release\UpdateNullContext.exe      \
+        .\Release\UpdateNullData.exe         \
+        .\Release\UpdateNullHash.exe         \
+        .\Release\UpdateNullKey.exe          \
+        .\Release\UpdatePass.exe             \
+        .\Release\UpdateZeroDataLength.exe   \
+        .\Release\UpdateZeroKeyLength.exe    
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

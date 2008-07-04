@@ -82,7 +82,14 @@ check_PROGRAMS =               \
         InsertZeroKeyLength    \
         ResizeNullContext      \
         ResizeNullHash         \
-        ResizePass             
+        ResizePass             \
+        UpdateNullContext      \
+        UpdateNullData         \
+        UpdateNullHash         \
+        UpdateNullKey          \
+        UpdatePass             \
+        UpdateZeroDataLength   \
+        UpdateZeroKeyLength    
 
 COMMON_HEADER = HashTest.h
 
@@ -145,6 +152,13 @@ InsertZeroKeyLength_SOURCES    = $(COMMON_HEADER) InsertZeroKeyLength.c
 ResizeNullContext_SOURCES      = $(COMMON_HEADER) ResizeNullContext.c
 ResizeNullHash_SOURCES         = $(COMMON_HEADER) ResizeNullHash.c
 ResizePass_SOURCES             = $(COMMON_HEADER) ResizePass.c
+UpdateNullContext_SOURCES      = $(COMMON_HEADER) UpdateNullContext.c
+UpdateNullData_SOURCES         = $(COMMON_HEADER) UpdateNullData.c
+UpdateNullHash_SOURCES         = $(COMMON_HEADER) UpdateNullHash.c
+UpdateNullKey_SOURCES          = $(COMMON_HEADER) UpdateNullKey.c
+UpdatePass_SOURCES             = $(COMMON_HEADER) UpdatePass.c
+UpdateZeroDataLength_SOURCES   = $(COMMON_HEADER) UpdateZeroDataLength.c
+UpdateZeroKeyLength_SOURCES    = $(COMMON_HEADER) UpdateZeroKeyLength.c
 
 EXTRA_DIST =           \
         Makefile.win32 \
@@ -215,7 +229,14 @@ TESTS =                        \
         InsertZeroKeyLength    \
         ResizeNullContext      \
         ResizeNullHash         \
-        ResizePass             
+        ResizePass             \
+        UpdateNullContext      \
+        UpdateNullData         \
+        UpdateNullHash         \
+        UpdateNullKey          \
+        UpdatePass             \
+        UpdateZeroDataLength   \
+        UpdateZeroKeyLength    
 
 XFAIL_TESTS =                  \
         CopyNullContext        \
@@ -262,7 +283,13 @@ XFAIL_TESTS =                  \
         InsertZeroDataLength   \
         InsertZeroKeyLength    \
         ResizeNullContext      \
-        ResizeNullHash         
+        ResizeNullHash         \
+        UpdateNullContext      \
+        UpdateNullData         \
+        UpdateNullHash         \
+        UpdateNullKey          \
+        UpdateZeroDataLength   \
+        UpdateZeroKeyLength    
 
 LDADD = $(top_builddir)/src/Engine/libEngine.la \
         $(top_builddir)/src/Common/libCommon.la
