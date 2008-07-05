@@ -33,14 +33,16 @@ LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsf.lib vdsfEngine.lib vdsfCommon.lib /nolo
 CFLAGS_RELEASE=/nologo /MD  /W3 /O2     /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF" /Fo"$(INTDIR_RELEASE)\\"     /c /GX
 CFLAGS_DEBUG  =/nologo /MDd /W3 /ZI /Od /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c /GX
 
-OBJS_RELEASE=                             \
-        "$(INTDIR_RELEASE)\Exception.obj" \
-        "$(INTDIR_RELEASE)\Folder.obj"    \
-        "$(INTDIR_RELEASE)\HashMap.obj"   \
-        "$(INTDIR_RELEASE)\Lifo.obj"      \
-        "$(INTDIR_RELEASE)\Process.obj"   \
-        "$(INTDIR_RELEASE)\Queue.obj"     \
-        "$(INTDIR_RELEASE)\Session.obj"   
+OBJS_RELEASE=                                 \
+        "$(INTDIR_RELEASE)\Exception.obj"     \
+        "$(INTDIR_RELEASE)\FastMap.obj"       \
+        "$(INTDIR_RELEASE)\FastMapEditor.obj" \
+        "$(INTDIR_RELEASE)\Folder.obj"        \
+        "$(INTDIR_RELEASE)\HashMap.obj"       \
+        "$(INTDIR_RELEASE)\Lifo.obj"          \
+        "$(INTDIR_RELEASE)\Process.obj"       \
+        "$(INTDIR_RELEASE)\Queue.obj"         \
+        "$(INTDIR_RELEASE)\Session.obj"       
 
 OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 

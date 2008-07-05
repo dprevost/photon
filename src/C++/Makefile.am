@@ -27,14 +27,16 @@ libvdsfcpp_la_LDFLAGS = -version-info 0:0:0
 
 include_HEADERS = 
 
-libvdsfcpp_la_SOURCES = \
-        Exception.cpp   \
-        Folder.cpp      \
-        HashMap.cpp     \
-        Lifo.cpp        \
-        Process.cpp     \
-        Queue.cpp       \
-        Session.cpp     
+libvdsfcpp_la_SOURCES =   \
+        Exception.cpp     \
+        FastMap.cpp       \
+        FastMapEditor.cpp \
+        Folder.cpp        \
+        HashMap.cpp       \
+        Lifo.cpp          \
+        Process.cpp       \
+        Queue.cpp         \
+        Session.cpp       
 
 EXTRA_DIST =           \
         CPP.dsp        \

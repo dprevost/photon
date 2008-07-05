@@ -234,6 +234,7 @@ private:
    /// Pointer to the vdsaSession struct
    VDS_HANDLE m_sessionHandle;
    
+   friend class vdsFastMap;
    friend class vdsFolder;
    friend class vdsHashMap;
    friend class vdsLifo;

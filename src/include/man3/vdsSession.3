@@ -1,4 +1,4 @@
-.TH "vdsSession" 3 "4 Jul 2008" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
+.TH "vdsSession" 3 "5 Jul 2008" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -83,6 +83,9 @@ Definition at line 30 of file vdsSession.
 .SS "Friends"
 
 .in +1c
+.ti -1c
+.RI "class \fBvdsFastMap\fP"
+.br
 .ti -1c
 .RI "class \fBvdsFolder\fP"
 .br
@@ -328,18 +331,21 @@ Note: the internal calls executed by the engine to satisfy this request cannot f
 
 .SH "Friends And Related Function Documentation"
 .PP 
-.SS "friend class vdsFolder\fC [friend]\fP"
+.SS "friend class vdsFastMap\fC [friend]\fP"
 .PP
 Definition at line 237 of file vdsSession.
-.SS "friend class vdsHashMap\fC [friend]\fP"
+.SS "friend class vdsFolder\fC [friend]\fP"
 .PP
 Definition at line 238 of file vdsSession.
-.SS "friend class vdsLifo\fC [friend]\fP"
+.SS "friend class vdsHashMap\fC [friend]\fP"
 .PP
 Definition at line 239 of file vdsSession.
-.SS "friend class vdsQueue\fC [friend]\fP"
+.SS "friend class vdsLifo\fC [friend]\fP"
 .PP
 Definition at line 240 of file vdsSession.
+.SS "friend class vdsQueue\fC [friend]\fP"
+.PP
+Definition at line 241 of file vdsSession.
 .SH "Member Data Documentation"
 .PP 
 .SS "VDS_HANDLE \fBvdsSession::m_sessionHandle\fP\fC [private]\fP"
