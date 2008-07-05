@@ -54,6 +54,91 @@ void vdsFolder::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void vdsFolder::CreateObject( const std::string   & objectName,
+                              vdsObjectDefinition * pDefinition )
+{
+   int rc = vdsFolderCreateObject( m_objectHandle,
+                                   objectName.c_str(),
+                                   objectName.length(),
+                                   pDefinition );
+
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsFolder::CreateObject" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsFolder::CreateObject( const char    *       objectName,
+                              size_t                nameLengthInBytes,
+                              vdsObjectDefinition * pDefinition )
+{
+   int rc = vdsFolderCreateObject( m_objectHandle,
+                                   objectName,
+                                   nameLengthInBytes,
+                                   pDefinition );
+
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsFolder::CreateObject" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsFolder::CreateObjectXML( const std::string & xmlBuffer )
+{
+   int rc = vdsFolderCreateObjectXML( m_objectHandle,
+                                      xmlBuffer.c_str(),
+                                      xmlBuffer.length() );
+
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsFolder::CreateObjectXML" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsFolder::CreateObjectXML( const char * xmlBuffer,
+                                 size_t       lengthInBytes )
+{
+   int rc = vdsFolderCreateObjectXML( m_objectHandle,
+                                      xmlBuffer,
+                                      lengthInBytes );
+
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsFolder::CreateObjectXML" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsFolder::DestroyObject( const std::string & objectName )
+{
+   int rc = vdsFolderDestroyObject( m_objectHandle,
+                                    objectName.c_str(),
+                                    objectName.length() );
+
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsFolder::DestroyObject" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void vdsFolder::DestroyObject( const char * objectName,
+                               size_t       nameLengthInBytes )
+{
+   int rc = vdsFolderDestroyObject( m_objectHandle,
+                                    objectName,
+                                    nameLengthInBytes );
+
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsFolder::DestroyObject" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 /*
  * Iterate through the folder - no data items are removed from the 
  * folder by this function.*/

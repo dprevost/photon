@@ -18,12 +18,18 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 
 check_PROGRAMS =     \
         ClosePass    \
+        Create       \
+        CreateXML    \
+        Destroy      \
         GetFirstPass \
         GetNextPass  \
         OpenPass     \
         StatusPass   
 
 ClosePass_SOURCES    = ClosePass.cpp
+Create_SOURCES       = Create.cpp
+CreateXML_SOURCES    = CreateXML.cpp
+Destroy_SOURCES      = Destroy.cpp
 GetFirstPass_SOURCES = GetFirstPass.cpp
 GetNextPass_SOURCES  = GetNextPass.cpp
 OpenPass_SOURCES     = OpenPass.cpp
@@ -31,6 +37,9 @@ StatusPass_SOURCES   = StatusPass.cpp
 
 EXTRA_DIST =            \
         ClosePass.sh    \
+        Create.sh       \
+        CreateXML.sh    \
+        Destroy.sh      \
         GetFirstPass.sh \
         GetNextPass.sh  \
         Makefile.win32  \
@@ -48,6 +57,9 @@ TESTS_ENVIRONMENT =                  \
 
 TESTS =                 \
         ClosePass.sh    \
+        Create.sh       \
+        CreateXML.sh    \
+        Destroy.sh      \
         GetFirstPass.sh \
         GetNextPass.sh  \
         OpenPass.sh     \

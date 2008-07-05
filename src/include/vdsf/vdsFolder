@@ -48,6 +48,111 @@ public:
     */
    void Close();
 
+   /**
+    * Create a new object in shared memory as a child of the current folder.
+    *
+    * The creation of the object only becomes permanent after a call to 
+    * vdsSession::vdsCommit.
+    *
+    * This function does not provide a handle or an object to the newly 
+    * created shared-memory object. Use vdsQueue::Open and similar functions 
+    * to access them.
+    *
+    * \param[in] objectName The name of the object. 
+    * \param[in] pDefinition The type of object to create (folder, queue, etc.)
+    *            and the "optional" definition.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void CreateObject( const std::string   & objectName,
+                      vdsObjectDefinition * pDefinition );
+
+   /**
+    * Create a new object in shared memory as a child of the current folder.
+    *
+    * The creation of the object only becomes permanent after a call to 
+    * vdsSession::vdsCommit.
+    *
+    * This function does not provide a handle or an object to the newly 
+    * created shared-memory object. Use vdsQueue::Open and similar functions 
+    * to access them.
+    *
+    * \param[in] objectName The name of the object.
+    * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
+    *            counting the null terminator.
+    * \param[in] pDefinition The type of object to create (folder, queue, etc.)
+    *            and the "optional" definition.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void CreateObject( const char    *       objectName,
+                      size_t                nameLengthInBytes,
+                      vdsObjectDefinition * pDefinition );
+
+   /**
+    * Create a new object in shared memory as a child of the current folder.
+    *
+    * The creation of the object only becomes permanent after a call to 
+    * vdsSession::vdsCommit.
+    *
+    * This function does not provide a handle or an object to the newly 
+    * created shared-memory object. Use vdsQueue::Open and similar functions 
+    * to access them.
+    *
+    * \param[in] xmlBuffer    The XML buffer containing all the required
+    *                         information. 
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void CreateObjectXML( const std::string & xmlBuffer );
+
+  /**
+    * Create a new object in shared memory as a child of the current folder.
+    *
+    * The creation of the object only becomes permanent after a call to 
+    * vdsSession::vdsCommit.
+    *
+    * This function does not provide a handle or an object to the newly 
+    * created shared-memory object. Use vdsQueue::Open and similar functions 
+    * to access them.
+    *
+    * \param[in] xmlBuffer    The XML buffer (string) containing all the required
+    *                         information. 
+    * \param[in] lengthInBytes The length of \em xmlBuffer (in bytes) not
+    *                          counting the null terminator.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void CreateObjectXML( const char * xmlBuffer,
+                         size_t       lengthInBytes );
+
+   /**
+    * Destroy an object, child of the current folder, in shared memory.
+    *
+    * The destruction of the object only becomes permanent after a call to 
+    * vdsSession::vdsCommit.
+    *
+    * \param[in]  objectName The name of the object. 
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void DestroyObject( const std::string & objectName );
+
+   /**
+    * Destroy an object, child of the current folder, in shared memory.
+    *
+    * The destruction of the object only becomes permanent after a call to 
+    * vdsSession::vdsCommit.
+    *
+    * \param[in]  objectName The name of the object. 
+    * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
+    *             counting the null terminator.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void DestroyObject( const char * objectName,
+                       size_t       nameLengthInBytes );
+
    /** 
     * Iterate through the folder - no data items are removed from the 
     * folder by this function.

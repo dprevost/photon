@@ -14,6 +14,9 @@ all:
 
 check_PROGRAMS =                   \
         .\Release\ClosePass.exe    \
+        .\Release\Create.exe       \
+        .\Release\CreateXML.exe    \
+        .\Release\Destroy.exe      \
         .\Release\GetFirstPass.exe \
         .\Release\GetNextPass.exe  \
         .\Release\OpenPass.exe     \
