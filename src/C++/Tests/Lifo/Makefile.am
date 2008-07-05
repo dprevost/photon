@@ -16,25 +16,28 @@ CLEANFILES = *~ core
 
 AM_LDFLAGS = @LIBXML2_LIBS@
 
-check_PROGRAMS = \
-        Close    \
-        GetFirst \
-        GetNext  \
-        Open     \
-        Pop      \
-        Push     \
-        Status   
+check_PROGRAMS =   \
+        Close      \
+        Definition \
+        GetFirst   \
+        GetNext    \
+        Open       \
+        Pop        \
+        Push       \
+        Status     
 
-Close_SOURCES    = Close.cpp
-GetFirst_SOURCES = GetFirst.cpp
-GetNext_SOURCES  = GetNext.cpp
-Open_SOURCES     = Open.cpp
-Pop_SOURCES      = Pop.cpp
-Push_SOURCES     = Push.cpp
-Status_SOURCES   = Status.cpp
+Close_SOURCES      = Close.cpp
+Definition_SOURCES = Definition.cpp
+GetFirst_SOURCES   = GetFirst.cpp
+GetNext_SOURCES    = GetNext.cpp
+Open_SOURCES       = Open.cpp
+Pop_SOURCES        = Pop.cpp
+Push_SOURCES       = Push.cpp
+Status_SOURCES     = Status.cpp
 
 EXTRA_DIST =           \
         Close.sh       \
+        Definition.sh  \
         GetFirst.sh    \
         GetNext.sh     \
         Makefile.win32 \
@@ -52,14 +55,15 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)             
 
-TESTS =             \
-        Close.sh    \
-        GetFirst.sh \
-        GetNext.sh  \
-        Open.sh     \
-        Pop.sh      \
-        Push.sh     \
-        Status.sh   
+TESTS =               \
+        Close.sh      \
+        Definition.sh \
+        GetFirst.sh   \
+        GetNext.sh    \
+        Open.sh       \
+        Pop.sh        \
+        Push.sh       \
+        Status.sh     
 
 XFAIL_TESTS = 
 

@@ -12,14 +12,15 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-check_PROGRAMS =               \
-        .\Release\Close.exe    \
-        .\Release\GetFirst.exe \
-        .\Release\GetNext.exe  \
-        .\Release\Open.exe     \
-        .\Release\Pop.exe      \
-        .\Release\Push.exe     \
-        .\Release\Status.exe   
+check_PROGRAMS =                 \
+        .\Release\Close.exe      \
+        .\Release\Definition.exe \
+        .\Release\GetFirst.exe   \
+        .\Release\GetNext.exe    \
+        .\Release\Open.exe       \
+        .\Release\Pop.exe        \
+        .\Release\Push.exe       \
+        .\Release\Status.exe     
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

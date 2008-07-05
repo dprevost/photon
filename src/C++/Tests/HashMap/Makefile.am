@@ -28,15 +28,16 @@ check_PROGRAMS =   \
         Replace    \
         Status     
 
-Close_SOURCES    = Close.cpp
-Delete_SOURCES   = Delete.cpp
-Get_SOURCES      = Get.cpp
-GetFirst_SOURCES = GetFirst.cpp
-GetNext_SOURCES  = GetNext.cpp
-Insert_SOURCES   = Insert.cpp
-Open_SOURCES     = Open.cpp
-Replace_SOURCES  = Replace.cpp
-Status_SOURCES   = Status.cpp
+Close_SOURCES      = Close.cpp
+Definition_SOURCES = Definition.cpp
+Delete_SOURCES     = Delete.cpp
+Get_SOURCES        = Get.cpp
+GetFirst_SOURCES   = GetFirst.cpp
+GetNext_SOURCES    = GetNext.cpp
+Insert_SOURCES     = Insert.cpp
+Open_SOURCES       = Open.cpp
+Replace_SOURCES    = Replace.cpp
+Status_SOURCES     = Status.cpp
 
 EXTRA_DIST =           \
         Close.sh       \
