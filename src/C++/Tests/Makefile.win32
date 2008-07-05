@@ -29,6 +29,7 @@ check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 check: $(OUTDIR) $(check_PROGRAMS)
 	cd Folder     && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd HashMap    && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Lifo       && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Queue      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Process    && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Session    && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -36,6 +37,7 @@ check: $(OUTDIR) $(check_PROGRAMS)
 checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
 	cd Folder     && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd HashMap    && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Lifo       && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Queue      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Process    && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Session    && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -43,6 +45,7 @@ checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG)
 clean: 
 	cd Folder     && nmake -f Makefile.win32 clean && cd ..
 	cd HashMap    && nmake -f Makefile.win32 clean && cd ..
+	cd Lifo       && nmake -f Makefile.win32 clean && cd ..
 	cd Queue      && nmake -f Makefile.win32 clean && cd ..
 	cd Process    && nmake -f Makefile.win32 clean && cd ..
 	cd Session    && nmake -f Makefile.win32 clean && cd ..

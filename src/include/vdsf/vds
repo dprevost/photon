@@ -29,6 +29,7 @@
 #include <vdsf/vdsSession>
 #include <vdsf/vdsFolder>
 #include <vdsf/vdsHashMap>
+#include <vdsf/vdsLifo>
 #include <vdsf/vdsQueue>
 #include <vdsf/vdsException>
 

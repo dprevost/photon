@@ -14,15 +14,35 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =       \
-        Folder  \
-        HashMap \
-        Lifo    \
-        Queue   \
-        Process \
-        Session 
+AM_LDFLAGS = @LIBXML2_LIBS@
 
-EXTRA_DIST = 
+check_PROGRAMS = \
+        Close    \
+        GetFirst \
+        GetNext  \
+        Open     \
+        Pop      \
+        Push     \
+        Status   
+
+Close_SOURCES    = Close.cpp
+GetFirst_SOURCES = GetFirst.cpp
+GetNext_SOURCES  = GetNext.cpp
+Open_SOURCES     = Open.cpp
+Pop_SOURCES      = Pop.cpp
+Push_SOURCES     = Push.cpp
+Status_SOURCES   = Status.cpp
+
+EXTRA_DIST =           \
+        Close.sh       \
+        GetFirst.sh    \
+        GetNext.sh     \
+        Makefile.win32 \
+        Open.sh        \
+        Pop.sh         \
+        Push.sh        \
+        RunTests.vbs   \
+        Status.sh      
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -32,5 +52,16 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)             
 
-LDADD = $(top_builddir)/src/C++/libvdsfcpp.la
+TESTS =             \
+        Close.sh    \
+        GetFirst.sh \
+        GetNext.sh  \
+        Open.sh     \
+        Pop.sh      \
+        Push.sh     \
+        Status.sh   
+
+XFAIL_TESTS = 
+
+LDADD = $(top_builddir)/src/C++/libvdsfcpp.la 
 

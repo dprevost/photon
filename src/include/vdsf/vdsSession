@@ -236,6 +236,7 @@ private:
    
    friend class vdsFolder;
    friend class vdsHashMap;
+   friend class vdsLifo;
    friend class vdsQueue;
 };
 
