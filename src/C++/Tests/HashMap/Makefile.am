@@ -16,16 +16,17 @@ CLEANFILES = *~ core
 
 AM_LDFLAGS = @LIBXML2_LIBS@
 
-check_PROGRAMS = \
-        Close    \
-        Delete   \
-        Get      \
-        GetFirst \
-        GetNext  \
-        Insert   \
-        Open     \
-        Replace  \
-        Status   
+check_PROGRAMS =   \
+        Close      \
+        Definition \
+        Delete     \
+        Get        \
+        GetFirst   \
+        GetNext    \
+        Insert     \
+        Open       \
+        Replace    \
+        Status     
 
 Close_SOURCES    = Close.cpp
 Delete_SOURCES   = Delete.cpp
@@ -39,6 +40,7 @@ Status_SOURCES   = Status.cpp
 
 EXTRA_DIST =           \
         Close.sh       \
+        Definition.sh  \
         Delete.sh      \
         Get.sh         \
         GetFirst.sh    \
@@ -58,16 +60,17 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-TESTS =             \
-        Close.sh    \
-        Delete.sh   \
-        Get.sh      \
-        GetFirst.sh \
-        GetNext.sh  \
-        Insert.sh   \
-        Open.sh     \
-        Replace.sh  \
-        Status.sh   
+TESTS =               \
+        Close.sh      \
+        Definition.sh \
+        Delete.sh     \
+        Get.sh        \
+        GetFirst.sh   \
+        GetNext.sh    \
+        Insert.sh     \
+        Open.sh       \
+        Replace.sh    \
+        Status.sh     
 
 XFAIL_TESTS = 
 

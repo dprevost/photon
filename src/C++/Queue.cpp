@@ -54,6 +54,17 @@ void vdsQueue::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void vdsQueue::Definition( vdsObjectDefinition ** definition )
+{
+   int rc = vdsQueueDefinition( m_objectHandle, definition );
+   
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsQueue::Definition" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 int vdsQueue::GetFirst( void   * buffer,
                         size_t   bufferLength,
                         size_t * returnedLength )

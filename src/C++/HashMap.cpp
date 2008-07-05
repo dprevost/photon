@@ -54,6 +54,17 @@ void vdsHashMap::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void vdsHashMap::Definition( vdsObjectDefinition ** definition )
+{
+   int rc = vdsHashMapDefinition( m_objectHandle, definition );
+   
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Definition" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void vdsHashMap::Delete( const void * key,
                          size_t       keyLength )
 {

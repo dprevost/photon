@@ -54,6 +54,17 @@ void vdsLifo::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void vdsLifo::Definition( vdsObjectDefinition ** definition )
+{
+   int rc = vdsLifoDefinition( m_objectHandle, definition );
+   
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsLifo::Definition" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 int vdsLifo::GetFirst( void   * buffer,
                        size_t   bufferLength,
                        size_t * returnedLength )
