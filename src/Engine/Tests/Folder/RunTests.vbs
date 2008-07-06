@@ -35,7 +35,7 @@ Dim failed_tests(130)
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(309)
+Dim ok_programs(30)
 Dim fail_programs(99)
 
 Dim exe_name, prog_path, program
