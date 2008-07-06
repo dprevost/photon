@@ -55,6 +55,11 @@ int vdsaConnect( vdsaConnector    * pConnector,
 #endif
    struct WDInput input;
 
+   VDS_PRE_CONDITION( pConnector   != NULL );
+   VDS_PRE_CONDITION( address      != NULL );
+   VDS_PRE_CONDITION( pAnswer      != NULL );
+   VDS_PRE_CONDITION( errorHandler != NULL );
+   
    pConnector->socketFD = VDS_INVALID_SOCKET;
 #if defined (WIN32)
    pConnector->cleanupNeeded = false;
@@ -124,6 +129,9 @@ void vdsaDisconnect( vdsaConnector    * pConnector,
    struct WDInput input;
    input.opcode = WD_DISCONNECT;
    input.processId = getpid();
+
+   VDS_PRE_CONDITION( pConnector   != NULL );
+   VDS_PRE_CONDITION( errorHandler != NULL );
 
    if ( pConnector->socketFD != VDS_INVALID_SOCKET ) {
 
