@@ -1839,6 +1839,7 @@ void vdseFolderStatus( vdseFolder   * pFolder,
 
    VDS_PRE_CONDITION( pFolder != NULL );
    VDS_PRE_CONDITION( pStatus != NULL );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
 
    GET_PTR( txStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
 

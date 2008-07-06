@@ -30,7 +30,6 @@ check_PROGRAMS =                   \
         CreateNullName             \
         CreatePass                 \
         CreateWrongType            \
-        DeleteInvalidSig           \
         DeleteNullContext          \
         DeleteNullFolder           \
         DeleteNullName             \
@@ -48,7 +47,6 @@ check_PROGRAMS =                   \
         EditPass                   \
         EditWrongObjectType        \
         EditZeroNameLength         \
-        FiniInvalidSig             \
         FiniNullContext            \
         FiniNullFolder             \
         FiniPass                   \
@@ -89,7 +87,6 @@ check_PROGRAMS =                   \
         InitPass                   \
         InitZeroBlocks             \
         InitZeroNameLength         \
-        InsertInvalidSig           \
         InsertNullContext          \
         InsertNullDefinition       \
         InsertNullFolder           \
@@ -159,7 +156,6 @@ CreateNullFolder_SOURCES           = $(COMMON_HEADER) CreateNullFolder.c
 CreateNullName_SOURCES             = $(COMMON_HEADER) CreateNullName.c
 CreatePass_SOURCES                 = $(COMMON_HEADER) CreatePass.c
 CreateWrongType_SOURCES            = $(COMMON_HEADER) CreateWrongType.c
-DeleteInvalidSig_SOURCES           = $(COMMON_HEADER) DeleteInvalidSig.c
 DeleteNullContext_SOURCES          = $(COMMON_HEADER) DeleteNullContext.c
 DeleteNullFolder_SOURCES           = $(COMMON_HEADER) DeleteNullFolder.c
 DeleteNullName_SOURCES             = $(COMMON_HEADER) DeleteNullName.c
@@ -177,7 +173,6 @@ EditNullName_SOURCES               = $(COMMON_HEADER) EditNullName.c
 EditPass_SOURCES                   = $(COMMON_HEADER) EditPass.c
 EditWrongObjectType_SOURCES        = $(COMMON_HEADER) EditWrongObjectType.c
 EditZeroNameLength_SOURCES         = $(COMMON_HEADER) EditZeroNameLength.c
-FiniInvalidSig_SOURCES             = $(COMMON_HEADER) FiniInvalidSig.c
 FiniNullContext_SOURCES            = $(COMMON_HEADER) FiniNullContext.c
 FiniNullFolder_SOURCES             = $(COMMON_HEADER) FiniNullFolder.c
 FiniPass_SOURCES                   = $(COMMON_HEADER) FiniPass.c
@@ -218,7 +213,6 @@ InitNullStatus_SOURCES             = $(COMMON_HEADER) InitNullStatus.c
 InitPass_SOURCES                   = $(COMMON_HEADER) InitPass.c
 InitZeroBlocks_SOURCES             = $(COMMON_HEADER) InitZeroBlocks.c
 InitZeroNameLength_SOURCES         = $(COMMON_HEADER) InitZeroNameLength.c
-InsertInvalidSig_SOURCES           = $(COMMON_HEADER) InsertInvalidSig.c
 InsertNullContext_SOURCES          = $(COMMON_HEADER) InsertNullContext.c
 InsertNullDefinition_SOURCES       = $(COMMON_HEADER) InsertNullDefinition.c
 InsertNullFolder_SOURCES           = $(COMMON_HEADER) InsertNullFolder.c
@@ -302,7 +296,6 @@ TESTS =                            \
         CreateNullName             \
         CreatePass                 \
         CreateWrongType            \
-        DeleteInvalidSig           \
         DeleteNullContext          \
         DeleteNullFolder           \
         DeleteNullName             \
@@ -320,7 +313,6 @@ TESTS =                            \
         EditPass                   \
         EditWrongObjectType        \
         EditZeroNameLength         \
-        FiniInvalidSig             \
         FiniNullContext            \
         FiniNullFolder             \
         FiniPass                   \
@@ -361,7 +353,6 @@ TESTS =                            \
         InitPass                   \
         InitZeroBlocks             \
         InitZeroNameLength         \
-        InsertInvalidSig           \
         InsertNullContext          \
         InsertNullDefinition       \
         InsertNullFolder           \
@@ -431,7 +422,6 @@ XFAIL_TESTS =                      \
         CreateNullFolder           \
         CreateNullName             \
         CreateWrongType            \
-        DeleteInvalidSig           \
         DeleteNullContext          \
         DeleteNullFolder           \
         DeleteNullName             \
@@ -446,7 +436,6 @@ XFAIL_TESTS =                      \
         EditNullName               \
         EditWrongObjectType        \
         EditZeroNameLength         \
-        FiniInvalidSig             \
         FiniNullContext            \
         FiniNullFolder             \
         FiniWrongObjType           \
@@ -480,7 +469,6 @@ XFAIL_TESTS =                      \
         InitNullStatus             \
         InitZeroBlocks             \
         InitZeroNameLength         \
-        InsertInvalidSig           \
         InsertNullContext          \
         InsertNullDefinition       \
         InsertNullFolder           \

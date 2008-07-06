@@ -28,7 +28,6 @@ check_PROGRAMS =                                 \
         .\Release\CreateNullName.exe             \
         .\Release\CreatePass.exe                 \
         .\Release\CreateWrongType.exe            \
-        .\Release\DeleteInvalidSig.exe           \
         .\Release\DeleteNullContext.exe          \
         .\Release\DeleteNullFolder.exe           \
         .\Release\DeleteNullName.exe             \
@@ -46,7 +45,6 @@ check_PROGRAMS =                                 \
         .\Release\EditPass.exe                   \
         .\Release\EditWrongObjectType.exe        \
         .\Release\EditZeroNameLength.exe         \
-        .\Release\FiniInvalidSig.exe             \
         .\Release\FiniNullContext.exe            \
         .\Release\FiniNullFolder.exe             \
         .\Release\FiniPass.exe                   \
@@ -87,7 +85,6 @@ check_PROGRAMS =                                 \
         .\Release\InitPass.exe                   \
         .\Release\InitZeroBlocks.exe             \
         .\Release\InitZeroNameLength.exe         \
-        .\Release\InsertInvalidSig.exe           \
         .\Release\InsertNullContext.exe          \
         .\Release\InsertNullDefinition.exe       \
         .\Release\InsertNullFolder.exe           \
