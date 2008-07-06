@@ -50,6 +50,7 @@ check_PROGRAMS =                  \
         InitNullContext           \
         InitNullDefinition        \
         InitNullHash              \
+        InitNullHashItem          \
         InitNullName              \
         InitNullParent            \
         InitNullStatus            \
@@ -80,6 +81,11 @@ check_PROGRAMS =                  \
 
 COMMON_HEADER = hashMapTest.h
 
+CopyNullContext_SOURCES           = $(COMMON_HEADER) CopyNullContext.c
+CopyNullHashItem_SOURCES          = $(COMMON_HEADER) CopyNullHashItem.c
+CopyNullNewMap_SOURCES            = $(COMMON_HEADER) CopyNullNewMap.c
+CopyNullOldMap_SOURCES            = $(COMMON_HEADER) CopyNullOldMap.c
+CopyPass_SOURCES                  = $(COMMON_HEADER) CopyPass.c
 DeleteNullContext_SOURCES         = $(COMMON_HEADER) DeleteNullContext.c
 DeleteNullHash_SOURCES            = $(COMMON_HEADER) DeleteNullHash.c
 DeleteNullKey_SOURCES             = $(COMMON_HEADER) DeleteNullKey.c
@@ -110,6 +116,7 @@ GetZeroKeyLength_SOURCES          = $(COMMON_HEADER) GetZeroKeyLength.c
 InitNullContext_SOURCES           = $(COMMON_HEADER) InitNullContext.c
 InitNullDefinition_SOURCES        = $(COMMON_HEADER) InitNullDefinition.c
 InitNullHash_SOURCES              = $(COMMON_HEADER) InitNullHash.c
+InitNullHashItem_SOURCES          = $(COMMON_HEADER) InitNullHashItem.c
 InitNullName_SOURCES              = $(COMMON_HEADER) InitNullName.c
 InitNullParent_SOURCES            = $(COMMON_HEADER) InitNullParent.c
 InitNullStatus_SOURCES            = $(COMMON_HEADER) InitNullStatus.c
@@ -184,6 +191,7 @@ TESTS =                           \
         InitNullContext           \
         InitNullDefinition        \
         InitNullHash              \
+        InitNullHashItem          \
         InitNullName              \
         InitNullParent            \
         InitNullStatus            \
@@ -237,6 +245,7 @@ XFAIL_TESTS =                     \
         InitNullContext           \
         InitNullDefinition        \
         InitNullHash              \
+        InitNullHashItem          \
         InitNullName              \
         InitNullParent            \
         InitNullStatus            \
