@@ -240,7 +240,7 @@ int vdsaOpenVDS( vdsaProcess        * process,
    g_pBaseAddr = (unsigned char * ) ptr;
    process->pHeader = (vdseMemoryHeader*) g_pBaseAddr;
 
-   if ( process->pHeader->version != MEMORY_VERSION ) {
+   if ( process->pHeader->version != VDSE_MEMORY_VERSION ) {
       process->pHeader = NULL;
       return VDS_INCOMPATIBLE_VERSIONS;
    }

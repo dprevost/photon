@@ -222,7 +222,7 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    /* cookie" to identify the file?) */
 
    strcpy( (*ppHeader)->cookie, "VDS" );
-   (*ppHeader)->version = MEMORY_VERSION;
+   (*ppHeader)->version = VDSE_MEMORY_VERSION;
    (*ppHeader)->totalLength = m_memorySizeKB*1024;
 
    (*ppHeader)->sizeofPtr = SIZEOF_VOID_P;
@@ -291,7 +291,7 @@ int vdswMemoryManager::OpenVDS( const char        * memoryFileName,
    
    m_pHeader = *ppHeader = (vdseMemoryHeader*) m_pMemoryAddress;
 
-   if ( (*ppHeader)->version != MEMORY_VERSION ) {
+   if ( (*ppHeader)->version != VDSE_MEMORY_VERSION ) {
       (*ppHeader) = NULL;
       return VDS_INCOMPATIBLE_VERSIONS;
    }
