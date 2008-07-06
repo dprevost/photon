@@ -82,7 +82,7 @@ check_PROGRAMS =                   \
         GetZeroNameLength          \
         InitNullContext            \
         InitNullFolder             \
-        InitNullKeyOffset          \
+        InitNullHashItemOffset     \
         InitNullName               \
         InitNullParentOffset       \
         InitNullStatus             \
@@ -212,7 +212,7 @@ GetZeroNameLength_SOURCES          = $(COMMON_HEADER) GetZeroNameLength.c
 InitNullContext_SOURCES            = $(COMMON_HEADER) InitNullContext.c
 InitNullFolder_SOURCES             = $(COMMON_HEADER) InitNullFolder.c
 InitNullName_SOURCES               = $(COMMON_HEADER) InitNullName.c
-InitNullKeyOffset_SOURCES          = $(COMMON_HEADER) InitNullKeyOffset.c
+InitNullHashItemOffset_SOURCES     = $(COMMON_HEADER) InitNullHashItemOffset.c
 InitNullParentOffset_SOURCES       = $(COMMON_HEADER) InitNullParentOffset.c
 InitNullStatus_SOURCES             = $(COMMON_HEADER) InitNullStatus.c
 InitPass_SOURCES                   = $(COMMON_HEADER) InitPass.c
@@ -354,7 +354,7 @@ TESTS =                            \
         GetZeroNameLength          \
         InitNullContext            \
         InitNullFolder             \
-        InitNullKeyOffset          \
+        InitNullHashItemOffset     \
         InitNullName               \
         InitNullParentOffset       \
         InitNullStatus             \
@@ -474,7 +474,7 @@ XFAIL_TESTS =                      \
         GetZeroNameLength          \
         InitNullContext            \
         InitNullFolder             \
-        InitNullKeyOffset          \
+        InitNullHashItemOffset     \
         InitNullName               \
         InitNullParentOffset       \
         InitNullStatus             \

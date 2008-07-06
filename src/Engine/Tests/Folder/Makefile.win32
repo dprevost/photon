@@ -80,7 +80,7 @@ check_PROGRAMS =                                 \
         .\Release\GetZeroNameLength.exe          \
         .\Release\InitNullContext.exe            \
         .\Release\InitNullFolder.exe             \
-        .\Release\InitNullKeyOffset.exe          \
+        .\Release\InitNullHashItemOffset.exe     \
         .\Release\InitNullName.exe               \
         .\Release\InitNullParentOffset.exe       \
         .\Release\InitNullStatus.exe             \
