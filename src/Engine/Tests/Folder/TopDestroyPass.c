@@ -74,6 +74,30 @@ int main()
 
    errcode = vdseTopFolderDestroyObject( pTopFolder,
                                          "Test1/Test2",
+                                         VDS_MAX_FULL_NAME_LENGTH+1,
+                                         &context );
+   if ( errcode != -1 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdscGetLastError( &context.errorHandler );
+   if ( errcode != VDS_OBJECT_NAME_TOO_LONG ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+
+   errcode = vdseTopFolderDestroyObject( pTopFolder,
+                                         "Test1/Test2",
+                                         0,
+                                         &context );
+   if ( errcode != -1 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = vdscGetLastError( &context.errorHandler );
+   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+   
+   errcode = vdseTopFolderDestroyObject( pTopFolder,
+                                         "Test1/Test2",
                                          strlen("Test1/Test2"),
                                          &context );
    if ( errcode != 0 ) {

@@ -15,9 +15,6 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES = *~ core
 
 check_PROGRAMS =                   \
-        CloseNullContext           \
-        CloseNullItem              \
-        ClosePass                  \
         CommitEditNullContext      \
         CommitEditNullFolder       \
         CommitEditNullItem         \
@@ -96,14 +93,6 @@ check_PROGRAMS =                   \
         InsertWrongObjType         \
         InsertZeroBlocks           \
         InsertZeroNameLength       \
-        OpenNullContext            \
-        OpenNullItem               \
-        OpenNullFolder             \
-        OpenNullName               \
-        OpenPass                   \
-        OpenWrongLength            \
-        OpenWrongType              \
-        OpenZeroLength             \
         ReleaseNullContext         \
         ReleaseNullFolder          \
         ReleaseNullItem            \
@@ -114,10 +103,16 @@ check_PROGRAMS =                   \
         RemoveNullItem             \
         RemovePass                 \
         RemoveWrongObjType         \
+        ResizeNullContext          \
+        ResizeNullFolder           \
+        ResizePass                 \
         StatusNullFolder           \
         StatusNullStatus           \
         StatusPass                 \
         Tests                      \
+        TopCloseNullContext        \
+        TopCloseNullItem           \
+        TopClosePass               \
         TopCreateInvalidNameLength \
         TopCreateNullContext       \
         TopCreateNullDefinition    \
@@ -137,6 +132,14 @@ check_PROGRAMS =                   \
         TopEditWrongLength         \
         TopEditWrongType           \
         TopEditZeroLength          \
+        TopOpenNullContext         \
+        TopOpenNullItem            \
+        TopOpenNullFolder          \
+        TopOpenNullName            \
+        TopOpenPass                \
+        TopOpenWrongLength         \
+        TopOpenWrongType           \
+        TopOpenZeroLength          \
         TopStatusNullContext       \
         TopStatusNullFolder        \
         TopStatusNullName          \
@@ -146,9 +149,6 @@ check_PROGRAMS =                   \
 
 COMMON_HEADER = folderTest.h
 
-CloseNullContext_SOURCES           = $(COMMON_HEADER) CloseNullContext.c
-CloseNullItem_SOURCES              = $(COMMON_HEADER) CloseNullItem.c
-ClosePass_SOURCES                  = $(COMMON_HEADER) ClosePass.c
 CreateInvalidNameLength_SOURCES    = $(COMMON_HEADER) CreateInvalidNameLength.c
 CreateNullContext_SOURCES          = $(COMMON_HEADER) CreateNullContext.c
 CreateNullDefinition_SOURCES       = $(COMMON_HEADER) CreateNullDefinition.c
@@ -222,14 +222,6 @@ InsertPass_SOURCES                 = $(COMMON_HEADER) InsertPass.c
 InsertWrongObjType_SOURCES         = $(COMMON_HEADER) InsertWrongObjType.c
 InsertZeroBlocks_SOURCES           = $(COMMON_HEADER) InsertZeroBlocks.c
 InsertZeroNameLength_SOURCES       = $(COMMON_HEADER) InsertZeroNameLength.c
-OpenNullContext_SOURCES            = $(COMMON_HEADER) OpenNullContext.c
-OpenNullItem_SOURCES               = $(COMMON_HEADER) OpenNullItem.c
-OpenNullFolder_SOURCES             = $(COMMON_HEADER) OpenNullFolder.c
-OpenNullName_SOURCES               = $(COMMON_HEADER) OpenNullName.c
-OpenPass_SOURCES                   = $(COMMON_HEADER) OpenPass.c
-OpenWrongLength_SOURCES            = $(COMMON_HEADER) OpenWrongLength.c
-OpenWrongType_SOURCES              = $(COMMON_HEADER) OpenWrongType.c
-OpenZeroLength_SOURCES             = $(COMMON_HEADER) OpenZeroLength.c
 ReleaseNullContext_SOURCES         = $(COMMON_HEADER) ReleaseNullContext.c
 ReleaseNullFolder_SOURCES          = $(COMMON_HEADER) ReleaseNullFolder.c
 ReleaseNullItem_SOURCES            = $(COMMON_HEADER) ReleaseNullItem.c
@@ -240,10 +232,16 @@ RemoveNullFolder_SOURCES           = $(COMMON_HEADER) RemoveNullFolder.c
 RemoveNullItem_SOURCES             = $(COMMON_HEADER) RemoveNullItem.c
 RemovePass_SOURCES                 = $(COMMON_HEADER) RemovePass.c
 RemoveWrongObjType_SOURCES         = $(COMMON_HEADER) RemoveWrongObjType.c
+ResizeNullContext_SOURCES          = $(COMMON_HEADER) ResizeNullContext.c
+ResizeNullFolder_SOURCES           = $(COMMON_HEADER) ResizeNullFolder.c
+ResizePass_SOURCES                 = $(COMMON_HEADER) ResizePass.c
 StatusNullFolder_SOURCES           = $(COMMON_HEADER) StatusNullFolder.c
 StatusNullStatus_SOURCES           = $(COMMON_HEADER) StatusNullStatus.c
 StatusPass_SOURCES                 = $(COMMON_HEADER) StatusPass.c
 Tests_SOURCES                      = $(COMMON_HEADER) Tests.c
+TopCloseNullContext_SOURCES        = $(COMMON_HEADER) TopCloseNullContext.c
+TopCloseNullItem_SOURCES           = $(COMMON_HEADER) TopCloseNullItem.c
+TopClosePass_SOURCES               = $(COMMON_HEADER) TopClosePass.c
 TopCreateInvalidNameLength_SOURCES = $(COMMON_HEADER) TopCreateInvalidNameLength.c
 TopCreateNullContext_SOURCES       = $(COMMON_HEADER) TopCreateNullContext.c
 TopCreateNullDefinition_SOURCES    = $(COMMON_HEADER) TopCreateNullDefinition.c
@@ -263,6 +261,14 @@ TopEditPass_SOURCES                = $(COMMON_HEADER) TopEditPass.c
 TopEditWrongLength_SOURCES         = $(COMMON_HEADER) TopEditWrongLength.c
 TopEditWrongType_SOURCES           = $(COMMON_HEADER) TopEditWrongType.c
 TopEditZeroLength_SOURCES          = $(COMMON_HEADER) TopEditZeroLength.c
+TopOpenNullContext_SOURCES         = $(COMMON_HEADER) TopOpenNullContext.c
+TopOpenNullItem_SOURCES            = $(COMMON_HEADER) TopOpenNullItem.c
+TopOpenNullFolder_SOURCES          = $(COMMON_HEADER) TopOpenNullFolder.c
+TopOpenNullName_SOURCES            = $(COMMON_HEADER) TopOpenNullName.c
+TopOpenPass_SOURCES                = $(COMMON_HEADER) TopOpenPass.c
+TopOpenWrongLength_SOURCES         = $(COMMON_HEADER) TopOpenWrongLength.c
+TopOpenWrongType_SOURCES           = $(COMMON_HEADER) TopOpenWrongType.c
+TopOpenZeroLength_SOURCES          = $(COMMON_HEADER) TopOpenZeroLength.c
 TopStatusNullContext_SOURCES       = $(COMMON_HEADER) TopStatusNullContext.c
 TopStatusNullFolder_SOURCES        = $(COMMON_HEADER) TopStatusNullFolder.c
 TopStatusNullName_SOURCES          = $(COMMON_HEADER) TopStatusNullName.c
@@ -281,9 +287,6 @@ TESTS_ENVIRONMENT =                  \
         PYTHON=$(PYTHON)             
 
 TESTS =                            \
-        CloseNullContext           \
-        CloseNullItem              \
-        ClosePass                  \
         CommitEditNullContext      \
         CommitEditNullFolder       \
         CommitEditNullItem         \
@@ -362,14 +365,6 @@ TESTS =                            \
         InsertWrongObjType         \
         InsertZeroBlocks           \
         InsertZeroNameLength       \
-        OpenNullContext            \
-        OpenNullItem               \
-        OpenNullFolder             \
-        OpenNullName               \
-        OpenPass                   \
-        OpenWrongLength            \
-        OpenWrongType              \
-        OpenZeroLength             \
         ReleaseNullContext         \
         ReleaseNullFolder          \
         ReleaseNullItem            \
@@ -380,10 +375,16 @@ TESTS =                            \
         RemoveNullItem             \
         RemovePass                 \
         RemoveWrongObjType         \
+        ResizeNullContext          \
+        ResizeNullFolder           \
+        ResizePass                 \
         StatusNullFolder           \
         StatusNullStatus           \
         StatusPass                 \
         Tests                      \
+        TopCloseNullContext        \
+        TopCloseNullItem           \
+        TopClosePass               \
         TopCreateInvalidNameLength \
         TopCreateNullContext       \
         TopCreateNullDefinition    \
@@ -403,6 +404,14 @@ TESTS =                            \
         TopEditWrongLength         \
         TopEditWrongType           \
         TopEditZeroLength          \
+        TopOpenNullContext         \
+        TopOpenNullItem            \
+        TopOpenNullFolder          \
+        TopOpenNullName            \
+        TopOpenPass                \
+        TopOpenWrongLength         \
+        TopOpenWrongType           \
+        TopOpenZeroLength          \
         TopStatusNullContext       \
         TopStatusNullFolder        \
         TopStatusNullName          \
@@ -411,8 +420,6 @@ TESTS =                            \
         ValidatePass            
 
 XFAIL_TESTS =                      \
-        CloseNullContext           \
-        CloseNullItem              \
         CommitEditNullContext      \
         CommitEditNullFolder       \
         CommitEditNullItem         \
@@ -477,11 +484,6 @@ XFAIL_TESTS =                      \
         InsertWrongObjType         \
         InsertZeroBlocks           \
         InsertZeroNameLength       \
-        OpenNullContext            \
-        OpenNullItem               \
-        OpenNullFolder             \
-        OpenNullName               \
-        OpenWrongType              \
         ReleaseNullContext         \
         ReleaseNullFolder          \
         ReleaseNullItem            \
@@ -490,8 +492,12 @@ XFAIL_TESTS =                      \
         RemoveNullFolder           \
         RemoveNullItem             \
         RemoveWrongObjType         \
+        ResizeNullContext          \
+        ResizeNullFolder           \
         StatusNullFolder           \
         StatusNullStatus           \
+        TopCloseNullContext        \
+        TopCloseNullItem           \
         TopCreateNullContext       \
         TopCreateNullDefinition    \
         TopCreateNullFolder        \
@@ -505,6 +511,11 @@ XFAIL_TESTS =                      \
         TopEditNullItem            \
         TopEditNullName            \
         TopEditWrongType           \
+        TopOpenNullContext         \
+        TopOpenNullItem            \
+        TopOpenNullFolder          \
+        TopOpenNullName            \
+        TopOpenWrongType           \
         TopStatusNullContext       \
         TopStatusNullFolder        \
         TopStatusNullName          \
