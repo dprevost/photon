@@ -1,0 +1,127 @@
+/* -*- c++ -*- */
+/* :mode=c++:  - For jedit, previous line for emacs */
+/*
+ * Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
+ *
+ * This file is part of the vdsf (Virtual Data Space Framework) Library.
+ *
+ * This file may be distributed and/or modified under the terms of the
+ * GNU General Public License version 2 as published by the Free Software
+ * Foundation and appearing in the file COPYING included in the
+ * packaging of this library.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ */
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#ifndef VDS_FAST_MAP_EDITOR_H_CPP
+#define VDS_FAST_MAP_EDITOR_H_CPP
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#include <vdsf/vdsCommon.h>
+#include <vdsf/vdsFastMap>
+#include <string>
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+// Forward declarations
+class vdsSession;
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+class VDSF_EXPORT vdsFastMapEditor: public vdsFastMap
+{
+public:
+
+   vdsFastMapEditor( vdsSession &session );
+
+   virtual ~vdsFastMapEditor();
+
+   /** 
+    * Remove the data item identified by the given key from the hash map.
+    *
+    * Data items which were added by another session and are not yet committed 
+    * will not be seen by this function and cannot be removed. Likewise, 
+    * destroyed data items (even if not yet committed) are invisible.
+    *
+    * The removals only become permanent after a call to vdsSession::Commit.
+    *
+    * \param[in]  key The key of the item to be removed.
+    * \param[in]  keyLength The length of the \em key buffer (in bytes).
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Delete( const void * key,
+                size_t       keyLength );
+
+   /**
+    * Insert a data element in the hash map.
+    *
+    * The additions only become permanent after a call to vdsSession::Commit.
+    *
+    * \param[in]  key The key of the item to be inserted.
+    * \param[in]  keyLength The length of the \em key buffer (in bytes).
+    * \param[in]  data  The data item to be inserted.
+    * \param[in]  dataLength The length of \em data (in bytes).
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Insert( const void * key,
+                size_t       keyLength,
+                const void * data,
+                size_t       dataLength );
+
+   /** 
+    * Open an existing read-only hash map for editing. Updates are done
+    * using a temporary copy and this copy becomes the latest version of
+    * the map only after a call to vdsSession::Commit().
+    *
+    * \param[in]  hashMapName The fully qualified name of the hash map. 
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Open( const std::string & hashMapName );
+   
+   /** 
+    * Open an existing read-only hash map for editing. Updates are done
+    * using a temporary copy and this copy becomes the latest version of
+    * the map only after a call to vdsSession::Commit().
+    *
+    * \param[in]  hashMapName The fully qualified name of the hash map. 
+    * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) 
+    *             not counting the null terminator.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Open( const char * hashMapName,
+              size_t       nameLengthInBytes );
+   
+   /**
+    * Replace a data element in the hash map.
+    *
+    * The replacements only become permanent after a call to vdsSession::Commit.
+    *
+    * \param[in]  key The key of the item to be replaced.
+    * \param[in]  keyLength The length of the \em key buffer (in bytes).
+    * \param[in]  data  The new data item that will replace the previous data.
+    * \param[in]  dataLength The length of \em data (in bytes).
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Replace( const void * key,
+                 size_t       keyLength,
+                 const void * data,
+                 size_t       dataLength );
+
+};
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#endif /* VDS_FAST_MAP_EDITOR_H_CPP */
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

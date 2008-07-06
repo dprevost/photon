@@ -1,0 +1,212 @@
+/* -*- c++ -*- */
+/* :mode=c++:  - For jedit, previous line for emacs */
+/*
+ * Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
+ *
+ * This file is part of the vdsf (Virtual Data Space Framework) Library.
+ *
+ * This file may be distributed and/or modified under the terms of the
+ * GNU General Public License version 2 as published by the Free Software
+ * Foundation and appearing in the file COPYING included in the
+ * packaging of this library.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ */
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#ifndef VDS_FAST_MAP_H_CPP
+#define VDS_FAST_MAP_H_CPP
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#include <vdsf/vdsCommon.h>
+#include <string>
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+// Forward declarations
+//class vdsQueueItem;
+class vdsSession;
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+class VDSF_EXPORT vdsFastMap
+{
+public:
+
+   vdsFastMap( vdsSession &session );
+
+   virtual ~vdsFastMap();
+
+   /**
+    * \brief Close a hash map.
+    *
+    * This function terminates the current access to the hash map in shared 
+    * memory (the hash map itself is untouched).
+    *
+    * \warning Closing an object does not automatically commit or rollback 
+    * data items that were inserted or removed. You still must use either 
+    * vdsSession::Commit or vdsSession::Rollback to end the current unit of 
+    * work.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Close();
+   
+   /**
+    * \brief Retrieve the data definition of the hash map.
+    *
+    * \warning This function allocates a buffer to hold the definition (using 
+    * malloc()). You must free it (with free()) when you no longer need the
+    * definition.
+    *
+    * \param[out]  definition The buffer allocated by the API to hold the content 
+    *              of the object definition. Freeing the memory (with free())
+    *              is the responsability of the caller.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Definition( vdsObjectDefinition ** definition );
+
+   /** 
+    * Retrieve the data item identified by the given key from the hash map.
+    *
+    * Data items which were added by another session and are not yet committed 
+    * will not be seen by this function. Likewise, 
+    * destroyed data items (even if not yet committed) are invisible.
+    *
+    * \param[in]  key The key of the item to be retrieved.
+    * \param[in]  keyLength The length of the \em key buffer (in bytes).
+    * \param[out] buffer The buffer provided by the user to hold the content of
+    *             the data item. Memory allocation for this buffer is the
+    *             responsability of the caller.
+    * \param[in]  bufferLength The length of \em buffer (in bytes).
+    * \param[out] returnedLength The actual number of bytes in the data item.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Get( const void * key,
+             size_t       keyLength,
+             void       * buffer,
+             size_t       bufferLength,
+             size_t     * returnedLength );
+
+   /** 
+    * Iterate through the hash map.
+    *
+    * Data items which were added by another session and are not yet committed 
+    * will not be seen by the iterator. Likewise, destroyed data items (even if
+    * not yet committed) are invisible.
+    *
+    * Data items retrieved this way will not be sorted.
+    *
+    * \param[out] key The key buffer provided by the user to hold the content of
+    *             the key associated with the first element. Memory allocation 
+    *             for this buffer is the responsability of the caller.
+    * \param[in]  keyLength The length of the \em key buffer (in bytes).
+    * \param[out] buffer The buffer provided by the user to hold the content of
+    *             the first element. Memory allocation for this buffer is the
+    *             responsability of the caller.
+    * \param[in]  bufferLength The length of \em buffer (in bytes).
+    * \param[out] retKeyLength The actual number of bytes in the key
+    * \param[out] retDataLength The actual number of bytes in the data item.
+    *
+    * \return 0 on success or VDS_IS_EMPTY if the hash map is empty.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   int GetFirst( void       * key,
+                 size_t       keyLength,
+                 void       * buffer,
+                 size_t       bufferLength,
+                 size_t     * retKeyLength,
+                 size_t     * retDataLength );
+
+   /** 
+    * Iterate through the hash map.
+    *
+    * Data items which were added by another session and are not yet committed 
+    * will not be seen by the iterator. Likewise, destroyed data items (even if
+    * not yet committed) are invisible.
+    *
+    * Evidently, you must call vdsHashMap::GetFirst to initialize the iterator. 
+    * Not so evident - calling vdsHashMap::Get will reset the iteration to the
+    * data item retrieved by this function (they use the same internal storage). 
+    * If this cause a problem, please let us know.
+    *
+    * Data items retrieved this way will not be sorted.
+    *
+    * \param[out] key The key buffer provided by the user to hold the content of
+    *             the key associated with the data element. Memory allocation 
+    *             for this buffer is the responsability of the caller.
+    * \param[in]  keyLength The length of the \em key buffer (in bytes).
+    * \param[out] buffer The buffer provided by the user to hold the content of
+    *             the data element. Memory allocation for this buffer is the
+    *             responsability of the caller.
+    * \param[in]  bufferLength The length of \em buffer (in bytes).
+    * \param[out] retKeyLength The actual number of bytes in the key
+    * \param[out] retDataLength The actual number of bytes in the data item.
+    *
+    * \return 0 on success or VDS_REACHED_THE_END when the iteration reaches
+    *           the end of the hash map.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   int GetNext( void       * key,
+                size_t       keyLength,
+                void       * buffer,
+                size_t       bufferLength,
+                size_t     * retKeyLength,
+                size_t     * retDataLength );
+
+   /** 
+    * Open an existing read-only hash map (see vdsSession::CreateObject to 
+    * create a new object).
+    *
+    * \param[in]  hashMapName The fully qualified name of the hash map. 
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Open( const std::string & hashMapName );
+   
+   /** 
+    * Open an existing read-only hash map (see vdsSession::CreateObject to 
+    * create a new object).
+    *
+    * \param[in]  hashMapName The fully qualified name of the hash map. 
+    * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) 
+    *             not counting the null terminator.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Open( const char * hashMapName,
+              size_t       nameLengthInBytes );
+   
+   /**
+    * Return the status of the hash map.
+    *
+    * \param[out] pStatus      A pointer to the status structure.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Status( vdsObjStatus * pStatus );
+
+protected:
+
+   /// Pointer to the vdsaFastMap struct.
+   VDS_HANDLE m_objectHandle;
+
+   /// Reference to the vdsaSession struct (we belong to).
+   VDS_HANDLE & m_sessionHandle;
+   
+};
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#endif /* VDS_FAST_MAP_H_CPP */
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
