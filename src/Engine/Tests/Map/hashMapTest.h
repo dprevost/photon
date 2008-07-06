@@ -106,5 +106,88 @@ initHashMapTest( bool                testIsExpectedToSucceed,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/**
+ * This function initializes the memory needed by the hash map
+ * object.
+ *
+ * A reminder: hash maps are memory objects - when they need memory, 
+ * they ask it from their internal memObject which can then ask the 
+ * global allocator. This requires proper initialization.
+ *
+ * The returned object is not initialized however - so that we can test
+ * the Init() call.
+ */
+ 
+void
+initHashMapCopyTest( bool                 testIsExpectedToSucceed,
+                     vdseMap           ** ppOldMap,
+                     vdseMap           ** ppNewMap,
+                     vdseSessionContext * pContext )
+{
+   int errcode;
+   unsigned char* ptr;
+   vdseMemAlloc*  pAlloc;
+   vdseTx* pTx;
+   vdseMap* pHashMap;
+   size_t allocatedLength = VDSE_BLOCK_SIZE * 25;
+
+   memset( pContext, 0, sizeof(vdseSessionContext) );
+   pContext->pidLocker = getpid();
+   
+   errcode = vdseInitEngine();
+   if ( errcode != 0 ) {
+      fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
+      if ( testIsExpectedToSucceed ) exit(1);
+      exit(0);
+   }
+   vdscInitErrorHandler( &pContext->errorHandler );
+
+   /* Initialize the global allocator */
+   ptr = malloc( allocatedLength );
+   if (ptr == NULL ) {
+      fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
+      if ( testIsExpectedToSucceed ) exit(1);
+      exit(0);
+   }
+   g_pBaseAddr = ptr;
+   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
+   vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
+   
+   /* Allocate memory for the tx object and initialize it */
+   pTx = (vdseTx*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
+   if ( pTx == NULL ) {
+      fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
+      if ( testIsExpectedToSucceed ) exit(1);
+      exit(0);
+   }
+   errcode = vdseTxInit( pTx, 1, pContext );
+   if ( errcode != 0 ) {
+      fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
+      if ( testIsExpectedToSucceed ) exit(1);
+      exit(0);
+   }
+   pContext->pTransaction = pTx;
+   
+   /* Allocate memory for the hash map object */
+   pHashMap = (vdseMap*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
+   if ( pHashMap == NULL ) {
+      fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
+      if ( testIsExpectedToSucceed ) exit(1);
+      exit(0);
+   }
+   *ppOldMap = pHashMap;
+   
+   /* Allocate memory for the hash map object */
+   pHashMap = (vdseMap*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
+   if ( pHashMap == NULL ) {
+      fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
+      if ( testIsExpectedToSucceed ) exit(1);
+      exit(0);
+   }
+   *ppNewMap = pHashMap;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 #endif /* VDST_HASH_MAP_TEST_H */
 

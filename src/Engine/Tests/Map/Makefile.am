@@ -15,6 +15,11 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES = *~ core
 
 check_PROGRAMS =                  \
+        CopyNullContext           \
+        CopyNullHashItem          \
+        CopyNullNewMap            \
+        CopyNullOldMap            \
+        CopyPass                  \
         DeleteNullContext         \
         DeleteNullHash            \
         DeleteNullKey             \
@@ -144,6 +149,11 @@ TESTS_ENVIRONMENT =                  \
         PYTHON=$(PYTHON)             
 
 TESTS =                           \
+        CopyNullContext           \
+        CopyNullHashItem          \
+        CopyNullNewMap            \
+        CopyNullOldMap            \
+        CopyPass                  \
         DeleteNullContext         \
         DeleteNullHash            \
         DeleteNullKey             \
@@ -203,6 +213,10 @@ TESTS =                           \
         StatusPass                
 
 XFAIL_TESTS =                     \
+        CopyNullContext           \
+        CopyNullHashItem          \
+        CopyNullNewMap            \
+        CopyNullOldMap            \
         DeleteNullContext         \
         DeleteNullHash            \
         DeleteNullKey             \

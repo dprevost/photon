@@ -13,6 +13,11 @@ include ..\Makefile.inc.Win32
 all: 
 
 check_PROGRAMS =                                \
+        .\Release\CopyNullContext.exe           \
+        .\Release\CopyNullHashItem.exe          \
+        .\Release\CopyNullNewMap.exe            \
+        .\Release\CopyNullOldMap.exe            \
+        .\Release\CopyPass.exe                  \
         .\Release\DeleteNullContext.exe         \
         .\Release\DeleteNullHash.exe            \
         .\Release\DeleteNullKey.exe             \

@@ -30,13 +30,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(56)
+Dim failed_tests(61)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(14)
-Dim fail_programs(41)
+Dim ok_programs(15)
+Dim fail_programs(45)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -50,67 +50,72 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0)  = "DeletePass"
-ok_programs(1)  = "FiniPass"
-ok_programs(2)  = "GetFirstPass"
-ok_programs(3)  = "GetFirstWrongKeyLength"
-ok_programs(4)  = "GetFirstWrongLength"
-ok_programs(5)  = "GetNextPass"
-ok_programs(6)  = "GetNextWrongKeyLength"
-ok_programs(7)  = "GetNextWrongLength"
-ok_programs(8)  = "GetPass"
-ok_programs(9)  = "GetWrongLength"
-ok_programs(10) = "InitPass"
-ok_programs(11) = "InsertPass"
-ok_programs(12) = "ReleasePass"
-ok_programs(13) = "ReplacePass"
-ok_programs(14) = "StatusPass"
+ok_programs(0)  = "CopyPass"
+ok_programs(1)  = "DeletePass"
+ok_programs(2)  = "FiniPass"
+ok_programs(3)  = "GetFirstPass"
+ok_programs(4)  = "GetFirstWrongKeyLength"
+ok_programs(5)  = "GetFirstWrongLength"
+ok_programs(6)  = "GetNextPass"
+ok_programs(7)  = "GetNextWrongKeyLength"
+ok_programs(8)  = "GetNextWrongLength"
+ok_programs(9)  = "GetPass"
+ok_programs(10) = "GetWrongLength"
+ok_programs(11) = "InitPass"
+ok_programs(12) = "InsertPass"
+ok_programs(13) = "ReleasePass"
+ok_programs(14) = "ReplacePass"
+ok_programs(15) = "StatusPass"
 
-fail_programs(0)  = "DeleteNullContext"
-fail_programs(1)  = "DeleteNullHash"
-fail_programs(2)  = "DeleteNullKey"
-fail_programs(3)  = "DeleteZeroKeyLength"
-fail_programs(4)  = "FiniNullContext"
-fail_programs(5)  = "FiniNullHash"
-fail_programs(6)  = "GetFirstNullContext"
-fail_programs(7)  = "GetFirstNullHash"
-fail_programs(8)  = "GetFirstNullItem"
-fail_programs(9)  = "GetNextNullContext"
-fail_programs(10) = "GetNextNullHash"
-fail_programs(11) = "GetNextNullItem"
-fail_programs(12) = "GetNullContext"
-fail_programs(13) = "GetNullHash"
-fail_programs(14) = "GetNullItem"
-fail_programs(15) = "GetNullKey"
-fail_programs(16) = "GetZeroKeyLength"
-fail_programs(17) = "InitNullContext"
-fail_programs(18) = "InitNullDefinition"
-fail_programs(19) = "InitNullHash"
-fail_programs(20) = "InitNullName"
-fail_programs(21) = "InitNullParent"
-fail_programs(22) = "InitNullStatus"
-fail_programs(23) = "InitZeroBlocks"
-fail_programs(24) = "InitZeroLength"
-fail_programs(25) = "InsertNullContext"
-fail_programs(26) = "InsertNullHash"
-fail_programs(27) = "InsertNullItem"
-fail_programs(28) = "InsertNullKey"
-fail_programs(29) = "InsertZeroLengthItem"
-fail_programs(30) = "InsertZeroLengthKey"
-fail_programs(31) = "ReleaseNullContext"
-fail_programs(32) = "ReleaseNullHash"
-fail_programs(33) = "ReleaseNullItem"
-fail_programs(34) = "ReplaceNullContext"
-fail_programs(35) = "ReplaceNullHash"
-fail_programs(36) = "ReplaceNullItem"
-fail_programs(37) = "ReplaceNullKey"
-fail_programs(38) = "ReplaceZeroLengthItem"
-fail_programs(39) = "ReplaceZeroLengthKey"
-fail_programs(40) = "StatusNullHash"
-fail_programs(41) = "StatusNullStatus"
+fail_programs(0)  = "CopyNullContext"
+fail_programs(1)  = "CopyNullHashItem"
+fail_programs(2)  = "CopyNullNewMap"
+fail_programs(3)  = "CopyNullOldMap"
+fail_programs(4)  = "DeleteNullContext"
+fail_programs(5)  = "DeleteNullHash"
+fail_programs(6)  = "DeleteNullKey"
+fail_programs(7)  = "DeleteZeroKeyLength"
+fail_programs(8)  = "FiniNullContext"
+fail_programs(9)  = "FiniNullHash"
+fail_programs(10)  = "GetFirstNullContext"
+fail_programs(11)  = "GetFirstNullHash"
+fail_programs(12)  = "GetFirstNullItem"
+fail_programs(13)  = "GetNextNullContext"
+fail_programs(14) = "GetNextNullHash"
+fail_programs(15) = "GetNextNullItem"
+fail_programs(16) = "GetNullContext"
+fail_programs(17) = "GetNullHash"
+fail_programs(18) = "GetNullItem"
+fail_programs(19) = "GetNullKey"
+fail_programs(20) = "GetZeroKeyLength"
+fail_programs(21) = "InitNullContext"
+fail_programs(22) = "InitNullDefinition"
+fail_programs(23) = "InitNullHash"
+fail_programs(24) = "InitNullName"
+fail_programs(25) = "InitNullParent"
+fail_programs(26) = "InitNullStatus"
+fail_programs(27) = "InitZeroBlocks"
+fail_programs(28) = "InitZeroLength"
+fail_programs(29) = "InsertNullContext"
+fail_programs(30) = "InsertNullHash"
+fail_programs(31) = "InsertNullItem"
+fail_programs(32) = "InsertNullKey"
+fail_programs(33) = "InsertZeroLengthItem"
+fail_programs(34) = "InsertZeroLengthKey"
+fail_programs(35) = "ReleaseNullContext"
+fail_programs(36) = "ReleaseNullHash"
+fail_programs(37) = "ReleaseNullItem"
+fail_programs(38) = "ReplaceNullContext"
+fail_programs(39) = "ReplaceNullHash"
+fail_programs(40) = "ReplaceNullItem"
+fail_programs(41) = "ReplaceNullKey"
+fail_programs(42) = "ReplaceZeroLengthItem"
+fail_programs(43) = "ReplaceZeroLengthKey"
+fail_programs(44) = "StatusNullHash"
+fail_programs(45) = "StatusNullStatus"
 
-numTests = 57                 ' Sum of length of both arrays 
-numFailed = 0
+numTests  = 62                 ' Sum of length of both arrays 
+numFailed =  0
 
 ' Create the FileSystemObject
 Set fso = CreateObject ("Scripting.FileSystemObject")

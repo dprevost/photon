@@ -40,9 +40,10 @@ int vdseMapCopy( vdseMap            * pOldMap,
    vdseFieldDef * oldDef, * newDef;
    enum ListErrors listErr = LIST_OK;
    
-   VDS_PRE_CONDITION( pOldMap  != NULL );
-   VDS_PRE_CONDITION( pNewMap  != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pOldMap   != NULL );
+   VDS_PRE_CONDITION( pNewMap   != NULL );
+   VDS_PRE_CONDITION( pHashItem != NULL );
+   VDS_PRE_CONDITION( pContext  != NULL );
    
    errcode = vdseMemObjectInit( &pNewMap->memObject, 
                                 VDSE_IDENT_MAP,
