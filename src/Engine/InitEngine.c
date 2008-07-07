@@ -32,7 +32,12 @@ VDSF_ENGINE_EXPORT const char * MYCXX = "cl.exe";
 
 static int vdseGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 {
-   const char * theMsg = vdse_ErrorMessage( errnum );
+   const char * theMsg;
+
+   VDS_PRE_CONDITION( msg != NULL);
+   VDS_PRE_CONDITION( msgLength > 0 );
+
+   theMsg = vdse_ErrorMessage( errnum );
    if ( theMsg == NULL ) return -1;
    if ( strlen(theMsg) >= msgLength ) return -1;
    
