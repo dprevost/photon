@@ -53,6 +53,7 @@ check_PROGRAMS =                  \
         InitNullContext           \
         InitNullDefinition        \
         InitNullHash              \
+        InitNullHashItemOffset    \
         InitNullName              \
         InitNullParent            \
         InitNullStatus            \
@@ -129,6 +130,7 @@ GetZeroKeyLength_SOURCES          = $(COMMON_HEADER) GetZeroKeyLength.c
 InitNullContext_SOURCES           = $(COMMON_HEADER) InitNullContext.c
 InitNullDefinition_SOURCES        = $(COMMON_HEADER) InitNullDefinition.c
 InitNullHash_SOURCES              = $(COMMON_HEADER) InitNullHash.c
+InitNullHashItemOffset_SOURCES    = $(COMMON_HEADER) InitNullHashItemOffset.c
 InitNullName_SOURCES              = $(COMMON_HEADER) InitNullName.c
 InitNullParent_SOURCES            = $(COMMON_HEADER) InitNullParent.c
 InitNullStatus_SOURCES            = $(COMMON_HEADER) InitNullStatus.c
@@ -214,6 +216,7 @@ TESTS =                           \
         InitNullContext           \
         InitNullDefinition        \
         InitNullHash              \
+        InitNullHashItemOffset    \
         InitNullName              \
         InitNullParent            \
         InitNullStatus            \
@@ -277,6 +280,7 @@ XFAIL_TESTS =                     \
         InitNullContext           \
         InitNullDefinition        \
         InitNullHash              \
+        InitNullHashItemOffset    \
         InitNullName              \
         InitNullParent            \
         InitNullStatus            \

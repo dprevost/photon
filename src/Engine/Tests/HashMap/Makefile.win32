@@ -51,6 +51,7 @@ check_PROGRAMS =                                \
         .\Release\InitNullContext.exe           \
         .\Release\InitNullDefinition.exe        \
         .\Release\InitNullHash.exe              \
+        .\Release\InitNullHashItemOffset.exe    \
         .\Release\InitNullName.exe              \
         .\Release\InitNullParent.exe            \
         .\Release\InitNullStatus.exe            \
