@@ -41,6 +41,10 @@ int vdsaGetDefinition( vdseFieldDef         * pInternalDef,
    unsigned int i;
    vdsObjectDefinition * ptr;
    
+   VDS_PRE_CONDITION( pInternalDef != NULL );
+   VDS_PRE_CONDITION( ppDefinition != NULL );
+   VDS_PRE_CONDITION( numFields > 0 );
+   
    ptr = (vdsObjectDefinition *)calloc( offsetof(vdsObjectDefinition,fields) +
       numFields * sizeof(vdsFieldDefinition), 1 );
    if ( ptr == NULL ) return VDS_NOT_ENOUGH_HEAP_MEMORY;
@@ -91,6 +95,10 @@ void vdsaGetKeyLimits( vdsKeyDefinition * pKeyDef,
                        size_t           * pMinLength,
                        size_t           * pMaxLength )
 {
+   VDS_PRE_CONDITION( pKeyDef    != NULL );
+   VDS_PRE_CONDITION( pMinLength != NULL );
+   VDS_PRE_CONDITION( pMaxLength != NULL );
+
    if ( pKeyDef->type == VDS_KEY_INTEGER ||
       pKeyDef->type == VDS_KEY_BINARY ||
       pKeyDef->type == VDS_KEY_STRING ) {
@@ -113,6 +121,11 @@ void vdsaGetLimits( vdseFieldDef * pDefinition,
 {
    unsigned int i;
    size_t minLength = 0, maxLength = 0;
+
+   VDS_PRE_CONDITION( pDefinition != NULL );
+   VDS_PRE_CONDITION( pMinLength  != NULL );
+   VDS_PRE_CONDITION( pMaxLength  != NULL );
+   VDS_PRE_CONDITION( numFields > 0 );
    
    /*
     * The first field is special - the alignment offset is always zero
@@ -213,6 +226,8 @@ int vdsaValidateDefinition( vdsObjectDefinition * pDefinition )
 {
    unsigned int i, j;
    
+   VDS_PRE_CONDITION( pDefinition != NULL );
+
    switch( pDefinition->type ) {
 
    case VDS_FOLDER:
@@ -415,6 +430,11 @@ int vdsaXmlToDefinition( const char           * xmlBuffer,
    uint16_t numFields;
    bool dynamicMode;
    
+   VDS_PRE_CONDITION( xmlBuffer         != NULL );
+   VDS_PRE_CONDITION( ppDefinition      != NULL );
+   VDS_PRE_CONDITION( objectName        != NULL );
+   VDS_PRE_CONDITION( nameLengthInBytes != NULL );
+
    /*
     * for debugging, I could use this instead:
     * doc = xmlReadMemory( buf, i, NULL, NULL, 0 );
