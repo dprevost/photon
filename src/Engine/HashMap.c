@@ -26,8 +26,8 @@
 
 static
 void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
-                              vdseHashItem       * pHashItem,
-                              vdseSessionContext * pContext );
+                               vdseHashItem       * pHashItem,
+                               vdseSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -700,7 +700,7 @@ int vdseHashMapInit( vdseHashMap         * pHashMap,
 int vdseHashMapInsert( vdseHashMap        * pHashMap,
                        const void         * pKey,
                        size_t               keyLength, 
-                       const void         * pItem,
+                       const void         * pData,
                        size_t               itemLength,
                        vdseSessionContext * pContext )
 {
@@ -713,7 +713,7 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pKey     != NULL )
-   VDS_PRE_CONDITION( pItem    != NULL )
+   VDS_PRE_CONDITION( pData    != NULL )
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( keyLength  > 0 );
    VDS_PRE_CONDITION( itemLength > 0 );
@@ -755,7 +755,7 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
                                   bucket,
                                   (unsigned char *)pKey, 
                                   keyLength, 
-                                  pItem, 
+                                  pData, 
                                   itemLength,
                                   &pHashItem,
                                   pContext );
@@ -907,7 +907,7 @@ void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
 int vdseHashMapReplace( vdseHashMap        * pHashMap,
                         const void         * pKey,
                         size_t               keyLength, 
-                        const void         * pItem,
+                        const void         * pData,
                         size_t               itemLength,
                         vdseSessionContext * pContext )
 {
@@ -920,7 +920,7 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pKey     != NULL )
-   VDS_PRE_CONDITION( pItem    != NULL )
+   VDS_PRE_CONDITION( pData    != NULL )
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( keyLength  > 0 );
    VDS_PRE_CONDITION( itemLength > 0 );
@@ -959,7 +959,7 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
                                   bucket,
                                   (unsigned char *)pKey, 
                                   keyLength, 
-                                  pItem, 
+                                  pData, 
                                   itemLength,
                                   &pNewHashItem,
                                   pContext );
