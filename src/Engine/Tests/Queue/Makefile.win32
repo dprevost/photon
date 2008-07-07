@@ -31,6 +31,7 @@ check_PROGRAMS =                               \
         .\Release\GetWrongLength.exe           \
         .\Release\InitNullContext.exe          \
         .\Release\InitNullDefinition.exe       \
+        .\Release\InitNullHashItem.exe         \
         .\Release\InitNullQueue.exe            \
         .\Release\InitNullName.exe             \
         .\Release\InitNullParent.exe           \

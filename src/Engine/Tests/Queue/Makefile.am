@@ -33,6 +33,7 @@ check_PROGRAMS =                 \
         GetWrongLength           \
         InitNullContext          \
         InitNullDefinition       \
+        InitNullHashItem         \
         InitNullQueue            \
         InitNullName             \
         InitNullParent           \
@@ -92,6 +93,7 @@ GetWrongFlag_SOURCES             = $(COMMON_HEADER) GetWrongFlag.c
 GetWrongLength_SOURCES           = $(COMMON_HEADER) GetWrongLength.c
 InitNullContext_SOURCES          = $(COMMON_HEADER) InitNullContext.c
 InitNullDefinition_SOURCES       = $(COMMON_HEADER) InitNullDefinition.c
+InitNullHashItem_SOURCES         = $(COMMON_HEADER) InitNullHashItem.c
 InitNullQueue_SOURCES            = $(COMMON_HEADER) InitNullQueue.c
 InitNullName_SOURCES             = $(COMMON_HEADER) InitNullName.c
 InitNullParent_SOURCES           = $(COMMON_HEADER) InitNullParent.c
@@ -160,6 +162,7 @@ TESTS =                          \
         GetWrongLength           \
         InitNullContext          \
         InitNullDefinition       \
+        InitNullHashItem         \
         InitNullQueue            \
         InitNullName             \
         InitNullParent           \
@@ -213,6 +216,7 @@ XFAIL_TESTS =                    \
         GetWrongFlag             \
         InitNullContext          \
         InitNullDefinition       \
+        InitNullHashItem         \
         InitNullQueue            \
         InitNullName             \
         InitNullParent           \
