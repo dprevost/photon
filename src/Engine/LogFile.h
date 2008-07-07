@@ -81,7 +81,7 @@ vdsErrors vdseInitLogFile( vdseLogFile      * logFile,
    
 VDSF_ENGINE_EXPORT
 vdsErrors vdseLogTransaction( vdseLogFile      * logFile,
-                              transaction_T      transactionId,
+                              int                transactionId,
                               vdscErrorHandler * pError );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

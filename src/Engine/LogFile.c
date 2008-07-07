@@ -62,7 +62,7 @@ vdsErrors vdseInitLogFile( vdseLogFile*      logFile,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 vdsErrors vdseLogTransaction( vdseLogFile*      logFile,
-                              transaction_T     transactionId,
+                              int               transactionId,
                               vdscErrorHandler* pError )
 {
    char msg[80];

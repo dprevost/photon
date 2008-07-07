@@ -100,14 +100,6 @@ extern vdscErrMsgHandle g_vdsErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/* 
- * We cannot use "[*]_t" as this is reserved. But _T is ok, as far as I
- * know...
- */
-typedef unsigned int transaction_T;
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 #define LOCK_TIMEOUT 10000 /* in milliseconds */
 
 #define VDSE_MAX_LOCK_DEPTH 3
