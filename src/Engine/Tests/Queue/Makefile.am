@@ -42,6 +42,12 @@ check_PROGRAMS =                 \
         InitZeroBlocks           \
         InitZeroLength           \
         InitZeroNumFields        \
+        InsertNowNullContext     \
+        InsertNowNullItem        \
+        InsertNowNullQueue       \
+        InsertNowPass            \
+        InsertNowWrongFlag       \
+        InsertNowZeroLengthItem  \
         InsertNullContext        \
         InsertNullQueue          \
         InsertNullItem           \
@@ -102,6 +108,12 @@ InitPass_SOURCES                 = $(COMMON_HEADER) InitPass.c
 InitZeroBlocks_SOURCES           = $(COMMON_HEADER) InitZeroBlocks.c
 InitZeroLength_SOURCES           = $(COMMON_HEADER) InitZeroLength.c
 InitZeroNumFields_SOURCES        = $(COMMON_HEADER) InitZeroNumFields.c
+InsertNowNullContext_SOURCES     = $(COMMON_HEADER) InsertNowNullContext.c
+InsertNowNullItem_SOURCES        = $(COMMON_HEADER) InsertNowNullItem.c
+InsertNowNullQueue_SOURCES       = $(COMMON_HEADER) InsertNowNullQueue.c
+InsertNowPass_SOURCES            = $(COMMON_HEADER) InsertNowPass.c
+InsertNowWrongFlag_SOURCES       = $(COMMON_HEADER) InsertNowWrongFlag.c
+InsertNowZeroLengthItem_SOURCES  = $(COMMON_HEADER) InsertNowZeroLengthItem.c
 InsertNullContext_SOURCES        = $(COMMON_HEADER) InsertNullContext.c
 InsertNullQueue_SOURCES          = $(COMMON_HEADER) InsertNullQueue.c
 InsertNullItem_SOURCES           = $(COMMON_HEADER) InsertNullItem.c
@@ -171,6 +183,12 @@ TESTS =                          \
         InitZeroBlocks           \
         InitZeroLength           \
         InitZeroNumFields        \
+        InsertNowNullContext     \
+        InsertNowNullItem        \
+        InsertNowNullQueue       \
+        InsertNowPass            \
+        InsertNowWrongFlag       \
+        InsertNowZeroLengthItem  \
         InsertNullContext        \
         InsertNullQueue          \
         InsertNullItem           \
@@ -224,6 +242,11 @@ XFAIL_TESTS =                    \
         InitZeroBlocks           \
         InitZeroLength           \
         InitZeroNumFields        \
+        InsertNowNullContext     \
+        InsertNowNullItem        \
+        InsertNowNullQueue       \
+        InsertNowWrongFlag       \
+        InsertNowZeroLengthItem  \
         InsertNullContext        \
         InsertNullQueue          \
         InsertNullItem           \

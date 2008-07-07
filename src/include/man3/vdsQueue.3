@@ -1,4 +1,4 @@
-.TH "vdsQueue" 3 "13 Jun 2008" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
+.TH "vdsQueue" 3 "7 Jul 2008" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -48,6 +48,10 @@ Definition at line 35 of file vdsQueue.
 .RI "\fIRemove the first item from the beginning of a FIFO queue and return it to the caller. \fP"
 .ti -1c
 .RI "void \fBPush\fP (const void *pItem, size_t length)"
+.br
+.RI "\fIInsert a data element at the end of the FIFO queue. \fP"
+.ti -1c
+.RI "void \fBPushNow\fP (const void *pItem, size_t length)"
 .br
 .RI "\fIInsert a data element at the end of the FIFO queue. \fP"
 .ti -1c
@@ -245,6 +249,25 @@ The additions only become permanent after a call to vdsSession::Commit.
 .RE
 .PP
 
+.SS "void vdsQueue::PushNow (const void * pItem, size_t length)"
+.PP
+Insert a data element at the end of the FIFO queue. 
+.PP
+The additions become permanent immediately, not after a call to vdsSession::Commit (in other words, you cannot easily undo these insertions).
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpItem\fP The data item to be inserted. 
+.br
+\fIlength\fP The length of \fIpItem\fP (in bytes).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIvdsException\fP An abnormal error occured. 
+.RE
+.PP
+
 .SS "void vdsQueue::Status (vdsObjStatus * pStatus)"
 .PP
 Return the status of the queue. 
@@ -266,12 +289,12 @@ Return the status of the queue.
 .PP
 Pointer to the vdsaQueue struct. 
 .PP
-Definition at line 196 of file vdsQueue.
+Definition at line 211 of file vdsQueue.
 .SS "VDS_HANDLE& \fBvdsQueue::m_sessionHandle\fP\fC [private]\fP"
 .PP
 Reference to the vdsaSession struct (we belong to). 
 .PP
-Definition at line 199 of file vdsQueue.
+Definition at line 214 of file vdsQueue.
 
 .SH "Author"
 .PP 

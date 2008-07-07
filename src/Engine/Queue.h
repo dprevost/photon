@@ -118,6 +118,13 @@ int vdseQueueInsert( vdseQueue          * pQueue,
                      vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
+int vdseQueueInsertNow( vdseQueue          * pQueue,
+                        const void         * pItem, 
+                        size_t               length,
+                        enum vdseQueueEnum   firstOrLast,
+                        vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
 int vdseQueueRemove( vdseQueue          * pQueue,
                      vdseQueueItem     ** ppQueueItem,
                      enum vdseQueueEnum   firstOrLast,

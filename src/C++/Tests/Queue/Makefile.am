@@ -24,6 +24,7 @@ check_PROGRAMS =   \
         Open       \
         Pop        \
         Push       \
+        PushNow    \
         Status     
 
 Close_SOURCES      = Close.cpp
@@ -33,6 +34,7 @@ GetNext_SOURCES    = GetNext.cpp
 Open_SOURCES       = Open.cpp
 Pop_SOURCES        = Pop.cpp
 Push_SOURCES       = Push.cpp
+PushNow_SOURCES    = PushNow.cpp
 Status_SOURCES     = Status.cpp
 
 EXTRA_DIST =           \
@@ -44,6 +46,7 @@ EXTRA_DIST =           \
         Open.sh        \
         Pop.sh         \
         Push.sh        \
+        PushNow.sh     \
         RunTests.vbs   \
         Status.sh      
 
@@ -63,6 +66,7 @@ TESTS =               \
         Open.sh       \
         Pop.sh        \
         Push.sh       \
+        PushNow.sh    \
         Status.sh     
 
 XFAIL_TESTS = 

@@ -203,6 +203,25 @@ int vdsQueuePush( VDS_HANDLE   objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
+ * Insert a data element at the end of the FIFO queue.
+ *
+ * The additions become permanent immediately, not after a call to ::vdsCommit.
+ * (in other words, you cannot easily undo these insertions). 
+ *
+ * \param[in]  objectHandle The handle to the queue (see ::vdsQueueOpen).
+ * \param[in]  pItem  The data item to be inserted.
+ * \param[in]  length The length of \em pItem (in bytes).
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
+VDSF_EXPORT
+int vdsQueuePushNow( VDS_HANDLE   objectHandle, 
+                     const void * pItem, 
+                     size_t       length );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
  * Return the status of the queue.
  *
  * \param[in]  objectHandle The handle to the queue (see ::vdsQueueOpen).

@@ -20,6 +20,7 @@ check_PROGRAMS =                 \
         .\Release\Open.exe       \
         .\Release\Pop.exe        \
         .\Release\Push.exe       \
+        .\Release\PushNow.exe    \
         .\Release\Status.exe     
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)

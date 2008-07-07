@@ -478,6 +478,65 @@ int vdsQueuePush( VDS_HANDLE   objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int vdsQueuePushNow( VDS_HANDLE   objectHandle,
+                     const void * data,
+                     size_t       dataLength )
+{
+   vdsaQueue * pQueue;
+   vdseQueue * pVDSQueue;
+   int errcode = 0, rc = 0;
+
+   pQueue = (vdsaQueue *) objectHandle;
+   if ( pQueue == NULL ) return VDS_NULL_HANDLE;
+   
+   if ( pQueue->object.type != VDSA_QUEUE ) return VDS_WRONG_TYPE_HANDLE;
+
+   if ( data == NULL ) {
+      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, VDS_NULL_POINTER );
+      return VDS_NULL_POINTER;
+   }
+   
+   if ( dataLength < pQueue->minLength || dataLength > pQueue->maxLength ) {
+      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      return VDS_INVALID_LENGTH;
+   }
+   
+   if ( ! pQueue->object.pSession->terminated ) {
+      if ( vdsaCommonLock( &pQueue->object ) == 0 ) {
+         pVDSQueue = (vdseQueue *) pQueue->object.pMyVdsObject;
+
+         rc = vdseQueueInsertNow( pVDSQueue,
+                                  data,
+                                  dataLength,
+                                  VDSE_QUEUE_LAST,
+                                  &pQueue->object.pSession->context );
+
+         vdsaCommonUnlock( &pQueue->object );
+      }
+      else {
+         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      }
+   }
+   else {
+      errcode = VDS_SESSION_IS_TERMINATED;
+   }
+   
+   if ( errcode != 0 ) {
+      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, errcode );
+   }
+   
+   if ( rc != 0 ) {
+      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
+   }
+   
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdsQueueStatus( VDS_HANDLE     objectHandle,
                     vdsObjStatus * pStatus )
 {

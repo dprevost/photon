@@ -1,4 +1,4 @@
-.TH "vdsQueue.h" 3 "4 Jul 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsQueue.h" 3 "7 Jul 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -45,6 +45,10 @@ Definition in file \fBvdsQueue.h\fP.
 .RI "\fIRemove the first item from the beginning of a FIFO queue and return it to the caller. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsQueuePush\fP (\fBVDS_HANDLE\fP objectHandle, const void *pItem, size_t length)"
+.br
+.RI "\fIInsert a data element at the end of the FIFO queue. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsQueuePushNow\fP (\fBVDS_HANDLE\fP objectHandle, const void *pItem, size_t length)"
 .br
 .RI "\fIInsert a data element at the end of the FIFO queue. \fP"
 .ti -1c

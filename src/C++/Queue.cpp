@@ -153,6 +153,19 @@ void vdsQueue::Push( const void * pItem,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void vdsQueue::PushNow( const void * pItem, 
+                        size_t       length )
+{
+   int rc = vdsQueuePushNow( m_objectHandle, 
+                             pItem, 
+                             length );
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsQueue::PushNow" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void vdsQueue::Status( vdsObjStatus * pStatus )
 {
    int rc = vdsQueueStatus( m_objectHandle,

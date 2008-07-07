@@ -420,6 +420,83 @@ the_exit:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int vdseQueueInsertNow( vdseQueue          * pQueue,
+                        const void         * pItem, 
+                        size_t               length ,
+                        enum vdseQueueEnum   firstOrLast,
+                        vdseSessionContext * pContext )
+{
+   vdseQueueItem* pQueueItem;
+   vdsErrors errcode = VDS_OK;
+   vdseTxStatus* txQueueStatus;
+   size_t allocLength;
+   
+   VDS_PRE_CONDITION( pQueue != NULL );
+   VDS_PRE_CONDITION( pItem    != NULL )
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( length  > 0 );
+   VDS_PRE_CONDITION( firstOrLast == VDSE_QUEUE_FIRST || 
+      firstOrLast == VDSE_QUEUE_LAST );
+   VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
+
+   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
+
+   if ( vdseLock( &pQueue->memObject, pContext ) == 0 ) {
+      if ( ! vdseTxStatusIsValid( txQueueStatus, SET_OFFSET(pContext->pTransaction) ) 
+         || vdseTxStatusIsMarkedAsDestroyed( txQueueStatus ) ) {
+         errcode = VDS_OBJECT_IS_DELETED;
+         goto the_exit;
+      }
+   
+      allocLength = length + offsetof( vdseQueueItem, data );
+      pQueueItem = (vdseQueueItem *) vdseMalloc( &pQueue->memObject,
+                                                 allocLength,
+                                                 pContext );
+      if ( pQueueItem == NULL ) {
+         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
+         goto the_exit;
+      }
+   
+      vdseLinkNodeInit( &pQueueItem->node );
+      pQueueItem->dataLength = length;
+      memcpy( pQueueItem->data, pItem, length );
+   
+      if ( firstOrLast == VDSE_QUEUE_FIRST ) {
+         vdseLinkedListPutFirst( &pQueue->listOfElements,
+                                 &pQueueItem->node );
+      }
+      else {
+         vdseLinkedListPutLast( &pQueue->listOfElements,
+                                &pQueueItem->node );
+      }
+      
+      vdseTxStatusInit( &pQueueItem->txStatus, VDSE_NULL_OFFSET );
+
+      vdseUnlock( &pQueue->memObject, pContext );
+   }
+   else {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      return -1;
+   }
+   
+   return 0;
+
+the_exit:
+
+   vdseUnlock( &pQueue->memObject, pContext );
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called vdscSetError. 
+    */
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   }
+    
+   return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdseQueueRelease( vdseQueue          * pQueue,
                       vdseQueueItem      * pQueueItem,
                       vdseSessionContext * pContext )

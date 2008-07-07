@@ -182,6 +182,21 @@ public:
               size_t       length );
 
    /**
+    * Insert a data element at the end of the FIFO queue.
+    *
+    * The additions become permanent immediately, not after a call to 
+    * vdsSession::Commit (in other words, you cannot easily undo these 
+    * insertions). 
+    *
+    * \param[in]  pItem  The data item to be inserted.
+    * \param[in]  length The length of \em pItem (in bytes).
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void PushNow( const void * pItem, 
+                 size_t       length );
+
+   /**
     * Return the status of the queue.
     *
     * \param[out] pStatus      A pointer to the status structure.

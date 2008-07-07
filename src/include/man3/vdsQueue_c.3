@@ -1,4 +1,4 @@
-.TH "API functions for vdsf FIFO queues." 3 "4 Jul 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "API functions for vdsf FIFO queues." 3 "7 Jul 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -38,6 +38,10 @@ Data items are placed at the end of the queue and retrieved from the beginning o
 .RI "\fIRemove the first item from the beginning of a FIFO queue and return it to the caller. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsQueuePush\fP (\fBVDS_HANDLE\fP objectHandle, const void *pItem, size_t length)"
+.br
+.RI "\fIInsert a data element at the end of the FIFO queue. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsQueuePushNow\fP (\fBVDS_HANDLE\fP objectHandle, const void *pItem, size_t length)"
 .br
 .RI "\fIInsert a data element at the end of the FIFO queue. \fP"
 .ti -1c
@@ -190,6 +194,27 @@ The removals only become permanent after a call to \fBvdsCommit\fP.
 Insert a data element at the end of the FIFO queue. 
 .PP
 The additions only become permanent after a call to \fBvdsCommit\fP.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the queue (see \fBvdsQueueOpen\fP). 
+.br
+\fIpItem\fP The data item to be inserted. 
+.br
+\fIlength\fP The length of \fIpItem\fP (in bytes).
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsQueuePushNow (\fBVDS_HANDLE\fP objectHandle, const void * pItem, size_t length)"
+.PP
+Insert a data element at the end of the FIFO queue. 
+.PP
+The additions become permanent immediately, not after a call to \fBvdsCommit\fP. (in other words, you cannot easily undo these insertions).
 .PP
 \fBParameters:\fP
 .RS 4

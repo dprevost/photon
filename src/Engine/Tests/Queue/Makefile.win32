@@ -40,6 +40,12 @@ check_PROGRAMS =                               \
         .\Release\InitZeroBlocks.exe           \
         .\Release\InitZeroLength.exe           \
         .\Release\InitZeroNumFields.exe        \
+        .\Release\InsertNowNullContext.exe     \
+        .\Release\InsertNowNullItem.exe        \
+        .\Release\InsertNowNullQueue.exe       \
+        .\Release\InsertNowPass.exe            \
+        .\Release\InsertNowWrongFlag.exe       \
+        .\Release\InsertNowZeroLengthItem.exe  \
         .\Release\InsertNullContext.exe        \
         .\Release\InsertNullQueue.exe          \
         .\Release\InsertNullItem.exe           \

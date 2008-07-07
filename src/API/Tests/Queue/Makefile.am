@@ -35,6 +35,7 @@ check_PROGRAMS =          \
         OpenNoSession     \
         OpenPass          \
         Pop               \
+        PushNow           \
         PushPass          \
         RemoveNullEntry   \
         RemoveNullHandle  \
@@ -60,6 +61,7 @@ NextWrongHandle_SOURCES   = NextWrongHandle.c
 OpenNoSession_SOURCES     = OpenNoSession.c
 OpenPass_SOURCES          = OpenPass.c
 Pop_SOURCES               = Pop.c
+PushNow_SOURCES           = PushNow.c
 PushPass_SOURCES          = PushPass.c
 RemoveNullEntry_SOURCES   = RemoveNullEntry.c
 RemoveNullHandle_SOURCES  = RemoveNullHandle.c
@@ -87,6 +89,7 @@ EXTRA_DIST =                 \
         OpenNoSession.sh     \
         OpenPass.sh          \
         Pop.sh               \
+        PushNow.sh           \
         PushPass.sh          \
         RemoveNullEntry.sh   \
         RemoveNullHandle.sh  \
@@ -122,6 +125,7 @@ TESTS =                      \
         OpenNoSession.sh     \
         OpenPass.sh          \
         Pop.sh               \
+        PushNow.sh           \
         PushPass.sh          \
         RemoveNullEntry.sh   \
         RemoveNullHandle.sh  \
