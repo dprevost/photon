@@ -70,8 +70,8 @@ int main()
                           (unsigned char*)key1,
                           strlen(key1),
                           &pItem,
-                          &context,
-                          &bucket );
+                          &bucket,
+                          &context );
    if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -96,8 +96,8 @@ int main()
                           (unsigned char*)key1,
                           strlen(key1),
                           &pItem,
-                          &context,
-                          &bucket );
+                          &bucket,
+                          &context );
    if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

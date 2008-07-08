@@ -69,8 +69,8 @@ int main()
                           (unsigned char*)key2,
                           0,
                           &pItem,
-                          &context,
-                          &bucket );
+                          &bucket,
+                          &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

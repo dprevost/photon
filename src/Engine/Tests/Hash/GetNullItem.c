@@ -68,8 +68,8 @@ int main()
                           (unsigned char*)key2,
                           strlen(key2),
                           NULL,
-                          &context,
-                          &bucket );
+                          &bucket,
+                          &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

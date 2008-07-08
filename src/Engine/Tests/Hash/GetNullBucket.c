@@ -22,12 +22,13 @@
  * The pointer to abucket is an optional argument. A NULL value is
  * therefore perfectly legit.
  */ 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
+#if defined(USE_DBC)
    vdseSessionContext context;
    vdseHash* pHash;
    enum ListErrors listErr;
@@ -71,13 +72,12 @@ int main()
                           (unsigned char*)key2,
                           strlen(key2),
                           &pItem,
-                          &context,
-                          NULL );
-   if ( listErr != LIST_OK ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   return 0;
+                          NULL,
+                          &context );
+   ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

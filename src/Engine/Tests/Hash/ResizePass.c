@@ -83,8 +83,8 @@ int main()
                              (unsigned char*)key,
                              strlen(key),
                              &pItem,
-                             &context,
-                             &bucket );
+                             &bucket,
+                             &context );
       if ( listErr != LIST_OK ) {
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }

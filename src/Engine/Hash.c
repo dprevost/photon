@@ -400,6 +400,7 @@ enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
             /* Set the chain */
             newBucket = hash_pjw( pNewItem->key, pNewItem->keyLength ) % 
                         g_vdseArrayLengths[pNewHash->lengthIndex];
+            pNewItem->bucket = newBucket;
             if ( pNewArray[newBucket] == VDSE_NULL_OFFSET ) {
                pNewArray[newBucket] = SET_OFFSET(pNewItem);
             }
@@ -495,7 +496,6 @@ vdseHashDelete( vdseHash            * pHash,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void vdseHashDeleteAt( vdseHash           * pHash,
-                       size_t               bucket,
                        vdseHashItem       * pItem,
                        vdseSessionContext * pContext )
 {
@@ -503,18 +503,19 @@ void vdseHashDeleteAt( vdseHash           * pHash,
    vdseHashItem * pNewItem = NULL, * previousItem = NULL;
    ptrdiff_t nextOffset;
    vdseMemObject * pMemObject;
+   size_t bucket;
    
    VDS_PRE_CONDITION( pHash    != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pItem    != NULL );
-   VDS_PRE_CONDITION( bucket < g_vdseArrayLengths[pHash->lengthIndex] );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
    GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
-
+   bucket = pItem->bucket;
+   
    nextOffset = pArray[bucket];
    while ( nextOffset != VDSE_NULL_OFFSET ) {
       previousItem = pNewItem;
@@ -669,18 +670,18 @@ vdseHashGet( vdseHash            * pHash,
              const unsigned char * pKey,
              size_t                keyLength,
              vdseHashItem       ** ppItem,
-             vdseSessionContext  * pContext,
-             size_t              * pBucket )
+             size_t              * pBucket,
+             vdseSessionContext  * pContext )
 {
-   size_t bucket;
    bool   keyFound = false;
    ptrdiff_t* pArray;
    vdseHashItem* pItem, *dummy;
    
-   VDS_PRE_CONDITION( pHash       != NULL );
-   VDS_PRE_CONDITION( pKey        != NULL );
-   VDS_PRE_CONDITION( ppItem      != NULL );
-   VDS_PRE_CONDITION( pContext    != NULL );
+   VDS_PRE_CONDITION( pHash    != NULL );
+   VDS_PRE_CONDITION( pKey     != NULL );
+   VDS_PRE_CONDITION( ppItem   != NULL );
+   VDS_PRE_CONDITION( pBucket  != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( keyLength > 0 );
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
@@ -688,9 +689,7 @@ vdseHashGet( vdseHash            * pHash,
    VDS_INV_CONDITION( pArray != NULL );
 
    keyFound = findKey( pHash, pArray, pKey, keyLength, 
-                       &pItem, &dummy, &bucket );
-
-   if ( pBucket ) *pBucket  = bucket;
+                       &pItem, &dummy, pBucket );
 
    if ( keyFound ) {
       *ppItem = pItem;
@@ -709,7 +708,6 @@ vdseHashGet( vdseHash            * pHash,
 
 enum ListErrors 
 vdseHashGetFirst( vdseHash  * pHash,
-                  size_t    * pBucket, 
                   ptrdiff_t * pFirstItemOffset )
 {
    ptrdiff_t* pArray, currentOffset;
@@ -717,7 +715,6 @@ vdseHashGetFirst( vdseHash  * pHash,
    size_t i;
    
    VDS_PRE_CONDITION( pHash != NULL );
-   VDS_PRE_CONDITION( pBucket != NULL );
    VDS_PRE_CONDITION( pFirstItemOffset != NULL );
    
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
@@ -735,7 +732,6 @@ vdseHashGetFirst( vdseHash  * pHash,
       currentOffset = pArray[i];
       
       if (currentOffset != VDSE_NULL_OFFSET ) {
-         *pBucket = i;
          *pFirstItemOffset = currentOffset;
          return LIST_OK;
       }
@@ -754,9 +750,7 @@ vdseHashGetFirst( vdseHash  * pHash,
 
 enum ListErrors 
 vdseHashGetNext( vdseHash  * pHash,
-                 size_t      previousBucket,
                  ptrdiff_t   previousOffset,
-                 size_t    * pNextBucket, 
                  ptrdiff_t * pNextItemOffset )
 {
    ptrdiff_t* pArray, currentOffset;
@@ -764,10 +758,8 @@ vdseHashGetNext( vdseHash  * pHash,
    vdseHashItem* pItem;
    
    VDS_PRE_CONDITION( pHash != NULL );
-   VDS_PRE_CONDITION( pNextBucket != NULL );
    VDS_PRE_CONDITION( pNextItemOffset != NULL );
    VDS_PRE_CONDITION( previousOffset != VDSE_NULL_OFFSET );
-   VDS_PRE_CONDITION( previousBucket < g_vdseArrayLengths[pHash->lengthIndex]);
    VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
@@ -776,7 +768,6 @@ vdseHashGetNext( vdseHash  * pHash,
    GET_PTR( pItem, previousOffset, vdseHashItem );
    if ( pItem->nextItem != VDSE_NULL_OFFSET ) {
       /* We found the next one in the linked list. */
-      *pNextBucket = previousBucket;
       *pNextItemOffset = pItem->nextItem;
       return LIST_OK;
    }
@@ -785,11 +776,10 @@ vdseHashGetNext( vdseHash  * pHash,
     * Note: the next item has to be the first non-empty pArray[i] beyond
     * the current bucket (previousBucket). 
     */
-   for ( i = previousBucket+1; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
+   for ( i = pItem->bucket+1; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
       currentOffset = pArray[i];
       
       if (currentOffset != VDSE_NULL_OFFSET ) {
-         *pNextBucket = i;
          *pNextItemOffset = currentOffset;
          return LIST_OK;
       }
@@ -905,7 +895,8 @@ vdseHashInsert( vdseHash            * pHash,
    if ( pItem == NULL ) return LIST_NO_MEMORY;
    
    pItem->nextItem = VDSE_NULL_OFFSET;
-
+   pItem->bucket = bucket;
+   
    /* keyLength must be set before calling getData() */   
    pItem->keyLength = keyLength;
    pItem->dataLength = dataLength;
@@ -976,7 +967,8 @@ vdseHashInsertAt( vdseHash            * pHash,
    if ( pItem == NULL ) return LIST_NO_MEMORY;
    
    pItem->nextItem = VDSE_NULL_OFFSET;
-
+   pItem->bucket = bucket;
+   
    /* keyLength must be set before calling getData() */   
    pItem->keyLength = keyLength;
    pItem->dataLength = dataLength;
@@ -1052,6 +1044,7 @@ vdseHashResize( vdseHash           * pHash,
          
          newBucket = hash_pjw( pItem->key, pItem->keyLength ) % 
                      g_vdseArrayLengths[newIndexLength];
+         pItem->bucket = newBucket;
          if ( ptr[newBucket] == VDSE_NULL_OFFSET ) {
             ptr[newBucket] = currentOffset;
          }
@@ -1145,7 +1138,7 @@ vdseHashUpdate( vdseHash            * pHash,
       
       /* initialize the new record */
       pNewItem->nextItem = pOldItem->nextItem;
-
+      pNewItem->bucket = pOldItem->bucket;
       pNewItem->keyLength = keyLength;
       pNewItem->dataLength = dataLength;
       pNewItem->dataOffset = SET_OFFSET(pNewItem) + newItemLength - dataLength;

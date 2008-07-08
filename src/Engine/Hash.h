@@ -54,6 +54,7 @@ struct vdseHashItem
    size_t        keyLength;
    ptrdiff_t     dataOffset;
    size_t        dataLength;
+   size_t        bucket;
    unsigned char key[1];
    
 };
@@ -140,7 +141,6 @@ enum ListErrors vdseHashDelete( vdseHash            * pHash,
 /* Used to delete an hash item when you know its exact position */
 VDSF_ENGINE_EXPORT 
 void vdseHashDeleteAt( vdseHash            * pHash,
-                       size_t                bucket,
                        vdseHashItem        * pItem,
                        vdseSessionContext  * pContext );
 
@@ -163,19 +163,16 @@ enum ListErrors vdseHashGet( vdseHash            * pHash,
                              const unsigned char * pkey,
                              size_t                keyLength,
                              vdseHashItem       ** ppItem,
-                             vdseSessionContext  * pContext,
-                             size_t              * pBucket );
+                             size_t              * pBucket,
+                             vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT 
 enum ListErrors vdseHashGetFirst( vdseHash  * pHash,
-                                  size_t    * pBucket, 
                                   ptrdiff_t * pFirstItemOffset );
 
 VDSF_ENGINE_EXPORT
 enum ListErrors vdseHashGetNext( vdseHash  * pHash,
-                                 size_t      previousBucket,
                                  ptrdiff_t   previousOffset,
-                                 size_t    * pNextBucket, 
                                  ptrdiff_t * pNextItemOffset );
 
 VDSF_ENGINE_EXPORT 

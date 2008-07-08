@@ -71,8 +71,8 @@ int main()
                           (unsigned char*)key2,
                           strlen(key2),
                           &pNewItem,
-                          &context,
-                          &bucket );
+                          &bucket,
+                          &context );
    if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -87,44 +87,6 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
       
-   if ( bucket == (size_t) -1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-#if 0   
-   listErr = vdseHashGetFirst( pHash,
-                               &bucketFirst,
-                               &offsetFirstItem );
-   if ( listErr != LIST_OK ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   listErr = vdseHashGetNext( pHash,
-                              bucketFirst,
-                              offsetFirstItem,
-                              &bucketNext,
-                              &offsetNextItem );
-   if ( listErr != LIST_OK ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( bucketNext == (size_t) -1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( offsetNextItem == VDSE_NULL_OFFSET ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   /* Only 2 items - should fail gracefully ! */
-   listErr = vdseHashGetNext( pHash,
-                              bucketNext,
-                              offsetNextItem,
-                              &bucketNext,
-                              &offsetNextItem );
-   if ( listErr != LIST_END_OF_LIST ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-#endif
-
    return 0;
 }
 

@@ -33,7 +33,6 @@ int main()
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
    vdseHashItem* pNewItem;
-   size_t bucket;
    
    pHash = initHashTest( expectedToPass, &context );
    
@@ -64,7 +63,6 @@ int main()
    }
    
    listErr = vdseHashGetFirst( pHash,
-                               &bucket,
                                NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

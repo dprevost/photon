@@ -69,8 +69,8 @@ int main()
                           (unsigned char*)key2,
                           strlen(key2),
                           &pItem,
-                          &context,
-                          &bucket );
+                          &bucket,
+                          &context );
    if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -89,8 +89,8 @@ int main()
                           (unsigned char*)"My Key 3",
                           strlen("My Key 3"),
                           &pItem,
-                          &context,
-                          &bucket );
+                          &bucket,
+                          &context );
    if ( listErr != LIST_KEY_NOT_FOUND ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

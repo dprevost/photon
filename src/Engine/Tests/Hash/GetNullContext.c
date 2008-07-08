@@ -69,8 +69,8 @@ int main()
                           (unsigned char*)key2,
                           strlen(key2),
                           &pItem,
-                          NULL,
-                          &bucket );
+                          &bucket,
+                          NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

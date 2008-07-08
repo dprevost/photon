@@ -34,7 +34,6 @@ int main()
    char* data2 = "My Data 2";
    ptrdiff_t offsetFirstItem, offsetNextItem;
    vdseHashItem* pNewItem;
-   size_t bucketFirst, bucketNext;
    
    pHash = initHashTest( expectedToPass, &context );
    
@@ -66,16 +65,13 @@ int main()
    }
    
    listErr = vdseHashGetFirst( pHash,
-                               &bucketFirst,
                                &offsetFirstItem );
    if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    listErr = vdseHashGetNext( NULL,
-                              bucketFirst,
                               offsetFirstItem,
-                              &bucketNext,
                               &offsetNextItem );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

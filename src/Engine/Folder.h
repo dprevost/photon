@@ -37,8 +37,6 @@ struct vdseFolderItem
 {
    vdseHashItem * pHashItem;
 
-   size_t      bucket;
-
    ptrdiff_t   itemOffset;
 
    int status;

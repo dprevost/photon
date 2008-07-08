@@ -59,8 +59,8 @@ int main()
                           (unsigned char*)key1,
                           strlen(key1),
                           &pNewItem,
-                          &context,
-                          &bucket );
+                          &bucket,
+                          &context );
    if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -77,7 +77,6 @@ int main()
    }
    
    vdseHashDeleteAt( pHash,
-                     bucket,
                      NULL,
                      &context );
 

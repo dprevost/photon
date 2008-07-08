@@ -77,8 +77,8 @@ int main()
                           (unsigned char*)key2,
                           strlen(key2),
                           &pItem,
-                          &context,
-                          &bucket );
+                          &bucket,
+                          &context );
    if ( listErr != LIST_KEY_NOT_FOUND ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

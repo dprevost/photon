@@ -37,8 +37,6 @@ struct vdseHashMapItem
 {
    vdseHashItem * pHashItem;
 
-   size_t      bucket;
-
    ptrdiff_t   itemOffset;
 
 };

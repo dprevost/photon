@@ -178,6 +178,7 @@ int vdseMapGet( vdseMap            * pHashMap,
    vdseHashItem* pHashItem = NULL; //, * previousItem = NULL;
    vdsErrors errcode;
    vdseTxStatus * txHashMapStatus;
+   size_t bucket;
    
    VDS_PRE_CONDITION( pHashMap   != NULL );
    VDS_PRE_CONDITION( pKey       != NULL );
@@ -198,8 +199,8 @@ int vdseMapGet( vdseMap            * pHashMap,
                           (unsigned char *)pKey, 
                           keyLength,
                           &pHashItem,
-                          pContext,
-                          NULL );
+                          &bucket,
+                          pContext );
    if ( listErr != LIST_OK ) {
       errcode = VDS_NO_SUCH_ITEM;
       goto the_exit;
@@ -248,7 +249,6 @@ int vdseMapGetFirst( vdseMap            * pHashMap,
    enum ListErrors listErr = LIST_OK;
    vdseHashItem* pHashItem = NULL;
    vdseTxStatus * txHashMapStatus;
-   size_t     bucket;
    ptrdiff_t  firstItemOffset;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
@@ -265,7 +265,6 @@ int vdseMapGetFirst( vdseMap            * pHashMap,
    }
 
    listErr = vdseHashGetFirst( &pHashMap->hashObj, 
-                               &bucket,
                                &firstItemOffset );
    if ( listErr != LIST_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
@@ -292,7 +291,6 @@ int vdseMapGetFirst( vdseMap            * pHashMap,
 
    txHashMapStatus->usageCounter++;
    pItem->pHashItem = pHashItem;
-   pItem->bucket = bucket;
    pItem->itemOffset = firstItemOffset;
 
    return 0;
@@ -310,7 +308,6 @@ int vdseMapGetNext( vdseMap            * pHashMap,
    vdseHashItem * pHashItem = NULL;
    vdseHashItem * previousHashItem = NULL;
    vdseTxStatus * txHashMapStatus;
-   size_t     bucket;
    ptrdiff_t  itemOffset;
 
    VDS_PRE_CONDITION( pHashMap != NULL );
@@ -328,14 +325,11 @@ int vdseMapGetNext( vdseMap            * pHashMap,
       return -1;
    }
 
-   bucket           = pItem->bucket;
    itemOffset       = pItem->itemOffset;
    previousHashItem = pItem->pHashItem;
    
    listErr = vdseHashGetNext( &pHashMap->hashObj, 
-                              bucket,
                               itemOffset,
-                              &bucket,
                               &itemOffset );
    if ( listErr != LIST_OK ) {
       /* 
@@ -345,7 +339,6 @@ int vdseMapGetNext( vdseMap            * pHashMap,
        * at this point.
        */
       pItem->pHashItem = NULL;
-      pItem->bucket = 0;
       pItem->itemOffset = VDSE_NULL_OFFSET;
       vdseMapReleaseNoLock( pHashMap, previousHashItem, pContext );
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
@@ -372,7 +365,6 @@ int vdseMapGetNext( vdseMap            * pHashMap,
 
    txHashMapStatus->usageCounter++;
    pItem->pHashItem = pHashItem;
-   pItem->bucket = bucket;
    pItem->itemOffset = itemOffset;
    vdseMapReleaseNoLock( pHashMap, previousHashItem, pContext );
 
@@ -639,7 +631,6 @@ void vdseMapStatus( vdseMap      * pHashMap,
 {
    enum ListErrors listErr = LIST_OK;
    vdseHashItem* pHashItem = NULL;
-   size_t     bucket;
    ptrdiff_t  firstItemOffset;
    vdseTxStatus  * txStatus;
 
@@ -655,9 +646,7 @@ void vdseMapStatus( vdseMap      * pHashMap,
    pStatus->maxKeyLength  = 0;
    if ( pStatus->numDataItem == 0 ) return;
 
-   listErr = vdseHashGetFirst( &pHashMap->hashObj, 
-                               &bucket,
-                               &firstItemOffset );
+   listErr = vdseHashGetFirst( &pHashMap->hashObj, &firstItemOffset );
    while ( listErr == LIST_OK ) {
       GET_PTR( pHashItem, firstItemOffset, vdseHashItem );
       if ( pHashItem->dataLength > pStatus->maxDataLength ) {
@@ -668,9 +657,7 @@ void vdseMapStatus( vdseMap      * pHashMap,
       }
 
       listErr = vdseHashGetNext( &pHashMap->hashObj, 
-                                 bucket,
                                  firstItemOffset,
-                                 &bucket,
                                  &firstItemOffset );
    }
 }

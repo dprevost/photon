@@ -33,12 +33,10 @@ check_PROGRAMS =                             \
         .\Release\EmptyPass.exe              \
         .\Release\FiniNullHash.exe           \
         .\Release\FiniPass.exe               \
-        .\Release\GetFirstNullBucket.exe     \
         .\Release\GetFirstNullHash.exe       \
         .\Release\GetFirstNullOffset.exe     \
         .\Release\GetFirstPass.exe           \
         .\Release\GetNextNullHash.exe        \
-        .\Release\GetNextNullNextBucket.exe  \
         .\Release\GetNextNullNextOffset.exe  \
         .\Release\GetNextNullPrevOffset.exe  \
         .\Release\GetNextPass.exe            \

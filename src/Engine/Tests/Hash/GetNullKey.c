@@ -69,8 +69,8 @@ int main()
                           NULL,
                           strlen(key2),
                           &pItem,
-                          &context,
-                          &bucket );
+                          &bucket,
+                          &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

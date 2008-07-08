@@ -44,12 +44,10 @@ check_PROGRAMS =               \
         EmptyPass              \
         FiniNullHash           \
         FiniPass               \
-        GetFirstNullBucket     \
         GetFirstNullHash       \
         GetFirstNullOffset     \
         GetFirstPass           \
         GetNextNullHash        \
-        GetNextNullNextBucket  \
         GetNextNullNextOffset  \
         GetNextNullPrevOffset  \
         GetNextPass            \
@@ -113,12 +111,10 @@ EmptyNullHash_SOURCES          = $(COMMON_HEADER) EmptyNullHash.c
 EmptyPass_SOURCES              = $(COMMON_HEADER) EmptyPass.c
 FiniNullHash_SOURCES           = $(COMMON_HEADER) FiniNullHash.c
 FiniPass_SOURCES               = $(COMMON_HEADER) FiniPass.c
-GetFirstNullBucket_SOURCES     = $(COMMON_HEADER) GetFirstNullBucket.c
 GetFirstNullHash_SOURCES       = $(COMMON_HEADER) GetFirstNullHash.c
 GetFirstNullOffset_SOURCES     = $(COMMON_HEADER) GetFirstNullOffset.c
 GetFirstPass_SOURCES           = $(COMMON_HEADER) GetFirstPass.c
 GetNextNullHash_SOURCES        = $(COMMON_HEADER) GetNextNullHash.c
-GetNextNullNextBucket_SOURCES  = $(COMMON_HEADER) GetNextNullNextBucket.c
 GetNextNullNextOffset_SOURCES  = $(COMMON_HEADER) GetNextNullNextOffset.c
 GetNextNullPrevOffset_SOURCES  = $(COMMON_HEADER) GetNextNullPrevOffset.c
 GetNextPass_SOURCES            = $(COMMON_HEADER) GetNextPass.c
@@ -191,12 +187,10 @@ TESTS =                        \
         EmptyPass              \
         FiniNullHash           \
         FiniPass               \
-        GetFirstNullBucket     \
         GetFirstNullHash       \
         GetFirstNullOffset     \
         GetFirstPass           \
         GetNextNullHash        \
-        GetNextNullNextBucket  \
         GetNextNullNextOffset  \
         GetNextNullPrevOffset  \
         GetNextPass            \
@@ -253,13 +247,12 @@ XFAIL_TESTS =                  \
         EmptyNullContext       \
         EmptyNullHash          \
         FiniNullHash           \
-        GetFirstNullBucket     \
         GetFirstNullHash       \
         GetFirstNullOffset     \
         GetNextNullHash        \
-        GetNextNullNextBucket  \
         GetNextNullNextOffset  \
         GetNextNullPrevOffset  \
+        GetNullBucket          \
         GetNullContext         \
         GetNullHash            \
         GetNullItem            \
