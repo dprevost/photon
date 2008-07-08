@@ -16,6 +16,7 @@ check_PROGRAMS =                 \
         .\Release\Close.exe      \
         .\Release\Definition.exe \
         .\Release\Delete.exe     \
+        .\Release\Empty.exe      \
         .\Release\Get.exe        \
         .\Release\GetFirst.exe   \
         .\Release\GetNext.exe    \

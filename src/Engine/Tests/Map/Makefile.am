@@ -25,6 +25,9 @@ check_PROGRAMS =                  \
         DeleteNullKey             \
         DeletePass                \
         DeleteZeroKeyLength       \
+        EmptyNullContext          \
+        EmptyNullMap              \
+        EmptyPass                 \
         FiniNullContext           \
         FiniNullHash              \
         FiniPass                  \
@@ -91,6 +94,9 @@ DeleteNullHash_SOURCES            = $(COMMON_HEADER) DeleteNullHash.c
 DeleteNullKey_SOURCES             = $(COMMON_HEADER) DeleteNullKey.c
 DeletePass_SOURCES                = $(COMMON_HEADER) DeletePass.c
 DeleteZeroKeyLength_SOURCES       = $(COMMON_HEADER) DeleteZeroKeyLength.c
+EmptyNullContext_SOURCES          = $(COMMON_HEADER) EmptyNullContext.c
+EmptyNullMap_SOURCES              = $(COMMON_HEADER) EmptyNullMap.c
+EmptyPass_SOURCES                 = $(COMMON_HEADER) EmptyPass.c
 FiniNullContext_SOURCES           = $(COMMON_HEADER) FiniNullContext.c
 FiniNullHash_SOURCES              = $(COMMON_HEADER) FiniNullHash.c
 FiniPass_SOURCES                  = $(COMMON_HEADER) FiniPass.c
@@ -166,6 +172,9 @@ TESTS =                           \
         DeleteNullKey             \
         DeletePass                \
         DeleteZeroKeyLength       \
+        EmptyNullContext          \
+        EmptyNullMap              \
+        EmptyPass                 \
         FiniNullContext           \
         FiniNullHash              \
         FiniPass                  \
@@ -229,6 +238,8 @@ XFAIL_TESTS =                     \
         DeleteNullHash            \
         DeleteNullKey             \
         DeleteZeroKeyLength       \
+        EmptyNullContext          \
+        EmptyNullMap              \
         FiniNullContext           \
         FiniNullHash              \
         GetFirstNullContext       \

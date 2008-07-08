@@ -19,6 +19,7 @@ check_PROGRAMS =                           \
         .\Release\Delete.exe               \
         .\Release\Definition.exe           \
         .\Release\Edit.exe                 \
+        .\Release\Empty.exe                \
         .\Release\FirstNullEntry.exe       \
         .\Release\FirstNullHandle.exe      \
         .\Release\FirstPass.exe            \

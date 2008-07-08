@@ -23,6 +23,9 @@ check_PROGRAMS =                                \
         .\Release\DeleteNullKey.exe             \
         .\Release\DeletePass.exe                \
         .\Release\DeleteZeroKeyLength.exe       \
+        .\Release\EmptyNullContext.exe          \
+        .\Release\EmptyNullMap.exe              \
+        .\Release\EmptyPass.exe                 \
         .\Release\FiniNullContext.exe           \
         .\Release\FiniNullHash.exe              \
         .\Release\FiniPass.exe                  \

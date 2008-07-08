@@ -1,4 +1,4 @@
-.TH "API functions for vdsf read-only hash maps." 3 "7 Jul 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "API functions for vdsf read-only hash maps." 3 "8 Jul 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -26,6 +26,10 @@ Hash maps use unique keys - the data items are not sorted.
 .RI "VDSF_EXPORT int \fBvdsFastMapEdit\fP (\fBVDS_HANDLE\fP sessionHandle, const char *hashMapName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP *objectHandle)"
 .br
 .RI "\fIOpen a temporary copy of an existing hash map for editing. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFastMapEmpty\fP (\fBVDS_HANDLE\fP objectHandle)"
+.br
+.RI "\fIRemove all data items from the map (you must be in edit mode). \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsFastMapGet\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
@@ -137,6 +141,23 @@ The copy becomes the latest version of the map when a session is committed.
 \fInameLengthInBytes\fP The length of \fIhashMapName\fP (in bytes) not counting the null terminator (null-terminators are not used by the vdsf engine). 
 .br
 \fIobjectHandle\fP The handle to the hash map, allowing us access to the map in shared memory. On error, this handle will be set to zero (NULL) unless the objectHandle pointer itself is NULL.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsFastMapEmpty (\fBVDS_HANDLE\fP objectHandle)"
+.PP
+Remove all data items from the map (you must be in edit mode). 
+.PP
+The removals only become permanent after a call to \fBvdsCommit\fP.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the hash map (see \fBvdsFastMapEdit\fP).
 .RE
 .PP
 \fBReturns:\fP

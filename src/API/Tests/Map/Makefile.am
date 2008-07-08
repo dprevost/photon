@@ -23,6 +23,7 @@ check_PROGRAMS =            \
         Delete              \
         Definition          \
         Edit                \
+        Empty               \
         FirstNullEntry      \
         FirstNullHandle     \
         FirstPass           \
@@ -53,6 +54,7 @@ CreateXML_SOURCES           = CreateXML.c
 Delete_SOURCES              = Delete.c
 Definition_SOURCES          = Definition.c
 Edit_SOURCES                = Edit.c
+Empty_SOURCES               = Empty.c
 FirstNullEntry_SOURCES      = FirstNullEntry.c
 FirstNullHandle_SOURCES     = FirstNullHandle.c
 FirstPass_SOURCES           = FirstPass.c
@@ -84,6 +86,7 @@ EXTRA_DIST =                   \
         Delete.sh              \
         Definition.sh          \
         Edit.sh                \
+        Empty.sh               \
         FirstNullEntry.sh      \
         FirstNullHandle.sh     \
         FirstPass.sh           \
@@ -125,6 +128,7 @@ TESTS =                        \
         Definition.sh          \
         Delete.sh              \
         Edit.sh                \
+        Empty.sh               \
         FirstNullEntry.sh      \
         FirstNullHandle.sh     \
         FirstPass.sh           \

@@ -50,6 +50,16 @@ void vdsFastMapEditor::Delete( const void * key,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void vdsFastMapEditor::Empty()
+{
+   int rc = vdsFastMapEmpty( m_objectHandle );
+   if ( rc != 0 ) {
+      throw vdsException( rc, m_sessionHandle, "vdsFastMapEditor::Empty" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void vdsFastMapEditor::Insert( const void * key,
                                size_t       keyLength,
                                const void * data,

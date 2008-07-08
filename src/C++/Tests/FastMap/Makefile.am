@@ -20,6 +20,7 @@ check_PROGRAMS =   \
         Close      \
         Definition \
         Delete     \
+        Empty      \
         Get        \
         GetFirst   \
         GetNext    \
@@ -31,6 +32,7 @@ check_PROGRAMS =   \
 Close_SOURCES      = Close.cpp
 Definition_SOURCES = Definition.cpp
 Delete_SOURCES     = Delete.cpp
+Empty_SOURCES      = Empty.cpp
 Get_SOURCES        = Get.cpp
 GetFirst_SOURCES   = GetFirst.cpp
 GetNext_SOURCES    = GetNext.cpp
@@ -43,6 +45,7 @@ EXTRA_DIST =           \
         Close.sh       \
         Definition.sh  \
         Delete.sh      \
+        Empty.sh       \
         Get.sh         \
         GetFirst.sh    \
         GetNext.sh     \
@@ -61,11 +64,11 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-#TESTS = Delete.sh
 TESTS =               \
         Close.sh      \
         Definition.sh \
         Delete.sh     \
+        Empty.sh      \
         Get.sh        \
         GetFirst.sh   \
         GetNext.sh    \

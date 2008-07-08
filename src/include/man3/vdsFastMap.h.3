@@ -1,4 +1,4 @@
-.TH "vdsFastMap.h" 3 "7 Jul 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsFastMap.h" 3 "8 Jul 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -43,6 +43,10 @@ Definition in file \fBvdsFastMap.h\fP.
 .RI "VDSF_EXPORT int \fBvdsFastMapEdit\fP (\fBVDS_HANDLE\fP sessionHandle, const char *hashMapName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP *objectHandle)"
 .br
 .RI "\fIOpen a temporary copy of an existing hash map for editing. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsFastMapEmpty\fP (\fBVDS_HANDLE\fP objectHandle)"
+.br
+.RI "\fIRemove all data items from the map (you must be in edit mode). \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsFastMapGet\fP (\fBVDS_HANDLE\fP objectHandle, const void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
