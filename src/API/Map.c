@@ -189,9 +189,9 @@ int vdsFastMapDelete( VDS_HANDLE   objectHandle,
          pVDSHashMap = (vdseMap *) pHashMap->object.pMyVdsObject;
 
          rc = vdseMapDelete( pVDSHashMap,
-                                 key,
-                                 keyLength,
-                                 &pHashMap->object.pSession->context );
+                             key,
+                             keyLength,
+                             &pHashMap->object.pSession->context );
 
          vdsaCommonUnlock( &pHashMap->object );
       }
@@ -283,6 +283,71 @@ int vdsFastMapEdit( VDS_HANDLE   sessionHandle,
       errcode = VDS_SESSION_IS_TERMINATED;
    }
 
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdsFastMapEmpty( VDS_HANDLE objectHandle )
+{
+   vdsaMap * pHashMap;
+   vdseMap * pVDSHashMap;
+   int errcode = 0, rc = 0;
+   
+   pHashMap = (vdsaMap *) objectHandle;
+   if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
+   
+   if ( pHashMap->object.type != VDSA_MAP ) {
+      return VDS_WRONG_TYPE_HANDLE;
+   }
+   
+   if ( pHashMap->object.pSession->terminated ) {
+      errcode = VDS_SESSION_IS_TERMINATED;
+      goto error_handler;
+   }
+
+   if ( pHashMap->editMode == 0 ) {
+      vdscSetError( &pHashMap->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, VDS_OBJECT_IS_READ_ONLY );
+      return VDS_OBJECT_IS_READ_ONLY;
+   }
+
+   if ( vdsaCommonLock( &pHashMap->object ) != 0 ) {
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      goto error_handler;
+   }
+
+   pVDSHashMap = (vdseMap *) pHashMap->object.pMyVdsObject;
+
+   /* Reinitialize the iterator, if needed */
+   if ( pHashMap->iterator.pHashItem != NULL ) {
+      rc = vdseMapRelease( pVDSHashMap,
+                               pHashMap->iterator.pHashItem,
+                               &pHashMap->object.pSession->context );
+
+      if ( rc != 0 ) goto error_handler_unlock;
+      
+      memset( &pHashMap->iterator, 0, sizeof(vdseHashMapItem) );
+   }
+
+   vdseMapEmpty( pVDSHashMap, &pHashMap->object.pSession->context );
+
+   vdsaCommonUnlock( &pHashMap->object );
+
+   return 0;
+
+error_handler_unlock:
+   vdsaCommonUnlock( &pHashMap->object );
+
+error_handler:
+   if ( errcode != 0 ) {
+      vdscSetError( &pHashMap->object.pSession->context.errorHandler, 
+         g_vdsErrorHandle, errcode );
+   }
+   if ( rc != 0 ) {
+      errcode = vdscGetLastError( &pHashMap->object.pSession->context.errorHandler );
+   }
+   
    return errcode;
 }
 

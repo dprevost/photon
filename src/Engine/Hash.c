@@ -648,9 +648,7 @@ void vdseHashEmpty( vdseHash           * pHash,
    
    pHash->numberOfItems = 0;
    pHash->totalDataSizeInBytes = 0;
-   pHash->enumResize = VDSE_HASH_TIME_TO_SHRINK;
-
-   return;
+   pHash->enumResize = isItTimeToResize( pHash );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

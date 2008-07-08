@@ -148,6 +148,28 @@ int vdseMapDelete( vdseMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+void vdseMapEmpty( vdseMap            * pHashMap,
+                   vdseSessionContext * pContext )
+{
+   VDS_PRE_CONDITION( pHashMap != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
+   
+   vdseHashEmpty( &pHashMap->hashObj, pContext );
+
+   /*
+    * Note: we do not check the return value of vdseHashResize since the
+    *       current function removes memory. It would make little sense
+    *       to return "not enough memory", specially since the call 
+    *       itself did work!
+    */
+   if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE ) {
+      vdseHashResize( &pHashMap->hashObj, pContext );
+   }
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 void vdseMapFini( vdseMap        * pHashMap,
                       vdseSessionContext * pContext )
 {

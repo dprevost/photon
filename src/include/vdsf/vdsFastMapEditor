@@ -59,6 +59,15 @@ public:
                 size_t       keyLength );
 
    /**
+    * Remove all data items from the map.
+    *
+    * The removals only become permanent after a call to vdsSession::Commit.
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void Empty();
+   
+   /**
     * Insert a data element in the hash map.
     *
     * The additions only become permanent after a call to vdsSession::Commit.

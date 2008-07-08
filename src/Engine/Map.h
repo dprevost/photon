@@ -77,6 +77,10 @@ int vdseMapDelete( vdseMap            * pHashMap,
                    vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
+void vdseMapEmpty( vdseMap            * pHashMap,
+                   vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
 void vdseMapFini( vdseMap            * pHashMap,
                   vdseSessionContext * pContext );
 

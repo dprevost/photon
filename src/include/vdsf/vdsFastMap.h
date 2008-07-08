@@ -150,6 +150,20 @@ int vdsFastMapEdit( VDS_HANDLE   sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/**
+ * Remove all data items from the map (you must be in edit mode).
+ *
+ * The removals only become permanent after a call to ::vdsCommit.
+ *
+ * \param[in]  objectHandle The handle to the hash map (see ::vdsFastMapEdit).
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
+VDSF_EXPORT
+int vdsFastMapEmpty( VDS_HANDLE objectHandle );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /** 
  * Retrieve the data item identified by the given key from the hash map.
  *
