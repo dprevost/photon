@@ -29,7 +29,6 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
                         vdseSessionContext * pContext )
 {
    enum ListErrors listErr;
-   size_t bucket, previousBucket;
    ptrdiff_t offset, previousOffset;
    vdseHashItem * pItem;
    vdseObjectDescriptor* pDesc = NULL;
@@ -42,7 +41,6 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
    if ( pFolder->hashObj.numberOfItems == 0 ) return rc;
 
    listErr = vdseHashGetFirst( &pFolder->hashObj,
-                               &bucket, 
                                &offset );
    while ( listErr == LIST_OK ) {
       GET_PTR( pItem, offset, vdseHashItem );
@@ -73,12 +71,9 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
             VDS_INV_CONDITION( pDesc_invalid_api_type );
       }
       
-      previousBucket = bucket;
       previousOffset = offset;
       listErr = vdseHashGetNext( &pFolder->hashObj,
-                                 previousBucket,
                                  previousOffset,
-                                 &bucket, 
                                  &offset );
 
       switch ( valid ) {
@@ -115,7 +110,6 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
                VDS_INV_CONDITION( pDesc_invalid_api_type );
          }
          vdseHashDeleteAt( &pFolder->hashObj,
-                           previousBucket,
                            pItem,
                            pContext );
       }

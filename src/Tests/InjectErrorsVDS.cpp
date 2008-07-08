@@ -67,7 +67,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    vdseTxStatus * txItemStatus, * txHashMapStatus;
    unsigned long i, ** apiObj;
    enum ListErrors listErrCode;
-   size_t bucket, previousBucket;
+//   size_t bucket, previousBucket;
    ptrdiff_t offset, previousOffset;
    vdseHashItem * pItem;
    ptrdiff_t* pArray;   
@@ -99,16 +99,12 @@ int AddDefectsHashMaps( vector<myMap> & h )
    txHashMapStatus->usageCounter++;
 
    listErrCode = vdseHashGetFirst( &pHashMap->hashObj,
-                                   &bucket, 
                                    &offset );
    i = 0;
    while ( listErrCode == LIST_OK ) {
-      previousBucket = bucket;
       previousOffset = offset;
       listErrCode = vdseHashGetNext( &pHashMap->hashObj,
-                                     previousBucket,
                                      previousOffset,
-                                     &bucket, 
                                      &offset );
       i++;
       if ( i >= 6 ) break;
@@ -135,7 +131,6 @@ int AddDefectsHashMaps( vector<myMap> & h )
    pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
 
    listErrCode = vdseHashGetFirst( &pHashMap->hashObj,
-                                   &bucket, 
                                    &offset );
    i = 0;
    while ( listErrCode == LIST_OK ) {      
@@ -155,12 +150,9 @@ int AddDefectsHashMaps( vector<myMap> & h )
          txItemStatus->enumStatus = VDSE_TXS_ADDED;
       }
 
-      previousBucket = bucket;
       previousOffset = offset;
       listErrCode = vdseHashGetNext( &pHashMap->hashObj,
-                                     previousBucket,
                                      previousOffset,
-                                     &bucket, 
                                      &offset );
       i++;
 
@@ -200,16 +192,12 @@ int AddDefectsHashMaps( vector<myMap> & h )
       return -1;
    }
    listErrCode = vdseHashGetFirst( &pHashMap->hashObj,
-                                   &bucket, 
                                    &offset );
    i = 0;
    while ( listErrCode == LIST_OK ) {
-      previousBucket = bucket;
       previousOffset = offset;
       listErrCode = vdseHashGetNext( &pHashMap->hashObj,
-                                     previousBucket,
                                      previousOffset,
-                                     &bucket, 
                                      &offset );
       i++;
       if ( i >= 6 ) break;
@@ -229,16 +217,12 @@ int AddDefectsHashMaps( vector<myMap> & h )
       return -1;
    }
    listErrCode = vdseHashGetFirst( &pHashMap->hashObj,
-                                   &bucket, 
                                    &offset );
    i = 0;
    while ( listErrCode == LIST_OK ) {
-      previousBucket = bucket;
       previousOffset = offset;
       listErrCode = vdseHashGetNext( &pHashMap->hashObj,
-                                     previousBucket,
                                      previousOffset,
-                                     &bucket, 
                                      &offset );
       i++;
       if ( i >= 6 ) break;

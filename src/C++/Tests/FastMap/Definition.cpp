@@ -43,8 +43,6 @@ int main( int argc, char * argv[] )
    string fname = "/cpp_hashmap_definition";
    string hname = fname + "/test";
 
-   struct dummy data;
-   char key[] = "My Key";
    size_t len;
    vdsObjectDefinition * pDef = NULL;
    vdsObjectDefinition * pDefHashMap = NULL;
@@ -90,7 +88,6 @@ int main( int argc, char * argv[] )
       session.CreateObject( fname, &folderDef );
       session.CreateObject( hname, pDefHashMap );
       hashmap.Open( hname );
-//      hashmap.Insert( key, strlen(key), &data, sizeof(data) );
    }
    catch( vdsException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

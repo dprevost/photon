@@ -27,7 +27,6 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
                          vdseSessionContext * pContext )
 {
    enum ListErrors listErr;
-   size_t bucket, previousBucket, deletedBucket = -1;
    ptrdiff_t offset, previousOffset;
    vdseHashItem * pItem, * pDeletedItem = NULL;
    vdseTxStatus * txItemStatus;
@@ -37,7 +36,6 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
    if ( pHashMap->hashObj.numberOfItems == 0 ) return rc;
    
    listErr = vdseHashGetFirst( &pHashMap->hashObj,
-                               &bucket, 
                                &offset );
    while ( listErr == LIST_OK ) {
       GET_PTR( pItem, offset, vdseHashItem );
@@ -56,17 +54,14 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
           */
          if ( txItemStatus->enumStatus == VDSE_TXS_ADDED ) {
             vdswEcho( pVerify, "Hash item added but not committed" );
-            deletedBucket = bucket;
             pDeletedItem = pItem;
          }         
          else if ( txItemStatus->enumStatus == VDSE_TXS_REPLACED ) {
             vdswEcho( pVerify, "Hash item replaced but not committed" );
-            deletedBucket = bucket;
             pDeletedItem = pItem;
          }
          else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
             vdswEcho( pVerify, "Hash item deleted and committed" );
-            deletedBucket = bucket;
             pDeletedItem = pItem;
          }
          else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
@@ -90,12 +85,9 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
          }
       }
       
-      previousBucket = bucket;
       previousOffset = offset;
       listErr = vdseHashGetNext( &pHashMap->hashObj,
-                                 previousBucket,
                                  previousOffset,
-                                 &bucket, 
                                  &offset );
 
       /*
@@ -105,7 +97,6 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
        */
       if ( pDeletedItem != NULL && pVerify->doRepair ) {
          vdseHashDeleteAt( &pHashMap->hashObj,
-                           deletedBucket,
                            pDeletedItem,
                            pContext );
          vdswEcho( pVerify, "Hash item removed from the VDS" );
