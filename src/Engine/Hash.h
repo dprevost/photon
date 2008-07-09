@@ -128,21 +128,13 @@ enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
                               vdseSessionContext * pContext );
 
 /*
- * Used to delete an item when you already have a pointer to it 
- * (pHashItem) but the exact position is unknown.
+ * Used to delete an hash item when you know its exact position
+ * (through the vdseHashItem) 
  */
-VDSF_ENGINE_EXPORT 
-enum ListErrors vdseHashDelete( vdseHash            * pHash,
-                                const unsigned char * pKey, 
-                                size_t                keyLength,
-                                vdseHashItem        * pHashItem,
-                                vdseSessionContext  * pContext );
-
-/* Used to delete an hash item when you know its exact position */
 VDSF_ENGINE_EXPORT 
 void vdseHashDelWithItem( vdseHash            * pHash,
                           vdseHashItem        * pItem,
-                         vdseSessionContext  * pContext );
+                          vdseSessionContext  * pContext );
 
 /* Direct delete using the key and nothing else. */
 VDSF_ENGINE_EXPORT 
