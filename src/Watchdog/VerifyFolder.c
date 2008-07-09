@@ -109,9 +109,9 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
             default:
                VDS_INV_CONDITION( pDesc_invalid_api_type );
          }
-         vdseHashDeleteAt( &pFolder->hashObj,
-                           pItem,
-                           pContext );
+         vdseHashDelWithItem( &pFolder->hashObj,
+                              pItem,
+                              pContext );
       }
    }
 

@@ -77,9 +77,9 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseHashDeleteAt( pHash,
-                     pNewItem,
-                     &context );
+   vdseHashDelWithItem( pHash,
+                        pNewItem,
+                        &context );
    if ( listErr != LIST_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

@@ -602,9 +602,9 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
                          memObjType,
                          pContext );
       if ( rc != 0 ) {
-         vdseHashDeleteAt( &pFolder->hashObj, 
-                           pHashItemNew,
-                           pContext );
+         vdseHashDelWithItem( &pFolder->hashObj, 
+                              pHashItemNew,
+                              pContext );
          vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
                          ptr, pMemObject->totalBlocks, pContext );
          goto the_exit;
@@ -631,9 +631,9 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
 
       if ( rc != 0 ) {
          vdseTxRemoveLastOps( (vdseTx*)pContext->pTransaction, pContext );
-         vdseHashDeleteAt( &pFolder->hashObj, 
-                           pHashItemNew,
-                           pContext );
+         vdseHashDelWithItem( &pFolder->hashObj, 
+                              pHashItemNew,
+                              pContext );
          vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
                          ptr, pMemObject->totalBlocks, pContext );
          goto the_exit;
@@ -1477,9 +1477,9 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
       free( pDesc ); 
       pDesc = NULL;
       if ( rc != 0 ) {
-         vdseHashDeleteAt( &pFolder->hashObj, 
-                           pHashItem,
-                           pContext );
+         vdseHashDelWithItem( &pFolder->hashObj, 
+                              pHashItem,
+                              pContext );
          vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
                          ptr, numBlocks, pContext );
          goto the_exit;
@@ -1557,9 +1557,9 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
 
       if ( rc != 0 ) {
          vdseTxRemoveLastOps( (vdseTx*)pContext->pTransaction, pContext );
-         vdseHashDeleteAt( &pFolder->hashObj,
-                           pHashItem,
-                           pContext );
+         vdseHashDelWithItem( &pFolder->hashObj,
+                              pHashItem,
+                              pContext );
          vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
                          ptr, numBlocks, pContext );
          goto the_exit;
@@ -1751,9 +1751,9 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
     *
     * Note: the hash array will release the memory of the hash item.
     */
-   vdseHashDeleteAt( &pFolder->hashObj, 
-                     pHashItem,
-                     pContext );
+   vdseHashDelWithItem( &pFolder->hashObj, 
+                        pHashItem,
+                        pContext );
 
    pFolder->nodeObject.txCounter--;
 

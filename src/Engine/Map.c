@@ -124,10 +124,10 @@ int vdseMapDelete( vdseMap            * pHashMap,
    VDS_PRE_CONDITION( keyLength > 0 );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
    
-   listErr = vdseHashDeleteRaw( &pHashMap->hashObj, 
-                                (unsigned char *)pKey,
-                                keyLength,
-                                pContext );
+   listErr = vdseHashDelWithKey( &pHashMap->hashObj, 
+                                 (unsigned char *)pKey,
+                                 keyLength,
+                                 pContext );
    if ( listErr != LIST_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NO_SUCH_ITEM );
       return -1;

@@ -495,9 +495,9 @@ vdseHashDelete( vdseHash            * pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseHashDeleteAt( vdseHash           * pHash,
-                       vdseHashItem       * pItem,
-                       vdseSessionContext * pContext )
+void vdseHashDelWithItem( vdseHash           * pHash,
+                          vdseHashItem       * pItem,
+                          vdseSessionContext * pContext )
 {
    ptrdiff_t * pArray;
    vdseHashItem * pNewItem = NULL, * previousItem = NULL;
@@ -552,10 +552,10 @@ void vdseHashDeleteAt( vdseHash           * pHash,
  * changes to a temp. copy of read-only objects - no transaction.
  */
 enum ListErrors 
-vdseHashDeleteRaw( vdseHash            * pHash,
-                   const unsigned char * pKey, 
-                   size_t                keyLength,
-                   vdseSessionContext  * pContext  )
+vdseHashDelWithKey( vdseHash            * pHash,
+                    const unsigned char * pKey, 
+                    size_t                keyLength,
+                    vdseSessionContext  * pContext  )
 {
    size_t bucket = 0;
    ptrdiff_t * pArray;

@@ -96,9 +96,9 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
        * retrieve the next item.
        */
       if ( pDeletedItem != NULL && pVerify->doRepair ) {
-         vdseHashDeleteAt( &pHashMap->hashObj,
-                           pDeletedItem,
-                           pContext );
+         vdseHashDelWithItem( &pHashMap->hashObj,
+                              pDeletedItem,
+                              pContext );
          vdswEcho( pVerify, "Hash item removed from the VDS" );
       }
       pDeletedItem = NULL;

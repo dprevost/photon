@@ -140,16 +140,16 @@ enum ListErrors vdseHashDelete( vdseHash            * pHash,
 
 /* Used to delete an hash item when you know its exact position */
 VDSF_ENGINE_EXPORT 
-void vdseHashDeleteAt( vdseHash            * pHash,
-                       vdseHashItem        * pItem,
-                       vdseSessionContext  * pContext );
+void vdseHashDelWithItem( vdseHash            * pHash,
+                          vdseHashItem        * pItem,
+                         vdseSessionContext  * pContext );
 
 /* Direct delete using the key and nothing else. */
 VDSF_ENGINE_EXPORT 
-enum ListErrors vdseHashDeleteRaw( vdseHash            * pHash,
-                                   const unsigned char * pKey, 
-                                   size_t                keyLength,
-                                   vdseSessionContext  * pContext );
+enum ListErrors vdseHashDelWithKey( vdseHash            * pHash,
+                                    const unsigned char * pKey, 
+                                    size_t                keyLength,
+                                    vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT 
 void vdseHashEmpty( vdseHash           * pHash,

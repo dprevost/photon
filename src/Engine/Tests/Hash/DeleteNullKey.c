@@ -63,11 +63,10 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashDelete( pHash,
-                             NULL,
-                             strlen(key2),
-                             pNewItem,
-                             &context );
+   listErr = vdseHashDelWithKey( pHash,
+                                 NULL,
+                                 strlen(key2),
+                                 &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

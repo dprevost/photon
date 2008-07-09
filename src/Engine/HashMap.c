@@ -92,9 +92,9 @@ void vdseHashMapCommitRemove( vdseHashMap        * pHashMap,
     * we mark it as a committed remove
     */
    if ( txItemStatus->usageCounter == 0 ) {
-      vdseHashDeleteAt( &pHashMap->hashObj, 
-                        pHashItem,
-                        pContext );
+      vdseHashDelWithItem( &pHashMap->hashObj, 
+                           pHashItem,
+                           pContext );
       pHashMap->nodeObject.txCounter--;
 
       /*
@@ -764,9 +764,9 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
                          0,
                          pContext );
       if ( rc != 0 ) {
-         vdseHashDeleteAt( &pHashMap->hashObj,
-                           pHashItem,
-                           pContext );
+         vdseHashDelWithItem( &pHashMap->hashObj,
+                              pHashItem,
+                              pContext );
          goto the_exit;
       }
       
@@ -840,7 +840,6 @@ void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
                                vdseHashItem       * pHashItem,
                                vdseSessionContext * pContext )
 {
-   enum ListErrors listErr = LIST_OK;
    vdseTxStatus * txItemStatus, * txHashMapStatus;
    
    VDS_PRE_CONDITION( pHashMap  != NULL );
@@ -858,14 +857,10 @@ void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
    if ( (txItemStatus->usageCounter == 0) && 
       txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
       /* Time to really delete the record! */
-      listErr = vdseHashDelete( &pHashMap->hashObj, 
-                                pHashItem->key,
-                                pHashItem->keyLength,
-                                pHashItem,
-                                pContext );
+      vdseHashDelWithItem( &pHashMap->hashObj, 
+                           pHashItem,
+                           pContext );
       pHashMap->nodeObject.txCounter--;
-
-      VDS_POST_CONDITION( listErr == LIST_OK );
    }
    
    /*
@@ -970,9 +965,9 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
                          0,
                          pContext );
       if ( rc != 0 ) {
-         vdseHashDeleteAt( &pHashMap->hashObj, 
-                           pNewHashItem,
-                           pContext );
+         vdseHashDelWithItem( &pHashMap->hashObj, 
+                              pNewHashItem,
+                              pContext );
          goto the_exit;
       }
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
@@ -983,9 +978,9 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
                          0,
                          pContext );
       if ( rc != 0 ) {
-         vdseHashDeleteAt( &pHashMap->hashObj, 
-                           pNewHashItem,
-                           pContext );
+         vdseHashDelWithItem( &pHashMap->hashObj, 
+                              pNewHashItem,
+                              pContext );
          vdseTxRemoveLastOps( (vdseTx*)pContext->pTransaction, pContext );
          goto the_exit;
       }
@@ -1048,9 +1043,9 @@ void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap,
     * the memory object).
     */
    if ( txItemStatus->usageCounter == 0 ) {
-      vdseHashDeleteAt( &pHashMap->hashObj, 
-                        pHashItem,
-                        pContext );
+      vdseHashDelWithItem( &pHashMap->hashObj, 
+                           pHashItem,
+                           pContext );
       pHashMap->nodeObject.txCounter--;
    
       VDS_POST_CONDITION( errcode == LIST_OK );
