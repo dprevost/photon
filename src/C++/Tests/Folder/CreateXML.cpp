@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
    string name = "/cpp_folder_createXML";
    string subname = "test";
    vdsObjectDefinition def; 
-
+   
    char buff[1000];
    char src_path[PATH_MAX] = {"../../../XML/vdsf_md10.xsd"};
 
@@ -44,6 +44,10 @@ int main( int argc, char * argv[] )
       }
       else {
          process.Init( "10701" );
+      }
+      if ( argc > 2 ) {
+         strcpy( src_path, argv[2] );
+         strcat( src_path, "/src/XML/vdsf_md10.xsd" );
       }
       session.Init();
       session.CreateObject( name, &def );

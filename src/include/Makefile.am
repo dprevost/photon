@@ -16,6 +16,7 @@ HEADER_FILES =                                      \
         $(top_srcdir)/src/include/vdsf/vdsFastMap.h \
         $(top_srcdir)/src/include/vdsf/vdsFolder.h  \
         $(top_srcdir)/src/include/vdsf/vdsHashMap.h \
+        $(top_srcdir)/src/include/vdsf/vdsLifo.h    \
         $(top_srcdir)/src/include/vdsf/vdsQueue.h   \
         $(top_srcdir)/src/include/vdsf/vdsProcess.h \
         $(top_srcdir)/src/include/vdsf/vdsSession.h 
@@ -112,23 +113,27 @@ EXTRA_DIST =                  \
         man3/vdsQueue.3       \
         man3/vdsSession.3     
 
-nobase_include_HEADERS =  \
-        vdsf/vdsCommon.h  \
-        vdsf/vdsErrors.h  \
-        vdsf/vdsFastMap.h \
-        vdsf/vdsFolder.h  \
-        vdsf/vdsHashMap.h \
-        vdsf/vdsProcess.h \
-        vdsf/vdsQueue.h   \
-        vdsf/vdsSession.h \
-        vdsf/vds.h        \
-        vdsf/vds          \
-        vdsf/vdsException \
-        vdsf/vdsFolder    \
-        vdsf/vdsHashMap   \
-        vdsf/vdsProcess   \
-        vdsf/vdsQueue     \
-        vdsf/vdsSession   
+nobase_include_HEADERS =      \
+        vdsf/vdsCommon.h      \
+        vdsf/vdsErrors.h      \
+        vdsf/vdsFastMap.h     \
+        vdsf/vdsFolder.h      \
+        vdsf/vdsHashMap.h     \
+        vdsf/vdsLifo.h        \
+        vdsf/vdsProcess.h     \
+        vdsf/vdsQueue.h       \
+        vdsf/vdsSession.h     \
+        vdsf/vds.h            \
+        vdsf/vds              \
+        vdsf/vdsException     \
+        vdsf/vdsFastMap       \
+        vdsf/vdsFastMapEditor \
+        vdsf/vdsFolder        \
+        vdsf/vdsHashMap       \
+        vdsf/vdsLifo          \
+        vdsf/vdsProcess       \
+        vdsf/vdsQueue         \
+        vdsf/vdsSession       
 
 #
 # Only rebuild the man pages if doxygen is present.
