@@ -23,8 +23,8 @@ INTDIR_RELEASE = .\Release
 OUTDIR_DEBUG   = .\Debug
 INTDIR_DEBUG   = .\Debug
 
-LIBXML2_INCLUDE = "C:\Program Files\libxml2\include"
-LIBXML2_LIB     = "C:\Program Files\libxml2\lib\libxml2.lib"
+LIBXML2_INCLUDE = "c:\Program Files\libxml2\include"
+LIBXML2_LIB     = "c:\Program Files\libxml2\lib\libxml2.lib"
 
 CLEANFILES = *~ *.dep *.plg vc60.* *.ncb
 
@@ -40,9 +40,10 @@ OBJS_RELEASE=                                  \
         "$(INTDIR_RELEASE)\api.obj"            \
         "$(INTDIR_RELEASE)\CommonObject.obj"   \
         "$(INTDIR_RELEASE)\Connector.obj"      \
-	"$(INTDIR_RELEASE)\DataDefinition.obj" \
+        "$(INTDIR_RELEASE)\DataDefinition.obj" \
         "$(INTDIR_RELEASE)\Folder.obj"         \
         "$(INTDIR_RELEASE)\HashMap.obj"        \
+        "$(INTDIR_RELEASE)\Lifo.obj"           \
         "$(INTDIR_RELEASE)\Map.obj"            \
         "$(INTDIR_RELEASE)\Process.obj"        \
         "$(INTDIR_RELEASE)\Queue.obj"          \
