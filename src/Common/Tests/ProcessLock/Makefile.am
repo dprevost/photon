@@ -14,6 +14,10 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
+# This flag allows you to examine the assembler output produced by the
+# gcc compiler. Useful for debugging, once in a while...
+# AM_CPPFLAGS += -save-temps
+
 check_PROGRAMS =             \
         AcquireInvalidSig    \
         AcquireNullLock      \

@@ -16,6 +16,10 @@ CLEANFILES = *~ arch/*~
 
 SUBDIRS = . Tests
 
+# This flag allows you to examine the assembler output produced by the
+# gcc compiler. Useful for debugging, once in a while...
+# AM_CPPFLAGS += -save-temps
+
 noinst_LTLIBRARIES   = libCommon.la
 
 libCommon_la_SOURCES =  \

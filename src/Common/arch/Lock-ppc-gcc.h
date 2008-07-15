@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
  * This file is part of the vdsf (Virtual Data Space Framework) Library.
  *
@@ -24,24 +24,25 @@
  * http://publib.boulder.ibm.com/infocenter/systems/index.jsp?topic=/com.ibm.aix.aixassem/doc/alangref/lwarx.htm
  */
 
-#define POWER_PC_LOCK                                               \
-__asm__ __volatile__ (                                              \
-   "loop:\t"                                                        \
-   "lwarx    %0,0,%2 \n\t" /* Load and reserve */                   \
-   "cmpwi    0,%0,0 \n\t"  /* Is the lock value equal to zero */    \
-   "bne-     exit\n\t"     /* No? Exit - the lock is taken */       \
-   "stwcx.   %1,0,%2\n\t"  /* Store the value in %1 at  %2 */       \
-   "bne-     loop\n\t"     /* We lost the reservation but the */    \
-                           /* lock was zero when we started so we */\
-                           /* try again  without a potential */     \
-                           /* timeout */                            \
-   "isync\n\t"             /* Full memory barrier */                \
-   "exit: "                                                         \
-   : "=&r"(oldLockValue) /* modifier '&': the output is set */      \
-                         /* before the input(s) are used - do not */\
-                         /* reuse an input reg. */                  \
-   : "r" (lockValue), "m"(&pLock->lock)                             \
-   : "cr0", "memory" ); /* cr0: condition register 0 */             
+#define POWER_PC_LOCK                                              \
+__asm__ __volatile__ (                                             \
+   "nop      \n"                                                   \
+   "1:       \n\t"                                                 \
+   "lwarx    %0,0,%2\n\t" /* Load and reserve */                   \
+   "cmpwi    0,%0,0\n\t"  /* Is the lock value equal to zero */    \
+   "bne-     2f\n\t"      /* No? Exit - the lock is taken */       \
+   "stwcx.   %1,0,%2\n\t" /* Store the value in %1 at  %2 */       \
+   "bne-     1b\n\t"      /* We lost the reservation but the */    \
+                          /* lock was zero when we started so we */\
+                          /* try again  without a potential */     \
+                          /* timeout */                            \
+   "isync\n"              /* Full memory barrier */                \
+   "2: "                                                           \
+   : "=&r"(oldLockValue)  /* modifier '&': the output is set */    \
+                          /* before the input(s) are used - do */  \
+                          /* not reuse an input reg. */            \
+   : "r" (lockValue), "r"(&pLock->lock)                            \
+   : "cr0", "memory" );   /* cr0: condition register 0 */             
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -50,13 +51,18 @@ vdscAcquireProcessLock( vdscProcessLock * pLock,
                         pid_t             pid_locker )
 {
    int lockValue = 0xff, oldLockValue;
+   volatile vds_lock_T * pLockLock;
 
    VDS_PRE_CONDITION( pLock != NULL );
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( pid_locker != 0 );
 
+   pLockLock = &pLock->lock;
+
    for (;;) {
+
       POWER_PC_LOCK
+
       if ( oldLockValue == 0 ) {
          pLock->pid = pid_locker;
          return;
@@ -73,11 +79,13 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
                            unsigned int      milliSecs )
 {
    int lockValue = 0xff, oldLockValue;
+   vds_lock_T * pLockLock;
 
    VDS_PRE_CONDITION( pLock != NULL );
    VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( pid_locker != 0 );
 
+   pLockLock = &pLock->lock;
    POWER_PC_LOCK
    
    if ( oldLockValue != 0 ) {
