@@ -164,21 +164,9 @@ size_t calculateItemLength( size_t keyLength,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline 
-unsigned char * getData( vdseHashItem * pItem )
-{
-   size_t len;
-   
-   len = offsetof(vdseHashItem, key) + pItem->keyLength;
-   len = ((len-1)/VDSC_ALIGNMENT_STRUCT + 1)*VDSC_ALIGNMENT_STRUCT;
-   
-   return (unsigned char*)pItem + len;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
+/* Just in case a new function is used instead, one of these days */
 static inline u_long
-hash_pjw (const unsigned char * str, size_t len)
+hash_it (const unsigned char * str, size_t len)
 {
    return fnv_buf( (void *)str, len, FNV1_INIT );
 }
@@ -205,49 +193,6 @@ vdseHashResizeEnum isItTimeToResize( vdseHash * pHash )
  * 
  * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
- * 
- * This function is to be used when you have a pointer to the item but you
- * don't know in which bucket.
- *
- * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-static bool findBucket( vdseHash            * pHash,
-                        ptrdiff_t           * pArray,
-                        const unsigned char * pKey,
-                        size_t                keyLength,
-                        vdseHashItem        * pHashItem,
-                        vdseHashItem       ** ppPreviousItem,
-                        vdseHashItem       ** ppPreviousSameKey,    
-                        size_t              * pBucket )
-{
-   ptrdiff_t currentOffset, nextOffset, itemOffset;
-   vdseHashItem* pItem;
-
-   *pBucket = hash_pjw( pKey, keyLength ) % g_vdseArrayLengths[pHash->lengthIndex];
-   currentOffset = pArray[*pBucket];
-   
-   *ppPreviousItem = NULL;
-   *ppPreviousSameKey = NULL;
-   itemOffset = SET_OFFSET( pHashItem );
-   
-   while ( currentOffset != VDSE_NULL_OFFSET ) {
-      GET_PTR( pItem, currentOffset, vdseHashItem );
-      nextOffset = pItem->nextItem;
-
-      if ( pHashItem == pItem ) return true;
-
-      if ( pItem->nextSameKey == itemOffset ) *ppPreviousSameKey = pItem;
-
-      /* Move to the next item in our bucket */      
-      currentOffset = nextOffset;
-      *ppPreviousItem = pItem;
-   }
-   
-   /* Nothing was found, return false */
-   return false;
-}
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static bool findKey( vdseHash            * pHash,
@@ -261,7 +206,7 @@ static bool findKey( vdseHash            * pHash,
    ptrdiff_t currentOffset, nextOffset;
    vdseHashItem* pItem;
 
-   *pBucket = hash_pjw( pKey, keyLength ) % g_vdseArrayLengths[pHash->lengthIndex];
+   *pBucket = hash_it( pKey, keyLength ) % g_vdseArrayLengths[pHash->lengthIndex];
    currentOffset = pArray[*pBucket];
    
    *ppPreviousItem = NULL;
@@ -286,25 +231,6 @@ static bool findKey( vdseHash            * pHash,
    *ppItem = NULL;
    
    return false;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-static void findLastItemInBucket( ptrdiff_t     * pArray,
-                                  size_t          bucket,
-                                  vdseHashItem ** ppLastItem )
-{
-   ptrdiff_t currentOffset;
-   vdseHashItem* pItem;
-
-   *ppLastItem = NULL;
-   currentOffset = pArray[bucket];
-
-   while ( currentOffset != VDSE_NULL_OFFSET ) {
-      GET_PTR( pItem, currentOffset, vdseHashItem );
-      currentOffset = pItem->nextItem;     
-      *ppLastItem = pItem;
-   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
@@ -398,7 +324,7 @@ enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
                                    pOldItem->dataLength;
 
             /* Set the chain */
-            newBucket = hash_pjw( pNewItem->key, pNewItem->keyLength ) % 
+            newBucket = hash_it( pNewItem->key, pNewItem->keyLength ) % 
                         g_vdseArrayLengths[pNewHash->lengthIndex];
             pNewItem->bucket = newBucket;
             if ( pNewArray[newBucket] == VDSE_NULL_OFFSET ) {
@@ -871,6 +797,7 @@ vdseHashInsertAt( vdseHash            * pHash,
    vdseHashItem* pItem, *previousItem = NULL;
    size_t itemLength;
    vdseMemObject * pMemObject;
+   ptrdiff_t currentOffset;
    
    VDS_PRE_CONDITION( pHash     != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
@@ -886,9 +813,12 @@ vdseHashInsertAt( vdseHash            * pHash,
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
-   findLastItemInBucket( pArray,
-                         bucket,
-                         &previousItem );
+   currentOffset = pArray[bucket];
+
+   while ( currentOffset != VDSE_NULL_OFFSET ) {
+      GET_PTR( previousItem, currentOffset, vdseHashItem );
+      currentOffset = previousItem->nextItem;     
+   }
 
    GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
    
@@ -974,7 +904,7 @@ vdseHashResize( vdseHash           * pHash,
          nextOffset = pItem->nextItem;
          pItem->nextItem = VDSE_NULL_OFFSET;
          
-         newBucket = hash_pjw( pItem->key, pItem->keyLength ) % 
+         newBucket = hash_it( pItem->key, pItem->keyLength ) % 
                      g_vdseArrayLengths[newIndexLength];
          pItem->bucket = newBucket;
          if ( ptr[newBucket] == VDSE_NULL_OFFSET ) {
