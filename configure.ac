@@ -471,6 +471,7 @@ AC_CONFIG_FILES([
    src/API/Tests/Folder/Makefile
    src/API/Tests/HashMap/Makefile
    src/API/Tests/Lifo/Makefile
+   src/API/Tests/ListReaders/Makefile
    src/API/Tests/Map/Makefile
    src/API/Tests/Process/Makefile
    src/API/Tests/Queue/Makefile

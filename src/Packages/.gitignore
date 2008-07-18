@@ -1,0 +1,6 @@
+/buildDeb.sh
+/control
+/vdsf.spec
+/*.deb
+/*.rpm
+/Output

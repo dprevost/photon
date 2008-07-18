@@ -1,0 +1,12 @@
+/Makefile
+/Makefile.in
+/Debug
+/Release
+/ClosePass
+/Create
+/CreateXML
+/Destroy
+/GetFirstPass
+/GetNextPass
+/OpenPass
+/StatusPass

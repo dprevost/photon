@@ -21,6 +21,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
+#include "API/api.h"
 
 #define VDSA_LIST_READER_SIG 0x1e216507
 

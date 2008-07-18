@@ -1,0 +1,14 @@
+/Makefile
+/Makefile.in
+/Debug
+/Release
+/Commit
+/Create
+/Destroy
+/ErrorMsg
+/Exit
+/GetInfo
+/Init
+/LastError
+/Rollback
+/Status

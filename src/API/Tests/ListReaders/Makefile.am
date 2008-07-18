@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -14,27 +14,31 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =            \
-        Api          \
-        CommonObject \
-        Folder       \
-        HashMap      \
-        Lifo         \
-        ListReaders  \
-        Map          \
-        Process      \
-        Queue        \
-        Session      
+AM_LDFLAGS = @LIBXML2_LIBS@
 
-EXTRA_DIST =               \
-        Makefile.inc.win32 \
-        Makefile.win32     
+check_PROGRAMS =        \
+        ListTest
+
+ListTest_SOURCES = ListTest.c
+
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
+        tcp_port=10701               \
+        top_srcdir=$(top_srcdir)     \
         srcdir=$(srcdir)             \
         top_builddir=$(top_builddir) \
         verbose=1                    \
-        PYTHON=$(PYTHON)             
+        PYTHON=$(PYTHON)
 
-LDADD = $(top_builddir)/src/API/libvdsf.la
+TESTS =          \
+        ListTest 
+
+XFAIL_TESTS = 
+
+LDADD = $(top_builddir)/src/API/libvdsf.la      \
+        $(top_builddir)/src/Engine/libEngine.la \
+        $(top_builddir)/src/Common/libCommon.la
 

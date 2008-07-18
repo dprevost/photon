@@ -1,0 +1,13 @@
+/Makefile
+/Makefile.in
+/vdswd
+/*.a
+/Debug
+/Release
+/vc60.pdb
+/vc60.idb
+/Watchdog.mak
+/Watchdog.ncb
+/Watchdog.opt
+/Watchdog.dep
+/Watchdog.plg
