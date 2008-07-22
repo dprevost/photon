@@ -495,6 +495,28 @@ void vdseTxRollback( vdseTx             * pTx,
 
          break;
 
+      case VDSE_TX_ADD_EDIT_OBJECT:
+
+         VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
+
+         GET_PTR( parentFolder, pOps->parentOffset, vdseFolder );
+         GET_PTR( pHashItem, pOps->childOffset, vdseHashItem );
+         GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+         
+         vdseLockNoFailure( &parentFolder->memObject, pContext );
+
+         vdseFolderRollbackEdit( parentFolder, 
+                                 pHashItem, pOps->childType, pContext );
+         
+         parentFolder->nodeObject.txCounter--;
+
+         /* If needed */
+         vdseFolderResize( parentFolder, pContext );
+
+         vdseUnlock( &parentFolder->memObject, pContext );
+         
+         break;
+
       case VDSE_TX_REMOVE_OBJECT:
 
          VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );

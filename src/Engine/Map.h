@@ -68,6 +68,7 @@ VDSF_ENGINE_EXPORT
 int vdseMapCopy( vdseMap            * pHashMap, 
                  vdseMap            * pNewMap,
                  vdseHashItem       * pHashItem,
+                 const char         * origName,
                  vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT

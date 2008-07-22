@@ -45,9 +45,11 @@ enum vdseTxStatusEnum
    VDSE_TXS_OK = 0,
    VDSE_TXS_DESTROYED,
    VDSE_TXS_ADDED,
-   VDSE_TX_EDIT,
-   VDSE_TXS_REPLACED,
-   VDSE_TXS_DESTROYED_COMMITTED
+   VDSE_TXS_EDIT,
+   VDSE_TXS_REPLACED, /* When a data item is replaced */
+   VDSE_TXS_DESTROYED_COMMITTED,
+   /* When a new version of an object is committed */
+   VDSE_TXS_VERSION_REPLACED 
 };
 typedef enum vdseTxStatusEnum vdseTxStatusEnum;
 

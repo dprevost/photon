@@ -181,6 +181,13 @@ VDSF_ENGINE_EXPORT
 void vdseFolderResize( vdseFolder         * pFolder, 
                        vdseSessionContext * pContext  );
 
+
+VDSF_ENGINE_EXPORT
+void vdseFolderRollbackEdit( vdseFolder          * pFolder,
+                             vdseHashItem        * pHashItem, 
+                             enum vdsObjectType    objectType,
+                             vdseSessionContext  * pContext );
+
 VDSF_ENGINE_EXPORT
 void vdseFolderStatus( vdseFolder   * pFolder,
                        vdsObjStatus * pStatus );

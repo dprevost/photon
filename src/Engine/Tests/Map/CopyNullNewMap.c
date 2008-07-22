@@ -27,7 +27,6 @@ int main()
    vdseMap * pOldMap, * pNewMap;
    vdseSessionContext context;
    int errcode;
-   vdseTxStatus status;
    char * key1  = "my key1";
    char * key2  = "my key2";
    char * data1 = "my data1";
@@ -42,17 +41,11 @@ int main()
    
    initHashMapCopyTest( expectedToPass, &pOldMap, &pNewMap, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   vdseTxStatusInit( &hashItem.txStatus, SET_OFFSET( context.pTransaction ) );
    
    errcode = vdseMapInit( pOldMap, 
-                          0, 1, 0, &status, 4, 
+                          0, 1, 0, &hashItem.txStatus, 4, 
                           "Map1", SET_OFFSET(pOldMap), &def, &context );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   errcode = vdseMapInit( pNewMap, 
-                          0, 1, 0, &status, 4, 
-                          "Map1", SET_OFFSET(pNewMap), &def, &context );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -79,6 +72,7 @@ int main()
    errcode = vdseMapCopy( pOldMap, 
                           NULL,
                           &hashItem,
+                          "Map1",
                           &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

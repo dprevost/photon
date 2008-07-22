@@ -46,6 +46,8 @@ void vdseFolderCommitEdit( vdseFolder         * pFolder,
    vdseObjectDescriptor * pDesc, * pDescLatest;
    vdseMap * pMapLatest, * pMapEdit;
    vdseHashItem * pHashItemLatest;
+   vdseTreeNode * node;
+   vdseTxStatus * tx;
    
    VDS_PRE_CONDITION( pFolder   != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
@@ -68,6 +70,16 @@ void vdseFolderCommitEdit( vdseFolder         * pFolder,
    pMapEdit->editVersion   = VDSE_NULL_OFFSET;
    pMapLatest->latestVersion = SET_OFFSET(pHashItem);
    pMapEdit->latestVersion = SET_OFFSET(pHashItem);
+
+   node = GET_PTR_FAST( pDesc->nodeOffset, vdseTreeNode );
+   tx = GET_PTR_FAST( node->txStatusOffset, vdseTxStatus );
+   vdseTxStatusClearTx( tx );
+
+   pHashItemLatest->txStatus.enumStatus = VDSE_TXS_VERSION_REPLACED;
+   /* Reminder: pHashItemLatest is now the old version */
+   vdseFolderReleaseNoLock( pFolder,
+                            pHashItemLatest,
+                            pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -456,7 +468,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
    vdseHashItem * pHashItemOld = NULL, * pHashItemNew = NULL;
    int rc;
    vdsErrors errcode;
-   vdseTxStatus * txStatus;
+   vdseTxStatus * txStatus, * newTxStatus;
    vdseTxStatus * txFolderStatus;
    vdseFolder * pNextFolder;
    vdseMemObject * pMemObject;
@@ -518,13 +530,17 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
             errcode = VDS_NO_SUCH_OBJECT;
             goto the_exit;
          }
+         if ( txStatus->enumStatus == VDSE_TXS_EDIT ) {
+            errcode = VDS_A_SINGLE_UPDATER_IS_ALLOWED;
+            goto the_exit;
+         }
          if ( txStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
             txStatus->enumStatus == VDSE_TXS_DESTROYED ) {
             errcode = VDS_OBJECT_IS_DELETED;
             goto the_exit;
          }
-         if ( txStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-            txStatus->enumStatus == VDSE_TXS_ADDED ) {
+         if ( txStatus->txOffset != SET_OFFSET(pContext->pTransaction) ||
+            txStatus->enumStatus != VDSE_TXS_ADDED ) {
             errcode = VDS_OBJECT_IS_IN_USE;
             goto the_exit;
          }
@@ -579,6 +595,8 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
                                   descLength,
                                   &pHashItemNew,
                                   pContext );
+      free( pDescNew );
+      pDescNew = NULL;
       if ( listErr != LIST_OK ) {
          vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
                          ptr, pMemObject->totalBlocks, pContext );
@@ -591,8 +609,8 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
          }
          goto the_exit;
       }
-      free( pDescNew );
-      pDescNew = NULL;
+
+      pDescNew = GET_PTR_FAST(pHashItemNew->dataOffset, vdseObjectDescriptor);
 
       rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_ADD_EDIT_OBJECT,
@@ -610,18 +628,21 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
          goto the_exit;
       }
       
-//      objTxStatus = &pHashItemNew->txStatus;
-//      vdseTxStatusInit( objTxStatus, SET_OFFSET(pContext->pTransaction) );
-//      objTxStatus->enumStatus = VDSE_TX_EDIT;
+      newTxStatus = &pHashItemNew->txStatus;
+      vdseTxStatusInit( newTxStatus, SET_OFFSET(pContext->pTransaction) );
+      newTxStatus->enumStatus = VDSE_TXS_EDIT;
+      txStatus->txOffset = SET_OFFSET(pContext->pTransaction);
+      txStatus->enumStatus = VDSE_TXS_EDIT;
       
-//      pDescNew = GET_PTR_FAST( pHashItemNew->dataOffset, vdseObjectDescriptor );
-
       switch ( memObjType ) {
       case VDSE_IDENT_MAP:
          rc = vdseMapCopy( pMap, /* old, */
                            (vdseMap *)ptr,
                            pHashItemNew,
+                           pDescNew->originalName,
                            pContext );
+         pDescNew->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseMap,nodeObject);
+         pDescNew->memOffset  = SET_OFFSET(ptr) + offsetof(vdseMap,memObject);
          break;
 
       default:
@@ -643,6 +664,9 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
       txFolderStatus->usageCounter++;
       txStatus->parentCounter++;
       pFolderItem->pHashItem = pHashItemNew;
+
+      pHashItemNew->txStatus.parentCounter = 1;
+      pHashItemNew->txStatus.usageCounter = 0;
 
       vdseUnlock( &pFolder->memObject, pContext );
 
@@ -1192,6 +1216,9 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
             vdseQueueStatus( GET_PTR_FAST( pDesc->memOffset, vdseQueue ),
                              pStatus );
             break;
+         case VDS_FAST_MAP:
+            vdseMapStatus( GET_PTR_FAST( pDesc->memOffset, vdseMap ), pStatus );
+            break;
          default:
             VDS_INV_CONDITION( pDesc_invalid_api_type );
          }
@@ -1546,8 +1573,8 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
                            SET_OFFSET(pHashItem),
                            pDefinition,
                            pContext );
-         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseHashMap,nodeObject);
-         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseHashMap,memObject);
+         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseMap,nodeObject);
+         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseMap,memObject);
          break;
 
       default:
@@ -1703,14 +1730,14 @@ void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
     * a remove was indeed committed.
     */
    if ( (txItemStatus->parentCounter == 0) && 
-      (txItemStatus->usageCounter == 0) &&
-      vdseTxStatusIsRemoveCommitted(txItemStatus) ) {
-      /* 
-       * Time to really delete the record!
-       */
-      vdseFolderRemoveObject( pFolder,
-                              pHashItem,
-                              pContext );
+      (txItemStatus->usageCounter == 0) ) {
+      if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ||
+         txItemStatus->enumStatus == VDSE_TXS_VERSION_REPLACED ) {
+         /* Time to really delete the record! */
+         vdseFolderRemoveObject( pFolder,
+                                 pHashItem,
+                                 pContext );
+      }
    }
 }
 
@@ -1812,6 +1839,58 @@ void vdseFolderResize( vdseFolder         * pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+void vdseFolderRollbackEdit( vdseFolder         * pFolder,
+                             vdseHashItem       * pHashItem, 
+                             enum vdsObjectType   objectType,
+                             vdseSessionContext * pContext )
+{
+   vdseObjectDescriptor * pDesc, * pDescLatest;
+   vdseMap * pMapLatest, * pMapEdit;
+   vdseHashItem * pHashItemLatest;
+   
+   VDS_PRE_CONDITION( pFolder   != NULL );
+   VDS_PRE_CONDITION( pHashItem != NULL );
+   VDS_PRE_CONDITION( pContext  != NULL );
+   VDS_PRE_CONDITION( objectType == VDSE_IDENT_MAP );
+
+   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+
+   pMapEdit = GET_PTR_FAST( pDesc->offset, vdseMap );
+   
+   VDS_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
+   
+   pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, vdseHashItem );
+   pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
+                               vdseObjectDescriptor );
+   pMapLatest = GET_PTR_FAST( pDescLatest->offset, vdseMap );
+   
+//   pHashItemLatest->nextSameKey = VDSE_NULL_OFFSET;
+   pMapLatest->editVersion = VDSE_NULL_OFFSET;
+
+   /* We remove our edit version from the folder - this one is pretty
+    * obvious. We also release the latest version, which basically means
+    * we decriment some counters and in some limit case we might also
+    * remove the map entirely (if it was destroyed - not open and the
+    * current edit session was the only thing standing in the way
+    */
+   vdseHashDelWithItem( &pFolder->hashObj, pHashItem, pContext );
+   /* If needed */
+   vdseFolderResize( pFolder, pContext );
+
+   vdseMapFini( pMapEdit, pContext );
+      
+   //txItemStatus->parentCounter, txItemStatus->usageCounter
+   vdseTreeNode * tree = GET_PTR_FAST( pDescLatest->nodeOffset, vdseTreeNode );
+   vdseTxStatus * tx = GET_PTR_FAST( tree->txStatusOffset, vdseTxStatus );
+   vdseTxStatusClearTx( tx );
+
+   vdseFolderReleaseNoLock( pFolder,
+                            pHashItemLatest,
+                            pContext );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 void vdseFolderStatus( vdseFolder   * pFolder,
                        vdsObjStatus * pStatus )
 {
@@ -1870,14 +1949,15 @@ int vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
        * a remove was indeed committed.
        */
       if ( (txItemStatus->parentCounter == 0) && 
-         (txItemStatus->usageCounter == 0) &&
-         vdseTxStatusIsRemoveCommitted(txItemStatus) ) {
-         /* Time to really delete the record! */
-         vdseFolderRemoveObject( parentFolder,
-                                 pFolderItem->pHashItem,
-                                 pContext );
+         (txItemStatus->usageCounter == 0) ) {
+         if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ||
+            txItemStatus->enumStatus == VDSE_TXS_VERSION_REPLACED ) {
+            /* Time to really delete the object and the record! */
+            vdseFolderRemoveObject( parentFolder,
+                                    pFolderItem->pHashItem,
+                                    pContext );
+         }
       }
-
       vdseUnlock( &parentFolder->memObject, pContext );
 
       return 0;

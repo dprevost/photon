@@ -42,7 +42,8 @@ check_PROGRAMS =                           \
         .\Release\RetrievePass.exe         \
         .\Release\RetrieveWrongHandle.exe  \
         .\Release\RetrieveZeroLength.exe   \
-        .\Release\Status.exe               
+        .\Release\Status.exe               \
+        .\Release\Tests.exe                
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 

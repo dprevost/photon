@@ -46,7 +46,8 @@ check_PROGRAMS =            \
         RetrievePass        \
         RetrieveWrongHandle \
         RetrieveZeroLength  \
-        Status              
+        Status              \
+        Tests               
 
 Close_SOURCES               = Close.c
 Create_SOURCES              = Create.c
@@ -78,6 +79,7 @@ RetrievePass_SOURCES        = RetrievePass.c
 RetrieveWrongHandle_SOURCES = RetrieveWrongHandle.c
 RetrieveZeroLength_SOURCES  = RetrieveZeroLength.c
 Status_SOURCES              = Status.c
+Tests_SOURCES               = Tests.c
 
 EXTRA_DIST =                   \
         Close.sh               \
@@ -111,7 +113,8 @@ EXTRA_DIST =                   \
         RetrieveWrongHandle.sh \
         RetrieveZeroLength.sh  \
         RunTests.vbs           \
-        Status.sh              
+        Status.sh              \
+        Tests.sh               
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -151,7 +154,8 @@ TESTS =                        \
         RetrievePass.sh        \
         RetrieveWrongHandle.sh \
         RetrieveZeroLength.sh  \
-        Status.sh              
+        Status.sh              \
+        Tests.sh               
 
 XFAIL_TESTS = 
 
