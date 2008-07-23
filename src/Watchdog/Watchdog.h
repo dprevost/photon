@@ -1,4 +1,3 @@
-/* -*- c++ -*- */
 /*
  * Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
@@ -14,12 +13,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #ifndef VDS_WATCHDOG_H
 #define VDS_WATCHDOG_H
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
 #include "Common/ProcessLock.h"
@@ -31,13 +30,13 @@
 
 #define PROG_NAME "vdswd"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #define WD_SHUTDOWN_REQUEST 0X001
 
 #define WD_MSG_LEN 512
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 // Forward declaration(s)
 struct vdseMemoryHeader;
@@ -46,7 +45,7 @@ BEGIN_C_DECLS
 extern vdscErrMsgHandle g_wdErrorHandle;
 END_C_DECLS
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #define VDS_LOCATION  "VDSLocation"
 #define VDS_WDADDRESS "WatchdogAddress"
@@ -55,7 +54,7 @@ END_C_DECLS
 #define VDS_FILEPERMS "FilePermissions"
 #define VDS_DIRPERMS  "DirectoryPermissions"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  *  We use this class as a workaround for the fundamental differences between 
@@ -70,47 +69,56 @@ END_C_DECLS
  *  Note: this synchronisation is not implemented yet...
  */
 
-class vdswWatchdog
+struct vdswWatchdog
 {
-public:
-
-   vdswWatchdog();
-
-   ~vdswWatchdog();
-
-   int ReadConfig( const char* cfgname );   
    
-   void Help( const char* progName ) const;
-   
-   int LastError() {
-#if defined ( WIN32 )
-      return GetLastError();
-#else
-      return errno;
-#endif
-   }
-   
-   const char* GetErrorMsg() { return m_errorMsg; }
+   /// Configuration parameters (as read from Windows registry or from 
+   /// the config file.
+   struct ConfigParams params;
 
-   void HandleAbnormalTermination( pid_t pid ) {
-      m_vds.HandleCrash( pid );
-   }
+   struct vdseMemoryHeader * pMemoryAddress;
    
-   /**
-    *  This function is going to validate the VDS or create it if it does 
-    *  not exist, cleanup any leftovers from previous runs, possibly run
-    *  the CrashRecovery (eventually), possibly create a backup copy, etc.
-    *  It will also initialize all POSIX semaphores (if we used them on
-    *  that platform). This is done before becoming a daemon, on Unix/linux,
-    *  or if run as a command line process on Windows so that errors are 
-    *  reported to the terminal (easier to debug/see problems immediately
-    *  than having to search in the EventLog/syslog facility).
-    */
-   int InitializeVDS() {
-      return m_vds.Init( &m_params, &m_pMemoryAddress, m_verifyVDSOnly );
-   }   
+   /// Lock to control synchronization (needed on Win32 only?)
+   /// todo - check this + initialize lock
+   // VDS_ProcessLock lock;
+   
+   /// Control word (or status flag) that determines the current status
+   /// of the watchdog (running, suspended, shutting down, etc. ).
+   unsigned int controlWord;
+   
+   /// Listen to connection requests
+   struct vdswAcceptor acceptor;
 
-   int SetSigHandler();
+   /// Send messages to system log facility once stderr is not available
+   struct vdswLogMsg  log;
+   
+   struct vdswHandler vds;
+
+   vdscErrorHandler errorHandler;
+
+   bool verifyVDSOnly;
+   
+   char errorMsg[WD_MSG_LEN];
+};
+
+typedef struct vdswWatchdog vdswWatchdog;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+extern vdswWatchdog * g_pWD;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static inline
+void vdswHandleAbnormalTermination( vdswWatchdog * pWatchdog,
+                                    pid_t          pid )
+{
+   vdswHandleCrash( &g_pWD->vds, pid );
+}
+
+void vdswWatchdogInit( vdswWatchdog * pWatchdog );
+
+void vdswWatchdogFini( vdswWatchdog * pWatchdog );
 
 #if defined ( WIN32 )
    int Install();
@@ -120,46 +128,48 @@ public:
    int ReadRegistry();
    
 #else
-   int Daemon();
+int vdswDaemon( vdswWatchdog * pWatchdog );
 #endif
 
-   static void Run();
+int vdswWatchdogReadConfig( vdswWatchdog * pWatchdog, const char* cfgname );   
    
-   static vdswWatchdog* g_pWD;
+void vdswHelp( const char* progName );
    
-   /// Configuration parameters (as read from Windows registry or from 
-   /// the config file.
-   struct ConfigParams m_params;
+static inline 
+int vdswLastError() {
+#if defined ( WIN32 )
+   return GetLastError();
+#else
+   return errno;
+#endif
+}
+   
+//const char* vdswGetErrorMsg() { return g_pWD->errorMsg; }
 
-   vdseMemoryHeader* m_pMemoryAddress;
    
-   /// Lock to control synchronization (needed on Win32 only?)
-   /// todo - check this + initialize lock
-   // VDS_ProcessLock m_lock;
-   
-   /// Control word (or status flag) that determines the current status
-   /// of the watchdog (running, suspended, shutting down, etc. ).
-   unsigned int m_controlWord;
-   
-   /// Listen to connection requests
-   vdswAcceptor m_acceptor;
+/**
+ *  This function is going to validate the VDS or create it if it does 
+ *  not exist, cleanup any leftovers from previous runs, possibly run
+ *  the CrashRecovery (eventually), possibly create a backup copy, etc.
+ *  It will also initialize all POSIX semaphores (if we used them on
+ *  that platform). This is done before becoming a daemon, on Unix/linux,
+ *  or if run as a command line process on Windows so that errors are 
+ *  reported to the terminal (easier to debug/see problems immediately
+ *  than having to search in the EventLog/syslog facility).
+ */
+static inline
+int vdswInitializeVDS( vdswWatchdog * pWatchdog ) {
+   return vdswHandlerInit( &pWatchdog->vds,
+                           &pWatchdog->params, 
+                           &pWatchdog->pMemoryAddress, 
+                           pWatchdog->verifyVDSOnly );
+}
 
-   /// Send messages to system log facility once stderr is not available
-   vdswLogMsg  m_log;
+int vdswSetSigHandler();
+
+void vdswRun();
    
-   vdswHandler m_vds;
-
-   vdscErrorHandler m_errorHandler;
-
-   bool m_verifyVDSOnly;
-   
-private:
-
-   char m_errorMsg[WD_MSG_LEN];
-   
-};
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* VDS_WATCHDOG_H */
 

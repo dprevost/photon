@@ -1,4 +1,3 @@
-/* -*- c++ -*- */
 /*
  * Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
@@ -14,19 +13,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #ifndef VDSW_LOGMSG_H
 #define VDSW_LOGMSG_H
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
 #if ! defined ( WIN32 )
 #include <syslog.h>
 #endif
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #define VDS_MAX_MSG_LOG 1024
 
@@ -43,7 +42,7 @@ enum wdMsgSeverity
 #endif
 };
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 /**
  *  The vdswLogMsg class is a wrapper for the differences between different
  *  platform-specific event-logging mechanisms (well... so far this means
@@ -54,19 +53,34 @@ enum wdMsgSeverity
  *  for example) to disturb a production environment.
  */
 
-class vdswLogMsg
+struct vdswLogMsg
 {
-public:
 
-   vdswLogMsg( const char* progName );
+   /// True if we are a daemon or an NT service, false otherwise
+   bool useLog;
+
+#if defined ( WIN32 )
+   HANDLE handle;
+#endif
+
+   char* name;
+};
+
+typedef struct vdswLogMsg vdswLogMsg;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdswLogMsgInit( vdswLogMsg * pLog,
+                    const char * progName );
    
-   ~vdswLogMsg();   
+void vdswLogMsgFini( vdswLogMsg * pLog );
    
-   void StartUsingLogger();
+void vdswStartUsingLogger( vdswLogMsg * pLog );
    
-   void SendMessage( enum wdMsgSeverity,
-                     const char* format, 
-                     ... );
+void vdswSendMessage( vdswLogMsg         * pLog,
+                      enum wdMsgSeverity   severity,
+                      const char         * format, 
+                      ... );
 
 #if defined ( WIN32 )
    /**
@@ -74,27 +88,16 @@ public:
     *  This is not mandatory but it makes it easier to examine events
     *  using EventViewer.
     */
-   int Install( const char * progName, 
+   int Install( vdswLogMsg * pLog,
+                const char * progName, 
                 const char * msgPathName,
                 int          dwNum );
 
-   int Uninstall( const char* progName );
+   int Uninstall( vdswLogMsg * pLog,
+                  const char * progName );
 #endif
 
-private:
-
-   /// True if we are a daemon or an NT service, false otherwise
-   bool m_useLog;
-
-#if defined ( WIN32 )
-   HANDLE m_handle;
-#endif
-
-   char* m_name;
-   
-};
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* VDSW_LOGMSG_H */
 

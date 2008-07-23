@@ -28,52 +28,53 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-class vdswMemoryManager
+struct vdswMemoryManager
 {
-public:
+   vdscMemoryFile memory;
 
-   vdswMemoryManager();
-
-   ~vdswMemoryManager();
+   size_t memorySizeKB;
    
-   /** This function creates the VDS. */
-   int CreateVDS( const char         * memoryFileName,
-                  size_t               memorySize,
-                  int                  filePerms,
-                  vdseMemoryHeader  ** ppMemoryAddress,
-                  vdseSessionContext * pContext );
+   void * pMemoryAddress;
 
-   /**
-    * This function opens an existing VDS. This is the function that should
-    * be used when the VDS already exist.
-    */
-   int OpenVDS( const char        * memoryFileName,
-                size_t              memorySize,
-                vdseMemoryHeader ** ppMemoryAddress );
-
-   void Close( vdscErrorHandler* pError );
-
-private:
-
-   vdscMemoryFile m_memory;
-
-   size_t m_memorySizeKB;
-   
-   void* m_pMemoryAddress;
-
-   vdseMemoryHeader* m_pHeader;
+   vdseMemoryHeader * pHeader;
    
 };
 
+typedef struct vdswMemoryManager vdswMemoryManager;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void vdswMemoryManagerInit( vdswMemoryManager * pManager );
+
+void vdswMemoryManagerFini( vdswMemoryManager * pManager );
+   
+/** This function creates the VDS. */
+int vdswCreateVDS( vdswMemoryManager  * pManager,
+                   const char         * memoryFileName,
+                   size_t               memorySize,
+                   int                  filePerms,
+                   vdseMemoryHeader  ** ppMemoryAddress,
+                   vdseSessionContext * pContext );
+
+/**
+ * This function opens an existing VDS. This is the function that should
+ * be used when the VDS already exist.
+ */
+int vdswOpenVDS( vdswMemoryManager * pManager, 
+                 const char        * memoryFileName,
+                 size_t              memorySize,
+                 vdseMemoryHeader ** ppMemoryAddress );
+
+void vdswCloseVDS( vdswMemoryManager * pManager,
+                   vdscErrorHandler  * pError );
 
 #if 0
 
 /* ::msync() is called with the MS_SYNC flag by default */
 static inline
-int vdseMemMgrSync( vdseMemMgr *      pManager,
-                    vdscErrorHandler* pError ) 
-{ 
+int vdswSyncVDS( vdswMemoryManager * pManager,
+                 vdscErrorHandler  * pError ) 
+{
    int err = vdscSyncMemFile( &pManager->memory, pError );
    return err;
 }

@@ -29,26 +29,27 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdswMemoryManager::vdswMemoryManager()
-   : m_memorySizeKB   ( 0    ),
-     m_pMemoryAddress ( NULL ),
-     m_pHeader        ( NULL )
+void vdswMemoryManagerInit( vdswMemoryManager * pManager )
+{
+   pManager->memorySizeKB = 0;
+   pManager->pMemoryAddress = NULL;
+   pManager->pHeader = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void vdswMemoryManagerFini( vdswMemoryManager * pManager )
 {
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdswMemoryManager::~vdswMemoryManager()
-{
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
-                                  size_t               memorySizekb,
-                                  int                  filePerms,
-                                  vdseMemoryHeader  ** ppHeader,
-                                  vdseSessionContext * pContext )
+int vdswCreateVDS( vdswMemoryManager  * pManager,
+                   const char         * memoryFileName,
+                   size_t               memorySizekb,
+                   int                  filePerms,
+                   vdseMemoryHeader  ** ppHeader,
+                   vdseSessionContext * pContext )
 {
    int errcode = 0;
    vdscMemoryFileStatus fileStatus;
@@ -58,18 +59,18 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    VDS_PRE_CONDITION( sizeof(vdseMemoryHeader) <= VDSE_BLOCK_SIZE );
    
    *ppHeader = NULL;
-   m_memorySizeKB = memorySizekb;   
+   pManager->memorySizeKB = memorySizekb;   
 
-   vdscInitMemoryFile( &m_memory, m_memorySizeKB, memoryFileName );
+   vdscInitMemoryFile( &pManager->memory, pManager->memorySizeKB, memoryFileName );
    
-   vdscBackStoreStatus( &m_memory, &fileStatus );
+   vdscBackStoreStatus( &pManager->memory, &fileStatus );
    
-   errcode = vdscCreateBackstore( &m_memory, filePerms, &pContext->errorHandler );
+   errcode = vdscCreateBackstore( &pManager->memory, filePerms, &pContext->errorHandler );
    if ( errcode != 0 ) {
       return VDS_INTERNAL_ERROR;
    }
 
-   errcode = vdscOpenMemFile( &m_memory, &m_pMemoryAddress, &pContext->errorHandler );   
+   errcode = vdscOpenMemFile( &pManager->memory, &pManager->pMemoryAddress, &pContext->errorHandler );   
    if ( errcode != 0 ) {
 /*#if defined (VDS_DEBUG) */
 /*        fprintf( stderr, "MMAP failure - %d\n", errno ); */
@@ -77,14 +78,14 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
       return VDS_INTERNAL_ERROR;
    }
       
-   m_pHeader = *ppHeader = (vdseMemoryHeader*) m_pMemoryAddress;
+   pManager->pHeader = *ppHeader = (vdseMemoryHeader*) pManager->pMemoryAddress;
    (*ppHeader)->running = 1;
 
    /* Sets the global base address */
-   g_pBaseAddr = (unsigned char *) m_pMemoryAddress;
+   g_pBaseAddr = (unsigned char *) pManager->pMemoryAddress;
    
    /* The memory allocator starts after the header */
-   unsigned char* pStart = (unsigned char*)m_pMemoryAddress +
+   unsigned char* pStart = (unsigned char*)pManager->pMemoryAddress +
       VDSE_BLOCK_SIZE;
    
    (*ppHeader)->allocatorOffset = SET_OFFSET( pStart );
@@ -92,7 +93,7 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
    
    errcode = vdseMemAllocInit( pAlloc,
                                g_pBaseAddr,
-                               m_memorySizeKB*1024,
+                               pManager->memorySizeKB*1024,
                                pContext );
    if ( errcode != 0 ) {
       (*ppHeader) = NULL;
@@ -119,13 +120,13 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
                     errcode );
       return -1;
    }
-   vdseTxStatusInit( &m_pHeader->topHashItem.txStatus, VDSE_NULL_OFFSET );
+   vdseTxStatusInit( &pManager->pHeader->topHashItem.txStatus, VDSE_NULL_OFFSET );
 
    pFolder->nodeObject.txCounter      = 0;
    pFolder->nodeObject.myNameLength   = 0;
    pFolder->nodeObject.myNameOffset   = VDSE_NULL_OFFSET;
    pFolder->nodeObject.txStatusOffset = 
-      SET_OFFSET( &m_pHeader->topHashItem.txStatus );
+      SET_OFFSET( &pManager->pHeader->topHashItem.txStatus );
    pFolder->nodeObject.myParentOffset = VDSE_NULL_OFFSET;
 
    listErr = vdseHashInit( &pFolder->hashObj, 
@@ -209,21 +210,21 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
       return VDS_NOT_ENOUGH_VDS_MEMORY;
    }
 
-   vdseProcMgr * pManager = (vdseProcMgr *) ptr;
+   vdseProcMgr * processManager = (vdseProcMgr *) ptr;
    
-   errcode = vdseProcMgrInit( pManager, pContext );
+   errcode = vdseProcMgrInit( processManager, pContext );
    if ( errcode != 0 ) {
       (*ppHeader) = NULL;
       return errcode;
    }
-   (*ppHeader)->processMgrOffset = SET_OFFSET( pManager );
+   (*ppHeader)->processMgrOffset = SET_OFFSET( processManager );
 
    /* And finish with setting up the version (and eventually some "magic */
    /* cookie" to identify the file?) */
 
    strcpy( (*ppHeader)->cookie, "VDS" );
    (*ppHeader)->version = VDSE_MEMORY_VERSION;
-   (*ppHeader)->totalLength = m_memorySizeKB*1024;
+   (*ppHeader)->totalLength = pManager->memorySizeKB*1024;
 
    (*ppHeader)->sizeofPtr = SIZEOF_VOID_P;
 #if WORDS_BIGENDIAN
@@ -260,28 +261,29 @@ int vdswMemoryManager::CreateVDS( const char         * memoryFileName,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswMemoryManager::OpenVDS( const char        * memoryFileName,
-                                size_t              memorySizekb,
-                                vdseMemoryHeader ** ppHeader )
+int vdswOpenVDS( vdswMemoryManager * pManager, 
+                 const char        * memoryFileName,
+                 size_t              memorySizekb,
+                 vdseMemoryHeader ** ppHeader )
 {
    int errcode = 0;
    vdscMemoryFileStatus fileStatus;
    vdscErrorHandler errorHandler;
    
    *ppHeader = NULL;
-   m_memorySizeKB = memorySizekb;
+   pManager->memorySizeKB = memorySizekb;
    
    vdscInitErrorHandler( &errorHandler );
    
-   vdscInitMemoryFile( &m_memory, m_memorySizeKB, memoryFileName );
+   vdscInitMemoryFile( &pManager->memory, pManager->memorySizeKB, memoryFileName );
    
-   vdscBackStoreStatus( &m_memory, &fileStatus );
+   vdscBackStoreStatus( &pManager->memory, &fileStatus );
    
    if ( ! fileStatus.fileExist ) {
       return VDS_BACKSTORE_FILE_MISSING;
    }
    
-   errcode = vdscOpenMemFile( &m_memory, &m_pMemoryAddress, &errorHandler );   
+   errcode = vdscOpenMemFile( &pManager->memory, &pManager->pMemoryAddress, &errorHandler );   
    if ( errcode != 0 ) {
 /*#if defined (VDS_DEBUG) */
       fprintf( stderr, "MMAP failure - %d %s\n", errno, memoryFileName );
@@ -289,7 +291,7 @@ int vdswMemoryManager::OpenVDS( const char        * memoryFileName,
       return VDS_ERROR_OPENING_VDS;
    }
    
-   m_pHeader = *ppHeader = (vdseMemoryHeader*) m_pMemoryAddress;
+   pManager->pHeader = *ppHeader = (vdseMemoryHeader*) pManager->pMemoryAddress;
 
    if ( (*ppHeader)->version != VDSE_MEMORY_VERSION ) {
       (*ppHeader) = NULL;
@@ -297,16 +299,17 @@ int vdswMemoryManager::OpenVDS( const char        * memoryFileName,
    }
 
    /* Sets the global base address */
-   g_pBaseAddr = (unsigned char *) m_pMemoryAddress;
+   g_pBaseAddr = (unsigned char *) pManager->pMemoryAddress;
   
    return errcode;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswMemoryManager::Close( vdscErrorHandler* pError )
+void vdswCloseVDS( vdswMemoryManager * pManager,
+                   vdscErrorHandler  * pError )
 {
-   vdscCloseMemFile( &m_memory, pError );
+   vdscCloseMemFile( &pManager->memory, pError );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

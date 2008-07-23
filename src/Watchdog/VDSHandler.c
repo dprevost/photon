@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
 #include "Watchdog/VDSHandler.h"
@@ -24,125 +24,12 @@
 #include "Engine/SessionContext.h"
 #include "Engine/InitEngine.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdswHandler::vdswHandler()
-   : m_pConfig     ( NULL ),
-     m_pMemManager ( NULL ),
-     m_pMemHeader  ( NULL )
-{
-   memset( &m_context, 0, sizeof(vdseSessionContext) );
-   m_context.pidLocker = getpid();
-   
-   int errcode = vdseInitEngine();
-   if ( errcode != 0 ) {
-      fprintf( stderr, "Abnormal error at line %d in VdsHandler.cpp\n", __LINE__ );
-      exit(1);
-   }
-   vdscInitErrorHandler( &m_context.errorHandler );
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-vdswHandler::~vdswHandler()
-{
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-void
-vdswHandler::CleanSession( vdseSession* pSession )
-{
-   fprintf( stderr, "Session %p\n", pSession );
-
-/*
-- need to loop on all objects to see if we hold a lock somewhere
- */
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-void
-vdswHandler::HandleCrash( pid_t pid )
-{
-//   int errcode;
-#if 0   
-   vdseProcess* pProcess = NULL;
-   vdseSessionContext context;
-   vdseSession* pFirstSession = NULL;
-   vdseSession* pCurrSession  = NULL;
-   vdseSession* pNextSession  = NULL;
-
-   memset( &context, 0, sizeof context );
-   context.lockValue = getpid();
-   context.pAllocator = &m_pMemHeader->allocator;
-   
-//      GET_PTR( m_pMemHeader->allocatorOffset, MemoryAllocator );
-
-   vdseProcessManager* pCleanupManager = 
-      GET_PTR( m_pMemHeader->cleanupMgrOffset, vdseProcessManager );
-
-   // Start by checking if we are not holding the lock to the 
-   // cleanup manager, the memory allocator, etc...
-
-   //////////////////////////////// ADD CODE HERE
-
-   // Find the linked list of all "recovery information" for our crash
-   // process - more specifically there are:
-   //  - one or more linked list, one per session, for all objects 
-   //    associated with that session
-   //  - and a process wide linked list of all these session-related 
-   //    linked lists
-   // (to be complete: the cleanup manager is itself a linked list made 
-   // of all the process wide linked lists.)
-   // 
-   errcode = pCleanupManager->FindProcess( pid, &pProcess, &context );
-   
-   fprintf( stderr, "Abnormal %d %d %p %p\n", pid, errcode, pCleanupManager, pProcess );
-
-   if ( errcode != 0 ) {
-      // log it
-      return;
-   }
-
-   /*
-    * Loop on all sessions to clean them up. It is indeed possible to 
-    * have no current session - a non-null errcode is not an error.
-    */
-   errcode = pProcess->GetFirstSession( &pCurrSession, &context );
-   fprintf( stderr, "Errcode %d %p \n", errcode, pCurrSession );
-   if ( errcode == 0 ) {
-      CleanSession( pCurrSession );
-
-      errcode = pProcess->GetNextSession( pCurrSession, 
-                                          &pNextSession,
-                                          &context );
-      while ( errcode == 0 ) {
-         CleanSession( pNextSession );
-         pCurrSession = pNextSession;
-         errcode = pProcess->GetNextSession( pCurrSession, 
-                                             &pNextSession,
-                                             &context );
-      }
-   }
-   
-   /*
-    * Remove the CleanupProcess object (it will iteratively remove all 
-    * its "children").
-    */
-   errcode = pCleanupManager->RemoveProcess( pProcess, &context );
-   if ( errcode != 0 ) {
-      // log it
-   }
-#endif // #if 0
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-int 
-vdswHandler::Init( struct ConfigParams * pConfig,
-                   vdseMemoryHeader   ** ppMemoryAddress,
-                   bool                  verifyVDSOnly )
+int vdswHandlerInit( vdswHandler         * pHandler,
+                     struct ConfigParams * pConfig,
+                     vdseMemoryHeader   ** ppMemoryAddress,
+                     bool                  verifyVDSOnly )
 {
    int errcode = 0;
    char path[PATH_MAX];
@@ -164,10 +51,28 @@ vdswHandler::Init( struct ConfigParams * pConfig,
    size_t numObjectsDeleted = 0;
    size_t numObjectsError = 0;
 
-   if ( pConfig == NULL ) return -1;
-   m_pConfig = pConfig;
+   pHandler->pConfig = NULL;
+   pHandler->pMemManager = NULL;
+   pHandler->pMemHeader = NULL;
 
-   m_pMemManager = new vdswMemoryManager();
+   memset( &pHandler->context, 0, sizeof(vdseSessionContext) );
+   pHandler->context.pidLocker = getpid();
+   
+   errcode = vdseInitEngine();
+   if ( errcode != 0 ) {
+      fprintf( stderr, "Abnormal error at line %d in VdsHandler.cpp\n", __LINE__ );
+      exit(1);
+   }
+   vdscInitErrorHandler( &pHandler->context.errorHandler );
+
+
+   if ( pConfig == NULL ) return -1;
+   pHandler->pConfig = pConfig;
+
+   pHandler->pMemManager = (vdswMemoryManager *)calloc( 
+      sizeof(vdswMemoryManager), 1 );
+   if ( pHandler->pMemManager == NULL ) return -1;
+   vdswMemoryManagerInit( pHandler->pMemManager );
    
    path_len = strlen( pConfig->wdLocation ) + strlen( VDS_DIR_SEPARATOR ) +
       strlen( VDS_MEMFILE_NAME )  + strlen( ".bak" );
@@ -185,11 +90,12 @@ vdswHandler::Init( struct ConfigParams * pConfig,
             "Error - the VDS does not exist - no verification possible\n" );
          return -1;
       }
-      errcode = m_pMemManager->CreateVDS( path,
-                                          pConfig->memorySizekb,
-                                          pConfig->filePerms,
-                                          ppMemoryAddress,
-                                          &m_context );
+      errcode = vdswCreateVDS( pHandler->pMemManager,
+                               path,
+                               pConfig->memorySizekb,
+                               pConfig->filePerms,
+                               ppMemoryAddress,
+                               &pHandler->context );
       if ( errcode != 0 ) return -1;
       
       (*ppMemoryAddress)->logON = false;
@@ -261,9 +167,10 @@ vdswHandler::Init( struct ConfigParams * pConfig,
          }
       }
       
-      errcode = m_pMemManager->OpenVDS( path,
-                                        pConfig->memorySizekb,
-                                        ppMemoryAddress );
+      errcode = vdswOpenVDS( pHandler->pMemManager,
+                             path,
+                             pConfig->memorySizekb,
+                             ppMemoryAddress );
       if ( errcode != 0 ) return errcode;
       
       fprintf( stderr, "Starting the recovery of the VDS, please be patient\n" );
@@ -334,10 +241,105 @@ vdswHandler::Init( struct ConfigParams * pConfig,
       
    }
 
-   m_pMemHeader = *ppMemoryAddress;
+   pHandler->pMemHeader = *ppMemoryAddress;
    
    return 0;
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void vdswHandlerFini( vdswHandler * pHandler )
+{
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+//void CleanSession( vdseSession * pSession )
+//{
+//   fprintf( stderr, "Session %p\n", pSession );
+
+/*
+- need to loop on all objects to see if we hold a lock somewhere
+ */
+//}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void vdswHandleCrash( vdswHandler * pHandler, pid_t pid )
+{
+//   int errcode;
+#if 0   
+   vdseProcess* pProcess = NULL;
+   vdseSessionContext context;
+   vdseSession* pFirstSession = NULL;
+   vdseSession* pCurrSession  = NULL;
+   vdseSession* pNextSession  = NULL;
+
+   memset( &context, 0, sizeof context );
+   context.lockValue = getpid();
+   context.pAllocator = &pHandler->pMemHeader->allocator;
+   
+//      GET_PTR( m_pMemHeader->allocatorOffset, MemoryAllocator );
+
+   vdseProcessManager* pCleanupManager = 
+      GET_PTR( m_pMemHeader->cleanupMgrOffset, vdseProcessManager );
+
+   // Start by checking if we are not holding the lock to the 
+   // cleanup manager, the memory allocator, etc...
+
+   //////////////////////////////// ADD CODE HERE
+
+   // Find the linked list of all "recovery information" for our crash
+   // process - more specifically there are:
+   //  - one or more linked list, one per session, for all objects 
+   //    associated with that session
+   //  - and a process wide linked list of all these session-related 
+   //    linked lists
+   // (to be complete: the cleanup manager is itself a linked list made 
+   // of all the process wide linked lists.)
+   // 
+   errcode = pCleanupManager->FindProcess( pid, &pProcess, &context );
+   
+   fprintf( stderr, "Abnormal %d %d %p %p\n", pid, errcode, pCleanupManager, pProcess );
+
+   if ( errcode != 0 ) {
+      // log it
+      return;
+   }
+
+   /*
+    * Loop on all sessions to clean them up. It is indeed possible to 
+    * have no current session - a non-null errcode is not an error.
+    */
+   errcode = pProcess->GetFirstSession( &pCurrSession, &context );
+   fprintf( stderr, "Errcode %d %p \n", errcode, pCurrSession );
+   if ( errcode == 0 ) {
+      CleanSession( pCurrSession );
+
+      errcode = pProcess->GetNextSession( pCurrSession, 
+                                          &pNextSession,
+                                          &context );
+      while ( errcode == 0 ) {
+         CleanSession( pNextSession );
+         pCurrSession = pNextSession;
+         errcode = pProcess->GetNextSession( pCurrSession, 
+                                             &pNextSession,
+                                             &context );
+      }
+   }
+   
+   /*
+    * Remove the CleanupProcess object (it will iteratively remove all 
+    * its "children").
+    */
+   errcode = pCleanupManager->RemoveProcess( pProcess, &context );
+   if ( errcode != 0 ) {
+      // log it
+   }
+#endif // #if 0
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

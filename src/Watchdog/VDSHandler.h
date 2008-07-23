@@ -14,22 +14,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #ifndef VDSW_HANDLER_H
 #define VDSW_HANDLER_H
 
 #include "Engine/SessionContext.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 // Forward declaration
 struct ConfigParams;
 struct vdseMemoryHeader;
 struct vdseSession;
-class  vdswMemoryManager;
+struct vdswMemoryManager;
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  *  This class initialize the VDS. 
@@ -37,23 +37,35 @@ class  vdswMemoryManager;
  *    - it will open it otherwise and make sure that its content is valid
  */
 
-class vdswHandler
+struct vdswHandler
 {
+   struct ConfigParams * pConfig;
 
-public:
+   struct vdswMemoryManager * pMemManager;
 
-   vdswHandler();
+   struct vdseMemoryHeader* pMemHeader;
    
-   ~vdswHandler();
+   vdseSessionContext context;
+};
 
-   void HandleCrash( pid_t pid );
+typedef struct vdswHandler vdswHandler;
 
-   int Init( struct ConfigParams      * pConfig,
-             struct vdseMemoryHeader ** ppMemoryAddress,
-             bool                       verifyVDSOnly );
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int vdswHandlerInit( vdswHandler              * pHandler,
+                     struct ConfigParams      * pConfig,
+                     struct vdseMemoryHeader ** ppMemoryAddress,
+                     bool                       verifyVDSOnly );
+
+void vdswHandlerFini( vdswHandler * pHandler );
+
+void vdswHandleCrash( vdswHandler * pHandler, pid_t pid );
+
+//   int Init( vdswHandler * pHandler,
+//       );
    
-private:   
-
+//private:   
+#if 0
    void CleanSession( vdseSession* pSession );
    
    struct ConfigParams * m_pConfig;
@@ -65,8 +77,9 @@ private:
    vdseSessionContext m_context;
    
 };
+#endif
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* VDSW_HANDLER_H */
 

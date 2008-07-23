@@ -13,18 +13,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "API/WatchdogCommon.h"
 #include "Watchdog/Watchdog.h"
 #include "Common/Options.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char *argv[] )
 {
    vdswWatchdog wDog;
-   vdswWatchdog::g_pWD = &wDog;
    int errcode = 0;
    
    vdscOptionHandle optHandle;
@@ -45,6 +44,10 @@ int main( int argc, char *argv[] )
       { 't', "test",   1, "",         "Test the config file and exit" },
       { 'v', "verify", 1, "",         "Verify the VDS and exit" }
    };
+
+   g_pWD = &wDog;
+   vdswWatchdogInit( g_pWD );
+
    errcode = vdscSetSupportedOptions( 4, opts, &optHandle );
 #endif
    if ( errcode != 0 ) {
@@ -66,9 +69,9 @@ int main( int argc, char *argv[] )
    }
 
    if ( vdscGetShortOptArgument( optHandle, 'c', &optArgument ) ) {
-      errcode = wDog.ReadConfig( optArgument );
+      errcode = vdswWatchdogReadConfig( &wDog, optArgument );
       if ( errcode != 0 ) {
-         fprintf( stderr, "%s\n", wDog.GetErrorMsg() );
+         fprintf( stderr, "%s\n", g_pWD->errorMsg );
          return errcode;
       }
    }
@@ -89,21 +92,22 @@ int main( int argc, char *argv[] )
    }
 #endif
    if ( vdscIsShortOptPresent( optHandle, 'v' ) ) {
-      wDog.m_verifyVDSOnly = true;
+      wDog.verifyVDSOnly = true;
    }
 
-   errcode = wDog.InitializeVDS();
+   errcode = vdswInitializeVDS( &wDog );
    if ( errcode != 0 ) {
-      wDog.m_log.SendMessage( WD_ERROR, 
-                              "VDS initialization error  - aborting..." );
+      vdswSendMessage( &wDog.log, 
+                       WD_ERROR, 
+                       "VDS initialization error  - aborting..." );
       return errcode;
    }
 
-   if ( wDog.m_verifyVDSOnly ) return 0;
+   if ( wDog.verifyVDSOnly ) return 0;
    
 #if ! defined ( WIN32 )
    if ( vdscIsShortOptPresent( optHandle, 'd' ) ) {
-      errcode = wDog.Daemon();
+      errcode = vdswDaemon( &wDog );
       if ( errcode != 0 ) return errcode;
    }
 #endif
@@ -112,10 +116,10 @@ int main( int argc, char *argv[] )
     * This is the main loop. If using Windows NT services, this loop
     * is called by the Service Control Manager (SCM) directly.
     */
-   vdswWatchdog::Run();
+   vdswRun();
    
    return 0;
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

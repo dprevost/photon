@@ -55,34 +55,34 @@ EXTRA_DIST =           \
         wdErrors.xml   \
         wdOptions.xml  
 
-vdswd_SOURCES =           \
-        wdErrorHandler.c  \
-        wdErrorHandler.h  \
-        wdErrors.h        \
-        Acceptor.cpp      \
-        Acceptor.h        \
-        Config.h          \
-        Config.c          \
-        LogMsg.cpp        \
-        LogMsg.h          \
-        MemoryManager.cpp \
-        MemoryManager.h   \
-        VDSHandler.cpp    \
-        VDSHandler.h      \
-        Watchdog.cpp      \
-        Watchdog.h        \
-        wd.cpp            
+vdswd_SOURCES =          \
+        wdErrorHandler.c \
+        wdErrorHandler.h \
+        wdErrors.h       \
+        Acceptor.c       \
+        Acceptor.h       \
+        Config.h         \
+        Config.c         \
+        LogMsg.c         \
+        LogMsg.h         \
+        MemoryManager.c  \
+        MemoryManager.h  \
+        VDSHandler.c     \
+        VDSHandler.h     \
+        Watchdog.c       \
+        Watchdog.h       \
+        wd.c             
 
-libVerifyVDS_a_SOURCES =      \
-        VerifyCommon.h        \
-        VerifyFolder.c        \
-        VerifyHash.c          \
-        VerifyHashMap.c       \
-        VerifyList.c          \
-        VerifyMemObj.c        \
-        VerifyQueue.c         \
-        VerifyVDS.c           \
-        VerifyVDS.h           
+libVerifyVDS_a_SOURCES = \
+        VerifyCommon.h   \
+        VerifyFolder.c   \
+        VerifyHash.c     \
+        VerifyHashMap.c  \
+        VerifyList.c     \
+        VerifyMemObj.c   \
+        VerifyQueue.c    \
+        VerifyVDS.c      \
+        VerifyVDS.h      
 
 vdswd_LDADD = $(top_builddir)/src/Engine/libEngine.la    \
               $(top_builddir)/src/Common/libCommon.la    \

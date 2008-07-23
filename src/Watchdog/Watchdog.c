@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
 #include <signal.h>
@@ -21,21 +21,16 @@
 #include "Common/ErrorHandler.h"
 #include "Watchdog/wdErrorHandler.h"
 
-#if HAVE_NEW
-#  include <new>
-#else
-#  include <new.h>
-#endif
-
 // This should be more than enough...
 #define LINE_MAX_LEN (2*PATH_MAX)
 
-vdswWatchdog* vdswWatchdog::g_pWD = NULL;
+vdswWatchdog * g_pWD = NULL;
+
 BEGIN_C_DECLS
 vdscErrMsgHandle g_wdErrorHandle = -1;
 END_C_DECLS
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 BEGIN_C_DECLS
 
@@ -44,7 +39,7 @@ RETSIGTYPE sigterm_handler( int s )
    /*
     * We need to turn a flag on, to indicate it is time to shutdown
     */
-   vdswWatchdog::g_pWD->m_controlWord |= WD_SHUTDOWN_REQUEST;
+   g_pWD->controlWord |= WD_SHUTDOWN_REQUEST;
 }
 
 RETSIGTYPE sighup_handler( int s )
@@ -77,18 +72,20 @@ int vdswGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 
 END_C_DECLS
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdswWatchdog::vdswWatchdog()
-   : m_pMemoryAddress ( NULL      ),
-     m_controlWord    ( 0         ),
-     m_log            ( PROG_NAME ),
-     m_verifyVDSOnly  ( false     )
+void vdswWatchdogInit( vdswWatchdog * pWatchdog )
 {
-   memset( &m_params, 0, sizeof m_params );
+   pWatchdog->pMemoryAddress = NULL;
+   pWatchdog->controlWord = 0;
+   pWatchdog->verifyVDSOnly = false;
+
+   vdswLogMsgInit( &pWatchdog->log, PROG_NAME );
+
+   memset( &pWatchdog->params, 0, sizeof pWatchdog->params );
 
    vdscInitErrorDefs();
-   vdscInitErrorHandler( &m_errorHandler );
+   vdscInitErrorHandler( &pWatchdog->errorHandler );
    
    g_wdErrorHandle = vdscAddErrorMsgHandler( "VDSWD", vdswGetErrorMsg );
    if ( g_wdErrorHandle == VDSC_NO_ERRHANDLER ) {
@@ -97,22 +94,22 @@ vdswWatchdog::vdswWatchdog()
    }
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdswWatchdog::~vdswWatchdog()
+void vdswWatchdogFini( vdswWatchdog * pWatchdog )
 {
-   vdscFiniErrorHandler( &m_errorHandler );
+   vdscFiniErrorHandler( &pWatchdog->errorHandler );
    vdscFiniErrorDefs();
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 //
 // The remaining functions are sorted in alphabetic order
 // 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if !defined ( WIN32 )
-int vdswWatchdog::Daemon()
+int vdswDaemon( vdswWatchdog * pWatchdog )
 {
    pid_t pid = 0;
    int errcode;
@@ -127,18 +124,18 @@ int vdswWatchdog::Daemon()
     *
     * We do it in two steps to help "end-users" recover from errors.
     */
-   errcode = access( m_params.wdLocation, F_OK );
+   errcode = access( pWatchdog->params.wdLocation, F_OK );
    if ( errcode != 0 ) {
       fprintf( stderr, "Invalid directory for VDS, error = %d\n", 
-               LastError() );
+               vdswLastError() );
       return -1;
    }
    
-   errcode = access( m_params.wdLocation, R_OK | W_OK | X_OK );
+   errcode = access( pWatchdog->params.wdLocation, R_OK | W_OK | X_OK );
    if ( errcode != 0 ) {
       fprintf( stderr, "Invalid file permissions on the %s%d\n", 
                "VDS directory, error = ",
-               LastError() );
+               vdswLastError() );
       return -1;
    }
    
@@ -166,7 +163,7 @@ int vdswWatchdog::Daemon()
    pid = fork();
 
    if ( pid == -1 ) {
-      fprintf( stderr, "Fork failed, error = %d\n", LastError() );
+      fprintf( stderr, "Fork failed, error = %d\n", vdswLastError() );
       return -1;
    }
    
@@ -175,14 +172,14 @@ int vdswWatchdog::Daemon()
 
    // Set the log object to sent messages to the log facility of the OS 
    // instead of sending them to stderr.
-   m_log.StartUsingLogger();
+   vdswStartUsingLogger( &pWatchdog->log );
    
    errcode = setsid();
    if ( errcode == -1 ) {
       // The only way setsid() can fail is if we are already a group process
       // leader (our group ID == our pid). But this test does not cost 
       // anything and may detect attempts at "enhancing" the code ...
-      m_log.SendMessage( WD_ERROR,
+      vdswSendMessage( &pWatchdog->log, WD_ERROR,
                          "setsid() error in Daemon() (errno = %d)",
                          errno );
       return -1;
@@ -190,7 +187,7 @@ int vdswWatchdog::Daemon()
    pid = fork();
 
    if ( pid == -1 ) {
-      m_log.SendMessage( WD_ERROR,
+      vdswSendMessage( &pWatchdog->log, WD_ERROR,
                          "Fork error in Daemon() (errno = %d)",
                          errno );
       return -1;
@@ -199,9 +196,9 @@ int vdswWatchdog::Daemon()
    // We are the parent
    if ( pid != 0 ) exit(0);
 
-   errcode = chdir( m_params.wdLocation );
+   errcode = chdir( pWatchdog->params.wdLocation );
    if ( errcode != 0 ) {
-      m_log.SendMessage( WD_ERROR,
+      vdswSendMessage( &pWatchdog->log, WD_ERROR,
                          "chdir() error in Daemon() (errno = %d)",
                          errno );
       return -1;
@@ -213,14 +210,14 @@ int vdswWatchdog::Daemon()
    close( 1 );
    close( 2 );
    
-   m_log.SendMessage( WD_INFO, "VDSF Watchdog initialized as a daemon" );   
+   vdswSendMessage( &pWatchdog->log, WD_INFO, "VDSF Watchdog initialized as a daemon" );   
    return 0;
 }
 #endif
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswWatchdog::Help( const char* progName ) const
+void vdswHelp( const char* progName )
 {
    fprintf( stderr, "Usage: %s [options] config_file \n", progName );
    fprintf( stderr, "Options:\n" );
@@ -237,7 +234,7 @@ void vdswWatchdog::Help( const char* progName ) const
             "Run the program as a Unix daemon (Unix/linux only)." );
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
 int vdswWatchdog::Install()
@@ -305,8 +302,8 @@ int vdswWatchdog::Install()
                             VDS_LOCATION,
                             0, 
                             REG_SZ,
-                            (LPBYTE)m_params.wdLocation, 
-                            strlen(m_params.wdLocation)+1 );
+                            (LPBYTE)pWatchdog->params.wdLocation, 
+                            strlen(pWatchdog->params.wdLocation)+1 );
    if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
       RegCloseKey( hKey );
@@ -317,8 +314,8 @@ int vdswWatchdog::Install()
                             VDS_WDADDRESS,
                             0, 
                             REG_SZ,
-                            (LPBYTE)m_params.wdAddress,
-                            strlen(m_params.wdAddress)+1 );
+                            (LPBYTE)pWatchdog->params.wdAddress,
+                            strlen(pWatchdog->params.wdAddress)+1 );
    if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
       RegCloseKey( hKey );
@@ -329,7 +326,7 @@ int vdswWatchdog::Install()
                             VDS_MEMSIZE,
                             0, 
                             REG_DWORD, 
-                            (LPBYTE)&m_params.memorySizekb,
+                            (LPBYTE)&pWatchdog->params.memorySizekb,
                             sizeof(size_t) );
    if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
@@ -341,7 +338,7 @@ int vdswWatchdog::Install()
                             VDS_USE_LOG,
                             0, 
                             REG_DWORD, 
-                            (LPBYTE)&m_params.logOn,
+                            (LPBYTE)&pWatchdog->params.logOn,
                             sizeof(bool) );
    if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
@@ -353,7 +350,7 @@ int vdswWatchdog::Install()
                             VDS_FILEPERMS,
                             0, 
                             REG_DWORD, 
-                            (LPBYTE)&m_params.filePerms,
+                            (LPBYTE)&pWatchdog->params.filePerms,
                             sizeof(int) );
    if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
@@ -365,7 +362,7 @@ int vdswWatchdog::Install()
                             VDS_DIRPERMS, 
                             0, 
                             REG_DWORD, 
-                            (LPBYTE)&m_params.dirPerms,
+                            (LPBYTE)&pWatchdog->params.dirPerms,
                             sizeof(int) );
    if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
@@ -378,27 +375,27 @@ int vdswWatchdog::Install()
 }
 #endif
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswWatchdog::ReadConfig( const char* cfgname )
+int vdswWatchdogReadConfig( vdswWatchdog * pWatchdog, const char* cfgname )
 {
    int errcode, len;
    
-   errcode = vdswReadConfig( cfgname, &m_params, 0, &m_errorHandler );
+   errcode = vdswReadConfig( cfgname, &pWatchdog->params, 0, &pWatchdog->errorHandler );
    if ( errcode != 0 ) {
-      memset( m_errorMsg, 0, WD_MSG_LEN );
-      sprintf( m_errorMsg, "%s%d%s",
+      memset( pWatchdog->errorMsg, 0, WD_MSG_LEN );
+      sprintf( pWatchdog->errorMsg, "%s%d%s",
                   "Config error, error code = ", 
-                  vdscGetLastError( &m_errorHandler ),
+                  vdscGetLastError( &pWatchdog->errorHandler ),
                   ", error message = " );
-      len = strlen(m_errorMsg);
-      vdscGetErrorMsg( &m_errorHandler, &m_errorMsg[len], WD_MSG_LEN-len );
+      len = strlen(pWatchdog->errorMsg);
+      vdscGetErrorMsg( &pWatchdog->errorHandler, &pWatchdog->errorMsg[len], WD_MSG_LEN-len );
    }
 
    return errcode;
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
 int vdswWatchdog::ReadRegistry()
@@ -413,7 +410,7 @@ int vdswWatchdog::ReadRegistry()
                            KEY_QUERY_VALUE,
                            &hKey );
    if ( errcode != ERROR_SUCCESS ) {
-      m_log.SendMessage( WD_ERROR, 
+      vdswSendMessage( &pWatchdog->log, WD_ERROR, 
                          "RegOpenKeyEx error = %d", 
                          GetLastError() );
       return -1;
@@ -424,10 +421,10 @@ int vdswWatchdog::ReadRegistry()
                               VDS_LOCATION,
                               NULL, 
                               NULL, 
-                              (LPBYTE)m_params.wdLocation, 
+                              (LPBYTE)pWatchdog->params.wdLocation, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      m_log.SendMessage( WD_ERROR, 
+      vdswSendMessage( &pWatchdog->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return -1;
@@ -438,10 +435,10 @@ int vdswWatchdog::ReadRegistry()
                               VDS_MEMSIZE, 
                               NULL, 
                               NULL, 
-                              (LPBYTE)&m_params.memorySizekb, 
+                              (LPBYTE)&pWatchdog->params.memorySizekb, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      m_log.SendMessage( WD_ERROR, 
+      vdswSendMessage( &pWatchdog->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return -1;
@@ -452,10 +449,10 @@ int vdswWatchdog::ReadRegistry()
                               VDS_WDADDRESS, 
                               NULL, 
                               NULL, 
-                              (LPBYTE)m_params.wdAddress,
+                              (LPBYTE)pWatchdog->params.wdAddress,
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      m_log.SendMessage( WD_ERROR, 
+      vdswSendMessage( &pWatchdog->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return -1;
@@ -466,10 +463,10 @@ int vdswWatchdog::ReadRegistry()
                               VDS_USE_LOG, 
                               NULL, 
                               NULL, 
-                              (LPBYTE)&m_params.logOn, 
+                              (LPBYTE)&pWatchdog->params.logOn, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      m_log.SendMessage( WD_ERROR, 
+      vdswSendMessage( &pWatchdog->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return -1;
@@ -480,10 +477,10 @@ int vdswWatchdog::ReadRegistry()
                               VDS_FILEPERMS, 
                               NULL, 
                               NULL, 
-                              (LPBYTE)&m_params.filePerms, 
+                              (LPBYTE)&pWatchdog->params.filePerms, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      m_log.SendMessage( WD_ERROR, 
+      vdswSendMessage( &pWatchdog->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return -1;
@@ -494,10 +491,10 @@ int vdswWatchdog::ReadRegistry()
                               VDS_DIRPERMS, 
                               NULL, 
                               NULL, 
-                              (LPBYTE)&m_params.dirPerms, 
+                              (LPBYTE)&pWatchdog->params.dirPerms, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      m_log.SendMessage( WD_ERROR, 
+      vdswSendMessage( &pWatchdog->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return -1;
@@ -507,10 +504,9 @@ int vdswWatchdog::ReadRegistry()
 }
 #endif
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-// A reminder - this function is static
-void vdswWatchdog::Run()
+void vdswRun()
 {
    int errcode = 0;
    
@@ -532,36 +528,37 @@ void vdswWatchdog::Run()
       
       // Set the log object to sent messages to the log facility of the OS 
       // instead of sending them to stderr.
-      g_pWD->m_log.StartUsingLogger();
+      g_pWD->log.StartUsingLogger();
          
       // We have our object but it is not properly initialized - we need
       // to access the registry (the NT service equivalent of calling 
       // ReadConfig() from main().
       errcode = g_pWD->ReadRegistry();
       if ( errcode != 0 ) {
-         g_pWD->m_log.SendMessage( WD_ERROR, 
+         vdswSendMessage( &g_pWD->log, WD_ERROR, 
                                    "ReadRegistry failed - aborting..." );
          return;
       }
    }
 #endif
    
-   errcode = g_pWD->SetSigHandler();
+   errcode = vdswSetSigHandler();
    if ( errcode != 0 ) {
-      g_pWD->m_log.SendMessage( WD_ERROR,
-                                "Signal Handler Installation error %d",
-                                g_pWD->LastError() );
+      vdswSendMessage( &g_pWD->log, 
+                       WD_ERROR,
+                       "Signal Handler Installation error %d",
+                       vdswLastError() );
       return;
    }
 
-   errcode = g_pWD->m_acceptor.PrepareConnection( g_pWD );
+   errcode = vdswPrepareConnection( &g_pWD->acceptor, g_pWD );
    if ( errcode != 0 ) {
-      g_pWD->m_log.SendMessage( WD_ERROR,
+      vdswSendMessage( &g_pWD->log, WD_ERROR,
          "Error in PrepareConnection() - aborting..." );
       return;
    }
    
-   g_pWD->m_acceptor.WaitForConnections();
+   vdswWaitForConnections( &g_pWD->acceptor );
    
 #if defined ( WIN32 )
    if ( deallocWD ) {
@@ -572,9 +569,9 @@ void vdswWatchdog::Run()
 #endif
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswWatchdog::SetSigHandler()
+int vdswSetSigHandler()
 {
 #if defined(WIN32)
    signal( SIGINT,  sigterm_handler );
@@ -593,7 +590,7 @@ int vdswWatchdog::SetSigHandler()
 
    errcode = sigprocmask( SIG_BLOCK, &new_set, &old_set ); 
    if ( errcode != 0 ) {
-      g_pWD->m_log.SendMessage( WD_ERROR, "%s%d\n",
+      vdswSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigprocmask error, errno = ", errno );
       return -1;
    }
@@ -617,7 +614,7 @@ int vdswWatchdog::SetSigHandler()
     */
    errcode = sigprocmask( SIG_SETMASK, &old_set, &new_set );
    if ( errcode != 0 ) {
-      g_pWD->m_log.SendMessage( WD_ERROR, "%s%d\n",
+      vdswSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigprocmask error, errno = ", errno );
       return -1;
    }
@@ -634,20 +631,20 @@ int vdswWatchdog::SetSigHandler()
    action.sa_handler = sigterm_handler;
    errcode = sigaction( SIGTERM, &action, NULL );
    if ( errcode != 0 ) {
-      g_pWD->m_log.SendMessage( WD_ERROR, "%s%d\n",
+      vdswSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigaction (SIGTERM) error, errno = ", errno );
       return -1;
    }
    errcode = sigaction( SIGINT,  &action, NULL );
    if ( errcode != 0 ) {
-      g_pWD->m_log.SendMessage( WD_ERROR, "%s%d\n",
+      vdswSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigaction (SIGINT) error, errno = ", errno );
       return -1;
    }
    action.sa_handler = sighup_handler;
    errcode = sigaction( SIGHUP, &action, NULL );
    if ( errcode != 0 ) {
-      g_pWD->m_log.SendMessage( WD_ERROR, "%s%d\n",
+      vdswSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigaction (SIGHUP) error, errno = ", errno );
       return -1;
    }
@@ -656,7 +653,7 @@ int vdswWatchdog::SetSigHandler()
    action.sa_handler = sigpipe_handler;
    errcode = sigaction( SIGPIPE, &action, NULL );
    if ( errcode != 0 ) {
-      g_pWD->m_log.SendMessage( WD_ERROR, "%s%d\n",
+      vdswSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigaction (SIGPIPE) error, errno = ", errno );
       return -1;
    }
@@ -665,7 +662,7 @@ int vdswWatchdog::SetSigHandler()
    return 0;
 }
    
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
 void vdswWatchdog::Uninstall()
@@ -794,5 +791,5 @@ void vdswWatchdog::Uninstall()
 }
 #endif
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

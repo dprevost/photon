@@ -14,12 +14,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #ifndef VDSW_ACCEPTOR_H
 #define VDSW_ACCEPTOR_H
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
 #if defined (WIN32)
@@ -32,7 +32,7 @@
 #include "API/WatchdogCommon.h"
 #include "Common/ErrorHandler.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined (WIN32) 
 #  define VDS_SOCKET SOCKET
@@ -42,7 +42,7 @@
 #  define VDS_INVALID_SOCKET -1
 #endif
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* 
  * Not really a dispatch table but...
@@ -54,12 +54,14 @@ struct vdswDispatch
    size_t     dataToBeWritten;
 };
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+typedef struct vdswDispatch vdswDispatch;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 // Forward declaration
-class vdswWatchdog;
+struct vdswWatchdog;
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  *  This class enables the watchdog to answer connection request from 
@@ -77,56 +79,47 @@ class vdswWatchdog;
  *
  */
 
-class vdswAcceptor
+struct vdswAcceptor
 {
-public:
-
-   vdswAcceptor();
-
-   ~vdswAcceptor();
-
-   int PrepareConnection( vdswWatchdog* pWatchdog );
-
-   void WaitForConnections();
-
    vdscErrorHandler errorHandler;
    
-private:
+   VDS_SOCKET socketFD;
 
-   VDS_SOCKET m_socketFD;
-
-   vdswWatchdog* m_pWatchdog;
+   struct vdswWatchdog * pWatchdog;
    
-   vdswDispatch m_dispatch[FD_SETSIZE];
+   struct vdswDispatch dispatch[FD_SETSIZE];
 
-   struct WDOutput m_answer;
+   struct WDOutput answer;
 
 #if defined (WIN32)
    /// If true, WSACleanup must be called by the destructor
-   bool m_cleanupNeeded;
+   bool cleanupNeeded;
 #endif
-
-   int GetSockError() {
-#if defined (WIN32)
-      return WSAGetLastError();
-#else
-      return errno;
-#endif
-   }
-
-   int Accept();
-   
-   void Send( int indice );
-   
-   void Receive( int indice );
-
-   void HandleAbnormalTermination( pid_t pid );
-
-   bool IsconnectionAlive(  int indice );
-   
 };
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+typedef struct vdswAcceptor vdswAcceptor;
+
+static inline
+int GetSockError() 
+{
+#if defined (WIN32)
+   return WSAGetLastError();
+#else
+   return errno;
+#endif
+}
+
+
+void vdswAcceptorInit( vdswAcceptor * pAcceptor );
+
+void vdswAcceptorFini( vdswAcceptor * pAcceptor );
+
+int vdswPrepareConnection( vdswAcceptor        * pAcceptor,
+                           struct vdswWatchdog * pWatchdog );
+
+void vdswWaitForConnections( vdswAcceptor * pAcceptor );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* VDSW_ACCEPTOR_H */
 

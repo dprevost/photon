@@ -13,46 +13,51 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if ! defined(WIN32)
 #  include <syslog.h>
 #endif
 #include "LogMsg.h"
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdswLogMsg::vdswLogMsg( const char* progName )
-   : m_useLog ( false ),
-#if defined ( WIN32 )
-     m_handle ( NULL ),
-#endif
-     m_name ( NULL )
+int vdswLogMsgInit( vdswLogMsg * pLog,
+                    const char * progName )
 {
    int len = strlen( progName );
-   m_name = new char [len+1];
-   strcpy( m_name, progName );
+
+   pLog->useLog = false;
+#if defined ( WIN32 )
+   pLog->handle = NULL;
+#endif
+   pLog->name = calloc( len+1, 1 );
+   if ( pLog->name == NULL ) return -1;
+   
+   strcpy( pLog->name, progName );
+
+   return 0;
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdswLogMsg::~vdswLogMsg()
+void vdswLogMsgFini( vdswLogMsg * pLog )
 {
-   if (m_useLog) {
+   if (pLog->useLog) {
 #if defined ( WIN32 )
-      if ( m_handle != NULL ) {
-         DeregisterEventSource( m_handle );
-         m_handle = NULL;
+      if ( pLog->handle != NULL ) {
+         DeregisterEventSource( pLog->handle );
+         pLog->handle = NULL;
       }
 #else
       closelog();
 #endif
    }
-   if ( m_name ) delete m_name;
-   m_name = NULL;
+   if ( pLog->name ) free(pLog->name);
+   pLog->name = NULL;
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
 int vdswLogMsg::Install( const char * progName, 
@@ -132,12 +137,12 @@ int vdswLogMsg::Install( const char * progName,
 }
 #endif
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void 
-vdswLogMsg::SendMessage( enum wdMsgSeverity severity,
-                        const char* format, 
-                        ... )
+void vdswSendMessage( vdswLogMsg         * pLog,
+                      enum wdMsgSeverity   severity,
+                      const char         * format, 
+                      ... )
 {
    char message[VDS_MAX_MSG_LOG];
    va_list args;
@@ -151,9 +156,9 @@ vdswLogMsg::SendMessage( enum wdMsgSeverity severity,
 #endif
    va_end( args );
 
-   if ( m_useLog ) {
+   if ( pLog->useLog ) {
 #ifdef WIN32
-      ReportEvent( m_handle, 
+      ReportEvent( pLog->handle, 
                    severity, 
                    NULL,
                    0, 0, 0, 
@@ -184,19 +189,19 @@ vdswLogMsg::SendMessage( enum wdMsgSeverity severity,
    }
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-   
-void vdswLogMsg::StartUsingLogger()
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void vdswStartUsingLogger( vdswLogMsg * pLog )
 {
-   m_useLog = true;
+   pLog->useLog = true;
 #if defined ( WIN32 )
-   m_handle = RegisterEventSource( NULL, m_name );
+   pLog->handle = RegisterEventSource( NULL, pLog->name );
 #else
-   openlog( m_name, LOG_PID, LOG_USER );
+   openlog( pLog->name, LOG_PID, LOG_USER );
 #endif
 }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
 int vdswLogMsg::Uninstall( const char* progName )
@@ -234,5 +239,5 @@ int vdswLogMsg::Uninstall( const char* progName )
 }
 #endif
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
