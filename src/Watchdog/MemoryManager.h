@@ -26,6 +26,8 @@
 #include "Common/MemoryFile.h"
 #include "Engine/SessionContext.h"
 
+BEGIN_C_DECLS
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 struct vdswMemoryManager
@@ -82,6 +84,8 @@ int vdswSyncVDS( vdswMemoryManager * pManager,
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+END_C_DECLS
 
 #endif /* VDSE_MEMORY_MANAGER_H */
 

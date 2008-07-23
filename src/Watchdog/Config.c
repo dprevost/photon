@@ -68,10 +68,10 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
  
  */
  
-int vdswReadConfig( const char*          cfgname,
-                    struct ConfigParams* pConfig,
-                    int                  debug,
-                    vdscErrorHandler*    pError  )
+int vdswReadConfig( const char          * cfgname,
+                    struct ConfigParams * pConfig,
+                    int                   debug,
+                    vdscErrorHandler    * pError )
 {
    xmlSchemaPtr schema = NULL;
    xmlSchemaValidCtxtPtr  validCtxt = NULL;
@@ -132,7 +132,6 @@ int vdswReadConfig( const char*          cfgname,
       errcode = VDSW_XML_NO_SCHEMA_LOCATION;
       goto cleanup;
    }
-   
    
    for ( i = 0; i < xmlStrlen(prop)-1; ++i ) {
       if ( isspace(prop[i]) ) {

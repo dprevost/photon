@@ -25,6 +25,8 @@
 #include <syslog.h>
 #endif
 
+BEGIN_C_DECLS
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #define VDS_MAX_MSG_LOG 1024
@@ -63,7 +65,7 @@ struct vdswLogMsg
    HANDLE handle;
 #endif
 
-   char* name;
+   char * name;
 };
 
 typedef struct vdswLogMsg vdswLogMsg;
@@ -88,16 +90,20 @@ void vdswSendMessage( vdswLogMsg         * pLog,
     *  This is not mandatory but it makes it easier to examine events
     *  using EventViewer.
     */
-   int Install( vdswLogMsg * pLog,
-                const char * progName, 
-                const char * msgPathName,
-                int          dwNum );
+int vdswLogMsgInstall( vdswLogMsg * pLog,
+                       const char * progName, 
+                       const char * msgPathName,
+                       int          dwNum );
 
-   int Uninstall( vdswLogMsg * pLog,
-                  const char * progName );
+int vdswLogMsgUninstall( vdswLogMsg * pLog,
+                         const char * progName );
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+END_C_DECLS
+
 #endif /* VDSW_LOGMSG_H */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

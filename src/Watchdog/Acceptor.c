@@ -32,10 +32,10 @@ static
 int Accept( vdswAcceptor * pAcceptor );
    
 static
-void Send( vdswAcceptor * pAcceptor, int indice );
+void Send( vdswAcceptor * pAcceptor, unsigned int indice );
    
 static
-void Receive( vdswAcceptor * pAcceptor, int indice );
+void Receive( vdswAcceptor * pAcceptor, unsigned int indice );
 
 static
 void HandleAbnormalTermination( vdswAcceptor * pAcceptor, pid_t pid );
@@ -59,6 +59,8 @@ void vdswAcceptorInit( vdswAcceptor * pAcceptor )
 
 void vdswAcceptorFini( vdswAcceptor * pAcceptor )
 {
+   VDS_PRE_CONDITION( pAcceptor != NULL );
+
    if ( pAcceptor->socketFD != VDS_INVALID_SOCKET ) {
 #if defined (WIN32) 
       closesocket( pAcceptor->socketFD );
@@ -79,7 +81,10 @@ int Accept( vdswAcceptor * pAcceptor )
 {
    VDS_SOCKET newSock = VDS_INVALID_SOCKET;
    int errcode, i;
-   
+#if defined (WIN32)
+   unsigned long mode = 1;
+#endif
+
 #if ! defined (WIN32) 
    do {
 #endif
@@ -110,7 +115,6 @@ int Accept( vdswAcceptor * pAcceptor )
     */
 
 #if defined (WIN32)
-   unsigned long mode = 1;
    errcode = ioctlsocket( newSock, FIONBIO, &mode );
    if ( errcode == SOCKET_ERROR ) {
       vdswSendMessage( &pAcceptor->pWatchdog->log,
@@ -207,6 +211,15 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
    int one = 1;
    unsigned short port;
    long int dummy = 0;
+#if defined (WIN32) 
+   WORD versionRequested;
+   WSADATA wsaData;
+   unsigned long mode = 1;
+#endif
+   struct sockaddr_in addr;
+
+   VDS_PRE_CONDITION( pAcceptor != NULL );
+   VDS_PRE_CONDITION( pWatchdog != NULL );
 
    pAcceptor->pWatchdog = pWatchdog;
    memset( &pAcceptor->answer, 0, sizeof pAcceptor->answer );
@@ -228,9 +241,6 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
 //   }
 
 #if defined (WIN32) 
-   WORD versionRequested;
-   WSADATA wsaData;
- 
    versionRequested = MAKEWORD( 2, 2 );
  
    errcode = WSAStartup( versionRequested, &wsaData );
@@ -267,7 +277,6 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
    // Set the socket in non-blocking mode.
 
 #if defined (WIN32)
-   unsigned long mode = 1;
    errcode = ioctlsocket( pAcceptor->socketFD, FIONBIO, &mode );
    if ( errcode == SOCKET_ERROR ) {
       vdswSendMessage( pAcceptor->pWatchdog->log, 
@@ -287,7 +296,6 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
    }
 #endif
 
-   struct sockaddr_in addr;
    memset( &addr, 0, sizeof(struct sockaddr_in) );
 
    addr.sin_family = PF_INET;
@@ -320,11 +328,14 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void
-Receive( vdswAcceptor * pAcceptor, int indice )
+Receive( vdswAcceptor * pAcceptor, unsigned int indice )
 {
    int errcode = 0;
    struct WDInput input;
    
+   VDS_PRE_CONDITION( pAcceptor != NULL );
+   VDS_PRE_CONDITION( indice < FD_SETSIZE );
+
    /*
     * A socket can be in a ready state for reading when:
     *  - there is something to read
@@ -406,12 +417,18 @@ Receive( vdswAcceptor * pAcceptor, int indice )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void
-Send( vdswAcceptor * pAcceptor, int indice )
+Send( vdswAcceptor * pAcceptor, unsigned int indice )
 {
    int errcode = 0;
-   char* ptr = (char*) &pAcceptor->answer;
-   int offset = sizeof pAcceptor->answer - pAcceptor->dispatch[indice].dataToBeWritten;
+   char * ptr;
+   int offset;
    
+   VDS_PRE_CONDITION( pAcceptor != NULL );
+   VDS_PRE_CONDITION( indice < FD_SETSIZE );
+
+   ptr = (char*) &pAcceptor->answer;
+   offset = sizeof pAcceptor->answer - pAcceptor->dispatch[indice].dataToBeWritten;
+
    do {
       errcode = send( pAcceptor->dispatch[indice].socketId, 
                       &ptr[offset], 
@@ -466,8 +483,11 @@ vdswWaitForConnections( vdswAcceptor * pAcceptor )
 {
    int errcode = 0;
    fd_set readSet, writeSet;
-   int i, maxFD, fired;
+   int maxFD, fired;
    struct timeval timeout;   
+   unsigned int i;
+   
+   VDS_PRE_CONDITION( pAcceptor != NULL );
 
    /*
     * NOTE: since socket handles, on Windows, are not integers, we will

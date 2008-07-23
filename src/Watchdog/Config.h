@@ -87,10 +87,10 @@ struct ConfigParams
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Read the configuration file from disk. */
-int vdswReadConfig( const char*          cfgname,
-                    struct ConfigParams* pConfig,
-                    int                  debug,
-                    vdscErrorHandler*    pError  );
+int vdswReadConfig( const char          * cfgname,
+                    struct ConfigParams * pConfig,
+                    int                   debug,
+                    vdscErrorHandler    * pError  );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

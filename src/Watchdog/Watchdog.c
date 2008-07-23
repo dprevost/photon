@@ -26,13 +26,9 @@
 
 vdswWatchdog * g_pWD = NULL;
 
-BEGIN_C_DECLS
 vdscErrMsgHandle g_wdErrorHandle = -1;
-END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-BEGIN_C_DECLS
 
 RETSIGTYPE sigterm_handler( int s )
 {
@@ -42,12 +38,16 @@ RETSIGTYPE sigterm_handler( int s )
    g_pWD->controlWord |= WD_SHUTDOWN_REQUEST;
 }
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 RETSIGTYPE sighup_handler( int s )
 {
    /*
     * Nothing yet for SIGHUP
     */
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 RETSIGTYPE sigpipe_handler( int s )
 {
@@ -59,8 +59,12 @@ RETSIGTYPE sigpipe_handler( int s )
    fprintf( stderr, "sigpipe_handler was called \n" );
 }
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdswGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 {
+   VDS_PRE_CONDITION( msg != NULL );
+
    const char * theMsg = vdsw_ErrorMessage( errnum );
    if ( theMsg == NULL ) return -1;
    if ( strlen(theMsg) >= msgLength ) return -1;
@@ -70,12 +74,12 @@ int vdswGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
    return 0;
 }
 
-END_C_DECLS
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void vdswWatchdogInit( vdswWatchdog * pWatchdog )
 {
+   VDS_PRE_CONDITION( pWatchdog != NULL );
+
    pWatchdog->pMemoryAddress = NULL;
    pWatchdog->controlWord = 0;
    pWatchdog->verifyVDSOnly = false;
@@ -98,6 +102,8 @@ void vdswWatchdogInit( vdswWatchdog * pWatchdog )
 
 void vdswWatchdogFini( vdswWatchdog * pWatchdog )
 {
+   VDS_PRE_CONDITION( pWatchdog != NULL );
+
    vdscFiniErrorHandler( &pWatchdog->errorHandler );
    vdscFiniErrorDefs();
 }
@@ -114,6 +120,8 @@ int vdswDaemon( vdswWatchdog * pWatchdog )
    pid_t pid = 0;
    int errcode;
    
+   VDS_PRE_CONDITION( pWatchdog != NULL );
+
    /*
     * Before becoming a daemon, we test the VDS directory to make sure it
     * is valid - this is, likely, the most probable failure of the whole
@@ -217,8 +225,10 @@ int vdswDaemon( vdswWatchdog * pWatchdog )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswHelp( const char* progName )
+void vdswHelp( const char * progName )
 {
+   VDS_PRE_CONDITION( progName != NULL );
+
    fprintf( stderr, "Usage: %s [options] config_file \n", progName );
    fprintf( stderr, "Options:\n" );
    
@@ -237,13 +247,15 @@ void vdswHelp( const char* progName )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-int vdswWatchdog::Install()
+int vdswInstall( vdswWatchdog * pWatchdog )
 {
    SC_HANDLE   hService;
    SC_HANDLE   hManager;
    char progPath[PATH_MAX];
    int errcode;
    HKEY hKey;
+
+   VDS_PRE_CONDITION( pWatchdog != NULL );
 
    memset( progPath, 0, PATH_MAX );
    if ( GetModuleFileName( NULL, progPath, PATH_MAX ) == 0 ) {
@@ -381,6 +393,9 @@ int vdswWatchdogReadConfig( vdswWatchdog * pWatchdog, const char* cfgname )
 {
    int errcode, len;
    
+   VDS_PRE_CONDITION( pWatchdog != NULL );
+   VDS_PRE_CONDITION( cfgname   != NULL );
+
    errcode = vdswReadConfig( cfgname, &pWatchdog->params, 0, &pWatchdog->errorHandler );
    if ( errcode != 0 ) {
       memset( pWatchdog->errorMsg, 0, WD_MSG_LEN );
@@ -398,12 +413,14 @@ int vdswWatchdogReadConfig( vdswWatchdog * pWatchdog, const char* cfgname )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-int vdswWatchdog::ReadRegistry()
+int vdswWatchdog::ReadRegistry( vdswWatchdog * pWatchdog )
 {
    int errcode;
    HKEY hKey;
    unsigned long length;
    
+   VDS_PRE_CONDITION( pWatchdog != NULL );
+
    errcode = RegOpenKeyEx( HKEY_LOCAL_MACHINE, 
                            "SYSTEM\\CurrentControlSet\\Services\\vdswd",
                            NULL,
@@ -542,6 +559,8 @@ void vdswRun()
    }
 #endif
    
+   VDS_PRE_CONDITION( g_pWD != NULL );
+
    errcode = vdswSetSigHandler();
    if ( errcode != 0 ) {
       vdswSendMessage( &g_pWD->log, 
@@ -574,6 +593,8 @@ void vdswRun()
 int vdswSetSigHandler()
 {
 #if defined(WIN32)
+   VDS_PRE_CONDITION( g_pWD != NULL );
+
    signal( SIGINT,  sigterm_handler );
    signal( SIGTERM, sigterm_handler );
 
@@ -582,6 +603,8 @@ int vdswSetSigHandler()
    sigset_t old_set, new_set;
    struct sigaction action;
    
+   VDS_PRE_CONDITION( g_pWD != NULL );
+
    /*
     * Get the current process mask (meaning the list of signals which are
     * currently blocked)
@@ -665,7 +688,7 @@ int vdswSetSigHandler()
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-void vdswWatchdog::Uninstall()
+void vdswWatchdog::Uninstall( vdswWatchdog * pWatchdog )
 {
    SC_HANDLE   hService;
    SC_HANDLE   hManager;
@@ -673,6 +696,8 @@ void vdswWatchdog::Uninstall()
    HKEY hKey;
    SERVICE_STATUS status;
    
+   VDS_PRE_CONDITION( pWatchdog != NULL );
+
    fprintf( stderr, "%s\n%s\n%s\n%s\n%s\n",
             "WARNING - Some errors while uninstalling might not be real",
             "errors if the service was not properly initialized in the",

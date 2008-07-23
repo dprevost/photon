@@ -21,6 +21,8 @@
 
 #include "Engine/SessionContext.h"
 
+BEGIN_C_DECLS
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 // Forward declaration
@@ -43,7 +45,7 @@ struct vdswHandler
 
    struct vdswMemoryManager * pMemManager;
 
-   struct vdseMemoryHeader* pMemHeader;
+   struct vdseMemoryHeader * pMemHeader;
    
    vdseSessionContext context;
 };
@@ -61,25 +63,15 @@ void vdswHandlerFini( vdswHandler * pHandler );
 
 void vdswHandleCrash( vdswHandler * pHandler, pid_t pid );
 
-//   int Init( vdswHandler * pHandler,
-//       );
-   
-//private:   
 #if 0
    void CleanSession( vdseSession* pSession );
-   
-   struct ConfigParams * m_pConfig;
-
-   vdswMemoryManager * m_pMemManager;
-
-   vdseMemoryHeader* m_pMemHeader;
-   
-   vdseSessionContext m_context;
-   
-};
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+END_C_DECLS
+
 #endif /* VDSW_HANDLER_H */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

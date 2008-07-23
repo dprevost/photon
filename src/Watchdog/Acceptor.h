@@ -1,4 +1,3 @@
-/* -*- C++ -*- */
 /*
  * Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
@@ -32,6 +31,8 @@
 #include "API/WatchdogCommon.h"
 #include "Common/ErrorHandler.h"
 
+BEGIN_C_DECLS
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined (WIN32) 
@@ -64,17 +65,17 @@ struct vdswWatchdog;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- *  This class enables the watchdog to answer connection request from 
+ *  This struct enables the watchdog to answer connection request from 
  *  applications and to send the information they need to access the VDS.
  *
- *  This class encapsulates the IPC mechanism uses between the apps and
+ *  This module encapsulates the IPC mechanism uses between the apps and
  *  the watchdog. I've looked at different possibilities, for example 
  *  named pipes but in the end, sockets are more universal than other 
  *  mechanisms so the choice was not difficult to make.
  *
  *  However, to maintain the possibility of using a different mechanism,
- *  the interface must be "universal" (using a char* as the address of 
- *  the watchdog instead of something more specific like an unsigned short 
+ *  the interface must be "universal" (example: using a char* as the address 
+ *  of the watchdog instead of something more specific like an unsigned short 
  *  (port number)).
  *
  */
@@ -92,12 +93,14 @@ struct vdswAcceptor
    struct WDOutput answer;
 
 #if defined (WIN32)
-   /// If true, WSACleanup must be called by the destructor
+   /** If true, WSACleanup must be called by the destructor */
    bool cleanupNeeded;
 #endif
 };
 
 typedef struct vdswAcceptor vdswAcceptor;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
 int GetSockError() 
@@ -109,6 +112,7 @@ int GetSockError()
 #endif
 }
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void vdswAcceptorInit( vdswAcceptor * pAcceptor );
 
@@ -121,5 +125,9 @@ void vdswWaitForConnections( vdswAcceptor * pAcceptor );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+END_C_DECLS
+
 #endif /* VDSW_ACCEPTOR_H */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

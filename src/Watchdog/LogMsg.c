@@ -27,6 +27,9 @@ int vdswLogMsgInit( vdswLogMsg * pLog,
 {
    int len = strlen( progName );
 
+   VDS_PRE_CONDITION( pLog     != NULL );
+   VDS_PRE_CONDITION( progName != NULL );
+
    pLog->useLog = false;
 #if defined ( WIN32 )
    pLog->handle = NULL;
@@ -43,6 +46,8 @@ int vdswLogMsgInit( vdswLogMsg * pLog,
 
 void vdswLogMsgFini( vdswLogMsg * pLog )
 {
+   VDS_PRE_CONDITION( pLog != NULL );
+
    if (pLog->useLog) {
 #if defined ( WIN32 )
       if ( pLog->handle != NULL ) {
@@ -60,14 +65,17 @@ void vdswLogMsgFini( vdswLogMsg * pLog )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-int vdswLogMsg::Install( const char * progName, 
-                         const char * msgPathName,
-                         int          numCategories )
+int vdswLogMsgInstall( const char * progName, 
+                       const char * msgPathName,
+                       int          numCategories )
 {
    HKEY hKey; 
    char buffer[MAX_PATH]; 
    int eventType;
    
+   VDS_PRE_CONDITION( progName    != NULL );
+   VDS_PRE_CONDITION( msgPathName != NULL );
+
    // Install a new subkey to the EventLog service (under "Application")
    sprintf( buffer, 
             "SYSTEM\\CurrentControlSet\\Services\\EventLog\\Application\\%s",
@@ -147,6 +155,9 @@ void vdswSendMessage( vdswLogMsg         * pLog,
    char message[VDS_MAX_MSG_LOG];
    va_list args;
 
+   VDS_PRE_CONDITION( pLog   != NULL );
+   VDS_PRE_CONDITION( format != NULL );
+
    va_start( args, format );
 #if HAVE_VSNPRINTF  /* safer but does not seem to be present on all 
                        platforms */
@@ -193,6 +204,8 @@ void vdswSendMessage( vdswLogMsg         * pLog,
 
 void vdswStartUsingLogger( vdswLogMsg * pLog )
 {
+   VDS_PRE_CONDITION( pLog != NULL );
+
    pLog->useLog = true;
 #if defined ( WIN32 )
    pLog->handle = RegisterEventSource( NULL, pLog->name );
@@ -204,10 +217,12 @@ void vdswStartUsingLogger( vdswLogMsg * pLog )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-int vdswLogMsg::Uninstall( const char* progName )
+int vdswLogMsgUninstall( const char * progName )
 {
    HKEY hKey; 
    char buffer[MAX_PATH]; 
+
+   VDS_PRE_CONDITION( progName != NULL );
 
    /*
     * To delete a registry key, you first need to open the key immediately

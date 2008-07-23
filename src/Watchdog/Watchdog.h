@@ -28,9 +28,11 @@
 #include "Config.h"
 #include "Common/ErrorHandler.h"
 
-#define PROG_NAME "vdswd"
+BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#define PROG_NAME "vdswd"
 
 #define WD_SHUTDOWN_REQUEST 0X001
 
@@ -41,9 +43,7 @@
 // Forward declaration(s)
 struct vdseMemoryHeader;
 
-BEGIN_C_DECLS
 extern vdscErrMsgHandle g_wdErrorHandle;
-END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -116,16 +116,19 @@ void vdswHandleAbnormalTermination( vdswWatchdog * pWatchdog,
    vdswHandleCrash( &g_pWD->vds, pid );
 }
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 void vdswWatchdogInit( vdswWatchdog * pWatchdog );
 
 void vdswWatchdogFini( vdswWatchdog * pWatchdog );
 
 #if defined ( WIN32 )
-   int Install();
 
-   void Uninstall();
+int vdswInstall();
 
-   int ReadRegistry();
+void vdswUninstall();
+
+int vdswReadRegistry();
    
 #else
 int vdswDaemon( vdswWatchdog * pWatchdog );
@@ -134,7 +137,9 @@ int vdswDaemon( vdswWatchdog * pWatchdog );
 int vdswWatchdogReadConfig( vdswWatchdog * pWatchdog, const char* cfgname );   
    
 void vdswHelp( const char* progName );
-   
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static inline 
 int vdswLastError() {
 #if defined ( WIN32 )
@@ -143,10 +148,9 @@ int vdswLastError() {
    return errno;
 #endif
 }
-   
-//const char* vdswGetErrorMsg() { return g_pWD->errorMsg; }
 
-   
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /**
  *  This function is going to validate the VDS or create it if it does 
  *  not exist, cleanup any leftovers from previous runs, possibly run
@@ -165,11 +169,17 @@ int vdswInitializeVDS( vdswWatchdog * pWatchdog ) {
                            pWatchdog->verifyVDSOnly );
 }
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdswSetSigHandler();
 
 void vdswRun();
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+END_C_DECLS
+
 #endif /* VDS_WATCHDOG_H */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

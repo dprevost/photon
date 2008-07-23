@@ -31,6 +31,8 @@
 
 void vdswMemoryManagerInit( vdswMemoryManager * pManager )
 {
+   VDS_PRE_CONDITION( pManager != NULL );
+
    pManager->memorySizeKB = 0;
    pManager->pMemoryAddress = NULL;
    pManager->pHeader = NULL;
@@ -40,6 +42,11 @@ void vdswMemoryManagerInit( vdswMemoryManager * pManager )
 
 void vdswMemoryManagerFini( vdswMemoryManager * pManager )
 {
+   VDS_PRE_CONDITION( pManager != NULL );
+
+   pManager->memorySizeKB = 0;
+   pManager->pMemoryAddress = NULL;
+   pManager->pHeader = NULL;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -54,9 +61,19 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
    int errcode = 0;
    vdscMemoryFileStatus fileStatus;
    vdseMemAlloc * pAlloc;
+   unsigned char * ptr;
+   vdseFolder * pFolder;
+   enum ListErrors listErr;
+   vdseProcMgr * processManager;
    
    /* Very unlikely but just in case... */
-   VDS_PRE_CONDITION( sizeof(vdseMemoryHeader) <= VDSE_BLOCK_SIZE );
+   VDS_PRE_CONDITION( pManager       != NULL );
+   VDS_PRE_CONDITION( memoryFileName != NULL );
+   VDS_PRE_CONDITION( ppHeader       != NULL );
+   VDS_PRE_CONDITION( pContext       != NULL );
+   VDS_PRE_CONDITION( memorySizekb > 0 );
+
+   VDS_INV_CONDITION( sizeof(vdseMemoryHeader) <= VDSE_BLOCK_SIZE );
    
    *ppHeader = NULL;
    pManager->memorySizeKB = memorySizekb;   
@@ -101,15 +118,13 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
    }
 
    /* The top folder  */
-   unsigned char* ptr = vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
+   ptr = vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
    if ( ptr == NULL ) {
       (*ppHeader) = NULL;
       return VDS_NOT_ENOUGH_VDS_MEMORY;
    }
-   vdseFolder * pFolder = (vdseFolder *) ptr;
-   
-   enum ListErrors listErr;
-   
+   pFolder = (vdseFolder *) ptr;
+
    errcode = vdseMemObjectInit( &pFolder->memObject, 
                                 VDSE_IDENT_FOLDER,
                                 &pFolder->blockGroup,
@@ -150,59 +165,6 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
    (*ppHeader)->topDescriptor.memOffset = SET_OFFSET( &pFolder->memObject );
    (*ppHeader)->topDescriptor.apiType = VDS_FOLDER;
 
-////////////////////////
-#if 0
-      descLength = offsetof(vdseObjectDescriptor, originalName) + 
-          (partialLength+1) * sizeof(char);
-      pDesc = (vdseObjectDescriptor *) malloc( descLength );
-
-      memset( pDesc, 0, descLength );
-      pDesc->apiType = objectType;
-      pDesc->offset = SET_OFFSET( ptr );
-      pDesc->nameLengthInBytes = partialLength * sizeof(char);
-      memcpy( pDesc->originalName, originalName, pDesc->nameLengthInBytes );
-
-      listErr = vdseHashInsert( &pFolder->hashObj, 
-                                (unsigned char *)objectName, 
-                                partialLength * sizeof(char), 
-                                (void*)pDesc, 
-                                descLength,
-                                &pHashItem,
-                                pContext );
-
-      switch( objectType ) {
-      case VDS_FOLDER:
-         memObjType = VDSE_IDENT_FOLDER;
-         break;
-
-      free( pDesc ); 
-      pDesc = NULL;
-      
-      objTxStatus = &pHashItem->txStatus;
-      vdseTxStatusInit( objTxStatus, SET_OFFSET(pContext->pTransaction) );
-      
-      GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
-      switch ( memObjType ) {
-      case VDSE_IDENT_FOLDER:
-         rc = vdseFolderInit( (vdseFolder*)ptr,
-                              SET_OFFSET(pFolder),
-                              numBlocks,
-                              expectedNumOfChilds,
-                              objTxStatus,
-                              partialLength,
-                              pDesc->originalName,
-                              SET_OFFSET(pHashItem->key),
-                              pContext );
-         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseFolder,nodeObject);
-         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseFolder,memObject);
-         break;
-      
-      }
-
-#endif
-//////////////////////   
-   
-   
    /* The Garbage Collection manager */
    ptr = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
    if ( ptr == NULL ) {
@@ -210,7 +172,7 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
       return VDS_NOT_ENOUGH_VDS_MEMORY;
    }
 
-   vdseProcMgr * processManager = (vdseProcMgr *) ptr;
+   processManager = (vdseProcMgr *) ptr;
    
    errcode = vdseProcMgrInit( processManager, pContext );
    if ( errcode != 0 ) {
@@ -238,6 +200,7 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
    (*ppHeader)->alignmentInt16  = VDSC_ALIGNMENT_INT16;
    (*ppHeader)->alignmentInt32  = VDSC_ALIGNMENT_INT32;
    (*ppHeader)->alignmentInt64  = VDSC_ALIGNMENT_INT64;
+#if 0
    fprintf(stderr, "%d %d %d %d %d %d %d\n",
  VDSC_ALIGNMENT_STRUCT,
  VDSC_ALIGNMENT_CHAR,
@@ -246,11 +209,8 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
  VDSC_ALIGNMENT_INT64,
  VDSC_ALIGNMENT_CHAR_ARRAY,
  VDSC_ALIGNMENT_BOOL );
-#if defined(CONFIG_KERNEL_HEADERS)
-   (*ppHeader)->usingSpinlocks = true;
-#else
-   (*ppHeader)->usingSpinlocks = false;
 #endif
+   (*ppHeader)->usingSpinlocks = false;
    (*ppHeader)->allocationUnit = VDSE_ALLOCATION_UNIT;
    strncpy( (*ppHeader)->cpu_type, MYCPU, 19 );
    strncpy( (*ppHeader)->compiler, MYCC, 19);
@@ -270,6 +230,11 @@ int vdswOpenVDS( vdswMemoryManager * pManager,
    vdscMemoryFileStatus fileStatus;
    vdscErrorHandler errorHandler;
    
+   VDS_PRE_CONDITION( pManager       != NULL );
+   VDS_PRE_CONDITION( memoryFileName != NULL );
+   VDS_PRE_CONDITION( ppHeader       != NULL );
+   VDS_PRE_CONDITION( memorySizekb > 0 );
+
    *ppHeader = NULL;
    pManager->memorySizeKB = memorySizekb;
    
@@ -309,6 +274,9 @@ int vdswOpenVDS( vdswMemoryManager * pManager,
 void vdswCloseVDS( vdswMemoryManager * pManager,
                    vdscErrorHandler  * pError )
 {
+   VDS_PRE_CONDITION( pManager != NULL );
+   VDS_PRE_CONDITION( pError   != NULL );
+
    vdscCloseMemFile( &pManager->memory, pError );
 }
 

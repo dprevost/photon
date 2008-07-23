@@ -51,6 +51,10 @@ int vdswHandlerInit( vdswHandler         * pHandler,
    size_t numObjectsDeleted = 0;
    size_t numObjectsError = 0;
 
+   VDS_PRE_CONDITION( pHandler        != NULL );
+   VDS_PRE_CONDITION( pConfig         != NULL );
+   VDS_PRE_CONDITION( ppMemoryAddress != NULL );
+
    pHandler->pConfig = NULL;
    pHandler->pMemManager = NULL;
    pHandler->pMemHeader = NULL;
@@ -64,7 +68,6 @@ int vdswHandlerInit( vdswHandler         * pHandler,
       exit(1);
    }
    vdscInitErrorHandler( &pHandler->context.errorHandler );
-
 
    if ( pConfig == NULL ) return -1;
    pHandler->pConfig = pConfig;
@@ -250,6 +253,11 @@ int vdswHandlerInit( vdswHandler         * pHandler,
 
 void vdswHandlerFini( vdswHandler * pHandler )
 {
+   VDS_PRE_CONDITION( pHandler != NULL );
+
+   pHandler->pConfig = NULL;
+   pHandler->pMemManager = NULL;
+   pHandler->pMemHeader = NULL;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -268,6 +276,8 @@ void vdswHandlerFini( vdswHandler * pHandler )
 void vdswHandleCrash( vdswHandler * pHandler, pid_t pid )
 {
 //   int errcode;
+   VDS_PRE_CONDITION( pHandler != NULL );
+
 #if 0   
    vdseProcess* pProcess = NULL;
    vdseSessionContext context;
