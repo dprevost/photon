@@ -26,7 +26,7 @@ int main()
 {
    vdseLinkedList list;
    vdseLinkNode node, *pNode;
-   enum ListErrors error;
+   bool ok;
    vdseSessionContext context;
    
    initTest( expectedToPass, &context );
@@ -37,8 +37,8 @@ int main()
    
    vdseLinkedListPutLast( &list, &node );
    
-   error = vdseLinkedListGetFirst( &list, &pNode );
-   if ( error != LIST_OK ) {
+   ok = vdseLinkedListGetFirst( &list, &pNode );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pNode != &node ) {

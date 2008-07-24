@@ -26,13 +26,13 @@ vdswCheckQueueContent( vdswVerifyStruct * pVerify,
                        struct vdseQueue * pQueue )
 {
    vdseTxStatus * txItemStatus;
-   enum ListErrors listErrCode;
    vdseLinkNode * pNode = NULL, * pDeletedNode = NULL;
    vdseQueueItem* pQueueItem = NULL;
    enum vdswRecoverError rc = VDSWR_OK;
+   bool ok;
    
-   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
-   while ( listErrCode == LIST_OK ) {
+   ok = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   while ( ok ) {
       pQueueItem = (vdseQueueItem*) 
          ((char*)pNode - offsetof( vdseQueueItem, node ));
       txItemStatus = &pQueueItem->txStatus;
@@ -76,9 +76,9 @@ vdswCheckQueueContent( vdswVerifyStruct * pVerify,
          }
       }
       
-      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
-                                             pNode, 
-                                             &pNode );
+      ok =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                    pNode, 
+                                    &pNode );
       /*
        * We need the old node to be able to get to the next node. That's
        * why we save the node to be deleted and delete it until after we
@@ -91,13 +91,7 @@ vdswCheckQueueContent( vdswVerifyStruct * pVerify,
       pDeletedNode = NULL;
    }
 
-   if ( listErrCode == LIST_END_OF_LIST || listErrCode == LIST_EMPTY ) {
-      return rc;
-   }
-   
-   fprintf( stderr, "Abnormal error in list, list error code = %d\n", 
-      listErrCode );
-   return VDSWR_UNHANDLED_ERROR;
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

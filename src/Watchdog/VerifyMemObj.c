@@ -30,9 +30,9 @@ vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
    enum vdswRecoverError rc = VDSWR_OK;
    struct vdseMemAlloc * pAlloc = (vdseMemAlloc *) pContext->pAllocator;
    vdseLinkNode * dummy;
-   enum ListErrors errGroup;
    vdseBlockGroup * pGroup;
    size_t numBlocks = 0;
+   bool ok;
    
    /*
     * Reset the bitmap and the the list of groups.
@@ -46,16 +46,15 @@ vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
    /*
     * We retrieve the first node
     */
-   errGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup,
-                                       &dummy );
-   while ( errGroup == LIST_OK ) {
+   ok = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
+   while ( ok ) {
       pGroup = (vdseBlockGroup*)( 
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
       numBlocks += pGroup->numBlocks;
       
-      errGroup = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
-                                         dummy,
-                                         &dummy );
+      ok = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
+                                   dummy,
+                                   &dummy );
    }
    if ( numBlocks != pMemObj->totalBlocks ) {
       rc = VDSWR_CHANGES;
@@ -76,9 +75,9 @@ void vdswPopulateBitmap( struct vdswVerifyStruct   * pVerify,
                          struct vdseSessionContext * pContext )
 {
    vdseLinkNode * dummy;
-   enum ListErrors errGroup;
    vdseBlockGroup * pGroup;
-
+   bool ok;
+   
    /*
     * Reset the bitmap and populate it for validating the content of the 
     * object itself.
@@ -87,9 +86,8 @@ void vdswPopulateBitmap( struct vdswVerifyStruct   * pVerify,
    /*
     * We retrieve the first node
     */
-   errGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup,
-                                       &dummy );
-   while ( errGroup == LIST_OK ) {
+   ok = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
+   while ( ok ) {
       pGroup = (vdseBlockGroup*)( 
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
 
@@ -97,9 +95,9 @@ void vdswPopulateBitmap( struct vdswVerifyStruct   * pVerify,
          SET_OFFSET( pGroup )/VDSE_BLOCK_SIZE*VDSE_BLOCK_SIZE, 
          pGroup->numBlocks*VDSE_BLOCK_SIZE );
       
-      errGroup = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
-                                         dummy,
-                                         &dummy );
+      ok = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
+                                   dummy,
+                                   &dummy );
    }
 }
 

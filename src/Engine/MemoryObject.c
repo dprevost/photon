@@ -102,7 +102,7 @@ vdseMemObjectFini( vdseMemObject      * pMemObj,
                    vdseSessionContext * pContext )
 {
    vdseLinkNode* firstNode, *dummy;
-   enum ListErrors errGroup; // , errNode;
+   bool ok;
    vdseBlockGroup* pGroup;
 
    VDS_PRE_CONDITION( pMemObj  != NULL );
@@ -113,13 +113,10 @@ vdseMemObjectFini( vdseMemObject      * pMemObj,
    /*
     * We retrieve the first node - and leave it alone.
     */
-   errGroup = vdseLinkedListGetFirst( &pMemObj->listBlockGroup,
-                                      &firstNode );
-   VDS_PRE_CONDITION( errGroup == LIST_OK );
+   ok = vdseLinkedListGetFirst( &pMemObj->listBlockGroup, &firstNode );
+   VDS_PRE_CONDITION( ok );
 
-   errGroup = vdseLinkedListGetFirst( &pMemObj->listBlockGroup,
-                                      &dummy );
-   while ( errGroup == LIST_OK ) {
+   while ( vdseLinkedListGetFirst(&pMemObj->listBlockGroup, &dummy) ) {
       pGroup = (vdseBlockGroup*)( 
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
 
@@ -128,8 +125,6 @@ vdseMemObjectFini( vdseMemObject      * pMemObj,
                       (unsigned char*)pGroup, 
                       pGroup->numBlocks,
                       pContext );
-      errGroup = vdseLinkedListGetFirst( &pMemObj->listBlockGroup,
-                                         &dummy );
    }
                       
    pMemObj->objType = VDSE_IDENT_CLEAR;
@@ -165,11 +160,11 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
 {
    size_t numChunks, requestedChunks, remainingChunks;
    vdseFreeBufferNode *oldNode, *currentNode, *newNode;
-   enum ListErrors errGroup, errNode;
    vdseBlockGroup* oldGroup, *currentGroup;
    vdseLinkNode* dummy;
    unsigned char* ptr;
    size_t requestedBlocks, i;
+   bool okGroup, okChunk;
    
    VDS_PRE_CONDITION( pMemObj  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -181,9 +176,8 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
     * The first loop is done on the list of block groups of the current 
     * memory object.
     */
-   errGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup,
-                                       &dummy );
-   while ( errGroup == LIST_OK ) {
+   okGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
+   while ( okGroup ) {
       currentGroup = (vdseBlockGroup*)( 
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
 
@@ -196,8 +190,8 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
           * This second loop is done on the list of free chunks in the 
           * current block group.
           */
-         errNode = vdseLinkedListPeakFirst( &currentGroup->freeList, &dummy );
-         while ( errNode == LIST_OK ) {
+         okChunk = vdseLinkedListPeakFirst( &currentGroup->freeList, &dummy );
+         while ( okChunk ) {
             currentNode = (vdseFreeBufferNode*)( 
                (unsigned char*)dummy - offsetof(vdseFreeBufferNode,node));
             numChunks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
@@ -241,16 +235,16 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
             } /* end if of numChunks >= requestedChunks */
    
             oldNode = currentNode;
-            errNode = vdseLinkedListPeakNext( &currentGroup->freeList,
+            okChunk = vdseLinkedListPeakNext( &currentGroup->freeList,
                                               &oldNode->node,
                                               &dummy );
          } /* end of second loop on chunks */
       } /* end of test on freeBytes */
       
       oldGroup = currentGroup;
-      errGroup = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
-                                         &oldGroup->node,
-                                         &dummy );
+      okGroup = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
+                                        &oldGroup->node,
+                                        &dummy );
    } /* end of first loop on block groups */
 
    /*
@@ -298,8 +292,8 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
       pMemObj->totalBlocks += i;
       
       /* Allocate the memory (the chunks) needed to satisfy the request. */
-      errNode = vdseLinkedListPeakFirst( &currentGroup->freeList, &dummy );
-      if ( errNode == LIST_OK ) {
+      okChunk = vdseLinkedListPeakFirst( &currentGroup->freeList, &dummy );
+      if ( okChunk ) {
          currentNode = (vdseFreeBufferNode*)( 
             (unsigned char*)dummy + offsetof(vdseFreeBufferNode,node));
          numChunks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
@@ -361,7 +355,6 @@ void vdseFree( vdseMemObject*      pMemObj,
                size_t              numBytes,
                vdseSessionContext* pContext )
 {
-   enum ListErrors errGroup;
    vdseBlockGroup* oldGroup, *currentGroup, *goodGroup = NULL;
    vdseLinkNode* dummy;
    bool otherBufferisFree = false;
@@ -369,6 +362,7 @@ void vdseFree( vdseMemObject*      pMemObj,
    vdseFreeBufferNode* otherNode;
    ptrdiff_t offset;
    size_t numBlocks;
+   bool ok;
    
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pMemObj  != NULL );
@@ -382,9 +376,8 @@ void vdseFree( vdseMemObject*      pMemObj,
    numBytes = ((numBytes-1)/VDSE_ALLOCATION_UNIT+1)*VDSE_ALLOCATION_UNIT;
    
    /* Find to which blockgroup ptr belongs to */
-   errGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup,
-                                       &dummy );
-   while ( errGroup == LIST_OK ) {
+   ok = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
+   while ( ok ) {
       currentGroup = (vdseBlockGroup*)( 
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
 
@@ -396,9 +389,9 @@ void vdseFree( vdseMemObject*      pMemObj,
          break;
       }
       oldGroup = currentGroup;
-      errGroup = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
-                                         &oldGroup->node,
-                                         &dummy );
+      ok = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
+                                   &oldGroup->node,
+                                   &dummy );
    }
    VDS_PRE_CONDITION( goodGroup != NULL );
 
@@ -494,9 +487,9 @@ void vdseMemObjectStatus( vdseMemObject * pMemObj,
                           vdsObjStatus  * pStatus )
 {
    vdseLinkNode * dummy;
-   enum ListErrors errGroup; // , errNode;
    vdseBlockGroup * pGroup;
-
+   bool ok;
+   
    VDS_PRE_CONDITION( pMemObj != NULL );
    VDS_PRE_CONDITION( pStatus != NULL );
 
@@ -507,18 +500,17 @@ void vdseMemObjectStatus( vdseMemObject * pMemObj,
    /*
     * We retrieve the first node
     */
-   errGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup,
-                                       &dummy );
-   VDS_PRE_CONDITION( errGroup == LIST_OK );
+   ok = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
+   VDS_PRE_CONDITION( ok );
 
-   while ( errGroup == LIST_OK ) {
+   while ( ok ) {
       pGroup = (vdseBlockGroup*)( 
          (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
       pStatus->freeBytes += pGroup->freeBytes;
 
-      errGroup = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
-                                         dummy,
-                                         &dummy );
+      ok = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
+                                   dummy,
+                                   &dummy );
    }
 }
 

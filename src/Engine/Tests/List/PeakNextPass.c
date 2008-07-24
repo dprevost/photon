@@ -26,8 +26,8 @@ int main()
 {
    vdseLinkedList list;
    vdseLinkNode node1, node2, *pNode;
-   enum ListErrors error;
    vdseSessionContext context;
+   bool ok;
    
    initTest( expectedToPass, &context );
    InitMem();
@@ -39,8 +39,8 @@ int main()
    vdseLinkedListPutLast( &list, &node1 );
    vdseLinkedListPutLast( &list, &node2 );
    
-   error = vdseLinkedListPeakNext( &list, &node1, &pNode );
-   if ( error != LIST_OK ) {
+   ok = vdseLinkedListPeakNext( &list, &node1, &pNode );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pNode != &node2 ) {

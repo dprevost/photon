@@ -109,10 +109,9 @@ int vdseQueueGet( vdseQueue          * pQueue,
    vdseQueueItem* pQueueItem = NULL;
    vdseQueueItem* pOldItem = NULL;
    vdsErrors errcode;
-   enum ListErrors listErrCode;
    vdseLinkNode * pNode = NULL;
    vdseTxStatus * txItemStatus, * txQueueStatus;
-   bool isOK;
+   bool isOK, okList;
    bool queueIsEmpty = true;
    
    VDS_PRE_CONDITION( pQueue     != NULL );
@@ -128,17 +127,16 @@ int vdseQueueGet( vdseQueue          * pQueue,
          
          errcode = VDS_REACHED_THE_END;
          pOldItem = (vdseQueueItem*) *ppIterator;
-         listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
-                                                &pOldItem->node, 
-                                                &pNode );
+         okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                           &pOldItem->node, 
+                                           &pNode );
       }
       else {
          /* This call can only fail if the queue is empty. */
-         listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, 
-                                                &pNode );
+         okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
       }
       
-      while ( listErrCode == LIST_OK ) {
+      while ( okList ) {
          pQueueItem = (vdseQueueItem*)
             ((char*)pNode - offsetof( vdseQueueItem, node ));
          txItemStatus = &pQueueItem->txStatus;
@@ -205,9 +203,9 @@ int vdseQueueGet( vdseQueue          * pQueue,
 
             return 0;
          }
-         listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
-                                                pNode, 
-                                                &pNode );
+         okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                           pNode, 
+                                           &pNode );
       }
    }
    else {
@@ -573,12 +571,12 @@ int vdseQueueRemove( vdseQueue          * pQueue,
 {
    int rc;
    vdsErrors errcode = VDS_OK;
-   enum ListErrors listErr = LIST_OK;
    vdseQueueItem * pItem = NULL;
    vdseTxStatus  * txParentStatus, * txItemStatus;
    vdseLinkNode  * pNode = NULL;
    bool queueIsEmpty = true;
-
+   bool okList;
+   
    VDS_PRE_CONDITION( pQueue      != NULL );
    VDS_PRE_CONDITION( ppQueueItem != NULL );
    VDS_PRE_CONDITION( pContext    != NULL );
@@ -597,13 +595,13 @@ int vdseQueueRemove( vdseQueue          * pQueue,
    
       /* This call can only fail if the queue is empty. */
       if ( firstOrLast == VDSE_QUEUE_FIRST ) {
-         listErr = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+         okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
       }
       else {
-         listErr = vdseLinkedListPeakLast( &pQueue->listOfElements, &pNode );
+         okList = vdseLinkedListPeakLast( &pQueue->listOfElements, &pNode );
       }
       
-      while ( listErr == LIST_OK ) {
+      while ( okList ) {
          pItem = (vdseQueueItem *) ((char*)pNode - offsetof( vdseQueueItem, node ));
          txItemStatus = &pItem->txStatus;
       
@@ -651,14 +649,14 @@ int vdseQueueRemove( vdseQueue          * pQueue,
          }
          
          if ( firstOrLast == VDSE_QUEUE_FIRST ) {
-            listErr = vdseLinkedListPeakNext( &pQueue->listOfElements, 
-                                              pNode, 
-                                              &pNode );
+            okList = vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                             pNode, 
+                                             &pNode );
          }
          else {
-            listErr = vdseLinkedListPeakPrevious( &pQueue->listOfElements, 
-                                                  pNode, 
-                                                  &pNode );
+            okList = vdseLinkedListPeakPrevious( &pQueue->listOfElements, 
+                                                 pNode, 
+                                                 &pNode );
          }
       }
    }
@@ -750,10 +748,10 @@ void vdseQueueStatus( vdseQueue    * pQueue,
                       vdsObjStatus * pStatus )
 {
    vdseQueueItem * pQueueItem = NULL;
-   enum ListErrors listErrCode;
    vdseLinkNode * pNode = NULL;
    vdseTxStatus  * txStatus;
-
+   bool okList;
+   
    VDS_PRE_CONDITION( pQueue  != NULL );
    VDS_PRE_CONDITION( pStatus != NULL );
    
@@ -766,19 +764,19 @@ void vdseQueueStatus( vdseQueue    * pQueue,
    if ( pStatus->numDataItem == 0 ) return;
    
    /* This call can only fail if the queue is empty. */
-   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, 
-                                          &pNode );
+   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, 
+                                     &pNode );
 
-   while ( listErrCode == LIST_OK ) {
+   while ( okList ) {
       pQueueItem = (vdseQueueItem*)
          ((char*)pNode - offsetof( vdseQueueItem, node ));
       if ( pQueueItem->dataLength > pStatus->maxDataLength ) {
          pStatus->maxDataLength = pQueueItem->dataLength;
       }
       
-      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
-                                             pNode, 
-                                             &pNode );
+      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                        pNode, 
+                                        &pNode );
    }
 }
 

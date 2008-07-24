@@ -122,7 +122,7 @@ int vdseTxAddOps( vdseTx             * pTx,
 void vdseTxRemoveLastOps( vdseTx             * pTx, 
                           vdseSessionContext * pContext )
 {
-   enum ListErrors listErr;
+   bool ok;
    vdseLinkNode * pDummy = NULL;
    vdseTxOps * pOps;
 
@@ -130,9 +130,9 @@ void vdseTxRemoveLastOps( vdseTx             * pTx,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pTx->signature == VDSE_TX_SIGNATURE );
    
-   listErr = vdseLinkedListGetLast( &pTx->listOfOps, &pDummy );
+   ok = vdseLinkedListGetLast( &pTx->listOfOps, &pDummy );
 
-   VDS_POST_CONDITION( listErr == LIST_OK );
+   VDS_POST_CONDITION( ok );
    
    pOps = (vdseTxOps *)((char *)pDummy - offsetof( vdseTxOps, node ));
    
@@ -185,8 +185,8 @@ int vdseTxCommit( vdseTx             * pTx,
       return 0;
    }
    
-   while ( vdseLinkedListGetFirst( &pTx->listOfOps, 
-                                   &pLinkNode ) == LIST_OK ) {
+   while ( vdseLinkedListGetFirst( &pTx->listOfOps, &pLinkNode ) ) {
+
       parentFolder = pChildFolder = NULL;
       pChildMemObject = pParentMemObject = NULL;
       pChildNode = NULL;
@@ -404,7 +404,7 @@ void vdseTxRollback( vdseTx             * pTx,
    }
    
    while ( vdseLinkedListGetLast( &pTx->listOfOps, 
-                                  &pLinkNode ) == LIST_OK ) {
+                                  &pLinkNode ) ) {
       parentFolder = pChildFolder = NULL;
       pChildMemObject = pParentMemObject = NULL;
       pChildNode   = NULL;

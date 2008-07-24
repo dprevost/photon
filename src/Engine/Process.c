@@ -69,7 +69,7 @@ void vdseProcessFini( vdseProcess        * pProcess,
     */
 
    while ( vdseLinkedListPeakFirst( &pProcess->listOfSessions, 
-                                    &pNode ) == LIST_OK ) {
+                                    &pNode ) ) {
       pSession = (vdseSession*)
          ((char*)pNode - offsetof( vdseSession, node ));
 
@@ -183,14 +183,14 @@ int vdseProcessGetFirstSession( vdseProcess        * pProcess,
                                 vdseSessionContext * pContext )
 {
    vdseLinkNode * pNode = NULL;
-   enum ListErrors err;
+   bool ok;
    
    VDS_PRE_CONDITION( pProcess  != NULL );
    VDS_PRE_CONDITION( ppSession != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
 
-   err = vdseLinkedListPeakFirst( &pProcess->listOfSessions, &pNode );
-   if ( err != LIST_OK ) return -1;
+   ok = vdseLinkedListPeakFirst( &pProcess->listOfSessions, &pNode );
+   if ( ! ok ) return -1;
 
    *ppSession = (vdseSession *)
       ((char*)pNode - offsetof( vdseSession, node ));
@@ -206,17 +206,17 @@ int vdseProcessGetNextSession( vdseProcess        * pProcess,
                                vdseSessionContext * pContext )
 {
    vdseLinkNode * pNode = NULL;
-   enum ListErrors err;
+   bool ok;
    
    VDS_PRE_CONDITION( pProcess != NULL );
    VDS_PRE_CONDITION( pCurrent != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( ppNext   != NULL );
 
-   err = vdseLinkedListPeakNext( &pProcess->listOfSessions,
-                                 &pCurrent->node,
-                                 &pNode );
-   if ( err != LIST_OK ) return -1;
+   ok = vdseLinkedListPeakNext( &pProcess->listOfSessions,
+                                &pCurrent->node,
+                                &pNode );
+   if ( ! ok ) return -1;
 
    *ppNext = (vdseSession*)
       ((char*)pNode - offsetof( vdseSession, node ));

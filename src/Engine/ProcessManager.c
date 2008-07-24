@@ -105,11 +105,11 @@ int vdseProcMgrFindProcess( vdseProcMgr        * pManager,
                             vdseProcess       ** ppProcess,
                             vdseSessionContext * pContext )
 {
-   enum ListErrors err = LIST_OK;
    vdseProcess *pCurrent, *pNext;
    vdseLinkNode * pNodeCurrent = NULL, * pNodeNext = NULL;
    vdsErrors errcode = VDS_OK;
-
+   bool ok;
+   
    VDS_PRE_CONDITION( pManager  != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
    VDS_PRE_CONDITION( ppProcess != NULL );
@@ -119,17 +119,17 @@ int vdseProcMgrFindProcess( vdseProcMgr        * pManager,
    
    /* For recovery purposes, always lock before doing anything! */
    if ( vdseLock( &pManager->memObject, pContext ) == 0 ) {
-      err = vdseLinkedListPeakFirst( &pManager->listOfProcesses, 
-                                     &pNodeCurrent );
-      if ( err == LIST_OK ) {
+      ok = vdseLinkedListPeakFirst( &pManager->listOfProcesses, 
+                                    &pNodeCurrent );
+      if ( ok ) {
          pCurrent = (vdseProcess*)
             ((char*)pNodeCurrent - offsetof( vdseProcess, node ));
          if ( pCurrent->pid == pid ) *ppProcess = pCurrent;
       
          while ( (*ppProcess == NULL) &&
-                 (vdseLinkedListPeakNext( &pManager->listOfProcesses, 
-                                          pNodeCurrent, 
-                                          &pNodeNext ) == LIST_OK) ) {
+                 vdseLinkedListPeakNext( &pManager->listOfProcesses, 
+                                         pNodeCurrent, 
+                                         &pNodeNext ) ) {
             pNext = (vdseProcess*)
                ((char*)pNodeNext - offsetof( vdseProcess, node ));
             if ( pNext->pid == pid ) *ppProcess = pNext;

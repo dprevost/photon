@@ -17,9 +17,9 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-inline enum ListErrors 
-vdseLinkedListGetFirst( vdseLinkedList  * pList,
-                        vdseLinkNode   ** ppItem )
+inline
+bool vdseLinkedListGetFirst( vdseLinkedList  * pList,
+                             vdseLinkNode   ** ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
@@ -27,7 +27,7 @@ vdseLinkedListGetFirst( vdseLinkedList  * pList,
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty queue. */
-   if ( pList->currentSize == 0 ) return LIST_EMPTY;
+   if ( pList->currentSize == 0 ) return false;
 
    /* Get the pointer to the first node */
    *ppItem = GET_PTR_FAST( pList->head.nextOffset, vdseLinkNode );
@@ -43,14 +43,14 @@ vdseLinkedListGetFirst( vdseLinkedList  * pList,
 
    VDS_POST_CONDITION( *ppItem != NULL );
 
-   return LIST_OK;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-inline enum ListErrors 
-vdseLinkedListGetLast( vdseLinkedList  * pList,
-                       vdseLinkNode   ** ppItem )
+inline
+bool vdseLinkedListGetLast( vdseLinkedList  * pList,
+                            vdseLinkNode   ** ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
@@ -58,7 +58,7 @@ vdseLinkedListGetLast( vdseLinkedList  * pList,
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
-   if ( pList->currentSize == 0 ) return LIST_EMPTY;
+   if ( pList->currentSize == 0 ) return false;
 
    /* Get the pointer to the last node */
    *ppItem = GET_PTR_FAST( pList->head.previousOffset, vdseLinkNode );
@@ -74,7 +74,7 @@ vdseLinkedListGetLast( vdseLinkedList  * pList,
 
    VDS_POST_CONDITION( *ppItem != NULL );
 
-   return LIST_OK;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -165,9 +165,9 @@ vdseLinkedListRemoveItem( vdseLinkedList * pList,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-inline enum ListErrors 
-vdseLinkedListPeakFirst( vdseLinkedList *  pList,
-                         vdseLinkNode   ** ppItem )
+inline
+bool vdseLinkedListPeakFirst( vdseLinkedList *  pList,
+                              vdseLinkNode   ** ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
@@ -175,20 +175,20 @@ vdseLinkedListPeakFirst( vdseLinkedList *  pList,
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
-   if ( pList->currentSize == 0 ) return LIST_EMPTY;
+   if ( pList->currentSize == 0 ) return false;
 
    *ppItem = GET_PTR_FAST( pList->head.nextOffset, vdseLinkNode );
 
    VDS_POST_CONDITION( *ppItem != NULL );
 
-   return LIST_OK;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-inline enum ListErrors 
-vdseLinkedListPeakLast( vdseLinkedList  * pList,
-                        vdseLinkNode   ** ppItem )
+inline
+bool vdseLinkedListPeakLast( vdseLinkedList  * pList,
+                             vdseLinkNode   ** ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
@@ -196,21 +196,21 @@ vdseLinkedListPeakLast( vdseLinkedList  * pList,
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
-   if ( pList->currentSize == 0 ) return LIST_EMPTY;
+   if ( pList->currentSize == 0 ) return false;
 
    *ppItem = GET_PTR_FAST( pList->head.previousOffset, vdseLinkNode );
 
    VDS_POST_CONDITION( *ppItem != NULL );
 
-   return LIST_OK;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-inline enum ListErrors 
-vdseLinkedListPeakNext( vdseLinkedList * pList,
-                        vdseLinkNode   * pCurrent, 
-                        vdseLinkNode  ** ppNext )
+inline
+bool vdseLinkedListPeakNext( vdseLinkedList * pList,
+                             vdseLinkNode   * pCurrent, 
+                             vdseLinkNode  ** ppNext )
 {
    vdseLinkNode* pNext;
 
@@ -223,21 +223,21 @@ vdseLinkedListPeakNext( vdseLinkedList * pList,
    VDS_PRE_CONDITION( pCurrent->nextOffset     != VDSE_NULL_OFFSET );
 
    pNext = GET_PTR_FAST( pCurrent->nextOffset, vdseLinkNode );
-   if ( pNext == &pList->head ) return LIST_END_OF_LIST;
+   if ( pNext == &pList->head ) return false;
 
    *ppNext = pNext;
    
    VDS_POST_CONDITION( *ppNext != NULL );
 
-   return LIST_OK;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-inline enum ListErrors 
-vdseLinkedListPeakPrevious( vdseLinkedList * pList,
-                            vdseLinkNode   * pCurrent, 
-                            vdseLinkNode  ** ppPrevious )
+inline
+bool vdseLinkedListPeakPrevious( vdseLinkedList * pList,
+                                 vdseLinkNode   * pCurrent, 
+                                 vdseLinkNode  ** ppPrevious )
 {
    vdseLinkNode* pPrevious;
 
@@ -250,13 +250,13 @@ vdseLinkedListPeakPrevious( vdseLinkedList * pList,
    VDS_PRE_CONDITION( pCurrent->nextOffset     != VDSE_NULL_OFFSET );
 
    pPrevious = GET_PTR_FAST( pCurrent->previousOffset, vdseLinkNode );
-   if ( pPrevious == &pList->head ) return LIST_END_OF_LIST;
+   if ( pPrevious == &pList->head ) return false;
 
    *ppPrevious = pPrevious;
 
    VDS_POST_CONDITION( *ppPrevious != NULL );
    
-   return LIST_OK;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

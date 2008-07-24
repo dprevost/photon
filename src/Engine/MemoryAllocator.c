@@ -260,7 +260,8 @@ vdseFreeBufferNode * FindBuffer( vdseMemAlloc     * pAlloc,
    vdseLinkNode * oldNode = NULL;
    vdseLinkNode * currentNode = NULL;
    vdseLinkNode * bestNode = NULL;
-   enum ListErrors errcode;
+//   enum ListErrors errcode;
+   bool ok;
 
    /* 
     * A bit tricky. To avoid fragmentation, we search for the best fitted
@@ -270,9 +271,8 @@ vdseFreeBufferNode * FindBuffer( vdseMemAlloc     * pAlloc,
     * reallocating arrays...).[N is BEST_FIT_MAX_LOOP, a define just in
     * case the compiler can optimize the loop].
     */
-   errcode = vdseLinkedListPeakFirst( &pAlloc->freeList,
-                                      &oldNode );
-   if ( errcode != LIST_OK ) goto error_exit;
+   ok = vdseLinkedListPeakFirst( &pAlloc->freeList, &oldNode );
+   if ( ! ok ) goto error_exit;
 
    numBlocks = ((vdseFreeBufferNode*)oldNode)->numBuffers;
    if ( numBlocks == requestedBlocks ) {
@@ -287,10 +287,10 @@ vdseFreeBufferNode * FindBuffer( vdseMemAlloc     * pAlloc,
    }
    
    for ( i = 0; i < BEST_FIT_MAX_LOOP; ++i ) {
-      errcode = vdseLinkedListPeakNext( &pAlloc->freeList,
-                                        oldNode,
-                                        &currentNode );
-      if ( errcode != LIST_OK ) {
+      ok = vdseLinkedListPeakNext( &pAlloc->freeList,
+                                   oldNode,
+                                   &currentNode );
+      if ( ! ok ) {
          if ( bestNode == NULL ) goto error_exit;
          break;
       }
@@ -309,12 +309,11 @@ vdseFreeBufferNode * FindBuffer( vdseMemAlloc     * pAlloc,
    }
    
    while ( bestNode == NULL ) {
-      errcode = vdseLinkedListPeakNext( &pAlloc->freeList,
-                                        oldNode,
-                                        &currentNode );
-      if ( errcode != LIST_OK ) {
-         goto error_exit;
-      }
+      ok = vdseLinkedListPeakNext( &pAlloc->freeList,
+                                   oldNode,
+                                   &currentNode );
+      if ( ! ok ) goto error_exit;
+
       numBlocks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
       if ( numBlocks >= requestedBlocks ) {
          bestNode = currentNode;
@@ -621,7 +620,8 @@ int vdseMemAllocStats( vdseMemAlloc       * pAlloc,
    size_t numBlocks;
    vdseLinkNode *oldNode = NULL;
    vdseLinkNode *currentNode = NULL;
-
+   bool ok;
+   
    VDS_PRE_CONDITION( pAlloc   != NULL );
    VDS_PRE_CONDITION( pInfo    != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -636,18 +636,18 @@ int vdseMemAllocStats( vdseMemAlloc       * pAlloc,
       pInfo->numFrees             = pAlloc->numFreeCalls;
       pInfo->largestFreeInBytes   = 0;
       
-      errcode = vdseLinkedListPeakFirst( &pAlloc->freeList,
-                                         &currentNode );
-      while ( errcode == LIST_OK ) {
+      ok = vdseLinkedListPeakFirst( &pAlloc->freeList,
+                                    &currentNode );
+      while ( ok ) {
          numBlocks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
          if ( numBlocks > pInfo->largestFreeInBytes ) {
             pInfo->largestFreeInBytes = numBlocks;
          }
          
          oldNode = currentNode;
-         errcode = vdseLinkedListPeakNext( &pAlloc->freeList,
-                                           oldNode,
-                                           &currentNode );
+         ok = vdseLinkedListPeakNext( &pAlloc->freeList,
+                                      oldNode,
+                                      &currentNode );
       }
       pInfo->largestFreeInBytes = pInfo->largestFreeInBytes << VDSE_BLOCK_SHIFT;
       

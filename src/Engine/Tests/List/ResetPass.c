@@ -26,7 +26,7 @@ int main()
 {
    vdseLinkedList list;
    vdseLinkNode* pNode = NULL;
-   enum ListErrors error;
+   bool ok;
    vdseSessionContext context;
   
    initTest( expectedToPass, &context );
@@ -43,8 +43,8 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   error = vdseLinkedListGetFirst( &list, &pNode );
-   if ( error != LIST_EMPTY ) {
+   ok = vdseLinkedListGetFirst( &list, &pNode );
+   if ( ok ) { /* The list is not empty after a reset... problem! */
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

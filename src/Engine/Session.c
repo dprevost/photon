@@ -94,8 +94,7 @@ void vdseSessionFini( vdseSession        * pSession,
     * last step. This might be reviewed eventually.
     */
 
-   while ( vdseLinkedListPeakFirst( &pSession->listOfObjects, 
-                                    &pNode ) == LIST_OK ) {
+   while ( vdseLinkedListPeakFirst( &pSession->listOfObjects, &pNode ) ) {
       pObject = (vdseObjectContext*)
          ((char*)pNode - offsetof( vdseObjectContext, node ));
       vdseSessionRemoveObj( pSession, pObject, pContext );
@@ -202,15 +201,12 @@ int vdseSessionRemoveFirst( vdseSession        * pSession,
                             vdseSessionContext * pContext )
 {
    vdseLinkNode * pNode = NULL;
-   int rc;
    vdseObjectContext * pObject;
    
    VDS_PRE_CONDITION( pSession != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
 
-   rc = vdseLinkedListGetFirst( &pSession->listOfObjects, 
-                                &pNode );
-   if ( rc == 0 ) {
+   if ( vdseLinkedListGetFirst(&pSession->listOfObjects, &pNode) ) {
       pObject = (vdseObjectContext*)
          ((char*)pNode - offsetof( vdseObjectContext, node ));
 
@@ -228,24 +224,25 @@ int vdseSessionRemoveFirst( vdseSession        * pSession,
 
 /* Lock and Unlock must be used before calling this function */
 int vdseSessionGetFirst( vdseSession        * pSession,
-                         vdseObjectContext ** ppObject,
-                         vdseSessionContext * pContext )
+                          vdseObjectContext ** ppObject,
+                          vdseSessionContext * pContext )
 {
    vdseLinkNode * pNode = NULL;
-   int rc;
+   bool ok;
 
    VDS_PRE_CONDITION( pSession != NULL );
    VDS_PRE_CONDITION( ppObject != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    
-   rc = vdseLinkedListPeakFirst( &pSession->listOfObjects, 
+   ok = vdseLinkedListPeakFirst( &pSession->listOfObjects, 
                                  &pNode );
-   if ( rc == 0 ) {
+   if ( ok ) {
       *ppObject = (vdseObjectContext*)
          ((char*)pNode - offsetof( vdseObjectContext, node ));
+      return 0;
    }
    
-   return rc;
+   return -1;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

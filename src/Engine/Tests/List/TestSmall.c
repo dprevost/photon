@@ -63,6 +63,7 @@ int main()
    enum ListErrors error;
    int errcode, countNext;
    vdseSessionContext context;
+   bool ok;
    
    int numInList;
    vdseLinkNode* pNode = NULL;
@@ -174,8 +175,8 @@ int main()
          break;
          
       case 2:
-         error = vdseLinkedListGetFirst( &list, &pNode );
-         if ( error == LIST_INTERNAL_ERROR ) {
+         ok = vdseLinkedListGetFirst( &list, &pNode );
+         if ( ! ok ) {
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
          
@@ -200,8 +201,8 @@ int main()
          break;
          
       case 3:
-         error = vdseLinkedListGetLast( &list, &pNode );
-         if ( error == LIST_INTERNAL_ERROR ) {
+         ok = vdseLinkedListGetLast( &list, &pNode );
+         if ( ! ok ) {
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
          
@@ -291,18 +292,12 @@ int main()
       
       /* Test the iterators */
       if ( ((i+1)%GET_NEXT_LOOP ) == 0 ) {
-         error = vdseLinkedListPeakFirst( &list, &pNode );
-         if ( error != LIST_OK && error != LIST_EMPTY ) {
-            ERROR_EXIT( expectedToPass, NULL, ; );
-         }
+         ok = vdseLinkedListPeakFirst( &list, &pNode );
             
          countNext = 1;
-         while ( error == LIST_OK ) {
-            error = vdseLinkedListPeakNext( &list, pNode, &pNode );
-            if ( error == LIST_INTERNAL_ERROR ) {
-               ERROR_EXIT( expectedToPass, NULL, ; );
-            }
-            if ( error == VDS_OK ) countNext++;
+         while ( ok ) {
+            ok = vdseLinkedListPeakNext( &list, pNode, &pNode );
+            if ( ok ) countNext++;
          }
 
          if ( countNext != numInList ) {
@@ -310,20 +305,14 @@ int main()
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
          
-         error = vdseLinkedListPeakLast( &list, &pNode );
-         if ( error != LIST_OK && error != LIST_EMPTY ) {
-            ERROR_EXIT( expectedToPass, NULL, ; );
-         }
+         ok = vdseLinkedListPeakLast( &list, &pNode );
          
          countNext = 1;
-         while ( error == LIST_OK ) {
-            error = vdseLinkedListPeakPrevious( &list, 
-                                                pNode, 
-                                                &pNode );
-            if ( error == LIST_INTERNAL_ERROR ) {
-               ERROR_EXIT( expectedToPass, NULL, ; );
-            }
-            if ( error == VDS_OK ) countNext++;
+         while ( ok ) {
+            ok = vdseLinkedListPeakPrevious( &list, 
+                                             pNode, 
+                                             &pNode );
+            if ( ok ) countNext++;
          }
 
          if ( countNext != numInList ) {

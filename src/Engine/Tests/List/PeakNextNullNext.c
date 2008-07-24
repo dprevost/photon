@@ -27,7 +27,6 @@ int main()
 #if defined(USE_DBC)
    vdseLinkedList list;
    vdseLinkNode node1, node2;
-   enum ListErrors error;
    vdseSessionContext context;
    
    initTest( expectedToPass, &context );
@@ -40,7 +39,7 @@ int main()
    vdseLinkedListPutLast( &list, &node1 );
    vdseLinkedListPutLast( &list, &node2 );
 
-   error = vdseLinkedListPeakNext( &list, &node1, NULL );
+   vdseLinkedListPeakNext( &list, &node1, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

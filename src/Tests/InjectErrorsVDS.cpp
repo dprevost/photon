@@ -249,6 +249,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    enum ListErrors listErrCode;
    vdseLinkNode * pNode = NULL, *pSavedNode = NULL;
    vdseQueueItem* pQueueItem = NULL;
+   bool okList;
    
    // Using a (void *) cast to eliminate a gcc warning (dereferencing 
    // type-punned pointer will break strict-aliasing rules)
@@ -275,17 +276,17 @@ int AddDefectsQueues( vector<myQueue> & q )
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
    txQueueStatus->usageCounter++;
    
-   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
-   while ( listErrCode == LIST_OK ) {
-      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
-                                             pNode, 
-                                             &pNode );
+   while ( okList ) {
+      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                        pNode, 
+                                        &pNode );
       i++;
       if ( i >= 6 ) break;
    }
-   if ( listErrCode != LIST_OK ) {
-      cerr << "Iteration error in " << q[1].name << ", list err = " << listErrCode << endl;
+   if ( ! okList ) {
+      cerr << "Iteration error in " << q[1].name << endl;
       return -1;
    }
    pQueueItem = (vdseQueueItem*) 
@@ -308,9 +309,9 @@ int AddDefectsQueues( vector<myQueue> & q )
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[3].queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
 
-   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
-   while ( listErrCode == LIST_OK ) {
+   while ( okList ) {
       pQueueItem = (vdseQueueItem*) 
          ((char*)pNode - offsetof( vdseQueueItem, node ));
       txItemStatus = &pQueueItem->txStatus;
@@ -328,14 +329,10 @@ int AddDefectsQueues( vector<myQueue> & q )
          txItemStatus->enumStatus = VDSE_TXS_ADDED;
       }
       
-      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
                                              pNode, 
                                              &pNode );
       i++;
-   }
-   if ( listErrCode != LIST_END_OF_LIST ) {
-      cerr << "Iteration error in " << q[3].name << ", list err = " << listErrCode << endl;
-      return -1;
    }
    
    cout << "Defect for " << q[4].name << ": object locked" << endl;
@@ -354,20 +351,20 @@ int AddDefectsQueues( vector<myQueue> & q )
       return -1;
    }
 
-   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
-   while ( listErrCode == LIST_OK ) {
-      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
-                                             pNode, 
-                                             &pNode );
+   while ( okList ) {
+      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                        pNode, 
+                                        &pNode );
       i++;
       if ( i == 9 ) {
          pNode->nextOffset = VDSE_NULL_OFFSET;
          break;
       }
    }
-   if ( listErrCode != LIST_OK ) {
-      cerr << "Iteration error in " << q[5].name << ", list err = " << listErrCode << endl;
+   if ( ! okList ) {
+      cerr << "Iteration error in " << q[5].name << endl;
       return -1;
    }
 
@@ -379,20 +376,20 @@ int AddDefectsQueues( vector<myQueue> & q )
       return -1;
    }
 
-   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
-   while ( listErrCode == LIST_OK ) {
-      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
-                                             pNode, 
-                                             &pNode );
+   while ( okList ) {
+      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                        pNode, 
+                                        &pNode );
       i++;
       if ( i == 9 ) {
          pNode->previousOffset = VDSE_NULL_OFFSET;
          break;
       }
    }
-   if ( listErrCode != LIST_OK ) {
-      cerr << "Iteration error in " << q[6].name << ", list err = " << listErrCode << endl;
+   if ( ! okList ) {
+      cerr << "Iteration error in " << q[6].name << endl;
       return -1;
    }
    
@@ -404,12 +401,12 @@ int AddDefectsQueues( vector<myQueue> & q )
       return -1;
    }
 
-   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
-   while ( listErrCode == LIST_OK ) {
-      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
-                                             pNode, 
-                                             &pNode );
+   while ( okList ) {
+      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                        pNode, 
+                                        &pNode );
       i++;
       if ( i == 9 ) pSavedNode = pNode;
       if ( i == 13 ) {
@@ -418,8 +415,8 @@ int AddDefectsQueues( vector<myQueue> & q )
          break;
       }
    }
-   if ( listErrCode != LIST_OK ) {
-      cerr << "Iteration error in " << q[7].name << ", list err = " << listErrCode << endl;
+   if ( ! okList ) {
+      cerr << "Iteration error in " << q[7].name << endl;
       return -1;
    }
 
@@ -431,12 +428,12 @@ int AddDefectsQueues( vector<myQueue> & q )
       return -1;
    }
 
-   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
-   while ( listErrCode == LIST_OK ) {
-      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
-                                             pNode, 
-                                             &pNode );
+   while ( okList ) {
+      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                        pNode, 
+                                        &pNode );
       i++;
       if ( i == 9 ) pSavedNode = pNode;
       if ( i == 13 ) {
@@ -445,8 +442,8 @@ int AddDefectsQueues( vector<myQueue> & q )
          break;
       }
    }
-   if ( listErrCode != LIST_OK ) {
-      cerr << "Iteration error in " << q[8].name << ", list err = " << listErrCode << endl;
+   if ( ! okList ) {
+      cerr << "Iteration error in " << q[8].name << endl;
       return -1;
    }
 
@@ -458,12 +455,12 @@ int AddDefectsQueues( vector<myQueue> & q )
       return -1;
    }
 
-   listErrCode = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
-   while ( listErrCode == LIST_OK ) {
-      listErrCode =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
-                                             pNode, 
-                                             &pNode );
+   while ( okList ) {
+      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+                                        pNode, 
+                                        &pNode );
       i++;
       if ( i == 9 ) {
          pNode->previousOffset = VDSE_NULL_OFFSET;
@@ -471,8 +468,8 @@ int AddDefectsQueues( vector<myQueue> & q )
          break;
       }
    }
-   if ( listErrCode != LIST_OK ) {
-      cerr << "Iteration error in " << q[9].name << ", list err = " << listErrCode << endl;
+   if ( ! okList ) {
+      cerr << "Iteration error in " << q[9].name << endl;
       return -1;
    }
 
