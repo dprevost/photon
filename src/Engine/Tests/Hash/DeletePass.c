@@ -26,7 +26,7 @@ int main()
 {
    vdseSessionContext context;
    vdseHash* pHash;
-   enum ListErrors listErr;
+   enum vdsErrors errcode;
    char* key1 = "My Key 1";
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
@@ -34,51 +34,52 @@ int main()
    vdseHashItem* pNewItem;
    size_t bucket;
    vdseHashItem* pItem = NULL;
+   bool ok;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( listErr != LIST_OK ) {
+   errcode = vdseHashInit( pHash, g_memObjOffset, 100, &context );
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashInsert( pHash,
+   errcode = vdseHashInsert( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data1,
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashInsert( pHash,
+   errcode = vdseHashInsert( pHash,
                              (unsigned char*)key2,
                              strlen(key2),
                              data2,
                              strlen(data2),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashDelWithKey( pHash,
-                                 (unsigned char*)key2,
-                                 strlen(key2),
-                                 &context );
-   if ( listErr != LIST_OK ) {
+   ok = vdseHashDelWithKey( pHash,
+                            (unsigned char*)key2,
+                            strlen(key2),
+                            &context );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashGet( pHash,
-                          (unsigned char*)key2,
-                          strlen(key2),
-                          &pItem,
-                          &bucket,
-                          &context );
-   if ( listErr != LIST_KEY_NOT_FOUND ) {
+   ok = vdseHashGet( pHash,
+                     (unsigned char*)key2,
+                     strlen(key2),
+                     &pItem,
+                     &bucket,
+                     &context );
+   if ( ok ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

@@ -27,52 +27,52 @@ int main()
 #if defined(USE_DBC)
    vdseSessionContext context;
    vdseHash* pHash;
-   enum ListErrors listErr;
+   enum vdsErrors errcode;
    char* key1 = "My Key 1";
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
    ptrdiff_t offsetFirstItem, offsetNextItem;
    vdseHashItem* pNewItem;
+   bool found;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( listErr != LIST_OK ) {
+   errcode = vdseHashInit( pHash, g_memObjOffset, 100, &context );
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashInsert( pHash,
+   errcode = vdseHashInsert( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data1,
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashInsert( pHash,
+   errcode = vdseHashInsert( pHash,
                              (unsigned char*)key2,
                              strlen(key2),
                              data2,
                              strlen(data2),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashGetFirst( pHash,
-                               &offsetFirstItem );
-   if ( listErr != LIST_OK ) {
+   found = vdseHashGetFirst( pHash, &offsetFirstItem );
+   if ( ! found ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashGetNext( NULL,
-                              offsetFirstItem,
-                              &offsetNextItem );
+   vdseHashGetNext( NULL,
+                    offsetFirstItem,
+                    &offsetNextItem );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

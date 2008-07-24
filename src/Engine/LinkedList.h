@@ -20,9 +20,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine.h"
-#include "ListErrors.h"
-#include "LinkNode.h"
+#include "Engine/Engine.h"
+#include "Engine/LinkNode.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

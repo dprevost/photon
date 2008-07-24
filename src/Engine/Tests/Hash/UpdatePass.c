@@ -26,7 +26,7 @@ int main()
 {
    vdseSessionContext context;
    vdseHash* pHash;
-   enum ListErrors listErr;
+   enum vdsErrors errcode;
    char* key1 = "My Key 1";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
@@ -34,45 +34,46 @@ int main()
    vdseHashItem* pNewItem;
    size_t bucket;
    vdseHashItem* pItem = NULL;
+   bool found;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( listErr != LIST_OK ) {
+   errcode = vdseHashInit( pHash, g_memObjOffset, 100, &context );
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashInsert( pHash,
+   errcode = vdseHashInsert( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data1,
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
    /*
     * Test with same data length
     */
-   listErr = vdseHashUpdate( pHash,
+   errcode = vdseHashUpdate( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data2,
                              strlen(data2),
                              &context );
-   if ( listErr != LIST_OK ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashGet( pHash,
-                          (unsigned char*)key1,
-                          strlen(key1),
-                          &pItem,
-                          &bucket,
-                          &context );
-   if ( listErr != LIST_OK ) {
+   found = vdseHashGet( pHash,
+                        (unsigned char*)key1,
+                        strlen(key1),
+                        &pItem,
+                        &bucket,
+                        &context );
+   if ( ! found ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( memcmp( GET_PTR_FAST(pItem->dataOffset, void), data2, strlen(data2 )) != 0 ) {
@@ -82,23 +83,23 @@ int main()
    /*
     * Test with different data length
     */
-   listErr = vdseHashUpdate( pHash,
+   errcode = vdseHashUpdate( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data3,
                              strlen(data3),
                              &context );
-   if ( listErr != LIST_OK ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashGet( pHash,
-                          (unsigned char*)key1,
-                          strlen(key1),
-                          &pItem,
-                          &bucket,
-                          &context );
-   if ( listErr != LIST_OK ) {
+   found = vdseHashGet( pHash,
+                        (unsigned char*)key1,
+                        strlen(key1),
+                        &pItem,
+                        &bucket,
+                        &context );
+   if ( ! found ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pItem->dataLength != strlen(data3) ) {

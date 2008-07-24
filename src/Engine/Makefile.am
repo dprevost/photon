@@ -45,7 +45,6 @@ libEngine_la_SOURCES =    \
         LinkedList.h      \
         LinkedList.inl    \
         LinkNode.h        \
-        ListErrors.h      \
         LogFile.c         \
         LogFile.h         \
         Map.c             \

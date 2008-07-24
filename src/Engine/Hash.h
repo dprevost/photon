@@ -21,7 +21,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Engine.h"
-#include "ListErrors.h"
+//#include "ListErrors.h"
 #include "SessionContext.h"
 #include "TxStatus.h"
 
@@ -123,9 +123,9 @@ typedef struct vdseHash vdseHash;
  * Used to create a copy of a read-only hash map for editing (updates)
  */
 VDSF_ENGINE_EXPORT
-enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
-                              vdseHash           * pNewHash,
-                              vdseSessionContext * pContext );
+enum vdsErrors vdseHashCopy( vdseHash           * pOldHash,
+                             vdseHash           * pNewHash,
+                             vdseSessionContext * pContext );
 
 /*
  * Used to delete an hash item when you know its exact position
@@ -138,10 +138,10 @@ void vdseHashDelWithItem( vdseHash            * pHash,
 
 /* Direct delete using the key and nothing else. */
 VDSF_ENGINE_EXPORT 
-enum ListErrors vdseHashDelWithKey( vdseHash            * pHash,
-                                    const unsigned char * pKey, 
-                                    size_t                keyLength,
-                                    vdseSessionContext  * pContext );
+bool vdseHashDelWithKey( vdseHash            * pHash,
+                         const unsigned char * pKey, 
+                         size_t                keyLength,
+                         vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT 
 void vdseHashEmpty( vdseHash           * pHash,
@@ -151,40 +151,40 @@ VDSF_ENGINE_EXPORT
 void vdseHashFini( vdseHash * pHash );
 
 VDSF_ENGINE_EXPORT 
-enum ListErrors vdseHashGet( vdseHash            * pHash,
-                             const unsigned char * pkey,
-                             size_t                keyLength,
-                             vdseHashItem       ** ppItem,
-                             size_t              * pBucket,
-                             vdseSessionContext  * pContext );
+bool vdseHashGet( vdseHash            * pHash,
+                  const unsigned char * pkey,
+                  size_t                keyLength,
+                  vdseHashItem       ** ppItem,
+                  size_t              * pBucket,
+                  vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT 
-enum ListErrors vdseHashGetFirst( vdseHash  * pHash,
-                                  ptrdiff_t * pFirstItemOffset );
+bool vdseHashGetFirst( vdseHash  * pHash,
+                       ptrdiff_t * pFirstItemOffset );
 
 VDSF_ENGINE_EXPORT
-enum ListErrors vdseHashGetNext( vdseHash  * pHash,
-                                 ptrdiff_t   previousOffset,
-                                 ptrdiff_t * pNextItemOffset );
+bool vdseHashGetNext( vdseHash  * pHash,
+                      ptrdiff_t   previousOffset,
+                      ptrdiff_t * pNextItemOffset );
 
 VDSF_ENGINE_EXPORT 
-enum ListErrors vdseHashInit( vdseHash           * pHash,
-                              ptrdiff_t            memObjOffset,
-                              size_t               reservedSize, 
-                              vdseSessionContext * pContext );
+enum vdsErrors vdseHashInit( vdseHash           * pHash,
+                             ptrdiff_t            memObjOffset,
+                             size_t               reservedSize, 
+                             vdseSessionContext * pContext );
 
 /*
  * ppNewItem is used to access the original name of 
  * objects and the vdseTxStatus by the objects themselves 
  */
 VDSF_ENGINE_EXPORT 
-enum ListErrors vdseHashInsert( vdseHash            * pHash,
-                                const unsigned char * pKey,
-                                size_t                keyLength,
-                                const void          * pData,
-                                size_t                dataLength,
-                                vdseHashItem       ** ppNewItem,
-                                vdseSessionContext  * pContext );
+enum vdsErrors vdseHashInsert( vdseHash            * pHash,
+                               const unsigned char * pKey,
+                               size_t                keyLength,
+                               const void          * pData,
+                               size_t                dataLength,
+                               vdseHashItem       ** ppNewItem,
+                               vdseSessionContext  * pContext );
 
 /*
  * Insert at is used to insert an item in a given bucket, at the end
@@ -192,26 +192,26 @@ enum ListErrors vdseHashInsert( vdseHash            * pHash,
  * before the change is committed.
  */
 VDSF_ENGINE_EXPORT 
-enum ListErrors vdseHashInsertAt( vdseHash            * pHash,
-                                  size_t                bucket,
-                                  const unsigned char * pKey,
-                                  size_t                keyLength,
-                                  const void          * pData,
-                                  size_t                dataLength,
-                                  vdseHashItem       ** ppNewItem,
-                                  vdseSessionContext  * pContext );
+enum vdsErrors vdseHashInsertAt( vdseHash            * pHash,
+                                 size_t                bucket,
+                                 const unsigned char * pKey,
+                                 size_t                keyLength,
+                                 const void          * pData,
+                                 size_t                dataLength,
+                                 vdseHashItem       ** ppNewItem,
+                                 vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
-enum ListErrors vdseHashResize( vdseHash           * pHash,
-                                vdseSessionContext * pContext );
+enum vdsErrors vdseHashResize( vdseHash           * pHash,
+                               vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-enum ListErrors vdseHashUpdate( vdseHash            * pHash,
-                                const unsigned char * pKey,
-                                size_t                keyLength,
-                                const void          * pData,
-                                size_t                dataLength,
-                                vdseSessionContext  * pContext );
+enum vdsErrors vdseHashUpdate( vdseHash            * pHash,
+                               const unsigned char * pKey,
+                               size_t                keyLength,
+                               const void          * pData,
+                               size_t                dataLength,
+                               vdseSessionContext  * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

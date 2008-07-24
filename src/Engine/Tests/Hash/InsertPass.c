@@ -26,7 +26,7 @@ int main()
 {
    vdseSessionContext context;
    vdseHash* pHash;
-   enum ListErrors listErr;
+   enum vdsErrors errcode;
    char* key1 = "My Key 1";
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
@@ -35,19 +35,19 @@ int main()
    
    pHash = initHashTest( expectedToPass, &context );
    
-   listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( listErr != LIST_OK ) {
+   errcode = vdseHashInit( pHash, g_memObjOffset, 100, &context );
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashInsert( pHash,
+   errcode = vdseHashInsert( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data1,
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pNewItem == NULL ) {
@@ -55,25 +55,25 @@ int main()
    }
    
    /* A duplicate - not allowed */
-   listErr = vdseHashInsert( pHash,
+   errcode = vdseHashInsert( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data2,
                              strlen(data2),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_KEY_FOUND ) {
+   if ( errcode != VDS_ITEM_ALREADY_PRESENT ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   listErr = vdseHashInsert( pHash,
+   errcode = vdseHashInsert( pHash,
                              (unsigned char*)key2,
                              strlen(key2),
                              data1,
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pNewItem == NULL ) {

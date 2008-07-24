@@ -27,7 +27,7 @@ int main()
 #if defined(USE_DBC)
    vdseSessionContext context;
    vdseHash * pOldHash, * pNewHash;
-   enum ListErrors listErr;
+   enum vdsErrors errcode;
    char* key1 = "My Key 1";
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
@@ -36,29 +36,29 @@ int main()
    
    initHashCopyTest( expectedToPass, &pOldHash, &pNewHash, true, &context );
    
-   listErr = vdseHashInsert( pOldHash,
+   errcode = vdseHashInsert( pOldHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data1,
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashInsert( pOldHash,
+   errcode = vdseHashInsert( pOldHash,
                              (unsigned char*)key2,
                              strlen(key2),
                              data2,
                              strlen(data2),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   listErr = vdseHashCopy( pOldHash,
+   errcode = vdseHashCopy( pOldHash,
                            pNewHash,
                            NULL );
 

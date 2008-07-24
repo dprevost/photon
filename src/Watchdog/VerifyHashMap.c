@@ -26,18 +26,17 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
                          vdseHashMap        * pHashMap, 
                          vdseSessionContext * pContext )
 {
-   enum ListErrors listErr;
    ptrdiff_t offset, previousOffset;
    vdseHashItem * pItem, * pDeletedItem = NULL;
    vdseTxStatus * txItemStatus;
    enum vdswRecoverError rc = VDSWR_OK;
-
+   bool found;
+   
    /* The easy case */
    if ( pHashMap->hashObj.numberOfItems == 0 ) return rc;
    
-   listErr = vdseHashGetFirst( &pHashMap->hashObj,
-                               &offset );
-   while ( listErr == LIST_OK ) {
+   found = vdseHashGetFirst( &pHashMap->hashObj, &offset );
+   while ( found ) {
       GET_PTR( pItem, offset, vdseHashItem );
       txItemStatus = &pItem->txStatus;
 
@@ -86,9 +85,9 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
       }
       
       previousOffset = offset;
-      listErr = vdseHashGetNext( &pHashMap->hashObj,
-                                 previousOffset,
-                                 &offset );
+      found = vdseHashGetNext( &pHashMap->hashObj,
+                               previousOffset,
+                               &offset );
 
       /*
        * We need the old item to be able to get to the next item. That's

@@ -39,7 +39,6 @@ int vdseMapCopy( vdseMap            * pOldMap,
 {
    int errcode;
    vdseFieldDef * oldDef, * newDef;
-   enum ListErrors listErr = LIST_OK;
    
    VDS_PRE_CONDITION( pOldMap   != NULL );
    VDS_PRE_CONDITION( pNewMap   != NULL );
@@ -78,29 +77,19 @@ int vdseMapCopy( vdseMap            * pOldMap,
    memcpy( newDef, oldDef, pNewMap->numFields* sizeof(vdseFieldDef) );
    memcpy( &pNewMap->keyDef, &pOldMap->keyDef, sizeof(vdsKeyDefinition) );
 
-   listErr = vdseHashInit( &pNewMap->hashObj,
+   errcode = vdseHashInit( &pNewMap->hashObj,
                            SET_OFFSET(&pNewMap->memObject),
                            pOldMap->hashObj.numberOfItems,
                            pContext );
-   if ( listErr != LIST_OK ) {
-      if ( listErr == LIST_NO_MEMORY ) {
-         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
-      }
-      else {
-         errcode = VDS_INTERNAL_ERROR;
-      }
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pContext->errorHandler, 
+                    g_vdsErrorHandle, 
+                    errcode );
       return -1;
    }
 
-   listErr = vdseHashCopy( &pOldMap->hashObj, &pNewMap->hashObj, pContext );
-   if ( listErr != LIST_OK ) {
-      if ( listErr == LIST_NO_MEMORY ) {
-         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
-      }
-      else {
-         errcode = VDS_INTERNAL_ERROR;
-      }
+   errcode = vdseHashCopy( &pOldMap->hashObj, &pNewMap->hashObj, pContext );
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return -1;
    }
@@ -118,7 +107,7 @@ int vdseMapDelete( vdseMap            * pHashMap,
                    size_t               keyLength, 
                    vdseSessionContext * pContext )
 {
-   enum ListErrors listErr = LIST_OK;
+   bool found;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pKey     != NULL );
@@ -126,11 +115,11 @@ int vdseMapDelete( vdseMap            * pHashMap,
    VDS_PRE_CONDITION( keyLength > 0 );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
    
-   listErr = vdseHashDelWithKey( &pHashMap->hashObj, 
-                                 (unsigned char *)pKey,
-                                 keyLength,
-                                 pContext );
-   if ( listErr != LIST_OK ) {
+   found = vdseHashDelWithKey( &pHashMap->hashObj, 
+                               (unsigned char *)pKey,
+                               keyLength,
+                               pContext );
+   if ( ! found ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NO_SUCH_ITEM );
       return -1;
    }
@@ -198,11 +187,11 @@ int vdseMapGet( vdseMap            * pHashMap,
                 size_t               bufferLength,
                 vdseSessionContext * pContext )
 {
-   enum ListErrors listErr = LIST_OK;
    vdseHashItem* pHashItem = NULL; //, * previousItem = NULL;
    vdsErrors errcode;
    vdseTxStatus * txHashMapStatus;
    size_t bucket;
+   bool found;
    
    VDS_PRE_CONDITION( pHashMap   != NULL );
    VDS_PRE_CONDITION( pKey       != NULL );
@@ -219,13 +208,13 @@ int vdseMapGet( vdseMap            * pHashMap,
       goto the_exit;
    }
    
-   listErr = vdseHashGet( &pHashMap->hashObj, 
-                          (unsigned char *)pKey, 
-                          keyLength,
-                          &pHashItem,
-                          &bucket,
-                          pContext );
-   if ( listErr != LIST_OK ) {
+   found = vdseHashGet( &pHashMap->hashObj, 
+                        (unsigned char *)pKey, 
+                        keyLength,
+                        &pHashItem,
+                        &bucket,
+                        pContext );
+   if ( ! found ) {
       errcode = VDS_NO_SUCH_ITEM;
       goto the_exit;
    }
@@ -270,10 +259,10 @@ int vdseMapGetFirst( vdseMap            * pHashMap,
                      size_t               bufferLength,
                      vdseSessionContext * pContext )
 {
-   enum ListErrors listErr = LIST_OK;
    vdseHashItem* pHashItem = NULL;
    vdseTxStatus * txHashMapStatus;
    ptrdiff_t  firstItemOffset;
+   bool found;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pItem    != NULL )
@@ -288,9 +277,9 @@ int vdseMapGetFirst( vdseMap            * pHashMap,
       return -1;
    }
    
-   listErr = vdseHashGetFirst( &pHashMap->hashObj, 
-                               &firstItemOffset );
-   if ( listErr != LIST_OK ) {
+   found = vdseHashGetFirst( &pHashMap->hashObj, 
+                             &firstItemOffset );
+   if ( ! found ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
       return -1;
    }
@@ -328,12 +317,12 @@ int vdseMapGetNext( vdseMap            * pHashMap,
                     size_t               bufferLength,
                     vdseSessionContext * pContext )
 {
-   enum ListErrors listErr = LIST_OK;
    vdseHashItem * pHashItem = NULL;
    vdseHashItem * previousHashItem = NULL;
    vdseTxStatus * txHashMapStatus;
    ptrdiff_t  itemOffset;
-
+   bool found;
+   
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pItem    != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -352,10 +341,10 @@ int vdseMapGetNext( vdseMap            * pHashMap,
    itemOffset       = pItem->itemOffset;
    previousHashItem = pItem->pHashItem;
    
-   listErr = vdseHashGetNext( &pHashMap->hashObj, 
-                              itemOffset,
-                              &itemOffset );
-   if ( listErr != LIST_OK ) {
+   found = vdseHashGetNext( &pHashMap->hashObj, 
+                            itemOffset,
+                            &itemOffset );
+   if ( ! found ) {
       /* 
        * If we come here, there are no additional data items to retrieve. As 
        * long as we clearly say that the internal iterator is reset (in case a 
@@ -409,7 +398,6 @@ int vdseMapInit( vdseMap             * pHashMap,
                  vdseSessionContext  * pContext )
 {
    vdsErrors errcode;
-   enum ListErrors listErr;
    vdseFieldDef * ptr;
    unsigned int i;
    
@@ -442,18 +430,14 @@ int vdseMapInit( vdseMap             * pHashMap,
                      parentOffset,
                      hashItemOffset );
 
-   listErr = vdseHashInit( &pHashMap->hashObj, 
+   errcode = vdseHashInit( &pHashMap->hashObj, 
                            SET_OFFSET(&pHashMap->memObject),
                            expectedNumOfItems, 
                            pContext );
-   if ( listErr != LIST_OK ) {
-      if ( listErr == LIST_NO_MEMORY ) {
-         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
-      }
-      else {
-         errcode = VDS_INTERNAL_ERROR;
-      }
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pContext->errorHandler,
+                    g_vdsErrorHandle,
+                    errcode );
       return -1;
    }
    
@@ -508,8 +492,8 @@ int vdseMapInsert( vdseMap            * pHashMap,
                    size_t               itemLength,
                    vdseSessionContext * pContext )
 {
-   enum ListErrors listErr = LIST_OK;
    vdseHashItem* pHashItem = NULL;
+   vdsErrors errcode;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pKey     != NULL )
@@ -519,22 +503,15 @@ int vdseMapInsert( vdseMap            * pHashMap,
    VDS_PRE_CONDITION( itemLength > 0 );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
 
-   listErr = vdseHashInsert( &pHashMap->hashObj, 
+   errcode = vdseHashInsert( &pHashMap->hashObj, 
                              (unsigned char *)pKey, 
                              keyLength,
                              pItem, 
                              itemLength,
                              &pHashItem,
                              pContext );
-   if ( listErr != LIST_OK ) {
-      if ( listErr == LIST_NO_MEMORY ) {
-         vdscSetError( &pContext->errorHandler, 
-            g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
-      }
-      else {
-         vdscSetError( &pContext->errorHandler, 
-            g_vdsErrorHandle, VDS_ITEM_ALREADY_PRESENT );
-      }
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return -1;
    }
       
@@ -608,7 +585,6 @@ int vdseMapReplace( vdseMap            * pHashMap,
                     size_t               dataLength,
                     vdseSessionContext * pContext )
 {
-   enum ListErrors listErr = LIST_OK;
    vdsErrors errcode = VDS_OK;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
@@ -619,22 +595,13 @@ int vdseMapReplace( vdseMap            * pHashMap,
    VDS_PRE_CONDITION( dataLength > 0 );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
 
-   listErr = vdseHashUpdate( &pHashMap->hashObj, 
+   errcode = vdseHashUpdate( &pHashMap->hashObj, 
                              (unsigned char *)pKey, 
                              keyLength,
                              pData,
                              dataLength,
                              pContext );
-   if ( listErr != LIST_OK ) {
-      if ( listErr == LIST_KEY_NOT_FOUND ) {
-         errcode = VDS_NO_SUCH_ITEM;
-      }
-      else if ( listErr == LIST_NO_MEMORY ) {
-         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
-      }
-      else {
-         errcode = VDS_INTERNAL_ERROR;
-      }
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return -1;
    }
@@ -647,11 +614,11 @@ int vdseMapReplace( vdseMap            * pHashMap,
 void vdseMapStatus( vdseMap      * pHashMap,
                     vdsObjStatus * pStatus )
 {
-   enum ListErrors listErr = LIST_OK;
    vdseHashItem* pHashItem = NULL;
    ptrdiff_t  firstItemOffset;
    vdseTxStatus  * txStatus;
-
+   bool found;
+   
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pStatus  != NULL );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
@@ -664,8 +631,8 @@ void vdseMapStatus( vdseMap      * pHashMap,
    pStatus->maxKeyLength  = 0;
    if ( pStatus->numDataItem == 0 ) return;
 
-   listErr = vdseHashGetFirst( &pHashMap->hashObj, &firstItemOffset );
-   while ( listErr == LIST_OK ) {
+   found = vdseHashGetFirst( &pHashMap->hashObj, &firstItemOffset );
+   while ( found ) {
       GET_PTR( pHashItem, firstItemOffset, vdseHashItem );
       if ( pHashItem->dataLength > pStatus->maxDataLength ) {
          pStatus->maxDataLength = pHashItem->dataLength;
@@ -674,9 +641,9 @@ void vdseMapStatus( vdseMap      * pHashMap,
          pStatus->maxKeyLength = pHashItem->keyLength;
       }
 
-      listErr = vdseHashGetNext( &pHashMap->hashObj, 
-                                 firstItemOffset,
-                                 &firstItemOffset );
+      found = vdseHashGetNext( &pHashMap->hashObj, 
+                               firstItemOffset,
+                               &firstItemOffset );
    }
 }
 

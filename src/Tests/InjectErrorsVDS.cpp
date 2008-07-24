@@ -66,12 +66,13 @@ int AddDefectsHashMaps( vector<myMap> & h )
    struct vdseHashMap * pHashMap;
    vdseTxStatus * txItemStatus, * txHashMapStatus;
    unsigned long i, ** apiObj;
-   enum ListErrors listErrCode;
+   enum vdsErrors errcode;
 //   size_t bucket, previousBucket;
    ptrdiff_t offset, previousOffset;
    vdseHashItem * pItem;
    ptrdiff_t* pArray;   
-
+   bool ok;
+   
    // Using a (void *) cast to eliminate a gcc warning (dereferencing 
    // type-punned pointer will break strict-aliasing rules)
    apiObj = (unsigned long **) ( (void *) &h[0].map );
@@ -98,19 +99,18 @@ int AddDefectsHashMaps( vector<myMap> & h )
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
    txHashMapStatus->usageCounter++;
 
-   listErrCode = vdseHashGetFirst( &pHashMap->hashObj,
-                                   &offset );
+   ok = vdseHashGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
-   while ( listErrCode == LIST_OK ) {
+   while ( ok ) {
       previousOffset = offset;
-      listErrCode = vdseHashGetNext( &pHashMap->hashObj,
-                                     previousOffset,
-                                     &offset );
+      ok = vdseHashGetNext( &pHashMap->hashObj,
+                            previousOffset,
+                            &offset );
       i++;
       if ( i >= 6 ) break;
    }
-   if ( listErrCode != LIST_OK ) {
-      cerr << "Iteration error in " << h[1].name << ", list err = " << listErrCode << endl;
+   if ( ! ok ) {
+      cerr << "Iteration error in " << h[1].name << endl;
       return -1;
    }
    GET_PTR( pItem, offset, vdseHashItem );
@@ -130,10 +130,9 @@ int AddDefectsHashMaps( vector<myMap> & h )
    apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[3].map + api_offset );
    pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
 
-   listErrCode = vdseHashGetFirst( &pHashMap->hashObj,
-                                   &offset );
+   ok = vdseHashGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
-   while ( listErrCode == LIST_OK ) {      
+   while ( ok ) {      
       GET_PTR( pItem, offset, vdseHashItem );
       txItemStatus = &pItem->txStatus;
 
@@ -151,14 +150,14 @@ int AddDefectsHashMaps( vector<myMap> & h )
       }
 
       previousOffset = offset;
-      listErrCode = vdseHashGetNext( &pHashMap->hashObj,
-                                     previousOffset,
-                                     &offset );
+      ok = vdseHashGetNext( &pHashMap->hashObj,
+                            previousOffset,
+                            &offset );
       i++;
 
    }
-   if ( listErrCode != LIST_END_OF_LIST ) {
-      cerr << "Iteration error in " << h[3].name << ", list err = " << listErrCode << endl;
+   if ( i < 20 ) {
+      cerr << "Iteration error in " << h[3].name << endl;
       return -1;
    }
    
@@ -191,19 +190,18 @@ int AddDefectsHashMaps( vector<myMap> & h )
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
-   listErrCode = vdseHashGetFirst( &pHashMap->hashObj,
-                                   &offset );
+   ok = vdseHashGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
-   while ( listErrCode == LIST_OK ) {
+   while ( ok ) {
       previousOffset = offset;
-      listErrCode = vdseHashGetNext( &pHashMap->hashObj,
-                                     previousOffset,
-                                     &offset );
+      ok = vdseHashGetNext( &pHashMap->hashObj,
+                            previousOffset,
+                            &offset );
       i++;
       if ( i >= 6 ) break;
    }
-   if ( listErrCode != LIST_OK ) {
-      cerr << "Iteration error in " << h[6].name << ", list err = " << listErrCode << endl;
+   if ( ! ok ) {
+      cerr << "Iteration error in " << h[6].name << endl;
       return -1;
    }
    GET_PTR( pItem, offset, vdseHashItem );
@@ -216,19 +214,18 @@ int AddDefectsHashMaps( vector<myMap> & h )
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
-   listErrCode = vdseHashGetFirst( &pHashMap->hashObj,
-                                   &offset );
+   ok = vdseHashGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
-   while ( listErrCode == LIST_OK ) {
+   while ( ok ) {
       previousOffset = offset;
-      listErrCode = vdseHashGetNext( &pHashMap->hashObj,
-                                     previousOffset,
-                                     &offset );
+      ok = vdseHashGetNext( &pHashMap->hashObj,
+                            previousOffset,
+                            &offset );
       i++;
       if ( i >= 6 ) break;
    }
-   if ( listErrCode != LIST_OK ) {
-      cerr << "Iteration error in " << h[7].name << ", list err = " << listErrCode << endl;
+   if ( ! ok ) {
+      cerr << "Iteration error in " << h[7].name << endl;
       return -1;
    }
    GET_PTR( pItem, offset, vdseHashItem );
@@ -246,7 +243,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    struct vdseQueue * pQueue;
    vdseTxStatus * txItemStatus, * txQueueStatus;
    unsigned long i, ** apiObj;
-   enum ListErrors listErrCode;
+   enum vdsErrors listErrCode;
    vdseLinkNode * pNode = NULL, *pSavedNode = NULL;
    vdseQueueItem* pQueueItem = NULL;
    bool okList;

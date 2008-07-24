@@ -60,7 +60,6 @@ int main()
    int i, j, k;
    int randElement;
    unsigned int randAction;
-   enum ListErrors error;
    int errcode, countNext;
    vdseSessionContext context;
    bool ok;

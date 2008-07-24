@@ -27,16 +27,17 @@ int main()
 #if defined(USE_DBC)
    vdseSessionContext context;
    vdseHash* pHash;
-   enum ListErrors listErr;
+   enum vdsErrors errcode;
    char* key = "My Key";
    char* data1 = "My Data 1";
    vdseHashItem* pNewItem;
    size_t bucket;
+   bool found;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( listErr != LIST_OK ) {
+   errcode = vdseHashInit( pHash, g_memObjOffset, 100, &context );
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -45,27 +46,27 @@ int main()
     * InsertAt() depends on this as you cannot insert in an empty
     * bucket.
     */
-   listErr = vdseHashInsert( pHash,
+   errcode = vdseHashInsert( pHash,
                              (unsigned char*)key,
                              strlen(key),
                              data1,
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( listErr != LIST_OK ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   listErr = vdseHashGet( pHash,
-                          (unsigned char*)key,
-                          strlen(key),
-                          &pNewItem,
-                          &bucket,
-                          &context );
-   if ( listErr != LIST_OK ) {
+   found = vdseHashGet( pHash,
+                        (unsigned char*)key,
+                        strlen(key),
+                        &pNewItem,
+                        &bucket,
+                        &context );
+   if ( ! found ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   listErr = vdseHashInsertAt( pHash,
+   errcode = vdseHashInsertAt( pHash,
                                bucket,
                                (unsigned char*)key,
                                0,

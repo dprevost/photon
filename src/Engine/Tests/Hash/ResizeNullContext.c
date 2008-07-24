@@ -27,7 +27,7 @@ int main()
 #if defined(USE_DBC)
    vdseSessionContext context;
    vdseHash* pHash;
-   enum ListErrors listErr;
+   enum vdsErrors errcode;
    char key[20];
    char data[20];
    vdseHashItem* pNewItem;
@@ -35,8 +35,8 @@ int main()
    
    pHash = initHashTest( expectedToPass, &context );
    
-   listErr = vdseHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( listErr != LIST_OK ) {
+   errcode = vdseHashInit( pHash, g_memObjOffset, 100, &context );
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -44,19 +44,19 @@ int main()
    for ( i = 0; i < 500; ++i ) {
       sprintf( key,  "My Key %d", i );
       sprintf( data, "My Data %d", i );
-      listErr = vdseHashInsert( pHash,
+      errcode = vdseHashInsert( pHash,
                                 (unsigned char*)key,
                                 strlen(key),
                                 data,
                                 strlen(data),
                                 &pNewItem,
                                 &context );
-      if ( listErr != LIST_OK ) {
+      if ( errcode != VDS_OK ) {
          fprintf( stderr, "i = %d %d\n", i, pHash->enumResize );
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }
       if ( pHash->enumResize == VDSE_HASH_TIME_TO_GROW ) {
-         listErr = vdseHashResize( pHash, NULL );
+         errcode = vdseHashResize( pHash, NULL );
 
          /* We should never come here! */
          ERROR_EXIT( expectedToPass, NULL, ; );

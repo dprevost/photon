@@ -239,9 +239,9 @@ static bool findKey( vdseHash            * pHash,
  * 
  * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
-                              vdseHash           * pNewHash,
-                              vdseSessionContext * pContext )
+enum vdsErrors vdseHashCopy( vdseHash           * pOldHash,
+                             vdseHash           * pNewHash,
+                             vdseSessionContext * pContext )
 {
    ptrdiff_t * pOldArray, * pNewArray;
    size_t i;
@@ -277,7 +277,7 @@ enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
             pNewItem = (vdseHashItem*) vdseMalloc( pMemObject, 
                                                    itemLength, 
                                                    pContext );
-            if ( pNewItem == NULL ) return LIST_NO_MEMORY;
+            if ( pNewItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
 
             /*
              * We copy everything and we reset the offset of interest
@@ -312,7 +312,7 @@ enum ListErrors vdseHashCopy( vdseHash           * pOldHash,
             pNewItem = (vdseHashItem*) vdseMalloc( pMemObject, 
                                                    itemLength, 
                                                    pContext );
-            if ( pNewItem == NULL ) return LIST_NO_MEMORY;
+            if ( pNewItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
 
             /*
              * We copy everything and we reset the offset of interest
@@ -411,11 +411,10 @@ void vdseHashDelWithItem( vdseHash           * pHash,
  * Note: there is no "same key" here since this function is used for doing
  * changes to a temp. copy of read-only objects - no transaction.
  */
-enum ListErrors 
-vdseHashDelWithKey( vdseHash            * pHash,
-                    const unsigned char * pKey, 
-                    size_t                keyLength,
-                    vdseSessionContext  * pContext  )
+bool vdseHashDelWithKey( vdseHash            * pHash,
+                         const unsigned char * pKey, 
+                         size_t                keyLength,
+                         vdseSessionContext  * pContext  )
 {
    size_t bucket = 0;
    ptrdiff_t * pArray;
@@ -462,10 +461,10 @@ vdseHashDelWithKey( vdseHash            * pHash,
       pHash->numberOfItems--;
       pHash->enumResize = isItTimeToResize( pHash );
 
-      return LIST_OK;
+      return true;
    }
 
-   return LIST_KEY_NOT_FOUND;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -523,15 +522,14 @@ void vdseHashFini( vdseHash * pHash )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum ListErrors 
-vdseHashGet( vdseHash            * pHash,
-             const unsigned char * pKey,
-             size_t                keyLength,
-             vdseHashItem       ** ppItem,
-             size_t              * pBucket,
-             vdseSessionContext  * pContext )
+bool vdseHashGet( vdseHash            * pHash,
+                  const unsigned char * pKey,
+                  size_t                keyLength,
+                  vdseHashItem       ** ppItem,
+                  size_t              * pBucket,
+                  vdseSessionContext  * pContext )
 {
-   bool   keyFound = false;
+   bool keyFound = false;
    ptrdiff_t* pArray;
    vdseHashItem* pItem, *dummy;
    
@@ -549,12 +547,9 @@ vdseHashGet( vdseHash            * pHash,
    keyFound = findKey( pHash, pArray, pKey, keyLength, 
                        &pItem, &dummy, pBucket );
 
-   if ( keyFound ) {
-      *ppItem = pItem;
-      return LIST_OK;
-   }
+   if ( keyFound ) *ppItem = pItem;
 
-   return LIST_KEY_NOT_FOUND;
+   return keyFound;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -564,9 +559,8 @@ vdseHashGet( vdseHash            * pHash,
 #  pragma warning(disable:4702) 
 #endif
 
-enum ListErrors 
-vdseHashGetFirst( vdseHash  * pHash,
-                  ptrdiff_t * pFirstItemOffset )
+bool vdseHashGetFirst( vdseHash  * pHash,
+                       ptrdiff_t * pFirstItemOffset )
 {
    ptrdiff_t* pArray, currentOffset;
    bool SHOULD_NOT_REACHED_THIS = true;
@@ -580,7 +574,7 @@ vdseHashGetFirst( vdseHash  * pHash,
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
-   if ( pHash->numberOfItems == 0 ) return LIST_EMPTY;
+   if ( pHash->numberOfItems == 0 ) return false;
    
    /* 
     * Note: the first item has to be the first non-empty pArray[i],
@@ -591,13 +585,13 @@ vdseHashGetFirst( vdseHash  * pHash,
       
       if (currentOffset != VDSE_NULL_OFFSET ) {
          *pFirstItemOffset = currentOffset;
-         return LIST_OK;
+         return true;
       }
    }
 
    VDS_POST_CONDITION( SHOULD_NOT_REACHED_THIS == false );
    
-   return LIST_EMPTY; /* Should never occur */
+   return false; /* Should never occur */
 }
 
 #if defined (WIN32)
@@ -606,10 +600,9 @@ vdseHashGetFirst( vdseHash  * pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum ListErrors 
-vdseHashGetNext( vdseHash  * pHash,
-                 ptrdiff_t   previousOffset,
-                 ptrdiff_t * pNextItemOffset )
+bool vdseHashGetNext( vdseHash  * pHash,
+                      ptrdiff_t   previousOffset,
+                      ptrdiff_t * pNextItemOffset )
 {
    ptrdiff_t* pArray, currentOffset;
    size_t i;
@@ -627,7 +620,7 @@ vdseHashGetNext( vdseHash  * pHash,
    if ( pItem->nextItem != VDSE_NULL_OFFSET ) {
       /* We found the next one in the linked list. */
       *pNextItemOffset = pItem->nextItem;
-      return LIST_OK;
+      return true;
    }
    
    /* 
@@ -639,22 +632,20 @@ vdseHashGetNext( vdseHash  * pHash,
       
       if (currentOffset != VDSE_NULL_OFFSET ) {
          *pNextItemOffset = currentOffset;
-         return LIST_OK;
+         return true;
       }
    }
    
-   return LIST_END_OF_LIST;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum ListErrors 
-vdseHashInit( vdseHash           * pHash,
-              ptrdiff_t            memObjOffset,
-              size_t               reservedSize, 
-              vdseSessionContext * pContext )
+enum vdsErrors vdseHashInit( vdseHash           * pHash,
+                             ptrdiff_t            memObjOffset,
+                             size_t               reservedSize, 
+                             vdseSessionContext * pContext )
 {
-   enum ListErrors errCode = LIST_OK;
    size_t len, numBuckets;
    ptrdiff_t* ptr;
    unsigned int i;
@@ -692,10 +683,7 @@ vdseHashInit( vdseHash           * pHash,
    len = g_vdseArrayLengths[pHash->lengthIndex] * sizeof(ptrdiff_t);
    
    ptr = (ptrdiff_t*) vdseMalloc( pMemObject, len, pContext );
-   if ( ptr == NULL ) {
-      errCode = LIST_NO_MEMORY;
-   }
-   else {
+   if ( ptr != NULL ) {
       for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i) {
          ptr[i] = VDSE_NULL_OFFSET;
       }
@@ -703,21 +691,22 @@ vdseHashInit( vdseHash           * pHash,
       pHash->arrayOffset = SET_OFFSET( ptr );
       pHash->initialized = VDSE_HASH_SIGNATURE;
       pHash->memObjOffset = memObjOffset;
+   
+      return VDS_OK;
    }
    
-   return errCode;
+   return VDS_NOT_ENOUGH_VDS_MEMORY;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum ListErrors 
-vdseHashInsert( vdseHash            * pHash,
-                const unsigned char * pKey,
-                size_t                keyLength,
-                const void          * pData,
-                size_t                dataLength,
-                vdseHashItem       ** ppNewItem,
-                vdseSessionContext  * pContext )
+enum vdsErrors vdseHashInsert( vdseHash            * pHash,
+                               const unsigned char * pKey,
+                               size_t                keyLength,
+                               const void          * pData,
+                               size_t                dataLength,
+                               vdseHashItem       ** ppNewItem,
+                               vdseSessionContext  * pContext )
 {
    ptrdiff_t* pArray;   
    size_t bucket = 0;
@@ -742,7 +731,7 @@ vdseHashInsert( vdseHash            * pHash,
    keyFound = findKey( pHash, pArray, pKey, keyLength, 
                        &pItem, &previousItem, &bucket );
 
-   if ( keyFound ) return LIST_KEY_FOUND;
+   if ( keyFound ) return VDS_ITEM_ALREADY_PRESENT;
 
    GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
    
@@ -750,7 +739,7 @@ vdseHashInsert( vdseHash            * pHash,
    /* overheads of the memory allocator */
    itemLength = calculateItemLength( keyLength, dataLength );
    pItem = (vdseHashItem*) vdseMalloc( pMemObject, itemLength, pContext );
-   if ( pItem == NULL ) return LIST_NO_MEMORY;
+   if ( pItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
    
    pItem->nextItem = VDSE_NULL_OFFSET;
    pItem->bucket = bucket;
@@ -778,20 +767,19 @@ vdseHashInsert( vdseHash            * pHash,
    
    *ppNewItem = pItem;
 
-   return LIST_OK;
+   return VDS_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum ListErrors 
-vdseHashInsertAt( vdseHash            * pHash,
-                  size_t                bucket,
-                  const unsigned char * pKey,
-                  size_t                keyLength,
-                  const void          * pData,
-                  size_t                dataLength,
-                  vdseHashItem       ** ppNewItem,
-                  vdseSessionContext  * pContext )
+enum vdsErrors vdseHashInsertAt( vdseHash            * pHash,
+                                 size_t                bucket,
+                                 const unsigned char * pKey,
+                                 size_t                keyLength,
+                                 const void          * pData,
+                                 size_t                dataLength,
+                                 vdseHashItem       ** ppNewItem,
+                                 vdseSessionContext  * pContext )
 {
    ptrdiff_t* pArray;   
    vdseHashItem* pItem, *previousItem = NULL;
@@ -826,7 +814,7 @@ vdseHashInsertAt( vdseHash            * pHash,
    /* overheads of the memory allocator */
    itemLength = calculateItemLength( keyLength, dataLength );
    pItem = (vdseHashItem*) vdseMalloc( pMemObject, itemLength, pContext );
-   if ( pItem == NULL ) return LIST_NO_MEMORY;
+   if ( pItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
    
    pItem->nextItem = VDSE_NULL_OFFSET;
    pItem->bucket = bucket;
@@ -853,14 +841,13 @@ vdseHashInsertAt( vdseHash            * pHash,
    
    *ppNewItem = pItem;
 
-   return LIST_OK;
+   return VDS_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum ListErrors 
-vdseHashResize( vdseHash           * pHash,
-                vdseSessionContext * pContext )
+enum vdsErrors vdseHashResize( vdseHash           * pHash,
+                               vdseSessionContext * pContext )
 {
    int newIndexLength;
    ptrdiff_t * ptr, * pArray;
@@ -876,7 +863,7 @@ vdseHashResize( vdseHash           * pHash,
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
-   if ( pHash->enumResize == VDSE_HASH_NO_RESIZE ) return LIST_OK;
+   if ( pHash->enumResize == VDSE_HASH_NO_RESIZE ) return VDS_OK;
 
    GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
 
@@ -890,7 +877,7 @@ vdseHashResize( vdseHash           * pHash,
    len = g_vdseArrayLengths[newIndexLength] * sizeof(ptrdiff_t);
    
    ptr = (ptrdiff_t*) vdseMalloc( pMemObject, len, pContext );
-   if ( ptr == NULL ) return LIST_NO_MEMORY;
+   if ( ptr == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
 
    for ( i = 0; i < g_vdseArrayLengths[newIndexLength]; ++i) {
       ptr[i] = VDSE_NULL_OFFSET;
@@ -937,7 +924,7 @@ vdseHashResize( vdseHash           * pHash,
    
    pHash->enumResize = VDSE_HASH_NO_RESIZE;
 
-   return LIST_OK;   
+   return VDS_OK;   
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -948,7 +935,7 @@ vdseHashResize( vdseHash           * pHash,
  * rollback!
  */
 
-enum ListErrors
+enum vdsErrors 
 vdseHashUpdate( vdseHash            * pHash,
                 const unsigned char * pKey,
                 size_t                keyLength,
@@ -977,7 +964,7 @@ vdseHashUpdate( vdseHash            * pHash,
    keyFound = findKey( pHash, pArray, pKey, keyLength,
                        &pOldItem, &previousItem, &bucket );
 
-   if ( ! keyFound ) return LIST_KEY_NOT_FOUND;
+   if ( ! keyFound ) return VDS_NO_SUCH_ITEM;
 
    newItemLength = calculateItemLength( keyLength, dataLength );
    oldItemLength = calculateItemLength( keyLength, pOldItem->dataLength );
@@ -996,7 +983,7 @@ vdseHashUpdate( vdseHash            * pHash,
       pMemObject = GET_PTR_FAST( pHash->memObjOffset, vdseMemObject );
       pNewItem = (vdseHashItem*) 
          vdseMalloc( pMemObject, newItemLength, pContext );
-      if ( pNewItem == NULL ) return LIST_NO_MEMORY;
+      if ( pNewItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
       
       /* initialize the new record */
       pNewItem->nextItem = pOldItem->nextItem;
@@ -1022,7 +1009,7 @@ vdseHashUpdate( vdseHash            * pHash,
       vdseFree( pMemObject, (unsigned char*)pOldItem, oldItemLength, pContext );
    }
    
-    return LIST_OK;
+    return VDS_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

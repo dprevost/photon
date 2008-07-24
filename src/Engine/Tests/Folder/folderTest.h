@@ -109,7 +109,7 @@ vdseTxStatus objTxStatus;
 vdseFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
                                vdseSessionContext* pContext )
 {
-   int errcode;
+   vdsErrors errcode;
    vdseFolder* pFolder;
    pFolder = initFolderTest( testIsExpectedToSucceed, pContext );
    
@@ -136,7 +136,7 @@ vdseFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
                            SET_OFFSET(&pFolder->memObject),
                            25, 
                            pContext );
-   if ( errcode != 0 ) {
+   if ( errcode != VDS_OK ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);

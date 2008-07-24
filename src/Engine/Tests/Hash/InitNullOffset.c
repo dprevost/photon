@@ -27,11 +27,11 @@ int main()
 #if defined(USE_DBC)
    vdseSessionContext context;
    vdseHash* pHash;
-   enum ListErrors listErr;
+   enum vdsErrors errcode;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   listErr = vdseHashInit( pHash, VDSE_NULL_OFFSET, 100, &context );
+   errcode = vdseHashInit( pHash, VDSE_NULL_OFFSET, 100, &context );
       
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

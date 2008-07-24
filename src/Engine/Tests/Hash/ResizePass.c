@@ -26,7 +26,7 @@ int main()
 {
    vdseSessionContext context;
    vdseHash* pHash;
-   enum ListErrors listErr;
+   enum vdsErrors errcode;
    char key[20];
    char data[20];
    vdseHashItem* pNewItem;
@@ -34,11 +34,12 @@ int main()
    unsigned char * pData;
    vdseHashItem* pItem = NULL;
    size_t bucket;
+   bool ok;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   listErr = vdseHashInit( pHash, g_memObjOffset, 10, &context );
-   if ( listErr != LIST_OK ) {
+   errcode = vdseHashInit( pHash, g_memObjOffset, 10, &context );
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -46,20 +47,20 @@ int main()
    for ( i = 0; i < 500; ++i ) {
       sprintf( key,  "My Key %d", i );
       sprintf( data, "My Data %d", i );
-      listErr = vdseHashInsert( pHash,
+      errcode = vdseHashInsert( pHash,
                                 (unsigned char*)key,
                                 strlen(key),
                                 data,
                                 strlen(data),
                                 &pNewItem,
                                 &context );
-      if ( listErr != LIST_OK ) {
+      if ( errcode != VDS_OK ) {
          fprintf( stderr, "i = %d %d\n", i, pHash->enumResize );
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }
       if ( pHash->enumResize == VDSE_HASH_TIME_TO_GROW ) {
-         listErr = vdseHashResize( pHash, &context );
-         if ( listErr != LIST_OK ) {
+         errcode = vdseHashResize( pHash, &context );
+         if ( errcode != VDS_OK ) {
             ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
          }
          else {
@@ -79,13 +80,13 @@ int main()
       sprintf( key,  "My Key %d", i );
       sprintf( data, "My Data %d", i );
       
-      listErr = vdseHashGet( pHash,
-                             (unsigned char*)key,
-                             strlen(key),
-                             &pItem,
-                             &bucket,
-                             &context );
-      if ( listErr != LIST_OK ) {
+      ok = vdseHashGet( pHash,
+                        (unsigned char*)key,
+                        strlen(key),
+                        &pItem,
+                        &bucket,
+                        &context );
+      if ( ! ok ) {
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }
       GET_PTR( pData, pItem->dataOffset, unsigned char );
@@ -96,17 +97,17 @@ int main()
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
       
-      listErr = vdseHashDelWithKey( pHash,
-                                    (unsigned char*)key,
-                                    strlen(key),
-                                    &context );
-      if ( listErr != LIST_OK ) {
+      ok = vdseHashDelWithKey( pHash,
+                               (unsigned char*)key,
+                               strlen(key),
+                               &context );
+      if ( ! ok ) {
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }
       
       if ( pHash->enumResize == VDSE_HASH_TIME_TO_SHRINK ) {
-         listErr = vdseHashResize( pHash, &context );
-         if ( listErr != LIST_OK ) {
+         errcode = vdseHashResize( pHash, &context );
+         if ( errcode != VDS_OK ) {
             ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
          }
          else {

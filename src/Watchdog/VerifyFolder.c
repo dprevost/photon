@@ -28,7 +28,6 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
                         struct vdseFolder  * pFolder, 
                         vdseSessionContext * pContext )
 {
-   enum ListErrors listErr;
    ptrdiff_t offset, previousOffset;
    vdseHashItem * pItem;
    vdseObjectDescriptor* pDesc = NULL;
@@ -36,13 +35,13 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
    int pDesc_invalid_api_type = 0;
    char message[VDS_MAX_NAME_LENGTH*4 + 30];
    enum vdswRecoverError rc = VDSWR_OK, valid;
+   bool found;
    
    /* The easy case */
    if ( pFolder->hashObj.numberOfItems == 0 ) return rc;
 
-   listErr = vdseHashGetFirst( &pFolder->hashObj,
-                               &offset );
-   while ( listErr == LIST_OK ) {
+   found = vdseHashGetFirst( &pFolder->hashObj, &offset );
+   while ( found ) {
       GET_PTR( pItem, offset, vdseHashItem );
       GET_PTR( pDesc, pItem->dataOffset, vdseObjectDescriptor );
       GET_PTR( pObject, pDesc->offset, void );
@@ -72,9 +71,9 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
       }
       
       previousOffset = offset;
-      listErr = vdseHashGetNext( &pFolder->hashObj,
-                                 previousOffset,
-                                 &offset );
+      found = vdseHashGetNext( &pFolder->hashObj,
+                               previousOffset,
+                               &offset );
 
       switch ( valid ) {
       case VDSWR_OK:

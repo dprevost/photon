@@ -180,10 +180,10 @@ static
 bool vdseFolderDeletable( vdseFolder         * pFolder,
                           vdseSessionContext * pContext )
 {
-   enum ListErrors listErr;
    ptrdiff_t offset, previousOffset;
    vdseHashItem * pItem;
    ptrdiff_t txOffset = SET_OFFSET( pContext->pTransaction );
+   bool found;
    
    /* The easy case */
    if ( pFolder->hashObj.numberOfItems == 0 ) return true;
@@ -195,9 +195,8 @@ bool vdseFolderDeletable( vdseFolder         * pFolder,
     * - or the end (we return true)
     */
    
-   listErr = vdseHashGetFirst( &pFolder->hashObj,
-                               &offset );
-   while ( listErr == LIST_OK ) {
+   found = vdseHashGetFirst( &pFolder->hashObj, &offset );
+   while ( found ) {
       GET_PTR( pItem, offset, vdseHashItem );
       if ( pItem->txStatus.txOffset != txOffset ) return false;
       if ( ! vdseTxStatusIsMarkedAsDestroyed( &pItem->txStatus ) ) {
@@ -206,9 +205,9 @@ bool vdseFolderDeletable( vdseFolder         * pFolder,
       
       previousOffset = offset;
       
-      listErr = vdseHashGetNext( &pFolder->hashObj,
-                                 previousOffset,
-                                 &offset );
+      found = vdseHashGetNext( &pFolder->hashObj,
+                               previousOffset,
+                               &offset );
    }
    
    return true;
@@ -225,13 +224,13 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
    size_t partialLength = 0;
    int rc;
    vdsErrors errcode = VDS_OK;
-   enum ListErrors listErr = LIST_OK;
    vdseObjectDescriptor* pDesc = NULL;
    vdseHashItem* pHashItem = NULL;
    vdseTxStatus* txStatus;
    vdseFolder * pNextFolder, *pDeletedFolder;
    vdseMemObject * pMemObj;
    size_t bucket;
+   bool found;
    
    VDS_PRE_CONDITION( pFolder    != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
@@ -245,13 +244,13 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
                                  &lastIteration );
    if ( errcode != VDS_OK ) goto the_exit;
 
-   listErr = vdseHashGet( &pFolder->hashObj, 
-                          (unsigned char *)objectName, 
-                          partialLength * sizeof(char),
-                          &pHashItem,
-                          &bucket,
-                          pContext );
-   if ( listErr != LIST_OK ) {
+   found = vdseHashGet( &pFolder->hashObj, 
+                        (unsigned char *)objectName, 
+                        partialLength * sizeof(char),
+                        &pHashItem,
+                        &bucket,
+                        pContext );
+   if ( ! found ) {
       if (lastIteration) {
          errcode = VDS_NO_SUCH_OBJECT;
       }
@@ -463,7 +462,6 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
 {
    bool lastIteration = true;
    size_t partialLength = 0, bucket = 0, descLength;
-   enum ListErrors listErr = LIST_OK;
    vdseObjectDescriptor * pDescOld = NULL, * pDescNew = NULL;
    vdseHashItem * pHashItemOld = NULL, * pHashItemNew = NULL;
    int rc;
@@ -475,6 +473,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
    unsigned char * ptr;
    vdseMemObjIdent memObjType = VDSE_IDENT_LAST;
    vdseMap * pMap;
+   bool found;
    
    VDS_PRE_CONDITION( pFolder     != NULL );
    VDS_PRE_CONDITION( objectName  != NULL )
@@ -490,13 +489,13 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
                                  &lastIteration );
    if ( errcode != VDS_OK ) goto the_exit;
    
-   listErr = vdseHashGet( &pFolder->hashObj, 
-                          (unsigned char *)objectName, 
-                          partialLength * sizeof(char), 
-                          &pHashItemOld,
-                          &bucket,
-                          pContext );
-   if ( listErr != LIST_OK ) {
+   found = vdseHashGet( &pFolder->hashObj, 
+                        (unsigned char *)objectName, 
+                        partialLength * sizeof(char), 
+                        &pHashItemOld,
+                        &bucket,
+                        pContext );
+   if ( ! found ) {
       if (lastIteration) {
          errcode = VDS_NO_SUCH_OBJECT;
       }
@@ -587,7 +586,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
       memcpy( pDescNew, pDescOld, descLength );
       pDescNew->offset = SET_OFFSET( ptr );
 
-      listErr = vdseHashInsertAt( &pFolder->hashObj, 
+      errcode = vdseHashInsertAt( &pFolder->hashObj, 
                                   bucket,
                                   (unsigned char *)objectName, 
                                   partialLength * sizeof(char), 
@@ -597,16 +596,10 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
                                   pContext );
       free( pDescNew );
       pDescNew = NULL;
-      if ( listErr != LIST_OK ) {
+      if ( errcode != VDS_OK ) {
          vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
                          ptr, pMemObject->totalBlocks, pContext );
          free( pDescNew );
-         if ( listErr == LIST_NO_MEMORY ) {
-            errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
-         }
-         else {
-            errcode = VDS_INTERNAL_ERROR;
-         }
          goto the_exit;
       }
 
@@ -760,12 +753,11 @@ int vdseFolderGetFirst( vdseFolder         * pFolder,
                         vdseFolderItem     * pItem,
                         vdseSessionContext * pContext )
 {
-   enum ListErrors listErr = LIST_OK;
    vdseHashItem* pHashItem = NULL;
    vdseTxStatus * txItemStatus;
    vdseTxStatus * txFolderStatus;
    ptrdiff_t  firstItemOffset;
-   bool isOK;
+   bool isOK, found;
 
    VDS_PRE_CONDITION( pFolder  != NULL );
    VDS_PRE_CONDITION( pItem    != NULL )
@@ -780,9 +772,8 @@ int vdseFolderGetFirst( vdseFolder         * pFolder,
        * current session (its transaction field equal to zero or to our 
        * transaction) AND is not marked as destroyed.
        */
-      listErr = vdseHashGetFirst( &pFolder->hashObj, 
-                                  &firstItemOffset );
-      while ( listErr == LIST_OK ) {
+      found = vdseHashGetFirst( &pFolder->hashObj, &firstItemOffset );
+      while ( found ) {
          GET_PTR( pHashItem, firstItemOffset, vdseHashItem );
          txItemStatus = &pHashItem->txStatus;
 
@@ -824,9 +815,9 @@ int vdseFolderGetFirst( vdseFolder         * pFolder,
             return 0;
          }
   
-         listErr = vdseHashGetNext( &pFolder->hashObj, 
-                                    firstItemOffset,
-                                    &firstItemOffset );
+         found = vdseHashGetNext( &pFolder->hashObj, 
+                                  firstItemOffset,
+                                  &firstItemOffset );
       }
    }
    else {
@@ -846,13 +837,12 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
                        vdseFolderItem     * pItem,
                        vdseSessionContext * pContext )
 {
-   enum ListErrors listErr = LIST_OK;
    vdseHashItem * pHashItem = NULL;
    vdseHashItem * previousHashItem = NULL;
    vdseTxStatus * txItemStatus;
    vdseTxStatus * txFolderStatus;
    ptrdiff_t  itemOffset;
-   bool isOK;
+   bool isOK, found;
 
    VDS_PRE_CONDITION( pFolder  != NULL );
    VDS_PRE_CONDITION( pItem    != NULL );
@@ -872,10 +862,10 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
        * current session (its transaction field equal to zero or to our 
        * transaction) AND is not marked as destroyed.
        */
-      listErr = vdseHashGetNext( &pFolder->hashObj, 
-                                 itemOffset,
-                                 &itemOffset );
-      while ( listErr == LIST_OK ) {
+      found = vdseHashGetNext( &pFolder->hashObj, 
+                               itemOffset,
+                               &itemOffset );
+      while ( found ) {
          GET_PTR( pHashItem, itemOffset, vdseHashItem );
          txItemStatus = &pHashItem->txStatus;
 
@@ -919,9 +909,9 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
             return 0;
          }
   
-         listErr = vdseHashGetNext( &pFolder->hashObj, 
-                                    itemOffset,
-                                    &itemOffset );
+         found = vdseHashGetNext( &pFolder->hashObj, 
+                                  itemOffset,
+                                  &itemOffset );
       }
    }
    else {
@@ -956,7 +946,7 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
 {
    bool lastIteration = true;
    size_t partialLength = 0;
-   enum ListErrors listErr = LIST_OK;
+//   enum ListErrors listErr = LIST_OK;
    vdseObjectDescriptor* pDesc = NULL;
    vdseHashItem* pHashItem = NULL;
    int rc;
@@ -965,6 +955,7 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
    vdseTxStatus * txFolderStatus;
    vdseFolder* pNextFolder;
    size_t bucket;
+   bool found;
    
    VDS_PRE_CONDITION( pFolder     != NULL );
    VDS_PRE_CONDITION( objectName  != NULL )
@@ -980,13 +971,13 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
                                  &lastIteration );
    if ( errcode != VDS_OK ) goto the_exit;
    
-   listErr = vdseHashGet( &pFolder->hashObj, 
-                          (unsigned char *)objectName, 
-                          partialLength * sizeof(char), 
-                          &pHashItem,
-                          &bucket,
-                          pContext );
-   if ( listErr != LIST_OK ) {
+   found = vdseHashGet( &pFolder->hashObj, 
+                        (unsigned char *)objectName, 
+                        partialLength * sizeof(char), 
+                        &pHashItem,
+                        &bucket,
+                        pContext );
+   if ( ! found ) {
       if (lastIteration) {
          errcode = VDS_NO_SUCH_OBJECT;
       }
@@ -1120,7 +1111,6 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
 {
    bool lastIteration = true;
    size_t partialLength = 0;
-   enum ListErrors listErr = LIST_OK;
    vdseObjectDescriptor * pDesc = NULL;
    vdseHashItem * pHashItem = NULL;
    int rc;
@@ -1130,6 +1120,7 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
    vdseMemObject * pMemObject;
    int pDesc_invalid_api_type = 0;
    size_t bucket;
+   bool found;
    
    VDS_PRE_CONDITION( pFolder    != NULL );
    VDS_PRE_CONDITION( objectName != NULL )
@@ -1144,13 +1135,13 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
                                  &lastIteration );
    if ( errcode != VDS_OK ) goto the_exit;
    
-   listErr = vdseHashGet( &pFolder->hashObj, 
-                          (unsigned char *)objectName, 
-                          partialLength * sizeof(char), 
-                          &pHashItem,
-                          &bucket,
-                          pContext );
-   if ( listErr != LIST_OK ) {
+   found = vdseHashGet( &pFolder->hashObj, 
+                        (unsigned char *)objectName, 
+                        partialLength * sizeof(char), 
+                        &pHashItem,
+                        &bucket,
+                        pContext );
+   if ( ! found ) {
       if (lastIteration) {
          errcode = VDS_NO_SUCH_OBJECT;
       }
@@ -1311,7 +1302,6 @@ int vdseFolderInit( vdseFolder         * pFolder,
                     vdseSessionContext * pContext )
 {
    vdsErrors errcode;
-   enum ListErrors listErr;
    
    VDS_PRE_CONDITION( pFolder   != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
@@ -1340,18 +1330,14 @@ int vdseFolderInit( vdseFolder         * pFolder,
                      parentOffset,
                      hashItemOffset );
 
-   listErr = vdseHashInit( &pFolder->hashObj,
+   errcode = vdseHashInit( &pFolder->hashObj,
                            SET_OFFSET(&pFolder->memObject),
                            expectedNumOfChilds, 
                            pContext );
-   if ( listErr != LIST_OK ) {
-      if ( listErr == LIST_NO_MEMORY ) {
-         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
-      }
-      else {
-         errcode = VDS_INTERNAL_ERROR;
-      }
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pContext->errorHandler, 
+                    g_vdsErrorHandle, 
+                    errcode );
       return -1;
    }
    
@@ -1371,7 +1357,6 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
 {
    bool lastIteration = true;
    size_t partialLength = 0;
-   enum ListErrors listErr = LIST_OK;
    vdseHashItem * pHashItem, * previousHashItem = NULL;
    int rc;
    vdsErrors errcode = VDS_OK;
@@ -1383,6 +1368,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
    vdseMemObjIdent memObjType = VDSE_IDENT_LAST;
    int invalid_object_type = 0;
    size_t bucket;
+   bool found;
    
    VDS_PRE_CONDITION( pFolder      != NULL );
    VDS_PRE_CONDITION( objectName   != NULL )
@@ -1415,13 +1401,13 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
        * once we have many types of objects
        */
 
-      listErr = vdseHashGet( &pFolder->hashObj, 
-                             (unsigned char *)objectName, 
-                             partialLength * sizeof(char), 
-                             &previousHashItem,
-                             &bucket,
-                             pContext );
-      if ( listErr == LIST_OK ) {
+      found = vdseHashGet( &pFolder->hashObj, 
+                           (unsigned char *)objectName, 
+                           partialLength * sizeof(char), 
+                           &previousHashItem,
+                           &bucket,
+                           pContext );
+      if ( found ) {
          while ( previousHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
             GET_PTR( previousHashItem, previousHashItem->nextSameKey, vdseHashItem );
          }
@@ -1455,7 +1441,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
       pDesc->nameLengthInBytes = partialLength * sizeof(char);
       memcpy( pDesc->originalName, originalName, pDesc->nameLengthInBytes );
 
-      listErr = vdseHashInsertAt( &pFolder->hashObj, 
+      errcode = vdseHashInsertAt( &pFolder->hashObj, 
                                   bucket,
                                   (unsigned char *)objectName, 
                                   partialLength * sizeof(char), 
@@ -1463,16 +1449,10 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
                                   descLength,
                                   &pHashItem,
                                   pContext );
-      if ( listErr != LIST_OK ) {
+      if ( errcode != VDS_OK ) {
          vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
                          ptr, numBlocks, pContext );
          free( pDesc );
-         if ( listErr == LIST_NO_MEMORY ) {
-            errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
-         }
-         else {
-            errcode = VDS_INTERNAL_ERROR;
-         }
          goto the_exit;
       }
 
@@ -1601,13 +1581,13 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
    }
    
    /* If we come here, this was not the last iteration, so we continue */
-   listErr = vdseHashGet( &pFolder->hashObj, 
-                          (unsigned char *)objectName, 
-                          partialLength * sizeof(char), 
-                          &pHashItem,
-                          &bucket,
-                          pContext );
-   if ( listErr != LIST_OK ) {
+   found = vdseHashGet( &pFolder->hashObj, 
+                        (unsigned char *)objectName, 
+                        partialLength * sizeof(char), 
+                        &pHashItem,
+                        &bucket,
+                        pContext );
+   if ( ! found ) {
       errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
    }
@@ -1750,11 +1730,11 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
                              vdseHashItem       * pHashItem,
                              vdseSessionContext * pContext )
 {
-   enum ListErrors listErr;
    vdseHashItem * previousItem = NULL;
    vdseObjectDescriptor * pDesc;
    void * ptrObject;
    size_t bucket;
+   bool found;
    
    VDS_PRE_CONDITION( pFolder   != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
@@ -1765,13 +1745,13 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
    GET_PTR( ptrObject, pDesc->offset, void );
 
    /* We search for the bucket */
-   listErr = vdseHashGet( &pFolder->hashObj, 
-                          pHashItem->key, 
-                          pHashItem->keyLength, 
-                          &previousItem,
-                          &bucket,
-                          pContext );
-   VDS_POST_CONDITION( listErr == LIST_OK );
+   found = vdseHashGet( &pFolder->hashObj, 
+                        pHashItem->key, 
+                        pHashItem->keyLength, 
+                        &previousItem,
+                        &bucket,
+                        pContext );
+   VDS_POST_CONDITION( found );
 
    /* 
     * Time to really delete the record!
