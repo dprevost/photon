@@ -49,14 +49,27 @@ int main()
 
    cout << "Information from vds at port 10701" << endl << endl;
    
-   cout << "vds total size     " << info.totalSizeInBytes << endl;
-   cout << "allocated memory   " << info.allocatedSizeInBytes << endl;
-   cout << "number of objects  " << info.numObjects << endl;
-   cout << "number of groups   " << info.numGroups << endl;
-   cout << "number of mallocs  " << info.numMallocs << endl;
-   cout << "number of frees    " << info.numFrees << endl;
-   cout << "largest free space " << info.largestFreeInBytes << endl;
+   cout << "vds total size (kb)     " << info.totalSizeInBytes/1024 << endl;
+   cout << "allocated memory (kb)   " << info.allocatedSizeInBytes/1024 << endl;
+   cout << "number of objects       " << info.numObjects << endl;
+   cout << "number of groups        " << info.numGroups << endl;
+   cout << "number of mallocs       " << info.numMallocs << endl;
+   cout << "number of frees         " << info.numFrees << endl;
+   cout << "largest free space (kb) " << info.largestFreeInBytes/1024 << endl;
 
+   cout << "VDS memory version      " << info.memoryVersion << endl;
+   cout << "C compiler name         " << info.compiler << endl;
+   cout << "Compiler version        " << info.compilerVersion << endl;
+   cout << "Platform                " << info.platform << endl;
+   cout << "Shared libs version     " << info.dllVersion << endl;
+   cout << "Watchdog version        " << info.watchdogVersion << endl;
+   cout << "VDS time of creation    " << info.creationTime << endl;
+
+   if ( info.bigEndian == 1 )
+      cout << "This platform is big endian" << endl;
+   else
+      cout << "This platform is little endian" << endl;
+   
    return 0;
 }
 

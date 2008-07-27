@@ -340,6 +340,7 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
    vdsaSession* pSession;
    int rc = 0, errcode = 0;
    vdseMemAlloc * pAlloc;
+   struct vdseMemoryHeader * pHead = g_pProcessInstance->pHeader;
    
    pSession = (vdsaSession*) sessionHandle;
 
@@ -350,11 +351,21 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
+   memset( pInfo, 0, sizeof(struct vdsInfo) );
    
    if ( vdsaSessionLock( pSession ) == 0 ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pAlloc, pSession->pHeader->allocatorOffset, vdseMemAlloc )
          rc = vdseMemAllocStats( pAlloc, pInfo, &pSession->context );
+         pInfo->memoryVersion = pHead->version;
+         pInfo->bigEndian = 0;
+         if (pHead->bigEndian) pInfo->bigEndian = 1;
+         memcpy( pInfo->compiler,        pHead->compiler,        20 );
+         memcpy( pInfo->compilerVersion, pHead->compilerVersion, 10 );
+         memcpy( pInfo->platform,        pHead->cpu_type ,       20 );
+         memcpy( pInfo->watchdogVersion, pHead->watchdogVersion, 10 );
+         memcpy( pInfo->creationTime,    pHead->creationTime,    30 );
+         strncpy( pInfo->dllVersion, PACKAGE_VERSION, 10 );
       }
       else {
          errcode = VDS_SESSION_IS_TERMINATED;

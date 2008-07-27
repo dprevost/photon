@@ -66,8 +66,6 @@ int AddDefectsHashMaps( vector<myMap> & h )
    struct vdseHashMap * pHashMap;
    vdseTxStatus * txItemStatus, * txHashMapStatus;
    unsigned long i, ** apiObj;
-   enum vdsErrors errcode;
-//   size_t bucket, previousBucket;
    ptrdiff_t offset, previousOffset;
    vdseHashItem * pItem;
    ptrdiff_t* pArray;   
@@ -243,7 +241,6 @@ int AddDefectsQueues( vector<myQueue> & q )
    struct vdseQueue * pQueue;
    vdseTxStatus * txItemStatus, * txQueueStatus;
    unsigned long i, ** apiObj;
-   enum vdsErrors listErrCode;
    vdseLinkNode * pNode = NULL, *pSavedNode = NULL;
    vdseQueueItem* pQueueItem = NULL;
    bool okList;

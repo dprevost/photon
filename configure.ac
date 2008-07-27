@@ -394,6 +394,7 @@ arch_include=empty
 
 case $ac_cv_compiler_name in
 GCC)
+  AC_DEFINE(VDS_USE_GCC, 1, Using gcc)
   case $host_cpu in
   i386 | i486 | i586 | i686 )
     arch_include=ok 
@@ -411,6 +412,7 @@ GCC)
     AC_DEFINE(VDS_USE_PPC_GCC, 1, Using a gcc-like compiler on a PowerPC) ;;
   esac ;;
 ICC)
+  AC_DEFINE(VDS_USE_ICC, 1, Using icc)
   # Intel compiler on x86 (32 and 64 bits) understands gcc inline
   case $host_cpu in
   i386 | i486 | i586 | i686 )
@@ -421,11 +423,13 @@ ICC)
     AC_DEFINE(VDS_USE_X86_64_GCC, 1, Using a gcc-like compiler on a x86_64) ;;
   esac ;;
 XLC)
+  AC_DEFINE(VDS_USE_XLC, 1, Using xlc)
   if test "$host_cpu" = "ppc"; then
     arch_include=ok
     AC_DEFINE(VDS_USE_PPC_XLC, 1, Using the xlc compiler on a Power PC)
   fi ;;
 PathScale)
+  AC_DEFINE(VDS_USE_PATHSCALE, 1, Using Pathscale)
   case $host_cpu in
   i386 | i486 | i586 | i686 )
     arch_include=ok 

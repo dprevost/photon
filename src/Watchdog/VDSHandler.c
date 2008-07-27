@@ -40,12 +40,8 @@ int vdswHandlerInit( vdswHandler         * pHandler,
    vdscMemoryFile memFile;
    FILE * fp = NULL;
    char timeBuf[30];
-//#if defined (WIN32)
-//   char tmpTime[9];
-//#else
    time_t t;
    struct tm formattedTime;
-//#endif
    size_t numObjectsOK = 0;
    size_t numObjectsRepaired = 0;
    size_t numObjectsDeleted = 0;
@@ -117,20 +113,12 @@ int vdswHandlerInit( vdswHandler         * pHandler,
          return -1;
       }
 
-      
       memset( logFile, '\0', PATH_MAX );
       memset( timeBuf, '\0', 30 );
 
-//#if defined (WIN32)
-//      _strdate( timeBuf );
-//      _strtime( tmpTime );
-//      strcat( timeBuf, " " );
-//      strcat( timeBuf, tmpTime );
-//#else
       t = time(NULL);
       localtime_r( &t, &formattedTime );
       strftime( timeBuf, 30, "%Y_%m_%d_%H_%M_%S", &formattedTime );
-//#endif
 
       path_len = strlen( pConfig->wdLocation ) + strlen( VDS_DIR_SEPARATOR ) +
       strlen("Logs") + strlen( VDS_DIR_SEPARATOR ) +

@@ -59,11 +59,13 @@ struct vdseMemoryHeader
    size_t   alignmentInt32;
    size_t   alignmentInt64;
    size_t   allocationUnit;
-   bool     usingSpinlocks;
    
    char     cpu_type[20];
    char     compiler[20];
    char     cxxcompiler[20];
+   char     compilerVersion[10];
+   char     watchdogVersion[10];
+   char     creationTime[30];
    
 //   vdseTxStatus topFolderStatus;
    vdseHashItem topHashItem;

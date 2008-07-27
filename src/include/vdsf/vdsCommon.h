@@ -283,6 +283,29 @@ struct vdsInfo
    /** Largest contiguous group of free blocks. */
    size_t largestFreeInBytes;
    
+   /** VDS version */
+   int memoryVersion;
+
+   /** Endianess (0 for little endian, 1 for big endian) */
+   int bigEndian;
+   
+   /** Compiler name */
+   char compiler[20];
+
+   /** Compiler version (if available) */
+   char compilerVersion[10];
+   
+   /** Platform */
+   char platform[20];
+   
+   /** Shared lib version */
+   char dllVersion[10];
+   
+   /** The watchdog version (of the vds creator) */
+   char watchdogVersion[10];
+   
+   /** Timestamp of creation of VDS */
+   char creationTime[30];
 };
 
 typedef struct vdsInfo vdsInfo;

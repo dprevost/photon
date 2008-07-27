@@ -64,8 +64,9 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
    unsigned char * ptr;
    vdseFolder * pFolder;
    vdseProcMgr * processManager;
-   bool ok;
-   
+   time_t t;
+   struct tm formattedTime;
+
    /* Very unlikely but just in case... */
    VDS_PRE_CONDITION( pManager       != NULL );
    VDS_PRE_CONDITION( memoryFileName != NULL );
@@ -204,12 +205,41 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
  VDSC_ALIGNMENT_CHAR_ARRAY,
  VDSC_ALIGNMENT_BOOL );
 #endif
-   (*ppHeader)->usingSpinlocks = false;
    (*ppHeader)->allocationUnit = VDSE_ALLOCATION_UNIT;
    strncpy( (*ppHeader)->cpu_type, MYCPU, 19 );
    strncpy( (*ppHeader)->compiler, MYCC, 19);
    strncpy( (*ppHeader)->cxxcompiler, MYCXX, 19);
-   
+   strncpy( (*ppHeader)->watchdogVersion, PACKAGE_VERSION, 10 );
+
+   t = time(NULL);
+   localtime_r( &t, &formattedTime );
+   strftime( (*ppHeader)->creationTime, 30, "%Y-%m-%d %H:%M:%S %Z", &formattedTime );
+
+#if VDS_USE_GCC 
+#  if defined(__GNUC_PATCHLEVEL__)
+   sprintf( (*ppHeader)->compilerVersion, "%d.%d.%d", __GNUC__, 
+      __GNUC_MINOR__, __GNUC_PATCHLEVEL__ );
+#  else
+   sprintf( (*ppHeader)->compilerVersion, "%d.%d", __GNUC__, __GNUC_MINOR__ );
+#  endif
+#endif
+#if VDS_USE_XLC
+   sprintf( (*ppHeader)->compilerVersion, "%d.%d", __xlc__/0xff, 
+      __xlc__ % 0xff );
+#endif
+#if VDS_USE_ICC
+   sprintf( (*ppHeader)->compilerVersion, "%d.%d.%d", __INTEL_COMPILER/100, 
+      (__INTEL_COMPILER/10) % 10, __INTEL_COMPILER % 100 );
+#endif
+#if VDS_USE_PATHSCALE
+   sprintf( (*ppHeader)->compilerVersion, "%d.%d.%d", __PATHCC__, 
+      __PATHCC_MINOR__, __PATHCC_PATCHLEVEL__ );
+#endif
+#if defined(_MSC_VER)
+   sprintf( (*ppHeader)->compilerVersion, "%d.%d"
+     _MSC_VER/100, _MSC_VER % 100 );
+#endif
+
    return errcode;
 }
 
