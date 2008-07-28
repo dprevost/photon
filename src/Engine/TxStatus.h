@@ -113,6 +113,8 @@ void vdseTxStatusInit( vdseTxStatus * pStatus, ptrdiff_t txOffset )
 static inline
 void vdseTxStatusSetTx( vdseTxStatus * pStatus, ptrdiff_t txOffset )
 {
+   VDS_PRE_CONDITION( pStatus != NULL );
+
    pStatus->txOffset = txOffset;
 }
 
@@ -190,6 +192,7 @@ static inline
 void vdseTxStatusCommitRemove( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
+   VDS_PRE_CONDITION( pStatus->txOffset != VDSE_NULL_OFFSET );
 
    pStatus->enumStatus = VDSE_TXS_DESTROYED_COMMITTED;
 }
@@ -200,6 +203,7 @@ static inline
 void vdseTxStatusUnmarkAsDestroyed( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
+   VDS_PRE_CONDITION( pStatus->txOffset != VDSE_NULL_OFFSET );
 
    pStatus->enumStatus = VDSE_TXS_OK;
    /* 

@@ -733,9 +733,8 @@ void vdseQueueRollbackRemove( vdseQueue * pQueue,
    GET_PTR( pQueueItem, itemOffset, vdseQueueItem );
 
    /*
-    * This call resets the transaction (to "none"), decrement the
-    * counter and remove the bit that flag this data as being in the
-    * process of being removed.
+    * This call resets the transaction (to "none") and remove the bit 
+    * that flag this data as being in the process of being removed.
     */
    vdseTxStatusUnmarkAsDestroyed(  &pQueueItem->txStatus );
 
