@@ -136,6 +136,10 @@ SOURCE=.\LogFile.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\Map.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\MemBitmap.c
 # End Source File
 # Begin Source File
@@ -216,11 +220,11 @@ SOURCE=.\LinkNode.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ListErrors.h
+SOURCE=.\LogFile.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\LogFile.h
+SOURCE=.\Map.h
 # End Source File
 # Begin Source File
 

@@ -124,11 +124,11 @@ void vdswWatchdogFini( vdswWatchdog * pWatchdog );
 
 #if defined ( WIN32 )
 
-int vdswInstall();
+int vdswInstall( vdswWatchdog * pWatchdog );
 
-void vdswUninstall();
+void vdswUninstall( vdswWatchdog * pWatchdog );
 
-int vdswReadRegistry();
+int vdswReadRegistry( vdswWatchdog * pWatchdog );
    
 #else
 int vdswDaemon( vdswWatchdog * pWatchdog );

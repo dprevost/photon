@@ -81,13 +81,13 @@ int main( int argc, char *argv[] )
    
 #if defined ( WIN32 )
    if ( vdscIsShortOptPresent( optHandle, 'i' ) ) {
-      errcode = wDog.Install();
+      errcode = vdswInstall( &wDog );
       if ( errcode != 0 ) return errcode;
       return 0;
    }
    
    if ( vdscIsShortOptPresent( optHandle, 'u' ) ) {
-      wDog.Uninstall();
+      vdswUninstall( &wDog );
       return 0;
    }
 #endif

@@ -63,9 +63,12 @@ RETSIGTYPE sigpipe_handler( int s )
 
 int vdswGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 {
+   const char * theMsg;
+
    VDS_PRE_CONDITION( msg != NULL );
 
-   const char * theMsg = vdsw_ErrorMessage( errnum );
+   theMsg = vdsw_ErrorMessage( errnum );
+
    if ( theMsg == NULL ) return -1;
    if ( strlen(theMsg) >= msgLength ) return -1;
 
@@ -302,7 +305,7 @@ int vdswInstall( vdswWatchdog * pWatchdog )
 
    errcode = RegOpenKeyEx( HKEY_LOCAL_MACHINE, 
                            "SYSTEM\\CurrentControlSet\\Services\\vdswd",
-                           NULL,
+                           0,
                            KEY_SET_VALUE,
                            &hKey );
    if ( errcode != ERROR_SUCCESS ) {
@@ -413,7 +416,7 @@ int vdswWatchdogReadConfig( vdswWatchdog * pWatchdog, const char* cfgname )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-int vdswWatchdog::ReadRegistry( vdswWatchdog * pWatchdog )
+int vdswReadRegistry( vdswWatchdog * pWatchdog )
 {
    int errcode;
    HKEY hKey;
@@ -423,7 +426,7 @@ int vdswWatchdog::ReadRegistry( vdswWatchdog * pWatchdog )
 
    errcode = RegOpenKeyEx( HKEY_LOCAL_MACHINE, 
                            "SYSTEM\\CurrentControlSet\\Services\\vdswd",
-                           NULL,
+                           0,
                            KEY_QUERY_VALUE,
                            &hKey );
    if ( errcode != ERROR_SUCCESS ) {
@@ -539,18 +542,18 @@ void vdswRun()
       // problem is by forcing a crash!!!
       assert( g_pWD != NULL );
 
-      g_pWD = new (g_pWD) vdswWatchdog;
+      vdswWatchdogInit( g_pWD );
 
       deallocWD = true;
       
       // Set the log object to sent messages to the log facility of the OS 
       // instead of sending them to stderr.
-      g_pWD->log.StartUsingLogger();
+      vdswStartUsingLogger( &g_pWD->log );
          
       // We have our object but it is not properly initialized - we need
       // to access the registry (the NT service equivalent of calling 
       // ReadConfig() from main().
-      errcode = g_pWD->ReadRegistry();
+      errcode = vdswReadRegistry( g_pWD );
       if ( errcode != 0 ) {
          vdswSendMessage( &g_pWD->log, WD_ERROR, 
                                    "ReadRegistry failed - aborting..." );
@@ -581,7 +584,7 @@ void vdswRun()
    
 #if defined ( WIN32 )
    if ( deallocWD ) {
-      g_pWD->~vdswWatchdog();
+      vdswWatchdogFini( g_pWD );
       free( g_pWD );
       g_pWD = NULL;
    }
@@ -688,7 +691,7 @@ int vdswSetSigHandler()
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-void vdswWatchdog::Uninstall( vdswWatchdog * pWatchdog )
+void vdswUninstall( vdswWatchdog * pWatchdog )
 {
    SC_HANDLE   hService;
    SC_HANDLE   hManager;
@@ -711,7 +714,7 @@ void vdswWatchdog::Uninstall( vdswWatchdog * pWatchdog )
     */
    errcode = RegOpenKeyEx( HKEY_LOCAL_MACHINE, 
                            "SYSTEM\\CurrentControlSet\\Services\\vdswd",
-                           NULL,
+                           0,
                            KEY_SET_VALUE,
                            &hKey );
    if ( errcode != ERROR_SUCCESS ) {

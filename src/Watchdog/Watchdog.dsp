@@ -97,7 +97,7 @@ PostBuild_Cmds=copy debug\vdswd.exe ..\Debug
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\Acceptor.cpp
+SOURCE=.\Acceptor.c
 # End Source File
 # Begin Source File
 
@@ -105,15 +105,15 @@ SOURCE=.\Config.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\LogMsg.cpp
+SOURCE=.\LogMsg.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\MemoryManager.cpp
+SOURCE=.\MemoryManager.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\VDSHandler.cpp
+SOURCE=.\VDSHandler.c
 # End Source File
 # Begin Source File
 
@@ -145,11 +145,11 @@ SOURCE=.\VerifyVDS.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\Watchdog.cpp
+SOURCE=.\Watchdog.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\wd.cpp
+SOURCE=.\wd.c
 # End Source File
 # Begin Source File
 

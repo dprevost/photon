@@ -66,6 +66,7 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
    vdseProcMgr * processManager;
    time_t t;
    struct tm formattedTime;
+   unsigned char * pStart;
 
    /* Very unlikely but just in case... */
    VDS_PRE_CONDITION( pManager       != NULL );
@@ -103,8 +104,7 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
    g_pBaseAddr = (unsigned char *) pManager->pMemoryAddress;
    
    /* The memory allocator starts after the header */
-   unsigned char* pStart = (unsigned char*)pManager->pMemoryAddress +
-      VDSE_BLOCK_SIZE;
+   pStart = (unsigned char*)pManager->pMemoryAddress + VDSE_BLOCK_SIZE;
    
    (*ppHeader)->allocatorOffset = SET_OFFSET( pStart );
    pAlloc = (vdseMemAlloc *) pStart;
@@ -236,7 +236,7 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
       __PATHCC_MINOR__, __PATHCC_PATCHLEVEL__ );
 #endif
 #if defined(_MSC_VER)
-   sprintf( (*ppHeader)->compilerVersion, "%d.%d"
+   sprintf( (*ppHeader)->compilerVersion, "%d.%d",
      _MSC_VER/100, _MSC_VER % 100 );
 #endif
 

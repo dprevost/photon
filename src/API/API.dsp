@@ -128,6 +128,14 @@ SOURCE=.\HashMap.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\Lifo.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\Map.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\Process.c
 # End Source File
 # Begin Source File
@@ -161,6 +169,18 @@ SOURCE=.\DataDefinition.h
 # Begin Source File
 
 SOURCE=.\Folder.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Lifo.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ListReaders.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Map.h
 # End Source File
 # Begin Source File
 

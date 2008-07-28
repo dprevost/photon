@@ -37,7 +37,7 @@ BEGIN_C_DECLS
 
 #if defined (WIN32) 
 #  define VDS_SOCKET SOCKET
-#  define VDS_INVALID_SOCKET NULL
+#  define VDS_INVALID_SOCKET INVALID_SOCKET
 #else
 #  define VDS_SOCKET  int
 #  define VDS_INVALID_SOCKET -1

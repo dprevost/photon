@@ -245,7 +245,7 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
  
    errcode = WSAStartup( versionRequested, &wsaData );
    if ( errcode != 0 ) {
-      vdswSendMessage( pAcceptor->pWatchdog->log, 
+      vdswSendMessage( &pAcceptor->pWatchdog->log, 
                        WD_ERROR, 
                        "In function WSAStartup(), error = %d",
                        errcode );
@@ -279,7 +279,7 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
 #if defined (WIN32)
    errcode = ioctlsocket( pAcceptor->socketFD, FIONBIO, &mode );
    if ( errcode == SOCKET_ERROR ) {
-      vdswSendMessage( pAcceptor->pWatchdog->log, 
+      vdswSendMessage( &pAcceptor->pWatchdog->log, 
                        WD_ERROR, 
                        "In function ioctlsocket(), error = %d",
                        GetSockError() );

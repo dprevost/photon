@@ -65,7 +65,8 @@ void vdswLogMsgFini( vdswLogMsg * pLog )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-int vdswLogMsgInstall( const char * progName, 
+int vdswLogMsgInstall( vdswLogMsg * pLog,
+                       const char * progName, 
                        const char * msgPathName,
                        int          numCategories )
 {
@@ -170,8 +171,8 @@ void vdswSendMessage( vdswLogMsg         * pLog,
    if ( pLog->useLog ) {
 #ifdef WIN32
       ReportEvent( pLog->handle, 
-                   severity, 
-                   NULL,
+                   (WORD)severity, 
+                   0,
                    0, 0, 0, 
                    strlen(message), 
                    NULL, 
@@ -217,7 +218,7 @@ void vdswStartUsingLogger( vdswLogMsg * pLog )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-int vdswLogMsgUninstall( const char * progName )
+int vdswLogMsgUninstall( vdswLogMsg * pLog, const char * progName )
 {
    HKEY hKey; 
    char buffer[MAX_PATH]; 

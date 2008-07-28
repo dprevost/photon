@@ -1827,6 +1827,8 @@ void vdseFolderRollbackEdit( vdseFolder         * pFolder,
    vdseObjectDescriptor * pDesc, * pDescLatest;
    vdseMap * pMapLatest, * pMapEdit;
    vdseHashItem * pHashItemLatest;
+   vdseTreeNode * tree;
+   vdseTxStatus * tx;
    
    VDS_PRE_CONDITION( pFolder   != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
@@ -1860,8 +1862,8 @@ void vdseFolderRollbackEdit( vdseFolder         * pFolder,
    vdseMapFini( pMapEdit, pContext );
       
    //txItemStatus->parentCounter, txItemStatus->usageCounter
-   vdseTreeNode * tree = GET_PTR_FAST( pDescLatest->nodeOffset, vdseTreeNode );
-   vdseTxStatus * tx = GET_PTR_FAST( tree->txStatusOffset, vdseTxStatus );
+   tree = GET_PTR_FAST( pDescLatest->nodeOffset, vdseTreeNode );
+   tx = GET_PTR_FAST( tree->txStatusOffset, vdseTxStatus );
    vdseTxStatusClearTx( tx );
 
    vdseFolderReleaseNoLock( pFolder,
