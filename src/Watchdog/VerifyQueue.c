@@ -47,21 +47,21 @@ vdswCheckQueueContent( vdswVerifyStruct * pVerify,
           *
           * Action is the equivalent of what a rollback would do.
           */
-         if ( txItemStatus->enumStatus == VDSE_TXS_ADDED ) {
+         if ( txItemStatus->status & VDSE_TXS_ADDED ) {
             vdswEcho( pVerify, "Queue item added but not committed" );
             pDeletedNode = pNode;
          }         
-         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+         else if ( txItemStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
             vdswEcho( pVerify, "Queue item deleted and committed" );
             pDeletedNode = pNode;
          }
-         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
+         else if ( txItemStatus->status & VDSE_TXS_DESTROYED ) {
             vdswEcho( pVerify, "Queue item deleted but not committed" );
          }
          
          if ( pDeletedNode == NULL && pVerify->doRepair ) {
             txItemStatus->txOffset = VDSE_NULL_OFFSET;
-            txItemStatus->enumStatus = VDSE_TXS_OK;
+            txItemStatus->status = VDSE_TXS_OK;
             vdswEcho( pVerify, "Queue item status fields reset to zero" );
          }
          rc = VDSWR_CHANGES;
@@ -141,12 +141,12 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txQueueStatus->enumStatus == VDSE_TXS_ADDED ) {
+      if ( txQueueStatus->status & VDSE_TXS_ADDED ) {
          vdswEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
          return VDSWR_DELETED_OBJECT;
       }
-      if ( txQueueStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+      if ( txQueueStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
          vdswEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
          return VDSWR_DELETED_OBJECT;
@@ -157,7 +157,7 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
       if ( pVerify->doRepair) {
          vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
          txQueueStatus->txOffset = VDSE_NULL_OFFSET;
-         txQueueStatus->enumStatus = VDSE_TXS_OK;
+         txQueueStatus->status = VDSE_TXS_OK;
       }
    }
    

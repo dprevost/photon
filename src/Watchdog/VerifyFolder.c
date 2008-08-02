@@ -160,12 +160,12 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txFolderStatus->enumStatus == VDSE_TXS_ADDED ) {
+      if ( txFolderStatus->status & VDSE_TXS_ADDED ) {
          vdswEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
          return VDSWR_DELETED_OBJECT;
       }
-      if ( txFolderStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+      if ( txFolderStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
          vdswEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
          return VDSWR_DELETED_OBJECT;
@@ -176,7 +176,7 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
       if ( pVerify->doRepair) {
          vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
          txFolderStatus->txOffset = VDSE_NULL_OFFSET;
-         txFolderStatus->enumStatus = VDSE_TXS_OK;
+         txFolderStatus->status = VDSE_TXS_OK;
       }
    }
    

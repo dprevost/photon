@@ -43,7 +43,7 @@ void vdseQueueCommitAdd( vdseQueue * pQueue,
     * A new entry that isn't yet committed cannot be accessed by some
     * other session. Clearing it is ok.
     */
-   vdseTxStatusSetTx( &pQueueItem->txStatus, VDSE_NULL_OFFSET );
+   vdseTxStatusClearTx( &pQueueItem->txStatus );
    pQueue->nodeObject.txCounter--;
 }
 
@@ -154,7 +154,7 @@ int vdseQueueGet( vdseQueue          * pQueue,
           */
          isOK = true;
          if ( txItemStatus->txOffset != VDSE_NULL_OFFSET ) {
-            switch( txItemStatus->enumStatus ) {
+            switch( txItemStatus->status ) {
 
             case VDSE_TXS_DESTROYED_COMMITTED:
                isOK = false;
@@ -391,7 +391,7 @@ int vdseQueueInsert( vdseQueue          * pQueue,
       
       vdseTxStatusInit( &pQueueItem->txStatus, SET_OFFSET(pContext->pTransaction) );
       pQueue->nodeObject.txCounter++;
-      pQueueItem->txStatus.enumStatus = VDSE_TXS_ADDED;
+      pQueueItem->txStatus.status = VDSE_TXS_ADDED;
 
       vdseUnlock( &pQueue->memObject, pContext );
    }
@@ -756,7 +756,7 @@ void vdseQueueStatus( vdseQueue    * pQueue,
    
    GET_PTR( txStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
 
-   pStatus->status = txStatus->enumStatus;
+   pStatus->status = txStatus->status;
    pStatus->numDataItem = pQueue->listOfElements.currentSize;
    pStatus->maxDataLength = 0;
    pStatus->maxKeyLength  = 0;

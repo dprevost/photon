@@ -124,7 +124,7 @@ vdseFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
    }
 
    vdseTxStatusInit( &objTxStatus, SET_OFFSET(pContext->pTransaction) );
-   objTxStatus.enumStatus = VDSE_TXS_ADDED;
+   objTxStatus.status = VDSE_TXS_ADDED;
 
    pFolder->nodeObject.txCounter      = 0;
    pFolder->nodeObject.myNameLength   = 0;

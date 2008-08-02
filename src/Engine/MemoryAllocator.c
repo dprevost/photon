@@ -260,7 +260,6 @@ vdseFreeBufferNode * FindBuffer( vdseMemAlloc     * pAlloc,
    vdseLinkNode * oldNode = NULL;
    vdseLinkNode * currentNode = NULL;
    vdseLinkNode * bestNode = NULL;
-//   enum ListErrors errcode;
    bool ok;
 
    /* 

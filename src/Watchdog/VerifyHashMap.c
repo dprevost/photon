@@ -51,25 +51,25 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
           *
           * Action is the equivalent of what a rollback would do.
           */
-         if ( txItemStatus->enumStatus == VDSE_TXS_ADDED ) {
+         if ( txItemStatus->status & VDSE_TXS_ADDED ) {
             vdswEcho( pVerify, "Hash item added but not committed" );
             pDeletedItem = pItem;
          }         
-         else if ( txItemStatus->enumStatus == VDSE_TXS_REPLACED ) {
+         else if ( txItemStatus->status & VDSE_TXS_REPLACED ) {
             vdswEcho( pVerify, "Hash item replaced but not committed" );
             pDeletedItem = pItem;
          }
-         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+         else if ( txItemStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
             vdswEcho( pVerify, "Hash item deleted and committed" );
             pDeletedItem = pItem;
          }
-         else if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
+         else if ( txItemStatus->status & VDSE_TXS_DESTROYED ) {
             vdswEcho( pVerify, "Hash item deleted but not committed" );
          }
          
          if ( pDeletedItem == NULL && pVerify->doRepair ) {
             txItemStatus->txOffset = VDSE_NULL_OFFSET;
-            txItemStatus->enumStatus = VDSE_TXS_OK;
+            txItemStatus->status = VDSE_TXS_OK;
             vdswEcho( pVerify, "Hash item status fields reset to zero" );
          }
          rc = VDSWR_CHANGES;
@@ -153,12 +153,12 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txHashMapStatus->enumStatus == VDSE_TXS_ADDED) {
+      if ( txHashMapStatus->status & VDSE_TXS_ADDED) {
          vdswEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
          return VDSWR_DELETED_OBJECT;
       }
-      if ( txHashMapStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+      if ( txHashMapStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
          vdswEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
          return VDSWR_DELETED_OBJECT;
@@ -169,7 +169,7 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
       if ( pVerify->doRepair) {
          vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
          txHashMapStatus->txOffset = VDSE_NULL_OFFSET;
-         txHashMapStatus->enumStatus = VDSE_TXS_OK;
+         txHashMapStatus->status = VDSE_TXS_OK;
       }
    }
 

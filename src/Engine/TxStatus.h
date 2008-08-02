@@ -37,9 +37,15 @@ BEGIN_C_DECLS
  * or a rollback or commit ops on the data of the object) will removed it.
  */
 
-//#define VDSE_MARKED_AS_DESTROYED  0x1
-//#define VDSE_REMOVE_IS_COMMITTED  0x2
+#define VDSE_TXS_OK                   0x00
+#define VDSE_TXS_DESTROYED            0x01
+#define VDSE_TXS_ADDED                0x02
+#define VDSE_TXS_EDIT                 0x04
+#define VDSE_TXS_REPLACED             0x08
+#define VDSE_TXS_DESTROYED_COMMITTED  0x10
+#define VDSE_TXS_EDIT_COMMITTED       0x20
 
+#if 0
 enum vdseTxStatusEnum
 {
    VDSE_TXS_OK = 0,
@@ -52,6 +58,7 @@ enum vdseTxStatusEnum
    VDSE_TXS_VERSION_REPLACED 
 };
 typedef enum vdseTxStatusEnum vdseTxStatusEnum;
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -64,12 +71,12 @@ struct vdseTxStatus
     * An object is marked as destroyed as soon as the API call to destroy 
     * it is processed. Once it is marked as destroyed, you can't open it
     * but any sessions using it can still continue to use it, without problems.
-    * If the call is rollback, the flag VDSE_MARKED_AS_DESTROYED is removed.
-    * However, if committed, the flag VDSE_REMOVE_IS_COMMITTED is set and the 
+    * If the call is rollback, the flag VDSE_TXS_DESTROYED is removed.
+    * However, if committed, the flag VDSE_TXS_DESTROYED_COMMITTED is set and the 
     * last session which access the object (in any form, either a simple close
     * or a rollback or commit ops on the data of the object) will removed it.
     */
-   vdseTxStatusEnum enumStatus;
+   uint32_t status;
    
    /** 
     * Counts the number of clients who are accessing either the current
@@ -97,13 +104,47 @@ typedef struct vdseTxStatus vdseTxStatus;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static inline
+void vdseTxStatusCommitEdit( vdseTxStatus * pOldStatus, 
+                             vdseTxStatus * pNewStatus )
+{
+   VDS_PRE_CONDITION( pOldStatus != NULL );
+   VDS_PRE_CONDITION( pNewStatus != NULL );
+   VDS_PRE_CONDITION( pNewStatus->txOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewStatus->status & VDSE_TXS_EDIT );
+
+   /* Remove the EDIT bit */
+   pNewStatus->status = pOldStatus->status & (uint32_t )(~VDSE_TXS_EDIT);
+
+   pOldStatus->status |= VDSE_TXS_EDIT_COMMITTED;
+
+   pNewStatus->txOffset = VDSE_NULL_OFFSET;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static inline
+void vdseTxStatusRollbackEdit( vdseTxStatus * pOldStatus )
+{
+   VDS_PRE_CONDITION( pOldStatus != NULL );
+
+   /* Remove the EDIT bit */
+   pOldStatus->status &= (uint32_t )(~VDSE_TXS_EDIT);
+
+   if ( pOldStatus->status == 0 ) {
+      pOldStatus->txOffset = VDSE_NULL_OFFSET;
+   }
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static inline 
 void vdseTxStatusInit( vdseTxStatus * pStatus, ptrdiff_t txOffset )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
    
    pStatus->txOffset = txOffset;
-   pStatus->enumStatus = VDSE_TXS_OK;
+   pStatus->status = VDSE_TXS_OK;
    pStatus->usageCounter = 0;
    pStatus->parentCounter = 0;
 }
@@ -124,7 +165,7 @@ static inline
 void vdseTxStatusFini( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( pStatus->enumStatus   == VDSE_TXS_OK );
+   VDS_PRE_CONDITION( pStatus->status == VDSE_TXS_OK );
    VDS_PRE_CONDITION( pStatus->usageCounter == 0 );
 
    pStatus->txOffset = VDSE_NULL_OFFSET;
@@ -153,7 +194,7 @@ void vdseTxStatusClearTx( vdseTxStatus * pStatus )
    VDS_PRE_CONDITION( pStatus->txOffset != VDSE_NULL_OFFSET );
 
    pStatus->txOffset = VDSE_NULL_OFFSET;
-   pStatus->enumStatus = VDSE_TXS_OK;
+   pStatus->status = VDSE_TXS_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -163,7 +204,7 @@ bool vdseTxStatusIsMarkedAsDestroyed( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   return (pStatus->enumStatus == VDSE_TXS_DESTROYED);
+   return (pStatus->status & VDSE_TXS_DESTROYED);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -173,7 +214,7 @@ bool vdseTxStatusIsRemoveCommitted( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   return (pStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED);
+   return (pStatus->status & VDSE_TXS_DESTROYED_COMMITTED);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -183,7 +224,7 @@ void vdseTxStatusMarkAsDestroyed( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   pStatus->enumStatus = VDSE_TXS_DESTROYED;
+   pStatus->status |= VDSE_TXS_DESTROYED;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -193,8 +234,14 @@ void vdseTxStatusCommitRemove( vdseTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
    VDS_PRE_CONDITION( pStatus->txOffset != VDSE_NULL_OFFSET );
+   /* Note - do not add this:
+    *    VDS_PRE_CONDITION( pStatus->status & VDSE_TXS_DESTROYED );
+    *
+    * This call can be reached using either a commit on a "remove" or a
+    * rollback on a "add". Maybe I should fix this...
+    */
 
-   pStatus->enumStatus = VDSE_TXS_DESTROYED_COMMITTED;
+   pStatus->status = VDSE_TXS_DESTROYED_COMMITTED;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -205,14 +252,14 @@ void vdseTxStatusUnmarkAsDestroyed( vdseTxStatus * pStatus )
    VDS_PRE_CONDITION( pStatus != NULL );
    VDS_PRE_CONDITION( pStatus->txOffset != VDSE_NULL_OFFSET );
 
-   pStatus->enumStatus = VDSE_TXS_OK;
+   pStatus->status &= (uint32_t )(~VDSE_TXS_DESTROYED);
    /* 
     * This function will be called by a rollback. We clear the transaction
-    * itself - obviously. But not the counter (which might be greater than 
-    * one if some other session had access to the data before the data
-    * was marked as removed).
+    * itself (if not used obviously). But not the counter (which might be 
+    * greater than one if some other session had access to the data before 
+    * the data was marked as removed).
     */
-   pStatus->txOffset = VDSE_NULL_OFFSET;
+   if ( pStatus->status == VDSE_TXS_OK ) pStatus->txOffset = VDSE_NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -229,6 +276,39 @@ bool vdseTxStatusSelfTest( vdseTxStatus * pStatus )
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static inline
+vdsErrors vdseTxTestObjectStatus( vdseTxStatus * pStatus, ptrdiff_t txOffset )
+{
+   VDS_PRE_CONDITION( pStatus != NULL );
+   VDS_PRE_CONDITION( txOffset != VDSE_NULL_OFFSET );
+
+   /* 
+    * If the transaction id of the object is equal to the 
+    * current transaction id AND the object is marked as deleted... error.
+    *
+    * If the transaction id of the object is NOT equal to the 
+    * current transaction id AND the object is added... error.
+    *
+    * If the object is flagged as deleted and committed, it does not exists
+    * from the API point of view.
+    */
+   if ( pStatus->txOffset != VDSE_NULL_OFFSET ) {
+      if ( pStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
+         return VDS_NO_SUCH_OBJECT;
+      }
+      if ( pStatus->txOffset == txOffset && pStatus->status & VDSE_TXS_DESTROYED ) {
+         return VDS_OBJECT_IS_DELETED;
+      }
+      if ( pStatus->txOffset != txOffset && pStatus->status & VDSE_TXS_ADDED ) {
+         return VDS_OBJECT_IS_IN_USE;
+      }
+   }
+
+   return VDS_OK;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+         
 END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

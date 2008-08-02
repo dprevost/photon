@@ -73,9 +73,9 @@ void vdseFolderCommitEdit( vdseFolder         * pFolder,
 
    node = GET_PTR_FAST( pDesc->nodeOffset, vdseTreeNode );
    tx = GET_PTR_FAST( node->txStatusOffset, vdseTxStatus );
-   vdseTxStatusClearTx( tx );
 
-   pHashItemLatest->txStatus.enumStatus = VDSE_TXS_VERSION_REPLACED;
+   vdseTxStatusCommitEdit( &pHashItemLatest->txStatus, tx );
+
    /* Reminder: pHashItemLatest is now the old version */
    vdseFolderReleaseNoLock( pFolder,
                             pHashItemLatest,
@@ -272,7 +272,7 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
        * (and if remove is committed - the data is "non-existent").
        */
       if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
-         if ( txStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+         if ( txStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
             errcode = VDS_NO_SUCH_OBJECT;
          }
          else {
@@ -525,21 +525,25 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
        * from the API point of view.
        */
       if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
-         if ( txStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+         if ( txStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
             errcode = VDS_NO_SUCH_OBJECT;
             goto the_exit;
          }
-         if ( txStatus->enumStatus == VDSE_TXS_EDIT ) {
+         if ( txStatus->status & VDSE_TXS_EDIT ) {
             errcode = VDS_A_SINGLE_UPDATER_IS_ALLOWED;
             goto the_exit;
          }
-         if ( txStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-            txStatus->enumStatus == VDSE_TXS_DESTROYED ) {
-            errcode = VDS_OBJECT_IS_DELETED;
-            goto the_exit;
+         if ( txStatus->txOffset == SET_OFFSET(pContext->pTransaction) ) {
+            if ( txStatus->status & VDSE_TXS_DESTROYED ) {
+               errcode = VDS_OBJECT_IS_DELETED;
+               goto the_exit;
+            }
+            else if ( ! (txStatus->status & VDSE_TXS_ADDED) ) {
+               errcode = VDS_OBJECT_IS_IN_USE;
+               goto the_exit;
+            }
          }
-         if ( txStatus->txOffset != SET_OFFSET(pContext->pTransaction) ||
-            txStatus->enumStatus != VDSE_TXS_ADDED ) {
+         else {
             errcode = VDS_OBJECT_IS_IN_USE;
             goto the_exit;
          }
@@ -623,9 +627,9 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
       
       newTxStatus = &pHashItemNew->txStatus;
       vdseTxStatusInit( newTxStatus, SET_OFFSET(pContext->pTransaction) );
-      newTxStatus->enumStatus = VDSE_TXS_EDIT;
       txStatus->txOffset = SET_OFFSET(pContext->pTransaction);
-      txStatus->enumStatus = VDSE_TXS_EDIT;
+      txStatus->status |= VDSE_TXS_EDIT;
+      newTxStatus->status = txStatus->status;
       
       switch ( memObjType ) {
       case VDSE_IDENT_MAP:
@@ -672,31 +676,11 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
       goto the_exit;
    }
 
-   /* 
-    * If the transaction id of the next folder is equal to the 
-    * current transaction id AND the object is marked as deleted... error.
-    *
-    * If the transaction id of the folder is NOT equal to the 
-    * current transaction id AND the object is added... error.
-    *
-    * If the folder is flagged as deleted and committed, it does not exists
-    * from the API point of view.
-    */
-   if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
-      if ( txStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
-         errcode = VDS_NO_SUCH_FOLDER;
-         goto the_exit;
-      }
-      if ( txStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-         txStatus->enumStatus == VDSE_TXS_DESTROYED ) {
-         errcode = VDS_OBJECT_IS_DELETED;
-         goto the_exit;
-      }
-      if ( txStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-         txStatus->enumStatus == VDSE_TXS_ADDED ) {
-         errcode = VDS_OBJECT_IS_IN_USE;
-         goto the_exit;
-      }
+   errcode = vdseTxTestObjectStatus( txStatus, 
+                                     SET_OFFSET(pContext->pTransaction) );
+   if ( errcode != VDS_OK ) {
+      if ( errcode == VDS_NO_SUCH_OBJECT) errcode = VDS_NO_SUCH_FOLDER;
+      goto the_exit;
    }
 
    GET_PTR( pNextFolder, pDescOld->offset, vdseFolder );
@@ -757,7 +741,7 @@ int vdseFolderGetFirst( vdseFolder         * pFolder,
    vdseTxStatus * txItemStatus;
    vdseTxStatus * txFolderStatus;
    ptrdiff_t  firstItemOffset;
-   bool isOK, found;
+   bool found;
 
    VDS_PRE_CONDITION( pFolder  != NULL );
    VDS_PRE_CONDITION( pItem    != NULL )
@@ -777,38 +761,14 @@ int vdseFolderGetFirst( vdseFolder         * pFolder,
          GET_PTR( pHashItem, firstItemOffset, vdseHashItem );
          txItemStatus = &pHashItem->txStatus;
 
-         /* 
-          * If the transaction id of the item (to retrieve) is equal to the 
-          * current transaction id AND the object is marked as deleted, we 
-          * go to the next item.
-          *
-          * If the transaction id of the item (to retrieve) is NOT equal to the 
-          * current transaction id AND the object is added... next!
-          *
-          * If the item is flagged as deleted and committed, it does not exists
-          * from the API point of view.
-          */
-         isOK = true;
-         if ( txItemStatus->txOffset != VDSE_NULL_OFFSET ) {
-            if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-               txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
-               isOK = false;
-            }
-            if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-               txItemStatus->enumStatus == VDSE_TXS_ADDED ) {
-               isOK = false;
-            }
-            if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
-               isOK = false;
-            }
-         }
- 
-         if ( isOK ) {
+        if ( vdseTxTestObjectStatus( txItemStatus, 
+            SET_OFFSET(pContext->pTransaction) ) == VDS_OK ) {
+
             txItemStatus->parentCounter++;
             txFolderStatus->usageCounter++;
             pItem->pHashItem = pHashItem;
             pItem->itemOffset = firstItemOffset;
-            pItem->status = txItemStatus->enumStatus;
+            pItem->status = txItemStatus->status;
             
             vdseUnlock( &pFolder->memObject, pContext );
             
@@ -842,7 +802,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
    vdseTxStatus * txItemStatus;
    vdseTxStatus * txFolderStatus;
    ptrdiff_t  itemOffset;
-   bool isOK, found;
+   bool found;
 
    VDS_PRE_CONDITION( pFolder  != NULL );
    VDS_PRE_CONDITION( pItem    != NULL );
@@ -869,38 +829,14 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
          GET_PTR( pHashItem, itemOffset, vdseHashItem );
          txItemStatus = &pHashItem->txStatus;
 
-         /* 
-          * If the transaction id of the item (to retrieve) is equal to the 
-          * current transaction id AND the object is marked as deleted, we 
-          * go to the next item.
-          *
-          * If the transaction id of the item (to retrieve) is NOT equal to the 
-          * current transaction id AND the object is added... next!
-          *
-          * If the item is flagged as deleted and committed, it does not exists
-          * from the API point of view.
-          */
-         isOK = true;
-         if ( txItemStatus->txOffset != VDSE_NULL_OFFSET ) {
-            if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-               txItemStatus->enumStatus == VDSE_TXS_DESTROYED ) {
-               isOK = false;
-            }
-            if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-               txItemStatus->enumStatus == VDSE_TXS_ADDED ) {
-               isOK = false;
-            }
-            if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
-               isOK = false;
-            }
-         }
+         if ( vdseTxTestObjectStatus( txItemStatus, 
+            SET_OFFSET(pContext->pTransaction) ) == VDS_OK ) {
  
-         if ( isOK ) {
             txItemStatus->parentCounter++;
             txFolderStatus->usageCounter++;
             pItem->pHashItem = pHashItem;
             pItem->itemOffset = itemOffset;
-            pItem->status = txItemStatus->enumStatus;
+            pItem->status = txItemStatus->status;
 
             vdseFolderReleaseNoLock( pFolder, previousHashItem, pContext );
 
@@ -946,7 +882,6 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
 {
    bool lastIteration = true;
    size_t partialLength = 0;
-//   enum ListErrors listErr = LIST_OK;
    vdseObjectDescriptor* pDesc = NULL;
    vdseHashItem* pHashItem = NULL;
    int rc;
@@ -996,32 +931,11 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
    
    if ( lastIteration ) {
       GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
-      /* 
-       * If the transaction id of the object (to open) is equal to the 
-       * current transaction id AND the object is marked as deleted... error.
-       *
-       * If the transaction id of the object (to retrieve) is NOT equal to the 
-       * current transaction id AND the object is added... error.
-       *
-       * If the object is flagged as deleted and committed, it does not exists
-       * from the API point of view.
-       */
-      if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
-         if ( txStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
-            errcode = VDS_NO_SUCH_OBJECT;
-            goto the_exit;
-         }
-         if ( txStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-            txStatus->enumStatus == VDSE_TXS_DESTROYED ) {
-            errcode = VDS_OBJECT_IS_DELETED;
-            goto the_exit;
-         }
-         if ( txStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-            txStatus->enumStatus == VDSE_TXS_ADDED ) {
-            errcode = VDS_OBJECT_IS_IN_USE;
-            goto the_exit;
-         }
-      }
+
+      errcode = vdseTxTestObjectStatus( txStatus, 
+                                        SET_OFFSET(pContext->pTransaction) );
+      if ( errcode != VDS_OK ) goto the_exit;
+
       if ( objectType != pDesc->apiType ) {
          errcode = VDS_WRONG_OBJECT_TYPE;
          goto the_exit;
@@ -1041,32 +955,12 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
       errcode = VDS_NO_SUCH_OBJECT;
       goto the_exit;
    }
-
-   /* 
-    * If the transaction id of the next folder is equal to the 
-    * current transaction id AND the object is marked as deleted... error.
-    *
-    * If the transaction id of the folder is NOT equal to the 
-    * current transaction id AND the object is added... error.
-    *
-    * If the folder is flagged as deleted and committed, it does not exists
-    * from the API point of view.
-    */
-   if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
-      if ( txStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
-         errcode = VDS_NO_SUCH_FOLDER;
-         goto the_exit;
-      }
-      if ( txStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-         txStatus->enumStatus == VDSE_TXS_DESTROYED ) {
-         errcode = VDS_OBJECT_IS_DELETED;
-         goto the_exit;
-      }
-      if ( txStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-         txStatus->enumStatus == VDSE_TXS_ADDED ) {
-         errcode = VDS_OBJECT_IS_IN_USE;
-         goto the_exit;
-      }
+   
+   errcode = vdseTxTestObjectStatus( txStatus, 
+                                     SET_OFFSET(pContext->pTransaction) );
+   if ( errcode != VDS_OK ) {
+      if ( errcode == VDS_NO_SUCH_OBJECT) errcode = VDS_NO_SUCH_FOLDER;
+      goto the_exit;
    }
 
    GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
@@ -1159,38 +1053,16 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
    GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
    
    if ( lastIteration ) {
-      /* 
-       * If the transaction id of the object is equal to the 
-       * current transaction id AND the object is marked as deleted... error.
-       *
-       * If the transaction id of the object (to retrieve) is NOT equal to the 
-       * current transaction id AND the object is added... error.
-       *
-       * If the object is flagged as deleted and committed, it does not exists
-       * from the API point of view.
-       */
-      if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
-         if ( txStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
-            errcode = VDS_NO_SUCH_OBJECT;
-            goto the_exit;
-         }
-         if ( txStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-            txStatus->enumStatus == VDSE_TXS_DESTROYED ) {
-            errcode = VDS_OBJECT_IS_DELETED;
-            goto the_exit;
-         }
-         if ( txStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-            txStatus->enumStatus == VDSE_TXS_ADDED ) {
-            errcode = VDS_OBJECT_IS_IN_USE;
-            goto the_exit;
-         }
-      }
+
+      errcode = vdseTxTestObjectStatus( txStatus, 
+                                        SET_OFFSET(pContext->pTransaction) );
+      if ( errcode != VDS_OK ) goto the_exit;
 
       GET_PTR( pMemObject, pDesc->memOffset, vdseMemObject );
       if ( vdseLock( pMemObject, pContext ) == 0 ) {
          vdseMemObjectStatus( pMemObject, pStatus );
          pStatus->type = pDesc->apiType;
-         pStatus->status = txStatus->enumStatus;
+         pStatus->status = txStatus->status;
 
          switch( pDesc->apiType ) {
 
@@ -1231,31 +1103,11 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
       goto the_exit;
    }
 
-   /* 
-    * If the transaction id of the next folder is equal to the 
-    * current transaction id AND the object is marked as deleted... error.
-    *
-    * If the transaction id of the folder is NOT equal to the 
-    * current transaction id AND the object is added... error.
-    *
-    * If the folder is flagged as deleted and committed, it does not exists
-    * from the API point of view.
-    */
-   if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
-      if ( txStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
-         errcode = VDS_NO_SUCH_FOLDER;
-         goto the_exit;
-      }
-      if ( txStatus->txOffset == SET_OFFSET(pContext->pTransaction) &&
-         txStatus->enumStatus == VDSE_TXS_DESTROYED ) {
-         errcode = VDS_OBJECT_IS_DELETED;
-         goto the_exit;
-      }
-      if ( txStatus->txOffset != SET_OFFSET(pContext->pTransaction) &&
-         txStatus->enumStatus == VDSE_TXS_ADDED ) {
-         errcode = VDS_OBJECT_IS_IN_USE;
-         goto the_exit;
-      }
+   errcode = vdseTxTestObjectStatus( txStatus, 
+                                     SET_OFFSET(pContext->pTransaction) );
+   if ( errcode != VDS_OK ) {
+      if ( errcode == VDS_NO_SUCH_OBJECT) errcode = VDS_NO_SUCH_FOLDER;
+      goto the_exit;
    }
 
    GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
@@ -1412,7 +1264,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
             GET_PTR( previousHashItem, previousHashItem->nextSameKey, vdseHashItem );
          }
          objTxStatus = &previousHashItem->txStatus;
-         if ( objTxStatus->enumStatus != VDSE_TXS_DESTROYED_COMMITTED ) {
+         if ( ! (objTxStatus->status & VDSE_TXS_DESTROYED_COMMITTED) ) {
             errcode = VDS_OBJECT_ALREADY_PRESENT;
             goto the_exit;
          }
@@ -1494,7 +1346,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
       
       objTxStatus = &pHashItem->txStatus;
       vdseTxStatusInit( objTxStatus, SET_OFFSET(pContext->pTransaction) );
-      objTxStatus->enumStatus = VDSE_TXS_ADDED;
+      objTxStatus->status = VDSE_TXS_ADDED;
       
       GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
       switch ( memObjType ) {
@@ -1602,22 +1454,13 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
       goto the_exit;
    }
    
-   /* 
-    * If the transaction id of the next folder is not either equal to
-    * zero or to the current transaction id, then it belongs to 
-    * another transaction - uncommitted. For this transaction it is
-    * as if it does not exist.
-    * Similarly, if we are marked as destroyed... can't access that folder
-    * (to have the id as ok and be marked as destroyed is a rare case - 
-    * it would require that the current transaction deleted the folder and 
-    * than tries to access it).
-    */
-   if ( ! vdseTxStatusIsValid( &pHashItem->txStatus, SET_OFFSET(pContext->pTransaction) ) 
-         || vdseTxStatusIsMarkedAsDestroyed( &pHashItem->txStatus ) ) {
+   errcode = vdseTxTestObjectStatus( &pHashItem->txStatus, 
+                                     SET_OFFSET(pContext->pTransaction) );
+   if ( errcode != VDS_OK ) {
       errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
    }
-   
+
    GET_PTR( pNextFolder, pDesc->offset, vdseFolder );   
    rc = vdseLock( &pNextFolder->memObject, pContext );
    if ( rc != 0 ) {
@@ -1711,8 +1554,8 @@ void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
     */
    if ( (txItemStatus->parentCounter == 0) && 
       (txItemStatus->usageCounter == 0) ) {
-      if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ||
-         txItemStatus->enumStatus == VDSE_TXS_VERSION_REPLACED ) {
+      if ( txItemStatus->status & VDSE_TXS_DESTROYED_COMMITTED ||
+         txItemStatus->status & VDSE_TXS_EDIT_COMMITTED ) {
          /* Time to really delete the record! */
          vdseFolderRemoveObject( pFolder,
                                  pHashItem,
@@ -1846,7 +1689,6 @@ void vdseFolderRollbackEdit( vdseFolder         * pFolder,
                                vdseObjectDescriptor );
    pMapLatest = GET_PTR_FAST( pDescLatest->offset, vdseMap );
    
-//   pHashItemLatest->nextSameKey = VDSE_NULL_OFFSET;
    pMapLatest->editVersion = VDSE_NULL_OFFSET;
 
    /* We remove our edit version from the folder - this one is pretty
@@ -1861,10 +1703,9 @@ void vdseFolderRollbackEdit( vdseFolder         * pFolder,
 
    vdseMapFini( pMapEdit, pContext );
       
-   //txItemStatus->parentCounter, txItemStatus->usageCounter
    tree = GET_PTR_FAST( pDescLatest->nodeOffset, vdseTreeNode );
    tx = GET_PTR_FAST( tree->txStatusOffset, vdseTxStatus );
-   vdseTxStatusClearTx( tx );
+   vdseTxStatusRollbackEdit( tx );
 
    vdseFolderReleaseNoLock( pFolder,
                             pHashItemLatest,
@@ -1884,7 +1725,7 @@ void vdseFolderStatus( vdseFolder   * pFolder,
 
    GET_PTR( txStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
 
-   pStatus->status = txStatus->enumStatus;
+   pStatus->status = txStatus->status;
    pStatus->numDataItem = pFolder->hashObj.numberOfItems;
    pStatus->maxDataLength = 0;
    pStatus->maxKeyLength  = 0;
@@ -1932,8 +1773,8 @@ int vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
        */
       if ( (txItemStatus->parentCounter == 0) && 
          (txItemStatus->usageCounter == 0) ) {
-         if ( txItemStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ||
-            txItemStatus->enumStatus == VDSE_TXS_VERSION_REPLACED ) {
+         if ( txItemStatus->status & VDSE_TXS_DESTROYED_COMMITTED ||
+            txItemStatus->status & VDSE_TXS_EDIT_COMMITTED ) {
             /* Time to really delete the object and the record! */
             vdseFolderRemoveObject( parentFolder,
                                     pFolderItem->pHashItem,

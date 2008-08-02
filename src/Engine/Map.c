@@ -187,7 +187,7 @@ int vdseMapGet( vdseMap            * pHashMap,
                 size_t               bufferLength,
                 vdseSessionContext * pContext )
 {
-   vdseHashItem* pHashItem = NULL; //, * previousItem = NULL;
+   vdseHashItem* pHashItem = NULL;
    vdsErrors errcode;
    vdseTxStatus * txHashMapStatus;
    size_t bucket;
@@ -202,8 +202,8 @@ int vdseMapGet( vdseMap            * pHashMap,
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
    
-   if ( txHashMapStatus->enumStatus == VDSE_TXS_DESTROYED || 
-      txHashMapStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+   if ( txHashMapStatus->status & VDSE_TXS_DESTROYED || 
+      txHashMapStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
       errcode = VDS_OBJECT_IS_DELETED;
       goto the_exit;
    }
@@ -271,8 +271,8 @@ int vdseMapGetFirst( vdseMap            * pHashMap,
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( txHashMapStatus->enumStatus == VDSE_TXS_DESTROYED || 
-      txHashMapStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+   if ( txHashMapStatus->status & VDSE_TXS_DESTROYED || 
+      txHashMapStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_IS_DELETED );
       return -1;
    }
@@ -332,8 +332,8 @@ int vdseMapGetNext( vdseMap            * pHashMap,
    
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( txHashMapStatus->enumStatus == VDSE_TXS_DESTROYED || 
-      txHashMapStatus->enumStatus == VDSE_TXS_DESTROYED_COMMITTED ) {
+   if ( txHashMapStatus->status & VDSE_TXS_DESTROYED || 
+      txHashMapStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_IS_DELETED );
       return -1;
    }
@@ -625,7 +625,7 @@ void vdseMapStatus( vdseMap      * pHashMap,
    
    GET_PTR( txStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   pStatus->status = txStatus->enumStatus;
+   pStatus->status = txStatus->status;
    pStatus->numDataItem = pHashMap->hashObj.numberOfItems;
    pStatus->maxDataLength = 0;
    pStatus->maxKeyLength  = 0;
