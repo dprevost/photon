@@ -9,6 +9,7 @@
 /CloseInvalidSig
 /CloseMemNull
 /ClosePass
+/CopyPass
 /CreateBackNullError
 /CreateBackInvalidSig
 /CreateBackInvLength

@@ -24,6 +24,7 @@ check_PROGRAMS =                              \
         .\Release\CloseInvalidSig.exe         \
         .\Release\CloseMemNull.exe            \
         .\Release\ClosePass.exe               \
+        .\Release\CopyPass.exe                \
         .\Release\CreateBackNullError.exe     \
         .\Release\CreateBackInvalidSig.exe    \
         .\Release\CreateBackInvLength.exe     \

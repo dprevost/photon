@@ -30,12 +30,12 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(50)
+Dim failed_tests(51)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(10)
+Dim ok_programs(11)
 Dim fail_programs(39)
 
 Dim exe_name, prog_path, program
@@ -52,15 +52,16 @@ dim strOutput
 ' Populate the program lists...
 ok_programs(0)  = "BackStatusPass"
 ok_programs(1)  = "ClosePass"
-ok_programs(2)  = "CreateBackPass"
-ok_programs(3)  = "FiniPass"
-ok_programs(4)  = "InitPass"
-ok_programs(5)  = "OpenPass"
-ok_programs(6)  = "ReadOnlyPass"
-ok_programs(7)  = "ReadOnlyTryWrite"
-ok_programs(8)  = "ReadWritePass"
-ok_programs(9)  = "SynchPass"
-ok_programs(10) = "Tests"
+ok_programs(2)  = "CopyPass"
+ok_programs(3)  = "CreateBackPass"
+ok_programs(4)  = "FiniPass"
+ok_programs(5)  = "InitPass"
+ok_programs(6)  = "OpenPass"
+ok_programs(7)  = "ReadOnlyPass"
+ok_programs(8)  = "ReadOnlyTryWrite"
+ok_programs(9)  = "ReadWritePass"
+ok_programs(10) = "SynchPass"
+ok_programs(11) = "Tests"
 
 fail_programs(0)  = "BackStatusInvalidSig"
 fail_programs(1)  = "BackStatusMemNull"
@@ -103,7 +104,7 @@ fail_programs(37) = "SynchInvalidBaseAddr"
 fail_programs(38) = "SynchInvalidSig"
 fail_programs(39) = "SynchMemNull"
 
-numTests = 51                 ' Sum of length of both arrays 
+numTests = 52                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject

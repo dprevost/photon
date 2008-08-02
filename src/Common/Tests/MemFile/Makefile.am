@@ -26,6 +26,7 @@ check_PROGRAMS =                \
         CloseInvalidSig         \
         CloseMemNull            \
         ClosePass               \
+        CopyPass                \
         CreateBackNullError     \
         CreateBackInvalidSig    \
         CreateBackInvLength     \
@@ -79,6 +80,7 @@ CloseNullError_SOURCES          = $(INCLUDE_FILES) CloseNullError.c
 CloseInvalidSig_SOURCES         = $(INCLUDE_FILES) CloseInvalidSig.c
 CloseMemNull_SOURCES            = $(INCLUDE_FILES) CloseMemNull.c
 ClosePass_SOURCES               = $(INCLUDE_FILES) ClosePass.c
+CopyPass_SOURCES                = $(INCLUDE_FILES) CopyPass.c
 CreateBackNullError_SOURCES     = $(INCLUDE_FILES) CreateBackNullError.c
 CreateBackInvalidSig_SOURCES    = $(INCLUDE_FILES) CreateBackInvalidSig.c
 CreateBackInvLength_SOURCES     = $(INCLUDE_FILES) CreateBackInvLength.c
@@ -132,7 +134,8 @@ TESTS_ENVIRONMENT =                  \
         verbose=0                    \
         PYTHON=$(PYTHON)             
 
-TESTS =                         \
+TESTS = CopyPass
+TESTS2 =                         \
         BackStatusInvalidSig    \
         BackStatusMemNull       \
         BackStatusNameEmpty     \
@@ -142,6 +145,7 @@ TESTS =                         \
         CloseInvalidSig         \
         CloseMemNull            \
         ClosePass               \
+        CopyPass                \
         CreateBackNullError     \
         CreateBackInvalidSig    \
         CreateBackInvLength     \

@@ -172,6 +172,95 @@ vdscBackStoreStatus( vdscMemoryFile*       pMem,
 /*!
  *
  * \param[in] pMem   A pointer to the vdscMemoryFile struct itself.
+ * \param[in] pError  A pointer to the vdscErrorHandler struct (used for 
+ *                    handling errors from the OS).
+ *
+ * \retval 0 on success
+ * \retval -1 on error (use pError to retrieve the error)
+ *
+ * \pre \em pMem cannot be NULL.
+ * \pre \em pError cannot be NULL.
+ * \invariant \em pMem->initialized must equal ::VDSC_MEMFILE_SIGNATURE.
+ * \invariant \em pMem->name cannot be empty.
+ * \invariant \em pMem->length must be positive.
+ *
+ */
+
+int vdscCopyBackstore( vdscMemoryFile*   pMem,
+                       int               filePerms,
+                       vdscErrorHandler* pError )
+{
+   int fdIn = -1, fdOut = -1;
+   char bckName [PATH_MAX];
+   size_t length = 1024*1024, leftToCopy;
+   unsigned char * buffer = NULL;
+   ssize_t i, j, k;
+   
+   VDS_PRE_CONDITION( pMem    != NULL );
+   VDS_INV_CONDITION( pMem->initialized == VDSC_MEMFILE_SIGNATURE );
+   VDS_INV_CONDITION( pMem->name[0] != '\0' );
+   VDS_INV_CONDITION( pMem->length > 0 );
+   VDS_PRE_CONDITION( pError != NULL );
+   VDS_PRE_CONDITION( ( filePerms & 0600 ) == 0600 );
+   
+   if ( strlen(pMem->name)+4+1 > PATH_MAX ) {
+      errno = ENAMETOOLONG;
+      goto error;
+   }
+   strcpy( bckName, pMem->name );
+   strcat( bckName, ".bck" );
+   
+   if ( pMem->length < length ) length = pMem->length;
+   leftToCopy = pMem->length;
+   
+   buffer = malloc( length );
+   if ( buffer == NULL ) goto error;
+   
+   fdIn = open( pMem->name, O_RDONLY );
+   if ( fdIn < 0 ) goto error;
+   fdOut = open( bckName, O_WRONLY | O_CREAT | O_TRUNC, filePerms );
+   if ( fdOut < 0 ) goto error;
+   
+   /* 
+    * The code below is probably too complex - I rarely saw a case where
+    * read/write did not complete when reading from a file (a socket or 
+    * pipe, yes, a file?). But...
+    */
+   while ( leftToCopy > 0 ) {
+      i = read( fdIn, buffer, length );
+      if ( i < 0 ) goto error;
+      if ( i == 0 ) break;
+      leftToCopy -= i;
+      if ( leftToCopy < length ) length = leftToCopy;
+      k = 0;
+      do {
+         j = write( fdOut, &buffer[k], i );
+         if ( j < 0 ) goto error;
+         i -= j;
+         k += j;
+      } while ( i > 0 );
+   }
+   
+   free( buffer );
+   close( fdIn );
+   close( fdOut );
+
+   return 0;
+   
+error:
+   if ( buffer ) free( buffer );
+   if ( fdIn  > -1 ) close( fdIn );
+   if ( fdOut > -1 ) close( fdOut );
+
+   vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+   
+   return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+/*!
+ *
+ * \param[in] pMem   A pointer to the vdscMemoryFile struct itself.
  * \param[in] filePerms The file permissions for the soon to be created 
  *                      backstore file.
  * \param[in] pError  A pointer to the vdscErrorHandler struct (used for 
@@ -200,13 +289,14 @@ vdscCreateBackstore( vdscMemoryFile*   pMem,
    size_t numWritten;
    int errcode = 0, fd;
    char buf[1];
-
+   
    VDS_PRE_CONDITION( pMem    != NULL );
    VDS_INV_CONDITION( pMem->initialized == VDSC_MEMFILE_SIGNATURE );
    VDS_INV_CONDITION( pMem->name[0] != '\0' );
    VDS_INV_CONDITION( pMem->length > 0 );
    VDS_PRE_CONDITION( pError != NULL );
    VDS_PRE_CONDITION( ( filePerms & 0600 ) == 0600 );
+   
    
    /* Create the file with the right permissions */
    fd = creat( pMem->name, filePerms );

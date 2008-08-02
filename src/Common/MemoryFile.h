@@ -147,6 +147,12 @@ int vdscOpenMemFile( vdscMemoryFile*   pMem,
                      void**            ppAddr,
                      vdscErrorHandler* pError );
    
+/*! \brief Create a copy of the backstore file */
+VDSF_COMMON_EXPORT
+int vdscCopyBackstore( vdscMemoryFile   * pMem,
+                       int                filePerms,
+                       vdscErrorHandler * pError );
+
 /*!
  *  \brief Close our access the memory file (possibly removing the memory
  *  file itself from memory).
