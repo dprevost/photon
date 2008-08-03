@@ -194,7 +194,7 @@ int vdscCopyBackstore( vdscMemoryFile*   pMem,
    char bckName [PATH_MAX];
    size_t length = 1024*1024, leftToCopy;
    unsigned char * buffer = NULL;
-   ssize_t i, j, k;
+   int i, j, k;
    
    VDS_PRE_CONDITION( pMem    != NULL );
    VDS_INV_CONDITION( pMem->initialized == VDSC_MEMFILE_SIGNATURE );
