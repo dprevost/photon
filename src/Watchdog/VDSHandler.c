@@ -28,10 +28,10 @@ extern vdscErrMsgHandle g_wdErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswHandlerInit( vdswHandler         * pHandler,
-                     struct ConfigParams * pConfig,
-                     vdseMemoryHeader   ** ppMemoryAddress,
-                     bool                  verifyVDSOnly )
+vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
+                            struct ConfigParams * pConfig,
+                            vdseMemoryHeader   ** ppMemoryAddress,
+                            bool                  verifyVDSOnly )
 {
    int errcode = 0;
    char path[PATH_MAX];
@@ -69,23 +69,13 @@ int vdswHandlerInit( vdswHandler         * pHandler,
 
    pHandler->pMemManager = (vdswMemoryManager *)calloc( 
       sizeof(vdswMemoryManager), 1 );
-   if ( pHandler->pMemManager == NULL ) {
-      vdscSetError( &pHandler->context.errorHandler,
-                    g_wdErrorHandle,
-                    VDSW_NOT_ENOUGH_HEAP_MEMORY );
-      return -1;
-   }
+   if ( pHandler->pMemManager == NULL ) return VDSW_NOT_ENOUGH_HEAP_MEMORY;
    vdswMemoryManagerInit( pHandler->pMemManager );
    
    path_len = strlen( pConfig->wdLocation ) + strlen( VDS_DIR_SEPARATOR ) +
       strlen( VDS_MEMFILE_NAME )  + strlen( ".bak" );
-   if ( path_len >= PATH_MAX ) {
-      vdscSetError( &pHandler->context.errorHandler,
-                    g_wdErrorHandle,
-                    VDSW_CFG_BCK_LOCATION_TOO_LONG );
-      return -1;
-   }
-      
+   if ( path_len >= PATH_MAX ) return VDSW_CFG_BCK_LOCATION_TOO_LONG;
+   
    sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
             VDS_MEMFILE_NAME );
    
@@ -94,10 +84,7 @@ int vdswHandlerInit( vdswHandler         * pHandler,
 
    if ( ! fileStatus.fileExist ) {
       if ( verifyVDSOnly ) {
-         vdscSetError( &pHandler->context.errorHandler,
-                       g_wdErrorHandle,
-                       VDSW_NO_VERIFICATION_POSSIBLE );
-         return -1;
+         return VDSW_NO_VERIFICATION_POSSIBLE;
       }
       errcode = vdswCreateVDS( pHandler->pMemManager,
                                path,
@@ -113,22 +100,14 @@ int vdswHandlerInit( vdswHandler         * pHandler,
          sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
                   VDS_LOGDIR_NAME );
          errcode = mkdir( path, pConfig->dirPerms );
-         if ( errcode != 0 ) {
-            vdscSetError( &pHandler->context.errorHandler,
-                          g_wdErrorHandle,
-                          VDSW_MKDIR_FAILURE );
-            return -1;
-         }
+         if ( errcode != 0 ) return VDSW_MKDIR_FAILURE;
          (*ppMemoryAddress)->logON = true;
       }
    }
    else {
       if ( ! fileStatus.fileReadable || ! fileStatus.fileWritable || 
          ! fileStatus.lenghtOK ) {
-         vdscSetError( &pHandler->context.errorHandler,
-                       g_wdErrorHandle,
-                       VDSW_FILE_NOT_ACCESSIBLE );
-         return -1;
+         return VDSW_FILE_NOT_ACCESSIBLE;
       }
 
       memset( logFile, '\0', PATH_MAX );
