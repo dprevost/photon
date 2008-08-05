@@ -55,10 +55,10 @@ typedef struct vdswHandler vdswHandler;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswHandlerInit( vdswHandler              * pHandler,
-                     struct ConfigParams      * pConfig,
-                     struct vdseMemoryHeader ** ppMemoryAddress,
-                     bool                       verifyVDSOnly );
+vdswErrors vdswHandlerInit( vdswHandler              * pHandler,
+                            struct ConfigParams      * pConfig,
+                            struct vdseMemoryHeader ** ppMemoryAddress,
+                            bool                       verifyVDSOnly );
 
 void vdswHandlerFini( vdswHandler * pHandler );
 

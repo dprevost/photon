@@ -28,10 +28,10 @@ extern vdscErrMsgHandle g_wdErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswHandlerInit( vdswHandler         * pHandler,
-                     struct ConfigParams * pConfig,
-                     vdseMemoryHeader   ** ppMemoryAddress,
-                     bool                  verifyVDSOnly )
+vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
+                            struct ConfigParams * pConfig,
+                            vdseMemoryHeader   ** ppMemoryAddress,
+                            bool                  verifyVDSOnly )
 {
    int errcode = 0;
    char path[PATH_MAX];
