@@ -114,30 +114,22 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
          sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
                   VDS_LOGDIR_NAME );
          errcode = mkdir( path, pConfig->dirPerms );
-<<<<<<< HEAD:src/Watchdog/VDSHandler.c
          if ( errcode != 0 ) {
             vdscSetError( &pHandler->context.errorHandler,
                           g_wdErrorHandle,
                           VDSW_MKDIR_FAILURE );
             return false;
          }
-=======
-         if ( errcode != 0 ) return VDSW_MKDIR_FAILURE;
->>>>>>> Work in progress - better error codes for the watchdog.:src/Watchdog/VDSHandler.c
          (*ppMemoryAddress)->logON = true;
       }
    }
    else {
       if ( ! fileStatus.fileReadable || ! fileStatus.fileWritable || 
          ! fileStatus.lenghtOK ) {
-<<<<<<< HEAD:src/Watchdog/VDSHandler.c
          vdscSetError( &pHandler->context.errorHandler,
                        g_wdErrorHandle,
                        VDSW_FILE_NOT_ACCESSIBLE );
          return false;
-=======
-         return VDSW_FILE_NOT_ACCESSIBLE;
->>>>>>> Work in progress - better error codes for the watchdog.:src/Watchdog/VDSHandler.c
       }
 
       memset( logFile, '\0', PATH_MAX );
