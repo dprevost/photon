@@ -124,17 +124,15 @@ void vdswWatchdogFini( vdswWatchdog * pWatchdog );
 
 #if defined ( WIN32 )
 
-int vdswInstall( vdswWatchdog * pWatchdog );
+bool vdswInstall( vdswWatchdog * pWatchdog );
 
 void vdswUninstall( vdswWatchdog * pWatchdog );
 
-int vdswReadRegistry( vdswWatchdog * pWatchdog );
-   
 #else
-int vdswDaemon( vdswWatchdog * pWatchdog );
+bool vdswDaemon( vdswWatchdog * pWatchdog );
 #endif
 
-int vdswWatchdogReadConfig( vdswWatchdog * pWatchdog, const char* cfgname );   
+bool vdswWatchdogReadConfig( vdswWatchdog * pWatchdog, const char* cfgname );   
    
 void vdswHelp( const char* progName );
 
@@ -162,7 +160,7 @@ int vdswLastError() {
  *  than having to search in the EventLog/syslog facility).
  */
 static inline
-vdswErrors vdswInitializeVDS( vdswWatchdog * pWatchdog ) {
+bool vdswInitializeVDS( vdswWatchdog * pWatchdog ) {
    return vdswHandlerInit( &pWatchdog->vds,
                            &pWatchdog->params, 
                            &pWatchdog->pMemoryAddress, 
@@ -170,8 +168,6 @@ vdswErrors vdswInitializeVDS( vdswWatchdog * pWatchdog ) {
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-int vdswSetSigHandler();
 
 void vdswRun();
    

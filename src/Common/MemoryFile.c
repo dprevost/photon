@@ -322,7 +322,10 @@ vdscCreateBackstore( vdscMemoryFile*   pMem,
    if ( errcode == 0 ) {
       buf[0] = 0;
       numWritten = fwrite( buf, 1, 1, fp );
-      if ( numWritten != 1 ) errcode = -1;
+      if ( numWritten != 1 ) {
+         vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );      
+         errcode = -1;
+      }
    }
    
    fclose( fp );
@@ -423,9 +426,8 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
       return -1;
    }
-   else {
-      *ppAddr = pMem->baseAddr;
-   }
+
+   *ppAddr = pMem->baseAddr;
    
 #else /* WIN32 */
 
@@ -446,9 +448,8 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
       return -1;
    }
-   else {
-      *ppAddr = pMem->baseAddr;
-   }
+
+   *ppAddr = pMem->baseAddr;
    
 #endif /* WIN32 */
    

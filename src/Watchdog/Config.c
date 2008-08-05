@@ -59,8 +59,8 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
  *                      the terminal. Or zero for no additional information.
  * \param[in,out] pError A pointer to a vdscErrorHandler struct.
  *
- * \retval 0 on success
- * \retval -1 on error (use pError to retrieve the error(s))
+ * \retval true on success
+ * \retval false on error (use pError to retrieve the error(s))
  *
  * \pre \em cfgname cannot be NULL.
  * \pre \em pConfig cannot be NULL.
@@ -68,10 +68,10 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
  
  */
  
-int vdswReadConfig( const char          * cfgname,
-                    struct ConfigParams * pConfig,
-                    int                   debug,
-                    vdscErrorHandler    * pError )
+bool vdswReadConfig( const char          * cfgname,
+                     struct ConfigParams * pConfig,
+                     int                   debug,
+                     vdscErrorHandler    * pError )
 {
    xmlSchemaPtr schema = NULL;
    xmlSchemaValidCtxtPtr  validCtxt = NULL;
@@ -99,11 +99,12 @@ int vdswReadConfig( const char          * cfgname,
    fd = open( cfgname, O_RDONLY );
    if ( fd == -1 ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
-      return -1;
+      return false;
    }
    i = read( fd, buf, 10000 );
    if ( i < 1 ) {
-      return -1;
+      if ( i == -1 ) vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      return false;
    }
 
    if ( debug ) {
@@ -208,11 +209,9 @@ int vdswReadConfig( const char          * cfgname,
             }
             errcode = VDSW_CFG_VDS_LOCATION_TOO_LONG;
             goto cleanup;
-            fprintf( stderr, "Error: vds_location is too long\n" );
-            return -1;
          }
-         fprintf( stderr, "Error: missing <vds_location> in config file\n" );
-         return -1;
+         errcode = VDSW_CFG_VDS_LOCATION_IS_MISSING;
+         goto cleanup;
       }
       node = node->next;
    }
@@ -307,9 +306,9 @@ cleanup:
 
    if ( errcode != VDSW_OK ) {
       vdscSetError( pError, g_wdErrorHandle, errcode );
-      return -1;
+      return false;
    }
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

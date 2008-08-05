@@ -29,7 +29,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static
-int Accept( vdswAcceptor * pAcceptor );
+bool Accept( vdswAcceptor * pAcceptor );
    
 static
 void Send( vdswAcceptor * pAcceptor, unsigned int indice );
@@ -40,9 +40,6 @@ void Receive( vdswAcceptor * pAcceptor, unsigned int indice );
 static
 void HandleAbnormalTermination( vdswAcceptor * pAcceptor, pid_t pid );
 
-static
-bool IsconnectionAlive( vdswAcceptor * pAcceptor, int indice );
-   
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void vdswAcceptorInit( vdswAcceptor * pAcceptor )
@@ -77,7 +74,7 @@ void vdswAcceptorFini( vdswAcceptor * pAcceptor )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int Accept( vdswAcceptor * pAcceptor )
+bool Accept( vdswAcceptor * pAcceptor )
 {
    VDS_SOCKET newSock = VDS_INVALID_SOCKET;
    int errcode, i;
@@ -97,17 +94,17 @@ int Accept( vdswAcceptor * pAcceptor )
       errcode = GetSockError();
 #if defined (WIN32) 
       if ( errcode == WSAEWOULDBLOCK )
-         return 0;
+         return true;
 #else
       if ( errcode == EWOULDBLOCK || errcode == EAGAIN )
-         return 0;
+         return true;
 #endif
       // The error is more serious...
       vdswSendMessage( &pAcceptor->pWatchdog->log,
                        WD_ERROR, 
                        "In function accept(), error = %d",
                        GetSockError() );
-      return -1;
+      return false;
    }
    
    /*
@@ -121,7 +118,7 @@ int Accept( vdswAcceptor * pAcceptor )
                        WD_ERROR, 
                        "In function ioctlsocket(), error = %d",
                        GetSockError() );
-      return -1;
+      return false;
    }
 #else
    errcode = fcntl( newSock, F_SETFL, O_NONBLOCK);
@@ -130,7 +127,7 @@ int Accept( vdswAcceptor * pAcceptor )
                        WD_ERROR, 
                        "In function fcntl(), error = %d",
                        GetSockError() );
-      return -1;
+      return false;
    }
 #endif
 
@@ -141,7 +138,7 @@ int Accept( vdswAcceptor * pAcceptor )
       }
    }
    
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -160,52 +157,8 @@ HandleAbnormalTermination( vdswAcceptor * pAcceptor, pid_t pid )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool 
-IsconnectionAlive( vdswAcceptor * pAcceptor, int indice )
-{
-   int errcode = 0;
-   
-   /* 
-    * We test to see if the other process is alive by:
-    *
-    *   on linux/unix, sending a NOOP signal to the process and ...
-    *
-    *   on windows, by opening the process with as limited access as
-    *   possible and ...
-    */
-
-#if defined(WIN32)
-   return true;
-#else
-   errcode = kill( pAcceptor->dispatch[indice].socketId, 0 );
-   if ( errcode == -1 ) {
-//      ESRCH
-   }
-   return true;
-#endif
-
-#if 0   
-   if ( errcode <= 0 ) {
-      // Abnormal termination of the connection
-#if defined (WIN32)
-      closesocket( pAcceptor->dispatch[indice].socketId );
-#else
-      close( pAcceptor->dispatch[indice].socketId );
-#endif
-      pAcceptor->dispatch[indice].socketId = VDS_INVALID_SOCKET;
-
-      if ( pAcceptor->dispatch[indice].pid > 0 )
-         HandleAbnormalTermination( pAcceptor->dispatch[indice].pid );
-      pAcceptor->dispatch[indice].pid = -1;
-   }
-#endif
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-int 
-vdswPrepareConnection( vdswAcceptor * pAcceptor,
-                       vdswWatchdog * pWatchdog )
+bool vdswPrepareConnection( vdswAcceptor * pAcceptor,
+                            vdswWatchdog * pWatchdog )
 {
    int errcode = 0;
    int one = 1;
@@ -229,16 +182,9 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
    dummy = strtol( pAcceptor->pWatchdog->params.wdAddress, NULL, 10 );
    if ( dummy <= 0 || dummy > 65535 ) {
       vdswSendMessage( &pAcceptor->pWatchdog->log, WD_ERROR, "Error getting port number" );
-      return -1;
+      return false;
    }
    port = (unsigned short) dummy;
-     
-//   errcode = sscanf( pAcceptor->pWatchdog->m_params.wdAddress, "%uh", &port );
-//   if ( errcode != 1 )
-//   {
-//      vdswSendMessage( pAcceptor->pWatchdog->log, WD_ERROR, "Error getting port number" );
-//      return -1;
-//   }
 
 #if defined (WIN32) 
    versionRequested = MAKEWORD( 2, 2 );
@@ -249,7 +195,7 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
                        WD_ERROR, 
                        "In function WSAStartup(), error = %d",
                        errcode );
-      return -1;
+      return false;
    }
    pAcceptor->cleanupNeeded = true;
    
@@ -261,7 +207,7 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
                        WD_ERROR, 
                        "In function socket(), error = %d",
                        GetSockError() );
-      return -1;
+      return false;
    }
    
    errcode = setsockopt( pAcceptor->socketFD, SOL_SOCKET, SO_REUSEADDR, 
@@ -271,7 +217,7 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
                        WD_ERROR, 
                        "In function setsockopt(), error = %d",
                        GetSockError() );
-      return -1;
+      return false;
    }
 
    // Set the socket in non-blocking mode.
@@ -283,7 +229,7 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
                        WD_ERROR, 
                        "In function ioctlsocket(), error = %d",
                        GetSockError() );
-      return -1;
+      return false;
    }
 #else
    errcode = fcntl( pAcceptor->socketFD, F_SETFL, O_NONBLOCK);
@@ -292,7 +238,7 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
                        WD_ERROR, 
                        "In function fcntl(), error = %d",
                        GetSockError() );
-      return -1;
+      return false;
    }
 #endif
 
@@ -310,7 +256,7 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
                        WD_ERROR, 
                        "In function bind(), error = %d",
                        GetSockError() );
-      return -1;
+      return false;
    }
 
    errcode = listen( pAcceptor->socketFD, 5 );
@@ -319,10 +265,10 @@ vdswPrepareConnection( vdswAcceptor * pAcceptor,
                        WD_ERROR, 
                        "In function listen(), error = %d",
                        GetSockError() );
-      return -1;
+      return false;
    }
    
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -486,6 +432,7 @@ vdswWaitForConnections( vdswAcceptor * pAcceptor )
    int maxFD, fired;
    struct timeval timeout;   
    unsigned int i;
+   bool rc;
    
    VDS_PRE_CONDITION( pAcceptor != NULL );
 
@@ -553,8 +500,9 @@ vdswWaitForConnections( vdswAcceptor * pAcceptor )
        * Start with the socket listening for new connection requests
        */
       if ( FD_ISSET( pAcceptor->socketFD, &readSet ) ) {
-         errcode = Accept( pAcceptor );
-         if ( errcode != 0 ) break;
+         rc = Accept( pAcceptor );
+         VDS_POST_CONDITION( rc == true || rc == false );
+         if ( ! rc ) break;
          fired--;
       }
       if ( fired == 0 ) continue;

@@ -33,13 +33,13 @@ FILE *             g_fp = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswValidate( vdseMemoryHeader * pMemoryAddress, 
-                  size_t           * pNumObjectsOK,
-                  size_t           * pNumObjectsRepaired,
-                  size_t           * pNumObjectsDeleted,
-                  size_t           * pNumObjectsError,
-                  FILE             * fp,
-                  bool               doRepair )
+void vdswValidate( vdseMemoryHeader * pMemoryAddress, 
+                   size_t           * pNumObjectsOK,
+                   size_t           * pNumObjectsRepaired,
+                   size_t           * pNumObjectsDeleted,
+                   size_t           * pNumObjectsError,
+                   FILE             * fp,
+                   bool               doRepair )
 {
    struct vdseProcessManager * processMgr;
    vdseFolder * topFolder;
@@ -124,48 +124,46 @@ int vdswValidate( vdseMemoryHeader * pMemoryAddress,
    *pNumObjectsRepaired = verifyStruct.numObjectsRepaired;
    *pNumObjectsDeleted = verifyStruct.numObjectsDeleted;
    *pNumObjectsError = verifyStruct.numObjectsError;
-
-   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswVerify( vdseMemoryHeader * pMemoryAddress, 
-                size_t           * pNumObjectsOK,
-                size_t           * pNumObjectsRepaired,
-                size_t           * pNumObjectsDeleted,
-                size_t           * pNumObjectsError,
-                FILE             * fp )
+void vdswVerify( vdseMemoryHeader * pMemoryAddress, 
+                 size_t           * pNumObjectsOK,
+                 size_t           * pNumObjectsRepaired,
+                 size_t           * pNumObjectsDeleted,
+                 size_t           * pNumObjectsError,
+                 FILE             * fp )
 {
    fprintf( fp, "Verification of VDS (no repair) is starting\n" );
    
-   return vdswValidate( pMemoryAddress, 
-                        pNumObjectsOK,
-                        pNumObjectsRepaired,
-                        pNumObjectsDeleted,
-                        pNumObjectsError, 
-                        fp, 
-                        false );
+   vdswValidate( pMemoryAddress, 
+                 pNumObjectsOK,
+                 pNumObjectsRepaired,
+                 pNumObjectsDeleted,
+                 pNumObjectsError, 
+                 fp, 
+                 false );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswRepair( vdseMemoryHeader * pMemoryAddress, 
-                size_t           * pNumObjectsOK,
-                size_t           * pNumObjectsRepaired,
-                size_t           * pNumObjectsDeleted,
-                size_t           * pNumObjectsError,
-                FILE             * fp )
+void vdswRepair( vdseMemoryHeader * pMemoryAddress, 
+                 size_t           * pNumObjectsOK,
+                 size_t           * pNumObjectsRepaired,
+                 size_t           * pNumObjectsDeleted,
+                 size_t           * pNumObjectsError,
+                 FILE             * fp )
 {
    fprintf( fp, "Verification and repair (if needed) of VDS is starting\n" );
    
-   return vdswValidate( pMemoryAddress, 
-                        pNumObjectsOK,
-                        pNumObjectsRepaired,
-                        pNumObjectsDeleted,
-                        pNumObjectsError, 
-                        fp, 
-                        true );
+   vdswValidate( pMemoryAddress, 
+                 pNumObjectsOK,
+                 pNumObjectsRepaired,
+                 pNumObjectsDeleted,
+                 pNumObjectsError, 
+                 fp, 
+                 true );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

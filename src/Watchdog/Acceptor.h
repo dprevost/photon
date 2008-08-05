@@ -118,8 +118,8 @@ void vdswAcceptorInit( vdswAcceptor * pAcceptor );
 
 void vdswAcceptorFini( vdswAcceptor * pAcceptor );
 
-int vdswPrepareConnection( vdswAcceptor        * pAcceptor,
-                           struct vdswWatchdog * pWatchdog );
+bool vdswPrepareConnection( vdswAcceptor        * pAcceptor,
+                            struct vdswWatchdog * pWatchdog );
 
 void vdswWaitForConnections( vdswAcceptor * pAcceptor );
 

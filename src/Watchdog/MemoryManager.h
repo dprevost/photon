@@ -51,21 +51,22 @@ void vdswMemoryManagerInit( vdswMemoryManager * pManager );
 void vdswMemoryManagerFini( vdswMemoryManager * pManager );
    
 /** This function creates the VDS. */
-int vdswCreateVDS( vdswMemoryManager  * pManager,
-                   const char         * memoryFileName,
-                   size_t               memorySize,
-                   int                  filePerms,
-                   vdseMemoryHeader  ** ppMemoryAddress,
-                   vdseSessionContext * pContext );
+bool vdswCreateVDS( vdswMemoryManager  * pManager,
+                    const char         * memoryFileName,
+                    size_t               memorySize,
+                    int                  filePerms,
+                    vdseMemoryHeader  ** ppMemoryAddress,
+                    vdseSessionContext * pContext );
 
 /**
  * This function opens an existing VDS. This is the function that should
  * be used when the VDS already exist.
  */
-int vdswOpenVDS( vdswMemoryManager * pManager, 
-                 const char        * memoryFileName,
-                 size_t              memorySize,
-                 vdseMemoryHeader ** ppMemoryAddress );
+bool vdswOpenVDS( vdswMemoryManager  * pManager, 
+                  const char         * memoryFileName,
+                  size_t               memorySize,
+                  vdseMemoryHeader  ** ppMemoryAddress,
+                  vdseSessionContext * pContext );
 
 void vdswCloseVDS( vdswMemoryManager * pManager,
                    vdscErrorHandler  * pError );

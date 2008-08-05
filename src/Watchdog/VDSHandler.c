@@ -28,15 +28,15 @@ extern vdscErrMsgHandle g_wdErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
-                            struct ConfigParams * pConfig,
-                            vdseMemoryHeader   ** ppMemoryAddress,
-                            bool                  verifyVDSOnly )
+bool vdswHandlerInit( vdswHandler         * pHandler,
+                      struct ConfigParams * pConfig,
+                      vdseMemoryHeader   ** ppMemoryAddress,
+                      bool                  verifyVDSOnly )
 {
+   bool rc;
    int errcode = 0;
    char path[PATH_MAX];
    char logFile[PATH_MAX];
-   char cmd[20+2*PATH_MAX];
    int path_len;
    vdscMemoryFileStatus fileStatus;
    vdscMemoryFile memFile;
@@ -69,13 +69,23 @@ vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
 
    pHandler->pMemManager = (vdswMemoryManager *)calloc( 
       sizeof(vdswMemoryManager), 1 );
-   if ( pHandler->pMemManager == NULL ) return VDSW_NOT_ENOUGH_HEAP_MEMORY;
+   if ( pHandler->pMemManager == NULL ) {
+      vdscSetError( &pHandler->context.errorHandler,
+                    g_wdErrorHandle,
+                    VDSW_NOT_ENOUGH_HEAP_MEMORY );
+      return false;
+   }
    vdswMemoryManagerInit( pHandler->pMemManager );
    
    path_len = strlen( pConfig->wdLocation ) + strlen( VDS_DIR_SEPARATOR ) +
       strlen( VDS_MEMFILE_NAME )  + strlen( ".bak" );
-   if ( path_len >= PATH_MAX ) return VDSW_CFG_BCK_LOCATION_TOO_LONG;
-   
+   if ( path_len >= PATH_MAX ) {
+      vdscSetError( &pHandler->context.errorHandler,
+                    g_wdErrorHandle,
+                    VDSW_CFG_BCK_LOCATION_TOO_LONG );
+      return false;
+   }
+      
    sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
             VDS_MEMFILE_NAME );
    
@@ -84,15 +94,19 @@ vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
 
    if ( ! fileStatus.fileExist ) {
       if ( verifyVDSOnly ) {
-         return VDSW_NO_VERIFICATION_POSSIBLE;
+         vdscSetError( &pHandler->context.errorHandler,
+                       g_wdErrorHandle,
+                       VDSW_NO_VERIFICATION_POSSIBLE );
+         return false;
       }
-      errcode = vdswCreateVDS( pHandler->pMemManager,
+      rc = vdswCreateVDS( pHandler->pMemManager,
                                path,
                                pConfig->memorySizekb,
                                pConfig->filePerms,
                                ppMemoryAddress,
                                &pHandler->context );
-      if ( errcode != 0 ) return errcode;
+      VDS_POST_CONDITION( rc == true || rc == false );
+      if ( ! rc ) return false;
       
       (*ppMemoryAddress)->logON = false;
       if ( pConfig->logOn ) {
@@ -100,14 +114,22 @@ vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
          sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
                   VDS_LOGDIR_NAME );
          errcode = mkdir( path, pConfig->dirPerms );
-         if ( errcode != 0 ) return VDSW_MKDIR_FAILURE;
+         if ( errcode != 0 ) {
+            vdscSetError( &pHandler->context.errorHandler,
+                          g_wdErrorHandle,
+                          VDSW_MKDIR_FAILURE );
+            return false;
+         }
          (*ppMemoryAddress)->logON = true;
       }
    }
    else {
       if ( ! fileStatus.fileReadable || ! fileStatus.fileWritable || 
          ! fileStatus.lenghtOK ) {
-         return VDSW_FILE_NOT_ACCESSIBLE;
+         vdscSetError( &pHandler->context.errorHandler,
+                       g_wdErrorHandle,
+                       VDSW_FILE_NOT_ACCESSIBLE );
+         return false;
       }
 
       memset( logFile, '\0', PATH_MAX );
@@ -135,7 +157,7 @@ vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
                vdscChainError( &pHandler->context.errorHandler,
                                g_wdErrorHandle,
                                VDSW_MKDIR_FAILURE );
-               return -1;
+               return false;
             }
          }
          sprintf( logFile, "%s%s%s%s%s%s%s", 
@@ -152,52 +174,54 @@ vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
       if ( fp == NULL ) fp = stderr;
 
       if ( ! verifyVDSOnly ) {
-         sprintf( cmd, "%s%s%s%s%s", "cp -f ", path, " ", path, ".bak" );
-//         errcode = vdscCopyBackstore( &pHandler->pMemManager->memory,
-//                                      &pHandler->context.errorHandler );
+         errcode = vdscCopyBackstore( &pHandler->pMemManager->memory,
+                                      pConfig->filePerms,
+                                      &pHandler->context.errorHandler );
          if ( errcode != 0 ) {
-            vdscSetError( &pHandler->context.errorHandler,
-                          g_wdErrorHandle,
-                          VDSW_COPY_BCK_FAILURE );
-            return -1;
+            vdscChainError( &pHandler->context.errorHandler,
+                            g_wdErrorHandle,
+                            VDSW_COPY_BCK_FAILURE );
+            return false;
          }
       }
       
-      errcode = vdswOpenVDS( pHandler->pMemManager,
-                             path,
-                             pConfig->memorySizekb,
-                             ppMemoryAddress );
-      if ( errcode != 0 ) return errcode;
+      rc = vdswOpenVDS( pHandler->pMemManager,
+                        path,
+                        pConfig->memorySizekb,
+                        ppMemoryAddress,
+                        &pHandler->context );
+      VDS_POST_CONDITION( rc == true || rc == false );
+      if ( ! rc ) return false;
       
       fprintf( stderr, "Starting the recovery of the VDS, please be patient\n" );
       if ( verifyVDSOnly ) {
-         errcode = vdswVerify( *ppMemoryAddress, 
-                               &numObjectsOK,
-                               &numObjectsRepaired,
-                               &numObjectsDeleted,
-                               &numObjectsError,
-                               fp );
+         vdswVerify( *ppMemoryAddress, 
+                     &numObjectsOK,
+                     &numObjectsRepaired,
+                     &numObjectsDeleted,
+                     &numObjectsError,
+                     fp );
          if ( fp != stderr ) fclose( fp );
-         return errcode;
+         return (numObjectsError == 0);
       }
-      errcode = vdswRepair( *ppMemoryAddress, 
-                            &numObjectsOK,
-                            &numObjectsRepaired,
-                            &numObjectsDeleted,
-                            &numObjectsError,
-                            fp );
+      vdswRepair( *ppMemoryAddress, 
+                  &numObjectsOK,
+                  &numObjectsRepaired,
+                  &numObjectsDeleted,
+                  &numObjectsError,
+                  fp );
       if ( fp != stderr ) fclose( fp );
 
       fprintf( stderr, "Number of objects with no defects: "VDSF_SIZE_T_FORMAT"\n", numObjectsOK );
       fprintf( stderr, "Number of objects with small defects: "VDSF_SIZE_T_FORMAT"\n", numObjectsRepaired );
       fprintf( stderr, "Number of deleted objects (added but not committed, etc.): "VDSF_SIZE_T_FORMAT"\n", numObjectsDeleted );
       fprintf( stderr, "Number of objects with errors: "VDSF_SIZE_T_FORMAT"\n", numObjectsError );
-      if ( errcode != 0 ) {
+      if ( numObjectsError != 0 ) {
          fprintf( stderr, "Failure repairing the vds (see log for details)\n" );
          fprintf( stderr, "Please save the backup (%s%s) \n%s\n",
             path, ".bak",
             "before running this program a second time." );
-         return errcode;
+         return false;
       }
 
 #if 0
@@ -227,7 +251,7 @@ vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
          if ( errcode == -1 ) {
             errcode = mkdir( path, pConfig->dirPerms );
             if ( errcode != 0 )
-               return -1;
+               return false;
          }
          (*ppMemoryAddress)->logON = true;
       }
@@ -239,7 +263,7 @@ vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
 
    pHandler->pMemHeader = *ppMemoryAddress;
    
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

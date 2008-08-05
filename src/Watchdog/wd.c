@@ -25,6 +25,7 @@ int main( int argc, char *argv[] )
 {
    vdswWatchdog wDog;
    int errcode = 0;
+   bool rc;
    
    vdscOptionHandle optHandle;
    char *optArgument;
@@ -73,10 +74,11 @@ int main( int argc, char *argv[] )
    }
 
    if ( vdscGetShortOptArgument( optHandle, 'c', &optArgument ) ) {
-      errcode = vdswWatchdogReadConfig( &wDog, optArgument );
-      if ( errcode != 0 ) {
+      rc = vdswWatchdogReadConfig( &wDog, optArgument );
+      VDS_POST_CONDITION( rc == true || rc == false );
+      if ( ! rc ) {
          fprintf( stderr, "%s\n", g_pWD->errorMsg );
-         return errcode;
+         return -1;
       }
    }
 
@@ -85,8 +87,9 @@ int main( int argc, char *argv[] )
    
 #if defined ( WIN32 )
    if ( vdscIsShortOptPresent( optHandle, 'i' ) ) {
-      errcode = vdswInstall( &wDog );
-      if ( errcode != 0 ) return errcode;
+      rc = vdswInstall( &wDog );
+      VDS_POST_CONDITION( rc == true || rc == false );
+      if ( ! rc ) return -1;
       return 0;
    }
    
@@ -99,20 +102,22 @@ int main( int argc, char *argv[] )
       wDog.verifyVDSOnly = true;
    }
 
-   errcode = vdswInitializeVDS( &wDog );
-   if ( errcode != 0 ) {
+   rc = vdswInitializeVDS( &wDog );
+   VDS_POST_CONDITION( rc == true || rc == false );
+   if ( ! rc ) {
       vdswSendMessage( &wDog.log, 
                        WD_ERROR, 
                        "VDS initialization error  - aborting..." );
-      return errcode;
+      return -1;
    }
 
    if ( wDog.verifyVDSOnly ) return 0;
    
 #if ! defined ( WIN32 )
    if ( vdscIsShortOptPresent( optHandle, 'd' ) ) {
-      errcode = vdswDaemon( &wDog );
-      if ( errcode != 0 ) return errcode;
+      rc = vdswDaemon( &wDog );
+      VDS_POST_CONDITION( rc == true || rc == false );
+      if ( ! rc ) return -1;
    }
 #endif
 

@@ -54,12 +54,12 @@ void vdswMemoryManagerFini( vdswMemoryManager * pManager )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswCreateVDS( vdswMemoryManager  * pManager,
-                   const char         * memoryFileName,
-                   size_t               memorySizekb,
-                   int                  filePerms,
-                   vdseMemoryHeader  ** ppHeader,
-                   vdseSessionContext * pContext )
+bool vdswCreateVDS( vdswMemoryManager  * pManager,
+                    const char         * memoryFileName,
+                    size_t               memorySizekb,
+                    int                  filePerms,
+                    vdseMemoryHeader  ** ppHeader,
+                    vdseSessionContext * pContext )
 {
    int errcode = 0;
    vdscMemoryFileStatus fileStatus;
@@ -89,12 +89,18 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
    
    errcode = vdscCreateBackstore( &pManager->memory, filePerms, &pContext->errorHandler );
    if ( errcode != 0 ) {
-      return VDSW_CREATE_BACKSTORE_FAILURE;
+      vdscChainError( &pContext->errorHandler,
+                      g_wdErrorHandle,
+                      VDSW_CREATE_BACKSTORE_FAILURE );
+      return false;
    }
 
    errcode = vdscOpenMemFile( &pManager->memory, &pManager->pMemoryAddress, &pContext->errorHandler );   
    if ( errcode != 0 ) {
-      return VDSW_OPEN_BACKSTORE_FAILURE;
+      vdscChainError( &pContext->errorHandler,
+                      g_wdErrorHandle,
+                      VDSW_OPEN_BACKSTORE_FAILURE );
+      return false;
    }
       
    pManager->pHeader = *ppHeader = (vdseMemoryHeader*) pManager->pMemoryAddress;
@@ -118,14 +124,17 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
-      return errcode;
+      return false;
    }
 
    /* The top folder  */
    ptr = vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
    if ( ptr == NULL ) {
       (*ppHeader) = NULL;
-      return VDS_NOT_ENOUGH_VDS_MEMORY;
+      vdscSetError( &pContext->errorHandler,
+                    g_vdsErrorHandle,
+                    VDS_NOT_ENOUGH_VDS_MEMORY );
+      return false;
    }
    pFolder = (vdseFolder *) ptr;
 
@@ -135,9 +144,9 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
                                 1 );
    if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler,
-                    g_wdErrorHandle,
+                    g_vdsErrorHandle,
                     errcode );
-      return -1;
+      return false;
    }
    vdseTxStatusInit( &pManager->pHeader->topHashItem.txStatus, VDSE_NULL_OFFSET );
 
@@ -148,19 +157,13 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
       SET_OFFSET( &pManager->pHeader->topHashItem.txStatus );
    pFolder->nodeObject.myParentOffset = VDSE_NULL_OFFSET;
 
-   listErr = vdseHashInit( &pFolder->hashObj, 
-                           SET_OFFSET(&pFolder->memObject),
-                           25, 
-                           pContext );
-   if ( listErr != LIST_OK ) {
-      if ( listErr == LIST_NO_MEMORY ) {
-         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
-      }
-      else {
-         errcode = VDS_INTERNAL_ERROR;
-      }
-      vdscSetError( &pContext->errorHandler, g_wdErrorHandle, errcode );
-      return -1;
+   errcode = vdseHashInit( &pFolder->hashObj, 
+                      SET_OFFSET(&pFolder->memObject),
+                      25, 
+                      pContext );
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      return false;
    }   
    (*ppHeader)->treeMgrOffset = SET_OFFSET( ptr );
    (*ppHeader)->topHashItem.dataOffset = SET_OFFSET(&(*ppHeader)->topDescriptor);
@@ -173,7 +176,10 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
    ptr = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
    if ( ptr == NULL ) {
       (*ppHeader) = NULL;
-      return VDS_NOT_ENOUGH_VDS_MEMORY;
+      vdscSetError( &pContext->errorHandler,
+                    g_vdsErrorHandle,
+                    VDS_NOT_ENOUGH_VDS_MEMORY );
+      return false;
    }
 
    processManager = (vdseProcMgr *) ptr;
@@ -181,7 +187,8 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
    errcode = vdseProcMgrInit( processManager, pContext );
    if ( errcode != 0 ) {
       (*ppHeader) = NULL;
-      return errcode;
+      /* The error is set in the function itself */
+      return false;
    }
    (*ppHeader)->processMgrOffset = SET_OFFSET( processManager );
 
@@ -204,16 +211,7 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
    (*ppHeader)->alignmentInt16  = VDSC_ALIGNMENT_INT16;
    (*ppHeader)->alignmentInt32  = VDSC_ALIGNMENT_INT32;
    (*ppHeader)->alignmentInt64  = VDSC_ALIGNMENT_INT64;
-#if 0
-   fprintf(stderr, "%d %d %d %d %d %d %d\n",
- VDSC_ALIGNMENT_STRUCT,
- VDSC_ALIGNMENT_CHAR,
- VDSC_ALIGNMENT_INT16,
- VDSC_ALIGNMENT_INT32,
- VDSC_ALIGNMENT_INT64,
- VDSC_ALIGNMENT_CHAR_ARRAY,
- VDSC_ALIGNMENT_BOOL );
-#endif
+
    (*ppHeader)->allocationUnit = VDSE_ALLOCATION_UNIT;
    strncpy( (*ppHeader)->cpu_type, MYCPU, 19 );
    strncpy( (*ppHeader)->compiler, MYCC, 19);
@@ -249,15 +247,16 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
      _MSC_VER/100, _MSC_VER % 100 );
 #endif
 
-   return errcode;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswOpenVDS( vdswMemoryManager * pManager, 
-                 const char        * memoryFileName,
-                 size_t              memorySizekb,
-                 vdseMemoryHeader ** ppHeader )
+bool vdswOpenVDS( vdswMemoryManager  * pManager, 
+                  const char         * memoryFileName,
+                  size_t               memorySizekb,
+                  vdseMemoryHeader  ** ppHeader,
+                  vdseSessionContext * pContext )
 {
    int errcode = 0;
    vdscMemoryFileStatus fileStatus;
@@ -278,30 +277,36 @@ int vdswOpenVDS( vdswMemoryManager * pManager,
    vdscBackStoreStatus( &pManager->memory, &fileStatus );
    
    if ( ! fileStatus.fileExist ) {
-      return VDSW_BACKSTORE_FILE_MISSING;
+      vdscSetError( &pContext->errorHandler,
+                    g_wdErrorHandle,
+                    VDSW_BACKSTORE_FILE_MISSING );
+      return false;
    }
    
    errcode = vdscOpenMemFile( &pManager->memory, 
                               &pManager->pMemoryAddress, 
                               &errorHandler );   
    if ( errcode != 0 ) {
-/*#if defined (VDS_DEBUG) */
-      fprintf( stderr, "MMAP failure - %d %s\n", errno, memoryFileName );
-/*#endif */
-      return VDSW_ERROR_OPENING_VDS;
+      vdscChainError( &pContext->errorHandler,
+                      g_wdErrorHandle,
+                      VDSW_ERROR_OPENING_VDS );
+      return false;
    }
    
    pManager->pHeader = *ppHeader = (vdseMemoryHeader*) pManager->pMemoryAddress;
 
    if ( (*ppHeader)->version != VDSE_MEMORY_VERSION ) {
       (*ppHeader) = NULL;
-      return VDSW_INCOMPATIBLE_VERSIONS;
+      vdscSetError( &pContext->errorHandler,
+                    g_wdErrorHandle,
+                    VDSW_INCOMPATIBLE_VERSIONS );
+      return false;
    }
 
    /* Sets the global base address */
    g_pBaseAddr = (unsigned char *) pManager->pMemoryAddress;
   
-   return errcode;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
