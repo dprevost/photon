@@ -20,6 +20,7 @@
 #define VDSW_HANDLER_H
 
 #include "Engine/SessionContext.h"
+#include "Watchdog/wdErrors.h"
 
 BEGIN_C_DECLS
 
@@ -54,10 +55,10 @@ typedef struct vdswHandler vdswHandler;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswHandlerInit( vdswHandler              * pHandler,
-                     struct ConfigParams      * pConfig,
-                     struct vdseMemoryHeader ** ppMemoryAddress,
-                     bool                       verifyVDSOnly );
+vdswErrors vdswHandlerInit( vdswHandler              * pHandler,
+                            struct ConfigParams      * pConfig,
+                            struct vdseMemoryHeader ** ppMemoryAddress,
+                            bool                       verifyVDSOnly );
 
 void vdswHandlerFini( vdswHandler * pHandler );
 

@@ -48,7 +48,128 @@
         </message>
       </message_group>
     </error>
+
+    <error>
+      <errnumber> 1 </errnumber>
+      <errname> NOT_ENOUGH_HEAP_MEMORY </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Not enough heap memory (non-VDS memory). 
+          </errormsg>
+          <errordoc>
+            Not enough heap memory (non-VDS memory).
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 2 </errnumber>
+      <errname> CFG_BCK_LOCATION_TOO_LONG</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Backup path is too long.</errormsg>
+          <errordoc>
+            The path of the backup path is longer 
+            than PATH_MAX (the maximum length of a filename/pathname).
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 3 </errnumber>
+      <errname> NO_VERIFICATION_POSSIBLE</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Cannot verify the VDS.</errormsg>
+          <errordoc>
+            The VDS does not exist and therefore cannot be verified.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 4 </errnumber>
+      <errname> MKDIR_FAILURE</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Cannot create the directory for the VDS.</errormsg>
+          <errordoc>
+            Cannot create the directory that will be used for the VDS
+            and associated files.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 5 </errnumber>
+      <errname>FILE_NOT_ACCESSIBLE</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Cannot access the backstore file for the VDS.</errormsg>
+          <errordoc>
+            Cannot access the backstore file for the VDS. You might want
+            to verify the permissionsandownership of the file and/or of the
+            parent directory.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 6 </errnumber>
+      <errname>COPY_BCK_FAILURE</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Error while creating a copy of the backstore file for the VDS.
+          </errormsg>
+          <errordoc>
+            Error while creating a copy of the backstore file for the VDS
+            (a backup copy is created before the VDS is verify for 
+            inconsistencies).
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 7 </errnumber>
+      <errname>CREATE_BACKSTORE_FAILURE</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Error creating the backstore file for the VDS.
+          </errormsg>
+          <errordoc>
+            Error creating the backstore file for the VDS. Possible reasons:
+            not enough disk space, invalid file permissions, etc.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 8 </errnumber>
+      <errname>OPEN_BACKSTORE_FAILURE</errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Error opening the backstore file for the VDS.
+          </errormsg>
+          <errordoc>
+            Error opening the backstore file for the VDS.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
   </errgroup>
+
   <errgroup>
     <errgroup_ident xml:lang="en">
       <errgroup_name>XML config errors</errgroup_name>

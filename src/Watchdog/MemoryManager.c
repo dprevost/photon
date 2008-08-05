@@ -22,6 +22,7 @@
 #include "Engine/Folder.h"
 #include "Engine/ProcessManager.h"
 #include "Engine/InitEngine.h"
+#include "Watchdog/wdErrors.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -86,15 +87,12 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
    
    errcode = vdscCreateBackstore( &pManager->memory, filePerms, &pContext->errorHandler );
    if ( errcode != 0 ) {
-      return VDS_INTERNAL_ERROR;
+      return VDSW_CREATE_BACKSTORE_FAILURE;
    }
 
    errcode = vdscOpenMemFile( &pManager->memory, &pManager->pMemoryAddress, &pContext->errorHandler );   
    if ( errcode != 0 ) {
-/*#if defined (VDS_DEBUG) */
-/*        fprintf( stderr, "MMAP failure - %d\n", errno ); */
-/*#endif */
-      return VDS_INTERNAL_ERROR;
+      return VDSW_OPEN_BACKSTORE_FAILURE;
    }
       
    pManager->pHeader = *ppHeader = (vdseMemoryHeader*) pManager->pMemoryAddress;
@@ -115,6 +113,9 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
                                pContext );
    if ( errcode != 0 ) {
       (*ppHeader) = NULL;
+      vdscSetError( &pContext->errorHandler,
+                    g_vdsErrorHandle,
+                    errcode );
       return errcode;
    }
 

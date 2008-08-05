@@ -162,7 +162,7 @@ int vdswLastError() {
  *  than having to search in the EventLog/syslog facility).
  */
 static inline
-int vdswInitializeVDS( vdswWatchdog * pWatchdog ) {
+vdswErrors vdswInitializeVDS( vdswWatchdog * pWatchdog ) {
    return vdswHandlerInit( &pWatchdog->vds,
                            &pWatchdog->params, 
                            &pWatchdog->pMemoryAddress, 

@@ -36,7 +36,6 @@ int main( int argc, char *argv[] )
       { 'u', "uninstall", 1, "",         "Uninstall the program as a NT service (Windows only)" },
       { 'v', "verify",    1, "",         "Verify the VDS and exit" }
    };
-   errcode = vdscSetSupportedOptions( 5, opts, &optHandle );
 #else
    struct vdscOptStruct opts[4] = {
       { 'c', "config", 0, "filename", "Filename for the configuration options" },
@@ -44,12 +43,17 @@ int main( int argc, char *argv[] )
       { 't', "test",   1, "",         "Test the config file and exit" },
       { 'v', "verify", 1, "",         "Verify the VDS and exit" }
    };
+#endif
 
    g_pWD = &wDog;
    vdswWatchdogInit( g_pWD );
 
+#if defined (WIN32)
+   errcode = vdscSetSupportedOptions( 5, opts, &optHandle );
+#else
    errcode = vdscSetSupportedOptions( 4, opts, &optHandle );
 #endif
+
    if ( errcode != 0 ) {
       fprintf( stderr, 
          "Internal error in vdscSetSupportedOptions, error code = %d\n",

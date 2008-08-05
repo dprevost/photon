@@ -26,10 +26,10 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswHandlerInit( vdswHandler         * pHandler,
-                     struct ConfigParams * pConfig,
-                     vdseMemoryHeader   ** ppMemoryAddress,
-                     bool                  verifyVDSOnly )
+vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
+                            struct ConfigParams * pConfig,
+                            vdseMemoryHeader   ** ppMemoryAddress,
+                            bool                  verifyVDSOnly )
 {
    int errcode = 0;
    char path[PATH_MAX];
@@ -51,8 +51,6 @@ int vdswHandlerInit( vdswHandler         * pHandler,
    VDS_PRE_CONDITION( pConfig         != NULL );
    VDS_PRE_CONDITION( ppMemoryAddress != NULL );
 
-   pHandler->pConfig = NULL;
-   pHandler->pMemManager = NULL;
    pHandler->pMemHeader = NULL;
 
    memset( &pHandler->context, 0, sizeof(vdseSessionContext) );
@@ -65,17 +63,16 @@ int vdswHandlerInit( vdswHandler         * pHandler,
    }
    vdscInitErrorHandler( &pHandler->context.errorHandler );
 
-   if ( pConfig == NULL ) return -1;
    pHandler->pConfig = pConfig;
 
    pHandler->pMemManager = (vdswMemoryManager *)calloc( 
       sizeof(vdswMemoryManager), 1 );
-   if ( pHandler->pMemManager == NULL ) return -1;
+   if ( pHandler->pMemManager == NULL ) return VDSW_NOT_ENOUGH_HEAP_MEMORY;
    vdswMemoryManagerInit( pHandler->pMemManager );
    
    path_len = strlen( pConfig->wdLocation ) + strlen( VDS_DIR_SEPARATOR ) +
       strlen( VDS_MEMFILE_NAME )  + strlen( ".bak" );
-   if ( path_len >= PATH_MAX ) return -1;
+   if ( path_len >= PATH_MAX ) return VDSW_CFG_BCK_LOCATION_TOO_LONG;
    
    sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
             VDS_MEMFILE_NAME );
@@ -85,9 +82,7 @@ int vdswHandlerInit( vdswHandler         * pHandler,
 
    if ( ! fileStatus.fileExist ) {
       if ( verifyVDSOnly ) {
-         fprintf( stderr, 
-            "Error - the VDS does not exist - no verification possible\n" );
-         return -1;
+         return VDSW_NO_VERIFICATION_POSSIBLE;
       }
       errcode = vdswCreateVDS( pHandler->pMemManager,
                                path,
@@ -95,7 +90,7 @@ int vdswHandlerInit( vdswHandler         * pHandler,
                                pConfig->filePerms,
                                ppMemoryAddress,
                                &pHandler->context );
-      if ( errcode != 0 ) return -1;
+      if ( errcode != 0 ) return errcode;
       
       (*ppMemoryAddress)->logON = false;
       if ( pConfig->logOn ) {
@@ -103,14 +98,14 @@ int vdswHandlerInit( vdswHandler         * pHandler,
          sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
                   VDS_LOGDIR_NAME );
          errcode = mkdir( path, pConfig->dirPerms );
-         if ( errcode != 0 ) return -1;
+         if ( errcode != 0 ) return VDSW_MKDIR_FAILURE;
          (*ppMemoryAddress)->logON = true;
       }
    }
    else {
       if ( ! fileStatus.fileReadable || ! fileStatus.fileWritable || 
          ! fileStatus.lenghtOK ) {
-         return -1;
+         return VDSW_FILE_NOT_ACCESSIBLE;
       }
 
       memset( logFile, '\0', PATH_MAX );
@@ -133,7 +128,7 @@ int vdswHandlerInit( vdswHandler         * pHandler,
          if ( errcode != 0 ) {
             if ( errno != EEXIST ) {
                fprintf( stderr, "Making a directory for log files failed, errno = %d\n", errno );
-               return -1;
+               return VDSW_MKDIR_FAILURE;
             }
          }
          sprintf( logFile, "%s%s%s%s%s%s%s", 
@@ -154,7 +149,7 @@ int vdswHandlerInit( vdswHandler         * pHandler,
          errcode = system( cmd );
          if ( errcode != 0 ) {
             fprintf( stderr, "Copy (backup) operation failed\n" );
-            return -1;
+            return VDSW_COPY_BCK_FAILURE;
          }
       }
       
@@ -192,7 +187,7 @@ int vdswHandlerInit( vdswHandler         * pHandler,
          fprintf( stderr, "Please save the backup (%s%s) \n%s\n",
             path, ".bak",
             "before running this program a second time." );
-         return -1;
+         return errcode;
       }
 
 #if 0
