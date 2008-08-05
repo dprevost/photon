@@ -265,6 +265,7 @@ bool vdswOpenVDS( vdswMemoryManager  * pManager,
    VDS_PRE_CONDITION( pManager       != NULL );
    VDS_PRE_CONDITION( memoryFileName != NULL );
    VDS_PRE_CONDITION( ppHeader       != NULL );
+   VDS_PRE_CONDITION( pContext       != NULL );
    VDS_PRE_CONDITION( memorySizekb > 0 );
 
    *ppHeader = NULL;
