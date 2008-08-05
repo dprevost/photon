@@ -1,4 +1,4 @@
-.TH "vdsInfo" 3 "8 Jul 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsInfo" 3 "5 Aug 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -44,24 +44,86 @@ Definition at line 263 of file vdsCommon.h.
 .RI "size_t \fBlargestFreeInBytes\fP"
 .br
 .RI "\fILargest contiguous group of free blocks. \fP"
+.ti -1c
+.RI "int \fBmemoryVersion\fP"
+.br
+.RI "\fIVDS version. \fP"
+.ti -1c
+.RI "int \fBbigEndian\fP"
+.br
+.RI "\fIEndianess (0 for little endian, 1 for big endian). \fP"
+.ti -1c
+.RI "char \fBcompiler\fP [20]"
+.br
+.RI "\fICompiler name. \fP"
+.ti -1c
+.RI "char \fBcompilerVersion\fP [10]"
+.br
+.RI "\fICompiler version (if available). \fP"
+.ti -1c
+.RI "char \fBplatform\fP [20]"
+.br
+.RI "\fIPlatform. \fP"
+.ti -1c
+.RI "char \fBdllVersion\fP [10]"
+.br
+.RI "\fIShared lib version. \fP"
+.ti -1c
+.RI "char \fBwatchdogVersion\fP [10]"
+.br
+.RI "\fIThe watchdog version (of the vds creator). \fP"
+.ti -1c
+.RI "char \fBcreationTime\fP [30]"
+.br
+.RI "\fITimestamp of creation of VDS. \fP"
 .in -1c
 .SH "Field Documentation"
 .PP 
-.SS "size_t \fBvdsInfo::totalSizeInBytes\fP"
-.PP
-Total size of the virtual data space. 
-.PP
-Definition at line 266 of file vdsCommon.h.
 .SS "size_t \fBvdsInfo::allocatedSizeInBytes\fP"
 .PP
 Total size of the allocated blocks. 
 .PP
 Definition at line 269 of file vdsCommon.h.
-.SS "size_t \fBvdsInfo::numObjects\fP"
+.SS "int \fBvdsInfo::bigEndian\fP"
 .PP
-Number of API objects in the vds (internal objects are not counted). 
+Endianess (0 for little endian, 1 for big endian). 
 .PP
-Definition at line 272 of file vdsCommon.h.
+Definition at line 290 of file vdsCommon.h.
+.SS "char \fBvdsInfo::compiler\fP[20]"
+.PP
+Compiler name. 
+.PP
+Definition at line 293 of file vdsCommon.h.
+.SS "char \fBvdsInfo::compilerVersion\fP[10]"
+.PP
+Compiler version (if available). 
+.PP
+Definition at line 296 of file vdsCommon.h.
+.SS "char \fBvdsInfo::creationTime\fP[30]"
+.PP
+Timestamp of creation of VDS. 
+.PP
+Definition at line 308 of file vdsCommon.h.
+.SS "char \fBvdsInfo::dllVersion\fP[10]"
+.PP
+Shared lib version. 
+.PP
+Definition at line 302 of file vdsCommon.h.
+.SS "size_t \fBvdsInfo::largestFreeInBytes\fP"
+.PP
+Largest contiguous group of free blocks. 
+.PP
+Definition at line 284 of file vdsCommon.h.
+.SS "int \fBvdsInfo::memoryVersion\fP"
+.PP
+VDS version. 
+.PP
+Definition at line 287 of file vdsCommon.h.
+.SS "size_t \fBvdsInfo::numFrees\fP"
+.PP
+Number of calls to free groups of blocks. 
+.PP
+Definition at line 281 of file vdsCommon.h.
 .SS "size_t \fBvdsInfo::numGroups\fP"
 .PP
 Total number of groups of blocks. 
@@ -72,16 +134,26 @@ Definition at line 275 of file vdsCommon.h.
 Number of calls to allocate groups of blocks. 
 .PP
 Definition at line 278 of file vdsCommon.h.
-.SS "size_t \fBvdsInfo::numFrees\fP"
+.SS "size_t \fBvdsInfo::numObjects\fP"
 .PP
-Number of calls to free groups of blocks. 
+Number of API objects in the vds (internal objects are not counted). 
 .PP
-Definition at line 281 of file vdsCommon.h.
-.SS "size_t \fBvdsInfo::largestFreeInBytes\fP"
+Definition at line 272 of file vdsCommon.h.
+.SS "char \fBvdsInfo::platform\fP[20]"
 .PP
-Largest contiguous group of free blocks. 
+Platform. 
 .PP
-Definition at line 284 of file vdsCommon.h.
+Definition at line 299 of file vdsCommon.h.
+.SS "size_t \fBvdsInfo::totalSizeInBytes\fP"
+.PP
+Total size of the virtual data space. 
+.PP
+Definition at line 266 of file vdsCommon.h.
+.SS "char \fBvdsInfo::watchdogVersion\fP[10]"
+.PP
+The watchdog version (of the vds creator). 
+.PP
+Definition at line 305 of file vdsCommon.h.
 
 .SH "Author"
 .PP 

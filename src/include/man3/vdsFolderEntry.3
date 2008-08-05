@@ -1,4 +1,4 @@
-.TH "vdsFolderEntry" 3 "8 Jul 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsFolderEntry" 3 "5 Aug 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -37,11 +37,16 @@ Definition at line 206 of file vdsCommon.h.
 .in -1c
 .SH "Field Documentation"
 .PP 
-.SS "\fBvdsObjectType\fP \fBvdsFolderEntry::type\fP"
+.SS "char \fBvdsFolderEntry::name\fP[VDS_MAX_NAME_LENGTH]"
 .PP
-The object type. 
+The name of the object. 
 .PP
-Definition at line 209 of file vdsCommon.h.
+Definition at line 218 of file vdsCommon.h.
+.SS "size_t \fBvdsFolderEntry::nameLengthInBytes\fP"
+.PP
+The actual length of the name of the object. 
+.PP
+Definition at line 215 of file vdsCommon.h.
 .SS "int \fBvdsFolderEntry::status\fP"
 .PP
 Status (created but not committed, etc. 
@@ -49,16 +54,11 @@ Status (created but not committed, etc.
 ) - not used in version 0.1 
 .PP
 Definition at line 212 of file vdsCommon.h.
-.SS "size_t \fBvdsFolderEntry::nameLengthInBytes\fP"
+.SS "\fBvdsObjectType\fP \fBvdsFolderEntry::type\fP"
 .PP
-The actual length of the name of the object. 
+The object type. 
 .PP
-Definition at line 215 of file vdsCommon.h.
-.SS "char \fBvdsFolderEntry::name\fP[VDS_MAX_NAME_LENGTH]"
-.PP
-The name of the object. 
-.PP
-Definition at line 218 of file vdsCommon.h.
+Definition at line 209 of file vdsCommon.h.
 
 .SH "Author"
 .PP 

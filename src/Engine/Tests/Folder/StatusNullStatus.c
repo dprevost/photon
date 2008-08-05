@@ -56,7 +56,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseFolderStatus( pFolder, NULL );
+   vdseFolderMyStatus( pFolder, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

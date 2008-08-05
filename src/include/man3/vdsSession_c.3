@@ -1,4 +1,4 @@
-.TH "API functions for vdsf sessions." 3 "8 Jul 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "API functions for vdsf sessions." 3 "5 Aug 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -27,6 +27,10 @@ API functions for vdsf sessions. \-
 .RI "VDSF_EXPORT int \fBvdsExitSession\fP (\fBVDS_HANDLE\fP sessionHandle)"
 .br
 .RI "\fITerminate the current session. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsGetDefinition\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjectDefinition\fP **definition)"
+.br
+.RI "\fIRetrieve the data definition of the named object. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsGetInfo\fP (\fBVDS_HANDLE\fP sessionHandle, \fBvdsInfo\fP *pInfo)"
 .br
@@ -149,6 +153,32 @@ Once this function is executed, attempts to use the session handle might lead to
 \fBParameters:\fP
 .RS 4
 \fIsessionHandle\fP Handle to the current session.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBvdsErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int vdsGetDefinition (\fBVDS_HANDLE\fP sessionHandle, const char * objectName, size_t nameLengthInBytes, \fBvdsObjectDefinition\fP ** definition)"
+.PP
+Retrieve the data definition of the named object. 
+.PP
+\fBWarning:\fP
+.RS 4
+This function allocates a buffer to hold the definition (using malloc()). You must free it (with free()) when you no longer need the definition.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsessionHandle\fP Handle to the current session. 
+.br
+\fIobjectName\fP The fully qualified name of the object. 
+.br
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the vdsf engine). 
+.br
+\fIdefinition\fP The buffer allocated by the API to hold the content of the object definition. Freeing the memory (with free()) is the responsability of the caller.
 .RE
 .PP
 \fBReturns:\fP

@@ -334,6 +334,93 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int vdsGetDefinition( VDS_HANDLE             sessionHandle,
+                      const char           * objectName,
+                      size_t                 nameLengthInBytes,
+                      vdsObjectDefinition ** ppDefinition )
+{
+   vdsaSession* pSession;
+   int rc = 0, errcode = 0;
+   vdseFolder * pTree;
+   vdseFieldDef * pInternalDef;
+   vdsObjectDefinition *pDefinition;
+   
+   pSession = (vdsaSession*) sessionHandle;
+
+   if ( pSession == NULL ) return VDS_NULL_HANDLE;   
+   if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   
+   if ( objectName == NULL ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
+      return VDS_INVALID_OBJECT_NAME;
+   }
+
+   if ( nameLengthInBytes == 0 ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      return VDS_INVALID_LENGTH;
+   }
+   
+   if ( ppDefinition == NULL ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      return VDS_NULL_POINTER;
+   }
+
+   pDefinition = calloc( sizeof(vdsObjectDefinition), 1 );
+   if ( pDefinition == NULL ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
+      return VDS_NOT_ENOUGH_HEAP_MEMORY;
+   }
+   
+   if ( vdsaSessionLock( pSession ) == 0 ) {
+      if ( ! pSession->terminated ) {
+         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder )
+         rc = vdseTopFolderGetDef( pTree, 
+                                   objectName,
+                                   nameLengthInBytes,
+                                   pDefinition,
+                                   &pInternalDef,
+                                   &pSession->context );
+         if ( rc == 0 ) {
+            if ( pDefinition->type == VDS_FOLDER ) {
+               *ppDefinition = pDefinition;
+            }
+            else {
+               errcode = vdsaGetDefinition( pInternalDef,
+                                            pDefinition->numFields,
+                                            ppDefinition );
+               if ( errcode == 0 ) {
+                  (*ppDefinition)->type = pDefinition->type;
+                  if ( pDefinition->type == VDS_HASH_MAP || 
+                     pDefinition->type == VDS_FAST_MAP ) {
+                     memcpy( &(*ppDefinition)->key, 
+                             &pDefinition->key, 
+                             sizeof(vdsKeyDefinition) );
+                  }
+               }
+            }
+         }
+      }
+      else {
+         errcode = VDS_SESSION_IS_TERMINATED;
+      }
+      vdsaSessionUnlock( pSession );
+   }
+   else {
+      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+   }
+   
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   }
+   if ( rc != 0 ) {
+      errcode = vdscGetLastError( &pSession->context.errorHandler );
+   }
+   
+   return errcode;
+}   
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdsGetInfo( VDS_HANDLE   sessionHandle,
                 vdsInfo    * pInfo )
 {

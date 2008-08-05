@@ -184,6 +184,32 @@ int vdsExitSession( VDS_HANDLE sessionHandle );
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
+ * \brief Retrieve the data definition of the named object.
+ *
+ * \warning This function allocates a buffer to hold the definition (using 
+ * malloc()). You must free it (with free()) when you no longer need the
+ * definition.
+ *
+ * \param[in]  sessionHandle Handle to the current session.
+ * \param[in]  objectName The fully qualified name of the object. 
+ * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
+ *             counting the null terminator (null-terminators are not used by
+ *             the vdsf engine).
+ * \param[out]  definition The buffer allocated by the API to hold the content 
+ *              of the object definition. Freeing the memory (with free())
+ *              is the responsability of the caller.
+ *
+ * \return 0 on success or a ::vdsErrors on error.
+ */
+VDSF_EXPORT
+int vdsGetDefinition( VDS_HANDLE             sessionHandle,
+                      const char           * objectName,
+                      size_t                 nameLengthInBytes,
+                      vdsObjectDefinition ** definition );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
  * Return information on the current status of the VDS (Virtual Data Space).
  *
  * The fetched information is mainly about the current status of the memory 

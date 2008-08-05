@@ -733,6 +733,159 @@ void vdseFolderFini( vdseFolder         * pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int vdseFolderGetDefinition( vdseFolder          * pFolder,
+                             const char          * objectName,
+                             size_t                strLength,
+                             vdsObjectDefinition * pDefinition,
+                             vdseFieldDef       ** ppInternalDef,
+                             vdseSessionContext  * pContext )
+{
+   bool lastIteration = true;
+   size_t partialLength = 0;
+   vdseObjectDescriptor * pDesc = NULL;
+   vdseHashItem * pHashItem = NULL;
+   int rc;
+   vdsErrors errcode;
+   vdseTxStatus * txStatus;
+   vdseFolder * pNextFolder;
+   vdseMemObject * pMemObject;
+   int pDesc_invalid_api_type = 0;
+   size_t bucket;
+   bool found;
+   
+   VDS_PRE_CONDITION( pFolder       != NULL );
+   VDS_PRE_CONDITION( objectName    != NULL )
+   VDS_PRE_CONDITION( pDefinition   != NULL );
+   VDS_PRE_CONDITION( ppInternalDef != NULL );
+   VDS_PRE_CONDITION( pContext      != NULL );
+   VDS_PRE_CONDITION( strLength > 0 );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+
+   errcode = vdseValidateString( objectName, 
+                                 strLength, 
+                                 &partialLength, 
+                                 &lastIteration );
+   if ( errcode != VDS_OK ) goto the_exit;
+   
+   found = vdseHashGet( &pFolder->hashObj, 
+                        (unsigned char *)objectName, 
+                        partialLength * sizeof(char), 
+                        &pHashItem,
+                        &bucket,
+                        pContext );
+   if ( ! found ) {
+      if (lastIteration) {
+         errcode = VDS_NO_SUCH_OBJECT;
+      }
+      else {
+         errcode = VDS_NO_SUCH_FOLDER;
+      }
+      goto the_exit;
+   }
+   while ( pHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
+      GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
+   }
+
+   txStatus = &pHashItem->txStatus;
+
+   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+   
+   if ( lastIteration ) {
+
+      errcode = vdseTxTestObjectStatus( txStatus, 
+                                        SET_OFFSET(pContext->pTransaction) );
+      if ( errcode != VDS_OK ) goto the_exit;
+
+      GET_PTR( pMemObject, pDesc->memOffset, vdseMemObject );
+      if ( vdseLock( pMemObject, pContext ) == 0 ) {
+
+         pDefinition->type = pDesc->apiType;
+
+         switch( pDesc->apiType ) {
+
+         case VDS_FOLDER:
+            break;
+         case VDS_HASH_MAP:
+            *ppInternalDef = GET_PTR_FAST(
+               GET_PTR_FAST( pDesc->offset, vdseHashMap)->dataDefOffset,
+               vdseFieldDef );
+            pDefinition->numFields = 
+               GET_PTR_FAST( pDesc->offset, vdseHashMap)->numFields;
+            break;
+         case VDS_QUEUE:
+         case VDS_LIFO:
+            pDefinition->numFields = 
+               GET_PTR_FAST( pDesc->offset, vdseQueue)->numFields;
+            break;
+         case VDS_FAST_MAP:
+            *ppInternalDef = GET_PTR_FAST(
+               GET_PTR_FAST( pDesc->offset, vdseMap)->dataDefOffset,
+               vdseFieldDef );
+            pDefinition->numFields = 
+               GET_PTR_FAST( pDesc->offset, vdseMap)->numFields;
+            break;
+         default:
+            VDS_INV_CONDITION( pDesc_invalid_api_type );
+         }
+         vdseUnlock( pMemObject, pContext );
+      }
+      else {
+         errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+         goto the_exit;
+      }
+      
+      vdseUnlock( &pFolder->memObject, pContext );
+
+      return 0;
+   }
+   
+   /* This is not the last node. This node must be a folder, otherwise... */
+   if ( pDesc->apiType != VDS_FOLDER ) {
+      errcode = VDS_NO_SUCH_OBJECT;
+      goto the_exit;
+   }
+
+   errcode = vdseTxTestObjectStatus( txStatus, 
+                                     SET_OFFSET(pContext->pTransaction) );
+   if ( errcode != VDS_OK ) {
+      if ( errcode == VDS_NO_SUCH_OBJECT) errcode = VDS_NO_SUCH_FOLDER;
+      goto the_exit;
+   }
+
+   GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
+   rc = vdseLock( &pNextFolder->memObject, pContext );
+   if ( rc != 0 ) {
+      errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+      goto the_exit;
+   }
+   vdseUnlock( &pFolder->memObject, pContext );
+     
+   rc = vdseFolderGetDefinition( pNextFolder,
+                                 &objectName[partialLength+1], 
+                                 strLength - partialLength - 1, 
+                                 pDefinition,
+                                 ppInternalDef,
+                                 pContext );
+   
+   return rc;
+
+the_exit:
+
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called vdscSetError. 
+    */
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   }
+   
+   vdseUnlock( &pFolder->memObject, pContext );
+   
+   return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdseFolderGetFirst( vdseFolder         * pFolder,
                         vdseFolderItem     * pItem,
                         vdseSessionContext * pContext )
@@ -1067,8 +1220,8 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
          switch( pDesc->apiType ) {
 
          case VDS_FOLDER:
-            vdseFolderStatus( GET_PTR_FAST( pDesc->memOffset, vdseFolder ),
-                              pStatus );
+            vdseFolderMyStatus( GET_PTR_FAST( pDesc->memOffset, vdseFolder ),
+                                pStatus );
             break;
          case VDS_HASH_MAP:
             vdseHashMapStatus( GET_PTR_FAST( pDesc->memOffset, vdseHashMap ),
@@ -1497,6 +1650,25 @@ the_exit:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+void vdseFolderMyStatus( vdseFolder   * pFolder,
+                         vdsObjStatus * pStatus )
+{
+   vdseTxStatus  * txStatus;
+
+   VDS_PRE_CONDITION( pFolder != NULL );
+   VDS_PRE_CONDITION( pStatus != NULL );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+
+   GET_PTR( txStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+
+   pStatus->status = txStatus->status;
+   pStatus->numDataItem = pFolder->hashObj.numberOfItems;
+   pStatus->maxDataLength = 0;
+   pStatus->maxKeyLength  = 0;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdseFolderRelease( vdseFolder         * pFolder,
                        vdseFolderItem     * pFolderItem,
                        vdseSessionContext * pContext )
@@ -1714,27 +1886,8 @@ void vdseFolderRollbackEdit( vdseFolder         * pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseFolderStatus( vdseFolder   * pFolder,
-                       vdsObjStatus * pStatus )
-{
-   vdseTxStatus  * txStatus;
-
-   VDS_PRE_CONDITION( pFolder != NULL );
-   VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
-
-   GET_PTR( txStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
-
-   pStatus->status = txStatus->status;
-   pStatus->numDataItem = pFolder->hashObj.numberOfItems;
-   pStatus->maxDataLength = 0;
-   pStatus->maxKeyLength  = 0;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 /*
- * The next 4 functions should only be used by the API, to create, destroy,
+ * The next 7 functions should only be used by the API, to create, destroy,
  * open or close a memory object.
  */
 
@@ -2078,6 +2231,112 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int vdseTopFolderGetDef( vdseFolder          * pFolder,
+                         const char          * objectName,
+                         size_t                nameLengthInBytes,
+                         vdsObjectDefinition * pDefinition,
+                         vdseFieldDef       ** ppInternalDef,
+                         vdseSessionContext  * pContext )
+{
+   vdsErrors errcode = VDS_OK;
+   size_t strLength, i;
+   int rc;
+   size_t first = 0;
+
+   const char * name = objectName;
+   char * lowerName = NULL;
+
+   VDS_PRE_CONDITION( pFolder       != NULL );
+   VDS_PRE_CONDITION( objectName    != NULL );
+   VDS_PRE_CONDITION( pDefinition   != NULL );
+   VDS_PRE_CONDITION( ppInternalDef != NULL );
+   VDS_PRE_CONDITION( pContext      != NULL );
+
+   *ppInternalDef = NULL;
+   
+   strLength = nameLengthInBytes;
+   
+   if ( strLength > VDS_MAX_FULL_NAME_LENGTH ) {
+      errcode = VDS_OBJECT_NAME_TOO_LONG;
+      goto error_handler;
+   }
+   if ( strLength == 0 ) {
+      errcode = VDS_INVALID_OBJECT_NAME;
+      goto error_handler;
+   }
+
+   lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
+   if ( lowerName == NULL ) {
+      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      goto error_handler;
+   }
+
+   /* lowercase the string */
+   for ( i = 0; i < strLength; ++i ) {
+      lowerName[i] = (char) tolower( name[i] );
+   }
+   
+   /* strip the first char if a separator */
+   if ( name[0] == '/' || name[0] == '\\' ) {
+      first = 1;
+      --strLength;
+   }
+
+   if ( strLength == 0 ) {
+      /* Getting the status of the top folder (special case). */
+      if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+         pDefinition->type = VDS_FOLDER;
+         
+         vdseUnlock( &pFolder->memObject, pContext );
+      }
+      else {
+         errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+         goto error_handler;
+      }
+   }
+   else {
+      /*
+       * There is no vdseUnlock here - the recursive nature of the 
+       * function vdseFolderGetObject() means that it will release 
+       * the lock as soon as it can, after locking the
+       * next folder in the chain if needed. 
+       */
+      if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+         rc = vdseFolderGetDefinition( pFolder,
+                                       &(lowerName[first]), 
+                                       strLength, 
+                                       pDefinition,
+                                       ppInternalDef,
+                                       pContext );
+         if ( rc != 0 ) goto error_handler;
+      }
+      else {
+         errcode = VDS_ENGINE_BUSY;
+         goto error_handler;
+      }
+   }
+   
+   free( lowerName );
+   
+   return 0;
+
+error_handler:
+
+   if ( lowerName != NULL ) free( lowerName );
+
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called vdscSetError. 
+    */
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   }
+   
+   return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int vdseTopFolderGetStatus( vdseFolder         * pFolder,
                             const char         * objectName,
                             size_t               nameLengthInBytes,
@@ -2131,7 +2390,7 @@ int vdseTopFolderGetStatus( vdseFolder         * pFolder,
          vdseMemObjectStatus( &pFolder->memObject, pStatus );
          pStatus->type = VDS_FOLDER;
          
-         vdseFolderStatus( pFolder, pStatus );
+         vdseFolderMyStatus( pFolder, pStatus );
 
          vdseUnlock( &pFolder->memObject, pContext );
       }

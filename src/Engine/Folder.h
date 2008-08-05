@@ -116,6 +116,15 @@ VDSF_ENGINE_EXPORT
 void vdseFolderFini( vdseFolder         * pFolder,
                      vdseSessionContext * pContext );
 
+
+VDSF_ENGINE_EXPORT
+int vdseFolderGetDefinition( vdseFolder          * pFolder,
+                             const char          * objectName,
+                             size_t                strLength,
+                             vdsObjectDefinition * pDefinition,
+                             vdseFieldDef       ** ppInternalDef,
+                             vdseSessionContext  * pContext );
+
 VDSF_ENGINE_EXPORT
 int vdseFolderGetFirst( vdseFolder         * pFolder,
                         vdseFolderItem     * pItem,
@@ -162,6 +171,11 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
                             size_t                expectedNumOfChilds,
                             vdseSessionContext  * pContext );
 
+/* Retrieve the status of the current folder */
+VDSF_ENGINE_EXPORT
+void vdseFolderMyStatus( vdseFolder   * pFolder,
+                         vdsObjStatus * pStatus );
+
 VDSF_ENGINE_EXPORT
 int vdseFolderRelease( vdseFolder         * pFolder,
                        vdseFolderItem     * pItem,
@@ -188,15 +202,11 @@ void vdseFolderRollbackEdit( vdseFolder          * pFolder,
                              enum vdsObjectType    objectType,
                              vdseSessionContext  * pContext );
 
-VDSF_ENGINE_EXPORT
-void vdseFolderStatus( vdseFolder   * pFolder,
-                       vdsObjStatus * pStatus );
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * The next 5 functions should only be used by the API, to create, destroy,
- * open or close a memory object. Or to obtain its status.
+ * The next 7 functions should only be used by the API, to create, destroy,
+ * open or close a memory object. Or to obtain its status or definition.
  */
 
 VDSF_ENGINE_EXPORT
@@ -223,6 +233,14 @@ int vdseTopFolderEditObject( vdseFolder         * pFolder,
                              enum vdsObjectType   objectType, 
                              vdseFolderItem     * pFolderItem,
                              vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+int vdseTopFolderGetDef( vdseFolder          * pFolder,
+                         const char          * objectName,
+                         size_t                nameLengthInBytes,
+                         vdsObjectDefinition * pDefinition,
+                         vdseFieldDef       ** ppInternalDef,
+                         vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseTopFolderGetStatus( vdseFolder         * pFolder,

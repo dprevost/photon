@@ -494,7 +494,7 @@ int vdsFolderStatus( VDS_HANDLE     objectHandle,
 
             vdseMemObjectStatus( &pVDSFolder->memObject, pStatus );
 
-            vdseFolderStatus( pVDSFolder, pStatus );
+            vdseFolderMyStatus( pVDSFolder, pStatus );
 
             vdseUnlock( &pVDSFolder->memObject, pContext );
          }

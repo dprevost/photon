@@ -1,4 +1,4 @@
-.TH "vdsSession.h" 3 "8 Jul 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "vdsSession.h" 3 "5 Aug 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -39,6 +39,10 @@ Definition in file \fBvdsSession.h\fP.
 .RI "VDSF_EXPORT int \fBvdsExitSession\fP (\fBVDS_HANDLE\fP sessionHandle)"
 .br
 .RI "\fITerminate the current session. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBvdsGetDefinition\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjectDefinition\fP **definition)"
+.br
+.RI "\fIRetrieve the data definition of the named object. \fP"
 .ti -1c
 .RI "VDSF_EXPORT int \fBvdsGetInfo\fP (\fBVDS_HANDLE\fP sessionHandle, \fBvdsInfo\fP *pInfo)"
 .br

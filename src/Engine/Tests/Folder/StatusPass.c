@@ -80,7 +80,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseFolderStatus( pFolder, &objStatus );
+   vdseFolderMyStatus( pFolder, &objStatus );
 
    if ( objStatus.numDataItem != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
