@@ -122,7 +122,7 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    if ( errcode != 0 ) {
       (*ppHeader) = NULL;
       vdscSetError( &pContext->errorHandler,
-                    g_wdErrorHandle,
+                    g_vdsErrorHandle,
                     errcode );
       return false;
    }
