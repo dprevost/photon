@@ -168,6 +168,54 @@
       </message_group>
     </error>
 
+    <error>
+      <errnumber> 9 </errnumber>
+      <errname> INCOMPATIBLE_VERSIONS </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Memory-file version mismatch.
+          </errormsg>
+          <errordoc>
+            The version of the existing memory-file on disk does not match the
+            version supported by the watchdog.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 10 </errnumber>
+      <errname> BACKSTORE_FILE_MISSING </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The vds backstore file is missing.
+          </errormsg>
+          <errordoc>
+            The vds backstore file is missing. The existence of this file 
+            was already verified previously - if it is missing, something 
+            really weird is going on.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+   
+    <error>
+      <errnumber> 11 </errnumber>
+      <errname> ERROR_OPENING_VDS </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            Generic i/o error when attempting to open the vds.
+          </errormsg>
+          <errordoc>
+            Generic i/o error when attempting to open the vds.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
   </errgroup>
 
   <errgroup>

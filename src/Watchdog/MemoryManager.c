@@ -278,22 +278,24 @@ int vdswOpenVDS( vdswMemoryManager * pManager,
    vdscBackStoreStatus( &pManager->memory, &fileStatus );
    
    if ( ! fileStatus.fileExist ) {
-      return VDS_BACKSTORE_FILE_MISSING;
+      return VDSW_BACKSTORE_FILE_MISSING;
    }
    
-   errcode = vdscOpenMemFile( &pManager->memory, &pManager->pMemoryAddress, &errorHandler );   
+   errcode = vdscOpenMemFile( &pManager->memory, 
+                              &pManager->pMemoryAddress, 
+                              &errorHandler );   
    if ( errcode != 0 ) {
 /*#if defined (VDS_DEBUG) */
       fprintf( stderr, "MMAP failure - %d %s\n", errno, memoryFileName );
 /*#endif */
-      return VDS_ERROR_OPENING_VDS;
+      return VDSW_ERROR_OPENING_VDS;
    }
    
    pManager->pHeader = *ppHeader = (vdseMemoryHeader*) pManager->pMemoryAddress;
 
    if ( (*ppHeader)->version != VDSE_MEMORY_VERSION ) {
       (*ppHeader) = NULL;
-      return VDS_INCOMPATIBLE_VERSIONS;
+      return VDSW_INCOMPATIBLE_VERSIONS;
    }
 
    /* Sets the global base address */
