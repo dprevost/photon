@@ -24,12 +24,14 @@
 #include "Engine/SessionContext.h"
 #include "Engine/InitEngine.h"
 
+extern vdscErrMsgHandle g_wdErrorHandle;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
-                            struct ConfigParams * pConfig,
-                            vdseMemoryHeader   ** ppMemoryAddress,
-                            bool                  verifyVDSOnly )
+int vdswHandlerInit( vdswHandler         * pHandler,
+                     struct ConfigParams * pConfig,
+                     vdseMemoryHeader   ** ppMemoryAddress,
+                     bool                  verifyVDSOnly )
 {
    int errcode = 0;
    char path[PATH_MAX];
@@ -67,13 +69,23 @@ vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
 
    pHandler->pMemManager = (vdswMemoryManager *)calloc( 
       sizeof(vdswMemoryManager), 1 );
-   if ( pHandler->pMemManager == NULL ) return VDSW_NOT_ENOUGH_HEAP_MEMORY;
+   if ( pHandler->pMemManager == NULL ) {
+      vdscSetError( &pHandler->context.errorHandler,
+                    g_wdErrorHandle,
+                    VDSW_NOT_ENOUGH_HEAP_MEMORY );
+      return -1;
+   }
    vdswMemoryManagerInit( pHandler->pMemManager );
    
    path_len = strlen( pConfig->wdLocation ) + strlen( VDS_DIR_SEPARATOR ) +
       strlen( VDS_MEMFILE_NAME )  + strlen( ".bak" );
-   if ( path_len >= PATH_MAX ) return VDSW_CFG_BCK_LOCATION_TOO_LONG;
-   
+   if ( path_len >= PATH_MAX ) {
+      vdscSetError( &pHandler->context.errorHandler,
+                    g_wdErrorHandle,
+                    VDSW_CFG_BCK_LOCATION_TOO_LONG );
+      return -1;
+   }
+      
    sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
             VDS_MEMFILE_NAME );
    
@@ -82,7 +94,10 @@ vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
 
    if ( ! fileStatus.fileExist ) {
       if ( verifyVDSOnly ) {
-         return VDSW_NO_VERIFICATION_POSSIBLE;
+         vdscSetError( &pHandler->context.errorHandler,
+                       g_wdErrorHandle,
+                       VDSW_NO_VERIFICATION_POSSIBLE );
+         return -1;
       }
       errcode = vdswCreateVDS( pHandler->pMemManager,
                                path,
@@ -98,14 +113,22 @@ vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
          sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
                   VDS_LOGDIR_NAME );
          errcode = mkdir( path, pConfig->dirPerms );
-         if ( errcode != 0 ) return VDSW_MKDIR_FAILURE;
+         if ( errcode != 0 ) {
+            vdscSetError( &pHandler->context.errorHandler,
+                          g_wdErrorHandle,
+                          VDSW_MKDIR_FAILURE );
+            return -1;
+         }
          (*ppMemoryAddress)->logON = true;
       }
    }
    else {
       if ( ! fileStatus.fileReadable || ! fileStatus.fileWritable || 
          ! fileStatus.lenghtOK ) {
-         return VDSW_FILE_NOT_ACCESSIBLE;
+         vdscSetError( &pHandler->context.errorHandler,
+                       g_wdErrorHandle,
+                       VDSW_FILE_NOT_ACCESSIBLE );
+         return -1;
       }
 
       memset( logFile, '\0', PATH_MAX );
@@ -127,8 +150,13 @@ vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
          errcode = mkdir( logFile, pConfig->dirPerms );
          if ( errcode != 0 ) {
             if ( errno != EEXIST ) {
-               fprintf( stderr, "Making a directory for log files failed, errno = %d\n", errno );
-               return VDSW_MKDIR_FAILURE;
+               vdscSetError( &pHandler->context.errorHandler,
+                             VDSC_ERRNO_HANDLE,
+                             errno );
+               vdscChainError( &pHandler->context.errorHandler,
+                               g_wdErrorHandle,
+                               VDSW_MKDIR_FAILURE );
+               return -1;
             }
          }
          sprintf( logFile, "%s%s%s%s%s%s%s", 
@@ -146,10 +174,13 @@ vdswErrors vdswHandlerInit( vdswHandler         * pHandler,
 
       if ( ! verifyVDSOnly ) {
          sprintf( cmd, "%s%s%s%s%s", "cp -f ", path, " ", path, ".bak" );
-         errcode = system( cmd );
+//         errcode = vdscCopyBackstore( &pHandler->pMemManager->memory,
+//                                      &pHandler->context.errorHandler );
          if ( errcode != 0 ) {
-            fprintf( stderr, "Copy (backup) operation failed\n" );
-            return VDSW_COPY_BCK_FAILURE;
+            vdscSetError( &pHandler->context.errorHandler,
+                          g_wdErrorHandle,
+                          VDSW_COPY_BCK_FAILURE );
+            return -1;
          }
       }
       

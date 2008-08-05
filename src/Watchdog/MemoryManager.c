@@ -24,6 +24,8 @@
 #include "Engine/InitEngine.h"
 #include "Watchdog/wdErrors.h"
 
+extern vdscErrMsgHandle g_wdErrorHandle;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #define MEMORY_HEADER_SPACE 4096
@@ -114,7 +116,7 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
    if ( errcode != 0 ) {
       (*ppHeader) = NULL;
       vdscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
+                    g_wdErrorHandle,
                     errcode );
       return errcode;
    }
@@ -133,7 +135,7 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
                                 1 );
    if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
+                    g_wdErrorHandle,
                     errcode );
       return -1;
    }
@@ -146,12 +148,18 @@ int vdswCreateVDS( vdswMemoryManager  * pManager,
       SET_OFFSET( &pManager->pHeader->topHashItem.txStatus );
    pFolder->nodeObject.myParentOffset = VDSE_NULL_OFFSET;
 
-   errcode = vdseHashInit( &pFolder->hashObj, 
-                      SET_OFFSET(&pFolder->memObject),
-                      25, 
-                      pContext );
-   if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   listErr = vdseHashInit( &pFolder->hashObj, 
+                           SET_OFFSET(&pFolder->memObject),
+                           25, 
+                           pContext );
+   if ( listErr != LIST_OK ) {
+      if ( listErr == LIST_NO_MEMORY ) {
+         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
+      }
+      else {
+         errcode = VDS_INTERNAL_ERROR;
+      }
+      vdscSetError( &pContext->errorHandler, g_wdErrorHandle, errcode );
       return -1;
    }   
    (*ppHeader)->treeMgrOffset = SET_OFFSET( ptr );
