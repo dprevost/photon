@@ -93,7 +93,8 @@ typedef struct vdscInternalOpt vdscInternalOpt;
  * A snippet of code, showing how to use this function:
  * \code
  *   vdscOptionHandle handle;
- *  
+ *   bool ok;
+ *
  *   struct vdscOptStruct opts[5] = 
  *      { '3', "three",   1, "", "repeat the loop three times",
  *        'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog",
@@ -102,7 +103,7 @@ typedef struct vdscInternalOpt vdscInternalOpt;
  *        'z', "zzz",     1, "", "go to sleep..."
  *      };
  *  
- *   errcode = vdscSetSupportedOptions( 5, opts, &handle );
+ *   ok = vdscSetSupportedOptions( 5, opts, &handle );
  \endcode
 
  * \param[in] numOpts The number of supported options.
@@ -120,9 +121,9 @@ typedef struct vdscInternalOpt vdscInternalOpt;
  * \pre All three strings in the vdscOptStruct struct must be NULL terminated.
  * \pre Options (both short and long) must be unique.
  */
-int vdscSetSupportedOptions( int               numOpts, 
-                             vdscOptStruct*    opts,
-                             vdscOptionHandle* pHandle )
+bool vdscSetSupportedOptions( int                numOpts, 
+                              vdscOptStruct    * opts,
+                              vdscOptionHandle * pHandle )
 {
    int i, k;
    bool nullTerminatedString;
@@ -191,12 +192,12 @@ int vdscSetSupportedOptions( int               numOpts,
    } /* end of loop for preconditions */
    
    optStruct = (vdscInternalOpt *)malloc( sizeof(vdscInternalOpt) );
-   if ( optStruct == NULL ) return -1;
+   if ( optStruct == NULL ) return false;
    
    optStruct->pArray = (vdscOptArray *)malloc(numOpts*sizeof(vdscOptArray));
    if ( optStruct->pArray == NULL ) {
       free( optStruct );
-      return -1;
+      return false;
    }
 
    memset( optStruct->pArray, 0, numOpts*sizeof(vdscOptArray) );
@@ -212,7 +213,7 @@ int vdscSetSupportedOptions( int               numOpts,
 
    optStruct->initialized = VDSC_OPTION_SIGNATURE;
    
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

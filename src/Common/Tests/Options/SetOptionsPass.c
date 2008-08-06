@@ -24,7 +24,7 @@ const bool expectedToPass = true;
 
 int main()
 {
-   int errcode = 0;
+   bool ok;
    vdscOptionHandle handle;
    
    struct vdscOptStruct opts[5] = {
@@ -35,7 +35,7 @@ int main()
       { 'z', "zzz",     1, "", "go to sleep..." }
    };
    
-   errcode = vdscSetSupportedOptions( 5, opts, &handle );
+   ok = vdscSetSupportedOptions( 5, opts, &handle );
 
    vdscUnsetSupportedOptions( handle );
 

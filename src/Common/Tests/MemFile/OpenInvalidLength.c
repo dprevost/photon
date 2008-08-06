@@ -28,7 +28,7 @@ int main()
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
    void*           pAddr = NULL;
-   int errcode = 0;
+   bool ok;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete
     * call is not as synchroneous as it should be...
@@ -40,13 +40,13 @@ int main()
    vdscInitErrorHandler( &errorHandler );
    vdscInitMemoryFile( &mem, 10, "MemFile.mem" );
 
-   errcode = vdscCreateBackstore( &mem, 0755, &errorHandler );
-   if ( errcode != 0 ) {
+   ok = vdscCreateBackstore( &mem, 0755, &errorHandler );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
    mem.length = 0;
-   errcode = vdscOpenMemFile( &mem, &pAddr, &errorHandler );
+   ok = vdscOpenMemFile( &mem, &pAddr, &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 #else

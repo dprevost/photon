@@ -119,62 +119,62 @@ typedef struct vdscMemoryFile vdscMemoryFile;
 
 /*! \brief Initialize a vdscMemoryFile struct. */
 VDSF_COMMON_EXPORT
-void vdscInitMemoryFile( vdscMemoryFile* pMem,
-                         size_t          kblength, 
-                         const char *    filename );
+void vdscInitMemoryFile( vdscMemoryFile * pMem,
+                         size_t           kblength, 
+                         const char     * filename );
 
 /*! \brief Terminate access to a vdscMemoryFile struct. */
 VDSF_COMMON_EXPORT
-void vdscFiniMemoryFile( vdscMemoryFile* pMem );
+void vdscFiniMemoryFile( vdscMemoryFile * pMem );
 
 /*! \brief Return the status of the backstore file. */
 VDSF_COMMON_EXPORT
-void vdscBackStoreStatus( vdscMemoryFile*       pMem,
-                          vdscMemoryFileStatus* pStatus );
+void vdscBackStoreStatus( vdscMemoryFile       * pMem,
+                          vdscMemoryFileStatus * pStatus );
    
 /*! \brief Create the backstore file */
 VDSF_COMMON_EXPORT
-int vdscCreateBackstore( vdscMemoryFile*   pMem,
-                         int               filePerms,
-                         vdscErrorHandler* pError );
+bool vdscCreateBackstore( vdscMemoryFile   * pMem,
+                          int                filePerms,
+                          vdscErrorHandler * pError );
    
 /*! 
  *  \brief "Open" an access to the memory file (this might load the 
  *  backstore in memory).
  */
 VDSF_COMMON_EXPORT
-int vdscOpenMemFile( vdscMemoryFile*   pMem,
-                     void**            ppAddr,
-                     vdscErrorHandler* pError );
+bool vdscOpenMemFile( vdscMemoryFile   * pMem,
+                      void            ** ppAddr,
+                      vdscErrorHandler * pError );
    
 /*! \brief Create a copy of the backstore file */
 VDSF_COMMON_EXPORT
-int vdscCopyBackstore( vdscMemoryFile   * pMem,
-                       int                filePerms,
-                       vdscErrorHandler * pError );
+bool vdscCopyBackstore( vdscMemoryFile   * pMem,
+                        int                filePerms,
+                        vdscErrorHandler * pError );
 
 /*!
  *  \brief Close our access the memory file (possibly removing the memory
  *  file itself from memory).
  */
 VDSF_COMMON_EXPORT
-void vdscCloseMemFile( vdscMemoryFile*   pMem,
-                       vdscErrorHandler* pError );
+void vdscCloseMemFile( vdscMemoryFile   * pMem,
+                       vdscErrorHandler * pError );
 
 /*! \brief Synchronize the memory file to the backstore (disk) */
 VDSF_COMMON_EXPORT
-int vdscSyncMemFile( vdscMemoryFile*   pMem,
-                     vdscErrorHandler* pError );
+bool vdscSyncMemFile( vdscMemoryFile   * pMem,
+                      vdscErrorHandler * pError );
 
 /*! \brief Set the shared memory to read-only. */
 static inline
-int vdscSetReadOnly( vdscMemoryFile   * pMem,
-                     vdscErrorHandler * pError );
+bool vdscSetReadOnly( vdscMemoryFile   * pMem,
+                      vdscErrorHandler * pError );
 
 /*! \brief Set the shared memory to be writable. */
 static inline
-int vdscSetReadWrite( vdscMemoryFile   * pMem,
-                      vdscErrorHandler * pError );
+bool vdscSetReadWrite( vdscMemoryFile   * pMem,
+                       vdscErrorHandler * pError );
 
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -28,7 +28,7 @@ int main()
    char dummyArgs[100];
    char *dummyPtrs[10];
    vdscOptionHandle handle;
-   bool gotIt;
+   bool gotIt, ok;
    
    struct vdscOptStruct opts[5] = {
       { '3', "three",   1, "", "repeat the loop three times" },
@@ -38,8 +38,8 @@ int main()
       { 'z', "zzz",     1, "", "go to sleep..." }
    };
    
-   errcode = vdscSetSupportedOptions( 5, opts, &handle );
-   if ( errcode != 0 ) {
+   ok = vdscSetSupportedOptions( 5, opts, &handle );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

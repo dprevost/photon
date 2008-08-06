@@ -43,6 +43,7 @@ int main( int argc, char * argv[] )
    int separator = -1;
    vdscOptionHandle optHandle;
    char * buff = NULL;
+   bool ok;
    
 #if HAVE_STAT || HAVE__STAT
    struct stat status;
@@ -69,14 +70,13 @@ int main( int argc, char * argv[] )
    xmlChar * prop = NULL;
    
 #if HAVE_STAT || HAVE__STAT
-   errcode = vdscSetSupportedOptions( 2, opts, &optHandle );
+   ok = vdscSetSupportedOptions( 2, opts, &optHandle );
 #else
-   errcode = vdscSetSupportedOptions( 3, opts, &optHandle );
+   ok = vdscSetSupportedOptions( 3, opts, &optHandle );
 #endif
-   if ( errcode != 0 ) {
-      fprintf( stderr, 
-         "Internal error in vdscSetSupportedOptions, error code = %d\n",
-         errcode );
+   VDS_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) {
+      fprintf( stderr, "Internal error in vdscSetSupportedOptions\n" );
       return 1;
    }
    

@@ -25,7 +25,7 @@ const bool expectedToPass = true;
 
 int main()
 {
-   int errcode;
+   bool ok;
    vdscDirIterator iterator;
    vdscErrorHandler errorHandler;
 
@@ -33,9 +33,9 @@ int main()
    vdscInitDir( &iterator );
    vdscInitErrorHandler( &errorHandler );
    
-   errcode = vdscOpenDir( &iterator, "..", &errorHandler );
+   ok = vdscOpenDir( &iterator, "..", &errorHandler );
 
-   if ( errcode != 0 ) {
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    if ( vdscAnyErrors( &errorHandler ) ) {

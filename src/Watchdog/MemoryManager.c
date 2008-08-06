@@ -70,7 +70,8 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    time_t t;
    struct tm formattedTime;
    unsigned char * pStart;
-
+   bool ok;
+   
    /* Very unlikely but just in case... */
    VDS_PRE_CONDITION( pManager       != NULL );
    VDS_PRE_CONDITION( memoryFileName != NULL );
@@ -87,16 +88,18 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    
    vdscBackStoreStatus( &pManager->memory, &fileStatus );
    
-   errcode = vdscCreateBackstore( &pManager->memory, filePerms, &pContext->errorHandler );
-   if ( errcode != 0 ) {
+   ok = vdscCreateBackstore( &pManager->memory, filePerms, &pContext->errorHandler );
+   VDS_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) {
       vdscChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
                       VDSW_CREATE_BACKSTORE_FAILURE );
       return false;
    }
 
-   errcode = vdscOpenMemFile( &pManager->memory, &pManager->pMemoryAddress, &pContext->errorHandler );   
-   if ( errcode != 0 ) {
+   ok = vdscOpenMemFile( &pManager->memory, &pManager->pMemoryAddress, &pContext->errorHandler );   
+   VDS_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) {
       vdscChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
                       VDSW_OPEN_BACKSTORE_FAILURE );
@@ -258,7 +261,8 @@ bool vdswOpenVDS( vdswMemoryManager  * pManager,
                   vdseMemoryHeader  ** ppHeader,
                   vdseSessionContext * pContext )
 {
-   int errcode = 0;
+   bool ok;
+   
    vdscMemoryFileStatus fileStatus;
    vdscErrorHandler errorHandler;
    
@@ -284,10 +288,11 @@ bool vdswOpenVDS( vdswMemoryManager  * pManager,
       return false;
    }
    
-   errcode = vdscOpenMemFile( &pManager->memory, 
-                              &pManager->pMemoryAddress, 
-                              &errorHandler );   
-   if ( errcode != 0 ) {
+   ok = vdscOpenMemFile( &pManager->memory, 
+                         &pManager->pMemoryAddress, 
+                         &errorHandler );   
+   VDS_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) {
       vdscChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
                       VDSW_ERROR_OPENING_VDS );

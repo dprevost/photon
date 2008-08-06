@@ -82,15 +82,15 @@ struct vdscOptStruct
 typedef struct vdscOptStruct vdscOptStruct;
 
 /** An opaque handle to our internal struct. */
-typedef void* vdscOptionHandle;
+typedef void * vdscOptionHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Populate the internal arrays of all supported options. */
 VDSF_COMMON_EXPORT
-int vdscSetSupportedOptions( int                   numOpts, 
-                             struct vdscOptStruct* opts,
-                             vdscOptionHandle*     pHandle );
+bool vdscSetSupportedOptions( int                    numOpts, 
+                              struct vdscOptStruct * opts,
+                              vdscOptionHandle     * pHandle );
 
 /*!
  * \brief Unset the internal arrays of all supported options (and free

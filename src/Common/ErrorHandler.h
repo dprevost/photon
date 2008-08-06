@@ -99,7 +99,7 @@ typedef struct vdscErrorHandler
    int errorCode[VDSC_ERROR_CHAIN_LENGTH];
    
    /** Handle to the function used to retrieve the error message. */
-   vdscErrMsgHandle   errorHandle[VDSC_ERROR_CHAIN_LENGTH];
+   vdscErrMsgHandle errorHandle[VDSC_ERROR_CHAIN_LENGTH];
    
 } vdscErrorHandler;
 
@@ -107,7 +107,7 @@ typedef struct vdscErrorHandler
 
 /*! \brief Use for initializing our internal data. */
 VDSF_COMMON_EXPORT
-int vdscInitErrorDefs();
+bool vdscInitErrorDefs();
 
 /*! \brief Clear our internal data. */
 VDSF_COMMON_EXPORT
@@ -115,8 +115,8 @@ void vdscFiniErrorDefs();
 
 /*! \brief Add a function to handle error messages. */
 VDSF_COMMON_EXPORT
-vdscErrMsgHandle vdscAddErrorMsgHandler( const char*         name, 
-                                         vdscErrMsgHandler_T handler );
+vdscErrMsgHandle vdscAddErrorMsgHandler( const char          * name, 
+                                         vdscErrMsgHandler_T   handler );
 
 /*! \brief Use for initializing the struct or to reset it, as needed. */
 VDSF_COMMON_EXPORT
@@ -136,7 +136,7 @@ void vdscFiniErrorHandler( vdscErrorHandler * pErrorHandler );
  * \pre \em pErrorHandler cannot be NULL.
  */
 static inline
-int vdscAnyErrors( vdscErrorHandler * pErrorHandler )
+bool vdscAnyErrors( vdscErrorHandler * pErrorHandler )
 {
    VDS_PRE_CONDITION( pErrorHandler != NULL );
 
@@ -148,7 +148,7 @@ int vdscAnyErrors( vdscErrorHandler * pErrorHandler )
  */
 VDSF_COMMON_EXPORT
 size_t vdscGetErrorMsg( vdscErrorHandler * pErrorHandler,
-                        char*              msg, 
+                        char             * msg, 
                         size_t             maxLength );
 
 /*! \brief Retrieves the length of the error message or the length of a 
@@ -163,18 +163,18 @@ size_t vdscGetErrorMsgLength( vdscErrorHandler * pErrorHandler );
  * error message. It will first reset the chain of error codes to zero.
  */
 VDSF_COMMON_EXPORT
-void vdscSetError( vdscErrorHandler *  pErrorHandler, 
-                   vdscErrMsgHandle    handle,
-                   int                 errorCode );   
+void vdscSetError( vdscErrorHandler * pErrorHandler, 
+                   vdscErrMsgHandle   handle,
+                   int                errorCode );   
 
 /*! \brief
  * Adds the error code and the handler for the error message to an 
  * existing chain.
  */
 VDSF_COMMON_EXPORT
-void vdscChainError( vdscErrorHandler *  pErrorHandler, 
-                     vdscErrMsgHandle    handle,
-                     int                 errorCode );  
+void vdscChainError( vdscErrorHandler * pErrorHandler, 
+                     vdscErrMsgHandle   handle,
+                     int                errorCode );  
 
 /*! \brief
  * Retrieves the last error number or zero if no errors.

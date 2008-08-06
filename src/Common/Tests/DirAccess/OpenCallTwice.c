@@ -35,7 +35,7 @@ int main()
     * This test is a bit useless on Windows but... it does not hurt!
     */
 
-   int errcode;
+   bool ok;
    vdscDirIterator iterator;
    vdscErrorHandler errorHandler;
 
@@ -43,16 +43,16 @@ int main()
    vdscInitDir( &iterator );
    vdscInitErrorHandler( &errorHandler );
    
-   errcode = vdscOpenDir( &iterator, "..", &errorHandler );
+   ok = vdscOpenDir( &iterator, "..", &errorHandler );
 
-   if ( errcode != 0 ) {
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    if ( vdscAnyErrors( &errorHandler ) ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   errcode = vdscOpenDir( &iterator, "..", &errorHandler );
+   ok = vdscOpenDir( &iterator, "..", &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -27,7 +27,7 @@ int main()
 #if defined(USE_DBC)
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
-   int errcode = 0;
+   bool ok;
    vdscMemoryFileStatus status;
    
    /* The rename is a work around for a bug on Windows. It seems that the 
@@ -40,8 +40,8 @@ int main()
    vdscInitErrorHandler( &errorHandler );
    vdscInitMemoryFile( &mem, 10, "MemFile.mem" );
 
-   errcode = vdscCreateBackstore( &mem, 0644, &errorHandler );
-   if ( errcode != 0 ) {
+   ok = vdscCreateBackstore( &mem, 0644, &errorHandler );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    

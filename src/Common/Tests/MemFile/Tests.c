@@ -34,7 +34,7 @@ int main()
    vdscMemoryFile  mem1, mem2;
    vdscErrorHandler errorHandler;
    void*           pAddr = NULL;
-   int errcode = 0;
+   bool ok;
    unsigned char* str;
    unsigned int i;
    
@@ -49,13 +49,13 @@ int main()
    vdscInitMemoryFile( &mem1, 10, "MemFile.mem" );
    vdscInitMemoryFile( &mem2, 10, "MemFile.mem" );
    
-   errcode = vdscCreateBackstore( &mem1, 0600, &errorHandler );
-   if ( errcode != 0 ) {
+   ok = vdscCreateBackstore( &mem1, 0600, &errorHandler );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
-   errcode = vdscOpenMemFile( &mem1, &pAddr, &errorHandler );
-   if ( errcode != 0 ) {
+   ok = vdscOpenMemFile( &mem1, &pAddr, &errorHandler );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
@@ -81,8 +81,8 @@ int main()
    vdscSyncMemFile( &mem1, &errorHandler );
    vdscCloseMemFile( &mem1, &errorHandler );
 
-   errcode = vdscOpenMemFile( &mem2, &pAddr, &errorHandler );
-   if ( errcode != 0 ) {
+   ok = vdscOpenMemFile( &mem2, &pAddr, &errorHandler );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    

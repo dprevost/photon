@@ -75,11 +75,10 @@ void vdswCloseVDS( vdswMemoryManager * pManager,
 
 /* ::msync() is called with the MS_SYNC flag by default */
 static inline
-int vdswSyncVDS( vdswMemoryManager * pManager,
-                 vdscErrorHandler  * pError ) 
+bool vdswSyncVDS( vdswMemoryManager * pManager,
+                  vdscErrorHandler  * pError ) 
 {
-   int err = vdscSyncMemFile( &pManager->memory, pError );
-   return err;
+   return vdscSyncMemFile( &pManager->memory, pError );
 }
 
 #endif

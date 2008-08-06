@@ -95,7 +95,9 @@ void vdswWatchdogInit( vdswWatchdog * pWatchdog )
 
    memset( &pWatchdog->params, 0, sizeof pWatchdog->params );
 
-   vdscInitErrorDefs();
+   if ( ! vdscInitErrorDefs() ) {
+      fprintf( stderr, "Internal error in vdscInitErrorDefs()\n" );
+   }
    vdscInitErrorHandler( &pWatchdog->errorHandler );
    
    g_wdErrorHandle = vdscAddErrorMsgHandler( "VDSWD", vdswGetErrorMsg );

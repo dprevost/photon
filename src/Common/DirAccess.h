@@ -122,14 +122,14 @@ void vdscFiniDir( vdscDirIterator * pIterator );
 
 /*! \brief Open the directory. */
 VDSF_COMMON_EXPORT
-int vdscOpenDir( vdscDirIterator*  pIterator,
-                 const char*       dirName,
-                 vdscErrorHandler* pError );
+bool vdscOpenDir( vdscDirIterator  * pIterator,
+                  const char       * dirName,
+                  vdscErrorHandler * pError );
 
 /*! \brief Get the next file name. */
 VDSF_COMMON_EXPORT
-const char* vdscDirGetNextFileName( vdscDirIterator*  pIterator,
-                                    vdscErrorHandler* pError );
+const char * vdscDirGetNextFileName( vdscDirIterator  * pIterator,
+                                     vdscErrorHandler * pError );
 
 /*! \brief Close the directory. */
 VDSF_COMMON_EXPORT

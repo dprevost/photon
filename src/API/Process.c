@@ -212,6 +212,7 @@ int vdsaOpenVDS( vdsaProcess        * process,
                  vdseSessionContext * pContext )
 {
    int errcode = 0;
+   bool ok;
    vdscMemoryFileStatus fileStatus;
    void * ptr;
    
@@ -229,10 +230,11 @@ int vdsaOpenVDS( vdsaProcess        * process,
       return VDS_BACKSTORE_FILE_MISSING;
    }
    
-   errcode = vdscOpenMemFile( &process->memoryFile, 
-                              &ptr, 
-                              &pContext->errorHandler );   
-   if ( errcode != 0 ) {
+   ok = vdscOpenMemFile( &process->memoryFile, 
+                         &ptr, 
+                         &pContext->errorHandler );   
+   VDS_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) {
       fprintf( stderr, "MMAP failure - %d %s\n", errno, memoryFileName );
       return VDS_ERROR_OPENING_VDS;
    }

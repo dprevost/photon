@@ -358,7 +358,7 @@ static int vdscGetWinErrMsg( int errnum, char *msg, unsigned int msgLength )
  *
  */
 
-int vdscInitErrorDefs()
+bool vdscInitErrorDefs()
 {
    int errcode = 0, length;
 #if defined (WIN32 )
@@ -428,7 +428,7 @@ int vdscInitErrorDefs()
       } /* if errcode of initlock == 0 ) */
    } /* The first check on g_definition == NULL */
    
-   return errcode;
+   return (errcode == 0);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

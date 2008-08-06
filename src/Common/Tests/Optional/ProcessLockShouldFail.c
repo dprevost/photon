@@ -87,6 +87,7 @@ int main( int argc, char* argv[] )
    char filename[PATH_MAX];
    struct localData *data = NULL;
    int errcode;
+   bool ok;
    vdscMemoryFile memFile;
    vdscErrorHandler errorHandler;
    int identifier, numChilds, i, childStatus;
@@ -109,8 +110,8 @@ int main( int argc, char* argv[] )
    vdscInitErrorHandler( &errorHandler );
    vdscInitTimer( &timer );   
 
-   errcode = vdscSetSupportedOptions( 6, opts, &handle );
-   if ( errcode != 0 ) {
+   ok = vdscSetSupportedOptions( 6, opts, &handle );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -194,13 +195,13 @@ int main( int argc, char* argv[] )
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
       }
       
-      errcode = vdscCreateBackstore( &memFile, 0644, &errorHandler );
-      if ( errcode < 0 ) {
+      ok = vdscCreateBackstore( &memFile, 0644, &errorHandler );
+      if ( ok != true ) {
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
       }
       
-      errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
-      if ( errcode < 0 ) {
+      ok = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
+      if ( ok != true ) {
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
       }
       
@@ -294,8 +295,8 @@ int main( int argc, char* argv[] )
       maxTime *= US_PER_SEC;
 
       mypid = getpid();
-      errcode = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
-      if ( errcode < 0 ) {
+      ok = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
+      if ( ok != true ) {
          ERROR_EXIT( childExpectedToPass, NULL, ; );
       }
       data = (struct localData*) ptr;

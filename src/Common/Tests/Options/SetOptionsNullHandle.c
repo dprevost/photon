@@ -25,7 +25,6 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   int errcode = 0;
    
    struct vdscOptStruct opts[5] = {
       { '3', "three",   1, "", "repeat the loop three times" },
@@ -35,7 +34,7 @@ int main()
       { 'z', "zzz",     1, "", "go to sleep..." }
    };
    
-   errcode = vdscSetSupportedOptions( 5, opts, NULL );
+   vdscSetSupportedOptions( 5, opts, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -33,9 +33,9 @@
  * \pre \em kblength must be positive
  * \pre \em filename cannot be NULL or the empty string ("")
  */
-void vdscInitMemoryFile( vdscMemoryFile* pMem,
-                         size_t          kblength,
-                         const char *    filename )
+void vdscInitMemoryFile( vdscMemoryFile * pMem,
+                         size_t           kblength,
+                         const char     * filename )
 {
    VDS_PRE_CONDITION( pMem != NULL );
    VDS_PRE_CONDITION( kblength > 0 );
@@ -63,7 +63,7 @@ void vdscInitMemoryFile( vdscMemoryFile* pMem,
  * \pre \em pMem cannot be NULL.
  * \invariant \em pMem->initialized must equal ::VDSC_MEMFILE_SIGNATURE.
  */
-void vdscFiniMemoryFile( vdscMemoryFile* pMem )
+void vdscFiniMemoryFile( vdscMemoryFile * pMem )
 {
    VDS_PRE_CONDITION( pMem != NULL );
    VDS_INV_CONDITION( pMem->initialized == VDSC_MEMFILE_SIGNATURE );
@@ -99,9 +99,8 @@ void vdscFiniMemoryFile( vdscMemoryFile* pMem )
  * \invariant \em pMem->name cannot be empty.
  */
 
-void
-vdscBackStoreStatus( vdscMemoryFile*       pMem,
-                     vdscMemoryFileStatus* pStatus )
+void vdscBackStoreStatus( vdscMemoryFile       * pMem,
+                          vdscMemoryFileStatus * pStatus )
 {
    int err = 0;
 #if ! HAVE_ACCESS || ! HAVE_STAT
@@ -175,8 +174,8 @@ vdscBackStoreStatus( vdscMemoryFile*       pMem,
  * \param[in] pError  A pointer to the vdscErrorHandler struct (used for 
  *                    handling errors from the OS).
  *
- * \retval 0 on success
- * \retval -1 on error (use pError to retrieve the error)
+ * \retval true  on success
+ * \retval false on error (use pError to retrieve the error)
  *
  * \pre \em pMem cannot be NULL.
  * \pre \em pError cannot be NULL.
@@ -186,9 +185,9 @@ vdscBackStoreStatus( vdscMemoryFile*       pMem,
  *
  */
 
-int vdscCopyBackstore( vdscMemoryFile*   pMem,
-                       int               filePerms,
-                       vdscErrorHandler* pError )
+bool vdscCopyBackstore( vdscMemoryFile   * pMem,
+                        int                filePerms,
+                        vdscErrorHandler * pError )
 {
    int fdIn = -1, fdOut = -1;
    char bckName [PATH_MAX];
@@ -245,7 +244,7 @@ int vdscCopyBackstore( vdscMemoryFile*   pMem,
    close( fdIn );
    close( fdOut );
 
-   return 0;
+   return true;
    
 error:
    if ( buffer ) free( buffer );
@@ -254,7 +253,7 @@ error:
 
    vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
    
-   return -1;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -266,8 +265,8 @@ error:
  * \param[in] pError  A pointer to the vdscErrorHandler struct (used for 
  *                    handling errors from the OS).
  *
- * \retval 0 on success
- * \retval -1 on error (use pError to retrieve the error)
+ * \retval true  on success
+ * \retval false on error (use pError to retrieve the error)
  *
  * \pre \em pMem cannot be NULL.
  * \pre \em pError cannot be NULL.
@@ -280,15 +279,15 @@ error:
  *
  */
 
-int 
-vdscCreateBackstore( vdscMemoryFile*   pMem,
-                     int               filePerms,
-                     vdscErrorHandler* pError )
+bool vdscCreateBackstore( vdscMemoryFile   * pMem,
+                          int                filePerms,
+                          vdscErrorHandler * pError )
 {
    FILE* fp;
    size_t numWritten;
    int errcode = 0, fd;
    char buf[1];
+   bool ok = true;
    
    VDS_PRE_CONDITION( pMem    != NULL );
    VDS_INV_CONDITION( pMem->initialized == VDSC_MEMFILE_SIGNATURE );
@@ -297,12 +296,11 @@ vdscCreateBackstore( vdscMemoryFile*   pMem,
    VDS_PRE_CONDITION( pError != NULL );
    VDS_PRE_CONDITION( ( filePerms & 0600 ) == 0600 );
    
-   
    /* Create the file with the right permissions */
    fd = creat( pMem->name, filePerms );
    if ( fd < 0 ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );      
-      return -1;
+      return false;
    }
    close( fd );
 
@@ -315,7 +313,7 @@ vdscCreateBackstore( vdscMemoryFile*   pMem,
    fp = fopen( pMem->name, "wb" );
    if ( fp == NULL ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );      
-      return -1;
+      return false;
    }
    
    errcode = fseek( fp, pMem->length-1, SEEK_SET );
@@ -324,13 +322,13 @@ vdscCreateBackstore( vdscMemoryFile*   pMem,
       numWritten = fwrite( buf, 1, 1, fp );
       if ( numWritten != 1 ) {
          vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );      
-         errcode = -1;
+         ok = false;
       }
    }
    
    fclose( fp );
    
-   return errcode;
+   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -348,8 +346,8 @@ vdscCreateBackstore( vdscMemoryFile*   pMem,
  * \param[in] pError  A pointer to the vdscErrorHandler struct (used for 
  *                    handling errors from the OS).
  *
- * \retval 0 on success
- * \retval -1 on error (use pError to retrieve the error)
+ * \retval true  on success
+ * \retval false on error (use pError to retrieve the error)
  *
  * \pre \em pMem cannot be NULL.
  * \pre \em ppAddr cannot be NULL.
@@ -365,10 +363,9 @@ vdscCreateBackstore( vdscMemoryFile*   pMem,
  *
  */
 
-int 
-vdscOpenMemFile( vdscMemoryFile*   pMem, 
-                 void**            ppAddr,
-                 vdscErrorHandler* pError )
+bool vdscOpenMemFile( vdscMemoryFile   * pMem, 
+                      void            ** ppAddr,
+                      vdscErrorHandler * pError )
 {
    VDS_PRE_CONDITION( pMem != NULL );
    VDS_INV_CONDITION( pMem->initialized == VDSC_MEMFILE_SIGNATURE );
@@ -401,7 +398,7 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
       0 );
    if ( pMem->fileHandle == VDS_INVALID_HANDLE ) {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
-      return -1;
+      return false;
    }
    
    pMem->mapHandle = CreateFileMappingA( pMem->fileHandle,
@@ -412,7 +409,7 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
                                          NULL );
    if ( pMem->mapHandle  == VDS_INVALID_HANDLE ) {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
-      return -1;
+      return false;
    }
 
    pMem->baseAddr = MapViewOfFileEx( pMem->mapHandle,
@@ -424,7 +421,7 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
 
    if ( pMem->baseAddr == VDS_MAP_FAILED ) {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
-      return -1;
+      return false;
    }
 
    *ppAddr = pMem->baseAddr;
@@ -434,7 +431,7 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
    pMem->fileHandle = open( pMem->name, O_RDWR );
    if ( pMem->fileHandle == VDS_INVALID_HANDLE ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
-      return -1;
+      return false;
    }
 
    pMem->baseAddr = mmap( NULL,
@@ -446,7 +443,7 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
 
    if ( pMem->baseAddr == VDS_MAP_FAILED ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
-      return -1;
+      return false;
    }
 
    *ppAddr = pMem->baseAddr;
@@ -461,7 +458,7 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
    VDS_POST_CONDITION( pMem->mapHandle  != VDS_INVALID_HANDLE );
 #endif   
 
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -476,9 +473,8 @@ vdscOpenMemFile( vdscMemoryFile*   pMem,
  * \invariant \em pMem->initialized must equal ::VDSC_MEMFILE_SIGNATURE.
  *
  */
-void
-vdscCloseMemFile( vdscMemoryFile*   pMem,
-                  vdscErrorHandler* pError )
+void vdscCloseMemFile( vdscMemoryFile   * pMem,
+                       vdscErrorHandler * pError )
 {
    VDS_PRE_CONDITION( pMem != NULL );
    VDS_INV_CONDITION( pMem->initialized == VDSC_MEMFILE_SIGNATURE );
@@ -520,8 +516,8 @@ vdscCloseMemFile( vdscMemoryFile*   pMem,
  * \param[in] pError  A pointer to the vdscErrorHandler struct (used for 
  *                    handling errors from the OS).
  *
- * \retval 0 on success
- * \retval -1 on error (use pError to retrieve the error)
+ * \retval true  on success
+ * \retval false on error (use pError to retrieve the error)
  *
  * \pre \em pMem cannot be NULL.
  * \pre \em pError cannot be NULL.
@@ -529,12 +525,12 @@ vdscCloseMemFile( vdscMemoryFile*   pMem,
  * \invariant \em pMem->baseAddr cannot be equal to ::VDS_MAP_FAILED.
  *
  */
-int
-vdscSyncMemFile( vdscMemoryFile*   pMem,
-                 vdscErrorHandler* pError )
+bool vdscSyncMemFile( vdscMemoryFile   * pMem,
+                      vdscErrorHandler * pError )
 {
    int errcode;
-
+   bool ok = true;
+   
    VDS_PRE_CONDITION( pMem != NULL );
    VDS_INV_CONDITION( pMem->initialized == VDSC_MEMFILE_SIGNATURE );
    VDS_INV_CONDITION( pMem->baseAddr != VDS_MAP_FAILED );
@@ -545,18 +541,16 @@ vdscSyncMemFile( vdscMemoryFile*   pMem,
    errcode = FlushViewOfFile( pMem->baseAddr, 0 );
    if ( errcode == 0 ) {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
-      errcode = -1;
-   }
-   else {
-      errcode = 0;
+      ok = false;
    }
 #elif HAVE_MSYNC
    errcode = msync( pMem->baseAddr, pMem->length, MS_SYNC );
 #else
    errcode = fdatasync( pMem->fileHandle );
 #endif
-
-   return errcode;
+   if ( errcode != 0 ) ok = false;
+   
+   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

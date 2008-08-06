@@ -26,7 +26,7 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   int errcode;
+   bool ok;
    vdscDirIterator iterator;
    const char* str;
    vdscErrorHandler errorHandler;
@@ -35,8 +35,8 @@ int main()
    vdscInitDir( &iterator );
    vdscInitErrorHandler( &errorHandler );
 
-   errcode = vdscOpenDir( &iterator, "..", &errorHandler );
-   if ( errcode != 0 ) {
+   ok = vdscOpenDir( &iterator, "..", &errorHandler );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    

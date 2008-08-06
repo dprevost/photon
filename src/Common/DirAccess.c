@@ -40,8 +40,8 @@
  * \post The return value cannot be NULL if no error was encountered.
  *
  */
-const char* vdscDirGetNextFileName( vdscDirIterator*  pIterator,
-                                    vdscErrorHandler* pError )
+const char * vdscDirGetNextFileName( vdscDirIterator  * pIterator,
+                                     vdscErrorHandler * pError )
 {
 #if ! defined (WIN32)
    struct dirent * pEntry;
@@ -207,8 +207,8 @@ void vdscCloseDir( vdscDirIterator * pIterator )
  * \param[in] pError     A pointer to a vdscErrorHandler struct (for handling
  *                       C library or Win32 API errors).
  *
- * \retval 0 on success
- * \retval -1 on error (use pError to retrieve the error)
+ * \retval true on success
+ * \retval false on error (use pError to retrieve the error)
  *
  * \pre \em pIterator cannot be NULL.
  * \pre \em dirName cannot be NULL.
@@ -224,9 +224,9 @@ void vdscCloseDir( vdscDirIterator * pIterator )
  *                ::VDSC_DIR_ACCESS_SIGNATURE.
  *
  */
-int vdscOpenDir( vdscDirIterator * pIterator, 
-                 const char*       dirName,
-                 vdscErrorHandler* pError )
+bool vdscOpenDir( vdscDirIterator  * pIterator, 
+                  const char       * dirName,
+                  vdscErrorHandler * pError )
 {
 #if defined (WIN32)
    int i = 0;
@@ -259,7 +259,7 @@ int vdscOpenDir( vdscDirIterator * pIterator,
    pIterator->pDir = opendir( dirName );
    if ( pIterator->pDir == NULL ) {
       vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
-      return -1;
+      return false;
    }
 #endif
 
@@ -267,7 +267,7 @@ int vdscOpenDir( vdscDirIterator * pIterator,
    VDS_POST_CONDITION( pIterator->pDir != NULL );
 #endif
 
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

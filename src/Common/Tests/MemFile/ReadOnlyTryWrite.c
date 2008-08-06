@@ -43,7 +43,7 @@ int main()
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
    void *          pAddr = NULL;
-   int errcode = 0;
+   bool ok;
 #if ! defined(WIN32)
    struct sigaction newAction, oldAction;
 #endif
@@ -58,18 +58,18 @@ int main()
    vdscInitErrorHandler( &errorHandler );
    vdscInitMemoryFile( &mem, 10, "MemFile.mem" );
 
-   errcode = vdscCreateBackstore( &mem, 0755, &errorHandler );
-   if ( errcode != 0 ) {
+   ok = vdscCreateBackstore( &mem, 0755, &errorHandler );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
-   errcode = vdscOpenMemFile( &mem, &pAddr, &errorHandler );
-   if ( errcode != 0 ) {
+   ok = vdscOpenMemFile( &mem, &pAddr, &errorHandler );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
-   errcode = vdscSetReadOnly( &mem, &errorHandler );
-   if ( errcode != 0 ) {
+   ok = vdscSetReadOnly( &mem, &errorHandler );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
@@ -81,7 +81,7 @@ int main()
 #else
    newAction.sa_handler = signalHandler;
    newAction.sa_flags   = SA_RESTART;
-   errcode = sigaction( SIGSEGV, &newAction, &oldAction );
+   sigaction( SIGSEGV, &newAction, &oldAction );
 #endif
 
    ((char*)pAddr)[0] = 'x';

@@ -31,6 +31,7 @@ int main( int argc, char *argv[] )
    vdsProcess process;
    vdsSession session;
    vdsShell   sh(session);
+   bool ok;
    
    vdscOptionHandle optHandle;
    char *optArgument;
@@ -38,8 +39,9 @@ int main( int argc, char *argv[] )
       { 'a', "address", 0, "watchdog_address", "The address of the VDSF watchdog" }
    };
 
-   errcode = vdscSetSupportedOptions( 1, opts, &optHandle );
-   if ( errcode != 0 ) return 1;
+   ok = vdscSetSupportedOptions( 1, opts, &optHandle );
+   VDS_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return 1;
 
    errcode = vdscValidateUserOptions( optHandle, argc, argv, 1 );
    if ( errcode < 0 ) {

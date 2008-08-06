@@ -31,8 +31,8 @@
  * \param[in] pError  A pointer to the vdscErrorHandler struct (used for 
  *                    handling errors from the OS).
  *
- * \retval 0 on success
- * \retval -1 on error (use pError to retrieve the error)
+ * \retval true  on success
+ * \retval false on error (use pError to retrieve the error)
  *
  * \pre \em pMem cannot be NULL.
  * \pre \em pError cannot be NULL.
@@ -41,13 +41,12 @@
  *
  */
 
-int
-vdscSetReadOnly( vdscMemoryFile   * pMem,
-                 vdscErrorHandler * pError )
+bool vdscSetReadOnly( vdscMemoryFile   * pMem,
+                      vdscErrorHandler * pError )
 {
    int errcode;
+   bool ok = true;
 #if defined (WIN32)
-   int err;
    unsigned long oldProt;
 #endif
 
@@ -57,32 +56,26 @@ vdscSetReadOnly( vdscMemoryFile   * pMem,
    VDS_PRE_CONDITION( pError != NULL );
 
 #if defined (WIN32)
-
-   err = VirtualProtect( pMem->baseAddr, 
-                         pMem->length, 
-                         PAGE_READONLY, 
-                         &oldProt );
-   if ( err == 0 ) {
+   errcode = VirtualProtect( pMem->baseAddr, 
+                             pMem->length, 
+                             PAGE_READONLY, 
+                             &oldProt );
+   if ( errcode == 0 ) {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );      
-      errcode = -1;
+      ok = false;
    }
-   else {
-      errcode = 0;
-   }
-   
 #elif HAVE_MPROTECT
-
    errcode = mprotect( pMem->baseAddr, pMem->length, PROT_READ );
    if ( errcode != 0 ) {
-      vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );      
+      vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      ok = false;
    }
 #else
-
-   errcode = -1;
-
+   /* autoconf should have spotted this */
+   ok = false;
 #endif
 
-   return errcode;
+   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -111,13 +104,12 @@ vdscSetReadOnly( vdscMemoryFile   * pMem,
  *
  */
 
-int
-vdscSetReadWrite( vdscMemoryFile   * pMem,
-                  vdscErrorHandler * pError )
+bool vdscSetReadWrite( vdscMemoryFile   * pMem,
+                       vdscErrorHandler * pError )
 {
    int errcode;
+   bool ok = true;
 #if defined (WIN32)
-   int err;
    unsigned long oldProt;
 #endif
 
@@ -127,30 +119,26 @@ vdscSetReadWrite( vdscMemoryFile   * pMem,
    VDS_PRE_CONDITION( pError != NULL );
 
 #if defined (WIN32)
-
-   errcode = 0;
-   err = VirtualProtect( pMem->baseAddr, 
-                         pMem->length, 
-                         PAGE_READWRITE, 
-                         &oldProt );
-   if ( err == 0 ) {
+   errcode = VirtualProtect( pMem->baseAddr, 
+                             pMem->length, 
+                             PAGE_READWRITE, 
+                             &oldProt );
+   if ( errcode == 0 ) {
       vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );      
-      errcode = -1;
+      ok = false;
    }
-
 #elif HAVE_MPROTECT
-
    errcode = mprotect( pMem->baseAddr, pMem->length, PROT_READ | PROT_WRITE );
    if ( errcode != 0 ) {
-      vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );      
+      vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      ok = false;
    }
 #else
-
-   errcode = -1;
-
+   /* autoconf should have spotted this */
+   ok = false;
 #endif
 
-   return errcode;
+   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -25,7 +25,7 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   int errcode = 0, i;
+   int i;
    vdscOptionHandle handle;
    
    struct vdscOptStruct opts[5] = {
@@ -40,7 +40,7 @@ int main()
       opts[2].argumentMessage[i] = 'x';
    }
    
-   errcode = vdscSetSupportedOptions( 5, opts, &handle );
+   vdscSetSupportedOptions( 5, opts, &handle );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -25,7 +25,7 @@ const bool expectedToPass = true;
 
 int main()
 {
-   int errcode = 0;
+   bool ok = 0;
    vdscDirIterator iterator;
    const char* str;
    vdscErrorHandler errorHandler;
@@ -34,8 +34,8 @@ int main()
    vdscInitDir( &iterator );
    vdscInitErrorHandler( &errorHandler );
    
-   errcode = vdscOpenDir( &iterator, ".", &errorHandler );
-   if ( errcode != 0 ) {
+   ok = vdscOpenDir( &iterator, ".", &errorHandler );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
@@ -47,8 +47,8 @@ int main()
    /* Close and reopen */
    vdscCloseDir( &iterator );
 
-   errcode = vdscOpenDir( &iterator, ".", &errorHandler );
-   if ( errcode != 0 ) {
+   ok = vdscOpenDir( &iterator, ".", &errorHandler );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
@@ -61,8 +61,8 @@ int main()
    vdscCloseDir( &iterator );
    vdscCloseDir( &iterator );
 
-   errcode = vdscOpenDir( &iterator, ".", &errorHandler );
-   if ( errcode != 0 ) {
+   ok = vdscOpenDir( &iterator, ".", &errorHandler );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    

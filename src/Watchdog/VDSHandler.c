@@ -33,7 +33,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
                       vdseMemoryHeader   ** ppMemoryAddress,
                       bool                  verifyVDSOnly )
 {
-   bool rc;
+   bool ok;
    int errcode = 0;
    char path[PATH_MAX];
    char logFile[PATH_MAX];
@@ -99,14 +99,14 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
                        VDSW_NO_VERIFICATION_POSSIBLE );
          return false;
       }
-      rc = vdswCreateVDS( pHandler->pMemManager,
+      ok = vdswCreateVDS( pHandler->pMemManager,
                                path,
                                pConfig->memorySizekb,
                                pConfig->filePerms,
                                ppMemoryAddress,
                                &pHandler->context );
-      VDS_POST_CONDITION( rc == true || rc == false );
-      if ( ! rc ) return false;
+      VDS_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) return false;
       
       (*ppMemoryAddress)->logON = false;
       if ( pConfig->logOn ) {
@@ -174,10 +174,11 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
       if ( fp == NULL ) fp = stderr;
 
       if ( ! verifyVDSOnly ) {
-         errcode = vdscCopyBackstore( &pHandler->pMemManager->memory,
-                                      pConfig->filePerms,
-                                      &pHandler->context.errorHandler );
-         if ( errcode != 0 ) {
+         ok = vdscCopyBackstore( &pHandler->pMemManager->memory,
+                                 pConfig->filePerms,
+                                 &pHandler->context.errorHandler );
+         VDS_POST_CONDITION( ok == true || ok == false );
+         if ( ! ok ) {
             vdscChainError( &pHandler->context.errorHandler,
                             g_wdErrorHandle,
                             VDSW_COPY_BCK_FAILURE );
@@ -185,13 +186,13 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
          }
       }
       
-      rc = vdswOpenVDS( pHandler->pMemManager,
+      ok = vdswOpenVDS( pHandler->pMemManager,
                         path,
                         pConfig->memorySizekb,
                         ppMemoryAddress,
                         &pHandler->context );
-      VDS_POST_CONDITION( rc == true || rc == false );
-      if ( ! rc ) return false;
+      VDS_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) return false;
       
       fprintf( stderr, "Starting the recovery of the VDS, please be patient\n" );
       if ( verifyVDSOnly ) {

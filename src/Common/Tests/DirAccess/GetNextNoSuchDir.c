@@ -34,7 +34,7 @@ int main()
    return 0;
 #else
 
-   int errcode;
+   bool ok;
    vdscDirIterator iterator;
    vdscErrorHandler errorHandler;
    const char* str;
@@ -43,8 +43,8 @@ int main()
    vdscInitDir( &iterator );
    vdscInitErrorHandler( &errorHandler );
    
-   errcode = vdscOpenDir( &iterator, "abc123", &errorHandler );
-   if ( errcode != 0 ) {
+   ok = vdscOpenDir( &iterator, "abc123", &errorHandler );
+   if ( ! ok ) {
       /* OpenDir cannot fail on Win32 but someone might update
        * the code eventually...
        */

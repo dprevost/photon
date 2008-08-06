@@ -35,7 +35,7 @@ int main()
    return 0;
 #else
 
-   int errcode;
+   bool ok;
    vdscDirIterator iterator;
    vdscErrorHandler errorHandler;
 
@@ -43,8 +43,8 @@ int main()
    vdscInitDir( &iterator );
    vdscInitErrorHandler( &errorHandler );
    
-   errcode = vdscOpenDir( &iterator, "abc123", &errorHandler );
-   if ( errcode == 0 ) {
+   ok = vdscOpenDir( &iterator, "abc123", &errorHandler );
+   if ( ok ) {
       ERROR_EXIT( expectedToPass, NULL, );
    }
    if ( ! vdscAnyErrors( &errorHandler ) ) {

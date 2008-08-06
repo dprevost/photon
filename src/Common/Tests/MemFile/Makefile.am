@@ -134,8 +134,7 @@ TESTS_ENVIRONMENT =                  \
         verbose=0                    \
         PYTHON=$(PYTHON)             
 
-TESTS = CopyPass
-TESTS2 =                         \
+TESTS =                         \
         BackStatusInvalidSig    \
         BackStatusMemNull       \
         BackStatusNameEmpty     \

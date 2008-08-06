@@ -51,7 +51,9 @@ static int vdseGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 int vdseInitEngine()
 {
    if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER ) {
-      vdscInitErrorDefs();
+      if ( ! vdscInitErrorDefs() ) {
+         fprintf( stderr, "Internal error in vdscInitErrorDefs()\n" );
+      }
 
       g_vdsErrorHandle = vdscAddErrorMsgHandler( "VDSF", vdseGetErrorMsg );
 

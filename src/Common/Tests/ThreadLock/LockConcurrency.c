@@ -114,6 +114,7 @@ int main( int argc, char* argv[] )
    void* ptr = NULL;   
    char filename[PATH_MAX];
    int errcode;
+   bool ok;
    vdscErrorHandler errorHandler;
    int i, *identifier;
    vdstThreadWrap *threadWrap;
@@ -131,8 +132,8 @@ int main( int argc, char* argv[] )
    vdscInitErrorDefs();
    vdscInitErrorHandler( &errorHandler );
 
-   errcode = vdscSetSupportedOptions( 4, opts, &handle );
-   if ( errcode != 0 ) {
+   ok = vdscSetSupportedOptions( 4, opts, &handle );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -202,13 +203,13 @@ int main( int argc, char* argv[] )
    
    vdscInitMemoryFile( &g_memFile, 10, filename );
 
-   errcode = vdscCreateBackstore( &g_memFile, 0644, &errorHandler );
-   if ( errcode < 0 ) {
+   ok = vdscCreateBackstore( &g_memFile, 0644, &errorHandler );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   errcode = vdscOpenMemFile( &g_memFile, &ptr, &errorHandler );
-   if ( errcode < 0 ) {
+   ok = vdscOpenMemFile( &g_memFile, &ptr, &errorHandler );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    

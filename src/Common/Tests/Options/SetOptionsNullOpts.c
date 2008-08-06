@@ -25,10 +25,9 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   int errcode = 0;
    vdscOptionHandle handle;
    
-   errcode = vdscSetSupportedOptions( 5, NULL, &handle );
+   vdscSetSupportedOptions( 5, NULL, &handle );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else
