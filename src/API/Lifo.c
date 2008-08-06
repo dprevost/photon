@@ -41,7 +41,7 @@ int vdsLifoClose( VDS_HANDLE objectHandle )
    if ( pLifo->object.type != VDSA_LIFO ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( ! pLifo->object.pSession->terminated ) {
-      if ( vdsaCommonLock( &pLifo->object ) == 0 ) {
+      if ( vdsaCommonLock( &pLifo->object ) ) {
          pVDSLifo = (vdseQueue *) pLifo->object.pMyVdsObject;
 
          /* Reinitialize the iterator, if needed */
@@ -109,7 +109,7 @@ int vdsLifoDefinition( VDS_HANDLE             objectHandle,
    }
 
    if ( ! pLifo->object.pSession->terminated ) {
-      if ( vdsaCommonLock( &pLifo->object ) == 0 ) {
+      if ( vdsaCommonLock( &pLifo->object ) ) {
          pVDSLifo = (vdseQueue *) pLifo->object.pMyVdsObject;
       
          errcode = vdsaGetDefinition( pLifo->pDefinition,
@@ -161,7 +161,7 @@ int vdsLifoGetFirst( VDS_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pLifo->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pLifo->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -241,7 +241,7 @@ int vdsLifoGetNext( VDS_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pLifo->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pLifo->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -370,7 +370,7 @@ int vdsLifoPop( VDS_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pLifo->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pLifo->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -445,7 +445,7 @@ int vdsLifoPush( VDS_HANDLE   objectHandle,
    }
    
    if ( ! pLifo->object.pSession->terminated ) {
-      if ( vdsaCommonLock( &pLifo->object ) == 0 ) {
+      if ( vdsaCommonLock( &pLifo->object ) ) {
          pVDSLifo = (vdseQueue *) pLifo->object.pMyVdsObject;
 
          rc = vdseQueueInsert( pVDSLifo,
@@ -499,10 +499,10 @@ int vdsLifoStatus( VDS_HANDLE     objectHandle,
    }
 
    if ( ! pLifo->object.pSession->terminated ) {
-      if ( vdsaCommonLock( &pLifo->object ) == 0 ) {
+      if ( vdsaCommonLock(&pLifo->object) ) {
          pVDSLifo = (vdseQueue *) pLifo->object.pMyVdsObject;
       
-         if ( vdseLock( &pVDSLifo->memObject, pContext ) == 0 ) {
+         if ( vdseLock(&pVDSLifo->memObject, pContext) ) {
             vdseMemObjectStatus( &pVDSLifo->memObject, pStatus );
 
             vdseQueueStatus( pVDSLifo, pStatus );
@@ -551,7 +551,7 @@ int vdsaLifoFirst( vdsaLifo      * pLifo,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pLifo->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pLifo->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -616,7 +616,7 @@ int vdsaLifoNext( vdsaLifo      * pLifo,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pLifo->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pLifo->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -670,7 +670,7 @@ int vdsaLifoRemove( vdsaLifo      * pLifo,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pLifo->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pLifo->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }

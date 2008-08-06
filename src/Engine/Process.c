@@ -100,8 +100,7 @@ vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
 
    *ppSession = NULL;
    /* For recovery purposes, always lock before doing anything! */
-   errcode = vdseLock( &pProcess->memObject, pContext );
-   if ( errcode == 0 ) {
+   if ( vdseLock( &pProcess->memObject, pContext ) ) {
       pCurrentBuffer = (vdseSession*) 
           vdseMallocBlocks( pContext->pAllocator, VDSE_ALLOC_ANY, 1, pContext );
       if ( pCurrentBuffer != NULL ) {
@@ -151,15 +150,12 @@ vdsErrors vdseProcessRemoveSession( vdseProcess        * pProcess,
                                     vdseSession        * pSession,
                                     vdseSessionContext * pContext )
 {
-   int errcode = 0;
-
    VDS_PRE_CONDITION( pProcess != NULL );
    VDS_PRE_CONDITION( pSession != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
 
    /* For recovery purposes, always lock before doing anything! */
-   errcode = vdseLock( &pProcess->memObject, pContext );
-   if ( errcode == 0 ) {
+   if ( vdseLock( &pProcess->memObject, pContext ) ) {
       vdseLinkedListRemoveItem( &pProcess->listOfSessions, 
                                 &pSession->node );
       
@@ -171,9 +167,10 @@ vdsErrors vdseProcessRemoveSession( vdseProcess        * pProcess,
       vdscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     VDS_ENGINE_BUSY );
+      return -1;
    }
    
-   return errcode;
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

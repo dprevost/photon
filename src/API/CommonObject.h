@@ -88,15 +88,18 @@ int vdsaCommonObjClose( vdsaCommonObject * pObject );
  * \param[in] pObject Pointer to the object to lock.
 */
 static inline
-int vdsaCommonLock( vdsaCommonObject * pObject )
+bool vdsaCommonLock( vdsaCommonObject * pObject )
 {
+   bool ok = true;
+   
    VDS_PRE_CONDITION( pObject != NULL );
 
    if ( g_protectionIsNeeded ) {
-      return vdscTryAcquireThreadLock( &pObject->pSession->mutex, 
-                                       LOCK_TIMEOUT );
+      ok = vdscTryAcquireThreadLock( &pObject->pSession->mutex, LOCK_TIMEOUT );
+      VDS_POST_CONDITION( ok == true || ok == false );
    }
-   return 0;
+   
+   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

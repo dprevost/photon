@@ -46,7 +46,7 @@ int vdsFolderClose( VDS_HANDLE objectHandle )
    
    if ( ! pFolder->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pFolder->object ) == 0 ) {
+      if ( vdsaCommonLock( &pFolder->object ) ) {
         pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
 
          /* Reinitialize the iterator, if needed */
@@ -132,7 +132,7 @@ int vdsFolderCreateObject( VDS_HANDLE            objectHandle,
    }
 
    if ( ! pSession->terminated ) {
-      if ( vdsaCommonLock( &pFolder->object ) == 0 ) {
+      if ( vdsaCommonLock( &pFolder->object ) ) {
          pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
 
          rc = vdseFolderCreateObject( pVDSFolder,
@@ -224,7 +224,7 @@ int vdsFolderDestroyObject( VDS_HANDLE   objectHandle,
    }
    
    if ( ! pSession->terminated ) {
-      if ( vdsaCommonLock( &pFolder->object ) == 0 ) {
+      if ( vdsaCommonLock( &pFolder->object ) ) {
          pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
 
          rc = vdseFolderDestroyObject( pVDSFolder,
@@ -280,7 +280,7 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
       goto error_handler;
    }
    
-   if ( vdsaCommonLock( &pFolder->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pFolder->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -364,7 +364,7 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
       goto error_handler;
    }
    
-   if ( vdsaCommonLock( &pFolder->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pFolder->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -486,11 +486,11 @@ int vdsFolderStatus( VDS_HANDLE     objectHandle,
    
    if ( ! pFolder->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pFolder->object ) == 0 ) {
+      if ( vdsaCommonLock( &pFolder->object ) ) {
 
          pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
       
-         if ( vdseLock( &pVDSFolder->memObject, pContext ) == 0 ) {
+         if ( vdseLock(&pVDSFolder->memObject, pContext) ) {
 
             vdseMemObjectStatus( &pVDSFolder->memObject, pStatus );
 

@@ -86,24 +86,34 @@ void vdseFree( vdseMemObject      * pMemObj,
                size_t               numBytes,
                vdseSessionContext * pContext );
 
-/** Returns 0 on success, -1 on error */
 static inline
-int vdseLock( vdseMemObject      * pMemObj,
-              vdseSessionContext * pContext )
+bool vdseLock( vdseMemObject      * pMemObj,
+               vdseSessionContext * pContext )
 {
+   bool ok;
+
+   VDS_PRE_CONDITION( pMemObj  != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+   
    if ( pContext->lockOffsets != NULL ) {
       vdseSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
    }
    
-   return vdscTryAcquireProcessLock ( &pMemObj->lock,
-                                      pContext->pidLocker,
-                                      LOCK_TIMEOUT );
+   ok = vdscTryAcquireProcessLock ( &pMemObj->lock,
+                                    pContext->pidLocker,
+                                    LOCK_TIMEOUT );
+   VDS_POST_CONDITION( ok == true || ok == false );
+   
+   return ok;
 }
 
 static inline
 void vdseLockNoFailure( vdseMemObject      * pMemObj,
                         vdseSessionContext * pContext )
 {
+   VDS_PRE_CONDITION( pMemObj  != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+
    if ( pContext->lockOffsets != NULL ) {
       vdseSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
    }
@@ -119,6 +129,9 @@ static inline
 void vdseUnlock( vdseMemObject      * pMemObj,
                  vdseSessionContext * pContext  )
 {
+   VDS_PRE_CONDITION( pMemObj  != NULL );
+   VDS_PRE_CONDITION( pContext != NULL );
+
    if ( pContext->lockOffsets != NULL ) {
       vdseSessionRemoveLock( pContext, SET_OFFSET( pMemObj ) );
    }

@@ -360,15 +360,17 @@ static int vdscGetWinErrMsg( int errnum, char *msg, unsigned int msgLength )
 
 bool vdscInitErrorDefs()
 {
-   int errcode = 0, length;
+   int length;
+   bool ok = true;
 #if defined (WIN32 )
    vdscErrorDefinition * pDefinition = NULL;
    vdscErrorDefinition * previous = NULL;
 #endif
 
    if ( g_definition == NULL ) {
-      errcode = vdscInitThreadLock( &g_lock );
-      if ( errcode == 0 ) {
+      ok = vdscInitThreadLock( &g_lock );
+      VDS_POST_CONDITION( ok == true || ok == false );
+      if ( ok ) {
          vdscAcquireThreadLock( &g_lock );
          if ( g_definition == NULL ) {
             length = offsetof(vdscErrorDefinition,name) + strlen("errno") + 1;
@@ -376,7 +378,7 @@ bool vdscInitErrorDefs()
             g_definition = malloc( length );
             if ( g_definition == NULL ) {
                fprintf( stderr, "Abnormal error in malloc\n" );
-               errcode = -1;
+               ok = false;
             }
             else {
                g_definition->initialized = VDSC_ERROR_DEFINITION_SIGNATURE;
@@ -391,7 +393,7 @@ bool vdscInitErrorDefs()
                pDefinition = malloc( length );
                if ( pDefinition == NULL ) {
                   fprintf( stderr, "Abnormal error in malloc\n" );
-                  errcode = -1;
+                  ok = false;
                }
                else {
                   pDefinition->initialized = VDSC_ERROR_DEFINITION_SIGNATURE;
@@ -409,7 +411,7 @@ bool vdscInitErrorDefs()
                   pDefinition = malloc( length );
                   if ( pDefinition == NULL ) {
                      fprintf( stderr, "Abnormal error in malloc\n" );
-                     errcode = -1;
+                     ok = false;
                   }
                   else {
                      pDefinition->initialized = VDSC_ERROR_DEFINITION_SIGNATURE;
@@ -425,10 +427,10 @@ bool vdscInitErrorDefs()
             } /* The first check on malloc failure */
          } /* The second check on g_definition == NULL */
          vdscReleaseThreadLock( &g_lock );
-      } /* if errcode of initlock == 0 ) */
+      } /* if initlock == true ) */
    } /* The first check on g_definition == NULL */
    
-   return (errcode == 0);
+   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -611,7 +613,7 @@ vdscGetErrorMsg( vdscErrorHandler * pErrorHandler,
    VDS_PRE_CONDITION( msg != NULL );
    VDS_PRE_CONDITION( maxLength > 0 );   
    
-   if ( vdscTryAcquireThreadLock( &g_lock, 100 ) != 0 ) return 0;
+   if ( ! vdscTryAcquireThreadLock( &g_lock, 100 ) ) return 0;
 
    for ( k = 0; k < pErrorHandler->chainLength; ++k ) {
       nextAvailable = g_definition;
@@ -676,7 +678,7 @@ vdscGetErrorMsgLength( vdscErrorHandler * pErrorHandler )
    VDS_INV_CONDITION( 
       pErrorHandler->initialized == VDSC_ERROR_HANDLER_SIGNATURE );
    
-   if ( vdscTryAcquireThreadLock( &g_lock, 100 ) != 0 ) return 0;
+   if ( ! vdscTryAcquireThreadLock( &g_lock, 100 ) ) return 0;
 
    for ( k = 0; k < pErrorHandler->chainLength; ++k ) {
       nextAvailable = g_definition;
@@ -742,7 +744,8 @@ void vdscSetError( vdscErrorHandler *  pErrorHandler,
     * Note: if we fail to get the lock we go on anyway since the lock
     * is only used for testing the pre-condition.
     */
-   if ( vdscTryAcquireThreadLock( &g_lock, 1000 ) == 0 ) {
+#if defined(USE_DBC)
+   if ( vdscTryAcquireThreadLock(&g_lock, 1000) ) {
       i = 0;
       nextAvailable = g_definition;
       while ( nextAvailable->next != NULL && i <= handle ) {
@@ -753,7 +756,8 @@ void vdscSetError( vdscErrorHandler *  pErrorHandler,
       vdscReleaseThreadLock( &g_lock );
       VDS_PRE_CONDITION(  i >= handle );
    }
-   
+#endif
+
    pErrorHandler->errorHandle[0] = handle;
    pErrorHandler->errorCode[0]   = errorCode;
    pErrorHandler->chainLength = 1;
@@ -797,7 +801,8 @@ void vdscChainError( vdscErrorHandler *  pErrorHandler,
     * Note: if we fail to get the lock we go on anyway since the lock
     * is only used for testing the pre-condition.
     */
-   if ( vdscTryAcquireThreadLock( &g_lock, 1000 ) == 0 ) {
+#if defined(USE_DBC)
+   if ( vdscTryAcquireThreadLock(&g_lock, 1000) ) {
       i = 0;
       nextAvailable = g_definition;
       while ( nextAvailable->next != NULL && i <= handle ) {
@@ -808,7 +813,8 @@ void vdscChainError( vdscErrorHandler *  pErrorHandler,
       vdscReleaseThreadLock( &g_lock );
       VDS_PRE_CONDITION( i >= handle );
    }
-   
+#endif
+
    pErrorHandler->errorHandle[pErrorHandler->chainLength] = handle;
    pErrorHandler->errorCode  [pErrorHandler->chainLength] = errorCode;
    pErrorHandler->chainLength++;

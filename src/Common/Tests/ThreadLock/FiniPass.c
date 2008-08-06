@@ -25,11 +25,11 @@ const bool expectedToPass = true;
 
 int main()
 {
-   int errcode;
+   bool ok;
    vdscThreadLock lock;
 
-   errcode = vdscInitThreadLock( &lock );
-   if ( errcode != 0 ) {
+   ok = vdscInitThreadLock( &lock );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

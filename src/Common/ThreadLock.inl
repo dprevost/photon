@@ -55,7 +55,7 @@ vdscAcquireThreadLock( vdscThreadLock* pLock )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-inline int
+inline bool
 vdscTryAcquireThreadLock( vdscThreadLock* pLock,
                           unsigned int milliSecs )
 {
@@ -68,7 +68,7 @@ vdscTryAcquireThreadLock( vdscThreadLock* pLock,
    status = TryEnterCriticalSection( &pLock->mutex );
 
    if ( status == TRUE ) {
-      return 0;
+      return true;
    }
    else {
       int iterations = milliSecs/g_timeOutinMilliSecs;
@@ -78,11 +78,11 @@ vdscTryAcquireThreadLock( vdscThreadLock* pLock,
          Sleep( g_timeOutinMilliSecs );
 
          status = TryEnterCriticalSection( &pLock->mutex );
-         if ( status == TRUE ) return 0;
+         if ( status == TRUE ) return true;
       }
    }
 
-   return -1;
+   return false;
 
 #else
    status = pthread_mutex_trylock( &pLock->mutex );
@@ -100,11 +100,11 @@ vdscTryAcquireThreadLock( vdscThreadLock* pLock,
       }
    }
 
-   if ( status == EBUSY ) return -1;
+   if ( status == EBUSY ) return false;
       
    VDS_POST_CONDITION( status == 0 );
 
-   return 0;
+   return true;
 #endif  
 }
 

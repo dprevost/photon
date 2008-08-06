@@ -36,14 +36,16 @@ int vdsInit( const char * wdAddress,
 {
    int errcode = VDS_OK;
    vdsaProcess * process;
-
+   bool ok;
+   
    if ( wdAddress == NULL ) return VDS_INVALID_WATCHDOG_ADDRESS;
    
    g_protectionIsNeeded = programIsMultiThreaded;
    
    if ( g_protectionIsNeeded ) {
-      errcode = vdscInitThreadLock( &g_ProcessMutex );
-      if ( errcode != 0 ) return VDS_NOT_ENOUGH_RESOURCES;
+      ok = vdscInitThreadLock( &g_ProcessMutex );
+      VDS_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) return VDS_NOT_ENOUGH_RESOURCES;
    }
 
    process = (vdsaProcess *) malloc( sizeof(vdsaProcess) );

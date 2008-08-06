@@ -25,11 +25,11 @@ const bool expectedToPass = true;
 
 int main()
 {
-   int errcode;
+   bool ok;
    vdscProcessLock lock;
 
-   errcode = vdscInitProcessLock( &lock );
-   if ( errcode != 0 ) {
+   ok = vdscInitProcessLock( &lock );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

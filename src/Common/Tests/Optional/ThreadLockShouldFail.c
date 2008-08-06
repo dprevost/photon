@@ -261,8 +261,8 @@ int main( int argc, char* argv[] )
    memset( ptr, 0, 10000 );
    g_data = (struct localData*) ptr;
    
-   errcode = vdscInitThreadLock( &g_data->lock );
-   if ( errcode < 0 ) {
+   ok = vdscInitThreadLock( &g_data->lock );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

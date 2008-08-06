@@ -100,7 +100,7 @@ static inline
 void vdseProcessNoMoreSessionAllowed( vdseProcess        * pProcess,
                                       vdseSessionContext * pContext )
 {
-   if ( vdseLock( &pProcess->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pProcess->memObject, pContext ) ) {
       pProcess->processIsTerminating = true;
       vdseUnlock( &pProcess->memObject, pContext );
    }

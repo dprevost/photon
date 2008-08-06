@@ -109,13 +109,16 @@ void vdsaCloseVDS( vdsaProcess        * process,
 static 
 #endif
 __inline
-int vdsaProcessLock()
+bool vdsaProcessLock()
 {
+   bool ok = true;
+   
    if ( g_protectionIsNeeded ) {
-      return vdscTryAcquireThreadLock( &g_ProcessMutex, LOCK_TIMEOUT );
+      ok = vdscTryAcquireThreadLock( &g_ProcessMutex, LOCK_TIMEOUT );
+      VDS_POST_CONDITION( ok == true || ok == false );
    }
    
-   return 0;
+   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -346,21 +346,23 @@ unsigned char * vdseMallocBlocks( vdseMemAlloc       * pAlloc,
 {
    vdseFreeBufferNode * pNode = NULL;
    vdseFreeBufferNode * pNewNode = NULL;
-   int errcode = 0;
    size_t newNumBlocks = 0;
    vdseMemBitmap * pBitmap;
    vdseMemObjIdent * identifier;
-
+   bool ok;
+   
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pAlloc   != NULL );
    VDS_PRE_CONDITION( requestedBlocks > 0 );
    VDS_INV_CONDITION( g_pBaseAddr != NULL );
 
-   errcode = vdscTryAcquireProcessLock( &pAlloc->memObj.lock, 
-                                        getpid(),
-                                        LOCK_TIMEOUT );
-   if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   ok = vdscTryAcquireProcessLock( &pAlloc->memObj.lock, 
+                                   getpid(),
+                                   LOCK_TIMEOUT );
+   VDS_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) {
+//BUG?      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+// engine busy vs not enough memory ... not the same thing!!!
       return NULL;
    }
    
@@ -426,7 +428,6 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
                      size_t               numBlocks,
                      vdseSessionContext * pContext )
 {
-   int errcode = 0;
    vdseFreeBufferNode * otherNode, * previousNode = NULL, * newNode = NULL;
    bool otherBufferisFree = false;
    vdseMemBitmap * pBitmap;
@@ -440,13 +441,16 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
    VDS_PRE_CONDITION( ptr      != NULL );
    VDS_PRE_CONDITION( numBlocks > 0 );
 
-   errcode = vdseLock( &pAlloc->memObj, pContext );
-   if ( errcode != 0 ) {
+   if ( ! vdseLock( &pAlloc->memObj, pContext ) ) {
       /* 
-       * Potential race conditions here if the memory is accessed beyond
-       * this point. Setting the field isInLimbo and VDSE_IDENT_LIMBO
+       * So we did not get the lock and still need to free the memory.
+       * We can't put the blocks back but we can put them in "limbo".
+       *
+       * Setting the field isInLimbo and VDSE_IDENT_LIMBO
        * must be done after the memory barrier (to make sure they are the
-       * last operations done on this piece of memory).
+       * last operations done on this piece of memory from the point of
+       * view of other processes using the read barrier to access the
+       * same data).
        */
       pFreeHeader = (vdseFreeBlock*) ptr;
       endBlock = (vdseEndBlockGroup *)
@@ -615,7 +619,6 @@ int vdseMemAllocStats( vdseMemAlloc       * pAlloc,
                        vdsInfo            * pInfo,
                        vdseSessionContext * pContext )
 {
-   int errcode = 0;
    size_t numBlocks;
    vdseLinkNode *oldNode = NULL;
    vdseLinkNode *currentNode = NULL;
@@ -625,8 +628,8 @@ int vdseMemAllocStats( vdseMemAlloc       * pAlloc,
    VDS_PRE_CONDITION( pInfo    != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
 
-   errcode = vdseLock( &pAlloc->memObj, pContext );
-   if ( errcode == 0 ) {
+   if ( vdseLock( &pAlloc->memObj, pContext ) ) {
+
       pInfo->totalSizeInBytes     = pAlloc->totalLength;
       pInfo->allocatedSizeInBytes = pAlloc->totalAllocBlocks << VDSE_BLOCK_SHIFT;
       pInfo->numObjects           = pAlloc->numApiObjects;

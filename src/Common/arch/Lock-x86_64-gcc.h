@@ -53,7 +53,7 @@ vdscAcquireProcessLock( vdscProcessLock * pLock,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-inline int
+inline bool
 vdscTryAcquireProcessLock( vdscProcessLock * pLock,
                            pid_t             pid_locker,
                            unsigned int      milliSecs )
@@ -93,7 +93,7 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
     * If the condition is true, the time slice was not enough, 
     * we did not get the lock.
     */
-   if ( out > 0 ) return -1;   
+   if ( out > 0 ) return false;
 
    /* A compiler barrier to make sure pid (and every other instructions 
     * after the lock is taken are not reordered. */
@@ -105,7 +105,7 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
     */
    pLock->pid = pid_locker;
 
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

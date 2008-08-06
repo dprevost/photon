@@ -93,17 +93,19 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-//#ifndef __cplusplus
-static 
-//#endif
-__inline
-int vdsaSessionLock( vdsaSession * pSession )
+static inline
+bool vdsaSessionLock( vdsaSession * pSession )
 {
+   bool ok = true;
+
+   VDS_PRE_CONDITION( pSession != NULL );
+   
    if ( g_protectionIsNeeded ) {
-      return vdscTryAcquireThreadLock( &pSession->mutex, 
-                                       LOCK_TIMEOUT );
+      ok = vdscTryAcquireThreadLock( &pSession->mutex, LOCK_TIMEOUT );
+      VDS_POST_CONDITION( ok == true || ok == false );
    }
-   return 0;
+   
+   return ok;
 }
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

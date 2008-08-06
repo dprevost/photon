@@ -171,8 +171,8 @@ int main( int argc, char* argv[] )
       memset( ptr, 0, 10000 );
       data = (struct localData*) ptr;
    
-      errcode = vdscInitProcessLock( &data->lock );
-      if ( errcode < 0 ) {
+      ok = vdscInitProcessLock( &data->lock );
+      if ( ok != true ) {
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
       
@@ -261,8 +261,8 @@ int main( int argc, char* argv[] )
    
       for (;;) {      
          if ( tryMode ) {
-            int err = vdscTryAcquireProcessLock( &data->lock, pid, 10000 );
-            if ( err != 0 ) continue;
+            ok = vdscTryAcquireProcessLock( &data->lock, pid, 10000 );
+            if ( ok != true ) continue;
          }
          else {
             vdscAcquireProcessLock( &data->lock, pid );

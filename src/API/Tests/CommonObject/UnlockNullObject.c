@@ -29,6 +29,7 @@ int main( int argc, char * argv[] )
 #if defined(USE_DBC)
    VDS_HANDLE sessionHandle;
    int errcode;
+   bool ok;
    vdsaCommonObject object;
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
@@ -75,9 +76,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaCommonLock( &object );
-   if ( errcode != VDS_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
+   ok = vdsaCommonLock( &object );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 

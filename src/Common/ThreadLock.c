@@ -19,12 +19,13 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdscInitThreadLock( vdscThreadLock* pLock )
+bool vdscInitThreadLock( vdscThreadLock* pLock )
 {
 #if defined (WIN32)
    BOOL status;
 #endif
-   int rc = -1;
+   bool ok = false;
+   int rc;
    
    VDS_PRE_CONDITION( pLock != NULL );
 
@@ -35,7 +36,7 @@ int vdscInitThreadLock( vdscThreadLock* pLock )
     * chosen. Not sure about the spin count however.
     */
    status = InitializeCriticalSectionAndSpinCount( &pLock->mutex, 100 );
-   if ( status == TRUE ) rc = 0;
+   if ( status == TRUE ) ok = true;
 #else
    /*
     * Default attributes (passing NULL as the second parameter) should give
@@ -45,9 +46,12 @@ int vdscInitThreadLock( vdscThreadLock* pLock )
    rc = pthread_mutex_init( &pLock->mutex, NULL );
 #endif
 
-   if ( rc == 0 ) pLock->initialized = VDSC_THREADLOCK_SIGNATURE;
-
-   return rc;
+   if ( rc == 0 ) {
+      pLock->initialized = VDSC_THREADLOCK_SIGNATURE;
+      ok = true;
+   }
+   
+   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

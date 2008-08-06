@@ -66,7 +66,7 @@ struct vdscInternalOpt
    unsigned int initialized;
    
    /** Pointer to the allocated array. */
-   vdscOptArray* pArray;
+   vdscOptArray * pArray;
 
    /** Number of supported option (array size). */
    int numOpt;
@@ -75,7 +75,7 @@ struct vdscInternalOpt
     * We keep a copy of the value of argv for vdscGetLongOptArgument and 
     * similar to retrieve the argument from the proper argv[].
     */
-   char** argv;
+   char ** argv;
 
    /** Additional protection - this field is set to "true" (1) only after
     *  the argv[] array is analyzed and validated. */
@@ -111,8 +111,8 @@ typedef struct vdscInternalOpt vdscInternalOpt;
  *                    options.
  * \param[out] pHandle A pointer to an opaque handle.
  *
- * \retval 0 on success
- * \retval -1 on error
+ * \retval true  on success
+ * \retval false on error
  *
  * \pre \em numOpts must be greater than zero.
  * \pre \em opts cannot be NULL.
@@ -246,10 +246,10 @@ bool vdscSetSupportedOptions( int                numOpts,
  * \invariant \em optStruct->initialized must equal 
  *                ::VDSC_OPTION_SIGNATURE.
  */
-int vdscValidateUserOptions( vdscOptionHandle handle,
-                             int              argc, 
-                             char *           argv[], 
-                             int              printError )
+int vdscValidateUserOptions( vdscOptionHandle   handle,
+                             int                argc, 
+                             char             * argv[], 
+                             int                printError )
 {
    int i = 1, j, returnCode = 0, found;
    size_t len;
@@ -497,11 +497,11 @@ int vdscValidateUserOptions( vdscOptionHandle handle,
  * \invariant \em optStruct->pArray cannot be NULL.
  * \invariant \em optStruct->numOpt must be positive.
  */
-bool vdscGetShortOptArgument( vdscOptionHandle handle,
-                              const char       opt, 
-                              char**           argument )
+bool vdscGetShortOptArgument( vdscOptionHandle    handle,
+                              const char          opt, 
+                              char             ** argument )
 {
-   vdscInternalOpt* optStruct = (vdscInternalOpt*)handle;
+   vdscInternalOpt * optStruct = (vdscInternalOpt *)handle;
    int i;
    
    VDS_PRE_CONDITION( handle != NULL );
@@ -558,11 +558,11 @@ bool vdscGetShortOptArgument( vdscOptionHandle handle,
  * \invariant \em optStruct->pArray cannot be NULL.
  * \invariant \em optStruct->numOpt must be positive.
  */
-bool vdscGetLongOptArgument( vdscOptionHandle handle,
-                             const char*      opt, 
-                             char**           argument )
+bool vdscGetLongOptArgument( vdscOptionHandle    handle,
+                             const char*         opt, 
+                             char             ** argument )
 {
-   vdscInternalOpt* optStruct = (vdscInternalOpt*)handle;
+   vdscInternalOpt * optStruct = (vdscInternalOpt *)handle;
    int i;
    bool nullTerminatedString;
    
@@ -630,7 +630,7 @@ bool vdscGetLongOptArgument( vdscOptionHandle handle,
 bool vdscIsShortOptPresent( vdscOptionHandle handle,
                             const char       opt )
 {
-   vdscInternalOpt* optStruct = (vdscInternalOpt*)handle;
+   vdscInternalOpt * optStruct = (vdscInternalOpt *)handle;
    int i;
    
    VDS_PRE_CONDITION( handle != NULL );
@@ -680,10 +680,10 @@ bool vdscIsShortOptPresent( vdscOptionHandle handle,
  * \invariant \em optStruct->pArray cannot be NULL.
  * \invariant \em optStruct->numOpt must be positive.
  */
-bool vdscIsLongOptPresent( vdscOptionHandle handle,
-                           const char*      opt )
+bool vdscIsLongOptPresent( vdscOptionHandle   handle,
+                           const char       * opt )
 {
-   vdscInternalOpt* optStruct = (vdscInternalOpt*)handle;
+   vdscInternalOpt * optStruct = (vdscInternalOpt *)handle;
    int i;
    bool nullTerminatedString;
    
@@ -742,15 +742,15 @@ bool vdscIsLongOptPresent( vdscOptionHandle handle,
  *
  */
 
-void vdscShowUsage( vdscOptionHandle handle,
-                    char*            progName,
-                    char*            addArguments )
+void vdscShowUsage( vdscOptionHandle   handle,
+                    char             * progName,
+                    char             * addArguments )
 {
    int i, len, max_len;
    char longOpt[VDSC_OPT_LONG_OPT_LENGTH+VDSC_OPT_ARGUMENT_MSG_LENGTH+3];
    char shortOpt[3], openBracket, closeBracket;
    char comment[VDSC_OPT_COMMENT_LENGTH];
-   vdscInternalOpt* optStruct = (vdscInternalOpt*)handle;
+   vdscInternalOpt * optStruct = (vdscInternalOpt *)handle;
    
    VDS_PRE_CONDITION( handle != NULL );
    VDS_INV_CONDITION( optStruct->initialized == VDSC_OPTION_SIGNATURE );
@@ -822,7 +822,7 @@ void vdscShowUsage( vdscOptionHandle handle,
  */
 void vdscUnsetSupportedOptions( vdscOptionHandle handle )
 {
-   vdscInternalOpt* optStruct = (vdscInternalOpt*)handle;
+   vdscInternalOpt * optStruct = (vdscInternalOpt *)handle;
 
    VDS_PRE_CONDITION( handle != NULL );
    VDS_INV_CONDITION( optStruct->initialized == VDSC_OPTION_SIGNATURE );

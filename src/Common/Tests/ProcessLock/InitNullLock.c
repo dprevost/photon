@@ -26,9 +26,9 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   int errcode;
+   bool ok;
 
-   errcode = vdscInitProcessLock( NULL );
+   ok = vdscInitProcessLock( NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

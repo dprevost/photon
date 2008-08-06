@@ -25,32 +25,32 @@ const bool expectedToPass = true;
 
 int main()
 {
-   int errcode;
    vdscProcessLock lock;
    pid_t pid = getpid();
+   bool ok;
    
-   errcode = vdscInitProcessLock( &lock );
-   if ( errcode != 0 ) {
+   ok = vdscInitProcessLock( &lock );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdscTryAcquireProcessLock( &lock, pid, 0 );
-   if ( errcode != 0 ) {
+   ok = vdscTryAcquireProcessLock( &lock, pid, 0 );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdscTryAcquireProcessLock( &lock, pid, 1000 );
-   if ( errcode == 0 ) {
+   ok = vdscTryAcquireProcessLock( &lock, pid, 1000 );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdscIsItLocked( &lock );   
-   if ( errcode == 0 ) {
+   ok = vdscIsItLocked( &lock );   
+   if ( ok == false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdscTestLockPidValue( &lock, pid );
-   if ( errcode == 0 ) {
+   ok = vdscTestLockPidValue( &lock, pid );
+   if ( ok == false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -59,8 +59,8 @@ int main()
    /* Calling it a second time should do nothing */
    vdscReleaseProcessLock( &lock );
 
-   errcode = vdscTryAcquireProcessLock( &lock, pid, 1000 );
-   if ( errcode != 0 ) {
+   ok = vdscTryAcquireProcessLock( &lock, pid, 1000 );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 

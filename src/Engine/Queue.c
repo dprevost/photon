@@ -122,7 +122,7 @@ int vdseQueueGet( vdseQueue          * pQueue,
    
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
    
-   if ( vdseLock( &pQueue->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pQueue->memObject, pContext ) ) {
       if ( flag == VDS_NEXT ) {
          
          errcode = VDS_REACHED_THE_END;
@@ -345,7 +345,7 @@ int vdseQueueInsert( vdseQueue          * pQueue,
 
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pQueue->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pQueue->memObject, pContext ) ) {
       if ( ! vdseTxStatusIsValid( txQueueStatus, SET_OFFSET(pContext->pTransaction) ) 
          || vdseTxStatusIsMarkedAsDestroyed( txQueueStatus ) ) {
          errcode = VDS_OBJECT_IS_DELETED;
@@ -439,7 +439,7 @@ int vdseQueueInsertNow( vdseQueue          * pQueue,
 
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pQueue->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pQueue->memObject, pContext ) ) {
       if ( ! vdseTxStatusIsValid( txQueueStatus, SET_OFFSET(pContext->pTransaction) ) 
          || vdseTxStatusIsMarkedAsDestroyed( txQueueStatus ) ) {
          errcode = VDS_OBJECT_IS_DELETED;
@@ -504,7 +504,7 @@ int vdseQueueRelease( vdseQueue          * pQueue,
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( pQueue->memObject.objType == VDSE_IDENT_QUEUE );
 
-   if ( vdseLock( &pQueue->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pQueue->memObject, pContext ) ) {
       vdseQueueReleaseNoLock( pQueue,
                               pQueueItem,
                               pContext );
@@ -586,7 +586,7 @@ int vdseQueueRemove( vdseQueue          * pQueue,
    
    GET_PTR( txParentStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pQueue->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pQueue->memObject, pContext ) ) {
       if ( ! vdseTxStatusIsValid( txParentStatus, SET_OFFSET(pContext->pTransaction) ) 
          || vdseTxStatusIsMarkedAsDestroyed( txParentStatus ) ) {
          errcode = VDS_OBJECT_IS_DELETED;

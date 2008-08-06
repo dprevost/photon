@@ -44,7 +44,7 @@ int vdsFastMapClose( VDS_HANDLE objectHandle )
    
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) == 0 ) {
+      if ( vdsaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (vdseMap *) pHashMap->object.pMyVdsObject;
 
          /* Reinitialize the iterator, if needed */
@@ -121,7 +121,7 @@ int vdsFastMapDefinition( VDS_HANDLE             objectHandle,
    }
 
    if ( ! pHashMap->object.pSession->terminated ) {
-      if ( vdsaCommonLock( &pHashMap->object ) == 0 ) {
+      if ( vdsaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (vdseMap *) pHashMap->object.pMyVdsObject;
       
          errcode = vdsaGetDefinition( pHashMap->pDefinition,
@@ -185,7 +185,7 @@ int vdsFastMapDelete( VDS_HANDLE   objectHandle,
    
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) == 0 ) {
+      if ( vdsaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (vdseMap *) pHashMap->object.pMyVdsObject;
 
          rc = vdseMapDelete( pVDSHashMap,
@@ -312,7 +312,7 @@ int vdsFastMapEmpty( VDS_HANDLE objectHandle )
       return VDS_OBJECT_IS_READ_ONLY;
    }
 
-   if ( vdsaCommonLock( &pHashMap->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -386,7 +386,7 @@ int vdsFastMapGet( VDS_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pHashMap->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -472,7 +472,7 @@ int vdsFastMapGetFirst( VDS_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pHashMap->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -563,7 +563,7 @@ int vdsFastMapGetNext( VDS_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pHashMap->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -649,7 +649,7 @@ int vdsFastMapInsert( VDS_HANDLE   objectHandle,
 
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) == 0 ) {
+      if ( vdsaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (vdseMap *) pHashMap->object.pMyVdsObject;
 
          rc = vdseMapInsert( pVDSHashMap,
@@ -791,7 +791,7 @@ int vdsFastMapReplace( VDS_HANDLE   objectHandle,
 
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) == 0 ) {
+      if ( vdsaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (vdseMap *) pHashMap->object.pMyVdsObject;
 
          rc = vdseMapReplace( pVDSHashMap,
@@ -846,10 +846,10 @@ int vdsFastMapStatus( VDS_HANDLE     objectHandle,
 
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) == 0 ) {
+      if ( vdsaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (vdseMap *) pHashMap->object.pMyVdsObject;
       
-         if ( vdseLock( &pVDSHashMap->memObject, pContext ) == 0 ) {
+         if ( vdseLock(&pVDSHashMap->memObject, pContext) ) {
             vdseMemObjectStatus( &pVDSHashMap->memObject, pStatus );
 
             vdseMapStatus( pVDSHashMap, pStatus );
@@ -899,7 +899,7 @@ int vdsaMapFirst( vdsaMap      * pHashMap,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pHashMap->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -966,7 +966,7 @@ int vdsaMapNext( vdsaMap   * pHashMap,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pHashMap->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -1057,7 +1057,7 @@ int vdsaMapRetrieve( vdsaMap       * pHashMap,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pHashMap->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }

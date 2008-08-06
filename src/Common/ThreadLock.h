@@ -56,30 +56,30 @@ typedef struct vdscThreadLock
  * mechanism allows this distinction).
  */
 VDSF_COMMON_EXPORT
-int vdscInitThreadLock( vdscThreadLock* pLock );
+bool vdscInitThreadLock( vdscThreadLock * pLock );
 
 /**
  *  Uninitialize the lock (it will remove the lock for POSIX semaphores).
  */
 VDSF_COMMON_EXPORT
-void vdscFiniThreadLock( vdscThreadLock* pLock );
+void vdscFiniThreadLock( vdscThreadLock * pLock );
 
 /** Acquire lock ownership (loop forever) - this is dangerous for
  * deadlocks.
  */
 static inline
-void vdscAcquireThreadLock( vdscThreadLock* pLock );
+void vdscAcquireThreadLock( vdscThreadLock * pLock );
 
 /** Attempt to acquire the lock for nMilliSecs - fails if it can't 
- *  Returns -1 on failure.  
+ *  Returns false on failure.  
  */
 static inline
-int vdscTryAcquireThreadLock ( vdscThreadLock* pLock,
-                               unsigned int milliSecs );   
+bool vdscTryAcquireThreadLock ( vdscThreadLock * pLock,
+                                unsigned int     milliSecs );   
 
 /** Release lock. */
 static inline
-void vdscReleaseThreadLock ( vdscThreadLock* pLock );
+void vdscReleaseThreadLock ( vdscThreadLock * pLock );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

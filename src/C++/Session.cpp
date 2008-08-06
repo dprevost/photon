@@ -196,7 +196,7 @@ int vdsSession::LastError()
    
    if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
-   if ( vdsaSessionLock( pSession ) == 0 ) {
+   if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          lastErr = vdscGetLastError( &pSession->context.errorHandler );
       }

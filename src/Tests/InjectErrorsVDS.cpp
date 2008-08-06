@@ -162,7 +162,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    cout << "Defect for " << h[4].name << ": object locked" << endl;
    apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[4].map + api_offset );
    pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
-   if ( vdscTryAcquireProcessLock ( &pHashMap->memObject.lock, getpid(), 0 ) ) {
+   if ( ! vdscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
@@ -170,7 +170,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    cout << "Defect for " << h[5].name << ": items - invalid offset" << endl;
    apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[5].map + api_offset );
    pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
-   if ( vdscTryAcquireProcessLock ( &pHashMap->memObject.lock, getpid(), 0 ) ) {
+   if ( ! vdscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
@@ -184,7 +184,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    cout << "Defect for " << h[6].name << ": item - invalid key length" << endl;
    apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[6].map + api_offset );
    pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
-   if ( vdscTryAcquireProcessLock ( &pHashMap->memObject.lock, getpid(), 0 ) ) {
+   if ( ! vdscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
@@ -208,7 +208,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    cout << "Defect for " << h[7].name << ": item - invalid data offset" << endl;
    apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[7].map + api_offset );
    pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
-   if ( vdscTryAcquireProcessLock ( &pHashMap->memObject.lock, getpid(), 0 ) ) {
+   if ( ! vdscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
@@ -332,7 +332,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    cout << "Defect for " << q[4].name << ": object locked" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[4].queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
-   if ( vdscTryAcquireProcessLock ( &pQueue->memObject.lock, getpid(), 0 ) ) {
+   if ( ! vdscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
@@ -340,7 +340,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    cout << "Defect for " << q[5].name << ": broken forward link" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[5].queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
-   if ( vdscTryAcquireProcessLock ( &pQueue->memObject.lock, getpid(), 0 ) ) {
+   if ( ! vdscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
@@ -365,7 +365,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    cout << "Defect for " << q[6].name << ": broken backward link" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[6].queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
-   if ( vdscTryAcquireProcessLock ( &pQueue->memObject.lock, getpid(), 0 ) ) {
+   if ( ! vdscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
@@ -390,7 +390,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    cout << "Defect for " << q[7].name << ": 2 broken forward links" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[7].queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
-   if ( vdscTryAcquireProcessLock ( &pQueue->memObject.lock, getpid(), 0 ) ) {
+   if ( ! vdscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
@@ -417,7 +417,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    cout << "Defect for " << q[8].name << ": 2 broken backward links" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[8].queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
-   if ( vdscTryAcquireProcessLock ( &pQueue->memObject.lock, getpid(), 0 ) ) {
+   if ( ! vdscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
@@ -444,7 +444,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    cout << "Defect for " << q[9].name << ": broken bw+fw links (eq)" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[9].queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
-   if ( vdscTryAcquireProcessLock ( &pQueue->memObject.lock, getpid(), 0 ) ) {
+   if ( ! vdscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }

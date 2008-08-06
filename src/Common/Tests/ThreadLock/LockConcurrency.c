@@ -60,6 +60,7 @@ int worker( void* arg )
    int errcode;
    char dum3[100];
    int dumId;
+   bool ok;
    
    identifier = *((int*)arg);
 
@@ -69,8 +70,8 @@ int worker( void* arg )
    
    while ( 1 ) {      
       if ( g_tryMode ) {
-         errcode = vdscTryAcquireThreadLock( &g_data->lock, 10000 );
-         if ( errcode != 0 ) continue;
+         ok = vdscTryAcquireThreadLock( &g_data->lock, 10000 );
+         if ( ok != true ) continue;
       }
       else {
          vdscAcquireThreadLock( &g_data->lock );
@@ -216,8 +217,8 @@ int main( int argc, char* argv[] )
    memset( ptr, 0, 10000 );
    g_data = (struct localData*) ptr;
    
-   errcode = vdscInitThreadLock( &g_data->lock );
-   if ( errcode < 0 ) {
+   ok = vdscInitThreadLock( &g_data->lock );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

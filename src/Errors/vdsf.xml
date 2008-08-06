@@ -121,10 +121,10 @@
             There are not enough resources to correctly process the call.
           </errordoc>
           <errordoc>
-            There are not enough resources to correctly process the call. 
-            This might be due to a lack of POSIX semaphores on systems 
-            where locks are implemented that way or a failure in initializing
-            a pthread_mutex (or on Windows, a critical section).
+            Possible explanations: it might be a lack of POSIX semaphores 
+            on systems where atomic locks are implemented that way or a 
+            failure in initializing a pthread_mutex (or on Windows, a 
+            critical section).
           </errordoc>
         </message>
       </message_group>
@@ -1040,6 +1040,22 @@
           <errordoc>
             Document validation for the xml buffer failed. To debug this
             problem you can use xmllint (part of the libxml2 package).
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
+      <errnumber> 601 </errnumber>
+      <errname> SEM_DESTROY_ERROR </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>Abnormal internal error with sem_destroy.</errormsg>
+          <errordoc>
+            Abnormal internal error with sem_destroy. It should not happen!
+            It could indicate that the memory allocated for the semaphore 
+            was corrupted (errno = EINVAL) or that the reference counting 
+            is wrong (errno = EBUSY). Please contact us.
           </errordoc>
         </message>
       </message_group>

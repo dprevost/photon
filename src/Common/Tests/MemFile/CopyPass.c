@@ -26,7 +26,6 @@ int main()
 {
    vdscMemoryFile  mem;
    vdscErrorHandler errorHandler;
-   void * pAddr = NULL;
    bool ok;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete

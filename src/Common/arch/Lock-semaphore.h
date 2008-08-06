@@ -47,7 +47,7 @@ vdscAcquireProcessLock( vdscProcessLock * pLock,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-inline int
+inline bool
 vdscTryAcquireProcessLock( vdscProcessLock * pLock,
                            pid_t             pid_locker,
                            unsigned int      milliSecs )
@@ -68,7 +68,7 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
    } while ( isItLocked == -1 && errno == EINTR );
    if (  isItLocked == -1 && errno != EAGAIN ) {
       fprintf( stderr, "Lock:trywait failed with errno = %d\n", errno );
-      return -1;
+      return false;
    }
 
    if ( isItLocked != 0 ) {
@@ -84,7 +84,7 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
 
          if (  isItLocked == -1 && errno != EAGAIN ) {
             fprintf( stderr, "Lock:trywait failed with errno = %d\n", errno );
-            return -1;
+            return false;
          }
          if ( i > 25 ) {
             int val;
@@ -96,7 +96,7 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
       
       /* We come here - the time slice was not enough, no luck getting the lock */
       if ( isItLocked != 0 ) {
-         return -1;   
+         return false;   
       }
    }
  
@@ -106,7 +106,7 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
     */
    pLock->pid = pid_locker;
 
-   return isItLocked;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

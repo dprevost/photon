@@ -101,33 +101,33 @@ void vdscUnsetSupportedOptions( vdscOptionHandle handle );
 
 /*! \brief Verify the validity of the options passed in by the end-user. */
 VDSF_COMMON_EXPORT
-int vdscValidateUserOptions( vdscOptionHandle handle,
-                             int              argc, 
-                             char *           argv[], 
-                             int              printError );
+int vdscValidateUserOptions( vdscOptionHandle   handle,
+                             int                argc, 
+                             char             * argv[], 
+                             int                printError );
 
 /*! \brief Print usage information. */
 VDSF_COMMON_EXPORT
-void vdscShowUsage( vdscOptionHandle handle,
-                    char*            progName,
-                    char*            addArguments );
+void vdscShowUsage( vdscOptionHandle   handle,
+                    char             * progName,
+                    char             * addArguments );
 
 /*! \brief Retrieves the argument associated with a given option. */
 VDSF_COMMON_EXPORT
-bool vdscGetShortOptArgument( vdscOptionHandle handle,
-                              const char       opt, 
-                              char**           argument );
+bool vdscGetShortOptArgument( vdscOptionHandle   handle,
+                              const char         opt, 
+                              char            ** argument );
 
 /*! \brief Retrieves the argument associated with a given option. */
 VDSF_COMMON_EXPORT
-bool vdscGetLongOptArgument( vdscOptionHandle handle,
-                             const char*      opt, 
-                             char**           argument );
+bool vdscGetLongOptArgument( vdscOptionHandle   handle,
+                             const char       * opt, 
+                             char            ** argument );
 
 /*! \brief Verify if the option is present. */
 VDSF_COMMON_EXPORT
-bool vdscIsLongOptPresent( vdscOptionHandle handle,
-                           const char*      opt );
+bool vdscIsLongOptPresent( vdscOptionHandle   handle,
+                           const char       * opt );
 
 /*! \brief Verify if the option is present. */
 VDSF_COMMON_EXPORT
@@ -143,3 +143,4 @@ bool vdscIsShortOptPresent( vdscOptionHandle handle,
 END_C_DECLS
 
 #endif /* VDSC_OPTIONS_H */
+

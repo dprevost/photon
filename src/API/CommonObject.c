@@ -41,7 +41,7 @@ int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
 
    if ( pObject->pSession == NULL ) return VDS_PROCESS_NOT_INITIALIZED;
 
-   if ( vdsaCommonLock( pObject ) == 0 ) {
+   if ( vdsaCommonLock( pObject ) ) {
       errcode = vdsaSessionOpenObj( pObject->pSession,
                                     objectType,
                                     editMode,

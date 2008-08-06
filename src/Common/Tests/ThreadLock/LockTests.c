@@ -25,16 +25,16 @@ const bool expectedToPass = true;
 
 int main()
 {
-   int errcode;
    vdscThreadLock lock;
+   bool ok;
    
-   errcode = vdscInitThreadLock( &lock );
-   if ( errcode != 0 ) {
+   ok = vdscInitThreadLock( &lock );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdscTryAcquireThreadLock( &lock, 0 );
-   if ( errcode != 0 ) {
+   ok = vdscTryAcquireThreadLock( &lock, 0 );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -45,22 +45,22 @@ int main()
     * Quite frankly, in retrospect this test seems quite useless but it 
     * does not hurt so...
     */
-   errcode = vdscTryAcquireThreadLock( &lock, 1000 );
+   ok = vdscTryAcquireThreadLock( &lock, 1000 );
 #if defined (WIN32)
-   if ( errcode != 0 ) {
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    vdscReleaseThreadLock( &lock );
 #else
-   if ( errcode == 0 ) {
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 #endif
 
    vdscReleaseThreadLock( &lock );
 
-   errcode = vdscTryAcquireThreadLock( &lock, 1000 );
-   if ( errcode != 0 ) {
+   ok = vdscTryAcquireThreadLock( &lock, 1000 );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

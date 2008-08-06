@@ -24,18 +24,24 @@ const bool expectedToPass = true;
 
 int main()
 {
-   int errcode;
+   bool ok;
    vdscProcessLock lock;
 
-   errcode = vdscInitProcessLock( &lock );
-   if ( errcode != 0 ) {
+   ok = vdscInitProcessLock( &lock );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    if ( lock.initialized != VDSC_LOCK_SIGNATURE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   
+
+   /* A second init call is allowed */
+   ok = vdscInitProcessLock( &lock );
+   if ( ok != true ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    vdscFiniProcessLock( &lock );
 
    return 0;

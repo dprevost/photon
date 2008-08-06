@@ -51,7 +51,7 @@ vdscAcquireProcessLock( vdscProcessLock * pLock,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-inline int
+inline bool
 vdscTryAcquireProcessLock( vdscProcessLock * pLock,
                            pid_t             pid_locker,
                            unsigned int      milliSecs )
@@ -83,7 +83,7 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
     * If the condition is true, the time slice was not enough, 
     * we did not get the lock.
     */
-   if ( isItLocked != 0 ) return -1;   
+   if ( isItLocked != 0 ) return false;
 
    /* There is a "race condition" when saving the pid of the caller
     * this way -> it is possible to have lock out-of-synch with
@@ -91,7 +91,7 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
     */
    pLock->pid = pid_locker;
 
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

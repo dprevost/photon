@@ -208,8 +208,8 @@ int main( int argc, char* argv[] )
       memset( ptr, 0, 10000 );
       data = (struct localData *)ptr;
       
-      errcode = vdscInitProcessLock( &data->lock );
-      if ( errcode < 0 ) {
+      ok = vdscInitProcessLock( &data->lock );
+      if ( ok != true ) {
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
       

@@ -156,8 +156,7 @@ void vdsaProcessFini()
    vdseProcessNoMoreSessionAllowed( process->pCleanup,
                                     &context );
 
-   errcode = vdseLock( &process->pCleanup->memObject, &context );
-   if ( errcode == 0 ) {
+   if ( vdseLock(&process->pCleanup->memObject, &context) ) {
       errcode = vdseProcessGetFirstSession( process->pCleanup, 
                                             &pVdsSession, 
                                             &context );

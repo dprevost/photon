@@ -44,7 +44,7 @@ int vdsHashMapClose( VDS_HANDLE objectHandle )
    
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) == 0 ) {
+      if ( vdsaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (vdseHashMap *) pHashMap->object.pMyVdsObject;
 
          /* Reinitialize the iterator, if needed */
@@ -111,7 +111,7 @@ int vdsHashMapDefinition( VDS_HANDLE             objectHandle,
    }
 
    if ( ! pHashMap->object.pSession->terminated ) {
-      if ( vdsaCommonLock( &pHashMap->object ) == 0 ) {
+      if ( vdsaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (vdseHashMap *) pHashMap->object.pMyVdsObject;
       
          errcode = vdsaGetDefinition( pHashMap->pDefinition,
@@ -170,7 +170,7 @@ int vdsHashMapDelete( VDS_HANDLE   objectHandle,
    
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) == 0 ) {
+      if ( vdsaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (vdseHashMap *) pHashMap->object.pMyVdsObject;
 
          rc = vdseHashMapDelete( pVDSHashMap,
@@ -234,7 +234,7 @@ int vdsHashMapGet( VDS_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pHashMap->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -320,7 +320,7 @@ int vdsHashMapGetFirst( VDS_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pHashMap->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -411,7 +411,7 @@ int vdsHashMapGetNext( VDS_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pHashMap->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -491,7 +491,7 @@ int vdsHashMapInsert( VDS_HANDLE   objectHandle,
 
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) == 0 ) {
+      if ( vdsaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (vdseHashMap *) pHashMap->object.pMyVdsObject;
 
          rc = vdseHashMapInsert( pVDSHashMap,
@@ -621,7 +621,7 @@ int vdsHashMapReplace( VDS_HANDLE   objectHandle,
 
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) == 0 ) {
+      if ( vdsaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (vdseHashMap *) pHashMap->object.pMyVdsObject;
 
          rc = vdseHashMapReplace( pVDSHashMap,
@@ -676,10 +676,10 @@ int vdsHashMapStatus( VDS_HANDLE     objectHandle,
 
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) == 0 ) {
+      if ( vdsaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (vdseHashMap *) pHashMap->object.pMyVdsObject;
       
-         if ( vdseLock( &pVDSHashMap->memObject, pContext ) == 0 ) {
+         if ( vdseLock(&pVDSHashMap->memObject, pContext) ) {
             vdseMemObjectStatus( &pVDSHashMap->memObject, pStatus );
 
             vdseHashMapStatus( pVDSHashMap, pStatus );
@@ -729,7 +729,7 @@ int vdsaHashMapFirst( vdsaHashMap      * pHashMap,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pHashMap->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -796,7 +796,7 @@ int vdsaHashMapNext( vdsaHashMap   * pHashMap,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pHashMap->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -857,7 +857,7 @@ int vdsaHashMapRetrieve( vdsaHashMap   * pHashMap,
       goto error_handler;
    }
 
-   if ( vdsaCommonLock( &pHashMap->object ) != 0 ) {
+   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }

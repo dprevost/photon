@@ -70,7 +70,7 @@ int vdsCommit( VDS_HANDLE sessionHandle )
       return VDS_NOT_ALL_EDIT_ARE_CLOSED;
    }
    
-   if ( vdsaSessionLock( pSession ) == 0 ) {
+   if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          rc = vdseTxCommit( (vdseTx*)pSession->context.pTransaction, 
                             &pSession->context );
@@ -135,7 +135,7 @@ int vdsCreateObject( VDS_HANDLE            sessionHandle,
       return errcode;
    }
    
-   if ( vdsaSessionLock( pSession ) == 0 ) {
+   if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder )
          rc = vdseTopFolderCreateObject( pTree,
@@ -189,7 +189,7 @@ int vdsDestroyObject( VDS_HANDLE   sessionHandle,
       return VDS_INVALID_LENGTH;
    }
    
-   if ( vdsaSessionLock( pSession ) == 0 ) {
+   if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder )
          rc = vdseTopFolderDestroyObject( pTree,
@@ -236,7 +236,7 @@ int vdsErrorMsg( VDS_HANDLE sessionHandle,
    
    if ( msgLengthInBytes < 32 ) return VDS_INVALID_LENGTH;
    
-   if ( vdsaSessionLock( pSession ) == 0 ) {
+   if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          if ( vdscGetLastError( &pSession->context.errorHandler ) != 0 ) {
             len = vdscGetErrorMsg( &pSession->context.errorHandler,
@@ -273,7 +273,7 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
    
    if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
-   if ( vdsaProcessLock() == 0 ) {
+   if ( vdsaProcessLock() ) {
       /*
        * if the exit process was called at the "same time" the session
        * might have been "removed" by the process object.
@@ -371,7 +371,7 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
       return VDS_NOT_ENOUGH_HEAP_MEMORY;
    }
    
-   if ( vdsaSessionLock( pSession ) == 0 ) {
+   if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder )
          rc = vdseTopFolderGetDef( pTree, 
@@ -440,7 +440,7 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
    }
    memset( pInfo, 0, sizeof(struct vdsInfo) );
    
-   if ( vdsaSessionLock( pSession ) == 0 ) {
+   if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pAlloc, pSession->pHeader->allocatorOffset, vdseMemAlloc )
          rc = vdseMemAllocStats( pAlloc, pInfo, &pSession->context );
@@ -504,7 +504,7 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
       return VDS_NULL_POINTER;
    }
 
-   if ( vdsaSessionLock( pSession ) == 0 ) {
+   if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder )
          rc = vdseTopFolderGetStatus( pTree, 
@@ -539,6 +539,7 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
    vdsErrors errcode;
    vdsaSession* pSession = NULL;
    void* ptr = NULL;
+   bool ok;
    
    if ( sessionHandle == NULL ) return VDS_NULL_HANDLE;
    
@@ -562,8 +563,9 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
     */
    
    if ( g_protectionIsNeeded ) {
-      errcode = vdscInitThreadLock( &pSession->mutex );
-      if ( errcode != 0 ) {
+      ok = vdscInitThreadLock( &pSession->mutex );
+      VDS_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) {
          errcode = VDS_NOT_ENOUGH_RESOURCES;
          goto error_handler;
       }
@@ -599,7 +601,7 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
     * in the process (exiting, for example). So we must lock the
     * session, just in case.
     */
-   if ( vdsaSessionLock( pSession ) == 0 ) {
+   if ( vdsaSessionLock( pSession ) ) {
       errcode = vdseProcessAddSession( g_pProcessInstance->pCleanup, 
                                        pSession, 
                                        &pSession->pCleanup, 
@@ -656,7 +658,7 @@ int vdsLastError( VDS_HANDLE sessionHandle )
    
    if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
-   if ( vdsaSessionLock( pSession ) == 0 ) {
+   if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          rc = vdscGetLastError( &pSession->context.errorHandler );
       }
@@ -681,7 +683,7 @@ int vdsRollback( VDS_HANDLE sessionHandle )
    if ( pSession == NULL ) return VDS_NULL_HANDLE;
    if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
    
-   if ( vdsaSessionLock( pSession ) == 0 ) {
+   if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          vdseTxRollback( (vdseTx*)pSession->context.pTransaction, 
                          &pSession->context );
@@ -752,7 +754,7 @@ int vdsaCloseSession( vdsaSession* pSession )
    
    VDS_PRE_CONDITION( pSession != NULL );
 
-   if ( vdsaSessionLock( pSession ) == 0 ) {
+   if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          if ( pSession->context.pTransaction != NULL ) {
             vdseTxRollback( (vdseTx*)(pSession->context.pTransaction), 
@@ -760,8 +762,7 @@ int vdsaCloseSession( vdsaSession* pSession )
             pSession->context.pTransaction = NULL;
          }
    
-         rc = vdseLock( &pSession->pCleanup->memObject, &pSession->context);
-         if ( rc == 0 ) {
+         if ( vdseLock( &pSession->pCleanup->memObject, &pSession->context) ) {
             for (;;) {
                rc = vdseSessionGetFirst( pSession->pCleanup, &pObject, &pSession->context );
                if ( rc != 0 ) break;

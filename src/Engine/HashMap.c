@@ -143,7 +143,7 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
    
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pHashMap->memObject, pContext ) ) {
       if ( ! vdseTxStatusIsValid( txHashMapStatus, SET_OFFSET(pContext->pTransaction) ) 
          || vdseTxStatusIsMarkedAsDestroyed( txHashMapStatus ) ) {
          errcode = VDS_OBJECT_IS_DELETED;
@@ -260,7 +260,7 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pHashMap->memObject, pContext ) ) {
       if ( ! vdseTxStatusIsValid( txHashMapStatus, SET_OFFSET(pContext->pTransaction) ) 
          || vdseTxStatusIsMarkedAsDestroyed( txHashMapStatus ) ) {
          errcode = VDS_OBJECT_IS_DELETED;
@@ -381,7 +381,7 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pHashMap->memObject, pContext ) ) {
       found = vdseHashGetFirst( &pHashMap->hashObj, 
                                 &firstItemOffset );
       while ( found ) {
@@ -486,7 +486,7 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
    itemOffset       = pItem->itemOffset;
    previousHashItem = pItem->pHashItem;
    
-   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pHashMap->memObject, pContext ) ) {
       found = vdseHashGetNext( &pHashMap->hashObj, 
                                  itemOffset,
                                  &itemOffset );
@@ -698,7 +698,7 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pHashMap->memObject, pContext ) ) {
       if ( ! vdseTxStatusIsValid( txHashMapStatus, SET_OFFSET(pContext->pTransaction) ) 
          || vdseTxStatusIsMarkedAsDestroyed( txHashMapStatus ) ) {
          errcode = VDS_OBJECT_IS_DELETED;
@@ -794,7 +794,7 @@ int vdseHashMapRelease( vdseHashMap        * pHashMap,
    VDS_PRE_CONDITION( pContext  != NULL );
    VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_HASH_MAP );
 
-   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pHashMap->memObject, pContext ) ) {
       vdseHashMapReleaseNoLock( pHashMap,
                                 pHashItem,
                                 pContext );
@@ -891,7 +891,7 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pHashMap->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pHashMap->memObject, pContext ) ) {
       if ( ! vdseTxStatusIsValid( txHashMapStatus, SET_OFFSET(pContext->pTransaction) ) 
          || vdseTxStatusIsMarkedAsDestroyed( txHashMapStatus ) ) {
          errcode = VDS_OBJECT_IS_DELETED;

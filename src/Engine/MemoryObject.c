@@ -48,7 +48,7 @@ vdseMemObjectInit( vdseMemObject   * pMemObj,
                    vdseBlockGroup  * pGroup,
                    size_t            numBlocks )
 {
-   int errcode = 0;
+   bool ok;
    
    VDS_PRE_CONDITION( pMemObj != NULL );
    VDS_PRE_CONDITION( pGroup  != NULL );
@@ -59,8 +59,13 @@ vdseMemObjectInit( vdseMemObject   * pMemObj,
    /* In case InitProcessLock fails */
    pMemObj->objType = VDSE_IDENT_CLEAR;
    
-   errcode =  vdscInitProcessLock( &pMemObj->lock );
-   if ( errcode != 0 ) return VDS_NOT_ENOUGH_RESOURCES;
+   ok =  vdscInitProcessLock( &pMemObj->lock );
+   VDS_POST_CONDITION( ok == true || ok == false );
+   /*
+    * The only possible error is a lack of resources when using semaphores, 
+    * i.e. when the number of semaphores is greater than SEM_VALUE_MAX.
+    */
+   if ( ! ok ) return VDS_NOT_ENOUGH_RESOURCES;
    
    pMemObj->objType = objType;
    vdseLinkedListInit( &pMemObj->listBlockGroup );
@@ -133,8 +138,8 @@ vdseMemObjectFini( vdseMemObject      * pMemObj,
 
    vdseLinkedListFini( &pMemObj->listBlockGroup );
 
-   if ( vdscFiniProcessLock( &pMemObj->lock ) != 0 ) {
-      return VDS_NOT_ENOUGH_RESOURCES;
+   if ( ! vdscFiniProcessLock( &pMemObj->lock ) ) {
+      return VDS_SEM_DESTROY_ERROR;
    }
    
    pGroup = (vdseBlockGroup*)(

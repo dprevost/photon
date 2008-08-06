@@ -139,7 +139,7 @@ int vdseFolderCreateObject( vdseFolder          * pFolder,
     * the lock as soon as it can, after locking the
     * next folder in the chain if needed. 
     */
-   if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+   if ( vdseLock(&pFolder->memObject, pContext) ) {
       rc = vdseFolderInsertObject( pFolder,
                                    &(lowerName[first]),
                                    &(name[first]),
@@ -343,8 +343,7 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
    }
 
    GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
-   rc = vdseLock( &pNextFolder->memObject, pContext );
-   if ( rc != 0 ) {
+   if ( ! vdseLock(&pNextFolder->memObject, pContext) ) {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
@@ -419,7 +418,7 @@ int vdseFolderDestroyObject( vdseFolder         * pFolder,
     * the lock as soon as it can, after locking the
     * next folder in the chain if needed. 
     */
-   if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+   if ( vdseLock(&pFolder->memObject, pContext) ) {
       rc = vdseFolderDeleteObject( pFolder,
                                    &(lowerName[first]), 
                                    strLength,
@@ -684,8 +683,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
    }
 
    GET_PTR( pNextFolder, pDescOld->offset, vdseFolder );
-   rc = vdseLock( &pNextFolder->memObject, pContext );
-   if ( rc != 0 ) {
+   if ( ! vdseLock( &pNextFolder->memObject, pContext ) ) {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
@@ -797,7 +795,7 @@ int vdseFolderGetDefinition( vdseFolder          * pFolder,
       if ( errcode != VDS_OK ) goto the_exit;
 
       GET_PTR( pMemObject, pDesc->memOffset, vdseMemObject );
-      if ( vdseLock( pMemObject, pContext ) == 0 ) {
+      if ( vdseLock( pMemObject, pContext ) ) {
 
          pDefinition->type = pDesc->apiType;
 
@@ -853,8 +851,7 @@ int vdseFolderGetDefinition( vdseFolder          * pFolder,
    }
 
    GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
-   rc = vdseLock( &pNextFolder->memObject, pContext );
-   if ( rc != 0 ) {
+   if ( ! vdseLock( &pNextFolder->memObject, pContext ) ) {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
@@ -903,7 +900,7 @@ int vdseFolderGetFirst( vdseFolder         * pFolder,
 
    GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
 
-   if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pFolder->memObject, pContext ) ) {
       /*
        * We loop on all data items until we find one which is visible to the
        * current session (its transaction field equal to zero or to our 
@@ -969,7 +966,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
    itemOffset       = pItem->itemOffset;
    previousHashItem = pItem->pHashItem;
    
-   if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pFolder->memObject, pContext ) ) {
       /*
        * We loop on all data items until we find one which is visible to the
        * current session (its transaction field equal to zero or to our 
@@ -1117,8 +1114,7 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
    }
 
    GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
-   rc = vdseLock( &pNextFolder->memObject, pContext );
-   if ( rc != 0 ) {
+   if ( ! vdseLock( &pNextFolder->memObject, pContext ) ) {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
@@ -1212,7 +1208,7 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
       if ( errcode != VDS_OK ) goto the_exit;
 
       GET_PTR( pMemObject, pDesc->memOffset, vdseMemObject );
-      if ( vdseLock( pMemObject, pContext ) == 0 ) {
+      if ( vdseLock( pMemObject, pContext ) ) {
          vdseMemObjectStatus( pMemObject, pStatus );
          pStatus->type = pDesc->apiType;
          pStatus->status = txStatus->status;
@@ -1264,8 +1260,7 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
    }
 
    GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
-   rc = vdseLock( &pNextFolder->memObject, pContext );
-   if ( rc != 0 ) {
+   if ( ! vdseLock( &pNextFolder->memObject, pContext ) ) {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
@@ -1615,8 +1610,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
    }
 
    GET_PTR( pNextFolder, pDesc->offset, vdseFolder );   
-   rc = vdseLock( &pNextFolder->memObject, pContext );
-   if ( rc != 0 ) {
+   if ( ! vdseLock( &pNextFolder->memObject, pContext ) ) {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
@@ -1683,7 +1677,7 @@ int vdseFolderRelease( vdseFolder         * pFolder,
    txItemStatus = &pFolderItem->pHashItem->txStatus;
    GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
    
-   if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pFolder->memObject, pContext ) ) {
       vdseFolderReleaseNoLock( pFolder,
                                pFolderItem->pHashItem,
                                pContext );
@@ -1913,7 +1907,7 @@ int vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
    GET_PTR( parentFolder, pNode->myParentOffset, vdseFolder );
    GET_PTR( txFolderStatus, parentFolder->nodeObject.txStatusOffset, vdseTxStatus );
    
-   if ( vdseLock( &parentFolder->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &parentFolder->memObject, pContext ) ) {
       GET_PTR( txItemStatus, pNode->txStatusOffset, vdseTxStatus );
       txItemStatus->parentCounter--;
       txFolderStatus->usageCounter--;
@@ -2004,7 +1998,7 @@ int vdseTopFolderCreateObject( vdseFolder          * pFolder,
     * the lock as soon as it can, after locking the
     * next folder in the chain if needed. 
     */
-   if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pFolder->memObject, pContext ) ) {
       rc = vdseFolderInsertObject( pFolder,
                                    &(lowerName[first]),
                                    &(name[first]),
@@ -2095,7 +2089,7 @@ int vdseTopFolderDestroyObject( vdseFolder         * pFolder,
     * the lock as soon as it can, after locking the
     * next folder in the chain if needed. 
     */
-   if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pFolder->memObject, pContext ) ) {
       rc = vdseFolderDeleteObject( pFolder,
                                    &(lowerName[first]), 
                                    strLength,
@@ -2195,7 +2189,7 @@ int vdseTopFolderEditObject( vdseFolder         * pFolder,
        * the lock as soon as it can, after locking the
        * next folder in the chain if needed. 
        */
-      if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+      if ( vdseLock( &pFolder->memObject, pContext ) ) {
          rc = vdseFolderEditObject( pFolder,
                                     &(lowerName[first]), 
                                     strLength, 
@@ -2284,7 +2278,7 @@ int vdseTopFolderGetDef( vdseFolder          * pFolder,
 
    if ( strLength == 0 ) {
       /* Getting the status of the top folder (special case). */
-      if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+      if ( vdseLock( &pFolder->memObject, pContext ) ) {
          pDefinition->type = VDS_FOLDER;
          
          vdseUnlock( &pFolder->memObject, pContext );
@@ -2301,7 +2295,7 @@ int vdseTopFolderGetDef( vdseFolder          * pFolder,
        * the lock as soon as it can, after locking the
        * next folder in the chain if needed. 
        */
-      if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+      if ( vdseLock( &pFolder->memObject, pContext ) ) {
          rc = vdseFolderGetDefinition( pFolder,
                                        &(lowerName[first]), 
                                        strLength, 
@@ -2386,7 +2380,7 @@ int vdseTopFolderGetStatus( vdseFolder         * pFolder,
 
    if ( strLength == 0 ) {
       /* Getting the status of the top folder (special case). */
-      if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+      if ( vdseLock( &pFolder->memObject, pContext ) ) {
          vdseMemObjectStatus( &pFolder->memObject, pStatus );
          pStatus->type = VDS_FOLDER;
          
@@ -2406,7 +2400,7 @@ int vdseTopFolderGetStatus( vdseFolder         * pFolder,
        * the lock as soon as it can, after locking the
        * next folder in the chain if needed. 
        */
-      if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+      if ( vdseLock( &pFolder->memObject, pContext ) ) {
          rc = vdseFolderGetStatus( pFolder,
                                    &(lowerName[first]), 
                                    strLength, 
@@ -2507,7 +2501,7 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
        * the lock as soon as it can, after locking the
        * next folder in the chain if needed. 
        */
-      if ( vdseLock( &pFolder->memObject, pContext ) == 0 ) {
+      if ( vdseLock( &pFolder->memObject, pContext ) ) {
          rc = vdseFolderGetObject( pFolder,
                                    &(lowerName[first]), 
                                    strLength, 

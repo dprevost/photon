@@ -118,7 +118,7 @@ int vdseSessionAddObj( vdseSession        * pSession,
                        vdseObjectContext ** ppObject,
                        vdseSessionContext * pContext )
 {
-   int errcode = 0, rc = -1;
+   int rc = -1;
    vdseObjectContext * pCurrentBuffer;
 
    VDS_PRE_CONDITION( pSession      != NULL );
@@ -129,8 +129,7 @@ int vdseSessionAddObj( vdseSession        * pSession,
    VDS_PRE_CONDITION( objType > 0 && objType < VDS_LAST_OBJECT_TYPE );
    
    /* For recovery purposes, always lock before doing anything! */
-   errcode = vdseLock( &pSession->memObject, pContext );
-   if ( errcode == 0 ) {
+   if ( vdseLock( &pSession->memObject, pContext ) ) {
       pCurrentBuffer = (vdseObjectContext *)
          vdseMalloc( &pSession->memObject, sizeof(vdseObjectContext), pContext );
       if ( pCurrentBuffer != NULL ) {
@@ -167,15 +166,12 @@ int vdseSessionRemoveObj( vdseSession        * pSession,
                           vdseObjectContext  * pObject,
                           vdseSessionContext * pContext )
 {
-   int errcode = VDS_OK;
-
    VDS_PRE_CONDITION( pSession != NULL );
    VDS_PRE_CONDITION( pObject  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
 
    /* For recovery purposes, always lock before doing anything! */
-   errcode = vdseLock( &pSession->memObject, pContext );
-   if ( errcode == 0 ) {
+   if ( vdseLock( &pSession->memObject, pContext ) ) {
       vdseLinkedListRemoveItem( &pSession->listOfObjects, 
                                 &pObject->node );
       vdseFree( &pSession->memObject, 
@@ -189,9 +185,10 @@ int vdseSessionRemoveObj( vdseSession        * pSession,
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     VDS_ENGINE_BUSY );
+      return -1;
    }
 
-   return errcode;
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

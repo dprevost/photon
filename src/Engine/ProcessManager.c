@@ -62,8 +62,7 @@ int vdseProcMgrAddProcess( vdseProcMgr        * pManager,
    VDS_PRE_CONDITION( pid > 0 );
 
    /* For recovery purposes, always lock before doing anything! */
-   errcode = vdseLock( &pManager->memObject, pContext );
-   if ( errcode == 0 ) {
+   if ( vdseLock( &pManager->memObject, pContext ) ) {
       pCurrentBuffer = (vdseProcess*)
          vdseMallocBlocks( pContext->pAllocator, VDSE_ALLOC_ANY, 1, pContext );
       if ( pCurrentBuffer != NULL ) {
@@ -118,7 +117,7 @@ int vdseProcMgrFindProcess( vdseProcMgr        * pManager,
    *ppProcess = NULL;
    
    /* For recovery purposes, always lock before doing anything! */
-   if ( vdseLock( &pManager->memObject, pContext ) == 0 ) {
+   if ( vdseLock( &pManager->memObject, pContext ) ) {
       ok = vdseLinkedListPeakFirst( &pManager->listOfProcesses, 
                                     &pNodeCurrent );
       if ( ok ) {
@@ -165,15 +164,12 @@ int vdseProcMgrRemoveProcess( vdseProcMgr        * pManager,
                               vdseProcess        * pProcess,
                               vdseSessionContext * pContext )
 {
-   int errcode = 0;
-
    VDS_PRE_CONDITION( pManager != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pProcess != NULL );
    
    /* For recovery purposes, always lock before doing anything! */
-   errcode = vdseLock( &pManager->memObject, pContext );
-   if ( errcode == 0 ) {
+   if ( vdseLock( &pManager->memObject, pContext ) ) {
       vdseLinkedListRemoveItem( &pManager->listOfProcesses, 
                                 &pProcess->node );
    
@@ -185,9 +181,10 @@ int vdseProcMgrRemoveProcess( vdseProcMgr        * pManager,
       vdscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     VDS_ENGINE_BUSY );
+      return -1;
    }
    
-   return errcode;
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

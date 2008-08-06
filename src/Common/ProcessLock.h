@@ -62,25 +62,21 @@ BEGIN_C_DECLS
  *    files of the kernel is not really recommended but...).
  */
 
-#if defined(CONFIG_KERNEL_HEADERS)
-#  include "Locking/linux/spinlock.h"
-#else
-#  if HAVE_SEMAPHORE_H
-#    include <semaphore.h>
-#  endif
-#  if HAVE_SYS_IPC_H && HAVE_SYS_SEM_H
-#    include <sys/ipc.h>
-#    include <sys/sem.h>
-#    if ! HAVE_STRUCT_SEMUN
+#if HAVE_SEMAPHORE_H
+#  include <semaphore.h>
+#endif
+#if HAVE_SYS_IPC_H && HAVE_SYS_SEM_H
+#  include <sys/ipc.h>
+#  include <sys/sem.h>
+#  if ! HAVE_STRUCT_SEMUN
 union semun {
    int val;                    /* value for SETVAL */
    struct semid_ds *buf;       /* buffer for IPC_STAT, IPC_SET */
    unsigned short int *array;  /* array for GETALL, SETALL */
    struct seminfo *__buf;      /* buffer for IPC_INFO */
 };
-#    endif
 #  endif
-#endif /* CONFIG_KERNEL_HEADERS */
+#endif
 
 #define VDSC_LOCK_SIGNATURE ((unsigned int)0x174a0c46 )
 
@@ -99,7 +95,6 @@ union semun {
  */
 
 #if 0
-#  undef  CONFIG_KERNEL_HEADERS
    /* replace by an appropriate macro for the test */
 #  define VDS_USE_POSIX_SEMAPHORE 
 #endif
@@ -168,13 +163,13 @@ typedef struct vdscProcessLock
  * may return an error.
  */
 VDSF_COMMON_EXPORT
-int vdscInitProcessLock( vdscProcessLock * pLock );
+bool vdscInitProcessLock( vdscProcessLock * pLock );
 
 /**
  *  Uninitialize the lock (it will remove the lock for POSIX semaphores).
  */
 VDSF_COMMON_EXPORT
-int vdscFiniProcessLock( vdscProcessLock * pLock );
+bool vdscFiniProcessLock( vdscProcessLock * pLock );
 
 /** Acquire lock ownership (loop forever) - this is dangerous for
  * deadlocks.
@@ -187,9 +182,9 @@ void vdscAcquireProcessLock( vdscProcessLock * pLock,
  *  Returns -1 on failure.  
  */
 static inline
-int vdscTryAcquireProcessLock( vdscProcessLock * pLock,
-                                pid_t            pidLocker,
-                                unsigned int     milliSecs );   
+bool vdscTryAcquireProcessLock( vdscProcessLock * pLock,
+                                pid_t             pidLocker,
+                                unsigned int      milliSecs );   
 
 /** Release lock. */
 static inline
@@ -200,14 +195,14 @@ void vdscReleaseProcessLock( vdscProcessLock * pLock );
  * Returns a boolean value (1 if the pids are the same, 0 otherwise).
  */
 VDSF_COMMON_EXPORT
-int vdscTestLockPidValue( vdscProcessLock * pLock, pid_t pid );
+bool vdscTestLockPidValue( vdscProcessLock * pLock, pid_t pid );
 
 /**
  * Test to see if the lock is on.
  * Returns a boolean value (1 if the lock is indeed locked, 0 otherwise).
  */
 VDSF_COMMON_EXPORT
-int vdscIsItLocked( vdscProcessLock * pLock );
+bool vdscIsItLocked( vdscProcessLock * pLock );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
