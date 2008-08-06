@@ -26,6 +26,7 @@ int main()
    vdseFolder * pFolder;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    char name[VDS_MAX_NAME_LENGTH+100];
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
@@ -39,12 +40,12 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   errcode = vdseFolderCreateObject( pFolder,
-                                     "Test1",
-                                     0,
-                                     &def,
-                                     &context );
-   if ( errcode != -1 ) {
+   ok = vdseFolderCreateObject( pFolder,
+                                "Test1",
+                                0,
+                                &def,
+                                &context );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdscGetLastError( &context.errorHandler );
@@ -52,12 +53,12 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   errcode = vdseFolderCreateObject( pFolder,
-                                     "/Test2",
-                                     strlen("/Test2"),
-                                     &def,
-                                     &context );
-   if ( errcode != -1 ) {
+   ok = vdseFolderCreateObject( pFolder,
+                                "/Test2",
+                                strlen("/Test2"),
+                                &def,
+                                &context );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdscGetLastError( &context.errorHandler );
@@ -65,12 +66,12 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   errcode = vdseFolderCreateObject( pFolder,
-                                     name,
-                                     VDS_MAX_NAME_LENGTH+1,
-                                     &def,
-                                     &context );
-   if ( errcode != -1 ) {
+   ok = vdseFolderCreateObject( pFolder,
+                                name,
+                                VDS_MAX_NAME_LENGTH+1,
+                                &def,
+                                &context );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdscGetLastError( &context.errorHandler );

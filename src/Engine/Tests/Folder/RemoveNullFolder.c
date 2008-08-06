@@ -63,7 +63,7 @@ int main()
                                   VDS_FOLDER,
                                   &folderItem,
                                   &context );
-   if ( errcode != 0 ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -73,7 +73,7 @@ int main()
                                   VDS_FOLDER,
                                   &folderItem,
                                   &context );
-   if ( errcode != 0 ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

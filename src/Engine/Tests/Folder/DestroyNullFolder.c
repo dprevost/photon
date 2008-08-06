@@ -27,6 +27,8 @@ int main()
    vdseFolder * pFolder;
    vdseSessionContext context;
    int errcode;
+   bool ok;
+   
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
@@ -36,12 +38,12 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   errcode = vdseFolderCreateObject( pFolder,
-                                     "Test1",
-                                     strlen("Test1"),
-                                     &def,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderCreateObject( pFolder,
+                                "Test1",
+                                strlen("Test1"),
+                                &def,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

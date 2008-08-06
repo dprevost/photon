@@ -87,11 +87,11 @@ void vdseFolderCommitEdit( vdseFolder         * pFolder,
 /*
  * The new object created by this function is a child of the folder 
  */
-int vdseFolderCreateObject( vdseFolder          * pFolder,
-                            const char          * objectName,
-                            size_t                nameLengthInBytes,
-                            vdsObjectDefinition * pDefinition,
-                            vdseSessionContext  * pContext )
+bool vdseFolderCreateObject( vdseFolder          * pFolder,
+                             const char          * objectName,
+                             size_t                nameLengthInBytes,
+                             vdsObjectDefinition * pDefinition,
+                             vdseSessionContext  * pContext )
 {
    vdsErrors errcode = VDS_OK;
    size_t strLength, i;
@@ -157,7 +157,7 @@ int vdseFolderCreateObject( vdseFolder          * pFolder,
    
    free( lowerName );
    
-   return 0;
+   return true;
 
 error_handler:
 
@@ -171,7 +171,7 @@ error_handler:
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   return -1;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -216,7 +216,7 @@ bool vdseFolderDeletable( vdseFolder         * pFolder,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseFolderDeleteObject( vdseFolder         * pFolder,
-                            const char    * objectName,
+                            const char         * objectName,
                             size_t               strLength, 
                             vdseSessionContext * pContext )
 {
@@ -354,6 +354,7 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
                                 &objectName[partialLength+1],
                                 strLength - partialLength - 1,
                                 pContext );
+//   VDS_POST_CONDITION( ok == true || ok == false );
    return rc;
    
 the_exit:
@@ -371,9 +372,9 @@ the_exit:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseFolderDestroyObject( vdseFolder         * pFolder,
-                             const char         * objectName,
-                             size_t               nameLengthInBytes,
-                             vdseSessionContext * pContext )
+                              const char         * objectName,
+                              size_t               nameLengthInBytes,
+                              vdseSessionContext * pContext )
 {
    vdsErrors errcode = VDS_OK;
    size_t strLength, i;
@@ -381,7 +382,7 @@ int vdseFolderDestroyObject( vdseFolder         * pFolder,
    size_t first = 0;
    const char * name = objectName;
    char * lowerName = NULL;
-
+   
    VDS_PRE_CONDITION( pFolder    != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
@@ -423,7 +424,8 @@ int vdseFolderDestroyObject( vdseFolder         * pFolder,
                                    &(lowerName[first]), 
                                    strLength,
                                    pContext );
-
+//      VDS_POST_CONDITION( ok == true || ok == false );
+//      if ( ! ok ) goto error_handler;
       if ( rc != 0 ) goto error_handler;
    }
    else {
@@ -453,11 +455,11 @@ error_handler:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseFolderEditObject( vdseFolder         * pFolder,
-                          const char         * objectName,
-                          size_t               strLength,
-                          enum vdsObjectType   objectType,
-                          vdseFolderItem     * pFolderItem,
-                          vdseSessionContext * pContext )
+                           const char         * objectName,
+                           size_t               strLength,
+                           enum vdsObjectType   objectType,
+                           vdseFolderItem     * pFolderItem,
+                           vdseSessionContext * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0, bucket = 0, descLength;
@@ -695,6 +697,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
                               objectType,
                               pFolderItem,
                               pContext );
+//   VDS_POST_CONDITION( ok == true || ok == false );
    
    return rc;
 
@@ -732,11 +735,11 @@ void vdseFolderFini( vdseFolder         * pFolder,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int vdseFolderGetDefinition( vdseFolder          * pFolder,
-                             const char          * objectName,
-                             size_t                strLength,
-                             vdsObjectDefinition * pDefinition,
-                             vdseFieldDef       ** ppInternalDef,
-                             vdseSessionContext  * pContext )
+                              const char          * objectName,
+                              size_t                strLength,
+                              vdsObjectDefinition * pDefinition,
+                              vdseFieldDef       ** ppInternalDef,
+                              vdseSessionContext  * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0;
@@ -863,7 +866,8 @@ int vdseFolderGetDefinition( vdseFolder          * pFolder,
                                  pDefinition,
                                  ppInternalDef,
                                  pContext );
-   
+ //  VDS_POST_CONDITION( ok == true || ok == false );
+
    return rc;
 
 the_exit:
@@ -883,9 +887,9 @@ the_exit:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseFolderGetFirst( vdseFolder         * pFolder,
-                        vdseFolderItem     * pItem,
-                        vdseSessionContext * pContext )
+vdsErrors vdseFolderGetFirst( vdseFolder         * pFolder,
+                              vdseFolderItem     * pItem,
+                              vdseSessionContext * pContext )
 {
    vdseHashItem* pHashItem = NULL;
    vdseTxStatus * txItemStatus;
@@ -922,7 +926,7 @@ int vdseFolderGetFirst( vdseFolder         * pFolder,
             
             vdseUnlock( &pFolder->memObject, pContext );
             
-            return 0;
+            return VDS_OK;
          }
   
          found = vdseHashGetNext( &pFolder->hashObj, 
@@ -932,20 +936,20 @@ int vdseFolderGetFirst( vdseFolder         * pFolder,
    }
    else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
-      return -1;
+      return VDS_OBJECT_CANNOT_GET_LOCK;
    }
    
    vdseUnlock( &pFolder->memObject, pContext );
    vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
 
-   return -1;
+   return VDS_IS_EMPTY;
 }
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseFolderGetNext( vdseFolder         * pFolder,
-                       vdseFolderItem     * pItem,
-                       vdseSessionContext * pContext )
+vdsErrors vdseFolderGetNext( vdseFolder         * pFolder,
+                             vdseFolderItem     * pItem,
+                             vdseSessionContext * pContext )
 {
    vdseHashItem * pHashItem = NULL;
    vdseHashItem * previousHashItem = NULL;
@@ -992,7 +996,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
 
             vdseUnlock( &pFolder->memObject, pContext );
             
-            return 0;
+            return VDS_OK;
          }
   
          found = vdseHashGetNext( &pFolder->hashObj, 
@@ -1002,7 +1006,7 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
    }
    else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
-      return -1;
+      return VDS_OBJECT_CANNOT_GET_LOCK;
    }
    
    /* 
@@ -1018,23 +1022,22 @@ int vdseFolderGetNext( vdseFolder         * pFolder,
    vdseUnlock( &pFolder->memObject, pContext );
    vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
 
-   return -1;
+   return VDS_REACHED_THE_END;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseFolderGetObject( vdseFolder         * pFolder,
-                         const char         * objectName,
-                         size_t               strLength,
-                         enum vdsObjectType   objectType,
-                         vdseFolderItem     * pFolderItem,
-                         vdseSessionContext * pContext )
+vdsErrors vdseFolderGetObject( vdseFolder         * pFolder,
+                               const char         * objectName,
+                               size_t               strLength,
+                               enum vdsObjectType   objectType,
+                               vdseFolderItem     * pFolderItem,
+                               vdseSessionContext * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0;
    vdseObjectDescriptor* pDesc = NULL;
    vdseHashItem* pHashItem = NULL;
-   int rc;
    vdsErrors errcode;
    vdseTxStatus * txStatus;
    vdseTxStatus * txFolderStatus;
@@ -1097,7 +1100,7 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
 
       vdseUnlock( &pFolder->memObject, pContext );
 
-      return 0;
+      return VDS_OK;
    }
    
    /* This is not the last node. This node must be a folder, otherwise... */
@@ -1120,43 +1123,43 @@ int vdseFolderGetObject( vdseFolder         * pFolder,
    }
    vdseUnlock( &pFolder->memObject, pContext );
      
-   rc = vdseFolderGetObject( pNextFolder,
-                             &objectName[partialLength+1], 
-                             strLength - partialLength - 1, 
-                             objectType,
-                             pFolderItem,
-                             pContext );
+   errcode = vdseFolderGetObject( pNextFolder,
+                                  &objectName[partialLength+1], 
+                                  strLength - partialLength - 1, 
+                                  objectType,
+                                  pFolderItem,
+                                  pContext );
    
-   return rc;
+   return errcode;
 
 the_exit:
 
+   VDS_POST_CONDITION( errcode != VDS_OK );
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called vdscSetError. 
     */
-   if ( errcode != VDS_OK ) {
+//   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
-   }
+//   }
    
    vdseUnlock( &pFolder->memObject, pContext );
    
-   return -1;
+   return errcode;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseFolderGetStatus( vdseFolder         * pFolder,
-                         const char         * objectName,
-                         size_t               strLength, 
-                         vdsObjStatus       * pStatus,
-                         vdseSessionContext * pContext )
+vdsErrors vdseFolderGetStatus( vdseFolder         * pFolder,
+                               const char         * objectName,
+                               size_t               strLength, 
+                               vdsObjStatus       * pStatus,
+                               vdseSessionContext * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0;
    vdseObjectDescriptor * pDesc = NULL;
    vdseHashItem * pHashItem = NULL;
-   int rc;
    vdsErrors errcode;
    vdseTxStatus * txStatus;
    vdseFolder * pNextFolder;
@@ -1243,7 +1246,7 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
       
       vdseUnlock( &pFolder->memObject, pContext );
 
-      return 0;
+      return VDS_OK;
    }
    
    /* This is not the last node. This node must be a folder, otherwise... */
@@ -1266,27 +1269,28 @@ int vdseFolderGetStatus( vdseFolder         * pFolder,
    }
    vdseUnlock( &pFolder->memObject, pContext );
      
-   rc = vdseFolderGetStatus( pNextFolder,
-                             &objectName[partialLength+1], 
-                             strLength - partialLength - 1, 
-                             pStatus,
-                             pContext );
+   errcode = vdseFolderGetStatus( pNextFolder,
+                                  &objectName[partialLength+1], 
+                                  strLength - partialLength - 1, 
+                                  pStatus,
+                                  pContext );
    
-   return rc;
+   return errcode;
 
 the_exit:
 
+   VDS_POST_CONDITION( errcode != VDS_OK );
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called vdscSetError. 
     */
-   if ( errcode != VDS_OK ) {
+//   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
-   }
+//   }
    
    vdseUnlock( &pFolder->memObject, pContext );
    
-   return -1;
+   return errcode;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -2185,7 +2189,7 @@ int vdseTopFolderEditObject( vdseFolder         * pFolder,
    else {
       /*
        * There is no vdseUnlock here - the recursive nature of the 
-       * function vdseFolderGetObject() means that it will release 
+       * function vdseFolderEditObject() means that it will release 
        * the lock as soon as it can, after locking the
        * next folder in the chain if needed. 
        */
@@ -2291,7 +2295,7 @@ int vdseTopFolderGetDef( vdseFolder          * pFolder,
    else {
       /*
        * There is no vdseUnlock here - the recursive nature of the 
-       * function vdseFolderGetObject() means that it will release 
+       * function vdseFolderGetDefinition() means that it will release 
        * the lock as soon as it can, after locking the
        * next folder in the chain if needed. 
        */
@@ -2396,7 +2400,7 @@ int vdseTopFolderGetStatus( vdseFolder         * pFolder,
    else {
       /*
        * There is no vdseUnlock here - the recursive nature of the 
-       * function vdseFolderGetObject() means that it will release 
+       * function vdseFolderGetStatus() means that it will release 
        * the lock as soon as it can, after locking the
        * next folder in the chain if needed. 
        */
@@ -2406,7 +2410,7 @@ int vdseTopFolderGetStatus( vdseFolder         * pFolder,
                                    strLength, 
                                    pStatus,
                                    pContext );
-         if ( rc != 0 ) goto error_handler;
+         if ( rc != VDS_OK ) goto error_handler;
       }
       else {
          errcode = VDS_ENGINE_BUSY;
@@ -2508,7 +2512,7 @@ int vdseTopFolderOpenObject( vdseFolder         * pFolder,
                                    objectType,
                                    pFolderItem,
                                    pContext );
-         if ( rc != 0 ) goto error_handler;
+         if ( rc != VDS_OK ) goto error_handler;
       }
       else {
          errcode = VDS_ENGINE_BUSY;

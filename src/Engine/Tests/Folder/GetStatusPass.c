@@ -73,7 +73,7 @@ int main()
                                   5,
                                   &objStatus,
                                   &context );
-   if ( errcode != 0 ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

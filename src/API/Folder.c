@@ -99,7 +99,8 @@ int vdsFolderCreateObject( VDS_HANDLE            objectHandle,
 {
    vdsaFolder * pFolder;
    vdseFolder * pVDSFolder;
-   int errcode = 0, rc = 0;
+   int errcode = 0;
+   bool ok = true;
    vdsaSession* pSession;
 
    pFolder = (vdsaFolder *) objectHandle;
@@ -135,12 +136,12 @@ int vdsFolderCreateObject( VDS_HANDLE            objectHandle,
       if ( vdsaCommonLock( &pFolder->object ) ) {
          pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
 
-         rc = vdseFolderCreateObject( pVDSFolder,
+         ok = vdseFolderCreateObject( pVDSFolder,
                                       objectName,
                                       nameLengthInBytes,
                                       pDefinition,
                                       &pSession->context );
-
+         VDS_POST_CONDITION( ok == true || ok == false );
          vdsaCommonUnlock( &pFolder->object );
       }
       else {
@@ -155,7 +156,7 @@ int vdsFolderCreateObject( VDS_HANDLE            objectHandle,
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   if ( rc != 0 ) {
+   if ( ! ok ) {
       errcode = vdscGetLastError( &pSession->context.errorHandler );
    }
    

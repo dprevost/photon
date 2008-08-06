@@ -65,7 +65,7 @@ int main()
                                   VDS_FOLDER,
                                   &folderItem,
                                   &context );
-   if ( errcode != 0 ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
@@ -88,10 +88,7 @@ int main()
                                   VDS_FOLDER,
                                   &folderItem,
                                   &context );
-   if ( errcode != -1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( vdscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT ) {
+   if ( errcode != VDS_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -113,7 +110,7 @@ int main()
                                   VDS_FOLDER,
                                   &folderItem,
                                   &context );
-   if ( errcode != 0 ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, vdseObjectDescriptor );

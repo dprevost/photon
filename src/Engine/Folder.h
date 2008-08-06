@@ -80,29 +80,29 @@ void vdseFolderCommitEdit( vdseFolder          * pFolder,
  * Creates an immediate child of the folder.
  */
 VDSF_ENGINE_EXPORT
-int vdseFolderCreateObject( vdseFolder          * pFolder,
-                            const char          * objectName,
-                            size_t                nameLengthInBytes,
-                            vdsObjectDefinition * pDefinition,
-                            vdseSessionContext  * pContext );
+bool vdseFolderCreateObject( vdseFolder          * pFolder,
+                             const char          * objectName,
+                             size_t                nameLengthInBytes,
+                             vdsObjectDefinition * pDefinition,
+                             vdseSessionContext  * pContext );
 
 /**
  * Delete an object, recursively.
  */ 
 VDSF_ENGINE_EXPORT
 int vdseFolderDeleteObject( vdseFolder         * pFolder,
-                            const char         * objectName,
-                            size_t               strLength, 
-                            vdseSessionContext * pContext );
+                             const char         * objectName,
+                             size_t               strLength, 
+                             vdseSessionContext * pContext );
 
 /**
  * Destroy an immediate child of the folder.
  */
 VDSF_ENGINE_EXPORT
 int vdseFolderDestroyObject( vdseFolder         * pFolder,
-                             const char         * objectName,
-                             size_t               nameLengthInBytes,
-                             vdseSessionContext * pContext );
+                              const char         * objectName,
+                              size_t               nameLengthInBytes,
+                              vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseFolderEditObject( vdseFolder         * pFolder,
@@ -126,29 +126,29 @@ int vdseFolderGetDefinition( vdseFolder          * pFolder,
                              vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseFolderGetFirst( vdseFolder         * pFolder,
-                        vdseFolderItem     * pItem,
-                        vdseSessionContext * pContext );
+vdsErrors vdseFolderGetFirst( vdseFolder         * pFolder,
+                              vdseFolderItem     * pItem,
+                              vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseFolderGetNext( vdseFolder         * pFolder,
-                       vdseFolderItem     * pItem,
-                       vdseSessionContext * pContext );
+vdsErrors vdseFolderGetNext( vdseFolder         * pFolder,
+                             vdseFolderItem     * pItem,
+                             vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseFolderGetObject( vdseFolder         * pFolder,
-                         const char         * objectName,
-                         size_t               strLength, 
-                         enum vdsObjectType   objectType, 
-                         vdseFolderItem     * pFolderItem,
-                         vdseSessionContext * pContext );
+vdsErrors vdseFolderGetObject( vdseFolder         * pFolder,
+                               const char         * objectName,
+                               size_t               strLength, 
+                               enum vdsObjectType   objectType, 
+                               vdseFolderItem     * pFolderItem,
+                               vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseFolderGetStatus( vdseFolder         * pFolder,
-                         const char         * objectName,
-                         size_t               strLength, 
-                         vdsObjStatus       * pStatus,
-                         vdseSessionContext * pContext );
+vdsErrors vdseFolderGetStatus( vdseFolder         * pFolder,
+                               const char         * objectName,
+                               size_t               strLength, 
+                               vdsObjStatus       * pStatus,
+                               vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseFolderInit( vdseFolder         * pFolder,

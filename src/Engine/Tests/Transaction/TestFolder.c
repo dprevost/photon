@@ -238,7 +238,7 @@ int main()
                                   VDS_HASH_MAP,
                                   &item,
                                   &context );
-   if ( errcode != 0 ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -292,7 +292,7 @@ int main()
                                   VDS_HASH_MAP,
                                   &item,
                                   &context );
-   if ( errcode != 0 ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -321,7 +321,7 @@ int main()
                                   VDS_HASH_MAP,
                                   &item,
                                   &context );
-   if ( errcode != 0 ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

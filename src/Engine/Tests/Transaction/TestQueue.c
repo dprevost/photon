@@ -75,7 +75,7 @@ int main()
                                   VDS_QUEUE,
                                   &item,
                                   &context );
-   if ( errcode != 0 ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    GET_PTR( pDescriptor, item.pHashItem->dataOffset, vdseObjectDescriptor );

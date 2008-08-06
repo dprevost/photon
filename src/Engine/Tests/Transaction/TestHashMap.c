@@ -79,7 +79,7 @@ int main()
                                   VDS_HASH_MAP,
                                   &item,
                                   &context );
-   if ( errcode != 0 ) {
+   if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    GET_PTR( pDescriptor, item.pHashItem->dataOffset, vdseObjectDescriptor );
