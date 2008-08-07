@@ -48,6 +48,7 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
                             vdseSessionContext* pContext )
 {
    int errcode;
+   bool ok;
    unsigned char* ptr;
    vdseMemAlloc*  pAlloc;
    vdseTx* pTx;
@@ -83,8 +84,8 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   errcode = vdseTxInit( pTx, 1, pContext );
-   if ( errcode != 0 ) {
+   ok = vdseTxInit( pTx, 1, pContext );
+   if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);

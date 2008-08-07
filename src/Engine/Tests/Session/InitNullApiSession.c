@@ -26,11 +26,10 @@ int main()
 #if defined(USE_DBC)
    vdseSession * pSession;
    vdseSessionContext context;
-   int errcode;
    
    pSession = initSessionTest( expectedToPass, &context );
 
-   errcode = vdseSessionInit( pSession, NULL, &context );
+   vdseSessionInit( pSession, NULL, &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

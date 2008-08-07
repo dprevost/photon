@@ -90,9 +90,10 @@ vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
                                  vdseSession       ** ppSession,
                                  vdseSessionContext * pContext )
 {
-   int errcode, rc = -1;
+   int rc = -1;
    vdseSession * pCurrentBuffer;
-
+   bool ok;
+   
    VDS_PRE_CONDITION( pProcess    != NULL );
    VDS_PRE_CONDITION( pApiSession != NULL );
    VDS_PRE_CONDITION( ppSession   != NULL );
@@ -104,8 +105,9 @@ vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
       pCurrentBuffer = (vdseSession*) 
           vdseMallocBlocks( pContext->pAllocator, VDSE_ALLOC_ANY, 1, pContext );
       if ( pCurrentBuffer != NULL ) {
-         errcode = vdseSessionInit( pCurrentBuffer, pApiSession, pContext );
-         if ( errcode == 0 ) {
+         ok = vdseSessionInit( pCurrentBuffer, pApiSession, pContext );
+         VDS_PRE_CONDITION( ok == true || ok == false );
+         if ( ok ) {
             vdseLinkNodeInit( &pCurrentBuffer->node );
             vdseLinkedListPutLast( &pProcess->listOfSessions, 
                                    &pCurrentBuffer->node );

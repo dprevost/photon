@@ -91,29 +91,29 @@ typedef struct vdseTx vdseTx;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-int vdseTxAddOps( vdseTx             * pTx,
-                  vdseTxType           txType,
-                  ptrdiff_t            parentOffset, 
-                  vdseMemObjIdent      parentType,
-                  ptrdiff_t            childOffset,
-                  vdseMemObjIdent      childType,
-                  vdseSessionContext * pContext );
+vdsErrors vdseTxAddOps( vdseTx             * pTx,
+                        vdseTxType           txType,
+                        ptrdiff_t            parentOffset, 
+                        vdseMemObjIdent      parentType,
+                        ptrdiff_t            childOffset,
+                        vdseMemObjIdent      childType,
+                        vdseSessionContext * pContext );
    
 VDSF_ENGINE_EXPORT
 void vdseTxRemoveLastOps( vdseTx * pTx, vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseTxInit( vdseTx             * pTx,
-                size_t               numberOfBlocks,
-                vdseSessionContext * pContext );
+bool vdseTxInit( vdseTx             * pTx,
+                 size_t               numberOfBlocks,
+                 vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 void vdseTxFini( vdseTx             * pTx, 
                  vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseTxCommit( vdseTx             * pTx,
-                  vdseSessionContext * pContext );
+void vdseTxCommit( vdseTx             * pTx,
+                   vdseSessionContext * pContext );
                   
 VDSF_ENGINE_EXPORT
 void vdseTxRollback( vdseTx             * pTx,

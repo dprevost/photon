@@ -26,17 +26,18 @@ int main()
 #if defined(USE_DBC)
    vdseTx* pTx;
    vdseSessionContext context;
+   bool ok;
    int errcode;
    
    pTx = initTxTest( expectedToPass, &context );
 
-   errcode = vdseTxInit( pTx, 1, &context );
-   if ( errcode != 0 ) {
+   ok = vdseTxInit( pTx, 1, &context );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    pTx->signature = 0;
-   errcode = vdseTxCommit( pTx, &context );
+   vdseTxCommit( pTx, &context );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

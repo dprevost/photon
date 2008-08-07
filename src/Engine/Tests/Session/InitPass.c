@@ -26,12 +26,13 @@ int main()
    vdseSession * pSession;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    void * pApiSession = (void *) &errcode; /* dummy pointer */
    
    pSession = initSessionTest( expectedToPass, &context );
 
-   errcode = vdseSessionInit( pSession, pApiSession, &context );
-   if ( errcode != 0 ) {
+   ok = vdseSessionInit( pSession, pApiSession, &context );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

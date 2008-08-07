@@ -23,9 +23,9 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseTxInit( vdseTx             * pTx,
-                size_t               numberOfBlocks,
-                vdseSessionContext * pContext )
+bool vdseTxInit( vdseTx             * pTx,
+                 size_t               numberOfBlocks,
+                 vdseSessionContext * pContext )
 {
    vdsErrors errcode;
    
@@ -39,14 +39,14 @@ int vdseTxInit( vdseTx             * pTx,
                                 numberOfBlocks );
    if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
-      return -1;
+      return false;
    }
 
    vdseLinkedListInit( &pTx->listOfOps );
 
    pTx->signature = VDSE_TX_SIGNATURE;
    
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -78,13 +78,13 @@ void vdseTxFini( vdseTx             * pTx,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseTxAddOps( vdseTx             * pTx,
-                  vdseTxType           txType,
-                  ptrdiff_t            parentOffset, 
-                  vdseMemObjIdent      parentType, 
-                  ptrdiff_t            childOffset,
-                  vdseMemObjIdent      childType, 
-                  vdseSessionContext * pContext )
+vdsErrors vdseTxAddOps( vdseTx             * pTx,
+                        vdseTxType           txType,
+                        ptrdiff_t            parentOffset, 
+                        vdseMemObjIdent      parentType, 
+                        ptrdiff_t            childOffset,
+                        vdseMemObjIdent      childType, 
+                        vdseSessionContext * pContext )
 {
    vdseTxOps * pOps;
    
@@ -107,14 +107,14 @@ int vdseTxAddOps( vdseTx             * pTx,
       vdseLinkNodeInit(  &pOps->node );
       vdseLinkedListPutLast( &pTx->listOfOps, &pOps->node );
 
-      return 0;
+      return VDS_OK;
    }
 
    vdscSetError( &pContext->errorHandler, 
                  g_vdsErrorHandle, 
                  VDS_NOT_ENOUGH_VDS_MEMORY );
 
-   return -1;
+   return VDS_NOT_ENOUGH_VDS_MEMORY;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -144,8 +144,8 @@ void vdseTxRemoveLastOps( vdseTx             * pTx,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseTxCommit( vdseTx             * pTx,
-                  vdseSessionContext * pContext )
+void vdseTxCommit( vdseTx             * pTx,
+                   vdseSessionContext * pContext )
 {
    int errcode = VDS_OK;
    vdseTxOps     * pOps = NULL;
@@ -167,7 +167,6 @@ int vdseTxCommit( vdseTx             * pTx,
    /* Synch the VDS */
 #if 0
    MemoryManager::Instance()->Sync( &pContext->errorHandler );
-#endif
 
    /* Write to the log file */
    if ( pContext->pLogFile != NULL ) {
@@ -179,10 +178,11 @@ int vdseTxCommit( vdseTx             * pTx,
          return -1;
       }
    }
+#endif
 
    if ( pTx->listOfOps.currentSize == 0 ) {
       /* All is well - nothing to commit */
-      return 0;
+      return;
    }
    
    while ( vdseLinkedListGetFirst( &pTx->listOfOps, &pLinkNode ) ) {
@@ -357,7 +357,6 @@ int vdseTxCommit( vdseTx             * pTx,
                 
    } /* end of while loop on the list of ops */
    
-   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

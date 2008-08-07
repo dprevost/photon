@@ -102,24 +102,24 @@ typedef struct vdseSession
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-int vdseSessionInit( vdseSession        * pSession,
-                     void               * pApiSession,
-                     vdseSessionContext * pContext );
+bool vdseSessionInit( vdseSession        * pSession,
+                      void               * pApiSession,
+                      vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 void vdseSessionFini( vdseSession        * pSession,
                       vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseSessionAddObj( vdseSession        * pSession,
-                       ptrdiff_t            objOffset, 
-                       enum vdsObjectType   objType, 
-                       void               * pCommonObject,
-                       vdseObjectContext ** ppObject,
-                       vdseSessionContext * pContext );
+bool vdseSessionAddObj( vdseSession        * pSession,
+                        ptrdiff_t            objOffset, 
+                        enum vdsObjectType   objType, 
+                        void               * pCommonObject,
+                        vdseObjectContext ** ppObject,
+                        vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseSessionRemoveObj( vdseSession        * pSession,
+bool vdseSessionRemoveObj( vdseSession        * pSession,
                           vdseObjectContext  * pObject,
                           vdseSessionContext * pContext );
 

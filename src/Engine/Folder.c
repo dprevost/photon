@@ -1487,7 +1487,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
                          pContext );
       free( pDesc ); 
       pDesc = NULL;
-      if ( rc != 0 ) {
+      if ( rc != VDS_OK ) {
          vdseHashDelWithItem( &pFolder->hashObj, 
                               pHashItem,
                               pContext );
@@ -1581,7 +1581,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
       }
       vdseUnlock( &pFolder->memObject, pContext );
 
-      return 0;
+      return VDS_OK;
    }
    
    /* If we come here, this was not the last iteration, so we continue */

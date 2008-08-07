@@ -56,10 +56,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseTxCommit( (vdseTx *)context.pTransaction, &context );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   vdseTxCommit( (vdseTx *)context.pTransaction, &context );
    
    pFolder->memObject.objType = VDSE_IDENT_HASH_MAP;
    errcode = vdseFolderDeleteObject( pFolder,

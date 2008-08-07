@@ -72,11 +72,9 @@ int vdsCommit( VDS_HANDLE sessionHandle )
    
    if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         rc = vdseTxCommit( (vdseTx*)pSession->context.pTransaction, 
+         vdseTxCommit( (vdseTx*)pSession->context.pTransaction, 
                             &pSession->context );
-         if ( rc == 0 ) {
-            vdsaResetReaders( pSession );
-         }
+         vdsaResetReaders( pSession );
       }
       else {
          errcode = VDS_SESSION_IS_TERMINATED;
@@ -716,15 +714,17 @@ int vdsaSessionCloseObj( vdsaSession             * pSession,
                          struct vdsaCommonObject * pObject )
 {
    int errcode = 0, rc = 0;
+   bool ok = true;
    
    VDS_PRE_CONDITION( pSession   != NULL );
    VDS_PRE_CONDITION( pObject    != NULL );
 
    if ( ! pSession->terminated ) {
-      rc = vdseSessionRemoveObj( pSession->pCleanup, 
+      ok = vdseSessionRemoveObj( pSession->pCleanup, 
                                  pObject->pObjectContext, 
                                  &pSession->context );
-      if ( rc == 0 ) {
+      VDS_POST_CONDITION( ok == true || ok == false );
+      if ( ok ) {
          rc = vdseTopFolderCloseObject( &pObject->folderItem,
                                         &pSession->context );
          if ( rc == 0 ) pSession->numberOfObjects--;
@@ -737,7 +737,7 @@ int vdsaSessionCloseObj( vdsaSession             * pSession,
    if ( errcode != VDS_OK ) {
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
-   if ( rc != 0 ) {
+   if ( rc != 0 || ok == false ) {
       errcode = vdscGetLastError( &pSession->context.errorHandler );
    }
    
@@ -815,6 +815,7 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
    int errcode = 0, rc = 0;
    vdseFolder * pTree;
    vdseObjectDescriptor * pDesc;
+   bool ok = true;
    
    VDS_PRE_CONDITION( pSession   != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
@@ -844,7 +845,7 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
          GET_PTR( pDesc, pObject->folderItem.pHashItem->dataOffset,
                           vdseObjectDescriptor );
 
-         rc = vdseSessionAddObj( pSession->pCleanup,
+         ok = vdseSessionAddObj( pSession->pCleanup,
                                  pDesc->offset,
                                  pDesc->apiType,
                                  pObject,
@@ -860,7 +861,7 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
    if ( errcode != VDS_OK ) {
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
-   if ( rc != 0 ) {
+   if ( rc != 0 || ok == false ) {
       errcode = vdscGetLastError( &pSession->context.errorHandler );
    }
    

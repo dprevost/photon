@@ -27,11 +27,12 @@ int main()
    vdseTx* pTx;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    
    pTx = initTxTest( expectedToPass, &context );
 
-   errcode = vdseTxInit( pTx, 1, &context );
-   if ( errcode != 0 ) {
+   ok = vdseTxInit( pTx, 1, &context );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

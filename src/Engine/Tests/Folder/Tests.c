@@ -128,10 +128,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseTxCommit( (vdseTx *)context.pTransaction, &context );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   vdseTxCommit( (vdseTx *)context.pTransaction, &context );
    
    /* Try to delete "/Test2" - should fail (not empty) */
    errcode = vdseFolderDeleteObject( pFolder1,
@@ -189,10 +186,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseTxCommit( (vdseTx *)context.pTransaction, &context );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   vdseTxCommit( (vdseTx *)context.pTransaction, &context );
    
    /* Delete "/Test2/Test4/Test6" - must fail (no such object) */
    errcode = vdseFolderDeleteObject( pFolder1,

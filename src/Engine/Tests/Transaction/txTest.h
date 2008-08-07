@@ -108,6 +108,7 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
    vdseTx* pTx;
    vdseFolder* pFolder;
    size_t allocatedLength = VDSE_BLOCK_SIZE * 25;
+   bool ok;
 
    memset( pContext, 0, sizeof(vdseSessionContext) );
    pContext->pidLocker = getpid();
@@ -138,8 +139,8 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   errcode = vdseTxInit( pTx, 1, pContext );
-   if ( errcode != 0 ) {
+   ok = vdseTxInit( pTx, 1, pContext );
+   if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);

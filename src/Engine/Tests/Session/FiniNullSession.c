@@ -31,7 +31,7 @@ int main()
    
    pSession = initSessionTest( expectedToPass, &context );
 
-   errcode = vdseSessionInit( pSession, pApiSession, &context );
+   vdseSessionInit( pSession, pApiSession, &context );
 
    vdseSessionFini( NULL, &context );
    

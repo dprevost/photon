@@ -29,22 +29,23 @@ int main()
    int errcode;
    void * pApiObject = (void *) &errcode; /* dummy pointer */
    ptrdiff_t objOffset;
+   bool ok;
    
    pSession = initSessionTest( expectedToPass, &context );
 
-   errcode = vdseSessionInit( pSession, pApiObject, &context );
-   if ( errcode != 0 ) {
+   ok = vdseSessionInit( pSession, pApiObject, &context );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    objOffset = SET_OFFSET( pSession ); /* Dummy offset */
    
-   errcode = vdseSessionAddObj( pSession,
-                                objOffset, 
-                                VDS_FOLDER,
-                                pApiObject,
-                                NULL,
-                                &context );
+   ok = vdseSessionAddObj( pSession,
+                           objOffset, 
+                           VDS_FOLDER,
+                           pApiObject,
+                           NULL,
+                           &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

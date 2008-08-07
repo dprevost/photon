@@ -26,12 +26,13 @@ int main()
    vdseTx* pTx;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    ptrdiff_t parentOffset = 0x1010, childOffset = 0x0101;
    
    pTx = initTxTest( expectedToPass, &context );
 
-   errcode = vdseTxInit( pTx, 1, &context );
-   if ( errcode != 0 ) {
+   ok = vdseTxInit( pTx, 1, &context );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

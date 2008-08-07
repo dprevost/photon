@@ -26,33 +26,33 @@ int main()
 #if defined(USE_DBC)
    vdseSession * pSession;
    vdseSessionContext context;
-   int errcode;
-   void * pApiObject = (void *) &errcode; /* dummy pointer */
+   bool ok;
+   void * pApiObject = (void *) &ok; /* dummy pointer */
    ptrdiff_t objOffset;
    vdseObjectContext * pObject;
    
    pSession = initSessionTest( expectedToPass, &context );
 
-   errcode = vdseSessionInit( pSession, pApiObject, &context );
-   if ( errcode != 0 ) {
+   ok = vdseSessionInit( pSession, pApiObject, &context );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    objOffset = SET_OFFSET( pSession ); /* Dummy offset */
    
-   errcode = vdseSessionAddObj( pSession,
-                                objOffset, 
-                                VDS_FOLDER,
-                                pApiObject,
-                                &pObject,
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseSessionAddObj( pSession,
+                           objOffset, 
+                           VDS_FOLDER,
+                           pApiObject,
+                           &pObject,
+                           &context );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseSessionRemoveObj( pSession,
-                                   NULL,
-                                   &context );
+   vdseSessionRemoveObj( pSession,
+                         NULL,
+                         &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

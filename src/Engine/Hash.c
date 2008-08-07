@@ -350,7 +350,7 @@ enum vdsErrors vdseHashCopy( vdseHash           * pOldHash,
    pNewHash->numberOfItems        = pOldHash->numberOfItems;
    pNewHash->enumResize           = pOldHash->enumResize;
 
-   return 0;
+   return VDS_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -22,13 +22,13 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseSessionInit( vdseSession        * pSession,
-                     void               * pApiSession,
-                     vdseSessionContext * pContext )
+bool vdseSessionInit( vdseSession        * pSession,
+                      void               * pApiSession,
+                      vdseSessionContext * pContext )
 {
    vdsErrors errcode;
-   int rc = -1;
    vdseTx * pTx;
+   bool ok, rc = false;
    
    VDS_PRE_CONDITION( pSession    != NULL );
    VDS_PRE_CONDITION( pContext    != NULL );
@@ -48,8 +48,9 @@ int vdseSessionInit( vdseSession        * pSession,
 
       pTx = (vdseTx*) vdseMallocBlocks( pContext->pAllocator, VDSE_ALLOC_ANY, 1, pContext );
       if ( pTx != NULL ) {
-         errcode = vdseTxInit( pTx, 1, pContext );
-         if ( errcode == 0 ) {
+         ok = vdseTxInit( pTx, 1, pContext );
+         VDS_PRE_CONDITION( ok == true || ok == false );
+         if ( ok ) {
             pSession->numLocks = 0;
             pSession->pTransaction = pTx;
             pContext->pTransaction = (void *) pTx;            
@@ -57,7 +58,7 @@ int vdseSessionInit( vdseSession        * pSession,
             pContext->numLocks = &pSession->numLocks;
             pSession->pApiSession = pApiSession;
             
-            rc = 0;
+            rc = true;
          }
          else {
             vdseFreeBlocks( pContext->pAllocator, 
@@ -111,14 +112,14 @@ void vdseSessionFini( vdseSession        * pSession,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseSessionAddObj( vdseSession        * pSession,
-                       ptrdiff_t            objOffset, 
-                       enum vdsObjectType   objType, 
-                       void               * pCommonObject,
-                       vdseObjectContext ** ppObject,
-                       vdseSessionContext * pContext )
+bool vdseSessionAddObj( vdseSession        * pSession,
+                        ptrdiff_t            objOffset, 
+                        enum vdsObjectType   objType, 
+                        void               * pCommonObject,
+                        vdseObjectContext ** ppObject,
+                        vdseSessionContext * pContext )
 {
-   int rc = -1;
+   bool ok = false;
    vdseObjectContext * pCurrentBuffer;
 
    VDS_PRE_CONDITION( pSession      != NULL );
@@ -141,7 +142,7 @@ int vdseSessionAddObj( vdseSession        * pSession,
          vdseLinkedListPutLast( &pSession->listOfObjects, 
                                 &pCurrentBuffer->node );
          *ppObject = pCurrentBuffer;
-         rc = 0;
+         ok = true;
       }
       else {
          vdscSetError( &pContext->errorHandler,
@@ -157,12 +158,12 @@ int vdseSessionAddObj( vdseSession        * pSession,
                     VDS_ENGINE_BUSY );
    }
    
-   return rc;
+   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseSessionRemoveObj( vdseSession        * pSession,
+bool vdseSessionRemoveObj( vdseSession        * pSession,
                           vdseObjectContext  * pObject,
                           vdseSessionContext * pContext )
 {
@@ -185,10 +186,10 @@ int vdseSessionRemoveObj( vdseSession        * pSession,
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     VDS_ENGINE_BUSY );
-      return -1;
+      return false;
    }
 
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
