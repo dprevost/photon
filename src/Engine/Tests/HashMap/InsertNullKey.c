@@ -26,7 +26,6 @@ int main()
 #if defined(USE_DBC)
    vdseHashMap * pHashMap;
    vdseSessionContext context;
-   int errcode;
    bool ok;
    vdseTxStatus status;
    char * data = "my data";
@@ -48,12 +47,12 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapInsert( pHashMap,
-                                NULL,
-                                6,
-                                (const void *) data,
-                                7,
-                                &context );
+   vdseHashMapInsert( pHashMap,
+                      NULL,
+                      6,
+                      (const void *) data,
+                      7,
+                      &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -25,7 +25,7 @@ int main()
 {
    vdseMap * pHashMap;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdseTxStatus status;
    char * key1  = "my key1";
    char * key2  = "my key2";
@@ -44,47 +44,47 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseMapInit( pHashMap, 
-                          0, 1, 0, &status, 4, 
-                          "Map1", SET_OFFSET(pHashMap), &def, &context );
-   if ( errcode != 0 ) {
+   ok = vdseMapInit( pHashMap, 
+                     0, 1, 0, &status, 4, 
+                     "Map1", SET_OFFSET(pHashMap), &def, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseMapInsert( pHashMap,
-                            (const void *) key1,
-                            7,
-                            (const void *) data1,
-                            8,
-                            &context );
-   if ( errcode != 0 ) {
+   ok = vdseMapInsert( pHashMap,
+                       (const void *) key1,
+                       7,
+                       (const void *) data1,
+                       8,
+                       &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseMapInsert( pHashMap,
-                            (const void *) key2,
-                            7,
-                            (const void *) data2,
-                            8,
-                            &context );
-   if ( errcode != 0 ) {
+   ok = vdseMapInsert( pHashMap,
+                       (const void *) key2,
+                       7,
+                       (const void *) data2,
+                       8,
+                       &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseMapGetFirst( pHashMap,
-                              &item,
-                              7,
-                              20,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseMapGetFirst( pHashMap,
+                         &item,
+                         7,
+                         20,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    GET_PTR( ptr1, item.pHashItem->dataOffset, char );
 
-   errcode = vdseMapGetNext( pHashMap,
-                             &item,
-                             7,
-                             20,
-                             &context );
-   if ( errcode != 0 ) {
+   ok = vdseMapGetNext( pHashMap,
+                        &item,
+                        7,
+                        20,
+                        &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    GET_PTR( ptr2, item.pHashItem->dataOffset, char );

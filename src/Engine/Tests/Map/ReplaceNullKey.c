@@ -26,7 +26,7 @@ int main()
 #if defined(USE_DBC)
    vdseMap * pHashMap;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdseTxStatus status;
    char * data1 = "my data1";
    char * data2 = "my data2";
@@ -42,29 +42,29 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseMapInit( pHashMap, 
-                          0, 1, 0, &status, 4, 
-                          "Map1", SET_OFFSET(pHashMap), &def, &context );
-   if ( errcode != 0 ) {
+   ok = vdseMapInit( pHashMap, 
+                     0, 1, 0, &status, 4, 
+                     "Map1", SET_OFFSET(pHashMap), &def, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseMapInsert( pHashMap,
-                            (const void *) key,
-                            6,
-                            (const void *) data1,
-                            strlen(data1),
-                            &context );
-   if ( errcode != 0 ) {
+   ok = vdseMapInsert( pHashMap,
+                       (const void *) key,
+                       6,
+                       (const void *) data1,
+                       strlen(data1),
+                       &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseMapReplace( pHashMap,
-                             NULL,
-                             6,
-                             (const void *) data2,
-                             strlen(data2),
-                             &context );
+   ok = vdseMapReplace( pHashMap,
+                        NULL,
+                        6,
+                        (const void *) data2,
+                        strlen(data2),
+                        &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

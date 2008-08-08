@@ -25,7 +25,6 @@ int main()
 {
    vdseHashMap * pHashMap;
    vdseSessionContext context;
-   int errcode;
    bool ok;
    vdseTxStatus status;
    char * key1  = "my key1";
@@ -52,22 +51,22 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapInsert( pHashMap,
-                                (const void *) key1,
-                                7,
-                                (const void *) data1,
-                                8,
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           (const void *) key1,
+                           7,
+                           (const void *) data1,
+                           8,
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapInsert( pHashMap,
-                                (const void *) key2,
-                                7,
-                                (const void *) data2,
-                                8,
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           (const void *) key2,
+                           7,
+                           (const void *) data2,
+                           8,
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    ok = vdseHashMapGetFirst( pHashMap,

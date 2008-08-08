@@ -674,12 +674,12 @@ bool vdseHashMapInit( vdseHashMap         * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseHashMapInsert( vdseHashMap        * pHashMap,
-                       const void         * pKey,
-                       size_t               keyLength, 
-                       const void         * pData,
-                       size_t               itemLength,
-                       vdseSessionContext * pContext )
+bool vdseHashMapInsert( vdseHashMap        * pHashMap,
+                        const void         * pKey,
+                        size_t               keyLength, 
+                        const void         * pData,
+                        size_t               itemLength,
+                        vdseSessionContext * pContext )
 {
    vdseHashItem* pHashItem = NULL, * previousHashItem = NULL;
    vdsErrors errcode = VDS_OK;
@@ -764,10 +764,10 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
    }
    else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
-      return -1;
+      return false;
    }
 
-   return 0;
+   return true;
 
 the_exit:
 
@@ -780,7 +780,7 @@ the_exit:
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   return -1;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -867,12 +867,12 @@ void vdseHashMapReleaseNoLock( vdseHashMap        * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseHashMapReplace( vdseHashMap        * pHashMap,
-                        const void         * pKey,
-                        size_t               keyLength, 
-                        const void         * pData,
-                        size_t               itemLength,
-                        vdseSessionContext * pContext )
+bool vdseHashMapReplace( vdseHashMap        * pHashMap,
+                         const void         * pKey,
+                         size_t               keyLength, 
+                         const void         * pData,
+                         size_t               itemLength,
+                         vdseSessionContext * pContext )
 {
    vdseHashItem * pHashItem, * pNewHashItem;
    vdsErrors errcode = VDS_OK;
@@ -972,10 +972,10 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
    }
    else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
-      return -1;
+      return false;
    }
 
-   return 0;
+   return true;
 
 the_exit:
 
@@ -988,7 +988,7 @@ the_exit:
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   return -1;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -84,31 +84,31 @@ int main()
    GET_PTR( pHashMap, pDescriptor->offset, vdseHashMap );
 
    /* Test 1 */
-   errcode = vdseHashMapInsert( pHashMap,
-                                key1,
-                                strlen(key1),
-                                data1,
-                                strlen(data1),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           key1,
+                           strlen(key1),
+                           data1,
+                           strlen(data1),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapInsert( pHashMap,
-                                key2,
-                                strlen(key2),
-                                data2,
-                                strlen(data2),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           key2,
+                           strlen(key2),
+                           data2,
+                           strlen(data2),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapInsert( pHashMap,
-                                key3,
-                                strlen(key3),
-                                data3,
-                                strlen(data3),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           key3,
+                           strlen(key3),
+                           data3,
+                           strlen(data3),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -128,31 +128,31 @@ int main()
    }
    
    /* Test 2 */
-   errcode = vdseHashMapInsert( pHashMap,
-                                key1,
-                                strlen(key1),
-                                data1,
-                                strlen(data1),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           key1,
+                           strlen(key1),
+                           data1,
+                           strlen(data1),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapInsert( pHashMap,
-                                key2,
-                                strlen(key2),
-                                data2,
-                                strlen(data2),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           key2,
+                           strlen(key2),
+                           data2,
+                           strlen(data2),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapInsert( pHashMap,
-                                key3,
-                                strlen(key3),
-                                data3,
-                                strlen(data3),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           key3,
+                           strlen(key3),
+                           data3,
+                           strlen(data3),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -246,31 +246,31 @@ int main()
    }
    
    /* Test 3 */
-   errcode = vdseHashMapInsert( pHashMap,
-                                key1,
-                                strlen(key1),
-                                data1,
-                                strlen(data1),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           key1,
+                           strlen(key1),
+                           data1,
+                           strlen(data1),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapInsert( pHashMap,
-                                key2,
-                                strlen(key2),
-                                data2,
-                                strlen(data2),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           key2,
+                           strlen(key2),
+                           data2,
+                           strlen(data2),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapInsert( pHashMap,
-                                key3,
-                                strlen(key3),
-                                data3,
-                                strlen(data3),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           key3,
+                           strlen(key3),
+                           data3,
+                           strlen(data3),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -313,31 +313,31 @@ int main()
    }
    
    /* Test 4 */
-   errcode = vdseHashMapInsert( pHashMap,
-                                key1,
-                                strlen(key1),
-                                data1,
-                                strlen(data1),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           key1,
+                           strlen(key1),
+                           data1,
+                           strlen(data1),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapInsert( pHashMap,
-                                key2,
-                                strlen(key2),
-                                data2,
-                                strlen(data2),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           key2,
+                           strlen(key2),
+                           data2,
+                           strlen(data2),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapInsert( pHashMap,
-                                key3,
-                                strlen(key3),
-                                data3,
-                                strlen(data3),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           key3,
+                           strlen(key3),
+                           data3,
+                           strlen(data3),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

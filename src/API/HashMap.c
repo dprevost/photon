@@ -469,8 +469,9 @@ int vdsHashMapInsert( VDS_HANDLE   objectHandle,
 {
    vdsaHashMap * pHashMap;
    vdseHashMap * pVDSHashMap;
-   int errcode = 0, rc = 0;
-
+   int errcode = 0;
+   bool ok = true;
+   
    pHashMap = (vdsaHashMap *) objectHandle;
    if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
    
@@ -503,13 +504,13 @@ int vdsHashMapInsert( VDS_HANDLE   objectHandle,
       if ( vdsaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (vdseHashMap *) pHashMap->object.pMyVdsObject;
 
-         rc = vdseHashMapInsert( pVDSHashMap,
+         ok = vdseHashMapInsert( pVDSHashMap,
                                  key,
                                  keyLength,
                                  data,
                                  dataLength,
                                  &pHashMap->object.pSession->context );
-
+         VDS_POST_CONDITION( ok == true || ok == false );
          vdsaCommonUnlock( &pHashMap->object );
       }
       else {
@@ -524,7 +525,7 @@ int vdsHashMapInsert( VDS_HANDLE   objectHandle,
       vdscSetError( &pHashMap->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
-   if ( rc != 0 ) {
+   if ( ! ok ) {
       errcode = vdscGetLastError( &pHashMap->object.pSession->context.errorHandler );
    }
    
@@ -610,8 +611,9 @@ int vdsHashMapReplace( VDS_HANDLE   objectHandle,
 {
    vdsaHashMap * pHashMap;
    vdseHashMap * pVDSHashMap;
-   int errcode = 0, rc = 0;
-
+   int errcode = VDS_OK;
+   bool ok = true;
+   
    pHashMap = (vdsaHashMap *) objectHandle;
    if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
    
@@ -633,13 +635,13 @@ int vdsHashMapReplace( VDS_HANDLE   objectHandle,
       if ( vdsaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (vdseHashMap *) pHashMap->object.pMyVdsObject;
 
-         rc = vdseHashMapReplace( pVDSHashMap,
+         ok = vdseHashMapReplace( pVDSHashMap,
                                   key,
                                   keyLength,
                                   data,
                                   dataLength,
                                   &pHashMap->object.pSession->context );
-
+         VDS_POST_CONDITION( ok == true || ok == false );
          vdsaCommonUnlock( &pHashMap->object );
       }
       else {
@@ -654,8 +656,8 @@ int vdsHashMapReplace( VDS_HANDLE   objectHandle,
       vdscSetError( &pHashMap->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
-   if ( rc != 0 ) {
-         errcode = vdscGetLastError( &pHashMap->object.pSession->context.errorHandler );
+   if ( ! ok ) {
+      errcode = vdscGetLastError( &pHashMap->object.pSession->context.errorHandler );
    }
    
    return errcode;

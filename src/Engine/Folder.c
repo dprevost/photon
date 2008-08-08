@@ -636,11 +636,12 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
       
       switch ( memObjType ) {
       case VDSE_IDENT_MAP:
-         rc = vdseMapCopy( pMap, /* old, */
+         ok = vdseMapCopy( pMap, /* old, */
                            (vdseMap *)ptr,
                            pHashItemNew,
                            pDescNew->originalName,
                            pContext );
+         VDS_POST_CONDITION( ok == true || ok == false );
          pDescNew->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseMap,nodeObject);
          pDescNew->memOffset  = SET_OFFSET(ptr) + offsetof(vdseMap,memObject);
          break;
@@ -650,7 +651,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
          goto the_exit;
       }
 
-      if ( rc != 0 ) {
+      if ( ! ok ) {
          vdseTxRemoveLastOps( (vdseTx*)pContext->pTransaction, pContext );
          vdseHashDelWithItem( &pFolder->hashObj, 
                               pHashItemNew,
@@ -1552,7 +1553,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
          break;
 
       case VDSE_IDENT_MAP:
-         rc = vdseMapInit( (vdseMap *)ptr,
+         ok = vdseMapInit( (vdseMap *)ptr,
                            SET_OFFSET(pFolder),
                            numBlocks,
                            expectedNumOfChilds,
@@ -1562,6 +1563,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
                            SET_OFFSET(pHashItem),
                            pDefinition,
                            pContext );
+         VDS_POST_CONDITION( ok == true || ok == false );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseMap,nodeObject);
          pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseMap,memObject);
          break;

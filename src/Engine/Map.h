@@ -65,17 +65,17 @@ typedef struct vdseMap vdseMap;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-int vdseMapCopy( vdseMap            * pHashMap, 
-                 vdseMap            * pNewMap,
-                 vdseHashItem       * pHashItem,
-                 const char         * origName,
-                 vdseSessionContext * pContext );
+bool vdseMapCopy( vdseMap            * pHashMap, 
+                  vdseMap            * pNewMap,
+                  vdseHashItem       * pHashItem,
+                  const char         * origName,
+                  vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseMapDelete( vdseMap            * pHashMap,
-                   const void         * key,
-                   size_t               keyLength, 
-                   vdseSessionContext * pContext );
+bool vdseMapDelete( vdseMap            * pHashMap,
+                    const void         * key,
+                    size_t               keyLength, 
+                    vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 void vdseMapEmpty( vdseMap            * pHashMap,
@@ -86,60 +86,59 @@ void vdseMapFini( vdseMap            * pHashMap,
                   vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseMapGet( vdseMap            * pHashMap,
-                const void         * pKey,
-                size_t               keyLength, 
-                vdseHashItem      ** ppItem,
-                size_t               bufferLength,
-                vdseSessionContext * pContext );
+bool vdseMapGet( vdseMap            * pHashMap,
+                 const void         * pKey,
+                 size_t               keyLength, 
+                 vdseHashItem      ** ppItem,
+                 size_t               bufferLength,
+                 vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseMapGetFirst( vdseMap            * pHashMap,
+bool vdseMapGetFirst( vdseMap            * pHashMap,
+                      vdseHashMapItem    * pItem,
+                      size_t               keyLength,
+                      size_t               bufferLength,
+                      vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+bool vdseMapGetNext( vdseMap            * pHashMap,
                      vdseHashMapItem    * pItem,
                      size_t               keyLength,
                      size_t               bufferLength,
                      vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseMapGetNext( vdseMap            * pHashMap,
-                    vdseHashMapItem    * pItem,
-                    size_t               keyLength,
-                    size_t               bufferLength,
-                    vdseSessionContext * pContext );
+bool vdseMapInit( vdseMap             * pHashMap,
+                  ptrdiff_t             parentOffset,
+                  size_t                numberOfBlocks,
+                  size_t                expectedNumOfChilds,
+                  vdseTxStatus        * pTxStatus,
+                  size_t                origNameLength,
+                  char                * origName,
+                  ptrdiff_t             hashItemOffset,
+                  vdsObjectDefinition * pDefinition,
+                  vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseMapInit( vdseMap             * pHashMap,
-                 ptrdiff_t             parentOffset,
-                 size_t                numberOfBlocks,
-                 size_t                expectedNumOfChilds,
-                 vdseTxStatus        * pTxStatus,
-                 size_t                origNameLength,
-                 char                * origName,
-                 ptrdiff_t             hashItemOffset,
-                 vdsObjectDefinition * pDefinition,
-                 vdseSessionContext  * pContext );
-
-
-VDSF_ENGINE_EXPORT
-int vdseMapInsert( vdseMap            * pHashMap,
-                   const void         * pKey,
-                   size_t               keyLength,
-                   const void         * pItem,
-                   size_t               itemLength,
-                   vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
-int vdseMapRelease( vdseMap            * pHashMap,
-                    vdseHashItem       * pHashItem,
-                    vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
-int vdseMapReplace( vdseMap            * pHashMap,
+bool vdseMapInsert( vdseMap            * pHashMap,
                     const void         * pKey,
                     size_t               keyLength,
                     const void         * pItem,
                     size_t               itemLength,
                     vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+bool vdseMapRelease( vdseMap            * pHashMap,
+                     vdseHashItem       * pHashItem,
+                     vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+bool vdseMapReplace( vdseMap            * pHashMap,
+                     const void         * pKey,
+                     size_t               keyLength,
+                     const void         * pItem,
+                     size_t               itemLength,
+                     vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 void vdseMapStatus( vdseMap      * pHashMap,

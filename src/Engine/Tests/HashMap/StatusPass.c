@@ -25,7 +25,6 @@ int main()
 {
    vdseHashMap * pHashMap;
    vdseSessionContext context;
-   int errcode;
    bool ok;
    vdseTxStatus txStatus;
    char * key1  = "my key1";
@@ -51,33 +50,33 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapInsert( pHashMap,
-                                (const void *) key1,
-                                7,
-                                (const void *) data,
-                                7,
-                                &context );
+   ok = vdseHashMapInsert( pHashMap,
+                           (const void *) key1,
+                           7,
+                           (const void *) data,
+                           7,
+                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapInsert( pHashMap,
-                                (const void *) key2,
-                                7,
-                                (const void *) data,
-                                7,
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           (const void *) key2,
+                           7,
+                           (const void *) data,
+                           7,
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapInsert( pHashMap,
-                                (const void *) key3,
-                                7,
-                                (const void *) data,
-                                7,
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           (const void *) key3,
+                           7,
+                           (const void *) data,
+                           7,
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

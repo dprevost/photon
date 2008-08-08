@@ -126,12 +126,12 @@ bool vdseHashMapInit( vdseHashMap         * pHashMap,
                       vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseHashMapInsert( vdseHashMap        * pHashMap,
-                       const void         * pKey,
-                       size_t               keyLength,
-                       const void         * pItem,
-                       size_t               itemLength,
-                       vdseSessionContext * pContext );
+bool vdseHashMapInsert( vdseHashMap        * pHashMap,
+                        const void         * pKey,
+                        size_t               keyLength,
+                        const void         * pItem,
+                        size_t               itemLength,
+                        vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 bool vdseHashMapRelease( vdseHashMap        * pHashMap,
@@ -139,12 +139,12 @@ bool vdseHashMapRelease( vdseHashMap        * pHashMap,
                          vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseHashMapReplace( vdseHashMap        * pHashMap,
-                        const void         * pKey,
-                        size_t               keyLength,
-                        const void         * pItem,
-                        size_t               itemLength,
-                        vdseSessionContext * pContext );
+bool vdseHashMapReplace( vdseHashMap        * pHashMap,
+                         const void         * pKey,
+                         size_t               keyLength,
+                         const void         * pItem,
+                         size_t               itemLength,
+                         vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap, 

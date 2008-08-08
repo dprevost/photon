@@ -25,7 +25,6 @@ int main()
 {
    vdseHashMap * pHashMap;
    vdseSessionContext context;
-   int errcode;
    bool ok;
    vdseTxStatus status;
    vdsObjectDefinition def = { 
@@ -46,26 +45,26 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapInsert( pHashMap,
-                                "my key 1",
-                                strlen("my key 1"),
-                                "my data 1",
-                                strlen("my data 1"),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           "my key 1",
+                           strlen("my key 1"),
+                           "my data 1",
+                           strlen("my data 1"),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pHashMap->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseHashMapInsert( pHashMap,
-                                "my key 2",
-                                strlen("my key 2"),
-                                "my data 2",
-                                strlen("my data 2"),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInsert( pHashMap,
+                           "my key 2",
+                           strlen("my key 2"),
+                           "my data 2",
+                           strlen("my data 2"),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pHashMap->nodeObject.txCounter != 2 ) {

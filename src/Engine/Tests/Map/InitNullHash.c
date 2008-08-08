@@ -26,7 +26,7 @@ int main()
 #if defined(USE_DBC)
    vdseMap * pHashMap;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdseTxStatus status;
    vdsObjectDefinition def = { 
       VDS_FAST_MAP, 
@@ -39,16 +39,16 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseMapInit( NULL, /* NULL hashmap */
-                          0, 
-                          1, 
-                          0, 
-                          &status, 
-                          4, 
-                          "Map1", 
-                          SET_OFFSET(pHashMap),
-                          &def,
-                          &context );
+   ok = vdseMapInit( NULL, /* NULL hashmap */
+                     0, 
+                     1, 
+                     0, 
+                     &status, 
+                     4, 
+                     "Map1", 
+                     SET_OFFSET(pHashMap),
+                     &def,
+                     &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

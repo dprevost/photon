@@ -26,7 +26,7 @@ int main()
 #if defined(USE_DBC)
    vdseMap * pOldMap, * pNewMap;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    char * key1  = "my key1";
    char * key2  = "my key2";
    char * data1 = "my data1";
@@ -43,37 +43,37 @@ int main()
 
    vdseTxStatusInit( &hashItem.txStatus, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseMapInit( pOldMap, 
-                          0, 1, 0, &hashItem.txStatus, 4, 
-                          "Map1", SET_OFFSET(pOldMap), &def, &context );
-   if ( errcode != 0 ) {
+   ok = vdseMapInit( pOldMap, 
+                     0, 1, 0, &hashItem.txStatus, 4, 
+                     "Map1", SET_OFFSET(pOldMap), &def, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseMapInsert( pOldMap,
-                            (const void *) key1,
-                            7,
-                            (const void *) data1,
-                            8,
-                            &context );
-   if ( errcode != 0 ) {
+   ok = vdseMapInsert( pOldMap,
+                       (const void *) key1,
+                       7,
+                       (const void *) data1,
+                       8,
+                       &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseMapInsert( pOldMap,
-                            (const void *) key2,
-                            7,
-                            (const void *) data2,
-                            8,
-                            &context );
-   if ( errcode != 0 ) {
+   ok = vdseMapInsert( pOldMap,
+                       (const void *) key2,
+                       7,
+                       (const void *) data2,
+                       8,
+                       &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   errcode = vdseMapCopy( pOldMap, 
-                          pNewMap,
-                          &hashItem,
-                          "Map1",
-                          NULL );
+   ok = vdseMapCopy( pOldMap, 
+                     pNewMap,
+                     &hashItem,
+                     "Map1",
+                     NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

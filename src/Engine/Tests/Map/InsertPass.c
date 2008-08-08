@@ -25,7 +25,7 @@ int main()
 {
    vdseMap * pHashMap;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdseTxStatus status;
    vdsObjectDefinition def = { 
       VDS_FAST_MAP, 
@@ -38,30 +38,30 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseMapInit( pHashMap, 
-                          0, 1, 0, &status, 4, 
-                          "Map1", SET_OFFSET(pHashMap), &def, &context );
-   if ( errcode != 0 ) {
+   ok = vdseMapInit( pHashMap, 
+                     0, 1, 0, &status, 4, 
+                     "Map1", SET_OFFSET(pHashMap), &def, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseMapInsert( pHashMap,
-                            "my key 1",
-                            strlen("my key 1"),
-                            "my data 1",
-                            strlen("my data 1"),
-                            &context );
-   if ( errcode != 0 ) {
+   ok = vdseMapInsert( pHashMap,
+                       "my key 1",
+                       strlen("my key 1"),
+                       "my data 1",
+                       strlen("my data 1"),
+                       &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseMapInsert( pHashMap,
-                            "my key 2",
-                            strlen("my key 2"),
-                            "my data 2",
-                            strlen("my data 2"),
-                            &context );
-   if ( errcode != 0 ) {
+   ok = vdseMapInsert( pHashMap,
+                       "my key 2",
+                       strlen("my key 2"),
+                       "my data 2",
+                       strlen("my data 2"),
+                       &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pHashMap->hashObj.numberOfItems != 2 ) {
