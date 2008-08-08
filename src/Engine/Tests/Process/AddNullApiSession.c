@@ -26,20 +26,20 @@ int main()
 #if defined(USE_DBC)
    vdseProcess * process;
    vdseSessionContext context;
-   int errcode;
    vdseSession * pSession;
+   bool ok;
    
    process = initProcessTest( expectedToPass, &context );
 
-   errcode = vdseProcessInit( process, 12345, &context );
-   if ( errcode != 0 ) {
+   ok = vdseProcessInit( process, 12345, &context );
+   if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseProcessAddSession( process,
-                                    NULL,
-                                    &pSession,
-                                    &context );
+   vdseProcessAddSession( process,
+                          NULL,
+                          &pSession,
+                          &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

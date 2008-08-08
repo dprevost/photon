@@ -332,8 +332,8 @@ int vdseQueueInsert( vdseQueue          * pQueue,
    vdseQueueItem* pQueueItem;
    vdsErrors errcode = VDS_OK;
    vdseTxStatus* txQueueStatus;
-   int rc;
    size_t allocLength;
+   bool ok;
    
    VDS_PRE_CONDITION( pQueue != NULL );
    VDS_PRE_CONDITION( pItem    != NULL )
@@ -365,14 +365,15 @@ int vdseQueueInsert( vdseQueue          * pQueue,
       pQueueItem->dataLength = length;
       memcpy( pQueueItem->data, pItem, length );
    
-      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
+      ok = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_ADD_DATA,
                          SET_OFFSET(pQueue),
                          VDSE_IDENT_QUEUE,
                          SET_OFFSET(pQueueItem),
                          0,
                          pContext );
-      if ( rc != 0 ) {
+      VDS_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) {
          vdseFree( &pQueue->memObject, 
                    (unsigned char * )pQueueItem,
                    allocLength,
@@ -569,13 +570,12 @@ int vdseQueueRemove( vdseQueue          * pQueue,
                      size_t               bufferLength,
                      vdseSessionContext * pContext )
 {
-   int rc;
    vdsErrors errcode = VDS_OK;
    vdseQueueItem * pItem = NULL;
    vdseTxStatus  * txParentStatus, * txItemStatus;
    vdseLinkNode  * pNode = NULL;
    bool queueIsEmpty = true;
-   bool okList;
+   bool okList, ok;
    
    VDS_PRE_CONDITION( pQueue      != NULL );
    VDS_PRE_CONDITION( ppQueueItem != NULL );
@@ -622,14 +622,15 @@ int vdseQueueRemove( vdseQueue          * pQueue,
             }
 
             /* Add to current transaction  */
-            rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
+            ok = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                                VDSE_TX_REMOVE_DATA,
                                SET_OFFSET( pQueue ),
                                VDSE_IDENT_QUEUE,
                                SET_OFFSET( pItem ),
                                0, /* irrelevant */
                                pContext );
-            if ( rc != 0 ) goto the_exit;
+            VDS_POST_CONDITION( ok == true || ok == false );
+            if ( ! ok ) goto the_exit;
       
             vdseTxStatusSetTx( txItemStatus, SET_OFFSET(pContext->pTransaction) );
             pQueue->nodeObject.txCounter++;

@@ -123,17 +123,16 @@ void vdseHashMapCommitRemove( vdseHashMap        * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseHashMapDelete( vdseHashMap        * pHashMap,
-                       const void         * pKey,
-                       size_t               keyLength, 
-                       vdseSessionContext * pContext )
+bool vdseHashMapDelete( vdseHashMap        * pHashMap,
+                        const void         * pKey,
+                        size_t               keyLength, 
+                        vdseSessionContext * pContext )
 {
-   int rc;
    vdsErrors errcode = VDS_OK;
    vdseHashItem* pHashItem = NULL;
    vdseTxStatus * txItemStatus, * txHashMapStatus;
    size_t bucket;
-   bool found;
+   bool found, ok;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pKey     != NULL );
@@ -184,14 +183,15 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
          goto the_exit;
       }
 
-      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
+      ok = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_REMOVE_DATA,
                          SET_OFFSET(pHashMap),
                          VDSE_IDENT_HASH_MAP,
                          SET_OFFSET( pHashItem),
                          0,
                          pContext );
-      if ( rc != 0 ) goto the_exit;
+      VDS_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) goto the_exit;
       
       txItemStatus->txOffset = SET_OFFSET(pContext->pTransaction);
       txItemStatus->status = VDSE_TXS_DESTROYED;
@@ -201,10 +201,10 @@ int vdseHashMapDelete( vdseHashMap        * pHashMap,
    }
    else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
-      return -1;
+      return false;
    }
 
-   return 0;
+   return true;
    
 the_exit:
 
@@ -214,7 +214,7 @@ the_exit:
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   return -1;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -238,12 +238,12 @@ void vdseHashMapFini( vdseHashMap        * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseHashMapGet( vdseHashMap        * pHashMap,
-                    const void         * pKey,
-                    size_t               keyLength, 
-                    vdseHashItem      ** ppHashItem,
-                    size_t               bufferLength,
-                    vdseSessionContext * pContext )
+bool vdseHashMapGet( vdseHashMap        * pHashMap,
+                     const void         * pKey,
+                     size_t               keyLength, 
+                     vdseHashItem      ** ppHashItem,
+                     size_t               bufferLength,
+                     vdseSessionContext * pContext )
 {
    vdseHashItem* pHashItem = NULL, * previousItem = NULL;
    vdsErrors errcode;
@@ -341,10 +341,10 @@ int vdseHashMapGet( vdseHashMap        * pHashMap,
    }
    else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
-      return -1;
+      return false;
    }
    
-   return 0;
+   return true;
 
 the_exit:
 
@@ -357,16 +357,16 @@ the_exit:
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   return -1;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
-                         vdseHashMapItem    * pItem,
-                         size_t               keyLength,
-                         size_t               bufferLength,
-                         vdseSessionContext * pContext )
+bool vdseHashMapGetFirst( vdseHashMap        * pHashMap,
+                          vdseHashMapItem    * pItem,
+                          size_t               keyLength,
+                          size_t               bufferLength,
+                          vdseSessionContext * pContext )
 {
    vdseHashItem* pHashItem = NULL;
    vdseTxStatus * txItemStatus;
@@ -424,13 +424,13 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
                vdseUnlock( &pHashMap->memObject, pContext );
                vdscSetError( &pContext->errorHandler, 
                              g_vdsErrorHandle, VDS_INVALID_LENGTH );
-               return -1;
+               return false;
             }
             if ( keyLength < pHashItem->keyLength ) {
                vdseUnlock( &pHashMap->memObject, pContext );
                vdscSetError( &pContext->errorHandler, 
                              g_vdsErrorHandle, VDS_INVALID_LENGTH );
-               return -1;
+               return false;
             }
 
             txItemStatus->usageCounter++;
@@ -440,7 +440,7 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
 
             vdseUnlock( &pHashMap->memObject, pContext );
             
-            return 0;
+            return true;
          }
   
          found = vdseHashGetNext( &pHashMap->hashObj, 
@@ -450,22 +450,22 @@ int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
    }
    else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
-      return -1;
+      return false;
    }
    
    vdseUnlock( &pHashMap->memObject, pContext );
    vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
 
-   return -1;
+   return false;
 }
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseHashMapGetNext( vdseHashMap        * pHashMap,
-                        vdseHashMapItem    * pItem,
-                        size_t               keyLength,
-                        size_t               bufferLength,
-                        vdseSessionContext * pContext )
+bool vdseHashMapGetNext( vdseHashMap        * pHashMap,
+                         vdseHashMapItem    * pItem,
+                         size_t               keyLength,
+                         size_t               bufferLength,
+                         vdseSessionContext * pContext )
 {
    vdseHashItem * pHashItem = NULL;
    vdseHashItem * previousHashItem = NULL;
@@ -530,13 +530,13 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
                vdseUnlock( &pHashMap->memObject, pContext );
                vdscSetError( &pContext->errorHandler, 
                              g_vdsErrorHandle, VDS_INVALID_LENGTH );
-               return -1;
+               return false;
             }
             if ( keyLength < pHashItem->keyLength ) {
                vdseUnlock( &pHashMap->memObject, pContext );
                vdscSetError( &pContext->errorHandler, 
                              g_vdsErrorHandle, VDS_INVALID_LENGTH );
-               return -1;
+               return false;
             }
 
             txItemStatus->usageCounter++;
@@ -547,7 +547,7 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
 
             vdseUnlock( &pHashMap->memObject, pContext );
             
-            return 0;
+            return true;
          }
   
          found = vdseHashGetNext( &pHashMap->hashObj, 
@@ -557,7 +557,7 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
    }
    else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
-      return -1;
+      return false;
    }
 
    /* 
@@ -573,21 +573,21 @@ int vdseHashMapGetNext( vdseHashMap        * pHashMap,
    vdseUnlock( &pHashMap->memObject, pContext );
    vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
 
-   return -1;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseHashMapInit( vdseHashMap         * pHashMap,
-                     ptrdiff_t             parentOffset,
-                     size_t                numberOfBlocks,
-                     size_t                expectedNumOfItems,
-                     vdseTxStatus        * pTxStatus,
-                     size_t                origNameLength,
-                     char                * origName,
-                     ptrdiff_t             hashItemOffset,
-                     vdsObjectDefinition * pDefinition,
-                     vdseSessionContext  * pContext )
+bool vdseHashMapInit( vdseHashMap         * pHashMap,
+                      ptrdiff_t             parentOffset,
+                      size_t                numberOfBlocks,
+                      size_t                expectedNumOfItems,
+                      vdseTxStatus        * pTxStatus,
+                      size_t                origNameLength,
+                      char                * origName,
+                      ptrdiff_t             hashItemOffset,
+                      vdsObjectDefinition * pDefinition,
+                      vdseSessionContext  * pContext )
 {
    vdsErrors errcode;
    vdseFieldDef * ptr;
@@ -612,7 +612,7 @@ int vdseHashMapInit( vdseHashMap         * pHashMap,
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
-      return -1;
+      return false;
    }
 
    vdseTreeNodeInit( &pHashMap->nodeObject,
@@ -630,7 +630,7 @@ int vdseHashMapInit( vdseHashMap         * pHashMap,
       vdscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     errcode );
-      return -1;
+      return false;
    }
    
    pHashMap->numFields = (uint16_t) pDefinition->numFields;
@@ -641,7 +641,7 @@ int vdseHashMapInit( vdseHashMap         * pHashMap,
    if ( ptr == NULL ) {
       vdscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
-      return -1;
+      return false;
    }
    pHashMap->dataDefOffset = SET_OFFSET(ptr);
 
@@ -669,7 +669,7 @@ int vdseHashMapInit( vdseHashMap         * pHashMap,
    }
    memcpy( &pHashMap->keyDef, &pDefinition->key, sizeof(vdsKeyDefinition) );
 
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -684,9 +684,8 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
    vdseHashItem* pHashItem = NULL, * previousHashItem = NULL;
    vdsErrors errcode = VDS_OK;
    vdseTxStatus * txItemStatus, * txHashMapStatus;
-   int rc;
    size_t bucket;
-   bool found;
+   bool found, ok;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pKey     != NULL )
@@ -738,14 +737,15 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
                                   pContext );
       if ( errcode != VDS_OK ) goto the_exit;
 
-      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
+      ok = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_ADD_DATA,
                          SET_OFFSET(pHashMap),
                          VDSE_IDENT_HASH_MAP,
                          SET_OFFSET(pHashItem),
                          0,
                          pContext );
-      if ( rc != 0 ) {
+      VDS_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) {
          vdseHashDelWithItem( &pHashMap->hashObj,
                               pHashItem,
                               pContext );
@@ -785,9 +785,9 @@ the_exit:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseHashMapRelease( vdseHashMap        * pHashMap,
-                        vdseHashItem       * pHashItem,
-                        vdseSessionContext * pContext )
+bool vdseHashMapRelease( vdseHashMap        * pHashMap,
+                         vdseHashItem       * pHashItem,
+                         vdseSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pHashMap  != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
@@ -805,10 +805,10 @@ int vdseHashMapRelease( vdseHashMap        * pHashMap,
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     VDS_OBJECT_CANNOT_GET_LOCK );
-      return -1;
+      return false;
    }
 
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -877,9 +877,8 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
    vdseHashItem * pHashItem, * pNewHashItem;
    vdsErrors errcode = VDS_OK;
    vdseTxStatus * txItemStatus, * txHashMapStatus;
-   int rc;
    size_t bucket;
-   bool found;
+   bool found, ok;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pKey     != NULL )
@@ -928,27 +927,29 @@ int vdseHashMapReplace( vdseHashMap        * pHashMap,
                                   pContext );
       if ( errcode != VDS_OK ) goto the_exit;
 
-      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
+      ok = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_REMOVE_DATA,
                          SET_OFFSET(pHashMap),
                          VDSE_IDENT_HASH_MAP,
                          SET_OFFSET(pHashItem),
                          0,
                          pContext );
-      if ( rc != 0 ) {
+      VDS_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) {
          vdseHashDelWithItem( &pHashMap->hashObj, 
                               pNewHashItem,
                               pContext );
          goto the_exit;
       }
-      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
+      ok = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_ADD_DATA,
                          SET_OFFSET(pHashMap),
                          VDSE_IDENT_HASH_MAP,
                          SET_OFFSET(pNewHashItem),
                          0,
                          pContext );
-      if ( rc != 0 ) {
+      VDS_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) {
          vdseHashDelWithItem( &pHashMap->hashObj, 
                               pNewHashItem,
                               pContext );

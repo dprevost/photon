@@ -26,11 +26,10 @@ int main()
 #if defined(USE_DBC)
    vdseProcMgr* pManager;
    vdseSessionContext context;
-   int errcode;
    
    pManager = initProcMgrTest( expectedToPass, &context );
 
-   errcode = vdseProcMgrInit( pManager, NULL );
+   vdseProcMgrInit( pManager, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
    

@@ -263,7 +263,7 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
 {
    vdsaSession * pSession;
    vdseSession * pCleanup;
-   
+   bool ok;
    int errcode = 0;
    
    pSession = (vdsaSession*) sessionHandle;
@@ -287,10 +287,11 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
           * call locks it as well. To avoid a recursive lock (leading to 
           * a deadlock) we cannot include this call in vdsaCloseSession.
           */
-          if ( errcode == 0 ) {
-            vdseProcessRemoveSession( g_pProcessInstance->pCleanup, 
-                                      pCleanup, 
-                                      &pSession->context );
+         if ( errcode == 0 ) {
+            ok = vdseProcessRemoveSession( g_pProcessInstance->pCleanup, 
+                                           pCleanup, 
+                                           &pSession->context );
+            VDS_POST_CONDITION( ok == true || ok == false );
           }
       }
       else {
@@ -600,12 +601,13 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
     * session, just in case.
     */
    if ( vdsaSessionLock( pSession ) ) {
-      errcode = vdseProcessAddSession( g_pProcessInstance->pCleanup, 
-                                       pSession, 
-                                       &pSession->pCleanup, 
-                                       &pSession->context );
+      ok = vdseProcessAddSession( g_pProcessInstance->pCleanup, 
+                                  pSession, 
+                                  &pSession->pCleanup, 
+                                  &pSession->context );
+      VDS_POST_CONDITION( ok == true || ok == false );
       vdsaSessionUnlock( pSession );
-      if ( errcode != VDS_OK ) goto error_handler;
+      if ( ! ok ) goto error_handler;
    }
    else {
       /* 
@@ -637,7 +639,12 @@ error_handler:
       pSession->context.pLogFile = NULL;
    }
 
-   vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != VDS_OK ) {
+      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   }
+   else {
+      errcode = vdscGetLastError( &pSession->context.errorHandler );
+   }
    
    free( pSession );
    
@@ -751,6 +758,7 @@ int vdsaCloseSession( vdsaSession* pSession )
    vdseObjectContext* pObject = NULL;
    vdsaCommonObject* pCommonObject = NULL;
    int rc, errcode = 0;
+   bool ok;
    
    VDS_PRE_CONDITION( pSession != NULL );
 
@@ -764,8 +772,9 @@ int vdsaCloseSession( vdsaSession* pSession )
    
          if ( vdseLock( &pSession->pCleanup->memObject, &pSession->context) ) {
             for (;;) {
-               rc = vdseSessionGetFirst( pSession->pCleanup, &pObject, &pSession->context );
-               if ( rc != 0 ) break;
+               ok = vdseSessionGetFirst( pSession->pCleanup, &pObject, &pSession->context );
+               VDS_POST_CONDITION( ok == true || ok == false );
+               if ( ! ok ) break;
 
                /* This would be an internal error... */
                if ( pObject == NULL ) continue;
@@ -777,7 +786,8 @@ int vdsaCloseSession( vdsaSession* pSession )
                                               &pSession->context );
                vdsaCommonCloseObject( pCommonObject );
 
-               vdseSessionRemoveFirst(pSession->pCleanup, &pSession->context );
+               ok = vdseSessionRemoveFirst(pSession->pCleanup, &pSession->context );
+               VDS_POST_CONDITION( ok == true );
             }
             vdseUnlock( &pSession->pCleanup->memObject, &pSession->context);
          }

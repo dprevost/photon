@@ -195,8 +195,8 @@ bool vdseSessionRemoveObj( vdseSession        * pSession,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Lock and Unlock must be used before calling this function */
-int vdseSessionRemoveFirst( vdseSession        * pSession,
-                            vdseSessionContext * pContext )
+bool vdseSessionRemoveFirst( vdseSession        * pSession,
+                             vdseSessionContext * pContext )
 {
    vdseLinkNode * pNode = NULL;
    vdseObjectContext * pObject;
@@ -212,16 +212,16 @@ int vdseSessionRemoveFirst( vdseSession        * pSession,
                 (unsigned char *)pObject, 
                 sizeof(vdseObjectContext),
                 pContext );
-      return 0;
+      return true;
    }
    
-   return -1;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Lock and Unlock must be used before calling this function */
-int vdseSessionGetFirst( vdseSession        * pSession,
+bool vdseSessionGetFirst( vdseSession        * pSession,
                           vdseObjectContext ** ppObject,
                           vdseSessionContext * pContext )
 {
@@ -237,10 +237,9 @@ int vdseSessionGetFirst( vdseSession        * pSession,
    if ( ok ) {
       *ppObject = (vdseObjectContext*)
          ((char*)pNode - offsetof( vdseObjectContext, node ));
-      return 0;
    }
    
-   return -1;
+   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

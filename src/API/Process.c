@@ -55,10 +55,11 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
 {
    struct WDOutput answer;
    char path[PATH_MAX];
-   int errcode = 0;
+   int errcode = VDS_OK;
    vdseSessionContext context;
    vdseProcMgr* pCleanupManager;
-
+   bool ok;
+   
    VDS_PRE_CONDITION( process   != NULL );
    VDS_PRE_CONDITION( wdAddress != NULL );
    
@@ -101,13 +102,17 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
    GET_PTR( context.pAllocator, process->pHeader->allocatorOffset, void );
    GET_PTR( pCleanupManager, process->pHeader->processMgrOffset, vdseProcMgr );
 
-   errcode = vdseProcMgrAddProcess( pCleanupManager,
-                                    getpid(), 
-                                    &process->pCleanup,
-                                    &context );
-   if ( errcode == 0 ) {
+   ok = vdseProcMgrAddProcess( pCleanupManager,
+                               getpid(), 
+                               &process->pCleanup,
+                               &context );
+   VDS_POST_CONDITION( ok == true || ok == false );
+   if ( ok ) {
       strcpy( process->logDirName, VDS_LOGDIR_NAME );
       g_pProcessInstance = process;
+   }
+   else {
+      errcode = vdscGetLastError( &context.errorHandler );
    }
    
 the_exit:
@@ -129,7 +134,8 @@ void vdsaProcessFini()
    vdseSession * pVdsSession = NULL, * pCurrent;
    int errcode = 0;
    vdsaProcess * process;
-
+   bool ok;
+   
    process = g_pProcessInstance;
    VDS_PRE_CONDITION( process != NULL );
 
@@ -157,10 +163,11 @@ void vdsaProcessFini()
                                     &context );
 
    if ( vdseLock(&process->pCleanup->memObject, &context) ) {
-      errcode = vdseProcessGetFirstSession( process->pCleanup, 
-                                            &pVdsSession, 
-                                            &context );
-      while ( errcode == 0 ) {
+      ok = vdseProcessGetFirstSession( process->pCleanup, 
+                                       &pVdsSession, 
+                                       &context );
+      VDS_POST_CONDITION( ok == true || ok == false );
+      while ( ok ) {
          pApiSession = pVdsSession->pApiSession;
          if ( pApiSession != NULL ) {
             errcode = vdsaCloseSession( pApiSession );
@@ -168,10 +175,10 @@ void vdsaProcessFini()
          }
 
          pCurrent = pVdsSession;
-         errcode = vdseProcessGetNextSession( process->pCleanup,
-                                              pCurrent,
-                                              &pVdsSession,
-                                              &context );
+         ok = vdseProcessGetNextSession( process->pCleanup,
+                                         pCurrent,
+                                         &pVdsSession,
+                                         &context );
       }
       
       vdseUnlock( &process->pCleanup->memObject, &context );
@@ -185,7 +192,8 @@ void vdsaProcessFini()
     * The lock is implicit. This call will also recursively destroy
     * all the vdseSession objects of the current process.
     */
-   vdseProcMgrRemoveProcess( processManager, process->pCleanup, &context );
+   ok = vdseProcMgrRemoveProcess( processManager, process->pCleanup, &context );
+   VDS_POST_CONDITION( ok == true || ok == false );
    process->pCleanup = NULL;
    
    /* close our access to the VDS */

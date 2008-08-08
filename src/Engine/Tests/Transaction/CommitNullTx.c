@@ -26,7 +26,6 @@ int main()
 #if defined(USE_DBC)
    vdseTx* pTx;
    vdseSessionContext context;
-   int errcode;
    bool ok;
    
    pTx = initTxTest( expectedToPass, &context );

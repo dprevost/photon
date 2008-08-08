@@ -82,49 +82,48 @@ void vdseHashMapCommitRemove( vdseHashMap        * pHashMap,
                               vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseHashMapDelete( vdseHashMap        * pHashMap,
-                       const void         * key,
-                       size_t               keyLength, 
-                       vdseSessionContext * pContext );
+bool vdseHashMapDelete( vdseHashMap        * pHashMap,
+                        const void         * key,
+                        size_t               keyLength, 
+                        vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 void vdseHashMapFini( vdseHashMap        * pHashMap,
                       vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseHashMapGet( vdseHashMap        * pHashMap,
-                    const void         * pKey,
-                    size_t               keyLength, 
-                    vdseHashItem      ** ppItem,
-                    size_t               bufferLength,
-                    vdseSessionContext * pContext );
+bool vdseHashMapGet( vdseHashMap        * pHashMap,
+                     const void         * pKey,
+                     size_t               keyLength, 
+                     vdseHashItem      ** ppItem,
+                     size_t               bufferLength,
+                     vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseHashMapGetFirst( vdseHashMap        * pHashMap,
+bool vdseHashMapGetFirst( vdseHashMap        * pHashMap,
+                          vdseHashMapItem    * pItem,
+                          size_t               keyLength,
+                          size_t               bufferLength,
+                          vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+bool vdseHashMapGetNext( vdseHashMap        * pHashMap,
                          vdseHashMapItem    * pItem,
                          size_t               keyLength,
                          size_t               bufferLength,
                          vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseHashMapGetNext( vdseHashMap        * pHashMap,
-                        vdseHashMapItem    * pItem,
-                        size_t               keyLength,
-                        size_t               bufferLength,
-                        vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
-int vdseHashMapInit( vdseHashMap         * pHashMap,
-                     ptrdiff_t             parentOffset,
-                     size_t                numberOfBlocks,
-                     size_t                expectedNumOfChilds,
-                     vdseTxStatus        * pTxStatus,
-                     size_t                origNameLength,
-                     char                * origName,
-                     ptrdiff_t             hashItemOffset,
-                     vdsObjectDefinition * pDefinition,
-                     vdseSessionContext  * pContext );
-
+bool vdseHashMapInit( vdseHashMap         * pHashMap,
+                      ptrdiff_t             parentOffset,
+                      size_t                numberOfBlocks,
+                      size_t                expectedNumOfChilds,
+                      vdseTxStatus        * pTxStatus,
+                      size_t                origNameLength,
+                      char                * origName,
+                      ptrdiff_t             hashItemOffset,
+                      vdsObjectDefinition * pDefinition,
+                      vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseHashMapInsert( vdseHashMap        * pHashMap,
@@ -135,9 +134,9 @@ int vdseHashMapInsert( vdseHashMap        * pHashMap,
                        vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseHashMapRelease( vdseHashMap        * pHashMap,
-                        vdseHashItem       * pHashItem,
-                        vdseSessionContext * pContext );
+bool vdseHashMapRelease( vdseHashMap        * pHashMap,
+                         vdseHashItem       * pHashItem,
+                         vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 int vdseHashMapReplace( vdseHashMap        * pHashMap,

@@ -26,11 +26,11 @@ int main()
 #if defined(USE_DBC)
    vdseProcess * process;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    
    process = initProcessTest( expectedToPass, &context );
 
-   errcode = vdseProcessInit( process, 12345, NULL );
+   ok = vdseProcessInit( process, 12345, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

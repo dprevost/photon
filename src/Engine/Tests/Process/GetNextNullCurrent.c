@@ -27,43 +27,44 @@ int main()
    vdseProcess * process;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    vdseSession * pSession1, *pSession2;
    void * pApiSession = (void *) &errcode; /* A dummy pointer */
    
    process = initProcessTest( expectedToPass, &context );
 
-   errcode = vdseProcessInit( process, 12345, &context );
-   if ( errcode != 0 ) {
+   ok = vdseProcessInit( process, 12345, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseProcessAddSession( process,
-                                    pApiSession,
+   ok = vdseProcessAddSession( process,
+                               pApiSession,
+                               &pSession1,
+                               &context );
+   if ( ok != true ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+   
+   ok = vdseProcessAddSession( process,
+                               pApiSession,
+                               &pSession1,
+                               &context );
+   if ( ok != true ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+   
+   ok = vdseProcessGetFirstSession( process,
                                     &pSession1,
                                     &context );
-   if ( errcode != 0 ) {
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseProcessAddSession( process,
-                                    pApiSession,
-                                    &pSession1,
-                                    &context );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   errcode = vdseProcessGetFirstSession( process,
-                                         &pSession1,
-                                         &context );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   errcode = vdseProcessGetNextSession( process,
-                                        NULL,
-                                        &pSession2,
-                                        &context );
+   vdseProcessGetNextSession( process,
+                              NULL,
+                              &pSession2,
+                              &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

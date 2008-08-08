@@ -21,9 +21,9 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseProcessInit( vdseProcess        * pProcess,
-                     pid_t                pid,
-                     vdseSessionContext * pContext )
+bool vdseProcessInit( vdseProcess        * pProcess,
+                      pid_t                pid,
+                      vdseSessionContext * pContext )
 {
    vdsErrors errcode;
 
@@ -39,7 +39,7 @@ int vdseProcessInit( vdseProcess        * pProcess,
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
-      return -1;
+      return false;
    }
 
    pProcess->pid = pid;
@@ -47,7 +47,7 @@ int vdseProcessInit( vdseProcess        * pProcess,
 
    vdseLinkedListInit( &pProcess->listOfSessions );
 
-   return 0;
+   return true;
 }
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -57,6 +57,7 @@ void vdseProcessFini( vdseProcess        * pProcess,
 {
    vdseSession  * pSession = NULL;
    vdseLinkNode * pNode    = NULL;
+   bool ok;
    
    VDS_PRE_CONDITION( pProcess != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -73,7 +74,8 @@ void vdseProcessFini( vdseProcess        * pProcess,
       pSession = (vdseSession*)
          ((char*)pNode - offsetof( vdseSession, node ));
 
-      vdseProcessRemoveSession( pProcess, pSession, pContext );
+      ok = vdseProcessRemoveSession( pProcess, pSession, pContext );
+      VDS_POST_CONDITION( ok == true || ok == false );
    }
 
    /* 
@@ -85,14 +87,13 @@ void vdseProcessFini( vdseProcess        * pProcess,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
-                                 void               * pApiSession,
-                                 vdseSession       ** ppSession,
-                                 vdseSessionContext * pContext )
+bool vdseProcessAddSession( vdseProcess        * pProcess,
+                            void               * pApiSession,
+                            vdseSession       ** ppSession,
+                            vdseSessionContext * pContext )
 {
-   int rc = -1;
    vdseSession * pCurrentBuffer;
-   bool ok;
+   bool ok = false;
    
    VDS_PRE_CONDITION( pProcess    != NULL );
    VDS_PRE_CONDITION( pApiSession != NULL );
@@ -112,7 +113,6 @@ vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
             vdseLinkedListPutLast( &pProcess->listOfSessions, 
                                    &pCurrentBuffer->node );
             *ppSession = pCurrentBuffer;
-            rc = 0;
          }
          else {
             vdseFreeBlocks( pContext->pAllocator, 
@@ -143,14 +143,14 @@ vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
                     VDS_ENGINE_BUSY );
    }
    
-   return rc;
+   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdsErrors vdseProcessRemoveSession( vdseProcess        * pProcess,
-                                    vdseSession        * pSession,
-                                    vdseSessionContext * pContext )
+bool vdseProcessRemoveSession( vdseProcess        * pProcess,
+                               vdseSession        * pSession,
+                               vdseSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pProcess != NULL );
    VDS_PRE_CONDITION( pSession != NULL );
@@ -169,17 +169,17 @@ vdsErrors vdseProcessRemoveSession( vdseProcess        * pProcess,
       vdscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     VDS_ENGINE_BUSY );
-      return -1;
+      return false;
    }
    
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseProcessGetFirstSession( vdseProcess        * pProcess,
-                                vdseSession       ** ppSession,
-                                vdseSessionContext * pContext )
+bool vdseProcessGetFirstSession( vdseProcess        * pProcess,
+                                 vdseSession       ** ppSession,
+                                 vdseSessionContext * pContext )
 {
    vdseLinkNode * pNode = NULL;
    bool ok;
@@ -189,20 +189,20 @@ int vdseProcessGetFirstSession( vdseProcess        * pProcess,
    VDS_PRE_CONDITION( pContext  != NULL );
 
    ok = vdseLinkedListPeakFirst( &pProcess->listOfSessions, &pNode );
-   if ( ! ok ) return -1;
-
-   *ppSession = (vdseSession *)
-      ((char*)pNode - offsetof( vdseSession, node ));
-
-   return 0;
+   if ( ok ) {
+      *ppSession = (vdseSession *)
+         ((char*)pNode - offsetof( vdseSession, node ));
+   }
+   
+   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseProcessGetNextSession( vdseProcess        * pProcess,
-                               vdseSession        * pCurrent,
-                               vdseSession       ** ppNext,
-                               vdseSessionContext * pContext )
+bool vdseProcessGetNextSession( vdseProcess        * pProcess,
+                                vdseSession        * pCurrent,
+                                vdseSession       ** ppNext,
+                                vdseSessionContext * pContext )
 {
    vdseLinkNode * pNode = NULL;
    bool ok;
@@ -215,12 +215,12 @@ int vdseProcessGetNextSession( vdseProcess        * pProcess,
    ok = vdseLinkedListPeakNext( &pProcess->listOfSessions,
                                 &pCurrent->node,
                                 &pNode );
-   if ( ! ok ) return -1;
-
-   *ppNext = (vdseSession*)
-      ((char*)pNode - offsetof( vdseSession, node ));
-
-   return 0;
+   if ( ok ) {
+      *ppNext = (vdseSession*)
+         ((char*)pNode - offsetof( vdseSession, node ));
+   }
+   
+   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

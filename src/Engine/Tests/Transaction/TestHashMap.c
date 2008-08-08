@@ -28,6 +28,7 @@ int main()
    vdseFolder * pFolder;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    vdseFolderItem item;
    vdseTxStatus status;
    vdseObjectDescriptor * pDescriptor;
@@ -170,25 +171,25 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseHashMapDelete( pHashMap,
-                                key1,
-                                strlen(key1),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapDelete( pHashMap,
+                           key1,
+                           strlen(key1),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapDelete( pHashMap,
-                                key2,
-                                strlen(key2),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapDelete( pHashMap,
+                           key2,
+                           strlen(key2),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapDelete( pHashMap,
-                                key3,
-                                strlen(key3),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapDelete( pHashMap,
+                           key3,
+                           strlen(key3),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -207,25 +208,25 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseHashMapDelete( pHashMap,
-                                key1,
-                                strlen(key1),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapDelete( pHashMap,
+                           key1,
+                           strlen(key1),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapDelete( pHashMap,
-                                key2,
-                                strlen(key2),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapDelete( pHashMap,
+                           key2,
+                           strlen(key2),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapDelete( pHashMap,
-                                key3,
-                                strlen(key3),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapDelete( pHashMap,
+                           key3,
+                           strlen(key3),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -273,13 +274,13 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapGet( pHashMap,
-                             key2,
-                             strlen(key2),
-                             &pHashItem,
-                             (size_t) -1,
-                             &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapGet( pHashMap,
+                        key2,
+                        strlen(key2),
+                        &pHashItem,
+                        (size_t) -1,
+                        &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -298,10 +299,10 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseHashMapRelease( pHashMap,
-                                 pHashItem,
-                                 &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapRelease( pHashMap,
+                            pHashItem,
+                            &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pHashMap->nodeObject.txCounter != 0 ) {
@@ -340,13 +341,13 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapGet( pHashMap,
-                             key2,
-                             strlen(key2),
-                             &pHashItem,
-                             (size_t) -1,
-                             &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapGet( pHashMap,
+                        key2,
+                        strlen(key2),
+                        &pHashItem,
+                        (size_t) -1,
+                        &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -358,10 +359,10 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseHashMapRelease( pHashMap,
-                                 pHashItem,
-                                 &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapRelease( pHashMap,
+                            pHashItem,
+                            &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pHashMap->nodeObject.txCounter != 0 ) {
@@ -371,34 +372,34 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseHashMapGet( pHashMap,
-                             key2,
-                             strlen(key2),
-                             &pHashItem,
-                             (size_t) -1,
-                             &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapGet( pHashMap,
+                        key2,
+                        strlen(key2),
+                        &pHashItem,
+                        (size_t) -1,
+                        &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapDelete( pHashMap,
-                                key1,
-                                strlen(key1),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapDelete( pHashMap,
+                           key1,
+                           strlen(key1),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapDelete( pHashMap,
-                                key2,
-                                strlen(key2),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapDelete( pHashMap,
+                           key2,
+                           strlen(key2),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapDelete( pHashMap,
-                                key3,
-                                strlen(key3),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapDelete( pHashMap,
+                           key3,
+                           strlen(key3),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -410,10 +411,10 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseHashMapRelease( pHashMap,
-                                 pHashItem,
-                                 &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapRelease( pHashMap,
+                            pHashItem,
+                            &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pHashMap->nodeObject.txCounter != 0 ) {
@@ -423,35 +424,35 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseHashMapGet( pHashMap,
-                             key2,
-                             strlen(key2),
-                             &pHashItem,
-                             (size_t) -1,
-                             &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapGet( pHashMap,
+                        key2,
+                        strlen(key2),
+                        &pHashItem,
+                        (size_t) -1,
+                        &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapDelete( pHashMap,
-                                key1,
-                                strlen(key1),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapDelete( pHashMap,
+                           key1,
+                           strlen(key1),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapDelete( pHashMap,
-                                key2,
-                                strlen(key2),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapDelete( pHashMap,
+                           key2,
+                           strlen(key2),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashMapDelete( pHashMap,
-                                key3,
-                                strlen(key3),
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapDelete( pHashMap,
+                           key3,
+                           strlen(key3),
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -463,10 +464,10 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseHashMapRelease( pHashMap,
-                                 pHashItem,
-                                 &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapRelease( pHashMap,
+                            pHashItem,
+                            &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pHashMap->nodeObject.txCounter != 0 ) {

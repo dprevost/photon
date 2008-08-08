@@ -27,6 +27,7 @@ int main()
    vdseHashMap * pHashMap;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    vdseTxStatus status;
    char * key  = "my key";
    char * data = "my data";
@@ -42,10 +43,10 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseHashMapInit( pHashMap, 
-                              0, 1, 0, &status, 4, 
-                              "Map1", SET_OFFSET(pHashMap), &def, &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInit( pHashMap, 
+                         0, 1, 0, &status, 4, 
+                         "Map1", SET_OFFSET(pHashMap), &def, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -59,31 +60,31 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapGet( pHashMap,
-                             (const void *) key,
-                             6,
-                             &pItem,
-                             20,
-                             &context );
+   ok = vdseHashMapGet( pHashMap,
+                        (const void *) key,
+                        6,
+                        &pItem,
+                        20,
+                        &context );
 
    vdseHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
 
-   if ( errcode != 0 ) {
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapRelease( pHashMap,
-                                 pItem,
-                                 &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapRelease( pHashMap,
+                            pItem,
+                            &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapDelete( pHashMap,
-                                (const void *) key,
-                                6,
-                                &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapDelete( pHashMap,
+                           (const void *) key,
+                           6,
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

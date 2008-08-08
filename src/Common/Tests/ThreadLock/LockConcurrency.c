@@ -57,7 +57,6 @@ int worker( void* arg )
    int identifier;
    unsigned long elapsedTime = 0;
    unsigned long loop = 0;
-   int errcode;
    char dum3[100];
    int dumId;
    bool ok;

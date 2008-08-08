@@ -50,9 +50,8 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseSessionRemoveFirst( pSession,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseSessionRemoveFirst( pSession, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

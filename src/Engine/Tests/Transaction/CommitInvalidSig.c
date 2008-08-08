@@ -27,7 +27,6 @@ int main()
    vdseTx* pTx;
    vdseSessionContext context;
    bool ok;
-   int errcode;
    
    pTx = initTxTest( expectedToPass, &context );
 

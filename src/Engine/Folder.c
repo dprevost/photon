@@ -230,7 +230,7 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
    vdseFolder * pNextFolder, *pDeletedFolder;
    vdseMemObject * pMemObj;
    size_t bucket;
-   bool found;
+   bool found, ok;
    
    VDS_PRE_CONDITION( pFolder    != NULL );
    VDS_PRE_CONDITION( objectName != NULL );
@@ -299,14 +299,15 @@ int vdseFolderDeleteObject( vdseFolder         * pFolder,
       }
       GET_PTR( pMemObj, pDesc->memOffset, vdseMemObject );
       
-      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
+      ok = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_REMOVE_OBJECT,
                          SET_OFFSET(pFolder),
                          VDSE_IDENT_FOLDER,
                          SET_OFFSET(pHashItem),
                          pMemObj->objType,
                          pContext );
-      if ( rc != 0 ) goto the_exit;
+      VDS_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) goto the_exit;
       
       vdseTxStatusSetTx( txStatus, SET_OFFSET(pContext->pTransaction) );
       vdseTxStatusMarkAsDestroyed( txStatus );
@@ -474,7 +475,7 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
    unsigned char * ptr;
    vdseMemObjIdent memObjType = VDSE_IDENT_LAST;
    vdseMap * pMap;
-   bool found;
+   bool found, ok;
    
    VDS_PRE_CONDITION( pFolder     != NULL );
    VDS_PRE_CONDITION( objectName  != NULL )
@@ -610,14 +611,15 @@ int vdseFolderEditObject( vdseFolder         * pFolder,
 
       pDescNew = GET_PTR_FAST(pHashItemNew->dataOffset, vdseObjectDescriptor);
 
-      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
+      ok = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_ADD_EDIT_OBJECT,
                          SET_OFFSET(pFolder),
                          VDSE_IDENT_FOLDER,
                          SET_OFFSET(pHashItemNew),
                          memObjType,
                          pContext );
-      if ( rc != 0 ) {
+      VDS_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) {
          vdseHashDelWithItem( &pFolder->hashObj, 
                               pHashItemNew,
                               pContext );
@@ -1362,7 +1364,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
    bool lastIteration = true;
    size_t partialLength = 0;
    vdseHashItem * pHashItem, * previousHashItem = NULL;
-   int rc;
+   int rc = 0;
    vdsErrors errcode = VDS_OK;
    vdseObjectDescriptor* pDesc = NULL;
    size_t descLength;
@@ -1372,7 +1374,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
    vdseMemObjIdent memObjType = VDSE_IDENT_LAST;
    int invalid_object_type = 0;
    size_t bucket;
-   bool found;
+   bool found, ok;
    
    VDS_PRE_CONDITION( pFolder      != NULL );
    VDS_PRE_CONDITION( objectName   != NULL )
@@ -1478,16 +1480,17 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
          VDS_POST_CONDITION( invalid_object_type );
       }
       
-      rc = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
+      ok = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
                          VDSE_TX_ADD_OBJECT,
                          SET_OFFSET(pFolder),
                          VDSE_IDENT_FOLDER,
                          SET_OFFSET(pHashItem),
                          memObjType,
                          pContext );
+      VDS_POST_CONDITION( ok == true || ok == false );
       free( pDesc ); 
       pDesc = NULL;
-      if ( rc != VDS_OK ) {
+      if ( ! ok ) {
          vdseHashDelWithItem( &pFolder->hashObj, 
                               pHashItem,
                               pContext );
@@ -1503,6 +1506,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
       GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
       switch ( memObjType ) {
 
+      ok = true;
       case VDSE_IDENT_QUEUE:
          rc = vdseQueueInit( (vdseQueue *)ptr,
                              SET_OFFSET(pFolder),
@@ -1532,16 +1536,17 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
          break;
       
       case VDSE_IDENT_HASH_MAP:
-         rc = vdseHashMapInit( (vdseHashMap *)ptr,
-                              SET_OFFSET(pFolder),
-                              numBlocks,
-                              expectedNumOfChilds,
-                              objTxStatus,
-                              partialLength,
-                              pDesc->originalName,
-                              SET_OFFSET(pHashItem),
-                              pDefinition,
-                              pContext );
+         ok = vdseHashMapInit( (vdseHashMap *)ptr,
+                               SET_OFFSET(pFolder),
+                               numBlocks,
+                               expectedNumOfChilds,
+                               objTxStatus,
+                               partialLength,
+                               pDesc->originalName,
+                               SET_OFFSET(pHashItem),
+                               pDefinition,
+                               pContext );
+         VDS_POST_CONDITION( ok == true || ok == false );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseHashMap,nodeObject);
          pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseHashMap,memObject);
          break;
@@ -1566,7 +1571,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
          goto the_exit;
       }
 
-      if ( rc != 0 ) {
+      if ( rc != 0 || ! ok ) {
          vdseTxRemoveLastOps( (vdseTx*)pContext->pTransaction, pContext );
          vdseHashDelWithItem( &pFolder->hashObj,
                               pHashItem,

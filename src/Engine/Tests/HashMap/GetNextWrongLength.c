@@ -26,6 +26,7 @@ int main()
    vdseHashMap * pHashMap;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    vdseTxStatus status;
    char * key1  = "my key1";
    char * key2  = "my key2";
@@ -43,10 +44,10 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseHashMapInit( pHashMap, 
-                              0, 1, 0, &status, 4, 
-                              "Map1", SET_OFFSET(pHashMap), &def, &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInit( pHashMap, 
+                         0, 1, 0, &status, 4, 
+                         "Map1", SET_OFFSET(pHashMap), &def, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -69,21 +70,21 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapGetFirst( pHashMap,
-                                  &item,
-                                  7,
-                                  20,
-                                  &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapGetFirst( pHashMap,
+                             &item,
+                             7,
+                             20,
+                             &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapGetNext( pHashMap,
-                                 &item,
-                                 7,
-                                 7,
-                                 &context );
-   if ( errcode == 0 ) {
+   ok = vdseHashMapGetNext( pHashMap,
+                            &item,
+                            7,
+                            7,
+                            &context );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdscGetLastError( &context.errorHandler );

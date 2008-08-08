@@ -26,7 +26,6 @@ int main()
 #if defined(USE_DBC)
    vdseTx* pTx;
    vdseSessionContext context;
-   int errcode;
    bool ok;
    ptrdiff_t parentOffset = 0x1010, childOffset = VDSE_NULL_OFFSET;
    
@@ -37,13 +36,13 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseTxAddOps( pTx,
-                           VDSE_TX_ADD_DATA,
-                           parentOffset, 
-                           VDS_FOLDER,
-                           childOffset,
-                           VDS_FOLDER,
-                           &context );
+   ok = vdseTxAddOps( pTx,
+                      VDSE_TX_ADD_DATA,
+                      parentOffset, 
+                      VDS_FOLDER,
+                      childOffset,
+                      VDS_FOLDER,
+                      &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

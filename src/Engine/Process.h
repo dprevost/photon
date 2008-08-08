@@ -63,38 +63,38 @@ typedef struct vdseProcess vdseProcess;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-int vdseProcessInit( vdseProcess        * pProcess,
-                     pid_t                pid,
-                     vdseSessionContext * pContext );
+bool vdseProcessInit( vdseProcess        * pProcess,
+                      pid_t                pid,
+                      vdseSessionContext * pContext );
    
 VDSF_ENGINE_EXPORT
 void vdseProcessFini( vdseProcess        * pProcess,
                       vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-vdsErrors vdseProcessAddSession( vdseProcess        * pProcess,
-                                 void               * pApiSession,
-                                 vdseSession       ** pSession,
-                                 vdseSessionContext * pContext );
+bool vdseProcessAddSession( vdseProcess        * pProcess,
+                            void               * pApiSession,
+                            vdseSession       ** pSession,
+                            vdseSessionContext * pContext );
 
 /*
  * Takes a lock on the current object. Not on the vdseSession itself. 
  */
 VDSF_ENGINE_EXPORT
-vdsErrors vdseProcessRemoveSession( vdseProcess        * pProcess,
-                                    vdseSession        * pSession,
-                                    vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
-int vdseProcessGetFirstSession( vdseProcess        * pProcess,
-                                vdseSession       ** ppSession,
-                                vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
-int vdseProcessGetNextSession( vdseProcess        * pProcess,
-                               vdseSession        * pCurrent,
-                               vdseSession       ** ppNext,
+bool vdseProcessRemoveSession( vdseProcess        * pProcess,
+                               vdseSession        * pSession,
                                vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+bool vdseProcessGetFirstSession( vdseProcess        * pProcess,
+                                 vdseSession       ** ppSession,
+                                 vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+bool vdseProcessGetNextSession( vdseProcess        * pProcess,
+                                vdseSession        * pCurrent,
+                                vdseSession       ** ppNext,
+                                vdseSessionContext * pContext );
 
 static inline
 void vdseProcessNoMoreSessionAllowed( vdseProcess        * pProcess,

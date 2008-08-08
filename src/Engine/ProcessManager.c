@@ -22,8 +22,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseProcMgrInit( vdseProcMgr        * pManager,
-                     vdseSessionContext * pContext )
+bool vdseProcMgrInit( vdseProcMgr        * pManager,
+                      vdseSessionContext * pContext )
 {
    vdsErrors errcode;
 
@@ -38,24 +38,24 @@ int vdseProcMgrInit( vdseProcMgr        * pManager,
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
-      return -1;
+      return false;
    }
 
    vdseLinkedListInit( &pManager->listOfProcesses );
       
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseProcMgrAddProcess( vdseProcMgr        * pManager,
-                           pid_t                pid, 
-                           vdseProcess       ** ppProcess,
-                           vdseSessionContext * pContext )
+bool vdseProcMgrAddProcess( vdseProcMgr        * pManager,
+                            pid_t                pid, 
+                            vdseProcess       ** ppProcess,
+                            vdseSessionContext * pContext )
 {
-   int errcode, rc = -1;
    vdseProcess* pCurrentBuffer;
-
+   bool ok = false;
+   
    VDS_PRE_CONDITION( pManager  != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
    VDS_PRE_CONDITION( ppProcess != NULL );
@@ -66,13 +66,13 @@ int vdseProcMgrAddProcess( vdseProcMgr        * pManager,
       pCurrentBuffer = (vdseProcess*)
          vdseMallocBlocks( pContext->pAllocator, VDSE_ALLOC_ANY, 1, pContext );
       if ( pCurrentBuffer != NULL ) {
-         errcode = vdseProcessInit( pCurrentBuffer, pid, pContext );
-         if ( errcode == 0 ) {
+         ok = vdseProcessInit( pCurrentBuffer, pid, pContext );
+         VDS_POST_CONDITION( ok == true || ok == false );
+         if ( ok ) {
             vdseLinkNodeInit( &pCurrentBuffer->node );
             vdseLinkedListPutLast( &pManager->listOfProcesses, 
                                    &pCurrentBuffer->node );
             *ppProcess = pCurrentBuffer;
-            rc = 0;
          }
          else {
             vdseFreeBlocks( pContext->pAllocator, 
@@ -94,15 +94,15 @@ int vdseProcMgrAddProcess( vdseProcMgr        * pManager,
                     VDS_ENGINE_BUSY );
    }
    
-   return rc;
+   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseProcMgrFindProcess( vdseProcMgr        * pManager,
-                            pid_t                pid,
-                            vdseProcess       ** ppProcess,
-                            vdseSessionContext * pContext )
+bool vdseProcMgrFindProcess( vdseProcMgr        * pManager,
+                             pid_t                pid,
+                             vdseProcess       ** ppProcess,
+                             vdseSessionContext * pContext )
 {
    vdseProcess *pCurrent, *pNext;
    vdseLinkNode * pNodeCurrent = NULL, * pNodeNext = NULL;
@@ -148,21 +148,21 @@ int vdseProcMgrFindProcess( vdseProcMgr        * pManager,
    /* Is this possible ? */
    if ( *ppProcess == NULL ) errcode = VDS_INTERNAL_ERROR;
 
-   if ( errcode !=VDS_OK ) {
+   if ( errcode != VDS_OK ) {
       vdscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     errcode );
-      return -1;
+      return false;
    }
 
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseProcMgrRemoveProcess( vdseProcMgr        * pManager,
-                              vdseProcess        * pProcess,
-                              vdseSessionContext * pContext )
+bool vdseProcMgrRemoveProcess( vdseProcMgr        * pManager,
+                               vdseProcess        * pProcess,
+                               vdseSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pManager != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -181,10 +181,10 @@ int vdseProcMgrRemoveProcess( vdseProcMgr        * pManager,
       vdscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     VDS_ENGINE_BUSY );
-      return -1;
+      return false;
    }
    
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

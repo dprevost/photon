@@ -187,8 +187,9 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
 
    processManager = (vdseProcMgr *) ptr;
    
-   errcode = vdseProcMgrInit( processManager, pContext );
-   if ( errcode != 0 ) {
+   ok = vdseProcMgrInit( processManager, pContext );
+   VDS_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) {
       (*ppHeader) = NULL;
       /* The error is set in the function itself */
       return false;

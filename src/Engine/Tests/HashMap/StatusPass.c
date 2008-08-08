@@ -26,6 +26,7 @@ int main()
    vdseHashMap * pHashMap;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    vdseTxStatus txStatus;
    char * key1  = "my key1";
    char * key2  = "my key2";
@@ -43,10 +44,10 @@ int main()
 
    vdseTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseHashMapInit( pHashMap, 
-                              0, 1, 0, &txStatus, 4, 
-                              "Map1", SET_OFFSET(pHashMap), &def, &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInit( pHashMap, 
+                         0, 1, 0, &txStatus, 4, 
+                         "Map1", SET_OFFSET(pHashMap), &def, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -56,7 +57,7 @@ int main()
                                 (const void *) data,
                                 7,
                                 &context );
-   if ( errcode != 0 ) {
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

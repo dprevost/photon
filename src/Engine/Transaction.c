@@ -78,13 +78,13 @@ void vdseTxFini( vdseTx             * pTx,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdsErrors vdseTxAddOps( vdseTx             * pTx,
-                        vdseTxType           txType,
-                        ptrdiff_t            parentOffset, 
-                        vdseMemObjIdent      parentType, 
-                        ptrdiff_t            childOffset,
-                        vdseMemObjIdent      childType, 
-                        vdseSessionContext * pContext )
+bool vdseTxAddOps( vdseTx             * pTx,
+                   vdseTxType           txType,
+                   ptrdiff_t            parentOffset, 
+                   vdseMemObjIdent      parentType, 
+                   ptrdiff_t            childOffset,
+                   vdseMemObjIdent      childType, 
+                   vdseSessionContext * pContext )
 {
    vdseTxOps * pOps;
    
@@ -107,14 +107,14 @@ vdsErrors vdseTxAddOps( vdseTx             * pTx,
       vdseLinkNodeInit(  &pOps->node );
       vdseLinkedListPutLast( &pTx->listOfOps, &pOps->node );
 
-      return VDS_OK;
+      return true;
    }
 
    vdscSetError( &pContext->errorHandler, 
                  g_vdsErrorHandle, 
                  VDS_NOT_ENOUGH_VDS_MEMORY );
 
-   return VDS_NOT_ENOUGH_VDS_MEMORY;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -147,7 +147,6 @@ void vdseTxRemoveLastOps( vdseTx             * pTx,
 void vdseTxCommit( vdseTx             * pTx,
                    vdseSessionContext * pContext )
 {
-   int errcode = VDS_OK;
    vdseTxOps     * pOps = NULL;
    vdseLinkNode  * pLinkNode = NULL;
    vdseFolder    * parentFolder,    * pChildFolder;
@@ -166,6 +165,8 @@ void vdseTxCommit( vdseTx             * pTx,
       
    /* Synch the VDS */
 #if 0
+   int errcode = VDS_OK;
+
    MemoryManager::Instance()->Sync( &pContext->errorHandler );
 
    /* Write to the log file */

@@ -91,13 +91,13 @@ typedef struct vdseTx vdseTx;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-vdsErrors vdseTxAddOps( vdseTx             * pTx,
-                        vdseTxType           txType,
-                        ptrdiff_t            parentOffset, 
-                        vdseMemObjIdent      parentType,
-                        ptrdiff_t            childOffset,
-                        vdseMemObjIdent      childType,
-                        vdseSessionContext * pContext );
+bool vdseTxAddOps( vdseTx             * pTx,
+                   vdseTxType           txType,
+                   ptrdiff_t            parentOffset, 
+                   vdseMemObjIdent      parentType,
+                   ptrdiff_t            childOffset,
+                   vdseMemObjIdent      childType,
+                   vdseSessionContext * pContext );
    
 VDSF_ENGINE_EXPORT
 void vdseTxRemoveLastOps( vdseTx * pTx, vdseSessionContext * pContext );

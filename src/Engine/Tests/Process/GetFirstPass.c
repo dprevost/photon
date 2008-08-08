@@ -26,28 +26,36 @@ int main()
    vdseProcess * process;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    vdseSession * pSession;
    void * pApiSession = (void *) &errcode; /* A dummy pointer */
    
    process = initProcessTest( expectedToPass, &context );
 
-   errcode = vdseProcessInit( process, 12345, &context );
-   if ( errcode != 0 ) {
+   ok = vdseProcessInit( process, 12345, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   
-   errcode = vdseProcessAddSession( process,
-                                    pApiSession,
+
+   ok = vdseProcessGetFirstSession( process,
                                     &pSession,
                                     &context );
-   if ( errcode != 0 ) {
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseProcessGetFirstSession( process,
-                                         &pSession,
-                                         &context );
-   if ( errcode != 0 ) {
+   ok = vdseProcessAddSession( process,
+                               pApiSession,
+                               &pSession,
+                               &context );
+   if ( ok != true ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+   
+   ok = vdseProcessGetFirstSession( process,
+                                    &pSession,
+                                    &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

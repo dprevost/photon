@@ -41,10 +41,10 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseHashMapInit( pHashMap, 
-                              0, 1, 0, &status, 4, 
-                              "Map1", SET_OFFSET(pHashMap), &def, &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInit( pHashMap, 
+                         0, 1, 0, &status, 4, 
+                         "Map1", SET_OFFSET(pHashMap), &def, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -58,13 +58,13 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapGet( pHashMap,
-                             (const void *) key,
-                             6,
-                             &pItem,
-                             6,
-                             &context );
-   if ( errcode == 0 ) {
+   ok = vdseHashMapGet( pHashMap,
+                        (const void *) key,
+                        6,
+                        &pItem,
+                        6,
+                        &context );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdscGetLastError( &context.errorHandler );

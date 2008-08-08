@@ -50,10 +50,8 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   errcode = vdseSessionGetFirst( pSession,
-                                  &pObject,
-                                  &context );
-   if ( errcode != 0 ) {
+   ok = vdseSessionGetFirst( pSession, &pObject, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

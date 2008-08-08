@@ -26,6 +26,7 @@ int main()
    vdseHashMap * pHashMap;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    vdseTxStatus status;
    char * key  = "my key";
    char * data = "my data";
@@ -42,10 +43,10 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseHashMapInit( pHashMap, 
-                              0, 1, 0, &status, 4, 
-                              "Map1", SET_OFFSET(pHashMap), &def, &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInit( pHashMap, 
+                         0, 1, 0, &status, 4, 
+                         "Map1", SET_OFFSET(pHashMap), &def, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -59,12 +60,12 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapGetFirst( pHashMap,
-                                  &item,
-                                  6,
-                                  20,
-                                  &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapGetFirst( pHashMap,
+                             &item,
+                             6,
+                             20,
+                             &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    GET_PTR( ptr, item.pHashItem->dataOffset, char );

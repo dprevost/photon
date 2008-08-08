@@ -51,9 +51,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   errcode = vdseSessionGetFirst( NULL,
-                                  &pObject,
-                                  &context );
+   vdseSessionGetFirst( NULL, &pObject, &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

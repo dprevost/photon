@@ -26,20 +26,20 @@ int main()
 #if defined(USE_DBC)
    vdseProcMgr* pManager;
    vdseSessionContext context;
-   int errcode;
    vdseProcess * process;
+   bool ok;
    
    pManager = initProcMgrTest( expectedToPass, &context );
 
-   errcode = vdseProcMgrInit( pManager, &context );
-   if ( errcode != 0 ) {
+   ok = vdseProcMgrInit( pManager, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseProcMgrAddProcess( pManager, 
-                                    0, 
-                                    &process,
-                                    &context );
+   ok = vdseProcMgrAddProcess( pManager, 
+                               0, 
+                               &process,
+                               &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

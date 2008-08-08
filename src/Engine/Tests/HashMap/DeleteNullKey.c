@@ -27,6 +27,7 @@ int main()
    vdseHashMap * pHashMap;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    vdseTxStatus status;
    char * key  = "my key";
    char * data = "my data";
@@ -42,10 +43,10 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseHashMapInit( pHashMap, 
-                              0, 1, 0, &status, 4, 
-                              "Map1", SET_OFFSET(pHashMap), &def, &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapInit( pHashMap, 
+                         0, 1, 0, &status, 4, 
+                         "Map1", SET_OFFSET(pHashMap), &def, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -63,29 +64,29 @@ int main()
     * We use get to get to the hash item in order to commit it 
     * (we need to commit the insertion before deleting it)
     */
-   errcode = vdseHashMapGet( pHashMap,
-                             (const void *) key,
-                             6,
-                             &pItem,
-                             20,
-                             &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapGet( pHashMap,
+                        (const void *) key,
+                        6,
+                        &pItem,
+                        20,
+                        &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    vdseHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
 
-   errcode = vdseHashMapRelease( pHashMap,
-                                 pItem,
-                                 &context );
-   if ( errcode != 0 ) {
+   ok = vdseHashMapRelease( pHashMap,
+                            pItem,
+                            &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashMapDelete( pHashMap,
-                                NULL,
-                                6,
-                                &context );
+   vdseHashMapDelete( pHashMap,
+                      NULL,
+                      6,
+                      &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

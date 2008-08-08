@@ -25,39 +25,38 @@ int main()
 {
    vdseProcMgr* pManager;
    vdseSessionContext context;
-   int errcode;
    vdseProcess *process;
+   bool ok;
    
    pManager = initProcMgrTest( expectedToPass, &context );
 
-   errcode = vdseProcMgrInit( pManager, &context );
-   if ( errcode != 0 ) {
+   ok = vdseProcMgrInit( pManager, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseProcMgrAddProcess( pManager, 
-                                    12345, 
-                                    &process,
-                                    &context );
+   ok = vdseProcMgrAddProcess( pManager, 
+                               12345, 
+                               &process,
+                               &context );
 
-   if ( errcode != 0 ) {
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseProcMgrFindProcess( pManager, 
-                                     12345, 
-                                     &process,
-                                     &context );
-
-   if ( errcode != 0 ) {
+   ok = vdseProcMgrFindProcess( pManager, 
+                                12345, 
+                                &process,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseProcMgrFindProcess( pManager, 
-                                     12378,
-                                     &process,
-                                     &context );
-   if ( errcode == 0 ) {
+   ok = vdseProcMgrFindProcess( pManager, 
+                                12378,
+                                &process,
+                                &context );
+   if ( ok == true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( vdscGetLastError( &context.errorHandler ) != VDS_INTERNAL_ERROR ) {
