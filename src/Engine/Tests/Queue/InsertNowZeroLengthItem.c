@@ -26,7 +26,7 @@ int main()
 #if defined(USE_DBC)
    vdseQueue * pQueue;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdseTxStatus status;
    char * data = "My Data";
    vdsObjectDefinition def = { 
@@ -40,18 +40,18 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseQueueInit( pQueue, 
-                            0, 1, &status, 4, 
-                            "Queue1", SET_OFFSET(pQueue), &def, &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInit( pQueue, 
+                       0, 1, &status, 4, 
+                       "Queue1", SET_OFFSET(pQueue), &def, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseQueueInsertNow( pQueue,
-                                 data,
-                                 0,
-                                 VDS_FIRST,
-                                 &context );
+   ok = vdseQueueInsertNow( pQueue,
+                            data,
+                            0,
+                            VDS_FIRST,
+                            &context );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

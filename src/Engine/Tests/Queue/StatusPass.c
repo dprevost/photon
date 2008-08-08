@@ -25,7 +25,7 @@ int main()
 {
    vdseQueue * pQueue;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdseTxStatus txStatus;
    vdsObjStatus status;
    char * data = "My Data";
@@ -40,28 +40,28 @@ int main()
 
    vdseTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseQueueInit( pQueue, 
-                            0, 1, &txStatus, 4, 
-                            "Queue1", SET_OFFSET(pQueue), &def, &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInit( pQueue, 
+                       0, 1, &txStatus, 4, 
+                       "Queue1", SET_OFFSET(pQueue), &def, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseQueueInsert( pQueue,
-                              data,
-                              8,
-                              VDSE_QUEUE_FIRST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data,
+                         8,
+                         VDSE_QUEUE_FIRST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseQueueInsert( pQueue,
-                              data,
-                              8,
-                              VDSE_QUEUE_FIRST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data,
+                         8,
+                         VDSE_QUEUE_FIRST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

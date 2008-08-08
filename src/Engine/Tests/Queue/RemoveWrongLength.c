@@ -25,6 +25,7 @@ int main()
 {
    vdseQueue * pQueue;
    vdseSessionContext context;
+   bool ok;
    int errcode;
    vdseTxStatus status;
    char * data = "My Data";
@@ -40,44 +41,44 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseQueueInit( pQueue, 
-                            0, 1, &status, 4, 
-                            "Queue1", SET_OFFSET(pQueue), &def, &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInit( pQueue, 
+                       0, 1, &status, 4, 
+                       "Queue1", SET_OFFSET(pQueue), &def, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseQueueInsert( pQueue,
-                              data,
-                              8,
-                              VDSE_QUEUE_FIRST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data,
+                         8,
+                         VDSE_QUEUE_FIRST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseQueueInsert( pQueue,
-                              data,
-                              6,
-                              VDSE_QUEUE_LAST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data,
+                         6,
+                         VDSE_QUEUE_LAST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    /* Must commit the insert before we attempt to remove */
-   errcode = vdseQueueGet( pQueue, VDS_FIRST, &pQueueItem, 100, &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueGet( pQueue, VDS_FIRST, &pQueueItem, 100, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    vdseQueueCommitAdd( pQueue, SET_OFFSET(pQueueItem) );
 
-   errcode = vdseQueueRemove( pQueue,
-                              &pQueueItem,
-                              VDSE_QUEUE_FIRST,
-                              7,
-                              &context );
-   if ( errcode == 0 ) {
+   ok = vdseQueueRemove( pQueue,
+                         &pQueueItem,
+                         VDSE_QUEUE_FIRST,
+                         7,
+                         &context );
+   if ( ok == true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdscGetLastError( &context.errorHandler );

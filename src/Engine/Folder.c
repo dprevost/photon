@@ -1509,7 +1509,7 @@ int vdseFolderInsertObject( vdseFolder          * pFolder,
 
       ok = true;
       case VDSE_IDENT_QUEUE:
-         rc = vdseQueueInit( (vdseQueue *)ptr,
+         ok = vdseQueueInit( (vdseQueue *)ptr,
                              SET_OFFSET(pFolder),
                              numBlocks,
                              objTxStatus,

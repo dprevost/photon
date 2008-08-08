@@ -100,11 +100,11 @@ void vdseQueueFini( vdseQueue          * pQueue,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseQueueGet( vdseQueue          * pQueue,
-                  unsigned int         flag,
-                  vdseQueueItem     ** ppIterator,
-                  size_t               bufferLength,
-                  vdseSessionContext * pContext )
+bool vdseQueueGet( vdseQueue          * pQueue,
+                   unsigned int         flag,
+                   vdseQueueItem     ** ppIterator,
+                   size_t               bufferLength,
+                   vdseSessionContext * pContext )
 {
    vdseQueueItem* pQueueItem = NULL;
    vdseQueueItem* pOldItem = NULL;
@@ -189,7 +189,7 @@ int vdseQueueGet( vdseQueue          * pQueue,
                vdscSetError( &pContext->errorHandler,
                              g_vdsErrorHandle,
                              VDS_INVALID_LENGTH );
-                return -1;
+                return false;
             }
 
             txItemStatus->usageCounter++;
@@ -201,7 +201,7 @@ int vdseQueueGet( vdseQueue          * pQueue,
             
             vdseUnlock( &pQueue->memObject, pContext );
 
-            return 0;
+            return true;
          }
          okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
                                            pNode, 
@@ -210,7 +210,7 @@ int vdseQueueGet( vdseQueue          * pQueue,
    }
    else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
-      return -1;
+      return false;
    }
    
    errcode = VDS_ITEM_IS_IN_USE;
@@ -233,20 +233,20 @@ int vdseQueueGet( vdseQueue          * pQueue,
    vdseUnlock( &pQueue->memObject, pContext );
    vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
 
-   return -1;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseQueueInit( vdseQueue           * pQueue,
-                   ptrdiff_t             parentOffset,
-                   size_t                numberOfBlocks,
-                   vdseTxStatus        * pTxStatus,
-                   size_t                origNameLength,
-                   char                * origName,
-                   ptrdiff_t             hashItemOffset,
-                   vdsObjectDefinition * pDefinition,
-                   vdseSessionContext  * pContext )
+bool vdseQueueInit( vdseQueue           * pQueue,
+                    ptrdiff_t             parentOffset,
+                    size_t                numberOfBlocks,
+                    vdseTxStatus        * pTxStatus,
+                    size_t                origNameLength,
+                    char                * origName,
+                    ptrdiff_t             hashItemOffset,
+                    vdsObjectDefinition * pDefinition,
+                    vdseSessionContext  * pContext )
 {
    vdsErrors errcode;
    vdseFieldDef * ptr;
@@ -271,7 +271,7 @@ int vdseQueueInit( vdseQueue           * pQueue,
       vdscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
-      return -1;
+      return false;
    }
 
    vdseTreeNodeInit( &pQueue->nodeObject,
@@ -291,7 +291,7 @@ int vdseQueueInit( vdseQueue           * pQueue,
    if ( ptr == NULL ) {
       vdscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
-      return -1;
+      return false;
    }
    pQueue->dataDefOffset = SET_OFFSET(ptr);
 
@@ -318,16 +318,16 @@ int vdseQueueInit( vdseQueue           * pQueue,
       }
    }
 
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseQueueInsert( vdseQueue          * pQueue,
-                     const void         * pItem, 
-                     size_t               length ,
-                     enum vdseQueueEnum   firstOrLast,
-                     vdseSessionContext * pContext )
+bool vdseQueueInsert( vdseQueue          * pQueue,
+                      const void         * pItem, 
+                      size_t               length ,
+                      enum vdseQueueEnum   firstOrLast,
+                      vdseSessionContext * pContext )
 {
    vdseQueueItem* pQueueItem;
    vdsErrors errcode = VDS_OK;
@@ -398,10 +398,10 @@ int vdseQueueInsert( vdseQueue          * pQueue,
    }
    else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
-      return -1;
+      return false;
    }
    
-   return 0;
+   return true;
 
 the_exit:
 
@@ -414,16 +414,16 @@ the_exit:
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
     
-   return -1;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseQueueInsertNow( vdseQueue          * pQueue,
-                        const void         * pItem, 
-                        size_t               length ,
-                        enum vdseQueueEnum   firstOrLast,
-                        vdseSessionContext * pContext )
+bool vdseQueueInsertNow( vdseQueue          * pQueue,
+                         const void         * pItem, 
+                         size_t               length ,
+                         enum vdseQueueEnum   firstOrLast,
+                         vdseSessionContext * pContext )
 {
    vdseQueueItem* pQueueItem;
    vdsErrors errcode = VDS_OK;
@@ -475,10 +475,10 @@ int vdseQueueInsertNow( vdseQueue          * pQueue,
    }
    else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
-      return -1;
+      return false;
    }
    
-   return 0;
+   return true;
 
 the_exit:
 
@@ -491,14 +491,14 @@ the_exit:
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
     
-   return -1;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseQueueRelease( vdseQueue          * pQueue,
-                      vdseQueueItem      * pQueueItem,
-                      vdseSessionContext * pContext )
+bool vdseQueueRelease( vdseQueue          * pQueue,
+                       vdseQueueItem      * pQueueItem,
+                       vdseSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pQueue != NULL );
    VDS_PRE_CONDITION( pQueueItem != NULL );
@@ -514,10 +514,10 @@ int vdseQueueRelease( vdseQueue          * pQueue,
    }
    else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
-      return -1;
+      return false;
    }
 
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -564,11 +564,11 @@ void vdseQueueReleaseNoLock( vdseQueue          * pQueue,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseQueueRemove( vdseQueue          * pQueue,
-                     vdseQueueItem     ** ppQueueItem,
-                     enum vdseQueueEnum   firstOrLast,
-                     size_t               bufferLength,
-                     vdseSessionContext * pContext )
+bool vdseQueueRemove( vdseQueue          * pQueue,
+                      vdseQueueItem     ** ppQueueItem,
+                      enum vdseQueueEnum   firstOrLast,
+                      size_t               bufferLength,
+                      vdseSessionContext * pContext )
 {
    vdsErrors errcode = VDS_OK;
    vdseQueueItem * pItem = NULL;
@@ -642,7 +642,7 @@ int vdseQueueRemove( vdseQueue          * pQueue,
 
             vdseUnlock( &pQueue->memObject, pContext );
 
-            return 0;
+            return true;
          }
          /* We test the type of flag to return the proper error code (if needed) */
          if ( ! vdseTxStatusIsRemoveCommitted(txItemStatus) ) {
@@ -663,7 +663,7 @@ int vdseQueueRemove( vdseQueue          * pQueue,
    }
    else {
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
-      return -1;
+      return false;
    }
 
    /* Let this falls through the error handler */
@@ -678,7 +678,7 @@ the_exit:
       vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   return -1;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

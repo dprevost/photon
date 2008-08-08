@@ -96,52 +96,52 @@ typedef struct vdseQueue vdseQueue;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-int vdseQueueInit( vdseQueue           * pQueue,
-                   ptrdiff_t             parentOffset,
-                   size_t                numberOfBlocks,
-                   vdseTxStatus        * pTxStatus,
-                   size_t                origNameLength,
-                   char                * origName,
-                   ptrdiff_t             hashItemOffset,
-                   vdsObjectDefinition * pDefinition,
-                   vdseSessionContext  * pContext );
+bool vdseQueueInit( vdseQueue           * pQueue,
+                    ptrdiff_t             parentOffset,
+                    size_t                numberOfBlocks,
+                    vdseTxStatus        * pTxStatus,
+                    size_t                origNameLength,
+                    char                * origName,
+                    ptrdiff_t             hashItemOffset,
+                    vdsObjectDefinition * pDefinition,
+                    vdseSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
 void vdseQueueFini( vdseQueue          * pQueue,
                     vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-int vdseQueueInsert( vdseQueue          * pQueue,
-                     const void         * pItem, 
-                     size_t               length,
-                     enum vdseQueueEnum   firstOrLast,
-                     vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
-int vdseQueueInsertNow( vdseQueue          * pQueue,
-                        const void         * pItem, 
-                        size_t               length,
-                        enum vdseQueueEnum   firstOrLast,
-                        vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
-int vdseQueueRemove( vdseQueue          * pQueue,
-                     vdseQueueItem     ** ppQueueItem,
-                     enum vdseQueueEnum   firstOrLast,
-                     size_t               bufferLength,
-                     vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
-int vdseQueueGet( vdseQueue          * pQueue,
-                  unsigned int         flag,
-                  vdseQueueItem     ** ppIterator,
-                  size_t               bufferLength,
-                  vdseSessionContext * pContext );
-
-VDSF_ENGINE_EXPORT
-int vdseQueueRelease( vdseQueue          * pQueue,
-                      vdseQueueItem      * pQueueItem,
+bool vdseQueueInsert( vdseQueue          * pQueue,
+                      const void         * pItem, 
+                      size_t               length,
+                      enum vdseQueueEnum   firstOrLast,
                       vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+bool vdseQueueInsertNow( vdseQueue          * pQueue,
+                         const void         * pItem, 
+                         size_t               length,
+                         enum vdseQueueEnum   firstOrLast,
+                         vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+bool vdseQueueRemove( vdseQueue          * pQueue,
+                      vdseQueueItem     ** ppQueueItem,
+                      enum vdseQueueEnum   firstOrLast,
+                      size_t               bufferLength,
+                      vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+bool vdseQueueGet( vdseQueue          * pQueue,
+                   unsigned int         flag,
+                   vdseQueueItem     ** ppIterator,
+                   size_t               bufferLength,
+                   vdseSessionContext * pContext );
+
+VDSF_ENGINE_EXPORT
+bool vdseQueueRelease( vdseQueue          * pQueue,
+                       vdseQueueItem      * pQueueItem,
+                       vdseSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 void vdseQueueCommitAdd( vdseQueue * pQueue, 

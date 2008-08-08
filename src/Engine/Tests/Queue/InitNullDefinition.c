@@ -26,16 +26,15 @@ int main()
 #if defined(USE_DBC)
    vdseQueue * pQueue;
    vdseSessionContext context;
-   int errcode;
    vdseTxStatus status;
    
    pQueue = initQueueTest( expectedToPass, &context );
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseQueueInit( pQueue, 
-                            0, 1, &status, 4, 
-                            "Queue1", SET_OFFSET(pQueue), NULL, &context );
+   vdseQueueInit( pQueue, 
+                  0, 1, &status, 4, 
+                  "Queue1", SET_OFFSET(pQueue), NULL, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else
