@@ -28,6 +28,7 @@ int main()
    vdseFolder * pFolder;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    vdseFolderItem item;
    vdseTxStatus status;
    vdseObjectDescriptor * pDescriptor;
@@ -81,28 +82,28 @@ int main()
    GET_PTR( pQueue, pDescriptor->offset, vdseQueue );
 
    /* Test 1 */
-   errcode = vdseQueueInsert( pQueue,
-                              data1,
-                              strlen(data1),
-                              VDSE_QUEUE_LAST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data1,
+                         strlen(data1),
+                         VDSE_QUEUE_LAST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueInsert( pQueue,
-                              data2,
-                              strlen(data2),
-                              VDSE_QUEUE_LAST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data2,
+                         strlen(data2),
+                         VDSE_QUEUE_LAST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueInsert( pQueue,
-                              data3,
-                              strlen(data3),
-                              VDSE_QUEUE_LAST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data3,
+                         strlen(data3),
+                         VDSE_QUEUE_LAST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -122,28 +123,28 @@ int main()
    }
    
    /* Test 2 */
-   errcode = vdseQueueInsert( pQueue,
-                              data1,
-                              strlen(data1),
-                              VDSE_QUEUE_LAST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data1,
+                         strlen(data1),
+                         VDSE_QUEUE_LAST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueInsert( pQueue,
-                              data2,
-                              strlen(data2),
-                              VDSE_QUEUE_LAST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data2,
+                         strlen(data2),
+                         VDSE_QUEUE_LAST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueInsert( pQueue,
-                              data3,
-                              strlen(data3),
-                              VDSE_QUEUE_LAST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data3,
+                         strlen(data3),
+                         VDSE_QUEUE_LAST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -162,46 +163,46 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseQueueRemove( pQueue,
-                              &pQueueItem,
-                              VDSE_QUEUE_FIRST,
-                              (size_t) -1,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRemove( pQueue,
+                         &pQueueItem,
+                         VDSE_QUEUE_FIRST,
+                         (size_t) -1,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRelease( pQueue,
-                               pQueueItem,
-                               &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRelease( pQueue,
+                          pQueueItem,
+                          &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRemove( pQueue,
-                              &pQueueItem,
-                              VDSE_QUEUE_FIRST,
-                              (size_t) -1,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRemove( pQueue,
+                         &pQueueItem,
+                         VDSE_QUEUE_FIRST,
+                         (size_t) -1,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRelease( pQueue,
-                               pQueueItem,
-                               &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRelease( pQueue,
+                          pQueueItem,
+                          &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRemove( pQueue,
-                              &pQueueItem,
-                              VDSE_QUEUE_FIRST,
-                              (size_t) -1,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRemove( pQueue,
+                         &pQueueItem,
+                         VDSE_QUEUE_FIRST,
+                         (size_t) -1,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRelease( pQueue,
-                               pQueueItem,
-                               &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRelease( pQueue,
+                          pQueueItem,
+                          &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -220,46 +221,46 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseQueueRemove( pQueue,
-                              &pQueueItem,
-                              VDSE_QUEUE_FIRST,
-                              (size_t) -1,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRemove( pQueue,
+                         &pQueueItem,
+                         VDSE_QUEUE_FIRST,
+                         (size_t) -1,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRelease( pQueue,
-                               pQueueItem,
-                               &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRelease( pQueue,
+                          pQueueItem,
+                          &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRemove( pQueue,
-                              &pQueueItem,
-                              VDSE_QUEUE_FIRST,
-                              (size_t) -1,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRemove( pQueue,
+                         &pQueueItem,
+                         VDSE_QUEUE_FIRST,
+                         (size_t) -1,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRelease( pQueue,
-                               pQueueItem,
-                               &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRelease( pQueue,
+                          pQueueItem,
+                          &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRemove( pQueue,
-                              &pQueueItem,
-                              VDSE_QUEUE_FIRST,
-                              (size_t) -1,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRemove( pQueue,
+                         &pQueueItem,
+                         VDSE_QUEUE_FIRST,
+                         (size_t) -1,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRelease( pQueue,
-                               pQueueItem,
-                               &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRelease( pQueue,
+                          pQueueItem,
+                          &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -279,37 +280,37 @@ int main()
    }
    
    /* Test 3 */
-   errcode = vdseQueueInsert( pQueue,
-                              data1,
-                              strlen(data1),
-                              VDSE_QUEUE_LAST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data1,
+                         strlen(data1),
+                         VDSE_QUEUE_LAST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueInsert( pQueue,
-                              data2,
-                              strlen(data2),
-                              VDSE_QUEUE_LAST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data2,
+                         strlen(data2),
+                         VDSE_QUEUE_LAST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueInsert( pQueue,
-                              data3,
-                              strlen(data3),
-                              VDSE_QUEUE_LAST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data3,
+                         strlen(data3),
+                         VDSE_QUEUE_LAST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseQueueGet( pQueue,
-                           VDS_FIRST,
-                           &pQueueItem,
-                           (size_t) -1,
-                           &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueGet( pQueue,
+                      VDS_FIRST,
+                      &pQueueItem,
+                      (size_t) -1,
+                      &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -328,10 +329,10 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseQueueRelease( pQueue,
-                               pQueueItem,
-                               &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRelease( pQueue,
+                          pQueueItem,
+                          &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pQueue->nodeObject.txCounter != 0 ) {
@@ -342,37 +343,37 @@ int main()
    }
    
    /* Test 4 */
-   errcode = vdseQueueInsert( pQueue,
-                              data1,
-                              strlen(data1),
-                              VDSE_QUEUE_LAST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data1,
+                         strlen(data1),
+                         VDSE_QUEUE_LAST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueInsert( pQueue,
-                              data2,
-                              strlen(data2),
-                              VDSE_QUEUE_LAST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data2,
+                         strlen(data2),
+                         VDSE_QUEUE_LAST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueInsert( pQueue,
-                              data3,
-                              strlen(data3),
-                              VDSE_QUEUE_LAST,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueInsert( pQueue,
+                         data3,
+                         strlen(data3),
+                         VDSE_QUEUE_LAST,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseQueueGet( pQueue,
-                           VDS_FIRST,
-                           &pQueueItem,
-                           (size_t) -1,
-                           &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueGet( pQueue,
+                      VDS_FIRST,
+                      &pQueueItem,
+                      (size_t) -1,
+                      &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -384,10 +385,10 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdseQueueRelease( pQueue,
-                               pQueueItem,
-                               &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRelease( pQueue,
+                          pQueueItem,
+                          &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pQueue->nodeObject.txCounter != 0 ) {
@@ -397,40 +398,40 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdseQueueRemove( pQueue,
-                              &pQueueItem,
-                              VDSE_QUEUE_FIRST,
-                              (size_t) -1,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRemove( pQueue,
+                         &pQueueItem,
+                         VDSE_QUEUE_FIRST,
+                         (size_t) -1,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRelease( pQueue,
-                               pQueueItem,
-                               &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRelease( pQueue,
+                          pQueueItem,
+                          &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRemove( pQueue,
-                              &pQueueItem,
-                              VDSE_QUEUE_FIRST,
-                              (size_t) -1,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRemove( pQueue,
+                         &pQueueItem,
+                         VDSE_QUEUE_FIRST,
+                         (size_t) -1,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRelease( pQueue,
-                               pQueueItem,
-                               &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRelease( pQueue,
+                          pQueueItem,
+                          &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRemove( pQueue,
-                              &pQueueItem,
-                              VDSE_QUEUE_FIRST,
-                              (size_t) -1,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRemove( pQueue,
+                         &pQueueItem,
+                         VDSE_QUEUE_FIRST,
+                         (size_t) -1,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -442,10 +443,10 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseQueueRelease( pQueue,
-                               pQueueItem,
-                               &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRelease( pQueue,
+                          pQueueItem,
+                          &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pQueue->nodeObject.txCounter != 0 ) {
@@ -455,40 +456,40 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseQueueRemove( pQueue,
-                              &pQueueItem,
-                              VDSE_QUEUE_FIRST,
-                              (size_t) -1,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRemove( pQueue,
+                         &pQueueItem,
+                         VDSE_QUEUE_FIRST,
+                         (size_t) -1,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRelease( pQueue,
-                               pQueueItem,
-                               &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRelease( pQueue,
+                          pQueueItem,
+                          &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRemove( pQueue,
-                              &pQueueItem,
-                              VDSE_QUEUE_FIRST,
-                              (size_t) -1,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRemove( pQueue,
+                         &pQueueItem,
+                         VDSE_QUEUE_FIRST,
+                         (size_t) -1,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRelease( pQueue,
-                               pQueueItem,
-                               &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRelease( pQueue,
+                          pQueueItem,
+                          &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseQueueRemove( pQueue,
-                              &pQueueItem,
-                              VDSE_QUEUE_FIRST,
-                              (size_t) -1,
-                              &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRemove( pQueue,
+                         &pQueueItem,
+                         VDSE_QUEUE_FIRST,
+                         (size_t) -1,
+                         &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -500,10 +501,10 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseQueueRelease( pQueue,
-                               pQueueItem,
-                               &context );
-   if ( errcode != 0 ) {
+   ok = vdseQueueRelease( pQueue,
+                          pQueueItem,
+                          &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pQueue->nodeObject.txCounter != 0 ) {
