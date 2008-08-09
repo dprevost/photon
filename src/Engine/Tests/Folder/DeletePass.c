@@ -25,7 +25,7 @@ int main()
 {
    vdseFolder* pFolder;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdseTxStatus status;
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
@@ -38,36 +38,36 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseFolderInit( pFolder,
-                             0,
-                             1,
-                             0,
-                             &status,
-                             5,
-                             "Test1",
-                             1234,
-                             &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInit( pFolder,
+                        0,
+                        1,
+                        0,
+                        &status,
+                        5,
+                        "Test1",
+                        1234,
+                        &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test2",
-                                     "Test2",
-                                     5,
-                                     &def,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInsertObject( pFolder,
+                                "test2",
+                                "Test2",
+                                5,
+                                &def,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderDeleteObject( pFolder,
-                                     "test2",
-                                     5,
-                                     &context );
-   if ( errcode != -1 ) {
+   ok = vdseFolderDeleteObject( pFolder,
+                                "test2",
+                                5,
+                                &context );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( vdscGetLastError( &context.errorHandler ) != VDS_OBJECT_IS_IN_USE ) {
@@ -76,22 +76,22 @@ int main()
    
    vdseTxCommit( (vdseTx *)context.pTransaction, &context );
    
-   errcode = vdseFolderDeleteObject( pFolder,
-                                     "test2",
-                                     5,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderDeleteObject( pFolder,
+                                "test2",
+                                5,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pFolder->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseFolderDeleteObject( pFolder,
-                                     "test3",
-                                     5,
-                                     &context );
-   if ( errcode != -1 ) {
+   ok = vdseFolderDeleteObject( pFolder,
+                                "test3",
+                                5,
+                                &context );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( vdscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT ) {

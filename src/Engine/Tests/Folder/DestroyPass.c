@@ -47,44 +47,42 @@ int main()
    }
    
    /* Using the topfolder to create a grandchild! */
-   errcode = vdseTopFolderCreateObject( pFolder,
-                                        "Test1/Test2",
-                                        strlen("Test1/Test2"),
-                                        &def,
-                                        &context );
-   if ( errcode != 0 ) {
+   ok = vdseTopFolderCreateObject( pFolder,
+                                   "Test1/Test2",
+                                   strlen("Test1/Test2"),
+                                   &def,
+                                   &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    vdseTxCommit( (vdseTx *)context.pTransaction, &context );
    
-   errcode = vdseFolderDestroyObject( pFolder,
-                                      "Test1",
-                                      strlen("Test1"),
-                                      &context );
-                                         
-   if ( vdscGetLastError(&context.errorHandler) != VDS_FOLDER_IS_NOT_EMPTY ) {
-      if ( errcode != 0 ) {
-         ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-      }
-      else {
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
+   ok = vdseFolderDestroyObject( pFolder,
+                                 "Test1",
+                                 strlen("Test1"),
+                                 &context );
+   if ( ok != false ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
    }
-
-   errcode = vdseTopFolderDestroyObject( pFolder,
-                                         "Test1/Test2",
-                                         strlen("Test1/Test2"),
-                                         &context );
-   if ( errcode != 0 ) {
+   errcode = vdscGetLastError( &context.errorHandler );
+   if ( errcode != VDS_FOLDER_IS_NOT_EMPTY ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+                                         
+   ok = vdseTopFolderDestroyObject( pFolder,
+                                    "Test1/Test2",
+                                    strlen("Test1/Test2"),
+                                    &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderDestroyObject( pFolder,
-                                      "Test2",
-                                      strlen("Test2"),
-                                      &context );
-   if ( errcode != -1 ) {
+   ok = vdseFolderDestroyObject( pFolder,
+                                 "Test2",
+                                 strlen("Test2"),
+                                 &context );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdscGetLastError( &context.errorHandler );
@@ -92,11 +90,11 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   errcode = vdseFolderDestroyObject( pFolder,
-                                      "Test1",
-                                      VDS_MAX_NAME_LENGTH+1,
-                                      &context );
-   if ( errcode != -1 ) {
+   ok = vdseFolderDestroyObject( pFolder,
+                                 "Test1",
+                                 VDS_MAX_NAME_LENGTH+1,
+                                 &context );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdscGetLastError( &context.errorHandler );
@@ -104,11 +102,11 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   errcode = vdseFolderDestroyObject( pFolder,
-                                      "Test1",
-                                      0,
-                                      &context );
-   if ( errcode != -1 ) {
+   ok = vdseFolderDestroyObject( pFolder,
+                                 "Test1",
+                                 0,
+                                 &context );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdscGetLastError( &context.errorHandler );
@@ -116,20 +114,20 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   errcode = vdseFolderDestroyObject( pFolder,
-                                      "Test1",
-                                      strlen("Test1"),
-                                      &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderDestroyObject( pFolder,
+                                 "Test1",
+                                 strlen("Test1"),
+                                 &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    /* Calling destroy on the same object, twice */
-   errcode = vdseFolderDestroyObject( pFolder,
-                                      "Test1",
-                                      strlen("Test1"),
-                                      &context );
-   if ( errcode != -1 ) {
+   ok = vdseFolderDestroyObject( pFolder,
+                                 "Test1",
+                                 strlen("Test1"),
+                                 &context );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdscGetLastError( &context.errorHandler );

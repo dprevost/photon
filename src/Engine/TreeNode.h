@@ -78,7 +78,6 @@ struct vdseTreeNode
    ptrdiff_t myNameOffset;
 
    /** Offset to the string used for the key (lowercase of the original). */
-//   ptrdiff_t myKeyOffset;
    ptrdiff_t myHashItem;
    
    /** Offset to the transaction info (vdseTxStatus). */

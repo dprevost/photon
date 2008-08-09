@@ -48,7 +48,7 @@ static int vdseGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseInitEngine()
+bool vdseInitEngine()
 {
    if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER ) {
       if ( ! vdscInitErrorDefs() ) {
@@ -60,11 +60,11 @@ int vdseInitEngine()
       if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER ) {
          fprintf( stderr, "Error registring the error handler for VDS errors\n" );
          fprintf( stderr, "The problem might be a lack of memory\n" );
-         return -1;
+         return false;
       }
    }
 
-   return 0;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

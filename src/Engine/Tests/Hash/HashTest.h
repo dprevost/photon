@@ -57,13 +57,14 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
                         vdseSessionContext* pContext )
 {
    int errcode;
+   bool ok;
    unsigned char* ptr;
    vdseMemAlloc*  pAlloc;
    vdstObjDummy* pDummy;
    size_t allocatedLength = VDSE_BLOCK_SIZE * 10;
    
-   errcode = vdseInitEngine();
-   if ( errcode != 0 ) {
+   ok = vdseInitEngine();
+   if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
@@ -126,13 +127,14 @@ void initHashCopyTest( bool                 testIsExpectedToSucceed,
                        vdseSessionContext * pContext )
 {
    int errcode;
+   bool ok;
    unsigned char* ptr;
    vdseMemAlloc*  pAlloc;
    vdstObjDummy* pDummy1, * pDummy2;
    size_t allocatedLength = VDSE_BLOCK_SIZE * 30;
    
-   errcode = vdseInitEngine();
-   if ( errcode != 0 ) {
+   ok = vdseInitEngine();
+   if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);

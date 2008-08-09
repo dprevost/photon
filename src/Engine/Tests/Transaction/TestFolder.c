@@ -26,7 +26,7 @@ int main()
    vdseTx* pTx;
    vdseFolder * pFolder;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdseFolderItem item;
    vdseTxStatus status;
    vdsObjectDefinition mapDef = { 
@@ -47,33 +47,33 @@ int main()
    
    vdseTxStatusInit( &status, SET_OFFSET( pTx ) );
    
-   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    /* Test 1 */
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test2",
-                                     "Test2",
-                                     5,
-                                     &folderDef,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInsertObject( pFolder,
+                                "test2",
+                                "Test2",
+                                5,
+                                &folderDef,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test3",
-                                     "Test3",
-                                     5,
-                                     &mapDef,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInsertObject( pFolder,
+                                "test3",
+                                "Test3",
+                                5,
+                                &mapDef,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pFolder->nodeObject.txCounter != 2 ) {
@@ -100,27 +100,27 @@ int main()
    }
    
    /* Test 2 */
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test2",
-                                     "Test2",
-                                     5,
-                                     &folderDef,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInsertObject( pFolder,
+                                "test2",
+                                "Test2",
+                                5,
+                                &folderDef,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test3",
-                                     "Test3",
-                                     5,
-                                     &mapDef,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInsertObject( pFolder,
+                                "test3",
+                                "Test3",
+                                5,
+                                &mapDef,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pFolder->nodeObject.txCounter != 2 ) {
@@ -138,19 +138,19 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseFolderDeleteObject( pFolder,
-                                     "test2",
-                                     5,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderDeleteObject( pFolder,
+                                "test2",
+                                5,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderDeleteObject( pFolder,
-                                     "test3",
-                                     5,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderDeleteObject( pFolder,
+                                "test3",
+                                5,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pFolder->nodeObject.txCounter != 2 ) {
@@ -168,19 +168,19 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseFolderDeleteObject( pFolder,
-                                     "test2",
-                                     5,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderDeleteObject( pFolder,
+                                "test2",
+                                5,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderDeleteObject( pFolder,
-                                     "test3",
-                                     5,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderDeleteObject( pFolder,
+                                "test3",
+                                5,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pFolder->nodeObject.txCounter != 2 ) {
@@ -199,37 +199,37 @@ int main()
    }
    
    /* Test 3 */
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test2",
-                                     "Test2",
-                                     5,
-                                     &folderDef,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInsertObject( pFolder,
+                                "test2",
+                                "Test2",
+                                5,
+                                &folderDef,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test3",
-                                     "Test3",
-                                     5,
-                                     &mapDef,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInsertObject( pFolder,
+                                "test3",
+                                "Test3",
+                                5,
+                                &mapDef,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderGetObject( pFolder,
-                                  "test3",
-                                  5,
-                                  VDS_HASH_MAP,
-                                  &item,
-                                  &context );
-   if ( errcode != VDS_OK ) {
+   ok = vdseFolderGetObject( pFolder,
+                             "test3",
+                             5,
+                             VDS_HASH_MAP,
+                             &item,
+                             &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -241,8 +241,8 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseFolderRelease( pFolder, &item, &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderRelease( pFolder, &item, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pFolder->nodeObject.txCounter != 0 ) {
@@ -253,37 +253,37 @@ int main()
    }
    
    /* Test 4 */
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test2",
-                                     "Test2",
-                                     5,
-                                     &folderDef,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInsertObject( pFolder,
+                                "test2",
+                                "Test2",
+                                5,
+                                &folderDef,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test3",
-                                     "Test3",
-                                     5,
-                                     &mapDef,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInsertObject( pFolder,
+                                "test3",
+                                "Test3",
+                                5,
+                                &mapDef,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderGetObject( pFolder,
-                                  "test3",
-                                  5,
-                                  VDS_HASH_MAP,
-                                  &item,
-                                  &context );
-   if ( errcode != VDS_OK ) {
+   ok = vdseFolderGetObject( pFolder,
+                             "test3",
+                             5,
+                             VDS_HASH_MAP,
+                             &item,
+                             &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -295,8 +295,8 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseFolderRelease( pFolder, &item, &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderRelease( pFolder, &item, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pFolder->nodeObject.txCounter != 0 ) {
@@ -306,29 +306,29 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseFolderGetObject( pFolder,
-                                  "test3",
-                                  5,
-                                  VDS_HASH_MAP,
-                                  &item,
-                                  &context );
-   if ( errcode != VDS_OK ) {
+   ok = vdseFolderGetObject( pFolder,
+                             "test3",
+                             5,
+                             VDS_HASH_MAP,
+                             &item,
+                             &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderDeleteObject( pFolder,
-                                     "test2",
-                                     5,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderDeleteObject( pFolder,
+                                "test2",
+                                5,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderDeleteObject( pFolder,
-                                     "test3",
-                                     5,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderDeleteObject( pFolder,
+                                "test3",
+                                5,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pFolder->nodeObject.txCounter != 2 ) {
@@ -346,19 +346,19 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseFolderDeleteObject( pFolder,
-                                     "test2",
-                                     5,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderDeleteObject( pFolder,
+                                "test2",
+                                5,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderDeleteObject( pFolder,
-                                     "test3",
-                                     5,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderDeleteObject( pFolder,
+                                "test3",
+                                5,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pFolder->nodeObject.txCounter != 2 ) {
@@ -376,8 +376,8 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseFolderRelease( pFolder, &item, &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderRelease( pFolder, &item, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pFolder->nodeObject.txCounter != 0 ) {

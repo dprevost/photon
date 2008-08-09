@@ -67,7 +67,6 @@ struct vdseMemoryHeader
    char     watchdogVersion[10];
    char     creationTime[30];
    
-//   vdseTxStatus topFolderStatus;
    vdseHashItem topHashItem;
    vdseObjectDescriptor topDescriptor;
    

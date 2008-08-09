@@ -52,32 +52,32 @@ int main()
    
    vdseTxStatusInit( &status, SET_OFFSET( pTx ) );
    
-   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 
+   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 
                              1234, &context );
-   if ( errcode != 0 ) {
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test2",
-                                     "Test2",
-                                     5,
-                                     &def,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInsertObject( pFolder,
+                                "test2",
+                                "Test2",
+                                5,
+                                &def,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    vdseTxCommit( pTx, &context );
 
-   errcode = vdseFolderGetObject( pFolder,
-                                  "test2",
-                                  5,
-                                  VDS_HASH_MAP,
-                                  &item,
-                                  &context );
-   if ( errcode != VDS_OK ) {
+   ok = vdseFolderGetObject( pFolder,
+                             "test2",
+                             5,
+                             VDS_HASH_MAP,
+                             &item,
+                             &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    GET_PTR( pDescriptor, item.pHashItem->dataOffset, vdseObjectDescriptor );

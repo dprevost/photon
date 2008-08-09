@@ -26,15 +26,15 @@ int main()
 #if defined(USE_DBC)
    vdseFolder* pFolder;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdseTxStatus status;
    
    pFolder = initFolderTest( expectedToPass, &context );
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

@@ -25,7 +25,7 @@ int main()
 {
    vdseFolder* pFolder;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdseTxStatus status;
    vdseFolderItem folderItem;
    vdsObjectDefinition mapDef = { 
@@ -39,30 +39,30 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test2",
-                                     "Test2",
-                                     5,
-                                     &mapDef,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInsertObject( pFolder,
+                                "test2",
+                                "Test2",
+                                5,
+                                &mapDef,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderEditObject( pFolder,
-                                  "test2",
-                                  5,
-                                  VDS_FAST_MAP,
-                                  &folderItem,
-                                  &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderEditObject( pFolder,
+                              "test2",
+                              5,
+                              VDS_FAST_MAP,
+                              &folderItem,
+                              &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 

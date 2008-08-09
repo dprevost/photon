@@ -26,7 +26,7 @@ int main()
 #if defined(USE_DBC)
    vdseFolder * pFolder;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdseFolderItem item;
    vdseTxStatus status;
    vdsObjectDefinition def = { 
@@ -40,46 +40,46 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test2",
-                                     "Test2",
-                                     5,
-                                     &def,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInsertObject( pFolder,
+                                "test2",
+                                "Test2",
+                                5,
+                                &def,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test3",
-                                     "Test3",
-                                     5,
-                                     &def,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInsertObject( pFolder,
+                                "test3",
+                                "Test3",
+                                5,
+                                &def,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderGetFirst( pFolder,
-                                 &item,
-                                 &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderGetFirst( pFolder,
+                            &item,
+                            &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    item.pHashItem = NULL;
-   errcode = vdseFolderGetNext( pFolder,
-                                &item,
-                                &context );
+   ok = vdseFolderGetNext( pFolder,
+                           &item,
+                           &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

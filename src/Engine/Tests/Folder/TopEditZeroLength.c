@@ -23,10 +23,10 @@ const bool expectedToPass = true;
 
 int main()
 {
-#if defined(USE_DBC)
    vdseFolder * pTopFolder;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    vdseFolderItem folderItem;
    vdsObjectDefinition folderDef = { 
       VDS_FOLDER, 
@@ -43,38 +43,38 @@ int main()
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   errcode = vdseTopFolderCreateObject( pTopFolder,
-                                        "Test1",
-                                        strlen("Test1"),
-                                        &folderDef,
-                                        &context );
-   if ( errcode != 0 ) {
+   ok = vdseTopFolderCreateObject( pTopFolder,
+                                   "Test1",
+                                   strlen("Test1"),
+                                   &folderDef,
+                                   &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseTopFolderCreateObject( pTopFolder,
-                                        "Test1/Test2",
-                                        strlen("Test1/Test2"),
-                                        &mapDef,
-                                        &context );
-   if ( errcode != 0 ) {
+   ok = vdseTopFolderCreateObject( pTopFolder,
+                                   "Test1/Test2",
+                                   strlen("Test1/Test2"),
+                                   &mapDef,
+                                   &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseTopFolderEditObject( pTopFolder,
-                                      "Test1/Test2",
-                                      0,
-                                      VDS_FAST_MAP,
-                                      &folderItem,
-                                      &context );
-   if ( errcode != -1 ) {
+   ok = vdseTopFolderEditObject( pTopFolder,
+                                 "Test1/Test2",
+                                 0,
+                                 VDS_FAST_MAP,
+                                 &folderItem,
+                                 &context );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = vdscGetLastError( &context.errorHandler );
    if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-#endif
+
    return 0;
 }
 

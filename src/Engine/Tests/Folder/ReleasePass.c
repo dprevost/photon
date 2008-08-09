@@ -25,7 +25,7 @@ int main()
 {
    vdseFolder * pFolder;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdseFolderItem item;
    vdseTxStatus status;
    vdseObjectDescriptor * pDescriptor;
@@ -42,46 +42,46 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test2",
-                                     "Test2",
-                                     5,
-                                     &def,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test3",
-                                     "Test3",
-                                     5,
-                                     &def,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   errcode = vdseFolderGetFirst( pFolder,
-                                 &item,
-                                 &context );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   errcode = vdseFolderGetNext( pFolder,
-                                &item,
+   ok = vdseFolderInsertObject( pFolder,
+                                "test2",
+                                "Test2",
+                                5,
+                                &def,
+                                1,
+                                0,
                                 &context );
-   if ( errcode != 0 ) {
+   if ( ok != true ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+   
+   ok = vdseFolderInsertObject( pFolder,
+                                "test3",
+                                "Test3",
+                                5,
+                                &def,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+   
+   ok = vdseFolderGetFirst( pFolder,
+                            &item,
+                            &context );
+   if ( ok != true ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+   
+   ok = vdseFolderGetNext( pFolder,
+                           &item,
+                           &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    GET_PTR( pDescriptor, item.pHashItem->dataOffset, vdseObjectDescriptor );
@@ -94,8 +94,8 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseFolderRelease( pFolder, &item, &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderRelease( pFolder, &item, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( txItemStatus->parentCounter != 0 ) {

@@ -87,19 +87,19 @@ void vdseLinkNodeFini( vdseLinkNode * pNode )
 }
 
 /** Test the values of the elements of the vdseLinkNode.
- *  Return true (1) if both elements are not the VDSE_NULL_OFFSET
- *  and false (0) if one or both are the VDSE_NULL_OFFSET.
+ *  Return true if both elements are not the VDSE_NULL_OFFSET
+ *  and false if one or both are the VDSE_NULL_OFFSET.
  */
 static inline
-int  vdseLinkNodeTest( vdseLinkNode * pNode )
+bool vdseLinkNodeTest( vdseLinkNode * pNode )
 {
    VDS_PRE_CONDITION( pNode != NULL );
 
    if ( pNode->nextOffset     == VDSE_NULL_OFFSET || 
         pNode->previousOffset == VDSE_NULL_OFFSET ) {
-      return 0;
+      return false;
    }
-   return 1;
+   return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

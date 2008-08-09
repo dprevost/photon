@@ -58,8 +58,9 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
    memset( &pHandler->context, 0, sizeof(vdseSessionContext) );
    pHandler->context.pidLocker = getpid();
    
-   errcode = vdseInitEngine();
-   if ( errcode != 0 ) {
+   ok = vdseInitEngine();
+   VDS_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in VdsHandler.cpp\n", __LINE__ );
       exit(1);
    }

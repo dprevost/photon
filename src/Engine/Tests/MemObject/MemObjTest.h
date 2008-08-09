@@ -48,6 +48,7 @@ vdstObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
                               vdseSessionContext* pContext )
 {
    int errcode;
+   bool ok;
    unsigned char* ptr;
    vdseMemAlloc*  pAlloc;
    vdstObjDummy* pDummy;
@@ -55,8 +56,8 @@ vdstObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
    
    memset( pContext, 0, sizeof(vdseSessionContext) );
    pContext->pidLocker = getpid();
-   errcode = vdseInitEngine();
-   if ( errcode != 0 ) {
+   ok = vdseInitEngine();
+   if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in MemObjTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);

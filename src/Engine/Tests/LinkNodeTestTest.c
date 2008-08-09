@@ -24,33 +24,33 @@ const bool expectedToPass = false;
 
 int main()
 {
-   int rc;
+   bool ok;
    vdseLinkNode node;
 
    vdseLinkNodeInit( &node );
 
-   rc = vdseLinkNodeTest( &node );
-   if ( rc != 0 ) {
+   ok = vdseLinkNodeTest( &node );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    node.nextOffset = 0x1234;
-   rc = vdseLinkNodeTest( &node );
-   if ( rc != 0 ) {
+   ok = vdseLinkNodeTest( &node );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    vdseLinkNodeInit( &node );
 
    node.previousOffset = 0x1234;
-   rc = vdseLinkNodeTest( &node );
-   if ( rc != 0 ) {
+   ok = vdseLinkNodeTest( &node );
+   if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    node.nextOffset = 0x1234;
-   rc = vdseLinkNodeTest( &node );
-   if ( rc == 0 ) {
+   ok = vdseLinkNodeTest( &node );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

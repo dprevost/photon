@@ -63,7 +63,7 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
    VDS_PRE_CONDITION( process   != NULL );
    VDS_PRE_CONDITION( wdAddress != NULL );
    
-   if (vdseInitEngine() != 0 ) return VDS_INTERNAL_ERROR;
+   if ( ! vdseInitEngine() ) return VDS_INTERNAL_ERROR;
    
    memset( &context, 0, sizeof context );
    context.pidLocker = getpid();

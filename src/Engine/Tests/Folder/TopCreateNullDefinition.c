@@ -26,15 +26,15 @@ int main()
 #if defined(USE_DBC)
    vdseFolder * pTopFolder;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   errcode = vdseTopFolderCreateObject( pTopFolder,
-                                        "Test1",
-                                        strlen("Test1"),
-                                        NULL,
-                                        &context );
+   ok = vdseTopFolderCreateObject( pTopFolder,
+                                   "Test1",
+                                   strlen("Test1"),
+                                   NULL,
+                                   &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

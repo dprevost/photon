@@ -615,9 +615,9 @@ void vdseMemAllocClose( vdseMemAlloc       * pAlloc,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdseMemAllocStats( vdseMemAlloc       * pAlloc,
-                       vdsInfo            * pInfo,
-                       vdseSessionContext * pContext )
+bool vdseMemAllocStats( vdseMemAlloc       * pAlloc,
+                        vdsInfo            * pInfo,
+                        vdseSessionContext * pContext )
 {
    size_t numBlocks;
    vdseLinkNode *oldNode = NULL;
@@ -655,11 +655,11 @@ int vdseMemAllocStats( vdseMemAlloc       * pAlloc,
       
       vdseUnlock( &pAlloc->memObj, pContext );
 
-      return 0;
+      return true;
    }
 
    vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_ENGINE_BUSY );
-   return -1;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

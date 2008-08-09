@@ -26,7 +26,7 @@ int main()
 {
    vdseFolder * pTopFolder;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdsObjStatus status;
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
@@ -37,39 +37,39 @@ int main()
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   errcode = vdseTopFolderCreateObject( pTopFolder,
-                                        "Test1",
-                                        strlen("Test1"),
-                                        &def,
-                                        &context );
-   if ( errcode != 0 ) {
+   ok = vdseTopFolderCreateObject( pTopFolder,
+                                   "Test1",
+                                   strlen("Test1"),
+                                   &def,
+                                   &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseTopFolderCreateObject( pTopFolder,
-                                        "Test1/Test2",
-                                        strlen("Test1/Test2"),
-                                        &def,
-                                        &context );
-   if ( errcode != 0 ) {
+   ok = vdseTopFolderCreateObject( pTopFolder,
+                                   "Test1/Test2",
+                                   strlen("Test1/Test2"),
+                                   &def,
+                                   &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseTopFolderCreateObject( pTopFolder,
-                                        "Test1/Test3",
-                                        strlen("Test1/Test3"),
-                                        &def,
-                                        &context );
-   if ( errcode != 0 ) {
+   ok = vdseTopFolderCreateObject( pTopFolder,
+                                   "Test1/Test3",
+                                   strlen("Test1/Test3"),
+                                   &def,
+                                   &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseTopFolderGetStatus( pTopFolder,
-                                     "Test1",
-                                     strlen("Test1"),
-                                     &status,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseTopFolderGetStatus( pTopFolder,
+                                "Test1",
+                                strlen("Test1"),
+                                &status,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

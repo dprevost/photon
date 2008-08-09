@@ -25,7 +25,7 @@ int main()
 {
    vdseFolder * pFolder;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdseFolderItem item;
    vdseTxStatus status;
    
@@ -33,15 +33,15 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderGetFirst( pFolder,
-                                 &item,
-                                 &context );
-   if ( errcode == 0 ) {
+   ok = vdseFolderGetFirst( pFolder,
+                            &item,
+                            &context );
+   if ( ok == true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( vdscGetLastError( &context.errorHandler ) != VDS_IS_EMPTY ) {

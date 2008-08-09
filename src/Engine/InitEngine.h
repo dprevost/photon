@@ -35,7 +35,7 @@ VDSF_ENGINE_EXPORT extern const char * MYCXX;
 #endif
 
 VDSF_ENGINE_EXPORT 
-int vdseInitEngine();
+bool vdseInitEngine();
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -26,7 +26,6 @@ int main()
 #if defined(USE_DBC)
    vdseFolder * pFolder;
    vdseSessionContext context;
-   int errcode;
    bool ok;
    
    vdsObjectDefinition def = { 
@@ -49,10 +48,10 @@ int main()
    
    vdseTxCommit( (vdseTx *)context.pTransaction, &context );
    
-   errcode = vdseFolderDestroyObject( pFolder,
-                                      "Test1",
-                                      strlen("Test1"),
-                                      NULL );
+   ok = vdseFolderDestroyObject( pFolder,
+                                 "Test1",
+                                 strlen("Test1"),
+                                 NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

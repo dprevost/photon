@@ -25,7 +25,7 @@ int main()
 {
    vdseFolder* pFolder;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdseTxStatus status;
    vdseFolderItem folderItem;
    vdseObjectDescriptor * pDescriptor;
@@ -42,30 +42,30 @@ int main()
 
    vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test2",
-                                     "Test2",
-                                     5,
-                                     &def,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
+   ok = vdseFolderInsertObject( pFolder,
+                                "test2",
+                                "Test2",
+                                5,
+                                &def,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderGetObject( pFolder,
-                                  "test2",
-                                  5,
-                                  VDS_FOLDER,
-                                  &folderItem,
-                                  &context );
-   if ( errcode != VDS_OK ) {
+   ok = vdseFolderGetObject( pFolder,
+                             "test2",
+                             5,
+                             VDS_FOLDER,
+                             &folderItem,
+                             &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
@@ -82,35 +82,38 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseFolderGetObject( pFolder,
-                                  "test3",
-                                  5,
-                                  VDS_FOLDER,
-                                  &folderItem,
-                                  &context );
-   if ( errcode != VDS_NO_SUCH_OBJECT ) {
+   ok = vdseFolderGetObject( pFolder,
+                             "test3",
+                             5,
+                             VDS_FOLDER,
+                             &folderItem,
+                             &context );
+   if ( ok != false ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( vdscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+      
+   ok = vdseFolderInsertObject( pFolder,
+                                "test4",
+                                "Test4",
+                                5,
+                                &def,
+                                1,
+                                0,
+                                &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseFolderInsertObject( pFolder,
-                                     "test4",
-                                     "Test4",
-                                     5,
-                                     &def,
-                                     1,
-                                     0,
-                                     &context );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   errcode = vdseFolderGetObject( pFolder,
-                                  "test4",
-                                  5,
-                                  VDS_FOLDER,
-                                  &folderItem,
-                                  &context );
-   if ( errcode != VDS_OK ) {
+   ok = vdseFolderGetObject( pFolder,
+                             "test4",
+                             5,
+                             VDS_FOLDER,
+                             &folderItem,
+                             &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, vdseObjectDescriptor );

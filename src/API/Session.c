@@ -56,7 +56,7 @@ void vdsaResetReaders( vdsaSession * pSession )
 
 int vdsCommit( VDS_HANDLE sessionHandle )
 {
-   int rc = 0, errcode = 0;
+   int errcode = VDS_OK;
    vdsaSession* pSession;
 
    pSession = (vdsaSession*) sessionHandle;
@@ -89,10 +89,6 @@ int vdsCommit( VDS_HANDLE sessionHandle )
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   if ( rc != 0 ) {
-      errcode = vdscGetLastError( &pSession->context.errorHandler );
-   }
-   
    return errcode;
 }
     
@@ -104,8 +100,9 @@ int vdsCreateObject( VDS_HANDLE            sessionHandle,
                      vdsObjectDefinition * pDefinition )
 {
    vdsaSession* pSession;
-   int rc = 0, errcode = 0;
+   int errcode = VDS_OK;
    vdseFolder * pTree;
+   bool ok = true;
    
    pSession = (vdsaSession*) sessionHandle;
    if ( pSession == NULL ) return VDS_NULL_HANDLE;
@@ -136,11 +133,12 @@ int vdsCreateObject( VDS_HANDLE            sessionHandle,
    if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder )
-         rc = vdseTopFolderCreateObject( pTree,
+         ok = vdseTopFolderCreateObject( pTree,
                                          objectName,
                                          nameLengthInBytes,
                                          pDefinition,
                                          &pSession->context );
+         VDS_POST_CONDITION( ok == true || ok == false );
       }
       else {
          errcode = VDS_SESSION_IS_TERMINATED;
@@ -155,7 +153,7 @@ int vdsCreateObject( VDS_HANDLE            sessionHandle,
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   if ( rc != 0 ) {
+   if ( ! ok ) {
       errcode = vdscGetLastError( &pSession->context.errorHandler );
    }
    
@@ -169,8 +167,9 @@ int vdsDestroyObject( VDS_HANDLE   sessionHandle,
                       size_t       nameLengthInBytes )
 {
    vdsaSession* pSession;
-   int rc = 0, errcode = 0;
+   int errcode = VDS_OK;
    vdseFolder * pTree;
+   bool ok = true;
    
    pSession = (vdsaSession*) sessionHandle;
    if ( pSession == NULL ) return VDS_NULL_HANDLE;
@@ -190,10 +189,11 @@ int vdsDestroyObject( VDS_HANDLE   sessionHandle,
    if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder )
-         rc = vdseTopFolderDestroyObject( pTree,
+         ok = vdseTopFolderDestroyObject( pTree,
                                           objectName,
                                           nameLengthInBytes,
                                           &pSession->context );
+         VDS_POST_CONDITION( ok == true || ok == false );
       }
       else {
          errcode = VDS_SESSION_IS_TERMINATED;
@@ -208,7 +208,7 @@ int vdsDestroyObject( VDS_HANDLE   sessionHandle,
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   if ( rc != 0 ) {
+   if ( ! ok ) {
       errcode = vdscGetLastError( &pSession->context.errorHandler );
    }
    
@@ -339,10 +339,11 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
                       vdsObjectDefinition ** ppDefinition )
 {
    vdsaSession* pSession;
-   int rc = 0, errcode = 0;
+   int errcode = VDS_OK;
    vdseFolder * pTree;
    vdseFieldDef * pInternalDef;
    vdsObjectDefinition *pDefinition;
+   bool ok = true;
    
    pSession = (vdsaSession*) sessionHandle;
 
@@ -373,13 +374,14 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
    if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder )
-         rc = vdseTopFolderGetDef( pTree, 
+         ok = vdseTopFolderGetDef( pTree, 
                                    objectName,
                                    nameLengthInBytes,
                                    pDefinition,
                                    &pInternalDef,
                                    &pSession->context );
-         if ( rc == 0 ) {
+         VDS_POST_CONDITION( ok == true || ok == false );
+         if ( ok ) {
             if ( pDefinition->type == VDS_FOLDER ) {
                *ppDefinition = pDefinition;
             }
@@ -411,7 +413,7 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
    if ( errcode != VDS_OK ) {
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
-   if ( rc != 0 ) {
+   if ( ! ok ) {
       errcode = vdscGetLastError( &pSession->context.errorHandler );
    }
    
@@ -424,7 +426,8 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
                 vdsInfo    * pInfo )
 {
    vdsaSession* pSession;
-   int rc = 0, errcode = 0;
+   int errcode = VDS_OK;
+   bool ok = true;
    vdseMemAlloc * pAlloc;
    struct vdseMemoryHeader * pHead = g_pProcessInstance->pHeader;
    
@@ -442,16 +445,19 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
    if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pAlloc, pSession->pHeader->allocatorOffset, vdseMemAlloc )
-         rc = vdseMemAllocStats( pAlloc, pInfo, &pSession->context );
-         pInfo->memoryVersion = pHead->version;
-         pInfo->bigEndian = 0;
-         if (pHead->bigEndian) pInfo->bigEndian = 1;
-         memcpy( pInfo->compiler,        pHead->compiler,        20 );
-         memcpy( pInfo->compilerVersion, pHead->compilerVersion, 10 );
-         memcpy( pInfo->platform,        pHead->cpu_type ,       20 );
-         memcpy( pInfo->watchdogVersion, pHead->watchdogVersion, 10 );
-         memcpy( pInfo->creationTime,    pHead->creationTime,    30 );
-         strncpy( pInfo->dllVersion, PACKAGE_VERSION, 10 );
+         ok = vdseMemAllocStats( pAlloc, pInfo, &pSession->context );
+         VDS_POST_CONDITION( ok == true || ok == false );
+         if ( ok ) {
+            pInfo->memoryVersion = pHead->version;
+            pInfo->bigEndian = 0;
+            if (pHead->bigEndian) pInfo->bigEndian = 1;
+            memcpy( pInfo->compiler,        pHead->compiler,        20 );
+            memcpy( pInfo->compilerVersion, pHead->compilerVersion, 10 );
+            memcpy( pInfo->platform,        pHead->cpu_type ,       20 );
+            memcpy( pInfo->watchdogVersion, pHead->watchdogVersion, 10 );
+            memcpy( pInfo->creationTime,    pHead->creationTime,    30 );
+            strncpy( pInfo->dllVersion, PACKAGE_VERSION, 10 );
+         }
       }
       else {
          errcode = VDS_SESSION_IS_TERMINATED;
@@ -465,7 +471,7 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
    if ( errcode != VDS_OK ) {
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
-   if ( rc != 0 ) {
+   if ( ! ok ) {
       errcode = vdscGetLastError( &pSession->context.errorHandler );
    }
    
@@ -480,8 +486,9 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
                   vdsObjStatus * pStatus )
 {
    vdsaSession* pSession;
-   int rc = 0, errcode = 0;
+   int errcode = 0;
    vdseFolder * pTree;
+   bool ok = true;
    
    pSession = (vdsaSession*) sessionHandle;
 
@@ -506,11 +513,12 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
    if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder )
-         rc = vdseTopFolderGetStatus( pTree, 
+         ok = vdseTopFolderGetStatus( pTree, 
                                       objectName,
                                       nameLengthInBytes,
                                       pStatus,
                                       &pSession->context );
+         VDS_POST_CONDITION( ok == true || ok == false );
       }
       else {
          errcode = VDS_SESSION_IS_TERMINATED;
@@ -524,7 +532,7 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
    if ( errcode != VDS_OK ) {
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
-   if ( rc != 0 ) {
+   if ( ! ok ) {
       errcode = vdscGetLastError( &pSession->context.errorHandler );
    }
    
@@ -680,7 +688,7 @@ int vdsLastError( VDS_HANDLE sessionHandle )
 
 int vdsRollback( VDS_HANDLE sessionHandle )
 {
-   int errcode = 0;
+   int errcode = VDS_OK;
    vdsaSession* pSession;
 
    pSession = (vdsaSession*) sessionHandle;
@@ -720,7 +728,7 @@ int vdsRollback( VDS_HANDLE sessionHandle )
 int vdsaSessionCloseObj( vdsaSession             * pSession,
                          struct vdsaCommonObject * pObject )
 {
-   int errcode = 0, rc = 0;
+   int errcode = VDS_OK;
    bool ok = true;
    
    VDS_PRE_CONDITION( pSession   != NULL );
@@ -732,9 +740,10 @@ int vdsaSessionCloseObj( vdsaSession             * pSession,
                                  &pSession->context );
       VDS_POST_CONDITION( ok == true || ok == false );
       if ( ok ) {
-         rc = vdseTopFolderCloseObject( &pObject->folderItem,
+         ok = vdseTopFolderCloseObject( &pObject->folderItem,
                                         &pSession->context );
-         if ( rc == 0 ) pSession->numberOfObjects--;
+         VDS_POST_CONDITION( ok == true || ok == false );
+         if ( ok ) pSession->numberOfObjects--;
       }
    }
    else {
@@ -744,7 +753,7 @@ int vdsaSessionCloseObj( vdsaSession             * pSession,
    if ( errcode != VDS_OK ) {
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
-   if ( rc != 0 || ok == false ) {
+   if ( ! ok ) {
       errcode = vdscGetLastError( &pSession->context.errorHandler );
    }
    
@@ -757,7 +766,7 @@ int vdsaCloseSession( vdsaSession* pSession )
 {
    vdseObjectContext* pObject = NULL;
    vdsaCommonObject* pCommonObject = NULL;
-   int rc, errcode = 0;
+   int rc, errcode = VDS_OK;
    bool ok;
    
    VDS_PRE_CONDITION( pSession != NULL );
@@ -822,7 +831,7 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
                         size_t                    nameLengthInBytes,
                         struct vdsaCommonObject * pObject )
 {
-   int errcode = 0, rc = 0;
+   int errcode = VDS_OK;
    vdseFolder * pTree;
    vdseObjectDescriptor * pDesc;
    bool ok = true;
@@ -836,22 +845,24 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
    if ( ! pSession->terminated ) {
       GET_PTR( pTree, pSession->pHeader->treeMgrOffset, vdseFolder );
       if ( editMode == VDSA_UPDATE_RO ) {
-         rc = vdseTopFolderEditObject( pTree,
+         ok = vdseTopFolderEditObject( pTree,
                                        objectName,
                                        nameLengthInBytes,
                                        objectType,
                                        &pObject->folderItem,
                                        &pSession->context );
+         VDS_POST_CONDITION( ok == true || ok == false );
       }
       else {
-         rc = vdseTopFolderOpenObject( pTree,
+         ok = vdseTopFolderOpenObject( pTree,
                                        objectName,
                                        nameLengthInBytes,
                                        objectType,
                                        &pObject->folderItem,
                                        &pSession->context );
+         VDS_POST_CONDITION( ok == true || ok == false );
       }
-      if ( rc == 0 ) {
+      if ( ok ) {
          GET_PTR( pDesc, pObject->folderItem.pHashItem->dataOffset,
                           vdseObjectDescriptor );
 
@@ -861,6 +872,7 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
                                  pObject,
                                  &pObject->pObjectContext,
                                  &pSession->context );
+         VDS_POST_CONDITION( ok == true || ok == false );
          pSession->numberOfObjects++;
       }
    }
@@ -871,7 +883,7 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
    if ( errcode != VDS_OK ) {
       vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
-   if ( rc != 0 || ok == false ) {
+   if ( ! ok ) {
       errcode = vdscGetLastError( &pSession->context.errorHandler );
    }
    

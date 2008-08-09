@@ -27,7 +27,7 @@ int main()
 #if defined(USE_DBC)
    vdseFolder * pTopFolder;
    vdseSessionContext context;
-   int errcode;
+   bool ok;
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
@@ -37,20 +37,20 @@ int main()
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   errcode = vdseTopFolderCreateObject( pTopFolder,
-                                        "Test1",
-                                        strlen("Test1"),
-                                        &def,
-                                        &context );
-   if ( errcode != 0 ) {
+   ok = vdseTopFolderCreateObject( pTopFolder,
+                                   "Test1",
+                                   strlen("Test1"),
+                                   &def,
+                                   &context );
+   if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseTopFolderGetStatus( pTopFolder,
-                                     "Test1",
-                                     strlen("Test1"),
-                                     NULL,
-                                     &context );
+   ok = vdseTopFolderGetStatus( pTopFolder,
+                                "Test1",
+                                strlen("Test1"),
+                                NULL,
+                                &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

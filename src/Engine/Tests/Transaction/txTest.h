@@ -47,7 +47,7 @@ vdscErrMsgHandle g_vdsErrorHandle;
 vdseTx* initTxTest( bool                testIsExpectedToSucceed,
                     vdseSessionContext* pContext )
 {
-   int errcode;
+   bool ok;
    unsigned char* ptr;
    vdseMemAlloc*  pAlloc;
    vdseTx* pDummy;
@@ -56,8 +56,8 @@ vdseTx* initTxTest( bool                testIsExpectedToSucceed,
    memset( pContext, 0, sizeof(vdseSessionContext) );
    pContext->pidLocker = getpid();
    
-   errcode = vdseInitEngine();
-   if ( errcode != 0 ) {
+   ok = vdseInitEngine();
+   if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in txTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
@@ -102,7 +102,6 @@ vdseTx* initTxTest( bool                testIsExpectedToSucceed,
 vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
                             vdseSessionContext* pContext )
 {
-   int errcode;
    unsigned char* ptr;
    vdseMemAlloc*  pAlloc;
    vdseTx* pTx;
@@ -113,8 +112,8 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
    memset( pContext, 0, sizeof(vdseSessionContext) );
    pContext->pidLocker = getpid();
    
-   errcode = vdseInitEngine();
-   if ( errcode != 0 ) {
+   ok = vdseInitEngine();
+   if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);

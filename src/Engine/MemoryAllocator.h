@@ -123,9 +123,9 @@ void vdseMemAllocClose( vdseMemAlloc       * pAlloc,
  *  integer on 32 bits machine - these numbers might loop around.
  */
 VDSF_ENGINE_EXPORT
-int vdseMemAllocStats( vdseMemAlloc       * pAlloc,
-                       vdsInfo            * pInfo,
-                       vdseSessionContext * pContext  );
+bool vdseMemAllocStats( vdseMemAlloc       * pAlloc,
+                        vdsInfo            * pInfo,
+                        vdseSessionContext * pContext  );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

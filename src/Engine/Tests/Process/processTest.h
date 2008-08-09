@@ -58,8 +58,8 @@ vdseProcess * initProcessTest( bool                testIsExpectedToSucceed,
    memset( pContext, 0, sizeof(vdseSessionContext) );
    pContext->pidLocker = getpid();
    
-   errcode = vdseInitEngine();
-   if ( errcode != 0 ) {
+   ok = vdseInitEngine();
+   if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in processTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
