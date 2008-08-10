@@ -1,8 +1,8 @@
 [Setup]
 MinVersion=0,4.0
 AppName=VDSF
-AppVerName=Virtual Data Space Framework version 0.2.0
-AppVersion=0.2.0
+AppVerName=Virtual Data Space Framework version 0.3.0
+AppVersion=0.3.0
 AppSupportURL=http://vdsf.sourceforge.net/
 AppId=VDSF_V0
 LicenseFile=COPYING
@@ -10,7 +10,7 @@ DefaultDirName={pf}\VDSF
 DefaultGroupName=VDSF
 SourceDir=..\..
 OutputDir=src\Packages\Output
-OutputBaseFilename=vdsf-0.2.0
+OutputBaseFilename=vdsf-0.3.0
 
 [Files]
 Source: src\Release\vdsf.dll; DestDir: {app}\bin
