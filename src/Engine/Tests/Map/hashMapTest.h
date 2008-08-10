@@ -49,7 +49,6 @@ vdseMap *
 initHashMapTest( bool                testIsExpectedToSucceed,
                  vdseSessionContext* pContext )
 {
-   int errcode;
    bool ok;
    unsigned char* ptr;
    vdseMemAlloc*  pAlloc;
@@ -125,7 +124,6 @@ initHashMapCopyTest( bool                 testIsExpectedToSucceed,
                      vdseMap           ** ppNewMap,
                      vdseSessionContext * pContext )
 {
-   int errcode;
    bool ok;
    unsigned char* ptr;
    vdseMemAlloc*  pAlloc;

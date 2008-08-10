@@ -25,9 +25,10 @@ const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char * argv[] )
+int main()
 {
-   int i, sum1 = 0, sum2 = 0;
+   int i;
+   unsigned int sum1 = 0, sum2 = 0;
 
    vdsaReader * readers, * dummy, * first;
    int * readerIsIn;

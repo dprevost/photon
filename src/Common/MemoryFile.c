@@ -545,10 +545,11 @@ bool vdscSyncMemFile( vdscMemoryFile   * pMem,
    }
 #elif HAVE_MSYNC
    errcode = msync( pMem->baseAddr, pMem->length, MS_SYNC );
+   if ( errcode != 0 ) ok = false;
 #else
    errcode = fdatasync( pMem->fileHandle );
-#endif
    if ( errcode != 0 ) ok = false;
+#endif
    
    return ok;
 }

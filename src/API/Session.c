@@ -387,7 +387,7 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
             }
             else {
                errcode = vdsaGetDefinition( pInternalDef,
-                                            pDefinition->numFields,
+                                            (uint16_t)pDefinition->numFields,
                                             ppDefinition );
                if ( errcode == 0 ) {
                   (*ppDefinition)->type = pDefinition->type;
@@ -543,7 +543,7 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
 
 int vdsInitSession( VDS_HANDLE* sessionHandle )
 {
-   vdsErrors errcode;
+   vdsErrors errcode = VDS_OK;
    vdsaSession* pSession = NULL;
    void* ptr = NULL;
    bool ok;

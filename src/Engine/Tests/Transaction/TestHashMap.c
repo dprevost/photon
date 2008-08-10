@@ -27,7 +27,6 @@ int main()
    vdseTx* pTx;
    vdseFolder * pFolder;
    vdseSessionContext context;
-   int errcode;
    bool ok;
    vdseFolderItem item;
    vdseTxStatus status;

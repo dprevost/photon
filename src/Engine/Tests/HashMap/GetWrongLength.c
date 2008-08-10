@@ -26,6 +26,7 @@ int main()
    vdseHashMap * pHashMap;
    vdseSessionContext context;
    int errcode;
+   bool ok;
    vdseTxStatus status;
    char * key  = "my key";
    char * data = "my data";

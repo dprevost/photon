@@ -47,7 +47,6 @@ typedef struct vdstObjDummy vdstObjDummy;
 vdstObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
                               vdseSessionContext* pContext )
 {
-   int errcode;
    bool ok;
    unsigned char* ptr;
    vdseMemAlloc*  pAlloc;

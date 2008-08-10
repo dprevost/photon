@@ -47,7 +47,6 @@ vdscErrMsgHandle g_vdsErrorHandle;
 vdseSession * initSessionTest( bool                testIsExpectedToSucceed,
                                vdseSessionContext* pContext )
 {
-   int errcode;
    bool ok;
    unsigned char* ptr;
    vdseMemAlloc*  pAlloc;

@@ -23,9 +23,10 @@ bool vdscInitThreadLock( vdscThreadLock* pLock )
 {
 #if defined (WIN32)
    BOOL status;
+#else
+   int rc;
 #endif
    bool ok = false;
-   int rc;
    
    VDS_PRE_CONDITION( pLock != NULL );
 
@@ -36,7 +37,10 @@ bool vdscInitThreadLock( vdscThreadLock* pLock )
     * chosen. Not sure about the spin count however.
     */
    status = InitializeCriticalSectionAndSpinCount( &pLock->mutex, 100 );
-   if ( status == TRUE ) ok = true;
+   if ( status == TRUE ) {
+      ok = true;
+      pLock->initialized = VDSC_THREADLOCK_SIGNATURE;
+   }
 #else
    /*
     * Default attributes (passing NULL as the second parameter) should give
@@ -44,12 +48,11 @@ bool vdscInitThreadLock( vdscThreadLock* pLock )
     * which is what we want (I think...).
     */
    rc = pthread_mutex_init( &pLock->mutex, NULL );
-#endif
-
    if ( rc == 0 ) {
       pLock->initialized = VDSC_THREADLOCK_SIGNATURE;
       ok = true;
    }
+#endif
    
    return ok;
 }
