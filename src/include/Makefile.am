@@ -71,6 +71,16 @@ VDS_C_FILES =                       \
         man3/vdsInitSession.3       \
         man3/vdsIteratorType.3      \
         man3/vdsLastError.3         \
+        man3/vdsLifo_c.3            \
+        man3/vdsLifoClose.3         \
+        man3/vdsLifoDefinition.3    \
+        man3/vdsLifoGetFirst.3      \
+        man3/vdsLifoGetNext.3       \
+        man3/vdsLifo.h.3            \
+        man3/vdsLifoOpen.3          \
+        man3/vdsLifoPop.3           \
+        man3/vdsLifoPush.3          \
+        man3/vdsLifoStatus.3        \
         man3/vdsObjectType.3        \
         man3/vdsObjStatus.3         \
         man3/vdsProcess_c.3         \
