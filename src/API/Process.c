@@ -65,7 +65,7 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
    
    if ( ! vdseInitEngine() ) return VDS_INTERNAL_ERROR;
    
-   memset( &context, 0, sizeof context );
+   memset( &context, 0, sizeof(vdseSessionContext) );
    context.pidLocker = getpid();
    vdscInitErrorHandler( &context.errorHandler );
    
@@ -148,7 +148,7 @@ void vdsaProcessFini()
       return;
    }
    
-   memset( &context, 0, sizeof context );
+   memset( &context, 0, sizeof(vdseSessionContext) );
    context.pidLocker = getpid();
    GET_PTR( context.pAllocator, process->pHeader->allocatorOffset, void );
    vdscInitErrorHandler( &context.errorHandler );

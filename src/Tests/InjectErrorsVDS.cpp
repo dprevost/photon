@@ -23,11 +23,13 @@
 #include "API/api.h"
 #include "API/HashMap.h"
 #include "API/Queue.h"
+#include "API/Lifo.h"
 
 using namespace std;
 
 #define NUM_MAPS    8
 #define NUM_QUEUES 10
+#define NUM_LIFOS  10
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -35,7 +37,7 @@ struct myQueue
 {
    myQueue( vdsSession & session )
       : queue ( session ),
-        name  ( "Test Folder/Queue " ) {}
+        name  ( "TestFolder/Queue" ) {}
 
    vdsQueue queue;
    string   name;
@@ -47,7 +49,7 @@ struct myMap
 {
    myMap( vdsSession & session )
       : map  ( session ),
-        name ( "Test Folder/HashMap " ) {}
+        name ( "TestFolder/HashMap" ) {}
 
    vdsHashMap map;
    string     name;
@@ -55,7 +57,19 @@ struct myMap
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-string foldername("Test Folder");
+struct myLifo
+{
+   myLifo( vdsSession & session )
+      : queue ( session ),
+        name  ( "TestFolder/Queue" ) {}
+
+   vdsLifo queue;
+   string  name;
+};
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+string foldername("TestFolder");
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -497,7 +511,7 @@ void CleanupPreviousRun( vdsSession & session )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void PopulateHashMaps( vdsSession & session, vector<myMap> & h )
+void PopulateHashMaps( vdsSession & session, myMap ** h )
 {
    int i, j;
    string data, key;
@@ -510,8 +524,8 @@ void PopulateHashMaps( vdsSession & session, vector<myMap> & h )
    };
    
    for ( i = 0; i < NUM_MAPS; ++i ) {
-      session.CreateObject( h[i].name, &mapDef );
-      h[i].map.Open( h[i].name );
+      session.CreateObject( h[i]->name, &mapDef );
+      h[i]->map.Open( h[i]->name );
 
       for ( j = 0; j < 20; ++j ) {
          sprintf(s, "%d", j);
@@ -519,7 +533,7 @@ void PopulateHashMaps( vdsSession & session, vector<myMap> & h )
          data = string("Inserted data item = ") + s;
          sprintf(s, "%d", i);
          data += string(" in hashMap = ") + s;
-         h[i].map.Insert( key.c_str(), key.length(), data.c_str(), data.length() );
+         h[i]->map.Insert( key.c_str(), key.length(), data.c_str(), data.length() );
       }
    }
 
@@ -528,7 +542,37 @@ void PopulateHashMaps( vdsSession & session, vector<myMap> & h )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void PopulateQueues( vdsSession & session, vector<myQueue> & q )
+void PopulateLifos( vdsSession & session, vector<myLifo> & l )
+{
+   int i, j;
+   string data;
+   char s[4];
+   vdsObjectDefinition queueDef = { 
+      VDS_LIFO,
+      1, 
+      { VDS_KEY_INTEGER, 0, 0, 0 }, 
+      { { "Field_1", VDS_VAR_STRING, 0, 4, 100, 0, 0 } } 
+   };
+   
+   for ( i = 0; i < NUM_LIFOS; ++i ) {
+      session.CreateObject( l[i].name, &queueDef );
+      l[i].queue.Open( l[i].name );
+
+      for ( j = 0; j < 20; ++j ) {
+         sprintf(s, "%d", j);
+         data = string("Inserted data item = ") + s;
+         sprintf(s, "%d", i);
+         data += string(" in queue = ") + s;
+         l[i].queue.Push( data.c_str(), data.length() );
+      }
+   }
+
+   session.Commit();
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void PopulateQueues( vdsSession & session, myQueue ** q )
 {
    int i, j;
    string data;
@@ -537,19 +581,20 @@ void PopulateQueues( vdsSession & session, vector<myQueue> & q )
       VDS_QUEUE,
       1, 
       { VDS_KEY_INTEGER, 0, 0, 0 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { { "Field_1", VDS_VAR_STRING, 0, 4, 100, 0, 0 } } 
    };
    
    for ( i = 0; i < NUM_QUEUES; ++i ) {
-      session.CreateObject( q[i].name, &queueDef );
-      q[i].queue.Open( q[i].name );
+      cout << " i = " << i << ", " << q[i]->name << ", " << &session << endl;
+      session.CreateObject( q[i]->name, &queueDef );
+      q[i]->queue.Open( q[i]->name );
 
       for ( j = 0; j < 20; ++j ) {
          sprintf(s, "%d", j);
          data = string("Inserted data item = ") + s;
          sprintf(s, "%d", i);
          data += string(" in queue = ") + s;
-         q[i].queue.Push( data.c_str(), data.length() );
+         q[i]->queue.Push( data.c_str(), data.length() );
       }
    }
 
@@ -564,6 +609,8 @@ int main()
    vdsSession session;
    int i, rc;
    vdsObjectDefinition folderDef;
+   myQueue ** q = new myQueue * [NUM_QUEUES];
+   myMap   ** h = new myMap * [NUM_MAPS];
 
    memset( &folderDef, 0, sizeof folderDef );
    folderDef.type = VDS_FOLDER;
@@ -580,7 +627,7 @@ int main()
       }
       else {
          cerr << "Init VDSF failed, error = " << exc.Message() << endl;
-         cerr << "Is the watchdog running?" << endl;
+         if ( rc == VDS_CONNECT_ERROR ) cerr << "Is the watchdog running?" << endl;
          return 1;
       }
    }
@@ -588,35 +635,45 @@ int main()
    cout << " ------- VDSF defects injector ------- " << endl << endl;
    cout << " This program will inject pseudo-random defects in a VDS." << endl << endl;
 
-   vector<myQueue> q( NUM_QUEUES, myQueue(session) );
-   vector<myMap>   h( NUM_MAPS,   myMap(session) );
-   for ( i = 0; i < NUM_QUEUES; ++i ) {
-      q[i].name += ('0' + i/10 );
-      q[i].name += ('0' + (i%10) );
+   for ( i = 0; i < NUM_QUEUES; ++ i ) {
+      q[i] = new myQueue(session);
+      q[i]->name += ('0' + i/10 );
+      q[i]->name += ('0' + (i%10) );
    }
+
+//   vector<myMap>   h( NUM_MAPS,   myMap(session) );
+//   vector<myLifo>  l( NUM_LIFOS,  myLifo(session) );
+
    for ( i = 0; i < NUM_MAPS; ++i ) {
-      h[i].name += ('0' + i/10 );
-      h[i].name += ('0' + (i%10) );
+      h[i] = new myMap(session);
+      h[i]->name += ('0' + i/10 );
+      h[i]->name += ('0' + (i%10) );
    }
+//   for ( i = 0; i < NUM_LIFOS; ++i ) {
+//      l[i].name += ('0' + i/10 );
+//      l[i].name += ('0' + (i%10) );
+//   }
    
    try {
       PopulateQueues( session, q );
       PopulateHashMaps( session, h );
+//      PopulateLifos( session, l );
    }
    catch( vdsException exc ) {
       cerr << "Creating and populating the objects failed, error = " << exc.Message() << endl;
       return 1;
    }
-   cout << "Queues are created and populated." << endl << endl;
+   cout << "Queues, maps, etc. are created and populated." << endl << endl;
 
-   rc = AddDefectsQueues( q );
+//   rc = AddDefectsQueues( q );
+rc = 0;
    if ( rc != 0 ) {
       cerr << "Adding defect to queues failed!" << endl;
       return 1;
    }
    cout << "All defects were added to queues." << endl << endl;
 
-   rc = AddDefectsHashMaps( h );
+//   rc = AddDefectsHashMaps( h );
    if ( rc != 0 ) {
       cerr << "Adding defect to hash maps failed!" << endl;
       return 1;

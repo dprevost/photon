@@ -90,7 +90,7 @@ int vdsaConnect( vdsaConnector    * pConnector,
       return VDS_SOCKET_ERROR;
    }
    
-   memset( &addr, 0, sizeof addr );
+   memset( &addr, 0, sizeof(struct sockaddr_in) );
    addr.sin_family = PF_INET;
    addr.sin_port = htons( port );
    addr.sin_addr.s_addr = inet_addr( "127.0.0.1" );
