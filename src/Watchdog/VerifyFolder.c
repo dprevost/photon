@@ -62,9 +62,15 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
                                        pContext );
             break;
          case VDS_QUEUE:
+         case VDS_LIFO:
             valid = vdswVerifyQueue( pVerify, 
                                      (struct vdseQueue *)pObject,
                                      pContext ); 
+            break;
+         case VDS_FAST_MAP:
+            valid = vdswVerifyFastMap( pVerify,
+                                       (struct vdseMap *)pObject, 
+                                       pContext );
             break;
          default:
             VDS_INV_CONDITION( pDesc_invalid_api_type );

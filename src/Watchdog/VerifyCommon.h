@@ -33,6 +33,7 @@ extern bool g_bTestAllocator;
 struct vdseLinkedList;
 struct vdseFolder;
 struct vdseHashMap;
+struct vdseMap;
 struct vdseQueue;
 struct vdseMemObject;
 
@@ -106,6 +107,11 @@ void
 vdswPopulateBitmap( struct vdswVerifyStruct   * pVerify,
                     struct vdseMemObject      * pMemObj,
                     struct vdseSessionContext * pContext );
+
+enum vdswRecoverError
+vdswVerifyFastMap( vdswVerifyStruct   * pVerify,
+                   struct vdseMap     * pHashMap, 
+                   vdseSessionContext * pContext  );
 
 enum vdswRecoverError
 vdswVerifyFolder( vdswVerifyStruct   * pVerify,

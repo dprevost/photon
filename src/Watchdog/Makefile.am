@@ -75,6 +75,7 @@ vdswd_SOURCES =          \
 
 libVerifyVDS_a_SOURCES = \
         VerifyCommon.h   \
+        VerifyFastMap.c  \
         VerifyFolder.c   \
         VerifyHash.c     \
         VerifyHashMap.c  \
