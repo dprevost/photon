@@ -175,7 +175,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
       if ( fp == NULL ) fp = stderr;
 
       if ( ! verifyVDSOnly ) {
-         ok = vdscCopyBackstore( &pHandler->pMemManager->memory,
+         ok = vdscCopyBackstore( &memFile,
                                  pConfig->filePerms,
                                  &pHandler->context.errorHandler );
          VDS_POST_CONDITION( ok == true || ok == false );
