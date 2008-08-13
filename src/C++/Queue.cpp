@@ -37,7 +37,7 @@ vdsQueue::~vdsQueue()
    if ( m_objectHandle != NULL ) {
       vdsQueueClose( m_objectHandle );
    }
-   m_sessionHandle = m_objectHandle = NULL;
+   m_objectHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

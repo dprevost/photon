@@ -248,7 +248,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int AddDefectsQueues( vector<myQueue> & q )
+int AddDefectsQueues( myQueue ** q )
 {
    int api_offset = -1;
    struct vdsaQueue ** apiQueue;
@@ -261,7 +261,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    
    // Using a (void *) cast to eliminate a gcc warning (dereferencing 
    // type-punned pointer will break strict-aliasing rules)
-   apiObj = (unsigned long **) ( (void *) &q[0].queue );
+   apiObj = (unsigned long **) ( (void *) &q[0]->queue );
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table
    for ( i = 0; i < sizeof(vdsQueue)/sizeof(void*); ++i, apiObj++ ) {
@@ -275,10 +275,10 @@ int AddDefectsQueues( vector<myQueue> & q )
       return -1;
    }
    
-   cout << "Defect for " << q[0].name << ": None" << endl;
+   cout << "Defect for " << q[0]->name << ": None" << endl;
 
-   cout << "Defect for " << q[1].name << ": 3 ref. couters" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[1].queue + api_offset );
+   cout << "Defect for " << q[1]->name << ": 3 ref. couters" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[1]->queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
    pQueue->nodeObject.txCounter++;
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
@@ -294,7 +294,7 @@ int AddDefectsQueues( vector<myQueue> & q )
       if ( i >= 6 ) break;
    }
    if ( ! okList ) {
-      cerr << "Iteration error in " << q[1].name << endl;
+      cerr << "Iteration error in " << q[1]->name << endl;
       return -1;
    }
    pQueueItem = (vdseQueueItem*) 
@@ -302,8 +302,8 @@ int AddDefectsQueues( vector<myQueue> & q )
    txItemStatus = &pQueueItem->txStatus;
    txItemStatus->usageCounter++;
 
-   cout << "Defect for " << q[2].name << ": object added - not committed" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[2].queue + api_offset );
+   cout << "Defect for " << q[2]->name << ": object added - not committed" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[2]->queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
    txQueueStatus->txOffset = SET_OFFSET( pQueue ); 
@@ -311,10 +311,10 @@ int AddDefectsQueues( vector<myQueue> & q )
 
    // Queue 2. Defects: 
    //  - Items added (not committed) and items removed (committed + non-comm)
-   cout << "Defect for " << q[3].name << ": 5 items removed-committed," << endl;
+   cout << "Defect for " << q[3]->name << ": 5 items removed-committed," << endl;
    cout << "                                  4 items removed - not committed," << endl;
    cout << "                                  9 items added - not committed" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[3].queue + api_offset );
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[3]->queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
 
    okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
@@ -343,16 +343,16 @@ int AddDefectsQueues( vector<myQueue> & q )
       i++;
    }
    
-   cout << "Defect for " << q[4].name << ": object locked" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[4].queue + api_offset );
+   cout << "Defect for " << q[4]->name << ": object locked" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[4]->queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! vdscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   cout << "Defect for " << q[5].name << ": broken forward link" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[5].queue + api_offset );
+   cout << "Defect for " << q[5]->name << ": broken forward link" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[5]->queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! vdscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -372,12 +372,12 @@ int AddDefectsQueues( vector<myQueue> & q )
       }
    }
    if ( ! okList ) {
-      cerr << "Iteration error in " << q[5].name << endl;
+      cerr << "Iteration error in " << q[5]->name << endl;
       return -1;
    }
 
-   cout << "Defect for " << q[6].name << ": broken backward link" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[6].queue + api_offset );
+   cout << "Defect for " << q[6]->name << ": broken backward link" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[6]->queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! vdscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -397,12 +397,12 @@ int AddDefectsQueues( vector<myQueue> & q )
       }
    }
    if ( ! okList ) {
-      cerr << "Iteration error in " << q[6].name << endl;
+      cerr << "Iteration error in " << q[6]->name << endl;
       return -1;
    }
    
-   cout << "Defect for " << q[7].name << ": 2 broken forward links" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[7].queue + api_offset );
+   cout << "Defect for " << q[7]->name << ": 2 broken forward links" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[7]->queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! vdscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -424,12 +424,12 @@ int AddDefectsQueues( vector<myQueue> & q )
       }
    }
    if ( ! okList ) {
-      cerr << "Iteration error in " << q[7].name << endl;
+      cerr << "Iteration error in " << q[7]->name << endl;
       return -1;
    }
 
-   cout << "Defect for " << q[8].name << ": 2 broken backward links" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[8].queue + api_offset );
+   cout << "Defect for " << q[8]->name << ": 2 broken backward links" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[8]->queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! vdscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -451,12 +451,12 @@ int AddDefectsQueues( vector<myQueue> & q )
       }
    }
    if ( ! okList ) {
-      cerr << "Iteration error in " << q[8].name << endl;
+      cerr << "Iteration error in " << q[8]->name << endl;
       return -1;
    }
 
-   cout << "Defect for " << q[9].name << ": broken bw+fw links (eq)" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[9].queue + api_offset );
+   cout << "Defect for " << q[9]->name << ": broken bw+fw links (eq)" << endl;
+   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[9]->queue + api_offset );
    pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! vdscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -477,7 +477,7 @@ int AddDefectsQueues( vector<myQueue> & q )
       }
    }
    if ( ! okList ) {
-      cerr << "Iteration error in " << q[9].name << endl;
+      cerr << "Iteration error in " << q[9]->name << endl;
       return -1;
    }
 
@@ -624,6 +624,8 @@ int main()
       rc = exc.ErrorCode();
       if ( rc == VDS_OBJECT_ALREADY_PRESENT ) {
          CleanupPreviousRun( session );
+         session.DestroyObject( foldername );
+         return 0;
       }
       else {
          cerr << "Init VDSF failed, error = " << exc.Message() << endl;
@@ -665,8 +667,7 @@ int main()
    }
    cout << "Queues, maps, etc. are created and populated." << endl << endl;
 
-//   rc = AddDefectsQueues( q );
-rc = 0;
+   rc = AddDefectsQueues( q );
    if ( rc != 0 ) {
       cerr << "Adding defect to queues failed!" << endl;
       return 1;

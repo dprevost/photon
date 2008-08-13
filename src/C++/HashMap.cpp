@@ -37,7 +37,7 @@ vdsHashMap::~vdsHashMap()
    if ( m_objectHandle != NULL ) {
       vdsHashMapClose( m_objectHandle );
    }
-   m_sessionHandle = m_objectHandle = NULL;
+   m_objectHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

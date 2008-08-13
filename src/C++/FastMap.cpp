@@ -37,7 +37,7 @@ vdsFastMap::~vdsFastMap()
    if ( m_objectHandle != NULL ) {
       vdsFastMapClose( m_objectHandle );
    }
-   m_sessionHandle = m_objectHandle = NULL;
+   m_objectHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

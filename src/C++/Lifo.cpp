@@ -37,7 +37,7 @@ vdsLifo::~vdsLifo()
    if ( m_objectHandle != NULL ) {
       vdsLifoClose( m_objectHandle );
    }
-   m_sessionHandle = m_objectHandle = NULL;
+   m_objectHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
