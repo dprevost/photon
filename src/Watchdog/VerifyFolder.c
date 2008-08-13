@@ -109,6 +109,7 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
                vdseHashMapFini( (struct vdseHashMap *)pObject, pContext );
                break;
             case VDS_QUEUE:
+            case VDS_LIFO:
                vdseQueueFini( (struct vdseQueue *)pObject, pContext );
                break;
             default:
