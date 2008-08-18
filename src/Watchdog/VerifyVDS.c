@@ -87,12 +87,12 @@ void vdswValidate( vdseMemoryHeader * pMemoryAddress,
                       VDSE_BLOCK_SIZE );
 
    // Test the lock of the allocator
-   if ( vdscIsItLocked( &memAllocator->memObj.lock ) ) {
+   if ( pscIsItLocked( &memAllocator->memObj.lock ) ) {
       vdswEcho( &verifyStruct, 
          "Warning! The memory allocator is locked - the VDS might be corrupted" );
       if ( doRepair ) {
          vdswEcho( &verifyStruct, "Trying to reset it..." );
-         vdscReleaseProcessLock ( &memAllocator->memObj.lock );
+         pscReleaseProcessLock ( &memAllocator->memObj.lock );
       }
       g_bTestAllocator = true;
    }

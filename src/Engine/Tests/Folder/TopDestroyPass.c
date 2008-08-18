@@ -61,7 +61,7 @@ int main()
                                     strlen("Test1"),
                                     &context );
                                          
-   if ( vdscGetLastError(&context.errorHandler) != VDS_FOLDER_IS_NOT_EMPTY ) {
+   if ( pscGetLastError(&context.errorHandler) != VDS_FOLDER_IS_NOT_EMPTY ) {
       if ( ok != true ) {
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }
@@ -77,7 +77,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdscGetLastError( &context.errorHandler );
+   errcode = pscGetLastError( &context.errorHandler );
    if ( errcode != VDS_OBJECT_NAME_TOO_LONG ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -89,7 +89,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdscGetLastError( &context.errorHandler );
+   errcode = pscGetLastError( &context.errorHandler );
    if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -109,7 +109,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdscGetLastError( &context.errorHandler );
+   errcode = pscGetLastError( &context.errorHandler );
    if ( errcode != VDS_NO_SUCH_FOLDER ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -121,7 +121,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdscGetLastError( &context.errorHandler );
+   errcode = pscGetLastError( &context.errorHandler );
    if ( errcode != VDS_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -134,7 +134,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdscGetLastError( &context.errorHandler );
+   errcode = pscGetLastError( &context.errorHandler );
    if ( errcode != VDS_OBJECT_IS_IN_USE ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

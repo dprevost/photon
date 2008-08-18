@@ -107,11 +107,11 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
    
    pVerify->spaces += 2;
    
-   if ( vdscIsItLocked( &pQueue->memObject.lock ) ) {
+   if ( pscIsItLocked( &pQueue->memObject.lock ) ) {
       vdswEcho( pVerify, "The object is locked - it might be corrupted" );
       if ( pVerify->doRepair ) {
          vdswEcho( pVerify, "Trying to reset the lock..." );
-         vdscReleaseProcessLock ( &pQueue->memObject.lock );
+         pscReleaseProcessLock ( &pQueue->memObject.lock );
       }
       rc = vdswVerifyMemObject( pVerify, &pQueue->memObject, pContext );
       if ( rc > VDSWR_START_ERRORS ) {

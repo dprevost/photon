@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSC_ARCH_BARRIER_H
-#define VDSC_ARCH_BARRIER_H
+#ifndef PSC_ARCH_BARRIER_H
+#define PSC_ARCH_BARRIER_H
 
 /*
  * Barrier for the Itanium with the Intel compiler (intrinsics).
@@ -26,28 +26,28 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void vdscMemoryBarrier()
+static inline void pscMemoryBarrier()
 {
    __mf();
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void vdscReadMemoryBarrier()
+static inline void pscReadMemoryBarrier()
 {
    __mf();
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void vdscWriteMemoryBarrier()
+static inline void pscWriteMemoryBarrier()
 {
    __mf();
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSC_ARCH_BARRIER_H */
+#endif /* PSC_ARCH_BARRIER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

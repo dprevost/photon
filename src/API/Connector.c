@@ -27,23 +27,23 @@
 #include <vdsf/vdsErrors.h>
 
 /** Send data on the socket. */
-static int Send(vdsaConnector    * pConnector,
-                void             * ptr, 
-                size_t             length,
-                vdscErrorHandler * errorHandler);   
+static int Send(vdsaConnector   * pConnector,
+                void            * ptr, 
+                size_t            length,
+                pscErrorHandler * errorHandler);   
 
 /** Receive data from the socket. */
-static int Receive( vdsaConnector    * pConnector,
-                    void             * ptr, 
-                    size_t             length,
-                    vdscErrorHandler * errorHandler );
+static int Receive( vdsaConnector   * pConnector,
+                    void            * ptr, 
+                    size_t            length,
+                    pscErrorHandler * errorHandler );
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaConnect( vdsaConnector    * pConnector,
-                 const char       * address,
-                 struct WDOutput  * pAnswer,
-                 vdscErrorHandler * errorHandler )
+int vdsaConnect( vdsaConnector   * pConnector,
+                 const char      * address,
+                 struct WDOutput * pAnswer,
+                 pscErrorHandler * errorHandler )
 {
    int errcode = 0;
    unsigned short port;
@@ -74,7 +74,7 @@ int vdsaConnect( vdsaConnector    * pConnector,
  
    errcode = WSAStartup( versionRequested, &wsaData );
    if ( errcode != 0 ) {
-      vdscSetError( errorHandler, VDSC_SOCKERR_HANDLE, WSAGetLastError() );
+      pscSetError( errorHandler, PSC_SOCKERR_HANDLE, WSAGetLastError() );
       return VDS_SOCKET_ERROR;
    }
    pConnector->cleanupNeeded = true;   
@@ -83,9 +83,9 @@ int vdsaConnect( vdsaConnector    * pConnector,
    pConnector->socketFD = socket( PF_INET, SOCK_STREAM, 0 );
    if ( pConnector->socketFD == VDS_INVALID_SOCKET ) {
 #if defined (WIN32) 
-      vdscSetError( errorHandler, VDSC_SOCKERR_HANDLE, WSAGetLastError() );
+      pscSetError( errorHandler, PSC_SOCKERR_HANDLE, WSAGetLastError() );
 #else
-      vdscSetError( errorHandler, VDSC_ERRNO_HANDLE, errno );
+      pscSetError( errorHandler, PSC_ERRNO_HANDLE, errno );
 #endif
       return VDS_SOCKET_ERROR;
    }
@@ -100,9 +100,9 @@ int vdsaConnect( vdsaConnector    * pConnector,
                       sizeof addr );
    if ( errcode != 0 ) {
 #if defined (WIN32) 
-      vdscSetError( errorHandler, VDSC_SOCKERR_HANDLE, WSAGetLastError() );
+      pscSetError( errorHandler, PSC_SOCKERR_HANDLE, WSAGetLastError() );
 #else
-      vdscSetError( errorHandler, VDSC_ERRNO_HANDLE, errno );
+      pscSetError( errorHandler, PSC_ERRNO_HANDLE, errno );
 #endif
       return VDS_CONNECT_ERROR;
    }
@@ -121,8 +121,8 @@ int vdsaConnect( vdsaConnector    * pConnector,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsaDisconnect( vdsaConnector    * pConnector,
-                     vdscErrorHandler * errorHandler )
+void vdsaDisconnect( vdsaConnector   * pConnector,
+                     pscErrorHandler * errorHandler )
 {
    int errcode = 0;
 
@@ -168,10 +168,10 @@ void vdsaDisconnect( vdsaConnector    * pConnector,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int Receive( vdsaConnector    * pConnector,
-             void             * ptr, 
-             size_t             length,
-             vdscErrorHandler * errorHandler )
+int Receive( vdsaConnector   * pConnector,
+             void            * ptr, 
+             size_t            length,
+             pscErrorHandler * errorHandler )
 {
    int errcode = 0;
 
@@ -188,11 +188,11 @@ int Receive( vdsaConnector    * pConnector,
    
    if ( errcode != (int) length ) {
 #if defined (WIN32)
-      vdscSetError( errorHandler, VDSC_SOCKERR_HANDLE, WSAGetLastError() );
+      pscSetError( errorHandler, PSC_SOCKERR_HANDLE, WSAGetLastError() );
       shutdown( pConnector->socketFD, SD_BOTH );      
       closesocket( pConnector->socketFD );
 #else
-      vdscSetError( errorHandler, VDSC_ERRNO_HANDLE, errno );
+      pscSetError( errorHandler, PSC_ERRNO_HANDLE, errno );
       shutdown( pConnector->socketFD, 2 );      
       close( pConnector->socketFD );
 #endif
@@ -205,10 +205,10 @@ int Receive( vdsaConnector    * pConnector,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int Send( vdsaConnector    * pConnector,
-          void             * ptr, 
-          size_t             length,
-          vdscErrorHandler * errorHandler )
+int Send( vdsaConnector   * pConnector,
+          void            * ptr, 
+          size_t            length,
+          pscErrorHandler * errorHandler )
 {
    int errcode = 0;
    
@@ -225,11 +225,11 @@ int Send( vdsaConnector    * pConnector,
 
    if ( errcode != (int) length ) {
 #if defined (WIN32)
-      vdscSetError( errorHandler, VDSC_SOCKERR_HANDLE, WSAGetLastError() );
+      pscSetError( errorHandler, PSC_SOCKERR_HANDLE, WSAGetLastError() );
       shutdown( pConnector->socketFD, SD_BOTH );      
       closesocket( pConnector->socketFD );
 #else
-      vdscSetError( errorHandler, VDSC_ERRNO_HANDLE, errno );
+      pscSetError( errorHandler, PSC_ERRNO_HANDLE, errno );
       shutdown( pConnector->socketFD, 2 );
       close( pConnector->socketFD );
 #endif

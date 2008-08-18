@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSC_TIMER_H
-#define VDSC_TIMER_H
+#ifndef PSC_TIMER_H
+#define PSC_TIMER_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -42,7 +42,7 @@ BEGIN_C_DECLS
  * might be preferable (and be more accurate?).
  */
 
-struct vdscTimer
+struct pscTimer
 {
    struct timeval timeBegin;
    struct timeval timeEnd;
@@ -62,7 +62,7 @@ struct vdscTimer
 
 };
 
-typedef struct vdscTimer vdscTimer;
+typedef struct pscTimer pscTimer;
 
 #if defined(WIN32)
 static inline int gettimeofday( struct timeval * tv, void * tz )
@@ -85,7 +85,7 @@ static inline int gettimeofday( struct timeval * tv, void * tz )
 
 /** Start the timer */
 static inline void 
-vdscBeginTimer( vdscTimer * pTimer )
+pscBeginTimer( pscTimer * pTimer )
 {
 #if defined (WIN32)
    if ( pTimer->highResolution == TRUE ) {
@@ -102,7 +102,7 @@ vdscBeginTimer( vdscTimer * pTimer )
 
 /** Stop the timer */
 static inline
-void vdscEndTimer( vdscTimer * pTimer )
+void pscEndTimer( pscTimer * pTimer )
 {
 #if defined (WIN32)
    if ( pTimer->highResolution == TRUE ) {
@@ -119,16 +119,16 @@ void vdscEndTimer( vdscTimer * pTimer )
    
 /** Calculates - returns the time to the caller in seconds and nanosecs. */
 VDSF_COMMON_EXPORT
-void vdscCalculateTimer( vdscTimer     * pTimer,
-                         unsigned long * pSecs,
-                         unsigned long * pnanoSecs );
+void pscCalculateTimer( pscTimer      * pTimer,
+                        unsigned long * pSecs,
+                        unsigned long * pnanoSecs );
    
 VDSF_COMMON_EXPORT
-void vdscInitTimer( vdscTimer * pTimer );
+void pscInitTimer( pscTimer * pTimer );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS
 
-#endif /* VDSC_TIMER_H */
+#endif /* PSC_TIMER_H */
 

@@ -90,7 +90,7 @@ struct ConfigParams
 bool vdswReadConfig( const char          * cfgname,
                      struct ConfigParams * pConfig,
                      int                   debug,
-                     vdscErrorHandler    * pError  );
+                     pscErrorHandler    * pError  );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

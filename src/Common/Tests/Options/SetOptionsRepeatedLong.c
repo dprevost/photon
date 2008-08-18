@@ -25,15 +25,15 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdscOptionHandle handle;
+   pscOptionHandle handle;
 
-   struct vdscOptStruct opts[3] = {
+   struct pscOptStruct opts[3] = {
       { 'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog" },
       { 'v', "address", 1, "", "try to explain what is going on" },
       { 'z', "zzz",     1, "", "sleep" }
    };
    
-   vdscSetSupportedOptions( 3, opts, &handle );
+   pscSetSupportedOptions( 3, opts, &handle );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

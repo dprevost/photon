@@ -27,7 +27,7 @@
 #include "Tests/PrintError.h"
 
 VDSF_ENGINE_EXPORT
-vdscErrMsgHandle g_vdsErrorHandle;
+pscErrMsgHandle g_vdsErrorHandle;
 
 ptrdiff_t g_memObjOffset = VDSE_NULL_OFFSET;
 
@@ -71,7 +71,7 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
    }
    memset(pContext, 0, sizeof(vdseSessionContext) );
    pContext->pidLocker = getpid();
-   vdscInitErrorHandler( &pContext->errorHandler );
+   pscInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
@@ -141,7 +141,7 @@ void initHashCopyTest( bool                 testIsExpectedToSucceed,
    }
    memset(pContext, 0, sizeof(vdseSessionContext) );
    pContext->pidLocker = getpid();
-   vdscInitErrorHandler( &pContext->errorHandler );
+   pscInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );

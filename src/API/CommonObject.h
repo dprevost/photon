@@ -95,7 +95,7 @@ bool vdsaCommonLock( vdsaCommonObject * pObject )
    VDS_PRE_CONDITION( pObject != NULL );
 
    if ( g_protectionIsNeeded ) {
-      ok = vdscTryAcquireThreadLock( &pObject->pSession->mutex, LOCK_TIMEOUT );
+      ok = pscTryAcquireThreadLock( &pObject->pSession->mutex, LOCK_TIMEOUT );
       VDS_POST_CONDITION( ok == true || ok == false );
    }
    
@@ -115,7 +115,7 @@ void vdsaCommonUnlock( vdsaCommonObject * pObject )
    VDS_PRE_CONDITION( pObject != NULL );
 
    if ( g_protectionIsNeeded ) {
-      vdscReleaseThreadLock( &pObject->pSession->mutex );
+      pscReleaseThreadLock( &pObject->pSession->mutex );
    }
 }
 

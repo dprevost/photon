@@ -186,7 +186,7 @@ bool vdseQueueGet( vdseQueue          * pQueue,
              */
             if ( bufferLength < pQueueItem->dataLength ) {
                vdseUnlock( &pQueue->memObject, pContext );
-               vdscSetError( &pContext->errorHandler,
+               pscSetError( &pContext->errorHandler,
                              g_vdsErrorHandle,
                              VDS_INVALID_LENGTH );
                 return false;
@@ -209,7 +209,7 @@ bool vdseQueueGet( vdseQueue          * pQueue,
       }
    }
    else {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
    
@@ -231,7 +231,7 @@ bool vdseQueueGet( vdseQueue          * pQueue,
    }
    
    vdseUnlock( &pQueue->memObject, pContext );
-   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
 
    return false;
 }
@@ -268,7 +268,7 @@ bool vdseQueueInit( vdseQueue           * pQueue,
                                 &pQueue->blockGroup,
                                 numberOfBlocks );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler,
+      pscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
       return false;
@@ -289,7 +289,7 @@ bool vdseQueueInit( vdseQueue           * pQueue,
                                      pQueue->numFields* sizeof(vdseFieldDef),
                                      pContext );
    if ( ptr == NULL ) {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
       return false;
    }
@@ -397,7 +397,7 @@ bool vdseQueueInsert( vdseQueue          * pQueue,
       vdseUnlock( &pQueue->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
    
@@ -408,10 +408,10 @@ the_exit:
    vdseUnlock( &pQueue->memObject, pContext );
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
     
    return false;
@@ -474,7 +474,7 @@ bool vdseQueueInsertNow( vdseQueue          * pQueue,
       vdseUnlock( &pQueue->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
    
@@ -485,10 +485,10 @@ the_exit:
    vdseUnlock( &pQueue->memObject, pContext );
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
     
    return false;
@@ -513,7 +513,7 @@ bool vdseQueueRelease( vdseQueue          * pQueue,
       vdseUnlock( &pQueue->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
 
@@ -662,7 +662,7 @@ bool vdseQueueRemove( vdseQueue          * pQueue,
       }
    }
    else {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
 
@@ -673,9 +673,9 @@ bool vdseQueueRemove( vdseQueue          * pQueue,
 the_exit:
 
    vdseUnlock( &pQueue->memObject, pContext );
-   /* vdscSetError might have been already called by some other function */
+   /* pscSetError might have been already called by some other function */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return false;

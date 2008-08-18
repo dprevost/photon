@@ -25,48 +25,48 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdscProcessLock lock;
+   pscProcessLock lock;
    pid_t pid = getpid();
    bool ok;
    
-   ok = vdscInitProcessLock( &lock );
+   ok = pscInitProcessLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdscTryAcquireProcessLock( &lock, pid, 0 );
+   ok = pscTryAcquireProcessLock( &lock, pid, 0 );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdscTryAcquireProcessLock( &lock, pid, 1000 );
+   ok = pscTryAcquireProcessLock( &lock, pid, 1000 );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdscIsItLocked( &lock );   
+   ok = pscIsItLocked( &lock );   
    if ( ok == false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdscTestLockPidValue( &lock, pid );
+   ok = pscTestLockPidValue( &lock, pid );
    if ( ok == false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdscReleaseProcessLock( &lock );
+   pscReleaseProcessLock( &lock );
 
    /* Calling it a second time should do nothing */
-   vdscReleaseProcessLock( &lock );
+   pscReleaseProcessLock( &lock );
 
-   ok = vdscTryAcquireProcessLock( &lock, pid, 1000 );
+   ok = pscTryAcquireProcessLock( &lock, pid, 1000 );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   vdscReleaseProcessLock( &lock );
+   pscReleaseProcessLock( &lock );
 
-   vdscFiniProcessLock( &lock );
+   pscFiniProcessLock( &lock );
 
    return 0;
 }

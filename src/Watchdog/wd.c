@@ -27,10 +27,10 @@ int main( int argc, char *argv[] )
    int errcode = 0;
    bool ok;
    
-   vdscOptionHandle optHandle;
+   pscOptionHandle optHandle;
    char *optArgument;
 #if defined (WIN32)
-   struct vdscOptStruct opts[5] = {
+   struct pscOptStruct opts[5] = {
       { 'c', "config",    0, "filename", "Filename for the configuration options" },
       { 'i', "install",   1, "",         "Install the program as a NT service (Windows only)" },
       { 't', "test",      1, "",         "Test the config file and exit" },
@@ -38,7 +38,7 @@ int main( int argc, char *argv[] )
       { 'v', "verify",    1, "",         "Verify the VDS and exit" }
    };
 #else
-   struct vdscOptStruct opts[4] = {
+   struct pscOptStruct opts[4] = {
       { 'c', "config", 0, "filename", "Filename for the configuration options" },
       { 'd', "daemon", 1, "",         "Run the program as a Unix daemon (Unix/linux only)" },
       { 't', "test",   1, "",         "Test the config file and exit" },
@@ -50,29 +50,29 @@ int main( int argc, char *argv[] )
    vdswWatchdogInit( g_pWD );
 
 #if defined (WIN32)
-   ok = vdscSetSupportedOptions( 5, opts, &optHandle );
+   ok = pscSetSupportedOptions( 5, opts, &optHandle );
 #else
-   ok = vdscSetSupportedOptions( 4, opts, &optHandle );
+   ok = pscSetSupportedOptions( 4, opts, &optHandle );
 #endif
    VDS_POST_CONDITION( ok == true || ok == false );
 
    if ( ! ok ) {
-      fprintf( stderr, "Internal error in vdscSetSupportedOptions\n" );
+      fprintf( stderr, "Internal error in pscSetSupportedOptions\n" );
       return 1;
    }
    
-   errcode = vdscValidateUserOptions( optHandle, argc, argv, 1 );
+   errcode = pscValidateUserOptions( optHandle, argc, argv, 1 );
    if ( errcode < 0 ) {
-      vdscShowUsage( optHandle, argv[0], "" );
+      pscShowUsage( optHandle, argv[0], "" );
       return 1;
    }
    
    if ( errcode > 0 ) {
-      vdscShowUsage( optHandle, argv[0], "" );
+      pscShowUsage( optHandle, argv[0], "" );
       return 0;
    }
 
-   if ( vdscGetShortOptArgument( optHandle, 'c', &optArgument ) ) {
+   if ( pscGetShortOptArgument( optHandle, 'c', &optArgument ) ) {
       ok = vdswWatchdogReadConfig( &wDog, optArgument );
       VDS_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
@@ -82,22 +82,22 @@ int main( int argc, char *argv[] )
    }
 
    // In test mode, we test the config file and exit.
-   if ( vdscIsShortOptPresent( optHandle, 't' ) ) return 0;
+   if ( pscIsShortOptPresent( optHandle, 't' ) ) return 0;
    
 #if defined ( WIN32 )
-   if ( vdscIsShortOptPresent( optHandle, 'i' ) ) {
+   if ( pscIsShortOptPresent( optHandle, 'i' ) ) {
       ok = vdswInstall( &wDog );
       VDS_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) return -1;
       return 0;
    }
    
-   if ( vdscIsShortOptPresent( optHandle, 'u' ) ) {
+   if ( pscIsShortOptPresent( optHandle, 'u' ) ) {
       vdswUninstall( &wDog );
       return 0;
    }
 #endif
-   if ( vdscIsShortOptPresent( optHandle, 'v' ) ) {
+   if ( pscIsShortOptPresent( optHandle, 'v' ) ) {
       wDog.verifyVDSOnly = true;
    }
 
@@ -113,7 +113,7 @@ int main( int argc, char *argv[] )
    if ( wDog.verifyVDSOnly ) return 0;
    
 #if ! defined ( WIN32 )
-   if ( vdscIsShortOptPresent( optHandle, 'd' ) ) {
+   if ( pscIsShortOptPresent( optHandle, 'd' ) ) {
       ok = vdswDaemon( &wDog );
       VDS_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) return -1;

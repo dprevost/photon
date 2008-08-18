@@ -28,7 +28,7 @@
 #include "Tests/PrintError.h"
 
 VDSF_ENGINE_EXPORT
-vdscErrMsgHandle g_vdsErrorHandle;
+pscErrMsgHandle g_vdsErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -63,7 +63,7 @@ vdseSession * initSessionTest( bool                testIsExpectedToSucceed,
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   vdscInitErrorHandler( &pContext->errorHandler );
+   pscInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );

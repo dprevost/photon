@@ -70,7 +70,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdscGetLastError( &context.errorHandler );
+   errcode = pscGetLastError( &context.errorHandler );
    if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

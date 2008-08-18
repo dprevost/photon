@@ -21,7 +21,7 @@
  * 
  * \param[in] pBarrier A pointer to the vdstBarrier struct itself.
  * \param[in] numThreads The number of threads to synchronize.
- * \param[in] pError     A pointer to a vdscErrorHandler struct
+ * \param[in] pError     A pointer to a pscErrorHandler struct
  *
  * \retval  0 on success
  * \retval -1 on error (use pError to retrieve the error)
@@ -31,9 +31,9 @@
  * \pre \em pError cannot be NULL.
  *
  */
-int vdstInitBarrier( vdstBarrier *     pBarrier, 
+int vdstInitBarrier( vdstBarrier     * pBarrier, 
                      int               numThreads,
-                     vdscErrorHandler* pError )
+                     pscErrorHandler * pError )
 {
 #if defined (WIN32)
    BOOL status;
@@ -95,16 +95,16 @@ int vdstInitBarrier( vdstBarrier *     pBarrier,
 end_on_error:
 
 #if defined (WIN32)
-   vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
+   pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );
 #else
    /* Some old versions of pthread used to returned -1 instead of
     * returning the error code. We check for this just in case.
     */
    if ( status > 0 ) {
-      vdscSetError( pError, VDSC_ERRNO_HANDLE, status );
+      pscSetError( pError, PSC_ERRNO_HANDLE, status );
    }
    else {
-      vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
    }
 #endif
    return -1;

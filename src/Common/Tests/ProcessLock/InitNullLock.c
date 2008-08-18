@@ -28,7 +28,7 @@ int main()
 #if defined(USE_DBC)
    bool ok;
 
-   ok = vdscInitProcessLock( NULL );
+   ok = pscInitProcessLock( NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

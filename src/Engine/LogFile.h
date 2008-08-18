@@ -65,7 +65,7 @@ typedef struct vdseLogFile vdseLogFile;
 
 VDSF_ENGINE_EXPORT
 void vdseCloseLogFile( vdseLogFile      * logFile,
-                       vdscErrorHandler * pError );
+                       pscErrorHandler * pError );
 
 /**
  * Initialize the log file.
@@ -77,12 +77,12 @@ VDSF_ENGINE_EXPORT
 vdsErrors vdseInitLogFile( vdseLogFile      * logFile,
                            const char       * dirName,
                            void             * pSession,
-                           vdscErrorHandler * pError );
+                           pscErrorHandler * pError );
    
 VDSF_ENGINE_EXPORT
 vdsErrors vdseLogTransaction( vdseLogFile      * logFile,
                               int                transactionId,
-                              vdscErrorHandler * pError );
+                              pscErrorHandler * pError );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

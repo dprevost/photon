@@ -20,8 +20,8 @@
 
 /*!
  * 
- * \param[in] pIterator  A pointer to the vdscDirIterator struct itself.
- * \param[in] pError     A pointer to a vdscErrorHandler struct (for handling
+ * \param[in] pIterator  A pointer to the pscDirIterator struct itself.
+ * \param[in] pError     A pointer to a pscErrorHandler struct (for handling
  *                       C library or Win32 API errors and more).
  *
  * \return The function returns a pointer to the next file name on success 
@@ -32,23 +32,23 @@
  * \pre \em pError cannot be NULL.
  * \pre (Posix specific) \em pIterator->pDir must be NULL (which insures
  *                           that this function was not called twice without
- *                           calling vdscCloseDir()).
+ *                           calling pscCloseDir()).
  *
  * \invariant \em pIterator->initialized must equal 
- *                ::VDSC_DIR_ACCESS_SIGNATURE.
+ *                ::PSC_DIR_ACCESS_SIGNATURE.
  *
  * \post The return value cannot be NULL if no error was encountered.
  *
  */
-const char * vdscDirGetNextFileName( vdscDirIterator  * pIterator,
-                                     vdscErrorHandler * pError )
+const char * pscDirGetNextFileName( pscDirIterator  * pIterator,
+                                    pscErrorHandler * pError )
 {
 #if ! defined (WIN32)
    struct dirent * pEntry;
 #endif
 
    VDS_PRE_CONDITION( pIterator != NULL );
-   VDS_INV_CONDITION( pIterator->initialized == VDSC_DIR_ACCESS_SIGNATURE );
+   VDS_INV_CONDITION( pIterator->initialized == PSC_DIR_ACCESS_SIGNATURE );
    VDS_PRE_CONDITION( pError    != NULL );
 
 #if defined (WIN32)
@@ -63,7 +63,7 @@ const char * vdscDirGetNextFileName( vdscDirIterator  * pIterator,
          FindFirstFile( pIterator->dirName, &pIterator->data );
    }
    if ( pIterator->handle == VDS_INVALID_HANDLE ) {
-      vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
+      pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );
       return NULL;
    }
    
@@ -72,7 +72,7 @@ const char * vdscDirGetNextFileName( vdscDirIterator  * pIterator,
       int err = FindNextFile( pIterator->handle, &pIterator->data );
       if ( err == 0 ) {
          if ( GetLastError() != ERROR_NO_MORE_FILES ) {
-            vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
+            pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );
          }
          return NULL;
       }
@@ -97,7 +97,7 @@ const char * vdscDirGetNextFileName( vdscDirIterator  * pIterator,
       pEntry = readdir( pIterator->pDir );
       if ( pEntry == NULL ) {
          if ( errno != 0 ) {
-            vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+            pscSetError( pError, PSC_ERRNO_HANDLE, errno );
          }
          break;
       }
@@ -123,17 +123,17 @@ const char * vdscDirGetNextFileName( vdscDirIterator  * pIterator,
 
 /*!
  * 
- * \param[in] pIterator  A pointer to the vdscDirIterator struct itself.
+ * \param[in] pIterator  A pointer to the pscDirIterator struct itself.
  *
  * \pre \em pIterator cannot be NULL.
  * \invariant \em pIterator->initialized must equal 
- *                ::VDSC_DIR_ACCESS_SIGNATURE.
+ *                ::PSC_DIR_ACCESS_SIGNATURE.
  *
  */
-void vdscFiniDir( vdscDirIterator * pIterator )
+void pscFiniDir( pscDirIterator * pIterator )
 {
    VDS_PRE_CONDITION( pIterator != NULL );
-   VDS_INV_CONDITION( pIterator->initialized == VDSC_DIR_ACCESS_SIGNATURE );
+   VDS_INV_CONDITION( pIterator->initialized == PSC_DIR_ACCESS_SIGNATURE );
 
 #if defined ( WIN32 )
    pIterator->handle = VDS_INVALID_HANDLE;
@@ -149,12 +149,12 @@ void vdscFiniDir( vdscDirIterator * pIterator )
 
 /*!
  * 
- * \param[in] pIterator  A pointer to the vdscDirIterator struct itself.
+ * \param[in] pIterator  A pointer to the pscDirIterator struct itself.
  *
  * \pre \em pIterator cannot be NULL.
  *
  */
-void vdscInitDir( vdscDirIterator * pIterator )
+void pscInitDir( pscDirIterator * pIterator )
 {
    VDS_PRE_CONDITION( pIterator != NULL );
 
@@ -165,24 +165,24 @@ void vdscInitDir( vdscDirIterator * pIterator )
    pIterator->pDir = NULL;
 #endif
 
-   pIterator->initialized = VDSC_DIR_ACCESS_SIGNATURE;
+   pIterator->initialized = PSC_DIR_ACCESS_SIGNATURE;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*!
  * 
- * \param[in] pIterator  A pointer to the vdscDirIterator struct itself.
+ * \param[in] pIterator  A pointer to the pscDirIterator struct itself.
  *
  * \pre \em pIterator cannot be NULL.
  * \invariant \em pIterator->initialized must equal 
- *                ::VDSC_DIR_ACCESS_SIGNATURE.
+ *                ::PSC_DIR_ACCESS_SIGNATURE.
  *
  */
-void vdscCloseDir( vdscDirIterator * pIterator )
+void pscCloseDir( pscDirIterator * pIterator )
 {
    VDS_PRE_CONDITION( pIterator != NULL );
-   VDS_INV_CONDITION( pIterator->initialized == VDSC_DIR_ACCESS_SIGNATURE );
+   VDS_INV_CONDITION( pIterator->initialized == PSC_DIR_ACCESS_SIGNATURE );
 
 #if defined (WIN32)
    if ( pIterator->handle != VDS_INVALID_HANDLE ) {
@@ -202,9 +202,9 @@ void vdscCloseDir( vdscDirIterator * pIterator )
 
 /*!
  * 
- * \param[in] pIterator  A pointer to the vdscDirIterator struct itself.
+ * \param[in] pIterator  A pointer to the pscDirIterator struct itself.
  * \param[in] dirName    The directory name.
- * \param[in] pError     A pointer to a vdscErrorHandler struct (for handling
+ * \param[in] pError     A pointer to a pscErrorHandler struct (for handling
  *                       C library or Win32 API errors).
  *
  * \retval true on success
@@ -215,25 +215,25 @@ void vdscCloseDir( vdscDirIterator * pIterator )
  * \pre \em pError cannot be NULL.
  * \pre (Win32 specific) \em pIterator->dirName must be empty (which insures
  *                           that this function was not called twice without
- *                           calling vdscCloseDir()).
+ *                           calling pscCloseDir()).
  * \pre (Posix specific) \em pIterator->pDir must be NULL (which insures
  *                           that this function was not called twice without
- *                           calling vdscCloseDir()).
+ *                           calling pscCloseDir()).
  *
  * \invariant \em pIterator->initialized must equal 
- *                ::VDSC_DIR_ACCESS_SIGNATURE.
+ *                ::PSC_DIR_ACCESS_SIGNATURE.
  *
  */
-bool vdscOpenDir( vdscDirIterator  * pIterator, 
-                  const char       * dirName,
-                  vdscErrorHandler * pError )
+bool pscOpenDir( pscDirIterator  * pIterator, 
+                 const char      * dirName,
+                 pscErrorHandler * pError )
 {
 #if defined (WIN32)
    int i = 0;
 #endif
 
    VDS_PRE_CONDITION( pIterator != NULL );
-   VDS_INV_CONDITION( pIterator->initialized == VDSC_DIR_ACCESS_SIGNATURE );
+   VDS_INV_CONDITION( pIterator->initialized == PSC_DIR_ACCESS_SIGNATURE );
    VDS_PRE_CONDITION( dirName   != NULL );
    VDS_PRE_CONDITION( pError    != NULL );
 
@@ -258,7 +258,7 @@ bool vdscOpenDir( vdscDirIterator  * pIterator,
 #else
    pIterator->pDir = opendir( dirName );
    if ( pIterator->pDir == NULL ) {
-      vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
       return false;
    }
 #endif

@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSC_PROCESS_LOCK_H
-#define VDSC_PROCESS_LOCK_H
+#ifndef PSC_PROCESS_LOCK_H
+#define PSC_PROCESS_LOCK_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 /*
@@ -78,7 +78,7 @@ union semun {
 #  endif
 #endif
 
-#define VDSC_LOCK_SIGNATURE ((unsigned int)0x174a0c46 )
+#define PSC_LOCK_SIGNATURE ((unsigned int)0x174a0c46 )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -136,7 +136,7 @@ extern int g_timeOutinMilliSecs;
 VDSF_COMMON_EXPORT
 extern struct timespec g_timeOut;
 
-typedef struct vdscProcessLock
+typedef struct pscProcessLock
 {
    unsigned int initialized;
 
@@ -154,7 +154,7 @@ typedef struct vdscProcessLock
    
    int counter;
 
-} vdscProcessLock;
+} pscProcessLock;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -163,46 +163,46 @@ typedef struct vdscProcessLock
  * may return an error.
  */
 VDSF_COMMON_EXPORT
-bool vdscInitProcessLock( vdscProcessLock * pLock );
+bool pscInitProcessLock( pscProcessLock * pLock );
 
 /**
  *  Uninitialize the lock (it will remove the lock for POSIX semaphores).
  */
 VDSF_COMMON_EXPORT
-bool vdscFiniProcessLock( vdscProcessLock * pLock );
+bool pscFiniProcessLock( pscProcessLock * pLock );
 
 /** Acquire lock ownership (loop forever) - this is dangerous for
  * deadlocks.
  */
 static inline
-void vdscAcquireProcessLock( vdscProcessLock * pLock,
-                             pid_t             pidLocker );
+void pscAcquireProcessLock( pscProcessLock * pLock,
+                            pid_t            pidLocker );
 
 /** Attempt to acquire the lock for nMilliSecs - fails if it can't 
  *  Returns -1 on failure.  
  */
 static inline
-bool vdscTryAcquireProcessLock( vdscProcessLock * pLock,
-                                pid_t             pidLocker,
-                                unsigned int      milliSecs );   
+bool pscTryAcquireProcessLock( pscProcessLock * pLock,
+                               pid_t            pidLocker,
+                               unsigned int     milliSecs );   
 
 /** Release lock. */
 static inline
-void vdscReleaseProcessLock( vdscProcessLock * pLock );
+void pscReleaseProcessLock( pscProcessLock * pLock );
 
 /**
  * Test the underlying value of the pid.
  * Returns a boolean value (1 if the pids are the same, 0 otherwise).
  */
 VDSF_COMMON_EXPORT
-bool vdscTestLockPidValue( vdscProcessLock * pLock, pid_t pid );
+bool pscTestLockPidValue( pscProcessLock * pLock, pid_t pid );
 
 /**
  * Test to see if the lock is on.
  * Returns a boolean value (1 if the lock is indeed locked, 0 otherwise).
  */
 VDSF_COMMON_EXPORT
-bool vdscIsItLocked( vdscProcessLock * pLock );
+bool pscIsItLocked( pscProcessLock * pLock );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -228,5 +228,5 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSC_PROCESS_LOCK_H */
+#endif /* PSC_PROCESS_LOCK_H */
 

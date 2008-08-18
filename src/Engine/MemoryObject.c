@@ -59,7 +59,7 @@ vdseMemObjectInit( vdseMemObject   * pMemObj,
    /* In case InitProcessLock fails */
    pMemObj->objType = VDSE_IDENT_CLEAR;
    
-   ok =  vdscInitProcessLock( &pMemObj->lock );
+   ok =  pscInitProcessLock( &pMemObj->lock );
    VDS_POST_CONDITION( ok == true || ok == false );
    /*
     * The only possible error is a lack of resources when using semaphores, 
@@ -138,7 +138,7 @@ vdseMemObjectFini( vdseMemObject      * pMemObj,
 
    vdseLinkedListFini( &pMemObj->listBlockGroup );
 
-   if ( ! vdscFiniProcessLock( &pMemObj->lock ) ) {
+   if ( ! pscFiniProcessLock( &pMemObj->lock ) ) {
       return VDS_SEM_DESTROY_ERROR;
    }
    
@@ -276,7 +276,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
        * We retry again with a smaller number, the minimal increase needed
        * to satisfy the original request.
        */
-      if ( vdscGetLastError( &pContext->errorHandler ) == 
+      if ( pscGetLastError( &pContext->errorHandler ) == 
          VDS_NOT_ENOUGH_VDS_MEMORY ) {
 
          i = requestedBlocks;
@@ -346,7 +346,7 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
     * versus a lack of a chunk big enough to accomodate the # of requested
     * blocks.
     */
-   vdscSetError( &pContext->errorHandler, 
+   pscSetError( &pContext->errorHandler, 
                  g_vdsErrorHandle, 
                  VDS_NOT_ENOUGH_VDS_MEMORY );
 

@@ -18,14 +18,14 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void
-vdscAcquireThreadLock( vdscThreadLock* pLock )
+pscAcquireThreadLock( pscThreadLock* pLock )
 {
 #if ! defined (WIN32)
    int status;
 #endif
 
    VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_THREADLOCK_SIGNATURE );
+   VDS_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
 
 #if defined (WIN32)
    /*
@@ -56,13 +56,13 @@ vdscAcquireThreadLock( vdscThreadLock* pLock )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline bool
-vdscTryAcquireThreadLock( vdscThreadLock* pLock,
-                          unsigned int milliSecs )
+pscTryAcquireThreadLock( pscThreadLock * pLock,
+                         unsigned int    milliSecs )
 {
    int status;
    
    VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_THREADLOCK_SIGNATURE );
+   VDS_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
 
 #if defined (WIN32)
    status = TryEnterCriticalSection( &pLock->mutex );
@@ -111,12 +111,12 @@ vdscTryAcquireThreadLock( vdscThreadLock* pLock,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void
-vdscReleaseThreadLock( vdscThreadLock* pLock )
+pscReleaseThreadLock( pscThreadLock* pLock )
 {
    int status;
    
    VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_THREADLOCK_SIGNATURE );
+   VDS_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
 
 #if defined (WIN32)
    status = 0; /* To avoid a warning */

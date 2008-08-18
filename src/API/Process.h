@@ -63,7 +63,7 @@ typedef struct vdsaProcess
    /** This object encapsulates the task of talking with the watchdog. */
    vdsaConnector connector;
    
-   vdscMemoryFile memoryFile;
+   pscMemoryFile memoryFile;
    
 } vdsaProcess;
 
@@ -79,7 +79,7 @@ extern bool           g_protectionIsNeeded;
  * This global mutex is needed for opening and closing sessions in 
  * a multi-threaded environment.
  */
-extern vdscThreadLock g_ProcessMutex;
+extern pscThreadLock g_ProcessMutex;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -114,7 +114,7 @@ bool vdsaProcessLock()
    bool ok = true;
    
    if ( g_protectionIsNeeded ) {
-      ok = vdscTryAcquireThreadLock( &g_ProcessMutex, LOCK_TIMEOUT );
+      ok = pscTryAcquireThreadLock( &g_ProcessMutex, LOCK_TIMEOUT );
       VDS_POST_CONDITION( ok == true || ok == false );
    }
    
@@ -131,7 +131,7 @@ __inline
 void vdsaProcessUnlock()
 {
    if ( g_protectionIsNeeded ) {
-      vdscReleaseThreadLock( &g_ProcessMutex );
+      pscReleaseThreadLock( &g_ProcessMutex );
    }
 }
 

@@ -70,7 +70,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( vdscGetLastError( &context.errorHandler ) != VDS_OBJECT_IS_IN_USE ) {
+   if ( pscGetLastError( &context.errorHandler ) != VDS_OBJECT_IS_IN_USE ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -94,7 +94,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( vdscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT ) {
+   if ( pscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

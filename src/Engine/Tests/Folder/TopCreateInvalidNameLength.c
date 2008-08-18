@@ -48,7 +48,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdscGetLastError( &context.errorHandler );
+   errcode = pscGetLastError( &context.errorHandler );
    if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -61,7 +61,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdscGetLastError( &context.errorHandler );
+   errcode = pscGetLastError( &context.errorHandler );
    if ( errcode != VDS_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -74,7 +74,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdscGetLastError( &context.errorHandler );
+   errcode = pscGetLastError( &context.errorHandler );
    if ( errcode != VDS_OBJECT_NAME_TOO_LONG ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -90,7 +90,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdscGetLastError( &context.errorHandler );
+   errcode = pscGetLastError( &context.errorHandler );
    if ( errcode != VDS_OBJECT_NAME_TOO_LONG ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

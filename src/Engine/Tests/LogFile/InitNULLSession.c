@@ -26,12 +26,12 @@ int main()
 {
 #if defined(USE_DBC)
    vdseLogFile logfile;
-   vdscErrorHandler errorHandler;
+   pscErrorHandler errorHandler;
    vdsErrors error;
    
-   vdscInitErrorDefs();
+   pscInitErrorDefs();
    
-   vdscInitErrorHandler( &errorHandler );
+   pscInitErrorHandler( &errorHandler );
 
    error = vdseInitLogFile( &logfile, ".", NULL, &errorHandler );
 

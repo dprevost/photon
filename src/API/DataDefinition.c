@@ -164,16 +164,16 @@ void vdsaGetLimits( vdseFieldDef * pDefinition,
 
       case VDS_INTEGER:
          if ( pDefinition[i].length1 == 1 ) {
-            minLength = ((minLength-1)/VDSC_ALIGNMENT_CHAR + 1)*VDSC_ALIGNMENT_CHAR;
+            minLength = ((minLength-1)/PSC_ALIGNMENT_CHAR + 1)*PSC_ALIGNMENT_CHAR;
          }
          else if ( pDefinition[i].length1 == 2 ) {
-            minLength = ((minLength-1)/VDSC_ALIGNMENT_INT16 + 1)*VDSC_ALIGNMENT_INT16;
+            minLength = ((minLength-1)/PSC_ALIGNMENT_INT16 + 1)*PSC_ALIGNMENT_INT16;
          }
          else if ( pDefinition[i].length1 == 4 ) {
-            minLength = ((minLength-1)/VDSC_ALIGNMENT_INT32 + 1)*VDSC_ALIGNMENT_INT32;
+            minLength = ((minLength-1)/PSC_ALIGNMENT_INT32 + 1)*PSC_ALIGNMENT_INT32;
          }
          else {
-            minLength = ((minLength-1)/VDSC_ALIGNMENT_INT64 + 1)*VDSC_ALIGNMENT_INT64;
+            minLength = ((minLength-1)/PSC_ALIGNMENT_INT64 + 1)*PSC_ALIGNMENT_INT64;
          }
          
          minLength += pDefinition[i].length1;
@@ -182,25 +182,25 @@ void vdsaGetLimits( vdseFieldDef * pDefinition,
 
       case VDS_BINARY:
       case VDS_STRING:
-         minLength = ((minLength-1)/VDSC_ALIGNMENT_CHAR + 1)*VDSC_ALIGNMENT_CHAR;
+         minLength = ((minLength-1)/PSC_ALIGNMENT_CHAR + 1)*PSC_ALIGNMENT_CHAR;
          minLength += pDefinition[i].length1;
 
          break;
 
       case VDS_DECIMAL:
-         minLength = ((minLength-1)/VDSC_ALIGNMENT_CHAR + 1)*VDSC_ALIGNMENT_CHAR;
+         minLength = ((minLength-1)/PSC_ALIGNMENT_CHAR + 1)*PSC_ALIGNMENT_CHAR;
          minLength += pDefinition[i].length1 + 2;
 
          break;
 
       case VDS_BOOLEAN:
-         minLength = ((minLength-1)/VDSC_ALIGNMENT_BOOL + 1)*VDSC_ALIGNMENT_BOOL;
+         minLength = ((minLength-1)/PSC_ALIGNMENT_BOOL + 1)*PSC_ALIGNMENT_BOOL;
          minLength += sizeof(bool);
          break;
 
       case VDS_VAR_BINARY:
       case VDS_VAR_STRING:
-         minLength = ((minLength-1)/VDSC_ALIGNMENT_CHAR + 1)*VDSC_ALIGNMENT_CHAR;
+         minLength = ((minLength-1)/PSC_ALIGNMENT_CHAR + 1)*PSC_ALIGNMENT_CHAR;
          minLength += pDefinition[i].length1;
 
          if ( pDefinition[i].length2 == 0 ||

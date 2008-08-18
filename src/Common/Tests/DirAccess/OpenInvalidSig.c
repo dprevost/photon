@@ -27,15 +27,15 @@ int main()
 {
 #if defined(USE_DBC)
    bool ok;
-   vdscDirIterator iterator;
-   vdscErrorHandler errorHandler;
+   pscDirIterator iterator;
+   pscErrorHandler errorHandler;
 
-   vdscInitErrorDefs();
-   vdscInitDir( &iterator );
-   vdscInitErrorHandler( &errorHandler );
+   pscInitErrorDefs();
+   pscInitDir( &iterator );
+   pscInitErrorHandler( &errorHandler );
    
    iterator.initialized = 0;
-   ok = vdscOpenDir( &iterator, "..", &errorHandler );
+   ok = pscOpenDir( &iterator, "..", &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

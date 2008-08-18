@@ -40,7 +40,7 @@ BEGIN_C_DECLS
  */
 struct vdseSessionContext
 {
-   vdscErrorHandler errorHandler;
+   pscErrorHandler errorHandler;
    
    /** Normally set to the process id (pid) of the process */
    pid_t pidLocker;
@@ -74,7 +74,7 @@ void vdseInitSessionContext( vdseSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pContext != NULL );
    
-   vdscInitErrorHandler( &pContext->errorHandler );
+   pscInitErrorHandler( &pContext->errorHandler );
    
    pContext->pidLocker    = getpid();
    pContext->lockObject   = VDSE_NULL_OFFSET;

@@ -28,10 +28,10 @@ int main()
    int errcode = 0;
    char dummyArgs[100];
    char *dummyPtrs[10];
-   vdscOptionHandle handle;
+   pscOptionHandle handle;
    bool ok;
    
-   struct vdscOptStruct opts[5] = {
+   struct pscOptStruct opts[5] = {
       { '3', "three",   1, "", "repeat the loop three times" },
       { 'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog" },
       { 'x', "",        1, "DISPLAY", "X display to use" },
@@ -39,7 +39,7 @@ int main()
       { 'z', "zzz",     1, "", "go to sleep..." }
    };
    
-   ok = vdscSetSupportedOptions( 5, opts, &handle );
+   ok = pscSetSupportedOptions( 5, opts, &handle );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -57,12 +57,12 @@ int main()
    dummyArgs[27] = 0;
    dummyArgs[30] = 0;
 
-   errcode = vdscValidateUserOptions( handle, 5, dummyPtrs, 1 );
+   errcode = pscValidateUserOptions( handle, 5, dummyPtrs, 1 );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdscIsLongOptPresent( NULL, "address" );
+   pscIsLongOptPresent( NULL, "address" );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

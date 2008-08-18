@@ -31,8 +31,8 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdscMemoryFile  mem1, mem2;
-   vdscErrorHandler errorHandler;
+   pscMemoryFile  mem1, mem2;
+   pscErrorHandler errorHandler;
    void*           pAddr = NULL;
    bool ok;
    unsigned char* str;
@@ -44,17 +44,17 @@ int main()
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
    
-   vdscInitErrorDefs();
-   vdscInitErrorHandler( &errorHandler );
-   vdscInitMemoryFile( &mem1, 10, "MemFile.mem" );
-   vdscInitMemoryFile( &mem2, 10, "MemFile.mem" );
+   pscInitErrorDefs();
+   pscInitErrorHandler( &errorHandler );
+   pscInitMemoryFile( &mem1, 10, "MemFile.mem" );
+   pscInitMemoryFile( &mem2, 10, "MemFile.mem" );
    
-   ok = vdscCreateBackstore( &mem1, 0600, &errorHandler );
+   ok = pscCreateBackstore( &mem1, 0600, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
-   ok = vdscOpenMemFile( &mem1, &pAddr, &errorHandler );
+   ok = pscOpenMemFile( &mem1, &pAddr, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
@@ -78,10 +78,10 @@ int main()
       str[i] = (unsigned char) (i % 256);
    }
    
-   vdscSyncMemFile( &mem1, &errorHandler );
-   vdscCloseMemFile( &mem1, &errorHandler );
+   pscSyncMemFile( &mem1, &errorHandler );
+   pscCloseMemFile( &mem1, &errorHandler );
 
-   ok = vdscOpenMemFile( &mem2, &pAddr, &errorHandler );
+   ok = pscOpenMemFile( &mem2, &pAddr, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
@@ -93,14 +93,14 @@ int main()
       }
    }
    
-   vdscCloseMemFile( &mem2, &errorHandler );
+   pscCloseMemFile( &mem2, &errorHandler );
 
    unlink( "MemFile.mem" );
 
-   vdscFiniMemoryFile( &mem1 );
-   vdscFiniMemoryFile( &mem2 );
-   vdscFiniErrorHandler( &errorHandler );
-   vdscFiniErrorDefs();
+   pscFiniMemoryFile( &mem1 );
+   pscFiniMemoryFile( &mem2 );
+   pscFiniErrorHandler( &errorHandler );
+   pscFiniErrorDefs();
 
    return 0;
 }

@@ -64,7 +64,7 @@ typedef struct vdsaSession
    int numberOfEdits;
    
    /** Our lock to serialize access to this object, if needed. */
-   vdscThreadLock  mutex;
+   pscThreadLock  mutex;
    
    vdsaListReaders listReaders;
    
@@ -101,7 +101,7 @@ bool vdsaSessionLock( vdsaSession * pSession )
    VDS_PRE_CONDITION( pSession != NULL );
    
    if ( g_protectionIsNeeded ) {
-      ok = vdscTryAcquireThreadLock( &pSession->mutex, LOCK_TIMEOUT );
+      ok = pscTryAcquireThreadLock( &pSession->mutex, LOCK_TIMEOUT );
       VDS_POST_CONDITION( ok == true || ok == false );
    }
    
@@ -118,7 +118,7 @@ __inline
 void vdsaSessionUnlock( vdsaSession* pSession )
 {
    if ( g_protectionIsNeeded ) {
-      vdscReleaseThreadLock( &pSession->mutex );
+      pscReleaseThreadLock( &pSession->mutex );
    }
 }
 

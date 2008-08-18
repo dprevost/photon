@@ -200,7 +200,7 @@ bool vdseHashMapDelete( vdseHashMap        * pHashMap,
       vdseUnlock( &pHashMap->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
 
@@ -209,9 +209,9 @@ bool vdseHashMapDelete( vdseHashMap        * pHashMap,
 the_exit:
 
    vdseUnlock( &pHashMap->memObject, pContext );
-   /* vdscSetError might have been already called by some other function */
+   /* pscSetError might have been already called by some other function */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return false;
@@ -340,7 +340,7 @@ bool vdseHashMapGet( vdseHashMap        * pHashMap,
       vdseUnlock( &pHashMap->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
    
@@ -351,10 +351,10 @@ the_exit:
    vdseUnlock( &pHashMap->memObject, pContext );
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return false;
@@ -422,13 +422,13 @@ bool vdseHashMapGetFirst( vdseHashMap        * pHashMap,
              */
             if ( bufferLength < pHashItem->dataLength ) {
                vdseUnlock( &pHashMap->memObject, pContext );
-               vdscSetError( &pContext->errorHandler, 
+               pscSetError( &pContext->errorHandler, 
                              g_vdsErrorHandle, VDS_INVALID_LENGTH );
                return false;
             }
             if ( keyLength < pHashItem->keyLength ) {
                vdseUnlock( &pHashMap->memObject, pContext );
-               vdscSetError( &pContext->errorHandler, 
+               pscSetError( &pContext->errorHandler, 
                              g_vdsErrorHandle, VDS_INVALID_LENGTH );
                return false;
             }
@@ -449,12 +449,12 @@ bool vdseHashMapGetFirst( vdseHashMap        * pHashMap,
       }
    }
    else {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
    
    vdseUnlock( &pHashMap->memObject, pContext );
-   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
+   pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
 
    return false;
 }
@@ -528,13 +528,13 @@ bool vdseHashMapGetNext( vdseHashMap        * pHashMap,
              */
             if ( bufferLength < pHashItem->dataLength ) {
                vdseUnlock( &pHashMap->memObject, pContext );
-               vdscSetError( &pContext->errorHandler, 
+               pscSetError( &pContext->errorHandler, 
                              g_vdsErrorHandle, VDS_INVALID_LENGTH );
                return false;
             }
             if ( keyLength < pHashItem->keyLength ) {
                vdseUnlock( &pHashMap->memObject, pContext );
-               vdscSetError( &pContext->errorHandler, 
+               pscSetError( &pContext->errorHandler, 
                              g_vdsErrorHandle, VDS_INVALID_LENGTH );
                return false;
             }
@@ -556,7 +556,7 @@ bool vdseHashMapGetNext( vdseHashMap        * pHashMap,
       }
    }
    else {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
 
@@ -571,7 +571,7 @@ bool vdseHashMapGetNext( vdseHashMap        * pHashMap,
    vdseHashMapReleaseNoLock( pHashMap, previousHashItem, pContext );
    
    vdseUnlock( &pHashMap->memObject, pContext );
-   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
+   pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
 
    return false;
 }
@@ -609,7 +609,7 @@ bool vdseHashMapInit( vdseHashMap         * pHashMap,
                                 &pHashMap->blockGroup,
                                 numberOfBlocks );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler,
+      pscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
       return false;
@@ -627,7 +627,7 @@ bool vdseHashMapInit( vdseHashMap         * pHashMap,
                            expectedNumOfItems, 
                            pContext );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     errcode );
       return false;
@@ -639,7 +639,7 @@ bool vdseHashMapInit( vdseHashMap         * pHashMap,
                                      pHashMap->numFields* sizeof(vdseFieldDef),
                                      pContext );
    if ( ptr == NULL ) {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
       return false;
    }
@@ -763,7 +763,7 @@ bool vdseHashMapInsert( vdseHashMap        * pHashMap,
       vdseUnlock( &pHashMap->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
 
@@ -774,10 +774,10 @@ the_exit:
    vdseUnlock( &pHashMap->memObject, pContext );
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return false;
@@ -802,7 +802,7 @@ bool vdseHashMapRelease( vdseHashMap        * pHashMap,
       vdseUnlock( &pHashMap->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler,
+      pscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
@@ -971,7 +971,7 @@ bool vdseHashMapReplace( vdseHashMap        * pHashMap,
       vdseUnlock( &pHashMap->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
 
@@ -982,10 +982,10 @@ the_exit:
    vdseUnlock( &pHashMap->memObject, pContext );
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return false;

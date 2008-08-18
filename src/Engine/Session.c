@@ -39,7 +39,7 @@ bool vdseSessionInit( vdseSession        * pSession,
                                 &pSession->blockGroup,
                                 1 ); /* A single block */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler,
+      pscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
    }
@@ -68,7 +68,7 @@ bool vdseSessionInit( vdseSession        * pSession,
          }
       }
       else {
-         vdscSetError( &pContext->errorHandler, 
+         pscSetError( &pContext->errorHandler, 
                        g_vdsErrorHandle, 
                        VDS_NOT_ENOUGH_VDS_MEMORY );
       }
@@ -145,7 +145,7 @@ bool vdseSessionAddObj( vdseSession        * pSession,
          ok = true;
       }
       else {
-         vdscSetError( &pContext->errorHandler,
+         pscSetError( &pContext->errorHandler,
                        g_vdsErrorHandle,
                        VDS_NOT_ENOUGH_VDS_MEMORY );
       }
@@ -153,7 +153,7 @@ bool vdseSessionAddObj( vdseSession        * pSession,
       vdseUnlock( &pSession->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler,
+      pscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     VDS_ENGINE_BUSY );
    }
@@ -183,7 +183,7 @@ bool vdseSessionRemoveObj( vdseSession        * pSession,
       vdseUnlock( &pSession->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler,
+      pscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     VDS_ENGINE_BUSY );
       return false;

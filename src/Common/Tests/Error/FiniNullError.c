@@ -26,12 +26,12 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdscErrorHandler errorHandler;
+   pscErrorHandler errorHandler;
    
-   vdscInitErrorDefs();
-   vdscInitErrorHandler( &errorHandler );
+   pscInitErrorDefs();
+   pscInitErrorHandler( &errorHandler );
 
-   vdscFiniErrorHandler( NULL );
+   pscFiniErrorHandler( NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

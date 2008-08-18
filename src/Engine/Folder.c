@@ -166,10 +166,10 @@ error_handler:
 
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return false;
@@ -360,9 +360,9 @@ bool vdseFolderDeleteObject( vdseFolder         * pFolder,
    
 the_exit:
 
-   /* vdscSetError might have been already called by some other function */
+   /* pscSetError might have been already called by some other function */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    vdseUnlock( &pFolder->memObject, pContext );
@@ -443,10 +443,10 @@ error_handler:
 
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return false;
@@ -706,10 +706,10 @@ the_exit:
 
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    vdseUnlock( &pFolder->memObject, pContext );
@@ -874,10 +874,10 @@ the_exit:
 
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    vdseUnlock( &pFolder->memObject, pContext );
@@ -935,12 +935,12 @@ bool vdseFolderGetFirst( vdseFolder         * pFolder,
       }
    }
    else {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
    
    vdseUnlock( &pFolder->memObject, pContext );
-   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
+   pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
 
    return false;
 }
@@ -1005,7 +1005,7 @@ bool vdseFolderGetNext( vdseFolder         * pFolder,
       }
    }
    else {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
    
@@ -1020,7 +1020,7 @@ bool vdseFolderGetNext( vdseFolder         * pFolder,
    vdseFolderReleaseNoLock( pFolder, previousHashItem, pContext );
     
    vdseUnlock( &pFolder->memObject, pContext );
-   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
+   pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
 
    return false;
 }
@@ -1137,10 +1137,10 @@ the_exit:
 
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    vdseUnlock( &pFolder->memObject, pContext );
@@ -1282,10 +1282,10 @@ the_exit:
 
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    vdseUnlock( &pFolder->memObject, pContext );
@@ -1321,7 +1321,7 @@ bool vdseFolderInit( vdseFolder         * pFolder,
                                 &pFolder->blockGroup,
                                 numberOfBlocks );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler,
+      pscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
       return false;
@@ -1339,7 +1339,7 @@ bool vdseFolderInit( vdseFolder         * pFolder,
                            expectedNumOfChilds, 
                            pContext );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     errcode );
       return false;
@@ -1639,10 +1639,10 @@ the_exit:
 
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    vdseUnlock( &pFolder->memObject, pContext );
@@ -1693,7 +1693,7 @@ bool vdseFolderRelease( vdseFolder         * pFolder,
       vdseUnlock( &pFolder->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
 
@@ -1941,7 +1941,7 @@ bool vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
       return true;
    }
    
-   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_ENGINE_BUSY );
+   pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_ENGINE_BUSY );
    
    return false;
 }
@@ -2033,10 +2033,10 @@ error_handler:
 
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return false;
@@ -2121,10 +2121,10 @@ error_handler:
 
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return false;
@@ -2224,10 +2224,10 @@ error_handler:
 
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return false;
@@ -2331,10 +2331,10 @@ error_handler:
 
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return false;
@@ -2436,10 +2436,10 @@ error_handler:
 
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return false;
@@ -2539,10 +2539,10 @@ error_handler:
 
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return false;

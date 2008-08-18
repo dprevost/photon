@@ -69,9 +69,9 @@ typedef struct vdstBarrier vdstBarrier;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Initialize the struct vdstBarrier. */
-int vdstInitBarrier( vdstBarrier *     pBarrier,
+int vdstInitBarrier( vdstBarrier     * pBarrier,
                      int               numThreads,
-                     vdscErrorHandler* pError );
+                     pscErrorHandler * pError );
 
 /*! \brief Terminate access to the struct vdstBarrier. */
 void vdstFiniBarrier( vdstBarrier * pBarrier );

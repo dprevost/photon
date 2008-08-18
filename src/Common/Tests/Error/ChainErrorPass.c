@@ -25,14 +25,14 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdscErrorHandler errorHandler;
+   pscErrorHandler errorHandler;
    
-   vdscInitErrorDefs();
-   vdscInitErrorHandler( &errorHandler );
+   pscInitErrorDefs();
+   pscInitErrorHandler( &errorHandler );
    
-   vdscSetError( &errorHandler, VDSC_ERRNO_HANDLE, ENOENT );
+   pscSetError( &errorHandler, PSC_ERRNO_HANDLE, ENOENT );
 
-   vdscChainError( &errorHandler, VDSC_ERRNO_HANDLE, EINTR );
+   pscChainError( &errorHandler, PSC_ERRNO_HANDLE, EINTR );
 
    if ( errorHandler.chainLength != 2 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -43,15 +43,15 @@ int main()
    if ( errorHandler.errorCode[1] != EINTR ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( errorHandler.errorHandle[0] != VDSC_ERRNO_HANDLE ) {
+   if ( errorHandler.errorHandle[0] != PSC_ERRNO_HANDLE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( errorHandler.errorHandle[1] != VDSC_ERRNO_HANDLE ) {
+   if ( errorHandler.errorHandle[1] != PSC_ERRNO_HANDLE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdscFiniErrorHandler( &errorHandler );
-   vdscFiniErrorDefs();
+   pscFiniErrorHandler( &errorHandler );
+   pscFiniErrorDefs();
 
    return 0;
 }

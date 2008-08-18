@@ -59,7 +59,7 @@ int main()
    if ( ok == true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( vdscGetLastError( &context.errorHandler ) != VDS_INTERNAL_ERROR ) {
+   if ( pscGetLastError( &context.errorHandler ) != VDS_INTERNAL_ERROR ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

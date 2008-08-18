@@ -41,7 +41,7 @@ void * vdstStartRoutine( void* arg )
 int vdstCreateThread( vdstThreadWrap* pThread, 
                       VDST_THREAD_FUNCTION startRoutine,
                       void* arg,
-                      vdscErrorHandler* pError )
+                      pscErrorHandler* pError )
 {
 #if defined (WIN32)
    HANDLE handle;
@@ -66,7 +66,7 @@ int vdstCreateThread( vdstThreadWrap* pThread,
                                      &threadId );
    if ( handle == NULL ) {
       /* _beginthreadex does indeed set errno. */
-      vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
       return -1;
    }
    pThread->hThread = handle;
@@ -77,10 +77,10 @@ int vdstCreateThread( vdstThreadWrap* pThread,
 
    if ( errcode != 0 ) {
       if ( errcode > 0 ) {
-         vdscSetError( pError, VDSC_ERRNO_HANDLE, errcode );
+         pscSetError( pError, PSC_ERRNO_HANDLE, errcode );
       }
       else {
-         vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+         pscSetError( pError, PSC_ERRNO_HANDLE, errno );
       }
       return -1;
    }
@@ -93,7 +93,7 @@ int vdstCreateThread( vdstThreadWrap* pThread,
 
 int vdstJoinThread( vdstThreadWrap* pThread, 
 //                    void* retValue,
-                    vdscErrorHandler* pError )
+                    pscErrorHandler* pError )
 {
 #if defined (WIN32)
    DWORD err;
@@ -108,7 +108,7 @@ int vdstJoinThread( vdstThreadWrap* pThread,
 //      }
    }
 
-   vdscSetError( pError, VDSC_WINERR_HANDLE, GetLastError() );
+   pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );
    return -1;
 
 #else
@@ -117,10 +117,10 @@ int vdstJoinThread( vdstThreadWrap* pThread,
    errcode = pthread_join( pThread->threadId, NULL ); // &retValue
    if ( errcode != 0 ) {
       if ( errcode > 0 ) {
-         vdscSetError( pError, VDSC_ERRNO_HANDLE, errcode );
+         pscSetError( pError, PSC_ERRNO_HANDLE, errcode );
       }
       else {
-         vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+         pscSetError( pError, PSC_ERRNO_HANDLE, errno );
       }
       return -1;
    }

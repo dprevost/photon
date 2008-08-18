@@ -25,11 +25,11 @@ const bool expectedToPass = true;
 int main()
 {
    vdseLogFile logfile;
-   vdscErrorHandler errorHandler;
+   pscErrorHandler errorHandler;
    vdsErrors error;
 
-   vdscInitErrorDefs();
-   vdscInitErrorHandler( &errorHandler );
+   pscInitErrorDefs();
+   pscInitErrorHandler( &errorHandler );
 
    error = vdseInitLogFile( &logfile, ".", (void*)0x1234, &errorHandler );
    if ( error != VDS_OK ) {
@@ -51,8 +51,8 @@ int main()
    
    vdseCloseLogFile( &logfile, &errorHandler );
    
-   vdscFiniErrorHandler( &errorHandler );
-   vdscFiniErrorDefs();
+   pscFiniErrorHandler( &errorHandler );
+   pscFiniErrorDefs();
    
    return 0;
 }

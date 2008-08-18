@@ -24,7 +24,7 @@
 #include "Engine/SessionContext.h"
 #include "Engine/InitEngine.h"
 
-extern vdscErrMsgHandle g_wdErrorHandle;
+extern pscErrMsgHandle g_wdErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -38,8 +38,8 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
    char path[PATH_MAX];
    char logFile[PATH_MAX];
    int path_len;
-   vdscMemoryFileStatus fileStatus;
-   vdscMemoryFile memFile;
+   pscMemoryFileStatus fileStatus;
+   pscMemoryFile memFile;
    FILE * fp = NULL;
    char timeBuf[30];
    time_t t;
@@ -64,14 +64,14 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
       fprintf( stderr, "Abnormal error at line %d in VdsHandler.cpp\n", __LINE__ );
       exit(1);
    }
-   vdscInitErrorHandler( &pHandler->context.errorHandler );
+   pscInitErrorHandler( &pHandler->context.errorHandler );
 
    pHandler->pConfig = pConfig;
 
    pHandler->pMemManager = (vdswMemoryManager *)calloc( 
       sizeof(vdswMemoryManager), 1 );
    if ( pHandler->pMemManager == NULL ) {
-      vdscSetError( &pHandler->context.errorHandler,
+      pscSetError( &pHandler->context.errorHandler,
                     g_wdErrorHandle,
                     VDSW_NOT_ENOUGH_HEAP_MEMORY );
       return false;
@@ -81,7 +81,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
    path_len = strlen( pConfig->wdLocation ) + strlen( VDS_DIR_SEPARATOR ) +
       strlen( VDS_MEMFILE_NAME )  + strlen( ".bak" );
    if ( path_len >= PATH_MAX ) {
-      vdscSetError( &pHandler->context.errorHandler,
+      pscSetError( &pHandler->context.errorHandler,
                     g_wdErrorHandle,
                     VDSW_CFG_BCK_LOCATION_TOO_LONG );
       return false;
@@ -90,12 +90,12 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
    sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
             VDS_MEMFILE_NAME );
    
-   vdscInitMemoryFile ( &memFile, pConfig->memorySizekb, path );
-   vdscBackStoreStatus( &memFile, &fileStatus );
+   pscInitMemoryFile ( &memFile, pConfig->memorySizekb, path );
+   pscBackStoreStatus( &memFile, &fileStatus );
 
    if ( ! fileStatus.fileExist ) {
       if ( verifyVDSOnly ) {
-         vdscSetError( &pHandler->context.errorHandler,
+         pscSetError( &pHandler->context.errorHandler,
                        g_wdErrorHandle,
                        VDSW_NO_VERIFICATION_POSSIBLE );
          return false;
@@ -116,7 +116,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
                   VDS_LOGDIR_NAME );
          errcode = mkdir( path, pConfig->dirPerms );
          if ( errcode != 0 ) {
-            vdscSetError( &pHandler->context.errorHandler,
+            pscSetError( &pHandler->context.errorHandler,
                           g_wdErrorHandle,
                           VDSW_MKDIR_FAILURE );
             return false;
@@ -127,7 +127,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
    else {
       if ( ! fileStatus.fileReadable || ! fileStatus.fileWritable || 
          ! fileStatus.lenghtOK ) {
-         vdscSetError( &pHandler->context.errorHandler,
+         pscSetError( &pHandler->context.errorHandler,
                        g_wdErrorHandle,
                        VDSW_FILE_NOT_ACCESSIBLE );
          return false;
@@ -152,10 +152,10 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
          errcode = mkdir( logFile, pConfig->dirPerms );
          if ( errcode != 0 ) {
             if ( errno != EEXIST ) {
-               vdscSetError( &pHandler->context.errorHandler,
-                             VDSC_ERRNO_HANDLE,
+               pscSetError( &pHandler->context.errorHandler,
+                             PSC_ERRNO_HANDLE,
                              errno );
-               vdscChainError( &pHandler->context.errorHandler,
+               pscChainError( &pHandler->context.errorHandler,
                                g_wdErrorHandle,
                                VDSW_MKDIR_FAILURE );
                return false;
@@ -175,12 +175,12 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
       if ( fp == NULL ) fp = stderr;
 
       if ( ! verifyVDSOnly ) {
-         ok = vdscCopyBackstore( &memFile,
+         ok = pscCopyBackstore( &memFile,
                                  pConfig->filePerms,
                                  &pHandler->context.errorHandler );
          VDS_POST_CONDITION( ok == true || ok == false );
          if ( ! ok ) {
-            vdscChainError( &pHandler->context.errorHandler,
+            pscChainError( &pHandler->context.errorHandler,
                             g_wdErrorHandle,
                             VDSW_COPY_BCK_FAILURE );
             return false;

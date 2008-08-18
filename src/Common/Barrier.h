@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSC_BARRIER_H
-#define VDSC_BARRIER_H
+#ifndef PSC_BARRIER_H
+#define PSC_BARRIER_H
 
 #if defined (WIN32)
 #  include "Common/arch/Barrier-win32.h"
@@ -34,5 +34,5 @@
 #  error "Not implemented yet!"
 #endif
 
-#endif /* VDSC_BARRIER_H */
+#endif /* PSC_BARRIER_H */
 

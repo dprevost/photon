@@ -50,7 +50,7 @@ bool vdseMapCopy( vdseMap            * pOldMap,
                                 &pNewMap->blockGroup,
                                 pOldMap->memObject.totalBlocks );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler,
+      pscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
       return false;
@@ -68,7 +68,7 @@ bool vdseMapCopy( vdseMap            * pOldMap,
                                          pNewMap->numFields* sizeof(vdseFieldDef),
                                          pContext );
    if ( newDef == NULL ) {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
       return false;
    }
@@ -82,7 +82,7 @@ bool vdseMapCopy( vdseMap            * pOldMap,
                            pOldMap->hashObj.numberOfItems,
                            pContext );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     errcode );
       return false;
@@ -90,7 +90,7 @@ bool vdseMapCopy( vdseMap            * pOldMap,
 
    errcode = vdseHashCopy( &pOldMap->hashObj, &pNewMap->hashObj, pContext );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return false;
    }
    pNewMap->latestVersion = pOldMap->latestVersion;
@@ -120,7 +120,7 @@ bool vdseMapDelete( vdseMap            * pHashMap,
                                keyLength,
                                pContext );
    if ( ! found ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NO_SUCH_ITEM );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NO_SUCH_ITEM );
       return false;
    }
 
@@ -242,10 +242,10 @@ the_exit:
 
    /*
     * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called vdscSetError. 
+    * some other function which already called pscSetError. 
     */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return false;
@@ -273,14 +273,14 @@ bool vdseMapGetFirst( vdseMap            * pHashMap,
 
    if ( txHashMapStatus->status & VDSE_TXS_DESTROYED || 
       txHashMapStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_IS_DELETED );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_IS_DELETED );
       return false;
    }
    
    found = vdseHashGetFirst( &pHashMap->hashObj, 
                              &firstItemOffset );
    if ( ! found ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
       return false;
    }
    
@@ -292,12 +292,12 @@ bool vdseMapGetFirst( vdseMap            * pHashMap,
     * could be done after but this way makes the code faster.
     */
    if ( bufferLength < pHashItem->dataLength ) {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return false;
    }
    if ( keyLength < pHashItem->keyLength ) {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return false;
    }
@@ -334,7 +334,7 @@ bool vdseMapGetNext( vdseMap            * pHashMap,
 
    if ( txHashMapStatus->status & VDSE_TXS_DESTROYED || 
       txHashMapStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_IS_DELETED );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_IS_DELETED );
       return false;
    }
    
@@ -354,7 +354,7 @@ bool vdseMapGetNext( vdseMap            * pHashMap,
       pItem->pHashItem = NULL;
       pItem->itemOffset = VDSE_NULL_OFFSET;
       vdseMapReleaseNoLock( pHashMap, previousHashItem, pContext );
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
       return false;
    }
    
@@ -366,12 +366,12 @@ bool vdseMapGetNext( vdseMap            * pHashMap,
     * could be done after but this way makes the code faster.
     */
    if ( bufferLength < pHashItem->dataLength ) {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return false;
    }
    if ( keyLength < pHashItem->keyLength ) {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return false;
    }
@@ -417,7 +417,7 @@ bool vdseMapInit( vdseMap             * pHashMap,
                                 &pHashMap->blockGroup,
                                 numberOfBlocks );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler,
+      pscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
       return false;
@@ -435,7 +435,7 @@ bool vdseMapInit( vdseMap             * pHashMap,
                            expectedNumOfItems, 
                            pContext );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler,
+      pscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
       return false;
@@ -447,7 +447,7 @@ bool vdseMapInit( vdseMap             * pHashMap,
                                      pHashMap->numFields* sizeof(vdseFieldDef),
                                      pContext );
    if ( ptr == NULL ) {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
       return false;
    }
@@ -511,7 +511,7 @@ bool vdseMapInsert( vdseMap            * pHashMap,
                              &pHashItem,
                              pContext );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return false;
    }
       
@@ -602,7 +602,7 @@ bool vdseMapReplace( vdseMap            * pHashMap,
                              dataLength,
                              pContext );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return false;
    }
    

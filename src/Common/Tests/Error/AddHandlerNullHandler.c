@@ -38,11 +38,11 @@ int errorHandler( int errorCode, char* msg, unsigned int msgLength )
 int main()
 {
 #if defined(USE_DBC)
-   vdscErrMsgHandle handle;
+   pscErrMsgHandle handle;
    
-   vdscInitErrorDefs();
+   pscInitErrorDefs();
 
-   handle = vdscAddErrorMsgHandler( "Dummy", NULL );
+   handle = pscAddErrorMsgHandler( "Dummy", NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

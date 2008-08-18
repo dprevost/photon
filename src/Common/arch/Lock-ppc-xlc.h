@@ -15,21 +15,21 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSC_ARCH_PROCESS_LOCK_H
-#define VDSC_ARCH_PROCESS_LOCK_H
+#ifndef PSC_ARCH_PROCESS_LOCK_H
+#define PSC_ARCH_PROCESS_LOCK_H
 
 #include <builtins.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void
-vdscAcquireProcessLock( vdscProcessLock * pLock,
-                        pid_t             pid_locker )
+pscAcquireProcessLock( pscProcessLock * pLock,
+                       pid_t            pid_locker )
 {
    int out = 0;
 
    VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
+   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( pid_locker != 0 );
 
    for (;;) {
@@ -48,14 +48,14 @@ vdscAcquireProcessLock( vdscProcessLock * pLock,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline bool
-vdscTryAcquireProcessLock( vdscProcessLock * pLock,
-                           pid_t             pid_locker,
-                           unsigned int      milliSecs )
+pscTryAcquireProcessLock( pscProcessLock * pLock,
+                          pid_t            pid_locker,
+                          unsigned int     milliSecs )
 {
    int out = 0;
 
    VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
+   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( pid_locker != 0 );
 
    if ( __lwarx( &pLock->lock ) == 0 ) {
@@ -98,10 +98,10 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void
-vdscReleaseProcessLock( vdscProcessLock * pLock )
+pscReleaseProcessLock( pscProcessLock * pLock )
 {
    VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
+   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
 
    pLock->pid  = 0;
    /*
@@ -114,7 +114,7 @@ vdscReleaseProcessLock( vdscProcessLock * pLock )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSC_ARCH_PROCESS_LOCK_H */
+#endif /* PSC_ARCH_PROCESS_LOCK_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

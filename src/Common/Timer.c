@@ -19,7 +19,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdscInitTimer( vdscTimer * pTimer )
+void pscInitTimer( pscTimer * pTimer )
 {
 #if defined (WIN32)
    pTimer->highResolution = TRUE;
@@ -38,9 +38,9 @@ void vdscInitTimer( vdscTimer * pTimer )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void 
-vdscCalculateTimer( vdscTimer     * pTimer,
-                    unsigned long * pSecs,
-                    unsigned long * pnanoSecs )
+pscCalculateTimer( pscTimer      * pTimer,
+                   unsigned long * pSecs,
+                   unsigned long * pnanoSecs )
 {
    unsigned long tmp;
    

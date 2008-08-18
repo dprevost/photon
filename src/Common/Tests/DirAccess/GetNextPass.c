@@ -26,33 +26,33 @@ const bool expectedToPass = true;
 int main()
 {
    bool ok;
-   vdscDirIterator iterator;
+   pscDirIterator iterator;
    const char* str;
-   vdscErrorHandler errorHandler;
+   pscErrorHandler errorHandler;
    
-   vdscInitErrorDefs();
-   vdscInitDir( &iterator );
-   vdscInitErrorHandler( &errorHandler );
+   pscInitErrorDefs();
+   pscInitDir( &iterator );
+   pscInitErrorHandler( &errorHandler );
 
-   ok = vdscOpenDir( &iterator, "..", &errorHandler );
+   ok = pscOpenDir( &iterator, "..", &errorHandler );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   str = vdscDirGetNextFileName( &iterator, &errorHandler );
+   str = pscDirGetNextFileName( &iterator, &errorHandler );
 
    if ( str == NULL ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
-   if ( vdscAnyErrors( &errorHandler ) ) {
+   if ( pscAnyErrors( &errorHandler ) ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   vdscCloseDir( &iterator );
+   pscCloseDir( &iterator );
 
-   vdscFiniDir( &iterator );
-   vdscFiniErrorHandler( &errorHandler );
-   vdscFiniErrorDefs();
+   pscFiniDir( &iterator );
+   pscFiniErrorHandler( &errorHandler );
+   pscFiniErrorDefs();
 
    return 0;
 }

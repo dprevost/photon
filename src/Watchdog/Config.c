@@ -21,7 +21,7 @@
 #include "Watchdog/Config.h"
 #include "Watchdog/wdErrors.h"
 
-extern vdscErrMsgHandle g_wdErrorHandle;
+extern pscErrMsgHandle g_wdErrorHandle;
 
 enum ECFG_PARAMS
 {
@@ -57,7 +57,7 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
  *                      parameters (once read).
  * \param[in]  debug    Set to one to get additional debug information on 
  *                      the terminal. Or zero for no additional information.
- * \param[in,out] pError A pointer to a vdscErrorHandler struct.
+ * \param[in,out] pError A pointer to a pscErrorHandler struct.
  *
  * \retval true on success
  * \retval false on error (use pError to retrieve the error(s))
@@ -71,7 +71,7 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
 bool vdswReadConfig( const char          * cfgname,
                      struct ConfigParams * pConfig,
                      int                   debug,
-                     vdscErrorHandler    * pError )
+                     pscErrorHandler    * pError )
 {
    xmlSchemaPtr schema = NULL;
    xmlSchemaValidCtxtPtr  validCtxt = NULL;
@@ -98,12 +98,12 @@ bool vdswReadConfig( const char          * cfgname,
 
    fd = open( cfgname, O_RDONLY );
    if ( fd == -1 ) {
-      vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
       return false;
    }
    i = read( fd, buf, 10000 );
    if ( i < 1 ) {
-      if ( i == -1 ) vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      if ( i == -1 ) pscSetError( pError, PSC_ERRNO_HANDLE, errno );
       return false;
    }
 
@@ -305,7 +305,7 @@ cleanup:
    if ( doc ) xmlFreeDoc( doc );
 
    if ( errcode != VDSW_OK ) {
-      vdscSetError( pError, g_wdErrorHandle, errcode );
+      pscSetError( pError, g_wdErrorHandle, errcode );
       return false;
    }
    return true;

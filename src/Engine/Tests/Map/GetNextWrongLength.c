@@ -87,7 +87,7 @@ int main()
    if ( ok == true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdscGetLastError( &context.errorHandler );
+   errcode = pscGetLastError( &context.errorHandler );
    if ( errcode != VDS_INVALID_LENGTH ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

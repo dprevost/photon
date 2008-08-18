@@ -24,8 +24,8 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdscMemoryFile  mem;
-   vdscErrorHandler errorHandler;
+   pscMemoryFile  mem;
+   pscErrorHandler errorHandler;
    void * pAddr = NULL;
    bool ok;
    
@@ -35,32 +35,32 @@ int main()
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
    
-   vdscInitErrorDefs();
-   vdscInitErrorHandler( &errorHandler );
-   vdscInitMemoryFile( &mem, 10, "MemFile.mem" );
+   pscInitErrorDefs();
+   pscInitErrorHandler( &errorHandler );
+   pscInitMemoryFile( &mem, 10, "MemFile.mem" );
 
-   ok = vdscCreateBackstore( &mem, 0755, &errorHandler );
+   ok = pscCreateBackstore( &mem, 0755, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
-   ok = vdscOpenMemFile( &mem, &pAddr, &errorHandler );
+   ok = pscOpenMemFile( &mem, &pAddr, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
-   ok = vdscSetReadOnly( &mem, &errorHandler );
+   ok = pscSetReadOnly( &mem, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
-   vdscCloseMemFile( &mem, &errorHandler );
+   pscCloseMemFile( &mem, &errorHandler );
 
    unlink( "MemFile.mem" );
    
-   vdscFiniMemoryFile( &mem );
-   vdscFiniErrorHandler( &errorHandler );
-   vdscFiniErrorDefs();
+   pscFiniMemoryFile( &mem );
+   pscFiniErrorHandler( &errorHandler );
+   pscFiniErrorDefs();
 
    return 0;
 }

@@ -37,31 +37,31 @@ int errorHandler( int errorCode, char* msg, unsigned int msgLength )
 
 int main()
 {
-   vdscErrMsgHandle handle1, handle2;
-   vdscErrorHandler error;
+   pscErrMsgHandle handle1, handle2;
+   pscErrorHandler error;
    char msg[100] = "";
    size_t len;
 
-   vdscInitErrorDefs();
+   pscInitErrorDefs();
 
-   handle1 = vdscAddErrorMsgHandler( "Dummy", &errorHandler );
-   if ( handle1 == VDSC_NO_ERRHANDLER ) {
+   handle1 = pscAddErrorMsgHandler( "Dummy", &errorHandler );
+   if ( handle1 == PSC_NO_ERRHANDLER ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   handle2 = vdscAddErrorMsgHandler( "Dummy2", &errorHandler );
-   if ( handle2 == VDSC_NO_ERRHANDLER ) {
+   handle2 = pscAddErrorMsgHandler( "Dummy2", &errorHandler );
+   if ( handle2 == PSC_NO_ERRHANDLER ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdscInitErrorHandler( &error );
-   vdscSetError( &error, handle2, 7 );
+   pscInitErrorHandler( &error );
+   pscSetError( &error, handle2, 7 );
 
-   len = vdscGetErrorMsg( &error, msg, 100 );
+   len = pscGetErrorMsg( &error, msg, 100 );
    if ( len == 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdscFiniErrorDefs();
+   pscFiniErrorDefs();
    
    return 0;
 }

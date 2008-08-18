@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSC_OPTIONS_H
-#define VDSC_OPTIONS_H
+#ifndef PSC_OPTIONS_H
+#define PSC_OPTIONS_H
 
 #include "Common.h"
 
@@ -25,7 +25,7 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * \defgroup vdscOptions Module to handle options for programs.
+ * \defgroup pscOptions Module to handle options for programs.
  *
  * This module provides a simple way (for programs) to handle options.
  * For example: vdswd --config filename
@@ -40,99 +40,99 @@ BEGIN_C_DECLS
  * \note Also, as always, options are case sensitive.
  *
  * \warning This module places limits on the lenght of some fields. 
- *     - Long options are limited to ::VDSC_OPT_LONG_OPT_LENGTH characters.
- *     - Comments on the options are limited to ::VDSC_OPT_COMMENT_LENGTH 
+ *     - Long options are limited to ::PSC_OPT_LONG_OPT_LENGTH characters.
+ *     - Comments on the options are limited to ::PSC_OPT_COMMENT_LENGTH 
  *          characters.
  *     - names for arguments to options (to be used in the message 
- *       "usage: ..." are limited to ::VDSC_OPT_ARGUMENT_MSG_LENGTH characters.
+ *       "usage: ..." are limited to ::PSC_OPT_ARGUMENT_MSG_LENGTH characters.
  *     .
  *     I don't know if these restrictions make sense... they do 
  *          make the programming job easier...
  *
- * \ingroup vdscCommon
+ * \ingroup pscCommon
  * @{
  */
 
 /** Maximum length of a long option, */
-#define VDSC_OPT_LONG_OPT_LENGTH  30
+#define PSC_OPT_LONG_OPT_LENGTH  30
 /** Maximum length of the display name of a argument. */
-#define VDSC_OPT_ARGUMENT_MSG_LENGTH 20
+#define PSC_OPT_ARGUMENT_MSG_LENGTH 20
 /** Maximum length of the comment field (to be displayed). */
-#define VDSC_OPT_COMMENT_LENGTH   80
+#define PSC_OPT_COMMENT_LENGTH   80
 
 /**
  * This struct is used to define which options will be supported
  * by the program. 
  */
-struct vdscOptStruct
+struct pscOptStruct
 {
    /** Single character option. */
    char shortOpt;
    /** Multi-character option. */
-   char longOpt[VDSC_OPT_LONG_OPT_LENGTH];
+   char longOpt[PSC_OPT_LONG_OPT_LENGTH];
    /** Is the option mandatory or optional? */
    int  isOptionel;
    /** Display name of the argument - use "" if the option takes no argument */
-   char argumentMessage[VDSC_OPT_ARGUMENT_MSG_LENGTH];
+   char argumentMessage[PSC_OPT_ARGUMENT_MSG_LENGTH];
    /** Comment to be displayed in "usage: ..." */
-   char comment[VDSC_OPT_COMMENT_LENGTH];
+   char comment[PSC_OPT_COMMENT_LENGTH];
    
 };
 
-typedef struct vdscOptStruct vdscOptStruct;
+typedef struct pscOptStruct pscOptStruct;
 
 /** An opaque handle to our internal struct. */
-typedef void * vdscOptionHandle;
+typedef void * pscOptionHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Populate the internal arrays of all supported options. */
 VDSF_COMMON_EXPORT
-bool vdscSetSupportedOptions( int                    numOpts, 
-                              struct vdscOptStruct * opts,
-                              vdscOptionHandle     * pHandle );
+bool pscSetSupportedOptions( int                   numOpts, 
+                             struct pscOptStruct * opts,
+                             pscOptionHandle     * pHandle );
 
 /*!
  * \brief Unset the internal arrays of all supported options (and free
  * the allocated memory, if needed).
  */
 VDSF_COMMON_EXPORT
-void vdscUnsetSupportedOptions( vdscOptionHandle handle );
+void pscUnsetSupportedOptions( pscOptionHandle handle );
 
 /*! \brief Verify the validity of the options passed in by the end-user. */
 VDSF_COMMON_EXPORT
-int vdscValidateUserOptions( vdscOptionHandle   handle,
-                             int                argc, 
-                             char             * argv[], 
-                             int                printError );
+int pscValidateUserOptions( pscOptionHandle   handle,
+                            int               argc, 
+                            char            * argv[], 
+                            int               printError );
 
 /*! \brief Print usage information. */
 VDSF_COMMON_EXPORT
-void vdscShowUsage( vdscOptionHandle   handle,
-                    char             * progName,
-                    char             * addArguments );
+void pscShowUsage( pscOptionHandle   handle,
+                   char            * progName,
+                   char            * addArguments );
 
 /*! \brief Retrieves the argument associated with a given option. */
 VDSF_COMMON_EXPORT
-bool vdscGetShortOptArgument( vdscOptionHandle   handle,
-                              const char         opt, 
-                              char            ** argument );
-
-/*! \brief Retrieves the argument associated with a given option. */
-VDSF_COMMON_EXPORT
-bool vdscGetLongOptArgument( vdscOptionHandle   handle,
-                             const char       * opt, 
+bool pscGetShortOptArgument( pscOptionHandle    handle,
+                             const char         opt, 
                              char            ** argument );
 
-/*! \brief Verify if the option is present. */
+/*! \brief Retrieves the argument associated with a given option. */
 VDSF_COMMON_EXPORT
-bool vdscIsLongOptPresent( vdscOptionHandle   handle,
-                           const char       * opt );
+bool pscGetLongOptArgument( pscOptionHandle    handle,
+                            const char       * opt, 
+                            char            ** argument );
 
 /*! \brief Verify if the option is present. */
 VDSF_COMMON_EXPORT
-bool vdscIsShortOptPresent( vdscOptionHandle handle,
-                            const char       opt );
+bool pscIsLongOptPresent( pscOptionHandle   handle,
+                          const char      * opt );
+
+/*! \brief Verify if the option is present. */
+VDSF_COMMON_EXPORT
+bool pscIsShortOptPresent( pscOptionHandle handle,
+                           const char      opt );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -142,5 +142,5 @@ bool vdscIsShortOptPresent( vdscOptionHandle handle,
 
 END_C_DECLS
 
-#endif /* VDSC_OPTIONS_H */
+#endif /* PSC_OPTIONS_H */
 

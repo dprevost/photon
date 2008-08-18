@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef VDSC_PRIVATE_H
-#define VDSC_PRIVATE_H
+#ifndef PSC_PRIVATE_H
+#define PSC_PRIVATE_H
 
 /*
 ** This file is in the public domain, so clarified as of
@@ -56,4 +56,4 @@ extern int errno;
 ** UNIX was a registered trademark of The Open Group in 2003.
 */
 
-#endif /* !defined VDSC_PRIVATE_H */
+#endif /* !defined PSC_PRIVATE_H */

@@ -48,7 +48,7 @@ int main( int argc, char * argv[] )
 
    memset( &context, 0, sizeof context );
    context.pidLocker= getpid();
-   vdscInitErrorHandler( &context.errorHandler );
+   pscInitErrorHandler( &context.errorHandler );
    
    vdsaCloseVDS( &process, &context );
 

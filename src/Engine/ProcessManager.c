@@ -35,7 +35,7 @@ bool vdseProcMgrInit( vdseProcMgr        * pManager,
                                 &pManager->blockGroup,
                                 1 ); /* A single block */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler,
+      pscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
       return false;
@@ -82,14 +82,14 @@ bool vdseProcMgrAddProcess( vdseProcMgr        * pManager,
          }
       }
       else {
-         vdscSetError( &pContext->errorHandler, 
+         pscSetError( &pContext->errorHandler, 
                        g_vdsErrorHandle, 
                        VDS_NOT_ENOUGH_VDS_MEMORY );
       }
       vdseUnlock( &pManager->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     VDS_ENGINE_BUSY );
    }
@@ -149,7 +149,7 @@ bool vdseProcMgrFindProcess( vdseProcMgr        * pManager,
    if ( *ppProcess == NULL ) errcode = VDS_INTERNAL_ERROR;
 
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     errcode );
       return false;
@@ -178,7 +178,7 @@ bool vdseProcMgrRemoveProcess( vdseProcMgr        * pManager,
       vdseUnlock( &pManager->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     VDS_ENGINE_BUSY );
       return false;

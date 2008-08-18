@@ -16,25 +16,25 @@
 #include "Common/ErrorHandler.h"
 #include "Common/ThreadLock.h"
 
-/** Unique identifier for the vdscErrorDefinition struct. */
-#define VDSC_ERROR_DEFINITION_SIGNATURE ((unsigned)0xfd13a982)
+/** Unique identifier for the pscErrorDefinition struct. */
+#define PSC_ERROR_DEFINITION_SIGNATURE ((unsigned)0xfd13a982)
 
 /**
  * Internal (hidden) struct to hold information about the functions required
  * to generate error messages from error codes.
  */
-typedef struct vdscErrorDefinition
+typedef struct pscErrorDefinition
 {
    unsigned int                initialized;
-   vdscErrMsgHandler_T         handler;
-   vdscErrMsgHandle            handle;
-   struct vdscErrorDefinition* next;
+   pscErrMsgHandler_T          handler;
+   pscErrMsgHandle             handle;
+   struct pscErrorDefinition * next;
    char                        name[1];
-} vdscErrorDefinition;
+} pscErrorDefinition;
 
-static vdscErrorDefinition *g_definition = NULL;
+static pscErrorDefinition *g_definition = NULL;
 
-static struct vdscThreadLock g_lock;
+static struct pscThreadLock g_lock;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -52,7 +52,7 @@ static struct vdscThreadLock g_lock;
  *
  * \pre \em msg cannot be NULL.
  */
-static int vdscGetErrnoMsg( int errnum, char *msg, unsigned int msgLength )
+static int pscGetErrnoMsg( int errnum, char * msg, unsigned int msgLength )
 {
    int errcode = 0;
    char* s = NULL;
@@ -106,7 +106,7 @@ static int vdscGetErrnoMsg( int errnum, char *msg, unsigned int msgLength )
  *
  * \pre \em msg cannot be NULL.
  */
-static int vdscGetSockErrMsg( int errnum, char *msg, unsigned int msgLength )
+static int pscGetSockErrMsg( int errnum, char * msg, unsigned int msgLength )
 {
    VDS_PRE_CONDITION( msg != NULL );
 
@@ -313,7 +313,7 @@ static int vdscGetSockErrMsg( int errnum, char *msg, unsigned int msgLength )
  *
  * \pre \em msg cannot be NULL.
  */
-static int vdscGetWinErrMsg( int errnum, char *msg, unsigned int msgLength )
+static int pscGetWinErrMsg( int errnum, char * msg, unsigned int msgLength )
 {
    char* buff = NULL;
    DWORD len;
@@ -358,22 +358,22 @@ static int vdscGetWinErrMsg( int errnum, char *msg, unsigned int msgLength )
  *
  */
 
-bool vdscInitErrorDefs()
+bool pscInitErrorDefs()
 {
    int length;
    bool ok = true;
 #if defined (WIN32 )
-   vdscErrorDefinition * pDefinition = NULL;
-   vdscErrorDefinition * previous = NULL;
+   pscErrorDefinition * pDefinition = NULL;
+   pscErrorDefinition * previous = NULL;
 #endif
 
    if ( g_definition == NULL ) {
-      ok = vdscInitThreadLock( &g_lock );
+      ok = pscInitThreadLock( &g_lock );
       VDS_POST_CONDITION( ok == true || ok == false );
       if ( ok ) {
-         vdscAcquireThreadLock( &g_lock );
+         pscAcquireThreadLock( &g_lock );
          if ( g_definition == NULL ) {
-            length = offsetof(vdscErrorDefinition,name) + strlen("errno") + 1;
+            length = offsetof(pscErrorDefinition,name) + strlen("errno") + 1;
          
             g_definition = malloc( length );
             if ( g_definition == NULL ) {
@@ -381,13 +381,13 @@ bool vdscInitErrorDefs()
                ok = false;
             }
             else {
-               g_definition->initialized = VDSC_ERROR_DEFINITION_SIGNATURE;
-               g_definition->handle      = VDSC_ERRNO_HANDLE;
-               g_definition->handler     = &vdscGetErrnoMsg;
+               g_definition->initialized = PSC_ERROR_DEFINITION_SIGNATURE;
+               g_definition->handle      = PSC_ERRNO_HANDLE;
+               g_definition->handler     = &pscGetErrnoMsg;
                g_definition->next        = NULL;
                strcpy( g_definition->name, "errno" );
 #if defined (WIN32 )
-               length = offsetof(vdscErrorDefinition,name) + 
+               length = offsetof(pscErrorDefinition,name) + 
                   strlen("Windows error") + 1;
          
                pDefinition = malloc( length );
@@ -396,16 +396,16 @@ bool vdscInitErrorDefs()
                   ok = false;
                }
                else {
-                  pDefinition->initialized = VDSC_ERROR_DEFINITION_SIGNATURE;
-                  pDefinition->handle      = VDSC_WINERR_HANDLE;
-                  pDefinition->handler     = &vdscGetWinErrMsg;
+                  pDefinition->initialized = PSC_ERROR_DEFINITION_SIGNATURE;
+                  pDefinition->handle      = PSC_WINERR_HANDLE;
+                  pDefinition->handler     = &pscGetWinErrMsg;
                   pDefinition->next        = NULL;
                   strcpy( pDefinition->name, "Windows error" );
               
                   g_definition->next = pDefinition;
                   previous = pDefinition;
 
-                  length = offsetof(vdscErrorDefinition,name) + 
+                  length = offsetof(pscErrorDefinition,name) + 
                      strlen("Windows socket error") + 1;
          
                   pDefinition = malloc( length );
@@ -414,9 +414,9 @@ bool vdscInitErrorDefs()
                      ok = false;
                   }
                   else {
-                     pDefinition->initialized = VDSC_ERROR_DEFINITION_SIGNATURE;
-                     pDefinition->handle      = VDSC_SOCKERR_HANDLE;
-                     pDefinition->handler     = &vdscGetSockErrMsg;
+                     pDefinition->initialized = PSC_ERROR_DEFINITION_SIGNATURE;
+                     pDefinition->handle      = PSC_SOCKERR_HANDLE;
+                     pDefinition->handler     = &pscGetSockErrMsg;
                      pDefinition->next        = NULL;
                      strcpy( pDefinition->name, "Windows socket error" );
           
@@ -426,7 +426,7 @@ bool vdscInitErrorDefs()
 #endif
             } /* The first check on malloc failure */
          } /* The second check on g_definition == NULL */
-         vdscReleaseThreadLock( &g_lock );
+         pscReleaseThreadLock( &g_lock );
       } /* if initlock == true ) */
    } /* The first check on g_definition == NULL */
    
@@ -443,13 +443,13 @@ bool vdscInitErrorDefs()
  *
  *
  */
-void vdscFiniErrorDefs()
+void pscFiniErrorDefs()
 {
-   vdscErrorDefinition * pDefinition = NULL;
-   vdscErrorDefinition * pNext = NULL;
+   pscErrorDefinition * pDefinition = NULL;
+   pscErrorDefinition * pNext = NULL;
 
    if ( g_definition != NULL ) {
-      vdscAcquireThreadLock( &g_lock );
+      pscAcquireThreadLock( &g_lock );
       if ( g_definition != NULL ) {
          pDefinition = g_definition;
          do {
@@ -460,7 +460,7 @@ void vdscFiniErrorDefs()
          while ( pDefinition != NULL );
          
       }
-      vdscReleaseThreadLock( &g_lock );
+      pscReleaseThreadLock( &g_lock );
    }
    g_definition = NULL;
 }
@@ -474,7 +474,7 @@ void vdscFiniErrorDefs()
  *                      error code into an error message.
  *
  * \return The function returns an opaque handle on success or 
- *         ::VDSC_NO_ERRHANDLER on error.
+ *         ::PSC_NO_ERRHANDLER on error.
 
  * \pre \em name cannot be NULL.
  * \pre \em handler cannot be NULL
@@ -482,27 +482,27 @@ void vdscFiniErrorDefs()
  * \invariant g_definition cannot be NULL.
  */
 
-vdscErrMsgHandle vdscAddErrorMsgHandler( const char*         name, 
-                                         vdscErrMsgHandler_T handler )
+pscErrMsgHandle pscAddErrorMsgHandler( const char         * name, 
+                                       pscErrMsgHandler_T   handler )
 {
    int length;
-   vdscErrMsgHandle handle = VDSC_NO_ERRHANDLER, i;
+   pscErrMsgHandle handle = PSC_NO_ERRHANDLER, i;
    
-   vdscErrorDefinition * pDefinition   = NULL;
-   vdscErrorDefinition * nextAvailable = NULL;
+   pscErrorDefinition * pDefinition   = NULL;
+   pscErrorDefinition * nextAvailable = NULL;
 
    VDS_INV_CONDITION( g_definition != NULL );
    VDS_PRE_CONDITION( name    != NULL );
    VDS_PRE_CONDITION( handler != NULL );
 
-   vdscAcquireThreadLock( &g_lock );
+   pscAcquireThreadLock( &g_lock );
 
-   length = offsetof(vdscErrorDefinition,name) + strlen( name ) + 1;
+   length = offsetof(pscErrorDefinition,name) + strlen( name ) + 1;
          
    pDefinition = malloc( length );
    if ( pDefinition == NULL ) return handle;
    
-   pDefinition->initialized = VDSC_ERROR_DEFINITION_SIGNATURE;
+   pDefinition->initialized = PSC_ERROR_DEFINITION_SIGNATURE;
    pDefinition->next = NULL;
    strcpy( pDefinition->name, name );
    pDefinition->handler = handler;
@@ -510,8 +510,8 @@ vdscErrMsgHandle vdscAddErrorMsgHandler( const char*         name,
    i = 1;
    nextAvailable = g_definition;
    while ( nextAvailable->next != NULL ) {
-      if ( nextAvailable->initialized != VDSC_ERROR_DEFINITION_SIGNATURE ) {
-         vdscReleaseThreadLock( &g_lock );
+      if ( nextAvailable->initialized != PSC_ERROR_DEFINITION_SIGNATURE ) {
+         pscReleaseThreadLock( &g_lock );
          return handle;
       }
       
@@ -522,7 +522,7 @@ vdscErrMsgHandle vdscAddErrorMsgHandler( const char*         name,
    nextAvailable->next = pDefinition;
    handle = i;
    
-   vdscReleaseThreadLock( &g_lock );
+   pscReleaseThreadLock( &g_lock );
 
    return handle;
 }
@@ -530,48 +530,48 @@ vdscErrMsgHandle vdscAddErrorMsgHandler( const char*         name,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * \param[in]  pErrorHandler A pointer to the vdscErrorHandler struct itself.
+ * \param[in]  pErrorHandler A pointer to the pscErrorHandler struct itself.
  *
  * \pre \em pErrorHandler cannot be NULL.
  *
  * \invariant g_definition cannot be NULL.
  */
-void vdscInitErrorHandler( vdscErrorHandler * pErrorHandler )
+void pscInitErrorHandler( pscErrorHandler * pErrorHandler )
 {
    int i;
    
    VDS_INV_CONDITION( g_definition  != NULL );
    VDS_PRE_CONDITION( pErrorHandler != NULL );
 
-   for ( i = 0; i < VDSC_ERROR_CHAIN_LENGTH; ++i ) {
+   for ( i = 0; i < PSC_ERROR_CHAIN_LENGTH; ++i ) {
       pErrorHandler->errorCode[i]   = 0;
-      pErrorHandler->errorHandle[i] = VDSC_NO_ERRHANDLER;
+      pErrorHandler->errorHandle[i] = PSC_NO_ERRHANDLER;
    }
    pErrorHandler->chainLength = 0;
-   pErrorHandler->initialized = VDSC_ERROR_HANDLER_SIGNATURE;
+   pErrorHandler->initialized = PSC_ERROR_HANDLER_SIGNATURE;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * \param[in]  pErrorHandler A pointer to the vdscErrorHandler struct itself.
+ * \param[in]  pErrorHandler A pointer to the pscErrorHandler struct itself.
  *
  * \pre \em pErrorHandler cannot be NULL.
  *
  * \invariant \em pErrorHandler->initialized must equal 
- *                ::VDSC_ERROR_HANDLER_SIGNATURE.
+ *                ::PSC_ERROR_HANDLER_SIGNATURE.
  */
-void vdscFiniErrorHandler( vdscErrorHandler * pErrorHandler )
+void pscFiniErrorHandler( pscErrorHandler * pErrorHandler )
 {
    int i;
    
    VDS_PRE_CONDITION( pErrorHandler != NULL );
    VDS_INV_CONDITION( 
-      pErrorHandler->initialized == VDSC_ERROR_HANDLER_SIGNATURE );
+      pErrorHandler->initialized == PSC_ERROR_HANDLER_SIGNATURE );
 
-   for ( i = 0; i < VDSC_ERROR_CHAIN_LENGTH; ++i ) {
+   for ( i = 0; i < PSC_ERROR_CHAIN_LENGTH; ++i ) {
       pErrorHandler->errorCode[i]   = 0;
-      pErrorHandler->errorHandle[i] = VDSC_NO_ERRHANDLER;
+      pErrorHandler->errorHandle[i] = PSC_NO_ERRHANDLER;
    }
    pErrorHandler->chainLength = 0;
    pErrorHandler->initialized = 0;
@@ -580,7 +580,7 @@ void vdscFiniErrorHandler( vdscErrorHandler * pErrorHandler )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * \param[in]     pErrorHandler A pointer to the vdscErrorHandler struct 
+ * \param[in]     pErrorHandler A pointer to the pscErrorHandler struct 
  *                              itself.
  * \param[in,out] msg           The buffer that will hold the message.
  * \param[in]     maxLength     The length (in bytes) of \em msg.
@@ -594,39 +594,39 @@ void vdscFiniErrorHandler( vdscErrorHandler * pErrorHandler )
  *
  * \invariant \em g_definition cannot be NULL.
  * \invariant \em pErrorHandler->initialized must equal 
- *                ::VDSC_ERROR_HANDLER_SIGNATURE.
+ *                ::PSC_ERROR_HANDLER_SIGNATURE.
  */
 size_t 
-vdscGetErrorMsg( vdscErrorHandler * pErrorHandler,
-                 char*              msg, 
-                 size_t             maxLength )
+pscGetErrorMsg( pscErrorHandler * pErrorHandler,
+                char*             msg, 
+                size_t            maxLength )
 {
    size_t len, length = maxLength, msgStart = 0;
-   vdscErrMsgHandle i;
+   pscErrMsgHandle i;
    int k;
-   vdscErrorDefinition * nextAvailable = NULL;
+   pscErrorDefinition * nextAvailable = NULL;
 
    VDS_INV_CONDITION( g_definition != NULL );
    VDS_PRE_CONDITION( pErrorHandler != NULL );
    VDS_INV_CONDITION( 
-      pErrorHandler->initialized == VDSC_ERROR_HANDLER_SIGNATURE );
+      pErrorHandler->initialized == PSC_ERROR_HANDLER_SIGNATURE );
    VDS_PRE_CONDITION( msg != NULL );
    VDS_PRE_CONDITION( maxLength > 0 );   
    
-   if ( ! vdscTryAcquireThreadLock( &g_lock, 100 ) ) return 0;
+   if ( ! pscTryAcquireThreadLock( &g_lock, 100 ) ) return 0;
 
    for ( k = 0; k < pErrorHandler->chainLength; ++k ) {
       nextAvailable = g_definition;
       for ( i = 0; i < pErrorHandler->errorHandle[k]; i++ ) {
          nextAvailable = nextAvailable->next;
          if ( nextAvailable == NULL ) {
-            vdscReleaseThreadLock( &g_lock );
+            pscReleaseThreadLock( &g_lock );
             return 0;
          }
       }
 
-      if ( nextAvailable->initialized != VDSC_ERROR_DEFINITION_SIGNATURE ) {
-         vdscReleaseThreadLock( &g_lock );
+      if ( nextAvailable->initialized != PSC_ERROR_DEFINITION_SIGNATURE ) {
+         pscReleaseThreadLock( &g_lock );
          return 0;
       }
 
@@ -644,7 +644,7 @@ vdscGetErrorMsg( vdscErrorHandler * pErrorHandler,
       msgStart += len;
    }
    
-   vdscReleaseThreadLock( &g_lock );
+   pscReleaseThreadLock( &g_lock );
 
    msg[maxLength-1] = '\0';
 
@@ -652,7 +652,7 @@ vdscGetErrorMsg( vdscErrorHandler * pErrorHandler,
 }
 
 /** 
- * \param[in]     pErrorHandler A pointer to the vdscErrorHandler struct 
+ * \param[in]     pErrorHandler A pointer to the pscErrorHandler struct 
  *                              itself.
  *
  * \return The length of the message (or zero on error, for example when 
@@ -662,36 +662,36 @@ vdscGetErrorMsg( vdscErrorHandler * pErrorHandler,
  *
  * \invariant \em g_definition cannot be NULL.
  * \invariant \em pErrorHandler->initialized must equal 
- *                ::VDSC_ERROR_HANDLER_SIGNATURE.
+ *                ::PSC_ERROR_HANDLER_SIGNATURE.
  */
 size_t 
-vdscGetErrorMsgLength( vdscErrorHandler * pErrorHandler )
+pscGetErrorMsgLength( pscErrorHandler * pErrorHandler )
 {
    size_t len, sum = 0;
-   vdscErrMsgHandle i;
+   pscErrMsgHandle i;
    int k;
-   vdscErrorDefinition * nextAvailable = NULL;
+   pscErrorDefinition * nextAvailable = NULL;
    char tmpMsg[4096];
 
    VDS_INV_CONDITION( g_definition != NULL );
    VDS_PRE_CONDITION( pErrorHandler != NULL );
    VDS_INV_CONDITION( 
-      pErrorHandler->initialized == VDSC_ERROR_HANDLER_SIGNATURE );
+      pErrorHandler->initialized == PSC_ERROR_HANDLER_SIGNATURE );
    
-   if ( ! vdscTryAcquireThreadLock( &g_lock, 100 ) ) return 0;
+   if ( ! pscTryAcquireThreadLock( &g_lock, 100 ) ) return 0;
 
    for ( k = 0; k < pErrorHandler->chainLength; ++k ) {
       nextAvailable = g_definition;
       for ( i = 0; i < pErrorHandler->errorHandle[k]; i++ ) {
          nextAvailable = nextAvailable->next;
          if ( nextAvailable == NULL ) {
-            vdscReleaseThreadLock( &g_lock );
+            pscReleaseThreadLock( &g_lock );
             return 0;
          }
       }
 
-      if ( nextAvailable->initialized != VDSC_ERROR_DEFINITION_SIGNATURE ) {
-         vdscReleaseThreadLock( &g_lock );
+      if ( nextAvailable->initialized != PSC_ERROR_DEFINITION_SIGNATURE ) {
+         pscReleaseThreadLock( &g_lock );
          return 0;
       }
 
@@ -705,7 +705,7 @@ vdscGetErrorMsgLength( vdscErrorHandler * pErrorHandler )
 
    }
    
-   vdscReleaseThreadLock( &g_lock );
+   pscReleaseThreadLock( &g_lock );
 
    return sum;
 }
@@ -713,31 +713,31 @@ vdscGetErrorMsgLength( vdscErrorHandler * pErrorHandler )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * \param[in]     pErrorHandler A pointer to the vdscErrorHandler struct 
+ * \param[in]     pErrorHandler A pointer to the pscErrorHandler struct 
  *                              itself.
  * \param[in,out] handle        Handle to the type of error codes/messages.
  * \param[in]     errorCode     The error code itself.
  *
  * \pre \em pErrorHandler cannot be NULL.
  * \pre \em handle must be valid (either one of the predefined ones or one
- *          returned by ::vdscAddErrorMsgHandler
+ *          returned by ::pscAddErrorMsgHandler
  *
  * \invariant \em g_definition cannot be NULL.
  * \invariant \em pErrorHandler->initialized must equal 
- *                ::VDSC_ERROR_HANDLER_SIGNATURE.
+ *                ::PSC_ERROR_HANDLER_SIGNATURE.
  */
-void vdscSetError( vdscErrorHandler *  pErrorHandler, 
-                   vdscErrMsgHandle    handle,
-                   int                 errorCode )
+void pscSetError( pscErrorHandler * pErrorHandler, 
+                  pscErrMsgHandle   handle,
+                  int               errorCode )
 {
    int i;
-   vdscErrorDefinition * nextAvailable = NULL;
+   pscErrorDefinition * nextAvailable = NULL;
 
    VDS_INV_CONDITION( g_definition != NULL );
 
    VDS_PRE_CONDITION( pErrorHandler != NULL );
    VDS_INV_CONDITION( 
-      pErrorHandler->initialized == VDSC_ERROR_HANDLER_SIGNATURE );
+      pErrorHandler->initialized == PSC_ERROR_HANDLER_SIGNATURE );
 
    /* 
     * Was the error handler initialized?
@@ -745,7 +745,7 @@ void vdscSetError( vdscErrorHandler *  pErrorHandler,
     * is only used for testing the pre-condition.
     */
 #if defined(USE_DBC)
-   if ( vdscTryAcquireThreadLock(&g_lock, 1000) ) {
+   if ( pscTryAcquireThreadLock(&g_lock, 1000) ) {
       i = 0;
       nextAvailable = g_definition;
       while ( nextAvailable->next != NULL && i <= handle ) {
@@ -753,7 +753,7 @@ void vdscSetError( vdscErrorHandler *  pErrorHandler,
          ++i;
       }
    
-      vdscReleaseThreadLock( &g_lock );
+      pscReleaseThreadLock( &g_lock );
       VDS_PRE_CONDITION(  i >= handle );
    }
 #endif
@@ -766,35 +766,35 @@ void vdscSetError( vdscErrorHandler *  pErrorHandler,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * \param[in]     pErrorHandler A pointer to the vdscErrorHandler struct 
+ * \param[in]     pErrorHandler A pointer to the pscErrorHandler struct 
  *                              itself.
  * \param[in,out] handle        Handle to the type of error codes/messages.
  * \param[in]     errorCode     The error code itself.
  *
  * \pre \em pErrorHandler cannot be NULL.
  * \pre \em handle must be valid (either one of the predefined ones or one
- *          returned by ::vdscAddErrorMsgHandler.
+ *          returned by ::pscAddErrorMsgHandler.
  *
  * \invariant \em g_definition cannot be NULL.
  * \invariant \em pErrorHandler->initialized must equal 
- *                ::VDSC_ERROR_HANDLER_SIGNATURE.\
+ *                ::PSC_ERROR_HANDLER_SIGNATURE.\
  * \invariant The length of the chain of errors must ge greater than zero
- *            and less than ::VDSC_ERROR_CHAIN_LENGTH.
+ *            and less than ::PSC_ERROR_CHAIN_LENGTH.
  */
-void vdscChainError( vdscErrorHandler *  pErrorHandler, 
-                     vdscErrMsgHandle    handle,
-                     int                 errorCode )
+void pscChainError( pscErrorHandler * pErrorHandler, 
+                    pscErrMsgHandle   handle,
+                    int               errorCode )
 {
    int i;
-   vdscErrorDefinition * nextAvailable = NULL;
+   pscErrorDefinition * nextAvailable = NULL;
 
    VDS_INV_CONDITION( g_definition != NULL );
 
    VDS_PRE_CONDITION( pErrorHandler != NULL );
    VDS_INV_CONDITION( 
-      pErrorHandler->initialized == VDSC_ERROR_HANDLER_SIGNATURE );
+      pErrorHandler->initialized == PSC_ERROR_HANDLER_SIGNATURE );
    VDS_INV_CONDITION( pErrorHandler->chainLength > 0 && 
-                      pErrorHandler->chainLength < VDSC_ERROR_CHAIN_LENGTH );
+                      pErrorHandler->chainLength < PSC_ERROR_CHAIN_LENGTH );
    
    /* 
     * Was the error handler initialized?
@@ -802,7 +802,7 @@ void vdscChainError( vdscErrorHandler *  pErrorHandler,
     * is only used for testing the pre-condition.
     */
 #if defined(USE_DBC)
-   if ( vdscTryAcquireThreadLock(&g_lock, 1000) ) {
+   if ( pscTryAcquireThreadLock(&g_lock, 1000) ) {
       i = 0;
       nextAvailable = g_definition;
       while ( nextAvailable->next != NULL && i <= handle ) {
@@ -810,7 +810,7 @@ void vdscChainError( vdscErrorHandler *  pErrorHandler,
          ++i;
       }
    
-      vdscReleaseThreadLock( &g_lock );
+      pscReleaseThreadLock( &g_lock );
       VDS_PRE_CONDITION( i >= handle );
    }
 #endif

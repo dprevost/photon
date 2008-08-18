@@ -25,10 +25,10 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdscMemoryFile  mem;
-   vdscErrorHandler errorHandler;
+   pscMemoryFile  mem;
+   pscErrorHandler errorHandler;
    bool ok;
-   vdscMemoryFileStatus status;
+   pscMemoryFileStatus status;
    
    /* The rename is a work around for a bug on Windows. It seems that the 
     * delete call (unlink) is not as synchroneous as it should be...
@@ -36,17 +36,17 @@ int main()
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
 
-   vdscInitErrorDefs();
-   vdscInitErrorHandler( &errorHandler );
-   vdscInitMemoryFile( &mem, 10, "MemFile.mem" );
+   pscInitErrorDefs();
+   pscInitErrorHandler( &errorHandler );
+   pscInitMemoryFile( &mem, 10, "MemFile.mem" );
 
-   ok = vdscCreateBackstore( &mem, 0644, &errorHandler );
+   ok = pscCreateBackstore( &mem, 0644, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
    mem.initialized = 0;
-   vdscBackStoreStatus( &mem, &status );
+   pscBackStoreStatus( &mem, &status );
 
    ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 #else

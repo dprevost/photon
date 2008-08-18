@@ -33,30 +33,30 @@ int main( int argc, char *argv[] )
    vdsShell   sh(session);
    bool ok;
    
-   vdscOptionHandle optHandle;
+   pscOptionHandle optHandle;
    char *optArgument;
-   struct vdscOptStruct opts[1] = { 
+   struct pscOptStruct opts[1] = { 
       { 'a', "address", 0, "watchdog_address", "The address of the VDSF watchdog" }
    };
 
-   ok = vdscSetSupportedOptions( 1, opts, &optHandle );
+   ok = pscSetSupportedOptions( 1, opts, &optHandle );
    VDS_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) return 1;
 
-   errcode = vdscValidateUserOptions( optHandle, argc, argv, 1 );
+   errcode = pscValidateUserOptions( optHandle, argc, argv, 1 );
    if ( errcode < 0 ) {
-      vdscShowUsage( optHandle, argv[0], "" );
+      pscShowUsage( optHandle, argv[0], "" );
       return 1;
    }
    if ( errcode > 0 ) {
-      vdscShowUsage( optHandle, argv[0], "" );
+      pscShowUsage( optHandle, argv[0], "" );
       cout << endl;
       sh.Man();
       
       return 0;
    }
 
-   vdscGetShortOptArgument( optHandle, 'a', &optArgument );
+   pscGetShortOptArgument( optHandle, 'a', &optArgument );
    try {
       process.Init( optArgument );
       session.Init();

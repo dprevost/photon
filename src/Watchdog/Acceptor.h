@@ -82,7 +82,7 @@ struct vdswWatchdog;
 
 struct vdswAcceptor
 {
-   vdscErrorHandler errorHandler;
+   pscErrorHandler errorHandler;
    
    VDS_SOCKET socketFD;
 

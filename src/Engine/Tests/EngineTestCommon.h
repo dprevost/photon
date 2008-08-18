@@ -24,7 +24,7 @@
 #include "Engine/SessionContext.h"
 
 VDSF_ENGINE_EXPORT
-vdscErrMsgHandle g_vdsErrorHandle;
+pscErrMsgHandle g_vdsErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -46,7 +46,7 @@ void initTest( bool testIsExpectedToSucceed, vdseSessionContext* pContext )
       exit(0);
    }
    
-   vdscInitErrorHandler( &pContext->errorHandler );
+   pscInitErrorHandler( &pContext->errorHandler );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

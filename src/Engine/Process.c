@@ -36,7 +36,7 @@ bool vdseProcessInit( vdseProcess        * pProcess,
                                 &pProcess->blockGroup,
                                 1 ); /* A single block */
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler,
+      pscSetError( &pContext->errorHandler,
                     g_vdsErrorHandle,
                     errcode );
       return false;
@@ -122,7 +122,7 @@ bool vdseProcessAddSession( vdseProcess        * pProcess,
          }
       }
       else {
-         vdscSetError( &pContext->errorHandler, 
+         pscSetError( &pContext->errorHandler, 
                        g_vdsErrorHandle, 
                        VDS_NOT_ENOUGH_VDS_MEMORY );
       }
@@ -138,7 +138,7 @@ bool vdseProcessAddSession( vdseProcess        * pProcess,
       vdseUnlock( &pProcess->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     VDS_ENGINE_BUSY );
    }
@@ -166,7 +166,7 @@ bool vdseProcessRemoveSession( vdseProcess        * pProcess,
       vdseUnlock( &pProcess->memObject, pContext );
    }
    else {
-      vdscSetError( &pContext->errorHandler, 
+      pscSetError( &pContext->errorHandler, 
                     g_vdsErrorHandle, 
                     VDS_ENGINE_BUSY );
       return false;

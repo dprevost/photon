@@ -38,7 +38,7 @@ bool vdseTxInit( vdseTx             * pTx,
                                 &pTx->blockGroup,
                                 numberOfBlocks );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return false;
    }
 
@@ -110,7 +110,7 @@ bool vdseTxAddOps( vdseTx             * pTx,
       return true;
    }
 
-   vdscSetError( &pContext->errorHandler, 
+   pscSetError( &pContext->errorHandler, 
                  g_vdsErrorHandle, 
                  VDS_NOT_ENOUGH_VDS_MEMORY );
 

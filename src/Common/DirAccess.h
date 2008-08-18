@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSC_DIR_ACCESS_H
-#define VDSC_DIR_ACCESS_H
+#ifndef PSC_DIR_ACCESS_H
+#define PSC_DIR_ACCESS_H
 
 #include "Common.h"
 #include "ErrorHandler.h"
@@ -26,7 +26,7 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * \defgroup vdscDirAccess The Directory Iterator module
+ * \defgroup pscDirAccess The Directory Iterator module
  *
  * This module encapsulates the differences between the different 
  * OSes when it comes to iterate through all files in a directory.
@@ -35,7 +35,7 @@ BEGIN_C_DECLS
  * the standard POSIX way of doing things although the code itself 
  * is not using the POSIX calls on some platforms (Windows, so far).
  *
- * \ingroup vdscCommon
+ * \ingroup pscCommon
  * @{
  */
 
@@ -51,8 +51,8 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** Unique identifier for the vdscDirIterator struct. */
-#define VDSC_DIR_ACCESS_SIGNATURE ((unsigned)0xca3dd33e)
+/** Unique identifier for the pscDirIterator struct. */
+#define PSC_DIR_ACCESS_SIGNATURE ((unsigned)0xca3dd33e)
 
 /**
  * \cond NO_DIR_DEFINES_PLEASE
@@ -89,9 +89,9 @@ BEGIN_C_DECLS
  * is not using the POSIX calls on some platforms (Windows, so far).
  */
 
-struct vdscDirIterator
+struct pscDirIterator
 {
-   /** Set to VDSC_DIR_ACCESS_SIGNATURE at initialization. */
+   /** Set to PSC_DIR_ACCESS_SIGNATURE at initialization. */
    unsigned int initialized;
 
 #if defined ( WIN32 )
@@ -108,32 +108,32 @@ struct vdscDirIterator
 
 };
 
-typedef struct vdscDirIterator vdscDirIterator;
+typedef struct pscDirIterator pscDirIterator;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/*! \brief Initialize the struct vdscDirIterator. */
+/*! \brief Initialize the struct pscDirIterator. */
 VDSF_COMMON_EXPORT
-void vdscInitDir( vdscDirIterator * pIterator );
+void pscInitDir( pscDirIterator * pIterator );
 
-/*! \brief Terminate access to the struct vdscDirIterator. */
+/*! \brief Terminate access to the struct pscDirIterator. */
 VDSF_COMMON_EXPORT
-void vdscFiniDir( vdscDirIterator * pIterator );
+void pscFiniDir( pscDirIterator * pIterator );
 
 /*! \brief Open the directory. */
 VDSF_COMMON_EXPORT
-bool vdscOpenDir( vdscDirIterator  * pIterator,
-                  const char       * dirName,
-                  vdscErrorHandler * pError );
+bool pscOpenDir( pscDirIterator  * pIterator,
+                 const char      * dirName,
+                 pscErrorHandler * pError );
 
 /*! \brief Get the next file name. */
 VDSF_COMMON_EXPORT
-const char * vdscDirGetNextFileName( vdscDirIterator  * pIterator,
-                                     vdscErrorHandler * pError );
+const char * pscDirGetNextFileName( pscDirIterator  * pIterator,
+                                    pscErrorHandler * pError );
 
 /*! \brief Close the directory. */
 VDSF_COMMON_EXPORT
-void vdscCloseDir( vdscDirIterator * pIterator );
+void pscCloseDir( pscDirIterator * pIterator );
 
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -144,5 +144,5 @@ void vdscCloseDir( vdscDirIterator * pIterator );
 
 END_C_DECLS
 
-#endif /* VDSC_DIR_ACCESS_H */
+#endif /* PSC_DIR_ACCESS_H */
 

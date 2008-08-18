@@ -25,8 +25,8 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdscMemoryFile  mem;
-   vdscErrorHandler errorHandler;
+   pscMemoryFile  mem;
+   pscErrorHandler errorHandler;
    void*           pAddr = NULL;
    bool ok;
    
@@ -36,17 +36,17 @@ int main()
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
    
-   vdscInitErrorDefs();
-   vdscInitErrorHandler( &errorHandler );
-   vdscInitMemoryFile( &mem, 10, "MemFile.mem" );
+   pscInitErrorDefs();
+   pscInitErrorHandler( &errorHandler );
+   pscInitMemoryFile( &mem, 10, "MemFile.mem" );
 
-   ok = vdscCreateBackstore( &mem, 0755, &errorHandler );
+   ok = pscCreateBackstore( &mem, 0755, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
    mem.length = 0;
-   ok = vdscOpenMemFile( &mem, &pAddr, &errorHandler );
+   ok = pscOpenMemFile( &mem, &pAddr, &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 #else

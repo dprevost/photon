@@ -20,7 +20,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT vdscErrMsgHandle g_vdsErrorHandle = VDSC_NO_ERRHANDLER;
+VDSF_ENGINE_EXPORT pscErrMsgHandle g_vdsErrorHandle = PSC_NO_ERRHANDLER;
 
 #if defined(WIN32)
 VDSF_ENGINE_EXPORT const char * MYCPU = "i386";
@@ -50,14 +50,14 @@ static int vdseGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 
 bool vdseInitEngine()
 {
-   if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER ) {
-      if ( ! vdscInitErrorDefs() ) {
-         fprintf( stderr, "Internal error in vdscInitErrorDefs()\n" );
+   if ( g_vdsErrorHandle == PSC_NO_ERRHANDLER ) {
+      if ( ! pscInitErrorDefs() ) {
+         fprintf( stderr, "Internal error in pscInitErrorDefs()\n" );
       }
 
-      g_vdsErrorHandle = vdscAddErrorMsgHandler( "VDSF", vdseGetErrorMsg );
+      g_vdsErrorHandle = pscAddErrorMsgHandler( "VDSF", vdseGetErrorMsg );
 
-      if ( g_vdsErrorHandle == VDSC_NO_ERRHANDLER ) {
+      if ( g_vdsErrorHandle == PSC_NO_ERRHANDLER ) {
          fprintf( stderr, "Error registring the error handler for VDS errors\n" );
          fprintf( stderr, "The problem might be a lack of memory\n" );
          return false;

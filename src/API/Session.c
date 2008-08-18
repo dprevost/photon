@@ -65,7 +65,7 @@ int vdsCommit( VDS_HANDLE sessionHandle )
    if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( pSession->numberOfEdits > 0 ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, 
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, 
          VDS_NOT_ALL_EDIT_ARE_CLOSED );
       return VDS_NOT_ALL_EDIT_ARE_CLOSED;
    }
@@ -86,7 +86,7 @@ int vdsCommit( VDS_HANDLE sessionHandle )
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return errcode;
@@ -110,23 +110,23 @@ int vdsCreateObject( VDS_HANDLE            sessionHandle,
    if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
    
    if ( objectName == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
       return VDS_INVALID_OBJECT_NAME;
    }
 
    if ( nameLengthInBytes == 0 ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
    }
    
    if ( pDefinition == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
 
    errcode = vdsaValidateDefinition( pDefinition );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
       return errcode;
    }
    
@@ -150,11 +150,11 @@ int vdsCreateObject( VDS_HANDLE            sessionHandle,
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pSession->context.errorHandler );
+      errcode = pscGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;
@@ -177,12 +177,12 @@ int vdsDestroyObject( VDS_HANDLE   sessionHandle,
    if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( objectName == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
       return VDS_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
    }
    
@@ -205,11 +205,11 @@ int vdsDestroyObject( VDS_HANDLE   sessionHandle,
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pSession->context.errorHandler );
+      errcode = pscGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;
@@ -236,8 +236,8 @@ int vdsErrorMsg( VDS_HANDLE sessionHandle,
    
    if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         if ( vdscGetLastError( &pSession->context.errorHandler ) != 0 ) {
-            len = vdscGetErrorMsg( &pSession->context.errorHandler,
+         if ( pscGetLastError( &pSession->context.errorHandler ) != 0 ) {
+            len = pscGetErrorMsg( &pSession->context.errorHandler,
                                    message, 
                                    msgLengthInBytes );
          }
@@ -325,7 +325,7 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
    }
    
    if ( errcode != 0 ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return errcode;
@@ -351,23 +351,23 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
    if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
    
    if ( objectName == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
       return VDS_INVALID_OBJECT_NAME;
    }
 
    if ( nameLengthInBytes == 0 ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
    }
    
    if ( ppDefinition == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
 
    pDefinition = calloc( sizeof(vdsObjectDefinition), 1 );
    if ( pDefinition == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
       return VDS_NOT_ENOUGH_HEAP_MEMORY;
    }
    
@@ -411,10 +411,10 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pSession->context.errorHandler );
+      errcode = pscGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;
@@ -437,7 +437,7 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
    if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
    
    if ( pInfo == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
    memset( pInfo, 0, sizeof(struct vdsInfo) );
@@ -469,10 +469,10 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pSession->context.errorHandler );
+      errcode = pscGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;
@@ -496,17 +496,17 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
    if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
    
    if ( objectName == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
       return VDS_INVALID_OBJECT_NAME;
    }
 
    if ( nameLengthInBytes == 0 ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
    }
    
    if ( pStatus == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
 
@@ -530,10 +530,10 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pSession->context.errorHandler );
+      errcode = pscGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;
@@ -562,7 +562,7 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
    pSession->context.pLogFile = NULL;
 
    pSession->context.pidLocker = getpid();
-   vdscInitErrorHandler( &pSession->context.errorHandler );
+   pscInitErrorHandler( &pSession->context.errorHandler );
 
    /*
     * From this point we can use "goto error_handler" to recover
@@ -570,7 +570,7 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
     */
    
    if ( g_protectionIsNeeded ) {
-      ok = vdscInitThreadLock( &pSession->mutex );
+      ok = pscInitThreadLock( &pSession->mutex );
       VDS_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
          errcode = VDS_NOT_ENOUGH_RESOURCES;
@@ -648,10 +648,10 @@ error_handler:
    }
 
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    else {
-      errcode = vdscGetLastError( &pSession->context.errorHandler );
+      errcode = pscGetLastError( &pSession->context.errorHandler );
    }
    
    free( pSession );
@@ -673,7 +673,7 @@ int vdsLastError( VDS_HANDLE sessionHandle )
 
    if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         rc = vdscGetLastError( &pSession->context.errorHandler );
+         rc = pscGetLastError( &pSession->context.errorHandler );
       }
       else {
          rc = VDS_SESSION_IS_TERMINATED;
@@ -713,7 +713,7 @@ int vdsRollback( VDS_HANDLE sessionHandle )
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return errcode;
@@ -751,10 +751,10 @@ int vdsaSessionCloseObj( vdsaSession             * pSession,
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pSession->context.errorHandler );
+      errcode = pscGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;
@@ -816,7 +816,7 @@ int vdsaCloseSession( vdsaSession* pSession )
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return errcode;
@@ -881,10 +881,10 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pSession->context.errorHandler );
+      errcode = pscGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;

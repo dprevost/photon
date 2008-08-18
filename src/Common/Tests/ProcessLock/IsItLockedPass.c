@@ -26,30 +26,30 @@ const bool expectedToPass = true;
 int main()
 {
    bool ok;
-   vdscProcessLock lock;
+   pscProcessLock lock;
 
-   ok = vdscInitProcessLock( &lock );
+   ok = pscInitProcessLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   if ( vdscIsItLocked( &lock ) ) {
+   if ( pscIsItLocked( &lock ) ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdscAcquireProcessLock( &lock, 0xff );
+   pscAcquireProcessLock( &lock, 0xff );
 
-   if ( !vdscIsItLocked( &lock ) ) {
+   if ( !pscIsItLocked( &lock ) ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdscReleaseProcessLock( &lock );
+   pscReleaseProcessLock( &lock );
 
-   if ( vdscIsItLocked( &lock ) ) {
+   if ( pscIsItLocked( &lock ) ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdscFiniProcessLock( &lock );
+   pscFiniProcessLock( &lock );
 
    return 0;
 }

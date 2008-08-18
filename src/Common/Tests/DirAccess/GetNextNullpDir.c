@@ -33,21 +33,21 @@ int main()
 #  else
 
    bool ok;
-   vdscDirIterator iterator;
+   pscDirIterator iterator;
    const char* str;
-   vdscErrorHandler errorHandler;
+   pscErrorHandler errorHandler;
    
-   vdscInitErrorDefs();
-   vdscInitDir( &iterator );
-   vdscInitErrorHandler( &errorHandler );
+   pscInitErrorDefs();
+   pscInitDir( &iterator );
+   pscInitErrorHandler( &errorHandler );
 
-   ok = vdscOpenDir( &iterator, "..", &errorHandler );
+   ok = pscOpenDir( &iterator, "..", &errorHandler );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, );
    }
    
    iterator.pDir = NULL;
-   str = vdscDirGetNextFileName( &iterator, &errorHandler );
+   str = pscDirGetNextFileName( &iterator, &errorHandler );
    
    ERROR_EXIT( expectedToPass, NULL, );
    

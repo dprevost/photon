@@ -43,7 +43,7 @@ int vdsInit( const char * wdAddress,
    g_protectionIsNeeded = programIsMultiThreaded;
    
    if ( g_protectionIsNeeded ) {
-      ok = vdscInitThreadLock( &g_ProcessMutex );
+      ok = pscInitThreadLock( &g_ProcessMutex );
       VDS_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) return VDS_NOT_ENOUGH_RESOURCES;
    }

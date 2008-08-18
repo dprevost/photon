@@ -138,11 +138,11 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
    pVerify->spaces += 2;
    
    /* Is the object lock ? */
-   if ( vdscIsItLocked( &pFolder->memObject.lock ) ) {
+   if ( pscIsItLocked( &pFolder->memObject.lock ) ) {
       vdswEcho( pVerify, "The object is locked - it might be corrupted" );
       if ( pVerify->doRepair ) {
          vdswEcho( pVerify, "Trying to reset the lock..." );
-         vdscReleaseProcessLock ( &pFolder->memObject.lock );
+         pscReleaseProcessLock ( &pFolder->memObject.lock );
       }
       rc = vdswVerifyMemObject( pVerify, &pFolder->memObject, pContext );
       if ( rc > VDSWR_START_ERRORS ) {

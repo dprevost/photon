@@ -27,15 +27,15 @@ int main()
 {
 #if defined(USE_DBC)
    bool ok;
-   vdscThreadLock lock;
+   pscThreadLock lock;
 
-   ok = vdscInitThreadLock( &lock );
+   ok = pscInitThreadLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    lock.initialized = 0;
-   vdscTryAcquireThreadLock( &lock, 100 );
+   pscTryAcquireThreadLock( &lock, 100 );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

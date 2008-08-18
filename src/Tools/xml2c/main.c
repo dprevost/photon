@@ -41,20 +41,20 @@ int main( int argc, char * argv[] )
    int fd = -1, errcode = 0, rc = 0, debug = 0;
    size_t length, i, j;
    int separator = -1;
-   vdscOptionHandle optHandle;
+   pscOptionHandle optHandle;
    char * buff = NULL;
    bool ok;
    
 #if HAVE_STAT || HAVE__STAT
    struct stat status;
 
-   struct vdscOptStruct opts[2] = {
+   struct pscOptStruct opts[2] = {
       { 'i', "input",    0, "input_filename", "Filename for the input (XML)" },
       { 'o', "output",   0, "output_dirname", "Directory name for the output files" }
    };
 
 #else
-   struct vdscOptStruct opts[3] = {
+   struct pscOptStruct opts[3] = {
       { 'i', "input",    0, "input_filename", "Filename for the input (XML)" },
       { 'l', "length",   0, "input length",   "Length of input if stat() not supported" },
       { 'o', "output",   0, "output_dirname", "Directory name for the output files" }
@@ -70,29 +70,29 @@ int main( int argc, char * argv[] )
    xmlChar * prop = NULL;
    
 #if HAVE_STAT || HAVE__STAT
-   ok = vdscSetSupportedOptions( 2, opts, &optHandle );
+   ok = pscSetSupportedOptions( 2, opts, &optHandle );
 #else
-   ok = vdscSetSupportedOptions( 3, opts, &optHandle );
+   ok = pscSetSupportedOptions( 3, opts, &optHandle );
 #endif
    VDS_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
-      fprintf( stderr, "Internal error in vdscSetSupportedOptions\n" );
+      fprintf( stderr, "Internal error in pscSetSupportedOptions\n" );
       return 1;
    }
    
-   errcode = vdscValidateUserOptions( optHandle, argc, argv, 1 );
+   errcode = pscValidateUserOptions( optHandle, argc, argv, 1 );
    if ( errcode < 0 ) {
-      vdscShowUsage( optHandle, argv[0], "" );
+      pscShowUsage( optHandle, argv[0], "" );
       return 1;
    }
    
    if ( errcode > 0 ) {
-      vdscShowUsage( optHandle, argv[0], "" );
+      pscShowUsage( optHandle, argv[0], "" );
       return 0;
    }
 
-   vdscGetShortOptArgument( optHandle, 'i', &inputname );
-   vdscGetShortOptArgument( optHandle, 'o', &dirname );
+   pscGetShortOptArgument( optHandle, 'i', &inputname );
+   pscGetShortOptArgument( optHandle, 'o', &dirname );
 
 #if HAVE_STAT || HAVE__STAT
    errcode = stat( inputname, &status );
@@ -102,7 +102,7 @@ int main( int argc, char * argv[] )
    }
    length = status.st_size;
 #else   
-   vdscGetShortOptArgument( optHandle, 'o', &dummy );
+   pscGetShortOptArgument( optHandle, 'o', &dummy );
    sscanf( dummy, VDSF_SIZE_T_FORMAT, &length );
 #endif
 

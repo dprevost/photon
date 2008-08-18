@@ -14,7 +14,7 @@
  */
 
 /**
- * \defgroup vdscCommon The Group of all modules in Common
+ * \defgroup pscCommon The Group of all modules in Common
  *
  * Modules in this group provides wrappers for C library function and 
  * low-level functionalities used by the different parts that makes VDSF.
@@ -25,8 +25,8 @@
 #  define FD_SETSIZE 100
 #endif
 
-#ifndef VDSC_COMMON_H
-#define VDSC_COMMON_H
+#ifndef PSC_COMMON_H
+#define PSC_COMMON_H
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -406,64 +406,64 @@ typedef int bool;
 #  define VDS_MAP_FAILED MAP_FAILED
 #endif
 
-struct vdscTestAlignmentStruct
+struct pscTestAlignmentStruct
 {
    unsigned char c;
-   struct vdscTestAlignment2
+   struct pscTestAlignment2
    {
       double d;
    } two;
 };
 
-#define VDSC_ALIGNMENT_STRUCT offsetof(struct vdscTestAlignmentStruct, two)
+#define PSC_ALIGNMENT_STRUCT offsetof(struct pscTestAlignmentStruct, two)
 
-struct vdscTestAlignmentChar
+struct pscTestAlignmentChar
 {
    unsigned char c1;
    unsigned char c2;
 };
 
-#define VDSC_ALIGNMENT_CHAR offsetof(struct vdscTestAlignmentChar, c2)
+#define PSC_ALIGNMENT_CHAR offsetof(struct pscTestAlignmentChar, c2)
 
-struct vdscTestAlignmentCharArray
+struct pscTestAlignmentCharArray
 {
    unsigned char c1;
    unsigned char array[11];
 };
 
-#define VDSC_ALIGNMENT_CHAR_ARRAY offsetof(struct vdscTestAlignmentCharArray, array)
+#define PSC_ALIGNMENT_CHAR_ARRAY offsetof(struct pscTestAlignmentCharArray, array)
 
-struct vdscTestAlignmentInt16
+struct pscTestAlignmentInt16
 {
    unsigned char c;
    uint16_t i16;
 };
 
-#define VDSC_ALIGNMENT_INT16 offsetof(struct vdscTestAlignmentInt16, i16)
+#define PSC_ALIGNMENT_INT16 offsetof(struct pscTestAlignmentInt16, i16)
 
-struct vdscTestAlignmentInt32
+struct pscTestAlignmentInt32
 {
    unsigned char c;
    uint32_t i32;
 };
 
-#define VDSC_ALIGNMENT_INT32 offsetof(struct vdscTestAlignmentInt32, i32)
+#define PSC_ALIGNMENT_INT32 offsetof(struct pscTestAlignmentInt32, i32)
 
-struct vdscTestAlignmentInt64
+struct pscTestAlignmentInt64
 {
    unsigned char c;
    uint64_t i64;
 };
 
-#define VDSC_ALIGNMENT_INT64 offsetof(struct vdscTestAlignmentInt64, i64)
+#define PSC_ALIGNMENT_INT64 offsetof(struct pscTestAlignmentInt64, i64)
 
-struct vdscTestAlignmentBool
+struct pscTestAlignmentBool
 {
    unsigned char c;
    bool b;
 };
 
-#define VDSC_ALIGNMENT_BOOL offsetof(struct vdscTestAlignmentBool, b)
+#define PSC_ALIGNMENT_BOOL offsetof(struct pscTestAlignmentBool, b)
 
 /****************************************************************/
 /*
@@ -495,4 +495,4 @@ struct vdscTestAlignmentBool
 
 END_C_DECLS
 
-#endif /* VDSC_COMMON_H */
+#endif /* PSC_COMMON_H */

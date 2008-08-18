@@ -35,15 +35,15 @@ int main()
 #else
 
    bool ok;
-   vdscDirIterator iterator;
-   vdscErrorHandler errorHandler;
+   pscDirIterator iterator;
+   pscErrorHandler errorHandler;
    const char* str;
 
-   vdscInitErrorDefs();
-   vdscInitDir( &iterator );
-   vdscInitErrorHandler( &errorHandler );
+   pscInitErrorDefs();
+   pscInitDir( &iterator );
+   pscInitErrorHandler( &errorHandler );
    
-   ok = vdscOpenDir( &iterator, "abc123", &errorHandler );
+   ok = pscOpenDir( &iterator, "abc123", &errorHandler );
    if ( ! ok ) {
       /* OpenDir cannot fail on Win32 but someone might update
        * the code eventually...
@@ -51,20 +51,20 @@ int main()
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
 
-   str = vdscDirGetNextFileName( &iterator, &errorHandler );
+   str = pscDirGetNextFileName( &iterator, &errorHandler );
 
    if ( str != NULL ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
-   if ( ! vdscAnyErrors( &errorHandler ) ) {
+   if ( ! pscAnyErrors( &errorHandler ) ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   vdscCloseDir( &iterator );
+   pscCloseDir( &iterator );
 
-   vdscFiniDir( &iterator );
-   vdscFiniErrorHandler( &errorHandler );
-   vdscFiniErrorDefs();
+   pscFiniDir( &iterator );
+   pscFiniErrorHandler( &errorHandler );
+   pscFiniErrorDefs();
 
    return 0;
 

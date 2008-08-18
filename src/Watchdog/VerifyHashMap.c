@@ -120,11 +120,11 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
    pVerify->spaces += 2;
 
    /* Is the object lock ? */
-   if ( vdscIsItLocked( &pHashMap->memObject.lock ) ) {
+   if ( pscIsItLocked( &pHashMap->memObject.lock ) ) {
       vdswEcho( pVerify, "The object is locked - it might be corrupted" );
       if ( pVerify->doRepair ) {
          vdswEcho( pVerify, "Trying to reset the lock..." );
-         vdscReleaseProcessLock ( &pHashMap->memObject.lock );
+         pscReleaseProcessLock ( &pHashMap->memObject.lock );
       }
       rc = vdswVerifyMemObject( pVerify, &pHashMap->memObject, pContext );
       if ( rc > VDSWR_START_ERRORS ) {

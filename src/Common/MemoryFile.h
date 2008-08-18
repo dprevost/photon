@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSC_MEMORY_FILE_H
-#define VDSC_MEMORY_FILE_H
+#ifndef PSC_MEMORY_FILE_H
+#define PSC_MEMORY_FILE_H
 
 #include "Common.h"
 #include "ErrorHandler.h"
@@ -26,7 +26,7 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * \defgroup vdscMemoryFile The Memory File module
+ * \defgroup pscMemoryFile The Memory File module
  *
  * This module encapsulates the difference between mmap on Unix/Linux 
  * and CreateFileMappingA (and similar calls) on WIN32.
@@ -36,7 +36,7 @@ BEGIN_C_DECLS
  * adding secure access through ACLs) could be added to this module 
  * eventually.
  *
- * \ingroup vdscCommon
+ * \ingroup pscCommon
  * @{
  */
 
@@ -51,13 +51,13 @@ BEGIN_C_DECLS
  * eventually.
  */
 
-/** Unique identifier for the vdscMemoryFile struct. */
-#define VDSC_MEMFILE_SIGNATURE ((unsigned)0x438eb633)
+/** Unique identifier for the pscMemoryFile struct. */
+#define PSC_MEMFILE_SIGNATURE ((unsigned)0x438eb633)
 
 /**
  * A simple structure used to get information on the status of the backstore.
  */
-struct vdscMemoryFileStatus
+struct pscMemoryFileStatus
 {
    /** Set to one if the file exist. */
    int  fileExist;
@@ -71,12 +71,12 @@ struct vdscMemoryFileStatus
    size_t actualLLength;
 };
 
-typedef struct vdscMemoryFileStatus vdscMemoryFileStatus;
+typedef struct pscMemoryFileStatus pscMemoryFileStatus;
 
 /** This struct holds all data needed for accessing the memory file. */
-struct vdscMemoryFile
+struct pscMemoryFile
 {
-   /** Set to VDSC_MEMFILE_SIGNATURE at initialization. */
+   /** Set to PSC_MEMFILE_SIGNATURE at initialization. */
    unsigned int initialized;
    
    /**
@@ -113,68 +113,68 @@ struct vdscMemoryFile
    
 };
 
-typedef struct vdscMemoryFile vdscMemoryFile;
+typedef struct pscMemoryFile pscMemoryFile;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/*! \brief Initialize a vdscMemoryFile struct. */
+/*! \brief Initialize a pscMemoryFile struct. */
 VDSF_COMMON_EXPORT
-void vdscInitMemoryFile( vdscMemoryFile * pMem,
-                         size_t           kblength, 
-                         const char     * filename );
+void pscInitMemoryFile( pscMemoryFile * pMem,
+                        size_t          kblength, 
+                        const char    * filename );
 
-/*! \brief Terminate access to a vdscMemoryFile struct. */
+/*! \brief Terminate access to a pscMemoryFile struct. */
 VDSF_COMMON_EXPORT
-void vdscFiniMemoryFile( vdscMemoryFile * pMem );
+void pscFiniMemoryFile( pscMemoryFile * pMem );
 
 /*! \brief Return the status of the backstore file. */
 VDSF_COMMON_EXPORT
-void vdscBackStoreStatus( vdscMemoryFile       * pMem,
-                          vdscMemoryFileStatus * pStatus );
+void pscBackStoreStatus( pscMemoryFile       * pMem,
+                         pscMemoryFileStatus * pStatus );
    
 /*! \brief Create the backstore file */
 VDSF_COMMON_EXPORT
-bool vdscCreateBackstore( vdscMemoryFile   * pMem,
-                          int                filePerms,
-                          vdscErrorHandler * pError );
+bool pscCreateBackstore( pscMemoryFile   * pMem,
+                         int               filePerms,
+                         pscErrorHandler * pError );
    
 /*! 
  *  \brief "Open" an access to the memory file (this might load the 
  *  backstore in memory).
  */
 VDSF_COMMON_EXPORT
-bool vdscOpenMemFile( vdscMemoryFile   * pMem,
-                      void            ** ppAddr,
-                      vdscErrorHandler * pError );
+bool pscOpenMemFile( pscMemoryFile   * pMem,
+                     void           ** ppAddr,
+                     pscErrorHandler * pError );
    
 /*! \brief Create a copy of the backstore file */
 VDSF_COMMON_EXPORT
-bool vdscCopyBackstore( vdscMemoryFile   * pMem,
-                        int                filePerms,
-                        vdscErrorHandler * pError );
+bool pscCopyBackstore( pscMemoryFile   * pMem,
+                       int               filePerms,
+                       pscErrorHandler * pError );
 
 /*!
  *  \brief Close our access the memory file (possibly removing the memory
  *  file itself from memory).
  */
 VDSF_COMMON_EXPORT
-void vdscCloseMemFile( vdscMemoryFile   * pMem,
-                       vdscErrorHandler * pError );
+void pscCloseMemFile( pscMemoryFile   * pMem,
+                      pscErrorHandler * pError );
 
 /*! \brief Synchronize the memory file to the backstore (disk) */
 VDSF_COMMON_EXPORT
-bool vdscSyncMemFile( vdscMemoryFile   * pMem,
-                      vdscErrorHandler * pError );
+bool pscSyncMemFile( pscMemoryFile   * pMem,
+                     pscErrorHandler * pError );
 
 /*! \brief Set the shared memory to read-only. */
 static inline
-bool vdscSetReadOnly( vdscMemoryFile   * pMem,
-                      vdscErrorHandler * pError );
+bool pscSetReadOnly( pscMemoryFile   * pMem,
+                     pscErrorHandler * pError );
 
 /*! \brief Set the shared memory to be writable. */
 static inline
-bool vdscSetReadWrite( vdscMemoryFile   * pMem,
-                       vdscErrorHandler * pError );
+bool pscSetReadWrite( pscMemoryFile   * pMem,
+                      pscErrorHandler * pError );
 
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -187,4 +187,4 @@ END_C_DECLS
 
 #include "MemoryFile.inl"
 
-#endif /* VDSC_MEMORY_FILE_H */
+#endif /* PSC_MEMORY_FILE_H */

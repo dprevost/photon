@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSC_ERROR_HANDLER_H
-#define VDSC_ERROR_HANDLER_H
+#ifndef PSC_ERROR_HANDLER_H
+#define PSC_ERROR_HANDLER_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -27,7 +27,7 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * \defgroup vdscErrorHandler The Error Handler module
+ * \defgroup pscErrorHandler The Error Handler module
  *
  * This module provides a unified mechanism to store error codes and
  * to retrieve error messages associated with the error codes.
@@ -42,7 +42,7 @@ BEGIN_C_DECLS
  * provided by errno (or GetLastError() on Windows).
  *
  * IMHO, a better solution is to provide a limited "stack" of error messages
- * (the size of the chain of errors is limited by VDSC_ERROR_CHAIN_LENGTH).
+ * (the size of the chain of errors is limited by PSC_ERROR_CHAIN_LENGTH).
  *
  * Currently the code will generate appropriate error messages for errno
  * and for GetLastError() and WSAGetLastError() on Windows.
@@ -54,7 +54,7 @@ BEGIN_C_DECLS
  * errorParser built it for you (transforming the comments in a header file 
  * describing the error codes in error messages).
  *
- * \ingroup vdscCommon
+ * \ingroup pscCommon
  * @{
  */
 
@@ -68,67 +68,67 @@ BEGIN_C_DECLS
  * 
  */
 
-/** Unique identifier for the vdscErrorHandler struct. */
-#define VDSC_ERROR_HANDLER_SIGNATURE ((unsigned)0xfd13a982)
+/** Unique identifier for the pscErrorHandler struct. */
+#define PSC_ERROR_HANDLER_SIGNATURE ((unsigned)0xfd13a982)
 
 /** A handle to the function that converts an error code into an error 
  *  message. 
  */
-typedef int vdscErrMsgHandle;
+typedef int pscErrMsgHandle;
 
-#define VDSC_NO_ERRHANDLER    ((vdscErrMsgHandle)-1)
-#define VDSC_ERRNO_HANDLE     ((vdscErrMsgHandle) 0)
+#define PSC_NO_ERRHANDLER    ((pscErrMsgHandle)-1)
+#define PSC_ERRNO_HANDLE     ((pscErrMsgHandle) 0)
 #if defined (WIN32 )
-#  define VDSC_WINERR_HANDLE  ((vdscErrMsgHandle) 1)
-#  define VDSC_SOCKERR_HANDLE ((vdscErrMsgHandle) 2)
+#  define PSC_WINERR_HANDLE  ((pscErrMsgHandle) 1)
+#  define PSC_SOCKERR_HANDLE ((pscErrMsgHandle) 2)
 #endif
 
-#define VDSC_ERROR_CHAIN_LENGTH  5
+#define PSC_ERROR_CHAIN_LENGTH  5
 
-typedef int (*vdscErrMsgHandler_T)(int, char *, unsigned int);
+typedef int (*pscErrMsgHandler_T)(int, char *, unsigned int);
 
-typedef struct vdscErrorHandler
+typedef struct pscErrorHandler
 {
-   /** Set to VDSC_ERROR_HANDLER_SIGNATURE at initialization. */
+   /** Set to PSC_ERROR_HANDLER_SIGNATURE at initialization. */
    unsigned int initialized;
    
    /** The length of the chain of errors. */
    int chainLength;
    
    /** Error codes. */
-   int errorCode[VDSC_ERROR_CHAIN_LENGTH];
+   int errorCode[PSC_ERROR_CHAIN_LENGTH];
    
    /** Handle to the function used to retrieve the error message. */
-   vdscErrMsgHandle errorHandle[VDSC_ERROR_CHAIN_LENGTH];
+   pscErrMsgHandle errorHandle[PSC_ERROR_CHAIN_LENGTH];
    
-} vdscErrorHandler;
+} pscErrorHandler;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Use for initializing our internal data. */
 VDSF_COMMON_EXPORT
-bool vdscInitErrorDefs();
+bool pscInitErrorDefs();
 
 /*! \brief Clear our internal data. */
 VDSF_COMMON_EXPORT
-void vdscFiniErrorDefs();
+void pscFiniErrorDefs();
 
 /*! \brief Add a function to handle error messages. */
 VDSF_COMMON_EXPORT
-vdscErrMsgHandle vdscAddErrorMsgHandler( const char          * name, 
-                                         vdscErrMsgHandler_T   handler );
+pscErrMsgHandle pscAddErrorMsgHandler( const char         * name, 
+                                       pscErrMsgHandler_T   handler );
 
 /*! \brief Use for initializing the struct or to reset it, as needed. */
 VDSF_COMMON_EXPORT
-void vdscInitErrorHandler( vdscErrorHandler * pErrorHandler );
+void pscInitErrorHandler( pscErrorHandler * pErrorHandler );
 
-/*! \brief Terminate access to the struct vdscErrorHandler */
+/*! \brief Terminate access to the struct pscErrorHandler */
 VDSF_COMMON_EXPORT
-void vdscFiniErrorHandler( vdscErrorHandler * pErrorHandler );
+void pscFiniErrorHandler( pscErrorHandler * pErrorHandler );
 
 /*! Test to see if errors were found. 
  * 
- * \param[in] pErrorHandler A pointer to the vdscErrorHandler struct itself.
+ * \param[in] pErrorHandler A pointer to the pscErrorHandler struct itself.
  *
  * \retval true  (1) if there are errors.
  * \retval false (0) if no errors.
@@ -136,7 +136,7 @@ void vdscFiniErrorHandler( vdscErrorHandler * pErrorHandler );
  * \pre \em pErrorHandler cannot be NULL.
  */
 static inline
-bool vdscAnyErrors( vdscErrorHandler * pErrorHandler )
+bool pscAnyErrors( pscErrorHandler * pErrorHandler )
 {
    VDS_PRE_CONDITION( pErrorHandler != NULL );
 
@@ -147,40 +147,40 @@ bool vdscAnyErrors( vdscErrorHandler * pErrorHandler )
  *         messages (if more than one)
  */
 VDSF_COMMON_EXPORT
-size_t vdscGetErrorMsg( vdscErrorHandler * pErrorHandler,
-                        char             * msg, 
-                        size_t             maxLength );
+size_t pscGetErrorMsg( pscErrorHandler * pErrorHandler,
+                       char            * msg, 
+                       size_t            maxLength );
 
 /*! \brief Retrieves the length of the error message or the length of a 
  *         concatenation of all error messages (if more than one) - the
  *         space for a NULL terminator is not included.
  */
 VDSF_COMMON_EXPORT
-size_t vdscGetErrorMsgLength( vdscErrorHandler * pErrorHandler );
+size_t pscGetErrorMsgLength( pscErrorHandler * pErrorHandler );
 
 /*! \brief 
  * Sets both the error code and the handler for the 
  * error message. It will first reset the chain of error codes to zero.
  */
 VDSF_COMMON_EXPORT
-void vdscSetError( vdscErrorHandler * pErrorHandler, 
-                   vdscErrMsgHandle   handle,
-                   int                errorCode );   
+void pscSetError( pscErrorHandler * pErrorHandler, 
+                  pscErrMsgHandle   handle,
+                  int               errorCode );   
 
 /*! \brief
  * Adds the error code and the handler for the error message to an 
  * existing chain.
  */
 VDSF_COMMON_EXPORT
-void vdscChainError( vdscErrorHandler * pErrorHandler, 
-                     vdscErrMsgHandle   handle,
-                     int                errorCode );  
+void pscChainError( pscErrorHandler * pErrorHandler, 
+                    pscErrMsgHandle   handle,
+                    int               errorCode );  
 
 /*! \brief
  * Retrieves the last error number or zero if no errors.
  */
 static inline 
-int vdscGetLastError( vdscErrorHandler * pErrorHandler )
+int pscGetLastError( pscErrorHandler * pErrorHandler )
 {
    VDS_PRE_CONDITION( pErrorHandler != NULL );
 
@@ -197,5 +197,5 @@ int vdscGetLastError( vdscErrorHandler * pErrorHandler )
 
 END_C_DECLS
 
-#endif /* VDSC_ERROR_HANDLER_H */
+#endif /* PSC_ERROR_HANDLER_H */
 

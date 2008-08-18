@@ -25,13 +25,13 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdscDirIterator iterator;
+   pscDirIterator iterator;
 
-   vdscInitDir( &iterator );
+   pscInitDir( &iterator );
 
-   vdscFiniDir( &iterator );
+   pscFiniDir( &iterator );
 
-   if ( iterator.initialized == VDSC_DIR_ACCESS_SIGNATURE ) {
+   if ( iterator.initialized == PSC_DIR_ACCESS_SIGNATURE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

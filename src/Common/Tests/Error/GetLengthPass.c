@@ -25,15 +25,15 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdscErrorHandler errorHandler;
+   pscErrorHandler errorHandler;
    
-   vdscInitErrorDefs();
-   vdscInitErrorHandler( &errorHandler );
+   pscInitErrorDefs();
+   pscInitErrorHandler( &errorHandler );
    
-   vdscGetErrorMsgLength( &errorHandler );
+   pscGetErrorMsgLength( &errorHandler );
 
-   vdscFiniErrorHandler( &errorHandler );
-   vdscFiniErrorDefs();
+   pscFiniErrorHandler( &errorHandler );
+   pscFiniErrorDefs();
    
    return 0;
 }

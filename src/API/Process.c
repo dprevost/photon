@@ -27,7 +27,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 vdsaProcess     *g_pProcessInstance = NULL;
-vdscThreadLock   g_ProcessMutex;
+pscThreadLock   g_ProcessMutex;
    
 /** 
  * Set to true if the program is multithreaded.
@@ -40,11 +40,11 @@ bool AreWeTerminated()
 {
    bool ret = true;
    
-   vdscAcquireThreadLock( &g_ProcessMutex );
+   pscAcquireThreadLock( &g_ProcessMutex );
 
    if ( g_pProcessInstance->pHeader != NULL ) ret = false;
    
-   vdscReleaseThreadLock( &g_ProcessMutex );
+   pscReleaseThreadLock( &g_ProcessMutex );
 
    return ret;
 }
@@ -67,10 +67,10 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
    
    memset( &context, 0, sizeof(vdseSessionContext) );
    context.pidLocker = getpid();
-   vdscInitErrorHandler( &context.errorHandler );
+   pscInitErrorHandler( &context.errorHandler );
    
    if ( g_protectionIsNeeded ) {
-      vdscAcquireThreadLock( &g_ProcessMutex );
+      pscAcquireThreadLock( &g_ProcessMutex );
    }
    
    if ( process->pHeader != NULL ) {
@@ -112,13 +112,13 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
       g_pProcessInstance = process;
    }
    else {
-      errcode = vdscGetLastError( &context.errorHandler );
+      errcode = pscGetLastError( &context.errorHandler );
    }
    
 the_exit:
    
    if ( g_protectionIsNeeded ) {
-      vdscReleaseThreadLock( &g_ProcessMutex );
+      pscReleaseThreadLock( &g_ProcessMutex );
    }
    
    return errcode;
@@ -151,10 +151,10 @@ void vdsaProcessFini()
    memset( &context, 0, sizeof(vdseSessionContext) );
    context.pidLocker = getpid();
    GET_PTR( context.pAllocator, process->pHeader->allocatorOffset, void );
-   vdscInitErrorHandler( &context.errorHandler );
+   pscInitErrorHandler( &context.errorHandler );
 
    if ( g_protectionIsNeeded ) {
-      vdscAcquireThreadLock( &g_ProcessMutex );
+      pscAcquireThreadLock( &g_ProcessMutex );
    }
    
    GET_PTR( processManager, process->pHeader->processMgrOffset, vdseProcMgr );
@@ -207,7 +207,7 @@ error_handler:
    vdsaDisconnect( &process->connector, &context.errorHandler );
 
    if ( g_protectionIsNeeded ) {
-      vdscReleaseThreadLock( &g_ProcessMutex );
+      pscReleaseThreadLock( &g_ProcessMutex );
    }
 }
 
@@ -220,7 +220,7 @@ int vdsaOpenVDS( vdsaProcess        * process,
 {
    int errcode = 0;
    bool ok;
-   vdscMemoryFileStatus fileStatus;
+   pscMemoryFileStatus fileStatus;
    void * ptr;
    
    VDS_PRE_CONDITION( process        != NULL );
@@ -229,15 +229,15 @@ int vdsaOpenVDS( vdsaProcess        * process,
 
    process->pHeader = NULL;
    
-   vdscInitMemoryFile( &process->memoryFile, memorySizekb, memoryFileName );
+   pscInitMemoryFile( &process->memoryFile, memorySizekb, memoryFileName );
    
-   vdscBackStoreStatus( &process->memoryFile, &fileStatus );
+   pscBackStoreStatus( &process->memoryFile, &fileStatus );
    
    if ( ! fileStatus.fileExist ) {
       return VDS_BACKSTORE_FILE_MISSING;
    }
    
-   ok = vdscOpenMemFile( &process->memoryFile, 
+   ok = pscOpenMemFile( &process->memoryFile, 
                          &ptr, 
                          &pContext->errorHandler );   
    VDS_POST_CONDITION( ok == true || ok == false );
@@ -265,7 +265,7 @@ void vdsaCloseVDS( vdsaProcess        * process,
    VDS_PRE_CONDITION( process  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
 
-   vdscCloseMemFile( &process->memoryFile, &pContext->errorHandler );
+   pscCloseMemFile( &process->memoryFile, &pContext->errorHandler );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

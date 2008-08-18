@@ -27,25 +27,25 @@ int main()
 {
 #if defined(USE_DBC)
    bool ok;
-   vdscDirIterator* pIterator;
-   vdscErrorHandler errorHandler;
+   pscDirIterator* pIterator;
+   pscErrorHandler errorHandler;
    
-   vdscInitErrorDefs();
+   pscInitErrorDefs();
 
-   pIterator = (vdscDirIterator*) malloc( sizeof(vdscDirIterator) );
-   memset( pIterator, 0x7, sizeof(vdscDirIterator) );
-   vdscInitErrorHandler( &errorHandler );
+   pIterator = (pscDirIterator*) malloc( sizeof(pscDirIterator) );
+   memset( pIterator, 0x7, sizeof(pscDirIterator) );
+   pscInitErrorHandler( &errorHandler );
    
-   ok = vdscOpenDir( pIterator, "..", &errorHandler );
+   ok = pscOpenDir( pIterator, "..", &errorHandler );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   vdscCloseDir( pIterator );
+   pscCloseDir( pIterator );
 
-   vdscFiniDir( pIterator );
-   vdscFiniErrorHandler( &errorHandler );
-   vdscFiniErrorDefs();
+   pscFiniDir( pIterator );
+   pscFiniErrorHandler( &errorHandler );
+   pscFiniErrorDefs();
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -34,18 +34,18 @@ int main()
    unsigned long sec = 0, nanoSec = 0;
    struct timespec sleepTime = { 0, 10000 };
    int errCode;
-   vdscTimer timer;
+   pscTimer timer;
 
-   vdscInitTimer( &timer );   
-   vdscBeginTimer( &timer );
+   pscInitTimer( &timer );   
+   pscBeginTimer( &timer );
 
    errCode = nanosleep( &sleepTime, NULL );
    if ( errCode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdscEndTimer( &timer );
-   vdscCalculateTimer( &timer, &sec, &nanoSec );
+   pscEndTimer( &timer );
+   pscCalculateTimer( &timer, &sec, &nanoSec );
 
    fprintf( stderr, "Sec = %u, uSec = %u\n", (unsigned int)sec, 
                                              (unsigned int)(nanoSec/1000) );

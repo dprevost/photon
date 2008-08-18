@@ -29,7 +29,7 @@
 
 #define MEM_SIZE (1024)
 
-vdscErrorHandler g_info;
+pscErrorHandler g_info;
 unsigned char    g_dum[MEM_SIZE];
 
 void InitMem()

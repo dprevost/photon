@@ -83,7 +83,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    else {
-      errcode = vdscGetLastError( &context.errorHandler );
+      errcode = pscGetLastError( &context.errorHandler );
       if ( errcode != VDS_NO_SUCH_ITEM ) {
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }

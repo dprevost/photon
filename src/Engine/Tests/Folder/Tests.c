@@ -72,7 +72,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( vdscGetLastError( &context.errorHandler ) != VDS_OBJECT_ALREADY_PRESENT ) {
+   if ( pscGetLastError( &context.errorHandler ) != VDS_OBJECT_ALREADY_PRESENT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -138,7 +138,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( vdscGetLastError( &context.errorHandler ) != VDS_FOLDER_IS_NOT_EMPTY ) {
+   if ( pscGetLastError( &context.errorHandler ) != VDS_FOLDER_IS_NOT_EMPTY ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -150,7 +150,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( vdscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT ) {
+   if ( pscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -196,7 +196,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( vdscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT ) {
+   if ( pscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -208,7 +208,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( vdscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_FOLDER ) {
+   if ( pscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_FOLDER ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

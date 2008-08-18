@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSC_ARCH_BARRIER_H
-#define VDSC_ARCH_BARRIER_H
+#ifndef PSC_ARCH_BARRIER_H
+#define PSC_ARCH_BARRIER_H
 
 /*
  * Barrier for the 64 bits version of Intel and AMD cpus when using gcc or 
@@ -25,28 +25,28 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
- static inline void vdscMemoryBarrier()
+ static inline void pscMemoryBarrier()
 {
    __asm__ __volatile__("mfence" : : : "memory");
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void vdscReadMemoryBarrier()
+static inline void pscReadMemoryBarrier()
 {
    __asm__ __volatile__("lfence" : : : "memory");
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void vdscWriteMemoryBarrier()
+static inline void pscWriteMemoryBarrier()
 {
    __asm__ __volatile__("sfence" : : : "memory");
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSC_ARCH_BARRIER_H */
+#endif /* PSC_ARCH_BARRIER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

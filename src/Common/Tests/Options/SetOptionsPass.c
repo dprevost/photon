@@ -25,9 +25,9 @@ const bool expectedToPass = true;
 int main()
 {
    bool ok;
-   vdscOptionHandle handle;
+   pscOptionHandle handle;
    
-   struct vdscOptStruct opts[5] = {
+   struct pscOptStruct opts[5] = {
       { '3', "three",   1, "", "repeat the loop three times" },
       { 'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog" },
       { 'x', "",        1, "DISPLAY", "X display to use" },
@@ -35,9 +35,9 @@ int main()
       { 'z', "zzz",     1, "", "go to sleep..." }
    };
    
-   ok = vdscSetSupportedOptions( 5, opts, &handle );
+   ok = pscSetSupportedOptions( 5, opts, &handle );
 
-   vdscUnsetSupportedOptions( handle );
+   pscUnsetSupportedOptions( handle );
 
    return 0;
 }

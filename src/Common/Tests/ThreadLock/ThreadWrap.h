@@ -74,11 +74,11 @@ typedef struct vdstThreadWrap
 int vdstCreateThread( vdstThreadWrap*      pThread, 
                       VDST_THREAD_FUNCTION startRoutine,
                       void*                arg,
-                      vdscErrorHandler*    pError );
+                      pscErrorHandler*    pError );
 
 int vdstJoinThread( vdstThreadWrap*   pThread, 
 //                    void*             retValue,
-                    vdscErrorHandler* pError);
+                    pscErrorHandler* pError);
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

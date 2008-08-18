@@ -44,7 +44,7 @@ int main()
    if ( ok == true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( vdscGetLastError( &context.errorHandler ) != VDS_IS_EMPTY ) {
+   if ( pscGetLastError( &context.errorHandler ) != VDS_IS_EMPTY ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

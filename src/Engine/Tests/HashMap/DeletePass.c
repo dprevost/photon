@@ -104,7 +104,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    else {
-      errcode = vdscGetLastError( &context.errorHandler );
+      errcode = pscGetLastError( &context.errorHandler );
       if ( errcode != VDS_ITEM_IS_DELETED ) {
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }

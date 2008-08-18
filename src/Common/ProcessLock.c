@@ -30,10 +30,10 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdscTestLockPidValue( vdscProcessLock * pLock, pid_t pid )
+bool pscTestLockPidValue( pscProcessLock * pLock, pid_t pid )
 {
    VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
+   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( pid != 0 );
 
    return pLock->pid == pid;
@@ -45,12 +45,12 @@ bool vdscTestLockPidValue( vdscProcessLock * pLock, pid_t pid )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdscIsItLocked( vdscProcessLock * pLock )
+bool pscIsItLocked( pscProcessLock * pLock )
 {
    int rc, val;
 
    VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
+   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
 
    rc = sem_getvalue( &pLock->semaphore.sem, &val );
    return val <= 0;
@@ -59,19 +59,19 @@ bool vdscIsItLocked( vdscProcessLock * pLock )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Initialize the lock */
-bool vdscInitProcessLock( vdscProcessLock * pLock )
+bool pscInitProcessLock( pscProcessLock * pLock )
 {
    int err = 0;
    int pshared = 1; /* Shared between processes */
 
    VDS_PRE_CONDITION( pLock != NULL );
 
-   if ( pLock->initialized == VDSC_LOCK_SIGNATURE ) return true;
+   if ( pLock->initialized == PSC_LOCK_SIGNATURE ) return true;
    
    memset( &pLock->semaphore.sem, 0, sizeof(sem_t) );
 
    pLock->pid = 0;
-   pLock->initialized = VDSC_LOCK_SIGNATURE;
+   pLock->initialized = PSC_LOCK_SIGNATURE;
 
    do {
       err = sem_init( &pLock->semaphore.sem, pshared, 1 );
@@ -89,12 +89,12 @@ bool vdscInitProcessLock( vdscProcessLock * pLock )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Remove the lock. */
-bool vdscFiniProcessLock( vdscProcessLock * pLock )
+bool pscFiniProcessLock( pscProcessLock * pLock )
 {
    int err = 0;
 
    VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
+   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
 
    do {
       err = sem_destroy( &pLock->semaphore.sem );
@@ -117,10 +117,10 @@ bool vdscFiniProcessLock( vdscProcessLock * pLock )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdscIsItLocked( vdscProcessLock * pLock )
+bool pscIsItLocked( pscProcessLock * pLock )
 {
    VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
+   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
 
    return pLock->lock != 0;
 }
@@ -128,14 +128,14 @@ bool vdscIsItLocked( vdscProcessLock * pLock )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Initialize the lock */
-bool vdscInitProcessLock( vdscProcessLock * pLock )
+bool pscInitProcessLock( pscProcessLock * pLock )
 {
    VDS_PRE_CONDITION( pLock != NULL );
 
-   if ( pLock->initialized != VDSC_LOCK_SIGNATURE ) {
+   if ( pLock->initialized != PSC_LOCK_SIGNATURE ) {
       pLock->lock = 0;
       pLock->pid  = 0;
-      pLock->initialized = VDSC_LOCK_SIGNATURE;
+      pLock->initialized = PSC_LOCK_SIGNATURE;
    }
    
    return true;
@@ -144,10 +144,10 @@ bool vdscInitProcessLock( vdscProcessLock * pLock )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Remove the lock - used for POSIX semaphores. */
-bool vdscFiniProcessLock( vdscProcessLock * pLock )
+bool pscFiniProcessLock( pscProcessLock * pLock )
 {
    VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
+   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
 
    pLock->pid  = 0;
    pLock->lock = 0;

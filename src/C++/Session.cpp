@@ -198,7 +198,7 @@ int vdsSession::LastError()
 
    if ( vdsaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         lastErr = vdscGetLastError( &pSession->context.errorHandler );
+         lastErr = pscGetLastError( &pSession->context.errorHandler );
       }
       else {
          rc = VDS_SESSION_IS_TERMINATED;

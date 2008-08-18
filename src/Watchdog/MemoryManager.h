@@ -32,7 +32,7 @@ BEGIN_C_DECLS
 
 struct vdswMemoryManager
 {
-   vdscMemoryFile memory;
+   pscMemoryFile memory;
 
    size_t memorySizeKB;
    
@@ -69,16 +69,16 @@ bool vdswOpenVDS( vdswMemoryManager  * pManager,
                   vdseSessionContext * pContext );
 
 void vdswCloseVDS( vdswMemoryManager * pManager,
-                   vdscErrorHandler  * pError );
+                   pscErrorHandler  * pError );
 
 #if 0
 
 /* ::msync() is called with the MS_SYNC flag by default */
 static inline
 bool vdswSyncVDS( vdswMemoryManager * pManager,
-                  vdscErrorHandler  * pError ) 
+                  pscErrorHandler  * pError ) 
 {
-   return vdscSyncMemFile( &pManager->memory, pError );
+   return pscSyncMemFile( &pManager->memory, pError );
 }
 
 #endif

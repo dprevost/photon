@@ -49,7 +49,7 @@ struct vdseMemObject
    vdseMemObjIdent objType;
    
    /** The lock... obviously */
-   vdscProcessLock lock;
+   pscProcessLock lock;
 
    /** Total number of blocks for the current object */
    size_t totalBlocks;
@@ -99,7 +99,7 @@ bool vdseLock( vdseMemObject      * pMemObj,
       vdseSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
    }
    
-   ok = vdscTryAcquireProcessLock ( &pMemObj->lock,
+   ok = pscTryAcquireProcessLock ( &pMemObj->lock,
                                     pContext->pidLocker,
                                     LOCK_TIMEOUT );
    VDS_POST_CONDITION( ok == true || ok == false );
@@ -118,7 +118,7 @@ void vdseLockNoFailure( vdseMemObject      * pMemObj,
       vdseSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
    }
    
-   vdscAcquireProcessLock ( &pMemObj->lock, LOCK_TIMEOUT );
+   pscAcquireProcessLock ( &pMemObj->lock, LOCK_TIMEOUT );
 }
 
 VDSF_ENGINE_EXPORT
@@ -136,7 +136,7 @@ void vdseUnlock( vdseMemObject      * pMemObj,
       vdseSessionRemoveLock( pContext, SET_OFFSET( pMemObj ) );
    }
    
-   vdscReleaseProcessLock ( &pMemObj->lock );
+   pscReleaseProcessLock ( &pMemObj->lock );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

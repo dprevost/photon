@@ -251,7 +251,7 @@ vdseMemAllocInit( vdseMemAlloc       * pAlloc,
 static inline 
 vdseFreeBufferNode * FindBuffer( vdseMemAlloc     * pAlloc,
                                  size_t             requestedBlocks,
-                                 vdscErrorHandler * pError )
+                                 pscErrorHandler * pError )
 {
    size_t i;
    /* size_t is unsigned. This is check by autoconf AC_TYPE_SIZE_T */
@@ -329,7 +329,7 @@ vdseFreeBufferNode * FindBuffer( vdseMemAlloc     * pAlloc,
     * versus a lack of a chunk big enough to accomodate the # of requested
     * blocks.
     */
-   vdscSetError( pError, g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
+   pscSetError( pError, g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
 
    return NULL;
 }
@@ -356,12 +356,12 @@ unsigned char * vdseMallocBlocks( vdseMemAlloc       * pAlloc,
    VDS_PRE_CONDITION( requestedBlocks > 0 );
    VDS_INV_CONDITION( g_pBaseAddr != NULL );
 
-   ok = vdscTryAcquireProcessLock( &pAlloc->memObj.lock, 
+   ok = pscTryAcquireProcessLock( &pAlloc->memObj.lock, 
                                    getpid(),
                                    LOCK_TIMEOUT );
    VDS_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
-//BUG?      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+//BUG?      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
 // engine busy vs not enough memory ... not the same thing!!!
       return NULL;
    }
@@ -413,7 +413,7 @@ unsigned char * vdseMallocBlocks( vdseMemAlloc       * pAlloc,
       vdseSetBufferAllocated( pBitmap, SET_OFFSET(pNode), 
                               requestedBlocks << VDSE_BLOCK_SHIFT );
    }
-   vdscReleaseProcessLock( &pAlloc->memObj.lock );
+   pscReleaseProcessLock( &pAlloc->memObj.lock );
 
    return (unsigned char *)pNode;
 }
@@ -458,7 +458,7 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
 
       pFreeHeader->numBlocks = numBlocks;
       
-      vdscWriteMemoryBarrier();
+      pscWriteMemoryBarrier();
       pFreeHeader->identifier = VDSE_IDENT_LIMBO;
       endBlock->isInLimbo = true;
 
@@ -488,7 +488,7 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
        * Impose a load (read) memory barrier before reading the location
        * of the start of the page group, etc.
        */
-      vdscReadMemoryBarrier();
+      pscReadMemoryBarrier();
 
       GET_PTR( previousNode, endBlock->firstBlockOffset, vdseFreeBufferNode );
       otherBufferisFree = vdseIsBufferFree( pBitmap, endBlock->firstBlockOffset );
@@ -552,7 +552,7 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
           * Impose a load (read) memory barrier before reading the number
           * of blocks  in this group, etc.
           */
-         vdscReadMemoryBarrier();
+         pscReadMemoryBarrier();
          
          if ( ident == VDSE_IDENT_LIMBO ) {
             newNode->numBuffers += pFreeHeader->numBlocks;
@@ -658,7 +658,7 @@ bool vdseMemAllocStats( vdseMemAlloc       * pAlloc,
       return true;
    }
 
-   vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_ENGINE_BUSY );
+   pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_ENGINE_BUSY );
    return false;
 }
 

@@ -26,7 +26,7 @@
 
 vdswWatchdog * g_pWD = NULL;
 
-vdscErrMsgHandle g_wdErrorHandle = -1;
+pscErrMsgHandle g_wdErrorHandle = -1;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -95,13 +95,13 @@ void vdswWatchdogInit( vdswWatchdog * pWatchdog )
 
    memset( &pWatchdog->params, 0, sizeof pWatchdog->params );
 
-   if ( ! vdscInitErrorDefs() ) {
-      fprintf( stderr, "Internal error in vdscInitErrorDefs()\n" );
+   if ( ! pscInitErrorDefs() ) {
+      fprintf( stderr, "Internal error in pscInitErrorDefs()\n" );
    }
-   vdscInitErrorHandler( &pWatchdog->errorHandler );
+   pscInitErrorHandler( &pWatchdog->errorHandler );
    
-   g_wdErrorHandle = vdscAddErrorMsgHandler( "VDSWD", vdswGetErrorMsg );
-   if ( g_wdErrorHandle == VDSC_NO_ERRHANDLER ) {
+   g_wdErrorHandle = pscAddErrorMsgHandler( "VDSWD", vdswGetErrorMsg );
+   if ( g_wdErrorHandle == PSC_NO_ERRHANDLER ) {
       fprintf( stderr, "Error registring the error handler for VDSWD errors\n" );
       fprintf( stderr, "The problem might be a lack of memory\n" );
    }
@@ -113,8 +113,8 @@ void vdswWatchdogFini( vdswWatchdog * pWatchdog )
 {
    VDS_PRE_CONDITION( pWatchdog != NULL );
 
-   vdscFiniErrorHandler( &pWatchdog->errorHandler );
-   vdscFiniErrorDefs();
+   pscFiniErrorHandler( &pWatchdog->errorHandler );
+   pscFiniErrorDefs();
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -412,10 +412,10 @@ bool vdswWatchdogReadConfig( vdswWatchdog * pWatchdog, const char* cfgname )
       memset( pWatchdog->errorMsg, 0, WD_MSG_LEN );
       sprintf( pWatchdog->errorMsg, "%s%d%s",
                   "Config error, error code = ", 
-                  vdscGetLastError( &pWatchdog->errorHandler ),
+                  pscGetLastError( &pWatchdog->errorHandler ),
                   ", error message = " );
       len = strlen(pWatchdog->errorMsg);
-      vdscGetErrorMsg( &pWatchdog->errorHandler, &pWatchdog->errorMsg[len], WD_MSG_LEN-len );
+      pscGetErrorMsg( &pWatchdog->errorHandler, &pWatchdog->errorMsg[len], WD_MSG_LEN-len );
    }
 
    return rc;

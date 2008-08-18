@@ -32,14 +32,14 @@ int main()
 {
 #if defined(USE_DBC)
    bool ok;
-   vdscProcessLock lock;
+   pscProcessLock lock;
 
-   ok = vdscInitProcessLock( &lock );
+   ok = pscInitProcessLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdscTryAcquireProcessLock( NULL, 0xff, 100 );
+   pscTryAcquireProcessLock( NULL, 0xff, 100 );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

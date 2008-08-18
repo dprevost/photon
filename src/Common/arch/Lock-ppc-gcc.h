@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSC_ARCH_PROCESS_LOCK_H
-#define VDSC_ARCH_PROCESS_LOCK_H
+#ifndef PSC_ARCH_PROCESS_LOCK_H
+#define PSC_ARCH_PROCESS_LOCK_H
 
 /*
  * Some help on assembler for aix is available here:
@@ -47,14 +47,14 @@ __asm__ __volatile__ (                                             \
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void
-vdscAcquireProcessLock( vdscProcessLock * pLock,
-                        pid_t             pid_locker )
+pscAcquireProcessLock( pscProcessLock * pLock,
+                       pid_t            pid_locker )
 {
    int lockValue = 0xff, oldLockValue;
    volatile vds_lock_T * pLockLock;
 
    VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
+   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( pid_locker != 0 );
 
    pLockLock = &pLock->lock;
@@ -74,15 +74,15 @@ vdscAcquireProcessLock( vdscProcessLock * pLock,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline bool
-vdscTryAcquireProcessLock( vdscProcessLock * pLock,
-                           pid_t             pid_locker,
-                           unsigned int      milliSecs )
+pscTryAcquireProcessLock( pscProcessLock * pLock,
+                          pid_t            pid_locker,
+                          unsigned int     milliSecs )
 {
    int lockValue = 0xff, oldLockValue;
    vds_lock_T * pLockLock;
 
    VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
+   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
    VDS_PRE_CONDITION( pid_locker != 0 );
 
    pLockLock = &pLock->lock;
@@ -113,10 +113,10 @@ vdscTryAcquireProcessLock( vdscProcessLock * pLock,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void
-vdscReleaseProcessLock( vdscProcessLock * pLock )
+pscReleaseProcessLock( pscProcessLock * pLock )
 {
    VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == VDSC_LOCK_SIGNATURE );
+   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
 
    pLock->pid = 0;
    /*
@@ -132,7 +132,7 @@ vdscReleaseProcessLock( vdscProcessLock * pLock )
 
 #undef POWER_PC_LOCK
 
-#endif /* VDSC_ARCH_PROCESS_LOCK_H */
+#endif /* PSC_ARCH_PROCESS_LOCK_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -80,7 +80,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdscGetLastError( &context.errorHandler );
+   errcode = pscGetLastError( &context.errorHandler );
    if ( errcode != VDS_NO_SUCH_FOLDER ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -94,7 +94,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdscGetLastError( &context.errorHandler );
+   errcode = pscGetLastError( &context.errorHandler );
    if ( errcode != VDS_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

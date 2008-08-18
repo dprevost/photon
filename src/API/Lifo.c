@@ -79,7 +79,7 @@ int vdsLifoClose( VDS_HANDLE objectHandle )
       free( pLifo );
    }
    else {
-      vdscSetError( &pLifo->object.pSession->context.errorHandler, 
+      pscSetError( &pLifo->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
@@ -104,7 +104,7 @@ int vdsLifoDefinition( VDS_HANDLE             objectHandle,
    pContext = &pLifo->object.pSession->context;
 
    if ( ppDefinition == NULL ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
 
@@ -127,7 +127,7 @@ int vdsLifoDefinition( VDS_HANDLE             objectHandle,
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return errcode;
@@ -200,12 +200,12 @@ error_handler_unlock:
 
 error_handler:
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pLifo->object.pSession->context.errorHandler, 
+      pscSetError( &pLifo->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pLifo->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pLifo->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -272,12 +272,12 @@ error_handler_unlock:
 
 error_handler:
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pLifo->object.pSession->context.errorHandler, 
+      pscSetError( &pLifo->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pLifo->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pLifo->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -304,18 +304,18 @@ int vdsLifoOpen( VDS_HANDLE   sessionHandle,
    if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( queueName == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
       return VDS_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
    }
    
    pLifo = (vdsaLifo *) malloc(sizeof(vdsaLifo));
    if (  pLifo == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
       return VDS_NOT_ENOUGH_HEAP_MEMORY;
    }
    
@@ -414,12 +414,12 @@ error_handler_unlock:
 
 error_handler:
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pLifo->object.pSession->context.errorHandler, 
+      pscSetError( &pLifo->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pLifo->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pLifo->object.pSession->context.errorHandler );
    }
 
    return errcode;
@@ -442,13 +442,13 @@ int vdsLifoPush( VDS_HANDLE   objectHandle,
    if ( pLifo->object.type != VDSA_LIFO ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( data == NULL ) {
-      vdscSetError( &pLifo->object.pSession->context.errorHandler, 
+      pscSetError( &pLifo->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
    
    if ( dataLength < pLifo->minLength || dataLength > pLifo->maxLength ) {
-      vdscSetError( &pLifo->object.pSession->context.errorHandler, 
+      pscSetError( &pLifo->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
    }
@@ -475,12 +475,12 @@ int vdsLifoPush( VDS_HANDLE   objectHandle,
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pLifo->object.pSession->context.errorHandler, 
+      pscSetError( &pLifo->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pLifo->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pLifo->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -504,7 +504,7 @@ int vdsLifoStatus( VDS_HANDLE     objectHandle,
    pContext = &pLifo->object.pSession->context;
 
    if ( pStatus == NULL ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
 
@@ -534,7 +534,7 @@ int vdsLifoStatus( VDS_HANDLE     objectHandle,
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return errcode;
@@ -600,12 +600,12 @@ error_handler_unlock:
 
 error_handler:
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pLifo->object.pSession->context.errorHandler, 
+      pscSetError( &pLifo->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pLifo->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pLifo->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -657,12 +657,12 @@ error_handler_unlock:
 
 error_handler:
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pLifo->object.pSession->context.errorHandler, 
+      pscSetError( &pLifo->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pLifo->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pLifo->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -724,12 +724,12 @@ error_handler_unlock:
 
 error_handler:
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pLifo->object.pSession->context.errorHandler, 
+      pscSetError( &pLifo->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pLifo->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pLifo->object.pSession->context.errorHandler );
    }
    
    return errcode;

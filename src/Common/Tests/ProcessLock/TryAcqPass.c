@@ -25,22 +25,22 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdscProcessLock lock;
+   pscProcessLock lock;
    bool ok;
    
-   ok = vdscInitProcessLock( &lock );
+   ok = pscInitProcessLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdscTryAcquireProcessLock( &lock, 0xff, 100 );
+   ok = pscTryAcquireProcessLock( &lock, 0xff, 100 );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdscReleaseProcessLock( &lock );
+   pscReleaseProcessLock( &lock );
 
-   vdscFiniProcessLock( &lock );
+   pscFiniProcessLock( &lock );
 
    return 0;
 }

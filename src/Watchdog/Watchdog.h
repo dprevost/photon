@@ -43,7 +43,7 @@ BEGIN_C_DECLS
 // Forward declaration(s)
 struct vdseMemoryHeader;
 
-extern vdscErrMsgHandle g_wdErrorHandle;
+extern pscErrMsgHandle g_wdErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -94,7 +94,7 @@ struct vdswWatchdog
    
    struct vdswHandler vds;
 
-   vdscErrorHandler errorHandler;
+   pscErrorHandler errorHandler;
 
    bool verifyVDSOnly;
    

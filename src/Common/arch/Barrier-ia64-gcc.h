@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSC_ARCH_BARRIER_H
-#define VDSC_ARCH_BARRIER_H
+#ifndef PSC_ARCH_BARRIER_H
+#define PSC_ARCH_BARRIER_H
 
 /*
  * Barrier for the Itanium when using gcc or a compiler
@@ -25,28 +25,28 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void vdscMemoryBarrier()
+static inline void pscMemoryBarrier()
 {
    __asm__ __volatile__("mf" : : : "memory");
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void vdscReadMemoryBarrier()
+static inline void pscReadMemoryBarrier()
 {
    __asm__ __volatile__("mf" : : : "memory");
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void vdscWriteMemoryBarrier()
+static inline void pscWriteMemoryBarrier()
 {
    __asm__ __volatile__("mf" : : : "memory");
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSC_ARCH_BARRIER_H */
+#endif /* PSC_ARCH_BARRIER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

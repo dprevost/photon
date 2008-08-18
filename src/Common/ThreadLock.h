@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSC_THREAD_LOCK_H
-#define VDSC_THREAD_LOCK_H
+#ifndef PSC_THREAD_LOCK_H
+#define PSC_THREAD_LOCK_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -24,7 +24,7 @@
 
 BEGIN_C_DECLS
 
-#define VDSC_THREADLOCK_SIGNATURE ((unsigned int)0x9f009f91 )
+#define PSC_THREADLOCK_SIGNATURE ((unsigned int)0x9f009f91 )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -34,7 +34,7 @@ extern int g_timeOutinMilliSecs;
 VDSF_COMMON_EXPORT
 extern struct timespec g_timeOut;
 
-typedef struct vdscThreadLock
+typedef struct pscThreadLock
 {
    unsigned int initialized;
 
@@ -44,7 +44,7 @@ typedef struct vdscThreadLock
    pthread_mutex_t mutex;
 #endif
 
-} vdscThreadLock;
+} pscThreadLock;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -56,30 +56,30 @@ typedef struct vdscThreadLock
  * mechanism allows this distinction).
  */
 VDSF_COMMON_EXPORT
-bool vdscInitThreadLock( vdscThreadLock * pLock );
+bool pscInitThreadLock( pscThreadLock * pLock );
 
 /**
  *  Uninitialize the lock (it will remove the lock for POSIX semaphores).
  */
 VDSF_COMMON_EXPORT
-void vdscFiniThreadLock( vdscThreadLock * pLock );
+void pscFiniThreadLock( pscThreadLock * pLock );
 
 /** Acquire lock ownership (loop forever) - this is dangerous for
  * deadlocks.
  */
 static inline
-void vdscAcquireThreadLock( vdscThreadLock * pLock );
+void pscAcquireThreadLock( pscThreadLock * pLock );
 
 /** Attempt to acquire the lock for nMilliSecs - fails if it can't 
  *  Returns false on failure.  
  */
 static inline
-bool vdscTryAcquireThreadLock ( vdscThreadLock * pLock,
-                                unsigned int     milliSecs );   
+bool pscTryAcquireThreadLock ( pscThreadLock * pLock,
+                               unsigned int    milliSecs );   
 
 /** Release lock. */
 static inline
-void vdscReleaseThreadLock ( vdscThreadLock * pLock );
+void pscReleaseThreadLock ( pscThreadLock * pLock );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -89,5 +89,5 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSC_THREAD_LOCK_H */
+#endif /* PSC_THREAD_LOCK_H */
 

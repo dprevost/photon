@@ -27,19 +27,19 @@ int main()
 {
 #if defined(USE_DBC)
    bool ok;
-   vdscDirIterator iterator;
-   vdscErrorHandler errorHandler;
+   pscDirIterator iterator;
+   pscErrorHandler errorHandler;
 
-   vdscInitErrorDefs();
-   vdscInitDir( &iterator );
-   vdscInitErrorHandler( &errorHandler );
+   pscInitErrorDefs();
+   pscInitDir( &iterator );
+   pscInitErrorHandler( &errorHandler );
    
-   ok = vdscOpenDir( &iterator, "..", &errorHandler );
+   ok = pscOpenDir( &iterator, "..", &errorHandler );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   vdscCloseDir( NULL );
+   pscCloseDir( NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

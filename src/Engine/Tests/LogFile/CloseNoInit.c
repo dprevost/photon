@@ -26,14 +26,14 @@ int main()
 {
 #if defined(USE_DBC)
    vdseLogFile logfile;
-   vdscErrorHandler error;
+   pscErrorHandler error;
    
-   vdscInitErrorDefs();
-   vdscInitErrorHandler( &error );
+   pscInitErrorDefs();
+   pscInitErrorHandler( &error );
 
    vdseCloseLogFile( &logfile, &error );   
 
-   vdscFiniErrorDefs();
+   pscFiniErrorDefs();
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

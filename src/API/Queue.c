@@ -79,7 +79,7 @@ int vdsQueueClose( VDS_HANDLE objectHandle )
       free( pQueue );
    }
    else {
-      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+      pscSetError( &pQueue->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
@@ -104,7 +104,7 @@ int vdsQueueDefinition( VDS_HANDLE             objectHandle,
    pContext = &pQueue->object.pSession->context;
 
    if ( ppDefinition == NULL ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
 
@@ -127,7 +127,7 @@ int vdsQueueDefinition( VDS_HANDLE             objectHandle,
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return errcode;
@@ -200,12 +200,12 @@ error_handler_unlock:
 
 error_handler:
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+      pscSetError( &pQueue->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -272,12 +272,12 @@ error_handler_unlock:
 
 error_handler:
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+      pscSetError( &pQueue->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -304,18 +304,18 @@ int vdsQueueOpen( VDS_HANDLE   sessionHandle,
    if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( queueName == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
       return VDS_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
    }
    
    pQueue = (vdsaQueue *) malloc(sizeof(vdsaQueue));
    if (  pQueue == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
       return VDS_NOT_ENOUGH_HEAP_MEMORY;
    }
    
@@ -414,12 +414,12 @@ error_handler_unlock:
 
 error_handler:
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+      pscSetError( &pQueue->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
 
    return errcode;
@@ -442,13 +442,13 @@ int vdsQueuePush( VDS_HANDLE   objectHandle,
    if ( pQueue->object.type != VDSA_QUEUE ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( data == NULL ) {
-      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+      pscSetError( &pQueue->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
    
    if ( dataLength < pQueue->minLength || dataLength > pQueue->maxLength ) {
-      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+      pscSetError( &pQueue->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
    }
@@ -475,12 +475,12 @@ int vdsQueuePush( VDS_HANDLE   objectHandle,
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+      pscSetError( &pQueue->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -503,13 +503,13 @@ int vdsQueuePushNow( VDS_HANDLE   objectHandle,
    if ( pQueue->object.type != VDSA_QUEUE ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( data == NULL ) {
-      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+      pscSetError( &pQueue->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
    
    if ( dataLength < pQueue->minLength || dataLength > pQueue->maxLength ) {
-      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+      pscSetError( &pQueue->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
    }
@@ -536,12 +536,12 @@ int vdsQueuePushNow( VDS_HANDLE   objectHandle,
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+      pscSetError( &pQueue->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -565,7 +565,7 @@ int vdsQueueStatus( VDS_HANDLE     objectHandle,
    pContext = &pQueue->object.pSession->context;
 
    if ( pStatus == NULL ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
 
@@ -595,7 +595,7 @@ int vdsQueueStatus( VDS_HANDLE     objectHandle,
    }
    
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return errcode;
@@ -661,12 +661,12 @@ error_handler_unlock:
 
 error_handler:
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+      pscSetError( &pQueue->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -718,12 +718,12 @@ error_handler_unlock:
 
 error_handler:
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+      pscSetError( &pQueue->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -785,12 +785,12 @@ error_handler_unlock:
 
 error_handler:
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pQueue->object.pSession->context.errorHandler, 
+      pscSetError( &pQueue->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
    return errcode;

@@ -86,16 +86,16 @@ typedef struct vdsaConnector
  *               information needed to establish a link to the VDS.
  * \return A VDS error code.
  */
-int vdsaConnect( vdsaConnector    * pConnector,
-                 const char       * address,
-                 struct WDOutput  * pAnswer,
-                 vdscErrorHandler * errorHandler );
+int vdsaConnect( vdsaConnector   * pConnector,
+                 const char      * address,
+                 struct WDOutput * pAnswer,
+                 pscErrorHandler * errorHandler );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Break the connection with the watchdog. */
-void vdsaDisconnect( vdsaConnector    * pConnector,
-                     vdscErrorHandler * errorHandler );
+void vdsaDisconnect( vdsaConnector   * pConnector,
+                     pscErrorHandler * errorHandler );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

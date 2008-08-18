@@ -72,7 +72,7 @@ VDSF_ENGINE_EXPORT
 extern unsigned char* g_pBaseAddr;
 
 VDSF_ENGINE_EXPORT
-extern vdscErrMsgHandle g_vdsErrorHandle;
+extern pscErrMsgHandle g_vdsErrorHandle;
 
 #define SET_OFFSET(ptr) ( (ptrdiff_t) ( (unsigned char*)(ptr) - \
        g_pBaseAddr ) )

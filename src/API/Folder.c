@@ -83,7 +83,7 @@ int vdsFolderClose( VDS_HANDLE objectHandle )
       free( pFolder );
    }
    else {
-      vdscSetError( &pFolder->object.pSession->context.errorHandler, 
+      pscSetError( &pFolder->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    
@@ -112,23 +112,23 @@ int vdsFolderCreateObject( VDS_HANDLE            objectHandle,
    pSession = pFolder->object.pSession;
 
    if ( objectName == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
       return VDS_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
    }
    
    if ( pDefinition == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
 
    errcode = vdsaValidateDefinition( pDefinition );
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
       return errcode;
    }
 
@@ -153,11 +153,11 @@ int vdsFolderCreateObject( VDS_HANDLE            objectHandle,
    }
 
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pSession->context.errorHandler );
+      errcode = pscGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;
@@ -216,12 +216,12 @@ int vdsFolderDestroyObject( VDS_HANDLE   objectHandle,
    pSession = pFolder->object.pSession;
 
    if ( objectName == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
       return VDS_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
    }
    
@@ -246,11 +246,11 @@ int vdsFolderDestroyObject( VDS_HANDLE   objectHandle,
    }
 
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = vdscGetLastError( &pSession->context.errorHandler );
+      errcode = pscGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;
@@ -328,11 +328,11 @@ error_handler_unlock:
 
 error_handler:
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pFolder->object.pSession->context.errorHandler, 
+      pscSetError( &pFolder->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    } 
    else {
-      errcode = vdscGetLastError( &pFolder->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pFolder->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -401,11 +401,11 @@ error_handler_unlock:
 
 error_handler:
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pFolder->object.pSession->context.errorHandler, 
+      pscSetError( &pFolder->object.pSession->context.errorHandler, 
          g_vdsErrorHandle, errcode );
    }
    else {
-      errcode = vdscGetLastError( &pFolder->object.pSession->context.errorHandler );
+      errcode = pscGetLastError( &pFolder->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -433,18 +433,18 @@ int vdsFolderOpen( VDS_HANDLE   sessionHandle,
    }
    
    if ( folderName == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
       return VDS_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
       return VDS_INVALID_LENGTH;
    }
    
    pFolder = (vdsaFolder *) malloc(sizeof(vdsaFolder));
    if (  pFolder == NULL ) {
-      vdscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
+      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
       return VDS_NOT_ENOUGH_HEAP_MEMORY;
    }
    
@@ -488,7 +488,7 @@ int vdsFolderStatus( VDS_HANDLE     objectHandle,
    pContext = &pFolder->object.pSession->context;
 
    if ( pStatus == NULL ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
       return VDS_NULL_POINTER;
    }
    
@@ -520,7 +520,7 @@ int vdsFolderStatus( VDS_HANDLE     objectHandle,
    }
       
    if ( errcode != VDS_OK ) {
-      vdscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
    return errcode;

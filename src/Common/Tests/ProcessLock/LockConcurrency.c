@@ -42,7 +42,7 @@ const bool childExpectedToPass = true;
 
 struct localData
 {
-   vdscProcessLock lock;
+   pscProcessLock lock;
    int exitFlag;
    char dum1[150];
    char dum2[250];
@@ -54,7 +54,7 @@ int main( int argc, char* argv[] )
 {
    pid_t pid, *childPid = NULL;
    unsigned long sec, nanoSec;
-   vdscTimer timer;
+   pscTimer timer;
    bool tryMode = false;
    
    unsigned long elapsedTime = 0, maxTime = 0;
@@ -64,16 +64,16 @@ int main( int argc, char* argv[] )
    struct localData *data = NULL;
    int errcode;
    bool ok;
-   vdscMemoryFile memFile;
-   vdscErrorHandler errorHandler;
+   pscMemoryFile memFile;
+   pscErrorHandler errorHandler;
    int identifier, numChilds, i, childStatus;
    char dum3[100];
    int dumId;
    bool foundError = false;
-   vdscOptionHandle handle;
+   pscOptionHandle handle;
    char *argument;
    char strId[10], strNumChilds[10], strTime[10], strMode[5];
-   struct vdscOptStruct opts[5] = {
+   struct pscOptStruct opts[5] = {
       { 'c', "child",      1, "numChilds",  "Number of child processes" },
       { 'f', "filename",   1, "memoryFile", "Filename for shared memory" },
       { 'i', "identifier", 1, "identifier", "Identifier for the process" },
@@ -81,26 +81,26 @@ int main( int argc, char* argv[] )
       { 't', "time",       1, "timeInSecs", "Time to run the tests" }
    };
 
-   vdscInitErrorDefs();
-   vdscInitErrorHandler( &errorHandler );
-   vdscInitTimer( &timer );
+   pscInitErrorDefs();
+   pscInitErrorHandler( &errorHandler );
+   pscInitTimer( &timer );
 
-   ok = vdscSetSupportedOptions( 5, opts, &handle );
+   ok = pscSetSupportedOptions( 5, opts, &handle );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdscValidateUserOptions( handle, argc, argv, 1 );
+   errcode = pscValidateUserOptions( handle, argc, argv, 1 );
    if ( errcode < 0 ) {
-      vdscShowUsage( handle, "LockConcurrency", "" );
+      pscShowUsage( handle, "LockConcurrency", "" );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( errcode > 0 ) {
-      vdscShowUsage( handle, "LockConcurrency", "" );
+      pscShowUsage( handle, "LockConcurrency", "" );
       return 0;
    }
    
-   if ( vdscGetShortOptArgument( handle, 'c', &argument ) ) {
+   if ( pscGetShortOptArgument( handle, 'c', &argument ) ) {
       numChilds = atoi( argument );
       if ( numChilds < 2 ) {
          fprintf( stderr, "Number of childs must be >= to two\n" );
@@ -111,7 +111,7 @@ int main( int argc, char* argv[] )
       numChilds = DEFAULT_NUM_CHILDREN;
    }
    
-   if ( vdscGetShortOptArgument( handle, 'i', &argument ) ) {
+   if ( pscGetShortOptArgument( handle, 'i', &argument ) ) {
       identifier = atoi( argument );
       if ( identifier > numChilds ) {
          fprintf( stderr, "Identifier must be between 0 and number of childs\n" );
@@ -122,7 +122,7 @@ int main( int argc, char* argv[] )
       identifier = 0;
    }
    
-   if ( vdscGetShortOptArgument( handle, 't', &argument ) ) {
+   if ( pscGetShortOptArgument( handle, 't', &argument ) ) {
       maxTime = strtol( argument, NULL, 0 );
       if ( maxTime < 1 ) {
          fprintf( stderr, "Time of test must be positive\n" );
@@ -133,11 +133,11 @@ int main( int argc, char* argv[] )
       maxTime = DEFAULT_TIME; /* in seconds */
    }
    
-   if ( vdscGetShortOptArgument( handle, 'm', &argument ) ) {
+   if ( pscGetShortOptArgument( handle, 'm', &argument ) ) {
       if ( strcmp( argument, "try" ) == 0 ) tryMode = true;
    }
    
-   if ( vdscGetShortOptArgument( handle, 'f', &argument ) ) {
+   if ( pscGetShortOptArgument( handle, 'f', &argument ) ) {
       strncpy( filename, argument, PATH_MAX );
       if ( filename[0] == '\0' ) {
          fprintf( stderr, "Empty memfile name\n" );
@@ -148,7 +148,7 @@ int main( int argc, char* argv[] )
       strcpy( filename, "Memfile.mem" );
    }
    
-   vdscInitMemoryFile( &memFile, 10, filename );
+   pscInitMemoryFile( &memFile, 10, filename );
    
    if ( identifier == 0 ) {
       /* The master process */
@@ -158,12 +158,12 @@ int main( int argc, char* argv[] )
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
       }
       
-      ok = vdscCreateBackstore( &memFile, 0644, &errorHandler );
+      ok = pscCreateBackstore( &memFile, 0644, &errorHandler );
       if ( ok != true ) {
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
       }
       
-      ok = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
+      ok = pscOpenMemFile( &memFile, &ptr, &errorHandler );
       if ( ok != true ) {
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
       }
@@ -171,7 +171,7 @@ int main( int argc, char* argv[] )
       memset( ptr, 0, 10000 );
       data = (struct localData*) ptr;
    
-      ok = vdscInitProcessLock( &data->lock );
+      ok = pscInitProcessLock( &data->lock );
       if ( ok != true ) {
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
@@ -236,8 +236,8 @@ int main( int argc, char* argv[] )
 #endif
       }
       if ( foundError ) {
-         vdscFiniErrorHandler( &errorHandler );
-         vdscFiniErrorDefs();
+         pscFiniErrorHandler( &errorHandler );
+         pscFiniErrorDefs();
          ERROR_EXIT( expectedToPass, NULL, ; );
       }      
    }
@@ -248,24 +248,24 @@ int main( int argc, char* argv[] )
    else {
       maxTime *= US_PER_SEC;
 
-      ok = vdscOpenMemFile( &memFile, &ptr, &errorHandler );
+      ok = pscOpenMemFile( &memFile, &ptr, &errorHandler );
       if ( ok != true ) {
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
       }
       
       data = (struct localData*) ptr;
    
-      vdscBeginTimer( &timer );
+      pscBeginTimer( &timer );
 
       pid = getpid();
    
       for (;;) {      
          if ( tryMode ) {
-            ok = vdscTryAcquireProcessLock( &data->lock, pid, 10000 );
+            ok = pscTryAcquireProcessLock( &data->lock, pid, 10000 );
             if ( ok != true ) continue;
          }
          else {
-            vdscAcquireProcessLock( &data->lock, pid );
+            pscAcquireProcessLock( &data->lock, pid );
          }
          
          sprintf( data->dum2, "dumStr2 %d  ", identifier+1 );
@@ -276,19 +276,19 @@ int main( int argc, char* argv[] )
             fprintf( stderr, "Wrong... %d %d %s-%s\n", identifier+1, 
                      dumId, data->dum1, data->dum2 );
             data->exitFlag = 1;
-            vdscReleaseProcessLock( &data->lock );
+            pscReleaseProcessLock( &data->lock );
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
       
-         vdscReleaseProcessLock( &data->lock );
+         pscReleaseProcessLock( &data->lock );
       
          if ( data->exitFlag == 1 ) break;
 
          loop++;
 
          if ( (loop % CHECK_TIMER ) == 0 ) {
-            vdscEndTimer( &timer );
-            vdscCalculateTimer( &timer, &sec, &nanoSec );
+            pscEndTimer( &timer );
+            pscCalculateTimer( &timer, &sec, &nanoSec );
 
             elapsedTime = sec*US_PER_SEC + nanoSec/1000;
             if ( elapsedTime > maxTime ) break;
@@ -301,8 +301,8 @@ int main( int argc, char* argv[] )
    }
    
    unlink( filename );
-   vdscFiniErrorHandler( &errorHandler );
-   vdscFiniErrorDefs();
+   pscFiniErrorHandler( &errorHandler );
+   pscFiniErrorDefs();
 
    return 0;
 }

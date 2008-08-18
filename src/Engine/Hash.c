@@ -155,7 +155,7 @@ size_t calculateItemLength( size_t keyLength,
    size_t len;
    
    len = offsetof(vdseHashItem, key) + keyLength;
-   len = ((len-1)/VDSC_ALIGNMENT_STRUCT + 1)*VDSC_ALIGNMENT_STRUCT;
+   len = ((len-1)/PSC_ALIGNMENT_STRUCT + 1)*PSC_ALIGNMENT_STRUCT;
    
    len += dataLength;
    

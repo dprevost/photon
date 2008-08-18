@@ -26,14 +26,14 @@ const bool expectedToPass = true;
 int main()
 {
    bool ok;
-   vdscProcessLock lock;
+   pscProcessLock lock;
 
-   ok = vdscInitProcessLock( &lock );
+   ok = pscInitProcessLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdscFiniProcessLock( &lock );
+   pscFiniProcessLock( &lock );
 
    if ( lock.initialized != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );

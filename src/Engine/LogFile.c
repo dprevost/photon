@@ -22,7 +22,7 @@
 vdsErrors vdseInitLogFile( vdseLogFile*      logFile,
                            const char*       dirName,
                            void*             pSession,
-                           vdscErrorHandler* pError )
+                           pscErrorHandler* pError )
 {
    VDS_PRE_CONDITION( pError   != NULL );
    VDS_PRE_CONDITION( logFile  != NULL );
@@ -33,7 +33,7 @@ vdsErrors vdseInitLogFile( vdseLogFile*      logFile,
    logFile->handle = -1;
 
    if ( access( dirName, F_OK ) != 0 ) {
-      vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error accessing directoryfor log file = %d\n", errno );
       return VDS_LOGFILE_ERROR;
    }
@@ -49,7 +49,7 @@ vdsErrors vdseInitLogFile( vdseLogFile*      logFile,
                            O_RDWR | O_CREAT | O_APPEND , 
                            0755 );
    if ( logFile->handle == -1 ) {
-      vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error opening log = %d\n", errno );
       return VDS_LOGFILE_ERROR;
    }
@@ -63,7 +63,7 @@ vdsErrors vdseInitLogFile( vdseLogFile*      logFile,
 
 vdsErrors vdseLogTransaction( vdseLogFile*      logFile,
                               int               transactionId,
-                              vdscErrorHandler* pError )
+                              pscErrorHandler* pError )
 {
    char msg[80];
    char timeBuf[30];
@@ -101,14 +101,14 @@ vdsErrors vdseLogTransaction( vdseLogFile*      logFile,
    
    err = write( logFile->handle, msg, strlen(msg) );
    if ( err <= 0 ) {
-      vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error write log = %d\n", errno );
       return VDS_LOGFILE_ERROR;
    }
    
    err = fdatasync( logFile->handle );
    if ( err < 0 ) {
-      vdscSetError( pError, VDSC_ERRNO_HANDLE, errno );
+      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error fdatasync log = %d\n", errno );
       return VDS_LOGFILE_ERROR;
    }
@@ -119,7 +119,7 @@ vdsErrors vdseLogTransaction( vdseLogFile*      logFile,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void vdseCloseLogFile( vdseLogFile*     logFile,
-                       vdscErrorHandler* pError )
+                       pscErrorHandler* pError )
 {
    int err;
 

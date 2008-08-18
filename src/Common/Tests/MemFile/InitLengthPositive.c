@@ -25,9 +25,9 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdscMemoryFile mem;
+   pscMemoryFile mem;
    
-   vdscInitMemoryFile( &mem, 0, "MemFile.mem" );
+   pscInitMemoryFile( &mem, 0, "MemFile.mem" );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -26,18 +26,18 @@ const bool expectedToPass = true;
 int main()
 {
    bool ok;
-   vdscThreadLock lock;
+   pscThreadLock lock;
 
-   ok = vdscInitThreadLock( &lock );
+   ok = pscInitThreadLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   if ( lock.initialized != VDSC_THREADLOCK_SIGNATURE ) {
+   if ( lock.initialized != PSC_THREADLOCK_SIGNATURE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdscFiniThreadLock( &lock );
+   pscFiniThreadLock( &lock );
 
    return 0;
 }
