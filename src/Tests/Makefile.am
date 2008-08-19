@@ -51,7 +51,7 @@ TESTS =                       \
         OutOfMemory.sh        
 
 LDADD = $(top_builddir)/src/API/libvdsf.la      \
-        $(top_builddir)/src/Engine/libEngine.la \
+        $(top_builddir)/src/Nucleus/libNucleus.la \
         $(top_builddir)/src/Common/libCommon.la
 
 InjectErrorsVDS_LDADD = $(top_builddir)/src/C++/libvdsfcpp.la 

@@ -23,8 +23,8 @@ INTDIR_DEBUG   = .\Debug
 CLEANFILES = *~  vc60.pdb
 
 W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfcpp.lib vdsf.lib vdsfEngine.lib vdsfCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../Release" 
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfcpp.lib vdsf.lib vdsfEngine.lib vdsfCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../Debug" 
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfcpp.lib vdsf.lib vdsfNucleus.lib vdsfCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../Release" 
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfcpp.lib vdsf.lib vdsfNucleus.lib vdsfCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../Debug" 
 
 CFLAGS_DEBUG=   /nologo /MDd /W3 /Zi /I "../.." /I "../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\"   /c /GX
 CFLAGS_RELEASE= /nologo /MD  /W3 /O2 /I "../.." /I "../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_RELEASE)\\" /c /GX

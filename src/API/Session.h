@@ -22,7 +22,7 @@
 
 #include "API/api.h"
 #include "Common/ThreadLock.h"
-#include "Engine/SessionContext.h"
+#include "Nucleus/SessionContext.h"
 #include "API/Process.h"
 #include "API/ListReaders.h"
 

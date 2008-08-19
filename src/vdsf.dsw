@@ -12,7 +12,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name Engine
+    Project_Dep_Name Nucleus
     End Project Dependency
 }}}
 
@@ -45,7 +45,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Engine"=.\Engine\Engine.dsp - Package Owner=<4>
+Project: "Nucleus"=.\Nucleus\Nucleus.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -72,7 +72,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name Engine
+    Project_Dep_Name Nucleus
     End Project Dependency
 }}}
 

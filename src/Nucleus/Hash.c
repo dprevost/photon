@@ -15,10 +15,10 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine/Hash.h"
-#include "Engine/hash_fnv.h"
-#include "Engine/SessionContext.h"
-#include "Engine/MemoryObject.h"
+#include "Nucleus/Hash.h"
+#include "Nucleus/hash_fnv.h"
+#include "Nucleus/SessionContext.h"
+#include "Nucleus/MemoryObject.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

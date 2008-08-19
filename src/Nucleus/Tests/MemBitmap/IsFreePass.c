@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine/MemBitmap.h"
-#include "Engine/Tests/EngineTestCommon.h"
+#include "Nucleus/MemBitmap.h"
+#include "Nucleus/Tests/EngineTestCommon.h"
 
 const bool expectedToPass = true;
 

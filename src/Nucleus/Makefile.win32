@@ -27,8 +27,8 @@ CLEANFILES = *~ *.dep *.plg vc60.* *.ncb
 
 W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfCommon.lib /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\vdsfEngine.dll" /implib:"$(OUTDIR_RELEASE)\vdsfEngine.lib" /libpath:"..\Release"
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfCommon.lib /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\vdsfEngine.dll"   /implib:"$(OUTDIR_DEBUG)\vdsfEngine.lib"   /libpath:"..\Debug"
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfCommon.lib /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\vdsfNucleus.dll" /implib:"$(OUTDIR_RELEASE)\vdsfNucleus.lib" /libpath:"..\Release"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfCommon.lib /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\vdsfNucleus.dll"   /implib:"$(OUTDIR_DEBUG)\vdsfNucleus.lib"   /libpath:"..\Debug"
 
 CFLAGS_RELEASE=/nologo /MD  /W4 /O2     /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF_ENGINE" /Fo"$(INTDIR_RELEASE)\\"     /c 
 CFLAGS_DEBUG  =/nologo /MDd /W4 /ZI /Od /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF_ENGINE" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
@@ -67,21 +67,21 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 .c{$(INTDIR_DEBUG)}.obj::
 	$(CPP) $(CFLAGS_DEBUG) $< 
 
-all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdsfEngine.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdsfEngine.dll
+all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdsfNucleus.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdsfNucleus.dll
 
-"$(OUTDIR_RELEASE)\vdsfEngine.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
-   -del ..\Release\vdsfEngine.dll
-	-del ..\Release\vdsfEngine.lib
+"$(OUTDIR_RELEASE)\vdsfNucleus.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
+   -del ..\Release\vdsfNucleus.dll
+	-del ..\Release\vdsfNucleus.lib
 	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
-   copy Release\vdsfEngine.dll ..\Release
-	copy Release\vdsfEngine.lib ..\Release
+   copy Release\vdsfNucleus.dll ..\Release
+	copy Release\vdsfNucleus.lib ..\Release
 
-"$(OUTDIR_DEBUG)\vdsfEngine.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
-   -del ..\Debug\vdsfEngine.dll
-	-del ..\Debug\vdsfEngine.lib
+"$(OUTDIR_DEBUG)\vdsfNucleus.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
+   -del ..\Debug\vdsfNucleus.dll
+	-del ..\Debug\vdsfNucleus.lib
 	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
-   copy debug\vdsfEngine.dll ..\Debug
-	copy debug\vdsfEngine.lib ..\Debug
+   copy debug\vdsfNucleus.dll ..\Debug
+	copy debug\vdsfNucleus.lib ..\Debug
 
 ###########################################################################
 #

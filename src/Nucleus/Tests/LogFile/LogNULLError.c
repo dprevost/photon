@@ -15,7 +15,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine/LogFile.h"
+#include "Nucleus/LogFile.h"
 #include "Tests/PrintError.h"
 
 const bool expectedToPass = false;

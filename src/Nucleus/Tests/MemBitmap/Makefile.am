@@ -121,6 +121,6 @@ XFAIL_TESTS =                \
         SetFreeNullBitmap    \
         SetFreeNullOffset    
 
-LDADD = $(top_builddir)/src/Engine/libEngine.la \
+LDADD = $(top_builddir)/src/Nucleus/libNucleus.la \
         $(top_builddir)/src/Common/libCommon.la
 

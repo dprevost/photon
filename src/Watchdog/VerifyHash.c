@@ -17,8 +17,8 @@
 
 #include "Common/Common.h"
 #include "Watchdog/VerifyCommon.h"
-#include "Engine/Hash.h"
-#include "Engine/hash_fnv.h"
+#include "Nucleus/Hash.h"
+#include "Nucleus/hash_fnv.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

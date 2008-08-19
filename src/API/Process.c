@@ -17,12 +17,12 @@
 
 #include "API/Process.h"
 #include "API/WatchdogCommon.h"
-#include "Engine/MemoryHeader.h"
-#include "Engine/ProcessManager.h"
+#include "Nucleus/MemoryHeader.h"
+#include "Nucleus/ProcessManager.h"
 #include "Common/MemoryFile.h"
 #include "API/Session.h"
-#include "Engine/InitEngine.h"
-#include "Engine/MemoryAllocator.h"
+#include "Nucleus/InitEngine.h"
+#include "Nucleus/MemoryAllocator.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

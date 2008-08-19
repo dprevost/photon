@@ -18,7 +18,7 @@
 #ifndef PSN_MEM_BITMAP_H
 #define PSN_MEM_BITMAP_H
 
-#include "Engine.h"
+#include "Nucleus/Engine.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

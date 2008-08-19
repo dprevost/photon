@@ -16,7 +16,7 @@ CLEANFILES = *~
 
 SUBDIRS = . Tests
  
-noinst_LTLIBRARIES   = libEngine.la
+noinst_LTLIBRARIES   = libNucleus.la
 
 # Trick: keeping VdsErrorHandler.c as the first file forces make to
 # generate it (and the .h) before trying to build the rest. Otherwise
@@ -24,7 +24,7 @@ noinst_LTLIBRARIES   = libEngine.la
 # remove the dependency files - the dependencies could have been written
 # by hand but... this would defeat the whole idea of automated tools!).
 
-libEngine_la_SOURCES =    \
+libNucleus_la_SOURCES =   \
         VdsErrorHandler.c \
         VdsErrorHandler.h \
         BlockGroup.c      \

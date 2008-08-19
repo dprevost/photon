@@ -18,10 +18,10 @@
 #ifndef PSN_BLOCK_GROUP_H
 #define PSN_BLOCK_GROUP_H
 
-#include "Engine/Engine.h"
-#include "Engine/MemBitmap.h"
-#include "Engine/LinkNode.h"
-#include "Engine/LinkedList.h"
+#include "Nucleus/Engine.h"
+#include "Nucleus/MemBitmap.h"
+#include "Nucleus/LinkNode.h"
+#include "Nucleus/LinkedList.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

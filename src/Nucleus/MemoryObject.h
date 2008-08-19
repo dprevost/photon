@@ -18,11 +18,11 @@
 #ifndef PSN_MEMORY_OBJECT_H
 #define PSN_MEMORY_OBJECT_H
 
-#include "Engine/Engine.h"
-#include "Engine/LinkNode.h"
-#include "Engine/LinkedList.h"
-#include "Engine/SessionContext.h"
-#include "Engine/BlockGroup.h"
+#include "Nucleus/Engine.h"
+#include "Nucleus/LinkNode.h"
+#include "Nucleus/LinkedList.h"
+#include "Nucleus/SessionContext.h"
+#include "Nucleus/BlockGroup.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

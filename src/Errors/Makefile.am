@@ -18,10 +18,10 @@ EXTRA_DIST =        \
         options.xml \
         vdsf.xml    
 
-OUTPUT_FILES =                                     \
-        $(top_srcdir)/src/include/vdsf/vdsErrors.h \
-        $(top_srcdir)/src/Engine/VdsErrorHandler.c \
-        $(top_srcdir)/src/Engine/VdsErrorHandler.h 
+OUTPUT_FILES =                                      \
+        $(top_srcdir)/src/include/vdsf/vdsErrors.h  \
+        $(top_srcdir)/src/Nucleus/VdsErrorHandler.c \
+        $(top_srcdir)/src/Nucleus/VdsErrorHandler.h 
  
 if COND_USE_ERRORPARSER
 all-local: $(OUTPUT_FILES)

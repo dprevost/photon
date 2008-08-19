@@ -20,12 +20,12 @@
 #include "Watchdog/VerifyCommon.h"
 #include "Watchdog/VerifyVDS.h"
 
-#include "Engine/MemoryHeader.h"
+#include "Nucleus/MemoryHeader.h"
 
-#include "Engine/ProcessManager.h"
-#include "Engine/Folder.h"
-#include "Engine/MemoryAllocator.h"
-#include "Engine/Queue.h"
+#include "Nucleus/ProcessManager.h"
+#include "Nucleus/Folder.h"
+#include "Nucleus/MemoryAllocator.h"
+#include "Nucleus/Queue.h"
 
 psnMemoryHeader * g_pMemoryAddress = NULL;
 bool               g_bTestAllocator = false;

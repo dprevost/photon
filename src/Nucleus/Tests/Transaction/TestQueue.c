@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "txTest.h"
-#include "Engine/Queue.h"
+#include "Nucleus/Queue.h"
 
 const bool expectedToPass = true;
 

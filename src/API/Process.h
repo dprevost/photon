@@ -21,8 +21,8 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "API/api.h"
-#include "Engine/Engine.h"
-#include "Engine/SessionContext.h"
+#include "Nucleus/Engine.h"
+#include "Nucleus/SessionContext.h"
 #include <vdsf/vdsCommon.h>
 #include "API/Connector.h"
 #include "Common/ThreadLock.h"

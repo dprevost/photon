@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine/MemoryAllocator.h"
-#include "Engine/Tests/EngineTestCommon.h"
+#include "Nucleus/MemoryAllocator.h"
+#include "Nucleus/Tests/EngineTestCommon.h"
 
 const bool expectedToPass = false;
 

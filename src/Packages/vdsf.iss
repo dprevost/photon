@@ -16,7 +16,7 @@ OutputBaseFilename=vdsf-0.3.0
 Source: src\Release\vdsf.dll; DestDir: {app}\bin
 Source: src\Release\vdsfCommon.dll; DestDir: {app}\bin
 Source: src\Release\vdsfcpp.dll; DestDir: {app}\bin
-Source: src\Release\vdsfEngine.dll; DestDir: {app}\bin
+Source: src\Release\vdsfNucleus.dll; DestDir: {app}\bin
 Source: src\Release\vdsInfo.exe; DestDir: {app}\bin
 Source: src\Release\vdssh.exe; DestDir: {app}\bin
 Source: src\Release\vdswd.exe; DestDir: {app}\bin

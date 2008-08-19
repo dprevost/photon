@@ -21,7 +21,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "API/CommonObject.h"
-#include "Engine/Folder.h"
+#include "Nucleus/Folder.h"
 
 BEGIN_C_DECLS
 

@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="Engine" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="Nucleus" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=Engine - Win32 Debug
+CFG=Nucleus - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "Engine.mak".
+!MESSAGE NMAKE /f "Nucleus.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "Engine.mak" CFG="Engine - Win32 Debug"
+!MESSAGE NMAKE /f "Nucleus.mak" CFG="Nucleus - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "Engine - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "Engine - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "Nucleus - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "Nucleus - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "Engine - Win32 Release"
+!IF  "$(CFG)" == "Nucleus - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -54,14 +54,14 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /dll /machine:I386 /out:"Release/vdsfEngine.dll" /libpath:"..\Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /dll /machine:I386 /out:"Release/vdsfNucleus.dll" /libpath:"..\Release"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PreLink_Cmds=if not exist ..\Release\ mkdir ..\Release	if exist ..\Release\vdsfEngine.lib del ..\Release\vdsfEngine.lib	if exist ..\Release\vdsfEngine.dll del ..\Release\vdsfEngine.dll
-PostBuild_Cmds=copy Release\vdsfEngine.lib ..\Release	copy Release\vdsfEngine.dll ..\Release
+PreLink_Cmds=if not exist ..\Release\ mkdir ..\Release	if exist ..\Release\vdsfNucleus.lib del ..\Release\vdsfNucleus.lib	if exist ..\Release\vdsfNucleus.dll del ..\Release\vdsfNucleus.dll
+PostBuild_Cmds=copy Release\vdsfNucleus.lib ..\Release	copy Release\vdsfNucleus.dll ..\Release
 # End Special Build Tool
 
-!ELSEIF  "$(CFG)" == "Engine - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Nucleus - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -86,19 +86,19 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /dll /debug /machine:I386 /out:"Debug/vdsfEngine.dll" /pdbtype:sept /libpath:"..\Debug"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /dll /debug /machine:I386 /out:"Debug/vdsfNucleus.dll" /pdbtype:sept /libpath:"..\Debug"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PreLink_Cmds=if not exist ..\Debug\ mkdir ..\Debug	if exist ..\Debug\vdsfEngine.lib del ..\Debug\vdsfEngine.lib	if exist ..\Debug\vdsfEngine.dll del ..\Debug\vdsfEngine.dll
-PostBuild_Cmds=copy Debug\vdsfEngine.lib ..\Debug	copy Debug\vdsfEngine.dll ..\Debug
+PreLink_Cmds=if not exist ..\Debug\ mkdir ..\Debug	if exist ..\Debug\vdsfNucleus.lib del ..\Debug\vdsfNucleus.lib	if exist ..\Debug\vdsfNucleus.dll del ..\Debug\vdsfNucleus.dll
+PostBuild_Cmds=copy Debug\vdsfNucleus.lib ..\Debug	copy Debug\vdsfNucleus.dll ..\Debug
 # End Special Build Tool
 
 !ENDIF 
 
 # Begin Target
 
-# Name "Engine - Win32 Release"
-# Name "Engine - Win32 Debug"
+# Name "Nucleus - Win32 Release"
+# Name "Nucleus - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"

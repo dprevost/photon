@@ -17,8 +17,8 @@
 
 #include "Common/Common.h"
 #include "Watchdog/VerifyCommon.h"
-#include "Engine/MemoryObject.h"
-#include "Engine/MemoryAllocator.h"
+#include "Nucleus/MemoryObject.h"
+#include "Nucleus/MemoryAllocator.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

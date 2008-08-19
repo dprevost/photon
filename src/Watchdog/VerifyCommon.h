@@ -18,8 +18,8 @@
 #ifndef VDSW_VERIFY_COMMON_H
 #define VDSW_VERIFY_COMMON_H
 
-#include "Engine/MemoryHeader.h"
-#include "Engine/MemBitmap.h"
+#include "Nucleus/MemoryHeader.h"
+#include "Nucleus/MemBitmap.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

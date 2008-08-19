@@ -18,10 +18,10 @@
 #ifndef ENGINE_TEST_COMMON_H
 #define ENGINE_TEST_COMMON_H
 
-#include "Engine/Engine.h"
-#include "Engine/InitEngine.h"
+#include "Nucleus/Engine.h"
+#include "Nucleus/InitEngine.h"
 #include "Tests/PrintError.h"
-#include "Engine/SessionContext.h"
+#include "Nucleus/SessionContext.h"
 
 VDSF_ENGINE_EXPORT
 pscErrMsgHandle g_vdsErrorHandle;

@@ -18,12 +18,12 @@
 #ifndef PSN_MEMORY_ALLOCATOR_H
 #define PSN_MEMORY_ALLOCATOR_H
 
-#include "Engine.h"
+#include "Nucleus/Engine.h"
 #include "Common/ErrorHandler.h"
-#include "MemoryObject.h"
-#include "LinkedList.h"
-#include "BlockGroup.h"
-#include "SessionContext.h"
+#include "Nucleus/MemoryObject.h"
+#include "Nucleus/LinkedList.h"
+#include "Nucleus/BlockGroup.h"
+#include "Nucleus/SessionContext.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

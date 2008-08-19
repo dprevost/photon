@@ -20,11 +20,11 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine/Engine.h"
-#include "Engine/LinkedList.h"
-#include "Engine/LinkNode.h"
-#include "Engine/MemoryObject.h"
-#include "Engine/BlockGroup.h"
+#include "Nucleus/Engine.h"
+#include "Nucleus/LinkedList.h"
+#include "Nucleus/LinkNode.h"
+#include "Nucleus/MemoryObject.h"
+#include "Nucleus/BlockGroup.h"
 
 struct psnTx;
 
@@ -48,7 +48,7 @@ struct psnObjectContext
 
    /**
     * Pointer to the object as allocated in the heap of the process.
-    * We cannot use the real type since the Engine does not know about
+    * We cannot use the real type since the Nucleus does not know about
     * the API objects.
     */
    void * pCommonObject; 

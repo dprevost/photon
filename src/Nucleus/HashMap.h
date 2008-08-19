@@ -20,12 +20,12 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine/Engine.h"
-#include "Engine/DataType.h"
-#include "Engine/MemoryObject.h"
-#include "Engine/TreeNode.h"
-#include "Engine/BlockGroup.h"
-#include "Engine/Hash.h"
+#include "Nucleus/Engine.h"
+#include "Nucleus/DataType.h"
+#include "Nucleus/MemoryObject.h"
+#include "Nucleus/TreeNode.h"
+#include "Nucleus/BlockGroup.h"
+#include "Nucleus/Hash.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -20,9 +20,9 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine/Engine.h"
-#include "Engine/TreeNode.h"
-#include "Engine/Hash.h"
+#include "Nucleus/Engine.h"
+#include "Nucleus/TreeNode.h"
+#include "Nucleus/Hash.h"
 
 BEGIN_C_DECLS
 

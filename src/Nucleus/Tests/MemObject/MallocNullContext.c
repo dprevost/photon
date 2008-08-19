@@ -15,7 +15,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine/MemoryObject.h"
+#include "Nucleus/MemoryObject.h"
 #include "MemObjTest.h"
 
 const bool expectedToPass = false;

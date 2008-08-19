@@ -18,7 +18,7 @@
 #ifndef VDSW_VERIFY_VDS_H
 #define VDSW_VERIFY_VDS_H
 
-#include "Engine/MemoryHeader.h"
+#include "Nucleus/MemoryHeader.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

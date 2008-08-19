@@ -130,7 +130,7 @@ TESTS =                        \
 
 XFAIL_TESTS =                  
 
-LDADD = $(top_builddir)/src/API/libvdsf.la      \
-        $(top_builddir)/src/Engine/libEngine.la \
-        $(top_builddir)/src/Common/libCommon.la
+LDADD = $(top_builddir)/src/API/libvdsf.la        \
+        $(top_builddir)/src/Nucleus/libNucleus.la \
+        $(top_builddir)/src/Common/libCommon.la   
 

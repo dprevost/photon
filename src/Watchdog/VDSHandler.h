@@ -19,7 +19,7 @@
 #ifndef VDSW_HANDLER_H
 #define VDSW_HANDLER_H
 
-#include "Engine/SessionContext.h"
+#include "Nucleus/SessionContext.h"
 #include "Watchdog/wdErrors.h"
 
 BEGIN_C_DECLS

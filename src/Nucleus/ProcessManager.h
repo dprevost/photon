@@ -20,11 +20,11 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine/Engine.h"
-#include "Engine/MemoryObject.h"
-#include "Engine/BlockGroup.h"
-#include "Engine/LinkedList.h"
-#include "Engine/Process.h"
+#include "Nucleus/Engine.h"
+#include "Nucleus/MemoryObject.h"
+#include "Nucleus/BlockGroup.h"
+#include "Nucleus/LinkedList.h"
+#include "Nucleus/Process.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

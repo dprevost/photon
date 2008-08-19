@@ -21,10 +21,10 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine/Engine.h"
-#include "Engine/MemoryHeader.h"
+#include "Nucleus/Engine.h"
+#include "Nucleus/MemoryHeader.h"
 #include "Common/MemoryFile.h"
-#include "Engine/SessionContext.h"
+#include "Nucleus/SessionContext.h"
 
 BEGIN_C_DECLS
 

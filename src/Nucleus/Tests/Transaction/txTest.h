@@ -18,14 +18,14 @@
 #ifndef TX_TEST_COMMON_H
 #define TX_TEST_COMMON_H
 
-#include "Engine/Engine.h"
-#include "Engine/MemoryObject.h"
-#include "Engine/BlockGroup.h"
-#include "Engine/MemoryAllocator.h"
-#include "Engine/Transaction.h"
-#include "Engine/InitEngine.h"
+#include "Nucleus/Engine.h"
+#include "Nucleus/MemoryObject.h"
+#include "Nucleus/BlockGroup.h"
+#include "Nucleus/MemoryAllocator.h"
+#include "Nucleus/Transaction.h"
+#include "Nucleus/InitEngine.h"
 #include "Tests/PrintError.h"
-#include "Engine/Folder.h"
+#include "Nucleus/Folder.h"
 
 VDSF_ENGINE_EXPORT
 pscErrMsgHandle g_vdsErrorHandle;

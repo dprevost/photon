@@ -20,8 +20,8 @@ CLEANFILES = *~
 
 OUTPUT_FILES =                      \
         ../include/vdsf/vdsErrors.h \
-        ../Engine/VdsErrorHandler.c \
-        ../Engine/VdsErrorHandler.h 
+        ../Nucleus/VdsErrorHandler.c \
+        ../Nucleus/VdsErrorHandler.h 
 
 ###########################################################################
 #

@@ -21,9 +21,9 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/ThreadLock.h"
-#include "Engine/Folder.h"
+#include "Nucleus/Folder.h"
 #include "API/Session.h"
-#include "Engine/Session.h"
+#include "Nucleus/Session.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

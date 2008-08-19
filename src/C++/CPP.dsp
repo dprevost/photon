@@ -54,7 +54,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsf.lib vdsfEngine.lib vdsfCommon.lib /nologo /dll /machine:I386 /out:"Release/vdsfcpp.dll" /libpath:"..\Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsf.lib vdsfNucleus.lib vdsfCommon.lib /nologo /dll /machine:I386 /out:"Release/vdsfcpp.dll" /libpath:"..\Release"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Cmds=if not exist ..\Release\ mkdir ..\Release	if exist ..\Release\vdsfcpp.lib del ..\Release\vdsfcpp.lib	if exist ..\Release\vdsfcpp.dll del ..\Release\vdsfcpp.dll
@@ -85,7 +85,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsf.lib vdsfEngine.lib vdsfCommon.lib /nologo /dll /debug /machine:I386 /out:"Debug/vdsfcpp.dll" /pdbtype:sept /libpath:"..\Debug"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsf.lib vdsfNucleus.lib vdsfCommon.lib /nologo /dll /debug /machine:I386 /out:"Debug/vdsfcpp.dll" /pdbtype:sept /libpath:"..\Debug"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Cmds=if not exist ..\Debug\ mkdir ..\Debug	if exist ..\Debug\vdsfcpp.lib del ..\Debug\vdsfcpp.lib	if exist ..\Debug\vdsfcpp.dll del ..\Debug\vdsfcpp.dll

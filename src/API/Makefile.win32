@@ -30,8 +30,8 @@ CLEANFILES = *~ *.dep *.plg vc60.* *.ncb
 
 W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfCommon.lib vdsfEngine.lib $(LIBXML2_LIB) /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\vdsf.dll" /implib:"$(OUTDIR_RELEASE)\vdsf.lib" /libpath:"..\Release"
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfCommon.lib vdsfEngine.lib $(LIBXML2_LIB) /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\vdsf.dll"   /implib:"$(OUTDIR_DEBUG)\vdsf.lib"   /libpath:"..\Debug"
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfCommon.lib vdsfNucleus.lib $(LIBXML2_LIB) /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\vdsf.dll" /implib:"$(OUTDIR_RELEASE)\vdsf.lib" /libpath:"..\Release"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfCommon.lib vdsfNucleus.lib $(LIBXML2_LIB) /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\vdsf.dll"   /implib:"$(OUTDIR_DEBUG)\vdsf.lib"   /libpath:"..\Debug"
 
 CFLAGS_RELEASE=/nologo /MD  /W4 /O2     /I "..\Common" /I "..\include" /I $(LIBXML2_INCLUDE) /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF_API" /D "BUILD_VDSF" /Fo"$(INTDIR_RELEASE)\\"     /c 
 CFLAGS_DEBUG  =/nologo /MDd /W4 /ZI /Od /I "..\Common" /I "..\include" /I $(LIBXML2_INCLUDE) /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF_API" /D "BUILD_VDSF" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 

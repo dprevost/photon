@@ -15,7 +15,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine/LinkNode.h"
+#include "Nucleus/LinkNode.h"
 #include "Tests/PrintError.h"
 
 const bool expectedToPass = false;

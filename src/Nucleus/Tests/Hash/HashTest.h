@@ -18,12 +18,12 @@
 #ifndef HASH_TEST_COMMON_H
 #define HASH_TEST_COMMON_H
 
-#include "Engine/Engine.h"
-#include "Engine/MemoryObject.h"
-#include "Engine/BlockGroup.h"
-#include "Engine/MemoryAllocator.h"
-#include "Engine/Hash.h"
-#include "Engine/InitEngine.h"
+#include "Nucleus/Engine.h"
+#include "Nucleus/MemoryObject.h"
+#include "Nucleus/BlockGroup.h"
+#include "Nucleus/MemoryAllocator.h"
+#include "Nucleus/Hash.h"
+#include "Nucleus/InitEngine.h"
 #include "Tests/PrintError.h"
 
 VDSF_ENGINE_EXPORT

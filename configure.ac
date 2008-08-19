@@ -498,24 +498,24 @@ AC_CONFIG_FILES([
    src/C++/Tests/Process/Makefile
    src/C++/Tests/Queue/Makefile
    src/C++/Tests/Session/Makefile
-   src/Engine/Makefile
-   src/Engine/Tests/Makefile
-   src/Engine/Tests/BlockGroup/Makefile
-   src/Engine/Tests/Folder/Makefile
-   src/Engine/Tests/Hash/Makefile
-   src/Engine/Tests/HashMap/Makefile
-   src/Engine/Tests/List/Makefile
-   src/Engine/Tests/LogFile/Makefile
-   src/Engine/Tests/Map/Makefile
-   src/Engine/Tests/MemAlloc/Makefile
-   src/Engine/Tests/MemBitmap/Makefile
-   src/Engine/Tests/MemObject/Makefile
-   src/Engine/Tests/Optional/Makefile
-   src/Engine/Tests/Process/Makefile
-   src/Engine/Tests/ProcessManager/Makefile
-   src/Engine/Tests/Queue/Makefile
-   src/Engine/Tests/Session/Makefile
-   src/Engine/Tests/Transaction/Makefile
+   src/Nucleus/Makefile
+   src/Nucleus/Tests/Makefile
+   src/Nucleus/Tests/BlockGroup/Makefile
+   src/Nucleus/Tests/Folder/Makefile
+   src/Nucleus/Tests/Hash/Makefile
+   src/Nucleus/Tests/HashMap/Makefile
+   src/Nucleus/Tests/List/Makefile
+   src/Nucleus/Tests/LogFile/Makefile
+   src/Nucleus/Tests/Map/Makefile
+   src/Nucleus/Tests/MemAlloc/Makefile
+   src/Nucleus/Tests/MemBitmap/Makefile
+   src/Nucleus/Tests/MemObject/Makefile
+   src/Nucleus/Tests/Optional/Makefile
+   src/Nucleus/Tests/Process/Makefile
+   src/Nucleus/Tests/ProcessManager/Makefile
+   src/Nucleus/Tests/Queue/Makefile
+   src/Nucleus/Tests/Session/Makefile
+   src/Nucleus/Tests/Transaction/Makefile
    src/Errors/Makefile
    src/Java/Makefile
    src/include/Makefile

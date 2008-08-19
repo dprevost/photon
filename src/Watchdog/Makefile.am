@@ -85,7 +85,7 @@ libVerifyVDS_a_SOURCES = \
         VerifyVDS.c      \
         VerifyVDS.h      
 
-vdswd_LDADD = $(top_builddir)/src/Engine/libEngine.la    \
+vdswd_LDADD = $(top_builddir)/src/Nucleus/libNucleus.la    \
               $(top_builddir)/src/Common/libCommon.la    \
               $(top_builddir)/src/Watchdog/libVerifyVDS.a 
 

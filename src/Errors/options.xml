@@ -36,7 +36,7 @@
        "errmsg_*_name" elements. If you do, the "GUARD" will use that 
        directory name and the .c file will include the header using the 
        full name (errmsg_header_name) -->
-   <errmsg_dir> ../Engine </errmsg_dir>
+   <errmsg_dir> ../Nucleus </errmsg_dir>
   <!-- The file name for the .h file for the code to retrieve the error 
        messages. -->
   <errmsg_header_name> VdsErrorHandler.h </errmsg_header_name>

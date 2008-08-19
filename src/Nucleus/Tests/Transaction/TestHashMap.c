@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "txTest.h"
-#include "Engine/HashMap.h"
+#include "Nucleus/HashMap.h"
 
 const bool expectedToPass = true;
 

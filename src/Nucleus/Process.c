@@ -15,9 +15,9 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine/Process.h"
-#include "Engine/MemoryAllocator.h"
-#include "Engine/SessionContext.h"
+#include "Nucleus/Process.h"
+#include "Nucleus/MemoryAllocator.h"
+#include "Nucleus/SessionContext.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

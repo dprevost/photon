@@ -21,8 +21,8 @@
 #include "Watchdog/Watchdog.h"
 #include "Watchdog/VerifyVDS.h"
 #include "API/WatchdogCommon.h"
-#include "Engine/SessionContext.h"
-#include "Engine/InitEngine.h"
+#include "Nucleus/SessionContext.h"
+#include "Nucleus/InitEngine.h"
 
 extern pscErrMsgHandle g_wdErrorHandle;
 

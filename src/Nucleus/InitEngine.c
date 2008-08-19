@@ -13,10 +13,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-#include "Engine.h"
-#include "InitEngine.h"
+#include "Nucleus/Engine.h"
+#include "Nucleus/InitEngine.h"
 #include "Common/ErrorHandler.h"
-#include "VdsErrorHandler.h"
+#include "Nucleus/VdsErrorHandler.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
