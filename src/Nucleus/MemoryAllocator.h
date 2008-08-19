@@ -83,7 +83,7 @@ typedef struct psnMemAlloc psnMemAlloc;
  * already there, initialized and all.
  */
 VDSF_ENGINE_EXPORT
-enum vdsErrors 
+enum psoErrors 
 psnMemAllocInit( psnMemAlloc       * pAlloc,
                   unsigned char      * pBaseAddress, 
                   size_t               length,
@@ -124,7 +124,7 @@ void psnMemAllocClose( psnMemAlloc       * pAlloc,
  */
 VDSF_ENGINE_EXPORT
 bool psnMemAllocStats( psnMemAlloc       * pAlloc,
-                        vdsInfo            * pInfo,
+                        psoInfo            * pInfo,
                         psnSessionContext * pContext  );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

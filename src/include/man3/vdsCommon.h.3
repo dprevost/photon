@@ -13,7 +13,7 @@ vdsCommon.h \-
 
 .in +1c
 .ti -1c
-.RI "struct \fBvdsKeyDefinition\fP"
+.RI "struct \fBpsoKeyDefinition\fP"
 .br
 .RI "\fIDescription of the structure of the hash map key. \fP"
 .ti -1c
@@ -21,19 +21,19 @@ vdsCommon.h \-
 .br
 .RI "\fIDescription of the structure of the data (if any). \fP"
 .ti -1c
-.RI "struct \fBvdsObjectDefinition\fP"
+.RI "struct \fBpsoObjectDefinition\fP"
 .br
 .RI "\fIThis struct has a variable length. \fP"
 .ti -1c
-.RI "struct \fBvdsFolderEntry\fP"
+.RI "struct \fBpsoFolderEntry\fP"
 .br
 .RI "\fIThis data structure is used to iterate throught all objects in a folder. \fP"
 .ti -1c
-.RI "struct \fBvdsObjStatus\fP"
+.RI "struct \fBpsoObjStatus\fP"
 .br
 .RI "\fIThis data structure is used to retrieve the status of objects. \fP"
 .ti -1c
-.RI "struct \fBvdsInfo\fP"
+.RI "struct \fBpsoInfo\fP"
 .br
 .RI "\fIThis data structure is used to retrieve the status of the virtual data space. \fP"
 .in -1c
@@ -68,46 +68,46 @@ vdsCommon.h \-
 
 .in +1c
 .ti -1c
-.RI "typedef void * \fBVDS_HANDLE\fP"
+.RI "typedef void * \fBPSO_HANDLE\fP"
 .br
-.RI "\fIVDS_HANDLE is an opaque data type used by the C API to reference objects created in the API module. \fP"
+.RI "\fIPSO_HANDLE is an opaque data type used by the C API to reference objects created in the API module. \fP"
 .ti -1c
-.RI "typedef enum \fBvdsObjectType\fP \fBvdsObjectType\fP"
+.RI "typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
 .br
 .ti -1c
 .RI "typedef enum \fBvdsIteratorType\fP \fBvdsIteratorType\fP"
 .br
 .ti -1c
-.RI "typedef \fBvdsKeyDefinition\fP \fBvdsKeyDefinition\fP"
+.RI "typedef \fBpsoKeyDefinition\fP \fBpsoKeyDefinition\fP"
 .br
 .ti -1c
 .RI "typedef \fBvdsFieldDefinition\fP \fBvdsFieldDefinition\fP"
 .br
 .ti -1c
-.RI "typedef \fBvdsObjectDefinition\fP \fBvdsObjectDefinition\fP"
+.RI "typedef \fBpsoObjectDefinition\fP \fBpsoObjectDefinition\fP"
 .br
 .ti -1c
-.RI "typedef \fBvdsFolderEntry\fP \fBvdsFolderEntry\fP"
+.RI "typedef \fBpsoFolderEntry\fP \fBpsoFolderEntry\fP"
 .br
 .ti -1c
-.RI "typedef \fBvdsObjStatus\fP \fBvdsObjStatus\fP"
+.RI "typedef \fBpsoObjStatus\fP \fBpsoObjStatus\fP"
 .br
 .ti -1c
-.RI "typedef \fBvdsInfo\fP \fBvdsInfo\fP"
+.RI "typedef \fBpsoInfo\fP \fBpsoInfo\fP"
 .br
 .in -1c
 .SS "Enumerations"
 
 .in +1c
 .ti -1c
-.RI "enum \fBvdsObjectType\fP { \fBVDS_FOLDER\fP =  1, \fBVDS_HASH_MAP\fP =  2, \fBVDS_LIFO\fP =  3, \fBVDS_FAST_MAP\fP =  4, \fBVDS_QUEUE\fP =  5, \fBVDS_LAST_OBJECT_TYPE\fP }"
+.RI "enum \fBpsoObjectType\fP { \fBVDS_FOLDER\fP =  1, \fBVDS_HASH_MAP\fP =  2, \fBVDS_LIFO\fP =  3, \fBVDS_FAST_MAP\fP =  4, \fBVDS_QUEUE\fP =  5, \fBVDS_LAST_OBJECT_TYPE\fP }"
 .br
 .RI "\fIThe object type as seen from the API. \fP"
 .ti -1c
 .RI "enum \fBvdsIteratorType\fP { \fBVDS_FIRST\fP =  1, \fBVDS_NEXT\fP =  2 }"
 .br
 .ti -1c
-.RI "enum \fBvdsFieldType\fP { \fBVDS_INTEGER\fP =  1, \fBVDS_BINARY\fP, \fBVDS_STRING\fP, \fBVDS_DECIMAL\fP, \fBVDS_BOOLEAN\fP, \fBVDS_VAR_BINARY\fP, \fBVDS_VAR_STRING\fP }"
+.RI "enum \fBpsoFieldType\fP { \fBVDS_INTEGER\fP =  1, \fBVDS_BINARY\fP, \fBVDS_STRING\fP, \fBVDS_DECIMAL\fP, \fBVDS_BOOLEAN\fP, \fBVDS_VAR_BINARY\fP, \fBVDS_VAR_STRING\fP }"
 .br
 .RI "\fIVDSF supported data types. \fP"
 .ti -1c
@@ -149,38 +149,38 @@ Uses to tell the VC++ compiler to export/import a function or variable on Window
 Definition at line 38 of file vdsCommon.h.
 .SH "Typedef Documentation"
 .PP 
-.SS "typedef void* \fBVDS_HANDLE\fP"
+.SS "typedef void* \fBPSO_HANDLE\fP"
 .PP
-VDS_HANDLE is an opaque data type used by the C API to reference objects created in the API module. 
+PSO_HANDLE is an opaque data type used by the C API to reference objects created in the API module. 
 .PP
 Definition at line 53 of file vdsCommon.h.
 .SS "typedef struct \fBvdsFieldDefinition\fP \fBvdsFieldDefinition\fP"
 .PP
 Definition at line 175 of file vdsCommon.h.
-.SS "typedef struct \fBvdsFolderEntry\fP \fBvdsFolderEntry\fP"
+.SS "typedef struct \fBpsoFolderEntry\fP \fBpsoFolderEntry\fP"
 .PP
 Definition at line 221 of file vdsCommon.h.
-.SS "typedef struct \fBvdsInfo\fP \fBvdsInfo\fP"
+.SS "typedef struct \fBpsoInfo\fP \fBpsoInfo\fP"
 .PP
 Definition at line 311 of file vdsCommon.h.
 .SS "typedef enum \fBvdsIteratorType\fP \fBvdsIteratorType\fP"
 .PP
 Definition at line 108 of file vdsCommon.h.
-.SS "typedef struct \fBvdsKeyDefinition\fP \fBvdsKeyDefinition\fP"
+.SS "typedef struct \fBpsoKeyDefinition\fP \fBpsoKeyDefinition\fP"
 .PP
 Definition at line 153 of file vdsCommon.h.
-.SS "typedef struct \fBvdsObjectDefinition\fP \fBvdsObjectDefinition\fP"
+.SS "typedef struct \fBpsoObjectDefinition\fP \fBpsoObjectDefinition\fP"
 .PP
 Definition at line 193 of file vdsCommon.h.
-.SS "typedef enum \fBvdsObjectType\fP \fBvdsObjectType\fP"
+.SS "typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
 .PP
 Definition at line 100 of file vdsCommon.h.
-.SS "typedef struct \fBvdsObjStatus\fP \fBvdsObjStatus\fP"
+.SS "typedef struct \fBpsoObjStatus\fP \fBpsoObjStatus\fP"
 .PP
 Definition at line 256 of file vdsCommon.h.
 .SH "Enumeration Type Documentation"
 .PP 
-.SS "enum \fBvdsFieldType\fP"
+.SS "enum \fBpsoFieldType\fP"
 .PP
 VDSF supported data types. 
 .PP
@@ -235,7 +235,7 @@ Only valid for the last field of the data definition.
 Only valid for the last field of the data definition. 
 .PP
 Definition at line 131 of file vdsCommon.h.
-.SS "enum \fBvdsObjectType\fP"
+.SS "enum \fBpsoObjectType\fP"
 .PP
 The object type as seen from the API. 
 .PP

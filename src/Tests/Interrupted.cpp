@@ -19,15 +19,15 @@
 #include <stdio.h>
 #include <signal.h>
 
-#include <photon/vdsProcess.h>
-#include <photon/vdsSession.h>
-#include <photon/vdsFolder.h>
-#include <photon/vdsQueue.h>
-#include <photon/vdsErrors.h>
+#include <photon/psoProcess.h>
+#include <photon/psoSession.h>
+#include <photon/psoFolder.h>
+#include <photon/psoQueue.h>
+#include <photon/psoErrors.h>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsSession* g_pSession1, *g_pSession2;
+psoSession* g_pSession1, *g_pSession2;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -52,7 +52,7 @@ vdsSession* g_pSession1, *g_pSession2;
 int Test1()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1);
+   psoQueue q1(*g_pSession1);
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
    if ( errCode != VDS_OK )
@@ -83,7 +83,7 @@ int Test1()
 int Test2()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession2);
+   psoQueue q1(*g_pSession2);
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
    if ( errCode != VDS_OK )
@@ -123,7 +123,7 @@ int Test2()
 int Test3()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession2);
+   psoQueue q1(*g_pSession2);
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
    if ( errCode != VDS_OK )
@@ -157,7 +157,7 @@ int Test3()
 int Test4( bool bSession1 )
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1);
+   psoQueue q1(*g_pSession1);
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
    if ( errCode != VDS_OK )
@@ -207,7 +207,7 @@ int Test4( bool bSession1 )
 int Test5()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession2);
+   psoQueue q1(*g_pSession2);
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
    if ( errCode != VDS_OK )
@@ -244,7 +244,7 @@ int Test5()
 int Test6()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1);
+   psoQueue q1(*g_pSession1);
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
    if ( errCode != VDS_OK )
@@ -284,7 +284,7 @@ int Test6()
 int Test7()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession2);
+   psoQueue q1(*g_pSession2);
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
    if ( errCode != VDS_OK )
@@ -323,7 +323,7 @@ int Test7()
 int Test8()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession2);
+   psoQueue q1(*g_pSession2);
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
    if ( errCode != VDS_OK )
@@ -366,7 +366,7 @@ int Test8()
 int Test9( bool bSession1 )
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1);
+   psoQueue q1(*g_pSession1);
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
    if ( errCode != VDS_OK )
@@ -421,7 +421,7 @@ int Test9( bool bSession1 )
 int Test10( bool bSession1 )
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession2);
+   psoQueue q1(*g_pSession2);
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
    if ( errCode != VDS_OK )
@@ -594,7 +594,7 @@ int Test13( bool bSession1 )
 int Test21()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1);
+   psoQueue q1(*g_pSession1);
    char str[25];
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
@@ -633,7 +633,7 @@ int Test21()
 int Test22()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1), q2(*g_pSession1);
+   psoQueue q1(*g_pSession1), q2(*g_pSession1);
    char str[25];
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
@@ -676,7 +676,7 @@ int Test22()
 int Test23()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1), q2(*g_pSession2);
+   psoQueue q1(*g_pSession1), q2(*g_pSession2);
    char str[25];
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
@@ -725,7 +725,7 @@ int Test23()
 int Test24()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1), q2(*g_pSession2);
+   psoQueue q1(*g_pSession1), q2(*g_pSession2);
    char str[25];
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
@@ -776,7 +776,7 @@ int Test24()
 int Test25( bool bSession1 )
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1);
+   psoQueue q1(*g_pSession1);
    char str[25];
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );   
@@ -839,7 +839,7 @@ int Test25( bool bSession1 )
 int Test26()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1);
+   psoQueue q1(*g_pSession1);
    char str[25];
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
@@ -888,8 +888,8 @@ int Test26()
 int Test27()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1);
-   vdsQueue q2(*g_pSession1);
+   psoQueue q1(*g_pSession1);
+   psoQueue q2(*g_pSession1);
    char str[25];
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
@@ -941,8 +941,8 @@ int Test27()
 int Test28()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1);
-   vdsQueue q2(*g_pSession2);
+   psoQueue q1(*g_pSession1);
+   psoQueue q2(*g_pSession2);
    char str[25];
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
@@ -994,8 +994,8 @@ int Test28()
 int Test29()
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1);
-   vdsQueue q2(*g_pSession2);
+   psoQueue q1(*g_pSession1);
+   psoQueue q2(*g_pSession2);
    char str[25];
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
@@ -1050,7 +1050,7 @@ int Test29()
 int Test30( bool bSession1 )
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1);
+   psoQueue q1(*g_pSession1);
    char str[25];
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
@@ -1114,8 +1114,8 @@ int Test30( bool bSession1 )
 int Test31( bool bSession1 )
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1);
-   vdsQueue q2(*g_pSession1);
+   psoQueue q1(*g_pSession1);
+   psoQueue q2(*g_pSession1);
    char str[25];
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
@@ -1183,8 +1183,8 @@ int Test31( bool bSession1 )
 int Test32( bool bSession1 )
 {
    int errCode = 0;
-   vdsQueue q1(*g_pSession1);
-   vdsQueue q2(*g_pSession2);
+   psoQueue q1(*g_pSession1);
+   psoQueue q2(*g_pSession2);
    char str[25];
    
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
@@ -1316,7 +1316,7 @@ int Run( bool bSession1, bool /* bSession2 */ )
 int main(int argc, char *argv[]) 
 {
    int errCode = 0;
-   vdsProcess process;
+   psoProcess process;
 
    if ( argc != 4 )
    {
@@ -1333,10 +1333,10 @@ int main(int argc, char *argv[])
    
    printf( " Both Sessions - implicit\n" );
    
-   g_pSession1 = new vdsSession( false );
-   g_pSession2 = new vdsSession( false );
+   g_pSession1 = new psoSession( false );
+   g_pSession2 = new psoSession( false );
 
-   vdsQueue q1(*g_pSession1);
+   psoQueue q1(*g_pSession1);
 
    errCode = g_pSession1->CreateObject( "A Queue", VDS_QUEUE );
    if ( errCode != VDS_OK )
@@ -1351,8 +1351,8 @@ int main(int argc, char *argv[])
 
    delete g_pSession1;
    delete g_pSession2;
-   g_pSession1 = new vdsSession( true );
-   g_pSession2 = new vdsSession( true );
+   g_pSession1 = new psoSession( true );
+   g_pSession2 = new psoSession( true );
 
    if ( (errCode = Run( true, true ))  != 0 ) goto error;
   
@@ -1361,8 +1361,8 @@ int main(int argc, char *argv[])
 
    delete g_pSession1;
    delete g_pSession2;
-   g_pSession1 = new vdsSession( false );
-   g_pSession2 = new vdsSession( true );
+   g_pSession1 = new psoSession( false );
+   g_pSession2 = new psoSession( true );
 
    if ( (errCode = Run( false, true ))  != 0 ) goto error;
   
@@ -1371,8 +1371,8 @@ int main(int argc, char *argv[])
 
    delete g_pSession1;
    delete g_pSession2;
-   g_pSession1 = new vdsSession( true );
-   g_pSession2 = new vdsSession( false );
+   g_pSession1 = new psoSession( true );
+   g_pSession2 = new psoSession( false );
 
    if ( (errCode = Run( true, false ))  != 0 ) goto error;
 

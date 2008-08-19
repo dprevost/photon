@@ -17,27 +17,27 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDS_H_CPP
-#define VDS_H_CPP
+#ifndef PSO_H_CPP
+#define PSO_H_CPP
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include <photon/phoErrors.h>
-#include <photon/phoCommon.h>
+#include <photon/psoErrors.h>
+#include <photon/psoCommon.h>
 
-#include <photon/phoProcess>
-#include <photon/phoSession>
-#include <photon/phoFolder>
-#include <photon/phoHashMap>
-#include <photon/phoFastMap>
-#include <photon/phoFastMapEditor>
-#include <photon/phoLifo>
-#include <photon/phoQueue>
-#include <photon/phoException>
+#include <photon/psoProcess>
+#include <photon/psoSession>
+#include <photon/psoFolder>
+#include <photon/psoHashMap>
+#include <photon/psoFastMap>
+#include <photon/psoFastMapEditor>
+#include <photon/psoLifo>
+#include <photon/psoQueue>
+#include <photon/psoException>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDS_H_CPP */
+#endif /* PSO_H_CPP */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

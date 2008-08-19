@@ -13,7 +13,7 @@
 include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~
-lib_LTLIBRARIES = libvdsfcpp.la
+lib_LTLIBRARIES = libphotoncpp.la
 
 SUBDIRS = . Tests
           
@@ -23,11 +23,11 @@ SUBDIRS = . Tests
 #  - the version is not in synch with the version of the whole package
 #  - format:  currentversion:revision:age  (age is the tricky one here)
 
-libvdsfcpp_la_LDFLAGS = -version-info 0:0:0
+libphotoncpp_la_LDFLAGS = -version-info 0:0:0
 
 include_HEADERS = 
 
-libvdsfcpp_la_SOURCES =   \
+libphotoncpp_la_SOURCES = \
         Exception.cpp     \
         FastMap.cpp       \
         FastMapEditor.cpp \
@@ -42,8 +42,8 @@ EXTRA_DIST =           \
         CPP.dsp        \
         Makefile.win32 
 
-libvdsfcpp_la_LIBADD =                            \
-        $(top_builddir)/src/API/libvdsf.la        \
+libphotoncpp_la_LIBADD =                          \
+        $(top_builddir)/src/API/libphoton.la      \
         $(top_builddir)/src/Nucleus/libNucleus.la \
         $(top_builddir)/src/Common/libCommon.la   
 

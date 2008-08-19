@@ -27,8 +27,8 @@ int main()
    psnSessionContext context;
    int errcode;
    bool ok;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
@@ -63,7 +63,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = pscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_NO_SUCH_FOLDER ) {
+   if ( errcode != PSO_NO_SUCH_FOLDER ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

@@ -1,15 +1,15 @@
-.TH "vdsSession.h" 3 "18 Aug 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "psoSession.h" 3 "18 Aug 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-vdsSession.h \- 
+psoSession.h \- 
 .SH "Detailed Description"
 .PP 
 This file provides the API needed to create and use a session. 
 
 
 .PP
-Definition in file \fBvdsSession.h\fP.
+Definition in file \fBpsoSession.h\fP.
 .SH SYNOPSIS
 .br
 .PP
@@ -20,47 +20,47 @@ Definition in file \fBvdsSession.h\fP.
 
 .in +1c
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsCommit\fP (\fBVDS_HANDLE\fP sessionHandle)"
+.RI "VDSF_EXPORT int \fBvdsCommit\fP (\fBPSO_HANDLE\fP sessionHandle)"
 .br
 .RI "\fICommit all insertions and deletions (of the current session) executed since the previous call to vdsCommit or vdsRollback. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsCreateObject\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjectDefinition\fP *pDefinition)"
+.RI "VDSF_EXPORT int \fBvdsCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
 .br
 .RI "\fICreate a new object in shared memory. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsDestroyObject\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes)"
+.RI "VDSF_EXPORT int \fBvdsDestroyObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes)"
 .br
 .RI "\fIDestroy an existing object in shared memory. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsErrorMsg\fP (\fBVDS_HANDLE\fP sessionHandle, char *message, size_t msgLengthInBytes)"
+.RI "VDSF_EXPORT int \fBpsoErrorMsg\fP (\fBPSO_HANDLE\fP sessionHandle, char *message, size_t msgLengthInBytes)"
 .br
 .RI "\fIReturn the error message associated with the last error(s). \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsExitSession\fP (\fBVDS_HANDLE\fP sessionHandle)"
+.RI "VDSF_EXPORT int \fBvdsExitSession\fP (\fBPSO_HANDLE\fP sessionHandle)"
 .br
 .RI "\fITerminate the current session. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsGetDefinition\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjectDefinition\fP **definition)"
+.RI "VDSF_EXPORT int \fBvdsGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP **definition)"
 .br
 .RI "\fIRetrieve the data definition of the named object. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsGetInfo\fP (\fBVDS_HANDLE\fP sessionHandle, \fBvdsInfo\fP *pInfo)"
+.RI "VDSF_EXPORT int \fBvdsGetInfo\fP (\fBPSO_HANDLE\fP sessionHandle, \fBpsoInfo\fP *pInfo)"
 .br
 .RI "\fIReturn information on the current status of the VDS (Virtual Data Space). \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsGetStatus\fP (\fBVDS_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjStatus\fP *pStatus)"
+.RI "VDSF_EXPORT int \fBvdsGetStatus\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjStatus\fP *pStatus)"
 .br
 .RI "\fIReturn the status of the named object. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsInitSession\fP (\fBVDS_HANDLE\fP *sessionHandle)"
+.RI "VDSF_EXPORT int \fBvdsInitSession\fP (\fBPSO_HANDLE\fP *sessionHandle)"
 .br
 .RI "\fIThis function initializes a session. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsLastError\fP (\fBVDS_HANDLE\fP sessionHandle)"
+.RI "VDSF_EXPORT int \fBvdsLastError\fP (\fBPSO_HANDLE\fP sessionHandle)"
 .br
 .RI "\fIReturn the last error seen in previous calls (of the current session). \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsRollback\fP (\fBVDS_HANDLE\fP sessionHandle)"
+.RI "VDSF_EXPORT int \fBvdsRollback\fP (\fBPSO_HANDLE\fP sessionHandle)"
 .br
 .RI "\fIRollback all insertions and deletions (of the current session) executed since the previous call to vdsCommit or vdsRollback. \fP"
 .in -1c

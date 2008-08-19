@@ -1,8 +1,8 @@
-.TH "vdsObjStatus" 3 "18 Aug 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "psoObjStatus" 3 "18 Aug 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-vdsObjStatus \- 
+psoObjStatus \- 
 .SH SYNOPSIS
 .br
 .PP
@@ -17,7 +17,7 @@ Definition at line 228 of file vdsCommon.h.
 
 .in +1c
 .ti -1c
-.RI "\fBvdsObjectType\fP \fBtype\fP"
+.RI "\fBpsoObjectType\fP \fBtype\fP"
 .br
 .RI "\fIThe object type. \fP"
 .ti -1c
@@ -51,44 +51,44 @@ Definition at line 228 of file vdsCommon.h.
 .in -1c
 .SH "Field Documentation"
 .PP 
-.SS "\fBvdsObjectType\fP \fBvdsObjStatus::type\fP"
+.SS "\fBpsoObjectType\fP \fBpsoObjStatus::type\fP"
 .PP
 The object type. 
 .PP
 Definition at line 231 of file vdsCommon.h.
-.SS "int \fBvdsObjStatus::status\fP"
+.SS "int \fBpsoObjStatus::status\fP"
 .PP
 Status (created but not committed, etc. 
 .PP
 ) - not used in version 0.1 
 .PP
 Definition at line 234 of file vdsCommon.h.
-.SS "size_t \fBvdsObjStatus::numBlocks\fP"
+.SS "size_t \fBpsoObjStatus::numBlocks\fP"
 .PP
 The number of blocks allocated to this object. 
 .PP
 Definition at line 237 of file vdsCommon.h.
-.SS "size_t \fBvdsObjStatus::numBlockGroup\fP"
+.SS "size_t \fBpsoObjStatus::numBlockGroup\fP"
 .PP
 The number of groups of blocks allocated to this object. 
 .PP
 Definition at line 240 of file vdsCommon.h.
-.SS "size_t \fBvdsObjStatus::numDataItem\fP"
+.SS "size_t \fBpsoObjStatus::numDataItem\fP"
 .PP
 The number of data items in thisa object. 
 .PP
 Definition at line 243 of file vdsCommon.h.
-.SS "size_t \fBvdsObjStatus::freeBytes\fP"
+.SS "size_t \fBpsoObjStatus::freeBytes\fP"
 .PP
 The amount of free space available in the blocks allocated to this object. 
 .PP
 Definition at line 246 of file vdsCommon.h.
-.SS "size_t \fBvdsObjStatus::maxDataLength\fP"
+.SS "size_t \fBpsoObjStatus::maxDataLength\fP"
 .PP
 Maximum data length (in bytes). 
 .PP
 Definition at line 249 of file vdsCommon.h.
-.SS "size_t \fBvdsObjStatus::maxKeyLength\fP"
+.SS "size_t \fBpsoObjStatus::maxKeyLength\fP"
 .PP
 Maximum key length (in bytes) if keys are supported - zero otherwise. 
 .PP

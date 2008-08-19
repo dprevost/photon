@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 #include "API/HashMap.h"
 
@@ -26,66 +26,66 @@ const bool expectedToPass = false;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE objHandle,  sessionHandle;
+   PSO_HANDLE objHandle,  sessionHandle;
    int errcode;
-   vdsObjectDefinition mapDef = { 
-      VDS_HASH_MAP, 
+   psoObjectDefinition mapDef = { 
+      PSO_HASH_MAP, 
       1, 
-      { VDS_KEY_VAR_STRING, 0, 4, 10 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 4, 10 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
-   vdsObjectDefinition folderDef = { 
-      VDS_FOLDER, 
+   psoObjectDefinition folderDef = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/ahons",
                               strlen("/ahons"),
                               &folderDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/ahons/test",
                               strlen("/ahons/test"),
                               &mapDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Close the session and try to act on the object */
 
-   errcode = vdsCommit( sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsExitSession( sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoExitSession( sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -94,16 +94,16 @@ int main( int argc, char * argv[] )
     * sessionHandle is a pointer to deallocated memory. We either get the
     * error or we crash!
     */
-   errcode = vdsHashMapOpen( sessionHandle,
+   errcode = psoHashMapOpen( sessionHandle,
                             "/ahons/test",
                             strlen("/ahons/test"),
                             &objHandle );
-   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   vdsExit();
+   psoExit();
 
 #if defined(WIN32)
    exit(3);

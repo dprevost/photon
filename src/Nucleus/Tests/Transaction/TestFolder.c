@@ -29,14 +29,14 @@ int main()
    bool ok;
    psnFolderItem item;
    psnTxStatus status;
-   vdsObjectDefinition mapDef = { 
-      VDS_HASH_MAP, 
+   psoObjectDefinition mapDef = { 
+      PSO_HASH_MAP, 
       1, 
       { 0, 0, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
-   vdsObjectDefinition folderDef = { 
-      VDS_FOLDER, 
+   psoObjectDefinition folderDef = { 
+      PSO_FOLDER, 
       1, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
@@ -226,7 +226,7 @@ int main()
    ok = psnFolderGetObject( pFolder,
                              "test3",
                              5,
-                             VDS_HASH_MAP,
+                             PSO_HASH_MAP,
                              &item,
                              &context );
    if ( ok != true ) {
@@ -280,7 +280,7 @@ int main()
    ok = psnFolderGetObject( pFolder,
                              "test3",
                              5,
-                             VDS_HASH_MAP,
+                             PSO_HASH_MAP,
                              &item,
                              &context );
    if ( ok != true ) {
@@ -309,7 +309,7 @@ int main()
    ok = psnFolderGetObject( pFolder,
                              "test3",
                              5,
-                             VDS_HASH_MAP,
+                             PSO_HASH_MAP,
                              &item,
                              &context );
    if ( ok != true ) {

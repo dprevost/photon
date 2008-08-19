@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDS_COMMON_H
-#define VDS_COMMON_H
+#ifndef PSO_COMMON_H
+#define PSO_COMMON_H
 
 #include <stdlib.h>
 
@@ -47,124 +47,124 @@ extern "C" {
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * VDS_HANDLE is an opaque data type used by the C API to reference 
+ * PSO_HANDLE is an opaque data type used by the C API to reference 
  * objects created in the API module.
  */
-typedef void* VDS_HANDLE;
+typedef void* PSO_HANDLE;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Maximum number of bytes of the name of a vds object (not counting the 
+ * Maximum number of bytes of the name of a pso object (not counting the 
  * name of the parent folder(s)).
  */ 
-#define VDS_MAX_NAME_LENGTH 256
+#define PSO_MAX_NAME_LENGTH 256
 
 /** 
- * Maximum number of bytes of the fully qualified name of a vds object 
+ * Maximum number of bytes of the fully qualified name of a pso object 
  * (including the name(s) of its parent folder(s)).
  *
  * Note: setting this value eliminates a possible loophole since some
  * heap memory must be allocated to hold the wide characters string 
  * for the duration of the operation (open, close, create or destroy).
  */ 
-#define VDS_MAX_FULL_NAME_LENGTH 1024
+#define PSO_MAX_FULL_NAME_LENGTH 1024
 
 /** 
- * Maximum number of bytes of the name of a field of a vds object.
+ * Maximum number of bytes of the name of a field of a pso object.
  */
-#define VDS_MAX_FIELD_LENGTH 32
+#define PSO_MAX_FIELD_LENGTH 32
 
 /** 
  * Maximum number of fields (including the last one).
  */
-#define VDS_MAX_FIELDS 65535
+#define PSO_MAX_FIELDS 65535
 
-#define VDS_FIELD_MAX_PRECISION 30
+#define PSO_FIELD_MAX_PRECISION 30
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  * The object type as seen from the API
  */
-enum vdsObjectType
+enum psoObjectType
 {
-   VDS_FOLDER   = 1,
-   VDS_HASH_MAP = 2,
-   VDS_LIFO     = 3,  /* A LIFO queue aka a stack */
-   VDS_FAST_MAP = 4,  /* A read-only hash map */
-   VDS_QUEUE    = 5,  /* A FIFO queue */
-   VDS_LAST_OBJECT_TYPE
+   PSO_FOLDER   = 1,
+   PSO_HASH_MAP = 2,
+   PSO_LIFO     = 3,  /* A LIFO queue aka a stack */
+   PSO_FAST_MAP = 4,  /* A read-only hash map */
+   PSO_QUEUE    = 5,  /* A FIFO queue */
+   PSO_LAST_OBJECT_TYPE
 };
 
-typedef enum vdsObjectType vdsObjectType;
+typedef enum psoObjectType psoObjectType;
 
-enum vdsIteratorType
+enum psoIteratorType
 {
-   VDS_FIRST = 1,
-   VDS_NEXT  = 2
+   PSO_FIRST = 1,
+   PSO_NEXT  = 2
 };
 
-typedef enum vdsIteratorType vdsIteratorType;
+typedef enum psoIteratorType psoIteratorType;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  * VDSF supported data types.
  */
-enum vdsFieldType
+enum psoFieldType
 {
-   VDS_INTEGER = 1,
-   VDS_BINARY,
-   VDS_STRING,
-   VDS_DECIMAL,
-   VDS_BOOLEAN,
+   PSO_INTEGER = 1,
+   PSO_BINARY,
+   PSO_STRING,
+   PSO_DECIMAL,
+   PSO_BOOLEAN,
    /** Only valid for the last field of the data definition */
-   VDS_VAR_BINARY,
+   PSO_VAR_BINARY,
    /** Only valid for the last field of the data definition */
-   VDS_VAR_STRING
+   PSO_VAR_STRING
 };
 
 /**
  * VDSF supported data types for keys.
  */
-enum vdsKeyType
+enum psoKeyType
 {
-   VDS_KEY_INTEGER = 101,
-   VDS_KEY_BINARY,
-   VDS_KEY_STRING,
+   PSO_KEY_INTEGER = 101,
+   PSO_KEY_BINARY,
+   PSO_KEY_STRING,
    /** Only valid for the last field of the data definition */
-   VDS_KEY_VAR_BINARY,
+   PSO_KEY_VAR_BINARY,
    /** Only valid for the last field of the data definition */
-   VDS_KEY_VAR_STRING
+   PSO_KEY_VAR_STRING
 };
 
 /**
  * Description of the structure of the hash map key.
  */
-struct vdsKeyDefinition
+struct psoKeyDefinition
 {
-   enum vdsKeyType type;
+   enum psoKeyType type;
    size_t length;
    size_t minLength;
    size_t maxLength;
 };
 
-typedef struct vdsKeyDefinition vdsKeyDefinition;
+typedef struct psoKeyDefinition psoKeyDefinition;
 
 /**
  * Description of the structure of the data (if any).
  *
  * This structure is aligned in such a way that you can do:
  *
- *    malloc( offsetof(vdsObjectDefinition, fields) +
- *            numFields * sizeof(vdsFieldDefinition) );
+ *    malloc( offsetof(psoObjectDefinition, fields) +
+ *            numFields * sizeof(psoFieldDefinition) );
  *
  */
-struct vdsFieldDefinition
+struct psoFieldDefinition
 {
-   char name[VDS_MAX_FIELD_LENGTH];
-   enum vdsFieldType type;
+   char name[PSO_MAX_FIELD_LENGTH];
+   enum psoFieldType type;
    size_t length;
    size_t minLength;
    size_t maxLength;
@@ -172,25 +172,25 @@ struct vdsFieldDefinition
    size_t scale;
 };
 
-typedef struct vdsFieldDefinition vdsFieldDefinition;
+typedef struct psoFieldDefinition psoFieldDefinition;
 
 /**
  * This struct has a variable length.
  */
-struct vdsObjectDefinition
+struct psoObjectDefinition
 {
-   enum vdsObjectType type;
+   enum psoObjectType type;
 
    unsigned int numFields;
    
    /** The data definition of the key (hash map only) */
-   vdsKeyDefinition key;
+   psoKeyDefinition key;
 
    /** The data definition of the fields */
-   vdsFieldDefinition fields[1];
+   psoFieldDefinition fields[1];
 };
 
-typedef struct vdsObjectDefinition vdsObjectDefinition;
+typedef struct psoObjectDefinition psoObjectDefinition;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -203,10 +203,10 @@ typedef struct vdsObjectDefinition vdsObjectDefinition;
  * vary if you are using different locales (internally, names are stored as
  * wide characters (4 bytes)).
  */
-struct vdsFolderEntry
+struct psoFolderEntry
 {
    /** The object type */
-   vdsObjectType type;
+   psoObjectType type;
    
    /** Status (created but not committed, etc.) - not used in version 0.1 */
    int status;
@@ -215,20 +215,20 @@ struct vdsFolderEntry
    size_t nameLengthInBytes;
    
    /** The name of the object. */
-   char name[VDS_MAX_NAME_LENGTH];
+   char name[PSO_MAX_NAME_LENGTH];
 };
 
-typedef struct vdsFolderEntry vdsFolderEntry;
+typedef struct psoFolderEntry psoFolderEntry;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  * This data structure is used to retrieve the status of objects.
  */
-struct vdsObjStatus
+struct psoObjStatus
 {
    /** The object type. */
-   vdsObjectType type;
+   psoObjectType type;
 
    /** Status (created but not committed, etc.) - not used in version 0.1 */
    int status;
@@ -253,14 +253,14 @@ struct vdsObjStatus
 
 };
 
-typedef struct vdsObjStatus vdsObjStatus;
+typedef struct psoObjStatus psoObjStatus;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  * This data structure is used to retrieve the status of the virtual data space.
  */
-struct vdsInfo
+struct psoInfo
 {
    /** Total size of the virtual data space. */
    size_t totalSizeInBytes;
@@ -268,7 +268,7 @@ struct vdsInfo
    /** Total size of the allocated blocks. */
    size_t allocatedSizeInBytes;
    
-   /** Number of API objects in the vds (internal objects are not counted). */
+   /** Number of API objects in the pso (internal objects are not counted). */
    size_t numObjects;
    
    /** Total number of groups of blocks. */
@@ -301,14 +301,14 @@ struct vdsInfo
    /** Shared lib version */
    char dllVersion[10];
    
-   /** The watchdog version (of the vds creator) */
+   /** The watchdog version (of the pso creator) */
    char watchdogVersion[10];
    
    /** Timestamp of creation of VDS */
    char creationTime[30];
 };
 
-typedef struct vdsInfo vdsInfo;
+typedef struct psoInfo psoInfo;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -316,4 +316,4 @@ typedef struct vdsInfo vdsInfo;
 }
 #endif
   
-#endif /* VDS_COMMON_H */
+#endif /* PSO_COMMON_H */

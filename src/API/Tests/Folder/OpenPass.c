@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 #include "API/Folder.h"
 
@@ -26,12 +26,12 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE objHandle,  sessionHandle;
-   VDS_HANDLE objHandle2, sessionHandle2;
+   PSO_HANDLE objHandle,  sessionHandle;
+   PSO_HANDLE objHandle2, sessionHandle2;
    int errcode;
    char junk[12];
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
@@ -40,113 +40,113 @@ int main( int argc, char * argv[] )
    memset( junk, 0, 12 );
    
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsInitSession( &sessionHandle2 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/afop",
                               strlen("/afop"),
                               &def );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsFolderOpen( NULL,
+   errcode = psoFolderOpen( NULL,
                             "/afop",
                             strlen("/afop"),
                             &objHandle );
-   if ( errcode != VDS_NULL_HANDLE ) {
+   if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   objHandle = (VDS_HANDLE) junk;
-   errcode = vdsFolderOpen( objHandle,
+   objHandle = (PSO_HANDLE) junk;
+   errcode = psoFolderOpen( objHandle,
                             "/afop",
                             strlen("/afop"),
                             &objHandle );
-   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderOpen( sessionHandle,
+   errcode = psoFolderOpen( sessionHandle,
                             NULL,
                             strlen("/afop"),
                             &objHandle );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderOpen( sessionHandle,
+   errcode = psoFolderOpen( sessionHandle,
                             "/afop",
                             0,
                             &objHandle );
-   if ( errcode != VDS_INVALID_LENGTH ) {
+   if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderOpen( sessionHandle,
+   errcode = psoFolderOpen( sessionHandle,
                             "/afop",
                             strlen("/afop"),
                             NULL );
-   if ( errcode != VDS_NULL_HANDLE ) {
+   if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = vdsFolderOpen( sessionHandle,
+   errcode = psoFolderOpen( sessionHandle,
                             "/afop",
                             strlen("/afop"),
                             &objHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderOpen( sessionHandle2,
+   errcode = psoFolderOpen( sessionHandle2,
                             "/afop",
                             strlen("/afop"),
                             &objHandle2 );
-   if ( errcode != VDS_OBJECT_IS_IN_USE ) {
+   if ( errcode != PSO_OBJECT_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* Close the session and try to act on the object */
 
-   errcode = vdsFolderClose( objHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFolderClose( objHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsExitSession( sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoExitSession( sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -155,16 +155,16 @@ int main( int argc, char * argv[] )
     * Warning: sessionHandle is a pointer to deallocated memory. It is
     * a bit dangerous to use it.
     */
-   errcode = vdsFolderOpen( sessionHandle,
+   errcode = psoFolderOpen( sessionHandle,
                             "/afop",
                             strlen("/afop"),
                             &objHandle );
-   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   vdsExit();
+   psoExit();
 
    return 0;
 }

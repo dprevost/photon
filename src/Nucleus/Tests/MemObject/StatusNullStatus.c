@@ -26,8 +26,8 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdsErrors errcode;
-   vdstObjDummy *pDummy;
+   psoErrors errcode;
+   psotObjDummy *pDummy;
    psnSessionContext context;
    
    pDummy = initMemObjTest( expectedToPass, &context );
@@ -36,7 +36,7 @@ int main()
                                 PSN_IDENT_FOLDER,
                                 &pDummy->blockGroup,
                                 1 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

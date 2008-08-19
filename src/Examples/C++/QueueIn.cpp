@@ -48,7 +48,7 @@ void cleanup()
       control.Close();
       inQueue.Close();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
    }
 }
@@ -73,10 +73,10 @@ void initObjects()
    catch(...) {} 
    
    // Create the folder first, evidently
-   session.CreateObject( folderName, VDS_FOLDER );
-   session.CreateObject( controlName, VDS_HASH_MAP );
-   session.CreateObject( inQueueName, VDS_QUEUE );
-   session.CreateObject( outQueueName, VDS_QUEUE );
+   session.CreateObject( folderName, PSO_FOLDER );
+   session.CreateObject( controlName, PSO_HASH_MAP );
+   session.CreateObject( inQueueName, PSO_QUEUE );
+   session.CreateObject( outQueueName, PSO_QUEUE );
 
    control.Open( controlName );
    // Initialize the control object
@@ -168,7 +168,7 @@ int main( int argc, char *argv[] )
       process.Init( argv[2] );
       session.Init();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
@@ -178,7 +178,7 @@ int main( int argc, char *argv[] )
       initObjects();
       inQueue.Open( inQueueName );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       cleanup();
       return 1;
@@ -236,7 +236,7 @@ int main( int argc, char *argv[] )
       }
       session.Commit();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       cleanup();
       return 1;

@@ -21,9 +21,9 @@
 // Some globals to make our life simpler
 // Note: the destructor of these objects will cleanup/close so no need
 // for explicit calls to terminate our access.
-vdsProcess process;
-vdsSession session1, session2;
-vdsHashMap map1( session1 ), map2( session2 );
+psoProcess process;
+psoSession session1, session2;
+psoHashMap map1( session1 ), map2( session2 );
 string mapName = "My Hash Map";
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -39,15 +39,15 @@ int createMap()
       session1.DestroyObject( mapName );
       session1.Commit();
    }
-   catch ( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NO_SUCH_OBJECT ) {
+   catch ( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NO_SUCH_OBJECT ) {
          cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
          return 1;
       }
    }
    
    try { 
-      session1.CreateObject( mapName, VDS_HASH_MAP );
+      session1.CreateObject( mapName, PSO_HASH_MAP );
       session1.Commit();
       map1.Open( mapName );
       /*
@@ -62,7 +62,7 @@ int createMap()
          rc = readData( countryCode, description );
       }
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
@@ -77,7 +77,7 @@ int main( int argc, char *argv[] )
    int rc;
    char description[80];
    size_t length;
-   vdsObjStatus status;
+   psoObjStatus status;
    
    if ( argc < 3 ) {
       cerr << "Usage: " << argv[0] << " iso_3166_data_file watchdog_address" << endl;
@@ -93,7 +93,7 @@ int main( int argc, char *argv[] )
       session1.Init();
       session2.Init();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
@@ -104,7 +104,7 @@ int main( int argc, char *argv[] )
    cout << "Map created" << endl;
    
    try { map2.Open( mapName ); }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
@@ -112,10 +112,10 @@ int main( int argc, char *argv[] )
    // The data is inserted but not committed yet - failure is expected
    rc = 0;
    try { map2.Get("FM", 2, description, 80, &length ); }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       rc = exc.ErrorCode();
       cerr << "Code = " << exc.ErrorCode() << endl;
-      if ( rc != VDS_ITEM_IS_IN_USE ) {
+      if ( rc != PSO_ITEM_IS_IN_USE ) {
          cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
          return 1;
       }
@@ -133,7 +133,7 @@ int main( int argc, char *argv[] )
       map2.Get( "FM", 2, description, 80, &length );
       cout << "Country code: FM, country: " << description << endl;
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }

@@ -24,16 +24,16 @@ using namespace std;
 
 int main()
 {
-   vdsProcess process;
-   vdsSession session;
-   vdsInfo info;
+   psoProcess process;
+   psoSession session;
+   psoInfo info;
    string msg;
    
    try {
       process.Init( "10701" );
       session.Init();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Init VDSF failed, error = " << exc.Message( msg ) << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -42,7 +42,7 @@ int main()
    try {
       session.GetInfo( &info );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << exc.Message( msg ) << endl; 
       return 1;
    }

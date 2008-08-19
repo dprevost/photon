@@ -15,12 +15,12 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDS_QUEUE_H
-#define VDS_QUEUE_H
+#ifndef PSO_QUEUE_H
+#define PSO_QUEUE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include <photon/vdsCommon.h>
+#include <photon/psoCommon.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,7 +33,7 @@ extern "C" {
  * This file provides the API needed to access a VDSF FIFO queue.
  */
 /**
- * \defgroup vdsQueue_c API functions for vdsf FIFO queues.
+ * \defgroup psoQueue_c API functions for psof FIFO queues.
  *
  * A reminder: FIFO, First In First Out. Data items are placed at the end of
  * the queue and retrieved from the beginning of the queue.
@@ -50,13 +50,13 @@ extern "C" {
  *
  * \warning Closing an object does not automatically commit or rollback 
  * data items that were inserted or removed. You still must use either 
- * ::vdsCommit or ::vdsRollback to end the current unit of work.
+ * ::psoCommit or ::psoRollback to end the current unit of work.
  *
- * \param[in] objectHandle The handle to the queue (see ::vdsQueueOpen).
- * \return 0 on success or a ::vdsErrors on error.
+ * \param[in] objectHandle The handle to the queue (see ::psoQueueOpen).
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsQueueClose( VDS_HANDLE objectHandle );
+int psoQueueClose( PSO_HANDLE objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -67,16 +67,16 @@ int vdsQueueClose( VDS_HANDLE objectHandle );
  * malloc()). You must free it (with free()) when you no longer need the
  * definition.
  *
- * \param[in]   objectHandle The handle to the queue (see ::vdsQueueOpen).
+ * \param[in]   objectHandle The handle to the queue (see ::psoQueueOpen).
  * \param[out]  definition The buffer allocated by the API to hold the content 
  *              of the object definition. Freeing the memory (with free())
  *              is the responsability of the caller.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsQueueDefinition( VDS_HANDLE             objectHandle, 
-                        vdsObjectDefinition ** definition );
+int psoQueueDefinition( PSO_HANDLE             objectHandle, 
+                        psoObjectDefinition ** definition );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -88,17 +88,17 @@ int vdsQueueDefinition( VDS_HANDLE             objectHandle,
  * will not be seen by the iterator. Likewise, destroyed data items (even if
  * not yet committed) are invisible.
  *
- * \param[in]   objectHandle The handle to the queue (see ::vdsQueueOpen).
+ * \param[in]   objectHandle The handle to the queue (see ::psoQueueOpen).
  * \param[out]  buffer The buffer provided by the user to hold the content of
  *              the first element. Memory allocation for this buffer is the
  *              responsability of the caller.
  * \param[in]   bufferLength The length of \em buffer (in bytes).
  * \param[out]  returnedLength The actual number of bytes in the data item.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsQueueGetFirst( VDS_HANDLE   objectHandle,
+int psoQueueGetFirst( PSO_HANDLE   objectHandle,
                       void       * buffer,
                       size_t       bufferLength,
                       size_t     * returnedLength );
@@ -113,22 +113,22 @@ int vdsQueueGetFirst( VDS_HANDLE   objectHandle,
  * will not be seen by the iterator. Likewise, destroyed data items (even if
  * not yet committed) are invisible.
  *
- * Evidently, you must call ::vdsQueueGetFirst to initialize the iterator. 
- * Not so evident - calling ::vdsQueuePop will reset the iteration to the
+ * Evidently, you must call ::psoQueueGetFirst to initialize the iterator. 
+ * Not so evident - calling ::psoQueuePop will reset the iteration to the
  * last element (they use the same internal storage). If this cause a problem,
  * please let us know.
  *
- * \param[in]   objectHandle The handle to the queue (see ::vdsQueueOpen).
+ * \param[in]   objectHandle The handle to the queue (see ::psoQueueOpen).
  * \param[out]  buffer The buffer provided by the user to hold the content of
  *              the next element. Memory allocation for this buffer is the
  *              responsability of the caller.
  * \param[in]   bufferLength The length of \em buffer (in bytes).
  * \param[out]  returnedLength The actual number of bytes in the data item.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsQueueGetNext( VDS_HANDLE   objectHandle,
+int psoQueueGetNext( PSO_HANDLE   objectHandle,
                      void       * buffer,
                      size_t       bufferLength,
                      size_t     * returnedLength );
@@ -136,24 +136,24 @@ int vdsQueueGetNext( VDS_HANDLE   objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Open an existing FIFO queue (see ::vdsCreateObject to create a new queue).
+ * Open an existing FIFO queue (see ::psoCreateObject to create a new queue).
  *
  * \param[in]  sessionHandle The handle to the current session.
  * \param[in]  queueName The fully qualified name of the queue. 
  * \param[in]  nameLengthInBytes The length of \em queueName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the vdsf engine).
+ *             the psof engine).
  * \param[out] objectHandle The handle to the queue, allowing us access to
  *             the queue in shared memory. On error, this handle will be set
  *             to zero (NULL) unless the objectHandle pointer itself is NULL.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsQueueOpen(  VDS_HANDLE   sessionHandle,
+int psoQueueOpen(  PSO_HANDLE   sessionHandle,
                    const char * queueName,
                    size_t       nameLengthInBytes,
-                   VDS_HANDLE * objectHandle );
+                   PSO_HANDLE * objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -165,19 +165,19 @@ int vdsQueueOpen(  VDS_HANDLE   sessionHandle,
  * will not be seen by this function. Likewise, destroyed data items (even if
  * not yet committed) are invisible.
  *
- * The removals only become permanent after a call to ::vdsCommit.
+ * The removals only become permanent after a call to ::psoCommit.
  *
- * \param[in]   objectHandle The handle to the queue (see ::vdsQueueOpen).
+ * \param[in]   objectHandle The handle to the queue (see ::psoQueueOpen).
  * \param[out]  buffer The buffer provided by the user to hold the content of
  *              the data item. Memory allocation for this buffer is the
  *              responsability of the caller.
  * \param[in]   bufferLength The length of \em buffer (in bytes).
  * \param[out]  returnedLength The actual number of bytes in the data item.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsQueuePop( VDS_HANDLE   objectHandle,
+int psoQueuePop( PSO_HANDLE   objectHandle,
                  void       * buffer,
                  size_t       bufferLength,
                  size_t     * returnedLength );
@@ -187,16 +187,16 @@ int vdsQueuePop( VDS_HANDLE   objectHandle,
 /**
  * Insert a data element at the end of the FIFO queue.
  *
- * The additions only become permanent after a call to ::vdsCommit.
+ * The additions only become permanent after a call to ::psoCommit.
  *
- * \param[in]  objectHandle The handle to the queue (see ::vdsQueueOpen).
+ * \param[in]  objectHandle The handle to the queue (see ::psoQueueOpen).
  * \param[in]  pItem  The data item to be inserted.
  * \param[in]  length The length of \em pItem (in bytes).
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsQueuePush( VDS_HANDLE   objectHandle, 
+int psoQueuePush( PSO_HANDLE   objectHandle, 
                   const void * pItem, 
                   size_t       length );
 
@@ -205,17 +205,17 @@ int vdsQueuePush( VDS_HANDLE   objectHandle,
 /**
  * Insert a data element at the end of the FIFO queue.
  *
- * The additions become permanent immediately, not after a call to ::vdsCommit.
+ * The additions become permanent immediately, not after a call to ::psoCommit.
  * (in other words, you cannot easily undo these insertions). 
  *
- * \param[in]  objectHandle The handle to the queue (see ::vdsQueueOpen).
+ * \param[in]  objectHandle The handle to the queue (see ::psoQueueOpen).
  * \param[in]  pItem  The data item to be inserted.
  * \param[in]  length The length of \em pItem (in bytes).
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsQueuePushNow( VDS_HANDLE   objectHandle, 
+int psoQueuePushNow( PSO_HANDLE   objectHandle, 
                      const void * pItem, 
                      size_t       length );
 
@@ -224,14 +224,14 @@ int vdsQueuePushNow( VDS_HANDLE   objectHandle,
 /**
  * Return the status of the queue.
  *
- * \param[in]  objectHandle The handle to the queue (see ::vdsQueueOpen).
+ * \param[in]  objectHandle The handle to the queue (see ::psoQueueOpen).
  * \param[out] pStatus      A pointer to the status structure.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsQueueStatus( VDS_HANDLE     objectHandle,
-                    vdsObjStatus * pStatus );
+int psoQueueStatus( PSO_HANDLE     objectHandle,
+                    psoObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -243,7 +243,7 @@ int vdsQueueStatus( VDS_HANDLE     objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDS_QUEUE_H */
+#endif /* PSO_QUEUE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

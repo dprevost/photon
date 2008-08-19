@@ -13,178 +13,178 @@ CLEANFILES = *~ photon/*~
 HEADER_FILES =                                        \
         $(top_srcdir)/src/include/photon/vds.h        \
         $(top_srcdir)/src/include/photon/vdsCommon.h  \
-        $(top_srcdir)/src/include/photon/vdsFastMap.h \
-        $(top_srcdir)/src/include/photon/vdsFolder.h  \
-        $(top_srcdir)/src/include/photon/vdsHashMap.h \
-        $(top_srcdir)/src/include/photon/vdsLifo.h    \
-        $(top_srcdir)/src/include/photon/vdsQueue.h   \
-        $(top_srcdir)/src/include/photon/vdsProcess.h \
-        $(top_srcdir)/src/include/photon/vdsSession.h 
+        $(top_srcdir)/src/include/photon/psoFastMap.h \
+        $(top_srcdir)/src/include/photon/psoFolder.h  \
+        $(top_srcdir)/src/include/photon/psoHashMap.h \
+        $(top_srcdir)/src/include/photon/psoLifo.h    \
+        $(top_srcdir)/src/include/photon/psoQueue.h   \
+        $(top_srcdir)/src/include/photon/psoProcess.h \
+        $(top_srcdir)/src/include/photon/psoSession.h 
 
-VDS_C_FILES =                       \
+PSO_C_FILES =                       \
         man3/vdsCommit.3            \
         man3/vdsCommon.h.3          \
         man3/vdsCreateObject.3      \
         man3/vdsDestroyObject.3     \
-        man3/vdsErrorMsg.3          \
-        man3/vdsErrors.3            \
-        man3/vdsErrors.h.3          \
+        man3/psoErrorMsg.3          \
+        man3/psoErrors.3            \
+        man3/psoErrors.h.3          \
         man3/vdsExit.3              \
         man3/vdsExitSession.3       \
-        man3/vdsFastMap_c.3         \
-        man3/vdsFastMapClose.3      \
-        man3/vdsFastMapDefinition.3 \
-        man3/vdsFastMapDelete.3     \
-        man3/vdsFastMapEdit.3       \
-        man3/vdsFastMapGet.3        \
-        man3/vdsFastMapGetFirst.3   \
-        man3/vdsFastMapGetNext.3    \
-        man3/vdsFastMap.h.3         \
-        man3/vdsFastMapInsert.3     \
-        man3/vdsFastMapOpen.3       \
-        man3/vdsFastMapReplace.3    \
-        man3/vdsFastMapStatus.3     \
-        man3/vdsFolder_c.3          \
-        man3/vdsFolderClose.3       \
-        man3/vdsFolderEntry.3       \
-        man3/vdsFolderGetFirst.3    \
-        man3/vdsFolderGetNext.3     \
-        man3/vdsFolder.h.3          \
-        man3/vdsFolderOpen.3        \
-        man3/vdsFolderStatus.3      \
+        man3/psoFastMap_c.3         \
+        man3/psoFastMapClose.3      \
+        man3/psoFastMapDefinition.3 \
+        man3/psoFastMapDelete.3     \
+        man3/psoFastMapEdit.3       \
+        man3/psoFastMapGet.3        \
+        man3/psoFastMapGetFirst.3   \
+        man3/psoFastMapGetNext.3    \
+        man3/psoFastMap.h.3         \
+        man3/psoFastMapInsert.3     \
+        man3/psoFastMapOpen.3       \
+        man3/psoFastMapReplace.3    \
+        man3/psoFastMapStatus.3     \
+        man3/psoFolder_c.3          \
+        man3/psoFolderClose.3       \
+        man3/psoFolderEntry.3       \
+        man3/psoFolderGetFirst.3    \
+        man3/psoFolderGetNext.3     \
+        man3/psoFolder.h.3          \
+        man3/psoFolderOpen.3        \
+        man3/psoFolderStatus.3      \
         man3/vdsGetInfo.3           \
         man3/vdsGetStatus.3         \
         man3/vds.h.3                \
-        man3/vdsHashMap_c.3         \
-        man3/vdsHashMapClose.3      \
-        man3/vdsHashMapDelete.3     \
-        man3/vdsHashMapGet.3        \
-        man3/vdsHashMapGetFirst.3   \
-        man3/vdsHashMapGetNext.3    \
-        man3/vdsHashMap.h.3         \
-        man3/vdsHashMapInsert.3     \
-        man3/vdsHashMapOpen.3       \
-        man3/vdsHashMapReplace.3    \
-        man3/vdsHashMapStatus.3     \
-        man3/vdsInfo.3              \
+        man3/psoHashMap_c.3         \
+        man3/psoHashMapClose.3      \
+        man3/psoHashMapDelete.3     \
+        man3/psoHashMapGet.3        \
+        man3/psoHashMapGetFirst.3   \
+        man3/psoHashMapGetNext.3    \
+        man3/psoHashMap.h.3         \
+        man3/psoHashMapInsert.3     \
+        man3/psoHashMapOpen.3       \
+        man3/psoHashMapReplace.3    \
+        man3/psoHashMapStatus.3     \
+        man3/psoInfo.3              \
         man3/vdsInit.3              \
         man3/vdsInitSession.3       \
         man3/vdsIteratorType.3      \
         man3/vdsLastError.3         \
-        man3/vdsLifo_c.3            \
-        man3/vdsLifoClose.3         \
-        man3/vdsLifoDefinition.3    \
-        man3/vdsLifoGetFirst.3      \
-        man3/vdsLifoGetNext.3       \
-        man3/vdsLifo.h.3            \
-        man3/vdsLifoOpen.3          \
-        man3/vdsLifoPop.3           \
-        man3/vdsLifoPush.3          \
-        man3/vdsLifoStatus.3        \
-        man3/vdsObjectType.3        \
-        man3/vdsObjStatus.3         \
-        man3/vdsProcess_c.3         \
-        man3/vdsProcess.h.3         \
-        man3/vdsQueue_c.3           \
-        man3/vdsQueueClose.3        \
-        man3/vdsQueueGetFirst.3     \
-        man3/vdsQueueGetNext.3      \
-        man3/vdsQueue.h.3           \
-        man3/vdsQueueOpen.3         \
-        man3/vdsQueuePop.3          \
-        man3/vdsQueuePush.3         \
-        man3/vdsQueueStatus.3       \
+        man3/psoLifo_c.3            \
+        man3/psoLifoClose.3         \
+        man3/psoLifoDefinition.3    \
+        man3/psoLifoGetFirst.3      \
+        man3/psoLifoGetNext.3       \
+        man3/psoLifo.h.3            \
+        man3/psoLifoOpen.3          \
+        man3/psoLifoPop.3           \
+        man3/psoLifoPush.3          \
+        man3/psoLifoStatus.3        \
+        man3/psoObjectType.3        \
+        man3/psoObjStatus.3         \
+        man3/psoProcess_c.3         \
+        man3/psoProcess.h.3         \
+        man3/psoQueue_c.3           \
+        man3/psoQueueClose.3        \
+        man3/psoQueueGetFirst.3     \
+        man3/psoQueueGetNext.3      \
+        man3/psoQueue.h.3           \
+        man3/psoQueueOpen.3         \
+        man3/psoQueuePop.3          \
+        man3/psoQueuePush.3         \
+        man3/psoQueueStatus.3       \
         man3/vdsRollback.3          \
-        man3/vdsSession_c.3         \
-        man3/vdsSession.h.3         
+        man3/psoSession_c.3         \
+        man3/psoSession.h.3         
 
 man_MANS =                  \
-        $(VDS_C_FILES)      \
-        man3/vdsException.3 \
-        man3/vdsFolder.3    \
-        man3/vdsHashMap.3   \
-        man3/vdsProcess.3   \
-        man3/vdsQueue.3     \
-        man3/vdsSession.3   
+        $(PSO_C_FILES)      \
+        man3/psoException.3 \
+        man3/psoFolder.3    \
+        man3/psoHashMap.3   \
+        man3/psoProcess.3   \
+        man3/psoQueue.3     \
+        man3/psoSession.3   
 
 EXTRA_DIST =                  \
         doxyfile.vds_c        \
-        $(VDS_C_FILES)        \
-        Doxyfile.vdsException \
-        Doxyfile.vdsFolder    \
-        Doxyfile.vdsHashMap   \
-        Doxyfile.vdsProcess   \
-        Doxyfile.vdsQueue     \
-        Doxyfile.vdsSession   \
-        man3/vdsException.3   \
-        man3/vdsFolder.3      \
-        man3/vdsHashMap.3     \
-        man3/vdsProcess.3     \
-        man3/vdsQueue.3       \
-        man3/vdsSession.3     
+        $(PSO_C_FILES)        \
+        Doxyfile.psoException \
+        Doxyfile.psoFolder    \
+        Doxyfile.psoHashMap   \
+        Doxyfile.psoProcess   \
+        Doxyfile.psoQueue     \
+        Doxyfile.psoSession   \
+        man3/psoException.3   \
+        man3/psoFolder.3      \
+        man3/psoHashMap.3     \
+        man3/psoProcess.3     \
+        man3/psoQueue.3       \
+        man3/psoSession.3     
 
 nobase_include_HEADERS =      \
         photon/vdsCommon.h      \
-        photon/vdsErrors.h      \
-        photon/vdsFastMap.h     \
-        photon/vdsFolder.h      \
-        photon/vdsHashMap.h     \
-        photon/vdsLifo.h        \
-        photon/vdsProcess.h     \
-        photon/vdsQueue.h       \
-        photon/vdsSession.h     \
+        photon/psoErrors.h      \
+        photon/psoFastMap.h     \
+        photon/psoFolder.h      \
+        photon/psoHashMap.h     \
+        photon/psoLifo.h        \
+        photon/psoProcess.h     \
+        photon/psoQueue.h       \
+        photon/psoSession.h     \
         photon/vds.h            \
         photon/vds              \
-        photon/vdsException     \
-        photon/vdsFastMap       \
-        photon/vdsFastMapEditor \
-        photon/vdsFolder        \
-        photon/vdsHashMap       \
-        photon/vdsLifo          \
-        photon/vdsProcess       \
-        photon/vdsQueue         \
-        photon/vdsSession       
+        photon/psoException     \
+        photon/psoFastMap       \
+        photon/psoFastMapEditor \
+        photon/psoFolder        \
+        photon/psoHashMap       \
+        photon/psoLifo          \
+        photon/psoProcess       \
+        photon/psoQueue         \
+        photon/psoSession       
 
 #
 # Only rebuild the man pages if doxygen is present.
 #
 if COND_USE_DOXYGEN
 
-man3/vdsException.3: photon/vdsException
-	doxygen $(top_srcdir)/src/include/Doxyfile.vdsException
-	cp dummy/man/man3/vdsException.3 man3/vdsException.3
+man3/psoException.3: photon/psoException
+	doxygen $(top_srcdir)/src/include/Doxyfile.psoException
+	cp dummy/man/man3/psoException.3 man3/psoException.3
 	-rm -rf dummy
 
-man3/vdsFolder.3: photon/vdsFolder
-	doxygen $(top_srcdir)/src/include/Doxyfile.vdsFolder
-	cp dummy/man/man3/vdsFolder.3 man3/vdsFolder.3
+man3/psoFolder.3: photon/psoFolder
+	doxygen $(top_srcdir)/src/include/Doxyfile.psoFolder
+	cp dummy/man/man3/psoFolder.3 man3/psoFolder.3
 	-rm -rf dummy
 
-man3/vdsHashMap.3: photon/vdsHashMap
-	doxygen $(top_srcdir)/src/include/Doxyfile.vdsHashMap
-	cp dummy/man/man3/vdsHashMap.3 man3/vdsHashMap.3
+man3/psoHashMap.3: photon/psoHashMap
+	doxygen $(top_srcdir)/src/include/Doxyfile.psoHashMap
+	cp dummy/man/man3/psoHashMap.3 man3/psoHashMap.3
 	-rm -rf dummy
 
-man3/vdsProcess.3: photon/vdsProcess
-	doxygen Doxyfile.vdsProcess
-	cp dummy/man/man3/vdsProcess.3 man3/vdsProcess.3
+man3/psoProcess.3: photon/psoProcess
+	doxygen Doxyfile.psoProcess
+	cp dummy/man/man3/psoProcess.3 man3/psoProcess.3
 	-rm -rf dummy
 
-man3/vdsQueue.3: photon/vdsQueue
-	doxygen Doxyfile.vdsQueue
-	cp dummy/man/man3/vdsQueue.3 man3/vdsQueue.3
+man3/psoQueue.3: photon/psoQueue
+	doxygen Doxyfile.psoQueue
+	cp dummy/man/man3/psoQueue.3 man3/psoQueue.3
 	-rm -rf dummy
 
-man3/vdsSession.3: photon/vdsSession
-	doxygen Doxyfile.vdsSession
-	cp dummy/man/man3/vdsSession.3 man3/vdsSession.3
+man3/psoSession.3: photon/psoSession
+	doxygen Doxyfile.psoSession
+	cp dummy/man/man3/psoSession.3 man3/psoSession.3
 	-rm -rf dummy
 
 # Warning: this doxygen run creates many more files which we do
 # not want to distribute (a header file for each error code, for each
 # data field in the data structures, etc.). All these files are links
 # to the "meat" we are keeping anyway!
-$(VDS_C_FILES): $(HEADER_FILES)
+$(PSO_C_FILES): $(HEADER_FILES)
 	doxygen doxyfile.vds_c
 	cp dummy/man/man3/vds*.3 man3/
 	-rm -rf dummy

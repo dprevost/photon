@@ -27,18 +27,18 @@ bool psnTxInit( psnTx             * pTx,
                  size_t               numberOfBlocks,
                  psnSessionContext * pContext )
 {
-   vdsErrors errcode;
+   psoErrors errcode;
    
-   VDS_PRE_CONDITION( pTx      != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( numberOfBlocks  > 0 );
+   PSO_PRE_CONDITION( pTx      != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( numberOfBlocks  > 0 );
    
    errcode = psnMemObjectInit( &pTx->memObject, 
                                 PSN_IDENT_TRANSACTION,
                                 &pTx->blockGroup,
                                 numberOfBlocks );
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
       return false;
    }
 
@@ -54,10 +54,10 @@ bool psnTxInit( psnTx             * pTx,
 void psnTxFini( psnTx             * pTx, 
                  psnSessionContext * pContext )
 {
-   VDS_PRE_CONDITION( pTx      != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pTx->listOfOps.currentSize == 0 );
-   VDS_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
+   PSO_PRE_CONDITION( pTx      != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pTx->listOfOps.currentSize == 0 );
+   PSO_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
    
    /* Synch the VDS */
 #if 0
@@ -88,11 +88,11 @@ bool psnTxAddOps( psnTx             * pTx,
 {
    psnTxOps * pOps;
    
-   VDS_PRE_CONDITION( pTx      != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( parentOffset != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( childOffset  != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
+   PSO_PRE_CONDITION( pTx      != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( parentOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( childOffset  != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
 
    pOps = (psnTxOps *) psnMalloc( &pTx->memObject,
                                     sizeof(psnTxOps), 
@@ -111,8 +111,8 @@ bool psnTxAddOps( psnTx             * pTx,
    }
 
    pscSetError( &pContext->errorHandler, 
-                 g_vdsErrorHandle, 
-                 VDS_NOT_ENOUGH_VDS_MEMORY );
+                 g_psoErrorHandle, 
+                 PSO_NOT_ENOUGH_PSO_MEMORY );
 
    return false;
 }
@@ -126,13 +126,13 @@ void psnTxRemoveLastOps( psnTx             * pTx,
    psnLinkNode * pDummy = NULL;
    psnTxOps * pOps;
 
-   VDS_PRE_CONDITION( pTx != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
+   PSO_PRE_CONDITION( pTx != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
    
    ok = psnLinkedListGetLast( &pTx->listOfOps, &pDummy );
 
-   VDS_POST_CONDITION( ok );
+   PSO_POST_CONDITION( ok );
    
    pOps = (psnTxOps *)((char *)pDummy - offsetof( psnTxOps, node ));
    
@@ -159,13 +159,13 @@ void psnTxCommit( psnTx             * pTx,
    psnHashItem  * pHashItem;
    psnObjectDescriptor * pDesc;
    
-   VDS_PRE_CONDITION( pTx      != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
+   PSO_PRE_CONDITION( pTx      != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
       
    /* Synch the VDS */
 #if 0
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
 
    MemoryManager::Instance()->Sync( &pContext->errorHandler );
 
@@ -174,7 +174,7 @@ void psnTxCommit( psnTx             * pTx,
       errcode = psnLogTransaction( pContext->pLogFile, 
                                     SET_OFFSET(pTx), 
                                     &pContext->errorHandler );
-      if ( errcode != VDS_OK ) {
+      if ( errcode != PSO_OK ) {
          fprintf(stderr, "Transaction::Commit err1 \n" );
          return -1;
       }
@@ -220,14 +220,14 @@ void psnTxCommit( psnTx             * pTx,
          }
          /* We should not come here */
          else {
-            VDS_POST_CONDITION( pOps_invalid_type );
+            PSO_POST_CONDITION( pOps_invalid_type );
          }
          
          break;
 
       case PSN_TX_ADD_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
+         PSO_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
 
          GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
          GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
@@ -251,7 +251,7 @@ void psnTxCommit( psnTx             * pTx,
 
       case PSN_TX_ADD_EDIT_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
+         PSO_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
 
          GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
          GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
@@ -273,7 +273,7 @@ void psnTxCommit( psnTx             * pTx,
 
       case PSN_TX_REMOVE_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
+         PSO_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
 
          GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
          GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
@@ -338,7 +338,7 @@ void psnTxCommit( psnTx             * pTx,
          }
          /* We should not come here */
          else {
-            VDS_POST_CONDITION( pOps_invalid_type );
+            PSO_POST_CONDITION( pOps_invalid_type );
          }
          
          break;
@@ -365,7 +365,7 @@ void psnTxCommit( psnTx             * pTx,
 void psnTxRollback( psnTx             * pTx,
                      psnSessionContext * pContext )
 {
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnTxOps     * pOps = NULL;
    psnLinkNode  * pLinkNode = NULL;
    psnFolder    * parentFolder,    * pChildFolder;
@@ -378,9 +378,9 @@ void psnTxRollback( psnTx             * pTx,
    psnObjectDescriptor * pDesc;
    int pOps_invalid_type = 0;
 
-   VDS_PRE_CONDITION( pTx      != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
+   PSO_PRE_CONDITION( pTx      != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
 
 #if 0
    /* Synch the VDS */
@@ -392,7 +392,7 @@ void psnTxRollback( psnTx             * pTx,
       errcode = psnLogTransaction( pContext->pLogFile, 
                                     SET_OFFSET(pTx), 
                                     &pContext->errorHandler );
-      if ( errcode != VDS_OK ) {
+      if ( errcode != PSO_OK ) {
          fprintf(stderr, "Transaction::Rollback err1 \n" );
          return;
       }
@@ -440,14 +440,14 @@ void psnTxRollback( psnTx             * pTx,
          }
          /* We should not come here */
          else {
-            VDS_POST_CONDITION( pOps_invalid_type );
+            PSO_POST_CONDITION( pOps_invalid_type );
          }
          
          break;
             
       case PSN_TX_ADD_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
+         PSO_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
 
          GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
          GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
@@ -497,7 +497,7 @@ void psnTxRollback( psnTx             * pTx,
 
       case PSN_TX_ADD_EDIT_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
+         PSO_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
 
          GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
          GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
@@ -519,7 +519,7 @@ void psnTxRollback( psnTx             * pTx,
 
       case PSN_TX_REMOVE_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
+         PSO_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
 
          GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
          GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
@@ -563,7 +563,7 @@ void psnTxRollback( psnTx             * pTx,
          }
          /* We should not come here */
          else {
-            VDS_POST_CONDITION( pOps_invalid_type );
+            PSO_POST_CONDITION( pOps_invalid_type );
          }
          
          break;

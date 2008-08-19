@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 #include "API/HashMap.h"
 
@@ -26,202 +26,202 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE objHandle,  sessionHandle;
-   VDS_HANDLE objHandle2, sessionHandle2;
+   PSO_HANDLE objHandle,  sessionHandle;
+   PSO_HANDLE objHandle2, sessionHandle2;
    int errcode;
    const char * key  = "My Key";
    const char * data = "My Data";
    char buffer[20], keyBuff[20];
    size_t length, keyLength;
-   vdsObjectDefinition mapDef = { 
-      VDS_HASH_MAP, 
+   psoObjectDefinition mapDef = { 
+      PSO_HASH_MAP, 
       1, 
-      { VDS_KEY_VAR_STRING, 0, 4, 10 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 4, 10 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
-   vdsObjectDefinition folderDef = { 
-      VDS_FOLDER, 
+   psoObjectDefinition folderDef = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsInitSession( &sessionHandle2 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/ahip",
                               strlen("/ahip"),
                               &folderDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/ahip/test",
                               strlen("/ahip/test"),
                               &mapDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCommit( sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsHashMapOpen( sessionHandle,
+   errcode = psoHashMapOpen( sessionHandle,
                              "/ahip/test",
                              strlen("/ahip/test"),
                              &objHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsHashMapOpen( sessionHandle2,
+   errcode = psoHashMapOpen( sessionHandle2,
                              "/ahip/test",
                              strlen("/ahip/test"),
                              &objHandle2 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsHashMapInsert( NULL,
+   errcode = psoHashMapInsert( NULL,
                                key,
                                6,
                                data,
                                7 );
-   if ( errcode != VDS_NULL_HANDLE ) {
+   if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapInsert( sessionHandle,
+   errcode = psoHashMapInsert( sessionHandle,
                                key,
                                6,
                                data,
                                7 );
-   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapInsert( objHandle,
+   errcode = psoHashMapInsert( objHandle,
                                NULL,
                                6,
                                data,
                                7 );
-   if ( errcode != VDS_NULL_POINTER ) {
+   if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapInsert( objHandle,
+   errcode = psoHashMapInsert( objHandle,
                                key,
                                0,
                                data,
                                7 );
-   if ( errcode != VDS_INVALID_LENGTH ) {
+   if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapInsert( objHandle,
+   errcode = psoHashMapInsert( objHandle,
                                key,
                                6,
                                NULL,
                                7 );
-   if ( errcode != VDS_NULL_POINTER ) {
+   if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapInsert( objHandle,
+   errcode = psoHashMapInsert( objHandle,
                                key,
                                6,
                                data,
                                0 );
-   if ( errcode != VDS_INVALID_LENGTH ) {
+   if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* 1 under the data minimum length */
-   errcode = vdsHashMapInsert( objHandle,
+   errcode = psoHashMapInsert( objHandle,
                                key,
                                6,
                                data,
                                3 );
-   if ( errcode != VDS_INVALID_LENGTH ) {
+   if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* 1 over the data maximum length */
-   errcode = vdsHashMapInsert( objHandle,
+   errcode = psoHashMapInsert( objHandle,
                                key,
                                6,
                                "12345678901", 
                                11 );
-   if ( errcode != VDS_INVALID_LENGTH ) {
+   if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    // 1 under the key minimum length
-   errcode = vdsHashMapInsert( objHandle,
+   errcode = psoHashMapInsert( objHandle,
                                key,
                                3,
                                data,
                                7 );
-   if ( errcode != VDS_INVALID_LENGTH ) {
+   if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* 1 over the key maximum length */
-   errcode = vdsHashMapInsert( objHandle,
+   errcode = psoHashMapInsert( objHandle,
                                "12345678901",
                                11,
                                data, 
                                7 );
-   if ( errcode != VDS_INVALID_LENGTH ) {
+   if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = vdsHashMapInsert( objHandle,
+   errcode = psoHashMapInsert( objHandle,
                                key,
                                6,
                                data,
                                7 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -232,59 +232,59 @@ int main( int argc, char * argv[] )
     *  - can get access to the item from first session.
     *  - cannot modify it from first session.
     */
-   errcode = vdsHashMapGet( objHandle2, 
+   errcode = psoHashMapGet( objHandle2, 
                             key, 
                             6,
                             buffer, 20, &length );
-   if ( errcode != VDS_ITEM_IS_IN_USE ) {
+   if ( errcode != PSO_ITEM_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsHashMapGet( objHandle, 
+   errcode = psoHashMapGet( objHandle, 
                             key, 
                             6,
                             buffer, 20, &length );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsHashMapDelete( objHandle, key, 6 );
-   if ( errcode != VDS_ITEM_IS_IN_USE ) {
+   errcode = psoHashMapDelete( objHandle, key, 6 );
+   if ( errcode != PSO_ITEM_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsHashMapGetFirst( objHandle, keyBuff, 20, buffer, 20, 
+   errcode = psoHashMapGetFirst( objHandle, keyBuff, 20, buffer, 20, 
                                  &keyLength, &length );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsHashMapGetFirst( objHandle2, keyBuff, 20, buffer, 20, 
+   errcode = psoHashMapGetFirst( objHandle2, keyBuff, 20, buffer, 20, 
                                  &keyLength, &length );
-   if ( errcode != VDS_IS_EMPTY ) {
+   if ( errcode != PSO_IS_EMPTY ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Close the session and try to act on the object */
 
-   errcode = vdsExitSession( sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoExitSession( sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapInsert( objHandle,
+   errcode = psoHashMapInsert( objHandle,
                                key,
                                6,
                                data,
                                7 );
-   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+   if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   vdsExit();
+   psoExit();
 
    return 0;
 }

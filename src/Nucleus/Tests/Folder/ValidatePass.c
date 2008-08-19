@@ -31,7 +31,7 @@ const bool expectedToPass = true;
 int main()
 {
    int errcode, i;
-   char name [VDS_MAX_NAME_LENGTH+10];
+   char name [PSO_MAX_NAME_LENGTH+10];
    size_t partial;
    bool last;
    
@@ -63,16 +63,16 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   for ( i = 0; i < VDS_MAX_NAME_LENGTH+9; ++i ) {
+   for ( i = 0; i < PSO_MAX_NAME_LENGTH+9; ++i ) {
       name[i] = 't';
    }
-   name[VDS_MAX_NAME_LENGTH+9] = 0;
+   name[PSO_MAX_NAME_LENGTH+9] = 0;
 
    errcode = psnValidateString( name,
-                                 VDS_MAX_NAME_LENGTH+9, /* not 10 ! */
+                                 PSO_MAX_NAME_LENGTH+9, /* not 10 ! */
                                  &partial,
                                  &last );
-   if ( errcode != VDS_OBJECT_NAME_TOO_LONG ) {
+   if ( errcode != PSO_OBJECT_NAME_TOO_LONG ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -96,7 +96,7 @@ int main()
                                  10,
                                  &partial,
                                  &last );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -105,7 +105,7 @@ int main()
                                  10,
                                  &partial,
                                  &last );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
@@ -115,7 +115,7 @@ int main()
                                  10,
                                  &partial,
                                  &last );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
@@ -124,7 +124,7 @@ int main()
                                  10,
                                  &partial,
                                  &last );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

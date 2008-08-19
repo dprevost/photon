@@ -111,7 +111,7 @@ end if
 
 tmpDir = objShell.Environment.item("TMP")
 tmpDir = objShell.ExpandEnvironmentStrings(tmpDir)
-tmpDir = tmpDir + "\vdsf_hash"
+tmpDir = tmpDir + "\photon_hash"
 
 if (fso.FolderExists(tmpDir)) Then
    fso.DeleteFolder(tmpDir)

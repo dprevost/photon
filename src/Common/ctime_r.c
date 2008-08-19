@@ -3,8 +3,9 @@
  * timezone package of Arthur David Olson and contributors.
  * (ftp://elsie.nci.nih.gov/pub/)
  * 
- * The code in this file was modified for inclusion into the vds framework by
- * D. Prevost, May 2004. The modified code is still in the public domain.
+ * The code in this file was modified for inclusion into Photon by
+ * D. Prevost, May 2004. Evidently, the modified code is still in the 
+ * public domain.
  *
  */
 

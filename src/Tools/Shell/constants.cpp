@@ -85,11 +85,11 @@ vdsConstants::Bytes( long numBytes )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 const string &
-vdsConstants::Type( vdsObjectType type )
+vdsConstants::Type( psoObjectType type )
 {
    int i = type;
    
-   if ( type < VDS_FOLDER || type >= VDS_LAST_OBJECT_TYPE ) i = 0;
+   if ( type < PSO_FOLDER || type >= PSO_LAST_OBJECT_TYPE ) i = 0;
    
    return types[i];
 }

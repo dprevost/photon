@@ -19,7 +19,7 @@
 # must provide the name of the directory where the sources are located
 # as the second argument to the script. Example:
 #
-# ./LockConcurrency.sh 100 /home/dprevost/vdsf0.1/src
+# ./LockConcurrency.sh 100 /home/dprevost/photon.git/src
 #
 # A second argument can be provided to indicate the build directory
 # if using the VPATH functionality of make.
@@ -56,8 +56,8 @@ if test -z "$srcdir"; then
   verbose=1
 fi
 
-rm -rf $TMPDIR/vdsf
-mkdir $TMPDIR/vdsf
+rm -rf $TMPDIR/pso
+mkdir $TMPDIR/pso
 if [ "$?" != 0 ] ; then
    exit 1
 fi

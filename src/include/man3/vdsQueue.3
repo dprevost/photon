@@ -1,29 +1,29 @@
-.TH "vdsQueue" 3 "7 Jul 2008" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
+.TH "psoQueue" 3 "7 Jul 2008" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-vdsQueue \- 
+psoQueue \- 
 .SH SYNOPSIS
 .br
 .PP
 .SH "Detailed Description"
 .PP 
-Definition at line 35 of file vdsQueue.
+Definition at line 35 of file psoQueue.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBvdsQueue\fP (vdsSession &session)"
+.RI "\fBpsoQueue\fP (psoSession &session)"
 .br
 .ti -1c
-.RI "virtual \fB~vdsQueue\fP ()"
+.RI "virtual \fB~psoQueue\fP ()"
 .br
 .ti -1c
 .RI "void \fBClose\fP ()"
 .br
 .RI "\fIClose a FIFO queue. \fP"
 .ti -1c
-.RI "void \fBDefinition\fP (vdsObjectDefinition **definition)"
+.RI "void \fBDefinition\fP (psoObjectDefinition **definition)"
 .br
 .RI "\fIRetrieve the data definition of the queue. \fP"
 .ti -1c
@@ -55,7 +55,7 @@ Definition at line 35 of file vdsQueue.
 .br
 .RI "\fIInsert a data element at the end of the FIFO queue. \fP"
 .ti -1c
-.RI "void \fBStatus\fP (vdsObjStatus *pStatus)"
+.RI "void \fBStatus\fP (psoObjStatus *pStatus)"
 .br
 .RI "\fIReturn the status of the queue. \fP"
 .in -1c
@@ -63,23 +63,23 @@ Definition at line 35 of file vdsQueue.
 
 .in +1c
 .ti -1c
-.RI "VDS_HANDLE \fBm_objectHandle\fP"
+.RI "PSO_HANDLE \fBm_objectHandle\fP"
 .br
 .RI "\fIPointer to the psaQueue struct. \fP"
 .ti -1c
-.RI "VDS_HANDLE & \fBm_sessionHandle\fP"
+.RI "PSO_HANDLE & \fBm_sessionHandle\fP"
 .br
 .RI "\fIReference to the psaSession struct (we belong to). \fP"
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "vdsQueue::vdsQueue (vdsSession & session)"
+.SS "psoQueue::psoQueue (psoSession & session)"
 .PP
-.SS "virtual vdsQueue::~vdsQueue ()\fC [virtual]\fP"
+.SS "virtual psoQueue::~psoQueue ()\fC [virtual]\fP"
 .PP
 .SH "Member Function Documentation"
 .PP 
-.SS "void vdsQueue::Close ()"
+.SS "void psoQueue::Close ()"
 .PP
 Close a FIFO queue. 
 .PP
@@ -87,16 +87,16 @@ This function terminates the current access to the queue in shared memory (the q
 .PP
 \fBWarning:\fP
 .RS 4
-Closing an object does not automatically commit or rollback data items that were inserted or removed. You still must use either vdsSession::Commit or vdsSession::Rollback to end the current unit of work.
+Closing an object does not automatically commit or rollback data items that were inserted or removed. You still must use either psoSession::Commit or psoSession::Rollback to end the current unit of work.
 .RE
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsQueue::Definition (vdsObjectDefinition ** definition)"
+.SS "void psoQueue::Definition (psoObjectDefinition ** definition)"
 .PP
 Retrieve the data definition of the queue. 
 .PP
@@ -112,11 +112,11 @@ This function allocates a buffer to hold the definition (using malloc()). You mu
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "int vdsQueue::GetFirst (void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "int psoQueue::GetFirst (void * buffer, size_t bufferLength, size_t * returnedLength)"
 .PP
 Iterate through the queue - no data items are removed from the queue by this function. 
 .PP
@@ -138,11 +138,11 @@ Data items which were added by another session and are not yet committed will no
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "int vdsQueue::GetNext (void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "int psoQueue::GetNext (void * buffer, size_t bufferLength, size_t * returnedLength)"
 .PP
 Iterate through the queue - no data items are removed from the queue by this function. 
 .PP
@@ -166,11 +166,11 @@ Evidently, you must call GetFirst to initialize the iterator. Not so evident - c
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsQueue::Open (const char * queueName, size_t nameLengthInBytes)"
+.SS "void psoQueue::Open (const char * queueName, size_t nameLengthInBytes)"
 .PP
 Open an existing FIFO queue (see Session::CreateObject to create a new queue). 
 .PP
@@ -183,11 +183,11 @@ Open an existing FIFO queue (see Session::CreateObject to create a new queue).
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsQueue::Open (const std::string & queueName)"
+.SS "void psoQueue::Open (const std::string & queueName)"
 .PP
 Open an existing FIFO queue (see Session::CreateObject to create a new queue). 
 .PP
@@ -198,17 +198,17 @@ Open an existing FIFO queue (see Session::CreateObject to create a new queue).
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "int vdsQueue::Pop (void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "int psoQueue::Pop (void * buffer, size_t bufferLength, size_t * returnedLength)"
 .PP
 Remove the first item from the beginning of a FIFO queue and return it to the caller. 
 .PP
 Data items which were added by another session and are not yet committed will not be seen by this function. Likewise, destroyed data items (even if not yet committed) are invisible.
 .PP
-The removals only become permanent after a call to vdsSession::Commit.
+The removals only become permanent after a call to psoSession::Commit.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -226,15 +226,15 @@ The removals only become permanent after a call to vdsSession::Commit.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsQueue::Push (const void * pItem, size_t length)"
+.SS "void psoQueue::Push (const void * pItem, size_t length)"
 .PP
 Insert a data element at the end of the FIFO queue. 
 .PP
-The additions only become permanent after a call to vdsSession::Commit.
+The additions only become permanent after a call to psoSession::Commit.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -245,15 +245,15 @@ The additions only become permanent after a call to vdsSession::Commit.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsQueue::PushNow (const void * pItem, size_t length)"
+.SS "void psoQueue::PushNow (const void * pItem, size_t length)"
 .PP
 Insert a data element at the end of the FIFO queue. 
 .PP
-The additions become permanent immediately, not after a call to vdsSession::Commit (in other words, you cannot easily undo these insertions).
+The additions become permanent immediately, not after a call to psoSession::Commit (in other words, you cannot easily undo these insertions).
 .PP
 \fBParameters:\fP
 .RS 4
@@ -264,11 +264,11 @@ The additions become permanent immediately, not after a call to vdsSession::Comm
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsQueue::Status (vdsObjStatus * pStatus)"
+.SS "void psoQueue::Status (psoObjStatus * pStatus)"
 .PP
 Return the status of the queue. 
 .PP
@@ -279,22 +279,22 @@ Return the status of the queue.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
 .SH "Member Data Documentation"
 .PP 
-.SS "VDS_HANDLE \fBvdsQueue::m_objectHandle\fP\fC [private]\fP"
+.SS "PSO_HANDLE \fBpsoQueue::m_objectHandle\fP\fC [private]\fP"
 .PP
 Pointer to the psaQueue struct. 
 .PP
-Definition at line 211 of file vdsQueue.
-.SS "VDS_HANDLE& \fBvdsQueue::m_sessionHandle\fP\fC [private]\fP"
+Definition at line 211 of file psoQueue.
+.SS "PSO_HANDLE& \fBpsoQueue::m_sessionHandle\fP\fC [private]\fP"
 .PP
 Reference to the psaSession struct (we belong to). 
 .PP
-Definition at line 214 of file vdsQueue.
+Definition at line 214 of file psoQueue.
 
 .SH "Author"
 .PP 

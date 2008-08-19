@@ -8,41 +8,41 @@ API functions for vdsf folders. \-
 
 .in +1c
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsFolderClose\fP (\fBVDS_HANDLE\fP objectHandle)"
+.RI "VDSF_EXPORT int \fBpsoFolderClose\fP (\fBPSO_HANDLE\fP objectHandle)"
 .br
 .RI "\fIClose a folder. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsFolderCreateObject\fP (\fBVDS_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes, \fBvdsObjectDefinition\fP *pDefinition)"
+.RI "VDSF_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsFolderCreateObjectXML\fP (\fBVDS_HANDLE\fP folderHandle, const char *xmlBuffer, size_t lengthInBytes)"
+.RI "VDSF_EXPORT int \fBpsoFolderCreateObjectXML\fP (\fBPSO_HANDLE\fP folderHandle, const char *xmlBuffer, size_t lengthInBytes)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsFolderDestroyObject\fP (\fBVDS_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes)"
+.RI "VDSF_EXPORT int \fBpsoFolderDestroyObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes)"
 .br
 .RI "\fIDestroy an object, child of the current folder, in shared memory. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsFolderGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
+.RI "VDSF_EXPORT int \fBpsoFolderGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP *pEntry)"
 .br
 .RI "\fIIterate through the folder - no data items are removed from the folder by this function. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsFolderGetNext\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP *pEntry)"
+.RI "VDSF_EXPORT int \fBpsoFolderGetNext\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP *pEntry)"
 .br
 .RI "\fIIterate through the folder. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsFolderOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *folderName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP *objectHandle)"
+.RI "VDSF_EXPORT int \fBpsoFolderOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *folderName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
 .br
 .RI "\fIOpen an existing folder (see \fBvdsCreateObject\fP to create a new folder). \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsFolderStatus\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP *pStatus)"
+.RI "VDSF_EXPORT int \fBpsoFolderStatus\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP *pStatus)"
 .br
 .RI "\fIReturn the status of the folder. \fP"
 .in -1c
 .SH "Function Documentation"
 .PP 
-.SS "VDSF_EXPORT int vdsFolderClose (\fBVDS_HANDLE\fP objectHandle)"
+.SS "VDSF_EXPORT int psoFolderClose (\fBPSO_HANDLE\fP objectHandle)"
 .PP
 Close a folder. 
 .PP
@@ -50,22 +50,22 @@ This function terminates the current access to the folder in shared memory (the 
 .PP
 \fBParameters:\fP
 .RS 4
-\fIobjectHandle\fP The handle to the folder (see \fBvdsFolderOpen\fP).
+\fIobjectHandle\fP The handle to the folder (see \fBpsoFolderOpen\fP).
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsFolderCreateObject (\fBVDS_HANDLE\fP folderHandle, const char * objectName, size_t nameLengthInBytes, \fBvdsObjectDefinition\fP * pDefinition)"
+.SS "VDSF_EXPORT int psoFolderCreateObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP * pDefinition)"
 .PP
 Create a new object in shared memory as a child of the current folder. 
 .PP
 The creation of the object only becomes permanent after a call to \fBvdsCommit\fP.
 .PP
-This function does not provide a handle to the newly created object. Use vdsQueueOpen and similar functions to get the handle.
+This function does not provide a handle to the newly created object. Use psoQueueOpen and similar functions to get the handle.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -80,17 +80,17 @@ This function does not provide a handle to the newly created object. Use vdsQueu
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsFolderCreateObjectXML (\fBVDS_HANDLE\fP folderHandle, const char * xmlBuffer, size_t lengthInBytes)"
+.SS "VDSF_EXPORT int psoFolderCreateObjectXML (\fBPSO_HANDLE\fP folderHandle, const char * xmlBuffer, size_t lengthInBytes)"
 .PP
 Create a new object in shared memory as a child of the current folder. 
 .PP
 The creation of the object only becomes permanent after a call to \fBvdsCommit\fP.
 .PP
-This function does not provide a handle to the newly created object. Use vdsQueueOpen and similar functions to get the handle.
+This function does not provide a handle to the newly created object. Use psoQueueOpen and similar functions to get the handle.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -103,11 +103,11 @@ This function does not provide a handle to the newly created object. Use vdsQueu
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsFolderDestroyObject (\fBVDS_HANDLE\fP folderHandle, const char * objectName, size_t nameLengthInBytes)"
+.SS "VDSF_EXPORT int psoFolderDestroyObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, size_t nameLengthInBytes)"
 .PP
 Destroy an object, child of the current folder, in shared memory. 
 .PP
@@ -124,11 +124,11 @@ The destruction of the object only becomes permanent after a call to \fBvdsCommi
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsFolderGetFirst (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP * pEntry)"
+.SS "VDSF_EXPORT int psoFolderGetFirst (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP * pEntry)"
 .PP
 Iterate through the folder - no data items are removed from the folder by this function. 
 .PP
@@ -136,39 +136,39 @@ Data items which were added by another session and are not yet committed will no
 .PP
 \fBParameters:\fP
 .RS 4
-\fIobjectHandle\fP The handle to the folder (see \fBvdsFolderOpen\fP). 
+\fIobjectHandle\fP The handle to the folder (see \fBpsoFolderOpen\fP). 
 .br
 \fIpEntry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsFolderGetNext (\fBVDS_HANDLE\fP objectHandle, \fBvdsFolderEntry\fP * pEntry)"
+.SS "VDSF_EXPORT int psoFolderGetNext (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP * pEntry)"
 .PP
 Iterate through the folder. 
 .PP
 Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
 .PP
-Evidently, you must call \fBvdsFolderGetFirst\fP to initialize the iterator.
+Evidently, you must call \fBpsoFolderGetFirst\fP to initialize the iterator.
 .PP
 \fBParameters:\fP
 .RS 4
-\fIobjectHandle\fP The handle to the folder (see \fBvdsFolderOpen\fP). 
+\fIobjectHandle\fP The handle to the folder (see \fBpsoFolderOpen\fP). 
 .br
 \fIpEntry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsFolderOpen (\fBVDS_HANDLE\fP sessionHandle, const char * folderName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP * objectHandle)"
+.SS "VDSF_EXPORT int psoFolderOpen (\fBPSO_HANDLE\fP sessionHandle, const char * folderName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
 .PP
 Open an existing folder (see \fBvdsCreateObject\fP to create a new folder). 
 .PP
@@ -185,24 +185,24 @@ Open an existing folder (see \fBvdsCreateObject\fP to create a new folder).
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsFolderStatus (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP * pStatus)"
+.SS "VDSF_EXPORT int psoFolderStatus (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP * pStatus)"
 .PP
 Return the status of the folder. 
 .PP
 \fBParameters:\fP
 .RS 4
-\fIobjectHandle\fP The handle to the folder (see \fBvdsFolderOpen\fP). 
+\fIobjectHandle\fP The handle to the folder (see \fBpsoFolderOpen\fP). 
 .br
 \fIpStatus\fP A pointer to the status structure.
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 

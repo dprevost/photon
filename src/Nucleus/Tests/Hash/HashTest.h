@@ -27,11 +27,11 @@
 #include "Tests/PrintError.h"
 
 VDSF_ENGINE_EXPORT
-pscErrMsgHandle g_vdsErrorHandle;
+pscErrMsgHandle g_psoErrorHandle;
 
 ptrdiff_t g_memObjOffset = PSN_NULL_OFFSET;
 
-struct vdstObjDummy
+struct psotObjDummy
 {
    struct psnMemObject memObject;
    struct psnHash      hashObj;
@@ -39,7 +39,7 @@ struct vdstObjDummy
    struct psnBlockGroup blockGroup;
 };
 
-typedef struct vdstObjDummy vdstObjDummy;
+typedef struct psotObjDummy psotObjDummy;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -60,7 +60,7 @@ psnHash* initHashTest( bool testIsExpectedToSucceed,
    bool ok;
    unsigned char* ptr;
    psnMemAlloc*  pAlloc;
-   vdstObjDummy* pDummy;
+   psotObjDummy* pDummy;
    size_t allocatedLength = PSN_BLOCK_SIZE * 10;
    
    ok = psnInitEngine();
@@ -85,7 +85,7 @@ psnHash* initHashTest( bool testIsExpectedToSucceed,
    psnMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for our dummy object + initialize it + blockGroup */
-   pDummy = (vdstObjDummy*) psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 2, pContext );
+   pDummy = (psotObjDummy*) psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 2, pContext );
    if ( pDummy == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -95,7 +95,7 @@ psnHash* initHashTest( bool testIsExpectedToSucceed,
                                 PSN_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 2 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
@@ -130,7 +130,7 @@ void initHashCopyTest( bool                 testIsExpectedToSucceed,
    bool ok;
    unsigned char* ptr;
    psnMemAlloc*  pAlloc;
-   vdstObjDummy* pDummy1, * pDummy2;
+   psotObjDummy* pDummy1, * pDummy2;
    size_t allocatedLength = PSN_BLOCK_SIZE * 30;
    
    ok = psnInitEngine();
@@ -155,7 +155,7 @@ void initHashCopyTest( bool                 testIsExpectedToSucceed,
    psnMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for our dummy objects + initialize + blockGroup */
-   pDummy1 = (vdstObjDummy*) psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 2, pContext );
+   pDummy1 = (psotObjDummy*) psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 2, pContext );
    if ( pDummy1 == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -165,7 +165,7 @@ void initHashCopyTest( bool                 testIsExpectedToSucceed,
                                 PSN_IDENT_ALLOCATOR,
                                 &pDummy1->blockGroup,
                                 2 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
@@ -182,7 +182,7 @@ void initHashCopyTest( bool                 testIsExpectedToSucceed,
    }
    *ppOldHash = &pDummy1->hashObj;
 
-   pDummy2 = (vdstObjDummy*) psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 2, pContext );
+   pDummy2 = (psotObjDummy*) psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 2, pContext );
    if ( pDummy2 == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -192,7 +192,7 @@ void initHashCopyTest( bool                 testIsExpectedToSucceed,
                                 PSN_IDENT_ALLOCATOR,
                                 &pDummy2->blockGroup,
                                 2 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);

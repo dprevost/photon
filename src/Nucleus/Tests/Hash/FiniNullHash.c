@@ -27,12 +27,12 @@ int main()
 #if defined(USE_DBC)
    psnSessionContext context;
    psnHash* pHash;
-   enum vdsErrors errcode;
+   enum psoErrors errcode;
    
    pHash = initHashTest( expectedToPass, &context );
    
    errcode = psnHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

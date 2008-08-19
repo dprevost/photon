@@ -15,12 +15,12 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDS_SESSION_H
-#define VDS_SESSION_H
+#ifndef PSO_SESSION_H
+#define PSO_SESSION_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include <photon/vdsCommon.h>
+#include <photon/psoCommon.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,7 +33,7 @@ extern "C" {
  * This file provides the API needed to create and use a session.
  */
 /**
- * \defgroup vdsSession_c API functions for vdsf sessions.
+ * \defgroup psoSession_c API functions for psof sessions.
  */
 /*@{*/
 
@@ -41,12 +41,12 @@ extern "C" {
 
 /**
  * Commit all insertions and deletions (of the current session) executed 
- * since the previous call to vdsCommit or vdsRollback.
+ * since the previous call to psoCommit or psoRollback.
  *
  * Insertions and deletions subjected to this call include both data items
  * inserted and deleted from data containers (maps, etc.) and objects 
- * themselves created with ::vdsCreateObj and/or destroyed with 
- * ::vdsDestroyObj.
+ * themselves created with ::psoCreateObj and/or destroyed with 
+ * ::psoDestroyObj.
  *
  * Note: the internal calls executed by the engine to satisfy this request
  * cannot fail. As such,
@@ -56,10 +56,10 @@ extern "C" {
  *
  * \param[in] sessionHandle Handle to the current session.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsCommit( VDS_HANDLE sessionHandle );
+int psoCommit( PSO_HANDLE sessionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -67,26 +67,26 @@ int vdsCommit( VDS_HANDLE sessionHandle );
  * Create a new object in shared memory.
  *
  * The creation of the object only becomes permanent after a call to 
- * ::vdsCommit.
+ * ::psoCommit.
  *
  * This function does not provide a handle to the newly created object. Use
- * vdsQueueOpen and similar functions to get the handle.
+ * psoQueueOpen and similar functions to get the handle.
  *
  * \param[in] sessionHandle Handle to the current session.
  * \param[in]  objectName The fully qualified name of the object. 
  * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the vdsf engine).
+ *             the psof engine).
  * \param[in]  pDefinition The type of object to create (folder, queue, etc.)
  *             and the optional definitions (as needed).
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsCreateObject( VDS_HANDLE            sessionHandle,
+int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char    *       objectName,
                      size_t                nameLengthInBytes,
-                     vdsObjectDefinition * pDefinition );
+                     psoObjectDefinition * pDefinition );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -97,10 +97,10 @@ Not sure yet how this will be implemented. If at all...
  * created if they do not exist.
  *
  * The creation of the objects only becomes permanent after a call to 
- * ::vdsCommit.
+ * ::psoCommit.
  *
  * This function does not provide a handle to the newly created objects. Use
- * vdsQueueOpen and similar functions to get the handles.
+ * psoQueueOpen and similar functions to get the handles.
  *
  * \param[in] sessionHandle Handle to the current session.
  * \param[in] xmlBuffer     The XML buffer containing all the required
@@ -108,10 +108,10 @@ Not sure yet how this will be implemented. If at all...
  * \param[in] lengthInBytes The length of \em xmlBuffer (in bytes) not
  *                          counting the null terminator.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsCreateObjectXML( VDS_HANDLE   sessionHandle,
+int psoCreateObjectXML( PSO_HANDLE   sessionHandle,
                         const char * xmlBuffer,
                         size_t       lengthInBytes );
 #endif
@@ -122,18 +122,18 @@ int vdsCreateObjectXML( VDS_HANDLE   sessionHandle,
  * Destroy an existing object in shared memory.
  *
  * The destruction of the object only becomes permanent after a call to 
- * ::vdsCommit.
+ * ::psoCommit.
  *
  * \param[in]  sessionHandle Handle to the current session.
  * \param[in]  objectName The fully qualified name of the object. 
  * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the vdsf engine).
+ *             the psof engine).
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsDestroyObject( VDS_HANDLE   sessionHandle,
+int psoDestroyObject( PSO_HANDLE   sessionHandle,
                       const char * objectName,
                       size_t       nameLengthInBytes );
 
@@ -157,10 +157,10 @@ int vdsDestroyObject( VDS_HANDLE   sessionHandle,
  * \param[in]   msgLengthInBytes The length of \em message (in bytes). Must
  *              be at least 32 bytes.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsErrorMsg( VDS_HANDLE sessionHandle,
+int psoErrorMsg( PSO_HANDLE sessionHandle,
                  char *     message,
                  size_t     msgLengthInBytes );
 
@@ -169,17 +169,17 @@ int vdsErrorMsg( VDS_HANDLE sessionHandle,
 /**
  * Terminate the current session. 
  *
- * An implicit call to ::vdsRollback is executed by this function.
+ * An implicit call to ::psoRollback is executed by this function.
  *
  * Once this function is executed, attempts to use the session handle
  * might lead to memory violation (and, possibly, crashes).
  *
  * \param[in]  sessionHandle Handle to the current session.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsExitSession( VDS_HANDLE sessionHandle );
+int psoExitSession( PSO_HANDLE sessionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -194,18 +194,18 @@ int vdsExitSession( VDS_HANDLE sessionHandle );
  * \param[in]  objectName The fully qualified name of the object. 
  * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the vdsf engine).
+ *             the psof engine).
  * \param[out]  definition The buffer allocated by the API to hold the content 
  *              of the object definition. Freeing the memory (with free())
  *              is the responsability of the caller.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsGetDefinition( VDS_HANDLE             sessionHandle,
+int psoGetDefinition( PSO_HANDLE             sessionHandle,
                       const char           * objectName,
                       size_t                 nameLengthInBytes,
-                      vdsObjectDefinition ** definition );
+                      psoObjectDefinition ** definition );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -216,13 +216,13 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
  * allocator.
  *
  * \param[in]  sessionHandle Handle to the current session.
- * \param[out] pInfo      A pointer to the ::vdsInfo structure.
+ * \param[out] pInfo      A pointer to the ::psoInfo structure.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsGetInfo( VDS_HANDLE   sessionHandle,
-                vdsInfo    * pInfo );
+int psoGetInfo( PSO_HANDLE   sessionHandle,
+                psoInfo    * pInfo );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -233,17 +233,17 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
  * \param[in]  objectName The fully qualified name of the object. 
  * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the vdsf engine).
- * \param[out] pStatus A pointer to the vdsObjStatus structure.
+ *             the psof engine).
+ * \param[out] pStatus A pointer to the psoObjStatus structure.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 
 VDSF_EXPORT
-int vdsGetStatus(  VDS_HANDLE     sessionHandle,
+int psoGetStatus(  PSO_HANDLE     sessionHandle,
                    const char *   objectName,
                    size_t         nameLengthInBytes,
-                   vdsObjStatus * pStatus );
+                   psoObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -262,10 +262,10 @@ int vdsGetStatus(  VDS_HANDLE     sessionHandle,
  *
  * \param[out] sessionHandle The handle to the newly created session.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsInitSession( VDS_HANDLE* sessionHandle );
+int psoInitSession( PSO_HANDLE* sessionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -282,18 +282,18 @@ int vdsInitSession( VDS_HANDLE* sessionHandle );
  * \return The last error.
  */
 VDSF_EXPORT
-int vdsLastError( VDS_HANDLE sessionHandle );
+int psoLastError( PSO_HANDLE sessionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  * Rollback all insertions and deletions (of the current session) executed 
- * since the previous call to vdsCommit or vdsRollback.
+ * since the previous call to psoCommit or psoRollback.
  *
  * Insertions and deletions subjected to this call include both data items
  * inserted and deleted from data containers (maps, etc.) and objects 
- * themselves created with ::vdsCreateObj and/or destroyed with 
- * ::vdsDestroyObj.
+ * themselves created with ::psoCreateObj and/or destroyed with 
+ * ::psoDestroyObj.
  *
  * Note: the internal calls executed by the engine to satisfy this request
  * cannot fail. As such,
@@ -303,10 +303,10 @@ int vdsLastError( VDS_HANDLE sessionHandle );
  *
  * \param[in] sessionHandle Handle to the current session.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsRollback( VDS_HANDLE sessionHandle );
+int psoRollback( PSO_HANDLE sessionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -318,7 +318,7 @@ int vdsRollback( VDS_HANDLE sessionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDS_SESSION_H */
+#endif /* PSO_SESSION_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

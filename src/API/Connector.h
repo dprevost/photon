@@ -31,11 +31,11 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined (WIN32) 
-#  define VDS_SOCKET SOCKET
-#  define VDS_INVALID_SOCKET INVALID_SOCKET
+#  define PSO_SOCKET SOCKET
+#  define PSO_INVALID_SOCKET INVALID_SOCKET
 #else
-#  define VDS_SOCKET  int
-#  define VDS_INVALID_SOCKET -1
+#  define PSO_SOCKET  int
+#  define PSO_INVALID_SOCKET -1
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -63,7 +63,7 @@ BEGIN_C_DECLS
 typedef struct psaConnector
 {
    /** Our socket handle */
-   VDS_SOCKET socketFD;
+   PSO_SOCKET socketFD;
 
 #if defined (WIN32)
    /** Win32 only - if true, WSACleanup must be called by the destructor. */

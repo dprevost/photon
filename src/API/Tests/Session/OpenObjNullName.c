@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 #include "API/CommonObject.h"
 #include "API/Session.h"
@@ -28,44 +28,44 @@ const bool expectedToPass = false;
 int main( int argc, char * argv[] )
 {
 #if defined(USE_DBC)
-   VDS_HANDLE sessionHandle;
+   PSO_HANDLE sessionHandle;
    int errcode;
    struct psaCommonObject object;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/asoonn",
                               strlen("/asoonn"),
                               &def );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psaSessionOpenObj( (psaSession *) sessionHandle,
-                                 VDS_FOLDER,
+                                 PSO_FOLDER,
                                  false,
                                  NULL,
                                  strlen("/asoono"),

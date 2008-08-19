@@ -55,15 +55,15 @@ int psaProcessInit( psaProcess * process, const char * wdAddress )
 {
    struct WDOutput answer;
    char path[PATH_MAX];
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnSessionContext context;
    psnProcMgr* pCleanupManager;
    bool ok;
    
-   VDS_PRE_CONDITION( process   != NULL );
-   VDS_PRE_CONDITION( wdAddress != NULL );
+   PSO_PRE_CONDITION( process   != NULL );
+   PSO_PRE_CONDITION( wdAddress != NULL );
    
-   if ( ! psnInitEngine() ) return VDS_INTERNAL_ERROR;
+   if ( ! psnInitEngine() ) return PSO_INTERNAL_ERROR;
    
    memset( &context, 0, sizeof(psnSessionContext) );
    context.pidLocker = getpid();
@@ -74,12 +74,12 @@ int psaProcessInit( psaProcess * process, const char * wdAddress )
    }
    
    if ( process->pHeader != NULL ) {
-      errcode = VDS_PROCESS_ALREADY_INITIALIZED;
+      errcode = PSO_PROCESS_ALREADY_INITIALIZED;
       goto the_exit;
    }
    
    if ( wdAddress == NULL ) {
-      errcode = VDS_INVALID_WATCHDOG_ADDRESS;
+      errcode = PSO_INVALID_WATCHDOG_ADDRESS;
       goto the_exit;
    }
    
@@ -87,17 +87,17 @@ int psaProcessInit( psaProcess * process, const char * wdAddress )
                           wdAddress, 
                           &answer, 
                           &context.errorHandler );
-   if ( errcode != VDS_OK ) goto the_exit;
+   if ( errcode != PSO_OK ) goto the_exit;
    
    /* The watchdog already tested that there is no buffer overflow here. */
-   sprintf( path, "%s%s%s", answer.pathname, VDS_DIR_SEPARATOR,
-            VDS_MEMFILE_NAME );
+   sprintf( path, "%s%s%s", answer.pathname, PSO_DIR_SEPARATOR,
+            PSO_MEMFILE_NAME );
 
    errcode = psaOpenVDS( process,
                           path,
                           answer.memorySizekb,
                           &context );
-   if ( errcode != VDS_OK ) goto the_exit;
+   if ( errcode != PSO_OK ) goto the_exit;
 
    GET_PTR( context.pAllocator, process->pHeader->allocatorOffset, void );
    GET_PTR( pCleanupManager, process->pHeader->processMgrOffset, psnProcMgr );
@@ -106,9 +106,9 @@ int psaProcessInit( psaProcess * process, const char * wdAddress )
                                getpid(), 
                                &process->pCleanup,
                                &context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ok ) {
-      strcpy( process->logDirName, VDS_LOGDIR_NAME );
+      strcpy( process->logDirName, PSO_LOGDIR_NAME );
       g_pProcessInstance = process;
    }
    else {
@@ -137,7 +137,7 @@ void psaProcessFini()
    bool ok;
    
    process = g_pProcessInstance;
-   VDS_PRE_CONDITION( process != NULL );
+   PSO_PRE_CONDITION( process != NULL );
 
    /* 
     * This can occurs if the process init (psaProcessInit()) 
@@ -166,7 +166,7 @@ void psaProcessFini()
       ok = psnProcessGetFirstSession( process->pCleanup, 
                                        &pVdsSession, 
                                        &context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       while ( ok ) {
          pApiSession = pVdsSession->pApiSession;
          if ( pApiSession != NULL ) {
@@ -184,7 +184,7 @@ void psaProcessFini()
       psnUnlock( &process->pCleanup->memObject, &context );
    }
    else {
-      errcode = VDS_INTERNAL_ERROR;
+      errcode = PSO_INTERNAL_ERROR;
       goto error_handler;
    }
    
@@ -193,7 +193,7 @@ void psaProcessFini()
     * all the psnSession objects of the current process.
     */
    ok = psnProcMgrRemoveProcess( processManager, process->pCleanup, &context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    process->pCleanup = NULL;
    
    /* close our access to the VDS */
@@ -223,9 +223,9 @@ int psaOpenVDS( psaProcess        * process,
    pscMemoryFileStatus fileStatus;
    void * ptr;
    
-   VDS_PRE_CONDITION( process        != NULL );
-   VDS_PRE_CONDITION( pContext       != NULL );
-   VDS_PRE_CONDITION( memoryFileName != NULL );
+   PSO_PRE_CONDITION( process        != NULL );
+   PSO_PRE_CONDITION( pContext       != NULL );
+   PSO_PRE_CONDITION( memoryFileName != NULL );
 
    process->pHeader = NULL;
    
@@ -234,16 +234,16 @@ int psaOpenVDS( psaProcess        * process,
    pscBackStoreStatus( &process->memoryFile, &fileStatus );
    
    if ( ! fileStatus.fileExist ) {
-      return VDS_BACKSTORE_FILE_MISSING;
+      return PSO_BACKSTORE_FILE_MISSING;
    }
    
    ok = pscOpenMemFile( &process->memoryFile, 
                          &ptr, 
                          &pContext->errorHandler );   
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       fprintf( stderr, "MMAP failure - %d %s\n", errno, memoryFileName );
-      return VDS_ERROR_OPENING_VDS;
+      return PSO_ERROR_OPENING_VDS;
    }
    
    g_pBaseAddr = (unsigned char * ) ptr;
@@ -251,7 +251,7 @@ int psaOpenVDS( psaProcess        * process,
 
    if ( process->pHeader->version != PSN_MEMORY_VERSION ) {
       process->pHeader = NULL;
-      return VDS_INCOMPATIBLE_VERSIONS;
+      return PSO_INCOMPATIBLE_VERSIONS;
    }
    
    return errcode;
@@ -262,8 +262,8 @@ int psaOpenVDS( psaProcess        * process,
 void psaCloseVDS( psaProcess        * process,
                   psnSessionContext * pContext )
 {
-   VDS_PRE_CONDITION( process  != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( process  != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
 
    pscCloseMemFile( &process->memoryFile, &pContext->errorHandler );
 }

@@ -83,7 +83,7 @@ int validateName( xmlChar * name )
          return -1;
       }
    }
-   if ( i > VDS_MAX_NAME_LENGTH ) {
+   if ( i > PSO_MAX_NAME_LENGTH ) {
       fprintf( stderr, "Object name is too long: %s\n", objectName );
       return -1;
    }

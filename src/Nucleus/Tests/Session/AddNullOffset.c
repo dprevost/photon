@@ -43,7 +43,7 @@ int main()
    
    ok = psnSessionAddObj( pSession,
                            PSN_NULL_OFFSET, 
-                           VDS_FOLDER,
+                           PSO_FOLDER,
                            pApiObject,
                            &pObject,
                            &context );

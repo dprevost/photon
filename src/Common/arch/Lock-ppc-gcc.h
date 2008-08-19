@@ -51,11 +51,11 @@ pscAcquireProcessLock( pscProcessLock * pLock,
                        pid_t            pid_locker )
 {
    int lockValue = 0xff, oldLockValue;
-   volatile vds_lock_T * pLockLock;
+   volatile pso_lock_T * pLockLock;
 
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
-   VDS_PRE_CONDITION( pid_locker != 0 );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pid_locker != 0 );
 
    pLockLock = &pLock->lock;
 
@@ -79,11 +79,11 @@ pscTryAcquireProcessLock( pscProcessLock * pLock,
                           unsigned int     milliSecs )
 {
    int lockValue = 0xff, oldLockValue;
-   vds_lock_T * pLockLock;
+   pso_lock_T * pLockLock;
 
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
-   VDS_PRE_CONDITION( pid_locker != 0 );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pid_locker != 0 );
 
    pLockLock = &pLock->lock;
    POWER_PC_LOCK
@@ -115,8 +115,8 @@ pscTryAcquireProcessLock( pscProcessLock * pLock,
 inline void
 pscReleaseProcessLock( pscProcessLock * pLock )
 {
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
 
    pLock->pid = 0;
    /*

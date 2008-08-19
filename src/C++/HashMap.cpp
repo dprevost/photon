@@ -16,15 +16,15 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vdsHashMap>
-#include <photon/vdsHashMap.h>
-#include <photon/vdsSession>
-#include <photon/vdsErrors.h>
-#include <photon/vdsException>
+#include <photon/psoHashMap>
+#include <photon/psoHashMap.h>
+#include <photon/psoSession>
+#include <photon/psoErrors.h>
+#include <photon/psoException>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsHashMap::vdsHashMap( vdsSession &session )
+psoHashMap::psoHashMap( psoSession &session )
    : m_objectHandle  ( NULL ),
      m_sessionHandle ( session.m_sessionHandle )
 {
@@ -32,87 +32,87 @@ vdsHashMap::vdsHashMap( vdsSession &session )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsHashMap::~vdsHashMap()
+psoHashMap::~psoHashMap()
 {
    if ( m_objectHandle != NULL ) {
-      vdsHashMapClose( m_objectHandle );
+      psoHashMapClose( m_objectHandle );
    }
    m_objectHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsHashMap::Close()
+void psoHashMap::Close()
 {
-   int rc = vdsHashMapClose( m_objectHandle );
+   int rc = psoHashMapClose( m_objectHandle );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Close" );
+      throw psoException( rc, m_sessionHandle, "psoHashMap::Close" );
    }
    m_objectHandle = NULL;   
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsHashMap::Definition( vdsObjectDefinition ** definition )
+void psoHashMap::Definition( psoObjectDefinition ** definition )
 {
-   int rc = vdsHashMapDefinition( m_objectHandle, definition );
+   int rc = psoHashMapDefinition( m_objectHandle, definition );
    
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Definition" );
+      throw psoException( rc, m_sessionHandle, "psoHashMap::Definition" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsHashMap::Delete( const void * key,
+void psoHashMap::Delete( const void * key,
                          size_t       keyLength )
 {
-   int rc = vdsHashMapDelete( m_objectHandle,
+   int rc = psoHashMapDelete( m_objectHandle,
                               key,
                               keyLength );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Delete" );
+      throw psoException( rc, m_sessionHandle, "psoHashMap::Delete" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsHashMap::Get( const void * key,
+void psoHashMap::Get( const void * key,
                       size_t       keyLength,
                       void       * buffer,
                       size_t       bufferLength,
                       size_t     * returnedLength )
 {
-   int rc = vdsHashMapGet( m_objectHandle,
+   int rc = psoHashMapGet( m_objectHandle,
                            key,
                            keyLength,
                            buffer,
                            bufferLength,
                            returnedLength );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Get" );
+      throw psoException( rc, m_sessionHandle, "psoHashMap::Get" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int vdsHashMap::GetFirst( void       * key,
+int psoHashMap::GetFirst( void       * key,
                           size_t       keyLength,
                           void       * buffer,
                           size_t       bufferLength,
                           size_t     * retKeyLength,
                           size_t     * retDataLength )
 {
-   int rc = vdsHashMapGetFirst( m_objectHandle,
+   int rc = psoHashMapGetFirst( m_objectHandle,
                                 key,
                                 keyLength,
                                 buffer,
                                 bufferLength,
                                 retKeyLength,
                                 retDataLength );
-   if ( rc != 0 && rc != VDS_IS_EMPTY ) {
-      throw vdsException( rc, m_sessionHandle, "vdsHashMap::GetFirst" );
+   if ( rc != 0 && rc != PSO_IS_EMPTY ) {
+      throw psoException( rc, m_sessionHandle, "psoHashMap::GetFirst" );
    }
    
    return rc;
@@ -120,96 +120,96 @@ int vdsHashMap::GetFirst( void       * key,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int vdsHashMap::GetNext( void       * key,
+int psoHashMap::GetNext( void       * key,
                          size_t       keyLength,
                          void       * buffer,
                          size_t       bufferLength,
                          size_t     * retKeyLength,
                          size_t     * retDataLength )
 {
-   int rc = vdsHashMapGetNext( m_objectHandle,
+   int rc = psoHashMapGetNext( m_objectHandle,
                                key,
                                keyLength,
                                buffer,
                                bufferLength,
                                retKeyLength,
                                retDataLength );
-   if ( rc != 0 && rc != VDS_REACHED_THE_END ) {
-      throw vdsException( rc, m_sessionHandle, "vdsHashMap::GetNext" );
+   if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
+      throw psoException( rc, m_sessionHandle, "psoHashMap::GetNext" );
    }
    return rc;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsHashMap::Insert( const void * key,
+void psoHashMap::Insert( const void * key,
                          size_t       keyLength,
                          const void * data,
                          size_t       dataLength )
 {
-   int rc = vdsHashMapInsert( m_objectHandle,
+   int rc = psoHashMapInsert( m_objectHandle,
                               key,
                               keyLength,
                               data,
                               dataLength );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Insert" );
+      throw psoException( rc, m_sessionHandle, "psoHashMap::Insert" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsHashMap::Open( const std::string & hashMapName )
+void psoHashMap::Open( const std::string & hashMapName )
 {
-   int rc = vdsHashMapOpen( m_sessionHandle,
+   int rc = psoHashMapOpen( m_sessionHandle,
                             hashMapName.c_str(),
                             hashMapName.length(),
                             &m_objectHandle );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Open" );
+      throw psoException( rc, m_sessionHandle, "psoHashMap::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsHashMap::Open( const char * hashMapName,
+void psoHashMap::Open( const char * hashMapName,
                        size_t       nameLengthInBytes )
 {
-   int rc = vdsHashMapOpen( m_sessionHandle,
+   int rc = psoHashMapOpen( m_sessionHandle,
                             hashMapName,
                             nameLengthInBytes,
                             &m_objectHandle );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Open" );
+      throw psoException( rc, m_sessionHandle, "psoHashMap::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsHashMap::Replace( const void * key,
+void psoHashMap::Replace( const void * key,
                           size_t       keyLength,
                           const void * data,
                           size_t       dataLength )
 {
-   int rc = vdsHashMapReplace( m_objectHandle,
+   int rc = psoHashMapReplace( m_objectHandle,
                                key,
                                keyLength,
                                data,
                                dataLength );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Replace" );
+      throw psoException( rc, m_sessionHandle, "psoHashMap::Replace" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsHashMap::Status( vdsObjStatus * pStatus )
+void psoHashMap::Status( psoObjStatus * pStatus )
 {
-   int rc = vdsHashMapStatus( m_objectHandle, pStatus );
+   int rc = psoHashMapStatus( m_objectHandle, pStatus );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsHashMap::Status" );
+      throw psoException( rc, m_sessionHandle, "psoHashMap::Status" );
    }
 }
 

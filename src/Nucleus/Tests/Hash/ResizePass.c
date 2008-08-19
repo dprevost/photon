@@ -26,7 +26,7 @@ int main()
 {
    psnSessionContext context;
    psnHash* pHash;
-   enum vdsErrors errcode;
+   enum psoErrors errcode;
    char key[20];
    char data[20];
    psnHashItem* pNewItem;
@@ -39,7 +39,7 @@ int main()
    pHash = initHashTest( expectedToPass, &context );
    
    errcode = psnHashInit( pHash, g_memObjOffset, 10, &context );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -54,13 +54,13 @@ int main()
                                 strlen(data),
                                 &pNewItem,
                                 &context );
-      if ( errcode != VDS_OK ) {
+      if ( errcode != PSO_OK ) {
          fprintf( stderr, "i = %d %d\n", i, pHash->enumResize );
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }
       if ( pHash->enumResize == PSN_HASH_TIME_TO_GROW ) {
          errcode = psnHashResize( pHash, &context );
-         if ( errcode != VDS_OK ) {
+         if ( errcode != PSO_OK ) {
             ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
          }
          else {
@@ -107,7 +107,7 @@ int main()
       
       if ( pHash->enumResize == PSN_HASH_TIME_TO_SHRINK ) {
          errcode = psnHashResize( pHash, &context );
-         if ( errcode != VDS_OK ) {
+         if ( errcode != PSO_OK ) {
             ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
          }
          else {

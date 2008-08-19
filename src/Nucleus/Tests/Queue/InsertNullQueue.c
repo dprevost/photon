@@ -29,11 +29,11 @@ int main()
    bool ok;
    psnTxStatus status;
    char * data = "My Data";
-   vdsObjectDefinition def = { 
-      VDS_QUEUE, 
+   psoObjectDefinition def = { 
+      PSO_QUEUE, 
       1, 
       { 0, 0, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
    
    pQueue = initQueueTest( expectedToPass, &context );
@@ -50,7 +50,7 @@ int main()
    ok = psnQueueInsert( NULL,
                          data,
                          8,
-                         VDS_FIRST,
+                         PSO_FIRST,
                          &context );
    
    ERROR_EXIT( expectedToPass, NULL, ; );

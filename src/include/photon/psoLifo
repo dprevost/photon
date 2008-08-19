@@ -17,28 +17,28 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_LIFO_H_CPP
-#define VDS_LIFO_H_CPP
+#ifndef PSO_LIFO_H_CPP
+#define PSO_LIFO_H_CPP
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#include <photon/vdsCommon.h>
+#include <photon/psoCommon.h>
 #include <string>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 // Forward declarations
-class vdsSession;
+class psoSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class VDSF_EXPORT vdsLifo
+class VDSF_EXPORT psoLifo
 {
 public:
 
-   vdsLifo( vdsSession &session );
+   psoLifo( psoSession &session );
 
-   virtual ~vdsLifo();
+   virtual ~psoLifo();
 
    /**
     * \brief Close a LIFO queue.
@@ -48,10 +48,10 @@ public:
     *
     * \warning Closing an object does not automatically commit or rollback 
     * data items that were inserted or removed. You still must use either 
-    * vdsSession::Commit or vdsSession::Rollback to end the current unit of 
+    * psoSession::Commit or psoSession::Rollback to end the current unit of 
     * work.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Close();
    
@@ -66,9 +66,9 @@ public:
     *              of the object definition. Freeing the memory (with free())
     *              is the responsability of the caller.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
-   void Definition( vdsObjectDefinition ** definition );
+   void Definition( psoObjectDefinition ** definition );
 
    /** 
     * Iterate through the queue - no data items are removed from the queue
@@ -84,9 +84,9 @@ public:
     * \param[in]   bufferLength The length of \em buffer (in bytes).
     * \param[out]  returnedLength The actual number of bytes in the data item.
     *
-    * \return 0 on success or VDS_IS_EMPTY if the queue is empty.
+    * \return 0 on success or PSO_IS_EMPTY if the queue is empty.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    int GetFirst( void   * buffer,
                  size_t   bufferLength,
@@ -111,10 +111,10 @@ public:
     * \param[in]   bufferLength The length of \em buffer (in bytes).
     * \param[out]  returnedLength The actual number of bytes in the data item.
     *
-    * \return 0 on success or VDS_REACHED_THE_END when the iteration reaches
+    * \return 0 on success or PSO_REACHED_THE_END when the iteration reaches
     *           the end of the queue.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    int GetNext( void   * buffer,
                 size_t   bufferLength,
@@ -126,7 +126,7 @@ public:
     *
     * \param[in]  queueName The fully qualified name of the queue. 
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Open( const std::string & queueName );
 
@@ -138,7 +138,7 @@ public:
     * \param[in]  nameLengthInBytes The length of \em queueName (in bytes) not
     *             counting the null terminator.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Open( const char * queueName,
               size_t       nameLengthInBytes );
@@ -151,7 +151,7 @@ public:
     * will not be seen by this function. Likewise, destroyed data items (even if
     * not yet committed) are invisible.
     *
-    * The removals only become permanent after a call to vdsSession::Commit.
+    * The removals only become permanent after a call to psoSession::Commit.
     *
     * \param[out]  buffer The buffer provided by the user to hold the content of
     *              the data item. Memory allocation for this buffer is the
@@ -159,10 +159,10 @@ public:
     * \param[in]   bufferLength The length of \em buffer (in bytes).
     * \param[out]  returnedLength The actual number of bytes in the data item.
     *
-    * \return 0 on success or VDS_IS_EMPTY if the queue is empty or
-    *           VDS_ITEM_IS_IN_USE if all existing items are "invisible".
+    * \return 0 on success or PSO_IS_EMPTY if the queue is empty or
+    *           PSO_ITEM_IS_IN_USE if all existing items are "invisible".
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    int Pop( void   * buffer,
             size_t   bufferLength,
@@ -171,12 +171,12 @@ public:
    /**
     * Insert a data element at the end of the LIFO queue.
     *
-    * The additions only become permanent after a call to vdsSession::Commit.
+    * The additions only become permanent after a call to psoSession::Commit.
     *
     * \param[in]  pItem  The data item to be inserted.
     * \param[in]  length The length of \em pItem (in bytes).
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Push( const void * pItem, 
               size_t       length );
@@ -186,23 +186,23 @@ public:
     *
     * \param[out] pStatus      A pointer to the status structure.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
-   void Status( vdsObjStatus * pStatus );
+   void Status( psoObjStatus * pStatus );
 
 private:
 
    /// Pointer to the psaLifo struct.
-   VDS_HANDLE m_objectHandle;
+   PSO_HANDLE m_objectHandle;
 
    /// Reference to the psaSession struct (we belong to).
-   VDS_HANDLE & m_sessionHandle;
+   PSO_HANDLE & m_sessionHandle;
 
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_LIFO_H_CPP */
+#endif /* PSO_LIFO_H_CPP */
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

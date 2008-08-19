@@ -24,7 +24,7 @@
 #endif
 
 #include "API/Connector.h"
-#include <photon/vdsErrors.h>
+#include <photon/psoErrors.h>
 
 /** Send data on the socket. */
 static int Send( psaConnector    * pConnector,
@@ -55,18 +55,18 @@ int psaConnect( psaConnector    * pConnector,
 #endif
    struct WDInput input;
 
-   VDS_PRE_CONDITION( pConnector   != NULL );
-   VDS_PRE_CONDITION( address      != NULL );
-   VDS_PRE_CONDITION( pAnswer      != NULL );
-   VDS_PRE_CONDITION( errorHandler != NULL );
+   PSO_PRE_CONDITION( pConnector   != NULL );
+   PSO_PRE_CONDITION( address      != NULL );
+   PSO_PRE_CONDITION( pAnswer      != NULL );
+   PSO_PRE_CONDITION( errorHandler != NULL );
    
-   pConnector->socketFD = VDS_INVALID_SOCKET;
+   pConnector->socketFD = PSO_INVALID_SOCKET;
 #if defined (WIN32)
    pConnector->cleanupNeeded = false;
 #endif
 
    dummy = strtol( address, NULL, 10 );
-   if ( dummy <= 0 || dummy > 65535 ) return VDS_INVALID_WATCHDOG_ADDRESS;
+   if ( dummy <= 0 || dummy > 65535 ) return PSO_INVALID_WATCHDOG_ADDRESS;
    port = (unsigned short) dummy;
 
 #if defined (WIN32) 
@@ -75,19 +75,19 @@ int psaConnect( psaConnector    * pConnector,
    errcode = WSAStartup( versionRequested, &wsaData );
    if ( errcode != 0 ) {
       pscSetError( errorHandler, PSC_SOCKERR_HANDLE, WSAGetLastError() );
-      return VDS_SOCKET_ERROR;
+      return PSO_SOCKET_ERROR;
    }
    pConnector->cleanupNeeded = true;   
 #endif
 
    pConnector->socketFD = socket( PF_INET, SOCK_STREAM, 0 );
-   if ( pConnector->socketFD == VDS_INVALID_SOCKET ) {
+   if ( pConnector->socketFD == PSO_INVALID_SOCKET ) {
 #if defined (WIN32) 
       pscSetError( errorHandler, PSC_SOCKERR_HANDLE, WSAGetLastError() );
 #else
       pscSetError( errorHandler, PSC_ERRNO_HANDLE, errno );
 #endif
-      return VDS_SOCKET_ERROR;
+      return PSO_SOCKET_ERROR;
    }
    
    memset( &addr, 0, sizeof(struct sockaddr_in) );
@@ -104,17 +104,17 @@ int psaConnect( psaConnector    * pConnector,
 #else
       pscSetError( errorHandler, PSC_ERRNO_HANDLE, errno );
 #endif
-      return VDS_CONNECT_ERROR;
+      return PSO_CONNECT_ERROR;
    }
 
    input.opcode = WD_CONNECT;
    input.processId = getpid();
 
    errcode = Send( pConnector, &input, sizeof(struct WDInput), errorHandler );
-   if ( errcode != 0 ) return VDS_SEND_ERROR;
+   if ( errcode != 0 ) return PSO_SEND_ERROR;
 
    errcode = Receive( pConnector, pAnswer, sizeof(struct WDOutput), errorHandler );
-   if ( errcode != 0 ) return VDS_RECEIVE_ERROR;
+   if ( errcode != 0 ) return PSO_RECEIVE_ERROR;
 
    return 0;
 }
@@ -130,10 +130,10 @@ void psaDisconnect( psaConnector    * pConnector,
    input.opcode = WD_DISCONNECT;
    input.processId = getpid();
 
-   VDS_PRE_CONDITION( pConnector   != NULL );
-   VDS_PRE_CONDITION( errorHandler != NULL );
+   PSO_PRE_CONDITION( pConnector   != NULL );
+   PSO_PRE_CONDITION( errorHandler != NULL );
 
-   if ( pConnector->socketFD != VDS_INVALID_SOCKET ) {
+   if ( pConnector->socketFD != PSO_INVALID_SOCKET ) {
 
       errcode = Send( pConnector, &input, sizeof(struct WDInput), errorHandler );
       /**
@@ -152,7 +152,7 @@ void psaDisconnect( psaConnector    * pConnector,
       shutdown( pConnector->socketFD, 2 );
       close( pConnector->socketFD );
 #endif
-      pConnector->socketFD = VDS_INVALID_SOCKET;
+      pConnector->socketFD = PSO_INVALID_SOCKET;
    }
    
 #if defined (WIN32) 
@@ -196,7 +196,7 @@ int Receive( psaConnector    * pConnector,
       shutdown( pConnector->socketFD, 2 );      
       close( pConnector->socketFD );
 #endif
-      pConnector->socketFD = VDS_INVALID_SOCKET;
+      pConnector->socketFD = PSO_INVALID_SOCKET;
       return -1;
    }
    
@@ -233,7 +233,7 @@ int Send( psaConnector    * pConnector,
       shutdown( pConnector->socketFD, 2 );
       close( pConnector->socketFD );
 #endif
-      pConnector->socketFD = VDS_INVALID_SOCKET;
+      pConnector->socketFD = PSO_INVALID_SOCKET;
       return -1;
    }
    

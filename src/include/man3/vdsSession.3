@@ -1,22 +1,22 @@
-.TH "vdsSession" 3 "5 Jul 2008" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
+.TH "psoSession" 3 "5 Jul 2008" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-vdsSession \- 
+psoSession \- 
 .SH SYNOPSIS
 .br
 .PP
 .SH "Detailed Description"
 .PP 
-Definition at line 30 of file vdsSession.
+Definition at line 30 of file psoSession.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBvdsSession\fP ()"
+.RI "\fBpsoSession\fP ()"
 .br
 .ti -1c
-.RI "virtual \fB~vdsSession\fP ()"
+.RI "virtual \fB~psoSession\fP ()"
 .br
 .RI "\fITerminate the current session and destroy this object. \fP"
 .ti -1c
@@ -24,11 +24,11 @@ Definition at line 30 of file vdsSession.
 .br
 .RI "\fICommit all insertions and deletions (of the current session) executed since the previous call to Commit or Rollback. \fP"
 .ti -1c
-.RI "void \fBCreateObject\fP (const std::string &objectName, vdsObjectDefinition *pDefinition)"
+.RI "void \fBCreateObject\fP (const std::string &objectName, psoObjectDefinition *pDefinition)"
 .br
 .RI "\fICreate a new object in shared memory. \fP"
 .ti -1c
-.RI "void \fBCreateObject\fP (const char *objectName, size_t nameLengthInBytes, vdsObjectDefinition *pDefinition)"
+.RI "void \fBCreateObject\fP (const char *objectName, size_t nameLengthInBytes, psoObjectDefinition *pDefinition)"
 .br
 .RI "\fICreate a new object in shared memory. \fP"
 .ti -1c
@@ -48,15 +48,15 @@ Definition at line 30 of file vdsSession.
 .br
 .RI "\fIReturn the error message associated with the last error(s). \fP"
 .ti -1c
-.RI "void \fBGetInfo\fP (vdsInfo *pInfo)"
+.RI "void \fBGetInfo\fP (psoInfo *pInfo)"
 .br
 .RI "\fIReturn information on the current status of the VDS (Virtual Data Space). \fP"
 .ti -1c
-.RI "void \fBGetStatus\fP (const std::string &objectName, vdsObjStatus *pStatus)"
+.RI "void \fBGetStatus\fP (const std::string &objectName, psoObjStatus *pStatus)"
 .br
 .RI "\fIReturn the status of the named object. \fP"
 .ti -1c
-.RI "void \fBGetStatus\fP (const char *objectName, size_t nameLengthInBytes, vdsObjStatus *pStatus)"
+.RI "void \fBGetStatus\fP (const char *objectName, size_t nameLengthInBytes, psoObjStatus *pStatus)"
 .br
 .RI "\fIReturn the status of the named object. \fP"
 .ti -1c
@@ -76,7 +76,7 @@ Definition at line 30 of file vdsSession.
 
 .in +1c
 .ti -1c
-.RI "VDS_HANDLE \fBm_sessionHandle\fP"
+.RI "PSO_HANDLE \fBm_sessionHandle\fP"
 .br
 .RI "\fIPointer to the psaSession struct. \fP"
 .in -1c
@@ -84,33 +84,33 @@ Definition at line 30 of file vdsSession.
 
 .in +1c
 .ti -1c
-.RI "class \fBvdsFastMap\fP"
+.RI "class \fBpsoFastMap\fP"
 .br
 .ti -1c
-.RI "class \fBvdsFolder\fP"
+.RI "class \fBpsoFolder\fP"
 .br
 .ti -1c
-.RI "class \fBvdsHashMap\fP"
+.RI "class \fBpsoHashMap\fP"
 .br
 .ti -1c
-.RI "class \fBvdsLifo\fP"
+.RI "class \fBpsoLifo\fP"
 .br
 .ti -1c
-.RI "class \fBvdsQueue\fP"
+.RI "class \fBpsoQueue\fP"
 .br
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "vdsSession::vdsSession ()"
+.SS "psoSession::psoSession ()"
 .PP
-.SS "virtual vdsSession::~vdsSession ()\fC [virtual]\fP"
+.SS "virtual psoSession::~psoSession ()\fC [virtual]\fP"
 .PP
 Terminate the current session and destroy this object. 
 .PP
 An implicit call to Rollback is executed by this destructor. 
 .SH "Member Function Documentation"
 .PP 
-.SS "void vdsSession::Commit ()"
+.SS "void psoSession::Commit ()"
 .PP
 Commit all insertions and deletions (of the current session) executed since the previous call to Commit or Rollback. 
 .PP
@@ -120,11 +120,11 @@ Note: the internal calls executed by the engine to satisfy this request cannot f
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsSession::CreateObject (const std::string & objectName, vdsObjectDefinition * pDefinition)"
+.SS "void psoSession::CreateObject (const std::string & objectName, psoObjectDefinition * pDefinition)"
 .PP
 Create a new object in shared memory. 
 .PP
@@ -139,11 +139,11 @@ The creation of the object only becomes permanent after a call to Commit.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsSession::CreateObject (const char * objectName, size_t nameLengthInBytes, vdsObjectDefinition * pDefinition)"
+.SS "void psoSession::CreateObject (const char * objectName, size_t nameLengthInBytes, psoObjectDefinition * pDefinition)"
 .PP
 Create a new object in shared memory. 
 .PP
@@ -160,11 +160,11 @@ The creation of the object only becomes permanent after a call to Commit.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsSession::DestroyObject (const std::string & objectName)"
+.SS "void psoSession::DestroyObject (const std::string & objectName)"
 .PP
 Destroy an existing object in shared memory. 
 .PP
@@ -177,11 +177,11 @@ The destruction of the object only becomes permanent after a call to Commit.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsSession::DestroyObject (const char * objectName, size_t nameLengthInBytes)"
+.SS "void psoSession::DestroyObject (const char * objectName, size_t nameLengthInBytes)"
 .PP
 Destroy an existing object in shared memory. 
 .PP
@@ -196,11 +196,11 @@ The destruction of the object only becomes permanent after a call to Commit.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsSession::ErrorMsg (char * message, size_t msgLengthInBytes)"
+.SS "void psoSession::ErrorMsg (char * message, size_t msgLengthInBytes)"
 .PP
 Return the error message associated with the last error(s). 
 .PP
@@ -217,11 +217,11 @@ Caveat, some basic errors cannot be captured, if the provided handles (session h
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "std::string& vdsSession::ErrorMsg (std::string & message)"
+.SS "std::string& psoSession::ErrorMsg (std::string & message)"
 .PP
 Return the error message associated with the last error(s). 
 .PP
@@ -234,11 +234,11 @@ Caveat, some basic errors cannot be captured, if the provided handles (session h
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsSession::GetInfo (vdsInfo * pInfo)"
+.SS "void psoSession::GetInfo (psoInfo * pInfo)"
 .PP
 Return information on the current status of the VDS (Virtual Data Space). 
 .PP
@@ -246,16 +246,16 @@ The fetched information is mainly about the current status of the memory allocat
 .PP
 \fBParameters:\fP
 .RS 4
-\fIpInfo\fP A pointer to the vdsInfo structure.
+\fIpInfo\fP A pointer to the psoInfo structure.
 .RE
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsSession::GetStatus (const std::string & objectName, vdsObjStatus * pStatus)"
+.SS "void psoSession::GetStatus (const std::string & objectName, psoObjStatus * pStatus)"
 .PP
 Return the status of the named object. 
 .PP
@@ -263,16 +263,16 @@ Return the status of the named object.
 .RS 4
 \fIobjectName\fP The fully qualified name of the object. 
 .br
-\fIpStatus\fP A pointer to the vdsObjStatus structure.
+\fIpStatus\fP A pointer to the psoObjStatus structure.
 .RE
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsSession::GetStatus (const char * objectName, size_t nameLengthInBytes, vdsObjStatus * pStatus)"
+.SS "void psoSession::GetStatus (const char * objectName, size_t nameLengthInBytes, psoObjStatus * pStatus)"
 .PP
 Return the status of the named object. 
 .PP
@@ -282,16 +282,16 @@ Return the status of the named object.
 .br
 \fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator. 
 .br
-\fIpStatus\fP A pointer to the vdsObjStatus structure.
+\fIpStatus\fP A pointer to the psoObjStatus structure.
 .RE
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsSession::Init ()"
+.SS "void psoSession::Init ()"
 .PP
 This function initializes a session. 
 .PP
@@ -301,21 +301,21 @@ Upon normal termination, the current transaction is rolled back. You MUST explic
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "int vdsSession::LastError ()"
+.SS "int psoSession::LastError ()"
 .PP
 Return the last error seen in previous calls (of the current session). 
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsSession::Rollback ()"
+.SS "void psoSession::Rollback ()"
 .PP
 Rollback all insertions and deletions (of the current session) executed since the previous call to Commit or Rollback. 
 .PP
@@ -325,34 +325,34 @@ Note: the internal calls executed by the engine to satisfy this request cannot f
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
 .SH "Friends And Related Function Documentation"
 .PP 
-.SS "friend class vdsFastMap\fC [friend]\fP"
+.SS "friend class psoFastMap\fC [friend]\fP"
 .PP
-Definition at line 237 of file vdsSession.
-.SS "friend class vdsFolder\fC [friend]\fP"
+Definition at line 237 of file psoSession.
+.SS "friend class psoFolder\fC [friend]\fP"
 .PP
-Definition at line 238 of file vdsSession.
-.SS "friend class vdsHashMap\fC [friend]\fP"
+Definition at line 238 of file psoSession.
+.SS "friend class psoHashMap\fC [friend]\fP"
 .PP
-Definition at line 239 of file vdsSession.
-.SS "friend class vdsLifo\fC [friend]\fP"
+Definition at line 239 of file psoSession.
+.SS "friend class psoLifo\fC [friend]\fP"
 .PP
-Definition at line 240 of file vdsSession.
-.SS "friend class vdsQueue\fC [friend]\fP"
+Definition at line 240 of file psoSession.
+.SS "friend class psoQueue\fC [friend]\fP"
 .PP
-Definition at line 241 of file vdsSession.
+Definition at line 241 of file psoSession.
 .SH "Member Data Documentation"
 .PP 
-.SS "VDS_HANDLE \fBvdsSession::m_sessionHandle\fP\fC [private]\fP"
+.SS "PSO_HANDLE \fBpsoSession::m_sessionHandle\fP\fC [private]\fP"
 .PP
 Pointer to the psaSession struct. 
 .PP
-Definition at line 235 of file vdsSession.
+Definition at line 235 of file psoSession.
 
 .SH "Author"
 .PP 

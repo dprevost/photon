@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 #include "API/HashMap.h"
 
@@ -27,74 +27,74 @@ const bool expectedToPass = false;
 int main( int argc, char * argv[] )
 {
 #if defined(USE_DBC)
-   VDS_HANDLE objHandle, sessionHandle;
+   PSO_HANDLE objHandle, sessionHandle;
    int errcode;
    const char * key  = "My Key";
    const char * data = "My Data";
    psaHashMapEntry entry;
-   vdsObjectDefinition mapDef = { 
-      VDS_HASH_MAP, 
+   psoObjectDefinition mapDef = { 
+      PSO_HASH_MAP, 
       1, 
-      { VDS_KEY_VAR_STRING, 0, 4, 10 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 4, 10 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
-   vdsObjectDefinition folderDef = { 
-      VDS_FOLDER, 
+   psoObjectDefinition folderDef = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
 
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/ahfwh",
                               strlen("/ahfwh"),
                               &folderDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/ahfwh/test",
                               strlen("/ahfwh/test"),
                               &mapDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapOpen( sessionHandle,
+   errcode = psoHashMapOpen( sessionHandle,
                              "/ahfwh/test",
                              strlen("/ahfwh/test"),
                              &objHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsHashMapInsert( objHandle,
+   errcode = psoHashMapInsert( objHandle,
                                key,
                                6,
                                data,
                                7 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

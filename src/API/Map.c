@@ -16,10 +16,10 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vdsFastMap.h>
+#include <photon/psoFastMap.h>
 #include "API/Map.h"
 #include "API/Session.h"
-#include <photon/vdsErrors.h>
+#include <photon/psoErrors.h>
 #include "API/CommonObject.h"
 #include "API/DataDefinition.h"
 
@@ -29,17 +29,17 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFastMapClose( VDS_HANDLE objectHandle )
+int psoFastMapClose( PSO_HANDLE objectHandle )
 {
    psaMap * pHashMap;
    psnMap * pVDSHashMap;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    
    pHashMap = (psaMap *) objectHandle;
-   if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
+   if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
    
    if ( pHashMap->object.type != PSA_MAP ) {
-      return VDS_WRONG_TYPE_HANDLE;
+      return PSO_WRONG_TYPE_HANDLE;
    }
    
    if ( ! pHashMap->object.pSession->terminated ) {
@@ -55,24 +55,24 @@ int vdsFastMapClose( VDS_HANDLE objectHandle )
                memset( &pHashMap->iterator, 0, sizeof(psnHashMapItem) );
             }
             else {
-               errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+               errcode = PSO_OBJECT_CANNOT_GET_LOCK;
             }
          }
 
-         if ( errcode == VDS_OK ) {
+         if ( errcode == PSO_OK ) {
             errcode = psaCommonObjClose( &pHashMap->object );
          }
          psaCommonUnlock( &pHashMap->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
-   if ( errcode == VDS_OK ) {
+   if ( errcode == PSO_OK ) {
       /*
        *
        */
@@ -92,7 +92,7 @@ int vdsFastMapClose( VDS_HANDLE objectHandle )
    }
    else {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -100,24 +100,24 @@ int vdsFastMapClose( VDS_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFastMapDefinition( VDS_HANDLE             objectHandle,
-                          vdsObjectDefinition ** ppDefinition )
+int psoFastMapDefinition( PSO_HANDLE             objectHandle,
+                          psoObjectDefinition ** ppDefinition )
 {
    psaMap * pHashMap;
    psnMap * pVDSHashMap;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnSessionContext * pContext;
    
    pHashMap = (psaMap *) objectHandle;
-   if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
+   if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pHashMap->object.type != PSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSA_MAP ) return PSO_WRONG_TYPE_HANDLE;
 
    pContext = &pHashMap->object.pSession->context;
 
    if ( ppDefinition == NULL ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
 
    if ( ! pHashMap->object.pSession->terminated ) {
@@ -127,24 +127,24 @@ int vdsFastMapDefinition( VDS_HANDLE             objectHandle,
          errcode = psaGetDefinition( pHashMap->pDefinition,
                                       pVDSHashMap->numFields,
                                       ppDefinition );
-         if ( errcode == VDS_OK ) {
-            (*ppDefinition)->type = VDS_FAST_MAP;
+         if ( errcode == PSO_OK ) {
+            (*ppDefinition)->type = PSO_FAST_MAP;
             memcpy( &(*ppDefinition)->key, 
                     &pVDSHashMap->keyDef, 
-                    sizeof(vdsKeyDefinition) );
+                    sizeof(psoKeyDefinition) );
          }
          psaCommonUnlock( &pHashMap->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -152,36 +152,36 @@ int vdsFastMapDefinition( VDS_HANDLE             objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFastMapDelete( VDS_HANDLE   objectHandle,
+int psoFastMapDelete( PSO_HANDLE   objectHandle,
                       const void * key,
                       size_t       keyLength )
 {
    psaMap * pHashMap;
    psnMap * pVDSHashMap;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
    pHashMap = (psaMap *) objectHandle;
-   if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
+   if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
    
    if ( pHashMap->object.type != PSA_MAP ) {
-      return VDS_WRONG_TYPE_HANDLE;
+      return PSO_WRONG_TYPE_HANDLE;
    }
    
    if ( key == NULL ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+         g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
    if ( keyLength == 0 ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+         g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    if ( pHashMap->editMode == 0 ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_OBJECT_IS_READ_ONLY );
-      return VDS_OBJECT_IS_READ_ONLY;
+         g_psoErrorHandle, PSO_OBJECT_IS_READ_ONLY );
+      return PSO_OBJECT_IS_READ_ONLY;
    }
    
    if ( ! pHashMap->object.pSession->terminated ) {
@@ -193,21 +193,21 @@ int vdsFastMapDelete( VDS_HANDLE   objectHandle,
                              key,
                              keyLength,
                              &pHashMap->object.pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
 
          psaCommonUnlock( &pHashMap->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
 
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
       errcode = pscGetLastError( &pHashMap->object.pSession->context.errorHandler );
@@ -218,38 +218,38 @@ int vdsFastMapDelete( VDS_HANDLE   objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFastMapEdit( VDS_HANDLE   sessionHandle,
+int psoFastMapEdit( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
                     size_t       nameLengthInBytes,
-                    VDS_HANDLE * objectHandle )
+                    PSO_HANDLE * objectHandle )
 {
    psaSession * pSession;
    psaMap * pHashMap = NULL;
    psnMap * pVDSHashMap;
    int errcode;
    
-   if ( objectHandle == NULL ) return VDS_NULL_HANDLE;
+   if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
    *objectHandle = NULL;
 
    pSession = (psaSession*) sessionHandle;
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( hashMapName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
-      return VDS_INVALID_OBJECT_NAME;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      return PSO_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    
    pHashMap = (psaMap *) malloc(sizeof(psaMap));
    if (  pHashMap == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
-      return VDS_NOT_ENOUGH_HEAP_MEMORY;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
    
    memset( pHashMap, 0, sizeof(psaMap) );
@@ -259,12 +259,12 @@ int vdsFastMapEdit( VDS_HANDLE   sessionHandle,
    if ( ! pHashMap->object.pSession->terminated ) {
 
       errcode = psaCommonObjOpen( &pHashMap->object,
-                                   VDS_FAST_MAP,
+                                   PSO_FAST_MAP,
                                    PSA_UPDATE_RO,
                                    hashMapName,
                                    nameLengthInBytes );
-      if ( errcode == VDS_OK ) {
-         *objectHandle = (VDS_HANDLE) pHashMap;
+      if ( errcode == PSO_OK ) {
+         *objectHandle = (PSO_HANDLE) pHashMap;
          pHashMap->editMode = 1;
          
          pVDSHashMap = (psnMap *) pHashMap->object.pMyVdsObject;
@@ -282,7 +282,7 @@ int vdsFastMapEdit( VDS_HANDLE   sessionHandle,
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
 
    return errcode;
@@ -290,33 +290,33 @@ int vdsFastMapEdit( VDS_HANDLE   sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFastMapEmpty( VDS_HANDLE objectHandle )
+int psoFastMapEmpty( PSO_HANDLE objectHandle )
 {
    psaMap * pHashMap;
    psnMap * pVDSHashMap;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
    
    pHashMap = (psaMap *) objectHandle;
-   if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
+   if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
    
    if ( pHashMap->object.type != PSA_MAP ) {
-      return VDS_WRONG_TYPE_HANDLE;
+      return PSO_WRONG_TYPE_HANDLE;
    }
    
    if ( pHashMap->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( pHashMap->editMode == 0 ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_OBJECT_IS_READ_ONLY );
-      return VDS_OBJECT_IS_READ_ONLY;
+         g_psoErrorHandle, PSO_OBJECT_IS_READ_ONLY );
+      return PSO_OBJECT_IS_READ_ONLY;
    }
 
    if ( ! psaCommonLock( &pHashMap->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
@@ -327,7 +327,7 @@ int vdsFastMapEmpty( VDS_HANDLE objectHandle )
       ok = psnMapRelease( pVDSHashMap,
                            pHashMap->iterator.pHashItem,
                            &pHashMap->object.pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
 
       if ( ! ok ) goto error_handler_unlock;
       
@@ -338,15 +338,15 @@ int vdsFastMapEmpty( VDS_HANDLE objectHandle )
 
    psaCommonUnlock( &pHashMap->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pHashMap->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
       errcode = pscGetLastError( &pHashMap->object.pSession->context.errorHandler );
@@ -357,7 +357,7 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFastMapGet( VDS_HANDLE   objectHandle,
+int psoFastMapGet( PSO_HANDLE   objectHandle,
                    const void * key,
                    size_t       keyLength,
                    void       * buffer,
@@ -366,33 +366,33 @@ int vdsFastMapGet( VDS_HANDLE   objectHandle,
 {
    psaMap * pHashMap;
    psnMap * pVDSHashMap;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
    void * ptr;
    
    pHashMap = (psaMap *) objectHandle;
-   if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
+   if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pHashMap->object.type != PSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSA_MAP ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( key == NULL || buffer == NULL || returnedLength == NULL) {
-      errcode = VDS_NULL_POINTER;
+      errcode = PSO_NULL_POINTER;
       goto error_handler;
    }
    if ( keyLength == 0 ) {
-      errcode = VDS_INVALID_LENGTH;
+      errcode = PSO_INVALID_LENGTH;
       goto error_handler;
    }
 
    *returnedLength = 0;
 
    if ( pHashMap->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pHashMap->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
    
@@ -403,7 +403,7 @@ int vdsFastMapGet( VDS_HANDLE   objectHandle,
       ok = psnMapRelease( pVDSHashMap,
                            pHashMap->iterator.pHashItem,
                            &pHashMap->object.pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
 
       if ( ! ok ) goto error_handler_unlock;
       
@@ -416,7 +416,7 @@ int vdsFastMapGet( VDS_HANDLE   objectHandle,
                     &pHashMap->iterator.pHashItem,
                     bufferLength,
                     &pHashMap->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
    *returnedLength = pHashMap->iterator.pHashItem->dataLength;
@@ -425,15 +425,15 @@ int vdsFastMapGet( VDS_HANDLE   objectHandle,
 
    psaCommonUnlock( &pHashMap->object );
    
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pHashMap->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
       errcode = pscGetLastError( &pHashMap->object.pSession->context.errorHandler );
@@ -444,7 +444,7 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFastMapGetFirst( VDS_HANDLE   objectHandle,
+int psoFastMapGetFirst( PSO_HANDLE   objectHandle,
                         void       * key,
                         size_t       keyLength,
                         void       * buffer,
@@ -454,34 +454,34 @@ int vdsFastMapGetFirst( VDS_HANDLE   objectHandle,
 {
    psaMap * pHashMap;
    psnMap * pVDSHashMap;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
    void * ptr;
    
    pHashMap = (psaMap *) objectHandle;
-   if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
+   if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pHashMap->object.type != PSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSA_MAP ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( buffer == NULL || retDataLength == NULL || retKeyLength == NULL ||
       key == NULL ) {
-      errcode = VDS_NULL_POINTER;
+      errcode = PSO_NULL_POINTER;
       goto error_handler;
    }
    *retDataLength = *retKeyLength = 0;
    
    if ( keyLength == 0 ) {
-      errcode = VDS_INVALID_LENGTH;
+      errcode = PSO_INVALID_LENGTH;
       goto error_handler;
    }
    
    if ( pHashMap->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pHashMap->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
@@ -492,7 +492,7 @@ int vdsFastMapGetFirst( VDS_HANDLE   objectHandle,
       ok = psnMapRelease( pVDSHashMap,
                            pHashMap->iterator.pHashItem,
                            &pHashMap->object.pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
 
       if ( ! ok ) goto error_handler_unlock;
 
@@ -504,7 +504,7 @@ int vdsFastMapGetFirst( VDS_HANDLE   objectHandle,
                          keyLength,
                          bufferLength,
                          &pHashMap->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
    *retDataLength = pHashMap->iterator.pHashItem->dataLength;
@@ -515,15 +515,15 @@ int vdsFastMapGetFirst( VDS_HANDLE   objectHandle,
 
    psaCommonUnlock( &pHashMap->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pHashMap->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
       errcode = pscGetLastError( &pHashMap->object.pSession->context.errorHandler );
@@ -534,7 +534,7 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFastMapGetNext( VDS_HANDLE   objectHandle,
+int psoFastMapGetNext( PSO_HANDLE   objectHandle,
                        void       * key,
                        size_t       keyLength,
                        void       * buffer,
@@ -544,39 +544,39 @@ int vdsFastMapGetNext( VDS_HANDLE   objectHandle,
 {
    psaMap * pHashMap;
    psnMap * pVDSHashMap;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
    void * ptr;
    
    pHashMap = (psaMap *) objectHandle;
-   if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
+   if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pHashMap->object.type != PSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSA_MAP ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( buffer == NULL || retDataLength == NULL || retKeyLength == NULL ||
       key == NULL ) {
-      errcode = VDS_NULL_POINTER;
+      errcode = PSO_NULL_POINTER;
       goto error_handler;
    }
    *retDataLength = *retKeyLength = 0;
 
    if ( keyLength == 0 ) {
-      errcode = VDS_INVALID_LENGTH;
+      errcode = PSO_INVALID_LENGTH;
       goto error_handler;
    }
    
    if ( pHashMap->iterator.pHashItem == NULL ) {
-      errcode = VDS_INVALID_ITERATOR;
+      errcode = PSO_INVALID_ITERATOR;
       goto error_handler;
    }
    
    if ( pHashMap->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pHashMap->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
@@ -587,7 +587,7 @@ int vdsFastMapGetNext( VDS_HANDLE   objectHandle,
                         keyLength,
                         bufferLength,
                         &pHashMap->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
    
    *retDataLength = pHashMap->iterator.pHashItem->dataLength;
@@ -598,15 +598,15 @@ int vdsFastMapGetNext( VDS_HANDLE   objectHandle,
 
    psaCommonUnlock( &pHashMap->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pHashMap->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
       errcode = pscGetLastError( &pHashMap->object.pSession->context.errorHandler );
@@ -617,7 +617,7 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFastMapInsert( VDS_HANDLE   objectHandle,
+int psoFastMapInsert( PSO_HANDLE   objectHandle,
                       const void * key,
                       size_t       keyLength,
                       const void * data,
@@ -625,40 +625,40 @@ int vdsFastMapInsert( VDS_HANDLE   objectHandle,
 {
    psaMap * pHashMap;
    psnMap * pVDSHashMap;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
    pHashMap = (psaMap *) objectHandle;
-   if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
+   if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pHashMap->object.type != PSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSA_MAP ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( key == NULL || data == NULL ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+         g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
    if ( keyLength == 0 ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+         g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    if ( keyLength < pHashMap->minKeyLength || keyLength > pHashMap->maxKeyLength ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+         g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
 
    if ( dataLength < pHashMap->minLength || dataLength > pHashMap->maxLength ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+         g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
 
    if ( pHashMap->editMode == 0 ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_OBJECT_IS_READ_ONLY );
-      return VDS_OBJECT_IS_READ_ONLY;
+         g_psoErrorHandle, PSO_OBJECT_IS_READ_ONLY );
+      return PSO_OBJECT_IS_READ_ONLY;
    }
 
    if ( ! pHashMap->object.pSession->terminated ) {
@@ -672,21 +672,21 @@ int vdsFastMapInsert( VDS_HANDLE   objectHandle,
                              data,
                              dataLength,
                              &pHashMap->object.pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
 
          psaCommonUnlock( &pHashMap->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
 
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
       errcode = pscGetLastError( &pHashMap->object.pSession->context.errorHandler );
@@ -697,38 +697,38 @@ int vdsFastMapInsert( VDS_HANDLE   objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFastMapOpen( VDS_HANDLE   sessionHandle,
+int psoFastMapOpen( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
                     size_t       nameLengthInBytes,
-                    VDS_HANDLE * objectHandle )
+                    PSO_HANDLE * objectHandle )
 {
    psaSession * pSession;
    psaMap * pHashMap = NULL;
    psnMap * pVDSHashMap;
    int errcode;
    
-   if ( objectHandle == NULL ) return VDS_NULL_HANDLE;
+   if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
    *objectHandle = NULL;
 
    pSession = (psaSession*) sessionHandle;
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( hashMapName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
-      return VDS_INVALID_OBJECT_NAME;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      return PSO_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    
    pHashMap = (psaMap *) malloc(sizeof(psaMap));
    if (  pHashMap == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
-      return VDS_NOT_ENOUGH_HEAP_MEMORY;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
    
    memset( pHashMap, 0, sizeof(psaMap) );
@@ -738,12 +738,12 @@ int vdsFastMapOpen( VDS_HANDLE   sessionHandle,
    if ( ! pHashMap->object.pSession->terminated ) {
 
       errcode = psaCommonObjOpen( &pHashMap->object,
-                                   VDS_FAST_MAP,
+                                   PSO_FAST_MAP,
                                    PSA_READ_ONLY,
                                    hashMapName,
                                    nameLengthInBytes );
-      if ( errcode == VDS_OK ) {
-         *objectHandle = (VDS_HANDLE) pHashMap;
+      if ( errcode == PSO_OK ) {
+         *objectHandle = (PSO_HANDLE) pHashMap;
          pHashMap->editMode = 0;
          
          pVDSHashMap = (psnMap *) pHashMap->object.pMyVdsObject;
@@ -764,7 +764,7 @@ int vdsFastMapOpen( VDS_HANDLE   sessionHandle,
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
 
    return errcode;
@@ -772,7 +772,7 @@ int vdsFastMapOpen( VDS_HANDLE   sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFastMapReplace( VDS_HANDLE   objectHandle,
+int psoFastMapReplace( PSO_HANDLE   objectHandle,
                        const void * key,
                        size_t       keyLength,
                        const void * data,
@@ -780,29 +780,29 @@ int vdsFastMapReplace( VDS_HANDLE   objectHandle,
 {
    psaMap * pHashMap;
    psnMap * pVDSHashMap;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
    pHashMap = (psaMap *) objectHandle;
-   if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
+   if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pHashMap->object.type != PSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSA_MAP ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( key == NULL || data == NULL ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+         g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
    if ( keyLength == 0 || dataLength == 0 ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+         g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
 
    if ( pHashMap->editMode == 0 ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_OBJECT_IS_READ_ONLY );
-      return VDS_OBJECT_IS_READ_ONLY;
+         g_psoErrorHandle, PSO_OBJECT_IS_READ_ONLY );
+      return PSO_OBJECT_IS_READ_ONLY;
    }
 
    if ( ! pHashMap->object.pSession->terminated ) {
@@ -816,21 +816,21 @@ int vdsFastMapReplace( VDS_HANDLE   objectHandle,
                               data,
                               dataLength,
                               &pHashMap->object.pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
 
          psaCommonUnlock( &pHashMap->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
 
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
       errcode = pscGetLastError( &pHashMap->object.pSession->context.errorHandler );
@@ -841,24 +841,24 @@ int vdsFastMapReplace( VDS_HANDLE   objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFastMapStatus( VDS_HANDLE     objectHandle,
-                      vdsObjStatus * pStatus )
+int psoFastMapStatus( PSO_HANDLE     objectHandle,
+                      psoObjStatus * pStatus )
 {
    psaMap * pHashMap;
    psnMap * pVDSHashMap;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnSessionContext * pContext;
    
    pHashMap = (psaMap *) objectHandle;
-   if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
+   if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pHashMap->object.type != PSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSA_MAP ) return PSO_WRONG_TYPE_HANDLE;
 
    pContext = &pHashMap->object.pSession->context;
 
    if ( pStatus == NULL ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
 
    if ( ! pHashMap->object.pSession->terminated ) {
@@ -874,21 +874,21 @@ int vdsFastMapStatus( VDS_HANDLE     objectHandle,
             psnUnlock( &pVDSHashMap->memObject, pContext );
          }
          else {
-            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+            errcode = PSO_OBJECT_CANNOT_GET_LOCK;
          }
       
          psaCommonUnlock( &pHashMap->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -905,20 +905,20 @@ int psaMapFirst( psaMap          * pHashMap,
                  psaHashMapEntry * pEntry )
 {
    psnMap * pVDSHashMap;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
-   VDS_PRE_CONDITION( pHashMap != NULL );
-   VDS_PRE_CONDITION( pEntry   != NULL );
-   VDS_PRE_CONDITION( pHashMap->object.type == PSA_MAP );
+   PSO_PRE_CONDITION( pHashMap != NULL );
+   PSO_PRE_CONDITION( pEntry   != NULL );
+   PSO_PRE_CONDITION( pHashMap->object.type == PSA_MAP );
    
    if ( pHashMap->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pHashMap->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
@@ -929,7 +929,7 @@ int psaMapFirst( psaMap          * pHashMap,
       ok = psnMapRelease( pVDSHashMap,
                            pHashMap->iterator.pHashItem,
                            &pHashMap->object.pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       
       if ( ! ok ) goto error_handler_unlock;
 
@@ -941,7 +941,7 @@ int psaMapFirst( psaMap          * pHashMap,
                          (size_t) -1,
                          (size_t) -1,
                          &pHashMap->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
    GET_PTR( pEntry->data, pHashMap->iterator.pHashItem->dataOffset, void );
@@ -951,15 +951,15 @@ int psaMapFirst( psaMap          * pHashMap,
    
    psaCommonUnlock( &pHashMap->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pHashMap->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
       errcode = pscGetLastError( &pHashMap->object.pSession->context.errorHandler );
@@ -974,21 +974,21 @@ int psaMapNext( psaMap          * pHashMap,
                 psaHashMapEntry * pEntry )
 {
    psnMap * pVDSHashMap;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
-   VDS_PRE_CONDITION( pHashMap != NULL );
-   VDS_PRE_CONDITION( pEntry   != NULL );
-   VDS_PRE_CONDITION( pHashMap->object.type == PSA_MAP );
-   VDS_PRE_CONDITION( pHashMap->iterator.pHashItem != NULL );
+   PSO_PRE_CONDITION( pHashMap != NULL );
+   PSO_PRE_CONDITION( pEntry   != NULL );
+   PSO_PRE_CONDITION( pHashMap->object.type == PSA_MAP );
+   PSO_PRE_CONDITION( pHashMap->iterator.pHashItem != NULL );
    
    if ( pHashMap->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pHashMap->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
@@ -999,7 +999,7 @@ int psaMapNext( psaMap          * pHashMap,
                         (size_t) -1,
                         (size_t) -1,
                         &pHashMap->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
    
    GET_PTR( pEntry->data, pHashMap->iterator.pHashItem->dataOffset, void );
@@ -1009,15 +1009,15 @@ int psaMapNext( psaMap          * pHashMap,
 
    psaCommonUnlock( &pHashMap->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pHashMap->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -1065,23 +1065,23 @@ int psaMapRetrieve( psaMap       * pHashMap,
                     psaDataEntry * pEntry )
 {
    psnMap * pVDSHashMap;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
    psnHashItem * pHashItem;
    
-   VDS_PRE_CONDITION( pHashMap != NULL );
-   VDS_PRE_CONDITION( key      != NULL );
-   VDS_PRE_CONDITION( pEntry   != NULL );
-   VDS_PRE_CONDITION( keyLength > 0 );
-   VDS_PRE_CONDITION( pHashMap->object.type == PSA_MAP );
+   PSO_PRE_CONDITION( pHashMap != NULL );
+   PSO_PRE_CONDITION( key      != NULL );
+   PSO_PRE_CONDITION( pEntry   != NULL );
+   PSO_PRE_CONDITION( keyLength > 0 );
+   PSO_PRE_CONDITION( pHashMap->object.type == PSA_MAP );
 
    if ( pHashMap->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pHashMap->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
@@ -1092,7 +1092,7 @@ int psaMapRetrieve( psaMap       * pHashMap,
       ok = psnMapRelease( pVDSHashMap,
                            pHashMap->iterator.pHashItem,
                            &pHashMap->object.pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler_unlock;
 
       memset( &pHashMap->iterator, 0, sizeof(psnHashMapItem) );
@@ -1104,7 +1104,7 @@ int psaMapRetrieve( psaMap       * pHashMap,
                     &pHashItem,
                     (size_t) -1,
                     &pHashMap->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
    GET_PTR( pEntry->data, pHashItem->dataOffset, void );
@@ -1112,15 +1112,15 @@ int psaMapRetrieve( psaMap       * pHashMap,
 
    psaCommonUnlock( &pHashMap->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pHashMap->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {

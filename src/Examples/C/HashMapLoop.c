@@ -21,15 +21,15 @@
 #endif
 
 /* Some globals to make our life simpler */
-VDS_HANDLE session1 = NULL;
-VDS_HANDLE map1 = NULL;
+PSO_HANDLE session1 = NULL;
+PSO_HANDLE map1 = NULL;
 const char* mapName = "My Hash Map Loop";
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void cleanup()
 {
-   if ( map1 != NULL ) vdsHashMapClose( map1 );
+   if ( map1 != NULL ) psoHashMapClose( map1 );
    
    if ( session1 != NULL ) vdsExitSession( session1 );
 
@@ -47,36 +47,36 @@ int createMap()
   
    /* If the map already exists, we remove it. */
    rc = vdsDestroyObject( session1, mapName, strlen(mapName) );
-   if ( rc == VDS_NO_SUCH_OBJECT || rc == VDS_OK ) {
+   if ( rc == PSO_NO_SUCH_OBJECT || rc == PSO_OK ) {
       /*
        * We must commit the change if we just destroyed it otherwise it
        * will still exist! 
        */
       rc = vdsCommit( session1 );
       if ( rc != 0 ) {
-         vdsErrorMsg(session1, msg, 256 );
+         psoErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
          return -1;
       }
       
-      rc = vdsCreateObject( session1, mapName, strlen(mapName), VDS_HASH_MAP );
+      rc = vdsCreateObject( session1, mapName, strlen(mapName), PSO_HASH_MAP );
       if ( rc != 0 ) {
-         vdsErrorMsg(session1, msg, 256 );
+         psoErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
          return -1;
       }
       /* Commit the creation of the object */
       rc = vdsCommit( session1 );
       if ( rc != 0 ) {
-         vdsErrorMsg(session1, msg, 256 );
+         psoErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
          return -1;
       }
 
-      rc = vdsHashMapOpen( session1, mapName, strlen(mapName), &map1 );
+      rc = psoHashMapOpen( session1, mapName, strlen(mapName), &map1 );
       if ( rc != 0 ) {
-         vdsErrorMsg(session1, msg, 256 );
-         fprintf( stderr, "At line %d, vdsHashMapOpen error: %s\n", __LINE__, msg );
+         psoErrorMsg(session1, msg, 256 );
+         fprintf( stderr, "At line %d, psoHashMapOpen error: %s\n", __LINE__, msg );
          return -1;
       }
       /*
@@ -86,11 +86,11 @@ int createMap()
        */
       rc = readData( countryCode, description );
       while ( rc > 0 ) {
-         rc = vdsHashMapInsert( map1, countryCode, 2, 
+         rc = psoHashMapInsert( map1, countryCode, 2, 
             description, strlen(description) );
          if ( rc != 0 ) {
-            vdsErrorMsg(session1, msg, 256 );
-            fprintf( stderr, "At line %d, vdsHashMapInsert error: %s\n", __LINE__, msg );
+            psoErrorMsg(session1, msg, 256 );
+            fprintf( stderr, "At line %d, psoHashMapInsert error: %s\n", __LINE__, msg );
             return -1;
          }
 
@@ -99,7 +99,7 @@ int createMap()
    }
    else { /* A problem when calling destroy */
 
-      vdsErrorMsg(session1, msg, 256 );
+      psoErrorMsg(session1, msg, 256 );
       fprintf( stderr, "At line %d, vdsDestroyObject error: %s\n", __LINE__, msg );
       return -1;
    }
@@ -143,20 +143,20 @@ int main( int argc, char *argv[] )
    if ( rc != 0 ) { cleanup(); return 1; }
    fprintf( stderr, "Map created\n" );
    
-   rc = vdsHashMapGetFirst( map1, countryCode, 2, description, 80, 
+   rc = psoHashMapGetFirst( map1, countryCode, 2, description, 80, 
                             &keyLength, &dataLength );
-   while ( rc == VDS_OK ) {
+   while ( rc == PSO_OK ) {
       countryCode[keyLength] = 0;
       description[dataLength] = 0;
       fprintf( stderr, "Country code: %s, country: %s\n", countryCode,
          description );
 
-      rc = vdsHashMapGetNext( map1, countryCode, 2, description, 80, 
+      rc = psoHashMapGetNext( map1, countryCode, 2, description, 80, 
                               &keyLength, &dataLength );
    }
 
-   if ( rc != VDS_REACHED_THE_END ) {
-      vdsErrorMsg(session1, msg, 256 );
+   if ( rc != PSO_REACHED_THE_END ) {
+      psoErrorMsg(session1, msg, 256 );
       fprintf( stderr, "At line %d, Hash Map loop abnormal error: %s\n", __LINE__, msg );
       cleanup();
       return 1;

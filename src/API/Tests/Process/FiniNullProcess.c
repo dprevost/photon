@@ -35,7 +35,7 @@ int main( int argc, char * argv[] )
    else {
       errcode = psaProcessInit( &process, "10701" );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       return 0;
    }

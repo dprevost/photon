@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 #include "API/Folder.h"
 
@@ -26,93 +26,93 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE objHandle, sessionHandle;
+   PSO_HANDLE objHandle, sessionHandle;
    int errcode;
-   vdsObjStatus status;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjStatus status;
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
 
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/afsp",
                               strlen("/afsp"),
                               &def );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderOpen( sessionHandle,
+   errcode = psoFolderOpen( sessionHandle,
                             "/afsp",
                             strlen("/afsp"),
                             &objHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsFolderStatus( sessionHandle, &status );
-   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+   errcode = psoFolderStatus( sessionHandle, &status );
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderStatus( NULL, &status );
-   if ( errcode != VDS_NULL_HANDLE ) {
+   errcode = psoFolderStatus( NULL, &status );
+   if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderStatus( objHandle, NULL );
-   if ( errcode != VDS_NULL_POINTER ) {
+   errcode = psoFolderStatus( objHandle, NULL );
+   if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = vdsFolderStatus( objHandle, &status );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFolderStatus( objHandle, &status );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Close the session and try to act on the object */
 
-   errcode = vdsExitSession( sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoExitSession( sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderStatus( objHandle, &status );
-   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+   errcode = psoFolderStatus( objHandle, &status );
+   if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdsExit();
+   psoExit();
 
    return 0;
 }

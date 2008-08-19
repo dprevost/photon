@@ -19,7 +19,7 @@
 CLEANFILES = *~
 
 OUTPUT_FILES =                      \
-        ../include/photon/vdsErrors.h \
+        ../include/photon/psoErrors.h \
         ../Nucleus/VdsErrorHandler.c \
         ../Nucleus/VdsErrorHandler.h 
 

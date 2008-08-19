@@ -40,9 +40,9 @@ int main()
    ok = psnTxAddOps( pTx,
                       PSN_TX_ADD_DATA,
                       parentOffset, 
-                      VDS_FOLDER,
+                      PSO_FOLDER,
                       childOffset,
-                      VDS_FOLDER,
+                      PSO_FOLDER,
                       &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

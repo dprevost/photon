@@ -29,7 +29,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define VDS_MAX_MSG_LOG 1024
+#define PSO_MAX_MSG_LOG 1024
 
 enum wdMsgSeverity
 {

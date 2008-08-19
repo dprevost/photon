@@ -21,7 +21,7 @@
 
 void psnBlockGroupFini( psnBlockGroup * pGroup )
 {
-   VDS_PRE_CONDITION( pGroup != NULL );
+   PSO_PRE_CONDITION( pGroup != NULL );
 
    psnMemBitmapFini(  &pGroup->bitmap );
    psnLinkedListFini( &pGroup->freeList );
@@ -48,10 +48,10 @@ void psnBlockGroupInit( psnBlockGroup  * pGroup,
    size_t currentLength;
    psnFreeBufferNode * firstNode;
    
-   VDS_PRE_CONDITION( pGroup != NULL );
-   VDS_PRE_CONDITION( firstBlockOffset != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( numBlocks > 0 );
-   VDS_PRE_CONDITION( objType > PSN_IDENT_FIRST && objType < PSN_IDENT_LAST );
+   PSO_PRE_CONDITION( pGroup != NULL );
+   PSO_PRE_CONDITION( firstBlockOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( numBlocks > 0 );
+   PSO_PRE_CONDITION( objType > PSN_IDENT_FIRST && objType < PSN_IDENT_LAST );
 
    pGroup->numBlocks = numBlocks;
    pGroup->objType = PSN_IDENT_PAGE_GROUP & objType;

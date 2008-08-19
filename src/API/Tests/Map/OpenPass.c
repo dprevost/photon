@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 #include "API/Map.h"
 
@@ -26,18 +26,18 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE objHandle,  sessionHandle;
-   VDS_HANDLE objHandle2, sessionHandle2;
+   PSO_HANDLE objHandle,  sessionHandle;
+   PSO_HANDLE objHandle2, sessionHandle2;
    int errcode;
    char junk[12];
-   vdsObjectDefinition mapDef = { 
-      VDS_FAST_MAP, 
+   psoObjectDefinition mapDef = { 
+      PSO_FAST_MAP, 
       1, 
-      { VDS_KEY_VAR_STRING, 0, 4, 10 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 4, 10 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
-   vdsObjectDefinition folderDef = { 
-      VDS_FOLDER, 
+   psoObjectDefinition folderDef = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
@@ -46,113 +46,113 @@ int main( int argc, char * argv[] )
    memset( junk, 0, 12 );
    
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsInitSession( &sessionHandle2 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/amop",
                               strlen("/amop"),
                               &folderDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/amop/test",
                               strlen("/amop/test"),
                               &mapDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsFastMapOpen( NULL,
+   errcode = psoFastMapOpen( NULL,
                              "/amop/test",
                              strlen("/amop/test"),
                              &objHandle );
-   if ( errcode != VDS_NULL_HANDLE ) {
+   if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   objHandle = (VDS_HANDLE) junk;
-   errcode = vdsFastMapOpen( objHandle,
+   objHandle = (PSO_HANDLE) junk;
+   errcode = psoFastMapOpen( objHandle,
                              "/amop/test",
                              strlen("/amop/test"),
                              &objHandle );
-   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapOpen( sessionHandle,
+   errcode = psoFastMapOpen( sessionHandle,
                              NULL,
                              strlen("/amop/test"),
                              &objHandle );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapOpen( sessionHandle,
+   errcode = psoFastMapOpen( sessionHandle,
                              "/amop/test",
                              0,
                              &objHandle );
-   if ( errcode != VDS_INVALID_LENGTH ) {
+   if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapOpen( sessionHandle,
+   errcode = psoFastMapOpen( sessionHandle,
                              "/amop/test",
                              strlen("/amop/test"),
                              NULL );
-   if ( errcode != VDS_NULL_HANDLE ) {
+   if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = vdsFastMapOpen( sessionHandle,
+   errcode = psoFastMapOpen( sessionHandle,
                              "/amop/test",
                              strlen("/amop/test"),
                              &objHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapOpen( sessionHandle2,
+   errcode = psoFastMapOpen( sessionHandle2,
                              "/amop/test",
                              strlen("/amop/test"),
                              &objHandle2 );
-   if ( errcode != VDS_OBJECT_IS_IN_USE ) {
+   if ( errcode != PSO_OBJECT_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   vdsExit();
+   psoExit();
 
    return 0;
 }

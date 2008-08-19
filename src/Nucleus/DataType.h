@@ -36,9 +36,9 @@ BEGIN_C_DECLS
  */
 struct psnFieldDef
 {
-   enum vdsFieldType type;
+   enum psoFieldType type;
 
-   char name[VDS_MAX_FIELD_LENGTH];
+   char name[PSO_MAX_FIELD_LENGTH];
 
    uint32_t length1;
    uint32_t length2;

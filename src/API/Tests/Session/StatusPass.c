@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 #include "API/CommonObject.h"
 
@@ -26,99 +26,99 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE sessionHandle;
+   PSO_HANDLE sessionHandle;
    int errcode;
-   vdsObjStatus status;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjStatus status;
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
 
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/ASSP",
                               strlen("/assp"),
                               &def );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsGetStatus( NULL,
+   errcode = psoGetStatus( NULL,
                            "/ASSP",
                            strlen("/assp"),
                            &status );
-   if ( errcode != VDS_NULL_HANDLE ) {
+   if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetStatus( sessionHandle,
+   errcode = psoGetStatus( sessionHandle,
                            NULL,
                            strlen("/assp"),
                            &status );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetStatus( sessionHandle,
+   errcode = psoGetStatus( sessionHandle,
                            "/ASSP",
                            0,
                            &status );
-   if ( errcode != VDS_INVALID_LENGTH ) {
+   if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetStatus( sessionHandle,
+   errcode = psoGetStatus( sessionHandle,
                            "/ASSP",
                            strlen("/assp"),
                            NULL );
-   if ( errcode != VDS_NULL_POINTER ) {
+   if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = vdsGetStatus( sessionHandle,
+   errcode = psoGetStatus( sessionHandle,
                            "/ASSP",
                            strlen("/assp"),
                            &status );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Close the process and try to act on the session */
 
-   vdsExit();
+   psoExit();
    
-   errcode = vdsGetStatus( sessionHandle,
+   errcode = psoGetStatus( sessionHandle,
                            "/ASSP",
                            strlen("/assp"),
                            &status );
-   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+   if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

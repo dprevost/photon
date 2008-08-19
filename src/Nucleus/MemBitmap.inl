@@ -29,8 +29,8 @@ bool psnIsBufferFree( psnMemBitmap * pBitmap,
    size_t inUnitsOfAllocation;
    ptrdiff_t localOffset;
    
-   VDS_PRE_CONDITION( pBitmap != NULL );
-   VDS_PRE_CONDITION( offset  != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pBitmap != NULL );
+   PSO_PRE_CONDITION( offset  != PSN_NULL_OFFSET );
 
    localOffset = offset - pBitmap->baseAddressOffset;
    if ( localOffset < 0 ) return false;
@@ -60,9 +60,9 @@ void psnSetBufferAllocated( psnMemBitmap * pBitmap,
    size_t inUnitsOfAllocation;
    ptrdiff_t localOffset;
    
-   VDS_PRE_CONDITION( pBitmap != NULL );
-   VDS_PRE_CONDITION( offset  != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( length > 0 );
+   PSO_PRE_CONDITION( pBitmap != NULL );
+   PSO_PRE_CONDITION( offset  != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( length > 0 );
    
    localOffset = offset - pBitmap->baseAddressOffset;
 
@@ -98,9 +98,9 @@ void psnSetBufferFree( psnMemBitmap * pBitmap,
    size_t inUnitsOfAllocation;
    ptrdiff_t localOffset;
 
-   VDS_PRE_CONDITION( pBitmap != NULL );
-   VDS_PRE_CONDITION( offset  != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( length > 0 );
+   PSO_PRE_CONDITION( pBitmap != NULL );
+   PSO_PRE_CONDITION( offset  != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( length > 0 );
 
    localOffset = offset - pBitmap->baseAddressOffset;
    
@@ -131,9 +131,9 @@ inline
 size_t psnGetBitmapLengthBytes( size_t length, size_t allocationUnit )
 {
    /* Testing that it is non-zero and a power of two */
-   VDS_PRE_CONDITION( allocationUnit > 0  && 
+   PSO_PRE_CONDITION( allocationUnit > 0  && 
                       ! (allocationUnit & (allocationUnit-1)) );
-   VDS_PRE_CONDITION( length > 0 );
+   PSO_PRE_CONDITION( length > 0 );
    
    /* We "align" it to a multiple of allocationUnit */
    length = ((length - 1) / allocationUnit + 1 ) * allocationUnit;

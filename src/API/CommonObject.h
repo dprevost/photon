@@ -40,7 +40,7 @@ typedef struct psaCommonObject
     * The type of object (as seen from the API, not the engine).
     *
     * Note: always put this first to help debug (for example, in gdb:
-    * "print * (int *) some_vds_handle" will show the object type).
+    * "print * (int *) some_pso_handle" will show the object type).
     */
    psaObjetType type;
 
@@ -69,7 +69,7 @@ typedef struct psaCommonObject
 /** Common function for opening data containers. */
 VDSF_API_EXPORT
 int psaCommonObjOpen( psaCommonObject    * pObject,
-                      enum vdsObjectType   objectType, 
+                      enum psoObjectType   objectType, 
                       psaEditMode          editMode,
                       const char         * objectName,
                       size_t               nameLengthInBytes );
@@ -92,11 +92,11 @@ bool psaCommonLock( psaCommonObject * pObject )
 {
    bool ok = true;
    
-   VDS_PRE_CONDITION( pObject != NULL );
+   PSO_PRE_CONDITION( pObject != NULL );
 
    if ( g_protectionIsNeeded ) {
       ok = pscTryAcquireThreadLock( &pObject->pSession->mutex, LOCK_TIMEOUT );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
    }
    
    return ok;
@@ -112,7 +112,7 @@ bool psaCommonLock( psaCommonObject * pObject )
 static inline
 void psaCommonUnlock( psaCommonObject * pObject )
 {
-   VDS_PRE_CONDITION( pObject != NULL );
+   PSO_PRE_CONDITION( pObject != NULL );
 
    if ( g_protectionIsNeeded ) {
       pscReleaseThreadLock( &pObject->pSession->mutex );
@@ -135,7 +135,7 @@ void psaCommonUnlock( psaCommonObject * pObject )
 static inline
 void psaCommonCloseObject( psaCommonObject * pObject )
 {
-   VDS_PRE_CONDITION( pObject != NULL );
+   PSO_PRE_CONDITION( pObject != NULL );
 
    pObject->pObjectContext = NULL;
 }

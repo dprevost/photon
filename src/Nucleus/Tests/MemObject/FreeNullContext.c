@@ -26,10 +26,10 @@ int main()
 {
 #if defined(USE_DBC)
    psnMemObject* pObj;
-   vdsErrors errcode;
+   psoErrors errcode;
    psnSessionContext context;
    unsigned char *buff[9];
-   vdstObjDummy *pDummy;
+   psotObjDummy *pDummy;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    pObj = &pDummy->memObject;
@@ -38,7 +38,7 @@ int main()
                                 PSN_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

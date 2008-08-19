@@ -16,10 +16,10 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vdsQueue.h>
+#include <photon/psoQueue.h>
 #include "API/Queue.h"
 #include "API/Session.h"
-#include <photon/vdsErrors.h>
+#include <photon/psoErrors.h>
 #include "API/CommonObject.h"
 #include "API/DataDefinition.h"
 
@@ -29,16 +29,16 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsQueueClose( VDS_HANDLE objectHandle )
+int psoQueueClose( PSO_HANDLE objectHandle )
 {
    psaQueue * pQueue;
    psnQueue * pVDSQueue;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    
    pQueue = (psaQueue *) objectHandle;
-   if ( pQueue == NULL ) return VDS_NULL_HANDLE;
+   if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( ! pQueue->object.pSession->terminated ) {
       if ( psaCommonLock( &pQueue->object ) ) {
@@ -52,25 +52,25 @@ int vdsQueueClose( VDS_HANDLE objectHandle )
                pQueue->iterator = NULL;
             }
             else {
-               errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+               errcode = PSO_OBJECT_CANNOT_GET_LOCK;
             }
          }
 
-         if ( errcode == VDS_OK ) {
+         if ( errcode == PSO_OK ) {
             errcode = psaCommonObjClose( &pQueue->object );
             pQueue->pDefinition = NULL;
          }
          psaCommonUnlock( &pQueue->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
 
-   if ( errcode == VDS_OK ) {
+   if ( errcode == PSO_OK ) {
       /*
        * Memory might still be around even after it is released, so we make 
        * sure future access with the handle fails by setting the type wrong!
@@ -80,7 +80,7 @@ int vdsQueueClose( VDS_HANDLE objectHandle )
    }
    else {
       pscSetError( &pQueue->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -88,24 +88,24 @@ int vdsQueueClose( VDS_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsQueueDefinition( VDS_HANDLE             objectHandle,
-                        vdsObjectDefinition ** ppDefinition )
+int psoQueueDefinition( PSO_HANDLE             objectHandle,
+                        psoObjectDefinition ** ppDefinition )
 {
    psaQueue * pQueue;
    psnQueue * pVDSQueue;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnSessionContext * pContext;
    
    pQueue = (psaQueue *) objectHandle;
-   if ( pQueue == NULL ) return VDS_NULL_HANDLE;
+   if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    pContext = &pQueue->object.pSession->context;
 
    if ( ppDefinition == NULL ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
 
    if ( ! pQueue->object.pSession->terminated ) {
@@ -115,19 +115,19 @@ int vdsQueueDefinition( VDS_HANDLE             objectHandle,
          errcode = psaGetDefinition( pQueue->pDefinition,
                                       pVDSQueue->numFields,
                                       ppDefinition );
-         if ( errcode == VDS_OK ) (*ppDefinition)->type = VDS_QUEUE;
+         if ( errcode == PSO_OK ) (*ppDefinition)->type = PSO_QUEUE;
          psaCommonUnlock( &pQueue->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -135,35 +135,35 @@ int vdsQueueDefinition( VDS_HANDLE             objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsQueueGetFirst( VDS_HANDLE   objectHandle,
+int psoQueueGetFirst( PSO_HANDLE   objectHandle,
                       void       * buffer,
                       size_t       bufferLength,
                       size_t     * returnedLength )
 {
    psaQueue * pQueue;
    psnQueue * pVDSQueue;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
    pQueue = (psaQueue *) objectHandle;
-   if ( pQueue == NULL ) return VDS_NULL_HANDLE;
+   if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( buffer == NULL || returnedLength == NULL ) {
-      errcode = VDS_NULL_POINTER;
+      errcode = PSO_NULL_POINTER;
       goto error_handler;
    }
 
    *returnedLength = 0;
 
    if ( pQueue->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pQueue->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
    
@@ -174,18 +174,18 @@ int vdsQueueGetFirst( VDS_HANDLE   objectHandle,
       ok = psnQueueRelease( pVDSQueue,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler_unlock;
       
       pQueue->iterator = NULL;
    }
 
    ok = psnQueueGet( pVDSQueue,
-                      VDS_FIRST,
+                      PSO_FIRST,
                       &pQueue->iterator,
                       bufferLength,
                       &pQueue->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
    *returnedLength = pQueue->iterator->dataLength;
@@ -193,15 +193,15 @@ int vdsQueueGetFirst( VDS_HANDLE   objectHandle,
 
    psaCommonUnlock( &pQueue->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pQueue->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pQueue->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -213,51 +213,51 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsQueueGetNext( VDS_HANDLE   objectHandle,
+int psoQueueGetNext( PSO_HANDLE   objectHandle,
                      void       * buffer,
                      size_t       bufferLength,
                      size_t     * returnedLength )
 {
    psaQueue * pQueue;
    psnQueue * pVDSQueue;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
    pQueue = (psaQueue *) objectHandle;
-   if ( pQueue == NULL ) return VDS_NULL_HANDLE;
+   if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( buffer == NULL || returnedLength == NULL ) {
-      errcode = VDS_NULL_POINTER;
+      errcode = PSO_NULL_POINTER;
       goto error_handler;
    }
 
    *returnedLength = 0;
 
    if ( pQueue->iterator == NULL ) {
-      errcode = VDS_INVALID_ITERATOR;
+      errcode = PSO_INVALID_ITERATOR;
       goto error_handler;
    }
    
    if ( pQueue->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pQueue->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
    pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
 
    ok = psnQueueGet( pVDSQueue,
-                      VDS_NEXT,
+                      PSO_NEXT,
                       &pQueue->iterator,
                       bufferLength,
                       &pQueue->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
    
    *returnedLength = pQueue->iterator->dataLength;
@@ -265,15 +265,15 @@ int vdsQueueGetNext( VDS_HANDLE   objectHandle,
 
    psaCommonUnlock( &pQueue->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pQueue->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pQueue->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -285,38 +285,38 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsQueueOpen( VDS_HANDLE   sessionHandle,
+int psoQueueOpen( PSO_HANDLE   sessionHandle,
                   const char * queueName,
                   size_t       nameLengthInBytes,
-                  VDS_HANDLE * objectHandle )
+                  PSO_HANDLE * objectHandle )
 {
    psaSession * pSession;
    psaQueue * pQueue = NULL;
    psnQueue * pVDSQueue;
    int errcode;
    
-   if ( objectHandle == NULL ) return VDS_NULL_HANDLE;
+   if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
    *objectHandle = NULL;
 
    pSession = (psaSession*) sessionHandle;
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( queueName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
-      return VDS_INVALID_OBJECT_NAME;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      return PSO_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    
    pQueue = (psaQueue *) malloc(sizeof(psaQueue));
    if (  pQueue == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
-      return VDS_NOT_ENOUGH_HEAP_MEMORY;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
    
    memset( pQueue, 0, sizeof(psaQueue) );
@@ -325,12 +325,12 @@ int vdsQueueOpen( VDS_HANDLE   sessionHandle,
 
    if ( ! pQueue->object.pSession->terminated ) {
       errcode = psaCommonObjOpen( &pQueue->object,
-                                   VDS_QUEUE,
+                                   PSO_QUEUE,
                                    PSA_READ_WRITE,
                                    queueName,
                                    nameLengthInBytes );
-      if ( errcode == VDS_OK ) {
-         *objectHandle = (VDS_HANDLE) pQueue;
+      if ( errcode == PSO_OK ) {
+         *objectHandle = (PSO_HANDLE) pQueue;
          pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
          GET_PTR( pQueue->pDefinition, 
                   pVDSQueue->dataDefOffset,
@@ -342,7 +342,7 @@ int vdsQueueOpen( VDS_HANDLE   sessionHandle,
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
 
    return errcode;
@@ -350,34 +350,34 @@ int vdsQueueOpen( VDS_HANDLE   sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsQueuePop( VDS_HANDLE   objectHandle,
+int psoQueuePop( PSO_HANDLE   objectHandle,
                  void       * buffer,
                  size_t       bufferLength,
                  size_t     * returnedLength )
 {
    psaQueue * pQueue;
    psnQueue * pVDSQueue;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
    pQueue = (psaQueue *) objectHandle;
-   if ( pQueue == NULL ) return VDS_NULL_HANDLE;
+   if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( buffer == NULL || returnedLength == NULL ) {
-      errcode = VDS_NULL_POINTER;
+      errcode = PSO_NULL_POINTER;
       goto error_handler;
    }
    *returnedLength = 0;
    
    if ( pQueue->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pQueue->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
@@ -388,7 +388,7 @@ int vdsQueuePop( VDS_HANDLE   objectHandle,
       ok = psnQueueRelease( pVDSQueue,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler_unlock;
 
       pQueue->iterator = NULL;
@@ -399,7 +399,7 @@ int vdsQueuePop( VDS_HANDLE   objectHandle,
                          PSN_QUEUE_FIRST,
                          bufferLength,
                          &pQueue->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
    *returnedLength = pQueue->iterator->dataLength;
@@ -407,15 +407,15 @@ int vdsQueuePop( VDS_HANDLE   objectHandle,
 
    psaCommonUnlock( &pQueue->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pQueue->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pQueue->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -427,30 +427,30 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsQueuePush( VDS_HANDLE   objectHandle,
+int psoQueuePush( PSO_HANDLE   objectHandle,
                   const void * data,
                   size_t       dataLength )
 {
    psaQueue * pQueue;
    psnQueue * pVDSQueue;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
    pQueue = (psaQueue *) objectHandle;
-   if ( pQueue == NULL ) return VDS_NULL_HANDLE;
+   if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( data == NULL ) {
       pscSetError( &pQueue->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+         g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
    
    if ( dataLength < pQueue->minLength || dataLength > pQueue->maxLength ) {
       pscSetError( &pQueue->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+         g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    
    if ( ! pQueue->object.pSession->terminated ) {
@@ -462,21 +462,21 @@ int vdsQueuePush( VDS_HANDLE   objectHandle,
                                dataLength,
                                PSN_QUEUE_LAST,
                                &pQueue->object.pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
 
          psaCommonUnlock( &pQueue->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pQueue->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -488,30 +488,30 @@ int vdsQueuePush( VDS_HANDLE   objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsQueuePushNow( VDS_HANDLE   objectHandle,
+int psoQueuePushNow( PSO_HANDLE   objectHandle,
                      const void * data,
                      size_t       dataLength )
 {
    psaQueue * pQueue;
    psnQueue * pVDSQueue;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
    pQueue = (psaQueue *) objectHandle;
-   if ( pQueue == NULL ) return VDS_NULL_HANDLE;
+   if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( data == NULL ) {
       pscSetError( &pQueue->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+         g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
    
    if ( dataLength < pQueue->minLength || dataLength > pQueue->maxLength ) {
       pscSetError( &pQueue->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+         g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    
    if ( ! pQueue->object.pSession->terminated ) {
@@ -523,21 +523,21 @@ int vdsQueuePushNow( VDS_HANDLE   objectHandle,
                                   dataLength,
                                   PSN_QUEUE_LAST,
                                   &pQueue->object.pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
 
          psaCommonUnlock( &pQueue->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pQueue->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -549,24 +549,24 @@ int vdsQueuePushNow( VDS_HANDLE   objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsQueueStatus( VDS_HANDLE     objectHandle,
-                    vdsObjStatus * pStatus )
+int psoQueueStatus( PSO_HANDLE     objectHandle,
+                    psoObjStatus * pStatus )
 {
    psaQueue * pQueue;
    psnQueue * pVDSQueue;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnSessionContext * pContext;
    
    pQueue = (psaQueue *) objectHandle;
-   if ( pQueue == NULL ) return VDS_NULL_HANDLE;
+   if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    pContext = &pQueue->object.pSession->context;
 
    if ( pStatus == NULL ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
 
    if ( ! pQueue->object.pSession->terminated ) {
@@ -581,21 +581,21 @@ int vdsQueueStatus( VDS_HANDLE     objectHandle,
             psnUnlock( &pVDSQueue->memObject, pContext );
          }
          else {
-            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+            errcode = PSO_OBJECT_CANNOT_GET_LOCK;
          }
       
          psaCommonUnlock( &pQueue->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -611,20 +611,20 @@ int psaQueueFirst( psaQueue     * pQueue,
                    psaDataEntry * pEntry )
 {
    psnQueue * pVDSQueue;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
-   VDS_PRE_CONDITION( pQueue != NULL );
-   VDS_PRE_CONDITION( pEntry != NULL );
-   VDS_PRE_CONDITION( pQueue->object.type == PSA_QUEUE );
+   PSO_PRE_CONDITION( pQueue != NULL );
+   PSO_PRE_CONDITION( pEntry != NULL );
+   PSO_PRE_CONDITION( pQueue->object.type == PSA_QUEUE );
    
    if ( pQueue->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pQueue->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
@@ -635,18 +635,18 @@ int psaQueueFirst( psaQueue     * pQueue,
       ok = psnQueueRelease( pVDSQueue,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler_unlock;
       
       pQueue->iterator = NULL;
    }
 
    ok = psnQueueGet( pVDSQueue,
-                      VDS_FIRST,
+                      PSO_FIRST,
                       &pQueue->iterator,
                       (size_t) -1,
                       &pQueue->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
    pEntry->data = pQueue->iterator->data;
@@ -654,15 +654,15 @@ int psaQueueFirst( psaQueue     * pQueue,
       
    psaCommonUnlock( &pQueue->object );
    
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pQueue->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pQueue->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -678,32 +678,32 @@ int psaQueueNext( psaQueue     * pQueue,
                   psaDataEntry * pEntry )
 {
    psnQueue * pVDSQueue;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
-   VDS_PRE_CONDITION( pQueue != NULL );
-   VDS_PRE_CONDITION( pEntry != NULL );
-   VDS_PRE_CONDITION( pQueue->object.type == PSA_QUEUE );
-   VDS_PRE_CONDITION( pQueue->iterator != NULL );
+   PSO_PRE_CONDITION( pQueue != NULL );
+   PSO_PRE_CONDITION( pEntry != NULL );
+   PSO_PRE_CONDITION( pQueue->object.type == PSA_QUEUE );
+   PSO_PRE_CONDITION( pQueue->iterator != NULL );
    
    if ( pQueue->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pQueue->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
    pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
 
    ok = psnQueueGet( pVDSQueue,
-                      VDS_NEXT,
+                      PSO_NEXT,
                       &pQueue->iterator,
                       (size_t) -1,
                       &pQueue->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
    pEntry->data = pQueue->iterator->data;
@@ -711,15 +711,15 @@ int psaQueueNext( psaQueue     * pQueue,
 
    psaCommonUnlock( &pQueue->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pQueue->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pQueue->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -735,20 +735,20 @@ int psaQueueRemove( psaQueue     * pQueue,
                     psaDataEntry * pEntry )
 {
    psnQueue * pVDSQueue;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
-   VDS_PRE_CONDITION( pQueue != NULL );
-   VDS_PRE_CONDITION( pEntry != NULL )
-   VDS_PRE_CONDITION( pQueue->object.type == PSA_QUEUE )
+   PSO_PRE_CONDITION( pQueue != NULL );
+   PSO_PRE_CONDITION( pEntry != NULL )
+   PSO_PRE_CONDITION( pQueue->object.type == PSA_QUEUE )
 
    if ( pQueue->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pQueue->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
@@ -759,7 +759,7 @@ int psaQueueRemove( psaQueue     * pQueue,
       ok = psnQueueRelease( pVDSQueue,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler_unlock;
 
       pQueue->iterator = NULL;
@@ -770,7 +770,7 @@ int psaQueueRemove( psaQueue     * pQueue,
                          PSN_QUEUE_FIRST,
                          (size_t) -1,
                          &pQueue->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
    pEntry->data = (const void *) pQueue->iterator->data;
@@ -778,15 +778,15 @@ int psaQueueRemove( psaQueue     * pQueue,
       
    psaCommonUnlock( &pQueue->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pQueue->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pQueue->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {

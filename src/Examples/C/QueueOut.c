@@ -24,9 +24,9 @@
 
 void cleanup()
 {
-   if ( control != NULL )  vdsHashMapClose( control );
-   if ( inQueue != NULL )  vdsQueueClose( inQueue );
-   if ( outQueue != NULL ) vdsQueueClose( outQueue );
+   if ( control != NULL )  psoHashMapClose( control );
+   if ( inQueue != NULL )  psoQueueClose( inQueue );
+   if ( outQueue != NULL ) psoQueueClose( outQueue );
    
    if ( session != NULL ) vdsExitSession( session );
 
@@ -41,26 +41,26 @@ int initObjects()
    char msg[256];
    int controlData;
 
-   rc = vdsHashMapOpen( session, controlName, strlen(controlName), &control );
+   rc = psoHashMapOpen( session, controlName, strlen(controlName), &control );
    if ( rc != 0 ) {
-      vdsErrorMsg(session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsHashMapOpen error: %s\n", __LINE__, msg );
+      psoErrorMsg(session, msg, 256 );
+      fprintf( stderr, "At line %d, psoHashMapOpen error: %s\n", __LINE__, msg );
       cleanup();
       return -1;
    }
 
    controlData = 1;
-   rc = vdsHashMapReplace( control, outProcessKey, strlen(outProcessKey), 
+   rc = psoHashMapReplace( control, outProcessKey, strlen(outProcessKey), 
       &controlData, sizeof(int) );
    if ( rc != 0 ) {
-      vdsErrorMsg(session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsHashMapInsert error: %s\n", __LINE__, msg );
+      psoErrorMsg(session, msg, 256 );
+      fprintf( stderr, "At line %d, psoHashMapInsert error: %s\n", __LINE__, msg );
       return -1;
    }
 
    rc = vdsCommit( session );
    if ( rc != 0 ) {
-      vdsErrorMsg( session, msg, 256 );
+      psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
       return -1;
    }
@@ -76,7 +76,7 @@ int timetoShutdown()
    int controlData = 0;
    size_t length;
    
-   rc = vdsHashMapGet( control, shutdownKey, strlen(shutdownKey), 
+   rc = psoHashMapGet( control, shutdownKey, strlen(shutdownKey), 
       &controlData, sizeof(int), &length );
    if ( rc == 0 && controlData == 2 ) return 1;
 
@@ -122,17 +122,17 @@ int main( int argc, char *argv[] )
    rc = initObjects();
    if ( rc != 0 ) { cleanup(); return 1; }
    
-   rc = vdsQueueOpen( session, outQueueName, strlen(outQueueName), &outQueue );
+   rc = psoQueueOpen( session, outQueueName, strlen(outQueueName), &outQueue );
    if ( rc != 0 ) {
-      vdsErrorMsg(session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsQueueOpen error: %s\n", __LINE__, msg );
+      psoErrorMsg(session, msg, 256 );
+      fprintf( stderr, "At line %d, psoQueueOpen error: %s\n", __LINE__, msg );
       cleanup();
       return -1;
    }
 
    while( 1 ) {
-      rc = vdsQueuePop( outQueue, &outStruct, sizeof(outStruct), &length );
-      if ( rc == VDS_IS_EMPTY || rc == VDS_ITEM_IS_IN_USE ) {
+      rc = psoQueuePop( outQueue, &outStruct, sizeof(outStruct), &length );
+      if ( rc == PSO_IS_EMPTY || rc == PSO_ITEM_IS_IN_USE ) {
          /* Nothing to do - might as well commit */
          vdsCommit( session );
          if ( boolShutdown ) break;
@@ -150,8 +150,8 @@ int main( int argc, char *argv[] )
          continue;
       }
       else if ( rc != 0 ) {
-         vdsErrorMsg(session, msg, 256 );
-         fprintf( stderr, "At line %d, vdsQueuePop error: %s\n", __LINE__, msg );
+         psoErrorMsg(session, msg, 256 );
+         fprintf( stderr, "At line %d, psoQueuePop error: %s\n", __LINE__, msg );
          cleanup();
          return -1;
       }

@@ -24,7 +24,7 @@
 #include "Nucleus/SessionContext.h"
 
 VDSF_ENGINE_EXPORT
-pscErrMsgHandle g_vdsErrorHandle;
+pscErrMsgHandle g_psoErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -27,8 +27,8 @@ int main()
    psnFolder * pTopFolder;
    psnSessionContext context;
    bool ok;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
@@ -57,7 +57,7 @@ int main()
    ok = psnTopFolderOpenObject( pTopFolder,
                                  "Test1/Test2",
                                  strlen("Test1/Test2"),
-                                 VDS_FOLDER,
+                                 PSO_FOLDER,
                                  NULL,
                                  &context );
 

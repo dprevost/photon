@@ -16,103 +16,103 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Common/Common.h"
-#include <photon/vdsSession>
-#include <photon/vdsSession.h>
-#include <photon/vdsErrors.h>
+#include <photon/psoSession>
+#include <photon/psoSession.h>
+#include <photon/psoErrors.h>
 #include "API/Session.h"
-#include <photon/vdsException>
+#include <photon/psoException>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsSession::vdsSession()
+psoSession::psoSession()
    : m_sessionHandle ( NULL )
 {
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsSession::~vdsSession()
+psoSession::~psoSession()
 {
-   vdsExitSession( m_sessionHandle );
+   psoExitSession( m_sessionHandle );
    m_sessionHandle = NULL;
 }
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsSession::Commit()
+void psoSession::Commit()
 {
-   int rc = vdsCommit( m_sessionHandle );
+   int rc = psoCommit( m_sessionHandle );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsSession::Commit" );
+      throw psoException( rc, m_sessionHandle, "psoSession::Commit" );
    }
 }
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsSession::CreateObject( const std::string   & objectName,
-                               vdsObjectDefinition * pDefinition )
+void psoSession::CreateObject( const std::string   & objectName,
+                               psoObjectDefinition * pDefinition )
 {
-   int rc = vdsCreateObject( m_sessionHandle,
+   int rc = psoCreateObject( m_sessionHandle,
                              objectName.c_str(),
                              objectName.length(),
                              pDefinition );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsSession::CreateObject" );
+      throw psoException( rc, m_sessionHandle, "psoSession::CreateObject" );
    }
 }
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsSession::CreateObject( const char          * objectName,
+void psoSession::CreateObject( const char          * objectName,
                                size_t                nameLengthInBytes,
-                               vdsObjectDefinition * pDefinition )
+                               psoObjectDefinition * pDefinition )
 {
-   int rc = vdsCreateObject( m_sessionHandle,
+   int rc = psoCreateObject( m_sessionHandle,
                              objectName,
                              nameLengthInBytes,
                              pDefinition );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsSession::CreateObject" );
+      throw psoException( rc, m_sessionHandle, "psoSession::CreateObject" );
    }
 }
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsSession::DestroyObject( const std::string & objectName )
+void psoSession::DestroyObject( const std::string & objectName )
 {
-   int rc = vdsDestroyObject( m_sessionHandle,
+   int rc = psoDestroyObject( m_sessionHandle,
                               objectName.c_str(),
                               objectName.length() );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsSession::DestroyObject" );
+      throw psoException( rc, m_sessionHandle, "psoSession::DestroyObject" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsSession::DestroyObject( const char * objectName,
+void psoSession::DestroyObject( const char * objectName,
                                 size_t       nameLengthInBytes )
 {
-   int rc = vdsDestroyObject( m_sessionHandle,
+   int rc = psoDestroyObject( m_sessionHandle,
                               objectName,
                               nameLengthInBytes );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsSession::DestroyObject" );
+      throw psoException( rc, m_sessionHandle, "psoSession::DestroyObject" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 std::string & 
-vdsSession::ErrorMsg( std::string & message )
+psoSession::ErrorMsg( std::string & message )
 {
    char msg[1024];
-   int rc = vdsErrorMsg( m_sessionHandle,
+   int rc = psoErrorMsg( m_sessionHandle,
                          msg,
                          1024 );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsSession::ErrorMsg" );
+      throw psoException( rc, m_sessionHandle, "psoSession::ErrorMsg" );
    }
    message = msg;
    return message;
@@ -120,97 +120,97 @@ vdsSession::ErrorMsg( std::string & message )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsSession::ErrorMsg( char   * message,
+void psoSession::ErrorMsg( char   * message,
                            size_t   msgLengthInBytes )
 {
    // Should be rewritten to use stl strings!!!
-   int rc = vdsErrorMsg( m_sessionHandle,
+   int rc = psoErrorMsg( m_sessionHandle,
                          message,
                          msgLengthInBytes );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsSession::ErrorMsg" );
+      throw psoException( rc, m_sessionHandle, "psoSession::ErrorMsg" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsSession::GetInfo( vdsInfo * pInfo )
+void psoSession::GetInfo( psoInfo * pInfo )
 {
-   int rc = vdsGetInfo( m_sessionHandle, pInfo );
+   int rc = psoGetInfo( m_sessionHandle, pInfo );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsSession::GetInfo" );
+      throw psoException( rc, m_sessionHandle, "psoSession::GetInfo" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsSession::GetStatus( const std::string & objectName,
-                            vdsObjStatus      * pStatus )
+void psoSession::GetStatus( const std::string & objectName,
+                            psoObjStatus      * pStatus )
 {
-   int rc = vdsGetStatus( m_sessionHandle,
+   int rc = psoGetStatus( m_sessionHandle,
                           objectName.c_str(),
                           objectName.length(),
                           pStatus );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsSession::GetStatus" );
+      throw psoException( rc, m_sessionHandle, "psoSession::GetStatus" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsSession::GetStatus( const char   * objectName,
+void psoSession::GetStatus( const char   * objectName,
                             size_t         nameLengthInBytes,
-                            vdsObjStatus * pStatus )
+                            psoObjStatus * pStatus )
 {
-   int rc = vdsGetStatus( m_sessionHandle,
+   int rc = psoGetStatus( m_sessionHandle,
                           objectName,
                           nameLengthInBytes,
                           pStatus );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsSession::GetStatus" );
+      throw psoException( rc, m_sessionHandle, "psoSession::GetStatus" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsSession::Init()
+void psoSession::Init()
 {
-   int rc = vdsInitSession( &m_sessionHandle );
+   int rc = psoInitSession( &m_sessionHandle );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, NULL, "vdsSession::Init" );
+      throw psoException( rc, NULL, "psoSession::Init" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int vdsSession::LastError()
+int psoSession::LastError()
 {
    psaSession* pSession;
    int rc = 0;
    int lastErr = 0;
    
    pSession = (psaSession *) m_sessionHandle;
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          lastErr = pscGetLastError( &pSession->context.errorHandler );
       }
       else {
-         rc = VDS_SESSION_IS_TERMINATED;
+         rc = PSO_SESSION_IS_TERMINATED;
       }
       psaSessionUnlock( pSession );
    }
    else {
-      rc = VDS_SESSION_CANNOT_GET_LOCK;
+      rc = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsSession::ErrorMsg" );
+      throw psoException( rc, m_sessionHandle, "psoSession::ErrorMsg" );
    }
    
    return lastErr;
@@ -218,12 +218,12 @@ int vdsSession::LastError()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsSession::Rollback()
+void psoSession::Rollback()
 {
-   int rc = vdsRollback( m_sessionHandle );
+   int rc = psoRollback( m_sessionHandle );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsSession::Rollback" );
+      throw psoException( rc, m_sessionHandle, "psoSession::Rollback" );
    }
 }
 

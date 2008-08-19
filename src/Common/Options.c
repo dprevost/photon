@@ -132,14 +132,14 @@ bool pscSetSupportedOptions( int               numOpts,
    /* There is no point in supporting all of this if the list
     * of available options is empty...
     */
-   VDS_PRE_CONDITION( numOpts > 0 );
-   VDS_PRE_CONDITION( opts != NULL );
-   VDS_PRE_CONDITION( pHandle != NULL );
+   PSO_PRE_CONDITION( numOpts > 0 );
+   PSO_PRE_CONDITION( opts != NULL );
+   PSO_PRE_CONDITION( pHandle != NULL );
 
    /* Test the integrity of the options */
    for ( i = 0; i < numOpts; ++i ) {
       /* Both short and long are empty */
-      VDS_PRE_CONDITION( 
+      PSO_PRE_CONDITION( 
          ( opts[i].shortOpt   != '\0' && 
            opts[i].shortOpt   != ' '  ) ||
          ( opts[i].longOpt[0] != '\0' && 
@@ -156,7 +156,7 @@ bool pscSetSupportedOptions( int               numOpts,
             break;
          }
       }
-      VDS_PRE_CONDITION( nullTerminatedString == true );
+      PSO_PRE_CONDITION( nullTerminatedString == true );
 
       nullTerminatedString = false;
       for ( k = 0; k < PSC_OPT_ARGUMENT_MSG_LENGTH; ++k ) {
@@ -165,7 +165,7 @@ bool pscSetSupportedOptions( int               numOpts,
             break;
          }
       }
-      VDS_PRE_CONDITION( nullTerminatedString == true );
+      PSO_PRE_CONDITION( nullTerminatedString == true );
 
       nullTerminatedString = false;
       for ( k = 0; k < PSC_OPT_COMMENT_LENGTH; ++k ) {
@@ -174,16 +174,16 @@ bool pscSetSupportedOptions( int               numOpts,
             break;
          }
       }
-      VDS_PRE_CONDITION( nullTerminatedString == true );
+      PSO_PRE_CONDITION( nullTerminatedString == true );
       
       /* Repeated options */
       for ( k = 0; k < i; ++k ) {
          if ( opts[i].shortOpt != '\0' && opts[i].shortOpt != ' ' ) {
-            VDS_PRE_CONDITION( opts[i].shortOpt != opts[k].shortOpt );
+            PSO_PRE_CONDITION( opts[i].shortOpt != opts[k].shortOpt );
          }
          if ( opts[i].longOpt[0] != '\0' && opts[i].longOpt[0] != ' ' ) {
             if ( strlen(opts[i].longOpt) == strlen(opts[i].longOpt) ) {
-               VDS_PRE_CONDITION( strcmp( opts[i].longOpt, 
+               PSO_PRE_CONDITION( strcmp( opts[i].longOpt, 
                                           opts[k].longOpt ) != 0 );
             }
          }
@@ -255,13 +255,13 @@ int pscValidateUserOptions( pscOptionHandle   handle,
    size_t len;
    pscInternalOpt* optStruct = (pscInternalOpt*)handle;
    
-   VDS_PRE_CONDITION( handle != NULL );
-   VDS_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
+   PSO_PRE_CONDITION( handle != NULL );
+   PSO_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
    
-   VDS_PRE_CONDITION( argc > 0 );
-   VDS_PRE_CONDITION( argv != NULL );
+   PSO_PRE_CONDITION( argc > 0 );
+   PSO_PRE_CONDITION( argv != NULL );
    for ( i = 0; i < argc; ++i ) {
-      VDS_PRE_CONDITION( argv[i] != NULL );
+      PSO_PRE_CONDITION( argv[i] != NULL );
    }
    
    if ( optStruct->validated ) {
@@ -504,13 +504,13 @@ bool pscGetShortOptArgument( pscOptionHandle    handle,
    pscInternalOpt * optStruct = (pscInternalOpt *)handle;
    int i;
    
-   VDS_PRE_CONDITION( handle != NULL );
-   VDS_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
+   PSO_PRE_CONDITION( handle != NULL );
+   PSO_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
 
-   VDS_INV_CONDITION( optStruct->pArray != NULL );
-   VDS_INV_CONDITION( optStruct->numOpt > 0 );
+   PSO_INV_CONDITION( optStruct->pArray != NULL );
+   PSO_INV_CONDITION( optStruct->numOpt > 0 );
    
-   VDS_PRE_CONDITION( argument != NULL );
+   PSO_PRE_CONDITION( argument != NULL );
 
    *argument = NULL;
    if ( opt == ' ' || opt == '\0' ) return false;
@@ -566,14 +566,14 @@ bool pscGetLongOptArgument( pscOptionHandle    handle,
    int i;
    bool nullTerminatedString;
    
-   VDS_PRE_CONDITION( handle != NULL );
-   VDS_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
+   PSO_PRE_CONDITION( handle != NULL );
+   PSO_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
 
-   VDS_INV_CONDITION( optStruct->pArray != NULL );
-   VDS_INV_CONDITION( optStruct->numOpt > 0 );
+   PSO_INV_CONDITION( optStruct->pArray != NULL );
+   PSO_INV_CONDITION( optStruct->numOpt > 0 );
    
-   VDS_PRE_CONDITION( opt   != NULL );
-   VDS_PRE_CONDITION( argument != NULL );
+   PSO_PRE_CONDITION( opt   != NULL );
+   PSO_PRE_CONDITION( argument != NULL );
 
    *argument = NULL;
    if ( opt[0] == ' ' || opt[0] == '\0' ) return false;
@@ -633,11 +633,11 @@ bool pscIsShortOptPresent( pscOptionHandle handle,
    pscInternalOpt * optStruct = (pscInternalOpt *)handle;
    int i;
    
-   VDS_PRE_CONDITION( handle != NULL );
-   VDS_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
+   PSO_PRE_CONDITION( handle != NULL );
+   PSO_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
 
-   VDS_INV_CONDITION( optStruct->pArray != NULL );
-   VDS_INV_CONDITION( optStruct->numOpt > 0 );
+   PSO_INV_CONDITION( optStruct->pArray != NULL );
+   PSO_INV_CONDITION( optStruct->numOpt > 0 );
    
    if ( opt == ' ' || opt == '\0' ) return false;
    
@@ -687,13 +687,13 @@ bool pscIsLongOptPresent( pscOptionHandle   handle,
    int i;
    bool nullTerminatedString;
    
-   VDS_PRE_CONDITION( handle != NULL );
-   VDS_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
+   PSO_PRE_CONDITION( handle != NULL );
+   PSO_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
 
-   VDS_INV_CONDITION( optStruct->pArray != NULL );
-   VDS_INV_CONDITION( optStruct->numOpt > 0 );
+   PSO_INV_CONDITION( optStruct->pArray != NULL );
+   PSO_INV_CONDITION( optStruct->numOpt > 0 );
    
-   VDS_PRE_CONDITION( opt   != NULL );
+   PSO_PRE_CONDITION( opt   != NULL );
 
    if ( opt[0] == ' ' || opt[0] == '\0' ) return false;
 
@@ -752,12 +752,12 @@ void pscShowUsage( pscOptionHandle   handle,
    char comment[PSC_OPT_COMMENT_LENGTH];
    pscInternalOpt * optStruct = (pscInternalOpt *)handle;
    
-   VDS_PRE_CONDITION( handle != NULL );
-   VDS_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
-   VDS_INV_CONDITION( optStruct->pArray != NULL );
-   VDS_INV_CONDITION( optStruct->numOpt > 0 );
-   VDS_PRE_CONDITION( progName     != NULL );
-   VDS_PRE_CONDITION( addArguments != NULL );
+   PSO_PRE_CONDITION( handle != NULL );
+   PSO_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
+   PSO_INV_CONDITION( optStruct->pArray != NULL );
+   PSO_INV_CONDITION( optStruct->numOpt > 0 );
+   PSO_PRE_CONDITION( progName     != NULL );
+   PSO_PRE_CONDITION( addArguments != NULL );
 
    max_len = 0;
    for ( i = 0; i < optStruct->numOpt; ++i ) {
@@ -824,8 +824,8 @@ void pscUnsetSupportedOptions( pscOptionHandle handle )
 {
    pscInternalOpt * optStruct = (pscInternalOpt *)handle;
 
-   VDS_PRE_CONDITION( handle != NULL );
-   VDS_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
+   PSO_PRE_CONDITION( handle != NULL );
+   PSO_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
 
    if ( optStruct->pArray != NULL ) free( optStruct->pArray );
    

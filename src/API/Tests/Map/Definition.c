@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 #include "API/Map.h"
 
@@ -34,15 +34,15 @@ struct dummy {
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE sessionHandle, objHandle;
+   PSO_HANDLE sessionHandle, objHandle;
    int errcode;
    struct dummy * data1 = NULL;
    char key[] = "My Key";
    size_t lenData, len;
-   vdsObjectDefinition * pDef = NULL;
-   vdsObjectDefinition * pDefHashMap = NULL;
-   vdsObjectDefinition folderDef = { 
-      VDS_FOLDER, 
+   psoObjectDefinition * pDef = NULL;
+   psoObjectDefinition * pDefHashMap = NULL;
+   psoObjectDefinition folderDef = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
@@ -51,16 +51,16 @@ int main( int argc, char * argv[] )
    lenData = offsetof(struct dummy, bin) + 10;
    data1 = (struct dummy *)malloc( lenData );
    
-   len = offsetof( vdsObjectDefinition, fields ) + 
-      5 * sizeof(vdsFieldDefinition);
-   pDefHashMap = (vdsObjectDefinition *)calloc( len, 1 );
-   pDefHashMap->type = VDS_FAST_MAP;
+   len = offsetof( psoObjectDefinition, fields ) + 
+      5 * sizeof(psoFieldDefinition);
+   pDefHashMap = (psoObjectDefinition *)calloc( len, 1 );
+   pDefHashMap->type = PSO_FAST_MAP;
    pDefHashMap->numFields = 5;
-   pDefHashMap->fields[0].type = VDS_INTEGER;
-   pDefHashMap->fields[1].type = VDS_INTEGER;
-   pDefHashMap->fields[2].type = VDS_STRING;
-   pDefHashMap->fields[3].type = VDS_INTEGER;
-   pDefHashMap->fields[4].type = VDS_VAR_BINARY;
+   pDefHashMap->fields[0].type = PSO_INTEGER;
+   pDefHashMap->fields[1].type = PSO_INTEGER;
+   pDefHashMap->fields[2].type = PSO_STRING;
+   pDefHashMap->fields[3].type = PSO_INTEGER;
+   pDefHashMap->fields[4].type = PSO_VAR_BINARY;
 
    pDefHashMap->fields[0].length = 1;
    pDefHashMap->fields[1].length = 4;
@@ -73,84 +73,84 @@ int main( int argc, char * argv[] )
    strcpy( pDefHashMap->fields[3].name, "field4" );
    strcpy( pDefHashMap->fields[4].name, "field5" );
    
-   pDefHashMap->key.type = VDS_KEY_VAR_STRING;
+   pDefHashMap->key.type = PSO_KEY_VAR_STRING;
    pDefHashMap->key.minLength = 1;
    pDefHashMap->key.maxLength = 0;
    
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/ammd",
                               strlen("/ammd"),
                               &folderDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/ammd/test",
                               strlen("/ammd/test"),
                               pDefHashMap );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapEdit( sessionHandle,
+   errcode = psoFastMapEdit( sessionHandle,
                              "/ammd/test",
                              strlen("/ammd/test"),
                              &objHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Test of the data definition with inserts . */
-   errcode = vdsFastMapInsert( objHandle, key, strlen(key), data1, 
+   errcode = psoFastMapInsert( objHandle, key, strlen(key), data1, 
       offsetof(struct dummy, bin)-1 );
-   if ( errcode != VDS_INVALID_LENGTH ) {
+   if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapInsert( objHandle, key, strlen(key), data1, lenData );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapInsert( objHandle, key, strlen(key), data1, lenData );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsFastMapDefinition( NULL, &pDef );
-   if ( errcode != VDS_NULL_HANDLE ) {
+   errcode = psoFastMapDefinition( NULL, &pDef );
+   if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapDefinition( objHandle, NULL );
-   if ( errcode != VDS_NULL_POINTER ) {
+   errcode = psoFastMapDefinition( objHandle, NULL );
+   if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = vdsFastMapDefinition( objHandle, &pDef );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapDefinition( objHandle, &pDef );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -161,19 +161,19 @@ int main( int argc, char * argv[] )
 
    /* Close the session and try to act on the object */
 
-   errcode = vdsExitSession( sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoExitSession( sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapDefinition( objHandle, &pDef );
-   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+   errcode = psoFastMapDefinition( objHandle, &pDef );
+   if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   vdsExit();
+   psoExit();
    
    return 0;
 }

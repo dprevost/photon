@@ -40,19 +40,19 @@ void cleanup()
    if ( control != NULL ) {
       /* We flush it all before warning QueueWork to exit. */
       vdsCommit( session );
-      rc = vdsHashMapReplace( control, shutdownKey, strlen(shutdownKey), 
+      rc = psoHashMapReplace( control, shutdownKey, strlen(shutdownKey), 
          &controlData, sizeof(int) );
       if ( rc != 0 ) {
-         vdsErrorMsg(session, msg, 256 );
-         fprintf( stderr, "At line %d, vdsHashMapReplace error: %s\n", __LINE__, msg );
+         psoErrorMsg(session, msg, 256 );
+         fprintf( stderr, "At line %d, psoHashMapReplace error: %s\n", __LINE__, msg );
       }
       else {
          vdsCommit( session );
       }
-      vdsHashMapClose( control );
+      psoHashMapClose( control );
    }
-   if ( inQueue != NULL )  vdsQueueClose( inQueue );
-   if ( outQueue != NULL ) vdsQueueClose( outQueue );
+   if ( inQueue != NULL )  psoQueueClose( inQueue );
+   if ( outQueue != NULL ) psoQueueClose( outQueue );
    if ( session != NULL )  vdsExitSession( session );
 
    vdsExit();
@@ -75,52 +75,52 @@ int initObjects()
    /* Commit the destruction of these objects */
    rc = vdsCommit( session );
    if ( rc != 0 ) {
-      vdsErrorMsg( session, msg, 256 );
+      psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
       return -1;
    }
 
    /* Create the folder first, evidently */
-   rc = vdsCreateObject( session, folderName, strlen(folderName), VDS_FOLDER );
+   rc = vdsCreateObject( session, folderName, strlen(folderName), PSO_FOLDER );
    if ( rc != 0 ) {
-      vdsErrorMsg( session, msg, 256 );
+      psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
 
-   rc = vdsCreateObject( session, controlName, strlen(controlName), VDS_HASH_MAP );
+   rc = vdsCreateObject( session, controlName, strlen(controlName), PSO_HASH_MAP );
    if ( rc != 0 ) {
-      vdsErrorMsg( session, msg, 256 );
+      psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
-   rc = vdsCreateObject( session, inQueueName, strlen(inQueueName), VDS_QUEUE );
+   rc = vdsCreateObject( session, inQueueName, strlen(inQueueName), PSO_QUEUE );
    if ( rc != 0 ) {
-      vdsErrorMsg( session, msg, 256 );
+      psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
-   rc = vdsCreateObject( session, outQueueName, strlen(outQueueName), VDS_QUEUE );
+   rc = vdsCreateObject( session, outQueueName, strlen(outQueueName), PSO_QUEUE );
    if ( rc != 0 ) {
-      vdsErrorMsg( session, msg, 256 );
+      psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
 
-   rc = vdsHashMapOpen( session, controlName, strlen(controlName), &control );
+   rc = psoHashMapOpen( session, controlName, strlen(controlName), &control );
    if ( rc != 0 ) {
-      vdsErrorMsg(session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsHashMapOpen error: %s\n", __LINE__, msg );
+      psoErrorMsg(session, msg, 256 );
+      fprintf( stderr, "At line %d, psoHashMapOpen error: %s\n", __LINE__, msg );
       cleanup();
       return -1;
    }
    /* Initialize the control object */
    controlData = 0; /* Will be set to one/two when it is time to shutdown */
-   rc = vdsHashMapInsert( control, shutdownKey, strlen(shutdownKey), 
+   rc = psoHashMapInsert( control, shutdownKey, strlen(shutdownKey), 
       &controlData, sizeof(int) );
    if ( rc != 0 ) {
-      vdsErrorMsg(session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsHashMapInsert error: %s\n", __LINE__, msg );
+      psoErrorMsg(session, msg, 256 );
+      fprintf( stderr, "At line %d, psoHashMapInsert error: %s\n", __LINE__, msg );
       return -1;
    }
    /*
@@ -129,24 +129,24 @@ int initObjects()
     * filling up the shared memory.
     */
    controlData = 0;
-   rc = vdsHashMapInsert( control, workProcessKey, strlen(workProcessKey), 
+   rc = psoHashMapInsert( control, workProcessKey, strlen(workProcessKey), 
       &controlData, sizeof(int) );
    if ( rc != 0 ) {
-      vdsErrorMsg(session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsHashMapInsert error: %s\n", __LINE__, msg );
+      psoErrorMsg(session, msg, 256 );
+      fprintf( stderr, "At line %d, psoHashMapInsert error: %s\n", __LINE__, msg );
       return -1;
    }
-   rc = vdsHashMapInsert( control, outProcessKey, strlen(outProcessKey), 
+   rc = psoHashMapInsert( control, outProcessKey, strlen(outProcessKey), 
       &controlData, sizeof(int) );
    if ( rc != 0 ) {
-      vdsErrorMsg(session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsHashMapInsert error: %s\n", __LINE__, msg );
+      psoErrorMsg(session, msg, 256 );
+      fprintf( stderr, "At line %d, psoHashMapInsert error: %s\n", __LINE__, msg );
       return -1;
    }
 
    rc = vdsCommit( session );
    if ( rc != 0 ) {
-      vdsErrorMsg( session, msg, 256 );
+      psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
       return -1;
    }
@@ -168,7 +168,7 @@ void waitForFriends()
    req.tv_nsec = 1000000;
 #endif
    do {
-      rc = vdsHashMapGet( control, workProcessKey, strlen(workProcessKey), 
+      rc = psoHashMapGet( control, workProcessKey, strlen(workProcessKey), 
          &controlData, sizeof(int), &length );
 #if defined(WIN32)
       Sleep(1);
@@ -179,7 +179,7 @@ void waitForFriends()
 
    controlData = 0;
    do {
-      rc = vdsHashMapGet( control, outProcessKey, strlen(outProcessKey), 
+      rc = psoHashMapGet( control, outProcessKey, strlen(outProcessKey), 
          &controlData, sizeof(int), &length );
 #if defined(WIN32)
       Sleep(1);
@@ -234,10 +234,10 @@ int main( int argc, char *argv[] )
    /* Wait for the two other programs */
    waitForFriends();
    
-   rc = vdsQueueOpen( session, inQueueName, strlen(inQueueName), &inQueue );
+   rc = psoQueueOpen( session, inQueueName, strlen(inQueueName), &inQueue );
    if ( rc != 0 ) {
-      vdsErrorMsg(session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsQueueOpen error: %s\n", __LINE__, msg );
+      psoErrorMsg(session, msg, 256 );
+      fprintf( stderr, "At line %d, psoQueueOpen error: %s\n", __LINE__, msg );
       cleanup();
       return -1;
    }
@@ -259,10 +259,10 @@ int main( int argc, char *argv[] )
        */
       rc = readData( inStruct.countryCode, inStruct.description );
       if ( rc > 0 ) {
-         rc = vdsQueuePush( inQueue, &inStruct, 2 + strlen( inStruct.description) );
+         rc = psoQueuePush( inQueue, &inStruct, 2 + strlen( inStruct.description) );
          if ( rc != 0 ) {
-            vdsErrorMsg(session, msg, 256 );
-            fprintf( stderr, "At line %d, vdsQueuePush error: %s\n", __LINE__, msg );
+            psoErrorMsg(session, msg, 256 );
+            fprintf( stderr, "At line %d, psoQueuePush error: %s\n", __LINE__, msg );
             cleanup();
             return -1;
          }

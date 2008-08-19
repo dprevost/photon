@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds>
+#include <photon/photon>
 #include <iostream>
 
 using namespace std;
@@ -25,9 +25,9 @@ using namespace std;
 
 int main( int argc, char * argv[] )
 {
-   vdsProcess process;
-   vdsSession session1, session2;
-   vdsQueue queue1(session1), queue2(session2);
+   psoProcess process;
+   psoSession session1, session2;
+   psoQueue queue1(session1), queue2(session2);
    string fname = "/cpp_queue_pop";
    string qname = fname + "/test";
 
@@ -35,16 +35,16 @@ int main( int argc, char * argv[] )
    char buffer[50];
    size_t length;
    int rc;
-   vdsObjectDefinition folderDef;
-   vdsObjectDefinition queueDef = { 
-      VDS_QUEUE,
+   psoObjectDefinition folderDef;
+   psoObjectDefinition queueDef = { 
+      PSO_QUEUE,
       1, 
-      { VDS_KEY_VAR_BINARY, 0, 0, 0 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_BINARY, 0, 0, 0 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
 
    memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = VDS_FOLDER;
+   folderDef.type = PSO_FOLDER;
    
    try {
       if ( argc > 1 ) {
@@ -62,7 +62,7 @@ int main( int argc, char * argv[] )
       session1.Commit();
       queue2.Open( qname );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -76,8 +76,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NULL_POINTER ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -89,8 +89,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_INVALID_LENGTH ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -102,8 +102,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NULL_POINTER ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -113,7 +113,7 @@ int main( int argc, char * argv[] )
    try {
       queue1.Pop( buffer, 50, &length );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -134,8 +134,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_ITEM_IS_IN_USE ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_ITEM_IS_IN_USE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -144,7 +144,7 @@ int main( int argc, char * argv[] )
    try {
       queue2.GetFirst( buffer, 50, &length );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -152,11 +152,11 @@ int main( int argc, char * argv[] )
    try {
       rc = queue2.Pop( buffer, 50, &length );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
-   if ( rc != VDS_ITEM_IS_IN_USE ) {
+   if ( rc != PSO_ITEM_IS_IN_USE ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -165,7 +165,7 @@ int main( int argc, char * argv[] )
     * Additional stuff to check after the commit:
     *  - cannot get access to the item from first session.
     *  - cannot get access to the item from second session.
-    *  And that the error is VDS_EMPTY.
+    *  And that the error is PSO_EMPTY.
     *
     * Note to make sure that the deleted item is still in the VDS,
     * we first call GetFirst to get a pointer to the item from
@@ -175,7 +175,7 @@ int main( int argc, char * argv[] )
    try {
       queue2.GetFirst( buffer, 50, &length );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -183,7 +183,7 @@ int main( int argc, char * argv[] )
    try {
       session1.Commit();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -191,11 +191,11 @@ int main( int argc, char * argv[] )
    try {
       rc = queue1.GetFirst( buffer, 50, &length );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
-   if ( rc != VDS_IS_EMPTY ) {
+   if ( rc != PSO_IS_EMPTY ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -203,11 +203,11 @@ int main( int argc, char * argv[] )
    try {
       rc = queue2.GetFirst( buffer, 50, &length );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
-   if ( rc != VDS_IS_EMPTY ) {
+   if ( rc != PSO_IS_EMPTY ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }

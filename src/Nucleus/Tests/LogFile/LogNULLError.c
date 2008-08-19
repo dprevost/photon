@@ -27,13 +27,13 @@ int main()
 #if defined(USE_DBC)
    psnLogFile logfile;
    pscErrorHandler errorHandler;
-   vdsErrors error;
+   psoErrors error;
 
    pscInitErrorDefs();
    pscInitErrorHandler( &errorHandler );
 
    error = psnInitLogFile( &logfile, ".", (void*)0x1234, &errorHandler );
-   if ( error != VDS_OK ) {
+   if ( error != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    

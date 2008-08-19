@@ -75,5 +75,5 @@ TESTS =              \
 
 XFAIL_TESTS = 
 
-LDADD = $(top_builddir)/src/C++/libvdsfcpp.la 
+LDADD = $(top_builddir)/src/C++/libphotoncpp.la 
 

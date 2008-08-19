@@ -15,10 +15,10 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDS_FOLDER_H
-#define VDS_FOLDER_H
+#ifndef PSO_FOLDER_H
+#define PSO_FOLDER_H
 
-#include <photon/vdsCommon.h>
+#include <photon/psoCommon.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -31,7 +31,7 @@ extern "C" {
  * This file provides the API needed to access a VDSF folder.
  */
 /**
- * \defgroup vdsFolder_c API functions for vdsf folders.
+ * \defgroup psoFolder_c API functions for psof folders.
  *
  * 
  */
@@ -45,12 +45,12 @@ extern "C" {
  * This function terminates the current access to the folder in shared memory
  * (the folder itself is untouched).
  *
- * \param[in] objectHandle The handle to the folder (see ::vdsFolderOpen).
+ * \param[in] objectHandle The handle to the folder (see ::psoFolderOpen).
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsFolderClose( VDS_HANDLE objectHandle );
+int psoFolderClose( PSO_HANDLE objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -58,26 +58,26 @@ int vdsFolderClose( VDS_HANDLE objectHandle );
  * Create a new object in shared memory as a child of the current folder.
  *
  * The creation of the object only becomes permanent after a call to 
- * ::vdsCommit.
+ * ::psoCommit.
  *
  * This function does not provide a handle to the newly created object. Use
- * vdsQueueOpen and similar functions to get the handle.
+ * psoQueueOpen and similar functions to get the handle.
  *
  * \param[in] folderHandle Handle to the current folder.
  * \param[in] objectName The name of the object. 
  * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
  *            counting the null terminator (null-terminators are not used by
- *            the vdsf engine).
+ *            the psof engine).
  * \param[in] pDefinition The type of object to create (folder, queue, etc.)
  *            and the "optional" definition.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsFolderCreateObject( VDS_HANDLE            folderHandle,
+int psoFolderCreateObject( PSO_HANDLE            folderHandle,
                            const char    *       objectName,
                            size_t                nameLengthInBytes,
-                           vdsObjectDefinition * pDefinition );
+                           psoObjectDefinition * pDefinition );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -85,10 +85,10 @@ int vdsFolderCreateObject( VDS_HANDLE            folderHandle,
  * Create a new object in shared memory as a child of the current folder.
  *
  * The creation of the object only becomes permanent after a call to 
- * ::vdsCommit.
+ * ::psoCommit.
  *
  * This function does not provide a handle to the newly created object. Use
- * vdsQueueOpen and similar functions to get the handle.
+ * psoQueueOpen and similar functions to get the handle.
  *
  * \param[in] folderHandle Handle to the current folder.
  * \param[in] xmlBuffer    The XML buffer (string) containing all the required
@@ -96,10 +96,10 @@ int vdsFolderCreateObject( VDS_HANDLE            folderHandle,
  * \param[in] lengthInBytes The length of \em xmlBuffer (in bytes) not
  *                          counting the null terminator.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsFolderCreateObjectXML( VDS_HANDLE   folderHandle,
+int psoFolderCreateObjectXML( PSO_HANDLE   folderHandle,
                               const char * xmlBuffer,
                               size_t       lengthInBytes );
 
@@ -109,18 +109,18 @@ int vdsFolderCreateObjectXML( VDS_HANDLE   folderHandle,
  * Destroy an object, child of the current folder, in shared memory.
  *
  * The destruction of the object only becomes permanent after a call to 
- * ::vdsCommit.
+ * ::psoCommit.
  *
  * \param[in]  folderHandle Handle to the current folder.
  * \param[in]  objectName The name of the object. 
  * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the vdsf engine).
+ *             the psof engine).
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsFolderDestroyObject( VDS_HANDLE   folderHandle,
+int psoFolderDestroyObject( PSO_HANDLE   folderHandle,
                             const char * objectName,
                             size_t       nameLengthInBytes );
 
@@ -134,16 +134,16 @@ int vdsFolderDestroyObject( VDS_HANDLE   folderHandle,
  * will not be seen by the iterator. Likewise, destroyed data items (even if
  * not yet committed) are invisible.
  *
- * \param[in]   objectHandle The handle to the folder (see ::vdsFolderOpen).
+ * \param[in]   objectHandle The handle to the folder (see ::psoFolderOpen).
  * \param[out]  pEntry The data structure provided by the user to hold the 
  *              content of each item in the folder. Memory allocation for 
  *              this buffer is the responsability of the caller.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
-                       vdsFolderEntry * pEntry );
+int psoFolderGetFirst( PSO_HANDLE       objectHandle,
+                       psoFolderEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -154,54 +154,54 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
  * will not be seen by the iterator. Likewise, destroyed data items (even if
  * not yet committed) are invisible.
  *
- * Evidently, you must call ::vdsFolderGetFirst to initialize the iterator. 
+ * Evidently, you must call ::psoFolderGetFirst to initialize the iterator. 
  *
- * \param[in]   objectHandle The handle to the folder (see ::vdsFolderOpen).
+ * \param[in]   objectHandle The handle to the folder (see ::psoFolderOpen).
  * \param[out]  pEntry The data structure provided by the user to hold the 
  *              content of each item in the folder. Memory allocation for 
  *              this buffer is the responsability of the caller.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsFolderGetNext( VDS_HANDLE       objectHandle,
-                      vdsFolderEntry * pEntry );
+int psoFolderGetNext( PSO_HANDLE       objectHandle,
+                      psoFolderEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Open an existing folder (see ::vdsCreateObject to create a new folder).
+ * Open an existing folder (see ::psoCreateObject to create a new folder).
  *
  * \param[in]  sessionHandle The handle to the current session.
  * \param[in]  folderName The fully qualified name of the folder. 
  * \param[in]  nameLengthInBytes The length of \em folderName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the vdsf engine).
+ *             the psof engine).
  * \param[out] objectHandle The handle to the folder, allowing us access to
  *             the folder in shared memory. On error, this handle will be set
  *             to zero (NULL) unless the objectHandle pointer itself is NULL.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsFolderOpen( VDS_HANDLE   sessionHandle,
+int psoFolderOpen( PSO_HANDLE   sessionHandle,
                    const char * folderName,
                    size_t       nameLengthInBytes,
-                   VDS_HANDLE * objectHandle );
+                   PSO_HANDLE * objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  * Return the status of the folder.
  *
- * \param[in]  objectHandle The handle to the folder (see ::vdsFolderOpen).
+ * \param[in]  objectHandle The handle to the folder (see ::psoFolderOpen).
  * \param[out] pStatus      A pointer to the status structure.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsFolderStatus( VDS_HANDLE     objectHandle,
-                     vdsObjStatus * pStatus );
+int psoFolderStatus( PSO_HANDLE     objectHandle,
+                     psoObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -213,7 +213,7 @@ int vdsFolderStatus( VDS_HANDLE     objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDS_FOLDER_H */
+#endif /* PSO_FOLDER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

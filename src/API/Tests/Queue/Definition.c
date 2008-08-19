@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 #include "API/Queue.h"
 
@@ -34,14 +34,14 @@ struct dummy {
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE sessionHandle, objHandle;
+   PSO_HANDLE sessionHandle, objHandle;
    int errcode;
    struct dummy * data1 = NULL;
    size_t lenData, len;
-   vdsObjectDefinition * pDef = NULL;
-   vdsObjectDefinition * pDefQueue = NULL;
-   vdsObjectDefinition folderDef = { 
-      VDS_FOLDER, 
+   psoObjectDefinition * pDef = NULL;
+   psoObjectDefinition * pDefQueue = NULL;
+   psoObjectDefinition folderDef = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
@@ -50,16 +50,16 @@ int main( int argc, char * argv[] )
    lenData = offsetof(struct dummy, bin) + 10;
    data1 = (struct dummy *)malloc( lenData );
    
-   len = offsetof( vdsObjectDefinition, fields ) + 
-      5 * sizeof(vdsFieldDefinition);
-   pDefQueue = (vdsObjectDefinition *)calloc( len, 1 );
-   pDefQueue->type = VDS_QUEUE;
+   len = offsetof( psoObjectDefinition, fields ) + 
+      5 * sizeof(psoFieldDefinition);
+   pDefQueue = (psoObjectDefinition *)calloc( len, 1 );
+   pDefQueue->type = PSO_QUEUE;
    pDefQueue->numFields = 5;
-   pDefQueue->fields[0].type = VDS_INTEGER;
-   pDefQueue->fields[1].type = VDS_INTEGER;
-   pDefQueue->fields[2].type = VDS_STRING;
-   pDefQueue->fields[3].type = VDS_INTEGER;
-   pDefQueue->fields[4].type = VDS_VAR_BINARY;
+   pDefQueue->fields[0].type = PSO_INTEGER;
+   pDefQueue->fields[1].type = PSO_INTEGER;
+   pDefQueue->fields[2].type = PSO_STRING;
+   pDefQueue->fields[3].type = PSO_INTEGER;
+   pDefQueue->fields[4].type = PSO_VAR_BINARY;
 
    pDefQueue->fields[0].length = 1;
    pDefQueue->fields[1].length = 4;
@@ -73,72 +73,72 @@ int main( int argc, char * argv[] )
    strcpy( pDefQueue->fields[4].name, "field5" );
    
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/aqsp",
                               strlen("/aqsp"),
                               &folderDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/aqsp/test",
                               strlen("/aqsp/test"),
                               pDefQueue );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueueOpen( sessionHandle,
+   errcode = psoQueueOpen( sessionHandle,
                            "/aqsp/test",
                            strlen("/aqsp/test"),
                            &objHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueuePush( objHandle, data1, lenData );
-   if ( errcode != VDS_OK ) {
+   errcode = psoQueuePush( objHandle, data1, lenData );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsQueueDefinition( NULL, &pDef );
-   if ( errcode != VDS_NULL_HANDLE ) {
+   errcode = psoQueueDefinition( NULL, &pDef );
+   if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueueDefinition( objHandle, NULL );
-   if ( errcode != VDS_NULL_POINTER ) {
+   errcode = psoQueueDefinition( objHandle, NULL );
+   if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = vdsQueueDefinition( objHandle, &pDef );
-   if ( errcode != VDS_OK ) {
+   errcode = psoQueueDefinition( objHandle, &pDef );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -149,19 +149,19 @@ int main( int argc, char * argv[] )
 
    /* Close the session and try to act on the object */
 
-   errcode = vdsExitSession( sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoExitSession( sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueueDefinition( objHandle, &pDef );
-   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+   errcode = psoQueueDefinition( objHandle, &pDef );
+   if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   vdsExit();
+   psoExit();
    
    return 0;
 }

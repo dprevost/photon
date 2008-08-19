@@ -31,8 +31,8 @@ int main()
    psnObjectDescriptor * pDescriptor;
    psnTxStatus * txItemStatus;
    psnTreeNode * pNode;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
@@ -62,7 +62,7 @@ int main()
    ok = psnFolderGetObject( pFolder,
                              "test2",
                              5,
-                             VDS_FOLDER,
+                             PSO_FOLDER,
                              &folderItem,
                              &context );
    if ( ok != true ) {
@@ -85,13 +85,13 @@ int main()
    ok = psnFolderGetObject( pFolder,
                              "test3",
                              5,
-                             VDS_FOLDER,
+                             PSO_FOLDER,
                              &folderItem,
                              &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT ) {
+   if ( pscGetLastError( &context.errorHandler ) != PSO_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
       
@@ -110,7 +110,7 @@ int main()
    ok = psnFolderGetObject( pFolder,
                              "test4",
                              5,
-                             VDS_FOLDER,
+                             PSO_FOLDER,
                              &folderItem,
                              &context );
    if ( ok != true ) {

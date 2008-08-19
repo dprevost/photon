@@ -27,7 +27,7 @@ int main()
 #if defined(USE_DBC)
    psnSessionContext context;
    psnHash* pHash;
-   enum vdsErrors errcode;
+   enum psoErrors errcode;
    char* key = "My Key";
    char* data1 = "My Data 1";
    psnHashItem* pNewItem;
@@ -37,7 +37,7 @@ int main()
    pHash = initHashTest( expectedToPass, &context );
    
    errcode = psnHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -53,7 +53,7 @@ int main()
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    found = psnHashGet( pHash,

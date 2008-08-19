@@ -108,10 +108,10 @@ static inline
 void psnTxStatusCommitEdit( psnTxStatus * pOldStatus, 
                              psnTxStatus * pNewStatus )
 {
-   VDS_PRE_CONDITION( pOldStatus != NULL );
-   VDS_PRE_CONDITION( pNewStatus != NULL );
-   VDS_PRE_CONDITION( pNewStatus->txOffset != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( pNewStatus->status & PSN_TXS_EDIT );
+   PSO_PRE_CONDITION( pOldStatus != NULL );
+   PSO_PRE_CONDITION( pNewStatus != NULL );
+   PSO_PRE_CONDITION( pNewStatus->txOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pNewStatus->status & PSN_TXS_EDIT );
 
    /* Remove the EDIT bit */
    pNewStatus->status = pOldStatus->status & (uint32_t )(~PSN_TXS_EDIT);
@@ -126,7 +126,7 @@ void psnTxStatusCommitEdit( psnTxStatus * pOldStatus,
 static inline
 void psnTxStatusRollbackEdit( psnTxStatus * pOldStatus )
 {
-   VDS_PRE_CONDITION( pOldStatus != NULL );
+   PSO_PRE_CONDITION( pOldStatus != NULL );
 
    /* Remove the EDIT bit */
    pOldStatus->status &= (uint32_t )(~PSN_TXS_EDIT);
@@ -141,7 +141,7 @@ void psnTxStatusRollbackEdit( psnTxStatus * pOldStatus )
 static inline 
 void psnTxStatusInit( psnTxStatus * pStatus, ptrdiff_t txOffset )
 {
-   VDS_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pStatus != NULL );
    
    pStatus->txOffset = txOffset;
    pStatus->status = PSN_TXS_OK;
@@ -154,7 +154,7 @@ void psnTxStatusInit( psnTxStatus * pStatus, ptrdiff_t txOffset )
 static inline
 void psnTxStatusSetTx( psnTxStatus * pStatus, ptrdiff_t txOffset )
 {
-   VDS_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pStatus != NULL );
 
    pStatus->txOffset = txOffset;
 }
@@ -164,9 +164,9 @@ void psnTxStatusSetTx( psnTxStatus * pStatus, ptrdiff_t txOffset )
 static inline 
 void psnTxStatusFini( psnTxStatus * pStatus )
 {
-   VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( pStatus->status == PSN_TXS_OK );
-   VDS_PRE_CONDITION( pStatus->usageCounter == 0 );
+   PSO_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pStatus->status == PSN_TXS_OK );
+   PSO_PRE_CONDITION( pStatus->usageCounter == 0 );
 
    pStatus->txOffset = PSN_NULL_OFFSET;
 }
@@ -176,8 +176,8 @@ void psnTxStatusFini( psnTxStatus * pStatus )
 static inline
 bool psnTxStatusIsValid( psnTxStatus * pStatus, ptrdiff_t txOffset )
 {
-   VDS_PRE_CONDITION( pStatus  != NULL );
-   VDS_PRE_CONDITION( txOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pStatus  != NULL );
+   PSO_PRE_CONDITION( txOffset != PSN_NULL_OFFSET );
 
    if ( pStatus->txOffset == PSN_NULL_OFFSET ) return true;
    if ( pStatus->txOffset == txOffset ) return true;
@@ -190,8 +190,8 @@ bool psnTxStatusIsValid( psnTxStatus * pStatus, ptrdiff_t txOffset )
 static inline
 void psnTxStatusClearTx( psnTxStatus * pStatus )
 {
-   VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( pStatus->txOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pStatus->txOffset != PSN_NULL_OFFSET );
 
    pStatus->txOffset = PSN_NULL_OFFSET;
    pStatus->status = PSN_TXS_OK;
@@ -202,7 +202,7 @@ void psnTxStatusClearTx( psnTxStatus * pStatus )
 static inline
 bool psnTxStatusIsMarkedAsDestroyed( psnTxStatus * pStatus )
 {
-   VDS_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pStatus != NULL );
 
    return (pStatus->status & PSN_TXS_DESTROYED);
 }
@@ -212,7 +212,7 @@ bool psnTxStatusIsMarkedAsDestroyed( psnTxStatus * pStatus )
 static inline
 bool psnTxStatusIsRemoveCommitted( psnTxStatus * pStatus )
 {
-   VDS_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pStatus != NULL );
 
    return (pStatus->status & PSN_TXS_DESTROYED_COMMITTED);
 }
@@ -222,7 +222,7 @@ bool psnTxStatusIsRemoveCommitted( psnTxStatus * pStatus )
 static inline
 void psnTxStatusMarkAsDestroyed( psnTxStatus * pStatus )
 {
-   VDS_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pStatus != NULL );
 
    pStatus->status |= PSN_TXS_DESTROYED;
 }
@@ -232,10 +232,10 @@ void psnTxStatusMarkAsDestroyed( psnTxStatus * pStatus )
 static inline
 void psnTxStatusCommitRemove( psnTxStatus * pStatus )
 {
-   VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( pStatus->txOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pStatus->txOffset != PSN_NULL_OFFSET );
    /* Note - do not add this:
-    *    VDS_PRE_CONDITION( pStatus->status & PSN_TXS_DESTROYED );
+    *    PSO_PRE_CONDITION( pStatus->status & PSN_TXS_DESTROYED );
     *
     * This call can be reached using either a commit on a "remove" or a
     * rollback on a "add". Maybe I should fix this...
@@ -249,8 +249,8 @@ void psnTxStatusCommitRemove( psnTxStatus * pStatus )
 static inline
 void psnTxStatusUnmarkAsDestroyed( psnTxStatus * pStatus )
 {
-   VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( pStatus->txOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pStatus->txOffset != PSN_NULL_OFFSET );
 
    pStatus->status &= (uint32_t )(~PSN_TXS_DESTROYED);
    /* 
@@ -267,7 +267,7 @@ void psnTxStatusUnmarkAsDestroyed( psnTxStatus * pStatus )
 static inline
 bool psnTxStatusSelfTest( psnTxStatus * pStatus )
 {
-   VDS_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pStatus != NULL );
 
    if ( pStatus->txOffset != PSN_NULL_OFFSET ) return false;
 
@@ -277,10 +277,10 @@ bool psnTxStatusSelfTest( psnTxStatus * pStatus )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-vdsErrors psnTxTestObjectStatus( psnTxStatus * pStatus, ptrdiff_t txOffset )
+psoErrors psnTxTestObjectStatus( psnTxStatus * pStatus, ptrdiff_t txOffset )
 {
-   VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( txOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( txOffset != PSN_NULL_OFFSET );
 
    /* 
     * If the transaction id of the object is equal to the 
@@ -294,17 +294,17 @@ vdsErrors psnTxTestObjectStatus( psnTxStatus * pStatus, ptrdiff_t txOffset )
     */
    if ( pStatus->txOffset != PSN_NULL_OFFSET ) {
       if ( pStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
-         return VDS_NO_SUCH_OBJECT;
+         return PSO_NO_SUCH_OBJECT;
       }
       if ( pStatus->txOffset == txOffset && pStatus->status & PSN_TXS_DESTROYED ) {
-         return VDS_OBJECT_IS_DELETED;
+         return PSO_OBJECT_IS_DELETED;
       }
       if ( pStatus->txOffset != txOffset && pStatus->status & PSN_TXS_ADDED ) {
-         return VDS_OBJECT_IS_IN_USE;
+         return PSO_OBJECT_IS_IN_USE;
       }
    }
 
-   return VDS_OK;
+   return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

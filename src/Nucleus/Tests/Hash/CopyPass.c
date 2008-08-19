@@ -26,7 +26,7 @@ int main()
 {
    psnSessionContext context;
    psnHash * pOldHash, * pNewHash;
-   enum vdsErrors errcode;
+   enum psoErrors errcode;
    char* key1 = "My Key 1";
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
@@ -45,7 +45,7 @@ int main()
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -56,7 +56,7 @@ int main()
                              strlen(data2),
                              &pNewItem,
                              &context );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
@@ -64,7 +64,7 @@ int main()
                            pNewHash,
                            &context );
    fprintf( stderr, "err = %d\n", errcode );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 

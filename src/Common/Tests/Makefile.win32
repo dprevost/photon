@@ -13,8 +13,8 @@ include .\Makefile.inc.Win32
 #
 # Override the values in Makefile.inc.Win32
 #
-LDD_FLAGS = $(W32_SYS_LIBS) vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Release" 
-LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) vdsfCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Debug" 
+LDD_FLAGS = $(W32_SYS_LIBS) psoCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Release" 
+LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) psoCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Debug" 
 CFLAGS_DEBUG=   /nologo /MDd /W4     /I ".." /I "../.." /I "../../.." /I "../../Tests" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
 CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I ".." /I "../.." /I "../../.." /I "../../Tests" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
 

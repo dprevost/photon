@@ -24,8 +24,8 @@ pscAcquireThreadLock( pscThreadLock* pLock )
    int status;
 #endif
 
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
 
 #if defined (WIN32)
    /*
@@ -47,7 +47,7 @@ pscAcquireThreadLock( pscThreadLock* pLock )
     * Note: this would not apply to other types of mutexes (recursive for
     * example) or the trylock() version...
     */
-   VDS_POST_CONDITION( status == 0 );
+   PSO_POST_CONDITION( status == 0 );
 
 #endif
 
@@ -61,8 +61,8 @@ pscTryAcquireThreadLock( pscThreadLock * pLock,
 {
    int status;
    
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
 
 #if defined (WIN32)
    status = TryEnterCriticalSection( &pLock->mutex );
@@ -102,7 +102,7 @@ pscTryAcquireThreadLock( pscThreadLock * pLock,
 
    if ( status == EBUSY ) return false;
       
-   VDS_POST_CONDITION( status == 0 );
+   PSO_POST_CONDITION( status == 0 );
 
    return true;
 #endif  
@@ -115,8 +115,8 @@ pscReleaseThreadLock( pscThreadLock* pLock )
 {
    int status;
    
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
 
 #if defined (WIN32)
    status = 0; /* To avoid a warning */
@@ -124,7 +124,7 @@ pscReleaseThreadLock( pscThreadLock* pLock )
 #else
    status = pthread_mutex_unlock( &pLock->mutex );
 
-   VDS_POST_CONDITION( status == 0 );
+   PSO_POST_CONDITION( status == 0 );
 
 #endif
 

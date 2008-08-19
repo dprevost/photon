@@ -26,21 +26,21 @@ bool psnSessionInit( psnSession        * pSession,
                       void               * pApiSession,
                       psnSessionContext * pContext )
 {
-   vdsErrors errcode;
+   psoErrors errcode;
    psnTx * pTx;
    bool ok, rc = false;
    
-   VDS_PRE_CONDITION( pSession    != NULL );
-   VDS_PRE_CONDITION( pContext    != NULL );
-   VDS_PRE_CONDITION( pApiSession != NULL );
+   PSO_PRE_CONDITION( pSession    != NULL );
+   PSO_PRE_CONDITION( pContext    != NULL );
+   PSO_PRE_CONDITION( pApiSession != NULL );
    
    errcode = psnMemObjectInit( &pSession->memObject, 
                                 PSN_IDENT_SESSION,
                                 &pSession->blockGroup,
                                 1 ); /* A single block */
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
+                    g_psoErrorHandle,
                     errcode );
    }
    else {
@@ -49,7 +49,7 @@ bool psnSessionInit( psnSession        * pSession,
       pTx = (psnTx*) psnMallocBlocks( pContext->pAllocator, PSN_ALLOC_ANY, 1, pContext );
       if ( pTx != NULL ) {
          ok = psnTxInit( pTx, 1, pContext );
-         VDS_PRE_CONDITION( ok == true || ok == false );
+         PSO_PRE_CONDITION( ok == true || ok == false );
          if ( ok ) {
             pSession->numLocks = 0;
             pSession->pTransaction = pTx;
@@ -69,8 +69,8 @@ bool psnSessionInit( psnSession        * pSession,
       }
       else {
          pscSetError( &pContext->errorHandler, 
-                       g_vdsErrorHandle, 
-                       VDS_NOT_ENOUGH_VDS_MEMORY );
+                       g_psoErrorHandle, 
+                       PSO_NOT_ENOUGH_PSO_MEMORY );
       }
    }
    
@@ -85,9 +85,9 @@ void psnSessionFini( psnSession        * pSession,
    psnObjectContext * pObject = NULL;
    psnLinkNode * pNode = NULL;
 
-   VDS_PRE_CONDITION( pSession != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pSession->memObject.objType == PSN_IDENT_SESSION );
+   PSO_PRE_CONDITION( pSession != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pSession->memObject.objType == PSN_IDENT_SESSION );
    
    /*
     * Eliminate all objects in the list. This is probably not needed
@@ -114,7 +114,7 @@ void psnSessionFini( psnSession        * pSession,
 
 bool psnSessionAddObj( psnSession        * pSession,
                         ptrdiff_t            objOffset, 
-                        enum vdsObjectType   objType, 
+                        enum psoObjectType   objType, 
                         void               * pCommonObject,
                         psnObjectContext ** ppObject,
                         psnSessionContext * pContext )
@@ -122,12 +122,12 @@ bool psnSessionAddObj( psnSession        * pSession,
    bool ok = false;
    psnObjectContext * pCurrentBuffer;
 
-   VDS_PRE_CONDITION( pSession      != NULL );
-   VDS_PRE_CONDITION( pCommonObject != NULL );
-   VDS_PRE_CONDITION( ppObject      != NULL );
-   VDS_PRE_CONDITION( pContext      != NULL );
-   VDS_PRE_CONDITION( objOffset     != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( objType > 0 && objType < VDS_LAST_OBJECT_TYPE );
+   PSO_PRE_CONDITION( pSession      != NULL );
+   PSO_PRE_CONDITION( pCommonObject != NULL );
+   PSO_PRE_CONDITION( ppObject      != NULL );
+   PSO_PRE_CONDITION( pContext      != NULL );
+   PSO_PRE_CONDITION( objOffset     != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( objType > 0 && objType < PSO_LAST_OBJECT_TYPE );
    
    /* For recovery purposes, always lock before doing anything! */
    if ( psnLock( &pSession->memObject, pContext ) ) {
@@ -146,16 +146,16 @@ bool psnSessionAddObj( psnSession        * pSession,
       }
       else {
          pscSetError( &pContext->errorHandler,
-                       g_vdsErrorHandle,
-                       VDS_NOT_ENOUGH_VDS_MEMORY );
+                       g_psoErrorHandle,
+                       PSO_NOT_ENOUGH_PSO_MEMORY );
       }
       
       psnUnlock( &pSession->memObject, pContext );
    }
    else {
       pscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
-                    VDS_ENGINE_BUSY );
+                    g_psoErrorHandle,
+                    PSO_ENGINE_BUSY );
    }
    
    return ok;
@@ -167,9 +167,9 @@ bool psnSessionRemoveObj( psnSession        * pSession,
                           psnObjectContext  * pObject,
                           psnSessionContext * pContext )
 {
-   VDS_PRE_CONDITION( pSession != NULL );
-   VDS_PRE_CONDITION( pObject  != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pSession != NULL );
+   PSO_PRE_CONDITION( pObject  != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
 
    /* For recovery purposes, always lock before doing anything! */
    if ( psnLock( &pSession->memObject, pContext ) ) {
@@ -184,8 +184,8 @@ bool psnSessionRemoveObj( psnSession        * pSession,
    }
    else {
       pscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
-                    VDS_ENGINE_BUSY );
+                    g_psoErrorHandle,
+                    PSO_ENGINE_BUSY );
       return false;
    }
 
@@ -201,8 +201,8 @@ bool psnSessionRemoveFirst( psnSession        * pSession,
    psnLinkNode * pNode = NULL;
    psnObjectContext * pObject;
    
-   VDS_PRE_CONDITION( pSession != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pSession != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
 
    if ( psnLinkedListGetFirst(&pSession->listOfObjects, &pNode) ) {
       pObject = (psnObjectContext*)
@@ -228,9 +228,9 @@ bool psnSessionGetFirst( psnSession        * pSession,
    psnLinkNode * pNode = NULL;
    bool ok;
 
-   VDS_PRE_CONDITION( pSession != NULL );
-   VDS_PRE_CONDITION( ppObject != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pSession != NULL );
+   PSO_PRE_CONDITION( ppObject != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
    
    ok = psnLinkedListPeakFirst( &pSession->listOfObjects, 
                                  &pNode );

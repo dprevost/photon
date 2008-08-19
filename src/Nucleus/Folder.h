@@ -73,7 +73,7 @@ typedef struct psnFolder psnFolder;
 VDSF_ENGINE_EXPORT
 void psnFolderCommitEdit( psnFolder          * pFolder,
                            psnHashItem        * pHashItem, 
-                           enum vdsObjectType    objectType,
+                           enum psoObjectType    objectType,
                            psnSessionContext  * pContext );
 
 /**
@@ -83,7 +83,7 @@ VDSF_ENGINE_EXPORT
 bool psnFolderCreateObject( psnFolder          * pFolder,
                              const char          * objectName,
                              size_t                nameLengthInBytes,
-                             vdsObjectDefinition * pDefinition,
+                             psoObjectDefinition * pDefinition,
                              psnSessionContext  * pContext );
 
 /**
@@ -108,7 +108,7 @@ VDSF_ENGINE_EXPORT
 bool psnFolderEditObject( psnFolder         * pFolder,
                            const char         * objectName,
                            size_t               strLength, 
-                           enum vdsObjectType   objectType, 
+                           enum psoObjectType   objectType, 
                            psnFolderItem     * pFolderItem,
                            psnSessionContext * pContext );
 
@@ -121,7 +121,7 @@ VDSF_ENGINE_EXPORT
 bool psnFolderGetDefinition( psnFolder          * pFolder,
                               const char          * objectName,
                               size_t                strLength,
-                              vdsObjectDefinition * pDefinition,
+                              psoObjectDefinition * pDefinition,
                               psnFieldDef       ** ppInternalDef,
                               psnSessionContext  * pContext );
 
@@ -139,7 +139,7 @@ VDSF_ENGINE_EXPORT
 bool psnFolderGetObject( psnFolder         * pFolder,
                           const char         * objectName,
                           size_t               strLength, 
-                          enum vdsObjectType   objectType, 
+                          enum psoObjectType   objectType, 
                           psnFolderItem     * pFolderItem,
                           psnSessionContext * pContext );
 
@@ -147,7 +147,7 @@ VDSF_ENGINE_EXPORT
 bool psnFolderGetStatus( psnFolder         * pFolder,
                           const char         * objectName,
                           size_t               strLength, 
-                          vdsObjStatus       * pStatus,
+                          psoObjStatus       * pStatus,
                           psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
@@ -166,7 +166,7 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
                              const char          * objectName,
                              const char          * originalName,
                              size_t                strLength,
-                             vdsObjectDefinition * pDefinition,
+                             psoObjectDefinition * pDefinition,
                              size_t                numBlocks,
                              size_t                expectedNumOfChilds,
                              psnSessionContext  * pContext );
@@ -174,7 +174,7 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
 /* Retrieve the status of the current folder */
 VDSF_ENGINE_EXPORT
 void psnFolderMyStatus( psnFolder   * pFolder,
-                         vdsObjStatus * pStatus );
+                         psoObjStatus * pStatus );
 
 VDSF_ENGINE_EXPORT
 bool psnFolderRelease( psnFolder         * pFolder,
@@ -199,7 +199,7 @@ void psnFolderResize( psnFolder         * pFolder,
 VDSF_ENGINE_EXPORT
 void psnFolderRollbackEdit( psnFolder          * pFolder,
                              psnHashItem        * pHashItem, 
-                             enum vdsObjectType    objectType,
+                             enum psoObjectType    objectType,
                              psnSessionContext  * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -217,7 +217,7 @@ VDSF_ENGINE_EXPORT
 bool psnTopFolderCreateObject( psnFolder          * pFolder,
                                 const char          * objectName,
                                 size_t                nameLengthInBytes,
-                                vdsObjectDefinition * pDefinition,
+                                psoObjectDefinition * pDefinition,
                                 psnSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
@@ -230,7 +230,7 @@ VDSF_ENGINE_EXPORT
 bool psnTopFolderEditObject( psnFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
-                              enum vdsObjectType   objectType, 
+                              enum psoObjectType   objectType, 
                               psnFolderItem     * pFolderItem,
                               psnSessionContext * pContext );
 
@@ -238,7 +238,7 @@ VDSF_ENGINE_EXPORT
 bool psnTopFolderGetDef( psnFolder          * pFolder,
                           const char          * objectName,
                           size_t                nameLengthInBytes,
-                          vdsObjectDefinition * pDefinition,
+                          psoObjectDefinition * pDefinition,
                           psnFieldDef       ** ppInternalDef,
                           psnSessionContext  * pContext );
 
@@ -246,14 +246,14 @@ VDSF_ENGINE_EXPORT
 bool psnTopFolderGetStatus( psnFolder         * pFolder,
                              const char         * objectName,
                              size_t               nameLengthInBytes,
-                             vdsObjStatus       * pFolderItem,
+                             psoObjStatus       * pFolderItem,
                              psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
 bool psnTopFolderOpenObject( psnFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
-                              enum vdsObjectType   objectType, 
+                              enum psoObjectType   objectType, 
                               psnFolderItem     * pFolderItem,
                               psnSessionContext * pContext );
 

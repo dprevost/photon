@@ -36,47 +36,47 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
  */
 int psaGetDefinition( psnFieldDef          * pInternalDef,
                       uint16_t               numFields,
-                      vdsObjectDefinition ** ppDefinition )
+                      psoObjectDefinition ** ppDefinition )
 {
    unsigned int i;
-   vdsObjectDefinition * ptr;
+   psoObjectDefinition * ptr;
    
-   VDS_PRE_CONDITION( pInternalDef != NULL );
-   VDS_PRE_CONDITION( ppDefinition != NULL );
-   VDS_PRE_CONDITION( numFields > 0 );
+   PSO_PRE_CONDITION( pInternalDef != NULL );
+   PSO_PRE_CONDITION( ppDefinition != NULL );
+   PSO_PRE_CONDITION( numFields > 0 );
    
-   ptr = (vdsObjectDefinition *)calloc( offsetof(vdsObjectDefinition,fields) +
-      numFields * sizeof(vdsFieldDefinition), 1 );
-   if ( ptr == NULL ) return VDS_NOT_ENOUGH_HEAP_MEMORY;
+   ptr = (psoObjectDefinition *)calloc( offsetof(psoObjectDefinition,fields) +
+      numFields * sizeof(psoFieldDefinition), 1 );
+   if ( ptr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
 
    ptr->numFields = numFields;
 
    for ( i = 0; i < numFields; ++i ) {
 
       ptr->fields[i].type = pInternalDef[i].type;
-      memcpy( ptr->fields[i].name, pInternalDef[i].name, VDS_MAX_FIELD_LENGTH );
+      memcpy( ptr->fields[i].name, pInternalDef[i].name, PSO_MAX_FIELD_LENGTH );
 
       switch( pInternalDef[i].type ) {
 
-      case VDS_BINARY:
-      case VDS_STRING:
-      case VDS_INTEGER:
+      case PSO_BINARY:
+      case PSO_STRING:
+      case PSO_INTEGER:
          ptr->fields[i].length = pInternalDef[i].length1;
          
          break;
 
-      case VDS_DECIMAL:
+      case PSO_DECIMAL:
          ptr->fields[i].precision = pInternalDef[i].length1;
          ptr->fields[i].scale     = pInternalDef[i].length2;
 
          break;
 
-      case VDS_BOOLEAN:
+      case PSO_BOOLEAN:
 
          break;
 
-      case VDS_VAR_BINARY:
-      case VDS_VAR_STRING:
+      case PSO_VAR_BINARY:
+      case PSO_VAR_STRING:
 
          ptr->fields[i].minLength = pInternalDef[i].length1;
          ptr->fields[i].maxLength = pInternalDef[i].length2;
@@ -91,21 +91,21 @@ int psaGetDefinition( psnFieldDef          * pInternalDef,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psaGetKeyLimits( vdsKeyDefinition * pKeyDef,
+void psaGetKeyLimits( psoKeyDefinition * pKeyDef,
                       size_t           * pMinLength,
                       size_t           * pMaxLength )
 {
-   VDS_PRE_CONDITION( pKeyDef    != NULL );
-   VDS_PRE_CONDITION( pMinLength != NULL );
-   VDS_PRE_CONDITION( pMaxLength != NULL );
+   PSO_PRE_CONDITION( pKeyDef    != NULL );
+   PSO_PRE_CONDITION( pMinLength != NULL );
+   PSO_PRE_CONDITION( pMaxLength != NULL );
 
-   if ( pKeyDef->type == VDS_KEY_INTEGER ||
-      pKeyDef->type == VDS_KEY_BINARY ||
-      pKeyDef->type == VDS_KEY_STRING ) {
+   if ( pKeyDef->type == PSO_KEY_INTEGER ||
+      pKeyDef->type == PSO_KEY_BINARY ||
+      pKeyDef->type == PSO_KEY_STRING ) {
       *pMinLength = *pMaxLength = pKeyDef->length;
    }
    else {
-      /* VDS_KEY_VAR_BINARY || VDS_VAR_STRING */
+      /* PSO_KEY_VAR_BINARY || PSO_VAR_STRING */
       *pMinLength = pKeyDef->minLength;
       *pMaxLength = pKeyDef->maxLength;
       if ( *pMaxLength == 0 ) *pMaxLength = 4294967295UL;
@@ -122,10 +122,10 @@ void psaGetLimits( psnFieldDef * pDefinition,
    unsigned int i;
    size_t minLength = 0, maxLength = 0;
 
-   VDS_PRE_CONDITION( pDefinition != NULL );
-   VDS_PRE_CONDITION( pMinLength  != NULL );
-   VDS_PRE_CONDITION( pMaxLength  != NULL );
-   VDS_PRE_CONDITION( numFields > 0 );
+   PSO_PRE_CONDITION( pDefinition != NULL );
+   PSO_PRE_CONDITION( pMinLength  != NULL );
+   PSO_PRE_CONDITION( pMaxLength  != NULL );
+   PSO_PRE_CONDITION( numFields > 0 );
    
    /*
     * The first field is special - the alignment offset is always zero
@@ -133,25 +133,25 @@ void psaGetLimits( psnFieldDef * pDefinition,
     */
    switch( pDefinition[0].type ) {
 
-   case VDS_INTEGER:
+   case PSO_INTEGER:
       minLength = pDefinition[0].length1;
       break;
 
-   case VDS_BINARY:
-   case VDS_STRING:
+   case PSO_BINARY:
+   case PSO_STRING:
       minLength = pDefinition[0].length1;
       break;
 
-   case VDS_DECIMAL:
+   case PSO_DECIMAL:
       minLength = pDefinition[0].length1 + 2;
       break;
 
-   case VDS_BOOLEAN:
+   case PSO_BOOLEAN:
       minLength = sizeof(bool);
       break;
 
-   case VDS_VAR_BINARY:
-   case VDS_VAR_STRING:
+   case PSO_VAR_BINARY:
+   case PSO_VAR_STRING:
       minLength = pDefinition[0].length1;
       maxLength = pDefinition[0].length2;
       if ( maxLength == 0 ) maxLength = 4294967295UL;
@@ -162,7 +162,7 @@ void psaGetLimits( psnFieldDef * pDefinition,
 
       switch( pDefinition[i].type ) {
 
-      case VDS_INTEGER:
+      case PSO_INTEGER:
          if ( pDefinition[i].length1 == 1 ) {
             minLength = ((minLength-1)/PSC_ALIGNMENT_CHAR + 1)*PSC_ALIGNMENT_CHAR;
          }
@@ -180,26 +180,26 @@ void psaGetLimits( psnFieldDef * pDefinition,
 
          break;
 
-      case VDS_BINARY:
-      case VDS_STRING:
+      case PSO_BINARY:
+      case PSO_STRING:
          minLength = ((minLength-1)/PSC_ALIGNMENT_CHAR + 1)*PSC_ALIGNMENT_CHAR;
          minLength += pDefinition[i].length1;
 
          break;
 
-      case VDS_DECIMAL:
+      case PSO_DECIMAL:
          minLength = ((minLength-1)/PSC_ALIGNMENT_CHAR + 1)*PSC_ALIGNMENT_CHAR;
          minLength += pDefinition[i].length1 + 2;
 
          break;
 
-      case VDS_BOOLEAN:
+      case PSO_BOOLEAN:
          minLength = ((minLength-1)/PSC_ALIGNMENT_BOOL + 1)*PSC_ALIGNMENT_BOOL;
          minLength += sizeof(bool);
          break;
 
-      case VDS_VAR_BINARY:
-      case VDS_VAR_STRING:
+      case PSO_VAR_BINARY:
+      case PSO_VAR_STRING:
          minLength = ((minLength-1)/PSC_ALIGNMENT_CHAR + 1)*PSC_ALIGNMENT_CHAR;
          minLength += pDefinition[i].length1;
 
@@ -222,49 +222,49 @@ void psaGetLimits( psnFieldDef * pDefinition,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psaValidateDefinition( vdsObjectDefinition * pDefinition )
+int psaValidateDefinition( psoObjectDefinition * pDefinition )
 {
    unsigned int i, j;
    
-   VDS_PRE_CONDITION( pDefinition != NULL );
+   PSO_PRE_CONDITION( pDefinition != NULL );
 
    switch( pDefinition->type ) {
 
-   case VDS_FOLDER:
+   case PSO_FOLDER:
       return 0;
 
-   case VDS_HASH_MAP:
-   case VDS_FAST_MAP:
+   case PSO_HASH_MAP:
+   case PSO_FAST_MAP:
 
       /* We do the key and let the queue case test the rest */
       switch( pDefinition->key.type ) {
 
-      case VDS_KEY_INTEGER:
+      case PSO_KEY_INTEGER:
          if ( pDefinition->key.length != 1 &&
               pDefinition->key.length != 2 &&
               pDefinition->key.length != 4 &&
               pDefinition->key.length != 8 ) {
-            return VDS_INVALID_FIELD_LENGTH_INT;
+            return PSO_INVALID_FIELD_LENGTH_INT;
          }
          break;
 
-      case VDS_KEY_BINARY:
-      case VDS_KEY_STRING:
+      case PSO_KEY_BINARY:
+      case PSO_KEY_STRING:
          if ( pDefinition->key.length == 0 ) {
-            return VDS_INVALID_FIELD_LENGTH;
+            return PSO_INVALID_FIELD_LENGTH;
          }
 #if SIZEOF_VOID_P > 4
          /* For 64 bits processors */
          if ( pDefinition->key.length > 4294967295 ) {
-            return VDS_INVALID_FIELD_LENGTH;
+            return PSO_INVALID_FIELD_LENGTH;
          }
 #endif
          break;
 
-      case VDS_KEY_VAR_BINARY:
-      case VDS_KEY_VAR_STRING:
+      case PSO_KEY_VAR_BINARY:
+      case PSO_KEY_VAR_STRING:
          if ( pDefinition->key.minLength == 0 ) {
-            return VDS_INVALID_FIELD_LENGTH;
+            return PSO_INVALID_FIELD_LENGTH;
          }
          /*
           * Reminder: maxLength set to zero indicates the maximum value
@@ -273,80 +273,80 @@ int psaValidateDefinition( vdsObjectDefinition * pDefinition )
 #if SIZEOF_VOID_P > 4
          /* For 64 bits processors */
          if ( pDefinition->key.maxLength > 4294967295 ) {
-            return VDS_INVALID_FIELD_LENGTH;
+            return PSO_INVALID_FIELD_LENGTH;
          }
          /* in case maxLength = 0 */
          if ( pDefinition->key.minLength > 4294967295 ) {
-            return VDS_INVALID_FIELD_LENGTH;
+            return PSO_INVALID_FIELD_LENGTH;
          }
 #endif
          if ( pDefinition->key.maxLength != 0 ) {
             if ( pDefinition->key.minLength > 
                  pDefinition->key.maxLength ) {
-               return VDS_INVALID_FIELD_LENGTH;
+               return PSO_INVALID_FIELD_LENGTH;
             }
          }
          break;
 
       default:
-         return VDS_INVALID_FIELD_TYPE;
+         return PSO_INVALID_FIELD_TYPE;
       }
 
-   case VDS_QUEUE:
-   case VDS_LIFO:
+   case PSO_QUEUE:
+   case PSO_LIFO:
       if ( pDefinition->numFields <= 0 || 
-           pDefinition->numFields > VDS_MAX_FIELDS ) {
-         return VDS_INVALID_NUM_FIELDS;
+           pDefinition->numFields > PSO_MAX_FIELDS ) {
+         return PSO_INVALID_NUM_FIELDS;
       }
 
       for ( i = 0; i < pDefinition->numFields; ++i ) {
          switch( pDefinition->fields[i].type ) {
 
-         case VDS_INTEGER:
+         case PSO_INTEGER:
             if ( pDefinition->fields[i].length != 1 &&
                  pDefinition->fields[i].length != 2 &&
                  pDefinition->fields[i].length != 4 &&
                  pDefinition->fields[i].length != 8 ) {
-               return VDS_INVALID_FIELD_LENGTH_INT;
+               return PSO_INVALID_FIELD_LENGTH_INT;
             }
             break;
 
-         case VDS_BINARY:
-         case VDS_STRING:
+         case PSO_BINARY:
+         case PSO_STRING:
             if ( pDefinition->fields[i].length == 0 ) {
-               return VDS_INVALID_FIELD_LENGTH;
+               return PSO_INVALID_FIELD_LENGTH;
             }
 #if SIZEOF_VOID_P > 4
             /* For 64 bits processors */
             if ( pDefinition->fields[i].length > 4294967295 ) {
-               return VDS_INVALID_FIELD_LENGTH;
+               return PSO_INVALID_FIELD_LENGTH;
             }
 #endif
             break;
 
-         case VDS_DECIMAL:
+         case PSO_DECIMAL:
             if ( pDefinition->fields[i].precision == 0 ||
-               pDefinition->fields[i].precision > VDS_FIELD_MAX_PRECISION ) {
-               return VDS_INVALID_PRECISION;
+               pDefinition->fields[i].precision > PSO_FIELD_MAX_PRECISION ) {
+               return PSO_INVALID_PRECISION;
             }
             if ( pDefinition->fields[i].scale > 
                  pDefinition->fields[i].precision ) {
-               return VDS_INVALID_SCALE;
+               return PSO_INVALID_SCALE;
             }
             break;
 
-         case VDS_BOOLEAN:
+         case PSO_BOOLEAN:
             break;
 
-         case VDS_VAR_BINARY:
-         case VDS_VAR_STRING:
+         case PSO_VAR_BINARY:
+         case PSO_VAR_STRING:
             /* These 2 types are only valid for the last field. */
-            if ( i != (pDefinition->numFields-1) ) return VDS_INVALID_FIELD_TYPE;
+            if ( i != (pDefinition->numFields-1) ) return PSO_INVALID_FIELD_TYPE;
 
             /* BIG WARNING: this rule is not captured by the XML schema */
             if ( pDefinition->numFields == 1 && 
                  pDefinition->fields[i].minLength == 0 ) {
-               return VDS_INVALID_FIELD_LENGTH;
+               return PSO_INVALID_FIELD_LENGTH;
             }
             /*
              * Reminder: maxLength set to zero indicates the maximum value
@@ -355,23 +355,23 @@ int psaValidateDefinition( vdsObjectDefinition * pDefinition )
 #if SIZEOF_VOID_P > 4
             /* For 64 bits processors */
             if ( pDefinition->fields[i].maxLength > 4294967295 ) {
-               return VDS_INVALID_FIELD_LENGTH;
+               return PSO_INVALID_FIELD_LENGTH;
             }
             /* in case maxLength = 0 */
             if ( pDefinition->fields[i].minLength > 4294967295 ) {
-               return VDS_INVALID_FIELD_LENGTH;
+               return PSO_INVALID_FIELD_LENGTH;
             }
 #endif
             if ( pDefinition->fields[i].maxLength != 0 ) {
                if ( pDefinition->fields[i].minLength > 
                     pDefinition->fields[i].maxLength ) {
-                  return VDS_INVALID_FIELD_LENGTH;
+                  return PSO_INVALID_FIELD_LENGTH;
                }
             }
             break;
 
          default:
-            return VDS_INVALID_FIELD_TYPE;
+            return PSO_INVALID_FIELD_TYPE;
          }
          /*
           * Field names must only allow characters that can be used to build 
@@ -384,29 +384,29 @@ int psaValidateDefinition( vdsObjectDefinition * pDefinition )
           *     http://msdn.microsoft.com/en-us/library/565w213d.aspx.
           */
          if ( ! isalpha(pDefinition->fields[i].name[0]) ) {
-            return VDS_INVALID_FIELD_NAME;
+            return PSO_INVALID_FIELD_NAME;
          }
-         for ( j = 1; j < VDS_MAX_FIELD_LENGTH; ++j ) {
+         for ( j = 1; j < PSO_MAX_FIELD_LENGTH; ++j ) {
             if ( pDefinition->fields[i].name[j] == 0 ) break;
             if ( isalnum(pDefinition->fields[i].name[j]) ) continue;
             if ( pDefinition->fields[i].name[j] == '_' ) continue;
             
-            return VDS_INVALID_FIELD_NAME;
+            return PSO_INVALID_FIELD_NAME;
          }
 
          /* We must also make sure that field names are not duplicate. */
          for ( j = 0; j < i; ++j ) {
             if ( strncmp( pDefinition->fields[i].name,
                           pDefinition->fields[j].name,
-                          VDS_MAX_FIELD_LENGTH ) == 0 ) {
-               return VDS_DUPLICATE_FIELD_NAME;
+                          PSO_MAX_FIELD_LENGTH ) == 0 ) {
+               return PSO_DUPLICATE_FIELD_NAME;
             }
          }
       }
       return 0;
       
    default:
-      return VDS_WRONG_OBJECT_TYPE;
+      return PSO_WRONG_OBJECT_TYPE;
    }
 
 }
@@ -415,7 +415,7 @@ int psaValidateDefinition( vdsObjectDefinition * pDefinition )
 
 int psaXmlToDefinition( const char           * xmlBuffer,
                         size_t                 lengthInBytes,
-                        vdsObjectDefinition ** ppDefinition,
+                        psoObjectDefinition ** ppDefinition,
                         char                ** objectName,
                         size_t               * nameLengthInBytes )
 {
@@ -430,10 +430,10 @@ int psaXmlToDefinition( const char           * xmlBuffer,
    uint16_t numFields;
    bool dynamicMode;
    
-   VDS_PRE_CONDITION( xmlBuffer         != NULL );
-   VDS_PRE_CONDITION( ppDefinition      != NULL );
-   VDS_PRE_CONDITION( objectName        != NULL );
-   VDS_PRE_CONDITION( nameLengthInBytes != NULL );
+   PSO_PRE_CONDITION( xmlBuffer         != NULL );
+   PSO_PRE_CONDITION( ppDefinition      != NULL );
+   PSO_PRE_CONDITION( objectName        != NULL );
+   PSO_PRE_CONDITION( nameLengthInBytes != NULL );
 
    /*
     * for debugging, I could use this instead:
@@ -442,26 +442,26 @@ int psaXmlToDefinition( const char           * xmlBuffer,
    doc = xmlReadMemory( xmlBuffer, lengthInBytes, NULL, NULL, 
                         XML_PARSE_NOERROR | XML_PARSE_NOWARNING );
    if ( doc == NULL ) {
-      errcode = VDS_XML_READ_ERROR;
+      errcode = PSO_XML_READ_ERROR;
       goto cleanup;
    }
    
    root = xmlDocGetRootElement( doc );
    if ( root == NULL ) {
-      errcode = VDS_XML_INVALID_ROOT;
+      errcode = PSO_XML_INVALID_ROOT;
       goto cleanup;
    }
    if ( (xmlStrcmp(root->name, BAD_CAST "folder")  != 0) &&
         (xmlStrcmp(root->name, BAD_CAST "queue")   != 0) &&
         (xmlStrcmp(root->name, BAD_CAST "lifo")    != 0) &&
         (xmlStrcmp(root->name, BAD_CAST "hashmap") != 0) ) {
-      errcode = VDS_XML_INVALID_ROOT;
+      errcode = PSO_XML_INVALID_ROOT;
       goto cleanup;
    }
 
    prop = xmlGetProp( root, BAD_CAST "schemaLocation" );
    if ( prop == NULL ) {
-      errcode = VDS_XML_NO_SCHEMA_LOCATION;
+      errcode = PSO_XML_NO_SCHEMA_LOCATION;
       goto cleanup;
    }
    
@@ -477,19 +477,19 @@ int psaXmlToDefinition( const char           * xmlBuffer,
       }
    }
    if ( separator == -1 ) {
-      errcode = VDS_XML_NO_SCHEMA_LOCATION;
+      errcode = PSO_XML_NO_SCHEMA_LOCATION;
       goto cleanup;
    }
    
    parserCtxt = xmlSchemaNewParserCtxt( (char*)&prop[separator] );
    if ( parserCtxt == NULL ) {
-      errcode = VDS_XML_PARSER_CONTEXT_FAILED;
+      errcode = PSO_XML_PARSER_CONTEXT_FAILED;
       goto cleanup;
    }
    
    schema = xmlSchemaParse( parserCtxt );
    if ( schema == NULL ) {
-      errcode = VDS_XML_PARSE_SCHEMA_FAILED;
+      errcode = PSO_XML_PARSE_SCHEMA_FAILED;
       goto cleanup;
    }
    
@@ -498,7 +498,7 @@ int psaXmlToDefinition( const char           * xmlBuffer,
 
    validCtxt = xmlSchemaNewValidCtxt( schema );
    if ( validCtxt == NULL ) {
-      errcode = VDS_XML_VALID_CONTEXT_FAILED;
+      errcode = PSO_XML_VALID_CONTEXT_FAILED;
       goto cleanup;
    }
    
@@ -516,18 +516,18 @@ int psaXmlToDefinition( const char           * xmlBuffer,
                             stderr );
    
    if ( xmlSchemaValidateDoc( validCtxt, doc ) != 0 ) {
-      errcode = VDS_XML_VALIDATION_FAILED;
+      errcode = PSO_XML_VALIDATION_FAILED;
       goto cleanup;
    }
 
    prop = xmlGetProp( root, BAD_CAST "objName" );
    if ( prop == NULL ) {
-      errcode = VDS_INVALID_OBJECT_NAME;
+      errcode = PSO_INVALID_OBJECT_NAME;
       goto cleanup;
    }
    *objectName = (char*)malloc( xmlStrlen(prop) + 1 );
    if ( *objectName == NULL ) {
-      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
       goto cleanup;
    }
    strcpy( *objectName, (char *)prop );
@@ -536,13 +536,13 @@ int psaXmlToDefinition( const char           * xmlBuffer,
    prop = NULL;
    
    if ( xmlStrcmp( root->name, BAD_CAST "folder") == 0 ) {
-      *ppDefinition = (vdsObjectDefinition *)
-                      calloc( sizeof(vdsObjectDefinition), 1 );
+      *ppDefinition = (psoObjectDefinition *)
+                      calloc( sizeof(psoObjectDefinition), 1 );
       if (*ppDefinition == NULL ) {
-         errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+         errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
          goto cleanup;
       }
-      (*ppDefinition)->type = VDS_FOLDER;
+      (*ppDefinition)->type = PSO_FOLDER;
       /* No fields to process. Go directly to the exit, error or not. */
       goto cleanup;
    }
@@ -552,7 +552,7 @@ int psaXmlToDefinition( const char           * xmlBuffer,
    if ( xmlStrcmp( root->name, BAD_CAST "hashmap") == 0 ) {
       prop = xmlGetProp( root, BAD_CAST "mode" );
       if ( prop == NULL ) {
-         errcode = VDS_WRONG_OBJECT_TYPE;
+         errcode = PSO_WRONG_OBJECT_TYPE;
          goto cleanup;
       }
       if ( xmlStrcmp( prop, BAD_CAST "dynamic" ) == 0 ) {
@@ -579,7 +579,7 @@ int psaXmlToDefinition( const char           * xmlBuffer,
                nodeField = nodeField->next;
             }
             else {
-               errcode = VDS_INVALID_KEY_DEF;
+               errcode = PSO_INVALID_KEY_DEF;
                goto cleanup;
             }
             break;
@@ -595,29 +595,29 @@ int psaXmlToDefinition( const char           * xmlBuffer,
       nodeField = nodeField->next;
    }
 
-   *ppDefinition = (vdsObjectDefinition *)
-      calloc( offsetof(vdsObjectDefinition,fields) +
-              numFields * sizeof(vdsFieldDefinition), 1 );
+   *ppDefinition = (psoObjectDefinition *)
+      calloc( offsetof(psoObjectDefinition,fields) +
+              numFields * sizeof(psoFieldDefinition), 1 );
    if (*ppDefinition == NULL ) {
-      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
       goto cleanup;
    }
    (*ppDefinition)->numFields = numFields;
 
    /* Extract the key, if any */
    if ( nodeKey != NULL ) {
-      (*ppDefinition)->type = VDS_FAST_MAP;
-      if ( dynamicMode ) (*ppDefinition)->type = VDS_HASH_MAP;
+      (*ppDefinition)->type = PSO_FAST_MAP;
+      if ( dynamicMode ) (*ppDefinition)->type = PSO_HASH_MAP;
       nodeType = nodeKey->children;
       while ( nodeType != NULL ) {
          if ( nodeType->type == XML_ELEMENT_NODE ) {
             if ( xmlStrcmp( nodeType->name, BAD_CAST "integer") == 0 ) {
                prop = xmlGetProp( nodeType, BAD_CAST "size" );
                if ( prop == NULL ) {
-                  errcode = VDS_INVALID_KEY_DEF;
+                  errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               (*ppDefinition)->key.type = VDS_KEY_INTEGER;
+               (*ppDefinition)->key.type = PSO_KEY_INTEGER;
                sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.length );
                xmlFree(prop);
                prop = NULL;
@@ -625,10 +625,10 @@ int psaXmlToDefinition( const char           * xmlBuffer,
             else if ( xmlStrcmp( nodeType->name, BAD_CAST "string") == 0 ) {
                prop = xmlGetProp( nodeType, BAD_CAST "length" );
                if ( prop == NULL ) {
-                  errcode = VDS_INVALID_KEY_DEF;
+                  errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               (*ppDefinition)->key.type = VDS_KEY_STRING;
+               (*ppDefinition)->key.type = PSO_KEY_STRING;
                sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.length );
                xmlFree(prop);
                prop = NULL;
@@ -636,10 +636,10 @@ int psaXmlToDefinition( const char           * xmlBuffer,
             else if ( xmlStrcmp( nodeType->name, BAD_CAST "binary") == 0 ) {
                prop = xmlGetProp( nodeType, BAD_CAST "length" );
                if ( prop == NULL ) {
-                  errcode = VDS_INVALID_KEY_DEF;
+                  errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               (*ppDefinition)->key.type = VDS_KEY_BINARY;
+               (*ppDefinition)->key.type = PSO_KEY_BINARY;
                sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.length );
                xmlFree(prop);
                prop = NULL;
@@ -647,41 +647,41 @@ int psaXmlToDefinition( const char           * xmlBuffer,
             else if ( xmlStrcmp( nodeType->name, BAD_CAST "varString") == 0 ) {
                prop = xmlGetProp( nodeType, BAD_CAST "minLength" );
                if ( prop == NULL ) {
-                  errcode = VDS_INVALID_KEY_DEF;
+                  errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
                sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.minLength );
                xmlFree(prop);
                prop = xmlGetProp( nodeType, BAD_CAST "maxLength" );
                if ( prop == NULL ) {
-                  errcode = VDS_INVALID_KEY_DEF;
+                  errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
                sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.maxLength );
                xmlFree(prop);               
                prop = NULL;
-               (*ppDefinition)->key.type = VDS_KEY_VAR_STRING;
+               (*ppDefinition)->key.type = PSO_KEY_VAR_STRING;
             }
             else if ( xmlStrcmp( nodeType->name, BAD_CAST "varBinary") == 0 ) {
                prop = xmlGetProp( nodeType, BAD_CAST "minLength" );
                if ( prop == NULL ) {
-                  errcode = VDS_INVALID_KEY_DEF;
+                  errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
                sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.minLength );
                xmlFree(prop);
                prop = xmlGetProp( nodeType, BAD_CAST "maxLength" );
                if ( prop == NULL ) {
-                  errcode = VDS_INVALID_KEY_DEF;
+                  errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
                sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.maxLength );
                xmlFree(prop);               
                prop = NULL;
-               (*ppDefinition)->key.type = VDS_KEY_VAR_BINARY;
+               (*ppDefinition)->key.type = PSO_KEY_VAR_BINARY;
             }
             else {
-               errcode = VDS_INVALID_KEY_DEF;
+               errcode = PSO_INVALID_KEY_DEF;
                goto cleanup;
             }
             
@@ -694,13 +694,13 @@ int psaXmlToDefinition( const char           * xmlBuffer,
    else {
       nodeField = root->children;
       if ( xmlStrcmp( root->name, BAD_CAST "queue") == 0 ) {
-         (*ppDefinition)->type = VDS_QUEUE;
+         (*ppDefinition)->type = PSO_QUEUE;
       }
       else if ( xmlStrcmp( root->name, BAD_CAST "lifo") == 0 ) {
-         (*ppDefinition)->type = VDS_LIFO;
+         (*ppDefinition)->type = PSO_LIFO;
       }
       else {
-         errcode = VDS_WRONG_OBJECT_TYPE;
+         errcode = PSO_WRONG_OBJECT_TYPE;
          goto cleanup;
       }
    }
@@ -710,11 +710,11 @@ int psaXmlToDefinition( const char           * xmlBuffer,
       if ( nodeField->type == XML_ELEMENT_NODE ) {
          prop = xmlGetProp( nodeField, BAD_CAST "name" );
          if ( prop == NULL ) {
-            errcode = VDS_INVALID_FIELD_NAME;
+            errcode = PSO_INVALID_FIELD_NAME;
             goto cleanup;
          }
          strncpy( (*ppDefinition)->fields[numFields].name, 
-            (char*)prop, VDS_MAX_FIELD_LENGTH );
+            (char*)prop, PSO_MAX_FIELD_LENGTH );
          xmlFree(prop);
          prop = NULL;
          
@@ -725,7 +725,7 @@ int psaXmlToDefinition( const char           * xmlBuffer,
                if ( xmlStrcmp( nodeType->name, BAD_CAST "integer") == 0 ) {
                   prop = xmlGetProp( nodeType, BAD_CAST "size" );
                   if ( prop == NULL ) {
-                     errcode = VDS_INVALID_FIELD_LENGTH_INT;
+                     errcode = PSO_INVALID_FIELD_LENGTH_INT;
                      goto cleanup;
                   }
                   sscanf( (char*)prop, "%ud", 
@@ -733,16 +733,16 @@ int psaXmlToDefinition( const char           * xmlBuffer,
                   xmlFree(prop);
                   prop = NULL;
 
-                  (*ppDefinition)->fields[numFields].type = VDS_INTEGER;
+                  (*ppDefinition)->fields[numFields].type = PSO_INTEGER;
                }
                else if ( xmlStrcmp( nodeType->name, BAD_CAST "boolean") == 0 ) {
-                  (*ppDefinition)->fields[numFields].type = VDS_BOOLEAN;
+                  (*ppDefinition)->fields[numFields].type = PSO_BOOLEAN;
                }
                else if ( (xmlStrcmp(nodeType->name, BAD_CAST "string") == 0) ||
                          (xmlStrcmp(nodeType->name, BAD_CAST "binary") == 0) ) {
                   prop = xmlGetProp( nodeType, BAD_CAST "length" );
                   if ( prop == NULL ) {
-                     errcode = VDS_INVALID_FIELD_LENGTH;
+                     errcode = PSO_INVALID_FIELD_LENGTH;
                      goto cleanup;
                   }
                   sscanf( (char*)prop, "%ud", 
@@ -751,21 +751,21 @@ int psaXmlToDefinition( const char           * xmlBuffer,
                   prop = NULL;
                   
                   if ( xmlStrcmp( nodeType->name, BAD_CAST "string") == 0 ) {
-                     (*ppDefinition)->fields[numFields].type = VDS_STRING;
+                     (*ppDefinition)->fields[numFields].type = PSO_STRING;
                   }
                   else {
-                     (*ppDefinition)->fields[numFields].type = VDS_BINARY;
+                     (*ppDefinition)->fields[numFields].type = PSO_BINARY;
                   }
                }
                else if ( (xmlStrcmp(nodeType->name, BAD_CAST "varString") == 0) ||
                          (xmlStrcmp(nodeType->name, BAD_CAST "varBinary") == 0) ) {
                   if ( xmlStrcmp(nodeField->name, BAD_CAST "lastField") != 0 ) {
-                     errcode = VDS_INVALID_FIELD_TYPE;
+                     errcode = PSO_INVALID_FIELD_TYPE;
                      goto cleanup;
                   }
                   prop = xmlGetProp( nodeType, BAD_CAST "minLength" );
                   if ( prop == NULL ) {
-                     errcode = VDS_INVALID_FIELD_LENGTH;
+                     errcode = PSO_INVALID_FIELD_LENGTH;
                      goto cleanup;
                   }
                   sscanf( (char*)prop, "%ud", 
@@ -773,7 +773,7 @@ int psaXmlToDefinition( const char           * xmlBuffer,
                   xmlFree(prop);
                   prop = xmlGetProp( nodeType, BAD_CAST "maxLength" );
                   if ( prop == NULL ) {
-                     errcode = VDS_INVALID_FIELD_LENGTH;
+                     errcode = PSO_INVALID_FIELD_LENGTH;
                      goto cleanup;
                   }
                   sscanf( (char*)prop, "%ud", 
@@ -782,16 +782,16 @@ int psaXmlToDefinition( const char           * xmlBuffer,
                   prop = NULL;
                   
                   if ( xmlStrcmp( nodeType->name, BAD_CAST "varString") == 0 ) {
-                     (*ppDefinition)->fields[numFields].type = VDS_VAR_STRING;
+                     (*ppDefinition)->fields[numFields].type = PSO_VAR_STRING;
                   }
                   else {
-                     (*ppDefinition)->fields[numFields].type = VDS_VAR_BINARY;
+                     (*ppDefinition)->fields[numFields].type = PSO_VAR_BINARY;
                   }
                }
                else if ( xmlStrcmp(nodeType->name, BAD_CAST "decimal") == 0 ) {
                   prop = xmlGetProp( nodeType, BAD_CAST "precision" );
                   if ( prop == NULL ) {
-                     errcode = VDS_INVALID_PRECISION;
+                     errcode = PSO_INVALID_PRECISION;
                      goto cleanup;
                   }
                   sscanf( (char*)prop, "%ud", 
@@ -799,7 +799,7 @@ int psaXmlToDefinition( const char           * xmlBuffer,
                   xmlFree(prop);
                   prop = xmlGetProp( nodeType, BAD_CAST "scale" );
                   if ( prop == NULL ) {
-                     errcode = VDS_INVALID_SCALE;
+                     errcode = PSO_INVALID_SCALE;
                      goto cleanup;
                   }
                   sscanf( (char*)prop, "%ud", 
@@ -807,10 +807,10 @@ int psaXmlToDefinition( const char           * xmlBuffer,
                   xmlFree(prop);
                   prop = NULL;
                   
-                  (*ppDefinition)->fields[numFields].type = VDS_DECIMAL;
+                  (*ppDefinition)->fields[numFields].type = PSO_DECIMAL;
                }
                else {
-                  errcode = VDS_INVALID_FIELD_TYPE;
+                  errcode = PSO_INVALID_FIELD_TYPE;
                   goto cleanup;
                }
                

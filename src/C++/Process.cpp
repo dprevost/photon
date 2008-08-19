@@ -16,34 +16,34 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Common/Common.h"
-#include <photon/vdsProcess>
-#include <photon/vdsProcess.h>
-#include <photon/vdsErrors.h>
-#include <photon/vdsException>
+#include <photon/psoProcess>
+#include <photon/psoProcess.h>
+#include <photon/psoErrors.h>
+#include <photon/psoException>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsProcess::vdsProcess()
+psoProcess::psoProcess()
 {
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsProcess::Init( const char* wdAddress,
+void psoProcess::Init( const char* wdAddress,
                        bool        protectionNeeded )
 {
-   int rc = vdsInit( wdAddress,
+   int rc = psoInit( wdAddress,
                      protectionNeeded );
    if ( rc != 0 ) {
-      throw vdsException( rc, NULL, "vdsProcess::Init" );
+      throw psoException( rc, NULL, "psoProcess::Init" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsProcess::~vdsProcess()
+psoProcess::~psoProcess()
 {
-   vdsExit();
+   psoExit();
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

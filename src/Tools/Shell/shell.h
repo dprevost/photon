@@ -35,7 +35,7 @@ using namespace std;
 class vdsShell
 {
 public:
-   vdsShell(vdsSession & s);
+   vdsShell(psoSession & s);
    ~vdsShell();
 
    void Run();
@@ -43,7 +43,7 @@ public:
 private:
 
    string currentLocation;
-   vdsSession & session;
+   psoSession & session;
    vector<string> tokens;
    vdsConstants constants;
    

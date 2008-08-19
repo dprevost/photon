@@ -24,10 +24,10 @@ const std::string outQueueName = "Queue Example\\Output Queue";
 const std::string folderName   = "Queue Example";
 const std::string controlName  = "Queue Example/Queue Control";
 
-vdsProcess process;
-vdsSession session;
-vdsQueue   inQueue(session), outQueue(session);
-vdsHashMap control(session);
+psoProcess process;
+psoSession session;
+psoQueue   inQueue(session), outQueue(session);
+psoHashMap control(session);
 
 // Keys for the control
 const char * workProcessKey = "Work Queue";

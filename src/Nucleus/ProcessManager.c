@@ -25,18 +25,18 @@
 bool psnProcMgrInit( psnProcMgr        * pManager,
                       psnSessionContext * pContext )
 {
-   vdsErrors errcode;
+   psoErrors errcode;
 
-   VDS_PRE_CONDITION( pManager != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pManager != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
 
    errcode = psnMemObjectInit( &pManager->memObject, 
                                 PSN_IDENT_PROCESS_MGR,
                                 &pManager->blockGroup,
                                 1 ); /* A single block */
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
+                    g_psoErrorHandle,
                     errcode );
       return false;
    }
@@ -56,10 +56,10 @@ bool psnProcMgrAddProcess( psnProcMgr        * pManager,
    psnProcess* pCurrentBuffer;
    bool ok = false;
    
-   VDS_PRE_CONDITION( pManager  != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( ppProcess != NULL );
-   VDS_PRE_CONDITION( pid > 0 );
+   PSO_PRE_CONDITION( pManager  != NULL );
+   PSO_PRE_CONDITION( pContext  != NULL );
+   PSO_PRE_CONDITION( ppProcess != NULL );
+   PSO_PRE_CONDITION( pid > 0 );
 
    /* For recovery purposes, always lock before doing anything! */
    if ( psnLock( &pManager->memObject, pContext ) ) {
@@ -67,7 +67,7 @@ bool psnProcMgrAddProcess( psnProcMgr        * pManager,
          psnMallocBlocks( pContext->pAllocator, PSN_ALLOC_ANY, 1, pContext );
       if ( pCurrentBuffer != NULL ) {
          ok = psnProcessInit( pCurrentBuffer, pid, pContext );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
          if ( ok ) {
             psnLinkNodeInit( &pCurrentBuffer->node );
             psnLinkedListPutLast( &pManager->listOfProcesses, 
@@ -83,15 +83,15 @@ bool psnProcMgrAddProcess( psnProcMgr        * pManager,
       }
       else {
          pscSetError( &pContext->errorHandler, 
-                       g_vdsErrorHandle, 
-                       VDS_NOT_ENOUGH_VDS_MEMORY );
+                       g_psoErrorHandle, 
+                       PSO_NOT_ENOUGH_PSO_MEMORY );
       }
       psnUnlock( &pManager->memObject, pContext );
    }
    else {
       pscSetError( &pContext->errorHandler, 
-                    g_vdsErrorHandle, 
-                    VDS_ENGINE_BUSY );
+                    g_psoErrorHandle, 
+                    PSO_ENGINE_BUSY );
    }
    
    return ok;
@@ -106,13 +106,13 @@ bool psnProcMgrFindProcess( psnProcMgr        * pManager,
 {
    psnProcess *pCurrent, *pNext;
    psnLinkNode * pNodeCurrent = NULL, * pNodeNext = NULL;
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    bool ok;
    
-   VDS_PRE_CONDITION( pManager  != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( ppProcess != NULL );
-   VDS_PRE_CONDITION( pid > 0 );
+   PSO_PRE_CONDITION( pManager  != NULL );
+   PSO_PRE_CONDITION( pContext  != NULL );
+   PSO_PRE_CONDITION( ppProcess != NULL );
+   PSO_PRE_CONDITION( pid > 0 );
    
    *ppProcess = NULL;
    
@@ -136,21 +136,21 @@ bool psnProcMgrFindProcess( psnProcMgr        * pManager,
          }
       }
       else {
-         errcode = VDS_INTERNAL_ERROR;
+         errcode = PSO_INTERNAL_ERROR;
       }
       
       psnUnlock( &pManager->memObject, pContext );
    }
    else {
-      errcode = VDS_ENGINE_BUSY;
+      errcode = PSO_ENGINE_BUSY;
    }
    
    /* Is this possible ? */
-   if ( *ppProcess == NULL ) errcode = VDS_INTERNAL_ERROR;
+   if ( *ppProcess == NULL ) errcode = PSO_INTERNAL_ERROR;
 
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pContext->errorHandler, 
-                    g_vdsErrorHandle, 
+                    g_psoErrorHandle, 
                     errcode );
       return false;
    }
@@ -164,9 +164,9 @@ bool psnProcMgrRemoveProcess( psnProcMgr        * pManager,
                                psnProcess        * pProcess,
                                psnSessionContext * pContext )
 {
-   VDS_PRE_CONDITION( pManager != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pProcess != NULL );
+   PSO_PRE_CONDITION( pManager != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pProcess != NULL );
    
    /* For recovery purposes, always lock before doing anything! */
    if ( psnLock( &pManager->memObject, pContext ) ) {
@@ -179,8 +179,8 @@ bool psnProcMgrRemoveProcess( psnProcMgr        * pManager,
    }
    else {
       pscSetError( &pContext->errorHandler, 
-                    g_vdsErrorHandle, 
-                    VDS_ENGINE_BUSY );
+                    g_psoErrorHandle, 
+                    PSO_ENGINE_BUSY );
       return false;
    }
    

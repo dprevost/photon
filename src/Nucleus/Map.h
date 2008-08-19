@@ -44,7 +44,7 @@ struct psnMap
 
    struct psnHash      hashObj;
 
-   struct vdsKeyDefinition keyDef;
+   struct psoKeyDefinition keyDef;
    
    /** Offset to the data definition */
    ptrdiff_t            dataDefOffset;
@@ -116,7 +116,7 @@ bool psnMapInit( psnMap             * pHashMap,
                   size_t                origNameLength,
                   char                * origName,
                   ptrdiff_t             hashItemOffset,
-                  vdsObjectDefinition * pDefinition,
+                  psoObjectDefinition * pDefinition,
                   psnSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
@@ -142,7 +142,7 @@ bool psnMapReplace( psnMap            * pHashMap,
 
 VDSF_ENGINE_EXPORT
 void psnMapStatus( psnMap      * pHashMap,
-                    vdsObjStatus * pStatus );
+                    psoObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

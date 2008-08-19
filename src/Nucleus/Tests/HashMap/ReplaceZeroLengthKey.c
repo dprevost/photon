@@ -31,11 +31,11 @@ int main()
    char * key  = "my key";
    char * data1 = "my data1";
    char * data2 = "my data2";
-   vdsObjectDefinition def = { 
-      VDS_HASH_MAP, 
+   psoObjectDefinition def = { 
+      PSO_HASH_MAP, 
       1, 
-      { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 1, 100 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } } 
    };
    
    pHashMap = initHashMapTest( expectedToPass, &context );

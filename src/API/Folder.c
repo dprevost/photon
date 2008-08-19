@@ -16,10 +16,10 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vdsFolder.h>
+#include <photon/psoFolder.h>
 #include "API/Folder.h"
 #include "API/Session.h"
-#include <photon/vdsErrors.h>
+#include <photon/psoErrors.h>
 #include "API/CommonObject.h"
 #include "API/DataDefinition.h"
 
@@ -31,17 +31,17 @@
  * 
  * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFolderClose( VDS_HANDLE objectHandle )
+int psoFolderClose( PSO_HANDLE objectHandle )
 {
    psaFolder * pFolder;
    psnFolder * pVDSFolder;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    
    pFolder = (psaFolder *) objectHandle;
-   if ( pFolder == NULL ) return VDS_NULL_HANDLE;
+   if ( pFolder == NULL ) return PSO_NULL_HANDLE;
    
    if ( pFolder->object.type != PSA_FOLDER ) {
-      return VDS_WRONG_TYPE_HANDLE;
+      return PSO_WRONG_TYPE_HANDLE;
    }
    
    if ( ! pFolder->object.pSession->terminated ) {
@@ -57,24 +57,24 @@ int vdsFolderClose( VDS_HANDLE objectHandle )
                memset( &pFolder->iterator, 0, sizeof(psnFolderItem) );
             }
             else {
-               errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+               errcode = PSO_OBJECT_CANNOT_GET_LOCK;
             }
          }
 
-         if ( errcode == VDS_OK ) {
+         if ( errcode == PSO_OK ) {
             errcode = psaCommonObjClose( &pFolder->object );
          }
          psaCommonUnlock( &pFolder->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
-   if ( errcode == VDS_OK ) {
+   if ( errcode == PSO_OK ) {
       /*
        * Memory might still be around even after it is released, so we make 
        * sure future access with the handle fails by setting the type wrong!
@@ -84,7 +84,7 @@ int vdsFolderClose( VDS_HANDLE objectHandle )
    }
    else {
       pscSetError( &pFolder->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -92,43 +92,43 @@ int vdsFolderClose( VDS_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFolderCreateObject( VDS_HANDLE            objectHandle,
+int psoFolderCreateObject( PSO_HANDLE            objectHandle,
                            const char          * objectName,
                            size_t                nameLengthInBytes,
-                           vdsObjectDefinition * pDefinition )
+                           psoObjectDefinition * pDefinition )
 {
    psaFolder * pFolder;
    psnFolder * pVDSFolder;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
    psaSession* pSession;
 
    pFolder = (psaFolder *) objectHandle;
-   if ( pFolder == NULL ) return VDS_NULL_HANDLE;
+   if ( pFolder == NULL ) return PSO_NULL_HANDLE;
    
    if ( pFolder->object.type != PSA_FOLDER ) {
-      return VDS_WRONG_TYPE_HANDLE;
+      return PSO_WRONG_TYPE_HANDLE;
    }
    pSession = pFolder->object.pSession;
 
    if ( objectName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
-      return VDS_INVALID_OBJECT_NAME;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      return PSO_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    
    if ( pDefinition == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
 
    errcode = psaValidateDefinition( pDefinition );
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
       return errcode;
    }
 
@@ -141,19 +141,19 @@ int vdsFolderCreateObject( VDS_HANDLE            objectHandle,
                                       nameLengthInBytes,
                                       pDefinition,
                                       &pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
          psaCommonUnlock( &pFolder->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
 
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -165,25 +165,25 @@ int vdsFolderCreateObject( VDS_HANDLE            objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFolderCreateObjectXML( VDS_HANDLE   objectHandle,
+int psoFolderCreateObjectXML( PSO_HANDLE   objectHandle,
                               const char * xmlBuffer,
                               size_t       lengthInBytes )
 {
-   vdsObjectDefinition * pDefinition = NULL;
-   int errcode = VDS_OK;
+   psoObjectDefinition * pDefinition = NULL;
+   int errcode = PSO_OK;
    char * objectName = NULL;
    size_t nameLengthInBytes = 0;
    
-   if ( xmlBuffer == NULL ) return VDS_NULL_POINTER;
-   if ( lengthInBytes == 0 ) return VDS_INVALID_LENGTH;
+   if ( xmlBuffer == NULL ) return PSO_NULL_POINTER;
+   if ( lengthInBytes == 0 ) return PSO_INVALID_LENGTH;
    
    errcode = psaXmlToDefinition( xmlBuffer,
                                   lengthInBytes,
                                   &pDefinition,
                                   &objectName,
                                   &nameLengthInBytes );
-   if ( errcode == VDS_OK ) {
-      errcode = vdsFolderCreateObject( objectHandle,
+   if ( errcode == PSO_OK ) {
+      errcode = psoFolderCreateObject( objectHandle,
                                        objectName,
                                        nameLengthInBytes,
                                        pDefinition );
@@ -197,32 +197,32 @@ int vdsFolderCreateObjectXML( VDS_HANDLE   objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFolderDestroyObject( VDS_HANDLE   objectHandle,
+int psoFolderDestroyObject( PSO_HANDLE   objectHandle,
                             const char * objectName,
                             size_t       nameLengthInBytes )
 {
    psaFolder * pFolder;
    psnFolder * pVDSFolder;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psaSession* pSession;
    bool ok = true;
    
    pFolder = (psaFolder *) objectHandle;
-   if ( pFolder == NULL ) return VDS_NULL_HANDLE;
+   if ( pFolder == NULL ) return PSO_NULL_HANDLE;
    
    if ( pFolder->object.type != PSA_FOLDER ) {
-      return VDS_WRONG_TYPE_HANDLE;
+      return PSO_WRONG_TYPE_HANDLE;
    }
    pSession = pFolder->object.pSession;
 
    if ( objectName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
-      return VDS_INVALID_OBJECT_NAME;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      return PSO_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    
    if ( ! pSession->terminated ) {
@@ -233,20 +233,20 @@ int vdsFolderDestroyObject( VDS_HANDLE   objectHandle,
                                        objectName,
                                        nameLengthInBytes,
                                        &pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
 
          psaCommonUnlock( &pFolder->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
 
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -258,34 +258,34 @@ int vdsFolderDestroyObject( VDS_HANDLE   objectHandle,
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
-                       vdsFolderEntry * pEntry )
+int psoFolderGetFirst( PSO_HANDLE       objectHandle,
+                       psoFolderEntry * pEntry )
 {
    psaFolder * pFolder;
    psnFolder * pVDSFolder;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnObjectDescriptor * pDescriptor;
    bool ok;
    
    pFolder = (psaFolder *) objectHandle;
-   if ( pFolder == NULL ) return VDS_NULL_HANDLE;
+   if ( pFolder == NULL ) return PSO_NULL_HANDLE;
    
    if ( pFolder->object.type != PSA_FOLDER ) {
-      return VDS_WRONG_TYPE_HANDLE;
+      return PSO_WRONG_TYPE_HANDLE;
    }
    
    if ( pEntry == NULL ) {
-      errcode = VDS_NULL_POINTER;
+      errcode = PSO_NULL_POINTER;
       goto error_handler;
    }
 
    if ( pFolder->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
    
    if ( ! psaCommonLock( &pFolder->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
    
@@ -296,7 +296,7 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
       ok = psnFolderRelease( pVDSFolder,
                               &pFolder->iterator,
                               &pFolder->object.pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ok ) {
          memset( &pFolder->iterator, 0, sizeof(psnFolderItem) );
       }
@@ -308,10 +308,10 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
    ok = psnFolderGetFirst( pVDSFolder,
                             &pFolder->iterator,
                             &pFolder->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
-   memset( pEntry, 0, sizeof( vdsFolderEntry ) );
+   memset( pEntry, 0, sizeof( psoFolderEntry ) );
    GET_PTR( pDescriptor, pFolder->iterator.pHashItem->dataOffset, 
                          psnObjectDescriptor );
    pEntry->type = pDescriptor->apiType;
@@ -321,15 +321,15 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
 
    psaCommonUnlock( &pFolder->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pFolder->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pFolder->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    } 
    else {
       errcode = pscGetLastError( &pFolder->object.pSession->context.errorHandler );
@@ -340,39 +340,39 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFolderGetNext( VDS_HANDLE       objectHandle,
-                      vdsFolderEntry * pEntry )
+int psoFolderGetNext( PSO_HANDLE       objectHandle,
+                      psoFolderEntry * pEntry )
 {
    psaFolder * pFolder;
    psnFolder * pVDSFolder;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnObjectDescriptor * pDescriptor;
    bool ok;
    
    pFolder = (psaFolder *) objectHandle;
-   if ( pFolder == NULL ) return VDS_NULL_HANDLE;
+   if ( pFolder == NULL ) return PSO_NULL_HANDLE;
    
    if ( pFolder->object.type != PSA_FOLDER ) {
-      return VDS_WRONG_TYPE_HANDLE;
+      return PSO_WRONG_TYPE_HANDLE;
    }
    
    if ( pEntry == NULL ) {
-      errcode = VDS_NULL_POINTER;
+      errcode = PSO_NULL_POINTER;
       goto error_handler;
    }
 
    if ( pFolder->iterator.pHashItem == NULL ) {
-      errcode = VDS_INVALID_ITERATOR;
+      errcode = PSO_INVALID_ITERATOR;
       goto error_handler;
    }
 
    if ( pFolder->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
    
    if ( ! psaCommonLock( &pFolder->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
@@ -381,10 +381,10 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
    ok = psnFolderGetNext( pVDSFolder,
                            &pFolder->iterator,
                            &pFolder->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
    
-   memset( pEntry, 0, sizeof( vdsFolderEntry ) );
+   memset( pEntry, 0, sizeof( psoFolderEntry ) );
    GET_PTR( pDescriptor, pFolder->iterator.pHashItem->dataOffset, 
                          psnObjectDescriptor );
    pEntry->type = pDescriptor->apiType;
@@ -394,15 +394,15 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
 
    psaCommonUnlock( &pFolder->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pFolder->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pFolder->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    else {
       errcode = pscGetLastError( &pFolder->object.pSession->context.errorHandler );
@@ -413,39 +413,39 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFolderOpen( VDS_HANDLE   sessionHandle,
+int psoFolderOpen( PSO_HANDLE   sessionHandle,
                    const char * folderName,
                    size_t       nameLengthInBytes,
-                   VDS_HANDLE * objectHandle )
+                   PSO_HANDLE * objectHandle )
 {
    psaSession * pSession;
    psaFolder * pFolder = NULL;
    int errcode;
    
-   if ( objectHandle == NULL ) return VDS_NULL_HANDLE;
+   if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
    *objectHandle = NULL;
 
    pSession = (psaSession*) sessionHandle;
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
    if ( pSession->type != PSA_SESSION ) {
-      return VDS_WRONG_TYPE_HANDLE;
+      return PSO_WRONG_TYPE_HANDLE;
    }
    
    if ( folderName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
-      return VDS_INVALID_OBJECT_NAME;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      return PSO_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    
    pFolder = (psaFolder *) malloc(sizeof(psaFolder));
    if (  pFolder == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
-      return VDS_NOT_ENOUGH_HEAP_MEMORY;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
    
    memset( pFolder, 0, sizeof(psaFolder) );
@@ -455,14 +455,14 @@ int vdsFolderOpen( VDS_HANDLE   sessionHandle,
    if ( ! pFolder->object.pSession->terminated ) {
 
       errcode = psaCommonObjOpen( &pFolder->object,
-                                   VDS_FOLDER,
+                                   PSO_FOLDER,
                                    PSA_READ_WRITE,
                                    folderName,
                                    nameLengthInBytes );
-      if ( errcode == VDS_OK ) *objectHandle = (VDS_HANDLE) pFolder;
+      if ( errcode == PSO_OK ) *objectHandle = (PSO_HANDLE) pFolder;
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
    return errcode;
@@ -470,26 +470,26 @@ int vdsFolderOpen( VDS_HANDLE   sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsFolderStatus( VDS_HANDLE     objectHandle,
-                     vdsObjStatus * pStatus )
+int psoFolderStatus( PSO_HANDLE     objectHandle,
+                     psoObjStatus * pStatus )
 {
    psaFolder * pFolder;
    psnFolder * pVDSFolder;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnSessionContext * pContext;
    
    pFolder = (psaFolder *) objectHandle;
-   if ( pFolder == NULL ) return VDS_NULL_HANDLE;
+   if ( pFolder == NULL ) return PSO_NULL_HANDLE;
    
    if ( pFolder->object.type != PSA_FOLDER ) {
-      return VDS_WRONG_TYPE_HANDLE;
+      return PSO_WRONG_TYPE_HANDLE;
    }
    
    pContext = &pFolder->object.pSession->context;
 
    if ( pStatus == NULL ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
    
    if ( ! pFolder->object.pSession->terminated ) {
@@ -507,20 +507,20 @@ int vdsFolderStatus( VDS_HANDLE     objectHandle,
             psnUnlock( &pVDSFolder->memObject, pContext );
          }
          else {
-            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+            errcode = PSO_OBJECT_CANNOT_GET_LOCK;
          }
          psaCommonUnlock( &pFolder->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
       
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;

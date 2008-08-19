@@ -19,15 +19,15 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdsErrors psnInitLogFile( psnLogFile*      logFile,
+psoErrors psnInitLogFile( psnLogFile*      logFile,
                            const char*       dirName,
                            void*             pSession,
                            pscErrorHandler* pError )
 {
-   VDS_PRE_CONDITION( pError   != NULL );
-   VDS_PRE_CONDITION( logFile  != NULL );
-   VDS_PRE_CONDITION( dirName  != NULL );
-   VDS_PRE_CONDITION( pSession != NULL );
+   PSO_PRE_CONDITION( pError   != NULL );
+   PSO_PRE_CONDITION( logFile  != NULL );
+   PSO_PRE_CONDITION( dirName  != NULL );
+   PSO_PRE_CONDITION( pSession != NULL );
 
    memset( logFile->filename, '\0', PATH_MAX );
    logFile->handle = -1;
@@ -35,15 +35,15 @@ vdsErrors psnInitLogFile( psnLogFile*      logFile,
    if ( access( dirName, F_OK ) != 0 ) {
       pscSetError( pError, PSC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error accessing directoryfor log file = %d\n", errno );
-      return VDS_LOGFILE_ERROR;
+      return PSO_LOGFILE_ERROR;
    }
    
    sprintf( logFile->filename, "%s%sLog-%d-%lu.%s", 
             dirName,
-            VDS_DIR_SEPARATOR,
+            PSO_DIR_SEPARATOR,
             getpid(),
             (unsigned long)pSession,
-            VDS_LOG_EXT );
+            PSO_LOG_EXT );
    
    logFile->handle = open( logFile->filename, 
                            O_RDWR | O_CREAT | O_APPEND , 
@@ -51,17 +51,17 @@ vdsErrors psnInitLogFile( psnLogFile*      logFile,
    if ( logFile->handle == -1 ) {
       pscSetError( pError, PSC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error opening log = %d\n", errno );
-      return VDS_LOGFILE_ERROR;
+      return PSO_LOGFILE_ERROR;
    }
    
    logFile->initialized = PSN_LOGFILE_SIGNATURE;
    
-   return VDS_OK;
+   return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdsErrors psnLogTransaction( psnLogFile*      logFile,
+psoErrors psnLogTransaction( psnLogFile*      logFile,
                               int               transactionId,
                               pscErrorHandler* pError )
 {
@@ -75,10 +75,10 @@ vdsErrors psnLogTransaction( psnLogFile*      logFile,
    struct tm formattedTime;
 #endif
 
-   VDS_PRE_CONDITION( pError  != NULL );
-   VDS_PRE_CONDITION( logFile != NULL );
-   VDS_INV_CONDITION( logFile->initialized == PSN_LOGFILE_SIGNATURE );
-   VDS_INV_CONDITION( logFile->handle != -1 );
+   PSO_PRE_CONDITION( pError  != NULL );
+   PSO_PRE_CONDITION( logFile != NULL );
+   PSO_INV_CONDITION( logFile->initialized == PSN_LOGFILE_SIGNATURE );
+   PSO_INV_CONDITION( logFile->handle != -1 );
    
    memset( timeBuf, '\0', 30 );
 
@@ -103,17 +103,17 @@ vdsErrors psnLogTransaction( psnLogFile*      logFile,
    if ( err <= 0 ) {
       pscSetError( pError, PSC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error write log = %d\n", errno );
-      return VDS_LOGFILE_ERROR;
+      return PSO_LOGFILE_ERROR;
    }
    
    err = fdatasync( logFile->handle );
    if ( err < 0 ) {
       pscSetError( pError, PSC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error fdatasync log = %d\n", errno );
-      return VDS_LOGFILE_ERROR;
+      return PSO_LOGFILE_ERROR;
    }
 
-   return VDS_OK;
+   return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -123,9 +123,9 @@ void psnCloseLogFile( psnLogFile*     logFile,
 {
    int err;
 
-   VDS_PRE_CONDITION( pError  != NULL );
-   VDS_PRE_CONDITION( logFile != NULL );
-   VDS_INV_CONDITION( logFile->initialized == PSN_LOGFILE_SIGNATURE );
+   PSO_PRE_CONDITION( pError  != NULL );
+   PSO_PRE_CONDITION( logFile != NULL );
+   PSO_INV_CONDITION( logFile->initialized == PSN_LOGFILE_SIGNATURE );
    
    if ( logFile->handle != -1 ) {
       close( logFile->handle );

@@ -21,10 +21,10 @@ inline
 bool psnLinkedListGetFirst( psnLinkedList  * pList,
                              psnLinkNode   ** ppItem )
 {
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( ppItem     != NULL );
+   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty queue. */
    if ( pList->currentSize == 0 ) return false;
@@ -41,7 +41,7 @@ bool psnLinkedListGetFirst( psnLinkedList  * pList,
 
    --pList->currentSize;
 
-   VDS_POST_CONDITION( *ppItem != NULL );
+   PSO_POST_CONDITION( *ppItem != NULL );
 
    return true;
 }
@@ -52,10 +52,10 @@ inline
 bool psnLinkedListGetLast( psnLinkedList  * pList,
                             psnLinkNode   ** ppItem )
 {
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( ppItem     != NULL );
+   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
    if ( pList->currentSize == 0 ) return false;
@@ -72,7 +72,7 @@ bool psnLinkedListGetLast( psnLinkedList  * pList,
 
    --pList->currentSize;
 
-   VDS_POST_CONDITION( *ppItem != NULL );
+   PSO_POST_CONDITION( *ppItem != NULL );
 
    return true;
 }
@@ -85,12 +85,12 @@ psnLinkedListPutLast( psnLinkedList * pList,
 {
    ptrdiff_t tmpOffset;
    
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pNewItem   != NULL );
-   VDS_PRE_CONDITION( pNewItem->previousOffset == PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( pNewItem->nextOffset     == PSN_NULL_OFFSET );
+   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_PRE_CONDITION( pNewItem   != NULL );
+   PSO_PRE_CONDITION( pNewItem->previousOffset == PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pNewItem->nextOffset     == PSN_NULL_OFFSET );
 
    tmpOffset = SET_OFFSET( pNewItem );
 
@@ -104,8 +104,8 @@ psnLinkedListPutLast( psnLinkedList * pList,
    
    pList->currentSize++;
 
-   VDS_POST_CONDITION( pNewItem->previousOffset != PSN_NULL_OFFSET );
-   VDS_POST_CONDITION( pNewItem->nextOffset     != PSN_NULL_OFFSET );
+   PSO_POST_CONDITION( pNewItem->previousOffset != PSN_NULL_OFFSET );
+   PSO_POST_CONDITION( pNewItem->nextOffset     != PSN_NULL_OFFSET );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -116,12 +116,12 @@ psnLinkedListPutFirst( psnLinkedList * pList,
 {
    ptrdiff_t tmpOffset;
    
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pNewItem   != NULL );
-   VDS_PRE_CONDITION( pNewItem->previousOffset == PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( pNewItem->nextOffset     == PSN_NULL_OFFSET );
+   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_PRE_CONDITION( pNewItem   != NULL );
+   PSO_PRE_CONDITION( pNewItem->previousOffset == PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pNewItem->nextOffset     == PSN_NULL_OFFSET );
 
    tmpOffset = SET_OFFSET( pNewItem );
 
@@ -136,8 +136,8 @@ psnLinkedListPutFirst( psnLinkedList * pList,
    
    pList->currentSize++;
 
-   VDS_POST_CONDITION( pNewItem->previousOffset != PSN_NULL_OFFSET );
-   VDS_POST_CONDITION( pNewItem->nextOffset     != PSN_NULL_OFFSET );
+   PSO_POST_CONDITION( pNewItem->previousOffset != PSN_NULL_OFFSET );
+   PSO_POST_CONDITION( pNewItem->nextOffset     != PSN_NULL_OFFSET );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -146,13 +146,13 @@ inline void
 psnLinkedListRemoveItem( psnLinkedList * pList,
                           psnLinkNode   * pRemovedItem )
 {
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pRemovedItem != NULL );
-   VDS_PRE_CONDITION( pRemovedItem->previousOffset != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( pRemovedItem->nextOffset     != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( pList->currentSize > 0 );
+   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_PRE_CONDITION( pRemovedItem != NULL );
+   PSO_PRE_CONDITION( pRemovedItem->previousOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pRemovedItem->nextOffset     != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pList->currentSize > 0 );
 
    GET_PTR_FAST( pRemovedItem->nextOffset, psnLinkNode )->previousOffset = 
       pRemovedItem->previousOffset;
@@ -169,17 +169,17 @@ inline
 bool psnLinkedListPeakFirst( psnLinkedList *  pList,
                               psnLinkNode   ** ppItem )
 {
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( ppItem     != NULL );
+   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
    if ( pList->currentSize == 0 ) return false;
 
    *ppItem = GET_PTR_FAST( pList->head.nextOffset, psnLinkNode );
 
-   VDS_POST_CONDITION( *ppItem != NULL );
+   PSO_POST_CONDITION( *ppItem != NULL );
 
    return true;
 }
@@ -190,17 +190,17 @@ inline
 bool psnLinkedListPeakLast( psnLinkedList  * pList,
                              psnLinkNode   ** ppItem )
 {
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( ppItem     != NULL );
+   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
    if ( pList->currentSize == 0 ) return false;
 
    *ppItem = GET_PTR_FAST( pList->head.previousOffset, psnLinkNode );
 
-   VDS_POST_CONDITION( *ppItem != NULL );
+   PSO_POST_CONDITION( *ppItem != NULL );
 
    return true;
 }
@@ -214,20 +214,20 @@ bool psnLinkedListPeakNext( psnLinkedList * pList,
 {
    psnLinkNode* pNext;
 
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pCurrent   != NULL );
-   VDS_PRE_CONDITION( ppNext     != NULL );
-   VDS_PRE_CONDITION( pCurrent->previousOffset != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( pCurrent->nextOffset     != PSN_NULL_OFFSET );
+   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_PRE_CONDITION( pCurrent   != NULL );
+   PSO_PRE_CONDITION( ppNext     != NULL );
+   PSO_PRE_CONDITION( pCurrent->previousOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pCurrent->nextOffset     != PSN_NULL_OFFSET );
 
    pNext = GET_PTR_FAST( pCurrent->nextOffset, psnLinkNode );
    if ( pNext == &pList->head ) return false;
 
    *ppNext = pNext;
    
-   VDS_POST_CONDITION( *ppNext != NULL );
+   PSO_POST_CONDITION( *ppNext != NULL );
 
    return true;
 }
@@ -241,20 +241,20 @@ bool psnLinkedListPeakPrevious( psnLinkedList * pList,
 {
    psnLinkNode* pPrevious;
 
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pCurrent   != NULL );
-   VDS_PRE_CONDITION( ppPrevious != NULL );
-   VDS_PRE_CONDITION( pCurrent->previousOffset != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( pCurrent->nextOffset     != PSN_NULL_OFFSET );
+   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_PRE_CONDITION( pCurrent   != NULL );
+   PSO_PRE_CONDITION( ppPrevious != NULL );
+   PSO_PRE_CONDITION( pCurrent->previousOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pCurrent->nextOffset     != PSN_NULL_OFFSET );
 
    pPrevious = GET_PTR_FAST( pCurrent->previousOffset, psnLinkNode );
    if ( pPrevious == &pList->head ) return false;
 
    *ppPrevious = pPrevious;
 
-   VDS_POST_CONDITION( *ppPrevious != NULL );
+   PSO_POST_CONDITION( *ppPrevious != NULL );
    
    return true;
 }
@@ -272,16 +272,16 @@ psnLinkedListReplaceItem( psnLinkedList * pList,
 {
    ptrdiff_t tmpOffset;
 
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pOldItem != NULL );
-   VDS_PRE_CONDITION( pOldItem->previousOffset != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( pOldItem->nextOffset     != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( pNewItem != NULL );
-   VDS_PRE_CONDITION( pNewItem->previousOffset == PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( pNewItem->nextOffset     == PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( pList->currentSize > 0 );
+   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_PRE_CONDITION( pOldItem != NULL );
+   PSO_PRE_CONDITION( pOldItem->previousOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pOldItem->nextOffset     != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pNewItem != NULL );
+   PSO_PRE_CONDITION( pNewItem->previousOffset == PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pNewItem->nextOffset     == PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pList->currentSize > 0 );
 
    tmpOffset = SET_OFFSET( pNewItem );
    pNewItem->nextOffset     = pOldItem->nextOffset;

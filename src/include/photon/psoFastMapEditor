@@ -17,29 +17,29 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_FAST_MAP_EDITOR_H_CPP
-#define VDS_FAST_MAP_EDITOR_H_CPP
+#ifndef PSO_FAST_MAP_EDITOR_H_CPP
+#define PSO_FAST_MAP_EDITOR_H_CPP
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#include <photon/vdsCommon.h>
-#include <photon/vdsFastMap>
+#include <photon/psoCommon.h>
+#include <photon/psoFastMap>
 #include <string>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 // Forward declarations
-class vdsSession;
+class psoSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class VDSF_EXPORT vdsFastMapEditor: public vdsFastMap
+class VDSF_EXPORT psoFastMapEditor: public psoFastMap
 {
 public:
 
-   vdsFastMapEditor( vdsSession &session );
+   psoFastMapEditor( psoSession &session );
 
-   virtual ~vdsFastMapEditor();
+   virtual ~psoFastMapEditor();
 
    /** 
     * Remove the data item identified by the given key from the hash map.
@@ -48,12 +48,12 @@ public:
     * will not be seen by this function and cannot be removed. Likewise, 
     * destroyed data items (even if not yet committed) are invisible.
     *
-    * The removals only become permanent after a call to vdsSession::Commit.
+    * The removals only become permanent after a call to psoSession::Commit.
     *
     * \param[in]  key The key of the item to be removed.
     * \param[in]  keyLength The length of the \em key buffer (in bytes).
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Delete( const void * key,
                 size_t       keyLength );
@@ -61,23 +61,23 @@ public:
    /**
     * Remove all data items from the map.
     *
-    * The removals only become permanent after a call to vdsSession::Commit.
+    * The removals only become permanent after a call to psoSession::Commit.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Empty();
    
    /**
     * Insert a data element in the hash map.
     *
-    * The additions only become permanent after a call to vdsSession::Commit.
+    * The additions only become permanent after a call to psoSession::Commit.
     *
     * \param[in]  key The key of the item to be inserted.
     * \param[in]  keyLength The length of the \em key buffer (in bytes).
     * \param[in]  data  The data item to be inserted.
     * \param[in]  dataLength The length of \em data (in bytes).
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Insert( const void * key,
                 size_t       keyLength,
@@ -87,24 +87,24 @@ public:
    /** 
     * Open an existing read-only hash map for editing. Updates are done
     * using a temporary copy and this copy becomes the latest version of
-    * the map only after a call to vdsSession::Commit().
+    * the map only after a call to psoSession::Commit().
     *
     * \param[in]  hashMapName The fully qualified name of the hash map. 
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Open( const std::string & hashMapName );
    
    /** 
     * Open an existing read-only hash map for editing. Updates are done
     * using a temporary copy and this copy becomes the latest version of
-    * the map only after a call to vdsSession::Commit().
+    * the map only after a call to psoSession::Commit().
     *
     * \param[in]  hashMapName The fully qualified name of the hash map. 
     * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) 
     *             not counting the null terminator.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Open( const char * hashMapName,
               size_t       nameLengthInBytes );
@@ -112,14 +112,14 @@ public:
    /**
     * Replace a data element in the hash map.
     *
-    * The replacements only become permanent after a call to vdsSession::Commit.
+    * The replacements only become permanent after a call to psoSession::Commit.
     *
     * \param[in]  key The key of the item to be replaced.
     * \param[in]  keyLength The length of the \em key buffer (in bytes).
     * \param[in]  data  The new data item that will replace the previous data.
     * \param[in]  dataLength The length of \em data (in bytes).
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Replace( const void * key,
                  size_t       keyLength,
@@ -130,7 +130,7 @@ public:
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_FAST_MAP_EDITOR_H_CPP */
+#endif /* PSO_FAST_MAP_EDITOR_H_CPP */
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

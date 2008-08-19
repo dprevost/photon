@@ -122,7 +122,7 @@ typedef struct psnHash psnHash;
  * Used to create a copy of a read-only hash map for editing (updates)
  */
 VDSF_ENGINE_EXPORT
-enum vdsErrors psnHashCopy( psnHash           * pOldHash,
+enum psoErrors psnHashCopy( psnHash           * pOldHash,
                              psnHash           * pNewHash,
                              psnSessionContext * pContext );
 
@@ -167,7 +167,7 @@ bool psnHashGetNext( psnHash  * pHash,
                       ptrdiff_t * pNextItemOffset );
 
 VDSF_ENGINE_EXPORT 
-enum vdsErrors psnHashInit( psnHash           * pHash,
+enum psoErrors psnHashInit( psnHash           * pHash,
                              ptrdiff_t            memObjOffset,
                              size_t               reservedSize, 
                              psnSessionContext * pContext );
@@ -177,7 +177,7 @@ enum vdsErrors psnHashInit( psnHash           * pHash,
  * objects and the psnTxStatus by the objects themselves 
  */
 VDSF_ENGINE_EXPORT 
-enum vdsErrors psnHashInsert( psnHash            * pHash,
+enum psoErrors psnHashInsert( psnHash            * pHash,
                                const unsigned char * pKey,
                                size_t                keyLength,
                                const void          * pData,
@@ -191,7 +191,7 @@ enum vdsErrors psnHashInsert( psnHash            * pHash,
  * before the change is committed.
  */
 VDSF_ENGINE_EXPORT 
-enum vdsErrors psnHashInsertAt( psnHash            * pHash,
+enum psoErrors psnHashInsertAt( psnHash            * pHash,
                                  size_t                bucket,
                                  const unsigned char * pKey,
                                  size_t                keyLength,
@@ -201,11 +201,11 @@ enum vdsErrors psnHashInsertAt( psnHash            * pHash,
                                  psnSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
-enum vdsErrors psnHashResize( psnHash           * pHash,
+enum psoErrors psnHashResize( psnHash           * pHash,
                                psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-enum vdsErrors psnHashUpdate( psnHash            * pHash,
+enum psoErrors psnHashUpdate( psnHash            * pHash,
                                const unsigned char * pKey,
                                size_t                keyLength,
                                const void          * pData,

@@ -34,8 +34,8 @@ void psnQueueCommitAdd( psnQueue * pQueue,
 {
    psnQueueItem * pQueueItem;
    
-   VDS_PRE_CONDITION( pQueue   != NULL );
-   VDS_PRE_CONDITION( itemOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pQueue   != NULL );
+   PSO_PRE_CONDITION( itemOffset != PSN_NULL_OFFSET );
 
    GET_PTR( pQueueItem, itemOffset, psnQueueItem );
 
@@ -56,9 +56,9 @@ void psnQueueCommitRemove( psnQueue          * pQueue,
    psnQueueItem * pQueueItem;
    size_t len;
    
-   VDS_PRE_CONDITION( pQueue   != NULL );
-   VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( itemOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pQueue   != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( itemOffset != PSN_NULL_OFFSET );
 
    GET_PTR( pQueueItem, itemOffset, psnQueueItem );
 
@@ -89,9 +89,9 @@ void psnQueueCommitRemove( psnQueue          * pQueue,
 void psnQueueFini( psnQueue          * pQueue,
                     psnSessionContext * pContext )
 {
-   VDS_PRE_CONDITION( pQueue   != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pQueue->memObject.objType == PSN_IDENT_QUEUE );
+   PSO_PRE_CONDITION( pQueue   != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pQueue->memObject.objType == PSN_IDENT_QUEUE );
 
    psnLinkedListFini( &pQueue->listOfElements );
    psnTreeNodeFini(   &pQueue->nodeObject );
@@ -108,24 +108,24 @@ bool psnQueueGet( psnQueue          * pQueue,
 {
    psnQueueItem* pQueueItem = NULL;
    psnQueueItem* pOldItem = NULL;
-   vdsErrors errcode;
+   psoErrors errcode;
    psnLinkNode * pNode = NULL;
    psnTxStatus * txItemStatus, * txQueueStatus;
    bool isOK, okList;
    bool queueIsEmpty = true;
    
-   VDS_PRE_CONDITION( pQueue     != NULL );
-   VDS_PRE_CONDITION( ppIterator != NULL );
-   VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( flag == VDS_FIRST || flag == VDS_NEXT );
-   VDS_PRE_CONDITION( pQueue->memObject.objType == PSN_IDENT_QUEUE );
+   PSO_PRE_CONDITION( pQueue     != NULL );
+   PSO_PRE_CONDITION( ppIterator != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( flag == PSO_FIRST || flag == PSO_NEXT );
+   PSO_PRE_CONDITION( pQueue->memObject.objType == PSN_IDENT_QUEUE );
    
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
    
    if ( psnLock( &pQueue->memObject, pContext ) ) {
-      if ( flag == VDS_NEXT ) {
+      if ( flag == PSO_NEXT ) {
          
-         errcode = VDS_REACHED_THE_END;
+         errcode = PSO_REACHED_THE_END;
          pOldItem = (psnQueueItem*) *ppIterator;
          okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                            &pOldItem->node, 
@@ -187,15 +187,15 @@ bool psnQueueGet( psnQueue          * pQueue,
             if ( bufferLength < pQueueItem->dataLength ) {
                psnUnlock( &pQueue->memObject, pContext );
                pscSetError( &pContext->errorHandler,
-                             g_vdsErrorHandle,
-                             VDS_INVALID_LENGTH );
+                             g_psoErrorHandle,
+                             PSO_INVALID_LENGTH );
                 return false;
             }
 
             txItemStatus->usageCounter++;
             txQueueStatus->usageCounter++;
             *ppIterator = pQueueItem;
-            if ( flag == VDS_NEXT ) {
+            if ( flag == PSO_NEXT ) {
                psnQueueReleaseNoLock( pQueue, pOldItem, pContext );
             }
             
@@ -209,14 +209,14 @@ bool psnQueueGet( psnQueue          * pQueue,
       }
    }
    else {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
    
-   errcode = VDS_ITEM_IS_IN_USE;
+   errcode = PSO_ITEM_IS_IN_USE;
    if ( queueIsEmpty ) {
-      errcode = VDS_IS_EMPTY;   
-      if ( flag == VDS_NEXT ) errcode = VDS_REACHED_THE_END;
+      errcode = PSO_IS_EMPTY;   
+      if ( flag == PSO_NEXT ) errcode = PSO_REACHED_THE_END;
    }
    
    /* 
@@ -226,12 +226,12 @@ bool psnQueueGet( psnQueue          * pQueue,
     * at this point.
     */
    *ppIterator = NULL;
-   if ( flag == VDS_NEXT ) {
+   if ( flag == PSO_NEXT ) {
       psnQueueReleaseNoLock( pQueue, pOldItem, pContext );
    }
    
    psnUnlock( &pQueue->memObject, pContext );
-   pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
 
    return false;
 }
@@ -245,31 +245,31 @@ bool psnQueueInit( psnQueue           * pQueue,
                     size_t                origNameLength,
                     char                * origName,
                     ptrdiff_t             hashItemOffset,
-                    vdsObjectDefinition * pDefinition,
+                    psoObjectDefinition * pDefinition,
                     psnSessionContext  * pContext )
 {
-   vdsErrors errcode;
+   psoErrors errcode;
    psnFieldDef * ptr;
    unsigned int i;
    
-   VDS_PRE_CONDITION( pQueue       != NULL );
-   VDS_PRE_CONDITION( pContext     != NULL );
-   VDS_PRE_CONDITION( pTxStatus    != NULL );
-   VDS_PRE_CONDITION( origName     != NULL );
-   VDS_PRE_CONDITION( pDefinition  != NULL );
-   VDS_PRE_CONDITION( hashItemOffset != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( parentOffset   != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( numberOfBlocks > 0 );
-   VDS_PRE_CONDITION( origNameLength > 0 );
-   VDS_PRE_CONDITION( pDefinition->numFields > 0 );
+   PSO_PRE_CONDITION( pQueue       != NULL );
+   PSO_PRE_CONDITION( pContext     != NULL );
+   PSO_PRE_CONDITION( pTxStatus    != NULL );
+   PSO_PRE_CONDITION( origName     != NULL );
+   PSO_PRE_CONDITION( pDefinition  != NULL );
+   PSO_PRE_CONDITION( hashItemOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( parentOffset   != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( numberOfBlocks > 0 );
+   PSO_PRE_CONDITION( origNameLength > 0 );
+   PSO_PRE_CONDITION( pDefinition->numFields > 0 );
    
    errcode = psnMemObjectInit( &pQueue->memObject, 
                                 PSN_IDENT_QUEUE,
                                 &pQueue->blockGroup,
                                 numberOfBlocks );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
+                    g_psoErrorHandle,
                     errcode );
       return false;
    }
@@ -290,28 +290,28 @@ bool psnQueueInit( psnQueue           * pQueue,
                                      pContext );
    if ( ptr == NULL ) {
       pscSetError( &pContext->errorHandler, 
-                    g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
+                    g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
    pQueue->dataDefOffset = SET_OFFSET(ptr);
 
    for ( i = 0; i < pQueue->numFields; ++i) {
-      memcpy( ptr[i].name, pDefinition->fields[i].name, VDS_MAX_FIELD_LENGTH );
+      memcpy( ptr[i].name, pDefinition->fields[i].name, PSO_MAX_FIELD_LENGTH );
       ptr[i].type = pDefinition->fields[i].type;
       switch( ptr[i].type ) {
-      case VDS_INTEGER:
-      case VDS_BINARY:
-      case VDS_STRING:
+      case PSO_INTEGER:
+      case PSO_BINARY:
+      case PSO_STRING:
          ptr[i].length1 = pDefinition->fields[i].length;
          break;
-      case VDS_DECIMAL:
+      case PSO_DECIMAL:
          ptr[i].length1 = pDefinition->fields[i].precision;
          ptr[i].length2 = pDefinition->fields[i].scale;         
          break;
-      case VDS_BOOLEAN:
+      case PSO_BOOLEAN:
          break;
-      case VDS_VAR_BINARY:
-      case VDS_VAR_STRING:
+      case PSO_VAR_BINARY:
+      case PSO_VAR_STRING:
          ptr[i].length1 = pDefinition->fields[i].minLength;
          ptr[i].length2 = pDefinition->fields[i].maxLength;
          
@@ -330,25 +330,25 @@ bool psnQueueInsert( psnQueue          * pQueue,
                       psnSessionContext * pContext )
 {
    psnQueueItem* pQueueItem;
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    psnTxStatus* txQueueStatus;
    size_t allocLength;
    bool ok;
    
-   VDS_PRE_CONDITION( pQueue != NULL );
-   VDS_PRE_CONDITION( pItem    != NULL )
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( length  > 0 );
-   VDS_PRE_CONDITION( firstOrLast == PSN_QUEUE_FIRST || 
+   PSO_PRE_CONDITION( pQueue != NULL );
+   PSO_PRE_CONDITION( pItem    != NULL )
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( length  > 0 );
+   PSO_PRE_CONDITION( firstOrLast == PSN_QUEUE_FIRST || 
       firstOrLast == PSN_QUEUE_LAST );
-   VDS_PRE_CONDITION( pQueue->memObject.objType == PSN_IDENT_QUEUE );
+   PSO_PRE_CONDITION( pQueue->memObject.objType == PSN_IDENT_QUEUE );
 
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
 
    if ( psnLock( &pQueue->memObject, pContext ) ) {
       if ( ! psnTxStatusIsValid( txQueueStatus, SET_OFFSET(pContext->pTransaction) ) 
          || psnTxStatusIsMarkedAsDestroyed( txQueueStatus ) ) {
-         errcode = VDS_OBJECT_IS_DELETED;
+         errcode = PSO_OBJECT_IS_DELETED;
          goto the_exit;
       }
    
@@ -357,7 +357,7 @@ bool psnQueueInsert( psnQueue          * pQueue,
                                                  allocLength,
                                                  pContext );
       if ( pQueueItem == NULL ) {
-         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
+         errcode = PSO_NOT_ENOUGH_PSO_MEMORY;
          goto the_exit;
       }
    
@@ -372,7 +372,7 @@ bool psnQueueInsert( psnQueue          * pQueue,
                          SET_OFFSET(pQueueItem),
                          0,
                          pContext );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
          psnFree( &pQueue->memObject, 
                    (unsigned char * )pQueueItem,
@@ -397,7 +397,7 @@ bool psnQueueInsert( psnQueue          * pQueue,
       psnUnlock( &pQueue->memObject, pContext );
    }
    else {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
    
@@ -410,8 +410,8 @@ the_exit:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
     
    return false;
@@ -426,24 +426,24 @@ bool psnQueueInsertNow( psnQueue          * pQueue,
                          psnSessionContext * pContext )
 {
    psnQueueItem* pQueueItem;
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    psnTxStatus* txQueueStatus;
    size_t allocLength;
    
-   VDS_PRE_CONDITION( pQueue != NULL );
-   VDS_PRE_CONDITION( pItem    != NULL )
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( length  > 0 );
-   VDS_PRE_CONDITION( firstOrLast == PSN_QUEUE_FIRST || 
+   PSO_PRE_CONDITION( pQueue != NULL );
+   PSO_PRE_CONDITION( pItem    != NULL )
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( length  > 0 );
+   PSO_PRE_CONDITION( firstOrLast == PSN_QUEUE_FIRST || 
       firstOrLast == PSN_QUEUE_LAST );
-   VDS_PRE_CONDITION( pQueue->memObject.objType == PSN_IDENT_QUEUE );
+   PSO_PRE_CONDITION( pQueue->memObject.objType == PSN_IDENT_QUEUE );
 
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
 
    if ( psnLock( &pQueue->memObject, pContext ) ) {
       if ( ! psnTxStatusIsValid( txQueueStatus, SET_OFFSET(pContext->pTransaction) ) 
          || psnTxStatusIsMarkedAsDestroyed( txQueueStatus ) ) {
-         errcode = VDS_OBJECT_IS_DELETED;
+         errcode = PSO_OBJECT_IS_DELETED;
          goto the_exit;
       }
    
@@ -452,7 +452,7 @@ bool psnQueueInsertNow( psnQueue          * pQueue,
                                                  allocLength,
                                                  pContext );
       if ( pQueueItem == NULL ) {
-         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
+         errcode = PSO_NOT_ENOUGH_PSO_MEMORY;
          goto the_exit;
       }
    
@@ -474,7 +474,7 @@ bool psnQueueInsertNow( psnQueue          * pQueue,
       psnUnlock( &pQueue->memObject, pContext );
    }
    else {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
    
@@ -487,8 +487,8 @@ the_exit:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
     
    return false;
@@ -500,10 +500,10 @@ bool psnQueueRelease( psnQueue          * pQueue,
                        psnQueueItem      * pQueueItem,
                        psnSessionContext * pContext )
 {
-   VDS_PRE_CONDITION( pQueue != NULL );
-   VDS_PRE_CONDITION( pQueueItem != NULL );
-   VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( pQueue->memObject.objType == PSN_IDENT_QUEUE );
+   PSO_PRE_CONDITION( pQueue != NULL );
+   PSO_PRE_CONDITION( pQueueItem != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( pQueue->memObject.objType == PSN_IDENT_QUEUE );
 
    if ( psnLock( &pQueue->memObject, pContext ) ) {
       psnQueueReleaseNoLock( pQueue,
@@ -513,7 +513,7 @@ bool psnQueueRelease( psnQueue          * pQueue,
       psnUnlock( &pQueue->memObject, pContext );
    }
    else {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
 
@@ -535,10 +535,10 @@ void psnQueueReleaseNoLock( psnQueue          * pQueue,
    psnTxStatus * txItemStatus, * txQueueStatus;
    size_t len;
    
-   VDS_PRE_CONDITION( pQueue != NULL );
-   VDS_PRE_CONDITION( pQueueItem != NULL );
-   VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( pQueue->memObject.objType == PSN_IDENT_QUEUE );
+   PSO_PRE_CONDITION( pQueue != NULL );
+   PSO_PRE_CONDITION( pQueueItem != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( pQueue->memObject.objType == PSN_IDENT_QUEUE );
 
    txItemStatus = &pQueueItem->txStatus;
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
@@ -570,26 +570,26 @@ bool psnQueueRemove( psnQueue          * pQueue,
                       size_t               bufferLength,
                       psnSessionContext * pContext )
 {
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    psnQueueItem * pItem = NULL;
    psnTxStatus  * txParentStatus, * txItemStatus;
    psnLinkNode  * pNode = NULL;
    bool queueIsEmpty = true;
    bool okList, ok;
    
-   VDS_PRE_CONDITION( pQueue      != NULL );
-   VDS_PRE_CONDITION( ppQueueItem != NULL );
-   VDS_PRE_CONDITION( pContext    != NULL );
-   VDS_PRE_CONDITION( firstOrLast == PSN_QUEUE_FIRST || 
+   PSO_PRE_CONDITION( pQueue      != NULL );
+   PSO_PRE_CONDITION( ppQueueItem != NULL );
+   PSO_PRE_CONDITION( pContext    != NULL );
+   PSO_PRE_CONDITION( firstOrLast == PSN_QUEUE_FIRST || 
       firstOrLast == PSN_QUEUE_LAST );
-   VDS_PRE_CONDITION( pQueue->memObject.objType == PSN_IDENT_QUEUE );
+   PSO_PRE_CONDITION( pQueue->memObject.objType == PSN_IDENT_QUEUE );
    
    GET_PTR( txParentStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
 
    if ( psnLock( &pQueue->memObject, pContext ) ) {
       if ( ! psnTxStatusIsValid( txParentStatus, SET_OFFSET(pContext->pTransaction) ) 
          || psnTxStatusIsMarkedAsDestroyed( txParentStatus ) ) {
-         errcode = VDS_OBJECT_IS_DELETED;
+         errcode = PSO_OBJECT_IS_DELETED;
          goto the_exit;
       }
    
@@ -617,7 +617,7 @@ bool psnQueueRemove( psnQueue          * pQueue,
              * after but this way makes the code faster.
              */
             if ( bufferLength < pItem->dataLength ) {
-               errcode = VDS_INVALID_LENGTH;
+               errcode = PSO_INVALID_LENGTH;
                goto the_exit;
             }
 
@@ -629,7 +629,7 @@ bool psnQueueRemove( psnQueue          * pQueue,
                                SET_OFFSET( pItem ),
                                0, /* irrelevant */
                                pContext );
-            VDS_POST_CONDITION( ok == true || ok == false );
+            PSO_POST_CONDITION( ok == true || ok == false );
             if ( ! ok ) goto the_exit;
       
             psnTxStatusSetTx( txItemStatus, SET_OFFSET(pContext->pTransaction) );
@@ -662,20 +662,20 @@ bool psnQueueRemove( psnQueue          * pQueue,
       }
    }
    else {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
 
    /* Let this falls through the error handler */
-   errcode = VDS_ITEM_IS_IN_USE;
-   if ( queueIsEmpty ) errcode = VDS_IS_EMPTY;   
+   errcode = PSO_ITEM_IS_IN_USE;
+   if ( queueIsEmpty ) errcode = PSO_IS_EMPTY;   
    
 the_exit:
 
    psnUnlock( &pQueue->memObject, pContext );
    /* pscSetError might have been already called by some other function */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return false;
@@ -691,9 +691,9 @@ void psnQueueRollbackAdd( psnQueue          * pQueue,
    size_t len;
    psnTxStatus * txStatus;
    
-   VDS_PRE_CONDITION( pQueue   != NULL );
-   VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( itemOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pQueue   != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( itemOffset != PSN_NULL_OFFSET );
 
    GET_PTR( pQueueItem, itemOffset, psnQueueItem );
    txStatus = &pQueueItem->txStatus;
@@ -728,8 +728,8 @@ void psnQueueRollbackRemove( psnQueue * pQueue,
 {
    psnQueueItem * pQueueItem;
    
-   VDS_PRE_CONDITION( pQueue     != NULL );
-   VDS_PRE_CONDITION( itemOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pQueue     != NULL );
+   PSO_PRE_CONDITION( itemOffset != PSN_NULL_OFFSET );
 
    GET_PTR( pQueueItem, itemOffset, psnQueueItem );
 
@@ -745,15 +745,15 @@ void psnQueueRollbackRemove( psnQueue * pQueue,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void psnQueueStatus( psnQueue    * pQueue,
-                      vdsObjStatus * pStatus )
+                      psoObjStatus * pStatus )
 {
    psnQueueItem * pQueueItem = NULL;
    psnLinkNode * pNode = NULL;
    psnTxStatus  * txStatus;
    bool okList;
    
-   VDS_PRE_CONDITION( pQueue  != NULL );
-   VDS_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pQueue  != NULL );
+   PSO_PRE_CONDITION( pStatus != NULL );
    
    GET_PTR( txStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
 

@@ -43,7 +43,7 @@ void cleanup()
       inQueue.Close();
       outQueue.Close();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
    }
 }
@@ -106,7 +106,7 @@ int main( int argc, char *argv[] )
       process.Init( argv[1] );
       session.Init();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
@@ -117,7 +117,7 @@ int main( int argc, char *argv[] )
       outQueue.Open( outQueueName );
       inQueue.Open( inQueueName );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       cleanup();
       return 1;
@@ -126,7 +126,7 @@ int main( int argc, char *argv[] )
    try {
       while( 1 ) {
          rc = inQueue.Pop( &workStruct, sizeof(workStruct), &length );
-         if ( rc != VDS_OK ) {
+         if ( rc != PSO_OK ) {
             // Nothing to do - might as well commit
             session.Commit();
             if ( bShutdown )
@@ -152,7 +152,7 @@ int main( int argc, char *argv[] )
          loop++;
       }
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       cleanup();
       return 1;

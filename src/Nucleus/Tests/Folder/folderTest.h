@@ -28,7 +28,7 @@
 #include "Tests/PrintError.h"
 
 VDSF_ENGINE_EXPORT
-pscErrMsgHandle g_vdsErrorHandle;
+pscErrMsgHandle g_psoErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -109,7 +109,7 @@ psnTxStatus objTxStatus;
 psnFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
                                psnSessionContext* pContext )
 {
-   vdsErrors errcode;
+   psoErrors errcode;
    psnFolder* pFolder;
    pFolder = initFolderTest( testIsExpectedToSucceed, pContext );
    
@@ -117,7 +117,7 @@ psnFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
                                 PSN_IDENT_FOLDER,
                                 &pFolder->blockGroup,
                                 1 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
@@ -136,7 +136,7 @@ psnFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
                            SET_OFFSET(&pFolder->memObject),
                            25, 
                            pContext );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);

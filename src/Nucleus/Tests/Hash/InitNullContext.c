@@ -27,7 +27,7 @@ int main()
 #if defined(USE_DBC)
    psnSessionContext context;
    psnHash* pHash;
-   enum vdsErrors errcode;
+   enum psoErrors errcode;
    
    pHash = initHashTest( expectedToPass, &context );
    

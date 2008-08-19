@@ -36,5 +36,5 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)             
 
-LDADD = $(top_builddir)/src/API/libvdsf.la
+LDADD = $(top_builddir)/src/API/libphoton.la
 

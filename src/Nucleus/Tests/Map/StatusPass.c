@@ -31,12 +31,12 @@ int main()
    char * key2  = "my key2";
    char * key3  = "my key3";
    char * data  = "my data";
-   vdsObjStatus status;
-   vdsObjectDefinition def = { 
-      VDS_FAST_MAP, 
+   psoObjStatus status;
+   psoObjectDefinition def = { 
+      PSO_FAST_MAP, 
       1, 
-      { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 1, 100 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } } 
    };
    
    pHashMap = initHashMapTest( expectedToPass, &context );

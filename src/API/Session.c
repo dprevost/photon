@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vdsSession.h>
+#include <photon/psoSession.h>
 #include "API/Session.h"
 #include "API/Process.h"
 #include "API/CommonObject.h"
@@ -54,20 +54,20 @@ void psaResetReaders( psaSession * pSession )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsCommit( VDS_HANDLE sessionHandle )
+int psoCommit( PSO_HANDLE sessionHandle )
 {
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psaSession* pSession;
 
    pSession = (psaSession*) sessionHandle;
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( pSession->numberOfEdits > 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, 
-         VDS_NOT_ALL_EDIT_ARE_CLOSED );
-      return VDS_NOT_ALL_EDIT_ARE_CLOSED;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, 
+         PSO_NOT_ALL_EDIT_ARE_CLOSED );
+      return PSO_NOT_ALL_EDIT_ARE_CLOSED;
    }
    
    if ( psaSessionLock( pSession ) ) {
@@ -77,16 +77,16 @@ int vdsCommit( VDS_HANDLE sessionHandle )
          psaResetReaders( pSession );
       }
       else {
-         errcode = VDS_SESSION_IS_TERMINATED;
+         errcode = PSO_SESSION_IS_TERMINATED;
       }
       psaSessionUnlock( pSession );
    }
    else {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -94,39 +94,39 @@ int vdsCommit( VDS_HANDLE sessionHandle )
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
    
-int vdsCreateObject( VDS_HANDLE            sessionHandle,
+int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char          * objectName,
                      size_t                nameLengthInBytes,
-                     vdsObjectDefinition * pDefinition )
+                     psoObjectDefinition * pDefinition )
 {
    psaSession* pSession;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnFolder * pTree;
    bool ok = true;
    
    pSession = (psaSession*) sessionHandle;
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
    
    if ( objectName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
-      return VDS_INVALID_OBJECT_NAME;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      return PSO_INVALID_OBJECT_NAME;
    }
 
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    
    if ( pDefinition == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
 
    errcode = psaValidateDefinition( pDefinition );
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
       return errcode;
    }
    
@@ -138,19 +138,19 @@ int vdsCreateObject( VDS_HANDLE            sessionHandle,
                                          nameLengthInBytes,
                                          pDefinition,
                                          &pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
       }
       else {
-         errcode = VDS_SESSION_IS_TERMINATED;
+         errcode = PSO_SESSION_IS_TERMINATED;
       }
       psaSessionUnlock( pSession );
    }
    else {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -162,28 +162,28 @@ int vdsCreateObject( VDS_HANDLE            sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsDestroyObject( VDS_HANDLE   sessionHandle,
+int psoDestroyObject( PSO_HANDLE   sessionHandle,
                       const char * objectName,
                       size_t       nameLengthInBytes )
 {
    psaSession* pSession;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnFolder * pTree;
    bool ok = true;
    
    pSession = (psaSession*) sessionHandle;
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( objectName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
-      return VDS_INVALID_OBJECT_NAME;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      return PSO_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    
    if ( psaSessionLock( pSession ) ) {
@@ -193,19 +193,19 @@ int vdsDestroyObject( VDS_HANDLE   sessionHandle,
                                           objectName,
                                           nameLengthInBytes,
                                           &pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
       }
       else {
-         errcode = VDS_SESSION_IS_TERMINATED;
+         errcode = PSO_SESSION_IS_TERMINATED;
       }
       psaSessionUnlock( pSession );
    }
    else {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -217,22 +217,22 @@ int vdsDestroyObject( VDS_HANDLE   sessionHandle,
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsErrorMsg( VDS_HANDLE sessionHandle,
+int psoErrorMsg( PSO_HANDLE sessionHandle,
                  char *     message,
                  size_t     msgLengthInBytes )
 {
    psaSession* pSession;
-   int rc = VDS_OK;
+   int rc = PSO_OK;
    size_t len;
    
    pSession = (psaSession*) sessionHandle;
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
-   if ( message == NULL ) return VDS_NULL_POINTER;
+   if ( message == NULL ) return PSO_NULL_POINTER;
    
-   if ( msgLengthInBytes < 32 ) return VDS_INVALID_LENGTH;
+   if ( msgLengthInBytes < 32 ) return PSO_INVALID_LENGTH;
    
    if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
@@ -246,12 +246,12 @@ int vdsErrorMsg( VDS_HANDLE sessionHandle,
          }
       }
       else {
-         rc = VDS_SESSION_IS_TERMINATED;
+         rc = PSO_SESSION_IS_TERMINATED;
       }
       psaSessionUnlock( pSession );
    }
    else {
-      rc = VDS_SESSION_CANNOT_GET_LOCK;
+      rc = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
    return rc;
@@ -259,7 +259,7 @@ int vdsErrorMsg( VDS_HANDLE sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsExitSession( VDS_HANDLE sessionHandle )
+int psoExitSession( PSO_HANDLE sessionHandle )
 {
    psaSession * pSession;
    psnSession * pCleanup;
@@ -267,9 +267,9 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
    int errcode = 0;
    
    pSession = (psaSession*) sessionHandle;
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( psaProcessLock() ) {
       /*
@@ -291,17 +291,17 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
             ok = psnProcessRemoveSession( g_pProcessInstance->pCleanup, 
                                            pCleanup, 
                                            &pSession->context );
-            VDS_POST_CONDITION( ok == true || ok == false );
+            PSO_POST_CONDITION( ok == true || ok == false );
           }
       }
       else {
-         errcode = VDS_SESSION_IS_TERMINATED;
+         errcode = PSO_SESSION_IS_TERMINATED;
       }
       
       psaProcessUnlock();
    }
    else {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
    /* 
@@ -325,7 +325,7 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
    }
    
    if ( errcode != 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -333,42 +333,42 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsGetDefinition( VDS_HANDLE             sessionHandle,
+int psoGetDefinition( PSO_HANDLE             sessionHandle,
                       const char           * objectName,
                       size_t                 nameLengthInBytes,
-                      vdsObjectDefinition ** ppDefinition )
+                      psoObjectDefinition ** ppDefinition )
 {
    psaSession* pSession;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnFolder * pTree;
    psnFieldDef * pInternalDef;
-   vdsObjectDefinition *pDefinition;
+   psoObjectDefinition *pDefinition;
    bool ok = true;
    
    pSession = (psaSession*) sessionHandle;
 
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;   
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;   
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
    
    if ( objectName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
-      return VDS_INVALID_OBJECT_NAME;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      return PSO_INVALID_OBJECT_NAME;
    }
 
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    
    if ( ppDefinition == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
 
-   pDefinition = calloc( sizeof(vdsObjectDefinition), 1 );
+   pDefinition = calloc( sizeof(psoObjectDefinition), 1 );
    if ( pDefinition == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
-      return VDS_NOT_ENOUGH_HEAP_MEMORY;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
    
    if ( psaSessionLock( pSession ) ) {
@@ -380,9 +380,9 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
                                    pDefinition,
                                    &pInternalDef,
                                    &pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
          if ( ok ) {
-            if ( pDefinition->type == VDS_FOLDER ) {
+            if ( pDefinition->type == PSO_FOLDER ) {
                *ppDefinition = pDefinition;
             }
             else {
@@ -391,27 +391,27 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
                                             ppDefinition );
                if ( errcode == 0 ) {
                   (*ppDefinition)->type = pDefinition->type;
-                  if ( pDefinition->type == VDS_HASH_MAP || 
-                     pDefinition->type == VDS_FAST_MAP ) {
+                  if ( pDefinition->type == PSO_HASH_MAP || 
+                     pDefinition->type == PSO_FAST_MAP ) {
                      memcpy( &(*ppDefinition)->key, 
                              &pDefinition->key, 
-                             sizeof(vdsKeyDefinition) );
+                             sizeof(psoKeyDefinition) );
                   }
                }
             }
          }
       }
       else {
-         errcode = VDS_SESSION_IS_TERMINATED;
+         errcode = PSO_SESSION_IS_TERMINATED;
       }
       psaSessionUnlock( pSession );
    }
    else {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
       errcode = pscGetLastError( &pSession->context.errorHandler );
@@ -422,31 +422,31 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsGetInfo( VDS_HANDLE   sessionHandle,
-                vdsInfo    * pInfo )
+int psoGetInfo( PSO_HANDLE   sessionHandle,
+                psoInfo    * pInfo )
 {
    psaSession* pSession;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
    psnMemAlloc * pAlloc;
    struct psnMemoryHeader * pHead = g_pProcessInstance->pHeader;
    
    pSession = (psaSession*) sessionHandle;
 
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;   
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;   
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
    
    if ( pInfo == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
-   memset( pInfo, 0, sizeof(struct vdsInfo) );
+   memset( pInfo, 0, sizeof(struct psoInfo) );
    
    if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pAlloc, pSession->pHeader->allocatorOffset, psnMemAlloc )
          ok = psnMemAllocStats( pAlloc, pInfo, &pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
          if ( ok ) {
             pInfo->memoryVersion = pHead->version;
             pInfo->bigEndian = 0;
@@ -460,16 +460,16 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
          }
       }
       else {
-         errcode = VDS_SESSION_IS_TERMINATED;
+         errcode = PSO_SESSION_IS_TERMINATED;
       }
       psaSessionUnlock( pSession );
    }
    else {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
       errcode = pscGetLastError( &pSession->context.errorHandler );
@@ -480,10 +480,10 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsGetStatus( VDS_HANDLE     sessionHandle,
+int psoGetStatus( PSO_HANDLE     sessionHandle,
                   const char   * objectName,
                   size_t         nameLengthInBytes,
-                  vdsObjStatus * pStatus )
+                  psoObjStatus * pStatus )
 {
    psaSession* pSession;
    int errcode = 0;
@@ -492,22 +492,22 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
    
    pSession = (psaSession*) sessionHandle;
 
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;   
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;   
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
    
    if ( objectName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
-      return VDS_INVALID_OBJECT_NAME;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      return PSO_INVALID_OBJECT_NAME;
    }
 
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    
    if ( pStatus == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
 
    if ( psaSessionLock( pSession ) ) {
@@ -518,19 +518,19 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
                                       nameLengthInBytes,
                                       pStatus,
                                       &pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
       }
       else {
-         errcode = VDS_SESSION_IS_TERMINATED;
+         errcode = PSO_SESSION_IS_TERMINATED;
       }
       psaSessionUnlock( pSession );
    }
    else {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
       errcode = pscGetLastError( &pSession->context.errorHandler );
@@ -541,21 +541,21 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsInitSession( VDS_HANDLE* sessionHandle )
+int psoInitSession( PSO_HANDLE* sessionHandle )
 {
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    psaSession* pSession = NULL;
    void* ptr = NULL;
    bool ok;
    
-   if ( sessionHandle == NULL ) return VDS_NULL_HANDLE;
+   if ( sessionHandle == NULL ) return PSO_NULL_HANDLE;
    
    *sessionHandle = NULL;
 
-   if ( g_pProcessInstance == NULL ) return VDS_PROCESS_NOT_INITIALIZED;
+   if ( g_pProcessInstance == NULL ) return PSO_PROCESS_NOT_INITIALIZED;
    
    pSession = (psaSession*) malloc(sizeof(psaSession));
-   if ( pSession == NULL ) return VDS_NOT_ENOUGH_HEAP_MEMORY;
+   if ( pSession == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
    
    memset( pSession, 0, sizeof(psaSession) );
    pSession->type = PSA_SESSION;
@@ -571,16 +571,16 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
    
    if ( g_protectionIsNeeded ) {
       ok = pscInitThreadLock( &pSession->mutex );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
-         errcode = VDS_NOT_ENOUGH_RESOURCES;
+         errcode = PSO_NOT_ENOUGH_RESOURCES;
          goto error_handler;
       }
    }
    
    pSession->pHeader = g_pProcessInstance->pHeader;
    if ( pSession->pHeader == NULL ) {
-      errcode = VDS_PROCESS_NOT_INITIALIZED;
+      errcode = PSO_PROCESS_NOT_INITIALIZED;
       goto error_handler;
    }
 
@@ -588,7 +588,7 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
    if ( pSession->pHeader->logON ) {
       ptr = malloc( sizeof(psnLogFile) );
       if ( ptr == NULL ) {
-         errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+         errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
          goto error_handler;
       }
 
@@ -598,7 +598,7 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
          g_pProcessInstance->logDirName,
          pSession,
          &pSession->context.errorHandler );
-      if ( errcode != VDS_OK ) goto error_handler;
+      if ( errcode != PSO_OK ) goto error_handler;
    }
    
    psaListReadersInit( &pSession->listReaders );
@@ -613,7 +613,7 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
                                   pSession, 
                                   &pSession->pCleanup, 
                                   &pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       psaSessionUnlock( pSession );
       if ( ! ok ) goto error_handler;
    }
@@ -622,14 +622,14 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
        * A lock failure should be impossible since the session is
        * unknown to other and cannot be locked.
        */
-      errcode = VDS_INTERNAL_ERROR;
+      errcode = PSO_INTERNAL_ERROR;
       goto error_handler;
    }
    
    pSession->terminated = false;
-   *sessionHandle = (VDS_HANDLE) pSession;
+   *sessionHandle = (PSO_HANDLE) pSession;
 
-   return VDS_OK;
+   return PSO_OK;
    
    /* Error processing... */
 
@@ -647,8 +647,8 @@ error_handler:
       pSession->context.pLogFile = NULL;
    }
 
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    else {
       errcode = pscGetLastError( &pSession->context.errorHandler );
@@ -661,22 +661,22 @@ error_handler:
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsLastError( VDS_HANDLE sessionHandle )
+int psoLastError( PSO_HANDLE sessionHandle )
 {
    psaSession* pSession;
-   int rc = VDS_SESSION_CANNOT_GET_LOCK;
+   int rc = PSO_SESSION_CANNOT_GET_LOCK;
    
    pSession = (psaSession*) sessionHandle;
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          rc = pscGetLastError( &pSession->context.errorHandler );
       }
       else {
-         rc = VDS_SESSION_IS_TERMINATED;
+         rc = PSO_SESSION_IS_TERMINATED;
       }
       psaSessionUnlock( pSession );
    }
@@ -686,15 +686,15 @@ int vdsLastError( VDS_HANDLE sessionHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsRollback( VDS_HANDLE sessionHandle )
+int psoRollback( PSO_HANDLE sessionHandle )
 {
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psaSession* pSession;
 
    pSession = (psaSession*) sessionHandle;
 
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
    
    if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
@@ -703,17 +703,17 @@ int vdsRollback( VDS_HANDLE sessionHandle )
          psaResetReaders( pSession );
       }
       else {
-         errcode = VDS_SESSION_IS_TERMINATED;
+         errcode = PSO_SESSION_IS_TERMINATED;
       }
       
       psaSessionUnlock( pSession );
    }
    else {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -728,30 +728,30 @@ int vdsRollback( VDS_HANDLE sessionHandle )
 int psaSessionCloseObj( psaSession             * pSession,
                         struct psaCommonObject * pObject )
 {
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
    
-   VDS_PRE_CONDITION( pSession   != NULL );
-   VDS_PRE_CONDITION( pObject    != NULL );
+   PSO_PRE_CONDITION( pSession   != NULL );
+   PSO_PRE_CONDITION( pObject    != NULL );
 
    if ( ! pSession->terminated ) {
       ok = psnSessionRemoveObj( pSession->pCleanup, 
                                  pObject->pObjectContext, 
                                  &pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ok ) {
          ok = psnTopFolderCloseObject( &pObject->folderItem,
                                         &pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
          if ( ok ) pSession->numberOfObjects--;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
       errcode = pscGetLastError( &pSession->context.errorHandler );
@@ -766,10 +766,10 @@ int psaCloseSession( psaSession* pSession )
 {
    psnObjectContext* pObject = NULL;
    psaCommonObject* pCommonObject = NULL;
-   int rc, errcode = VDS_OK;
+   int rc, errcode = PSO_OK;
    bool ok;
    
-   VDS_PRE_CONDITION( pSession != NULL );
+   PSO_PRE_CONDITION( pSession != NULL );
 
    if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
@@ -782,7 +782,7 @@ int psaCloseSession( psaSession* pSession )
          if ( psnLock( &pSession->pCleanup->memObject, &pSession->context) ) {
             for (;;) {
                ok = psnSessionGetFirst( pSession->pCleanup, &pObject, &pSession->context );
-               VDS_POST_CONDITION( ok == true || ok == false );
+               PSO_POST_CONDITION( ok == true || ok == false );
                if ( ! ok ) break;
 
                /* This would be an internal error... */
@@ -796,7 +796,7 @@ int psaCloseSession( psaSession* pSession )
                psaCommonCloseObject( pCommonObject );
 
                ok = psnSessionRemoveFirst(pSession->pCleanup, &pSession->context );
-               VDS_POST_CONDITION( ok == true );
+               PSO_POST_CONDITION( ok == true );
             }
             psnUnlock( &pSession->pCleanup->memObject, &pSession->context);
          }
@@ -806,17 +806,17 @@ int psaCloseSession( psaSession* pSession )
         
       }
       else {
-         errcode = VDS_SESSION_IS_TERMINATED;
+         errcode = PSO_SESSION_IS_TERMINATED;
       }
       
       psaSessionUnlock( pSession );
    }
    else {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -825,22 +825,22 @@ int psaCloseSession( psaSession* pSession )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psaSessionOpenObj( psaSession             * pSession,
-                       enum vdsObjectType       objectType,
+                       enum psoObjectType       objectType,
                        psaEditMode              editMode,
                        const char             * objectName,
                        size_t                   nameLengthInBytes,
                        struct psaCommonObject * pObject )
 {
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnFolder * pTree;
    psnObjectDescriptor * pDesc;
    bool ok = true;
    
-   VDS_PRE_CONDITION( pSession   != NULL );
-   VDS_PRE_CONDITION( objectName != NULL );
-   VDS_PRE_CONDITION( pObject    != NULL );
-   VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
-   VDS_PRE_CONDITION( nameLengthInBytes > 0 );
+   PSO_PRE_CONDITION( pSession   != NULL );
+   PSO_PRE_CONDITION( objectName != NULL );
+   PSO_PRE_CONDITION( pObject    != NULL );
+   PSO_PRE_CONDITION( objectType > 0 && objectType < PSO_LAST_OBJECT_TYPE );
+   PSO_PRE_CONDITION( nameLengthInBytes > 0 );
    
    if ( ! pSession->terminated ) {
       GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psnFolder );
@@ -851,7 +851,7 @@ int psaSessionOpenObj( psaSession             * pSession,
                                        objectType,
                                        &pObject->folderItem,
                                        &pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
       }
       else {
          ok = psnTopFolderOpenObject( pTree,
@@ -860,7 +860,7 @@ int psaSessionOpenObj( psaSession             * pSession,
                                        objectType,
                                        &pObject->folderItem,
                                        &pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
       }
       if ( ok ) {
          GET_PTR( pDesc, pObject->folderItem.pHashItem->dataOffset,
@@ -872,16 +872,16 @@ int psaSessionOpenObj( psaSession             * pSession,
                                  pObject,
                                  &pObject->pObjectContext,
                                  &pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
          pSession->numberOfObjects++;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
       errcode = pscGetLastError( &pSession->context.errorHandler );

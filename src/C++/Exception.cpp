@@ -16,15 +16,15 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Common/Common.h"
-#include <photon/vdsException>
-#include <photon/vdsSession.h>
+#include <photon/psoException>
+#include <photon/psoSession.h>
 
 using namespace std;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsException::vdsException( int          theErrorCode,
-                            VDS_HANDLE   sessionHandle, 
+psoException::psoException( int          theErrorCode,
+                            PSO_HANDLE   sessionHandle, 
                             const char * functionName )
    : errcode( theErrorCode )
 {
@@ -32,7 +32,7 @@ vdsException::vdsException( int          theErrorCode,
    int rc = 0;
    
    if ( sessionHandle != NULL ) {
-      rc = vdsErrorMsg( sessionHandle, s, 1024 );
+      rc = psoErrorMsg( sessionHandle, s, 1024 );
       msg = functionName;
       msg += " exception: ";
       msg += s;
@@ -50,13 +50,13 @@ vdsException::vdsException( int          theErrorCode,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsException::~vdsException()
+psoException::~psoException()
 {
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-string & vdsException::Message( string & errorMessage )
+string & psoException::Message( string & errorMessage )
 {
    errorMessage = msg;
    return errorMessage;
@@ -64,7 +64,7 @@ string & vdsException::Message( string & errorMessage )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-string & vdsException::Message()
+string & psoException::Message()
 {
    return msg;
 }

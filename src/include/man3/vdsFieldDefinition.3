@@ -14,7 +14,7 @@ Description of the structure of the data (if any).
 
 This structure is aligned in such a way that you can do:
 .PP
-malloc( offsetof(vdsObjectDefinition, fields) + numFields * sizeof(vdsFieldDefinition) ); 
+malloc( offsetof(psoObjectDefinition, fields) + numFields * sizeof(vdsFieldDefinition) ); 
 .PP
 Definition at line 164 of file vdsCommon.h.
 .SS "Data Fields"
@@ -24,7 +24,7 @@ Definition at line 164 of file vdsCommon.h.
 .RI "char \fBname\fP [VDS_MAX_FIELD_LENGTH]"
 .br
 .ti -1c
-.RI "enum \fBvdsFieldType\fP \fBtype\fP"
+.RI "enum \fBpsoFieldType\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "size_t \fBlength\fP"
@@ -47,7 +47,7 @@ Definition at line 164 of file vdsCommon.h.
 .SS "char \fBvdsFieldDefinition::name\fP[VDS_MAX_FIELD_LENGTH]"
 .PP
 Definition at line 166 of file vdsCommon.h.
-.SS "enum \fBvdsFieldType\fP \fBvdsFieldDefinition::type\fP"
+.SS "enum \fBpsoFieldType\fP \fBvdsFieldDefinition::type\fP"
 .PP
 Definition at line 167 of file vdsCommon.h.
 .SS "size_t \fBvdsFieldDefinition::length\fP"

@@ -26,11 +26,11 @@ void psnMemBitmapInit( psnMemBitmap* pBitmap,
 {
    size_t len, i;
    
-   VDS_PRE_CONDITION( pBitmap     != NULL );
-   VDS_PRE_CONDITION( baseAddressOffset != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( totalLength      > 0 );
+   PSO_PRE_CONDITION( pBitmap     != NULL );
+   PSO_PRE_CONDITION( baseAddressOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( totalLength      > 0 );
    /* Testing that it is non-zero and a power of two */
-   VDS_PRE_CONDITION( allocGranularity > 0  && 
+   PSO_PRE_CONDITION( allocGranularity > 0  && 
                       ! (allocGranularity & (allocGranularity-1)) );
 
    pBitmap->lengthInBits = totalLength/allocGranularity;
@@ -48,7 +48,7 @@ void psnMemBitmapInit( psnMemBitmap* pBitmap,
 void psnMemBitmapFini( psnMemBitmap* pBitmap )
 {
    size_t len, i;
-   VDS_PRE_CONDITION( pBitmap != NULL );
+   PSO_PRE_CONDITION( pBitmap != NULL );
    
    len = ( (pBitmap->lengthInBits - 1 ) >> 3 ) + 1;
    for ( i = 0; i < len; ++i ) {

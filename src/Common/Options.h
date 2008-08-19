@@ -28,7 +28,7 @@ BEGIN_C_DECLS
  * \defgroup pscOptions Module to handle options for programs.
  *
  * This module provides a simple way (for programs) to handle options.
- * For example: vdswd --config filename
+ * For example: quasar --config filename
  * 
  * I know that this looks like reinventing the wheel... but I've look
  * at alternatives and was not satisfied. They were either too complex,

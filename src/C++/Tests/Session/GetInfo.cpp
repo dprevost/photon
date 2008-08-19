@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds>
+#include <photon/photon>
 #include <iostream>
 
 using namespace std;
@@ -25,15 +25,15 @@ using namespace std;
 
 int main( int argc, char * argv[] )
 {
-   vdsProcess process;
-   vdsSession session;
+   psoProcess process;
+   psoSession session;
    string name = "/cpp_session_getinfo", msg;
-   vdsInfo info, info2;
+   psoInfo info, info2;
    size_t allocSpace;
-   vdsObjectDefinition folderDef;
+   psoObjectDefinition folderDef;
 
    memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = VDS_FOLDER;
+   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -45,7 +45,7 @@ int main( int argc, char * argv[] )
       session.Init();
       
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -59,8 +59,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NULL_POINTER ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -71,7 +71,7 @@ int main( int argc, char * argv[] )
    try {
       session.GetInfo( &info );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -80,7 +80,7 @@ int main( int argc, char * argv[] )
    try {
       session.CreateObject( name, &folderDef );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -88,7 +88,7 @@ int main( int argc, char * argv[] )
    try {
       session.GetInfo( &info2 );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -119,7 +119,7 @@ int main( int argc, char * argv[] )
       session.DestroyObject( name );
       session.GetInfo( &info );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -149,7 +149,7 @@ int main( int argc, char * argv[] )
       session.Commit();
       session.GetInfo( &info2 );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

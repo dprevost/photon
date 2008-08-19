@@ -23,7 +23,7 @@
 #include "API/api.h"
 #include "Nucleus/Engine.h"
 #include "Nucleus/SessionContext.h"
-#include <photon/vdsCommon.h>
+#include <photon/psoCommon.h>
 #include "API/Connector.h"
 #include "Common/ThreadLock.h"
 #include "Common/MemoryFile.h"
@@ -36,7 +36,7 @@ BEGIN_C_DECLS
 struct psnMemoryHeader;
 struct psnProcess;
 struct psnObjectContext;
-struct vdsProxyObject;
+struct psoProxyObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -55,7 +55,7 @@ typedef struct psaProcess
    struct psnProcess* pCleanup;
 
    /** The pid of the process is stored in this member. */
-   vds_lock_T lockValue;
+   pso_lock_T lockValue;
 
    /** The name of the directory for log files (used by transactions). */
    char logDirName[PATH_MAX];
@@ -115,7 +115,7 @@ bool psaProcessLock()
    
    if ( g_protectionIsNeeded ) {
       ok = pscTryAcquireThreadLock( &g_ProcessMutex, LOCK_TIMEOUT );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
    }
    
    return ok;

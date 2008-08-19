@@ -40,7 +40,7 @@ public:
    vdsConstants();
    ~vdsConstants();
    
-   const string & Type( vdsObjectType type );
+   const string & Type( psoObjectType type );
    const string & TypeHeader()
       { return headerType; }
    

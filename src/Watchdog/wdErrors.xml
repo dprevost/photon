@@ -388,7 +388,7 @@
 
     <error>
       <errnumber> 110 </errnumber>
-      <errname> CFG_VDS_LOCATION_TOO_LONG</errname>
+      <errname> CFG_PSO_LOCATION_TOO_LONG</errname>
       <message_group>
         <message xml:lang="en">
           <errormsg>Config: vds_location is too long.</errormsg>
@@ -402,7 +402,7 @@
 
     <error>
       <errnumber> 111 </errnumber>
-      <errname> CFG_VDS_LOCATION_IS_MISSING</errname>
+      <errname> CFG_PSO_LOCATION_IS_MISSING</errname>
       <message_group>
         <message xml:lang="en">
           <errormsg>Config: vds_location is missing.</errormsg>

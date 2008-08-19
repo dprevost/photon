@@ -39,11 +39,11 @@ int main()
    char * data2 = "My data2";
    char * data3 = "My data3";
    psnHashItem * pHashItem;
-   vdsObjectDefinition def = { 
-      VDS_HASH_MAP, 
+   psoObjectDefinition def = { 
+      PSO_HASH_MAP, 
       1, 
       { 0, 0, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
 
    pFolder = initFolderTest( expectedToPass, &context );
@@ -73,7 +73,7 @@ int main()
    ok = psnFolderGetObject( pFolder,
                              "test2",
                              5,
-                             VDS_HASH_MAP,
+                             PSO_HASH_MAP,
                              &item,
                              &context );
    if ( ok != true ) {

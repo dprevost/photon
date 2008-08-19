@@ -24,7 +24,7 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsShell::vdsShell(vdsSession & s)
+vdsShell::vdsShell(psoSession & s)
    : currentLocation( "/" ),
      session        ( s )
 {
@@ -241,7 +241,7 @@ string & vdsShell::Trim( string & s )
 void vdsShell::Cat()
 {
    string objectName;
-   vdsObjStatus status;
+   psoObjStatus status;
    unsigned char * key, * buffer;
    int rc;
    size_t keyLength, dataLength;
@@ -258,12 +258,12 @@ void vdsShell::Cat()
    try {
       session.GetStatus( objectName, &status );
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       exc = exc; // Avoid a warning
       cerr << "vdssh: cat: " << objectName << ": Invalid object name" << endl;
       return;
    }
-   if ( status.type == VDS_FOLDER ) {
+   if ( status.type == PSO_FOLDER ) {
       cerr << "vdssh: cat: " << objectName << ": Is a directory/folder" << endl;
       return;
    }
@@ -274,9 +274,9 @@ void vdsShell::Cat()
          
          buffer = new unsigned char[status.maxDataLength+1];
 
-         if ( status.type == VDS_HASH_MAP ) {
+         if ( status.type == PSO_HASH_MAP ) {
          
-            vdsHashMap hashMap(session);
+            psoHashMap hashMap(session);
          
             key = new unsigned char[status.maxKeyLength+1];
          
@@ -298,9 +298,9 @@ void vdsShell::Cat()
             }
             hashMap.Close();
          }
-         else if ( status.type == VDS_QUEUE ) {
+         else if ( status.type == PSO_QUEUE ) {
 
-            vdsQueue queue(session);
+            psoQueue queue(session);
          
             queue.Open( objectName );
          
@@ -315,7 +315,7 @@ void vdsShell::Cat()
          }
       }
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       cerr << "vdssh: cat: " << exc.Message() << endl;
    }
 
@@ -326,7 +326,7 @@ void vdsShell::Cat()
 void vdsShell::Cd()
 {
    string newLoc;
-   vdsObjStatus status;
+   psoObjStatus status;
 
    if ( tokens.size() == 1 ) {
       currentLocation = "/";
@@ -348,12 +348,12 @@ void vdsShell::Cd()
    try {
       session.GetStatus( newLoc, &status );
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       exc = exc; // Avoid a warning
       cerr << "vdssh: cd: " << newLoc << ": Invalid folder name" << endl;
       return;
    }
-   if ( status.type != VDS_FOLDER ) {
+   if ( status.type != PSO_FOLDER ) {
       cerr << "vdssh: cd: " << newLoc << ": Invalid folder name" << endl;
       return;
    }
@@ -365,11 +365,11 @@ void vdsShell::Cd()
 void vdsShell::Cp()
 {
    string srcName, destName;
-   vdsObjStatus status;
+   psoObjStatus status;
    unsigned char * key, * buffer;
    int rc;
    size_t keyLength, dataLength;
-   vdsObjectDefinition definition;
+   psoObjectDefinition definition;
    
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -391,12 +391,12 @@ void vdsShell::Cp()
    try {
       session.GetStatus( srcName, &status );
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       exc = exc; // Avoid a warning
       cerr << "vdssh: cp: " << srcName << ": Invalid object name" << endl;
       return;
    }
-   if ( status.type == VDS_FOLDER ) {
+   if ( status.type == PSO_FOLDER ) {
       cerr << "vdssh: cp: " << srcName << ": Is a directory/folder" << endl;
       return;
    }
@@ -409,9 +409,9 @@ void vdsShell::Cp()
          
          buffer = new unsigned char[status.maxDataLength];
 
-         if ( status.type == VDS_HASH_MAP ) {
+         if ( status.type == PSO_HASH_MAP ) {
          
-            vdsHashMap srcHash(session), destHash(session);
+            psoHashMap srcHash(session), destHash(session);
          
             key = new unsigned char[status.maxKeyLength];
          
@@ -430,9 +430,9 @@ void vdsShell::Cp()
             srcHash.Close();
             destHash.Close();
          }
-         else if ( status.type == VDS_QUEUE ) {
+         else if ( status.type == PSO_QUEUE ) {
 
-            vdsQueue srcQueue(session), destQueue(session);
+            psoQueue srcQueue(session), destQueue(session);
          
             srcQueue.Open( srcName );
             destQueue.Open( destName );
@@ -448,7 +448,7 @@ void vdsShell::Cp()
       }
       session.Commit();
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
       cerr << "vdssh: cp: " << exc.Message() << endl;
    }
@@ -458,12 +458,12 @@ void vdsShell::Cp()
 
 void vdsShell::Free()
 {
-   vdsInfo info;
+   psoInfo info;
    
    try {
       session.GetInfo( &info );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "vdssh: free: " << exc.Message() << endl;
       return;
    }
@@ -482,9 +482,9 @@ void vdsShell::Free()
 
 void vdsShell::Ls()
 {
-   vdsFolder folder( session );
+   psoFolder folder( session );
    int rc;
-   vdsFolderEntry entry;
+   psoFolderEntry entry;
    string folderName = currentLocation;
    
    if ( tokens.size() == 2 ) {
@@ -508,9 +508,9 @@ void vdsShell::Ls()
       }
       folder.Close();
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() == VDS_NO_SUCH_OBJECT || 
-         exc.ErrorCode() == VDS_NO_SUCH_FOLDER ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() == PSO_NO_SUCH_OBJECT || 
+         exc.ErrorCode() == PSO_NO_SUCH_FOLDER ) {
          cerr << "vdssh: " << tokens[0] << ": " << "No such file or directory" << endl;
       }
       else {
@@ -565,7 +565,7 @@ void vdsShell::Man()
 void vdsShell::Mkdir()
 {
    string folderName;
-   vdsObjectDefinition definition;
+   psoObjectDefinition definition;
 
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -576,11 +576,11 @@ void vdsShell::Mkdir()
    }
    
    try {
-      definition.type = VDS_FOLDER;
+      definition.type = PSO_FOLDER;
       session.CreateObject( folderName, &definition );
       session.Commit();
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
       cerr << "vdssh: mkdir: " << exc.Message() << endl;
    }
@@ -591,7 +591,7 @@ void vdsShell::Mkdir()
 void vdsShell::Rm()
 {
    string objectName;
-   vdsObjStatus status;
+   psoObjStatus status;
    
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -605,12 +605,12 @@ void vdsShell::Rm()
    try {
       session.GetStatus( objectName, &status );
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       exc = exc; // Avoid a warning
       cerr << "vdssh: rm: " << objectName << ": Invalid object name" << endl;
       return;
    }
-   if ( status.type == VDS_FOLDER ) {
+   if ( status.type == PSO_FOLDER ) {
       cerr << "vdssh: rm: " << objectName << ": Is a directory/folder" << endl;
       return;
    }
@@ -619,7 +619,7 @@ void vdsShell::Rm()
       session.DestroyObject( objectName );
       session.Commit();
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
       cerr << "vdssh: rm: " << exc.Message() << endl;
    }
@@ -630,7 +630,7 @@ void vdsShell::Rm()
 void vdsShell::Rmdir()
 {
    string folderName;
-   vdsObjStatus status;
+   psoObjStatus status;
    
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -644,12 +644,12 @@ void vdsShell::Rmdir()
    try {
       session.GetStatus( folderName, &status );
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       exc = exc; // Avoid a warning
       cerr << "vdssh: rmdir: " << folderName << ": Invalid folder name" << endl;
       return;
    }
-   if ( status.type != VDS_FOLDER ) {
+   if ( status.type != PSO_FOLDER ) {
       cerr << "vdssh: rmdir: " << folderName << ": Not a directory/folder" << endl;
       return;
    }
@@ -658,7 +658,7 @@ void vdsShell::Rmdir()
       session.DestroyObject( folderName );
       session.Commit();
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
       cerr << "vdssh: rmdir: " << exc.Message() << endl;
    }
@@ -669,7 +669,7 @@ void vdsShell::Rmdir()
 void vdsShell::Stat()
 {
    string objectName;
-   vdsObjStatus status;
+   psoObjStatus status;
    
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -682,7 +682,7 @@ void vdsShell::Stat()
    try {
       session.GetStatus( objectName, &status );
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       cerr << "vdssh: stat: " << objectName << ": " << exc.Message() << endl;
       return;
    }
@@ -702,9 +702,9 @@ void vdsShell::Touch()
 {
    string objectName;
    string option, filename;
-   vdsObjectDefinition definition;
+   psoObjectDefinition definition;
 
-   definition.type = VDS_LAST_OBJECT_TYPE;
+   definition.type = PSO_LAST_OBJECT_TYPE;
    
    if ( tokens[1][0] == '-' ) {
       option   = tokens[1];
@@ -720,10 +720,10 @@ void vdsShell::Touch()
    }
    
    if ( option == "-q" || option == "--queue" ) {
-      definition.type = VDS_QUEUE;
+      definition.type = PSO_QUEUE;
    }
    else if ( option == "-h" || option == "--hashmap" ) {
-      definition.type = VDS_HASH_MAP;
+      definition.type = PSO_HASH_MAP;
    }
    else {
       cerr << "vdssh: touch: " << "invalid option (" << option << ")" << endl;
@@ -742,7 +742,7 @@ void vdsShell::Touch()
       session.CreateObject( objectName, &definition );
       session.Commit();
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
       cerr << "vdssh: touch: " << exc.Message() << endl;
    }

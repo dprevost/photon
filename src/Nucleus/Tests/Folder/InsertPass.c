@@ -27,8 +27,8 @@ int main()
    psnSessionContext context;
    bool ok;
    psnTxStatus status;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 

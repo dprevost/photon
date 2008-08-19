@@ -15,10 +15,10 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDS_PROCESS_H
-#define VDS_PROCESS_H
+#ifndef PSO_PROCESS_H
+#define PSO_PROCESS_H
 
-#include <photon/vdsCommon.h>
+#include <photon/psoCommon.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -28,10 +28,10 @@ extern "C" {
 
 /**
  * \file
- * This file provides the API functions for vdsf processes.
+ * This file provides the API functions for psof processes.
  */
 /**
- * \defgroup vdsProcess_c API functions for vdsf processes.
+ * \defgroup psoProcess_c API functions for psof processes.
  */
 /*@{*/
 
@@ -43,10 +43,10 @@ extern "C" {
  * the different objects. 
  * 
  * This function takes no argument and always end successfully (even
- * if called twice or if ::vdsInit was not called).
+ * if called twice or if ::psoInit was not called).
  */
 VDSF_EXPORT
-void vdsExit();
+void psoExit();
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -75,11 +75,11 @@ void vdsExit();
  * \param[in] protectionNeeded A boolean value indicating if multi-threaded
  *            locks are needed or not.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
 
  */
 VDSF_EXPORT
-int vdsInit( const char* wdAddress,
+int psoInit( const char* wdAddress,
              int         protectionNeeded );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -92,7 +92,7 @@ int vdsInit( const char* wdAddress,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDS_PROCESS_H */
+#endif /* PSO_PROCESS_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

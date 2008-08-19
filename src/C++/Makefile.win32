@@ -27,8 +27,8 @@ CLEANFILES = *~ *.dep *.plg vc60.* *.ncb
 
 W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsf.lib vdsfNucleus.lib vdsfCommon.lib /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\vdsfcpp.dll" /implib:"$(OUTDIR_RELEASE)\vdsfcpp.lib" /libpath:"..\Release"
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsf.lib vdsfNucleus.lib vdsfCommon.lib /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\vdsfcpp.dll"   /implib:"$(OUTDIR_DEBUG)\vdsfcpp.lib"   /libpath:"..\Debug"
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photon.lib psoNucleus.lib psoCommon.lib /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\photoncpp.dll" /implib:"$(OUTDIR_RELEASE)\photoncpp.lib" /libpath:"..\Release"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photon.lib psoNucleus.lib psoCommon.lib /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\photoncpp.dll"   /implib:"$(OUTDIR_DEBUG)\photoncpp.lib"   /libpath:"..\Debug"
 
 CFLAGS_RELEASE=/nologo /MD  /W3 /O2     /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF" /Fo"$(INTDIR_RELEASE)\\"     /c /GX
 CFLAGS_DEBUG  =/nologo /MDd /W3 /ZI /Od /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_VDSF" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c /GX
@@ -58,21 +58,21 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 .cpp{$(INTDIR_DEBUG)}.obj::
 	$(CPP) $(CFLAGS_DEBUG) $< 
 
-all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdsfcpp.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdsfcpp.dll
+all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\photoncpp.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\photoncpp.dll
 
-"$(OUTDIR_RELEASE)\vdsfcpp.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
-	-del ..\Release\vdsfcpp.dll
-	-del ..\Release\vdsfcpp.lib
+"$(OUTDIR_RELEASE)\photoncpp.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
+	-del ..\Release\photoncpp.dll
+	-del ..\Release\photoncpp.lib
 	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
-	copy Release\vdsfcpp.dll ..\Release
-	copy Release\vdsfcpp.lib ..\Release
+	copy Release\photoncpp.dll ..\Release
+	copy Release\photoncpp.lib ..\Release
 
-"$(OUTDIR_DEBUG)\vdsfcpp.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
-	-del ..\Debug\vdsfcpp.dll
-	-del ..\Debug\vdsfcpp.lib
+"$(OUTDIR_DEBUG)\photoncpp.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
+	-del ..\Debug\photoncpp.dll
+	-del ..\Debug\photoncpp.lib
 	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
-	copy debug\vdsfcpp.dll ..\Debug
-	copy debug\vdsfcpp.lib ..\Debug
+	copy debug\photoncpp.dll ..\Debug
+	copy debug\photoncpp.lib ..\Debug
 
 ###########################################################################
 #

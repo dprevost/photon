@@ -30,11 +30,11 @@ int main()
    char * key  = "my key";
    char * data = "my data";
    psnHashItem * pItem;
-   vdsObjectDefinition def = { 
-      VDS_FAST_MAP, 
+   psoObjectDefinition def = { 
+      PSO_FAST_MAP, 
       1, 
-      { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 1, 100 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } } 
    };
    
    pHashMap = initHashMapTest( expectedToPass, &context );

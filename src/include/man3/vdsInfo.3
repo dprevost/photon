@@ -1,8 +1,8 @@
-.TH "vdsInfo" 3 "18 Aug 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "psoInfo" 3 "18 Aug 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-vdsInfo \- 
+psoInfo \- 
 .SH SYNOPSIS
 .br
 .PP
@@ -79,77 +79,77 @@ Definition at line 263 of file vdsCommon.h.
 .in -1c
 .SH "Field Documentation"
 .PP 
-.SS "size_t \fBvdsInfo::totalSizeInBytes\fP"
+.SS "size_t \fBpsoInfo::totalSizeInBytes\fP"
 .PP
 Total size of the virtual data space. 
 .PP
 Definition at line 266 of file vdsCommon.h.
-.SS "size_t \fBvdsInfo::allocatedSizeInBytes\fP"
+.SS "size_t \fBpsoInfo::allocatedSizeInBytes\fP"
 .PP
 Total size of the allocated blocks. 
 .PP
 Definition at line 269 of file vdsCommon.h.
-.SS "size_t \fBvdsInfo::numObjects\fP"
+.SS "size_t \fBpsoInfo::numObjects\fP"
 .PP
 Number of API objects in the vds (internal objects are not counted). 
 .PP
 Definition at line 272 of file vdsCommon.h.
-.SS "size_t \fBvdsInfo::numGroups\fP"
+.SS "size_t \fBpsoInfo::numGroups\fP"
 .PP
 Total number of groups of blocks. 
 .PP
 Definition at line 275 of file vdsCommon.h.
-.SS "size_t \fBvdsInfo::numMallocs\fP"
+.SS "size_t \fBpsoInfo::numMallocs\fP"
 .PP
 Number of calls to allocate groups of blocks. 
 .PP
 Definition at line 278 of file vdsCommon.h.
-.SS "size_t \fBvdsInfo::numFrees\fP"
+.SS "size_t \fBpsoInfo::numFrees\fP"
 .PP
 Number of calls to free groups of blocks. 
 .PP
 Definition at line 281 of file vdsCommon.h.
-.SS "size_t \fBvdsInfo::largestFreeInBytes\fP"
+.SS "size_t \fBpsoInfo::largestFreeInBytes\fP"
 .PP
 Largest contiguous group of free blocks. 
 .PP
 Definition at line 284 of file vdsCommon.h.
-.SS "int \fBvdsInfo::memoryVersion\fP"
+.SS "int \fBpsoInfo::memoryVersion\fP"
 .PP
 VDS version. 
 .PP
 Definition at line 287 of file vdsCommon.h.
-.SS "int \fBvdsInfo::bigEndian\fP"
+.SS "int \fBpsoInfo::bigEndian\fP"
 .PP
 Endianess (0 for little endian, 1 for big endian). 
 .PP
 Definition at line 290 of file vdsCommon.h.
-.SS "char \fBvdsInfo::compiler\fP[20]"
+.SS "char \fBpsoInfo::compiler\fP[20]"
 .PP
 Compiler name. 
 .PP
 Definition at line 293 of file vdsCommon.h.
-.SS "char \fBvdsInfo::compilerVersion\fP[10]"
+.SS "char \fBpsoInfo::compilerVersion\fP[10]"
 .PP
 Compiler version (if available). 
 .PP
 Definition at line 296 of file vdsCommon.h.
-.SS "char \fBvdsInfo::platform\fP[20]"
+.SS "char \fBpsoInfo::platform\fP[20]"
 .PP
 Platform. 
 .PP
 Definition at line 299 of file vdsCommon.h.
-.SS "char \fBvdsInfo::dllVersion\fP[10]"
+.SS "char \fBpsoInfo::dllVersion\fP[10]"
 .PP
 Shared lib version. 
 .PP
 Definition at line 302 of file vdsCommon.h.
-.SS "char \fBvdsInfo::watchdogVersion\fP[10]"
+.SS "char \fBpsoInfo::watchdogVersion\fP[10]"
 .PP
 The watchdog version (of the vds creator). 
 .PP
 Definition at line 305 of file vdsCommon.h.
-.SS "char \fBvdsInfo::creationTime\fP[30]"
+.SS "char \fBpsoInfo::creationTime\fP[30]"
 .PP
 Timestamp of creation of VDS. 
 .PP

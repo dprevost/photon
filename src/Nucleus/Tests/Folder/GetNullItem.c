@@ -28,8 +28,8 @@ int main()
    psnSessionContext context;
    bool ok;
    psnTxStatus status;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
@@ -59,7 +59,7 @@ int main()
    ok = psnFolderGetObject( pFolder,
                              "test2",
                              5,
-                             VDS_FOLDER,
+                             PSO_FOLDER,
                              NULL,
                              &context );
    

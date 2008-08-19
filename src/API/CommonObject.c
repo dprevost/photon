@@ -18,28 +18,28 @@
 #include "Common/Common.h"
 #include "API/CommonObject.h"
 #include "API/Session.h"
-#include <photon/vds.h>
-#include <photon/vdsErrors.h>
+#include <photon/photon.h>
+#include <photon/psoErrors.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** */
 int psaCommonObjOpen( psaCommonObject    * pObject,
-                      enum vdsObjectType   objectType,
+                      enum psoObjectType   objectType,
                       psaEditMode          editMode,
                       const char         * objectName,
                       size_t               nameLengthInBytes )
 {
-   int errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+   int errcode = PSO_OBJECT_CANNOT_GET_LOCK;
    psnObjectDescriptor * pDesc;
    
-   VDS_PRE_CONDITION( pObject    != NULL );
-   VDS_PRE_CONDITION( objectName != NULL );
-   VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
-   VDS_PRE_CONDITION( pObject->pObjectContext == NULL );
-   VDS_PRE_CONDITION( nameLengthInBytes > 0 );
+   PSO_PRE_CONDITION( pObject    != NULL );
+   PSO_PRE_CONDITION( objectName != NULL );
+   PSO_PRE_CONDITION( objectType > 0 && objectType < PSO_LAST_OBJECT_TYPE );
+   PSO_PRE_CONDITION( pObject->pObjectContext == NULL );
+   PSO_PRE_CONDITION( nameLengthInBytes > 0 );
 
-   if ( pObject->pSession == NULL ) return VDS_PROCESS_NOT_INITIALIZED;
+   if ( pObject->pSession == NULL ) return PSO_PROCESS_NOT_INITIALIZED;
 
    if ( psaCommonLock( pObject ) ) {
       errcode = psaSessionOpenObj( pObject->pSession,
@@ -65,10 +65,10 @@ int psaCommonObjClose( psaCommonObject * pObject )
 {
    int errcode = 0;
 
-   VDS_PRE_CONDITION( pObject != NULL );
-   VDS_PRE_CONDITION( pObject->pObjectContext != NULL );
+   PSO_PRE_CONDITION( pObject != NULL );
+   PSO_PRE_CONDITION( pObject->pObjectContext != NULL );
    
-   if ( pObject->pSession == NULL ) return VDS_PROCESS_NOT_INITIALIZED;
+   if ( pObject->pSession == NULL ) return PSO_PROCESS_NOT_INITIALIZED;
 
    /* No need to lock the api session. The caller already did it! */
    errcode = psaSessionCloseObj( pObject->pSession, pObject );

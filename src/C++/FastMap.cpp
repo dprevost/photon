@@ -16,15 +16,15 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vdsFastMap>
-#include <photon/vdsFastMap.h>
-#include <photon/vdsSession>
-#include <photon/vdsErrors.h>
-#include <photon/vdsException>
+#include <photon/psoFastMap>
+#include <photon/psoFastMap.h>
+#include <photon/psoSession>
+#include <photon/psoErrors.h>
+#include <photon/psoException>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsFastMap::vdsFastMap( vdsSession &session )
+psoFastMap::psoFastMap( psoSession &session )
    : m_objectHandle  ( NULL ),
      m_sessionHandle ( session.m_sessionHandle )
 {
@@ -32,74 +32,74 @@ vdsFastMap::vdsFastMap( vdsSession &session )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsFastMap::~vdsFastMap()
+psoFastMap::~psoFastMap()
 {
    if ( m_objectHandle != NULL ) {
-      vdsFastMapClose( m_objectHandle );
+      psoFastMapClose( m_objectHandle );
    }
    m_objectHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFastMap::Close()
+void psoFastMap::Close()
 {
-   int rc = vdsFastMapClose( m_objectHandle );
+   int rc = psoFastMapClose( m_objectHandle );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFastMap::Close" );
+      throw psoException( rc, m_sessionHandle, "psoFastMap::Close" );
    }
    m_objectHandle = NULL;   
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFastMap::Definition( vdsObjectDefinition ** definition )
+void psoFastMap::Definition( psoObjectDefinition ** definition )
 {
-   int rc = vdsFastMapDefinition( m_objectHandle, definition );
+   int rc = psoFastMapDefinition( m_objectHandle, definition );
    
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFastMap::Definition" );
+      throw psoException( rc, m_sessionHandle, "psoFastMap::Definition" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFastMap::Get( const void * key,
+void psoFastMap::Get( const void * key,
                       size_t       keyLength,
                       void       * buffer,
                       size_t       bufferLength,
                       size_t     * returnedLength )
 {
-   int rc = vdsFastMapGet( m_objectHandle,
+   int rc = psoFastMapGet( m_objectHandle,
                            key,
                            keyLength,
                            buffer,
                            bufferLength,
                            returnedLength );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFastMap::Get" );
+      throw psoException( rc, m_sessionHandle, "psoFastMap::Get" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int vdsFastMap::GetFirst( void       * key,
+int psoFastMap::GetFirst( void       * key,
                           size_t       keyLength,
                           void       * buffer,
                           size_t       bufferLength,
                           size_t     * retKeyLength,
                           size_t     * retDataLength )
 {
-   int rc = vdsFastMapGetFirst( m_objectHandle,
+   int rc = psoFastMapGetFirst( m_objectHandle,
                                 key,
                                 keyLength,
                                 buffer,
                                 bufferLength,
                                 retKeyLength,
                                 retDataLength );
-   if ( rc != 0 && rc != VDS_IS_EMPTY ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFastMap::GetFirst" );
+   if ( rc != 0 && rc != PSO_IS_EMPTY ) {
+      throw psoException( rc, m_sessionHandle, "psoFastMap::GetFirst" );
    }
    
    return rc;
@@ -107,62 +107,62 @@ int vdsFastMap::GetFirst( void       * key,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int vdsFastMap::GetNext( void       * key,
+int psoFastMap::GetNext( void       * key,
                          size_t       keyLength,
                          void       * buffer,
                          size_t       bufferLength,
                          size_t     * retKeyLength,
                          size_t     * retDataLength )
 {
-   int rc = vdsFastMapGetNext( m_objectHandle,
+   int rc = psoFastMapGetNext( m_objectHandle,
                                key,
                                keyLength,
                                buffer,
                                bufferLength,
                                retKeyLength,
                                retDataLength );
-   if ( rc != 0 && rc != VDS_REACHED_THE_END ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFastMap::GetNext" );
+   if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
+      throw psoException( rc, m_sessionHandle, "psoFastMap::GetNext" );
    }
    return rc;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFastMap::Open( const std::string & hashMapName )
+void psoFastMap::Open( const std::string & hashMapName )
 {
-   int rc = vdsFastMapOpen( m_sessionHandle,
+   int rc = psoFastMapOpen( m_sessionHandle,
                             hashMapName.c_str(),
                             hashMapName.length(),
                             &m_objectHandle );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFastMap::Open" );
+      throw psoException( rc, m_sessionHandle, "psoFastMap::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFastMap::Open( const char * hashMapName,
+void psoFastMap::Open( const char * hashMapName,
                        size_t       nameLengthInBytes )
 {
-   int rc = vdsFastMapOpen( m_sessionHandle,
+   int rc = psoFastMapOpen( m_sessionHandle,
                             hashMapName,
                             nameLengthInBytes,
                             &m_objectHandle );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFastMap::Open" );
+      throw psoException( rc, m_sessionHandle, "psoFastMap::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFastMap::Status( vdsObjStatus * pStatus )
+void psoFastMap::Status( psoObjStatus * pStatus )
 {
-   int rc = vdsFastMapStatus( m_objectHandle, pStatus );
+   int rc = psoFastMapStatus( m_objectHandle, pStatus );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFastMap::Status" );
+      throw psoException( rc, m_sessionHandle, "psoFastMap::Status" );
    }
 }
 

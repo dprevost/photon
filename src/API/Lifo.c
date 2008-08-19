@@ -16,10 +16,10 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vdsLifo.h>
+#include <photon/psoLifo.h>
 #include "API/Lifo.h"
 #include "API/Session.h"
-#include <photon/vdsErrors.h>
+#include <photon/psoErrors.h>
 #include "API/CommonObject.h"
 #include "API/DataDefinition.h"
 
@@ -29,16 +29,16 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsLifoClose( VDS_HANDLE objectHandle )
+int psoLifoClose( PSO_HANDLE objectHandle )
 {
    psaLifo * pLifo;
    psnQueue * pVDSLifo;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    
    pLifo = (psaLifo *) objectHandle;
-   if ( pLifo == NULL ) return VDS_NULL_HANDLE;
+   if ( pLifo == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pLifo->object.type != PSA_LIFO ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pLifo->object.type != PSA_LIFO ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( ! pLifo->object.pSession->terminated ) {
       if ( psaCommonLock( &pLifo->object ) ) {
@@ -52,25 +52,25 @@ int vdsLifoClose( VDS_HANDLE objectHandle )
                pLifo->iterator = NULL;
             }
             else {
-               errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+               errcode = PSO_OBJECT_CANNOT_GET_LOCK;
             }
          }
 
-         if ( errcode == VDS_OK ) {
+         if ( errcode == PSO_OK ) {
             errcode = psaCommonObjClose( &pLifo->object );
             pLifo->pDefinition = NULL;
          }
          psaCommonUnlock( &pLifo->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
 
-   if ( errcode == VDS_OK ) {
+   if ( errcode == PSO_OK ) {
       /*
        * Memory might still be around even after it is released, so we make 
        * sure future access with the handle fails by setting the type wrong!
@@ -80,7 +80,7 @@ int vdsLifoClose( VDS_HANDLE objectHandle )
    }
    else {
       pscSetError( &pLifo->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -88,24 +88,24 @@ int vdsLifoClose( VDS_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsLifoDefinition( VDS_HANDLE             objectHandle,
-                       vdsObjectDefinition ** ppDefinition )
+int psoLifoDefinition( PSO_HANDLE             objectHandle,
+                       psoObjectDefinition ** ppDefinition )
 {
    psaLifo * pLifo;
    psnQueue * pVDSLifo;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnSessionContext * pContext;
    
    pLifo = (psaLifo *) objectHandle;
-   if ( pLifo == NULL ) return VDS_NULL_HANDLE;
+   if ( pLifo == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pLifo->object.type != PSA_LIFO ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pLifo->object.type != PSA_LIFO ) return PSO_WRONG_TYPE_HANDLE;
 
    pContext = &pLifo->object.pSession->context;
 
    if ( ppDefinition == NULL ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
 
    if ( ! pLifo->object.pSession->terminated ) {
@@ -115,19 +115,19 @@ int vdsLifoDefinition( VDS_HANDLE             objectHandle,
          errcode = psaGetDefinition( pLifo->pDefinition,
                                       pVDSLifo->numFields,
                                       ppDefinition );
-         if ( errcode == VDS_OK ) (*ppDefinition)->type = VDS_LIFO;
+         if ( errcode == PSO_OK ) (*ppDefinition)->type = PSO_LIFO;
          psaCommonUnlock( &pLifo->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -135,35 +135,35 @@ int vdsLifoDefinition( VDS_HANDLE             objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsLifoGetFirst( VDS_HANDLE   objectHandle,
+int psoLifoGetFirst( PSO_HANDLE   objectHandle,
                      void       * buffer,
                      size_t       bufferLength,
                      size_t     * returnedLength )
 {
    psaLifo * pLifo;
    psnQueue * pVDSLifo;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
    pLifo = (psaLifo *) objectHandle;
-   if ( pLifo == NULL ) return VDS_NULL_HANDLE;
+   if ( pLifo == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pLifo->object.type != PSA_LIFO ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pLifo->object.type != PSA_LIFO ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( buffer == NULL || returnedLength == NULL ) {
-      errcode = VDS_NULL_POINTER;
+      errcode = PSO_NULL_POINTER;
       goto error_handler;
    }
 
    *returnedLength = 0;
 
    if ( pLifo->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pLifo->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
    
@@ -174,18 +174,18 @@ int vdsLifoGetFirst( VDS_HANDLE   objectHandle,
       ok = psnQueueRelease( pVDSLifo,
                              pLifo->iterator,
                              &pLifo->object.pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler_unlock;
       
       pLifo->iterator = NULL;
    }
 
    ok = psnQueueGet( pVDSLifo,
-                      VDS_FIRST,
+                      PSO_FIRST,
                       &pLifo->iterator,
                       bufferLength,
                       &pLifo->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
    *returnedLength = pLifo->iterator->dataLength;
@@ -193,15 +193,15 @@ int vdsLifoGetFirst( VDS_HANDLE   objectHandle,
 
    psaCommonUnlock( &pLifo->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pLifo->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pLifo->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -213,51 +213,51 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsLifoGetNext( VDS_HANDLE   objectHandle,
+int psoLifoGetNext( PSO_HANDLE   objectHandle,
                     void       * buffer,
                     size_t       bufferLength,
                     size_t     * returnedLength )
 {
    psaLifo * pLifo;
    psnQueue * pVDSLifo;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
    
    pLifo = (psaLifo *) objectHandle;
-   if ( pLifo == NULL ) return VDS_NULL_HANDLE;
+   if ( pLifo == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pLifo->object.type != PSA_LIFO ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pLifo->object.type != PSA_LIFO ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( buffer == NULL || returnedLength == NULL ) {
-      errcode = VDS_NULL_POINTER;
+      errcode = PSO_NULL_POINTER;
       goto error_handler;
    }
 
    *returnedLength = 0;
 
    if ( pLifo->iterator == NULL ) {
-      errcode = VDS_INVALID_ITERATOR;
+      errcode = PSO_INVALID_ITERATOR;
       goto error_handler;
    }
    
    if ( pLifo->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pLifo->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
    pVDSLifo = (psnQueue *) pLifo->object.pMyVdsObject;
 
    ok = psnQueueGet( pVDSLifo,
-                      VDS_NEXT,
+                      PSO_NEXT,
                       &pLifo->iterator,
                       bufferLength,
                       &pLifo->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
    
    *returnedLength = pLifo->iterator->dataLength;
@@ -265,15 +265,15 @@ int vdsLifoGetNext( VDS_HANDLE   objectHandle,
 
    psaCommonUnlock( &pLifo->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pLifo->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pLifo->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -285,38 +285,38 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsLifoOpen( VDS_HANDLE   sessionHandle,
+int psoLifoOpen( PSO_HANDLE   sessionHandle,
                  const char * queueName,
                  size_t       nameLengthInBytes,
-                 VDS_HANDLE * objectHandle )
+                 PSO_HANDLE * objectHandle )
 {
    psaSession * pSession;
    psaLifo * pLifo = NULL;
    psnQueue * pVDSLifo;
    int errcode;
    
-   if ( objectHandle == NULL ) return VDS_NULL_HANDLE;
+   if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
    *objectHandle = NULL;
 
    pSession = (psaSession*) sessionHandle;
-   if ( pSession == NULL ) return VDS_NULL_HANDLE;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( queueName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
-      return VDS_INVALID_OBJECT_NAME;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      return PSO_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    
    pLifo = (psaLifo *) malloc(sizeof(psaLifo));
    if (  pLifo == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
-      return VDS_NOT_ENOUGH_HEAP_MEMORY;
+      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
    
    memset( pLifo, 0, sizeof(psaLifo) );
@@ -325,12 +325,12 @@ int vdsLifoOpen( VDS_HANDLE   sessionHandle,
 
    if ( ! pLifo->object.pSession->terminated ) {
       errcode = psaCommonObjOpen( &pLifo->object,
-                                   VDS_LIFO,
+                                   PSO_LIFO,
                                    PSA_READ_WRITE,
                                    queueName,
                                    nameLengthInBytes );
-      if ( errcode == VDS_OK ) {
-         *objectHandle = (VDS_HANDLE) pLifo;
+      if ( errcode == PSO_OK ) {
+         *objectHandle = (PSO_HANDLE) pLifo;
          pVDSLifo = (psnQueue *) pLifo->object.pMyVdsObject;
          GET_PTR( pLifo->pDefinition, 
                   pVDSLifo->dataDefOffset,
@@ -342,7 +342,7 @@ int vdsLifoOpen( VDS_HANDLE   sessionHandle,
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
 
    return errcode;
@@ -350,34 +350,34 @@ int vdsLifoOpen( VDS_HANDLE   sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsLifoPop( VDS_HANDLE   objectHandle,
+int psoLifoPop( PSO_HANDLE   objectHandle,
                 void       * buffer,
                 size_t       bufferLength,
                 size_t     * returnedLength )
 {
    psaLifo * pLifo;
    psnQueue * pVDSLifo;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
    pLifo = (psaLifo *) objectHandle;
-   if ( pLifo == NULL ) return VDS_NULL_HANDLE;
+   if ( pLifo == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pLifo->object.type != PSA_LIFO ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pLifo->object.type != PSA_LIFO ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( buffer == NULL || returnedLength == NULL ) {
-      errcode = VDS_NULL_POINTER;
+      errcode = PSO_NULL_POINTER;
       goto error_handler;
    }
    *returnedLength = 0;
    
    if ( pLifo->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pLifo->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
@@ -388,7 +388,7 @@ int vdsLifoPop( VDS_HANDLE   objectHandle,
       ok = psnQueueRelease( pVDSLifo,
                              pLifo->iterator,
                              &pLifo->object.pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler_unlock;
 
       pLifo->iterator = NULL;
@@ -399,7 +399,7 @@ int vdsLifoPop( VDS_HANDLE   objectHandle,
                          PSN_QUEUE_LAST,
                          bufferLength,
                          &pLifo->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
    *returnedLength = pLifo->iterator->dataLength;
@@ -407,15 +407,15 @@ int vdsLifoPop( VDS_HANDLE   objectHandle,
 
    psaCommonUnlock( &pLifo->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pLifo->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pLifo->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -427,30 +427,30 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsLifoPush( VDS_HANDLE   objectHandle,
+int psoLifoPush( PSO_HANDLE   objectHandle,
                  const void * data,
                  size_t       dataLength )
 {
    psaLifo * pLifo;
    psnQueue * pVDSLifo;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
    pLifo = (psaLifo *) objectHandle;
-   if ( pLifo == NULL ) return VDS_NULL_HANDLE;
+   if ( pLifo == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pLifo->object.type != PSA_LIFO ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pLifo->object.type != PSA_LIFO ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( data == NULL ) {
       pscSetError( &pLifo->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+         g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
    
    if ( dataLength < pLifo->minLength || dataLength > pLifo->maxLength ) {
       pscSetError( &pLifo->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, VDS_INVALID_LENGTH );
-      return VDS_INVALID_LENGTH;
+         g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
    
    if ( ! pLifo->object.pSession->terminated ) {
@@ -462,21 +462,21 @@ int vdsLifoPush( VDS_HANDLE   objectHandle,
                                dataLength,
                                PSN_QUEUE_LAST,
                                &pLifo->object.pSession->context );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
 
          psaCommonUnlock( &pLifo->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pLifo->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -488,24 +488,24 @@ int vdsLifoPush( VDS_HANDLE   objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsLifoStatus( VDS_HANDLE     objectHandle,
-                   vdsObjStatus * pStatus )
+int psoLifoStatus( PSO_HANDLE     objectHandle,
+                   psoObjStatus * pStatus )
 {
    psaLifo * pLifo;
    psnQueue * pVDSLifo;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psnSessionContext * pContext;
    
    pLifo = (psaLifo *) objectHandle;
-   if ( pLifo == NULL ) return VDS_NULL_HANDLE;
+   if ( pLifo == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pLifo->object.type != PSA_LIFO ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pLifo->object.type != PSA_LIFO ) return PSO_WRONG_TYPE_HANDLE;
 
    pContext = &pLifo->object.pSession->context;
 
    if ( pStatus == NULL ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
-      return VDS_NULL_POINTER;
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
 
    if ( ! pLifo->object.pSession->terminated ) {
@@ -520,21 +520,21 @@ int vdsLifoStatus( VDS_HANDLE     objectHandle,
             psnUnlock( &pVDSLifo->memObject, pContext );
          }
          else {
-            errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+            errcode = PSO_OBJECT_CANNOT_GET_LOCK;
          }
       
          psaCommonUnlock( &pLifo->object );
       }
       else {
-         errcode = VDS_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -550,20 +550,20 @@ int psaLifoFirst( psaLifo      * pLifo,
                   psaDataEntry * pEntry )
 {
    psnQueue * pVDSLifo;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
-   VDS_PRE_CONDITION( pLifo != NULL );
-   VDS_PRE_CONDITION( pEntry != NULL );
-   VDS_PRE_CONDITION( pLifo->object.type == PSA_LIFO );
+   PSO_PRE_CONDITION( pLifo != NULL );
+   PSO_PRE_CONDITION( pEntry != NULL );
+   PSO_PRE_CONDITION( pLifo->object.type == PSA_LIFO );
    
    if ( pLifo->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pLifo->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
@@ -574,18 +574,18 @@ int psaLifoFirst( psaLifo      * pLifo,
       ok = psnQueueRelease( pVDSLifo,
                              pLifo->iterator,
                              &pLifo->object.pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler_unlock;
       
       pLifo->iterator = NULL;
    }
 
    ok = psnQueueGet( pVDSLifo,
-                      VDS_FIRST,
+                      PSO_FIRST,
                       &pLifo->iterator,
                       (size_t) -1,
                       &pLifo->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
    pEntry->data = pLifo->iterator->data;
@@ -593,15 +593,15 @@ int psaLifoFirst( psaLifo      * pLifo,
       
    psaCommonUnlock( &pLifo->object );
    
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pLifo->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pLifo->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -617,32 +617,32 @@ int psaLifoNext( psaLifo      * pLifo,
                  psaDataEntry * pEntry )
 {
    psnQueue * pVDSLifo;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
-   VDS_PRE_CONDITION( pLifo != NULL );
-   VDS_PRE_CONDITION( pEntry != NULL );
-   VDS_PRE_CONDITION( pLifo->object.type == PSA_LIFO );
-   VDS_PRE_CONDITION( pLifo->iterator != NULL );
+   PSO_PRE_CONDITION( pLifo != NULL );
+   PSO_PRE_CONDITION( pEntry != NULL );
+   PSO_PRE_CONDITION( pLifo->object.type == PSA_LIFO );
+   PSO_PRE_CONDITION( pLifo->iterator != NULL );
    
    if ( pLifo->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pLifo->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
    pVDSLifo = (psnQueue *) pLifo->object.pMyVdsObject;
 
    ok = psnQueueGet( pVDSLifo,
-                      VDS_NEXT,
+                      PSO_NEXT,
                       &pLifo->iterator,
                       (size_t) -1,
                       &pLifo->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
    pEntry->data = pLifo->iterator->data;
@@ -650,15 +650,15 @@ int psaLifoNext( psaLifo      * pLifo,
 
    psaCommonUnlock( &pLifo->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pLifo->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pLifo->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
@@ -674,20 +674,20 @@ int psaLifoRemove( psaLifo      * pLifo,
                    psaDataEntry * pEntry )
 {
    psnQueue * pVDSLifo;
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    bool ok = true;
 
-   VDS_PRE_CONDITION( pLifo != NULL );
-   VDS_PRE_CONDITION( pEntry != NULL )
-   VDS_PRE_CONDITION( pLifo->object.type == PSA_LIFO )
+   PSO_PRE_CONDITION( pLifo != NULL );
+   PSO_PRE_CONDITION( pEntry != NULL )
+   PSO_PRE_CONDITION( pLifo->object.type == PSA_LIFO )
 
    if ( pLifo->object.pSession->terminated ) {
-      errcode = VDS_SESSION_IS_TERMINATED;
+      errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
    if ( ! psaCommonLock( &pLifo->object ) ) {
-      errcode = VDS_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
@@ -698,7 +698,7 @@ int psaLifoRemove( psaLifo      * pLifo,
       ok = psnQueueRelease( pVDSLifo,
                              pLifo->iterator,
                              &pLifo->object.pSession->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler_unlock;
 
       pLifo->iterator = NULL;
@@ -709,7 +709,7 @@ int psaLifoRemove( psaLifo      * pLifo,
                          PSN_QUEUE_LAST,
                          (size_t) -1,
                          &pLifo->object.pSession->context );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
    pEntry->data = (const void *) pLifo->iterator->data;
@@ -717,15 +717,15 @@ int psaLifoRemove( psaLifo      * pLifo,
       
    psaCommonUnlock( &pLifo->object );
 
-   return VDS_OK;
+   return PSO_OK;
 
 error_handler_unlock:
    psaCommonUnlock( &pLifo->object );
 
 error_handler:
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pLifo->object.pSession->context.errorHandler, 
-         g_vdsErrorHandle, errcode );
+         g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {

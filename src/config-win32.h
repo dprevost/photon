@@ -23,7 +23,7 @@
 
 /*
  * DBC inserts contract validations (tests for NULL pointers, etc.) in the 
- * code in the form of macros (VDS_PRE_CONDITION and friends). These macros 
+ * code in the form of macros (PSO_PRE_CONDITION and friends). These macros 
  * are defined in src\Common\Common.h.
  *
  * It is recommended to set USE_DBC to 1 on development systems and when

@@ -26,7 +26,7 @@ int main()
 {
    psnSessionContext context;
    psnHash* pHash;
-   enum vdsErrors errcode;
+   enum psoErrors errcode;
    char* key1 = "My Key 1";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
@@ -39,7 +39,7 @@ int main()
    pHash = initHashTest( expectedToPass, &context );
    
    errcode = psnHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -50,7 +50,7 @@ int main()
                              strlen(data1),
                              &pNewItem,
                              &context );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
@@ -63,7 +63,7 @@ int main()
                              data2,
                              strlen(data2),
                              &context );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -89,7 +89,7 @@ int main()
                              data3,
                              strlen(data3),
                              &context );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSW_VERIFY_VDS_H
-#define VDSW_VERIFY_VDS_H
+#ifndef VDSW_VERIFY_PSO_H
+#define VDSW_VERIFY_PSO_H
 
 #include "Nucleus/MemoryHeader.h"
 
@@ -46,7 +46,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSW_VERIFY_VDS_H */
+#endif /* VDSW_VERIFY_PSO_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -44,9 +44,9 @@ void HandleAbnormalTermination( vdswAcceptor * pAcceptor, pid_t pid );
 
 void vdswAcceptorInit( vdswAcceptor * pAcceptor )
 {
-   VDS_PRE_CONDITION( pAcceptor != NULL );
+   PSO_PRE_CONDITION( pAcceptor != NULL );
 
-   pAcceptor->socketFD = VDS_INVALID_SOCKET;
+   pAcceptor->socketFD = PSO_INVALID_SOCKET;
 #if defined (WIN32) 
    pAcceptor->cleanupNeeded = false;
 #endif
@@ -56,15 +56,15 @@ void vdswAcceptorInit( vdswAcceptor * pAcceptor )
 
 void vdswAcceptorFini( vdswAcceptor * pAcceptor )
 {
-   VDS_PRE_CONDITION( pAcceptor != NULL );
+   PSO_PRE_CONDITION( pAcceptor != NULL );
 
-   if ( pAcceptor->socketFD != VDS_INVALID_SOCKET ) {
+   if ( pAcceptor->socketFD != PSO_INVALID_SOCKET ) {
 #if defined (WIN32) 
       closesocket( pAcceptor->socketFD );
 #else
       close( pAcceptor->socketFD );
 #endif
-      pAcceptor->socketFD = VDS_INVALID_SOCKET;
+      pAcceptor->socketFD = PSO_INVALID_SOCKET;
    }
    
 #if defined (WIN32) 
@@ -76,7 +76,7 @@ void vdswAcceptorFini( vdswAcceptor * pAcceptor )
 
 bool Accept( vdswAcceptor * pAcceptor )
 {
-   VDS_SOCKET newSock = VDS_INVALID_SOCKET;
+   PSO_SOCKET newSock = PSO_INVALID_SOCKET;
    int errcode, i;
 #if defined (WIN32)
    unsigned long mode = 1;
@@ -87,10 +87,10 @@ bool Accept( vdswAcceptor * pAcceptor )
 #endif
       newSock = accept( pAcceptor->socketFD, NULL, 0 );
 #if ! defined (WIN32)
-   } while ( newSock == VDS_INVALID_SOCKET && errno == EINTR );
+   } while ( newSock == PSO_INVALID_SOCKET && errno == EINTR );
 #endif
   
-   if ( newSock == VDS_INVALID_SOCKET ) {
+   if ( newSock == PSO_INVALID_SOCKET ) {
       errcode = GetSockError();
 #if defined (WIN32) 
       if ( errcode == WSAEWOULDBLOCK )
@@ -132,7 +132,7 @@ bool Accept( vdswAcceptor * pAcceptor )
 #endif
 
    for ( i = 1; i < FD_SETSIZE; ++i ) {
-      if (  pAcceptor->dispatch[i].socketId == VDS_INVALID_SOCKET ) {
+      if (  pAcceptor->dispatch[i].socketId == PSO_INVALID_SOCKET ) {
          pAcceptor->dispatch[i].socketId = newSock;
          break;
       }
@@ -171,8 +171,8 @@ bool vdswPrepareConnection( vdswAcceptor * pAcceptor,
 #endif
    struct sockaddr_in addr;
 
-   VDS_PRE_CONDITION( pAcceptor != NULL );
-   VDS_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( pAcceptor != NULL );
+   PSO_PRE_CONDITION( pWatchdog != NULL );
 
    pAcceptor->pWatchdog = pWatchdog;
    memset( &pAcceptor->answer, 0, sizeof pAcceptor->answer );
@@ -202,7 +202,7 @@ bool vdswPrepareConnection( vdswAcceptor * pAcceptor,
 #endif
 
    pAcceptor->socketFD = socket( PF_INET, SOCK_STREAM, 0 );
-   if ( pAcceptor->socketFD == VDS_INVALID_SOCKET ) {
+   if ( pAcceptor->socketFD == PSO_INVALID_SOCKET ) {
       vdswSendMessage( &pAcceptor->pWatchdog->log, 
                        WD_ERROR, 
                        "In function socket(), error = %d",
@@ -279,8 +279,8 @@ Receive( vdswAcceptor * pAcceptor, unsigned int indice )
    int errcode = 0;
    struct WDInput input;
    
-   VDS_PRE_CONDITION( pAcceptor != NULL );
-   VDS_PRE_CONDITION( indice < FD_SETSIZE );
+   PSO_PRE_CONDITION( pAcceptor != NULL );
+   PSO_PRE_CONDITION( indice < FD_SETSIZE );
 
    /*
     * A socket can be in a ready state for reading when:
@@ -309,7 +309,7 @@ Receive( vdswAcceptor * pAcceptor, unsigned int indice )
 #else
       close( pAcceptor->dispatch[indice].socketId );
 #endif
-      pAcceptor->dispatch[indice].socketId = VDS_INVALID_SOCKET;
+      pAcceptor->dispatch[indice].socketId = PSO_INVALID_SOCKET;
 
       if ( pAcceptor->dispatch[indice].pid > 0 ) {
          HandleAbnormalTermination( pAcceptor, pAcceptor->dispatch[indice].pid );
@@ -332,7 +332,7 @@ Receive( vdswAcceptor * pAcceptor, unsigned int indice )
 #else
          close( pAcceptor->dispatch[indice].socketId );
 #endif
-         pAcceptor->dispatch[indice].socketId = VDS_INVALID_SOCKET;
+         pAcceptor->dispatch[indice].socketId = PSO_INVALID_SOCKET;
          if ( pAcceptor->dispatch[indice].pid > 0 ) {
             HandleAbnormalTermination( pAcceptor, pAcceptor->dispatch[indice].pid );
          }
@@ -352,7 +352,7 @@ Receive( vdswAcceptor * pAcceptor, unsigned int indice )
             shutdown( pAcceptor->dispatch[indice].socketId, 2 );      
             close( pAcceptor->dispatch[indice].socketId );
 #endif
-            pAcceptor->dispatch[indice].socketId = VDS_INVALID_SOCKET;
+            pAcceptor->dispatch[indice].socketId = PSO_INVALID_SOCKET;
          }
       }
    }
@@ -369,8 +369,8 @@ Send( vdswAcceptor * pAcceptor, unsigned int indice )
    char * ptr;
    int offset;
    
-   VDS_PRE_CONDITION( pAcceptor != NULL );
-   VDS_PRE_CONDITION( indice < FD_SETSIZE );
+   PSO_PRE_CONDITION( pAcceptor != NULL );
+   PSO_PRE_CONDITION( indice < FD_SETSIZE );
 
    ptr = (char*) &pAcceptor->answer;
    offset = sizeof pAcceptor->answer - pAcceptor->dispatch[indice].dataToBeWritten;
@@ -408,7 +408,7 @@ Send( vdswAcceptor * pAcceptor, unsigned int indice )
       }
 #endif
 
-      pAcceptor->dispatch[indice].socketId = VDS_INVALID_SOCKET;
+      pAcceptor->dispatch[indice].socketId = PSO_INVALID_SOCKET;
       vdswSendMessage( &pAcceptor->pWatchdog->log,
                        WD_WARNING, 
                        "Connection terminated abnormally %s%d",
@@ -434,7 +434,7 @@ vdswWaitForConnections( vdswAcceptor * pAcceptor )
    unsigned int i;
    bool rc;
    
-   VDS_PRE_CONDITION( pAcceptor != NULL );
+   PSO_PRE_CONDITION( pAcceptor != NULL );
 
    /*
     * NOTE: since socket handles, on Windows, are not integers, we will
@@ -446,7 +446,7 @@ vdswWaitForConnections( vdswAcceptor * pAcceptor )
    pAcceptor->dispatch[0].dataToBeWritten = false;
    
    for ( i = 1; i < FD_SETSIZE; ++i ) {
-      pAcceptor->dispatch[i].socketId = VDS_INVALID_SOCKET;
+      pAcceptor->dispatch[i].socketId = PSO_INVALID_SOCKET;
       pAcceptor->dispatch[i].pid = -1;
       pAcceptor->dispatch[i].dataToBeWritten = false;
    }   
@@ -464,7 +464,7 @@ vdswWaitForConnections( vdswAcceptor * pAcceptor )
       maxFD = 0;
       for ( i = 0; i < FD_SETSIZE; ++i ) {
          
-         if ( pAcceptor->dispatch[i].socketId != VDS_INVALID_SOCKET) {
+         if ( pAcceptor->dispatch[i].socketId != PSO_INVALID_SOCKET) {
             if ( pAcceptor->dispatch[i].dataToBeWritten == 0 ) {
                FD_SET( pAcceptor->dispatch[i].socketId, &readSet);
                zzz++;
@@ -501,7 +501,7 @@ vdswWaitForConnections( vdswAcceptor * pAcceptor )
        */
       if ( FD_ISSET( pAcceptor->socketFD, &readSet ) ) {
          rc = Accept( pAcceptor );
-         VDS_POST_CONDITION( rc == true || rc == false );
+         PSO_POST_CONDITION( rc == true || rc == false );
          if ( ! rc ) break;
          fired--;
       }
@@ -511,7 +511,7 @@ vdswWaitForConnections( vdswAcceptor * pAcceptor )
        * Process all open sockets 
        */
       for ( i = 1; i < FD_SETSIZE; ++i ) {
-         if ( pAcceptor->dispatch[i].socketId != VDS_INVALID_SOCKET ) {
+         if ( pAcceptor->dispatch[i].socketId != PSO_INVALID_SOCKET ) {
             if ( FD_ISSET( pAcceptor->dispatch[i].socketId, &writeSet ) ) {
                Send( pAcceptor, i );
                fired--;
@@ -527,7 +527,7 @@ vdswWaitForConnections( vdswAcceptor * pAcceptor )
 
    // Cleanup (close all sockets)
    for ( i = 0; i < FD_SETSIZE; ++i ) {
-      if ( pAcceptor->dispatch[i].socketId != VDS_INVALID_SOCKET ) {
+      if ( pAcceptor->dispatch[i].socketId != PSO_INVALID_SOCKET ) {
 #if defined (WIN32) 
          shutdown( pAcceptor->dispatch[i].socketId, SD_BOTH );      
          closesocket( pAcceptor->dispatch[i].socketId );
@@ -537,7 +537,7 @@ vdswWaitForConnections( vdswAcceptor * pAcceptor )
 #endif
       }
    }
-   pAcceptor->socketFD = VDS_INVALID_SOCKET;
+   pAcceptor->socketFD = PSO_INVALID_SOCKET;
 
 }
 

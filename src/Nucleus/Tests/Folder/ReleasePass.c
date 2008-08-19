@@ -31,8 +31,8 @@ int main()
    psnObjectDescriptor * pDescriptor;
    psnTxStatus * txItemStatus;
    psnTreeNode * pNode;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 

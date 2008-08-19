@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 
 const bool expectedToPass = true;
@@ -42,52 +42,52 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE sessionHandle, folderHandle;
+   PSO_HANDLE sessionHandle, folderHandle;
    int errcode;
    char buff[1000];
    char src_path[PATH_MAX] = {"../../../XML/vdsf_md10.xsd"};
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
    if ( argc > 2 ) {
       strcpy( src_path, argv[2] );
       strcat( src_path, "/src/XML/vdsf_md10.xsd" );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/ahmcx",
                               strlen("/ahmcx"),
                               &def );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderOpen( sessionHandle,
+   errcode = psoFolderOpen( sessionHandle,
                             "/ahmcx",
                             strlen("/ahmcx"),
                             &folderHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -100,28 +100,28 @@ int main( int argc, char * argv[] )
       "<field name=\"junk3\"><string length=\"100\"/></field>\n"
       "<lastField name=\"junk2\"><integer size=\"4\" /></lastField>" );
 
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        NULL,
                                        strlen(buff) );
-   if ( errcode != VDS_NULL_POINTER ) {
+   if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        0 );
-   if ( errcode != VDS_INVALID_LENGTH ) { 
+   if ( errcode != PSO_INVALID_LENGTH ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Empty definition, obviously. */
    BUILD_XML(src_path, "" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_XML_VALIDATION_FAILED ) { 
+   if ( errcode != PSO_XML_VALIDATION_FAILED ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -132,10 +132,10 @@ int main( int argc, char * argv[] )
       "<field name=\"junk1\"><boolean /></field>\n"
       "<lastField name=\"junk2\"><integer size=\"4\" /></lastField>\n"
       "<field name=\"junk3\"><string length=\"100\"/></field>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_XML_VALIDATION_FAILED ) { 
+   if ( errcode != PSO_XML_VALIDATION_FAILED ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -146,10 +146,10 @@ int main( int argc, char * argv[] )
       "<field name=\"junk1\"><boolean /></field>\n"
       "<field name=\"junk2\"><string length=\"100\"/></field>\n"
       "<lastField name=\"junk2\"><integer size=\"4\" /></lastField>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_XML_VALIDATION_FAILED ) { 
+   if ( errcode != PSO_XML_VALIDATION_FAILED ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -160,10 +160,10 @@ int main( int argc, char * argv[] )
       "<field name=\"junk1\"><varString minLength=\"0\" maxLength=\"100\" /></field>\n"
       "<field name=\"junk2\"><string length=\"100\"/></field>\n"
       "<lastField name=\"junk2\"><integer size=\"4\" /></lastField>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_XML_VALIDATION_FAILED ) { 
+   if ( errcode != PSO_XML_VALIDATION_FAILED ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -174,10 +174,10 @@ int main( int argc, char * argv[] )
       "<field name=\"junk1\"><decimal /></field>\n"
       "<field name=\"junk2\"><string length=\"100\"/></field>\n"
       "<lastField name=\"junk3\"><integer size=\"4\" /></lastField>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_XML_VALIDATION_FAILED ) { 
+   if ( errcode != PSO_XML_VALIDATION_FAILED ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -188,10 +188,10 @@ int main( int argc, char * argv[] )
       "<field name=\"junk1\"><decimal precision=\"100\" scale=\"0\" /></field>\n"
       "<field name=\"junk2\"><string length=\"100\"/></field>\n"
       "<lastField name=\"junk3\"><integer size=\"4\" /></lastField>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_XML_VALIDATION_FAILED ) { 
+   if ( errcode != PSO_XML_VALIDATION_FAILED ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -202,10 +202,10 @@ int main( int argc, char * argv[] )
       "<field name=\"junk1\"><decimal precision=\"10\" scale=\"11\" /></field>\n"
       "<field name=\"junk2\"><string length=\"100\"/></field>\n"
       "<lastField name=\"junk3\"><integer size=\"4\" /></lastField>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_INVALID_SCALE ) { 
+   if ( errcode != PSO_INVALID_SCALE ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -216,10 +216,10 @@ int main( int argc, char * argv[] )
       "<field name=\"junk1\"><integer size=\"11\" /></field>\n"
       "<field name=\"junk2\"><string length=\"100\"/></field>\n"
       "<lastField name=\"junk3\"><integer size=\"4\" /></lastField>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_XML_VALIDATION_FAILED ) { 
+   if ( errcode != PSO_XML_VALIDATION_FAILED ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -230,10 +230,10 @@ int main( int argc, char * argv[] )
       "<field name=\"junk1\"><integer length=\"4\" /></field>\n"
       "<field name=\"junk2\"><string length=\"100\"/></field>\n"
       "<lastField name=\"junk3\"><integer size=\"4\" /></lastField>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_XML_VALIDATION_FAILED ) { 
+   if ( errcode != PSO_XML_VALIDATION_FAILED ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -244,10 +244,10 @@ int main( int argc, char * argv[] )
       "<field name=\"junk1\"><integer size=\"4\" /></field>\n"
       "<field name=\"junk2\"><string length=\"100\"/></field>\n"
       "<lastField name=\"junk3\"><integer size=\"4\" /></lastField>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_XML_VALIDATION_FAILED ) { 
+   if ( errcode != PSO_XML_VALIDATION_FAILED ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -258,10 +258,10 @@ int main( int argc, char * argv[] )
       "<field name=\"junk1\"><integer size=\"4\" /></field>\n"
       "<field name=\"junk2\"><string length=\"100\"/></field>\n"
       "<lastField name=\"junk3\"><integer size=\"4\" /></lastField>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_XML_VALIDATION_FAILED ) { 
+   if ( errcode != PSO_XML_VALIDATION_FAILED ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -273,10 +273,10 @@ int main( int argc, char * argv[] )
       "<field name=\"junk1\"><integer size=\"4\" /></field>\n"
       "<field name=\"junk2\"><string length=\"100\"/></field>\n"
       "<lastField name=\"junk3\"><integer size=\"4\" /></lastField>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_XML_VALIDATION_FAILED ) { 
+   if ( errcode != PSO_XML_VALIDATION_FAILED ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -287,10 +287,10 @@ int main( int argc, char * argv[] )
       "<key><integer size=\"4\" /></key>\n"
       "<field name=\"junk2\"><string length=\"100\"/></field>\n"
       "<lastField name=\"junk3\"><integer size=\"4\" /></lastField>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_XML_VALIDATION_FAILED ) { 
+   if ( errcode != PSO_XML_VALIDATION_FAILED ) { 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -304,16 +304,16 @@ int main( int argc, char * argv[] )
       "<field name=\"junk5\"><boolean /></field>\n"
       "<field name=\"junk6\"><binary length=\"200\" /></field>\n"
       "<lastField name=\"junk7\"><varBinary minLength=\"10\" maxLength=\"0\" /></lastField>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_OK ) { 
+   if ( errcode != PSO_OK ) { 
       fprintf(stderr, "buff = \n%s\n", buff );
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   vdsExit();
+   psoExit();
 
    return 0;
 }

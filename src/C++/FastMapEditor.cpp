@@ -16,108 +16,108 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vdsFastMapEditor>
-#include <photon/vdsFastMap.h>
-#include <photon/vdsSession>
-#include <photon/vdsErrors.h>
-#include <photon/vdsException>
+#include <photon/psoFastMapEditor>
+#include <photon/psoFastMap.h>
+#include <photon/psoSession>
+#include <photon/psoErrors.h>
+#include <photon/psoException>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsFastMapEditor::vdsFastMapEditor( vdsSession &session )
-   : vdsFastMap( session )
+psoFastMapEditor::psoFastMapEditor( psoSession &session )
+   : psoFastMap( session )
 {
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsFastMapEditor::~vdsFastMapEditor()
+psoFastMapEditor::~psoFastMapEditor()
 {
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFastMapEditor::Delete( const void * key,
+void psoFastMapEditor::Delete( const void * key,
                          size_t       keyLength )
 {
-   int rc = vdsFastMapDelete( m_objectHandle,
+   int rc = psoFastMapDelete( m_objectHandle,
                               key,
                               keyLength );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFastMapEditor::Delete" );
+      throw psoException( rc, m_sessionHandle, "psoFastMapEditor::Delete" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFastMapEditor::Empty()
+void psoFastMapEditor::Empty()
 {
-   int rc = vdsFastMapEmpty( m_objectHandle );
+   int rc = psoFastMapEmpty( m_objectHandle );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFastMapEditor::Empty" );
+      throw psoException( rc, m_sessionHandle, "psoFastMapEditor::Empty" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFastMapEditor::Insert( const void * key,
+void psoFastMapEditor::Insert( const void * key,
                                size_t       keyLength,
                                const void * data,
                                size_t       dataLength )
 {
-   int rc = vdsFastMapInsert( m_objectHandle,
+   int rc = psoFastMapInsert( m_objectHandle,
                               key,
                               keyLength,
                               data,
                               dataLength );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFastMapEditor::Insert" );
+      throw psoException( rc, m_sessionHandle, "psoFastMapEditor::Insert" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFastMapEditor::Open( const std::string & hashMapName )
+void psoFastMapEditor::Open( const std::string & hashMapName )
 {
-   int rc = vdsFastMapEdit( m_sessionHandle,
+   int rc = psoFastMapEdit( m_sessionHandle,
                             hashMapName.c_str(),
                             hashMapName.length(),
                             &m_objectHandle );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFastMapEditor::Open" );
+      throw psoException( rc, m_sessionHandle, "psoFastMapEditor::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFastMapEditor::Open( const char * hashMapName,
+void psoFastMapEditor::Open( const char * hashMapName,
                              size_t       nameLengthInBytes )
 {
-   int rc = vdsFastMapEdit( m_sessionHandle,
+   int rc = psoFastMapEdit( m_sessionHandle,
                             hashMapName,
                             nameLengthInBytes,
                             &m_objectHandle );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFastMapEditor::Open" );
+      throw psoException( rc, m_sessionHandle, "psoFastMapEditor::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFastMapEditor::Replace( const void * key,
+void psoFastMapEditor::Replace( const void * key,
                                 size_t       keyLength,
                                 const void * data,
                                 size_t       dataLength )
 {
-   int rc = vdsFastMapReplace( m_objectHandle,
+   int rc = psoFastMapReplace( m_objectHandle,
                                key,
                                keyLength,
                                data,
                                dataLength );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFastMapEditor::Replace" );
+      throw psoException( rc, m_sessionHandle, "psoFastMapEditor::Replace" );
    }
 }
 

@@ -239,7 +239,7 @@ static bool findKey( psnHash            * pHash,
  * 
  * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdsErrors psnHashCopy( psnHash           * pOldHash,
+enum psoErrors psnHashCopy( psnHash           * pOldHash,
                              psnHash           * pNewHash,
                              psnSessionContext * pContext )
 {
@@ -250,16 +250,16 @@ enum vdsErrors psnHashCopy( psnHash           * pOldHash,
    psnMemObject * pMemObject;
    size_t itemLength;
    
-   VDS_PRE_CONDITION( pOldHash != NULL );
-   VDS_PRE_CONDITION( pNewHash != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_INV_CONDITION( pOldHash->initialized == PSN_HASH_SIGNATURE );
-   VDS_INV_CONDITION( pNewHash->initialized == PSN_HASH_SIGNATURE );
+   PSO_PRE_CONDITION( pOldHash != NULL );
+   PSO_PRE_CONDITION( pNewHash != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_INV_CONDITION( pOldHash->initialized == PSN_HASH_SIGNATURE );
+   PSO_INV_CONDITION( pNewHash->initialized == PSN_HASH_SIGNATURE );
 
    GET_PTR( pOldArray, pOldHash->arrayOffset, ptrdiff_t );
-   VDS_INV_CONDITION( pOldArray != NULL );
+   PSO_INV_CONDITION( pOldArray != NULL );
    GET_PTR( pNewArray, pNewHash->arrayOffset, ptrdiff_t );
-   VDS_INV_CONDITION( pNewArray != NULL );
+   PSO_INV_CONDITION( pNewArray != NULL );
 
    GET_PTR( pMemObject, pNewHash->memObjOffset, psnMemObject );
 
@@ -277,7 +277,7 @@ enum vdsErrors psnHashCopy( psnHash           * pOldHash,
             pNewItem = (psnHashItem*) psnMalloc( pMemObject, 
                                                    itemLength, 
                                                    pContext );
-            if ( pNewItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
+            if ( pNewItem == NULL ) return PSO_NOT_ENOUGH_PSO_MEMORY;
 
             /*
              * We copy everything and we reset the offset of interest
@@ -312,7 +312,7 @@ enum vdsErrors psnHashCopy( psnHash           * pOldHash,
             pNewItem = (psnHashItem*) psnMalloc( pMemObject, 
                                                    itemLength, 
                                                    pContext );
-            if ( pNewItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
+            if ( pNewItem == NULL ) return PSO_NOT_ENOUGH_PSO_MEMORY;
 
             /*
              * We copy everything and we reset the offset of interest
@@ -350,7 +350,7 @@ enum vdsErrors psnHashCopy( psnHash           * pOldHash,
    pNewHash->numberOfItems        = pOldHash->numberOfItems;
    pNewHash->enumResize           = pOldHash->enumResize;
 
-   return VDS_OK;
+   return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -365,13 +365,13 @@ void psnHashDelWithItem( psnHash           * pHash,
    psnMemObject * pMemObject;
    size_t bucket;
    
-   VDS_PRE_CONDITION( pHash    != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pItem    != NULL );
-   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
+   PSO_PRE_CONDITION( pHash    != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pItem    != NULL );
+   PSO_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-   VDS_INV_CONDITION( pArray != NULL );
+   PSO_INV_CONDITION( pArray != NULL );
 
    GET_PTR( pMemObject, pHash->memObjOffset, psnMemObject );
    bucket = pItem->bucket;
@@ -383,7 +383,7 @@ void psnHashDelWithItem( psnHash           * pHash,
       if ( pNewItem == pItem ) break;
       nextOffset = pNewItem->nextItem;
    }
-   VDS_INV_CONDITION( pNewItem == pItem );
+   PSO_INV_CONDITION( pNewItem == pItem );
 
    nextOffset = pItem->nextItem;
       
@@ -423,14 +423,14 @@ bool psnHashDelWithKey( psnHash            * pHash,
    ptrdiff_t nextOffset;
    psnMemObject * pMemObject;
   
-   VDS_PRE_CONDITION( pHash     != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pKey      != NULL );
-   VDS_PRE_CONDITION( keyLength > 0 );
-   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
+   PSO_PRE_CONDITION( pHash     != NULL );
+   PSO_PRE_CONDITION( pContext  != NULL );
+   PSO_PRE_CONDITION( pKey      != NULL );
+   PSO_PRE_CONDITION( keyLength > 0 );
+   PSO_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-   VDS_INV_CONDITION( pArray != NULL );
+   PSO_INV_CONDITION( pArray != NULL );
 
    GET_PTR( pMemObject, pHash->memObjOffset, psnMemObject );
    
@@ -477,12 +477,12 @@ void psnHashEmpty( psnHash           * pHash,
    psnHashItem* pItem;
    psnMemObject * pMemObject;
    
-   VDS_PRE_CONDITION( pHash != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
+   PSO_PRE_CONDITION( pHash != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-   VDS_INV_CONDITION( pArray != NULL );
+   PSO_INV_CONDITION( pArray != NULL );
 
    GET_PTR( pMemObject, pHash->memObjOffset, psnMemObject );
 
@@ -514,8 +514,8 @@ void psnHashEmpty( psnHash           * pHash,
 
 void psnHashFini( psnHash * pHash )
 {
-   VDS_PRE_CONDITION( pHash != NULL );
-   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
+   PSO_PRE_CONDITION( pHash != NULL );
+   PSO_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    pHash->initialized = 0;
 }
@@ -533,16 +533,16 @@ bool psnHashGet( psnHash            * pHash,
    ptrdiff_t* pArray;
    psnHashItem* pItem, *dummy;
    
-   VDS_PRE_CONDITION( pHash    != NULL );
-   VDS_PRE_CONDITION( pKey     != NULL );
-   VDS_PRE_CONDITION( ppItem   != NULL );
-   VDS_PRE_CONDITION( pBucket  != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( keyLength > 0 );
-   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
+   PSO_PRE_CONDITION( pHash    != NULL );
+   PSO_PRE_CONDITION( pKey     != NULL );
+   PSO_PRE_CONDITION( ppItem   != NULL );
+   PSO_PRE_CONDITION( pBucket  != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( keyLength > 0 );
+   PSO_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-   VDS_INV_CONDITION( pArray != NULL );
+   PSO_INV_CONDITION( pArray != NULL );
 
    keyFound = findKey( pHash, pArray, pKey, keyLength, 
                        &pItem, &dummy, pBucket );
@@ -566,13 +566,13 @@ bool psnHashGetFirst( psnHash  * pHash,
    bool SHOULD_NOT_REACHED_THIS = true;
    size_t i;
    
-   VDS_PRE_CONDITION( pHash != NULL );
-   VDS_PRE_CONDITION( pFirstItemOffset != NULL );
+   PSO_PRE_CONDITION( pHash != NULL );
+   PSO_PRE_CONDITION( pFirstItemOffset != NULL );
    
-   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
+   PSO_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-   VDS_INV_CONDITION( pArray != NULL );
+   PSO_INV_CONDITION( pArray != NULL );
 
    if ( pHash->numberOfItems == 0 ) return false;
    
@@ -589,7 +589,7 @@ bool psnHashGetFirst( psnHash  * pHash,
       }
    }
 
-   VDS_POST_CONDITION( SHOULD_NOT_REACHED_THIS == false );
+   PSO_POST_CONDITION( SHOULD_NOT_REACHED_THIS == false );
    
    return false; /* Should never occur */
 }
@@ -608,13 +608,13 @@ bool psnHashGetNext( psnHash  * pHash,
    size_t i;
    psnHashItem* pItem;
    
-   VDS_PRE_CONDITION( pHash != NULL );
-   VDS_PRE_CONDITION( pNextItemOffset != NULL );
-   VDS_PRE_CONDITION( previousOffset != PSN_NULL_OFFSET );
-   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
+   PSO_PRE_CONDITION( pHash != NULL );
+   PSO_PRE_CONDITION( pNextItemOffset != NULL );
+   PSO_PRE_CONDITION( previousOffset != PSN_NULL_OFFSET );
+   PSO_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-   VDS_INV_CONDITION( pArray != NULL );
+   PSO_INV_CONDITION( pArray != NULL );
 
    GET_PTR( pItem, previousOffset, psnHashItem );
    if ( pItem->nextItem != PSN_NULL_OFFSET ) {
@@ -641,7 +641,7 @@ bool psnHashGetNext( psnHash  * pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdsErrors psnHashInit( psnHash           * pHash,
+enum psoErrors psnHashInit( psnHash           * pHash,
                              ptrdiff_t            memObjOffset,
                              size_t               reservedSize, 
                              psnSessionContext * pContext )
@@ -651,8 +651,8 @@ enum vdsErrors psnHashInit( psnHash           * pHash,
    unsigned int i;
    psnMemObject * pMemObject;
    
-   VDS_PRE_CONDITION( pHash != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pHash != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
 
    pHash->numberOfItems = 0;
    pHash->totalDataSizeInBytes = 0;
@@ -692,15 +692,15 @@ enum vdsErrors psnHashInit( psnHash           * pHash,
       pHash->initialized = PSN_HASH_SIGNATURE;
       pHash->memObjOffset = memObjOffset;
    
-      return VDS_OK;
+      return PSO_OK;
    }
    
-   return VDS_NOT_ENOUGH_VDS_MEMORY;
+   return PSO_NOT_ENOUGH_PSO_MEMORY;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdsErrors psnHashInsert( psnHash            * pHash,
+enum psoErrors psnHashInsert( psnHash            * pHash,
                                const unsigned char * pKey,
                                size_t                keyLength,
                                const void          * pData,
@@ -715,23 +715,23 @@ enum vdsErrors psnHashInsert( psnHash            * pHash,
    size_t itemLength;
    psnMemObject * pMemObject;
    
-   VDS_PRE_CONDITION( pHash     != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pKey      != NULL );
-   VDS_PRE_CONDITION( pData     != NULL );
-   VDS_PRE_CONDITION( ppNewItem != NULL );
-   VDS_PRE_CONDITION( keyLength  > 0 );
-   VDS_PRE_CONDITION( dataLength > 0 );
+   PSO_PRE_CONDITION( pHash     != NULL );
+   PSO_PRE_CONDITION( pContext  != NULL );
+   PSO_PRE_CONDITION( pKey      != NULL );
+   PSO_PRE_CONDITION( pData     != NULL );
+   PSO_PRE_CONDITION( ppNewItem != NULL );
+   PSO_PRE_CONDITION( keyLength  > 0 );
+   PSO_PRE_CONDITION( dataLength > 0 );
 
-   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
+   PSO_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-   VDS_INV_CONDITION( pArray != NULL );
+   PSO_INV_CONDITION( pArray != NULL );
 
    keyFound = findKey( pHash, pArray, pKey, keyLength, 
                        &pItem, &previousItem, &bucket );
 
-   if ( keyFound ) return VDS_ITEM_ALREADY_PRESENT;
+   if ( keyFound ) return PSO_ITEM_ALREADY_PRESENT;
 
    GET_PTR( pMemObject, pHash->memObjOffset, psnMemObject );
    
@@ -739,7 +739,7 @@ enum vdsErrors psnHashInsert( psnHash            * pHash,
    /* overheads of the memory allocator */
    itemLength = calculateItemLength( keyLength, dataLength );
    pItem = (psnHashItem*) psnMalloc( pMemObject, itemLength, pContext );
-   if ( pItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
+   if ( pItem == NULL ) return PSO_NOT_ENOUGH_PSO_MEMORY;
    
    pItem->nextItem = PSN_NULL_OFFSET;
    pItem->bucket = bucket;
@@ -767,12 +767,12 @@ enum vdsErrors psnHashInsert( psnHash            * pHash,
    
    *ppNewItem = pItem;
 
-   return VDS_OK;
+   return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdsErrors psnHashInsertAt( psnHash            * pHash,
+enum psoErrors psnHashInsertAt( psnHash            * pHash,
                                  size_t                bucket,
                                  const unsigned char * pKey,
                                  size_t                keyLength,
@@ -787,19 +787,19 @@ enum vdsErrors psnHashInsertAt( psnHash            * pHash,
    psnMemObject * pMemObject;
    ptrdiff_t currentOffset;
    
-   VDS_PRE_CONDITION( pHash     != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pKey      != NULL );
-   VDS_PRE_CONDITION( pData     != NULL );
-   VDS_PRE_CONDITION( ppNewItem != NULL );
-   VDS_PRE_CONDITION( keyLength  > 0 );
-   VDS_PRE_CONDITION( dataLength > 0 );
-   VDS_PRE_CONDITION( bucket < g_psnArrayLengths[pHash->lengthIndex] );
+   PSO_PRE_CONDITION( pHash     != NULL );
+   PSO_PRE_CONDITION( pContext  != NULL );
+   PSO_PRE_CONDITION( pKey      != NULL );
+   PSO_PRE_CONDITION( pData     != NULL );
+   PSO_PRE_CONDITION( ppNewItem != NULL );
+   PSO_PRE_CONDITION( keyLength  > 0 );
+   PSO_PRE_CONDITION( dataLength > 0 );
+   PSO_PRE_CONDITION( bucket < g_psnArrayLengths[pHash->lengthIndex] );
 
-   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
+   PSO_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-   VDS_INV_CONDITION( pArray != NULL );
+   PSO_INV_CONDITION( pArray != NULL );
 
    currentOffset = pArray[bucket];
 
@@ -814,7 +814,7 @@ enum vdsErrors psnHashInsertAt( psnHash            * pHash,
    /* overheads of the memory allocator */
    itemLength = calculateItemLength( keyLength, dataLength );
    pItem = (psnHashItem*) psnMalloc( pMemObject, itemLength, pContext );
-   if ( pItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
+   if ( pItem == NULL ) return PSO_NOT_ENOUGH_PSO_MEMORY;
    
    pItem->nextItem = PSN_NULL_OFFSET;
    pItem->bucket = bucket;
@@ -841,12 +841,12 @@ enum vdsErrors psnHashInsertAt( psnHash            * pHash,
    
    *ppNewItem = pItem;
 
-   return VDS_OK;
+   return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdsErrors psnHashResize( psnHash           * pHash,
+enum psoErrors psnHashResize( psnHash           * pHash,
                                psnSessionContext * pContext )
 {
    int newIndexLength;
@@ -856,14 +856,14 @@ enum vdsErrors psnHashResize( psnHash           * pHash,
    psnHashItem * pItem, * pNewItem;
    psnMemObject * pMemObject;
   
-   VDS_PRE_CONDITION( pHash != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
+   PSO_PRE_CONDITION( pHash != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-   VDS_INV_CONDITION( pArray != NULL );
+   PSO_INV_CONDITION( pArray != NULL );
 
-   if ( pHash->enumResize == PSN_HASH_NO_RESIZE ) return VDS_OK;
+   if ( pHash->enumResize == PSN_HASH_NO_RESIZE ) return PSO_OK;
 
    GET_PTR( pMemObject, pHash->memObjOffset, psnMemObject );
 
@@ -877,7 +877,7 @@ enum vdsErrors psnHashResize( psnHash           * pHash,
    len = g_psnArrayLengths[newIndexLength] * sizeof(ptrdiff_t);
    
    ptr = (ptrdiff_t*) psnMalloc( pMemObject, len, pContext );
-   if ( ptr == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
+   if ( ptr == NULL ) return PSO_NOT_ENOUGH_PSO_MEMORY;
 
    for ( i = 0; i < g_psnArrayLengths[newIndexLength]; ++i) {
       ptr[i] = PSN_NULL_OFFSET;
@@ -924,7 +924,7 @@ enum vdsErrors psnHashResize( psnHash           * pHash,
    
    pHash->enumResize = PSN_HASH_NO_RESIZE;
 
-   return VDS_OK;   
+   return PSO_OK;   
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -935,7 +935,7 @@ enum vdsErrors psnHashResize( psnHash           * pHash,
  * rollback!
  */
 
-enum vdsErrors 
+enum psoErrors 
 psnHashUpdate( psnHash            * pHash,
                 const unsigned char * pKey,
                 size_t                keyLength,
@@ -950,21 +950,21 @@ psnHashUpdate( psnHash            * pHash,
    psnHashItem * pOldItem, * previousItem = NULL, * pNewItem = NULL;
    psnMemObject * pMemObject;
 
-   VDS_PRE_CONDITION( pHash    != NULL );
-   VDS_PRE_CONDITION( pKey     != NULL );
-   VDS_PRE_CONDITION( pData    != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( keyLength  > 0 );
-   VDS_PRE_CONDITION( dataLength > 0 );
-   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
+   PSO_PRE_CONDITION( pHash    != NULL );
+   PSO_PRE_CONDITION( pKey     != NULL );
+   PSO_PRE_CONDITION( pData    != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( keyLength  > 0 );
+   PSO_PRE_CONDITION( dataLength > 0 );
+   PSO_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
 
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-   VDS_INV_CONDITION( pArray != NULL );
+   PSO_INV_CONDITION( pArray != NULL );
 
    keyFound = findKey( pHash, pArray, pKey, keyLength,
                        &pOldItem, &previousItem, &bucket );
 
-   if ( ! keyFound ) return VDS_NO_SUCH_ITEM;
+   if ( ! keyFound ) return PSO_NO_SUCH_ITEM;
 
    newItemLength = calculateItemLength( keyLength, dataLength );
    oldItemLength = calculateItemLength( keyLength, pOldItem->dataLength );
@@ -983,7 +983,7 @@ psnHashUpdate( psnHash            * pHash,
       pMemObject = GET_PTR_FAST( pHash->memObjOffset, psnMemObject );
       pNewItem = (psnHashItem*) 
          psnMalloc( pMemObject, newItemLength, pContext );
-      if ( pNewItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
+      if ( pNewItem == NULL ) return PSO_NOT_ENOUGH_PSO_MEMORY;
       
       /* initialize the new record */
       pNewItem->nextItem = pOldItem->nextItem;
@@ -1009,7 +1009,7 @@ psnHashUpdate( psnHash            * pHash,
       psnFree( pMemObject, (unsigned char*)pOldItem, oldItemLength, pContext );
    }
    
-    return VDS_OK;
+    return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

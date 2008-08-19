@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDS_WATCHDOG_H
-#define VDS_WATCHDOG_H
+#ifndef PSO_WATCHDOG_H
+#define PSO_WATCHDOG_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -47,12 +47,12 @@ extern pscErrMsgHandle g_wdErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define VDS_LOCATION  "VDSLocation"
-#define VDS_WDADDRESS "WatchdogAddress"
-#define VDS_MEMSIZE   "MemorySize"
-#define VDS_USE_LOG   "LogTransaction"
-#define VDS_FILEPERMS "FilePermissions"
-#define VDS_DIRPERMS  "DirectoryPermissions"
+#define PSO_LOCATION  "VDSLocation"
+#define PSO_WDADDRESS "WatchdogAddress"
+#define PSO_MEMSIZE   "MemorySize"
+#define PSO_USE_LOG   "LogTransaction"
+#define PSO_FILEPERMS "FilePermissions"
+#define PSO_DIRPERMS  "DirectoryPermissions"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -80,7 +80,7 @@ struct vdswWatchdog
    
    /// Lock to control synchronization (needed on Win32 only?)
    /// todo - check this + initialize lock
-   // VDS_ProcessLock lock;
+   // PSO_ProcessLock lock;
    
    /// Control word (or status flag) that determines the current status
    /// of the watchdog (running, suspended, shutting down, etc. ).
@@ -175,7 +175,7 @@ void vdswRun();
 
 END_C_DECLS
 
-#endif /* VDS_WATCHDOG_H */
+#endif /* PSO_WATCHDOG_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

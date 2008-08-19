@@ -28,8 +28,8 @@ using namespace std;
 int main( int argc, char *argv[] )
 {
    int errcode = 0;
-   vdsProcess process;
-   vdsSession session;
+   psoProcess process;
+   psoSession session;
    vdsShell   sh(session);
    bool ok;
    
@@ -40,7 +40,7 @@ int main( int argc, char *argv[] )
    };
 
    ok = pscSetSupportedOptions( 1, opts, &optHandle );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) return 1;
 
    errcode = pscValidateUserOptions( optHandle, argc, argv, 1 );
@@ -61,7 +61,7 @@ int main( int argc, char *argv[] )
       process.Init( optArgument );
       session.Init();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Init VDSF failed, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;

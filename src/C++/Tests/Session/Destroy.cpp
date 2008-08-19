@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds>
+#include <photon/photon>
 #include <iostream>
 
 using namespace std;
@@ -25,23 +25,23 @@ using namespace std;
 
 int main( int argc, char * argv[] )
 {
-   vdsProcess process;
-   vdsSession session1, session2;
-   vdsFolder folder1(session1), folder2(session2);
-   vdsQueue  queue1(session1), queue2(session2);
+   psoProcess process;
+   psoSession session1, session2;
+   psoFolder folder1(session1), folder2(session2);
+   psoQueue  queue1(session1), queue2(session2);
    
    string name = "/cpp_session_destroy";
    const char * c_name = "/cpp_session_destroy";
-   vdsObjectDefinition folderDef;
-   vdsObjectDefinition queueDef = { 
-      VDS_QUEUE,
+   psoObjectDefinition folderDef;
+   psoObjectDefinition queueDef = { 
+      PSO_QUEUE,
       1, 
-      { VDS_KEY_VAR_BINARY, 0, 0, 0 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_BINARY, 0, 0, 0 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
 
    memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = VDS_FOLDER;
+   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -53,7 +53,7 @@ int main( int argc, char * argv[] )
       session1.Init();
       session2.Init();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -66,8 +66,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NO_SUCH_OBJECT ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NO_SUCH_OBJECT ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -76,7 +76,7 @@ int main( int argc, char * argv[] )
    try {
       session1.CreateObject( name, &folderDef );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -88,8 +88,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_OBJECT_IS_IN_USE ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_OBJECT_IS_IN_USE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -98,7 +98,7 @@ int main( int argc, char * argv[] )
    try {
       session1.Commit();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -111,8 +111,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_INVALID_OBJECT_NAME ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_OBJECT_NAME ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -124,8 +124,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_INVALID_LENGTH ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -137,8 +137,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_INVALID_LENGTH ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -148,7 +148,7 @@ int main( int argc, char * argv[] )
    try {
       session1.DestroyObject( name );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -160,8 +160,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_OBJECT_IS_DELETED ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_OBJECT_IS_DELETED ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -171,7 +171,7 @@ int main( int argc, char * argv[] )
    try {
       folder2.Open( name );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -184,7 +184,7 @@ int main( int argc, char * argv[] )
    try {
       session1.Commit();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -195,8 +195,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NO_SUCH_OBJECT ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NO_SUCH_OBJECT ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -205,7 +205,7 @@ int main( int argc, char * argv[] )
    try {
       session1.CreateObject( name, &queueDef );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -213,7 +213,7 @@ int main( int argc, char * argv[] )
    try {
       queue1.Open( name );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -224,8 +224,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_OBJECT_IS_IN_USE ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_OBJECT_IS_IN_USE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }

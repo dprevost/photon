@@ -73,7 +73,7 @@ vdswd_SOURCES =          \
         Watchdog.h       \
         wd.c             
 
-libVerifyVDS_a_SOURCES = \
+libVerifyPSO_a_SOURCES = \
         VerifyCommon.h   \
         VerifyFastMap.c  \
         VerifyFolder.c   \

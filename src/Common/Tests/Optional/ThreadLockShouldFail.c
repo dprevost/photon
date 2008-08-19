@@ -57,7 +57,7 @@ pscMemoryFile    g_memFile;
 struct localData *g_data = NULL;
 unsigned long     g_maxTime = 0;
 unsigned long     g_failureRate;
-vdstBarrier       g_barrier;
+psotBarrier       g_barrier;
 bool              g_tryMode = false;
 
 /*
@@ -90,7 +90,7 @@ int worker( void* arg )
    identifier = *((int*)arg);
 
    pscInitTimer( &timer );   
-   vdstBarrierWait( &g_barrier );
+   psotBarrierWait( &g_barrier );
    pscBeginTimer( &timer );
   
    while ( 1 ) {
@@ -150,7 +150,7 @@ int main( int argc, char* argv[] )
    bool ok;
    pscErrorHandler errorHandler;
    int i, *identifier, numThreads;
-   vdstThreadWrap *threadWrap;
+   psotThreadWrap *threadWrap;
    bool foundError = false;
    pscOptionHandle handle;
    char *argument;
@@ -235,13 +235,13 @@ int main( int argc, char* argv[] )
    }
    memset( identifier, 0, numThreads*sizeof(int) );
 
-   threadWrap = (vdstThreadWrap*) malloc(numThreads*sizeof(vdstThreadWrap));
+   threadWrap = (psotThreadWrap*) malloc(numThreads*sizeof(psotThreadWrap));
    if ( threadWrap == NULL ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
-   memset( threadWrap, 0, numThreads*sizeof(vdstThreadWrap) );
+   memset( threadWrap, 0, numThreads*sizeof(psotThreadWrap) );
    
-   errcode = vdstInitBarrier( &g_barrier, numThreads, &errorHandler );
+   errcode = psotInitBarrier( &g_barrier, numThreads, &errorHandler );
    if ( errcode < 0 ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
@@ -268,7 +268,7 @@ int main( int argc, char* argv[] )
    
    for ( i = 0; i < numThreads; ++i ) {
       identifier[i] = i+1;
-      errcode = vdstCreateThread( &threadWrap[i], 
+      errcode = psotCreateThread( &threadWrap[i], 
                                   &worker,
                                   (void*)&identifier[i],
                                   &errorHandler );
@@ -278,7 +278,7 @@ int main( int argc, char* argv[] )
    }
 
    for ( i = 0; i < numThreads; ++i ) {
-      errcode = vdstJoinThread( &threadWrap[i], &errorHandler );
+      errcode = psotJoinThread( &threadWrap[i], &errorHandler );
       if ( errcode < 0 ) {
          ERROR_EXIT( expectedToPass, &errorHandler, ; );
       }
@@ -290,7 +290,7 @@ int main( int argc, char* argv[] )
    }
    
    pscFiniMemoryFile( &g_memFile );
-   vdstFiniBarrier( &g_barrier );
+   psotFiniBarrier( &g_barrier );
    pscFiniErrorHandler( &errorHandler );
    pscFiniErrorDefs();
 

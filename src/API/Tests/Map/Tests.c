@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 #include "API/Map.h"
 
@@ -31,88 +31,88 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE objHandleEdit, objHandleRead1, objHandleRead2;
-   VDS_HANDLE sessionHandleEdit, sessionHandleRead;
+   PSO_HANDLE objHandleEdit, objHandleRead1, objHandleRead2;
+   PSO_HANDLE sessionHandleEdit, sessionHandleRead;
    int errcode;
    const char * key1  = "My Key 1";
    const char * key2  = "My Key 2";
    const char * key3  = "My Key 3";
    const char * data = "My Data";
-   vdsInfo baseline1, baseline2, baseline3, info;
-   vdsObjStatus status;
-   vdsObjectDefinition mapDef = { 
-      VDS_FAST_MAP, 
+   psoInfo baseline1, baseline2, baseline3, info;
+   psoObjStatus status;
+   psoObjectDefinition mapDef = { 
+      PSO_FAST_MAP, 
       1, 
-      { VDS_KEY_VAR_STRING, 0, 4, 10 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 4, 10 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
-   vdsObjectDefinition folderDef = { 
-      VDS_FOLDER, 
+   psoObjectDefinition folderDef = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
 
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandleEdit );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandleEdit );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsInitSession( &sessionHandleRead );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandleRead );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetInfo( sessionHandleEdit, &baseline1 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &baseline1 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsCreateObject( sessionHandleEdit,
+   errcode = psoCreateObject( sessionHandleEdit,
                               "/api_map_tests",
                               strlen("/api_map_tests"),
                               &folderDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetInfo( sessionHandleEdit, &baseline2 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &baseline2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandleEdit,
+   errcode = psoCreateObject( sessionHandleEdit,
                               "/api_map_tests/test",
                               strlen("/api_map_tests/test"),
                               &mapDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCommit( sessionHandleEdit );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandleEdit );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetInfo( sessionHandleEdit, &baseline3 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &baseline3 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -121,17 +121,17 @@ int main( int argc, char * argv[] )
     * Test 1. Make sure that the temporary object is removed when the
     * edits are committed.
     */
-   errcode = vdsFastMapEdit( sessionHandleEdit,
+   errcode = psoFastMapEdit( sessionHandleEdit,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
                              &objHandleEdit );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetInfo( sessionHandleEdit, &info );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &info );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -141,30 +141,30 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapInsert( objHandleEdit,
+   errcode = psoFastMapInsert( objHandleEdit,
                                key1,
                                strlen(key1),
                                data,
                                7 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapClose( objHandleEdit );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandleEdit );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsCommit( sessionHandleEdit );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandleEdit );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetInfo( sessionHandleEdit, &info );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &info );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -174,11 +174,11 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsGetStatus( sessionHandleEdit,
+   errcode = psoGetStatus( sessionHandleEdit,
                            "/api_map_tests/test",
                            strlen("/api_map_tests/test"),
                            &status );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -192,39 +192,39 @@ int main( int argc, char * argv[] )
     * Test 2. Make sure that the temporary object is removed when the
     * edits are rollbacked.
     */
-   errcode = vdsFastMapEdit( sessionHandleEdit,
+   errcode = psoFastMapEdit( sessionHandleEdit,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
                              &objHandleEdit );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapInsert( objHandleEdit,
+   errcode = psoFastMapInsert( objHandleEdit,
                                key2,
                                strlen(key2),
                                data,
                                7 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapClose( objHandleEdit );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandleEdit );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsRollback( sessionHandleEdit );
-   if ( errcode != VDS_OK ) {
+   errcode = psoRollback( sessionHandleEdit );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetInfo( sessionHandleEdit, &info );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &info );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -234,11 +234,11 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsGetStatus( sessionHandleEdit,
+   errcode = psoGetStatus( sessionHandleEdit,
                            "/api_map_tests/test",
                            strlen("/api_map_tests/test"),
                            &status );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -252,56 +252,56 @@ int main( int argc, char * argv[] )
     * Test 3. Same as test 1 but with the map being used (open in read-only
     * mode).
     */
-   errcode = vdsFastMapOpen( sessionHandleRead,
+   errcode = psoFastMapOpen( sessionHandleRead,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
                              &objHandleRead1 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-    errcode = vdsFastMapEdit( sessionHandleEdit,
+    errcode = psoFastMapEdit( sessionHandleEdit,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
                              &objHandleEdit );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapOpen( sessionHandleRead,
+   errcode = psoFastMapOpen( sessionHandleRead,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
                              &objHandleRead2 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapInsert( objHandleEdit,
+   errcode = psoFastMapInsert( objHandleEdit,
                                key2,
                                strlen(key2),
                                data,
                                strlen(data) );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapClose( objHandleEdit );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandleEdit );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsCommit( sessionHandleEdit );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandleEdit );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetInfo( sessionHandleEdit, &info );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &info );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -311,11 +311,11 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsGetStatus( sessionHandleEdit,
+   errcode = psoGetStatus( sessionHandleEdit,
                            "/api_map_tests/test",
                            strlen("/api_map_tests/test"),
                            &status );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -325,13 +325,13 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsFastMapClose( objHandleRead1 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandleRead1 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsGetInfo( sessionHandleEdit, &info );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &info );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -341,13 +341,13 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsCommit( sessionHandleRead );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandleRead );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsGetInfo( sessionHandleEdit, &info );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &info );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -357,13 +357,13 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapClose( objHandleRead2 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandleRead2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsGetInfo( sessionHandleEdit, &info );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &info );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -377,56 +377,56 @@ int main( int argc, char * argv[] )
     * Test 4. Same as test 2 but with the map being used (open in read-only
     * mode).
     */
-   errcode = vdsFastMapOpen( sessionHandleRead,
+   errcode = psoFastMapOpen( sessionHandleRead,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
                              &objHandleRead1 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-    errcode = vdsFastMapEdit( sessionHandleEdit,
+    errcode = psoFastMapEdit( sessionHandleEdit,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
                              &objHandleEdit );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapOpen( sessionHandleRead,
+   errcode = psoFastMapOpen( sessionHandleRead,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
                              &objHandleRead2 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapInsert( objHandleEdit,
+   errcode = psoFastMapInsert( objHandleEdit,
                                key3,
                                strlen(key3),
                                data,
                                strlen(data) );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapClose( objHandleEdit );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandleEdit );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsRollback( sessionHandleEdit );
-   if ( errcode != VDS_OK ) {
+   errcode = psoRollback( sessionHandleEdit );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetInfo( sessionHandleEdit, &info );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &info );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -436,11 +436,11 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsGetStatus( sessionHandleEdit,
+   errcode = psoGetStatus( sessionHandleEdit,
                            "/api_map_tests/test",
                            strlen("/api_map_tests/test"),
                            &status );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -450,25 +450,25 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsFastMapClose( objHandleRead1 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandleRead1 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsCommit( sessionHandleRead );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandleRead );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapClose( objHandleRead2 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandleRead2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsGetInfo( sessionHandleEdit, &info );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &info );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -483,47 +483,47 @@ int main( int argc, char * argv[] )
     * mode. It should fail as the engine only support one transaction per
     * object when edits are concerned.
     */
-   errcode = vdsFastMapEdit( sessionHandleEdit,
+   errcode = psoFastMapEdit( sessionHandleEdit,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
                              &objHandleEdit );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapInsert( objHandleEdit,
+   errcode = psoFastMapInsert( objHandleEdit,
                                key3,
                                strlen(key3),
                                data,
                                strlen(data) );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsDestroyObject( sessionHandleRead,
+   errcode = psoDestroyObject( sessionHandleRead,
                                "/api_map_tests/test",
                                strlen("/api_map_tests/test") );
-   if ( errcode != VDS_OBJECT_IS_IN_USE ) {
+   if ( errcode != PSO_OBJECT_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapClose( objHandleEdit );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandleEdit );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsCommit( sessionHandleEdit );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandleEdit );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetInfo( sessionHandleEdit, &info );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &info );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -538,40 +538,40 @@ int main( int argc, char * argv[] )
     * before the commit). It should fail as the engine only support one 
     * transaction per object for edits.
     */
-   errcode = vdsFastMapOpen( sessionHandleRead,
+   errcode = psoFastMapOpen( sessionHandleRead,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
                              &objHandleRead1 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsDestroyObject( sessionHandleRead,
+   errcode = psoDestroyObject( sessionHandleRead,
                                "/api_map_tests/test",
                                strlen("/api_map_tests/test") );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapEdit( sessionHandleEdit,
+   errcode = psoFastMapEdit( sessionHandleEdit,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
                              &objHandleEdit );
-   if ( errcode != VDS_OBJECT_IS_IN_USE ) {
+   if ( errcode != PSO_OBJECT_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCommit( sessionHandleRead );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandleRead );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetInfo( sessionHandleEdit, &info );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &info );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -581,14 +581,14 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapClose( objHandleRead1 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandleRead1 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetInfo( sessionHandleEdit, &info );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandleEdit, &info );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -598,7 +598,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   vdsExit();
+   psoExit();
 
    return 0;
 }

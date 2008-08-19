@@ -30,11 +30,11 @@ int main()
    psnTxStatus status;
    char * data = "My Data";
    psnQueueItem * pQueueItem;
-   vdsObjectDefinition def = { 
-      VDS_QUEUE, 
+   psoObjectDefinition def = { 
+      PSO_QUEUE, 
       1, 
       { 0, 0, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
    
    pQueue = initQueueTest( expectedToPass, &context );
@@ -67,7 +67,7 @@ int main()
    }
    
    /* Must commit the insert before we attempt to remove */
-   ok = psnQueueGet( pQueue, VDS_FIRST, &pQueueItem, 100, &context );
+   ok = psnQueueGet( pQueue, PSO_FIRST, &pQueueItem, 100, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

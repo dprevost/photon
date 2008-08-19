@@ -26,9 +26,9 @@ pscAcquireProcessLock( pscProcessLock * pLock,
 {
    int isItLocked = -1; /* Value of 0 indicates success */
 
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
-   VDS_PRE_CONDITION( pid_locker != 0 );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pid_locker != 0 );
 
    for (;;) {
       if ( pLock->lock == 0 ) {
@@ -40,7 +40,7 @@ pscAcquireProcessLock( pscProcessLock * pLock,
    }
 
    /* Failure to get the lock should not occured!!! */
-   VDS_POST_CONDITION( isItLocked == 0 );
+   PSO_POST_CONDITION( isItLocked == 0 );
 
    /* There is a "race condition" when saving the pid of the caller
     * this way -> it is possible to have lock out-of-synch with
@@ -58,9 +58,9 @@ pscTryAcquireProcessLock( pscProcessLock * pLock,
 {
    int isItLocked = -1; /* Value of 0 indicates success */
 
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
-   VDS_PRE_CONDITION( pid_locker != 0 );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pid_locker != 0 );
 
    if ( pLock->lock == 0 ) {
       isItLocked = InterlockedExchange( (LPLONG)&pLock->lock, 0xff );
@@ -99,8 +99,8 @@ pscTryAcquireProcessLock( pscProcessLock * pLock,
 inline void
 pscReleaseProcessLock( pscProcessLock * pLock )
 {
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
 
    pLock->pid = 0;
    /* 

@@ -30,8 +30,8 @@ int main()
    psnTxStatus status;
    psnObjectDescriptor* pDescriptor = NULL;
    psnFolderItem folderItem;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
@@ -72,7 +72,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pscGetLastError( &context.errorHandler ) != VDS_OBJECT_ALREADY_PRESENT ) {
+   if ( pscGetLastError( &context.errorHandler ) != PSO_OBJECT_ALREADY_PRESENT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -93,7 +93,7 @@ int main()
    ok = psnFolderGetObject( pFolder1,
                              "test2",
                              5,
-                             VDS_FOLDER,
+                             PSO_FOLDER,
                              &folderItem,
                              &context );
    if ( ok != true ) {
@@ -138,7 +138,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pscGetLastError( &context.errorHandler ) != VDS_FOLDER_IS_NOT_EMPTY ) {
+   if ( pscGetLastError( &context.errorHandler ) != PSO_FOLDER_IS_NOT_EMPTY ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -150,7 +150,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT ) {
+   if ( pscGetLastError( &context.errorHandler ) != PSO_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -158,7 +158,7 @@ int main()
    ok = psnFolderGetObject( pFolder1,
                              "test2/test4",
                              11,
-                             VDS_FOLDER,
+                             PSO_FOLDER,
                              &folderItem,
                              &context );
    if ( ok != true ) {
@@ -196,7 +196,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT ) {
+   if ( pscGetLastError( &context.errorHandler ) != PSO_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -208,7 +208,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_FOLDER ) {
+   if ( pscGetLastError( &context.errorHandler ) != PSO_NO_SUCH_FOLDER ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

@@ -41,14 +41,14 @@ BEGIN_C_DECLS
  * current code creates threads with beginthreadex()).
  *
  * This code might eventually be migrated to the Common directory if 
- * it is used by other parts of vdsf.
+ * it is used by other parts of Photon.
  */
  
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 typedef int (*VDST_THREAD_FUNCTION)(void*);
 
-typedef struct vdstThreadWrap
+typedef struct psotThreadWrap
 {
 #if defined (WIN32)
    /** The WIN32 thread identifier */
@@ -67,16 +67,16 @@ typedef struct vdstThreadWrap
    /** Return code of the thread */
    int returnCode;
    
-} vdstThreadWrap;
+} psotThreadWrap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdstCreateThread( vdstThreadWrap*      pThread, 
+int psotCreateThread( psotThreadWrap*      pThread, 
                       VDST_THREAD_FUNCTION startRoutine,
                       void*                arg,
                       pscErrorHandler*    pError );
 
-int vdstJoinThread( vdstThreadWrap*   pThread, 
+int psotJoinThread( psotThreadWrap*   pThread, 
 //                    void*             retValue,
                     pscErrorHandler* pError);
    

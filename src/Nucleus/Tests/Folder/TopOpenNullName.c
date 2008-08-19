@@ -28,8 +28,8 @@ int main()
    psnSessionContext context;
    bool ok;
    psnFolderItem folderItem;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
@@ -58,7 +58,7 @@ int main()
    ok = psnTopFolderOpenObject( pTopFolder,
                                  NULL,
                                  strlen("Test1"),
-                                 VDS_FOLDER,
+                                 PSO_FOLDER,
                                  &folderItem,
                                  &context );
 

@@ -31,11 +31,11 @@ int main()
    psnObjectDescriptor * pDescriptor;
    psnTxStatus * txItemStatus;
    psnTreeNode * pNode;
-   vdsObjectDefinition mapDef = { 
-      VDS_FAST_MAP, 
+   psoObjectDefinition mapDef = { 
+      PSO_FAST_MAP, 
       1, 
-      { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 1, 100 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } } 
    };
 
    pFolder = initFolderTest( expectedToPass, &context );
@@ -62,7 +62,7 @@ int main()
    ok = psnFolderEditObject( pFolder,
                               "test2",
                               5,
-                              VDS_FAST_MAP,
+                              PSO_FAST_MAP,
                               &folderItem,
                               &context );
    if ( ok != true ) {
@@ -85,13 +85,13 @@ int main()
    ok = psnFolderEditObject( pFolder,
                               "test3",
                               5,
-                              VDS_FAST_MAP,
+                              PSO_FAST_MAP,
                               &folderItem,
                               &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pscGetLastError( &context.errorHandler ) != VDS_NO_SUCH_OBJECT ) {
+   if ( pscGetLastError( &context.errorHandler ) != PSO_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
@@ -110,7 +110,7 @@ int main()
    ok = psnFolderEditObject( pFolder,
                               "test4",
                               5,
-                              VDS_FAST_MAP,
+                              PSO_FAST_MAP,
                               &folderItem,
                               &context );
    if ( ok != true ) {

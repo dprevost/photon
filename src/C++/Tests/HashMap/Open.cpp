@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds>
+#include <photon/photon>
 #include <iostream>
 
 using namespace std;
@@ -25,22 +25,22 @@ using namespace std;
 
 int main( int argc, char * argv[] )
 {
-   vdsProcess process;
-   vdsSession session1, session2;
-   vdsHashMap map1(session1), map2(session2);
+   psoProcess process;
+   psoSession session1, session2;
+   psoHashMap map1(session1), map2(session2);
    string fname = "/cpp_hashmap_open";
    string hname = fname + "/test";
    const char * c_name = "/cpp_hashmap_open/test";
-   vdsObjectDefinition folderDef;
-   vdsObjectDefinition mapDef = { 
-      VDS_HASH_MAP,
+   psoObjectDefinition folderDef;
+   psoObjectDefinition mapDef = { 
+      PSO_HASH_MAP,
       1, 
-      { VDS_KEY_VAR_BINARY, 0, 1, 20 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_BINARY, 0, 1, 20 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
 
    memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = VDS_FOLDER;
+   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -54,7 +54,7 @@ int main( int argc, char * argv[] )
       session1.CreateObject( fname, &folderDef );
       session1.CreateObject( hname, &mapDef );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -68,8 +68,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_INVALID_OBJECT_NAME ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_OBJECT_NAME ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -81,8 +81,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_INVALID_LENGTH ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -94,8 +94,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_WRONG_OBJECT_TYPE ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_WRONG_OBJECT_TYPE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -107,8 +107,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_INVALID_LENGTH ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -118,7 +118,7 @@ int main( int argc, char * argv[] )
    try {
       map1.Open( hname );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -128,8 +128,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_OBJECT_IS_IN_USE ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_OBJECT_IS_IN_USE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -139,7 +139,7 @@ int main( int argc, char * argv[] )
       session1.Commit();
       map2.Open( c_name, strlen(c_name) );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

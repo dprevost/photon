@@ -24,7 +24,7 @@ const char * outQueueName = "Queue Example\\Output Queue";
 const char * folderName   = "Queue Example";
 const char * controlName  = "Queue Example/Queue Control";
 
-VDS_HANDLE session = NULL, inQueue = NULL, outQueue = NULL, control = NULL;
+PSO_HANDLE session = NULL, inQueue = NULL, outQueue = NULL, control = NULL;
 
 /* Keys for the control */
 const char * workProcessKey = "Work Queue";

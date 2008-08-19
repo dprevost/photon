@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds>
+#include <photon/photon>
 #include <iostream>
 
 using namespace std;
@@ -25,24 +25,24 @@ using namespace std;
 
 int main( int argc, char * argv[] )
 {
-   vdsProcess process;
-   vdsSession session;
-   vdsLifo queue(session);
+   psoProcess process;
+   psoSession session;
+   psoLifo queue(session);
    string fname = "/cpp_queue_getfirst";
    string qname = fname + "/test";
    const char * data1 = "My Data1";
    char buffer[50];
    size_t length;
-   vdsObjectDefinition folderDef;
-   vdsObjectDefinition queueDef = { 
-      VDS_LIFO,
+   psoObjectDefinition folderDef;
+   psoObjectDefinition queueDef = { 
+      PSO_LIFO,
       1, 
-      { VDS_KEY_VAR_BINARY, 0, 0, 0 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_BINARY, 0, 0, 0 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
 
    memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = VDS_FOLDER;
+   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -57,7 +57,7 @@ int main( int argc, char * argv[] )
       queue.Open( qname );
       queue.Push( data1, strlen(data1) );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -71,8 +71,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NULL_POINTER ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -84,8 +84,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_INVALID_LENGTH ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -97,8 +97,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NULL_POINTER ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -108,7 +108,7 @@ int main( int argc, char * argv[] )
    try {
       queue.GetFirst( buffer, 50, &length );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

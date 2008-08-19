@@ -27,7 +27,7 @@ int main()
    psnFolder * pFolder;
    psnSessionContext context;
  
-   vdsObjectDefinition def = { 
+   psoObjectDefinition def = { 
       0, 
       0, 
       { 0, 0, 0, 0}, 

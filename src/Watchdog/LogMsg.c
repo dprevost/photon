@@ -27,8 +27,8 @@ int vdswLogMsgInit( vdswLogMsg * pLog,
 {
    int len = strlen( progName );
 
-   VDS_PRE_CONDITION( pLog     != NULL );
-   VDS_PRE_CONDITION( progName != NULL );
+   PSO_PRE_CONDITION( pLog     != NULL );
+   PSO_PRE_CONDITION( progName != NULL );
 
    pLog->useLog = false;
 #if defined ( WIN32 )
@@ -46,7 +46,7 @@ int vdswLogMsgInit( vdswLogMsg * pLog,
 
 void vdswLogMsgFini( vdswLogMsg * pLog )
 {
-   VDS_PRE_CONDITION( pLog != NULL );
+   PSO_PRE_CONDITION( pLog != NULL );
 
    if (pLog->useLog) {
 #if defined ( WIN32 )
@@ -74,8 +74,8 @@ int vdswLogMsgInstall( vdswLogMsg * pLog,
    char buffer[MAX_PATH]; 
    int eventType;
    
-   VDS_PRE_CONDITION( progName    != NULL );
-   VDS_PRE_CONDITION( msgPathName != NULL );
+   PSO_PRE_CONDITION( progName    != NULL );
+   PSO_PRE_CONDITION( msgPathName != NULL );
 
    // Install a new subkey to the EventLog service (under "Application")
    sprintf( buffer, 
@@ -153,16 +153,16 @@ void vdswSendMessage( vdswLogMsg         * pLog,
                       const char         * format, 
                       ... )
 {
-   char message[VDS_MAX_MSG_LOG];
+   char message[PSO_MAX_MSG_LOG];
    va_list args;
 
-   VDS_PRE_CONDITION( pLog   != NULL );
-   VDS_PRE_CONDITION( format != NULL );
+   PSO_PRE_CONDITION( pLog   != NULL );
+   PSO_PRE_CONDITION( format != NULL );
 
    va_start( args, format );
 #if HAVE_VSNPRINTF  /* safer but does not seem to be present on all 
                        platforms */
-   vsnprintf( message, VDS_MAX_MSG_LOG, format, args );
+   vsnprintf( message, PSO_MAX_MSG_LOG, format, args );
 #else
    vsprintf ( message, format, args );
 #endif
@@ -205,7 +205,7 @@ void vdswSendMessage( vdswLogMsg         * pLog,
 
 void vdswStartUsingLogger( vdswLogMsg * pLog )
 {
-   VDS_PRE_CONDITION( pLog != NULL );
+   PSO_PRE_CONDITION( pLog != NULL );
 
    pLog->useLog = true;
 #if defined ( WIN32 )
@@ -223,7 +223,7 @@ int vdswLogMsgUninstall( vdswLogMsg * pLog, const char * progName )
    HKEY hKey; 
    char buffer[MAX_PATH]; 
 
-   VDS_PRE_CONDITION( progName != NULL );
+   PSO_PRE_CONDITION( progName != NULL );
 
    /*
     * To delete a registry key, you first need to open the key immediately

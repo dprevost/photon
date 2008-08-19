@@ -33,12 +33,12 @@ JNIEXPORT jlong JNICALL Java_org_vdsf_VdsSession_initSession (
    int errcode;
    jclass exc;
    char msg[100];
-   VDS_HANDLE handle;
+   PSO_HANDLE handle;
    
    errcode = vdsInitSession( &handle );
 
    // Normal return
-   if ( errcode == VDS_OK ) return (jlong) handle;
+   if ( errcode == PSO_OK ) return (jlong) handle;
    
    // Throw a java exception
 

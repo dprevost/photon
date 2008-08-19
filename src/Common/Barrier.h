@@ -20,15 +20,15 @@
 
 #if defined (WIN32)
 #  include "Common/arch/Barrier-win32.h"
-#elif defined (VDS_USE_I386_GCC)
+#elif defined (PSO_USE_I386_GCC)
 #  include "Common/arch/Barrier-i386-gcc.h"
-#elif defined (VDS_USE_X86_64_GCC)
+#elif defined (PSO_USE_X86_64_GCC)
 #  include "Common/arch/Barrier-x86_64-gcc.h"
-#elif defined (VDS_USE_SPARC_GCC)
+#elif defined (PSO_USE_SPARC_GCC)
 #  include "Common/arch/Barrier-sparc-gcc.h"
-#elif defined (VDS_USE_PPC_GCC)
+#elif defined (PSO_USE_PPC_GCC)
 #  include "Common/arch/Barrier-ppc-gcc.h"
-#elif defined(VDS_USE_PPC_XLC)
+#elif defined(PSO_USE_PPC_XLC)
 #  include "Common/arch/Barrier-ppc-xlc.h"
 #else
 #  error "Not implemented yet!"

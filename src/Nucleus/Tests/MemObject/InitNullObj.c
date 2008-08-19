@@ -26,7 +26,7 @@ int main()
 {
 #if defined(USE_DBC)
    psnMemObject* pObj;
-   vdstObjDummy  *pDummy;
+   psotObjDummy  *pDummy;
    psnSessionContext context;
    
    pDummy = initMemObjTest( expectedToPass, &context );

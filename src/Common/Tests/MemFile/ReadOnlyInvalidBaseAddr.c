@@ -50,7 +50,7 @@ int main()
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
-   mem.baseAddr = VDS_MAP_FAILED;
+   mem.baseAddr = PSO_MAP_FAILED;
    pscSetReadOnly( &mem, &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );

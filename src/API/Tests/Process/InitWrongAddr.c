@@ -28,7 +28,7 @@ int main()
    /* try something junk... */   
    errcode = psaProcessInit( &process, "abcdef" );
 
-   if ( errcode != VDS_INVALID_WATCHDOG_ADDRESS ) {
+   if ( errcode != PSO_INVALID_WATCHDOG_ADDRESS ) {
       fprintf( stderr, "err: %d\n", errcode );
       return -1;
    }

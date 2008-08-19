@@ -72,7 +72,7 @@ typedef struct psnSessionContext psnSessionContext;
 static inline 
 void psnInitSessionContext( psnSessionContext * pContext )
 {
-   VDS_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
    
    pscInitErrorHandler( &pContext->errorHandler );
    
@@ -89,9 +89,9 @@ static inline
 void psnSessionAddLock( psnSessionContext * pSession,
                          ptrdiff_t            memObjectOffset )
 {
-   VDS_PRE_CONDITION( pSession != NULL );
-   VDS_PRE_CONDITION( *pSession->numLocks < PSN_MAX_LOCK_DEPTH );
-   VDS_PRE_CONDITION( memObjectOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pSession != NULL );
+   PSO_PRE_CONDITION( *pSession->numLocks < PSN_MAX_LOCK_DEPTH );
+   PSO_PRE_CONDITION( memObjectOffset != PSN_NULL_OFFSET );
    
    pSession->lockOffsets[*pSession->numLocks] = memObjectOffset;
    (*pSession->numLocks)++;
@@ -105,9 +105,9 @@ void psnSessionRemoveLock( psnSessionContext * pSession,
 {
    int i, j, n;
    
-   VDS_PRE_CONDITION( pSession != NULL );
-   VDS_PRE_CONDITION( *pSession->numLocks > 0 );
-   VDS_PRE_CONDITION( memObjectOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pSession != NULL );
+   PSO_PRE_CONDITION( *pSession->numLocks > 0 );
+   PSO_PRE_CONDITION( memObjectOffset != PSN_NULL_OFFSET );
    
    n = *pSession->numLocks;
 
@@ -124,7 +124,7 @@ void psnSessionRemoveLock( psnSessionContext * pSession,
    }
    
    /* Will fail if pMemObject was not in the array */
-   VDS_POST_CONDITION( n == (*pSession->numLocks + 1) );
+   PSO_POST_CONDITION( n == (*pSession->numLocks + 1) );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

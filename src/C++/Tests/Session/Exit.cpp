@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds>
+#include <photon/photon>
 #include <iostream>
 
 using namespace std;
@@ -40,15 +40,15 @@ using namespace std;
 
 int main( int argc, char * argv[] )
 {
-   vdsProcess process;
-   vdsSession * session = NULL;
-   vdsFolder * folder = NULL;
+   psoProcess process;
+   psoSession * session = NULL;
+   psoFolder * folder = NULL;
    string name = "/cpp_session_exit";
-   vdsObjStatus status;
-   vdsObjectDefinition folderDef;
+   psoObjStatus status;
+   psoObjectDefinition folderDef;
 
    memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = VDS_FOLDER;
+   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -58,15 +58,15 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
    }
 
    try {
-      session = new vdsSession();
-      folder = new vdsFolder(*session);
+      session = new psoSession();
+      folder = new psoFolder(*session);
       
       session->Init();
       session->CreateObject( name, &folderDef );
@@ -74,7 +74,7 @@ int main( int argc, char * argv[] )
       
       delete session;
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -87,39 +87,39 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_SESSION_IS_TERMINATED ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_SESSION_IS_TERMINATED ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
    }
    
 #if 0   
-   VDS_HANDLE sessionHandle, objHandle;
+   PSO_HANDLE sessionHandle, objHandle;
    int errcode;
    
 
    errcode = vdsExitSession( sessionHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* */
    errcode = vdsCreateObject( sessionHandle, "test1", 5, &folderDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = vdsExitSession( sessionHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

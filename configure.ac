@@ -394,49 +394,49 @@ arch_include=empty
 
 case $ac_cv_compiler_name in
 GCC)
-  AC_DEFINE(VDS_USE_GCC, 1, Using gcc)
+  AC_DEFINE(PSO_USE_GCC, 1, Using gcc)
   case $host_cpu in
   i386 | i486 | i586 | i686 )
     arch_include=ok 
-    AC_DEFINE(VDS_USE_I386_GCC, 1, Using a gcc-like compiler on a i386) ;;
+    AC_DEFINE(PSO_USE_I386_GCC, 1, Using a gcc-like compiler on a i386) ;;
   x86_64)
     arch_include=ok 
-    AC_DEFINE(VDS_USE_X86_64_GCC, 1, Using a gcc-like compiler on a x86_64) ;;
+    AC_DEFINE(PSO_USE_X86_64_GCC, 1, Using a gcc-like compiler on a x86_64) ;;
   #alpha)          ;;
   sparc)
     arch_include=ok
-    AC_DEFINE(VDS_USE_SPARC_GCC, 1, Using a gcc-like compiler on a sparc) ;;
+    AC_DEFINE(PSO_USE_SPARC_GCC, 1, Using a gcc-like compiler on a sparc) ;;
   #sparc64)      ;;
   powerpc)
     arch_include=ok
-    AC_DEFINE(VDS_USE_PPC_GCC, 1, Using a gcc-like compiler on a PowerPC) ;;
+    AC_DEFINE(PSO_USE_PPC_GCC, 1, Using a gcc-like compiler on a PowerPC) ;;
   esac ;;
 ICC)
-  AC_DEFINE(VDS_USE_ICC, 1, Using icc)
+  AC_DEFINE(PSO_USE_ICC, 1, Using icc)
   # Intel compiler on x86 (32 and 64 bits) understands gcc inline
   case $host_cpu in
   i386 | i486 | i586 | i686 )
     arch_include=ok 
-    AC_DEFINE(VDS_USE_I386_GCC, 1, Using a gcc-like compiler on a i386) ;;
+    AC_DEFINE(PSO_USE_I386_GCC, 1, Using a gcc-like compiler on a i386) ;;
   x86_64)
     arch_include=ok 
-    AC_DEFINE(VDS_USE_X86_64_GCC, 1, Using a gcc-like compiler on a x86_64) ;;
+    AC_DEFINE(PSO_USE_X86_64_GCC, 1, Using a gcc-like compiler on a x86_64) ;;
   esac ;;
 XLC)
-  AC_DEFINE(VDS_USE_XLC, 1, Using xlc)
+  AC_DEFINE(PSO_USE_XLC, 1, Using xlc)
   if test "$host_cpu" = "ppc"; then
     arch_include=ok
-    AC_DEFINE(VDS_USE_PPC_XLC, 1, Using the xlc compiler on a Power PC)
+    AC_DEFINE(PSO_USE_PPC_XLC, 1, Using the xlc compiler on a Power PC)
   fi ;;
 PathScale)
-  AC_DEFINE(VDS_USE_PATHSCALE, 1, Using Pathscale)
+  AC_DEFINE(PSO_USE_PATHSCALE, 1, Using Pathscale)
   case $host_cpu in
   i386 | i486 | i586 | i686 )
     arch_include=ok 
-    AC_DEFINE(VDS_USE_I386_GCC, 1, Using a gcc-like compiler on a i386) ;;
+    AC_DEFINE(PSO_USE_I386_GCC, 1, Using a gcc-like compiler on a i386) ;;
   x86_64)
     arch_include=ok 
-    AC_DEFINE(VDS_USE_X86_64_GCC, 1, Using a gcc-like compiler on a x86_64) ;;
+    AC_DEFINE(PSO_USE_X86_64_GCC, 1, Using a gcc-like compiler on a x86_64) ;;
   esac ;;
 *) ;;
 esac

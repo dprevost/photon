@@ -24,8 +24,8 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdsErrors errcode;
-   vdstObjDummy *pDummy;
+   psoErrors errcode;
+   psotObjDummy *pDummy;
    psnSessionContext context;
    
    pDummy = initMemObjTest( expectedToPass, &context );
@@ -34,12 +34,12 @@ int main()
                                 PSN_IDENT_FOLDER,
                                 &pDummy->blockGroup,
                                 1 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = psnMemObjectFini( &pDummy->memObject, PSN_ALLOC_ANY, &context );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

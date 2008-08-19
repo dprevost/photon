@@ -110,7 +110,7 @@ end if
 
 tmpDir = objShell.Environment.item("TMP")
 tmpDir = objShell.ExpandEnvironmentStrings(tmpDir)
-tmpDir = tmpDir + "\vdsf_session"
+tmpDir = tmpDir + "\photon_session"
 
 if (fso.FolderExists(tmpDir)) Then
    fso.DeleteFolder(tmpDir)

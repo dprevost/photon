@@ -1,29 +1,29 @@
-.TH "vdsHashMap" 3 "25 Jun 2008" "Version 0.2" "vdsf C++ API" \" -*- nroff -*-
+.TH "psoHashMap" 3 "25 Jun 2008" "Version 0.2" "vdsf C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-vdsHashMap \- 
+psoHashMap \- 
 .SH SYNOPSIS
 .br
 .PP
 .SH "Detailed Description"
 .PP 
-Definition at line 36 of file vdsHashMap.
+Definition at line 36 of file psoHashMap.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBvdsHashMap\fP (vdsSession &session)"
+.RI "\fBpsoHashMap\fP (psoSession &session)"
 .br
 .ti -1c
-.RI "virtual \fB~vdsHashMap\fP ()"
+.RI "virtual \fB~psoHashMap\fP ()"
 .br
 .ti -1c
 .RI "void \fBClose\fP ()"
 .br
 .RI "\fIClose a hash map. \fP"
 .ti -1c
-.RI "void \fBDefinition\fP (vdsObjectDefinition **definition)"
+.RI "void \fBDefinition\fP (psoObjectDefinition **definition)"
 .br
 .RI "\fIRetrieve the data definition of the hash map. \fP"
 .ti -1c
@@ -49,17 +49,17 @@ Definition at line 36 of file vdsHashMap.
 .ti -1c
 .RI "void \fBOpen\fP (const std::string &hashMapName)"
 .br
-.RI "\fIOpen an existing hash map (see vdsSession::CreateObject to create a new object). \fP"
+.RI "\fIOpen an existing hash map (see psoSession::CreateObject to create a new object). \fP"
 .ti -1c
 .RI "void \fBOpen\fP (const char *hashMapName, size_t nameLengthInBytes)"
 .br
-.RI "\fIOpen an existing hash map (see vdsSession::CreateObject to create a new object). \fP"
+.RI "\fIOpen an existing hash map (see psoSession::CreateObject to create a new object). \fP"
 .ti -1c
 .RI "void \fBReplace\fP (const void *key, size_t keyLength, const void *data, size_t dataLength)"
 .br
 .RI "\fIReplace a data element in the hash map. \fP"
 .ti -1c
-.RI "void \fBStatus\fP (vdsObjStatus *pStatus)"
+.RI "void \fBStatus\fP (psoObjStatus *pStatus)"
 .br
 .RI "\fIReturn the status of the hash map. \fP"
 .in -1c
@@ -67,23 +67,23 @@ Definition at line 36 of file vdsHashMap.
 
 .in +1c
 .ti -1c
-.RI "VDS_HANDLE \fBm_objectHandle\fP"
+.RI "PSO_HANDLE \fBm_objectHandle\fP"
 .br
 .RI "\fIPointer to the psaHashMap struct. \fP"
 .ti -1c
-.RI "VDS_HANDLE & \fBm_sessionHandle\fP"
+.RI "PSO_HANDLE & \fBm_sessionHandle\fP"
 .br
 .RI "\fIReference to the psaSession struct (we belong to). \fP"
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "vdsHashMap::vdsHashMap (vdsSession & session)"
+.SS "psoHashMap::psoHashMap (psoSession & session)"
 .PP
-.SS "virtual vdsHashMap::~vdsHashMap ()\fC [virtual]\fP"
+.SS "virtual psoHashMap::~psoHashMap ()\fC [virtual]\fP"
 .PP
 .SH "Member Function Documentation"
 .PP 
-.SS "void vdsHashMap::Close ()"
+.SS "void psoHashMap::Close ()"
 .PP
 Close a hash map. 
 .PP
@@ -91,16 +91,16 @@ This function terminates the current access to the hash map in shared memory (th
 .PP
 \fBWarning:\fP
 .RS 4
-Closing an object does not automatically commit or rollback data items that were inserted or removed. You still must use either vdsSession::Commit or vdsSession::Rollback to end the current unit of work.
+Closing an object does not automatically commit or rollback data items that were inserted or removed. You still must use either psoSession::Commit or psoSession::Rollback to end the current unit of work.
 .RE
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsHashMap::Definition (vdsObjectDefinition ** definition)"
+.SS "void psoHashMap::Definition (psoObjectDefinition ** definition)"
 .PP
 Retrieve the data definition of the hash map. 
 .PP
@@ -116,17 +116,17 @@ This function allocates a buffer to hold the definition (using malloc()). You mu
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsHashMap::Delete (const void * key, size_t keyLength)"
+.SS "void psoHashMap::Delete (const void * key, size_t keyLength)"
 .PP
 Remove the data item identified by the given key from the hash map. 
 .PP
 Data items which were added by another session and are not yet committed will not be seen by this function and cannot be removed. Likewise, destroyed data items (even if not yet committed) are invisible.
 .PP
-The removals only become permanent after a call to vdsSession::Commit.
+The removals only become permanent after a call to psoSession::Commit.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -137,11 +137,11 @@ The removals only become permanent after a call to vdsSession::Commit.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsHashMap::Get (const void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "void psoHashMap::Get (const void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * returnedLength)"
 .PP
 Retrieve the data item identified by the given key from the hash map. 
 .PP
@@ -162,11 +162,11 @@ Data items which were added by another session and are not yet committed will no
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "int vdsHashMap::GetFirst (void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
+.SS "int psoHashMap::GetFirst (void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
 .PP
 Iterate through the hash map. 
 .PP
@@ -196,17 +196,17 @@ Data items retrieved this way will not be sorted.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "int vdsHashMap::GetNext (void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
+.SS "int psoHashMap::GetNext (void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
 .PP
 Iterate through the hash map. 
 .PP
 Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
 .PP
-Evidently, you must call \fBvdsHashMap::GetFirst\fP to initialize the iterator. Not so evident - calling \fBvdsHashMap::Get\fP will reset the iteration to the data item retrieved by this function (they use the same internal storage). If this cause a problem, please let us know.
+Evidently, you must call \fBpsoHashMap::GetFirst\fP to initialize the iterator. Not so evident - calling \fBpsoHashMap::Get\fP will reset the iteration to the data item retrieved by this function (they use the same internal storage). If this cause a problem, please let us know.
 .PP
 Data items retrieved this way will not be sorted.
 .PP
@@ -232,15 +232,15 @@ Data items retrieved this way will not be sorted.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsHashMap::Insert (const void * key, size_t keyLength, const void * data, size_t dataLength)"
+.SS "void psoHashMap::Insert (const void * key, size_t keyLength, const void * data, size_t dataLength)"
 .PP
 Insert a data element in the hash map. 
 .PP
-The additions only become permanent after a call to vdsSession::Commit.
+The additions only become permanent after a call to psoSession::Commit.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -255,13 +255,13 @@ The additions only become permanent after a call to vdsSession::Commit.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsHashMap::Open (const char * hashMapName, size_t nameLengthInBytes)"
+.SS "void psoHashMap::Open (const char * hashMapName, size_t nameLengthInBytes)"
 .PP
-Open an existing hash map (see vdsSession::CreateObject to create a new object). 
+Open an existing hash map (see psoSession::CreateObject to create a new object). 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -272,13 +272,13 @@ Open an existing hash map (see vdsSession::CreateObject to create a new object).
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsHashMap::Open (const std::string & hashMapName)"
+.SS "void psoHashMap::Open (const std::string & hashMapName)"
 .PP
-Open an existing hash map (see vdsSession::CreateObject to create a new object). 
+Open an existing hash map (see psoSession::CreateObject to create a new object). 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -287,15 +287,15 @@ Open an existing hash map (see vdsSession::CreateObject to create a new object).
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsHashMap::Replace (const void * key, size_t keyLength, const void * data, size_t dataLength)"
+.SS "void psoHashMap::Replace (const void * key, size_t keyLength, const void * data, size_t dataLength)"
 .PP
 Replace a data element in the hash map. 
 .PP
-The replacements only become permanent after a call to vdsSession::Commit.
+The replacements only become permanent after a call to psoSession::Commit.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -310,11 +310,11 @@ The replacements only become permanent after a call to vdsSession::Commit.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsHashMap::Status (vdsObjStatus * pStatus)"
+.SS "void psoHashMap::Status (psoObjStatus * pStatus)"
 .PP
 Return the status of the hash map. 
 .PP
@@ -325,22 +325,22 @@ Return the status of the hash map.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
 .SH "Member Data Documentation"
 .PP 
-.SS "VDS_HANDLE \fBvdsHashMap::m_objectHandle\fP\fC [private]\fP"
+.SS "PSO_HANDLE \fBpsoHashMap::m_objectHandle\fP\fC [private]\fP"
 .PP
 Pointer to the psaHashMap struct. 
 .PP
-Definition at line 251 of file vdsHashMap.
-.SS "VDS_HANDLE& \fBvdsHashMap::m_sessionHandle\fP\fC [private]\fP"
+Definition at line 251 of file psoHashMap.
+.SS "PSO_HANDLE& \fBpsoHashMap::m_sessionHandle\fP\fC [private]\fP"
 .PP
 Reference to the psaSession struct (we belong to). 
 .PP
-Definition at line 254 of file vdsHashMap.
+Definition at line 254 of file psoHashMap.
 
 .SH "Author"
 .PP 

@@ -31,8 +31,8 @@
  * \param[in] pGroup  A pointer to the psnBlockGroup struct.
  * \param[in] numBlocks The initial number of Blocks allocated to this object.
  *
- * \retval VDS_OK  No error found
- * \retval VDS_NOT_ENOUGH_RESOURCES Something went wrong in allocating 
+ * \retval PSO_OK  No error found
+ * \retval PSO_NOT_ENOUGH_RESOURCES Something went wrong in allocating 
  *                                  resources for the Process Lock.
  *
  * \pre \em pMemObj cannot be NULL.
@@ -42,7 +42,7 @@
  * \pre \em numBlocks must be greater than zero.
  */
 
-enum vdsErrors 
+enum psoErrors 
 psnMemObjectInit( psnMemObject   * pMemObj,
                    psnMemObjIdent   objType,
                    psnBlockGroup  * pGroup,
@@ -50,22 +50,22 @@ psnMemObjectInit( psnMemObject   * pMemObj,
 {
    bool ok;
    
-   VDS_PRE_CONDITION( pMemObj != NULL );
-   VDS_PRE_CONDITION( pGroup  != NULL );
-   VDS_PRE_CONDITION( numBlocks > 0 );
-   VDS_PRE_CONDITION( objType > PSN_IDENT_FIRST && 
+   PSO_PRE_CONDITION( pMemObj != NULL );
+   PSO_PRE_CONDITION( pGroup  != NULL );
+   PSO_PRE_CONDITION( numBlocks > 0 );
+   PSO_PRE_CONDITION( objType > PSN_IDENT_FIRST && 
                       objType < PSN_IDENT_LAST );
 
    /* In case InitProcessLock fails */
    pMemObj->objType = PSN_IDENT_CLEAR;
    
    ok =  pscInitProcessLock( &pMemObj->lock );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    /*
     * The only possible error is a lack of resources when using semaphores, 
     * i.e. when the number of semaphores is greater than SEM_VALUE_MAX.
     */
-   if ( ! ok ) return VDS_NOT_ENOUGH_RESOURCES;
+   if ( ! ok ) return PSO_NOT_ENOUGH_RESOURCES;
    
    pMemObj->objType = objType;
    psnLinkedListInit( &pMemObj->listBlockGroup );
@@ -82,7 +82,7 @@ psnMemObjectInit( psnMemObject   * pMemObj,
                            
    pMemObj->totalBlocks = numBlocks;
    
-   return VDS_OK;
+   return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -101,7 +101,7 @@ psnMemObjectInit( psnMemObject   * pMemObj,
  *          PSN_IDENT_LAST).
  */
 
-enum vdsErrors 
+enum psoErrors 
 psnMemObjectFini( psnMemObject      * pMemObj,
                    psnAllocTypeEnum    allocType,
                    psnSessionContext * pContext )
@@ -110,16 +110,16 @@ psnMemObjectFini( psnMemObject      * pMemObj,
    bool ok;
    psnBlockGroup* pGroup;
 
-   VDS_PRE_CONDITION( pMemObj  != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pMemObj->objType > PSN_IDENT_FIRST && 
+   PSO_PRE_CONDITION( pMemObj  != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pMemObj->objType > PSN_IDENT_FIRST && 
                       pMemObj->objType < PSN_IDENT_LAST );
 
    /*
     * We retrieve the first node - and leave it alone.
     */
    ok = psnLinkedListGetFirst( &pMemObj->listBlockGroup, &firstNode );
-   VDS_PRE_CONDITION( ok );
+   PSO_PRE_CONDITION( ok );
 
    while ( psnLinkedListGetFirst(&pMemObj->listBlockGroup, &dummy) ) {
       pGroup = (psnBlockGroup*)( 
@@ -139,7 +139,7 @@ psnMemObjectFini( psnMemObject      * pMemObj,
    psnLinkedListFini( &pMemObj->listBlockGroup );
 
    if ( ! pscFiniProcessLock( &pMemObj->lock ) ) {
-      return VDS_SEM_DESTROY_ERROR;
+      return PSO_SEM_DESTROY_ERROR;
    }
    
    pGroup = (psnBlockGroup*)(
@@ -154,7 +154,7 @@ psnMemObjectFini( psnMemObject      * pMemObj,
                    pGroup->numBlocks,
                    pContext );
    
-   return VDS_OK;
+   return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -171,9 +171,9 @@ unsigned char* psnMalloc( psnMemObject*      pMemObj,
    size_t requestedBlocks, i;
    bool okGroup, okChunk;
    
-   VDS_PRE_CONDITION( pMemObj  != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( numBytes > 0 );
+   PSO_PRE_CONDITION( pMemObj  != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( numBytes > 0 );
    
    requestedChunks = (numBytes-1)/PSN_ALLOCATION_UNIT + 1;
    
@@ -277,7 +277,7 @@ unsigned char* psnMalloc( psnMemObject*      pMemObj,
        * to satisfy the original request.
        */
       if ( pscGetLastError( &pContext->errorHandler ) == 
-         VDS_NOT_ENOUGH_VDS_MEMORY ) {
+         PSO_NOT_ENOUGH_PSO_MEMORY ) {
 
          i = requestedBlocks;
          currentGroup = (psnBlockGroup*) psnMallocBlocks( pContext->pAllocator,
@@ -347,8 +347,8 @@ unsigned char* psnMalloc( psnMemObject*      pMemObj,
     * blocks.
     */
    pscSetError( &pContext->errorHandler, 
-                 g_vdsErrorHandle, 
-                 VDS_NOT_ENOUGH_VDS_MEMORY );
+                 g_psoErrorHandle, 
+                 PSO_NOT_ENOUGH_PSO_MEMORY );
 
    return NULL;
 }
@@ -369,10 +369,10 @@ void psnFree( psnMemObject*      pMemObj,
    size_t numBlocks;
    bool ok;
    
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pMemObj  != NULL );
-   VDS_PRE_CONDITION( ptr      != NULL );
-   VDS_PRE_CONDITION( numBytes > 0 );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pMemObj  != NULL );
+   PSO_PRE_CONDITION( ptr      != NULL );
+   PSO_PRE_CONDITION( numBytes > 0 );
 
    /*
     * Ajust numBytes so that it is a multiple of PSN_ALLOCATION_UNIT,
@@ -398,7 +398,7 @@ void psnFree( psnMemObject*      pMemObj,
                                    &oldGroup->node,
                                    &dummy );
    }
-   VDS_PRE_CONDITION( goodGroup != NULL );
+   PSO_PRE_CONDITION( goodGroup != NULL );
 
    goodGroup->freeBytes += numBytes;
 
@@ -489,14 +489,14 @@ void psnFree( psnMemObject*      pMemObj,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void psnMemObjectStatus( psnMemObject * pMemObj, 
-                          vdsObjStatus  * pStatus )
+                          psoObjStatus  * pStatus )
 {
    psnLinkNode * dummy;
    psnBlockGroup * pGroup;
    bool ok;
    
-   VDS_PRE_CONDITION( pMemObj != NULL );
-   VDS_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pMemObj != NULL );
+   PSO_PRE_CONDITION( pStatus != NULL );
 
    pStatus->numBlocks = pMemObj->totalBlocks;
    pStatus->numBlockGroup = pMemObj->listBlockGroup.currentSize;
@@ -506,7 +506,7 @@ void psnMemObjectStatus( psnMemObject * pMemObj,
     * We retrieve the first node
     */
    ok = psnLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
-   VDS_PRE_CONDITION( ok );
+   PSO_PRE_CONDITION( ok );
 
    while ( ok ) {
       pGroup = (psnBlockGroup*)( 

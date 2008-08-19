@@ -26,7 +26,7 @@ int main()
 {
 #if defined(USE_DBC)
    pscErrorHandler errorHandler;
-   vdsErrors error;
+   psoErrors error;
    
    pscInitErrorDefs();
    pscInitErrorHandler( &errorHandler );

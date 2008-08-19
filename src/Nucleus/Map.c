@@ -40,18 +40,18 @@ bool psnMapCopy( psnMap            * pOldMap,
    int errcode;
    psnFieldDef * oldDef, * newDef;
    
-   VDS_PRE_CONDITION( pOldMap   != NULL );
-   VDS_PRE_CONDITION( pNewMap   != NULL );
-   VDS_PRE_CONDITION( pHashItem != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
+   PSO_PRE_CONDITION( pOldMap   != NULL );
+   PSO_PRE_CONDITION( pNewMap   != NULL );
+   PSO_PRE_CONDITION( pHashItem != NULL );
+   PSO_PRE_CONDITION( pContext  != NULL );
    
    errcode = psnMemObjectInit( &pNewMap->memObject, 
                                 PSN_IDENT_MAP,
                                 &pNewMap->blockGroup,
                                 pOldMap->memObject.totalBlocks );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
+                    g_psoErrorHandle,
                     errcode );
       return false;
    }
@@ -69,28 +69,28 @@ bool psnMapCopy( psnMap            * pOldMap,
                                          pContext );
    if ( newDef == NULL ) {
       pscSetError( &pContext->errorHandler, 
-                    g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
+                    g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
    pNewMap->dataDefOffset = SET_OFFSET(newDef);
    oldDef = GET_PTR_FAST( pOldMap->dataDefOffset, psnFieldDef );
    memcpy( newDef, oldDef, pNewMap->numFields* sizeof(psnFieldDef) );
-   memcpy( &pNewMap->keyDef, &pOldMap->keyDef, sizeof(vdsKeyDefinition) );
+   memcpy( &pNewMap->keyDef, &pOldMap->keyDef, sizeof(psoKeyDefinition) );
 
    errcode = psnHashInit( &pNewMap->hashObj,
                            SET_OFFSET(&pNewMap->memObject),
                            pOldMap->hashObj.numberOfItems,
                            pContext );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pContext->errorHandler, 
-                    g_vdsErrorHandle, 
+                    g_psoErrorHandle, 
                     errcode );
       return false;
    }
 
    errcode = psnHashCopy( &pOldMap->hashObj, &pNewMap->hashObj, pContext );
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
       return false;
    }
    pNewMap->latestVersion = pOldMap->latestVersion;
@@ -109,18 +109,18 @@ bool psnMapDelete( psnMap            * pHashMap,
 {
    bool found;
    
-   VDS_PRE_CONDITION( pHashMap != NULL );
-   VDS_PRE_CONDITION( pKey     != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( keyLength > 0 );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
+   PSO_PRE_CONDITION( pHashMap != NULL );
+   PSO_PRE_CONDITION( pKey     != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( keyLength > 0 );
+   PSO_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
    
    found = psnHashDelWithKey( &pHashMap->hashObj, 
                                (unsigned char *)pKey,
                                keyLength,
                                pContext );
    if ( ! found ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_NO_SUCH_ITEM );
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NO_SUCH_ITEM );
       return false;
    }
 
@@ -142,9 +142,9 @@ bool psnMapDelete( psnMap            * pHashMap,
 void psnMapEmpty( psnMap            * pHashMap,
                    psnSessionContext * pContext )
 {
-   VDS_PRE_CONDITION( pHashMap != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
+   PSO_PRE_CONDITION( pHashMap != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
    
    psnHashEmpty( &pHashMap->hashObj, pContext );
 
@@ -164,9 +164,9 @@ void psnMapEmpty( psnMap            * pHashMap,
 void psnMapFini( psnMap        * pHashMap,
                       psnSessionContext * pContext )
 {
-   VDS_PRE_CONDITION( pHashMap != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
+   PSO_PRE_CONDITION( pHashMap != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
 
    psnHashFini( &pHashMap->hashObj );
    psnTreeNodeFini( &pHashMap->nodeObject );
@@ -188,23 +188,23 @@ bool psnMapGet( psnMap            * pHashMap,
                  psnSessionContext * pContext )
 {
    psnHashItem* pHashItem = NULL;
-   vdsErrors errcode;
+   psoErrors errcode;
    psnTxStatus * txHashMapStatus;
    size_t bucket;
    bool found;
    
-   VDS_PRE_CONDITION( pHashMap   != NULL );
-   VDS_PRE_CONDITION( pKey       != NULL );
-   VDS_PRE_CONDITION( ppHashItem != NULL );
-   VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( keyLength > 0 );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
+   PSO_PRE_CONDITION( pHashMap   != NULL );
+   PSO_PRE_CONDITION( pKey       != NULL );
+   PSO_PRE_CONDITION( ppHashItem != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( keyLength > 0 );
+   PSO_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
    
    if ( txHashMapStatus->status & PSN_TXS_DESTROYED || 
       txHashMapStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
-      errcode = VDS_OBJECT_IS_DELETED;
+      errcode = PSO_OBJECT_IS_DELETED;
       goto the_exit;
    }
    
@@ -215,7 +215,7 @@ bool psnMapGet( psnMap            * pHashMap,
                         &bucket,
                         pContext );
    if ( ! found ) {
-      errcode = VDS_NO_SUCH_ITEM;
+      errcode = PSO_NO_SUCH_ITEM;
       goto the_exit;
    }
 
@@ -225,7 +225,7 @@ bool psnMapGet( psnMap            * pHashMap,
     * after but this way makes the code faster.
     */
    if ( bufferLength < pHashItem->dataLength ) {
-      errcode = VDS_INVALID_LENGTH;
+      errcode = PSO_INVALID_LENGTH;
       goto the_exit;
    }
       
@@ -244,8 +244,8 @@ the_exit:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return false;
@@ -264,23 +264,23 @@ bool psnMapGetFirst( psnMap            * pHashMap,
    ptrdiff_t  firstItemOffset;
    bool found;
    
-   VDS_PRE_CONDITION( pHashMap != NULL );
-   VDS_PRE_CONDITION( pItem    != NULL )
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
+   PSO_PRE_CONDITION( pHashMap != NULL );
+   PSO_PRE_CONDITION( pItem    != NULL )
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
 
    if ( txHashMapStatus->status & PSN_TXS_DESTROYED || 
       txHashMapStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_IS_DELETED );
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_IS_DELETED );
       return false;
    }
    
    found = psnHashGetFirst( &pHashMap->hashObj, 
                              &firstItemOffset );
    if ( ! found ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_IS_EMPTY );
       return false;
    }
    
@@ -293,12 +293,12 @@ bool psnMapGetFirst( psnMap            * pHashMap,
     */
    if ( bufferLength < pHashItem->dataLength ) {
       pscSetError( &pContext->errorHandler, 
-                    g_vdsErrorHandle, VDS_INVALID_LENGTH );
+                    g_psoErrorHandle, PSO_INVALID_LENGTH );
       return false;
    }
    if ( keyLength < pHashItem->keyLength ) {
       pscSetError( &pContext->errorHandler, 
-                    g_vdsErrorHandle, VDS_INVALID_LENGTH );
+                    g_psoErrorHandle, PSO_INVALID_LENGTH );
       return false;
    }
 
@@ -323,18 +323,18 @@ bool psnMapGetNext( psnMap            * pHashMap,
    ptrdiff_t  itemOffset;
    bool found;
    
-   VDS_PRE_CONDITION( pHashMap != NULL );
-   VDS_PRE_CONDITION( pItem    != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
-   VDS_PRE_CONDITION( pItem->pHashItem  != NULL );
-   VDS_PRE_CONDITION( pItem->itemOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pHashMap != NULL );
+   PSO_PRE_CONDITION( pItem    != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
+   PSO_PRE_CONDITION( pItem->pHashItem  != NULL );
+   PSO_PRE_CONDITION( pItem->itemOffset != PSN_NULL_OFFSET );
    
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
 
    if ( txHashMapStatus->status & PSN_TXS_DESTROYED || 
       txHashMapStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_IS_DELETED );
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_IS_DELETED );
       return false;
    }
    
@@ -354,7 +354,7 @@ bool psnMapGetNext( psnMap            * pHashMap,
       pItem->pHashItem = NULL;
       pItem->itemOffset = PSN_NULL_OFFSET;
       psnMapReleaseNoLock( pHashMap, previousHashItem, pContext );
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_REACHED_THE_END );
       return false;
    }
    
@@ -367,12 +367,12 @@ bool psnMapGetNext( psnMap            * pHashMap,
     */
    if ( bufferLength < pHashItem->dataLength ) {
       pscSetError( &pContext->errorHandler, 
-                    g_vdsErrorHandle, VDS_INVALID_LENGTH );
+                    g_psoErrorHandle, PSO_INVALID_LENGTH );
       return false;
    }
    if ( keyLength < pHashItem->keyLength ) {
       pscSetError( &pContext->errorHandler, 
-                    g_vdsErrorHandle, VDS_INVALID_LENGTH );
+                    g_psoErrorHandle, PSO_INVALID_LENGTH );
       return false;
    }
 
@@ -394,31 +394,31 @@ bool psnMapInit( psnMap             * pHashMap,
                   size_t                origNameLength,
                   char                * origName,
                   ptrdiff_t             hashItemOffset,
-                  vdsObjectDefinition * pDefinition,
+                  psoObjectDefinition * pDefinition,
                   psnSessionContext  * pContext )
 {
-   vdsErrors errcode;
+   psoErrors errcode;
    psnFieldDef * ptr;
    unsigned int i;
    
-   VDS_PRE_CONDITION( pHashMap     != NULL );
-   VDS_PRE_CONDITION( pContext     != NULL );
-   VDS_PRE_CONDITION( pTxStatus    != NULL );
-   VDS_PRE_CONDITION( origName     != NULL );
-   VDS_PRE_CONDITION( pDefinition  != NULL );
-   VDS_PRE_CONDITION( hashItemOffset != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( parentOffset   != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( numberOfBlocks  > 0 );
-   VDS_PRE_CONDITION( origNameLength > 0 );
-   VDS_PRE_CONDITION( pDefinition->numFields > 0 );
+   PSO_PRE_CONDITION( pHashMap     != NULL );
+   PSO_PRE_CONDITION( pContext     != NULL );
+   PSO_PRE_CONDITION( pTxStatus    != NULL );
+   PSO_PRE_CONDITION( origName     != NULL );
+   PSO_PRE_CONDITION( pDefinition  != NULL );
+   PSO_PRE_CONDITION( hashItemOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( parentOffset   != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( numberOfBlocks  > 0 );
+   PSO_PRE_CONDITION( origNameLength > 0 );
+   PSO_PRE_CONDITION( pDefinition->numFields > 0 );
    
    errcode = psnMemObjectInit( &pHashMap->memObject, 
                                 PSN_IDENT_MAP,
                                 &pHashMap->blockGroup,
                                 numberOfBlocks );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
+                    g_psoErrorHandle,
                     errcode );
       return false;
    }
@@ -434,9 +434,9 @@ bool psnMapInit( psnMap             * pHashMap,
                            SET_OFFSET(&pHashMap->memObject),
                            expectedNumOfItems, 
                            pContext );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
+                    g_psoErrorHandle,
                     errcode );
       return false;
    }
@@ -448,34 +448,34 @@ bool psnMapInit( psnMap             * pHashMap,
                                      pContext );
    if ( ptr == NULL ) {
       pscSetError( &pContext->errorHandler, 
-                    g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
+                    g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
    pHashMap->dataDefOffset = SET_OFFSET(ptr);
 
    for ( i = 0; i < pHashMap->numFields; ++i) {
-      memcpy( ptr[i].name, pDefinition->fields[i].name, VDS_MAX_FIELD_LENGTH );
+      memcpy( ptr[i].name, pDefinition->fields[i].name, PSO_MAX_FIELD_LENGTH );
       ptr[i].type = pDefinition->fields[i].type;
       switch( ptr[i].type ) {
-      case VDS_INTEGER:
-      case VDS_BINARY:
-      case VDS_STRING:
+      case PSO_INTEGER:
+      case PSO_BINARY:
+      case PSO_STRING:
          ptr[i].length1 = pDefinition->fields[i].length;
          break;
-      case VDS_DECIMAL:
+      case PSO_DECIMAL:
          ptr[i].length1 = pDefinition->fields[i].precision;
          ptr[i].length2 = pDefinition->fields[i].scale;         
          break;
-      case VDS_BOOLEAN:
+      case PSO_BOOLEAN:
          break;
-      case VDS_VAR_BINARY:
-      case VDS_VAR_STRING:
+      case PSO_VAR_BINARY:
+      case PSO_VAR_STRING:
          ptr[i].length1 = pDefinition->fields[i].minLength;
          ptr[i].length2 = pDefinition->fields[i].maxLength;
          
       }
    }
-   memcpy( &pHashMap->keyDef, &pDefinition->key, sizeof(vdsKeyDefinition) );
+   memcpy( &pHashMap->keyDef, &pDefinition->key, sizeof(psoKeyDefinition) );
 
    pHashMap->latestVersion = hashItemOffset;
    pHashMap->editVersion = PSN_NULL_OFFSET;
@@ -493,15 +493,15 @@ bool psnMapInsert( psnMap            * pHashMap,
                     psnSessionContext * pContext )
 {
    psnHashItem* pHashItem = NULL;
-   vdsErrors errcode;
+   psoErrors errcode;
    
-   VDS_PRE_CONDITION( pHashMap != NULL );
-   VDS_PRE_CONDITION( pKey     != NULL )
-   VDS_PRE_CONDITION( pItem    != NULL )
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( keyLength  > 0 );
-   VDS_PRE_CONDITION( itemLength > 0 );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
+   PSO_PRE_CONDITION( pHashMap != NULL );
+   PSO_PRE_CONDITION( pKey     != NULL )
+   PSO_PRE_CONDITION( pItem    != NULL )
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( keyLength  > 0 );
+   PSO_PRE_CONDITION( itemLength > 0 );
+   PSO_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
 
    errcode = psnHashInsert( &pHashMap->hashObj, 
                              (unsigned char *)pKey, 
@@ -510,8 +510,8 @@ bool psnMapInsert( psnMap            * pHashMap,
                              itemLength,
                              &pHashItem,
                              pContext );
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
       return false;
    }
       
@@ -524,10 +524,10 @@ bool psnMapRelease( psnMap            * pHashMap,
                      psnHashItem       * pHashItem,
                      psnSessionContext * pContext )
 {
-   VDS_PRE_CONDITION( pHashMap  != NULL );
-   VDS_PRE_CONDITION( pHashItem != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
+   PSO_PRE_CONDITION( pHashMap  != NULL );
+   PSO_PRE_CONDITION( pHashItem != NULL );
+   PSO_PRE_CONDITION( pContext  != NULL );
+   PSO_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
 
    psnMapReleaseNoLock( pHashMap,
                          pHashItem,
@@ -548,10 +548,10 @@ void psnMapReleaseNoLock( psnMap            * pHashMap,
 {
    psnTxStatus * txHashMapStatus;
    
-   VDS_PRE_CONDITION( pHashMap  != NULL );
-   VDS_PRE_CONDITION( pHashItem != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
+   PSO_PRE_CONDITION( pHashMap  != NULL );
+   PSO_PRE_CONDITION( pHashItem != NULL );
+   PSO_PRE_CONDITION( pContext  != NULL );
+   PSO_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
 
@@ -585,15 +585,15 @@ bool psnMapReplace( psnMap            * pHashMap,
                      size_t               dataLength,
                      psnSessionContext * pContext )
 {
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    
-   VDS_PRE_CONDITION( pHashMap != NULL );
-   VDS_PRE_CONDITION( pKey     != NULL )
-   VDS_PRE_CONDITION( pData    != NULL )
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( keyLength  > 0 );
-   VDS_PRE_CONDITION( dataLength > 0 );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
+   PSO_PRE_CONDITION( pHashMap != NULL );
+   PSO_PRE_CONDITION( pKey     != NULL )
+   PSO_PRE_CONDITION( pData    != NULL )
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( keyLength  > 0 );
+   PSO_PRE_CONDITION( dataLength > 0 );
+   PSO_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
 
    errcode = psnHashUpdate( &pHashMap->hashObj, 
                              (unsigned char *)pKey, 
@@ -601,8 +601,8 @@ bool psnMapReplace( psnMap            * pHashMap,
                              pData,
                              dataLength,
                              pContext );
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
       return false;
    }
    
@@ -612,16 +612,16 @@ bool psnMapReplace( psnMap            * pHashMap,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void psnMapStatus( psnMap      * pHashMap,
-                    vdsObjStatus * pStatus )
+                    psoObjStatus * pStatus )
 {
    psnHashItem* pHashItem = NULL;
    ptrdiff_t  firstItemOffset;
    psnTxStatus  * txStatus;
    bool found;
    
-   VDS_PRE_CONDITION( pHashMap != NULL );
-   VDS_PRE_CONDITION( pStatus  != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
+   PSO_PRE_CONDITION( pHashMap != NULL );
+   PSO_PRE_CONDITION( pStatus  != NULL );
+   PSO_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
    
    GET_PTR( txStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
 

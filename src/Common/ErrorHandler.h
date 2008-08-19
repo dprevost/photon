@@ -138,7 +138,7 @@ void pscFiniErrorHandler( pscErrorHandler * pErrorHandler );
 static inline
 bool pscAnyErrors( pscErrorHandler * pErrorHandler )
 {
-   VDS_PRE_CONDITION( pErrorHandler != NULL );
+   PSO_PRE_CONDITION( pErrorHandler != NULL );
 
    return ( pErrorHandler->chainLength > 0 ); 
 }
@@ -182,7 +182,7 @@ void pscChainError( pscErrorHandler * pErrorHandler,
 static inline 
 int pscGetLastError( pscErrorHandler * pErrorHandler )
 {
-   VDS_PRE_CONDITION( pErrorHandler != NULL );
+   PSO_PRE_CONDITION( pErrorHandler != NULL );
 
    if ( pErrorHandler->chainLength > 0 )
       return pErrorHandler->errorCode[pErrorHandler->chainLength-1];

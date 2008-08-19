@@ -1,23 +1,23 @@
-.TH "vdsException" 3 "18 Mar 2008" "Version 0.2" "vdsf C++ API" \" -*- nroff -*-
+.TH "psoException" 3 "18 Mar 2008" "Version 0.2" "vdsf C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-vdsException \- 
+psoException \- 
 .SH SYNOPSIS
 .br
 .PP
 .SH "Detailed Description"
 .PP 
-Definition at line 39 of file vdsException.
+Definition at line 39 of file psoException.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBvdsException\fP (int theErrorCode, VDS_HANDLE sessionHandle, const char *functionName)"
+.RI "\fBpsoException\fP (int theErrorCode, PSO_HANDLE sessionHandle, const char *functionName)"
 .br
 .RI "\fIConstruct a vdsf exception using the return code from the C function and the name of the function throwing it. \fP"
 .ti -1c
-.RI "virtual \fB~vdsException\fP ()"
+.RI "virtual \fB~psoException\fP ()"
 .br
 .ti -1c
 .RI "std::string & \fBMessage\fP (std::string &errorMessage)"
@@ -44,35 +44,35 @@ Definition at line 39 of file vdsException.
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "vdsException::vdsException (int theErrorCode, VDS_HANDLE sessionHandle, const char * functionName)"
+.SS "psoException::psoException (int theErrorCode, PSO_HANDLE sessionHandle, const char * functionName)"
 .PP
 Construct a vdsf exception using the return code from the C function and the name of the function throwing it. 
 .PP
-.SS "virtual vdsException::~vdsException ()\fC [virtual]\fP"
+.SS "virtual psoException::~psoException ()\fC [virtual]\fP"
 .PP
 .SH "Member Function Documentation"
 .PP 
-.SS "int vdsException::ErrorCode ()\fC [inline]\fP"
+.SS "int psoException::ErrorCode ()\fC [inline]\fP"
 .PP
 Return the error code associated with the exception. 
 .PP
-Definition at line 58 of file vdsException.
-.SS "std::string& vdsException::Message ()"
+Definition at line 58 of file psoException.
+.SS "std::string& psoException::Message ()"
 .PP
 Return the error message. 
 .PP
-.SS "std::string& vdsException::Message (std::string & errorMessage)"
+.SS "std::string& psoException::Message (std::string & errorMessage)"
 .PP
 Return the error message. 
 .PP
 .SH "Member Data Documentation"
 .PP 
-.SS "int \fBvdsException::errcode\fP\fC [private]\fP"
+.SS "int \fBpsoException::errcode\fP\fC [private]\fP"
 .PP
-Definition at line 64 of file vdsException.
-.SS "std::string \fBvdsException::msg\fP\fC [private]\fP"
+Definition at line 64 of file psoException.
+.SS "std::string \fBpsoException::msg\fP\fC [private]\fP"
 .PP
-Definition at line 62 of file vdsException.
+Definition at line 62 of file psoException.
 
 .SH "Author"
 .PP 

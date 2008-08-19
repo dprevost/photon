@@ -36,11 +36,11 @@ int main()
    char * data2 = "My data2";
    char * data3 = "My data3";
    psnQueueItem * pQueueItem;
-   vdsObjectDefinition def = { 
-      VDS_QUEUE, 
+   psoObjectDefinition def = { 
+      PSO_QUEUE, 
       1, 
       { 0, 0, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
 
    pFolder = initFolderTest( expectedToPass, &context );
@@ -71,7 +71,7 @@ int main()
    ok = psnFolderGetObject( pFolder,
                              "test2",
                              5,
-                             VDS_QUEUE,
+                             PSO_QUEUE,
                              &item,
                              &context );
    if ( ok != true ) {
@@ -305,7 +305,7 @@ int main()
    }
    
    ok = psnQueueGet( pQueue,
-                      VDS_FIRST,
+                      PSO_FIRST,
                       &pQueueItem,
                       (size_t) -1,
                       &context );
@@ -368,7 +368,7 @@ int main()
    }
    
    ok = psnQueueGet( pQueue,
-                      VDS_FIRST,
+                      PSO_FIRST,
                       &pQueueItem,
                       (size_t) -1,
                       &context );

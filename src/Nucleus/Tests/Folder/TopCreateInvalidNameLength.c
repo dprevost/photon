@@ -27,16 +27,16 @@ int main()
    psnSessionContext context;
    int errcode;
    bool ok;
-   char name[VDS_MAX_FULL_NAME_LENGTH+100];
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   char name[PSO_MAX_FULL_NAME_LENGTH+100];
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
-   memset( name, 't', VDS_MAX_FULL_NAME_LENGTH+99 );
-   name[VDS_MAX_FULL_NAME_LENGTH+99] = 0;
+   memset( name, 't', PSO_MAX_FULL_NAME_LENGTH+99 );
+   name[PSO_MAX_FULL_NAME_LENGTH+99] = 0;
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
@@ -49,7 +49,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = pscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
@@ -62,36 +62,36 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = pscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
    ok = psnTopFolderCreateObject( pTopFolder,
                                    name,
-                                   VDS_MAX_FULL_NAME_LENGTH+1,
+                                   PSO_MAX_FULL_NAME_LENGTH+1,
                                    &def,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = pscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_OBJECT_NAME_TOO_LONG ) {
+   if ( errcode != PSO_OBJECT_NAME_TOO_LONG ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   memset( name, 0, VDS_MAX_FULL_NAME_LENGTH+100 );
-   memset( name, 't', VDS_MAX_NAME_LENGTH+1 );
+   memset( name, 0, PSO_MAX_FULL_NAME_LENGTH+100 );
+   memset( name, 't', PSO_MAX_NAME_LENGTH+1 );
 
    ok = psnTopFolderCreateObject( pTopFolder,
                                    name,
-                                   VDS_MAX_NAME_LENGTH+1,
+                                   PSO_MAX_NAME_LENGTH+1,
                                    &def,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = pscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_OBJECT_NAME_TOO_LONG ) {
+   if ( errcode != PSO_OBJECT_NAME_TOO_LONG ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

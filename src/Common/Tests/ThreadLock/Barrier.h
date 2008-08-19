@@ -40,7 +40,7 @@ BEGIN_C_DECLS
  */
 
  
-struct vdstSubBarrier
+struct psotSubBarrier
 {
 #if defined (WIN32)
    HANDLE           waitEvent;
@@ -52,7 +52,7 @@ struct vdstSubBarrier
    int     numRunners;        /* number of running threads    */
 };
  
-struct vdstBarrier
+struct psotBarrier
 {
    /** Set to VDST_BARRIER_SIGNATURE at initialization. */
    unsigned int initialized;
@@ -60,23 +60,23 @@ struct vdstBarrier
    /** maximum number of running threads */
    int     numThreads;
 
-   struct vdstSubBarrier  subBarrier[2];
+   struct psotSubBarrier  subBarrier[2];
    int currentSubBarrier;
 };
 
-typedef struct vdstBarrier vdstBarrier;
+typedef struct psotBarrier psotBarrier;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/*! \brief Initialize the struct vdstBarrier. */
-int vdstInitBarrier( vdstBarrier     * pBarrier,
+/*! \brief Initialize the struct psotBarrier. */
+int psotInitBarrier( psotBarrier     * pBarrier,
                      int               numThreads,
                      pscErrorHandler * pError );
 
-/*! \brief Terminate access to the struct vdstBarrier. */
-void vdstFiniBarrier( vdstBarrier * pBarrier );
+/*! \brief Terminate access to the struct psotBarrier. */
+void psotFiniBarrier( psotBarrier * pBarrier );
 
-void vdstBarrierWait( vdstBarrier * pBarrier );
+void psotBarrierWait( psotBarrier * pBarrier );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

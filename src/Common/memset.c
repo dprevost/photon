@@ -2,7 +2,7 @@
  * The original source from this function was taken from:
  * http://www.opensource.apple.com/darwinsource/10.3/gcc_os-1256/libiberty/memcmp.c
  * 
- * It was slightly modified for inclusion into the vds framework by
+ * It was slightly modified for inclusion into Photon by
  * D. Prevost, May 2004.
  */
 

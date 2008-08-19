@@ -27,8 +27,8 @@ int main()
    psnFolder * pTopFolder;
    psnSessionContext context;
    bool ok;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 

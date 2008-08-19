@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds>
+#include <photon/photon>
 #include <iostream>
 
 using namespace std;
@@ -25,14 +25,14 @@ using namespace std;
 
 int main( int argc, char * argv[] )
 {
-   vdsProcess process;
-   vdsSession session;
+   psoProcess process;
+   psoSession session;
    int errcode;
    string name = "/cpp_session_last_error";
-   vdsObjectDefinition folderDef;
+   psoObjectDefinition folderDef;
 
    memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = VDS_FOLDER;
+   folderDef.type = PSO_FOLDER;
    
    try {
       if ( argc > 1 ) {
@@ -44,14 +44,14 @@ int main( int argc, char * argv[] )
       session.Init();
       // Is last error properly initialized?
       errcode = session.LastError();
-      if ( errcode != VDS_OK ) {
+      if ( errcode != PSO_OK ) {
          cerr << "Test failed - line " << __LINE__ << endl;
          return 1;
       }
       // Our first "test call"
       session.CreateObject( name, &folderDef );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -60,11 +60,11 @@ int main( int argc, char * argv[] )
    try {
       errcode = session.LastError();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -77,8 +77,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_OBJECT_ALREADY_PRESENT ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_OBJECT_ALREADY_PRESENT ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -87,11 +87,11 @@ int main( int argc, char * argv[] )
    try {
       errcode = session.LastError();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
-   if ( errcode != VDS_OBJECT_ALREADY_PRESENT ) {
+   if ( errcode != PSO_OBJECT_ALREADY_PRESENT ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }

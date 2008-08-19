@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 #include "API/Map.h"
 
@@ -26,54 +26,54 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE objHandle1, sessionHandle1;
-   VDS_HANDLE objHandle2, sessionHandle2;
+   PSO_HANDLE objHandle1, sessionHandle1;
+   PSO_HANDLE objHandle2, sessionHandle2;
    int errcode;
    const char * key1  = "My Key1";
    const char * key2  = "My Key2";
    const char * data = "My Data";
    size_t length;
    char buffer[20];
-   vdsObjectDefinition mapDef = { 
-      VDS_FAST_MAP, 
+   psoObjectDefinition mapDef = { 
+      PSO_FAST_MAP, 
       1, 
-      { VDS_KEY_VAR_STRING, 0, 4, 10 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 4, 10 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
-   vdsObjectDefinition folderDef = { 
-      VDS_FOLDER, 
+   psoObjectDefinition folderDef = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
 
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle1 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle1 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsInitSession( &sessionHandle2 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle1,
+   errcode = psoCreateObject( sessionHandle1,
                               "/amdp",
                               strlen("/amdp"),
                               &folderDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -81,120 +81,120 @@ int main( int argc, char * argv[] )
    /*
     * Create and populate the map.
     */
-   errcode = vdsCreateObject( sessionHandle1,
+   errcode = psoCreateObject( sessionHandle1,
                               "/amdp/test",
                               strlen("/amdp/test"),
                               &mapDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapEdit( sessionHandle1,
+   errcode = psoFastMapEdit( sessionHandle1,
                              "/amdp/test",
                              strlen("/amdp/test"),
                              &objHandle1 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapInsert( objHandle1,
+   errcode = psoFastMapInsert( objHandle1,
                                key1,
                                strlen(key1),
                                data,
                                7 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapInsert( objHandle1,
+   errcode = psoFastMapInsert( objHandle1,
                                key2,
                                strlen(key2),
                                data,
                                7 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapClose( objHandle1 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandle1 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsCommit( sessionHandle1 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandle1 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* Get both handles and do a sanity check */
-   errcode = vdsFastMapOpen( sessionHandle1,
+   errcode = psoFastMapOpen( sessionHandle1,
                              "/amdp/test",
                              strlen("/amdp/test"),
                              &objHandle1 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapEdit( sessionHandle2,
+   errcode = psoFastMapEdit( sessionHandle2,
                              "/amdp/test",
                              strlen("/amdp/test"),
                              &objHandle2 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapGet( objHandle1, 
+   errcode = psoFastMapGet( objHandle1, 
                             key1, 
                             strlen(key1),
                             buffer, 20, &length );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsFastMapDelete( objHandle1, /* read-only handle */
+   errcode = psoFastMapDelete( objHandle1, /* read-only handle */
                                key1,
                                strlen(key1) );
-   if ( errcode != VDS_OBJECT_IS_READ_ONLY ) {
+   if ( errcode != PSO_OBJECT_IS_READ_ONLY ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapDelete( NULL,
+   errcode = psoFastMapDelete( NULL,
                                key1,
                                strlen(key1) );
-   if ( errcode != VDS_NULL_HANDLE ) {
+   if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapDelete( sessionHandle1,
+   errcode = psoFastMapDelete( sessionHandle1,
                                key1,
                                strlen(key1) );
-   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapDelete( objHandle2,
+   errcode = psoFastMapDelete( objHandle2,
                                NULL,
                                strlen(key1) );
-   if ( errcode != VDS_NULL_POINTER ) {
+   if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapDelete( objHandle2,
+   errcode = psoFastMapDelete( objHandle2,
                                key1,
                                0 );
-   if ( errcode != VDS_INVALID_LENGTH ) {
+   if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -206,27 +206,27 @@ int main( int argc, char * argv[] )
     *   - the editor (objHandle2) does not see it (it is gone)
     *   - the reader (   "     ) - nothing has changed. 
     */
-   errcode = vdsFastMapDelete( objHandle2,
+   errcode = psoFastMapDelete( objHandle2,
                                key1,
                                strlen(key1) );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapGet( objHandle2, 
+   errcode = psoFastMapGet( objHandle2, 
                             key1, 
                             strlen(key1),
                             buffer, 20, &length );
-   if ( errcode != VDS_NO_SUCH_ITEM ) {
+   if ( errcode != PSO_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapGet( objHandle1, 
+   errcode = psoFastMapGet( objHandle1, 
                             key1, 
                             strlen(key1),
                             buffer, 20, &length );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -237,75 +237,75 @@ int main( int argc, char * argv[] )
     *   - the old reader (   "     ) - nothing has changed. 
     * Furthermore, a new reader on session 1 should also not see it.
     */
-   errcode = vdsFastMapClose( objHandle2 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandle2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsCommit( sessionHandle2 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandle2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapOpen( sessionHandle2,
+   errcode = psoFastMapOpen( sessionHandle2,
                              "/amdp/test",
                              strlen("/amdp/test"),
                              &objHandle2 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapGet( objHandle2, 
+   errcode = psoFastMapGet( objHandle2, 
                             key1, 
                             strlen(key1),
                             buffer, 20, &length );
-   if ( errcode != VDS_NO_SUCH_ITEM ) {
+   if ( errcode != PSO_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapGet( objHandle1, 
+   errcode = psoFastMapGet( objHandle1, 
                             key1, 
                             strlen(key1),
                             buffer, 20, &length );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapClose( objHandle2 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandle2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapOpen( sessionHandle1,
+   errcode = psoFastMapOpen( sessionHandle1,
                              "/amdp/test",
                              strlen("/amdp/test"),
                              &objHandle2 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapGet( objHandle2, 
+   errcode = psoFastMapGet( objHandle2, 
                             key1, 
                             strlen(key1),
                             buffer, 20, &length );
-   if ( errcode != VDS_NO_SUCH_ITEM ) {
+   if ( errcode != PSO_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    /*
     * Commit session1 - the old reader should not see it now.
     */
-   errcode = vdsCommit( sessionHandle1 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandle1 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapGet( objHandle1, 
+   errcode = psoFastMapGet( objHandle1, 
                             key1, 
                             strlen(key1),
                             buffer, 20, &length );
-   if ( errcode != VDS_NO_SUCH_ITEM ) {
+   if ( errcode != PSO_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -315,92 +315,92 @@ int main( int argc, char * argv[] )
     * use rollback on session 1 instead of commit. The result should
     * be identical.
     */
-   errcode = vdsFastMapClose( objHandle2 ); /* not in edit mode and with session 1 */
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandle2 ); /* not in edit mode and with session 1 */
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapEdit( sessionHandle2,
+   errcode = psoFastMapEdit( sessionHandle2,
                              "/amdp/test",
                              strlen("/amdp/test"),
                              &objHandle2 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapDelete( objHandle2,
+   errcode = psoFastMapDelete( objHandle2,
                                key2,
                                strlen(key2) );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapGet( objHandle2, 
+   errcode = psoFastMapGet( objHandle2, 
                             key2, 
                             strlen(key2),
                             buffer, 20, &length );
-   if ( errcode != VDS_NO_SUCH_ITEM ) {
+   if ( errcode != PSO_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapGet( objHandle1, 
+   errcode = psoFastMapGet( objHandle1, 
                             key2, 
                             strlen(key2),
                             buffer, 20, &length );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapClose( objHandle2 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFastMapClose( objHandle2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsCommit( sessionHandle2 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandle2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsRollback( sessionHandle1 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoRollback( sessionHandle1 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFastMapGet( objHandle1, 
+   errcode = psoFastMapGet( objHandle1, 
                             key2, 
                             strlen(key2),
                             buffer, 20, &length );
-   if ( errcode != VDS_NO_SUCH_ITEM ) {
+   if ( errcode != PSO_NO_SUCH_ITEM ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* Close the session and try to act on the object */
-   errcode = vdsFastMapEdit( sessionHandle2,
+   errcode = psoFastMapEdit( sessionHandle2,
                              "/amdp/test",
                              strlen("/amdp/test"),
                              &objHandle2 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsExitSession( sessionHandle2 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoExitSession( sessionHandle2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFastMapDelete( objHandle2,
+   errcode = psoFastMapDelete( objHandle2,
                                key1,
                                strlen(key1) );
-   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+   if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   vdsExit();
+   psoExit();
 
    return 0;
 }

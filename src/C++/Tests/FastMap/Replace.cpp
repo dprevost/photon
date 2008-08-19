@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds>
+#include <photon/photon>
 #include <iostream>
 
 using namespace std;
@@ -25,10 +25,10 @@ using namespace std;
 
 int main( int argc, char * argv[] )
 {
-   vdsProcess process;
-   vdsSession session1, session2;
-   vdsFastMapEditor map1(session1);
-   vdsFastMap map2(session2);
+   psoProcess process;
+   psoSession session1, session2;
+   psoFastMapEditor map1(session1);
+   psoFastMap map2(session2);
    string fname = "/cpp_fastmap_replace";
    string hname = fname + "/test";
 
@@ -37,16 +37,16 @@ int main( int argc, char * argv[] )
    const char * data2 = "My Data 2";
    char buffer[50];
    size_t length;
-   vdsObjectDefinition folderDef;
-   vdsObjectDefinition mapDef = { 
-      VDS_FAST_MAP,
+   psoObjectDefinition folderDef;
+   psoObjectDefinition mapDef = { 
+      PSO_FAST_MAP,
       1, 
-      { VDS_KEY_VAR_BINARY, 0, 1, 20 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_BINARY, 0, 1, 20 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
 
    memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = VDS_FOLDER;
+   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -67,7 +67,7 @@ int main( int argc, char * argv[] )
       map1.Open( hname );
       map2.Open( hname );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -81,8 +81,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_ITEM_IS_IN_USE ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_ITEM_IS_IN_USE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -91,7 +91,7 @@ int main( int argc, char * argv[] )
    try {
       session1.Commit();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -105,8 +105,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NULL_POINTER ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -118,8 +118,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_INVALID_LENGTH ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -131,8 +131,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NULL_POINTER ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -144,8 +144,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_INVALID_LENGTH ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -155,7 +155,7 @@ int main( int argc, char * argv[] )
    try {
       map1.Replace( key, 6, data2, strlen(data2) );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -169,7 +169,7 @@ int main( int argc, char * argv[] )
    try {
       map1.Get( key, 6, buffer, 50, &length );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -185,7 +185,7 @@ int main( int argc, char * argv[] )
    try {
       map2.Get( key, 6, buffer, 50, &length );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -203,7 +203,7 @@ int main( int argc, char * argv[] )
       session1.Commit();
       session2.Commit();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -211,7 +211,7 @@ int main( int argc, char * argv[] )
    try {
       map2.Get( key, 6, buffer, 50, &length );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

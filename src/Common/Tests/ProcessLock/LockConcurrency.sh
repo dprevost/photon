@@ -19,7 +19,7 @@
 # must provide the name of the directory where the sources are located
 # as the second argument to the script. Example:
 #
-# ./LockConcurrency.sh 100 /home/dprevost/vdsf0.1/src
+# ./LockConcurrency.sh 100 /home/dprevost/photon.git/src
 #
 # A second argument can be provided to indicate the build directory
 # if using the VPATH functionality of make.
@@ -38,7 +38,7 @@ fi
 if [ "$TMPDIR" = "" ] ; then
    TMPDIR=/tmp
 fi
-BASE_DIR=$TMPDIR/vdsf_lock_concurr
+BASE_DIR=$TMPDIR/pso_lock_concurr
 
 trap `rm -rf $BASE_DIR; exit 1` 1 2 3 15
 

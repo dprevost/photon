@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 
 const bool expectedToPass = true;
@@ -25,52 +25,52 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE sessionHandle, folderHandle;
+   PSO_HANDLE sessionHandle, folderHandle;
    int errcode;
    char buff[1000];
    char src_path[PATH_MAX] = {"../../../XML/vdsf_md10.xsd"};
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
    if ( argc > 2 ) {
       strcpy( src_path, argv[2] );
       strcat( src_path, "/src/XML/vdsf_md10.xsd" );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/afcx",
                               strlen("/afcx"),
                               &def );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderOpen( sessionHandle,
+   errcode = psoFolderOpen( sessionHandle,
                             "/afcx",
                             strlen("/afcx"),
                             &folderHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -87,27 +87,27 @@ int main( int argc, char * argv[] )
       "</folder2>" );
 //fprintf( stderr, "%s\n", buff );
 
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        NULL,
                                        strlen(buff) );
-   if ( errcode != VDS_NULL_POINTER ) {
+   if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        0 );
-   if ( errcode != VDS_INVALID_LENGTH ) { // 
+   if ( errcode != PSO_INVALID_LENGTH ) { // 
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* The closing tag is </folder2> instead of folder. */
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_XML_READ_ERROR ) {
+   if ( errcode != PSO_XML_READ_ERROR ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -120,15 +120,15 @@ int main( int argc, char * argv[] )
    strcat( buff, "\" "
       "objName=\"My_name\" >"
       "</folder>" );
-   errcode = vdsFolderCreateObjectXML( folderHandle,
+   errcode = psoFolderCreateObjectXML( folderHandle,
                                        buff,
                                        strlen(buff) );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   vdsExit();
+   psoExit();
 
    return 0;
 }

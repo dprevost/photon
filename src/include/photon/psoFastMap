@@ -17,29 +17,29 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_FAST_MAP_H_CPP
-#define VDS_FAST_MAP_H_CPP
+#ifndef PSO_FAST_MAP_H_CPP
+#define PSO_FAST_MAP_H_CPP
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#include <photon/vdsCommon.h>
+#include <photon/psoCommon.h>
 #include <string>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 // Forward declarations
-//class vdsQueueItem;
-class vdsSession;
+//class psoQueueItem;
+class psoSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class VDSF_EXPORT vdsFastMap
+class VDSF_EXPORT psoFastMap
 {
 public:
 
-   vdsFastMap( vdsSession &session );
+   psoFastMap( psoSession &session );
 
-   virtual ~vdsFastMap();
+   virtual ~psoFastMap();
 
    /**
     * \brief Close a hash map.
@@ -49,10 +49,10 @@ public:
     *
     * \warning Closing an object does not automatically commit or rollback 
     * data items that were inserted or removed. You still must use either 
-    * vdsSession::Commit or vdsSession::Rollback to end the current unit of 
+    * psoSession::Commit or psoSession::Rollback to end the current unit of 
     * work.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Close();
    
@@ -67,9 +67,9 @@ public:
     *              of the object definition. Freeing the memory (with free())
     *              is the responsability of the caller.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
-   void Definition( vdsObjectDefinition ** definition );
+   void Definition( psoObjectDefinition ** definition );
 
    /** 
     * Retrieve the data item identified by the given key from the hash map.
@@ -86,7 +86,7 @@ public:
     * \param[in]  bufferLength The length of \em buffer (in bytes).
     * \param[out] returnedLength The actual number of bytes in the data item.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Get( const void * key,
              size_t       keyLength,
@@ -114,9 +114,9 @@ public:
     * \param[out] retKeyLength The actual number of bytes in the key
     * \param[out] retDataLength The actual number of bytes in the data item.
     *
-    * \return 0 on success or VDS_IS_EMPTY if the hash map is empty.
+    * \return 0 on success or PSO_IS_EMPTY if the hash map is empty.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    int GetFirst( void       * key,
                  size_t       keyLength,
@@ -132,8 +132,8 @@ public:
     * will not be seen by the iterator. Likewise, destroyed data items (even if
     * not yet committed) are invisible.
     *
-    * Evidently, you must call vdsHashMap::GetFirst to initialize the iterator. 
-    * Not so evident - calling vdsHashMap::Get will reset the iteration to the
+    * Evidently, you must call psoHashMap::GetFirst to initialize the iterator. 
+    * Not so evident - calling psoHashMap::Get will reset the iteration to the
     * data item retrieved by this function (they use the same internal storage). 
     * If this cause a problem, please let us know.
     *
@@ -150,10 +150,10 @@ public:
     * \param[out] retKeyLength The actual number of bytes in the key
     * \param[out] retDataLength The actual number of bytes in the data item.
     *
-    * \return 0 on success or VDS_REACHED_THE_END when the iteration reaches
+    * \return 0 on success or PSO_REACHED_THE_END when the iteration reaches
     *           the end of the hash map.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    int GetNext( void       * key,
                 size_t       keyLength,
@@ -163,24 +163,24 @@ public:
                 size_t     * retDataLength );
 
    /** 
-    * Open an existing read-only hash map (see vdsSession::CreateObject to 
+    * Open an existing read-only hash map (see psoSession::CreateObject to 
     * create a new object).
     *
     * \param[in]  hashMapName The fully qualified name of the hash map. 
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Open( const std::string & hashMapName );
    
    /** 
-    * Open an existing read-only hash map (see vdsSession::CreateObject to 
+    * Open an existing read-only hash map (see psoSession::CreateObject to 
     * create a new object).
     *
     * \param[in]  hashMapName The fully qualified name of the hash map. 
     * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) 
     *             not counting the null terminator.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Open( const char * hashMapName,
               size_t       nameLengthInBytes );
@@ -190,23 +190,23 @@ public:
     *
     * \param[out] pStatus      A pointer to the status structure.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
-   void Status( vdsObjStatus * pStatus );
+   void Status( psoObjStatus * pStatus );
 
 protected:
 
    /// Pointer to the psaFastMap struct.
-   VDS_HANDLE m_objectHandle;
+   PSO_HANDLE m_objectHandle;
 
    /// Reference to the psaSession struct (we belong to).
-   VDS_HANDLE & m_sessionHandle;
+   PSO_HANDLE & m_sessionHandle;
    
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_FAST_MAP_H_CPP */
+#endif /* PSO_FAST_MAP_H_CPP */
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

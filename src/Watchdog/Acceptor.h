@@ -36,11 +36,11 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined (WIN32) 
-#  define VDS_SOCKET SOCKET
-#  define VDS_INVALID_SOCKET INVALID_SOCKET
+#  define PSO_SOCKET SOCKET
+#  define PSO_INVALID_SOCKET INVALID_SOCKET
 #else
-#  define VDS_SOCKET  int
-#  define VDS_INVALID_SOCKET -1
+#  define PSO_SOCKET  int
+#  define PSO_INVALID_SOCKET -1
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -50,7 +50,7 @@ BEGIN_C_DECLS
  */
 struct vdswDispatch
 {
-   VDS_SOCKET socketId;
+   PSO_SOCKET socketId;
    pid_t      pid;
    size_t     dataToBeWritten;
 };
@@ -84,7 +84,7 @@ struct vdswAcceptor
 {
    pscErrorHandler errorHandler;
    
-   VDS_SOCKET socketFD;
+   PSO_SOCKET socketFD;
 
    struct vdswWatchdog * pWatchdog;
    

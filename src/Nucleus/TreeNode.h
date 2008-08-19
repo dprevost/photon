@@ -38,7 +38,7 @@ struct psnObjectDescriptor
    ptrdiff_t memOffset;
    
    /** The object type as seen from the API. */
-   enum vdsObjectType apiType;
+   enum psoObjectType apiType;
    
    /** 
     * The length in bytes of the name as originally entered.
@@ -101,7 +101,7 @@ void psnTreeNodeInit( psnTreeNode * pNode,
                        ptrdiff_t      parentOffset,
                        ptrdiff_t      hashItemOffset )
 {
-   VDS_PRE_CONDITION( pNode != NULL );
+   PSO_PRE_CONDITION( pNode != NULL );
    
    pNode->txCounter      = 0;
    pNode->myNameLength   = originalNameLength;
@@ -116,7 +116,7 @@ void psnTreeNodeInit( psnTreeNode * pNode,
 static inline 
 void psnTreeNodeFini( psnTreeNode * pNode )
 {
-   VDS_PRE_CONDITION( pNode != NULL );
+   PSO_PRE_CONDITION( pNode != NULL );
    
    pNode->txCounter      = 0;
    pNode->myNameLength   = 0;

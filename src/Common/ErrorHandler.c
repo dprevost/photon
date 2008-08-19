@@ -57,7 +57,7 @@ static int pscGetErrnoMsg( int errnum, char * msg, unsigned int msgLength )
    int errcode = 0;
    char* s = NULL;
    
-   VDS_PRE_CONDITION( msg != NULL );
+   PSO_PRE_CONDITION( msg != NULL );
    
    /* To remove gcc warning messages */
    errcode = errcode;
@@ -108,7 +108,7 @@ static int pscGetErrnoMsg( int errnum, char * msg, unsigned int msgLength )
  */
 static int pscGetSockErrMsg( int errnum, char * msg, unsigned int msgLength )
 {
-   VDS_PRE_CONDITION( msg != NULL );
+   PSO_PRE_CONDITION( msg != NULL );
 
    if ( msgLength > 0 ) {
       /*
@@ -318,7 +318,7 @@ static int pscGetWinErrMsg( int errnum, char * msg, unsigned int msgLength )
    char* buff = NULL;
    DWORD len;
    
-   VDS_PRE_CONDITION( msg != NULL );
+   PSO_PRE_CONDITION( msg != NULL );
 
    if ( msgLength > 0 ) {
       len = FormatMessageA(
@@ -369,7 +369,7 @@ bool pscInitErrorDefs()
 
    if ( g_definition == NULL ) {
       ok = pscInitThreadLock( &g_lock );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ok ) {
          pscAcquireThreadLock( &g_lock );
          if ( g_definition == NULL ) {
@@ -491,9 +491,9 @@ pscErrMsgHandle pscAddErrorMsgHandler( const char         * name,
    pscErrorDefinition * pDefinition   = NULL;
    pscErrorDefinition * nextAvailable = NULL;
 
-   VDS_INV_CONDITION( g_definition != NULL );
-   VDS_PRE_CONDITION( name    != NULL );
-   VDS_PRE_CONDITION( handler != NULL );
+   PSO_INV_CONDITION( g_definition != NULL );
+   PSO_PRE_CONDITION( name    != NULL );
+   PSO_PRE_CONDITION( handler != NULL );
 
    pscAcquireThreadLock( &g_lock );
 
@@ -540,8 +540,8 @@ void pscInitErrorHandler( pscErrorHandler * pErrorHandler )
 {
    int i;
    
-   VDS_INV_CONDITION( g_definition  != NULL );
-   VDS_PRE_CONDITION( pErrorHandler != NULL );
+   PSO_INV_CONDITION( g_definition  != NULL );
+   PSO_PRE_CONDITION( pErrorHandler != NULL );
 
    for ( i = 0; i < PSC_ERROR_CHAIN_LENGTH; ++i ) {
       pErrorHandler->errorCode[i]   = 0;
@@ -565,8 +565,8 @@ void pscFiniErrorHandler( pscErrorHandler * pErrorHandler )
 {
    int i;
    
-   VDS_PRE_CONDITION( pErrorHandler != NULL );
-   VDS_INV_CONDITION( 
+   PSO_PRE_CONDITION( pErrorHandler != NULL );
+   PSO_INV_CONDITION( 
       pErrorHandler->initialized == PSC_ERROR_HANDLER_SIGNATURE );
 
    for ( i = 0; i < PSC_ERROR_CHAIN_LENGTH; ++i ) {
@@ -606,12 +606,12 @@ pscGetErrorMsg( pscErrorHandler * pErrorHandler,
    int k;
    pscErrorDefinition * nextAvailable = NULL;
 
-   VDS_INV_CONDITION( g_definition != NULL );
-   VDS_PRE_CONDITION( pErrorHandler != NULL );
-   VDS_INV_CONDITION( 
+   PSO_INV_CONDITION( g_definition != NULL );
+   PSO_PRE_CONDITION( pErrorHandler != NULL );
+   PSO_INV_CONDITION( 
       pErrorHandler->initialized == PSC_ERROR_HANDLER_SIGNATURE );
-   VDS_PRE_CONDITION( msg != NULL );
-   VDS_PRE_CONDITION( maxLength > 0 );   
+   PSO_PRE_CONDITION( msg != NULL );
+   PSO_PRE_CONDITION( maxLength > 0 );   
    
    if ( ! pscTryAcquireThreadLock( &g_lock, 100 ) ) return 0;
 
@@ -673,9 +673,9 @@ pscGetErrorMsgLength( pscErrorHandler * pErrorHandler )
    pscErrorDefinition * nextAvailable = NULL;
    char tmpMsg[4096];
 
-   VDS_INV_CONDITION( g_definition != NULL );
-   VDS_PRE_CONDITION( pErrorHandler != NULL );
-   VDS_INV_CONDITION( 
+   PSO_INV_CONDITION( g_definition != NULL );
+   PSO_PRE_CONDITION( pErrorHandler != NULL );
+   PSO_INV_CONDITION( 
       pErrorHandler->initialized == PSC_ERROR_HANDLER_SIGNATURE );
    
    if ( ! pscTryAcquireThreadLock( &g_lock, 100 ) ) return 0;
@@ -700,7 +700,7 @@ pscGetErrorMsgLength( pscErrorHandler * pErrorHandler )
                               4096 );
       /* Just in case */
       len = strnlen( tmpMsg, 4096 );
-      VDS_POST_CONDITION( len < 4096 );      
+      PSO_POST_CONDITION( len < 4096 );      
       sum += len;
 
    }
@@ -733,10 +733,10 @@ void pscSetError( pscErrorHandler * pErrorHandler,
    int i;
    pscErrorDefinition * nextAvailable = NULL;
 
-   VDS_INV_CONDITION( g_definition != NULL );
+   PSO_INV_CONDITION( g_definition != NULL );
 
-   VDS_PRE_CONDITION( pErrorHandler != NULL );
-   VDS_INV_CONDITION( 
+   PSO_PRE_CONDITION( pErrorHandler != NULL );
+   PSO_INV_CONDITION( 
       pErrorHandler->initialized == PSC_ERROR_HANDLER_SIGNATURE );
 
    /* 
@@ -754,7 +754,7 @@ void pscSetError( pscErrorHandler * pErrorHandler,
       }
    
       pscReleaseThreadLock( &g_lock );
-      VDS_PRE_CONDITION(  i >= handle );
+      PSO_PRE_CONDITION(  i >= handle );
    }
 #endif
 
@@ -788,12 +788,12 @@ void pscChainError( pscErrorHandler * pErrorHandler,
    int i;
    pscErrorDefinition * nextAvailable = NULL;
 
-   VDS_INV_CONDITION( g_definition != NULL );
+   PSO_INV_CONDITION( g_definition != NULL );
 
-   VDS_PRE_CONDITION( pErrorHandler != NULL );
-   VDS_INV_CONDITION( 
+   PSO_PRE_CONDITION( pErrorHandler != NULL );
+   PSO_INV_CONDITION( 
       pErrorHandler->initialized == PSC_ERROR_HANDLER_SIGNATURE );
-   VDS_INV_CONDITION( pErrorHandler->chainLength > 0 && 
+   PSO_INV_CONDITION( pErrorHandler->chainLength > 0 && 
                       pErrorHandler->chainLength < PSC_ERROR_CHAIN_LENGTH );
    
    /* 
@@ -811,7 +811,7 @@ void pscChainError( pscErrorHandler * pErrorHandler,
       }
    
       pscReleaseThreadLock( &g_lock );
-      VDS_PRE_CONDITION( i >= handle );
+      PSO_PRE_CONDITION( i >= handle );
    }
 #endif
 

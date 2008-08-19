@@ -20,7 +20,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include <photon/vdsCommon.h>
+#include <photon/psoCommon.h>
 #include "Nucleus/DataType.h"
 #include "API/api.h"
 
@@ -41,10 +41,10 @@ BEGIN_C_DECLS
 VDSF_API_EXPORT
 int psaGetDefinition( psnFieldDef          * pInternalDef,
                       uint16_t               numFields,
-                      vdsObjectDefinition ** ppDefinition );
+                      psoObjectDefinition ** ppDefinition );
 
 VDSF_API_EXPORT
-void psaGetKeyLimits( vdsKeyDefinition * pKeyDef,
+void psaGetKeyLimits( psoKeyDefinition * pKeyDef,
                       size_t           * pMinLength,
                       size_t           * pMaxLength );
 
@@ -55,12 +55,12 @@ void psaGetLimits( psnFieldDef * pDefinition,
                    size_t      * pMaxLength );
 
 VDSF_API_EXPORT
-int psaValidateDefinition( vdsObjectDefinition * pDefinition );
+int psaValidateDefinition( psoObjectDefinition * pDefinition );
 
 VDSF_API_EXPORT
 int psaXmlToDefinition( const char           * xmlBuffer,
                         size_t                 lengthInBytes,
-                        vdsObjectDefinition ** ppDefinition,
+                        psoObjectDefinition ** ppDefinition,
                         char                ** objectName,
                         size_t               * nameLengthInBytes );
 

@@ -20,12 +20,12 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined (WIN32)
-unsigned __stdcall vdstStartRoutine( void* arg )
+unsigned __stdcall psotStartRoutine( void* arg )
 #else
-void * vdstStartRoutine( void* arg )
+void * psotStartRoutine( void* arg )
 #endif
 {
-   vdstThreadWrap* pThread = (vdstThreadWrap*) arg;
+   psotThreadWrap* pThread = (psotThreadWrap*) arg;
 
    pThread->returnCode = pThread->startRoutine( pThread->arg );
    
@@ -38,7 +38,7 @@ void * vdstStartRoutine( void* arg )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdstCreateThread( vdstThreadWrap* pThread, 
+int psotCreateThread( psotThreadWrap* pThread, 
                       VDST_THREAD_FUNCTION startRoutine,
                       void* arg,
                       pscErrorHandler* pError )
@@ -50,8 +50,8 @@ int vdstCreateThread( vdstThreadWrap* pThread,
    int errcode = -1;
 #endif
 
-   VDS_PRE_CONDITION( pThread != NULL );
-   VDS_PRE_CONDITION( startRoutine != NULL );
+   PSO_PRE_CONDITION( pThread != NULL );
+   PSO_PRE_CONDITION( startRoutine != NULL );
 
    pThread->arg = arg;
    pThread->returnCode = 0;
@@ -60,7 +60,7 @@ int vdstCreateThread( vdstThreadWrap* pThread,
 #if defined (WIN32)
    handle = (HANDLE) _beginthreadex( NULL, /* Default sec. attributes */
                                      0,    /* Default stack size */
-                                     &vdstStartRoutine,
+                                     &psotStartRoutine,
                                      (void*)pThread,
                                      0, /* Thread does not start suspended */
                                      &threadId );
@@ -73,7 +73,7 @@ int vdstCreateThread( vdstThreadWrap* pThread,
    
 #else
    errcode = pthread_create ( &pThread->threadId, 
-                              NULL, vdstStartRoutine, (void*)pThread );
+                              NULL, psotStartRoutine, (void*)pThread );
 
    if ( errcode != 0 ) {
       if ( errcode > 0 ) {
@@ -91,7 +91,7 @@ int vdstCreateThread( vdstThreadWrap* pThread,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdstJoinThread( vdstThreadWrap* pThread, 
+int psotJoinThread( psotThreadWrap* pThread, 
 //                    void* retValue,
                     pscErrorHandler* pError )
 {

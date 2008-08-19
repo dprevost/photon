@@ -13,41 +13,41 @@ Data items are placed at the end of the queue and retrieved from the end of the 
 
 .in +1c
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsLifoClose\fP (\fBVDS_HANDLE\fP objectHandle)"
+.RI "VDSF_EXPORT int \fBpsoLifoClose\fP (\fBPSO_HANDLE\fP objectHandle)"
 .br
 .RI "\fIClose a LIFO queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsLifoDefinition\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjectDefinition\fP **definition)"
+.RI "VDSF_EXPORT int \fBpsoLifoDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP **definition)"
 .br
 .RI "\fIRetrieve the data definition of the queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsLifoGetFirst\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "VDSF_EXPORT int \fBpsoLifoGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .RI "\fIIterate through the queue - no data items are removed from the queue by this function. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsLifoGetNext\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "VDSF_EXPORT int \fBpsoLifoGetNext\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .RI "\fIIterate through the queue - no data items are removed from the queue by this function. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsLifoOpen\fP (\fBVDS_HANDLE\fP sessionHandle, const char *queueName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP *objectHandle)"
+.RI "VDSF_EXPORT int \fBpsoLifoOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *queueName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
 .br
 .RI "\fIOpen an existing LIFO queue (see \fBvdsCreateObject\fP to create a new queue). \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsLifoPop\fP (\fBVDS_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "VDSF_EXPORT int \fBpsoLifoPop\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .RI "\fIRemove the first item from the beginning of a LIFO queue and return it to the caller. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsLifoPush\fP (\fBVDS_HANDLE\fP objectHandle, const void *pItem, size_t length)"
+.RI "VDSF_EXPORT int \fBpsoLifoPush\fP (\fBPSO_HANDLE\fP objectHandle, const void *pItem, size_t length)"
 .br
 .RI "\fIInsert a data element at the end of the LIFO queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBvdsLifoStatus\fP (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP *pStatus)"
+.RI "VDSF_EXPORT int \fBpsoLifoStatus\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP *pStatus)"
 .br
 .RI "\fIReturn the status of the queue. \fP"
 .in -1c
 .SH "Function Documentation"
 .PP 
-.SS "VDSF_EXPORT int vdsLifoClose (\fBVDS_HANDLE\fP objectHandle)"
+.SS "VDSF_EXPORT int psoLifoClose (\fBPSO_HANDLE\fP objectHandle)"
 .PP
 Close a LIFO queue. 
 .PP
@@ -60,16 +60,16 @@ Closing an object does not automatically commit or rollback data items that were
 .PP
 \fBParameters:\fP
 .RS 4
-\fIobjectHandle\fP The handle to the queue (see \fBvdsLifoOpen\fP). 
+\fIobjectHandle\fP The handle to the queue (see \fBpsoLifoOpen\fP). 
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsLifoDefinition (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjectDefinition\fP ** definition)"
+.SS "VDSF_EXPORT int psoLifoDefinition (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP ** definition)"
 .PP
 Retrieve the data definition of the queue. 
 .PP
@@ -80,18 +80,18 @@ This function allocates a buffer to hold the definition (using malloc()). You mu
 .PP
 \fBParameters:\fP
 .RS 4
-\fIobjectHandle\fP The handle to the queue (see \fBvdsLifoOpen\fP). 
+\fIobjectHandle\fP The handle to the queue (see \fBpsoLifoOpen\fP). 
 .br
 \fIdefinition\fP The buffer allocated by the API to hold the content of the object definition. Freeing the memory (with free()) is the responsability of the caller.
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsLifoGetFirst (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "VDSF_EXPORT int psoLifoGetFirst (\fBPSO_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
 .PP
 Iterate through the queue - no data items are removed from the queue by this function. 
 .PP
@@ -99,7 +99,7 @@ Data items which were added by another session and are not yet committed will no
 .PP
 \fBParameters:\fP
 .RS 4
-\fIobjectHandle\fP The handle to the queue (see \fBvdsLifoOpen\fP). 
+\fIobjectHandle\fP The handle to the queue (see \fBpsoLifoOpen\fP). 
 .br
 \fIbuffer\fP The buffer provided by the user to hold the content of the first element. Memory allocation for this buffer is the responsability of the caller. 
 .br
@@ -110,21 +110,21 @@ Data items which were added by another session and are not yet committed will no
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsLifoGetNext (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "VDSF_EXPORT int psoLifoGetNext (\fBPSO_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
 .PP
 Iterate through the queue - no data items are removed from the queue by this function. 
 .PP
 Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
 .PP
-Evidently, you must call \fBvdsLifoGetFirst\fP to initialize the iterator. Not so evident - calling \fBvdsLifoPop\fP will reset the iteration to the last element (they use the same internal storage). If this cause a problem, please let us know.
+Evidently, you must call \fBpsoLifoGetFirst\fP to initialize the iterator. Not so evident - calling \fBpsoLifoPop\fP will reset the iteration to the last element (they use the same internal storage). If this cause a problem, please let us know.
 .PP
 \fBParameters:\fP
 .RS 4
-\fIobjectHandle\fP The handle to the queue (see \fBvdsLifoOpen\fP). 
+\fIobjectHandle\fP The handle to the queue (see \fBpsoLifoOpen\fP). 
 .br
 \fIbuffer\fP The buffer provided by the user to hold the content of the next element. Memory allocation for this buffer is the responsability of the caller. 
 .br
@@ -135,11 +135,11 @@ Evidently, you must call \fBvdsLifoGetFirst\fP to initialize the iterator. Not s
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsLifoOpen (\fBVDS_HANDLE\fP sessionHandle, const char * queueName, size_t nameLengthInBytes, \fBVDS_HANDLE\fP * objectHandle)"
+.SS "VDSF_EXPORT int psoLifoOpen (\fBPSO_HANDLE\fP sessionHandle, const char * queueName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
 .PP
 Open an existing LIFO queue (see \fBvdsCreateObject\fP to create a new queue). 
 .PP
@@ -156,11 +156,11 @@ Open an existing LIFO queue (see \fBvdsCreateObject\fP to create a new queue).
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsLifoPop (\fBVDS_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "VDSF_EXPORT int psoLifoPop (\fBPSO_HANDLE\fP objectHandle, void * buffer, size_t bufferLength, size_t * returnedLength)"
 .PP
 Remove the first item from the beginning of a LIFO queue and return it to the caller. 
 .PP
@@ -170,7 +170,7 @@ The removals only become permanent after a call to \fBvdsCommit\fP.
 .PP
 \fBParameters:\fP
 .RS 4
-\fIobjectHandle\fP The handle to the queue (see \fBvdsLifoOpen\fP). 
+\fIobjectHandle\fP The handle to the queue (see \fBpsoLifoOpen\fP). 
 .br
 \fIbuffer\fP The buffer provided by the user to hold the content of the data item. Memory allocation for this buffer is the responsability of the caller. 
 .br
@@ -181,11 +181,11 @@ The removals only become permanent after a call to \fBvdsCommit\fP.
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsLifoPush (\fBVDS_HANDLE\fP objectHandle, const void * pItem, size_t length)"
+.SS "VDSF_EXPORT int psoLifoPush (\fBPSO_HANDLE\fP objectHandle, const void * pItem, size_t length)"
 .PP
 Insert a data element at the end of the LIFO queue. 
 .PP
@@ -193,7 +193,7 @@ The additions only become permanent after a call to \fBvdsCommit\fP.
 .PP
 \fBParameters:\fP
 .RS 4
-\fIobjectHandle\fP The handle to the queue (see \fBvdsLifoOpen\fP). 
+\fIobjectHandle\fP The handle to the queue (see \fBpsoLifoOpen\fP). 
 .br
 \fIpItem\fP The data item to be inserted. 
 .br
@@ -202,24 +202,24 @@ The additions only become permanent after a call to \fBvdsCommit\fP.
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "VDSF_EXPORT int vdsLifoStatus (\fBVDS_HANDLE\fP objectHandle, \fBvdsObjStatus\fP * pStatus)"
+.SS "VDSF_EXPORT int psoLifoStatus (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP * pStatus)"
 .PP
 Return the status of the queue. 
 .PP
 \fBParameters:\fP
 .RS 4
-\fIobjectHandle\fP The handle to the queue (see \fBvdsLifoOpen\fP). 
+\fIobjectHandle\fP The handle to the queue (see \fBpsoLifoOpen\fP). 
 .br
 \fIpStatus\fP A pointer to the status structure.
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBvdsErrors\fP on error. 
+0 on success or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 

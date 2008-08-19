@@ -36,7 +36,7 @@
  *   should be destroyed.
  *
  * - There is a race condition for setting the pid in the lock object,
- *   VDS_ProcessLock::lock (this does not occur in the inline assembler 
+ *   PSO_ProcessLock::lock (this does not occur in the inline assembler 
  *   since we use the pid as the lock value in the atomic operation). 
  *   To be able to handle this, a special attribute in the ContextObject
  *   must be set to indicate that a lock is going to be attempted. This 
@@ -87,7 +87,7 @@ union semun {
  */
 
 //#if !defined(CONFIG_KERNEL_HEADERS) && ! defined (WIN32)
-//#  define VDS_USE_POSIX_SEMAPHORE
+//#  define PSO_USE_POSIX_SEMAPHORE
 //#endif
 
 /* Override the macro for testing purposes. Change the #if 0 to
@@ -96,7 +96,7 @@ union semun {
 
 #if 0
    /* replace by an appropriate macro for the test */
-#  define VDS_USE_POSIX_SEMAPHORE 
+#  define PSO_USE_POSIX_SEMAPHORE 
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -106,7 +106,7 @@ union semun {
  * least Tru64 (and possibly other RISC-based platforms) by forcing the 
  * semaphore structure to be 64-bit aligned.
  */
-#if defined(VDS_USE_POSIX_SEMAPHORE)
+#if defined(PSO_USE_POSIX_SEMAPHORE)
 union sem_align
 {
    long junk;
@@ -118,7 +118,7 @@ union sem_align
 
 /* Some sanity checks - do not remove, please. */
 
-#if defined(VDS_USE_POSIX_SEMAPHORE) && !defined(HAVE_SEM_INIT)
+#if defined(PSO_USE_POSIX_SEMAPHORE) && !defined(HAVE_SEM_INIT)
 #  error "sem_init() does not work! Help!"
 #endif
 
@@ -126,7 +126,7 @@ union sem_align
 
 /* unsigned int is ok for all OSes so far... but ... */
 
-typedef volatile unsigned int vds_lock_T;
+typedef volatile unsigned int pso_lock_T;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -140,9 +140,9 @@ typedef struct pscProcessLock
 {
    unsigned int initialized;
 
-   vds_lock_T lock;
+   pso_lock_T lock;
 
-#if defined (VDS_USE_POSIX_SEMAPHORE)
+#if defined (PSO_USE_POSIX_SEMAPHORE)
    union sem_align  semaphore;
 #endif
 
@@ -206,19 +206,19 @@ bool pscIsItLocked( pscProcessLock * pLock );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#if defined (VDS_USE_POSIX_SEMAPHORE)
+#if defined (PSO_USE_POSIX_SEMAPHORE)
 #  include "Common/arch/Lock-semaphore.h"
 #elif defined (WIN32)
 #  include "Common/arch/Lock-win32.h"
-#elif defined (VDS_USE_I386_GCC)
+#elif defined (PSO_USE_I386_GCC)
 #  include "Common/arch/Lock-i386-gcc.h"
-#elif defined (VDS_USE_X86_64_GCC)
+#elif defined (PSO_USE_X86_64_GCC)
 #  include "Common/arch/Lock-x86_64-gcc.h"
-#elif defined (VDS_USE_SPARC_GCC)
+#elif defined (PSO_USE_SPARC_GCC)
 #  include "Common/arch/Lock-sparc-gcc.h"
-#elif defined (VDS_USE_PPC_GCC)
+#elif defined (PSO_USE_PPC_GCC)
 #  include "Common/arch/Lock-ppc-gcc.h"
-#elif defined(VDS_USE_PPC_XLC)
+#elif defined(PSO_USE_PPC_XLC)
 #  include "Common/arch/Lock-ppc-xlc.h"
 #else
 #  error "Not implemented yet!"

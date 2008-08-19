@@ -21,19 +21,19 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-VDS_HANDLE g_session1, g_session2;
+PSO_HANDLE g_session1, g_session2;
 
-vdsObjectDefinition g_queueDef = { 
-   VDS_QUEUE,
+psoObjectDefinition g_queueDef = { 
+   PSO_QUEUE,
    1, 
-   { VDS_BINARY, 0, 0, 0 }, 
-   { { "Field_1", VDS_VAR_STRING, 0, 1, 200, 0, 0 } } 
+   { PSO_BINARY, 0, 0, 0 }, 
+   { { "Field_1", PSO_VAR_STRING, 0, 1, 200, 0, 0 } } 
 };
-vdsObjectDefinition g_folderDef = { 
-   VDS_FOLDER,
+psoObjectDefinition g_folderDef = { 
+   PSO_FOLDER,
    0, 
-   { VDS_KEY_VAR_STRING, 0, 0, 0 }, 
-   { { "", VDS_VAR_STRING, 0, 0, 0, 0, 0 } } 
+   { PSO_KEY_VAR_STRING, 0, 0, 0 }, 
+   { { "", PSO_VAR_STRING, 0, 0, 0, 0, 0 } } 
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -102,15 +102,15 @@ vdsObjectDefinition g_folderDef = {
 int Test1()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL;
+   PSO_HANDLE q1 = NULL;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OK,
+              PSO_OK,
               errcode );
       goto end;
    }
@@ -118,7 +118,7 @@ int Test1()
 end:
 
    vdsCommit( g_session1 );
-   if ( q1 != NULL ) vdsQueueClose( q1 );
+   if ( q1 != NULL ) psoQueueClose( q1 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
    
@@ -131,31 +131,31 @@ end:
 int Test2()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL;
+   PSO_HANDLE q1 = NULL;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OK,
+              PSO_OK,
               errcode );
       goto end;
    }
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OBJECT_IS_IN_USE ) {
+   errcode = psoQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OBJECT_IS_IN_USE ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OBJECT_IS_IN_USE, 
+              PSO_OBJECT_IS_IN_USE, 
               errcode );
       errcode = -1;
       goto end;
    }
-   errcode = VDS_OK;
+   errcode = PSO_OK;
 
 end:
 
    vdsCommit( g_session1 );
-   if ( q1 != NULL ) vdsQueueClose( q1 );
+   if ( q1 != NULL ) psoQueueClose( q1 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -168,18 +168,18 @@ end:
 int Test3()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL;
+   PSO_HANDLE q1 = NULL;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OK, 
+              PSO_OK, 
               errcode );
       goto end;
    }
@@ -187,7 +187,7 @@ int Test3()
 end:
 
    vdsCommit( g_session1 );
-   if ( q1 != NULL ) vdsQueueClose( q1 );
+   if ( q1 != NULL ) psoQueueClose( q1 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -200,18 +200,18 @@ end:
 int Test4()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL;
+   PSO_HANDLE q1 = NULL;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsRollback( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_NO_SUCH_OBJECT ) {
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_NO_SUCH_OBJECT ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_NO_SUCH_OBJECT, 
+              PSO_NO_SUCH_OBJECT, 
               errcode );
        errcode = -1;
       goto end;
@@ -221,7 +221,7 @@ int Test4()
 end:
 
    vdsCommit( g_session1 );
-   if ( q1 != NULL ) vdsQueueClose( q1 );
+   if ( q1 != NULL ) psoQueueClose( q1 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -234,21 +234,21 @@ end:
 int Test5()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL;
+   PSO_HANDLE q1 = NULL;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OK,
+              PSO_OK,
               errcode );
       goto end;
    }
@@ -256,7 +256,7 @@ int Test5()
 end:
 
    vdsCommit( g_session1 );
-   if ( q1 != NULL ) vdsQueueClose( q1 );
+   if ( q1 != NULL ) psoQueueClose( q1 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -269,21 +269,21 @@ end:
 int Test6()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL; 
+   PSO_HANDLE q1 = NULL; 
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OBJECT_IS_DELETED ) {
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OBJECT_IS_DELETED ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OBJECT_IS_DELETED,
+              PSO_OBJECT_IS_DELETED,
               errcode );
       errcode = -1;
       goto end;
@@ -293,7 +293,7 @@ int Test6()
 end:
 
    vdsCommit( g_session1 );
-   if ( q1 != NULL ) vdsQueueClose( q1 );
+   if ( q1 != NULL ) psoQueueClose( q1 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -306,21 +306,21 @@ end:
 int Test7()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL; 
+   PSO_HANDLE q1 = NULL; 
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OK,
+              PSO_OK,
               errcode );
       goto end;
    }
@@ -328,7 +328,7 @@ int Test7()
 end:
 
    vdsCommit( g_session1 );
-   if ( q1 != NULL ) vdsQueueClose( q1 );
+   if ( q1 != NULL ) psoQueueClose( q1 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -341,24 +341,24 @@ end:
 int Test8()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL;
+   PSO_HANDLE q1 = NULL;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_NO_SUCH_OBJECT ) {
+   errcode = psoQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_NO_SUCH_OBJECT ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_NO_SUCH_OBJECT,
+              PSO_NO_SUCH_OBJECT,
               errcode );
       errcode = -1;
       goto end;
@@ -368,7 +368,7 @@ int Test8()
 end:
 
    vdsCommit( g_session1 );
-   if ( q1 != NULL ) vdsQueueClose( q1 );
+   if ( q1 != NULL ) psoQueueClose( q1 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -381,24 +381,24 @@ end:
 int Test9()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL;
+   PSO_HANDLE q1 = NULL;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsRollback( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OK,
+              PSO_OK,
               errcode );
       goto end;
    }
@@ -406,7 +406,7 @@ int Test9()
 end:
 
    vdsCommit( g_session1 );
-   if ( q1 != NULL ) vdsQueueClose( q1 );
+   if ( q1 != NULL ) psoQueueClose( q1 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -419,24 +419,24 @@ end:
 int Test10()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL;
+   PSO_HANDLE q1 = NULL;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsRollback( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OK,
+              PSO_OK,
               errcode );
       goto end;
    }
@@ -444,7 +444,7 @@ int Test10()
 end:
 
    vdsCommit( g_session1 );
-   if ( q1 != NULL ) vdsQueueClose( q1 );
+   if ( q1 != NULL ) psoQueueClose( q1 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -459,12 +459,12 @@ int Test11()
    int errcode = 0;
 
    errcode = vdsCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_queueDef );
-   if ( errcode != VDS_NO_SUCH_FOLDER ) {
+   if ( errcode != PSO_NO_SUCH_FOLDER ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_NO_SUCH_FOLDER,
+              PSO_NO_SUCH_FOLDER,
               errcode );
       errcode = -1;
       goto end;
@@ -491,15 +491,15 @@ int Test12()
    int errcode = 0;
 
    errcode = vdsCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OK,
+              PSO_OK,
               errcode );
       goto end;
    }
@@ -524,15 +524,15 @@ int Test13()
    int errcode = 0;
 
    errcode = vdsCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsRollback( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_queueDef );
-   if ( errcode != VDS_NO_SUCH_FOLDER ) {
+   if ( errcode != PSO_NO_SUCH_FOLDER ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_NO_SUCH_FOLDER,
+              PSO_NO_SUCH_FOLDER,
               errcode );
       errcode = -1;
       goto end;
@@ -557,23 +557,23 @@ end:
 int Test21()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL;
+   PSO_HANDLE q1 = NULL;
    char str[25];
    size_t returnLength;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePush( q1, "1234567890123", 14 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePush( q1, "1234567890123", 14 );
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueuePop( q1, str, 25, &returnLength );
-   if ( errcode != VDS_ITEM_IS_IN_USE ) {
+   errcode = psoQueuePop( q1, str, 25, &returnLength );
+   if ( errcode != PSO_ITEM_IS_IN_USE ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_ITEM_IS_IN_USE,
+              PSO_ITEM_IS_IN_USE,
               errcode );
       goto end;
    }
@@ -582,7 +582,7 @@ int Test21()
 end:
 
    vdsCommit( g_session1 );
-   vdsQueueClose( q1 );
+   psoQueueClose( q1 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -595,26 +595,26 @@ end:
 int Test22()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL, q2 = NULL;
+   PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
    size_t returnLength;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q2 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q2 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePush( q1, "1234567890123", 14 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePush( q1, "1234567890123", 14 );
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueuePop( q2, str, 25, &returnLength );
-   if ( errcode != VDS_ITEM_IS_IN_USE ) {
+   errcode = psoQueuePop( q2, str, 25, &returnLength );
+   if ( errcode != PSO_ITEM_IS_IN_USE ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_ITEM_IS_IN_USE, 
+              PSO_ITEM_IS_IN_USE, 
               errcode );
       goto end;
    }
@@ -623,8 +623,8 @@ int Test22()
 end:
 
    vdsCommit( g_session1 );
-   vdsQueueClose( q1 );
-   vdsQueueClose( q2 );
+   psoQueueClose( q1 );
+   psoQueueClose( q2 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -637,30 +637,30 @@ end:
 int Test23()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL, q2 = NULL;
+   PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
    size_t returnLength;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    // So that the object can be open by session 2
    errcode = vdsCommit( g_session1 ); 
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q2 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q2 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePush( q1, "1234567890123", 14 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePush( q1, "1234567890123", 14 );
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueuePop( q2, str, 25, &returnLength );
-   if ( errcode != VDS_ITEM_IS_IN_USE ) {
+   errcode = psoQueuePop( q2, str, 25, &returnLength );
+   if ( errcode != PSO_ITEM_IS_IN_USE ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_ITEM_IS_IN_USE, 
+              PSO_ITEM_IS_IN_USE, 
               errcode );
       errcode = -1;
       goto end;
@@ -670,8 +670,8 @@ int Test23()
 end:
 
    vdsCommit( g_session1 );
-   vdsQueueClose( q1 );
-   vdsQueueClose( q2 );
+   psoQueueClose( q1 );
+   psoQueueClose( q2 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -684,33 +684,33 @@ end:
 int Test24()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL, q2 = NULL;
+   PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
    size_t returnLength;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    // So that the object can be open by session 2
    errcode = vdsCommit( g_session1 ); 
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q2 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q2 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePush( q1, "1234567890123", 14 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePush( q1, "1234567890123", 14 );
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 ); 
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueuePop( q2, str, 25, &returnLength );
-   if ( errcode != VDS_OK ) {
+   errcode = psoQueuePop( q2, str, 25, &returnLength );
+   if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OK, 
+              PSO_OK, 
               errcode );
       goto end;
    }
@@ -719,8 +719,8 @@ end:
 
    vdsCommit( g_session1 );
    vdsCommit( g_session2 );
-   vdsQueueClose( q1 );
-   vdsQueueClose( q2 );
+   psoQueueClose( q1 );
+   psoQueueClose( q2 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session2 );
    vdsCommit( g_session1 );
@@ -734,30 +734,30 @@ end:
 int Test25()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL;
+   PSO_HANDLE q1 = NULL;
    char str[25];
    size_t returnLength;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );   
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
    // So that the object can be open by session 2
    errcode = vdsCommit( g_session1 ); 
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePush( q1, "1234567890123", 14 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePush( q1, "1234567890123", 14 );
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsRollback( g_session1 ); 
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueuePop( q1,  str, 25, &returnLength );
-   if ( errcode != VDS_IS_EMPTY ) {
+   errcode = psoQueuePop( q1,  str, 25, &returnLength );
+   if ( errcode != PSO_IS_EMPTY ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_IS_EMPTY, 
+              PSO_IS_EMPTY, 
               errcode );
       errcode = -1;
       goto end;
@@ -767,7 +767,7 @@ int Test25()
 end:
 
    vdsCommit( g_session1 );
-   vdsQueueClose( q1 );
+   psoQueueClose( q1 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -780,30 +780,30 @@ end:
 int Test26()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL;
+   PSO_HANDLE q1 = NULL;
    char str[25];
    size_t returnLength;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePush( q1, "1234567890123", 14 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePush( q1, "1234567890123", 14 );
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePop( q1,  str, 25, &returnLength );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePop( q1,  str, 25, &returnLength );
+   if ( errcode != PSO_OK ) goto end;
 
    // A bit trivial...
-   errcode = vdsQueuePop( q1,  str, 25, &returnLength );
-   if ( errcode != VDS_ITEM_IS_IN_USE ) {
+   errcode = psoQueuePop( q1,  str, 25, &returnLength );
+   if ( errcode != PSO_ITEM_IS_IN_USE ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_ITEM_IS_IN_USE, 
+              PSO_ITEM_IS_IN_USE, 
               errcode );
       errcode = -1;
       goto end;
@@ -813,7 +813,7 @@ int Test26()
 end:
 
    vdsCommit( g_session1 );
-   vdsQueueClose( q1 );
+   psoQueueClose( q1 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -826,32 +826,32 @@ end:
 int Test27()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL, q2 = NULL;
+   PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
    size_t returnLength;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q2 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q2 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePush( q1, "1234567890123", 14 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePush( q1, "1234567890123", 14 );
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePop( q1,  str, 25, &returnLength );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePop( q1,  str, 25, &returnLength );
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueuePop( q2, str, 25, &returnLength );
-   if ( errcode != VDS_ITEM_IS_IN_USE ) {
+   errcode = psoQueuePop( q2, str, 25, &returnLength );
+   if ( errcode != PSO_ITEM_IS_IN_USE ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_ITEM_IS_IN_USE, 
+              PSO_ITEM_IS_IN_USE, 
               errcode );
       errcode = -1;
       goto end;
@@ -861,8 +861,8 @@ int Test27()
 end:
 
    vdsCommit( g_session1 );
-   vdsQueueClose( q1 );
-   vdsQueueClose( q2 );
+   psoQueueClose( q1 );
+   psoQueueClose( q2 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -875,32 +875,32 @@ end:
 int Test28()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL, q2 = NULL;
+   PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
    size_t returnLength;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePush( q1, "1234567890123", 14 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePush( q1, "1234567890123", 14 );
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q2 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q2 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePop( q1,  str, 25, &returnLength );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePop( q1,  str, 25, &returnLength );
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueuePop( q2, str, 25, &returnLength );
-   if ( errcode != VDS_ITEM_IS_IN_USE ) {
+   errcode = psoQueuePop( q2, str, 25, &returnLength );
+   if ( errcode != PSO_ITEM_IS_IN_USE ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_ITEM_IS_IN_USE, 
+              PSO_ITEM_IS_IN_USE, 
               errcode );
       errcode = -1;
       goto end;
@@ -910,8 +910,8 @@ int Test28()
 end:
 
    vdsCommit( g_session1 );
-   vdsQueueClose( q1 );
-   vdsQueueClose( q2 );
+   psoQueueClose( q1 );
+   psoQueueClose( q2 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -924,35 +924,35 @@ end:
 int Test29()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL, q2 = NULL;
+   PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
    size_t returnLength;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePush( q1, "1234567890123", 14 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePush( q1, "1234567890123", 14 );
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q2 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q2 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePop( q1,  str, 25, &returnLength );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePop( q1,  str, 25, &returnLength );
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueuePop( q2, str, 25, &returnLength );
-   if ( errcode != VDS_IS_EMPTY ) {
+   errcode = psoQueuePop( q2, str, 25, &returnLength );
+   if ( errcode != PSO_IS_EMPTY ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_IS_EMPTY, 
+              PSO_IS_EMPTY, 
               errcode );
       errcode = -1;
       goto end;
@@ -962,8 +962,8 @@ int Test29()
 end:
 
    vdsCommit( g_session1 );
-   vdsQueueClose( q1 );
-   vdsQueueClose( q2 );
+   psoQueueClose( q1 );
+   psoQueueClose( q2 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -976,32 +976,32 @@ end:
 int Test30()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL;
+   PSO_HANDLE q1 = NULL;
    char str[25];
    size_t returnLength;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePush( q1, "1234567890123", 14 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePush( q1, "1234567890123", 14 );
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePop( q1,  str, 25, &returnLength );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePop( q1,  str, 25, &returnLength );
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsRollback( g_session1 ); 
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePop( q1,  str, 25, &returnLength );
-   if ( errcode != VDS_OK ) {
+   errcode = psoQueuePop( q1,  str, 25, &returnLength );
+   if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OK, 
+              PSO_OK, 
               errcode );
       goto end;
    }
@@ -1009,7 +1009,7 @@ int Test30()
 end:
 
    vdsCommit( g_session1 );
-   vdsQueueClose( q1 );
+   psoQueueClose( q1 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -1022,35 +1022,35 @@ end:
 int Test31()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL, q2 = NULL;
+   PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
    size_t returnLength;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePush( q1, "1234567890123", 14 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePush( q1, "1234567890123", 14 );
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q2 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q2 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePop( q1,  str, 25, &returnLength );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePop( q1,  str, 25, &returnLength );
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsRollback( g_session1 ); 
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePop( q2, str, 25, &returnLength );
-   if ( errcode != VDS_OK ) {
+   errcode = psoQueuePop( q2, str, 25, &returnLength );
+   if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OK, 
+              PSO_OK, 
               errcode );
       goto end;
    }
@@ -1058,8 +1058,8 @@ int Test31()
 end:
 
    vdsCommit( g_session1 );
-   vdsQueueClose( q1 );
-   vdsQueueClose( q2 );
+   psoQueueClose( q1 );
+   psoQueueClose( q2 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
 
@@ -1072,35 +1072,35 @@ end:
 int Test32()
 {
    int errcode = 0;
-   VDS_HANDLE q1 = NULL, q2 = NULL;
+   PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
    size_t returnLength;
    
    errcode = vdsCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
    
-   errcode = vdsQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePush( q1, "1234567890123", 14 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePush( q1, "1234567890123", 14 );
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsCommit( g_session1 );
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q2 );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueueOpen( g_session2, "A_Queue", strlen("A_Queue"), &q2 );
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePop( q1,  str, 25, &returnLength );
-   if ( errcode != VDS_OK ) goto end;
+   errcode = psoQueuePop( q1,  str, 25, &returnLength );
+   if ( errcode != PSO_OK ) goto end;
 
    errcode = vdsRollback( g_session1 ); 
-   if ( errcode != VDS_OK ) goto end;
+   if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsQueuePop( q2, str, 25, &returnLength );
-   if ( errcode != VDS_OK ) {
+   errcode = psoQueuePop( q2, str, 25, &returnLength );
+   if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
-              VDS_OK, 
+              PSO_OK, 
               errcode );
       goto end;
    }
@@ -1109,8 +1109,8 @@ end:
 
    vdsCommit( g_session1 );
    vdsCommit( g_session2 );
-   vdsQueueClose( q1 );
-   vdsQueueClose( q2 );
+   psoQueueClose( q1 );
+   psoQueueClose( q2 );
    vdsDestroyObject( g_session1, "A_Queue", strlen("A_Queue") ); 
    vdsCommit( g_session1 );
    vdsCommit( g_session2 );
@@ -1193,18 +1193,18 @@ int main(int argc, char *argv[])
    else {
       errcode = vdsInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       printf( " Error opening VDS = %d\n", errcode );
       return -1;
    }
    
    errcode = vdsInitSession( &g_session1 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       printf( " Error opening session 1 = %d\n", errcode );
       return -1;
    }
    errcode = vdsInitSession( &g_session2 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       printf( " Error opening session 2 = %d\n", errcode );
       return -1;
    }

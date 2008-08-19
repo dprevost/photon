@@ -34,7 +34,7 @@ extern pscErrMsgHandle g_wdErrorHandle;
 
 void vdswMemoryManagerInit( vdswMemoryManager * pManager )
 {
-   VDS_PRE_CONDITION( pManager != NULL );
+   PSO_PRE_CONDITION( pManager != NULL );
 
    pManager->memorySizeKB = 0;
    pManager->pMemoryAddress = NULL;
@@ -45,7 +45,7 @@ void vdswMemoryManagerInit( vdswMemoryManager * pManager )
 
 void vdswMemoryManagerFini( vdswMemoryManager * pManager )
 {
-   VDS_PRE_CONDITION( pManager != NULL );
+   PSO_PRE_CONDITION( pManager != NULL );
 
    pManager->memorySizeKB = 0;
    pManager->pMemoryAddress = NULL;
@@ -73,13 +73,13 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    bool ok;
    
    /* Very unlikely but just in case... */
-   VDS_PRE_CONDITION( pManager       != NULL );
-   VDS_PRE_CONDITION( memoryFileName != NULL );
-   VDS_PRE_CONDITION( ppHeader       != NULL );
-   VDS_PRE_CONDITION( pContext       != NULL );
-   VDS_PRE_CONDITION( memorySizekb > 0 );
+   PSO_PRE_CONDITION( pManager       != NULL );
+   PSO_PRE_CONDITION( memoryFileName != NULL );
+   PSO_PRE_CONDITION( ppHeader       != NULL );
+   PSO_PRE_CONDITION( pContext       != NULL );
+   PSO_PRE_CONDITION( memorySizekb > 0 );
 
-   VDS_INV_CONDITION( sizeof(psnMemoryHeader) <= PSN_BLOCK_SIZE );
+   PSO_INV_CONDITION( sizeof(psnMemoryHeader) <= PSN_BLOCK_SIZE );
    
    *ppHeader = NULL;
    pManager->memorySizeKB = memorySizekb;   
@@ -89,7 +89,7 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    pscBackStoreStatus( &pManager->memory, &fileStatus );
    
    ok = pscCreateBackstore( &pManager->memory, filePerms, &pContext->errorHandler );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       pscChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
@@ -98,7 +98,7 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    }
 
    ok = pscOpenMemFile( &pManager->memory, &pManager->pMemoryAddress, &pContext->errorHandler );   
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       pscChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
@@ -125,7 +125,7 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    if ( errcode != 0 ) {
       (*ppHeader) = NULL;
       pscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
+                    g_psoErrorHandle,
                     errcode );
       return false;
    }
@@ -135,8 +135,8 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    if ( ptr == NULL ) {
       (*ppHeader) = NULL;
       pscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
-                    VDS_NOT_ENOUGH_VDS_MEMORY );
+                    g_psoErrorHandle,
+                    PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
    pFolder = (psnFolder *) ptr;
@@ -145,7 +145,7 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
                                 PSN_IDENT_FOLDER,
                                 &pFolder->blockGroup,
                                 1 );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pContext->errorHandler,
                     g_wdErrorHandle,
                     errcode );
@@ -164,8 +164,8 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
                       SET_OFFSET(&pFolder->memObject),
                       25, 
                       pContext );
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
       return false;
    }   
    (*ppHeader)->treeMgrOffset = SET_OFFSET( ptr );
@@ -173,22 +173,22 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    (*ppHeader)->topDescriptor.offset = SET_OFFSET( ptr );
    (*ppHeader)->topDescriptor.nodeOffset = SET_OFFSET( &pFolder->nodeObject );
    (*ppHeader)->topDescriptor.memOffset = SET_OFFSET( &pFolder->memObject );
-   (*ppHeader)->topDescriptor.apiType = VDS_FOLDER;
+   (*ppHeader)->topDescriptor.apiType = PSO_FOLDER;
 
    /* The Garbage Collection manager */
    ptr = psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 1, pContext );
    if ( ptr == NULL ) {
       (*ppHeader) = NULL;
       pscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
-                    VDS_NOT_ENOUGH_VDS_MEMORY );
+                    g_psoErrorHandle,
+                    PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
 
    processManager = (psnProcMgr *) ptr;
    
    ok = psnProcMgrInit( processManager, pContext );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       (*ppHeader) = NULL;
       /* The error is set in the function itself */
@@ -226,7 +226,7 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    localtime_r( &t, &formattedTime );
    strftime( (*ppHeader)->creationTime, 30, "%Y-%m-%d %H:%M:%S %Z", &formattedTime );
 
-#if VDS_USE_GCC 
+#if PSO_USE_GCC 
 #  if defined(__GNUC_PATCHLEVEL__)
    sprintf( (*ppHeader)->compilerVersion, "%d.%d.%d", __GNUC__, 
       __GNUC_MINOR__, __GNUC_PATCHLEVEL__ );
@@ -234,15 +234,15 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    sprintf( (*ppHeader)->compilerVersion, "%d.%d", __GNUC__, __GNUC_MINOR__ );
 #  endif
 #endif
-#if VDS_USE_XLC
+#if PSO_USE_XLC
    sprintf( (*ppHeader)->compilerVersion, "%d.%d", __xlc__/0xff, 
       __xlc__ % 0xff );
 #endif
-#if VDS_USE_ICC
+#if PSO_USE_ICC
    sprintf( (*ppHeader)->compilerVersion, "%d.%d.%d", __INTEL_COMPILER/100, 
       (__INTEL_COMPILER/10) % 10, __INTEL_COMPILER % 100 );
 #endif
-#if VDS_USE_PATHSCALE
+#if PSO_USE_PATHSCALE
    sprintf( (*ppHeader)->compilerVersion, "%d.%d.%d", __PATHCC__, 
       __PATHCC_MINOR__, __PATHCC_PATCHLEVEL__ );
 #endif
@@ -267,11 +267,11 @@ bool vdswOpenVDS( vdswMemoryManager  * pManager,
    pscMemoryFileStatus fileStatus;
    pscErrorHandler errorHandler;
    
-   VDS_PRE_CONDITION( pManager       != NULL );
-   VDS_PRE_CONDITION( memoryFileName != NULL );
-   VDS_PRE_CONDITION( ppHeader       != NULL );
-   VDS_PRE_CONDITION( pContext       != NULL );
-   VDS_PRE_CONDITION( memorySizekb > 0 );
+   PSO_PRE_CONDITION( pManager       != NULL );
+   PSO_PRE_CONDITION( memoryFileName != NULL );
+   PSO_PRE_CONDITION( ppHeader       != NULL );
+   PSO_PRE_CONDITION( pContext       != NULL );
+   PSO_PRE_CONDITION( memorySizekb > 0 );
 
    *ppHeader = NULL;
    pManager->memorySizeKB = memorySizekb;
@@ -292,7 +292,7 @@ bool vdswOpenVDS( vdswMemoryManager  * pManager,
    ok = pscOpenMemFile( &pManager->memory, 
                          &pManager->pMemoryAddress, 
                          &errorHandler );   
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       pscChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
@@ -321,8 +321,8 @@ bool vdswOpenVDS( vdswMemoryManager  * pManager,
 void vdswCloseVDS( vdswMemoryManager * pManager,
                    pscErrorHandler  * pError )
 {
-   VDS_PRE_CONDITION( pManager != NULL );
-   VDS_PRE_CONDITION( pError   != NULL );
+   PSO_PRE_CONDITION( pManager != NULL );
+   PSO_PRE_CONDITION( pError   != NULL );
 
    pscCloseMemFile( &pManager->memory, pError );
 }

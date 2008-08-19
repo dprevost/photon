@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds>
+#include <photon/photon>
 #include <iostream>
 
 using namespace std;
@@ -37,31 +37,31 @@ struct dummy {
 
 int main( int argc, char * argv[] )
 {
-   vdsProcess process;
-   vdsSession session;
-   vdsQueue queue(session);
+   psoProcess process;
+   psoSession session;
+   psoQueue queue(session);
    string fname = "/cpp_queue_definition";
    string hname = fname + "/test";
 
    struct dummy data;
    size_t len;
-   vdsObjectDefinition * pDef = NULL;
-   vdsObjectDefinition * pDefQueue = NULL;
-   vdsObjectDefinition folderDef;
+   psoObjectDefinition * pDef = NULL;
+   psoObjectDefinition * pDefQueue = NULL;
+   psoObjectDefinition folderDef;
    
    memset( &folderDef, 0, sizeof(folderDef) );
-   folderDef.type = VDS_FOLDER;
+   folderDef.type = PSO_FOLDER;
    
-   len = offsetof( vdsObjectDefinition, fields ) + 
-      5 * sizeof(vdsFieldDefinition);
-   pDefQueue = (vdsObjectDefinition *)calloc( len, 1 );
-   pDefQueue->type = VDS_QUEUE;
+   len = offsetof( psoObjectDefinition, fields ) + 
+      5 * sizeof(psoFieldDefinition);
+   pDefQueue = (psoObjectDefinition *)calloc( len, 1 );
+   pDefQueue->type = PSO_QUEUE;
    pDefQueue->numFields = 5;
-   pDefQueue->fields[0].type = VDS_INTEGER;
-   pDefQueue->fields[1].type = VDS_INTEGER;
-   pDefQueue->fields[2].type = VDS_STRING;
-   pDefQueue->fields[3].type = VDS_INTEGER;
-   pDefQueue->fields[4].type = VDS_VAR_BINARY;
+   pDefQueue->fields[0].type = PSO_INTEGER;
+   pDefQueue->fields[1].type = PSO_INTEGER;
+   pDefQueue->fields[2].type = PSO_STRING;
+   pDefQueue->fields[3].type = PSO_INTEGER;
+   pDefQueue->fields[4].type = PSO_VAR_BINARY;
 
    pDefQueue->fields[0].length = 1;
    pDefQueue->fields[1].length = 4;
@@ -87,7 +87,7 @@ int main( int argc, char * argv[] )
       queue.Open( hname );
       queue.Push( &data, sizeof(data) );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -101,8 +101,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NULL_POINTER ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -112,7 +112,7 @@ int main( int argc, char * argv[] )
    try {
       queue.Definition( &pDef );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

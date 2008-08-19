@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 
 const bool expectedToPass = true;
@@ -25,133 +25,133 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE sessionHandle, folderHandle;
+   PSO_HANDLE sessionHandle, folderHandle;
    int errcode;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/afcr",
                               strlen("/afcr"),
                               &def );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderOpen( sessionHandle,
+   errcode = psoFolderOpen( sessionHandle,
                             "/afcr",
                             strlen("/afcr"),
                             &folderHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsFolderCreateObject( folderHandle,
+   errcode = psoFolderCreateObject( folderHandle,
                                     NULL,
                                     strlen("afcr"),
                                     &def );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsFolderCreateObject( folderHandle,
+   errcode = psoFolderCreateObject( folderHandle,
                                     "afcr",
                                     0,
                                     &def );
-   if ( errcode != VDS_INVALID_LENGTH ) {
+   if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    def.type = 0;
-   errcode = vdsFolderCreateObject( folderHandle,
+   errcode = psoFolderCreateObject( folderHandle,
                                     "afcr",
                                     strlen("afcr"),
                                     &def );
-   if ( errcode != VDS_WRONG_OBJECT_TYPE ) {
+   if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   def.type = VDS_FOLDER;
+   def.type = PSO_FOLDER;
    
-   errcode = vdsFolderCreateObject( folderHandle,
+   errcode = psoFolderCreateObject( folderHandle,
                                     "afcr",
                                     strlen("afcr"),
                                     NULL );
-   if ( errcode != VDS_NULL_POINTER ) {
+   if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* End of invalid args. This call should succeed. */
-   errcode = vdsFolderCreateObject( folderHandle,
+   errcode = psoFolderCreateObject( folderHandle,
                                     "afcr",
                                     strlen("afcr"),
                                     &def );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Close the folder and try to act on it */
    
-   errcode = vdsFolderClose( folderHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoFolderClose( folderHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsFolderCreateObject( folderHandle,
+   errcode = psoFolderCreateObject( folderHandle,
                                     "afcr2",
                                     strlen("afcr2"),
                                     &def );
-   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Reopen the folder, close the process and try to act on the session */
 
-   errcode = vdsFolderOpen( sessionHandle,
+   errcode = psoFolderOpen( sessionHandle,
                             "/afcr",
                             strlen("/afcr"),
                             &folderHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   vdsExit();
+   psoExit();
    
-   errcode = vdsFolderCreateObject( folderHandle,
+   errcode = psoFolderCreateObject( folderHandle,
                                     "afcr3",
                                     strlen("afcr3"),
                                     &def );
-   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+   if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

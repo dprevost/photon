@@ -31,7 +31,7 @@ void psnFolderReleaseNoLock( psnFolder         * pFolder,
                               psnSessionContext * pContext );
 
 static 
-vdsErrors psnValidateString( const char * objectName,
+psoErrors psnValidateString( const char * objectName,
                               size_t            strLength, 
                               size_t          * pPartialLength,
                               bool            * pLastIteration );
@@ -40,7 +40,7 @@ vdsErrors psnValidateString( const char * objectName,
 
 void psnFolderCommitEdit( psnFolder         * pFolder,
                            psnHashItem       * pHashItem, 
-                           enum vdsObjectType   objectType,
+                           enum psoObjectType   objectType,
                            psnSessionContext * pContext )
 {
    psnObjectDescriptor * pDesc, * pDescLatest;
@@ -49,16 +49,16 @@ void psnFolderCommitEdit( psnFolder         * pFolder,
    psnTreeNode * node;
    psnTxStatus * tx;
    
-   VDS_PRE_CONDITION( pFolder   != NULL );
-   VDS_PRE_CONDITION( pHashItem != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( objectType == PSN_IDENT_MAP );
+   PSO_PRE_CONDITION( pFolder   != NULL );
+   PSO_PRE_CONDITION( pHashItem != NULL );
+   PSO_PRE_CONDITION( pContext  != NULL );
+   PSO_PRE_CONDITION( objectType == PSN_IDENT_MAP );
 
    GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
 
    pMapEdit = GET_PTR_FAST( pDesc->offset, psnMap );
    
-   VDS_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
+   PSO_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
    
    pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, psnHashItem );
    pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
@@ -90,44 +90,44 @@ void psnFolderCommitEdit( psnFolder         * pFolder,
 bool psnFolderCreateObject( psnFolder          * pFolder,
                              const char          * objectName,
                              size_t                nameLengthInBytes,
-                             vdsObjectDefinition * pDefinition,
+                             psoObjectDefinition * pDefinition,
                              psnSessionContext  * pContext )
 {
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    size_t strLength, i;
    size_t first = 0;
    const char * name = objectName;
    char * lowerName = NULL;
    bool ok;
    
-   VDS_PRE_CONDITION( pFolder     != NULL );
-   VDS_PRE_CONDITION( objectName  != NULL );
-   VDS_PRE_CONDITION( pContext    != NULL );
-   VDS_PRE_CONDITION( pDefinition != NULL );
-   VDS_PRE_CONDITION( pDefinition->type > 0 && 
-                      pDefinition->type < VDS_LAST_OBJECT_TYPE );
+   PSO_PRE_CONDITION( pFolder     != NULL );
+   PSO_PRE_CONDITION( objectName  != NULL );
+   PSO_PRE_CONDITION( pContext    != NULL );
+   PSO_PRE_CONDITION( pDefinition != NULL );
+   PSO_PRE_CONDITION( pDefinition->type > 0 && 
+                      pDefinition->type < PSO_LAST_OBJECT_TYPE );
    
    strLength = nameLengthInBytes;
 
-   if ( strLength > VDS_MAX_NAME_LENGTH ) {
-      errcode = VDS_OBJECT_NAME_TOO_LONG;
+   if ( strLength > PSO_MAX_NAME_LENGTH ) {
+      errcode = PSO_OBJECT_NAME_TOO_LONG;
       goto error_handler;
    }
    if ( strLength == 0 ) {
-      errcode = VDS_INVALID_OBJECT_NAME;
+      errcode = PSO_INVALID_OBJECT_NAME;
       goto error_handler;
    }
 
    lowerName = (char*)malloc( (strLength+1)*sizeof(char) );
    if ( lowerName == NULL ) {
-      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
       goto error_handler;
    }
 
    /* lowecase the string and check for separators */
    for ( i = 0; i < strLength; ++i ) {
       if ( name[i] == '/' || name[i] == '\\' ) {
-         errcode = VDS_INVALID_OBJECT_NAME;
+         errcode = PSO_INVALID_OBJECT_NAME;
          goto error_handler;
       }
       lowerName[i] = (char) tolower( name[i] );
@@ -148,11 +148,11 @@ bool psnFolderCreateObject( psnFolder          * pFolder,
                                    1, /* numBlocks, */
                                    0, /* expectedNumOfChilds, */
                                    pContext );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler;
    }
    else {
-      errcode = VDS_ENGINE_BUSY;
+      errcode = PSO_ENGINE_BUSY;
       goto error_handler;
    }
    
@@ -168,8 +168,8 @@ error_handler:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return false;
@@ -223,7 +223,7 @@ bool psnFolderDeleteObject( psnFolder         * pFolder,
 {
    bool lastIteration = true;
    size_t partialLength = 0;
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    psnObjectDescriptor* pDesc = NULL;
    psnHashItem* pHashItem = NULL;
    psnTxStatus* txStatus;
@@ -232,17 +232,17 @@ bool psnFolderDeleteObject( psnFolder         * pFolder,
    size_t bucket;
    bool found, ok;
    
-   VDS_PRE_CONDITION( pFolder    != NULL );
-   VDS_PRE_CONDITION( objectName != NULL );
-   VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
+   PSO_PRE_CONDITION( pFolder    != NULL );
+   PSO_PRE_CONDITION( objectName != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( strLength > 0 );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
    errcode = psnValidateString( objectName, 
                                  strLength, 
                                  &partialLength, 
                                  &lastIteration );
-   if ( errcode != VDS_OK ) goto the_exit;
+   if ( errcode != PSO_OK ) goto the_exit;
 
    found = psnHashGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
@@ -252,10 +252,10 @@ bool psnFolderDeleteObject( psnFolder         * pFolder,
                         pContext );
    if ( ! found ) {
       if (lastIteration) {
-         errcode = VDS_NO_SUCH_OBJECT;
+         errcode = PSO_NO_SUCH_OBJECT;
       }
       else {
-         errcode = VDS_NO_SUCH_FOLDER;
+         errcode = PSO_NO_SUCH_FOLDER;
       }
       goto the_exit;
    }
@@ -273,10 +273,10 @@ bool psnFolderDeleteObject( psnFolder         * pFolder,
        */
       if ( txStatus->txOffset != PSN_NULL_OFFSET ) {
          if ( txStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
-            errcode = VDS_NO_SUCH_OBJECT;
+            errcode = PSO_NO_SUCH_OBJECT;
          }
          else {
-            errcode = VDS_OBJECT_IS_IN_USE;
+            errcode = PSO_OBJECT_IS_IN_USE;
          }
          goto the_exit;
       }
@@ -290,10 +290,10 @@ bool psnFolderDeleteObject( psnFolder         * pFolder,
        *
        * Other objects contain data, not objects. 
        */
-      if ( pDesc->apiType == VDS_FOLDER ) {
+      if ( pDesc->apiType == PSO_FOLDER ) {
          GET_PTR( pDeletedFolder, pDesc->offset, psnFolder );
          if ( ! psnFolderDeletable( pDeletedFolder, pContext ) ) {
-            errcode = VDS_FOLDER_IS_NOT_EMPTY;
+            errcode = PSO_FOLDER_IS_NOT_EMPTY;
             goto the_exit;
          }
       }
@@ -306,7 +306,7 @@ bool psnFolderDeleteObject( psnFolder         * pFolder,
                          SET_OFFSET(pHashItem),
                          pMemObj->objType,
                          pContext );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto the_exit;
       
       psnTxStatusSetTx( txStatus, SET_OFFSET(pContext->pTransaction) );
@@ -322,8 +322,8 @@ bool psnFolderDeleteObject( psnFolder         * pFolder,
 
    /* This is not the last node. This node must be a folder, otherwise... */
    GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
-   if ( pDesc->apiType != VDS_FOLDER ) {
-      errcode = VDS_NO_SUCH_FOLDER;
+   if ( pDesc->apiType != PSO_FOLDER ) {
+      errcode = PSO_NO_SUCH_FOLDER;
       goto the_exit;
    }
 
@@ -339,13 +339,13 @@ bool psnFolderDeleteObject( psnFolder         * pFolder,
     */
    if ( ! psnTxStatusIsValid( txStatus, SET_OFFSET(pContext->pTransaction)) 
         || psnTxStatusIsMarkedAsDestroyed( txStatus ) ) {
-      errcode = VDS_NO_SUCH_FOLDER;
+      errcode = PSO_NO_SUCH_FOLDER;
       goto the_exit;
    }
 
    GET_PTR( pNextFolder, pDesc->offset, psnFolder );
    if ( ! psnLock(&pNextFolder->memObject, pContext) ) {
-      errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+      errcode = PSO_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
    
@@ -355,14 +355,14 @@ bool psnFolderDeleteObject( psnFolder         * pFolder,
                                 &objectName[partialLength+1],
                                 strLength - partialLength - 1,
                                 pContext );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    return ok;
    
 the_exit:
 
    /* pscSetError might have been already called by some other function */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    psnUnlock( &pFolder->memObject, pContext );
@@ -377,38 +377,38 @@ bool psnFolderDestroyObject( psnFolder         * pFolder,
                               size_t               nameLengthInBytes,
                               psnSessionContext * pContext )
 {
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    size_t strLength, i;
    size_t first = 0;
    const char * name = objectName;
    char * lowerName = NULL;
    bool ok;
    
-   VDS_PRE_CONDITION( pFolder    != NULL );
-   VDS_PRE_CONDITION( objectName != NULL );
-   VDS_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( pFolder    != NULL );
+   PSO_PRE_CONDITION( objectName != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
 
    strLength = nameLengthInBytes;
    
-   if ( strLength > VDS_MAX_NAME_LENGTH ) {
-      errcode = VDS_OBJECT_NAME_TOO_LONG;
+   if ( strLength > PSO_MAX_NAME_LENGTH ) {
+      errcode = PSO_OBJECT_NAME_TOO_LONG;
       goto error_handler;
    }
    if ( strLength == 0 ) {
-      errcode = VDS_INVALID_OBJECT_NAME;
+      errcode = PSO_INVALID_OBJECT_NAME;
       goto error_handler;
    }
 
    lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
    if ( lowerName == NULL ) {
-      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
       goto error_handler;
    }
 
    /* lowecase the string and check for separators */
    for ( i = 0; i < strLength; ++i ) {
       if ( name[i] == '/' || name[i] == '\\' ) {
-         errcode = VDS_INVALID_OBJECT_NAME;
+         errcode = PSO_INVALID_OBJECT_NAME;
          goto error_handler;
       }
       lowerName[i] = (char) tolower( name[i] );
@@ -425,11 +425,11 @@ bool psnFolderDestroyObject( psnFolder         * pFolder,
                                    &(lowerName[first]), 
                                    strLength,
                                    pContext );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler;
    }
    else {
-      errcode = VDS_ENGINE_BUSY;
+      errcode = PSO_ENGINE_BUSY;
       goto error_handler;
    }
    
@@ -445,8 +445,8 @@ error_handler:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return false;
@@ -457,7 +457,7 @@ error_handler:
 bool psnFolderEditObject( psnFolder         * pFolder,
                            const char         * objectName,
                            size_t               strLength,
-                           enum vdsObjectType   objectType,
+                           enum psoObjectType   objectType,
                            psnFolderItem     * pFolderItem,
                            psnSessionContext * pContext )
 {
@@ -465,7 +465,7 @@ bool psnFolderEditObject( psnFolder         * pFolder,
    size_t partialLength = 0, bucket = 0, descLength;
    psnObjectDescriptor * pDescOld = NULL, * pDescNew = NULL;
    psnHashItem * pHashItemOld = NULL, * pHashItemNew = NULL;
-   vdsErrors errcode;
+   psoErrors errcode;
    psnTxStatus * txStatus, * newTxStatus;
    psnTxStatus * txFolderStatus;
    psnFolder * pNextFolder;
@@ -475,19 +475,19 @@ bool psnFolderEditObject( psnFolder         * pFolder,
    psnMap * pMap;
    bool found, ok;
    
-   VDS_PRE_CONDITION( pFolder     != NULL );
-   VDS_PRE_CONDITION( objectName  != NULL )
-   VDS_PRE_CONDITION( pFolderItem != NULL );
-   VDS_PRE_CONDITION( pContext    != NULL );
-   VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
-   VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
+   PSO_PRE_CONDITION( pFolder     != NULL );
+   PSO_PRE_CONDITION( objectName  != NULL )
+   PSO_PRE_CONDITION( pFolderItem != NULL );
+   PSO_PRE_CONDITION( pContext    != NULL );
+   PSO_PRE_CONDITION( strLength > 0 );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
+   PSO_PRE_CONDITION( objectType > 0 && objectType < PSO_LAST_OBJECT_TYPE );
 
    errcode = psnValidateString( objectName, 
                                  strLength, 
                                  &partialLength, 
                                  &lastIteration );
-   if ( errcode != VDS_OK ) goto the_exit;
+   if ( errcode != PSO_OK ) goto the_exit;
    
    found = psnHashGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
@@ -497,10 +497,10 @@ bool psnFolderEditObject( psnFolder         * pFolder,
                         pContext );
    if ( ! found ) {
       if (lastIteration) {
-         errcode = VDS_NO_SUCH_OBJECT;
+         errcode = PSO_NO_SUCH_OBJECT;
       }
       else {
-         errcode = VDS_NO_SUCH_FOLDER;
+         errcode = PSO_NO_SUCH_FOLDER;
       }
       goto the_exit;
    }
@@ -526,44 +526,44 @@ bool psnFolderEditObject( psnFolder         * pFolder,
        */
       if ( txStatus->txOffset != PSN_NULL_OFFSET ) {
          if ( txStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
-            errcode = VDS_NO_SUCH_OBJECT;
+            errcode = PSO_NO_SUCH_OBJECT;
             goto the_exit;
          }
          if ( txStatus->status & PSN_TXS_EDIT ) {
-            errcode = VDS_A_SINGLE_UPDATER_IS_ALLOWED;
+            errcode = PSO_A_SINGLE_UPDATER_IS_ALLOWED;
             goto the_exit;
          }
          if ( txStatus->txOffset == SET_OFFSET(pContext->pTransaction) ) {
             if ( txStatus->status & PSN_TXS_DESTROYED ) {
-               errcode = VDS_OBJECT_IS_DELETED;
+               errcode = PSO_OBJECT_IS_DELETED;
                goto the_exit;
             }
             else if ( ! (txStatus->status & PSN_TXS_ADDED) ) {
-               errcode = VDS_OBJECT_IS_IN_USE;
+               errcode = PSO_OBJECT_IS_IN_USE;
                goto the_exit;
             }
          }
          else {
-            errcode = VDS_OBJECT_IS_IN_USE;
+            errcode = PSO_OBJECT_IS_IN_USE;
             goto the_exit;
          }
       }
       if ( objectType != pDescOld->apiType ) {
-         errcode = VDS_WRONG_OBJECT_TYPE;
+         errcode = PSO_WRONG_OBJECT_TYPE;
          goto the_exit;
       }
 
       switch( pDescOld->apiType ) {
-      case VDS_FAST_MAP:
+      case PSO_FAST_MAP:
          pMap = GET_PTR_FAST( pDescOld->offset, psnMap );
          if ( pMap->editVersion != PSN_NULL_OFFSET ) {
-            errcode = VDS_A_SINGLE_UPDATER_IS_ALLOWED;
+            errcode = PSO_A_SINGLE_UPDATER_IS_ALLOWED;
             goto the_exit;
          }
          memObjType = PSN_IDENT_MAP;
          break;
       default:
-         errcode = VDS_INTERNAL_ERROR;
+         errcode = PSO_INTERNAL_ERROR;
          goto the_exit;
       }
 
@@ -574,7 +574,7 @@ bool psnFolderEditObject( psnFolder         * pFolder,
                                                pMemObject->totalBlocks,
                                                pContext );
       if ( ptr == NULL ) {
-         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
+         errcode = PSO_NOT_ENOUGH_PSO_MEMORY;
          goto the_exit;
       }
       
@@ -584,7 +584,7 @@ bool psnFolderEditObject( psnFolder         * pFolder,
       if ( pDescNew == NULL ) {
          psnFreeBlocks( pContext->pAllocator, PSN_ALLOC_API_OBJ,
                          ptr, pMemObject->totalBlocks, pContext );
-         errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+         errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
          goto the_exit;
       }
       memcpy( pDescNew, pDescOld, descLength );
@@ -600,7 +600,7 @@ bool psnFolderEditObject( psnFolder         * pFolder,
                                   pContext );
       free( pDescNew );
       pDescNew = NULL;
-      if ( errcode != VDS_OK ) {
+      if ( errcode != PSO_OK ) {
          psnFreeBlocks( pContext->pAllocator, PSN_ALLOC_API_OBJ,
                          ptr, pMemObject->totalBlocks, pContext );
          free( pDescNew );
@@ -616,7 +616,7 @@ bool psnFolderEditObject( psnFolder         * pFolder,
                          SET_OFFSET(pHashItemNew),
                          memObjType,
                          pContext );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
          psnHashDelWithItem( &pFolder->hashObj, 
                               pHashItemNew,
@@ -639,13 +639,13 @@ bool psnFolderEditObject( psnFolder         * pFolder,
                            pHashItemNew,
                            pDescNew->originalName,
                            pContext );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
          pDescNew->nodeOffset = SET_OFFSET(ptr) + offsetof(psnMap,nodeObject);
          pDescNew->memOffset  = SET_OFFSET(ptr) + offsetof(psnMap,memObject);
          break;
 
       default:
-         errcode = VDS_INTERNAL_ERROR;
+         errcode = PSO_INTERNAL_ERROR;
          goto the_exit;
       }
 
@@ -673,21 +673,21 @@ bool psnFolderEditObject( psnFolder         * pFolder,
    }
    
    /* This is not the last node. This node must be a folder, otherwise... */
-   if ( pDescOld->apiType != VDS_FOLDER ) {
-      errcode = VDS_NO_SUCH_OBJECT;
+   if ( pDescOld->apiType != PSO_FOLDER ) {
+      errcode = PSO_NO_SUCH_OBJECT;
       goto the_exit;
    }
 
    errcode = psnTxTestObjectStatus( txStatus, 
                                      SET_OFFSET(pContext->pTransaction) );
-   if ( errcode != VDS_OK ) {
-      if ( errcode == VDS_NO_SUCH_OBJECT) errcode = VDS_NO_SUCH_FOLDER;
+   if ( errcode != PSO_OK ) {
+      if ( errcode == PSO_NO_SUCH_OBJECT) errcode = PSO_NO_SUCH_FOLDER;
       goto the_exit;
    }
 
    GET_PTR( pNextFolder, pDescOld->offset, psnFolder );
    if ( ! psnLock( &pNextFolder->memObject, pContext ) ) {
-      errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+      errcode = PSO_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
    psnUnlock( &pFolder->memObject, pContext );
@@ -698,7 +698,7 @@ bool psnFolderEditObject( psnFolder         * pFolder,
                               objectType,
                               pFolderItem,
                               pContext );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    
    return ok;
 
@@ -708,8 +708,8 @@ the_exit:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    psnUnlock( &pFolder->memObject, pContext );
@@ -722,9 +722,9 @@ the_exit:
 void psnFolderFini( psnFolder         * pFolder,
                      psnSessionContext * pContext )
 {
-   VDS_PRE_CONDITION( pFolder  != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
+   PSO_PRE_CONDITION( pFolder  != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
    psnHashFini( &pFolder->hashObj );
    psnTreeNodeFini( &pFolder->nodeObject );
@@ -738,7 +738,7 @@ void psnFolderFini( psnFolder         * pFolder,
 bool psnFolderGetDefinition( psnFolder          * pFolder,
                               const char          * objectName,
                               size_t                strLength,
-                              vdsObjectDefinition * pDefinition,
+                              psoObjectDefinition * pDefinition,
                               psnFieldDef       ** ppInternalDef,
                               psnSessionContext  * pContext )
 {
@@ -746,7 +746,7 @@ bool psnFolderGetDefinition( psnFolder          * pFolder,
    size_t partialLength = 0;
    psnObjectDescriptor * pDesc = NULL;
    psnHashItem * pHashItem = NULL;
-   vdsErrors errcode;
+   psoErrors errcode;
    psnTxStatus * txStatus;
    psnFolder * pNextFolder;
    psnMemObject * pMemObject;
@@ -754,19 +754,19 @@ bool psnFolderGetDefinition( psnFolder          * pFolder,
    size_t bucket;
    bool found, ok;
    
-   VDS_PRE_CONDITION( pFolder       != NULL );
-   VDS_PRE_CONDITION( objectName    != NULL )
-   VDS_PRE_CONDITION( pDefinition   != NULL );
-   VDS_PRE_CONDITION( ppInternalDef != NULL );
-   VDS_PRE_CONDITION( pContext      != NULL );
-   VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
+   PSO_PRE_CONDITION( pFolder       != NULL );
+   PSO_PRE_CONDITION( objectName    != NULL )
+   PSO_PRE_CONDITION( pDefinition   != NULL );
+   PSO_PRE_CONDITION( ppInternalDef != NULL );
+   PSO_PRE_CONDITION( pContext      != NULL );
+   PSO_PRE_CONDITION( strLength > 0 );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
    errcode = psnValidateString( objectName, 
                                  strLength, 
                                  &partialLength, 
                                  &lastIteration );
-   if ( errcode != VDS_OK ) goto the_exit;
+   if ( errcode != PSO_OK ) goto the_exit;
    
    found = psnHashGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
@@ -776,10 +776,10 @@ bool psnFolderGetDefinition( psnFolder          * pFolder,
                         pContext );
    if ( ! found ) {
       if (lastIteration) {
-         errcode = VDS_NO_SUCH_OBJECT;
+         errcode = PSO_NO_SUCH_OBJECT;
       }
       else {
-         errcode = VDS_NO_SUCH_FOLDER;
+         errcode = PSO_NO_SUCH_FOLDER;
       }
       goto the_exit;
    }
@@ -795,7 +795,7 @@ bool psnFolderGetDefinition( psnFolder          * pFolder,
 
       errcode = psnTxTestObjectStatus( txStatus, 
                                         SET_OFFSET(pContext->pTransaction) );
-      if ( errcode != VDS_OK ) goto the_exit;
+      if ( errcode != PSO_OK ) goto the_exit;
 
       GET_PTR( pMemObject, pDesc->memOffset, psnMemObject );
       if ( psnLock( pMemObject, pContext ) ) {
@@ -804,21 +804,21 @@ bool psnFolderGetDefinition( psnFolder          * pFolder,
 
          switch( pDesc->apiType ) {
 
-         case VDS_FOLDER:
+         case PSO_FOLDER:
             break;
-         case VDS_HASH_MAP:
+         case PSO_HASH_MAP:
             *ppInternalDef = GET_PTR_FAST(
                GET_PTR_FAST( pDesc->offset, psnHashMap)->dataDefOffset,
                psnFieldDef );
             pDefinition->numFields = 
                GET_PTR_FAST( pDesc->offset, psnHashMap)->numFields;
             break;
-         case VDS_QUEUE:
-         case VDS_LIFO:
+         case PSO_QUEUE:
+         case PSO_LIFO:
             pDefinition->numFields = 
                GET_PTR_FAST( pDesc->offset, psnQueue)->numFields;
             break;
-         case VDS_FAST_MAP:
+         case PSO_FAST_MAP:
             *ppInternalDef = GET_PTR_FAST(
                GET_PTR_FAST( pDesc->offset, psnMap)->dataDefOffset,
                psnFieldDef );
@@ -826,12 +826,12 @@ bool psnFolderGetDefinition( psnFolder          * pFolder,
                GET_PTR_FAST( pDesc->offset, psnMap)->numFields;
             break;
          default:
-            VDS_INV_CONDITION( pDesc_invalid_api_type );
+            PSO_INV_CONDITION( pDesc_invalid_api_type );
          }
          psnUnlock( pMemObject, pContext );
       }
       else {
-         errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+         errcode = PSO_OBJECT_CANNOT_GET_LOCK;
          goto the_exit;
       }
       
@@ -841,21 +841,21 @@ bool psnFolderGetDefinition( psnFolder          * pFolder,
    }
    
    /* This is not the last node. This node must be a folder, otherwise... */
-   if ( pDesc->apiType != VDS_FOLDER ) {
-      errcode = VDS_NO_SUCH_OBJECT;
+   if ( pDesc->apiType != PSO_FOLDER ) {
+      errcode = PSO_NO_SUCH_OBJECT;
       goto the_exit;
    }
 
    errcode = psnTxTestObjectStatus( txStatus, 
                                      SET_OFFSET(pContext->pTransaction) );
-   if ( errcode != VDS_OK ) {
-      if ( errcode == VDS_NO_SUCH_OBJECT) errcode = VDS_NO_SUCH_FOLDER;
+   if ( errcode != PSO_OK ) {
+      if ( errcode == PSO_NO_SUCH_OBJECT) errcode = PSO_NO_SUCH_FOLDER;
       goto the_exit;
    }
 
    GET_PTR( pNextFolder, pDesc->offset, psnFolder );
    if ( ! psnLock( &pNextFolder->memObject, pContext ) ) {
-      errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+      errcode = PSO_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
    psnUnlock( &pFolder->memObject, pContext );
@@ -866,7 +866,7 @@ bool psnFolderGetDefinition( psnFolder          * pFolder,
                                  pDefinition,
                                  ppInternalDef,
                                  pContext );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
 
    return ok;
 
@@ -876,8 +876,8 @@ the_exit:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    psnUnlock( &pFolder->memObject, pContext );
@@ -897,10 +897,10 @@ bool psnFolderGetFirst( psnFolder         * pFolder,
    ptrdiff_t  firstItemOffset;
    bool found;
 
-   VDS_PRE_CONDITION( pFolder  != NULL );
-   VDS_PRE_CONDITION( pItem    != NULL )
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
+   PSO_PRE_CONDITION( pFolder  != NULL );
+   PSO_PRE_CONDITION( pItem    != NULL )
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
    GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
 
@@ -916,7 +916,7 @@ bool psnFolderGetFirst( psnFolder         * pFolder,
          txItemStatus = &pHashItem->txStatus;
 
         if ( psnTxTestObjectStatus( txItemStatus, 
-            SET_OFFSET(pContext->pTransaction) ) == VDS_OK ) {
+            SET_OFFSET(pContext->pTransaction) ) == PSO_OK ) {
 
             txItemStatus->parentCounter++;
             txFolderStatus->usageCounter++;
@@ -935,12 +935,12 @@ bool psnFolderGetFirst( psnFolder         * pFolder,
       }
    }
    else {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
    
    psnUnlock( &pFolder->memObject, pContext );
-   pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
+   pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_IS_EMPTY );
 
    return false;
 }
@@ -958,12 +958,12 @@ bool psnFolderGetNext( psnFolder         * pFolder,
    ptrdiff_t  itemOffset;
    bool found;
 
-   VDS_PRE_CONDITION( pFolder  != NULL );
-   VDS_PRE_CONDITION( pItem    != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
-   VDS_PRE_CONDITION( pItem->pHashItem  != NULL );
-   VDS_PRE_CONDITION( pItem->itemOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pFolder  != NULL );
+   PSO_PRE_CONDITION( pItem    != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
+   PSO_PRE_CONDITION( pItem->pHashItem  != NULL );
+   PSO_PRE_CONDITION( pItem->itemOffset != PSN_NULL_OFFSET );
    
    GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
 
@@ -984,7 +984,7 @@ bool psnFolderGetNext( psnFolder         * pFolder,
          txItemStatus = &pHashItem->txStatus;
 
          if ( psnTxTestObjectStatus( txItemStatus, 
-            SET_OFFSET(pContext->pTransaction) ) == VDS_OK ) {
+            SET_OFFSET(pContext->pTransaction) ) == PSO_OK ) {
  
             txItemStatus->parentCounter++;
             txFolderStatus->usageCounter++;
@@ -1005,7 +1005,7 @@ bool psnFolderGetNext( psnFolder         * pFolder,
       }
    }
    else {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
    
@@ -1020,7 +1020,7 @@ bool psnFolderGetNext( psnFolder         * pFolder,
    psnFolderReleaseNoLock( pFolder, previousHashItem, pContext );
     
    psnUnlock( &pFolder->memObject, pContext );
-   pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
+   pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_REACHED_THE_END );
 
    return false;
 }
@@ -1030,7 +1030,7 @@ bool psnFolderGetNext( psnFolder         * pFolder,
 bool psnFolderGetObject( psnFolder         * pFolder,
                           const char         * objectName,
                           size_t               strLength,
-                          enum vdsObjectType   objectType,
+                          enum psoObjectType   objectType,
                           psnFolderItem     * pFolderItem,
                           psnSessionContext * pContext )
 {
@@ -1038,26 +1038,26 @@ bool psnFolderGetObject( psnFolder         * pFolder,
    size_t partialLength = 0;
    psnObjectDescriptor* pDesc = NULL;
    psnHashItem* pHashItem = NULL;
-   vdsErrors errcode;
+   psoErrors errcode;
    psnTxStatus * txStatus;
    psnTxStatus * txFolderStatus;
    psnFolder* pNextFolder;
    size_t bucket;
    bool found, ok;
    
-   VDS_PRE_CONDITION( pFolder     != NULL );
-   VDS_PRE_CONDITION( objectName  != NULL )
-   VDS_PRE_CONDITION( pFolderItem != NULL );
-   VDS_PRE_CONDITION( pContext    != NULL );
-   VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
-   VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
+   PSO_PRE_CONDITION( pFolder     != NULL );
+   PSO_PRE_CONDITION( objectName  != NULL )
+   PSO_PRE_CONDITION( pFolderItem != NULL );
+   PSO_PRE_CONDITION( pContext    != NULL );
+   PSO_PRE_CONDITION( strLength > 0 );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
+   PSO_PRE_CONDITION( objectType > 0 && objectType < PSO_LAST_OBJECT_TYPE );
 
    errcode = psnValidateString( objectName, 
                                  strLength, 
                                  &partialLength, 
                                  &lastIteration );
-   if ( errcode != VDS_OK ) goto the_exit;
+   if ( errcode != PSO_OK ) goto the_exit;
    
    found = psnHashGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
@@ -1067,10 +1067,10 @@ bool psnFolderGetObject( psnFolder         * pFolder,
                         pContext );
    if ( ! found ) {
       if (lastIteration) {
-         errcode = VDS_NO_SUCH_OBJECT;
+         errcode = PSO_NO_SUCH_OBJECT;
       }
       else {
-         errcode = VDS_NO_SUCH_FOLDER;
+         errcode = PSO_NO_SUCH_FOLDER;
       }
       goto the_exit;
    }
@@ -1087,10 +1087,10 @@ bool psnFolderGetObject( psnFolder         * pFolder,
 
       errcode = psnTxTestObjectStatus( txStatus, 
                                         SET_OFFSET(pContext->pTransaction) );
-      if ( errcode != VDS_OK ) goto the_exit;
+      if ( errcode != PSO_OK ) goto the_exit;
 
       if ( objectType != pDesc->apiType ) {
-         errcode = VDS_WRONG_OBJECT_TYPE;
+         errcode = PSO_WRONG_OBJECT_TYPE;
          goto the_exit;
       }
 
@@ -1104,21 +1104,21 @@ bool psnFolderGetObject( psnFolder         * pFolder,
    }
    
    /* This is not the last node. This node must be a folder, otherwise... */
-   if ( pDesc->apiType != VDS_FOLDER ) {
-      errcode = VDS_NO_SUCH_OBJECT;
+   if ( pDesc->apiType != PSO_FOLDER ) {
+      errcode = PSO_NO_SUCH_OBJECT;
       goto the_exit;
    }
    
    errcode = psnTxTestObjectStatus( txStatus, 
                                      SET_OFFSET(pContext->pTransaction) );
-   if ( errcode != VDS_OK ) {
-      if ( errcode == VDS_NO_SUCH_OBJECT) errcode = VDS_NO_SUCH_FOLDER;
+   if ( errcode != PSO_OK ) {
+      if ( errcode == PSO_NO_SUCH_OBJECT) errcode = PSO_NO_SUCH_FOLDER;
       goto the_exit;
    }
 
    GET_PTR( pNextFolder, pDesc->offset, psnFolder );
    if ( ! psnLock( &pNextFolder->memObject, pContext ) ) {
-      errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+      errcode = PSO_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
    psnUnlock( &pFolder->memObject, pContext );
@@ -1129,7 +1129,7 @@ bool psnFolderGetObject( psnFolder         * pFolder,
                              objectType,
                              pFolderItem,
                              pContext );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    
    return ok;
 
@@ -1139,8 +1139,8 @@ the_exit:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    psnUnlock( &pFolder->memObject, pContext );
@@ -1153,14 +1153,14 @@ the_exit:
 bool psnFolderGetStatus( psnFolder         * pFolder,
                           const char         * objectName,
                           size_t               strLength, 
-                          vdsObjStatus       * pStatus,
+                          psoObjStatus       * pStatus,
                           psnSessionContext * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0;
    psnObjectDescriptor * pDesc = NULL;
    psnHashItem * pHashItem = NULL;
-   vdsErrors errcode;
+   psoErrors errcode;
    psnTxStatus * txStatus;
    psnFolder * pNextFolder;
    psnMemObject * pMemObject;
@@ -1168,18 +1168,18 @@ bool psnFolderGetStatus( psnFolder         * pFolder,
    size_t bucket;
    bool found, ok;
    
-   VDS_PRE_CONDITION( pFolder    != NULL );
-   VDS_PRE_CONDITION( objectName != NULL )
-   VDS_PRE_CONDITION( pStatus    != NULL );
-   VDS_PRE_CONDITION( pContext   != NULL );
-   VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
+   PSO_PRE_CONDITION( pFolder    != NULL );
+   PSO_PRE_CONDITION( objectName != NULL )
+   PSO_PRE_CONDITION( pStatus    != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( strLength > 0 );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
    errcode = psnValidateString( objectName, 
                                  strLength, 
                                  &partialLength, 
                                  &lastIteration );
-   if ( errcode != VDS_OK ) goto the_exit;
+   if ( errcode != PSO_OK ) goto the_exit;
    
    found = psnHashGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
@@ -1189,10 +1189,10 @@ bool psnFolderGetStatus( psnFolder         * pFolder,
                         pContext );
    if ( ! found ) {
       if (lastIteration) {
-         errcode = VDS_NO_SUCH_OBJECT;
+         errcode = PSO_NO_SUCH_OBJECT;
       }
       else {
-         errcode = VDS_NO_SUCH_FOLDER;
+         errcode = PSO_NO_SUCH_FOLDER;
       }
       goto the_exit;
    }
@@ -1208,7 +1208,7 @@ bool psnFolderGetStatus( psnFolder         * pFolder,
 
       errcode = psnTxTestObjectStatus( txStatus, 
                                         SET_OFFSET(pContext->pTransaction) );
-      if ( errcode != VDS_OK ) goto the_exit;
+      if ( errcode != PSO_OK ) goto the_exit;
 
       GET_PTR( pMemObject, pDesc->memOffset, psnMemObject );
       if ( psnLock( pMemObject, pContext ) ) {
@@ -1218,29 +1218,29 @@ bool psnFolderGetStatus( psnFolder         * pFolder,
 
          switch( pDesc->apiType ) {
 
-         case VDS_FOLDER:
+         case PSO_FOLDER:
             psnFolderMyStatus( GET_PTR_FAST( pDesc->memOffset, psnFolder ),
                                 pStatus );
             break;
-         case VDS_HASH_MAP:
+         case PSO_HASH_MAP:
             psnHashMapStatus( GET_PTR_FAST( pDesc->memOffset, psnHashMap ),
                                pStatus );
             break;
-         case VDS_QUEUE:
-         case VDS_LIFO:
+         case PSO_QUEUE:
+         case PSO_LIFO:
             psnQueueStatus( GET_PTR_FAST( pDesc->memOffset, psnQueue ),
                              pStatus );
             break;
-         case VDS_FAST_MAP:
+         case PSO_FAST_MAP:
             psnMapStatus( GET_PTR_FAST( pDesc->memOffset, psnMap ), pStatus );
             break;
          default:
-            VDS_INV_CONDITION( pDesc_invalid_api_type );
+            PSO_INV_CONDITION( pDesc_invalid_api_type );
          }
          psnUnlock( pMemObject, pContext );
       }
       else {
-         errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+         errcode = PSO_OBJECT_CANNOT_GET_LOCK;
          goto the_exit;
       }
       
@@ -1250,21 +1250,21 @@ bool psnFolderGetStatus( psnFolder         * pFolder,
    }
    
    /* This is not the last node. This node must be a folder, otherwise... */
-   if ( pDesc->apiType != VDS_FOLDER ) {
-      errcode = VDS_NO_SUCH_OBJECT;
+   if ( pDesc->apiType != PSO_FOLDER ) {
+      errcode = PSO_NO_SUCH_OBJECT;
       goto the_exit;
    }
 
    errcode = psnTxTestObjectStatus( txStatus, 
                                      SET_OFFSET(pContext->pTransaction) );
-   if ( errcode != VDS_OK ) {
-      if ( errcode == VDS_NO_SUCH_OBJECT) errcode = VDS_NO_SUCH_FOLDER;
+   if ( errcode != PSO_OK ) {
+      if ( errcode == PSO_NO_SUCH_OBJECT) errcode = PSO_NO_SUCH_FOLDER;
       goto the_exit;
    }
 
    GET_PTR( pNextFolder, pDesc->offset, psnFolder );
    if ( ! psnLock( &pNextFolder->memObject, pContext ) ) {
-      errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+      errcode = PSO_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
    psnUnlock( &pFolder->memObject, pContext );
@@ -1274,7 +1274,7 @@ bool psnFolderGetStatus( psnFolder         * pFolder,
                              strLength - partialLength - 1, 
                              pStatus,
                              pContext );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    
    return ok;
 
@@ -1284,8 +1284,8 @@ the_exit:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    psnUnlock( &pFolder->memObject, pContext );
@@ -1305,24 +1305,24 @@ bool psnFolderInit( psnFolder         * pFolder,
                      ptrdiff_t            hashItemOffset,
                      psnSessionContext * pContext )
 {
-   vdsErrors errcode;
+   psoErrors errcode;
    
-   VDS_PRE_CONDITION( pFolder   != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pTxStatus != NULL );
-   VDS_PRE_CONDITION( origName  != NULL );
-   VDS_PRE_CONDITION( hashItemOffset != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( parentOffset   != PSN_NULL_OFFSET );
-   VDS_PRE_CONDITION( numberOfBlocks  > 0 );
-   VDS_PRE_CONDITION( origNameLength > 0 );
+   PSO_PRE_CONDITION( pFolder   != NULL );
+   PSO_PRE_CONDITION( pContext  != NULL );
+   PSO_PRE_CONDITION( pTxStatus != NULL );
+   PSO_PRE_CONDITION( origName  != NULL );
+   PSO_PRE_CONDITION( hashItemOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( parentOffset   != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( numberOfBlocks  > 0 );
+   PSO_PRE_CONDITION( origNameLength > 0 );
    
    errcode = psnMemObjectInit( &pFolder->memObject, 
                                 PSN_IDENT_FOLDER,
                                 &pFolder->blockGroup,
                                 numberOfBlocks );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pContext->errorHandler,
-                    g_vdsErrorHandle,
+                    g_psoErrorHandle,
                     errcode );
       return false;
    }
@@ -1338,9 +1338,9 @@ bool psnFolderInit( psnFolder         * pFolder,
                            SET_OFFSET(&pFolder->memObject),
                            expectedNumOfChilds, 
                            pContext );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       pscSetError( &pContext->errorHandler, 
-                    g_vdsErrorHandle, 
+                    g_psoErrorHandle, 
                     errcode );
       return false;
    }
@@ -1354,7 +1354,7 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
                              const char          * objectName,
                              const char          * originalName,
                              size_t                strLength, 
-                             vdsObjectDefinition * pDefinition,
+                             psoObjectDefinition * pDefinition,
                              size_t                numBlocks,
                              size_t                expectedNumOfChilds,
                              psnSessionContext  * pContext )
@@ -1362,7 +1362,7 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
    bool lastIteration = true;
    size_t partialLength = 0;
    psnHashItem * pHashItem, * previousHashItem = NULL;
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    psnObjectDescriptor* pDesc = NULL;
    size_t descLength;
    unsigned char* ptr = NULL;
@@ -1373,19 +1373,19 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
    size_t bucket;
    bool found, ok;
    
-   VDS_PRE_CONDITION( pFolder      != NULL );
-   VDS_PRE_CONDITION( objectName   != NULL )
-   VDS_PRE_CONDITION( originalName != NULL )
-   VDS_PRE_CONDITION( pContext     != NULL );
-   VDS_PRE_CONDITION( pDefinition  != NULL );
-   VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
+   PSO_PRE_CONDITION( pFolder      != NULL );
+   PSO_PRE_CONDITION( objectName   != NULL )
+   PSO_PRE_CONDITION( originalName != NULL )
+   PSO_PRE_CONDITION( pContext     != NULL );
+   PSO_PRE_CONDITION( pDefinition  != NULL );
+   PSO_PRE_CONDITION( strLength > 0 );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
    errcode = psnValidateString( objectName, 
                                  strLength, 
                                  &partialLength, 
                                  &lastIteration );
-   if ( errcode != VDS_OK ) goto the_exit;
+   if ( errcode != PSO_OK ) goto the_exit;
    
    if ( lastIteration ) {
       /* 
@@ -1416,7 +1416,7 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
          }
          objTxStatus = &previousHashItem->txStatus;
          if ( ! (objTxStatus->status & PSN_TXS_DESTROYED_COMMITTED) ) {
-            errcode = VDS_OBJECT_ALREADY_PRESENT;
+            errcode = PSO_OBJECT_ALREADY_PRESENT;
             goto the_exit;
          }
       }
@@ -1426,7 +1426,7 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
                                                numBlocks,
                                                pContext );
       if ( ptr == NULL ) {
-         errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
+         errcode = PSO_NOT_ENOUGH_PSO_MEMORY;
          goto the_exit;
       }
       descLength = offsetof(psnObjectDescriptor, originalName) + 
@@ -1435,7 +1435,7 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
       if ( pDesc == NULL ) {
          psnFreeBlocks( pContext->pAllocator, PSN_ALLOC_API_OBJ,
                          ptr, numBlocks, pContext );
-         errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+         errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
          goto the_exit;
       }
       memset( pDesc, 0, descLength );
@@ -1452,7 +1452,7 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
                                   descLength,
                                   &pHashItem,
                                   pContext );
-      if ( errcode != VDS_OK ) {
+      if ( errcode != PSO_OK ) {
          psnFreeBlocks( pContext->pAllocator, PSN_ALLOC_API_OBJ,
                          ptr, numBlocks, pContext );
          free( pDesc );
@@ -1460,21 +1460,21 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
       }
 
       switch( pDefinition->type ) {
-      case VDS_FOLDER:
+      case PSO_FOLDER:
          memObjType = PSN_IDENT_FOLDER;
          break;
-      case VDS_HASH_MAP:
+      case PSO_HASH_MAP:
          memObjType = PSN_IDENT_HASH_MAP;
          break;
-      case VDS_FAST_MAP:
+      case PSO_FAST_MAP:
          memObjType = PSN_IDENT_MAP;
          break;
-      case VDS_QUEUE:
-      case VDS_LIFO:
+      case PSO_QUEUE:
+      case PSO_LIFO:
          memObjType = PSN_IDENT_QUEUE;
          break;
       default:
-         VDS_POST_CONDITION( invalid_object_type );
+         PSO_POST_CONDITION( invalid_object_type );
       }
       
       ok = psnTxAddOps( (psnTx*)pContext->pTransaction,
@@ -1484,7 +1484,7 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
                          SET_OFFSET(pHashItem),
                          memObjType,
                          pContext );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       free( pDesc ); 
       pDesc = NULL;
       if ( ! ok ) {
@@ -1557,16 +1557,16 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
                            SET_OFFSET(pHashItem),
                            pDefinition,
                            pContext );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psnMap,nodeObject);
          pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(psnMap,memObject);
          break;
 
       default:
-         errcode = VDS_INTERNAL_ERROR;
+         errcode = PSO_INTERNAL_ERROR;
          goto the_exit;
       }
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
 
       if ( ! ok ) {
          psnTxRemoveLastOps( (psnTx*)pContext->pTransaction, pContext );
@@ -1594,7 +1594,7 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
                         &bucket,
                         pContext );
    if ( ! found ) {
-      errcode = VDS_NO_SUCH_FOLDER;
+      errcode = PSO_NO_SUCH_FOLDER;
       goto the_exit;
    }
    while ( pHashItem->nextSameKey != PSN_NULL_OFFSET ) {
@@ -1603,21 +1603,21 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
    
    /* This is not the last node. This node must be a folder, otherwise... */
    GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
-   if ( pDesc->apiType != VDS_FOLDER ) {
-      errcode = VDS_NO_SUCH_FOLDER;
+   if ( pDesc->apiType != PSO_FOLDER ) {
+      errcode = PSO_NO_SUCH_FOLDER;
       goto the_exit;
    }
    
    errcode = psnTxTestObjectStatus( &pHashItem->txStatus, 
                                      SET_OFFSET(pContext->pTransaction) );
-   if ( errcode != VDS_OK ) {
-      errcode = VDS_NO_SUCH_FOLDER;
+   if ( errcode != PSO_OK ) {
+      errcode = PSO_NO_SUCH_FOLDER;
       goto the_exit;
    }
 
    GET_PTR( pNextFolder, pDesc->offset, psnFolder );   
    if ( ! psnLock( &pNextFolder->memObject, pContext ) ) {
-      errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+      errcode = PSO_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
    
@@ -1631,7 +1631,7 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
                                 numBlocks,
                                 expectedNumOfChilds,
                                 pContext );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
 
    return ok;
    
@@ -1641,8 +1641,8 @@ the_exit:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    psnUnlock( &pFolder->memObject, pContext );
@@ -1653,13 +1653,13 @@ the_exit:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void psnFolderMyStatus( psnFolder   * pFolder,
-                         vdsObjStatus * pStatus )
+                         psoObjStatus * pStatus )
 {
    psnTxStatus  * txStatus;
 
-   VDS_PRE_CONDITION( pFolder != NULL );
-   VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
+   PSO_PRE_CONDITION( pFolder != NULL );
+   PSO_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
    GET_PTR( txStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
 
@@ -1677,10 +1677,10 @@ bool psnFolderRelease( psnFolder         * pFolder,
 {
    psnTxStatus * txItemStatus, * txFolderStatus;
    
-   VDS_PRE_CONDITION( pFolder     != NULL );
-   VDS_PRE_CONDITION( pFolderItem != NULL );
-   VDS_PRE_CONDITION( pContext    != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
+   PSO_PRE_CONDITION( pFolder     != NULL );
+   PSO_PRE_CONDITION( pFolderItem != NULL );
+   PSO_PRE_CONDITION( pContext    != NULL );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
    txItemStatus = &pFolderItem->pHashItem->txStatus;
    GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
@@ -1693,7 +1693,7 @@ bool psnFolderRelease( psnFolder         * pFolder,
       psnUnlock( &pFolder->memObject, pContext );
    }
    else {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
       return false;
    }
 
@@ -1709,10 +1709,10 @@ void psnFolderReleaseNoLock( psnFolder         * pFolder,
 {
    psnTxStatus * txItemStatus, * txFolderStatus;
    
-   VDS_PRE_CONDITION( pFolder   != NULL );
-   VDS_PRE_CONDITION( pHashItem != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
+   PSO_PRE_CONDITION( pFolder   != NULL );
+   PSO_PRE_CONDITION( pHashItem != NULL );
+   PSO_PRE_CONDITION( pContext  != NULL );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
    txItemStatus = &pHashItem->txStatus;
    GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
@@ -1753,10 +1753,10 @@ void psnFolderRemoveObject( psnFolder         * pFolder,
    size_t bucket;
    bool found;
    
-   VDS_PRE_CONDITION( pFolder   != NULL );
-   VDS_PRE_CONDITION( pHashItem != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
+   PSO_PRE_CONDITION( pFolder   != NULL );
+   PSO_PRE_CONDITION( pHashItem != NULL );
+   PSO_PRE_CONDITION( pContext  != NULL );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
    GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
    GET_PTR( ptrObject, pDesc->offset, void );
@@ -1768,7 +1768,7 @@ void psnFolderRemoveObject( psnFolder         * pFolder,
                         &previousItem,
                         &bucket,
                         pContext );
-   VDS_POST_CONDITION( found );
+   PSO_POST_CONDITION( found );
 
    /* 
     * Time to really delete the record!
@@ -1790,20 +1790,20 @@ void psnFolderRemoveObject( psnFolder         * pFolder,
     * of the memory object).
     */
    switch ( pDesc->apiType ) {
-   case VDS_FOLDER:
+   case PSO_FOLDER:
       psnFolderFini( (psnFolder*)ptrObject, pContext );
       break;
-   case VDS_HASH_MAP:
+   case PSO_HASH_MAP:
       psnHashMapFini( (psnHashMap *)ptrObject, pContext );
       break;
-   case VDS_QUEUE:
-   case VDS_LIFO:
+   case PSO_QUEUE:
+   case PSO_LIFO:
       psnQueueFini( (psnQueue *)ptrObject, pContext );
       break;
-   case VDS_FAST_MAP:
+   case PSO_FAST_MAP:
       psnMapFini( (psnMap *)ptrObject, pContext );
       break;
-   case VDS_LAST_OBJECT_TYPE:
+   case PSO_LAST_OBJECT_TYPE:
       ;
    }        
 }
@@ -1815,8 +1815,8 @@ void psnFolderResize( psnFolder         * pFolder,
 {
    psnTxStatus * txFolderStatus;
    
-   VDS_PRE_CONDITION( pFolder  != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pFolder  != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
 
    /*
     * Do we need to resize? We need both conditions here:
@@ -1838,7 +1838,7 @@ void psnFolderResize( psnFolder         * pFolder,
 
 void psnFolderRollbackEdit( psnFolder         * pFolder,
                              psnHashItem       * pHashItem, 
-                             enum vdsObjectType   objectType,
+                             enum psoObjectType   objectType,
                              psnSessionContext * pContext )
 {
    psnObjectDescriptor * pDesc, * pDescLatest;
@@ -1847,16 +1847,16 @@ void psnFolderRollbackEdit( psnFolder         * pFolder,
    psnTreeNode * tree;
    psnTxStatus * tx;
    
-   VDS_PRE_CONDITION( pFolder   != NULL );
-   VDS_PRE_CONDITION( pHashItem != NULL );
-   VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( objectType == PSN_IDENT_MAP );
+   PSO_PRE_CONDITION( pFolder   != NULL );
+   PSO_PRE_CONDITION( pHashItem != NULL );
+   PSO_PRE_CONDITION( pContext  != NULL );
+   PSO_PRE_CONDITION( objectType == PSN_IDENT_MAP );
 
    GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
 
    pMapEdit = GET_PTR_FAST( pDesc->offset, psnMap );
    
-   VDS_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
+   PSO_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
    
    pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, psnHashItem );
    pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
@@ -1903,8 +1903,8 @@ bool psnTopFolderCloseObject( psnFolderItem     * pFolderItem,
    psnTxStatus * txItemStatus, * txFolderStatus;
    psnObjectDescriptor * pDesc;
    
-   VDS_PRE_CONDITION( pFolderItem != NULL );
-   VDS_PRE_CONDITION( pContext    != NULL );
+   PSO_PRE_CONDITION( pFolderItem != NULL );
+   PSO_PRE_CONDITION( pContext    != NULL );
 
    GET_PTR( pDesc, pFolderItem->pHashItem->dataOffset, psnObjectDescriptor );
    GET_PTR( pNode, pDesc->nodeOffset, psnTreeNode);
@@ -1941,7 +1941,7 @@ bool psnTopFolderCloseObject( psnFolderItem     * pFolderItem,
       return true;
    }
    
-   pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_ENGINE_BUSY );
+   pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_ENGINE_BUSY );
    
    return false;
 }
@@ -1951,37 +1951,37 @@ bool psnTopFolderCloseObject( psnFolderItem     * pFolderItem,
 bool psnTopFolderCreateObject( psnFolder          * pFolder,
                                 const char          * objectName,
                                 size_t                nameLengthInBytes,
-                                vdsObjectDefinition * pDefinition,
+                                psoObjectDefinition * pDefinition,
                                 psnSessionContext  * pContext )
 {
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    size_t strLength, i;
    bool ok;
    size_t first = 0;
    const char * name = objectName;
    char * lowerName = NULL;
 
-   VDS_PRE_CONDITION( pFolder     != NULL );
-   VDS_PRE_CONDITION( objectName  != NULL );
-   VDS_PRE_CONDITION( pContext    != NULL );
-   VDS_PRE_CONDITION( pDefinition != NULL );
-   VDS_PRE_CONDITION( pDefinition->type > 0 && 
-                      pDefinition->type < VDS_LAST_OBJECT_TYPE );
+   PSO_PRE_CONDITION( pFolder     != NULL );
+   PSO_PRE_CONDITION( objectName  != NULL );
+   PSO_PRE_CONDITION( pContext    != NULL );
+   PSO_PRE_CONDITION( pDefinition != NULL );
+   PSO_PRE_CONDITION( pDefinition->type > 0 && 
+                      pDefinition->type < PSO_LAST_OBJECT_TYPE );
    
    strLength = nameLengthInBytes;
 
-   if ( strLength > VDS_MAX_FULL_NAME_LENGTH ) {
-      errcode = VDS_OBJECT_NAME_TOO_LONG;
+   if ( strLength > PSO_MAX_FULL_NAME_LENGTH ) {
+      errcode = PSO_OBJECT_NAME_TOO_LONG;
       goto error_handler;
    }
    if ( strLength == 0 ) {
-      errcode = VDS_INVALID_OBJECT_NAME;
+      errcode = PSO_INVALID_OBJECT_NAME;
       goto error_handler;
    }
 
    lowerName = (char*)malloc( (strLength+1)*sizeof(char) );
    if ( lowerName == NULL ) {
-      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
       goto error_handler;
    }
 
@@ -1995,7 +1995,7 @@ bool psnTopFolderCreateObject( psnFolder          * pFolder,
       first = 1;
       --strLength;
       if ( strLength == 0 ) {
-         errcode = VDS_INVALID_OBJECT_NAME;
+         errcode = PSO_INVALID_OBJECT_NAME;
          goto error_handler;
       }
    }
@@ -2015,11 +2015,11 @@ bool psnTopFolderCreateObject( psnFolder          * pFolder,
                                    1, /* numBlocks, */
                                    0, /* expectedNumOfChilds, */
                                    pContext );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler;
    }
    else {
-      errcode = VDS_ENGINE_BUSY;
+      errcode = PSO_ENGINE_BUSY;
       goto error_handler;
    }
    
@@ -2035,8 +2035,8 @@ error_handler:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return false;
@@ -2049,31 +2049,31 @@ bool psnTopFolderDestroyObject( psnFolder         * pFolder,
                                  size_t               nameLengthInBytes,
                                  psnSessionContext * pContext )
 {
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    size_t strLength, i;
    size_t first = 0;
    const char * name = objectName;
    char * lowerName = NULL;
    bool ok;
    
-   VDS_PRE_CONDITION( pFolder    != NULL );
-   VDS_PRE_CONDITION( objectName != NULL );
-   VDS_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( pFolder    != NULL );
+   PSO_PRE_CONDITION( objectName != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
 
    strLength = nameLengthInBytes;
    
-   if ( strLength > VDS_MAX_FULL_NAME_LENGTH ) {
-      errcode = VDS_OBJECT_NAME_TOO_LONG;
+   if ( strLength > PSO_MAX_FULL_NAME_LENGTH ) {
+      errcode = PSO_OBJECT_NAME_TOO_LONG;
       goto error_handler;
    }
    if ( strLength == 0 ) {
-      errcode = VDS_INVALID_OBJECT_NAME;
+      errcode = PSO_INVALID_OBJECT_NAME;
       goto error_handler;
    }
 
    lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
    if ( lowerName == NULL ) {
-      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
       goto error_handler;
    }
 
@@ -2087,7 +2087,7 @@ bool psnTopFolderDestroyObject( psnFolder         * pFolder,
       first = 1;
       --strLength;
       if ( strLength == 0 ) {
-         errcode = VDS_INVALID_OBJECT_NAME;
+         errcode = PSO_INVALID_OBJECT_NAME;
          goto error_handler;
       }
    }
@@ -2103,11 +2103,11 @@ bool psnTopFolderDestroyObject( psnFolder         * pFolder,
                                    &(lowerName[first]), 
                                    strLength,
                                    pContext );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler;
    }
    else {
-      errcode = VDS_ENGINE_BUSY;
+      errcode = PSO_ENGINE_BUSY;
       goto error_handler;
    }
    
@@ -2123,8 +2123,8 @@ error_handler:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return false;
@@ -2135,36 +2135,36 @@ error_handler:
 bool psnTopFolderEditObject( psnFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
-                              enum vdsObjectType   objectType, 
+                              enum psoObjectType   objectType, 
                               psnFolderItem     * pFolderItem,
                               psnSessionContext * pContext )
 {
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    size_t strLength, i;
    bool ok;
    size_t first = 0;
    const char * name = objectName;
    char * lowerName = NULL;
 
-   VDS_PRE_CONDITION( pFolder     != NULL );
-   VDS_PRE_CONDITION( pFolderItem != NULL );
-   VDS_PRE_CONDITION( objectName  != NULL );
-   VDS_PRE_CONDITION( pContext    != NULL );
-   VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
+   PSO_PRE_CONDITION( pFolder     != NULL );
+   PSO_PRE_CONDITION( pFolderItem != NULL );
+   PSO_PRE_CONDITION( objectName  != NULL );
+   PSO_PRE_CONDITION( pContext    != NULL );
+   PSO_PRE_CONDITION( objectType > 0 && objectType < PSO_LAST_OBJECT_TYPE );
 
    strLength = nameLengthInBytes;
-   if ( strLength > VDS_MAX_FULL_NAME_LENGTH ) {
-      errcode = VDS_OBJECT_NAME_TOO_LONG;
+   if ( strLength > PSO_MAX_FULL_NAME_LENGTH ) {
+      errcode = PSO_OBJECT_NAME_TOO_LONG;
       goto error_handler;
    }
    if ( strLength == 0 ) {
-      errcode = VDS_INVALID_OBJECT_NAME;
+      errcode = PSO_INVALID_OBJECT_NAME;
       goto error_handler;
    }
 
    lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
    if ( lowerName == NULL ) {
-      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
       goto error_handler;
    }
 
@@ -2185,8 +2185,8 @@ bool psnTopFolderEditObject( psnFolder         * pFolder,
        * since all we do is to retrieve the pointer (and we do not 
        * count access since the object is undeletable).
        */
-      if ( objectType != VDS_FOLDER ) {
-         errcode = VDS_WRONG_OBJECT_TYPE;
+      if ( objectType != PSO_FOLDER ) {
+         errcode = PSO_WRONG_OBJECT_TYPE;
          goto error_handler;
       }
       pFolderItem->pHashItem = &((psnMemoryHeader *) g_pBaseAddr)->topHashItem;
@@ -2205,11 +2205,11 @@ bool psnTopFolderEditObject( psnFolder         * pFolder,
                                     objectType,
                                     pFolderItem,
                                     pContext );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
          if ( ! ok ) goto error_handler;
       }
       else {
-         errcode = VDS_ENGINE_BUSY;
+         errcode = PSO_ENGINE_BUSY;
          goto error_handler;
       }
    }
@@ -2226,8 +2226,8 @@ error_handler:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return false;
@@ -2238,11 +2238,11 @@ error_handler:
 bool psnTopFolderGetDef( psnFolder          * pFolder,
                           const char          * objectName,
                           size_t                nameLengthInBytes,
-                          vdsObjectDefinition * pDefinition,
+                          psoObjectDefinition * pDefinition,
                           psnFieldDef       ** ppInternalDef,
                           psnSessionContext  * pContext )
 {
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    size_t strLength, i;
    bool ok;
    size_t first = 0;
@@ -2250,28 +2250,28 @@ bool psnTopFolderGetDef( psnFolder          * pFolder,
    const char * name = objectName;
    char * lowerName = NULL;
 
-   VDS_PRE_CONDITION( pFolder       != NULL );
-   VDS_PRE_CONDITION( objectName    != NULL );
-   VDS_PRE_CONDITION( pDefinition   != NULL );
-   VDS_PRE_CONDITION( ppInternalDef != NULL );
-   VDS_PRE_CONDITION( pContext      != NULL );
+   PSO_PRE_CONDITION( pFolder       != NULL );
+   PSO_PRE_CONDITION( objectName    != NULL );
+   PSO_PRE_CONDITION( pDefinition   != NULL );
+   PSO_PRE_CONDITION( ppInternalDef != NULL );
+   PSO_PRE_CONDITION( pContext      != NULL );
 
    *ppInternalDef = NULL;
    
    strLength = nameLengthInBytes;
    
-   if ( strLength > VDS_MAX_FULL_NAME_LENGTH ) {
-      errcode = VDS_OBJECT_NAME_TOO_LONG;
+   if ( strLength > PSO_MAX_FULL_NAME_LENGTH ) {
+      errcode = PSO_OBJECT_NAME_TOO_LONG;
       goto error_handler;
    }
    if ( strLength == 0 ) {
-      errcode = VDS_INVALID_OBJECT_NAME;
+      errcode = PSO_INVALID_OBJECT_NAME;
       goto error_handler;
    }
 
    lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
    if ( lowerName == NULL ) {
-      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
       goto error_handler;
    }
 
@@ -2289,12 +2289,12 @@ bool psnTopFolderGetDef( psnFolder          * pFolder,
    if ( strLength == 0 ) {
       /* Getting the status of the top folder (special case). */
       if ( psnLock( &pFolder->memObject, pContext ) ) {
-         pDefinition->type = VDS_FOLDER;
+         pDefinition->type = PSO_FOLDER;
          
          psnUnlock( &pFolder->memObject, pContext );
       }
       else {
-         errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+         errcode = PSO_OBJECT_CANNOT_GET_LOCK;
          goto error_handler;
       }
    }
@@ -2312,11 +2312,11 @@ bool psnTopFolderGetDef( psnFolder          * pFolder,
                                        pDefinition,
                                        ppInternalDef,
                                        pContext );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
          if ( ! ok ) goto error_handler;
       }
       else {
-         errcode = VDS_ENGINE_BUSY;
+         errcode = PSO_ENGINE_BUSY;
          goto error_handler;
       }
    }
@@ -2333,8 +2333,8 @@ error_handler:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return false;
@@ -2345,10 +2345,10 @@ error_handler:
 bool psnTopFolderGetStatus( psnFolder         * pFolder,
                              const char         * objectName,
                              size_t               nameLengthInBytes,
-                             vdsObjStatus       * pStatus,
+                             psoObjStatus       * pStatus,
                              psnSessionContext * pContext )
 {
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    size_t strLength, i;
    bool ok;
    size_t first = 0;
@@ -2356,25 +2356,25 @@ bool psnTopFolderGetStatus( psnFolder         * pFolder,
    const char * name = objectName;
    char * lowerName = NULL;
 
-   VDS_PRE_CONDITION( pFolder    != NULL );
-   VDS_PRE_CONDITION( pStatus    != NULL );
-   VDS_PRE_CONDITION( objectName != NULL );
-   VDS_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( pFolder    != NULL );
+   PSO_PRE_CONDITION( pStatus    != NULL );
+   PSO_PRE_CONDITION( objectName != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
 
    strLength = nameLengthInBytes;
    
-   if ( strLength > VDS_MAX_FULL_NAME_LENGTH ) {
-      errcode = VDS_OBJECT_NAME_TOO_LONG;
+   if ( strLength > PSO_MAX_FULL_NAME_LENGTH ) {
+      errcode = PSO_OBJECT_NAME_TOO_LONG;
       goto error_handler;
    }
    if ( strLength == 0 ) {
-      errcode = VDS_INVALID_OBJECT_NAME;
+      errcode = PSO_INVALID_OBJECT_NAME;
       goto error_handler;
    }
 
    lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
    if ( lowerName == NULL ) {
-      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
       goto error_handler;
    }
 
@@ -2393,14 +2393,14 @@ bool psnTopFolderGetStatus( psnFolder         * pFolder,
       /* Getting the status of the top folder (special case). */
       if ( psnLock( &pFolder->memObject, pContext ) ) {
          psnMemObjectStatus( &pFolder->memObject, pStatus );
-         pStatus->type = VDS_FOLDER;
+         pStatus->type = PSO_FOLDER;
          
          psnFolderMyStatus( pFolder, pStatus );
 
          psnUnlock( &pFolder->memObject, pContext );
       }
       else {
-         errcode = VDS_OBJECT_CANNOT_GET_LOCK;
+         errcode = PSO_OBJECT_CANNOT_GET_LOCK;
          goto error_handler;
       }
    }
@@ -2417,11 +2417,11 @@ bool psnTopFolderGetStatus( psnFolder         * pFolder,
                                    strLength, 
                                    pStatus,
                                    pContext );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
          if ( ! ok ) goto error_handler;
       }
       else {
-         errcode = VDS_ENGINE_BUSY;
+         errcode = PSO_ENGINE_BUSY;
          goto error_handler;
       }
    }
@@ -2438,8 +2438,8 @@ error_handler:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return false;
@@ -2450,36 +2450,36 @@ error_handler:
 bool psnTopFolderOpenObject( psnFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
-                              enum vdsObjectType   objectType, 
+                              enum psoObjectType   objectType, 
                               psnFolderItem     * pFolderItem,
                               psnSessionContext * pContext )
 {
-   vdsErrors errcode = VDS_OK;
+   psoErrors errcode = PSO_OK;
    size_t strLength, i;
    size_t first = 0;
    const char * name = objectName;
    char * lowerName = NULL;
    bool ok;
 
-   VDS_PRE_CONDITION( pFolder     != NULL );
-   VDS_PRE_CONDITION( pFolderItem != NULL );
-   VDS_PRE_CONDITION( objectName  != NULL );
-   VDS_PRE_CONDITION( pContext    != NULL );
-   VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
+   PSO_PRE_CONDITION( pFolder     != NULL );
+   PSO_PRE_CONDITION( pFolderItem != NULL );
+   PSO_PRE_CONDITION( objectName  != NULL );
+   PSO_PRE_CONDITION( pContext    != NULL );
+   PSO_PRE_CONDITION( objectType > 0 && objectType < PSO_LAST_OBJECT_TYPE );
 
    strLength = nameLengthInBytes;
-   if ( strLength > VDS_MAX_FULL_NAME_LENGTH ) {
-      errcode = VDS_OBJECT_NAME_TOO_LONG;
+   if ( strLength > PSO_MAX_FULL_NAME_LENGTH ) {
+      errcode = PSO_OBJECT_NAME_TOO_LONG;
       goto error_handler;
    }
    if ( strLength == 0 ) {
-      errcode = VDS_INVALID_OBJECT_NAME;
+      errcode = PSO_INVALID_OBJECT_NAME;
       goto error_handler;
    }
 
    lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
    if ( lowerName == NULL ) {
-      errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
+      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
       goto error_handler;
    }
 
@@ -2500,8 +2500,8 @@ bool psnTopFolderOpenObject( psnFolder         * pFolder,
        * since all we do is to retrieve the pointer (and we do not 
        * count access since the object is undeletable).
        */
-      if ( objectType != VDS_FOLDER ) {
-         errcode = VDS_WRONG_OBJECT_TYPE;
+      if ( objectType != PSO_FOLDER ) {
+         errcode = PSO_WRONG_OBJECT_TYPE;
          goto error_handler;
       }
       pFolderItem->pHashItem = &((psnMemoryHeader *) g_pBaseAddr)->topHashItem;
@@ -2520,11 +2520,11 @@ bool psnTopFolderOpenObject( psnFolder         * pFolder,
                                    objectType,
                                    pFolderItem,
                                    pContext );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
          if ( ! ok ) goto error_handler;
       }
       else {
-         errcode = VDS_ENGINE_BUSY;
+         errcode = PSO_ENGINE_BUSY;
          goto error_handler;
       }
    }
@@ -2541,8 +2541,8 @@ error_handler:
     * On failure, errcode would be non-zero, unless the failure occurs in
     * some other function which already called pscSetError. 
     */
-   if ( errcode != VDS_OK ) {
-      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+   if ( errcode != PSO_OK ) {
+      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return false;
@@ -2550,7 +2550,7 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdsErrors psnValidateString( const char * objectName,
+psoErrors psnValidateString( const char * objectName,
                               size_t       strLength, 
                               size_t     * pPartialLength,
                               bool       * pLastIteration )
@@ -2560,7 +2560,7 @@ vdsErrors psnValidateString( const char * objectName,
    
    /* The first char is always special - it cannot be '/' */
    if ( ! isalpha( (int) objectName[0] )  ) {
-      return VDS_INVALID_OBJECT_NAME;
+      return PSO_INVALID_OBJECT_NAME;
    }
    
    for ( i = 1; i < strLength; ++i ) {
@@ -2573,17 +2573,17 @@ vdsErrors psnValidateString( const char * objectName,
          break;
       }
       if ( !( isalnum((int) objectName[i]) || (objectName[i] == '_') ) ) {
-         return VDS_INVALID_OBJECT_NAME;
+         return PSO_INVALID_OBJECT_NAME;
       }
    }
-   if ( i > VDS_MAX_NAME_LENGTH ) {
-      return VDS_OBJECT_NAME_TOO_LONG;
+   if ( i > PSO_MAX_NAME_LENGTH ) {
+      return PSO_OBJECT_NAME_TOO_LONG;
    }
    
    *pPartialLength = i;
    *pLastIteration = last;
 
-   return VDS_OK;
+   return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

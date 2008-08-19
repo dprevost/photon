@@ -191,9 +191,9 @@ typedef DWORD uint32_t;
 #endif
 
 #if defined WIN32
-#  define VDS_DIR_SEPARATOR "\\"
+#  define PSO_DIR_SEPARATOR "\\"
 #else
-#  define VDS_DIR_SEPARATOR "/"
+#  define PSO_DIR_SEPARATOR "/"
 #endif
 
 #if HAVE_FCNTL_H
@@ -350,28 +350,28 @@ extern char *new_ctime_r( const time_t *timep, char *buf, int buflen );
 #  else
 #    define ABORT() abort()
 #  endif
-#  define VDS_PRE_CONDITION(x) \
+#  define PSO_PRE_CONDITION(x) \
    if ( ! (x) ) { \
       fprintf( stderr, "%s (\"%s\") failed in file %s at line %d\n", \
          "DBC: precondition", #x, __FILE__, __LINE__ ); \
       ABORT(); \
    }
-#  define VDS_POST_CONDITION(x) \
+#  define PSO_POST_CONDITION(x) \
    if ( ! (x) ) { \
       fprintf( stderr, "%s (\"%s\") failed in file %s at line %d\n", \
          "DBC: postcondition", #x, __FILE__, __LINE__ ); \
       ABORT(); \
    }
-#  define VDS_INV_CONDITION(x) \
+#  define PSO_INV_CONDITION(x) \
    if ( ! (x) ) { \
       fprintf( stderr, "%s (\"%s\") failed in file %s at line %d\n", \
          "DBC: invariant", #x, __FILE__, __LINE__ ); \
       ABORT(); \
    }
 #else
-#  define VDS_PRE_CONDITION(x) 
-#  define VDS_POST_CONDITION(x)
-#  define VDS_INV_CONDITION(x)
+#  define PSO_PRE_CONDITION(x) 
+#  define PSO_POST_CONDITION(x)
+#  define PSO_INV_CONDITION(x)
 #endif
 
 /*
@@ -391,19 +391,19 @@ typedef int bool;
 #endif
 
 #if defined (WIN32)
-#  define VDS_INVALID_HANDLE (NULL)
+#  define PSO_INVALID_HANDLE (NULL)
 #else
-#  define VDS_INVALID_HANDLE (-1)
+#  define PSO_INVALID_HANDLE (-1)
 #endif
 
 #if ! defined (MAP_FAILED)
 #  if defined (WIN32)
-#    define VDS_MAP_FAILED NULL
+#    define PSO_MAP_FAILED NULL
 #  else
-#    define VDS_MAP_FAILED ((void *) -1)
+#    define PSO_MAP_FAILED ((void *) -1)
 #  endif
 #else
-#  define VDS_MAP_FAILED MAP_FAILED
+#  define PSO_MAP_FAILED MAP_FAILED
 #endif
 
 struct pscTestAlignmentStruct

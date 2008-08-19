@@ -63,14 +63,14 @@ typedef struct psnMemObject psnMemObject;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-enum vdsErrors 
+enum psoErrors 
 psnMemObjectInit( psnMemObject   * pMemObj,
                    psnMemObjIdent   objType,
                    psnBlockGroup  * pGroup,
                    size_t            numBlocks );
 
 VDSF_ENGINE_EXPORT
-enum vdsErrors 
+enum psoErrors 
 psnMemObjectFini( psnMemObject      * pMemObj,
                    psnAllocTypeEnum    allocType,
                    psnSessionContext * pContext );
@@ -92,8 +92,8 @@ bool psnLock( psnMemObject      * pMemObj,
 {
    bool ok;
 
-   VDS_PRE_CONDITION( pMemObj  != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pMemObj  != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
    
    if ( pContext->lockOffsets != NULL ) {
       psnSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
@@ -102,7 +102,7 @@ bool psnLock( psnMemObject      * pMemObj,
    ok = pscTryAcquireProcessLock ( &pMemObj->lock,
                                     pContext->pidLocker,
                                     LOCK_TIMEOUT );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    
    return ok;
 }
@@ -111,8 +111,8 @@ static inline
 void psnLockNoFailure( psnMemObject      * pMemObj,
                         psnSessionContext * pContext )
 {
-   VDS_PRE_CONDITION( pMemObj  != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pMemObj  != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
 
    if ( pContext->lockOffsets != NULL ) {
       psnSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
@@ -123,14 +123,14 @@ void psnLockNoFailure( psnMemObject      * pMemObj,
 
 VDSF_ENGINE_EXPORT
 void psnMemObjectStatus( psnMemObject * pMemObject, 
-                          vdsObjStatus  * pStatus );
+                          psoObjStatus  * pStatus );
 
 static inline
 void psnUnlock( psnMemObject      * pMemObj,
                  psnSessionContext * pContext  )
 {
-   VDS_PRE_CONDITION( pMemObj  != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pMemObj  != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
 
    if ( pContext->lockOffsets != NULL ) {
       psnSessionRemoveLock( pContext, SET_OFFSET( pMemObj ) );

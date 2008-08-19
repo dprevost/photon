@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds>
+#include <photon/photon>
 #include "Tests/PrintError.h"
 #include <iostream>
 
@@ -26,14 +26,14 @@ using namespace std;
 
 int main( int argc, char * argv[] )
 {
-   vdsProcess process;
-   vdsSession session;
-   vdsFolder folder(session);
+   psoProcess process;
+   psoSession session;
+   psoFolder folder(session);
    string name = "/cpp_folder_close";
-   vdsObjectDefinition def; 
+   psoObjectDefinition def; 
 
    memset( &def, 0, sizeof def );
-   def.type = VDS_FOLDER;
+   def.type = PSO_FOLDER;
    
    try {
       if ( argc > 1 ) {
@@ -45,7 +45,7 @@ int main( int argc, char * argv[] )
       session.Init();
       session.CreateObject( name, &def );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -58,8 +58,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NULL_HANDLE ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_HANDLE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -68,7 +68,7 @@ int main( int argc, char * argv[] )
    try {
       folder.Open( name );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -76,7 +76,7 @@ int main( int argc, char * argv[] )
    try {
       folder.Close();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

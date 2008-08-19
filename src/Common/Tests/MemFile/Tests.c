@@ -59,15 +59,15 @@ int main()
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
-   if ( mem1.fileHandle == VDS_INVALID_HANDLE ) {
+   if ( mem1.fileHandle == PSO_INVALID_HANDLE ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    }
-   if ( mem1.baseAddr == VDS_MAP_FAILED ) {
+   if ( mem1.baseAddr == PSO_MAP_FAILED ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    }
    
 #if defined (WIN32)
-   if ( mem1.mapHandle == VDS_INVALID_HANDLE ) {
+   if ( mem1.mapHandle == PSO_INVALID_HANDLE ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    }
 #endif

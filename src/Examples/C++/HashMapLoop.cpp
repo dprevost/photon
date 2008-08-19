@@ -20,9 +20,9 @@
 // Some globals to make our life simpler. 
 // Note: the destructor of these objects will cleanup/close so no need
 // for explicit calls to terminate our access.
-vdsProcess process;
-vdsSession session;
-vdsHashMap theMap( session );
+psoProcess process;
+psoSession session;
+psoHashMap theMap( session );
 string mapName = "My Hash Map Loop";
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -38,15 +38,15 @@ int createMap()
       session.DestroyObject( mapName );
       session.Commit();
    }
-   catch ( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NO_SUCH_OBJECT ) {
+   catch ( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NO_SUCH_OBJECT ) {
          cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
          return 1;
       }
    }
 
    try { 
-      session.CreateObject( mapName, VDS_HASH_MAP );
+      session.CreateObject( mapName, PSO_HASH_MAP );
       session.Commit();
       theMap.Open( mapName );
       /*
@@ -61,7 +61,7 @@ int createMap()
          rc = readData( countryCode, description );
       }
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
@@ -91,7 +91,7 @@ int main( int argc, char *argv[] )
       process.Init( argv[2] );
       session.Init();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
@@ -104,7 +104,7 @@ int main( int argc, char *argv[] )
    try {
       rc = theMap.GetFirst( countryCode, 2, description, 80, 
                             &keyLength, &dataLength );
-      while ( rc == VDS_OK ) {
+      while ( rc == PSO_OK ) {
          countryCode[keyLength] = 0;
          description[dataLength] = 0;
          cout << "Country code: " << countryCode << ", country: " << 
@@ -113,13 +113,13 @@ int main( int argc, char *argv[] )
          rc = theMap.GetNext( countryCode, 2, description, 80, 
                               &keyLength, &dataLength );
       }
-      if ( rc != VDS_REACHED_THE_END ) {
+      if ( rc != PSO_REACHED_THE_END ) {
          cerr << "At line " << __LINE__ << ", Hash Map loop abnormal error: " <<
             rc << endl;
          return 1;
       }
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }

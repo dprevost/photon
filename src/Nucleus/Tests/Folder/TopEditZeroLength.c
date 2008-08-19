@@ -28,17 +28,17 @@ int main()
    int errcode;
    bool ok;
    psnFolderItem folderItem;
-   vdsObjectDefinition folderDef = { 
-      VDS_FOLDER, 
+   psoObjectDefinition folderDef = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
-   vdsObjectDefinition mapDef = { 
-      VDS_FAST_MAP, 
+   psoObjectDefinition mapDef = { 
+      PSO_FAST_MAP, 
       1, 
-      { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 1, 100 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } } 
    };
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
@@ -64,14 +64,14 @@ int main()
    ok = psnTopFolderEditObject( pTopFolder,
                                  "Test1/Test2",
                                  0,
-                                 VDS_FAST_MAP,
+                                 PSO_FAST_MAP,
                                  &folderItem,
                                  &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = pscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 

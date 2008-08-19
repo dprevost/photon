@@ -69,7 +69,7 @@ int vdswGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 {
    const char * theMsg;
 
-   VDS_PRE_CONDITION( msg != NULL );
+   PSO_PRE_CONDITION( msg != NULL );
 
    theMsg = vdsw_ErrorMessage( errnum );
 
@@ -85,7 +85,7 @@ int vdswGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 
 void vdswWatchdogInit( vdswWatchdog * pWatchdog )
 {
-   VDS_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( pWatchdog != NULL );
 
    pWatchdog->pMemoryAddress = NULL;
    pWatchdog->controlWord = 0;
@@ -111,7 +111,7 @@ void vdswWatchdogInit( vdswWatchdog * pWatchdog )
 
 void vdswWatchdogFini( vdswWatchdog * pWatchdog )
 {
-   VDS_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( pWatchdog != NULL );
 
    pscFiniErrorHandler( &pWatchdog->errorHandler );
    pscFiniErrorDefs();
@@ -129,7 +129,7 @@ bool vdswDaemon( vdswWatchdog * pWatchdog )
    pid_t pid = 0;
    int errcode;
    
-   VDS_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( pWatchdog != NULL );
 
    /*
     * Before becoming a daemon, we test the VDS directory to make sure it
@@ -236,7 +236,7 @@ bool vdswDaemon( vdswWatchdog * pWatchdog )
 
 void vdswHelp( const char * progName )
 {
-   VDS_PRE_CONDITION( progName != NULL );
+   PSO_PRE_CONDITION( progName != NULL );
 
    fprintf( stderr, "Usage: %s [options] config_file \n", progName );
    fprintf( stderr, "Options:\n" );
@@ -264,7 +264,7 @@ bool vdswInstall( vdswWatchdog * pWatchdog )
    int errcode;
    HKEY hKey;
 
-   VDS_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( pWatchdog != NULL );
 
    memset( progPath, 0, PATH_MAX );
    if ( GetModuleFileName( NULL, progPath, PATH_MAX ) == 0 ) {
@@ -320,7 +320,7 @@ bool vdswInstall( vdswWatchdog * pWatchdog )
    }
    
    errcode = RegSetValueEx( hKey, 
-                            VDS_LOCATION,
+                            PSO_LOCATION,
                             0, 
                             REG_SZ,
                             (LPBYTE)pWatchdog->params.wdLocation, 
@@ -332,7 +332,7 @@ bool vdswInstall( vdswWatchdog * pWatchdog )
    }
 
    errcode = RegSetValueEx( hKey, 
-                            VDS_WDADDRESS,
+                            PSO_WDADDRESS,
                             0, 
                             REG_SZ,
                             (LPBYTE)pWatchdog->params.wdAddress,
@@ -344,7 +344,7 @@ bool vdswInstall( vdswWatchdog * pWatchdog )
    }
 
    errcode = RegSetValueEx( hKey, 
-                            VDS_MEMSIZE,
+                            PSO_MEMSIZE,
                             0, 
                             REG_DWORD, 
                             (LPBYTE)&pWatchdog->params.memorySizekb,
@@ -356,7 +356,7 @@ bool vdswInstall( vdswWatchdog * pWatchdog )
    }
 
    errcode = RegSetValueEx( hKey, 
-                            VDS_USE_LOG,
+                            PSO_USE_LOG,
                             0, 
                             REG_DWORD, 
                             (LPBYTE)&pWatchdog->params.logOn,
@@ -368,7 +368,7 @@ bool vdswInstall( vdswWatchdog * pWatchdog )
    }
 
    errcode = RegSetValueEx( hKey, 
-                            VDS_FILEPERMS,
+                            PSO_FILEPERMS,
                             0, 
                             REG_DWORD, 
                             (LPBYTE)&pWatchdog->params.filePerms,
@@ -380,7 +380,7 @@ bool vdswInstall( vdswWatchdog * pWatchdog )
    }
 
    errcode = RegSetValueEx( hKey, 
-                            VDS_DIRPERMS, 
+                            PSO_DIRPERMS, 
                             0, 
                             REG_DWORD, 
                             (LPBYTE)&pWatchdog->params.dirPerms,
@@ -403,11 +403,11 @@ bool vdswWatchdogReadConfig( vdswWatchdog * pWatchdog, const char* cfgname )
    int len;
    bool rc;
    
-   VDS_PRE_CONDITION( pWatchdog != NULL );
-   VDS_PRE_CONDITION( cfgname   != NULL );
+   PSO_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( cfgname   != NULL );
 
    rc = vdswReadConfig( cfgname, &pWatchdog->params, 0, &pWatchdog->errorHandler );
-   VDS_POST_CONDITION( rc == true || rc == false );
+   PSO_POST_CONDITION( rc == true || rc == false );
    if ( ! rc ) {
       memset( pWatchdog->errorMsg, 0, WD_MSG_LEN );
       sprintf( pWatchdog->errorMsg, "%s%d%s",
@@ -430,7 +430,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
    HKEY hKey;
    unsigned long length;
    
-   VDS_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( pWatchdog != NULL );
 
    errcode = RegOpenKeyEx( HKEY_LOCAL_MACHINE, 
                            "SYSTEM\\CurrentControlSet\\Services\\vdswd",
@@ -446,7 +446,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
 
    length = PATH_MAX;
    errcode = RegQueryValueEx( hKey, 
-                              VDS_LOCATION,
+                              PSO_LOCATION,
                               NULL, 
                               NULL, 
                               (LPBYTE)pWatchdog->params.wdLocation, 
@@ -460,7 +460,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
 
    length = sizeof(size_t);
    errcode = RegQueryValueEx( hKey, 
-                              VDS_MEMSIZE, 
+                              PSO_MEMSIZE, 
                               NULL, 
                               NULL, 
                               (LPBYTE)&pWatchdog->params.memorySizekb, 
@@ -474,7 +474,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
 
    length = PATH_MAX;
    errcode = RegQueryValueEx( hKey, 
-                              VDS_WDADDRESS, 
+                              PSO_WDADDRESS, 
                               NULL, 
                               NULL, 
                               (LPBYTE)pWatchdog->params.wdAddress,
@@ -488,7 +488,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
 
    length = sizeof(bool);
    errcode = RegQueryValueEx( hKey, 
-                              VDS_USE_LOG, 
+                              PSO_USE_LOG, 
                               NULL, 
                               NULL, 
                               (LPBYTE)&pWatchdog->params.logOn, 
@@ -502,7 +502,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
 
    length = sizeof(int);
    errcode = RegQueryValueEx( hKey, 
-                              VDS_FILEPERMS, 
+                              PSO_FILEPERMS, 
                               NULL, 
                               NULL, 
                               (LPBYTE)&pWatchdog->params.filePerms, 
@@ -516,7 +516,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
 
    length = sizeof(int);
    errcode = RegQueryValueEx( hKey, 
-                              VDS_DIRPERMS, 
+                              PSO_DIRPERMS, 
                               NULL, 
                               NULL, 
                               (LPBYTE)&pWatchdog->params.dirPerms, 
@@ -562,7 +562,7 @@ void vdswRun()
       // to access the registry (the NT service equivalent of calling 
       // ReadConfig() from main().
       rc = vdswReadRegistry( g_pWD );
-      VDS_POST_CONDITION( rc == true || rc == false );
+      PSO_POST_CONDITION( rc == true || rc == false );
       if ( ! rc ) {
          vdswSendMessage( &g_pWD->log, WD_ERROR, 
                           "ReadRegistry failed - aborting..." );
@@ -571,10 +571,10 @@ void vdswRun()
    }
 #endif
    
-   VDS_PRE_CONDITION( g_pWD != NULL );
+   PSO_PRE_CONDITION( g_pWD != NULL );
 
    rc = vdswSetSigHandler();
-   VDS_POST_CONDITION( rc == true || rc == false );
+   PSO_POST_CONDITION( rc == true || rc == false );
    if ( ! rc ) {
       vdswSendMessage( &g_pWD->log, 
                        WD_ERROR,
@@ -584,7 +584,7 @@ void vdswRun()
    }
 
    rc = vdswPrepareConnection( &g_pWD->acceptor, g_pWD );
-   VDS_POST_CONDITION( rc == true || rc == false );
+   PSO_POST_CONDITION( rc == true || rc == false );
    if ( ! rc ) {
       vdswSendMessage( &g_pWD->log, WD_ERROR,
          "Error in PrepareConnection() - aborting..." );
@@ -607,7 +607,7 @@ void vdswRun()
 bool vdswSetSigHandler()
 {
 #if defined(WIN32)
-   VDS_PRE_CONDITION( g_pWD != NULL );
+   PSO_PRE_CONDITION( g_pWD != NULL );
 
    signal( SIGINT,  sigterm_handler );
    signal( SIGTERM, sigterm_handler );
@@ -617,7 +617,7 @@ bool vdswSetSigHandler()
    sigset_t old_set, new_set;
    struct sigaction action;
    
-   VDS_PRE_CONDITION( g_pWD != NULL );
+   PSO_PRE_CONDITION( g_pWD != NULL );
 
    /*
     * Get the current process mask (meaning the list of signals which are
@@ -710,7 +710,7 @@ void vdswUninstall( vdswWatchdog * pWatchdog )
    HKEY hKey;
    SERVICE_STATUS status;
    
-   VDS_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( pWatchdog != NULL );
 
    fprintf( stderr, "%s\n%s\n%s\n%s\n%s\n",
             "WARNING - Some errors while uninstalling might not be real",
@@ -732,27 +732,27 @@ void vdswUninstall( vdswWatchdog * pWatchdog )
       fprintf( stderr, "RegOpenKeyEx error = %d\n", GetLastError() );
    }
    else {
-      errcode = RegDeleteValue( hKey, VDS_LOCATION );
+      errcode = RegDeleteValue( hKey, PSO_LOCATION );
       if ( errcode != ERROR_SUCCESS ) {
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
       }
-      errcode = RegDeleteValue( hKey, VDS_WDADDRESS );
+      errcode = RegDeleteValue( hKey, PSO_WDADDRESS );
       if ( errcode != ERROR_SUCCESS ) {
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
       }
-      errcode = RegDeleteValue( hKey, VDS_MEMSIZE );
+      errcode = RegDeleteValue( hKey, PSO_MEMSIZE );
       if ( errcode != ERROR_SUCCESS ) {
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
       }
-      errcode = RegDeleteValue( hKey,  VDS_USE_LOG);
+      errcode = RegDeleteValue( hKey,  PSO_USE_LOG);
       if ( errcode != ERROR_SUCCESS ) {
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
       }
-      errcode = RegDeleteValue( hKey, VDS_FILEPERMS );
+      errcode = RegDeleteValue( hKey, PSO_FILEPERMS );
       if ( errcode != ERROR_SUCCESS ) {
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
       }
-      errcode = RegDeleteValue( hKey, VDS_DIRPERMS );
+      errcode = RegDeleteValue( hKey, PSO_DIRPERMS );
       if ( errcode != ERROR_SUCCESS ) {
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
       }

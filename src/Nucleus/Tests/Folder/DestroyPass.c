@@ -28,8 +28,8 @@ int main()
    int errcode;
    bool ok;
    
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
@@ -66,7 +66,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = pscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_FOLDER_IS_NOT_EMPTY ) {
+   if ( errcode != PSO_FOLDER_IS_NOT_EMPTY ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
                                          
@@ -86,19 +86,19 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = pscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_NO_SUCH_OBJECT ) {
+   if ( errcode != PSO_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
    ok = psnFolderDestroyObject( pFolder,
                                  "Test1",
-                                 VDS_MAX_NAME_LENGTH+1,
+                                 PSO_MAX_NAME_LENGTH+1,
                                  &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = pscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_OBJECT_NAME_TOO_LONG ) {
+   if ( errcode != PSO_OBJECT_NAME_TOO_LONG ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
@@ -110,7 +110,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = pscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_INVALID_OBJECT_NAME ) {
+   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
@@ -131,7 +131,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = pscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_OBJECT_IS_IN_USE ) {
+   if ( errcode != PSO_OBJECT_IS_IN_USE ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

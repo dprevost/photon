@@ -44,7 +44,7 @@ struct psnObjectContext
    ptrdiff_t offset;
 
    /** object type */
-   enum vdsObjectType type;
+   enum psoObjectType type;
 
    /**
     * Pointer to the object as allocated in the heap of the process.
@@ -113,7 +113,7 @@ void psnSessionFini( psnSession        * pSession,
 VDSF_ENGINE_EXPORT
 bool psnSessionAddObj( psnSession        * pSession,
                         ptrdiff_t            objOffset, 
-                        enum vdsObjectType   objType, 
+                        enum psoObjectType   objType, 
                         void               * pCommonObject,
                         psnObjectContext ** ppObject,
                         psnSessionContext * pContext );

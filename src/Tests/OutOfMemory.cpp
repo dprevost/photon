@@ -29,7 +29,7 @@ string queueName2("Out_Folder/Queue_2");
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Cleanup( vdsSession & session )
+void Cleanup( psoSession & session )
 {
    try {
       session.DestroyObject( queueName1 );
@@ -37,7 +37,7 @@ void Cleanup( vdsSession & session )
       session.DestroyObject( folderName );
       session.Commit();
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       cerr << "Cleanup failed, error = " << exc.Message() << endl;
    }
 }
@@ -46,25 +46,25 @@ void Cleanup( vdsSession & session )
 
 int main()
 {
-   vdsProcess process;
-   vdsSession session;
-   vdsInfo info1; 
+   psoProcess process;
+   psoSession session;
+   psoInfo info1; 
    const char * dataIn = "1234567890123456789012345";
    char dataOut[50];
    size_t length;
    int countIn = 0, countOut = 0, errcode;
-   vdsQueue q1(session), q2(session);
+   psoQueue q1(session), q2(session);
 
-   vdsObjectDefinition queueDef = { 
-      VDS_QUEUE,
+   psoObjectDefinition queueDef = { 
+      PSO_QUEUE,
       1, 
-      { VDS_KEY_INTEGER, 0, 0, 0 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
+      { PSO_KEY_INTEGER, 0, 0, 0 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } } 
    };
-   vdsObjectDefinition folderDef;
+   psoObjectDefinition folderDef;
 
    memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = VDS_FOLDER;
+   folderDef.type = PSO_FOLDER;
    
    try {
       process.Init( "10701" );
@@ -76,14 +76,14 @@ int main()
          session.DestroyObject( folderName );
          session.Commit();
       }
-      catch ( vdsException exc ) {}
+      catch ( psoException exc ) {}
 
       session.CreateObject( folderName, &folderDef );
       session.CreateObject( queueName1, &queueDef );
       session.CreateObject( queueName2, &queueDef );
       session.GetInfo( &info1 );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Init VDSF failed, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -95,7 +95,7 @@ int main()
       q1.Open( queueName1 );
       q2.Open( queueName2 );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Error opening queues, error = " << exc.Message() << endl;
       return 1;
    }
@@ -108,8 +108,8 @@ int main()
          countIn++;
       }
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() == VDS_NOT_ENOUGH_VDS_MEMORY ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() == PSO_NOT_ENOUGH_PSO_MEMORY ) {
          cout << "Number of inserted records: " << countIn << endl;
       }
       else {
@@ -121,7 +121,7 @@ int main()
    try {
       session.Commit();
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       cerr << "Commit error = " << exc.Message() << endl;
    }
    
@@ -135,7 +135,7 @@ int main()
          if ( errcode == 0 ) countOut++;
       } while ( errcode == 0 );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Error retrieving data, error = " << exc.Message() << endl;
       return 1;
    }
@@ -146,7 +146,7 @@ int main()
    try {
       session.Commit();
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       cerr << "Commit error = " << exc.Message() << endl;
    }
    
@@ -155,7 +155,7 @@ int main()
    cerr << "Total allocated in vds: " << info1.allocatedSizeInBytes << endl;
    cerr << info1.totalSizeInBytes << endl;
  
-   vdsObjStatus status;
+   psoObjStatus status;
 
    q1.Status( &status );
    cout << status.numBlocks << endl;

@@ -15,12 +15,12 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDS_HASH_MAP_H
-#define VDS_HASH_MAP_H
+#ifndef PSO_HASH_MAP_H
+#define PSO_HASH_MAP_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include <photon/vdsCommon.h>
+#include <photon/psoCommon.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -36,7 +36,7 @@ extern "C" {
  */
 
 /**
- * \defgroup vdsHashMap_c API functions for vdsf hash maps.
+ * \defgroup psoHashMap_c API functions for psof hash maps.
  *
  * Hash maps use unique keys - the data items are not sorted.
  */
@@ -52,13 +52,13 @@ extern "C" {
  *
  * \warning Closing an object does not automatically commit or rollback 
  * data items that were inserted or removed. You still must use either 
- * ::vdsCommit or ::vdsRollback to end the current unit of work.
+ * ::psoCommit or ::psoRollback to end the current unit of work.
  *
- * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
- * \return 0 on success or a ::vdsErrors on error.
+ * \param[in]  objectHandle The handle to the hash map (see ::psoHashMapOpen).
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsHashMapClose( VDS_HANDLE objectHandle );
+int psoHashMapClose( PSO_HANDLE objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -69,16 +69,16 @@ int vdsHashMapClose( VDS_HANDLE objectHandle );
  * malloc()). You must free it (with free()) when you no longer need the
  * definition.
  *
- * \param[in]   objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[in]   objectHandle The handle to the hash map (see ::psoHashMapOpen).
  * \param[out]  definition The buffer allocated by the API to hold the content 
  *              of the object definition. Freeing the memory (with free())
  *              is the responsability of the caller.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsHashMapDefinition( VDS_HANDLE             objectHandle, 
-                          vdsObjectDefinition ** definition );
+int psoHashMapDefinition( PSO_HANDLE             objectHandle, 
+                          psoObjectDefinition ** definition );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -89,16 +89,16 @@ int vdsHashMapDefinition( VDS_HANDLE             objectHandle,
  * will not be seen by this function and cannot be removed. Likewise, 
  * destroyed data items (even if not yet committed) are invisible.
  *
- * The removals only become permanent after a call to ::vdsCommit.
+ * The removals only become permanent after a call to ::psoCommit.
  *
- * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[in]  objectHandle The handle to the hash map (see ::psoHashMapOpen).
  * \param[in]  key The key of the item to be removed.
  * \param[in]  keyLength The length of the \em key buffer (in bytes).
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsHashMapDelete( VDS_HANDLE   objectHandle,
+int psoHashMapDelete( PSO_HANDLE   objectHandle,
                       const void * key,
                       size_t       keyLength );
 
@@ -111,7 +111,7 @@ int vdsHashMapDelete( VDS_HANDLE   objectHandle,
  * will not be seen by this function. Likewise, 
  * destroyed data items (even if not yet committed) are invisible.
  *
- * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[in]  objectHandle The handle to the hash map (see ::psoHashMapOpen).
  * \param[in]  key The key of the item to be retrieved.
  * \param[in]  keyLength The length of the \em key buffer (in bytes).
  * \param[out] buffer The buffer provided by the user to hold the content of
@@ -120,10 +120,10 @@ int vdsHashMapDelete( VDS_HANDLE   objectHandle,
  * \param[in]  bufferLength The length of \em buffer (in bytes).
  * \param[out] returnedLength The actual number of bytes in the data item.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsHashMapGet( VDS_HANDLE   objectHandle,
+int psoHashMapGet( PSO_HANDLE   objectHandle,
                    const void * key,
                    size_t       keyLength,
                    void       * buffer,
@@ -141,7 +141,7 @@ int vdsHashMapGet( VDS_HANDLE   objectHandle,
  *
  * Data items retrieved this way will not be sorted.
  *
- * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[in]  objectHandle The handle to the hash map (see ::psoHashMapOpen).
  * \param[out] key The key buffer provided by the user to hold the content of
  *             the key associated with the first element. Memory allocation 
  *             for this buffer is the responsability of the caller.
@@ -153,10 +153,10 @@ int vdsHashMapGet( VDS_HANDLE   objectHandle,
  * \param[out] retKeyLength The actual number of bytes in the key
  * \param[out] retDataLength The actual number of bytes in the data item.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsHashMapGetFirst( VDS_HANDLE   objectHandle,
+int psoHashMapGetFirst( PSO_HANDLE   objectHandle,
                         void       * key,
                         size_t       keyLength,
                         void       * buffer,
@@ -173,14 +173,14 @@ int vdsHashMapGetFirst( VDS_HANDLE   objectHandle,
  * will not be seen by the iterator. Likewise, destroyed data items (even if
  * not yet committed) are invisible.
  *
- * Evidently, you must call ::vdsHashMapGetFirst to initialize the iterator. 
- * Not so evident - calling ::vdsHashMapGet will reset the iteration to the
+ * Evidently, you must call ::psoHashMapGetFirst to initialize the iterator. 
+ * Not so evident - calling ::psoHashMapGet will reset the iteration to the
  * data item retrieved by this function (they use the same internal storage). 
  * If this cause a problem, please let us know.
  *
  * Data items retrieved this way will not be sorted.
  *
- * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[in]  objectHandle The handle to the hash map (see ::psoHashMapOpen).
  * \param[out] key The key buffer provided by the user to hold the content of
  *             the key associated with the data element. Memory allocation 
  *             for this buffer is the responsability of the caller.
@@ -192,10 +192,10 @@ int vdsHashMapGetFirst( VDS_HANDLE   objectHandle,
  * \param[out] retKeyLength The actual number of bytes in the key
  * \param[out] retDataLength The actual number of bytes in the data item.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsHashMapGetNext( VDS_HANDLE   objectHandle,
+int psoHashMapGetNext( PSO_HANDLE   objectHandle,
                        void       * key,
                        size_t       keyLength,
                        void       * buffer,
@@ -208,18 +208,18 @@ int vdsHashMapGetNext( VDS_HANDLE   objectHandle,
 /**
  * Insert a data element in the hash map.
  *
- * The additions only become permanent after a call to ::vdsCommit.
+ * The additions only become permanent after a call to ::psoCommit.
  *
- * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[in]  objectHandle The handle to the hash map (see ::psoHashMapOpen).
  * \param[in]  key The key of the item to be inserted.
  * \param[in]  keyLength The length of the \em key buffer (in bytes).
  * \param[in]  data  The data item to be inserted.
  * \param[in]  dataLength The length of \em data (in bytes).
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsHashMapInsert( VDS_HANDLE   objectHandle,
+int psoHashMapInsert( PSO_HANDLE   objectHandle,
                       const void * key,
                       size_t       keyLength,
                       const void * data,
@@ -228,42 +228,42 @@ int vdsHashMapInsert( VDS_HANDLE   objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Open an existing hash map (see ::vdsCreateObject to create a new object).
+ * Open an existing hash map (see ::psoCreateObject to create a new object).
  *
  * \param[in]  sessionHandle The handle to the current session.
  * \param[in]  hashMapName The fully qualified name of the hash map. 
  * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the vdsf engine).
+ *             the psof engine).
  * \param[out] objectHandle The handle to the hash map, allowing us access to
  *             the map in shared memory. On error, this handle will be set
  *             to zero (NULL) unless the objectHandle pointer itself is NULL.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsHashMapOpen( VDS_HANDLE   sessionHandle,
+int psoHashMapOpen( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
                     size_t       nameLengthInBytes,
-                    VDS_HANDLE * objectHandle );
+                    PSO_HANDLE * objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  * Replace a data element in the hash map.
  *
- * The replacements only become permanent after a call to ::vdsCommit.
+ * The replacements only become permanent after a call to ::psoCommit.
  *
- * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[in]  objectHandle The handle to the hash map (see ::psoHashMapOpen).
  * \param[in]  key The key of the item to be replaced.
  * \param[in]  keyLength The length of the \em key buffer (in bytes).
  * \param[in]  data  The new data item that will replace the previous data.
  * \param[in]  dataLength The length of \em data (in bytes).
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsHashMapReplace( VDS_HANDLE   objectHandle,
+int psoHashMapReplace( PSO_HANDLE   objectHandle,
                        const void * key,
                        size_t       keyLength,
                        const void * data,
@@ -274,14 +274,14 @@ int vdsHashMapReplace( VDS_HANDLE   objectHandle,
 /**
  * Return the status of the hash map.
  *
- * \param[in]  objectHandle The handle to the hash map (see ::vdsHashMapOpen).
+ * \param[in]  objectHandle The handle to the hash map (see ::psoHashMapOpen).
  * \param[out] pStatus      A pointer to the status structure.
  *
- * \return 0 on success or a ::vdsErrors on error.
+ * \return 0 on success or a ::psoErrors on error.
  */
 VDSF_EXPORT
-int vdsHashMapStatus( VDS_HANDLE     objectHandle,
-                      vdsObjStatus * pStatus );
+int psoHashMapStatus( PSO_HANDLE     objectHandle,
+                      psoObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -293,7 +293,7 @@ int vdsHashMapStatus( VDS_HANDLE     objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDS_HASH_MAP_H */
+#endif /* PSO_HASH_MAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

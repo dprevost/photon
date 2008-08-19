@@ -15,17 +15,17 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDS_H
-#define VDS_H
+#ifndef PSO_H
+#define PSO_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include <photon/phoErrors.h>
-#include <photon/phoCommon.h>
+#include <photon/psoErrors.h>
+#include <photon/psoCommon.h>
 
-#include <photon/phoProcess.h>
-#include <photon/phoSession.h>
-#include <photon/phoFolder.h>
+#include <photon/psoProcess.h>
+#include <photon/psoSession.h>
+#include <photon/psoFolder.h>
 /*
  * Hash maps and maps implements the same data container but differs with 
  * respect to transactions. 
@@ -33,14 +33,14 @@
  * Hash maps are read-write and locks are used to insure data integrity.
  * Maps are read-only (with an update procedure) and no locks are required.
  */
-#include <photon/phoHashMap.h>
-#include <photon/phoFastMap.h>
-#include <photon/phoQueue.h>
-#include <photon/phoLifo.h>
+#include <photon/psoHashMap.h>
+#include <photon/psoFastMap.h>
+#include <photon/psoQueue.h>
+#include <photon/psoLifo.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDS_H */
+#endif /* PSO_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

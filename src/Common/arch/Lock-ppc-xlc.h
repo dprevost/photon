@@ -28,9 +28,9 @@ pscAcquireProcessLock( pscProcessLock * pLock,
 {
    int out = 0;
 
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
-   VDS_PRE_CONDITION( pid_locker != 0 );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pid_locker != 0 );
 
    for (;;) {
       if ( __lwarx( &pLock->lock ) == 0 ) {
@@ -54,9 +54,9 @@ pscTryAcquireProcessLock( pscProcessLock * pLock,
 {
    int out = 0;
 
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
-   VDS_PRE_CONDITION( pid_locker != 0 );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pid_locker != 0 );
 
    if ( __lwarx( &pLock->lock ) == 0 ) {
       out = __stwcx( &pLock->lock, 1 );
@@ -100,8 +100,8 @@ pscTryAcquireProcessLock( pscProcessLock * pLock,
 inline void
 pscReleaseProcessLock( pscProcessLock * pLock )
 {
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
 
    pLock->pid  = 0;
    /*

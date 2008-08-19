@@ -26,9 +26,9 @@ pscAcquireProcessLock( pscProcessLock * pLock,
 {
    unsigned int out = 0xff;
 
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
-   VDS_PRE_CONDITION( pid_locker != 0 );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pid_locker != 0 );
 
    for (;;) {
       if ( pLock->lock == 0 ) {
@@ -43,7 +43,7 @@ pscAcquireProcessLock( pscProcessLock * pLock,
    }
 
    /* Failure to get the lock should not occured!!! */
-   VDS_POST_CONDITION( out == 0 );
+   PSO_POST_CONDITION( out == 0 );
 
    /* There is a "race condition" when saving the pid of the caller
     * this way -> it is possible to have lock out-of-synch with
@@ -61,9 +61,9 @@ pscTryAcquireProcessLock( pscProcessLock * pLock,
 {
    unsigned int out = 0xff;
 
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
-   VDS_PRE_CONDITION( pid_locker != 0 );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pid_locker != 0 );
 
    if ( pLock->lock == 0 ) {
       __asm__ __volatile__ (
@@ -110,8 +110,8 @@ pscTryAcquireProcessLock( pscProcessLock * pLock,
 inline void
 pscReleaseProcessLock( pscProcessLock * pLock )
 {
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
 
    pLock->pid = 0;
 

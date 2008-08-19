@@ -28,8 +28,8 @@ int main()
    psnSessionContext context;
    bool ok;
    psnFolderItem folderItem;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 

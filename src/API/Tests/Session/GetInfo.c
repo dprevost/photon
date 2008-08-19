@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 
 const bool expectedToPass = true;
@@ -25,75 +25,75 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE handle, sessionHandle;
+   PSO_HANDLE handle, sessionHandle;
    int errcode;
-   vdsInfo info, info2;
+   psoInfo info, info2;
    size_t allocSpace;
    int xyz = 12345;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
    
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Invalid arguments to tested function. */
 
-   errcode = vdsGetInfo( NULL, &info );
-   if ( errcode != VDS_NULL_HANDLE ) {
+   errcode = psoGetInfo( NULL, &info );
+   if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsGetInfo( sessionHandle, NULL );
-   if ( errcode != VDS_NULL_POINTER ) {
+   errcode = psoGetInfo( sessionHandle, NULL );
+   if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   handle = (VDS_HANDLE) &xyz;
-   errcode = vdsGetInfo( handle, &info );
-   if ( errcode != VDS_WRONG_TYPE_HANDLE ) {
+   handle = (PSO_HANDLE) &xyz;
+   errcode = psoGetInfo( handle, &info );
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* End of invalid args. This call should succeed. */
-   errcode = vdsGetInfo( sessionHandle, &info );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandle, &info );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    allocSpace = info.allocatedSizeInBytes;
    
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/asgi",
                               strlen("/asgi"),
                               &def );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsGetInfo( sessionHandle, &info2 );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandle, &info2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -113,21 +113,21 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsCommit( sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsDestroyObject( sessionHandle,
+   errcode = psoDestroyObject( sessionHandle,
                                "/asgi",
                                strlen("/asgi") );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = vdsGetInfo( sessionHandle, &info );
-   if ( errcode != VDS_OK ) {
+   errcode = psoGetInfo( sessionHandle, &info );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -147,9 +147,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdsCommit( sessionHandle );
-   errcode = vdsGetInfo( sessionHandle, &info2 );
-   if ( errcode != VDS_OK ) {
+   psoCommit( sessionHandle );
+   errcode = psoGetInfo( sessionHandle, &info2 );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -171,10 +171,10 @@ int main( int argc, char * argv[] )
    
    /* Close the process and try to act on the session */
 
-   vdsExit();
+   psoExit();
    
-   errcode = vdsGetInfo( sessionHandle, &info );
-   if ( errcode != VDS_SESSION_IS_TERMINATED ) {
+   errcode = psoGetInfo( sessionHandle, &info );
+   if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

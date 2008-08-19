@@ -85,11 +85,11 @@
 
     <error>
       <errnumber> 2 </errnumber>
-      <errname> NOT_ENOUGH_VDS_MEMORY </errname>
+      <errname> NOT_ENOUGH_PSO_MEMORY </errname>
       <message_group>
         <message xml:lang="en">
-          <errormsg>Not enough memory in the VDS.</errormsg>
-          <errordoc>Not enough memory in the VDS.</errordoc>
+          <errormsg>Not enough memory in the PSO.</errormsg>
+          <errordoc>Not enough memory in the PSO.</errordoc>
         </message>
       </message_group>
     </error>
@@ -100,10 +100,10 @@
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            Not enough heap memory (non-VDS memory). 
+            Not enough heap memory (non-PSO memory). 
           </errormsg>
           <errordoc>
-            Not enough heap memory (non-VDS memory).
+            Not enough heap memory (non-PSO memory).
           </errordoc>
         </message>
       </message_group>
@@ -563,13 +563,13 @@
         <message xml:lang="en">
           <errormsg>
             The name of the object is too long.
-            The maximum length of a name cannot be more than VDS_MAX_NAME_LENGTH
-            (or VDS_MAX_FULL_NAME_LENGTH for the fully qualified name).
+            The maximum length of a name cannot be more than PSO_MAX_NAME_LENGTH
+            (or PSO_MAX_FULL_NAME_LENGTH for the fully qualified name).
           </errormsg>
           <errordoc>
             The name of the object is too long.
-            The maximum length of a name cannot be more than VDS_MAX_NAME_LENGTH
-            (or VDS_MAX_FULL_NAME_LENGTH for the fully qualified name).
+            The maximum length of a name cannot be more than PSO_MAX_NAME_LENGTH
+            (or PSO_MAX_FULL_NAME_LENGTH for the fully qualified name).
           </errordoc>
         </message>
       </message_group>
@@ -776,7 +776,7 @@
           </errormsg>
           <errordoc>
             The number of fields in the data definition is invalid - either 
-            zero or greater than VDS_MAX_FIELDS (defined in photon/vdsCommon.h).
+            zero or greater than PSO_MAX_FIELDS (defined in photon/vdsCommon.h).
           </errordoc>
         </message>
       </message_group>
@@ -792,11 +792,11 @@
           </errormsg>
           <errordoc>
             The data type of the field definition does not correspond to one of
-            the data type defined in the enum vdsFieldType (photon/vdsCommon.h).
-            or you've used VDS_VAR_STRING or VDS_VAR_BINARY at the wrong place.
+            the data type defined in the enum psoFieldType (photon/vdsCommon.h).
+            or you've used PSO_VAR_STRING or PSO_VAR_BINARY at the wrong place.
           </errordoc>
           <errordoc> 
-            Do not forget that VDS_VAR_STRING and VDS_VAR_BINAR can only be
+            Do not forget that PSO_VAR_STRING and PSO_VAR_BINAR can only be
             used for the last field of your data definition.
           </errordoc>
         </message>
@@ -809,10 +809,10 @@
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            The length of an integer field (VDS_INTEGER) is invalid.
+            The length of an integer field (PSO_INTEGER) is invalid.
           </errormsg>
           <errordoc>
-            The length of an integer field (VDS_INTEGER) is invalid. Valid
+            The length of an integer field (PSO_INTEGER) is invalid. Valid
             values are 1, 2, 4 and 8.
           </errordoc>
         </message>
@@ -883,10 +883,10 @@
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            The precision of a VDS_DECIMAL field is invalid.
+            The precision of a PSO_DECIMAL field is invalid.
           </errormsg>
           <errordoc>
-            The precision of a VDS_DECIMAL field is either zero or over the 
+            The precision of a PSO_DECIMAL field is either zero or over the 
             limit for this type (set at 30 currently). Note: precision 
             is the number of digits in a number.
           </errordoc>
@@ -900,10 +900,10 @@
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            The scale of a VDS_DECIMAL field is invalid.
+            The scale of a PSO_DECIMAL field is invalid.
           </errormsg>
           <errordoc>
-            The scale of a VDS_DECIMAL field is invalid (greater than the
+            The scale of a PSO_DECIMAL field is invalid (greater than the
             value of precision. Note: scale is the number of digits to the 
             right of the decimal separator in a number.
           </errordoc>

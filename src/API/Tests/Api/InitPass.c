@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 
 const bool expectedToPass = true;
@@ -27,36 +27,36 @@ int main( int argc, char * argv[] )
 {
    int errcode;
    
-   errcode = vdsInit( NULL, 1 );
-   if ( errcode != VDS_INVALID_WATCHDOG_ADDRESS ) {
+   errcode = psoInit( NULL, 1 );
+   if ( errcode != PSO_INVALID_WATCHDOG_ADDRESS ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsInit( "12345", 1 );
-   if ( errcode != VDS_CONNECT_ERROR ) {
+   errcode = psoInit( "12345", 1 );
+   if ( errcode != PSO_CONNECT_ERROR ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsInit( "12345", 0 );
-   if ( errcode != VDS_CONNECT_ERROR ) {
+   errcode = psoInit( "12345", 0 );
+   if ( errcode != PSO_CONNECT_ERROR ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdsExit();
+   psoExit();
    
    return 0;
 }

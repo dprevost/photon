@@ -35,11 +35,11 @@ using namespace std;
 
 struct myQueue
 {
-   myQueue( vdsSession & session )
+   myQueue( psoSession & session )
       : queue ( session ),
         name  ( "TestFolder/Queue" ) {}
 
-   vdsQueue queue;
+   psoQueue queue;
    string   name;
 };
 
@@ -47,11 +47,11 @@ struct myQueue
 
 struct myMap
 {
-   myMap( vdsSession & session )
+   myMap( psoSession & session )
       : map  ( session ),
         name ( "TestFolder/HashMap" ) {}
 
-   vdsHashMap map;
+   psoHashMap map;
    string     name;
 };
 
@@ -59,11 +59,11 @@ struct myMap
 
 struct myLifo
 {
-   myLifo( vdsSession & session )
+   myLifo( psoSession & session )
       : queue ( session ),
         name  ( "TestFolder/Lifo" ) {}
 
-   vdsLifo queue;
+   psoLifo queue;
    string  name;
 };
 
@@ -91,7 +91,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
 
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table (true for g++)
-   for ( i = 0; i < sizeof(vdsHashMap)/sizeof(void*); ++i, apiObj++ ) {
+   for ( i = 0; i < sizeof(psoHashMap)/sizeof(void*); ++i, apiObj++ ) {
       if ( **apiObj == PSA_HASH_MAP ) {
          api_offset = i * sizeof(void*);
          break;
@@ -264,7 +264,7 @@ int AddDefectsLifos( vector<myLifo> & l )
    apiObj = (unsigned long **) ( (void *) &l[0].queue );
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table
-   for ( i = 0; i < sizeof(vdsQueue)/sizeof(void*); ++i, apiObj++ ) {
+   for ( i = 0; i < sizeof(psoQueue)/sizeof(void*); ++i, apiObj++ ) {
       if ( **apiObj == PSA_LIFO ) {
          api_offset = i * sizeof(void*);
          break;
@@ -502,7 +502,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    apiObj = (unsigned long **) ( (void *) &q[0].queue );
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table
-   for ( i = 0; i < sizeof(vdsQueue)/sizeof(void*); ++i, apiObj++ ) {
+   for ( i = 0; i < sizeof(psoQueue)/sizeof(void*); ++i, apiObj++ ) {
       if ( **apiObj == PSA_QUEUE ) {
          api_offset = i * sizeof(void*);
          break;
@@ -724,10 +724,10 @@ int AddDefectsQueues( vector<myQueue> & q )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void CleanupPreviousRun( vdsSession & session )
+void CleanupPreviousRun( psoSession & session )
 {
-   vdsFolder folder( session );
-   vdsFolderEntry entry;
+   psoFolder folder( session );
+   psoFolderEntry entry;
    int ok;
    string s;
    
@@ -741,7 +741,7 @@ void CleanupPreviousRun( vdsSession & session )
       }
       session.Commit();
    }
-   catch ( vdsException exc ) {
+   catch ( psoException exc ) {
       cerr << "Cleanup of previous session failed, error = " << exc.Message() << endl;
       exit(1);
    }
@@ -749,16 +749,16 @@ void CleanupPreviousRun( vdsSession & session )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void PopulateHashMaps( vdsSession & session, vector<myMap> & h )
+void PopulateHashMaps( psoSession & session, vector<myMap> & h )
 {
    int i, j;
    string data, key;
    char s[4];
-   vdsObjectDefinition mapDef = { 
-      VDS_HASH_MAP,
+   psoObjectDefinition mapDef = { 
+      PSO_HASH_MAP,
       1, 
-      { VDS_KEY_VAR_STRING, 0, 1, 200 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 1, 200, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 1, 200 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 1, 200, 0, 0 } } 
    };
    
    for ( i = 0; i < NUM_MAPS; ++i ) {
@@ -780,16 +780,16 @@ void PopulateHashMaps( vdsSession & session, vector<myMap> & h )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void PopulateLifos( vdsSession & session, vector<myLifo> & l )
+void PopulateLifos( psoSession & session, vector<myLifo> & l )
 {
    int i, j;
    string data;
    char s[4];
-   vdsObjectDefinition queueDef = { 
-      VDS_LIFO,
+   psoObjectDefinition queueDef = { 
+      PSO_LIFO,
       1, 
-      { VDS_KEY_INTEGER, 0, 0, 0 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 100, 0, 0 } } 
+      { PSO_KEY_INTEGER, 0, 0, 0 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 100, 0, 0 } } 
    };
    
    for ( i = 0; i < NUM_LIFOS; ++i ) {
@@ -810,16 +810,16 @@ void PopulateLifos( vdsSession & session, vector<myLifo> & l )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void PopulateQueues( vdsSession & session, vector<myQueue> & q )
+void PopulateQueues( psoSession & session, vector<myQueue> & q )
 {
    int i, j;
    string data;
    char s[4];
-   vdsObjectDefinition queueDef = { 
-      VDS_QUEUE,
+   psoObjectDefinition queueDef = { 
+      PSO_QUEUE,
       1, 
-      { VDS_KEY_INTEGER, 0, 0, 0 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 100, 0, 0 } } 
+      { PSO_KEY_INTEGER, 0, 0, 0 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 100, 0, 0 } } 
    };
    
    for ( i = 0; i < NUM_QUEUES; ++i ) {
@@ -843,27 +843,27 @@ void PopulateQueues( vdsSession & session, vector<myQueue> & q )
 
 int main()
 {
-   vdsProcess process;
-   vdsSession session;
+   psoProcess process;
+   psoSession session;
    int i, rc;
-   vdsObjectDefinition folderDef;
+   psoObjectDefinition folderDef;
 
    memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = VDS_FOLDER;
+   folderDef.type = PSO_FOLDER;
    
    try {
       process.Init( "10701" );
       session.Init();
       session.CreateObject( foldername, &folderDef );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       rc = exc.ErrorCode();
-      if ( rc == VDS_OBJECT_ALREADY_PRESENT ) {
+      if ( rc == PSO_OBJECT_ALREADY_PRESENT ) {
          CleanupPreviousRun( session );
       }
       else {
          cerr << "Init VDSF failed, error = " << exc.Message() << endl;
-         if ( rc == VDS_CONNECT_ERROR ) cerr << "Is the watchdog running?" << endl;
+         if ( rc == PSO_CONNECT_ERROR ) cerr << "Is the watchdog running?" << endl;
          return 1;
       }
    }
@@ -894,7 +894,7 @@ int main()
       PopulateHashMaps( session, h );
       PopulateLifos( session, l );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Creating and populating the objects failed, error = " << exc.Message() << endl;
       return 1;
    }

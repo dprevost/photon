@@ -22,8 +22,8 @@
 
 #include "Common/Common.h"
 #include "Common/ProcessLock.h"
-#include <photon/vdsErrors.h>
-#include <photon/vdsCommon.h>
+#include <photon/psoErrors.h>
+#include <photon/psoCommon.h>
 #include "Common/ErrorHandler.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -72,7 +72,7 @@ VDSF_ENGINE_EXPORT
 extern unsigned char* g_pBaseAddr;
 
 VDSF_ENGINE_EXPORT
-extern pscErrMsgHandle g_vdsErrorHandle;
+extern pscErrMsgHandle g_psoErrorHandle;
 
 #define SET_OFFSET(ptr) ( (ptrdiff_t) ( (unsigned char*)(ptr) - \
        g_pBaseAddr ) )
@@ -90,8 +90,8 @@ extern pscErrMsgHandle g_vdsErrorHandle;
 
 #define GET_PTR_DBG(target,offset,type) { \
    ptrdiff_t off = offset; \
-   VDS_INV_CONDITION( off != 0 ); \
-   VDS_INV_CONDITION( off != PSN_NULL_OFFSET ); \
+   PSO_INV_CONDITION( off != 0 ); \
+   PSO_INV_CONDITION( off != PSN_NULL_OFFSET ); \
    target = (type*) ( (unsigned char*) g_pBaseAddr + (ptrdiff_t) off ); \
 }
 

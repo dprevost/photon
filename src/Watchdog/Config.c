@@ -25,16 +25,16 @@ extern pscErrMsgHandle g_wdErrorHandle;
 
 enum ECFG_PARAMS
 {
-   VDS_WDADDRESS = 0,
-   eVDS_LOCATION,
-   eVDS_MEMSIZE,
-   eVDS_USE_LOG,
-   eVDS_FILEPERMS,
-   eVDS_DIRPERMS,
-   eVDS_NUM_CFG_PARAMS
+   PSO_WDADDRESS = 0,
+   ePSO_LOCATION,
+   ePSO_MEMSIZE,
+   ePSO_USE_LOG,
+   ePSO_FILEPERMS,
+   ePSO_DIRPERMS,
+   ePSO_NUM_CFG_PARAMS
 };
 
-const char g_paramNames[eVDS_NUM_CFG_PARAMS][64] = { 
+const char g_paramNames[ePSO_NUM_CFG_PARAMS][64] = { 
    "WatchdogAddress", 
    "VDSLocation", 
    "MemorySize", 
@@ -84,15 +84,15 @@ bool vdswReadConfig( const char          * cfgname,
    char buf[10000];
 
    /* These are to make sure we have read all parameters */
-   int isPresent[eVDS_NUM_CFG_PARAMS];
+   int isPresent[ePSO_NUM_CFG_PARAMS];
    
-   VDS_PRE_CONDITION( cfgname  != NULL );
-   VDS_PRE_CONDITION( pConfig  != NULL );
-   VDS_PRE_CONDITION( pError   != NULL );
+   PSO_PRE_CONDITION( cfgname  != NULL );
+   PSO_PRE_CONDITION( pConfig  != NULL );
+   PSO_PRE_CONDITION( pError   != NULL );
 
    memset( pConfig, 0, sizeof(struct ConfigParams) );
 
-   for ( i = 0; i < eVDS_NUM_CFG_PARAMS; ++i ) {
+   for ( i = 0; i < ePSO_NUM_CFG_PARAMS; ++i ) {
       isPresent[i] = 0;
    }
 
@@ -207,10 +207,10 @@ bool vdswReadConfig( const char          * cfgname,
                node = node->next;
                break;
             }
-            errcode = VDSW_CFG_VDS_LOCATION_TOO_LONG;
+            errcode = VDSW_CFG_PSO_LOCATION_TOO_LONG;
             goto cleanup;
          }
-         errcode = VDSW_CFG_VDS_LOCATION_IS_MISSING;
+         errcode = VDSW_CFG_PSO_LOCATION_IS_MISSING;
          goto cleanup;
       }
       node = node->next;

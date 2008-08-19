@@ -37,21 +37,21 @@ void pscInitMemoryFile( pscMemoryFile * pMem,
                         size_t          kblength,
                         const char    * filename )
 {
-   VDS_PRE_CONDITION( pMem != NULL );
-   VDS_PRE_CONDITION( kblength > 0 );
-   VDS_PRE_CONDITION( filename != NULL );
-   VDS_PRE_CONDITION( filename[0] != '\0' );
+   PSO_PRE_CONDITION( pMem != NULL );
+   PSO_PRE_CONDITION( kblength > 0 );
+   PSO_PRE_CONDITION( filename != NULL );
+   PSO_PRE_CONDITION( filename[0] != '\0' );
    
-   pMem->baseAddr = VDS_MAP_FAILED;
+   pMem->baseAddr = PSO_MAP_FAILED;
    pMem->length   = kblength*1024;
-   pMem->fileHandle = VDS_INVALID_HANDLE;
+   pMem->fileHandle = PSO_INVALID_HANDLE;
    memset( pMem->name, 0, PATH_MAX );
    strncpy( pMem->name, filename, PATH_MAX );
 
    pMem->initialized = PSC_MEMFILE_SIGNATURE;
    
 #if defined (WIN32)
-   pMem->mapHandle = VDS_INVALID_HANDLE;
+   pMem->mapHandle = PSO_INVALID_HANDLE;
 #endif
 }
 
@@ -65,18 +65,18 @@ void pscInitMemoryFile( pscMemoryFile * pMem,
  */
 void pscFiniMemoryFile( pscMemoryFile * pMem )
 {
-   VDS_PRE_CONDITION( pMem != NULL );
-   VDS_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_PRE_CONDITION( pMem != NULL );
+   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
    
-   pMem->baseAddr = VDS_MAP_FAILED;
+   pMem->baseAddr = PSO_MAP_FAILED;
    pMem->length   = 0;
-   pMem->fileHandle = VDS_INVALID_HANDLE;
+   pMem->fileHandle = PSO_INVALID_HANDLE;
    memset( pMem->name, 0, PATH_MAX );
 
    pMem->initialized = 0;
    
 #if defined (WIN32)
-   pMem->mapHandle = VDS_INVALID_HANDLE;
+   pMem->mapHandle = PSO_INVALID_HANDLE;
 #endif
 }
 
@@ -112,10 +112,10 @@ void pscBackStoreStatus( pscMemoryFile       * pMem,
    struct stat info;
 #endif
 
-   VDS_PRE_CONDITION( pMem    != NULL );
-   VDS_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
-   VDS_INV_CONDITION( pMem->name[0] != '\0' );
-   VDS_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pMem    != NULL );
+   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->name[0] != '\0' );
+   PSO_PRE_CONDITION( pStatus != NULL );
 
    pStatus->fileExist     = 0;
    pStatus->fileReadable  = 0;
@@ -195,12 +195,12 @@ bool pscCopyBackstore( pscMemoryFile   * pMem,
    unsigned char * buffer = NULL;
    int i, j, k;
    
-   VDS_PRE_CONDITION( pMem    != NULL );
-   VDS_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
-   VDS_INV_CONDITION( pMem->name[0] != '\0' );
-   VDS_INV_CONDITION( pMem->length > 0 );
-   VDS_PRE_CONDITION( pError != NULL );
-   VDS_PRE_CONDITION( ( filePerms & 0600 ) == 0600 );
+   PSO_PRE_CONDITION( pMem    != NULL );
+   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->name[0] != '\0' );
+   PSO_INV_CONDITION( pMem->length > 0 );
+   PSO_PRE_CONDITION( pError != NULL );
+   PSO_PRE_CONDITION( ( filePerms & 0600 ) == 0600 );
    
    if ( strlen(pMem->name)+4+1 > PATH_MAX ) {
       errno = ENAMETOOLONG;
@@ -289,12 +289,12 @@ bool pscCreateBackstore( pscMemoryFile   * pMem,
    char buf[1];
    bool ok = true;
    
-   VDS_PRE_CONDITION( pMem    != NULL );
-   VDS_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
-   VDS_INV_CONDITION( pMem->name[0] != '\0' );
-   VDS_INV_CONDITION( pMem->length > 0 );
-   VDS_PRE_CONDITION( pError != NULL );
-   VDS_PRE_CONDITION( ( filePerms & 0600 ) == 0600 );
+   PSO_PRE_CONDITION( pMem    != NULL );
+   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->name[0] != '\0' );
+   PSO_INV_CONDITION( pMem->length > 0 );
+   PSO_PRE_CONDITION( pError != NULL );
+   PSO_PRE_CONDITION( ( filePerms & 0600 ) == 0600 );
    
    /* Create the file with the right permissions */
    fd = creat( pMem->name, filePerms );
@@ -355,11 +355,11 @@ bool pscCreateBackstore( pscMemoryFile   * pMem,
  * \invariant \em pMem->initialized must equal ::PSC_MEMFILE_SIGNATURE.
  * \invariant \em pMem->name cannot be empty.
  * \invariant \em pMem->length must be positive.
- * \post \em *ppAddr cannot be ::VDS_MAP_FAILED (NULL on Win32, (void*)-1
+ * \post \em *ppAddr cannot be ::PSO_MAP_FAILED (NULL on Win32, (void*)-1
  *           on many Posix-compliant systems).
- * \post \em pMem->baseAddr cannot be ::VDS_MAP_FAILED.
- * \post \em pMem->fileHandle cannot be ::VDS_INVALID_HANDLE.
- * \post (Win32 only) \em pMem->mapHandle cannot be ::VDS_INVALID_HANDLE.
+ * \post \em pMem->baseAddr cannot be ::PSO_MAP_FAILED.
+ * \post \em pMem->fileHandle cannot be ::PSO_INVALID_HANDLE.
+ * \post (Win32 only) \em pMem->mapHandle cannot be ::PSO_INVALID_HANDLE.
  *
  */
 
@@ -367,12 +367,12 @@ bool pscOpenMemFile( pscMemoryFile   * pMem,
                      void           ** ppAddr,
                      pscErrorHandler * pError )
 {
-   VDS_PRE_CONDITION( pMem != NULL );
-   VDS_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
-   VDS_INV_CONDITION( pMem->name[0] != '\0' );
-   VDS_INV_CONDITION( pMem->length > 0 );
-   VDS_PRE_CONDITION( ppAddr != NULL );
-   VDS_PRE_CONDITION( pError != NULL );
+   PSO_PRE_CONDITION( pMem != NULL );
+   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->name[0] != '\0' );
+   PSO_INV_CONDITION( pMem->length > 0 );
+   PSO_PRE_CONDITION( ppAddr != NULL );
+   PSO_PRE_CONDITION( pError != NULL );
 
    /**
     * \todo This section on Win32 is wrong!!!! We should setup the 
@@ -396,7 +396,7 @@ bool pscOpenMemFile( pscMemoryFile   * pMem,
       OPEN_EXISTING,
       0,
       0 );
-   if ( pMem->fileHandle == VDS_INVALID_HANDLE ) {
+   if ( pMem->fileHandle == PSO_INVALID_HANDLE ) {
       pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );
       return false;
    }
@@ -407,7 +407,7 @@ bool pscOpenMemFile( pscMemoryFile   * pMem,
                                          0,
                                          0,
                                          NULL );
-   if ( pMem->mapHandle  == VDS_INVALID_HANDLE ) {
+   if ( pMem->mapHandle  == PSO_INVALID_HANDLE ) {
       pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );
       return false;
    }
@@ -419,7 +419,7 @@ bool pscOpenMemFile( pscMemoryFile   * pMem,
                                      0,
                                      NULL );
 
-   if ( pMem->baseAddr == VDS_MAP_FAILED ) {
+   if ( pMem->baseAddr == PSO_MAP_FAILED ) {
       pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );
       return false;
    }
@@ -429,7 +429,7 @@ bool pscOpenMemFile( pscMemoryFile   * pMem,
 #else /* WIN32 */
 
    pMem->fileHandle = open( pMem->name, O_RDWR );
-   if ( pMem->fileHandle == VDS_INVALID_HANDLE ) {
+   if ( pMem->fileHandle == PSO_INVALID_HANDLE ) {
       pscSetError( pError, PSC_ERRNO_HANDLE, errno );
       return false;
    }
@@ -441,7 +441,7 @@ bool pscOpenMemFile( pscMemoryFile   * pMem,
                           pMem->fileHandle,
                           0 );
 
-   if ( pMem->baseAddr == VDS_MAP_FAILED ) {
+   if ( pMem->baseAddr == PSO_MAP_FAILED ) {
       pscSetError( pError, PSC_ERRNO_HANDLE, errno );
       return false;
    }
@@ -451,11 +451,11 @@ bool pscOpenMemFile( pscMemoryFile   * pMem,
 #endif /* WIN32 */
    
    /* Just in case */
-   VDS_POST_CONDITION( *ppAddr != VDS_MAP_FAILED );
-   VDS_POST_CONDITION( pMem->baseAddr   != VDS_MAP_FAILED );
-   VDS_POST_CONDITION( pMem->fileHandle != VDS_INVALID_HANDLE );
+   PSO_POST_CONDITION( *ppAddr != PSO_MAP_FAILED );
+   PSO_POST_CONDITION( pMem->baseAddr   != PSO_MAP_FAILED );
+   PSO_POST_CONDITION( pMem->fileHandle != PSO_INVALID_HANDLE );
 #if defined (WIN32)
-   VDS_POST_CONDITION( pMem->mapHandle  != VDS_INVALID_HANDLE );
+   PSO_POST_CONDITION( pMem->mapHandle  != PSO_INVALID_HANDLE );
 #endif   
 
    return true;
@@ -476,36 +476,36 @@ bool pscOpenMemFile( pscMemoryFile   * pMem,
 void pscCloseMemFile( pscMemoryFile   * pMem,
                       pscErrorHandler * pError )
 {
-   VDS_PRE_CONDITION( pMem != NULL );
-   VDS_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
-   VDS_PRE_CONDITION( pError != NULL );
+   PSO_PRE_CONDITION( pMem != NULL );
+   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_PRE_CONDITION( pError != NULL );
 
-   if ( pMem->baseAddr != VDS_MAP_FAILED ) {
+   if ( pMem->baseAddr != PSO_MAP_FAILED ) {
       pscSyncMemFile( pMem, pError );
    }
    
 #if defined (WIN32)
-   if (pMem->baseAddr != VDS_MAP_FAILED) {
+   if (pMem->baseAddr != PSO_MAP_FAILED) {
       UnmapViewOfFile( pMem->baseAddr );
    }
-   if ( pMem->mapHandle != VDS_INVALID_HANDLE ) {
+   if ( pMem->mapHandle != PSO_INVALID_HANDLE ) {
       CloseHandle( pMem->mapHandle );
    }
-   if ( pMem->fileHandle != VDS_INVALID_HANDLE ) {
+   if ( pMem->fileHandle != PSO_INVALID_HANDLE ) {
       CloseHandle( pMem->fileHandle );
    }
-   pMem->mapHandle = VDS_INVALID_HANDLE;
+   pMem->mapHandle = PSO_INVALID_HANDLE;
 #else
-   if ( pMem->baseAddr != VDS_MAP_FAILED ) {
+   if ( pMem->baseAddr != PSO_MAP_FAILED ) {
       munmap( pMem->baseAddr, pMem->length );
    }
-   if ( pMem->fileHandle != VDS_INVALID_HANDLE ) {
+   if ( pMem->fileHandle != PSO_INVALID_HANDLE ) {
       close( pMem->fileHandle );
    }
 #endif
 
-   pMem->fileHandle = VDS_INVALID_HANDLE;
-   pMem->baseAddr = VDS_MAP_FAILED;
+   pMem->fileHandle = PSO_INVALID_HANDLE;
+   pMem->baseAddr = PSO_MAP_FAILED;
    pMem->length = 0;
 }
 
@@ -522,7 +522,7 @@ void pscCloseMemFile( pscMemoryFile   * pMem,
  * \pre \em pMem cannot be NULL.
  * \pre \em pError cannot be NULL.
  * \invariant \em pMem->initialized must equal ::PSC_MEMFILE_SIGNATURE.
- * \invariant \em pMem->baseAddr cannot be equal to ::VDS_MAP_FAILED.
+ * \invariant \em pMem->baseAddr cannot be equal to ::PSO_MAP_FAILED.
  *
  */
 bool pscSyncMemFile( pscMemoryFile   * pMem,
@@ -531,10 +531,10 @@ bool pscSyncMemFile( pscMemoryFile   * pMem,
    int errcode;
    bool ok = true;
    
-   VDS_PRE_CONDITION( pMem != NULL );
-   VDS_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
-   VDS_INV_CONDITION( pMem->baseAddr != VDS_MAP_FAILED );
-   VDS_PRE_CONDITION( pError != NULL );
+   PSO_PRE_CONDITION( pMem != NULL );
+   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->baseAddr != PSO_MAP_FAILED );
+   PSO_PRE_CONDITION( pError != NULL );
 
 #if defined (WIN32)
 

@@ -33,5 +33,5 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)             
 
-LDADD = $(top_builddir)/src/C++/libvdsfcpp.la
+LDADD = $(top_builddir)/src/C++/libphotoncpp.la
 

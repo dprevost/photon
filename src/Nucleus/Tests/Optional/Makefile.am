@@ -19,7 +19,7 @@ check_PROGRAMS =          \
         InitBigVDS        
 
 DisplayBigVDSSize_SOURCES = DisplayBigVDSSize.c
-InitBigVDS_SOURCES        = InitBigVDS.c
+InitBigPSO_SOURCES        = InitBigVDS.c
 
 EXTRA_DIST = 
 

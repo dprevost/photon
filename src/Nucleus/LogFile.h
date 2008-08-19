@@ -29,7 +29,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define VDS_LOG_EXT "tlog"
+#define PSO_LOG_EXT "tlog"
 
 /* Random generated signature... the first 8 bytes of the digest (md5)
  * of LogFile.c at that time... The signature is used to indicate
@@ -74,13 +74,13 @@ void psnCloseLogFile( psnLogFile      * logFile,
  * session of a given process would otherwise have the same name).
  */
 VDSF_ENGINE_EXPORT
-vdsErrors psnInitLogFile( psnLogFile      * logFile,
+psoErrors psnInitLogFile( psnLogFile      * logFile,
                            const char       * dirName,
                            void             * pSession,
                            pscErrorHandler * pError );
    
 VDSF_ENGINE_EXPORT
-vdsErrors psnLogTransaction( psnLogFile      * logFile,
+psoErrors psnLogTransaction( psnLogFile      * logFile,
                               int                transactionId,
                               pscErrorHandler * pError );
 

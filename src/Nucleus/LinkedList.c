@@ -22,9 +22,9 @@
 /* Cleanup the list once we're done with it. */
 void psnLinkedListFini( psnLinkedList* pList )
 {   
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
    
    /* We reset the node element to PSN_NULL_OFFSET. */
    psnLinkNodeInit( &pList->head );
@@ -37,7 +37,7 @@ void psnLinkedListFini( psnLinkedList* pList )
 
 void psnLinkedListInit( psnLinkedList* pList )
 {
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    
    psnLinkNodeInit( &pList->head );
    pList->currentSize = 0;
@@ -53,9 +53,9 @@ void psnLinkedListInit( psnLinkedList* pList )
 
 void psnLinkedListReset( psnLinkedList* pList )
 {
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
 
    pList->currentSize = 0;
 
@@ -73,10 +73,10 @@ bool psnLinkedListIsValid( psnLinkedList* pList,
    
    psnLinkNode* pItem;
 
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
-   VDS_PRE_CONDITION( pUnknown   != NULL );
+   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_PRE_CONDITION( pUnknown   != NULL );
 
    pItem = &pList->head;
    

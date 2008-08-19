@@ -44,10 +44,10 @@ bin_PROGRAMS_DEBUG = $(bin_PROGRAMS:.\Release\=.\Debug\)
 ###########################################################################
 
 all: "$(OUTDIR)" "$(OUTDIR_DEBUG)" $(bin_PROGRAMS) $(bin_PROGRAMS_DEBUG)
-   -del ..\Release\vdsInfo.exe
-	-del ..\Debug\vdsInfo.exe
-   copy "$(OUTDIR)\info.exe" ..\Release\vdsInfo.exe
-   copy "$(OUTDIR_DEBUG)\info.exe" ..\Debug\vdsInfo.exe
+   -del ..\Release\psoInfo.exe
+	-del ..\Debug\psoInfo.exe
+   copy "$(OUTDIR)\info.exe" ..\Release\psoInfo.exe
+   copy "$(OUTDIR_DEBUG)\info.exe" ..\Debug\psoInfo.exe
 	cd Shell && nmake -f Makefile.win32 && cd ..
    
 check: all

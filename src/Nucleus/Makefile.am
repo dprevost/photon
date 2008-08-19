@@ -25,8 +25,8 @@ noinst_LTLIBRARIES   = libNucleus.la
 # by hand but... this would defeat the whole idea of automated tools!).
 
 libNucleus_la_SOURCES =   \
-        VdsErrorHandler.c \
-        VdsErrorHandler.h \
+        psoErrorHandler.c \
+        psoErrorHandler.h \
         BlockGroup.c      \
         BlockGroup.h      \
         DataType.h        \

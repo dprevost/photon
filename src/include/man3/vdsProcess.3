@@ -1,41 +1,41 @@
-.TH "vdsProcess" 3 "18 Mar 2008" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
+.TH "psoProcess" 3 "18 Mar 2008" "Version 0.1" "vdsf C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-vdsProcess \- 
+psoProcess \- 
 .SH SYNOPSIS
 .br
 .PP
 .SH "Detailed Description"
 .PP 
-Definition at line 35 of file vdsProcess.
+Definition at line 35 of file psoProcess.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBvdsProcess\fP ()"
+.RI "\fBpsoProcess\fP ()"
 .br
 .ti -1c
 .RI "void \fBInit\fP (const char *wdAddress, bool protectionNeeded=false)"
 .br
 .RI "\fIThis function initializes access to a VDS. \fP"
 .ti -1c
-.RI "virtual \fB~vdsProcess\fP ()"
+.RI "virtual \fB~psoProcess\fP ()"
 .br
 .RI "\fIThe destructor terminates all access to the VDS. \fP"
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "vdsProcess::vdsProcess ()"
+.SS "psoProcess::psoProcess ()"
 .PP
-.SS "virtual vdsProcess::~vdsProcess ()\fC [virtual]\fP"
+.SS "virtual psoProcess::~psoProcess ()\fC [virtual]\fP"
 .PP
 The destructor terminates all access to the VDS. 
 .PP
 This function will also close all sessions and terminate all accesses to the different objects. 
 .SH "Member Function Documentation"
 .PP 
-.SS "void vdsProcess::Init (const char * wdAddress, bool protectionNeeded = \fCfalse\fP)"
+.SS "void psoProcess::Init (const char * wdAddress, bool protectionNeeded = \fCfalse\fP)"
 .PP
 This function initializes access to a VDS. 
 .PP
@@ -52,7 +52,7 @@ It takes 2 input arguments, the address of the watchdog and a boolean value. Thi
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 

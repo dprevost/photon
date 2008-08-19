@@ -17,28 +17,28 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_SESSION_H_CPP
-#define VDS_SESSION_H_CPP
+#ifndef PSO_SESSION_H_CPP
+#define PSO_SESSION_H_CPP
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#include <photon/vdsCommon.h>
+#include <photon/psoCommon.h>
 #include <string>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class VDSF_EXPORT vdsSession
+class VDSF_EXPORT psoSession
 {
 public:
    
-   vdsSession();
+   psoSession();
 
    /**
     * Terminate the current session and destroy this object.
     *
     * An implicit call to ::Rollback is executed by this destructor.
     */
-   virtual ~vdsSession();
+   virtual ~psoSession();
    
    /**
     * Commit all insertions and deletions (of the current session) executed 
@@ -54,7 +54,7 @@ public:
     * where some operations were committed and others not. If this function 
     * thows an exception, nothing was committed.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Commit();
    
@@ -68,10 +68,10 @@ public:
     * \param[in]  pDefinition The type of object to create (folder, queue, etc.)
     *             and the optional definitions (as needed).
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void CreateObject( const std::string   & objectName,
-                      vdsObjectDefinition * pDefinition );
+                      psoObjectDefinition * pDefinition );
    
    /**
     * Create a new object in shared memory.
@@ -85,11 +85,11 @@ public:
     * \param[in]  pDefinition The type of object to create (folder, queue, etc.)
     *             and the optional definitions (as needed).
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void CreateObject( const char          * objectName,
                       size_t                nameLengthInBytes,
-                      vdsObjectDefinition * pDefinition );
+                      psoObjectDefinition * pDefinition );
    
    /**
     * Destroy an existing object in shared memory.
@@ -99,7 +99,7 @@ public:
     *
     * \param[in]  objectName The fully qualified name of the object. 
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void DestroyObject( const std::string & objectName );
 
@@ -113,7 +113,7 @@ public:
     * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
     *             counting the null terminator.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void DestroyObject( const char * objectName,
                        size_t       nameLengthInBytes );
@@ -135,7 +135,7 @@ public:
     * \param[in]   msgLengthInBytes The length of \em message (in bytes). Must
     *              be at least 32 bytes.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */   
    void ErrorMsg( char   * message,
                   size_t   msgLengthInBytes );
@@ -151,7 +151,7 @@ public:
     * \param[out]  message Buffer for the error message. Memory allocation for 
     *              this buffer is the responsability of the caller.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */   
    std::string & ErrorMsg( std::string & message );
 
@@ -161,22 +161,22 @@ public:
     * The fetched information is mainly about the current status of the memory 
     * allocator.
     *
-    * \param[out] pInfo      A pointer to the ::vdsInfo structure.
+    * \param[out] pInfo      A pointer to the ::psoInfo structure.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
-   void GetInfo( vdsInfo * pInfo );
+   void GetInfo( psoInfo * pInfo );
 
    /**
     * Return the status of the named object.
     *
     * \param[in]  objectName The fully qualified name of the object. 
-    * \param[out] pStatus A pointer to the vdsObjStatus structure.
+    * \param[out] pStatus A pointer to the psoObjStatus structure.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void GetStatus( const std::string & objectName,
-                   vdsObjStatus      * pStatus );
+                   psoObjStatus      * pStatus );
 
    /**
     * Return the status of the named object.
@@ -184,13 +184,13 @@ public:
     * \param[in]  objectName The fully qualified name of the object. 
     * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
     *             counting the null terminator.
-    * \param[out] pStatus A pointer to the vdsObjStatus structure.
+    * \param[out] pStatus A pointer to the psoObjStatus structure.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void GetStatus( const char   * objectName,
                    size_t         nameLengthInBytes,
-                   vdsObjStatus * pStatus );
+                   psoObjStatus * pStatus );
 
    /**
     * This function initializes a session. 
@@ -200,14 +200,14 @@ public:
     * Upon normal termination, the current transaction is rolled back. You
     * MUST explicitly call Commit to save your changes.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Init();
    
    /**
     * Return the last error seen in previous calls (of the current session).
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    int LastError();
 
@@ -225,25 +225,25 @@ public:
     * where some operations were rollbacked and others not. If this function 
     * thows an exception, nothing was rollbacked.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Rollback();
    
 private:
 
    /// Pointer to the psaSession struct
-   VDS_HANDLE m_sessionHandle;
+   PSO_HANDLE m_sessionHandle;
    
-   friend class vdsFastMap;
-   friend class vdsFolder;
-   friend class vdsHashMap;
-   friend class vdsLifo;
-   friend class vdsQueue;
+   friend class psoFastMap;
+   friend class psoFolder;
+   friend class psoHashMap;
+   friend class psoLifo;
+   friend class psoQueue;
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_SESSION_H_CPP */
+#endif /* PSO_SESSION_H_CPP */
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

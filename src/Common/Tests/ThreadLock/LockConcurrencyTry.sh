@@ -19,7 +19,7 @@
 # must provide the name of the directory where the sources are located
 # as the second argument to the script. Example:
 #
-# ./LockConcurrencyTry.sh 100 /home/dprevost/vdsf0.1/src
+# ./LockConcurrencyTry.sh 100 /home/dprevost/photon.git/src
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -53,8 +53,8 @@ if test -z "$srcdir"; then
   verbose=1
 fi
 
-rm -rf $TMPDIR/vdsf
-mkdir $TMPDIR/vdsf
+rm -rf $TMPDIR/pso
+mkdir $TMPDIR/pso
 if [ "$?" != 0 ] ; then
    exit 1
 fi

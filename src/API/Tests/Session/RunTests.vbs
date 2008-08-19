@@ -126,7 +126,7 @@ end if
 
 tmpDir = objShell.Environment.item("TMP")
 tmpDir = objShell.ExpandEnvironmentStrings(tmpDir)
-tmpDir = tmpDir + "\vdsf_session"
+tmpDir = tmpDir + "\photon_session"
 
 if (fso.FolderExists(tmpDir)) Then
    fso.DeleteFolder(tmpDir)
@@ -141,16 +141,16 @@ cmdFile.WriteLine("<?xml version=""1.0""?>")
 cmdFile.WriteLine("<vdsf_config xmlns=""http://vdsf.sourceforge.net/Config""")
 cmdFile.WriteLine("xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""")
 cmdFile.WriteLine("xsi:schemaLocation=""http://vdsf.sourceforge.net/Config " + tmpDir + "\wd_config.xsd""> ")
-cmdFile.WriteLine("  <vds_location>" + tmpDir + "</vds_location>")
+cmdFile.WriteLine("  <pso_location>" + tmpDir + "</pso_location>")
 cmdFile.WriteLine("  <mem_size size=""10240"" units=""kb"" />")
 cmdFile.WriteLine("  <watchdog_address>10701</watchdog_address>")
 cmdFile.WriteLine("  <file_access access=""group"" />")
 cmdFile.WriteLine("</vdsf_config>")
 cmdFile.Close
 
-exeName = wd_path + "\vdswd.exe -c " + tmpDir + "\cfg.xml"
+exeName = wd_path + "\psowd.exe -c " + tmpDir + "\cfg.xml"
 
-objShellwd.Run "%comspec% /c title vdswd | " & exeName, 2, false
+objShellwd.Run "%comspec% /c title psowd | " & exeName, 2, false
 
 'Turn on error handling
 On Error Resume Next
@@ -212,7 +212,7 @@ Next
 dim z
 z = false
 while z <> true 
-   z = objShellwd.AppActivate( "vdswd" )
+   z = objShellwd.AppActivate( "psowd" )
    Wscript.Sleep 100
 wend
 objShellwd.SendKeys "^C"

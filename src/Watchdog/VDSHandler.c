@@ -49,9 +49,9 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
    size_t numObjectsDeleted = 0;
    size_t numObjectsError = 0;
 
-   VDS_PRE_CONDITION( pHandler        != NULL );
-   VDS_PRE_CONDITION( pConfig         != NULL );
-   VDS_PRE_CONDITION( ppMemoryAddress != NULL );
+   PSO_PRE_CONDITION( pHandler        != NULL );
+   PSO_PRE_CONDITION( pConfig         != NULL );
+   PSO_PRE_CONDITION( ppMemoryAddress != NULL );
 
    pHandler->pMemHeader = NULL;
 
@@ -59,7 +59,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
    pHandler->context.pidLocker = getpid();
    
    ok = psnInitEngine();
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in VdsHandler.cpp\n", __LINE__ );
       exit(1);
@@ -78,8 +78,8 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
    }
    vdswMemoryManagerInit( pHandler->pMemManager );
    
-   path_len = strlen( pConfig->wdLocation ) + strlen( VDS_DIR_SEPARATOR ) +
-      strlen( VDS_MEMFILE_NAME )  + strlen( ".bak" );
+   path_len = strlen( pConfig->wdLocation ) + strlen( PSO_DIR_SEPARATOR ) +
+      strlen( PSO_MEMFILE_NAME )  + strlen( ".bak" );
    if ( path_len >= PATH_MAX ) {
       pscSetError( &pHandler->context.errorHandler,
                     g_wdErrorHandle,
@@ -87,8 +87,8 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
       return false;
    }
       
-   sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
-            VDS_MEMFILE_NAME );
+   sprintf( path, "%s%s%s", pConfig->wdLocation, PSO_DIR_SEPARATOR,
+            PSO_MEMFILE_NAME );
    
    pscInitMemoryFile ( &memFile, pConfig->memorySizekb, path );
    pscBackStoreStatus( &memFile, &fileStatus );
@@ -106,14 +106,14 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
                                pConfig->filePerms,
                                ppMemoryAddress,
                                &pHandler->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) return false;
       
       (*ppMemoryAddress)->logON = false;
       if ( pConfig->logOn ) {
          
-         sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
-                  VDS_LOGDIR_NAME );
+         sprintf( path, "%s%s%s", pConfig->wdLocation, PSO_DIR_SEPARATOR,
+                  PSO_LOGDIR_NAME );
          errcode = mkdir( path, pConfig->dirPerms );
          if ( errcode != 0 ) {
             pscSetError( &pHandler->context.errorHandler,
@@ -140,13 +140,13 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
       localtime_r( &t, &formattedTime );
       strftime( timeBuf, 30, "%Y_%m_%d_%H_%M_%S", &formattedTime );
 
-      path_len = strlen( pConfig->wdLocation ) + strlen( VDS_DIR_SEPARATOR ) +
-      strlen("Logs") + strlen( VDS_DIR_SEPARATOR ) +
+      path_len = strlen( pConfig->wdLocation ) + strlen( PSO_DIR_SEPARATOR ) +
+      strlen("Logs") + strlen( PSO_DIR_SEPARATOR ) +
       strlen("Verify_") + strlen(timeBuf) + strlen(".log");
       if ( path_len < PATH_MAX ) {
         sprintf( logFile, "%s%s%s", 
             pConfig->wdLocation, 
-            VDS_DIR_SEPARATOR,
+            PSO_DIR_SEPARATOR,
             "Logs" );
       
          errcode = mkdir( logFile, pConfig->dirPerms );
@@ -163,9 +163,9 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
          }
          sprintf( logFile, "%s%s%s%s%s%s%s", 
             pConfig->wdLocation, 
-            VDS_DIR_SEPARATOR,
+            PSO_DIR_SEPARATOR,
             "Logs",
-            VDS_DIR_SEPARATOR,
+            PSO_DIR_SEPARATOR,
             "Verify_",
             timeBuf,
             ".log" );
@@ -178,7 +178,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
          ok = pscCopyBackstore( &memFile,
                                  pConfig->filePerms,
                                  &pHandler->context.errorHandler );
-         VDS_POST_CONDITION( ok == true || ok == false );
+         PSO_POST_CONDITION( ok == true || ok == false );
          if ( ! ok ) {
             pscChainError( &pHandler->context.errorHandler,
                             g_wdErrorHandle,
@@ -192,7 +192,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
                         pConfig->memorySizekb,
                         ppMemoryAddress,
                         &pHandler->context );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) return false;
       
       fprintf( stderr, "Starting the recovery of the VDS, please be patient\n" );
@@ -237,8 +237,8 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
           * program was run but is on now. Or that the directory was
           * removed for what ever reason. We recreate it if needed.
           */
-         sprintf( path, "%s%s%s", pConfig->wdLocation, VDS_DIR_SEPARATOR,
-                  VDS_LOGDIR_NAME );
+         sprintf( path, "%s%s%s", pConfig->wdLocation, PSO_DIR_SEPARATOR,
+                  PSO_LOGDIR_NAME );
 #if HAVE_ACCESS
          errcode = access( path, F_OK );
 #else
@@ -272,7 +272,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
 
 void vdswHandlerFini( vdswHandler * pHandler )
 {
-   VDS_PRE_CONDITION( pHandler != NULL );
+   PSO_PRE_CONDITION( pHandler != NULL );
 
    pHandler->pConfig = NULL;
    pHandler->pMemManager = NULL;
@@ -295,7 +295,7 @@ void vdswHandlerFini( vdswHandler * pHandler )
 void vdswHandleCrash( vdswHandler * pHandler, pid_t pid )
 {
 //   int errcode;
-   VDS_PRE_CONDITION( pHandler != NULL );
+   PSO_PRE_CONDITION( pHandler != NULL );
 
 #if 0   
    psnProcess* pProcess = NULL;

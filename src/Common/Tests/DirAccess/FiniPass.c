@@ -36,7 +36,7 @@ int main()
    }
    
 #if defined(WIN32)
-   if ( iterator.handle != VDS_INVALID_HANDLE ) {
+   if ( iterator.handle != PSO_INVALID_HANDLE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( iterator.dirName[0] != '\0' ) {

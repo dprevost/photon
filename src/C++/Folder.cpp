@@ -16,15 +16,15 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Common/Common.h"
-#include <photon/vdsFolder>
-#include <photon/vdsFolder.h>
-#include <photon/vdsSession>
-#include <photon/vdsErrors.h>
-#include <photon/vdsException>
+#include <photon/psoFolder>
+#include <photon/psoFolder.h>
+#include <photon/psoSession>
+#include <photon/psoErrors.h>
+#include <photon/psoException>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsFolder::vdsFolder( vdsSession &session )
+psoFolder::psoFolder( psoSession &session )
    : m_objectHandle  ( NULL ),
      m_sessionHandle ( session.m_sessionHandle )
 {
@@ -32,108 +32,108 @@ vdsFolder::vdsFolder( vdsSession &session )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsFolder::~vdsFolder()
+psoFolder::~psoFolder()
 {
    if ( m_objectHandle != NULL ) {
-      vdsFolderClose( m_objectHandle );
+      psoFolderClose( m_objectHandle );
    }
    m_objectHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFolder::Close()
+void psoFolder::Close()
 {
-   int rc = vdsFolderClose( m_objectHandle );
+   int rc = psoFolderClose( m_objectHandle );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFolder::Close" );
+      throw psoException( rc, m_sessionHandle, "psoFolder::Close" );
    }
    m_objectHandle = NULL;   
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFolder::CreateObject( const std::string   & objectName,
-                              vdsObjectDefinition * pDefinition )
+void psoFolder::CreateObject( const std::string   & objectName,
+                              psoObjectDefinition * pDefinition )
 {
-   int rc = vdsFolderCreateObject( m_objectHandle,
+   int rc = psoFolderCreateObject( m_objectHandle,
                                    objectName.c_str(),
                                    objectName.length(),
                                    pDefinition );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFolder::CreateObject" );
+      throw psoException( rc, m_sessionHandle, "psoFolder::CreateObject" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFolder::CreateObject( const char    *       objectName,
+void psoFolder::CreateObject( const char    *       objectName,
                               size_t                nameLengthInBytes,
-                              vdsObjectDefinition * pDefinition )
+                              psoObjectDefinition * pDefinition )
 {
-   int rc = vdsFolderCreateObject( m_objectHandle,
+   int rc = psoFolderCreateObject( m_objectHandle,
                                    objectName,
                                    nameLengthInBytes,
                                    pDefinition );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFolder::CreateObject" );
+      throw psoException( rc, m_sessionHandle, "psoFolder::CreateObject" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFolder::CreateObjectXML( const std::string & xmlBuffer )
+void psoFolder::CreateObjectXML( const std::string & xmlBuffer )
 {
-   int rc = vdsFolderCreateObjectXML( m_objectHandle,
+   int rc = psoFolderCreateObjectXML( m_objectHandle,
                                       xmlBuffer.c_str(),
                                       xmlBuffer.length() );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFolder::CreateObjectXML" );
+      throw psoException( rc, m_sessionHandle, "psoFolder::CreateObjectXML" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFolder::CreateObjectXML( const char * xmlBuffer,
+void psoFolder::CreateObjectXML( const char * xmlBuffer,
                                  size_t       lengthInBytes )
 {
-   int rc = vdsFolderCreateObjectXML( m_objectHandle,
+   int rc = psoFolderCreateObjectXML( m_objectHandle,
                                       xmlBuffer,
                                       lengthInBytes );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFolder::CreateObjectXML" );
+      throw psoException( rc, m_sessionHandle, "psoFolder::CreateObjectXML" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFolder::DestroyObject( const std::string & objectName )
+void psoFolder::DestroyObject( const std::string & objectName )
 {
-   int rc = vdsFolderDestroyObject( m_objectHandle,
+   int rc = psoFolderDestroyObject( m_objectHandle,
                                     objectName.c_str(),
                                     objectName.length() );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFolder::DestroyObject" );
+      throw psoException( rc, m_sessionHandle, "psoFolder::DestroyObject" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFolder::DestroyObject( const char * objectName,
+void psoFolder::DestroyObject( const char * objectName,
                                size_t       nameLengthInBytes )
 {
-   int rc = vdsFolderDestroyObject( m_objectHandle,
+   int rc = psoFolderDestroyObject( m_objectHandle,
                                     objectName,
                                     nameLengthInBytes );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFolder::DestroyObject" );
+      throw psoException( rc, m_sessionHandle, "psoFolder::DestroyObject" );
    }
 }
 
@@ -142,62 +142,62 @@ void vdsFolder::DestroyObject( const char * objectName,
 /*
  * Iterate through the folder - no data items are removed from the 
  * folder by this function.*/
-int vdsFolder::GetFirst( vdsFolderEntry * pEntry )
+int psoFolder::GetFirst( psoFolderEntry * pEntry )
 {
-   int rc = vdsFolderGetFirst( m_objectHandle, pEntry );
-   if ( rc != 0 && rc != VDS_IS_EMPTY ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFolder::GetFirst" );
+   int rc = psoFolderGetFirst( m_objectHandle, pEntry );
+   if ( rc != 0 && rc != PSO_IS_EMPTY ) {
+      throw psoException( rc, m_sessionHandle, "psoFolder::GetFirst" );
    }
    return rc;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int vdsFolder::GetNext( vdsFolderEntry * pEntry )
+int psoFolder::GetNext( psoFolderEntry * pEntry )
 {
-   int rc = vdsFolderGetNext( m_objectHandle, pEntry );
-   if ( rc != 0 && rc != VDS_REACHED_THE_END ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFolder::GetNext" );
+   int rc = psoFolderGetNext( m_objectHandle, pEntry );
+   if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
+      throw psoException( rc, m_sessionHandle, "psoFolder::GetNext" );
    }
    return rc;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFolder::Open( const std::string & folderName )
+void psoFolder::Open( const std::string & folderName )
 {
-   int rc = vdsFolderOpen( m_sessionHandle,
+   int rc = psoFolderOpen( m_sessionHandle,
                            folderName.c_str(),
                            folderName.length(),
                            &m_objectHandle );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFolder::Open" );
+      throw psoException( rc, m_sessionHandle, "psoFolder::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFolder::Open( const char * folderName,
+void psoFolder::Open( const char * folderName,
                       size_t       nameLengthInBytes )
 {
-   int rc = vdsFolderOpen( m_sessionHandle,
+   int rc = psoFolderOpen( m_sessionHandle,
                            folderName,
                            nameLengthInBytes,
                            &m_objectHandle );
 
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFolder::Open" );
+      throw psoException( rc, m_sessionHandle, "psoFolder::Open" );
    }
 }
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsFolder::Status( vdsObjStatus * pStatus )
+void psoFolder::Status( psoObjStatus * pStatus )
 {
-   int rc = vdsFolderStatus( m_objectHandle, pStatus );
+   int rc = psoFolderStatus( m_objectHandle, pStatus );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsFolder::Status" );
+      throw psoException( rc, m_sessionHandle, "psoFolder::Status" );
    }
 }
 

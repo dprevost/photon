@@ -28,7 +28,7 @@
 #include "Nucleus/Folder.h"
 
 VDSF_ENGINE_EXPORT
-pscErrMsgHandle g_vdsErrorHandle;
+pscErrMsgHandle g_psoErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

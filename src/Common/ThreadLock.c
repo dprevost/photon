@@ -28,7 +28,7 @@ bool pscInitThreadLock( pscThreadLock* pLock )
 #endif
    bool ok = false;
    
-   VDS_PRE_CONDITION( pLock != NULL );
+   PSO_PRE_CONDITION( pLock != NULL );
 
 #if defined (WIN32)
    /*
@@ -65,15 +65,15 @@ void pscFiniThreadLock( pscThreadLock* pLock )
    int err = 0;
 #endif
 
-   VDS_PRE_CONDITION( pLock != NULL );
-   VDS_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
+   PSO_PRE_CONDITION( pLock != NULL );
+   PSO_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
 
 #if defined (WIN32)
    DeleteCriticalSection( &pLock->mutex );
 #else
    err = pthread_mutex_destroy( &pLock->mutex );
    
-   VDS_POST_CONDITION( err == 0 );
+   PSO_POST_CONDITION( err == 0 );
 #endif
    pLock->initialized = 0;
    

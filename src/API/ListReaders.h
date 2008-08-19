@@ -64,9 +64,9 @@ typedef struct psaListReaders psaListReaders;
 static inline
 void psaListReadersFini( psaListReaders * pList )
 {
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
+   PSO_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
 
    pList->head.previous = pList->head.next = &pList->head;
    pList->currentSize = 0;
@@ -78,7 +78,7 @@ void psaListReadersFini( psaListReaders * pList )
 static inline
 void psaListReadersInit( psaListReaders * pList )
 {
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
 
    pList->head.previous = pList->head.next = &pList->head;
    pList->currentSize = 0;
@@ -91,10 +91,10 @@ static inline
 bool psaListReadersPeakFirst( psaListReaders * pList,
                               psaReader     ** ppItem )
 {
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
-   VDS_PRE_CONDITION( ppItem != NULL );
+   PSO_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
+   PSO_PRE_CONDITION( ppItem != NULL );
 
    /* Check for empty queue. */
    if ( pList->currentSize == 0 ) return false;
@@ -102,7 +102,7 @@ bool psaListReadersPeakFirst( psaListReaders * pList,
    /* Get the pointer to the first node */
    *ppItem = pList->head.next;
 
-   VDS_POST_CONDITION( *ppItem != NULL );
+   PSO_POST_CONDITION( *ppItem != NULL );
 
    return true;
 }
@@ -116,20 +116,20 @@ bool psaListReadersPeakNext( psaListReaders * pList,
 {
    psaReader * pNext;
 
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
-   VDS_PRE_CONDITION( pCurrent   != NULL );
-   VDS_PRE_CONDITION( ppNext     != NULL );
-   VDS_PRE_CONDITION( pCurrent->previous != NULL );
-   VDS_PRE_CONDITION( pCurrent->next     != NULL );
+   PSO_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
+   PSO_PRE_CONDITION( pCurrent   != NULL );
+   PSO_PRE_CONDITION( ppNext     != NULL );
+   PSO_PRE_CONDITION( pCurrent->previous != NULL );
+   PSO_PRE_CONDITION( pCurrent->next     != NULL );
 
    pNext = pCurrent->next;
    if ( pNext == &pList->head ) return false;
 
    *ppNext = pNext;
    
-   VDS_POST_CONDITION( *ppNext != NULL );
+   PSO_POST_CONDITION( *ppNext != NULL );
 
    return true;
 }
@@ -140,10 +140,10 @@ static inline
 void psaListReadersPut( psaListReaders * pList,
                         psaReader      * pNewItem )
 {
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
-   VDS_PRE_CONDITION( pNewItem != NULL );
+   PSO_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
+   PSO_PRE_CONDITION( pNewItem != NULL );
 
    pNewItem->next = &pList->head;
    /* The order of the next two is important - don't change it! */
@@ -154,8 +154,8 @@ void psaListReadersPut( psaListReaders * pList,
    
    pList->currentSize++;
 
-   VDS_POST_CONDITION( pNewItem->previous != NULL );
-   VDS_POST_CONDITION( pNewItem->next     != NULL );
+   PSO_POST_CONDITION( pNewItem->previous != NULL );
+   PSO_POST_CONDITION( pNewItem->next     != NULL );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -164,13 +164,13 @@ static inline
 void psaListReadersRemove( psaListReaders * pList,
                            psaReader      * pRemovedItem )
 {
-   VDS_PRE_CONDITION( pList != NULL );
+   PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
-   VDS_PRE_CONDITION( pRemovedItem != NULL );
-   VDS_PRE_CONDITION( pRemovedItem->previous != NULL );
-   VDS_PRE_CONDITION( pRemovedItem->next     != NULL );
-   VDS_PRE_CONDITION( pList->currentSize > 0 );
+   PSO_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
+   PSO_PRE_CONDITION( pRemovedItem != NULL );
+   PSO_PRE_CONDITION( pRemovedItem->previous != NULL );
+   PSO_PRE_CONDITION( pRemovedItem->next     != NULL );
+   PSO_PRE_CONDITION( pList->currentSize > 0 );
 
    pRemovedItem->next->previous = pRemovedItem->previous;
    pRemovedItem->previous->next = pRemovedItem->next;

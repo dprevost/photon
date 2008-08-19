@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Tests/PrintError.h"
 #include "API/Queue.h"
 
@@ -26,81 +26,81 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   VDS_HANDLE sessionHandle, objHandle;
+   PSO_HANDLE sessionHandle, objHandle;
    int errcode;
    const char * data1 = "My Data1";
    psaDataEntry entry;
-   vdsObjectDefinition defQueue = { 
-      VDS_QUEUE,
+   psoObjectDefinition defQueue = { 
+      PSO_QUEUE,
       1, 
       { 0, 0, 0, 0}, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
-   vdsObjectDefinition folderDef = { 
-      VDS_FOLDER, 
+   psoObjectDefinition folderDef = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
 
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsInitSession( &sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/aqrp",
                               strlen("/aqrp"),
                               &folderDef );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCreateObject( sessionHandle,
+   errcode = psoCreateObject( sessionHandle,
                               "/aqrp/test",
                               strlen("/aqrp/test"),
                               &defQueue );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueueOpen( sessionHandle,
+   errcode = psoQueueOpen( sessionHandle,
                            "/aqrp/test",
                            strlen("/aqrp/test"),
                            &objHandle );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsQueuePush( objHandle, data1, strlen(data1) );
-   if ( errcode != VDS_OK ) {
+   errcode = psoQueuePush( objHandle, data1, strlen(data1) );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsCommit( sessionHandle );
-   if ( errcode != VDS_OK ) {
+   errcode = psoCommit( sessionHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    errcode = psaQueueRemove( objHandle, &entry );
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -109,11 +109,11 @@ int main( int argc, char * argv[] )
    }
    
    /* Cleanup */
-   vdsQueueClose( objHandle );
-   vdsDestroyObject( sessionHandle, "/aqrp/test", strlen("/aqrp/test") );
-   vdsDestroyObject( sessionHandle, "/aqrp", strlen("/aqrp") );
-   vdsCommit( sessionHandle );
-   vdsExit();
+   psoQueueClose( objHandle );
+   psoDestroyObject( sessionHandle, "/aqrp/test", strlen("/aqrp/test") );
+   psoDestroyObject( sessionHandle, "/aqrp", strlen("/aqrp") );
+   psoCommit( sessionHandle );
+   psoExit();
    
    return 0;
 }

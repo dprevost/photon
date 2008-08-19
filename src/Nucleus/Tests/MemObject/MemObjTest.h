@@ -26,16 +26,16 @@
 #include "Tests/PrintError.h"
 
 VDSF_ENGINE_EXPORT
-pscErrMsgHandle g_vdsErrorHandle;
+pscErrMsgHandle g_psoErrorHandle;
 
-struct vdstObjDummy
+struct psotObjDummy
 {
    struct psnMemObject memObject;
    /* Variable size struct - always put at the end */
    struct psnBlockGroup blockGroup;
 };
 
-typedef struct vdstObjDummy vdstObjDummy;
+typedef struct psotObjDummy psotObjDummy;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -44,13 +44,13 @@ typedef struct vdstObjDummy vdstObjDummy;
  * for testing this object interface.
  */
  
-vdstObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
+psotObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
                               psnSessionContext* pContext )
 {
    bool ok;
    unsigned char* ptr;
    psnMemAlloc*  pAlloc;
-   vdstObjDummy* pDummy;
+   psotObjDummy* pDummy;
    size_t allocatedLength = PSN_BLOCK_SIZE * 10;
    
    memset( pContext, 0, sizeof(psnSessionContext) );
@@ -75,7 +75,7 @@ vdstObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
    psnMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for our dummy object + initialize it + blockGroup */
-   pDummy = (vdstObjDummy*) psnMallocBlocks( pAlloc, PSN_ALLOC_API_OBJ, 4, pContext );
+   pDummy = (psotObjDummy*) psnMallocBlocks( pAlloc, PSN_ALLOC_API_OBJ, 4, pContext );
    if ( pDummy == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in MemObjTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);

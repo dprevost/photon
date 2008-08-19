@@ -33,7 +33,7 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
    psnObjectDescriptor* pDesc = NULL;
    void * pObject;
    int pDesc_invalid_api_type = 0;
-   char message[VDS_MAX_NAME_LENGTH*4 + 30];
+   char message[PSO_MAX_NAME_LENGTH*4 + 30];
    enum vdswRecoverError rc = VDSWR_OK, valid;
    bool found;
    
@@ -46,34 +46,34 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
       GET_PTR( pDesc, pItem->dataOffset, psnObjectDescriptor );
       GET_PTR( pObject, pDesc->offset, void );
       
-      memset( message, 0, VDS_MAX_NAME_LENGTH*4+30 );
+      memset( message, 0, PSO_MAX_NAME_LENGTH*4+30 );
       strcpy( message, "Object name: " );
       strncat( message, pDesc->originalName, pDesc->nameLengthInBytes );
       vdswEcho( pVerify, message );
       switch( pDesc->apiType ) {
-         case VDS_FOLDER:
+         case PSO_FOLDER:
             valid = vdswVerifyFolder( pVerify,
                                       (psnFolder *)pObject, 
                                       pContext );
             break;
-         case VDS_HASH_MAP:
+         case PSO_HASH_MAP:
             valid = vdswVerifyHashMap( pVerify,
                                        (struct psnHashMap *)pObject, 
                                        pContext );
             break;
-         case VDS_QUEUE:
-         case VDS_LIFO:
+         case PSO_QUEUE:
+         case PSO_LIFO:
             valid = vdswVerifyQueue( pVerify, 
                                      (struct psnQueue *)pObject,
                                      pContext ); 
             break;
-         case VDS_FAST_MAP:
+         case PSO_FAST_MAP:
             valid = vdswVerifyFastMap( pVerify,
                                        (struct psnMap *)pObject, 
                                        pContext );
             break;
          default:
-            VDS_INV_CONDITION( pDesc_invalid_api_type );
+            PSO_INV_CONDITION( pDesc_invalid_api_type );
       }
       
       previousOffset = offset;
@@ -102,18 +102,18 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
          vdswEcho( pVerify, "Removing the object from the VDS" );
          pVerify->spaces -= 2;
          switch( pDesc->apiType ) {
-            case VDS_FOLDER:
+            case PSO_FOLDER:
                psnFolderFini( (psnFolder *)pObject, pContext );
                break;
-            case VDS_HASH_MAP:
+            case PSO_HASH_MAP:
                psnHashMapFini( (struct psnHashMap *)pObject, pContext );
                break;
-            case VDS_QUEUE:
-            case VDS_LIFO:
+            case PSO_QUEUE:
+            case PSO_LIFO:
                psnQueueFini( (struct psnQueue *)pObject, pContext );
                break;
             default:
-               VDS_INV_CONDITION( pDesc_invalid_api_type );
+               PSO_INV_CONDITION( pDesc_invalid_api_type );
          }
          psnHashDelWithItem( &pFolder->hashObj,
                               pItem,

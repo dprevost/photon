@@ -132,22 +132,22 @@ VDSF_ENGINE_EXPORT unsigned char * g_pBaseAddr = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdsErrors 
+enum psoErrors 
 psnMemAllocInit( psnMemAlloc       * pAlloc,
                   unsigned char      * pBaseAddress,
                   size_t               length,
                   psnSessionContext * pContext )
 {
-   enum vdsErrors errcode;
+   enum psoErrors errcode;
    psnFreeBufferNode * pNode;
    size_t neededBlocks, neededBytes, bitmapLength;
    psnMemBitmap * pBitmap = NULL;
    
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pAlloc   != NULL );
-   VDS_PRE_CONDITION( pBaseAddress != NULL );
-   VDS_PRE_CONDITION( length >= (3 << PSN_BLOCK_SHIFT) );
-   VDS_INV_CONDITION( g_pBaseAddr != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pAlloc   != NULL );
+   PSO_PRE_CONDITION( pBaseAddress != NULL );
+   PSO_PRE_CONDITION( length >= (3 << PSN_BLOCK_SHIFT) );
+   PSO_INV_CONDITION( g_pBaseAddr != NULL );
 
    pContext->pAllocator = (void *) pAlloc;
    /*
@@ -194,7 +194,7 @@ psnMemAllocInit( psnMemAlloc       * pAlloc,
                                 PSN_IDENT_ALLOCATOR,
                                 &pAlloc->blockGroup,
                                 neededBlocks );
-   if ( errcode != VDS_OK ) return errcode;
+   if ( errcode != PSO_OK ) return errcode;
    
    psnEndBlockSet( SET_OFFSET(pAlloc), 
                     neededBlocks, 
@@ -236,7 +236,7 @@ psnMemAllocInit( psnMemAlloc       * pAlloc,
    
    psnEndBlockSet( SET_OFFSET(pNode), pNode->numBuffers, false, true );
    
-   return VDS_OK;
+   return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -329,7 +329,7 @@ psnFreeBufferNode * FindBuffer( psnMemAlloc     * pAlloc,
     * versus a lack of a chunk big enough to accomodate the # of requested
     * blocks.
     */
-   pscSetError( pError, g_vdsErrorHandle, VDS_NOT_ENOUGH_VDS_MEMORY );
+   pscSetError( pError, g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
 
    return NULL;
 }
@@ -351,17 +351,17 @@ unsigned char * psnMallocBlocks( psnMemAlloc       * pAlloc,
    psnMemObjIdent * identifier;
    bool ok;
    
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pAlloc   != NULL );
-   VDS_PRE_CONDITION( requestedBlocks > 0 );
-   VDS_INV_CONDITION( g_pBaseAddr != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pAlloc   != NULL );
+   PSO_PRE_CONDITION( requestedBlocks > 0 );
+   PSO_INV_CONDITION( g_pBaseAddr != NULL );
 
    ok = pscTryAcquireProcessLock( &pAlloc->memObj.lock, 
                                    getpid(),
                                    LOCK_TIMEOUT );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
-//BUG?      pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
+//BUG?      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
 // engine busy vs not enough memory ... not the same thing!!!
       return NULL;
    }
@@ -436,10 +436,10 @@ void psnFreeBlocks( psnMemAlloc       * pAlloc,
    psnMemObjIdent ident;
    psnFreeBlock * pFreeHeader;
    
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pAlloc   != NULL );
-   VDS_PRE_CONDITION( ptr      != NULL );
-   VDS_PRE_CONDITION( numBlocks > 0 );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pAlloc   != NULL );
+   PSO_PRE_CONDITION( ptr      != NULL );
+   PSO_PRE_CONDITION( numBlocks > 0 );
 
    if ( ! psnLock( &pAlloc->memObj, pContext ) ) {
       /* 
@@ -502,7 +502,7 @@ void psnFreeBlocks( psnMemAlloc       * pAlloc,
           * It might be better to remove this check later when the system
           * is all working and stable.
           */
-         VDS_INV_CONDITION( previousNode->numBuffers == endBlock->numBlocks );
+         PSO_INV_CONDITION( previousNode->numBuffers == endBlock->numBlocks );
       
          /*
           * The previous node is already in our list of free blocks. We remove
@@ -604,8 +604,8 @@ void psnFreeBlocks( psnMemAlloc       * pAlloc,
 void psnMemAllocClose( psnMemAlloc       * pAlloc,
                         psnSessionContext * pContext )
 {
-   VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pAlloc   != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pAlloc   != NULL );
 
    pAlloc->totalAllocBlocks = 0;
    pAlloc->numMallocCalls   = 0;
@@ -616,7 +616,7 @@ void psnMemAllocClose( psnMemAlloc       * pAlloc,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 bool psnMemAllocStats( psnMemAlloc       * pAlloc,
-                        vdsInfo            * pInfo,
+                        psoInfo            * pInfo,
                         psnSessionContext * pContext )
 {
    size_t numBlocks;
@@ -624,9 +624,9 @@ bool psnMemAllocStats( psnMemAlloc       * pAlloc,
    psnLinkNode *currentNode = NULL;
    bool ok;
    
-   VDS_PRE_CONDITION( pAlloc   != NULL );
-   VDS_PRE_CONDITION( pInfo    != NULL );
-   VDS_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pAlloc   != NULL );
+   PSO_PRE_CONDITION( pInfo    != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
 
    if ( psnLock( &pAlloc->memObj, pContext ) ) {
 
@@ -658,7 +658,7 @@ bool psnMemAllocStats( psnMemAlloc       * pAlloc,
       return true;
    }
 
-   pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_ENGINE_BUSY );
+   pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_ENGINE_BUSY );
    return false;
 }
 

@@ -50,10 +50,10 @@ bool pscSetReadOnly( pscMemoryFile   * pMem,
    unsigned long oldProt;
 #endif
 
-   VDS_PRE_CONDITION( pMem   != NULL );
-   VDS_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
-   VDS_INV_CONDITION( pMem->baseAddr != VDS_MAP_FAILED );
-   VDS_PRE_CONDITION( pError != NULL );
+   PSO_PRE_CONDITION( pMem   != NULL );
+   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->baseAddr != PSO_MAP_FAILED );
+   PSO_PRE_CONDITION( pError != NULL );
 
 #if defined (WIN32)
    errcode = VirtualProtect( pMem->baseAddr, 
@@ -113,10 +113,10 @@ bool pscSetReadWrite( pscMemoryFile   * pMem,
    unsigned long oldProt;
 #endif
 
-   VDS_PRE_CONDITION( pMem != NULL );
-   VDS_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
-   VDS_INV_CONDITION( pMem->baseAddr != VDS_MAP_FAILED );
-   VDS_PRE_CONDITION( pError != NULL );
+   PSO_PRE_CONDITION( pMem != NULL );
+   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->baseAddr != PSO_MAP_FAILED );
+   PSO_PRE_CONDITION( pError != NULL );
 
 #if defined (WIN32)
    errcode = VirtualProtect( pMem->baseAddr, 

@@ -29,11 +29,11 @@ int main()
    bool ok;
    psnTxStatus status;
    psnFolderItem folderItem;
-   vdsObjectDefinition mapDef = { 
-      VDS_FAST_MAP, 
+   psoObjectDefinition mapDef = { 
+      PSO_FAST_MAP, 
       1, 
-      { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 1, 100 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } } 
    };
    
    pFolder = initFolderTest( expectedToPass, &context );
@@ -60,7 +60,7 @@ int main()
    ok = psnFolderEditObject( pFolder,
                               "test2",
                               5,
-                              VDS_FAST_MAP,
+                              PSO_FAST_MAP,
                               &folderItem,
                               NULL );
    

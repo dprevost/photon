@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds>
+#include <photon/photon>
 #include <iostream>
 
 using namespace std;
@@ -25,7 +25,7 @@ using namespace std;
 
 int main( int argc, char * argv[] )
 {
-  vdsProcess process;
+  psoProcess process;
    
    try {
       process.Init( NULL );
@@ -33,8 +33,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_INVALID_WATCHDOG_ADDRESS ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_WATCHDOG_ADDRESS ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -46,8 +46,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_CONNECT_ERROR ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_CONNECT_ERROR ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -59,8 +59,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_CONNECT_ERROR ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_CONNECT_ERROR ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -74,7 +74,7 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;

@@ -85,7 +85,7 @@ int psaSessionCloseObj( psaSession             * pSession,
 
 VDSF_API_EXPORT
 int psaSessionOpenObj( psaSession             * pSession,
-                       vdsObjectType            objectType,
+                       psoObjectType            objectType,
                        psaEditMode              editMode,
                        const char             * objectName,
                        size_t                   nameLengthInBytes,
@@ -98,11 +98,11 @@ bool psaSessionLock( psaSession * pSession )
 {
    bool ok = true;
 
-   VDS_PRE_CONDITION( pSession != NULL );
+   PSO_PRE_CONDITION( pSession != NULL );
    
    if ( g_protectionIsNeeded ) {
       ok = pscTryAcquireThreadLock( &pSession->mutex, LOCK_TIMEOUT );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
    }
    
    return ok;

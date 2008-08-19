@@ -93,7 +93,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "vdsInfo"=.\TOOLS\vdsInfo.dsp - Package Owner=<4>
+Project: "psoInfo"=.\TOOLS\psoInfo.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

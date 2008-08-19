@@ -74,7 +74,7 @@ int main( int argc, char * argv[] )
 #else
    ok = pscSetSupportedOptions( 3, opts, &optHandle );
 #endif
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       fprintf( stderr, "Internal error in pscSetSupportedOptions\n" );
       return 1;

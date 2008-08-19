@@ -26,8 +26,8 @@ int main()
 #if defined(USE_DBC)
    psnFolder * pFolder;
    psnSessionContext context;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 

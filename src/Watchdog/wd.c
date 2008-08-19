@@ -54,7 +54,7 @@ int main( int argc, char *argv[] )
 #else
    ok = pscSetSupportedOptions( 4, opts, &optHandle );
 #endif
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
 
    if ( ! ok ) {
       fprintf( stderr, "Internal error in pscSetSupportedOptions\n" );
@@ -74,7 +74,7 @@ int main( int argc, char *argv[] )
 
    if ( pscGetShortOptArgument( optHandle, 'c', &optArgument ) ) {
       ok = vdswWatchdogReadConfig( &wDog, optArgument );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
          fprintf( stderr, "%s\n", g_pWD->errorMsg );
          return -1;
@@ -87,7 +87,7 @@ int main( int argc, char *argv[] )
 #if defined ( WIN32 )
    if ( pscIsShortOptPresent( optHandle, 'i' ) ) {
       ok = vdswInstall( &wDog );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) return -1;
       return 0;
    }
@@ -102,7 +102,7 @@ int main( int argc, char *argv[] )
    }
 
    ok = vdswInitializeVDS( &wDog );
-   VDS_POST_CONDITION( ok == true || ok == false );
+   PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       vdswSendMessage( &wDog.log, 
                        WD_ERROR, 
@@ -115,7 +115,7 @@ int main( int argc, char *argv[] )
 #if ! defined ( WIN32 )
    if ( pscIsShortOptPresent( optHandle, 'd' ) ) {
       ok = vdswDaemon( &wDog );
-      VDS_POST_CONDITION( ok == true || ok == false );
+      PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) return -1;
    }
 #endif

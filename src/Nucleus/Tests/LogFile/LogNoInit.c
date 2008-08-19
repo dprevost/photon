@@ -27,7 +27,7 @@ int main()
 #if defined(USE_DBC)
    psnLogFile logfile;
    pscErrorHandler errorHandler;
-   vdsErrors error;
+   psoErrors error;
 
    pscInitErrorDefs();
    pscInitErrorHandler( &errorHandler );

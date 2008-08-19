@@ -47,22 +47,22 @@ const char * pscDirGetNextFileName( pscDirIterator  * pIterator,
    struct dirent * pEntry;
 #endif
 
-   VDS_PRE_CONDITION( pIterator != NULL );
-   VDS_INV_CONDITION( pIterator->initialized == PSC_DIR_ACCESS_SIGNATURE );
-   VDS_PRE_CONDITION( pError    != NULL );
+   PSO_PRE_CONDITION( pIterator != NULL );
+   PSO_INV_CONDITION( pIterator->initialized == PSC_DIR_ACCESS_SIGNATURE );
+   PSO_PRE_CONDITION( pError    != NULL );
 
 #if defined (WIN32)
-   VDS_PRE_CONDITION( pIterator->dirName[0] != '\0' );
+   PSO_PRE_CONDITION( pIterator->dirName[0] != '\0' );
 #else
-   VDS_PRE_CONDITION( pIterator->pDir != NULL );
+   PSO_PRE_CONDITION( pIterator->pDir != NULL );
 #endif
 
 #if defined (WIN32)
-   if ( pIterator->handle == VDS_INVALID_HANDLE ) {
+   if ( pIterator->handle == PSO_INVALID_HANDLE ) {
       pIterator->handle = 
          FindFirstFile( pIterator->dirName, &pIterator->data );
    }
-   if ( pIterator->handle == VDS_INVALID_HANDLE ) {
+   if ( pIterator->handle == PSO_INVALID_HANDLE ) {
       pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );
       return NULL;
    }
@@ -86,7 +86,7 @@ const char * pscDirGetNextFileName( pscDirIterator  * pIterator,
            pIterator->data.cFileName[1] == '.' ) {
          continue;
       }
-      VDS_POST_CONDITION( pIterator->data.cFileName  != NULL );
+      PSO_POST_CONDITION( pIterator->data.cFileName  != NULL );
 
       return pIterator->data.cFileName;
    }
@@ -110,7 +110,7 @@ const char * pscDirGetNextFileName( pscDirIterator  * pIterator,
          continue;
       }
       
-      VDS_POST_CONDITION( pEntry->d_name != NULL );
+      PSO_POST_CONDITION( pEntry->d_name != NULL );
 
       return pEntry->d_name;
    }
@@ -132,11 +132,11 @@ const char * pscDirGetNextFileName( pscDirIterator  * pIterator,
  */
 void pscFiniDir( pscDirIterator * pIterator )
 {
-   VDS_PRE_CONDITION( pIterator != NULL );
-   VDS_INV_CONDITION( pIterator->initialized == PSC_DIR_ACCESS_SIGNATURE );
+   PSO_PRE_CONDITION( pIterator != NULL );
+   PSO_INV_CONDITION( pIterator->initialized == PSC_DIR_ACCESS_SIGNATURE );
 
 #if defined ( WIN32 )
-   pIterator->handle = VDS_INVALID_HANDLE;
+   pIterator->handle = PSO_INVALID_HANDLE;
    memset( pIterator->dirName, 0, PATH_MAX);
 #else
    pIterator->pDir = NULL;
@@ -156,10 +156,10 @@ void pscFiniDir( pscDirIterator * pIterator )
  */
 void pscInitDir( pscDirIterator * pIterator )
 {
-   VDS_PRE_CONDITION( pIterator != NULL );
+   PSO_PRE_CONDITION( pIterator != NULL );
 
 #if defined ( WIN32 )
-   pIterator->handle = VDS_INVALID_HANDLE;
+   pIterator->handle = PSO_INVALID_HANDLE;
    memset( pIterator->dirName, 0, PATH_MAX);
 #else
    pIterator->pDir = NULL;
@@ -181,14 +181,14 @@ void pscInitDir( pscDirIterator * pIterator )
  */
 void pscCloseDir( pscDirIterator * pIterator )
 {
-   VDS_PRE_CONDITION( pIterator != NULL );
-   VDS_INV_CONDITION( pIterator->initialized == PSC_DIR_ACCESS_SIGNATURE );
+   PSO_PRE_CONDITION( pIterator != NULL );
+   PSO_INV_CONDITION( pIterator->initialized == PSC_DIR_ACCESS_SIGNATURE );
 
 #if defined (WIN32)
-   if ( pIterator->handle != VDS_INVALID_HANDLE ) {
+   if ( pIterator->handle != PSO_INVALID_HANDLE ) {
       FindClose( pIterator->handle );
    }
-   pIterator->handle = VDS_INVALID_HANDLE;
+   pIterator->handle = PSO_INVALID_HANDLE;
    memset( pIterator->dirName, 0, PATH_MAX);
 #else
    if ( pIterator->pDir != NULL ) {
@@ -232,15 +232,15 @@ bool pscOpenDir( pscDirIterator  * pIterator,
    int i = 0;
 #endif
 
-   VDS_PRE_CONDITION( pIterator != NULL );
-   VDS_INV_CONDITION( pIterator->initialized == PSC_DIR_ACCESS_SIGNATURE );
-   VDS_PRE_CONDITION( dirName   != NULL );
-   VDS_PRE_CONDITION( pError    != NULL );
+   PSO_PRE_CONDITION( pIterator != NULL );
+   PSO_INV_CONDITION( pIterator->initialized == PSC_DIR_ACCESS_SIGNATURE );
+   PSO_PRE_CONDITION( dirName   != NULL );
+   PSO_PRE_CONDITION( pError    != NULL );
 
 #if defined (WIN32)
-   VDS_PRE_CONDITION( pIterator->dirName[0] == '\0' );
+   PSO_PRE_CONDITION( pIterator->dirName[0] == '\0' );
 #else
-   VDS_PRE_CONDITION( pIterator->pDir == NULL );
+   PSO_PRE_CONDITION( pIterator->pDir == NULL );
 #endif
 
 #if defined (WIN32)
@@ -264,7 +264,7 @@ bool pscOpenDir( pscDirIterator  * pIterator,
 #endif
 
 #if ! defined (WIN32)
-   VDS_POST_CONDITION( pIterator->pDir != NULL );
+   PSO_POST_CONDITION( pIterator->pDir != NULL );
 #endif
 
    return true;

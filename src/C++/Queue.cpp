@@ -16,15 +16,15 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Common/Common.h"
-#include <photon/vdsQueue>
-#include <photon/vdsQueue.h>
-#include <photon/vdsSession>
-#include <photon/vdsErrors.h>
-#include <photon/vdsException>
+#include <photon/psoQueue>
+#include <photon/psoQueue.h>
+#include <photon/psoSession>
+#include <photon/psoErrors.h>
+#include <photon/psoException>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsQueue::vdsQueue( vdsSession &session )
+psoQueue::psoQueue( psoSession &session )
    : m_objectHandle  ( NULL ),
      m_sessionHandle ( session.m_sessionHandle )
 {
@@ -32,21 +32,21 @@ vdsQueue::vdsQueue( vdsSession &session )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsQueue::~vdsQueue()
+psoQueue::~psoQueue()
 {
    if ( m_objectHandle != NULL ) {
-      vdsQueueClose( m_objectHandle );
+      psoQueueClose( m_objectHandle );
    }
    m_objectHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsQueue::Close()
+void psoQueue::Close()
 {
-   int rc = vdsQueueClose( m_objectHandle );
+   int rc = psoQueueClose( m_objectHandle );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsQueue::Close" );
+      throw psoException( rc, m_sessionHandle, "psoQueue::Close" );
    }
    
    m_objectHandle = NULL;   
@@ -54,124 +54,124 @@ void vdsQueue::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsQueue::Definition( vdsObjectDefinition ** definition )
+void psoQueue::Definition( psoObjectDefinition ** definition )
 {
-   int rc = vdsQueueDefinition( m_objectHandle, definition );
+   int rc = psoQueueDefinition( m_objectHandle, definition );
    
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsQueue::Definition" );
+      throw psoException( rc, m_sessionHandle, "psoQueue::Definition" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int vdsQueue::GetFirst( void   * buffer,
+int psoQueue::GetFirst( void   * buffer,
                         size_t   bufferLength,
                         size_t * returnedLength )
 {
-   int rc = vdsQueueGetFirst( m_objectHandle,
+   int rc = psoQueueGetFirst( m_objectHandle,
                               buffer,
                               bufferLength,
                               returnedLength );
-   if ( rc != 0 && rc != VDS_IS_EMPTY ) {
-      throw vdsException( rc, m_sessionHandle, "vdsQueue::GetFirst" );
+   if ( rc != 0 && rc != PSO_IS_EMPTY ) {
+      throw psoException( rc, m_sessionHandle, "psoQueue::GetFirst" );
    }
    return rc;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int vdsQueue::GetNext( void   * buffer,
+int psoQueue::GetNext( void   * buffer,
                        size_t   bufferLength,
                        size_t * returnedLength )
 {
-   int rc = vdsQueueGetNext( m_objectHandle,
+   int rc = psoQueueGetNext( m_objectHandle,
                              buffer,
                              bufferLength,
                              returnedLength );
-   if ( rc != 0 && rc != VDS_REACHED_THE_END ) {
-      throw vdsException( rc, m_sessionHandle, "vdsQueue::GetNext" );
+   if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
+      throw psoException( rc, m_sessionHandle, "psoQueue::GetNext" );
    }
    return rc;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsQueue::Open( const std::string & queueName )
+void psoQueue::Open( const std::string & queueName )
 {
-   int rc = vdsQueueOpen( m_sessionHandle,
+   int rc = psoQueueOpen( m_sessionHandle,
                           queueName.c_str(),
                           queueName.length(),
                           &m_objectHandle );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsQueue::Open" );
+      throw psoException( rc, m_sessionHandle, "psoQueue::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsQueue::Open( const char * queueName,
+void psoQueue::Open( const char * queueName,
                      size_t       nameLengthInBytes )
 {
-   int rc = vdsQueueOpen( m_sessionHandle,
+   int rc = psoQueueOpen( m_sessionHandle,
                           queueName,
                           nameLengthInBytes,
                           &m_objectHandle );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsQueue::Open" );
+      throw psoException( rc, m_sessionHandle, "psoQueue::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int vdsQueue::Pop( void   * buffer,
+int psoQueue::Pop( void   * buffer,
                    size_t   bufferLength,
                    size_t * returnedLength )
 {
-   int rc = vdsQueuePop( m_objectHandle,
+   int rc = psoQueuePop( m_objectHandle,
                          buffer,
                          bufferLength,
                          returnedLength );
-   if ( rc != 0 && rc != VDS_IS_EMPTY && rc != VDS_ITEM_IS_IN_USE ) {
-      throw vdsException( rc, m_sessionHandle, "vdsQueue::Pop" );
+   if ( rc != 0 && rc != PSO_IS_EMPTY && rc != PSO_ITEM_IS_IN_USE ) {
+      throw psoException( rc, m_sessionHandle, "psoQueue::Pop" );
    }
    return rc;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsQueue::Push( const void * pItem, 
+void psoQueue::Push( const void * pItem, 
                      size_t       length )
 {
-   int rc = vdsQueuePush( m_objectHandle, 
+   int rc = psoQueuePush( m_objectHandle, 
                           pItem, 
                           length );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsQueue::Push" );
+      throw psoException( rc, m_sessionHandle, "psoQueue::Push" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsQueue::PushNow( const void * pItem, 
+void psoQueue::PushNow( const void * pItem, 
                         size_t       length )
 {
-   int rc = vdsQueuePushNow( m_objectHandle, 
+   int rc = psoQueuePushNow( m_objectHandle, 
                              pItem, 
                              length );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsQueue::PushNow" );
+      throw psoException( rc, m_sessionHandle, "psoQueue::PushNow" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsQueue::Status( vdsObjStatus * pStatus )
+void psoQueue::Status( psoObjStatus * pStatus )
 {
-   int rc = vdsQueueStatus( m_objectHandle,
+   int rc = psoQueueStatus( m_objectHandle,
                             pStatus );
    if ( rc != 0 ) {
-      throw vdsException( rc, m_sessionHandle, "vdsQueue::Status" );
+      throw psoException( rc, m_sessionHandle, "psoQueue::Status" );
    }
 }
 

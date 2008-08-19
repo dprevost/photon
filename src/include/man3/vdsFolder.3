@@ -1,33 +1,33 @@
-.TH "vdsFolder" 3 "5 Jul 2008" "Version 0.2" "vdsf C++ API" \" -*- nroff -*-
+.TH "psoFolder" 3 "5 Jul 2008" "Version 0.2" "vdsf C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-vdsFolder \- 
+psoFolder \- 
 .SH SYNOPSIS
 .br
 .PP
 .SH "Detailed Description"
 .PP 
-Definition at line 33 of file vdsFolder.
+Definition at line 33 of file psoFolder.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBvdsFolder\fP (vdsSession &session)"
+.RI "\fBpsoFolder\fP (psoSession &session)"
 .br
 .ti -1c
-.RI "virtual \fB~vdsFolder\fP ()"
+.RI "virtual \fB~psoFolder\fP ()"
 .br
 .ti -1c
 .RI "void \fBClose\fP ()"
 .br
 .RI "\fIClose a folder. \fP"
 .ti -1c
-.RI "void \fBCreateObject\fP (const std::string &objectName, vdsObjectDefinition *pDefinition)"
+.RI "void \fBCreateObject\fP (const std::string &objectName, psoObjectDefinition *pDefinition)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c
-.RI "void \fBCreateObject\fP (const char *objectName, size_t nameLengthInBytes, vdsObjectDefinition *pDefinition)"
+.RI "void \fBCreateObject\fP (const char *objectName, size_t nameLengthInBytes, psoObjectDefinition *pDefinition)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c
@@ -47,23 +47,23 @@ Definition at line 33 of file vdsFolder.
 .br
 .RI "\fIDestroy an object, child of the current folder, in shared memory. \fP"
 .ti -1c
-.RI "int \fBGetFirst\fP (vdsFolderEntry *pEntry)"
+.RI "int \fBGetFirst\fP (psoFolderEntry *pEntry)"
 .br
 .RI "\fIIterate through the folder - no data items are removed from the folder by this function. \fP"
 .ti -1c
-.RI "int \fBGetNext\fP (vdsFolderEntry *pEntry)"
+.RI "int \fBGetNext\fP (psoFolderEntry *pEntry)"
 .br
 .RI "\fIIterate through the folder. \fP"
 .ti -1c
 .RI "void \fBOpen\fP (const std::string &folderName)"
 .br
-.RI "\fIOpen an existing folder (see vdsSession::CreateObject to create a new folder). \fP"
+.RI "\fIOpen an existing folder (see psoSession::CreateObject to create a new folder). \fP"
 .ti -1c
 .RI "void \fBOpen\fP (const char *folderName, size_t nameLengthInBytes)"
 .br
-.RI "\fIOpen an existing folder (see vdsSession::CreateObject to create a new folder). \fP"
+.RI "\fIOpen an existing folder (see psoSession::CreateObject to create a new folder). \fP"
 .ti -1c
-.RI "void \fBStatus\fP (vdsObjStatus *pStatus)"
+.RI "void \fBStatus\fP (psoObjStatus *pStatus)"
 .br
 .RI "\fIReturn the status of the folder. \fP"
 .in -1c
@@ -71,23 +71,23 @@ Definition at line 33 of file vdsFolder.
 
 .in +1c
 .ti -1c
-.RI "VDS_HANDLE \fBm_objectHandle\fP"
+.RI "PSO_HANDLE \fBm_objectHandle\fP"
 .br
 .RI "\fIPointer to the psaFolder struct. \fP"
 .ti -1c
-.RI "VDS_HANDLE & \fBm_sessionHandle\fP"
+.RI "PSO_HANDLE & \fBm_sessionHandle\fP"
 .br
 .RI "\fIReference to the psaSession struct (we belong to). \fP"
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "vdsFolder::vdsFolder (vdsSession & session)"
+.SS "psoFolder::psoFolder (psoSession & session)"
 .PP
-.SS "virtual vdsFolder::~vdsFolder ()\fC [virtual]\fP"
+.SS "virtual psoFolder::~psoFolder ()\fC [virtual]\fP"
 .PP
 .SH "Member Function Documentation"
 .PP 
-.SS "void vdsFolder::Close ()"
+.SS "void psoFolder::Close ()"
 .PP
 Close a folder. 
 .PP
@@ -95,17 +95,17 @@ This function terminates the current access to the folder in shared memory (the 
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsFolder::CreateObject (const char * objectName, size_t nameLengthInBytes, vdsObjectDefinition * pDefinition)"
+.SS "void psoFolder::CreateObject (const char * objectName, size_t nameLengthInBytes, psoObjectDefinition * pDefinition)"
 .PP
 Create a new object in shared memory as a child of the current folder. 
 .PP
-The creation of the object only becomes permanent after a call to vdsSession::vdsCommit.
+The creation of the object only becomes permanent after a call to psoSession::vdsCommit.
 .PP
-This function does not provide a handle or an object to the newly created shared-memory object. Use vdsQueue::Open and similar functions to access them.
+This function does not provide a handle or an object to the newly created shared-memory object. Use psoQueue::Open and similar functions to access them.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -118,17 +118,17 @@ This function does not provide a handle or an object to the newly created shared
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsFolder::CreateObject (const std::string & objectName, vdsObjectDefinition * pDefinition)"
+.SS "void psoFolder::CreateObject (const std::string & objectName, psoObjectDefinition * pDefinition)"
 .PP
 Create a new object in shared memory as a child of the current folder. 
 .PP
-The creation of the object only becomes permanent after a call to vdsSession::vdsCommit.
+The creation of the object only becomes permanent after a call to psoSession::vdsCommit.
 .PP
-This function does not provide a handle or an object to the newly created shared-memory object. Use vdsQueue::Open and similar functions to access them.
+This function does not provide a handle or an object to the newly created shared-memory object. Use psoQueue::Open and similar functions to access them.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -139,17 +139,17 @@ This function does not provide a handle or an object to the newly created shared
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsFolder::CreateObjectXML (const char * xmlBuffer, size_t lengthInBytes)"
+.SS "void psoFolder::CreateObjectXML (const char * xmlBuffer, size_t lengthInBytes)"
 .PP
 Create a new object in shared memory as a child of the current folder. 
 .PP
-The creation of the object only becomes permanent after a call to vdsSession::vdsCommit.
+The creation of the object only becomes permanent after a call to psoSession::vdsCommit.
 .PP
-This function does not provide a handle or an object to the newly created shared-memory object. Use vdsQueue::Open and similar functions to access them.
+This function does not provide a handle or an object to the newly created shared-memory object. Use psoQueue::Open and similar functions to access them.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -160,17 +160,17 @@ This function does not provide a handle or an object to the newly created shared
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsFolder::CreateObjectXML (const std::string & xmlBuffer)"
+.SS "void psoFolder::CreateObjectXML (const std::string & xmlBuffer)"
 .PP
 Create a new object in shared memory as a child of the current folder. 
 .PP
-The creation of the object only becomes permanent after a call to vdsSession::vdsCommit.
+The creation of the object only becomes permanent after a call to psoSession::vdsCommit.
 .PP
-This function does not provide a handle or an object to the newly created shared-memory object. Use vdsQueue::Open and similar functions to access them.
+This function does not provide a handle or an object to the newly created shared-memory object. Use psoQueue::Open and similar functions to access them.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -179,15 +179,15 @@ This function does not provide a handle or an object to the newly created shared
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsFolder::DestroyObject (const char * objectName, size_t nameLengthInBytes)"
+.SS "void psoFolder::DestroyObject (const char * objectName, size_t nameLengthInBytes)"
 .PP
 Destroy an object, child of the current folder, in shared memory. 
 .PP
-The destruction of the object only becomes permanent after a call to vdsSession::vdsCommit.
+The destruction of the object only becomes permanent after a call to psoSession::vdsCommit.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -198,15 +198,15 @@ The destruction of the object only becomes permanent after a call to vdsSession:
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsFolder::DestroyObject (const std::string & objectName)"
+.SS "void psoFolder::DestroyObject (const std::string & objectName)"
 .PP
 Destroy an object, child of the current folder, in shared memory. 
 .PP
-The destruction of the object only becomes permanent after a call to vdsSession::vdsCommit.
+The destruction of the object only becomes permanent after a call to psoSession::vdsCommit.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -215,11 +215,11 @@ The destruction of the object only becomes permanent after a call to vdsSession:
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "int vdsFolder::GetFirst (vdsFolderEntry * pEntry)"
+.SS "int psoFolder::GetFirst (psoFolderEntry * pEntry)"
 .PP
 Iterate through the folder - no data items are removed from the folder by this function. 
 .PP
@@ -237,17 +237,17 @@ Data items which were added by another session and are not yet committed will no
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "int vdsFolder::GetNext (vdsFolderEntry * pEntry)"
+.SS "int psoFolder::GetNext (psoFolderEntry * pEntry)"
 .PP
 Iterate through the folder. 
 .PP
 Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
 .PP
-Evidently, you must call \fBvdsFolder::GetFirst\fP to initialize the iterator.
+Evidently, you must call \fBpsoFolder::GetFirst\fP to initialize the iterator.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -261,13 +261,13 @@ Evidently, you must call \fBvdsFolder::GetFirst\fP to initialize the iterator.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsFolder::Open (const char * folderName, size_t nameLengthInBytes)"
+.SS "void psoFolder::Open (const char * folderName, size_t nameLengthInBytes)"
 .PP
-Open an existing folder (see vdsSession::CreateObject to create a new folder). 
+Open an existing folder (see psoSession::CreateObject to create a new folder). 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -278,13 +278,13 @@ Open an existing folder (see vdsSession::CreateObject to create a new folder).
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsFolder::Open (const std::string & folderName)"
+.SS "void psoFolder::Open (const std::string & folderName)"
 .PP
-Open an existing folder (see vdsSession::CreateObject to create a new folder). 
+Open an existing folder (see psoSession::CreateObject to create a new folder). 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -293,11 +293,11 @@ Open an existing folder (see vdsSession::CreateObject to create a new folder).
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
-.SS "void vdsFolder::Status (vdsObjStatus * pStatus)"
+.SS "void psoFolder::Status (psoObjStatus * pStatus)"
 .PP
 Return the status of the folder. 
 .PP
@@ -308,22 +308,22 @@ Return the status of the folder.
 .PP
 \fBExceptions:\fP
 .RS 4
-\fIvdsException\fP An abnormal error occured. 
+\fIpsoException\fP An abnormal error occured. 
 .RE
 .PP
 
 .SH "Member Data Documentation"
 .PP 
-.SS "VDS_HANDLE \fBvdsFolder::m_objectHandle\fP\fC [private]\fP"
+.SS "PSO_HANDLE \fBpsoFolder::m_objectHandle\fP\fC [private]\fP"
 .PP
 Pointer to the psaFolder struct. 
 .PP
-Definition at line 231 of file vdsFolder.
-.SS "VDS_HANDLE& \fBvdsFolder::m_sessionHandle\fP\fC [private]\fP"
+Definition at line 231 of file psoFolder.
+.SS "PSO_HANDLE& \fBpsoFolder::m_sessionHandle\fP\fC [private]\fP"
 .PP
 Reference to the psaSession struct (we belong to). 
 .PP
-Definition at line 234 of file vdsFolder.
+Definition at line 234 of file psoFolder.
 
 .SH "Author"
 .PP 

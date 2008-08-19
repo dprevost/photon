@@ -17,26 +17,26 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_PROCESS
-#define VDS_PROCESS
+#ifndef PSO_PROCESS
+#define PSO_PROCESS
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include <stdlib.h>
-#include <photon/vdsCommon.h>
+#include <photon/psoCommon.h>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 // Forward declaration
-class vdsSession;
+class psoSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class VDSF_EXPORT vdsProcess
+class VDSF_EXPORT psoProcess
 {
 public:
 
-   vdsProcess();
+   psoProcess();
    
    /**
     * This function initializes access to a VDS. It takes 2 input 
@@ -60,7 +60,7 @@ public:
     * \param[in] protectionNeeded A boolean value indicating if multi-threaded
     *            locks are needed or not.
     *
-    * \exception vdsException An abnormal error occured.
+    * \exception psoException An abnormal error occured.
     */
    void Init( const char* wdAddress,
               bool        protectionNeeded = false );
@@ -70,11 +70,11 @@ public:
     * will also close all sessions and terminate all accesses to 
     * the different objects.
     */
-   virtual ~vdsProcess();
+   virtual ~psoProcess();
 
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_PROCESS */
+#endif /* PSO_PROCESS */
 

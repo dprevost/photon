@@ -14,7 +14,7 @@
  */
 
 #include "Common/Common.h"
-#include <photon/vds.h>
+#include <photon/photon.h>
 #include "Process.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -31,37 +31,37 @@ extern "C" {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsInit( const char * wdAddress,
+int psoInit( const char * wdAddress,
              int          programIsMultiThreaded )                  
 {
-   int errcode = VDS_OK;
+   int errcode = PSO_OK;
    psaProcess * process;
    bool ok;
    
-   if ( wdAddress == NULL ) return VDS_INVALID_WATCHDOG_ADDRESS;
+   if ( wdAddress == NULL ) return PSO_INVALID_WATCHDOG_ADDRESS;
    
    g_protectionIsNeeded = programIsMultiThreaded;
    
    if ( g_protectionIsNeeded ) {
       ok = pscInitThreadLock( &g_ProcessMutex );
-      VDS_POST_CONDITION( ok == true || ok == false );
-      if ( ! ok ) return VDS_NOT_ENOUGH_RESOURCES;
+      PSO_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) return PSO_NOT_ENOUGH_RESOURCES;
    }
 
    process = (psaProcess *) malloc( sizeof(psaProcess) );
-   if ( process == NULL ) return VDS_NOT_ENOUGH_HEAP_MEMORY;
+   if ( process == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
   
    memset( process, 0, sizeof(psaProcess) );
    errcode = psaProcessInit( process, wdAddress );
 
-   if ( errcode != VDS_OK ) free( process );
+   if ( errcode != PSO_OK ) free( process );
 
    return errcode;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsExit()
+void psoExit()
 {
    if ( g_pProcessInstance != NULL ) {
       psaProcessFini();

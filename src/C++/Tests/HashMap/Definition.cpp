@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds>
+#include <photon/photon>
 #include <iostream>
 
 using namespace std;
@@ -37,32 +37,32 @@ struct dummy {
 
 int main( int argc, char * argv[] )
 {
-   vdsProcess process;
-   vdsSession session;
-   vdsHashMap hashmap(session);
+   psoProcess process;
+   psoSession session;
+   psoHashMap hashmap(session);
    string fname = "/cpp_hashmap_definition";
    string hname = fname + "/test";
 
    struct dummy data;
    char key[] = "My Key";
    size_t len;
-   vdsObjectDefinition * pDef = NULL;
-   vdsObjectDefinition * pDefHashMap = NULL;
-   vdsObjectDefinition folderDef;
+   psoObjectDefinition * pDef = NULL;
+   psoObjectDefinition * pDefHashMap = NULL;
+   psoObjectDefinition folderDef;
    
    memset( &folderDef, 0, sizeof(folderDef) );
-   folderDef.type = VDS_FOLDER;
+   folderDef.type = PSO_FOLDER;
    
-   len = offsetof( vdsObjectDefinition, fields ) + 
-      5 * sizeof(vdsFieldDefinition);
-   pDefHashMap = (vdsObjectDefinition *)calloc( len, 1 );
-   pDefHashMap->type = VDS_HASH_MAP;
+   len = offsetof( psoObjectDefinition, fields ) + 
+      5 * sizeof(psoFieldDefinition);
+   pDefHashMap = (psoObjectDefinition *)calloc( len, 1 );
+   pDefHashMap->type = PSO_HASH_MAP;
    pDefHashMap->numFields = 5;
-   pDefHashMap->fields[0].type = VDS_INTEGER;
-   pDefHashMap->fields[1].type = VDS_INTEGER;
-   pDefHashMap->fields[2].type = VDS_STRING;
-   pDefHashMap->fields[3].type = VDS_INTEGER;
-   pDefHashMap->fields[4].type = VDS_VAR_BINARY;
+   pDefHashMap->fields[0].type = PSO_INTEGER;
+   pDefHashMap->fields[1].type = PSO_INTEGER;
+   pDefHashMap->fields[2].type = PSO_STRING;
+   pDefHashMap->fields[3].type = PSO_INTEGER;
+   pDefHashMap->fields[4].type = PSO_VAR_BINARY;
 
    pDefHashMap->fields[0].length = 1;
    pDefHashMap->fields[1].length = 4;
@@ -75,7 +75,7 @@ int main( int argc, char * argv[] )
    strcpy( pDefHashMap->fields[3].name, "field4" );
    strcpy( pDefHashMap->fields[4].name, "field5" );
    
-   pDefHashMap->key.type = VDS_KEY_VAR_STRING;
+   pDefHashMap->key.type = PSO_KEY_VAR_STRING;
    pDefHashMap->key.minLength = 1;
    pDefHashMap->key.maxLength = 0;
    
@@ -92,7 +92,7 @@ int main( int argc, char * argv[] )
       hashmap.Open( hname );
       hashmap.Insert( key, strlen(key), &data, sizeof(data) );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -106,8 +106,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NULL_POINTER ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -117,7 +117,7 @@ int main( int argc, char * argv[] )
    try {
       hashmap.Definition( &pDef );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

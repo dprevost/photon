@@ -19,7 +19,7 @@
 
 /*!
  * 
- * \param[in] pBarrier A pointer to the vdstBarrier struct itself.
+ * \param[in] pBarrier A pointer to the psotBarrier struct itself.
  * \param[in] numThreads The number of threads to synchronize.
  * \param[in] pError     A pointer to a pscErrorHandler struct
  *
@@ -31,7 +31,7 @@
  * \pre \em pError cannot be NULL.
  *
  */
-int vdstInitBarrier( vdstBarrier     * pBarrier, 
+int psotInitBarrier( psotBarrier     * pBarrier, 
                      int               numThreads,
                      pscErrorHandler * pError )
 {
@@ -41,9 +41,9 @@ int vdstInitBarrier( vdstBarrier     * pBarrier,
    int status;      
 #endif
 
-   VDS_PRE_CONDITION( pBarrier != NULL );
-   VDS_PRE_CONDITION( numThreads > 0 );
-   VDS_PRE_CONDITION( pError != NULL );
+   PSO_PRE_CONDITION( pBarrier != NULL );
+   PSO_PRE_CONDITION( numThreads > 0 );
+   PSO_PRE_CONDITION( pError != NULL );
    
 #if defined ( WIN32 )
    /*
@@ -114,7 +114,7 @@ end_on_error:
 
 /*!
  * 
- * \param[in] pBarrier A pointer to the vdstBarrier struct itself.
+ * \param[in] pBarrier A pointer to the psotBarrier struct itself.
  *
  * \pre \em pBarrier cannot be NULL.
  *
@@ -122,7 +122,7 @@ end_on_error:
  *
  */
  
-void vdstFiniBarrier( vdstBarrier * pBarrier )
+void psotFiniBarrier( psotBarrier * pBarrier )
 {
 #if defined (WIN32)
    BOOL status;
@@ -130,25 +130,25 @@ void vdstFiniBarrier( vdstBarrier * pBarrier )
    int status;      
 #endif
 
-   VDS_PRE_CONDITION( pBarrier != NULL );
+   PSO_PRE_CONDITION( pBarrier != NULL );
 
 #if defined (WIN32)
    status = CloseHandle( pBarrier->subBarrier[0].waitEvent );
-   VDS_POST_CONDITION( status != 0 );
+   PSO_POST_CONDITION( status != 0 );
    status = CloseHandle( pBarrier->subBarrier[1].waitEvent );
-   VDS_POST_CONDITION( status != 0 );
+   PSO_POST_CONDITION( status != 0 );
 
    DeleteCriticalSection( &pBarrier->subBarrier[0].waitLock );
    DeleteCriticalSection( &pBarrier->subBarrier[1].waitLock );
 #else
    status = pthread_cond_destroy( &pBarrier->subBarrier[0].waitVar );
-   VDS_POST_CONDITION( status == 0 );
+   PSO_POST_CONDITION( status == 0 );
    status = pthread_cond_destroy( &pBarrier->subBarrier[1].waitVar );
-   VDS_POST_CONDITION( status == 0 );
+   PSO_POST_CONDITION( status == 0 );
    status = pthread_mutex_destroy( &pBarrier->subBarrier[0].waitLock );
-   VDS_POST_CONDITION( status == 0 );
+   PSO_POST_CONDITION( status == 0 );
    status = pthread_mutex_destroy( &pBarrier->subBarrier[1].waitLock );
-   VDS_POST_CONDITION( status == 0 );
+   PSO_POST_CONDITION( status == 0 );
 #endif
 
    return;
@@ -158,27 +158,27 @@ void vdstFiniBarrier( vdstBarrier * pBarrier )
 
 /*!
  * 
- * \param[in] pBarrier A pointer to the vdstBarrier struct itself.
+ * \param[in] pBarrier A pointer to the psotBarrier struct itself.
  *
  * \pre \em pBarrier cannot be NULL.
  *
  */
 
-void vdstBarrierWait( vdstBarrier * pBarrier )
+void psotBarrierWait( psotBarrier * pBarrier )
 {
 #if ! defined (WIN32)
    int status;      
 #endif
-   struct vdstSubBarrier* pCurrentSub;
+   struct psotSubBarrier* pCurrentSub;
 
-   VDS_PRE_CONDITION( pBarrier != NULL );
+   PSO_PRE_CONDITION( pBarrier != NULL );
 
    pCurrentSub = &pBarrier->subBarrier[pBarrier->currentSubBarrier];
 #if defined (WIN32)
    EnterCriticalSection( &pCurrentSub->waitLock );
 #else
    status = pthread_mutex_lock( &pCurrentSub->waitLock );
-   VDS_POST_CONDITION( status == 0 );
+   PSO_POST_CONDITION( status == 0 );
 #endif
 
    pCurrentSub->numRunners--;
@@ -207,7 +207,7 @@ void vdstBarrierWait( vdstBarrier * pBarrier )
       SetEvent( pBarrier->subBarrier[1-pBarrier->currentSubBarrier].waitEvent ); 
 #else
       status = pthread_cond_broadcast( &pCurrentSub->waitVar );
-      VDS_POST_CONDITION( status == 0 );
+      PSO_POST_CONDITION( status == 0 );
 #endif
    }
    else {

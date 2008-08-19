@@ -24,8 +24,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define VDS_MEMFILE_NAME  "mem_file.vds"
-#define VDS_LOGDIR_NAME   "log_dir"
+#define PSO_MEMFILE_NAME  "mem_file.pso"
+#define PSO_LOGDIR_NAME   "log_dir"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

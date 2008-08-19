@@ -17,8 +17,8 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_EXCEPTION
-#define VDS_EXCEPTION
+#ifndef PSO_EXCEPTION
+#define PSO_EXCEPTION
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -29,24 +29,24 @@
 #endif
 #include <string>
 
-#include <photon/vdsCommon.h>
+#include <photon/psoCommon.h>
 
 // Forward declaration
-class vdsSession;
+class psoSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class VDSF_EXPORT vdsException
+class VDSF_EXPORT psoException
 {
 public:
 
-   /// Construct a vdsf exception using the return code from the C function
+   /// Construct a psof exception using the return code from the C function
    /// and the name of the function throwing it.
-   vdsException( int          theErrorCode, 
-                 VDS_HANDLE   sessionHandle, 
+   psoException( int          theErrorCode, 
+                 PSO_HANDLE   sessionHandle, 
                  const char * functionName );
    
-   virtual ~vdsException();
+   virtual ~psoException();
 
    /// Return the error message.
    std::string & Message( std::string & errorMessage );
@@ -66,4 +66,4 @@ private:
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_EXCEPTION */
+#endif /* PSO_EXCEPTION */

@@ -39,7 +39,7 @@ int main( int argc, char * argv[] )
    else {
       errcode = psaProcessInit( &process, "10701" );
    }
-   if ( errcode != VDS_OK ) {
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       return -1;
    }
@@ -50,7 +50,7 @@ int main( int argc, char * argv[] )
    
    errcode = psaOpenVDS( &process, "dummy", 100, &context );
 
-   if ( errcode != VDS_BACKSTORE_FILE_MISSING ) {
+   if ( errcode != PSO_BACKSTORE_FILE_MISSING ) {
       fprintf( stderr, "err: %d\n", errcode );
       return -1;
    }

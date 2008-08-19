@@ -21,16 +21,16 @@
 #endif
 
 /* Some globals to make our life simpler */
-VDS_HANDLE session1 = NULL, session2 = NULL;
-VDS_HANDLE map1 = NULL, map2 = NULL;
+PSO_HANDLE session1 = NULL, session2 = NULL;
+PSO_HANDLE map1 = NULL, map2 = NULL;
 const char* mapName = "My Hash Map";
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void cleanup()
 {
-   if ( map1 != NULL ) vdsHashMapClose( map1 );
-   if ( map2 != NULL ) vdsHashMapClose( map2 );
+   if ( map1 != NULL ) psoHashMapClose( map1 );
+   if ( map2 != NULL ) psoHashMapClose( map2 );
    
    if ( session1 != NULL ) vdsExitSession( session1 );
    if ( session2 != NULL ) vdsExitSession( session2 );
@@ -49,35 +49,35 @@ int createMap()
   
    /* If the map already exists, we remove it. */
    rc = vdsDestroyObject( session1, mapName, strlen(mapName) );
-   if ( rc == VDS_NO_SUCH_OBJECT || rc == VDS_OK ) {
+   if ( rc == PSO_NO_SUCH_OBJECT || rc == PSO_OK ) {
       /*
        * We must commit the change if we just destroyed it otherwise it
        * will still exist! 
        */
       rc = vdsCommit( session1 );
       if ( rc != 0 ) {
-         vdsErrorMsg(session1, msg, 256 );
+         psoErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
          return -1;
       }
       
-      rc = vdsCreateObject( session1, mapName, strlen(mapName), VDS_HASH_MAP );
+      rc = vdsCreateObject( session1, mapName, strlen(mapName), PSO_HASH_MAP );
       if ( rc != 0 ) {
-         vdsErrorMsg(session1, msg, 256 );
+         psoErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
          return -1;
       }
       /* Commit the creation of the object */
       rc = vdsCommit( session1 );
       if ( rc != 0 ) {
-         vdsErrorMsg(session1, msg, 256 );
+         psoErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
          return -1;
       }
-      rc = vdsHashMapOpen( session1, mapName, strlen(mapName), &map1 );
+      rc = psoHashMapOpen( session1, mapName, strlen(mapName), &map1 );
       if ( rc != 0 ) {
-         vdsErrorMsg(session1, msg, 256 );
-         fprintf( stderr, "At line %d, vdsHashMapOpen error: %s\n", __LINE__, msg );
+         psoErrorMsg(session1, msg, 256 );
+         fprintf( stderr, "At line %d, psoHashMapOpen error: %s\n", __LINE__, msg );
          return -1;
       }
       /*
@@ -87,11 +87,11 @@ int createMap()
        */
       rc = readData( countryCode, description );
       while ( rc > 0 ) {
-         rc = vdsHashMapInsert( map1, countryCode, 2, 
+         rc = psoHashMapInsert( map1, countryCode, 2, 
             description, strlen(description) );
          if ( rc != 0 ) {
-            vdsErrorMsg(session1, msg, 256 );
-            fprintf( stderr, "At line %d, vdsHashMapInsert error: %s\n", __LINE__, msg );
+            psoErrorMsg(session1, msg, 256 );
+            fprintf( stderr, "At line %d, psoHashMapInsert error: %s\n", __LINE__, msg );
             return -1;
          }
 
@@ -100,7 +100,7 @@ int createMap()
    }
    else { /* A problem when calling destroy */
 
-      vdsErrorMsg(session1, msg, 256 );
+      psoErrorMsg(session1, msg, 256 );
       fprintf( stderr, "At line %d, vdsDestroyObject error: %s\n", __LINE__, msg );
       return -1;
    }
@@ -116,7 +116,7 @@ int main( int argc, char *argv[] )
    char description[80];
    char msg[256];
    size_t length;
-   vdsObjStatus status;
+   psoObjStatus status;
    
    if ( argc < 3 ) {
       fprintf( stderr, "Usage: %s iso_3166_data_file watchdog_address\n", argv[0] );
@@ -149,43 +149,43 @@ int main( int argc, char *argv[] )
    if ( rc != 0 ) { cleanup(); return 1; }
    fprintf( stderr, "Map created\n" );
    
-   rc = vdsHashMapOpen( session2, mapName, strlen(mapName), &map2 );
+   rc = psoHashMapOpen( session2, mapName, strlen(mapName), &map2 );
    if ( rc != 0 ) {
-      vdsErrorMsg(session2, msg, 256 );
-      fprintf( stderr, "At line %d, vdsHashMapOpen error: %s\n", __LINE__, msg );
+      psoErrorMsg(session2, msg, 256 );
+      fprintf( stderr, "At line %d, psoHashMapOpen error: %s\n", __LINE__, msg );
       cleanup();
       return -1;
    }
    
    /* The data is inserted but not committed yet - failure is expected */
-   rc = vdsHashMapGet( map2, "FM", 2, description, 80, &length );
+   rc = psoHashMapGet( map2, "FM", 2, description, 80, &length );
    if ( rc == 0 ) {
-      fprintf( stderr, "At line %d, unexpected success in vdsHashMapGet! \n", __LINE__ );
+      fprintf( stderr, "At line %d, unexpected success in psoHashMapGet! \n", __LINE__ );
       cleanup();
       return -1;
    }
-   if ( rc != VDS_ITEM_IS_IN_USE ) {
-      vdsErrorMsg(session2, msg, 256 );
-      fprintf( stderr, "At line %d, vdsHashMapGet error: %s\n", __LINE__, msg );
+   if ( rc != PSO_ITEM_IS_IN_USE ) {
+      psoErrorMsg(session2, msg, 256 );
+      fprintf( stderr, "At line %d, psoHashMapGet error: %s\n", __LINE__, msg );
       cleanup();
       return -1;
    }
    rc = vdsCommit( session1 );
    if ( rc != 0 ) {
-      vdsErrorMsg(session1, msg, 256 );
+      psoErrorMsg(session1, msg, 256 );
       fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
       cleanup();
       return -1;
    }
    
-   vdsHashMapStatus( map2, &status );
+   psoHashMapStatus( map2, &status );
    fprintf( stderr, "Number of countries in the hash map = %d\n", 
       status.numDataItem );
 
-   rc = vdsHashMapGet( map2, "FM", 2, description, 80, &length );
+   rc = psoHashMapGet( map2, "FM", 2, description, 80, &length );
    if ( rc != 0 ) {
-      vdsErrorMsg(session2, msg, 256 );
-      fprintf( stderr, "At line %d, vdsHashMapGet error: %s\n", __LINE__, msg );
+      psoErrorMsg(session2, msg, 256 );
+      fprintf( stderr, "At line %d, psoHashMapGet error: %s\n", __LINE__, msg );
       cleanup();
       return -1;
    }

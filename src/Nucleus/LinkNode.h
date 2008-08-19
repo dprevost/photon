@@ -72,7 +72,7 @@ typedef struct psnFreeBufferNode psnFreeBufferNode;
 static inline
 void psnLinkNodeInit( psnLinkNode * pNode )
 {
-   VDS_PRE_CONDITION( pNode != NULL );
+   PSO_PRE_CONDITION( pNode != NULL );
    
    pNode->nextOffset     = PSN_NULL_OFFSET;
    pNode->previousOffset = PSN_NULL_OFFSET;
@@ -81,7 +81,7 @@ void psnLinkNodeInit( psnLinkNode * pNode )
 static inline
 void psnLinkNodeFini( psnLinkNode * pNode )
 {
-   VDS_PRE_CONDITION( pNode != NULL );
+   PSO_PRE_CONDITION( pNode != NULL );
 
    psnLinkNodeInit( pNode );
 }
@@ -93,7 +93,7 @@ void psnLinkNodeFini( psnLinkNode * pNode )
 static inline
 bool psnLinkNodeTest( psnLinkNode * pNode )
 {
-   VDS_PRE_CONDITION( pNode != NULL );
+   PSO_PRE_CONDITION( pNode != NULL );
 
    if ( pNode->nextOffset     == PSN_NULL_OFFSET || 
         pNode->previousOffset == PSN_NULL_OFFSET ) {

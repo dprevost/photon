@@ -28,8 +28,8 @@ int main()
    int errcode;
    bool ok;
    psnFolderItem folderItem;
-   vdsObjectDefinition def = { 
-      VDS_FOLDER, 
+   psoObjectDefinition def = { 
+      PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
@@ -58,7 +58,7 @@ int main()
    ok = psnTopFolderOpenObject( pTopFolder,
                                  "Test1/Test2",
                                  strlen("Test1/Test2"),
-                                 VDS_FOLDER,
+                                 PSO_FOLDER,
                                  &folderItem,
                                  &context );
    if ( ok != true ) {
@@ -68,28 +68,28 @@ int main()
    ok = psnTopFolderOpenObject( pTopFolder,
                                  "Test3/Test2",
                                  strlen("Test3/Test2"),
-                                 VDS_FOLDER,
+                                 PSO_FOLDER,
                                  &folderItem,
                                  &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = pscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_NO_SUCH_FOLDER ) {
+   if ( errcode != PSO_NO_SUCH_FOLDER ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    ok = psnTopFolderOpenObject( pTopFolder,
                                  "Test1/Test5",
                                  strlen("Test1/Test5"),
-                                 VDS_FOLDER,
+                                 PSO_FOLDER,
                                  &folderItem,
                                  &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = pscGetLastError( &context.errorHandler );
-   if ( errcode != VDS_NO_SUCH_OBJECT ) {
+   if ( errcode != PSO_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

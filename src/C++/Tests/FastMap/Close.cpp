@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vds>
+#include <photon/photon>
 #include <iostream>
 
 using namespace std;
@@ -25,22 +25,22 @@ using namespace std;
 
 int main( int argc, char * argv[] )
 {
-   vdsProcess process;
-   vdsSession session;
-   vdsFastMap hashmap(session);
-   vdsFastMapEditor editor(session);
+   psoProcess process;
+   psoSession session;
+   psoFastMap hashmap(session);
+   psoFastMapEditor editor(session);
    string fname = "/cpp_fastmap_close";
    string hname = fname + "/test";
-   vdsObjectDefinition folderDef;
-   vdsObjectDefinition mapDef = { 
-      VDS_FAST_MAP,
+   psoObjectDefinition folderDef;
+   psoObjectDefinition mapDef = { 
+      PSO_FAST_MAP,
       1, 
-      { VDS_KEY_VAR_BINARY, 0, 1, 20 }, 
-      { { "Field_1", VDS_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_BINARY, 0, 1, 20 }, 
+      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
    };
 
    memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = VDS_FOLDER;
+   folderDef.type = PSO_FOLDER;
    
    try {
       if ( argc > 1 ) {
@@ -53,7 +53,7 @@ int main( int argc, char * argv[] )
       session.CreateObject( fname, &folderDef );
       session.CreateObject( hname, &mapDef );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -66,8 +66,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NULL_HANDLE ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_HANDLE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -76,7 +76,7 @@ int main( int argc, char * argv[] )
    try {
       hashmap.Open( hname );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -84,7 +84,7 @@ int main( int argc, char * argv[] )
    try {
       hashmap.Close();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -98,8 +98,8 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( vdsException exc ) {
-      if ( exc.ErrorCode() != VDS_NULL_HANDLE ) {
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_HANDLE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -108,7 +108,7 @@ int main( int argc, char * argv[] )
    try {
       editor.Open( hname );
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -116,7 +116,7 @@ int main( int argc, char * argv[] )
    try {
       editor.Close();
    }
-   catch( vdsException exc ) {
+   catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

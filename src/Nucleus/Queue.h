@@ -69,7 +69,7 @@ struct psnQueue
    struct psnTreeNode  nodeObject;
 
    /** The type of queue (as decided when vdsCreateObject() was called). */
-   enum vdsObjectType queueType;
+   enum psoObjectType queueType;
 
    /** Our own doubly-linked list, to hold the data. */
    psnLinkedList listOfElements;
@@ -103,7 +103,7 @@ bool psnQueueInit( psnQueue           * pQueue,
                     size_t                origNameLength,
                     char                * origName,
                     ptrdiff_t             hashItemOffset,
-                    vdsObjectDefinition * pDefinition,
+                    psoObjectDefinition * pDefinition,
                     psnSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
@@ -163,7 +163,7 @@ void psnQueueRollbackRemove( psnQueue * pQueue,
 
 VDSF_ENGINE_EXPORT
 void psnQueueStatus( psnQueue    * pQueue,
-                      vdsObjStatus * pStatus );
+                      psoObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
