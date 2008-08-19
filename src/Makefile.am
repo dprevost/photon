@@ -13,7 +13,7 @@ CLEANFILES = *~ Packages\*~
 # The code have to be build following a certain order:
 #   1-    Errors
 #   2-    Common
-#   3-    Engine
+#   3-    Nucleus
 #   4-    Watchdog
 #   5-    API
 #   n-    ...
@@ -26,7 +26,7 @@ endif
 SUBDIRS =             \
         Errors        \
         Common        \
-        Engine        \
+        Nucleus       \
         Watchdog      \
         API           \
         C++           \
