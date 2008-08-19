@@ -2,7 +2,7 @@
 '
 ' Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
 ' 
-' This file is part of vdsf (Virtual Data Space Framework).
+' This file is part of photon (photonsoftware.org).
 ' 
 ' This file may be distributed and/or modified under the terms of the
 ' GNU General Public License version 2 as published by the Free Software
@@ -112,7 +112,7 @@ end if
 
 tmpDir = objShell.Environment.item("TMP")
 tmpDir = objShell.ExpandEnvironmentStrings(tmpDir)
-tmpDir = tmpDir + "\vdsf_common"
+tmpDir = tmpDir + "\photon_common"
 
 if (fso.FolderExists(tmpDir)) Then
    fso.DeleteFolder(tmpDir)
@@ -124,14 +124,14 @@ fso.Copyfile "..\..\..\XML\\wd_config.xsd", tmpDir + "\wd_config.xsd"
 
 Set cmdFile = fso.CreateTextFile(tmpDir + "\cfg.xml", True)
 cmdFile.WriteLine("<?xml version=""1.0""?>")
-cmdFile.WriteLine("<vdsf_config xmlns=""http://vdsf.sourceforge.net/Config""")
+cmdFile.WriteLine("<photon_config xmlns=""http://vdsf.sourceforge.net/Config""")
 cmdFile.WriteLine("xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""")
 cmdFile.WriteLine("xsi:schemaLocation=""http://vdsf.sourceforge.net/Config " + tmpDir + "\wd_config.xsd""> ")
 cmdFile.WriteLine("  <vds_location>" + tmpDir + "</vds_location>")
 cmdFile.WriteLine("  <mem_size size=""10240"" units=""kb"" />")
 cmdFile.WriteLine("  <watchdog_address>10701</watchdog_address>")
 cmdFile.WriteLine("  <file_access access=""group"" />")
-cmdFile.WriteLine("</vdsf_config>")
+cmdFile.WriteLine("</photon_config>")
 cmdFile.Close
 
 exeName = wd_path + "\vdswd.exe -c " + tmpDir + "\cfg.xml"

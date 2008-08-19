@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
- * This file is part of vdsf (Virtual Data Space Framework) Library.
+ * This file is part of photon (photonsoftware.org).
  *
  * This file may be distributed and/or modified under the terms of the
  * GNU General Public License version 2 as published by the Free Software
@@ -20,12 +20,12 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include <photon/vdsErrors.h>
-#include <photon/vdsCommon.h>
+#include <photon/phoErrors.h>
+#include <photon/phoCommon.h>
 
-#include <photon/vdsProcess.h>
-#include <photon/vdsSession.h>
-#include <photon/vdsFolder.h>
+#include <photon/phoProcess.h>
+#include <photon/phoSession.h>
+#include <photon/phoFolder.h>
 /*
  * Hash maps and maps implements the same data container but differs with 
  * respect to transactions. 
@@ -33,10 +33,10 @@
  * Hash maps are read-write and locks are used to insure data integrity.
  * Maps are read-only (with an update procedure) and no locks are required.
  */
-#include <photon/vdsHashMap.h>
-#include <photon/vdsFastMap.h>
-#include <photon/vdsQueue.h>
-#include <photon/vdsLifo.h>
+#include <photon/phoHashMap.h>
+#include <photon/phoFastMap.h>
+#include <photon/phoQueue.h>
+#include <photon/phoLifo.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

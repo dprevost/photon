@@ -13,7 +13,7 @@
 include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~
-lib_LTLIBRARIES = libvdsf.la
+lib_LTLIBRARIES = libphoton.la
 
 SUBDIRS = . Tests
 
@@ -25,11 +25,11 @@ AM_CPPFLAGS += @LIBXML2_CFLAGS@
 #  - the version is not in synch with the version of the whole package
 #  - format:  currentversion:revision:age  (age is the tricky one here)
 
-libvdsf_la_LDFLAGS = @LIBXML2_LIBS@ -version-info 0:0:0
+libphoton_la_LDFLAGS = @LIBXML2_LIBS@ -version-info 0:0:0
 
 include_HEADERS = 
 
-libvdsf_la_SOURCES =     \
+libphoton_la_SOURCES =   \
         api.c            \
         api.h            \
         CommonObject.c   \
@@ -55,7 +55,7 @@ libvdsf_la_SOURCES =     \
         Session.h        \
         WatchdogCommon.h 
 
-libvdsf_la_LIBADD =                               \
+libphoton_la_LIBADD =                             \
         $(top_builddir)/src/Nucleus/libNucleus.la \
         $(top_builddir)/src/Common/libCommon.la   
 

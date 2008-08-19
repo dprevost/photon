@@ -2,7 +2,7 @@
 
 # Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
 # 
-# This file is part of vdsf (Virtual Data Space Framework).
+# This file is part of photon (photonsoftware.org).
 #
 # This file may be distributed and/or modified under the terms of the
 # GNU General Public License version 2 as published by the Free Software
@@ -24,7 +24,7 @@
 #
 # For example: 
 # 
-# ./InitPass.sh /home/dprevost/photon/ /home/dprevost/vdsf 10701
+# ./InitPass.sh /home/dprevost/photon/ /home/dprevost/photon 10701
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
