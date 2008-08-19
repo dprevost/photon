@@ -457,7 +457,7 @@ fi
 AC_CONFIG_FILES([
    doc/doxyfile.vds_c
    doc/doxyfile.vds_cpp
-   src/include/doxyfile.vds_c
+   src/include/doxyfile.pso_c
    src/Packages/buildDeb.sh
    src/Packages/control
    src/Packages/vdsf.spec

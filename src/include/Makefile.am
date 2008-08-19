@@ -11,8 +11,8 @@
 CLEANFILES = *~ photon/*~
 
 HEADER_FILES =                                        \
-        $(top_srcdir)/src/include/photon/vds.h        \
-        $(top_srcdir)/src/include/photon/vdsCommon.h  \
+        $(top_srcdir)/src/include/photon/photon.h     \
+        $(top_srcdir)/src/include/photon/psoCommon.h  \
         $(top_srcdir)/src/include/photon/psoFastMap.h \
         $(top_srcdir)/src/include/photon/psoFolder.h  \
         $(top_srcdir)/src/include/photon/psoHashMap.h \
@@ -22,15 +22,15 @@ HEADER_FILES =                                        \
         $(top_srcdir)/src/include/photon/psoSession.h 
 
 PSO_C_FILES =                       \
-        man3/vdsCommit.3            \
-        man3/vdsCommon.h.3          \
-        man3/vdsCreateObject.3      \
-        man3/vdsDestroyObject.3     \
+        man3/psoCommit.3            \
+        man3/psoCommon.h.3          \
+        man3/psoCreateObject.3      \
+        man3/psoDestroyObject.3     \
         man3/psoErrorMsg.3          \
         man3/psoErrors.3            \
         man3/psoErrors.h.3          \
-        man3/vdsExit.3              \
-        man3/vdsExitSession.3       \
+        man3/psoExit.3              \
+        man3/psoExitSession.3       \
         man3/psoFastMap_c.3         \
         man3/psoFastMapClose.3      \
         man3/psoFastMapDefinition.3 \
@@ -52,9 +52,9 @@ PSO_C_FILES =                       \
         man3/psoFolder.h.3          \
         man3/psoFolderOpen.3        \
         man3/psoFolderStatus.3      \
-        man3/vdsGetInfo.3           \
-        man3/vdsGetStatus.3         \
-        man3/vds.h.3                \
+        man3/psoGetInfo.3           \
+        man3/psoGetStatus.3         \
+        man3/photon.h.3                \
         man3/psoHashMap_c.3         \
         man3/psoHashMapClose.3      \
         man3/psoHashMapDelete.3     \
@@ -67,10 +67,10 @@ PSO_C_FILES =                       \
         man3/psoHashMapReplace.3    \
         man3/psoHashMapStatus.3     \
         man3/psoInfo.3              \
-        man3/vdsInit.3              \
-        man3/vdsInitSession.3       \
-        man3/vdsIteratorType.3      \
-        man3/vdsLastError.3         \
+        man3/psoInit.3              \
+        man3/psoInitSession.3       \
+        man3/psoIteratorType.3      \
+        man3/psoLastError.3         \
         man3/psoLifo_c.3            \
         man3/psoLifoClose.3         \
         man3/psoLifoDefinition.3    \
@@ -94,7 +94,7 @@ PSO_C_FILES =                       \
         man3/psoQueuePop.3          \
         man3/psoQueuePush.3         \
         man3/psoQueueStatus.3       \
-        man3/vdsRollback.3          \
+        man3/psoRollback.3          \
         man3/psoSession_c.3         \
         man3/psoSession.h.3         
 
@@ -108,7 +108,7 @@ man_MANS =                  \
         man3/psoSession.3   
 
 EXTRA_DIST =                  \
-        doxyfile.vds_c        \
+        doxyfile.pso_c        \
         $(PSO_C_FILES)        \
         Doxyfile.psoException \
         Doxyfile.psoFolder    \
@@ -123,8 +123,8 @@ EXTRA_DIST =                  \
         man3/psoQueue.3       \
         man3/psoSession.3     
 
-nobase_include_HEADERS =      \
-        photon/vdsCommon.h      \
+nobase_include_HEADERS =        \
+        photon/psoCommon.h      \
         photon/psoErrors.h      \
         photon/psoFastMap.h     \
         photon/psoFolder.h      \
@@ -133,8 +133,8 @@ nobase_include_HEADERS =      \
         photon/psoProcess.h     \
         photon/psoQueue.h       \
         photon/psoSession.h     \
-        photon/vds.h            \
-        photon/vds              \
+        photon/photon.h         \
+        photon/photon           \
         photon/psoException     \
         photon/psoFastMap       \
         photon/psoFastMapEditor \
@@ -185,8 +185,8 @@ man3/psoSession.3: photon/psoSession
 # data field in the data structures, etc.). All these files are links
 # to the "meat" we are keeping anyway!
 $(PSO_C_FILES): $(HEADER_FILES)
-	doxygen doxyfile.vds_c
-	cp dummy/man/man3/vds*.3 man3/
+	doxygen doxyfile.pso_c
+	cp dummy/man/man3/p*.3 man3/
 	-rm -rf dummy
 
 endif
