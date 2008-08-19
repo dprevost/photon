@@ -24,31 +24,31 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseLinkedList list;
-   vdseLinkNode* pNode = NULL;
+   psnLinkedList list;
+   psnLinkNode* pNode = NULL;
    bool ok;
-   vdseSessionContext context;
+   psnSessionContext context;
   
    initTest( expectedToPass, &context );
    InitMem();
    
-   vdseLinkedListInit( &list );
+   psnLinkedListInit( &list );
    
-   vdseLinkedListReset( &list );
+   psnLinkedListReset( &list );
 
-   if ( list.initialized != VDSE_LIST_SIGNATURE ) {
+   if ( list.initialized != PSN_LIST_SIGNATURE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( list.currentSize != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseLinkedListGetFirst( &list, &pNode );
+   ok = psnLinkedListGetFirst( &list, &pNode );
    if ( ok ) { /* The list is not empty after a reset... problem! */
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseLinkedListFini( &list );
+   psnLinkedListFini( &list );
 
    return 0;
 }

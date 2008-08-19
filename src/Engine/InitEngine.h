@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_INIT_ENGINE_H
-#define VDSE_INIT_ENGINE_H
+#ifndef PSN_INIT_ENGINE_H
+#define PSN_INIT_ENGINE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -35,7 +35,7 @@ VDSF_ENGINE_EXPORT extern const char * MYCXX;
 #endif
 
 VDSF_ENGINE_EXPORT 
-bool vdseInitEngine();
+bool psnInitEngine();
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -43,7 +43,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_INIT_ENGINE_H */
+#endif /* PSN_INIT_ENGINE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

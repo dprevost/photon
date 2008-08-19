@@ -25,15 +25,15 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseMemObject* pObj;
+   psnMemObject* pObj;
    vdstObjDummy  *pDummy;
-   vdseSessionContext context;
+   psnSessionContext context;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    pObj = &pDummy->memObject;
 
-   vdseMemObjectInit( NULL, 
-                      VDSE_IDENT_ALLOCATOR,
+   psnMemObjectInit( NULL, 
+                      PSN_IDENT_ALLOCATOR,
                       &pDummy->blockGroup,
                       4 );
    ERROR_EXIT( expectedToPass, NULL, ; );

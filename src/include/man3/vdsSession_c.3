@@ -1,4 +1,4 @@
-.TH "API functions for vdsf sessions." 3 "5 Aug 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
+.TH "API functions for vdsf sessions." 3 "18 Aug 2008" "Version 0.3.0" "vdsf C API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -237,7 +237,7 @@ Upon successful completion, the session handle is set and the function returns z
 .PP
 This function will also initiate a new transaction.
 .PP
-Upon normal termination, the current transaction is rolled back. You MUST explicitly call vdseCommit to save your changes.
+Upon normal termination, the current transaction is rolled back. You MUST explicitly call psnCommit to save your changes.
 .PP
 \fBParameters:\fP
 .RS 4

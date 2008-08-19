@@ -25,10 +25,10 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseMemAlloc*     pAlloc;
-   vdseSessionContext context;
+   psnMemAlloc*     pAlloc;
+   psnSessionContext context;
    unsigned char* ptr;
-   size_t allocatedLength = VDSE_BLOCK_SIZE*10;
+   size_t allocatedLength = PSN_BLOCK_SIZE*10;
    unsigned char* newBuff;
    
    initTest( expectedToPass, &context );
@@ -39,15 +39,15 @@ int main()
    }
    
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
-   vdseMemAllocInit( pAlloc, ptr, allocatedLength, &context );
+   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
+   psnMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
-   newBuff = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 2, &context );
+   newBuff = psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 2, &context );
    if ( newBuff == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseFreeBlocks( NULL, VDSE_ALLOC_ANY, newBuff, 2, &context );
+   psnFreeBlocks( NULL, PSN_ALLOC_ANY, newBuff, 2, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -25,19 +25,19 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseLinkedList list;
-   vdseLinkNode node, *pNode;
-   vdseSessionContext context;
+   psnLinkedList list;
+   psnLinkNode node, *pNode;
+   psnSessionContext context;
    
    initTest( expectedToPass, &context );
    InitMem();
    
-   vdseLinkNodeInit( &node );
-   vdseLinkedListInit( &list );
+   psnLinkNodeInit( &node );
+   psnLinkedListInit( &list );
    
-   vdseLinkedListPutLast( &list, &node );
+   psnLinkedListPutLast( &list, &node );
 
-   vdseLinkedListPeakLast( NULL, &pNode );
+   psnLinkedListPeakLast( NULL, &pNode );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

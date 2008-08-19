@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_LINK_NODE_H
-#define VDSE_LINK_NODE_H
+#ifndef PSN_LINK_NODE_H
+#define PSN_LINK_NODE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -29,7 +29,7 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * A vdseLinkNode is the unit element of our linked lists. This might
+ * A psnLinkNode is the unit element of our linked lists. This might
  * seems like a trivial struct but since we use linked lists in many 
  * places, using a struct for the previous and next element simplify 
  * some of the code. Also, do not forget that our linked lists do 
@@ -40,63 +40,63 @@ BEGIN_C_DECLS
  * 64bits machines - this type of error/bug is difficult to find, better
  * not make it in the first place...).
  */
-struct vdseLinkNode
+struct psnLinkNode
 {
    ptrdiff_t nextOffset;
    ptrdiff_t previousOffset;
 };
 
-typedef struct	vdseLinkNode vdseLinkNode;
+typedef struct	psnLinkNode psnLinkNode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * A "specialized" version of vdseLinkNode. It is used in many places
+ * A "specialized" version of psnLinkNode. It is used in many places
  * and was put here to avoid circular dependencies...
  */
-struct vdseFreeBufferNode
+struct psnFreeBufferNode
 {
    /* The linked node itself */
-   vdseLinkNode node;
+   psnLinkNode node;
    
    /* The number of buffers associate with each member of the list. */
    size_t numBuffers;
    
 };
 
-typedef struct vdseFreeBufferNode vdseFreeBufferNode;
+typedef struct psnFreeBufferNode psnFreeBufferNode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** Initialize the elements of the vdseLinkNode to VDSE_NULL_OFFSET. */
+/** Initialize the elements of the psnLinkNode to PSN_NULL_OFFSET. */
 static inline
-void vdseLinkNodeInit( vdseLinkNode * pNode )
+void psnLinkNodeInit( psnLinkNode * pNode )
 {
    VDS_PRE_CONDITION( pNode != NULL );
    
-   pNode->nextOffset     = VDSE_NULL_OFFSET;
-   pNode->previousOffset = VDSE_NULL_OFFSET;
+   pNode->nextOffset     = PSN_NULL_OFFSET;
+   pNode->previousOffset = PSN_NULL_OFFSET;
 }
 
 static inline
-void vdseLinkNodeFini( vdseLinkNode * pNode )
+void psnLinkNodeFini( psnLinkNode * pNode )
 {
    VDS_PRE_CONDITION( pNode != NULL );
 
-   vdseLinkNodeInit( pNode );
+   psnLinkNodeInit( pNode );
 }
 
-/** Test the values of the elements of the vdseLinkNode.
- *  Return true if both elements are not the VDSE_NULL_OFFSET
- *  and false if one or both are the VDSE_NULL_OFFSET.
+/** Test the values of the elements of the psnLinkNode.
+ *  Return true if both elements are not the PSN_NULL_OFFSET
+ *  and false if one or both are the PSN_NULL_OFFSET.
  */
 static inline
-bool vdseLinkNodeTest( vdseLinkNode * pNode )
+bool psnLinkNodeTest( psnLinkNode * pNode )
 {
    VDS_PRE_CONDITION( pNode != NULL );
 
-   if ( pNode->nextOffset     == VDSE_NULL_OFFSET || 
-        pNode->previousOffset == VDSE_NULL_OFFSET ) {
+   if ( pNode->nextOffset     == PSN_NULL_OFFSET || 
+        pNode->previousOffset == PSN_NULL_OFFSET ) {
       return false;
    }
    return true;
@@ -108,6 +108,6 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_LINK_NODE_H */
+#endif /* PSN_LINK_NODE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

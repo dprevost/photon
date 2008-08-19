@@ -24,14 +24,14 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseLogFile logfile;
+   psnLogFile logfile;
    pscErrorHandler errorHandler;
    vdsErrors error;
    
    pscInitErrorDefs();
    pscInitErrorHandler( &errorHandler );
 
-   error = vdseInitLogFile( &logfile, ".", (void*)0x1234, &errorHandler );
+   error = psnInitLogFile( &logfile, ".", (void*)0x1234, &errorHandler );
    if ( error != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }

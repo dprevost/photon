@@ -9,10 +9,10 @@ InitBigVDS
     allocator itself to use two blocks instead of one).
     
     Since each bit of the bitmap represents a block, to get a bitmap of
-    length one block requires 8 * VDSE_BLOCK_SIZE blocks. 
+    length one block requires 8 * PSN_BLOCK_SIZE blocks. 
     
     The total memory is obtained by multiplying the number of blocks by the
-    length of each block so: 8 * VDSE_BLOCK_SIZE * VDSE_BLOCK_SIZE.
+    length of each block so: 8 * PSN_BLOCK_SIZE * PSN_BLOCK_SIZE.
     
     The utility DisplayBigVDSSize can do this calculation for you if you 
     are unsure of the actual size of blocks you are using.

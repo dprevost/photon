@@ -77,11 +77,11 @@ int AddDefectsHashMaps( vector<myMap> & h )
 {
    int api_offset = -1;
    struct vdsaHashMap ** apiHashMap;
-   struct vdseHashMap * pHashMap;
-   vdseTxStatus * txItemStatus, * txHashMapStatus;
+   struct psnHashMap * pHashMap;
+   psnTxStatus * txItemStatus, * txHashMapStatus;
    unsigned long i, ** apiObj;
    ptrdiff_t offset, previousOffset;
-   vdseHashItem * pItem;
+   psnHashItem * pItem;
    ptrdiff_t* pArray;   
    bool ok;
    
@@ -106,16 +106,16 @@ int AddDefectsHashMaps( vector<myMap> & h )
 
    cout << "Defect for " << h[1].name << ": 3 ref. couters" << endl;
    apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[1].map + api_offset );
-   pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
+   pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyVdsObject;
    pHashMap->nodeObject.txCounter++;
-   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
    txHashMapStatus->usageCounter++;
 
-   ok = vdseHashGetFirst( &pHashMap->hashObj, &offset );
+   ok = psnHashGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
    while ( ok ) {
       previousOffset = offset;
-      ok = vdseHashGetNext( &pHashMap->hashObj,
+      ok = psnHashGetNext( &pHashMap->hashObj,
                             previousOffset,
                             &offset );
       i++;
@@ -125,44 +125,44 @@ int AddDefectsHashMaps( vector<myMap> & h )
       cerr << "Iteration error in " << h[1].name << endl;
       return -1;
    }
-   GET_PTR( pItem, offset, vdseHashItem );
+   GET_PTR( pItem, offset, psnHashItem );
    txItemStatus = &pItem->txStatus;
    txItemStatus->usageCounter++;
 
    cout << "Defect for " << h[2].name << ": object added - not committed" << endl;
    apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[2].map + api_offset );
-   pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
-   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyVdsObject;
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
    txHashMapStatus->txOffset = SET_OFFSET( pHashMap ); 
-   txHashMapStatus->status = VDSE_TXS_ADDED;
+   txHashMapStatus->status = PSN_TXS_ADDED;
 
    cout << "Defect for " << h[3].name << ": 5 items removed-committed," << endl;
    cout << "                                  4 items removed - not committed," << endl;
    cout << "                                  9 items added - not committed" << endl;
    apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[3].map + api_offset );
-   pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
+   pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyVdsObject;
 
-   ok = vdseHashGetFirst( &pHashMap->hashObj, &offset );
+   ok = psnHashGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
    while ( ok ) {      
-      GET_PTR( pItem, offset, vdseHashItem );
+      GET_PTR( pItem, offset, psnHashItem );
       txItemStatus = &pItem->txStatus;
 
       if ( i < 5 ) { /* removed committed */
          txItemStatus->txOffset = SET_OFFSET( pHashMap ); 
-         txItemStatus->status = VDSE_TXS_DESTROYED_COMMITTED;
+         txItemStatus->status = PSN_TXS_DESTROYED_COMMITTED;
       }
       else if ( i < 9 ) { /* removed uncommitted */
          txItemStatus->txOffset = SET_OFFSET( pHashMap ); 
-         txItemStatus->status = VDSE_TXS_DESTROYED;
+         txItemStatus->status = PSN_TXS_DESTROYED;
       }
       else if ( i >= 11 ) { /* Added */
          txItemStatus->txOffset = SET_OFFSET( pHashMap ); 
-         txItemStatus->status = VDSE_TXS_ADDED;
+         txItemStatus->status = PSN_TXS_ADDED;
       }
 
       previousOffset = offset;
-      ok = vdseHashGetNext( &pHashMap->hashObj,
+      ok = psnHashGetNext( &pHashMap->hashObj,
                             previousOffset,
                             &offset );
       i++;
@@ -175,7 +175,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    
    cout << "Defect for " << h[4].name << ": object locked" << endl;
    apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[4].map + api_offset );
-   pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
+   pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
@@ -183,7 +183,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
 
    cout << "Defect for " << h[5].name << ": items - invalid offset" << endl;
    apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[5].map + api_offset );
-   pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
+   pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
@@ -191,22 +191,22 @@ int AddDefectsHashMaps( vector<myMap> & h )
 
    GET_PTR( pArray, pHashMap->hashObj.arrayOffset, ptrdiff_t );
 
-   for ( i = 0; i < g_vdseArrayLengths[pHashMap->hashObj.lengthIndex]; ++i ) {
-      if ( pArray[i] != VDSE_NULL_OFFSET ) pArray[i] = 0;
+   for ( i = 0; i < g_psnArrayLengths[pHashMap->hashObj.lengthIndex]; ++i ) {
+      if ( pArray[i] != PSN_NULL_OFFSET ) pArray[i] = 0;
    }
    
    cout << "Defect for " << h[6].name << ": item - invalid key length" << endl;
    apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[6].map + api_offset );
-   pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
+   pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
-   ok = vdseHashGetFirst( &pHashMap->hashObj, &offset );
+   ok = psnHashGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
    while ( ok ) {
       previousOffset = offset;
-      ok = vdseHashGetNext( &pHashMap->hashObj,
+      ok = psnHashGetNext( &pHashMap->hashObj,
                             previousOffset,
                             &offset );
       i++;
@@ -216,21 +216,21 @@ int AddDefectsHashMaps( vector<myMap> & h )
       cerr << "Iteration error in " << h[6].name << endl;
       return -1;
    }
-   GET_PTR( pItem, offset, vdseHashItem );
+   GET_PTR( pItem, offset, psnHashItem );
    pItem->keyLength = 0;
    
    cout << "Defect for " << h[7].name << ": item - invalid data offset" << endl;
    apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[7].map + api_offset );
-   pHashMap = (vdseHashMap *) (*apiHashMap)->object.pMyVdsObject;
+   pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
-   ok = vdseHashGetFirst( &pHashMap->hashObj, &offset );
+   ok = psnHashGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
    while ( ok ) {
       previousOffset = offset;
-      ok = vdseHashGetNext( &pHashMap->hashObj,
+      ok = psnHashGetNext( &pHashMap->hashObj,
                             previousOffset,
                             &offset );
       i++;
@@ -240,7 +240,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
       cerr << "Iteration error in " << h[7].name << endl;
       return -1;
    }
-   GET_PTR( pItem, offset, vdseHashItem );
+   GET_PTR( pItem, offset, psnHashItem );
    pItem->dataOffset = 0;
 
    return 0;
@@ -252,11 +252,11 @@ int AddDefectsLifos( vector<myLifo> & l )
 {
    int api_offset = -1;
    struct vdsaLifo ** apiLifo;
-   struct vdseQueue * pQueue;
-   vdseTxStatus * txItemStatus, * txQueueStatus;
+   struct psnQueue * pQueue;
+   psnTxStatus * txItemStatus, * txQueueStatus;
    unsigned long i, ** apiObj;
-   vdseLinkNode * pNode = NULL, *pSavedNode = NULL;
-   vdseQueueItem* pQueueItem = NULL;
+   psnLinkNode * pNode = NULL, *pSavedNode = NULL;
+   psnQueueItem* pQueueItem = NULL;
    bool okList;
    
    // Using a (void *) cast to eliminate a gcc warning (dereferencing 
@@ -279,15 +279,15 @@ int AddDefectsLifos( vector<myLifo> & l )
 
    cout << "Defect for " << l[1].name << ": 3 ref. couters" << endl;
    apiLifo = (vdsaLifo **) ( (unsigned char *) &l[1].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiLifo)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    pQueue->nodeObject.txCounter++;
-   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
    txQueueStatus->usageCounter++;
    
-   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
@@ -297,17 +297,17 @@ int AddDefectsLifos( vector<myLifo> & l )
       cerr << "Iteration error in " << l[1].name << endl;
       return -1;
    }
-   pQueueItem = (vdseQueueItem*) 
-      ((char*)pNode - offsetof( vdseQueueItem, node ));
+   pQueueItem = (psnQueueItem*) 
+      ((char*)pNode - offsetof( psnQueueItem, node ));
    txItemStatus = &pQueueItem->txStatus;
    txItemStatus->usageCounter++;
 
    cout << "Defect for " << l[2].name << ": object added - not committed" << endl;
    apiLifo = (vdsaLifo **) ( (unsigned char *) &l[2].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiLifo)->object.pMyVdsObject;
-   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
+   pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
+   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
    txQueueStatus->txOffset = SET_OFFSET( pQueue ); 
-   txQueueStatus->status = VDSE_TXS_ADDED;
+   txQueueStatus->status = PSN_TXS_ADDED;
 
    // Queue 2. Defects: 
    //  - Items added (not committed) and items removed (committed + non-comm)
@@ -315,29 +315,29 @@ int AddDefectsLifos( vector<myLifo> & l )
    cout << "                                  4 items removed - not committed," << endl;
    cout << "                                  9 items added - not committed" << endl;
    apiLifo = (vdsaLifo **) ( (unsigned char *) &l[3].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiLifo)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
 
-   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      pQueueItem = (vdseQueueItem*) 
-         ((char*)pNode - offsetof( vdseQueueItem, node ));
+      pQueueItem = (psnQueueItem*) 
+         ((char*)pNode - offsetof( psnQueueItem, node ));
       txItemStatus = &pQueueItem->txStatus;
 
       if ( i < 5 ) { /* removed committed */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->status = VDSE_TXS_DESTROYED_COMMITTED;
+         txItemStatus->status = PSN_TXS_DESTROYED_COMMITTED;
       }
       else if ( i < 9 ) { /* removed uncommitted */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->status = VDSE_TXS_DESTROYED;
+         txItemStatus->status = PSN_TXS_DESTROYED;
       }
       else if ( i >= 11 ) { /* Added */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->status = VDSE_TXS_ADDED;
+         txItemStatus->status = PSN_TXS_ADDED;
       }
       
-      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                              pNode, 
                                              &pNode );
       i++;
@@ -345,7 +345,7 @@ int AddDefectsLifos( vector<myLifo> & l )
    
    cout << "Defect for " << l[4].name << ": object locked" << endl;
    apiLifo = (vdsaLifo **) ( (unsigned char *) &l[4].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiLifo)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
@@ -353,21 +353,21 @@ int AddDefectsLifos( vector<myLifo> & l )
 
    cout << "Defect for " << l[5].name << ": broken forward link" << endl;
    apiLifo = (vdsaLifo **) ( (unsigned char *) &l[5].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiLifo)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->nextOffset = VDSE_NULL_OFFSET;
+         pNode->nextOffset = PSN_NULL_OFFSET;
          break;
       }
    }
@@ -378,21 +378,21 @@ int AddDefectsLifos( vector<myLifo> & l )
 
    cout << "Defect for " << l[6].name << ": broken backward link" << endl;
    apiLifo = (vdsaLifo **) ( (unsigned char *) &l[6].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiLifo)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->previousOffset = VDSE_NULL_OFFSET;
+         pNode->previousOffset = PSN_NULL_OFFSET;
          break;
       }
    }
@@ -403,23 +403,23 @@ int AddDefectsLifos( vector<myLifo> & l )
    
    cout << "Defect for " << l[7].name << ": 2 broken forward links" << endl;
    apiLifo = (vdsaLifo **) ( (unsigned char *) &l[7].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiLifo)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) pSavedNode = pNode;
       if ( i == 13 ) {
-         pSavedNode->nextOffset = VDSE_NULL_OFFSET;
-         pNode->nextOffset = VDSE_NULL_OFFSET;
+         pSavedNode->nextOffset = PSN_NULL_OFFSET;
+         pNode->nextOffset = PSN_NULL_OFFSET;
          break;
       }
    }
@@ -430,23 +430,23 @@ int AddDefectsLifos( vector<myLifo> & l )
 
    cout << "Defect for " << l[8].name << ": 2 broken backward links" << endl;
    apiLifo = (vdsaLifo **) ( (unsigned char *) &l[8].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiLifo)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) pSavedNode = pNode;
       if ( i == 13 ) {
-         pSavedNode->previousOffset = VDSE_NULL_OFFSET;
-         pNode->previousOffset = VDSE_NULL_OFFSET;
+         pSavedNode->previousOffset = PSN_NULL_OFFSET;
+         pNode->previousOffset = PSN_NULL_OFFSET;
          break;
       }
    }
@@ -457,22 +457,22 @@ int AddDefectsLifos( vector<myLifo> & l )
 
    cout << "Defect for " << l[9].name << ": broken bw+fw links (eq)" << endl;
    apiLifo = (vdsaLifo **) ( (unsigned char *) &l[9].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiLifo)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->previousOffset = VDSE_NULL_OFFSET;
-         pNode->nextOffset = VDSE_NULL_OFFSET;
+         pNode->previousOffset = PSN_NULL_OFFSET;
+         pNode->nextOffset = PSN_NULL_OFFSET;
          break;
       }
    }
@@ -490,11 +490,11 @@ int AddDefectsQueues( vector<myQueue> & q )
 {
    int api_offset = -1;
    struct vdsaQueue ** apiQueue;
-   struct vdseQueue * pQueue;
-   vdseTxStatus * txItemStatus, * txQueueStatus;
+   struct psnQueue * pQueue;
+   psnTxStatus * txItemStatus, * txQueueStatus;
    unsigned long i, ** apiObj;
-   vdseLinkNode * pNode = NULL, *pSavedNode = NULL;
-   vdseQueueItem* pQueueItem = NULL;
+   psnLinkNode * pNode = NULL, *pSavedNode = NULL;
+   psnQueueItem* pQueueItem = NULL;
    bool okList;
    
    // Using a (void *) cast to eliminate a gcc warning (dereferencing 
@@ -517,15 +517,15 @@ int AddDefectsQueues( vector<myQueue> & q )
 
    cout << "Defect for " << q[1].name << ": 3 ref. couters" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[1].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    pQueue->nodeObject.txCounter++;
-   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
    txQueueStatus->usageCounter++;
    
-   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
@@ -535,17 +535,17 @@ int AddDefectsQueues( vector<myQueue> & q )
       cerr << "Iteration error in " << q[1].name << endl;
       return -1;
    }
-   pQueueItem = (vdseQueueItem*) 
-      ((char*)pNode - offsetof( vdseQueueItem, node ));
+   pQueueItem = (psnQueueItem*) 
+      ((char*)pNode - offsetof( psnQueueItem, node ));
    txItemStatus = &pQueueItem->txStatus;
    txItemStatus->usageCounter++;
 
    cout << "Defect for " << q[2].name << ": object added - not committed" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[2].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
-   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
+   pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
+   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
    txQueueStatus->txOffset = SET_OFFSET( pQueue ); 
-   txQueueStatus->status = VDSE_TXS_ADDED;
+   txQueueStatus->status = PSN_TXS_ADDED;
 
    // Queue 2. Defects: 
    //  - Items added (not committed) and items removed (committed + non-comm)
@@ -553,29 +553,29 @@ int AddDefectsQueues( vector<myQueue> & q )
    cout << "                                  4 items removed - not committed," << endl;
    cout << "                                  9 items added - not committed" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[3].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
 
-   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      pQueueItem = (vdseQueueItem*) 
-         ((char*)pNode - offsetof( vdseQueueItem, node ));
+      pQueueItem = (psnQueueItem*) 
+         ((char*)pNode - offsetof( psnQueueItem, node ));
       txItemStatus = &pQueueItem->txStatus;
 
       if ( i < 5 ) { /* removed committed */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->status = VDSE_TXS_DESTROYED_COMMITTED;
+         txItemStatus->status = PSN_TXS_DESTROYED_COMMITTED;
       }
       else if ( i < 9 ) { /* removed uncommitted */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->status = VDSE_TXS_DESTROYED;
+         txItemStatus->status = PSN_TXS_DESTROYED;
       }
       else if ( i >= 11 ) { /* Added */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->status = VDSE_TXS_ADDED;
+         txItemStatus->status = PSN_TXS_ADDED;
       }
       
-      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                              pNode, 
                                              &pNode );
       i++;
@@ -583,7 +583,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    
    cout << "Defect for " << q[4].name << ": object locked" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[4].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
@@ -591,21 +591,21 @@ int AddDefectsQueues( vector<myQueue> & q )
 
    cout << "Defect for " << q[5].name << ": broken forward link" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[5].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->nextOffset = VDSE_NULL_OFFSET;
+         pNode->nextOffset = PSN_NULL_OFFSET;
          break;
       }
    }
@@ -616,21 +616,21 @@ int AddDefectsQueues( vector<myQueue> & q )
 
    cout << "Defect for " << q[6].name << ": broken backward link" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[6].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->previousOffset = VDSE_NULL_OFFSET;
+         pNode->previousOffset = PSN_NULL_OFFSET;
          break;
       }
    }
@@ -641,23 +641,23 @@ int AddDefectsQueues( vector<myQueue> & q )
    
    cout << "Defect for " << q[7].name << ": 2 broken forward links" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[7].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) pSavedNode = pNode;
       if ( i == 13 ) {
-         pSavedNode->nextOffset = VDSE_NULL_OFFSET;
-         pNode->nextOffset = VDSE_NULL_OFFSET;
+         pSavedNode->nextOffset = PSN_NULL_OFFSET;
+         pNode->nextOffset = PSN_NULL_OFFSET;
          break;
       }
    }
@@ -668,23 +668,23 @@ int AddDefectsQueues( vector<myQueue> & q )
 
    cout << "Defect for " << q[8].name << ": 2 broken backward links" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[8].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) pSavedNode = pNode;
       if ( i == 13 ) {
-         pSavedNode->previousOffset = VDSE_NULL_OFFSET;
-         pNode->previousOffset = VDSE_NULL_OFFSET;
+         pSavedNode->previousOffset = PSN_NULL_OFFSET;
+         pNode->previousOffset = PSN_NULL_OFFSET;
          break;
       }
    }
@@ -695,22 +695,22 @@ int AddDefectsQueues( vector<myQueue> & q )
 
    cout << "Defect for " << q[9].name << ": broken bw+fw links (eq)" << endl;
    apiQueue = (vdsaQueue **) ( (unsigned char *) &q[9].queue + api_offset );
-   pQueue = (vdseQueue *) (*apiQueue)->object.pMyVdsObject;
+   pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->previousOffset = VDSE_NULL_OFFSET;
-         pNode->nextOffset = VDSE_NULL_OFFSET;
+         pNode->previousOffset = PSN_NULL_OFFSET;
+         pNode->nextOffset = PSN_NULL_OFFSET;
          break;
       }
    }

@@ -24,19 +24,19 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseProcess * process;
-   vdseSessionContext context;
-   vdseSession * pSession;
+   psnProcess * process;
+   psnSessionContext context;
+   psnSession * pSession;
    bool ok;
    
    process = initProcessTest( expectedToPass, &context );
 
-   ok = vdseProcessInit( process, 12345, &context );
+   ok = psnProcessInit( process, 12345, &context );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseProcessAddSession( process,
+   psnProcessAddSession( process,
                           NULL,
                           &pSession,
                           &context );

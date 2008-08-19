@@ -24,12 +24,12 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseProcMgr* pManager;
-   vdseSessionContext context;
+   psnProcMgr* pManager;
+   psnSessionContext context;
    
    pManager = initProcMgrTest( expectedToPass, &context );
 
-   vdseProcMgrInit( pManager, NULL );
+   psnProcMgrInit( pManager, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
    

@@ -25,28 +25,28 @@
 /* Forward declaration of static functions */
 
 static
-void vdseMapReleaseNoLock( vdseMap            * pHashMap,
-                           vdseHashItem       * pHashItem,
-                           vdseSessionContext * pContext );
+void psnMapReleaseNoLock( psnMap            * pHashMap,
+                           psnHashItem       * pHashItem,
+                           psnSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseMapCopy( vdseMap            * pOldMap, 
-                  vdseMap            * pNewMap,
-                  vdseHashItem       * pHashItem,
+bool psnMapCopy( psnMap            * pOldMap, 
+                  psnMap            * pNewMap,
+                  psnHashItem       * pHashItem,
                   const char         * origName,
-                  vdseSessionContext * pContext )
+                  psnSessionContext * pContext )
 {
    int errcode;
-   vdseFieldDef * oldDef, * newDef;
+   psnFieldDef * oldDef, * newDef;
    
    VDS_PRE_CONDITION( pOldMap   != NULL );
    VDS_PRE_CONDITION( pNewMap   != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
    
-   errcode = vdseMemObjectInit( &pNewMap->memObject, 
-                                VDSE_IDENT_MAP,
+   errcode = psnMemObjectInit( &pNewMap->memObject, 
+                                PSN_IDENT_MAP,
                                 &pNewMap->blockGroup,
                                 pOldMap->memObject.totalBlocks );
    if ( errcode != VDS_OK ) {
@@ -56,7 +56,7 @@ bool vdseMapCopy( vdseMap            * pOldMap,
       return false;
    }
 
-   vdseTreeNodeInit( &pNewMap->nodeObject,
+   psnTreeNodeInit( &pNewMap->nodeObject,
                      SET_OFFSET(&pHashItem->txStatus),
                      pOldMap->nodeObject.myNameLength,
                      SET_OFFSET(origName),
@@ -64,8 +64,8 @@ bool vdseMapCopy( vdseMap            * pOldMap,
                      SET_OFFSET(pHashItem) );
 
    pNewMap->numFields = pOldMap->numFields;
-   newDef = (vdseFieldDef *) vdseMalloc( &pNewMap->memObject, 
-                                         pNewMap->numFields* sizeof(vdseFieldDef),
+   newDef = (psnFieldDef *) psnMalloc( &pNewMap->memObject, 
+                                         pNewMap->numFields* sizeof(psnFieldDef),
                                          pContext );
    if ( newDef == NULL ) {
       pscSetError( &pContext->errorHandler, 
@@ -73,11 +73,11 @@ bool vdseMapCopy( vdseMap            * pOldMap,
       return false;
    }
    pNewMap->dataDefOffset = SET_OFFSET(newDef);
-   oldDef = GET_PTR_FAST( pOldMap->dataDefOffset, vdseFieldDef );
-   memcpy( newDef, oldDef, pNewMap->numFields* sizeof(vdseFieldDef) );
+   oldDef = GET_PTR_FAST( pOldMap->dataDefOffset, psnFieldDef );
+   memcpy( newDef, oldDef, pNewMap->numFields* sizeof(psnFieldDef) );
    memcpy( &pNewMap->keyDef, &pOldMap->keyDef, sizeof(vdsKeyDefinition) );
 
-   errcode = vdseHashInit( &pNewMap->hashObj,
+   errcode = psnHashInit( &pNewMap->hashObj,
                            SET_OFFSET(&pNewMap->memObject),
                            pOldMap->hashObj.numberOfItems,
                            pContext );
@@ -88,7 +88,7 @@ bool vdseMapCopy( vdseMap            * pOldMap,
       return false;
    }
 
-   errcode = vdseHashCopy( &pOldMap->hashObj, &pNewMap->hashObj, pContext );
+   errcode = psnHashCopy( &pOldMap->hashObj, &pNewMap->hashObj, pContext );
    if ( errcode != VDS_OK ) {
       pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
       return false;
@@ -102,10 +102,10 @@ bool vdseMapCopy( vdseMap            * pOldMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseMapDelete( vdseMap            * pHashMap,
+bool psnMapDelete( psnMap            * pHashMap,
                     const void         * pKey,
                     size_t               keyLength, 
-                    vdseSessionContext * pContext )
+                    psnSessionContext * pContext )
 {
    bool found;
    
@@ -113,9 +113,9 @@ bool vdseMapDelete( vdseMap            * pHashMap,
    VDS_PRE_CONDITION( pKey     != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( keyLength > 0 );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
    
-   found = vdseHashDelWithKey( &pHashMap->hashObj, 
+   found = psnHashDelWithKey( &pHashMap->hashObj, 
                                (unsigned char *)pKey,
                                keyLength,
                                pContext );
@@ -125,13 +125,13 @@ bool vdseMapDelete( vdseMap            * pHashMap,
    }
 
    /*
-    * Note: we do not check the return value of vdseHashResize since the
+    * Note: we do not check the return value of psnHashResize since the
     *       current function removes memory. It would make little sense
     *       to return "not enough memory", specially since the call 
     *       itself did work!
     */
-   if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE ) {
-      vdseHashResize( &pHashMap->hashObj, pContext );
+   if ( pHashMap->hashObj.enumResize != PSN_HASH_NO_RESIZE ) {
+      psnHashResize( &pHashMap->hashObj, pContext );
    }
 
    return true;
@@ -139,57 +139,57 @@ bool vdseMapDelete( vdseMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseMapEmpty( vdseMap            * pHashMap,
-                   vdseSessionContext * pContext )
+void psnMapEmpty( psnMap            * pHashMap,
+                   psnSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
    
-   vdseHashEmpty( &pHashMap->hashObj, pContext );
+   psnHashEmpty( &pHashMap->hashObj, pContext );
 
    /*
-    * Note: we do not check the return value of vdseHashResize since the
+    * Note: we do not check the return value of psnHashResize since the
     *       current function removes memory. It would make little sense
     *       to return "not enough memory", specially since the call 
     *       itself did work!
     */
-   if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE ) {
-      vdseHashResize( &pHashMap->hashObj, pContext );
+   if ( pHashMap->hashObj.enumResize != PSN_HASH_NO_RESIZE ) {
+      psnHashResize( &pHashMap->hashObj, pContext );
    }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseMapFini( vdseMap        * pHashMap,
-                      vdseSessionContext * pContext )
+void psnMapFini( psnMap        * pHashMap,
+                      psnSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
 
-   vdseHashFini( &pHashMap->hashObj );
-   vdseTreeNodeFini( &pHashMap->nodeObject );
+   psnHashFini( &pHashMap->hashObj );
+   psnTreeNodeFini( &pHashMap->nodeObject );
    
    /* 
     * Must be the last call since it will release the blocks of
     * memory to the allocator.
     */
-   vdseMemObjectFini(  &pHashMap->memObject, VDSE_ALLOC_API_OBJ, pContext );
+   psnMemObjectFini(  &pHashMap->memObject, PSN_ALLOC_API_OBJ, pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseMapGet( vdseMap            * pHashMap,
+bool psnMapGet( psnMap            * pHashMap,
                  const void         * pKey,
                  size_t               keyLength, 
-                 vdseHashItem      ** ppHashItem,
+                 psnHashItem      ** ppHashItem,
                  size_t               bufferLength,
-                 vdseSessionContext * pContext )
+                 psnSessionContext * pContext )
 {
-   vdseHashItem* pHashItem = NULL;
+   psnHashItem* pHashItem = NULL;
    vdsErrors errcode;
-   vdseTxStatus * txHashMapStatus;
+   psnTxStatus * txHashMapStatus;
    size_t bucket;
    bool found;
    
@@ -198,17 +198,17 @@ bool vdseMapGet( vdseMap            * pHashMap,
    VDS_PRE_CONDITION( ppHashItem != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( keyLength > 0 );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
 
-   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
    
-   if ( txHashMapStatus->status & VDSE_TXS_DESTROYED || 
-      txHashMapStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
+   if ( txHashMapStatus->status & PSN_TXS_DESTROYED || 
+      txHashMapStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
       errcode = VDS_OBJECT_IS_DELETED;
       goto the_exit;
    }
    
-   found = vdseHashGet( &pHashMap->hashObj, 
+   found = psnHashGet( &pHashMap->hashObj, 
                         (unsigned char *)pKey, 
                         keyLength,
                         &pHashItem,
@@ -253,38 +253,38 @@ the_exit:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseMapGetFirst( vdseMap            * pHashMap,
-                      vdseHashMapItem    * pItem,
+bool psnMapGetFirst( psnMap            * pHashMap,
+                      psnHashMapItem    * pItem,
                       size_t               keyLength,
                       size_t               bufferLength,
-                      vdseSessionContext * pContext )
+                      psnSessionContext * pContext )
 {
-   vdseHashItem* pHashItem = NULL;
-   vdseTxStatus * txHashMapStatus;
+   psnHashItem* pHashItem = NULL;
+   psnTxStatus * txHashMapStatus;
    ptrdiff_t  firstItemOffset;
    bool found;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pItem    != NULL )
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
 
-   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
 
-   if ( txHashMapStatus->status & VDSE_TXS_DESTROYED || 
-      txHashMapStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
+   if ( txHashMapStatus->status & PSN_TXS_DESTROYED || 
+      txHashMapStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
       pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_IS_DELETED );
       return false;
    }
    
-   found = vdseHashGetFirst( &pHashMap->hashObj, 
+   found = psnHashGetFirst( &pHashMap->hashObj, 
                              &firstItemOffset );
    if ( ! found ) {
       pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
       return false;
    }
    
-   GET_PTR( pHashItem, firstItemOffset, vdseHashItem );
+   GET_PTR( pHashItem, firstItemOffset, psnHashItem );
 
    /*
     * These tests cannot be done in the API (before calling the 
@@ -311,29 +311,29 @@ bool vdseMapGetFirst( vdseMap            * pHashMap,
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseMapGetNext( vdseMap            * pHashMap,
-                     vdseHashMapItem    * pItem,
+bool psnMapGetNext( psnMap            * pHashMap,
+                     psnHashMapItem    * pItem,
                      size_t               keyLength,
                      size_t               bufferLength,
-                     vdseSessionContext * pContext )
+                     psnSessionContext * pContext )
 {
-   vdseHashItem * pHashItem = NULL;
-   vdseHashItem * previousHashItem = NULL;
-   vdseTxStatus * txHashMapStatus;
+   psnHashItem * pHashItem = NULL;
+   psnHashItem * previousHashItem = NULL;
+   psnTxStatus * txHashMapStatus;
    ptrdiff_t  itemOffset;
    bool found;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pItem    != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
    VDS_PRE_CONDITION( pItem->pHashItem  != NULL );
-   VDS_PRE_CONDITION( pItem->itemOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pItem->itemOffset != PSN_NULL_OFFSET );
    
-   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
 
-   if ( txHashMapStatus->status & VDSE_TXS_DESTROYED || 
-      txHashMapStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
+   if ( txHashMapStatus->status & PSN_TXS_DESTROYED || 
+      txHashMapStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
       pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_IS_DELETED );
       return false;
    }
@@ -341,7 +341,7 @@ bool vdseMapGetNext( vdseMap            * pHashMap,
    itemOffset       = pItem->itemOffset;
    previousHashItem = pItem->pHashItem;
    
-   found = vdseHashGetNext( &pHashMap->hashObj, 
+   found = psnHashGetNext( &pHashMap->hashObj, 
                             itemOffset,
                             &itemOffset );
    if ( ! found ) {
@@ -352,13 +352,13 @@ bool vdseMapGetNext( vdseMap            * pHashMap,
        * at this point.
        */
       pItem->pHashItem = NULL;
-      pItem->itemOffset = VDSE_NULL_OFFSET;
-      vdseMapReleaseNoLock( pHashMap, previousHashItem, pContext );
+      pItem->itemOffset = PSN_NULL_OFFSET;
+      psnMapReleaseNoLock( pHashMap, previousHashItem, pContext );
       pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
       return false;
    }
    
-   GET_PTR( pHashItem, itemOffset, vdseHashItem );
+   GET_PTR( pHashItem, itemOffset, psnHashItem );
 
    /*
     * These tests cannot be done in the API (before calling the 
@@ -379,26 +379,26 @@ bool vdseMapGetNext( vdseMap            * pHashMap,
    txHashMapStatus->usageCounter++;
    pItem->pHashItem = pHashItem;
    pItem->itemOffset = itemOffset;
-   vdseMapReleaseNoLock( pHashMap, previousHashItem, pContext );
+   psnMapReleaseNoLock( pHashMap, previousHashItem, pContext );
 
    return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseMapInit( vdseMap             * pHashMap,
+bool psnMapInit( psnMap             * pHashMap,
                   ptrdiff_t             parentOffset,
                   size_t                numberOfBlocks,
                   size_t                expectedNumOfItems,
-                  vdseTxStatus        * pTxStatus,
+                  psnTxStatus        * pTxStatus,
                   size_t                origNameLength,
                   char                * origName,
                   ptrdiff_t             hashItemOffset,
                   vdsObjectDefinition * pDefinition,
-                  vdseSessionContext  * pContext )
+                  psnSessionContext  * pContext )
 {
    vdsErrors errcode;
-   vdseFieldDef * ptr;
+   psnFieldDef * ptr;
    unsigned int i;
    
    VDS_PRE_CONDITION( pHashMap     != NULL );
@@ -406,14 +406,14 @@ bool vdseMapInit( vdseMap             * pHashMap,
    VDS_PRE_CONDITION( pTxStatus    != NULL );
    VDS_PRE_CONDITION( origName     != NULL );
    VDS_PRE_CONDITION( pDefinition  != NULL );
-   VDS_PRE_CONDITION( hashItemOffset != VDSE_NULL_OFFSET );
-   VDS_PRE_CONDITION( parentOffset   != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( hashItemOffset != PSN_NULL_OFFSET );
+   VDS_PRE_CONDITION( parentOffset   != PSN_NULL_OFFSET );
    VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    VDS_PRE_CONDITION( origNameLength > 0 );
    VDS_PRE_CONDITION( pDefinition->numFields > 0 );
    
-   errcode = vdseMemObjectInit( &pHashMap->memObject, 
-                                VDSE_IDENT_MAP,
+   errcode = psnMemObjectInit( &pHashMap->memObject, 
+                                PSN_IDENT_MAP,
                                 &pHashMap->blockGroup,
                                 numberOfBlocks );
    if ( errcode != VDS_OK ) {
@@ -423,14 +423,14 @@ bool vdseMapInit( vdseMap             * pHashMap,
       return false;
    }
 
-   vdseTreeNodeInit( &pHashMap->nodeObject,
+   psnTreeNodeInit( &pHashMap->nodeObject,
                      SET_OFFSET(pTxStatus),
                      origNameLength,
                      SET_OFFSET(origName),
                      parentOffset,
                      hashItemOffset );
 
-   errcode = vdseHashInit( &pHashMap->hashObj, 
+   errcode = psnHashInit( &pHashMap->hashObj, 
                            SET_OFFSET(&pHashMap->memObject),
                            expectedNumOfItems, 
                            pContext );
@@ -443,8 +443,8 @@ bool vdseMapInit( vdseMap             * pHashMap,
    
    pHashMap->numFields = (uint16_t) pDefinition->numFields;
 
-   ptr = (vdseFieldDef*) vdseMalloc( &pHashMap->memObject, 
-                                     pHashMap->numFields* sizeof(vdseFieldDef),
+   ptr = (psnFieldDef*) psnMalloc( &pHashMap->memObject, 
+                                     pHashMap->numFields* sizeof(psnFieldDef),
                                      pContext );
    if ( ptr == NULL ) {
       pscSetError( &pContext->errorHandler, 
@@ -478,21 +478,21 @@ bool vdseMapInit( vdseMap             * pHashMap,
    memcpy( &pHashMap->keyDef, &pDefinition->key, sizeof(vdsKeyDefinition) );
 
    pHashMap->latestVersion = hashItemOffset;
-   pHashMap->editVersion = VDSE_NULL_OFFSET;
+   pHashMap->editVersion = PSN_NULL_OFFSET;
    
    return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseMapInsert( vdseMap            * pHashMap,
+bool psnMapInsert( psnMap            * pHashMap,
                     const void         * pKey,
                     size_t               keyLength, 
                     const void         * pItem,
                     size_t               itemLength,
-                    vdseSessionContext * pContext )
+                    psnSessionContext * pContext )
 {
-   vdseHashItem* pHashItem = NULL;
+   psnHashItem* pHashItem = NULL;
    vdsErrors errcode;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
@@ -501,9 +501,9 @@ bool vdseMapInsert( vdseMap            * pHashMap,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( keyLength  > 0 );
    VDS_PRE_CONDITION( itemLength > 0 );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
 
-   errcode = vdseHashInsert( &pHashMap->hashObj, 
+   errcode = psnHashInsert( &pHashMap->hashObj, 
                              (unsigned char *)pKey, 
                              keyLength,
                              pItem, 
@@ -520,16 +520,16 @@ bool vdseMapInsert( vdseMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseMapRelease( vdseMap            * pHashMap,
-                     vdseHashItem       * pHashItem,
-                     vdseSessionContext * pContext )
+bool psnMapRelease( psnMap            * pHashMap,
+                     psnHashItem       * pHashItem,
+                     psnSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pHashMap  != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
 
-   vdseMapReleaseNoLock( pHashMap,
+   psnMapReleaseNoLock( pHashMap,
                          pHashItem,
                          pContext );
    return true;
@@ -542,18 +542,18 @@ bool vdseMapRelease( vdseMap            * pHashMap,
  * object. Always use the standard one when calling from the API.
  */
 static
-void vdseMapReleaseNoLock( vdseMap            * pHashMap,
-                           vdseHashItem       * pHashItem,
-                           vdseSessionContext * pContext )
+void psnMapReleaseNoLock( psnMap            * pHashMap,
+                           psnHashItem       * pHashItem,
+                           psnSessionContext * pContext )
 {
-   vdseTxStatus * txHashMapStatus;
+   psnTxStatus * txHashMapStatus;
    
    VDS_PRE_CONDITION( pHashMap  != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
 
-   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
 
    txHashMapStatus->usageCounter--;
 
@@ -565,25 +565,25 @@ void vdseMapReleaseNoLock( vdseMap            * pHashMap,
     *   - nodeObject.txCounter: offset to some of our data is part of a
     *                           transaction.
     *
-    * Note: we do not check the return value of vdseHashResize since the
+    * Note: we do not check the return value of psnHashResize since the
     *       current function returns void. Let's someone else find that 
     *       we are getting low on memory...
     */
    if ( txHashMapStatus->usageCounter == 0 ) {
-      if ( pHashMap->hashObj.enumResize != VDSE_HASH_NO_RESIZE ) {
-         vdseHashResize( &pHashMap->hashObj, pContext );
+      if ( pHashMap->hashObj.enumResize != PSN_HASH_NO_RESIZE ) {
+         psnHashResize( &pHashMap->hashObj, pContext );
       }
    }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseMapReplace( vdseMap            * pHashMap,
+bool psnMapReplace( psnMap            * pHashMap,
                      const void         * pKey,
                      size_t               keyLength, 
                      const void         * pData,
                      size_t               dataLength,
-                     vdseSessionContext * pContext )
+                     psnSessionContext * pContext )
 {
    vdsErrors errcode = VDS_OK;
    
@@ -593,9 +593,9 @@ bool vdseMapReplace( vdseMap            * pHashMap,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( keyLength  > 0 );
    VDS_PRE_CONDITION( dataLength > 0 );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
 
-   errcode = vdseHashUpdate( &pHashMap->hashObj, 
+   errcode = psnHashUpdate( &pHashMap->hashObj, 
                              (unsigned char *)pKey, 
                              keyLength,
                              pData,
@@ -611,19 +611,19 @@ bool vdseMapReplace( vdseMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseMapStatus( vdseMap      * pHashMap,
+void psnMapStatus( psnMap      * pHashMap,
                     vdsObjStatus * pStatus )
 {
-   vdseHashItem* pHashItem = NULL;
+   psnHashItem* pHashItem = NULL;
    ptrdiff_t  firstItemOffset;
-   vdseTxStatus  * txStatus;
+   psnTxStatus  * txStatus;
    bool found;
    
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pStatus  != NULL );
-   VDS_PRE_CONDITION( pHashMap->memObject.objType == VDSE_IDENT_MAP );
+   VDS_PRE_CONDITION( pHashMap->memObject.objType == PSN_IDENT_MAP );
    
-   GET_PTR( txStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
 
    pStatus->status = txStatus->status;
    pStatus->numDataItem = pHashMap->hashObj.numberOfItems;
@@ -631,9 +631,9 @@ void vdseMapStatus( vdseMap      * pHashMap,
    pStatus->maxKeyLength  = 0;
    if ( pStatus->numDataItem == 0 ) return;
 
-   found = vdseHashGetFirst( &pHashMap->hashObj, &firstItemOffset );
+   found = psnHashGetFirst( &pHashMap->hashObj, &firstItemOffset );
    while ( found ) {
-      GET_PTR( pHashItem, firstItemOffset, vdseHashItem );
+      GET_PTR( pHashItem, firstItemOffset, psnHashItem );
       if ( pHashItem->dataLength > pStatus->maxDataLength ) {
          pStatus->maxDataLength = pHashItem->dataLength;
       }
@@ -641,7 +641,7 @@ void vdseMapStatus( vdseMap      * pHashMap,
          pStatus->maxKeyLength = pHashItem->keyLength;
       }
 
-      found = vdseHashGetNext( &pHashMap->hashObj, 
+      found = psnHashGetNext( &pHashMap->hashObj, 
                                firstItemOffset,
                                &firstItemOffset );
    }

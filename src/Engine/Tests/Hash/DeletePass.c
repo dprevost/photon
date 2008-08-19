@@ -24,26 +24,26 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseSessionContext context;
-   vdseHash* pHash;
+   psnSessionContext context;
+   psnHash* pHash;
    enum vdsErrors errcode;
    char* key1 = "My Key 1";
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
-   vdseHashItem* pNewItem;
+   psnHashItem* pNewItem;
    size_t bucket;
-   vdseHashItem* pItem = NULL;
+   psnHashItem* pItem = NULL;
    bool ok;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = vdseHashInit( pHash, g_memObjOffset, 100, &context );
+   errcode = psnHashInit( pHash, g_memObjOffset, 100, &context );
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashInsert( pHash,
+   errcode = psnHashInsert( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data1,
@@ -54,7 +54,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashInsert( pHash,
+   errcode = psnHashInsert( pHash,
                              (unsigned char*)key2,
                              strlen(key2),
                              data2,
@@ -65,7 +65,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashDelWithKey( pHash,
+   ok = psnHashDelWithKey( pHash,
                             (unsigned char*)key2,
                             strlen(key2),
                             &context );
@@ -73,7 +73,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashGet( pHash,
+   ok = psnHashGet( pHash,
                      (unsigned char*)key2,
                      strlen(key2),
                      &pItem,

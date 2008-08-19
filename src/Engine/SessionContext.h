@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_SESSION_CONTEXT_H
-#define VDSE_SESSION_CONTEXT_H
+#ifndef PSN_SESSION_CONTEXT_H
+#define PSN_SESSION_CONTEXT_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -38,7 +38,7 @@ BEGIN_C_DECLS
  *
  * The pointers are to void* to avoid problems of circular dependency.
  */
-struct vdseSessionContext
+struct psnSessionContext
 {
    pscErrorHandler errorHandler;
    
@@ -65,19 +65,19 @@ struct vdseSessionContext
    
 };
 
-typedef struct vdseSessionContext vdseSessionContext;
+typedef struct psnSessionContext psnSessionContext;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void vdseInitSessionContext( vdseSessionContext * pContext )
+void psnInitSessionContext( psnSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pContext != NULL );
    
    pscInitErrorHandler( &pContext->errorHandler );
    
    pContext->pidLocker    = getpid();
-   pContext->lockObject   = VDSE_NULL_OFFSET;
+   pContext->lockObject   = PSN_NULL_OFFSET;
    pContext->pTransaction = NULL;
    pContext->pAllocator   = NULL;
    pContext->pLogFile     = NULL;
@@ -86,12 +86,12 @@ void vdseInitSessionContext( vdseSessionContext * pContext )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseSessionAddLock( vdseSessionContext * pSession,
+void psnSessionAddLock( psnSessionContext * pSession,
                          ptrdiff_t            memObjectOffset )
 {
    VDS_PRE_CONDITION( pSession != NULL );
-   VDS_PRE_CONDITION( *pSession->numLocks < VDSE_MAX_LOCK_DEPTH );
-   VDS_PRE_CONDITION( memObjectOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( *pSession->numLocks < PSN_MAX_LOCK_DEPTH );
+   VDS_PRE_CONDITION( memObjectOffset != PSN_NULL_OFFSET );
    
    pSession->lockOffsets[*pSession->numLocks] = memObjectOffset;
    (*pSession->numLocks)++;
@@ -100,14 +100,14 @@ void vdseSessionAddLock( vdseSessionContext * pSession,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseSessionRemoveLock( vdseSessionContext * pSession,
+void psnSessionRemoveLock( psnSessionContext * pSession,
                             ptrdiff_t            memObjectOffset )
 {
    int i, j, n;
    
    VDS_PRE_CONDITION( pSession != NULL );
    VDS_PRE_CONDITION( *pSession->numLocks > 0 );
-   VDS_PRE_CONDITION( memObjectOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( memObjectOffset != PSN_NULL_OFFSET );
    
    n = *pSession->numLocks;
 
@@ -118,7 +118,7 @@ void vdseSessionRemoveLock( vdseSessionContext * pSession,
             pSession->lockOffsets[j-1] = pSession->lockOffsets[j];
          }
          
-         pSession->lockOffsets[*pSession->numLocks-1] = VDSE_NULL_OFFSET;         
+         pSession->lockOffsets[*pSession->numLocks-1] = PSN_NULL_OFFSET;         
          (*pSession->numLocks)--;
       }
    }
@@ -133,7 +133,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_SESSION_CONTEXT_H */
+#endif /* PSN_SESSION_CONTEXT_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

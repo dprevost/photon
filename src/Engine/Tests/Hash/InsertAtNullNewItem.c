@@ -25,18 +25,18 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseSessionContext context;
-   vdseHash* pHash;
+   psnSessionContext context;
+   psnHash* pHash;
    enum vdsErrors errcode;
    char* key = "My Key";
    char* data1 = "My Data 1";
    size_t bucket;
-   vdseHashItem* pNewItem;
+   psnHashItem* pNewItem;
    bool found;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = vdseHashInit( pHash, g_memObjOffset, 100, &context );
+   errcode = psnHashInit( pHash, g_memObjOffset, 100, &context );
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -46,7 +46,7 @@ int main()
     * InsertAt() depends on this as you cannot insert in an empty
     * bucket.
     */
-   errcode = vdseHashInsert( pHash,
+   errcode = psnHashInsert( pHash,
                              (unsigned char*)key,
                              strlen(key),
                              data1,
@@ -56,7 +56,7 @@ int main()
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   found = vdseHashGet( pHash,
+   found = psnHashGet( pHash,
                         (unsigned char*)key,
                         strlen(key),
                         &pNewItem,
@@ -66,7 +66,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashInsertAt( pHash,
+   errcode = psnHashInsertAt( pHash,
                                bucket,
                                (unsigned char*)key,
                                strlen(key),

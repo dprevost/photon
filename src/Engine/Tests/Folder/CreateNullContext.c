@@ -24,8 +24,8 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseFolder * pFolder;
-   vdseSessionContext context;
+   psnFolder * pFolder;
+   psnSessionContext context;
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
@@ -35,7 +35,7 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   vdseFolderCreateObject( pFolder,
+   psnFolderCreateObject( pFolder,
                            "Test1",
                            strlen("Test1"),
                            &def,

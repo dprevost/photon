@@ -23,10 +23,10 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseFolder* pFolder;
-   vdseSessionContext context;
+   psnFolder* pFolder;
+   psnSessionContext context;
    bool ok;
-   vdseTxStatus status;
+   psnTxStatus status;
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
@@ -36,9 +36,9 @@ int main()
    
    pFolder = initFolderTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseFolderInit( pFolder,
+   ok = psnFolderInit( pFolder,
                         0,
                         1,
                         0,
@@ -51,7 +51,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -63,7 +63,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderDeleteObject( pFolder,
+   ok = psnFolderDeleteObject( pFolder,
                                 "test2",
                                 5,
                                 &context );
@@ -74,9 +74,9 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseTxCommit( (vdseTx *)context.pTransaction, &context );
+   psnTxCommit( (psnTx *)context.pTransaction, &context );
    
-   ok = vdseFolderDeleteObject( pFolder,
+   ok = psnFolderDeleteObject( pFolder,
                                 "test2",
                                 5,
                                 &context );
@@ -87,7 +87,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseFolderDeleteObject( pFolder,
+   ok = psnFolderDeleteObject( pFolder,
                                 "test3",
                                 5,
                                 &context );
@@ -98,7 +98,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseFolderFini( pFolder, &context );
+   psnFolderFini( pFolder, &context );
    
    return 0;
 }

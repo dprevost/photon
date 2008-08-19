@@ -24,13 +24,13 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseBlockGroup *pGroup;
+   psnBlockGroup *pGroup;
    unsigned char* ptr;
-   vdseSessionContext context;
+   psnSessionContext context;
    
    initTest( expectedToPass, &context );
 
-   ptr = malloc( VDSE_BLOCK_SIZE*10 );
+   ptr = malloc( PSN_BLOCK_SIZE*10 );
    if (ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -39,18 +39,18 @@ int main()
    /* This "100" (non-zero) offset should mark this block group 
     * as the first block group of a MemObject.
     */
-   pGroup = (vdseBlockGroup*) (ptr + 100);
+   pGroup = (psnBlockGroup*) (ptr + 100);
    
-   vdseBlockGroupInit( pGroup, 
+   psnBlockGroupInit( pGroup, 
                       SET_OFFSET(ptr),
                       10,
-                      VDSE_IDENT_QUEUE );
-   vdseBlockGroupFini( pGroup );
+                      PSN_IDENT_QUEUE );
+   psnBlockGroupFini( pGroup );
    
-   if ( pGroup->node.nextOffset != VDSE_NULL_OFFSET ) {
+   if ( pGroup->node.nextOffset != PSN_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pGroup->node.previousOffset != VDSE_NULL_OFFSET ) {
+   if ( pGroup->node.previousOffset != PSN_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pGroup->numBlocks != 0 ) {
@@ -62,7 +62,7 @@ int main()
    if (pGroup->freeList.initialized != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pGroup->bitmap.baseAddressOffset != VDSE_NULL_OFFSET ) {
+   if ( pGroup->bitmap.baseAddressOffset != PSN_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_TX_STATUS_H
-#define VDSE_TX_STATUS_H
+#ifndef PSN_TX_STATUS_H
+#define PSN_TX_STATUS_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -31,38 +31,38 @@ BEGIN_C_DECLS
 /* An object is marked as destroyed as soon as the API call to destroy 
  * it is processed. Once it is marked as destroyed, you can't open it
  * but any sessions using can still continue to use it, without problems.
- * If the call is rollback, the flag VDSE_MARKED_AS_DESTROYED is removed.
- * However, if committed, the flag VDSE_REMOVE_IS_COMMITTED is set and the last 
+ * If the call is rollback, the flag PSN_MARKED_AS_DESTROYED is removed.
+ * However, if committed, the flag PSN_REMOVE_IS_COMMITTED is set and the last 
  * session which access the object (in any form, either a simple close
  * or a rollback or commit ops on the data of the object) will removed it.
  */
 
-#define VDSE_TXS_OK                   0x00
-#define VDSE_TXS_DESTROYED            0x01
-#define VDSE_TXS_ADDED                0x02
-#define VDSE_TXS_EDIT                 0x04
-#define VDSE_TXS_REPLACED             0x08
-#define VDSE_TXS_DESTROYED_COMMITTED  0x10
-#define VDSE_TXS_EDIT_COMMITTED       0x20
+#define PSN_TXS_OK                   0x00
+#define PSN_TXS_DESTROYED            0x01
+#define PSN_TXS_ADDED                0x02
+#define PSN_TXS_EDIT                 0x04
+#define PSN_TXS_REPLACED             0x08
+#define PSN_TXS_DESTROYED_COMMITTED  0x10
+#define PSN_TXS_EDIT_COMMITTED       0x20
 
 #if 0
-enum vdseTxStatusEnum
+enum psnTxStatusEnum
 {
-   VDSE_TXS_OK = 0,
-   VDSE_TXS_DESTROYED,
-   VDSE_TXS_ADDED,
-   VDSE_TXS_EDIT,
-   VDSE_TXS_REPLACED, /* When a data item is replaced */
-   VDSE_TXS_DESTROYED_COMMITTED,
+   PSN_TXS_OK = 0,
+   PSN_TXS_DESTROYED,
+   PSN_TXS_ADDED,
+   PSN_TXS_EDIT,
+   PSN_TXS_REPLACED, /* When a data item is replaced */
+   PSN_TXS_DESTROYED_COMMITTED,
    /* When a new version of an object is committed */
-   VDSE_TXS_VERSION_REPLACED 
+   PSN_TXS_VERSION_REPLACED 
 };
-typedef enum vdseTxStatusEnum vdseTxStatusEnum;
+typedef enum psnTxStatusEnum psnTxStatusEnum;
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdseTxStatus
+struct psnTxStatus
 {
    /** The offset of the current transaction */
    ptrdiff_t txOffset;
@@ -71,8 +71,8 @@ struct vdseTxStatus
     * An object is marked as destroyed as soon as the API call to destroy 
     * it is processed. Once it is marked as destroyed, you can't open it
     * but any sessions using it can still continue to use it, without problems.
-    * If the call is rollback, the flag VDSE_TXS_DESTROYED is removed.
-    * However, if committed, the flag VDSE_TXS_DESTROYED_COMMITTED is set and the 
+    * If the call is rollback, the flag PSN_TXS_DESTROYED is removed.
+    * However, if committed, the flag PSN_TXS_DESTROYED_COMMITTED is set and the 
     * last session which access the object (in any form, either a simple close
     * or a rollback or commit ops on the data of the object) will removed it.
     */
@@ -100,51 +100,51 @@ struct vdseTxStatus
 
 };
 
-typedef struct vdseTxStatus vdseTxStatus;
+typedef struct psnTxStatus psnTxStatus;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusCommitEdit( vdseTxStatus * pOldStatus, 
-                             vdseTxStatus * pNewStatus )
+void psnTxStatusCommitEdit( psnTxStatus * pOldStatus, 
+                             psnTxStatus * pNewStatus )
 {
    VDS_PRE_CONDITION( pOldStatus != NULL );
    VDS_PRE_CONDITION( pNewStatus != NULL );
-   VDS_PRE_CONDITION( pNewStatus->txOffset != VDSE_NULL_OFFSET );
-   VDS_PRE_CONDITION( pNewStatus->status & VDSE_TXS_EDIT );
+   VDS_PRE_CONDITION( pNewStatus->txOffset != PSN_NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewStatus->status & PSN_TXS_EDIT );
 
    /* Remove the EDIT bit */
-   pNewStatus->status = pOldStatus->status & (uint32_t )(~VDSE_TXS_EDIT);
+   pNewStatus->status = pOldStatus->status & (uint32_t )(~PSN_TXS_EDIT);
 
-   pOldStatus->status |= VDSE_TXS_EDIT_COMMITTED;
+   pOldStatus->status |= PSN_TXS_EDIT_COMMITTED;
 
-   pNewStatus->txOffset = VDSE_NULL_OFFSET;
+   pNewStatus->txOffset = PSN_NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusRollbackEdit( vdseTxStatus * pOldStatus )
+void psnTxStatusRollbackEdit( psnTxStatus * pOldStatus )
 {
    VDS_PRE_CONDITION( pOldStatus != NULL );
 
    /* Remove the EDIT bit */
-   pOldStatus->status &= (uint32_t )(~VDSE_TXS_EDIT);
+   pOldStatus->status &= (uint32_t )(~PSN_TXS_EDIT);
 
    if ( pOldStatus->status == 0 ) {
-      pOldStatus->txOffset = VDSE_NULL_OFFSET;
+      pOldStatus->txOffset = PSN_NULL_OFFSET;
    }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void vdseTxStatusInit( vdseTxStatus * pStatus, ptrdiff_t txOffset )
+void psnTxStatusInit( psnTxStatus * pStatus, ptrdiff_t txOffset )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
    
    pStatus->txOffset = txOffset;
-   pStatus->status = VDSE_TXS_OK;
+   pStatus->status = PSN_TXS_OK;
    pStatus->usageCounter = 0;
    pStatus->parentCounter = 0;
 }
@@ -152,7 +152,7 @@ void vdseTxStatusInit( vdseTxStatus * pStatus, ptrdiff_t txOffset )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusSetTx( vdseTxStatus * pStatus, ptrdiff_t txOffset )
+void psnTxStatusSetTx( psnTxStatus * pStatus, ptrdiff_t txOffset )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
@@ -162,24 +162,24 @@ void vdseTxStatusSetTx( vdseTxStatus * pStatus, ptrdiff_t txOffset )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void vdseTxStatusFini( vdseTxStatus * pStatus )
+void psnTxStatusFini( psnTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( pStatus->status == VDSE_TXS_OK );
+   VDS_PRE_CONDITION( pStatus->status == PSN_TXS_OK );
    VDS_PRE_CONDITION( pStatus->usageCounter == 0 );
 
-   pStatus->txOffset = VDSE_NULL_OFFSET;
+   pStatus->txOffset = PSN_NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdseTxStatusIsValid( vdseTxStatus * pStatus, ptrdiff_t txOffset )
+bool psnTxStatusIsValid( psnTxStatus * pStatus, ptrdiff_t txOffset )
 {
    VDS_PRE_CONDITION( pStatus  != NULL );
-   VDS_PRE_CONDITION( txOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( txOffset != PSN_NULL_OFFSET );
 
-   if ( pStatus->txOffset == VDSE_NULL_OFFSET ) return true;
+   if ( pStatus->txOffset == PSN_NULL_OFFSET ) return true;
    if ( pStatus->txOffset == txOffset ) return true;
 
    return false;
@@ -188,88 +188,88 @@ bool vdseTxStatusIsValid( vdseTxStatus * pStatus, ptrdiff_t txOffset )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusClearTx( vdseTxStatus * pStatus )
+void psnTxStatusClearTx( psnTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( pStatus->txOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pStatus->txOffset != PSN_NULL_OFFSET );
 
-   pStatus->txOffset = VDSE_NULL_OFFSET;
-   pStatus->status = VDSE_TXS_OK;
+   pStatus->txOffset = PSN_NULL_OFFSET;
+   pStatus->status = PSN_TXS_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
    
 static inline
-bool vdseTxStatusIsMarkedAsDestroyed( vdseTxStatus * pStatus )
+bool psnTxStatusIsMarkedAsDestroyed( psnTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   return (pStatus->status & VDSE_TXS_DESTROYED);
+   return (pStatus->status & PSN_TXS_DESTROYED);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdseTxStatusIsRemoveCommitted( vdseTxStatus * pStatus )
+bool psnTxStatusIsRemoveCommitted( psnTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   return (pStatus->status & VDSE_TXS_DESTROYED_COMMITTED);
+   return (pStatus->status & PSN_TXS_DESTROYED_COMMITTED);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusMarkAsDestroyed( vdseTxStatus * pStatus )
+void psnTxStatusMarkAsDestroyed( psnTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   pStatus->status |= VDSE_TXS_DESTROYED;
+   pStatus->status |= PSN_TXS_DESTROYED;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusCommitRemove( vdseTxStatus * pStatus )
+void psnTxStatusCommitRemove( psnTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( pStatus->txOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pStatus->txOffset != PSN_NULL_OFFSET );
    /* Note - do not add this:
-    *    VDS_PRE_CONDITION( pStatus->status & VDSE_TXS_DESTROYED );
+    *    VDS_PRE_CONDITION( pStatus->status & PSN_TXS_DESTROYED );
     *
     * This call can be reached using either a commit on a "remove" or a
     * rollback on a "add". Maybe I should fix this...
     */
 
-   pStatus->status = VDSE_TXS_DESTROYED_COMMITTED;
+   pStatus->status = PSN_TXS_DESTROYED_COMMITTED;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseTxStatusUnmarkAsDestroyed( vdseTxStatus * pStatus )
+void psnTxStatusUnmarkAsDestroyed( psnTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( pStatus->txOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pStatus->txOffset != PSN_NULL_OFFSET );
 
-   pStatus->status &= (uint32_t )(~VDSE_TXS_DESTROYED);
+   pStatus->status &= (uint32_t )(~PSN_TXS_DESTROYED);
    /* 
     * This function will be called by a rollback. We clear the transaction
     * itself (if not used obviously). But not the counter (which might be 
     * greater than one if some other session had access to the data before 
     * the data was marked as removed).
     */
-   if ( pStatus->status == VDSE_TXS_OK ) pStatus->txOffset = VDSE_NULL_OFFSET;
+   if ( pStatus->status == PSN_TXS_OK ) pStatus->txOffset = PSN_NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdseTxStatusSelfTest( vdseTxStatus * pStatus )
+bool psnTxStatusSelfTest( psnTxStatus * pStatus )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
 
-   if ( pStatus->txOffset != VDSE_NULL_OFFSET ) return false;
+   if ( pStatus->txOffset != PSN_NULL_OFFSET ) return false;
 
    return true;
 }
@@ -277,10 +277,10 @@ bool vdseTxStatusSelfTest( vdseTxStatus * pStatus )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-vdsErrors vdseTxTestObjectStatus( vdseTxStatus * pStatus, ptrdiff_t txOffset )
+vdsErrors psnTxTestObjectStatus( psnTxStatus * pStatus, ptrdiff_t txOffset )
 {
    VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( txOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( txOffset != PSN_NULL_OFFSET );
 
    /* 
     * If the transaction id of the object is equal to the 
@@ -292,14 +292,14 @@ vdsErrors vdseTxTestObjectStatus( vdseTxStatus * pStatus, ptrdiff_t txOffset )
     * If the object is flagged as deleted and committed, it does not exists
     * from the API point of view.
     */
-   if ( pStatus->txOffset != VDSE_NULL_OFFSET ) {
-      if ( pStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
+   if ( pStatus->txOffset != PSN_NULL_OFFSET ) {
+      if ( pStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
          return VDS_NO_SUCH_OBJECT;
       }
-      if ( pStatus->txOffset == txOffset && pStatus->status & VDSE_TXS_DESTROYED ) {
+      if ( pStatus->txOffset == txOffset && pStatus->status & PSN_TXS_DESTROYED ) {
          return VDS_OBJECT_IS_DELETED;
       }
-      if ( pStatus->txOffset != txOffset && pStatus->status & VDSE_TXS_ADDED ) {
+      if ( pStatus->txOffset != txOffset && pStatus->status & PSN_TXS_ADDED ) {
          return VDS_OBJECT_IS_IN_USE;
       }
    }
@@ -313,7 +313,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_TX_STATUS_H */
+#endif /* PSN_TX_STATUS_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

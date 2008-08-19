@@ -24,10 +24,10 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseQueue * pQueue;
-   vdseSessionContext context;
+   psnQueue * pQueue;
+   psnSessionContext context;
    bool ok;
-   vdseTxStatus status;
+   psnTxStatus status;
    vdsObjectDefinition def = { 
       VDS_QUEUE, 
       1, 
@@ -37,16 +37,16 @@ int main()
    
    pQueue = initQueueTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseQueueInit( pQueue, 
+   ok = psnQueueInit( pQueue, 
                        0, 1, &status, 4, 
                        "Queue1", SET_OFFSET(pQueue), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          NULL,
                          8,
                          VDS_FIRST,

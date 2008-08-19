@@ -23,10 +23,10 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseFolder* pFolder;
-   vdseSessionContext context;
+   psnFolder* pFolder;
+   psnSessionContext context;
    bool ok;
-   vdseTxStatus status;
+   psnTxStatus status;
    vdsObjStatus objStatus;
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
@@ -37,14 +37,14 @@ int main()
    
    pFolder = initFolderTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   ok = psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -56,7 +56,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test2/test3",
                                 "Test2/test3",
                                 11,
@@ -68,7 +68,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderGetStatus( pFolder,
+   ok = psnFolderGetStatus( pFolder,
                              "test2",
                              5,
                              &objStatus,
@@ -86,7 +86,7 @@ int main()
    if ( objStatus.numBlockGroup != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( objStatus.freeBytes == 0 || objStatus.freeBytes >=VDSE_BLOCK_SIZE ) {
+   if ( objStatus.freeBytes == 0 || objStatus.freeBytes >=PSN_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

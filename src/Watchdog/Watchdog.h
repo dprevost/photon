@@ -41,7 +41,7 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 // Forward declaration(s)
-struct vdseMemoryHeader;
+struct psnMemoryHeader;
 
 extern pscErrMsgHandle g_wdErrorHandle;
 
@@ -76,7 +76,7 @@ struct vdswWatchdog
    /// the config file.
    struct ConfigParams params;
 
-   struct vdseMemoryHeader * pMemoryAddress;
+   struct psnMemoryHeader * pMemoryAddress;
    
    /// Lock to control synchronization (needed on Win32 only?)
    /// todo - check this + initialize lock

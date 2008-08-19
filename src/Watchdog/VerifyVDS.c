@@ -27,13 +27,13 @@
 #include "Engine/MemoryAllocator.h"
 #include "Engine/Queue.h"
 
-vdseMemoryHeader * g_pMemoryAddress = NULL;
+psnMemoryHeader * g_pMemoryAddress = NULL;
 bool               g_bTestAllocator = false;
 FILE *             g_fp = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswValidate( vdseMemoryHeader * pMemoryAddress, 
+void vdswValidate( psnMemoryHeader * pMemoryAddress, 
                    size_t           * pNumObjectsOK,
                    size_t           * pNumObjectsRepaired,
                    size_t           * pNumObjectsDeleted,
@@ -41,12 +41,12 @@ void vdswValidate( vdseMemoryHeader * pMemoryAddress,
                    FILE             * fp,
                    bool               doRepair )
 {
-   struct vdseProcessManager * processMgr;
-   vdseFolder * topFolder;
-   vdseMemAlloc * memAllocator;
+   struct psnProcessManager * processMgr;
+   psnFolder * topFolder;
+   psnMemAlloc * memAllocator;
    enum vdswRecoverError valid;
-   vdseSessionContext context;
-   ptrdiff_t  lockOffsets[VDSE_MAX_LOCK_DEPTH];
+   psnSessionContext context;
+   ptrdiff_t  lockOffsets[PSN_MAX_LOCK_DEPTH];
    int        numLocks = 0;
    struct vdswVerifyStruct verifyStruct = { 
       1, 0, stderr, doRepair, 0, 0, 0, 0, NULL };
@@ -73,18 +73,18 @@ void vdswValidate( vdseMemoryHeader * pMemoryAddress,
    strftime( timeBuf, 30, "%H:%M:%S", &formattedTime );
    fprintf( fp, "Current time: %s\n\n", timeBuf );
    
-   GET_PTR( processMgr, pMemoryAddress->processMgrOffset, struct vdseProcessManager );
-   GET_PTR( topFolder, pMemoryAddress->treeMgrOffset, vdseFolder );
-   GET_PTR( memAllocator, pMemoryAddress->allocatorOffset, vdseMemAlloc );
+   GET_PTR( processMgr, pMemoryAddress->processMgrOffset, struct psnProcessManager );
+   GET_PTR( topFolder, pMemoryAddress->treeMgrOffset, psnFolder );
+   GET_PTR( memAllocator, pMemoryAddress->allocatorOffset, psnMemAlloc );
 
    /* allocate the bitmap */
-   bitmapLength = offsetof( vdseMemBitmap, bitmap ) + 
-      vdseGetBitmapLengthBytes( memAllocator->totalLength, VDSE_BLOCK_SIZE );
-   verifyStruct.pBitmap = (vdseMemBitmap *) malloc(bitmapLength);
-   vdseMemBitmapInit( verifyStruct.pBitmap,
+   bitmapLength = offsetof( psnMemBitmap, bitmap ) + 
+      psnGetBitmapLengthBytes( memAllocator->totalLength, PSN_BLOCK_SIZE );
+   verifyStruct.pBitmap = (psnMemBitmap *) malloc(bitmapLength);
+   psnMemBitmapInit( verifyStruct.pBitmap,
                       0,
                       memAllocator->totalLength,
-                      VDSE_BLOCK_SIZE );
+                      PSN_BLOCK_SIZE );
 
    // Test the lock of the allocator
    if ( pscIsItLocked( &memAllocator->memObj.lock ) ) {
@@ -99,7 +99,7 @@ void vdswValidate( vdseMemoryHeader * pMemoryAddress,
    
    vdswEcho( &verifyStruct, "Object name: /" );
 
-   vdseInitSessionContext( &context );
+   psnInitSessionContext( &context );
    context.pAllocator = (void *) memAllocator;
    context.lockOffsets = lockOffsets;
    context.numLocks = &numLocks;
@@ -128,7 +128,7 @@ void vdswValidate( vdseMemoryHeader * pMemoryAddress,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswVerify( vdseMemoryHeader * pMemoryAddress, 
+void vdswVerify( psnMemoryHeader * pMemoryAddress, 
                  size_t           * pNumObjectsOK,
                  size_t           * pNumObjectsRepaired,
                  size_t           * pNumObjectsDeleted,
@@ -148,7 +148,7 @@ void vdswVerify( vdseMemoryHeader * pMemoryAddress,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswRepair( vdseMemoryHeader * pMemoryAddress, 
+void vdswRepair( psnMemoryHeader * pMemoryAddress, 
                  size_t           * pNumObjectsOK,
                  size_t           * pNumObjectsRepaired,
                  size_t           * pNumObjectsDeleted,

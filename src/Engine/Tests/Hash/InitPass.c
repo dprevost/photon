@@ -24,13 +24,13 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseSessionContext context;
-   vdseHash* pHash;
+   psnSessionContext context;
+   psnHash* pHash;
    enum vdsErrors errcode;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = vdseHashInit( pHash, g_memObjOffset, 100, &context );
+   errcode = psnHashInit( pHash, g_memObjOffset, 100, &context );
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

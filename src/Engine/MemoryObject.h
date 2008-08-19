@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_MEMORY_OBJECT_H
-#define VDSE_MEMORY_OBJECT_H
+#ifndef PSN_MEMORY_OBJECT_H
+#define PSN_MEMORY_OBJECT_H
 
 #include "Engine/Engine.h"
 #include "Engine/LinkNode.h"
@@ -39,14 +39,14 @@ BEGIN_C_DECLS
  * an object. This way, the identifier is always at the top of a block and it
  * should help debug, recover from crashes, etc. 
  *
- * The vdseBlockGroup struct is NOT included in this struct since it
- * contains a variable array size. The vdseBlockGroup struct should be
- * put at the end of the container that owns a vdseMemObject.
+ * The psnBlockGroup struct is NOT included in this struct since it
+ * contains a variable array size. The psnBlockGroup struct should be
+ * put at the end of the container that owns a psnMemObject.
  */
-struct vdseMemObject
+struct psnMemObject
 {
    /** Type of memory object */
-   vdseMemObjIdent objType;
+   psnMemObjIdent objType;
    
    /** The lock... obviously */
    pscProcessLock lock;
@@ -54,41 +54,41 @@ struct vdseMemObject
    /** Total number of blocks for the current object */
    size_t totalBlocks;
    
-   vdseLinkedList listBlockGroup;
+   psnLinkedList listBlockGroup;
    
 };
 
-typedef struct vdseMemObject vdseMemObject;
+typedef struct psnMemObject psnMemObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
 enum vdsErrors 
-vdseMemObjectInit( vdseMemObject   * pMemObj,
-                   vdseMemObjIdent   objType,
-                   vdseBlockGroup  * pGroup,
+psnMemObjectInit( psnMemObject   * pMemObj,
+                   psnMemObjIdent   objType,
+                   psnBlockGroup  * pGroup,
                    size_t            numBlocks );
 
 VDSF_ENGINE_EXPORT
 enum vdsErrors 
-vdseMemObjectFini( vdseMemObject      * pMemObj,
-                   vdseAllocTypeEnum    allocType,
-                   vdseSessionContext * pContext );
+psnMemObjectFini( psnMemObject      * pMemObj,
+                   psnAllocTypeEnum    allocType,
+                   psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-unsigned char* vdseMalloc( vdseMemObject      * pMemObj,
+unsigned char* psnMalloc( psnMemObject      * pMemObj,
                            size_t               numBytes,
-                           vdseSessionContext * pContext );
+                           psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseFree( vdseMemObject      * pMemObj,
+void psnFree( psnMemObject      * pMemObj,
                unsigned char      * ptr, 
                size_t               numBytes,
-               vdseSessionContext * pContext );
+               psnSessionContext * pContext );
 
 static inline
-bool vdseLock( vdseMemObject      * pMemObj,
-               vdseSessionContext * pContext )
+bool psnLock( psnMemObject      * pMemObj,
+               psnSessionContext * pContext )
 {
    bool ok;
 
@@ -96,7 +96,7 @@ bool vdseLock( vdseMemObject      * pMemObj,
    VDS_PRE_CONDITION( pContext != NULL );
    
    if ( pContext->lockOffsets != NULL ) {
-      vdseSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
+      psnSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
    }
    
    ok = pscTryAcquireProcessLock ( &pMemObj->lock,
@@ -108,32 +108,32 @@ bool vdseLock( vdseMemObject      * pMemObj,
 }
 
 static inline
-void vdseLockNoFailure( vdseMemObject      * pMemObj,
-                        vdseSessionContext * pContext )
+void psnLockNoFailure( psnMemObject      * pMemObj,
+                        psnSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pMemObj  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
 
    if ( pContext->lockOffsets != NULL ) {
-      vdseSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
+      psnSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
    }
    
    pscAcquireProcessLock ( &pMemObj->lock, LOCK_TIMEOUT );
 }
 
 VDSF_ENGINE_EXPORT
-void vdseMemObjectStatus( vdseMemObject * pMemObject, 
+void psnMemObjectStatus( psnMemObject * pMemObject, 
                           vdsObjStatus  * pStatus );
 
 static inline
-void vdseUnlock( vdseMemObject      * pMemObj,
-                 vdseSessionContext * pContext  )
+void psnUnlock( psnMemObject      * pMemObj,
+                 psnSessionContext * pContext  )
 {
    VDS_PRE_CONDITION( pMemObj  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
 
    if ( pContext->lockOffsets != NULL ) {
-      vdseSessionRemoveLock( pContext, SET_OFFSET( pMemObj ) );
+      psnSessionRemoveLock( pContext, SET_OFFSET( pMemObj ) );
    }
    
    pscReleaseProcessLock ( &pMemObj->lock );
@@ -145,7 +145,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_MEMORY_OBJECT_H */
+#endif /* PSN_MEMORY_OBJECT_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

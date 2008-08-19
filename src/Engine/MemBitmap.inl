@@ -22,7 +22,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool vdseIsBufferFree( vdseMemBitmap * pBitmap,
+bool psnIsBufferFree( psnMemBitmap * pBitmap,
                        ptrdiff_t       offset )
 {
    size_t byte, bit;
@@ -30,7 +30,7 @@ bool vdseIsBufferFree( vdseMemBitmap * pBitmap,
    ptrdiff_t localOffset;
    
    VDS_PRE_CONDITION( pBitmap != NULL );
-   VDS_PRE_CONDITION( offset  != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( offset  != PSN_NULL_OFFSET );
 
    localOffset = offset - pBitmap->baseAddressOffset;
    if ( localOffset < 0 ) return false;
@@ -52,7 +52,7 @@ bool vdseIsBufferFree( vdseMemBitmap * pBitmap,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-void vdseSetBufferAllocated( vdseMemBitmap * pBitmap,
+void psnSetBufferAllocated( psnMemBitmap * pBitmap,
                              ptrdiff_t       offset,
                              size_t          length )
 {
@@ -61,7 +61,7 @@ void vdseSetBufferAllocated( vdseMemBitmap * pBitmap,
    ptrdiff_t localOffset;
    
    VDS_PRE_CONDITION( pBitmap != NULL );
-   VDS_PRE_CONDITION( offset  != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( offset  != PSN_NULL_OFFSET );
    VDS_PRE_CONDITION( length > 0 );
    
    localOffset = offset - pBitmap->baseAddressOffset;
@@ -90,7 +90,7 @@ void vdseSetBufferAllocated( vdseMemBitmap * pBitmap,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-void vdseSetBufferFree( vdseMemBitmap * pBitmap,
+void psnSetBufferFree( psnMemBitmap * pBitmap,
                         ptrdiff_t       offset,
                         size_t          length )
 {
@@ -99,7 +99,7 @@ void vdseSetBufferFree( vdseMemBitmap * pBitmap,
    ptrdiff_t localOffset;
 
    VDS_PRE_CONDITION( pBitmap != NULL );
-   VDS_PRE_CONDITION( offset  != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( offset  != PSN_NULL_OFFSET );
    VDS_PRE_CONDITION( length > 0 );
 
    localOffset = offset - pBitmap->baseAddressOffset;
@@ -128,7 +128,7 @@ void vdseSetBufferFree( vdseMemBitmap * pBitmap,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-size_t vdseGetBitmapLengthBytes( size_t length, size_t allocationUnit )
+size_t psnGetBitmapLengthBytes( size_t length, size_t allocationUnit )
 {
    /* Testing that it is non-zero and a power of two */
    VDS_PRE_CONDITION( allocationUnit > 0  && 

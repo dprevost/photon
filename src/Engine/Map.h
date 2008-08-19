@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_MAP_H
-#define VDSE_MAP_H
+#ifndef PSN_MAP_H
+#define PSN_MAP_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -34,15 +34,15 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdseMap
+struct psnMap
 {
    /** Always first */
-   struct vdseMemObject memObject;
+   struct psnMemObject memObject;
 
    /** Basic info for all leaves and branches of our tree. */
-   struct vdseTreeNode  nodeObject;
+   struct psnTreeNode  nodeObject;
 
-   struct vdseHash      hashObj;
+   struct psnHash      hashObj;
 
    struct vdsKeyDefinition keyDef;
    
@@ -56,92 +56,92 @@ struct vdseMap
    uint16_t numFields;
    
    /** Variable size struct - always put at the end */
-   struct vdseBlockGroup blockGroup;
+   struct psnBlockGroup blockGroup;
 
 };
 
-typedef struct vdseMap vdseMap;
+typedef struct psnMap psnMap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-bool vdseMapCopy( vdseMap            * pHashMap, 
-                  vdseMap            * pNewMap,
-                  vdseHashItem       * pHashItem,
+bool psnMapCopy( psnMap            * pHashMap, 
+                  psnMap            * pNewMap,
+                  psnHashItem       * pHashItem,
                   const char         * origName,
-                  vdseSessionContext * pContext );
+                  psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseMapDelete( vdseMap            * pHashMap,
+bool psnMapDelete( psnMap            * pHashMap,
                     const void         * key,
                     size_t               keyLength, 
-                    vdseSessionContext * pContext );
+                    psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseMapEmpty( vdseMap            * pHashMap,
-                   vdseSessionContext * pContext );
+void psnMapEmpty( psnMap            * pHashMap,
+                   psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseMapFini( vdseMap            * pHashMap,
-                  vdseSessionContext * pContext );
+void psnMapFini( psnMap            * pHashMap,
+                  psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseMapGet( vdseMap            * pHashMap,
+bool psnMapGet( psnMap            * pHashMap,
                  const void         * pKey,
                  size_t               keyLength, 
-                 vdseHashItem      ** ppItem,
+                 psnHashItem      ** ppItem,
                  size_t               bufferLength,
-                 vdseSessionContext * pContext );
+                 psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseMapGetFirst( vdseMap            * pHashMap,
-                      vdseHashMapItem    * pItem,
+bool psnMapGetFirst( psnMap            * pHashMap,
+                      psnHashMapItem    * pItem,
                       size_t               keyLength,
                       size_t               bufferLength,
-                      vdseSessionContext * pContext );
+                      psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseMapGetNext( vdseMap            * pHashMap,
-                     vdseHashMapItem    * pItem,
+bool psnMapGetNext( psnMap            * pHashMap,
+                     psnHashMapItem    * pItem,
                      size_t               keyLength,
                      size_t               bufferLength,
-                     vdseSessionContext * pContext );
+                     psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseMapInit( vdseMap             * pHashMap,
+bool psnMapInit( psnMap             * pHashMap,
                   ptrdiff_t             parentOffset,
                   size_t                numberOfBlocks,
                   size_t                expectedNumOfChilds,
-                  vdseTxStatus        * pTxStatus,
+                  psnTxStatus        * pTxStatus,
                   size_t                origNameLength,
                   char                * origName,
                   ptrdiff_t             hashItemOffset,
                   vdsObjectDefinition * pDefinition,
-                  vdseSessionContext  * pContext );
+                  psnSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseMapInsert( vdseMap            * pHashMap,
+bool psnMapInsert( psnMap            * pHashMap,
                     const void         * pKey,
                     size_t               keyLength,
                     const void         * pItem,
                     size_t               itemLength,
-                    vdseSessionContext * pContext );
+                    psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseMapRelease( vdseMap            * pHashMap,
-                     vdseHashItem       * pHashItem,
-                     vdseSessionContext * pContext );
+bool psnMapRelease( psnMap            * pHashMap,
+                     psnHashItem       * pHashItem,
+                     psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseMapReplace( vdseMap            * pHashMap,
+bool psnMapReplace( psnMap            * pHashMap,
                      const void         * pKey,
                      size_t               keyLength,
                      const void         * pItem,
                      size_t               itemLength,
-                     vdseSessionContext * pContext );
+                     psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseMapStatus( vdseMap      * pHashMap,
+void psnMapStatus( psnMap      * pHashMap,
                     vdsObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -150,7 +150,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_MAP_H */
+#endif /* PSN_MAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

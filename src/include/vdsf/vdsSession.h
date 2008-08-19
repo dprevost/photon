@@ -258,7 +258,7 @@ int vdsGetStatus(  VDS_HANDLE     sessionHandle,
  * This function will also initiate a new transaction.
  *
  * Upon normal termination, the current transaction is rolled back. You
- * MUST explicitly call vdseCommit to save your changes.
+ * MUST explicitly call psnCommit to save your changes.
  *
  * \param[out] sessionHandle The handle to the newly created session.
  *

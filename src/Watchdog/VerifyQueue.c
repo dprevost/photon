@@ -23,21 +23,21 @@
 
 enum vdswRecoverError
 vdswCheckQueueContent( vdswVerifyStruct * pVerify,
-                       struct vdseQueue * pQueue )
+                       struct psnQueue * pQueue )
 {
-   vdseTxStatus * txItemStatus;
-   vdseLinkNode * pNode = NULL, * pDeletedNode = NULL;
-   vdseQueueItem* pQueueItem = NULL;
+   psnTxStatus * txItemStatus;
+   psnLinkNode * pNode = NULL, * pDeletedNode = NULL;
+   psnQueueItem* pQueueItem = NULL;
    enum vdswRecoverError rc = VDSWR_OK;
    bool ok;
    
-   ok = vdseLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   ok = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    while ( ok ) {
-      pQueueItem = (vdseQueueItem*) 
-         ((char*)pNode - offsetof( vdseQueueItem, node ));
+      pQueueItem = (psnQueueItem*) 
+         ((char*)pNode - offsetof( psnQueueItem, node ));
       txItemStatus = &pQueueItem->txStatus;
 
-      if ( txItemStatus->txOffset != VDSE_NULL_OFFSET ) {
+      if ( txItemStatus->txOffset != PSN_NULL_OFFSET ) {
          /*
           * So we have an interrupted transaction. What kind? 
           *   FLAG                      ACTION          
@@ -47,21 +47,21 @@ vdswCheckQueueContent( vdswVerifyStruct * pVerify,
           *
           * Action is the equivalent of what a rollback would do.
           */
-         if ( txItemStatus->status & VDSE_TXS_ADDED ) {
+         if ( txItemStatus->status & PSN_TXS_ADDED ) {
             vdswEcho( pVerify, "Queue item added but not committed" );
             pDeletedNode = pNode;
          }         
-         else if ( txItemStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
+         else if ( txItemStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
             vdswEcho( pVerify, "Queue item deleted and committed" );
             pDeletedNode = pNode;
          }
-         else if ( txItemStatus->status & VDSE_TXS_DESTROYED ) {
+         else if ( txItemStatus->status & PSN_TXS_DESTROYED ) {
             vdswEcho( pVerify, "Queue item deleted but not committed" );
          }
          
          if ( pDeletedNode == NULL && pVerify->doRepair ) {
-            txItemStatus->txOffset = VDSE_NULL_OFFSET;
-            txItemStatus->status = VDSE_TXS_OK;
+            txItemStatus->txOffset = PSN_NULL_OFFSET;
+            txItemStatus->status = PSN_TXS_OK;
             vdswEcho( pVerify, "Queue item status fields reset to zero" );
          }
          rc = VDSWR_CHANGES;
@@ -76,7 +76,7 @@ vdswCheckQueueContent( vdswVerifyStruct * pVerify,
          }
       }
       
-      ok =  vdseLinkedListPeakNext( &pQueue->listOfElements, 
+      ok =  psnLinkedListPeakNext( &pQueue->listOfElements, 
                                     pNode, 
                                     &pNode );
       /*
@@ -85,7 +85,7 @@ vdswCheckQueueContent( vdswVerifyStruct * pVerify,
        * retrieve the next node.
        */
       if ( pDeletedNode != NULL && pVerify->doRepair ) {
-         vdseLinkedListRemoveItem( &pQueue->listOfElements, pDeletedNode );
+         psnLinkedListRemoveItem( &pQueue->listOfElements, pDeletedNode );
          vdswEcho( pVerify, "Queue item removed from the VDS" );
       }
       pDeletedNode = NULL;
@@ -98,10 +98,10 @@ vdswCheckQueueContent( vdswVerifyStruct * pVerify,
 
 enum vdswRecoverError 
 vdswVerifyQueue( vdswVerifyStruct   * pVerify,
-                 struct vdseQueue   * pQueue,
-                 vdseSessionContext * pContext )
+                 struct psnQueue   * pQueue,
+                 psnSessionContext * pContext )
 {
-   vdseTxStatus * txQueueStatus;
+   psnTxStatus * txQueueStatus;
    enum vdswRecoverError rc = VDSWR_OK, rc2;
    bool bTestObject = false;
    
@@ -129,9 +129,9 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
     */
    vdswPopulateBitmap( pVerify, &pQueue->memObject, pContext );
 
-   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
 
-   if ( txQueueStatus->txOffset != VDSE_NULL_OFFSET ) {
+   if ( txQueueStatus->txOffset != PSN_NULL_OFFSET ) {
       /*
        * So we have an interrupted transaction. What kind? 
        *   FLAG                      ACTION          
@@ -141,12 +141,12 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txQueueStatus->status & VDSE_TXS_ADDED ) {
+      if ( txQueueStatus->status & PSN_TXS_ADDED ) {
          vdswEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
          return VDSWR_DELETED_OBJECT;
       }
-      if ( txQueueStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
+      if ( txQueueStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
          vdswEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
          return VDSWR_DELETED_OBJECT;
@@ -156,8 +156,8 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
       rc = VDSWR_CHANGES;
       if ( pVerify->doRepair) {
          vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
-         txQueueStatus->txOffset = VDSE_NULL_OFFSET;
-         txQueueStatus->status = VDSE_TXS_OK;
+         txQueueStatus->txOffset = PSN_NULL_OFFSET;
+         txQueueStatus->status = PSN_TXS_OK;
       }
    }
    

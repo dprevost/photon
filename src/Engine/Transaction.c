@@ -23,9 +23,9 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseTxInit( vdseTx             * pTx,
+bool psnTxInit( psnTx             * pTx,
                  size_t               numberOfBlocks,
-                 vdseSessionContext * pContext )
+                 psnSessionContext * pContext )
 {
    vdsErrors errcode;
    
@@ -33,8 +33,8 @@ bool vdseTxInit( vdseTx             * pTx,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    
-   errcode = vdseMemObjectInit( &pTx->memObject, 
-                                VDSE_IDENT_TRANSACTION,
+   errcode = psnMemObjectInit( &pTx->memObject, 
+                                PSN_IDENT_TRANSACTION,
                                 &pTx->blockGroup,
                                 numberOfBlocks );
    if ( errcode != VDS_OK ) {
@@ -42,22 +42,22 @@ bool vdseTxInit( vdseTx             * pTx,
       return false;
    }
 
-   vdseLinkedListInit( &pTx->listOfOps );
+   psnLinkedListInit( &pTx->listOfOps );
 
-   pTx->signature = VDSE_TX_SIGNATURE;
+   pTx->signature = PSN_TX_SIGNATURE;
    
    return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseTxFini( vdseTx             * pTx, 
-                 vdseSessionContext * pContext )
+void psnTxFini( psnTx             * pTx, 
+                 psnSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pTx      != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pTx->listOfOps.currentSize == 0 );
-   VDS_PRE_CONDITION( pTx->signature == VDSE_TX_SIGNATURE );
+   VDS_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
    
    /* Synch the VDS */
 #if 0
@@ -66,36 +66,36 @@ void vdseTxFini( vdseTx             * pTx,
 
    /* Close and unlink the log file */
    if ( pContext->pLogFile != NULL ) {
-      vdseCloseLogFile( pContext->pLogFile, &pContext->errorHandler );
+      psnCloseLogFile( pContext->pLogFile, &pContext->errorHandler );
    }
    
-   vdseLinkedListFini( &pTx->listOfOps );
+   psnLinkedListFini( &pTx->listOfOps );
    pTx->signature = 0;
    
    /* This will remove the blocks of allocated memory */
-   vdseMemObjectFini(  &pTx->memObject, VDSE_ALLOC_ANY, pContext );
+   psnMemObjectFini(  &pTx->memObject, PSN_ALLOC_ANY, pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseTxAddOps( vdseTx             * pTx,
-                   vdseTxType           txType,
+bool psnTxAddOps( psnTx             * pTx,
+                   psnTxType           txType,
                    ptrdiff_t            parentOffset, 
-                   vdseMemObjIdent      parentType, 
+                   psnMemObjIdent      parentType, 
                    ptrdiff_t            childOffset,
-                   vdseMemObjIdent      childType, 
-                   vdseSessionContext * pContext )
+                   psnMemObjIdent      childType, 
+                   psnSessionContext * pContext )
 {
-   vdseTxOps * pOps;
+   psnTxOps * pOps;
    
    VDS_PRE_CONDITION( pTx      != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( parentOffset != VDSE_NULL_OFFSET );
-   VDS_PRE_CONDITION( childOffset  != VDSE_NULL_OFFSET );
-   VDS_PRE_CONDITION( pTx->signature == VDSE_TX_SIGNATURE );
+   VDS_PRE_CONDITION( parentOffset != PSN_NULL_OFFSET );
+   VDS_PRE_CONDITION( childOffset  != PSN_NULL_OFFSET );
+   VDS_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
 
-   pOps = (vdseTxOps *) vdseMalloc( &pTx->memObject,
-                                    sizeof(vdseTxOps), 
+   pOps = (psnTxOps *) psnMalloc( &pTx->memObject,
+                                    sizeof(psnTxOps), 
                                     pContext );
    if ( pOps != NULL ) {
       pOps->transType    = txType;
@@ -104,8 +104,8 @@ bool vdseTxAddOps( vdseTx             * pTx,
       pOps->childOffset  = childOffset;
       pOps->childType    = childType;
 
-      vdseLinkNodeInit(  &pOps->node );
-      vdseLinkedListPutLast( &pTx->listOfOps, &pOps->node );
+      psnLinkNodeInit(  &pOps->node );
+      psnLinkedListPutLast( &pTx->listOfOps, &pOps->node );
 
       return true;
    }
@@ -119,49 +119,49 @@ bool vdseTxAddOps( vdseTx             * pTx,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseTxRemoveLastOps( vdseTx             * pTx, 
-                          vdseSessionContext * pContext )
+void psnTxRemoveLastOps( psnTx             * pTx, 
+                          psnSessionContext * pContext )
 {
    bool ok;
-   vdseLinkNode * pDummy = NULL;
-   vdseTxOps * pOps;
+   psnLinkNode * pDummy = NULL;
+   psnTxOps * pOps;
 
    VDS_PRE_CONDITION( pTx != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pTx->signature == VDSE_TX_SIGNATURE );
+   VDS_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
    
-   ok = vdseLinkedListGetLast( &pTx->listOfOps, &pDummy );
+   ok = psnLinkedListGetLast( &pTx->listOfOps, &pDummy );
 
    VDS_POST_CONDITION( ok );
    
-   pOps = (vdseTxOps *)((char *)pDummy - offsetof( vdseTxOps, node ));
+   pOps = (psnTxOps *)((char *)pDummy - offsetof( psnTxOps, node ));
    
-   vdseFree( &pTx->memObject,
+   psnFree( &pTx->memObject,
              (unsigned char *) pOps,
-             sizeof(vdseTxOps), 
+             sizeof(psnTxOps), 
              pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseTxCommit( vdseTx             * pTx,
-                   vdseSessionContext * pContext )
+void psnTxCommit( psnTx             * pTx,
+                   psnSessionContext * pContext )
 {
-   vdseTxOps     * pOps = NULL;
-   vdseLinkNode  * pLinkNode = NULL;
-   vdseFolder    * parentFolder,    * pChildFolder;
-   vdseMemObject * pChildMemObject, * pParentMemObject;
-   vdseTreeNode  * pChildNode;
-   vdseTxStatus  * pChildStatus;
-   vdseHashMap   * pHashMap;
-   vdseQueue     * pQueue;
+   psnTxOps     * pOps = NULL;
+   psnLinkNode  * pLinkNode = NULL;
+   psnFolder    * parentFolder,    * pChildFolder;
+   psnMemObject * pChildMemObject, * pParentMemObject;
+   psnTreeNode  * pChildNode;
+   psnTxStatus  * pChildStatus;
+   psnHashMap   * pHashMap;
+   psnQueue     * pQueue;
    int pOps_invalid_type = 0;
-   vdseHashItem  * pHashItem;
-   vdseObjectDescriptor * pDesc;
+   psnHashItem  * pHashItem;
+   psnObjectDescriptor * pDesc;
    
    VDS_PRE_CONDITION( pTx      != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pTx->signature == VDSE_TX_SIGNATURE );
+   VDS_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
       
    /* Synch the VDS */
 #if 0
@@ -171,7 +171,7 @@ void vdseTxCommit( vdseTx             * pTx,
 
    /* Write to the log file */
    if ( pContext->pLogFile != NULL ) {
-      errcode = vdseLogTransaction( pContext->pLogFile, 
+      errcode = psnLogTransaction( pContext->pLogFile, 
                                     SET_OFFSET(pTx), 
                                     &pContext->errorHandler );
       if ( errcode != VDS_OK ) {
@@ -186,7 +186,7 @@ void vdseTxCommit( vdseTx             * pTx,
       return;
    }
    
-   while ( vdseLinkedListGetFirst( &pTx->listOfOps, &pLinkNode ) ) {
+   while ( psnLinkedListGetFirst( &pTx->listOfOps, &pLinkNode ) ) {
 
       parentFolder = pChildFolder = NULL;
       pChildMemObject = pParentMemObject = NULL;
@@ -195,28 +195,28 @@ void vdseTxCommit( vdseTx             * pTx,
       pHashMap = NULL;
       pQueue   = NULL;
       
-      pOps = (vdseTxOps*)
-         ((char*)pLinkNode - offsetof( vdseTxOps, node ));
+      pOps = (psnTxOps*)
+         ((char*)pLinkNode - offsetof( psnTxOps, node ));
       
       switch( pOps->transType ) {
 
-      case VDSE_TX_ADD_DATA:
+      case PSN_TX_ADD_DATA:
 
-         if ( pOps->parentType == VDSE_IDENT_HASH_MAP ) {
-            GET_PTR( pHashMap, pOps->parentOffset, vdseHashMap );
+         if ( pOps->parentType == PSN_IDENT_HASH_MAP ) {
+            GET_PTR( pHashMap, pOps->parentOffset, psnHashMap );
             pParentMemObject = &pHashMap->memObject;
 
-            vdseLockNoFailure( pParentMemObject, pContext );
-            vdseHashMapCommitAdd( pHashMap, pOps->childOffset, pContext );
-            vdseUnlock( pParentMemObject, pContext );
+            psnLockNoFailure( pParentMemObject, pContext );
+            psnHashMapCommitAdd( pHashMap, pOps->childOffset, pContext );
+            psnUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == VDSE_IDENT_QUEUE ) {
-            GET_PTR( pQueue, pOps->parentOffset, vdseQueue );
+         else if ( pOps->parentType == PSN_IDENT_QUEUE ) {
+            GET_PTR( pQueue, pOps->parentOffset, psnQueue );
             pParentMemObject = &pQueue->memObject;
 
-            vdseLockNoFailure( pParentMemObject, pContext );
-            vdseQueueCommitAdd( pQueue, pOps->childOffset );
-            vdseUnlock( pParentMemObject, pContext );
+            psnLockNoFailure( pParentMemObject, pContext );
+            psnQueueCommitAdd( pQueue, pOps->childOffset );
+            psnUnlock( pParentMemObject, pContext );
          }
          /* We should not come here */
          else {
@@ -225,66 +225,66 @@ void vdseTxCommit( vdseTx             * pTx,
          
          break;
 
-      case VDSE_TX_ADD_OBJECT:
+      case PSN_TX_ADD_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
+         VDS_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
 
-         GET_PTR( parentFolder, pOps->parentOffset, vdseFolder );
-         GET_PTR( pHashItem, pOps->childOffset, vdseHashItem );
-         GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
-         GET_PTR( pChildMemObject, pDesc->memOffset, vdseMemObject );
+         GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
+         GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
+         GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
+         GET_PTR( pChildMemObject, pDesc->memOffset, psnMemObject );
          pChildStatus = &pHashItem->txStatus;
          
-         vdseLockNoFailure( &parentFolder->memObject, pContext );
-         vdseLockNoFailure( pChildMemObject, pContext );
+         psnLockNoFailure( &parentFolder->memObject, pContext );
+         psnLockNoFailure( pChildMemObject, pContext );
 
-         vdseTxStatusClearTx( pChildStatus );
+         psnTxStatusClearTx( pChildStatus );
          parentFolder->nodeObject.txCounter--;
 
          /* If needed */
-         vdseFolderResize( parentFolder, pContext );
+         psnFolderResize( parentFolder, pContext );
 
-         vdseUnlock( pChildMemObject, pContext );
-         vdseUnlock( &parentFolder->memObject, pContext );
+         psnUnlock( pChildMemObject, pContext );
+         psnUnlock( &parentFolder->memObject, pContext );
          
          break;
 
-      case VDSE_TX_ADD_EDIT_OBJECT:
+      case PSN_TX_ADD_EDIT_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
+         VDS_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
 
-         GET_PTR( parentFolder, pOps->parentOffset, vdseFolder );
-         GET_PTR( pHashItem, pOps->childOffset, vdseHashItem );
-         GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+         GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
+         GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
+         GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
          
-         vdseLockNoFailure( &parentFolder->memObject, pContext );
+         psnLockNoFailure( &parentFolder->memObject, pContext );
 
-         vdseFolderCommitEdit( parentFolder, 
+         psnFolderCommitEdit( parentFolder, 
                                pHashItem, pOps->childType, pContext );
          
          parentFolder->nodeObject.txCounter--;
 
          /* If needed */
-         vdseFolderResize( parentFolder, pContext );
+         psnFolderResize( parentFolder, pContext );
 
-         vdseUnlock( &parentFolder->memObject, pContext );
+         psnUnlock( &parentFolder->memObject, pContext );
          
          break;
 
-      case VDSE_TX_REMOVE_OBJECT:
+      case PSN_TX_REMOVE_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
+         VDS_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
 
-         GET_PTR( parentFolder, pOps->parentOffset, vdseFolder );
-         GET_PTR( pHashItem, pOps->childOffset, vdseHashItem );
-         GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
-         GET_PTR( pChildMemObject, pDesc->memOffset, vdseMemObject );
-         GET_PTR( pChildNode, pDesc->nodeOffset, vdseTreeNode );
+         GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
+         GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
+         GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
+         GET_PTR( pChildMemObject, pDesc->memOffset, psnMemObject );
+         GET_PTR( pChildNode, pDesc->nodeOffset, psnTreeNode );
          pChildStatus = &pHashItem->txStatus;
 
-         vdseLockNoFailure( &parentFolder->memObject, pContext );
+         psnLockNoFailure( &parentFolder->memObject, pContext );
 
-         vdseLockNoFailure( pChildMemObject, pContext );
+         psnLockNoFailure( pChildMemObject, pContext );
 
          if ( pChildStatus->usageCounter > 0 || 
             pChildNode->txCounter > 0  || pChildStatus->parentCounter > 0 ) {
@@ -293,48 +293,48 @@ void vdseTxCommit( vdseTx             * pTx,
              * as "Remove is committed" so that the last "user" do delete
              * it.
              */
-            vdseTxStatusCommitRemove( pChildStatus );
-            vdseUnlock( pChildMemObject, pContext );
+            psnTxStatusCommitRemove( pChildStatus );
+            psnUnlock( pChildMemObject, pContext );
          }
          else {
             /* 
              * No one uses the object to remove and no one can access it
              * since we have a lock on its parent. We can safely unlock it.
              */
-            vdseUnlock( pChildMemObject, pContext );
+            psnUnlock( pChildMemObject, pContext );
 
             /* 
              * Remove it from the folder (from the hash list)
              * (this function also decrease the txCounter of the parentFolder 
              */
-            vdseFolderRemoveObject( parentFolder, 
+            psnFolderRemoveObject( parentFolder, 
                                     pHashItem,
                                     pContext );
          }
-         vdseUnlock( &parentFolder->memObject, pContext );
+         psnUnlock( &parentFolder->memObject, pContext );
 
          break;
 
-      case VDSE_TX_REMOVE_DATA:
-         if ( pOps->parentType == VDSE_IDENT_HASH_MAP ) {
-            GET_PTR( pHashMap, pOps->parentOffset, vdseHashMap );
+      case PSN_TX_REMOVE_DATA:
+         if ( pOps->parentType == PSN_IDENT_HASH_MAP ) {
+            GET_PTR( pHashMap, pOps->parentOffset, psnHashMap );
             pParentMemObject = &pHashMap->memObject;
 
-            vdseLockNoFailure( pParentMemObject, pContext );
-            vdseHashMapCommitRemove( pHashMap,
+            psnLockNoFailure( pParentMemObject, pContext );
+            psnHashMapCommitRemove( pHashMap,
                                      pOps->childOffset,
                                      pContext );
-            vdseUnlock( pParentMemObject, pContext );
+            psnUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == VDSE_IDENT_QUEUE ) {
-            GET_PTR( pQueue, pOps->parentOffset, vdseQueue );
+         else if ( pOps->parentType == PSN_IDENT_QUEUE ) {
+            GET_PTR( pQueue, pOps->parentOffset, psnQueue );
             pParentMemObject = &pQueue->memObject;
 
-            vdseLockNoFailure( pParentMemObject, pContext );
-            vdseQueueCommitRemove( pQueue,
+            psnLockNoFailure( pParentMemObject, pContext );
+            psnQueueCommitRemove( pQueue,
                                    pOps->childOffset,
                                    pContext );
-            vdseUnlock( pParentMemObject, pContext );
+            psnUnlock( pParentMemObject, pContext );
          }
          /* We should not come here */
          else {
@@ -343,17 +343,17 @@ void vdseTxCommit( vdseTx             * pTx,
          
          break;
 #if 0
-      case VDSE_TX_SELECT:
+      case PSN_TX_SELECT:
          /* Not yet! */
          break;
          
-      case VDSE_TX_UPDATE:
+      case PSN_TX_UPDATE:
          /* Not yet! */
          break;
 #endif
       } /* end of switch on type of ops */
 
-      vdseFree( &pTx->memObject, (unsigned char*) pOps, sizeof(vdseTxOps), 
+      psnFree( &pTx->memObject, (unsigned char*) pOps, sizeof(psnTxOps), 
                 pContext );
                 
    } /* end of while loop on the list of ops */
@@ -362,25 +362,25 @@ void vdseTxCommit( vdseTx             * pTx,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseTxRollback( vdseTx             * pTx,
-                     vdseSessionContext * pContext )
+void psnTxRollback( psnTx             * pTx,
+                     psnSessionContext * pContext )
 {
    int errcode = VDS_OK;
-   vdseTxOps     * pOps = NULL;
-   vdseLinkNode  * pLinkNode = NULL;
-   vdseFolder    * parentFolder,    * pChildFolder;
-   vdseMemObject * pChildMemObject, * pParentMemObject;
-   vdseTreeNode  * pChildNode;
-   vdseTxStatus  * pChildStatus;
-   vdseHashMap   * pHashMap;
-   vdseQueue     * pQueue;
-   vdseHashItem  * pHashItem;
-   vdseObjectDescriptor * pDesc;
+   psnTxOps     * pOps = NULL;
+   psnLinkNode  * pLinkNode = NULL;
+   psnFolder    * parentFolder,    * pChildFolder;
+   psnMemObject * pChildMemObject, * pParentMemObject;
+   psnTreeNode  * pChildNode;
+   psnTxStatus  * pChildStatus;
+   psnHashMap   * pHashMap;
+   psnQueue     * pQueue;
+   psnHashItem  * pHashItem;
+   psnObjectDescriptor * pDesc;
    int pOps_invalid_type = 0;
 
    VDS_PRE_CONDITION( pTx      != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pTx->signature == VDSE_TX_SIGNATURE );
+   VDS_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
 
 #if 0
    /* Synch the VDS */
@@ -389,7 +389,7 @@ void vdseTxRollback( vdseTx             * pTx,
 
    /* Write to the log file */
    if ( pContext->pLogFile != NULL ) {
-      errcode = vdseLogTransaction( pContext->pLogFile, 
+      errcode = psnLogTransaction( pContext->pLogFile, 
                                     SET_OFFSET(pTx), 
                                     &pContext->errorHandler );
       if ( errcode != VDS_OK ) {
@@ -403,7 +403,7 @@ void vdseTxRollback( vdseTx             * pTx,
       return;
    }
    
-   while ( vdseLinkedListGetLast( &pTx->listOfOps, 
+   while ( psnLinkedListGetLast( &pTx->listOfOps, 
                                   &pLinkNode ) ) {
       parentFolder = pChildFolder = NULL;
       pChildMemObject = pParentMemObject = NULL;
@@ -412,31 +412,31 @@ void vdseTxRollback( vdseTx             * pTx,
       pHashMap     = NULL;
       pQueue       = NULL;
       
-      pOps = (vdseTxOps*)
-         ((char*)pLinkNode - offsetof( vdseTxOps, node ));
+      pOps = (psnTxOps*)
+         ((char*)pLinkNode - offsetof( psnTxOps, node ));
 
       switch( pOps->transType ) {
 
-      case VDSE_TX_ADD_DATA:
-         if ( pOps->parentType == VDSE_IDENT_HASH_MAP ) {
-            GET_PTR( pHashMap, pOps->parentOffset, vdseHashMap );
+      case PSN_TX_ADD_DATA:
+         if ( pOps->parentType == PSN_IDENT_HASH_MAP ) {
+            GET_PTR( pHashMap, pOps->parentOffset, psnHashMap );
             pParentMemObject = &pHashMap->memObject;
 
-            vdseLockNoFailure( pParentMemObject, pContext );
-            vdseHashMapRollbackAdd( pHashMap, 
+            psnLockNoFailure( pParentMemObject, pContext );
+            psnHashMapRollbackAdd( pHashMap, 
                                     pOps->childOffset,
                                     pContext );
-            vdseUnlock( pParentMemObject, pContext );
+            psnUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == VDSE_IDENT_QUEUE ) {
-            GET_PTR( pQueue, pOps->parentOffset, vdseQueue );
+         else if ( pOps->parentType == PSN_IDENT_QUEUE ) {
+            GET_PTR( pQueue, pOps->parentOffset, psnQueue );
             pParentMemObject = &pQueue->memObject;
 
-            vdseLockNoFailure( pParentMemObject, pContext );
-            vdseQueueRollbackAdd( pQueue, 
+            psnLockNoFailure( pParentMemObject, pContext );
+            psnQueueRollbackAdd( pQueue, 
                                   pOps->childOffset,
                                   pContext );
-            vdseUnlock( pParentMemObject, pContext );
+            psnUnlock( pParentMemObject, pContext );
          }
          /* We should not come here */
          else {
@@ -445,20 +445,20 @@ void vdseTxRollback( vdseTx             * pTx,
          
          break;
             
-      case VDSE_TX_ADD_OBJECT:
+      case PSN_TX_ADD_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
+         VDS_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
 
-         GET_PTR( parentFolder, pOps->parentOffset, vdseFolder );
-         GET_PTR( pHashItem, pOps->childOffset, vdseHashItem );
-         GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
-         GET_PTR( pChildMemObject, pDesc->memOffset, vdseMemObject );
-         GET_PTR( pChildNode, pDesc->nodeOffset, vdseTreeNode );
+         GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
+         GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
+         GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
+         GET_PTR( pChildMemObject, pDesc->memOffset, psnMemObject );
+         GET_PTR( pChildNode, pDesc->nodeOffset, psnTreeNode );
          pChildStatus = &pHashItem->txStatus;
 
-         vdseLockNoFailure( &parentFolder->memObject, pContext );
+         psnLockNoFailure( &parentFolder->memObject, pContext );
 
-         vdseLockNoFailure( pChildMemObject, pContext );
+         psnLockNoFailure( pChildMemObject, pContext );
 
          if ( pChildStatus->usageCounter > 0 || 
             pChildNode->txCounter > 0  || pChildStatus->parentCounter > 0 ) {
@@ -476,90 +476,90 @@ void vdseTxRollback( vdseTx             * pTx,
              * as "Remove is committed" so that the last "user" do delete
              * it.
              */
-            vdseTxStatusCommitRemove( pChildStatus );
-            vdseUnlock( pChildMemObject, pContext );
+            psnTxStatusCommitRemove( pChildStatus );
+            psnUnlock( pChildMemObject, pContext );
          }
          else {
             /* 
              * No one uses the object to remove and no one can access it
              * since we have a lock on its parent. We can safely unlock it.
              */
-            vdseUnlock( pChildMemObject, pContext );
+            psnUnlock( pChildMemObject, pContext );
 
             /* Remove it from the folder (from the hash list) */
-            vdseFolderRemoveObject( parentFolder,
+            psnFolderRemoveObject( parentFolder,
                                     pHashItem,
                                     pContext );
          }
-         vdseUnlock( &parentFolder->memObject, pContext );
+         psnUnlock( &parentFolder->memObject, pContext );
 
          break;
 
-      case VDSE_TX_ADD_EDIT_OBJECT:
+      case PSN_TX_ADD_EDIT_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
+         VDS_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
 
-         GET_PTR( parentFolder, pOps->parentOffset, vdseFolder );
-         GET_PTR( pHashItem, pOps->childOffset, vdseHashItem );
-         GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+         GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
+         GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
+         GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
          
-         vdseLockNoFailure( &parentFolder->memObject, pContext );
+         psnLockNoFailure( &parentFolder->memObject, pContext );
 
-         vdseFolderRollbackEdit( parentFolder, 
+         psnFolderRollbackEdit( parentFolder, 
                                  pHashItem, pOps->childType, pContext );
          
          parentFolder->nodeObject.txCounter--;
 
          /* If needed */
-         vdseFolderResize( parentFolder, pContext );
+         psnFolderResize( parentFolder, pContext );
 
-         vdseUnlock( &parentFolder->memObject, pContext );
+         psnUnlock( &parentFolder->memObject, pContext );
          
          break;
 
-      case VDSE_TX_REMOVE_OBJECT:
+      case PSN_TX_REMOVE_OBJECT:
 
-         VDS_POST_CONDITION( pOps->parentType == VDSE_IDENT_FOLDER );
+         VDS_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
 
-         GET_PTR( parentFolder, pOps->parentOffset, vdseFolder );
-         GET_PTR( pHashItem, pOps->childOffset, vdseHashItem );
-         GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
-         GET_PTR( pChildMemObject, pDesc->memOffset, vdseMemObject );
+         GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
+         GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
+         GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
+         GET_PTR( pChildMemObject, pDesc->memOffset, psnMemObject );
          pChildStatus = &pHashItem->txStatus;
 
-         vdseLockNoFailure( &parentFolder->memObject, pContext );
-         vdseLockNoFailure( pChildMemObject, pContext );
+         psnLockNoFailure( &parentFolder->memObject, pContext );
+         psnLockNoFailure( pChildMemObject, pContext );
 
-         vdseTxStatusClearTx( pChildStatus );
+         psnTxStatusClearTx( pChildStatus );
          parentFolder->nodeObject.txCounter--;
 
          /* If needed */
-         vdseFolderResize( parentFolder, pContext );
+         psnFolderResize( parentFolder, pContext );
          
-         vdseUnlock( pChildMemObject, pContext );
-         vdseUnlock( &parentFolder->memObject, pContext );
+         psnUnlock( pChildMemObject, pContext );
+         psnUnlock( &parentFolder->memObject, pContext );
 
          break;
 
-      case VDSE_TX_REMOVE_DATA:
+      case PSN_TX_REMOVE_DATA:
 
-         if ( pOps->parentType == VDSE_IDENT_HASH_MAP ) {
-            GET_PTR( pHashMap, pOps->parentOffset, vdseHashMap );
+         if ( pOps->parentType == PSN_IDENT_HASH_MAP ) {
+            GET_PTR( pHashMap, pOps->parentOffset, psnHashMap );
             pParentMemObject = &pHashMap->memObject;
 
-            vdseLockNoFailure( pParentMemObject, pContext );
-            vdseHashMapRollbackRemove( pHashMap, 
+            psnLockNoFailure( pParentMemObject, pContext );
+            psnHashMapRollbackRemove( pHashMap, 
                                        pOps->childOffset, pContext );
-            vdseUnlock( pParentMemObject, pContext );
+            psnUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == VDSE_IDENT_QUEUE ) {
-            GET_PTR( pQueue, pOps->parentOffset, vdseQueue );
+         else if ( pOps->parentType == PSN_IDENT_QUEUE ) {
+            GET_PTR( pQueue, pOps->parentOffset, psnQueue );
             pParentMemObject = &pQueue->memObject;
 
-            vdseLockNoFailure( pParentMemObject, pContext );
-            vdseQueueRollbackRemove( pQueue, 
+            psnLockNoFailure( pParentMemObject, pContext );
+            psnQueueRollbackRemove( pQueue, 
                                      pOps->childOffset );
-            vdseUnlock( pParentMemObject, pContext );
+            psnUnlock( pParentMemObject, pContext );
          }
          /* We should not come here */
          else {
@@ -569,17 +569,17 @@ void vdseTxRollback( vdseTx             * pTx,
          break;
 
 #if 0
-      case VDSE_TX_SELECT:
+      case PSN_TX_SELECT:
          /* Not yet! */
          break;
          
-      case VDSE_TX_UPDATE:
+      case PSN_TX_UPDATE:
          /* Not yet! */
          break;
 #endif         
       }
 
-      vdseFree( &pTx->memObject, (unsigned char*) pOps, sizeof(vdseTxOps), 
+      psnFree( &pTx->memObject, (unsigned char*) pOps, sizeof(psnTxOps), 
                 pContext );
    }
    

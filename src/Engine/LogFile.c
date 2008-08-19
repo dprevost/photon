@@ -19,7 +19,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdsErrors vdseInitLogFile( vdseLogFile*      logFile,
+vdsErrors psnInitLogFile( psnLogFile*      logFile,
                            const char*       dirName,
                            void*             pSession,
                            pscErrorHandler* pError )
@@ -54,14 +54,14 @@ vdsErrors vdseInitLogFile( vdseLogFile*      logFile,
       return VDS_LOGFILE_ERROR;
    }
    
-   logFile->initialized = VDSE_LOGFILE_SIGNATURE;
+   logFile->initialized = PSN_LOGFILE_SIGNATURE;
    
    return VDS_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdsErrors vdseLogTransaction( vdseLogFile*      logFile,
+vdsErrors psnLogTransaction( psnLogFile*      logFile,
                               int               transactionId,
                               pscErrorHandler* pError )
 {
@@ -77,7 +77,7 @@ vdsErrors vdseLogTransaction( vdseLogFile*      logFile,
 
    VDS_PRE_CONDITION( pError  != NULL );
    VDS_PRE_CONDITION( logFile != NULL );
-   VDS_INV_CONDITION( logFile->initialized == VDSE_LOGFILE_SIGNATURE );
+   VDS_INV_CONDITION( logFile->initialized == PSN_LOGFILE_SIGNATURE );
    VDS_INV_CONDITION( logFile->handle != -1 );
    
    memset( timeBuf, '\0', 30 );
@@ -118,14 +118,14 @@ vdsErrors vdseLogTransaction( vdseLogFile*      logFile,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseCloseLogFile( vdseLogFile*     logFile,
+void psnCloseLogFile( psnLogFile*     logFile,
                        pscErrorHandler* pError )
 {
    int err;
 
    VDS_PRE_CONDITION( pError  != NULL );
    VDS_PRE_CONDITION( logFile != NULL );
-   VDS_INV_CONDITION( logFile->initialized == VDSE_LOGFILE_SIGNATURE );
+   VDS_INV_CONDITION( logFile->initialized == PSN_LOGFILE_SIGNATURE );
    
    if ( logFile->handle != -1 ) {
       close( logFile->handle );

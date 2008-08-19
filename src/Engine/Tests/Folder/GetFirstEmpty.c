@@ -23,22 +23,22 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseFolder * pFolder;
-   vdseSessionContext context;
+   psnFolder * pFolder;
+   psnSessionContext context;
    bool ok;
-   vdseFolderItem item;
-   vdseTxStatus status;
+   psnFolderItem item;
+   psnTxStatus status;
    
    pFolder = initFolderTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   ok = psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderGetFirst( pFolder,
+   ok = psnFolderGetFirst( pFolder,
                             &item,
                             &context );
    if ( ok == true ) {

@@ -24,24 +24,24 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseLogFile logfile;
+   psnLogFile logfile;
    pscErrorHandler errorHandler;
    vdsErrors error;
 
    pscInitErrorDefs();
    pscInitErrorHandler( &errorHandler );
 
-   error = vdseInitLogFile( &logfile, ".", (void*)0x1234, &errorHandler );
+   error = psnInitLogFile( &logfile, ".", (void*)0x1234, &errorHandler );
    if ( error != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   error = vdseLogTransaction( &logfile, 1, &errorHandler );
+   error = psnLogTransaction( &logfile, 1, &errorHandler );
    if ( error != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   vdseCloseLogFile( &logfile, &errorHandler );
+   psnCloseLogFile( &logfile, &errorHandler );
    pscFiniErrorDefs();
    
    return 0;

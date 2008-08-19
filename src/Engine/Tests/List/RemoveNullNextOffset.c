@@ -25,20 +25,20 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseLinkedList list;
-   vdseLinkNode node;
-   vdseSessionContext context;
+   psnLinkedList list;
+   psnLinkNode node;
+   psnSessionContext context;
    
    initTest( expectedToPass, &context );
    InitMem();
    
-   vdseLinkNodeInit( &node );
-   vdseLinkedListInit( &list );
+   psnLinkNodeInit( &node );
+   psnLinkedListInit( &list );
    
-   vdseLinkedListPutLast( &list, &node );
+   psnLinkedListPutLast( &list, &node );
 
-   node.nextOffset = VDSE_NULL_OFFSET;
-   vdseLinkedListRemoveItem( &list, &node );
+   node.nextOffset = PSN_NULL_OFFSET;
+   psnLinkedListRemoveItem( &list, &node );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -30,14 +30,14 @@ VDSF_ENGINE_EXPORT const char * MYCXX = "cl.exe";
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static int vdseGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
+static int psnGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 {
    const char * theMsg;
 
    VDS_PRE_CONDITION( msg != NULL);
    VDS_PRE_CONDITION( msgLength > 0 );
 
-   theMsg = vdse_ErrorMessage( errnum );
+   theMsg = psn_ErrorMessage( errnum );
    if ( theMsg == NULL ) return -1;
    if ( strlen(theMsg) >= msgLength ) return -1;
    
@@ -48,14 +48,14 @@ static int vdseGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseInitEngine()
+bool psnInitEngine()
 {
    if ( g_vdsErrorHandle == PSC_NO_ERRHANDLER ) {
       if ( ! pscInitErrorDefs() ) {
          fprintf( stderr, "Internal error in pscInitErrorDefs()\n" );
       }
 
-      g_vdsErrorHandle = pscAddErrorMsgHandler( "VDSF", vdseGetErrorMsg );
+      g_vdsErrorHandle = pscAddErrorMsgHandler( "VDSF", psnGetErrorMsg );
 
       if ( g_vdsErrorHandle == PSC_NO_ERRHANDLER ) {
          fprintf( stderr, "Error registring the error handler for VDS errors\n" );

@@ -24,13 +24,13 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseBlockGroup *pGroup;
+   psnBlockGroup *pGroup;
    unsigned char* ptr;
-   vdseSessionContext context;
+   psnSessionContext context;
    
    initTest( expectedToPass, &context );
 
-   ptr = malloc( VDSE_BLOCK_SIZE*10 );
+   ptr = malloc( PSN_BLOCK_SIZE*10 );
    if (ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -39,26 +39,26 @@ int main()
    /* This "100" (non-zero) offset should mark this block group 
     * as the first block group of a MemObject.
     */
-   pGroup = (vdseBlockGroup*) (ptr + 100);
+   pGroup = (psnBlockGroup*) (ptr + 100);
    
-   vdseBlockGroupInit( pGroup, 
+   psnBlockGroupInit( pGroup, 
                       SET_OFFSET(ptr),
                       10,
-                      VDSE_IDENT_QUEUE );
-   if ( pGroup->node.nextOffset != VDSE_NULL_OFFSET ) {
+                      PSN_IDENT_QUEUE );
+   if ( pGroup->node.nextOffset != PSN_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pGroup->node.previousOffset != VDSE_NULL_OFFSET ) {
+   if ( pGroup->node.previousOffset != PSN_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pGroup->numBlocks != 10 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pGroup->maxFreeBytes < 9*VDSE_BLOCK_SIZE || 
-            pGroup->maxFreeBytes >= 10*VDSE_BLOCK_SIZE ) {
+   if ( pGroup->maxFreeBytes < 9*PSN_BLOCK_SIZE || 
+            pGroup->maxFreeBytes >= 10*PSN_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if (pGroup->freeList.initialized != VDSE_LIST_SIGNATURE ) {
+   if (pGroup->freeList.initialized != PSN_LIST_SIGNATURE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pGroup->isDeletable == true ) {
@@ -68,16 +68,16 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseBlockGroupFini( pGroup );
+   psnBlockGroupFini( pGroup );
 
    /* A zero offset this time */
-   pGroup = (vdseBlockGroup*) ptr;
-   vdseBlockGroupInit( pGroup, SET_OFFSET(ptr), 10, VDSE_IDENT_QUEUE );
+   pGroup = (psnBlockGroup*) ptr;
+   psnBlockGroupInit( pGroup, SET_OFFSET(ptr), 10, PSN_IDENT_QUEUE );
    if ( pGroup->isDeletable == false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseBlockGroupFini( pGroup );
+   psnBlockGroupFini( pGroup );
    
    return 0;
 }

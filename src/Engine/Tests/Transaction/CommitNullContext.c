@@ -24,18 +24,18 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseTx* pTx;
-   vdseSessionContext context;
+   psnTx* pTx;
+   psnSessionContext context;
    bool ok;
    
    pTx = initTxTest( expectedToPass, &context );
 
-   ok = vdseTxInit( pTx, 1, &context );
+   ok = psnTxInit( pTx, 1, &context );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseTxCommit( pTx, NULL );
+   psnTxCommit( pTx, NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -19,50 +19,50 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseBlockGroupFini( vdseBlockGroup * pGroup )
+void psnBlockGroupFini( psnBlockGroup * pGroup )
 {
    VDS_PRE_CONDITION( pGroup != NULL );
 
-   vdseMemBitmapFini(  &pGroup->bitmap );
-   vdseLinkedListFini( &pGroup->freeList );
-   vdseLinkNodeFini(   &pGroup->node );
+   psnMemBitmapFini(  &pGroup->bitmap );
+   psnLinkedListFini( &pGroup->freeList );
+   psnLinkNodeFini(   &pGroup->node );
 
    pGroup->numBlocks = 0;
    pGroup->maxFreeBytes = 0;
    pGroup->freeBytes = 0;
-   pGroup->objType = VDSE_IDENT_CLEAR;
+   pGroup->objType = PSN_IDENT_CLEAR;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
  * Note: no need to initialize the endBlock struct. It is set by the 
- * memory allocator when calling vdseMallocBlocks().
+ * memory allocator when calling psnMallocBlocks().
  */
-void vdseBlockGroupInit( vdseBlockGroup  * pGroup,
+void psnBlockGroupInit( psnBlockGroup  * pGroup,
                          ptrdiff_t         firstBlockOffset,
                          size_t            numBlocks,
-                         vdseMemObjIdent   objType )
+                         psnMemObjIdent   objType )
 {
    ptrdiff_t groupOffset;
    size_t currentLength;
-   vdseFreeBufferNode * firstNode;
+   psnFreeBufferNode * firstNode;
    
    VDS_PRE_CONDITION( pGroup != NULL );
-   VDS_PRE_CONDITION( firstBlockOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( firstBlockOffset != PSN_NULL_OFFSET );
    VDS_PRE_CONDITION( numBlocks > 0 );
-   VDS_PRE_CONDITION( objType > VDSE_IDENT_FIRST && objType < VDSE_IDENT_LAST );
+   VDS_PRE_CONDITION( objType > PSN_IDENT_FIRST && objType < PSN_IDENT_LAST );
 
    pGroup->numBlocks = numBlocks;
-   pGroup->objType = VDSE_IDENT_PAGE_GROUP & objType;
+   pGroup->objType = PSN_IDENT_PAGE_GROUP & objType;
    
-   vdseLinkNodeInit( &pGroup->node );
-   vdseLinkedListInit( &pGroup->freeList );
+   psnLinkNodeInit( &pGroup->node );
+   psnLinkedListInit( &pGroup->freeList );
    
-   vdseMemBitmapInit( &pGroup->bitmap,
+   psnMemBitmapInit( &pGroup->bitmap,
                       firstBlockOffset,
-                      numBlocks << VDSE_BLOCK_SHIFT, 
-                      VDSE_ALLOCATION_UNIT );
+                      numBlocks << PSN_BLOCK_SHIFT, 
+                      PSN_ALLOCATION_UNIT );
    
    /* Is the blockGroup struct at the beginning of the group ? */
    groupOffset = SET_OFFSET(pGroup);
@@ -84,33 +84,33 @@ void vdseBlockGroupInit( vdseBlockGroup  * pGroup,
       currentLength = groupOffset-firstBlockOffset;
    }
 
-   currentLength += offsetof(vdseBlockGroup,bitmap) +
-                    offsetof(vdseMemBitmap,bitmap) +
-                    vdseGetBitmapLengthBytes( numBlocks << VDSE_BLOCK_SHIFT, 
-                                              VDSE_ALLOCATION_UNIT );
-   currentLength = ((currentLength-1)/VDSE_ALLOCATION_UNIT+1)*VDSE_ALLOCATION_UNIT;
+   currentLength += offsetof(psnBlockGroup,bitmap) +
+                    offsetof(psnMemBitmap,bitmap) +
+                    psnGetBitmapLengthBytes( numBlocks << PSN_BLOCK_SHIFT, 
+                                              PSN_ALLOCATION_UNIT );
+   currentLength = ((currentLength-1)/PSN_ALLOCATION_UNIT+1)*PSN_ALLOCATION_UNIT;
    
-   pGroup->maxFreeBytes = (numBlocks << VDSE_BLOCK_SHIFT) - currentLength;
+   pGroup->maxFreeBytes = (numBlocks << PSN_BLOCK_SHIFT) - currentLength;
    
-   /* remove the space required by the vdseEndBlockGroup struct */
-   pGroup->maxFreeBytes -= VDSE_ALLOCATION_UNIT;
+   /* remove the space required by the psnEndBlockGroup struct */
+   pGroup->maxFreeBytes -= PSN_ALLOCATION_UNIT;
    pGroup->freeBytes = pGroup->maxFreeBytes;
    
    /* 
     * So we have one free buffer, starting at offset "currentLength"
     * + firstBlockOffset with length "maxFreeBytes". Insert it in our freeList.
     */
-   GET_PTR( firstNode, firstBlockOffset+currentLength, vdseFreeBufferNode );
-   vdseLinkNodeInit( &firstNode->node );
-   firstNode->numBuffers = pGroup->maxFreeBytes/VDSE_ALLOCATION_UNIT;
+   GET_PTR( firstNode, firstBlockOffset+currentLength, psnFreeBufferNode );
+   psnLinkNodeInit( &firstNode->node );
+   firstNode->numBuffers = pGroup->maxFreeBytes/PSN_ALLOCATION_UNIT;
 
-   vdseLinkedListPutFirst( &pGroup->freeList, &firstNode->node );
+   psnLinkedListPutFirst( &pGroup->freeList, &firstNode->node );
 
    /* And set the bitmap */
-   vdseSetBufferAllocated( &pGroup->bitmap, firstBlockOffset, currentLength );
-   vdseSetBufferAllocated( &pGroup->bitmap, 
-                           vdseEndBlockOffset(firstBlockOffset, numBlocks), 
-                           VDSE_ALLOCATION_UNIT );
+   psnSetBufferAllocated( &pGroup->bitmap, firstBlockOffset, currentLength );
+   psnSetBufferAllocated( &pGroup->bitmap, 
+                           psnEndBlockOffset(firstBlockOffset, numBlocks), 
+                           PSN_ALLOCATION_UNIT );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

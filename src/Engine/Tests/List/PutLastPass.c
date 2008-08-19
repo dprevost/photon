@@ -24,22 +24,22 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseLinkedList list;
-   vdseLinkNode node;
-   vdseSessionContext context;
+   psnLinkedList list;
+   psnLinkNode node;
+   psnSessionContext context;
    
    initTest( expectedToPass, &context );
    InitMem();
    
-   vdseLinkNodeInit( &node );
-   vdseLinkedListInit( &list );
+   psnLinkNodeInit( &node );
+   psnLinkedListInit( &list );
 
-   vdseLinkedListPutLast( &list, &node );
+   psnLinkedListPutLast( &list, &node );
    if ( list.currentSize != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseLinkedListFini( &list );
+   psnLinkedListFini( &list );
 
    return 0;
 }

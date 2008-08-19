@@ -34,7 +34,7 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
 /* 
  * Note: the type of object must be filled by the caller.
  */
-int vdsaGetDefinition( vdseFieldDef         * pInternalDef,
+int vdsaGetDefinition( psnFieldDef         * pInternalDef,
                        uint16_t               numFields,
                        vdsObjectDefinition ** ppDefinition )
 {
@@ -114,7 +114,7 @@ void vdsaGetKeyLimits( vdsKeyDefinition * pKeyDef,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsaGetLimits( vdseFieldDef * pDefinition,
+void vdsaGetLimits( psnFieldDef * pDefinition,
                     uint16_t       numFields,
                     size_t       * pMinLength,
                     size_t       * pMaxLength )

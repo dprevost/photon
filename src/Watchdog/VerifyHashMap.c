@@ -23,24 +23,24 @@
 
 enum vdswRecoverError
 vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
-                         vdseHashMap        * pHashMap, 
-                         vdseSessionContext * pContext )
+                         psnHashMap        * pHashMap, 
+                         psnSessionContext * pContext )
 {
    ptrdiff_t offset, previousOffset;
-   vdseHashItem * pItem, * pDeletedItem = NULL;
-   vdseTxStatus * txItemStatus;
+   psnHashItem * pItem, * pDeletedItem = NULL;
+   psnTxStatus * txItemStatus;
    enum vdswRecoverError rc = VDSWR_OK;
    bool found;
    
    /* The easy case */
    if ( pHashMap->hashObj.numberOfItems == 0 ) return rc;
    
-   found = vdseHashGetFirst( &pHashMap->hashObj, &offset );
+   found = psnHashGetFirst( &pHashMap->hashObj, &offset );
    while ( found ) {
-      GET_PTR( pItem, offset, vdseHashItem );
+      GET_PTR( pItem, offset, psnHashItem );
       txItemStatus = &pItem->txStatus;
 
-      if ( txItemStatus->txOffset != VDSE_NULL_OFFSET ) {
+      if ( txItemStatus->txOffset != PSN_NULL_OFFSET ) {
          /*
           * So we have an interrupted transaction. What kind? 
           *   FLAG                      ACTION          
@@ -51,25 +51,25 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
           *
           * Action is the equivalent of what a rollback would do.
           */
-         if ( txItemStatus->status & VDSE_TXS_ADDED ) {
+         if ( txItemStatus->status & PSN_TXS_ADDED ) {
             vdswEcho( pVerify, "Hash item added but not committed" );
             pDeletedItem = pItem;
          }         
-         else if ( txItemStatus->status & VDSE_TXS_REPLACED ) {
+         else if ( txItemStatus->status & PSN_TXS_REPLACED ) {
             vdswEcho( pVerify, "Hash item replaced but not committed" );
             pDeletedItem = pItem;
          }
-         else if ( txItemStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
+         else if ( txItemStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
             vdswEcho( pVerify, "Hash item deleted and committed" );
             pDeletedItem = pItem;
          }
-         else if ( txItemStatus->status & VDSE_TXS_DESTROYED ) {
+         else if ( txItemStatus->status & PSN_TXS_DESTROYED ) {
             vdswEcho( pVerify, "Hash item deleted but not committed" );
          }
          
          if ( pDeletedItem == NULL && pVerify->doRepair ) {
-            txItemStatus->txOffset = VDSE_NULL_OFFSET;
-            txItemStatus->status = VDSE_TXS_OK;
+            txItemStatus->txOffset = PSN_NULL_OFFSET;
+            txItemStatus->status = PSN_TXS_OK;
             vdswEcho( pVerify, "Hash item status fields reset to zero" );
          }
          rc = VDSWR_CHANGES;
@@ -85,7 +85,7 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
       }
       
       previousOffset = offset;
-      found = vdseHashGetNext( &pHashMap->hashObj,
+      found = psnHashGetNext( &pHashMap->hashObj,
                                previousOffset,
                                &offset );
 
@@ -95,7 +95,7 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
        * retrieve the next item.
        */
       if ( pDeletedItem != NULL && pVerify->doRepair ) {
-         vdseHashDelWithItem( &pHashMap->hashObj,
+         psnHashDelWithItem( &pHashMap->hashObj,
                               pDeletedItem,
                               pContext );
          vdswEcho( pVerify, "Hash item removed from the VDS" );
@@ -110,10 +110,10 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
 
 enum vdswRecoverError 
 vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
-                   vdseHashMap        * pHashMap,
-                   vdseSessionContext * pContext )
+                   psnHashMap        * pHashMap,
+                   psnSessionContext * pContext )
 {
-   vdseTxStatus * txHashMapStatus;
+   psnTxStatus * txHashMapStatus;
    enum vdswRecoverError rc = VDSWR_OK, rc2;
    bool bTestObject = false;
       
@@ -142,9 +142,9 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
     */
    vdswPopulateBitmap( pVerify, &pHashMap->memObject, pContext );
 
-   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
 
-   if ( txHashMapStatus->txOffset != VDSE_NULL_OFFSET ) {
+   if ( txHashMapStatus->txOffset != PSN_NULL_OFFSET ) {
       /*
        *   FLAG                      ACTION          
        *   TXS_ADDED                 remove object   
@@ -153,12 +153,12 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txHashMapStatus->status & VDSE_TXS_ADDED) {
+      if ( txHashMapStatus->status & PSN_TXS_ADDED) {
          vdswEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
          return VDSWR_DELETED_OBJECT;
       }
-      if ( txHashMapStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
+      if ( txHashMapStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
          vdswEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
          return VDSWR_DELETED_OBJECT;
@@ -168,8 +168,8 @@ vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
       rc = VDSWR_CHANGES;
       if ( pVerify->doRepair) {
          vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
-         txHashMapStatus->txOffset = VDSE_NULL_OFFSET;
-         txHashMapStatus->status = VDSE_TXS_OK;
+         txHashMapStatus->txOffset = PSN_NULL_OFFSET;
+         txHashMapStatus->status = PSN_TXS_OK;
       }
    }
 

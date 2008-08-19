@@ -25,15 +25,15 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseLinkedList list;
-   vdseSessionContext context;
+   psnLinkedList list;
+   psnSessionContext context;
    
    initTest( expectedToPass, &context );
    InitMem();
    
-   vdseLinkedListInit( &list );
+   psnLinkedListInit( &list );
 
-   vdseLinkedListFini( NULL );
+   psnLinkedListFini( NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

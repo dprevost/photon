@@ -24,23 +24,23 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseSessionContext context;
-   vdseMemAlloc*     pAlloc;
+   psnSessionContext context;
+   psnMemAlloc*     pAlloc;
    unsigned char* ptr;
    bool isFree;
-   vdseMemBitmap* pBitmap;
+   psnMemBitmap* pBitmap;
    
    initTest( expectedToPass, &context );
 
-   ptr = malloc( 51*VDSE_BLOCK_SIZE );
+   ptr = malloc( 51*PSN_BLOCK_SIZE );
    if ( ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   g_pBaseAddr = (unsigned char *)((((size_t)ptr - 1)/VDSE_BLOCK_SIZE + 1)*VDSE_BLOCK_SIZE);
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
-   vdseMemAllocInit( pAlloc, g_pBaseAddr, 50*VDSE_BLOCK_SIZE, &context );
-   GET_PTR( pBitmap, pAlloc->bitmapOffset, vdseMemBitmap );
+   g_pBaseAddr = (unsigned char *)((((size_t)ptr - 1)/PSN_BLOCK_SIZE + 1)*PSN_BLOCK_SIZE);
+   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
+   psnMemAllocInit( pAlloc, g_pBaseAddr, 50*PSN_BLOCK_SIZE, &context );
+   GET_PTR( pBitmap, pAlloc->bitmapOffset, psnMemBitmap );
    
    if ( (pBitmap->lengthInBits-1)/8+1 != 7 ) {
       fprintf( stderr, "Wrong bitmapLength, got "VDSF_SIZE_T_FORMAT
@@ -54,22 +54,22 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   isFree = vdseIsBufferFree( pBitmap, 0 );
+   isFree = psnIsBufferFree( pBitmap, 0 );
    if ( isFree ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   isFree = vdseIsBufferFree( pBitmap, 2*VDSE_BLOCK_SIZE );
+   isFree = psnIsBufferFree( pBitmap, 2*PSN_BLOCK_SIZE );
    if ( ! isFree ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   isFree = vdseIsBufferFree( pBitmap, -VDSE_BLOCK_SIZE );
+   isFree = psnIsBufferFree( pBitmap, -PSN_BLOCK_SIZE );
    if ( isFree ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   isFree = vdseIsBufferFree( pBitmap, 50*VDSE_BLOCK_SIZE );
+   isFree = psnIsBufferFree( pBitmap, 50*PSN_BLOCK_SIZE );
    if ( isFree ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

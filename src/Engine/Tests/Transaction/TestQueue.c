@@ -24,18 +24,18 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseTx* pTx;
-   vdseFolder * pFolder;
-   vdseSessionContext context;
+   psnTx* pTx;
+   psnFolder * pFolder;
+   psnSessionContext context;
    bool ok;
-   vdseFolderItem item;
-   vdseTxStatus status;
-   vdseObjectDescriptor * pDescriptor;
-   vdseQueue * pQueue;
+   psnFolderItem item;
+   psnTxStatus status;
+   psnObjectDescriptor * pDescriptor;
+   psnQueue * pQueue;
    char * data1 = "My data1";
    char * data2 = "My data2";
    char * data3 = "My data3";
-   vdseQueueItem * pQueueItem;
+   psnQueueItem * pQueueItem;
    vdsObjectDefinition def = { 
       VDS_QUEUE, 
       1, 
@@ -46,15 +46,15 @@ int main()
    pFolder = initFolderTest( expectedToPass, &context );
    pTx = context.pTransaction;
    
-   vdseTxStatusInit( &status, SET_OFFSET( pTx ) );
+   psnTxStatusInit( &status, SET_OFFSET( pTx ) );
    
-   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 
+   ok = psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 
                              1234, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -66,9 +66,9 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseTxCommit( pTx, &context );
+   psnTxCommit( pTx, &context );
    
-   ok = vdseFolderGetObject( pFolder,
+   ok = psnFolderGetObject( pFolder,
                              "test2",
                              5,
                              VDS_QUEUE,
@@ -77,30 +77,30 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   GET_PTR( pDescriptor, item.pHashItem->dataOffset, vdseObjectDescriptor );
-   GET_PTR( pQueue, pDescriptor->offset, vdseQueue );
+   GET_PTR( pDescriptor, item.pHashItem->dataOffset, psnObjectDescriptor );
+   GET_PTR( pQueue, pDescriptor->offset, psnQueue );
 
    /* Test 1 */
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data1,
                          strlen(data1),
-                         VDSE_QUEUE_LAST,
+                         PSN_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data2,
                          strlen(data2),
-                         VDSE_QUEUE_LAST,
+                         PSN_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data3,
                          strlen(data3),
-                         VDSE_QUEUE_LAST,
+                         PSN_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -113,7 +113,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseTxRollback( pTx, &context );
+   psnTxRollback( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -122,26 +122,26 @@ int main()
    }
    
    /* Test 2 */
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data1,
                          strlen(data1),
-                         VDSE_QUEUE_LAST,
+                         PSN_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data2,
                          strlen(data2),
-                         VDSE_QUEUE_LAST,
+                         PSN_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data3,
                          strlen(data3),
-                         VDSE_QUEUE_LAST,
+                         PSN_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -154,7 +154,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseTxCommit( pTx, &context );
+   psnTxCommit( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -162,43 +162,43 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseQueueRemove( pQueue,
+   ok = psnQueueRemove( pQueue,
                          &pQueueItem,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRelease( pQueue,
+   ok = psnQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRemove( pQueue,
+   ok = psnQueueRemove( pQueue,
                          &pQueueItem,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRelease( pQueue,
+   ok = psnQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRemove( pQueue,
+   ok = psnQueueRemove( pQueue,
                          &pQueueItem,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRelease( pQueue,
+   ok = psnQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
@@ -212,7 +212,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseTxRollback( pTx, &context );
+   psnTxRollback( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -220,43 +220,43 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseQueueRemove( pQueue,
+   ok = psnQueueRemove( pQueue,
                          &pQueueItem,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRelease( pQueue,
+   ok = psnQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRemove( pQueue,
+   ok = psnQueueRemove( pQueue,
                          &pQueueItem,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRelease( pQueue,
+   ok = psnQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRemove( pQueue,
+   ok = psnQueueRemove( pQueue,
                          &pQueueItem,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRelease( pQueue,
+   ok = psnQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
@@ -270,7 +270,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseTxCommit( pTx, &context );
+   psnTxCommit( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -279,32 +279,32 @@ int main()
    }
    
    /* Test 3 */
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data1,
                          strlen(data1),
-                         VDSE_QUEUE_LAST,
+                         PSN_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data2,
                          strlen(data2),
-                         VDSE_QUEUE_LAST,
+                         PSN_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data3,
                          strlen(data3),
-                         VDSE_QUEUE_LAST,
+                         PSN_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseQueueGet( pQueue,
+   ok = psnQueueGet( pQueue,
                       VDS_FIRST,
                       &pQueueItem,
                       (size_t) -1,
@@ -320,7 +320,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseTxRollback( pTx, &context );
+   psnTxRollback( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -328,7 +328,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseQueueRelease( pQueue,
+   ok = psnQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
@@ -342,32 +342,32 @@ int main()
    }
    
    /* Test 4 */
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data1,
                          strlen(data1),
-                         VDSE_QUEUE_LAST,
+                         PSN_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data2,
                          strlen(data2),
-                         VDSE_QUEUE_LAST,
+                         PSN_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data3,
                          strlen(data3),
-                         VDSE_QUEUE_LAST,
+                         PSN_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseQueueGet( pQueue,
+   ok = psnQueueGet( pQueue,
                       VDS_FIRST,
                       &pQueueItem,
                       (size_t) -1,
@@ -376,7 +376,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseTxCommit( pTx, &context );
+   psnTxCommit( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -384,7 +384,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   ok = vdseQueueRelease( pQueue,
+   ok = psnQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
@@ -397,44 +397,44 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   ok = vdseQueueRemove( pQueue,
+   ok = psnQueueRemove( pQueue,
                          &pQueueItem,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRelease( pQueue,
+   ok = psnQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRemove( pQueue,
+   ok = psnQueueRemove( pQueue,
                          &pQueueItem,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRelease( pQueue,
+   ok = psnQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRemove( pQueue,
+   ok = psnQueueRemove( pQueue,
                          &pQueueItem,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseTxRollback( pTx, &context );
+   psnTxRollback( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -442,7 +442,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseQueueRelease( pQueue,
+   ok = psnQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
@@ -455,44 +455,44 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseQueueRemove( pQueue,
+   ok = psnQueueRemove( pQueue,
                          &pQueueItem,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRelease( pQueue,
+   ok = psnQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRemove( pQueue,
+   ok = psnQueueRemove( pQueue,
                          &pQueueItem,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRelease( pQueue,
+   ok = psnQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseQueueRemove( pQueue,
+   ok = psnQueueRemove( pQueue,
                          &pQueueItem,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseTxCommit( pTx, &context );
+   psnTxCommit( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -500,7 +500,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseQueueRelease( pQueue,
+   ok = psnQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {

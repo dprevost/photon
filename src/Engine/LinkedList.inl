@@ -18,25 +18,25 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool vdseLinkedListGetFirst( vdseLinkedList  * pList,
-                             vdseLinkNode   ** ppItem )
+bool psnLinkedListGetFirst( psnLinkedList  * pList,
+                             psnLinkNode   ** ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
+   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty queue. */
    if ( pList->currentSize == 0 ) return false;
 
    /* Get the pointer to the first node */
-   *ppItem = GET_PTR_FAST( pList->head.nextOffset, vdseLinkNode );
+   *ppItem = GET_PTR_FAST( pList->head.nextOffset, psnLinkNode );
 
    /* Reset the next offset of the head and the previous offset
     * of the item after the item we are removing.
     */
    pList->head.nextOffset = (*ppItem)->nextOffset;
-   GET_PTR_FAST( (*ppItem)->nextOffset, vdseLinkNode)->previousOffset = 
+   GET_PTR_FAST( (*ppItem)->nextOffset, psnLinkNode)->previousOffset = 
       SET_OFFSET( &pList->head );
 
    --pList->currentSize;
@@ -49,25 +49,25 @@ bool vdseLinkedListGetFirst( vdseLinkedList  * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool vdseLinkedListGetLast( vdseLinkedList  * pList,
-                            vdseLinkNode   ** ppItem )
+bool psnLinkedListGetLast( psnLinkedList  * pList,
+                            psnLinkNode   ** ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
+   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
    if ( pList->currentSize == 0 ) return false;
 
    /* Get the pointer to the last node */
-   *ppItem = GET_PTR_FAST( pList->head.previousOffset, vdseLinkNode );
+   *ppItem = GET_PTR_FAST( pList->head.previousOffset, psnLinkNode );
 
    /* Reset the previous offset of the head and the next offset
     * of the item before the item we are removing.
     */   
    pList->head.previousOffset = (*ppItem)->previousOffset;
-   GET_PTR_FAST( (*ppItem)->previousOffset, vdseLinkNode)->nextOffset = 
+   GET_PTR_FAST( (*ppItem)->previousOffset, psnLinkNode)->nextOffset = 
       SET_OFFSET( &pList->head );
 
    --pList->currentSize;
@@ -80,17 +80,17 @@ bool vdseLinkedListGetLast( vdseLinkedList  * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void 
-vdseLinkedListPutLast( vdseLinkedList * pList,
-                       vdseLinkNode   * pNewItem )
+psnLinkedListPutLast( psnLinkedList * pList,
+                       psnLinkNode   * pNewItem )
 {
    ptrdiff_t tmpOffset;
    
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
+   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pNewItem   != NULL );
-   VDS_PRE_CONDITION( pNewItem->previousOffset == VDSE_NULL_OFFSET );
-   VDS_PRE_CONDITION( pNewItem->nextOffset     == VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->previousOffset == PSN_NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->nextOffset     == PSN_NULL_OFFSET );
 
    tmpOffset = SET_OFFSET( pNewItem );
 
@@ -99,29 +99,29 @@ vdseLinkedListPutLast( vdseLinkedList * pList,
    pNewItem->previousOffset   = pList->head.previousOffset;
    pList->head.previousOffset = tmpOffset;
 
-   GET_PTR_FAST( pNewItem->previousOffset, vdseLinkNode )->nextOffset = 
+   GET_PTR_FAST( pNewItem->previousOffset, psnLinkNode )->nextOffset = 
       tmpOffset;
    
    pList->currentSize++;
 
-   VDS_POST_CONDITION( pNewItem->previousOffset != VDSE_NULL_OFFSET );
-   VDS_POST_CONDITION( pNewItem->nextOffset     != VDSE_NULL_OFFSET );
+   VDS_POST_CONDITION( pNewItem->previousOffset != PSN_NULL_OFFSET );
+   VDS_POST_CONDITION( pNewItem->nextOffset     != PSN_NULL_OFFSET );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void 
-vdseLinkedListPutFirst( vdseLinkedList * pList,
-                        vdseLinkNode   * pNewItem )
+psnLinkedListPutFirst( psnLinkedList * pList,
+                        psnLinkNode   * pNewItem )
 {
    ptrdiff_t tmpOffset;
    
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
+   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pNewItem   != NULL );
-   VDS_PRE_CONDITION( pNewItem->previousOffset == VDSE_NULL_OFFSET );
-   VDS_PRE_CONDITION( pNewItem->nextOffset     == VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->previousOffset == PSN_NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->nextOffset     == PSN_NULL_OFFSET );
 
    tmpOffset = SET_OFFSET( pNewItem );
 
@@ -131,33 +131,33 @@ vdseLinkedListPutFirst( vdseLinkedList * pList,
    pNewItem->nextOffset = pList->head.nextOffset;   
    pList->head.nextOffset = tmpOffset;
 
-   GET_PTR_FAST( pNewItem->nextOffset, vdseLinkNode )->previousOffset = 
+   GET_PTR_FAST( pNewItem->nextOffset, psnLinkNode )->previousOffset = 
       tmpOffset;
    
    pList->currentSize++;
 
-   VDS_POST_CONDITION( pNewItem->previousOffset != VDSE_NULL_OFFSET );
-   VDS_POST_CONDITION( pNewItem->nextOffset     != VDSE_NULL_OFFSET );
+   VDS_POST_CONDITION( pNewItem->previousOffset != PSN_NULL_OFFSET );
+   VDS_POST_CONDITION( pNewItem->nextOffset     != PSN_NULL_OFFSET );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void 
-vdseLinkedListRemoveItem( vdseLinkedList * pList,
-                          vdseLinkNode   * pRemovedItem )
+psnLinkedListRemoveItem( psnLinkedList * pList,
+                          psnLinkNode   * pRemovedItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
+   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pRemovedItem != NULL );
-   VDS_PRE_CONDITION( pRemovedItem->previousOffset != VDSE_NULL_OFFSET );
-   VDS_PRE_CONDITION( pRemovedItem->nextOffset     != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pRemovedItem->previousOffset != PSN_NULL_OFFSET );
+   VDS_PRE_CONDITION( pRemovedItem->nextOffset     != PSN_NULL_OFFSET );
    VDS_PRE_CONDITION( pList->currentSize > 0 );
 
-   GET_PTR_FAST( pRemovedItem->nextOffset, vdseLinkNode )->previousOffset = 
+   GET_PTR_FAST( pRemovedItem->nextOffset, psnLinkNode )->previousOffset = 
       pRemovedItem->previousOffset;
 
-   GET_PTR_FAST( pRemovedItem->previousOffset, vdseLinkNode )->nextOffset = 
+   GET_PTR_FAST( pRemovedItem->previousOffset, psnLinkNode )->nextOffset = 
       pRemovedItem->nextOffset;
 
    --pList->currentSize;
@@ -166,18 +166,18 @@ vdseLinkedListRemoveItem( vdseLinkedList * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool vdseLinkedListPeakFirst( vdseLinkedList *  pList,
-                              vdseLinkNode   ** ppItem )
+bool psnLinkedListPeakFirst( psnLinkedList *  pList,
+                              psnLinkNode   ** ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
+   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
    if ( pList->currentSize == 0 ) return false;
 
-   *ppItem = GET_PTR_FAST( pList->head.nextOffset, vdseLinkNode );
+   *ppItem = GET_PTR_FAST( pList->head.nextOffset, psnLinkNode );
 
    VDS_POST_CONDITION( *ppItem != NULL );
 
@@ -187,18 +187,18 @@ bool vdseLinkedListPeakFirst( vdseLinkedList *  pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool vdseLinkedListPeakLast( vdseLinkedList  * pList,
-                             vdseLinkNode   ** ppItem )
+bool psnLinkedListPeakLast( psnLinkedList  * pList,
+                             psnLinkNode   ** ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
+   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
    VDS_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
    if ( pList->currentSize == 0 ) return false;
 
-   *ppItem = GET_PTR_FAST( pList->head.previousOffset, vdseLinkNode );
+   *ppItem = GET_PTR_FAST( pList->head.previousOffset, psnLinkNode );
 
    VDS_POST_CONDITION( *ppItem != NULL );
 
@@ -208,21 +208,21 @@ bool vdseLinkedListPeakLast( vdseLinkedList  * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool vdseLinkedListPeakNext( vdseLinkedList * pList,
-                             vdseLinkNode   * pCurrent, 
-                             vdseLinkNode  ** ppNext )
+bool psnLinkedListPeakNext( psnLinkedList * pList,
+                             psnLinkNode   * pCurrent, 
+                             psnLinkNode  ** ppNext )
 {
-   vdseLinkNode* pNext;
+   psnLinkNode* pNext;
 
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
+   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pCurrent   != NULL );
    VDS_PRE_CONDITION( ppNext     != NULL );
-   VDS_PRE_CONDITION( pCurrent->previousOffset != VDSE_NULL_OFFSET );
-   VDS_PRE_CONDITION( pCurrent->nextOffset     != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pCurrent->previousOffset != PSN_NULL_OFFSET );
+   VDS_PRE_CONDITION( pCurrent->nextOffset     != PSN_NULL_OFFSET );
 
-   pNext = GET_PTR_FAST( pCurrent->nextOffset, vdseLinkNode );
+   pNext = GET_PTR_FAST( pCurrent->nextOffset, psnLinkNode );
    if ( pNext == &pList->head ) return false;
 
    *ppNext = pNext;
@@ -235,21 +235,21 @@ bool vdseLinkedListPeakNext( vdseLinkedList * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool vdseLinkedListPeakPrevious( vdseLinkedList * pList,
-                                 vdseLinkNode   * pCurrent, 
-                                 vdseLinkNode  ** ppPrevious )
+bool psnLinkedListPeakPrevious( psnLinkedList * pList,
+                                 psnLinkNode   * pCurrent, 
+                                 psnLinkNode  ** ppPrevious )
 {
-   vdseLinkNode* pPrevious;
+   psnLinkNode* pPrevious;
 
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
+   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pCurrent   != NULL );
    VDS_PRE_CONDITION( ppPrevious != NULL );
-   VDS_PRE_CONDITION( pCurrent->previousOffset != VDSE_NULL_OFFSET );
-   VDS_PRE_CONDITION( pCurrent->nextOffset     != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pCurrent->previousOffset != PSN_NULL_OFFSET );
+   VDS_PRE_CONDITION( pCurrent->nextOffset     != PSN_NULL_OFFSET );
 
-   pPrevious = GET_PTR_FAST( pCurrent->previousOffset, vdseLinkNode );
+   pPrevious = GET_PTR_FAST( pCurrent->previousOffset, psnLinkNode );
    if ( pPrevious == &pList->head ) return false;
 
    *ppPrevious = pPrevious;
@@ -266,31 +266,31 @@ bool vdseLinkedListPeakPrevious( vdseLinkedList * pList,
  * assumes that pOldItem is in the list... otherwise big trouble!)
  */
 inline void 
-vdseLinkedListReplaceItem( vdseLinkedList * pList,
-                           vdseLinkNode   * pOldItem,
-                           vdseLinkNode   * pNewItem )
+psnLinkedListReplaceItem( psnLinkedList * pList,
+                           psnLinkNode   * pOldItem,
+                           psnLinkNode   * pNewItem )
 {
    ptrdiff_t tmpOffset;
 
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
+   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pOldItem != NULL );
-   VDS_PRE_CONDITION( pOldItem->previousOffset != VDSE_NULL_OFFSET );
-   VDS_PRE_CONDITION( pOldItem->nextOffset     != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pOldItem->previousOffset != PSN_NULL_OFFSET );
+   VDS_PRE_CONDITION( pOldItem->nextOffset     != PSN_NULL_OFFSET );
    VDS_PRE_CONDITION( pNewItem != NULL );
-   VDS_PRE_CONDITION( pNewItem->previousOffset == VDSE_NULL_OFFSET );
-   VDS_PRE_CONDITION( pNewItem->nextOffset     == VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->previousOffset == PSN_NULL_OFFSET );
+   VDS_PRE_CONDITION( pNewItem->nextOffset     == PSN_NULL_OFFSET );
    VDS_PRE_CONDITION( pList->currentSize > 0 );
 
    tmpOffset = SET_OFFSET( pNewItem );
    pNewItem->nextOffset     = pOldItem->nextOffset;
    pNewItem->previousOffset = pOldItem->previousOffset;
 
-   GET_PTR_FAST( pOldItem->nextOffset, vdseLinkNode )->previousOffset = 
+   GET_PTR_FAST( pOldItem->nextOffset, psnLinkNode )->previousOffset = 
       tmpOffset;
 
-   GET_PTR_FAST( pOldItem->previousOffset, vdseLinkNode )->nextOffset = 
+   GET_PTR_FAST( pOldItem->previousOffset, psnLinkNode )->nextOffset = 
       tmpOffset;
 }
 

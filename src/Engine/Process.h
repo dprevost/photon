@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_PROCESS_H
-#define VDSE_PROCESS_H
+#ifndef PSN_PROCESS_H
+#define PSN_PROCESS_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -40,69 +40,69 @@ BEGIN_C_DECLS
  * closed objects (->decrease access counter), unlocked objects, etc.
  *
  */
-struct vdseProcess
+struct psnProcess
 {
    /** Always first */
-   struct vdseMemObject memObject;
+   struct psnMemObject memObject;
 
-   vdseLinkNode node;
+   psnLinkNode node;
    
    pid_t pid;
 
-   vdseLinkedList listOfSessions;
+   psnLinkedList listOfSessions;
 
    bool processIsTerminating;
 
    /** Variable size struct - always put at the end */
-   struct vdseBlockGroup blockGroup;
+   struct psnBlockGroup blockGroup;
 
 };
 
-typedef struct vdseProcess vdseProcess;
+typedef struct psnProcess psnProcess;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-bool vdseProcessInit( vdseProcess        * pProcess,
+bool psnProcessInit( psnProcess        * pProcess,
                       pid_t                pid,
-                      vdseSessionContext * pContext );
+                      psnSessionContext * pContext );
    
 VDSF_ENGINE_EXPORT
-void vdseProcessFini( vdseProcess        * pProcess,
-                      vdseSessionContext * pContext );
+void psnProcessFini( psnProcess        * pProcess,
+                      psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseProcessAddSession( vdseProcess        * pProcess,
+bool psnProcessAddSession( psnProcess        * pProcess,
                             void               * pApiSession,
-                            vdseSession       ** pSession,
-                            vdseSessionContext * pContext );
+                            psnSession       ** pSession,
+                            psnSessionContext * pContext );
 
 /*
- * Takes a lock on the current object. Not on the vdseSession itself. 
+ * Takes a lock on the current object. Not on the psnSession itself. 
  */
 VDSF_ENGINE_EXPORT
-bool vdseProcessRemoveSession( vdseProcess        * pProcess,
-                               vdseSession        * pSession,
-                               vdseSessionContext * pContext );
+bool psnProcessRemoveSession( psnProcess        * pProcess,
+                               psnSession        * pSession,
+                               psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseProcessGetFirstSession( vdseProcess        * pProcess,
-                                 vdseSession       ** ppSession,
-                                 vdseSessionContext * pContext );
+bool psnProcessGetFirstSession( psnProcess        * pProcess,
+                                 psnSession       ** ppSession,
+                                 psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseProcessGetNextSession( vdseProcess        * pProcess,
-                                vdseSession        * pCurrent,
-                                vdseSession       ** ppNext,
-                                vdseSessionContext * pContext );
+bool psnProcessGetNextSession( psnProcess        * pProcess,
+                                psnSession        * pCurrent,
+                                psnSession       ** ppNext,
+                                psnSessionContext * pContext );
 
 static inline
-void vdseProcessNoMoreSessionAllowed( vdseProcess        * pProcess,
-                                      vdseSessionContext * pContext )
+void psnProcessNoMoreSessionAllowed( psnProcess        * pProcess,
+                                      psnSessionContext * pContext )
 {
-   if ( vdseLock( &pProcess->memObject, pContext ) ) {
+   if ( psnLock( &pProcess->memObject, pContext ) ) {
       pProcess->processIsTerminating = true;
-      vdseUnlock( &pProcess->memObject, pContext );
+      psnUnlock( &pProcess->memObject, pContext );
    }
 }
 
@@ -112,7 +112,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_PROCESS_H */
+#endif /* PSN_PROCESS_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -38,7 +38,7 @@ struct vdswMemoryManager
    
    void * pMemoryAddress;
 
-   vdseMemoryHeader * pHeader;
+   psnMemoryHeader * pHeader;
    
 };
 
@@ -55,8 +55,8 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
                     const char         * memoryFileName,
                     size_t               memorySize,
                     int                  filePerms,
-                    vdseMemoryHeader  ** ppMemoryAddress,
-                    vdseSessionContext * pContext );
+                    psnMemoryHeader  ** ppMemoryAddress,
+                    psnSessionContext * pContext );
 
 /**
  * This function opens an existing VDS. This is the function that should
@@ -65,8 +65,8 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
 bool vdswOpenVDS( vdswMemoryManager  * pManager, 
                   const char         * memoryFileName,
                   size_t               memorySize,
-                  vdseMemoryHeader  ** ppMemoryAddress,
-                  vdseSessionContext * pContext );
+                  psnMemoryHeader  ** ppMemoryAddress,
+                  psnSessionContext * pContext );
 
 void vdswCloseVDS( vdswMemoryManager * pManager,
                    pscErrorHandler  * pError );
@@ -87,7 +87,7 @@ bool vdswSyncVDS( vdswMemoryManager * pManager,
 
 END_C_DECLS
 
-#endif /* VDSE_MEMORY_MANAGER_H */
+#endif /* PSN_MEMORY_MANAGER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

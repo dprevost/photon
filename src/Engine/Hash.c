@@ -35,7 +35,7 @@
  * (which list the first 10 prime numbers less than 2^n for n up to 400).
  */
 #if SIZEOF_VOID_P == 4
-size_t g_vdseArrayLengths[VDSE_PRIME_NUMBER_ARRAY_LENGTH] = 
+size_t g_psnArrayLengths[PSN_PRIME_NUMBER_ARRAY_LENGTH] = 
 {
    13,     
    29,
@@ -67,7 +67,7 @@ size_t g_vdseArrayLengths[VDSE_PRIME_NUMBER_ARRAY_LENGTH] =
    0x80000000 - 1
 };
 #else
-size_t g_vdseArrayLengths[VDSE_PRIME_NUMBER_ARRAY_LENGTH] = 
+size_t g_psnArrayLengths[PSN_PRIME_NUMBER_ARRAY_LENGTH] = 
 {
    13,     
    29,
@@ -154,7 +154,7 @@ size_t calculateItemLength( size_t keyLength,
 {
    size_t len;
    
-   len = offsetof(vdseHashItem, key) + keyLength;
+   len = offsetof(psnHashItem, key) + keyLength;
    len = ((len-1)/PSC_ALIGNMENT_STRUCT + 1)*PSC_ALIGNMENT_STRUCT;
    
    len += dataLength;
@@ -174,17 +174,17 @@ hash_it (const unsigned char * str, size_t len)
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-vdseHashResizeEnum isItTimeToResize( vdseHash * pHash )
+psnHashResizeEnum isItTimeToResize( psnHash * pHash )
 {
    unsigned int loadFactor = 100 * pHash->numberOfItems / 
-      g_vdseArrayLengths[pHash->lengthIndex];
+      g_psnArrayLengths[pHash->lengthIndex];
 
-  if ( loadFactor >= g_maxLoadFactor ) return VDSE_HASH_TIME_TO_GROW;
+  if ( loadFactor >= g_maxLoadFactor ) return PSN_HASH_TIME_TO_GROW;
   if ( pHash->lengthIndex > pHash->lengthIndexMinimum ) {
-     if ( loadFactor <= g_minLoadFactor ) return VDSE_HASH_TIME_TO_SHRINK;
+     if ( loadFactor <= g_minLoadFactor ) return PSN_HASH_TIME_TO_SHRINK;
   }
   
-  return VDSE_HASH_NO_RESIZE;
+  return PSN_HASH_NO_RESIZE;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- 
@@ -195,24 +195,24 @@ vdseHashResizeEnum isItTimeToResize( vdseHash * pHash )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static bool findKey( vdseHash            * pHash,
+static bool findKey( psnHash            * pHash,
                      ptrdiff_t           * pArray,
                      const unsigned char * pKey,
                      size_t                keyLength,
-                     vdseHashItem       ** ppItem,
-                     vdseHashItem       ** ppPreviousItem,
+                     psnHashItem       ** ppItem,
+                     psnHashItem       ** ppPreviousItem,
                      size_t              * pBucket )
 {
    ptrdiff_t currentOffset, nextOffset;
-   vdseHashItem* pItem;
+   psnHashItem* pItem;
 
-   *pBucket = hash_it( pKey, keyLength ) % g_vdseArrayLengths[pHash->lengthIndex];
+   *pBucket = hash_it( pKey, keyLength ) % g_psnArrayLengths[pHash->lengthIndex];
    currentOffset = pArray[*pBucket];
    
    *ppPreviousItem = NULL;
 
-   while ( currentOffset != VDSE_NULL_OFFSET ) {
-      GET_PTR( pItem, currentOffset, vdseHashItem );
+   while ( currentOffset != PSN_NULL_OFFSET ) {
+      GET_PTR( pItem, currentOffset, psnHashItem );
       nextOffset = pItem->nextItem;
      
       if ( keyLength == pItem->keyLength ) {
@@ -239,42 +239,42 @@ static bool findKey( vdseHash            * pHash,
  * 
  * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdsErrors vdseHashCopy( vdseHash           * pOldHash,
-                             vdseHash           * pNewHash,
-                             vdseSessionContext * pContext )
+enum vdsErrors psnHashCopy( psnHash           * pOldHash,
+                             psnHash           * pNewHash,
+                             psnSessionContext * pContext )
 {
    ptrdiff_t * pOldArray, * pNewArray;
    size_t i;
    ptrdiff_t currentOffset, tempOffset, newBucket;
-   vdseHashItem * pOldItem, * pNewItem, * previousItem, * tempItem;
-   vdseMemObject * pMemObject;
+   psnHashItem * pOldItem, * pNewItem, * previousItem, * tempItem;
+   psnMemObject * pMemObject;
    size_t itemLength;
    
    VDS_PRE_CONDITION( pOldHash != NULL );
    VDS_PRE_CONDITION( pNewHash != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_INV_CONDITION( pOldHash->initialized == VDSE_HASH_SIGNATURE );
-   VDS_INV_CONDITION( pNewHash->initialized == VDSE_HASH_SIGNATURE );
+   VDS_INV_CONDITION( pOldHash->initialized == PSN_HASH_SIGNATURE );
+   VDS_INV_CONDITION( pNewHash->initialized == PSN_HASH_SIGNATURE );
 
    GET_PTR( pOldArray, pOldHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pOldArray != NULL );
    GET_PTR( pNewArray, pNewHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pNewArray != NULL );
 
-   GET_PTR( pMemObject, pNewHash->memObjOffset, vdseMemObject );
+   GET_PTR( pMemObject, pNewHash->memObjOffset, psnMemObject );
 
    if ( pOldHash->lengthIndex == pNewHash->lengthIndex ) {
       /* Much simpler path... hashing is done for us */
-      for ( i = 0; i < g_vdseArrayLengths[pOldHash->lengthIndex]; ++i ) {
+      for ( i = 0; i < g_psnArrayLengths[pOldHash->lengthIndex]; ++i ) {
 
          currentOffset = pOldArray[i];
          previousItem = NULL;
-         while ( currentOffset != VDSE_NULL_OFFSET ) {
-            GET_PTR( pOldItem, currentOffset, vdseHashItem );
+         while ( currentOffset != PSN_NULL_OFFSET ) {
+            GET_PTR( pOldItem, currentOffset, psnHashItem );
 
             itemLength = calculateItemLength( pOldItem->keyLength,
                                               pOldItem->dataLength );
-            pNewItem = (vdseHashItem*) vdseMalloc( pMemObject, 
+            pNewItem = (psnHashItem*) psnMalloc( pMemObject, 
                                                    itemLength, 
                                                    pContext );
             if ( pNewItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
@@ -282,7 +282,7 @@ enum vdsErrors vdseHashCopy( vdseHash           * pOldHash,
             /*
              * We copy everything and we reset the offset of interest
              * to proper values (the nextSameKey offset should always be 
-             * VDSE_NULL_OFFSET since the oldHash is for a read-only object).
+             * PSN_NULL_OFFSET since the oldHash is for a read-only object).
              */
             memcpy( pNewItem, pOldItem, itemLength );
             pNewItem->dataOffset = SET_OFFSET(pNewItem) + itemLength - 
@@ -301,15 +301,15 @@ enum vdsErrors vdseHashCopy( vdseHash           * pOldHash,
       }
    }
    else {
-      for ( i = 0; i < g_vdseArrayLengths[pOldHash->lengthIndex]; ++i ) {
+      for ( i = 0; i < g_psnArrayLengths[pOldHash->lengthIndex]; ++i ) {
          currentOffset = pOldArray[i];
       
-         while ( currentOffset != VDSE_NULL_OFFSET ) {
-            GET_PTR( pOldItem, currentOffset, vdseHashItem );
+         while ( currentOffset != PSN_NULL_OFFSET ) {
+            GET_PTR( pOldItem, currentOffset, psnHashItem );
 
             itemLength = calculateItemLength( pOldItem->keyLength,
                                               pOldItem->dataLength );
-            pNewItem = (vdseHashItem*) vdseMalloc( pMemObject, 
+            pNewItem = (psnHashItem*) psnMalloc( pMemObject, 
                                                    itemLength, 
                                                    pContext );
             if ( pNewItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
@@ -317,7 +317,7 @@ enum vdsErrors vdseHashCopy( vdseHash           * pOldHash,
             /*
              * We copy everything and we reset the offset of interest
              * to proper values (the nextSameKey offset should always be 
-             * VDSE_NULL_OFFSET since the oldHash is for a read-only object).
+             * PSN_NULL_OFFSET since the oldHash is for a read-only object).
              */
             memcpy( pNewItem, pOldItem, itemLength );
             pNewItem->dataOffset = SET_OFFSET(pNewItem) + itemLength - 
@@ -325,17 +325,17 @@ enum vdsErrors vdseHashCopy( vdseHash           * pOldHash,
 
             /* Set the chain */
             newBucket = hash_it( pNewItem->key, pNewItem->keyLength ) % 
-                        g_vdseArrayLengths[pNewHash->lengthIndex];
+                        g_psnArrayLengths[pNewHash->lengthIndex];
             pNewItem->bucket = newBucket;
-            if ( pNewArray[newBucket] == VDSE_NULL_OFFSET ) {
+            if ( pNewArray[newBucket] == PSN_NULL_OFFSET ) {
                pNewArray[newBucket] = SET_OFFSET(pNewItem);
             }
             else {
                tempOffset = pNewArray[newBucket];
-               GET_PTR( tempItem, tempOffset, vdseHashItem );
-               while ( tempItem->nextItem != VDSE_NULL_OFFSET ) {
+               GET_PTR( tempItem, tempOffset, psnHashItem );
+               while ( tempItem->nextItem != PSN_NULL_OFFSET ) {
                   tempOffset = tempItem->nextItem;
-                  GET_PTR( tempItem, tempOffset, vdseHashItem );
+                  GET_PTR( tempItem, tempOffset, psnHashItem );
                }
                tempItem->nextItem = SET_OFFSET(pNewItem);
             }
@@ -355,31 +355,31 @@ enum vdsErrors vdseHashCopy( vdseHash           * pOldHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseHashDelWithItem( vdseHash           * pHash,
-                          vdseHashItem       * pItem,
-                          vdseSessionContext * pContext )
+void psnHashDelWithItem( psnHash           * pHash,
+                          psnHashItem       * pItem,
+                          psnSessionContext * pContext )
 {
    ptrdiff_t * pArray;
-   vdseHashItem * pNewItem = NULL, * previousItem = NULL;
+   psnHashItem * pNewItem = NULL, * previousItem = NULL;
    ptrdiff_t nextOffset;
-   vdseMemObject * pMemObject;
+   psnMemObject * pMemObject;
    size_t bucket;
    
    VDS_PRE_CONDITION( pHash    != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pItem    != NULL );
-   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
-   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
+   GET_PTR( pMemObject, pHash->memObjOffset, psnMemObject );
    bucket = pItem->bucket;
    
    nextOffset = pArray[bucket];
-   while ( nextOffset != VDSE_NULL_OFFSET ) {
+   while ( nextOffset != PSN_NULL_OFFSET ) {
       previousItem = pNewItem;
-      GET_PTR( pNewItem, nextOffset, vdseHashItem );
+      GET_PTR( pNewItem, nextOffset, psnHashItem );
       if ( pNewItem == pItem ) break;
       nextOffset = pNewItem->nextItem;
    }
@@ -388,7 +388,7 @@ void vdseHashDelWithItem( vdseHash           * pHash,
    nextOffset = pItem->nextItem;
       
    pHash->totalDataSizeInBytes -= pItem->dataLength;
-   vdseFree( pMemObject, 
+   psnFree( pMemObject, 
              (unsigned char*)pItem, 
              calculateItemLength(pItem->keyLength,pItem->dataLength),
              pContext );
@@ -411,28 +411,28 @@ void vdseHashDelWithItem( vdseHash           * pHash,
  * Note: there is no "same key" here since this function is used for doing
  * changes to a temp. copy of read-only objects - no transaction.
  */
-bool vdseHashDelWithKey( vdseHash            * pHash,
+bool psnHashDelWithKey( psnHash            * pHash,
                          const unsigned char * pKey, 
                          size_t                keyLength,
-                         vdseSessionContext  * pContext  )
+                         psnSessionContext  * pContext  )
 {
    size_t bucket = 0;
    ptrdiff_t * pArray;
    bool keyFound = false;
-   vdseHashItem * previousItem = NULL, * pItem = NULL;
+   psnHashItem * previousItem = NULL, * pItem = NULL;
    ptrdiff_t nextOffset;
-   vdseMemObject * pMemObject;
+   psnMemObject * pMemObject;
   
    VDS_PRE_CONDITION( pHash     != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
    VDS_PRE_CONDITION( pKey      != NULL );
    VDS_PRE_CONDITION( keyLength > 0 );
-   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
-   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
+   GET_PTR( pMemObject, pHash->memObjOffset, psnMemObject );
    
    keyFound = findKey( pHash, 
                        pArray, 
@@ -446,7 +446,7 @@ bool vdseHashDelWithKey( vdseHash            * pHash,
       nextOffset  = pItem->nextItem;
       
       pHash->totalDataSizeInBytes -= pItem->dataLength;
-      vdseFree( pMemObject, 
+      psnFree( pMemObject, 
                 (unsigned char*)pItem, 
                 calculateItemLength(pItem->keyLength,pItem->dataLength),
                 pContext );
@@ -469,31 +469,31 @@ bool vdseHashDelWithKey( vdseHash            * pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseHashEmpty( vdseHash           * pHash,
-                    vdseSessionContext * pContext )
+void psnHashEmpty( psnHash           * pHash,
+                    psnSessionContext * pContext )
 {
    ptrdiff_t* pArray, currentOffset, nextOffset;
    size_t i;
-   vdseHashItem* pItem;
-   vdseMemObject * pMemObject;
+   psnHashItem* pItem;
+   psnMemObject * pMemObject;
    
    VDS_PRE_CONDITION( pHash != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
-   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
+   GET_PTR( pMemObject, pHash->memObjOffset, psnMemObject );
 
-   for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
+   for ( i = 0; i < g_psnArrayLengths[pHash->lengthIndex]; ++i ) {
       currentOffset = pArray[i];
       
-      while ( currentOffset != VDSE_NULL_OFFSET ) {
-         GET_PTR( pItem, currentOffset, vdseHashItem );
+      while ( currentOffset != PSN_NULL_OFFSET ) {
+         GET_PTR( pItem, currentOffset, psnHashItem );
          nextOffset = pItem->nextItem;
          
-         vdseFree( pMemObject, 
+         psnFree( pMemObject, 
                    (unsigned char*) pItem, 
                    calculateItemLength(pItem->keyLength,pItem->dataLength), 
                    pContext );
@@ -502,7 +502,7 @@ void vdseHashEmpty( vdseHash           * pHash,
          currentOffset = nextOffset;
       }
       
-      pArray[i] = VDSE_NULL_OFFSET;
+      pArray[i] = PSN_NULL_OFFSET;
    }
    
    pHash->numberOfItems = 0;
@@ -512,26 +512,26 @@ void vdseHashEmpty( vdseHash           * pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseHashFini( vdseHash * pHash )
+void psnHashFini( psnHash * pHash )
 {
    VDS_PRE_CONDITION( pHash != NULL );
-   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    pHash->initialized = 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseHashGet( vdseHash            * pHash,
+bool psnHashGet( psnHash            * pHash,
                   const unsigned char * pKey,
                   size_t                keyLength,
-                  vdseHashItem       ** ppItem,
+                  psnHashItem       ** ppItem,
                   size_t              * pBucket,
-                  vdseSessionContext  * pContext )
+                  psnSessionContext  * pContext )
 {
    bool keyFound = false;
    ptrdiff_t* pArray;
-   vdseHashItem* pItem, *dummy;
+   psnHashItem* pItem, *dummy;
    
    VDS_PRE_CONDITION( pHash    != NULL );
    VDS_PRE_CONDITION( pKey     != NULL );
@@ -539,7 +539,7 @@ bool vdseHashGet( vdseHash            * pHash,
    VDS_PRE_CONDITION( pBucket  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( keyLength > 0 );
-   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
@@ -559,7 +559,7 @@ bool vdseHashGet( vdseHash            * pHash,
 #  pragma warning(disable:4702) 
 #endif
 
-bool vdseHashGetFirst( vdseHash  * pHash,
+bool psnHashGetFirst( psnHash  * pHash,
                        ptrdiff_t * pFirstItemOffset )
 {
    ptrdiff_t* pArray, currentOffset;
@@ -569,7 +569,7 @@ bool vdseHashGetFirst( vdseHash  * pHash,
    VDS_PRE_CONDITION( pHash != NULL );
    VDS_PRE_CONDITION( pFirstItemOffset != NULL );
    
-   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
@@ -580,10 +580,10 @@ bool vdseHashGetFirst( vdseHash  * pHash,
     * Note: the first item has to be the first non-empty pArray[i],
     * this makes the search easier.
     */
-   for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
+   for ( i = 0; i < g_psnArrayLengths[pHash->lengthIndex]; ++i ) {
       currentOffset = pArray[i];
       
-      if (currentOffset != VDSE_NULL_OFFSET ) {
+      if (currentOffset != PSN_NULL_OFFSET ) {
          *pFirstItemOffset = currentOffset;
          return true;
       }
@@ -600,24 +600,24 @@ bool vdseHashGetFirst( vdseHash  * pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseHashGetNext( vdseHash  * pHash,
+bool psnHashGetNext( psnHash  * pHash,
                       ptrdiff_t   previousOffset,
                       ptrdiff_t * pNextItemOffset )
 {
    ptrdiff_t* pArray, currentOffset;
    size_t i;
-   vdseHashItem* pItem;
+   psnHashItem* pItem;
    
    VDS_PRE_CONDITION( pHash != NULL );
    VDS_PRE_CONDITION( pNextItemOffset != NULL );
-   VDS_PRE_CONDITION( previousOffset != VDSE_NULL_OFFSET );
-   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   VDS_PRE_CONDITION( previousOffset != PSN_NULL_OFFSET );
+   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
-   GET_PTR( pItem, previousOffset, vdseHashItem );
-   if ( pItem->nextItem != VDSE_NULL_OFFSET ) {
+   GET_PTR( pItem, previousOffset, psnHashItem );
+   if ( pItem->nextItem != PSN_NULL_OFFSET ) {
       /* We found the next one in the linked list. */
       *pNextItemOffset = pItem->nextItem;
       return true;
@@ -627,10 +627,10 @@ bool vdseHashGetNext( vdseHash  * pHash,
     * Note: the next item has to be the first non-empty pArray[i] beyond
     * the current bucket (previousBucket). 
     */
-   for ( i = pItem->bucket+1; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
+   for ( i = pItem->bucket+1; i < g_psnArrayLengths[pHash->lengthIndex]; ++i ) {
       currentOffset = pArray[i];
       
-      if (currentOffset != VDSE_NULL_OFFSET ) {
+      if (currentOffset != PSN_NULL_OFFSET ) {
          *pNextItemOffset = currentOffset;
          return true;
       }
@@ -641,24 +641,24 @@ bool vdseHashGetNext( vdseHash  * pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdsErrors vdseHashInit( vdseHash           * pHash,
+enum vdsErrors psnHashInit( psnHash           * pHash,
                              ptrdiff_t            memObjOffset,
                              size_t               reservedSize, 
-                             vdseSessionContext * pContext )
+                             psnSessionContext * pContext )
 {
    size_t len, numBuckets;
    ptrdiff_t* ptr;
    unsigned int i;
-   vdseMemObject * pMemObject;
+   psnMemObject * pMemObject;
    
    VDS_PRE_CONDITION( pHash != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
 
    pHash->numberOfItems = 0;
    pHash->totalDataSizeInBytes = 0;
-   pHash->enumResize = VDSE_HASH_NO_RESIZE;
+   pHash->enumResize = PSN_HASH_NO_RESIZE;
    
-   GET_PTR( pMemObject, memObjOffset, vdseMemObject );
+   GET_PTR( pMemObject, memObjOffset, psnMemObject );
    /*
     * reservedSize... In real life what it means is that we cannot shrink 
     * the array to a point where we would need to increase it in order
@@ -672,24 +672,24 @@ enum vdsErrors vdseHashInit( vdseHash           * pHash,
    
    /* Which one of our lengths is closer but larger than numBuckets? */
    pHash->lengthIndex = pHash->lengthIndexMinimum = 0;
-   for ( i = 1; i < VDSE_PRIME_NUMBER_ARRAY_LENGTH; ++i ) {
-      if ( g_vdseArrayLengths[i] > numBuckets ) {
+   for ( i = 1; i < PSN_PRIME_NUMBER_ARRAY_LENGTH; ++i ) {
+      if ( g_psnArrayLengths[i] > numBuckets ) {
          pHash->lengthIndex = i - 1;
          pHash->lengthIndexMinimum = i - 1;
          break;
       }
    }
    
-   len = g_vdseArrayLengths[pHash->lengthIndex] * sizeof(ptrdiff_t);
+   len = g_psnArrayLengths[pHash->lengthIndex] * sizeof(ptrdiff_t);
    
-   ptr = (ptrdiff_t*) vdseMalloc( pMemObject, len, pContext );
+   ptr = (ptrdiff_t*) psnMalloc( pMemObject, len, pContext );
    if ( ptr != NULL ) {
-      for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i) {
-         ptr[i] = VDSE_NULL_OFFSET;
+      for ( i = 0; i < g_psnArrayLengths[pHash->lengthIndex]; ++i) {
+         ptr[i] = PSN_NULL_OFFSET;
       }
       
       pHash->arrayOffset = SET_OFFSET( ptr );
-      pHash->initialized = VDSE_HASH_SIGNATURE;
+      pHash->initialized = PSN_HASH_SIGNATURE;
       pHash->memObjOffset = memObjOffset;
    
       return VDS_OK;
@@ -700,20 +700,20 @@ enum vdsErrors vdseHashInit( vdseHash           * pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdsErrors vdseHashInsert( vdseHash            * pHash,
+enum vdsErrors psnHashInsert( psnHash            * pHash,
                                const unsigned char * pKey,
                                size_t                keyLength,
                                const void          * pData,
                                size_t                dataLength,
-                               vdseHashItem       ** ppNewItem,
-                               vdseSessionContext  * pContext )
+                               psnHashItem       ** ppNewItem,
+                               psnSessionContext  * pContext )
 {
    ptrdiff_t* pArray;   
    size_t bucket = 0;
    bool   keyFound = false;
-   vdseHashItem* pItem, *previousItem = NULL;
+   psnHashItem* pItem, *previousItem = NULL;
    size_t itemLength;
-   vdseMemObject * pMemObject;
+   psnMemObject * pMemObject;
    
    VDS_PRE_CONDITION( pHash     != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
@@ -723,7 +723,7 @@ enum vdsErrors vdseHashInsert( vdseHash            * pHash,
    VDS_PRE_CONDITION( keyLength  > 0 );
    VDS_PRE_CONDITION( dataLength > 0 );
 
-   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
@@ -733,22 +733,22 @@ enum vdsErrors vdseHashInsert( vdseHash            * pHash,
 
    if ( keyFound ) return VDS_ITEM_ALREADY_PRESENT;
 
-   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
+   GET_PTR( pMemObject, pHash->memObjOffset, psnMemObject );
    
    /* The whole item is allocated in one step, header+data, to minimize */
    /* overheads of the memory allocator */
    itemLength = calculateItemLength( keyLength, dataLength );
-   pItem = (vdseHashItem*) vdseMalloc( pMemObject, itemLength, pContext );
+   pItem = (psnHashItem*) psnMalloc( pMemObject, itemLength, pContext );
    if ( pItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
    
-   pItem->nextItem = VDSE_NULL_OFFSET;
+   pItem->nextItem = PSN_NULL_OFFSET;
    pItem->bucket = bucket;
    
    /* keyLength must be set before calling getData() */   
    pItem->keyLength = keyLength;
    pItem->dataLength = dataLength;
    pItem->dataOffset = SET_OFFSET(pItem) + itemLength - dataLength;
-   pItem->nextSameKey = VDSE_NULL_OFFSET;
+   pItem->nextSameKey = PSN_NULL_OFFSET;
    
    memcpy( pItem->key,     pKey, keyLength );
    memcpy( GET_PTR_FAST(pItem->dataOffset, unsigned char), pData, dataLength );
@@ -772,19 +772,19 @@ enum vdsErrors vdseHashInsert( vdseHash            * pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdsErrors vdseHashInsertAt( vdseHash            * pHash,
+enum vdsErrors psnHashInsertAt( psnHash            * pHash,
                                  size_t                bucket,
                                  const unsigned char * pKey,
                                  size_t                keyLength,
                                  const void          * pData,
                                  size_t                dataLength,
-                                 vdseHashItem       ** ppNewItem,
-                                 vdseSessionContext  * pContext )
+                                 psnHashItem       ** ppNewItem,
+                                 psnSessionContext  * pContext )
 {
    ptrdiff_t* pArray;   
-   vdseHashItem* pItem, *previousItem = NULL;
+   psnHashItem* pItem, *previousItem = NULL;
    size_t itemLength;
-   vdseMemObject * pMemObject;
+   psnMemObject * pMemObject;
    ptrdiff_t currentOffset;
    
    VDS_PRE_CONDITION( pHash     != NULL );
@@ -794,36 +794,36 @@ enum vdsErrors vdseHashInsertAt( vdseHash            * pHash,
    VDS_PRE_CONDITION( ppNewItem != NULL );
    VDS_PRE_CONDITION( keyLength  > 0 );
    VDS_PRE_CONDITION( dataLength > 0 );
-   VDS_PRE_CONDITION( bucket < g_vdseArrayLengths[pHash->lengthIndex] );
+   VDS_PRE_CONDITION( bucket < g_psnArrayLengths[pHash->lengthIndex] );
 
-   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
    currentOffset = pArray[bucket];
 
-   while ( currentOffset != VDSE_NULL_OFFSET ) {
-      GET_PTR( previousItem, currentOffset, vdseHashItem );
+   while ( currentOffset != PSN_NULL_OFFSET ) {
+      GET_PTR( previousItem, currentOffset, psnHashItem );
       currentOffset = previousItem->nextItem;     
    }
 
-   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
+   GET_PTR( pMemObject, pHash->memObjOffset, psnMemObject );
    
    /* The whole item is allocated in one step, header+data, to minimize */
    /* overheads of the memory allocator */
    itemLength = calculateItemLength( keyLength, dataLength );
-   pItem = (vdseHashItem*) vdseMalloc( pMemObject, itemLength, pContext );
+   pItem = (psnHashItem*) psnMalloc( pMemObject, itemLength, pContext );
    if ( pItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
    
-   pItem->nextItem = VDSE_NULL_OFFSET;
+   pItem->nextItem = PSN_NULL_OFFSET;
    pItem->bucket = bucket;
    
    /* keyLength must be set before calling getData() */   
    pItem->keyLength = keyLength;
    pItem->dataLength = dataLength;
    pItem->dataOffset = SET_OFFSET(pItem) + itemLength - dataLength;
-   pItem->nextSameKey = VDSE_NULL_OFFSET;
+   pItem->nextSameKey = PSN_NULL_OFFSET;
     
    memcpy( pItem->key,     pKey, keyLength );
    memcpy( GET_PTR_FAST(pItem->dataOffset, unsigned char), pData, dataLength );
@@ -846,63 +846,63 @@ enum vdsErrors vdseHashInsertAt( vdseHash            * pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdsErrors vdseHashResize( vdseHash           * pHash,
-                               vdseSessionContext * pContext )
+enum vdsErrors psnHashResize( psnHash           * pHash,
+                               psnSessionContext * pContext )
 {
    int newIndexLength;
    ptrdiff_t * ptr, * pArray;
    size_t len, i;
    ptrdiff_t currentOffset, nextOffset, newBucket, newOffset;
-   vdseHashItem * pItem, * pNewItem;
-   vdseMemObject * pMemObject;
+   psnHashItem * pItem, * pNewItem;
+   psnMemObject * pMemObject;
   
    VDS_PRE_CONDITION( pHash != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
 
-   if ( pHash->enumResize == VDSE_HASH_NO_RESIZE ) return VDS_OK;
+   if ( pHash->enumResize == PSN_HASH_NO_RESIZE ) return VDS_OK;
 
-   GET_PTR( pMemObject, pHash->memObjOffset, vdseMemObject );
+   GET_PTR( pMemObject, pHash->memObjOffset, psnMemObject );
 
-   if ( pHash->enumResize == VDSE_HASH_TIME_TO_GROW ) {
+   if ( pHash->enumResize == PSN_HASH_TIME_TO_GROW ) {
       newIndexLength = pHash->lengthIndex + 1;
    }
    else {
       newIndexLength = pHash->lengthIndex - 1;     
    }
    
-   len = g_vdseArrayLengths[newIndexLength] * sizeof(ptrdiff_t);
+   len = g_psnArrayLengths[newIndexLength] * sizeof(ptrdiff_t);
    
-   ptr = (ptrdiff_t*) vdseMalloc( pMemObject, len, pContext );
+   ptr = (ptrdiff_t*) psnMalloc( pMemObject, len, pContext );
    if ( ptr == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
 
-   for ( i = 0; i < g_vdseArrayLengths[newIndexLength]; ++i) {
-      ptr[i] = VDSE_NULL_OFFSET;
+   for ( i = 0; i < g_psnArrayLengths[newIndexLength]; ++i) {
+      ptr[i] = PSN_NULL_OFFSET;
    }
    
-   for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
+   for ( i = 0; i < g_psnArrayLengths[pHash->lengthIndex]; ++i ) {
       currentOffset = pArray[i];
       
-      while ( currentOffset != VDSE_NULL_OFFSET ) {
-         GET_PTR( pItem, currentOffset, vdseHashItem );
+      while ( currentOffset != PSN_NULL_OFFSET ) {
+         GET_PTR( pItem, currentOffset, psnHashItem );
          nextOffset = pItem->nextItem;
-         pItem->nextItem = VDSE_NULL_OFFSET;
+         pItem->nextItem = PSN_NULL_OFFSET;
          
          newBucket = hash_it( pItem->key, pItem->keyLength ) % 
-                     g_vdseArrayLengths[newIndexLength];
+                     g_psnArrayLengths[newIndexLength];
          pItem->bucket = newBucket;
-         if ( ptr[newBucket] == VDSE_NULL_OFFSET ) {
+         if ( ptr[newBucket] == PSN_NULL_OFFSET ) {
             ptr[newBucket] = currentOffset;
          }
          else {
             newOffset = ptr[newBucket];
-            GET_PTR( pNewItem, newOffset, vdseHashItem );
-            while ( pNewItem->nextItem != VDSE_NULL_OFFSET ) {
+            GET_PTR( pNewItem, newOffset, psnHashItem );
+            while ( pNewItem->nextItem != PSN_NULL_OFFSET ) {
                newOffset = pNewItem->nextItem;
-               GET_PTR( pNewItem, newOffset, vdseHashItem );
+               GET_PTR( pNewItem, newOffset, psnHashItem );
             }
             pNewItem->nextItem = currentOffset;
          }
@@ -912,17 +912,17 @@ enum vdsErrors vdseHashResize( vdseHash           * pHash,
       }
    }
    
-   len = g_vdseArrayLengths[pHash->lengthIndex]*sizeof(ptrdiff_t);
+   len = g_psnArrayLengths[pHash->lengthIndex]*sizeof(ptrdiff_t);
 
    pHash->lengthIndex = newIndexLength;
    pHash->arrayOffset = SET_OFFSET( ptr );
 
-   vdseFree( pMemObject,
+   psnFree( pMemObject,
              (unsigned char*)pArray,
              len, 
              pContext );
    
-   pHash->enumResize = VDSE_HASH_NO_RESIZE;
+   pHash->enumResize = PSN_HASH_NO_RESIZE;
 
    return VDS_OK;   
 }
@@ -936,19 +936,19 @@ enum vdsErrors vdseHashResize( vdseHash           * pHash,
  */
 
 enum vdsErrors 
-vdseHashUpdate( vdseHash            * pHash,
+psnHashUpdate( psnHash            * pHash,
                 const unsigned char * pKey,
                 size_t                keyLength,
                 const void          * pData,
                 size_t                dataLength,
-                vdseSessionContext  * pContext )
+                psnSessionContext  * pContext )
 {
    size_t bucket = 0;
    bool keyFound = false;
    ptrdiff_t * pArray;
    size_t newItemLength, oldItemLength;
-   vdseHashItem * pOldItem, * previousItem = NULL, * pNewItem = NULL;
-   vdseMemObject * pMemObject;
+   psnHashItem * pOldItem, * previousItem = NULL, * pNewItem = NULL;
+   psnMemObject * pMemObject;
 
    VDS_PRE_CONDITION( pHash    != NULL );
    VDS_PRE_CONDITION( pKey     != NULL );
@@ -956,7 +956,7 @@ vdseHashUpdate( vdseHash            * pHash,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( keyLength  > 0 );
    VDS_PRE_CONDITION( dataLength > 0 );
-   VDS_INV_CONDITION( pHash->initialized == VDSE_HASH_SIGNATURE );
+   VDS_INV_CONDITION( pHash->initialized == PSN_HASH_SIGNATURE );
 
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    VDS_INV_CONDITION( pArray != NULL );
@@ -980,9 +980,9 @@ vdseHashUpdate( vdseHash            * pHash,
       pOldItem->dataLength = dataLength;
    }
    else {
-      pMemObject = GET_PTR_FAST( pHash->memObjOffset, vdseMemObject );
-      pNewItem = (vdseHashItem*) 
-         vdseMalloc( pMemObject, newItemLength, pContext );
+      pMemObject = GET_PTR_FAST( pHash->memObjOffset, psnMemObject );
+      pNewItem = (psnHashItem*) 
+         psnMalloc( pMemObject, newItemLength, pContext );
       if ( pNewItem == NULL ) return VDS_NOT_ENOUGH_VDS_MEMORY;
       
       /* initialize the new record */
@@ -991,7 +991,7 @@ vdseHashUpdate( vdseHash            * pHash,
       pNewItem->keyLength = keyLength;
       pNewItem->dataLength = dataLength;
       pNewItem->dataOffset = SET_OFFSET(pNewItem) + newItemLength - dataLength;
-      pNewItem->nextSameKey = VDSE_NULL_OFFSET;
+      pNewItem->nextSameKey = PSN_NULL_OFFSET;
    
       memcpy( pNewItem->key, pKey, keyLength );
       memcpy( GET_PTR_FAST(pNewItem->dataOffset, unsigned char), pData, dataLength );
@@ -1006,7 +1006,7 @@ vdseHashUpdate( vdseHash            * pHash,
       }
       
       /* Eliminate the old record */
-      vdseFree( pMemObject, (unsigned char*)pOldItem, oldItemLength, pContext );
+      psnFree( pMemObject, (unsigned char*)pOldItem, oldItemLength, pContext );
    }
    
     return VDS_OK;

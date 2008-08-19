@@ -35,12 +35,12 @@ typedef struct vdsaHashMap
    
    /**
     * This struct holds both the result of the iteration (the pointer to
-    * the current vdseHashItem) and the values needed to get the next item.
+    * the current psnHashItem) and the values needed to get the next item.
     */
-   vdseHashMapItem iterator;
+   psnHashMapItem iterator;
 
    /** A pointer to the data definition of the queue. */
-   vdseFieldDef * pDefinition;
+   psnFieldDef * pDefinition;
    
    size_t minLength;
    size_t maxLength;

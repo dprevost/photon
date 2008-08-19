@@ -31,7 +31,7 @@ int main()
    pscInitErrorDefs();
    pscInitErrorHandler( &errorHandler );
 
-   error = vdseInitLogFile( NULL, ".", (void*)0x1234, &errorHandler );
+   error = psnInitLogFile( NULL, ".", (void*)0x1234, &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

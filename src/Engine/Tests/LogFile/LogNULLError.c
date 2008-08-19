@@ -25,19 +25,19 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseLogFile logfile;
+   psnLogFile logfile;
    pscErrorHandler errorHandler;
    vdsErrors error;
 
    pscInitErrorDefs();
    pscInitErrorHandler( &errorHandler );
 
-   error = vdseInitLogFile( &logfile, ".", (void*)0x1234, &errorHandler );
+   error = psnInitLogFile( &logfile, ".", (void*)0x1234, &errorHandler );
    if ( error != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   error = vdseLogTransaction( &logfile, 1, NULL );
+   error = psnLogTransaction( &logfile, 1, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

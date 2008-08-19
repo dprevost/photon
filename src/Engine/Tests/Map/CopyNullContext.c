@@ -24,8 +24,8 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseMap * pOldMap, * pNewMap;
-   vdseSessionContext context;
+   psnMap * pOldMap, * pNewMap;
+   psnSessionContext context;
    bool ok;
    char * key1  = "my key1";
    char * key2  = "my key2";
@@ -37,20 +37,20 @@ int main()
       { VDS_KEY_VAR_STRING, 0, 1, 100 }, 
       { { "Field_1", VDS_VAR_STRING, 0, 1, 100, 0, 0 } } 
    };
-   vdseHashItem   hashItem;
+   psnHashItem   hashItem;
    
    initHashMapCopyTest( expectedToPass, &pOldMap, &pNewMap, &context );
 
-   vdseTxStatusInit( &hashItem.txStatus, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &hashItem.txStatus, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseMapInit( pOldMap, 
+   ok = psnMapInit( pOldMap, 
                      0, 1, 0, &hashItem.txStatus, 4, 
                      "Map1", SET_OFFSET(pOldMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseMapInsert( pOldMap,
+   ok = psnMapInsert( pOldMap,
                        (const void *) key1,
                        7,
                        (const void *) data1,
@@ -59,7 +59,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseMapInsert( pOldMap,
+   ok = psnMapInsert( pOldMap,
                        (const void *) key2,
                        7,
                        (const void *) data2,
@@ -69,7 +69,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = vdseMapCopy( pOldMap, 
+   ok = psnMapCopy( pOldMap, 
                      pNewMap,
                      &hashItem,
                      "Map1",

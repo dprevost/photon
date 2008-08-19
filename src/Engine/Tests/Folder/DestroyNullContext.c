@@ -24,8 +24,8 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseFolder * pFolder;
-   vdseSessionContext context;
+   psnFolder * pFolder;
+   psnSessionContext context;
    bool ok;
    
    vdsObjectDefinition def = { 
@@ -37,7 +37,7 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = vdseFolderCreateObject( pFolder,
+   ok = psnFolderCreateObject( pFolder,
                                 "Test1",
                                 strlen("Test1"),
                                 &def,
@@ -46,9 +46,9 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseTxCommit( (vdseTx *)context.pTransaction, &context );
+   psnTxCommit( (psnTx *)context.pTransaction, &context );
    
-   ok = vdseFolderDestroyObject( pFolder,
+   ok = psnFolderDestroyObject( pFolder,
                                  "Test1",
                                  strlen("Test1"),
                                  NULL );

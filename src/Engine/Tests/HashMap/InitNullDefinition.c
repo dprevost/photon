@@ -24,16 +24,16 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseHashMap * pHashMap;
-   vdseSessionContext context;
+   psnHashMap * pHashMap;
+   psnSessionContext context;
    int errcode;
-   vdseTxStatus status;
+   psnTxStatus status;
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = vdseHashMapInit( pHashMap, 
+   errcode = psnHashMapInit( pHashMap, 
                               0, 
                               1, 
                               0, 

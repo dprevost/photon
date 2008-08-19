@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_BLOCK_GROUP_H
-#define VDSE_BLOCK_GROUP_H
+#ifndef PSN_BLOCK_GROUP_H
+#define PSN_BLOCK_GROUP_H
 
 #include "Engine/Engine.h"
 #include "Engine/MemBitmap.h"
@@ -29,13 +29,13 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdseBlockGroup
+struct psnBlockGroup
 {
    /** Type of memory object */
-   vdseMemObjIdent objType;
+   psnMemObjIdent objType;
 
    /** Our own node for the link list of all groups of a memory object */
-   vdseLinkNode node;
+   psnLinkNode node;
 
    /** The number of blocks associated with the current group. */
    size_t numBlocks;
@@ -47,29 +47,29 @@ struct vdseBlockGroup
    size_t freeBytes;
    
    /** Our linked list of free buffers. */
-   vdseLinkedList freeList;
+   psnLinkedList freeList;
 
    bool isDeletable;
    
    /** Must be last since this struct contains a "variable-length" array. */
-   vdseMemBitmap bitmap;
+   psnMemBitmap bitmap;
    
 };
 
-typedef struct vdseBlockGroup vdseBlockGroup;
+typedef struct psnBlockGroup psnBlockGroup;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  *  This struct is to be set at the end of a group of blocks.
  *  The exact details of the struct might change - the main constraint
- *  is that the struct must be no greater than VDSE_ALLOCATION_UNIT.
+ *  is that the struct must be no greater than PSN_ALLOCATION_UNIT.
  *
- *  Note: the struct is also used for group of blocks with no vdseBlockGroup
+ *  Note: the struct is also used for group of blocks with no psnBlockGroup
  *  (a group of free blocks, for example). It should make no reference to
  *  that struct, obviously.
  */
-struct vdseEndBlockGroup
+struct psnEndBlockGroup
 {
    /** The offset to the start of the group of blocks */
    ptrdiff_t firstBlockOffset;
@@ -85,49 +85,49 @@ struct vdseEndBlockGroup
    
 };
 
-typedef struct vdseEndBlockGroup vdseEndBlockGroup;
+typedef struct psnEndBlockGroup psnEndBlockGroup;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-void vdseBlockGroupFini( vdseBlockGroup* pGroup );
+void psnBlockGroupFini( psnBlockGroup* pGroup );
 
 /** 
- * Initialize the vdseBlockGroup struct. 
+ * Initialize the psnBlockGroup struct. 
  */
 VDSF_ENGINE_EXPORT
-void vdseBlockGroupInit( vdseBlockGroup  * pGroup,
+void psnBlockGroupInit( psnBlockGroup  * pGroup,
                          ptrdiff_t         firstBlockOffset,
                          size_t            numBlocks,
-                         vdseMemObjIdent   objType );
+                         psnMemObjIdent   objType );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** This small inline function returns the offset of the end block struct. */
 
 static inline
-ptrdiff_t vdseEndBlockOffset( ptrdiff_t firstBlockOffset, 
+ptrdiff_t psnEndBlockOffset( ptrdiff_t firstBlockOffset, 
                               size_t    numBlocks )
 {
    return (firstBlockOffset + 
-      (numBlocks <<  VDSE_BLOCK_SHIFT) -
-      VDSE_ALLOCATION_UNIT);
+      (numBlocks <<  PSN_BLOCK_SHIFT) -
+      PSN_ALLOCATION_UNIT);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdseEndBlockSet( ptrdiff_t firstBlockOffset, 
+void psnEndBlockSet( ptrdiff_t firstBlockOffset, 
                       size_t    numBlocks, 
                       bool      limboStatus,
                       bool      lastBlock )
 {
-   vdseEndBlockGroup* endBlock;
+   psnEndBlockGroup* endBlock;
    
    GET_PTR( endBlock, 
-            firstBlockOffset + (numBlocks <<  VDSE_BLOCK_SHIFT) -
-               VDSE_ALLOCATION_UNIT,
-            vdseEndBlockGroup );
+            firstBlockOffset + (numBlocks <<  PSN_BLOCK_SHIFT) -
+               PSN_ALLOCATION_UNIT,
+            psnEndBlockGroup );
                        
    endBlock->firstBlockOffset = firstBlockOffset;
    endBlock->numBlocks = numBlocks;
@@ -141,7 +141,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_BLOCK_GROUP_H */
+#endif /* PSN_BLOCK_GROUP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -36,25 +36,25 @@
  
 enum vdswRecoverError
 vdswVerifyHash( vdswVerifyStruct * pVerify,
-                struct vdseHash  * pHash,
+                struct psnHash  * pHash,
                 ptrdiff_t          offset )
 {
    ptrdiff_t * pArray;
    size_t i, bucket;
    ptrdiff_t previousOffset, currentOffset, nextOffset, tmpOffset;
-   vdseHashItem * pItem, * previousItem;
+   psnHashItem * pItem, * previousItem;
    size_t invalidBuckets = 0;
    size_t numberOfItems = 0;
    size_t totalDataSizeInBytes = 0;
    bool removeItem;
    enum vdswRecoverError rc = VDSWR_OK;
    
-   if ( pHash->initialized != VDSE_HASH_SIGNATURE ) {
+   if ( pHash->initialized != PSN_HASH_SIGNATURE ) {
       rc = VDSWR_CHANGES;
       vdswEcho( pVerify, 
-         "Hash::initialized is not VDSE_HASH_SIGNATURE - it might indicate a serious problem" );
+         "Hash::initialized is not PSN_HASH_SIGNATURE - it might indicate a serious problem" );
       if ( pVerify->doRepair ) {
-         pHash->initialized = VDSE_HASH_SIGNATURE;
+         pHash->initialized = PSN_HASH_SIGNATURE;
          vdswEcho( pVerify, "Resetting Hash::initialized" );
       }
    }
@@ -76,17 +76,17 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
    }
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
 
-   if ( pHash->lengthIndex >= VDSE_PRIME_NUMBER_ARRAY_LENGTH ) {
+   if ( pHash->lengthIndex >= PSN_PRIME_NUMBER_ARRAY_LENGTH ) {
       vdswEcho( pVerify, 
          "Hash::lengthIndex is invalid - aborting the hash verification" );
       return VDSWR_UNRECOVERABLE_ERROR;
    }
   
-   for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
-      previousOffset = VDSE_NULL_OFFSET;
+   for ( i = 0; i < g_psnArrayLengths[pHash->lengthIndex]; ++i ) {
+      previousOffset = PSN_NULL_OFFSET;
       currentOffset = pArray[i];
       
-      while ( currentOffset != VDSE_NULL_OFFSET ) {
+      while ( currentOffset != PSN_NULL_OFFSET ) {
          removeItem = false;
          
          if ( ! vdswVerifyOffset( pVerify, currentOffset ) ) {
@@ -94,18 +94,18 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
             vdswEcho( pVerify, 
                "Hash item offset is invalid - jumping to next offset" );
             if ( pVerify->doRepair ) {
-               if ( previousOffset == VDSE_NULL_OFFSET ) {
-                  pArray[i] = VDSE_NULL_OFFSET;
+               if ( previousOffset == PSN_NULL_OFFSET ) {
+                  pArray[i] = PSN_NULL_OFFSET;
                }
                else {
-                  GET_PTR( previousItem, previousOffset, vdseHashItem );
-                  previousItem->nextItem = VDSE_NULL_OFFSET;
+                  GET_PTR( previousItem, previousOffset, psnHashItem );
+                  previousItem->nextItem = PSN_NULL_OFFSET;
                }
             }
             break; /* of the while loop */
          }
 
-         GET_PTR( pItem, currentOffset, vdseHashItem );
+         GET_PTR( pItem, currentOffset, psnHashItem );
          nextOffset = pItem->nextItem;
          
          if ( pItem->keyLength == 0 ) {
@@ -115,16 +115,16 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
          }
          else {
             /* test the hash item itself */
-            if ( pItem->nextSameKey != VDSE_NULL_OFFSET ) {
+            if ( pItem->nextSameKey != PSN_NULL_OFFSET ) {
                if ( ! vdswVerifyOffset( pVerify, pItem->nextSameKey ) ) {
                   rc = VDSWR_CHANGES;
                   vdswEcho( pVerify, "HashItem::nextSameKey is invalid" );
                   if ( pVerify->doRepair ) {
-                     pItem->nextSameKey = VDSE_NULL_OFFSET;
+                     pItem->nextSameKey = PSN_NULL_OFFSET;
                   }
                }
             }
-            if ( pItem->dataOffset == VDSE_NULL_OFFSET ) {
+            if ( pItem->dataOffset == PSN_NULL_OFFSET ) {
                rc = VDSWR_CHANGES;
                vdswEcho( pVerify, "HashItem::dataOffset is NULL" );
                removeItem = true;
@@ -154,11 +154,11 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
          if ( pVerify->doRepair && removeItem ) {
             rc = VDSWR_CHANGES;
             vdswEcho( pVerify, "HashItem is removed" );
-            if ( previousOffset == VDSE_NULL_OFFSET ) {
+            if ( previousOffset == PSN_NULL_OFFSET ) {
                pArray[i] = nextOffset;
             }
             else {
-               GET_PTR(previousItem, previousOffset, vdseHashItem );
+               GET_PTR(previousItem, previousOffset, psnHashItem );
                previousItem->nextItem = nextOffset;
             }
             
@@ -196,29 +196,29 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
     * Next iteration - are the keys in the right bucket? 
     * Question: can this really happen?
     */
-   for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
+   for ( i = 0; i < g_psnArrayLengths[pHash->lengthIndex]; ++i ) {
       currentOffset = pArray[i];
       
-      while ( currentOffset != VDSE_NULL_OFFSET ) {
-         GET_PTR( pItem, currentOffset, vdseHashItem );
+      while ( currentOffset != PSN_NULL_OFFSET ) {
+         GET_PTR( pItem, currentOffset, psnHashItem );
          nextOffset = pItem->nextItem;
          
          bucket = fnv_buf( (void *)pItem->key, pItem->keyLength, FNV1_INIT) %
-                     g_vdseArrayLengths[pHash->lengthIndex];
+                     g_psnArrayLengths[pHash->lengthIndex];
          if ( bucket != i ) {
            rc = VDSWR_CHANGES;
            vdswEcho( pVerify, "Hash item - invalid bucket" );
             invalidBuckets++;
             if ( pVerify->doRepair ) {
-               if ( pArray[bucket] == VDSE_NULL_OFFSET ) {
+               if ( pArray[bucket] == PSN_NULL_OFFSET ) {
                   pArray[bucket] = currentOffset;
                }
                else {
                   tmpOffset = pArray[bucket];
                   do {
-                     GET_PTR( pItem, tmpOffset, vdseHashItem );
+                     GET_PTR( pItem, tmpOffset, psnHashItem );
                      tmpOffset = pItem->nextItem;
-                  } while ( tmpOffset != VDSE_NULL_OFFSET );
+                  } while ( tmpOffset != PSN_NULL_OFFSET );
                   pItem->nextItem = currentOffset;
                }
             }
@@ -233,28 +233,28 @@ vdswVerifyHash( vdswVerifyStruct * pVerify,
    /*
     * Next iteration - are identical keys properly arranged?
     */
-   for ( i = 0; i < g_vdseArrayLengths[pHash->lengthIndex]; ++i ) {
+   for ( i = 0; i < g_psnArrayLengths[pHash->lengthIndex]; ++i ) {
       currentOffset = pArray[i];
       
-      while ( currentOffset != VDSE_NULL_OFFSET ) {
-         GET_PTR( pItem, currentOffset, vdseHashItem );
+      while ( currentOffset != PSN_NULL_OFFSET ) {
+         GET_PTR( pItem, currentOffset, psnHashItem );
          nextOffset = pItem->nextItem;
          
          bucket = fnv_buf( (void *)pItem->key, pItem->keyLength, FNV1_INIT) %
-                     g_vdseArrayLengths[pHash->lengthIndex];
+                     g_psnArrayLengths[pHash->lengthIndex];
          if ( bucket != i ) {
             vdswEcho( pVerify, "Hash item - invalid bucket" );
             invalidBuckets++;
             if ( pVerify->doRepair ) {
-               if ( pArray[bucket] == VDSE_NULL_OFFSET ) {
+               if ( pArray[bucket] == PSN_NULL_OFFSET ) {
                   pArray[bucket] = currentOffset;
                }
                else {
                   tmpOffset = pArray[bucket];
                   do {
-                     GET_PTR( pItem, tmpOffset, vdseHashItem );
+                     GET_PTR( pItem, tmpOffset, psnHashItem );
                      tmpOffset = pItem->nextItem;
-                  } while ( tmpOffset != VDSE_NULL_OFFSET );
+                  } while ( tmpOffset != PSN_NULL_OFFSET );
                   pItem->nextItem = currentOffset;
                }
             }

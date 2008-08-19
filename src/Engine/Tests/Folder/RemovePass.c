@@ -23,11 +23,11 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseFolder* pFolder;
-   vdseSessionContext context;
+   psnFolder* pFolder;
+   psnSessionContext context;
    bool ok;
-   vdseTxStatus status;
-   vdseFolderItem folderItem;
+   psnTxStatus status;
+   psnFolderItem folderItem;
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
@@ -37,14 +37,14 @@ int main()
    
    pFolder = initFolderTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   ok = psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -59,7 +59,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseFolderGetObject( pFolder,
+   ok = psnFolderGetObject( pFolder,
                              "test2",
                              5,
                              VDS_FOLDER,
@@ -69,7 +69,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseFolderRemoveObject( pFolder,
+   psnFolderRemoveObject( pFolder,
                            folderItem.pHashItem,
                            &context );
    if ( pFolder->nodeObject.txCounter != 0 ) {

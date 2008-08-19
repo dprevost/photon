@@ -30,7 +30,7 @@ extern pscErrMsgHandle g_wdErrorHandle;
 
 bool vdswHandlerInit( vdswHandler         * pHandler,
                       struct ConfigParams * pConfig,
-                      vdseMemoryHeader   ** ppMemoryAddress,
+                      psnMemoryHeader   ** ppMemoryAddress,
                       bool                  verifyVDSOnly )
 {
    bool ok;
@@ -55,10 +55,10 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
 
    pHandler->pMemHeader = NULL;
 
-   memset( &pHandler->context, 0, sizeof(vdseSessionContext) );
+   memset( &pHandler->context, 0, sizeof(psnSessionContext) );
    pHandler->context.pidLocker = getpid();
    
-   ok = vdseInitEngine();
+   ok = psnInitEngine();
    VDS_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in VdsHandler.cpp\n", __LINE__ );
@@ -281,7 +281,7 @@ void vdswHandlerFini( vdswHandler * pHandler )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-//void CleanSession( vdseSession * pSession )
+//void CleanSession( psnSession * pSession )
 //{
 //   fprintf( stderr, "Session %p\n", pSession );
 
@@ -298,11 +298,11 @@ void vdswHandleCrash( vdswHandler * pHandler, pid_t pid )
    VDS_PRE_CONDITION( pHandler != NULL );
 
 #if 0   
-   vdseProcess* pProcess = NULL;
-   vdseSessionContext context;
-   vdseSession* pFirstSession = NULL;
-   vdseSession* pCurrSession  = NULL;
-   vdseSession* pNextSession  = NULL;
+   psnProcess* pProcess = NULL;
+   psnSessionContext context;
+   psnSession* pFirstSession = NULL;
+   psnSession* pCurrSession  = NULL;
+   psnSession* pNextSession  = NULL;
 
    memset( &context, 0, sizeof context );
    context.lockValue = getpid();
@@ -310,8 +310,8 @@ void vdswHandleCrash( vdswHandler * pHandler, pid_t pid )
    
 //      GET_PTR( m_pMemHeader->allocatorOffset, MemoryAllocator );
 
-   vdseProcessManager* pCleanupManager = 
-      GET_PTR( m_pMemHeader->cleanupMgrOffset, vdseProcessManager );
+   psnProcessManager* pCleanupManager = 
+      GET_PTR( m_pMemHeader->cleanupMgrOffset, psnProcessManager );
 
    // Start by checking if we are not holding the lock to the 
    // cleanup manager, the memory allocator, etc...

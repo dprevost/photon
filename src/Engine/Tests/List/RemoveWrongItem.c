@@ -25,34 +25,34 @@ const bool expectedToPass = false;
 /*
  * The following test is pretty weak. Removing an item from the wrong list
  * has one consequence - the list counter becomes wrong. Otherwise all is
- * well (the call vdseLinkedListRemoveItem() does remove the link from its
+ * well (the call psnLinkedListRemoveItem() does remove the link from its
  * linked list since it uses the previous and next members of the removed
  * node.
  */
 int main()
 {
 #if defined(USE_DBC)
-   vdseLinkedList list1;
-   vdseLinkedList list2;
-   vdseLinkNode node1, node2;
-   vdseSessionContext context;
+   psnLinkedList list1;
+   psnLinkedList list2;
+   psnLinkNode node1, node2;
+   psnSessionContext context;
    
    initTest( expectedToPass, &context );
    InitMem();
    
-   vdseLinkNodeInit( &node1 );
-   vdseLinkNodeInit( &node2 );
-   vdseLinkedListInit( &list1 );
-   vdseLinkedListInit( &list2 );
+   psnLinkNodeInit( &node1 );
+   psnLinkNodeInit( &node2 );
+   psnLinkedListInit( &list1 );
+   psnLinkedListInit( &list2 );
    
-   vdseLinkedListPutLast( &list1, &node1 );
-   vdseLinkedListPutLast( &list2, &node2 );
+   psnLinkedListPutLast( &list1, &node1 );
+   psnLinkedListPutLast( &list2, &node2 );
 
    /* Remove it from the wrong list - should work but... */
-   vdseLinkedListRemoveItem( &list2, &node1 );
+   psnLinkedListRemoveItem( &list2, &node1 );
 
    /* Should crash since the number of items in list2 is zero */
-   vdseLinkedListRemoveItem( &list2, &node2 );
+   psnLinkedListRemoveItem( &list2, &node2 );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -26,19 +26,19 @@ int main()
 {
    vdsErrors errcode;
    vdstObjDummy *pDummy;
-   vdseSessionContext context;
+   psnSessionContext context;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    
-   errcode = vdseMemObjectInit( &pDummy->memObject, 
-                                VDSE_IDENT_FOLDER,
+   errcode = psnMemObjectInit( &pDummy->memObject, 
+                                PSN_IDENT_FOLDER,
                                 &pDummy->blockGroup,
                                 1 );
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdseMemObjectFini( &pDummy->memObject, VDSE_ALLOC_ANY, &context );
+   errcode = psnMemObjectFini( &pDummy->memObject, PSN_ALLOC_ANY, &context );
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

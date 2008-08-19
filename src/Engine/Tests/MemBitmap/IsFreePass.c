@@ -24,45 +24,45 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseMemBitmap *pBitmap;
+   psnMemBitmap *pBitmap;
    unsigned char* ptr;
    bool answer;
-   vdseSessionContext context;
+   psnSessionContext context;
    
    initTest( expectedToPass, &context );
 
-   ptr = malloc( VDSE_BLOCK_SIZE*10 );
+   ptr = malloc( PSN_BLOCK_SIZE*10 );
    if (ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    g_pBaseAddr = ptr;
    
-   pBitmap = (vdseMemBitmap*) ptr;
+   pBitmap = (psnMemBitmap*) ptr;
    
-   vdseMemBitmapInit( pBitmap, 
+   psnMemBitmapInit( pBitmap, 
                       SET_OFFSET(ptr),
-                      10*VDSE_BLOCK_SIZE,
+                      10*PSN_BLOCK_SIZE,
                       8 );
 
-  vdseSetBufferAllocated( pBitmap,
-                          VDSE_BLOCK_SIZE/4, /* offset */
-                          VDSE_BLOCK_SIZE*2 ); /* length */
+  psnSetBufferAllocated( pBitmap,
+                          PSN_BLOCK_SIZE/4, /* offset */
+                          PSN_BLOCK_SIZE*2 ); /* length */
 
-   vdseSetBufferFree( pBitmap,
-                      VDSE_BLOCK_SIZE/2, /* offset */
-                      VDSE_BLOCK_SIZE/4 ); /* length */
+   psnSetBufferFree( pBitmap,
+                      PSN_BLOCK_SIZE/2, /* offset */
+                      PSN_BLOCK_SIZE/4 ); /* length */
 
-   answer = vdseIsBufferFree( pBitmap, VDSE_BLOCK_SIZE/4 );
+   answer = psnIsBufferFree( pBitmap, PSN_BLOCK_SIZE/4 );
    if ( answer == true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   answer = vdseIsBufferFree( pBitmap, VDSE_BLOCK_SIZE/2 );
+   answer = psnIsBufferFree( pBitmap, PSN_BLOCK_SIZE/2 );
    if ( answer == false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseMemBitmapFini( pBitmap );
+   psnMemBitmapFini( pBitmap );
 
    return 0;
 }

@@ -25,17 +25,17 @@
 
 BEGIN_C_DECLS
 
-extern vdseMemoryHeader * g_pMemoryAddress;
+extern psnMemoryHeader * g_pMemoryAddress;
 extern bool g_bTestAllocator;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdseLinkedList;
-struct vdseFolder;
-struct vdseHashMap;
-struct vdseMap;
-struct vdseQueue;
-struct vdseMemObject;
+struct psnLinkedList;
+struct psnFolder;
+struct psnHashMap;
+struct psnMap;
+struct psnQueue;
+struct psnMemObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -63,7 +63,7 @@ struct vdswVerifyStruct
    size_t numObjectsRepaired;
    size_t numObjectsDeleted;
    size_t numObjectsError;
-   vdseMemBitmap * pBitmap;
+   psnMemBitmap * pBitmap;
 };
 typedef struct vdswVerifyStruct vdswVerifyStruct;
 
@@ -85,7 +85,7 @@ void vdswEcho( vdswVerifyStruct * pVerify, char * message )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdswResetBitmap( vdseMemBitmap * pBitmap )
+void vdswResetBitmap( psnMemBitmap * pBitmap )
 {
    size_t length;
    
@@ -98,49 +98,49 @@ void vdswResetBitmap( vdseMemBitmap * pBitmap )
 static inline
 bool vdswVerifyOffset( vdswVerifyStruct * pVerify, ptrdiff_t offset )
 {
-   return vdseIsBufferFree( pVerify->pBitmap, offset );
+   return psnIsBufferFree( pVerify->pBitmap, offset );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void 
 vdswPopulateBitmap( struct vdswVerifyStruct   * pVerify,
-                    struct vdseMemObject      * pMemObj,
-                    struct vdseSessionContext * pContext );
+                    struct psnMemObject      * pMemObj,
+                    struct psnSessionContext * pContext );
 
 enum vdswRecoverError
 vdswVerifyFastMap( vdswVerifyStruct   * pVerify,
-                   struct vdseMap     * pHashMap, 
-                   vdseSessionContext * pContext  );
+                   struct psnMap     * pHashMap, 
+                   psnSessionContext * pContext  );
 
 enum vdswRecoverError
 vdswVerifyFolder( vdswVerifyStruct   * pVerify,
-                  struct vdseFolder  * pFolder,
-                  vdseSessionContext * pContext );
+                  struct psnFolder  * pFolder,
+                  psnSessionContext * pContext );
 
 enum vdswRecoverError
 vdswVerifyHash( vdswVerifyStruct * pVerify,
-                struct vdseHash  * pHash,
+                struct psnHash  * pHash,
                 ptrdiff_t          memObjOffset );
 
 enum vdswRecoverError
 vdswVerifyList( vdswVerifyStruct      * pVerify,
-                struct vdseLinkedList * pList );
+                struct psnLinkedList * pList );
 
 enum vdswRecoverError
 vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
-                   struct vdseHashMap * pHashMap, 
-                   vdseSessionContext * pContext  );
+                   struct psnHashMap * pHashMap, 
+                   psnSessionContext * pContext  );
 
 enum vdswRecoverError
 vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
-                     struct vdseMemObject      * pMemObj,
-                     struct vdseSessionContext * pContext );
+                     struct psnMemObject      * pMemObj,
+                     struct psnSessionContext * pContext );
 
 enum vdswRecoverError
 vdswVerifyQueue( vdswVerifyStruct   * pVerify,
-                 struct vdseQueue   * pQueue, 
-                 vdseSessionContext * pContext  );
+                 struct psnQueue   * pQueue, 
+                 psnSessionContext * pContext  );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

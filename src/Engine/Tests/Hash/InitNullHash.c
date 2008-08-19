@@ -25,13 +25,13 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseSessionContext context;
-   vdseHash* pHash;
+   psnSessionContext context;
+   psnHash* pHash;
    enum vdsErrors errcode;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = vdseHashInit( NULL, g_memObjOffset, 100, &context );
+   errcode = psnHashInit( NULL, g_memObjOffset, 100, &context );
       
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

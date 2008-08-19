@@ -24,20 +24,20 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseLinkedList list;
-   vdseLinkNode node, *pNode;
+   psnLinkedList list;
+   psnLinkNode node, *pNode;
    bool ok;
-   vdseSessionContext context;
+   psnSessionContext context;
    
    initTest( expectedToPass, &context );
    InitMem();
    
-   vdseLinkNodeInit( &node );
-   vdseLinkedListInit( &list );
+   psnLinkNodeInit( &node );
+   psnLinkedListInit( &list );
    
-   vdseLinkedListPutLast( &list, &node );
+   psnLinkedListPutLast( &list, &node );
    
-   ok = vdseLinkedListGetLast( &list, &pNode );
+   ok = psnLinkedListGetLast( &list, &pNode );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -48,7 +48,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseLinkedListFini( &list );
+   psnLinkedListFini( &list );
 
    return 0;
 }

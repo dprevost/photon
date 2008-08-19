@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_MEMORY_ALLOCATOR_H
-#define VDSE_MEMORY_ALLOCATOR_H
+#ifndef PSN_MEMORY_ALLOCATOR_H
+#define PSN_MEMORY_ALLOCATOR_H
 
 #include "Engine.h"
 #include "Common/ErrorHandler.h"
@@ -31,13 +31,13 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdseMemAlloc
+struct psnMemAlloc
 {
    /**
-    * The vdseMemAlloc is itself a memory object and "inherits" from
+    * The psnMemAlloc is itself a memory object and "inherits" from
     * the memObj structure.
     */
-   vdseMemObject memObj;
+   psnMemObject memObj;
    
    /** Total space currently allocated */
    size_t totalAllocBlocks;   
@@ -58,7 +58,7 @@ struct vdseMemAlloc
    size_t totalLength;
 
    /** Structure used to hold the list of free buffers. */
-   vdseLinkedList freeList;
+   psnLinkedList freeList;
 
    ptrdiff_t bitmapOffset;
    
@@ -66,16 +66,16 @@ struct vdseMemAlloc
     * The header of the group of blocks for this object. It MUST be
     * at the end of the struct since it contains a variable array.
     */
-   vdseBlockGroup blockGroup;
+   psnBlockGroup blockGroup;
    
 };
 
-typedef struct vdseMemAlloc vdseMemAlloc;
+typedef struct psnMemAlloc psnMemAlloc;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Initialize the vdseMemAlloc struct. The second argument is the start of
+ * Initialize the psnMemAlloc struct. The second argument is the start of
  * the shared memory itself. 
  *
  * This function should only be called by the watchdog (it might move there
@@ -84,48 +84,48 @@ typedef struct vdseMemAlloc vdseMemAlloc;
  */
 VDSF_ENGINE_EXPORT
 enum vdsErrors 
-vdseMemAllocInit( vdseMemAlloc       * pAlloc,
+psnMemAllocInit( psnMemAlloc       * pAlloc,
                   unsigned char      * pBaseAddress, 
                   size_t               length,
-                  vdseSessionContext * pContext );
+                  psnSessionContext * pContext );
 
 /**
  * 
  */
 VDSF_ENGINE_EXPORT unsigned char* 
-vdseMallocBlocks( vdseMemAlloc       * pAlloc,
-                  vdseAllocTypeEnum    allocType,
+psnMallocBlocks( psnMemAlloc       * pAlloc,
+                  psnAllocTypeEnum    allocType,
                   size_t               numBlocks,
-                  vdseSessionContext * pContext );
+                  psnSessionContext * pContext );
 
 /** Free ptr, the memory is returned to the pool. */
 VDSF_ENGINE_EXPORT
-void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
-                     vdseAllocTypeEnum    allocType,
+void psnFreeBlocks( psnMemAlloc       * pAlloc,
+                     psnAllocTypeEnum    allocType,
                      unsigned char      * ptr, 
                      size_t               numBlocks,
-                     vdseSessionContext * pContext );
+                     psnSessionContext * pContext );
 
 static inline
-bool vdseMemAllocLastBlock( vdseMemAlloc * pAlloc,
+bool psnMemAllocLastBlock( psnMemAlloc * pAlloc,
                             ptrdiff_t      offset,
                             size_t         numBlocks )
 {
-   return ( pAlloc->totalLength <= (size_t)offset + (numBlocks << VDSE_BLOCK_SHIFT));
+   return ( pAlloc->totalLength <= (size_t)offset + (numBlocks << PSN_BLOCK_SHIFT));
 }
 
 VDSF_ENGINE_EXPORT
-void vdseMemAllocClose( vdseMemAlloc       * pAlloc,
-                        vdseSessionContext * pContext );
+void psnMemAllocClose( psnMemAlloc       * pAlloc,
+                        psnSessionContext * pContext );
 
 /** Returns status and statistics from the memory allocator. Note 
  *  that the number of mallocs/frees are not based on a 64 bits 
  *  integer on 32 bits machine - these numbers might loop around.
  */
 VDSF_ENGINE_EXPORT
-bool vdseMemAllocStats( vdseMemAlloc       * pAlloc,
+bool psnMemAllocStats( psnMemAlloc       * pAlloc,
                         vdsInfo            * pInfo,
-                        vdseSessionContext * pContext  );
+                        psnSessionContext * pContext  );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -133,7 +133,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_MEMORY_ALLOCATOR_H */
+#endif /* PSN_MEMORY_ALLOCATOR_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

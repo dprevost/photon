@@ -135,7 +135,7 @@ int main( int argc, char * argv[] )
    if ( status.numBlockGroup != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( status.freeBytes == 0 || status.freeBytes >=VDSE_BLOCK_SIZE ) {
+   if ( status.freeBytes == 0 || status.freeBytes >=PSN_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

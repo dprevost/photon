@@ -45,21 +45,21 @@ pscErrMsgHandle g_vdsErrorHandle;
  * the Init() call.
  */
  
-vdseHashMap * 
+psnHashMap * 
 initHashMapTest( bool                testIsExpectedToSucceed,
-                 vdseSessionContext* pContext )
+                 psnSessionContext* pContext )
 {
    bool ok;
    unsigned char* ptr;
-   vdseMemAlloc*  pAlloc;
-   vdseTx* pTx;
-   vdseHashMap* pHashMap;
-   size_t allocatedLength = VDSE_BLOCK_SIZE * 25;
+   psnMemAlloc*  pAlloc;
+   psnTx* pTx;
+   psnHashMap* pHashMap;
+   size_t allocatedLength = PSN_BLOCK_SIZE * 25;
 
-   memset( pContext, 0, sizeof(vdseSessionContext) );
+   memset( pContext, 0, sizeof(psnSessionContext) );
    pContext->pidLocker = getpid();
    
-   ok = vdseInitEngine();
+   ok = psnInitEngine();
    if ( ok != true ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -75,17 +75,17 @@ initHashMapTest( bool                testIsExpectedToSucceed,
       exit(0);
    }
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
-   vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
+   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
+   psnMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
-   pTx = (vdseTx*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
+   pTx = (psnTx*)psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 1, pContext );
    if ( pTx == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   ok = vdseTxInit( pTx, 1, pContext );
+   ok = psnTxInit( pTx, 1, pContext );
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -94,7 +94,7 @@ initHashMapTest( bool                testIsExpectedToSucceed,
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the hash map object */
-   pHashMap = (vdseHashMap*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
+   pHashMap = (psnHashMap*)psnMallocBlocks( pAlloc, PSN_ALLOC_API_OBJ, 1, pContext );
    if ( pHashMap == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);

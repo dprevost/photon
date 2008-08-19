@@ -25,18 +25,18 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseSessionContext context;
-   vdseHash * pOldHash, * pNewHash;
+   psnSessionContext context;
+   psnHash * pOldHash, * pNewHash;
    enum vdsErrors errcode;
    char* key1 = "My Key 1";
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
-   vdseHashItem* pNewItem;
+   psnHashItem* pNewItem;
    
    initHashCopyTest( expectedToPass, &pOldHash, &pNewHash, true, &context );
    
-   errcode = vdseHashInsert( pOldHash,
+   errcode = psnHashInsert( pOldHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data1,
@@ -47,7 +47,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashInsert( pOldHash,
+   errcode = psnHashInsert( pOldHash,
                              (unsigned char*)key2,
                              strlen(key2),
                              data2,
@@ -58,7 +58,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   errcode = vdseHashCopy( pOldHash,
+   errcode = psnHashCopy( pOldHash,
                            pNewHash,
                            NULL );
 

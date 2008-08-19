@@ -25,21 +25,21 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseSessionContext context;
-   vdseHash* pHash;
+   psnSessionContext context;
+   psnHash* pHash;
    enum vdsErrors errcode;
    char* key = "My Key";
    char* data1 = "My Data 1";
-   vdseHashItem* pNewItem;
+   psnHashItem* pNewItem;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = vdseHashInit( pHash, g_memObjOffset, 100, &context );
+   errcode = psnHashInit( pHash, g_memObjOffset, 100, &context );
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseHashInsert( NULL,
+   errcode = psnHashInsert( NULL,
                              (unsigned char*)key,
                              strlen(key),
                              data1,

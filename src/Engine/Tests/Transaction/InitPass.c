@@ -23,13 +23,13 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseTx* pTx;
-   vdseSessionContext context;
+   psnTx* pTx;
+   psnSessionContext context;
    bool ok;
    
    pTx = initTxTest( expectedToPass, &context );
 
-   ok = vdseTxInit( pTx, 1, &context );
+   ok = psnTxInit( pTx, 1, &context );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

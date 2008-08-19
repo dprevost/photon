@@ -27,7 +27,7 @@ int main()
 #if defined(USE_DBC)
    size_t calculatedSize;
    
-   calculatedSize = vdseGetBitmapLengthBytes( 1024, 0 );
+   calculatedSize = psnGetBitmapLengthBytes( 1024, 0 );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

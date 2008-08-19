@@ -23,13 +23,13 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseQueue * pQueue;
-   vdseSessionContext context;
+   psnQueue * pQueue;
+   psnSessionContext context;
    bool ok;
    int errcode;
-   vdseTxStatus status;
+   psnTxStatus status;
    char * data = "My Data";
-   vdseQueueItem * pItem = NULL;
+   psnQueueItem * pItem = NULL;
    vdsObjectDefinition def = { 
       VDS_QUEUE, 
       1, 
@@ -39,34 +39,34 @@ int main()
    
    pQueue = initQueueTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseQueueInit( pQueue, 
+   ok = psnQueueInit( pQueue, 
                        0, 1, &status, 4, 
                        "Queue1", SET_OFFSET(pQueue), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data,
                          8,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data,
                          6,
-                         VDSE_QUEUE_LAST,
+                         PSN_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseQueueGet( pQueue,
+   ok = psnQueueGet( pQueue,
                       VDS_FIRST,
                       &pItem,
                       7,

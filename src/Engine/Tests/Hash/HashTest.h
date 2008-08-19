@@ -29,14 +29,14 @@
 VDSF_ENGINE_EXPORT
 pscErrMsgHandle g_vdsErrorHandle;
 
-ptrdiff_t g_memObjOffset = VDSE_NULL_OFFSET;
+ptrdiff_t g_memObjOffset = PSN_NULL_OFFSET;
 
 struct vdstObjDummy
 {
-   struct vdseMemObject memObject;
-   struct vdseHash      hashObj;
+   struct psnMemObject memObject;
+   struct psnHash      hashObj;
    /* Variable size struct - always put at the end */
-   struct vdseBlockGroup blockGroup;
+   struct psnBlockGroup blockGroup;
 };
 
 typedef struct vdstObjDummy vdstObjDummy;
@@ -45,7 +45,7 @@ typedef struct vdstObjDummy vdstObjDummy;
 
 /**
  * This function initializes a dummy Memory Object holding a
- * vdseHash that can be used to test the hash functions.
+ * psnHash that can be used to test the hash functions.
  *
  * A reminder: when the hash needs memory, it first ask its 
  * owner, the memory object which can ask the global allocator.
@@ -53,23 +53,23 @@ typedef struct vdstObjDummy vdstObjDummy;
  * of the hash function calls.
  */
  
-vdseHash* initHashTest( bool testIsExpectedToSucceed,
-                        vdseSessionContext* pContext )
+psnHash* initHashTest( bool testIsExpectedToSucceed,
+                        psnSessionContext* pContext )
 {
    int errcode;
    bool ok;
    unsigned char* ptr;
-   vdseMemAlloc*  pAlloc;
+   psnMemAlloc*  pAlloc;
    vdstObjDummy* pDummy;
-   size_t allocatedLength = VDSE_BLOCK_SIZE * 10;
+   size_t allocatedLength = PSN_BLOCK_SIZE * 10;
    
-   ok = vdseInitEngine();
+   ok = psnInitEngine();
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   memset(pContext, 0, sizeof(vdseSessionContext) );
+   memset(pContext, 0, sizeof(psnSessionContext) );
    pContext->pidLocker = getpid();
    pscInitErrorHandler( &pContext->errorHandler );
 
@@ -81,18 +81,18 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
       exit(0);
    }
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
-   vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
+   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
+   psnMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for our dummy object + initialize it + blockGroup */
-   pDummy = (vdstObjDummy*) vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 2, pContext );
+   pDummy = (vdstObjDummy*) psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 2, pContext );
    if ( pDummy == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   errcode = vdseMemObjectInit( &pDummy->memObject, 
-                                VDSE_IDENT_ALLOCATOR,
+   errcode = psnMemObjectInit( &pDummy->memObject, 
+                                PSN_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 2 );
    if ( errcode != VDS_OK ) {
@@ -112,7 +112,7 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 /**
  * This function initializes a dummy Memory Object holding two
- * vdseHash objects that can be used to test the hash copy function.
+ * psnHash objects that can be used to test the hash copy function.
  *
  * A reminder: when the hash needs memory, it first ask its 
  * owner, the memory object which can ask the global allocator.
@@ -121,25 +121,25 @@ vdseHash* initHashTest( bool testIsExpectedToSucceed,
  */
  
 void initHashCopyTest( bool                 testIsExpectedToSucceed,
-                       vdseHash          ** ppOldHash,
-                       vdseHash          ** ppNewHash,
+                       psnHash          ** ppOldHash,
+                       psnHash          ** ppNewHash,
                        bool                 sameLength, /* array length of hash */
-                       vdseSessionContext * pContext )
+                       psnSessionContext * pContext )
 {
    int errcode;
    bool ok;
    unsigned char* ptr;
-   vdseMemAlloc*  pAlloc;
+   psnMemAlloc*  pAlloc;
    vdstObjDummy* pDummy1, * pDummy2;
-   size_t allocatedLength = VDSE_BLOCK_SIZE * 30;
+   size_t allocatedLength = PSN_BLOCK_SIZE * 30;
    
-   ok = vdseInitEngine();
+   ok = psnInitEngine();
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   memset(pContext, 0, sizeof(vdseSessionContext) );
+   memset(pContext, 0, sizeof(psnSessionContext) );
    pContext->pidLocker = getpid();
    pscInitErrorHandler( &pContext->errorHandler );
 
@@ -151,18 +151,18 @@ void initHashCopyTest( bool                 testIsExpectedToSucceed,
       exit(0);
    }
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
-   vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
+   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
+   psnMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for our dummy objects + initialize + blockGroup */
-   pDummy1 = (vdstObjDummy*) vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 2, pContext );
+   pDummy1 = (vdstObjDummy*) psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 2, pContext );
    if ( pDummy1 == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   errcode = vdseMemObjectInit( &pDummy1->memObject, 
-                                VDSE_IDENT_ALLOCATOR,
+   errcode = psnMemObjectInit( &pDummy1->memObject, 
+                                PSN_IDENT_ALLOCATOR,
                                 &pDummy1->blockGroup,
                                 2 );
    if ( errcode != VDS_OK ) {
@@ -171,7 +171,7 @@ void initHashCopyTest( bool                 testIsExpectedToSucceed,
       exit(0);
    }
    
-   errcode = vdseHashInit( &pDummy1->hashObj, 
+   errcode = psnHashInit( &pDummy1->hashObj, 
                            SET_OFFSET(&pDummy1->memObject), 
                            10,
                            pContext );
@@ -182,14 +182,14 @@ void initHashCopyTest( bool                 testIsExpectedToSucceed,
    }
    *ppOldHash = &pDummy1->hashObj;
 
-   pDummy2 = (vdstObjDummy*) vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 2, pContext );
+   pDummy2 = (vdstObjDummy*) psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 2, pContext );
    if ( pDummy2 == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   errcode = vdseMemObjectInit( &pDummy2->memObject, 
-                                VDSE_IDENT_ALLOCATOR,
+   errcode = psnMemObjectInit( &pDummy2->memObject, 
+                                PSN_IDENT_ALLOCATOR,
                                 &pDummy2->blockGroup,
                                 2 );
    if ( errcode != VDS_OK ) {
@@ -199,13 +199,13 @@ void initHashCopyTest( bool                 testIsExpectedToSucceed,
    }
 
    if ( sameLength ) {
-      errcode = vdseHashInit( &pDummy2->hashObj, 
+      errcode = psnHashInit( &pDummy2->hashObj, 
                               SET_OFFSET(&pDummy2->memObject), 
                               10,
                               pContext );
    }
    else {
-      errcode = vdseHashInit( &pDummy2->hashObj, 
+      errcode = psnHashInit( &pDummy2->hashObj, 
                               SET_OFFSET(&pDummy2->memObject), 
                               100,
                               pContext );

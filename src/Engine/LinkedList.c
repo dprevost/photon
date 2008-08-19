@@ -20,14 +20,14 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Cleanup the list once we're done with it. */
-void vdseLinkedListFini( vdseLinkedList* pList )
+void psnLinkedListFini( psnLinkedList* pList )
 {   
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
+   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
    
-   /* We reset the node element to VDSE_NULL_OFFSET. */
-   vdseLinkNodeInit( &pList->head );
+   /* We reset the node element to PSN_NULL_OFFSET. */
+   psnLinkNodeInit( &pList->head );
 
    pList->currentSize    = 0;
    pList->initialized    = 0;
@@ -35,27 +35,27 @@ void vdseLinkedListFini( vdseLinkedList* pList )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseLinkedListInit( vdseLinkedList* pList )
+void psnLinkedListInit( psnLinkedList* pList )
 {
    VDS_PRE_CONDITION( pList != NULL );
    
-   vdseLinkNodeInit( &pList->head );
+   psnLinkNodeInit( &pList->head );
    pList->currentSize = 0;
 
    /* Make the list circular by pointing it back to itself. */
    pList->head.previousOffset = pList->head.nextOffset = 
       SET_OFFSET( &pList->head );
 
-   pList->initialized = VDSE_LIST_SIGNATURE;
+   pList->initialized = PSN_LIST_SIGNATURE;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseLinkedListReset( vdseLinkedList* pList )
+void psnLinkedListReset( psnLinkedList* pList )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
+   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
 
    pList->currentSize = 0;
 
@@ -66,28 +66,28 @@ void vdseLinkedListReset( vdseLinkedList* pList )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseLinkedListIsValid( vdseLinkedList* pList,
-                            vdseLinkNode*   pUnknown )
+bool psnLinkedListIsValid( psnLinkedList* pList,
+                            psnLinkNode*   pUnknown )
 {
    bool valid = false;
    
-   vdseLinkNode* pItem;
+   psnLinkNode* pItem;
 
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSE_LIST_SIGNATURE );
+   VDS_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
    VDS_PRE_CONDITION( pUnknown   != NULL );
 
    pItem = &pList->head;
    
-   GET_PTR( pItem, pItem->nextOffset, vdseLinkNode );
+   GET_PTR( pItem, pItem->nextOffset, psnLinkNode );
    while ( pItem != &pList->head ) {
       if ( pItem == pUnknown ) {
          valid = true;
          break;
       }
       
-      GET_PTR( pItem, pItem->nextOffset, vdseLinkNode );
+      GET_PTR( pItem, pItem->nextOffset, psnLinkNode );
    }
 
    return valid;

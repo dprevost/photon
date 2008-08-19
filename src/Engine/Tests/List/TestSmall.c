@@ -55,17 +55,17 @@ gf after fini -> assert
 
 int main()
 {
-   vdseLinkedList list;
+   psnLinkedList list;
    dummyStruct dummy[MAX_ELEMENTS];
    int i, j, k;
    int randElement;
    unsigned int randAction;
    int errcode, countNext;
-   vdseSessionContext context;
+   psnSessionContext context;
    bool ok;
    
    int numInList;
-   vdseLinkNode* pNode = NULL;
+   psnLinkNode* pNode = NULL;
    dummyStruct*  pDummy;
    
    initTest( expectedToPass, &context );
@@ -76,15 +76,15 @@ int main()
    
    for ( i = 0; i < MAX_ELEMENTS; ++i ) {
       dummy[i].dummy1 = i;
-      vdseLinkNodeInit( &dummy[i].node );
+      psnLinkNodeInit( &dummy[i].node );
    }
 
    /* Initialize the list */
-   vdseLinkedListInit( &list );
+   psnLinkedListInit( &list );
 
    for ( i = 0; i < INITIAL_LIST_SIZE; ++i ) {
-      vdseLinkNodeInit( &dummy[i].node );
-      vdseLinkedListPutLast( &list, &dummy[i].node );
+      psnLinkNodeInit( &dummy[i].node );
+      psnLinkedListPutLast( &list, &dummy[i].node );
       dummy[i].isInUse = 1;
    }
    numInList = INITIAL_LIST_SIZE;
@@ -131,8 +131,8 @@ int main()
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
          
-         vdseLinkNodeInit( &dummy[k].node );
-         vdseLinkedListPutFirst( &list, &dummy[k].node );
+         psnLinkNodeInit( &dummy[k].node );
+         psnLinkedListPutFirst( &list, &dummy[k].node );
 
          dummy[k].isInUse = 1;
          numInList++;
@@ -166,15 +166,15 @@ int main()
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
 
-         vdseLinkNodeInit( &dummy[k].node );
-         vdseLinkedListPutLast( &list, &dummy[k].node );
+         psnLinkNodeInit( &dummy[k].node );
+         psnLinkedListPutLast( &list, &dummy[k].node );
 
          dummy[k].isInUse = 1;
          numInList++;
          break;
          
       case 2:
-         ok = vdseLinkedListGetFirst( &list, &pNode );
+         ok = psnLinkedListGetFirst( &list, &pNode );
          if ( ! ok ) {
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
@@ -200,7 +200,7 @@ int main()
          break;
          
       case 3:
-         ok = vdseLinkedListGetLast( &list, &pNode );
+         ok = psnLinkedListGetLast( &list, &pNode );
          if ( ! ok ) {
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
@@ -251,7 +251,7 @@ int main()
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
 
-         vdseLinkedListRemoveItem( &list, &dummy[k].node );
+         psnLinkedListRemoveItem( &list, &dummy[k].node );
 
          dummy[k].isInUse = 0;         
          numInList--;
@@ -291,11 +291,11 @@ int main()
       
       /* Test the iterators */
       if ( ((i+1)%GET_NEXT_LOOP ) == 0 ) {
-         ok = vdseLinkedListPeakFirst( &list, &pNode );
+         ok = psnLinkedListPeakFirst( &list, &pNode );
             
          countNext = 1;
          while ( ok ) {
-            ok = vdseLinkedListPeakNext( &list, pNode, &pNode );
+            ok = psnLinkedListPeakNext( &list, pNode, &pNode );
             if ( ok ) countNext++;
          }
 
@@ -304,11 +304,11 @@ int main()
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
          
-         ok = vdseLinkedListPeakLast( &list, &pNode );
+         ok = psnLinkedListPeakLast( &list, &pNode );
          
          countNext = 1;
          while ( ok ) {
-            ok = vdseLinkedListPeakPrevious( &list, 
+            ok = psnLinkedListPeakPrevious( &list, 
                                              pNode, 
                                              &pNode );
             if ( ok ) countNext++;
@@ -323,7 +323,7 @@ int main()
 
    } /* End of for loop */
 
-   vdseLinkedListFini( &list );
+   psnLinkedListFini( &list );
 
    return 0;
 }

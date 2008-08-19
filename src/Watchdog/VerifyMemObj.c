@@ -24,13 +24,13 @@
 
 enum vdswRecoverError
 vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
-                     struct vdseMemObject      * pMemObj,
-                     struct vdseSessionContext * pContext )
+                     struct psnMemObject      * pMemObj,
+                     struct psnSessionContext * pContext )
 {
    enum vdswRecoverError rc = VDSWR_OK;
-   struct vdseMemAlloc * pAlloc = (vdseMemAlloc *) pContext->pAllocator;
-   vdseLinkNode * dummy;
-   vdseBlockGroup * pGroup;
+   struct psnMemAlloc * pAlloc = (psnMemAlloc *) pContext->pAllocator;
+   psnLinkNode * dummy;
+   psnBlockGroup * pGroup;
    size_t numBlocks = 0;
    bool ok;
    
@@ -38,7 +38,7 @@ vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
     * Reset the bitmap and the the list of groups.
     */
    vdswResetBitmap( pVerify->pBitmap );
-   vdseSetBufferFree( pVerify->pBitmap, 0, pAlloc->totalLength );
+   psnSetBufferFree( pVerify->pBitmap, 0, pAlloc->totalLength );
 
    rc = vdswVerifyList( pVerify, &pMemObj->listBlockGroup );
    if ( rc > VDSWR_START_ERRORS ) return rc;
@@ -46,13 +46,13 @@ vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
    /*
     * We retrieve the first node
     */
-   ok = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
+   ok = psnLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
    while ( ok ) {
-      pGroup = (vdseBlockGroup*)( 
-         (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
+      pGroup = (psnBlockGroup*)( 
+         (unsigned char*)dummy - offsetof(psnBlockGroup,node));
       numBlocks += pGroup->numBlocks;
       
-      ok = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
+      ok = psnLinkedListPeakNext( &pMemObj->listBlockGroup,
                                    dummy,
                                    &dummy );
    }
@@ -71,11 +71,11 @@ vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void vdswPopulateBitmap( struct vdswVerifyStruct   * pVerify,
-                         struct vdseMemObject      * pMemObj,
-                         struct vdseSessionContext * pContext )
+                         struct psnMemObject      * pMemObj,
+                         struct psnSessionContext * pContext )
 {
-   vdseLinkNode * dummy;
-   vdseBlockGroup * pGroup;
+   psnLinkNode * dummy;
+   psnBlockGroup * pGroup;
    bool ok;
    
    /*
@@ -86,16 +86,16 @@ void vdswPopulateBitmap( struct vdswVerifyStruct   * pVerify,
    /*
     * We retrieve the first node
     */
-   ok = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
+   ok = psnLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
    while ( ok ) {
-      pGroup = (vdseBlockGroup*)( 
-         (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
+      pGroup = (psnBlockGroup*)( 
+         (unsigned char*)dummy - offsetof(psnBlockGroup,node));
 
-      vdseSetBufferFree( pVerify->pBitmap, 
-         SET_OFFSET( pGroup )/VDSE_BLOCK_SIZE*VDSE_BLOCK_SIZE, 
-         pGroup->numBlocks*VDSE_BLOCK_SIZE );
+      psnSetBufferFree( pVerify->pBitmap, 
+         SET_OFFSET( pGroup )/PSN_BLOCK_SIZE*PSN_BLOCK_SIZE, 
+         pGroup->numBlocks*PSN_BLOCK_SIZE );
       
-      ok = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
+      ok = psnLinkedListPeakNext( &pMemObj->listBlockGroup,
                                    dummy,
                                    &dummy );
    }

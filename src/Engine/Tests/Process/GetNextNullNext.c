@@ -24,28 +24,28 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseProcess * process;
-   vdseSessionContext context;
+   psnProcess * process;
+   psnSessionContext context;
    int errcode;
    bool ok;
-   vdseSession * pSession1;
+   psnSession * pSession1;
    void * pApiSession = (void *) &errcode; /* A dummy pointer */
    
    process = initProcessTest( expectedToPass, &context );
 
-   ok = vdseProcessInit( process, 12345, &context );
+   ok = psnProcessInit( process, 12345, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseProcessAddSession( process,
+   ok = psnProcessAddSession( process,
                                pApiSession,
                                &pSession1,
                                &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseProcessAddSession( process,
+   ok = psnProcessAddSession( process,
                                pApiSession,
                                &pSession1,
                                &context );
@@ -53,14 +53,14 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseProcessGetFirstSession( process,
+   ok = psnProcessGetFirstSession( process,
                                     &pSession1,
                                     &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseProcessGetNextSession( process,
+   psnProcessGetNextSession( process,
                               pSession1,
                               NULL,
                               &context );

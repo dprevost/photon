@@ -19,7 +19,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseMemBitmapInit( vdseMemBitmap* pBitmap,
+void psnMemBitmapInit( psnMemBitmap* pBitmap,
                         ptrdiff_t      baseAddressOffset,
                         size_t         totalLength,
                         size_t         allocGranularity )
@@ -27,7 +27,7 @@ void vdseMemBitmapInit( vdseMemBitmap* pBitmap,
    size_t len, i;
    
    VDS_PRE_CONDITION( pBitmap     != NULL );
-   VDS_PRE_CONDITION( baseAddressOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( baseAddressOffset != PSN_NULL_OFFSET );
    VDS_PRE_CONDITION( totalLength      > 0 );
    /* Testing that it is non-zero and a power of two */
    VDS_PRE_CONDITION( allocGranularity > 0  && 
@@ -45,7 +45,7 @@ void vdseMemBitmapInit( vdseMemBitmap* pBitmap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseMemBitmapFini( vdseMemBitmap* pBitmap )
+void psnMemBitmapFini( psnMemBitmap* pBitmap )
 {
    size_t len, i;
    VDS_PRE_CONDITION( pBitmap != NULL );
@@ -57,7 +57,7 @@ void vdseMemBitmapFini( vdseMemBitmap* pBitmap )
    
    pBitmap->lengthInBits = 0;
    pBitmap->allocGranularity = 0;
-   pBitmap->baseAddressOffset = VDSE_NULL_OFFSET;
+   pBitmap->baseAddressOffset = PSN_NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

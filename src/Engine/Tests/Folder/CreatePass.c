@@ -23,8 +23,8 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseFolder * pFolder;
-   vdseSessionContext context;
+   psnFolder * pFolder;
+   psnSessionContext context;
    bool ok;
    
    vdsObjectDefinition def = { 
@@ -36,7 +36,7 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = vdseFolderCreateObject( pFolder,
+   ok = psnFolderCreateObject( pFolder,
                                 "Test1",
                                 strlen("Test1"),
                                 &def,
@@ -45,7 +45,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderCreateObject( pFolder,
+   ok = psnFolderCreateObject( pFolder,
                                 "Test2",
                                 strlen("Test2"),
                                 &def,

@@ -24,13 +24,13 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseProcess * process;
-   vdseSessionContext context;
+   psnProcess * process;
+   psnSessionContext context;
    bool ok;
    
    process = initProcessTest( expectedToPass, &context );
 
-   ok = vdseProcessInit( NULL, 12345, &context );
+   ok = psnProcessInit( NULL, 12345, &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

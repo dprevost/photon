@@ -28,20 +28,20 @@ int main()
 #if defined(USE_DBC)
    vdsErrors errcode;
    vdstObjDummy *pDummy;
-   vdseSessionContext context;
+   psnSessionContext context;
    vdsObjStatus status;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    
-   errcode = vdseMemObjectInit( &pDummy->memObject, 
-                                VDSE_IDENT_FOLDER,
+   errcode = psnMemObjectInit( &pDummy->memObject, 
+                                PSN_IDENT_FOLDER,
                                 &pDummy->blockGroup,
                                 1 );
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseMemObjectStatus( NULL, &status );
+   psnMemObjectStatus( NULL, &status );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

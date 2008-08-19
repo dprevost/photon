@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_SESSION_H
-#define VDSE_SESSION_H
+#ifndef PSN_SESSION_H
+#define PSN_SESSION_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -26,7 +26,7 @@
 #include "Engine/MemoryObject.h"
 #include "Engine/BlockGroup.h"
 
-struct vdseTx;
+struct psnTx;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -38,7 +38,7 @@ BEGIN_C_DECLS
  * The context information for each object accessed by a session is 
  * kept in a doubly linked list (for fast access). 
  */
-struct vdseObjectContext
+struct psnObjectContext
 {
    /** offset to the object pointer in memory */
    ptrdiff_t offset;
@@ -53,12 +53,12 @@ struct vdseObjectContext
     */
    void * pCommonObject; 
    
-   /** Our node in the linked list of the vdseSession object. */
-   vdseLinkNode node;
+   /** Our node in the linked list of the psnSession object. */
+   psnLinkNode node;
       
 };
 
-typedef struct vdseObjectContext vdseObjectContext;
+typedef struct psnObjectContext psnObjectContext;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -70,69 +70,69 @@ typedef struct vdseObjectContext vdseObjectContext;
  * closed objects (->decrease access counter), unlocked objects, etc.
  *
  */
-typedef struct vdseSession
+typedef struct psnSession
 {
    /** Always first */
-   struct vdseMemObject memObject;
+   struct psnMemObject memObject;
 
-   /** This object is part of the linked list of the vdseProcess */
-   vdseLinkNode node;
+   /** This object is part of the linked list of the psnProcess */
+   psnLinkNode node;
 
    /** Pointer to the vdsaSession. To be used by the process object when
        it cleans up its sessions. */
    void * pApiSession;
    
    /** Pointer to our transaction object */
-   struct vdseTx * pTransaction;
+   struct psnTx * pTransaction;
    
    /** Our own internal list of objects accessed by the current session */
-   vdseLinkedList listOfObjects;
+   psnLinkedList listOfObjects;
 
    /** our current list of locks */
-   ptrdiff_t lockOffsets[VDSE_MAX_LOCK_DEPTH];
+   ptrdiff_t lockOffsets[PSN_MAX_LOCK_DEPTH];
 
    /** number of locks we are holding */
    int numLocks;
    
    /** Variable size struct - always put at the end */
-   struct vdseBlockGroup blockGroup;
+   struct psnBlockGroup blockGroup;
 
-} vdseSession;
+} psnSession;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-bool vdseSessionInit( vdseSession        * pSession,
+bool psnSessionInit( psnSession        * pSession,
                       void               * pApiSession,
-                      vdseSessionContext * pContext );
+                      psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseSessionFini( vdseSession        * pSession,
-                      vdseSessionContext * pContext );
+void psnSessionFini( psnSession        * pSession,
+                      psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseSessionAddObj( vdseSession        * pSession,
+bool psnSessionAddObj( psnSession        * pSession,
                         ptrdiff_t            objOffset, 
                         enum vdsObjectType   objType, 
                         void               * pCommonObject,
-                        vdseObjectContext ** ppObject,
-                        vdseSessionContext * pContext );
+                        psnObjectContext ** ppObject,
+                        psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseSessionRemoveObj( vdseSession        * pSession,
-                          vdseObjectContext  * pObject,
-                          vdseSessionContext * pContext );
-
-/* Lock and Unlock must be used before calling this function */
-VDSF_ENGINE_EXPORT
-bool vdseSessionRemoveFirst( vdseSession        * pSession,
-                             vdseSessionContext * pContext );
+bool psnSessionRemoveObj( psnSession        * pSession,
+                          psnObjectContext  * pObject,
+                          psnSessionContext * pContext );
 
 /* Lock and Unlock must be used before calling this function */
 VDSF_ENGINE_EXPORT
-bool vdseSessionGetFirst( vdseSession        * pSession,
-                          vdseObjectContext ** ppObject,
-                          vdseSessionContext * pContext );
+bool psnSessionRemoveFirst( psnSession        * pSession,
+                             psnSessionContext * pContext );
+
+/* Lock and Unlock must be used before calling this function */
+VDSF_ENGINE_EXPORT
+bool psnSessionGetFirst( psnSession        * pSession,
+                          psnObjectContext ** ppObject,
+                          psnSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -140,7 +140,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_SESSION_H */
+#endif /* PSN_SESSION_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

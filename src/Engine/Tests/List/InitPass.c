@@ -24,15 +24,15 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseLinkedList list;
-   vdseSessionContext context;
+   psnLinkedList list;
+   psnSessionContext context;
    
    initTest( expectedToPass, &context );
    InitMem();
    
-   vdseLinkedListInit( &list );
+   psnLinkedListInit( &list );
    
-   vdseLinkedListFini( &list );
+   psnLinkedListFini( &list );
    
    return 0;
 }

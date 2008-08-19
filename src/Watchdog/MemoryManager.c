@@ -58,15 +58,15 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
                     const char         * memoryFileName,
                     size_t               memorySizekb,
                     int                  filePerms,
-                    vdseMemoryHeader  ** ppHeader,
-                    vdseSessionContext * pContext )
+                    psnMemoryHeader  ** ppHeader,
+                    psnSessionContext * pContext )
 {
    int errcode = 0;
    pscMemoryFileStatus fileStatus;
-   vdseMemAlloc * pAlloc;
+   psnMemAlloc * pAlloc;
    unsigned char * ptr;
-   vdseFolder * pFolder;
-   vdseProcMgr * processManager;
+   psnFolder * pFolder;
+   psnProcMgr * processManager;
    time_t t;
    struct tm formattedTime;
    unsigned char * pStart;
@@ -79,7 +79,7 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    VDS_PRE_CONDITION( pContext       != NULL );
    VDS_PRE_CONDITION( memorySizekb > 0 );
 
-   VDS_INV_CONDITION( sizeof(vdseMemoryHeader) <= VDSE_BLOCK_SIZE );
+   VDS_INV_CONDITION( sizeof(psnMemoryHeader) <= PSN_BLOCK_SIZE );
    
    *ppHeader = NULL;
    pManager->memorySizeKB = memorySizekb;   
@@ -106,19 +106,19 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
       return false;
    }
       
-   pManager->pHeader = *ppHeader = (vdseMemoryHeader*) pManager->pMemoryAddress;
+   pManager->pHeader = *ppHeader = (psnMemoryHeader*) pManager->pMemoryAddress;
    (*ppHeader)->running = 1;
 
    /* Sets the global base address */
    g_pBaseAddr = (unsigned char *) pManager->pMemoryAddress;
    
    /* The memory allocator starts after the header */
-   pStart = (unsigned char*)pManager->pMemoryAddress + VDSE_BLOCK_SIZE;
+   pStart = (unsigned char*)pManager->pMemoryAddress + PSN_BLOCK_SIZE;
    
    (*ppHeader)->allocatorOffset = SET_OFFSET( pStart );
-   pAlloc = (vdseMemAlloc *) pStart;
+   pAlloc = (psnMemAlloc *) pStart;
    
-   errcode = vdseMemAllocInit( pAlloc,
+   errcode = psnMemAllocInit( pAlloc,
                                g_pBaseAddr,
                                pManager->memorySizeKB*1024,
                                pContext );
@@ -131,7 +131,7 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    }
 
    /* The top folder  */
-   ptr = vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
+   ptr = psnMallocBlocks( pAlloc, PSN_ALLOC_API_OBJ, 1, pContext );
    if ( ptr == NULL ) {
       (*ppHeader) = NULL;
       pscSetError( &pContext->errorHandler,
@@ -139,10 +139,10 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
                     VDS_NOT_ENOUGH_VDS_MEMORY );
       return false;
    }
-   pFolder = (vdseFolder *) ptr;
+   pFolder = (psnFolder *) ptr;
 
-   errcode = vdseMemObjectInit( &pFolder->memObject, 
-                                VDSE_IDENT_FOLDER,
+   errcode = psnMemObjectInit( &pFolder->memObject, 
+                                PSN_IDENT_FOLDER,
                                 &pFolder->blockGroup,
                                 1 );
    if ( errcode != VDS_OK ) {
@@ -151,16 +151,16 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
                     errcode );
       return false;
    }
-   vdseTxStatusInit( &pManager->pHeader->topHashItem.txStatus, VDSE_NULL_OFFSET );
+   psnTxStatusInit( &pManager->pHeader->topHashItem.txStatus, PSN_NULL_OFFSET );
 
    pFolder->nodeObject.txCounter      = 0;
    pFolder->nodeObject.myNameLength   = 0;
-   pFolder->nodeObject.myNameOffset   = VDSE_NULL_OFFSET;
+   pFolder->nodeObject.myNameOffset   = PSN_NULL_OFFSET;
    pFolder->nodeObject.txStatusOffset = 
       SET_OFFSET( &pManager->pHeader->topHashItem.txStatus );
-   pFolder->nodeObject.myParentOffset = VDSE_NULL_OFFSET;
+   pFolder->nodeObject.myParentOffset = PSN_NULL_OFFSET;
 
-   errcode = vdseHashInit( &pFolder->hashObj, 
+   errcode = psnHashInit( &pFolder->hashObj, 
                       SET_OFFSET(&pFolder->memObject),
                       25, 
                       pContext );
@@ -176,7 +176,7 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    (*ppHeader)->topDescriptor.apiType = VDS_FOLDER;
 
    /* The Garbage Collection manager */
-   ptr = vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
+   ptr = psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 1, pContext );
    if ( ptr == NULL ) {
       (*ppHeader) = NULL;
       pscSetError( &pContext->errorHandler,
@@ -185,9 +185,9 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
       return false;
    }
 
-   processManager = (vdseProcMgr *) ptr;
+   processManager = (psnProcMgr *) ptr;
    
-   ok = vdseProcMgrInit( processManager, pContext );
+   ok = psnProcMgrInit( processManager, pContext );
    VDS_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       (*ppHeader) = NULL;
@@ -200,7 +200,7 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    /* cookie" to identify the file?) */
 
    strcpy( (*ppHeader)->cookie, "VDS" );
-   (*ppHeader)->version = VDSE_MEMORY_VERSION;
+   (*ppHeader)->version = PSN_MEMORY_VERSION;
    (*ppHeader)->totalLength = pManager->memorySizeKB*1024;
 
    (*ppHeader)->sizeofPtr = SIZEOF_VOID_P;
@@ -209,14 +209,14 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
 #else
    (*ppHeader)->bigEndian = false;
 #endif
-   (*ppHeader)->blockSize = VDSE_BLOCK_SIZE;
+   (*ppHeader)->blockSize = PSN_BLOCK_SIZE;
    (*ppHeader)->alignmentStruct = PSC_ALIGNMENT_STRUCT;
    (*ppHeader)->alignmentChar   = PSC_ALIGNMENT_CHAR;
    (*ppHeader)->alignmentInt16  = PSC_ALIGNMENT_INT16;
    (*ppHeader)->alignmentInt32  = PSC_ALIGNMENT_INT32;
    (*ppHeader)->alignmentInt64  = PSC_ALIGNMENT_INT64;
 
-   (*ppHeader)->allocationUnit = VDSE_ALLOCATION_UNIT;
+   (*ppHeader)->allocationUnit = PSN_ALLOCATION_UNIT;
    strncpy( (*ppHeader)->cpu_type, MYCPU, 19 );
    strncpy( (*ppHeader)->compiler, MYCC, 19);
    strncpy( (*ppHeader)->cxxcompiler, MYCXX, 19);
@@ -259,8 +259,8 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
 bool vdswOpenVDS( vdswMemoryManager  * pManager, 
                   const char         * memoryFileName,
                   size_t               memorySizekb,
-                  vdseMemoryHeader  ** ppHeader,
-                  vdseSessionContext * pContext )
+                  psnMemoryHeader  ** ppHeader,
+                  psnSessionContext * pContext )
 {
    bool ok;
    
@@ -300,9 +300,9 @@ bool vdswOpenVDS( vdswMemoryManager  * pManager,
       return false;
    }
    
-   pManager->pHeader = *ppHeader = (vdseMemoryHeader*) pManager->pMemoryAddress;
+   pManager->pHeader = *ppHeader = (psnMemoryHeader*) pManager->pMemoryAddress;
 
-   if ( (*ppHeader)->version != VDSE_MEMORY_VERSION ) {
+   if ( (*ppHeader)->version != PSN_MEMORY_VERSION ) {
       (*ppHeader) = NULL;
       pscSetError( &pContext->errorHandler,
                     g_wdErrorHandle,

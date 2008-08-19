@@ -23,14 +23,14 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseMap * pHashMap;
-   vdseSessionContext context;
+   psnMap * pHashMap;
+   psnSessionContext context;
    bool ok;
-   vdseTxStatus status;
+   psnTxStatus status;
    char * key  = "my key";
    char * data1 = "my data1";
    char * data2 = "my data2";
-   vdseHashItem * pItem;
+   psnHashItem * pItem;
    char * ptr;
    vdsObjectDefinition def = { 
       VDS_FAST_MAP, 
@@ -41,16 +41,16 @@ int main()
 
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseMapInit( pHashMap, 
+   ok = psnMapInit( pHashMap, 
                      0, 1, 0, &status, 4, 
                      "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseMapInsert( pHashMap,
+   ok = psnMapInsert( pHashMap,
                        (const void *) key,
                        6,
                        (const void *) data1,
@@ -60,7 +60,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseMapGet( pHashMap,
+   ok = psnMapGet( pHashMap,
                     (const void *) key,
                     6,
                     &pItem,
@@ -71,7 +71,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseMapReplace( pHashMap,
+   ok = psnMapReplace( pHashMap,
                         (const void *) key,
                         6,
                         (const void *) data2,
@@ -81,7 +81,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseMapGet( pHashMap,
+   ok = psnMapGet( pHashMap,
                     (const void *) key,
                     6,
                     &pItem,

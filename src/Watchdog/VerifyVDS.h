@@ -26,14 +26,14 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswVerify( vdseMemoryHeader * pMemoryAddress, 
+void vdswVerify( psnMemoryHeader * pMemoryAddress, 
                  size_t           * pNumObjectsOK,
                  size_t           * pNumObjectsRepaired,
                  size_t           * pNumObjectsDeleted,
                  size_t           * pNumObjectsError,
                  FILE             * fp );
 
-void vdswRepair( vdseMemoryHeader * pMemoryAddress,
+void vdswRepair( psnMemoryHeader * pMemoryAddress,
                  size_t           * pNumObjectsOK,
                  size_t           * pNumObjectsRepaired,
                  size_t           * pNumObjectsDeleted,

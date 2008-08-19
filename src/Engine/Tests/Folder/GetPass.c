@@ -23,14 +23,14 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseFolder* pFolder;
-   vdseSessionContext context;
+   psnFolder* pFolder;
+   psnSessionContext context;
    bool ok;
-   vdseTxStatus status;
-   vdseFolderItem folderItem;
-   vdseObjectDescriptor * pDescriptor;
-   vdseTxStatus * txItemStatus;
-   vdseTreeNode * pNode;
+   psnTxStatus status;
+   psnFolderItem folderItem;
+   psnObjectDescriptor * pDescriptor;
+   psnTxStatus * txItemStatus;
+   psnTreeNode * pNode;
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
@@ -40,14 +40,14 @@ int main()
 
    pFolder = initFolderTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   ok = psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -59,7 +59,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderGetObject( pFolder,
+   ok = psnFolderGetObject( pFolder,
                              "test2",
                              5,
                              VDS_FOLDER,
@@ -68,13 +68,13 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, psnObjectDescriptor );
    if ( memcmp( pDescriptor->originalName, 
                 "Test2", 5*sizeof(char) ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   GET_PTR( pNode, pDescriptor->nodeOffset, vdseTreeNode);
-   GET_PTR( txItemStatus, pNode->txStatusOffset, vdseTxStatus );
+   GET_PTR( pNode, pDescriptor->nodeOffset, psnTreeNode);
+   GET_PTR( txItemStatus, pNode->txStatusOffset, psnTxStatus );
    if ( txItemStatus->parentCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -82,7 +82,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseFolderGetObject( pFolder,
+   ok = psnFolderGetObject( pFolder,
                              "test3",
                              5,
                              VDS_FOLDER,
@@ -95,7 +95,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
       
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test4",
                                 "Test4",
                                 5,
@@ -107,7 +107,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderGetObject( pFolder,
+   ok = psnFolderGetObject( pFolder,
                              "test4",
                              5,
                              VDS_FOLDER,
@@ -116,13 +116,13 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, psnObjectDescriptor );
    if ( memcmp( pDescriptor->originalName, 
                 "Test4", 5*sizeof(char) ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   GET_PTR( pNode, pDescriptor->nodeOffset, vdseTreeNode);
-   GET_PTR( txItemStatus, pNode->txStatusOffset, vdseTxStatus );
+   GET_PTR( pNode, pDescriptor->nodeOffset, psnTreeNode);
+   GET_PTR( txItemStatus, pNode->txStatusOffset, psnTxStatus );
    if ( txItemStatus->parentCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -133,7 +133,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseFolderFini( pFolder, &context );
+   psnFolderFini( pFolder, &context );
    
    return 0;
 }

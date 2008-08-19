@@ -44,19 +44,19 @@ pscErrMsgHandle g_vdsErrorHandle;
  * the Init() call.
  */
  
-vdseTx* initTxTest( bool                testIsExpectedToSucceed,
-                    vdseSessionContext* pContext )
+psnTx* initTxTest( bool                testIsExpectedToSucceed,
+                    psnSessionContext* pContext )
 {
    bool ok;
    unsigned char* ptr;
-   vdseMemAlloc*  pAlloc;
-   vdseTx* pDummy;
-   size_t allocatedLength = VDSE_BLOCK_SIZE * 10;
+   psnMemAlloc*  pAlloc;
+   psnTx* pDummy;
+   size_t allocatedLength = PSN_BLOCK_SIZE * 10;
 
-   memset( pContext, 0, sizeof(vdseSessionContext) );
+   memset( pContext, 0, sizeof(psnSessionContext) );
    pContext->pidLocker = getpid();
    
-   ok = vdseInitEngine();
+   ok = psnInitEngine();
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in txTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -72,11 +72,11 @@ vdseTx* initTxTest( bool                testIsExpectedToSucceed,
       exit(0);
    }
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
-   vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
+   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
+   psnMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object */
-   pDummy = (vdseTx*) vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
+   pDummy = (psnTx*) psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 1, pContext );
    if ( pDummy == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in txTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -99,20 +99,20 @@ vdseTx* initTxTest( bool                testIsExpectedToSucceed,
  * the Init() call.
  */
  
-vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
-                            vdseSessionContext* pContext )
+psnFolder* initFolderTest( bool                testIsExpectedToSucceed,
+                            psnSessionContext* pContext )
 {
    unsigned char* ptr;
-   vdseMemAlloc*  pAlloc;
-   vdseTx* pTx;
-   vdseFolder* pFolder;
-   size_t allocatedLength = VDSE_BLOCK_SIZE * 25;
+   psnMemAlloc*  pAlloc;
+   psnTx* pTx;
+   psnFolder* pFolder;
+   size_t allocatedLength = PSN_BLOCK_SIZE * 25;
    bool ok;
 
-   memset( pContext, 0, sizeof(vdseSessionContext) );
+   memset( pContext, 0, sizeof(psnSessionContext) );
    pContext->pidLocker = getpid();
    
-   ok = vdseInitEngine();
+   ok = psnInitEngine();
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -128,17 +128,17 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
       exit(0);
    }
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
-   vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
+   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
+   psnMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
-   pTx = (vdseTx*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
+   pTx = (psnTx*)psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 1, pContext );
    if ( pTx == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   ok = vdseTxInit( pTx, 1, pContext );
+   ok = psnTxInit( pTx, 1, pContext );
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -147,7 +147,7 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the folder object */
-   pFolder = (vdseFolder*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
+   pFolder = (psnFolder*)psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 1, pContext );
    if ( pFolder == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);

@@ -25,28 +25,28 @@ const bool expectedToPass = true;
 int main()
 {
    vdsErrors errcode;
-   vdseMemObject* pObj;
+   psnMemObject* pObj;
    vdstObjDummy  *pDummy;
-   vdseSessionContext context;
+   psnSessionContext context;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    pObj = &pDummy->memObject;
    
-   errcode = vdseMemObjectInit( pObj, 
-                                VDSE_IDENT_ALLOCATOR,
+   errcode = psnMemObjectInit( pObj, 
+                                PSN_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pObj->objType != VDSE_IDENT_ALLOCATOR ) {
+   if ( pObj->objType != PSN_IDENT_ALLOCATOR ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pObj->totalBlocks != 4 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseMemObjectFini( pObj, VDSE_ALLOC_ANY, &context );
+   psnMemObjectFini( pObj, PSN_ALLOC_ANY, &context );
    
    return 0;
 }

@@ -25,31 +25,31 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseMemObject* pObj;
+   psnMemObject* pObj;
    vdsErrors errcode;
-   vdseSessionContext context;
+   psnSessionContext context;
    unsigned char *buff[9];
    vdstObjDummy  *pDummy;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    pObj = &pDummy->memObject;
    
-   errcode = vdseMemObjectInit( pObj, 
-                                VDSE_IDENT_ALLOCATOR,
+   errcode = psnMemObjectInit( pObj, 
+                                PSN_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   buff[0] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
+   buff[0] = psnMalloc( pObj, PSN_BLOCK_SIZE, &context );
    if ( buff[0] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseFree( pObj, buff[0], 0, &context );
+   psnFree( pObj, buff[0], 0, &context );
    
-   vdseMemObjectFini( pObj, VDSE_ALLOC_ANY, &context );
+   psnMemObjectFini( pObj, PSN_ALLOC_ANY, &context );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

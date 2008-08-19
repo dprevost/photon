@@ -23,13 +23,13 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseHashMap * pHashMap;
-   vdseSessionContext context;
+   psnHashMap * pHashMap;
+   psnSessionContext context;
    bool ok;
-   vdseTxStatus status;
+   psnTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   vdseHashMapItem item;
+   psnHashMapItem item;
    char * ptr;
    vdsObjectDefinition def = { 
       VDS_HASH_MAP, 
@@ -40,16 +40,16 @@ int main()
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseHashMapInit( pHashMap, 
+   ok = psnHashMapInit( pHashMap, 
                          0, 1, 0, &status, 4, 
                          "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashMapInsert( pHashMap,
+   ok = psnHashMapInsert( pHashMap,
                            (const void *) key,
                            6,
                            (const void *) data,
@@ -59,7 +59,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashMapGetFirst( pHashMap,
+   ok = psnHashMapGetFirst( pHashMap,
                              &item,
                              6,
                              20,

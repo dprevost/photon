@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_HASH_MAP_H
-#define VDSE_HASH_MAP_H
+#ifndef PSN_HASH_MAP_H
+#define PSN_HASH_MAP_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,27 +33,27 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdseHashMapItem
+struct psnHashMapItem
 {
-   vdseHashItem * pHashItem;
+   psnHashItem * pHashItem;
 
    ptrdiff_t   itemOffset;
 
 };
 
-typedef struct vdseHashMapItem vdseHashMapItem;
+typedef struct psnHashMapItem psnHashMapItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdseHashMap
+struct psnHashMap
 {
    /** Always first */
-   struct vdseMemObject memObject;
+   struct psnMemObject memObject;
 
    /** Basic info for all leaves and branches of our tree. */
-   struct vdseTreeNode  nodeObject;
+   struct psnTreeNode  nodeObject;
 
-   struct vdseHash      hashObj;
+   struct psnHash      hashObj;
 
    struct vdsKeyDefinition keyDef;
    
@@ -63,101 +63,101 @@ struct vdseHashMap
    uint16_t numFields;
    
    /** Variable size struct - always put at the end */
-   struct vdseBlockGroup blockGroup;
+   struct psnBlockGroup blockGroup;
 
 };
 
-typedef struct vdseHashMap vdseHashMap;
+typedef struct psnHashMap psnHashMap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-void vdseHashMapCommitAdd( vdseHashMap        * pHashMap, 
+void psnHashMapCommitAdd( psnHashMap        * pHashMap, 
                            ptrdiff_t            itemOffset,
-                           vdseSessionContext * pContext  );
+                           psnSessionContext * pContext  );
 
 VDSF_ENGINE_EXPORT
-void vdseHashMapCommitRemove( vdseHashMap        * pHashMap, 
+void psnHashMapCommitRemove( psnHashMap        * pHashMap, 
                               ptrdiff_t            itemOffset,
-                              vdseSessionContext * pContext );
+                              psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseHashMapDelete( vdseHashMap        * pHashMap,
+bool psnHashMapDelete( psnHashMap        * pHashMap,
                         const void         * key,
                         size_t               keyLength, 
-                        vdseSessionContext * pContext );
+                        psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseHashMapFini( vdseHashMap        * pHashMap,
-                      vdseSessionContext * pContext );
+void psnHashMapFini( psnHashMap        * pHashMap,
+                      psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseHashMapGet( vdseHashMap        * pHashMap,
+bool psnHashMapGet( psnHashMap        * pHashMap,
                      const void         * pKey,
                      size_t               keyLength, 
-                     vdseHashItem      ** ppItem,
+                     psnHashItem      ** ppItem,
                      size_t               bufferLength,
-                     vdseSessionContext * pContext );
+                     psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseHashMapGetFirst( vdseHashMap        * pHashMap,
-                          vdseHashMapItem    * pItem,
+bool psnHashMapGetFirst( psnHashMap        * pHashMap,
+                          psnHashMapItem    * pItem,
                           size_t               keyLength,
                           size_t               bufferLength,
-                          vdseSessionContext * pContext );
+                          psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseHashMapGetNext( vdseHashMap        * pHashMap,
-                         vdseHashMapItem    * pItem,
+bool psnHashMapGetNext( psnHashMap        * pHashMap,
+                         psnHashMapItem    * pItem,
                          size_t               keyLength,
                          size_t               bufferLength,
-                         vdseSessionContext * pContext );
+                         psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseHashMapInit( vdseHashMap         * pHashMap,
+bool psnHashMapInit( psnHashMap         * pHashMap,
                       ptrdiff_t             parentOffset,
                       size_t                numberOfBlocks,
                       size_t                expectedNumOfChilds,
-                      vdseTxStatus        * pTxStatus,
+                      psnTxStatus        * pTxStatus,
                       size_t                origNameLength,
                       char                * origName,
                       ptrdiff_t             hashItemOffset,
                       vdsObjectDefinition * pDefinition,
-                      vdseSessionContext  * pContext );
+                      psnSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseHashMapInsert( vdseHashMap        * pHashMap,
+bool psnHashMapInsert( psnHashMap        * pHashMap,
                         const void         * pKey,
                         size_t               keyLength,
                         const void         * pItem,
                         size_t               itemLength,
-                        vdseSessionContext * pContext );
+                        psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseHashMapRelease( vdseHashMap        * pHashMap,
-                         vdseHashItem       * pHashItem,
-                         vdseSessionContext * pContext );
+bool psnHashMapRelease( psnHashMap        * pHashMap,
+                         psnHashItem       * pHashItem,
+                         psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseHashMapReplace( vdseHashMap        * pHashMap,
+bool psnHashMapReplace( psnHashMap        * pHashMap,
                          const void         * pKey,
                          size_t               keyLength,
                          const void         * pItem,
                          size_t               itemLength,
-                         vdseSessionContext * pContext );
+                         psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseHashMapRollbackAdd( vdseHashMap        * pHashMap, 
+void psnHashMapRollbackAdd( psnHashMap        * pHashMap, 
                              ptrdiff_t            itemOffset,
-                             vdseSessionContext * pContext  );
+                             psnSessionContext * pContext  );
 
 VDSF_ENGINE_EXPORT
-void vdseHashMapRollbackRemove( vdseHashMap        * pHashMap, 
+void psnHashMapRollbackRemove( psnHashMap        * pHashMap, 
                                 ptrdiff_t            itemOffset,
-                                vdseSessionContext * pContext  );
+                                psnSessionContext * pContext  );
 
 VDSF_ENGINE_EXPORT
-void vdseHashMapStatus( vdseHashMap  * pHashMap,
+void psnHashMapStatus( psnHashMap  * pHashMap,
                         vdsObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -166,7 +166,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_HASH_MAP_H */
+#endif /* PSN_HASH_MAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

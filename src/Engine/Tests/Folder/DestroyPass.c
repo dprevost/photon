@@ -23,8 +23,8 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseFolder * pFolder;
-   vdseSessionContext context;
+   psnFolder * pFolder;
+   psnSessionContext context;
    int errcode;
    bool ok;
    
@@ -37,7 +37,7 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = vdseFolderCreateObject( pFolder,
+   ok = psnFolderCreateObject( pFolder,
                                 "Test1",
                                 strlen("Test1"),
                                 &def,
@@ -47,7 +47,7 @@ int main()
    }
    
    /* Using the topfolder to create a grandchild! */
-   ok = vdseTopFolderCreateObject( pFolder,
+   ok = psnTopFolderCreateObject( pFolder,
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &def,
@@ -56,9 +56,9 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseTxCommit( (vdseTx *)context.pTransaction, &context );
+   psnTxCommit( (psnTx *)context.pTransaction, &context );
    
-   ok = vdseFolderDestroyObject( pFolder,
+   ok = psnFolderDestroyObject( pFolder,
                                  "Test1",
                                  strlen("Test1"),
                                  &context );
@@ -70,7 +70,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
                                          
-   ok = vdseTopFolderDestroyObject( pFolder,
+   ok = psnTopFolderDestroyObject( pFolder,
                                     "Test1/Test2",
                                     strlen("Test1/Test2"),
                                     &context );
@@ -78,7 +78,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderDestroyObject( pFolder,
+   ok = psnFolderDestroyObject( pFolder,
                                  "Test2",
                                  strlen("Test2"),
                                  &context );
@@ -90,7 +90,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = vdseFolderDestroyObject( pFolder,
+   ok = psnFolderDestroyObject( pFolder,
                                  "Test1",
                                  VDS_MAX_NAME_LENGTH+1,
                                  &context );
@@ -102,7 +102,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = vdseFolderDestroyObject( pFolder,
+   ok = psnFolderDestroyObject( pFolder,
                                  "Test1",
                                  0,
                                  &context );
@@ -114,7 +114,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = vdseFolderDestroyObject( pFolder,
+   ok = psnFolderDestroyObject( pFolder,
                                  "Test1",
                                  strlen("Test1"),
                                  &context );
@@ -123,7 +123,7 @@ int main()
    }
    
    /* Calling destroy on the same object, twice */
-   ok = vdseFolderDestroyObject( pFolder,
+   ok = psnFolderDestroyObject( pFolder,
                                  "Test1",
                                  strlen("Test1"),
                                  &context );

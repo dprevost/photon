@@ -27,12 +27,12 @@ int main()
 #if defined(USE_DBC)
    vdsErrors errcode;
    vdstObjDummy *pDummy;
-   vdseSessionContext context;
+   psnSessionContext context;
    
    pDummy = initMemObjTest( expectedToPass, &context );
 
-   errcode = vdseMemObjectInit( &pDummy->memObject,
-                                VDSE_IDENT_ALLOCATOR,
+   errcode = psnMemObjectInit( &pDummy->memObject,
+                                PSN_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
    if ( errcode != VDS_OK ) {
@@ -40,7 +40,7 @@ int main()
    }
    
    /* Should crash at this point */
-   vdseMemObjectFini( NULL, VDSE_ALLOC_ANY, &context );
+   psnMemObjectFini( NULL, PSN_ALLOC_ANY, &context );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

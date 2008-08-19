@@ -23,12 +23,12 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseQueue * pQueue;
-   vdseSessionContext context;
+   psnQueue * pQueue;
+   psnSessionContext context;
    bool ok;
-   vdseTxStatus status;
+   psnTxStatus status;
    char * data = "My Data";
-   vdseQueueItem * pQueueItem;
+   psnQueueItem * pQueueItem;
    vdsObjectDefinition def = { 
       VDS_QUEUE, 
       1, 
@@ -38,50 +38,50 @@ int main()
    
    pQueue = initQueueTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseQueueInit( pQueue, 
+   ok = psnQueueInit( pQueue, 
                        0, 1, &status, 4, 
                        "Queue1", SET_OFFSET(pQueue), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data,
                          8,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseQueueInsert( pQueue,
+   ok = psnQueueInsert( pQueue,
                          data,
                          6,
-                         VDSE_QUEUE_LAST,
+                         PSN_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    /* Must commit the insert before we attempt to remove */
-   ok = vdseQueueGet( pQueue, VDS_FIRST, &pQueueItem, 100, &context );
+   ok = psnQueueGet( pQueue, VDS_FIRST, &pQueueItem, 100, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   vdseQueueCommitAdd( pQueue, SET_OFFSET(pQueueItem) );
+   psnQueueCommitAdd( pQueue, SET_OFFSET(pQueueItem) );
 
-   ok = vdseQueueRemove( pQueue,
+   ok = psnQueueRemove( pQueue,
                          &pQueueItem,
-                         VDSE_QUEUE_FIRST,
+                         PSN_QUEUE_FIRST,
                          20,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseQueueRollbackRemove( pQueue, SET_OFFSET( pQueueItem ) );
+   psnQueueRollbackRemove( pQueue, SET_OFFSET( pQueueItem ) );
 
    return 0;
 }

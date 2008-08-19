@@ -28,8 +28,8 @@ BEGIN_C_DECLS
 
 // Forward declaration
 struct ConfigParams;
-struct vdseMemoryHeader;
-struct vdseSession;
+struct psnMemoryHeader;
+struct psnSession;
 struct vdswMemoryManager;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -46,9 +46,9 @@ struct vdswHandler
 
    struct vdswMemoryManager * pMemManager;
 
-   struct vdseMemoryHeader * pMemHeader;
+   struct psnMemoryHeader * pMemHeader;
    
-   vdseSessionContext context;
+   psnSessionContext context;
 };
 
 typedef struct vdswHandler vdswHandler;
@@ -57,7 +57,7 @@ typedef struct vdswHandler vdswHandler;
 
 bool vdswHandlerInit( vdswHandler              * pHandler,
                       struct ConfigParams      * pConfig,
-                      struct vdseMemoryHeader ** ppMemoryAddress,
+                      struct psnMemoryHeader ** ppMemoryAddress,
                       bool                       verifyVDSOnly );
 
 void vdswHandlerFini( vdswHandler * pHandler );
@@ -65,7 +65,7 @@ void vdswHandlerFini( vdswHandler * pHandler );
 void vdswHandleCrash( vdswHandler * pHandler, pid_t pid );
 
 #if 0
-   void CleanSession( vdseSession* pSession );
+   void CleanSession( psnSession* pSession );
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

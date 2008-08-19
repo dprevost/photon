@@ -24,20 +24,20 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseTx* pTx;
-   vdseSessionContext context;
+   psnTx* pTx;
+   psnSessionContext context;
    bool ok;
-   ptrdiff_t parentOffset = 0x1010, childOffset = VDSE_NULL_OFFSET;
+   ptrdiff_t parentOffset = 0x1010, childOffset = PSN_NULL_OFFSET;
    
    pTx = initTxTest( expectedToPass, &context );
 
-   ok = vdseTxInit( pTx, 1, &context );
+   ok = psnTxInit( pTx, 1, &context );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseTxAddOps( pTx,
-                      VDSE_TX_ADD_DATA,
+   ok = psnTxAddOps( pTx,
+                      PSN_TX_ADD_DATA,
                       parentOffset, 
                       VDS_FOLDER,
                       childOffset,

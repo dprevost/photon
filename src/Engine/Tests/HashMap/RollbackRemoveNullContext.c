@@ -24,13 +24,13 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseHashMap * pHashMap;
-   vdseSessionContext context;
+   psnHashMap * pHashMap;
+   psnSessionContext context;
    bool ok;
-   vdseTxStatus status;
+   psnTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   vdseHashItem * pItem;
+   psnHashItem * pItem;
    vdsObjectDefinition def = { 
       VDS_HASH_MAP, 
       1, 
@@ -40,16 +40,16 @@ int main()
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseHashMapInit( pHashMap, 
+   ok = psnHashMapInit( pHashMap, 
                          0, 1, 0, &status, 4, 
                          "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashMapInsert( pHashMap,
+   ok = psnHashMapInsert( pHashMap,
                            (const void *) key,
                            6,
                            (const void *) data,
@@ -59,7 +59,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashMapGet( pHashMap,
+   ok = psnHashMapGet( pHashMap,
                         (const void *) key,
                         6,
                         &pItem,
@@ -70,16 +70,16 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
+   psnHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
 
-   ok = vdseHashMapRelease( pHashMap,
+   ok = psnHashMapRelease( pHashMap,
                             pItem,
                             &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashMapDelete( pHashMap,
+   ok = psnHashMapDelete( pHashMap,
                            (const void *) key,
                            6,
                            &context );
@@ -87,7 +87,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseHashMapRollbackRemove( pHashMap, SET_OFFSET(pItem), NULL );
+   psnHashMapRollbackRemove( pHashMap, SET_OFFSET(pItem), NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

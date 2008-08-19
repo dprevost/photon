@@ -24,15 +24,15 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseQueue * pQueue;
-   vdseSessionContext context;
-   vdseTxStatus status;
+   psnQueue * pQueue;
+   psnSessionContext context;
+   psnTxStatus status;
    
    pQueue = initQueueTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   vdseQueueInit( pQueue, 
+   psnQueueInit( pQueue, 
                   0, 1, &status, 4, 
                   "Queue1", SET_OFFSET(pQueue), NULL, &context );
 

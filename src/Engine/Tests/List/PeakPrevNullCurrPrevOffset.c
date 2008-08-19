@@ -25,29 +25,29 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseLinkedList list;
-   vdseLinkNode node1, node2, *pNode;
-   vdseSessionContext context;
+   psnLinkedList list;
+   psnLinkNode node1, node2, *pNode;
+   psnSessionContext context;
    bool ok;
    
    initTest( expectedToPass, &context );
    InitMem();
    
-   vdseLinkNodeInit( &node1 );
-   vdseLinkNodeInit( &node2 );
-   vdseLinkedListInit( &list );
+   psnLinkNodeInit( &node1 );
+   psnLinkNodeInit( &node2 );
+   psnLinkedListInit( &list );
    
-   vdseLinkedListPutLast( &list, &node1 );
-   vdseLinkedListPutLast( &list, &node2 );
+   psnLinkedListPutLast( &list, &node1 );
+   psnLinkedListPutLast( &list, &node2 );
 
-   ok = vdseLinkedListPeakLast( &list, &pNode );
+   ok = psnLinkedListPeakLast( &list, &pNode );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pNode->previousOffset = VDSE_NULL_OFFSET;
+   pNode->previousOffset = PSN_NULL_OFFSET;
    
-   ok = vdseLinkedListPeakPrevious( &list, pNode, &pNode );
+   ok = psnLinkedListPeakPrevious( &list, pNode, &pNode );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

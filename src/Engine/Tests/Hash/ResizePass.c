@@ -24,21 +24,21 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseSessionContext context;
-   vdseHash* pHash;
+   psnSessionContext context;
+   psnHash* pHash;
    enum vdsErrors errcode;
    char key[20];
    char data[20];
-   vdseHashItem* pNewItem;
+   psnHashItem* pNewItem;
    int i;
    unsigned char * pData;
-   vdseHashItem* pItem = NULL;
+   psnHashItem* pItem = NULL;
    size_t bucket;
    bool ok;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = vdseHashInit( pHash, g_memObjOffset, 10, &context );
+   errcode = psnHashInit( pHash, g_memObjOffset, 10, &context );
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -47,7 +47,7 @@ int main()
    for ( i = 0; i < 500; ++i ) {
       sprintf( key,  "My Key %d", i );
       sprintf( data, "My Data %d", i );
-      errcode = vdseHashInsert( pHash,
+      errcode = psnHashInsert( pHash,
                                 (unsigned char*)key,
                                 strlen(key),
                                 data,
@@ -58,15 +58,15 @@ int main()
          fprintf( stderr, "i = %d %d\n", i, pHash->enumResize );
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }
-      if ( pHash->enumResize == VDSE_HASH_TIME_TO_GROW ) {
-         errcode = vdseHashResize( pHash, &context );
+      if ( pHash->enumResize == PSN_HASH_TIME_TO_GROW ) {
+         errcode = psnHashResize( pHash, &context );
          if ( errcode != VDS_OK ) {
             ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
          }
          else {
             fprintf( stderr, "Resize ok %d\n", i );
          }
-         if ( pHash->enumResize == VDSE_HASH_TIME_TO_GROW ) {
+         if ( pHash->enumResize == PSN_HASH_TIME_TO_GROW ) {
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
       }
@@ -80,7 +80,7 @@ int main()
       sprintf( key,  "My Key %d", i );
       sprintf( data, "My Data %d", i );
       
-      ok = vdseHashGet( pHash,
+      ok = psnHashGet( pHash,
                         (unsigned char*)key,
                         strlen(key),
                         &pItem,
@@ -97,7 +97,7 @@ int main()
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
       
-      ok = vdseHashDelWithKey( pHash,
+      ok = psnHashDelWithKey( pHash,
                                (unsigned char*)key,
                                strlen(key),
                                &context );
@@ -105,15 +105,15 @@ int main()
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }
       
-      if ( pHash->enumResize == VDSE_HASH_TIME_TO_SHRINK ) {
-         errcode = vdseHashResize( pHash, &context );
+      if ( pHash->enumResize == PSN_HASH_TIME_TO_SHRINK ) {
+         errcode = psnHashResize( pHash, &context );
          if ( errcode != VDS_OK ) {
             ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
          }
          else {
             fprintf( stderr, "Resize (shrink ok %d\n", i );
          }
-         if ( pHash->enumResize == VDSE_HASH_TIME_TO_SHRINK ) {
+         if ( pHash->enumResize == PSN_HASH_TIME_TO_SHRINK ) {
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
       }

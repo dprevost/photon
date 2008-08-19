@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_TREE_NODE_H
-#define VDSE_TREE_NODE_H
+#ifndef PSN_TREE_NODE_H
+#define PSN_TREE_NODE_H
 
 #include "Engine.h"
 
@@ -26,12 +26,12 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 	
-struct vdseObjectDescriptor
+struct psnObjectDescriptor
 {
    /** Offset of the object */
    ptrdiff_t offset;
    
-   /** Offset to the vdseTreeNode struct. */
+   /** Offset to the psnTreeNode struct. */
    ptrdiff_t nodeOffset;
    
    /** Offset to the memory object struct. */
@@ -54,7 +54,7 @@ struct vdseObjectDescriptor
    
 };
 
-typedef struct vdseObjectDescriptor vdseObjectDescriptor;
+typedef struct psnObjectDescriptor psnObjectDescriptor;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -62,7 +62,7 @@ typedef struct vdseObjectDescriptor vdseObjectDescriptor;
  * This structure contains the information needed for all the leaves and
  * the branches of the tree of objects/containers visible from the API.
  */
-struct vdseTreeNode
+struct psnTreeNode
 {
    /** Count the number of uncommitted/unrollbacked transaction ops are
     * still to be processed on this object (or more exactly on its data).
@@ -80,21 +80,21 @@ struct vdseTreeNode
    /** Offset to the string used for the key (lowercase of the original). */
    ptrdiff_t myHashItem;
    
-   /** Offset to the transaction info (vdseTxStatus). */
+   /** Offset to the transaction info (psnTxStatus). */
    ptrdiff_t txStatusOffset;
 
    /** Offset to the parent of this object. */
-   /* VDSE_NULL_OFFSET for top folder ("/") */
+   /* PSN_NULL_OFFSET for top folder ("/") */
    ptrdiff_t myParentOffset;
    
 };
 
-typedef struct vdseTreeNode vdseTreeNode;
+typedef struct psnTreeNode psnTreeNode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void vdseTreeNodeInit( vdseTreeNode * pNode,
+void psnTreeNodeInit( psnTreeNode * pNode,
                        ptrdiff_t      txStatusOffset,
                        size_t         originalNameLength,
                        ptrdiff_t      originalNameOffset,
@@ -114,16 +114,16 @@ void vdseTreeNodeInit( vdseTreeNode * pNode,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void vdseTreeNodeFini( vdseTreeNode * pNode )
+void psnTreeNodeFini( psnTreeNode * pNode )
 {
    VDS_PRE_CONDITION( pNode != NULL );
    
    pNode->txCounter      = 0;
    pNode->myNameLength   = 0;
-   pNode->myNameOffset   = VDSE_NULL_OFFSET;
-   pNode->txStatusOffset = VDSE_NULL_OFFSET;
-   pNode->myParentOffset = VDSE_NULL_OFFSET;
-   pNode->myHashItem     = VDSE_NULL_OFFSET;
+   pNode->myNameOffset   = PSN_NULL_OFFSET;
+   pNode->txStatusOffset = PSN_NULL_OFFSET;
+   pNode->myParentOffset = PSN_NULL_OFFSET;
+   pNode->myHashItem     = PSN_NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -132,7 +132,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_TREE_NODE_H */
+#endif /* PSN_TREE_NODE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

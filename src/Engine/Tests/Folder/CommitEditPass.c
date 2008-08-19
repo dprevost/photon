@@ -23,11 +23,11 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseFolder* pFolder;
-   vdseSessionContext context;
+   psnFolder* pFolder;
+   psnSessionContext context;
    bool ok;
-   vdseTxStatus status;
-   vdseFolderItem folderItem;
+   psnTxStatus status;
+   psnFolderItem folderItem;
    vdsObjectDefinition mapDef = { 
       VDS_FAST_MAP, 
       1, 
@@ -37,14 +37,14 @@ int main()
 
    pFolder = initFolderTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   ok = psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -56,7 +56,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderEditObject( pFolder,
+   ok = psnFolderEditObject( pFolder,
                               "test2",
                               5,
                               VDS_FAST_MAP,
@@ -66,12 +66,12 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   vdseFolderCommitEdit( pFolder,
+   psnFolderCommitEdit( pFolder,
                          folderItem.pHashItem, 
-                         VDSE_IDENT_MAP,
+                         PSN_IDENT_MAP,
                          &context );
 
-   vdseFolderFini( pFolder, &context );
+   psnFolderFini( pFolder, &context );
    
    return 0;
 }

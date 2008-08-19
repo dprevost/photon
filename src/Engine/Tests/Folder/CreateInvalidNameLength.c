@@ -23,8 +23,8 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseFolder * pFolder;
-   vdseSessionContext context;
+   psnFolder * pFolder;
+   psnSessionContext context;
    int errcode;
    bool ok;
    char name[VDS_MAX_NAME_LENGTH+100];
@@ -40,7 +40,7 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = vdseFolderCreateObject( pFolder,
+   ok = psnFolderCreateObject( pFolder,
                                 "Test1",
                                 0,
                                 &def,
@@ -53,7 +53,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = vdseFolderCreateObject( pFolder,
+   ok = psnFolderCreateObject( pFolder,
                                 "/Test2",
                                 strlen("/Test2"),
                                 &def,
@@ -66,7 +66,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = vdseFolderCreateObject( pFolder,
+   ok = psnFolderCreateObject( pFolder,
                                 name,
                                 VDS_MAX_NAME_LENGTH+1,
                                 &def,

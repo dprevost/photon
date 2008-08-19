@@ -51,13 +51,13 @@ typedef struct vdsaCommonObject
     *
     * Not used often, yet.
     */
-   vdseObjectContext *  pObjectContext;
+   psnObjectContext *  pObjectContext;
 
    /** Pointer to the session we belong to. */
    struct vdsaSession* pSession;
 
    /** A folder item. It contains a pointer to the hash item in VDS memory. */
-   vdseFolderItem  folderItem;
+   psnFolderItem  folderItem;
 
    /** A pointer to the object in VDS. */   
    void * pMyVdsObject;

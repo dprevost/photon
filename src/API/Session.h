@@ -36,8 +36,8 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdseSession;
-struct vdseMemoryHeader;
+struct psnSession;
+struct psnMemoryHeader;
 struct vdsaCommonObject;
 
 /**
@@ -50,12 +50,12 @@ typedef struct vdsaSession
 {
    vdsaObjetType type;
    
-   vdseSessionContext context;
+   psnSessionContext context;
 
    /** Pointer to the header of the shared memory */
-   struct vdseMemoryHeader* pHeader;
+   struct psnMemoryHeader* pHeader;
 
-   struct vdseSession* pCleanup;
+   struct psnSession* pCleanup;
 
    bool terminated;
    

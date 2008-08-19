@@ -24,15 +24,15 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseFolder* pFolder;
-   vdseSessionContext context;
-   vdseTxStatus status;
+   psnFolder* pFolder;
+   psnSessionContext context;
+   psnTxStatus status;
    
    pFolder = initFolderTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", VDSE_NULL_OFFSET, &context );
+   psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", PSN_NULL_OFFSET, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

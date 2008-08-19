@@ -39,21 +39,21 @@
  ************************************
  *
  * Groups of blocks in limbo are identifies with theit first and last 4 bytes
- * (the first bytes set to VDSE_IDENT_LIMBO and the field isInLimbo set to 
+ * (the first bytes set to PSN_IDENT_LIMBO and the field isInLimbo set to 
  * true in the endblock).
  *
  * When a group of block is deallocated:
  *  - the object must be locked (or must be unreachable by using its name
  *    through its parent folder and its usage count must be zero).
- *  - call vdseFreeBlocks()
+ *  - call psnFreeBlocks()
  *      - if we get a lock on the allocator, go on as usual
  *      - if not
  *         - the bytes following the first bytes must be set with the number of 
- *           blocks in the group (using the vdseFreeBlock struct).
+ *           blocks in the group (using the psnFreeBlock struct).
   *        - set a write memory barrier to make sure that the stores will
  *           be properly ordered (in other words, to make sure that isInLimbo
- *           and VDSE_IDENT_LIMBO are set last.
- *         - the first bytes must be set to VDSE_IDENT_LIMBO.
+ *           and PSN_IDENT_LIMBO are set last.
+ *         - the first bytes must be set to PSN_IDENT_LIMBO.
  *         - set the field isInLimbo to true in the endblock.
  *           (the number of blocks should already be set)
  *  - unlock the object, if needed.
@@ -70,7 +70,7 @@
  *
  * When a group of block is allocated:
  *  - We hold the lock so - no problem of synchronization should arise.
- *  - set the first bytes to VDSE_IDENT_ALLOCATED so that the group cannot
+ *  - set the first bytes to PSN_IDENT_ALLOCATED so that the group cannot
  *    be mistaken as in limbo.
  *  - Set the isInLimbo field of the endBlock to false (just in case).
  *  - Set the bitmap of allocated blocks.
@@ -80,19 +80,19 @@
  * allocator lock and the initialization of the group of blocks. We want to
  * make sure that no other thread/process getting a hold of the allocator
  * might think that the group is in limbo.
- * Note: the beginning of the group should be a vdseFreeBufferNode that
- *       cannot be confused with VDSE_IDENT_LIMBO. But... 
+ * Note: the beginning of the group should be a psnFreeBufferNode that
+ *       cannot be confused with PSN_IDENT_LIMBO. But... 
  *        1 - one never knows if that code will always stay the same.
- *        2 - being explicit and setting VDSE_IDENT_ALLOCATED cannot
+ *        2 - being explicit and setting PSN_IDENT_ALLOCATED cannot
  *            hurt and makes the code itself more clear.
  *        3 - and setting the fields like this might help debugging.
  *
- * When trying to regroup loose memory (in vdseFreeBlocks):
+ * When trying to regroup loose memory (in psnFreeBlocks):
  *  - if the group is marked as free, just do the normal stuff (concatenate
  *    the buffers).
  *  - when checking previous buffers marked as allocated, if the isInLimbo 
  *    field if true, concatenate.
- *  - when checking forward buffers, if the first bytes are VDSE_IDENT_LIMBO,
+ *  - when checking forward buffers, if the first bytes are PSN_IDENT_LIMBO,
  *    concatenate.
  *  - Put a read memory barrier between reading the first bytes (or last bytes)
  *    and reading anything else in the block (to make sure that the compiler 
@@ -104,22 +104,22 @@
  *      read # of blocks in group
  *                            set # blocks in group
  *                            write memory barrier
- *                            set VDSE_IDENT_LIMBO
- *      read VDSE_IDENT_LIMBO
+ *                            set PSN_IDENT_LIMBO
+ *      read PSN_IDENT_LIMBO
  *
  *    The point being that the cpu/compiler can reorder operations as 
  *    they see fit unless explicitely told not to (a read barrier forces
  *    the load of the # of blocks to be after the loads of either 
- *    VDSE_IDENT_LIMBO or isInLimbo.
+ *    PSN_IDENT_LIMBO or isInLimbo.
  *
  */
-struct vdseFreeBlock
+struct psnFreeBlock
 {
-    vdseMemObjIdent identifier;
+    psnMemObjIdent identifier;
     size_t          numBlocks;
 };
 
-typedef struct vdseFreeBlock vdseFreeBlock;
+typedef struct psnFreeBlock psnFreeBlock;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -133,20 +133,20 @@ VDSF_ENGINE_EXPORT unsigned char * g_pBaseAddr = NULL;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum vdsErrors 
-vdseMemAllocInit( vdseMemAlloc       * pAlloc,
+psnMemAllocInit( psnMemAlloc       * pAlloc,
                   unsigned char      * pBaseAddress,
                   size_t               length,
-                  vdseSessionContext * pContext )
+                  psnSessionContext * pContext )
 {
    enum vdsErrors errcode;
-   vdseFreeBufferNode * pNode;
+   psnFreeBufferNode * pNode;
    size_t neededBlocks, neededBytes, bitmapLength;
-   vdseMemBitmap * pBitmap = NULL;
+   psnMemBitmap * pBitmap = NULL;
    
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pAlloc   != NULL );
    VDS_PRE_CONDITION( pBaseAddress != NULL );
-   VDS_PRE_CONDITION( length >= (3 << VDSE_BLOCK_SHIFT) );
+   VDS_PRE_CONDITION( length >= (3 << PSN_BLOCK_SHIFT) );
    VDS_INV_CONDITION( g_pBaseAddr != NULL );
 
    pContext->pAllocator = (void *) pAlloc;
@@ -164,46 +164,46 @@ vdseMemAllocInit( vdseMemAlloc       * pAlloc,
     */
 
    /* Calculate the size of the bitmap of the allocator */
-   bitmapLength = offsetof( vdseMemBitmap, bitmap ) + 
-                  vdseGetBitmapLengthBytes( length, VDSE_BLOCK_SIZE );
-   /* Align it on VDSE_ALLOCATION_UNIT bytes boundary */
-   bitmapLength = ( (bitmapLength - 1) / VDSE_ALLOCATION_UNIT + 1 ) * 
-                 VDSE_ALLOCATION_UNIT;
+   bitmapLength = offsetof( psnMemBitmap, bitmap ) + 
+                  psnGetBitmapLengthBytes( length, PSN_BLOCK_SIZE );
+   /* Align it on PSN_ALLOCATION_UNIT bytes boundary */
+   bitmapLength = ( (bitmapLength - 1) / PSN_ALLOCATION_UNIT + 1 ) * 
+                 PSN_ALLOCATION_UNIT;
 
    /* How many blocks do we need, at a minimum, for the allocator */
-   neededBlocks =  ((bitmapLength - 1) >> VDSE_BLOCK_SHIFT) + 1;
+   neededBlocks =  ((bitmapLength - 1) >> PSN_BLOCK_SHIFT) + 1;
    
    /* How many bytes do we need for the allocator */
-   neededBytes = offsetof( struct vdseMemAlloc, blockGroup ) +
-                 offsetof( vdseBlockGroup, bitmap ) + 
-                 offsetof( vdseMemBitmap, bitmap ) +
-                 vdseGetBitmapLengthBytes( neededBlocks << VDSE_BLOCK_SHIFT, 
-                                           VDSE_ALLOCATION_UNIT ) +
-                 VDSE_ALLOCATION_UNIT; /* The endBlock struct */
+   neededBytes = offsetof( struct psnMemAlloc, blockGroup ) +
+                 offsetof( psnBlockGroup, bitmap ) + 
+                 offsetof( psnMemBitmap, bitmap ) +
+                 psnGetBitmapLengthBytes( neededBlocks << PSN_BLOCK_SHIFT, 
+                                           PSN_ALLOCATION_UNIT ) +
+                 PSN_ALLOCATION_UNIT; /* The endBlock struct */
 
-   /* Align it on VDSE_ALLOCATION_UNIT bytes boundary */
-   neededBytes = ( (neededBytes - 1) / VDSE_ALLOCATION_UNIT + 1 ) * 
-                 VDSE_ALLOCATION_UNIT;
+   /* Align it on PSN_ALLOCATION_UNIT bytes boundary */
+   neededBytes = ( (neededBytes - 1) / PSN_ALLOCATION_UNIT + 1 ) * 
+                 PSN_ALLOCATION_UNIT;
 
    /* So, enough space or not ? */
-   if ( (neededBlocks << VDSE_BLOCK_SHIFT) < (neededBytes + bitmapLength) ) {
+   if ( (neededBlocks << PSN_BLOCK_SHIFT) < (neededBytes + bitmapLength) ) {
       neededBlocks++;
    }
    
-   errcode = vdseMemObjectInit( &pAlloc->memObj,                         
-                                VDSE_IDENT_ALLOCATOR,
+   errcode = psnMemObjectInit( &pAlloc->memObj,                         
+                                PSN_IDENT_ALLOCATOR,
                                 &pAlloc->blockGroup,
                                 neededBlocks );
    if ( errcode != VDS_OK ) return errcode;
    
-   vdseEndBlockSet( SET_OFFSET(pAlloc), 
+   psnEndBlockSet( SET_OFFSET(pAlloc), 
                     neededBlocks, 
                     false,   /* isInLimbo */
                     false ); /* is at the end of the VDS */
                                               
    /* Add the blockGroup to the list of groups of the memObject */
-   vdseLinkNodeInit( &pAlloc->blockGroup.node );
-   vdseLinkedListPutFirst( &pAlloc->memObj.listBlockGroup, 
+   psnLinkNodeInit( &pAlloc->blockGroup.node );
+   psnLinkedListPutFirst( &pAlloc->memObj.listBlockGroup, 
                            &pAlloc->blockGroup.node );
 
    /* The overall header and the memory allocator itself */
@@ -215,26 +215,26 @@ vdseMemAllocInit( vdseMemAlloc       * pAlloc,
    pAlloc->totalLength     = length;
 
    /* Initialize the bitmap for the allocator itself */ 
-   pBitmap = (vdseMemBitmap*) vdseMalloc( &pAlloc->memObj,
+   pBitmap = (psnMemBitmap*) psnMalloc( &pAlloc->memObj,
                                           bitmapLength,
                                           pContext );
-   vdseMemBitmapInit( pBitmap,
+   psnMemBitmapInit( pBitmap,
                       0,
                       pAlloc->totalLength,
-                      VDSE_BLOCK_SIZE );
-   vdseSetBufferAllocated( pBitmap, 0, (neededBlocks+1) << VDSE_BLOCK_SHIFT );
+                      PSN_BLOCK_SIZE );
+   psnSetBufferAllocated( pBitmap, 0, (neededBlocks+1) << PSN_BLOCK_SHIFT );
    pAlloc->bitmapOffset = SET_OFFSET( pBitmap );
    
    /* Initialize the linked list */
-   vdseLinkedListInit( &pAlloc->freeList );
+   psnLinkedListInit( &pAlloc->freeList );
    
    /* Now put the rest of the free blocks in our free list */
-   pNode = (vdseFreeBufferNode*)(pBaseAddress + ((neededBlocks+1) << VDSE_BLOCK_SHIFT));
-   pNode->numBuffers = (length >> VDSE_BLOCK_SHIFT) - (neededBlocks+1);
-   vdseLinkNodeInit( &pNode->node );
-   vdseLinkedListPutFirst( &pAlloc->freeList, &pNode->node );   
+   pNode = (psnFreeBufferNode*)(pBaseAddress + ((neededBlocks+1) << PSN_BLOCK_SHIFT));
+   pNode->numBuffers = (length >> PSN_BLOCK_SHIFT) - (neededBlocks+1);
+   psnLinkNodeInit( &pNode->node );
+   psnLinkedListPutFirst( &pAlloc->freeList, &pNode->node );   
    
-   vdseEndBlockSet( SET_OFFSET(pNode), pNode->numBuffers, false, true );
+   psnEndBlockSet( SET_OFFSET(pNode), pNode->numBuffers, false, true );
    
    return VDS_OK;
 }
@@ -243,13 +243,13 @@ vdseMemAllocInit( vdseMemAlloc       * pAlloc,
 
 #define BEST_FIT_MAX_LOOP 100
 /**
- * This function was splitted from the vdseMalloc() function in order 
+ * This function was splitted from the psnMalloc() function in order 
  * to be able to test the algorithm without having to setup everything.
  * (And it becomes easier to replace the algorithm, if needed or to 
  * tweak it).
  */
 static inline 
-vdseFreeBufferNode * FindBuffer( vdseMemAlloc     * pAlloc,
+psnFreeBufferNode * FindBuffer( psnMemAlloc     * pAlloc,
                                  size_t             requestedBlocks,
                                  pscErrorHandler * pError )
 {
@@ -257,9 +257,9 @@ vdseFreeBufferNode * FindBuffer( vdseMemAlloc     * pAlloc,
    /* size_t is unsigned. This is check by autoconf AC_TYPE_SIZE_T */
    size_t diff = (size_t) -1;
    size_t numBlocks;
-   vdseLinkNode * oldNode = NULL;
-   vdseLinkNode * currentNode = NULL;
-   vdseLinkNode * bestNode = NULL;
+   psnLinkNode * oldNode = NULL;
+   psnLinkNode * currentNode = NULL;
+   psnLinkNode * bestNode = NULL;
    bool ok;
 
    /* 
@@ -270,10 +270,10 @@ vdseFreeBufferNode * FindBuffer( vdseMemAlloc     * pAlloc,
     * reallocating arrays...).[N is BEST_FIT_MAX_LOOP, a define just in
     * case the compiler can optimize the loop].
     */
-   ok = vdseLinkedListPeakFirst( &pAlloc->freeList, &oldNode );
+   ok = psnLinkedListPeakFirst( &pAlloc->freeList, &oldNode );
    if ( ! ok ) goto error_exit;
 
-   numBlocks = ((vdseFreeBufferNode*)oldNode)->numBuffers;
+   numBlocks = ((psnFreeBufferNode*)oldNode)->numBuffers;
    if ( numBlocks == requestedBlocks ) {
       /* Special case - perfect match */
       return (void*) oldNode;
@@ -286,14 +286,14 @@ vdseFreeBufferNode * FindBuffer( vdseMemAlloc     * pAlloc,
    }
    
    for ( i = 0; i < BEST_FIT_MAX_LOOP; ++i ) {
-      ok = vdseLinkedListPeakNext( &pAlloc->freeList,
+      ok = psnLinkedListPeakNext( &pAlloc->freeList,
                                    oldNode,
                                    &currentNode );
       if ( ! ok ) {
          if ( bestNode == NULL ) goto error_exit;
          break;
       }
-      numBlocks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
+      numBlocks = ((psnFreeBufferNode*)currentNode)->numBuffers;
       if ( numBlocks == requestedBlocks ) {
          /* Special case - perfect match */
          return (void*) currentNode;
@@ -308,19 +308,19 @@ vdseFreeBufferNode * FindBuffer( vdseMemAlloc     * pAlloc,
    }
    
    while ( bestNode == NULL ) {
-      ok = vdseLinkedListPeakNext( &pAlloc->freeList,
+      ok = psnLinkedListPeakNext( &pAlloc->freeList,
                                    oldNode,
                                    &currentNode );
       if ( ! ok ) goto error_exit;
 
-      numBlocks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
+      numBlocks = ((psnFreeBufferNode*)currentNode)->numBuffers;
       if ( numBlocks >= requestedBlocks ) {
          bestNode = currentNode;
       }
       oldNode = currentNode;
    }
    
-   return (vdseFreeBufferNode*) bestNode;
+   return (psnFreeBufferNode*) bestNode;
    
  error_exit:
  
@@ -339,16 +339,16 @@ vdseFreeBufferNode * FindBuffer( vdseMemAlloc     * pAlloc,
 /**
  * Allocates the blocks of shared memory we need.  
  */
-unsigned char * vdseMallocBlocks( vdseMemAlloc       * pAlloc,
-                                  vdseAllocTypeEnum    allocType,
+unsigned char * psnMallocBlocks( psnMemAlloc       * pAlloc,
+                                  psnAllocTypeEnum    allocType,
                                   size_t               requestedBlocks,
-                                  vdseSessionContext * pContext )
+                                  psnSessionContext * pContext )
 {
-   vdseFreeBufferNode * pNode = NULL;
-   vdseFreeBufferNode * pNewNode = NULL;
+   psnFreeBufferNode * pNode = NULL;
+   psnFreeBufferNode * pNewNode = NULL;
    size_t newNumBlocks = 0;
-   vdseMemBitmap * pBitmap;
-   vdseMemObjIdent * identifier;
+   psnMemBitmap * pBitmap;
+   psnMemObjIdent * identifier;
    bool ok;
    
    VDS_PRE_CONDITION( pContext != NULL );
@@ -366,52 +366,52 @@ unsigned char * vdseMallocBlocks( vdseMemAlloc       * pAlloc,
       return NULL;
    }
    
-   GET_PTR( pBitmap, pAlloc->bitmapOffset, vdseMemBitmap );
+   GET_PTR( pBitmap, pAlloc->bitmapOffset, psnMemBitmap );
    
    pNode = FindBuffer( pAlloc, requestedBlocks, &pContext->errorHandler );
    if ( pNode != NULL ) {
       newNumBlocks = pNode->numBuffers - requestedBlocks;
       if ( newNumBlocks == 0 ) {
          /* Remove the node from the list */
-         vdseLinkedListRemoveItem( &pAlloc->freeList, &pNode->node );
+         psnLinkedListRemoveItem( &pAlloc->freeList, &pNode->node );
       }
       else {
-         pNewNode = (vdseFreeBufferNode*)
-                    ((unsigned char*) pNode + (requestedBlocks << VDSE_BLOCK_SHIFT));
+         pNewNode = (psnFreeBufferNode*)
+                    ((unsigned char*) pNode + (requestedBlocks << PSN_BLOCK_SHIFT));
          pNewNode->numBuffers = newNumBlocks;
-         vdseLinkNodeInit( &pNewNode->node );
-         vdseLinkedListReplaceItem( &pAlloc->freeList, 
+         psnLinkNodeInit( &pNewNode->node );
+         psnLinkedListReplaceItem( &pAlloc->freeList, 
                                     &pNode->node, 
                                     &pNewNode->node );
          
-         /* Reset the vdseEndBlock struct */
-         vdseEndBlockSet( SET_OFFSET(pNewNode), 
+         /* Reset the psnEndBlock struct */
+         psnEndBlockSet( SET_OFFSET(pNewNode), 
                           newNumBlocks, 
                           false,
-                          vdseMemAllocLastBlock( pAlloc,
+                          psnMemAllocLastBlock( pAlloc,
                                                  SET_OFFSET(pNewNode),
                                                  newNumBlocks ) );
       }
       /* Set the first bytes to "allocated" and set the endBlock of the
        * newly allocated blocks.
        */
-      identifier = (vdseMemObjIdent *) pNode;
-      *identifier = VDSE_IDENT_ALLOCATED;
-      vdseEndBlockSet( SET_OFFSET(pNode), 
+      identifier = (psnMemObjIdent *) pNode;
+      *identifier = PSN_IDENT_ALLOCATED;
+      psnEndBlockSet( SET_OFFSET(pNode), 
                        requestedBlocks, 
                        false,
-                       vdseMemAllocLastBlock( pAlloc,
+                       psnMemAllocLastBlock( pAlloc,
                                               SET_OFFSET(pNode),
                                               requestedBlocks ) );
       
       pAlloc->totalAllocBlocks += requestedBlocks;   
       pAlloc->numMallocCalls++;
       pAlloc->numGroups++;
-      if ( allocType == VDSE_ALLOC_API_OBJ ) pAlloc->numApiObjects++;
+      if ( allocType == PSN_ALLOC_API_OBJ ) pAlloc->numApiObjects++;
       
       /* Set the bitmap */
-      vdseSetBufferAllocated( pBitmap, SET_OFFSET(pNode), 
-                              requestedBlocks << VDSE_BLOCK_SHIFT );
+      psnSetBufferAllocated( pBitmap, SET_OFFSET(pNode), 
+                              requestedBlocks << PSN_BLOCK_SHIFT );
    }
    pscReleaseProcessLock( &pAlloc->memObj.lock );
 
@@ -422,51 +422,51 @@ unsigned char * vdseMallocBlocks( vdseMemAlloc       * pAlloc,
 
 /** Free ptr, the memory is returned to the pool. */
 
-void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
-                     vdseAllocTypeEnum    allocType,
+void psnFreeBlocks( psnMemAlloc       * pAlloc,
+                     psnAllocTypeEnum    allocType,
                      unsigned char      * ptr, 
                      size_t               numBlocks,
-                     vdseSessionContext * pContext )
+                     psnSessionContext * pContext )
 {
-   vdseFreeBufferNode * otherNode, * previousNode = NULL, * newNode = NULL;
+   psnFreeBufferNode * otherNode, * previousNode = NULL, * newNode = NULL;
    bool otherBufferisFree = false;
-   vdseMemBitmap * pBitmap;
-   vdseEndBlockGroup * endBlock;
+   psnMemBitmap * pBitmap;
+   psnEndBlockGroup * endBlock;
    bool isInLimbo;
-   vdseMemObjIdent ident;
-   vdseFreeBlock * pFreeHeader;
+   psnMemObjIdent ident;
+   psnFreeBlock * pFreeHeader;
    
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pAlloc   != NULL );
    VDS_PRE_CONDITION( ptr      != NULL );
    VDS_PRE_CONDITION( numBlocks > 0 );
 
-   if ( ! vdseLock( &pAlloc->memObj, pContext ) ) {
+   if ( ! psnLock( &pAlloc->memObj, pContext ) ) {
       /* 
        * So we did not get the lock and still need to free the memory.
        * We can't put the blocks back but we can put them in "limbo".
        *
-       * Setting the field isInLimbo and VDSE_IDENT_LIMBO
+       * Setting the field isInLimbo and PSN_IDENT_LIMBO
        * must be done after the memory barrier (to make sure they are the
        * last operations done on this piece of memory from the point of
        * view of other processes using the read barrier to access the
        * same data).
        */
-      pFreeHeader = (vdseFreeBlock*) ptr;
-      endBlock = (vdseEndBlockGroup *)
-         (ptr + (numBlocks << VDSE_BLOCK_SHIFT) - VDSE_ALLOCATION_UNIT);
+      pFreeHeader = (psnFreeBlock*) ptr;
+      endBlock = (psnEndBlockGroup *)
+         (ptr + (numBlocks << PSN_BLOCK_SHIFT) - PSN_ALLOCATION_UNIT);
 
       pFreeHeader->numBlocks = numBlocks;
       
       pscWriteMemoryBarrier();
-      pFreeHeader->identifier = VDSE_IDENT_LIMBO;
+      pFreeHeader->identifier = PSN_IDENT_LIMBO;
       endBlock->isInLimbo = true;
 
       return;
    }
 
-   GET_PTR( pBitmap, pAlloc->bitmapOffset, vdseMemBitmap );
-   newNode = (vdseFreeBufferNode*)ptr;
+   GET_PTR( pBitmap, pAlloc->bitmapOffset, psnMemBitmap );
+   newNode = (psnFreeBufferNode*)ptr;
    newNode->numBuffers = numBlocks;
 
    /*
@@ -481,7 +481,7 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
     * memory.
     */
    do {
-      endBlock = (vdseEndBlockGroup*)((unsigned char*)newNode-VDSE_ALLOCATION_UNIT);
+      endBlock = (psnEndBlockGroup*)((unsigned char*)newNode-PSN_ALLOCATION_UNIT);
       isInLimbo = endBlock->isInLimbo;
       
       /* 
@@ -490,8 +490,8 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
        */
       pscReadMemoryBarrier();
 
-      GET_PTR( previousNode, endBlock->firstBlockOffset, vdseFreeBufferNode );
-      otherBufferisFree = vdseIsBufferFree( pBitmap, endBlock->firstBlockOffset );
+      GET_PTR( previousNode, endBlock->firstBlockOffset, psnFreeBufferNode );
+      otherBufferisFree = psnIsBufferFree( pBitmap, endBlock->firstBlockOffset );
 
       if ( isInLimbo ) {
          previousNode->numBuffers = newNode->numBuffers + endBlock->numBlocks;
@@ -510,7 +510,7 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
           * consolidated group).
           */
          previousNode->numBuffers += newNode->numBuffers;
-         vdseLinkedListRemoveItem( &pAlloc->freeList, 
+         psnLinkedListRemoveItem( &pAlloc->freeList, 
                                    &previousNode->node );
          newNode = previousNode;
       }
@@ -523,26 +523,26 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
     * Things we have to watchout for:
     *   - not going past the end of the shared memory...
     *   - if the group of block is allocated, test the first few bytes for
-    *     the VDSE_IDENT_LIMBO identifier.
+    *     the PSN_IDENT_LIMBO identifier.
     *
     * We use a while loop to test if the current group would not be the last
     * group before doing any data processing beyond the shared memory boundary.
     */
 
-   otherNode = (vdseFreeBufferNode*)
-      ((unsigned char*)newNode + (newNode->numBuffers << VDSE_BLOCK_SHIFT) );
-   pFreeHeader = (vdseFreeBlock*) otherNode;   
+   otherNode = (psnFreeBufferNode*)
+      ((unsigned char*)newNode + (newNode->numBuffers << PSN_BLOCK_SHIFT) );
+   pFreeHeader = (psnFreeBlock*) otherNode;   
    /* 
     * At this point enBlock is set to the end of the current buffer, not to
     * the end of the next one (otherNode) we are looking at.
     */
-   endBlock = (vdseEndBlockGroup*)((unsigned char*)otherNode-VDSE_ALLOCATION_UNIT);
+   endBlock = (psnEndBlockGroup*)((unsigned char*)otherNode-PSN_ALLOCATION_UNIT);
       
    while ( ! endBlock->lastBlock ) {
-      otherBufferisFree = vdseIsBufferFree( pBitmap, SET_OFFSET(otherNode) );
+      otherBufferisFree = psnIsBufferFree( pBitmap, SET_OFFSET(otherNode) );
       if ( otherBufferisFree ) {
          newNode->numBuffers += otherNode->numBuffers;
-         vdseLinkedListRemoveItem( &pAlloc->freeList, 
+         psnLinkedListRemoveItem( &pAlloc->freeList, 
                                    &otherNode->node );
       }
       else {
@@ -554,7 +554,7 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
           */
          pscReadMemoryBarrier();
          
-         if ( ident == VDSE_IDENT_LIMBO ) {
+         if ( ident == PSN_IDENT_LIMBO ) {
             newNode->numBuffers += pFreeHeader->numBlocks;
          }
          else {
@@ -562,47 +562,47 @@ void vdseFreeBlocks( vdseMemAlloc       * pAlloc,
          }
       }
 
-      otherNode = (vdseFreeBufferNode*)
-         ((unsigned char*)newNode + (newNode->numBuffers << VDSE_BLOCK_SHIFT) );
-      pFreeHeader = (vdseFreeBlock*) otherNode;   
+      otherNode = (psnFreeBufferNode*)
+         ((unsigned char*)newNode + (newNode->numBuffers << PSN_BLOCK_SHIFT) );
+      pFreeHeader = (psnFreeBlock*) otherNode;   
       /* 
        * At this point enBlock is set to the end of the current consolidated
        * buffer, not to the end of the next one (otherNode) we'll be looking
        * at in the next iteration.
        */
-      endBlock = (vdseEndBlockGroup*)((unsigned char*)otherNode-VDSE_ALLOCATION_UNIT);
+      endBlock = (psnEndBlockGroup*)((unsigned char*)otherNode-PSN_ALLOCATION_UNIT);
    }
    /*
     * All consolidation done. Complete the job by putting the group in the
     * free list and setting the bitmap.
     */
-   vdseLinkNodeInit( &newNode->node );
-   vdseLinkedListPutLast( &pAlloc->freeList, &newNode->node );
+   psnLinkNodeInit( &newNode->node );
+   psnLinkedListPutLast( &pAlloc->freeList, &newNode->node );
                              
    pAlloc->totalAllocBlocks -= numBlocks;   
    pAlloc->numFreeCalls++;
    pAlloc->numGroups--;
-   if ( allocType == VDSE_ALLOC_API_OBJ ) pAlloc->numApiObjects--;
+   if ( allocType == PSN_ALLOC_API_OBJ ) pAlloc->numApiObjects--;
 
    /* Set the bitmap */
-   vdseSetBufferFree( pBitmap, SET_OFFSET(newNode), newNode->numBuffers << VDSE_BLOCK_SHIFT );
+   psnSetBufferFree( pBitmap, SET_OFFSET(newNode), newNode->numBuffers << PSN_BLOCK_SHIFT );
 
-   vdseEndBlockSet( SET_OFFSET(newNode), 
+   psnEndBlockSet( SET_OFFSET(newNode), 
                     newNode->numBuffers, 
                     false, /* limbo flag */
-                    vdseMemAllocLastBlock( pAlloc,
+                    psnMemAllocLastBlock( pAlloc,
                                            SET_OFFSET(newNode),
                                            newNode->numBuffers ));
    
-   vdseUnlock( &pAlloc->memObj, pContext );
+   psnUnlock( &pAlloc->memObj, pContext );
 
    return;
 }
   
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseMemAllocClose( vdseMemAlloc       * pAlloc,
-                        vdseSessionContext * pContext )
+void psnMemAllocClose( psnMemAlloc       * pAlloc,
+                        psnSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pAlloc   != NULL );
@@ -615,45 +615,45 @@ void vdseMemAllocClose( vdseMemAlloc       * pAlloc,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseMemAllocStats( vdseMemAlloc       * pAlloc,
+bool psnMemAllocStats( psnMemAlloc       * pAlloc,
                         vdsInfo            * pInfo,
-                        vdseSessionContext * pContext )
+                        psnSessionContext * pContext )
 {
    size_t numBlocks;
-   vdseLinkNode *oldNode = NULL;
-   vdseLinkNode *currentNode = NULL;
+   psnLinkNode *oldNode = NULL;
+   psnLinkNode *currentNode = NULL;
    bool ok;
    
    VDS_PRE_CONDITION( pAlloc   != NULL );
    VDS_PRE_CONDITION( pInfo    != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
 
-   if ( vdseLock( &pAlloc->memObj, pContext ) ) {
+   if ( psnLock( &pAlloc->memObj, pContext ) ) {
 
       pInfo->totalSizeInBytes     = pAlloc->totalLength;
-      pInfo->allocatedSizeInBytes = pAlloc->totalAllocBlocks << VDSE_BLOCK_SHIFT;
+      pInfo->allocatedSizeInBytes = pAlloc->totalAllocBlocks << PSN_BLOCK_SHIFT;
       pInfo->numObjects           = pAlloc->numApiObjects;
       pInfo->numGroups            = pAlloc->numGroups;
       pInfo->numMallocs           = pAlloc->numMallocCalls;
       pInfo->numFrees             = pAlloc->numFreeCalls;
       pInfo->largestFreeInBytes   = 0;
       
-      ok = vdseLinkedListPeakFirst( &pAlloc->freeList,
+      ok = psnLinkedListPeakFirst( &pAlloc->freeList,
                                     &currentNode );
       while ( ok ) {
-         numBlocks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
+         numBlocks = ((psnFreeBufferNode*)currentNode)->numBuffers;
          if ( numBlocks > pInfo->largestFreeInBytes ) {
             pInfo->largestFreeInBytes = numBlocks;
          }
          
          oldNode = currentNode;
-         ok = vdseLinkedListPeakNext( &pAlloc->freeList,
+         ok = psnLinkedListPeakNext( &pAlloc->freeList,
                                       oldNode,
                                       &currentNode );
       }
-      pInfo->largestFreeInBytes = pInfo->largestFreeInBytes << VDSE_BLOCK_SHIFT;
+      pInfo->largestFreeInBytes = pInfo->largestFreeInBytes << PSN_BLOCK_SHIFT;
       
-      vdseUnlock( &pAlloc->memObj, pContext );
+      psnUnlock( &pAlloc->memObj, pContext );
 
       return true;
    }

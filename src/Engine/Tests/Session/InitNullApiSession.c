@@ -24,12 +24,12 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseSession * pSession;
-   vdseSessionContext context;
+   psnSession * pSession;
+   psnSessionContext context;
    
    pSession = initSessionTest( expectedToPass, &context );
 
-   vdseSessionInit( pSession, NULL, &context );
+   psnSessionInit( pSession, NULL, &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

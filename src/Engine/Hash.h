@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_HASH_H
-#define VDSE_HASH_H
+#ifndef PSN_HASH_H
+#define PSN_HASH_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -30,7 +30,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define VDSE_HASH_SIGNATURE  ((unsigned int)0x2026fe02)
+#define PSN_HASH_SIGNATURE  ((unsigned int)0x2026fe02)
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -41,9 +41,9 @@ BEGIN_C_DECLS
  * aligned if we eventually allow direct access to the data (from the 
  * API) or even to be able to use it easily internally. 
  */
-struct vdseHashItem
+struct psnHashItem
 {
-   vdseTxStatus  txStatus;
+   psnTxStatus  txStatus;
    
    /** Next item in this bucket */
    ptrdiff_t     nextItem;
@@ -58,19 +58,19 @@ struct vdseHashItem
    
 };
 
-typedef struct vdseHashItem vdseHashItem;
+typedef struct psnHashItem psnHashItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdseHashResizeEnum
+enum psnHashResizeEnum
 {
-   VDSE_HASH_NO_RESIZE,
-   VDSE_HASH_TIME_TO_GROW,
-   VDSE_HASH_TIME_TO_SHRINK
+   PSN_HASH_NO_RESIZE,
+   PSN_HASH_TIME_TO_GROW,
+   PSN_HASH_TIME_TO_SHRINK
    
 };
 
-typedef enum vdseHashResizeEnum vdseHashResizeEnum;
+typedef enum psnHashResizeEnum psnHashResizeEnum;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -85,12 +85,12 @@ typedef enum vdseHashResizeEnum vdseHashResizeEnum;
  * (when the array is 100% populated). There is no such limit with buckets 
  * since it is an array of linked lists).
  */
-struct vdseHash
+struct psnHash
 {
    /** offset of the memory object we need to use for allocating memory. */
    ptrdiff_t memObjOffset;
    
-   /** Offset to an array of offsets to vdseHashItem objects */
+   /** Offset to an array of offsets to psnHashItem objects */
    ptrdiff_t    arrayOffset; 
    
    /** Number of items stored in this hash map. */
@@ -103,18 +103,18 @@ struct vdseHash
    int lengthIndex;
 
    /** The mimimum shrinking factor that we can tolerate to accommodate
-    *  the reservedSize argument of vdseHashInit() ) */
+    *  the reservedSize argument of psnHashInit() ) */
    int lengthIndexMinimum;
 
    /** Indicator of the current status of the array. */
-   vdseHashResizeEnum enumResize;
+   psnHashResizeEnum enumResize;
    
-   /** Set to VDSE_HASH_SIGNATURE at initialization. */
+   /** Set to PSN_HASH_SIGNATURE at initialization. */
    unsigned int initialized;
 
 };
 
-typedef struct vdseHash vdseHash;
+typedef struct psnHash psnHash;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -122,68 +122,68 @@ typedef struct vdseHash vdseHash;
  * Used to create a copy of a read-only hash map for editing (updates)
  */
 VDSF_ENGINE_EXPORT
-enum vdsErrors vdseHashCopy( vdseHash           * pOldHash,
-                             vdseHash           * pNewHash,
-                             vdseSessionContext * pContext );
+enum vdsErrors psnHashCopy( psnHash           * pOldHash,
+                             psnHash           * pNewHash,
+                             psnSessionContext * pContext );
 
 /*
  * Used to delete an hash item when you know its exact position
- * (through the vdseHashItem) 
+ * (through the psnHashItem) 
  */
 VDSF_ENGINE_EXPORT 
-void vdseHashDelWithItem( vdseHash            * pHash,
-                          vdseHashItem        * pItem,
-                          vdseSessionContext  * pContext );
+void psnHashDelWithItem( psnHash            * pHash,
+                          psnHashItem        * pItem,
+                          psnSessionContext  * pContext );
 
 /* Direct delete using the key and nothing else. */
 VDSF_ENGINE_EXPORT 
-bool vdseHashDelWithKey( vdseHash            * pHash,
+bool psnHashDelWithKey( psnHash            * pHash,
                          const unsigned char * pKey, 
                          size_t                keyLength,
-                         vdseSessionContext  * pContext );
+                         psnSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT 
-void vdseHashEmpty( vdseHash           * pHash,
-                    vdseSessionContext * pContext );
+void psnHashEmpty( psnHash           * pHash,
+                    psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseHashFini( vdseHash * pHash );
+void psnHashFini( psnHash * pHash );
 
 VDSF_ENGINE_EXPORT 
-bool vdseHashGet( vdseHash            * pHash,
+bool psnHashGet( psnHash            * pHash,
                   const unsigned char * pkey,
                   size_t                keyLength,
-                  vdseHashItem       ** ppItem,
+                  psnHashItem       ** ppItem,
                   size_t              * pBucket,
-                  vdseSessionContext  * pContext );
+                  psnSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT 
-bool vdseHashGetFirst( vdseHash  * pHash,
+bool psnHashGetFirst( psnHash  * pHash,
                        ptrdiff_t * pFirstItemOffset );
 
 VDSF_ENGINE_EXPORT
-bool vdseHashGetNext( vdseHash  * pHash,
+bool psnHashGetNext( psnHash  * pHash,
                       ptrdiff_t   previousOffset,
                       ptrdiff_t * pNextItemOffset );
 
 VDSF_ENGINE_EXPORT 
-enum vdsErrors vdseHashInit( vdseHash           * pHash,
+enum vdsErrors psnHashInit( psnHash           * pHash,
                              ptrdiff_t            memObjOffset,
                              size_t               reservedSize, 
-                             vdseSessionContext * pContext );
+                             psnSessionContext * pContext );
 
 /*
  * ppNewItem is used to access the original name of 
- * objects and the vdseTxStatus by the objects themselves 
+ * objects and the psnTxStatus by the objects themselves 
  */
 VDSF_ENGINE_EXPORT 
-enum vdsErrors vdseHashInsert( vdseHash            * pHash,
+enum vdsErrors psnHashInsert( psnHash            * pHash,
                                const unsigned char * pKey,
                                size_t                keyLength,
                                const void          * pData,
                                size_t                dataLength,
-                               vdseHashItem       ** ppNewItem,
-                               vdseSessionContext  * pContext );
+                               psnHashItem       ** ppNewItem,
+                               psnSessionContext  * pContext );
 
 /*
  * Insert at is used to insert an item in a given bucket, at the end
@@ -191,26 +191,26 @@ enum vdsErrors vdseHashInsert( vdseHash            * pHash,
  * before the change is committed.
  */
 VDSF_ENGINE_EXPORT 
-enum vdsErrors vdseHashInsertAt( vdseHash            * pHash,
+enum vdsErrors psnHashInsertAt( psnHash            * pHash,
                                  size_t                bucket,
                                  const unsigned char * pKey,
                                  size_t                keyLength,
                                  const void          * pData,
                                  size_t                dataLength,
-                                 vdseHashItem       ** ppNewItem,
-                                 vdseSessionContext  * pContext );
+                                 psnHashItem       ** ppNewItem,
+                                 psnSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
-enum vdsErrors vdseHashResize( vdseHash           * pHash,
-                               vdseSessionContext * pContext );
+enum vdsErrors psnHashResize( psnHash           * pHash,
+                               psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-enum vdsErrors vdseHashUpdate( vdseHash            * pHash,
+enum vdsErrors psnHashUpdate( psnHash            * pHash,
                                const unsigned char * pKey,
                                size_t                keyLength,
                                const void          * pData,
                                size_t                dataLength,
-                               vdseSessionContext  * pContext );
+                               psnSessionContext  * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -228,13 +228,13 @@ enum vdsErrors vdseHashUpdate( vdseHash            * pHash,
  */
  
 #if SIZEOF_VOID_P == 4
-#  define VDSE_PRIME_NUMBER_ARRAY_LENGTH 28
+#  define PSN_PRIME_NUMBER_ARRAY_LENGTH 28
 VDSF_ENGINE_EXPORT
-extern size_t g_vdseArrayLengths[VDSE_PRIME_NUMBER_ARRAY_LENGTH];
+extern size_t g_psnArrayLengths[PSN_PRIME_NUMBER_ARRAY_LENGTH];
 #else
-#  define VDSE_PRIME_NUMBER_ARRAY_LENGTH 60
+#  define PSN_PRIME_NUMBER_ARRAY_LENGTH 60
 VDSF_ENGINE_EXPORT
-extern size_t g_vdseArrayLengths[VDSE_PRIME_NUMBER_ARRAY_LENGTH];
+extern size_t g_psnArrayLengths[PSN_PRIME_NUMBER_ARRAY_LENGTH];
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -243,7 +243,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_HASH_MAP_H */
+#endif /* PSN_HASH_MAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

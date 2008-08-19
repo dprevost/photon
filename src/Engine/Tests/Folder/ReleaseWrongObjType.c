@@ -24,11 +24,11 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseFolder * pFolder;
-   vdseSessionContext context;
+   psnFolder * pFolder;
+   psnSessionContext context;
    bool ok;
-   vdseFolderItem item;
-   vdseTxStatus status;
+   psnFolderItem item;
+   psnTxStatus status;
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
@@ -38,14 +38,14 @@ int main()
    
    pFolder = initFolderTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   ok = psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -57,7 +57,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test3",
                                 "Test3",
                                 5,
@@ -69,22 +69,22 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderGetFirst( pFolder,
+   ok = psnFolderGetFirst( pFolder,
                             &item,
                             &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderGetNext( pFolder,
+   ok = psnFolderGetNext( pFolder,
                            &item,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   pFolder->memObject.objType = VDSE_IDENT_HASH_MAP;
-   ok = vdseFolderRelease( pFolder, &item, &context );
+   pFolder->memObject.objType = PSN_IDENT_HASH_MAP;
+   ok = psnFolderRelease( pFolder, &item, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

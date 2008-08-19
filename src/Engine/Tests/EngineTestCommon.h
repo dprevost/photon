@@ -33,14 +33,14 @@ pscErrMsgHandle g_vdsErrorHandle;
  * errorhandle for the VDS errors tobe initialized. 
  */
  
-void initTest( bool testIsExpectedToSucceed, vdseSessionContext* pContext )
+void initTest( bool testIsExpectedToSucceed, psnSessionContext* pContext )
 {
    bool ok;
    
-   memset( pContext, 0, sizeof(vdseSessionContext) );
+   memset( pContext, 0, sizeof(psnSessionContext) );
    pContext->pidLocker = getpid();
    
-   ok = vdseInitEngine();
+   ok = psnInitEngine();
    if ( ok != true ) {
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);

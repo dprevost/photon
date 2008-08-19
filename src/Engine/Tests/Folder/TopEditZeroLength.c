@@ -23,11 +23,11 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseFolder * pTopFolder;
-   vdseSessionContext context;
+   psnFolder * pTopFolder;
+   psnSessionContext context;
    int errcode;
    bool ok;
-   vdseFolderItem folderItem;
+   psnFolderItem folderItem;
    vdsObjectDefinition folderDef = { 
       VDS_FOLDER, 
       0, 
@@ -43,7 +43,7 @@ int main()
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = vdseTopFolderCreateObject( pTopFolder,
+   ok = psnTopFolderCreateObject( pTopFolder,
                                    "Test1",
                                    strlen("Test1"),
                                    &folderDef,
@@ -52,7 +52,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseTopFolderCreateObject( pTopFolder,
+   ok = psnTopFolderCreateObject( pTopFolder,
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &mapDef,
@@ -61,7 +61,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseTopFolderEditObject( pTopFolder,
+   ok = psnTopFolderEditObject( pTopFolder,
                                  "Test1/Test2",
                                  0,
                                  VDS_FAST_MAP,

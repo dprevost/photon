@@ -34,7 +34,7 @@
 int vdsFolderClose( VDS_HANDLE objectHandle )
 {
    vdsaFolder * pFolder;
-   vdseFolder * pVDSFolder;
+   psnFolder * pVDSFolder;
    int errcode = VDS_OK;
    
    pFolder = (vdsaFolder *) objectHandle;
@@ -47,14 +47,14 @@ int vdsFolderClose( VDS_HANDLE objectHandle )
    if ( ! pFolder->object.pSession->terminated ) {
 
       if ( vdsaCommonLock( &pFolder->object ) ) {
-        pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+        pVDSFolder = (psnFolder *) pFolder->object.pMyVdsObject;
 
          /* Reinitialize the iterator, if needed */
          if ( pFolder->iterator.pHashItem != NULL ) {
-            if ( vdseFolderRelease( pVDSFolder,
+            if ( psnFolderRelease( pVDSFolder,
                                     &pFolder->iterator,
                                     &pFolder->object.pSession->context ) == 0 ) {
-               memset( &pFolder->iterator, 0, sizeof(vdseFolderItem) );
+               memset( &pFolder->iterator, 0, sizeof(psnFolderItem) );
             }
             else {
                errcode = VDS_OBJECT_CANNOT_GET_LOCK;
@@ -98,7 +98,7 @@ int vdsFolderCreateObject( VDS_HANDLE            objectHandle,
                            vdsObjectDefinition * pDefinition )
 {
    vdsaFolder * pFolder;
-   vdseFolder * pVDSFolder;
+   psnFolder * pVDSFolder;
    int errcode = VDS_OK;
    bool ok = true;
    vdsaSession* pSession;
@@ -134,9 +134,9 @@ int vdsFolderCreateObject( VDS_HANDLE            objectHandle,
 
    if ( ! pSession->terminated ) {
       if ( vdsaCommonLock( &pFolder->object ) ) {
-         pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+         pVDSFolder = (psnFolder *) pFolder->object.pMyVdsObject;
 
-         ok = vdseFolderCreateObject( pVDSFolder,
+         ok = psnFolderCreateObject( pVDSFolder,
                                       objectName,
                                       nameLengthInBytes,
                                       pDefinition,
@@ -202,7 +202,7 @@ int vdsFolderDestroyObject( VDS_HANDLE   objectHandle,
                             size_t       nameLengthInBytes )
 {
    vdsaFolder * pFolder;
-   vdseFolder * pVDSFolder;
+   psnFolder * pVDSFolder;
    int errcode = VDS_OK;
    vdsaSession* pSession;
    bool ok = true;
@@ -227,9 +227,9 @@ int vdsFolderDestroyObject( VDS_HANDLE   objectHandle,
    
    if ( ! pSession->terminated ) {
       if ( vdsaCommonLock( &pFolder->object ) ) {
-         pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+         pVDSFolder = (psnFolder *) pFolder->object.pMyVdsObject;
 
-         ok = vdseFolderDestroyObject( pVDSFolder,
+         ok = psnFolderDestroyObject( pVDSFolder,
                                        objectName,
                                        nameLengthInBytes,
                                        &pSession->context );
@@ -262,9 +262,9 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
                        vdsFolderEntry * pEntry )
 {
    vdsaFolder * pFolder;
-   vdseFolder * pVDSFolder;
+   psnFolder * pVDSFolder;
    int errcode = VDS_OK;
-   vdseObjectDescriptor * pDescriptor;
+   psnObjectDescriptor * pDescriptor;
    bool ok;
    
    pFolder = (vdsaFolder *) objectHandle;
@@ -289,23 +289,23 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
       goto error_handler;
    }
    
-   pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+   pVDSFolder = (psnFolder *) pFolder->object.pMyVdsObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pFolder->iterator.pHashItem != NULL ) {
-      ok = vdseFolderRelease( pVDSFolder,
+      ok = psnFolderRelease( pVDSFolder,
                               &pFolder->iterator,
                               &pFolder->object.pSession->context );
       VDS_POST_CONDITION( ok == true || ok == false );
       if ( ok ) {
-         memset( &pFolder->iterator, 0, sizeof(vdseFolderItem) );
+         memset( &pFolder->iterator, 0, sizeof(psnFolderItem) );
       }
       else {
          goto error_handler_unlock;
       }
    }
 
-   ok = vdseFolderGetFirst( pVDSFolder,
+   ok = psnFolderGetFirst( pVDSFolder,
                             &pFolder->iterator,
                             &pFolder->object.pSession->context );
    VDS_POST_CONDITION( ok == true || ok == false );
@@ -313,7 +313,7 @@ int vdsFolderGetFirst( VDS_HANDLE       objectHandle,
 
    memset( pEntry, 0, sizeof( vdsFolderEntry ) );
    GET_PTR( pDescriptor, pFolder->iterator.pHashItem->dataOffset, 
-                         vdseObjectDescriptor );
+                         psnObjectDescriptor );
    pEntry->type = pDescriptor->apiType;
    pEntry->status = pFolder->iterator.status;
    pEntry->nameLengthInBytes = pDescriptor->nameLengthInBytes;
@@ -344,9 +344,9 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
                       vdsFolderEntry * pEntry )
 {
    vdsaFolder * pFolder;
-   vdseFolder * pVDSFolder;
+   psnFolder * pVDSFolder;
    int errcode = VDS_OK;
-   vdseObjectDescriptor * pDescriptor;
+   psnObjectDescriptor * pDescriptor;
    bool ok;
    
    pFolder = (vdsaFolder *) objectHandle;
@@ -376,9 +376,9 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
       goto error_handler;
    }
 
-   pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+   pVDSFolder = (psnFolder *) pFolder->object.pMyVdsObject;
 
-   ok = vdseFolderGetNext( pVDSFolder,
+   ok = psnFolderGetNext( pVDSFolder,
                            &pFolder->iterator,
                            &pFolder->object.pSession->context );
    VDS_POST_CONDITION( ok == true || ok == false );
@@ -386,7 +386,7 @@ int vdsFolderGetNext( VDS_HANDLE       objectHandle,
    
    memset( pEntry, 0, sizeof( vdsFolderEntry ) );
    GET_PTR( pDescriptor, pFolder->iterator.pHashItem->dataOffset, 
-                         vdseObjectDescriptor );
+                         psnObjectDescriptor );
    pEntry->type = pDescriptor->apiType;
    pEntry->status = pFolder->iterator.status;
    pEntry->nameLengthInBytes = pDescriptor->nameLengthInBytes;
@@ -474,9 +474,9 @@ int vdsFolderStatus( VDS_HANDLE     objectHandle,
                      vdsObjStatus * pStatus )
 {
    vdsaFolder * pFolder;
-   vdseFolder * pVDSFolder;
+   psnFolder * pVDSFolder;
    int errcode = VDS_OK;
-   vdseSessionContext * pContext;
+   psnSessionContext * pContext;
    
    pFolder = (vdsaFolder *) objectHandle;
    if ( pFolder == NULL ) return VDS_NULL_HANDLE;
@@ -496,15 +496,15 @@ int vdsFolderStatus( VDS_HANDLE     objectHandle,
 
       if ( vdsaCommonLock( &pFolder->object ) ) {
 
-         pVDSFolder = (vdseFolder *) pFolder->object.pMyVdsObject;
+         pVDSFolder = (psnFolder *) pFolder->object.pMyVdsObject;
       
-         if ( vdseLock(&pVDSFolder->memObject, pContext) ) {
+         if ( psnLock(&pVDSFolder->memObject, pContext) ) {
 
-            vdseMemObjectStatus( &pVDSFolder->memObject, pStatus );
+            psnMemObjectStatus( &pVDSFolder->memObject, pStatus );
 
-            vdseFolderMyStatus( pVDSFolder, pStatus );
+            psnFolderMyStatus( pVDSFolder, pStatus );
 
-            vdseUnlock( &pVDSFolder->memObject, pContext );
+            psnUnlock( &pVDSFolder->memObject, pContext );
          }
          else {
             errcode = VDS_OBJECT_CANNOT_GET_LOCK;

@@ -23,12 +23,12 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseTx* pTx;
-   vdseFolder * pFolder;
-   vdseSessionContext context;
+   psnTx* pTx;
+   psnFolder * pFolder;
+   psnSessionContext context;
    bool ok;
-   vdseFolderItem item;
-   vdseTxStatus status;
+   psnFolderItem item;
+   psnTxStatus status;
    vdsObjectDefinition mapDef = { 
       VDS_HASH_MAP, 
       1, 
@@ -45,15 +45,15 @@ int main()
    pFolder = initFolderTest( expectedToPass, &context );
    pTx = context.pTransaction;
    
-   vdseTxStatusInit( &status, SET_OFFSET( pTx ) );
+   psnTxStatusInit( &status, SET_OFFSET( pTx ) );
    
-   ok = vdseFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   ok = psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    /* Test 1 */
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -65,7 +65,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test3",
                                 "Test3",
                                 5,
@@ -83,7 +83,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseTxRollback( pTx, &context );
+   psnTxRollback( pTx, &context );
    if ( pFolder->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -91,7 +91,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseTxCommit( pTx, &context );
+   psnTxCommit( pTx, &context );
    if ( pFolder->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -100,7 +100,7 @@ int main()
    }
    
    /* Test 2 */
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -112,7 +112,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test3",
                                 "Test3",
                                 5,
@@ -130,7 +130,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseTxCommit( pTx, &context );
+   psnTxCommit( pTx, &context );
    if ( pFolder->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -138,7 +138,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseFolderDeleteObject( pFolder,
+   ok = psnFolderDeleteObject( pFolder,
                                 "test2",
                                 5,
                                 &context );
@@ -146,7 +146,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderDeleteObject( pFolder,
+   ok = psnFolderDeleteObject( pFolder,
                                 "test3",
                                 5,
                                 &context );
@@ -160,7 +160,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseTxRollback( pTx, &context );
+   psnTxRollback( pTx, &context );
    if ( pFolder->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -168,7 +168,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseFolderDeleteObject( pFolder,
+   ok = psnFolderDeleteObject( pFolder,
                                 "test2",
                                 5,
                                 &context );
@@ -176,7 +176,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderDeleteObject( pFolder,
+   ok = psnFolderDeleteObject( pFolder,
                                 "test3",
                                 5,
                                 &context );
@@ -190,7 +190,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseTxCommit( pTx, &context );
+   psnTxCommit( pTx, &context );
    if ( pFolder->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -199,7 +199,7 @@ int main()
    }
    
    /* Test 3 */
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -211,7 +211,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test3",
                                 "Test3",
                                 5,
@@ -223,7 +223,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderGetObject( pFolder,
+   ok = psnFolderGetObject( pFolder,
                              "test3",
                              5,
                              VDS_HASH_MAP,
@@ -233,7 +233,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseTxRollback( pTx, &context );
+   psnTxRollback( pTx, &context );
    if ( pFolder->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -241,7 +241,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseFolderRelease( pFolder, &item, &context );
+   ok = psnFolderRelease( pFolder, &item, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -253,7 +253,7 @@ int main()
    }
    
    /* Test 4 */
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -265,7 +265,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderInsertObject( pFolder,
+   ok = psnFolderInsertObject( pFolder,
                                 "test3",
                                 "Test3",
                                 5,
@@ -277,7 +277,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderGetObject( pFolder,
+   ok = psnFolderGetObject( pFolder,
                              "test3",
                              5,
                              VDS_HASH_MAP,
@@ -287,7 +287,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseTxCommit( pTx, &context );
+   psnTxCommit( pTx, &context );
    if ( pFolder->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -295,7 +295,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseFolderRelease( pFolder, &item, &context );
+   ok = psnFolderRelease( pFolder, &item, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -306,7 +306,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseFolderGetObject( pFolder,
+   ok = psnFolderGetObject( pFolder,
                              "test3",
                              5,
                              VDS_HASH_MAP,
@@ -316,7 +316,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderDeleteObject( pFolder,
+   ok = psnFolderDeleteObject( pFolder,
                                 "test2",
                                 5,
                                 &context );
@@ -324,7 +324,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderDeleteObject( pFolder,
+   ok = psnFolderDeleteObject( pFolder,
                                 "test3",
                                 5,
                                 &context );
@@ -338,7 +338,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseTxRollback( pTx, &context );
+   psnTxRollback( pTx, &context );
    if ( pFolder->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -346,7 +346,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseFolderDeleteObject( pFolder,
+   ok = psnFolderDeleteObject( pFolder,
                                 "test2",
                                 5,
                                 &context );
@@ -354,7 +354,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseFolderDeleteObject( pFolder,
+   ok = psnFolderDeleteObject( pFolder,
                                 "test3",
                                 5,
                                 &context );
@@ -368,7 +368,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseTxCommit( pTx, &context );
+   psnTxCommit( pTx, &context );
    if ( pFolder->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -376,7 +376,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = vdseFolderRelease( pFolder, &item, &context );
+   ok = psnFolderRelease( pFolder, &item, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

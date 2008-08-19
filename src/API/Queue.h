@@ -35,12 +35,12 @@ typedef struct vdsaQueue
    
    /**
     * This pointer holds the result of the iteration (the pointer to
-    * the current vdseQueueItem).
+    * the current psnQueueItem).
     */
-   vdseQueueItem * iterator;
+   psnQueueItem * iterator;
    
    /** A pointer to the data definition of the queue. */
-   vdseFieldDef * pDefinition;
+   psnFieldDef * pDefinition;
    
    size_t minLength;
    size_t maxLength;

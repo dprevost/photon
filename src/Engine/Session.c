@@ -22,20 +22,20 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseSessionInit( vdseSession        * pSession,
+bool psnSessionInit( psnSession        * pSession,
                       void               * pApiSession,
-                      vdseSessionContext * pContext )
+                      psnSessionContext * pContext )
 {
    vdsErrors errcode;
-   vdseTx * pTx;
+   psnTx * pTx;
    bool ok, rc = false;
    
    VDS_PRE_CONDITION( pSession    != NULL );
    VDS_PRE_CONDITION( pContext    != NULL );
    VDS_PRE_CONDITION( pApiSession != NULL );
    
-   errcode = vdseMemObjectInit( &pSession->memObject, 
-                                VDSE_IDENT_SESSION,
+   errcode = psnMemObjectInit( &pSession->memObject, 
+                                PSN_IDENT_SESSION,
                                 &pSession->blockGroup,
                                 1 ); /* A single block */
    if ( errcode != VDS_OK ) {
@@ -44,11 +44,11 @@ bool vdseSessionInit( vdseSession        * pSession,
                     errcode );
    }
    else {
-      vdseLinkedListInit( &pSession->listOfObjects );
+      psnLinkedListInit( &pSession->listOfObjects );
 
-      pTx = (vdseTx*) vdseMallocBlocks( pContext->pAllocator, VDSE_ALLOC_ANY, 1, pContext );
+      pTx = (psnTx*) psnMallocBlocks( pContext->pAllocator, PSN_ALLOC_ANY, 1, pContext );
       if ( pTx != NULL ) {
-         ok = vdseTxInit( pTx, 1, pContext );
+         ok = psnTxInit( pTx, 1, pContext );
          VDS_PRE_CONDITION( ok == true || ok == false );
          if ( ok ) {
             pSession->numLocks = 0;
@@ -61,8 +61,8 @@ bool vdseSessionInit( vdseSession        * pSession,
             rc = true;
          }
          else {
-            vdseFreeBlocks( pContext->pAllocator, 
-                            VDSE_ALLOC_ANY,
+            psnFreeBlocks( pContext->pAllocator, 
+                            PSN_ALLOC_ANY,
                             (unsigned char *)pTx, 
                             1, pContext );
          }
@@ -79,15 +79,15 @@ bool vdseSessionInit( vdseSession        * pSession,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseSessionFini( vdseSession        * pSession,
-                      vdseSessionContext * pContext )
+void psnSessionFini( psnSession        * pSession,
+                      psnSessionContext * pContext )
 {
-   vdseObjectContext * pObject = NULL;
-   vdseLinkNode * pNode = NULL;
+   psnObjectContext * pObject = NULL;
+   psnLinkNode * pNode = NULL;
 
    VDS_PRE_CONDITION( pSession != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pSession->memObject.objType == VDSE_IDENT_SESSION );
+   VDS_PRE_CONDITION( pSession->memObject.objType == PSN_IDENT_SESSION );
    
    /*
     * Eliminate all objects in the list. This is probably not needed
@@ -95,51 +95,51 @@ void vdseSessionFini( vdseSession        * pSession,
     * last step. This might be reviewed eventually.
     */
 
-   while ( vdseLinkedListPeakFirst( &pSession->listOfObjects, &pNode ) ) {
-      pObject = (vdseObjectContext*)
-         ((char*)pNode - offsetof( vdseObjectContext, node ));
-      vdseSessionRemoveObj( pSession, pObject, pContext );
+   while ( psnLinkedListPeakFirst( &pSession->listOfObjects, &pNode ) ) {
+      pObject = (psnObjectContext*)
+         ((char*)pNode - offsetof( psnObjectContext, node ));
+      psnSessionRemoveObj( pSession, pObject, pContext );
    }
    
    /* Terminates our associated transaction objects. We presume that
     * either commit or rollback was called to clear it.
     */
-   vdseTxFini( pSession->pTransaction, pContext );
+   psnTxFini( pSession->pTransaction, pContext );
 
    /* This will remove the blocks of allocated memory */
-   vdseMemObjectFini(  &pSession->memObject, VDSE_ALLOC_ANY, pContext );
+   psnMemObjectFini(  &pSession->memObject, PSN_ALLOC_ANY, pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseSessionAddObj( vdseSession        * pSession,
+bool psnSessionAddObj( psnSession        * pSession,
                         ptrdiff_t            objOffset, 
                         enum vdsObjectType   objType, 
                         void               * pCommonObject,
-                        vdseObjectContext ** ppObject,
-                        vdseSessionContext * pContext )
+                        psnObjectContext ** ppObject,
+                        psnSessionContext * pContext )
 {
    bool ok = false;
-   vdseObjectContext * pCurrentBuffer;
+   psnObjectContext * pCurrentBuffer;
 
    VDS_PRE_CONDITION( pSession      != NULL );
    VDS_PRE_CONDITION( pCommonObject != NULL );
    VDS_PRE_CONDITION( ppObject      != NULL );
    VDS_PRE_CONDITION( pContext      != NULL );
-   VDS_PRE_CONDITION( objOffset     != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( objOffset     != PSN_NULL_OFFSET );
    VDS_PRE_CONDITION( objType > 0 && objType < VDS_LAST_OBJECT_TYPE );
    
    /* For recovery purposes, always lock before doing anything! */
-   if ( vdseLock( &pSession->memObject, pContext ) ) {
-      pCurrentBuffer = (vdseObjectContext *)
-         vdseMalloc( &pSession->memObject, sizeof(vdseObjectContext), pContext );
+   if ( psnLock( &pSession->memObject, pContext ) ) {
+      pCurrentBuffer = (psnObjectContext *)
+         psnMalloc( &pSession->memObject, sizeof(psnObjectContext), pContext );
       if ( pCurrentBuffer != NULL ) {
          pCurrentBuffer->offset    = objOffset;
          pCurrentBuffer->type      = objType;
          pCurrentBuffer->pCommonObject = pCommonObject;
 
-         vdseLinkNodeInit( &pCurrentBuffer->node );
-         vdseLinkedListPutLast( &pSession->listOfObjects, 
+         psnLinkNodeInit( &pCurrentBuffer->node );
+         psnLinkedListPutLast( &pSession->listOfObjects, 
                                 &pCurrentBuffer->node );
          *ppObject = pCurrentBuffer;
          ok = true;
@@ -150,7 +150,7 @@ bool vdseSessionAddObj( vdseSession        * pSession,
                        VDS_NOT_ENOUGH_VDS_MEMORY );
       }
       
-      vdseUnlock( &pSession->memObject, pContext );
+      psnUnlock( &pSession->memObject, pContext );
    }
    else {
       pscSetError( &pContext->errorHandler,
@@ -163,24 +163,24 @@ bool vdseSessionAddObj( vdseSession        * pSession,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseSessionRemoveObj( vdseSession        * pSession,
-                          vdseObjectContext  * pObject,
-                          vdseSessionContext * pContext )
+bool psnSessionRemoveObj( psnSession        * pSession,
+                          psnObjectContext  * pObject,
+                          psnSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pSession != NULL );
    VDS_PRE_CONDITION( pObject  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
 
    /* For recovery purposes, always lock before doing anything! */
-   if ( vdseLock( &pSession->memObject, pContext ) ) {
-      vdseLinkedListRemoveItem( &pSession->listOfObjects, 
+   if ( psnLock( &pSession->memObject, pContext ) ) {
+      psnLinkedListRemoveItem( &pSession->listOfObjects, 
                                 &pObject->node );
-      vdseFree( &pSession->memObject, 
+      psnFree( &pSession->memObject, 
                 (unsigned char *)pObject, 
-                sizeof(vdseObjectContext),
+                sizeof(psnObjectContext),
                 pContext );
 
-      vdseUnlock( &pSession->memObject, pContext );
+      psnUnlock( &pSession->memObject, pContext );
    }
    else {
       pscSetError( &pContext->errorHandler,
@@ -195,22 +195,22 @@ bool vdseSessionRemoveObj( vdseSession        * pSession,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Lock and Unlock must be used before calling this function */
-bool vdseSessionRemoveFirst( vdseSession        * pSession,
-                             vdseSessionContext * pContext )
+bool psnSessionRemoveFirst( psnSession        * pSession,
+                             psnSessionContext * pContext )
 {
-   vdseLinkNode * pNode = NULL;
-   vdseObjectContext * pObject;
+   psnLinkNode * pNode = NULL;
+   psnObjectContext * pObject;
    
    VDS_PRE_CONDITION( pSession != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
 
-   if ( vdseLinkedListGetFirst(&pSession->listOfObjects, &pNode) ) {
-      pObject = (vdseObjectContext*)
-         ((char*)pNode - offsetof( vdseObjectContext, node ));
+   if ( psnLinkedListGetFirst(&pSession->listOfObjects, &pNode) ) {
+      pObject = (psnObjectContext*)
+         ((char*)pNode - offsetof( psnObjectContext, node ));
 
-      vdseFree( &pSession->memObject, 
+      psnFree( &pSession->memObject, 
                 (unsigned char *)pObject, 
-                sizeof(vdseObjectContext),
+                sizeof(psnObjectContext),
                 pContext );
       return true;
    }
@@ -221,22 +221,22 @@ bool vdseSessionRemoveFirst( vdseSession        * pSession,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Lock and Unlock must be used before calling this function */
-bool vdseSessionGetFirst( vdseSession        * pSession,
-                          vdseObjectContext ** ppObject,
-                          vdseSessionContext * pContext )
+bool psnSessionGetFirst( psnSession        * pSession,
+                          psnObjectContext ** ppObject,
+                          psnSessionContext * pContext )
 {
-   vdseLinkNode * pNode = NULL;
+   psnLinkNode * pNode = NULL;
    bool ok;
 
    VDS_PRE_CONDITION( pSession != NULL );
    VDS_PRE_CONDITION( ppObject != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    
-   ok = vdseLinkedListPeakFirst( &pSession->listOfObjects, 
+   ok = psnLinkedListPeakFirst( &pSession->listOfObjects, 
                                  &pNode );
    if ( ok ) {
-      *ppObject = (vdseObjectContext*)
-         ((char*)pNode - offsetof( vdseObjectContext, node ));
+      *ppObject = (psnObjectContext*)
+         ((char*)pNode - offsetof( psnObjectContext, node ));
    }
    
    return ok;

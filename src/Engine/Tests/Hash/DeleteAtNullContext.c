@@ -25,18 +25,18 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseSessionContext context;
-   vdseHash* pHash;
+   psnSessionContext context;
+   psnHash* pHash;
    enum vdsErrors errcode;
    char* key1 = "My Key 1";
    char* data1 = "My Data 1";
-   vdseHashItem* pNewItem;
+   psnHashItem* pNewItem;
    size_t bucket;
    bool found;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = vdseHashInit( pHash, g_memObjOffset, 100, &context );
+   errcode = psnHashInit( pHash, g_memObjOffset, 100, &context );
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -46,7 +46,7 @@ int main()
     * InsertAt() depends on this as you cannot insert in an empty
     * bucket.
     */
-   errcode = vdseHashInsert( pHash,
+   errcode = psnHashInsert( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data1,
@@ -56,7 +56,7 @@ int main()
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   found = vdseHashGet( pHash,
+   found = psnHashGet( pHash,
                           (unsigned char*)key1,
                           strlen(key1),
                           &pNewItem,
@@ -65,7 +65,7 @@ int main()
    if ( ! found ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = vdseHashInsertAt( pHash,
+   errcode = psnHashInsertAt( pHash,
                                bucket,
                                (unsigned char*)key1,
                                strlen(key1),
@@ -77,7 +77,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseHashDelWithItem( pHash, pNewItem, NULL );
+   psnHashDelWithItem( pHash, pNewItem, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -69,20 +69,20 @@ enum repairMode
 struct repairKit
 {
    enum repairMode mode;
-   struct vdseLinkedList * pList;
+   struct psnLinkedList * pList;
    size_t forwardChainLen;
    size_t backwardChainLen;
    bool breakInForwardChain;
    bool breakInBackwardChain;
    bool foundNextBreak;
    /* The last valid node before the break */
-   vdseLinkNode * nextBreak;
+   psnLinkNode * nextBreak;
    /* The node before the last valid node before the break */
-   vdseLinkNode * nextBreakPrevious;
+   psnLinkNode * nextBreakPrevious;
    /* The last valid node before the break */
-   vdseLinkNode * previousBreak;
+   psnLinkNode * previousBreak;
    /* The node before the last valid node before the break */
-   vdseLinkNode * previousBreakPrevious;
+   psnLinkNode * previousBreakPrevious;
 
 };
 
@@ -90,9 +90,9 @@ struct repairKit
 
 enum vdswRecoverError 
 vdswVerifyList( vdswVerifyStruct      * pVerify,
-                struct vdseLinkedList * pList )
+                struct psnLinkedList * pList )
 {
-   vdseLinkNode * next, * previous;
+   psnLinkNode * next, * previous;
    ptrdiff_t headOffset;
    struct repairKit kit = { \
       NO_REPAIR, pList, 0, 0, false, false, false, NULL, NULL, NULL, NULL };
@@ -115,7 +115,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
    next = &pList->head;
    previous = next;
    while ( next->nextOffset != headOffset ) {
-      if ( next->nextOffset == VDSE_NULL_OFFSET ) {
+      if ( next->nextOffset == PSN_NULL_OFFSET ) {
          kit.nextBreak = next;
          kit.nextBreakPrevious = previous;
          kit.breakInForwardChain = true;
@@ -131,14 +131,14 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
          }
       }
       previous = next;
-      GET_PTR( next, next->nextOffset, vdseLinkNode );
+      GET_PTR( next, next->nextOffset, psnLinkNode );
    }
 
    // Same as before but we loop backward.
    next = &pList->head;
    previous = next;
    while ( next->previousOffset != headOffset ) {
-      if ( next->previousOffset == VDSE_NULL_OFFSET ) {
+      if ( next->previousOffset == PSN_NULL_OFFSET ) {
          kit.previousBreak = next;
          kit.previousBreakPrevious = previous;
          kit.breakInBackwardChain = true;
@@ -154,7 +154,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
          }
       }
       previous = next;
-      GET_PTR( next, next->previousOffset, vdseLinkNode );
+      GET_PTR( next, next->previousOffset, psnLinkNode );
    }
    
    // So how did it go?... we have multiple possibilities here.
@@ -223,7 +223,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
        */
       previous = &pList->head;
       do {
-         GET_PTR( next, previous->nextOffset, vdseLinkNode );
+         GET_PTR( next, previous->nextOffset, psnLinkNode );
          next->previousOffset = SET_OFFSET( previous );
          /* prepare for next round */
          previous = next;
@@ -244,7 +244,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
        */
       previous = &pList->head;
       do {
-         GET_PTR( next, previous->previousOffset, vdseLinkNode );
+         GET_PTR( next, previous->previousOffset, psnLinkNode );
          next->nextOffset = SET_OFFSET( previous );
 
          /* prepare for next round */
@@ -271,7 +271,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
        */
       previous = &pList->head;
       do {
-         GET_PTR( next, previous->nextOffset, vdseLinkNode );
+         GET_PTR( next, previous->nextOffset, psnLinkNode );
          next->previousOffset = SET_OFFSET( previous );
          if ( kit.previousBreak == next )
             foundNode = true;
@@ -290,7 +290,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
           * value of kit.previousBreakPrevious->previousOffset (we use it to 
           * recover the value of previous but we also need to reset it).
           */
-         GET_PTR( previous, kit.previousBreakPrevious->previousOffset, vdseLinkNode );
+         GET_PTR( previous, kit.previousBreakPrevious->previousOffset, psnLinkNode );
          
          kit.previousBreak->nextOffset = SET_OFFSET( kit.previousBreakPrevious );
          kit.previousBreak->previousOffset = SET_OFFSET( previous );
@@ -318,7 +318,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
        */
       previous = &pList->head;
       do {
-         GET_PTR( next, previous->previousOffset, vdseLinkNode );
+         GET_PTR( next, previous->previousOffset, psnLinkNode );
          next->nextOffset = SET_OFFSET( previous );
          if ( kit.nextBreak == next )
             foundNode = true;
@@ -338,7 +338,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
           * value of kit.nextBreakPrevious->nextOffset (we use it to recover
           * the value of next but we also need to reset it).
           */
-         GET_PTR( next, kit.nextBreakPrevious->nextOffset, vdseLinkNode );
+         GET_PTR( next, kit.nextBreakPrevious->nextOffset, psnLinkNode );
          
          kit.nextBreak->previousOffset = SET_OFFSET( kit.nextBreakPrevious );
          kit.nextBreak->nextOffset = SET_OFFSET( next );

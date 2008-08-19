@@ -21,9 +21,9 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseProcessInit( vdseProcess        * pProcess,
+bool psnProcessInit( psnProcess        * pProcess,
                       pid_t                pid,
-                      vdseSessionContext * pContext )
+                      psnSessionContext * pContext )
 {
    vdsErrors errcode;
 
@@ -31,8 +31,8 @@ bool vdseProcessInit( vdseProcess        * pProcess,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pid > 0 );
 
-   errcode = vdseMemObjectInit( &pProcess->memObject, 
-                                VDSE_IDENT_PROCESS,
+   errcode = psnMemObjectInit( &pProcess->memObject, 
+                                PSN_IDENT_PROCESS,
                                 &pProcess->blockGroup,
                                 1 ); /* A single block */
    if ( errcode != VDS_OK ) {
@@ -45,23 +45,23 @@ bool vdseProcessInit( vdseProcess        * pProcess,
    pProcess->pid = pid;
    pProcess->processIsTerminating = false;
 
-   vdseLinkedListInit( &pProcess->listOfSessions );
+   psnLinkedListInit( &pProcess->listOfSessions );
 
    return true;
 }
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseProcessFini( vdseProcess        * pProcess,
-                      vdseSessionContext * pContext )
+void psnProcessFini( psnProcess        * pProcess,
+                      psnSessionContext * pContext )
 {
-   vdseSession  * pSession = NULL;
-   vdseLinkNode * pNode    = NULL;
+   psnSession  * pSession = NULL;
+   psnLinkNode * pNode    = NULL;
    bool ok;
    
    VDS_PRE_CONDITION( pProcess != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pProcess->memObject.objType == VDSE_IDENT_PROCESS );
+   VDS_PRE_CONDITION( pProcess->memObject.objType == PSN_IDENT_PROCESS );
 
    /*
     * Eliminate all sessions in the list. This is probably not needed
@@ -69,12 +69,12 @@ void vdseProcessFini( vdseProcess        * pProcess,
     * last step. This might be reviewed eventually.
     */
 
-   while ( vdseLinkedListPeakFirst( &pProcess->listOfSessions, 
+   while ( psnLinkedListPeakFirst( &pProcess->listOfSessions, 
                                     &pNode ) ) {
-      pSession = (vdseSession*)
-         ((char*)pNode - offsetof( vdseSession, node ));
+      pSession = (psnSession*)
+         ((char*)pNode - offsetof( psnSession, node ));
 
-      ok = vdseProcessRemoveSession( pProcess, pSession, pContext );
+      ok = psnProcessRemoveSession( pProcess, pSession, pContext );
       VDS_POST_CONDITION( ok == true || ok == false );
    }
 
@@ -82,17 +82,17 @@ void vdseProcessFini( vdseProcess        * pProcess,
     * This will remove the blocks of allocated memory.
     * It must be the last operation on that piece of memory.
     */
-   vdseMemObjectFini(  &pProcess->memObject, VDSE_ALLOC_ANY, pContext );
+   psnMemObjectFini(  &pProcess->memObject, PSN_ALLOC_ANY, pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseProcessAddSession( vdseProcess        * pProcess,
+bool psnProcessAddSession( psnProcess        * pProcess,
                             void               * pApiSession,
-                            vdseSession       ** ppSession,
-                            vdseSessionContext * pContext )
+                            psnSession       ** ppSession,
+                            psnSessionContext * pContext )
 {
-   vdseSession * pCurrentBuffer;
+   psnSession * pCurrentBuffer;
    bool ok = false;
    
    VDS_PRE_CONDITION( pProcess    != NULL );
@@ -102,21 +102,21 @@ bool vdseProcessAddSession( vdseProcess        * pProcess,
 
    *ppSession = NULL;
    /* For recovery purposes, always lock before doing anything! */
-   if ( vdseLock( &pProcess->memObject, pContext ) ) {
-      pCurrentBuffer = (vdseSession*) 
-          vdseMallocBlocks( pContext->pAllocator, VDSE_ALLOC_ANY, 1, pContext );
+   if ( psnLock( &pProcess->memObject, pContext ) ) {
+      pCurrentBuffer = (psnSession*) 
+          psnMallocBlocks( pContext->pAllocator, PSN_ALLOC_ANY, 1, pContext );
       if ( pCurrentBuffer != NULL ) {
-         ok = vdseSessionInit( pCurrentBuffer, pApiSession, pContext );
+         ok = psnSessionInit( pCurrentBuffer, pApiSession, pContext );
          VDS_PRE_CONDITION( ok == true || ok == false );
          if ( ok ) {
-            vdseLinkNodeInit( &pCurrentBuffer->node );
-            vdseLinkedListPutLast( &pProcess->listOfSessions, 
+            psnLinkNodeInit( &pCurrentBuffer->node );
+            psnLinkedListPutLast( &pProcess->listOfSessions, 
                                    &pCurrentBuffer->node );
             *ppSession = pCurrentBuffer;
          }
          else {
-            vdseFreeBlocks( pContext->pAllocator, 
-                            VDSE_ALLOC_ANY,
+            psnFreeBlocks( pContext->pAllocator, 
+                            PSN_ALLOC_ANY,
                             (unsigned char *)pCurrentBuffer, 
                             1, pContext );
          }
@@ -135,7 +135,7 @@ bool vdseProcessAddSession( vdseProcess        * pProcess,
          pContext->lockOffsets[*pContext->numLocks] = SET_OFFSET(&pProcess->memObject);
          (*pContext->numLocks)++;
       }
-      vdseUnlock( &pProcess->memObject, pContext );
+      psnUnlock( &pProcess->memObject, pContext );
    }
    else {
       pscSetError( &pContext->errorHandler, 
@@ -148,22 +148,22 @@ bool vdseProcessAddSession( vdseProcess        * pProcess,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseProcessRemoveSession( vdseProcess        * pProcess,
-                               vdseSession        * pSession,
-                               vdseSessionContext * pContext )
+bool psnProcessRemoveSession( psnProcess        * pProcess,
+                               psnSession        * pSession,
+                               psnSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pProcess != NULL );
    VDS_PRE_CONDITION( pSession != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
 
    /* For recovery purposes, always lock before doing anything! */
-   if ( vdseLock( &pProcess->memObject, pContext ) ) {
-      vdseLinkedListRemoveItem( &pProcess->listOfSessions, 
+   if ( psnLock( &pProcess->memObject, pContext ) ) {
+      psnLinkedListRemoveItem( &pProcess->listOfSessions, 
                                 &pSession->node );
       
-      vdseSessionFini( pSession, pContext );
+      psnSessionFini( pSession, pContext );
 
-      vdseUnlock( &pProcess->memObject, pContext );
+      psnUnlock( &pProcess->memObject, pContext );
    }
    else {
       pscSetError( &pContext->errorHandler, 
@@ -177,21 +177,21 @@ bool vdseProcessRemoveSession( vdseProcess        * pProcess,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseProcessGetFirstSession( vdseProcess        * pProcess,
-                                 vdseSession       ** ppSession,
-                                 vdseSessionContext * pContext )
+bool psnProcessGetFirstSession( psnProcess        * pProcess,
+                                 psnSession       ** ppSession,
+                                 psnSessionContext * pContext )
 {
-   vdseLinkNode * pNode = NULL;
+   psnLinkNode * pNode = NULL;
    bool ok;
    
    VDS_PRE_CONDITION( pProcess  != NULL );
    VDS_PRE_CONDITION( ppSession != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
 
-   ok = vdseLinkedListPeakFirst( &pProcess->listOfSessions, &pNode );
+   ok = psnLinkedListPeakFirst( &pProcess->listOfSessions, &pNode );
    if ( ok ) {
-      *ppSession = (vdseSession *)
-         ((char*)pNode - offsetof( vdseSession, node ));
+      *ppSession = (psnSession *)
+         ((char*)pNode - offsetof( psnSession, node ));
    }
    
    return ok;
@@ -199,12 +199,12 @@ bool vdseProcessGetFirstSession( vdseProcess        * pProcess,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseProcessGetNextSession( vdseProcess        * pProcess,
-                                vdseSession        * pCurrent,
-                                vdseSession       ** ppNext,
-                                vdseSessionContext * pContext )
+bool psnProcessGetNextSession( psnProcess        * pProcess,
+                                psnSession        * pCurrent,
+                                psnSession       ** ppNext,
+                                psnSessionContext * pContext )
 {
-   vdseLinkNode * pNode = NULL;
+   psnLinkNode * pNode = NULL;
    bool ok;
    
    VDS_PRE_CONDITION( pProcess != NULL );
@@ -212,12 +212,12 @@ bool vdseProcessGetNextSession( vdseProcess        * pProcess,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( ppNext   != NULL );
 
-   ok = vdseLinkedListPeakNext( &pProcess->listOfSessions,
+   ok = psnLinkedListPeakNext( &pProcess->listOfSessions,
                                 &pCurrent->node,
                                 &pNode );
    if ( ok ) {
-      *ppNext = (vdseSession*)
-         ((char*)pNode - offsetof( vdseSession, node ));
+      *ppNext = (psnSession*)
+         ((char*)pNode - offsetof( psnSession, node ));
    }
    
    return ok;

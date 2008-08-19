@@ -25,12 +25,12 @@
 
 enum vdswRecoverError
 vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
-                        struct vdseFolder  * pFolder, 
-                        vdseSessionContext * pContext )
+                        struct psnFolder  * pFolder, 
+                        psnSessionContext * pContext )
 {
    ptrdiff_t offset, previousOffset;
-   vdseHashItem * pItem;
-   vdseObjectDescriptor* pDesc = NULL;
+   psnHashItem * pItem;
+   psnObjectDescriptor* pDesc = NULL;
    void * pObject;
    int pDesc_invalid_api_type = 0;
    char message[VDS_MAX_NAME_LENGTH*4 + 30];
@@ -40,10 +40,10 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
    /* The easy case */
    if ( pFolder->hashObj.numberOfItems == 0 ) return rc;
 
-   found = vdseHashGetFirst( &pFolder->hashObj, &offset );
+   found = psnHashGetFirst( &pFolder->hashObj, &offset );
    while ( found ) {
-      GET_PTR( pItem, offset, vdseHashItem );
-      GET_PTR( pDesc, pItem->dataOffset, vdseObjectDescriptor );
+      GET_PTR( pItem, offset, psnHashItem );
+      GET_PTR( pDesc, pItem->dataOffset, psnObjectDescriptor );
       GET_PTR( pObject, pDesc->offset, void );
       
       memset( message, 0, VDS_MAX_NAME_LENGTH*4+30 );
@@ -53,23 +53,23 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
       switch( pDesc->apiType ) {
          case VDS_FOLDER:
             valid = vdswVerifyFolder( pVerify,
-                                      (vdseFolder *)pObject, 
+                                      (psnFolder *)pObject, 
                                       pContext );
             break;
          case VDS_HASH_MAP:
             valid = vdswVerifyHashMap( pVerify,
-                                       (struct vdseHashMap *)pObject, 
+                                       (struct psnHashMap *)pObject, 
                                        pContext );
             break;
          case VDS_QUEUE:
          case VDS_LIFO:
             valid = vdswVerifyQueue( pVerify, 
-                                     (struct vdseQueue *)pObject,
+                                     (struct psnQueue *)pObject,
                                      pContext ); 
             break;
          case VDS_FAST_MAP:
             valid = vdswVerifyFastMap( pVerify,
-                                       (struct vdseMap *)pObject, 
+                                       (struct psnMap *)pObject, 
                                        pContext );
             break;
          default:
@@ -77,7 +77,7 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
       }
       
       previousOffset = offset;
-      found = vdseHashGetNext( &pFolder->hashObj,
+      found = psnHashGetNext( &pFolder->hashObj,
                                previousOffset,
                                &offset );
 
@@ -103,19 +103,19 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
          pVerify->spaces -= 2;
          switch( pDesc->apiType ) {
             case VDS_FOLDER:
-               vdseFolderFini( (vdseFolder *)pObject, pContext );
+               psnFolderFini( (psnFolder *)pObject, pContext );
                break;
             case VDS_HASH_MAP:
-               vdseHashMapFini( (struct vdseHashMap *)pObject, pContext );
+               psnHashMapFini( (struct psnHashMap *)pObject, pContext );
                break;
             case VDS_QUEUE:
             case VDS_LIFO:
-               vdseQueueFini( (struct vdseQueue *)pObject, pContext );
+               psnQueueFini( (struct psnQueue *)pObject, pContext );
                break;
             default:
                VDS_INV_CONDITION( pDesc_invalid_api_type );
          }
-         vdseHashDelWithItem( &pFolder->hashObj,
+         psnHashDelWithItem( &pFolder->hashObj,
                               pItem,
                               pContext );
       }
@@ -128,10 +128,10 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
 
 enum vdswRecoverError
 vdswVerifyFolder( vdswVerifyStruct   * pVerify,
-                  struct vdseFolder  * pFolder,
-                  vdseSessionContext * pContext )
+                  struct psnFolder  * pFolder,
+                  psnSessionContext * pContext )
 {
-   vdseTxStatus * txFolderStatus;
+   psnTxStatus * txFolderStatus;
    enum vdswRecoverError rc = VDSWR_OK, rc2;
    bool bTestObject = false;
    
@@ -155,9 +155,9 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
 
    vdswPopulateBitmap( pVerify, &pFolder->memObject, pContext );
 
-   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
 
-   if ( txFolderStatus->txOffset != VDSE_NULL_OFFSET ) {
+   if ( txFolderStatus->txOffset != PSN_NULL_OFFSET ) {
       /*
        * So we have an interrupted transaction. What kind? 
        *   FLAG                      ACTION          
@@ -167,12 +167,12 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txFolderStatus->status & VDSE_TXS_ADDED ) {
+      if ( txFolderStatus->status & PSN_TXS_ADDED ) {
          vdswEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
          return VDSWR_DELETED_OBJECT;
       }
-      if ( txFolderStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
+      if ( txFolderStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
          vdswEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
          return VDSWR_DELETED_OBJECT;
@@ -182,8 +182,8 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
       rc = VDSWR_CHANGES;
       if ( pVerify->doRepair) {
          vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
-         txFolderStatus->txOffset = VDSE_NULL_OFFSET;
-         txFolderStatus->status = VDSE_TXS_OK;
+         txFolderStatus->txOffset = PSN_NULL_OFFSET;
+         txFolderStatus->status = PSN_TXS_OK;
       }
    }
    

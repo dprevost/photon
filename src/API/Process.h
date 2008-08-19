@@ -33,9 +33,9 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Forward declarations */
-struct vdseMemoryHeader;
-struct vdseProcess;
-struct vdseObjectContext;
+struct psnMemoryHeader;
+struct psnProcess;
+struct psnObjectContext;
 struct vdsProxyObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -45,14 +45,14 @@ typedef struct vdsaProcess
    vdsaObjetType type;
 
    /** Pointer to the header of the VDS memory. */
-   struct vdseMemoryHeader* pHeader;
+   struct psnMemoryHeader* pHeader;
 
    /** 
     * Pointer to our own cleanup object in the VDS. This object is used by 
     * the CleanupManager to hold process-specific information that might
     * be needed in case of a crash (current state of transactions, etc.).
     */
-   struct vdseProcess* pCleanup;
+   struct psnProcess* pCleanup;
 
    /** The pid of the process is stored in this member. */
    vds_lock_T lockValue;
@@ -97,11 +97,11 @@ VDSF_API_EXPORT
 int vdsaOpenVDS( vdsaProcess        * process,
                  const char         * memoryFileName,
                  size_t               memorySizekb,
-                 vdseSessionContext * pSession );
+                 psnSessionContext * pSession );
                         
 VDSF_API_EXPORT
 void vdsaCloseVDS( vdsaProcess        * process,
-                   vdseSessionContext * pSession );
+                   psnSessionContext * pSession );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -24,32 +24,32 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseMemBitmap *pBitmap;
+   psnMemBitmap *pBitmap;
    unsigned char* ptr;
    size_t i;
-   vdseSessionContext context;
+   psnSessionContext context;
    
    initTest( expectedToPass, &context );
 
-   ptr = malloc( VDSE_BLOCK_SIZE*10 );
+   ptr = malloc( PSN_BLOCK_SIZE*10 );
    if (ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    g_pBaseAddr = ptr;
    
-   pBitmap = (vdseMemBitmap*) ptr;
+   pBitmap = (psnMemBitmap*) ptr;
    
-   vdseMemBitmapInit( pBitmap, 
+   psnMemBitmapInit( pBitmap, 
                       SET_OFFSET(ptr),
-                      10*VDSE_BLOCK_SIZE,
+                      10*PSN_BLOCK_SIZE,
                       8 );
 
    /* We do this to test that fini() zero things out */
-   vdseSetBufferAllocated( pBitmap,
-                           VDSE_BLOCK_SIZE, /* offset */
-                           VDSE_BLOCK_SIZE ); /* length */
+   psnSetBufferAllocated( pBitmap,
+                           PSN_BLOCK_SIZE, /* offset */
+                           PSN_BLOCK_SIZE ); /* length */
                              
-   vdseMemBitmapFini( pBitmap );
+   psnMemBitmapFini( pBitmap );
 
    if ( pBitmap->lengthInBits != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -57,7 +57,7 @@ int main()
    if ( pBitmap->allocGranularity != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pBitmap->baseAddressOffset != VDSE_NULL_OFFSET ) {
+   if ( pBitmap->baseAddressOffset != PSN_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    for ( i = 0; i < pBitmap->lengthInBits / 8; ++i ) {

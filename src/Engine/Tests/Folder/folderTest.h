@@ -44,20 +44,20 @@ pscErrMsgHandle g_vdsErrorHandle;
  * the Init() call.
  */
  
-vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
-                            vdseSessionContext* pContext )
+psnFolder* initFolderTest( bool                testIsExpectedToSucceed,
+                            psnSessionContext* pContext )
 {
    bool ok;
    unsigned char* ptr;
-   vdseMemAlloc*  pAlloc;
-   vdseTx* pTx;
-   vdseFolder* pFolder;
-   size_t allocatedLength = VDSE_BLOCK_SIZE * 25;
+   psnMemAlloc*  pAlloc;
+   psnTx* pTx;
+   psnFolder* pFolder;
+   size_t allocatedLength = PSN_BLOCK_SIZE * 25;
 
-   memset( pContext, 0, sizeof(vdseSessionContext) );
+   memset( pContext, 0, sizeof(psnSessionContext) );
    pContext->pidLocker = getpid();
    
-   ok = vdseInitEngine();
+   ok = psnInitEngine();
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -73,17 +73,17 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
       exit(0);
    }
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
-   vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
+   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
+   psnMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
-   pTx = (vdseTx*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_ANY, 1, pContext );
+   pTx = (psnTx*)psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 1, pContext );
    if ( pTx == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   ok = vdseTxInit( pTx, 1, pContext );
+   ok = psnTxInit( pTx, 1, pContext );
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -92,7 +92,7 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the folder object */
-   pFolder = (vdseFolder*)vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 1, pContext );
+   pFolder = (psnFolder*)psnMallocBlocks( pAlloc, PSN_ALLOC_API_OBJ, 1, pContext );
    if ( pFolder == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -104,17 +104,17 @@ vdseFolder* initFolderTest( bool                testIsExpectedToSucceed,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdseTxStatus objTxStatus;
+psnTxStatus objTxStatus;
 
-vdseFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
-                               vdseSessionContext* pContext )
+psnFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
+                               psnSessionContext* pContext )
 {
    vdsErrors errcode;
-   vdseFolder* pFolder;
+   psnFolder* pFolder;
    pFolder = initFolderTest( testIsExpectedToSucceed, pContext );
    
-   errcode = vdseMemObjectInit( &pFolder->memObject, 
-                                VDSE_IDENT_FOLDER,
+   errcode = psnMemObjectInit( &pFolder->memObject, 
+                                PSN_IDENT_FOLDER,
                                 &pFolder->blockGroup,
                                 1 );
    if ( errcode != VDS_OK ) {
@@ -123,16 +123,16 @@ vdseFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
       exit(0);
    }
 
-   vdseTxStatusInit( &objTxStatus, SET_OFFSET(pContext->pTransaction) );
-   objTxStatus.status = VDSE_TXS_ADDED;
+   psnTxStatusInit( &objTxStatus, SET_OFFSET(pContext->pTransaction) );
+   objTxStatus.status = PSN_TXS_ADDED;
 
    pFolder->nodeObject.txCounter      = 0;
    pFolder->nodeObject.myNameLength   = 0;
-   pFolder->nodeObject.myNameOffset   = VDSE_NULL_OFFSET;
+   pFolder->nodeObject.myNameOffset   = PSN_NULL_OFFSET;
    pFolder->nodeObject.txStatusOffset = SET_OFFSET(&objTxStatus);
-   pFolder->nodeObject.myParentOffset = VDSE_NULL_OFFSET;
+   pFolder->nodeObject.myParentOffset = PSN_NULL_OFFSET;
 
-   errcode = vdseHashInit( &pFolder->hashObj, 
+   errcode = psnHashInit( &pFolder->hashObj, 
                            SET_OFFSET(&pFolder->memObject),
                            25, 
                            pContext );

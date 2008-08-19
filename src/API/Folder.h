@@ -34,7 +34,7 @@ typedef struct vdsaFolder
    /**
     * This struct holds the result of the iteration 
     */
-   vdseFolderItem iterator;
+   psnFolderItem iterator;
    
 } vdsaFolder;
 

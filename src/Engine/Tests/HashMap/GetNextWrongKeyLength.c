@@ -23,16 +23,16 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseHashMap * pHashMap;
-   vdseSessionContext context;
+   psnHashMap * pHashMap;
+   psnSessionContext context;
    int errcode;
    bool ok;
-   vdseTxStatus status;
+   psnTxStatus status;
    char * key1  = "my key1";
    char * key2  = "my key2";
    char * data1 = "my data1";
    char * data2 = "my data2";
-   vdseHashMapItem item;
+   psnHashMapItem item;
    vdsObjectDefinition def = { 
       VDS_HASH_MAP, 
       1, 
@@ -42,16 +42,16 @@ int main()
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseHashMapInit( pHashMap, 
+   ok = psnHashMapInit( pHashMap, 
                          0, 1, 0, &status, 4, 
                          "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashMapInsert( pHashMap,
+   ok = psnHashMapInsert( pHashMap,
                            (const void *) key1,
                            7,
                            (const void *) data1,
@@ -60,7 +60,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseHashMapInsert( pHashMap,
+   ok = psnHashMapInsert( pHashMap,
                            (const void *) key2,
                            7,
                            (const void *) data2,
@@ -69,7 +69,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = vdseHashMapGetFirst( pHashMap,
+   ok = psnHashMapGetFirst( pHashMap,
                              &item,
                              7,
                              20,
@@ -78,7 +78,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashMapGetNext( pHashMap,
+   ok = psnHashMapGetNext( pHashMap,
                             &item,
                             6,
                             20,

@@ -20,7 +20,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Initialize a vdseMemObject struct. This will also initialize the lock
+ * Initialize a psnMemObject struct. This will also initialize the lock
  * itself (each basic memory object has a lock), the initial group of
  * blocks struct representing the memory allocated for the object and 
  * the linked list of all such groups of blocks that might be allocated 
@@ -28,7 +28,7 @@
  *
  * \param[in] pMemObj A pointer to the data struct we are initializing.
  * \param[in] objType The buffer used to store the message.
- * \param[in] pGroup  A pointer to the vdseBlockGroup struct.
+ * \param[in] pGroup  A pointer to the psnBlockGroup struct.
  * \param[in] numBlocks The initial number of Blocks allocated to this object.
  *
  * \retval VDS_OK  No error found
@@ -36,16 +36,16 @@
  *                                  resources for the Process Lock.
  *
  * \pre \em pMemObj cannot be NULL.
- * \pre \em objType must be valid (greater than VDSE_IDENT_FIRST and less than 
- *          VDSE_IDENT_LAST).
+ * \pre \em objType must be valid (greater than PSN_IDENT_FIRST and less than 
+ *          PSN_IDENT_LAST).
  * \pre \em pGroup cannot be NULL.
  * \pre \em numBlocks must be greater than zero.
  */
 
 enum vdsErrors 
-vdseMemObjectInit( vdseMemObject   * pMemObj,
-                   vdseMemObjIdent   objType,
-                   vdseBlockGroup  * pGroup,
+psnMemObjectInit( psnMemObject   * pMemObj,
+                   psnMemObjIdent   objType,
+                   psnBlockGroup  * pGroup,
                    size_t            numBlocks )
 {
    bool ok;
@@ -53,11 +53,11 @@ vdseMemObjectInit( vdseMemObject   * pMemObj,
    VDS_PRE_CONDITION( pMemObj != NULL );
    VDS_PRE_CONDITION( pGroup  != NULL );
    VDS_PRE_CONDITION( numBlocks > 0 );
-   VDS_PRE_CONDITION( objType > VDSE_IDENT_FIRST && 
-                      objType < VDSE_IDENT_LAST );
+   VDS_PRE_CONDITION( objType > PSN_IDENT_FIRST && 
+                      objType < PSN_IDENT_LAST );
 
    /* In case InitProcessLock fails */
-   pMemObj->objType = VDSE_IDENT_CLEAR;
+   pMemObj->objType = PSN_IDENT_CLEAR;
    
    ok =  pscInitProcessLock( &pMemObj->lock );
    VDS_POST_CONDITION( ok == true || ok == false );
@@ -68,16 +68,16 @@ vdseMemObjectInit( vdseMemObject   * pMemObj,
    if ( ! ok ) return VDS_NOT_ENOUGH_RESOURCES;
    
    pMemObj->objType = objType;
-   vdseLinkedListInit( &pMemObj->listBlockGroup );
+   psnLinkedListInit( &pMemObj->listBlockGroup );
    
-   vdseBlockGroupInit( pGroup,
+   psnBlockGroupInit( pGroup,
                        SET_OFFSET(pMemObj),
                        numBlocks,
                        objType );
    
    /* Add the blockGroup to the list of groups of the memObject */
-   vdseLinkNodeInit( &pGroup->node );
-   vdseLinkedListPutFirst( &pMemObj->listBlockGroup, 
+   psnLinkNodeInit( &pGroup->node );
+   psnLinkedListPutFirst( &pMemObj->listBlockGroup, 
                            &pGroup->node );
                            
    pMemObj->totalBlocks = numBlocks;
@@ -88,7 +88,7 @@ vdseMemObjectInit( vdseMemObject   * pMemObj,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Terminate access to (destroy) a vdseMemObject struct. It will release
+ * Terminate access to (destroy) a psnMemObject struct. It will release
  * groups of blocks of memory associated with this object.
  *
  *
@@ -97,58 +97,58 @@ vdseMemObjectInit( vdseMemObject   * pMemObj,
  *
  * \pre \em pMemObj cannot be NULL.
  * \pre \em pContext cannot be NULL.
- * \pre \em objType must be valid (greater than VDSE_IDENT_FIRST and less than 
- *          VDSE_IDENT_LAST).
+ * \pre \em objType must be valid (greater than PSN_IDENT_FIRST and less than 
+ *          PSN_IDENT_LAST).
  */
 
 enum vdsErrors 
-vdseMemObjectFini( vdseMemObject      * pMemObj,
-                   vdseAllocTypeEnum    allocType,
-                   vdseSessionContext * pContext )
+psnMemObjectFini( psnMemObject      * pMemObj,
+                   psnAllocTypeEnum    allocType,
+                   psnSessionContext * pContext )
 {
-   vdseLinkNode* firstNode, *dummy;
+   psnLinkNode* firstNode, *dummy;
    bool ok;
-   vdseBlockGroup* pGroup;
+   psnBlockGroup* pGroup;
 
    VDS_PRE_CONDITION( pMemObj  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pMemObj->objType > VDSE_IDENT_FIRST && 
-                      pMemObj->objType < VDSE_IDENT_LAST );
+   VDS_PRE_CONDITION( pMemObj->objType > PSN_IDENT_FIRST && 
+                      pMemObj->objType < PSN_IDENT_LAST );
 
    /*
     * We retrieve the first node - and leave it alone.
     */
-   ok = vdseLinkedListGetFirst( &pMemObj->listBlockGroup, &firstNode );
+   ok = psnLinkedListGetFirst( &pMemObj->listBlockGroup, &firstNode );
    VDS_PRE_CONDITION( ok );
 
-   while ( vdseLinkedListGetFirst(&pMemObj->listBlockGroup, &dummy) ) {
-      pGroup = (vdseBlockGroup*)( 
-         (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
+   while ( psnLinkedListGetFirst(&pMemObj->listBlockGroup, &dummy) ) {
+      pGroup = (psnBlockGroup*)( 
+         (unsigned char*)dummy - offsetof(psnBlockGroup,node));
 
-      vdseFreeBlocks( pContext->pAllocator, 
-                      VDSE_ALLOC_ANY,
+      psnFreeBlocks( pContext->pAllocator, 
+                      PSN_ALLOC_ANY,
                       (unsigned char*)pGroup, 
                       pGroup->numBlocks,
                       pContext );
    }
                       
-   pMemObj->objType = VDSE_IDENT_CLEAR;
+   pMemObj->objType = PSN_IDENT_CLEAR;
 
    pMemObj->totalBlocks = 0;
 
-   vdseLinkedListFini( &pMemObj->listBlockGroup );
+   psnLinkedListFini( &pMemObj->listBlockGroup );
 
    if ( ! pscFiniProcessLock( &pMemObj->lock ) ) {
       return VDS_SEM_DESTROY_ERROR;
    }
    
-   pGroup = (vdseBlockGroup*)(
-      (unsigned char*)firstNode - offsetof(vdseBlockGroup,node));
+   pGroup = (psnBlockGroup*)(
+      (unsigned char*)firstNode - offsetof(psnBlockGroup,node));
 
    /*
     * This must be the last access to the memory object.
     */
-   vdseFreeBlocks( pContext->pAllocator, 
+   psnFreeBlocks( pContext->pAllocator, 
                    allocType,
                    (unsigned char*)pMemObj, 
                    pGroup->numBlocks,
@@ -159,14 +159,14 @@ vdseMemObjectFini( vdseMemObject      * pMemObj,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
+unsigned char* psnMalloc( psnMemObject*      pMemObj,
                            size_t              numBytes,
-                           vdseSessionContext* pContext )
+                           psnSessionContext* pContext )
 {
    size_t numChunks, requestedChunks, remainingChunks;
-   vdseFreeBufferNode *oldNode, *currentNode, *newNode;
-   vdseBlockGroup* oldGroup, *currentGroup;
-   vdseLinkNode* dummy;
+   psnFreeBufferNode *oldNode, *currentNode, *newNode;
+   psnBlockGroup* oldGroup, *currentGroup;
+   psnLinkNode* dummy;
    unsigned char* ptr;
    size_t requestedBlocks, i;
    bool okGroup, okChunk;
@@ -175,46 +175,46 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( numBytes > 0 );
    
-   requestedChunks = (numBytes-1)/VDSE_ALLOCATION_UNIT + 1;
+   requestedChunks = (numBytes-1)/PSN_ALLOCATION_UNIT + 1;
    
    /*
     * The first loop is done on the list of block groups of the current 
     * memory object.
     */
-   okGroup = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
+   okGroup = psnLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
    while ( okGroup ) {
-      currentGroup = (vdseBlockGroup*)( 
-         (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
+      currentGroup = (psnBlockGroup*)( 
+         (unsigned char*)dummy - offsetof(psnBlockGroup,node));
 
       /*
        * No point in trying if the amount of free space is less than
        * the requested size for that group.
        */
-      if ( currentGroup->freeBytes > requestedChunks *VDSE_ALLOCATION_UNIT ) {
+      if ( currentGroup->freeBytes > requestedChunks *PSN_ALLOCATION_UNIT ) {
          /*
           * This second loop is done on the list of free chunks in the 
           * current block group.
           */
-         okChunk = vdseLinkedListPeakFirst( &currentGroup->freeList, &dummy );
+         okChunk = psnLinkedListPeakFirst( &currentGroup->freeList, &dummy );
          while ( okChunk ) {
-            currentNode = (vdseFreeBufferNode*)( 
-               (unsigned char*)dummy - offsetof(vdseFreeBufferNode,node));
-            numChunks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
+            currentNode = (psnFreeBufferNode*)( 
+               (unsigned char*)dummy - offsetof(psnFreeBufferNode,node));
+            numChunks = ((psnFreeBufferNode*)currentNode)->numBuffers;
             if ( numChunks >= requestedChunks ) {
                /* We got it */
                remainingChunks = numChunks - requestedChunks;
                if ( remainingChunks == 0 ) {
                   /* Remove the chunk from the list */
-                  vdseLinkedListRemoveItem( &currentGroup->freeList, 
+                  psnLinkedListRemoveItem( &currentGroup->freeList, 
                                             &currentNode->node );
                }
                else {
-                  newNode = (vdseFreeBufferNode*)
+                  newNode = (psnFreeBufferNode*)
                             ((unsigned char*) currentNode + 
-                            (requestedChunks*VDSE_ALLOCATION_UNIT));
+                            (requestedChunks*PSN_ALLOCATION_UNIT));
                   newNode->numBuffers = remainingChunks;
-                  vdseLinkNodeInit( &newNode->node );
-                  vdseLinkedListReplaceItem( &currentGroup->freeList, 
+                  psnLinkNodeInit( &newNode->node );
+                  psnLinkedListReplaceItem( &currentGroup->freeList, 
                                              &currentNode->node, 
                                              &newNode->node );
                   /*
@@ -225,29 +225,29 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
                    */
                   if ( remainingChunks > 1 ) {
                      ptr = (unsigned char*) newNode + 
-                        (remainingChunks-1) * VDSE_ALLOCATION_UNIT; 
+                        (remainingChunks-1) * PSN_ALLOCATION_UNIT; 
                      *((ptrdiff_t *)ptr) = SET_OFFSET(newNode);
                   }
                }
 
-               currentGroup->freeBytes -= requestedChunks*VDSE_ALLOCATION_UNIT;
+               currentGroup->freeBytes -= requestedChunks*PSN_ALLOCATION_UNIT;
                /* Set the bitmap of chunks of the current block group. */
-               vdseSetBufferAllocated( &currentGroup->bitmap, 
+               psnSetBufferAllocated( &currentGroup->bitmap, 
                                        SET_OFFSET(currentNode), 
-                                       requestedChunks*VDSE_ALLOCATION_UNIT );
+                                       requestedChunks*PSN_ALLOCATION_UNIT );
                               
                return (unsigned char*) currentNode;
             } /* end if of numChunks >= requestedChunks */
    
             oldNode = currentNode;
-            okChunk = vdseLinkedListPeakNext( &currentGroup->freeList,
+            okChunk = psnLinkedListPeakNext( &currentGroup->freeList,
                                               &oldNode->node,
                                               &dummy );
          } /* end of second loop on chunks */
       } /* end of test on freeBytes */
       
       oldGroup = currentGroup;
-      okGroup = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
+      okGroup = psnLinkedListPeakNext( &pMemObj->listBlockGroup,
                                         &oldGroup->node,
                                         &dummy );
    } /* end of first loop on block groups */
@@ -261,14 +261,14 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
     *  - alloc the buffer the caller requested from that new chunk of memory.
     */
     
-   i = ( sizeof(vdseBlockGroup) - 1 ) / VDSE_ALLOCATION_UNIT + 1;
-   requestedBlocks = (((requestedChunks+i)*VDSE_ALLOCATION_UNIT - 1) >> VDSE_BLOCK_SHIFT) + 1;
+   i = ( sizeof(psnBlockGroup) - 1 ) / PSN_ALLOCATION_UNIT + 1;
+   requestedBlocks = (((requestedChunks+i)*PSN_ALLOCATION_UNIT - 1) >> PSN_BLOCK_SHIFT) + 1;
    /* We increment the size by 3%, if 3% is bigger than the request */
    i = 3 * pMemObj->totalBlocks / 100;
    if ( i < requestedBlocks ) i = requestedBlocks;
    
-   currentGroup = (vdseBlockGroup*) vdseMallocBlocks( pContext->pAllocator,
-                                                      VDSE_ALLOC_ANY,
+   currentGroup = (psnBlockGroup*) psnMallocBlocks( pContext->pAllocator,
+                                                      PSN_ALLOC_ANY,
                                                       i,
                                                       pContext );
    if ( currentGroup == NULL && i > requestedBlocks ) {
@@ -280,42 +280,42 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
          VDS_NOT_ENOUGH_VDS_MEMORY ) {
 
          i = requestedBlocks;
-         currentGroup = (vdseBlockGroup*) vdseMallocBlocks( pContext->pAllocator,
-                                                            VDSE_ALLOC_ANY,
+         currentGroup = (psnBlockGroup*) psnMallocBlocks( pContext->pAllocator,
+                                                            PSN_ALLOC_ANY,
                                                             i,
                                                             pContext );
       }
    }
    if ( currentGroup != NULL ) {
-      vdseBlockGroupInit( currentGroup, 
+      psnBlockGroupInit( currentGroup, 
                           SET_OFFSET( currentGroup ), 
                           i, 
                           pMemObj->objType );
       /* Add the blockGroup to the list of groups of the memObject */
-      vdseLinkNodeInit( &currentGroup->node );
-      vdseLinkedListPutLast( &pMemObj->listBlockGroup, &currentGroup->node );
+      psnLinkNodeInit( &currentGroup->node );
+      psnLinkedListPutLast( &pMemObj->listBlockGroup, &currentGroup->node );
       pMemObj->totalBlocks += i;
       
       /* Allocate the memory (the chunks) needed to satisfy the request. */
-      okChunk = vdseLinkedListPeakFirst( &currentGroup->freeList, &dummy );
+      okChunk = psnLinkedListPeakFirst( &currentGroup->freeList, &dummy );
       if ( okChunk ) {
-         currentNode = (vdseFreeBufferNode*)( 
-            (unsigned char*)dummy + offsetof(vdseFreeBufferNode,node));
-         numChunks = ((vdseFreeBufferNode*)currentNode)->numBuffers;
+         currentNode = (psnFreeBufferNode*)( 
+            (unsigned char*)dummy + offsetof(psnFreeBufferNode,node));
+         numChunks = ((psnFreeBufferNode*)currentNode)->numBuffers;
          remainingChunks = numChunks - requestedChunks;
          
          if ( remainingChunks == 0 ) {
             /* Remove the node from the list */
-            vdseLinkedListRemoveItem( &currentGroup->freeList, 
+            psnLinkedListRemoveItem( &currentGroup->freeList, 
                                       &currentNode->node );
          }
          else {
-            newNode = (vdseFreeBufferNode*)
+            newNode = (psnFreeBufferNode*)
                       ((unsigned char*) currentNode + 
-                      (requestedChunks*VDSE_ALLOCATION_UNIT));
+                      (requestedChunks*PSN_ALLOCATION_UNIT));
             newNode->numBuffers = remainingChunks;
-            vdseLinkNodeInit( &newNode->node );
-            vdseLinkedListReplaceItem( &currentGroup->freeList, 
+            psnLinkNodeInit( &newNode->node );
+            psnLinkedListReplaceItem( &currentGroup->freeList, 
                                        &currentNode->node, 
                                        &newNode->node );
             /*
@@ -326,16 +326,16 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
              */
             if ( remainingChunks > 1 ) {
                ptr = (unsigned char*) newNode + 
-                  (remainingChunks-1) * VDSE_ALLOCATION_UNIT; 
+                  (remainingChunks-1) * PSN_ALLOCATION_UNIT; 
                *((ptrdiff_t *)ptr) = SET_OFFSET(newNode);
             }
          }
 
-         currentGroup->freeBytes -= requestedChunks*VDSE_ALLOCATION_UNIT;
+         currentGroup->freeBytes -= requestedChunks*PSN_ALLOCATION_UNIT;
          /* Set the bitmap */
-         vdseSetBufferAllocated( &currentGroup->bitmap, 
+         psnSetBufferAllocated( &currentGroup->bitmap, 
                                  SET_OFFSET(currentNode), 
-                                 requestedChunks*VDSE_ALLOCATION_UNIT );
+                                 requestedChunks*PSN_ALLOCATION_UNIT );
                               
          return (unsigned char*) currentNode;
       }
@@ -355,16 +355,16 @@ unsigned char* vdseMalloc( vdseMemObject*      pMemObj,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseFree( vdseMemObject*      pMemObj,
+void psnFree( psnMemObject*      pMemObj,
                unsigned char*      ptr, 
                size_t              numBytes,
-               vdseSessionContext* pContext )
+               psnSessionContext* pContext )
 {
-   vdseBlockGroup* oldGroup, *currentGroup, *goodGroup = NULL;
-   vdseLinkNode* dummy;
+   psnBlockGroup* oldGroup, *currentGroup, *goodGroup = NULL;
+   psnLinkNode* dummy;
    bool otherBufferisFree = false;
    unsigned char* p;
-   vdseFreeBufferNode* otherNode;
+   psnFreeBufferNode* otherNode;
    ptrdiff_t offset;
    size_t numBlocks;
    bool ok;
@@ -375,26 +375,26 @@ void vdseFree( vdseMemObject*      pMemObj,
    VDS_PRE_CONDITION( numBytes > 0 );
 
    /*
-    * Ajust numBytes so that it is a multiple of VDSE_ALLOCATION_UNIT,
+    * Ajust numBytes so that it is a multiple of PSN_ALLOCATION_UNIT,
     * without truncating it, of course...
     */
-   numBytes = ((numBytes-1)/VDSE_ALLOCATION_UNIT+1)*VDSE_ALLOCATION_UNIT;
+   numBytes = ((numBytes-1)/PSN_ALLOCATION_UNIT+1)*PSN_ALLOCATION_UNIT;
    
    /* Find to which blockgroup ptr belongs to */
-   ok = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
+   ok = psnLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
    while ( ok ) {
-      currentGroup = (vdseBlockGroup*)( 
-         (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
+      currentGroup = (psnBlockGroup*)( 
+         (unsigned char*)dummy - offsetof(psnBlockGroup,node));
 
       offset = currentGroup->bitmap.baseAddressOffset;
       if ( ptr >= GET_PTR_FAST( offset, unsigned char) && 
-           ptr < GET_PTR_FAST( offset+ (currentGroup->numBlocks << VDSE_BLOCK_SHIFT), 
+           ptr < GET_PTR_FAST( offset+ (currentGroup->numBlocks << PSN_BLOCK_SHIFT), 
                           unsigned char ) ) {
          goodGroup = currentGroup;
          break;
       }
       oldGroup = currentGroup;
-      ok = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
+      ok = psnLinkedListPeakNext( &pMemObj->listBlockGroup,
                                    &oldGroup->node,
                                    &dummy );
    }
@@ -406,12 +406,12 @@ void vdseFree( vdseMemObject*      pMemObj,
     * Check if the chunk before the current chunk (ptr)
     * is in the freeList or not.
     */
-   p = ptr - VDSE_ALLOCATION_UNIT;
-   otherBufferisFree = vdseIsBufferFree( &goodGroup->bitmap, SET_OFFSET(p) );
+   p = ptr - PSN_ALLOCATION_UNIT;
+   otherBufferisFree = psnIsBufferFree( &goodGroup->bitmap, SET_OFFSET(p) );
    if ( otherBufferisFree ) {
       /* Find the start of that free group of chunks */
-      if ( vdseIsBufferFree( &goodGroup->bitmap, 
-         SET_OFFSET( ptr - 2*VDSE_ALLOCATION_UNIT ) ) ) {
+      if ( psnIsBufferFree( &goodGroup->bitmap, 
+         SET_OFFSET( ptr - 2*PSN_ALLOCATION_UNIT ) ) ) {
          /* The free group has more than one chunk */
          offset = *((ptrdiff_t*)p);
          GET_PTR( p, offset, unsigned char);
@@ -421,7 +421,7 @@ void vdseFree( vdseMemObject*      pMemObj,
        * The node is already in the linked list! All we need to do is
        * to modify the number of chunks that this node has.
        */
-      ((vdseFreeBufferNode*)p)->numBuffers += (numBytes/VDSE_ALLOCATION_UNIT);
+      ((psnFreeBufferNode*)p)->numBuffers += (numBytes/PSN_ALLOCATION_UNIT);
    }
    else {
       /*
@@ -429,10 +429,10 @@ void vdseFree( vdseMemObject*      pMemObj,
        * buffer as a new node in the list.
        */
       p = ptr; /* This is needed further down */
-      ((vdseFreeBufferNode*)p)->numBuffers = numBytes/VDSE_ALLOCATION_UNIT;
-      vdseLinkNodeInit( &((vdseFreeBufferNode*)p)->node );
-      vdseLinkedListPutLast( &goodGroup->freeList, 
-                             &((vdseFreeBufferNode*)p)->node );
+      ((psnFreeBufferNode*)p)->numBuffers = numBytes/PSN_ALLOCATION_UNIT;
+      psnLinkNodeInit( &((psnFreeBufferNode*)p)->node );
+      psnLinkedListPutLast( &goodGroup->freeList, 
+                             &((psnFreeBufferNode*)p)->node );
    }
 
    /* 
@@ -442,45 +442,45 @@ void vdseFree( vdseMemObject*      pMemObj,
     * Note: "p" at this point represents the node which contain our buffer
     *       and, possibly, the previous buffer if it was free.
     */
-   otherNode = (vdseFreeBufferNode*)( ptr + numBytes);
-   otherBufferisFree = vdseIsBufferFree( &goodGroup->bitmap, 
+   otherNode = (psnFreeBufferNode*)( ptr + numBytes);
+   otherBufferisFree = psnIsBufferFree( &goodGroup->bitmap, 
                                          SET_OFFSET(otherNode) );
    if ( otherBufferisFree ) {
-      ((vdseFreeBufferNode*)p)->numBuffers += otherNode->numBuffers;
-      vdseLinkedListRemoveItem( &goodGroup->freeList, 
+      ((psnFreeBufferNode*)p)->numBuffers += otherNode->numBuffers;
+      psnLinkedListRemoveItem( &goodGroup->freeList, 
                                 &otherNode->node );
-      memset( otherNode, 0, sizeof(vdseFreeBufferNode) );
+      memset( otherNode, 0, sizeof(psnFreeBufferNode) );
    }
 
-   if ( ((vdseFreeBufferNode*)p)->numBuffers*VDSE_ALLOCATION_UNIT == 
+   if ( ((psnFreeBufferNode*)p)->numBuffers*PSN_ALLOCATION_UNIT == 
       goodGroup->maxFreeBytes && goodGroup->isDeletable ) {
 
       numBlocks = goodGroup->numBlocks;
       pMemObj->totalBlocks -= numBlocks;
       /* Remove the blockGroup to the list of groups of the memObject */
-      vdseLinkedListRemoveItem( &pMemObj->listBlockGroup, &goodGroup->node );
+      psnLinkedListRemoveItem( &pMemObj->listBlockGroup, &goodGroup->node );
 
-      vdseBlockGroupFini( goodGroup );
+      psnBlockGroupFini( goodGroup );
       
-      vdseFreeBlocks( pContext->pAllocator,
-                      VDSE_ALLOC_ANY,
+      psnFreeBlocks( pContext->pAllocator,
+                      PSN_ALLOC_ANY,
                       (unsigned char*)goodGroup,
                       numBlocks,
                       pContext );
    }
    else {
       /* Set the bitmap */
-      vdseSetBufferFree( &goodGroup->bitmap, SET_OFFSET(ptr), numBytes );
+      psnSetBufferFree( &goodGroup->bitmap, SET_OFFSET(ptr), numBytes );
    
       /*
        * Put the offset of the first free block on the last free block.
        * This makes it simpler/faster to rejoin groups of free blocks. But 
        * only if the number of blocks in the group > 1.
        */
-      if ( ((vdseFreeBufferNode*)p)->numBuffers > 1 ) {
+      if ( ((psnFreeBufferNode*)p)->numBuffers > 1 ) {
          /* Warning - we reuse ptr here */
           ptr = p + 
-             (((vdseFreeBufferNode*)p)->numBuffers-1) * VDSE_ALLOCATION_UNIT; 
+             (((psnFreeBufferNode*)p)->numBuffers-1) * PSN_ALLOCATION_UNIT; 
           *((ptrdiff_t *)ptr) = SET_OFFSET(p);
       }
    }
@@ -488,11 +488,11 @@ void vdseFree( vdseMemObject*      pMemObj,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseMemObjectStatus( vdseMemObject * pMemObj, 
+void psnMemObjectStatus( psnMemObject * pMemObj, 
                           vdsObjStatus  * pStatus )
 {
-   vdseLinkNode * dummy;
-   vdseBlockGroup * pGroup;
+   psnLinkNode * dummy;
+   psnBlockGroup * pGroup;
    bool ok;
    
    VDS_PRE_CONDITION( pMemObj != NULL );
@@ -505,15 +505,15 @@ void vdseMemObjectStatus( vdseMemObject * pMemObj,
    /*
     * We retrieve the first node
     */
-   ok = vdseLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
+   ok = psnLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
    VDS_PRE_CONDITION( ok );
 
    while ( ok ) {
-      pGroup = (vdseBlockGroup*)( 
-         (unsigned char*)dummy - offsetof(vdseBlockGroup,node));
+      pGroup = (psnBlockGroup*)( 
+         (unsigned char*)dummy - offsetof(psnBlockGroup,node));
       pStatus->freeBytes += pGroup->freeBytes;
 
-      ok = vdseLinkedListPeakNext( &pMemObj->listBlockGroup,
+      ok = psnLinkedListPeakNext( &pMemObj->listBlockGroup,
                                    dummy,
                                    &dummy );
    }

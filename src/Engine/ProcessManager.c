@@ -22,16 +22,16 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseProcMgrInit( vdseProcMgr        * pManager,
-                      vdseSessionContext * pContext )
+bool psnProcMgrInit( psnProcMgr        * pManager,
+                      psnSessionContext * pContext )
 {
    vdsErrors errcode;
 
    VDS_PRE_CONDITION( pManager != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
 
-   errcode = vdseMemObjectInit( &pManager->memObject, 
-                                VDSE_IDENT_PROCESS_MGR,
+   errcode = psnMemObjectInit( &pManager->memObject, 
+                                PSN_IDENT_PROCESS_MGR,
                                 &pManager->blockGroup,
                                 1 ); /* A single block */
    if ( errcode != VDS_OK ) {
@@ -41,19 +41,19 @@ bool vdseProcMgrInit( vdseProcMgr        * pManager,
       return false;
    }
 
-   vdseLinkedListInit( &pManager->listOfProcesses );
+   psnLinkedListInit( &pManager->listOfProcesses );
       
    return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseProcMgrAddProcess( vdseProcMgr        * pManager,
+bool psnProcMgrAddProcess( psnProcMgr        * pManager,
                             pid_t                pid, 
-                            vdseProcess       ** ppProcess,
-                            vdseSessionContext * pContext )
+                            psnProcess       ** ppProcess,
+                            psnSessionContext * pContext )
 {
-   vdseProcess* pCurrentBuffer;
+   psnProcess* pCurrentBuffer;
    bool ok = false;
    
    VDS_PRE_CONDITION( pManager  != NULL );
@@ -62,21 +62,21 @@ bool vdseProcMgrAddProcess( vdseProcMgr        * pManager,
    VDS_PRE_CONDITION( pid > 0 );
 
    /* For recovery purposes, always lock before doing anything! */
-   if ( vdseLock( &pManager->memObject, pContext ) ) {
-      pCurrentBuffer = (vdseProcess*)
-         vdseMallocBlocks( pContext->pAllocator, VDSE_ALLOC_ANY, 1, pContext );
+   if ( psnLock( &pManager->memObject, pContext ) ) {
+      pCurrentBuffer = (psnProcess*)
+         psnMallocBlocks( pContext->pAllocator, PSN_ALLOC_ANY, 1, pContext );
       if ( pCurrentBuffer != NULL ) {
-         ok = vdseProcessInit( pCurrentBuffer, pid, pContext );
+         ok = psnProcessInit( pCurrentBuffer, pid, pContext );
          VDS_POST_CONDITION( ok == true || ok == false );
          if ( ok ) {
-            vdseLinkNodeInit( &pCurrentBuffer->node );
-            vdseLinkedListPutLast( &pManager->listOfProcesses, 
+            psnLinkNodeInit( &pCurrentBuffer->node );
+            psnLinkedListPutLast( &pManager->listOfProcesses, 
                                    &pCurrentBuffer->node );
             *ppProcess = pCurrentBuffer;
          }
          else {
-            vdseFreeBlocks( pContext->pAllocator, 
-                            VDSE_ALLOC_ANY,
+            psnFreeBlocks( pContext->pAllocator, 
+                            PSN_ALLOC_ANY,
                             (unsigned char *)pCurrentBuffer, 
                             1, pContext );
          }
@@ -86,7 +86,7 @@ bool vdseProcMgrAddProcess( vdseProcMgr        * pManager,
                        g_vdsErrorHandle, 
                        VDS_NOT_ENOUGH_VDS_MEMORY );
       }
-      vdseUnlock( &pManager->memObject, pContext );
+      psnUnlock( &pManager->memObject, pContext );
    }
    else {
       pscSetError( &pContext->errorHandler, 
@@ -99,13 +99,13 @@ bool vdseProcMgrAddProcess( vdseProcMgr        * pManager,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseProcMgrFindProcess( vdseProcMgr        * pManager,
+bool psnProcMgrFindProcess( psnProcMgr        * pManager,
                              pid_t                pid,
-                             vdseProcess       ** ppProcess,
-                             vdseSessionContext * pContext )
+                             psnProcess       ** ppProcess,
+                             psnSessionContext * pContext )
 {
-   vdseProcess *pCurrent, *pNext;
-   vdseLinkNode * pNodeCurrent = NULL, * pNodeNext = NULL;
+   psnProcess *pCurrent, *pNext;
+   psnLinkNode * pNodeCurrent = NULL, * pNodeNext = NULL;
    vdsErrors errcode = VDS_OK;
    bool ok;
    
@@ -117,20 +117,20 @@ bool vdseProcMgrFindProcess( vdseProcMgr        * pManager,
    *ppProcess = NULL;
    
    /* For recovery purposes, always lock before doing anything! */
-   if ( vdseLock( &pManager->memObject, pContext ) ) {
-      ok = vdseLinkedListPeakFirst( &pManager->listOfProcesses, 
+   if ( psnLock( &pManager->memObject, pContext ) ) {
+      ok = psnLinkedListPeakFirst( &pManager->listOfProcesses, 
                                     &pNodeCurrent );
       if ( ok ) {
-         pCurrent = (vdseProcess*)
-            ((char*)pNodeCurrent - offsetof( vdseProcess, node ));
+         pCurrent = (psnProcess*)
+            ((char*)pNodeCurrent - offsetof( psnProcess, node ));
          if ( pCurrent->pid == pid ) *ppProcess = pCurrent;
       
          while ( (*ppProcess == NULL) &&
-                 vdseLinkedListPeakNext( &pManager->listOfProcesses, 
+                 psnLinkedListPeakNext( &pManager->listOfProcesses, 
                                          pNodeCurrent, 
                                          &pNodeNext ) ) {
-            pNext = (vdseProcess*)
-               ((char*)pNodeNext - offsetof( vdseProcess, node ));
+            pNext = (psnProcess*)
+               ((char*)pNodeNext - offsetof( psnProcess, node ));
             if ( pNext->pid == pid ) *ppProcess = pNext;
             pNodeCurrent = pNodeNext;
          }
@@ -139,7 +139,7 @@ bool vdseProcMgrFindProcess( vdseProcMgr        * pManager,
          errcode = VDS_INTERNAL_ERROR;
       }
       
-      vdseUnlock( &pManager->memObject, pContext );
+      psnUnlock( &pManager->memObject, pContext );
    }
    else {
       errcode = VDS_ENGINE_BUSY;
@@ -160,22 +160,22 @@ bool vdseProcMgrFindProcess( vdseProcMgr        * pManager,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseProcMgrRemoveProcess( vdseProcMgr        * pManager,
-                               vdseProcess        * pProcess,
-                               vdseSessionContext * pContext )
+bool psnProcMgrRemoveProcess( psnProcMgr        * pManager,
+                               psnProcess        * pProcess,
+                               psnSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pManager != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
    VDS_PRE_CONDITION( pProcess != NULL );
    
    /* For recovery purposes, always lock before doing anything! */
-   if ( vdseLock( &pManager->memObject, pContext ) ) {
-      vdseLinkedListRemoveItem( &pManager->listOfProcesses, 
+   if ( psnLock( &pManager->memObject, pContext ) ) {
+      psnLinkedListRemoveItem( &pManager->listOfProcesses, 
                                 &pProcess->node );
    
-      vdseProcessFini( pProcess, pContext );
+      psnProcessFini( pProcess, pContext );
                       
-      vdseUnlock( &pManager->memObject, pContext );
+      psnUnlock( &pManager->memObject, pContext );
    }
    else {
       pscSetError( &pContext->errorHandler, 

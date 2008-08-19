@@ -24,12 +24,12 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseTx* pTx;
-   vdseSessionContext context;
+   psnTx* pTx;
+   psnSessionContext context;
    
    pTx = initTxTest( expectedToPass, &context );
 
-   vdseTxInit( NULL, 1, &context );
+   psnTxInit( NULL, 1, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

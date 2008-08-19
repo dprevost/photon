@@ -25,24 +25,24 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseMemObject* pObj;
+   psnMemObject* pObj;
    vdsErrors errcode;
-   vdseSessionContext context;
+   psnSessionContext context;
    unsigned char *buff[9];
    vdstObjDummy  *pDummy;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    pObj = &pDummy->memObject;
    
-   errcode = vdseMemObjectInit( pObj, 
-                                VDSE_IDENT_ALLOCATOR,
+   errcode = psnMemObjectInit( pObj, 
+                                PSN_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   buff[0] = vdseMalloc( pObj, 0, &context );
+   buff[0] = psnMalloc( pObj, 0, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

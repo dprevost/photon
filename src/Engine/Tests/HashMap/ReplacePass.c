@@ -23,14 +23,14 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseHashMap * pHashMap;
-   vdseSessionContext context;
+   psnHashMap * pHashMap;
+   psnSessionContext context;
    bool ok;
-   vdseTxStatus status;
+   psnTxStatus status;
    char * key  = "my key";
    char * data1 = "my data1";
    char * data2 = "my data2";
-   vdseHashItem * pItem;
+   psnHashItem * pItem;
    char * ptr;
    vdsObjectDefinition def = { 
       VDS_HASH_MAP, 
@@ -41,16 +41,16 @@ int main()
 
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseHashMapInit( pHashMap, 
+   ok = psnHashMapInit( pHashMap, 
                          0, 1, 0, &status, 4, 
                          "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashMapInsert( pHashMap,
+   ok = psnHashMapInsert( pHashMap,
                            (const void *) key,
                            6,
                            (const void *) data1,
@@ -64,7 +64,7 @@ int main()
     * We use get to get to the hash item in order to commit it 
     * (we need to commit the insertion before replacing it)
     */
-   ok = vdseHashMapGet( pHashMap,
+   ok = psnHashMapGet( pHashMap,
                         (const void *) key,
                         6,
                         &pItem,
@@ -75,16 +75,16 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
+   psnHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
 
-   ok = vdseHashMapRelease( pHashMap,
+   ok = psnHashMapRelease( pHashMap,
                             pItem,
                             &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashMapReplace( pHashMap,
+   ok = psnHashMapReplace( pHashMap,
                             (const void *) key,
                             6,
                             (const void *) data2,
@@ -94,7 +94,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashMapGet( pHashMap,
+   ok = psnHashMapGet( pHashMap,
                         (const void *) key,
                         6,
                         &pItem,

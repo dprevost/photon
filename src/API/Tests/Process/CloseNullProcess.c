@@ -27,7 +27,7 @@ int main( int argc, char * argv[] )
 #if defined(USE_DBC)
    vdsaProcess process;
    int errcode;
-   vdseSessionContext context;
+   psnSessionContext context;
       
    memset( &process, 0, sizeof(vdsaProcess) );
 

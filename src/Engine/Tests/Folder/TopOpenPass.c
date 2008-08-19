@@ -23,11 +23,11 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseFolder * pTopFolder;
-   vdseSessionContext context;
+   psnFolder * pTopFolder;
+   psnSessionContext context;
    int errcode;
    bool ok;
-   vdseFolderItem folderItem;
+   psnFolderItem folderItem;
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
@@ -37,7 +37,7 @@ int main()
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = vdseTopFolderCreateObject( pTopFolder,
+   ok = psnTopFolderCreateObject( pTopFolder,
                                    "Test1",
                                    strlen("Test1"),
                                    &def,
@@ -46,7 +46,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseTopFolderCreateObject( pTopFolder,
+   ok = psnTopFolderCreateObject( pTopFolder,
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &def,
@@ -55,7 +55,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseTopFolderOpenObject( pTopFolder,
+   ok = psnTopFolderOpenObject( pTopFolder,
                                  "Test1/Test2",
                                  strlen("Test1/Test2"),
                                  VDS_FOLDER,
@@ -65,7 +65,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseTopFolderOpenObject( pTopFolder,
+   ok = psnTopFolderOpenObject( pTopFolder,
                                  "Test3/Test2",
                                  strlen("Test3/Test2"),
                                  VDS_FOLDER,
@@ -79,7 +79,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseTopFolderOpenObject( pTopFolder,
+   ok = psnTopFolderOpenObject( pTopFolder,
                                  "Test1/Test5",
                                  strlen("Test1/Test5"),
                                  VDS_FOLDER,

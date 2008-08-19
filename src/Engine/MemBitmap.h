@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_MEM_BITMAP_H
-#define VDSE_MEM_BITMAP_H
+#ifndef PSN_MEM_BITMAP_H
+#define PSN_MEM_BITMAP_H
 
 #include "Engine.h"
 
@@ -26,7 +26,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdseMemBitmap
+struct psnMemBitmap
 {
    size_t lengthInBits;
    
@@ -39,38 +39,38 @@ struct vdseMemBitmap
    
 };
 
-typedef struct vdseMemBitmap vdseMemBitmap;
+typedef struct psnMemBitmap psnMemBitmap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Initialize the vdseMemBitmap struct. 
+ * Initialize the psnMemBitmap struct. 
  */
 VDSF_ENGINE_EXPORT
-void vdseMemBitmapInit( vdseMemBitmap * pBitmap,
+void psnMemBitmapInit( psnMemBitmap * pBitmap,
                         ptrdiff_t       offset,
                         size_t          totalLength,
                         size_t          allocationUnit );
 
 VDSF_ENGINE_EXPORT
-void vdseMemBitmapFini( vdseMemBitmap * pBitmap );
+void psnMemBitmapFini( psnMemBitmap * pBitmap );
 
 static inline
-bool vdseIsBufferFree( vdseMemBitmap * pBitmap,
+bool psnIsBufferFree( psnMemBitmap * pBitmap,
                        ptrdiff_t       offset );
 
 static inline
-void vdseSetBufferAllocated( vdseMemBitmap * pBitmap,
+void psnSetBufferAllocated( psnMemBitmap * pBitmap,
                              ptrdiff_t       offset,
                              size_t          length );
 
 static inline
-void vdseSetBufferFree( vdseMemBitmap * pBitmap,
+void psnSetBufferFree( psnMemBitmap * pBitmap,
                         ptrdiff_t       offset,
                         size_t          length );
 
 static inline
-size_t vdseGetBitmapLengthBytes( size_t length, size_t allocationUnit );
+size_t psnGetBitmapLengthBytes( size_t length, size_t allocationUnit );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -82,7 +82,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_MEM_BITMAP_H */
+#endif /* PSN_MEM_BITMAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

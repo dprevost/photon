@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_DATATYPE_H
-#define VDSE_DATATYPE_H
+#ifndef PSN_DATATYPE_H
+#define PSN_DATATYPE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -34,7 +34,7 @@ BEGIN_C_DECLS
  * length is not a multiple of sizeof(void*), you might have an alignment
  * problem on some hardware.
  */
-struct vdseFieldDef
+struct psnFieldDef
 {
    enum vdsFieldType type;
 
@@ -44,10 +44,10 @@ struct vdseFieldDef
    uint32_t length2;
 };
 
-typedef struct vdseFieldDef vdseFieldDef;
+typedef struct psnFieldDef psnFieldDef;
 
-#define VDSE_GET_SCALE(ptr,i) (ptr[i].length2)
-#define VDSE_GET_PRECISION(ptr,i) (ptr[i].length1)
+#define PSN_GET_SCALE(ptr,i) (ptr[i].length2)
+#define PSN_GET_PRECISION(ptr,i) (ptr[i].length1)
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -55,7 +55,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_DATATYPE_H */
+#endif /* PSN_DATATYPE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

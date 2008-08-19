@@ -30,9 +30,9 @@ pscErrMsgHandle g_vdsErrorHandle;
 
 struct vdstObjDummy
 {
-   struct vdseMemObject memObject;
+   struct psnMemObject memObject;
    /* Variable size struct - always put at the end */
-   struct vdseBlockGroup blockGroup;
+   struct psnBlockGroup blockGroup;
 };
 
 typedef struct vdstObjDummy vdstObjDummy;
@@ -45,17 +45,17 @@ typedef struct vdstObjDummy vdstObjDummy;
  */
  
 vdstObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
-                              vdseSessionContext* pContext )
+                              psnSessionContext* pContext )
 {
    bool ok;
    unsigned char* ptr;
-   vdseMemAlloc*  pAlloc;
+   psnMemAlloc*  pAlloc;
    vdstObjDummy* pDummy;
-   size_t allocatedLength = VDSE_BLOCK_SIZE * 10;
+   size_t allocatedLength = PSN_BLOCK_SIZE * 10;
    
-   memset( pContext, 0, sizeof(vdseSessionContext) );
+   memset( pContext, 0, sizeof(psnSessionContext) );
    pContext->pidLocker = getpid();
-   ok = vdseInitEngine();
+   ok = psnInitEngine();
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in MemObjTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -71,11 +71,11 @@ vdstObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
       exit(0);
    }
    g_pBaseAddr = ptr;
-   pAlloc = (vdseMemAlloc*)(g_pBaseAddr + VDSE_BLOCK_SIZE);
-   vdseMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
+   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
+   psnMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for our dummy object + initialize it + blockGroup */
-   pDummy = (vdstObjDummy*) vdseMallocBlocks( pAlloc, VDSE_ALLOC_API_OBJ, 4, pContext );
+   pDummy = (vdstObjDummy*) psnMallocBlocks( pAlloc, PSN_ALLOC_API_OBJ, 4, pContext );
    if ( pDummy == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in MemObjTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);

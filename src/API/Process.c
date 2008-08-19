@@ -56,16 +56,16 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
    struct WDOutput answer;
    char path[PATH_MAX];
    int errcode = VDS_OK;
-   vdseSessionContext context;
-   vdseProcMgr* pCleanupManager;
+   psnSessionContext context;
+   psnProcMgr* pCleanupManager;
    bool ok;
    
    VDS_PRE_CONDITION( process   != NULL );
    VDS_PRE_CONDITION( wdAddress != NULL );
    
-   if ( ! vdseInitEngine() ) return VDS_INTERNAL_ERROR;
+   if ( ! psnInitEngine() ) return VDS_INTERNAL_ERROR;
    
-   memset( &context, 0, sizeof(vdseSessionContext) );
+   memset( &context, 0, sizeof(psnSessionContext) );
    context.pidLocker = getpid();
    pscInitErrorHandler( &context.errorHandler );
    
@@ -100,9 +100,9 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
    if ( errcode != VDS_OK ) goto the_exit;
 
    GET_PTR( context.pAllocator, process->pHeader->allocatorOffset, void );
-   GET_PTR( pCleanupManager, process->pHeader->processMgrOffset, vdseProcMgr );
+   GET_PTR( pCleanupManager, process->pHeader->processMgrOffset, psnProcMgr );
 
-   ok = vdseProcMgrAddProcess( pCleanupManager,
+   ok = psnProcMgrAddProcess( pCleanupManager,
                                getpid(), 
                                &process->pCleanup,
                                &context );
@@ -128,10 +128,10 @@ the_exit:
 
 void vdsaProcessFini()
 {
-   vdseProcMgr * processManager = NULL;
-   vdseSessionContext context;
+   psnProcMgr * processManager = NULL;
+   psnSessionContext context;
    vdsaSession * pApiSession = NULL;
-   vdseSession * pVdsSession = NULL, * pCurrent;
+   psnSession * pVdsSession = NULL, * pCurrent;
    int errcode = 0;
    vdsaProcess * process;
    bool ok;
@@ -148,7 +148,7 @@ void vdsaProcessFini()
       return;
    }
    
-   memset( &context, 0, sizeof(vdseSessionContext) );
+   memset( &context, 0, sizeof(psnSessionContext) );
    context.pidLocker = getpid();
    GET_PTR( context.pAllocator, process->pHeader->allocatorOffset, void );
    pscInitErrorHandler( &context.errorHandler );
@@ -157,13 +157,13 @@ void vdsaProcessFini()
       pscAcquireThreadLock( &g_ProcessMutex );
    }
    
-   GET_PTR( processManager, process->pHeader->processMgrOffset, vdseProcMgr );
+   GET_PTR( processManager, process->pHeader->processMgrOffset, psnProcMgr );
 
-   vdseProcessNoMoreSessionAllowed( process->pCleanup,
+   psnProcessNoMoreSessionAllowed( process->pCleanup,
                                     &context );
 
-   if ( vdseLock(&process->pCleanup->memObject, &context) ) {
-      ok = vdseProcessGetFirstSession( process->pCleanup, 
+   if ( psnLock(&process->pCleanup->memObject, &context) ) {
+      ok = psnProcessGetFirstSession( process->pCleanup, 
                                        &pVdsSession, 
                                        &context );
       VDS_POST_CONDITION( ok == true || ok == false );
@@ -175,13 +175,13 @@ void vdsaProcessFini()
          }
 
          pCurrent = pVdsSession;
-         ok = vdseProcessGetNextSession( process->pCleanup,
+         ok = psnProcessGetNextSession( process->pCleanup,
                                          pCurrent,
                                          &pVdsSession,
                                          &context );
       }
       
-      vdseUnlock( &process->pCleanup->memObject, &context );
+      psnUnlock( &process->pCleanup->memObject, &context );
    }
    else {
       errcode = VDS_INTERNAL_ERROR;
@@ -190,9 +190,9 @@ void vdsaProcessFini()
    
    /*
     * The lock is implicit. This call will also recursively destroy
-    * all the vdseSession objects of the current process.
+    * all the psnSession objects of the current process.
     */
-   ok = vdseProcMgrRemoveProcess( processManager, process->pCleanup, &context );
+   ok = psnProcMgrRemoveProcess( processManager, process->pCleanup, &context );
    VDS_POST_CONDITION( ok == true || ok == false );
    process->pCleanup = NULL;
    
@@ -216,7 +216,7 @@ error_handler:
 int vdsaOpenVDS( vdsaProcess        * process,
                  const char         * memoryFileName,
                  size_t               memorySizekb,
-                 vdseSessionContext * pContext )
+                 psnSessionContext * pContext )
 {
    int errcode = 0;
    bool ok;
@@ -247,9 +247,9 @@ int vdsaOpenVDS( vdsaProcess        * process,
    }
    
    g_pBaseAddr = (unsigned char * ) ptr;
-   process->pHeader = (vdseMemoryHeader*) g_pBaseAddr;
+   process->pHeader = (psnMemoryHeader*) g_pBaseAddr;
 
-   if ( process->pHeader->version != VDSE_MEMORY_VERSION ) {
+   if ( process->pHeader->version != PSN_MEMORY_VERSION ) {
       process->pHeader = NULL;
       return VDS_INCOMPATIBLE_VERSIONS;
    }
@@ -260,7 +260,7 @@ int vdsaOpenVDS( vdsaProcess        * process,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void vdsaCloseVDS( vdsaProcess        * process,
-                   vdseSessionContext * pContext )
+                   psnSessionContext * pContext )
 {
    VDS_PRE_CONDITION( process  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );

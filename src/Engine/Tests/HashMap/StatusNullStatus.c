@@ -24,10 +24,10 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseHashMap * pHashMap;
-   vdseSessionContext context;
+   psnHashMap * pHashMap;
+   psnSessionContext context;
    bool ok;
-   vdseTxStatus txStatus;
+   psnTxStatus txStatus;
    char * key  = "my key";
    char * data = "my data";
    vdsObjectDefinition def = { 
@@ -39,16 +39,16 @@ int main()
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseHashMapInit( pHashMap, 
+   ok = psnHashMapInit( pHashMap, 
                          0, 1, 0, &txStatus, 4, 
                          "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashMapInsert( pHashMap,
+   ok = psnHashMapInsert( pHashMap,
                            (const void *) key,
                            6,
                            (const void *) data,
@@ -58,7 +58,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseHashMapStatus( pHashMap, NULL );
+   psnHashMapStatus( pHashMap, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

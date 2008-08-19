@@ -24,19 +24,19 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseTx* pTx;
-   vdseSessionContext context;
+   psnTx* pTx;
+   psnSessionContext context;
    bool ok;
    
    pTx = initTxTest( expectedToPass, &context );
 
-   ok = vdseTxInit( pTx, 1, &context );
+   ok = psnTxInit( pTx, 1, &context );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    pTx->signature = 0;
-   vdseTxFini( pTx, &context );
+   psnTxFini( pTx, &context );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

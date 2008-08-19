@@ -25,13 +25,13 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseBlockGroup *pGroup;
+   psnBlockGroup *pGroup;
    unsigned char* ptr;
-   vdseSessionContext context;
+   psnSessionContext context;
    
    initTest( expectedToPass, &context );
 
-   ptr = malloc( VDSE_BLOCK_SIZE*10 );
+   ptr = malloc( PSN_BLOCK_SIZE*10 );
    if (ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -40,12 +40,12 @@ int main()
    /* This "100" (non-zero) offset should mark this block group 
     * as the first block group of a MemObject.
     */
-   pGroup = (vdseBlockGroup*) (ptr + 100);
+   pGroup = (psnBlockGroup*) (ptr + 100);
    
-   vdseBlockGroupInit( pGroup, 
-                      VDSE_NULL_OFFSET,
+   psnBlockGroupInit( pGroup, 
+                      PSN_NULL_OFFSET,
                       10,
-                      VDSE_IDENT_QUEUE );
+                      PSN_IDENT_QUEUE );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

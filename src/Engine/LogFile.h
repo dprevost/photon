@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_LOG_FILE_H
-#define VDSE_LOG_FILE_H
+#ifndef PSN_LOG_FILE_H
+#define PSN_LOG_FILE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -35,7 +35,7 @@ BEGIN_C_DECLS
  * of LogFile.c at that time... The signature is used to indicate
  * that the struct was properly initialized.
  */
-#define VDSE_LOGFILE_SIGNATURE ((unsigned int)0xf211c428)
+#define PSN_LOGFILE_SIGNATURE ((unsigned int)0xf211c428)
 
 /**
  * This module is used to log transactions to disk once they are committed.
@@ -46,12 +46,12 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdseLogFile
+struct psnLogFile
 {
    /** File handle as returned by open() */
    int handle;
 
-   /** Set to VDSE_LOGFILE_SIGNATURE at initialization. */
+   /** Set to PSN_LOGFILE_SIGNATURE at initialization. */
    unsigned int initialized;
 
    /** File name (the full path) */
@@ -59,12 +59,12 @@ struct vdseLogFile
    
 };
 
-typedef struct vdseLogFile vdseLogFile;
+typedef struct psnLogFile psnLogFile;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-void vdseCloseLogFile( vdseLogFile      * logFile,
+void psnCloseLogFile( psnLogFile      * logFile,
                        pscErrorHandler * pError );
 
 /**
@@ -74,13 +74,13 @@ void vdseCloseLogFile( vdseLogFile      * logFile,
  * session of a given process would otherwise have the same name).
  */
 VDSF_ENGINE_EXPORT
-vdsErrors vdseInitLogFile( vdseLogFile      * logFile,
+vdsErrors psnInitLogFile( psnLogFile      * logFile,
                            const char       * dirName,
                            void             * pSession,
                            pscErrorHandler * pError );
    
 VDSF_ENGINE_EXPORT
-vdsErrors vdseLogTransaction( vdseLogFile      * logFile,
+vdsErrors psnLogTransaction( psnLogFile      * logFile,
                               int                transactionId,
                               pscErrorHandler * pError );
 
@@ -90,7 +90,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_LOG_FILE_H */
+#endif /* PSN_LOG_FILE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

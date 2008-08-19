@@ -26,58 +26,58 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static
-void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
-                              vdseHashItem       * pHashItemItem,
-                              vdseSessionContext * pContext );
+void psnFolderReleaseNoLock( psnFolder         * pFolder,
+                              psnHashItem       * pHashItemItem,
+                              psnSessionContext * pContext );
 
 static 
-vdsErrors vdseValidateString( const char * objectName,
+vdsErrors psnValidateString( const char * objectName,
                               size_t            strLength, 
                               size_t          * pPartialLength,
                               bool            * pLastIteration );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseFolderCommitEdit( vdseFolder         * pFolder,
-                           vdseHashItem       * pHashItem, 
+void psnFolderCommitEdit( psnFolder         * pFolder,
+                           psnHashItem       * pHashItem, 
                            enum vdsObjectType   objectType,
-                           vdseSessionContext * pContext )
+                           psnSessionContext * pContext )
 {
-   vdseObjectDescriptor * pDesc, * pDescLatest;
-   vdseMap * pMapLatest, * pMapEdit;
-   vdseHashItem * pHashItemLatest;
-   vdseTreeNode * node;
-   vdseTxStatus * tx;
+   psnObjectDescriptor * pDesc, * pDescLatest;
+   psnMap * pMapLatest, * pMapEdit;
+   psnHashItem * pHashItemLatest;
+   psnTreeNode * node;
+   psnTxStatus * tx;
    
    VDS_PRE_CONDITION( pFolder   != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( objectType == VDSE_IDENT_MAP );
+   VDS_PRE_CONDITION( objectType == PSN_IDENT_MAP );
 
-   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
 
-   pMapEdit = GET_PTR_FAST( pDesc->offset, vdseMap );
+   pMapEdit = GET_PTR_FAST( pDesc->offset, psnMap );
    
    VDS_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
    
-   pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, vdseHashItem );
+   pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, psnHashItem );
    pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
-                               vdseObjectDescriptor );
-   pMapLatest = GET_PTR_FAST( pDescLatest->offset, vdseMap );
+                               psnObjectDescriptor );
+   pMapLatest = GET_PTR_FAST( pDescLatest->offset, psnMap );
 
    pHashItemLatest->nextSameKey = SET_OFFSET(pHashItem);
-   pMapLatest->editVersion = VDSE_NULL_OFFSET;
-   pMapEdit->editVersion   = VDSE_NULL_OFFSET;
+   pMapLatest->editVersion = PSN_NULL_OFFSET;
+   pMapEdit->editVersion   = PSN_NULL_OFFSET;
    pMapLatest->latestVersion = SET_OFFSET(pHashItem);
    pMapEdit->latestVersion = SET_OFFSET(pHashItem);
 
-   node = GET_PTR_FAST( pDesc->nodeOffset, vdseTreeNode );
-   tx = GET_PTR_FAST( node->txStatusOffset, vdseTxStatus );
+   node = GET_PTR_FAST( pDesc->nodeOffset, psnTreeNode );
+   tx = GET_PTR_FAST( node->txStatusOffset, psnTxStatus );
 
-   vdseTxStatusCommitEdit( &pHashItemLatest->txStatus, tx );
+   psnTxStatusCommitEdit( &pHashItemLatest->txStatus, tx );
 
    /* Reminder: pHashItemLatest is now the old version */
-   vdseFolderReleaseNoLock( pFolder,
+   psnFolderReleaseNoLock( pFolder,
                             pHashItemLatest,
                             pContext );
 }
@@ -87,11 +87,11 @@ void vdseFolderCommitEdit( vdseFolder         * pFolder,
 /*
  * The new object created by this function is a child of the folder 
  */
-bool vdseFolderCreateObject( vdseFolder          * pFolder,
+bool psnFolderCreateObject( psnFolder          * pFolder,
                              const char          * objectName,
                              size_t                nameLengthInBytes,
                              vdsObjectDefinition * pDefinition,
-                             vdseSessionContext  * pContext )
+                             psnSessionContext  * pContext )
 {
    vdsErrors errcode = VDS_OK;
    size_t strLength, i;
@@ -134,13 +134,13 @@ bool vdseFolderCreateObject( vdseFolder          * pFolder,
    }
    
    /*
-    * There is no vdseUnlock here - the recursive nature of the 
-    * function vdseFolderInsertObject() means that it will release 
+    * There is no psnUnlock here - the recursive nature of the 
+    * function psnFolderInsertObject() means that it will release 
     * the lock as soon as it can, after locking the
     * next folder in the chain if needed. 
     */
-   if ( vdseLock(&pFolder->memObject, pContext) ) {
-      ok = vdseFolderInsertObject( pFolder,
+   if ( psnLock(&pFolder->memObject, pContext) ) {
+      ok = psnFolderInsertObject( pFolder,
                                    &(lowerName[first]),
                                    &(name[first]),
                                    strLength, 
@@ -178,11 +178,11 @@ error_handler:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static
-bool vdseFolderDeletable( vdseFolder         * pFolder,
-                          vdseSessionContext * pContext )
+bool psnFolderDeletable( psnFolder         * pFolder,
+                          psnSessionContext * pContext )
 {
    ptrdiff_t offset, previousOffset;
-   vdseHashItem * pItem;
+   psnHashItem * pItem;
    ptrdiff_t txOffset = SET_OFFSET( pContext->pTransaction );
    bool found;
    
@@ -196,17 +196,17 @@ bool vdseFolderDeletable( vdseFolder         * pFolder,
     * - or the end (we return true)
     */
    
-   found = vdseHashGetFirst( &pFolder->hashObj, &offset );
+   found = psnHashGetFirst( &pFolder->hashObj, &offset );
    while ( found ) {
-      GET_PTR( pItem, offset, vdseHashItem );
+      GET_PTR( pItem, offset, psnHashItem );
       if ( pItem->txStatus.txOffset != txOffset ) return false;
-      if ( ! vdseTxStatusIsMarkedAsDestroyed( &pItem->txStatus ) ) {
+      if ( ! psnTxStatusIsMarkedAsDestroyed( &pItem->txStatus ) ) {
          return false;
       }
       
       previousOffset = offset;
       
-      found = vdseHashGetNext( &pFolder->hashObj,
+      found = psnHashGetNext( &pFolder->hashObj,
                                previousOffset,
                                &offset );
    }
@@ -216,19 +216,19 @@ bool vdseFolderDeletable( vdseFolder         * pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseFolderDeleteObject( vdseFolder         * pFolder,
+bool psnFolderDeleteObject( psnFolder         * pFolder,
                              const char         * objectName,
                              size_t               strLength, 
-                             vdseSessionContext * pContext )
+                             psnSessionContext * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0;
    vdsErrors errcode = VDS_OK;
-   vdseObjectDescriptor* pDesc = NULL;
-   vdseHashItem* pHashItem = NULL;
-   vdseTxStatus* txStatus;
-   vdseFolder * pNextFolder, *pDeletedFolder;
-   vdseMemObject * pMemObj;
+   psnObjectDescriptor* pDesc = NULL;
+   psnHashItem* pHashItem = NULL;
+   psnTxStatus* txStatus;
+   psnFolder * pNextFolder, *pDeletedFolder;
+   psnMemObject * pMemObj;
    size_t bucket;
    bool found, ok;
    
@@ -236,15 +236,15 @@ bool vdseFolderDeleteObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( objectName != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
-   errcode = vdseValidateString( objectName, 
+   errcode = psnValidateString( objectName, 
                                  strLength, 
                                  &partialLength, 
                                  &lastIteration );
    if ( errcode != VDS_OK ) goto the_exit;
 
-   found = vdseHashGet( &pFolder->hashObj, 
+   found = psnHashGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
                         partialLength * sizeof(char),
                         &pHashItem,
@@ -259,8 +259,8 @@ bool vdseFolderDeleteObject( vdseFolder         * pFolder,
       }
       goto the_exit;
    }
-   while ( pHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
-      GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
+   while ( pHashItem->nextSameKey != PSN_NULL_OFFSET ) {
+      GET_PTR( pHashItem, pHashItem->nextSameKey, psnHashItem );
    }
 
    txStatus = &pHashItem->txStatus;
@@ -271,8 +271,8 @@ bool vdseFolderDeleteObject( vdseFolder         * pFolder,
        * we do not support two transactions on the same data
        * (and if remove is committed - the data is "non-existent").
        */
-      if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
-         if ( txStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
+      if ( txStatus->txOffset != PSN_NULL_OFFSET ) {
+         if ( txStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
             errcode = VDS_NO_SUCH_OBJECT;
          }
          else {
@@ -281,7 +281,7 @@ bool vdseFolderDeleteObject( vdseFolder         * pFolder,
          goto the_exit;
       }
 
-      GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+      GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
       
       /*
        * A special case - folders cannot be deleted if they are not empty
@@ -291,29 +291,29 @@ bool vdseFolderDeleteObject( vdseFolder         * pFolder,
        * Other objects contain data, not objects. 
        */
       if ( pDesc->apiType == VDS_FOLDER ) {
-         GET_PTR( pDeletedFolder, pDesc->offset, vdseFolder );
-         if ( ! vdseFolderDeletable( pDeletedFolder, pContext ) ) {
+         GET_PTR( pDeletedFolder, pDesc->offset, psnFolder );
+         if ( ! psnFolderDeletable( pDeletedFolder, pContext ) ) {
             errcode = VDS_FOLDER_IS_NOT_EMPTY;
             goto the_exit;
          }
       }
-      GET_PTR( pMemObj, pDesc->memOffset, vdseMemObject );
+      GET_PTR( pMemObj, pDesc->memOffset, psnMemObject );
       
-      ok = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
-                         VDSE_TX_REMOVE_OBJECT,
+      ok = psnTxAddOps( (psnTx*)pContext->pTransaction,
+                         PSN_TX_REMOVE_OBJECT,
                          SET_OFFSET(pFolder),
-                         VDSE_IDENT_FOLDER,
+                         PSN_IDENT_FOLDER,
                          SET_OFFSET(pHashItem),
                          pMemObj->objType,
                          pContext );
       VDS_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto the_exit;
       
-      vdseTxStatusSetTx( txStatus, SET_OFFSET(pContext->pTransaction) );
-      vdseTxStatusMarkAsDestroyed( txStatus );
+      psnTxStatusSetTx( txStatus, SET_OFFSET(pContext->pTransaction) );
+      psnTxStatusMarkAsDestroyed( txStatus );
       pFolder->nodeObject.txCounter++;
       
-      vdseUnlock( &pFolder->memObject, pContext );
+      psnUnlock( &pFolder->memObject, pContext );
 
       return true;
    }
@@ -321,7 +321,7 @@ bool vdseFolderDeleteObject( vdseFolder         * pFolder,
    /* If we come here, this was not the last iteration, so we continue */
 
    /* This is not the last node. This node must be a folder, otherwise... */
-   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
    if ( pDesc->apiType != VDS_FOLDER ) {
       errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
@@ -337,21 +337,21 @@ bool vdseFolderDeleteObject( vdseFolder         * pFolder,
     * it would require that the current transaction deleted the folder and 
     * than tries to access it).
     */
-   if ( ! vdseTxStatusIsValid( txStatus, SET_OFFSET(pContext->pTransaction)) 
-        || vdseTxStatusIsMarkedAsDestroyed( txStatus ) ) {
+   if ( ! psnTxStatusIsValid( txStatus, SET_OFFSET(pContext->pTransaction)) 
+        || psnTxStatusIsMarkedAsDestroyed( txStatus ) ) {
       errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
    }
 
-   GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
-   if ( ! vdseLock(&pNextFolder->memObject, pContext) ) {
+   GET_PTR( pNextFolder, pDesc->offset, psnFolder );
+   if ( ! psnLock(&pNextFolder->memObject, pContext) ) {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
    
-   vdseUnlock( &pFolder->memObject, pContext );
+   psnUnlock( &pFolder->memObject, pContext );
 
-   ok = vdseFolderDeleteObject( pNextFolder,
+   ok = psnFolderDeleteObject( pNextFolder,
                                 &objectName[partialLength+1],
                                 strLength - partialLength - 1,
                                 pContext );
@@ -365,17 +365,17 @@ the_exit:
       pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   vdseUnlock( &pFolder->memObject, pContext );
+   psnUnlock( &pFolder->memObject, pContext );
    
    return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseFolderDestroyObject( vdseFolder         * pFolder,
+bool psnFolderDestroyObject( psnFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
-                              vdseSessionContext * pContext )
+                              psnSessionContext * pContext )
 {
    vdsErrors errcode = VDS_OK;
    size_t strLength, i;
@@ -415,13 +415,13 @@ bool vdseFolderDestroyObject( vdseFolder         * pFolder,
    }
    
    /*
-    * There is no vdseUnlock here - the recursive nature of the 
-    * function vdseFolderDeleteObject() means that it will release 
+    * There is no psnUnlock here - the recursive nature of the 
+    * function psnFolderDeleteObject() means that it will release 
     * the lock as soon as it can, after locking the
     * next folder in the chain if needed. 
     */
-   if ( vdseLock(&pFolder->memObject, pContext) ) {
-      ok = vdseFolderDeleteObject( pFolder,
+   if ( psnLock(&pFolder->memObject, pContext) ) {
+      ok = psnFolderDeleteObject( pFolder,
                                    &(lowerName[first]), 
                                    strLength,
                                    pContext );
@@ -454,25 +454,25 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseFolderEditObject( vdseFolder         * pFolder,
+bool psnFolderEditObject( psnFolder         * pFolder,
                            const char         * objectName,
                            size_t               strLength,
                            enum vdsObjectType   objectType,
-                           vdseFolderItem     * pFolderItem,
-                           vdseSessionContext * pContext )
+                           psnFolderItem     * pFolderItem,
+                           psnSessionContext * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0, bucket = 0, descLength;
-   vdseObjectDescriptor * pDescOld = NULL, * pDescNew = NULL;
-   vdseHashItem * pHashItemOld = NULL, * pHashItemNew = NULL;
+   psnObjectDescriptor * pDescOld = NULL, * pDescNew = NULL;
+   psnHashItem * pHashItemOld = NULL, * pHashItemNew = NULL;
    vdsErrors errcode;
-   vdseTxStatus * txStatus, * newTxStatus;
-   vdseTxStatus * txFolderStatus;
-   vdseFolder * pNextFolder;
-   vdseMemObject * pMemObject;
+   psnTxStatus * txStatus, * newTxStatus;
+   psnTxStatus * txFolderStatus;
+   psnFolder * pNextFolder;
+   psnMemObject * pMemObject;
    unsigned char * ptr;
-   vdseMemObjIdent memObjType = VDSE_IDENT_LAST;
-   vdseMap * pMap;
+   psnMemObjIdent memObjType = PSN_IDENT_LAST;
+   psnMap * pMap;
    bool found, ok;
    
    VDS_PRE_CONDITION( pFolder     != NULL );
@@ -480,16 +480,16 @@ bool vdseFolderEditObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pFolderItem != NULL );
    VDS_PRE_CONDITION( pContext    != NULL );
    VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
    VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
 
-   errcode = vdseValidateString( objectName, 
+   errcode = psnValidateString( objectName, 
                                  strLength, 
                                  &partialLength, 
                                  &lastIteration );
    if ( errcode != VDS_OK ) goto the_exit;
    
-   found = vdseHashGet( &pFolder->hashObj, 
+   found = psnHashGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
                         partialLength * sizeof(char), 
                         &pHashItemOld,
@@ -504,16 +504,16 @@ bool vdseFolderEditObject( vdseFolder         * pFolder,
       }
       goto the_exit;
    }
-   while ( pHashItemOld->nextSameKey != VDSE_NULL_OFFSET ) {
-      GET_PTR( pHashItemOld, pHashItemOld->nextSameKey, vdseHashItem );
+   while ( pHashItemOld->nextSameKey != PSN_NULL_OFFSET ) {
+      GET_PTR( pHashItemOld, pHashItemOld->nextSameKey, psnHashItem );
    }
 
    txStatus = &pHashItemOld->txStatus;
 
-   GET_PTR( pDescOld, pHashItemOld->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDescOld, pHashItemOld->dataOffset, psnObjectDescriptor );
    
    if ( lastIteration ) {
-      GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+      GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
       /* 
        * If the transaction id of the object (to open) is equal to the 
        * current transaction id AND the object is marked as deleted... error.
@@ -524,21 +524,21 @@ bool vdseFolderEditObject( vdseFolder         * pFolder,
        * If the object is flagged as deleted and committed, it does not exists
        * from the API point of view.
        */
-      if ( txStatus->txOffset != VDSE_NULL_OFFSET ) {
-         if ( txStatus->status & VDSE_TXS_DESTROYED_COMMITTED ) {
+      if ( txStatus->txOffset != PSN_NULL_OFFSET ) {
+         if ( txStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
             errcode = VDS_NO_SUCH_OBJECT;
             goto the_exit;
          }
-         if ( txStatus->status & VDSE_TXS_EDIT ) {
+         if ( txStatus->status & PSN_TXS_EDIT ) {
             errcode = VDS_A_SINGLE_UPDATER_IS_ALLOWED;
             goto the_exit;
          }
          if ( txStatus->txOffset == SET_OFFSET(pContext->pTransaction) ) {
-            if ( txStatus->status & VDSE_TXS_DESTROYED ) {
+            if ( txStatus->status & PSN_TXS_DESTROYED ) {
                errcode = VDS_OBJECT_IS_DELETED;
                goto the_exit;
             }
-            else if ( ! (txStatus->status & VDSE_TXS_ADDED) ) {
+            else if ( ! (txStatus->status & PSN_TXS_ADDED) ) {
                errcode = VDS_OBJECT_IS_IN_USE;
                goto the_exit;
             }
@@ -555,22 +555,22 @@ bool vdseFolderEditObject( vdseFolder         * pFolder,
 
       switch( pDescOld->apiType ) {
       case VDS_FAST_MAP:
-         pMap = GET_PTR_FAST( pDescOld->offset, vdseMap );
-         if ( pMap->editVersion != VDSE_NULL_OFFSET ) {
+         pMap = GET_PTR_FAST( pDescOld->offset, psnMap );
+         if ( pMap->editVersion != PSN_NULL_OFFSET ) {
             errcode = VDS_A_SINGLE_UPDATER_IS_ALLOWED;
             goto the_exit;
          }
-         memObjType = VDSE_IDENT_MAP;
+         memObjType = PSN_IDENT_MAP;
          break;
       default:
          errcode = VDS_INTERNAL_ERROR;
          goto the_exit;
       }
 
-      pMemObject = GET_PTR_FAST( pDescOld->memOffset, vdseMemObject );
+      pMemObject = GET_PTR_FAST( pDescOld->memOffset, psnMemObject );
       
-      ptr = (unsigned char*) vdseMallocBlocks( pContext->pAllocator,
-                                               VDSE_ALLOC_API_OBJ,
+      ptr = (unsigned char*) psnMallocBlocks( pContext->pAllocator,
+                                               PSN_ALLOC_API_OBJ,
                                                pMemObject->totalBlocks,
                                                pContext );
       if ( ptr == NULL ) {
@@ -578,11 +578,11 @@ bool vdseFolderEditObject( vdseFolder         * pFolder,
          goto the_exit;
       }
       
-      descLength = offsetof(vdseObjectDescriptor, originalName) + 
+      descLength = offsetof(psnObjectDescriptor, originalName) + 
           (partialLength+1) * sizeof(char);
-      pDescNew = (vdseObjectDescriptor *) malloc( descLength );
+      pDescNew = (psnObjectDescriptor *) malloc( descLength );
       if ( pDescNew == NULL ) {
-         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+         psnFreeBlocks( pContext->pAllocator, PSN_ALLOC_API_OBJ,
                          ptr, pMemObject->totalBlocks, pContext );
          errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
          goto the_exit;
@@ -590,7 +590,7 @@ bool vdseFolderEditObject( vdseFolder         * pFolder,
       memcpy( pDescNew, pDescOld, descLength );
       pDescNew->offset = SET_OFFSET( ptr );
 
-      errcode = vdseHashInsertAt( &pFolder->hashObj, 
+      errcode = psnHashInsertAt( &pFolder->hashObj, 
                                   bucket,
                                   (unsigned char *)objectName, 
                                   partialLength * sizeof(char), 
@@ -601,47 +601,47 @@ bool vdseFolderEditObject( vdseFolder         * pFolder,
       free( pDescNew );
       pDescNew = NULL;
       if ( errcode != VDS_OK ) {
-         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+         psnFreeBlocks( pContext->pAllocator, PSN_ALLOC_API_OBJ,
                          ptr, pMemObject->totalBlocks, pContext );
          free( pDescNew );
          goto the_exit;
       }
 
-      pDescNew = GET_PTR_FAST(pHashItemNew->dataOffset, vdseObjectDescriptor);
+      pDescNew = GET_PTR_FAST(pHashItemNew->dataOffset, psnObjectDescriptor);
 
-      ok = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
-                         VDSE_TX_ADD_EDIT_OBJECT,
+      ok = psnTxAddOps( (psnTx*)pContext->pTransaction,
+                         PSN_TX_ADD_EDIT_OBJECT,
                          SET_OFFSET(pFolder),
-                         VDSE_IDENT_FOLDER,
+                         PSN_IDENT_FOLDER,
                          SET_OFFSET(pHashItemNew),
                          memObjType,
                          pContext );
       VDS_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
-         vdseHashDelWithItem( &pFolder->hashObj, 
+         psnHashDelWithItem( &pFolder->hashObj, 
                               pHashItemNew,
                               pContext );
-         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+         psnFreeBlocks( pContext->pAllocator, PSN_ALLOC_API_OBJ,
                          ptr, pMemObject->totalBlocks, pContext );
          goto the_exit;
       }
       
       newTxStatus = &pHashItemNew->txStatus;
-      vdseTxStatusInit( newTxStatus, SET_OFFSET(pContext->pTransaction) );
+      psnTxStatusInit( newTxStatus, SET_OFFSET(pContext->pTransaction) );
       txStatus->txOffset = SET_OFFSET(pContext->pTransaction);
-      txStatus->status |= VDSE_TXS_EDIT;
+      txStatus->status |= PSN_TXS_EDIT;
       newTxStatus->status = txStatus->status;
       
       switch ( memObjType ) {
-      case VDSE_IDENT_MAP:
-         ok = vdseMapCopy( pMap, /* old, */
-                           (vdseMap *)ptr,
+      case PSN_IDENT_MAP:
+         ok = psnMapCopy( pMap, /* old, */
+                           (psnMap *)ptr,
                            pHashItemNew,
                            pDescNew->originalName,
                            pContext );
          VDS_POST_CONDITION( ok == true || ok == false );
-         pDescNew->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseMap,nodeObject);
-         pDescNew->memOffset  = SET_OFFSET(ptr) + offsetof(vdseMap,memObject);
+         pDescNew->nodeOffset = SET_OFFSET(ptr) + offsetof(psnMap,nodeObject);
+         pDescNew->memOffset  = SET_OFFSET(ptr) + offsetof(psnMap,memObject);
          break;
 
       default:
@@ -650,11 +650,11 @@ bool vdseFolderEditObject( vdseFolder         * pFolder,
       }
 
       if ( ! ok ) {
-         vdseTxRemoveLastOps( (vdseTx*)pContext->pTransaction, pContext );
-         vdseHashDelWithItem( &pFolder->hashObj, 
+         psnTxRemoveLastOps( (psnTx*)pContext->pTransaction, pContext );
+         psnHashDelWithItem( &pFolder->hashObj, 
                               pHashItemNew,
                               pContext );
-         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+         psnFreeBlocks( pContext->pAllocator, PSN_ALLOC_API_OBJ,
                          ptr, pMemObject->totalBlocks, pContext );
          goto the_exit;
       }
@@ -667,7 +667,7 @@ bool vdseFolderEditObject( vdseFolder         * pFolder,
       pHashItemNew->txStatus.parentCounter = 1;
       pHashItemNew->txStatus.usageCounter = 0;
 
-      vdseUnlock( &pFolder->memObject, pContext );
+      psnUnlock( &pFolder->memObject, pContext );
 
       return true;
    }
@@ -678,21 +678,21 @@ bool vdseFolderEditObject( vdseFolder         * pFolder,
       goto the_exit;
    }
 
-   errcode = vdseTxTestObjectStatus( txStatus, 
+   errcode = psnTxTestObjectStatus( txStatus, 
                                      SET_OFFSET(pContext->pTransaction) );
    if ( errcode != VDS_OK ) {
       if ( errcode == VDS_NO_SUCH_OBJECT) errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
    }
 
-   GET_PTR( pNextFolder, pDescOld->offset, vdseFolder );
-   if ( ! vdseLock( &pNextFolder->memObject, pContext ) ) {
+   GET_PTR( pNextFolder, pDescOld->offset, psnFolder );
+   if ( ! psnLock( &pNextFolder->memObject, pContext ) ) {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
-   vdseUnlock( &pFolder->memObject, pContext );
+   psnUnlock( &pFolder->memObject, pContext );
      
-   ok = vdseFolderEditObject( pNextFolder,
+   ok = psnFolderEditObject( pNextFolder,
                               &objectName[partialLength+1], 
                               strLength - partialLength - 1, 
                               objectType,
@@ -712,44 +712,44 @@ the_exit:
       pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   vdseUnlock( &pFolder->memObject, pContext );
+   psnUnlock( &pFolder->memObject, pContext );
    
    return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseFolderFini( vdseFolder         * pFolder,
-                     vdseSessionContext * pContext )
+void psnFolderFini( psnFolder         * pFolder,
+                     psnSessionContext * pContext )
 {
    VDS_PRE_CONDITION( pFolder  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
-   vdseHashFini( &pFolder->hashObj );
-   vdseTreeNodeFini( &pFolder->nodeObject );
+   psnHashFini( &pFolder->hashObj );
+   psnTreeNodeFini( &pFolder->nodeObject );
    
    /* This call must be last - put a barrier here ? */ 
-   vdseMemObjectFini(  &pFolder->memObject, VDSE_ALLOC_API_OBJ, pContext );
+   psnMemObjectFini(  &pFolder->memObject, PSN_ALLOC_API_OBJ, pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseFolderGetDefinition( vdseFolder          * pFolder,
+bool psnFolderGetDefinition( psnFolder          * pFolder,
                               const char          * objectName,
                               size_t                strLength,
                               vdsObjectDefinition * pDefinition,
-                              vdseFieldDef       ** ppInternalDef,
-                              vdseSessionContext  * pContext )
+                              psnFieldDef       ** ppInternalDef,
+                              psnSessionContext  * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0;
-   vdseObjectDescriptor * pDesc = NULL;
-   vdseHashItem * pHashItem = NULL;
+   psnObjectDescriptor * pDesc = NULL;
+   psnHashItem * pHashItem = NULL;
    vdsErrors errcode;
-   vdseTxStatus * txStatus;
-   vdseFolder * pNextFolder;
-   vdseMemObject * pMemObject;
+   psnTxStatus * txStatus;
+   psnFolder * pNextFolder;
+   psnMemObject * pMemObject;
    int pDesc_invalid_api_type = 0;
    size_t bucket;
    bool found, ok;
@@ -760,15 +760,15 @@ bool vdseFolderGetDefinition( vdseFolder          * pFolder,
    VDS_PRE_CONDITION( ppInternalDef != NULL );
    VDS_PRE_CONDITION( pContext      != NULL );
    VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
-   errcode = vdseValidateString( objectName, 
+   errcode = psnValidateString( objectName, 
                                  strLength, 
                                  &partialLength, 
                                  &lastIteration );
    if ( errcode != VDS_OK ) goto the_exit;
    
-   found = vdseHashGet( &pFolder->hashObj, 
+   found = psnHashGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
                         partialLength * sizeof(char), 
                         &pHashItem,
@@ -783,22 +783,22 @@ bool vdseFolderGetDefinition( vdseFolder          * pFolder,
       }
       goto the_exit;
    }
-   while ( pHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
-      GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
+   while ( pHashItem->nextSameKey != PSN_NULL_OFFSET ) {
+      GET_PTR( pHashItem, pHashItem->nextSameKey, psnHashItem );
    }
 
    txStatus = &pHashItem->txStatus;
 
-   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
    
    if ( lastIteration ) {
 
-      errcode = vdseTxTestObjectStatus( txStatus, 
+      errcode = psnTxTestObjectStatus( txStatus, 
                                         SET_OFFSET(pContext->pTransaction) );
       if ( errcode != VDS_OK ) goto the_exit;
 
-      GET_PTR( pMemObject, pDesc->memOffset, vdseMemObject );
-      if ( vdseLock( pMemObject, pContext ) ) {
+      GET_PTR( pMemObject, pDesc->memOffset, psnMemObject );
+      if ( psnLock( pMemObject, pContext ) ) {
 
          pDefinition->type = pDesc->apiType;
 
@@ -808,34 +808,34 @@ bool vdseFolderGetDefinition( vdseFolder          * pFolder,
             break;
          case VDS_HASH_MAP:
             *ppInternalDef = GET_PTR_FAST(
-               GET_PTR_FAST( pDesc->offset, vdseHashMap)->dataDefOffset,
-               vdseFieldDef );
+               GET_PTR_FAST( pDesc->offset, psnHashMap)->dataDefOffset,
+               psnFieldDef );
             pDefinition->numFields = 
-               GET_PTR_FAST( pDesc->offset, vdseHashMap)->numFields;
+               GET_PTR_FAST( pDesc->offset, psnHashMap)->numFields;
             break;
          case VDS_QUEUE:
          case VDS_LIFO:
             pDefinition->numFields = 
-               GET_PTR_FAST( pDesc->offset, vdseQueue)->numFields;
+               GET_PTR_FAST( pDesc->offset, psnQueue)->numFields;
             break;
          case VDS_FAST_MAP:
             *ppInternalDef = GET_PTR_FAST(
-               GET_PTR_FAST( pDesc->offset, vdseMap)->dataDefOffset,
-               vdseFieldDef );
+               GET_PTR_FAST( pDesc->offset, psnMap)->dataDefOffset,
+               psnFieldDef );
             pDefinition->numFields = 
-               GET_PTR_FAST( pDesc->offset, vdseMap)->numFields;
+               GET_PTR_FAST( pDesc->offset, psnMap)->numFields;
             break;
          default:
             VDS_INV_CONDITION( pDesc_invalid_api_type );
          }
-         vdseUnlock( pMemObject, pContext );
+         psnUnlock( pMemObject, pContext );
       }
       else {
          errcode = VDS_OBJECT_CANNOT_GET_LOCK;
          goto the_exit;
       }
       
-      vdseUnlock( &pFolder->memObject, pContext );
+      psnUnlock( &pFolder->memObject, pContext );
 
       return true;
    }
@@ -846,21 +846,21 @@ bool vdseFolderGetDefinition( vdseFolder          * pFolder,
       goto the_exit;
    }
 
-   errcode = vdseTxTestObjectStatus( txStatus, 
+   errcode = psnTxTestObjectStatus( txStatus, 
                                      SET_OFFSET(pContext->pTransaction) );
    if ( errcode != VDS_OK ) {
       if ( errcode == VDS_NO_SUCH_OBJECT) errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
    }
 
-   GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
-   if ( ! vdseLock( &pNextFolder->memObject, pContext ) ) {
+   GET_PTR( pNextFolder, pDesc->offset, psnFolder );
+   if ( ! psnLock( &pNextFolder->memObject, pContext ) ) {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
-   vdseUnlock( &pFolder->memObject, pContext );
+   psnUnlock( &pFolder->memObject, pContext );
      
-   ok = vdseFolderGetDefinition( pNextFolder,
+   ok = psnFolderGetDefinition( pNextFolder,
                                  &objectName[partialLength+1], 
                                  strLength - partialLength - 1, 
                                  pDefinition,
@@ -880,42 +880,42 @@ the_exit:
       pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   vdseUnlock( &pFolder->memObject, pContext );
+   psnUnlock( &pFolder->memObject, pContext );
    
    return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseFolderGetFirst( vdseFolder         * pFolder,
-                         vdseFolderItem     * pItem,
-                         vdseSessionContext * pContext )
+bool psnFolderGetFirst( psnFolder         * pFolder,
+                         psnFolderItem     * pItem,
+                         psnSessionContext * pContext )
 {
-   vdseHashItem* pHashItem = NULL;
-   vdseTxStatus * txItemStatus;
-   vdseTxStatus * txFolderStatus;
+   psnHashItem* pHashItem = NULL;
+   psnTxStatus * txItemStatus;
+   psnTxStatus * txFolderStatus;
    ptrdiff_t  firstItemOffset;
    bool found;
 
    VDS_PRE_CONDITION( pFolder  != NULL );
    VDS_PRE_CONDITION( pItem    != NULL )
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
-   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
 
-   if ( vdseLock( &pFolder->memObject, pContext ) ) {
+   if ( psnLock( &pFolder->memObject, pContext ) ) {
       /*
        * We loop on all data items until we find one which is visible to the
        * current session (its transaction field equal to zero or to our 
        * transaction) AND is not marked as destroyed.
        */
-      found = vdseHashGetFirst( &pFolder->hashObj, &firstItemOffset );
+      found = psnHashGetFirst( &pFolder->hashObj, &firstItemOffset );
       while ( found ) {
-         GET_PTR( pHashItem, firstItemOffset, vdseHashItem );
+         GET_PTR( pHashItem, firstItemOffset, psnHashItem );
          txItemStatus = &pHashItem->txStatus;
 
-        if ( vdseTxTestObjectStatus( txItemStatus, 
+        if ( psnTxTestObjectStatus( txItemStatus, 
             SET_OFFSET(pContext->pTransaction) ) == VDS_OK ) {
 
             txItemStatus->parentCounter++;
@@ -924,12 +924,12 @@ bool vdseFolderGetFirst( vdseFolder         * pFolder,
             pItem->itemOffset = firstItemOffset;
             pItem->status = txItemStatus->status;
             
-            vdseUnlock( &pFolder->memObject, pContext );
+            psnUnlock( &pFolder->memObject, pContext );
             
             return true;
          }
   
-         found = vdseHashGetNext( &pFolder->hashObj, 
+         found = psnHashGetNext( &pFolder->hashObj, 
                                   firstItemOffset,
                                   &firstItemOffset );
       }
@@ -939,7 +939,7 @@ bool vdseFolderGetFirst( vdseFolder         * pFolder,
       return false;
    }
    
-   vdseUnlock( &pFolder->memObject, pContext );
+   psnUnlock( &pFolder->memObject, pContext );
    pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_IS_EMPTY );
 
    return false;
@@ -947,43 +947,43 @@ bool vdseFolderGetFirst( vdseFolder         * pFolder,
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseFolderGetNext( vdseFolder         * pFolder,
-                        vdseFolderItem     * pItem,
-                        vdseSessionContext * pContext )
+bool psnFolderGetNext( psnFolder         * pFolder,
+                        psnFolderItem     * pItem,
+                        psnSessionContext * pContext )
 {
-   vdseHashItem * pHashItem = NULL;
-   vdseHashItem * previousHashItem = NULL;
-   vdseTxStatus * txItemStatus;
-   vdseTxStatus * txFolderStatus;
+   psnHashItem * pHashItem = NULL;
+   psnHashItem * previousHashItem = NULL;
+   psnTxStatus * txItemStatus;
+   psnTxStatus * txFolderStatus;
    ptrdiff_t  itemOffset;
    bool found;
 
    VDS_PRE_CONDITION( pFolder  != NULL );
    VDS_PRE_CONDITION( pItem    != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
    VDS_PRE_CONDITION( pItem->pHashItem  != NULL );
-   VDS_PRE_CONDITION( pItem->itemOffset != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( pItem->itemOffset != PSN_NULL_OFFSET );
    
-   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
 
    itemOffset       = pItem->itemOffset;
    previousHashItem = pItem->pHashItem;
    
-   if ( vdseLock( &pFolder->memObject, pContext ) ) {
+   if ( psnLock( &pFolder->memObject, pContext ) ) {
       /*
        * We loop on all data items until we find one which is visible to the
        * current session (its transaction field equal to zero or to our 
        * transaction) AND is not marked as destroyed.
        */
-      found = vdseHashGetNext( &pFolder->hashObj, 
+      found = psnHashGetNext( &pFolder->hashObj, 
                                itemOffset,
                                &itemOffset );
       while ( found ) {
-         GET_PTR( pHashItem, itemOffset, vdseHashItem );
+         GET_PTR( pHashItem, itemOffset, psnHashItem );
          txItemStatus = &pHashItem->txStatus;
 
-         if ( vdseTxTestObjectStatus( txItemStatus, 
+         if ( psnTxTestObjectStatus( txItemStatus, 
             SET_OFFSET(pContext->pTransaction) ) == VDS_OK ) {
  
             txItemStatus->parentCounter++;
@@ -992,14 +992,14 @@ bool vdseFolderGetNext( vdseFolder         * pFolder,
             pItem->itemOffset = itemOffset;
             pItem->status = txItemStatus->status;
 
-            vdseFolderReleaseNoLock( pFolder, previousHashItem, pContext );
+            psnFolderReleaseNoLock( pFolder, previousHashItem, pContext );
 
-            vdseUnlock( &pFolder->memObject, pContext );
+            psnUnlock( &pFolder->memObject, pContext );
             
             return true;
          }
   
-         found = vdseHashGetNext( &pFolder->hashObj, 
+         found = psnHashGetNext( &pFolder->hashObj, 
                                   itemOffset,
                                   &itemOffset );
       }
@@ -1016,10 +1016,10 @@ bool vdseFolderGetNext( vdseFolder         * pFolder,
     * at this point.
     */
    pItem->pHashItem = NULL;
-   pItem->itemOffset = VDSE_NULL_OFFSET;
-   vdseFolderReleaseNoLock( pFolder, previousHashItem, pContext );
+   pItem->itemOffset = PSN_NULL_OFFSET;
+   psnFolderReleaseNoLock( pFolder, previousHashItem, pContext );
     
-   vdseUnlock( &pFolder->memObject, pContext );
+   psnUnlock( &pFolder->memObject, pContext );
    pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_REACHED_THE_END );
 
    return false;
@@ -1027,21 +1027,21 @@ bool vdseFolderGetNext( vdseFolder         * pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseFolderGetObject( vdseFolder         * pFolder,
+bool psnFolderGetObject( psnFolder         * pFolder,
                           const char         * objectName,
                           size_t               strLength,
                           enum vdsObjectType   objectType,
-                          vdseFolderItem     * pFolderItem,
-                          vdseSessionContext * pContext )
+                          psnFolderItem     * pFolderItem,
+                          psnSessionContext * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0;
-   vdseObjectDescriptor* pDesc = NULL;
-   vdseHashItem* pHashItem = NULL;
+   psnObjectDescriptor* pDesc = NULL;
+   psnHashItem* pHashItem = NULL;
    vdsErrors errcode;
-   vdseTxStatus * txStatus;
-   vdseTxStatus * txFolderStatus;
-   vdseFolder* pNextFolder;
+   psnTxStatus * txStatus;
+   psnTxStatus * txFolderStatus;
+   psnFolder* pNextFolder;
    size_t bucket;
    bool found, ok;
    
@@ -1050,16 +1050,16 @@ bool vdseFolderGetObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pFolderItem != NULL );
    VDS_PRE_CONDITION( pContext    != NULL );
    VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
    VDS_PRE_CONDITION( objectType > 0 && objectType < VDS_LAST_OBJECT_TYPE );
 
-   errcode = vdseValidateString( objectName, 
+   errcode = psnValidateString( objectName, 
                                  strLength, 
                                  &partialLength, 
                                  &lastIteration );
    if ( errcode != VDS_OK ) goto the_exit;
    
-   found = vdseHashGet( &pFolder->hashObj, 
+   found = psnHashGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
                         partialLength * sizeof(char), 
                         &pHashItem,
@@ -1074,18 +1074,18 @@ bool vdseFolderGetObject( vdseFolder         * pFolder,
       }
       goto the_exit;
    }
-   while ( pHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
-      GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
+   while ( pHashItem->nextSameKey != PSN_NULL_OFFSET ) {
+      GET_PTR( pHashItem, pHashItem->nextSameKey, psnHashItem );
    }
 
    txStatus = &pHashItem->txStatus;
 
-   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
    
    if ( lastIteration ) {
-      GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+      GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
 
-      errcode = vdseTxTestObjectStatus( txStatus, 
+      errcode = psnTxTestObjectStatus( txStatus, 
                                         SET_OFFSET(pContext->pTransaction) );
       if ( errcode != VDS_OK ) goto the_exit;
 
@@ -1098,7 +1098,7 @@ bool vdseFolderGetObject( vdseFolder         * pFolder,
       txStatus->parentCounter++;
       pFolderItem->pHashItem = pHashItem;
 
-      vdseUnlock( &pFolder->memObject, pContext );
+      psnUnlock( &pFolder->memObject, pContext );
 
       return true;
    }
@@ -1109,21 +1109,21 @@ bool vdseFolderGetObject( vdseFolder         * pFolder,
       goto the_exit;
    }
    
-   errcode = vdseTxTestObjectStatus( txStatus, 
+   errcode = psnTxTestObjectStatus( txStatus, 
                                      SET_OFFSET(pContext->pTransaction) );
    if ( errcode != VDS_OK ) {
       if ( errcode == VDS_NO_SUCH_OBJECT) errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
    }
 
-   GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
-   if ( ! vdseLock( &pNextFolder->memObject, pContext ) ) {
+   GET_PTR( pNextFolder, pDesc->offset, psnFolder );
+   if ( ! psnLock( &pNextFolder->memObject, pContext ) ) {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
-   vdseUnlock( &pFolder->memObject, pContext );
+   psnUnlock( &pFolder->memObject, pContext );
      
-   ok = vdseFolderGetObject( pNextFolder,
+   ok = psnFolderGetObject( pNextFolder,
                              &objectName[partialLength+1], 
                              strLength - partialLength - 1, 
                              objectType,
@@ -1143,27 +1143,27 @@ the_exit:
       pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   vdseUnlock( &pFolder->memObject, pContext );
+   psnUnlock( &pFolder->memObject, pContext );
    
    return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseFolderGetStatus( vdseFolder         * pFolder,
+bool psnFolderGetStatus( psnFolder         * pFolder,
                           const char         * objectName,
                           size_t               strLength, 
                           vdsObjStatus       * pStatus,
-                          vdseSessionContext * pContext )
+                          psnSessionContext * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0;
-   vdseObjectDescriptor * pDesc = NULL;
-   vdseHashItem * pHashItem = NULL;
+   psnObjectDescriptor * pDesc = NULL;
+   psnHashItem * pHashItem = NULL;
    vdsErrors errcode;
-   vdseTxStatus * txStatus;
-   vdseFolder * pNextFolder;
-   vdseMemObject * pMemObject;
+   psnTxStatus * txStatus;
+   psnFolder * pNextFolder;
+   psnMemObject * pMemObject;
    int pDesc_invalid_api_type = 0;
    size_t bucket;
    bool found, ok;
@@ -1173,15 +1173,15 @@ bool vdseFolderGetStatus( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pStatus    != NULL );
    VDS_PRE_CONDITION( pContext   != NULL );
    VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
-   errcode = vdseValidateString( objectName, 
+   errcode = psnValidateString( objectName, 
                                  strLength, 
                                  &partialLength, 
                                  &lastIteration );
    if ( errcode != VDS_OK ) goto the_exit;
    
-   found = vdseHashGet( &pFolder->hashObj, 
+   found = psnHashGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
                         partialLength * sizeof(char), 
                         &pHashItem,
@@ -1196,55 +1196,55 @@ bool vdseFolderGetStatus( vdseFolder         * pFolder,
       }
       goto the_exit;
    }
-   while ( pHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
-      GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
+   while ( pHashItem->nextSameKey != PSN_NULL_OFFSET ) {
+      GET_PTR( pHashItem, pHashItem->nextSameKey, psnHashItem );
    }
 
    txStatus = &pHashItem->txStatus;
 
-   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
    
    if ( lastIteration ) {
 
-      errcode = vdseTxTestObjectStatus( txStatus, 
+      errcode = psnTxTestObjectStatus( txStatus, 
                                         SET_OFFSET(pContext->pTransaction) );
       if ( errcode != VDS_OK ) goto the_exit;
 
-      GET_PTR( pMemObject, pDesc->memOffset, vdseMemObject );
-      if ( vdseLock( pMemObject, pContext ) ) {
-         vdseMemObjectStatus( pMemObject, pStatus );
+      GET_PTR( pMemObject, pDesc->memOffset, psnMemObject );
+      if ( psnLock( pMemObject, pContext ) ) {
+         psnMemObjectStatus( pMemObject, pStatus );
          pStatus->type = pDesc->apiType;
          pStatus->status = txStatus->status;
 
          switch( pDesc->apiType ) {
 
          case VDS_FOLDER:
-            vdseFolderMyStatus( GET_PTR_FAST( pDesc->memOffset, vdseFolder ),
+            psnFolderMyStatus( GET_PTR_FAST( pDesc->memOffset, psnFolder ),
                                 pStatus );
             break;
          case VDS_HASH_MAP:
-            vdseHashMapStatus( GET_PTR_FAST( pDesc->memOffset, vdseHashMap ),
+            psnHashMapStatus( GET_PTR_FAST( pDesc->memOffset, psnHashMap ),
                                pStatus );
             break;
          case VDS_QUEUE:
          case VDS_LIFO:
-            vdseQueueStatus( GET_PTR_FAST( pDesc->memOffset, vdseQueue ),
+            psnQueueStatus( GET_PTR_FAST( pDesc->memOffset, psnQueue ),
                              pStatus );
             break;
          case VDS_FAST_MAP:
-            vdseMapStatus( GET_PTR_FAST( pDesc->memOffset, vdseMap ), pStatus );
+            psnMapStatus( GET_PTR_FAST( pDesc->memOffset, psnMap ), pStatus );
             break;
          default:
             VDS_INV_CONDITION( pDesc_invalid_api_type );
          }
-         vdseUnlock( pMemObject, pContext );
+         psnUnlock( pMemObject, pContext );
       }
       else {
          errcode = VDS_OBJECT_CANNOT_GET_LOCK;
          goto the_exit;
       }
       
-      vdseUnlock( &pFolder->memObject, pContext );
+      psnUnlock( &pFolder->memObject, pContext );
 
       return true;
    }
@@ -1255,21 +1255,21 @@ bool vdseFolderGetStatus( vdseFolder         * pFolder,
       goto the_exit;
    }
 
-   errcode = vdseTxTestObjectStatus( txStatus, 
+   errcode = psnTxTestObjectStatus( txStatus, 
                                      SET_OFFSET(pContext->pTransaction) );
    if ( errcode != VDS_OK ) {
       if ( errcode == VDS_NO_SUCH_OBJECT) errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
    }
 
-   GET_PTR( pNextFolder, pDesc->offset, vdseFolder );
-   if ( ! vdseLock( &pNextFolder->memObject, pContext ) ) {
+   GET_PTR( pNextFolder, pDesc->offset, psnFolder );
+   if ( ! psnLock( &pNextFolder->memObject, pContext ) ) {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
-   vdseUnlock( &pFolder->memObject, pContext );
+   psnUnlock( &pFolder->memObject, pContext );
      
-   ok = vdseFolderGetStatus( pNextFolder,
+   ok = psnFolderGetStatus( pNextFolder,
                              &objectName[partialLength+1], 
                              strLength - partialLength - 1, 
                              pStatus,
@@ -1288,22 +1288,22 @@ the_exit:
       pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   vdseUnlock( &pFolder->memObject, pContext );
+   psnUnlock( &pFolder->memObject, pContext );
    
    return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseFolderInit( vdseFolder         * pFolder,
+bool psnFolderInit( psnFolder         * pFolder,
                      ptrdiff_t            parentOffset,
                      size_t               numberOfBlocks,
                      size_t               expectedNumOfChilds,
-                     vdseTxStatus       * pTxStatus,
+                     psnTxStatus       * pTxStatus,
                      size_t               origNameLength,
                      char               * origName,
                      ptrdiff_t            hashItemOffset,
-                     vdseSessionContext * pContext )
+                     psnSessionContext * pContext )
 {
    vdsErrors errcode;
    
@@ -1311,13 +1311,13 @@ bool vdseFolderInit( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pContext  != NULL );
    VDS_PRE_CONDITION( pTxStatus != NULL );
    VDS_PRE_CONDITION( origName  != NULL );
-   VDS_PRE_CONDITION( hashItemOffset != VDSE_NULL_OFFSET );
-   VDS_PRE_CONDITION( parentOffset   != VDSE_NULL_OFFSET );
+   VDS_PRE_CONDITION( hashItemOffset != PSN_NULL_OFFSET );
+   VDS_PRE_CONDITION( parentOffset   != PSN_NULL_OFFSET );
    VDS_PRE_CONDITION( numberOfBlocks  > 0 );
    VDS_PRE_CONDITION( origNameLength > 0 );
    
-   errcode = vdseMemObjectInit( &pFolder->memObject, 
-                                VDSE_IDENT_FOLDER,
+   errcode = psnMemObjectInit( &pFolder->memObject, 
+                                PSN_IDENT_FOLDER,
                                 &pFolder->blockGroup,
                                 numberOfBlocks );
    if ( errcode != VDS_OK ) {
@@ -1327,14 +1327,14 @@ bool vdseFolderInit( vdseFolder         * pFolder,
       return false;
    }
 
-   vdseTreeNodeInit( &pFolder->nodeObject,
+   psnTreeNodeInit( &pFolder->nodeObject,
                      SET_OFFSET(pTxStatus),
                      origNameLength,
                      SET_OFFSET(origName),
                      parentOffset,
                      hashItemOffset );
 
-   errcode = vdseHashInit( &pFolder->hashObj,
+   errcode = psnHashInit( &pFolder->hashObj,
                            SET_OFFSET(&pFolder->memObject),
                            expectedNumOfChilds, 
                            pContext );
@@ -1350,25 +1350,25 @@ bool vdseFolderInit( vdseFolder         * pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseFolderInsertObject( vdseFolder          * pFolder,
+bool psnFolderInsertObject( psnFolder          * pFolder,
                              const char          * objectName,
                              const char          * originalName,
                              size_t                strLength, 
                              vdsObjectDefinition * pDefinition,
                              size_t                numBlocks,
                              size_t                expectedNumOfChilds,
-                             vdseSessionContext  * pContext )
+                             psnSessionContext  * pContext )
 {
    bool lastIteration = true;
    size_t partialLength = 0;
-   vdseHashItem * pHashItem, * previousHashItem = NULL;
+   psnHashItem * pHashItem, * previousHashItem = NULL;
    vdsErrors errcode = VDS_OK;
-   vdseObjectDescriptor* pDesc = NULL;
+   psnObjectDescriptor* pDesc = NULL;
    size_t descLength;
    unsigned char* ptr = NULL;
-   vdseFolder* pNextFolder;
-   vdseTxStatus* objTxStatus;  /* txStatus of the created object */
-   vdseMemObjIdent memObjType = VDSE_IDENT_LAST;
+   psnFolder* pNextFolder;
+   psnTxStatus* objTxStatus;  /* txStatus of the created object */
+   psnMemObjIdent memObjType = PSN_IDENT_LAST;
    int invalid_object_type = 0;
    size_t bucket;
    bool found, ok;
@@ -1379,9 +1379,9 @@ bool vdseFolderInsertObject( vdseFolder          * pFolder,
    VDS_PRE_CONDITION( pContext     != NULL );
    VDS_PRE_CONDITION( pDefinition  != NULL );
    VDS_PRE_CONDITION( strLength > 0 );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
-   errcode = vdseValidateString( objectName, 
+   errcode = psnValidateString( objectName, 
                                  strLength, 
                                  &partialLength, 
                                  &lastIteration );
@@ -1404,36 +1404,36 @@ bool vdseFolderInsertObject( vdseFolder          * pFolder,
        * once we have many types of objects
        */
 
-      found = vdseHashGet( &pFolder->hashObj, 
+      found = psnHashGet( &pFolder->hashObj, 
                            (unsigned char *)objectName, 
                            partialLength * sizeof(char), 
                            &previousHashItem,
                            &bucket,
                            pContext );
       if ( found ) {
-         while ( previousHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
-            GET_PTR( previousHashItem, previousHashItem->nextSameKey, vdseHashItem );
+         while ( previousHashItem->nextSameKey != PSN_NULL_OFFSET ) {
+            GET_PTR( previousHashItem, previousHashItem->nextSameKey, psnHashItem );
          }
          objTxStatus = &previousHashItem->txStatus;
-         if ( ! (objTxStatus->status & VDSE_TXS_DESTROYED_COMMITTED) ) {
+         if ( ! (objTxStatus->status & PSN_TXS_DESTROYED_COMMITTED) ) {
             errcode = VDS_OBJECT_ALREADY_PRESENT;
             goto the_exit;
          }
       }
 
-      ptr = (unsigned char*) vdseMallocBlocks( pContext->pAllocator,
-                                               VDSE_ALLOC_API_OBJ,
+      ptr = (unsigned char*) psnMallocBlocks( pContext->pAllocator,
+                                               PSN_ALLOC_API_OBJ,
                                                numBlocks,
                                                pContext );
       if ( ptr == NULL ) {
          errcode = VDS_NOT_ENOUGH_VDS_MEMORY;
          goto the_exit;
       }
-      descLength = offsetof(vdseObjectDescriptor, originalName) + 
+      descLength = offsetof(psnObjectDescriptor, originalName) + 
           (partialLength+1) * sizeof(char);
-      pDesc = (vdseObjectDescriptor *) malloc( descLength );
+      pDesc = (psnObjectDescriptor *) malloc( descLength );
       if ( pDesc == NULL ) {
-         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+         psnFreeBlocks( pContext->pAllocator, PSN_ALLOC_API_OBJ,
                          ptr, numBlocks, pContext );
          errcode = VDS_NOT_ENOUGH_HEAP_MEMORY;
          goto the_exit;
@@ -1444,7 +1444,7 @@ bool vdseFolderInsertObject( vdseFolder          * pFolder,
       pDesc->nameLengthInBytes = partialLength * sizeof(char);
       memcpy( pDesc->originalName, originalName, pDesc->nameLengthInBytes );
 
-      errcode = vdseHashInsertAt( &pFolder->hashObj, 
+      errcode = psnHashInsertAt( &pFolder->hashObj, 
                                   bucket,
                                   (unsigned char *)objectName, 
                                   partialLength * sizeof(char), 
@@ -1453,7 +1453,7 @@ bool vdseFolderInsertObject( vdseFolder          * pFolder,
                                   &pHashItem,
                                   pContext );
       if ( errcode != VDS_OK ) {
-         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+         psnFreeBlocks( pContext->pAllocator, PSN_ALLOC_API_OBJ,
                          ptr, numBlocks, pContext );
          free( pDesc );
          goto the_exit;
@@ -1461,26 +1461,26 @@ bool vdseFolderInsertObject( vdseFolder          * pFolder,
 
       switch( pDefinition->type ) {
       case VDS_FOLDER:
-         memObjType = VDSE_IDENT_FOLDER;
+         memObjType = PSN_IDENT_FOLDER;
          break;
       case VDS_HASH_MAP:
-         memObjType = VDSE_IDENT_HASH_MAP;
+         memObjType = PSN_IDENT_HASH_MAP;
          break;
       case VDS_FAST_MAP:
-         memObjType = VDSE_IDENT_MAP;
+         memObjType = PSN_IDENT_MAP;
          break;
       case VDS_QUEUE:
       case VDS_LIFO:
-         memObjType = VDSE_IDENT_QUEUE;
+         memObjType = PSN_IDENT_QUEUE;
          break;
       default:
          VDS_POST_CONDITION( invalid_object_type );
       }
       
-      ok = vdseTxAddOps( (vdseTx*)pContext->pTransaction,
-                         VDSE_TX_ADD_OBJECT,
+      ok = psnTxAddOps( (psnTx*)pContext->pTransaction,
+                         PSN_TX_ADD_OBJECT,
                          SET_OFFSET(pFolder),
-                         VDSE_IDENT_FOLDER,
+                         PSN_IDENT_FOLDER,
                          SET_OFFSET(pHashItem),
                          memObjType,
                          pContext );
@@ -1488,23 +1488,23 @@ bool vdseFolderInsertObject( vdseFolder          * pFolder,
       free( pDesc ); 
       pDesc = NULL;
       if ( ! ok ) {
-         vdseHashDelWithItem( &pFolder->hashObj, 
+         psnHashDelWithItem( &pFolder->hashObj, 
                               pHashItem,
                               pContext );
-         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+         psnFreeBlocks( pContext->pAllocator, PSN_ALLOC_API_OBJ,
                          ptr, numBlocks, pContext );
          goto the_exit;
       }
       
       objTxStatus = &pHashItem->txStatus;
-      vdseTxStatusInit( objTxStatus, SET_OFFSET(pContext->pTransaction) );
-      objTxStatus->status = VDSE_TXS_ADDED;
+      psnTxStatusInit( objTxStatus, SET_OFFSET(pContext->pTransaction) );
+      objTxStatus->status = PSN_TXS_ADDED;
       
-      GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+      GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
       switch ( memObjType ) {
 
-      case VDSE_IDENT_QUEUE:
-         ok = vdseQueueInit( (vdseQueue *)ptr,
+      case PSN_IDENT_QUEUE:
+         ok = psnQueueInit( (psnQueue *)ptr,
                              SET_OFFSET(pFolder),
                              numBlocks,
                              objTxStatus,
@@ -1513,12 +1513,12 @@ bool vdseFolderInsertObject( vdseFolder          * pFolder,
                              SET_OFFSET(pHashItem),
                              pDefinition,
                              pContext );
-         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseQueue,nodeObject);
-         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseQueue,memObject);
+         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psnQueue,nodeObject);
+         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(psnQueue,memObject);
          break;
 
-      case VDSE_IDENT_FOLDER:
-         ok = vdseFolderInit( (vdseFolder*)ptr,
+      case PSN_IDENT_FOLDER:
+         ok = psnFolderInit( (psnFolder*)ptr,
                               SET_OFFSET(pFolder),
                               numBlocks,
                               expectedNumOfChilds,
@@ -1527,12 +1527,12 @@ bool vdseFolderInsertObject( vdseFolder          * pFolder,
                               pDesc->originalName,
                               SET_OFFSET(pHashItem),
                               pContext );
-         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseFolder,nodeObject);
-         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseFolder,memObject);
+         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psnFolder,nodeObject);
+         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(psnFolder,memObject);
          break;
       
-      case VDSE_IDENT_HASH_MAP:
-         ok = vdseHashMapInit( (vdseHashMap *)ptr,
+      case PSN_IDENT_HASH_MAP:
+         ok = psnHashMapInit( (psnHashMap *)ptr,
                                SET_OFFSET(pFolder),
                                numBlocks,
                                expectedNumOfChilds,
@@ -1542,12 +1542,12 @@ bool vdseFolderInsertObject( vdseFolder          * pFolder,
                                SET_OFFSET(pHashItem),
                                pDefinition,
                                pContext );
-         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseHashMap,nodeObject);
-         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseHashMap,memObject);
+         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psnHashMap,nodeObject);
+         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(psnHashMap,memObject);
          break;
 
-      case VDSE_IDENT_MAP:
-         ok = vdseMapInit( (vdseMap *)ptr,
+      case PSN_IDENT_MAP:
+         ok = psnMapInit( (psnMap *)ptr,
                            SET_OFFSET(pFolder),
                            numBlocks,
                            expectedNumOfChilds,
@@ -1558,8 +1558,8 @@ bool vdseFolderInsertObject( vdseFolder          * pFolder,
                            pDefinition,
                            pContext );
          VDS_POST_CONDITION( ok == true || ok == false );
-         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(vdseMap,nodeObject);
-         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(vdseMap,memObject);
+         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psnMap,nodeObject);
+         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(psnMap,memObject);
          break;
 
       default:
@@ -1569,11 +1569,11 @@ bool vdseFolderInsertObject( vdseFolder          * pFolder,
       VDS_POST_CONDITION( ok == true || ok == false );
 
       if ( ! ok ) {
-         vdseTxRemoveLastOps( (vdseTx*)pContext->pTransaction, pContext );
-         vdseHashDelWithItem( &pFolder->hashObj,
+         psnTxRemoveLastOps( (psnTx*)pContext->pTransaction, pContext );
+         psnHashDelWithItem( &pFolder->hashObj,
                               pHashItem,
                               pContext );
-         vdseFreeBlocks( pContext->pAllocator, VDSE_ALLOC_API_OBJ,
+         psnFreeBlocks( pContext->pAllocator, PSN_ALLOC_API_OBJ,
                          ptr, numBlocks, pContext );
          goto the_exit;
       }
@@ -1581,13 +1581,13 @@ bool vdseFolderInsertObject( vdseFolder          * pFolder,
       if ( previousHashItem != NULL ) {
          previousHashItem->nextSameKey = SET_OFFSET(pHashItem);
       }
-      vdseUnlock( &pFolder->memObject, pContext );
+      psnUnlock( &pFolder->memObject, pContext );
 
       return true;
    }
    
    /* If we come here, this was not the last iteration, so we continue */
-   found = vdseHashGet( &pFolder->hashObj, 
+   found = psnHashGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
                         partialLength * sizeof(char), 
                         &pHashItem,
@@ -1597,33 +1597,33 @@ bool vdseFolderInsertObject( vdseFolder          * pFolder,
       errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
    }
-   while ( pHashItem->nextSameKey != VDSE_NULL_OFFSET ) {
-      GET_PTR( pHashItem, pHashItem->nextSameKey, vdseHashItem );
+   while ( pHashItem->nextSameKey != PSN_NULL_OFFSET ) {
+      GET_PTR( pHashItem, pHashItem->nextSameKey, psnHashItem );
    }
    
    /* This is not the last node. This node must be a folder, otherwise... */
-   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
    if ( pDesc->apiType != VDS_FOLDER ) {
       errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
    }
    
-   errcode = vdseTxTestObjectStatus( &pHashItem->txStatus, 
+   errcode = psnTxTestObjectStatus( &pHashItem->txStatus, 
                                      SET_OFFSET(pContext->pTransaction) );
    if ( errcode != VDS_OK ) {
       errcode = VDS_NO_SUCH_FOLDER;
       goto the_exit;
    }
 
-   GET_PTR( pNextFolder, pDesc->offset, vdseFolder );   
-   if ( ! vdseLock( &pNextFolder->memObject, pContext ) ) {
+   GET_PTR( pNextFolder, pDesc->offset, psnFolder );   
+   if ( ! psnLock( &pNextFolder->memObject, pContext ) ) {
       errcode = VDS_OBJECT_CANNOT_GET_LOCK;
       goto the_exit;
    }
    
-   vdseUnlock( &pFolder->memObject, pContext );
+   psnUnlock( &pFolder->memObject, pContext );
 
-   ok = vdseFolderInsertObject( pNextFolder,
+   ok = psnFolderInsertObject( pNextFolder,
                                 &objectName[partialLength+1],
                                 &originalName[partialLength+1],
                                 strLength - partialLength - 1,
@@ -1645,23 +1645,23 @@ the_exit:
       pscSetError( &pContext->errorHandler, g_vdsErrorHandle, errcode );
    }
    
-   vdseUnlock( &pFolder->memObject, pContext );
+   psnUnlock( &pFolder->memObject, pContext );
    
    return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseFolderMyStatus( vdseFolder   * pFolder,
+void psnFolderMyStatus( psnFolder   * pFolder,
                          vdsObjStatus * pStatus )
 {
-   vdseTxStatus  * txStatus;
+   psnTxStatus  * txStatus;
 
    VDS_PRE_CONDITION( pFolder != NULL );
    VDS_PRE_CONDITION( pStatus != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
-   GET_PTR( txStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
 
    pStatus->status = txStatus->status;
    pStatus->numDataItem = pFolder->hashObj.numberOfItems;
@@ -1671,26 +1671,26 @@ void vdseFolderMyStatus( vdseFolder   * pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseFolderRelease( vdseFolder         * pFolder,
-                        vdseFolderItem     * pFolderItem,
-                        vdseSessionContext * pContext )
+bool psnFolderRelease( psnFolder         * pFolder,
+                        psnFolderItem     * pFolderItem,
+                        psnSessionContext * pContext )
 {
-   vdseTxStatus * txItemStatus, * txFolderStatus;
+   psnTxStatus * txItemStatus, * txFolderStatus;
    
    VDS_PRE_CONDITION( pFolder     != NULL );
    VDS_PRE_CONDITION( pFolderItem != NULL );
    VDS_PRE_CONDITION( pContext    != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
    txItemStatus = &pFolderItem->pHashItem->txStatus;
-   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
    
-   if ( vdseLock( &pFolder->memObject, pContext ) ) {
-      vdseFolderReleaseNoLock( pFolder,
+   if ( psnLock( &pFolder->memObject, pContext ) ) {
+      psnFolderReleaseNoLock( pFolder,
                                pFolderItem->pHashItem,
                                pContext );
 
-      vdseUnlock( &pFolder->memObject, pContext );
+      psnUnlock( &pFolder->memObject, pContext );
    }
    else {
       pscSetError( &pContext->errorHandler, g_vdsErrorHandle, VDS_OBJECT_CANNOT_GET_LOCK );
@@ -1703,19 +1703,19 @@ bool vdseFolderRelease( vdseFolder         * pFolder,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static
-void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
-                              vdseHashItem       * pHashItem,
-                              vdseSessionContext * pContext )
+void psnFolderReleaseNoLock( psnFolder         * pFolder,
+                              psnHashItem       * pHashItem,
+                              psnSessionContext * pContext )
 {
-   vdseTxStatus * txItemStatus, * txFolderStatus;
+   psnTxStatus * txItemStatus, * txFolderStatus;
    
    VDS_PRE_CONDITION( pFolder   != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
    txItemStatus = &pHashItem->txStatus;
-   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
    
    txItemStatus->parentCounter--;
    txFolderStatus->usageCounter--;
@@ -1728,10 +1728,10 @@ void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
     */
    if ( (txItemStatus->parentCounter == 0) && 
       (txItemStatus->usageCounter == 0) ) {
-      if ( txItemStatus->status & VDSE_TXS_DESTROYED_COMMITTED ||
-         txItemStatus->status & VDSE_TXS_EDIT_COMMITTED ) {
+      if ( txItemStatus->status & PSN_TXS_DESTROYED_COMMITTED ||
+         txItemStatus->status & PSN_TXS_EDIT_COMMITTED ) {
          /* Time to really delete the record! */
-         vdseFolderRemoveObject( pFolder,
+         psnFolderRemoveObject( pFolder,
                                  pHashItem,
                                  pContext );
       }
@@ -1743,12 +1743,12 @@ void vdseFolderReleaseNoLock( vdseFolder         * pFolder,
 /* 
  * lock on the folder is the responsability of the caller.
  */
-void vdseFolderRemoveObject( vdseFolder         * pFolder,
-                             vdseHashItem       * pHashItem,
-                             vdseSessionContext * pContext )
+void psnFolderRemoveObject( psnFolder         * pFolder,
+                             psnHashItem       * pHashItem,
+                             psnSessionContext * pContext )
 {
-   vdseHashItem * previousItem = NULL;
-   vdseObjectDescriptor * pDesc;
+   psnHashItem * previousItem = NULL;
+   psnObjectDescriptor * pDesc;
    void * ptrObject;
    size_t bucket;
    bool found;
@@ -1756,13 +1756,13 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
    VDS_PRE_CONDITION( pFolder   != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( pFolder->memObject.objType == VDSE_IDENT_FOLDER );
+   VDS_PRE_CONDITION( pFolder->memObject.objType == PSN_IDENT_FOLDER );
 
-   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
    GET_PTR( ptrObject, pDesc->offset, void );
 
    /* We search for the bucket */
-   found = vdseHashGet( &pFolder->hashObj, 
+   found = psnHashGet( &pFolder->hashObj, 
                         pHashItem->key, 
                         pHashItem->keyLength, 
                         &previousItem,
@@ -1775,14 +1775,14 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
     *
     * Note: the hash array will release the memory of the hash item.
     */
-   vdseHashDelWithItem( &pFolder->hashObj, 
+   psnHashDelWithItem( &pFolder->hashObj, 
                         pHashItem,
                         pContext );
 
    pFolder->nodeObject.txCounter--;
 
    /* If needed */
-   vdseFolderResize( pFolder, pContext );
+   psnFolderResize( pFolder, pContext );
 
    /*
     * Since the object is now remove from the hash, all we need
@@ -1791,17 +1791,17 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
     */
    switch ( pDesc->apiType ) {
    case VDS_FOLDER:
-      vdseFolderFini( (vdseFolder*)ptrObject, pContext );
+      psnFolderFini( (psnFolder*)ptrObject, pContext );
       break;
    case VDS_HASH_MAP:
-      vdseHashMapFini( (vdseHashMap *)ptrObject, pContext );
+      psnHashMapFini( (psnHashMap *)ptrObject, pContext );
       break;
    case VDS_QUEUE:
    case VDS_LIFO:
-      vdseQueueFini( (vdseQueue *)ptrObject, pContext );
+      psnQueueFini( (psnQueue *)ptrObject, pContext );
       break;
    case VDS_FAST_MAP:
-      vdseMapFini( (vdseMap *)ptrObject, pContext );
+      psnMapFini( (psnMap *)ptrObject, pContext );
       break;
    case VDS_LAST_OBJECT_TYPE:
       ;
@@ -1810,10 +1810,10 @@ void vdseFolderRemoveObject( vdseFolder         * pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseFolderResize( vdseFolder         * pFolder, 
-                       vdseSessionContext * pContext  )
+void psnFolderResize( psnFolder         * pFolder, 
+                       psnSessionContext * pContext  )
 {
-   vdseTxStatus * txFolderStatus;
+   psnTxStatus * txFolderStatus;
    
    VDS_PRE_CONDITION( pFolder  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );
@@ -1826,44 +1826,44 @@ void vdseFolderResize( vdseFolder         * pFolder,
     *   - nodeObject.txCounter: offset to some of our data is part of a
     *                           transaction.
     */
-   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
    if ( (txFolderStatus->usageCounter == 0) &&
       (pFolder->nodeObject.txCounter == 0 ) ) {
-      if ( pFolder->hashObj.enumResize != VDSE_HASH_NO_RESIZE )
-         vdseHashResize( &pFolder->hashObj, pContext );
+      if ( pFolder->hashObj.enumResize != PSN_HASH_NO_RESIZE )
+         psnHashResize( &pFolder->hashObj, pContext );
    }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdseFolderRollbackEdit( vdseFolder         * pFolder,
-                             vdseHashItem       * pHashItem, 
+void psnFolderRollbackEdit( psnFolder         * pFolder,
+                             psnHashItem       * pHashItem, 
                              enum vdsObjectType   objectType,
-                             vdseSessionContext * pContext )
+                             psnSessionContext * pContext )
 {
-   vdseObjectDescriptor * pDesc, * pDescLatest;
-   vdseMap * pMapLatest, * pMapEdit;
-   vdseHashItem * pHashItemLatest;
-   vdseTreeNode * tree;
-   vdseTxStatus * tx;
+   psnObjectDescriptor * pDesc, * pDescLatest;
+   psnMap * pMapLatest, * pMapEdit;
+   psnHashItem * pHashItemLatest;
+   psnTreeNode * tree;
+   psnTxStatus * tx;
    
    VDS_PRE_CONDITION( pFolder   != NULL );
    VDS_PRE_CONDITION( pHashItem != NULL );
    VDS_PRE_CONDITION( pContext  != NULL );
-   VDS_PRE_CONDITION( objectType == VDSE_IDENT_MAP );
+   VDS_PRE_CONDITION( objectType == PSN_IDENT_MAP );
 
-   GET_PTR( pDesc, pHashItem->dataOffset, vdseObjectDescriptor );
+   GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
 
-   pMapEdit = GET_PTR_FAST( pDesc->offset, vdseMap );
+   pMapEdit = GET_PTR_FAST( pDesc->offset, psnMap );
    
    VDS_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
    
-   pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, vdseHashItem );
+   pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, psnHashItem );
    pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
-                               vdseObjectDescriptor );
-   pMapLatest = GET_PTR_FAST( pDescLatest->offset, vdseMap );
+                               psnObjectDescriptor );
+   pMapLatest = GET_PTR_FAST( pDescLatest->offset, psnMap );
    
-   pMapLatest->editVersion = VDSE_NULL_OFFSET;
+   pMapLatest->editVersion = PSN_NULL_OFFSET;
 
    /* We remove our edit version from the folder - this one is pretty
     * obvious. We also release the latest version, which basically means
@@ -1871,17 +1871,17 @@ void vdseFolderRollbackEdit( vdseFolder         * pFolder,
     * remove the map entirely (if it was destroyed - not open and the
     * current edit session was the only thing standing in the way
     */
-   vdseHashDelWithItem( &pFolder->hashObj, pHashItem, pContext );
+   psnHashDelWithItem( &pFolder->hashObj, pHashItem, pContext );
    /* If needed */
-   vdseFolderResize( pFolder, pContext );
+   psnFolderResize( pFolder, pContext );
 
-   vdseMapFini( pMapEdit, pContext );
+   psnMapFini( pMapEdit, pContext );
       
-   tree = GET_PTR_FAST( pDescLatest->nodeOffset, vdseTreeNode );
-   tx = GET_PTR_FAST( tree->txStatusOffset, vdseTxStatus );
-   vdseTxStatusRollbackEdit( tx );
+   tree = GET_PTR_FAST( pDescLatest->nodeOffset, psnTreeNode );
+   tx = GET_PTR_FAST( tree->txStatusOffset, psnTxStatus );
+   psnTxStatusRollbackEdit( tx );
 
-   vdseFolderReleaseNoLock( pFolder,
+   psnFolderReleaseNoLock( pFolder,
                             pHashItemLatest,
                             pContext );
 }
@@ -1895,28 +1895,28 @@ void vdseFolderRollbackEdit( vdseFolder         * pFolder,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
-                               vdseSessionContext * pContext )
+bool psnTopFolderCloseObject( psnFolderItem     * pFolderItem,
+                               psnSessionContext * pContext )
 {
-   vdseFolder   * parentFolder;
-   vdseTreeNode * pNode;
-   vdseTxStatus * txItemStatus, * txFolderStatus;
-   vdseObjectDescriptor * pDesc;
+   psnFolder   * parentFolder;
+   psnTreeNode * pNode;
+   psnTxStatus * txItemStatus, * txFolderStatus;
+   psnObjectDescriptor * pDesc;
    
    VDS_PRE_CONDITION( pFolderItem != NULL );
    VDS_PRE_CONDITION( pContext    != NULL );
 
-   GET_PTR( pDesc, pFolderItem->pHashItem->dataOffset, vdseObjectDescriptor );
-   GET_PTR( pNode, pDesc->nodeOffset, vdseTreeNode);
+   GET_PTR( pDesc, pFolderItem->pHashItem->dataOffset, psnObjectDescriptor );
+   GET_PTR( pNode, pDesc->nodeOffset, psnTreeNode);
    
    /* Special case, the top folder */
-   if ( pNode->myParentOffset == VDSE_NULL_OFFSET ) return 0;
+   if ( pNode->myParentOffset == PSN_NULL_OFFSET ) return 0;
 
-   GET_PTR( parentFolder, pNode->myParentOffset, vdseFolder );
-   GET_PTR( txFolderStatus, parentFolder->nodeObject.txStatusOffset, vdseTxStatus );
+   GET_PTR( parentFolder, pNode->myParentOffset, psnFolder );
+   GET_PTR( txFolderStatus, parentFolder->nodeObject.txStatusOffset, psnTxStatus );
    
-   if ( vdseLock( &parentFolder->memObject, pContext ) ) {
-      GET_PTR( txItemStatus, pNode->txStatusOffset, vdseTxStatus );
+   if ( psnLock( &parentFolder->memObject, pContext ) ) {
+      GET_PTR( txItemStatus, pNode->txStatusOffset, psnTxStatus );
       txItemStatus->parentCounter--;
       txFolderStatus->usageCounter--;
       
@@ -1928,15 +1928,15 @@ bool vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
        */
       if ( (txItemStatus->parentCounter == 0) && 
          (txItemStatus->usageCounter == 0) ) {
-         if ( txItemStatus->status & VDSE_TXS_DESTROYED_COMMITTED ||
-            txItemStatus->status & VDSE_TXS_EDIT_COMMITTED ) {
+         if ( txItemStatus->status & PSN_TXS_DESTROYED_COMMITTED ||
+            txItemStatus->status & PSN_TXS_EDIT_COMMITTED ) {
             /* Time to really delete the object and the record! */
-            vdseFolderRemoveObject( parentFolder,
+            psnFolderRemoveObject( parentFolder,
                                     pFolderItem->pHashItem,
                                     pContext );
          }
       }
-      vdseUnlock( &parentFolder->memObject, pContext );
+      psnUnlock( &parentFolder->memObject, pContext );
 
       return true;
    }
@@ -1948,11 +1948,11 @@ bool vdseTopFolderCloseObject( vdseFolderItem     * pFolderItem,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseTopFolderCreateObject( vdseFolder          * pFolder,
+bool psnTopFolderCreateObject( psnFolder          * pFolder,
                                 const char          * objectName,
                                 size_t                nameLengthInBytes,
                                 vdsObjectDefinition * pDefinition,
-                                vdseSessionContext  * pContext )
+                                psnSessionContext  * pContext )
 {
    vdsErrors errcode = VDS_OK;
    size_t strLength, i;
@@ -2001,13 +2001,13 @@ bool vdseTopFolderCreateObject( vdseFolder          * pFolder,
    }
 
    /*
-    * There is no vdseUnlock here - the recursive nature of the 
-    * function vdseFolderInsertObject() means that it will release 
+    * There is no psnUnlock here - the recursive nature of the 
+    * function psnFolderInsertObject() means that it will release 
     * the lock as soon as it can, after locking the
     * next folder in the chain if needed. 
     */
-   if ( vdseLock( &pFolder->memObject, pContext ) ) {
-      ok = vdseFolderInsertObject( pFolder,
+   if ( psnLock( &pFolder->memObject, pContext ) ) {
+      ok = psnFolderInsertObject( pFolder,
                                    &(lowerName[first]),
                                    &(name[first]),
                                    strLength, 
@@ -2044,10 +2044,10 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseTopFolderDestroyObject( vdseFolder         * pFolder,
+bool psnTopFolderDestroyObject( psnFolder         * pFolder,
                                  const char         * objectName,
                                  size_t               nameLengthInBytes,
-                                 vdseSessionContext * pContext )
+                                 psnSessionContext * pContext )
 {
    vdsErrors errcode = VDS_OK;
    size_t strLength, i;
@@ -2093,13 +2093,13 @@ bool vdseTopFolderDestroyObject( vdseFolder         * pFolder,
    }
 
    /*
-    * There is no vdseUnlock here - the recursive nature of the 
-    * function vdseFolderDeleteObject() means that it will release 
+    * There is no psnUnlock here - the recursive nature of the 
+    * function psnFolderDeleteObject() means that it will release 
     * the lock as soon as it can, after locking the
     * next folder in the chain if needed. 
     */
-   if ( vdseLock( &pFolder->memObject, pContext ) ) {
-      ok = vdseFolderDeleteObject( pFolder,
+   if ( psnLock( &pFolder->memObject, pContext ) ) {
+      ok = psnFolderDeleteObject( pFolder,
                                    &(lowerName[first]), 
                                    strLength,
                                    pContext );
@@ -2132,12 +2132,12 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseTopFolderEditObject( vdseFolder         * pFolder,
+bool psnTopFolderEditObject( psnFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
                               enum vdsObjectType   objectType, 
-                              vdseFolderItem     * pFolderItem,
-                              vdseSessionContext * pContext )
+                              psnFolderItem     * pFolderItem,
+                              psnSessionContext * pContext )
 {
    vdsErrors errcode = VDS_OK;
    size_t strLength, i;
@@ -2189,17 +2189,17 @@ bool vdseTopFolderEditObject( vdseFolder         * pFolder,
          errcode = VDS_WRONG_OBJECT_TYPE;
          goto error_handler;
       }
-      pFolderItem->pHashItem = &((vdseMemoryHeader *) g_pBaseAddr)->topHashItem;
+      pFolderItem->pHashItem = &((psnMemoryHeader *) g_pBaseAddr)->topHashItem;
    }
    else {
       /*
-       * There is no vdseUnlock here - the recursive nature of the 
-       * function vdseFolderEditObject() means that it will release 
+       * There is no psnUnlock here - the recursive nature of the 
+       * function psnFolderEditObject() means that it will release 
        * the lock as soon as it can, after locking the
        * next folder in the chain if needed. 
        */
-      if ( vdseLock( &pFolder->memObject, pContext ) ) {
-         ok = vdseFolderEditObject( pFolder,
+      if ( psnLock( &pFolder->memObject, pContext ) ) {
+         ok = psnFolderEditObject( pFolder,
                                     &(lowerName[first]), 
                                     strLength, 
                                     objectType,
@@ -2235,12 +2235,12 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseTopFolderGetDef( vdseFolder          * pFolder,
+bool psnTopFolderGetDef( psnFolder          * pFolder,
                           const char          * objectName,
                           size_t                nameLengthInBytes,
                           vdsObjectDefinition * pDefinition,
-                          vdseFieldDef       ** ppInternalDef,
-                          vdseSessionContext  * pContext )
+                          psnFieldDef       ** ppInternalDef,
+                          psnSessionContext  * pContext )
 {
    vdsErrors errcode = VDS_OK;
    size_t strLength, i;
@@ -2288,10 +2288,10 @@ bool vdseTopFolderGetDef( vdseFolder          * pFolder,
 
    if ( strLength == 0 ) {
       /* Getting the status of the top folder (special case). */
-      if ( vdseLock( &pFolder->memObject, pContext ) ) {
+      if ( psnLock( &pFolder->memObject, pContext ) ) {
          pDefinition->type = VDS_FOLDER;
          
-         vdseUnlock( &pFolder->memObject, pContext );
+         psnUnlock( &pFolder->memObject, pContext );
       }
       else {
          errcode = VDS_OBJECT_CANNOT_GET_LOCK;
@@ -2300,13 +2300,13 @@ bool vdseTopFolderGetDef( vdseFolder          * pFolder,
    }
    else {
       /*
-       * There is no vdseUnlock here - the recursive nature of the 
-       * function vdseFolderGetDefinition() means that it will release 
+       * There is no psnUnlock here - the recursive nature of the 
+       * function psnFolderGetDefinition() means that it will release 
        * the lock as soon as it can, after locking the
        * next folder in the chain if needed. 
        */
-      if ( vdseLock( &pFolder->memObject, pContext ) ) {
-         ok = vdseFolderGetDefinition( pFolder,
+      if ( psnLock( &pFolder->memObject, pContext ) ) {
+         ok = psnFolderGetDefinition( pFolder,
                                        &(lowerName[first]), 
                                        strLength, 
                                        pDefinition,
@@ -2342,11 +2342,11 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseTopFolderGetStatus( vdseFolder         * pFolder,
+bool psnTopFolderGetStatus( psnFolder         * pFolder,
                              const char         * objectName,
                              size_t               nameLengthInBytes,
                              vdsObjStatus       * pStatus,
-                             vdseSessionContext * pContext )
+                             psnSessionContext * pContext )
 {
    vdsErrors errcode = VDS_OK;
    size_t strLength, i;
@@ -2391,13 +2391,13 @@ bool vdseTopFolderGetStatus( vdseFolder         * pFolder,
 
    if ( strLength == 0 ) {
       /* Getting the status of the top folder (special case). */
-      if ( vdseLock( &pFolder->memObject, pContext ) ) {
-         vdseMemObjectStatus( &pFolder->memObject, pStatus );
+      if ( psnLock( &pFolder->memObject, pContext ) ) {
+         psnMemObjectStatus( &pFolder->memObject, pStatus );
          pStatus->type = VDS_FOLDER;
          
-         vdseFolderMyStatus( pFolder, pStatus );
+         psnFolderMyStatus( pFolder, pStatus );
 
-         vdseUnlock( &pFolder->memObject, pContext );
+         psnUnlock( &pFolder->memObject, pContext );
       }
       else {
          errcode = VDS_OBJECT_CANNOT_GET_LOCK;
@@ -2406,13 +2406,13 @@ bool vdseTopFolderGetStatus( vdseFolder         * pFolder,
    }
    else {
       /*
-       * There is no vdseUnlock here - the recursive nature of the 
-       * function vdseFolderGetStatus() means that it will release 
+       * There is no psnUnlock here - the recursive nature of the 
+       * function psnFolderGetStatus() means that it will release 
        * the lock as soon as it can, after locking the
        * next folder in the chain if needed. 
        */
-      if ( vdseLock( &pFolder->memObject, pContext ) ) {
-         ok = vdseFolderGetStatus( pFolder,
+      if ( psnLock( &pFolder->memObject, pContext ) ) {
+         ok = psnFolderGetStatus( pFolder,
                                    &(lowerName[first]), 
                                    strLength, 
                                    pStatus,
@@ -2447,12 +2447,12 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdseTopFolderOpenObject( vdseFolder         * pFolder,
+bool psnTopFolderOpenObject( psnFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
                               enum vdsObjectType   objectType, 
-                              vdseFolderItem     * pFolderItem,
-                              vdseSessionContext * pContext )
+                              psnFolderItem     * pFolderItem,
+                              psnSessionContext * pContext )
 {
    vdsErrors errcode = VDS_OK;
    size_t strLength, i;
@@ -2504,17 +2504,17 @@ bool vdseTopFolderOpenObject( vdseFolder         * pFolder,
          errcode = VDS_WRONG_OBJECT_TYPE;
          goto error_handler;
       }
-      pFolderItem->pHashItem = &((vdseMemoryHeader *) g_pBaseAddr)->topHashItem;
+      pFolderItem->pHashItem = &((psnMemoryHeader *) g_pBaseAddr)->topHashItem;
    }
    else {
       /*
-       * There is no vdseUnlock here - the recursive nature of the 
-       * function vdseFolderGetObject() means that it will release 
+       * There is no psnUnlock here - the recursive nature of the 
+       * function psnFolderGetObject() means that it will release 
        * the lock as soon as it can, after locking the
        * next folder in the chain if needed. 
        */
-      if ( vdseLock( &pFolder->memObject, pContext ) ) {
-         ok = vdseFolderGetObject( pFolder,
+      if ( psnLock( &pFolder->memObject, pContext ) ) {
+         ok = psnFolderGetObject( pFolder,
                                    &(lowerName[first]), 
                                    strLength, 
                                    objectType,
@@ -2550,7 +2550,7 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdsErrors vdseValidateString( const char * objectName,
+vdsErrors psnValidateString( const char * objectName,
                               size_t       strLength, 
                               size_t     * pPartialLength,
                               bool       * pLastIteration )

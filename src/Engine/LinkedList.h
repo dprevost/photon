@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_DLINKED_LIST_H
-#define VDSE_DLINKED_LIST_H
+#ifndef PSN_DLINKED_LIST_H
+#define PSN_DLINKED_LIST_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,7 +33,7 @@ BEGIN_C_DECLS
  * of LinkedList.c at that time... The signature is used to indicate
  * that the struct was properly initialized.
  */
-#define VDSE_LIST_SIGNATURE  ((unsigned int)0x7a3dc233)
+#define PSN_LIST_SIGNATURE  ((unsigned int)0x7a3dc233)
 
 /**
  * This module implements a simple and efficient doubled linked list.
@@ -45,96 +45,96 @@ BEGIN_C_DECLS
  * 2) They will not do synchronisation (locking). Again, this task is left
  *    to the object owning/using the list.
  */	
-struct vdseLinkedList
+struct psnLinkedList
 {
    /** The dummy node of the circular linked list. */
-   vdseLinkNode head;
+   psnLinkNode head;
 
    /** Current size of the list. */
    size_t currentSize;
 
-   /** Set to VDSE_LIST_SIGNATURE at initialization. */
+   /** Set to PSN_LIST_SIGNATURE at initialization. */
    unsigned int initialized;
    
 };
 
-typedef struct vdseLinkedList vdseLinkedList;
+typedef struct psnLinkedList psnLinkedList;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Cleanup the list once we're done with it. */
 VDSF_ENGINE_EXPORT void 
-vdseLinkedListFini( vdseLinkedList * pList );
+psnLinkedListFini( psnLinkedList * pList );
 
 /** Removes and returns the first item on the list. */
 static inline 
-bool vdseLinkedListGetFirst( vdseLinkedList  * pList,
-                             vdseLinkNode   ** ppItem );
+bool psnLinkedListGetFirst( psnLinkedList  * pList,
+                             psnLinkNode   ** ppItem );
 
 /** Removes and returns the last item on the list. */ 
 static inline 
-bool vdseLinkedListGetLast( vdseLinkedList  * pList,
-                            vdseLinkNode   ** ppItem );
+bool psnLinkedListGetLast( psnLinkedList  * pList,
+                            psnLinkNode   ** ppItem );
 
 /** Initialize the linked list. */
 VDSF_ENGINE_EXPORT 
-void vdseLinkedListInit( vdseLinkedList * pList );
+void psnLinkedListInit( psnLinkedList * pList );
 
 /** Adds pNewItem to the beginning of the list. */
 static inline 
-void vdseLinkedListPutFirst( vdseLinkedList * pList,
-                             vdseLinkNode   * pNewItem );
+void psnLinkedListPutFirst( psnLinkedList * pList,
+                             psnLinkNode   * pNewItem );
 
 /** Adds pNewItem to the tail of the list. */
 static inline 
-void vdseLinkedListPutLast( vdseLinkedList * pList,
-                            vdseLinkNode   * pNewItem );
+void psnLinkedListPutLast( psnLinkedList * pList,
+                            psnLinkNode   * pNewItem );
 
 /** Returns the first item on the list. The item is not removed. */
 static inline
-bool vdseLinkedListPeakFirst( vdseLinkedList  * pList,
-                              vdseLinkNode   ** ppItem );
+bool psnLinkedListPeakFirst( psnLinkedList  * pList,
+                              psnLinkNode   ** ppItem );
 
 /** Returns the last item on the list. The item is not removed. */
 static inline
-bool vdseLinkedListPeakLast( vdseLinkedList  * pList,
-                             vdseLinkNode   ** ppItem );
+bool psnLinkedListPeakLast( psnLinkedList  * pList,
+                             psnLinkNode   ** ppItem );
 
 /** Returns the item just after pCurrent. The item is not removed. */
 static inline
-bool vdseLinkedListPeakNext( vdseLinkedList * pList, 
-                             vdseLinkNode   * pCurrent, 
-                             vdseLinkNode  ** ppNext );
+bool psnLinkedListPeakNext( psnLinkedList * pList, 
+                             psnLinkNode   * pCurrent, 
+                             psnLinkNode  ** ppNext );
 
 /** Returns the item just before pCurrent. The item is not removed. */
 static inline
-bool vdseLinkedListPeakPrevious( vdseLinkedList * pList,
-                                 vdseLinkNode   * pCurrent, 
-                                 vdseLinkNode  ** ppPrevious );
+bool psnLinkedListPeakPrevious( psnLinkedList * pList,
+                                 psnLinkNode   * pCurrent, 
+                                 psnLinkNode  ** ppPrevious );
 
 /** 
  * Remove the item pointed to by pRemovedItem from the list (this 
  * assumes that pRemovedItem is in the list... otherwise big trouble!)
  */
 static inline
-void vdseLinkedListRemoveItem( vdseLinkedList * pList,
-                               vdseLinkNode   * pRemovedItem );
+void psnLinkedListRemoveItem( psnLinkedList * pList,
+                               psnLinkNode   * pRemovedItem );
 
 /** 
  * Replace the item pointed to by pOldItem with the item pNewItem (this 
  * assumes that pOldItem is in the list... otherwise big trouble!)
  */
 static inline 
-void vdseLinkedListReplaceItem( vdseLinkedList * pList,
-                                vdseLinkNode   * pOldItem,
-                                vdseLinkNode   * pNewItem );
+void psnLinkedListReplaceItem( psnLinkedList * pList,
+                                psnLinkNode   * pOldItem,
+                                psnLinkNode   * pNewItem );
 
 /** Search in the list to see if pUnknown is in it or not - used by the
- *  crash recovery algorithm, vdseFree, etc. 
+ *  crash recovery algorithm, psnFree, etc. 
  */
 VDSF_ENGINE_EXPORT 
-bool vdseLinkedListIsValid( vdseLinkedList * pList,
-                            vdseLinkNode   * pUnknown );
+bool psnLinkedListIsValid( psnLinkedList * pList,
+                            psnLinkNode   * pUnknown );
 
 /*
  * The next functions are part of the recovery algorithm and should not
@@ -145,7 +145,7 @@ bool vdseLinkedListIsValid( vdseLinkedList * pList,
  *  crash recovery algorithm
  */
 VDSF_ENGINE_EXPORT 
-void vdseLinkedListReset( vdseLinkedList * pList );
+void psnLinkedListReset( psnLinkedList * pList );
 
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -158,7 +158,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_DLINKED_LIST_H */
+#endif /* PSN_DLINKED_LIST_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

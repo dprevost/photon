@@ -24,45 +24,45 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseMemObject* pObj;
+   psnMemObject* pObj;
    vdsErrors errcode;
-   vdseSessionContext context;
+   psnSessionContext context;
    unsigned char *buff[9];
    vdstObjDummy  *pDummy;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    pObj = &pDummy->memObject;
    
-   errcode = vdseMemObjectInit( pObj, 
-                                VDSE_IDENT_ALLOCATOR,
+   errcode = psnMemObjectInit( pObj, 
+                                PSN_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   buff[0] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
+   buff[0] = psnMalloc( pObj, PSN_BLOCK_SIZE, &context );
    if ( buff[0] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   buff[1] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
+   buff[1] = psnMalloc( pObj, PSN_BLOCK_SIZE, &context );
    if ( buff[1] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   buff[2] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
+   buff[2] = psnMalloc( pObj, PSN_BLOCK_SIZE, &context );
    if ( buff[2] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseFree( pObj, buff[1], VDSE_BLOCK_SIZE, &context );
+   psnFree( pObj, buff[1], PSN_BLOCK_SIZE, &context );
    if ( pDummy->blockGroup.maxFreeBytes != 
-        pDummy->blockGroup.freeBytes+2*VDSE_BLOCK_SIZE ) {
+        pDummy->blockGroup.freeBytes+2*PSN_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   vdseFree( pObj, buff[2], VDSE_BLOCK_SIZE, &context );
-   vdseFree( pObj, buff[0], VDSE_BLOCK_SIZE, &context );
+   psnFree( pObj, buff[2], PSN_BLOCK_SIZE, &context );
+   psnFree( pObj, buff[0], PSN_BLOCK_SIZE, &context );
    if ( pObj->totalBlocks != 4 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -70,7 +70,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   buff[0] = vdseMalloc( pObj, 3*VDSE_BLOCK_SIZE, &context );
+   buff[0] = psnMalloc( pObj, 3*PSN_BLOCK_SIZE, &context );
    if ( buff[0] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -79,10 +79,10 @@ int main()
    }
    
    /* Needs two new blocks at this point */
-   if ( pDummy->blockGroup.freeBytes >= VDSE_BLOCK_SIZE ) {
+   if ( pDummy->blockGroup.freeBytes >= PSN_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   buff[3] = vdseMalloc( pObj, VDSE_BLOCK_SIZE, &context );
+   buff[3] = psnMalloc( pObj, PSN_BLOCK_SIZE, &context );
    if ( buff[3] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -90,12 +90,12 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseFree( pObj, buff[3], VDSE_BLOCK_SIZE, &context );
+   psnFree( pObj, buff[3], PSN_BLOCK_SIZE, &context );
    if ( pObj->totalBlocks != 4 ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = vdseMemObjectFini( pObj, VDSE_ALLOC_ANY, &context );
+   errcode = psnMemObjectFini( pObj, PSN_ALLOC_ANY, &context );
    if ( errcode != VDS_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

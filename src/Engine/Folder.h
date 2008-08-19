@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_FOLDER_H
-#define VDSE_FOLDER_H
+#ifndef PSN_FOLDER_H
+#define PSN_FOLDER_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,9 +33,9 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdseFolderItem
+struct psnFolderItem
 {
-   vdseHashItem * pHashItem;
+   psnHashItem * pHashItem;
 
    ptrdiff_t   itemOffset;
 
@@ -43,7 +43,7 @@ struct vdseFolderItem
    
 };
 
-typedef struct vdseFolderItem vdseFolderItem;
+typedef struct psnFolderItem psnFolderItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -51,135 +51,135 @@ typedef struct vdseFolderItem vdseFolderItem;
  * Wrapper for the container holding the information on the tree of
  * shared objects.
  */
-struct vdseFolder
+struct psnFolder
 {
    /** The memory object struct. */
-   struct vdseMemObject memObject;
+   struct psnMemObject memObject;
 
    /** Basic info for all leaves and branches of our tree. */
-   struct vdseTreeNode  nodeObject;
+   struct psnTreeNode  nodeObject;
 
-   struct vdseHash      hashObj;
+   struct psnHash      hashObj;
 
    /** Variable size struct - always put at the end */
-   struct vdseBlockGroup blockGroup;
+   struct psnBlockGroup blockGroup;
 
 };
 
-typedef struct vdseFolder vdseFolder;
+typedef struct psnFolder psnFolder;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-void vdseFolderCommitEdit( vdseFolder          * pFolder,
-                           vdseHashItem        * pHashItem, 
+void psnFolderCommitEdit( psnFolder          * pFolder,
+                           psnHashItem        * pHashItem, 
                            enum vdsObjectType    objectType,
-                           vdseSessionContext  * pContext );
+                           psnSessionContext  * pContext );
 
 /**
  * Creates an immediate child of the folder.
  */
 VDSF_ENGINE_EXPORT
-bool vdseFolderCreateObject( vdseFolder          * pFolder,
+bool psnFolderCreateObject( psnFolder          * pFolder,
                              const char          * objectName,
                              size_t                nameLengthInBytes,
                              vdsObjectDefinition * pDefinition,
-                             vdseSessionContext  * pContext );
+                             psnSessionContext  * pContext );
 
 /**
  * Delete an object, recursively.
  */ 
 VDSF_ENGINE_EXPORT
-bool vdseFolderDeleteObject( vdseFolder         * pFolder,
+bool psnFolderDeleteObject( psnFolder         * pFolder,
                              const char         * objectName,
                              size_t               strLength, 
-                             vdseSessionContext * pContext );
+                             psnSessionContext * pContext );
 
 /**
  * Destroy an immediate child of the folder.
  */
 VDSF_ENGINE_EXPORT
-bool vdseFolderDestroyObject( vdseFolder         * pFolder,
+bool psnFolderDestroyObject( psnFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
-                              vdseSessionContext * pContext );
+                              psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseFolderEditObject( vdseFolder         * pFolder,
+bool psnFolderEditObject( psnFolder         * pFolder,
                            const char         * objectName,
                            size_t               strLength, 
                            enum vdsObjectType   objectType, 
-                           vdseFolderItem     * pFolderItem,
-                           vdseSessionContext * pContext );
+                           psnFolderItem     * pFolderItem,
+                           psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseFolderFini( vdseFolder         * pFolder,
-                     vdseSessionContext * pContext );
+void psnFolderFini( psnFolder         * pFolder,
+                     psnSessionContext * pContext );
 
 
 VDSF_ENGINE_EXPORT
-bool vdseFolderGetDefinition( vdseFolder          * pFolder,
+bool psnFolderGetDefinition( psnFolder          * pFolder,
                               const char          * objectName,
                               size_t                strLength,
                               vdsObjectDefinition * pDefinition,
-                              vdseFieldDef       ** ppInternalDef,
-                              vdseSessionContext  * pContext );
+                              psnFieldDef       ** ppInternalDef,
+                              psnSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseFolderGetFirst( vdseFolder         * pFolder,
-                         vdseFolderItem     * pItem,
-                         vdseSessionContext * pContext );
+bool psnFolderGetFirst( psnFolder         * pFolder,
+                         psnFolderItem     * pItem,
+                         psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseFolderGetNext( vdseFolder         * pFolder,
-                        vdseFolderItem     * pItem,
-                        vdseSessionContext * pContext );
+bool psnFolderGetNext( psnFolder         * pFolder,
+                        psnFolderItem     * pItem,
+                        psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseFolderGetObject( vdseFolder         * pFolder,
+bool psnFolderGetObject( psnFolder         * pFolder,
                           const char         * objectName,
                           size_t               strLength, 
                           enum vdsObjectType   objectType, 
-                          vdseFolderItem     * pFolderItem,
-                          vdseSessionContext * pContext );
+                          psnFolderItem     * pFolderItem,
+                          psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseFolderGetStatus( vdseFolder         * pFolder,
+bool psnFolderGetStatus( psnFolder         * pFolder,
                           const char         * objectName,
                           size_t               strLength, 
                           vdsObjStatus       * pStatus,
-                          vdseSessionContext * pContext );
+                          psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseFolderInit( vdseFolder         * pFolder,
+bool psnFolderInit( psnFolder         * pFolder,
                      ptrdiff_t            parentOffset,
                      size_t               numberOfBlocks,
                      size_t               expectedNumOfChilds,
-                     vdseTxStatus       * pTxStatus,
+                     psnTxStatus       * pTxStatus,
                      size_t               origNameLength,
                      char               * origName,
                      ptrdiff_t            hashItemOffset,
-                     vdseSessionContext * pContext );
+                     psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseFolderInsertObject( vdseFolder          * pFolder,
+bool psnFolderInsertObject( psnFolder          * pFolder,
                              const char          * objectName,
                              const char          * originalName,
                              size_t                strLength,
                              vdsObjectDefinition * pDefinition,
                              size_t                numBlocks,
                              size_t                expectedNumOfChilds,
-                             vdseSessionContext  * pContext );
+                             psnSessionContext  * pContext );
 
 /* Retrieve the status of the current folder */
 VDSF_ENGINE_EXPORT
-void vdseFolderMyStatus( vdseFolder   * pFolder,
+void psnFolderMyStatus( psnFolder   * pFolder,
                          vdsObjStatus * pStatus );
 
 VDSF_ENGINE_EXPORT
-bool vdseFolderRelease( vdseFolder         * pFolder,
-                        vdseFolderItem     * pItem,
-                        vdseSessionContext * pContext );
+bool psnFolderRelease( psnFolder         * pFolder,
+                        psnFolderItem     * pItem,
+                        psnSessionContext * pContext );
 
 /** 
  * This function does the actual removal of the entry in the list of the
@@ -187,20 +187,20 @@ bool vdseFolderRelease( vdseFolder         * pFolder,
  * have this object open, etc...).
  */
 VDSF_ENGINE_EXPORT
-void vdseFolderRemoveObject( vdseFolder         * pFolder,
-                             vdseHashItem       * pHashItem,
-                             vdseSessionContext * pContext );
+void psnFolderRemoveObject( psnFolder         * pFolder,
+                             psnHashItem       * pHashItem,
+                             psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseFolderResize( vdseFolder         * pFolder, 
-                       vdseSessionContext * pContext  );
+void psnFolderResize( psnFolder         * pFolder, 
+                       psnSessionContext * pContext  );
 
 
 VDSF_ENGINE_EXPORT
-void vdseFolderRollbackEdit( vdseFolder          * pFolder,
-                             vdseHashItem        * pHashItem, 
+void psnFolderRollbackEdit( psnFolder          * pFolder,
+                             psnHashItem        * pHashItem, 
                              enum vdsObjectType    objectType,
-                             vdseSessionContext  * pContext );
+                             psnSessionContext  * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -210,52 +210,52 @@ void vdseFolderRollbackEdit( vdseFolder          * pFolder,
  */
 
 VDSF_ENGINE_EXPORT
-bool vdseTopFolderCloseObject( vdseFolderItem     * pDescriptor,
-                               vdseSessionContext * pContext );
+bool psnTopFolderCloseObject( psnFolderItem     * pDescriptor,
+                               psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseTopFolderCreateObject( vdseFolder          * pFolder,
+bool psnTopFolderCreateObject( psnFolder          * pFolder,
                                 const char          * objectName,
                                 size_t                nameLengthInBytes,
                                 vdsObjectDefinition * pDefinition,
-                                vdseSessionContext  * pContext );
+                                psnSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseTopFolderDestroyObject( vdseFolder         * pFolder,
+bool psnTopFolderDestroyObject( psnFolder         * pFolder,
                                  const char         * objectName,
                                  size_t               nameLengthInBytes,
-                                 vdseSessionContext * pContext );
+                                 psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseTopFolderEditObject( vdseFolder         * pFolder,
+bool psnTopFolderEditObject( psnFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
                               enum vdsObjectType   objectType, 
-                              vdseFolderItem     * pFolderItem,
-                              vdseSessionContext * pContext );
+                              psnFolderItem     * pFolderItem,
+                              psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseTopFolderGetDef( vdseFolder          * pFolder,
+bool psnTopFolderGetDef( psnFolder          * pFolder,
                           const char          * objectName,
                           size_t                nameLengthInBytes,
                           vdsObjectDefinition * pDefinition,
-                          vdseFieldDef       ** ppInternalDef,
-                          vdseSessionContext  * pContext );
+                          psnFieldDef       ** ppInternalDef,
+                          psnSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseTopFolderGetStatus( vdseFolder         * pFolder,
+bool psnTopFolderGetStatus( psnFolder         * pFolder,
                              const char         * objectName,
                              size_t               nameLengthInBytes,
                              vdsObjStatus       * pFolderItem,
-                             vdseSessionContext * pContext );
+                             psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseTopFolderOpenObject( vdseFolder         * pFolder,
+bool psnTopFolderOpenObject( psnFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
                               enum vdsObjectType   objectType, 
-                              vdseFolderItem     * pFolderItem,
-                              vdseSessionContext * pContext );
+                              psnFolderItem     * pFolderItem,
+                              psnSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -263,6 +263,6 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_FOLDER_H */
+#endif /* PSN_FOLDER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

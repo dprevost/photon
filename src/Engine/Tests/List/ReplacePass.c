@@ -24,31 +24,31 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseLinkedList list;
-   vdseLinkNode oldNode, newNode, * pDummy = NULL;
-   vdseLinkNode node1, node2;
-   vdseSessionContext context;
+   psnLinkedList list;
+   psnLinkNode oldNode, newNode, * pDummy = NULL;
+   psnLinkNode node1, node2;
+   psnSessionContext context;
    
    initTest( expectedToPass, &context );
    InitMem();
    
-   vdseLinkNodeInit( &oldNode );
-   vdseLinkNodeInit( &newNode );
-   vdseLinkNodeInit( &node1 );
-   vdseLinkNodeInit( &node2 );
+   psnLinkNodeInit( &oldNode );
+   psnLinkNodeInit( &newNode );
+   psnLinkNodeInit( &node1 );
+   psnLinkNodeInit( &node2 );
 
-   vdseLinkedListInit( &list );
+   psnLinkedListInit( &list );
 
    /* Test 1 - replace alone */
-   vdseLinkedListPutFirst( &list, &oldNode );
+   psnLinkedListPutFirst( &list, &oldNode );
 
-   vdseLinkedListReplaceItem( &list, &oldNode, &newNode );
+   psnLinkedListReplaceItem( &list, &oldNode, &newNode );
 
    if ( list.currentSize != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseLinkedListPeakFirst( &list, &pDummy );
+   psnLinkedListPeakFirst( &list, &pDummy );
    if ( pDummy != &newNode ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -58,15 +58,15 @@ int main()
    }
    
    /* Test 2 - replace at tail */
-   vdseLinkedListPutFirst( &list, &node1 );
-   vdseLinkNodeInit( &oldNode );
-   vdseLinkedListReplaceItem( &list, &newNode, &oldNode );
+   psnLinkedListPutFirst( &list, &node1 );
+   psnLinkNodeInit( &oldNode );
+   psnLinkedListReplaceItem( &list, &newNode, &oldNode );
 
    if ( list.currentSize != 2 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseLinkedListPeakLast( &list, &pDummy );
+   psnLinkedListPeakLast( &list, &pDummy );
    if ( pDummy != &oldNode ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -75,15 +75,15 @@ int main()
    }
    
    /* Test 3 - replace in the middle */
-   vdseLinkedListPutLast( &list, &node2 );
-   vdseLinkNodeInit( &newNode );
-   vdseLinkedListReplaceItem( &list, &oldNode, &newNode );
+   psnLinkedListPutLast( &list, &node2 );
+   psnLinkNodeInit( &newNode );
+   psnLinkedListReplaceItem( &list, &oldNode, &newNode );
 
    if ( list.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseLinkedListPeakNext( &list, &node1, &pDummy );
+   psnLinkedListPeakNext( &list, &node1, &pDummy );
    if ( pDummy != &newNode ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -92,14 +92,14 @@ int main()
    }
    
    /* Test 4 - replace at head */
-   vdseLinkNodeInit( &oldNode );
-   vdseLinkedListReplaceItem( &list, &node1, &oldNode );
+   psnLinkNodeInit( &oldNode );
+   psnLinkedListReplaceItem( &list, &node1, &oldNode );
 
    if ( list.currentSize != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseLinkedListPeakFirst( &list, &pDummy );
+   psnLinkedListPeakFirst( &list, &pDummy );
    if ( pDummy != &oldNode ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -107,7 +107,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdseLinkedListFini( &list );
+   psnLinkedListFini( &list );
    
    return 0;
 }

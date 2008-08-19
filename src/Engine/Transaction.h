@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_TX_H
-#define VDSE_TX_H
+#ifndef PSN_TX_H
+#define PSN_TX_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -26,7 +26,7 @@
 #include "MemoryObject.h"
 #include "BlockGroup.h"
 
-#define VDSE_TX_SIGNATURE 0xabc6c981
+#define PSN_TX_SIGNATURE 0xabc6c981
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -34,90 +34,90 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdseTxType
+enum psnTxType
 {
    /* ops on data */
-   VDSE_TX_ADD_DATA = 1,
-   VDSE_TX_REMOVE_DATA,
-/*   VDSE_TX_REPLACE_DATA, */
+   PSN_TX_ADD_DATA = 1,
+   PSN_TX_REMOVE_DATA,
+/*   PSN_TX_REPLACE_DATA, */
 
    /* ops on objects */
-   VDSE_TX_ADD_OBJECT = 0x81,
-   VDSE_TX_REMOVE_OBJECT,
-   VDSE_TX_ADD_EDIT_OBJECT
+   PSN_TX_ADD_OBJECT = 0x81,
+   PSN_TX_REMOVE_OBJECT,
+   PSN_TX_ADD_EDIT_OBJECT
 
 };
 
-typedef enum vdseTxType vdseTxType;
+typedef enum psnTxType psnTxType;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Each element of a transaction is kept in a doubly linked list
  * (for fast access). 
  */
-struct vdseTxOps
+struct psnTxOps
 {
-   vdseTxType      transType;
+   psnTxType      transType;
    ptrdiff_t       parentOffset;  
-   vdseMemObjIdent parentType;
+   psnMemObjIdent parentType;
    ptrdiff_t       childOffset;
-   vdseMemObjIdent childType;
+   psnMemObjIdent childType;
 
-   vdseLinkNode node;
+   psnLinkNode node;
    
 };
 
-typedef struct vdseTxOps vdseTxOps;
+typedef struct psnTxOps psnTxOps;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdseTx
+struct psnTx
 {
    /** Always first */
-   struct vdseMemObject memObject;
+   struct psnMemObject memObject;
 
    int signature;
 
    /** Linked list of all ops of the current transaction */   
-   vdseLinkedList listOfOps;
+   psnLinkedList listOfOps;
 
    /** Variable size struct - always put at the end */
-   struct vdseBlockGroup blockGroup;
+   struct psnBlockGroup blockGroup;
 
 };
 
-typedef struct vdseTx vdseTx;
+typedef struct psnTx psnTx;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-bool vdseTxAddOps( vdseTx             * pTx,
-                   vdseTxType           txType,
+bool psnTxAddOps( psnTx             * pTx,
+                   psnTxType           txType,
                    ptrdiff_t            parentOffset, 
-                   vdseMemObjIdent      parentType,
+                   psnMemObjIdent      parentType,
                    ptrdiff_t            childOffset,
-                   vdseMemObjIdent      childType,
-                   vdseSessionContext * pContext );
+                   psnMemObjIdent      childType,
+                   psnSessionContext * pContext );
    
 VDSF_ENGINE_EXPORT
-void vdseTxRemoveLastOps( vdseTx * pTx, vdseSessionContext * pContext );
+void psnTxRemoveLastOps( psnTx * pTx, psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseTxInit( vdseTx             * pTx,
+bool psnTxInit( psnTx             * pTx,
                  size_t               numberOfBlocks,
-                 vdseSessionContext * pContext );
+                 psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseTxFini( vdseTx             * pTx, 
-                 vdseSessionContext * pContext );
+void psnTxFini( psnTx             * pTx, 
+                 psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseTxCommit( vdseTx             * pTx,
-                   vdseSessionContext * pContext );
+void psnTxCommit( psnTx             * pTx,
+                   psnSessionContext * pContext );
                   
 VDSF_ENGINE_EXPORT
-void vdseTxRollback( vdseTx             * pTx,
-                     vdseSessionContext * pContext );
+void psnTxRollback( psnTx             * pTx,
+                     psnSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -125,7 +125,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_TX_H */
+#endif /* PSN_TX_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

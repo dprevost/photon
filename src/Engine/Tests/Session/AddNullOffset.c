@@ -24,25 +24,25 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseSession * pSession;
-   vdseSessionContext context;
+   psnSession * pSession;
+   psnSessionContext context;
    int errcode;
    void * pApiObject = (void *) &errcode; /* dummy pointer */
    ptrdiff_t objOffset;
-   vdseObjectContext * pObject;
+   psnObjectContext * pObject;
    bool ok;
    
    pSession = initSessionTest( expectedToPass, &context );
 
-   ok = vdseSessionInit( pSession, pApiObject, &context );
+   ok = psnSessionInit( pSession, pApiObject, &context );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    objOffset = SET_OFFSET( pSession ); /* Dummy offset */
    
-   ok = vdseSessionAddObj( pSession,
-                           VDSE_NULL_OFFSET, 
+   ok = psnSessionAddObj( pSession,
+                           PSN_NULL_OFFSET, 
                            VDS_FOLDER,
                            pApiObject,
                            &pObject,

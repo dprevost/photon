@@ -24,13 +24,13 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   vdseMap * pHashMap;
-   vdseSessionContext context;
+   psnMap * pHashMap;
+   psnSessionContext context;
    bool ok;
-   vdseTxStatus status;
+   psnTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   vdseHashItem * pItem;
+   psnHashItem * pItem;
    vdsObjectDefinition def = { 
       VDS_FAST_MAP, 
       1, 
@@ -40,16 +40,16 @@ int main()
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseMapInit( pHashMap, 
+   ok = psnMapInit( pHashMap, 
                      0, 1, 0, &status, 4, 
                      "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseMapInsert( pHashMap,
+   ok = psnMapInsert( pHashMap,
                        (const void *) key,
                        6,
                        (const void *) data,
@@ -60,7 +60,7 @@ int main()
    }
    
    /* Is the item there? */
-   ok = vdseMapGet( pHashMap,
+   ok = psnMapGet( pHashMap,
                     (const void *) key,
                     6,
                     &pItem,
@@ -70,7 +70,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   vdseMapEmpty( pHashMap, NULL );
+   psnMapEmpty( pHashMap, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

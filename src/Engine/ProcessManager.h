@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_PROCESS_MANAGER_H
-#define VDSE_PROCESS_MANAGER_H
+#ifndef PSN_PROCESS_MANAGER_H
+#define PSN_PROCESS_MANAGER_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -40,47 +40,47 @@ BEGIN_C_DECLS
  * closed objects (->decrease access counter), unlocked objects, etc.
  *
  */
-struct vdseProcessManager
+struct psnProcessManager
 {
    /** Always first */
-   struct vdseMemObject memObject;
+   struct psnMemObject memObject;
 
    /** Our linked lists of cleanup processes objects. */
-   vdseLinkedList listOfProcesses;
+   psnLinkedList listOfProcesses;
 
    /** Variable size struct - always put at the end */
-   struct vdseBlockGroup blockGroup;
+   struct psnBlockGroup blockGroup;
 
 };
 
-typedef struct vdseProcessManager vdseProcMgr;
+typedef struct psnProcessManager psnProcMgr;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-bool vdseProcMgrInit( vdseProcMgr        * pManager,
-                      vdseSessionContext * pContext );
+bool psnProcMgrInit( psnProcMgr        * pManager,
+                      psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseProcMgrAddProcess( vdseProcMgr        * pManager,
+bool psnProcMgrAddProcess( psnProcMgr        * pManager,
                             pid_t                pid, 
-                            vdseProcess       ** ppCleanupProcess,
-                            vdseSessionContext * pContext );
+                            psnProcess       ** ppCleanupProcess,
+                            psnSessionContext * pContext );
 
 /*
  * This function is for the watchdog - to recover from crashes in
  * real time.
  */
 VDSF_ENGINE_EXPORT
-bool vdseProcMgrFindProcess( vdseProcMgr        * pManager,
+bool psnProcMgrFindProcess( psnProcMgr        * pManager,
                              pid_t                pid, 
-                             vdseProcess       ** ppCleanupProcess,
-                             vdseSessionContext * pContext );
+                             psnProcess       ** ppCleanupProcess,
+                             psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseProcMgrRemoveProcess( vdseProcMgr        * pManager,
-                               vdseProcess        * pCleanupProcess,
-                               vdseSessionContext * pContext );
+bool psnProcMgrRemoveProcess( psnProcMgr        * pManager,
+                               psnProcess        * pCleanupProcess,
+                               psnSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -88,7 +88,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_PROCESS_MANAGER_H */
+#endif /* PSN_PROCESS_MANAGER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

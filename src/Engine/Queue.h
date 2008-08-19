@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_QUEUE_H
-#define VDSE_QUEUE_H
+#ifndef PSN_QUEUE_H
+#define PSN_QUEUE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,22 +33,22 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdseQueueEnum
+enum psnQueueEnum
 {
-   VDSE_QUEUE_FIRST = 101,
-   VDSE_QUEUE_LAST  = 202
+   PSN_QUEUE_FIRST = 101,
+   PSN_QUEUE_LAST  = 202
    
 };
 
-typedef enum vdseQueueEnum vdseQueueEnum;
+typedef enum psnQueueEnum psnQueueEnum;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdseQueueItem
+struct psnQueueItem
 {
-   vdseTxStatus  txStatus;
+   psnTxStatus  txStatus;
 
-   vdseLinkNode node;
+   psnLinkNode node;
 
    size_t dataLength;
    
@@ -56,23 +56,23 @@ struct vdseQueueItem
 
 };
 
-typedef struct vdseQueueItem vdseQueueItem;
+typedef struct psnQueueItem psnQueueItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdseQueue
+struct psnQueue
 {
    /** Always first */
-   struct vdseMemObject memObject;
+   struct psnMemObject memObject;
 
    /** Basic info for all leaves and branches of our tree. */
-   struct vdseTreeNode  nodeObject;
+   struct psnTreeNode  nodeObject;
 
    /** The type of queue (as decided when vdsCreateObject() was called). */
    enum vdsObjectType queueType;
 
    /** Our own doubly-linked list, to hold the data. */
-   vdseLinkedList listOfElements;
+   psnLinkedList listOfElements;
 
    /** Offset to the data definition */
    ptrdiff_t  dataDefOffset;
@@ -87,82 +87,82 @@ struct vdseQueue
    size_t numValidItems;
 
    /** Variable size struct - always put at the end */
-   struct vdseBlockGroup blockGroup;
+   struct psnBlockGroup blockGroup;
 
 };
 
-typedef struct vdseQueue vdseQueue;
+typedef struct psnQueue psnQueue;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_ENGINE_EXPORT
-bool vdseQueueInit( vdseQueue           * pQueue,
+bool psnQueueInit( psnQueue           * pQueue,
                     ptrdiff_t             parentOffset,
                     size_t                numberOfBlocks,
-                    vdseTxStatus        * pTxStatus,
+                    psnTxStatus        * pTxStatus,
                     size_t                origNameLength,
                     char                * origName,
                     ptrdiff_t             hashItemOffset,
                     vdsObjectDefinition * pDefinition,
-                    vdseSessionContext  * pContext );
+                    psnSessionContext  * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseQueueFini( vdseQueue          * pQueue,
-                    vdseSessionContext * pContext );
+void psnQueueFini( psnQueue          * pQueue,
+                    psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseQueueInsert( vdseQueue          * pQueue,
+bool psnQueueInsert( psnQueue          * pQueue,
                       const void         * pItem, 
                       size_t               length,
-                      enum vdseQueueEnum   firstOrLast,
-                      vdseSessionContext * pContext );
+                      enum psnQueueEnum   firstOrLast,
+                      psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseQueueInsertNow( vdseQueue          * pQueue,
+bool psnQueueInsertNow( psnQueue          * pQueue,
                          const void         * pItem, 
                          size_t               length,
-                         enum vdseQueueEnum   firstOrLast,
-                         vdseSessionContext * pContext );
+                         enum psnQueueEnum   firstOrLast,
+                         psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseQueueRemove( vdseQueue          * pQueue,
-                      vdseQueueItem     ** ppQueueItem,
-                      enum vdseQueueEnum   firstOrLast,
+bool psnQueueRemove( psnQueue          * pQueue,
+                      psnQueueItem     ** ppQueueItem,
+                      enum psnQueueEnum   firstOrLast,
                       size_t               bufferLength,
-                      vdseSessionContext * pContext );
+                      psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseQueueGet( vdseQueue          * pQueue,
+bool psnQueueGet( psnQueue          * pQueue,
                    unsigned int         flag,
-                   vdseQueueItem     ** ppIterator,
+                   psnQueueItem     ** ppIterator,
                    size_t               bufferLength,
-                   vdseSessionContext * pContext );
+                   psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-bool vdseQueueRelease( vdseQueue          * pQueue,
-                       vdseQueueItem      * pQueueItem,
-                       vdseSessionContext * pContext );
+bool psnQueueRelease( psnQueue          * pQueue,
+                       psnQueueItem      * pQueueItem,
+                       psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseQueueCommitAdd( vdseQueue * pQueue, 
+void psnQueueCommitAdd( psnQueue * pQueue, 
                          ptrdiff_t   itemOffset );
 
 VDSF_ENGINE_EXPORT
-void vdseQueueRollbackAdd( vdseQueue          * pQueue, 
+void psnQueueRollbackAdd( psnQueue          * pQueue, 
                            ptrdiff_t            itemOffset,
-                           vdseSessionContext * pContext  );
+                           psnSessionContext * pContext  );
 
 VDSF_ENGINE_EXPORT
-void vdseQueueCommitRemove( vdseQueue          * pQueue, 
+void psnQueueCommitRemove( psnQueue          * pQueue, 
                             ptrdiff_t            itemOffset,
-                            vdseSessionContext * pContext );
+                            psnSessionContext * pContext );
 
 VDSF_ENGINE_EXPORT
-void vdseQueueRollbackRemove( vdseQueue * pQueue, 
+void psnQueueRollbackRemove( psnQueue * pQueue, 
                               ptrdiff_t   itemOffset );
 
 VDSF_ENGINE_EXPORT
-void vdseQueueStatus( vdseQueue    * pQueue,
+void psnQueueStatus( psnQueue    * pQueue,
                       vdsObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -171,7 +171,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_QUEUE_H */
+#endif /* PSN_QUEUE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

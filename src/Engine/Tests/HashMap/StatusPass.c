@@ -23,10 +23,10 @@ const bool expectedToPass = true;
 
 int main()
 {
-   vdseHashMap * pHashMap;
-   vdseSessionContext context;
+   psnHashMap * pHashMap;
+   psnSessionContext context;
    bool ok;
-   vdseTxStatus txStatus;
+   psnTxStatus txStatus;
    char * key1  = "my key1";
    char * key2  = "my key2";
    char * key3  = "my key3";
@@ -41,16 +41,16 @@ int main()
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   vdseTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
+   psnTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
    
-   ok = vdseHashMapInit( pHashMap, 
+   ok = psnHashMapInit( pHashMap, 
                          0, 1, 0, &txStatus, 4, 
                          "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashMapInsert( pHashMap,
+   ok = psnHashMapInsert( pHashMap,
                            (const void *) key1,
                            7,
                            (const void *) data,
@@ -60,7 +60,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashMapInsert( pHashMap,
+   ok = psnHashMapInsert( pHashMap,
                            (const void *) key2,
                            7,
                            (const void *) data,
@@ -70,7 +70,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = vdseHashMapInsert( pHashMap,
+   ok = psnHashMapInsert( pHashMap,
                            (const void *) key3,
                            7,
                            (const void *) data,
@@ -80,7 +80,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   vdseHashMapStatus( pHashMap, &status );
+   psnHashMapStatus( pHashMap, &status );
 
    if ( status.numDataItem != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );

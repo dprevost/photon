@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSE_ENGINE_H
-#define VDSE_ENGINE_H
+#ifndef PSN_ENGINE_H
+#define PSN_ENGINE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -57,9 +57,9 @@ BEGIN_C_DECLS
 
  /* MAJOR concern: you cannot check if a reconstructed pointer is
   * NULL or not - this makes no sense anymore. You have to test 
-  * the offset for VDSE_NULL_OFFSET !!! 
+  * the offset for PSN_NULL_OFFSET !!! 
   */
-#define VDSE_NULL_OFFSET ( (ptrdiff_t) -1 )
+#define PSN_NULL_OFFSET ( (ptrdiff_t) -1 )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -78,8 +78,8 @@ extern pscErrMsgHandle g_vdsErrorHandle;
        g_pBaseAddr ) )
 
 /* Only use this macro when you know, for a fact, that the offset cannot
- * be the VDSE_NULL_OFFSET (for example, in the LinkedList "class", the links
- * are never set to VDSE_NULL_OFFSET...). 
+ * be the PSN_NULL_OFFSET (for example, in the LinkedList "class", the links
+ * are never set to PSN_NULL_OFFSET...). 
  */
 #define GET_PTR_FAST(off,class) ( (class*) (           \
        (unsigned char*) g_pBaseAddr + (ptrdiff_t) (off) ))
@@ -91,7 +91,7 @@ extern pscErrMsgHandle g_vdsErrorHandle;
 #define GET_PTR_DBG(target,offset,type) { \
    ptrdiff_t off = offset; \
    VDS_INV_CONDITION( off != 0 ); \
-   VDS_INV_CONDITION( off != VDSE_NULL_OFFSET ); \
+   VDS_INV_CONDITION( off != PSN_NULL_OFFSET ); \
    target = (type*) ( (unsigned char*) g_pBaseAddr + (ptrdiff_t) off ); \
 }
 
@@ -102,21 +102,21 @@ extern pscErrMsgHandle g_vdsErrorHandle;
 
 #define LOCK_TIMEOUT 10000 /* in milliseconds */
 
-#define VDSE_MAX_LOCK_DEPTH 3
+#define PSN_MAX_LOCK_DEPTH 3
 
-/** Pages allocations will be done as multiples of VDSE_BLOCK_SIZE. */
-#if ! defined(VDSE_BLOCK_SIZE)
-#  define VDSE_BLOCK_SIZE   8192
-#  define VDSE_BLOCK_SHIFT    13
+/** Pages allocations will be done as multiples of PSN_BLOCK_SIZE. */
+#if ! defined(PSN_BLOCK_SIZE)
+#  define PSN_BLOCK_SIZE   8192
+#  define PSN_BLOCK_SHIFT    13
 #endif
 
-/** Memory allocation will be done as multiples of VDSE_ALLOCATION_UNIT. */
+/** Memory allocation will be done as multiples of PSN_ALLOCATION_UNIT. */
 #if SIZEOF_VOID_P == 4
-#  define VDSE_ALLOCATION_UNIT 16
+#  define PSN_ALLOCATION_UNIT 16
 #elif SIZEOF_VOID_P == 8
-#  define VDSE_ALLOCATION_UNIT 32
+#  define PSN_ALLOCATION_UNIT 32
 #else
-#  error "Without a known SIZEOF_VOID_P (4 or 8) I cannot calculate VDSE_ALLOCATION_UNIT"
+#  error "Without a known SIZEOF_VOID_P (4 or 8) I cannot calculate PSN_ALLOCATION_UNIT"
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -132,37 +132,37 @@ extern pscErrMsgHandle g_vdsErrorHandle;
  * stray pointers/offsets (for debugging, if needed).
  */
 
-enum vdseMemObjIdentifier
+enum psnMemObjIdentifier
 {
    /**
     * Special identifiers - it is set by the allocator when a group of blocks
-    * is allocated (under lock). An "allocated" group with VDSE_IDENT_LIMBO
-    * is a group in limbo while the same group with VDSE_IDENT_ALLOCATED
+    * is allocated (under lock). An "allocated" group with PSN_IDENT_LIMBO
+    * is a group in limbo while the same group with PSN_IDENT_ALLOCATED
     * is not.
     */
-   VDSE_IDENT_CLEAR           = 0xc1ea9001,
-   VDSE_IDENT_LIMBO           = 0xccaaffee,
-   VDSE_IDENT_ALLOCATED       = 0xeeffaacc,
+   PSN_IDENT_CLEAR           = 0xc1ea9001,
+   PSN_IDENT_LIMBO           = 0xccaaffee,
+   PSN_IDENT_ALLOCATED       = 0xeeffaacc,
    
-   VDSE_IDENT_FIRST           = 0x34220101,
-   VDSE_IDENT_ALLOCATOR       = 0x34220103,
+   PSN_IDENT_FIRST           = 0x34220101,
+   PSN_IDENT_ALLOCATOR       = 0x34220103,
 
-   VDSE_IDENT_FOLDER          = 0x34220105,
-   VDSE_IDENT_HASH_MAP        = 0x34220107,
-   VDSE_IDENT_PROCESS         = 0x34220109,
-   VDSE_IDENT_PROCESS_MGR     = 0x3422010b,
-   VDSE_IDENT_QUEUE           = 0x3422010d,
-   VDSE_IDENT_SESSION         = 0x3422010f,
-   VDSE_IDENT_TRANSACTION     = 0x34220111,
-   VDSE_IDENT_MAP             = 0x34220113,
+   PSN_IDENT_FOLDER          = 0x34220105,
+   PSN_IDENT_HASH_MAP        = 0x34220107,
+   PSN_IDENT_PROCESS         = 0x34220109,
+   PSN_IDENT_PROCESS_MGR     = 0x3422010b,
+   PSN_IDENT_QUEUE           = 0x3422010d,
+   PSN_IDENT_SESSION         = 0x3422010f,
+   PSN_IDENT_TRANSACTION     = 0x34220111,
+   PSN_IDENT_MAP             = 0x34220113,
 
-   VDSE_IDENT_LAST            = 0x34220125
+   PSN_IDENT_LAST            = 0x34220125
 
 };
 
-typedef enum vdseMemObjIdentifier vdseMemObjIdent;
+typedef enum psnMemObjIdentifier psnMemObjIdent;
 
-#define VDSE_IDENT_PAGE_GROUP   0x80000000
+#define PSN_IDENT_PAGE_GROUP   0x80000000
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -170,17 +170,17 @@ typedef enum vdseMemObjIdentifier vdseMemObjIdent;
  * This enum allows to count the number of objects and the number of 
  * extensions (additional groups of blocks added to an object). 
  */
-enum vdseAllocTypeEnum
+enum psnAllocTypeEnum
 {
    /** When allocating/freeing the initial group of blocks of an API object */ 
-   VDSE_ALLOC_API_OBJ,
+   PSN_ALLOC_API_OBJ,
    
    /** Any other group of blocks */
-   VDSE_ALLOC_ANY
+   PSN_ALLOC_ANY
    
 };
 
-typedef enum vdseAllocTypeEnum vdseAllocTypeEnum;
+typedef enum psnAllocTypeEnum psnAllocTypeEnum;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -188,7 +188,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSE_ENGINE_H */
+#endif /* PSN_ENGINE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
