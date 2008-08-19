@@ -46,7 +46,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsaCloseSession( (vdsaSession *) sessionHandle );
+   errcode = psaCloseSession( (psaSession *) sessionHandle );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

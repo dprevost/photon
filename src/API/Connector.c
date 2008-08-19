@@ -27,23 +27,23 @@
 #include <vdsf/vdsErrors.h>
 
 /** Send data on the socket. */
-static int Send(vdsaConnector   * pConnector,
-                void            * ptr, 
-                size_t            length,
-                pscErrorHandler * errorHandler);   
+static int Send( psaConnector    * pConnector,
+                 void            * ptr, 
+                 size_t            length,
+                 pscErrorHandler * errorHandler);   
 
 /** Receive data from the socket. */
-static int Receive( vdsaConnector   * pConnector,
+static int Receive( psaConnector    * pConnector,
                     void            * ptr, 
                     size_t            length,
                     pscErrorHandler * errorHandler );
-   
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaConnect( vdsaConnector   * pConnector,
-                 const char      * address,
-                 struct WDOutput * pAnswer,
-                 pscErrorHandler * errorHandler )
+int psaConnect( psaConnector    * pConnector,
+                const char      * address,
+                struct WDOutput * pAnswer,
+                pscErrorHandler * errorHandler )
 {
    int errcode = 0;
    unsigned short port;
@@ -121,8 +121,8 @@ int vdsaConnect( vdsaConnector   * pConnector,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsaDisconnect( vdsaConnector   * pConnector,
-                     pscErrorHandler * errorHandler )
+void psaDisconnect( psaConnector    * pConnector,
+                    pscErrorHandler * errorHandler )
 {
    int errcode = 0;
 
@@ -168,7 +168,7 @@ void vdsaDisconnect( vdsaConnector   * pConnector,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int Receive( vdsaConnector   * pConnector,
+int Receive( psaConnector    * pConnector,
              void            * ptr, 
              size_t            length,
              pscErrorHandler * errorHandler )
@@ -205,7 +205,7 @@ int Receive( vdsaConnector   * pConnector,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int Send( vdsaConnector   * pConnector,
+int Send( psaConnector    * pConnector,
           void            * ptr, 
           size_t            length,
           pscErrorHandler * errorHandler )

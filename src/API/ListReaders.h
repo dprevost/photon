@@ -15,15 +15,15 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_LIST_READERS_H
-#define VDSA_LIST_READERS_H
+#ifndef PSA_LIST_READERS_H
+#define PSA_LIST_READERS_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
 #include "API/api.h"
 
-#define VDSA_LIST_READER_SIG 0x1e216507
+#define PSA_LIST_READER_SIG 0x1e216507
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -31,43 +31,42 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdsaReader
+struct psaReader
 {
-   struct vdsaReader * previous;
-   struct vdsaReader * next;
+   struct psaReader * previous;
+   struct psaReader * next;
    
-   /** Pointer to the vdsa* object */
+   /** Pointer to the psa* object */
    void * address;
    
    /** For the future: we'll likely have more than one type of read-only. */
-   enum vdsaObjetType type;
+   enum psaObjetType type;
 };
 
-typedef struct vdsaReader vdsaReader;
+typedef struct psaReader psaReader;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdsaListReaders
+struct psaListReaders
 {
    size_t currentSize;
 
-   vdsaReader head;
+   psaReader head;
 
-   /** Set to VDSA_LIST_READER_SIG at initialization. */
+   /** Set to PSA_LIST_READER_SIG at initialization. */
    unsigned int initialized;
 };
 
-typedef struct vdsaListReaders vdsaListReaders;
+typedef struct psaListReaders psaListReaders;
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdsaListReadersFini( vdsaListReaders * pList )
+void psaListReadersFini( psaListReaders * pList )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSA_LIST_READER_SIG );
+   VDS_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
 
    pList->head.previous = pList->head.next = &pList->head;
    pList->currentSize = 0;
@@ -77,24 +76,24 @@ void vdsaListReadersFini( vdsaListReaders * pList )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdsaListReadersInit( vdsaListReaders * pList )
+void psaListReadersInit( psaListReaders * pList )
 {
    VDS_PRE_CONDITION( pList != NULL );
 
    pList->head.previous = pList->head.next = &pList->head;
    pList->currentSize = 0;
-   pList->initialized = VDSA_LIST_READER_SIG;
+   pList->initialized = PSA_LIST_READER_SIG;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdsaListReadersPeakFirst( vdsaListReaders * pList,
-                               vdsaReader     ** ppItem )
+bool psaListReadersPeakFirst( psaListReaders * pList,
+                              psaReader     ** ppItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSA_LIST_READER_SIG );
+   VDS_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
    VDS_PRE_CONDITION( ppItem != NULL );
 
    /* Check for empty queue. */
@@ -111,15 +110,15 @@ bool vdsaListReadersPeakFirst( vdsaListReaders * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdsaListReadersPeakNext( vdsaListReaders * pList,
-                              vdsaReader      * pCurrent, 
-                              vdsaReader     ** ppNext )
+bool psaListReadersPeakNext( psaListReaders * pList,
+                             psaReader      * pCurrent, 
+                             psaReader     ** ppNext )
 {
-   vdsaReader * pNext;
+   psaReader * pNext;
 
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSA_LIST_READER_SIG );
+   VDS_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
    VDS_PRE_CONDITION( pCurrent   != NULL );
    VDS_PRE_CONDITION( ppNext     != NULL );
    VDS_PRE_CONDITION( pCurrent->previous != NULL );
@@ -138,12 +137,12 @@ bool vdsaListReadersPeakNext( vdsaListReaders * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdsaListReadersPut( vdsaListReaders * pList,
-                         vdsaReader      * pNewItem )
+void psaListReadersPut( psaListReaders * pList,
+                        psaReader      * pNewItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSA_LIST_READER_SIG );
+   VDS_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
    VDS_PRE_CONDITION( pNewItem != NULL );
 
    pNewItem->next = &pList->head;
@@ -162,12 +161,12 @@ void vdsaListReadersPut( vdsaListReaders * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdsaListReadersRemove( vdsaListReaders * pList,
-                            vdsaReader      * pRemovedItem )
+void psaListReadersRemove( psaListReaders * pList,
+                           psaReader      * pRemovedItem )
 {
    VDS_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   VDS_INV_CONDITION( pList->initialized == VDSA_LIST_READER_SIG );
+   VDS_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
    VDS_PRE_CONDITION( pRemovedItem != NULL );
    VDS_PRE_CONDITION( pRemovedItem->previous != NULL );
    VDS_PRE_CONDITION( pRemovedItem->next     != NULL );
@@ -185,6 +184,6 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_LIST_READERS_H */
+#endif /* PSA_LIST_READERS_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

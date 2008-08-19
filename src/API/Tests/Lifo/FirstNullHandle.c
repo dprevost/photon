@@ -30,7 +30,7 @@ int main( int argc, char * argv[] )
    VDS_HANDLE sessionHandle, objHandle;
    int errcode;
    const char * data1 = "My Data1";
-   vdsaDataEntry entry;
+   psaDataEntry entry;
    vdsObjectDefinition defLilo = { 
       VDS_LIFO,
       1, 
@@ -94,7 +94,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaLifoFirst( NULL, &entry );
+   errcode = psaLifoFirst( NULL, &entry );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

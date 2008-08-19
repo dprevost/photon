@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_CONNECTOR_H
-#define VDSA_CONNECTOR_H
+#ifndef PSA_CONNECTOR_H
+#define PSA_CONNECTOR_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -60,7 +60,7 @@ BEGIN_C_DECLS
  *
  */
 
-typedef struct vdsaConnector
+typedef struct psaConnector
 {
    /** Our socket handle */
    VDS_SOCKET socketFD;
@@ -70,7 +70,7 @@ typedef struct vdsaConnector
    bool cleanupNeeded;
 #endif
 
-} vdsaConnector;
+} psaConnector;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -86,16 +86,16 @@ typedef struct vdsaConnector
  *               information needed to establish a link to the VDS.
  * \return A VDS error code.
  */
-int vdsaConnect( vdsaConnector   * pConnector,
-                 const char      * address,
-                 struct WDOutput * pAnswer,
-                 pscErrorHandler * errorHandler );
+int psaConnect( psaConnector    * pConnector,
+                const char      * address,
+                struct WDOutput * pAnswer,
+                pscErrorHandler * errorHandler );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Break the connection with the watchdog. */
-void vdsaDisconnect( vdsaConnector   * pConnector,
-                     pscErrorHandler * errorHandler );
+void psaDisconnect( psaConnector    * pConnector,
+                    pscErrorHandler * errorHandler );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -103,7 +103,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_CONNECTOR_H */
+#endif /* PSA_CONNECTOR_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

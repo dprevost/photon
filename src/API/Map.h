@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_MAP_H
-#define VDSA_MAP_H
+#ifndef PSA_MAP_H
+#define PSA_MAP_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -30,9 +30,9 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdsaMap
+typedef struct psaMap
 {
-   vdsaCommonObject object;
+   psaCommonObject object;
    
    /**
     * This struct holds both the result of the iteration (the pointer to
@@ -50,25 +50,25 @@ typedef struct vdsaMap
 
    int editMode;
 
-   vdsaReader reader;
+   psaReader reader;
    
-} vdsaMap;
+} psaMap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_API_EXPORT
-int vdsaMapFirst( vdsaMap          * pHashMap,
-                  vdsaHashMapEntry * pEntry );
+int psaMapFirst( psaMap          * pHashMap,
+                 psaHashMapEntry * pEntry );
 
 VDSF_API_EXPORT
-int vdsaMapNext( vdsaMap          * pHashMap,
-                 vdsaHashMapEntry * pEntry );
+int psaMapNext( psaMap          * pHashMap,
+                psaHashMapEntry * pEntry );
 
 VDSF_API_EXPORT
-int vdsaMapRetrieve( vdsaMap       * pHashMap,
-                     const void    * key,
-                     size_t          keyLength,
-                     vdsaDataEntry * pEntry );
+int psaMapRetrieve( psaMap       * pHashMap,
+                    const void   * key,
+                    size_t         keyLength,
+                    psaDataEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -76,7 +76,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_MAP_H */
+#endif /* PSA_MAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

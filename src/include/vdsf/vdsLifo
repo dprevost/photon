@@ -192,10 +192,10 @@ public:
 
 private:
 
-   /// Pointer to the vdsaLifo struct.
+   /// Pointer to the psaLifo struct.
    VDS_HANDLE m_objectHandle;
 
-   /// Reference to the vdsaSession struct (we belong to).
+   /// Reference to the psaSession struct (we belong to).
    VDS_HANDLE & m_sessionHandle;
 
 };

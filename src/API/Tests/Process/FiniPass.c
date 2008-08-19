@@ -21,22 +21,22 @@
 
 int main( int argc, char * argv[] )
 {
-   vdsaProcess process;
+   psaProcess process;
    int errcode;
    
-   memset( &process, 0, sizeof(vdsaProcess) );
+   memset( &process, 0, sizeof(psaProcess) );
    if ( argc > 1 ) {
-      errcode = vdsaProcessInit( &process, argv[1] );
+      errcode = psaProcessInit( &process, argv[1] );
    }
    else {
-      errcode = vdsaProcessInit( &process, "10701" );
+      errcode = psaProcessInit( &process, "10701" );
    }
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       return -1;
    }
    
-   vdsaProcessFini();
+   psaProcessFini();
    
    return 0;
 }

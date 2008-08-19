@@ -16,6 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
+#include "Nucleus/Engine.h"
 #include <vdsf/vds>
 #include <iostream>
 

@@ -33,16 +33,16 @@ const bool expectedToPass = false;
 int main( int argc, char * argv[] )
 {
 #if defined(USE_DBC)
-   vdsaProcess process;
+   psaProcess process;
    int errcode;
    psnSessionContext context;
       
-   memset( &process, 0, sizeof(vdsaProcess) );
+   memset( &process, 0, sizeof(psaProcess) );
    if ( argc > 1 ) {
-      errcode = vdsaProcessInit( &process, argv[1] );
+      errcode = psaProcessInit( &process, argv[1] );
    }
    else {
-      errcode = vdsaProcessInit( &process, "10701" );
+      errcode = psaProcessInit( &process, "10701" );
    }
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -53,7 +53,7 @@ int main( int argc, char * argv[] )
    context.pidLocker= getpid();
    pscInitErrorHandler( &context.errorHandler );
    
-   errcode = vdsaOpenVDS( NULL, "dummy", 100, &context );
+   errcode = psaOpenVDS( NULL, "dummy", 100, &context );
 
    /* Should not return */
    ERROR_EXIT( expectedToPass, NULL, ; );

@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_API_H
-#define VDSA_API_H
+#ifndef PSA_API_H
+#define PSA_API_H
 
 #include "Common/Common.h"
 
@@ -25,29 +25,29 @@
 /**
  * The type of object (as seen from the API, not the engine).
  */
-enum vdsaObjetType
+enum psaObjetType
 {
-   VDSA_PROCESS = 0x111,
-   VDSA_SESSION,
-   VDSA_FOLDER,
-   VDSA_HASH_MAP,
-   VDSA_MAP,
-   VDSA_QUEUE,
-   VDSA_LIFO
+   PSA_PROCESS = 0x111,
+   PSA_SESSION,
+   PSA_FOLDER,
+   PSA_HASH_MAP,
+   PSA_MAP,
+   PSA_QUEUE,
+   PSA_LIFO
 };
 
-typedef enum vdsaObjetType vdsaObjetType;
+typedef enum psaObjetType psaObjetType;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdsaEditMode
+enum psaEditMode
 {
-   VDSA_READ_WRITE = 0,
-   VDSA_READ_ONLY,
-   VDSA_UPDATE_RO
+   PSA_READ_WRITE = 0,
+   PSA_READ_ONLY,
+   PSA_UPDATE_RO
 };
 
-typedef enum vdsaEditMode vdsaEditMode;
+typedef enum psaEditMode psaEditMode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -64,7 +64,7 @@ typedef enum vdsaEditMode vdsaEditMode;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** A simple struct to simplify arguments to a few functions. */
-struct vdsaDataEntry
+struct psaDataEntry
 {
    /** Length of the data in bytes. */
    size_t length;
@@ -74,11 +74,11 @@ struct vdsaDataEntry
 
 };
 
-typedef struct vdsaDataEntry vdsaDataEntry;
+typedef struct psaDataEntry psaDataEntry;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_API_H */
+#endif /* PSA_API_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_QUEUE_H
-#define VDSA_QUEUE_H
+#ifndef PSA_QUEUE_H
+#define PSA_QUEUE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -29,9 +29,9 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdsaQueue
+typedef struct psaQueue
 {
-   vdsaCommonObject object;
+   psaCommonObject object;
    
    /**
     * This pointer holds the result of the iteration (the pointer to
@@ -45,7 +45,7 @@ typedef struct vdsaQueue
    size_t minLength;
    size_t maxLength;
    
-} vdsaQueue;
+} psaQueue;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -54,21 +54,21 @@ typedef struct vdsaQueue
  * by this function.
  */
 VDSF_API_EXPORT
-int vdsaQueueFirst( vdsaQueue     * pQueue,
-                    vdsaDataEntry * pEntry );
+int psaQueueFirst( psaQueue     * pQueue,
+                   psaDataEntry * pEntry );
 
 /** 
  * Iterates through the queue - no data items are removed from the queue
  * by this function.
  */
 VDSF_API_EXPORT
-int vdsaQueueNext( vdsaQueue     * pQueue,
-                   vdsaDataEntry * pEntry );
+int psaQueueNext( psaQueue     * pQueue,
+                  psaDataEntry * pEntry );
 
 /** Remove the first inserted item from a FIFO queue. */
 VDSF_API_EXPORT
-int vdsaQueueRemove( vdsaQueue     * pQueue,
-                     vdsaDataEntry * pEntry );
+int psaQueueRemove( psaQueue     * pQueue,
+                    psaDataEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -76,7 +76,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_QUEUE_H */
+#endif /* PSA_QUEUE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -78,7 +78,7 @@ typedef struct psnSession
    /** This object is part of the linked list of the psnProcess */
    psnLinkNode node;
 
-   /** Pointer to the vdsaSession. To be used by the process object when
+   /** Pointer to the psaSession. To be used by the process object when
        it cleans up its sessions. */
    void * pApiSession;
    

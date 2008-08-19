@@ -231,7 +231,7 @@ public:
    
 private:
 
-   /// Pointer to the vdsaSession struct
+   /// Pointer to the psaSession struct
    VDS_HANDLE m_sessionHandle;
    
    friend class vdsFastMap;

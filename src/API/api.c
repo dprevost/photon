@@ -35,7 +35,7 @@ int vdsInit( const char * wdAddress,
              int          programIsMultiThreaded )                  
 {
    int errcode = VDS_OK;
-   vdsaProcess * process;
+   psaProcess * process;
    bool ok;
    
    if ( wdAddress == NULL ) return VDS_INVALID_WATCHDOG_ADDRESS;
@@ -48,11 +48,11 @@ int vdsInit( const char * wdAddress,
       if ( ! ok ) return VDS_NOT_ENOUGH_RESOURCES;
    }
 
-   process = (vdsaProcess *) malloc( sizeof(vdsaProcess) );
+   process = (psaProcess *) malloc( sizeof(psaProcess) );
    if ( process == NULL ) return VDS_NOT_ENOUGH_HEAP_MEMORY;
   
-   memset( process, 0, sizeof(vdsaProcess) );
-   errcode = vdsaProcessInit( process, wdAddress );
+   memset( process, 0, sizeof(psaProcess) );
+   errcode = psaProcessInit( process, wdAddress );
 
    if ( errcode != VDS_OK ) free( process );
 
@@ -64,7 +64,7 @@ int vdsInit( const char * wdAddress,
 void vdsExit()
 {
    if ( g_pProcessInstance != NULL ) {
-      vdsaProcessFini();
+      psaProcessFini();
    }
 }
 

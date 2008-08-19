@@ -63,7 +63,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaSessionOpenObj( (vdsaSession *) sessionHandle,
+   errcode = psaSessionOpenObj( (psaSession *) sessionHandle,
                                  VDS_FOLDER,
                                  false,
                                  "/asoono",

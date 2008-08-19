@@ -30,15 +30,15 @@ int main()
    int i;
    unsigned int sum1 = 0, sum2 = 0;
 
-   vdsaReader * readers, * dummy, * first;
+   psaReader * readers, * dummy, * first;
    int * readerIsIn;
-   vdsaListReaders list;
+   psaListReaders list;
 
    srand( 0x123456 );
    
-   vdsaListReadersInit( &list );
+   psaListReadersInit( &list );
    
-   readers = (vdsaReader *)malloc( MAX_READERS*sizeof(vdsaReader) );
+   readers = (psaReader *)malloc( MAX_READERS*sizeof(psaReader) );
    if ( readers == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -51,7 +51,7 @@ int main()
       readers[i].address = (void *) &readers[i];
       readerIsIn[i] = 0;
       if ( rand() > RAND_MAX/2 ) {
-         vdsaListReadersPut( &list, &readers[i] );
+         psaListReadersPut( &list, &readers[i] );
          readerIsIn[i] = 1;
          sum1++;
       }
@@ -63,7 +63,7 @@ int main()
    }
    
    /* Test our loop */
-   if ( vdsaListReadersPeakFirst( &list, &dummy ) != true ) {
+   if ( psaListReadersPeakFirst( &list, &dummy ) != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    first = dummy;
@@ -72,7 +72,7 @@ int main()
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
       sum2++;
-   } while ( vdsaListReadersPeakNext( &list, dummy, &dummy ) );
+   } while ( psaListReadersPeakNext( &list, dummy, &dummy ) );
    
    if ( sum2 != list.currentSize ) {
       fprintf( stderr, "%d %d\n", sum2, list.currentSize );
@@ -86,11 +86,11 @@ int main()
    /* inverse our selection ! (to test removals) */
    for ( i = 0; i < MAX_READERS; ++i ) {
       if ( readerIsIn[i] == 0 ) {
-         vdsaListReadersPut( &list, &readers[i] );
+         psaListReadersPut( &list, &readers[i] );
          readerIsIn[i] = 1;
       }
       else {
-         vdsaListReadersRemove( &list, &readers[i] );
+         psaListReadersRemove( &list, &readers[i] );
          readerIsIn[i] = 0;
       }
    }
@@ -102,7 +102,7 @@ int main()
 
    /* Retest our loop */
    sum2 = 0;
-   if ( vdsaListReadersPeakFirst( &list, &dummy ) != true ) {
+   if ( psaListReadersPeakFirst( &list, &dummy ) != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( dummy == first ) {
@@ -117,7 +117,7 @@ int main()
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
       sum2++;
-   } while ( vdsaListReadersPeakNext( &list, dummy, &dummy ) );
+   } while ( psaListReadersPeakNext( &list, dummy, &dummy ) );
    
    if ( sum2 != list.currentSize ) {
       fprintf( stderr, "%d %d\n", sum2, list.currentSize );

@@ -29,7 +29,7 @@ int main( int argc, char * argv[] )
 #if defined(USE_DBC)
    VDS_HANDLE sessionHandle;
    int errcode;
-   vdsaCommonObject object;
+   psaCommonObject object;
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
@@ -63,9 +63,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   memset( &object, 0, sizeof(vdsaCommonObject) );
-   object.pSession = (vdsaSession *) sessionHandle;
-   errcode = vdsaCommonObjOpen( NULL,
+   memset( &object, 0, sizeof(psaCommonObject) );
+   object.pSession = (psaSession *) sessionHandle;
+   errcode = psaCommonObjOpen( NULL,
                                 VDS_FOLDER,
                                 false,
                                 "/acono",

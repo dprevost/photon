@@ -98,7 +98,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaMapFirst( objHandle, NULL );
+   errcode = psaMapFirst( objHandle, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -29,7 +29,7 @@ int main( int argc, char * argv[] )
 {
    VDS_HANDLE sessionHandle;
    int errcode;
-   struct vdsaCommonObject object;
+   struct psaCommonObject object;
    
    if ( argc > 1 ) {
       errcode = vdsInit( argv[1], 0 );
@@ -48,7 +48,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaSessionOpenObj( (vdsaSession *) sessionHandle,
+   errcode = psaSessionOpenObj( (psaSession *) sessionHandle,
                                  VDS_FOLDER,
                                  false,
                                  "/asoonc",

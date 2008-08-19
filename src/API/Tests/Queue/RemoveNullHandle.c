@@ -30,7 +30,7 @@ int main( int argc, char * argv[] )
    VDS_HANDLE sessionHandle, objHandle;
    int errcode;
    const char * data1 = "My Data1";
-   vdsaDataEntry entry;
+   psaDataEntry entry;
    vdsObjectDefinition defQueue = { 
       VDS_QUEUE,
       1, 
@@ -100,7 +100,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsaQueueRemove( NULL, &entry );
+   errcode = psaQueueRemove( NULL, &entry );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

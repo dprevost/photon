@@ -32,19 +32,19 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsaMapResetReader( void * map );
+void psaMapResetReader( void * map );
 
 static inline
-void vdsaResetReaders( vdsaSession * pSession )
+void psaResetReaders( psaSession * pSession )
 {
-   vdsaReader * reader = NULL;
+   psaReader * reader = NULL;
    
-   if ( vdsaListReadersPeakFirst( &pSession->listReaders, &reader ) ) {
+   if ( psaListReadersPeakFirst( &pSession->listReaders, &reader ) ) {
       do {
-         if ( reader->type == VDSA_MAP ) {
-            vdsaMapResetReader( reader->address );
+         if ( reader->type == PSA_MAP ) {
+            psaMapResetReader( reader->address );
          }
-      } while (vdsaListReadersPeakNext(&pSession->listReaders, reader, &reader) );
+      } while (psaListReadersPeakNext(&pSession->listReaders, reader, &reader) );
    }
 }
 
@@ -57,12 +57,12 @@ void vdsaResetReaders( vdsaSession * pSession )
 int vdsCommit( VDS_HANDLE sessionHandle )
 {
    int errcode = VDS_OK;
-   vdsaSession* pSession;
+   psaSession* pSession;
 
-   pSession = (vdsaSession*) sessionHandle;
+   pSession = (psaSession*) sessionHandle;
    if ( pSession == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( pSession->numberOfEdits > 0 ) {
       pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, 
@@ -70,16 +70,16 @@ int vdsCommit( VDS_HANDLE sessionHandle )
       return VDS_NOT_ALL_EDIT_ARE_CLOSED;
    }
    
-   if ( vdsaSessionLock( pSession ) ) {
+   if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          psnTxCommit( (psnTx*)pSession->context.pTransaction, 
                             &pSession->context );
-         vdsaResetReaders( pSession );
+         psaResetReaders( pSession );
       }
       else {
          errcode = VDS_SESSION_IS_TERMINATED;
       }
-      vdsaSessionUnlock( pSession );
+      psaSessionUnlock( pSession );
    }
    else {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -99,15 +99,15 @@ int vdsCreateObject( VDS_HANDLE            sessionHandle,
                      size_t                nameLengthInBytes,
                      vdsObjectDefinition * pDefinition )
 {
-   vdsaSession* pSession;
+   psaSession* pSession;
    int errcode = VDS_OK;
    psnFolder * pTree;
    bool ok = true;
    
-   pSession = (vdsaSession*) sessionHandle;
+   pSession = (psaSession*) sessionHandle;
    if ( pSession == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
    
    if ( objectName == NULL ) {
       pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
@@ -124,13 +124,13 @@ int vdsCreateObject( VDS_HANDLE            sessionHandle,
       return VDS_NULL_POINTER;
    }
 
-   errcode = vdsaValidateDefinition( pDefinition );
+   errcode = psaValidateDefinition( pDefinition );
    if ( errcode != VDS_OK ) {
       pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, errcode );
       return errcode;
    }
    
-   if ( vdsaSessionLock( pSession ) ) {
+   if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psnFolder )
          ok = psnTopFolderCreateObject( pTree,
@@ -143,7 +143,7 @@ int vdsCreateObject( VDS_HANDLE            sessionHandle,
       else {
          errcode = VDS_SESSION_IS_TERMINATED;
       }
-      vdsaSessionUnlock( pSession );
+      psaSessionUnlock( pSession );
    }
    else {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -166,15 +166,15 @@ int vdsDestroyObject( VDS_HANDLE   sessionHandle,
                       const char * objectName,
                       size_t       nameLengthInBytes )
 {
-   vdsaSession* pSession;
+   psaSession* pSession;
    int errcode = VDS_OK;
    psnFolder * pTree;
    bool ok = true;
    
-   pSession = (vdsaSession*) sessionHandle;
+   pSession = (psaSession*) sessionHandle;
    if ( pSession == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( objectName == NULL ) {
       pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
@@ -186,7 +186,7 @@ int vdsDestroyObject( VDS_HANDLE   sessionHandle,
       return VDS_INVALID_LENGTH;
    }
    
-   if ( vdsaSessionLock( pSession ) ) {
+   if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psnFolder )
          ok = psnTopFolderDestroyObject( pTree,
@@ -198,7 +198,7 @@ int vdsDestroyObject( VDS_HANDLE   sessionHandle,
       else {
          errcode = VDS_SESSION_IS_TERMINATED;
       }
-      vdsaSessionUnlock( pSession );
+      psaSessionUnlock( pSession );
    }
    else {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -221,20 +221,20 @@ int vdsErrorMsg( VDS_HANDLE sessionHandle,
                  char *     message,
                  size_t     msgLengthInBytes )
 {
-   vdsaSession* pSession;
+   psaSession* pSession;
    int rc = VDS_OK;
    size_t len;
    
-   pSession = (vdsaSession*) sessionHandle;
+   pSession = (psaSession*) sessionHandle;
    if ( pSession == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( message == NULL ) return VDS_NULL_POINTER;
    
    if ( msgLengthInBytes < 32 ) return VDS_INVALID_LENGTH;
    
-   if ( vdsaSessionLock( pSession ) ) {
+   if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          if ( pscGetLastError( &pSession->context.errorHandler ) != 0 ) {
             len = pscGetErrorMsg( &pSession->context.errorHandler,
@@ -248,7 +248,7 @@ int vdsErrorMsg( VDS_HANDLE sessionHandle,
       else {
          rc = VDS_SESSION_IS_TERMINATED;
       }
-      vdsaSessionUnlock( pSession );
+      psaSessionUnlock( pSession );
    }
    else {
       rc = VDS_SESSION_CANNOT_GET_LOCK;
@@ -261,17 +261,17 @@ int vdsErrorMsg( VDS_HANDLE sessionHandle,
 
 int vdsExitSession( VDS_HANDLE sessionHandle )
 {
-   vdsaSession * pSession;
+   psaSession * pSession;
    psnSession * pCleanup;
    bool ok;
    int errcode = 0;
    
-   pSession = (vdsaSession*) sessionHandle;
+   pSession = (psaSession*) sessionHandle;
    if ( pSession == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
-   if ( vdsaProcessLock() ) {
+   if ( psaProcessLock() ) {
       /*
        * if the exit process was called at the "same time" the session
        * might have been "removed" by the process object.
@@ -279,13 +279,13 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
       if ( ! pSession->terminated ) {
          /* ok we are still there */
          pCleanup = pSession->pCleanup;
-         errcode = vdsaCloseSession( pSession );
+         errcode = psaCloseSession( pSession );
          
          /*
-          * vdsaCloseSession can be called by the api process object while
+          * psaCloseSession can be called by the api process object while
           * it holds the lock to the vdesProcess object. And the next
           * call locks it as well. To avoid a recursive lock (leading to 
-          * a deadlock) we cannot include this call in vdsaCloseSession.
+          * a deadlock) we cannot include this call in psaCloseSession.
           */
          if ( errcode == 0 ) {
             ok = psnProcessRemoveSession( g_pProcessInstance->pCleanup, 
@@ -298,7 +298,7 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
          errcode = VDS_SESSION_IS_TERMINATED;
       }
       
-      vdsaProcessUnlock();
+      psaProcessUnlock();
    }
    else {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -320,7 +320,7 @@ int vdsExitSession( VDS_HANDLE sessionHandle )
        */
       pSession->type = 0;
       /* Reset the list to spot logic errors (illegal accesses) with DBC */
-      vdsaListReadersFini( &pSession->listReaders );
+      psaListReadersFini( &pSession->listReaders );
       free( pSession );
    }
    
@@ -338,17 +338,17 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
                       size_t                 nameLengthInBytes,
                       vdsObjectDefinition ** ppDefinition )
 {
-   vdsaSession* pSession;
+   psaSession* pSession;
    int errcode = VDS_OK;
    psnFolder * pTree;
    psnFieldDef * pInternalDef;
    vdsObjectDefinition *pDefinition;
    bool ok = true;
    
-   pSession = (vdsaSession*) sessionHandle;
+   pSession = (psaSession*) sessionHandle;
 
    if ( pSession == NULL ) return VDS_NULL_HANDLE;   
-   if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
    
    if ( objectName == NULL ) {
       pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
@@ -371,7 +371,7 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
       return VDS_NOT_ENOUGH_HEAP_MEMORY;
    }
    
-   if ( vdsaSessionLock( pSession ) ) {
+   if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psnFolder )
          ok = psnTopFolderGetDef( pTree, 
@@ -386,7 +386,7 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
                *ppDefinition = pDefinition;
             }
             else {
-               errcode = vdsaGetDefinition( pInternalDef,
+               errcode = psaGetDefinition( pInternalDef,
                                             (uint16_t)pDefinition->numFields,
                                             ppDefinition );
                if ( errcode == 0 ) {
@@ -404,7 +404,7 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
       else {
          errcode = VDS_SESSION_IS_TERMINATED;
       }
-      vdsaSessionUnlock( pSession );
+      psaSessionUnlock( pSession );
    }
    else {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -425,16 +425,16 @@ int vdsGetDefinition( VDS_HANDLE             sessionHandle,
 int vdsGetInfo( VDS_HANDLE   sessionHandle,
                 vdsInfo    * pInfo )
 {
-   vdsaSession* pSession;
+   psaSession* pSession;
    int errcode = VDS_OK;
    bool ok = true;
    psnMemAlloc * pAlloc;
    struct psnMemoryHeader * pHead = g_pProcessInstance->pHeader;
    
-   pSession = (vdsaSession*) sessionHandle;
+   pSession = (psaSession*) sessionHandle;
 
    if ( pSession == NULL ) return VDS_NULL_HANDLE;   
-   if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
    
    if ( pInfo == NULL ) {
       pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NULL_POINTER );
@@ -442,7 +442,7 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
    }
    memset( pInfo, 0, sizeof(struct vdsInfo) );
    
-   if ( vdsaSessionLock( pSession ) ) {
+   if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pAlloc, pSession->pHeader->allocatorOffset, psnMemAlloc )
          ok = psnMemAllocStats( pAlloc, pInfo, &pSession->context );
@@ -462,7 +462,7 @@ int vdsGetInfo( VDS_HANDLE   sessionHandle,
       else {
          errcode = VDS_SESSION_IS_TERMINATED;
       }
-      vdsaSessionUnlock( pSession );
+      psaSessionUnlock( pSession );
    }
    else {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -485,15 +485,15 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
                   size_t         nameLengthInBytes,
                   vdsObjStatus * pStatus )
 {
-   vdsaSession* pSession;
+   psaSession* pSession;
    int errcode = 0;
    psnFolder * pTree;
    bool ok = true;
    
-   pSession = (vdsaSession*) sessionHandle;
+   pSession = (psaSession*) sessionHandle;
 
    if ( pSession == NULL ) return VDS_NULL_HANDLE;   
-   if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
    
    if ( objectName == NULL ) {
       pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
@@ -510,7 +510,7 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
       return VDS_NULL_POINTER;
    }
 
-   if ( vdsaSessionLock( pSession ) ) {
+   if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psnFolder )
          ok = psnTopFolderGetStatus( pTree, 
@@ -523,7 +523,7 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
       else {
          errcode = VDS_SESSION_IS_TERMINATED;
       }
-      vdsaSessionUnlock( pSession );
+      psaSessionUnlock( pSession );
    }
    else {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -544,7 +544,7 @@ int vdsGetStatus( VDS_HANDLE     sessionHandle,
 int vdsInitSession( VDS_HANDLE* sessionHandle )
 {
    vdsErrors errcode = VDS_OK;
-   vdsaSession* pSession = NULL;
+   psaSession* pSession = NULL;
    void* ptr = NULL;
    bool ok;
    
@@ -554,11 +554,11 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
 
    if ( g_pProcessInstance == NULL ) return VDS_PROCESS_NOT_INITIALIZED;
    
-   pSession = (vdsaSession*) malloc(sizeof(vdsaSession));
+   pSession = (psaSession*) malloc(sizeof(psaSession));
    if ( pSession == NULL ) return VDS_NOT_ENOUGH_HEAP_MEMORY;
    
-   memset( pSession, 0, sizeof(vdsaSession) );
-   pSession->type = VDSA_SESSION;
+   memset( pSession, 0, sizeof(psaSession) );
+   pSession->type = PSA_SESSION;
    pSession->context.pLogFile = NULL;
 
    pSession->context.pidLocker = getpid();
@@ -601,20 +601,20 @@ int vdsInitSession( VDS_HANDLE* sessionHandle )
       if ( errcode != VDS_OK ) goto error_handler;
    }
    
-   vdsaListReadersInit( &pSession->listReaders );
+   psaListReadersInit( &pSession->listReaders );
    
    /*
     * Once a session is added, it can be accessed by other threads
     * in the process (exiting, for example). So we must lock the
     * session, just in case.
     */
-   if ( vdsaSessionLock( pSession ) ) {
+   if ( psaSessionLock( pSession ) ) {
       ok = psnProcessAddSession( g_pProcessInstance->pCleanup, 
                                   pSession, 
                                   &pSession->pCleanup, 
                                   &pSession->context );
       VDS_POST_CONDITION( ok == true || ok == false );
-      vdsaSessionUnlock( pSession );
+      psaSessionUnlock( pSession );
       if ( ! ok ) goto error_handler;
    }
    else {
@@ -663,22 +663,22 @@ error_handler:
 
 int vdsLastError( VDS_HANDLE sessionHandle )
 {
-   vdsaSession* pSession;
+   psaSession* pSession;
    int rc = VDS_SESSION_CANNOT_GET_LOCK;
    
-   pSession = (vdsaSession*) sessionHandle;
+   pSession = (psaSession*) sessionHandle;
    if ( pSession == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
-   if ( vdsaSessionLock( pSession ) ) {
+   if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          rc = pscGetLastError( &pSession->context.errorHandler );
       }
       else {
          rc = VDS_SESSION_IS_TERMINATED;
       }
-      vdsaSessionUnlock( pSession );
+      psaSessionUnlock( pSession );
    }
 
    return rc;
@@ -689,24 +689,24 @@ int vdsLastError( VDS_HANDLE sessionHandle )
 int vdsRollback( VDS_HANDLE sessionHandle )
 {
    int errcode = VDS_OK;
-   vdsaSession* pSession;
+   psaSession* pSession;
 
-   pSession = (vdsaSession*) sessionHandle;
+   pSession = (psaSession*) sessionHandle;
 
    if ( pSession == NULL ) return VDS_NULL_HANDLE;
-   if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
    
-   if ( vdsaSessionLock( pSession ) ) {
+   if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          psnTxRollback( (psnTx*)pSession->context.pTransaction, 
                          &pSession->context );
-         vdsaResetReaders( pSession );
+         psaResetReaders( pSession );
       }
       else {
          errcode = VDS_SESSION_IS_TERMINATED;
       }
       
-      vdsaSessionUnlock( pSession );
+      psaSessionUnlock( pSession );
    }
    else {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -725,8 +725,8 @@ int vdsRollback( VDS_HANDLE sessionHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaSessionCloseObj( vdsaSession             * pSession,
-                         struct vdsaCommonObject * pObject )
+int psaSessionCloseObj( psaSession             * pSession,
+                        struct psaCommonObject * pObject )
 {
    int errcode = VDS_OK;
    bool ok = true;
@@ -762,16 +762,16 @@ int vdsaSessionCloseObj( vdsaSession             * pSession,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaCloseSession( vdsaSession* pSession )
+int psaCloseSession( psaSession* pSession )
 {
    psnObjectContext* pObject = NULL;
-   vdsaCommonObject* pCommonObject = NULL;
+   psaCommonObject* pCommonObject = NULL;
    int rc, errcode = VDS_OK;
    bool ok;
    
    VDS_PRE_CONDITION( pSession != NULL );
 
-   if ( vdsaSessionLock( pSession ) ) {
+   if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          if ( pSession->context.pTransaction != NULL ) {
             psnTxRollback( (psnTx*)(pSession->context.pTransaction), 
@@ -790,10 +790,10 @@ int vdsaCloseSession( vdsaSession* pSession )
             
                if ( pObject->pCommonObject == NULL ) continue;
             
-               pCommonObject = (vdsaCommonObject*) pObject->pCommonObject;
+               pCommonObject = (psaCommonObject*) pObject->pCommonObject;
                rc = psnTopFolderCloseObject( &pCommonObject->folderItem, 
                                               &pSession->context );
-               vdsaCommonCloseObject( pCommonObject );
+               psaCommonCloseObject( pCommonObject );
 
                ok = psnSessionRemoveFirst(pSession->pCleanup, &pSession->context );
                VDS_POST_CONDITION( ok == true );
@@ -809,7 +809,7 @@ int vdsaCloseSession( vdsaSession* pSession )
          errcode = VDS_SESSION_IS_TERMINATED;
       }
       
-      vdsaSessionUnlock( pSession );
+      psaSessionUnlock( pSession );
    }
    else {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -824,12 +824,12 @@ int vdsaCloseSession( vdsaSession* pSession )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaSessionOpenObj( vdsaSession             * pSession,
-                        enum vdsObjectType        objectType,
-                        vdsaEditMode              editMode,
-                        const char              * objectName,
-                        size_t                    nameLengthInBytes,
-                        struct vdsaCommonObject * pObject )
+int psaSessionOpenObj( psaSession             * pSession,
+                       enum vdsObjectType       objectType,
+                       psaEditMode              editMode,
+                       const char             * objectName,
+                       size_t                   nameLengthInBytes,
+                       struct psaCommonObject * pObject )
 {
    int errcode = VDS_OK;
    psnFolder * pTree;
@@ -844,7 +844,7 @@ int vdsaSessionOpenObj( vdsaSession             * pSession,
    
    if ( ! pSession->terminated ) {
       GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psnFolder );
-      if ( editMode == VDSA_UPDATE_RO ) {
+      if ( editMode == PSA_UPDATE_RO ) {
          ok = psnTopFolderEditObject( pTree,
                                        objectName,
                                        nameLengthInBytes,

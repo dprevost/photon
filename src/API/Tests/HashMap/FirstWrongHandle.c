@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * key  = "My Key";
    const char * data = "My Data";
-   vdsaHashMapEntry entry;
+   psaHashMapEntry entry;
    vdsObjectDefinition mapDef = { 
       VDS_HASH_MAP, 
       1, 
@@ -99,7 +99,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaHashMapFirst( sessionHandle,
+   errcode = psaHashMapFirst( sessionHandle,
                                &entry );
  
    ERROR_EXIT( expectedToPass, NULL, ; );

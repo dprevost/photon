@@ -76,7 +76,7 @@ string foldername("TestFolder");
 int AddDefectsHashMaps( vector<myMap> & h )
 {
    int api_offset = -1;
-   struct vdsaHashMap ** apiHashMap;
+   struct psaHashMap ** apiHashMap;
    struct psnHashMap * pHashMap;
    psnTxStatus * txItemStatus, * txHashMapStatus;
    unsigned long i, ** apiObj;
@@ -92,7 +92,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table (true for g++)
    for ( i = 0; i < sizeof(vdsHashMap)/sizeof(void*); ++i, apiObj++ ) {
-      if ( **apiObj == VDSA_HASH_MAP ) {
+      if ( **apiObj == PSA_HASH_MAP ) {
          api_offset = i * sizeof(void*);
          break;
       }
@@ -105,7 +105,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    cout << "Defect for " << h[0].name << ": None" << endl;
 
    cout << "Defect for " << h[1].name << ": 3 ref. couters" << endl;
-   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[1].map + api_offset );
+   apiHashMap = (psaHashMap **) ( (unsigned char *) &h[1].map + api_offset );
    pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyVdsObject;
    pHashMap->nodeObject.txCounter++;
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
@@ -130,7 +130,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    txItemStatus->usageCounter++;
 
    cout << "Defect for " << h[2].name << ": object added - not committed" << endl;
-   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[2].map + api_offset );
+   apiHashMap = (psaHashMap **) ( (unsigned char *) &h[2].map + api_offset );
    pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyVdsObject;
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
    txHashMapStatus->txOffset = SET_OFFSET( pHashMap ); 
@@ -139,7 +139,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    cout << "Defect for " << h[3].name << ": 5 items removed-committed," << endl;
    cout << "                                  4 items removed - not committed," << endl;
    cout << "                                  9 items added - not committed" << endl;
-   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[3].map + api_offset );
+   apiHashMap = (psaHashMap **) ( (unsigned char *) &h[3].map + api_offset );
    pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyVdsObject;
 
    ok = psnHashGetFirst( &pHashMap->hashObj, &offset );
@@ -174,7 +174,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    }
    
    cout << "Defect for " << h[4].name << ": object locked" << endl;
-   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[4].map + api_offset );
+   apiHashMap = (psaHashMap **) ( (unsigned char *) &h[4].map + api_offset );
    pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -182,7 +182,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    }
 
    cout << "Defect for " << h[5].name << ": items - invalid offset" << endl;
-   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[5].map + api_offset );
+   apiHashMap = (psaHashMap **) ( (unsigned char *) &h[5].map + api_offset );
    pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -196,7 +196,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    }
    
    cout << "Defect for " << h[6].name << ": item - invalid key length" << endl;
-   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[6].map + api_offset );
+   apiHashMap = (psaHashMap **) ( (unsigned char *) &h[6].map + api_offset );
    pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -220,7 +220,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    pItem->keyLength = 0;
    
    cout << "Defect for " << h[7].name << ": item - invalid data offset" << endl;
-   apiHashMap = (vdsaHashMap **) ( (unsigned char *) &h[7].map + api_offset );
+   apiHashMap = (psaHashMap **) ( (unsigned char *) &h[7].map + api_offset );
    pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -251,7 +251,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
 int AddDefectsLifos( vector<myLifo> & l )
 {
    int api_offset = -1;
-   struct vdsaLifo ** apiLifo;
+   struct psaLifo ** apiLifo;
    struct psnQueue * pQueue;
    psnTxStatus * txItemStatus, * txQueueStatus;
    unsigned long i, ** apiObj;
@@ -265,7 +265,7 @@ int AddDefectsLifos( vector<myLifo> & l )
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table
    for ( i = 0; i < sizeof(vdsQueue)/sizeof(void*); ++i, apiObj++ ) {
-      if ( **apiObj == VDSA_LIFO ) {
+      if ( **apiObj == PSA_LIFO ) {
          api_offset = i * sizeof(void*);
          break;
       }
@@ -278,7 +278,7 @@ int AddDefectsLifos( vector<myLifo> & l )
    cout << "Defect for " << l[0].name << ": None" << endl;
 
    cout << "Defect for " << l[1].name << ": 3 ref. couters" << endl;
-   apiLifo = (vdsaLifo **) ( (unsigned char *) &l[1].queue + api_offset );
+   apiLifo = (psaLifo **) ( (unsigned char *) &l[1].queue + api_offset );
    pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    pQueue->nodeObject.txCounter++;
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
@@ -303,7 +303,7 @@ int AddDefectsLifos( vector<myLifo> & l )
    txItemStatus->usageCounter++;
 
    cout << "Defect for " << l[2].name << ": object added - not committed" << endl;
-   apiLifo = (vdsaLifo **) ( (unsigned char *) &l[2].queue + api_offset );
+   apiLifo = (psaLifo **) ( (unsigned char *) &l[2].queue + api_offset );
    pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
    txQueueStatus->txOffset = SET_OFFSET( pQueue ); 
@@ -314,7 +314,7 @@ int AddDefectsLifos( vector<myLifo> & l )
    cout << "Defect for " << l[3].name << ": 5 items removed-committed," << endl;
    cout << "                                  4 items removed - not committed," << endl;
    cout << "                                  9 items added - not committed" << endl;
-   apiLifo = (vdsaLifo **) ( (unsigned char *) &l[3].queue + api_offset );
+   apiLifo = (psaLifo **) ( (unsigned char *) &l[3].queue + api_offset );
    pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
 
    okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
@@ -344,7 +344,7 @@ int AddDefectsLifos( vector<myLifo> & l )
    }
    
    cout << "Defect for " << l[4].name << ": object locked" << endl;
-   apiLifo = (vdsaLifo **) ( (unsigned char *) &l[4].queue + api_offset );
+   apiLifo = (psaLifo **) ( (unsigned char *) &l[4].queue + api_offset );
    pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -352,7 +352,7 @@ int AddDefectsLifos( vector<myLifo> & l )
    }
 
    cout << "Defect for " << l[5].name << ": broken forward link" << endl;
-   apiLifo = (vdsaLifo **) ( (unsigned char *) &l[5].queue + api_offset );
+   apiLifo = (psaLifo **) ( (unsigned char *) &l[5].queue + api_offset );
    pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -377,7 +377,7 @@ int AddDefectsLifos( vector<myLifo> & l )
    }
 
    cout << "Defect for " << l[6].name << ": broken backward link" << endl;
-   apiLifo = (vdsaLifo **) ( (unsigned char *) &l[6].queue + api_offset );
+   apiLifo = (psaLifo **) ( (unsigned char *) &l[6].queue + api_offset );
    pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -402,7 +402,7 @@ int AddDefectsLifos( vector<myLifo> & l )
    }
    
    cout << "Defect for " << l[7].name << ": 2 broken forward links" << endl;
-   apiLifo = (vdsaLifo **) ( (unsigned char *) &l[7].queue + api_offset );
+   apiLifo = (psaLifo **) ( (unsigned char *) &l[7].queue + api_offset );
    pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -429,7 +429,7 @@ int AddDefectsLifos( vector<myLifo> & l )
    }
 
    cout << "Defect for " << l[8].name << ": 2 broken backward links" << endl;
-   apiLifo = (vdsaLifo **) ( (unsigned char *) &l[8].queue + api_offset );
+   apiLifo = (psaLifo **) ( (unsigned char *) &l[8].queue + api_offset );
    pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -456,7 +456,7 @@ int AddDefectsLifos( vector<myLifo> & l )
    }
 
    cout << "Defect for " << l[9].name << ": broken bw+fw links (eq)" << endl;
-   apiLifo = (vdsaLifo **) ( (unsigned char *) &l[9].queue + api_offset );
+   apiLifo = (psaLifo **) ( (unsigned char *) &l[9].queue + api_offset );
    pQueue = (psnQueue *) (*apiLifo)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -489,7 +489,7 @@ int AddDefectsLifos( vector<myLifo> & l )
 int AddDefectsQueues( vector<myQueue> & q )
 {
    int api_offset = -1;
-   struct vdsaQueue ** apiQueue;
+   struct psaQueue ** apiQueue;
    struct psnQueue * pQueue;
    psnTxStatus * txItemStatus, * txQueueStatus;
    unsigned long i, ** apiObj;
@@ -503,7 +503,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table
    for ( i = 0; i < sizeof(vdsQueue)/sizeof(void*); ++i, apiObj++ ) {
-      if ( **apiObj == VDSA_QUEUE ) {
+      if ( **apiObj == PSA_QUEUE ) {
          api_offset = i * sizeof(void*);
          break;
       }
@@ -516,7 +516,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    cout << "Defect for " << q[0].name << ": None" << endl;
 
    cout << "Defect for " << q[1].name << ": 3 ref. couters" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[1].queue + api_offset );
+   apiQueue = (psaQueue **) ( (unsigned char *) &q[1].queue + api_offset );
    pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    pQueue->nodeObject.txCounter++;
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
@@ -541,7 +541,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    txItemStatus->usageCounter++;
 
    cout << "Defect for " << q[2].name << ": object added - not committed" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[2].queue + api_offset );
+   apiQueue = (psaQueue **) ( (unsigned char *) &q[2].queue + api_offset );
    pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
    txQueueStatus->txOffset = SET_OFFSET( pQueue ); 
@@ -552,7 +552,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    cout << "Defect for " << q[3].name << ": 5 items removed-committed," << endl;
    cout << "                                  4 items removed - not committed," << endl;
    cout << "                                  9 items added - not committed" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[3].queue + api_offset );
+   apiQueue = (psaQueue **) ( (unsigned char *) &q[3].queue + api_offset );
    pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
 
    okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
@@ -582,7 +582,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    }
    
    cout << "Defect for " << q[4].name << ": object locked" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[4].queue + api_offset );
+   apiQueue = (psaQueue **) ( (unsigned char *) &q[4].queue + api_offset );
    pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -590,7 +590,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    }
 
    cout << "Defect for " << q[5].name << ": broken forward link" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[5].queue + api_offset );
+   apiQueue = (psaQueue **) ( (unsigned char *) &q[5].queue + api_offset );
    pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -615,7 +615,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    }
 
    cout << "Defect for " << q[6].name << ": broken backward link" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[6].queue + api_offset );
+   apiQueue = (psaQueue **) ( (unsigned char *) &q[6].queue + api_offset );
    pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -640,7 +640,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    }
    
    cout << "Defect for " << q[7].name << ": 2 broken forward links" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[7].queue + api_offset );
+   apiQueue = (psaQueue **) ( (unsigned char *) &q[7].queue + api_offset );
    pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -667,7 +667,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    }
 
    cout << "Defect for " << q[8].name << ": 2 broken backward links" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[8].queue + api_offset );
+   apiQueue = (psaQueue **) ( (unsigned char *) &q[8].queue + api_offset );
    pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
@@ -694,7 +694,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    }
 
    cout << "Defect for " << q[9].name << ": broken bw+fw links (eq)" << endl;
-   apiQueue = (vdsaQueue **) ( (unsigned char *) &q[9].queue + api_offset );
+   apiQueue = (psaQueue **) ( (unsigned char *) &q[9].queue + api_offset );
    pQueue = (psnQueue *) (*apiQueue)->object.pMyVdsObject;
    if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;

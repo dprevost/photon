@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_PROCESS_H
-#define VDSA_PROCESS_H
+#ifndef PSA_PROCESS_H
+#define PSA_PROCESS_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -40,9 +40,9 @@ struct vdsProxyObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdsaProcess
+typedef struct psaProcess
 {
-   vdsaObjetType type;
+   psaObjetType type;
 
    /** Pointer to the header of the VDS memory. */
    struct psnMemoryHeader* pHeader;
@@ -61,16 +61,16 @@ typedef struct vdsaProcess
    char logDirName[PATH_MAX];
 
    /** This object encapsulates the task of talking with the watchdog. */
-   vdsaConnector connector;
+   psaConnector connector;
    
    pscMemoryFile memoryFile;
    
-} vdsaProcess;
+} psaProcess;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_API_EXPORT
-extern vdsaProcess *  g_pProcessInstance;
+extern psaProcess *  g_pProcessInstance;
 
 VDSF_API_EXPORT
 extern bool           g_protectionIsNeeded;
@@ -84,24 +84,24 @@ extern pscThreadLock g_ProcessMutex;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_API_EXPORT
-int vdsaProcessInit( vdsaProcess *pProcess,
-                     const char  *wdAddress );
+int psaProcessInit( psaProcess * pProcess,
+                    const char * wdAddress );
 
 VDSF_API_EXPORT
-void vdsaProcessFini();
+void psaProcessFini();
 
 VDSF_API_EXPORT
 bool AreWeTerminated();
 
 VDSF_API_EXPORT
-int vdsaOpenVDS( vdsaProcess        * process,
-                 const char         * memoryFileName,
-                 size_t               memorySizekb,
-                 psnSessionContext * pSession );
+int psaOpenVDS( psaProcess        * process,
+                const char        * memoryFileName,
+                size_t              memorySizekb,
+                psnSessionContext * pSession );
                         
 VDSF_API_EXPORT
-void vdsaCloseVDS( vdsaProcess        * process,
-                   psnSessionContext * pSession );
+void psaCloseVDS( psaProcess        * process,
+                  psnSessionContext * pSession );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -109,7 +109,7 @@ void vdsaCloseVDS( vdsaProcess        * process,
 static 
 #endif
 __inline
-bool vdsaProcessLock()
+bool psaProcessLock()
 {
    bool ok = true;
    
@@ -128,7 +128,7 @@ bool vdsaProcessLock()
 static 
 #endif
 __inline
-void vdsaProcessUnlock()
+void psaProcessUnlock()
 {
    if ( g_protectionIsNeeded ) {
       pscReleaseThreadLock( &g_ProcessMutex );
@@ -141,7 +141,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_PROCESS_H */
+#endif /* PSA_PROCESS_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

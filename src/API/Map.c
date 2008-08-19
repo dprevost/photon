@@ -31,20 +31,20 @@
 
 int vdsFastMapClose( VDS_HANDLE objectHandle )
 {
-   vdsaMap * pHashMap;
+   psaMap * pHashMap;
    psnMap * pVDSHashMap;
    int errcode = VDS_OK;
    
-   pHashMap = (vdsaMap *) objectHandle;
+   pHashMap = (psaMap *) objectHandle;
    if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pHashMap->object.type != VDSA_MAP ) {
+   if ( pHashMap->object.type != PSA_MAP ) {
       return VDS_WRONG_TYPE_HANDLE;
    }
    
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) ) {
+      if ( psaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (psnMap *) pHashMap->object.pMyVdsObject;
 
          /* Reinitialize the iterator, if needed */
@@ -60,9 +60,9 @@ int vdsFastMapClose( VDS_HANDLE objectHandle )
          }
 
          if ( errcode == VDS_OK ) {
-            errcode = vdsaCommonObjClose( &pHashMap->object );
+            errcode = psaCommonObjClose( &pHashMap->object );
          }
-         vdsaCommonUnlock( &pHashMap->object );
+         psaCommonUnlock( &pHashMap->object );
       }
       else {
          errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -80,7 +80,7 @@ int vdsFastMapClose( VDS_HANDLE objectHandle )
          pHashMap->object.pSession->numberOfEdits--;
       }
       else {
-         vdsaListReadersRemove( &pHashMap->object.pSession->listReaders, 
+         psaListReadersRemove( &pHashMap->object.pSession->listReaders, 
                                 &pHashMap->reader );
       }
       /*
@@ -103,15 +103,15 @@ int vdsFastMapClose( VDS_HANDLE objectHandle )
 int vdsFastMapDefinition( VDS_HANDLE             objectHandle,
                           vdsObjectDefinition ** ppDefinition )
 {
-   vdsaMap * pHashMap;
+   psaMap * pHashMap;
    psnMap * pVDSHashMap;
    int errcode = VDS_OK;
    psnSessionContext * pContext;
    
-   pHashMap = (vdsaMap *) objectHandle;
+   pHashMap = (psaMap *) objectHandle;
    if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pHashMap->object.type != VDSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
 
    pContext = &pHashMap->object.pSession->context;
 
@@ -121,10 +121,10 @@ int vdsFastMapDefinition( VDS_HANDLE             objectHandle,
    }
 
    if ( ! pHashMap->object.pSession->terminated ) {
-      if ( vdsaCommonLock( &pHashMap->object ) ) {
+      if ( psaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (psnMap *) pHashMap->object.pMyVdsObject;
       
-         errcode = vdsaGetDefinition( pHashMap->pDefinition,
+         errcode = psaGetDefinition( pHashMap->pDefinition,
                                       pVDSHashMap->numFields,
                                       ppDefinition );
          if ( errcode == VDS_OK ) {
@@ -133,7 +133,7 @@ int vdsFastMapDefinition( VDS_HANDLE             objectHandle,
                     &pVDSHashMap->keyDef, 
                     sizeof(vdsKeyDefinition) );
          }
-         vdsaCommonUnlock( &pHashMap->object );
+         psaCommonUnlock( &pHashMap->object );
       }
       else {
          errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -156,15 +156,15 @@ int vdsFastMapDelete( VDS_HANDLE   objectHandle,
                       const void * key,
                       size_t       keyLength )
 {
-   vdsaMap * pHashMap;
+   psaMap * pHashMap;
    psnMap * pVDSHashMap;
    int errcode = VDS_OK;
    bool ok = true;
 
-   pHashMap = (vdsaMap *) objectHandle;
+   pHashMap = (psaMap *) objectHandle;
    if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pHashMap->object.type != VDSA_MAP ) {
+   if ( pHashMap->object.type != PSA_MAP ) {
       return VDS_WRONG_TYPE_HANDLE;
    }
    
@@ -186,7 +186,7 @@ int vdsFastMapDelete( VDS_HANDLE   objectHandle,
    
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) ) {
+      if ( psaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (psnMap *) pHashMap->object.pMyVdsObject;
 
          ok = psnMapDelete( pVDSHashMap,
@@ -195,7 +195,7 @@ int vdsFastMapDelete( VDS_HANDLE   objectHandle,
                              &pHashMap->object.pSession->context );
          VDS_POST_CONDITION( ok == true || ok == false );
 
-         vdsaCommonUnlock( &pHashMap->object );
+         psaCommonUnlock( &pHashMap->object );
       }
       else {
          errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -223,18 +223,18 @@ int vdsFastMapEdit( VDS_HANDLE   sessionHandle,
                     size_t       nameLengthInBytes,
                     VDS_HANDLE * objectHandle )
 {
-   vdsaSession * pSession;
-   vdsaMap * pHashMap = NULL;
+   psaSession * pSession;
+   psaMap * pHashMap = NULL;
    psnMap * pVDSHashMap;
    int errcode;
    
    if ( objectHandle == NULL ) return VDS_NULL_HANDLE;
    *objectHandle = NULL;
 
-   pSession = (vdsaSession*) sessionHandle;
+   pSession = (psaSession*) sessionHandle;
    if ( pSession == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( hashMapName == NULL ) {
       pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
@@ -246,21 +246,21 @@ int vdsFastMapEdit( VDS_HANDLE   sessionHandle,
       return VDS_INVALID_LENGTH;
    }
    
-   pHashMap = (vdsaMap *) malloc(sizeof(vdsaMap));
+   pHashMap = (psaMap *) malloc(sizeof(psaMap));
    if (  pHashMap == NULL ) {
       pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
       return VDS_NOT_ENOUGH_HEAP_MEMORY;
    }
    
-   memset( pHashMap, 0, sizeof(vdsaMap) );
-   pHashMap->object.type = VDSA_MAP;
+   memset( pHashMap, 0, sizeof(psaMap) );
+   pHashMap->object.type = PSA_MAP;
    pHashMap->object.pSession = pSession;
 
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      errcode = vdsaCommonObjOpen( &pHashMap->object,
+      errcode = psaCommonObjOpen( &pHashMap->object,
                                    VDS_FAST_MAP,
-                                   VDSA_UPDATE_RO,
+                                   PSA_UPDATE_RO,
                                    hashMapName,
                                    nameLengthInBytes );
       if ( errcode == VDS_OK ) {
@@ -271,11 +271,11 @@ int vdsFastMapEdit( VDS_HANDLE   sessionHandle,
          GET_PTR( pHashMap->pDefinition, 
                   pVDSHashMap->dataDefOffset,
                   psnFieldDef );
-         vdsaGetLimits( pHashMap->pDefinition,
+         psaGetLimits( pHashMap->pDefinition,
                         pVDSHashMap->numFields,
                         &pHashMap->minLength,
                         &pHashMap->maxLength );
-         vdsaGetKeyLimits( &pVDSHashMap->keyDef,
+         psaGetKeyLimits( &pVDSHashMap->keyDef,
                            &pHashMap->minKeyLength,
                            &pHashMap->maxKeyLength );
          pSession->numberOfEdits++;
@@ -292,15 +292,15 @@ int vdsFastMapEdit( VDS_HANDLE   sessionHandle,
 
 int vdsFastMapEmpty( VDS_HANDLE objectHandle )
 {
-   vdsaMap * pHashMap;
+   psaMap * pHashMap;
    psnMap * pVDSHashMap;
    int errcode = VDS_OK;
    bool ok = true;
    
-   pHashMap = (vdsaMap *) objectHandle;
+   pHashMap = (psaMap *) objectHandle;
    if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pHashMap->object.type != VDSA_MAP ) {
+   if ( pHashMap->object.type != PSA_MAP ) {
       return VDS_WRONG_TYPE_HANDLE;
    }
    
@@ -315,7 +315,7 @@ int vdsFastMapEmpty( VDS_HANDLE objectHandle )
       return VDS_OBJECT_IS_READ_ONLY;
    }
 
-   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
+   if ( ! psaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -336,12 +336,12 @@ int vdsFastMapEmpty( VDS_HANDLE objectHandle )
 
    psnMapEmpty( pVDSHashMap, &pHashMap->object.pSession->context );
 
-   vdsaCommonUnlock( &pHashMap->object );
+   psaCommonUnlock( &pHashMap->object );
 
    return VDS_OK;
 
 error_handler_unlock:
-   vdsaCommonUnlock( &pHashMap->object );
+   psaCommonUnlock( &pHashMap->object );
 
 error_handler:
    if ( errcode != VDS_OK ) {
@@ -364,16 +364,16 @@ int vdsFastMapGet( VDS_HANDLE   objectHandle,
                    size_t       bufferLength,
                    size_t     * returnedLength )
 {
-   vdsaMap * pHashMap;
+   psaMap * pHashMap;
    psnMap * pVDSHashMap;
    int errcode = VDS_OK;
    bool ok = true;
    void * ptr;
    
-   pHashMap = (vdsaMap *) objectHandle;
+   pHashMap = (psaMap *) objectHandle;
    if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pHashMap->object.type != VDSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( key == NULL || buffer == NULL || returnedLength == NULL) {
       errcode = VDS_NULL_POINTER;
@@ -391,7 +391,7 @@ int vdsFastMapGet( VDS_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
+   if ( ! psaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -423,12 +423,12 @@ int vdsFastMapGet( VDS_HANDLE   objectHandle,
    GET_PTR( ptr, pHashMap->iterator.pHashItem->dataOffset, void );
    memcpy( buffer, ptr, *returnedLength );
 
-   vdsaCommonUnlock( &pHashMap->object );
+   psaCommonUnlock( &pHashMap->object );
    
    return VDS_OK;
 
 error_handler_unlock:
-   vdsaCommonUnlock( &pHashMap->object );
+   psaCommonUnlock( &pHashMap->object );
 
 error_handler:
    if ( errcode != VDS_OK ) {
@@ -452,16 +452,16 @@ int vdsFastMapGetFirst( VDS_HANDLE   objectHandle,
                         size_t     * retKeyLength,
                         size_t     * retDataLength )
 {
-   vdsaMap * pHashMap;
+   psaMap * pHashMap;
    psnMap * pVDSHashMap;
    int errcode = VDS_OK;
    bool ok = true;
    void * ptr;
    
-   pHashMap = (vdsaMap *) objectHandle;
+   pHashMap = (psaMap *) objectHandle;
    if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pHashMap->object.type != VDSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( buffer == NULL || retDataLength == NULL || retKeyLength == NULL ||
       key == NULL ) {
@@ -480,7 +480,7 @@ int vdsFastMapGetFirst( VDS_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
+   if ( ! psaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -513,12 +513,12 @@ int vdsFastMapGetFirst( VDS_HANDLE   objectHandle,
    *retKeyLength = pHashMap->iterator.pHashItem->keyLength;
    memcpy( key, pHashMap->iterator.pHashItem->key, *retKeyLength );
 
-   vdsaCommonUnlock( &pHashMap->object );
+   psaCommonUnlock( &pHashMap->object );
 
    return VDS_OK;
 
 error_handler_unlock:
-   vdsaCommonUnlock( &pHashMap->object );
+   psaCommonUnlock( &pHashMap->object );
 
 error_handler:
    if ( errcode != VDS_OK ) {
@@ -542,16 +542,16 @@ int vdsFastMapGetNext( VDS_HANDLE   objectHandle,
                        size_t     * retKeyLength,
                        size_t     * retDataLength )
 {
-   vdsaMap * pHashMap;
+   psaMap * pHashMap;
    psnMap * pVDSHashMap;
    int errcode = VDS_OK;
    bool ok = true;
    void * ptr;
    
-   pHashMap = (vdsaMap *) objectHandle;
+   pHashMap = (psaMap *) objectHandle;
    if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pHashMap->object.type != VDSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( buffer == NULL || retDataLength == NULL || retKeyLength == NULL ||
       key == NULL ) {
@@ -575,7 +575,7 @@ int vdsFastMapGetNext( VDS_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
+   if ( ! psaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -596,12 +596,12 @@ int vdsFastMapGetNext( VDS_HANDLE   objectHandle,
    *retKeyLength = pHashMap->iterator.pHashItem->keyLength;
    memcpy( key, pHashMap->iterator.pHashItem->key, *retKeyLength );
 
-   vdsaCommonUnlock( &pHashMap->object );
+   psaCommonUnlock( &pHashMap->object );
 
    return VDS_OK;
 
 error_handler_unlock:
-   vdsaCommonUnlock( &pHashMap->object );
+   psaCommonUnlock( &pHashMap->object );
 
 error_handler:
    if ( errcode != VDS_OK ) {
@@ -623,15 +623,15 @@ int vdsFastMapInsert( VDS_HANDLE   objectHandle,
                       const void * data,
                       size_t       dataLength )
 {
-   vdsaMap * pHashMap;
+   psaMap * pHashMap;
    psnMap * pVDSHashMap;
    int errcode = VDS_OK;
    bool ok = true;
 
-   pHashMap = (vdsaMap *) objectHandle;
+   pHashMap = (psaMap *) objectHandle;
    if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pHashMap->object.type != VDSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( key == NULL || data == NULL ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
@@ -663,7 +663,7 @@ int vdsFastMapInsert( VDS_HANDLE   objectHandle,
 
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) ) {
+      if ( psaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (psnMap *) pHashMap->object.pMyVdsObject;
 
          ok = psnMapInsert( pVDSHashMap,
@@ -674,7 +674,7 @@ int vdsFastMapInsert( VDS_HANDLE   objectHandle,
                              &pHashMap->object.pSession->context );
          VDS_POST_CONDITION( ok == true || ok == false );
 
-         vdsaCommonUnlock( &pHashMap->object );
+         psaCommonUnlock( &pHashMap->object );
       }
       else {
          errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -702,18 +702,18 @@ int vdsFastMapOpen( VDS_HANDLE   sessionHandle,
                     size_t       nameLengthInBytes,
                     VDS_HANDLE * objectHandle )
 {
-   vdsaSession * pSession;
-   vdsaMap * pHashMap = NULL;
+   psaSession * pSession;
+   psaMap * pHashMap = NULL;
    psnMap * pVDSHashMap;
    int errcode;
    
    if ( objectHandle == NULL ) return VDS_NULL_HANDLE;
    *objectHandle = NULL;
 
-   pSession = (vdsaSession*) sessionHandle;
+   pSession = (psaSession*) sessionHandle;
    if ( pSession == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( hashMapName == NULL ) {
       pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_INVALID_OBJECT_NAME );
@@ -725,21 +725,21 @@ int vdsFastMapOpen( VDS_HANDLE   sessionHandle,
       return VDS_INVALID_LENGTH;
    }
    
-   pHashMap = (vdsaMap *) malloc(sizeof(vdsaMap));
+   pHashMap = (psaMap *) malloc(sizeof(psaMap));
    if (  pHashMap == NULL ) {
       pscSetError( &pSession->context.errorHandler, g_vdsErrorHandle, VDS_NOT_ENOUGH_HEAP_MEMORY );
       return VDS_NOT_ENOUGH_HEAP_MEMORY;
    }
    
-   memset( pHashMap, 0, sizeof(vdsaMap) );
-   pHashMap->object.type = VDSA_MAP;
+   memset( pHashMap, 0, sizeof(psaMap) );
+   pHashMap->object.type = PSA_MAP;
    pHashMap->object.pSession = pSession;
 
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      errcode = vdsaCommonObjOpen( &pHashMap->object,
+      errcode = psaCommonObjOpen( &pHashMap->object,
                                    VDS_FAST_MAP,
-                                   VDSA_READ_ONLY,
+                                   PSA_READ_ONLY,
                                    hashMapName,
                                    nameLengthInBytes );
       if ( errcode == VDS_OK ) {
@@ -747,18 +747,18 @@ int vdsFastMapOpen( VDS_HANDLE   sessionHandle,
          pHashMap->editMode = 0;
          
          pVDSHashMap = (psnMap *) pHashMap->object.pMyVdsObject;
-         pHashMap->reader.type = VDSA_MAP;
+         pHashMap->reader.type = PSA_MAP;
          pHashMap->reader.address = pHashMap;
-         vdsaListReadersPut( &pHashMap->object.pSession->listReaders, 
+         psaListReadersPut( &pHashMap->object.pSession->listReaders, 
                              &pHashMap->reader );
          GET_PTR( pHashMap->pDefinition, 
                   pVDSHashMap->dataDefOffset,
                   psnFieldDef );
-         vdsaGetLimits( pHashMap->pDefinition,
+         psaGetLimits( pHashMap->pDefinition,
                         pVDSHashMap->numFields,
                         &pHashMap->minLength,
                         &pHashMap->maxLength );
-         vdsaGetKeyLimits( &pVDSHashMap->keyDef,
+         psaGetKeyLimits( &pVDSHashMap->keyDef,
                            &pHashMap->minKeyLength,
                            &pHashMap->maxKeyLength );
       }
@@ -778,15 +778,15 @@ int vdsFastMapReplace( VDS_HANDLE   objectHandle,
                        const void * data,
                        size_t       dataLength )
 {
-   vdsaMap * pHashMap;
+   psaMap * pHashMap;
    psnMap * pVDSHashMap;
    int errcode = VDS_OK;
    bool ok = true;
 
-   pHashMap = (vdsaMap *) objectHandle;
+   pHashMap = (psaMap *) objectHandle;
    if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pHashMap->object.type != VDSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
 
    if ( key == NULL || data == NULL ) {
       pscSetError( &pHashMap->object.pSession->context.errorHandler, 
@@ -807,7 +807,7 @@ int vdsFastMapReplace( VDS_HANDLE   objectHandle,
 
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) ) {
+      if ( psaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (psnMap *) pHashMap->object.pMyVdsObject;
 
          ok = psnMapReplace( pVDSHashMap,
@@ -818,7 +818,7 @@ int vdsFastMapReplace( VDS_HANDLE   objectHandle,
                               &pHashMap->object.pSession->context );
          VDS_POST_CONDITION( ok == true || ok == false );
 
-         vdsaCommonUnlock( &pHashMap->object );
+         psaCommonUnlock( &pHashMap->object );
       }
       else {
          errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -844,15 +844,15 @@ int vdsFastMapReplace( VDS_HANDLE   objectHandle,
 int vdsFastMapStatus( VDS_HANDLE     objectHandle,
                       vdsObjStatus * pStatus )
 {
-   vdsaMap * pHashMap;
+   psaMap * pHashMap;
    psnMap * pVDSHashMap;
    int errcode = VDS_OK;
    psnSessionContext * pContext;
    
-   pHashMap = (vdsaMap *) objectHandle;
+   pHashMap = (psaMap *) objectHandle;
    if ( pHashMap == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pHashMap->object.type != VDSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSA_MAP ) return VDS_WRONG_TYPE_HANDLE;
 
    pContext = &pHashMap->object.pSession->context;
 
@@ -863,7 +863,7 @@ int vdsFastMapStatus( VDS_HANDLE     objectHandle,
 
    if ( ! pHashMap->object.pSession->terminated ) {
 
-      if ( vdsaCommonLock( &pHashMap->object ) ) {
+      if ( psaCommonLock( &pHashMap->object ) ) {
          pVDSHashMap = (psnMap *) pHashMap->object.pMyVdsObject;
       
          if ( psnLock(&pVDSHashMap->memObject, pContext) ) {
@@ -877,7 +877,7 @@ int vdsFastMapStatus( VDS_HANDLE     objectHandle,
             errcode = VDS_OBJECT_CANNOT_GET_LOCK;
          }
       
-         vdsaCommonUnlock( &pHashMap->object );
+         psaCommonUnlock( &pHashMap->object );
       }
       else {
          errcode = VDS_SESSION_CANNOT_GET_LOCK;
@@ -901,8 +901,8 @@ int vdsFastMapStatus( VDS_HANDLE     objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaMapFirst( vdsaMap          * pHashMap,
-                  vdsaHashMapEntry * pEntry )
+int psaMapFirst( psaMap          * pHashMap,
+                 psaHashMapEntry * pEntry )
 {
    psnMap * pVDSHashMap;
    int errcode = VDS_OK;
@@ -910,14 +910,14 @@ int vdsaMapFirst( vdsaMap          * pHashMap,
 
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pEntry   != NULL );
-   VDS_PRE_CONDITION( pHashMap->object.type == VDSA_MAP );
+   VDS_PRE_CONDITION( pHashMap->object.type == PSA_MAP );
    
    if ( pHashMap->object.pSession->terminated ) {
       errcode = VDS_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
-   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
+   if ( ! psaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -949,12 +949,12 @@ int vdsaMapFirst( vdsaMap          * pHashMap,
    pEntry->keyLength = pHashMap->iterator.pHashItem->keyLength;
    pEntry->key = pHashMap->iterator.pHashItem->key;
    
-   vdsaCommonUnlock( &pHashMap->object );
+   psaCommonUnlock( &pHashMap->object );
 
    return VDS_OK;
 
 error_handler_unlock:
-   vdsaCommonUnlock( &pHashMap->object );
+   psaCommonUnlock( &pHashMap->object );
 
 error_handler:
    if ( errcode != VDS_OK ) {
@@ -970,8 +970,8 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaMapNext( vdsaMap          * pHashMap,
-                 vdsaHashMapEntry * pEntry )
+int psaMapNext( psaMap          * pHashMap,
+                psaHashMapEntry * pEntry )
 {
    psnMap * pVDSHashMap;
    int errcode = VDS_OK;
@@ -979,7 +979,7 @@ int vdsaMapNext( vdsaMap          * pHashMap,
 
    VDS_PRE_CONDITION( pHashMap != NULL );
    VDS_PRE_CONDITION( pEntry   != NULL );
-   VDS_PRE_CONDITION( pHashMap->object.type == VDSA_MAP );
+   VDS_PRE_CONDITION( pHashMap->object.type == PSA_MAP );
    VDS_PRE_CONDITION( pHashMap->iterator.pHashItem != NULL );
    
    if ( pHashMap->object.pSession->terminated ) {
@@ -987,7 +987,7 @@ int vdsaMapNext( vdsaMap          * pHashMap,
       goto error_handler;
    }
 
-   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
+   if ( ! psaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -1007,12 +1007,12 @@ int vdsaMapNext( vdsaMap          * pHashMap,
    pEntry->keyLength = pHashMap->iterator.pHashItem->keyLength;
    pEntry->key = pHashMap->iterator.pHashItem->key;
 
-   vdsaCommonUnlock( &pHashMap->object );
+   psaCommonUnlock( &pHashMap->object );
 
    return VDS_OK;
 
 error_handler_unlock:
-   vdsaCommonUnlock( &pHashMap->object );
+   psaCommonUnlock( &pHashMap->object );
 
 error_handler:
    if ( errcode != VDS_OK ) {
@@ -1033,9 +1033,9 @@ error_handler:
  * This function is called when a session is committed or rollbacked.
  * The local lock on the session (if any) is already taken.
  */
-void vdsaMapResetReader( void * map )
+void psaMapResetReader( void * map )
 {
-   vdsaMap * pHashMap = map;
+   psaMap * pHashMap = map;
    psnMap * pVDSHashMap, * pMapLatest;
 
    psnHashItem * pHashItemLatest;
@@ -1059,10 +1059,10 @@ void vdsaMapResetReader( void * map )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaMapRetrieve( vdsaMap       * pHashMap,
-                     const void    * key,
-                     size_t          keyLength,
-                     vdsaDataEntry * pEntry )
+int psaMapRetrieve( psaMap       * pHashMap,
+                    const void   * key,
+                    size_t         keyLength,
+                    psaDataEntry * pEntry )
 {
    psnMap * pVDSHashMap;
    int errcode = VDS_OK;
@@ -1073,14 +1073,14 @@ int vdsaMapRetrieve( vdsaMap       * pHashMap,
    VDS_PRE_CONDITION( key      != NULL );
    VDS_PRE_CONDITION( pEntry   != NULL );
    VDS_PRE_CONDITION( keyLength > 0 );
-   VDS_PRE_CONDITION( pHashMap->object.type == VDSA_MAP );
+   VDS_PRE_CONDITION( pHashMap->object.type == PSA_MAP );
 
    if ( pHashMap->object.pSession->terminated ) {
       errcode = VDS_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
-   if ( ! vdsaCommonLock( &pHashMap->object ) ) {
+   if ( ! psaCommonLock( &pHashMap->object ) ) {
       errcode = VDS_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
@@ -1110,12 +1110,12 @@ int vdsaMapRetrieve( vdsaMap       * pHashMap,
    GET_PTR( pEntry->data, pHashItem->dataOffset, void );
    pEntry->length = pHashItem->dataLength;
 
-   vdsaCommonUnlock( &pHashMap->object );
+   psaCommonUnlock( &pHashMap->object );
 
    return VDS_OK;
 
 error_handler_unlock:
-   vdsaCommonUnlock( &pHashMap->object );
+   psaCommonUnlock( &pHashMap->object );
 
 error_handler:
    if ( errcode != VDS_OK ) {

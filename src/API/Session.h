@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_SESSION_H
-#define VDSA_SESSION_H
+#ifndef PSA_SESSION_H
+#define PSA_SESSION_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -38,7 +38,7 @@ BEGIN_C_DECLS
 
 struct psnSession;
 struct psnMemoryHeader;
-struct vdsaCommonObject;
+struct psaCommonObject;
 
 /**
  * This class handles transactions and other session wide concerns. For 
@@ -46,9 +46,9 @@ struct vdsaCommonObject;
  * objects.
  */
 
-typedef struct vdsaSession
+typedef struct psaSession
 {
-   vdsaObjetType type;
+   psaObjetType type;
    
    psnSessionContext context;
 
@@ -66,35 +66,35 @@ typedef struct vdsaSession
    /** Our lock to serialize access to this object, if needed. */
    pscThreadLock  mutex;
    
-   vdsaListReaders listReaders;
+   psaListReaders listReaders;
    
-} vdsaSession;
+} psaSession;
 
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * No lock is taken on the vdsaSession.
+ * No lock is taken on the psaSession.
  */
 VDSF_API_EXPORT
-int vdsaCloseSession( vdsaSession* pSession );
+int psaCloseSession( psaSession* pSession );
 
 VDSF_API_EXPORT
-int vdsaSessionCloseObj( vdsaSession             * pSession,
-                         struct vdsaCommonObject * pObject );
+int psaSessionCloseObj( psaSession             * pSession,
+                        struct psaCommonObject * pObject );
 
 VDSF_API_EXPORT
-int vdsaSessionOpenObj( vdsaSession             * pSession,
-                        vdsObjectType             objectType,
-                        vdsaEditMode              editMode,
-                        const char              * objectName,
-                        size_t                    nameLengthInBytes,
-                        struct vdsaCommonObject * pObject );
+int psaSessionOpenObj( psaSession             * pSession,
+                       vdsObjectType            objectType,
+                       psaEditMode              editMode,
+                       const char             * objectName,
+                       size_t                   nameLengthInBytes,
+                       struct psaCommonObject * pObject );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdsaSessionLock( vdsaSession * pSession )
+bool psaSessionLock( psaSession * pSession )
 {
    bool ok = true;
 
@@ -115,7 +115,7 @@ bool vdsaSessionLock( vdsaSession * pSession )
 static 
 //#endif
 __inline
-void vdsaSessionUnlock( vdsaSession* pSession )
+void psaSessionUnlock( psaSession * pSession )
 {
    if ( g_protectionIsNeeded ) {
       pscReleaseThreadLock( &pSession->mutex );
@@ -128,7 +128,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_SESSION_H */
+#endif /* PSA_SESSION_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

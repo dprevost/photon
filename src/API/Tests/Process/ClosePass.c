@@ -30,16 +30,16 @@
 
 int main( int argc, char * argv[] )
 {
-   vdsaProcess process;
+   psaProcess process;
    int errcode;
    psnSessionContext context;
    
-   memset( &process, 0, sizeof(vdsaProcess) );
+   memset( &process, 0, sizeof(psaProcess) );
    if ( argc > 1 ) {
-      errcode = vdsaProcessInit( &process, argv[1] );
+      errcode = psaProcessInit( &process, argv[1] );
    }
    else {
-      errcode = vdsaProcessInit( &process, "10701" );
+      errcode = psaProcessInit( &process, "10701" );
    }
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -50,10 +50,10 @@ int main( int argc, char * argv[] )
    context.pidLocker= getpid();
    pscInitErrorHandler( &context.errorHandler );
    
-   vdsaCloseVDS( &process, &context );
+   psaCloseVDS( &process, &context );
 
-   /* Cannot call vdsaProcessFini since it calls CloseVDS()  */
-   vdsaDisconnect( &process.connector, &context.errorHandler );
+   /* Cannot call psaProcessFini since it calls CloseVDS()  */
+   psaDisconnect( &process.connector, &context.errorHandler );
 
    return 0;
 }

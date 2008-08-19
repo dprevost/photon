@@ -28,10 +28,10 @@ int main( int argc, char * argv[] )
    int errcode;
    
    if ( argc > 1 ) {
-      errcode = vdsaProcessInit( NULL, argv[1] );
+      errcode = psaProcessInit( NULL, argv[1] );
    }
    else {
-      errcode = vdsaProcessInit( NULL, "10701" );
+      errcode = psaProcessInit( NULL, "10701" );
    }
    
    ERROR_EXIT( expectedToPass, NULL, ; );

@@ -24,11 +24,11 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** */
-int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
-                       enum vdsObjectType   objectType,
-                       vdsaEditMode         editMode,
-                       const char         * objectName,
-                       size_t               nameLengthInBytes )
+int psaCommonObjOpen( psaCommonObject    * pObject,
+                      enum vdsObjectType   objectType,
+                      psaEditMode          editMode,
+                      const char         * objectName,
+                      size_t               nameLengthInBytes )
 {
    int errcode = VDS_OBJECT_CANNOT_GET_LOCK;
    psnObjectDescriptor * pDesc;
@@ -41,8 +41,8 @@ int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
 
    if ( pObject->pSession == NULL ) return VDS_PROCESS_NOT_INITIALIZED;
 
-   if ( vdsaCommonLock( pObject ) ) {
-      errcode = vdsaSessionOpenObj( pObject->pSession,
+   if ( psaCommonLock( pObject ) ) {
+      errcode = psaSessionOpenObj( pObject->pSession,
                                     objectType,
                                     editMode,
                                     objectName,
@@ -53,7 +53,7 @@ int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
                           psnObjectDescriptor );
          GET_PTR( pObject->pMyVdsObject, pDesc->offset, void );
       }
-      vdsaCommonUnlock( pObject );
+      psaCommonUnlock( pObject );
    }
    
    return errcode;
@@ -61,7 +61,7 @@ int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaCommonObjClose( vdsaCommonObject * pObject )
+int psaCommonObjClose( psaCommonObject * pObject )
 {
    int errcode = 0;
 
@@ -71,7 +71,7 @@ int vdsaCommonObjClose( vdsaCommonObject * pObject )
    if ( pObject->pSession == NULL ) return VDS_PROCESS_NOT_INITIALIZED;
 
    /* No need to lock the api session. The caller already did it! */
-   errcode = vdsaSessionCloseObj( pObject->pSession, pObject );
+   errcode = psaSessionCloseObj( pObject->pSession, pObject );
    
    return errcode;
 }

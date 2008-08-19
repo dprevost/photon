@@ -187,23 +187,23 @@ void vdsSession::Init()
 
 int vdsSession::LastError()
 {
-   vdsaSession* pSession;
+   psaSession* pSession;
    int rc = 0;
    int lastErr = 0;
    
-   pSession = (vdsaSession*) m_sessionHandle;
+   pSession = (psaSession *) m_sessionHandle;
    if ( pSession == NULL ) return VDS_NULL_HANDLE;
    
-   if ( pSession->type != VDSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSA_SESSION ) return VDS_WRONG_TYPE_HANDLE;
 
-   if ( vdsaSessionLock( pSession ) ) {
+   if ( psaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          lastErr = pscGetLastError( &pSession->context.errorHandler );
       }
       else {
          rc = VDS_SESSION_IS_TERMINATED;
       }
-      vdsaSessionUnlock( pSession );
+      psaSessionUnlock( pSession );
    }
    else {
       rc = VDS_SESSION_CANNOT_GET_LOCK;

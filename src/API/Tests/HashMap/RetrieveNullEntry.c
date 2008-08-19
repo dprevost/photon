@@ -98,7 +98,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaHashMapRetrieve( objHandle,
+   errcode = psaHashMapRetrieve( objHandle,
                                   key,
                                   6,
                                   NULL );

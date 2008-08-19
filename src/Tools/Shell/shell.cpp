@@ -16,6 +16,7 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Tools/Shell/shell.h"
+#include "Nucleus/Engine.h" // For PSN_BLOCK_SIZE
 #include <string>
 #include <sstream>
 #include <iostream>

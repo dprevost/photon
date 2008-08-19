@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_DATA_DEFINITION_H
-#define VDSA_DATA_DEFINITION_H
+#ifndef PSA_DATA_DEFINITION_H
+#define PSA_DATA_DEFINITION_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -39,30 +39,30 @@ BEGIN_C_DECLS
  * The memory must be free by the calling program.
  */
 VDSF_API_EXPORT
-int vdsaGetDefinition( psnFieldDef         * pInternalDef,
-                       uint16_t               numFields,
-                       vdsObjectDefinition ** ppDefinition );
+int psaGetDefinition( psnFieldDef          * pInternalDef,
+                      uint16_t               numFields,
+                      vdsObjectDefinition ** ppDefinition );
 
 VDSF_API_EXPORT
-void vdsaGetKeyLimits( vdsKeyDefinition * pKeyDef,
-                       size_t           * pMinLength,
-                       size_t           * pMaxLength );
+void psaGetKeyLimits( vdsKeyDefinition * pKeyDef,
+                      size_t           * pMinLength,
+                      size_t           * pMaxLength );
 
 VDSF_API_EXPORT
-void vdsaGetLimits( psnFieldDef * pDefinition,
-                    uint16_t       numFields,
-                    size_t       * pMinLength,
-                    size_t       * pMaxLength );
+void psaGetLimits( psnFieldDef * pDefinition,
+                   uint16_t      numFields,
+                   size_t      * pMinLength,
+                   size_t      * pMaxLength );
 
 VDSF_API_EXPORT
-int vdsaValidateDefinition( vdsObjectDefinition * pDefinition );
+int psaValidateDefinition( vdsObjectDefinition * pDefinition );
 
 VDSF_API_EXPORT
-int vdsaXmlToDefinition( const char           * xmlBuffer,
-                         size_t                 lengthInBytes,
-                         vdsObjectDefinition ** ppDefinition,
-                         char                ** objectName,
-                         size_t               * nameLengthInBytes );
+int psaXmlToDefinition( const char           * xmlBuffer,
+                        size_t                 lengthInBytes,
+                        vdsObjectDefinition ** ppDefinition,
+                        char                ** objectName,
+                        size_t               * nameLengthInBytes );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -70,6 +70,6 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_DATA_DEFINITION_H */
+#endif /* PSA_DATA_DEFINITION_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

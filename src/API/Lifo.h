@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_LIFO_H
-#define VDSA_LIFO_H
+#ifndef PSA_LIFO_H
+#define PSA_LIFO_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -29,9 +29,9 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdsaLifo
+typedef struct psaLifo
 {
-   vdsaCommonObject object;
+   psaCommonObject object;
    
    /**
     * This pointer holds the result of the iteration (the pointer to
@@ -45,7 +45,7 @@ typedef struct vdsaLifo
    size_t minLength;
    size_t maxLength;
    
-} vdsaLifo;
+} psaLifo;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -54,21 +54,21 @@ typedef struct vdsaLifo
  * by this function.
  */
 VDSF_API_EXPORT
-int vdsaLifoFirst( vdsaLifo      * pLifo,
-                   vdsaDataEntry * pEntry );
+int psaLifoFirst( psaLifo      * pLifo,
+                  psaDataEntry * pEntry );
 
 /** 
  * Iterates through the queue - no data items are removed from the queue
  * by this function.
  */
 VDSF_API_EXPORT
-int vdsaLifoNext( vdsaLifo      * pLifo,
-                  vdsaDataEntry * pEntry );
+int psaLifoNext( psaLifo      * pLifo,
+                 psaDataEntry * pEntry );
 
 /** Remove the first inserted item from a FIFO queue. */
 VDSF_API_EXPORT
-int vdsaLifoRemove( vdsaLifo      * pLifo,
-                    vdsaDataEntry * pEntry );
+int psaLifoRemove( psaLifo      * pLifo,
+                   psaDataEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -76,7 +76,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_LIFO_H */
+#endif /* PSA_LIFO_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_HASH_MAP_H
-#define VDSA_HASH_MAP_H
+#ifndef PSA_HASH_MAP_H
+#define PSA_HASH_MAP_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -29,9 +29,9 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdsaHashMap
+typedef struct psaHashMap
 {
-   vdsaCommonObject object;
+   psaCommonObject object;
    
    /**
     * This struct holds both the result of the iteration (the pointer to
@@ -47,34 +47,34 @@ typedef struct vdsaHashMap
    size_t minKeyLength;
    size_t maxKeyLength;
 
-} vdsaHashMap;
+} psaHashMap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct vdsaHashMapEntry
+typedef struct psaHashMapEntry
 {
    size_t keyLength;
    size_t dataLength;
    const void * key;
    const void * data;
 
-} vdsaHashMapEntry;
+} psaHashMapEntry;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 VDSF_API_EXPORT
-int vdsaHashMapFirst( vdsaHashMap      * pHashMap,
-                      vdsaHashMapEntry * pEntry );
+int psaHashMapFirst( psaHashMap      * pHashMap,
+                     psaHashMapEntry * pEntry );
 
 VDSF_API_EXPORT
-int vdsaHashMapNext( vdsaHashMap      * pHashMap,
-                     vdsaHashMapEntry * pEntry );
+int psaHashMapNext( psaHashMap      * pHashMap,
+                    psaHashMapEntry * pEntry );
 
 VDSF_API_EXPORT
-int vdsaHashMapRetrieve( vdsaHashMap   * pHashMap,
-                         const void    * key,
-                         size_t          keyLength,
-                         vdsaDataEntry * pEntry );
+int psaHashMapRetrieve( psaHashMap   * pHashMap,
+                        const void   * key,
+                        size_t         keyLength,
+                        psaDataEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -82,7 +82,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_HASH_MAP_H */
+#endif /* PSA_HASH_MAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

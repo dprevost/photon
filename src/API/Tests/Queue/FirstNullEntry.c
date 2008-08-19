@@ -93,7 +93,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaQueueFirst( objHandle, NULL );
+   errcode = psaQueueFirst( objHandle, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

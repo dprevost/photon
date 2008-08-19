@@ -34,9 +34,9 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
 /* 
  * Note: the type of object must be filled by the caller.
  */
-int vdsaGetDefinition( psnFieldDef         * pInternalDef,
-                       uint16_t               numFields,
-                       vdsObjectDefinition ** ppDefinition )
+int psaGetDefinition( psnFieldDef          * pInternalDef,
+                      uint16_t               numFields,
+                      vdsObjectDefinition ** ppDefinition )
 {
    unsigned int i;
    vdsObjectDefinition * ptr;
@@ -91,9 +91,9 @@ int vdsaGetDefinition( psnFieldDef         * pInternalDef,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsaGetKeyLimits( vdsKeyDefinition * pKeyDef,
-                       size_t           * pMinLength,
-                       size_t           * pMaxLength )
+void psaGetKeyLimits( vdsKeyDefinition * pKeyDef,
+                      size_t           * pMinLength,
+                      size_t           * pMaxLength )
 {
    VDS_PRE_CONDITION( pKeyDef    != NULL );
    VDS_PRE_CONDITION( pMinLength != NULL );
@@ -114,10 +114,10 @@ void vdsaGetKeyLimits( vdsKeyDefinition * pKeyDef,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsaGetLimits( psnFieldDef * pDefinition,
-                    uint16_t       numFields,
-                    size_t       * pMinLength,
-                    size_t       * pMaxLength )
+void psaGetLimits( psnFieldDef * pDefinition,
+                   uint16_t      numFields,
+                   size_t      * pMinLength,
+                   size_t      * pMaxLength )
 {
    unsigned int i;
    size_t minLength = 0, maxLength = 0;
@@ -222,7 +222,7 @@ void vdsaGetLimits( psnFieldDef * pDefinition,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaValidateDefinition( vdsObjectDefinition * pDefinition )
+int psaValidateDefinition( vdsObjectDefinition * pDefinition )
 {
    unsigned int i, j;
    
@@ -413,11 +413,11 @@ int vdsaValidateDefinition( vdsObjectDefinition * pDefinition )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaXmlToDefinition( const char           * xmlBuffer,
-                         size_t                 lengthInBytes,
-                         vdsObjectDefinition ** ppDefinition,
-                         char                ** objectName,
-                         size_t               * nameLengthInBytes )
+int psaXmlToDefinition( const char           * xmlBuffer,
+                        size_t                 lengthInBytes,
+                        vdsObjectDefinition ** ppDefinition,
+                        char                ** objectName,
+                        size_t               * nameLengthInBytes )
 {
    xmlSchemaPtr schema = NULL;
    xmlSchemaValidCtxtPtr  validCtxt = NULL;

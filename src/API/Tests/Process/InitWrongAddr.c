@@ -21,12 +21,12 @@
 
 int main()
 {
-   vdsaProcess process;
+   psaProcess process;
    int errcode;
 
-   memset( &process, 0, sizeof(vdsaProcess) );
+   memset( &process, 0, sizeof(psaProcess) );
    /* try something junk... */   
-   errcode = vdsaProcessInit( &process, "abcdef" );
+   errcode = psaProcessInit( &process, "abcdef" );
 
    if ( errcode != VDS_INVALID_WATCHDOG_ADDRESS ) {
       fprintf( stderr, "err: %d\n", errcode );

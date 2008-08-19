@@ -26,7 +26,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-vdsaProcess     *g_pProcessInstance = NULL;
+psaProcess     *g_pProcessInstance = NULL;
 pscThreadLock   g_ProcessMutex;
    
 /** 
@@ -51,7 +51,7 @@ bool AreWeTerminated()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
+int psaProcessInit( psaProcess * process, const char * wdAddress )
 {
    struct WDOutput answer;
    char path[PATH_MAX];
@@ -83,7 +83,7 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
       goto the_exit;
    }
    
-   errcode = vdsaConnect( &process->connector, 
+   errcode = psaConnect( &process->connector, 
                           wdAddress, 
                           &answer, 
                           &context.errorHandler );
@@ -93,7 +93,7 @@ int vdsaProcessInit( vdsaProcess * process, const char * wdAddress )
    sprintf( path, "%s%s%s", answer.pathname, VDS_DIR_SEPARATOR,
             VDS_MEMFILE_NAME );
 
-   errcode = vdsaOpenVDS( process,
+   errcode = psaOpenVDS( process,
                           path,
                           answer.memorySizekb,
                           &context );
@@ -126,25 +126,25 @@ the_exit:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsaProcessFini()
+void psaProcessFini()
 {
    psnProcMgr * processManager = NULL;
    psnSessionContext context;
-   vdsaSession * pApiSession = NULL;
+   psaSession * pApiSession = NULL;
    psnSession * pVdsSession = NULL, * pCurrent;
    int errcode = 0;
-   vdsaProcess * process;
+   psaProcess * process;
    bool ok;
    
    process = g_pProcessInstance;
    VDS_PRE_CONDITION( process != NULL );
 
    /* 
-    * This can occurs if the process init (vdsaProcessInit()) 
+    * This can occurs if the process init (psaProcessInit()) 
     * was not called from the C API and somehow failed.
     */
    if ( process->pHeader == NULL ) {
-      vdsaDisconnect( &process->connector, &context.errorHandler );
+      psaDisconnect( &process->connector, &context.errorHandler );
       return;
    }
    
@@ -170,7 +170,7 @@ void vdsaProcessFini()
       while ( ok ) {
          pApiSession = pVdsSession->pApiSession;
          if ( pApiSession != NULL ) {
-            errcode = vdsaCloseSession( pApiSession );
+            errcode = psaCloseSession( pApiSession );
             /** \todo handle error here */
          }
 
@@ -198,13 +198,13 @@ void vdsaProcessFini()
    
    /* close our access to the VDS */
    if ( process->pHeader != NULL ) {
-      vdsaCloseVDS( process, &context );
+      psaCloseVDS( process, &context );
       process->pHeader = NULL;
    }
    
 error_handler:
 
-   vdsaDisconnect( &process->connector, &context.errorHandler );
+   psaDisconnect( &process->connector, &context.errorHandler );
 
    if ( g_protectionIsNeeded ) {
       pscReleaseThreadLock( &g_ProcessMutex );
@@ -213,10 +213,10 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdsaOpenVDS( vdsaProcess        * process,
-                 const char         * memoryFileName,
-                 size_t               memorySizekb,
-                 psnSessionContext * pContext )
+int psaOpenVDS( psaProcess        * process,
+                const char        * memoryFileName,
+                size_t              memorySizekb,
+                psnSessionContext * pContext )
 {
    int errcode = 0;
    bool ok;
@@ -259,8 +259,8 @@ int vdsaOpenVDS( vdsaProcess        * process,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdsaCloseVDS( vdsaProcess        * process,
-                   psnSessionContext * pContext )
+void psaCloseVDS( psaProcess        * process,
+                  psnSessionContext * pContext )
 {
    VDS_PRE_CONDITION( process  != NULL );
    VDS_PRE_CONDITION( pContext != NULL );

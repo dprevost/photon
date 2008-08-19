@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSA_COMMON_OBJECT_H
-#define VDSA_COMMON_OBJECT_H
+#ifndef PSA_COMMON_OBJECT_H
+#define PSA_COMMON_OBJECT_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -34,7 +34,7 @@ BEGIN_C_DECLS
 /** 
  * Data common to all api objects (for data containers). 
  */
-typedef struct vdsaCommonObject
+typedef struct psaCommonObject
 {
    /**
     * The type of object (as seen from the API, not the engine).
@@ -42,7 +42,7 @@ typedef struct vdsaCommonObject
     * Note: always put this first to help debug (for example, in gdb:
     * "print * (int *) some_vds_handle" will show the object type).
     */
-   vdsaObjetType type;
+   psaObjetType type;
 
    /** 
     * Pointer to our own cleanup object in the VDS. This object is used by 
@@ -54,7 +54,7 @@ typedef struct vdsaCommonObject
    psnObjectContext *  pObjectContext;
 
    /** Pointer to the session we belong to. */
-   struct vdsaSession* pSession;
+   struct psaSession* pSession;
 
    /** A folder item. It contains a pointer to the hash item in VDS memory. */
    psnFolderItem  folderItem;
@@ -62,23 +62,23 @@ typedef struct vdsaCommonObject
    /** A pointer to the object in VDS. */   
    void * pMyVdsObject;
 
-} vdsaCommonObject;
+} psaCommonObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Common function for opening data containers. */
 VDSF_API_EXPORT
-int vdsaCommonObjOpen( vdsaCommonObject   * pObject,
-                       enum vdsObjectType   objectType, 
-                       vdsaEditMode         editMode,
-                       const char         * objectName,
-                       size_t               nameLengthInBytes );
+int psaCommonObjOpen( psaCommonObject    * pObject,
+                      enum vdsObjectType   objectType, 
+                      psaEditMode          editMode,
+                      const char         * objectName,
+                      size_t               nameLengthInBytes );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Common function for closing data containers. */
 VDSF_API_EXPORT
-int vdsaCommonObjClose( vdsaCommonObject * pObject );
+int psaCommonObjClose( psaCommonObject * pObject );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -88,7 +88,7 @@ int vdsaCommonObjClose( vdsaCommonObject * pObject );
  * \param[in] pObject Pointer to the object to lock.
 */
 static inline
-bool vdsaCommonLock( vdsaCommonObject * pObject )
+bool psaCommonLock( psaCommonObject * pObject )
 {
    bool ok = true;
    
@@ -110,7 +110,7 @@ bool vdsaCommonLock( vdsaCommonObject * pObject )
  * \param[in] pObject Pointer to the object to unlock.
  */
 static inline
-void vdsaCommonUnlock( vdsaCommonObject * pObject )
+void psaCommonUnlock( psaCommonObject * pObject )
 {
    VDS_PRE_CONDITION( pObject != NULL );
 
@@ -122,9 +122,9 @@ void vdsaCommonUnlock( vdsaCommonObject * pObject )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Called by the vdsaSession upon session termination.
+ * Called by the psaSession upon session termination.
  *
- * Setting vdsaCommonObject::pObjectContext to NULL indicates that a
+ * Setting psaCommonObject::pObjectContext to NULL indicates that a
  * process or a session has terminated and that no further access to
  * the VDS is allowed/possible!
  *
@@ -133,7 +133,7 @@ void vdsaCommonUnlock( vdsaCommonObject * pObject )
  * \todo Not sure if this makes sense anymore. Revisit!
  */
 static inline
-void vdsaCommonCloseObject( vdsaCommonObject * pObject )
+void psaCommonCloseObject( psaCommonObject * pObject )
 {
    VDS_PRE_CONDITION( pObject != NULL );
 
@@ -146,7 +146,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSA_COMMON_OBJECT_H */
+#endif /* PSA_COMMON_OBJECT_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

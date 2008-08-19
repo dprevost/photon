@@ -28,7 +28,7 @@ int main( int argc, char * argv[] )
 {
    VDS_HANDLE sessionHandle;
    int errcode;
-   vdsaCommonObject object;
+   psaCommonObject object;
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
@@ -62,9 +62,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   memset( &object, 0, sizeof(vdsaCommonObject) );
-   object.pSession = (vdsaSession *) sessionHandle;
-   errcode = vdsaCommonObjOpen( &object,
+   memset( &object, 0, sizeof(psaCommonObject) );
+   object.pSession = (psaSession *) sessionHandle;
+   errcode = psaCommonObjOpen( &object,
                                 VDS_FOLDER,
                                 false,
                                 "/accp",
@@ -74,7 +74,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaCommonObjClose( &object );
+   errcode = psaCommonObjClose( &object );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -47,7 +47,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsaCloseSession( NULL );
+   errcode = psaCloseSession( NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -29,7 +29,7 @@ int main( int argc, char * argv[] )
 {
    VDS_HANDLE sessionHandle;
    int errcode;
-   struct vdsaCommonObject object;
+   struct psaCommonObject object;
    vdsObjectDefinition def = { 
       VDS_FOLDER, 
       0, 
@@ -63,7 +63,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaSessionOpenObj( (vdsaSession *) sessionHandle,
+   errcode = psaSessionOpenObj( (psaSession *) sessionHandle,
                                  VDS_FOLDER,
                                  false,
                                  "/asclop",
@@ -74,7 +74,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsaSessionCloseObj( (vdsaSession *) sessionHandle,
+   errcode = psaSessionCloseObj( (psaSession *) sessionHandle,
                                   &object );
    if ( errcode != VDS_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
