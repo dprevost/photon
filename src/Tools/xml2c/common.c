@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <vdsf/vdsCommon.h>
+#include <photon/vdsCommon.h>
 
 #include <libxml/xmlschemas.h>
 #include <libxml/xmlschemastypes.h>

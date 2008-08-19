@@ -12,7 +12,7 @@
 #define QUEUE_H
 
 #include <string>
-#include <vdsf/vds>
+#include <photon/vds>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

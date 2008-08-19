@@ -24,7 +24,7 @@
 #
 # For example: 
 # 
-# ./InitPass.sh /home/dprevost/vdsf/ /home/dprevost/vdsf 10701
+# ./InitPass.sh /home/dprevost/photon/ /home/dprevost/vdsf 10701
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

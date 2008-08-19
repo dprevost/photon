@@ -24,7 +24,7 @@
 #endif
 
 #include "API/Connector.h"
-#include <vdsf/vdsErrors.h>
+#include <photon/vdsErrors.h>
 
 /** Send data on the socket. */
 static int Send( psaConnector    * pConnector,

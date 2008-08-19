@@ -11,7 +11,7 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#include <vdsf/vds.h>
+#include <photon/vds.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

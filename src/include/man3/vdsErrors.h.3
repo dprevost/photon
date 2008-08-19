@@ -207,10 +207,10 @@ Read-only objects are not updated very frequently and therefore only a single ed
 To allow concurrent editors (either all working on the same copy or each working with its own copy would have been be possible but was deemed unnecessary. 
 .TP
 \fB\fIVDS_INVALID_NUM_FIELDS \fP\fP
-The number of fields in the data definition is invalid - either zero or greater than VDS_MAX_FIELDS (defined in \fBvdsf/vdsCommon.h\fP). 
+The number of fields in the data definition is invalid - either zero or greater than VDS_MAX_FIELDS (defined in \fBphoton/vdsCommon.h\fP). 
 .TP
 \fB\fIVDS_INVALID_FIELD_TYPE \fP\fP
-The data type of the field definition does not correspond to one of the data type defined in the enum vdsFieldType (\fBvdsf/vdsCommon.h\fP). 
+The data type of the field definition does not correspond to one of the data type defined in the enum vdsFieldType (\fBphoton/vdsCommon.h\fP). 
 .PP
 or you've used VDS_VAR_STRING or VDS_VAR_BINARY at the wrong place.
 .PP

@@ -26,7 +26,7 @@
 #
 # For example: 
 # 
-# /home/dprevost/vdsf/ /home/dprevost/vdsf src/API/Tests/Api InitPass 10701 0
+# /home/dprevost/photon/ /home/dprevost/vdsf src/API/Tests/Api InitPass 10701 0
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

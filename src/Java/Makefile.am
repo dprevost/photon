@@ -12,21 +12,21 @@
 # overwrite any macros set in the common file
 include $(top_srcdir)/src/Makefile.Common.am
 
-CLEANFILES = *~ ./org/vdsf/*~  $(top_builddir)/src/java/org/vdsf/*.class
+CLEANFILES = *~ ./org/photon/*~  $(top_builddir)/src/java/org/photon/*.class
 
 #Java_Source =                      \
-        org/vdsf/VdsException.java \
-        org/vdsf/VdsFolder.java    \
-        org/vdsf/VdsProcess.java   \
-        org/vdsf/VdsQueue.java     \
-        org/vdsf/VdsSession.java
+        org/photon/VdsException.java \
+        org/photon/VdsFolder.java    \
+        org/photon/VdsProcess.java   \
+        org/photon/VdsQueue.java     \
+        org/photon/VdsSession.java
 
 #Java_Classes =                      \
-        org/vdsf/VdsException.class \
-        org/vdsf/VdsFolder.class    \
-        org/vdsf/VdsProcess.class   \
-        org/vdsf/VdsQueue.class     \
-        org/vdsf/VdsSession.class
+        org/photon/VdsException.class \
+        org/photon/VdsFolder.class    \
+        org/photon/VdsProcess.class   \
+        org/photon/VdsQueue.class     \
+        org/photon/VdsSession.class
 
 #%.class: %.java
 #	javac -d $(top_builddir)/src/java $?

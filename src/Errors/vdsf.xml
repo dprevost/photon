@@ -776,7 +776,7 @@
           </errormsg>
           <errordoc>
             The number of fields in the data definition is invalid - either 
-            zero or greater than VDS_MAX_FIELDS (defined in vdsf/vdsCommon.h).
+            zero or greater than VDS_MAX_FIELDS (defined in photon/vdsCommon.h).
           </errordoc>
         </message>
       </message_group>
@@ -792,7 +792,7 @@
           </errormsg>
           <errordoc>
             The data type of the field definition does not correspond to one of
-            the data type defined in the enum vdsFieldType (vdsf/vdsCommon.h).
+            the data type defined in the enum vdsFieldType (photon/vdsCommon.h).
             or you've used VDS_VAR_STRING or VDS_VAR_BINARY at the wrong place.
           </errordoc>
           <errordoc> 

@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <vdsf/vds>
+#include <photon/vds>
 #include "Tests/PrintError.h"
 #include <iostream>
 

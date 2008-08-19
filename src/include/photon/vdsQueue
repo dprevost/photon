@@ -1,9 +1,9 @@
 /* -*- c++ -*- */
 /* :mode=c++:  - For jedit, previous line for emacs */
 /*
- * Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
- * This file is part of the vdsf (Virtual Data Space Framework) Library.
+ * This file is part of photon (photonsoftware.org).
  *
  * This file may be distributed and/or modified under the terms of the
  * GNU General Public License version 2 as published by the Free Software
@@ -17,12 +17,12 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDS_LIFO_H_CPP
-#define VDS_LIFO_H_CPP
+#ifndef VDS_QUEUE_H_CPP
+#define VDS_QUEUE_H_CPP
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#include <vdsf/vdsCommon.h>
+#include <photon/vdsCommon.h>
 #include <string>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -32,16 +32,16 @@ class vdsSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class VDSF_EXPORT vdsLifo
+class VDSF_EXPORT vdsQueue
 {
 public:
 
-   vdsLifo( vdsSession &session );
+   vdsQueue( vdsSession &session );
 
-   virtual ~vdsLifo();
+   virtual ~vdsQueue();
 
    /**
-    * \brief Close a LIFO queue.
+    * \brief Close a FIFO queue.
     *
     * This function terminates the current access to the queue in shared 
     * memory (the queue itself, in shared memory is untouched).
@@ -121,7 +121,7 @@ public:
                 size_t * returnedLength );
 
    /** 
-    * Open an existing LIFO queue (see Session::CreateObject to create a new 
+    * Open an existing FIFO queue (see Session::CreateObject to create a new 
     * queue).
     *
     * \param[in]  queueName The fully qualified name of the queue. 
@@ -131,7 +131,7 @@ public:
    void Open( const std::string & queueName );
 
    /** 
-    * Open an existing LIFO queue (see Session::CreateObject to create a new 
+    * Open an existing FIFO queue (see Session::CreateObject to create a new 
     * queue).
     *
     * \param[in]  queueName The fully qualified name of the queue. 
@@ -144,7 +144,7 @@ public:
               size_t       nameLengthInBytes );
 
    /** 
-    * Remove the first item from the end of a LIFO queue and return it 
+    * Remove the first item from the beginning of a FIFO queue and return it 
     * to the caller.
     *
     * Data items which were added by another session and are not yet committed 
@@ -169,7 +169,7 @@ public:
             size_t * returnedLength );
 
    /**
-    * Insert a data element at the end of the LIFO queue.
+    * Insert a data element at the end of the FIFO queue.
     *
     * The additions only become permanent after a call to vdsSession::Commit.
     *
@@ -182,6 +182,21 @@ public:
               size_t       length );
 
    /**
+    * Insert a data element at the end of the FIFO queue.
+    *
+    * The additions become permanent immediately, not after a call to 
+    * vdsSession::Commit (in other words, you cannot easily undo these 
+    * insertions). 
+    *
+    * \param[in]  pItem  The data item to be inserted.
+    * \param[in]  length The length of \em pItem (in bytes).
+    *
+    * \exception vdsException An abnormal error occured.
+    */
+   void PushNow( const void * pItem, 
+                 size_t       length );
+
+   /**
     * Return the status of the queue.
     *
     * \param[out] pStatus      A pointer to the status structure.
@@ -192,7 +207,7 @@ public:
 
 private:
 
-   /// Pointer to the psaLifo struct.
+   /// Pointer to the psaQueue struct.
    VDS_HANDLE m_objectHandle;
 
    /// Reference to the psaSession struct (we belong to).
@@ -202,7 +217,7 @@ private:
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* VDS_LIFO_H_CPP */
+#endif /* VDS_QUEUE_H_CPP */
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

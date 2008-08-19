@@ -8,18 +8,18 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-CLEANFILES = *~ vdsf/*~
+CLEANFILES = *~ photon/*~
 
-HEADER_FILES =                                      \
-        $(top_srcdir)/src/include/vdsf/vds.h        \
-        $(top_srcdir)/src/include/vdsf/vdsCommon.h  \
-        $(top_srcdir)/src/include/vdsf/vdsFastMap.h \
-        $(top_srcdir)/src/include/vdsf/vdsFolder.h  \
-        $(top_srcdir)/src/include/vdsf/vdsHashMap.h \
-        $(top_srcdir)/src/include/vdsf/vdsLifo.h    \
-        $(top_srcdir)/src/include/vdsf/vdsQueue.h   \
-        $(top_srcdir)/src/include/vdsf/vdsProcess.h \
-        $(top_srcdir)/src/include/vdsf/vdsSession.h 
+HEADER_FILES =                                        \
+        $(top_srcdir)/src/include/photon/vds.h        \
+        $(top_srcdir)/src/include/photon/vdsCommon.h  \
+        $(top_srcdir)/src/include/photon/vdsFastMap.h \
+        $(top_srcdir)/src/include/photon/vdsFolder.h  \
+        $(top_srcdir)/src/include/photon/vdsHashMap.h \
+        $(top_srcdir)/src/include/photon/vdsLifo.h    \
+        $(top_srcdir)/src/include/photon/vdsQueue.h   \
+        $(top_srcdir)/src/include/photon/vdsProcess.h \
+        $(top_srcdir)/src/include/photon/vdsSession.h 
 
 VDS_C_FILES =                       \
         man3/vdsCommit.3            \
@@ -124,58 +124,58 @@ EXTRA_DIST =                  \
         man3/vdsSession.3     
 
 nobase_include_HEADERS =      \
-        vdsf/vdsCommon.h      \
-        vdsf/vdsErrors.h      \
-        vdsf/vdsFastMap.h     \
-        vdsf/vdsFolder.h      \
-        vdsf/vdsHashMap.h     \
-        vdsf/vdsLifo.h        \
-        vdsf/vdsProcess.h     \
-        vdsf/vdsQueue.h       \
-        vdsf/vdsSession.h     \
-        vdsf/vds.h            \
-        vdsf/vds              \
-        vdsf/vdsException     \
-        vdsf/vdsFastMap       \
-        vdsf/vdsFastMapEditor \
-        vdsf/vdsFolder        \
-        vdsf/vdsHashMap       \
-        vdsf/vdsLifo          \
-        vdsf/vdsProcess       \
-        vdsf/vdsQueue         \
-        vdsf/vdsSession       
+        photon/vdsCommon.h      \
+        photon/vdsErrors.h      \
+        photon/vdsFastMap.h     \
+        photon/vdsFolder.h      \
+        photon/vdsHashMap.h     \
+        photon/vdsLifo.h        \
+        photon/vdsProcess.h     \
+        photon/vdsQueue.h       \
+        photon/vdsSession.h     \
+        photon/vds.h            \
+        photon/vds              \
+        photon/vdsException     \
+        photon/vdsFastMap       \
+        photon/vdsFastMapEditor \
+        photon/vdsFolder        \
+        photon/vdsHashMap       \
+        photon/vdsLifo          \
+        photon/vdsProcess       \
+        photon/vdsQueue         \
+        photon/vdsSession       
 
 #
 # Only rebuild the man pages if doxygen is present.
 #
 if COND_USE_DOXYGEN
 
-man3/vdsException.3: vdsf/vdsException
+man3/vdsException.3: photon/vdsException
 	doxygen $(top_srcdir)/src/include/Doxyfile.vdsException
 	cp dummy/man/man3/vdsException.3 man3/vdsException.3
 	-rm -rf dummy
 
-man3/vdsFolder.3: vdsf/vdsFolder
+man3/vdsFolder.3: photon/vdsFolder
 	doxygen $(top_srcdir)/src/include/Doxyfile.vdsFolder
 	cp dummy/man/man3/vdsFolder.3 man3/vdsFolder.3
 	-rm -rf dummy
 
-man3/vdsHashMap.3: vdsf/vdsHashMap
+man3/vdsHashMap.3: photon/vdsHashMap
 	doxygen $(top_srcdir)/src/include/Doxyfile.vdsHashMap
 	cp dummy/man/man3/vdsHashMap.3 man3/vdsHashMap.3
 	-rm -rf dummy
 
-man3/vdsProcess.3: vdsf/vdsProcess
+man3/vdsProcess.3: photon/vdsProcess
 	doxygen Doxyfile.vdsProcess
 	cp dummy/man/man3/vdsProcess.3 man3/vdsProcess.3
 	-rm -rf dummy
 
-man3/vdsQueue.3: vdsf/vdsQueue
+man3/vdsQueue.3: photon/vdsQueue
 	doxygen Doxyfile.vdsQueue
 	cp dummy/man/man3/vdsQueue.3 man3/vdsQueue.3
 	-rm -rf dummy
 
-man3/vdsSession.3: vdsf/vdsSession
+man3/vdsSession.3: photon/vdsSession
 	doxygen Doxyfile.vdsSession
 	cp dummy/man/man3/vdsSession.3 man3/vdsSession.3
 	-rm -rf dummy

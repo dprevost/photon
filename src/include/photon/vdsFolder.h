@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
- * This file is part of the vdsf (Virtual Data Space Framework) Library.
+ * This file is part of photon (photonsoftware.org).
  *
  * This file may be distributed and/or modified under the terms of the
  * GNU General Public License version 2 as published by the Free Software
@@ -18,7 +18,7 @@
 #ifndef VDS_FOLDER_H
 #define VDS_FOLDER_H
 
-#include <vdsf/vdsCommon.h>
+#include <photon/vdsCommon.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

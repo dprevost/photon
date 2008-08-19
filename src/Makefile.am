@@ -91,14 +91,14 @@ EXTRA_DIST =               \
         XML/wd_config.xsd  
 
 install-data-local:
-	-mkdir -p $(DESTDIR)$(datadir)/doc/vdsf/Examples
+	-mkdir -p $(DESTDIR)$(datadir)/doc/photon/Examples
 	for f in $(EXAMPLES_FILES); do \
-		$(install_sh_DATA) $(top_srcdir)/src/$$f $(DESTDIR)$(datadir)/doc/vdsf/$$f ; \
+		$(install_sh_DATA) $(top_srcdir)/src/$$f $(DESTDIR)$(datadir)/doc/photon/$$f ; \
 	done
 
 uninstall-local:
 	-for f in $(EXAMPLES_FILES); do \
-		rm -f $(DESTDIR)$(datadir)/doc/vdsf/$$f ; \
+		rm -f $(DESTDIR)$(datadir)/doc/photon/$$f ; \
 	done
 	-rmdir $(DESTDIR)$(datadir)/doc/vdsf
 	-rmdir $(DESTDIR)$(datadir)/doc

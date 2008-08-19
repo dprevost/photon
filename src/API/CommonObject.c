@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
  *
- * This file is part of the vdsf (Virtual Data Space Framework) Library.
+ * This file is part of photon (photonsoftware.org).
  *
  * This file may be distributed and/or modified under the terms of the
  * GNU General Public License version 2 as published by the Free Software
@@ -18,8 +18,8 @@
 #include "Common/Common.h"
 #include "API/CommonObject.h"
 #include "API/Session.h"
-#include <vdsf/vds.h>
-#include <vdsf/vdsErrors.h>
+#include <photon/vds.h>
+#include <photon/vdsErrors.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

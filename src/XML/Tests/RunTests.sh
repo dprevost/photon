@@ -21,7 +21,7 @@
 #  - the path of the top directory of the source
 # For example: 
 # 
-# ./RunTests.sh /home/dprevost/vdsf/ 
+# ./RunTests.sh /home/dprevost/photon/ 
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

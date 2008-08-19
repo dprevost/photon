@@ -17,7 +17,7 @@
 
 #include "Common/Common.h"
 
-#include <vdsf/vds.h>
+#include <photon/vds.h>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

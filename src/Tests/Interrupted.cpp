@@ -19,11 +19,11 @@
 #include <stdio.h>
 #include <signal.h>
 
-#include <vdsf/vdsProcess.h>
-#include <vdsf/vdsSession.h>
-#include <vdsf/vdsFolder.h>
-#include <vdsf/vdsQueue.h>
-#include <vdsf/vdsErrors.h>
+#include <photon/vdsProcess.h>
+#include <photon/vdsSession.h>
+#include <photon/vdsFolder.h>
+#include <photon/vdsQueue.h>
+#include <photon/vdsErrors.h>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

@@ -15,7 +15,7 @@ vdswd
 Name
 ****
 
-vdswd -- starts the vdsf watchdog
+vdswd a^€” starts the vdsf watchdog
 
 
 
@@ -126,15 +126,15 @@ Copyright (C) 2008 Daniel Pre'vost.
 Tag Table:
 Node: Top169
 Ref: name226
-Ref: synopsis274
-Ref: Testing the configuration file [and exit];295
-Ref: Verifying the VDS [and exit];435
-Ref: Getting [minimal] help;551
-Ref: Running normally;624
-Ref: DESCRIPTION718
-Ref: OPTIONS909
-Ref: CONFIGURATION1439
-Ref: REPORTING BUGS2144
-Ref: COPYRIGHT2226
+Ref: synopsis276
+Ref: Testing the configuration file [and exit];297
+Ref: Verifying the VDS [and exit];437
+Ref: Getting [minimal] help;553
+Ref: Running normally;626
+Ref: DESCRIPTION720
+Ref: OPTIONS911
+Ref: CONFIGURATION1441
+Ref: REPORTING BUGS2146
+Ref: COPYRIGHT2228
 
 End Tag Table

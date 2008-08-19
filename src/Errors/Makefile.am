@@ -19,7 +19,7 @@ EXTRA_DIST =        \
         vdsf.xml    
 
 OUTPUT_FILES =                                      \
-        $(top_srcdir)/src/include/vdsf/vdsErrors.h  \
+        $(top_srcdir)/src/include/photon/vdsErrors.h  \
         $(top_srcdir)/src/Nucleus/VdsErrorHandler.c \
         $(top_srcdir)/src/Nucleus/VdsErrorHandler.h 
  

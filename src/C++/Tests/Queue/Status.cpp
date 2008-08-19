@@ -17,7 +17,7 @@
 
 #include "Common/Common.h"
 #include "Nucleus/Engine.h"
-#include <vdsf/vds>
+#include <photon/vds>
 #include <iostream>
 
 using namespace std;

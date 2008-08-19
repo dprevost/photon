@@ -17,23 +17,23 @@ if [ "$TMPDIR" = "" ] ; then
    TMPDIR=/tmp
 fi
 
-mkdir -p $TMPDIR/debian_vdsf/DEBIAN
+mkdir -p $TMPDIR/debian_photon/DEBIAN
 
 cd ../..
 make DESTDIR=/tmp/debian_vdsf install-strip 
-mkdir -p $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf
-install -m 644 README $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf/README
-install -m 644 COPYING $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf/copyright
-install -m 644 ChangeLog $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf/changelog
-install -m 644 ChangeLog $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf/changelog.Debian
-gzip $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf/changelog
-gzip $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf/changelog.Debian
-install -m 644 doc/refman.pdf $TMPDIR/debian_vdsf/usr/local/share/doc/vdsf/refman.pdf
+mkdir -p $TMPDIR/debian_photon/usr/local/share/doc/vdsf
+install -m 644 README $TMPDIR/debian_photon/usr/local/share/doc/photon/README
+install -m 644 COPYING $TMPDIR/debian_photon/usr/local/share/doc/photon/copyright
+install -m 644 ChangeLog $TMPDIR/debian_photon/usr/local/share/doc/photon/changelog
+install -m 644 ChangeLog $TMPDIR/debian_photon/usr/local/share/doc/photon/changelog.Debian
+gzip $TMPDIR/debian_photon/usr/local/share/doc/photon/changelog
+gzip $TMPDIR/debian_photon/usr/local/share/doc/photon/changelog.Debian
+install -m 644 doc/refman.pdf $TMPDIR/debian_photon/usr/local/share/doc/photon/refman.pdf
 cd -
 
-size=`du -sk $TMPDIR/debian_vdsf/usr  | gawk '{ print $1 }'`
+size=`du -sk $TMPDIR/debian_photon/usr  | gawk '{ print $1 }'`
 echo $size
-sed "s/@SIZE@/$size/g" < control > $TMPDIR/debian_vdsf/DEBIAN/control
+sed "s/@SIZE@/$size/g" < control > $TMPDIR/debian_photon/DEBIAN/control
 
 fakeroot dpkg-deb --build $TMPDIR/debian_vdsf
 mv  $TMPDIR/debian_vdsf.deb vdsf_@PACKAGE_VERSION@_@architecture@-1.deb

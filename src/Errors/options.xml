@@ -26,7 +26,7 @@
        
        Alternatively, you can put the directory directly in the header_name 
        element. But if you do, the "GUARD" will use that directory name. -->
-  <header_name_dir> ../include/vdsf </header_name_dir>
+  <header_name_dir> ../include/photon </header_name_dir>
   <!-- The file name for the .h file which will hold the errors. -->
   <header_name> vdsErrors.h </header_name>
   <!-- Name of the output dir for the code to retrieve the error messages. 

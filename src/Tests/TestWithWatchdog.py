@@ -26,7 +26,7 @@
 #
 # For example:
 #
-# python TestWithWatchdog.py /home/dprevost/vdsf/ home/dprevost/vdsf \
+# python TestWithWatchdog.py /home/dprevost/photon/ home/dprevost/vdsf \
 #        src/API/Tests/Api InitPass 10701 /tmp/vdsf_InitPass
 #
 # (the build directory will usually be the top directory unless you're

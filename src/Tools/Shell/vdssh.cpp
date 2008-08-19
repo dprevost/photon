@@ -18,7 +18,7 @@
 #include "Common/Common.h"
 #include "Common/Options.h"
 #include "Tools/Shell/shell.h"
-#include <vdsf/vds>
+#include <photon/vds>
 #include <iostream>
 
 using namespace std;

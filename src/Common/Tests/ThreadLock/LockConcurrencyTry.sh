@@ -35,7 +35,7 @@ fi
 if [ "$TMPDIR" = "" ] ; then
    TMPDIR=/tmp
 fi
-BASE_DIR=$TMPDIR/vdsf/lock_concurr
+BASE_DIR=$TMPDIR/photon/lock_concurr
 
 trap `rm -rf $BASE_DIR; exit 1` 1 2 3 15
 

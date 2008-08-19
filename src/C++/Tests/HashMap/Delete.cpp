@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <vdsf/vds>
+#include <photon/vds>
 #include <iostream>
 
 using namespace std;

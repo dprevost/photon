@@ -13,7 +13,7 @@
 @anchor{name}
 @chapheading Name
 
-vdswd --- starts the vdsf watchdog
+vdswd @^a€” starts the vdsf watchdog
 
 @noindent
 @anchor{synopsis}

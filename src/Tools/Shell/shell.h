@@ -19,7 +19,7 @@
 #define VDSTOOLS_SHELL_H
 
 #include "Common/Common.h"
-#include <vdsf/vds>
+#include <photon/vds>
 #if defined(WIN32)
 #  pragma warning(disable: 4786)
 #endif

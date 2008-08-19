@@ -28,7 +28,7 @@
 
 using namespace std;
 
-#include <vdsf/vds>
+#include <photon/vds>
 
 FILE * fp = NULL;
 

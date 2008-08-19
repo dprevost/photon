@@ -20,12 +20,12 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include <vdsf/vdsErrors.h>
-#include <vdsf/vdsCommon.h>
+#include <photon/vdsErrors.h>
+#include <photon/vdsCommon.h>
 
-#include <vdsf/vdsProcess.h>
-#include <vdsf/vdsSession.h>
-#include <vdsf/vdsFolder.h>
+#include <photon/vdsProcess.h>
+#include <photon/vdsSession.h>
+#include <photon/vdsFolder.h>
 /*
  * Hash maps and maps implements the same data container but differs with 
  * respect to transactions. 
@@ -33,10 +33,10 @@
  * Hash maps are read-write and locks are used to insure data integrity.
  * Maps are read-only (with an update procedure) and no locks are required.
  */
-#include <vdsf/vdsHashMap.h>
-#include <vdsf/vdsFastMap.h>
-#include <vdsf/vdsQueue.h>
-#include <vdsf/vdsLifo.h>
+#include <photon/vdsHashMap.h>
+#include <photon/vdsFastMap.h>
+#include <photon/vdsQueue.h>
+#include <photon/vdsLifo.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

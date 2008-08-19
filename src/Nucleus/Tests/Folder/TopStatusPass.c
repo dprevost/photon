@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "folderTest.h"
-#include <vdsf/vdsCommon.h>
+#include <photon/vdsCommon.h>
 
 const bool expectedToPass = true;
 

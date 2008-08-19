@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include <jni.h>
-#include <vdsf/vds.h>
+#include <photon/vds.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -42,7 +42,7 @@ JNIEXPORT jlong JNICALL Java_org_vdsf_VdsSession_initSession (
    
    // Throw a java exception
 
-   exc = (*env)->FindClass( env, "org/vdsf/VdsException" );
+   exc = (*env)->FindClass( env, "org/photon/VdsException" );
    if ( exc  != NULL ) {
       sprintf( msg, "vdsf Error = %d", errcode );
       (*env)->ThrowNew( env, exc, msg );
