@@ -24,10 +24,10 @@
 #                                                                           #
 #############################################################################
 
-AC_INIT([Virtual Data Space Framework],
+AC_INIT([Photon Software],
         [0.3.0],
         [Daniel Prevost <dprevost@users.sourceforge.net>],
-        [vdsf])
+        [photon])
 
 AC_PREREQ(2.57)
 AC_CONFIG_AUX_DIR(Config)

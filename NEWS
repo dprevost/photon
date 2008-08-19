@@ -1,10 +1,10 @@
-vdsf -- History of visible changes.
+Photon Software -- History of visible changes.
 
 Copyright (C) 2006-2008, Daniel Prevost <dprevost@users.sourceforge.net>
 See the end for copying conditions.
 
-Please send vdsf bug reports to dprevost@users.sourceforge.net.
-or use the sourceforge tracker for vdsf bug reports at
+Please send photon bug reports to dprevost@users.sourceforge.net.
+or use the sourceforge tracker for photon bug reports at
 http://sourceforge.net/tracker/?group_id=156288&atid=799182
 
 Version 0.1
@@ -24,6 +24,13 @@ Version 0.2
     * Some crash-recovery features at startup
     * Better isolation policy at startup
     * A pseudo-shell utility (vdssh)
+
+Version 0.3
+
+    * The project was renamed to photon
+    * LIFO queues
+    * XML to describe content of data components
+    * Fast Maps (a read-only version of the hash maps)
     
 -------------------------------------------------------
 

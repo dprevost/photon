@@ -30,13 +30,13 @@ SUBDIRS = m4 src doc
 ACLOCAL_AMFLAGS = -I m4
 
 install-data-local:
-	-mkdir -p $(DESTDIR)$(datadir)/doc/vdsf
-	$(install_sh_DATA) $(top_srcdir)/README  $(DESTDIR)$(datadir)/doc/vdsf/README
-	$(install_sh_DATA) $(top_srcdir)/COPYING $(DESTDIR)$(datadir)/doc/vdsf/COPYING
+	-mkdir -p $(DESTDIR)$(datadir)/doc/photon
+	$(install_sh_DATA) $(top_srcdir)/README  $(DESTDIR)$(datadir)/doc/photon/README
+	$(install_sh_DATA) $(top_srcdir)/COPYING $(DESTDIR)$(datadir)/doc/photon/COPYING
 
 uninstall-local:
-	-rm -f $(DESTDIR)$(datadir)/doc/vdsf/README
-	-rm -f $(DESTDIR)$(datadir)/doc/vdsf/COPYING
-	-rmdir $(DESTDIR)$(datadir)/doc/vdsf
+	-rm -f $(DESTDIR)$(datadir)/doc/photon/README
+	-rm -f $(DESTDIR)$(datadir)/doc/photon/COPYING
+	-rmdir $(DESTDIR)$(datadir)/doc/photon
 	-rmdir $(DESTDIR)$(datadir)/doc
 

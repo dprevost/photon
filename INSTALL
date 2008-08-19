@@ -1,15 +1,16 @@
 Installation Instructions
 *************************
 
-Some notes specific to vdsf:
+Some notes specific to Photon:
 
  * To build and install from source, the "standard" method should be
    used:
     * ./configure (or ./configure --prefix=/usr)
     * make (see the note below on compilers)
     * make install (from an account with the required privileges, of course).
-    * On Windows, use "nmake -f makefile.win32" to build vdsf (see the web
-      site for additional explanations).
+    * On Windows, use "nmake -f makefile.win32" to build Photon (see the web
+      site for additional explanations). [There is also a VC++ project 
+      file but it only builds the software, not the tests].
 
  * Doxygen and latex are required if you want to rebuild the documentation. 
    The graphviz package is also recommended (doxygen uses it to create 
@@ -31,7 +32,9 @@ Some notes specific to vdsf:
         (/usr/local).  
 
  * Compilers: gcc is recommended but any compiler that accepts gcc 
-   inline-assembly syntax should work.
+   inline-assembly syntax should work. Support for other C compilers
+   is work in progress (example: code for the IBM xlc compiler was added
+   but has not been tested yet).
 
 ************************************************************************
 *
