@@ -15,7 +15,7 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#include <photon/vds>
+#include <photon/photon>
 #include <iostream>
 
 using namespace std;
@@ -34,8 +34,8 @@ int main()
       session.Init();
    }
    catch( psoException exc ) {
-      cerr << "Init VDSF failed, error = " << exc.Message( msg ) << endl;
-      cerr << "Is the watchdog running?" << endl;
+      cerr << "Init of Photon failed, error = " << exc.Message( msg ) << endl;
+      cerr << "Is quasar running?" << endl;
       return 1;
    }
 

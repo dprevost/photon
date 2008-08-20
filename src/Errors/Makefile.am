@@ -18,11 +18,11 @@ EXTRA_DIST =        \
         options.xml \
         vdsf.xml    
 
-OUTPUT_FILES =                                      \
-        $(top_srcdir)/src/include/photon/psoErrors.h  \
-        $(top_srcdir)/src/Nucleus/VdsErrorHandler.c \
-        $(top_srcdir)/src/Nucleus/VdsErrorHandler.h 
- 
+OUTPUT_FILES =                                       \
+        $(top_srcdir)/src/include/photon/psoErrors.h \
+        $(top_srcdir)/src/Nucleus/psoErrorHandler.c  \
+        $(top_srcdir)/src/Nucleus/psoErrorHandler.h  
+
 if COND_USE_ERRORPARSER
 all-local: $(OUTPUT_FILES)
 

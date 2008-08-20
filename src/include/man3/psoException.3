@@ -1,0 +1,80 @@
+.TH "psoException" 3 "19 Aug 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+psoException \- 
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+Definition at line 39 of file psoException.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBpsoException\fP (int theErrorCode, PSO_HANDLE sessionHandle, const char *functionName)"
+.br
+.RI "\fIConstruct a psof exception using the return code from the C function and the name of the function throwing it. \fP"
+.ti -1c
+.RI "virtual \fB~psoException\fP ()"
+.br
+.ti -1c
+.RI "std::string & \fBMessage\fP (std::string &errorMessage)"
+.br
+.RI "\fIReturn the error message. \fP"
+.ti -1c
+.RI "std::string & \fBMessage\fP ()"
+.br
+.RI "\fIReturn the error message. \fP"
+.ti -1c
+.RI "int \fBErrorCode\fP ()"
+.br
+.RI "\fIReturn the error code associated with the exception. \fP"
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBmsg\fP"
+.br
+.ti -1c
+.RI "int \fBerrcode\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "psoException::psoException (int theErrorCode, PSO_HANDLE sessionHandle, const char * functionName)"
+.PP
+Construct a psof exception using the return code from the C function and the name of the function throwing it. 
+.PP
+
+.SS "virtual psoException::~psoException ()\fC [virtual]\fP"
+.PP
+.SH "Member Function Documentation"
+.PP 
+.SS "std::string& psoException::Message (std::string & errorMessage)"
+.PP
+Return the error message. 
+.PP
+.SS "std::string& psoException::Message ()"
+.PP
+Return the error message. 
+.PP
+.SS "int psoException::ErrorCode ()\fC [inline]\fP"
+.PP
+Return the error code associated with the exception. 
+.PP
+Definition at line 58 of file psoException.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string \fBpsoException::msg\fP\fC [private]\fP"
+.PP
+Definition at line 62 of file psoException.
+.SS "int \fBpsoException::errcode\fP\fC [private]\fP"
+.PP
+Definition at line 64 of file psoException.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Photon C++ API from the source code.

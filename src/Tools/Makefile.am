@@ -26,5 +26,5 @@ EXTRA_DIST =           \
         Makefile.win32 \
         psoInfo.dsp    
 
-vdsinfo_LDADD = $(top_builddir)/src/C++/libvdsfcpp.la 
+vdsinfo_LDADD = $(top_builddir)/src/C++/libphotoncpp.la 
 

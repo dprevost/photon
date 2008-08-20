@@ -1,0 +1,208 @@
+.TH "API functions for psof folders." 3 "19 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+API functions for psof folders. \- 
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFolderClose\fP (\fBPSO_HANDLE\fP objectHandle)"
+.br
+.RI "\fIClose a folder. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
+.br
+.RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFolderCreateObjectXML\fP (\fBPSO_HANDLE\fP folderHandle, const char *xmlBuffer, size_t lengthInBytes)"
+.br
+.RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFolderDestroyObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes)"
+.br
+.RI "\fIDestroy an object, child of the current folder, in shared memory. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFolderGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP *pEntry)"
+.br
+.RI "\fIIterate through the folder - no data items are removed from the folder by this function. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFolderGetNext\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP *pEntry)"
+.br
+.RI "\fIIterate through the folder. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFolderOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *folderName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
+.br
+.RI "\fIOpen an existing folder (see \fBpsoCreateObject\fP to create a new folder). \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFolderStatus\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP *pStatus)"
+.br
+.RI "\fIReturn the status of the folder. \fP"
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "VDSF_EXPORT int psoFolderClose (\fBPSO_HANDLE\fP objectHandle)"
+.PP
+Close a folder. 
+.PP
+This function terminates the current access to the folder in shared memory (the folder itself is untouched).
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the folder (see \fBpsoFolderOpen\fP).
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int psoFolderCreateObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP * pDefinition)"
+.PP
+Create a new object in shared memory as a child of the current folder. 
+.PP
+The creation of the object only becomes permanent after a call to \fBpsoCommit\fP.
+.PP
+This function does not provide a handle to the newly created object. Use psoQueueOpen and similar functions to get the handle.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfolderHandle\fP Handle to the current folder. 
+.br
+\fIobjectName\fP The name of the object. 
+.br
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the psof engine). 
+.br
+\fIpDefinition\fP The type of object to create (folder, queue, etc.) and the 'optional' definition.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int psoFolderCreateObjectXML (\fBPSO_HANDLE\fP folderHandle, const char * xmlBuffer, size_t lengthInBytes)"
+.PP
+Create a new object in shared memory as a child of the current folder. 
+.PP
+The creation of the object only becomes permanent after a call to \fBpsoCommit\fP.
+.PP
+This function does not provide a handle to the newly created object. Use psoQueueOpen and similar functions to get the handle.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfolderHandle\fP Handle to the current folder. 
+.br
+\fIxmlBuffer\fP The XML buffer (string) containing all the required information. 
+.br
+\fIlengthInBytes\fP The length of \fIxmlBuffer\fP (in bytes) not counting the null terminator.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int psoFolderDestroyObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, size_t nameLengthInBytes)"
+.PP
+Destroy an object, child of the current folder, in shared memory. 
+.PP
+The destruction of the object only becomes permanent after a call to \fBpsoCommit\fP.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfolderHandle\fP Handle to the current folder. 
+.br
+\fIobjectName\fP The name of the object. 
+.br
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the psof engine).
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int psoFolderGetFirst (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP * pEntry)"
+.PP
+Iterate through the folder - no data items are removed from the folder by this function. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the folder (see \fBpsoFolderOpen\fP). 
+.br
+\fIpEntry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int psoFolderGetNext (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP * pEntry)"
+.PP
+Iterate through the folder. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+Evidently, you must call \fBpsoFolderGetFirst\fP to initialize the iterator.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the folder (see \fBpsoFolderOpen\fP). 
+.br
+\fIpEntry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int psoFolderOpen (\fBPSO_HANDLE\fP sessionHandle, const char * folderName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
+.PP
+Open an existing folder (see \fBpsoCreateObject\fP to create a new folder). 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsessionHandle\fP The handle to the current session. 
+.br
+\fIfolderName\fP The fully qualified name of the folder. 
+.br
+\fInameLengthInBytes\fP The length of \fIfolderName\fP (in bytes) not counting the null terminator (null-terminators are not used by the psof engine). 
+.br
+\fIobjectHandle\fP The handle to the folder, allowing us access to the folder in shared memory. On error, this handle will be set to zero (NULL) unless the objectHandle pointer itself is NULL.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "VDSF_EXPORT int psoFolderStatus (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP * pStatus)"
+.PP
+Return the status of the folder. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the folder (see \fBpsoFolderOpen\fP). 
+.br
+\fIpStatus\fP A pointer to the status structure.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+

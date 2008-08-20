@@ -1,0 +1,111 @@
+.TH "psoObjStatus" 3 "19 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+psoObjStatus \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <psoCommon.h>\fP
+.PP
+.SH "Detailed Description"
+.PP 
+This data structure is used to retrieve the status of objects. 
+.PP
+Definition at line 228 of file psoCommon.h.
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "\fBpsoObjectType\fP \fBtype\fP"
+.br
+.RI "\fIThe object type. \fP"
+.ti -1c
+.RI "int \fBstatus\fP"
+.br
+.RI "\fIStatus (created but not committed, etc. \fP"
+.ti -1c
+.RI "size_t \fBnumBlocks\fP"
+.br
+.RI "\fIThe number of blocks allocated to this object. \fP"
+.ti -1c
+.RI "size_t \fBnumBlockGroup\fP"
+.br
+.RI "\fIThe number of groups of blocks allocated to this object. \fP"
+.ti -1c
+.RI "size_t \fBnumDataItem\fP"
+.br
+.RI "\fIThe number of data items in thisa object. \fP"
+.ti -1c
+.RI "size_t \fBfreeBytes\fP"
+.br
+.RI "\fIThe amount of free space available in the blocks allocated to this object. \fP"
+.ti -1c
+.RI "size_t \fBmaxDataLength\fP"
+.br
+.RI "\fIMaximum data length (in bytes). \fP"
+.ti -1c
+.RI "size_t \fBmaxKeyLength\fP"
+.br
+.RI "\fIMaximum key length (in bytes) if keys are supported - zero otherwise. \fP"
+.in -1c
+.SH "Field Documentation"
+.PP 
+.SS "\fBpsoObjectType\fP \fBpsoObjStatus::type\fP"
+.PP
+The object type. 
+.PP
+
+.PP
+Definition at line 231 of file psoCommon.h.
+.SS "int \fBpsoObjStatus::status\fP"
+.PP
+Status (created but not committed, etc. 
+.PP
+) - not used in version 0.1 
+.PP
+Definition at line 234 of file psoCommon.h.
+.SS "size_t \fBpsoObjStatus::numBlocks\fP"
+.PP
+The number of blocks allocated to this object. 
+.PP
+
+.PP
+Definition at line 237 of file psoCommon.h.
+.SS "size_t \fBpsoObjStatus::numBlockGroup\fP"
+.PP
+The number of groups of blocks allocated to this object. 
+.PP
+
+.PP
+Definition at line 240 of file psoCommon.h.
+.SS "size_t \fBpsoObjStatus::numDataItem\fP"
+.PP
+The number of data items in thisa object. 
+.PP
+
+.PP
+Definition at line 243 of file psoCommon.h.
+.SS "size_t \fBpsoObjStatus::freeBytes\fP"
+.PP
+The amount of free space available in the blocks allocated to this object. 
+.PP
+
+.PP
+Definition at line 246 of file psoCommon.h.
+.SS "size_t \fBpsoObjStatus::maxDataLength\fP"
+.PP
+Maximum data length (in bytes). 
+.PP
+
+.PP
+Definition at line 249 of file psoCommon.h.
+.SS "size_t \fBpsoObjStatus::maxKeyLength\fP"
+.PP
+Maximum key length (in bytes) if keys are supported - zero otherwise. 
+.PP
+Definition at line 252 of file psoCommon.h.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Photon Software from the source code.

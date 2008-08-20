@@ -186,7 +186,8 @@ man3/psoSession.3: photon/psoSession
 # to the "meat" we are keeping anyway!
 $(PSO_C_FILES): $(HEADER_FILES)
 	doxygen doxyfile.pso_c
-	cp dummy/man/man3/p*.3 man3/
+	cp dummy/man/man3/pso*.3 man3/
+	cp dummy/man/man3/photon*.3 man3/
 	-rm -rf dummy
 
 endif

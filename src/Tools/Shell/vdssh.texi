@@ -13,7 +13,7 @@
 @anchor{name}
 @chapheading Name
 
-vdssh --- starts a pseudo-shell to access VDSF data
+vdssh @^a€” starts a pseudo-shell to access VDSF data
 
 @noindent
 @anchor{synopsis}

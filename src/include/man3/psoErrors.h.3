@@ -1,0 +1,295 @@
+.TH "psoErrors.h" 3 "19 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+psoErrors.h \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef enum \fBpsoErrors\fP \fBpsoErrors\fP"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBpsoErrors\fP { \fBPSO_OK\fP =  0, \fBPSO_INTERNAL_ERROR\fP =  666, \fBPSO_ENGINE_BUSY\fP =  1, \fBPSO_NOT_ENOUGH_PSO_MEMORY\fP =  2, \fBPSO_NOT_ENOUGH_HEAP_MEMORY\fP =  3, \fBPSO_NOT_ENOUGH_RESOURCES\fP =  4, \fBPSO_WRONG_TYPE_HANDLE\fP =  5, \fBPSO_NULL_HANDLE\fP =  6, \fBPSO_NULL_POINTER\fP =  7, \fBPSO_INVALID_LENGTH\fP =  8, \fBPSO_PROCESS_ALREADY_INITIALIZED\fP =  21, \fBPSO_PROCESS_NOT_INITIALIZED\fP =  22, \fBPSO_INVALID_WATCHDOG_ADDRESS\fP =  23, \fBPSO_INCOMPATIBLE_VERSIONS\fP =  24, \fBPSO_SOCKET_ERROR\fP =  25, \fBPSO_CONNECT_ERROR\fP =  26, \fBPSO_SEND_ERROR\fP =  27, \fBPSO_RECEIVE_ERROR\fP =  28, \fBPSO_BACKSTORE_FILE_MISSING\fP =  29, \fBPSO_ERROR_OPENING_VDS\fP =  30, \fBPSO_LOGFILE_ERROR\fP =  41, \fBPSO_SESSION_CANNOT_GET_LOCK\fP =  42, \fBPSO_SESSION_IS_TERMINATED\fP =  43, \fBPSO_INVALID_OBJECT_NAME\fP =  51, \fBPSO_NO_SUCH_OBJECT\fP =  52, \fBPSO_NO_SUCH_FOLDER\fP =  53, \fBPSO_OBJECT_ALREADY_PRESENT\fP =  54, \fBPSO_IS_EMPTY\fP =  55, \fBPSO_WRONG_OBJECT_TYPE\fP =  56, \fBPSO_OBJECT_CANNOT_GET_LOCK\fP =  57, \fBPSO_REACHED_THE_END\fP =  58, \fBPSO_INVALID_ITERATOR\fP =  59, \fBPSO_OBJECT_NAME_TOO_LONG\fP =  60, \fBPSO_FOLDER_IS_NOT_EMPTY\fP =  61, \fBPSO_ITEM_ALREADY_PRESENT\fP =  62, \fBPSO_NO_SUCH_ITEM\fP =  63, \fBPSO_OBJECT_IS_DELETED\fP =  64, \fBPSO_OBJECT_NOT_INITIALIZED\fP =  65, \fBPSO_ITEM_IS_IN_USE\fP =  66, \fBPSO_ITEM_IS_DELETED\fP =  67, \fBPSO_OBJECT_IS_IN_USE\fP =  69, \fBPSO_OBJECT_IS_READ_ONLY\fP =  70, \fBPSO_NOT_ALL_EDIT_ARE_CLOSED\fP =  71, \fBPSO_A_SINGLE_UPDATER_IS_ALLOWED\fP =  72, \fBPSO_INVALID_NUM_FIELDS\fP =  101, \fBPSO_INVALID_FIELD_TYPE\fP =  102, \fBPSO_INVALID_FIELD_LENGTH_INT\fP =  103, \fBPSO_INVALID_FIELD_LENGTH\fP =  104, \fBPSO_INVALID_FIELD_NAME\fP =  105, \fBPSO_DUPLICATE_FIELD_NAME\fP =  106, \fBPSO_INVALID_PRECISION\fP =  107, \fBPSO_INVALID_SCALE\fP =  108, \fBPSO_INVALID_KEY_DEF\fP =  109, \fBPSO_XML_READ_ERROR\fP =  201, \fBPSO_XML_INVALID_ROOT\fP =  202, \fBPSO_XML_NO_SCHEMA_LOCATION\fP =  203, \fBPSO_XML_PARSER_CONTEXT_FAILED\fP =  204, \fBPSO_XML_PARSE_SCHEMA_FAILED\fP =  205, \fBPSO_XML_VALID_CONTEXT_FAILED\fP =  206, \fBPSO_XML_VALIDATION_FAILED\fP =  207, \fBPSO_SEM_DESTROY_ERROR\fP =  601 }"
+.br
+.in -1c
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef enum \fBpsoErrors\fP \fBpsoErrors\fP"
+.PP
+Definition at line 447 of file psoErrors.h.
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBpsoErrors\fP"
+.PP
+\fBEnumerator: \fP
+.in +1c
+.TP
+\fB\fIPSO_OK \fP\fP
+No error. 
+.PP
+.. 
+.TP
+\fB\fIPSO_INTERNAL_ERROR \fP\fP
+Abnormal internal error. 
+.PP
+It should not happen! 
+.TP
+\fB\fIPSO_ENGINE_BUSY \fP\fP
+Cannot get a lock on a system object, the engine is 'busy'. 
+.PP
+This might be the result of either a very busy system where unused cpu cycles are rare or a lock might be held by a crashed process. 
+.TP
+\fB\fIPSO_NOT_ENOUGH_PSO_MEMORY \fP\fP
+Not enough memory in the PSO. 
+.TP
+\fB\fIPSO_NOT_ENOUGH_HEAP_MEMORY \fP\fP
+Not enough heap memory (non-PSO memory). 
+.TP
+\fB\fIPSO_NOT_ENOUGH_RESOURCES \fP\fP
+There are not enough resources to correctly process the call. 
+.PP
+Possible explanations: it might be a lack of POSIX semaphores on systems where atomic locks are implemented that way or a failure in initializing a pthread_mutex (or on Windows, a critical section). 
+.TP
+\fB\fIPSO_WRONG_TYPE_HANDLE \fP\fP
+The provided handle is of the wrong type (C API). 
+.PP
+This could happen if you provide a queue handle to access a hash map or something similar. It can also occur if you try to access an object after closing it.
+.PP
+If you are seeing this error for the C++ API (or some other object-oriented interface), you've just found an internal error... (the handle is encapsulated and cannot be modified using the public interface). 
+.TP
+\fB\fIPSO_NULL_HANDLE \fP\fP
+The provided handle is NULL. 
+.TP
+\fB\fIPSO_NULL_POINTER \fP\fP
+One of the arguments of an API function is an invalid NULL pointer. 
+.TP
+\fB\fIPSO_INVALID_LENGTH \fP\fP
+An invalid length was provided as an argument to an API function. 
+.PP
+This invalid length will usually indicate that the length value is set to zero. 
+.TP
+\fB\fIPSO_PROCESS_ALREADY_INITIALIZED \fP\fP
+The process was already initialized. 
+.PP
+One possibility: was vdsInit() called for a second time? 
+.TP
+\fB\fIPSO_PROCESS_NOT_INITIALIZED \fP\fP
+The process was not properly initialized. 
+.PP
+One possibility: was vdsInit() called? 
+.TP
+\fB\fIPSO_INVALID_WATCHDOG_ADDRESS \fP\fP
+The watchdog address is invalid (empty string, NULL pointer, etc. 
+.PP
+). 
+.TP
+\fB\fIPSO_INCOMPATIBLE_VERSIONS \fP\fP
+API - memory-file version mismatch. 
+.TP
+\fB\fIPSO_SOCKET_ERROR \fP\fP
+Generic socket error. 
+.TP
+\fB\fIPSO_CONNECT_ERROR \fP\fP
+Socket error when trying to connect to the watchdog. 
+.TP
+\fB\fIPSO_SEND_ERROR \fP\fP
+Socket error when trying to send a request to the watchdog. 
+.TP
+\fB\fIPSO_RECEIVE_ERROR \fP\fP
+Socket error when trying to receive a reply from the watchdog. 
+.TP
+\fB\fIPSO_BACKSTORE_FILE_MISSING \fP\fP
+The vds backstore file is missing. 
+.PP
+The name of this file is provided by the watchdog - if it is missing, something really weird is going on. 
+.TP
+\fB\fIPSO_ERROR_OPENING_VDS \fP\fP
+Generic i/o error when attempting to open the vds. 
+.TP
+\fB\fIPSO_LOGFILE_ERROR \fP\fP
+Error accessing the directory for the log files or error opening the log file itself. 
+.TP
+\fB\fIPSO_SESSION_CANNOT_GET_LOCK \fP\fP
+Cannot get a lock on the session (a pthread_mutex or a critical section on Windows). 
+.TP
+\fB\fIPSO_SESSION_IS_TERMINATED \fP\fP
+An attempt was made to use a session object (a session handle) after this session was terminated. 
+.TP
+\fB\fIPSO_INVALID_OBJECT_NAME \fP\fP
+Permitted characters for names are alphanumerics, spaces (' '), dashes ('-') and underlines ('_'). 
+.PP
+The first character must be alphanumeric. 
+.TP
+\fB\fIPSO_NO_SUCH_OBJECT \fP\fP
+The object was not found (but its folder does exist). 
+.TP
+\fB\fIPSO_NO_SUCH_FOLDER \fP\fP
+One of the parent folder of an object does not exist. 
+.TP
+\fB\fIPSO_OBJECT_ALREADY_PRESENT \fP\fP
+Attempt to create an object which already exists. 
+.TP
+\fB\fIPSO_IS_EMPTY \fP\fP
+The object (data container) is empty. 
+.TP
+\fB\fIPSO_WRONG_OBJECT_TYPE \fP\fP
+Attempt to create an object of an unknown object type or to open an object of the wrong type. 
+.TP
+\fB\fIPSO_OBJECT_CANNOT_GET_LOCK \fP\fP
+Cannot get lock on the object. 
+.PP
+This might be the result of either a very busy system where unused cpu cycles are rare or a lock might be held by a crashed process. 
+.TP
+\fB\fIPSO_REACHED_THE_END \fP\fP
+The search/iteration reached the end without finding a new item/record. 
+.TP
+\fB\fIPSO_INVALID_ITERATOR \fP\fP
+An invalid value was used for a vdsIteratorType parameter. 
+.TP
+\fB\fIPSO_OBJECT_NAME_TOO_LONG \fP\fP
+The name of the object is too long. 
+.PP
+The maximum length of a name cannot be more than PSO_MAX_NAME_LENGTH (or PSO_MAX_FULL_NAME_LENGTH for the fully qualified name). 
+.TP
+\fB\fIPSO_FOLDER_IS_NOT_EMPTY \fP\fP
+You cannot delete a folder if there are still undeleted objects in it. 
+.PP
+Technical: a folder does not need to be empty to be deleted but all objects in it must be 'marked as deleted' by the current session. This enables writing recursive deletions 
+.TP
+\fB\fIPSO_ITEM_ALREADY_PRESENT \fP\fP
+An item with the same key was found. 
+.TP
+\fB\fIPSO_NO_SUCH_ITEM \fP\fP
+The item was not found in the hash map. 
+.TP
+\fB\fIPSO_OBJECT_IS_DELETED \fP\fP
+The object is scheduled to be deleted soon. 
+.PP
+Operations on this data container are not permitted at this time. 
+.TP
+\fB\fIPSO_OBJECT_NOT_INITIALIZED \fP\fP
+Object must be open first before you can access them. 
+.TP
+\fB\fIPSO_ITEM_IS_IN_USE \fP\fP
+The data item is scheduled to be deleted soon or was just created and is not committed. 
+.PP
+Operations on this data item are not permitted at this time. 
+.TP
+\fB\fIPSO_ITEM_IS_DELETED \fP\fP
+The data item is scheduled to be deleted soon. 
+.PP
+Operations on this data container are not permitted at this time. 
+.TP
+\fB\fIPSO_OBJECT_IS_IN_USE \fP\fP
+The object is scheduled to be deleted soon or was just created and is not committed. 
+.PP
+Operations on this object are not permitted at this time. 
+.TP
+\fB\fIPSO_OBJECT_IS_READ_ONLY \fP\fP
+The object is read-only and update operations (delete/insert/replace) on it are not permitted. 
+.PP
+at this time. 
+.TP
+\fB\fIPSO_NOT_ALL_EDIT_ARE_CLOSED \fP\fP
+All read-only objects open for updates (as temporary objects) must be closed prior to doing a commit on the session. 
+.TP
+\fB\fIPSO_A_SINGLE_UPDATER_IS_ALLOWED \fP\fP
+Read-only objects are not updated very frequently and therefore only a single editing copy is allowed. 
+.PP
+To allow concurrent editors (either all working on the same copy or each working with its own copy would have been be possible but was deemed unnecessary. 
+.TP
+\fB\fIPSO_INVALID_NUM_FIELDS \fP\fP
+The number of fields in the data definition is invalid - either zero or greater than PSO_MAX_FIELDS (defined in photon/vdsCommon.h). 
+.TP
+\fB\fIPSO_INVALID_FIELD_TYPE \fP\fP
+The data type of the field definition does not correspond to one of the data type defined in the enum psoFieldType (photon/vdsCommon.h). 
+.PP
+or you've used PSO_VAR_STRING or PSO_VAR_BINARY at the wrong place.
+.PP
+Do not forget that PSO_VAR_STRING and PSO_VAR_BINAR can only be used for the last field of your data definition. 
+.TP
+\fB\fIPSO_INVALID_FIELD_LENGTH_INT \fP\fP
+The length of an integer field (PSO_INTEGER) is invalid. 
+.PP
+Valid values are 1, 2, 4 and 8. 
+.TP
+\fB\fIPSO_INVALID_FIELD_LENGTH \fP\fP
+The length of a field (string or binary) is invalid. 
+.PP
+Valid values are all numbers greater than zero and less than 4294967296 (4 Giga). 
+.TP
+\fB\fIPSO_INVALID_FIELD_NAME \fP\fP
+The name of the field contains invalid characters. 
+.PP
+Valid characters are the standard ASCII alphanumerics ([a-zA-Z0-9]) and the underscore ('_'). The first character of the name must be letter. 
+.TP
+\fB\fIPSO_DUPLICATE_FIELD_NAME \fP\fP
+The name of the field is already used by another field in the current definition. 
+.PP
+Note: at the moment field names are case sensitive (for example 'account_id' and 'Account_Id' are considered different). This might be changed eventually so this practice should be avoided. 
+.TP
+\fB\fIPSO_INVALID_PRECISION \fP\fP
+The precision of a PSO_DECIMAL field is either zero or over the limit for this type (set at 30 currently). 
+.PP
+Note: precision is the number of digits in a number. 
+.TP
+\fB\fIPSO_INVALID_SCALE \fP\fP
+The scale of a PSO_DECIMAL field is invalid (greater than the value of precision. 
+.PP
+Note: scale is the number of digits to the right of the decimal separator in a number. 
+.TP
+\fB\fIPSO_INVALID_KEY_DEF \fP\fP
+The key definition for a hash map is either invalid or missing. 
+.TP
+\fB\fIPSO_XML_READ_ERROR \fP\fP
+Error reading the XML buffer stream. 
+.PP
+No validation is done at this point. Therefore the error is likely something like a missing end-tag or some other non-conformance to the XML's syntax rules.
+.PP
+A simple Google search for 'well-formed xml' returns many web sites that describe the syntax rules for XML. You can also use the program xmllint (included in the distribution of libxm2) to pinpoint the issue. 
+.TP
+\fB\fIPSO_XML_INVALID_ROOT \fP\fP
+The root element is not the expected root, <folder> and similar. 
+.TP
+\fB\fIPSO_XML_NO_SCHEMA_LOCATION \fP\fP
+The root element must have an attribute named schemaLocation (in the namespace 'http://www.w3.org/2001/XMLSchema-instance') to point to the schema use for the xml buffer stream. 
+.PP
+This attribute is in two parts separated by a space. The code expects the file name of the schema in the second element of this attribute. 
+.TP
+\fB\fIPSO_XML_PARSER_CONTEXT_FAILED \fP\fP
+The creation of a new schema parser context failed. 
+.PP
+There might be multiple reasons for this, for example, a memory-allocation failure in libxml2. However, the most likely reason is that the schema file is not at the location indicated by the attribute schemaLocation of the root element of the buffer stream. 
+.TP
+\fB\fIPSO_XML_PARSE_SCHEMA_FAILED \fP\fP
+The parse operation of the schema failed. 
+.PP
+Most likely, there is an error in the schema. To debug this you can use xmllint (part of the libxml2 package). 
+.TP
+\fB\fIPSO_XML_VALID_CONTEXT_FAILED \fP\fP
+The creation of a new schema validation context failed. 
+.PP
+There might be multiple reasons for this, for example, a memory-allocation failure in libxml2. 
+.TP
+\fB\fIPSO_XML_VALIDATION_FAILED \fP\fP
+Document validation for the xml buffer failed. 
+.PP
+To debug this problem you can use xmllint (part of the libxml2 package). 
+.TP
+\fB\fIPSO_SEM_DESTROY_ERROR \fP\fP
+Abnormal internal error with sem_destroy. 
+.PP
+It should not happen! It could indicate that the memory allocated for the semaphore was corrupted (errno = EINVAL) or that the reference counting is wrong (errno = EBUSY). Please contact us. 
+.PP
+Definition at line 34 of file psoErrors.h.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Photon Software from the source code.

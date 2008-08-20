@@ -1,0 +1,81 @@
+.TH "psoFastMap.h" 3 "19 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+psoFastMap.h \- 
+.SH "Detailed Description"
+.PP 
+This file provides the API needed to access read-only VDSF hash maps. 
+
+The features are very similar to the ordinary hash maps except that no locks are require to access the data and special procedures are implemented for the occasional updates:
+.PP
+1) when a map is open in read-only mode (\fBpsoFastMapOpen()\fP, the end-of-this-unit-of-work calls (psoCommit/psoRollback) will check if a new version of the map exits and if indeed this is the case, the new version will be use instead of the old one.
+.PP
+2) when a map is open for editing a working copy of the map is created in shared memory and the map can be updated (no locks again since only the updater can access the working copy). When the session is committed, the working version becomes the latest version and can be open/accessed by readers. And, of course, the same procedure applies if you have a set of maps that must be changed together.
+.PP
+If psoRollback is called, all changes done to the working copy are erased.
+.PP
+Note: the old versions are removed from memory when all readers have updated their versions. Even if a program is only doing read access to the VDS data, it is important to add \fBpsoCommit()\fP once in a while to refresh the 'handles' if the program is running for a while. 
+.PP
+Definition in file \fBpsoFastMap.h\fP.
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <photon/psoCommon.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFastMapClose\fP (\fBPSO_HANDLE\fP objectHandle)"
+.br
+.RI "\fIClose a Hash Map. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFastMapDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP **definition)"
+.br
+.RI "\fIRetrieve the data definition of the hash map. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFastMapDelete\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength)"
+.br
+.RI "\fIRemove the data item identified by the given key from the hash map (you must be in edit mode). \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFastMapEdit\fP (\fBPSO_HANDLE\fP sessionHandle, const char *hashMapName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
+.br
+.RI "\fIOpen a temporary copy of an existing hash map for editing. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFastMapEmpty\fP (\fBPSO_HANDLE\fP objectHandle)"
+.br
+.RI "\fIRemove all data items from the map (you must be in edit mode). \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFastMapGet\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.br
+.RI "\fIRetrieve the data item identified by the given key from the hash map. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFastMapGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
+.br
+.RI "\fIIterate through the hash map. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFastMapGetNext\fP (\fBPSO_HANDLE\fP objectHandle, void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
+.br
+.RI "\fIIterate through the hash map. \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFastMapInsert\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength, const void *data, size_t dataLength)"
+.br
+.RI "\fIInsert a data element in the hash map (you must be in edit mode). \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFastMapOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *hashMapName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
+.br
+.RI "\fIOpen an existing hash map read only (see \fBpsoCreateObject\fP to create a new object). \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFastMapReplace\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength, const void *data, size_t dataLength)"
+.br
+.RI "\fIReplace a data element in the hash map (you must be in edit mode). \fP"
+.ti -1c
+.RI "VDSF_EXPORT int \fBpsoFastMapStatus\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP *pStatus)"
+.br
+.RI "\fIReturn the status of the hash map. \fP"
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Photon Software from the source code.

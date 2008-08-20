@@ -117,16 +117,16 @@ ACX_PTHREAD(
       AC_DEFINE(USE_PTHREAD, 1, [Using Posix threads])
 	],
 	[
-	    AC_MSG_ERROR([VDSF requires a Posix Thread library and I don'k know where it is.])
+	    AC_MSG_ERROR([Photon requires a Posix Thread library and I don'k know where it is.])
 	])
 
 AC_CHECK_PROG(found_pkg_config, pkg-config, [yes], [no] )
 if test "x$found_pkg_config" != "xyes" ; then
-  AC_MSG_ERROR([VDSF requires pkg-config])
+  AC_MSG_ERROR([Photon requires pkg-config])
 fi
 
 PKG_CHECK_MODULES(LIBXML2, [libxml-2.0],,
-   AC_MSG_ERROR([VDSF requires libxml2 (including the development environment)])) 
+   AC_MSG_ERROR([Photon requires libxml2 (including the development environment)])) 
 
 AC_SUBST(LIBXML2_CFLAGS)
 AC_SUBST(LIBXML2_LIBS)
@@ -191,7 +191,7 @@ AC_C_ASM
 
 AC_C_CC_TYPE
 if test "$ac_cv_compiler_name" = "unknown"; then
-  AC_MSG_NOTICE([This version of VDSF does not for support your compiler])
+  AC_MSG_NOTICE([This version of Photon does not for support your compiler])
   AC_MSG_ERROR([So, please contact us to add support for your compiler])
 fi
 
@@ -310,10 +310,10 @@ fi
 AC_C_BIGENDIAN
 
 if test "$build_alias" != ""; then
-  AC_MSG_ERROR([This version of vdsf does not support cross-compilation])
+  AC_MSG_ERROR([This version of Photon does not support cross-compilation])
 fi
 if test "$target_alias" != ""; then
-  AC_MSG_ERROR([This version of vdsf does not support cross-compilation])
+  AC_MSG_ERROR([This version of Photon does not support cross-compilation])
 fi
 
 # The ACX_THREAD m4 routine already called AC_CANONICAL_HOST so we can
@@ -337,15 +337,15 @@ sparc)       locking_dir=asm-sparc
 esac
 AC_SUBST(architecture)
 
-##################################################
-#                                                #
-# Section - override VDSF build/compile defaults #
-#                                                #
-##################################################
+####################################################
+#                                                  #
+# Section - override Photon build/compile defaults #
+#                                                  #
+####################################################
 
 AC_ARG_ENABLE([set-block-size],
               AC_HELP_STRING([--enable-set-block-size=some_value],
-                             [set the size of vdsf blocks (values must be either 1k, 2k, 4k, 8k or 16k) @<:@default=8k@:>@]),
+                             [set the size of Photon blocks (values must be either 1k, 2k, 4k, 8k or 16k) @<:@default=8k@:>@]),
 	      [block_size=$enableval],
 	      [block_size=8k])
 if test "$block_size" = "1k"; then
@@ -455,12 +455,12 @@ fi
 ####################
 
 AC_CONFIG_FILES([
-   doc/doxyfile.vds_c
-   doc/doxyfile.vds_cpp
+   doc/doxyfile.photon_c
+   doc/doxyfile.photon_cpp
    src/include/doxyfile.pso_c
    src/Packages/buildDeb.sh
    src/Packages/control
-   src/Packages/vdsf.spec
+   src/Packages/photon.spec
 ])
    
 AC_CONFIG_FILES([

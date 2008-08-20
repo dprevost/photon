@@ -1,0 +1,261 @@
+.TH "psoCommon.h" 3 "19 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+psoCommon.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdlib.h>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBpsoKeyDefinition\fP"
+.br
+.RI "\fIDescription of the structure of the hash map key. \fP"
+.ti -1c
+.RI "struct \fBpsoFieldDefinition\fP"
+.br
+.RI "\fIDescription of the structure of the data (if any). \fP"
+.ti -1c
+.RI "struct \fBpsoObjectDefinition\fP"
+.br
+.RI "\fIThis struct has a variable length. \fP"
+.ti -1c
+.RI "struct \fBpsoFolderEntry\fP"
+.br
+.RI "\fIThis data structure is used to iterate throught all objects in a folder. \fP"
+.ti -1c
+.RI "struct \fBpsoObjStatus\fP"
+.br
+.RI "\fIThis data structure is used to retrieve the status of objects. \fP"
+.ti -1c
+.RI "struct \fBpsoInfo\fP"
+.br
+.RI "\fIThis data structure is used to retrieve the status of the virtual data space. \fP"
+.in -1c
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBVDSF_EXPORT\fP"
+.br
+.RI "\fIUses to tell the VC++ compiler to export/import a function or variable on Windows (the macro is empty on other platforms). \fP"
+.ti -1c
+.RI "#define \fBPSO_MAX_NAME_LENGTH\fP   256"
+.br
+.RI "\fIMaximum number of bytes of the name of a pso object (not counting the name of the parent folder(s)). \fP"
+.ti -1c
+.RI "#define \fBPSO_MAX_FULL_NAME_LENGTH\fP   1024"
+.br
+.RI "\fIMaximum number of bytes of the fully qualified name of a pso object (including the name(s) of its parent folder(s)). \fP"
+.ti -1c
+.RI "#define \fBPSO_MAX_FIELD_LENGTH\fP   32"
+.br
+.RI "\fIMaximum number of bytes of the name of a field of a pso object. \fP"
+.ti -1c
+.RI "#define \fBPSO_MAX_FIELDS\fP   65535"
+.br
+.RI "\fIMaximum number of fields (including the last one). \fP"
+.ti -1c
+.RI "#define \fBPSO_FIELD_MAX_PRECISION\fP   30"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef void * \fBPSO_HANDLE\fP"
+.br
+.RI "\fIPSO_HANDLE is an opaque data type used by the C API to reference objects created in the API module. \fP"
+.ti -1c
+.RI "typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
+.br
+.ti -1c
+.RI "typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBpsoKeyDefinition\fP \fBpsoKeyDefinition\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBpsoFieldDefinition\fP \fBpsoFieldDefinition\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBpsoObjectDefinition\fP \fBpsoObjectDefinition\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBpsoFolderEntry\fP \fBpsoFolderEntry\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBpsoObjStatus\fP \fBpsoObjStatus\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBpsoInfo\fP \fBpsoInfo\fP"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBpsoObjectType\fP { \fBPSO_FOLDER\fP =  1, \fBPSO_HASH_MAP\fP =  2, \fBPSO_LIFO\fP =  3, \fBPSO_FAST_MAP\fP =  4, \fBPSO_QUEUE\fP =  5, \fBPSO_LAST_OBJECT_TYPE\fP }"
+.br
+.RI "\fIThe object type as seen from the API. \fP"
+.ti -1c
+.RI "enum \fBpsoIteratorType\fP { \fBPSO_FIRST\fP =  1, \fBPSO_NEXT\fP =  2 }"
+.br
+.ti -1c
+.RI "enum \fBpsoFieldType\fP { \fBPSO_INTEGER\fP =  1, \fBPSO_BINARY\fP, \fBPSO_STRING\fP, \fBPSO_DECIMAL\fP, \fBPSO_BOOLEAN\fP, \fBPSO_VAR_BINARY\fP, \fBPSO_VAR_STRING\fP }"
+.br
+.RI "\fIVDSF supported data types. \fP"
+.ti -1c
+.RI "enum \fBpsoKeyType\fP { \fBPSO_KEY_INTEGER\fP =  101, \fBPSO_KEY_BINARY\fP, \fBPSO_KEY_STRING\fP, \fBPSO_KEY_VAR_BINARY\fP, \fBPSO_KEY_VAR_STRING\fP }"
+.br
+.RI "\fIVDSF supported data types for keys. \fP"
+.in -1c
+.SH "Define Documentation"
+.PP 
+.SS "#define PSO_FIELD_MAX_PRECISION   30"
+.PP
+Definition at line 83 of file psoCommon.h.
+.SS "#define PSO_MAX_FIELD_LENGTH   32"
+.PP
+Maximum number of bytes of the name of a field of a pso object. 
+.PP
+Definition at line 76 of file psoCommon.h.
+.SS "#define PSO_MAX_FIELDS   65535"
+.PP
+Maximum number of fields (including the last one). 
+.PP
+Definition at line 81 of file psoCommon.h.
+.SS "#define PSO_MAX_FULL_NAME_LENGTH   1024"
+.PP
+Maximum number of bytes of the fully qualified name of a pso object (including the name(s) of its parent folder(s)). 
+.PP
+Note: setting this value eliminates a possible loophole since some heap memory must be allocated to hold the wide characters string for the duration of the operation (open, close, create or destroy). 
+.PP
+Definition at line 71 of file psoCommon.h.
+.SS "#define PSO_MAX_NAME_LENGTH   256"
+.PP
+Maximum number of bytes of the name of a pso object (not counting the name of the parent folder(s)). 
+.PP
+Definition at line 61 of file psoCommon.h.
+.SS "#define VDSF_EXPORT"
+.PP
+Uses to tell the VC++ compiler to export/import a function or variable on Windows (the macro is empty on other platforms). 
+.PP
+Definition at line 38 of file psoCommon.h.
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef void* \fBPSO_HANDLE\fP"
+.PP
+PSO_HANDLE is an opaque data type used by the C API to reference objects created in the API module. 
+.PP
+Definition at line 53 of file psoCommon.h.
+.SS "typedef struct \fBpsoFieldDefinition\fP \fBpsoFieldDefinition\fP"
+.PP
+Definition at line 175 of file psoCommon.h.
+.SS "typedef struct \fBpsoFolderEntry\fP \fBpsoFolderEntry\fP"
+.PP
+Definition at line 221 of file psoCommon.h.
+.SS "typedef struct \fBpsoInfo\fP \fBpsoInfo\fP"
+.PP
+Definition at line 311 of file psoCommon.h.
+.SS "typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
+.PP
+Definition at line 108 of file psoCommon.h.
+.SS "typedef struct \fBpsoKeyDefinition\fP \fBpsoKeyDefinition\fP"
+.PP
+Definition at line 153 of file psoCommon.h.
+.SS "typedef struct \fBpsoObjectDefinition\fP \fBpsoObjectDefinition\fP"
+.PP
+Definition at line 193 of file psoCommon.h.
+.SS "typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
+.PP
+Definition at line 100 of file psoCommon.h.
+.SS "typedef struct \fBpsoObjStatus\fP \fBpsoObjStatus\fP"
+.PP
+Definition at line 256 of file psoCommon.h.
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBpsoFieldType\fP"
+.PP
+VDSF supported data types. 
+.PP
+\fBEnumerator: \fP
+.in +1c
+.TP
+\fB\fIPSO_INTEGER \fP\fP
+.TP
+\fB\fIPSO_BINARY \fP\fP
+.TP
+\fB\fIPSO_STRING \fP\fP
+.TP
+\fB\fIPSO_DECIMAL \fP\fP
+.TP
+\fB\fIPSO_BOOLEAN \fP\fP
+.TP
+\fB\fIPSO_VAR_BINARY \fP\fP
+Only valid for the last field of the data definition. 
+.TP
+\fB\fIPSO_VAR_STRING \fP\fP
+Only valid for the last field of the data definition. 
+.PP
+Definition at line 115 of file psoCommon.h.
+.SS "enum \fBpsoIteratorType\fP"
+.PP
+\fBEnumerator: \fP
+.in +1c
+.TP
+\fB\fIPSO_FIRST \fP\fP
+.TP
+\fB\fIPSO_NEXT \fP\fP
+
+.PP
+Definition at line 102 of file psoCommon.h.
+.SS "enum \fBpsoKeyType\fP"
+.PP
+VDSF supported data types for keys. 
+.PP
+\fBEnumerator: \fP
+.in +1c
+.TP
+\fB\fIPSO_KEY_INTEGER \fP\fP
+.TP
+\fB\fIPSO_KEY_BINARY \fP\fP
+.TP
+\fB\fIPSO_KEY_STRING \fP\fP
+.TP
+\fB\fIPSO_KEY_VAR_BINARY \fP\fP
+Only valid for the last field of the data definition. 
+.TP
+\fB\fIPSO_KEY_VAR_STRING \fP\fP
+Only valid for the last field of the data definition. 
+.PP
+Definition at line 131 of file psoCommon.h.
+.SS "enum \fBpsoObjectType\fP"
+.PP
+The object type as seen from the API. 
+.PP
+\fBEnumerator: \fP
+.in +1c
+.TP
+\fB\fIPSO_FOLDER \fP\fP
+.TP
+\fB\fIPSO_HASH_MAP \fP\fP
+.TP
+\fB\fIPSO_LIFO \fP\fP
+.TP
+\fB\fIPSO_FAST_MAP \fP\fP
+.TP
+\fB\fIPSO_QUEUE \fP\fP
+.TP
+\fB\fIPSO_LAST_OBJECT_TYPE \fP\fP
+
+.PP
+Definition at line 90 of file psoCommon.h.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Photon Software from the source code.

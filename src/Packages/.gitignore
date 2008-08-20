@@ -1,6 +1,6 @@
 /buildDeb.sh
 /control
-/vdsf.spec
+/photon.spec
 /*.deb
 /*.rpm
 /Output

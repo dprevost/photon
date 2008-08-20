@@ -1,0 +1,71 @@
+.TH "psoFieldDefinition" 3 "19 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+psoFieldDefinition \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <psoCommon.h>\fP
+.PP
+.SH "Detailed Description"
+.PP 
+Description of the structure of the data (if any). 
+
+This structure is aligned in such a way that you can do:
+.PP
+malloc( offsetof(psoObjectDefinition, fields) + numFields * sizeof(psoFieldDefinition) ); 
+.PP
+Definition at line 164 of file psoCommon.h.
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char \fBname\fP [PSO_MAX_FIELD_LENGTH]"
+.br
+.ti -1c
+.RI "enum \fBpsoFieldType\fP \fBtype\fP"
+.br
+.ti -1c
+.RI "size_t \fBlength\fP"
+.br
+.ti -1c
+.RI "size_t \fBminLength\fP"
+.br
+.ti -1c
+.RI "size_t \fBmaxLength\fP"
+.br
+.ti -1c
+.RI "size_t \fBprecision\fP"
+.br
+.ti -1c
+.RI "size_t \fBscale\fP"
+.br
+.in -1c
+.SH "Field Documentation"
+.PP 
+.SS "char \fBpsoFieldDefinition::name\fP[PSO_MAX_FIELD_LENGTH]"
+.PP
+Definition at line 166 of file psoCommon.h.
+.SS "enum \fBpsoFieldType\fP \fBpsoFieldDefinition::type\fP"
+.PP
+Definition at line 167 of file psoCommon.h.
+.SS "size_t \fBpsoFieldDefinition::length\fP"
+.PP
+Definition at line 168 of file psoCommon.h.
+.SS "size_t \fBpsoFieldDefinition::minLength\fP"
+.PP
+Definition at line 169 of file psoCommon.h.
+.SS "size_t \fBpsoFieldDefinition::maxLength\fP"
+.PP
+Definition at line 170 of file psoCommon.h.
+.SS "size_t \fBpsoFieldDefinition::precision\fP"
+.PP
+Definition at line 171 of file psoCommon.h.
+.SS "size_t \fBpsoFieldDefinition::scale\fP"
+.PP
+Definition at line 172 of file psoCommon.h.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Photon Software from the source code.

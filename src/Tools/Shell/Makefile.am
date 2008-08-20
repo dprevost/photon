@@ -43,5 +43,5 @@ vdssh_SOURCES =       \
         vdssh.cpp     \
         vdssh.dsp     
 
-vdssh_LDADD = $(top_builddir)/src/C++/libvdsfcpp.la
+vdssh_LDADD = $(top_builddir)/src/C++/libphotoncpp.la
 
