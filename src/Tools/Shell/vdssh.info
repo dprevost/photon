@@ -54,7 +54,7 @@ OPTIONS
 *******
 
 `-a', `--address' WATCHDOG_ADDRESS
-     The TCP port for the VDSF watchdog (the program vdswd).
+     The TCP port for the VDSF watchdog (the program quasar).
 
 `-h', `-?', `--help'
      Minimal help including a list of supported commands.
@@ -141,8 +141,8 @@ Ref: Getting [minimal] help;331
 Ref: Running normally;404
 Ref: DESCRIPTION485
 Ref: OPTIONS812
-Ref: Commands1008
-Ref: REPORTING BUGS2475
-Ref: COPYRIGHT2557
+Ref: Commands1009
+Ref: REPORTING BUGS2476
+Ref: COPYRIGHT2558
 
 End Tag Table

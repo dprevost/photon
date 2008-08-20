@@ -19,7 +19,7 @@
 #include <signal.h>
 #include "Watchdog/Watchdog.h"
 #include "Common/ErrorHandler.h"
-#include "Watchdog/wdErrorHandler.h"
+#include "Watchdog/quasarErrorHandler.h"
 
 // This should be more than enough...
 #define LINE_MAX_LEN (2*PATH_MAX)
@@ -71,7 +71,7 @@ int vdswGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 
    PSO_PRE_CONDITION( msg != NULL );
 
-   theMsg = vdsw_ErrorMessage( errnum );
+   theMsg = psoq_ErrorMessage( errnum );
 
    if ( theMsg == NULL ) return -1;
    if ( strlen(theMsg) >= msgLength ) return -1;
@@ -281,7 +281,7 @@ bool vdswInstall( vdswWatchdog * pWatchdog )
    }
     
    hService = CreateService( hManager,
-                             "vdswd",
+                             "quasar",
                              "VDSF Watchdog",
                              SERVICE_ALL_ACCESS,
                              SERVICE_WIN32_OWN_PROCESS,
@@ -310,7 +310,7 @@ bool vdswInstall( vdswWatchdog * pWatchdog )
     */
 
    errcode = RegOpenKeyEx( HKEY_LOCAL_MACHINE, 
-                           "SYSTEM\\CurrentControlSet\\Services\\vdswd",
+                           "SYSTEM\\CurrentControlSet\\Services\\quasar",
                            0,
                            KEY_SET_VALUE,
                            &hKey );
@@ -433,7 +433,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
    PSO_PRE_CONDITION( pWatchdog != NULL );
 
    errcode = RegOpenKeyEx( HKEY_LOCAL_MACHINE, 
-                           "SYSTEM\\CurrentControlSet\\Services\\vdswd",
+                           "SYSTEM\\CurrentControlSet\\Services\\quasar",
                            0,
                            KEY_QUERY_VALUE,
                            &hKey );
@@ -724,7 +724,7 @@ void vdswUninstall( vdswWatchdog * pWatchdog )
     * service.
     */
    errcode = RegOpenKeyEx( HKEY_LOCAL_MACHINE, 
-                           "SYSTEM\\CurrentControlSet\\Services\\vdswd",
+                           "SYSTEM\\CurrentControlSet\\Services\\quasar",
                            0,
                            KEY_SET_VALUE,
                            &hKey );

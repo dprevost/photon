@@ -73,7 +73,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
    if ( pHandler->pMemManager == NULL ) {
       pscSetError( &pHandler->context.errorHandler,
                     g_wdErrorHandle,
-                    VDSW_NOT_ENOUGH_HEAP_MEMORY );
+                    PSOQ_NOT_ENOUGH_HEAP_MEMORY );
       return false;
    }
    vdswMemoryManagerInit( pHandler->pMemManager );
@@ -83,7 +83,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
    if ( path_len >= PATH_MAX ) {
       pscSetError( &pHandler->context.errorHandler,
                     g_wdErrorHandle,
-                    VDSW_CFG_BCK_LOCATION_TOO_LONG );
+                    PSOQ_CFG_BCK_LOCATION_TOO_LONG );
       return false;
    }
       
@@ -97,7 +97,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
       if ( verifyVDSOnly ) {
          pscSetError( &pHandler->context.errorHandler,
                        g_wdErrorHandle,
-                       VDSW_NO_VERIFICATION_POSSIBLE );
+                       PSOQ_NO_VERIFICATION_POSSIBLE );
          return false;
       }
       ok = vdswCreateVDS( pHandler->pMemManager,
@@ -118,7 +118,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
          if ( errcode != 0 ) {
             pscSetError( &pHandler->context.errorHandler,
                           g_wdErrorHandle,
-                          VDSW_MKDIR_FAILURE );
+                          PSOQ_MKDIR_FAILURE );
             return false;
          }
          (*ppMemoryAddress)->logON = true;
@@ -129,7 +129,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
          ! fileStatus.lenghtOK ) {
          pscSetError( &pHandler->context.errorHandler,
                        g_wdErrorHandle,
-                       VDSW_FILE_NOT_ACCESSIBLE );
+                       PSOQ_FILE_NOT_ACCESSIBLE );
          return false;
       }
 
@@ -157,7 +157,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
                              errno );
                pscChainError( &pHandler->context.errorHandler,
                                g_wdErrorHandle,
-                               VDSW_MKDIR_FAILURE );
+                               PSOQ_MKDIR_FAILURE );
                return false;
             }
          }
@@ -182,7 +182,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
          if ( ! ok ) {
             pscChainError( &pHandler->context.errorHandler,
                             g_wdErrorHandle,
-                            VDSW_COPY_BCK_FAILURE );
+                            PSOQ_COPY_BCK_FAILURE );
             return false;
          }
       }

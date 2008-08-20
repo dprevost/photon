@@ -19,7 +19,7 @@
 #include <libxml/xmlschemastypes.h>
 
 #include "Watchdog/Config.h"
-#include "Watchdog/wdErrors.h"
+#include "Watchdog/quasarErrors.h"
 
 extern pscErrMsgHandle g_wdErrorHandle;
 
@@ -80,7 +80,7 @@ bool vdswReadConfig( const char          * cfgname,
    xmlDoc  * doc = NULL;
    xmlChar * prop = NULL;
    int i, j, fd = -1, separator = -1;
-   enum vdswErrors errcode = VDSW_OK;
+   enum vdswErrors errcode = PSOQ_OK;
    char buf[10000];
 
    /* These are to make sure we have read all parameters */
@@ -114,23 +114,23 @@ bool vdswReadConfig( const char          * cfgname,
       doc = xmlReadMemory( buf, i, NULL, NULL, XML_PARSE_NOERROR | XML_PARSE_NOWARNING );
    }
    if ( doc == NULL ) {
-      errcode = VDSW_XML_READ_ERROR;
+      errcode = PSOQ_XML_READ_ERROR;
       goto cleanup;
    }
    
    root = xmlDocGetRootElement( doc );
    if ( root == NULL ) {
-      errcode = VDSW_XML_NO_ROOT;
+      errcode = PSOQ_XML_NO_ROOT;
       goto cleanup;
    }
    if ( xmlStrcmp( root->name, BAD_CAST "vdsf_config") != 0 ) {
-      errcode = VDSW_XML_INVALID_ROOT;
+      errcode = PSOQ_XML_INVALID_ROOT;
       goto cleanup;
    }
    
    prop = xmlGetProp( root, BAD_CAST "schemaLocation" );
    if ( prop == NULL ) {
-      errcode = VDSW_XML_NO_SCHEMA_LOCATION;
+      errcode = PSOQ_XML_NO_SCHEMA_LOCATION;
       goto cleanup;
    }
    
@@ -146,19 +146,19 @@ bool vdswReadConfig( const char          * cfgname,
       }
    }
    if ( separator == -1 ) {
-      errcode = VDSW_XML_NO_SCHEMA_LOCATION;
+      errcode = PSOQ_XML_NO_SCHEMA_LOCATION;
       goto cleanup;
    }
    
    parserCtxt = xmlSchemaNewParserCtxt( (char*)&prop[separator] );
    if ( parserCtxt == NULL ) {
-      errcode = VDSW_XML_PARSER_CONTEXT_FAILED;
+      errcode = PSOQ_XML_PARSER_CONTEXT_FAILED;
       goto cleanup;
    }
    
    schema = xmlSchemaParse( parserCtxt );
    if ( schema == NULL ) {
-      errcode = VDSW_XML_PARSE_SCHEMA_FAILED;
+      errcode = PSOQ_XML_PARSE_SCHEMA_FAILED;
       goto cleanup;
    }
    
@@ -167,7 +167,7 @@ bool vdswReadConfig( const char          * cfgname,
 
    validCtxt = xmlSchemaNewValidCtxt( schema );
    if ( validCtxt == NULL ) {
-      errcode = VDSW_XML_VALID_CONTEXT_FAILED;
+      errcode = PSOQ_XML_VALID_CONTEXT_FAILED;
       goto cleanup;
    }
    
@@ -185,7 +185,7 @@ bool vdswReadConfig( const char          * cfgname,
    }
    
    if ( xmlSchemaValidateDoc( validCtxt, doc ) != 0 ) {
-      errcode = VDSW_XML_VALIDATION_FAILED;
+      errcode = PSOQ_XML_VALIDATION_FAILED;
       goto cleanup;
    }
    
@@ -207,10 +207,10 @@ bool vdswReadConfig( const char          * cfgname,
                node = node->next;
                break;
             }
-            errcode = VDSW_CFG_PSO_LOCATION_TOO_LONG;
+            errcode = PSOQ_CFG_PSO_LOCATION_TOO_LONG;
             goto cleanup;
          }
-         errcode = VDSW_CFG_PSO_LOCATION_IS_MISSING;
+         errcode = PSOQ_CFG_PSO_LOCATION_IS_MISSING;
          goto cleanup;
       }
       node = node->next;
@@ -221,7 +221,7 @@ bool vdswReadConfig( const char          * cfgname,
          if ( xmlStrcmp( node->name, BAD_CAST "mem_size") == 0 ) {
             prop = xmlGetProp( node, BAD_CAST "size" );
             if ( prop == NULL ) {
-               errcode = VDSW_CFG_SIZE_IS_MISSING;
+               errcode = PSOQ_CFG_SIZE_IS_MISSING;
                goto cleanup;
             }
             pConfig->memorySizekb = atoi((char*)prop);
@@ -229,7 +229,7 @@ bool vdswReadConfig( const char          * cfgname,
 
             prop = xmlGetProp( node, BAD_CAST "units" );
             if ( prop == NULL ) {
-               errcode = VDSW_CFG_UNITS_IS_MISSING;
+               errcode = PSOQ_CFG_UNITS_IS_MISSING;
                goto cleanup;
             }
             if ( xmlStrcmp( prop, BAD_CAST "mb") == 0 ) {
@@ -244,7 +244,7 @@ bool vdswReadConfig( const char          * cfgname,
             node = node->next;
             break;
          }
-         errcode = VDSW_CFG_MEM_SIZE_IS_MISSING;
+         errcode = PSOQ_CFG_MEM_SIZE_IS_MISSING;
          goto cleanup;
       }
       node = node->next;
@@ -257,7 +257,7 @@ bool vdswReadConfig( const char          * cfgname,
             node = node->next;
             break;
          }
-         errcode = VDSW_CFG_WATCHDOG_ADDRESS_IS_MISSING;
+         errcode = PSOQ_CFG_WATCHDOG_ADDRESS_IS_MISSING;
          goto cleanup;
       }
       node = node->next;
@@ -268,7 +268,7 @@ bool vdswReadConfig( const char          * cfgname,
          if ( xmlStrcmp( node->name, BAD_CAST "file_access") == 0 ) {
             prop = xmlGetProp( node, BAD_CAST "access" );
             if ( prop == NULL ) {
-               errcode = VDSW_CFG_ACCESS_IS_MISSING;
+               errcode = PSOQ_CFG_ACCESS_IS_MISSING;
                goto cleanup;
             }
             
@@ -290,7 +290,7 @@ bool vdswReadConfig( const char          * cfgname,
             node = node->next;
             break;
          }
-         errcode = VDSW_CFG_FILE_ACCESS_IS_MISSING;
+         errcode = PSOQ_CFG_FILE_ACCESS_IS_MISSING;
          goto cleanup;
       }
       node = node->next;
@@ -304,7 +304,7 @@ cleanup:
    if ( prop ) xmlFree( prop );
    if ( doc ) xmlFreeDoc( doc );
 
-   if ( errcode != VDSW_OK ) {
+   if ( errcode != PSOQ_OK ) {
       pscSetError( pError, g_wdErrorHandle, errcode );
       return false;
    }

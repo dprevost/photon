@@ -58,7 +58,7 @@ vds_dir   = sys.argv[7]
 
 return_code = 0
 cfg_suff = 'cfg.xml'
-wd_name = 'vdswd'
+wd_name = 'quasar'
 wd_pid = 0
 wd_present = 0
 

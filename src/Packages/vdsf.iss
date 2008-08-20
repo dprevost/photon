@@ -19,7 +19,7 @@ Source: src\Release\vdsfcpp.dll; DestDir: {app}\bin
 Source: src\Release\vdsfNucleus.dll; DestDir: {app}\bin
 Source: src\Release\psoInfo.exe; DestDir: {app}\bin
 Source: src\Release\vdssh.exe; DestDir: {app}\bin
-Source: src\Release\vdswd.exe; DestDir: {app}\bin
+Source: src\Release\quasar.exe; DestDir: {app}\bin
 Source: src\include\vdsf\vds.h; DestDir: {app}\include
 Source: src\include\vdsf\psoCommon.h; DestDir: {app}\include
 Source: src\include\vdsf\psoErrors.h; DestDir: {app}\include
@@ -41,7 +41,7 @@ Source: doc\refman_c.pdf; DestDir: {app}
 Source: doc\refman_c++.pdf; DestDir: {app}
 Source: COPYING; DestDir: {app}; DestName: License.txt
 Source: src\Examples\iso_3166.tab; DestDir: {app}\Examples
-Source: src\Examples\vdswd-config.example; DestDir: {app}\Examples
+Source: src\Examples\quasar-config.example; DestDir: {app}\Examples
 Source: src\Examples\README.txt; DestDir: {app}\Examples
 Source: src\Examples\C\Examples.dsw; DestDir: {app}\Examples\C
 Source: src\Examples\C\HashMap.c; DestDir: {app}\Examples\C
@@ -78,17 +78,17 @@ Source: src\Examples\C++\Project_Files\QueueWork.dsp; DestDir: {app}\Examples\C+
 ;Source: c:\windows\system32\mswinsck.ocx; DestDir: {sys}; Flags: regserver restartreplace sharedfile
 
 [Icons]
-;Name: "{group}\Watchdog"; Filename: "{app}\bin\vdswd.EXE"; WorkingDir: "{app}"
+;Name: "{group}\Watchdog"; Filename: "{app}\bin\quasar.EXE"; WorkingDir: "{app}"
 Name: {group}\Ref. Manual C API; Filename: {app}\refman_c.pdf
 Name: {group}\Ref. Manual C++ API; Filename: {app}\refman_c++.pdf
 Name: {group}\Uninstall My Program; Filename: {uninstallexe}
 
 [Registry]
-Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdswd.exe; ValueType: string; ValueData: {app}\bin\vdswd.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
-Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdswd.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\quasar.exe; ValueType: string; ValueData: {app}\bin\quasar.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\quasar.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
 
-Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdswd.exe; ValueType: string; ValueData: {app}\bin\vdswd.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
-Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdswd.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\quasar.exe; ValueType: string; ValueData: {app}\bin\quasar.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\quasar.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
 
 Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdssh.exe; ValueType: string; ValueData: {app}\bin\vdssh.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
 Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdssh.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue

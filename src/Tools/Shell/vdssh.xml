@@ -59,7 +59,7 @@
     <term><option>-a</option>, <option>--address</option> <replaceable>watchdog_address</replaceable></term>
     <listitem>
       <para>
-        The TCP port for the VDSF watchdog (the program vdswd).
+        The TCP port for the VDSF watchdog (the program quasar).
       </para>
     </listitem>
   </varlistentry>

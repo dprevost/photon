@@ -26,7 +26,7 @@
        element. But if you do, the "GUARD" will use that directory name.
   <header_name_dir>  </header_name_dir> -->
   <!-- The file name for the .h file which will hold the errors. -->
-  <header_name> wdErrors.h </header_name>
+  <header_name> quasarErrors.h </header_name>
   <!-- Name of the output dir for the code to retrieve the error messages. 
        If absent, the current directory will be used.
 
@@ -37,15 +37,15 @@
    <errmsg_dir> ../Engine </errmsg_dir> -->
   <!-- The file name for the .h file for the code to retrieve the error 
        messages. -->
-  <errmsg_header_name> wdErrorHandler.h </errmsg_header_name>
+  <errmsg_header_name> quasarErrorHandler.h </errmsg_header_name>
   <!-- The file name for the .c file for the code to retrieve the error 
        messages. -->
-  <errmsg_c_name> wdErrorHandler.c </errmsg_c_name>
+  <errmsg_c_name> quasarErrorHandler.c </errmsg_c_name>
   <!-- Prefix to be used for the error codes (enum or #define). -->
-  <prefix_error> VDSW </prefix_error>
+  <prefix_error> PSOQ </prefix_error>
   <!-- Prefix to be used for all variables in the code to retrieve the 
        error messages -->
-  <prefix_variable> vdsw </prefix_variable>
+  <prefix_variable> psoq </prefix_variable>
   <!-- How to handle the error message. The problem: the generated C strings
        will be use, eventually, by standard C/C++ libraries and some 
        sequence of characters could have some bad side effects, possibly

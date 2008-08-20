@@ -16,7 +16,7 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Common/Common.h"
-#include <photon/vds>
+#include <photon/photon>
 #include <iostream>
 #include <vector>
 

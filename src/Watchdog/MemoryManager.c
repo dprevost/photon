@@ -22,7 +22,7 @@
 #include "Nucleus/Folder.h"
 #include "Nucleus/ProcessManager.h"
 #include "Nucleus/InitEngine.h"
-#include "Watchdog/wdErrors.h"
+#include "Watchdog/quasarErrors.h"
 
 extern pscErrMsgHandle g_wdErrorHandle;
 
@@ -93,7 +93,7 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    if ( ! ok ) {
       pscChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
-                      VDSW_CREATE_BACKSTORE_FAILURE );
+                      PSOQ_CREATE_BACKSTORE_FAILURE );
       return false;
    }
 
@@ -102,7 +102,7 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    if ( ! ok ) {
       pscChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
-                      VDSW_OPEN_BACKSTORE_FAILURE );
+                      PSOQ_OPEN_BACKSTORE_FAILURE );
       return false;
    }
       
@@ -285,7 +285,7 @@ bool vdswOpenVDS( vdswMemoryManager  * pManager,
    if ( ! fileStatus.fileExist ) {
       pscSetError( &pContext->errorHandler,
                     g_wdErrorHandle,
-                    VDSW_BACKSTORE_FILE_MISSING );
+                    PSOQ_BACKSTORE_FILE_MISSING );
       return false;
    }
    
@@ -296,7 +296,7 @@ bool vdswOpenVDS( vdswMemoryManager  * pManager,
    if ( ! ok ) {
       pscChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
-                      VDSW_ERROR_OPENING_VDS );
+                      PSOQ_ERROR_OPENING_VDS );
       return false;
    }
    
@@ -306,7 +306,7 @@ bool vdswOpenVDS( vdswMemoryManager  * pManager,
       (*ppHeader) = NULL;
       pscSetError( &pContext->errorHandler,
                     g_wdErrorHandle,
-                    VDSW_INCOMPATIBLE_VERSIONS );
+                    PSOQ_INCOMPATIBLE_VERSIONS );
       return false;
    }
 

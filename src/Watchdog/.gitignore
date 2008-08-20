@@ -1,6 +1,6 @@
 /Makefile
 /Makefile.in
-/vdswd
+/quasar
 /*.a
 /Debug
 /Release

@@ -123,9 +123,9 @@ cmdFile.WriteLine("  <file_access access=""group"" />")
 cmdFile.WriteLine("</vdsf_config>")
 cmdFile.Close
 
-exeName = wd_path + "\vdswd.exe -c " + tmpDir + "\cfg.xml"
+exeName = wd_path + "\quasar.exe -c " + tmpDir + "\cfg.xml"
 
-objShellwd.Run "%comspec% /c title vdswd | " & exeName, 2, false
+objShellwd.Run "%comspec% /c title quasar | " & exeName, 2, false
 
 'Turn on error handling
 On Error Resume Next
@@ -187,7 +187,7 @@ Next
 dim z
 z = false
 while z <> true 
-   z = objShellwd.AppActivate( "vdswd" )
+   z = objShellwd.AppActivate( "quasar" )
    Wscript.Sleep 100
 wend
 objShellwd.SendKeys "^C"

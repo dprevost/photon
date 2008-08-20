@@ -75,8 +75,8 @@ fi
 echo " "
 echo "Launching the watchdog..."
 
-$wddir/vdswd --config $BASE_DIR/cfg.xml
-# gdb $wddir/vdswd  
+$wddir/quasar --config $BASE_DIR/cfg.xml
+# gdb $wddir/quasar  
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

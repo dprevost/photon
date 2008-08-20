@@ -50,7 +50,7 @@ for a list of supported commands (and syntax).
 @table @asis
 
 @item @code{-a}, @code{--address} @var{watchdog_address}
-The TCP port for the VDSF watchdog (the program vdswd).
+The TCP port for the VDSF watchdog (the program quasar).
 
 @item @code{-h}, @code{-?}, @code{--help}
 Minimal help including a list of supported commands.

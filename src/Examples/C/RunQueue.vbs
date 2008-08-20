@@ -88,9 +88,9 @@ cmdFile.WriteLine("DirectoryPermissions  0770     ")
 
 ' Run the Programs
 
-exeName = "vdswd.exe -c " + tmpDir + "\cfg.txt"
+exeName = "quasar.exe -c " + tmpDir + "\cfg.txt"
 
-rc = objShell.Run("%comspec% /c title vdswd | " & exeName, 1, false)
+rc = objShell.Run("%comspec% /c title quasar | " & exeName, 1, false)
 Wscript.Sleep 1000
 
 exeName = "QueueIn.exe " + isoFile + " " + wdAddr + " " + numIterations + _
@@ -104,7 +104,7 @@ objShell.Run "%comspec% /k title QueueWork | " & exeName, 1, false
 exeName = "QueueOut.exe " + wdAddr
 objShell.Run "%comspec% /k title QueueOut | " & exeName, 1, false
 
-wscript.echo "You MUST kill the vdswd terminal when the test is over to repeat it"
+wscript.echo "You MUST kill the quasar terminal when the test is over to repeat it"
 
 wscript.quit(0)
 

@@ -28,12 +28,12 @@ INTDIR_DEBUG   = .\Debug
 LIBXML2_INCLUDE = "C:\Program Files\libxml2\include"
 LIBXML2_LIB     = "C:\Program Files\libxml2\lib\libxml2.lib"
 
-CLEANFILES = *~ vdswd.plg vdswd.dep vc60.idb vc60.pdb vdswd.mak BuildTools.ncb
+CLEANFILES = *~ quasar.plg quasar.dep vc60.idb vc60.pdb quasar.mak BuildTools.ncb
 
 W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfNucleus.lib vdsfCommon.lib $(LIBXML2_LIB) /nologo /version:0.1 /subsystem:console /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\vdswd.exe" /libpath:"..\Release" 
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfNucleus.lib vdsfCommon.lib $(LIBXML2_LIB) /nologo /version:0.1 /subsystem:console /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\vdswd.exe"   /libpath:"..\Debug" 
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) vdsfNucleus.lib vdsfCommon.lib $(LIBXML2_LIB) /nologo /version:0.1 /subsystem:console /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\quasar.exe" /libpath:"..\Release" 
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) vdsfNucleus.lib vdsfCommon.lib $(LIBXML2_LIB) /nologo /version:0.1 /subsystem:console /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\quasar.exe"   /libpath:"..\Debug" 
 
 CFLAGS_RELEASE = /nologo /MD  /W3 /GX     /O2 /I ".." /I "../include" /I $(LIBXML2_INCLUDE) /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_RELEASE)\\"     /c 
 CFLAGS_DEBUG   = /nologo /MDd /W3 /GX /ZI /Od /I ".." /I "../include" /I $(LIBXML2_INCLUDE) /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" /GZ /c 
@@ -74,17 +74,17 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 .c{$(INTDIR_DEBUG)}.obj::
 	$(CPP) $(CFLAGS_DEBUG) $< 
 
-all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdswd.exe $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdswd.exe
+all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\quasar.exe $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\quasar.exe
 
-"$(OUTDIR_RELEASE)\vdswd.exe" : "$(OUTDIR_RELEASE)" $(OBJS_RELEASE)
-   -del ..\Release\vdswd.exe
+"$(OUTDIR_RELEASE)\quasar.exe" : "$(OUTDIR_RELEASE)" $(OBJS_RELEASE)
+   -del ..\Release\quasar.exe
 	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
-   copy Release\vdswd.exe ..\Release
+   copy Release\quasar.exe ..\Release
 
-"$(OUTDIR_DEBUG)\vdswd.exe" : "$(OUTDIR_DEBUG)" $(OBJS_DEBUG)
-   -del ..\Debug\vdswd.exe
+"$(OUTDIR_DEBUG)\quasar.exe" : "$(OUTDIR_DEBUG)" $(OBJS_DEBUG)
+   -del ..\Debug\quasar.exe
 	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
-   copy debug\vdswd.exe ..\Debug
+   copy debug\quasar.exe ..\Debug
 
 ###########################################################################
 #

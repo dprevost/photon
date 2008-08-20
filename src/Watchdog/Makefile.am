@@ -15,63 +15,63 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES        = *~
 
 AM_CPPFLAGS += @LIBXML2_CFLAGS@
-vdswd_LDFLAGS = @LIBXML2_LIBS@
+quasar_LDFLAGS = @LIBXML2_LIBS@
 
 SUBDIRS = . Tests
  
-bin_PROGRAMS = vdswd
+bin_PROGRAMS = quasar
 
 noinst_LIBRARIES = libVerifyVDS.a
 
-man_MANS = vdswd.1
-info_TEXINFOS = vdswd.texi
+man_MANS = quasar.1
+info_TEXINFOS = quasar.texi
 
-OUTPUT_FILES =           \
-        wdErrors.h       \
-        wdErrorHandler.c \
-        wdErrorHandler.h 
+OUTPUT_FILES =               \
+        quasarErrors.h       \
+        quasarErrorHandler.c \
+        quasarErrorHandler.h 
 
 if COND_USE_DOCBOOK2TEXI
-vdswd.texi: vdswd.xml
-	docbook2x-texi --encoding=iso-8859-1 vdswd.xml
+quasar.texi: quasar.xml
+	docbook2x-texi --encoding=iso-8859-1 quasar.xml
 endif
 if COND_USE_DOCBOOK2MAN
-vdswd.1: vdswd.xml
-	docbook2x-man --encoding=iso-8859-1 vdswd.xml
+quasar.1: quasar.xml
+	docbook2x-man --encoding=iso-8859-1 quasar.xml
 endif
 
 if COND_USE_ERRORPARSER
 ##all-local: $(OUTPUT_FILES)
 
-$(OUTPUT_FILES): wdOptions.xml wdErrors.xml
-	errorParser --options wdOptions.xml wdErrors.xml
+$(OUTPUT_FILES): quasarOptions.xml quasarErrors.xml
+	errorParser --options quasarOptions.xml quasarErrors.xml
 endif
 
-EXTRA_DIST =           \
-        $(man_MANS)    \
-        Makefile.win32 \
-        vdswd.xml      \
-        Watchdog.dsp   \
-        wdErrors.xml   \
-        wdOptions.xml  
+EXTRA_DIST =              \
+        $(man_MANS)       \
+        Makefile.win32    \
+        quasar.xml        \
+        Watchdog.dsp      \
+        quasarErrors.xml  \
+        quasarOptions.xml 
 
-vdswd_SOURCES =          \
-        wdErrorHandler.c \
-        wdErrorHandler.h \
-        wdErrors.h       \
-        Acceptor.c       \
-        Acceptor.h       \
-        Config.h         \
-        Config.c         \
-        LogMsg.c         \
-        LogMsg.h         \
-        MemoryManager.c  \
-        MemoryManager.h  \
-        VDSHandler.c     \
-        VDSHandler.h     \
-        Watchdog.c       \
-        Watchdog.h       \
-        wd.c             
+quasar_SOURCES =             \
+        quasarErrorHandler.c \
+        quasarErrorHandler.h \
+        quasarErrors.h       \
+        Acceptor.c           \
+        Acceptor.h           \
+        Config.h             \
+        Config.c             \
+        LogMsg.c             \
+        LogMsg.h             \
+        MemoryManager.c      \
+        MemoryManager.h      \
+        VDSHandler.c         \
+        VDSHandler.h         \
+        Watchdog.c           \
+        Watchdog.h           \
+        wd.c                 
 
 libVerifyVDS_a_SOURCES = \
         VerifyCommon.h   \
@@ -85,7 +85,7 @@ libVerifyVDS_a_SOURCES = \
         VerifyVDS.c      \
         VerifyVDS.h      
 
-vdswd_LDADD = $(top_builddir)/src/Nucleus/libNucleus.la    \
-              $(top_builddir)/src/Common/libCommon.la    \
+quasar_LDADD = $(top_builddir)/src/Nucleus/libNucleus.la  \
+              $(top_builddir)/src/Common/libCommon.la     \
               $(top_builddir)/src/Watchdog/libVerifyVDS.a 
 

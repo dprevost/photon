@@ -32,7 +32,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define PROG_NAME "vdswd"
+#define PROG_NAME "quasar"
 
 #define WD_SHUTDOWN_REQUEST 0X001
 

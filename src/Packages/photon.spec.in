@@ -45,7 +45,7 @@ rm -rf $RPM_BUILD_ROOT
 
 /usr/local/bin/vdsinfo
 /usr/local/bin/vdssh
-/usr/local/bin/vdswd
+/usr/local/bin/quasar
 /usr/local/include/photon/vds.h
 /usr/local/include/photon/psoCommon.h
 /usr/local/include/photon/psoErrors.h
@@ -77,7 +77,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/lib/libvdsfcpp.so.0
 /usr/local/lib/libvdsfcpp.so.0.0.0
 /usr/local/share/man/man1/vdssh.1
-/usr/local/share/man/man1/vdswd.1
+/usr/local/share/man/man1/quasar.1
 /usr/local/share/man/man3/vds.h.3
 /usr/local/share/man/man3/vdsCommit.3
 /usr/local/share/man/man3/psoCommon.h.3
@@ -138,7 +138,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man3/psoSession.3
 /usr/local/info/dir
 /usr/local/info/vdssh.info
-/usr/local/info/vdswd.info
+/usr/local/info/quasar.info
 /usr/local/share/man/man3/psoFastMap.h.3
 /usr/local/share/man/man3/psoFastMapClose.3
 /usr/local/share/man/man3/psoFastMapDefinition.3
