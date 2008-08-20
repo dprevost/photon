@@ -163,7 +163,7 @@ int main( int argc, char *argv[] )
    rc = openData( argv[1] );
    if ( rc != 0 ) return 1;
    
-   // Initialize vds and create our session
+   // Initialize the shared memory and create our session
    try {
       process.Init( argv[2] );
       session.Init();
@@ -212,7 +212,7 @@ int main( int argc, char *argv[] )
             /* 
              * Why 10? It could be 100. Or 1. Not sure if it makes a big 
              * difference performance wise. If this code was reading from
-             * non-blocking sockets in a "select loop", calling vdsCommit for
+             * non-blocking sockets in a "select loop", calling Commit for
              * each iteration of the loop would make sense. YMMV.
              */
             if ( (loop %10) == 0 )

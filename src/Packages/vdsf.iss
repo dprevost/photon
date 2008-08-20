@@ -21,7 +21,7 @@ Source: src\Release\psoInfo.exe; DestDir: {app}\bin
 Source: src\Release\vdssh.exe; DestDir: {app}\bin
 Source: src\Release\vdswd.exe; DestDir: {app}\bin
 Source: src\include\vdsf\vds.h; DestDir: {app}\include
-Source: src\include\vdsf\vdsCommon.h; DestDir: {app}\include
+Source: src\include\vdsf\psoCommon.h; DestDir: {app}\include
 Source: src\include\vdsf\psoErrors.h; DestDir: {app}\include
 Source: src\include\vdsf\psoFolder.h; DestDir: {app}\include
 Source: src\include\vdsf\psoHashMap.h; DestDir: {app}\include

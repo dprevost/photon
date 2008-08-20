@@ -28,9 +28,9 @@ void cleanup()
    if ( inQueue != NULL )  psoQueueClose( inQueue );
    if ( outQueue != NULL ) psoQueueClose( outQueue );
    
-   if ( session != NULL ) vdsExitSession( session );
+   if ( session != NULL ) psoExitSession( session );
 
-   vdsExit();
+   psoExit();
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -58,10 +58,10 @@ int initObjects()
       return -1;
    }
 
-   rc = vdsCommit( session );
+   rc = psoCommit( session );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
+      fprintf( stderr, "At line %d, psoCommit error: %s\n", __LINE__, msg );
       return -1;
    }
    
@@ -105,16 +105,16 @@ int main( int argc, char *argv[] )
       return 1;
    }
 
-   /* Initialize vds and create our session */
-   rc = vdsInit( argv[1], 0 );
+   /* Initialize shared memory and create our session */
+   rc = psoInit( argv[1], 0 );
    if ( rc != 0 ) {
-      fprintf( stderr, "At line %d, vdsInit error: %d\n", __LINE__, rc );
+      fprintf( stderr, "At line %d, psoInit error: %d\n", __LINE__, rc );
       return 1;
    }
 
-   rc = vdsInitSession( &session );
+   rc = psoInitSession( &session );
    if ( rc != 0 ) {
-      fprintf( stderr, "At line %d, vdsInitSession error: %d\n", __LINE__, rc );
+      fprintf( stderr, "At line %d, psoInitSession error: %d\n", __LINE__, rc );
       return 1;
    }
 
@@ -134,7 +134,7 @@ int main( int argc, char *argv[] )
       rc = psoQueuePop( outQueue, &outStruct, sizeof(outStruct), &length );
       if ( rc == PSO_IS_EMPTY || rc == PSO_ITEM_IS_IN_USE ) {
          /* Nothing to do - might as well commit */
-         vdsCommit( session );
+         psoCommit( session );
          if ( boolShutdown ) break;
 #if defined(WIN32)
          Sleep(1);
@@ -160,7 +160,7 @@ int main( int argc, char *argv[] )
        * Why 10? It could be 100. Or 1. Not sure if it makes a big 
        * difference performance wise. 
        */
-      if ( (loop %10) == 0 ) vdsCommit( session );
+      if ( (loop %10) == 0 ) psoCommit( session );
       loop++;
    }
 

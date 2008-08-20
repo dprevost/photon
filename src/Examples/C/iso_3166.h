@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include <photon/vds.h>
+#include <photon/photon.h>
 
 FILE * fp = NULL;
 

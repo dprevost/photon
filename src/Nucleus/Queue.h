@@ -68,7 +68,7 @@ struct psnQueue
    /** Basic info for all leaves and branches of our tree. */
    struct psnTreeNode  nodeObject;
 
-   /** The type of queue (as decided when vdsCreateObject() was called). */
+   /** The type of queue (as decided when psoCreateObject() was called). */
    enum psoObjectType queueType;
 
    /** Our own doubly-linked list, to hold the data. */

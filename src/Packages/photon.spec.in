@@ -47,7 +47,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/bin/vdssh
 /usr/local/bin/vdswd
 /usr/local/include/photon/vds.h
-/usr/local/include/photon/vdsCommon.h
+/usr/local/include/photon/psoCommon.h
 /usr/local/include/photon/psoErrors.h
 /usr/local/include/photon/psoFastMap.h
 /usr/local/include/photon/psoFolder.h
@@ -80,7 +80,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man1/vdswd.1
 /usr/local/share/man/man3/vds.h.3
 /usr/local/share/man/man3/vdsCommit.3
-/usr/local/share/man/man3/vdsCommon.h.3
+/usr/local/share/man/man3/psoCommon.h.3
 /usr/local/share/man/man3/vdsCreateObject.3
 /usr/local/share/man/man3/vdsDestroyObject.3
 /usr/local/share/man/man3/psoErrorMsg.3

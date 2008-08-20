@@ -87,7 +87,7 @@ int main( int argc, char *argv[] )
    rc = openData( argv[1] );
    if ( rc != 0 ) return 1;
    
-   // Initialize vds and create our session
+   // Initialize the shared memory and create our session
    try {
       process.Init( argv[2] );
       session1.Init();

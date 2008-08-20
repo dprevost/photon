@@ -467,7 +467,7 @@ void psnTxRollback( psnTx             * pTx,
              * be able to open the object until CREATE is committed but
              * the current session might have open it to insert data and... 
              * (the rollback might be the result of an abnormal error, for
-             * example or a call to vdsExit() or...).
+             * example or a call to psoExit() or...).
              */
             /** \todo Revisit this. Maybe rolling back a create object should
              * also automatically close the object if open. */

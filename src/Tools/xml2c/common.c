@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/vdsCommon.h>
+#include <photon/psoCommon.h>
 
 #include <libxml/xmlschemas.h>
 #include <libxml/xmlschemastypes.h>

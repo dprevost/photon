@@ -17,7 +17,7 @@
 
 #include "Common/Common.h"
 
-#include <photon/vds.h>
+#include <photon/photon.h>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -104,7 +104,7 @@ int Test1()
    int errcode = 0;
    PSO_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -118,9 +118,9 @@ int Test1()
 end:
 
    if ( h1 != NULL ) psoHashMapClose( h1 );
-   vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -1;
    return 0;
@@ -133,7 +133,7 @@ int Test2()
    int errcode = 0;
    PSO_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               PSO_OK,
@@ -155,9 +155,9 @@ int Test2()
 end:
 
    if ( h1 != NULL ) psoHashMapClose( h1 );
-   vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -2;
    return 0;
@@ -170,10 +170,10 @@ int Test3()
    int errcode = 0;
    PSO_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h1 );
@@ -187,9 +187,9 @@ int Test3()
 end:
 
    if ( h1 != NULL ) psoHashMapClose( h1 );
-   vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -3;
    return 0;
@@ -202,10 +202,10 @@ int Test4()
    int errcode = 0;
    PSO_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsRollback( g_session1 );
+   errcode = psoRollback( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -221,9 +221,9 @@ int Test4()
 end:
 
    if ( h1 != NULL ) psoHashMapClose( h1 );
-   vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -4;
    return 0;
@@ -236,16 +236,16 @@ int Test5()
    int errcode = 0;
    PSO_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h1 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   errcode = psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
    if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               PSO_OK,
@@ -256,9 +256,9 @@ int Test5()
 end:
 
    if ( h1 != NULL ) psoHashMapClose( h1 );
-   vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -5;
    return 0;
@@ -271,13 +271,13 @@ int Test6()
    int errcode = 0;
    PSO_HANDLE h1 = NULL; 
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") );
+   errcode = psoDestroyObject( g_session1, "A_Map", strlen("A_Map") );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -293,9 +293,9 @@ int Test6()
 end:
 
    if ( h1 != NULL ) psoHashMapClose( h1 );
-   vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -6;
    return 0;
@@ -308,13 +308,13 @@ int Test7()
    int errcode = 0;
    PSO_HANDLE h1 = NULL; 
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") );
+   errcode = psoDestroyObject( g_session1, "A_Map", strlen("A_Map") );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h1 );
@@ -328,9 +328,9 @@ int Test7()
 end:
 
    if ( h1 != NULL ) psoHashMapClose( h1 );
-   vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -7;
    return 0;
@@ -343,16 +343,16 @@ int Test8()
    int errcode = 0;
    PSO_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") );
+   errcode = psoDestroyObject( g_session1, "A_Map", strlen("A_Map") );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h1 );
@@ -368,9 +368,9 @@ int Test8()
 end:
 
    if ( h1 != NULL ) psoHashMapClose( h1 );
-   vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -8;
    return 0;
@@ -383,16 +383,16 @@ int Test9()
    int errcode = 0;
    PSO_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") );
+   errcode = psoDestroyObject( g_session1, "A_Map", strlen("A_Map") );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsRollback( g_session1 );
+   errcode = psoRollback( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -406,9 +406,9 @@ int Test9()
 end:
 
    if ( h1 != NULL ) psoHashMapClose( h1 );
-   vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -9;
    return 0;
@@ -421,16 +421,16 @@ int Test10()
    int errcode = 0;
    PSO_HANDLE h1 = NULL;
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") );
+   errcode = psoDestroyObject( g_session1, "A_Map", strlen("A_Map") );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsRollback( g_session1 );
+   errcode = psoRollback( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h1 );
@@ -444,9 +444,9 @@ int Test10()
 end:
 
    if ( h1 != NULL ) psoHashMapClose( h1 );
-   vdsCommit( g_session1 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -10;
    return 0;
@@ -458,10 +458,10 @@ int Test11()
 {
    int errcode = 0;
 
-   errcode = vdsCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef );
+   errcode = psoCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_mapDef );
+   errcode = psoCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_mapDef );
    if ( errcode != PSO_NO_SUCH_FOLDER ) {
       printf( " Expected error = %d, returned error = %d\n", 
               PSO_NO_SUCH_FOLDER,
@@ -473,12 +473,12 @@ int Test11()
 
 end:
 
-   vdsCommit( g_session1 );
-   vdsCommit( g_session2 );
-   vdsDestroyObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue") ); 
-   vdsCommit( g_session2 );
-   vdsDestroyObject( g_session1, "A_Folder", strlen("A_Folder") ); 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
+   psoCommit( g_session2 );
+   psoDestroyObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue") ); 
+   psoCommit( g_session2 );
+   psoDestroyObject( g_session1, "A_Folder", strlen("A_Folder") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -11;
    return 0;
@@ -490,13 +490,13 @@ int Test12()
 {
    int errcode = 0;
 
-   errcode = vdsCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef );
+   errcode = psoCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_mapDef );
+   errcode = psoCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_mapDef );
    if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               PSO_OK,
@@ -506,12 +506,12 @@ int Test12()
 
 end:
 
-   vdsCommit( g_session1 );
-   vdsCommit( g_session2 );
-   vdsDestroyObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue") ); 
-   vdsCommit( g_session2 );
-   vdsDestroyObject( g_session1, "A_Folder", strlen("A_Folder") ); 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
+   psoCommit( g_session2 );
+   psoDestroyObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue") ); 
+   psoCommit( g_session2 );
+   psoDestroyObject( g_session1, "A_Folder", strlen("A_Folder") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -12;
    return 0;
@@ -523,13 +523,13 @@ int Test13()
 {
    int errcode = 0;
 
-   errcode = vdsCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef );
+   errcode = psoCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsRollback( g_session1 );
+   errcode = psoRollback( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_mapDef );
+   errcode = psoCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_mapDef );
    if ( errcode != PSO_NO_SUCH_FOLDER ) {
       printf( " Expected error = %d, returned error = %d\n", 
               PSO_NO_SUCH_FOLDER,
@@ -541,12 +541,12 @@ int Test13()
 
 end:
 
-   vdsCommit( g_session1 );
-   vdsCommit( g_session2 );
-   vdsDestroyObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue") ); 
-   vdsCommit( g_session2 );
-   vdsDestroyObject( g_session1, "A_Folder", strlen("A_Folder") ); 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
+   psoCommit( g_session2 );
+   psoDestroyObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue") ); 
+   psoCommit( g_session2 );
+   psoDestroyObject( g_session1, "A_Folder", strlen("A_Folder") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -13;
    return 0;
@@ -562,7 +562,7 @@ int Test21()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -581,10 +581,10 @@ int Test21()
 
 end:
 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
    psoHashMapClose( h1 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -21;
    return 0;
@@ -600,7 +600,7 @@ int Test22()
    size_t returnLength;
    char * key1 = "Key 1";
 
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -622,11 +622,11 @@ int Test22()
 
 end:
 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
    psoHashMapClose( h1 );
    psoHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -22;
    return 0;
@@ -642,11 +642,11 @@ int Test23()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
 
    // So that the object can be open by session 2
-   errcode = vdsCommit( g_session1 ); 
+   errcode = psoCommit( g_session1 ); 
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -670,11 +670,11 @@ int Test23()
    
 end:
 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
    psoHashMapClose( h1 );
    psoHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -23;
    return 0;
@@ -690,11 +690,11 @@ int Test24()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
 
    // So that the object can be open by session 2
-   errcode = vdsCommit( g_session1 ); 
+   errcode = psoCommit( g_session1 ); 
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -706,7 +706,7 @@ int Test24()
    errcode = psoHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 ); 
+   errcode = psoCommit( g_session1 ); 
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapGet( h2, key1, strlen(key1), str, 25, &returnLength );
@@ -719,13 +719,13 @@ int Test24()
 
 end:
 
-   vdsCommit( g_session1 );
-   vdsCommit( g_session2 );
+   psoCommit( g_session1 );
+   psoCommit( g_session2 );
    psoHashMapClose( h1 );
    psoHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session2 );
-   vdsCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session2 );
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -24;
    return 0;
@@ -741,11 +741,11 @@ int Test25()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );   
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );   
    if ( errcode != PSO_OK ) goto end;
 
    // So that the object can be open by session 2
-   errcode = vdsCommit( g_session1 ); 
+   errcode = psoCommit( g_session1 ); 
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -754,7 +754,7 @@ int Test25()
    errcode = psoHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsRollback( g_session1 ); 
+   errcode = psoRollback( g_session1 ); 
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapGet( h1,  key1, strlen(key1), str, 25, &returnLength );
@@ -769,10 +769,10 @@ int Test25()
    
 end:
 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
    psoHashMapClose( h1 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -25;
    return 0;
@@ -788,7 +788,7 @@ int Test26()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -797,7 +797,7 @@ int Test26()
    errcode = psoHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapDelete( h1, key1, strlen(key1) );
@@ -816,10 +816,10 @@ int Test26()
    
 end:
 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
    psoHashMapClose( h1 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -26;
    return 0;
@@ -835,7 +835,7 @@ int Test27()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -847,7 +847,7 @@ int Test27()
    errcode = psoHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapDelete( h1, key1, strlen(key1) );
@@ -865,11 +865,11 @@ int Test27()
 
 end:
 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
    psoHashMapClose( h1 );
    psoHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -27;
    return 0;
@@ -885,7 +885,7 @@ int Test28()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -894,7 +894,7 @@ int Test28()
    errcode = psoHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h2 );
@@ -915,11 +915,11 @@ int Test28()
 
 end:
 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
    psoHashMapClose( h1 );
    psoHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -28;
    return 0;
@@ -935,7 +935,7 @@ int Test29()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -944,7 +944,7 @@ int Test29()
    errcode = psoHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h2 );
@@ -953,7 +953,7 @@ int Test29()
    errcode = psoHashMapDelete( h1, key1, strlen(key1) );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapGet( h2, key1, strlen(key1), str, 25, &returnLength );
@@ -968,11 +968,11 @@ int Test29()
 
 end:
 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
    psoHashMapClose( h1 );
    psoHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -29;
    return 0;
@@ -988,7 +988,7 @@ int Test30()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -997,13 +997,13 @@ int Test30()
    errcode = psoHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapDelete( h1, key1, strlen(key1) );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsRollback( g_session1 ); 
+   errcode = psoRollback( g_session1 ); 
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapGet( h1, key1, strlen(key1), str, 25, &returnLength );
@@ -1016,10 +1016,10 @@ int Test30()
 
 end:
 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
    psoHashMapClose( h1 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -30;
    return 0;
@@ -1035,7 +1035,7 @@ int Test31()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -1044,7 +1044,7 @@ int Test31()
    errcode = psoHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h2 );
@@ -1053,7 +1053,7 @@ int Test31()
    errcode = psoHashMapDelete( h1, key1, strlen(key1) );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsRollback( g_session1 ); 
+   errcode = psoRollback( g_session1 ); 
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapGet( h2, key1, strlen(key1), str, 25, &returnLength );
@@ -1066,11 +1066,11 @@ int Test31()
 
 end:
 
-   vdsCommit( g_session1 );
+   psoCommit( g_session1 );
    psoHashMapClose( h1 );
    psoHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
 
    if ( errcode != 0 ) return -31;
    return 0;
@@ -1086,7 +1086,7 @@ int Test32()
    size_t returnLength;
    char * key1 = "Key 1";
    
-   errcode = vdsCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
+   errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -1095,7 +1095,7 @@ int Test32()
    errcode = psoHashMapInsert( h1, key1, strlen(key1), "1234567890123", 14 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsCommit( g_session1 );
+   errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session2, "A_Map", strlen("A_Map"), &h2 );
@@ -1104,7 +1104,7 @@ int Test32()
    errcode = psoHashMapDelete( h1, key1, strlen(key1) );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = vdsRollback( g_session1 ); 
+   errcode = psoRollback( g_session1 ); 
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapGet( h2, key1, strlen(key1), str, 25, &returnLength );
@@ -1117,13 +1117,13 @@ int Test32()
 
 end:
 
-   vdsCommit( g_session1 );
-   vdsCommit( g_session2 );
+   psoCommit( g_session1 );
+   psoCommit( g_session2 );
    psoHashMapClose( h1 );
    psoHashMapClose( h2 );
-   vdsDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
-   vdsCommit( g_session1 );
-   vdsCommit( g_session2 );
+   psoDestroyObject( g_session1, "A_Map", strlen("A_Map") ); 
+   psoCommit( g_session1 );
+   psoCommit( g_session2 );
 
    if ( errcode != 0 ) return -32;
    return 0;
@@ -1198,22 +1198,22 @@ int main(int argc, char *argv[])
    int errcode = 0;
 
    if ( argc > 1 ) {
-      errcode = vdsInit( argv[1], 0 );
+      errcode = psoInit( argv[1], 0 );
    }
    else {
-      errcode = vdsInit( "10701", 0 );
+      errcode = psoInit( "10701", 0 );
    }
    if ( errcode != PSO_OK ) {
       printf( " Error opening VDS = %d\n", errcode );
       return -1;
    }
    
-   errcode = vdsInitSession( &g_session1 );
+   errcode = psoInitSession( &g_session1 );
    if ( errcode != PSO_OK ) {
       printf( " Error opening session 1 = %d\n", errcode );
       return -1;
    }
-   errcode = vdsInitSession( &g_session2 );
+   errcode = psoInitSession( &g_session2 );
    if ( errcode != PSO_OK ) {
       printf( " Error opening session 2 = %d\n", errcode );
       return -1;
@@ -1222,15 +1222,15 @@ int main(int argc, char *argv[])
    if ( (errcode = Run()) != 0 ) goto error;
    
    printf( "Terminating normally\n" );
-   vdsExitSession( &g_session1 );
-   vdsExitSession( &g_session2 );
-   vdsExit();
+   psoExitSession( &g_session1 );
+   psoExitSession( &g_session2 );
+   psoExit();
    
    return 0;
 
 error:
    fprintf( stderr, " Error in test %d, Aborting anormally\n", errcode ); 
-   vdsExit();
+   psoExit();
    
    return -1;
 }

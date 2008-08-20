@@ -39,7 +39,7 @@ void cleanup()
     */
    if ( control != NULL ) {
       /* We flush it all before warning QueueWork to exit. */
-      vdsCommit( session );
+      psoCommit( session );
       rc = psoHashMapReplace( control, shutdownKey, strlen(shutdownKey), 
          &controlData, sizeof(int) );
       if ( rc != 0 ) {
@@ -47,15 +47,15 @@ void cleanup()
          fprintf( stderr, "At line %d, psoHashMapReplace error: %s\n", __LINE__, msg );
       }
       else {
-         vdsCommit( session );
+         psoCommit( session );
       }
       psoHashMapClose( control );
    }
    if ( inQueue != NULL )  psoQueueClose( inQueue );
    if ( outQueue != NULL ) psoQueueClose( outQueue );
-   if ( session != NULL )  vdsExitSession( session );
+   if ( session != NULL )  psoExitSession( session );
 
-   vdsExit();
+   psoExit();
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -67,43 +67,43 @@ int initObjects()
    int controlData;
 
    /* If the objects already exist, we remove them. */
-   vdsDestroyObject( session, inQueueName,  strlen(inQueueName)  );
-   vdsDestroyObject( session, outQueueName, strlen(outQueueName) );
-   vdsDestroyObject( session, controlName,  strlen(controlName)  );
+   psoDestroyObject( session, inQueueName,  strlen(inQueueName)  );
+   psoDestroyObject( session, outQueueName, strlen(outQueueName) );
+   psoDestroyObject( session, controlName,  strlen(controlName)  );
    /* Remove th folder last (to delete a folder it must be empty) */
-   vdsDestroyObject( session, folderName,   strlen(folderName)   );
+   psoDestroyObject( session, folderName,   strlen(folderName)   );
    /* Commit the destruction of these objects */
-   rc = vdsCommit( session );
+   rc = psoCommit( session );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
+      fprintf( stderr, "At line %d, psoCommit error: %s\n", __LINE__, msg );
       return -1;
    }
 
    /* Create the folder first, evidently */
-   rc = vdsCreateObject( session, folderName, strlen(folderName), PSO_FOLDER );
+   rc = psoCreateObject( session, folderName, strlen(folderName), PSO_FOLDER );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
+      fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
 
-   rc = vdsCreateObject( session, controlName, strlen(controlName), PSO_HASH_MAP );
+   rc = psoCreateObject( session, controlName, strlen(controlName), PSO_HASH_MAP );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
+      fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
-   rc = vdsCreateObject( session, inQueueName, strlen(inQueueName), PSO_QUEUE );
+   rc = psoCreateObject( session, inQueueName, strlen(inQueueName), PSO_QUEUE );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
+      fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
-   rc = vdsCreateObject( session, outQueueName, strlen(outQueueName), PSO_QUEUE );
+   rc = psoCreateObject( session, outQueueName, strlen(outQueueName), PSO_QUEUE );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
+      fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
 
@@ -144,10 +144,10 @@ int initObjects()
       return -1;
    }
 
-   rc = vdsCommit( session );
+   rc = psoCommit( session );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
+      fprintf( stderr, "At line %d, psoCommit error: %s\n", __LINE__, msg );
       return -1;
    }
    
@@ -213,16 +213,16 @@ int main( int argc, char *argv[] )
    rc = openData( argv[1] );
    if ( rc != 0 ) return 1;
    
-   /* Initialize vds and create our session */
-   rc = vdsInit( argv[2], 0 );
+   /* Initialize shared memory and create our session */
+   rc = psoInit( argv[2], 0 );
    if ( rc != 0 ) {
-      fprintf( stderr, "At line %d, vdsInit error: %d\n", __LINE__, rc );
+      fprintf( stderr, "At line %d, psoInit error: %d\n", __LINE__, rc );
       return 1;
    }
 
-   rc = vdsInitSession( &session );
+   rc = psoInitSession( &session );
    if ( rc != 0 ) {
-      fprintf( stderr, "At line %d, vdsInitSession error: %d\n", __LINE__, rc );
+      fprintf( stderr, "At line %d, psoInitSession error: %d\n", __LINE__, rc );
       return 1;
    }
 
@@ -270,10 +270,10 @@ int main( int argc, char *argv[] )
          /* 
           * Why 10? It could be 100. Or 1. Not sure if it makes a big 
           * difference performance wise. If this code was reading from
-          * non-blocking sockets in a "select loop", calling vdsCommit for
+          * non-blocking sockets in a "select loop", calling psoCommit for
           * each iteration of the loop would make sense. YMMV.
           */
-         if ( (loop %10) == 0 ) vdsCommit( session );
+         if ( (loop %10) == 0 ) psoCommit( session );
 
          if ( (loop % cycle) == 0 ) {
 #if defined(WIN32)
@@ -293,7 +293,7 @@ int main( int argc, char *argv[] )
          return -1;
       }
    }
-   vdsCommit( session );
+   psoCommit( session );
 
    cleanup();
    fprintf( stderr, "Done: %s\n", argv[0] );

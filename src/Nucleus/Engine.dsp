@@ -54,11 +54,11 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /dll /machine:I386 /out:"Release/vdsfNucleus.dll" /libpath:"..\Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib psoCommon.lib /nologo /dll /machine:I386 /out:"Release/psoNucleus.dll" /libpath:"..\Release"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PreLink_Cmds=if not exist ..\Release\ mkdir ..\Release	if exist ..\Release\vdsfNucleus.lib del ..\Release\vdsfNucleus.lib	if exist ..\Release\vdsfNucleus.dll del ..\Release\vdsfNucleus.dll
-PostBuild_Cmds=copy Release\vdsfNucleus.lib ..\Release	copy Release\vdsfNucleus.dll ..\Release
+PreLink_Cmds=if not exist ..\Release\ mkdir ..\Release	if exist ..\Release\psoNucleus.lib del ..\Release\psoNucleus.lib	if exist ..\Release\psoNucleus.dll del ..\Release\psoNucleus.dll
+PostBuild_Cmds=copy Release\psoNucleus.lib ..\Release	copy Release\psoNucleus.dll ..\Release
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "Nucleus - Win32 Debug"
@@ -86,11 +86,11 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib /nologo /dll /debug /machine:I386 /out:"Debug/vdsfNucleus.dll" /pdbtype:sept /libpath:"..\Debug"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib psoCommon.lib /nologo /dll /debug /machine:I386 /out:"Debug/psoNucleus.dll" /pdbtype:sept /libpath:"..\Debug"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PreLink_Cmds=if not exist ..\Debug\ mkdir ..\Debug	if exist ..\Debug\vdsfNucleus.lib del ..\Debug\vdsfNucleus.lib	if exist ..\Debug\vdsfNucleus.dll del ..\Debug\vdsfNucleus.dll
-PostBuild_Cmds=copy Debug\vdsfNucleus.lib ..\Debug	copy Debug\vdsfNucleus.dll ..\Debug
+PreLink_Cmds=if not exist ..\Debug\ mkdir ..\Debug	if exist ..\Debug\psoNucleus.lib del ..\Debug\psoNucleus.lib	if exist ..\Debug\psoNucleus.dll del ..\Debug\psoNucleus.dll
+PostBuild_Cmds=copy Debug\psoNucleus.lib ..\Debug	copy Debug\psoNucleus.dll ..\Debug
 # End Special Build Tool
 
 !ENDIF 

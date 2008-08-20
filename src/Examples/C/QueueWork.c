@@ -36,7 +36,7 @@ void cleanup()
     */
    if ( control != NULL ) {
       /* We flush it all before warning QueueOut to exit. */
-      vdsCommit( session );
+      psoCommit( session );
       rc = psoHashMapReplace( control, shutdownKey, strlen(shutdownKey), 
          &controlData, sizeof(int) );
       if ( rc != 0 ) {
@@ -45,7 +45,7 @@ void cleanup()
       }
       else {
          /* We commit this update */
-         vdsCommit( session );
+         psoCommit( session );
       }
       psoHashMapClose( control );
    }
@@ -53,8 +53,8 @@ void cleanup()
    if ( inQueue != NULL )  psoQueueClose( inQueue );
    if ( outQueue != NULL ) psoQueueClose( outQueue );
    
-   if ( session != NULL ) vdsExitSession( session );
-   vdsExit();
+   if ( session != NULL ) psoExitSession( session );
+   psoExit();
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -82,10 +82,10 @@ int initObjects()
       return -1;
    }
 
-   rc = vdsCommit( session );
+   rc = psoCommit( session );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
-      fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
+      fprintf( stderr, "At line %d, psoCommit error: %s\n", __LINE__, msg );
       return -1;
    }
    
@@ -129,16 +129,16 @@ int main( int argc, char *argv[] )
       return 1;
    }
 
-   /* Initialize vds and create our session */
-   rc = vdsInit( argv[1], 0 );
+   /* Initialize shared memory and create our session */
+   rc = psoInit( argv[1], 0 );
    if ( rc != 0 ) {
-      fprintf( stderr, "At line %d, vdsInit error: %d\n", __LINE__, rc );
+      fprintf( stderr, "At line %d, psoInit error: %d\n", __LINE__, rc );
       return 1;
    }
 
-   rc = vdsInitSession( &session );
+   rc = psoInitSession( &session );
    if ( rc != 0 ) {
-      fprintf( stderr, "At line %d, vdsInitSession error: %d\n", __LINE__, rc );
+      fprintf( stderr, "At line %d, psoInitSession error: %d\n", __LINE__, rc );
       return 1;
    }
 
@@ -165,7 +165,7 @@ int main( int argc, char *argv[] )
       rc = psoQueuePop( inQueue, &workStruct, sizeof(workStruct), &length );
       if ( rc == PSO_IS_EMPTY || rc == PSO_ITEM_IS_IN_USE ) {
          /* Nothing to do - might as well commit */
-         vdsCommit( session );
+         psoCommit( session );
          if ( boolShutdown ) break;
          /*
           * We continue after we receive the shutdown to make sure that
@@ -198,7 +198,7 @@ int main( int argc, char *argv[] )
          return -1;
       }
 
-      if ( (loop %10) == 0 ) vdsCommit( session );
+      if ( (loop %10) == 0 ) psoCommit( session );
       loop++;
    }
 

@@ -23,14 +23,15 @@ using namespace std;
 
 
 /* 
- * This test is for ticket 1836613. It seems that vdsExitSession() is not
+ * This test is for ticket 1836613. It seems that psoExitSession() is not
  * closing open objects - the bug will be seen when the session is reopen
  * and a new attempt will be made to create the object. This attempt should 
  * work since in the previous pass:
  *   - the object was created but not committed
  *   - an automated rollback was perform with ExistSession()
- *   - an automated close object was performed with vdsExitSession (which
- *     should put all ref. counters to zero, deleting the object from the vds)
+ *   - an automated close object was performed with psoExitSession (which
+ *     should put all ref. counters to zero, deleting the object from 
+ *     shared memory)
  *
  * Note: for c++, we must do it a bit differently as there is no exit()
  *       function for sessions - it is implicitely called by the destructor.
@@ -99,32 +100,32 @@ int main( int argc, char * argv[] )
    int errcode;
    
 
-   errcode = vdsExitSession( sessionHandle );
+   errcode = psoExitSession( sessionHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = vdsInitSession( &sessionHandle );
+   errcode = psoInitSession( &sessionHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* */
-   errcode = vdsCreateObject( sessionHandle, "test1", 5, &folderDef );
+   errcode = psoCreateObject( sessionHandle, "test1", 5, &folderDef );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = vdsExitSession( sessionHandle );
+   errcode = psoExitSession( sessionHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   vdsExit();
+   psoExit();
 #endif
    
    return 0;

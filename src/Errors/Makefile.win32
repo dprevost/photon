@@ -20,8 +20,8 @@ CLEANFILES = *~
 
 OUTPUT_FILES =                      \
         ../include/photon/psoErrors.h \
-        ../Nucleus/VdsErrorHandler.c \
-        ../Nucleus/VdsErrorHandler.h 
+        ../Nucleus/psoErrorHandler.c \
+        ../Nucleus/psoErrorHandler.h 
 
 ###########################################################################
 #
@@ -31,8 +31,8 @@ OUTPUT_FILES =                      \
 
 all: $(OUTPUT_FILES) 
 
-$(OUTPUT_FILES) : options.xml vdsf.xml
-	errorParser --options options.xml vdsf.xml
+$(OUTPUT_FILES) : options.xml photon.xml
+	errorParser --options options.xml photon.xml
 
 ###########################################################################
 #

@@ -31,9 +31,9 @@ void cleanup()
 {
    if ( map1 != NULL ) psoHashMapClose( map1 );
    
-   if ( session1 != NULL ) vdsExitSession( session1 );
+   if ( session1 != NULL ) psoExitSession( session1 );
 
-   vdsExit();
+   psoExit();
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -46,30 +46,30 @@ int createMap()
    char description[100];
   
    /* If the map already exists, we remove it. */
-   rc = vdsDestroyObject( session1, mapName, strlen(mapName) );
+   rc = psoDestroyObject( session1, mapName, strlen(mapName) );
    if ( rc == PSO_NO_SUCH_OBJECT || rc == PSO_OK ) {
       /*
        * We must commit the change if we just destroyed it otherwise it
        * will still exist! 
        */
-      rc = vdsCommit( session1 );
+      rc = psoCommit( session1 );
       if ( rc != 0 ) {
          psoErrorMsg(session1, msg, 256 );
-         fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
+         fprintf( stderr, "At line %d, psoCommit error: %s\n", __LINE__, msg );
          return -1;
       }
       
-      rc = vdsCreateObject( session1, mapName, strlen(mapName), PSO_HASH_MAP );
+      rc = psoCreateObject( session1, mapName, strlen(mapName), PSO_HASH_MAP );
       if ( rc != 0 ) {
          psoErrorMsg(session1, msg, 256 );
-         fprintf( stderr, "At line %d, vdsCreateObject error: %s\n", __LINE__, msg );
+         fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
          return -1;
       }
       /* Commit the creation of the object */
-      rc = vdsCommit( session1 );
+      rc = psoCommit( session1 );
       if ( rc != 0 ) {
          psoErrorMsg(session1, msg, 256 );
-         fprintf( stderr, "At line %d, vdsCommit error: %s\n", __LINE__, msg );
+         fprintf( stderr, "At line %d, psoCommit error: %s\n", __LINE__, msg );
          return -1;
       }
 
@@ -100,7 +100,7 @@ int createMap()
    else { /* A problem when calling destroy */
 
       psoErrorMsg(session1, msg, 256 );
-      fprintf( stderr, "At line %d, vdsDestroyObject error: %s\n", __LINE__, msg );
+      fprintf( stderr, "At line %d, psoDestroyObject error: %s\n", __LINE__, msg );
       return -1;
    }
    
@@ -125,16 +125,16 @@ int main( int argc, char *argv[] )
    rc = openData( argv[1] );
    if ( rc != 0 ) return 1;
    
-   /* Initialize vds and create our session */
-   rc = vdsInit( argv[2], 0 );
+   /* Initialize shared memory and create our session */
+   rc = psoInit( argv[2], 0 );
    if ( rc != 0 ) {
-      fprintf( stderr, "At line %d, vdsInit error: %d\n", __LINE__, rc );
+      fprintf( stderr, "At line %d, psoInit error: %d\n", __LINE__, rc );
       return 1;
    }
 
-   rc = vdsInitSession( &session1 );
+   rc = psoInitSession( &session1 );
    if ( rc != 0 ) {
-      fprintf( stderr, "At line %d, vdsInitSession error: %d\n", __LINE__, rc );
+      fprintf( stderr, "At line %d, psoInitSession error: %d\n", __LINE__, rc );
       return 1;
    }
    

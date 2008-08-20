@@ -80,7 +80,7 @@ struct psnEndBlockGroup
    /** Set to true when a block is in limbo (free but not in the free list */
    bool isInLimbo;
    
-   /** Set to true if the block is the last one in the vds */
+   /** Set to true if the block is the last one in the shared memory */
    bool lastBlock;
    
 };

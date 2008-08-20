@@ -6,11 +6,11 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-# The additional library path is for vdsf developers (who may not have
-# installed vdsf).
-LDFLAGS += -L../../API/.libs -lvdsf
-# The additional include path is for vdsf developers (who may not have
-# installed vdsf).
+# The additional library path is for photon developers (who may not have
+# installed photon).
+LDFLAGS += -L../../API/.libs -lphoton
+# The additional include path is for photon developers (who may not have
+# installed photon).
 CFLAGS += -g -I../../include -Wall
 
 TARGETS = HashMap     \

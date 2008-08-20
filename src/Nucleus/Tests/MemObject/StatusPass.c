@@ -17,7 +17,7 @@
 
 #include "Nucleus/MemoryObject.h"
 #include "MemObjTest.h"
-#include <photon/vdsCommon.h>
+#include <photon/psoCommon.h>
 
 const bool expectedToPass = true;
 

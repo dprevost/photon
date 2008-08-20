@@ -22,12 +22,12 @@
 #  - the name of the test to be run
 #  - the tcp/ip port for the watchdog
 #  - expected error code
-#  - the path of the directory for the vds
+#  - the path of the directory for the shared memory
 #
 # For example:
 #
-# python TestWithWatchdog.py /home/dprevost/photon/ home/dprevost/vdsf \
-#        src/API/Tests/Api InitPass 10701 /tmp/vdsf_InitPass
+# python TestWithWatchdog.py /home/dprevost/photon/ home/dprevost/photon \
+#        src/API/Tests/Api InitPass 10701 /tmp/photon_InitPass
 #
 # (the build directory will usually be the top directory unless you're
 # building using VPATH (the simplest example being "make dist"))

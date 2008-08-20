@@ -34,7 +34,7 @@ CLEANFILES = *~
         TMReadLoop.sh 
 
 
-LDADD = $(top_builddir)/src/API/libvdsf.la
+LDADD = $(top_builddir)/src/API/libphoton.la
 
 #distclean-local:
 #	-rm -rf $(testsubdir)

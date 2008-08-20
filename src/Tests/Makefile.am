@@ -50,7 +50,7 @@ TESTS =                       \
         TransactionQueue.sh   \
         OutOfMemory.sh        
 
-LDADD = $(top_builddir)/src/API/libvdsf.la      \
+LDADD = $(top_builddir)/src/API/libphoton.la      \
         $(top_builddir)/src/Nucleus/libNucleus.la \
         $(top_builddir)/src/Common/libCommon.la
 

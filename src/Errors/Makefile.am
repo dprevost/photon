@@ -16,7 +16,7 @@ CLEANFILES = *~
 
 EXTRA_DIST =        \
         options.xml \
-        vdsf.xml    
+        photon.xml    
 
 OUTPUT_FILES =                                       \
         $(top_srcdir)/src/include/photon/psoErrors.h \
@@ -26,8 +26,8 @@ OUTPUT_FILES =                                       \
 if COND_USE_ERRORPARSER
 all-local: $(OUTPUT_FILES)
 
-$(OUTPUT_FILES): options.xml vdsf.xml
-	errorParser --options options.xml vdsf.xml
+$(OUTPUT_FILES): options.xml photon.xml
+	errorParser --options options.xml photon.xml
 
 endif
 

@@ -26,7 +26,7 @@
 #
 # For example: 
 # 
-# /home/dprevost/photon/ /home/dprevost/vdsf src/API/Tests/Api InitPass 10701 0
+# /home/dprevost/photon/ /home/dprevost/photon src/API/Tests/Api InitPass 10701 0
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -45,7 +45,7 @@ errcode=$6
 if [ "$TMPDIR" = "" ] ; then
    TMPDIR=/tmp
 fi
-BASE_DIR=$TMPDIR/vdsf_$test_name
+BASE_DIR=$TMPDIR/photon_$test_name
 
 trap `rm -rf $BASE_DIR; exit 1` 1 2 3 15
 
