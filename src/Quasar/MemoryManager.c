@@ -16,13 +16,13 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Nucleus/Engine.h"
-#include "Watchdog/MemoryManager.h"
+#include "Quasar/MemoryManager.h"
 #include "Common/MemoryFile.h"
 #include "Nucleus/MemoryAllocator.h"
 #include "Nucleus/Folder.h"
 #include "Nucleus/ProcessManager.h"
 #include "Nucleus/InitEngine.h"
-#include "Watchdog/quasarErrors.h"
+#include "Quasar/quasarErrors.h"
 
 extern pscErrMsgHandle g_wdErrorHandle;
 

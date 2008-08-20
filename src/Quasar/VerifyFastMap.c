@@ -16,124 +16,136 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include "Watchdog/VerifyCommon.h"
-#include "Nucleus/Queue.h"
+#include "Quasar/VerifyCommon.h"
+#include "Nucleus/Map.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum vdswRecoverError
-vdswCheckQueueContent( vdswVerifyStruct * pVerify,
-                       struct psnQueue * pQueue )
+vdswCheckFastMapContent( vdswVerifyStruct   * pVerify,
+                         psnMap            * pHashMap, 
+                         psnSessionContext * pContext )
 {
+   ptrdiff_t offset, previousOffset;
+   psnHashItem * pItem, * pDeletedItem = NULL;
    psnTxStatus * txItemStatus;
-   psnLinkNode * pNode = NULL, * pDeletedNode = NULL;
-   psnQueueItem* pQueueItem = NULL;
    enum vdswRecoverError rc = VDSWR_OK;
-   bool ok;
+   bool found;
    
-   ok = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
-   while ( ok ) {
-      pQueueItem = (psnQueueItem*) 
-         ((char*)pNode - offsetof( psnQueueItem, node ));
-      txItemStatus = &pQueueItem->txStatus;
+   /* The easy case */
+   if ( pHashMap->hashObj.numberOfItems == 0 ) return rc;
+   
+   found = psnHashGetFirst( &pHashMap->hashObj, &offset );
+   while ( found ) {
+      GET_PTR( pItem, offset, psnHashItem );
+      txItemStatus = &pItem->txStatus;
 
       if ( txItemStatus->txOffset != PSN_NULL_OFFSET ) {
          /*
           * So we have an interrupted transaction. What kind? 
           *   FLAG                      ACTION          
           *   TXS_ADDED                 remove item
+          *   TXS_REPLACED              remove item (the older item is also reset)
           *   TXS_DESTROYED             reset txStatus  
           *   TXS_DESTROYED_COMMITTED   remove item
           *
           * Action is the equivalent of what a rollback would do.
           */
          if ( txItemStatus->status & PSN_TXS_ADDED ) {
-            vdswEcho( pVerify, "Queue item added but not committed" );
-            pDeletedNode = pNode;
+            vdswEcho( pVerify, "Hash item added but not committed" );
+            pDeletedItem = pItem;
          }         
+         else if ( txItemStatus->status & PSN_TXS_REPLACED ) {
+            vdswEcho( pVerify, "Hash item replaced but not committed" );
+            pDeletedItem = pItem;
+         }
          else if ( txItemStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
-            vdswEcho( pVerify, "Queue item deleted and committed" );
-            pDeletedNode = pNode;
+            vdswEcho( pVerify, "Hash item deleted and committed" );
+            pDeletedItem = pItem;
          }
          else if ( txItemStatus->status & PSN_TXS_DESTROYED ) {
-            vdswEcho( pVerify, "Queue item deleted but not committed" );
+            vdswEcho( pVerify, "Hash item deleted but not committed" );
          }
          
-         if ( pDeletedNode == NULL && pVerify->doRepair ) {
+         if ( pDeletedItem == NULL && pVerify->doRepair ) {
             txItemStatus->txOffset = PSN_NULL_OFFSET;
             txItemStatus->status = PSN_TXS_OK;
-            vdswEcho( pVerify, "Queue item status fields reset to zero" );
+            vdswEcho( pVerify, "Hash item status fields reset to zero" );
          }
          rc = VDSWR_CHANGES;
       }
-
-      if ( pDeletedNode == NULL && txItemStatus->usageCounter != 0 ) {
+      
+      if ( pDeletedItem == NULL && txItemStatus->usageCounter != 0 ) {
          rc = VDSWR_CHANGES;
-         vdswEcho( pVerify, "Queue item usage counter is not zero" );
+         vdswEcho( pVerify, "Hash item usage counter is not zero" );
          if (pVerify->doRepair) {
-            vdswEcho( pVerify, "Queue item usage counter set to zero" );
             txItemStatus->usageCounter = 0;
+            vdswEcho( pVerify, "Hash item usage counter set to zero" );
          }
       }
       
-      ok =  psnLinkedListPeakNext( &pQueue->listOfElements, 
-                                    pNode, 
-                                    &pNode );
-      /*
-       * We need the old node to be able to get to the next node. That's
-       * why we save the node to be deleted and delete it until after we
-       * retrieve the next node.
-       */
-      if ( pDeletedNode != NULL && pVerify->doRepair ) {
-         psnLinkedListRemoveItem( &pQueue->listOfElements, pDeletedNode );
-         vdswEcho( pVerify, "Queue item removed from the VDS" );
-      }
-      pDeletedNode = NULL;
-   }
+      previousOffset = offset;
+      found = psnHashGetNext( &pHashMap->hashObj,
+                               previousOffset,
+                               &offset );
 
+      /*
+       * We need the old item to be able to get to the next item. That's
+       * why we save the item to be deleted and delete it until after we
+       * retrieve the next item.
+       */
+      if ( pDeletedItem != NULL && pVerify->doRepair ) {
+         psnHashDelWithItem( &pHashMap->hashObj,
+                              pDeletedItem,
+                              pContext );
+         vdswEcho( pVerify, "Hash item removed from the VDS" );
+      }
+      pDeletedItem = NULL;
+   }
+   
    return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum vdswRecoverError 
-vdswVerifyQueue( vdswVerifyStruct   * pVerify,
-                 struct psnQueue   * pQueue,
-                 psnSessionContext * pContext )
+vdswVerifyFastMap( vdswVerifyStruct   * pVerify,
+                   psnMap            * pHashMap,
+                   psnSessionContext * pContext )
 {
-   psnTxStatus * txQueueStatus;
+   psnTxStatus * txHashMapStatus;
    enum vdswRecoverError rc = VDSWR_OK, rc2;
    bool bTestObject = false;
-   
+      
    pVerify->spaces += 2;
-   
-   if ( pscIsItLocked( &pQueue->memObject.lock ) ) {
+
+   /* Is the object lock ? */
+   if ( pscIsItLocked( &pHashMap->memObject.lock ) ) {
       vdswEcho( pVerify, "The object is locked - it might be corrupted" );
       if ( pVerify->doRepair ) {
          vdswEcho( pVerify, "Trying to reset the lock..." );
-         pscReleaseProcessLock ( &pQueue->memObject.lock );
+         pscReleaseProcessLock ( &pHashMap->memObject.lock );
       }
-      rc = vdswVerifyMemObject( pVerify, &pQueue->memObject, pContext );
+      rc = vdswVerifyMemObject( pVerify, &pHashMap->memObject, pContext );
       if ( rc > VDSWR_START_ERRORS ) {
          pVerify->spaces -= 2;
          return rc;
       }
-      rc = VDSWR_CHANGES; 
+      rc = VDSWR_CHANGES;
       bTestObject = true;
    }
-   
+
    /*
     * Currently, the bitmap is only use if the object was locked. This might
     * change (as it is the case for other types of objects) so populate the 
     * bitmap in all cases to be safe.
     */
-   vdswPopulateBitmap( pVerify, &pQueue->memObject, pContext );
+   vdswPopulateBitmap( pVerify, &pHashMap->memObject, pContext );
 
-   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
 
-   if ( txQueueStatus->txOffset != PSN_NULL_OFFSET ) {
+   if ( txHashMapStatus->txOffset != PSN_NULL_OFFSET ) {
       /*
-       * So we have an interrupted transaction. What kind? 
        *   FLAG                      ACTION          
        *   TXS_ADDED                 remove object   
        *   TXS_DESTROYED             reset txStatus  
@@ -141,53 +153,55 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txQueueStatus->status & PSN_TXS_ADDED ) {
+      if ( txHashMapStatus->status & PSN_TXS_ADDED) {
          vdswEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
          return VDSWR_DELETED_OBJECT;
       }
-      if ( txQueueStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
+      if ( txHashMapStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
          vdswEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
          return VDSWR_DELETED_OBJECT;
       }
-
+      
       vdswEcho( pVerify, "Object deleted but not committed" );
       rc = VDSWR_CHANGES;
       if ( pVerify->doRepair) {
          vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
-         txQueueStatus->txOffset = PSN_NULL_OFFSET;
-         txQueueStatus->status = PSN_TXS_OK;
+         txHashMapStatus->txOffset = PSN_NULL_OFFSET;
+         txHashMapStatus->status = PSN_TXS_OK;
       }
    }
-   
-   if ( txQueueStatus->usageCounter != 0 ) {
+
+   if ( txHashMapStatus->usageCounter != 0 ) {
       rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Usage counter is not zero" );
       if (pVerify->doRepair) {
-         txQueueStatus->usageCounter = 0;
+         txHashMapStatus->usageCounter = 0;
          vdswEcho( pVerify, "Usage counter set to zero" );
       }
    }
-   if ( txQueueStatus->parentCounter != 0 ) {
+   if ( txHashMapStatus->parentCounter != 0 ) {
       rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Parent counter is not zero" );
       if (pVerify->doRepair) {
-         txQueueStatus->parentCounter = 0;
+         txHashMapStatus->parentCounter = 0;
          vdswEcho( pVerify, "Parent counter set to zero" );
       }
    }
-   if ( pQueue->nodeObject.txCounter != 0 ) {
+   if ( pHashMap->nodeObject.txCounter != 0 ) {
       rc = VDSWR_CHANGES;
       vdswEcho( pVerify, "Transaction counter is not zero" );
       if (pVerify->doRepair) {
-         pQueue->nodeObject.txCounter = 0;
+         pHashMap->nodeObject.txCounter = 0;
          vdswEcho( pVerify, "Transaction counter set to zero" );
       }
    }
-   
+
    if ( bTestObject ) {
-      rc2 = vdswVerifyList( pVerify, &pQueue->listOfElements );
+      rc2 = vdswVerifyHash( pVerify, 
+                           &pHashMap->hashObj, 
+                           SET_OFFSET(&pHashMap->memObject) );
       if ( rc2 > VDSWR_START_ERRORS ) {
          pVerify->spaces -= 2;
          return rc2;
@@ -195,8 +209,8 @@ vdswVerifyQueue( vdswVerifyStruct   * pVerify,
       /* At this point rc is either 0 or VDSWR_CHANGES - same for rc2 */
       if ( rc2 > rc ) rc = rc2;
    }
-   
-   rc2 = vdswCheckQueueContent( pVerify, pQueue );
+
+   rc2 = vdswCheckFastMapContent( pVerify, pHashMap, pContext );
    /* At this point rc is either 0 or VDSWR_CHANGES */
    if ( rc2 > rc ) rc = rc2;
    pVerify->spaces -= 2;

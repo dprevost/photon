@@ -498,6 +498,7 @@ AC_CONFIG_FILES([
    src/C++/Tests/Process/Makefile
    src/C++/Tests/Queue/Makefile
    src/C++/Tests/Session/Makefile
+   src/Errors/Makefile
    src/Nucleus/Makefile
    src/Nucleus/Tests/Makefile
    src/Nucleus/Tests/BlockGroup/Makefile
@@ -516,14 +517,13 @@ AC_CONFIG_FILES([
    src/Nucleus/Tests/Queue/Makefile
    src/Nucleus/Tests/Session/Makefile
    src/Nucleus/Tests/Transaction/Makefile
-   src/Errors/Makefile
+   src/Quasar/Makefile
+   src/Quasar/Tests/Makefile
    src/Java/Makefile
    src/include/Makefile
    src/Tests/Makefile
    src/Tools/Makefile
    src/Tools/Shell/Makefile
-   src/Watchdog/Makefile
-   src/Watchdog/Tests/Makefile
    src/XML/Makefile
    src/XML/Tests/Makefile
 ])

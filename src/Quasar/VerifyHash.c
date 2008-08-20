@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include "Watchdog/VerifyCommon.h"
+#include "Quasar/VerifyCommon.h"
 #include "Nucleus/Hash.h"
 #include "Nucleus/hash_fnv.h"
 

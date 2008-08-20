@@ -14,7 +14,7 @@ CLEANFILES = *~ Packages\*~
 #   1-    Errors
 #   2-    Common
 #   3-    Nucleus
-#   4-    Watchdog
+#   4-    Quasar
 #   5-    API
 #   n-    ...
 #   Last- Tests
@@ -27,7 +27,7 @@ SUBDIRS =             \
         Errors        \
         Common        \
         Nucleus       \
-        Watchdog      \
+        Quasar        \
         API           \
         C++           \
         $(MAYBE_Java) \
@@ -78,15 +78,15 @@ EXAMPLES_FILES =                                   \
         Examples/C++/Project_Files/QueueOut.dsp    \
         Examples/C++/Project_Files/QueueWork.dsp   
 
-PACKAGES_FILES =              \
-        Packages/vdsf.iss     \
-        Packages/vdsf.spec.in 
+PACKAGES_FILES =                \
+        Packages/photon.iss     \
+        Packages/photon.spec.in 
 
 EXTRA_DIST =               \
         $(EXAMPLES_FILES)  \
         config-win32.h     \
         Makefile.win32     \
-        vdsf.dsw           \
+        photon.dsw         \
         $(PACKAGES_FILES)  \
         XML/wd_config.xsd  
 
@@ -100,6 +100,6 @@ uninstall-local:
 	-for f in $(EXAMPLES_FILES); do \
 		rm -f $(DESTDIR)$(datadir)/doc/photon/$$f ; \
 	done
-	-rmdir $(DESTDIR)$(datadir)/doc/vdsf
+	-rmdir $(DESTDIR)$(datadir)/doc/photon
 	-rmdir $(DESTDIR)$(datadir)/doc
 

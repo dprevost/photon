@@ -16,10 +16,10 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include "Watchdog/VDSHandler.h"
-#include "Watchdog/MemoryManager.h"
-#include "Watchdog/Watchdog.h"
-#include "Watchdog/VerifyVDS.h"
+#include "Quasar/VDSHandler.h"
+#include "Quasar/MemoryManager.h"
+#include "Quasar/Watchdog.h"
+#include "Quasar/VerifyVDS.h"
 #include "API/WatchdogCommon.h"
 #include "Nucleus/SessionContext.h"
 #include "Nucleus/InitEngine.h"

@@ -76,27 +76,27 @@ fi
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 if [ $verbose = 1 ] ; then
-$top_builddir/src/Watchdog/quasar 
+$top_builddir/src/Quasar/quasar 
 else
-$top_builddir/src/Watchdog/quasar >/dev/null 2>&1
+$top_builddir/src/Quasar/quasar >/dev/null 2>&1
 fi
 if [ "$?" = 0 ] ; then
    exit 1
 fi
 
 if [ $verbose = 1 ] ; then
-$top_builddir/src/Watchdog/quasar -u
+$top_builddir/src/Quasar/quasar -u
 else
-$top_builddir/src/Watchdog/quasar -u >/dev/null 2>&1
+$top_builddir/src/Quasar/quasar -u >/dev/null 2>&1
 fi
 if [ "$?" = 0 ] ; then
    exit 1
 fi
 
 if [ $verbose = 1 ] ; then
-$top_builddir/src/Watchdog/quasar --test -c $BASE_DIR/cfg.xml
+$top_builddir/src/Quasar/quasar --test -c $BASE_DIR/cfg.xml
 else
-$top_builddir/src/Watchdog/quasar --test -c $BASE_DIR/cfg.xml >/dev/null 2>&1
+$top_builddir/src/Quasar/quasar --test -c $BASE_DIR/cfg.xml >/dev/null 2>&1
 fi
 if [ "$?" = 0 ] ; then
    exit 1
@@ -104,9 +104,9 @@ fi
 
 touch $BASE_DIR/cfg.xml
 if [ $verbose = 1 ] ; then
-$top_builddir/src/Watchdog/quasar --test -c $BASE_DIR/cfg.xml
+$top_builddir/src/Quasar/quasar --test -c $BASE_DIR/cfg.xml
 else
-$top_builddir/src/Watchdog/quasar --test -c $BASE_DIR/cfg.xml >/dev/null 2>&1
+$top_builddir/src/Quasar/quasar --test -c $BASE_DIR/cfg.xml >/dev/null 2>&1
 fi
 if [ "$?" = 0 ] ; then
    exit 1
@@ -124,9 +124,9 @@ echo "  <file_access access=\"group\" />                        " >> $BASE_DIR/c
 echo "</vdsf_config>                                            " >> $BASE_DIR/cfg.xml
 
 if [ $verbose = 1 ] ; then
-$top_builddir/src/Watchdog/quasar --test -c $BASE_DIR/cfg.xml
+$top_builddir/src/Quasar/quasar --test -c $BASE_DIR/cfg.xml
 else
-$top_builddir/src/Watchdog/quasar --test -c $BASE_DIR/cfg.xml >/dev/null 2>&1
+$top_builddir/src/Quasar/quasar --test -c $BASE_DIR/cfg.xml >/dev/null 2>&1
 fi
 if [ "$?" = 0 ] ; then
    exit 1
@@ -145,9 +145,9 @@ echo "  <file_access access=\"group\" />                        " >> $BASE_DIR/c
 echo "</vdsf_config>                                            " >> $BASE_DIR/cfg.xml
 
 #if [ $verbose = 1 ] ; then
-$top_builddir/src/Watchdog/quasar --test -c $BASE_DIR/cfg.xml
+$top_builddir/src/Quasar/quasar --test -c $BASE_DIR/cfg.xml
 #else
-#$top_builddir/src/Watchdog/quasar --test $BASE_DIR/cfg.xml >/dev/null 2>&1
+#$top_builddir/src/Quasar/quasar --test $BASE_DIR/cfg.xml >/dev/null 2>&1
 #fi
 if [ "$?" != 0 ] ; then
    exit 1

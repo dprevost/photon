@@ -18,8 +18,8 @@
 #include <libxml/xmlschemas.h>
 #include <libxml/xmlschemastypes.h>
 
-#include "Watchdog/Config.h"
-#include "Watchdog/quasarErrors.h"
+#include "Quasar/Config.h"
+#include "Quasar/quasarErrors.h"
 
 extern pscErrMsgHandle g_wdErrorHandle;
 

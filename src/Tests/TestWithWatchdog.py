@@ -62,7 +62,7 @@ wd_name = 'quasar'
 wd_pid = 0
 wd_present = 0
 
-wd_dir = os.path.join( os.path.join( build_dir, 'src' ), 'Watchdog' )
+wd_dir = os.path.join( os.path.join( build_dir, 'src' ), 'Quasar' )
 cfg_name = os.path.join( vds_dir, cfg_suff )
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

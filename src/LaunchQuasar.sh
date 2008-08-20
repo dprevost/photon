@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2007-2008 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
 # 
 # This file is part of photon (photonsoftware.org).
 #
@@ -27,42 +27,44 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-echo "This launch a new watchdog. Warning: The vds is NOT removed upon termination."
-echo "You can specify the path to the watchdog executable as the first argument"
+echo "This launch a new server (quasar). Warning: The shared memory is removed upon termination."
+echo "You can specify the path to quasar as the first argument"
 
 if [ "$TMPDIR" = "" ] ; then
    TMPDIR=/tmp
 fi
-BASE_DIR=$TMPDIR/vdsf_002
+BASE_DIR=$TMPDIR/photon_001
 
-trap 'rm -rf $BASE_DIR; exit 1' 1 3 6 15
-trap 'exit 0' 2
+trap 'rm -rf $BASE_DIR; exit 1' 1 2 3 15
 
 if test -z "$1"; then
-  wddir="./Watchdog"
+  QUASAR_DIR="./Quasar"
 else
-  wddir=$1
+  QUASAR_DIR=$1
 fi
 
 verbose=1
 
-if [ ! -d $BASE_DIR ]; then
-  mkdir $BASE_DIR
-  cp $wddir/../XML/wd_config.xsd $BASE_DIR
-  if [ "$?" != 0 ] ; then
-    exit 1
-  fi
-
-  echo "<?xml version=\"1.0\"?>                                   " >> $BASE_DIR/cfg.xml
-  echo "<vdsf_config xmlns=\"http://vdsf.sourceforge.net/Config\" " >> $BASE_DIR/cfg.xml
-  echo "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"   " >> $BASE_DIR/cfg.xml
-  echo "xsi:schemaLocation=\"http://vdsf.sourceforge.net/Config $BASE_DIR/wd_config.xsd\"> " >> $BASE_DIR/cfg.xml
-  echo "  <vds_location>$BASE_DIR</vds_location>                  " >> $BASE_DIR/cfg.xml
-  echo "  <mem_size size=\"10240\" units=\"kb\" />                " >> $BASE_DIR/cfg.xml
-  echo "  <watchdog_address>10701</watchdog_address>              " >> $BASE_DIR/cfg.xml
-  echo "  <file_access access=\"group\" />                        " >> $BASE_DIR/cfg.xml
-  echo "</vdsf_config>                                            " >> $BASE_DIR/cfg.xml
+rm -rf $BASE_DIR
+mkdir $BASE_DIR
+if [ "$?" != 0 ] ; then
+   exit 1
 fi
+
+cp $QUASAR_DIR/../XML/wd_config.xsd $BASE_DIR
+if [ "$?" != 0 ] ; then
+   exit 1
+fi
+
+echo "<?xml version=\"1.0\"?>                                   " >> $BASE_DIR/cfg.xml
+echo "<vdsf_config xmlns=\"http://vdsf.sourceforge.net/Config\" " >> $BASE_DIR/cfg.xml
+echo "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"   " >> $BASE_DIR/cfg.xml
+echo "xsi:schemaLocation=\"http://vdsf.sourceforge.net/Config $BASE_DIR/wd_config.xsd\"> " >> $BASE_DIR/cfg.xml
+echo "  <vds_location>$BASE_DIR</vds_location>                  " >> $BASE_DIR/cfg.xml
+echo "  <mem_size size=\"10240\" units=\"kb\" />                " >> $BASE_DIR/cfg.xml
+echo "  <watchdog_address>10701</watchdog_address>              " >> $BASE_DIR/cfg.xml
+echo "  <file_access access=\"group\" />                        " >> $BASE_DIR/cfg.xml
+echo "</vdsf_config>                                            " >> $BASE_DIR/cfg.xml
 
 if [ $verbose = 1 ] ; then
    verb=
@@ -73,14 +75,13 @@ fi
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 echo " "
-echo "Launching the watchdog..."
+echo "Launching quasar..."
 
-$wddir/quasar --config $BASE_DIR/cfg.xml
-# gdb $wddir/quasar  
+$QUASAR_DIR/quasar  --config $BASE_DIR/cfg.xml
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#rm -rf $BASE_DIR
+rm -rf $BASE_DIR
 
 exit 0
 

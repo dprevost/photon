@@ -17,8 +17,8 @@
 
 #include "Common/Common.h"
 
-#include "Watchdog/VerifyCommon.h"
-#include "Watchdog/VerifyVDS.h"
+#include "Quasar/VerifyCommon.h"
+#include "Quasar/VerifyVDS.h"
 
 #include "Nucleus/MemoryHeader.h"
 

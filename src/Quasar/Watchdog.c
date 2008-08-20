@@ -17,9 +17,9 @@
 
 #include "Common/Common.h"
 #include <signal.h>
-#include "Watchdog/Watchdog.h"
+#include "Quasar/Watchdog.h"
 #include "Common/ErrorHandler.h"
-#include "Watchdog/quasarErrorHandler.h"
+#include "Quasar/quasarErrorHandler.h"
 
 // This should be more than enough...
 #define LINE_MAX_LEN (2*PATH_MAX)

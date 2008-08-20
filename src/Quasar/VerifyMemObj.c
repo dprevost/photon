@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include "Watchdog/VerifyCommon.h"
+#include "Quasar/VerifyCommon.h"
 #include "Nucleus/MemoryObject.h"
 #include "Nucleus/MemoryAllocator.h"
 

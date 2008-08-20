@@ -31,7 +31,7 @@
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 if [ "$#" != 6 ] ; then
-   echo "usage: $0 src_dir build_dir test_dir test_name watchdog_port expected_error_code"
+   echo "usage: $0 src_dir build_dir test_dir test_name quasar_port expected_error_code"
    exit 1
 fi
 

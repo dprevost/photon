@@ -20,7 +20,7 @@
 #define VDSW_HANDLER_H
 
 #include "Nucleus/SessionContext.h"
-#include "Watchdog/quasarErrors.h"
+#include "Quasar/quasarErrors.h"
 
 BEGIN_C_DECLS
 

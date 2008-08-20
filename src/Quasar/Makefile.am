@@ -87,5 +87,5 @@ libVerifyVDS_a_SOURCES = \
 
 quasar_LDADD = $(top_builddir)/src/Nucleus/libNucleus.la  \
               $(top_builddir)/src/Common/libCommon.la     \
-              $(top_builddir)/src/Watchdog/libVerifyVDS.a 
+              $(top_builddir)/src/Quasar/libVerifyVDS.a 
 
