@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:md="http://vdsf.sourceforge.net/vdsf_md"
-targetNamespace="http://vdsf.sourceforge.net/vdsf"
-xmlns="http://vdsf.sourceforge.net/vdsf"
+           xmlns:md="http://vdsf.sourceforge.net/photon_meta"
+targetNamespace="http://vdsf.sourceforge.net/photon"
+xmlns="http://vdsf.sourceforge.net/photon"
 elementFormDefault="qualified">
 
 <!-- Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
@@ -20,8 +20,8 @@ elementFormDefault="qualified">
 -->
 
 <xs:import
-  namespace="http://vdsf.sourceforge.net/vdsf_md"
-  schemaLocation="vdsf_md10.xsd">
+  namespace="http://vdsf.sourceforge.net/photon_meta"
+  schemaLocation="photon_meta10.xsd">
 </xs:import>
 
 <!-- Define our simple types first -->
@@ -90,7 +90,7 @@ elementFormDefault="qualified">
   </xs:complexType>
 </xs:element>
 
-<xs:element name="vdsf">
+<xs:element name="photon">
   <xs:complexType>
     <xs:choice minOccurs="0" maxOccurs="unbounded">
       <xs:element ref="folder"/>

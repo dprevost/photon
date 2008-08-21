@@ -97,7 +97,7 @@ int main( int argc, char *argv[] )
 #endif
    
    if ( argc < 2 ) {
-      cerr << "Usage: " << argv[0] << " watchdog_address" << endl;
+      cerr << "Usage: " << argv[0] << " quasar_address" << endl;
       return 1;
    }
 

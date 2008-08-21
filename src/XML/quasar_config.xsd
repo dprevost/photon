@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  targetNamespace="http://vdsf.sourceforge.net/Config"
-  xmlns="http://vdsf.sourceforge.net/Config"
+  targetNamespace="http://vdsf.sourceforge.net/quasarConfig"
+  xmlns="http://vdsf.sourceforge.net/quasarConfig"
   elementFormDefault="qualified"
   version="1.0">
 
@@ -49,12 +49,12 @@
 </xs:complexType>
 
 <!-- This is our root element -->
-<xs:element name="vdsf_config">
+<xs:element name="quasar_config">
   <xs:complexType>
     <xs:sequence>
-      <xs:element name="vds_location" type="pathString" />
+      <xs:element name="mem_location" type="pathString" />
       <xs:element name="mem_size" type="memType"/>
-      <xs:element name="watchdog_address" type="portType" />
+      <xs:element name="quasar_address" type="portType" />
       <xs:element name="file_access" type="accessType" />
     </xs:sequence>
   </xs:complexType>

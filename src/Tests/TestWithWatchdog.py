@@ -194,21 +194,21 @@ def WriteCfg():
    try:
       line = '<?xml version=\"1.0\"?>'
       cfg_file.write( line )   
-      line = '<vdsf_config xmlns=\"http://vdsf.sourceforge.net/Config\"'
+      line = '<quasar_config xmlns=\"http://vdsf.sourceforge.net/quasarConfig\"'
       cfg_file.write( line )   
       line = 'xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"'
       cfg_file.write( line )   
-      line = 'xsi:schemaLocation=\"http://vdsf.sourceforge.net/Config ' + os.path.join( vds_dir, 'wd_config.xsd' ) + '\"> '
+      line = 'xsi:schemaLocation=\"http://vdsf.sourceforge.net/quasarConfig ' + os.path.join( vds_dir, 'quasar_config.xsd' ) + '\"> '
       cfg_file.write( line )   
-      line = '  <vds_location>' + vds_dir + '</vds_location>'
+      line = '  <mem_location>' + vds_dir + '</mem_location>'
       cfg_file.write( line )   
       line = '  <mem_size size=\"10240\" units=\"kb\" />'
       cfg_file.write( line )   
-      line = '  <watchdog_address>10701</watchdog_address>'
+      line = '  <quasar_address>10701</quasar_address>'
       cfg_file.write( line )   
       line = '  <file_access access=\"group\" />'
       cfg_file.write( line )   
-      line = '</vdsf_config>'
+      line = '</quasar_config>'
       cfg_file.write( line )   
       cfg_file.close()
    except:

@@ -62,7 +62,7 @@ if [ "$?" != 0 ] ; then
    exit 1
 fi
 
-cp $srcdir/../../XML/wd_config.xsd $BASE_DIR
+cp $srcdir/../../XML/quasar_config.xsd $BASE_DIR
 if [ "$?" != 0 ] ; then
    exit 1
 fi
@@ -114,14 +114,14 @@ fi
 
 
 echo "<?xml version=\"1.0\"?>                                   " >> $BASE_DIR/cfg.xml
-echo "<vdsf_config xmlns=\"http://vdsf.sourceforge.net/Config\" " >> $BASE_DIR/cfg.xml
+echo "<quasar_config xmlns=\"http://vdsf.sourceforge.net/quasarConfig\" " >> $BASE_DIR/cfg.xml
 echo "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"   " >> $BASE_DIR/cfg.xml
-echo "xsi:schemaLocation=\"http://vdsf.sourceforge.net/Config $BASE_DIR/wd_config.xsd\"> " >> $BASE_DIR/cfg.xml
-echo "  <vds_location>$BASE_DIR/vds</vds_location>              " >> $BASE_DIR/cfg.xml
+echo "xsi:schemaLocation=\"http://vdsf.sourceforge.net/quasarConfig $BASE_DIR/quasar_config.xsd\"> " >> $BASE_DIR/cfg.xml
+echo "  <mem_location>$BASE_DIR/vds</mem_location>              " >> $BASE_DIR/cfg.xml
 echo "  <mem_size size=\"10240\" units=\"kb\" />                " >> $BASE_DIR/cfg.xml
-#echo "  <watchdog_address>10701</watchdog_address>              " >> $BASE_DIR/cfg.xml
+#echo "  <quasar_address>10701</quasar_address>              " >> $BASE_DIR/cfg.xml
 echo "  <file_access access=\"group\" />                        " >> $BASE_DIR/cfg.xml
-echo "</vdsf_config>                                            " >> $BASE_DIR/cfg.xml
+echo "</quasar_config>                                            " >> $BASE_DIR/cfg.xml
 
 if [ $verbose = 1 ] ; then
 $top_builddir/src/Quasar/quasar --test -c $BASE_DIR/cfg.xml
@@ -135,14 +135,14 @@ fi
 # Success expected
 rm -f $BASE_DIR/cfg.xml
 echo "<?xml version=\"1.0\"?>                                   " >> $BASE_DIR/cfg.xml
-echo "<vdsf_config xmlns=\"http://vdsf.sourceforge.net/Config\" " >> $BASE_DIR/cfg.xml
+echo "<quasar_config xmlns=\"http://vdsf.sourceforge.net/quasarConfig\" " >> $BASE_DIR/cfg.xml
 echo "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"   " >> $BASE_DIR/cfg.xml
-echo "xsi:schemaLocation=\"http://vdsf.sourceforge.net/Config $BASE_DIR/wd_config.xsd\"> " >> $BASE_DIR/cfg.xml
-echo "  <vds_location>$BASE_DIR/vds</vds_location>              " >> $BASE_DIR/cfg.xml
+echo "xsi:schemaLocation=\"http://vdsf.sourceforge.net/quasarConfig $BASE_DIR/quasar_config.xsd\"> " >> $BASE_DIR/cfg.xml
+echo "  <mem_location>$BASE_DIR/vds</mem_location>              " >> $BASE_DIR/cfg.xml
 echo "  <mem_size size=\"10240\" units=\"kb\" />                " >> $BASE_DIR/cfg.xml
-echo "  <watchdog_address>10701</watchdog_address>              " >> $BASE_DIR/cfg.xml
+echo "  <quasar_address>10701</quasar_address>              " >> $BASE_DIR/cfg.xml
 echo "  <file_access access=\"group\" />                        " >> $BASE_DIR/cfg.xml
-echo "</vdsf_config>                                            " >> $BASE_DIR/cfg.xml
+echo "</quasar_config>                                            " >> $BASE_DIR/cfg.xml
 
 #if [ $verbose = 1 ] ; then
 $top_builddir/src/Quasar/quasar --test -c $BASE_DIR/cfg.xml

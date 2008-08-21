@@ -288,7 +288,7 @@
         <message xml:lang="en">
           <errormsg>The root element is not the expected root.</errormsg>
           <errordoc>
-            The root element is not the expected root, &lt;vdsf_config&gt;.
+            The root element is not the expected root, &lt;quasar_config&gt;.
           </errordoc>
         </message>
       </message_group>
@@ -391,9 +391,9 @@
       <errname> CFG_PSO_LOCATION_TOO_LONG</errname>
       <message_group>
         <message xml:lang="en">
-          <errormsg>Config: vds_location is too long.</errormsg>
+          <errormsg>Config: mem_location is too long.</errormsg>
           <errordoc>
-            The path associated with the tag &lt;vds_location&gt; is longer 
+            The path associated with the tag &lt;mem_location&gt; is longer 
             than PATH_MAX (the maximum length of a filename/pathname).
           </errordoc>
         </message>
@@ -405,9 +405,9 @@
       <errname> CFG_PSO_LOCATION_IS_MISSING</errname>
       <message_group>
         <message xml:lang="en">
-          <errormsg>Config: vds_location is missing.</errormsg>
+          <errormsg>Config: mem_location is missing.</errormsg>
           <errordoc>
-            The tag &lt;vds_location&gt; is missing. This would normally
+            The tag &lt;mem_location&gt; is missing. This would normally
             be caught when the configuration is validated using the schema 
             unless of course there is a bug in the code or the schema
             itself was modified.
@@ -469,9 +469,9 @@
       <errname> CFG_WATCHDOG_ADDRESS_IS_MISSING</errname>
       <message_group>
         <message xml:lang="en">
-          <errormsg>Config: watchdog_address is missing.</errormsg>
+          <errormsg>Config: quasar_address is missing.</errormsg>
           <errordoc>
-            The tag &lt;watchdog_address&gt; is missing. This would normally
+            The tag &lt;quasar_address&gt; is missing. This would normally
             be caught when the configuration is validated using the schema 
             unless of course there is a bug in the code or the schema
             itself was modified.

@@ -58,7 +58,7 @@ if [ "$?" != 0 ] ; then
    exit 1
 fi
 
-cp $src_dir/src/XML/wd_config.xsd $BASE_DIR
+cp $src_dir/src/XML/quasar_config.xsd $BASE_DIR
 if [ "$?" != 0 ] ; then
    exit 1
 fi

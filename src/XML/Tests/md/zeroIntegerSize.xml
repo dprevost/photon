@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
-<queue xmlns="http://vdsf.sourceforge.net/vdsf_md"
+<queue xmlns="http://vdsf.sourceforge.net/photon_meta"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://vdsf.sourceforge.net/vdsf_md vdsf_md10.xsd"
+  xsi:schemaLocation="http://vdsf.sourceforge.net/photon_meta photon_meta10.xsd"
   objName="A_queue" >
 
   <field name="customer_id"><integer size="0"/></field>

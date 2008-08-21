@@ -123,7 +123,7 @@ bool vdswReadConfig( const char          * cfgname,
       errcode = PSOQ_XML_NO_ROOT;
       goto cleanup;
    }
-   if ( xmlStrcmp( root->name, BAD_CAST "vdsf_config") != 0 ) {
+   if ( xmlStrcmp( root->name, BAD_CAST "quasar_config") != 0 ) {
       errcode = PSOQ_XML_INVALID_ROOT;
       goto cleanup;
    }
@@ -194,7 +194,7 @@ bool vdswReadConfig( const char          * cfgname,
 
    while ( node != NULL ) {
       if ( node->type == XML_ELEMENT_NODE ) {
-         if ( xmlStrcmp( node->name, BAD_CAST "vds_location") == 0 ) {
+         if ( xmlStrcmp( node->name, BAD_CAST "mem_location") == 0 ) {
             /* 
              * The schema should normally resolved this by imposing a 
              * limit which is less than PATH_MAX on most systems but...
@@ -252,7 +252,7 @@ bool vdswReadConfig( const char          * cfgname,
 
    while ( node != NULL ) {
       if ( node->type == XML_ELEMENT_NODE ) {
-         if ( xmlStrcmp( node->name, BAD_CAST "watchdog_address") == 0 ) {
+         if ( xmlStrcmp( node->name, BAD_CAST "quasar_address") == 0 ) {
             strcpy( pConfig->wdAddress, (char*)node->children->content );
             node = node->next;
             break;

@@ -80,7 +80,7 @@ int main( int argc, char *argv[] )
    psoObjStatus status;
    
    if ( argc < 3 ) {
-      cerr << "Usage: " << argv[0] << " iso_3166_data_file watchdog_address" << endl;
+      cerr << "Usage: " << argv[0] << " iso_3166_data_file quasar_address" << endl;
       return 1;
    }
    

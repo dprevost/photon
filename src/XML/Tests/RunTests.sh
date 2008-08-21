@@ -53,9 +53,9 @@ run_md_test()
    test_name=$1
 
    if [ $verbose = 1 ] ; then
-      xmllint --noout --schema $xml_dir/vdsf_md10.xsd $test_name
+      xmllint --noout --schema $xml_dir/photon_meta10.xsd $test_name
    else
-      xmllint --noout --schema $xml_dir/vdsf_md10.xsd $test_name >/dev/null 2>&1
+      xmllint --noout --schema $xml_dir/photon_meta10.xsd $test_name >/dev/null 2>&1
    fi
    if [ "$?" = 0 ] ; then
       echo "FAIL: $test_name "

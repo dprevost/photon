@@ -125,7 +125,7 @@ int main( int argc, char *argv[] )
 #endif
    
    if ( argc < 2 ) {
-      fprintf( stderr, "Usage: %s watchdog_address\n", argv[0] );
+      fprintf( stderr, "Usage: %s quasar_address\n", argv[0] );
       return 1;
    }
 

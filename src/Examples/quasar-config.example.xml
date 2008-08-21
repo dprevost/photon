@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 
-<vdsf_config xmlns="http://vdsf.sourceforge.net/Config"
+<quasar_config xmlns="http://vdsf.sourceforge.net/quasarConfig"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://vdsf.sourceforge.net/Config ../XML/wd_config.xsd">
+xsi:schemaLocation="http://vdsf.sourceforge.net/quasarConfig ../XML/quasar_config.xsd">
 
 <!-- Directory for the vds (the shared-memory file) and support 
      files. The files will be created if needed.
      Note: this example use /tmp but this might not be a good idea 
      if /tmp is clean on reboot. -->
-<vds_location>\tmp/vdsf</vds_location>
+<mem_location>\tmp/vdsf</mem_location>
 
 <!-- MemorySize is in kbytes ("kb"), megabytes ("mb") or gigabytes ("gb"). 
      For example a VDS of 10 Megabytes can either be written as
@@ -26,7 +26,7 @@ xsi:schemaLocation="http://vdsf.sourceforge.net/Config ../XML/wd_config.xsd">
      communicate. The port is bind to a local address (127.0.0.1)
      and cannot be accessed from a different computer for obvious
      security reasons. The port must be between 1025 and 65535. -->
-<watchdog_address>10701</watchdog_address>
+<quasar_address>10701</quasar_address>
 
 <!-- Unix only (at this moment)
 
@@ -54,5 +54,5 @@ xsi:schemaLocation="http://vdsf.sourceforge.net/Config ../XML/wd_config.xsd">
      equivalent) to this group. -->
 <file_access access="group" />
 
-</vdsf_config>
+</quasar_config>
 

@@ -89,7 +89,7 @@ if Not consoleMode then
    wscript.echo "Be patient - running the tests in batch mode - click ok to start"
 end if
 
-exeName = "xmllint --noout --schema ..\vdsf_md10.xsd md\"
+exeName = "xmllint --noout --schema ..\photon_meta10.xsd md\"
 
 ' Run all tests
 

@@ -202,7 +202,7 @@ int main( int argc, char *argv[] )
 #endif
    
    if ( argc < 6 ) {
-      fprintf( stderr, "Usage: %s iso_3166_data_file watchdog_address number_of_iterations milliseconds iterations_per_cycle\n", argv[0] );
+      fprintf( stderr, "Usage: %s iso_3166_data_file quasar_address number_of_iterations milliseconds iterations_per_cycle\n", argv[0] );
       return 1;
    }
 

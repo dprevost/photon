@@ -11,7 +11,7 @@
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 if [ "$#" != 5 ] ; then
-   echo "usage: $0 iso_data_file watchdog_address number_of_iterations millisecs iterations_per_cycle"
+   echo "usage: $0 iso_data_file quasar_address number_of_iterations millisecs iterations_per_cycle"
    exit 1
 fi
 

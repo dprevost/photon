@@ -33,7 +33,7 @@ int main( int argc, char * argv[] )
    psoObjectDefinition def; 
    
    char buff[1000];
-   char src_path[PATH_MAX] = {"../../../XML/vdsf_md10.xsd"};
+   char src_path[PATH_MAX] = {"../../../XML/photon_meta10.xsd"};
 
    memset( &def, 0, sizeof def );
    def.type = PSO_FOLDER;
@@ -47,7 +47,7 @@ int main( int argc, char * argv[] )
       }
       if ( argc > 2 ) {
          strcpy( src_path, argv[2] );
-         strcat( src_path, "/src/XML/vdsf_md10.xsd" );
+         strcat( src_path, "/src/XML/photon_meta10.xsd" );
       }
       session.Init();
       session.CreateObject( name, &def );
@@ -62,9 +62,9 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
    
    strcpy( buff, "<?xml version=\"1.0\"?>\n"
-      "<folder xmlns=\"http://vdsf.sourceforge.net/vdsf_md\" "
+      "<folder xmlns=\"http://vdsf.sourceforge.net/photon_meta\" "
       "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-      "xsi:schemaLocation=\"http://vdsf.sourceforge.net/vdsf_md ");
+      "xsi:schemaLocation=\"http://vdsf.sourceforge.net/photon_meta ");
    strcat( buff, src_path);
    strcat( buff, "\" "
       "objName=\"My_name\" > "
@@ -111,9 +111,9 @@ int main( int argc, char * argv[] )
    // End of invalid args. This call should succeed.
 
    strcpy( buff, "<?xml version=\"1.0\"?>\n"
-      "<folder xmlns=\"http://vdsf.sourceforge.net/vdsf_md\" "
+      "<folder xmlns=\"http://vdsf.sourceforge.net/photon_meta\" "
       "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-      "xsi:schemaLocation=\"http://vdsf.sourceforge.net/vdsf_md ");
+      "xsi:schemaLocation=\"http://vdsf.sourceforge.net/photon_meta ");
    strcat( buff, src_path);
    strcat( buff, "\" "
       "objName=\"My_name\" >"

@@ -16,9 +16,9 @@ CLEANFILES = *~
 
 SUBDIRS = . Tests
 
-EXTRA_DIST =           \
-        Makefile.win32 \
-        vdsf10.xsd     \
-        vdsf_md10.xsd  
-
+EXTRA_DIST =              \
+        Makefile.win32    \
+        photon10.xsd      \
+        photon_meta10.xsd \
+        quasar_config.xsd 
 

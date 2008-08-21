@@ -119,7 +119,7 @@ int main( int argc, char *argv[] )
    psoObjStatus status;
    
    if ( argc < 3 ) {
-      fprintf( stderr, "Usage: %s iso_3166_data_file watchdog_address\n", argv[0] );
+      fprintf( stderr, "Usage: %s iso_3166_data_file quasar_address\n", argv[0] );
       return 1;
    }
    

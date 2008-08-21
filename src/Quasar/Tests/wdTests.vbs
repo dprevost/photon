@@ -168,18 +168,18 @@ if rc = 0 then
    wscript.quit(1)
 end if
 
-fso.Copyfile "..\..\XML\wd_config.xsd", tmpDir + "\wd_config.xsd"
+fso.Copyfile "..\..\XML\quasar_config.xsd", tmpDir + "\quasar_config.xsd"
 
 Set cmdFile = fso.CreateTextFile(tmpDir + "\cfg.xml", True)
 cmdFile.WriteLine("<?xml version=""1.0""?>")
-cmdFile.WriteLine("<vdsf_config xmlns=""http://vdsf.sourceforge.net/Config""")
+cmdFile.WriteLine("<quasar_config xmlns=""http://vdsf.sourceforge.net/quasarConfig""")
 cmdFile.WriteLine("xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""")
-cmdFile.WriteLine("xsi:schemaLocation=""http://vdsf.sourceforge.net/Config " + tmpDir + "\wd_config.xsd""> ")
-cmdFile.WriteLine("  <vds_location>" + tmpDir + "</vds_location>")
+cmdFile.WriteLine("xsi:schemaLocation=""http://vdsf.sourceforge.net/quasarConfig " + tmpDir + "\quasar_config.xsd""> ")
+cmdFile.WriteLine("  <mem_location>" + tmpDir + "</mem_location>")
 cmdFile.WriteLine("  <mem_size size=""10240"" units=""kb"" />")
-'cmdFile.WriteLine("  <watchdog_address>10701</watchdog_address>")
+'cmdFile.WriteLine("  <quasar_address>10701</quasar_address>")
 cmdFile.WriteLine("  <file_access access=""group"" />")
-cmdFile.WriteLine("</vdsf_config>")
+cmdFile.WriteLine("</quasar_config>")
 cmdFile.Close
 
 exeName = progPath & "\" & "quasar.exe --test -c " & tmpDir & "\cfg.xml"
@@ -204,14 +204,14 @@ end if
 
 Set cmdFile = fso.CreateTextFile(tmpDir + "\cfg.xml", True)
 cmdFile.WriteLine("<?xml version=""1.0""?>")
-cmdFile.WriteLine("<vdsf_config xmlns=""http://vdsf.sourceforge.net/Config""")
+cmdFile.WriteLine("<quasar_config xmlns=""http://vdsf.sourceforge.net/quasarConfig""")
 cmdFile.WriteLine("xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""")
-cmdFile.WriteLine("xsi:schemaLocation=""http://vdsf.sourceforge.net/Config " + tmpDir + "\wd_config.xsd""> ")
-cmdFile.WriteLine("  <vds_location>" + tmpDir + "</vds_location>")
+cmdFile.WriteLine("xsi:schemaLocation=""http://vdsf.sourceforge.net/quasarConfig " + tmpDir + "\quasar_config.xsd""> ")
+cmdFile.WriteLine("  <mem_location>" + tmpDir + "</mem_location>")
 cmdFile.WriteLine("  <mem_size size=""10240"" units=""kb"" />")
-cmdFile.WriteLine("  <watchdog_address>10701</watchdog_address>")
+cmdFile.WriteLine("  <quasar_address>10701</quasar_address>")
 cmdFile.WriteLine("  <file_access access=""group"" />")
-cmdFile.WriteLine("</vdsf_config>")
+cmdFile.WriteLine("</quasar_config>")
 cmdFile.Close
 
 exeName = progPath & "\" & "quasar.exe --test -c " & tmpDir & "\cfg.xml"

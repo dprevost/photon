@@ -143,7 +143,7 @@ int main( int argc, char * argv[] )
       goto cleanup;
    }
 
-//   if ( xmlStrcmp( root->name, BAD_CAST "vdsf_config") != 0 ) {
+//   if ( xmlStrcmp( root->name, BAD_CAST "quasar_config") != 0 ) {
 //      errcode = VDSW_XML_INVALID_ROOT;
 //      goto cleanup;
 //   }

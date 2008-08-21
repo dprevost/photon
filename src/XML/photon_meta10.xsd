@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-targetNamespace="http://vdsf.sourceforge.net/vdsf_md"
-xmlns="http://vdsf.sourceforge.net/vdsf_md"
+targetNamespace="http://vdsf.sourceforge.net/photon_meta"
+xmlns="http://vdsf.sourceforge.net/photon_meta"
 elementFormDefault="qualified">
 
 <!-- Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
@@ -230,7 +230,7 @@ elementFormDefault="qualified">
   </xs:sequence>
 </xs:complexType>
 
-<xs:element name="vdsf" type="topFolderType">
+<xs:element name="photon" type="topFolderType">
   <xs:unique name="topFolderUnique">
     <xs:selector xpath="*"/>
     <xs:field xpath="@objName"/>

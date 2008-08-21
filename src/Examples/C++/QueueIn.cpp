@@ -151,7 +151,7 @@ int main( int argc, char *argv[] )
 #endif
    
    if ( argc < 6 ) {
-      cerr << "Usage: " << argv[0] << " iso_3166_data_file watchdog_address" <<
+      cerr << "Usage: " << argv[0] << " iso_3166_data_file quasar_address" <<
          "number_of_iterations milliseconds iterations_per_cycle" << endl;
       return 1;
    }

@@ -88,7 +88,7 @@ EXTRA_DIST =               \
         Makefile.win32     \
         photon.dsw         \
         $(PACKAGES_FILES)  \
-        XML/wd_config.xsd  
+        XML/quasar_config.xsd  
 
 install-data-local:
 	-mkdir -p $(DESTDIR)$(datadir)/doc/photon/Examples

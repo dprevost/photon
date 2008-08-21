@@ -50,7 +50,7 @@ Set objArgs = WScript.Arguments
 ' --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 If objArgs.Count <> 5 Then
-   Wscript.Echo "usage: cscript RunQueue.vbs iso_data_file watchdog_address number_of_iterations millisecs iterations_per_cycle"
+   Wscript.Echo "usage: cscript RunQueue.vbs iso_data_file quasar_address number_of_iterations millisecs iterations_per_cycle"
    Wscript.Quit(1)
 End If
 isoFile       = objArgs(0)

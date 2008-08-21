@@ -134,23 +134,23 @@ end if
 
 fso.CreateFolder(tmpDir)
 
-fso.Copyfile "..\..\..\XML\\wd_config.xsd", tmpDir + "\wd_config.xsd"
+fso.Copyfile "..\..\..\XML\\quasar_config.xsd", tmpDir + "\quasar_config.xsd"
 
 Set cmdFile = fso.CreateTextFile(tmpDir + "\cfg.xml", True)
 cmdFile.WriteLine("<?xml version=""1.0""?>")
-cmdFile.WriteLine("<vdsf_config xmlns=""http://vdsf.sourceforge.net/Config""")
+cmdFile.WriteLine("<quasar_config xmlns=""http://vdsf.sourceforge.net/quasarConfig""")
 cmdFile.WriteLine("xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""")
-cmdFile.WriteLine("xsi:schemaLocation=""http://vdsf.sourceforge.net/Config " + tmpDir + "\wd_config.xsd""> ")
-cmdFile.WriteLine("  <pso_location>" + tmpDir + "</pso_location>")
+cmdFile.WriteLine("xsi:schemaLocation=""http://vdsf.sourceforge.net/quasarConfig " + tmpDir + "\quasar_config.xsd""> ")
+cmdFile.WriteLine("  <mem_location>" + tmpDir + "</mem_location>")
 cmdFile.WriteLine("  <mem_size size=""10240"" units=""kb"" />")
-cmdFile.WriteLine("  <watchdog_address>10701</watchdog_address>")
+cmdFile.WriteLine("  <quasar_address>10701</quasar_address>")
 cmdFile.WriteLine("  <file_access access=""group"" />")
-cmdFile.WriteLine("</vdsf_config>")
+cmdFile.WriteLine("</quasar_config>")
 cmdFile.Close
 
-exeName = wd_path + "\psowd.exe -c " + tmpDir + "\cfg.xml"
+exeName = wd_path + "\quasar.exe -c " + tmpDir + "\cfg.xml"
 
-objShellwd.Run "%comspec% /c title psowd | " & exeName, 2, false
+objShellwd.Run "%comspec% /c title quasar | " & exeName, 2, false
 
 'Turn on error handling
 On Error Resume Next
@@ -212,7 +212,7 @@ Next
 dim z
 z = false
 while z <> true 
-   z = objShellwd.AppActivate( "psowd" )
+   z = objShellwd.AppActivate( "quasar" )
    Wscript.Sleep 100
 wend
 objShellwd.SendKeys "^C"
