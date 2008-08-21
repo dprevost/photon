@@ -1,19 +1,19 @@
 \input texinfo
-@setfilename vdswd.info
+@setfilename quasar.info
 @documentencoding iso-8859-1
-@settitle vdswd
+@settitle quasar
 @direntry
-* vdswd: (vdswd).               starts the vdsf watchdog
+* quasar: (quasar).             starts the Photon server
 @end direntry
 
 @node Top
-@top vdswd
+@top quasar
 
 @noindent
 @anchor{name}
 @chapheading Name
 
-vdswd @^a€” starts the vdsf watchdog
+quasar @^a€” starts the Photon server
 
 @noindent
 @anchor{synopsis}
@@ -23,31 +23,31 @@ vdswd @^a€” starts the vdsf watchdog
 @anchor{Testing the configuration file [and exit];}
 @heading Testing the configuration file (and exit):
 
-@samp{vdswd -c|--config} @emph{config_filename }@code{-t|--test}
+@samp{quasar -c|--config} @emph{config_filename }@code{-t|--test}
 
 @noindent
 @anchor{Verifying the VDS [and exit];}
 @heading Verifying the VDS (and exit):
 
-@samp{vdswd -c|--config} @emph{config_filename }@code{-v|--verify}
+@samp{quasar -c|--config} @emph{config_filename }@code{-v|--verify}
 
 @noindent
 @anchor{Getting [minimal] help;}
 @heading Getting (minimal) help:
 
-@samp{vdswd -h|--help|-?}
+@samp{quasar -h|--help|-?}
 
 @noindent
 @anchor{Running normally;}
 @heading Running normally:
 
-@samp{vdswd -c|--config} @emph{config_filename }[@code{-d|--daemon}]
+@samp{quasar -c|--config} @emph{config_filename }[@code{-d|--daemon}]
 
 @noindent
 @anchor{DESCRIPTION}
 @chapheading DESCRIPTION
 
-vdswd is the crash-recovery daemon (the watchdog) of the Virtual Data Space
+quasar is the crash-recovery daemon (the watchdog) of the Virtual Data Space
 Framework (VDSF). Currently, crash recovery is only done when this program is 
 started.
 

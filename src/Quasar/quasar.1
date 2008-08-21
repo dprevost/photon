@@ -4,27 +4,27 @@
 \\$2 \(la\\$1\(ra\\$3
 ..
 .if \n(.g .mso www.tmac
-.TH vdswd 1 "19 August 2008" VDSF "User Commands"
+.TH quasar 1 "20 August 2008" "Photon software" "User Commands"
 .SH NAME
-vdswd \- starts the vdsf watchdog
+quasar \- starts the Photon server
 .SH SYNOPSIS
 .SS "TESTING THE CONFIGURATION FILE (AND EXIT):"
-\*(T<\fBvdswd \-c|\-\-config\fR\*(T> \fIconfig_filename \fR\*(T<\fB\-t|\-\-test\fR\*(T>
+\*(T<\fBquasar \-c|\-\-config\fR\*(T> \fIconfig_filename \fR\*(T<\fB\-t|\-\-test\fR\*(T>
 .SS "VERIFYING THE VDS (AND EXIT):"
-\*(T<\fBvdswd \-c|\-\-config\fR\*(T> \fIconfig_filename \fR\*(T<\fB\-v|\-\-verify\fR\*(T>
+\*(T<\fBquasar \-c|\-\-config\fR\*(T> \fIconfig_filename \fR\*(T<\fB\-v|\-\-verify\fR\*(T>
 .SS "GETTING (MINIMAL) HELP:"
-\*(T<\fBvdswd \-h|\-\-help|\-?\fR\*(T>
+\*(T<\fBquasar \-h|\-\-help|\-?\fR\*(T>
 .SS "RUNNING NORMALLY:"
-\*(T<\fBvdswd \-c|\-\-config\fR\*(T> \fIconfig_filename \fR[\*(T<\fB\-d|\-\-daemon\fR\*(T>]
+\*(T<\fBquasar \-c|\-\-config\fR\*(T> \fIconfig_filename \fR[\*(T<\fB\-d|\-\-daemon\fR\*(T>]
 .SH DESCRIPTION
-vdswd is the crash-recovery daemon (the watchdog) of the Virtual Data Space
+quasar is the crash-recovery daemon (the watchdog) of the Virtual Data Space
 Framework (VDSF). Currently, crash recovery is only done when this program is 
 started.
 .SH OPTIONS
 .TP 
 \*(T<\fB\-c\fR\*(T>, \*(T<\fB\-\-config\fR\*(T> \fIconfig_filename\fR
 The name of the configuration file (see 
-CONFIGURATION [\fBvdswd\fR(1)]
+CONFIGURATION [\fBquasar\fR(1)]
 below).
 .TP 
 \*(T<\fB\-d\fR\*(T>, \*(T<\fB\-\-daemon\fR\*(T>

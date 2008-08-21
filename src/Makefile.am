@@ -42,7 +42,7 @@ SUBDIRS =             \
 EXAMPLES_FILES =                                   \
         Examples/iso_3166.tab                      \
         Examples/README.txt                        \
-        Examples/quasar-config.example              \
+        Examples/quasar-config.example.xml         \
         Examples/C/Examples.dsw                    \
         Examples/C/HashMap.c                       \
         Examples/C/HashMapLoop.c                   \

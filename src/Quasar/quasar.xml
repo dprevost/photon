@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
                    "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
-<refentry id='vdswd1'>
+<refentry id='quasar1'>
 <!--  
   Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
 
@@ -17,39 +17,39 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 -->
 <refmeta>
-  <refentrytitle>vdswd</refentrytitle>
+  <refentrytitle>quasar</refentrytitle>
   <manvolnum>1</manvolnum>
-  <refmiscinfo class='source'>VDSF</refmiscinfo>
+  <refmiscinfo class='source'>Photon software</refmiscinfo>
   <refmiscinfo class='manual'>User Commands</refmiscinfo>
   <refmiscinfo class='version'>0.3.0</refmiscinfo>
 </refmeta>
 <refnamediv id='name'>
-  <refname>vdswd</refname>
-  <refpurpose>starts the vdsf watchdog</refpurpose>
+  <refname>quasar</refname>
+  <refpurpose>starts the Photon server</refpurpose>
 </refnamediv>
 <refsynopsisdiv id='synopsis'>
 
 <refsect2 id='testing_the_configuration_file'><title>Testing the configuration file (and exit):</title>
-<para><userinput>vdswd -c|--config</userinput> <emphasis remap='I'>config_filename </emphasis><option>-t|--test</option></para>
+<para><userinput>quasar -c|--config</userinput> <emphasis remap='I'>config_filename </emphasis><option>-t|--test</option></para>
 </refsect2>
 
 <refsect2 id='verifying_the_vds'><title>Verifying the VDS (and exit):</title>
-<para><userinput>vdswd -c|--config</userinput> <emphasis remap='I'>config_filename </emphasis><option>-v|--verify</option></para>
+<para><userinput>quasar -c|--config</userinput> <emphasis remap='I'>config_filename </emphasis><option>-v|--verify</option></para>
 </refsect2>
 
 <refsect2 id='getting_help'><title>Getting (minimal) help:</title>
-<para><userinput>vdswd -h|--help|-?</userinput></para> 
+<para><userinput>quasar -h|--help|-?</userinput></para> 
 </refsect2>
 
 <refsect2 id='running_normally'><title>Running normally:</title>
-<para><userinput>vdswd -c|--config</userinput> <emphasis remap='I'>config_filename </emphasis>[<option>-d|--daemon</option>]</para>
+<para><userinput>quasar -c|--config</userinput> <emphasis remap='I'>config_filename </emphasis>[<option>-d|--daemon</option>]</para>
 </refsect2>
 </refsynopsisdiv>
 
 <!-- body begins here -->
 
 <refsect1 id='description'><title>DESCRIPTION</title>
-<para>vdswd is the crash-recovery daemon (the watchdog) of the Virtual Data Space
+<para>quasar is the crash-recovery daemon (the watchdog) of the Virtual Data Space
 Framework (VDSF). Currently, crash recovery is only done when this program is 
 started.</para>
 </refsect1>
