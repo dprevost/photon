@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
-<quasar_config xmlns="http://vdsf.sourceforge.net/quasarConfig"
+<quasar_config xmlns="http://photonsoftware.org/quasarConfig"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://vdsf.sourceforge.net/quasarConfig ../XML/quasar_config.xsd">
+xsi:schemaLocation="http://photonsoftware.org/quasarConfig ../XML/quasar_config.xsd">
 
 <!-- Directory for the vds (the shared-memory file) and support 
      files. The files will be created if needed.

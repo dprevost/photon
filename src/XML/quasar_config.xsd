@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  targetNamespace="http://vdsf.sourceforge.net/quasarConfig"
-  xmlns="http://vdsf.sourceforge.net/quasarConfig"
+  targetNamespace="http://photonsoftware.org/quasarConfig"
+  xmlns="http://photonsoftware.org/quasarConfig"
   elementFormDefault="qualified"
   version="1.0">
 

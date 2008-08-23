@@ -114,9 +114,9 @@ fi
 
 
 echo "<?xml version=\"1.0\"?>                                   " >> $BASE_DIR/cfg.xml
-echo "<quasar_config xmlns=\"http://vdsf.sourceforge.net/quasarConfig\" " >> $BASE_DIR/cfg.xml
+echo "<quasar_config xmlns=\"http://photonsoftware.org/quasarConfig\" " >> $BASE_DIR/cfg.xml
 echo "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"   " >> $BASE_DIR/cfg.xml
-echo "xsi:schemaLocation=\"http://vdsf.sourceforge.net/quasarConfig $BASE_DIR/quasar_config.xsd\"> " >> $BASE_DIR/cfg.xml
+echo "xsi:schemaLocation=\"http://photonsoftware.org/quasarConfig $BASE_DIR/quasar_config.xsd\"> " >> $BASE_DIR/cfg.xml
 echo "  <mem_location>$BASE_DIR/vds</mem_location>              " >> $BASE_DIR/cfg.xml
 echo "  <mem_size size=\"10240\" units=\"kb\" />                " >> $BASE_DIR/cfg.xml
 #echo "  <quasar_address>10701</quasar_address>              " >> $BASE_DIR/cfg.xml
@@ -135,9 +135,9 @@ fi
 # Success expected
 rm -f $BASE_DIR/cfg.xml
 echo "<?xml version=\"1.0\"?>                                   " >> $BASE_DIR/cfg.xml
-echo "<quasar_config xmlns=\"http://vdsf.sourceforge.net/quasarConfig\" " >> $BASE_DIR/cfg.xml
+echo "<quasar_config xmlns=\"http://photonsoftware.org/quasarConfig\" " >> $BASE_DIR/cfg.xml
 echo "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"   " >> $BASE_DIR/cfg.xml
-echo "xsi:schemaLocation=\"http://vdsf.sourceforge.net/quasarConfig $BASE_DIR/quasar_config.xsd\"> " >> $BASE_DIR/cfg.xml
+echo "xsi:schemaLocation=\"http://photonsoftware.org/quasarConfig $BASE_DIR/quasar_config.xsd\"> " >> $BASE_DIR/cfg.xml
 echo "  <mem_location>$BASE_DIR/vds</mem_location>              " >> $BASE_DIR/cfg.xml
 echo "  <mem_size size=\"10240\" units=\"kb\" />                " >> $BASE_DIR/cfg.xml
 echo "  <quasar_address>10701</quasar_address>              " >> $BASE_DIR/cfg.xml

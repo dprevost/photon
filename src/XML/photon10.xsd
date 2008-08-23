@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:md="http://vdsf.sourceforge.net/photon_meta"
-targetNamespace="http://vdsf.sourceforge.net/photon"
-xmlns="http://vdsf.sourceforge.net/photon"
+           xmlns:md="http://photonsoftware.org/photon_meta"
+targetNamespace="http://photonsoftware.org/photon"
+xmlns="http://photonsoftware.org/photon"
 elementFormDefault="qualified">
 
 <!-- Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
@@ -20,7 +20,7 @@ elementFormDefault="qualified">
 -->
 
 <xs:import
-  namespace="http://vdsf.sourceforge.net/photon_meta"
+  namespace="http://photonsoftware.org/photon_meta"
   schemaLocation="photon_meta10.xsd">
 </xs:import>
 

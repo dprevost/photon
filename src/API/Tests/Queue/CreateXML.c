@@ -30,9 +30,9 @@ const bool expectedToPass = true;
  */
 #define BUILD_XML(SRC_PATH,TRAILER)                                 \
    strcpy( buff, "<?xml version=\"1.0\"?>\n"                        \
-      "<queue xmlns=\"http://vdsf.sourceforge.net/photon_meta\" \n"     \
+      "<queue xmlns=\"http://photonsoftware.org/photon_meta\" \n"     \
       "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n"  \
-      "xsi:schemaLocation=\"http://vdsf.sourceforge.net/photon_meta "); \
+      "xsi:schemaLocation=\"http://photonsoftware.org/photon_meta "); \
    strcat( buff, SRC_PATH);                                         \
    strcat( buff, "\"\n objName=\"My_Queue\" >\n" );                 \
    strcat( buff, TRAILER );                                         \

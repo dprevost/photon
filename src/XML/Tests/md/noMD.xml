@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
-<queue xmlns="http://vdsf.sourceforge.net/photon_meta"
+<queue xmlns="http://photonsoftware.org/photon_meta"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://vdsf.sourceforge.net/photon_meta photon_meta10.xsd"
+  xsi:schemaLocation="http://photonsoftware.org/photon_meta photon_meta10.xsd"
   objName="A_queue" >
 
 </queue>

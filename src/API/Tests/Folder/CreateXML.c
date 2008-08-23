@@ -78,9 +78,9 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    strcpy( buff, "<?xml version=\"1.0\"?>\n"
-      "<folder xmlns=\"http://vdsf.sourceforge.net/photon_meta\" "
+      "<folder xmlns=\"http://photonsoftware.org/photon_meta\" "
       "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-      "xsi:schemaLocation=\"http://vdsf.sourceforge.net/photon_meta ");
+      "xsi:schemaLocation=\"http://photonsoftware.org/photon_meta ");
    strcat( buff, src_path);
    strcat( buff, "\" "
       "objName=\"My_name\" > "
@@ -113,9 +113,9 @@ int main( int argc, char * argv[] )
    }
 
    strcpy( buff, "<?xml version=\"1.0\"?>\n"
-      "<folder xmlns=\"http://vdsf.sourceforge.net/photon_meta\" "
+      "<folder xmlns=\"http://photonsoftware.org/photon_meta\" "
       "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-      "xsi:schemaLocation=\"http://vdsf.sourceforge.net/photon_meta ");
+      "xsi:schemaLocation=\"http://photonsoftware.org/photon_meta ");
    strcat( buff, src_path);
    strcat( buff, "\" "
       "objName=\"My_name\" >"

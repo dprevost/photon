@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-targetNamespace="http://vdsf.sourceforge.net/photon_meta"
-xmlns="http://vdsf.sourceforge.net/photon_meta"
+targetNamespace="http://photonsoftware.org/photon_meta"
+xmlns="http://photonsoftware.org/photon_meta"
 elementFormDefault="qualified">
 
 <!-- Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>

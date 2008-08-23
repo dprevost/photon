@@ -194,11 +194,11 @@ def WriteCfg():
    try:
       line = '<?xml version=\"1.0\"?>'
       cfg_file.write( line )   
-      line = '<quasar_config xmlns=\"http://vdsf.sourceforge.net/quasarConfig\"'
+      line = '<quasar_config xmlns=\"http://photonsoftware.org/quasarConfig\"'
       cfg_file.write( line )   
       line = 'xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"'
       cfg_file.write( line )   
-      line = 'xsi:schemaLocation=\"http://vdsf.sourceforge.net/quasarConfig ' + os.path.join( vds_dir, 'quasar_config.xsd' ) + '\"> '
+      line = 'xsi:schemaLocation=\"http://photonsoftware.org/quasarConfig ' + os.path.join( vds_dir, 'quasar_config.xsd' ) + '\"> '
       cfg_file.write( line )   
       line = '  <mem_location>' + vds_dir + '</mem_location>'
       cfg_file.write( line )   
