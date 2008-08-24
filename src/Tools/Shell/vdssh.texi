@@ -29,7 +29,7 @@ vdssh @^a€” starts a pseudo-shell to access VDSF data
 @anchor{Running normally;}
 @heading Running normally:
 
-@samp{vdssh -a|--address} @emph{watchdog_address }
+@samp{vdssh -a|--address} @emph{quasar_address }
 
 @noindent
 @anchor{DESCRIPTION}
@@ -49,7 +49,7 @@ for a list of supported commands (and syntax).
 
 @table @asis
 
-@item @code{-a}, @code{--address} @var{watchdog_address}
+@item @code{-a}, @code{--address} @var{quasar_address}
 The TCP port for the VDSF watchdog (the program quasar).
 
 @item @code{-h}, @code{-?}, @code{--help}

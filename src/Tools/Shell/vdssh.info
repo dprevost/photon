@@ -34,7 +34,7 @@ Getting (minimal) help:
 Running normally:
 =================
 
-`vdssh -a|--address' _watchdog_address _
+`vdssh -a|--address' _quasar_address _
 
 
 
@@ -53,7 +53,7 @@ for a list of supported commands (and syntax).
 OPTIONS
 *******
 
-`-a', `--address' WATCHDOG_ADDRESS
+`-a', `--address' QUASAR_ADDRESS
      The TCP port for the VDSF watchdog (the program quasar).
 
 `-h', `-?', `--help'
@@ -139,10 +139,10 @@ Ref: name243
 Ref: synopsis310
 Ref: Getting [minimal] help;331
 Ref: Running normally;404
-Ref: DESCRIPTION485
-Ref: OPTIONS812
-Ref: Commands1009
-Ref: REPORTING BUGS2476
-Ref: COPYRIGHT2558
+Ref: DESCRIPTION483
+Ref: OPTIONS810
+Ref: Commands1005
+Ref: REPORTING BUGS2472
+Ref: COPYRIGHT2554
 
 End Tag Table

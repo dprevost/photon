@@ -47,8 +47,8 @@ quasar @^a€” starts the Photon server
 @anchor{DESCRIPTION}
 @chapheading DESCRIPTION
 
-quasar is the crash-recovery daemon (the watchdog) of the Virtual Data Space
-Framework (VDSF). Currently, crash recovery is only done when this program is 
+quasar is the crash-recovery daemon (the watchdog) of the Photon 
+Framework. Currently, crash recovery is only done when this program is 
 started.
 
 @noindent
@@ -108,7 +108,7 @@ The file permissions used for the directory holding the shared-memory file.
 @anchor{REPORTING BUGS}
 @chapheading REPORTING BUGS
 
-Report bugs to <dprevost@@users.sourceforge.net>.
+Report bugs to <dprevost@@photonsoftware.org>.
 
 @noindent
 @anchor{COPYRIGHT}
