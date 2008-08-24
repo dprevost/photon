@@ -1,4 +1,4 @@
-.TH "psoErrors.h" 3 "19 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoErrors.h" 3 "24 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -79,12 +79,12 @@ This invalid length will usually indicate that the length value is set to zero.
 \fB\fIPSO_PROCESS_ALREADY_INITIALIZED \fP\fP
 The process was already initialized. 
 .PP
-One possibility: was vdsInit() called for a second time? 
+One possibility: was \fBpsoInit()\fP called for a second time? 
 .TP
 \fB\fIPSO_PROCESS_NOT_INITIALIZED \fP\fP
 The process was not properly initialized. 
 .PP
-One possibility: was vdsInit() called? 
+One possibility: was \fBpsoInit()\fP called? 
 .TP
 \fB\fIPSO_INVALID_WATCHDOG_ADDRESS \fP\fP
 The watchdog address is invalid (empty string, NULL pointer, etc. 
@@ -107,12 +107,12 @@ Socket error when trying to send a request to the watchdog.
 Socket error when trying to receive a reply from the watchdog. 
 .TP
 \fB\fIPSO_BACKSTORE_FILE_MISSING \fP\fP
-The vds backstore file is missing. 
+The shared-memory backstore file is missing. 
 .PP
-The name of this file is provided by the watchdog - if it is missing, something really weird is going on. 
+The name of this file is provided by the server (quasar) - if it is missing, something really weird is going on. 
 .TP
 \fB\fIPSO_ERROR_OPENING_VDS \fP\fP
-Generic i/o error when attempting to open the vds. 
+Generic i/o error when attempting to open the shared memory. 
 .TP
 \fB\fIPSO_LOGFILE_ERROR \fP\fP
 Error accessing the directory for the log files or error opening the log file itself. 
@@ -152,7 +152,7 @@ This might be the result of either a very busy system where unused cpu cycles ar
 The search/iteration reached the end without finding a new item/record. 
 .TP
 \fB\fIPSO_INVALID_ITERATOR \fP\fP
-An invalid value was used for a vdsIteratorType parameter. 
+An invalid value was used for a psoIteratorType parameter. 
 .TP
 \fB\fIPSO_OBJECT_NAME_TOO_LONG \fP\fP
 The name of the object is too long. 
@@ -207,10 +207,10 @@ Read-only objects are not updated very frequently and therefore only a single ed
 To allow concurrent editors (either all working on the same copy or each working with its own copy would have been be possible but was deemed unnecessary. 
 .TP
 \fB\fIPSO_INVALID_NUM_FIELDS \fP\fP
-The number of fields in the data definition is invalid - either zero or greater than PSO_MAX_FIELDS (defined in photon/vdsCommon.h). 
+The number of fields in the data definition is invalid - either zero or greater than PSO_MAX_FIELDS (defined in \fBphoton/psoCommon.h\fP). 
 .TP
 \fB\fIPSO_INVALID_FIELD_TYPE \fP\fP
-The data type of the field definition does not correspond to one of the data type defined in the enum psoFieldType (photon/vdsCommon.h). 
+The data type of the field definition does not correspond to one of the data type defined in the enum psoFieldType (\fBphoton/psoCommon.h\fP). 
 .PP
 or you've used PSO_VAR_STRING or PSO_VAR_BINARY at the wrong place.
 .PP

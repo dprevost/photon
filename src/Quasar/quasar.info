@@ -1,21 +1,21 @@
-This is vdswd.info, produced by makeinfo version 4.8 from vdswd.texi.
+This is quasar.info, produced by makeinfo version 4.8 from quasar.texi.
 
 START-INFO-DIR-ENTRY
-* vdswd: (vdswd).               starts the vdsf watchdog
+* quasar: (quasar).             starts the Photon server
 END-INFO-DIR-ENTRY
 
 
-File: vdswd.info,  Node: Top,  Up: (dir)
+File: quasar.info,  Node: Top,  Up: (dir)
 
-vdswd
-*****
+quasar
+******
 
 
 
 Name
 ****
 
-vdswd a^€” starts the vdsf watchdog
+quasar a^€” starts the Photon server
 
 
 
@@ -27,37 +27,37 @@ Synopsis
 Testing the configuration file (and exit):
 ==========================================
 
-`vdswd -c|--config' _config_filename _`-t|--test'
+`quasar -c|--config' _config_filename _`-t|--test'
 
 
 
 Verifying the VDS (and exit):
 =============================
 
-`vdswd -c|--config' _config_filename _`-v|--verify'
+`quasar -c|--config' _config_filename _`-v|--verify'
 
 
 
 Getting (minimal) help:
 =======================
 
-`vdswd -h|--help|-?'
+`quasar -h|--help|-?'
 
 
 
 Running normally:
 =================
 
-`vdswd -c|--config' _config_filename _[`-d|--daemon']
+`quasar -c|--config' _config_filename _[`-d|--daemon']
 
 
 
 DESCRIPTION
 ***********
 
-vdswd is the crash-recovery daemon (the watchdog) of the Virtual Data
-Space Framework (VDSF). Currently, crash recovery is only done when
-this program is started.
+quasar is the crash-recovery daemon (the watchdog) of the Photon
+Framework. Currently, crash recovery is only done when this program is
+started.
 
 
 
@@ -112,7 +112,7 @@ _DirectoryPermissions_
 REPORTING BUGS
 **************
 
-Report bugs to <dprevost@users.sourceforge.net>.
+Report bugs to <dprevost@photonsoftware.org>.
 
 
 
@@ -124,17 +124,17 @@ Copyright (C) 2008 Daniel Pre'vost.
 
 
 Tag Table:
-Node: Top169
-Ref: name226
-Ref: synopsis276
-Ref: Testing the configuration file [and exit];297
-Ref: Verifying the VDS [and exit];437
-Ref: Getting [minimal] help;553
-Ref: Running normally;626
-Ref: DESCRIPTION720
-Ref: OPTIONS911
-Ref: CONFIGURATION1441
-Ref: REPORTING BUGS2146
-Ref: COPYRIGHT2228
+Node: Top171
+Ref: name231
+Ref: synopsis282
+Ref: Testing the configuration file [and exit];303
+Ref: Verifying the VDS [and exit];444
+Ref: Getting [minimal] help;561
+Ref: Running normally;635
+Ref: DESCRIPTION730
+Ref: OPTIONS903
+Ref: CONFIGURATION1433
+Ref: REPORTING BUGS2138
+Ref: COPYRIGHT2217
 
 End Tag Table
