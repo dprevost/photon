@@ -34,7 +34,7 @@ BEGIN_C_DECLS
  * places, using a struct for the previous and next element simplify 
  * some of the code. Also, do not forget that our linked lists do 
  * not act on pointers but used offsets instead like everything else
- * in the VDS. Using a struct also ensures that the type of previous
+ * in shared memory. Using a struct also ensures that the type of previous
  * and next elements are ptrdiff_t and not int or something like this 
  * (int (or u_int?) would probably work on 32bits and fail on some 
  * 64bits machines - this type of error/bug is difficult to find, better

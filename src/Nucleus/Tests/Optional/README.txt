@@ -17,7 +17,7 @@ InitBigVDS
     The utility DisplayBigVDSSize can do this calculation for you if you 
     are unsure of the actual size of blocks you are using.
     
-    For a block size of 8192 bytes, the VDS would have to be 512 MB. 
+    For a block size of 8192 bytes, the shared memory would have to be 512 MB. 
     
     This is why this test is optional - it will often go beyond the amount
     of available RAM.

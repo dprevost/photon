@@ -98,7 +98,7 @@ vdswCheckHashMapContent( vdswVerifyStruct   * pVerify,
          psnHashDelWithItem( &pHashMap->hashObj,
                               pDeletedItem,
                               pContext );
-         vdswEcho( pVerify, "Hash item removed from the VDS" );
+         vdswEcho( pVerify, "Hash item removed from shared memory" );
       }
       pDeletedItem = NULL;
    }

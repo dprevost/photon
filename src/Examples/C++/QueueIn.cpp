@@ -85,8 +85,8 @@ void initObjects()
                    &controlData, sizeof(int) );
 
    // The next two control items indicate if the other two programs are 
-   // ready to use the VDS or not (otherwise you can get a bit of a problem
-   // filling up the shared memory.
+   // ready to use shared memory or not (otherwise you can get a bit of 
+   // a problem, filling up the shared memory before they are started)
    controlData = 0;
    control.Insert( workProcessKey, strlen(workProcessKey), 
                    &controlData, sizeof(int) );

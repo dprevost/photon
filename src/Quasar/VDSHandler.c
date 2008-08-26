@@ -195,7 +195,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) return false;
       
-      fprintf( stderr, "Starting the recovery of the VDS, please be patient\n" );
+      fprintf( stderr, "Starting the recovery of the shared memory, please be patient\n" );
       if ( verifyVDSOnly ) {
          vdswVerify( *ppMemoryAddress, 
                      &numObjectsOK,
@@ -219,7 +219,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
       fprintf( stderr, "Number of deleted objects (added but not committed, etc.): "PSO_SIZE_T_FORMAT"\n", numObjectsDeleted );
       fprintf( stderr, "Number of objects with errors: "PSO_SIZE_T_FORMAT"\n", numObjectsError );
       if ( numObjectsError != 0 ) {
-         fprintf( stderr, "Failure repairing the vds (see log for details)\n" );
+         fprintf( stderr, "Failure repairing the shared memory (see log for details)\n" );
          fprintf( stderr, "Please save the backup (%s%s) \n%s\n",
             path, ".bak",
             "before running this program a second time." );
@@ -228,7 +228,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
 
 #if 0
       /*
-       * We validate the VDS first since the config file can set/unset the  
+       * We validate the shared memory first since the config file can set/unset the  
        * logging of transactions on an existing VDS.
        */
       if ( pConfig->logOn ) {

@@ -79,7 +79,7 @@ typedef struct psnMemAlloc psnMemAlloc;
  * the shared memory itself. 
  *
  * This function should only be called by the watchdog (it might move there
- * eventually). Reason: when a program access the VDS, the allocator is 
+ * eventually). Reason: when a program access shared memory, the allocator is 
  * already there, initialized and all.
  */
 PHOTON_ENGINE_EXPORT

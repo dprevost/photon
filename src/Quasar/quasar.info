@@ -31,8 +31,8 @@ Testing the configuration file (and exit):
 
 
 
-Verifying the VDS (and exit):
-=============================
+Verifying the shared memory (and exit):
+=======================================
 
 `quasar -c|--config' _config_filename _`-v|--verify'
 
@@ -128,13 +128,13 @@ Node: Top171
 Ref: name231
 Ref: synopsis282
 Ref: Testing the configuration file [and exit];303
-Ref: Verifying the VDS [and exit];444
-Ref: Getting [minimal] help;561
-Ref: Running normally;635
-Ref: DESCRIPTION730
-Ref: OPTIONS903
-Ref: CONFIGURATION1433
-Ref: REPORTING BUGS2138
-Ref: COPYRIGHT2217
+Ref: Verifying the shared memory [and exit];444
+Ref: Getting [minimal] help;581
+Ref: Running normally;655
+Ref: DESCRIPTION750
+Ref: OPTIONS923
+Ref: CONFIGURATION1453
+Ref: REPORTING BUGS2158
+Ref: COPYRIGHT2237
 
 End Tag Table

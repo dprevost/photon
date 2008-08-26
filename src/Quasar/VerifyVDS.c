@@ -89,7 +89,7 @@ void vdswValidate( psnMemoryHeader * pMemoryAddress,
    // Test the lock of the allocator
    if ( pscIsItLocked( &memAllocator->memObj.lock ) ) {
       vdswEcho( &verifyStruct, 
-         "Warning! The memory allocator is locked - the VDS might be corrupted" );
+         "Warning! The memory allocator is locked - the shared memory might be corrupted" );
       if ( doRepair ) {
          vdswEcho( &verifyStruct, "Trying to reset it..." );
          pscReleaseProcessLock ( &memAllocator->memObj.lock );

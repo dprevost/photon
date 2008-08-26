@@ -66,7 +66,7 @@ public:
               bool        protectionNeeded = false );
 
    /**
-    * The destructor terminates all access to the VDS. This function 
+    * The destructor terminates all access to shared memory. This function 
     * will also close all sessions and terminate all accesses to 
     * the different objects.
     */

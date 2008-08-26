@@ -1,11 +1,11 @@
-.TH "psoLifo.h" 3 "24 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoLifo.h" 3 "26 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 psoLifo.h \- 
 .SH "Detailed Description"
 .PP 
-This file provides the API needed to access a VDSF LIFO queue. 
+This file provides the API needed to access a Photon LIFO queue. 
 
 
 .PP
@@ -20,35 +20,35 @@ Definition in file \fBpsoLifo.h\fP.
 
 .in +1c
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoLifoClose\fP (\fBPSO_HANDLE\fP objectHandle)"
+.RI "PHOTON_EXPORT int \fBpsoLifoClose\fP (\fBPSO_HANDLE\fP objectHandle)"
 .br
 .RI "\fIClose a LIFO queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoLifoDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP **definition)"
+.RI "PHOTON_EXPORT int \fBpsoLifoDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP **definition)"
 .br
 .RI "\fIRetrieve the data definition of the queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoLifoGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "PHOTON_EXPORT int \fBpsoLifoGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .RI "\fIIterate through the queue - no data items are removed from the queue by this function. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoLifoGetNext\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "PHOTON_EXPORT int \fBpsoLifoGetNext\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .RI "\fIIterate through the queue - no data items are removed from the queue by this function. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoLifoOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *queueName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
+.RI "PHOTON_EXPORT int \fBpsoLifoOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *queueName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
 .br
 .RI "\fIOpen an existing LIFO queue (see \fBpsoCreateObject\fP to create a new queue). \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoLifoPop\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "PHOTON_EXPORT int \fBpsoLifoPop\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .RI "\fIRemove the first item from the beginning of a LIFO queue and return it to the caller. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoLifoPush\fP (\fBPSO_HANDLE\fP objectHandle, const void *pItem, size_t length)"
+.RI "PHOTON_EXPORT int \fBpsoLifoPush\fP (\fBPSO_HANDLE\fP objectHandle, const void *pItem, size_t length)"
 .br
 .RI "\fIInsert a data element at the end of the LIFO queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoLifoStatus\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP *pStatus)"
+.RI "PHOTON_EXPORT int \fBpsoLifoStatus\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP *pStatus)"
 .br
 .RI "\fIReturn the status of the queue. \fP"
 .in -1c

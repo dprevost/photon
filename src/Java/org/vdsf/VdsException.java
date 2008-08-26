@@ -16,7 +16,7 @@
 package org.vdsf;
 
 /**
- * Exception class for the vdsf library.
+ * Exception class for the Photon library.
  */
 
 class VdsException extends Exception {

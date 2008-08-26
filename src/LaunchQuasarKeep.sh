@@ -23,7 +23,7 @@
 # located in "../Watchdog".
 #
 # \todo Additional arguments (to control the location of the working
-#       files, the size of the VDS, etc.) should be added eventually.
+#       files, the size of the shared memory, etc.) should be added eventually.
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

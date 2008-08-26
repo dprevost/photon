@@ -35,14 +35,14 @@ int main( int argc, char *argv[] )
       { 'i', "install",   1, "",         "Install the program as a NT service (Windows only)" },
       { 't', "test",      1, "",         "Test the config file and exit" },
       { 'u', "uninstall", 1, "",         "Uninstall the program as a NT service (Windows only)" },
-      { 'v', "verify",    1, "",         "Verify the VDS and exit" }
+      { 'v', "verify",    1, "",         "Verify the shared memory and exit" }
    };
 #else
    struct pscOptStruct opts[4] = {
       { 'c', "config", 0, "filename", "Filename for the configuration options" },
       { 'd', "daemon", 1, "",         "Run the program as a Unix daemon (Unix/linux only)" },
       { 't', "test",   1, "",         "Test the config file and exit" },
-      { 'v', "verify", 1, "",         "Verify the VDS and exit" }
+      { 'v', "verify", 1, "",         "Verify the shared memory and exit" }
    };
 #endif
 

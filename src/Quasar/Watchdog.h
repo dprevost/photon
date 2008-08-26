@@ -150,7 +150,7 @@ int vdswLastError() {
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- *  This function is going to validate the VDS or create it if it does 
+ *  This function is going to validate the shared memory or create it if it does 
  *  not exist, cleanup any leftovers from previous runs, possibly run
  *  the CrashRecovery (eventually), possibly create a backup copy, etc.
  *  It will also initialize all POSIX semaphores (if we used them on

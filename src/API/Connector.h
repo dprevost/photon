@@ -46,7 +46,7 @@ BEGIN_C_DECLS
 
 /**
  *  This object enables the client application to connect to the watchdog
- *  and to request the information it need to access the VDS.
+ *  and to request the information it need to access the shared memory.
  *
  *  This object encapsulates the IPC mechanism uses between the apps and
  *  the watchdog. I've looked at different possibilities, for example 
@@ -78,13 +78,13 @@ typedef struct psaConnector
  * Establish a connection between the client and the watchdog.
  * 
  * This method also retrieves the information necessary for 
- * establishing a link to the VDS (file name, etc.).
+ * establishing a link to the shared memory (file name, etc.).
  *
  * \param address The address of the watchdog (currently this is just
  *                the tcp/ip port formatted as a string).
  * \param pAnswer A pointer to a structure containing all relevant
- *               information needed to establish a link to the VDS.
- * \return A VDS error code.
+ *               information needed to establish a link to the shared memory.
+ * \return A Photon error code.
  */
 int psaConnect( psaConnector    * pConnector,
                 const char      * address,

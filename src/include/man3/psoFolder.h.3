@@ -1,11 +1,11 @@
-.TH "psoFolder.h" 3 "24 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoFolder.h" 3 "26 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 psoFolder.h \- 
 .SH "Detailed Description"
 .PP 
-This file provides the API needed to access a VDSF folder. 
+This file provides the API needed to access a Photon folder. 
 
 
 .PP
@@ -20,35 +20,35 @@ Definition in file \fBpsoFolder.h\fP.
 
 .in +1c
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoFolderClose\fP (\fBPSO_HANDLE\fP objectHandle)"
+.RI "PHOTON_EXPORT int \fBpsoFolderClose\fP (\fBPSO_HANDLE\fP objectHandle)"
 .br
 .RI "\fIClose a folder. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
+.RI "PHOTON_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoFolderCreateObjectXML\fP (\fBPSO_HANDLE\fP folderHandle, const char *xmlBuffer, size_t lengthInBytes)"
+.RI "PHOTON_EXPORT int \fBpsoFolderCreateObjectXML\fP (\fBPSO_HANDLE\fP folderHandle, const char *xmlBuffer, size_t lengthInBytes)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoFolderDestroyObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes)"
+.RI "PHOTON_EXPORT int \fBpsoFolderDestroyObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes)"
 .br
 .RI "\fIDestroy an object, child of the current folder, in shared memory. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoFolderGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP *pEntry)"
+.RI "PHOTON_EXPORT int \fBpsoFolderGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP *pEntry)"
 .br
 .RI "\fIIterate through the folder - no data items are removed from the folder by this function. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoFolderGetNext\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP *pEntry)"
+.RI "PHOTON_EXPORT int \fBpsoFolderGetNext\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP *pEntry)"
 .br
 .RI "\fIIterate through the folder. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoFolderOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *folderName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
+.RI "PHOTON_EXPORT int \fBpsoFolderOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *folderName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
 .br
 .RI "\fIOpen an existing folder (see \fBpsoCreateObject\fP to create a new folder). \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoFolderStatus\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP *pStatus)"
+.RI "PHOTON_EXPORT int \fBpsoFolderStatus\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP *pStatus)"
 .br
 .RI "\fIReturn the status of the folder. \fP"
 .in -1c

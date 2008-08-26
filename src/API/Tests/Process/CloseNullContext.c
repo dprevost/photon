@@ -41,7 +41,7 @@ int main( int argc, char * argv[] )
       return 0;
    }
 
-   psaCloseVDS( &process, NULL );
+   psoaCloseMemory( &process, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -105,8 +105,8 @@ elementFormDefault="qualified">
 <!-- For the next two types, when the attribute "maxLength" is set to zero,
      it indicates that there is no limits to the string or binary data up
      to 4 Gigabytes
-     (other than the usual constraints of the VDS, the computer itself, 
-     etc.). This is the default.
+     (other than the usual constraints of the shared memory, the computer 
+     itself, etc.). This is the default.
      
      [I could have used -1 instead but that would allow zero to 
      be accepted and a maximum length of zero is non sense.] -->

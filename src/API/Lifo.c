@@ -32,7 +32,7 @@
 int psoLifoClose( PSO_HANDLE objectHandle )
 {
    psaLifo * pLifo;
-   psnQueue * pVDSLifo;
+   psnQueue * pMemLifo;
    int errcode = PSO_OK;
    
    pLifo = (psaLifo *) objectHandle;
@@ -42,11 +42,11 @@ int psoLifoClose( PSO_HANDLE objectHandle )
 
    if ( ! pLifo->object.pSession->terminated ) {
       if ( psaCommonLock( &pLifo->object ) ) {
-         pVDSLifo = (psnQueue *) pLifo->object.pMyVdsObject;
+         pMemLifo = (psnQueue *) pLifo->object.pMyMemObject;
 
          /* Reinitialize the iterator, if needed */
          if ( pLifo->iterator != NULL ) {
-            if ( psnQueueRelease( pVDSLifo,
+            if ( psnQueueRelease( pMemLifo,
                                    pLifo->iterator,
                                    &pLifo->object.pSession->context ) ) {
                pLifo->iterator = NULL;
@@ -92,7 +92,7 @@ int psoLifoDefinition( PSO_HANDLE             objectHandle,
                        psoObjectDefinition ** ppDefinition )
 {
    psaLifo * pLifo;
-   psnQueue * pVDSLifo;
+   psnQueue * pMemLifo;
    int errcode = PSO_OK;
    psnSessionContext * pContext;
    
@@ -110,10 +110,10 @@ int psoLifoDefinition( PSO_HANDLE             objectHandle,
 
    if ( ! pLifo->object.pSession->terminated ) {
       if ( psaCommonLock( &pLifo->object ) ) {
-         pVDSLifo = (psnQueue *) pLifo->object.pMyVdsObject;
+         pMemLifo = (psnQueue *) pLifo->object.pMyMemObject;
       
          errcode = psaGetDefinition( pLifo->pDefinition,
-                                      pVDSLifo->numFields,
+                                      pMemLifo->numFields,
                                       ppDefinition );
          if ( errcode == PSO_OK ) (*ppDefinition)->type = PSO_LIFO;
          psaCommonUnlock( &pLifo->object );
@@ -141,7 +141,7 @@ int psoLifoGetFirst( PSO_HANDLE   objectHandle,
                      size_t     * returnedLength )
 {
    psaLifo * pLifo;
-   psnQueue * pVDSLifo;
+   psnQueue * pMemLifo;
    int errcode = PSO_OK;
    bool ok = true;
 
@@ -167,11 +167,11 @@ int psoLifoGetFirst( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
    
-   pVDSLifo = (psnQueue *) pLifo->object.pMyVdsObject;
+   pMemLifo = (psnQueue *) pLifo->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pLifo->iterator != NULL ) {
-      ok = psnQueueRelease( pVDSLifo,
+      ok = psnQueueRelease( pMemLifo,
                              pLifo->iterator,
                              &pLifo->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -180,7 +180,7 @@ int psoLifoGetFirst( PSO_HANDLE   objectHandle,
       pLifo->iterator = NULL;
    }
 
-   ok = psnQueueGet( pVDSLifo,
+   ok = psnQueueGet( pMemLifo,
                       PSO_FIRST,
                       &pLifo->iterator,
                       bufferLength,
@@ -219,7 +219,7 @@ int psoLifoGetNext( PSO_HANDLE   objectHandle,
                     size_t     * returnedLength )
 {
    psaLifo * pLifo;
-   psnQueue * pVDSLifo;
+   psnQueue * pMemLifo;
    int errcode = PSO_OK;
    bool ok = true;
    
@@ -250,9 +250,9 @@ int psoLifoGetNext( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   pVDSLifo = (psnQueue *) pLifo->object.pMyVdsObject;
+   pMemLifo = (psnQueue *) pLifo->object.pMyMemObject;
 
-   ok = psnQueueGet( pVDSLifo,
+   ok = psnQueueGet( pMemLifo,
                       PSO_NEXT,
                       &pLifo->iterator,
                       bufferLength,
@@ -292,7 +292,7 @@ int psoLifoOpen( PSO_HANDLE   sessionHandle,
 {
    psaSession * pSession;
    psaLifo * pLifo = NULL;
-   psnQueue * pVDSLifo;
+   psnQueue * pMemLifo;
    int errcode;
    
    if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
@@ -331,12 +331,12 @@ int psoLifoOpen( PSO_HANDLE   sessionHandle,
                                    nameLengthInBytes );
       if ( errcode == PSO_OK ) {
          *objectHandle = (PSO_HANDLE) pLifo;
-         pVDSLifo = (psnQueue *) pLifo->object.pMyVdsObject;
+         pMemLifo = (psnQueue *) pLifo->object.pMyMemObject;
          GET_PTR( pLifo->pDefinition, 
-                  pVDSLifo->dataDefOffset,
+                  pMemLifo->dataDefOffset,
                   psnFieldDef );
          psaGetLimits( pLifo->pDefinition,
-                        pVDSLifo->numFields,
+                        pMemLifo->numFields,
                         &pLifo->minLength,
                         &pLifo->maxLength );
       }
@@ -356,7 +356,7 @@ int psoLifoPop( PSO_HANDLE   objectHandle,
                 size_t     * returnedLength )
 {
    psaLifo * pLifo;
-   psnQueue * pVDSLifo;
+   psnQueue * pMemLifo;
    int errcode = PSO_OK;
    bool ok = true;
 
@@ -381,11 +381,11 @@ int psoLifoPop( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   pVDSLifo = (psnQueue *) pLifo->object.pMyVdsObject;
+   pMemLifo = (psnQueue *) pLifo->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pLifo->iterator != NULL ) {
-      ok = psnQueueRelease( pVDSLifo,
+      ok = psnQueueRelease( pMemLifo,
                              pLifo->iterator,
                              &pLifo->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -394,7 +394,7 @@ int psoLifoPop( PSO_HANDLE   objectHandle,
       pLifo->iterator = NULL;
    }
 
-   ok = psnQueueRemove( pVDSLifo,
+   ok = psnQueueRemove( pMemLifo,
                          &pLifo->iterator,
                          PSN_QUEUE_LAST,
                          bufferLength,
@@ -432,7 +432,7 @@ int psoLifoPush( PSO_HANDLE   objectHandle,
                  size_t       dataLength )
 {
    psaLifo * pLifo;
-   psnQueue * pVDSLifo;
+   psnQueue * pMemLifo;
    int errcode = PSO_OK;
    bool ok = true;
 
@@ -455,9 +455,9 @@ int psoLifoPush( PSO_HANDLE   objectHandle,
    
    if ( ! pLifo->object.pSession->terminated ) {
       if ( psaCommonLock( &pLifo->object ) ) {
-         pVDSLifo = (psnQueue *) pLifo->object.pMyVdsObject;
+         pMemLifo = (psnQueue *) pLifo->object.pMyMemObject;
 
-         ok = psnQueueInsert( pVDSLifo,
+         ok = psnQueueInsert( pMemLifo,
                                data,
                                dataLength,
                                PSN_QUEUE_LAST,
@@ -492,7 +492,7 @@ int psoLifoStatus( PSO_HANDLE     objectHandle,
                    psoObjStatus * pStatus )
 {
    psaLifo * pLifo;
-   psnQueue * pVDSLifo;
+   psnQueue * pMemLifo;
    int errcode = PSO_OK;
    psnSessionContext * pContext;
    
@@ -510,14 +510,14 @@ int psoLifoStatus( PSO_HANDLE     objectHandle,
 
    if ( ! pLifo->object.pSession->terminated ) {
       if ( psaCommonLock(&pLifo->object) ) {
-         pVDSLifo = (psnQueue *) pLifo->object.pMyVdsObject;
+         pMemLifo = (psnQueue *) pLifo->object.pMyMemObject;
       
-         if ( psnLock(&pVDSLifo->memObject, pContext) ) {
-            psnMemObjectStatus( &pVDSLifo->memObject, pStatus );
+         if ( psnLock(&pMemLifo->memObject, pContext) ) {
+            psnMemObjectStatus( &pMemLifo->memObject, pStatus );
 
-            psnQueueStatus( pVDSLifo, pStatus );
+            psnQueueStatus( pMemLifo, pStatus );
 
-            psnUnlock( &pVDSLifo->memObject, pContext );
+            psnUnlock( &pMemLifo->memObject, pContext );
          }
          else {
             errcode = PSO_OBJECT_CANNOT_GET_LOCK;
@@ -549,7 +549,7 @@ int psoLifoStatus( PSO_HANDLE     objectHandle,
 int psaLifoFirst( psaLifo      * pLifo,
                   psaDataEntry * pEntry )
 {
-   psnQueue * pVDSLifo;
+   psnQueue * pMemLifo;
    int errcode = PSO_OK;
    bool ok = true;
 
@@ -567,11 +567,11 @@ int psaLifoFirst( psaLifo      * pLifo,
       goto error_handler;
    }
 
-   pVDSLifo = (psnQueue *) pLifo->object.pMyVdsObject;
+   pMemLifo = (psnQueue *) pLifo->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pLifo->iterator != NULL ) {
-      ok = psnQueueRelease( pVDSLifo,
+      ok = psnQueueRelease( pMemLifo,
                              pLifo->iterator,
                              &pLifo->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -580,7 +580,7 @@ int psaLifoFirst( psaLifo      * pLifo,
       pLifo->iterator = NULL;
    }
 
-   ok = psnQueueGet( pVDSLifo,
+   ok = psnQueueGet( pMemLifo,
                       PSO_FIRST,
                       &pLifo->iterator,
                       (size_t) -1,
@@ -616,7 +616,7 @@ error_handler:
 int psaLifoNext( psaLifo      * pLifo,
                  psaDataEntry * pEntry )
 {
-   psnQueue * pVDSLifo;
+   psnQueue * pMemLifo;
    int errcode = PSO_OK;
    bool ok = true;
 
@@ -635,9 +635,9 @@ int psaLifoNext( psaLifo      * pLifo,
       goto error_handler;
    }
 
-   pVDSLifo = (psnQueue *) pLifo->object.pMyVdsObject;
+   pMemLifo = (psnQueue *) pLifo->object.pMyMemObject;
 
-   ok = psnQueueGet( pVDSLifo,
+   ok = psnQueueGet( pMemLifo,
                       PSO_NEXT,
                       &pLifo->iterator,
                       (size_t) -1,
@@ -673,7 +673,7 @@ error_handler:
 int psaLifoRemove( psaLifo      * pLifo,
                    psaDataEntry * pEntry )
 {
-   psnQueue * pVDSLifo;
+   psnQueue * pMemLifo;
    int errcode = PSO_OK;
    bool ok = true;
 
@@ -691,11 +691,11 @@ int psaLifoRemove( psaLifo      * pLifo,
       goto error_handler;
    }
 
-   pVDSLifo = (psnQueue *) pLifo->object.pMyVdsObject;
+   pMemLifo = (psnQueue *) pLifo->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pLifo->iterator != NULL ) {
-      ok = psnQueueRelease( pVDSLifo,
+      ok = psnQueueRelease( pMemLifo,
                              pLifo->iterator,
                              &pLifo->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -704,7 +704,7 @@ int psaLifoRemove( psaLifo      * pLifo,
       pLifo->iterator = NULL;
    }
 
-   ok = psnQueueRemove( pVDSLifo,
+   ok = psnQueueRemove( pMemLifo,
                          &pLifo->iterator,
                          PSN_QUEUE_LAST,
                          (size_t) -1,

@@ -32,7 +32,7 @@
 int psoHashMapClose( PSO_HANDLE objectHandle )
 {
    psaHashMap * pHashMap;
-   psnHashMap * pVDSHashMap;
+   psnHashMap * pMemHashMap;
    int errcode = 0;
    
    pHashMap = (psaHashMap *) objectHandle;
@@ -45,11 +45,11 @@ int psoHashMapClose( PSO_HANDLE objectHandle )
    if ( ! pHashMap->object.pSession->terminated ) {
 
       if ( psaCommonLock( &pHashMap->object ) ) {
-         pVDSHashMap = (psnHashMap *) pHashMap->object.pMyVdsObject;
+         pMemHashMap = (psnHashMap *) pHashMap->object.pMyMemObject;
 
          /* Reinitialize the iterator, if needed */
          if ( pHashMap->iterator.pHashItem != NULL ) {
-            if ( psnHashMapRelease( pVDSHashMap,
+            if ( psnHashMapRelease( pMemHashMap,
                                      pHashMap->iterator.pHashItem,
                                      &pHashMap->object.pSession->context ) ) {
                memset( &pHashMap->iterator, 0, sizeof(psnHashMapItem) );
@@ -94,7 +94,7 @@ int psoHashMapDefinition( PSO_HANDLE             objectHandle,
                           psoObjectDefinition ** ppDefinition )
 {
    psaHashMap * pHashMap;
-   psnHashMap * pVDSHashMap;
+   psnHashMap * pMemHashMap;
    int errcode = 0;
    psnSessionContext * pContext;
    
@@ -112,15 +112,15 @@ int psoHashMapDefinition( PSO_HANDLE             objectHandle,
 
    if ( ! pHashMap->object.pSession->terminated ) {
       if ( psaCommonLock( &pHashMap->object ) ) {
-         pVDSHashMap = (psnHashMap *) pHashMap->object.pMyVdsObject;
+         pMemHashMap = (psnHashMap *) pHashMap->object.pMyMemObject;
       
          errcode = psaGetDefinition( pHashMap->pDefinition,
-                                      pVDSHashMap->numFields,
+                                      pMemHashMap->numFields,
                                       ppDefinition );
          if ( errcode == 0 ) {
             (*ppDefinition)->type = PSO_HASH_MAP;
             memcpy( &(*ppDefinition)->key, 
-                    &pVDSHashMap->keyDef, 
+                    &pMemHashMap->keyDef, 
                     sizeof(psoKeyDefinition) );
          }
          psaCommonUnlock( &pHashMap->object );
@@ -147,7 +147,7 @@ int psoHashMapDelete( PSO_HANDLE   objectHandle,
                       size_t       keyLength )
 {
    psaHashMap * pHashMap;
-   psnHashMap * pVDSHashMap;
+   psnHashMap * pMemHashMap;
    int errcode = PSO_OK;
    bool ok = true;
    
@@ -172,9 +172,9 @@ int psoHashMapDelete( PSO_HANDLE   objectHandle,
    if ( ! pHashMap->object.pSession->terminated ) {
 
       if ( psaCommonLock( &pHashMap->object ) ) {
-         pVDSHashMap = (psnHashMap *) pHashMap->object.pMyVdsObject;
+         pMemHashMap = (psnHashMap *) pHashMap->object.pMyMemObject;
 
-         ok = psnHashMapDelete( pVDSHashMap,
+         ok = psnHashMapDelete( pMemHashMap,
                                  key,
                                  keyLength,
                                  &pHashMap->object.pSession->context );
@@ -211,7 +211,7 @@ int psoHashMapGet( PSO_HANDLE   objectHandle,
                    size_t     * returnedLength )
 {
    psaHashMap * pHashMap;
-   psnHashMap * pVDSHashMap;
+   psnHashMap * pMemHashMap;
    int errcode = PSO_OK;
    bool ok = true;
    void * ptr;
@@ -242,11 +242,11 @@ int psoHashMapGet( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
    
-   pVDSHashMap = (psnHashMap *) pHashMap->object.pMyVdsObject;
+   pMemHashMap = (psnHashMap *) pHashMap->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pHashMap->iterator.pHashItem != NULL ) {
-      ok = psnHashMapRelease( pVDSHashMap,
+      ok = psnHashMapRelease( pMemHashMap,
                                pHashMap->iterator.pHashItem,
                                &pHashMap->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -255,7 +255,7 @@ int psoHashMapGet( PSO_HANDLE   objectHandle,
       memset( &pHashMap->iterator, 0, sizeof(psnHashMapItem) );
    }
 
-   ok = psnHashMapGet( pVDSHashMap,
+   ok = psnHashMapGet( pMemHashMap,
                         key,
                         keyLength,
                         &pHashMap->iterator.pHashItem,
@@ -298,7 +298,7 @@ int psoHashMapGetFirst( PSO_HANDLE   objectHandle,
                         size_t     * retDataLength )
 {
    psaHashMap * pHashMap;
-   psnHashMap * pVDSHashMap;
+   psnHashMap * pMemHashMap;
    int errcode = 0;
    void * ptr;
    bool ok;
@@ -330,11 +330,11 @@ int psoHashMapGetFirst( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   pVDSHashMap = (psnHashMap *) pHashMap->object.pMyVdsObject;
+   pMemHashMap = (psnHashMap *) pHashMap->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pHashMap->iterator.pHashItem != NULL ) {
-      ok = psnHashMapRelease( pVDSHashMap,
+      ok = psnHashMapRelease( pMemHashMap,
                                pHashMap->iterator.pHashItem,
                                &pHashMap->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -343,7 +343,7 @@ int psoHashMapGetFirst( PSO_HANDLE   objectHandle,
       memset( &pHashMap->iterator, 0, sizeof(psnHashMapItem) );
    }
 
-   ok = psnHashMapGetFirst( pVDSHashMap,
+   ok = psnHashMapGetFirst( pMemHashMap,
                              &pHashMap->iterator,
                              keyLength,
                              bufferLength,
@@ -387,7 +387,7 @@ int psoHashMapGetNext( PSO_HANDLE   objectHandle,
                        size_t     * retDataLength )
 {
    psaHashMap * pHashMap;
-   psnHashMap * pVDSHashMap;
+   psnHashMap * pMemHashMap;
    int errcode = 0;
    void * ptr;
    bool ok;
@@ -424,9 +424,9 @@ int psoHashMapGetNext( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   pVDSHashMap = (psnHashMap *) pHashMap->object.pMyVdsObject;
+   pMemHashMap = (psnHashMap *) pHashMap->object.pMyMemObject;
 
-   ok = psnHashMapGetNext( pVDSHashMap,
+   ok = psnHashMapGetNext( pMemHashMap,
                             &pHashMap->iterator,
                             keyLength,
                             bufferLength,
@@ -468,7 +468,7 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
                       size_t       dataLength )
 {
    psaHashMap * pHashMap;
-   psnHashMap * pVDSHashMap;
+   psnHashMap * pMemHashMap;
    int errcode = 0;
    bool ok = true;
    
@@ -502,9 +502,9 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
    if ( ! pHashMap->object.pSession->terminated ) {
 
       if ( psaCommonLock( &pHashMap->object ) ) {
-         pVDSHashMap = (psnHashMap *) pHashMap->object.pMyVdsObject;
+         pMemHashMap = (psnHashMap *) pHashMap->object.pMyMemObject;
 
-         ok = psnHashMapInsert( pVDSHashMap,
+         ok = psnHashMapInsert( pMemHashMap,
                                  key,
                                  keyLength,
                                  data,
@@ -541,7 +541,7 @@ int psoHashMapOpen( PSO_HANDLE   sessionHandle,
 {
    psaSession * pSession;
    psaHashMap * pHashMap = NULL;
-   psnHashMap * pVDSHashMap;
+   psnHashMap * pMemHashMap;
    int errcode;
    
    if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
@@ -581,15 +581,15 @@ int psoHashMapOpen( PSO_HANDLE   sessionHandle,
                                    nameLengthInBytes );
       if ( errcode == 0 ) {
          *objectHandle = (PSO_HANDLE) pHashMap;
-         pVDSHashMap = (psnHashMap *) pHashMap->object.pMyVdsObject;
+         pMemHashMap = (psnHashMap *) pHashMap->object.pMyMemObject;
          GET_PTR( pHashMap->pDefinition, 
-                  pVDSHashMap->dataDefOffset,
+                  pMemHashMap->dataDefOffset,
                   psnFieldDef );
          psaGetLimits( pHashMap->pDefinition,
-                        pVDSHashMap->numFields,
+                        pMemHashMap->numFields,
                         &pHashMap->minLength,
                         &pHashMap->maxLength );
-         psaGetKeyLimits( &pVDSHashMap->keyDef,
+         psaGetKeyLimits( &pMemHashMap->keyDef,
                            &pHashMap->minKeyLength,
                            &pHashMap->maxKeyLength );
       }
@@ -610,7 +610,7 @@ int psoHashMapReplace( PSO_HANDLE   objectHandle,
                        size_t       dataLength )
 {
    psaHashMap * pHashMap;
-   psnHashMap * pVDSHashMap;
+   psnHashMap * pMemHashMap;
    int errcode = PSO_OK;
    bool ok = true;
    
@@ -633,9 +633,9 @@ int psoHashMapReplace( PSO_HANDLE   objectHandle,
    if ( ! pHashMap->object.pSession->terminated ) {
 
       if ( psaCommonLock( &pHashMap->object ) ) {
-         pVDSHashMap = (psnHashMap *) pHashMap->object.pMyVdsObject;
+         pMemHashMap = (psnHashMap *) pHashMap->object.pMyMemObject;
 
-         ok = psnHashMapReplace( pVDSHashMap,
+         ok = psnHashMapReplace( pMemHashMap,
                                   key,
                                   keyLength,
                                   data,
@@ -669,7 +669,7 @@ int psoHashMapStatus( PSO_HANDLE     objectHandle,
                       psoObjStatus * pStatus )
 {
    psaHashMap * pHashMap;
-   psnHashMap * pVDSHashMap;
+   psnHashMap * pMemHashMap;
    int errcode = 0;
    psnSessionContext * pContext;
    
@@ -688,14 +688,14 @@ int psoHashMapStatus( PSO_HANDLE     objectHandle,
    if ( ! pHashMap->object.pSession->terminated ) {
 
       if ( psaCommonLock( &pHashMap->object ) ) {
-         pVDSHashMap = (psnHashMap *) pHashMap->object.pMyVdsObject;
+         pMemHashMap = (psnHashMap *) pHashMap->object.pMyMemObject;
       
-         if ( psnLock(&pVDSHashMap->memObject, pContext) ) {
-            psnMemObjectStatus( &pVDSHashMap->memObject, pStatus );
+         if ( psnLock(&pMemHashMap->memObject, pContext) ) {
+            psnMemObjectStatus( &pMemHashMap->memObject, pStatus );
 
-            psnHashMapStatus( pVDSHashMap, pStatus );
+            psnHashMapStatus( pMemHashMap, pStatus );
 
-            psnUnlock( &pVDSHashMap->memObject, pContext );
+            psnUnlock( &pMemHashMap->memObject, pContext );
          }
          else {
             errcode = PSO_OBJECT_CANNOT_GET_LOCK;
@@ -728,7 +728,7 @@ int psoHashMapStatus( PSO_HANDLE     objectHandle,
 int psaHashMapFirst( psaHashMap      * pHashMap,
                      psaHashMapEntry * pEntry )
 {
-   psnHashMap * pVDSHashMap;
+   psnHashMap * pMemHashMap;
    int errcode = PSO_OK;
    bool ok;
    
@@ -746,11 +746,11 @@ int psaHashMapFirst( psaHashMap      * pHashMap,
       goto error_handler;
    }
 
-   pVDSHashMap = (psnHashMap *) pHashMap->object.pMyVdsObject;
+   pMemHashMap = (psnHashMap *) pHashMap->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pHashMap->iterator.pHashItem != NULL ) {
-      ok = psnHashMapRelease( pVDSHashMap,
+      ok = psnHashMapRelease( pMemHashMap,
                                pHashMap->iterator.pHashItem,
                                &pHashMap->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -759,7 +759,7 @@ int psaHashMapFirst( psaHashMap      * pHashMap,
       memset( &pHashMap->iterator, 0, sizeof(psnHashMapItem) );
    }
 
-   ok = psnHashMapGetFirst( pVDSHashMap,
+   ok = psnHashMapGetFirst( pMemHashMap,
                              &pHashMap->iterator,
                              (size_t) -1,
                              (size_t) -1,
@@ -796,7 +796,7 @@ error_handler:
 int psaHashMapNext( psaHashMap      * pHashMap,
                     psaHashMapEntry * pEntry )
 {
-   psnHashMap * pVDSHashMap;
+   psnHashMap * pMemHashMap;
    int errcode = PSO_OK;
    bool ok;
    
@@ -815,9 +815,9 @@ int psaHashMapNext( psaHashMap      * pHashMap,
       goto error_handler;
    }
 
-   pVDSHashMap = (psnHashMap *) pHashMap->object.pMyVdsObject;
+   pMemHashMap = (psnHashMap *) pHashMap->object.pMyMemObject;
 
-   ok = psnHashMapGetNext( pVDSHashMap,
+   ok = psnHashMapGetNext( pMemHashMap,
                             &pHashMap->iterator,
                             (size_t) -1,
                             (size_t) -1,
@@ -856,7 +856,7 @@ int psaHashMapRetrieve( psaHashMap   * pHashMap,
                         size_t         keyLength,
                         psaDataEntry * pEntry )
 {
-   psnHashMap * pVDSHashMap;
+   psnHashMap * pMemHashMap;
    int errcode = 0;
    bool ok = true;
    psnHashItem * pHashItem;
@@ -877,11 +877,11 @@ int psaHashMapRetrieve( psaHashMap   * pHashMap,
       goto error_handler;
    }
 
-   pVDSHashMap = (psnHashMap *) pHashMap->object.pMyVdsObject;
+   pMemHashMap = (psnHashMap *) pHashMap->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pHashMap->iterator.pHashItem != NULL ) {
-      ok = psnHashMapRelease( pVDSHashMap,
+      ok = psnHashMapRelease( pMemHashMap,
                                pHashMap->iterator.pHashItem,
                                &pHashMap->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -890,7 +890,7 @@ int psaHashMapRetrieve( psaHashMap   * pHashMap,
       memset( &pHashMap->iterator, 0, sizeof(psnHashMapItem) );
    }
 
-   ok = psnHashMapGet( pVDSHashMap,
+   ok = psnHashMapGet( pMemHashMap,
                         key,
                         keyLength,
                         &pHashItem,

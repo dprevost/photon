@@ -46,7 +46,7 @@ int main( int argc, char * argv[] )
    context.pidLocker= getpid();
    pscInitErrorHandler( &context.errorHandler );
    
-   psaCloseVDS( NULL, &context );
+   psoaCloseMemory( NULL, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

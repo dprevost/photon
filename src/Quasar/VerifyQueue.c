@@ -86,7 +86,7 @@ vdswCheckQueueContent( vdswVerifyStruct * pVerify,
        */
       if ( pDeletedNode != NULL && pVerify->doRepair ) {
          psnLinkedListRemoveItem( &pQueue->listOfElements, pDeletedNode );
-         vdswEcho( pVerify, "Queue item removed from the VDS" );
+         vdswEcho( pVerify, "Queue item removed from shared memory" );
       }
       pDeletedNode = NULL;
    }

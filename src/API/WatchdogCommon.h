@@ -35,8 +35,8 @@ BEGIN_C_DECLS
 
 /**
  *  Applications can send two types of messages. One when they first 
- *  connect to request all needed parameters (file name of VDs, for example)
- *  and one when they disconnect.
+ *  connect to request all needed parameters (file name of shared memory, 
+ *  for example) and one when they disconnect.
  */
 enum  WDOpcode
 {

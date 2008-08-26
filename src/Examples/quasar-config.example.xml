@@ -4,7 +4,7 @@
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://photonsoftware.org/quasarConfig ../XML/quasar_config.xsd">
 
-<!-- Directory for the vds (the shared-memory file) and support 
+<!-- Directory for the shared-memory file and support 
      files. The files will be created if needed.
      Note: this example use /tmp but this might not be a good idea 
      if /tmp is clean on reboot. -->
@@ -30,8 +30,8 @@ xsi:schemaLocation="http://photonsoftware.org/quasarConfig ../XML/quasar_config.
 
 <!-- Unix only (at this moment)
 
-     Which "class" of users should have full access to the VDS backstore
-     and all other related files?
+     Which "class" of users should have full access to the shared-memory
+     backstore and all other related files?
      
      In other words, which class of users can access/use Photon?
      
@@ -49,7 +49,7 @@ xsi:schemaLocation="http://photonsoftware.org/quasarConfig ../XML/quasar_config.
        <file_access access="group" group="vdsf"/>
 
      Note: this is mainly for future development, for example if you
-     want the web server (or a database or...) to access the vds,
+     want the web server (or a database or...) to access shared memory,
      you can create a group, vdsf, and add the user apache (or
      equivalent) to this group. -->
 <file_access access="group" />

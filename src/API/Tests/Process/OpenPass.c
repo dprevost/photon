@@ -48,7 +48,7 @@ int main( int argc, char * argv[] )
    context.pidLocker= getpid();
    pscInitErrorHandler( &context.errorHandler );
    
-   errcode = psaOpenVDS( &process, "dummy", 100, &context );
+   errcode = psoaOpenMemory( &process, "dummy", 100, &context );
 
    if ( errcode != PSO_BACKSTORE_FILE_MISSING ) {
       fprintf( stderr, "err: %d\n", errcode );

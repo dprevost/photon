@@ -32,7 +32,7 @@
 int psoQueueClose( PSO_HANDLE objectHandle )
 {
    psaQueue * pQueue;
-   psnQueue * pVDSQueue;
+   psnQueue * pMemQueue;
    int errcode = PSO_OK;
    
    pQueue = (psaQueue *) objectHandle;
@@ -42,11 +42,11 @@ int psoQueueClose( PSO_HANDLE objectHandle )
 
    if ( ! pQueue->object.pSession->terminated ) {
       if ( psaCommonLock( &pQueue->object ) ) {
-         pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
+         pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
 
          /* Reinitialize the iterator, if needed */
          if ( pQueue->iterator != NULL ) {
-            if ( psnQueueRelease( pVDSQueue,
+            if ( psnQueueRelease( pMemQueue,
                                    pQueue->iterator,
                                    &pQueue->object.pSession->context ) ) {
                pQueue->iterator = NULL;
@@ -92,7 +92,7 @@ int psoQueueDefinition( PSO_HANDLE             objectHandle,
                         psoObjectDefinition ** ppDefinition )
 {
    psaQueue * pQueue;
-   psnQueue * pVDSQueue;
+   psnQueue * pMemQueue;
    int errcode = PSO_OK;
    psnSessionContext * pContext;
    
@@ -110,10 +110,10 @@ int psoQueueDefinition( PSO_HANDLE             objectHandle,
 
    if ( ! pQueue->object.pSession->terminated ) {
       if ( psaCommonLock( &pQueue->object ) ) {
-         pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
+         pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
       
          errcode = psaGetDefinition( pQueue->pDefinition,
-                                      pVDSQueue->numFields,
+                                      pMemQueue->numFields,
                                       ppDefinition );
          if ( errcode == PSO_OK ) (*ppDefinition)->type = PSO_QUEUE;
          psaCommonUnlock( &pQueue->object );
@@ -141,7 +141,7 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
                       size_t     * returnedLength )
 {
    psaQueue * pQueue;
-   psnQueue * pVDSQueue;
+   psnQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
@@ -167,11 +167,11 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
    
-   pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
+   pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pQueue->iterator != NULL ) {
-      ok = psnQueueRelease( pVDSQueue,
+      ok = psnQueueRelease( pMemQueue,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -180,7 +180,7 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
       pQueue->iterator = NULL;
    }
 
-   ok = psnQueueGet( pVDSQueue,
+   ok = psnQueueGet( pMemQueue,
                       PSO_FIRST,
                       &pQueue->iterator,
                       bufferLength,
@@ -219,7 +219,7 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
                      size_t     * returnedLength )
 {
    psaQueue * pQueue;
-   psnQueue * pVDSQueue;
+   psnQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
@@ -250,9 +250,9 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
+   pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
 
-   ok = psnQueueGet( pVDSQueue,
+   ok = psnQueueGet( pMemQueue,
                       PSO_NEXT,
                       &pQueue->iterator,
                       bufferLength,
@@ -292,7 +292,7 @@ int psoQueueOpen( PSO_HANDLE   sessionHandle,
 {
    psaSession * pSession;
    psaQueue * pQueue = NULL;
-   psnQueue * pVDSQueue;
+   psnQueue * pMemQueue;
    int errcode;
    
    if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
@@ -331,12 +331,12 @@ int psoQueueOpen( PSO_HANDLE   sessionHandle,
                                    nameLengthInBytes );
       if ( errcode == PSO_OK ) {
          *objectHandle = (PSO_HANDLE) pQueue;
-         pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
+         pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
          GET_PTR( pQueue->pDefinition, 
-                  pVDSQueue->dataDefOffset,
+                  pMemQueue->dataDefOffset,
                   psnFieldDef );
          psaGetLimits( pQueue->pDefinition,
-                        pVDSQueue->numFields,
+                        pMemQueue->numFields,
                         &pQueue->minLength,
                         &pQueue->maxLength );
       }
@@ -356,7 +356,7 @@ int psoQueuePop( PSO_HANDLE   objectHandle,
                  size_t     * returnedLength )
 {
    psaQueue * pQueue;
-   psnQueue * pVDSQueue;
+   psnQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
@@ -381,11 +381,11 @@ int psoQueuePop( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
+   pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pQueue->iterator != NULL ) {
-      ok = psnQueueRelease( pVDSQueue,
+      ok = psnQueueRelease( pMemQueue,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -394,7 +394,7 @@ int psoQueuePop( PSO_HANDLE   objectHandle,
       pQueue->iterator = NULL;
    }
 
-   ok = psnQueueRemove( pVDSQueue,
+   ok = psnQueueRemove( pMemQueue,
                          &pQueue->iterator,
                          PSN_QUEUE_FIRST,
                          bufferLength,
@@ -432,7 +432,7 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
                   size_t       dataLength )
 {
    psaQueue * pQueue;
-   psnQueue * pVDSQueue;
+   psnQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
@@ -455,9 +455,9 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
    
    if ( ! pQueue->object.pSession->terminated ) {
       if ( psaCommonLock( &pQueue->object ) ) {
-         pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
+         pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
 
-         ok = psnQueueInsert( pVDSQueue,
+         ok = psnQueueInsert( pMemQueue,
                                data,
                                dataLength,
                                PSN_QUEUE_LAST,
@@ -493,7 +493,7 @@ int psoQueuePushNow( PSO_HANDLE   objectHandle,
                      size_t       dataLength )
 {
    psaQueue * pQueue;
-   psnQueue * pVDSQueue;
+   psnQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
@@ -516,9 +516,9 @@ int psoQueuePushNow( PSO_HANDLE   objectHandle,
    
    if ( ! pQueue->object.pSession->terminated ) {
       if ( psaCommonLock( &pQueue->object ) ) {
-         pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
+         pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
 
-         ok = psnQueueInsertNow( pVDSQueue,
+         ok = psnQueueInsertNow( pMemQueue,
                                   data,
                                   dataLength,
                                   PSN_QUEUE_LAST,
@@ -553,7 +553,7 @@ int psoQueueStatus( PSO_HANDLE     objectHandle,
                     psoObjStatus * pStatus )
 {
    psaQueue * pQueue;
-   psnQueue * pVDSQueue;
+   psnQueue * pMemQueue;
    int errcode = PSO_OK;
    psnSessionContext * pContext;
    
@@ -571,14 +571,14 @@ int psoQueueStatus( PSO_HANDLE     objectHandle,
 
    if ( ! pQueue->object.pSession->terminated ) {
       if ( psaCommonLock( &pQueue->object ) ) {
-         pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
+         pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
       
-         if ( psnLock(&pVDSQueue->memObject, pContext) ) {
-            psnMemObjectStatus( &pVDSQueue->memObject, pStatus );
+         if ( psnLock(&pMemQueue->memObject, pContext) ) {
+            psnMemObjectStatus( &pMemQueue->memObject, pStatus );
 
-            psnQueueStatus( pVDSQueue, pStatus );
+            psnQueueStatus( pMemQueue, pStatus );
 
-            psnUnlock( &pVDSQueue->memObject, pContext );
+            psnUnlock( &pMemQueue->memObject, pContext );
          }
          else {
             errcode = PSO_OBJECT_CANNOT_GET_LOCK;
@@ -610,7 +610,7 @@ int psoQueueStatus( PSO_HANDLE     objectHandle,
 int psaQueueFirst( psaQueue     * pQueue,
                    psaDataEntry * pEntry )
 {
-   psnQueue * pVDSQueue;
+   psnQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
@@ -628,11 +628,11 @@ int psaQueueFirst( psaQueue     * pQueue,
       goto error_handler;
    }
 
-   pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
+   pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pQueue->iterator != NULL ) {
-      ok = psnQueueRelease( pVDSQueue,
+      ok = psnQueueRelease( pMemQueue,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -641,7 +641,7 @@ int psaQueueFirst( psaQueue     * pQueue,
       pQueue->iterator = NULL;
    }
 
-   ok = psnQueueGet( pVDSQueue,
+   ok = psnQueueGet( pMemQueue,
                       PSO_FIRST,
                       &pQueue->iterator,
                       (size_t) -1,
@@ -677,7 +677,7 @@ error_handler:
 int psaQueueNext( psaQueue     * pQueue,
                   psaDataEntry * pEntry )
 {
-   psnQueue * pVDSQueue;
+   psnQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
@@ -696,9 +696,9 @@ int psaQueueNext( psaQueue     * pQueue,
       goto error_handler;
    }
 
-   pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
+   pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
 
-   ok = psnQueueGet( pVDSQueue,
+   ok = psnQueueGet( pMemQueue,
                       PSO_NEXT,
                       &pQueue->iterator,
                       (size_t) -1,
@@ -734,7 +734,7 @@ error_handler:
 int psaQueueRemove( psaQueue     * pQueue,
                     psaDataEntry * pEntry )
 {
-   psnQueue * pVDSQueue;
+   psnQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
@@ -752,11 +752,11 @@ int psaQueueRemove( psaQueue     * pQueue,
       goto error_handler;
    }
 
-   pVDSQueue = (psnQueue *) pQueue->object.pMyVdsObject;
+   pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pQueue->iterator != NULL ) {
-      ok = psnQueueRelease( pVDSQueue,
+      ok = psnQueueRelease( pMemQueue,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -765,7 +765,7 @@ int psaQueueRemove( psaQueue     * pQueue,
       pQueue->iterator = NULL;
    }
 
-   ok = psnQueueRemove( pVDSQueue,
+   ok = psnQueueRemove( pMemQueue,
                          &pQueue->iterator,
                          PSN_QUEUE_FIRST,
                          (size_t) -1,

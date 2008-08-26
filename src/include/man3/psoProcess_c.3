@@ -1,4 +1,4 @@
-.TH "API functions for psof processes." 3 "24 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for psof processes." 3 "26 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -8,24 +8,24 @@ API functions for psof processes. \-
 
 .in +1c
 .ti -1c
-.RI "VDSF_EXPORT void \fBpsoExit\fP ()"
+.RI "PHOTON_EXPORT void \fBpsoExit\fP ()"
 .br
-.RI "\fIThis function terminates all access to the VDS. \fP"
+.RI "\fIThis function terminates all access to shared memory. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoInit\fP (const char *wdAddress, int protectionNeeded)"
+.RI "PHOTON_EXPORT int \fBpsoInit\fP (const char *wdAddress, int protectionNeeded)"
 .br
 .RI "\fIThis function initializes access to a VDS. \fP"
 .in -1c
 .SH "Function Documentation"
 .PP 
-.SS "VDSF_EXPORT void psoExit ()"
+.SS "PHOTON_EXPORT void psoExit ()"
 .PP
-This function terminates all access to the VDS. 
+This function terminates all access to shared memory. 
 .PP
 This function will also close all sessions and terminate all accesses to the different objects.
 .PP
 This function takes no argument and always end successfully (even if called twice or if \fBpsoInit\fP was not called). 
-.SS "VDSF_EXPORT int psoInit (const char * wdAddress, int protectionNeeded)"
+.SS "PHOTON_EXPORT int psoInit (const char * wdAddress, int protectionNeeded)"
 .PP
 This function initializes access to a VDS. 
 .PP

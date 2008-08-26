@@ -34,7 +34,7 @@ BEGIN_C_DECLS
  * or session specific. Regrouping this information in this single
  * structure simplify the code. 
  *
- * This struct is allocated in the process space, not in the VDS memory.
+ * This struct is allocated in the process space, not in shared memory.
  *
  * The pointers are to void* to avoid problems of circular dependency.
  */

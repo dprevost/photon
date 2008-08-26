@@ -1,4 +1,4 @@
-.TH "psoSession.h" 3 "24 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoSession.h" 3 "26 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,47 +20,47 @@ Definition in file \fBpsoSession.h\fP.
 
 .in +1c
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoCommit\fP (\fBPSO_HANDLE\fP sessionHandle)"
+.RI "PHOTON_EXPORT int \fBpsoCommit\fP (\fBPSO_HANDLE\fP sessionHandle)"
 .br
 .RI "\fICommit all insertions and deletions (of the current session) executed since the previous call to psoCommit or psoRollback. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
+.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
 .br
 .RI "\fICreate a new object in shared memory. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoDestroyObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes)"
+.RI "PHOTON_EXPORT int \fBpsoDestroyObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes)"
 .br
 .RI "\fIDestroy an existing object in shared memory. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoErrorMsg\fP (\fBPSO_HANDLE\fP sessionHandle, char *message, size_t msgLengthInBytes)"
+.RI "PHOTON_EXPORT int \fBpsoErrorMsg\fP (\fBPSO_HANDLE\fP sessionHandle, char *message, size_t msgLengthInBytes)"
 .br
 .RI "\fIReturn the error message associated with the last error(s). \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoExitSession\fP (\fBPSO_HANDLE\fP sessionHandle)"
+.RI "PHOTON_EXPORT int \fBpsoExitSession\fP (\fBPSO_HANDLE\fP sessionHandle)"
 .br
 .RI "\fITerminate the current session. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP **definition)"
+.RI "PHOTON_EXPORT int \fBpsoGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP **definition)"
 .br
 .RI "\fIRetrieve the data definition of the named object. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoGetInfo\fP (\fBPSO_HANDLE\fP sessionHandle, \fBpsoInfo\fP *pInfo)"
+.RI "PHOTON_EXPORT int \fBpsoGetInfo\fP (\fBPSO_HANDLE\fP sessionHandle, \fBpsoInfo\fP *pInfo)"
 .br
-.RI "\fIReturn information on the current status of the VDS (Virtual Data Space). \fP"
+.RI "\fIReturn information on the current status of the shared memory. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoGetStatus\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjStatus\fP *pStatus)"
+.RI "PHOTON_EXPORT int \fBpsoGetStatus\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjStatus\fP *pStatus)"
 .br
 .RI "\fIReturn the status of the named object. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoInitSession\fP (\fBPSO_HANDLE\fP *sessionHandle)"
+.RI "PHOTON_EXPORT int \fBpsoInitSession\fP (\fBPSO_HANDLE\fP *sessionHandle)"
 .br
 .RI "\fIThis function initializes a session. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoLastError\fP (\fBPSO_HANDLE\fP sessionHandle)"
+.RI "PHOTON_EXPORT int \fBpsoLastError\fP (\fBPSO_HANDLE\fP sessionHandle)"
 .br
 .RI "\fIReturn the last error seen in previous calls (of the current session). \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoRollback\fP (\fBPSO_HANDLE\fP sessionHandle)"
+.RI "PHOTON_EXPORT int \fBpsoRollback\fP (\fBPSO_HANDLE\fP sessionHandle)"
 .br
 .RI "\fIRollback all insertions and deletions (of the current session) executed since the previous call to psoCommit or psoRollback. \fP"
 .in -1c

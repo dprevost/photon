@@ -343,7 +343,7 @@
    
     <error>
       <errnumber> 30 </errnumber>
-      <errname> ERROR_OPENING_VDS </errname>
+      <errname> ERROR_OPENING_MEMORY </errname>
       <message_group>
         <message xml:lang="en">
           <errormsg>

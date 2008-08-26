@@ -53,7 +53,7 @@ int main( int argc, char * argv[] )
    context.pidLocker= getpid();
    pscInitErrorHandler( &context.errorHandler );
    
-   errcode = psaOpenVDS( NULL, "dummy", 100, &context );
+   errcode = psoaOpenMemory( NULL, "dummy", 100, &context );
 
    /* Should not return */
    ERROR_EXIT( expectedToPass, NULL, ; );

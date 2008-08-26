@@ -23,7 +23,7 @@ class VdsFolderEntry {
 }
 
 /**
- * Folder class for the vdsf library.
+ * Folder class for the Photon library.
  */
 
 class VdsFolder {

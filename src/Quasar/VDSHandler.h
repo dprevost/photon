@@ -35,8 +35,8 @@ struct vdswMemoryManager;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- *  This class initialize the VDS. 
- *    - it will create the VDS if it does not exist.
+ *  This class initialize the shared memory. 
+ *    - it will create the shared memory if it does not exist.
  *    - it will open it otherwise and make sure that its content is valid
  */
 

@@ -53,8 +53,9 @@ extern "C" {
  *
  * Note: the old versions are removed from memory when all readers have
  *       updated their versions. Even if a program is only doing read access
- *       to the VDS data, it is important to add psoCommit() once in a while
- *       to refresh the "handles" if the program is running for a while. 
+ *       to shared memory data, it is important to add psoCommit() once in 
+ *       a while to refresh the "handles" if the program is running for a 
+ *       while. 
  */
 
 /**

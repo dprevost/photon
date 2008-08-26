@@ -34,7 +34,7 @@
 int psoFolderClose( PSO_HANDLE objectHandle )
 {
    psaFolder * pFolder;
-   psnFolder * pVDSFolder;
+   psnFolder * pMemFolder;
    int errcode = PSO_OK;
    
    pFolder = (psaFolder *) objectHandle;
@@ -47,11 +47,11 @@ int psoFolderClose( PSO_HANDLE objectHandle )
    if ( ! pFolder->object.pSession->terminated ) {
 
       if ( psaCommonLock( &pFolder->object ) ) {
-        pVDSFolder = (psnFolder *) pFolder->object.pMyVdsObject;
+        pMemFolder = (psnFolder *) pFolder->object.pMyMemObject;
 
          /* Reinitialize the iterator, if needed */
          if ( pFolder->iterator.pHashItem != NULL ) {
-            if ( psnFolderRelease( pVDSFolder,
+            if ( psnFolderRelease( pMemFolder,
                                     &pFolder->iterator,
                                     &pFolder->object.pSession->context ) == 0 ) {
                memset( &pFolder->iterator, 0, sizeof(psnFolderItem) );
@@ -98,7 +98,7 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
                            psoObjectDefinition * pDefinition )
 {
    psaFolder * pFolder;
-   psnFolder * pVDSFolder;
+   psnFolder * pMemFolder;
    int errcode = PSO_OK;
    bool ok = true;
    psaSession* pSession;
@@ -134,9 +134,9 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
 
    if ( ! pSession->terminated ) {
       if ( psaCommonLock( &pFolder->object ) ) {
-         pVDSFolder = (psnFolder *) pFolder->object.pMyVdsObject;
+         pMemFolder = (psnFolder *) pFolder->object.pMyMemObject;
 
-         ok = psnFolderCreateObject( pVDSFolder,
+         ok = psnFolderCreateObject( pMemFolder,
                                       objectName,
                                       nameLengthInBytes,
                                       pDefinition,
@@ -202,7 +202,7 @@ int psoFolderDestroyObject( PSO_HANDLE   objectHandle,
                             size_t       nameLengthInBytes )
 {
    psaFolder * pFolder;
-   psnFolder * pVDSFolder;
+   psnFolder * pMemFolder;
    int errcode = PSO_OK;
    psaSession* pSession;
    bool ok = true;
@@ -227,9 +227,9 @@ int psoFolderDestroyObject( PSO_HANDLE   objectHandle,
    
    if ( ! pSession->terminated ) {
       if ( psaCommonLock( &pFolder->object ) ) {
-         pVDSFolder = (psnFolder *) pFolder->object.pMyVdsObject;
+         pMemFolder = (psnFolder *) pFolder->object.pMyMemObject;
 
-         ok = psnFolderDestroyObject( pVDSFolder,
+         ok = psnFolderDestroyObject( pMemFolder,
                                        objectName,
                                        nameLengthInBytes,
                                        &pSession->context );
@@ -262,7 +262,7 @@ int psoFolderGetFirst( PSO_HANDLE       objectHandle,
                        psoFolderEntry * pEntry )
 {
    psaFolder * pFolder;
-   psnFolder * pVDSFolder;
+   psnFolder * pMemFolder;
    int errcode = PSO_OK;
    psnObjectDescriptor * pDescriptor;
    bool ok;
@@ -289,11 +289,11 @@ int psoFolderGetFirst( PSO_HANDLE       objectHandle,
       goto error_handler;
    }
    
-   pVDSFolder = (psnFolder *) pFolder->object.pMyVdsObject;
+   pMemFolder = (psnFolder *) pFolder->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pFolder->iterator.pHashItem != NULL ) {
-      ok = psnFolderRelease( pVDSFolder,
+      ok = psnFolderRelease( pMemFolder,
                               &pFolder->iterator,
                               &pFolder->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -305,7 +305,7 @@ int psoFolderGetFirst( PSO_HANDLE       objectHandle,
       }
    }
 
-   ok = psnFolderGetFirst( pVDSFolder,
+   ok = psnFolderGetFirst( pMemFolder,
                             &pFolder->iterator,
                             &pFolder->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
@@ -344,7 +344,7 @@ int psoFolderGetNext( PSO_HANDLE       objectHandle,
                       psoFolderEntry * pEntry )
 {
    psaFolder * pFolder;
-   psnFolder * pVDSFolder;
+   psnFolder * pMemFolder;
    int errcode = PSO_OK;
    psnObjectDescriptor * pDescriptor;
    bool ok;
@@ -376,9 +376,9 @@ int psoFolderGetNext( PSO_HANDLE       objectHandle,
       goto error_handler;
    }
 
-   pVDSFolder = (psnFolder *) pFolder->object.pMyVdsObject;
+   pMemFolder = (psnFolder *) pFolder->object.pMyMemObject;
 
-   ok = psnFolderGetNext( pVDSFolder,
+   ok = psnFolderGetNext( pMemFolder,
                            &pFolder->iterator,
                            &pFolder->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
@@ -474,7 +474,7 @@ int psoFolderStatus( PSO_HANDLE     objectHandle,
                      psoObjStatus * pStatus )
 {
    psaFolder * pFolder;
-   psnFolder * pVDSFolder;
+   psnFolder * pMemFolder;
    int errcode = PSO_OK;
    psnSessionContext * pContext;
    
@@ -496,15 +496,15 @@ int psoFolderStatus( PSO_HANDLE     objectHandle,
 
       if ( psaCommonLock( &pFolder->object ) ) {
 
-         pVDSFolder = (psnFolder *) pFolder->object.pMyVdsObject;
+         pMemFolder = (psnFolder *) pFolder->object.pMyMemObject;
       
-         if ( psnLock(&pVDSFolder->memObject, pContext) ) {
+         if ( psnLock(&pMemFolder->memObject, pContext) ) {
 
-            psnMemObjectStatus( &pVDSFolder->memObject, pStatus );
+            psnMemObjectStatus( &pMemFolder->memObject, pStatus );
 
-            psnFolderMyStatus( pVDSFolder, pStatus );
+            psnFolderMyStatus( pMemFolder, pStatus );
 
-            psnUnlock( &pVDSFolder->memObject, pContext );
+            psnUnlock( &pMemFolder->memObject, pContext );
          }
          else {
             errcode = PSO_OBJECT_CANNOT_GET_LOCK;

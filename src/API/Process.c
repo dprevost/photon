@@ -93,10 +93,10 @@ int psaProcessInit( psaProcess * process, const char * wdAddress )
    sprintf( path, "%s%s%s", answer.pathname, PSO_DIR_SEPARATOR,
             PSO_MEMFILE_NAME );
 
-   errcode = psaOpenVDS( process,
-                          path,
-                          answer.memorySizekb,
-                          &context );
+   errcode = psoaOpenMemory( process,
+                             path,
+                             answer.memorySizekb,
+                             &context );
    if ( errcode != PSO_OK ) goto the_exit;
 
    GET_PTR( context.pAllocator, process->pHeader->allocatorOffset, void );
@@ -131,7 +131,7 @@ void psaProcessFini()
    psnProcMgr * processManager = NULL;
    psnSessionContext context;
    psaSession * pApiSession = NULL;
-   psnSession * pVdsSession = NULL, * pCurrent;
+   psnSession * pMemSession = NULL, * pCurrent;
    int errcode = 0;
    psaProcess * process;
    bool ok;
@@ -164,20 +164,20 @@ void psaProcessFini()
 
    if ( psnLock(&process->pCleanup->memObject, &context) ) {
       ok = psnProcessGetFirstSession( process->pCleanup, 
-                                       &pVdsSession, 
+                                       &pMemSession, 
                                        &context );
       PSO_POST_CONDITION( ok == true || ok == false );
       while ( ok ) {
-         pApiSession = pVdsSession->pApiSession;
+         pApiSession = pMemSession->pApiSession;
          if ( pApiSession != NULL ) {
             errcode = psaCloseSession( pApiSession );
             /** \todo handle error here */
          }
 
-         pCurrent = pVdsSession;
+         pCurrent = pMemSession;
          ok = psnProcessGetNextSession( process->pCleanup,
                                          pCurrent,
-                                         &pVdsSession,
+                                         &pMemSession,
                                          &context );
       }
       
@@ -196,9 +196,9 @@ void psaProcessFini()
    PSO_POST_CONDITION( ok == true || ok == false );
    process->pCleanup = NULL;
    
-   /* close our access to the VDS */
+   /* close our access to the shared memory */
    if ( process->pHeader != NULL ) {
-      psaCloseVDS( process, &context );
+      psoaCloseMemory( process, &context );
       process->pHeader = NULL;
    }
    
@@ -213,10 +213,10 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psaOpenVDS( psaProcess        * process,
-                const char        * memoryFileName,
-                size_t              memorySizekb,
-                psnSessionContext * pContext )
+int psoaOpenMemory( psaProcess        * process,
+                    const char        * memoryFileName,
+                    size_t              memorySizekb,
+                    psnSessionContext * pContext )
 {
    int errcode = 0;
    bool ok;
@@ -243,7 +243,7 @@ int psaOpenVDS( psaProcess        * process,
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       fprintf( stderr, "MMAP failure - %d %s\n", errno, memoryFileName );
-      return PSO_ERROR_OPENING_VDS;
+      return PSO_ERROR_OPENING_MEMORY;
    }
    
    g_pBaseAddr = (unsigned char * ) ptr;
@@ -259,8 +259,8 @@ int psaOpenVDS( psaProcess        * process,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psaCloseVDS( psaProcess        * process,
-                  psnSessionContext * pContext )
+void psoaCloseMemory( psaProcess        * process,
+                      psnSessionContext * pContext )
 {
    PSO_PRE_CONDITION( process  != NULL );
    PSO_PRE_CONDITION( pContext != NULL );

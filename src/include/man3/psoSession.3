@@ -1,4 +1,4 @@
-.TH "psoSession" 3 "24 Aug 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
+.TH "psoSession" 3 "26 Aug 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -50,7 +50,7 @@ Definition at line 30 of file psoSession.
 .ti -1c
 .RI "void \fBGetInfo\fP (psoInfo *pInfo)"
 .br
-.RI "\fIReturn information on the current status of the VDS (Virtual Data Space). \fP"
+.RI "\fIReturn information on the current status of the shared memory. \fP"
 .ti -1c
 .RI "void \fBGetStatus\fP (const std::string &objectName, psoObjStatus *pStatus)"
 .br
@@ -240,7 +240,7 @@ Caveat, some basic errors cannot be captured, if the provided handles (session h
 
 .SS "void psoSession::GetInfo (psoInfo * pInfo)"
 .PP
-Return information on the current status of the VDS (Virtual Data Space). 
+Return information on the current status of the shared memory. 
 .PP
 The fetched information is mainly about the current status of the memory allocator.
 .PP

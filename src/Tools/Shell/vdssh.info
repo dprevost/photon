@@ -1,7 +1,7 @@
 This is vdssh.info, produced by makeinfo version 4.8 from vdssh.texi.
 
 START-INFO-DIR-ENTRY
-* vdssh: (vdssh).               starts a pseudo-shell to access VDSF data
+* vdssh: (vdssh).               starts a pseudo-shell to access Photon data
 END-INFO-DIR-ENTRY
 
 
@@ -15,7 +15,7 @@ vdssh
 Name
 ****
 
-vdssh a^€” starts a pseudo-shell to access VDSF data
+vdssh a^€” starts a pseudo-shell to access Photon data
 
 
 
@@ -41,8 +41,8 @@ Running normally:
 DESCRIPTION
 ***********
 
-vdssh is a pseudo-shell allowing access to the data in the VDS
-(shared-memory used by the VDSF software).
+vdssh is a pseudo-shell allowing access to the data in the
+shared-memory used by the Photon software.
 
    This program supports a very limited number of standard Bourne shell
 commands (and a few equivalent DOS commands). See the section *COMMANDS*
@@ -54,7 +54,7 @@ OPTIONS
 *******
 
 `-a', `--address' QUASAR_ADDRESS
-     The TCP port for the VDSF watchdog (the program quasar).
+     The TCP port for the Photon server (quasar).
 
 `-h', `-?', `--help'
      Minimal help including a list of supported commands.
@@ -134,15 +134,15 @@ Copyright (C) 2008 Daniel Pre'vost.
 
 
 Tag Table:
-Node: Top186
-Ref: name243
-Ref: synopsis310
-Ref: Getting [minimal] help;331
-Ref: Running normally;404
-Ref: DESCRIPTION483
+Node: Top188
+Ref: name245
+Ref: synopsis314
+Ref: Getting [minimal] help;335
+Ref: Running normally;408
+Ref: DESCRIPTION487
 Ref: OPTIONS810
-Ref: Commands1005
-Ref: REPORTING BUGS2472
-Ref: COPYRIGHT2554
+Ref: Commands993
+Ref: REPORTING BUGS2460
+Ref: COPYRIGHT2542
 
 End Tag Table

@@ -226,7 +226,7 @@ int main( int argc, char * argv[] )
     *  - cannot get access to the item from second session.
     *  And that the error is PSO_EMPTY.
     *
-    * Note to make sure that the deleted item is still in the VDS,
+    * Note to make sure that the deleted item is still in shared memory,
     * we first call GetFirst to get a pointer to the item from
     * session 2 (the failed call to Pop just above release that
     * internal pointer).

@@ -3,7 +3,7 @@
 @documentencoding iso-8859-1
 @settitle vdssh
 @direntry
-* vdssh: (vdssh).               starts a pseudo-shell to access VDSF data
+* vdssh: (vdssh).               starts a pseudo-shell to access Photon data
 @end direntry
 
 @node Top
@@ -13,7 +13,7 @@
 @anchor{name}
 @chapheading Name
 
-vdssh @^a€” starts a pseudo-shell to access VDSF data
+vdssh @^a€” starts a pseudo-shell to access Photon data
 
 @noindent
 @anchor{synopsis}
@@ -35,8 +35,8 @@ vdssh @^a€” starts a pseudo-shell to access VDSF data
 @anchor{DESCRIPTION}
 @chapheading DESCRIPTION
 
-vdssh is a pseudo-shell allowing access to the data in the VDS 
-(shared-memory used by the VDSF software).
+vdssh is a pseudo-shell allowing access to the data in the 
+shared-memory used by the Photon software.
 
 This program supports a very limited number of standard Bourne shell commands 
 (and a few equivalent DOS commands). See the section 
@@ -50,7 +50,7 @@ for a list of supported commands (and syntax).
 @table @asis
 
 @item @code{-a}, @code{--address} @var{quasar_address}
-The TCP port for the VDSF watchdog (the program quasar).
+The TCP port for the Photon server (quasar).
 
 @item @code{-h}, @code{-?}, @code{--help}
 Minimal help including a list of supported commands.

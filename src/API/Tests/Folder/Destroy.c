@@ -166,7 +166,7 @@ int main( int argc, char * argv[] )
 
    /* 
     * Commit with session #2 having the object open. The object should 
-    * still be in the VDS but we should be able to create a new one.
+    * still be in shared memory but we should be able to create a new one.
     */
    errcode = psoCommit( sessionHandle );
    if ( errcode != PSO_OK ) {

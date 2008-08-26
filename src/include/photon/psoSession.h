@@ -210,7 +210,7 @@ int psoGetDefinition( PSO_HANDLE             sessionHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * Return information on the current status of the VDS (Virtual Data Space).
+ * Return information on the current status of the shared memory.
  *
  * The fetched information is mainly about the current status of the memory 
  * allocator.

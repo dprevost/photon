@@ -296,7 +296,7 @@ bool vdswOpenVDS( vdswMemoryManager  * pManager,
    if ( ! ok ) {
       pscChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
-                      PSOQ_ERROR_OPENING_VDS );
+                      PSOQ_ERROR_OPENING_MEMORY );
       return false;
    }
    

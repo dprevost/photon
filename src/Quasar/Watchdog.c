@@ -132,7 +132,7 @@ bool vdswDaemon( vdswWatchdog * pWatchdog )
    PSO_PRE_CONDITION( pWatchdog != NULL );
 
    /*
-    * Before becoming a daemon, we test the VDS directory to make sure it
+    * Before becoming a daemon, we test the shared memory directory to make sure it
     * is valid - this is, likely, the most probable failure of the whole
     * process and it is much easier to report an error at this stage than 
     * to report it using syslog() or the Win32 equivalent.
@@ -167,7 +167,7 @@ bool vdswDaemon( vdswWatchdog * pWatchdog )
     *    a terminal in the future (terminals are associated with session
     *    leaders)
     * 4) chdir to appropriate location (the appropriate location in our case 
-    *    is the location (directory) of the VDS files - this does guarantee
+    *    is the location (directory) of the shared memory files - this does guarantee
     *    that the underlying file system cannot be unmounted without 
     *    properly terminating the daemon first [at least under normal
     *    conditions of operations]
@@ -305,7 +305,7 @@ bool vdswInstall( vdswWatchdog * pWatchdog )
    /*
     * Now that the service is created, we need to save into the registry
     * all pertinent information that will be needed for the proper 
-    * running of this service. This include the location of of the VDS
+    * running of this service. This include the location of the shared-memory
     * directory, the Watchdog address (as used by client apps), etc.
     */
 

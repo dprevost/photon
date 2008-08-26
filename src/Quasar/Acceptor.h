@@ -66,7 +66,8 @@ struct vdswWatchdog;
 
 /**
  *  This struct enables the watchdog to answer connection request from 
- *  applications and to send the information they need to access the VDS.
+ *  applications and to send the information they need to access the shared 
+ *  memory.
  *
  *  This module encapsulates the IPC mechanism uses between the apps and
  *  the watchdog. I've looked at different possibilities, for example 

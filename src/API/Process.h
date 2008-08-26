@@ -44,11 +44,11 @@ typedef struct psaProcess
 {
    psaObjetType type;
 
-   /** Pointer to the header of the VDS memory. */
+   /** Pointer to the header of the shared memory. */
    struct psnMemoryHeader* pHeader;
 
    /** 
-    * Pointer to our own cleanup object in the VDS. This object is used by 
+    * Pointer to our own cleanup object in shared memory. This object is used by 
     * the CleanupManager to hold process-specific information that might
     * be needed in case of a crash (current state of transactions, etc.).
     */
@@ -94,14 +94,14 @@ PHOTON_API_EXPORT
 bool AreWeTerminated();
 
 PHOTON_API_EXPORT
-int psaOpenVDS( psaProcess        * process,
-                const char        * memoryFileName,
-                size_t              memorySizekb,
-                psnSessionContext * pSession );
+int psoaOpenMemory( psaProcess        * process,
+                    const char        * memoryFileName,
+                    size_t              memorySizekb,
+                    psnSessionContext * pSession );
                         
 PHOTON_API_EXPORT
-void psaCloseVDS( psaProcess        * process,
-                  psnSessionContext * pSession );
+void psoaCloseMemory( psaProcess        * process,
+                      psnSessionContext * pSession );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

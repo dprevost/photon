@@ -51,7 +51,7 @@ int psaCommonObjOpen( psaCommonObject    * pObject,
       if ( errcode == 0 ) {
          GET_PTR( pDesc, pObject->folderItem.pHashItem->dataOffset,
                           psnObjectDescriptor );
-         GET_PTR( pObject->pMyVdsObject, pDesc->offset, void );
+         GET_PTR( pObject->pMyMemObject, pDesc->offset, void );
       }
       psaCommonUnlock( pObject );
    }

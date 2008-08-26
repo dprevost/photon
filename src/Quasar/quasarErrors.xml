@@ -21,7 +21,7 @@
       <authors>Daniel Prevost</authors>
       <!-- Each <notice> is mapped to a paragraph (easier to read) -->
       <notice>
-        This file is part of the vdsf library (Virtual Data Space Framework).
+        This file is part of the Photon framework (photonsoftware.org).
       </notice>
       <!-- The GPL license is of course for Photon, not for Error Parser... -->
       <notice>
@@ -83,9 +83,9 @@
       <errname> NO_VERIFICATION_POSSIBLE</errname>
       <message_group>
         <message xml:lang="en">
-          <errormsg>Cannot verify the VDS.</errormsg>
+          <errormsg>Cannot verify the shared memory.</errormsg>
           <errordoc>
-            The VDS does not exist and therefore cannot be verified.
+            The shared memory does not exist and therefore cannot be verified.
           </errordoc>
         </message>
       </message_group>
@@ -96,9 +96,9 @@
       <errname> MKDIR_FAILURE</errname>
       <message_group>
         <message xml:lang="en">
-          <errormsg>Cannot create the directory for the VDS.</errormsg>
+          <errormsg>Cannot create the directory for the shared memory.</errormsg>
           <errordoc>
-            Cannot create the directory that will be used for the VDS
+            Cannot create the directory that will be used for the shared memory
             and associated files.
           </errordoc>
         </message>
@@ -110,10 +110,10 @@
       <errname>FILE_NOT_ACCESSIBLE</errname>
       <message_group>
         <message xml:lang="en">
-          <errormsg>Cannot access the backstore file for the VDS.</errormsg>
+          <errormsg>Cannot access the backstore file for the shared memory.</errormsg>
           <errordoc>
-            Cannot access the backstore file for the VDS. You might want
-            to verify the permissionsandownership of the file and/or of the
+            Cannot access the backstore file for the shared memory. You might want
+            to verify the permissions and ownership of the file and/or of the
             parent directory.
           </errordoc>
         </message>
@@ -126,11 +126,11 @@
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            Error while creating a copy of the backstore file for the VDS.
+            Error while creating a copy of the backstore file for the shared memory.
           </errormsg>
           <errordoc>
-            Error while creating a copy of the backstore file for the VDS
-            (a backup copy is created before the VDS is verify for 
+            Error while creating a copy of the backstore file for the shared memory
+            (a backup copy is created before the shared memory is verify for 
             inconsistencies).
           </errordoc>
         </message>
@@ -143,10 +143,10 @@
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            Error creating the backstore file for the VDS.
+            Error creating the backstore file for the shared memory.
           </errormsg>
           <errordoc>
-            Error creating the backstore file for the VDS. Possible reasons:
+            Error creating the backstore file for the shared memory. Possible reasons:
             not enough disk space, invalid file permissions, etc.
           </errordoc>
         </message>
@@ -159,10 +159,10 @@
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            Error opening the backstore file for the VDS.
+            Error opening the backstore file for the shared memory.
           </errormsg>
           <errordoc>
-            Error opening the backstore file for the VDS.
+            Error opening the backstore file for the shared memory.
           </errordoc>
         </message>
       </message_group>
@@ -190,10 +190,10 @@
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            The vds backstore file is missing.
+            The shared-memory backstore file is missing.
           </errormsg>
           <errordoc>
-            The vds backstore file is missing. The existence of this file 
+            The shared-memory backstore file is missing. The existence of this file 
             was already verified previously - if it is missing, something 
             really weird is going on.
           </errordoc>
@@ -203,14 +203,14 @@
    
     <error>
       <errnumber> 11 </errnumber>
-      <errname> ERROR_OPENING_VDS </errname>
+      <errname> ERROR_OPENING_MEMORY </errname>
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            Generic i/o error when attempting to open the vds.
+            Generic i/o error when attempting to open the shared memory.
           </errormsg>
           <errordoc>
-            Generic i/o error when attempting to open the vds.
+            Generic i/o error when attempting to open the shared memory.
           </errordoc>
         </message>
       </message_group>

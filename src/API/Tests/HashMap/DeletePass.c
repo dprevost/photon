@@ -213,7 +213,7 @@ int main( int argc, char * argv[] )
     *  - cannot get access to the item from second session.
     *  - can insert new item with same key.
     *
-    * Note to make sure that the deleted item is still in the VDS,
+    * Note to make sure that the deleted item is still in shared memory,
     * we will act on the first session (the second session holds
     * an internal pointer to the data record).
     */

@@ -59,7 +59,7 @@ void psnTxFini( psnTx             * pTx,
    PSO_PRE_CONDITION( pTx->listOfOps.currentSize == 0 );
    PSO_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
    
-   /* Synch the VDS */
+   /* Synch the shared memory */
 #if 0
    MemoryManager::Instance()->Sync( &pContext->errorHandler );
 #endif
@@ -163,7 +163,7 @@ void psnTxCommit( psnTx             * pTx,
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
       
-   /* Synch the VDS */
+   /* Synch the shared memory */
 #if 0
    int errcode = PSO_OK;
 
@@ -383,7 +383,7 @@ void psnTxRollback( psnTx             * pTx,
    PSO_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
 
 #if 0
-   /* Synch the VDS */
+   /* Synch the shared memory */
    MemoryManager::Instance()->Sync( &pContext->errorHandler );
 #endif
 

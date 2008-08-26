@@ -45,7 +45,7 @@ typedef struct psaCommonObject
    psaObjetType type;
 
    /** 
-    * Pointer to our own cleanup object in the VDS. This object is used by 
+    * Pointer to our own cleanup object in memory. This object is used by 
     * the ProcessManager to hold object-specific information that might
     * be needed in case of a crash (current state of transactions, etc.).
     *
@@ -56,11 +56,11 @@ typedef struct psaCommonObject
    /** Pointer to the session we belong to. */
    struct psaSession* pSession;
 
-   /** A folder item. It contains a pointer to the hash item in VDS memory. */
+   /** A folder item. It contains a pointer to the hash item in memory. */
    psnFolderItem  folderItem;
 
-   /** A pointer to the object in VDS. */   
-   void * pMyVdsObject;
+   /** A pointer to the object in shared memory. */   
+   void * pMyMemObject;
 
 } psaCommonObject;
 
@@ -126,7 +126,7 @@ void psaCommonUnlock( psaCommonObject * pObject )
  *
  * Setting psaCommonObject::pObjectContext to NULL indicates that a
  * process or a session has terminated and that no further access to
- * the VDS is allowed/possible!
+ * the shared memory is allowed/possible!
  *
  * \param[in] pObject Pointer to the object to close.
  *

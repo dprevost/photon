@@ -4,17 +4,17 @@
 \\$2 \(la\\$1\(ra\\$3
 ..
 .if \n(.g .mso www.tmac
-.TH vdssh 1 "24 August 2008" VDSF "User Commands"
+.TH vdssh 1 "26 August 2008" Photon "User Commands"
 .SH NAME
-vdssh \- starts a pseudo-shell to access VDSF data
+vdssh \- starts a pseudo-shell to access Photon data
 .SH SYNOPSIS
 .SS "GETTING (MINIMAL) HELP:"
 \*(T<\fBvdssh \-h|\-\-help|\-?\fR\*(T>
 .SS "RUNNING NORMALLY:"
 \*(T<\fBvdssh \-a|\-\-address\fR\*(T> \fIquasar_address \fR
 .SH DESCRIPTION
-vdssh is a pseudo-shell allowing access to the data in the VDS 
-(shared-memory used by the VDSF software).
+vdssh is a pseudo-shell allowing access to the data in the 
+shared-memory used by the Photon software.
 .PP
 This program supports a very limited number of standard Bourne shell commands 
 (and a few equivalent DOS commands). See the section 
@@ -23,7 +23,7 @@ for a list of supported commands (and syntax).
 .SH OPTIONS
 .TP 
 \*(T<\fB\-a\fR\*(T>, \*(T<\fB\-\-address\fR\*(T> \fIquasar_address\fR
-The TCP port for the VDSF watchdog (the program quasar).
+The TCP port for the Photon server (quasar).
 .TP 
 \*(T<\fB\-h\fR\*(T>, \*(T<\fB\-?\fR\*(T>, \*(T<\fB\-\-help\fR\*(T>
 Minimal help including a list of supported commands.
@@ -87,4 +87,4 @@ Create a new object named object_name of the specified type:
 .SH "REPORTING BUGS"
 Report bugs to <dprevost@users.sourceforge.net>.
 .SH COPYRIGHT
-Copyright \(^A\(co 2008 Daniel Pr\('evost.
+Copyright \(^A\(co 2008 Daniel Pr\(~A\(covost.

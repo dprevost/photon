@@ -26,8 +26,8 @@ quasar @^a€” starts the Photon server
 @samp{quasar -c|--config} @emph{config_filename }@code{-t|--test}
 
 @noindent
-@anchor{Verifying the VDS [and exit];}
-@heading Verifying the VDS (and exit):
+@anchor{Verifying the shared memory [and exit];}
+@heading Verifying the shared memory (and exit):
 
 @samp{quasar -c|--config} @emph{config_filename }@code{-v|--verify}
 

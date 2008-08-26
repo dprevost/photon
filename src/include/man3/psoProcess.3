@@ -1,4 +1,4 @@
-.TH "psoProcess" 3 "24 Aug 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
+.TH "psoProcess" 3 "26 Aug 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -22,7 +22,7 @@ Definition at line 35 of file psoProcess.
 .ti -1c
 .RI "virtual \fB~psoProcess\fP ()"
 .br
-.RI "\fIThe destructor terminates all access to the VDS. \fP"
+.RI "\fIThe destructor terminates all access to shared memory. \fP"
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
@@ -30,7 +30,7 @@ Definition at line 35 of file psoProcess.
 .PP
 .SS "virtual psoProcess::~psoProcess ()\fC [virtual]\fP"
 .PP
-The destructor terminates all access to the VDS. 
+The destructor terminates all access to shared memory. 
 .PP
 This function will also close all sessions and terminate all accesses to the different objects. 
 .SH "Member Function Documentation"

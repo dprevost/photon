@@ -1,11 +1,11 @@
-.TH "psoQueue.h" 3 "24 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoQueue.h" 3 "26 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 psoQueue.h \- 
 .SH "Detailed Description"
 .PP 
-This file provides the API needed to access a VDSF FIFO queue. 
+This file provides the API needed to access a Photon FIFO queue. 
 
 
 .PP
@@ -20,39 +20,39 @@ Definition in file \fBpsoQueue.h\fP.
 
 .in +1c
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoQueueClose\fP (\fBPSO_HANDLE\fP objectHandle)"
+.RI "PHOTON_EXPORT int \fBpsoQueueClose\fP (\fBPSO_HANDLE\fP objectHandle)"
 .br
 .RI "\fIClose a FIFO queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoQueueDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP **definition)"
+.RI "PHOTON_EXPORT int \fBpsoQueueDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP **definition)"
 .br
 .RI "\fIRetrieve the data definition of the queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoQueueGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "PHOTON_EXPORT int \fBpsoQueueGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .RI "\fIIterate through the queue - no data items are removed from the queue by this function. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoQueueGetNext\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "PHOTON_EXPORT int \fBpsoQueueGetNext\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .RI "\fIIterate through the queue - no data items are removed from the queue by this function. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoQueueOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *queueName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
+.RI "PHOTON_EXPORT int \fBpsoQueueOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *queueName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
 .br
 .RI "\fIOpen an existing FIFO queue (see \fBpsoCreateObject\fP to create a new queue). \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoQueuePop\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "PHOTON_EXPORT int \fBpsoQueuePop\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .RI "\fIRemove the first item from the beginning of a FIFO queue and return it to the caller. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoQueuePush\fP (\fBPSO_HANDLE\fP objectHandle, const void *pItem, size_t length)"
+.RI "PHOTON_EXPORT int \fBpsoQueuePush\fP (\fBPSO_HANDLE\fP objectHandle, const void *pItem, size_t length)"
 .br
 .RI "\fIInsert a data element at the end of the FIFO queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoQueuePushNow\fP (\fBPSO_HANDLE\fP objectHandle, const void *pItem, size_t length)"
+.RI "PHOTON_EXPORT int \fBpsoQueuePushNow\fP (\fBPSO_HANDLE\fP objectHandle, const void *pItem, size_t length)"
 .br
 .RI "\fIInsert a data element at the end of the FIFO queue. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoQueueStatus\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP *pStatus)"
+.RI "PHOTON_EXPORT int \fBpsoQueueStatus\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP *pStatus)"
 .br
 .RI "\fIReturn the status of the queue. \fP"
 .in -1c

@@ -67,10 +67,10 @@ struct ConfigParams
    /** Address where the wd listen to incoming requests from application */
    char wdAddress[PATH_MAX];
 
-   /** Location of the backstore file for the VDS */
+   /** Location of the backstore file for the shared memory */
    char wdLocation[PATH_MAX];
 
-   /** The size of the VDS in kilobytes */
+   /** The size of the shared memory in kilobytes */
    size_t memorySizekb;
 
    /** Whether we log transactions to disk or not */

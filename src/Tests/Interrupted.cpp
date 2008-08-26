@@ -39,7 +39,7 @@ psoSession* g_pSession1, *g_pSession2;
  * 
  * - there will be a series of tests with crashes number 1, 2, ...
  * - for each test there will be a test of the test, usually run after, to 
- *   make sure that the vds was properly cleaned.
+ *   make sure that the shared memory was properly cleaned.
  *
  * test cases:
  * 

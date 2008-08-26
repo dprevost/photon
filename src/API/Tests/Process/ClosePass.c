@@ -50,9 +50,9 @@ int main( int argc, char * argv[] )
    context.pidLocker= getpid();
    pscInitErrorHandler( &context.errorHandler );
    
-   psaCloseVDS( &process, &context );
+   psoaCloseMemory( &process, &context );
 
-   /* Cannot call psaProcessFini since it calls CloseVDS()  */
+   /* Cannot call psaProcessFini since it calls CloseMemory()  */
    psaDisconnect( &process.connector, &context.errorHandler );
 
    return 0;

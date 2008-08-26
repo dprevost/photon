@@ -4,19 +4,19 @@ Some issues that need to be considered for the watchdog.
 
 Goals of the watchdog:
 
-1) To be able to detect application crashes and to cleanup the VDS as
-   required.
+1) To be able to detect application crashes and to cleanup the shared memory 
+   as required.
 
 2) To have a single "owner" of the shared memory/backstored file in order
    to provide additional features (for example adding ACLs to these objects
    on system that support them).
 
 3) To eliminate the need, for applications, to specify parameters for 
-   the VDS (size, etc.) in the form of a config file or whatever. 
+   the shared memory (size, etc.) in the form of a config file or whatever. 
 
 4) To eliminate the small but non-null danger of a race condition when 
-   the VDS is created/started (the other solution was to used a file lock
-   on the backstored file but...).
+   the shared memory is created/started (the other solution was to used a 
+   file lock on the backstored file but...).
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

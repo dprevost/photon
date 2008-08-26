@@ -33,7 +33,7 @@
 <para><userinput>quasar -c|--config</userinput> <emphasis remap='I'>config_filename </emphasis><option>-t|--test</option></para>
 </refsect2>
 
-<refsect2 id='verifying_the_vds'><title>Verifying the VDS (and exit):</title>
+<refsect2 id='verifying_the_vds'><title>Verifying the shared memory (and exit):</title>
 <para><userinput>quasar -c|--config</userinput> <emphasis remap='I'>config_filename </emphasis><option>-v|--verify</option></para>
 </refsect2>
 

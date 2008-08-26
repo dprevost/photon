@@ -199,7 +199,7 @@ psnMemAllocInit( psnMemAlloc       * pAlloc,
    psnEndBlockSet( SET_OFFSET(pAlloc), 
                     neededBlocks, 
                     false,   /* isInLimbo */
-                    false ); /* is at the end of the VDS */
+                    false ); /* is at the end of the shared memory */
                                               
    /* Add the blockGroup to the list of groups of the memObject */
    psnLinkNodeInit( &pAlloc->blockGroup.node );

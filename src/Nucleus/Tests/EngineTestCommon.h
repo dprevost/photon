@@ -29,8 +29,8 @@ pscErrMsgHandle g_psoErrorHandle;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * This function should be called by every function that requires the
- * errorhandle for the VDS errors tobe initialized. 
+ * This function should be called by every program that requires the
+ * errorhandle for the Photon errors to be initialized. 
  */
  
 void initTest( bool testIsExpectedToSucceed, psnSessionContext* pContext )

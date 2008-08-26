@@ -50,7 +50,7 @@ void vdswMemoryManagerInit( vdswMemoryManager * pManager );
 
 void vdswMemoryManagerFini( vdswMemoryManager * pManager );
    
-/** This function creates the VDS. */
+/** This function creates the shared memory. */
 bool vdswCreateVDS( vdswMemoryManager  * pManager,
                     const char         * memoryFileName,
                     size_t               memorySize,
@@ -60,7 +60,7 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
 
 /**
  * This function opens an existing VDS. This is the function that should
- * be used when the VDS already exist.
+ * be used when the shared memory already exist.
  */
 bool vdswOpenVDS( vdswMemoryManager  * pManager, 
                   const char         * memoryFileName,

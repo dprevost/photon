@@ -19,13 +19,13 @@
 <refmeta>
   <refentrytitle>vdssh</refentrytitle>
   <manvolnum>1</manvolnum>
-  <refmiscinfo class='source'>VDSF</refmiscinfo>
+  <refmiscinfo class='source'>Photon</refmiscinfo>
   <refmiscinfo class='manual'>User Commands</refmiscinfo>
   <refmiscinfo class='version'>0.3.0</refmiscinfo>
 </refmeta>
 <refnamediv id='name'>
   <refname>vdssh</refname>
-  <refpurpose>starts a pseudo-shell to access VDSF data</refpurpose>
+  <refpurpose>starts a pseudo-shell to access Photon data</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv id='synopsis'>
@@ -42,8 +42,8 @@
 
 <refsect1 id='description'><title>DESCRIPTION</title>
   <para> 
-    vdssh is a pseudo-shell allowing access to the data in the VDS 
-    (shared-memory used by the VDSF software).
+    vdssh is a pseudo-shell allowing access to the data in the 
+    shared-memory used by the Photon software.
   </para>
   <para>
     This program supports a very limited number of standard Bourne shell commands 
@@ -59,7 +59,7 @@
     <term><option>-a</option>, <option>--address</option> <replaceable>quasar_address</replaceable></term>
     <listitem>
       <para>
-        The TCP port for the VDSF watchdog (the program quasar).
+        The TCP port for the Photon server (quasar).
       </para>
     </listitem>
   </varlistentry>

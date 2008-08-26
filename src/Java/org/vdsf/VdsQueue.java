@@ -16,7 +16,7 @@
 package org.vdsf;
 
 /**
- * Queue class for the vdsf library.
+ * Queue class for the Photon library.
  */
 
 class VdsQueue {

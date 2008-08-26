@@ -38,7 +38,7 @@ extern "C" {
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * This function terminates all access to the VDS. This function 
+ * This function terminates all access to shared memory. This function 
  * will also close all sessions and terminate all accesses to 
  * the different objects. 
  * 

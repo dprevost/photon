@@ -1,4 +1,4 @@
-.TH "API functions for psof hash maps." 3 "24 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for psof hash maps." 3 "26 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -11,49 +11,49 @@ Hash maps use unique keys - the data items are not sorted.
 
 .in +1c
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoHashMapClose\fP (\fBPSO_HANDLE\fP objectHandle)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapClose\fP (\fBPSO_HANDLE\fP objectHandle)"
 .br
 .RI "\fIClose a Hash Map. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoHashMapDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP **definition)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP **definition)"
 .br
 .RI "\fIRetrieve the data definition of the hash map. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoHashMapDelete\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapDelete\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength)"
 .br
 .RI "\fIRemove the data item identified by the given key from the hash map. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoHashMapGet\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapGet\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *returnedLength)"
 .br
 .RI "\fIRetrieve the data item identified by the given key from the hash map. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoHashMapGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
 .br
 .RI "\fIIterate through the hash map. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoHashMapGetNext\fP (\fBPSO_HANDLE\fP objectHandle, void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapGetNext\fP (\fBPSO_HANDLE\fP objectHandle, void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
 .br
 .RI "\fIIterate through the hash map. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoHashMapInsert\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength, const void *data, size_t dataLength)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapInsert\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength, const void *data, size_t dataLength)"
 .br
 .RI "\fIInsert a data element in the hash map. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoHashMapOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *hashMapName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *hashMapName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
 .br
 .RI "\fIOpen an existing hash map (see \fBpsoCreateObject\fP to create a new object). \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoHashMapReplace\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength, const void *data, size_t dataLength)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapReplace\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength, const void *data, size_t dataLength)"
 .br
 .RI "\fIReplace a data element in the hash map. \fP"
 .ti -1c
-.RI "VDSF_EXPORT int \fBpsoHashMapStatus\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP *pStatus)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapStatus\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP *pStatus)"
 .br
 .RI "\fIReturn the status of the hash map. \fP"
 .in -1c
 .SH "Function Documentation"
 .PP 
-.SS "VDSF_EXPORT int psoHashMapClose (\fBPSO_HANDLE\fP objectHandle)"
+.SS "PHOTON_EXPORT int psoHashMapClose (\fBPSO_HANDLE\fP objectHandle)"
 .PP
 Close a Hash Map. 
 .PP
@@ -75,7 +75,7 @@ Closing an object does not automatically commit or rollback data items that were
 .RE
 .PP
 
-.SS "VDSF_EXPORT int psoHashMapDefinition (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP ** definition)"
+.SS "PHOTON_EXPORT int psoHashMapDefinition (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP ** definition)"
 .PP
 Retrieve the data definition of the hash map. 
 .PP
@@ -97,7 +97,7 @@ This function allocates a buffer to hold the definition (using malloc()). You mu
 .RE
 .PP
 
-.SS "VDSF_EXPORT int psoHashMapDelete (\fBPSO_HANDLE\fP objectHandle, const void * key, size_t keyLength)"
+.SS "PHOTON_EXPORT int psoHashMapDelete (\fBPSO_HANDLE\fP objectHandle, const void * key, size_t keyLength)"
 .PP
 Remove the data item identified by the given key from the hash map. 
 .PP
@@ -120,7 +120,7 @@ The removals only become permanent after a call to \fBpsoCommit\fP.
 .RE
 .PP
 
-.SS "VDSF_EXPORT int psoHashMapGet (\fBPSO_HANDLE\fP objectHandle, const void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "PHOTON_EXPORT int psoHashMapGet (\fBPSO_HANDLE\fP objectHandle, const void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * returnedLength)"
 .PP
 Retrieve the data item identified by the given key from the hash map. 
 .PP
@@ -147,7 +147,7 @@ Data items which were added by another session and are not yet committed will no
 .RE
 .PP
 
-.SS "VDSF_EXPORT int psoHashMapGetFirst (\fBPSO_HANDLE\fP objectHandle, void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
+.SS "PHOTON_EXPORT int psoHashMapGetFirst (\fBPSO_HANDLE\fP objectHandle, void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
 .PP
 Iterate through the hash map. 
 .PP
@@ -178,7 +178,7 @@ Data items retrieved this way will not be sorted.
 .RE
 .PP
 
-.SS "VDSF_EXPORT int psoHashMapGetNext (\fBPSO_HANDLE\fP objectHandle, void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
+.SS "PHOTON_EXPORT int psoHashMapGetNext (\fBPSO_HANDLE\fP objectHandle, void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
 .PP
 Iterate through the hash map. 
 .PP
@@ -211,7 +211,7 @@ Data items retrieved this way will not be sorted.
 .RE
 .PP
 
-.SS "VDSF_EXPORT int psoHashMapInsert (\fBPSO_HANDLE\fP objectHandle, const void * key, size_t keyLength, const void * data, size_t dataLength)"
+.SS "PHOTON_EXPORT int psoHashMapInsert (\fBPSO_HANDLE\fP objectHandle, const void * key, size_t keyLength, const void * data, size_t dataLength)"
 .PP
 Insert a data element in the hash map. 
 .PP
@@ -236,7 +236,7 @@ The additions only become permanent after a call to \fBpsoCommit\fP.
 .RE
 .PP
 
-.SS "VDSF_EXPORT int psoHashMapOpen (\fBPSO_HANDLE\fP sessionHandle, const char * hashMapName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
+.SS "PHOTON_EXPORT int psoHashMapOpen (\fBPSO_HANDLE\fP sessionHandle, const char * hashMapName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
 .PP
 Open an existing hash map (see \fBpsoCreateObject\fP to create a new object). 
 .PP
@@ -257,7 +257,7 @@ Open an existing hash map (see \fBpsoCreateObject\fP to create a new object).
 .RE
 .PP
 
-.SS "VDSF_EXPORT int psoHashMapReplace (\fBPSO_HANDLE\fP objectHandle, const void * key, size_t keyLength, const void * data, size_t dataLength)"
+.SS "PHOTON_EXPORT int psoHashMapReplace (\fBPSO_HANDLE\fP objectHandle, const void * key, size_t keyLength, const void * data, size_t dataLength)"
 .PP
 Replace a data element in the hash map. 
 .PP
@@ -282,7 +282,7 @@ The replacements only become permanent after a call to \fBpsoCommit\fP.
 .RE
 .PP
 
-.SS "VDSF_EXPORT int psoHashMapStatus (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP * pStatus)"
+.SS "PHOTON_EXPORT int psoHashMapStatus (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP * pStatus)"
 .PP
 Return the status of the hash map. 
 .PP

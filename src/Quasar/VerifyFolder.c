@@ -99,7 +99,7 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
       if ( valid == VDSWR_DELETED_OBJECT && pVerify->doRepair ) {
          rc = VDSWR_CHANGES;
          pVerify->spaces += 2;
-         vdswEcho( pVerify, "Removing the object from the VDS" );
+         vdswEcho( pVerify, "Removing the object from shared memory" );
          pVerify->spaces -= 2;
          switch( pDesc->apiType ) {
             case PSO_FOLDER:
