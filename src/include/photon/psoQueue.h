@@ -30,7 +30,7 @@ extern "C" {
 
 /**
  * \file
- * This file provides the API needed to access a VDSF FIFO queue.
+ * This file provides the API needed to access a Photon FIFO queue.
  */
 /**
  * \defgroup psoQueue_c API functions for psof FIFO queues.
@@ -55,7 +55,7 @@ extern "C" {
  * \param[in] objectHandle The handle to the queue (see ::psoQueueOpen).
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoQueueClose( PSO_HANDLE objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -74,7 +74,7 @@ int psoQueueClose( PSO_HANDLE objectHandle );
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoQueueDefinition( PSO_HANDLE             objectHandle, 
                         psoObjectDefinition ** definition );
 
@@ -97,7 +97,7 @@ int psoQueueDefinition( PSO_HANDLE             objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoQueueGetFirst( PSO_HANDLE   objectHandle,
                       void       * buffer,
                       size_t       bufferLength,
@@ -127,7 +127,7 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoQueueGetNext( PSO_HANDLE   objectHandle,
                      void       * buffer,
                      size_t       bufferLength,
@@ -149,7 +149,7 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoQueueOpen(  PSO_HANDLE   sessionHandle,
                    const char * queueName,
                    size_t       nameLengthInBytes,
@@ -176,7 +176,7 @@ int psoQueueOpen(  PSO_HANDLE   sessionHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoQueuePop( PSO_HANDLE   objectHandle,
                  void       * buffer,
                  size_t       bufferLength,
@@ -195,7 +195,7 @@ int psoQueuePop( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoQueuePush( PSO_HANDLE   objectHandle, 
                   const void * pItem, 
                   size_t       length );
@@ -214,7 +214,7 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoQueuePushNow( PSO_HANDLE   objectHandle, 
                      const void * pItem, 
                      size_t       length );
@@ -229,7 +229,7 @@ int psoQueuePushNow( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoQueueStatus( PSO_HANDLE     objectHandle,
                     psoObjStatus * pStatus );
 

@@ -33,7 +33,7 @@ xsi:schemaLocation="http://photonsoftware.org/quasarConfig ../XML/quasar_config.
      Which "class" of users should have full access to the VDS backstore
      and all other related files?
      
-     In other words, which class of users can access/use VDSF?
+     In other words, which class of users can access/use Photon?
      
      Three possible answers:
        "user" - only the user that launched/will launch the watchdog (and 

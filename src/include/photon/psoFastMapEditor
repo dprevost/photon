@@ -33,7 +33,7 @@ class psoSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class VDSF_EXPORT psoFastMapEditor: public psoFastMap
+class PHOTON_EXPORT psoFastMapEditor: public psoFastMap
 {
 public:
 

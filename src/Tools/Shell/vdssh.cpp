@@ -36,7 +36,7 @@ int main( int argc, char *argv[] )
    pscOptionHandle optHandle;
    char *optArgument;
    struct pscOptStruct opts[1] = { 
-      { 'a', "address", 0, "quasar_address", "The address of the VDSF watchdog" }
+      { 'a', "address", 0, "quasar_address", "The address of the Photon server" }
    };
 
    ok = pscSetSupportedOptions( 1, opts, &optHandle );
@@ -62,7 +62,7 @@ int main( int argc, char *argv[] )
       session.Init();
    }
    catch( psoException exc ) {
-      cerr << "Init VDSF failed, error = " << exc.Message() << endl;
+      cerr << "Init Photon failed, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
    }

@@ -58,7 +58,7 @@ extern "C" {
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoCommit( PSO_HANDLE sessionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -82,7 +82,7 @@ int psoCommit( PSO_HANDLE sessionHandle );
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char    *       objectName,
                      size_t                nameLengthInBytes,
@@ -110,7 +110,7 @@ Not sure yet how this will be implemented. If at all...
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoCreateObjectXML( PSO_HANDLE   sessionHandle,
                         const char * xmlBuffer,
                         size_t       lengthInBytes );
@@ -132,7 +132,7 @@ int psoCreateObjectXML( PSO_HANDLE   sessionHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoDestroyObject( PSO_HANDLE   sessionHandle,
                       const char * objectName,
                       size_t       nameLengthInBytes );
@@ -159,7 +159,7 @@ int psoDestroyObject( PSO_HANDLE   sessionHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoErrorMsg( PSO_HANDLE sessionHandle,
                  char *     message,
                  size_t     msgLengthInBytes );
@@ -178,7 +178,7 @@ int psoErrorMsg( PSO_HANDLE sessionHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoExitSession( PSO_HANDLE sessionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -201,7 +201,7 @@ int psoExitSession( PSO_HANDLE sessionHandle );
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoGetDefinition( PSO_HANDLE             sessionHandle,
                       const char           * objectName,
                       size_t                 nameLengthInBytes,
@@ -220,7 +220,7 @@ int psoGetDefinition( PSO_HANDLE             sessionHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoGetInfo( PSO_HANDLE   sessionHandle,
                 psoInfo    * pInfo );
 
@@ -239,7 +239,7 @@ int psoGetInfo( PSO_HANDLE   sessionHandle,
  * \return 0 on success or a ::psoErrors on error.
  */
 
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoGetStatus(  PSO_HANDLE     sessionHandle,
                    const char *   objectName,
                    size_t         nameLengthInBytes,
@@ -264,7 +264,7 @@ int psoGetStatus(  PSO_HANDLE     sessionHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoInitSession( PSO_HANDLE* sessionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -281,7 +281,7 @@ int psoInitSession( PSO_HANDLE* sessionHandle );
  *
  * \return The last error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoLastError( PSO_HANDLE sessionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -305,7 +305,7 @@ int psoLastError( PSO_HANDLE sessionHandle );
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoRollback( PSO_HANDLE sessionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

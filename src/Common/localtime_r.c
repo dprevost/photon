@@ -196,7 +196,7 @@ localsub( const time_t * const	timep,
 ** Re-entrant version of localtime.
 */
 
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 struct tm *
 localtime_r( const time_t * 	timep,
              struct tm *	tm )

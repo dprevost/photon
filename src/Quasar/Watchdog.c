@@ -227,7 +227,7 @@ bool vdswDaemon( vdswWatchdog * pWatchdog )
    close( 1 );
    close( 2 );
    
-   vdswSendMessage( &pWatchdog->log, WD_INFO, "VDSF Watchdog initialized as a daemon" );   
+   vdswSendMessage( &pWatchdog->log, WD_INFO, "Photon Watchdog initialized as a daemon" );   
    return true;
 }
 #endif
@@ -282,7 +282,7 @@ bool vdswInstall( vdswWatchdog * pWatchdog )
     
    hService = CreateService( hManager,
                              "quasar",
-                             "VDSF Watchdog",
+                             "Photon Watchdog",
                              SERVICE_ALL_ACCESS,
                              SERVICE_WIN32_OWN_PROCESS,
                              SERVICE_DEMAND_START,

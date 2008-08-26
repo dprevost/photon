@@ -46,13 +46,13 @@ typedef struct psnMemBitmap psnMemBitmap;
 /** 
  * Initialize the psnMemBitmap struct. 
  */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnMemBitmapInit( psnMemBitmap * pBitmap,
                         ptrdiff_t       offset,
                         size_t          totalLength,
                         size_t          allocationUnit );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnMemBitmapFini( psnMemBitmap * pBitmap );
 
 static inline

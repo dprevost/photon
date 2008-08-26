@@ -84,7 +84,7 @@ int main()
       session.GetInfo( &info1 );
    }
    catch( psoException exc ) {
-      cerr << "Init VDSF failed, error = " << exc.Message() << endl;
+      cerr << "Init Photon failed, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
    }

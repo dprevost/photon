@@ -118,12 +118,12 @@ void pscEndTimer( pscTimer * pTimer )
 }
    
 /** Calculates - returns the time to the caller in seconds and nanosecs. */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 void pscCalculateTimer( pscTimer      * pTimer,
                         unsigned long * pSecs,
                         unsigned long * pnanoSecs );
    
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 void pscInitTimer( pscTimer * pTimer );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

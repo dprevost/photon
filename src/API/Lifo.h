@@ -53,7 +53,7 @@ typedef struct psaLifo
  * Iterates through the queue - no data items are removed from the queue
  * by this function.
  */
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaLifoFirst( psaLifo      * pLifo,
                   psaDataEntry * pEntry );
 
@@ -61,12 +61,12 @@ int psaLifoFirst( psaLifo      * pLifo,
  * Iterates through the queue - no data items are removed from the queue
  * by this function.
  */
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaLifoNext( psaLifo      * pLifo,
                  psaDataEntry * pEntry );
 
 /** Remove the first inserted item from a FIFO queue. */
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaLifoRemove( psaLifo      * pLifo,
                    psaDataEntry * pEntry );
 

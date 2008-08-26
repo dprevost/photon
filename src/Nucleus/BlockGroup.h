@@ -89,13 +89,13 @@ typedef struct psnEndBlockGroup psnEndBlockGroup;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnBlockGroupFini( psnBlockGroup* pGroup );
 
 /** 
  * Initialize the psnBlockGroup struct. 
  */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnBlockGroupInit( psnBlockGroup  * pGroup,
                          ptrdiff_t         firstBlockOffset,
                          size_t            numBlocks,

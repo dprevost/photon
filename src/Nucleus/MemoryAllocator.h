@@ -82,7 +82,7 @@ typedef struct psnMemAlloc psnMemAlloc;
  * eventually). Reason: when a program access the VDS, the allocator is 
  * already there, initialized and all.
  */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 enum psoErrors 
 psnMemAllocInit( psnMemAlloc       * pAlloc,
                   unsigned char      * pBaseAddress, 
@@ -92,14 +92,14 @@ psnMemAllocInit( psnMemAlloc       * pAlloc,
 /**
  * 
  */
-VDSF_ENGINE_EXPORT unsigned char* 
+PHOTON_ENGINE_EXPORT unsigned char* 
 psnMallocBlocks( psnMemAlloc       * pAlloc,
                   psnAllocTypeEnum    allocType,
                   size_t               numBlocks,
                   psnSessionContext * pContext );
 
 /** Free ptr, the memory is returned to the pool. */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnFreeBlocks( psnMemAlloc       * pAlloc,
                      psnAllocTypeEnum    allocType,
                      unsigned char      * ptr, 
@@ -114,7 +114,7 @@ bool psnMemAllocLastBlock( psnMemAlloc * pAlloc,
    return ( pAlloc->totalLength <= (size_t)offset + (numBlocks << PSN_BLOCK_SHIFT));
 }
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnMemAllocClose( psnMemAlloc       * pAlloc,
                         psnSessionContext * pContext );
 
@@ -122,7 +122,7 @@ void psnMemAllocClose( psnMemAlloc       * pAlloc,
  *  that the number of mallocs/frees are not based on a 64 bits 
  *  integer on 32 bits machine - these numbers might loop around.
  */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnMemAllocStats( psnMemAlloc       * pAlloc,
                         psoInfo            * pInfo,
                         psnSessionContext * pContext  );

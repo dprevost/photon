@@ -57,11 +57,11 @@ typedef struct psnProcessManager psnProcMgr;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnProcMgrInit( psnProcMgr        * pManager,
                       psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnProcMgrAddProcess( psnProcMgr        * pManager,
                             pid_t                pid, 
                             psnProcess       ** ppCleanupProcess,
@@ -71,13 +71,13 @@ bool psnProcMgrAddProcess( psnProcMgr        * pManager,
  * This function is for the watchdog - to recover from crashes in
  * real time.
  */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnProcMgrFindProcess( psnProcMgr        * pManager,
                              pid_t                pid, 
                              psnProcess       ** ppCleanupProcess,
                              psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnProcMgrRemoveProcess( psnProcMgr        * pManager,
                                psnProcess        * pCleanupProcess,
                                psnSessionContext * pContext );

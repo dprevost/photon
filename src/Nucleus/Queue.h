@@ -95,7 +95,7 @@ typedef struct psnQueue psnQueue;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnQueueInit( psnQueue           * pQueue,
                     ptrdiff_t             parentOffset,
                     size_t                numberOfBlocks,
@@ -106,62 +106,62 @@ bool psnQueueInit( psnQueue           * pQueue,
                     psoObjectDefinition * pDefinition,
                     psnSessionContext  * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnQueueFini( psnQueue          * pQueue,
                     psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnQueueInsert( psnQueue          * pQueue,
                       const void         * pItem, 
                       size_t               length,
                       enum psnQueueEnum   firstOrLast,
                       psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnQueueInsertNow( psnQueue          * pQueue,
                          const void         * pItem, 
                          size_t               length,
                          enum psnQueueEnum   firstOrLast,
                          psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnQueueRemove( psnQueue          * pQueue,
                       psnQueueItem     ** ppQueueItem,
                       enum psnQueueEnum   firstOrLast,
                       size_t               bufferLength,
                       psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnQueueGet( psnQueue          * pQueue,
                    unsigned int         flag,
                    psnQueueItem     ** ppIterator,
                    size_t               bufferLength,
                    psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnQueueRelease( psnQueue          * pQueue,
                        psnQueueItem      * pQueueItem,
                        psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnQueueCommitAdd( psnQueue * pQueue, 
                          ptrdiff_t   itemOffset );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnQueueRollbackAdd( psnQueue          * pQueue, 
                            ptrdiff_t            itemOffset,
                            psnSessionContext * pContext  );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnQueueCommitRemove( psnQueue          * pQueue, 
                             ptrdiff_t            itemOffset,
                             psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnQueueRollbackRemove( psnQueue * pQueue, 
                               ptrdiff_t   itemOffset );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnQueueStatus( psnQueue    * pQueue,
                       psoObjStatus * pStatus );
 

@@ -32,7 +32,7 @@ class psoSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class VDSF_EXPORT psoQueue
+class PHOTON_EXPORT psoQueue
 {
 public:
 

@@ -27,7 +27,7 @@
 #include "Tests/PrintError.h"
 #include "Nucleus/Folder.h"
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 pscErrMsgHandle g_psoErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

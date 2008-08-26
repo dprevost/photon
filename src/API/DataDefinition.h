@@ -38,26 +38,26 @@ BEGIN_C_DECLS
  * 
  * The memory must be free by the calling program.
  */
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaGetDefinition( psnFieldDef          * pInternalDef,
                       uint16_t               numFields,
                       psoObjectDefinition ** ppDefinition );
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 void psaGetKeyLimits( psoKeyDefinition * pKeyDef,
                       size_t           * pMinLength,
                       size_t           * pMaxLength );
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 void psaGetLimits( psnFieldDef * pDefinition,
                    uint16_t      numFields,
                    size_t      * pMinLength,
                    size_t      * pMaxLength );
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaValidateDefinition( psoObjectDefinition * pDefinition );
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaXmlToDefinition( const char           * xmlBuffer,
                         size_t                 lengthInBytes,
                         psoObjectDefinition ** ppDefinition,

@@ -17,7 +17,7 @@
  * \defgroup pscCommon The Group of all modules in Common
  *
  * Modules in this group provides wrappers for C library function and 
- * low-level functionalities used by the different parts that makes VDSF.
+ * low-level functionalities used by the different parts that makes Photon.
  *
  */
 
@@ -46,13 +46,13 @@
 #endif
 
 #if defined WIN32
-#  ifdef BUILD_VDSF_COMMON
-#    define VDSF_COMMON_EXPORT __declspec ( dllexport )
+#  ifdef BUILD_PHOTON_COMMON
+#    define PHOTON_COMMON_EXPORT __declspec ( dllexport )
 #  else
-#    define VDSF_COMMON_EXPORT __declspec ( dllimport )
+#    define PHOTON_COMMON_EXPORT __declspec ( dllimport )
 #  endif
 #else
-#  define VDSF_COMMON_EXPORT
+#  define PHOTON_COMMON_EXPORT
 #endif
 
 #if  ! defined ( BEGIN_C_DECLS )
@@ -311,13 +311,13 @@ struct timespec
   long tv_nsec;
 };
 
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 extern int nanosleep(const struct timespec * pRequest, 
                      struct timespec       * pRemain );
 #endif
 
 #ifndef HAVE_LOCALTIME_R
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 extern struct tm *localtime_r( const time_t * timep,
                                struct tm *		tm );
 #endif
@@ -474,22 +474,22 @@ struct pscTestAlignmentBool
  * for these format so I can't based
  */
 #if HAVE_PRINTF_SIZE_T
-#  define VDSF_SIZE_T_FORMAT    "%zd"
+#  define PSO_SIZE_T_FORMAT    "%zd"
 #else
 #  if SIZEOF_VOID_P == 4
-#    define VDSF_SIZE_T_FORMAT    "%d"
+#    define PSO_SIZE_T_FORMAT    "%d"
 #  else
-#    define VDSF_SIZE_T_FORMAT    "%ld"
+#    define PSO_SIZE_T_FORMAT    "%ld"
 #  endif
 #endif
 
 #if HAVE_PRINTF_PTRDIFF_T
-#  define VDSF_PTRDIFF_T_FORMAT "%td"
+#  define PSO_PTRDIFF_T_FORMAT "%td"
 #else
 #  if SIZEOF_VOID_P == 4
-#    define VDSF_PTRDIFF_T_FORMAT "%d"
+#    define PSO_PTRDIFF_T_FORMAT "%d"
 #  else
-#    define VDSF_PTRDIFF_T_FORMAT "%ld"
+#    define PSO_PTRDIFF_T_FORMAT "%ld"
 #  endif
 #endif
 

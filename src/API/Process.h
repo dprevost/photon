@@ -69,10 +69,10 @@ typedef struct psaProcess
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 extern psaProcess *  g_pProcessInstance;
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 extern bool           g_protectionIsNeeded;
 
 /** 
@@ -83,23 +83,23 @@ extern pscThreadLock g_ProcessMutex;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaProcessInit( psaProcess * pProcess,
                     const char * wdAddress );
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 void psaProcessFini();
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 bool AreWeTerminated();
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaOpenVDS( psaProcess        * process,
                 const char        * memoryFileName,
                 size_t              memorySizekb,
                 psnSessionContext * pSession );
                         
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 void psaCloseVDS( psaProcess        * process,
                   psnSessionContext * pSession );
 

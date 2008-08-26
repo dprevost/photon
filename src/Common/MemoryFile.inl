@@ -19,7 +19,7 @@
 
 /*!
  *
- * This function is to be used for debugging applications build on VDSF.
+ * This function is to be used for debugging applications build on Photon.
  * It disables write access to the shared memory between API calls. The
  * function pscSetReadWrite() is used to enable write access during calls.
  *
@@ -82,7 +82,7 @@ bool pscSetReadOnly( pscMemoryFile   * pMem,
 
 /*!
  *
- * This function is to be used for debugging applications build on VDSF.
+ * This function is to be used for debugging applications build on Photon.
  * It enables write access to the shared memory during API calls. The
  * function pscSetReadOnly() is used to block access between calls.
  *

@@ -30,7 +30,7 @@ extern "C" {
 
 /**
  * \file
- * This file provides the API needed to access read-only VDSF hash maps.
+ * This file provides the API needed to access read-only Photon hash maps.
  *
  * The features are very similar to the ordinary hash maps except that
  * no locks are require to access the data and special procedures are 
@@ -81,7 +81,7 @@ extern "C" {
  *                          or ::psoFastMapEdit).
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFastMapClose( PSO_HANDLE objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -101,7 +101,7 @@ int psoFastMapClose( PSO_HANDLE objectHandle );
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFastMapDefinition( PSO_HANDLE             objectHandle, 
                           psoObjectDefinition ** definition );
 
@@ -119,7 +119,7 @@ int psoFastMapDefinition( PSO_HANDLE             objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFastMapDelete( PSO_HANDLE   objectHandle,
                       const void * key,
                       size_t       keyLength );
@@ -142,7 +142,7 @@ int psoFastMapDelete( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFastMapEdit( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
                     size_t       nameLengthInBytes,
@@ -159,7 +159,7 @@ int psoFastMapEdit( PSO_HANDLE   sessionHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFastMapEmpty( PSO_HANDLE objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -179,7 +179,7 @@ int psoFastMapEmpty( PSO_HANDLE objectHandle );
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFastMapGet( PSO_HANDLE   objectHandle,
                    const void * key,
                    size_t       keyLength,
@@ -209,7 +209,7 @@ int psoFastMapGet( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFastMapGetFirst( PSO_HANDLE   objectHandle,
                         void       * key,
                         size_t       keyLength,
@@ -245,7 +245,7 @@ int psoFastMapGetFirst( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFastMapGetNext( PSO_HANDLE   objectHandle,
                        void       * key,
                        size_t       keyLength,
@@ -269,7 +269,7 @@ int psoFastMapGetNext( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFastMapInsert( PSO_HANDLE   objectHandle,
                       const void * key,
                       size_t       keyLength,
@@ -293,7 +293,7 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFastMapOpen( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
                     size_t       nameLengthInBytes,
@@ -314,7 +314,7 @@ int psoFastMapOpen( PSO_HANDLE   sessionHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFastMapReplace( PSO_HANDLE   objectHandle,
                        const void * key,
                        size_t       keyLength,
@@ -332,7 +332,7 @@ int psoFastMapReplace( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFastMapStatus( PSO_HANDLE     objectHandle,
                       psoObjStatus * pStatus );
 

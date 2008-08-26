@@ -45,7 +45,7 @@ extern "C" {
  * This function takes no argument and always end successfully (even
  * if called twice or if ::psoInit was not called).
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 void psoExit();
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -78,7 +78,7 @@ void psoExit();
  * \return 0 on success or a ::psoErrors on error.
 
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoInit( const char* wdAddress,
              int         protectionNeeded );
 

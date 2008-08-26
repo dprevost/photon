@@ -130,10 +130,10 @@ typedef volatile unsigned int pso_lock_T;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 extern int g_timeOutinMilliSecs;
 
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 extern struct timespec g_timeOut;
 
 typedef struct pscProcessLock
@@ -162,13 +162,13 @@ typedef struct pscProcessLock
  * Initialize the lock - used for POSIX semaphore since sem_init()
  * may return an error.
  */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 bool pscInitProcessLock( pscProcessLock * pLock );
 
 /**
  *  Uninitialize the lock (it will remove the lock for POSIX semaphores).
  */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 bool pscFiniProcessLock( pscProcessLock * pLock );
 
 /** Acquire lock ownership (loop forever) - this is dangerous for
@@ -194,14 +194,14 @@ void pscReleaseProcessLock( pscProcessLock * pLock );
  * Test the underlying value of the pid.
  * Returns a boolean value (1 if the pids are the same, 0 otherwise).
  */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 bool pscTestLockPidValue( pscProcessLock * pLock, pid_t pid );
 
 /**
  * Test to see if the lock is on.
  * Returns a boolean value (1 if the lock is indeed locked, 0 otherwise).
  */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 bool pscIsItLocked( pscProcessLock * pLock );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

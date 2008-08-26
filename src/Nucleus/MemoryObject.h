@@ -62,25 +62,25 @@ typedef struct psnMemObject psnMemObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 enum psoErrors 
 psnMemObjectInit( psnMemObject   * pMemObj,
                    psnMemObjIdent   objType,
                    psnBlockGroup  * pGroup,
                    size_t            numBlocks );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 enum psoErrors 
 psnMemObjectFini( psnMemObject      * pMemObj,
                    psnAllocTypeEnum    allocType,
                    psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 unsigned char* psnMalloc( psnMemObject      * pMemObj,
                            size_t               numBytes,
                            psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnFree( psnMemObject      * pMemObj,
                unsigned char      * ptr, 
                size_t               numBytes,
@@ -121,7 +121,7 @@ void psnLockNoFailure( psnMemObject      * pMemObj,
    pscAcquireProcessLock ( &pMemObj->lock, LOCK_TIMEOUT );
 }
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnMemObjectStatus( psnMemObject * pMemObject, 
                           psoObjStatus  * pStatus );
 

@@ -125,7 +125,7 @@ void DumpList( psnLinkedList* pList )
 
    while ( testSize > 0 ) {
       GET_PTR( pItem, pItem->nextOffset, psnLinkNode );
-      fprintf( stderr, VDSF_SIZE_T_FORMAT" = %p %p %p %p \n",
+      fprintf( stderr, PSO_SIZE_T_FORMAT" = %p %p %p %p \n",
                testSize,
                pItem ,
                GET_PTR_FAST(pItem->nextOffset,psnLinkNode ),

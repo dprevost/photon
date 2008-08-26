@@ -113,26 +113,26 @@ typedef struct pscDirIterator pscDirIterator;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Initialize the struct pscDirIterator. */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 void pscInitDir( pscDirIterator * pIterator );
 
 /*! \brief Terminate access to the struct pscDirIterator. */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 void pscFiniDir( pscDirIterator * pIterator );
 
 /*! \brief Open the directory. */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 bool pscOpenDir( pscDirIterator  * pIterator,
                  const char      * dirName,
                  pscErrorHandler * pError );
 
 /*! \brief Get the next file name. */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 const char * pscDirGetNextFileName( pscDirIterator  * pIterator,
                                     pscErrorHandler * pError );
 
 /*! \brief Close the directory. */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 void pscCloseDir( pscDirIterator * pIterator );
 
 

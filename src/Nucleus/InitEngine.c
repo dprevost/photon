@@ -20,12 +20,12 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT pscErrMsgHandle g_psoErrorHandle = PSC_NO_ERRHANDLER;
+PHOTON_ENGINE_EXPORT pscErrMsgHandle g_psoErrorHandle = PSC_NO_ERRHANDLER;
 
 #if defined(WIN32)
-VDSF_ENGINE_EXPORT const char * MYCPU = "i386";
-VDSF_ENGINE_EXPORT const char * MYCC  = "cl.exe.";
-VDSF_ENGINE_EXPORT const char * MYCXX = "cl.exe";
+PHOTON_ENGINE_EXPORT const char * MYCPU = "i386";
+PHOTON_ENGINE_EXPORT const char * MYCC  = "cl.exe.";
+PHOTON_ENGINE_EXPORT const char * MYCXX = "cl.exe";
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -55,7 +55,7 @@ bool psnInitEngine()
          fprintf( stderr, "Internal error in pscInitErrorDefs()\n" );
       }
 
-      g_psoErrorHandle = pscAddErrorMsgHandler( "VDSF", psnGetErrorMsg );
+      g_psoErrorHandle = pscAddErrorMsgHandler( "Photon", psnGetErrorMsg );
 
       if ( g_psoErrorHandle == PSC_NO_ERRHANDLER ) {
          fprintf( stderr, "Error registring the error handler for VDS errors\n" );

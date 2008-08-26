@@ -76,14 +76,14 @@ typedef struct psaSession
 /*
  * No lock is taken on the psaSession.
  */
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaCloseSession( psaSession* pSession );
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaSessionCloseObj( psaSession             * pSession,
                         struct psaCommonObject * pObject );
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaSessionOpenObj( psaSession             * pSession,
                        psoObjectType            objectType,
                        psaEditMode              editMode,

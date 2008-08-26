@@ -214,10 +214,10 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
                   fp );
       if ( fp != stderr ) fclose( fp );
 
-      fprintf( stderr, "Number of objects with no defects: "VDSF_SIZE_T_FORMAT"\n", numObjectsOK );
-      fprintf( stderr, "Number of objects with small defects: "VDSF_SIZE_T_FORMAT"\n", numObjectsRepaired );
-      fprintf( stderr, "Number of deleted objects (added but not committed, etc.): "VDSF_SIZE_T_FORMAT"\n", numObjectsDeleted );
-      fprintf( stderr, "Number of objects with errors: "VDSF_SIZE_T_FORMAT"\n", numObjectsError );
+      fprintf( stderr, "Number of objects with no defects: "PSO_SIZE_T_FORMAT"\n", numObjectsOK );
+      fprintf( stderr, "Number of objects with small defects: "PSO_SIZE_T_FORMAT"\n", numObjectsRepaired );
+      fprintf( stderr, "Number of deleted objects (added but not committed, etc.): "PSO_SIZE_T_FORMAT"\n", numObjectsDeleted );
+      fprintf( stderr, "Number of objects with errors: "PSO_SIZE_T_FORMAT"\n", numObjectsError );
       if ( numObjectsError != 0 ) {
          fprintf( stderr, "Failure repairing the vds (see log for details)\n" );
          fprintf( stderr, "Please save the backup (%s%s) \n%s\n",

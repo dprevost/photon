@@ -27,7 +27,7 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class VDSF_EXPORT psoSession
+class PHOTON_EXPORT psoSession
 {
 public:
    

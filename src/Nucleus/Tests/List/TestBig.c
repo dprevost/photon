@@ -221,7 +221,7 @@ int main()
       } /* End switch statement */
 
       if ( (size_t)numInList != list.currentSize ) {
-         fprintf( stderr, "Discrepency in list size (%d "VDSF_SIZE_T_FORMAT
+         fprintf( stderr, "Discrepency in list size (%d "PSO_SIZE_T_FORMAT
                   "), action = %d\n", 
                   numInList, list.currentSize, randAction%6 );
          ERROR_EXIT( expectedToPass, NULL, ; );

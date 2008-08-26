@@ -30,7 +30,7 @@ extern "C" {
 
 /**
  * \file
- * This file provides the API needed to access a VDSF LIFO queue.
+ * This file provides the API needed to access a Photon LIFO queue.
  */
 /**
  * \defgroup psoLifo_c API functions for psof LIFO queues.
@@ -55,7 +55,7 @@ extern "C" {
  * \param[in] objectHandle The handle to the queue (see ::psoLifoOpen).
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoLifoClose( PSO_HANDLE objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -74,7 +74,7 @@ int psoLifoClose( PSO_HANDLE objectHandle );
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoLifoDefinition( PSO_HANDLE             objectHandle, 
                        psoObjectDefinition ** definition );
 
@@ -97,7 +97,7 @@ int psoLifoDefinition( PSO_HANDLE             objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoLifoGetFirst( PSO_HANDLE   objectHandle,
                      void       * buffer,
                      size_t       bufferLength,
@@ -127,7 +127,7 @@ int psoLifoGetFirst( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoLifoGetNext( PSO_HANDLE   objectHandle,
                     void       * buffer,
                     size_t       bufferLength,
@@ -149,7 +149,7 @@ int psoLifoGetNext( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoLifoOpen(  PSO_HANDLE   sessionHandle,
                   const char * queueName,
                   size_t       nameLengthInBytes,
@@ -176,7 +176,7 @@ int psoLifoOpen(  PSO_HANDLE   sessionHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoLifoPop( PSO_HANDLE   objectHandle,
                 void       * buffer,
                 size_t       bufferLength,
@@ -195,7 +195,7 @@ int psoLifoPop( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoLifoPush( PSO_HANDLE   objectHandle, 
                  const void * pItem, 
                  size_t       length );
@@ -210,7 +210,7 @@ int psoLifoPush( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoLifoStatus( PSO_HANDLE     objectHandle,
                    psoObjStatus * pStatus );
 

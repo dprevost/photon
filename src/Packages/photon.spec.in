@@ -9,11 +9,11 @@ BuildRoot: /var/tmp/%{name}-buildroot
 Prefix: /usr/local
 
 %description
-VDSF is a development tool for complex server applications. It provides 
+Photon is a development tool for complex server applications. It provides 
 data containers like queues and hash maps shared amongst processes, 
 in virtual memory. 
 
-VDSF as a fast development tool: instead of having one complex multi-threaded 
+Photon as a fast development tool: instead of having one complex multi-threaded 
 application doing multiple tasks, create a bunch of programs each doing its 
 own single task. All the programs communicate with each other (as needed) 
 using the shared objects in the Virtual Data Space.

@@ -23,19 +23,19 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * \def VDSF_EXPORT
+ * \def PHOTON_EXPORT
  * 
  * Uses to tell the VC++ compiler to export/import a function or variable on
  * Windows (the macro is empty on other platforms).
  */
 #if defined(WIN32)
-#  ifdef BUILD_VDSF
-#    define VDSF_EXPORT __declspec ( dllexport )
+#  ifdef BUILD_PHOTON
+#    define PHOTON_EXPORT __declspec ( dllexport )
 #  else
-#    define VDSF_EXPORT __declspec ( dllimport )
+#    define PHOTON_EXPORT __declspec ( dllimport )
 #  endif
 #else
-#  define VDSF_EXPORT
+#  define PHOTON_EXPORT
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -110,7 +110,7 @@ typedef enum psoIteratorType psoIteratorType;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * VDSF supported data types.
+ * Photon supported data types.
  */
 enum psoFieldType
 {
@@ -126,7 +126,7 @@ enum psoFieldType
 };
 
 /**
- * VDSF supported data types for keys.
+ * Photon supported data types for keys.
  */
 enum psoKeyType
 {

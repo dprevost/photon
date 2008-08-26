@@ -62,16 +62,16 @@ typedef struct psnProcess psnProcess;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnProcessInit( psnProcess        * pProcess,
                       pid_t                pid,
                       psnSessionContext * pContext );
    
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnProcessFini( psnProcess        * pProcess,
                       psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnProcessAddSession( psnProcess        * pProcess,
                             void               * pApiSession,
                             psnSession       ** pSession,
@@ -80,17 +80,17 @@ bool psnProcessAddSession( psnProcess        * pProcess,
 /*
  * Takes a lock on the current object. Not on the psnSession itself. 
  */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnProcessRemoveSession( psnProcess        * pProcess,
                                psnSession        * pSession,
                                psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnProcessGetFirstSession( psnProcess        * pProcess,
                                  psnSession       ** ppSession,
                                  psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnProcessGetNextSession( psnProcess        * pProcess,
                                 psnSession        * pCurrent,
                                 psnSession       ** ppNext,

@@ -90,7 +90,7 @@ typedef struct psnTx psnTx;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnTxAddOps( psnTx             * pTx,
                    psnTxType           txType,
                    ptrdiff_t            parentOffset, 
@@ -99,23 +99,23 @@ bool psnTxAddOps( psnTx             * pTx,
                    psnMemObjIdent      childType,
                    psnSessionContext * pContext );
    
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnTxRemoveLastOps( psnTx * pTx, psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnTxInit( psnTx             * pTx,
                  size_t               numberOfBlocks,
                  psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnTxFini( psnTx             * pTx, 
                  psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnTxCommit( psnTx             * pTx,
                    psnSessionContext * pContext );
                   
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnTxRollback( psnTx             * pTx,
                      psnSessionContext * pContext );
 

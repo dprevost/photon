@@ -30,7 +30,7 @@ extern "C" {
 
 /**
  * \file
- * This file provides the API needed to access a VDSF hash map.
+ * This file provides the API needed to access a Photon hash map.
  *
  * Hash maps use unique keys - the data items are not sorted.
  */
@@ -57,7 +57,7 @@ extern "C" {
  * \param[in]  objectHandle The handle to the hash map (see ::psoHashMapOpen).
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoHashMapClose( PSO_HANDLE objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -76,7 +76,7 @@ int psoHashMapClose( PSO_HANDLE objectHandle );
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoHashMapDefinition( PSO_HANDLE             objectHandle, 
                           psoObjectDefinition ** definition );
 
@@ -97,7 +97,7 @@ int psoHashMapDefinition( PSO_HANDLE             objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoHashMapDelete( PSO_HANDLE   objectHandle,
                       const void * key,
                       size_t       keyLength );
@@ -122,7 +122,7 @@ int psoHashMapDelete( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoHashMapGet( PSO_HANDLE   objectHandle,
                    const void * key,
                    size_t       keyLength,
@@ -155,7 +155,7 @@ int psoHashMapGet( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoHashMapGetFirst( PSO_HANDLE   objectHandle,
                         void       * key,
                         size_t       keyLength,
@@ -194,7 +194,7 @@ int psoHashMapGetFirst( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoHashMapGetNext( PSO_HANDLE   objectHandle,
                        void       * key,
                        size_t       keyLength,
@@ -218,7 +218,7 @@ int psoHashMapGetNext( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoHashMapInsert( PSO_HANDLE   objectHandle,
                       const void * key,
                       size_t       keyLength,
@@ -241,7 +241,7 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoHashMapOpen( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
                     size_t       nameLengthInBytes,
@@ -262,7 +262,7 @@ int psoHashMapOpen( PSO_HANDLE   sessionHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoHashMapReplace( PSO_HANDLE   objectHandle,
                        const void * key,
                        size_t       keyLength,
@@ -279,7 +279,7 @@ int psoHashMapReplace( PSO_HANDLE   objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoHashMapStatus( PSO_HANDLE     objectHandle,
                       psoObjStatus * pStatus );
 

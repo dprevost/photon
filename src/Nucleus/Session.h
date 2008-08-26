@@ -101,16 +101,16 @@ typedef struct psnSession
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnSessionInit( psnSession        * pSession,
                       void               * pApiSession,
                       psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnSessionFini( psnSession        * pSession,
                       psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnSessionAddObj( psnSession        * pSession,
                         ptrdiff_t            objOffset, 
                         enum psoObjectType   objType, 
@@ -118,18 +118,18 @@ bool psnSessionAddObj( psnSession        * pSession,
                         psnObjectContext ** ppObject,
                         psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnSessionRemoveObj( psnSession        * pSession,
                           psnObjectContext  * pObject,
                           psnSessionContext * pContext );
 
 /* Lock and Unlock must be used before calling this function */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnSessionRemoveFirst( psnSession        * pSession,
                              psnSessionContext * pContext );
 
 /* Lock and Unlock must be used before calling this function */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnSessionGetFirst( psnSession        * pSession,
                           psnObjectContext ** ppObject,
                           psnSessionContext * pContext );

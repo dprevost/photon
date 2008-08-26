@@ -21,7 +21,7 @@
 
 BEGIN_C_DECLS
 
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 int g_timeOutinMilliSecs = 5;
 
 struct timespec g_timeOut = { 0, 5000000 };

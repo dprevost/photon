@@ -62,15 +62,15 @@ typedef struct psaHashMapEntry
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaHashMapFirst( psaHashMap      * pHashMap,
                      psaHashMapEntry * pEntry );
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaHashMapNext( psaHashMap      * pHashMap,
                     psaHashMapEntry * pEntry );
 
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaHashMapRetrieve( psaHashMap   * pHashMap,
                         const void   * key,
                         size_t         keyLength,

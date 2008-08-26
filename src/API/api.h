@@ -52,13 +52,13 @@ typedef enum psaEditMode psaEditMode;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined(WIN32)
-#  ifdef BUILD_VDSF_API
-#    define VDSF_API_EXPORT __declspec ( dllexport )
+#  ifdef BUILD_PHOTON_API
+#    define PHOTON_API_EXPORT __declspec ( dllexport )
 #  else
-#    define VDSF_API_EXPORT __declspec ( dllimport )
+#    define PHOTON_API_EXPORT __declspec ( dllimport )
 #  endif
 #else
-#  define VDSF_API_EXPORT
+#  define PHOTON_API_EXPORT
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

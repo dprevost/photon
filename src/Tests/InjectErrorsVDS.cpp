@@ -862,13 +862,13 @@ int main()
          CleanupPreviousRun( session );
       }
       else {
-         cerr << "Init VDSF failed, error = " << exc.Message() << endl;
+         cerr << "Init Photon failed, error = " << exc.Message() << endl;
          if ( rc == PSO_CONNECT_ERROR ) cerr << "Is the watchdog running?" << endl;
          return 1;
       }
    }
    
-   cout << " ------- VDSF defects injector ------- " << endl << endl;
+   cout << " ------- Photon defects injector ------- " << endl << endl;
    cout << " This program will inject pseudo-random defects in a VDS." << endl << endl;
 
    vector<myQueue>   q( NUM_QUEUES,   myQueue(session) );

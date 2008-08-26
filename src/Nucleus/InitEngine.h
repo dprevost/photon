@@ -29,12 +29,12 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined(WIN32)
-VDSF_ENGINE_EXPORT extern const char * MYCPU;
-VDSF_ENGINE_EXPORT extern const char * MYCC;
-VDSF_ENGINE_EXPORT extern const char * MYCXX;
+PHOTON_ENGINE_EXPORT extern const char * MYCPU;
+PHOTON_ENGINE_EXPORT extern const char * MYCC;
+PHOTON_ENGINE_EXPORT extern const char * MYCXX;
 #endif
 
-VDSF_ENGINE_EXPORT 
+PHOTON_ENGINE_EXPORT 
 bool psnInitEngine();
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

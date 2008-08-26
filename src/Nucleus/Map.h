@@ -64,28 +64,28 @@ typedef struct psnMap psnMap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnMapCopy( psnMap            * pHashMap, 
                   psnMap            * pNewMap,
                   psnHashItem       * pHashItem,
                   const char         * origName,
                   psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnMapDelete( psnMap            * pHashMap,
                     const void         * key,
                     size_t               keyLength, 
                     psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnMapEmpty( psnMap            * pHashMap,
                    psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnMapFini( psnMap            * pHashMap,
                   psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnMapGet( psnMap            * pHashMap,
                  const void         * pKey,
                  size_t               keyLength, 
@@ -93,21 +93,21 @@ bool psnMapGet( psnMap            * pHashMap,
                  size_t               bufferLength,
                  psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnMapGetFirst( psnMap            * pHashMap,
                       psnHashMapItem    * pItem,
                       size_t               keyLength,
                       size_t               bufferLength,
                       psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnMapGetNext( psnMap            * pHashMap,
                      psnHashMapItem    * pItem,
                      size_t               keyLength,
                      size_t               bufferLength,
                      psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnMapInit( psnMap             * pHashMap,
                   ptrdiff_t             parentOffset,
                   size_t                numberOfBlocks,
@@ -119,7 +119,7 @@ bool psnMapInit( psnMap             * pHashMap,
                   psoObjectDefinition * pDefinition,
                   psnSessionContext  * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnMapInsert( psnMap            * pHashMap,
                     const void         * pKey,
                     size_t               keyLength,
@@ -127,12 +127,12 @@ bool psnMapInsert( psnMap            * pHashMap,
                     size_t               itemLength,
                     psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnMapRelease( psnMap            * pHashMap,
                      psnHashItem       * pHashItem,
                      psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnMapReplace( psnMap            * pHashMap,
                      const void         * pKey,
                      size_t               keyLength,
@@ -140,7 +140,7 @@ bool psnMapReplace( psnMap            * pHashMap,
                      size_t               itemLength,
                      psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnMapStatus( psnMap      * pHashMap,
                     psoObjStatus * pStatus );
 

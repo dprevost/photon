@@ -32,7 +32,7 @@ class psoSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class VDSF_EXPORT psoLifo
+class PHOTON_EXPORT psoLifo
 {
 public:
 

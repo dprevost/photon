@@ -29,13 +29,13 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined(WIN32)
-#  ifdef BUILD_VDSF_ENGINE
-#    define VDSF_ENGINE_EXPORT __declspec ( dllexport )
+#  ifdef BUILD_PHOTON_ENGINE
+#    define PHOTON_ENGINE_EXPORT __declspec ( dllexport )
 #  else
-#    define VDSF_ENGINE_EXPORT __declspec ( dllimport )
+#    define PHOTON_ENGINE_EXPORT __declspec ( dllimport )
 #  endif
 #else
-#  define VDSF_ENGINE_EXPORT
+#  define PHOTON_ENGINE_EXPORT
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -68,10 +68,10 @@ BEGIN_C_DECLS
  *  process having their own copy of this global). This pointer is used
  *  everywhere to recover the real pointer addresses from our offsets
  */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 extern unsigned char* g_pBaseAddr;
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 extern pscErrMsgHandle g_psoErrorHandle;
 
 #define SET_OFFSET(ptr) ( (ptrdiff_t) ( (unsigned char*)(ptr) - \

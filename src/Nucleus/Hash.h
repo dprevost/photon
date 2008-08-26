@@ -121,7 +121,7 @@ typedef struct psnHash psnHash;
 /*
  * Used to create a copy of a read-only hash map for editing (updates)
  */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 enum psoErrors psnHashCopy( psnHash           * pOldHash,
                              psnHash           * pNewHash,
                              psnSessionContext * pContext );
@@ -130,26 +130,26 @@ enum psoErrors psnHashCopy( psnHash           * pOldHash,
  * Used to delete an hash item when you know its exact position
  * (through the psnHashItem) 
  */
-VDSF_ENGINE_EXPORT 
+PHOTON_ENGINE_EXPORT 
 void psnHashDelWithItem( psnHash            * pHash,
                           psnHashItem        * pItem,
                           psnSessionContext  * pContext );
 
 /* Direct delete using the key and nothing else. */
-VDSF_ENGINE_EXPORT 
+PHOTON_ENGINE_EXPORT 
 bool psnHashDelWithKey( psnHash            * pHash,
                          const unsigned char * pKey, 
                          size_t                keyLength,
                          psnSessionContext  * pContext );
 
-VDSF_ENGINE_EXPORT 
+PHOTON_ENGINE_EXPORT 
 void psnHashEmpty( psnHash           * pHash,
                     psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnHashFini( psnHash * pHash );
 
-VDSF_ENGINE_EXPORT 
+PHOTON_ENGINE_EXPORT 
 bool psnHashGet( psnHash            * pHash,
                   const unsigned char * pkey,
                   size_t                keyLength,
@@ -157,16 +157,16 @@ bool psnHashGet( psnHash            * pHash,
                   size_t              * pBucket,
                   psnSessionContext  * pContext );
 
-VDSF_ENGINE_EXPORT 
+PHOTON_ENGINE_EXPORT 
 bool psnHashGetFirst( psnHash  * pHash,
                        ptrdiff_t * pFirstItemOffset );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnHashGetNext( psnHash  * pHash,
                       ptrdiff_t   previousOffset,
                       ptrdiff_t * pNextItemOffset );
 
-VDSF_ENGINE_EXPORT 
+PHOTON_ENGINE_EXPORT 
 enum psoErrors psnHashInit( psnHash           * pHash,
                              ptrdiff_t            memObjOffset,
                              size_t               reservedSize, 
@@ -176,7 +176,7 @@ enum psoErrors psnHashInit( psnHash           * pHash,
  * ppNewItem is used to access the original name of 
  * objects and the psnTxStatus by the objects themselves 
  */
-VDSF_ENGINE_EXPORT 
+PHOTON_ENGINE_EXPORT 
 enum psoErrors psnHashInsert( psnHash            * pHash,
                                const unsigned char * pKey,
                                size_t                keyLength,
@@ -190,7 +190,7 @@ enum psoErrors psnHashInsert( psnHash            * pHash,
  * of the linked list. This is used for adding a replacement item, 
  * before the change is committed.
  */
-VDSF_ENGINE_EXPORT 
+PHOTON_ENGINE_EXPORT 
 enum psoErrors psnHashInsertAt( psnHash            * pHash,
                                  size_t                bucket,
                                  const unsigned char * pKey,
@@ -200,11 +200,11 @@ enum psoErrors psnHashInsertAt( psnHash            * pHash,
                                  psnHashItem       ** ppNewItem,
                                  psnSessionContext  * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 enum psoErrors psnHashResize( psnHash           * pHash,
                                psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 enum psoErrors psnHashUpdate( psnHash            * pHash,
                                const unsigned char * pKey,
                                size_t                keyLength,
@@ -229,11 +229,11 @@ enum psoErrors psnHashUpdate( psnHash            * pHash,
  
 #if SIZEOF_VOID_P == 4
 #  define PSN_PRIME_NUMBER_ARRAY_LENGTH 28
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 extern size_t g_psnArrayLengths[PSN_PRIME_NUMBER_ARRAY_LENGTH];
 #else
 #  define PSN_PRIME_NUMBER_ARRAY_LENGTH 60
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 extern size_t g_psnArrayLengths[PSN_PRIME_NUMBER_ARRAY_LENGTH];
 #endif
 

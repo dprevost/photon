@@ -33,7 +33,7 @@ class psoSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class VDSF_EXPORT psoHashMap
+class PHOTON_EXPORT psoHashMap
 {
 public:
 

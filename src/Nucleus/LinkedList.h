@@ -63,7 +63,7 @@ typedef struct psnLinkedList psnLinkedList;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Cleanup the list once we're done with it. */
-VDSF_ENGINE_EXPORT void 
+PHOTON_ENGINE_EXPORT void 
 psnLinkedListFini( psnLinkedList * pList );
 
 /** Removes and returns the first item on the list. */
@@ -77,7 +77,7 @@ bool psnLinkedListGetLast( psnLinkedList  * pList,
                             psnLinkNode   ** ppItem );
 
 /** Initialize the linked list. */
-VDSF_ENGINE_EXPORT 
+PHOTON_ENGINE_EXPORT 
 void psnLinkedListInit( psnLinkedList * pList );
 
 /** Adds pNewItem to the beginning of the list. */
@@ -132,7 +132,7 @@ void psnLinkedListReplaceItem( psnLinkedList * pList,
 /** Search in the list to see if pUnknown is in it or not - used by the
  *  crash recovery algorithm, psnFree, etc. 
  */
-VDSF_ENGINE_EXPORT 
+PHOTON_ENGINE_EXPORT 
 bool psnLinkedListIsValid( psnLinkedList * pList,
                             psnLinkNode   * pUnknown );
 
@@ -144,7 +144,7 @@ bool psnLinkedListIsValid( psnLinkedList * pList,
 /** Reset the list to be empty - used by the
  *  crash recovery algorithm
  */
-VDSF_ENGINE_EXPORT 
+PHOTON_ENGINE_EXPORT 
 void psnLinkedListReset( psnLinkedList * pList );
 
 

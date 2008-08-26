@@ -128,7 +128,7 @@ typedef struct psnFreeBlock psnFreeBlock;
  *  process having their own copy of this global). This pointer is used
  *  everywhere to recover the real pointer addresses from our offsets
  */
-VDSF_ENGINE_EXPORT unsigned char * g_pBaseAddr = NULL;
+PHOTON_ENGINE_EXPORT unsigned char * g_pBaseAddr = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

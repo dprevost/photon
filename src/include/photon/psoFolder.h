@@ -28,7 +28,7 @@ extern "C" {
 
 /**
  * \file
- * This file provides the API needed to access a VDSF folder.
+ * This file provides the API needed to access a Photon folder.
  */
 /**
  * \defgroup psoFolder_c API functions for psof folders.
@@ -49,7 +49,7 @@ extern "C" {
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFolderClose( PSO_HANDLE objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -73,7 +73,7 @@ int psoFolderClose( PSO_HANDLE objectHandle );
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFolderCreateObject( PSO_HANDLE            folderHandle,
                            const char    *       objectName,
                            size_t                nameLengthInBytes,
@@ -98,7 +98,7 @@ int psoFolderCreateObject( PSO_HANDLE            folderHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFolderCreateObjectXML( PSO_HANDLE   folderHandle,
                               const char * xmlBuffer,
                               size_t       lengthInBytes );
@@ -119,7 +119,7 @@ int psoFolderCreateObjectXML( PSO_HANDLE   folderHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFolderDestroyObject( PSO_HANDLE   folderHandle,
                             const char * objectName,
                             size_t       nameLengthInBytes );
@@ -141,7 +141,7 @@ int psoFolderDestroyObject( PSO_HANDLE   folderHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFolderGetFirst( PSO_HANDLE       objectHandle,
                        psoFolderEntry * pEntry );
 
@@ -163,7 +163,7 @@ int psoFolderGetFirst( PSO_HANDLE       objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFolderGetNext( PSO_HANDLE       objectHandle,
                       psoFolderEntry * pEntry );
 
@@ -183,7 +183,7 @@ int psoFolderGetNext( PSO_HANDLE       objectHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFolderOpen( PSO_HANDLE   sessionHandle,
                    const char * folderName,
                    size_t       nameLengthInBytes,
@@ -199,7 +199,7 @@ int psoFolderOpen( PSO_HANDLE   sessionHandle,
  *
  * \return 0 on success or a ::psoErrors on error.
  */
-VDSF_EXPORT
+PHOTON_EXPORT
 int psoFolderStatus( PSO_HANDLE     objectHandle,
                      psoObjStatus * pStatus );
 

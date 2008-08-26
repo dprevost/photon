@@ -3,7 +3,7 @@
              "http://errorparser.sourceforge.net/xml/errorParser12.dtd"> 
 <!-- 
     This file contains the error codes specific to the watchdog of
-    VDSF.
+    Photon.
     
     You can replace the DOCTYPE with this, if you prefer:
 <!DOCTYPE errorlist SYSTEM 
@@ -11,7 +11,7 @@
     
 -->
 
-<!-- VDSF next version is 0.3 -->
+<!-- Photon next version is 0.3 -->
 <errorlist version="0.3">
   <!-- Copyright information and any additional info that will appear at 
        the top of the generated files. This is optional. -->
@@ -23,7 +23,7 @@
       <notice>
         This file is part of the vdsf library (Virtual Data Space Framework).
       </notice>
-      <!-- The GPL license is of course for VDSF, not for Error Parser... -->
+      <!-- The GPL license is of course for Photon, not for Error Parser... -->
       <notice>
         This file may be distributed and/or modified under the terms of the
         GNU General Public License version 2 as published by the Free Software

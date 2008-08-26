@@ -63,7 +63,7 @@ typedef struct psnLogFile psnLogFile;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnCloseLogFile( psnLogFile      * logFile,
                        pscErrorHandler * pError );
 
@@ -73,13 +73,13 @@ void psnCloseLogFile( psnLogFile      * logFile,
  * pSession is only used to uniquely identify the log file (since each 
  * session of a given process would otherwise have the same name).
  */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 psoErrors psnInitLogFile( psnLogFile      * logFile,
                            const char       * dirName,
                            void             * pSession,
                            pscErrorHandler * pError );
    
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 psoErrors psnLogTransaction( psnLogFile      * logFile,
                               int                transactionId,
                               pscErrorHandler * pError );

@@ -53,7 +53,7 @@ typedef struct psaQueue
  * Iterates through the queue - no data items are removed from the queue
  * by this function.
  */
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaQueueFirst( psaQueue     * pQueue,
                    psaDataEntry * pEntry );
 
@@ -61,12 +61,12 @@ int psaQueueFirst( psaQueue     * pQueue,
  * Iterates through the queue - no data items are removed from the queue
  * by this function.
  */
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaQueueNext( psaQueue     * pQueue,
                   psaDataEntry * pEntry );
 
 /** Remove the first inserted item from a FIFO queue. */
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaQueueRemove( psaQueue     * pQueue,
                     psaDataEntry * pEntry );
 

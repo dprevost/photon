@@ -125,7 +125,7 @@ int doDefinition( FILE * fp, xmlNode * node )
                fprintf( stderr, "Invalid integer length\n" );
                goto cleanup;
             }
-            sscanf( (char*)prop, VDSF_SIZE_T_FORMAT, &length );
+            sscanf( (char*)prop, PSO_SIZE_T_FORMAT, &length );
             xmlFree(prop);
             prop = NULL;
 
@@ -156,7 +156,7 @@ int doDefinition( FILE * fp, xmlNode * node )
                fprintf( stderr, "Invalid integer length\n" );
                goto cleanup;
             }
-            sscanf( (char*)prop, VDSF_SIZE_T_FORMAT, &length );
+            sscanf( (char*)prop, PSO_SIZE_T_FORMAT, &length );
             xmlFree(prop);
             prop = NULL;
 
@@ -168,7 +168,7 @@ int doDefinition( FILE * fp, xmlNode * node )
                fprintf( stderr, "Invalid integer length\n" );
                goto cleanup;
             }
-            sscanf( (char*)prop, VDSF_SIZE_T_FORMAT, &length );
+            sscanf( (char*)prop, PSO_SIZE_T_FORMAT, &length );
             xmlFree(prop);
             prop = NULL;
 
@@ -196,7 +196,7 @@ int doDefinition( FILE * fp, xmlNode * node )
                goto cleanup;
             }
 
-            sscanf( (char*)prop, VDSF_SIZE_T_FORMAT, &length );
+            sscanf( (char*)prop, PSO_SIZE_T_FORMAT, &length );
             xmlFree(prop);
             prop = NULL;
 

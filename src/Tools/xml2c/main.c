@@ -103,7 +103,7 @@ int main( int argc, char * argv[] )
    length = status.st_size;
 #else   
    pscGetShortOptArgument( optHandle, 'o', &dummy );
-   sscanf( dummy, VDSF_SIZE_T_FORMAT, &length );
+   sscanf( dummy, PSO_SIZE_T_FORMAT, &length );
 #endif
 
    fd = open( inputname, O_RDONLY );

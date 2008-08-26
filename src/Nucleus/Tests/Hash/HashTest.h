@@ -26,7 +26,7 @@
 #include "Nucleus/InitEngine.h"
 #include "Tests/PrintError.h"
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 pscErrMsgHandle g_psoErrorHandle;
 
 ptrdiff_t g_memObjOffset = PSN_NULL_OFFSET;

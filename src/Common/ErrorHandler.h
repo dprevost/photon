@@ -106,24 +106,24 @@ typedef struct pscErrorHandler
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Use for initializing our internal data. */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 bool pscInitErrorDefs();
 
 /*! \brief Clear our internal data. */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 void pscFiniErrorDefs();
 
 /*! \brief Add a function to handle error messages. */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 pscErrMsgHandle pscAddErrorMsgHandler( const char         * name, 
                                        pscErrMsgHandler_T   handler );
 
 /*! \brief Use for initializing the struct or to reset it, as needed. */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 void pscInitErrorHandler( pscErrorHandler * pErrorHandler );
 
 /*! \brief Terminate access to the struct pscErrorHandler */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 void pscFiniErrorHandler( pscErrorHandler * pErrorHandler );
 
 /*! Test to see if errors were found. 
@@ -146,7 +146,7 @@ bool pscAnyErrors( pscErrorHandler * pErrorHandler )
 /*! \brief Retrieves the error message or a concatenation of all error 
  *         messages (if more than one)
  */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 size_t pscGetErrorMsg( pscErrorHandler * pErrorHandler,
                        char            * msg, 
                        size_t            maxLength );
@@ -155,14 +155,14 @@ size_t pscGetErrorMsg( pscErrorHandler * pErrorHandler,
  *         concatenation of all error messages (if more than one) - the
  *         space for a NULL terminator is not included.
  */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 size_t pscGetErrorMsgLength( pscErrorHandler * pErrorHandler );
 
 /*! \brief 
  * Sets both the error code and the handler for the 
  * error message. It will first reset the chain of error codes to zero.
  */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 void pscSetError( pscErrorHandler * pErrorHandler, 
                   pscErrMsgHandle   handle,
                   int               errorCode );   
@@ -171,7 +171,7 @@ void pscSetError( pscErrorHandler * pErrorHandler,
  * Adds the error code and the handler for the error message to an 
  * existing chain.
  */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 void pscChainError( pscErrorHandler * pErrorHandler, 
                     pscErrMsgHandle   handle,
                     int               errorCode );  

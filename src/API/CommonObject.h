@@ -67,7 +67,7 @@ typedef struct psaCommonObject
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Common function for opening data containers. */
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaCommonObjOpen( psaCommonObject    * pObject,
                       enum psoObjectType   objectType, 
                       psaEditMode          editMode,
@@ -77,7 +77,7 @@ int psaCommonObjOpen( psaCommonObject    * pObject,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Common function for closing data containers. */
-VDSF_API_EXPORT
+PHOTON_API_EXPORT
 int psaCommonObjClose( psaCommonObject * pObject );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -118,22 +118,22 @@ typedef struct pscMemoryFile pscMemoryFile;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Initialize a pscMemoryFile struct. */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 void pscInitMemoryFile( pscMemoryFile * pMem,
                         size_t          kblength, 
                         const char    * filename );
 
 /*! \brief Terminate access to a pscMemoryFile struct. */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 void pscFiniMemoryFile( pscMemoryFile * pMem );
 
 /*! \brief Return the status of the backstore file. */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 void pscBackStoreStatus( pscMemoryFile       * pMem,
                          pscMemoryFileStatus * pStatus );
    
 /*! \brief Create the backstore file */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 bool pscCreateBackstore( pscMemoryFile   * pMem,
                          int               filePerms,
                          pscErrorHandler * pError );
@@ -142,13 +142,13 @@ bool pscCreateBackstore( pscMemoryFile   * pMem,
  *  \brief "Open" an access to the memory file (this might load the 
  *  backstore in memory).
  */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 bool pscOpenMemFile( pscMemoryFile   * pMem,
                      void           ** ppAddr,
                      pscErrorHandler * pError );
    
 /*! \brief Create a copy of the backstore file */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 bool pscCopyBackstore( pscMemoryFile   * pMem,
                        int               filePerms,
                        pscErrorHandler * pError );
@@ -157,12 +157,12 @@ bool pscCopyBackstore( pscMemoryFile   * pMem,
  *  \brief Close our access the memory file (possibly removing the memory
  *  file itself from memory).
  */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 void pscCloseMemFile( pscMemoryFile   * pMem,
                       pscErrorHandler * pError );
 
 /*! \brief Synchronize the memory file to the backstore (disk) */
-VDSF_COMMON_EXPORT
+PHOTON_COMMON_EXPORT
 bool pscSyncMemFile( pscMemoryFile   * pMem,
                      pscErrorHandler * pError );
 

@@ -70,7 +70,7 @@ typedef struct psnFolder psnFolder;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnFolderCommitEdit( psnFolder          * pFolder,
                            psnHashItem        * pHashItem, 
                            enum psoObjectType    objectType,
@@ -79,7 +79,7 @@ void psnFolderCommitEdit( psnFolder          * pFolder,
 /**
  * Creates an immediate child of the folder.
  */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnFolderCreateObject( psnFolder          * pFolder,
                              const char          * objectName,
                              size_t                nameLengthInBytes,
@@ -89,7 +89,7 @@ bool psnFolderCreateObject( psnFolder          * pFolder,
 /**
  * Delete an object, recursively.
  */ 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnFolderDeleteObject( psnFolder         * pFolder,
                              const char         * objectName,
                              size_t               strLength, 
@@ -98,13 +98,13 @@ bool psnFolderDeleteObject( psnFolder         * pFolder,
 /**
  * Destroy an immediate child of the folder.
  */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnFolderDestroyObject( psnFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
                               psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnFolderEditObject( psnFolder         * pFolder,
                            const char         * objectName,
                            size_t               strLength, 
@@ -112,12 +112,12 @@ bool psnFolderEditObject( psnFolder         * pFolder,
                            psnFolderItem     * pFolderItem,
                            psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnFolderFini( psnFolder         * pFolder,
                      psnSessionContext * pContext );
 
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnFolderGetDefinition( psnFolder          * pFolder,
                               const char          * objectName,
                               size_t                strLength,
@@ -125,17 +125,17 @@ bool psnFolderGetDefinition( psnFolder          * pFolder,
                               psnFieldDef       ** ppInternalDef,
                               psnSessionContext  * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnFolderGetFirst( psnFolder         * pFolder,
                          psnFolderItem     * pItem,
                          psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnFolderGetNext( psnFolder         * pFolder,
                         psnFolderItem     * pItem,
                         psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnFolderGetObject( psnFolder         * pFolder,
                           const char         * objectName,
                           size_t               strLength, 
@@ -143,14 +143,14 @@ bool psnFolderGetObject( psnFolder         * pFolder,
                           psnFolderItem     * pFolderItem,
                           psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnFolderGetStatus( psnFolder         * pFolder,
                           const char         * objectName,
                           size_t               strLength, 
                           psoObjStatus       * pStatus,
                           psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnFolderInit( psnFolder         * pFolder,
                      ptrdiff_t            parentOffset,
                      size_t               numberOfBlocks,
@@ -161,7 +161,7 @@ bool psnFolderInit( psnFolder         * pFolder,
                      ptrdiff_t            hashItemOffset,
                      psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnFolderInsertObject( psnFolder          * pFolder,
                              const char          * objectName,
                              const char          * originalName,
@@ -172,11 +172,11 @@ bool psnFolderInsertObject( psnFolder          * pFolder,
                              psnSessionContext  * pContext );
 
 /* Retrieve the status of the current folder */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnFolderMyStatus( psnFolder   * pFolder,
                          psoObjStatus * pStatus );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnFolderRelease( psnFolder         * pFolder,
                         psnFolderItem     * pItem,
                         psnSessionContext * pContext );
@@ -186,17 +186,17 @@ bool psnFolderRelease( psnFolder         * pFolder,
  * folder object (once there are no pending transactions, no sessions
  * have this object open, etc...).
  */
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnFolderRemoveObject( psnFolder         * pFolder,
                              psnHashItem       * pHashItem,
                              psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnFolderResize( psnFolder         * pFolder, 
                        psnSessionContext * pContext  );
 
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 void psnFolderRollbackEdit( psnFolder          * pFolder,
                              psnHashItem        * pHashItem, 
                              enum psoObjectType    objectType,
@@ -209,24 +209,24 @@ void psnFolderRollbackEdit( psnFolder          * pFolder,
  * open or close a memory object. Or to obtain its status or definition.
  */
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnTopFolderCloseObject( psnFolderItem     * pDescriptor,
                                psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnTopFolderCreateObject( psnFolder          * pFolder,
                                 const char          * objectName,
                                 size_t                nameLengthInBytes,
                                 psoObjectDefinition * pDefinition,
                                 psnSessionContext  * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnTopFolderDestroyObject( psnFolder         * pFolder,
                                  const char         * objectName,
                                  size_t               nameLengthInBytes,
                                  psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnTopFolderEditObject( psnFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
@@ -234,7 +234,7 @@ bool psnTopFolderEditObject( psnFolder         * pFolder,
                               psnFolderItem     * pFolderItem,
                               psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnTopFolderGetDef( psnFolder          * pFolder,
                           const char          * objectName,
                           size_t                nameLengthInBytes,
@@ -242,14 +242,14 @@ bool psnTopFolderGetDef( psnFolder          * pFolder,
                           psnFieldDef       ** ppInternalDef,
                           psnSessionContext  * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnTopFolderGetStatus( psnFolder         * pFolder,
                              const char         * objectName,
                              size_t               nameLengthInBytes,
                              psoObjStatus       * pFolderItem,
                              psnSessionContext * pContext );
 
-VDSF_ENGINE_EXPORT
+PHOTON_ENGINE_EXPORT
 bool psnTopFolderOpenObject( psnFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,

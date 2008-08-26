@@ -2,7 +2,7 @@
 <!DOCTYPE errorlist PUBLIC "-//Error Parser project//DTD Error Parser XML V1.2//EN"
              "http://errorparser.sourceforge.net/xml/errorParser12.dtd"> 
 <!-- 
-    This example is going to be used for an existing project, VDSF 
+    This example is going to be used for an existing project, Photon 
     (http://sourceforge.net/projects/vdsf), once Error Parser is able
     to create code to retrieve error messages using the error number.
 
@@ -12,7 +12,7 @@
     
 -->
 
-<!-- VDSF next version is 0.3 -->
+<!-- Photon next version is 0.3 -->
 <errorlist version="0.3">
   <!-- Copyright information and any additional info that will appear at 
        the top of the generated files. This is optional. -->
