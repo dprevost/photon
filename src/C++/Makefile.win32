@@ -27,8 +27,8 @@ CLEANFILES = *~ *.dep *.plg vc60.* *.ncb
 
 W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photon.lib psoNucleus.lib psoCommon.lib /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\photoncpp.dll" /implib:"$(OUTDIR_RELEASE)\photoncpp.lib" /libpath:"..\Release"
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photon.lib psoNucleus.lib psoCommon.lib /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\photoncpp.dll"   /implib:"$(OUTDIR_DEBUG)\photoncpp.lib"   /libpath:"..\Debug"
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\photoncpp.dll" /implib:"$(OUTDIR_RELEASE)\photoncpp.lib" /libpath:"..\Release"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\photoncpp.dll"   /implib:"$(OUTDIR_DEBUG)\photoncpp.lib"   /libpath:"..\Debug"
 
 CFLAGS_RELEASE=/nologo /MD  /W3 /O2     /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_PHOTON" /Fo"$(INTDIR_RELEASE)\\"     /c /GX
 CFLAGS_DEBUG  =/nologo /MDd /W3 /ZI /Od /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_PHOTON" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c /GX

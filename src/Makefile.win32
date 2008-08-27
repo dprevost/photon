@@ -24,7 +24,7 @@ all: "$(OUTDIR_RELEASE)" "$(OUTDIR_DEBUG)"
 	cd Errors   && nmake -f Makefile.win32 && cd ..
 	cd Common   && nmake -f Makefile.win32 && cd ..
 	cd Nucleus  && nmake -f Makefile.win32 && cd ..
-	cd Watchdog && nmake -f Makefile.win32 && cd ..
+	cd Quasar   && nmake -f Makefile.win32 && cd ..
 	cd API      && nmake -f Makefile.win32 && cd ..
 	cd C++      && nmake -f Makefile.win32 && cd ..
 	cd XML      && nmake -f Makefile.win32 && cd ..
@@ -35,7 +35,7 @@ check: "$(OUTDIR_RELEASE)" "$(OUTDIR_DEBUG)"
 	cd Errors   && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Common   && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Nucleus  && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Watchdog && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Quasar   && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd API      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd C++      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd XML      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -46,7 +46,7 @@ checkdebug: "$(OUTDIR_RELEASE)" "$(OUTDIR_DEBUG)"
 	cd Errors   && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Common   && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Nucleus  && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Watchdog && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Quasar   && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd API      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd C++      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd XML      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -57,7 +57,7 @@ clean:
 	cd Errors   && nmake -f Makefile.win32 clean && cd ..
 	cd Common   && nmake -f Makefile.win32 clean && cd ..
 	cd Nucleus  && nmake -f Makefile.win32 clean && cd ..
-	cd Watchdog && nmake -f Makefile.win32 clean && cd ..
+	cd Quasar   && nmake -f Makefile.win32 clean && cd ..
 	cd API      && nmake -f Makefile.win32 clean && cd ..
 	cd C++      && nmake -f Makefile.win32 clean && cd ..
 	cd XML      && nmake -f Makefile.win32 clean && cd ..

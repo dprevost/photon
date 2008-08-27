@@ -29,7 +29,7 @@ int main( int argc, char * argv[] )
    psoSession session1, session2;
    psoFastMapEditor map1(session1);
    psoFastMap map2(session2);
-   string fname = "/cpp_hashmap_empty";
+   string fname = "/cpp_fastmap_empty";
    string hname = fname + "/test";
 
    const char * key  = "My Key";

@@ -27,8 +27,8 @@ CLEANFILES = *~ *.dep *.plg vc60.* *.ncb
 
 W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) psoCommon.lib /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\psoNucleus.dll" /implib:"$(OUTDIR_RELEASE)\psoNucleus.lib" /libpath:"..\Release"
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) psoCommon.lib /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\psoNucleus.dll"   /implib:"$(OUTDIR_DEBUG)\psoNucleus.lib"   /libpath:"..\Debug"
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photonCommon.lib /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\photonNucleus.dll" /implib:"$(OUTDIR_RELEASE)\photonNucleus.lib" /libpath:"..\Release"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photonCommon.lib /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\photonNucleus.dll"   /implib:"$(OUTDIR_DEBUG)\photonNucleus.lib"   /libpath:"..\Debug"
 
 CFLAGS_RELEASE=/nologo /MD  /W4 /O2     /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_PHOTON_ENGINE" /Fo"$(INTDIR_RELEASE)\\"     /c 
 CFLAGS_DEBUG  =/nologo /MDd /W4 /ZI /Od /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_PHOTON_ENGINE" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
@@ -51,7 +51,7 @@ OBJS_RELEASE=                                   \
         "$(INTDIR_RELEASE)\Queue.obj"           \
         "$(INTDIR_RELEASE)\Session.obj"         \
         "$(INTDIR_RELEASE)\Transaction.obj"     \
-        "$(INTDIR_RELEASE)\VdsErrorHandler.obj" 
+        "$(INTDIR_RELEASE)\psoErrorHandler.obj" 
 
 OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 
@@ -67,21 +67,21 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 .c{$(INTDIR_DEBUG)}.obj::
 	$(CPP) $(CFLAGS_DEBUG) $< 
 
-all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\psoNucleus.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\psoNucleus.dll
+all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\photonNucleus.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\photonNucleus.dll
 
-"$(OUTDIR_RELEASE)\psoNucleus.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
-   -del ..\Release\psoNucleus.dll
-	-del ..\Release\psoNucleus.lib
+"$(OUTDIR_RELEASE)\photonNucleus.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
+   -del ..\Release\photonNucleus.dll
+	-del ..\Release\photonNucleus.lib
 	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
-   copy Release\psoNucleus.dll ..\Release
-	copy Release\psoNucleus.lib ..\Release
+   copy Release\photonNucleus.dll ..\Release
+	copy Release\photonNucleus.lib ..\Release
 
-"$(OUTDIR_DEBUG)\psoNucleus.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
-   -del ..\Debug\psoNucleus.dll
-	-del ..\Debug\psoNucleus.lib
+"$(OUTDIR_DEBUG)\photonNucleus.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
+   -del ..\Debug\photonNucleus.dll
+	-del ..\Debug\photonNucleus.lib
 	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
-   copy debug\psoNucleus.dll ..\Debug
-	copy debug\psoNucleus.lib ..\Debug
+   copy debug\photonNucleus.dll ..\Debug
+	copy debug\photonNucleus.lib ..\Debug
 
 ###########################################################################
 #

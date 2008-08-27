@@ -40,7 +40,7 @@ int main( int argc, char * argv[] )
    psoProcess process;
    psoSession session;
    psoFastMap hashmap(session);
-   string fname = "/cpp_hashmap_definition";
+   string fname = "/cpp_fastmap_definition";
    string hname = fname + "/test";
 
    size_t len;

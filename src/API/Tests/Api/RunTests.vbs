@@ -114,14 +114,14 @@ fso.Copyfile "..\..\..\XML\\quasar_config.xsd", tmpDir + "\quasar_config.xsd"
 
 Set cmdFile = fso.CreateTextFile(tmpDir + "\cfg.xml", True)
 cmdFile.WriteLine("<?xml version=""1.0""?>")
-cmdFile.WriteLine("<photon_config xmlns=""http://photonsoftware.org/quasarConfig""")
+cmdFile.WriteLine("<quasar_config xmlns=""http://photonsoftware.org/quasarConfig""")
 cmdFile.WriteLine("xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""")
 cmdFile.WriteLine("xsi:schemaLocation=""http://photonsoftware.org/quasarConfig " + tmpDir + "\quasar_config.xsd""> ")
 cmdFile.WriteLine("  <mem_location>" + tmpDir + "</mem_location>")
 cmdFile.WriteLine("  <mem_size size=""10240"" units=""kb"" />")
 cmdFile.WriteLine("  <quasar_address>10701</quasar_address>")
 cmdFile.WriteLine("  <file_access access=""group"" />")
-cmdFile.WriteLine("</photon_config>")
+cmdFile.WriteLine("</quasar_config>")
 cmdFile.Close
 
 exeName = wd_path + "\quasar.exe -c " + tmpDir + "\cfg.xml"

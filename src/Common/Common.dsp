@@ -57,8 +57,8 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib /nologo /dll /machine:I386 /out:"Release/psoCommon.dll"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PreLink_Cmds=if not exist ..\Release\ mkdir ..\Release	if exist ..\Release\psoCommon.dll del ..\Release\psoCommon.dll	if exist ..\Release\psoCommon.lib del ..\Release\psoCommon.lib
-PostBuild_Cmds=copy Release\psoCommon.dll ..\Release	copy Release\psoCommon.lib ..\Release
+PreLink_Cmds=if not exist ..\Release\ mkdir ..\Release	if exist ..\Release\psoCommon.dll del ..\Release\psoCommon.dll	if exist ..\Release\photonCommon.lib del ..\Release\photonCommon.lib
+PostBuild_Cmds=copy Release\psoCommon.dll ..\Release	copy Release\photonCommon.lib ..\Release
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "Common - Win32 Debug"
@@ -89,8 +89,8 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ws2_32.lib /nologo /dll /debug /machine:I386 /out:"Debug/psoCommon.dll" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PreLink_Cmds=if not exist ..\Debug\ mkdir ..\Debug	if exist ..\Debug\psoCommon.dll del ..\Debug\psoCommon.dll	if exist ..\Debug\psoCommon.lib del ..\Debug\psoCommon.lib
-PostBuild_Cmds=copy debug\psoCommon.dll ..\Debug	copy debug\psoCommon.lib ..\Debug
+PreLink_Cmds=if not exist ..\Debug\ mkdir ..\Debug	if exist ..\Debug\psoCommon.dll del ..\Debug\psoCommon.dll	if exist ..\Debug\photonCommon.lib del ..\Debug\photonCommon.lib
+PostBuild_Cmds=copy debug\psoCommon.dll ..\Debug	copy debug\photonCommon.lib ..\Debug
 # End Special Build Tool
 
 !ENDIF 
