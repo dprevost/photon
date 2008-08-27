@@ -33,7 +33,7 @@ extern "C" {
  * This file provides the API needed to access a Photon FIFO queue.
  */
 /**
- * \defgroup psoQueue_c API functions for psof FIFO queues.
+ * \defgroup psoQueue_c API functions for Photon FIFO queues.
  *
  * A reminder: FIFO, First In First Out. Data items are placed at the end of
  * the queue and retrieved from the beginning of the queue.
@@ -142,7 +142,7 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
  * \param[in]  queueName The fully qualified name of the queue. 
  * \param[in]  nameLengthInBytes The length of \em queueName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the psof engine).
+ *             the Photon engine).
  * \param[out] objectHandle The handle to the queue, allowing us access to
  *             the queue in shared memory. On error, this handle will be set
  *             to zero (NULL) unless the objectHandle pointer itself is NULL.

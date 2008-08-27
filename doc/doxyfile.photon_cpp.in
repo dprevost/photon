@@ -114,7 +114,7 @@ FULL_PATH_NAMES = YES
 # If left blank the directory from which doxygen is run is used as the 
 # path to strip.
 
-STRIP_FROM_PATH = 
+STRIP_FROM_PATH = "/home/project/Photon/photon.git/src/include"
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of 
 # the path mentioned in the documentation of a class, which tells 
@@ -145,7 +145,7 @@ JAVADOC_AUTOBRIEF = YES
 # The new default is to treat a multi-line C++ comment block as a detailed 
 # description. Set this tag to YES if you prefer the old behaviour instead.
 
-MULTILINE_CPP_IS_BRIEF = NO
+MULTILINE_CPP_IS_BRIEF = YES
 
 # If the DETAILS_AT_TOP tag is set to YES then Doxygen 
 # will output the detailed description near the top, like JavaDoc.
@@ -423,7 +423,16 @@ WARN_LOGFILE =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT = ../src/include/photon/photon ../src/include/photon/psoException ../src/include/photon/psoFolder ../src/include/photon/psoHashMap ../src/include/photon/psoQueue ../src/include/photon/psoProcess ../src/include/photon/psoSession
+INPUT = ../src/include/photon/photon           \
+        ../src/include/photon/psoException     \
+        ../src/include/photon/psoFastMap       \
+        ../src/include/photon/psoFastMapEditor \
+        ../src/include/photon/psoFolder        \
+        ../src/include/photon/psoHashMap       \
+        ../src/include/photon/psoLifo          \
+        ../src/include/photon/psoQueue         \
+        ../src/include/photon/psoProcess       \
+        ../src/include/photon/psoSession
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -578,13 +587,13 @@ IGNORE_PREFIX =
 # If the GENERATE_HTML tag is set to YES (the default) Doxygen will 
 # generate HTML output.
 
-GENERATE_HTML = NO
+GENERATE_HTML = YES
 
 # The HTML_OUTPUT tag is used to specify where the HTML docs will be put. 
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be 
 # put in front of it. If left blank `html' will be used as the default path.
 
-HTML_OUTPUT = html
+HTML_OUTPUT = cpp_api
 
 # The HTML_FILE_EXTENSION tag can be used to specify the file extension for 
 # each generated HTML page (for example: .htm,.php,.asp). If it is left blank 
@@ -666,7 +675,7 @@ DISABLE_INDEX = NO
 # This tag can be used to set the number of enum values (range [1..20]) 
 # that doxygen will group on one line in the generated HTML documentation.
 
-ENUM_VALUES_PER_LINE = 4
+ENUM_VALUES_PER_LINE = 1
 
 # If the GENERATE_TREEVIEW tag is set to YES, a side panel will be
 # generated containing a tree-like index structure (just like the one that 

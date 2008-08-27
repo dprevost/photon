@@ -31,7 +31,7 @@ extern "C" {
  * This file provides the API needed to access a Photon folder.
  */
 /**
- * \defgroup psoFolder_c API functions for psof folders.
+ * \defgroup psoFolder_c API functions for Photon folders.
  *
  * 
  */
@@ -67,7 +67,7 @@ int psoFolderClose( PSO_HANDLE objectHandle );
  * \param[in] objectName The name of the object. 
  * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
  *            counting the null terminator (null-terminators are not used by
- *            the psof engine).
+ *            the Photon engine).
  * \param[in] pDefinition The type of object to create (folder, queue, etc.)
  *            and the "optional" definition.
  *
@@ -115,7 +115,7 @@ int psoFolderCreateObjectXML( PSO_HANDLE   folderHandle,
  * \param[in]  objectName The name of the object. 
  * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the psof engine).
+ *             the Photon engine).
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -176,7 +176,7 @@ int psoFolderGetNext( PSO_HANDLE       objectHandle,
  * \param[in]  folderName The fully qualified name of the folder. 
  * \param[in]  nameLengthInBytes The length of \em folderName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the psof engine).
+ *             the Photon engine).
  * \param[out] objectHandle The handle to the folder, allowing us access to
  *             the folder in shared memory. On error, this handle will be set
  *             to zero (NULL) unless the objectHandle pointer itself is NULL.

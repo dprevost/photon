@@ -1,8 +1,8 @@
-.TH "API functions for psof hash maps." 3 "26 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon hash maps." 3 "26 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-API functions for psof hash maps. \- 
+API functions for Photon hash maps. \- 
 .SH "Detailed Description"
 .PP 
 Hash maps use unique keys - the data items are not sorted. 
@@ -246,7 +246,7 @@ Open an existing hash map (see \fBpsoCreateObject\fP to create a new object).
 .br
 \fIhashMapName\fP The fully qualified name of the hash map. 
 .br
-\fInameLengthInBytes\fP The length of \fIhashMapName\fP (in bytes) not counting the null terminator (null-terminators are not used by the psof engine). 
+\fInameLengthInBytes\fP The length of \fIhashMapName\fP (in bytes) not counting the null terminator (null-terminators are not used by the Photon engine). 
 .br
 \fIobjectHandle\fP The handle to the hash map, allowing us access to the map in shared memory. On error, this handle will be set to zero (NULL) unless the objectHandle pointer itself is NULL.
 .RE

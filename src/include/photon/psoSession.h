@@ -33,7 +33,7 @@ extern "C" {
  * This file provides the API needed to create and use a session.
  */
 /**
- * \defgroup psoSession_c API functions for psof sessions.
+ * \defgroup psoSession_c API functions for Photon sessions.
  */
 /*@{*/
 
@@ -76,7 +76,7 @@ int psoCommit( PSO_HANDLE sessionHandle );
  * \param[in]  objectName The fully qualified name of the object. 
  * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the psof engine).
+ *             the Photon engine).
  * \param[in]  pDefinition The type of object to create (folder, queue, etc.)
  *             and the optional definitions (as needed).
  *
@@ -128,7 +128,7 @@ int psoCreateObjectXML( PSO_HANDLE   sessionHandle,
  * \param[in]  objectName The fully qualified name of the object. 
  * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the psof engine).
+ *             the Photon engine).
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -194,7 +194,7 @@ int psoExitSession( PSO_HANDLE sessionHandle );
  * \param[in]  objectName The fully qualified name of the object. 
  * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the psof engine).
+ *             the Photon engine).
  * \param[out]  definition The buffer allocated by the API to hold the content 
  *              of the object definition. Freeing the memory (with free())
  *              is the responsability of the caller.
@@ -233,7 +233,7 @@ int psoGetInfo( PSO_HANDLE   sessionHandle,
  * \param[in]  objectName The fully qualified name of the object. 
  * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the psof engine).
+ *             the Photon engine).
  * \param[out] pStatus A pointer to the psoObjStatus structure.
  *
  * \return 0 on success or a ::psoErrors on error.

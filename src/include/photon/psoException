@@ -40,7 +40,7 @@ class PHOTON_EXPORT psoException
 {
 public:
 
-   /// Construct a psof exception using the return code from the C function
+   /// Construct a Photon exception using the return code from the C function
    /// and the name of the function throwing it.
    psoException( int          theErrorCode, 
                  PSO_HANDLE   sessionHandle, 

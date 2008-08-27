@@ -59,7 +59,7 @@ extern "C" {
  */
 
 /**
- * \defgroup psoFastMap_c API functions for psof read-only hash maps.
+ * \defgroup psoFastMap_c API functions for Photon read-only hash maps.
  *
  * Hash maps use unique keys - the data items are not sorted.
  */
@@ -136,7 +136,7 @@ int psoFastMapDelete( PSO_HANDLE   objectHandle,
  * \param[in]  hashMapName The fully qualified name of the hash map. 
  * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the psof engine).
+ *             the Photon engine).
  * \param[out] objectHandle The handle to the hash map, allowing us access to
  *             the map in shared memory. On error, this handle will be set
  *             to zero (NULL) unless the objectHandle pointer itself is NULL.
@@ -287,7 +287,7 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
  * \param[in]  hashMapName The fully qualified name of the hash map. 
  * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
- *             the psof engine).
+ *             the Photon engine).
  * \param[out] objectHandle The handle to the hash map, allowing us access to
  *             the map in shared memory. On error, this handle will be set
  *             to zero (NULL) unless the objectHandle pointer itself is NULL.

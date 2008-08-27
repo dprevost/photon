@@ -28,10 +28,10 @@ extern "C" {
 
 /**
  * \file
- * This file provides the API functions for psof processes.
+ * This file provides the API functions for Photon processes.
  */
 /**
- * \defgroup psoProcess_c API functions for psof processes.
+ * \defgroup psoProcess_c API functions for Photon processes.
  */
 /*@{*/
 
