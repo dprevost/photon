@@ -1,42 +1,42 @@
 [Setup]
 MinVersion=0,4.0
-AppName=VDSF
-AppVerName=Virtual Data Space Framework version 0.3.0
+AppName=Photon
+AppVerName=Photon Software version 0.3.0
 AppVersion=0.3.0
 AppSupportURL=http://photonsoftware.org/
 AppId=VDSF_V0
 LicenseFile=COPYING
-DefaultDirName={pf}\VDSF
-DefaultGroupName=VDSF
+DefaultDirName={pf}\Photonsoftware
+DefaultGroupName=Photon Software
 SourceDir=..\..
 OutputDir=src\Packages\Output
-OutputBaseFilename=vdsf-0.3.0
+OutputBaseFilename=photon-0.3.0
 
 [Files]
-Source: src\Release\vdsf.dll; DestDir: {app}\bin
-Source: src\Release\vdsfCommon.dll; DestDir: {app}\bin
-Source: src\Release\vdsfcpp.dll; DestDir: {app}\bin
-Source: src\Release\vdsfNucleus.dll; DestDir: {app}\bin
+Source: src\Release\photon.dll; DestDir: {app}\bin
+Source: src\Release\photonCommon.dll; DestDir: {app}\bin
+Source: src\Release\photoncpp.dll; DestDir: {app}\bin
+Source: src\Release\photonNucleus.dll; DestDir: {app}\bin
 Source: src\Release\psoInfo.exe; DestDir: {app}\bin
 Source: src\Release\vdssh.exe; DestDir: {app}\bin
 Source: src\Release\quasar.exe; DestDir: {app}\bin
-Source: src\include\vdsf\vds.h; DestDir: {app}\include
-Source: src\include\vdsf\psoCommon.h; DestDir: {app}\include
-Source: src\include\vdsf\psoErrors.h; DestDir: {app}\include
-Source: src\include\vdsf\psoFolder.h; DestDir: {app}\include
-Source: src\include\vdsf\psoHashMap.h; DestDir: {app}\include
-Source: src\include\vdsf\psoProcess.h; DestDir: {app}\include
-Source: src\include\vdsf\psoQueue.h; DestDir: {app}\include
-Source: src\include\vdsf\psoSession.h; DestDir: {app}\include
-Source: src\include\vdsf\vds; DestDir: {app}\include
-Source: src\include\vdsf\psoException; DestDir: {app}\include
-Source: src\include\vdsf\psoFolder; DestDir: {app}\include
-Source: src\include\vdsf\psoHashMap; DestDir: {app}\include
-Source: src\include\vdsf\psoProcess; DestDir: {app}\include
-Source: src\include\vdsf\psoQueue; DestDir: {app}\include
-Source: src\include\vdsf\psoSession; DestDir: {app}\include
-Source: src\Release\vdsf.lib; DestDir: {app}\lib
-Source: src\Release\vdsfcpp.lib; DestDir: {app}\lib
+Source: src\include\photon\photon.h; DestDir: {app}\include
+Source: src\include\photon\psoCommon.h; DestDir: {app}\include
+Source: src\include\photon\psoErrors.h; DestDir: {app}\include
+Source: src\include\photon\psoFolder.h; DestDir: {app}\include
+Source: src\include\photon\psoHashMap.h; DestDir: {app}\include
+Source: src\include\photon\psoProcess.h; DestDir: {app}\include
+Source: src\include\photon\psoQueue.h; DestDir: {app}\include
+Source: src\include\photon\psoSession.h; DestDir: {app}\include
+Source: src\include\photon\photon; DestDir: {app}\include
+Source: src\include\photon\psoException; DestDir: {app}\include
+Source: src\include\photon\psoFolder; DestDir: {app}\include
+Source: src\include\photon\psoHashMap; DestDir: {app}\include
+Source: src\include\photon\psoProcess; DestDir: {app}\include
+Source: src\include\photon\psoQueue; DestDir: {app}\include
+Source: src\include\photon\psoSession; DestDir: {app}\include
+Source: src\Release\photon.lib; DestDir: {app}\lib
+Source: src\Release\photoncpp.lib; DestDir: {app}\lib
 Source: doc\refman_c.pdf; DestDir: {app}
 Source: doc\refman_c++.pdf; DestDir: {app}
 Source: COPYING; DestDir: {app}; DestName: License.txt
@@ -96,11 +96,11 @@ Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdssh.ex
 Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdssh.exe; ValueType: string; ValueData: {app}\bin\vdssh.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
 Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdssh.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
 
-Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdsinfo.exe; ValueType: string; ValueData: {app}\bin\vdsinfo.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
-Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdsinfo.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\psoinfo.exe; ValueType: string; ValueData: {app}\bin\psoinfo.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\psoinfo.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
 
-Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdsinfo.exe; ValueType: string; ValueData: {app}\bin\vdsinfo.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
-Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdsinfo.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\psoinfo.exe; ValueType: string; ValueData: {app}\bin\psoinfo.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\psoinfo.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
 [Code]
 
 function InitializeSetup(): Boolean;
