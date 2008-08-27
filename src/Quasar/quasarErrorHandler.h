@@ -22,8 +22,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef QUASARERRORHANDLER_H	
-#define QUASARERRORHANDLER_H	
+#ifndef QUASARERRORHANDLER_H
+#define QUASARERRORHANDLER_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,5 +50,5 @@ const char * psoq_ErrorMessage( int errnum );
 }
 #endif
 
-#endif /* QUASARERRORHANDLER_H9 */
+#endif /* QUASARERRORHANDLER_H */
 

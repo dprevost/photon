@@ -54,11 +54,11 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib photonCommon.lib /nologo /dll /machine:I386 /out:"Release/psoNucleus.dll" /libpath:"..\Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib photonCommon.lib /nologo /dll /machine:I386 /out:"Release/photonNucleus.dll" /libpath:"..\Release"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PreLink_Cmds=if not exist ..\Release\ mkdir ..\Release	if exist ..\Release\photonNucleus.lib del ..\Release\photonNucleus.lib	if exist ..\Release\psoNucleus.dll del ..\Release\psoNucleus.dll
-PostBuild_Cmds=copy Release\photonNucleus.lib ..\Release	copy Release\psoNucleus.dll ..\Release
+PreLink_Cmds=if not exist ..\Release\ mkdir ..\Release	if exist ..\Release\photonNucleus.lib del ..\Release\photonNucleus.lib	if exist ..\Release\photonNucleus.dll del ..\Release\photonNucleus.dll
+PostBuild_Cmds=copy Release\photonNucleus.lib ..\Release	copy Release\photonNucleus.dll ..\Release
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "Nucleus - Win32 Debug"
@@ -86,11 +86,11 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib photonCommon.lib /nologo /dll /debug /machine:I386 /out:"Debug/psoNucleus.dll" /pdbtype:sept /libpath:"..\Debug"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib photonCommon.lib /nologo /dll /debug /machine:I386 /out:"Debug/photonNucleus.dll" /pdbtype:sept /libpath:"..\Debug"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PreLink_Cmds=if not exist ..\Debug\ mkdir ..\Debug	if exist ..\Debug\photonNucleus.lib del ..\Debug\photonNucleus.lib	if exist ..\Debug\psoNucleus.dll del ..\Debug\psoNucleus.dll
-PostBuild_Cmds=copy Debug\photonNucleus.lib ..\Debug	copy Debug\psoNucleus.dll ..\Debug
+PreLink_Cmds=if not exist ..\Debug\ mkdir ..\Debug	if exist ..\Debug\photonNucleus.lib del ..\Debug\photonNucleus.lib	if exist ..\Debug\photonNucleus.dll del ..\Debug\photonNucleus.dll
+PostBuild_Cmds=copy Debug\photonNucleus.lib ..\Debug	copy Debug\photonNucleus.dll ..\Debug
 # End Special Build Tool
 
 !ENDIF 
@@ -160,6 +160,10 @@ SOURCE=.\ProcessManager.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\psoErrorHandler.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\Queue.c
 # End Source File
 # Begin Source File
@@ -169,10 +173,6 @@ SOURCE=.\Session.c
 # Begin Source File
 
 SOURCE=.\Transaction.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\VdsErrorHandler.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -256,6 +256,10 @@ SOURCE=.\ProcessManager.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\psoErrorHandler.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Queue.h
 # End Source File
 # Begin Source File
@@ -277,10 +281,6 @@ SOURCE=.\TreeNode.h
 # Begin Source File
 
 SOURCE=.\TxStatus.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\VdsErrorHandler.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="Watchdog" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="Quasar" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=Watchdog - Win32 Debug
+CFG=Quasar - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "Watchdog.mak".
+!MESSAGE NMAKE /f "quasar.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "Watchdog.mak" CFG="Watchdog - Win32 Debug"
+!MESSAGE NMAKE /f "quasar.mak" CFG="Quasar - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "Watchdog - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "Watchdog - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Quasar - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Quasar - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=Watchdog - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "Watchdog - Win32 Release"
+!IF  "$(CFG)" == "Quasar - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -51,13 +51,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib ws2_32.lib vdsfNucleus.lib libxml2.lib /nologo /version:0.1 /subsystem:console /machine:I386 /out:"Release/quasar.exe" /libpath:"..\Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib photonCommon.lib ws2_32.lib photonNucleus.lib libxml2.lib /nologo /version:0.1 /subsystem:console /machine:I386 /libpath:"..\Release"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Cmds=copy Release\quasar.exe ..\Release
 # End Special Build Tool
 
-!ELSEIF  "$(CFG)" == "Watchdog - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Quasar - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib vdsfCommon.lib ws2_32.lib vdsfNucleus.lib libxml2.lib /nologo /version:0.1 /subsystem:console /debug /machine:I386 /out:"Debug/quasar.exe" /pdbtype:sept /libpath:"..\Debug"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib photonCommon.lib ws2_32.lib photonNucleus.lib libxml2.lib /nologo /version:0.1 /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\Debug"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Cmds=copy debug\quasar.exe ..\Debug
@@ -90,8 +90,8 @@ PostBuild_Cmds=copy debug\quasar.exe ..\Debug
 
 # Begin Target
 
-# Name "Watchdog - Win32 Release"
-# Name "Watchdog - Win32 Debug"
+# Name "Quasar - Win32 Release"
+# Name "Quasar - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -113,7 +113,15 @@ SOURCE=.\MemoryManager.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\quasarErrorHandler.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\VDSHandler.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\VerifyFastMap.c
 # End Source File
 # Begin Source File
 
@@ -151,10 +159,6 @@ SOURCE=.\Watchdog.c
 
 SOURCE=.\wd.c
 # End Source File
-# Begin Source File
-
-SOURCE=.\wdErrorHandler.c
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -173,19 +177,19 @@ SOURCE=.\MemoryManager.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\quasarErrorHandler.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\quasarErrors.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\VDSHandler.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\Watchdog.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\wdErrorHandler.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\wdErrors.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
