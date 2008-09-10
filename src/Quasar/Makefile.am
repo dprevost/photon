@@ -51,7 +51,7 @@ EXTRA_DIST =              \
         $(man_MANS)       \
         Makefile.win32    \
         quasar.xml        \
-        Watchdog.dsp      \
+        quasar.dsp        \
         quasarErrors.xml  \
         quasarOptions.xml 
 

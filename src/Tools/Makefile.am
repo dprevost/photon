@@ -18,13 +18,13 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 
 SUBDIRS = . Shell
  
-bin_PROGRAMS = vdsinfo
+bin_PROGRAMS = psoinfo
 
-vdsinfo_SOURCES = info.cpp
+psoinfo_SOURCES = info.cpp
 
 EXTRA_DIST =           \
         Makefile.win32 \
-        vdsInfo.dsp    
+        psoInfo.dsp    
 
-vdsinfo_LDADD = $(top_builddir)/src/C++/libphotoncpp.la 
+psoinfo_LDADD = $(top_builddir)/src/C++/libphotoncpp.la 
 

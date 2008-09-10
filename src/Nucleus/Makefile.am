@@ -72,6 +72,6 @@ libNucleus_la_SOURCES =   \
         TxStatus.h        
    
 EXTRA_DIST =           \
-        Engine.dsp     \
+        Nucleus.dsp    \
         Makefile.win32 
 
