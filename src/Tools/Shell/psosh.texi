@@ -1,19 +1,19 @@
 \input texinfo
-@setfilename vdssh.info
+@setfilename psosh.info
 @documentencoding iso-8859-1
-@settitle vdssh
+@settitle psosh
 @direntry
-* vdssh: (vdssh).               starts a pseudo-shell to access Photon data
+* psosh: (psosh).               starts a pseudo-shell to access Photon data
 @end direntry
 
 @node Top
-@top vdssh
+@top psosh
 
 @noindent
 @anchor{name}
 @chapheading Name
 
-vdssh @^a€” starts a pseudo-shell to access Photon data
+psosh @^a€” starts a pseudo-shell to access Photon data
 
 @noindent
 @anchor{synopsis}
@@ -23,19 +23,19 @@ vdssh @^a€” starts a pseudo-shell to access Photon data
 @anchor{Getting [minimal] help;}
 @heading Getting (minimal) help:
 
-@samp{vdssh -h|--help|-?}
+@samp{psosh -h|--help|-?}
 
 @noindent
 @anchor{Running normally;}
 @heading Running normally:
 
-@samp{vdssh -a|--address} @emph{quasar_address }
+@samp{psosh -a|--address} @emph{quasar_address }
 
 @noindent
 @anchor{DESCRIPTION}
 @chapheading DESCRIPTION
 
-vdssh is a pseudo-shell allowing access to the data in the 
+psosh is a pseudo-shell allowing access to the data in the 
 shared-memory used by the Photon software.
 
 This program supports a very limited number of standard Bourne shell commands 

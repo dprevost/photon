@@ -40,13 +40,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%docdir /usr/local/share/doc/vdsf
-/usr/local/share/doc/vdsf
+%docdir /usr/local/share/doc/photon
+/usr/local/share/doc/photon
 
-/usr/local/bin/vdsinfo
-/usr/local/bin/vdssh
+/usr/local/bin/psoinfo
+/usr/local/bin/psosh
 /usr/local/bin/quasar
-/usr/local/include/photon/vds.h
+/usr/local/include/photon/photon.h
 /usr/local/include/photon/psoCommon.h
 /usr/local/include/photon/psoErrors.h
 /usr/local/include/photon/psoFastMap.h
@@ -56,7 +56,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/include/photon/psoProcess.h
 /usr/local/include/photon/psoQueue.h
 /usr/local/include/photon/psoSession.h
-/usr/local/include/photon/vds
+/usr/local/include/photon/photon
 /usr/local/include/photon/psoException
 /usr/local/include/photon/psoFastMap
 /usr/local/include/photon/psoFastMapEditor
@@ -66,28 +66,28 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/include/photon/psoProcess
 /usr/local/include/photon/psoQueue
 /usr/local/include/photon/psoSession
-/usr/local/lib/libvdsf.a
-/usr/local/lib/libvdsf.la
-/usr/local/lib/libvdsf.so
-/usr/local/lib/libvdsf.so.0
-/usr/local/lib/libvdsf.so.0.0.0
-/usr/local/lib/libvdsfcpp.a
-/usr/local/lib/libvdsfcpp.la
-/usr/local/lib/libvdsfcpp.so
-/usr/local/lib/libvdsfcpp.so.0
-/usr/local/lib/libvdsfcpp.so.0.0.0
-/usr/local/share/man/man1/vdssh.1
+/usr/local/lib/libphoton.a
+/usr/local/lib/libphoton.la
+/usr/local/lib/libphoton.so
+/usr/local/lib/libphoton.so.0
+/usr/local/lib/libphoton.so.0.0.0
+/usr/local/lib/libphotoncpp.a
+/usr/local/lib/libphotoncpp.la
+/usr/local/lib/libphotoncpp.so
+/usr/local/lib/libphotoncpp.so.0
+/usr/local/lib/libphotoncpp.so.0.0.0
+/usr/local/share/man/man1/psosh.1
 /usr/local/share/man/man1/quasar.1
-/usr/local/share/man/man3/vds.h.3
-/usr/local/share/man/man3/vdsCommit.3
+/usr/local/share/man/man3/photon.h.3
+/usr/local/share/man/man3/psoCommit.3
 /usr/local/share/man/man3/psoCommon.h.3
-/usr/local/share/man/man3/vdsCreateObject.3
-/usr/local/share/man/man3/vdsDestroyObject.3
+/usr/local/share/man/man3/psoCreateObject.3
+/usr/local/share/man/man3/psoDestroyObject.3
 /usr/local/share/man/man3/psoErrorMsg.3
 /usr/local/share/man/man3/psoErrors.3
 /usr/local/share/man/man3/psoErrors.h.3
-/usr/local/share/man/man3/vdsExit.3
-/usr/local/share/man/man3/vdsExitSession.3
+/usr/local/share/man/man3/psoExit.3
+/usr/local/share/man/man3/psoExitSession.3
 /usr/local/share/man/man3/psoFolder.h.3
 /usr/local/share/man/man3/psoFolderClose.3
 /usr/local/share/man/man3/psoFolderEntry.3
@@ -95,8 +95,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man3/psoFolderGetNext.3
 /usr/local/share/man/man3/psoFolderOpen.3
 /usr/local/share/man/man3/psoFolderStatus.3
-/usr/local/share/man/man3/vdsGetInfo.3
-/usr/local/share/man/man3/vdsGetStatus.3
+/usr/local/share/man/man3/psoGetInfo.3
+/usr/local/share/man/man3/psoGetStatus.3
 /usr/local/share/man/man3/psoHashMap.h.3
 /usr/local/share/man/man3/psoHashMapClose.3
 /usr/local/share/man/man3/psoHashMapDelete.3
@@ -108,10 +108,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man3/psoHashMapReplace.3
 /usr/local/share/man/man3/psoHashMapStatus.3
 /usr/local/share/man/man3/psoInfo.3
-/usr/local/share/man/man3/vdsInit.3
-/usr/local/share/man/man3/vdsInitSession.3
-/usr/local/share/man/man3/vdsIteratorType.3
-/usr/local/share/man/man3/vdsLastError.3
+/usr/local/share/man/man3/psoInit.3
+/usr/local/share/man/man3/psoInitSession.3
+/usr/local/share/man/man3/psoIteratorType.3
+/usr/local/share/man/man3/psoLastError.3
 /usr/local/share/man/man3/psoObjStatus.3
 /usr/local/share/man/man3/psoObjectType.3
 /usr/local/share/man/man3/psoProcess.h.3
@@ -123,7 +123,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man3/psoQueuePop.3
 /usr/local/share/man/man3/psoQueuePush.3
 /usr/local/share/man/man3/psoQueueStatus.3
-/usr/local/share/man/man3/vdsRollback.3
+/usr/local/share/man/man3/psoRollback.3
 /usr/local/share/man/man3/psoSession.h.3
 /usr/local/share/man/man3/psoFolder_c.3
 /usr/local/share/man/man3/psoHashMap_c.3
@@ -137,7 +137,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man3/psoQueue.3
 /usr/local/share/man/man3/psoSession.3
 /usr/local/info/dir
-/usr/local/info/vdssh.info
+/usr/local/info/psosh.info
 /usr/local/info/quasar.info
 /usr/local/share/man/man3/psoFastMap.h.3
 /usr/local/share/man/man3/psoFastMapClose.3

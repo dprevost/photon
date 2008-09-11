@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
                    "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
-<refentry id='vdssh1'>
+<refentry id='psosh1'>
 <!--  
   Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
 
@@ -17,24 +17,24 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 -->
 <refmeta>
-  <refentrytitle>vdssh</refentrytitle>
+  <refentrytitle>psosh</refentrytitle>
   <manvolnum>1</manvolnum>
   <refmiscinfo class='source'>Photon</refmiscinfo>
   <refmiscinfo class='manual'>User Commands</refmiscinfo>
   <refmiscinfo class='version'>0.3.0</refmiscinfo>
 </refmeta>
 <refnamediv id='name'>
-  <refname>vdssh</refname>
+  <refname>psosh</refname>
   <refpurpose>starts a pseudo-shell to access Photon data</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv id='synopsis'>
   <refsect2 id='getting_help'><title>Getting (minimal) help:</title>
-  <para><userinput>vdssh -h|--help|-?</userinput></para> 
+  <para><userinput>psosh -h|--help|-?</userinput></para> 
   </refsect2>
 
   <refsect2 id='running_normally'><title>Running normally:</title>
-  <para><userinput>vdssh -a|--address</userinput> <emphasis remap='I'>quasar_address </emphasis></para>
+  <para><userinput>psosh -a|--address</userinput> <emphasis remap='I'>quasar_address </emphasis></para>
   </refsect2>
 </refsynopsisdiv>
 
@@ -42,7 +42,7 @@
 
 <refsect1 id='description'><title>DESCRIPTION</title>
   <para> 
-    vdssh is a pseudo-shell allowing access to the data in the 
+    psosh is a pseudo-shell allowing access to the data in the 
     shared-memory used by the Photon software.
   </para>
   <para>

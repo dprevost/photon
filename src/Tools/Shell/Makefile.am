@@ -16,32 +16,32 @@ CLEANFILES = *~
 
 AM_LDFLAGS = @LIBXML2_LIBS@
 
-bin_PROGRAMS = vdssh
+bin_PROGRAMS = psosh
 
-man_MANS = vdssh.1
-info_TEXINFOS = vdssh.texi
+man_MANS = psosh.1
+info_TEXINFOS = psosh.texi
 
 if COND_USE_DOCBOOK2TEXI
-vdssh.texi: vdssh.xml
-	docbook2x-texi --encoding=iso-8859-1 vdssh.xml
+psosh.texi: psosh.xml
+	docbook2x-texi --encoding=iso-8859-1 psosh.xml
 endif
 if COND_USE_DOCBOOK2MAN
-vdssh.1: vdssh.xml
-	docbook2x-man --encoding=iso-8859-1 vdssh.xml
+psosh.1: psosh.xml
+	docbook2x-man --encoding=iso-8859-1 psosh.xml
 endif
 
 EXTRA_DIST =           \
         $(man_MANS)    \
-        vdssh.xml      \
+        psosh.xml      \
         Makefile.win32 
 
-vdssh_SOURCES =       \
+psosh_SOURCES =       \
         constants.cpp \
         constants.h   \
         shell.cpp     \
         shell.h       \
-        vdssh.cpp     \
-        vdssh.dsp     
+        psosh.cpp     \
+        psosh.dsp     
 
-vdssh_LDADD = $(top_builddir)/src/C++/libphotoncpp.la
+psosh_LDADD = $(top_builddir)/src/C++/libphotoncpp.la
 

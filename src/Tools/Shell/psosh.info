@@ -1,13 +1,13 @@
-This is vdssh.info, produced by makeinfo version 4.8 from vdssh.texi.
+This is psosh.info, produced by makeinfo version 4.8 from psosh.texi.
 
 START-INFO-DIR-ENTRY
-* vdssh: (vdssh).               starts a pseudo-shell to access Photon data
+* psosh: (psosh).               starts a pseudo-shell to access Photon data
 END-INFO-DIR-ENTRY
 
 
-File: vdssh.info,  Node: Top,  Up: (dir)
+File: psosh.info,  Node: Top,  Up: (dir)
 
-vdssh
+psosh
 *****
 
 
@@ -15,7 +15,7 @@ vdssh
 Name
 ****
 
-vdssh a^€” starts a pseudo-shell to access Photon data
+psosh a^€” starts a pseudo-shell to access Photon data
 
 
 
@@ -27,21 +27,21 @@ Synopsis
 Getting (minimal) help:
 =======================
 
-`vdssh -h|--help|-?'
+`psosh -h|--help|-?'
 
 
 
 Running normally:
 =================
 
-`vdssh -a|--address' _quasar_address _
+`psosh -a|--address' _quasar_address _
 
 
 
 DESCRIPTION
 ***********
 
-vdssh is a pseudo-shell allowing access to the data in the
+psosh is a pseudo-shell allowing access to the data in the
 shared-memory used by the Photon software.
 
    This program supports a very limited number of standard Bourne shell
