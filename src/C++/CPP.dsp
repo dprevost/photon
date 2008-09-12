@@ -74,8 +74,8 @@ PostBuild_Cmds=copy Release\photoncpp.lib ..\Release	copy Release\photoncpp.dll 
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "CPP_EXPORTS" /YX /FD /GZ  /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I ".." /I "..\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "CPP_EXPORTS" /D "BUILD_PHOTON" /YX /FD /GZ  /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "CPP_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I ".." /I "..\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "CPP_EXPORTS" /D "BUILD_PHOTON" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x1009 /d "_DEBUG"
@@ -107,11 +107,23 @@ SOURCE=.\Exception.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\FastMap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FastMapEditor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Folder.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\HashMap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Lifo.cpp
 # End Source File
 # Begin Source File
 
