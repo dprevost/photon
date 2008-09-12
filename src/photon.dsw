@@ -93,7 +93,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "vdssh"=.\TOOLS\SHELL\vdssh.dsp - Package Owner=<4>
+Project: "psosh"=.\TOOLS\SHELL\psosh.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

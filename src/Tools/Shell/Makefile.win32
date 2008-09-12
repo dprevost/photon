@@ -32,7 +32,7 @@ CFLAGS_RELEASE= /nologo /MD  /W3 /O2 /I "../.." /I "../../include" /D "WIN32" /D
 OBJS_RELEASE=                             \
         "$(INTDIR_RELEASE)\constants.obj" \
         "$(INTDIR_RELEASE)\shell.obj"     \
-        "$(INTDIR_RELEASE)\vdssh.obj"     
+        "$(INTDIR_RELEASE)\psosh.obj"     
 
 OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 
@@ -54,17 +54,17 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 #
 ###########################################################################
 
-all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\vdssh.exe $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\vdssh.exe
+all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\psosh.exe $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\psosh.exe
 
-"$(OUTDIR_RELEASE)\vdssh.exe" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
-   -del ..\..\Release\vdssh.exe
-	$(LINK32) $(LDD_FLAGS_RELEASE) /out:"$(OUTDIR_RELEASE)\vdssh.exe" $(OBJS_RELEASE)
-   copy Release\vdssh.exe ..\..\Release
+"$(OUTDIR_RELEASE)\psosh.exe" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
+   -del ..\..\Release\psosh.exe
+	$(LINK32) $(LDD_FLAGS_RELEASE) /out:"$(OUTDIR_RELEASE)\psosh.exe" $(OBJS_RELEASE)
+   copy Release\psosh.exe ..\..\Release
 
-"$(OUTDIR_DEBUG)\vdssh.exe" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
-   -del ..\..\Debug\vdssh.exe
-	$(LINK32) $(LDD_FLAGS_DEBUG) /out:"$(OUTDIR_DEBUG)\vdssh.exe" $(OBJS_DEBUG)
-   copy debug\vdssh.exe ..\..\Debug
+"$(OUTDIR_DEBUG)\psosh.exe" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
+   -del ..\..\Debug\psosh.exe
+	$(LINK32) $(LDD_FLAGS_DEBUG) /out:"$(OUTDIR_DEBUG)\psosh.exe" $(OBJS_DEBUG)
+   copy debug\psosh.exe ..\..\Debug
 
 check: all
 

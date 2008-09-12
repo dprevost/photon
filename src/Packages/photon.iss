@@ -18,7 +18,7 @@ Source: src\Release\photonCommon.dll; DestDir: {app}\bin
 Source: src\Release\photoncpp.dll; DestDir: {app}\bin
 Source: src\Release\photonNucleus.dll; DestDir: {app}\bin
 Source: src\Release\psoInfo.exe; DestDir: {app}\bin
-Source: src\Release\vdssh.exe; DestDir: {app}\bin
+Source: src\Release\psosh.exe; DestDir: {app}\bin
 Source: src\Release\quasar.exe; DestDir: {app}\bin
 Source: src\include\photon\photon.h; DestDir: {app}\include
 Source: src\include\photon\psoCommon.h; DestDir: {app}\include
