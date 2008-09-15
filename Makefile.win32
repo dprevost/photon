@@ -28,4 +28,8 @@ checkdebug:
 
 clean: 
 	cd src && nmake -f Makefile.win32 clean && cd ..
+	cd doc && nmake -f Makefile.win32 clean && cd ..
+
+doc: 
+	cd doc && nmake -f Makefile.win32 && cd ..
 

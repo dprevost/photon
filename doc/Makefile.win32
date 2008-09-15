@@ -1,0 +1,51 @@
+###########################################################################
+#
+# Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+
+HEADER_FILES =                                        \
+        $(top_srcdir)/src/include/photon/photon.h     \
+        $(top_srcdir)/src/include/photon/psoCommon.h  \
+        $(top_srcdir)/src/include/photon/psoFolder.h  \
+        $(top_srcdir)/src/include/photon/psoHashMap.h \
+        $(top_srcdir)/src/include/photon/psoQueue.h   \
+        $(top_srcdir)/src/include/photon/psoProcess.h \
+        $(top_srcdir)/src/include/photon/psoSession.h 
+
+CPP_HEADER_FILES =                                    \
+        $(top_srcdir)/src/include/photon/photon       \
+        $(top_srcdir)/src/include/photon/psoException \
+        $(top_srcdir)/src/include/photon/psoFolder    \
+        $(top_srcdir)/src/include/photon/psoHashMap   \
+        $(top_srcdir)/src/include/photon/psoQueue     \
+        $(top_srcdir)/src/include/photon/psoProcess   \
+        $(top_srcdir)/src/include/photon/psoSession   
+
+all: refman_c.pdf refman_c++.pdf
+
+refman_c.pdf: $(HEADER_FILES)
+	-rm -rf c
+	doxygen doxyfile.photon_c 
+	cd c/latex; make refman.pdf; cd ../..
+	cd c/latex; make refman.pdf; cd ../..
+	copy c/latex/refman.pdf refman_c.pdf
+
+refman_c++.pdf: $(CPP_HEADER_FILES)
+	-rm -rf c++
+	doxygen doxyfile.photon_cpp 
+	cd c++/latex; make refman.pdf; cd ../..
+	cd c++/latex; make refman.pdf; cd ../..
+	copy c++/latex/refman.pdf refman_c++.pdf
+   
+clean: 
+	-@erase /Q  c
+	-@erase /Q  c++
+
