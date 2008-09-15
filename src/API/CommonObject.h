@@ -95,7 +95,7 @@ bool psaCommonLock( psaCommonObject * pObject )
    PSO_PRE_CONDITION( pObject != NULL );
 
    if ( g_protectionIsNeeded ) {
-      ok = pscTryAcquireThreadLock( &pObject->pSession->mutex, LOCK_TIMEOUT );
+      ok = pscTryAcquireThreadLock( &pObject->pSession->mutex, PSN_LOCK_TIMEOUT );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
    

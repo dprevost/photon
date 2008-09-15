@@ -100,7 +100,7 @@ extern pscErrMsgHandle g_psoErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define LOCK_TIMEOUT 10000 /* in milliseconds */
+#define PSN_LOCK_TIMEOUT 10000 /* in milliseconds */
 
 #define PSN_MAX_LOCK_DEPTH 3
 

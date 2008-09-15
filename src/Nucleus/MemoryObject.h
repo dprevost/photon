@@ -100,8 +100,8 @@ bool psnLock( psnMemObject      * pMemObj,
    }
    
    ok = pscTryAcquireProcessLock ( &pMemObj->lock,
-                                    pContext->pidLocker,
-                                    LOCK_TIMEOUT );
+                                   pContext->pidLocker,
+                                   PSN_LOCK_TIMEOUT );
    PSO_POST_CONDITION( ok == true || ok == false );
    
    return ok;
@@ -118,7 +118,7 @@ void psnLockNoFailure( psnMemObject      * pMemObj,
       psnSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
    }
    
-   pscAcquireProcessLock ( &pMemObj->lock, LOCK_TIMEOUT );
+   pscAcquireProcessLock ( &pMemObj->lock, PSN_LOCK_TIMEOUT );
 }
 
 PHOTON_ENGINE_EXPORT

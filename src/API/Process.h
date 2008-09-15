@@ -114,7 +114,7 @@ bool psaProcessLock()
    bool ok = true;
    
    if ( g_protectionIsNeeded ) {
-      ok = pscTryAcquireThreadLock( &g_ProcessMutex, LOCK_TIMEOUT );
+      ok = pscTryAcquireThreadLock( &g_ProcessMutex, PSN_LOCK_TIMEOUT );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
    

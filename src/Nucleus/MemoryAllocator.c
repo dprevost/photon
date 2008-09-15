@@ -358,7 +358,7 @@ unsigned char * psnMallocBlocks( psnMemAlloc       * pAlloc,
 
    ok = pscTryAcquireProcessLock( &pAlloc->memObj.lock, 
                                    getpid(),
-                                   LOCK_TIMEOUT );
+                                   PSN_LOCK_TIMEOUT );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
 //BUG?      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );

@@ -26,10 +26,6 @@
 #include "API/Process.h"
 #include "API/ListReaders.h"
 
-#if !defined(LOCK_TIMEOUT)
-# define LOCK_TIMEOUT 10000 
-#endif
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 BEGIN_C_DECLS
@@ -101,7 +97,7 @@ bool psaSessionLock( psaSession * pSession )
    PSO_PRE_CONDITION( pSession != NULL );
    
    if ( g_protectionIsNeeded ) {
-      ok = pscTryAcquireThreadLock( &pSession->mutex, LOCK_TIMEOUT );
+      ok = pscTryAcquireThreadLock( &pSession->mutex, PSN_LOCK_TIMEOUT );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
    
