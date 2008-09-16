@@ -33,7 +33,7 @@ all: refman_c.pdf refman_c++.pdf
 
 refman_c.pdf: $(HEADER_FILES)
 	-rm -rf c
-	doxygen doxyfile.vds_c.win32
+	doxygen doxyfile.photon_c.win32
 	pdflatex -output-directory=c\latex c\latex\refman.tex
 	makeindex c\latex\refman.idx
 	pdflatex -output-directory=c\latex c\latex\refman.tex
@@ -41,7 +41,7 @@ refman_c.pdf: $(HEADER_FILES)
 
 refman_c++.pdf: $(CPP_HEADER_FILES)
 	-rm -rf c++
-	doxygen doxyfile.vds_cpp.win32
+	doxygen doxyfile.photon_cpp.win32
 	pdflatex -output-directory=c++\latex c++\latex\refman.tex
 	makeindex c++\latex\refman.idx
 	pdflatex -output-directory=c++\latex c++\latex\refman.tex
