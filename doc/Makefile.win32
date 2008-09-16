@@ -12,38 +12,42 @@
 #
 
 HEADER_FILES =                                        \
-        $(top_srcdir)/src/include/photon/photon.h     \
-        $(top_srcdir)/src/include/photon/psoCommon.h  \
-        $(top_srcdir)/src/include/photon/psoFolder.h  \
-        $(top_srcdir)/src/include/photon/psoHashMap.h \
-        $(top_srcdir)/src/include/photon/psoQueue.h   \
-        $(top_srcdir)/src/include/photon/psoProcess.h \
-        $(top_srcdir)/src/include/photon/psoSession.h 
+        ../src/include/photon/photon.h     \
+        ../src/include/photon/psoCommon.h  \
+        ../src/include/photon/psoFolder.h  \
+        ../src/include/photon/psoHashMap.h \
+        ../src/include/photon/psoQueue.h   \
+        ../src/include/photon/psoProcess.h \
+        ../src/include/photon/psoSession.h 
 
 CPP_HEADER_FILES =                                    \
-        $(top_srcdir)/src/include/photon/photon       \
-        $(top_srcdir)/src/include/photon/psoException \
-        $(top_srcdir)/src/include/photon/psoFolder    \
-        $(top_srcdir)/src/include/photon/psoHashMap   \
-        $(top_srcdir)/src/include/photon/psoQueue     \
-        $(top_srcdir)/src/include/photon/psoProcess   \
-        $(top_srcdir)/src/include/photon/psoSession   
+        ../src/include/photon/photon       \
+        ../src/include/photon/psoException \
+        ../src/include/photon/psoFolder    \
+        ../src/include/photon/psoHashMap   \
+        ../src/include/photon/psoQueue     \
+        ../src/include/photon/psoProcess   \
+        ../src/include/photon/psoSession   
 
 all: refman_c.pdf refman_c++.pdf
 
 refman_c.pdf: $(HEADER_FILES)
 	-rm -rf c
-	doxygen doxyfile.photon_c 
-	cd c/latex; make refman.pdf; cd ../..
-	cd c/latex; make refman.pdf; cd ../..
-	copy c/latex/refman.pdf refman_c.pdf
+	doxygen doxyfile.vds_c.win32
+	pdflatex -output-directory=c\latex c\latex\refman.tex
+	makeindex c\latex\refman.idx
+	pdflatex -output-directory=c\latex c\latex\refman.tex
+	copy c\latex\refman.pdf refman_c.pdf
 
 refman_c++.pdf: $(CPP_HEADER_FILES)
 	-rm -rf c++
-	doxygen doxyfile.photon_cpp 
-	cd c++/latex; make refman.pdf; cd ../..
-	cd c++/latex; make refman.pdf; cd ../..
-	copy c++/latex/refman.pdf refman_c++.pdf
+	doxygen doxyfile.vds_cpp.win32
+	pdflatex -output-directory=c++\latex c++\latex\refman.tex
+	makeindex c++\latex\refman.idx
+	pdflatex -output-directory=c++\latex c++\latex\refman.tex
+#	cd c++\latex; nmake refman.pdf; cd ..\..
+#	cd c++\latex; nmake refman.pdf; cd ..\..
+	copy "c++\latex\refman.pdf" "refman_c++.pdf"
    
 clean: 
 	-@erase /Q  c
