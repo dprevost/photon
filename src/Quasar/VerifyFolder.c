@@ -23,53 +23,53 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswRecoverError
-vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
-                        struct psnFolder  * pFolder, 
-                        psnSessionContext * pContext )
+enum psoqRecoverError
+psoqCheckFolderContent( psoqVerifyStruct   * pVerify,
+                        struct psonFolder  * pFolder, 
+                        psonSessionContext * pContext )
 {
    ptrdiff_t offset, previousOffset;
-   psnHashItem * pItem;
-   psnObjectDescriptor* pDesc = NULL;
+   psonHashItem * pItem;
+   psonObjectDescriptor* pDesc = NULL;
    void * pObject;
    int pDesc_invalid_api_type = 0;
    char message[PSO_MAX_NAME_LENGTH*4 + 30];
-   enum vdswRecoverError rc = VDSWR_OK, valid;
+   enum psoqRecoverError rc = PSOQ_REC_OK, valid;
    bool found;
    
    /* The easy case */
    if ( pFolder->hashObj.numberOfItems == 0 ) return rc;
 
-   found = psnHashGetFirst( &pFolder->hashObj, &offset );
+   found = psonHashGetFirst( &pFolder->hashObj, &offset );
    while ( found ) {
-      GET_PTR( pItem, offset, psnHashItem );
-      GET_PTR( pDesc, pItem->dataOffset, psnObjectDescriptor );
+      GET_PTR( pItem, offset, psonHashItem );
+      GET_PTR( pDesc, pItem->dataOffset, psonObjectDescriptor );
       GET_PTR( pObject, pDesc->offset, void );
       
       memset( message, 0, PSO_MAX_NAME_LENGTH*4+30 );
       strcpy( message, "Object name: " );
       strncat( message, pDesc->originalName, pDesc->nameLengthInBytes );
-      vdswEcho( pVerify, message );
+      psoqEcho( pVerify, message );
       switch( pDesc->apiType ) {
          case PSO_FOLDER:
-            valid = vdswVerifyFolder( pVerify,
-                                      (psnFolder *)pObject, 
+            valid = psoqVerifyFolder( pVerify,
+                                      (psonFolder *)pObject, 
                                       pContext );
             break;
          case PSO_HASH_MAP:
-            valid = vdswVerifyHashMap( pVerify,
-                                       (struct psnHashMap *)pObject, 
+            valid = psoqVerifyHashMap( pVerify,
+                                       (struct psonHashMap *)pObject, 
                                        pContext );
             break;
          case PSO_QUEUE:
          case PSO_LIFO:
-            valid = vdswVerifyQueue( pVerify, 
-                                     (struct psnQueue *)pObject,
+            valid = psoqVerifyQueue( pVerify, 
+                                     (struct psonQueue *)pObject,
                                      pContext ); 
             break;
          case PSO_FAST_MAP:
-            valid = vdswVerifyFastMap( pVerify,
-                                       (struct psnMap *)pObject, 
+            valid = psoqVerifyFastMap( pVerify,
+                                       (struct psonMap *)pObject, 
                                        pContext );
             break;
          default:
@@ -77,18 +77,18 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
       }
       
       previousOffset = offset;
-      found = psnHashGetNext( &pFolder->hashObj,
+      found = psonHashGetNext( &pFolder->hashObj,
                                previousOffset,
                                &offset );
 
       switch ( valid ) {
-      case VDSWR_OK:
+      case PSOQ_REC_OK:
          pVerify->numObjectsOK++;
          break;
-      case VDSWR_CHANGES:
+      case PSOQ_REC_CHANGES:
          pVerify->numObjectsRepaired++;
          break;
-      case VDSWR_DELETED_OBJECT:
+      case PSOQ_REC_DELETED_OBJECT:
          pVerify->numObjectsDeleted++;
          break;
       default: /* other errors */
@@ -96,26 +96,26 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
          break;
       }
 
-      if ( valid == VDSWR_DELETED_OBJECT && pVerify->doRepair ) {
-         rc = VDSWR_CHANGES;
+      if ( valid == PSOQ_REC_DELETED_OBJECT && pVerify->doRepair ) {
+         rc = PSOQ_REC_CHANGES;
          pVerify->spaces += 2;
-         vdswEcho( pVerify, "Removing the object from shared memory" );
+         psoqEcho( pVerify, "Removing the object from shared memory" );
          pVerify->spaces -= 2;
          switch( pDesc->apiType ) {
             case PSO_FOLDER:
-               psnFolderFini( (psnFolder *)pObject, pContext );
+               psonFolderFini( (psonFolder *)pObject, pContext );
                break;
             case PSO_HASH_MAP:
-               psnHashMapFini( (struct psnHashMap *)pObject, pContext );
+               psonHashMapFini( (struct psonHashMap *)pObject, pContext );
                break;
             case PSO_QUEUE:
             case PSO_LIFO:
-               psnQueueFini( (struct psnQueue *)pObject, pContext );
+               psonQueueFini( (struct psonQueue *)pObject, pContext );
                break;
             default:
                PSO_INV_CONDITION( pDesc_invalid_api_type );
          }
-         psnHashDelWithItem( &pFolder->hashObj,
+         psonHashDelWithItem( &pFolder->hashObj,
                               pItem,
                               pContext );
       }
@@ -126,38 +126,38 @@ vdswCheckFolderContent( vdswVerifyStruct   * pVerify,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswRecoverError
-vdswVerifyFolder( vdswVerifyStruct   * pVerify,
-                  struct psnFolder  * pFolder,
-                  psnSessionContext * pContext )
+enum psoqRecoverError
+psoqVerifyFolder( psoqVerifyStruct   * pVerify,
+                  struct psonFolder  * pFolder,
+                  psonSessionContext * pContext )
 {
-   psnTxStatus * txFolderStatus;
-   enum vdswRecoverError rc = VDSWR_OK, rc2;
+   psonTxStatus * txFolderStatus;
+   enum psoqRecoverError rc = PSOQ_REC_OK, rc2;
    bool bTestObject = false;
    
    pVerify->spaces += 2;
    
    /* Is the object lock ? */
-   if ( pscIsItLocked( &pFolder->memObject.lock ) ) {
-      vdswEcho( pVerify, "The object is locked - it might be corrupted" );
+   if ( psocIsItLocked( &pFolder->memObject.lock ) ) {
+      psoqEcho( pVerify, "The object is locked - it might be corrupted" );
       if ( pVerify->doRepair ) {
-         vdswEcho( pVerify, "Trying to reset the lock..." );
-         pscReleaseProcessLock ( &pFolder->memObject.lock );
+         psoqEcho( pVerify, "Trying to reset the lock..." );
+         psocReleaseProcessLock ( &pFolder->memObject.lock );
       }
-      rc = vdswVerifyMemObject( pVerify, &pFolder->memObject, pContext );
-      if ( rc > VDSWR_START_ERRORS ) {
+      rc = psoqVerifyMemObject( pVerify, &pFolder->memObject, pContext );
+      if ( rc > PSOQ_REC_START_ERRORS ) {
          pVerify->spaces -= 2;
          return rc;
       }
-      rc = VDSWR_CHANGES;
+      rc = PSOQ_REC_CHANGES;
       bTestObject = true;
    }
 
-   vdswPopulateBitmap( pVerify, &pFolder->memObject, pContext );
+   psoqPopulateBitmap( pVerify, &pFolder->memObject, pContext );
 
-   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psnTxStatus );
+   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psonTxStatus );
 
-   if ( txFolderStatus->txOffset != PSN_NULL_OFFSET ) {
+   if ( txFolderStatus->txOffset != PSON_NULL_OFFSET ) {
       /*
        * So we have an interrupted transaction. What kind? 
        *   FLAG                      ACTION          
@@ -167,65 +167,65 @@ vdswVerifyFolder( vdswVerifyStruct   * pVerify,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txFolderStatus->status & PSN_TXS_ADDED ) {
-         vdswEcho( pVerify, "Object added but not committed" );
+      if ( txFolderStatus->status & PSON_TXS_ADDED ) {
+         psoqEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
-         return VDSWR_DELETED_OBJECT;
+         return PSOQ_REC_DELETED_OBJECT;
       }
-      if ( txFolderStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
-         vdswEcho( pVerify, "Object deleted and committed" );
+      if ( txFolderStatus->status & PSON_TXS_DESTROYED_COMMITTED ) {
+         psoqEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
-         return VDSWR_DELETED_OBJECT;
+         return PSOQ_REC_DELETED_OBJECT;
       }
 
-      vdswEcho( pVerify, "Object deleted but not committed" );      
-      rc = VDSWR_CHANGES;
+      psoqEcho( pVerify, "Object deleted but not committed" );      
+      rc = PSOQ_REC_CHANGES;
       if ( pVerify->doRepair) {
-         vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
-         txFolderStatus->txOffset = PSN_NULL_OFFSET;
-         txFolderStatus->status = PSN_TXS_OK;
+         psoqEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
+         txFolderStatus->txOffset = PSON_NULL_OFFSET;
+         txFolderStatus->status = PSON_TXS_OK;
       }
    }
    
    if ( txFolderStatus->usageCounter != 0 ) {
-      rc = VDSWR_CHANGES;
-      vdswEcho( pVerify, "Usage counter is not zero" );
+      rc = PSOQ_REC_CHANGES;
+      psoqEcho( pVerify, "Usage counter is not zero" );
       if (pVerify->doRepair) {
          txFolderStatus->usageCounter = 0;
-         vdswEcho( pVerify, "Usage counter set to zero" );
+         psoqEcho( pVerify, "Usage counter set to zero" );
       }
    }
    if ( txFolderStatus->parentCounter != 0 ) {
-      rc = VDSWR_CHANGES;
-      vdswEcho( pVerify, "Parent counter is not zero" );
+      rc = PSOQ_REC_CHANGES;
+      psoqEcho( pVerify, "Parent counter is not zero" );
       if (pVerify->doRepair) {
          txFolderStatus->parentCounter = 0;
-         vdswEcho( pVerify, "Parent counter set to zero" );
+         psoqEcho( pVerify, "Parent counter set to zero" );
       }
    }
    if ( pFolder->nodeObject.txCounter != 0 ) {
-      rc = VDSWR_CHANGES;
-      vdswEcho( pVerify, "Transaction counter is not zero" );
+      rc = PSOQ_REC_CHANGES;
+      psoqEcho( pVerify, "Transaction counter is not zero" );
       if (pVerify->doRepair) {
          pFolder->nodeObject.txCounter = 0;
-         vdswEcho( pVerify, "Transaction counter set to zero" );
+         psoqEcho( pVerify, "Transaction counter set to zero" );
       }
    }
 
    if ( bTestObject ) {
-      rc2 = vdswVerifyHash( pVerify, 
+      rc2 = psoqVerifyHash( pVerify, 
                             &pFolder->hashObj, 
                             SET_OFFSET(&pFolder->memObject) );
-      if ( rc2 > VDSWR_START_ERRORS ) {
+      if ( rc2 > PSOQ_REC_START_ERRORS ) {
          pVerify->spaces -= 2;
          return rc2;
       }
-      /* At this point rc is either 0 or VDSWR_CHANGES - same for rc2 */
+      /* At this point rc is either 0 or PSOQ_REC_CHANGES - same for rc2 */
       if ( rc2 > rc ) rc = rc2;
    }
    
-   rc2 = vdswCheckFolderContent( pVerify, pFolder, pContext );
-   /* At this point rc is either 0 or VDSWR_CHANGES */
+   rc2 = psoqCheckFolderContent( pVerify, pFolder, pContext );
+   /* At this point rc is either 0 or PSOQ_REC_CHANGES */
    if ( rc2 > rc ) rc = rc2;
    pVerify->spaces -= 2;
 

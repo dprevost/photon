@@ -25,31 +25,31 @@ const bool expectedToPass = false;
 int main()
 {
    bool ok;
-   psnLinkNode node;
+   psonLinkNode node;
 
-   psnLinkNodeInit( &node );
+   psonLinkNodeInit( &node );
 
-   ok = psnLinkNodeTest( &node );
+   ok = psonLinkNodeTest( &node );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    node.nextOffset = 0x1234;
-   ok = psnLinkNodeTest( &node );
+   ok = psonLinkNodeTest( &node );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnLinkNodeInit( &node );
+   psonLinkNodeInit( &node );
 
    node.previousOffset = 0x1234;
-   ok = psnLinkNodeTest( &node );
+   ok = psonLinkNodeTest( &node );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    node.nextOffset = 0x1234;
-   ok = psnLinkNodeTest( &node );
+   ok = psonLinkNodeTest( &node );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

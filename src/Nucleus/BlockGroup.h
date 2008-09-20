@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_BLOCK_GROUP_H
-#define PSN_BLOCK_GROUP_H
+#ifndef PSON_BLOCK_GROUP_H
+#define PSON_BLOCK_GROUP_H
 
 #include "Nucleus/Engine.h"
 #include "Nucleus/MemBitmap.h"
@@ -29,13 +29,13 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psnBlockGroup
+struct psonBlockGroup
 {
    /** Type of memory object */
-   psnMemObjIdent objType;
+   psonMemObjIdent objType;
 
    /** Our own node for the link list of all groups of a memory object */
-   psnLinkNode node;
+   psonLinkNode node;
 
    /** The number of blocks associated with the current group. */
    size_t numBlocks;
@@ -47,29 +47,29 @@ struct psnBlockGroup
    size_t freeBytes;
    
    /** Our linked list of free buffers. */
-   psnLinkedList freeList;
+   psonLinkedList freeList;
 
    bool isDeletable;
    
    /** Must be last since this struct contains a "variable-length" array. */
-   psnMemBitmap bitmap;
+   psonMemBitmap bitmap;
    
 };
 
-typedef struct psnBlockGroup psnBlockGroup;
+typedef struct psonBlockGroup psonBlockGroup;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  *  This struct is to be set at the end of a group of blocks.
  *  The exact details of the struct might change - the main constraint
- *  is that the struct must be no greater than PSN_ALLOCATION_UNIT.
+ *  is that the struct must be no greater than PSON_ALLOCATION_UNIT.
  *
- *  Note: the struct is also used for group of blocks with no psnBlockGroup
+ *  Note: the struct is also used for group of blocks with no psonBlockGroup
  *  (a group of free blocks, for example). It should make no reference to
  *  that struct, obviously.
  */
-struct psnEndBlockGroup
+struct psonEndBlockGroup
 {
    /** The offset to the start of the group of blocks */
    ptrdiff_t firstBlockOffset;
@@ -85,49 +85,49 @@ struct psnEndBlockGroup
    
 };
 
-typedef struct psnEndBlockGroup psnEndBlockGroup;
+typedef struct psonEndBlockGroup psonEndBlockGroup;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
-void psnBlockGroupFini( psnBlockGroup* pGroup );
+void psonBlockGroupFini( psonBlockGroup* pGroup );
 
 /** 
- * Initialize the psnBlockGroup struct. 
+ * Initialize the psonBlockGroup struct. 
  */
 PHOTON_ENGINE_EXPORT
-void psnBlockGroupInit( psnBlockGroup  * pGroup,
+void psonBlockGroupInit( psonBlockGroup  * pGroup,
                          ptrdiff_t         firstBlockOffset,
                          size_t            numBlocks,
-                         psnMemObjIdent   objType );
+                         psonMemObjIdent   objType );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** This small inline function returns the offset of the end block struct. */
 
 static inline
-ptrdiff_t psnEndBlockOffset( ptrdiff_t firstBlockOffset, 
+ptrdiff_t psonEndBlockOffset( ptrdiff_t firstBlockOffset, 
                               size_t    numBlocks )
 {
    return (firstBlockOffset + 
-      (numBlocks <<  PSN_BLOCK_SHIFT) -
-      PSN_ALLOCATION_UNIT);
+      (numBlocks <<  PSON_BLOCK_SHIFT) -
+      PSON_ALLOCATION_UNIT);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psnEndBlockSet( ptrdiff_t firstBlockOffset, 
+void psonEndBlockSet( ptrdiff_t firstBlockOffset, 
                       size_t    numBlocks, 
                       bool      limboStatus,
                       bool      lastBlock )
 {
-   psnEndBlockGroup* endBlock;
+   psonEndBlockGroup* endBlock;
    
    GET_PTR( endBlock, 
-            firstBlockOffset + (numBlocks <<  PSN_BLOCK_SHIFT) -
-               PSN_ALLOCATION_UNIT,
-            psnEndBlockGroup );
+            firstBlockOffset + (numBlocks <<  PSON_BLOCK_SHIFT) -
+               PSON_ALLOCATION_UNIT,
+            psonEndBlockGroup );
                        
    endBlock->firstBlockOffset = firstBlockOffset;
    endBlock->numBlocks = numBlocks;
@@ -141,7 +141,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_BLOCK_GROUP_H */
+#endif /* PSON_BLOCK_GROUP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

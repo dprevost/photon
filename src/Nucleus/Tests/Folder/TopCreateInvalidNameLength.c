@@ -23,8 +23,8 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnFolder * pTopFolder;
-   psnSessionContext context;
+   psonFolder * pTopFolder;
+   psonSessionContext context;
    int errcode;
    bool ok;
    char name[PSO_MAX_FULL_NAME_LENGTH+100];
@@ -40,7 +40,7 @@ int main()
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psnTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateObject( pTopFolder,
                                    "Test1",
                                    0,
                                    &def,
@@ -48,12 +48,12 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = pscGetLastError( &context.errorHandler );
+   errcode = psocGetLastError( &context.errorHandler );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = psnTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateObject( pTopFolder,
                                    "/Test2",
                                    1,
                                    &def,
@@ -61,12 +61,12 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = pscGetLastError( &context.errorHandler );
+   errcode = psocGetLastError( &context.errorHandler );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = psnTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateObject( pTopFolder,
                                    name,
                                    PSO_MAX_FULL_NAME_LENGTH+1,
                                    &def,
@@ -74,7 +74,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = pscGetLastError( &context.errorHandler );
+   errcode = psocGetLastError( &context.errorHandler );
    if ( errcode != PSO_OBJECT_NAME_TOO_LONG ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -82,7 +82,7 @@ int main()
    memset( name, 0, PSO_MAX_FULL_NAME_LENGTH+100 );
    memset( name, 't', PSO_MAX_NAME_LENGTH+1 );
 
-   ok = psnTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateObject( pTopFolder,
                                    name,
                                    PSO_MAX_NAME_LENGTH+1,
                                    &def,
@@ -90,7 +90,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = pscGetLastError( &context.errorHandler );
+   errcode = psocGetLastError( &context.errorHandler );
    if ( errcode != PSO_OBJECT_NAME_TOO_LONG ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

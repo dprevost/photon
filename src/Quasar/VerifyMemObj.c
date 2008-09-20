@@ -22,46 +22,46 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswRecoverError
-vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
-                     struct psnMemObject      * pMemObj,
-                     struct psnSessionContext * pContext )
+enum psoqRecoverError
+psoqVerifyMemObject( struct psoqVerifyStruct   * pVerify,
+                     struct psonMemObject      * pMemObj,
+                     struct psonSessionContext * pContext )
 {
-   enum vdswRecoverError rc = VDSWR_OK;
-   struct psnMemAlloc * pAlloc = (psnMemAlloc *) pContext->pAllocator;
-   psnLinkNode * dummy;
-   psnBlockGroup * pGroup;
+   enum psoqRecoverError rc = PSOQ_REC_OK;
+   struct psonMemAlloc * pAlloc = (psonMemAlloc *) pContext->pAllocator;
+   psonLinkNode * dummy;
+   psonBlockGroup * pGroup;
    size_t numBlocks = 0;
    bool ok;
    
    /*
     * Reset the bitmap and the the list of groups.
     */
-   vdswResetBitmap( pVerify->pBitmap );
-   psnSetBufferFree( pVerify->pBitmap, 0, pAlloc->totalLength );
+   psoqResetBitmap( pVerify->pBitmap );
+   psonSetBufferFree( pVerify->pBitmap, 0, pAlloc->totalLength );
 
-   rc = vdswVerifyList( pVerify, &pMemObj->listBlockGroup );
-   if ( rc > VDSWR_START_ERRORS ) return rc;
+   rc = psoqVerifyList( pVerify, &pMemObj->listBlockGroup );
+   if ( rc > PSOQ_REC_START_ERRORS ) return rc;
    
    /*
     * We retrieve the first node
     */
-   ok = psnLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
+   ok = psonLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
    while ( ok ) {
-      pGroup = (psnBlockGroup*)( 
-         (unsigned char*)dummy - offsetof(psnBlockGroup,node));
+      pGroup = (psonBlockGroup*)( 
+         (unsigned char*)dummy - offsetof(psonBlockGroup,node));
       numBlocks += pGroup->numBlocks;
       
-      ok = psnLinkedListPeakNext( &pMemObj->listBlockGroup,
+      ok = psonLinkedListPeakNext( &pMemObj->listBlockGroup,
                                    dummy,
                                    &dummy );
    }
    if ( numBlocks != pMemObj->totalBlocks ) {
-      rc = VDSWR_CHANGES;
-      vdswEcho( pVerify, "Number of blocks is wrong" );
+      rc = PSOQ_REC_CHANGES;
+      psoqEcho( pVerify, "Number of blocks is wrong" );
       if (pVerify->doRepair) {
          pMemObj->totalBlocks = numBlocks;
-         vdswEcho( pVerify, "Number of blocks set to proper value" );
+         psoqEcho( pVerify, "Number of blocks set to proper value" );
       }
    }
    
@@ -70,32 +70,32 @@ vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswPopulateBitmap( struct vdswVerifyStruct   * pVerify,
-                         struct psnMemObject      * pMemObj,
-                         struct psnSessionContext * pContext )
+void psoqPopulateBitmap( struct psoqVerifyStruct   * pVerify,
+                         struct psonMemObject      * pMemObj,
+                         struct psonSessionContext * pContext )
 {
-   psnLinkNode * dummy;
-   psnBlockGroup * pGroup;
+   psonLinkNode * dummy;
+   psonBlockGroup * pGroup;
    bool ok;
    
    /*
     * Reset the bitmap and populate it for validating the content of the 
     * object itself.
     */
-   vdswResetBitmap( pVerify->pBitmap );
+   psoqResetBitmap( pVerify->pBitmap );
    /*
     * We retrieve the first node
     */
-   ok = psnLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
+   ok = psonLinkedListPeakFirst( &pMemObj->listBlockGroup, &dummy );
    while ( ok ) {
-      pGroup = (psnBlockGroup*)( 
-         (unsigned char*)dummy - offsetof(psnBlockGroup,node));
+      pGroup = (psonBlockGroup*)( 
+         (unsigned char*)dummy - offsetof(psonBlockGroup,node));
 
-      psnSetBufferFree( pVerify->pBitmap, 
-         SET_OFFSET( pGroup )/PSN_BLOCK_SIZE*PSN_BLOCK_SIZE, 
-         pGroup->numBlocks*PSN_BLOCK_SIZE );
+      psonSetBufferFree( pVerify->pBitmap, 
+         SET_OFFSET( pGroup )/PSON_BLOCK_SIZE*PSON_BLOCK_SIZE, 
+         pGroup->numBlocks*PSON_BLOCK_SIZE );
       
-      ok = psnLinkedListPeakNext( &pMemObj->listBlockGroup,
+      ok = psonLinkedListPeakNext( &pMemObj->listBlockGroup,
                                    dummy,
                                    &dummy );
    }

@@ -24,13 +24,13 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnHashMap * pHashMap;
-   psnSessionContext context;
+   psonHashMap * pHashMap;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus status;
+   psonTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   psnHashItem * pItem;
+   psonHashItem * pItem;
    psoObjectDefinition def = { 
       PSO_HASH_MAP, 
       1, 
@@ -40,16 +40,16 @@ int main()
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnHashMapInit( pHashMap, 
+   ok = psonHashMapInit( pHashMap, 
                          0, 1, 0, &status, 4, 
                          "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            (const void *) key,
                            6,
                            (const void *) data,
@@ -59,7 +59,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnHashMapGet( pHashMap,
+   ok = psonHashMapGet( pHashMap,
                         (const void *) key,
                         6,
                         &pItem,
@@ -70,16 +70,16 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
+   psonHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
 
-   ok = psnHashMapRelease( pHashMap,
+   ok = psonHashMapRelease( pHashMap,
                             pItem,
                             &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnHashMapDelete( pHashMap,
+   ok = psonHashMapDelete( pHashMap,
                            (const void *) key,
                            6,
                            &context );
@@ -87,8 +87,8 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnHashMapCommitRemove( pHashMap, 
-                            PSN_NULL_OFFSET,
+   psonHashMapCommitRemove( pHashMap, 
+                            PSON_NULL_OFFSET,
                             &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

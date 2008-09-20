@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSW_VERIFY_COMMON_H
-#define VDSW_VERIFY_COMMON_H
+#ifndef PSOQ_VERIFY_COMMON_H
+#define PSOQ_VERIFY_COMMON_H
 
 #include "Nucleus/MemoryHeader.h"
 #include "Nucleus/MemBitmap.h"
@@ -25,35 +25,35 @@
 
 BEGIN_C_DECLS
 
-extern psnMemoryHeader * g_pMemoryAddress;
+extern psonMemoryHeader * g_pMemoryAddress;
 extern bool g_bTestAllocator;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psnLinkedList;
-struct psnFolder;
-struct psnHashMap;
-struct psnMap;
-struct psnQueue;
-struct psnMemObject;
+struct psonLinkedList;
+struct psonFolder;
+struct psonHashMap;
+struct psonMap;
+struct psonQueue;
+struct psonMemObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswRecoverError 
+enum psoqRecoverError 
 {
-   VDSWR_OK = 0,
-   VDSWR_CHANGES,
-   VDSWR_START_ERRORS = 100,
+   PSOQ_REC_OK = 0,
+   PSOQ_REC_CHANGES,
+   PSOQ_REC_START_ERRORS = 100,
    /* Object added but not committed or object deleted and committed */
-   VDSWR_DELETED_OBJECT,
-   VDSWR_UNHANDLED_ERROR,
-   VDSWR_UNRECOVERABLE_ERROR
+   PSOQ_REC_DELETED_OBJECT,
+   PSOQ_REC_UNHANDLED_ERROR,
+   PSOQ_REC_UNRECOVERABLE_ERROR
 };
-typedef enum vdswRecoverError vdswRecoverError;
+typedef enum psoqRecoverError psoqRecoverError;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdswVerifyStruct
+struct psoqVerifyStruct
 {
    bool   verbose;
    int    spaces;
@@ -63,14 +63,14 @@ struct vdswVerifyStruct
    size_t numObjectsRepaired;
    size_t numObjectsDeleted;
    size_t numObjectsError;
-   psnMemBitmap * pBitmap;
+   psonMemBitmap * pBitmap;
 };
-typedef struct vdswVerifyStruct vdswVerifyStruct;
+typedef struct psoqVerifyStruct psoqVerifyStruct;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdswEcho( vdswVerifyStruct * pVerify, char * message )
+void psoqEcho( psoqVerifyStruct * pVerify, char * message )
 {
    int i;
    
@@ -85,7 +85,7 @@ void vdswEcho( vdswVerifyStruct * pVerify, char * message )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdswResetBitmap( psnMemBitmap * pBitmap )
+void psoqResetBitmap( psonMemBitmap * pBitmap )
 {
    size_t length;
    
@@ -96,51 +96,51 @@ void vdswResetBitmap( psnMemBitmap * pBitmap )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool vdswVerifyOffset( vdswVerifyStruct * pVerify, ptrdiff_t offset )
+bool psoqVerifyOffset( psoqVerifyStruct * pVerify, ptrdiff_t offset )
 {
-   return psnIsBufferFree( pVerify->pBitmap, offset );
+   return psonIsBufferFree( pVerify->pBitmap, offset );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void 
-vdswPopulateBitmap( struct vdswVerifyStruct   * pVerify,
-                    struct psnMemObject      * pMemObj,
-                    struct psnSessionContext * pContext );
+psoqPopulateBitmap( struct psoqVerifyStruct   * pVerify,
+                    struct psonMemObject      * pMemObj,
+                    struct psonSessionContext * pContext );
 
-enum vdswRecoverError
-vdswVerifyFastMap( vdswVerifyStruct   * pVerify,
-                   struct psnMap     * pHashMap, 
-                   psnSessionContext * pContext  );
+enum psoqRecoverError
+psoqVerifyFastMap( psoqVerifyStruct   * pVerify,
+                   struct psonMap     * pHashMap, 
+                   psonSessionContext * pContext  );
 
-enum vdswRecoverError
-vdswVerifyFolder( vdswVerifyStruct   * pVerify,
-                  struct psnFolder  * pFolder,
-                  psnSessionContext * pContext );
+enum psoqRecoverError
+psoqVerifyFolder( psoqVerifyStruct   * pVerify,
+                  struct psonFolder  * pFolder,
+                  psonSessionContext * pContext );
 
-enum vdswRecoverError
-vdswVerifyHash( vdswVerifyStruct * pVerify,
-                struct psnHash  * pHash,
+enum psoqRecoverError
+psoqVerifyHash( psoqVerifyStruct * pVerify,
+                struct psonHash  * pHash,
                 ptrdiff_t          memObjOffset );
 
-enum vdswRecoverError
-vdswVerifyList( vdswVerifyStruct      * pVerify,
-                struct psnLinkedList * pList );
+enum psoqRecoverError
+psoqVerifyList( psoqVerifyStruct      * pVerify,
+                struct psonLinkedList * pList );
 
-enum vdswRecoverError
-vdswVerifyHashMap( vdswVerifyStruct   * pVerify,
-                   struct psnHashMap * pHashMap, 
-                   psnSessionContext * pContext  );
+enum psoqRecoverError
+psoqVerifyHashMap( psoqVerifyStruct   * pVerify,
+                   struct psonHashMap * pHashMap, 
+                   psonSessionContext * pContext  );
 
-enum vdswRecoverError
-vdswVerifyMemObject( struct vdswVerifyStruct   * pVerify,
-                     struct psnMemObject      * pMemObj,
-                     struct psnSessionContext * pContext );
+enum psoqRecoverError
+psoqVerifyMemObject( struct psoqVerifyStruct   * pVerify,
+                     struct psonMemObject      * pMemObj,
+                     struct psonSessionContext * pContext );
 
-enum vdswRecoverError
-vdswVerifyQueue( vdswVerifyStruct   * pVerify,
-                 struct psnQueue   * pQueue, 
-                 psnSessionContext * pContext  );
+enum psoqRecoverError
+psoqVerifyQueue( psoqVerifyStruct   * pVerify,
+                 struct psonQueue   * pQueue, 
+                 psonSessionContext * pContext  );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -148,7 +148,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSW_VERIFY_COMMON_H */
+#endif /* PSOQ_VERIFY_COMMON_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

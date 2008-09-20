@@ -16,8 +16,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSW_HANDLER_H
-#define VDSW_HANDLER_H
+#ifndef PSOQ_HANDLER_H
+#define PSOQ_HANDLER_H
 
 #include "Nucleus/SessionContext.h"
 #include "Quasar/quasarErrors.h"
@@ -28,9 +28,9 @@ BEGIN_C_DECLS
 
 // Forward declaration
 struct ConfigParams;
-struct psnMemoryHeader;
-struct psnSession;
-struct vdswMemoryManager;
+struct psonMemoryHeader;
+struct psonSession;
+struct psoqMemoryManager;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -40,39 +40,39 @@ struct vdswMemoryManager;
  *    - it will open it otherwise and make sure that its content is valid
  */
 
-struct vdswHandler
+struct psoqHandler
 {
    struct ConfigParams * pConfig;
 
-   struct vdswMemoryManager * pMemManager;
+   struct psoqMemoryManager * pMemManager;
 
-   struct psnMemoryHeader * pMemHeader;
+   struct psonMemoryHeader * pMemHeader;
    
-   psnSessionContext context;
+   psonSessionContext context;
 };
 
-typedef struct vdswHandler vdswHandler;
+typedef struct psoqHandler psoqHandler;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdswHandlerInit( vdswHandler              * pHandler,
+bool psoqHandlerInit( psoqHandler              * pHandler,
                       struct ConfigParams      * pConfig,
-                      struct psnMemoryHeader ** ppMemoryAddress,
+                      struct psonMemoryHeader ** ppMemoryAddress,
                       bool                       verifyVDSOnly );
 
-void vdswHandlerFini( vdswHandler * pHandler );
+void psoqHandlerFini( psoqHandler * pHandler );
 
-void vdswHandleCrash( vdswHandler * pHandler, pid_t pid );
+void psoqHandleCrash( psoqHandler * pHandler, pid_t pid );
 
 #if 0
-   void CleanSession( psnSession* pSession );
+   void CleanSession( psonSession* pSession );
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS
 
-#endif /* VDSW_HANDLER_H */
+#endif /* PSOQ_HANDLER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

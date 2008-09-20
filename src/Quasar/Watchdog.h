@@ -41,9 +41,9 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 // Forward declaration(s)
-struct psnMemoryHeader;
+struct psonMemoryHeader;
 
-extern pscErrMsgHandle g_wdErrorHandle;
+extern psocErrMsgHandle g_wdErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -69,14 +69,14 @@ extern pscErrMsgHandle g_wdErrorHandle;
  *  Note: this synchronisation is not implemented yet...
  */
 
-struct vdswWatchdog
+struct psoqWatchdog
 {
    
    /// Configuration parameters (as read from Windows registry or from 
    /// the config file.
    struct ConfigParams params;
 
-   struct psnMemoryHeader * pMemoryAddress;
+   struct psonMemoryHeader * pMemoryAddress;
    
    /// Lock to control synchronization (needed on Win32 only?)
    /// todo - check this + initialize lock
@@ -87,59 +87,59 @@ struct vdswWatchdog
    unsigned int controlWord;
    
    /// Listen to connection requests
-   struct vdswAcceptor acceptor;
+   struct psoqAcceptor acceptor;
 
    /// Send messages to system log facility once stderr is not available
-   struct vdswLogMsg  log;
+   struct psoqLogMsg  log;
    
-   struct vdswHandler vds;
+   struct psoqHandler vds;
 
-   pscErrorHandler errorHandler;
+   psocErrorHandler errorHandler;
 
    bool verifyVDSOnly;
    
    char errorMsg[WD_MSG_LEN];
 };
 
-typedef struct vdswWatchdog vdswWatchdog;
+typedef struct psoqWatchdog psoqWatchdog;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-extern vdswWatchdog * g_pWD;
+extern psoqWatchdog * g_pWD;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void vdswHandleAbnormalTermination( vdswWatchdog * pWatchdog,
+void psoqHandleAbnormalTermination( psoqWatchdog * pWatchdog,
                                     pid_t          pid )
 {
-   vdswHandleCrash( &g_pWD->vds, pid );
+   psoqHandleCrash( &g_pWD->vds, pid );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswWatchdogInit( vdswWatchdog * pWatchdog );
+void psoqWatchdogInit( psoqWatchdog * pWatchdog );
 
-void vdswWatchdogFini( vdswWatchdog * pWatchdog );
+void psoqWatchdogFini( psoqWatchdog * pWatchdog );
 
 #if defined ( WIN32 )
 
-bool vdswInstall( vdswWatchdog * pWatchdog );
+bool psoqInstall( psoqWatchdog * pWatchdog );
 
-void vdswUninstall( vdswWatchdog * pWatchdog );
+void psoqUninstall( psoqWatchdog * pWatchdog );
 
 #else
-bool vdswDaemon( vdswWatchdog * pWatchdog );
+bool psoqDaemon( psoqWatchdog * pWatchdog );
 #endif
 
-bool vdswWatchdogReadConfig( vdswWatchdog * pWatchdog, const char* cfgname );   
+bool psoqWatchdogReadConfig( psoqWatchdog * pWatchdog, const char* cfgname );   
    
-void vdswHelp( const char* progName );
+void psoqHelp( const char* progName );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-int vdswLastError() {
+int psoqLastError() {
 #if defined ( WIN32 )
    return GetLastError();
 #else
@@ -160,8 +160,8 @@ int vdswLastError() {
  *  than having to search in the EventLog/syslog facility).
  */
 static inline
-bool vdswInitializeVDS( vdswWatchdog * pWatchdog ) {
-   return vdswHandlerInit( &pWatchdog->vds,
+bool psoqInitializeVDS( psoqWatchdog * pWatchdog ) {
+   return psoqHandlerInit( &pWatchdog->vds,
                            &pWatchdog->params, 
                            &pWatchdog->pMemoryAddress, 
                            pWatchdog->verifyVDSOnly );
@@ -169,7 +169,7 @@ bool vdswInitializeVDS( vdswWatchdog * pWatchdog ) {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswRun();
+void psoqRun();
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

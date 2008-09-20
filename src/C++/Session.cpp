@@ -187,23 +187,23 @@ void psoSession::Init()
 
 int psoSession::LastError()
 {
-   psaSession* pSession;
+   psoaSession* pSession;
    int rc = 0;
    int lastErr = 0;
    
-   pSession = (psaSession *) m_sessionHandle;
+   pSession = (psoaSession *) m_sessionHandle;
    if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
-   if ( psaSessionLock( pSession ) ) {
+   if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         lastErr = pscGetLastError( &pSession->context.errorHandler );
+         lastErr = psocGetLastError( &pSession->context.errorHandler );
       }
       else {
          rc = PSO_SESSION_IS_TERMINATED;
       }
-      psaSessionUnlock( pSession );
+      psoaSessionUnlock( pSession );
    }
    else {
       rc = PSO_SESSION_CANNOT_GET_LOCK;

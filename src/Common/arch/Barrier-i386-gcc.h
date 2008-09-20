@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSC_ARCH_BARRIER_H
-#define PSC_ARCH_BARRIER_H
+#ifndef PSOC_ARCH_BARRIER_H
+#define PSOC_ARCH_BARRIER_H
 
 /*
  * Barrier for the i386 (Intel, AMD and more) when using gcc or a compiler
@@ -25,28 +25,28 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void pscMemoryBarrier()
+static inline void psocMemoryBarrier()
 {
    __asm__ __volatile__("lock; addl $0,0(%%esp)" : : : "memory");
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void pscReadMemoryBarrier()
+static inline void psocReadMemoryBarrier()
 {
    __asm__ __volatile__("lock; addl $0,0(%%esp)" : : : "memory");
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void pscWriteMemoryBarrier()
+static inline void psocWriteMemoryBarrier()
 {
    __asm__ __volatile__("" : : : "memory");
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSC_ARCH_BARRIER_H */
+#endif /* PSOC_ARCH_BARRIER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

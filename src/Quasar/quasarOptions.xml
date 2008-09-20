@@ -18,7 +18,7 @@
 
 <options>
   <!-- The name of the enum. If absent, #define will be generated instead. -->
-  <enumname> vdswErrors</enumname>
+  <enumname> psoqErrors</enumname>
   <!-- Name of the output dir for the error header file. If absent, the 
        current directory will be used.
        

@@ -23,19 +23,19 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnProcMgr* pManager;
-   psnSessionContext context;
-   psnProcess *process;
+   psonProcMgr* pManager;
+   psonSessionContext context;
+   psonProcess *process;
    bool ok;
    
    pManager = initProcMgrTest( expectedToPass, &context );
 
-   ok = psnProcMgrInit( pManager, &context );
+   ok = psonProcMgrInit( pManager, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnProcMgrAddProcess( pManager, 
+   ok = psonProcMgrAddProcess( pManager, 
                                12345, 
                                &process,
                                &context );
@@ -44,7 +44,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnProcMgrFindProcess( pManager, 
+   ok = psonProcMgrFindProcess( pManager, 
                                 12345, 
                                 &process,
                                 &context );
@@ -52,14 +52,14 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnProcMgrFindProcess( pManager, 
+   ok = psonProcMgrFindProcess( pManager, 
                                 12378,
                                 &process,
                                 &context );
    if ( ok == true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pscGetLastError( &context.errorHandler ) != PSO_INTERNAL_ERROR ) {
+   if ( psocGetLastError( &context.errorHandler ) != PSO_INTERNAL_ERROR ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

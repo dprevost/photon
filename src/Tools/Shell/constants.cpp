@@ -44,7 +44,7 @@ vdsConstants::vdsConstants()
    stats.push_back( "Added  " );
    headerStatus =   "Status ";
 //   stats.push_back( "Replaced" );
-//   PSN_TXS_DESTROYED_COMMITTED
+//   PSON_TXS_DESTROYED_COMMITTED
    stats.push_back( "Unknown" );
 }
 

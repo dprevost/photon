@@ -26,56 +26,56 @@ const bool expectedToPass = true;
 int main()
 {
    bool ok = 0;
-   pscDirIterator iterator;
+   psocDirIterator iterator;
    const char* str;
-   pscErrorHandler errorHandler;
+   psocErrorHandler errorHandler;
 
-   pscInitErrorDefs();
-   pscInitDir( &iterator );
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorDefs();
+   psocInitDir( &iterator );
+   psocInitErrorHandler( &errorHandler );
    
-   ok = pscOpenDir( &iterator, ".", &errorHandler );
+   ok = psocOpenDir( &iterator, ".", &errorHandler );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   str = pscDirGetNextFileName( &iterator, &errorHandler );
+   str = psocDirGetNextFileName( &iterator, &errorHandler );
    if ( str == NULL ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
    /* Close and reopen */
-   pscCloseDir( &iterator );
+   psocCloseDir( &iterator );
 
-   ok = pscOpenDir( &iterator, ".", &errorHandler );
+   ok = psocOpenDir( &iterator, ".", &errorHandler );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   str = pscDirGetNextFileName( &iterator, &errorHandler );
+   str = psocDirGetNextFileName( &iterator, &errorHandler );
    if ( str == NULL ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
    /* Close twice and reopen - should work */
-   pscCloseDir( &iterator );
-   pscCloseDir( &iterator );
+   psocCloseDir( &iterator );
+   psocCloseDir( &iterator );
 
-   ok = pscOpenDir( &iterator, ".", &errorHandler );
+   ok = psocOpenDir( &iterator, ".", &errorHandler );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   str = pscDirGetNextFileName( &iterator, &errorHandler );
+   str = psocDirGetNextFileName( &iterator, &errorHandler );
    if ( str == NULL ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   pscCloseDir( &iterator );
+   psocCloseDir( &iterator );
 
-   pscFiniDir( &iterator );
-   pscFiniErrorHandler( &errorHandler );
-   pscFiniErrorDefs();
+   psocFiniDir( &iterator );
+   psocFiniErrorHandler( &errorHandler );
+   psocFiniErrorDefs();
 
    return 0;
 }

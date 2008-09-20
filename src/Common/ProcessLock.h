@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSC_PROCESS_LOCK_H
-#define PSC_PROCESS_LOCK_H
+#ifndef PSOC_PROCESS_LOCK_H
+#define PSOC_PROCESS_LOCK_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 /*
@@ -78,7 +78,7 @@ union semun {
 #  endif
 #endif
 
-#define PSC_LOCK_SIGNATURE ((unsigned int)0x174a0c46 )
+#define PSOC_LOCK_SIGNATURE ((unsigned int)0x174a0c46 )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -136,7 +136,7 @@ extern int g_timeOutinMilliSecs;
 PHOTON_COMMON_EXPORT
 extern struct timespec g_timeOut;
 
-typedef struct pscProcessLock
+typedef struct psocProcessLock
 {
    unsigned int initialized;
 
@@ -154,7 +154,7 @@ typedef struct pscProcessLock
    
    int counter;
 
-} pscProcessLock;
+} psocProcessLock;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -163,46 +163,46 @@ typedef struct pscProcessLock
  * may return an error.
  */
 PHOTON_COMMON_EXPORT
-bool pscInitProcessLock( pscProcessLock * pLock );
+bool psocInitProcessLock( psocProcessLock * pLock );
 
 /**
  *  Uninitialize the lock (it will remove the lock for POSIX semaphores).
  */
 PHOTON_COMMON_EXPORT
-bool pscFiniProcessLock( pscProcessLock * pLock );
+bool psocFiniProcessLock( psocProcessLock * pLock );
 
 /** Acquire lock ownership (loop forever) - this is dangerous for
  * deadlocks.
  */
 static inline
-void pscAcquireProcessLock( pscProcessLock * pLock,
-                            pid_t            pidLocker );
+void psocAcquireProcessLock( psocProcessLock * pLock,
+                             pid_t             pidLocker );
 
 /** Attempt to acquire the lock for nMilliSecs - fails if it can't 
  *  Returns -1 on failure.  
  */
 static inline
-bool pscTryAcquireProcessLock( pscProcessLock * pLock,
-                               pid_t            pidLocker,
-                               unsigned int     milliSecs );   
+bool psocTryAcquireProcessLock( psocProcessLock * pLock,
+                                pid_t             pidLocker,
+                                unsigned int      milliSecs );   
 
 /** Release lock. */
 static inline
-void pscReleaseProcessLock( pscProcessLock * pLock );
+void psocReleaseProcessLock( psocProcessLock * pLock );
 
 /**
  * Test the underlying value of the pid.
  * Returns a boolean value (1 if the pids are the same, 0 otherwise).
  */
 PHOTON_COMMON_EXPORT
-bool pscTestLockPidValue( pscProcessLock * pLock, pid_t pid );
+bool psocTestLockPidValue( psocProcessLock * pLock, pid_t pid );
 
 /**
  * Test to see if the lock is on.
  * Returns a boolean value (1 if the lock is indeed locked, 0 otherwise).
  */
 PHOTON_COMMON_EXPORT
-bool pscIsItLocked( pscProcessLock * pLock );
+bool psocIsItLocked( psocProcessLock * pLock );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -228,5 +228,5 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSC_PROCESS_LOCK_H */
+#endif /* PSOC_PROCESS_LOCK_H */
 

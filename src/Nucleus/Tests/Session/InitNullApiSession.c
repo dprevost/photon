@@ -24,12 +24,12 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnSession * pSession;
-   psnSessionContext context;
+   psonSession * pSession;
+   psonSessionContext context;
    
    pSession = initSessionTest( expectedToPass, &context );
 
-   psnSessionInit( pSession, NULL, &context );
+   psonSessionInit( pSession, NULL, &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

@@ -23,15 +23,15 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnSession * pSession;
-   psnSessionContext context;
+   psonSession * pSession;
+   psonSessionContext context;
    int errcode;
    bool ok;
    void * pApiSession = (void *) &errcode; /* dummy pointer */
    
    pSession = initSessionTest( expectedToPass, &context );
 
-   ok = psnSessionInit( pSession, pApiSession, &context );
+   ok = psonSessionInit( pSession, pApiSession, &context );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

@@ -25,8 +25,8 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnFolder * pTopFolder;
-   psnSessionContext context;
+   psonFolder * pTopFolder;
+   psonSessionContext context;
    bool ok;
    psoObjStatus status;
    psoObjectDefinition def = { 
@@ -38,7 +38,7 @@ int main()
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psnTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateObject( pTopFolder,
                                    "Test1",
                                    strlen("Test1"),
                                    &def,
@@ -47,7 +47,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnTopFolderGetStatus( pTopFolder,
+   ok = psonTopFolderGetStatus( pTopFolder,
                                 NULL,
                                 strlen("Test1"),
                                 &status,

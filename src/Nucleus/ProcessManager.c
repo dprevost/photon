@@ -22,38 +22,38 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psnProcMgrInit( psnProcMgr        * pManager,
-                      psnSessionContext * pContext )
+bool psonProcMgrInit( psonProcMgr        * pManager,
+                      psonSessionContext * pContext )
 {
    psoErrors errcode;
 
    PSO_PRE_CONDITION( pManager != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
 
-   errcode = psnMemObjectInit( &pManager->memObject, 
-                                PSN_IDENT_PROCESS_MGR,
+   errcode = psonMemObjectInit( &pManager->memObject, 
+                                PSON_IDENT_PROCESS_MGR,
                                 &pManager->blockGroup,
                                 1 ); /* A single block */
    if ( errcode != PSO_OK ) {
-      pscSetError( &pContext->errorHandler,
+      psocSetError( &pContext->errorHandler,
                     g_psoErrorHandle,
                     errcode );
       return false;
    }
 
-   psnLinkedListInit( &pManager->listOfProcesses );
+   psonLinkedListInit( &pManager->listOfProcesses );
       
    return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psnProcMgrAddProcess( psnProcMgr        * pManager,
+bool psonProcMgrAddProcess( psonProcMgr        * pManager,
                             pid_t                pid, 
-                            psnProcess       ** ppProcess,
-                            psnSessionContext * pContext )
+                            psonProcess       ** ppProcess,
+                            psonSessionContext * pContext )
 {
-   psnProcess* pCurrentBuffer;
+   psonProcess* pCurrentBuffer;
    bool ok = false;
    
    PSO_PRE_CONDITION( pManager  != NULL );
@@ -62,34 +62,34 @@ bool psnProcMgrAddProcess( psnProcMgr        * pManager,
    PSO_PRE_CONDITION( pid > 0 );
 
    /* For recovery purposes, always lock before doing anything! */
-   if ( psnLock( &pManager->memObject, pContext ) ) {
-      pCurrentBuffer = (psnProcess*)
-         psnMallocBlocks( pContext->pAllocator, PSN_ALLOC_ANY, 1, pContext );
+   if ( psonLock( &pManager->memObject, pContext ) ) {
+      pCurrentBuffer = (psonProcess*)
+         psonMallocBlocks( pContext->pAllocator, PSON_ALLOC_ANY, 1, pContext );
       if ( pCurrentBuffer != NULL ) {
-         ok = psnProcessInit( pCurrentBuffer, pid, pContext );
+         ok = psonProcessInit( pCurrentBuffer, pid, pContext );
          PSO_POST_CONDITION( ok == true || ok == false );
          if ( ok ) {
-            psnLinkNodeInit( &pCurrentBuffer->node );
-            psnLinkedListPutLast( &pManager->listOfProcesses, 
+            psonLinkNodeInit( &pCurrentBuffer->node );
+            psonLinkedListPutLast( &pManager->listOfProcesses, 
                                    &pCurrentBuffer->node );
             *ppProcess = pCurrentBuffer;
          }
          else {
-            psnFreeBlocks( pContext->pAllocator, 
-                            PSN_ALLOC_ANY,
+            psonFreeBlocks( pContext->pAllocator, 
+                            PSON_ALLOC_ANY,
                             (unsigned char *)pCurrentBuffer, 
                             1, pContext );
          }
       }
       else {
-         pscSetError( &pContext->errorHandler, 
+         psocSetError( &pContext->errorHandler, 
                        g_psoErrorHandle, 
                        PSO_NOT_ENOUGH_PSO_MEMORY );
       }
-      psnUnlock( &pManager->memObject, pContext );
+      psonUnlock( &pManager->memObject, pContext );
    }
    else {
-      pscSetError( &pContext->errorHandler, 
+      psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, 
                     PSO_ENGINE_BUSY );
    }
@@ -99,13 +99,13 @@ bool psnProcMgrAddProcess( psnProcMgr        * pManager,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psnProcMgrFindProcess( psnProcMgr        * pManager,
+bool psonProcMgrFindProcess( psonProcMgr        * pManager,
                              pid_t                pid,
-                             psnProcess       ** ppProcess,
-                             psnSessionContext * pContext )
+                             psonProcess       ** ppProcess,
+                             psonSessionContext * pContext )
 {
-   psnProcess *pCurrent, *pNext;
-   psnLinkNode * pNodeCurrent = NULL, * pNodeNext = NULL;
+   psonProcess *pCurrent, *pNext;
+   psonLinkNode * pNodeCurrent = NULL, * pNodeNext = NULL;
    psoErrors errcode = PSO_OK;
    bool ok;
    
@@ -117,20 +117,20 @@ bool psnProcMgrFindProcess( psnProcMgr        * pManager,
    *ppProcess = NULL;
    
    /* For recovery purposes, always lock before doing anything! */
-   if ( psnLock( &pManager->memObject, pContext ) ) {
-      ok = psnLinkedListPeakFirst( &pManager->listOfProcesses, 
+   if ( psonLock( &pManager->memObject, pContext ) ) {
+      ok = psonLinkedListPeakFirst( &pManager->listOfProcesses, 
                                     &pNodeCurrent );
       if ( ok ) {
-         pCurrent = (psnProcess*)
-            ((char*)pNodeCurrent - offsetof( psnProcess, node ));
+         pCurrent = (psonProcess*)
+            ((char*)pNodeCurrent - offsetof( psonProcess, node ));
          if ( pCurrent->pid == pid ) *ppProcess = pCurrent;
       
          while ( (*ppProcess == NULL) &&
-                 psnLinkedListPeakNext( &pManager->listOfProcesses, 
+                 psonLinkedListPeakNext( &pManager->listOfProcesses, 
                                          pNodeCurrent, 
                                          &pNodeNext ) ) {
-            pNext = (psnProcess*)
-               ((char*)pNodeNext - offsetof( psnProcess, node ));
+            pNext = (psonProcess*)
+               ((char*)pNodeNext - offsetof( psonProcess, node ));
             if ( pNext->pid == pid ) *ppProcess = pNext;
             pNodeCurrent = pNodeNext;
          }
@@ -139,7 +139,7 @@ bool psnProcMgrFindProcess( psnProcMgr        * pManager,
          errcode = PSO_INTERNAL_ERROR;
       }
       
-      psnUnlock( &pManager->memObject, pContext );
+      psonUnlock( &pManager->memObject, pContext );
    }
    else {
       errcode = PSO_ENGINE_BUSY;
@@ -149,7 +149,7 @@ bool psnProcMgrFindProcess( psnProcMgr        * pManager,
    if ( *ppProcess == NULL ) errcode = PSO_INTERNAL_ERROR;
 
    if ( errcode != PSO_OK ) {
-      pscSetError( &pContext->errorHandler, 
+      psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, 
                     errcode );
       return false;
@@ -160,25 +160,25 @@ bool psnProcMgrFindProcess( psnProcMgr        * pManager,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psnProcMgrRemoveProcess( psnProcMgr        * pManager,
-                               psnProcess        * pProcess,
-                               psnSessionContext * pContext )
+bool psonProcMgrRemoveProcess( psonProcMgr        * pManager,
+                               psonProcess        * pProcess,
+                               psonSessionContext * pContext )
 {
    PSO_PRE_CONDITION( pManager != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pProcess != NULL );
    
    /* For recovery purposes, always lock before doing anything! */
-   if ( psnLock( &pManager->memObject, pContext ) ) {
-      psnLinkedListRemoveItem( &pManager->listOfProcesses, 
+   if ( psonLock( &pManager->memObject, pContext ) ) {
+      psonLinkedListRemoveItem( &pManager->listOfProcesses, 
                                 &pProcess->node );
    
-      psnProcessFini( pProcess, pContext );
+      psonProcessFini( pProcess, pContext );
                       
-      psnUnlock( &pManager->memObject, pContext );
+      psonUnlock( &pManager->memObject, pContext );
    }
    else {
-      pscSetError( &pContext->errorHandler, 
+      psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, 
                     PSO_ENGINE_BUSY );
       return false;

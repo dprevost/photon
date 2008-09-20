@@ -26,9 +26,9 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   pscErrorHandler errorHandler;
+   psocErrorHandler errorHandler;
    
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorHandler( &errorHandler );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

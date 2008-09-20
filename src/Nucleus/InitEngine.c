@@ -20,7 +20,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-PHOTON_ENGINE_EXPORT pscErrMsgHandle g_psoErrorHandle = PSC_NO_ERRHANDLER;
+PHOTON_ENGINE_EXPORT psocErrMsgHandle g_psoErrorHandle = PSOC_NO_ERRHANDLER;
 
 #if defined(WIN32)
 PHOTON_ENGINE_EXPORT const char * MYCPU = "i386";
@@ -30,14 +30,14 @@ PHOTON_ENGINE_EXPORT const char * MYCXX = "cl.exe";
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static int psnGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
+static int psonGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 {
    const char * theMsg;
 
    PSO_PRE_CONDITION( msg != NULL);
    PSO_PRE_CONDITION( msgLength > 0 );
 
-   theMsg = psn_ErrorMessage( errnum );
+   theMsg = pson_ErrorMessage( errnum );
    if ( theMsg == NULL ) return -1;
    if ( strlen(theMsg) >= msgLength ) return -1;
    
@@ -48,16 +48,16 @@ static int psnGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psnInitEngine()
+bool psonInitEngine()
 {
-   if ( g_psoErrorHandle == PSC_NO_ERRHANDLER ) {
-      if ( ! pscInitErrorDefs() ) {
-         fprintf( stderr, "Internal error in pscInitErrorDefs()\n" );
+   if ( g_psoErrorHandle == PSOC_NO_ERRHANDLER ) {
+      if ( ! psocInitErrorDefs() ) {
+         fprintf( stderr, "Internal error in psocInitErrorDefs()\n" );
       }
 
-      g_psoErrorHandle = pscAddErrorMsgHandler( "Photon", psnGetErrorMsg );
+      g_psoErrorHandle = psocAddErrorMsgHandler( "Photon", psonGetErrorMsg );
 
-      if ( g_psoErrorHandle == PSC_NO_ERRHANDLER ) {
+      if ( g_psoErrorHandle == PSOC_NO_ERRHANDLER ) {
          fprintf( stderr, "Error registring the error handler for VDS errors\n" );
          fprintf( stderr, "The problem might be a lack of memory\n" );
          return false;

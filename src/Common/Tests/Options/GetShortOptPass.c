@@ -28,10 +28,10 @@ int main()
    char dummyArgs[100];
    char *dummyPtrs[10];
    char *value = NULL;
-   pscOptionHandle handle;
+   psocOptionHandle handle;
    bool gotIt, ok;
    
-   struct pscOptStruct opts[5] = {
+   struct psocOptStruct opts[5] = {
       { '3', "three",   1, "", "repeat the loop three times" },
       { 'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog" },
       { 'x', "",        1, "DISPLAY", "X display to use" },
@@ -39,7 +39,7 @@ int main()
       { 'z', "zzz",     1, "", "go to sleep..." }
    };
    
-   ok = pscSetSupportedOptions( 5, opts, &handle );
+   ok = psocSetSupportedOptions( 5, opts, &handle );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -57,36 +57,36 @@ int main()
    dummyArgs[27] = 0;
    dummyArgs[30] = 0;
 
-   errcode = pscValidateUserOptions( handle, 5, dummyPtrs, 1 );
+   errcode = psocValidateUserOptions( handle, 5, dummyPtrs, 1 );
    if ( errcode != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* Option + value are present */
-   gotIt = pscGetShortOptArgument( handle, 'a', &value );
+   gotIt = psocGetShortOptArgument( handle, 'a', &value );
    if ( ! gotIt ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* Option is absent */
-   gotIt = pscGetShortOptArgument( handle, 'x', &value );
+   gotIt = psocGetShortOptArgument( handle, 'x', &value );
    if ( gotIt ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* Option is present but takes no value */
-   gotIt = pscGetShortOptArgument( handle, 'v', &value );
+   gotIt = psocGetShortOptArgument( handle, 'v', &value );
    if ( gotIt ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* Unknown option */
-   gotIt = pscGetShortOptArgument( handle, 't', &value );
+   gotIt = psocGetShortOptArgument( handle, 't', &value );
    if ( gotIt ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pscUnsetSupportedOptions( handle );
+   psocUnsetSupportedOptions( handle );
 
    return 0;
 }

@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSA_HASH_MAP_H
-#define PSA_HASH_MAP_H
+#ifndef PSOA_HASH_MAP_H
+#define PSOA_HASH_MAP_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -29,52 +29,52 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct psaHashMap
+typedef struct psoaHashMap
 {
-   psaCommonObject object;
+   psoaCommonObject object;
    
    /**
     * This struct holds both the result of the iteration (the pointer to
-    * the current psnHashItem) and the values needed to get the next item.
+    * the current psonHashItem) and the values needed to get the next item.
     */
-   psnHashMapItem iterator;
+   psonHashMapItem iterator;
 
    /** A pointer to the data definition of the queue. */
-   psnFieldDef * pDefinition;
+   psonFieldDef * pDefinition;
    
    size_t minLength;
    size_t maxLength;
    size_t minKeyLength;
    size_t maxKeyLength;
 
-} psaHashMap;
+} psoaHashMap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct psaHashMapEntry
+typedef struct psoaHashMapEntry
 {
    size_t keyLength;
    size_t dataLength;
    const void * key;
    const void * data;
 
-} psaHashMapEntry;
+} psoaHashMapEntry;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_API_EXPORT
-int psaHashMapFirst( psaHashMap      * pHashMap,
-                     psaHashMapEntry * pEntry );
+int psoaHashMapFirst( psoaHashMap      * pHashMap,
+                     psoaHashMapEntry * pEntry );
 
 PHOTON_API_EXPORT
-int psaHashMapNext( psaHashMap      * pHashMap,
-                    psaHashMapEntry * pEntry );
+int psoaHashMapNext( psoaHashMap      * pHashMap,
+                    psoaHashMapEntry * pEntry );
 
 PHOTON_API_EXPORT
-int psaHashMapRetrieve( psaHashMap   * pHashMap,
+int psoaHashMapRetrieve( psoaHashMap   * pHashMap,
                         const void   * key,
                         size_t         keyLength,
-                        psaDataEntry * pEntry );
+                        psoaDataEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -82,7 +82,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSA_HASH_MAP_H */
+#endif /* PSOA_HASH_MAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

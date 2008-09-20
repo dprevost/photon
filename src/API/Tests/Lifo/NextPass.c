@@ -30,7 +30,7 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * data1 = "My Data1";
    const char * data2 = "My Data2";
-   psaDataEntry entry;
+   psoaDataEntry entry;
    psoObjectDefinition defLilo = { 
       PSO_LIFO,
       1, 
@@ -100,13 +100,13 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaLifoFirst( objHandle, &entry );
+   errcode = psoaLifoFirst( objHandle, &entry );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaLifoNext( objHandle,
+   errcode = psoaLifoNext( objHandle,
                             &entry );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

@@ -93,7 +93,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaLifoFirst( objHandle, NULL );
+   errcode = psoaLifoFirst( objHandle, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

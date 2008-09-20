@@ -19,10 +19,10 @@
 #include "Common.h"
 
 /** 
- * Unique identifier for the pscInternalOpt struct. 
- * \ingroup pscOptions 
+ * Unique identifier for the psocInternalOpt struct. 
+ * \ingroup psocOptions 
  */
-#define PSC_OPTION_SIGNATURE ((unsigned int)0xd70e9ab8)
+#define PSOC_OPTION_SIGNATURE ((unsigned int)0xd70e9ab8)
 
 /** This struct augments the original struct used to describe the 
  *  supported options (by adding field that indicates where the
@@ -35,12 +35,12 @@
  *  A value of zero in the two location fields indicates that
  *  the option is absent (since argv[0] is reserved for the
  *  program name).
- * \ingroup pscOptions 
+ * \ingroup psocOptions 
  */
-struct pscOptArray
+struct psocOptArray
 {
    /** Local copy of the description of supported options. */
-   struct pscOptStruct opt;
+   struct psocOptStruct opt;
    /** Location of the option (if found) in the argv[] array. */
    int optionLocation;
    /** Location of the argument (if found) in the argv[] array. */
@@ -48,31 +48,31 @@ struct pscOptArray
    
 };
 
-typedef struct pscOptArray pscOptArray;
+typedef struct psocOptArray psocOptArray;
 
 /** 
  *  This struct is \b not used by the interface of this module but
  *  hidden away in the implementation (the code).
  *
  *  To be exact, a pointer to this struct is passed as an opaque handle,
- *  ::pscOptionHandle, throughout the interface. 
+ *  ::psocOptionHandle, throughout the interface. 
  *
  *  The struct itself contains all our "bookkeeping stuff".
- * \ingroup pscOptions 
+ * \ingroup psocOptions 
  */
-struct pscInternalOpt
+struct psocInternalOpt
 {
-   /** Set to PSC_OPTION_SIGNATURE at initialization. */
+   /** Set to PSOC_OPTION_SIGNATURE at initialization. */
    unsigned int initialized;
    
    /** Pointer to the allocated array. */
-   pscOptArray * pArray;
+   psocOptArray * pArray;
 
    /** Number of supported option (array size). */
    int numOpt;
 
    /**
-    * We keep a copy of the value of argv for pscGetLongOptArgument and 
+    * We keep a copy of the value of argv for psocGetLongOptArgument and 
     * similar to retrieve the argument from the proper argv[].
     */
    char ** argv;
@@ -83,7 +83,7 @@ struct pscInternalOpt
 
 };
 
-typedef struct pscInternalOpt pscInternalOpt;
+typedef struct psocInternalOpt psocInternalOpt;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -92,10 +92,10 @@ typedef struct pscInternalOpt pscInternalOpt;
  *
  * A snippet of code, showing how to use this function:
  * \code
- *   pscOptionHandle handle;
+ *   psocOptionHandle handle;
  *   bool ok;
  *
- *   struct pscOptStruct opts[5] = 
+ *   struct psocOptStruct opts[5] = 
  *      { '3', "three",   1, "", "repeat the loop three times",
  *        'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog",
  *        'x', "",        1, "DISPLAY", "X display to use",
@@ -103,11 +103,11 @@ typedef struct pscInternalOpt pscInternalOpt;
  *        'z', "zzz",     1, "", "go to sleep..."
  *      };
  *  
- *   ok = pscSetSupportedOptions( 5, opts, &handle );
+ *   ok = psocSetSupportedOptions( 5, opts, &handle );
  \endcode
 
  * \param[in] numOpts The number of supported options.
- * \param[in] opts    Array of pscOptStruct describing the supported 
+ * \param[in] opts    Array of psocOptStruct describing the supported 
  *                    options.
  * \param[out] pHandle A pointer to an opaque handle.
  *
@@ -118,16 +118,16 @@ typedef struct pscInternalOpt pscInternalOpt;
  * \pre \em opts cannot be NULL.
  * \pre \em pHandle cannot be NULL.
  * \pre Both long and short options cannot be both empty.
- * \pre All three strings in the pscOptStruct struct must be NULL terminated.
+ * \pre All three strings in the psocOptStruct struct must be NULL terminated.
  * \pre Options (both short and long) must be unique.
  */
-bool pscSetSupportedOptions( int               numOpts, 
-                             pscOptStruct    * opts,
-                             pscOptionHandle * pHandle )
+bool psocSetSupportedOptions( int                numOpts, 
+                              psocOptStruct    * opts,
+                              psocOptionHandle * pHandle )
 {
    int i, k;
    bool nullTerminatedString;
-   pscInternalOpt* optStruct;
+   psocInternalOpt* optStruct;
    
    /* There is no point in supporting all of this if the list
     * of available options is empty...
@@ -150,7 +150,7 @@ bool pscSetSupportedOptions( int               numOpts,
        * function in that test).
        */
       nullTerminatedString = false;
-      for ( k = 0; k < PSC_OPT_LONG_OPT_LENGTH; ++k ) {
+      for ( k = 0; k < PSOC_OPT_LONG_OPT_LENGTH; ++k ) {
          if ( opts[i].longOpt[k] == '\0' ) {
             nullTerminatedString = true;
             break;
@@ -159,7 +159,7 @@ bool pscSetSupportedOptions( int               numOpts,
       PSO_PRE_CONDITION( nullTerminatedString == true );
 
       nullTerminatedString = false;
-      for ( k = 0; k < PSC_OPT_ARGUMENT_MSG_LENGTH; ++k ) {
+      for ( k = 0; k < PSOC_OPT_ARGUMENT_MSG_LENGTH; ++k ) {
          if ( opts[i].argumentMessage[k] == '\0' ) {
             nullTerminatedString = true;
             break;
@@ -168,7 +168,7 @@ bool pscSetSupportedOptions( int               numOpts,
       PSO_PRE_CONDITION( nullTerminatedString == true );
 
       nullTerminatedString = false;
-      for ( k = 0; k < PSC_OPT_COMMENT_LENGTH; ++k ) {
+      for ( k = 0; k < PSOC_OPT_COMMENT_LENGTH; ++k ) {
          if ( opts[i].comment[k] == '\0' ) {
             nullTerminatedString = true;
             break;
@@ -191,27 +191,27 @@ bool pscSetSupportedOptions( int               numOpts,
 
    } /* end of loop for preconditions */
    
-   optStruct = (pscInternalOpt *)malloc( sizeof(pscInternalOpt) );
+   optStruct = (psocInternalOpt *)malloc( sizeof(psocInternalOpt) );
    if ( optStruct == NULL ) return false;
    
-   optStruct->pArray = (pscOptArray *)malloc(numOpts*sizeof(pscOptArray));
+   optStruct->pArray = (psocOptArray *)malloc(numOpts*sizeof(psocOptArray));
    if ( optStruct->pArray == NULL ) {
       free( optStruct );
       return false;
    }
 
-   memset( optStruct->pArray, 0, numOpts*sizeof(pscOptArray) );
+   memset( optStruct->pArray, 0, numOpts*sizeof(psocOptArray) );
    optStruct->numOpt = numOpts;
    optStruct->argv = NULL;
    optStruct->validated = 0;
    
    for ( i = 0; i < numOpts; ++i ) {
-      memcpy( &optStruct->pArray[i].opt, &opts[i], sizeof(pscOptStruct) );
+      memcpy( &optStruct->pArray[i].opt, &opts[i], sizeof(psocOptStruct) );
    }
    
    *pHandle = (void*) optStruct;
 
-   optStruct->initialized = PSC_OPTION_SIGNATURE;
+   optStruct->initialized = PSOC_OPTION_SIGNATURE;
    
    return true;
 }
@@ -229,7 +229,7 @@ bool pscSetSupportedOptions( int               numOpts,
  * If the test fails it will print info on the error (on stderr) if 
  * printError is set to 1.
  *
- * \param[in] handle Opaque handle to a pscOptArray struct.
+ * \param[in] handle Opaque handle to a psocOptArray struct.
  * \param[in] argc   Size of the array argv[]
  * \param[in] argv   Array of arguments passed in to the program.
  * \param[in] printError A flag. If true, it will print error messages on
@@ -244,19 +244,19 @@ bool pscSetSupportedOptions( int               numOpts,
  * \pre \em argv (and all the member of the array) cannot be NULL.
  *
  * \invariant \em optStruct->initialized must equal 
- *                ::PSC_OPTION_SIGNATURE.
+ *                ::PSOC_OPTION_SIGNATURE.
  */
-int pscValidateUserOptions( pscOptionHandle   handle,
-                            int               argc, 
-                            char            * argv[], 
-                            int               printError )
+int psocValidateUserOptions( psocOptionHandle   handle,
+                             int                argc, 
+                             char             * argv[], 
+                             int                printError )
 {
    int i = 1, j, returnCode = 0, found;
    size_t len;
-   pscInternalOpt* optStruct = (pscInternalOpt*)handle;
+   psocInternalOpt* optStruct = (psocInternalOpt*)handle;
    
    PSO_PRE_CONDITION( handle != NULL );
-   PSO_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
+   PSO_INV_CONDITION( optStruct->initialized == PSOC_OPTION_SIGNATURE );
    
    PSO_PRE_CONDITION( argc > 0 );
    PSO_PRE_CONDITION( argv != NULL );
@@ -282,7 +282,7 @@ int pscValidateUserOptions( pscOptionHandle   handle,
           * and we want to make sure there are no buffer overflow).
           */
          
-         for ( j = 1, len = 0; j < PSC_OPT_LONG_OPT_LENGTH; ++j ) {
+         for ( j = 1, len = 0; j < PSOC_OPT_LONG_OPT_LENGTH; ++j ) {
             if ( argv[i][j] == '\0' ) {
                len = j;
                break;
@@ -479,7 +479,7 @@ int pscValidateUserOptions( pscOptionHandle   handle,
  * was done in order to simplify the code. Otherwise the code would 
  * have required multiple additional checks.
  *
- * \param[in] handle Opaque handle to a pscOptArray struct.
+ * \param[in] handle Opaque handle to a psocOptArray struct.
  * \param[in] opt    The short option.
  * \param[out] argument The argument associated with this short option, if any.
  *
@@ -493,19 +493,19 @@ int pscValidateUserOptions( pscOptionHandle   handle,
  * \pre \em argument cannot be NULL.
  *
  * \invariant \em optStruct->initialized must equal 
- *                ::PSC_OPTION_SIGNATURE.
+ *                ::PSOC_OPTION_SIGNATURE.
  * \invariant \em optStruct->pArray cannot be NULL.
  * \invariant \em optStruct->numOpt must be positive.
  */
-bool pscGetShortOptArgument( pscOptionHandle    handle,
-                             const char         opt, 
-                             char            ** argument )
+bool psocGetShortOptArgument( psocOptionHandle    handle,
+                              const char          opt, 
+                              char             ** argument )
 {
-   pscInternalOpt * optStruct = (pscInternalOpt *)handle;
+   psocInternalOpt * optStruct = (psocInternalOpt *)handle;
    int i;
    
    PSO_PRE_CONDITION( handle != NULL );
-   PSO_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
+   PSO_INV_CONDITION( optStruct->initialized == PSOC_OPTION_SIGNATURE );
 
    PSO_INV_CONDITION( optStruct->pArray != NULL );
    PSO_INV_CONDITION( optStruct->numOpt > 0 );
@@ -539,7 +539,7 @@ bool pscGetShortOptArgument( pscOptionHandle    handle,
  * was done in order to simplify the code. Otherwise the code would 
  * have required multiple additional checks.
  *
- * \param[in] handle Opaque handle to a pscOptArray struct.
+ * \param[in] handle Opaque handle to a psocOptArray struct.
  * \param[in] opt    The long option.
  * \param[out] argument The argument associated with this long option, if any.
  *
@@ -554,20 +554,20 @@ bool pscGetShortOptArgument( pscOptionHandle    handle,
  * \pre \em argument cannot be NULL.
  *
  * \invariant \em optStruct->initialized must equal 
- *                ::PSC_OPTION_SIGNATURE.
+ *                ::PSOC_OPTION_SIGNATURE.
  * \invariant \em optStruct->pArray cannot be NULL.
  * \invariant \em optStruct->numOpt must be positive.
  */
-bool pscGetLongOptArgument( pscOptionHandle    handle,
-                            const char*        opt, 
-                            char            ** argument )
+bool psocGetLongOptArgument( psocOptionHandle    handle,
+                             const char*         opt, 
+                             char             ** argument )
 {
-   pscInternalOpt * optStruct = (pscInternalOpt *)handle;
+   psocInternalOpt * optStruct = (psocInternalOpt *)handle;
    int i;
    bool nullTerminatedString;
    
    PSO_PRE_CONDITION( handle != NULL );
-   PSO_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
+   PSO_INV_CONDITION( optStruct->initialized == PSOC_OPTION_SIGNATURE );
 
    PSO_INV_CONDITION( optStruct->pArray != NULL );
    PSO_INV_CONDITION( optStruct->numOpt > 0 );
@@ -580,7 +580,7 @@ bool pscGetLongOptArgument( pscOptionHandle    handle,
 
    /* Make sure we were passed a null-terminated string */
    nullTerminatedString = false;
-   for ( i = 0; i < PSC_OPT_LONG_OPT_LENGTH; ++i ) {
+   for ( i = 0; i < PSOC_OPT_LONG_OPT_LENGTH; ++i ) {
       if ( opt[i] == '\0' ) {
          nullTerminatedString = true;
          break;
@@ -612,7 +612,7 @@ bool pscGetLongOptArgument( pscOptionHandle    handle,
  * was done in order to simplify the code. Otherwise the code would 
  * have required multiple additional checks.
  *
- * \param[in] handle Opaque handle to a pscOptArray struct.
+ * \param[in] handle Opaque handle to a psocOptArray struct.
  * \param[in] opt    The long option.
  *
  * \retval false  If the option was not found.
@@ -623,18 +623,18 @@ bool pscGetLongOptArgument( pscOptionHandle    handle,
  * \pre \em handle cannot be NULL.
  *
  * \invariant \em optStruct->initialized must equal 
- *                ::PSC_OPTION_SIGNATURE.
+ *                ::PSOC_OPTION_SIGNATURE.
  * \invariant \em optStruct->pArray cannot be NULL.
  * \invariant \em optStruct->numOpt must be positive.
  */
-bool pscIsShortOptPresent( pscOptionHandle handle,
-                           const char      opt )
+bool psocIsShortOptPresent( psocOptionHandle handle,
+                            const char       opt )
 {
-   pscInternalOpt * optStruct = (pscInternalOpt *)handle;
+   psocInternalOpt * optStruct = (psocInternalOpt *)handle;
    int i;
    
    PSO_PRE_CONDITION( handle != NULL );
-   PSO_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
+   PSO_INV_CONDITION( optStruct->initialized == PSOC_OPTION_SIGNATURE );
 
    PSO_INV_CONDITION( optStruct->pArray != NULL );
    PSO_INV_CONDITION( optStruct->numOpt > 0 );
@@ -664,7 +664,7 @@ bool pscIsShortOptPresent( pscOptionHandle handle,
  * was done in order to simplify the code. Otherwise the code would 
  * have required multiple additional checks.
  *
- * \param[in] handle Opaque handle to a pscOptArray struct.
+ * \param[in] handle Opaque handle to a psocOptArray struct.
  * \param[in] opt    The long option.
  *
  * \retval false  If the option was not found.
@@ -676,19 +676,19 @@ bool pscIsShortOptPresent( pscOptionHandle handle,
  * \pre \em opt cannot be NULL.
  *
  * \invariant \em optStruct->initialized must equal 
- *                ::PSC_OPTION_SIGNATURE.
+ *                ::PSOC_OPTION_SIGNATURE.
  * \invariant \em optStruct->pArray cannot be NULL.
  * \invariant \em optStruct->numOpt must be positive.
  */
-bool pscIsLongOptPresent( pscOptionHandle   handle,
-                          const char      * opt )
+bool psocIsLongOptPresent( psocOptionHandle   handle,
+                           const char       * opt )
 {
-   pscInternalOpt * optStruct = (pscInternalOpt *)handle;
+   psocInternalOpt * optStruct = (psocInternalOpt *)handle;
    int i;
    bool nullTerminatedString;
    
    PSO_PRE_CONDITION( handle != NULL );
-   PSO_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
+   PSO_INV_CONDITION( optStruct->initialized == PSOC_OPTION_SIGNATURE );
 
    PSO_INV_CONDITION( optStruct->pArray != NULL );
    PSO_INV_CONDITION( optStruct->numOpt > 0 );
@@ -699,7 +699,7 @@ bool pscIsLongOptPresent( pscOptionHandle   handle,
 
    /* Make sure we were passed a null-terminated string */
    nullTerminatedString = false;
-   for ( i = 0; i < PSC_OPT_LONG_OPT_LENGTH; ++i ) {
+   for ( i = 0; i < PSOC_OPT_LONG_OPT_LENGTH; ++i ) {
       if ( opt[i] == '\0' ) {
          nullTerminatedString = true;
          break;
@@ -724,7 +724,7 @@ bool pscIsLongOptPresent( pscOptionHandle   handle,
 /*!
  * The output of this function is sent to stderr.
  *
- * \param[in] handle Opaque handle to a pscOptArray struct.
+ * \param[in] handle Opaque handle to a psocOptArray struct.
  * \param[in] progName The name of the calling program (which might 
  *                     differ from argv[0], for example if the program 
  *                     was called using the full path).
@@ -736,24 +736,24 @@ bool pscIsLongOptPresent( pscOptionHandle   handle,
  * \pre \em addArguments cannot be NULL.
  *
  * \invariant \em optStruct->initialized must equal 
- *                ::PSC_OPTION_SIGNATURE.
+ *                ::PSOC_OPTION_SIGNATURE.
  * \invariant \em optStruct->pArray cannot be NULL.
  * \invariant \em optStruct->numOpt must be positive.
  *
  */
 
-void pscShowUsage( pscOptionHandle   handle,
-                   char            * progName,
-                   char            * addArguments )
+void psocShowUsage( psocOptionHandle   handle,
+                    char             * progName,
+                    char             * addArguments )
 {
    int i, len, max_len;
-   char longOpt[PSC_OPT_LONG_OPT_LENGTH+PSC_OPT_ARGUMENT_MSG_LENGTH+3];
+   char longOpt[PSOC_OPT_LONG_OPT_LENGTH+PSOC_OPT_ARGUMENT_MSG_LENGTH+3];
    char shortOpt[3], openBracket, closeBracket;
-   char comment[PSC_OPT_COMMENT_LENGTH];
-   pscInternalOpt * optStruct = (pscInternalOpt *)handle;
+   char comment[PSOC_OPT_COMMENT_LENGTH];
+   psocInternalOpt * optStruct = (psocInternalOpt *)handle;
    
    PSO_PRE_CONDITION( handle != NULL );
-   PSO_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
+   PSO_INV_CONDITION( optStruct->initialized == PSOC_OPTION_SIGNATURE );
    PSO_INV_CONDITION( optStruct->pArray != NULL );
    PSO_INV_CONDITION( optStruct->numOpt > 0 );
    PSO_PRE_CONDITION( progName     != NULL );
@@ -778,8 +778,8 @@ void pscShowUsage( pscOptionHandle   handle,
    for ( i = 0; i < optStruct->numOpt; ++i ) {
       memset( shortOpt, 0, 3 );
       memset( longOpt, 0, 
-              PSC_OPT_LONG_OPT_LENGTH+PSC_OPT_ARGUMENT_MSG_LENGTH+3 );
-      memset( comment, 0, PSC_OPT_COMMENT_LENGTH );
+              PSOC_OPT_LONG_OPT_LENGTH+PSOC_OPT_ARGUMENT_MSG_LENGTH+3 );
+      memset( comment, 0, PSOC_OPT_COMMENT_LENGTH );
       openBracket = closeBracket = ' ';
       
       if ( optStruct->pArray[i].opt.isOptionel ) {
@@ -820,19 +820,19 @@ void pscShowUsage( pscOptionHandle   handle,
  * Unset the internal arrays of all supported options (and free
  * the allocated memory, if needed).
  */
-void pscUnsetSupportedOptions( pscOptionHandle handle )
+void psocUnsetSupportedOptions( psocOptionHandle handle )
 {
-   pscInternalOpt * optStruct = (pscInternalOpt *)handle;
+   psocInternalOpt * optStruct = (psocInternalOpt *)handle;
 
    PSO_PRE_CONDITION( handle != NULL );
-   PSO_INV_CONDITION( optStruct->initialized == PSC_OPTION_SIGNATURE );
+   PSO_INV_CONDITION( optStruct->initialized == PSOC_OPTION_SIGNATURE );
 
    if ( optStruct->pArray != NULL ) free( optStruct->pArray );
    
    /* We zero the struct, just in case someone tries to reuse
     * the handle (and somehow the preconditions do not catch it).
     */
-   memset( optStruct, 0, sizeof(pscInternalOpt) );
+   memset( optStruct, 0, sizeof(psocInternalOpt) );
    
    free( optStruct );
 }

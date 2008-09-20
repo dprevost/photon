@@ -46,7 +46,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = psaCloseSession( (psaSession *) sessionHandle );
+   errcode = psoaCloseSession( (psoaSession *) sessionHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

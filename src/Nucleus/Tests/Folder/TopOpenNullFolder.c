@@ -24,10 +24,10 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnFolder * pTopFolder;
-   psnSessionContext context;
+   psonFolder * pTopFolder;
+   psonSessionContext context;
    bool ok;
-   psnFolderItem folderItem;
+   psonFolderItem folderItem;
    psoObjectDefinition def = { 
       PSO_FOLDER, 
       0, 
@@ -37,7 +37,7 @@ int main()
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psnTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateObject( pTopFolder,
                                    "Test1",
                                    strlen("Test1"),
                                    &def,
@@ -46,7 +46,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateObject( pTopFolder,
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &def,
@@ -55,7 +55,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnTopFolderOpenObject( NULL,
+   ok = psonTopFolderOpenObject( NULL,
                                  "Test1/Test2",
                                  strlen("Test1/Test2"),
                                  PSO_FOLDER,

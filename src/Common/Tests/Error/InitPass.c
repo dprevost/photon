@@ -25,26 +25,26 @@ const bool expectedToPass = true;
 
 int main()
 {
-   pscErrorHandler errorHandler;
+   psocErrorHandler errorHandler;
    int i;
    
-   pscInitErrorDefs();
-   pscInitErrorHandler( &errorHandler );   
+   psocInitErrorDefs();
+   psocInitErrorHandler( &errorHandler );   
    
-   for ( i = 0; i < PSC_ERROR_CHAIN_LENGTH; ++i ) {
+   for ( i = 0; i < PSOC_ERROR_CHAIN_LENGTH; ++i ) {
       if ( errorHandler.errorCode[0]   != 0 ) {
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
-      if ( errorHandler.errorHandle[0] != PSC_NO_ERRHANDLER ) {
+      if ( errorHandler.errorHandle[0] != PSOC_NO_ERRHANDLER ) {
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
    }
-   if ( errorHandler.initialized != PSC_ERROR_HANDLER_SIGNATURE ) {
+   if ( errorHandler.initialized != PSOC_ERROR_HANDLER_SIGNATURE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pscFiniErrorHandler( &errorHandler );
-   pscFiniErrorDefs();
+   psocFiniErrorHandler( &errorHandler );
+   psocFiniErrorDefs();
 
    return 0;
 }

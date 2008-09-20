@@ -74,11 +74,11 @@ typedef struct psotThreadWrap
 int psotCreateThread( psotThreadWrap*      pThread, 
                       VDST_THREAD_FUNCTION startRoutine,
                       void*                arg,
-                      pscErrorHandler*    pError );
+                      psocErrorHandler*    pError );
 
 int psotJoinThread( psotThreadWrap*   pThread, 
 //                    void*             retValue,
-                    pscErrorHandler* pError);
+                    psocErrorHandler* pError);
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

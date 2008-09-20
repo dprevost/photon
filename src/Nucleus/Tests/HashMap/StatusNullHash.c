@@ -24,10 +24,10 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnHashMap * pHashMap;
-   psnSessionContext context;
+   psonHashMap * pHashMap;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus txStatus;
+   psonTxStatus txStatus;
    char * key  = "my key";
    char * data = "my data";
    psoObjStatus status;
@@ -40,16 +40,16 @@ int main()
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   psnTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnHashMapInit( pHashMap, 
+   ok = psonHashMapInit( pHashMap, 
                          0, 1, 0, &txStatus, 4, 
                          "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            (const void *) key,
                            6,
                            (const void *) data,
@@ -59,7 +59,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnHashMapStatus( NULL, &status );
+   psonHashMapStatus( NULL, &status );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_TX_STATUS_H
-#define PSN_TX_STATUS_H
+#ifndef PSON_TX_STATUS_H
+#define PSON_TX_STATUS_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -31,38 +31,38 @@ BEGIN_C_DECLS
 /* An object is marked as destroyed as soon as the API call to destroy 
  * it is processed. Once it is marked as destroyed, you can't open it
  * but any sessions using can still continue to use it, without problems.
- * If the call is rollback, the flag PSN_MARKED_AS_DESTROYED is removed.
- * However, if committed, the flag PSN_REMOVE_IS_COMMITTED is set and the last 
+ * If the call is rollback, the flag PSON_MARKED_AS_DESTROYED is removed.
+ * However, if committed, the flag PSON_REMOVE_IS_COMMITTED is set and the last 
  * session which access the object (in any form, either a simple close
  * or a rollback or commit ops on the data of the object) will removed it.
  */
 
-#define PSN_TXS_OK                   0x00
-#define PSN_TXS_DESTROYED            0x01
-#define PSN_TXS_ADDED                0x02
-#define PSN_TXS_EDIT                 0x04
-#define PSN_TXS_REPLACED             0x08
-#define PSN_TXS_DESTROYED_COMMITTED  0x10
-#define PSN_TXS_EDIT_COMMITTED       0x20
+#define PSON_TXS_OK                   0x00
+#define PSON_TXS_DESTROYED            0x01
+#define PSON_TXS_ADDED                0x02
+#define PSON_TXS_EDIT                 0x04
+#define PSON_TXS_REPLACED             0x08
+#define PSON_TXS_DESTROYED_COMMITTED  0x10
+#define PSON_TXS_EDIT_COMMITTED       0x20
 
 #if 0
-enum psnTxStatusEnum
+enum psonTxStatusEnum
 {
-   PSN_TXS_OK = 0,
-   PSN_TXS_DESTROYED,
-   PSN_TXS_ADDED,
-   PSN_TXS_EDIT,
-   PSN_TXS_REPLACED, /* When a data item is replaced */
-   PSN_TXS_DESTROYED_COMMITTED,
+   PSON_TXS_OK = 0,
+   PSON_TXS_DESTROYED,
+   PSON_TXS_ADDED,
+   PSON_TXS_EDIT,
+   PSON_TXS_REPLACED, /* When a data item is replaced */
+   PSON_TXS_DESTROYED_COMMITTED,
    /* When a new version of an object is committed */
-   PSN_TXS_VERSION_REPLACED 
+   PSON_TXS_VERSION_REPLACED 
 };
-typedef enum psnTxStatusEnum psnTxStatusEnum;
+typedef enum psonTxStatusEnum psonTxStatusEnum;
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psnTxStatus
+struct psonTxStatus
 {
    /** The offset of the current transaction */
    ptrdiff_t txOffset;
@@ -71,8 +71,8 @@ struct psnTxStatus
     * An object is marked as destroyed as soon as the API call to destroy 
     * it is processed. Once it is marked as destroyed, you can't open it
     * but any sessions using it can still continue to use it, without problems.
-    * If the call is rollback, the flag PSN_TXS_DESTROYED is removed.
-    * However, if committed, the flag PSN_TXS_DESTROYED_COMMITTED is set and the 
+    * If the call is rollback, the flag PSON_TXS_DESTROYED is removed.
+    * However, if committed, the flag PSON_TXS_DESTROYED_COMMITTED is set and the 
     * last session which access the object (in any form, either a simple close
     * or a rollback or commit ops on the data of the object) will removed it.
     */
@@ -100,51 +100,51 @@ struct psnTxStatus
 
 };
 
-typedef struct psnTxStatus psnTxStatus;
+typedef struct psonTxStatus psonTxStatus;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psnTxStatusCommitEdit( psnTxStatus * pOldStatus, 
-                             psnTxStatus * pNewStatus )
+void psonTxStatusCommitEdit( psonTxStatus * pOldStatus, 
+                             psonTxStatus * pNewStatus )
 {
    PSO_PRE_CONDITION( pOldStatus != NULL );
    PSO_PRE_CONDITION( pNewStatus != NULL );
-   PSO_PRE_CONDITION( pNewStatus->txOffset != PSN_NULL_OFFSET );
-   PSO_PRE_CONDITION( pNewStatus->status & PSN_TXS_EDIT );
+   PSO_PRE_CONDITION( pNewStatus->txOffset != PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( pNewStatus->status & PSON_TXS_EDIT );
 
    /* Remove the EDIT bit */
-   pNewStatus->status = pOldStatus->status & (uint32_t )(~PSN_TXS_EDIT);
+   pNewStatus->status = pOldStatus->status & (uint32_t )(~PSON_TXS_EDIT);
 
-   pOldStatus->status |= PSN_TXS_EDIT_COMMITTED;
+   pOldStatus->status |= PSON_TXS_EDIT_COMMITTED;
 
-   pNewStatus->txOffset = PSN_NULL_OFFSET;
+   pNewStatus->txOffset = PSON_NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psnTxStatusRollbackEdit( psnTxStatus * pOldStatus )
+void psonTxStatusRollbackEdit( psonTxStatus * pOldStatus )
 {
    PSO_PRE_CONDITION( pOldStatus != NULL );
 
    /* Remove the EDIT bit */
-   pOldStatus->status &= (uint32_t )(~PSN_TXS_EDIT);
+   pOldStatus->status &= (uint32_t )(~PSON_TXS_EDIT);
 
    if ( pOldStatus->status == 0 ) {
-      pOldStatus->txOffset = PSN_NULL_OFFSET;
+      pOldStatus->txOffset = PSON_NULL_OFFSET;
    }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void psnTxStatusInit( psnTxStatus * pStatus, ptrdiff_t txOffset )
+void psonTxStatusInit( psonTxStatus * pStatus, ptrdiff_t txOffset )
 {
    PSO_PRE_CONDITION( pStatus != NULL );
    
    pStatus->txOffset = txOffset;
-   pStatus->status = PSN_TXS_OK;
+   pStatus->status = PSON_TXS_OK;
    pStatus->usageCounter = 0;
    pStatus->parentCounter = 0;
 }
@@ -152,7 +152,7 @@ void psnTxStatusInit( psnTxStatus * pStatus, ptrdiff_t txOffset )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psnTxStatusSetTx( psnTxStatus * pStatus, ptrdiff_t txOffset )
+void psonTxStatusSetTx( psonTxStatus * pStatus, ptrdiff_t txOffset )
 {
    PSO_PRE_CONDITION( pStatus != NULL );
 
@@ -162,24 +162,24 @@ void psnTxStatusSetTx( psnTxStatus * pStatus, ptrdiff_t txOffset )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void psnTxStatusFini( psnTxStatus * pStatus )
+void psonTxStatusFini( psonTxStatus * pStatus )
 {
    PSO_PRE_CONDITION( pStatus != NULL );
-   PSO_PRE_CONDITION( pStatus->status == PSN_TXS_OK );
+   PSO_PRE_CONDITION( pStatus->status == PSON_TXS_OK );
    PSO_PRE_CONDITION( pStatus->usageCounter == 0 );
 
-   pStatus->txOffset = PSN_NULL_OFFSET;
+   pStatus->txOffset = PSON_NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool psnTxStatusIsValid( psnTxStatus * pStatus, ptrdiff_t txOffset )
+bool psonTxStatusIsValid( psonTxStatus * pStatus, ptrdiff_t txOffset )
 {
    PSO_PRE_CONDITION( pStatus  != NULL );
-   PSO_PRE_CONDITION( txOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( txOffset != PSON_NULL_OFFSET );
 
-   if ( pStatus->txOffset == PSN_NULL_OFFSET ) return true;
+   if ( pStatus->txOffset == PSON_NULL_OFFSET ) return true;
    if ( pStatus->txOffset == txOffset ) return true;
 
    return false;
@@ -188,88 +188,88 @@ bool psnTxStatusIsValid( psnTxStatus * pStatus, ptrdiff_t txOffset )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psnTxStatusClearTx( psnTxStatus * pStatus )
+void psonTxStatusClearTx( psonTxStatus * pStatus )
 {
    PSO_PRE_CONDITION( pStatus != NULL );
-   PSO_PRE_CONDITION( pStatus->txOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pStatus->txOffset != PSON_NULL_OFFSET );
 
-   pStatus->txOffset = PSN_NULL_OFFSET;
-   pStatus->status = PSN_TXS_OK;
+   pStatus->txOffset = PSON_NULL_OFFSET;
+   pStatus->status = PSON_TXS_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
    
 static inline
-bool psnTxStatusIsMarkedAsDestroyed( psnTxStatus * pStatus )
+bool psonTxStatusIsMarkedAsDestroyed( psonTxStatus * pStatus )
 {
    PSO_PRE_CONDITION( pStatus != NULL );
 
-   return (pStatus->status & PSN_TXS_DESTROYED);
+   return (pStatus->status & PSON_TXS_DESTROYED);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool psnTxStatusIsRemoveCommitted( psnTxStatus * pStatus )
+bool psonTxStatusIsRemoveCommitted( psonTxStatus * pStatus )
 {
    PSO_PRE_CONDITION( pStatus != NULL );
 
-   return (pStatus->status & PSN_TXS_DESTROYED_COMMITTED);
+   return (pStatus->status & PSON_TXS_DESTROYED_COMMITTED);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psnTxStatusMarkAsDestroyed( psnTxStatus * pStatus )
+void psonTxStatusMarkAsDestroyed( psonTxStatus * pStatus )
 {
    PSO_PRE_CONDITION( pStatus != NULL );
 
-   pStatus->status |= PSN_TXS_DESTROYED;
+   pStatus->status |= PSON_TXS_DESTROYED;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psnTxStatusCommitRemove( psnTxStatus * pStatus )
+void psonTxStatusCommitRemove( psonTxStatus * pStatus )
 {
    PSO_PRE_CONDITION( pStatus != NULL );
-   PSO_PRE_CONDITION( pStatus->txOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pStatus->txOffset != PSON_NULL_OFFSET );
    /* Note - do not add this:
-    *    PSO_PRE_CONDITION( pStatus->status & PSN_TXS_DESTROYED );
+    *    PSO_PRE_CONDITION( pStatus->status & PSON_TXS_DESTROYED );
     *
     * This call can be reached using either a commit on a "remove" or a
     * rollback on a "add". Maybe I should fix this...
     */
 
-   pStatus->status = PSN_TXS_DESTROYED_COMMITTED;
+   pStatus->status = PSON_TXS_DESTROYED_COMMITTED;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psnTxStatusUnmarkAsDestroyed( psnTxStatus * pStatus )
+void psonTxStatusUnmarkAsDestroyed( psonTxStatus * pStatus )
 {
    PSO_PRE_CONDITION( pStatus != NULL );
-   PSO_PRE_CONDITION( pStatus->txOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pStatus->txOffset != PSON_NULL_OFFSET );
 
-   pStatus->status &= (uint32_t )(~PSN_TXS_DESTROYED);
+   pStatus->status &= (uint32_t )(~PSON_TXS_DESTROYED);
    /* 
     * This function will be called by a rollback. We clear the transaction
     * itself (if not used obviously). But not the counter (which might be 
     * greater than one if some other session had access to the data before 
     * the data was marked as removed).
     */
-   if ( pStatus->status == PSN_TXS_OK ) pStatus->txOffset = PSN_NULL_OFFSET;
+   if ( pStatus->status == PSON_TXS_OK ) pStatus->txOffset = PSON_NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool psnTxStatusSelfTest( psnTxStatus * pStatus )
+bool psonTxStatusSelfTest( psonTxStatus * pStatus )
 {
    PSO_PRE_CONDITION( pStatus != NULL );
 
-   if ( pStatus->txOffset != PSN_NULL_OFFSET ) return false;
+   if ( pStatus->txOffset != PSON_NULL_OFFSET ) return false;
 
    return true;
 }
@@ -277,10 +277,10 @@ bool psnTxStatusSelfTest( psnTxStatus * pStatus )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-psoErrors psnTxTestObjectStatus( psnTxStatus * pStatus, ptrdiff_t txOffset )
+psoErrors psonTxTestObjectStatus( psonTxStatus * pStatus, ptrdiff_t txOffset )
 {
    PSO_PRE_CONDITION( pStatus != NULL );
-   PSO_PRE_CONDITION( txOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( txOffset != PSON_NULL_OFFSET );
 
    /* 
     * If the transaction id of the object is equal to the 
@@ -292,14 +292,14 @@ psoErrors psnTxTestObjectStatus( psnTxStatus * pStatus, ptrdiff_t txOffset )
     * If the object is flagged as deleted and committed, it does not exists
     * from the API point of view.
     */
-   if ( pStatus->txOffset != PSN_NULL_OFFSET ) {
-      if ( pStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
+   if ( pStatus->txOffset != PSON_NULL_OFFSET ) {
+      if ( pStatus->status & PSON_TXS_DESTROYED_COMMITTED ) {
          return PSO_NO_SUCH_OBJECT;
       }
-      if ( pStatus->txOffset == txOffset && pStatus->status & PSN_TXS_DESTROYED ) {
+      if ( pStatus->txOffset == txOffset && pStatus->status & PSON_TXS_DESTROYED ) {
          return PSO_OBJECT_IS_DELETED;
       }
-      if ( pStatus->txOffset != txOffset && pStatus->status & PSN_TXS_ADDED ) {
+      if ( pStatus->txOffset != txOffset && pStatus->status & PSON_TXS_ADDED ) {
          return PSO_OBJECT_IS_IN_USE;
       }
    }
@@ -313,7 +313,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_TX_STATUS_H */
+#endif /* PSON_TX_STATUS_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -16,8 +16,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSW_MEMORY_MANAGER_H
-#define VDSW_MEMORY_MANAGER_H
+#ifndef PSOQ_MEMORY_MANAGER_H
+#define PSOQ_MEMORY_MANAGER_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -30,55 +30,55 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct vdswMemoryManager
+struct psoqMemoryManager
 {
-   pscMemoryFile memory;
+   psocMemoryFile memory;
 
    size_t memorySizeKB;
    
    void * pMemoryAddress;
 
-   psnMemoryHeader * pHeader;
+   psonMemoryHeader * pHeader;
    
 };
 
-typedef struct vdswMemoryManager vdswMemoryManager;
+typedef struct psoqMemoryManager psoqMemoryManager;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswMemoryManagerInit( vdswMemoryManager * pManager );
+void psoqMemoryManagerInit( psoqMemoryManager * pManager );
 
-void vdswMemoryManagerFini( vdswMemoryManager * pManager );
+void psoqMemoryManagerFini( psoqMemoryManager * pManager );
    
 /** This function creates the shared memory. */
-bool vdswCreateVDS( vdswMemoryManager  * pManager,
+bool psoqCreateVDS( psoqMemoryManager  * pManager,
                     const char         * memoryFileName,
                     size_t               memorySize,
                     int                  filePerms,
-                    psnMemoryHeader  ** ppMemoryAddress,
-                    psnSessionContext * pContext );
+                    psonMemoryHeader  ** ppMemoryAddress,
+                    psonSessionContext * pContext );
 
 /**
  * This function opens an existing VDS. This is the function that should
  * be used when the shared memory already exist.
  */
-bool vdswOpenVDS( vdswMemoryManager  * pManager, 
+bool psoqOpenVDS( psoqMemoryManager  * pManager, 
                   const char         * memoryFileName,
                   size_t               memorySize,
-                  psnMemoryHeader  ** ppMemoryAddress,
-                  psnSessionContext * pContext );
+                  psonMemoryHeader  ** ppMemoryAddress,
+                  psonSessionContext * pContext );
 
-void vdswCloseVDS( vdswMemoryManager * pManager,
-                   pscErrorHandler  * pError );
+void psoqCloseVDS( psoqMemoryManager * pManager,
+                   psocErrorHandler  * pError );
 
 #if 0
 
 /* ::msync() is called with the MS_SYNC flag by default */
 static inline
-bool vdswSyncVDS( vdswMemoryManager * pManager,
-                  pscErrorHandler  * pError ) 
+bool psoqSyncVDS( psoqMemoryManager * pManager,
+                  psocErrorHandler  * pError ) 
 {
-   return pscSyncMemFile( &pManager->memory, pError );
+   return psocSyncMemFile( &pManager->memory, pError );
 }
 
 #endif
@@ -87,7 +87,7 @@ bool vdswSyncVDS( vdswMemoryManager * pManager,
 
 END_C_DECLS
 
-#endif /* PSN_MEMORY_MANAGER_H */
+#endif /* PSON_MEMORY_MANAGER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

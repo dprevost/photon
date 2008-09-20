@@ -21,7 +21,7 @@
  * 
  * \param[in] pBarrier A pointer to the psotBarrier struct itself.
  * \param[in] numThreads The number of threads to synchronize.
- * \param[in] pError     A pointer to a pscErrorHandler struct
+ * \param[in] pError     A pointer to a psocErrorHandler struct
  *
  * \retval  0 on success
  * \retval -1 on error (use pError to retrieve the error)
@@ -33,7 +33,7 @@
  */
 int psotInitBarrier( psotBarrier     * pBarrier, 
                      int               numThreads,
-                     pscErrorHandler * pError )
+                     psocErrorHandler * pError )
 {
 #if defined (WIN32)
    BOOL status;
@@ -95,16 +95,16 @@ int psotInitBarrier( psotBarrier     * pBarrier,
 end_on_error:
 
 #if defined (WIN32)
-   pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );
+   psocSetError( pError, PSOC_WINERR_HANDLE, GetLastError() );
 #else
    /* Some old versions of pthread used to returned -1 instead of
     * returning the error code. We check for this just in case.
     */
    if ( status > 0 ) {
-      pscSetError( pError, PSC_ERRNO_HANDLE, status );
+      psocSetError( pError, PSOC_ERRNO_HANDLE, status );
    }
    else {
-      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
+      psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
    }
 #endif
    return -1;

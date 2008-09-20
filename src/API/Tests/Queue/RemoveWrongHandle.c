@@ -30,7 +30,7 @@ int main( int argc, char * argv[] )
    PSO_HANDLE sessionHandle, objHandle;
    int errcode;
    const char * data1 = "My Data1";
-   psaDataEntry entry;
+   psoaDataEntry entry;
    psoObjectDefinition defQueue = { 
       PSO_QUEUE,
       1, 
@@ -106,7 +106,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = psaQueueRemove( sessionHandle, &entry );
+   errcode = psoaQueueRemove( sessionHandle, &entry );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_FOLDER_H
-#define PSN_FOLDER_H
+#ifndef PSON_FOLDER_H
+#define PSON_FOLDER_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,9 +33,9 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psnFolderItem
+struct psonFolderItem
 {
-   psnHashItem * pHashItem;
+   psonHashItem * pHashItem;
 
    ptrdiff_t   itemOffset;
 
@@ -43,7 +43,7 @@ struct psnFolderItem
    
 };
 
-typedef struct psnFolderItem psnFolderItem;
+typedef struct psonFolderItem psonFolderItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -51,135 +51,135 @@ typedef struct psnFolderItem psnFolderItem;
  * Wrapper for the container holding the information on the tree of
  * shared objects.
  */
-struct psnFolder
+struct psonFolder
 {
    /** The memory object struct. */
-   struct psnMemObject memObject;
+   struct psonMemObject memObject;
 
    /** Basic info for all leaves and branches of our tree. */
-   struct psnTreeNode  nodeObject;
+   struct psonTreeNode  nodeObject;
 
-   struct psnHash      hashObj;
+   struct psonHash      hashObj;
 
    /** Variable size struct - always put at the end */
-   struct psnBlockGroup blockGroup;
+   struct psonBlockGroup blockGroup;
 
 };
 
-typedef struct psnFolder psnFolder;
+typedef struct psonFolder psonFolder;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
-void psnFolderCommitEdit( psnFolder          * pFolder,
-                           psnHashItem        * pHashItem, 
+void psonFolderCommitEdit( psonFolder          * pFolder,
+                           psonHashItem        * pHashItem, 
                            enum psoObjectType    objectType,
-                           psnSessionContext  * pContext );
+                           psonSessionContext  * pContext );
 
 /**
  * Creates an immediate child of the folder.
  */
 PHOTON_ENGINE_EXPORT
-bool psnFolderCreateObject( psnFolder          * pFolder,
+bool psonFolderCreateObject( psonFolder          * pFolder,
                              const char          * objectName,
                              size_t                nameLengthInBytes,
                              psoObjectDefinition * pDefinition,
-                             psnSessionContext  * pContext );
+                             psonSessionContext  * pContext );
 
 /**
  * Delete an object, recursively.
  */ 
 PHOTON_ENGINE_EXPORT
-bool psnFolderDeleteObject( psnFolder         * pFolder,
+bool psonFolderDeleteObject( psonFolder         * pFolder,
                              const char         * objectName,
                              size_t               strLength, 
-                             psnSessionContext * pContext );
+                             psonSessionContext * pContext );
 
 /**
  * Destroy an immediate child of the folder.
  */
 PHOTON_ENGINE_EXPORT
-bool psnFolderDestroyObject( psnFolder         * pFolder,
+bool psonFolderDestroyObject( psonFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
-                              psnSessionContext * pContext );
+                              psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnFolderEditObject( psnFolder         * pFolder,
+bool psonFolderEditObject( psonFolder         * pFolder,
                            const char         * objectName,
                            size_t               strLength, 
                            enum psoObjectType   objectType, 
-                           psnFolderItem     * pFolderItem,
-                           psnSessionContext * pContext );
+                           psonFolderItem     * pFolderItem,
+                           psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnFolderFini( psnFolder         * pFolder,
-                     psnSessionContext * pContext );
+void psonFolderFini( psonFolder         * pFolder,
+                     psonSessionContext * pContext );
 
 
 PHOTON_ENGINE_EXPORT
-bool psnFolderGetDefinition( psnFolder          * pFolder,
+bool psonFolderGetDefinition( psonFolder          * pFolder,
                               const char          * objectName,
                               size_t                strLength,
                               psoObjectDefinition * pDefinition,
-                              psnFieldDef       ** ppInternalDef,
-                              psnSessionContext  * pContext );
+                              psonFieldDef       ** ppInternalDef,
+                              psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnFolderGetFirst( psnFolder         * pFolder,
-                         psnFolderItem     * pItem,
-                         psnSessionContext * pContext );
+bool psonFolderGetFirst( psonFolder         * pFolder,
+                         psonFolderItem     * pItem,
+                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnFolderGetNext( psnFolder         * pFolder,
-                        psnFolderItem     * pItem,
-                        psnSessionContext * pContext );
+bool psonFolderGetNext( psonFolder         * pFolder,
+                        psonFolderItem     * pItem,
+                        psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnFolderGetObject( psnFolder         * pFolder,
+bool psonFolderGetObject( psonFolder         * pFolder,
                           const char         * objectName,
                           size_t               strLength, 
                           enum psoObjectType   objectType, 
-                          psnFolderItem     * pFolderItem,
-                          psnSessionContext * pContext );
+                          psonFolderItem     * pFolderItem,
+                          psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnFolderGetStatus( psnFolder         * pFolder,
+bool psonFolderGetStatus( psonFolder         * pFolder,
                           const char         * objectName,
                           size_t               strLength, 
                           psoObjStatus       * pStatus,
-                          psnSessionContext * pContext );
+                          psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnFolderInit( psnFolder         * pFolder,
+bool psonFolderInit( psonFolder         * pFolder,
                      ptrdiff_t            parentOffset,
                      size_t               numberOfBlocks,
                      size_t               expectedNumOfChilds,
-                     psnTxStatus       * pTxStatus,
+                     psonTxStatus       * pTxStatus,
                      size_t               origNameLength,
                      char               * origName,
                      ptrdiff_t            hashItemOffset,
-                     psnSessionContext * pContext );
+                     psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnFolderInsertObject( psnFolder          * pFolder,
+bool psonFolderInsertObject( psonFolder          * pFolder,
                              const char          * objectName,
                              const char          * originalName,
                              size_t                strLength,
                              psoObjectDefinition * pDefinition,
                              size_t                numBlocks,
                              size_t                expectedNumOfChilds,
-                             psnSessionContext  * pContext );
+                             psonSessionContext  * pContext );
 
 /* Retrieve the status of the current folder */
 PHOTON_ENGINE_EXPORT
-void psnFolderMyStatus( psnFolder   * pFolder,
+void psonFolderMyStatus( psonFolder   * pFolder,
                          psoObjStatus * pStatus );
 
 PHOTON_ENGINE_EXPORT
-bool psnFolderRelease( psnFolder         * pFolder,
-                        psnFolderItem     * pItem,
-                        psnSessionContext * pContext );
+bool psonFolderRelease( psonFolder         * pFolder,
+                        psonFolderItem     * pItem,
+                        psonSessionContext * pContext );
 
 /** 
  * This function does the actual removal of the entry in the list of the
@@ -187,20 +187,20 @@ bool psnFolderRelease( psnFolder         * pFolder,
  * have this object open, etc...).
  */
 PHOTON_ENGINE_EXPORT
-void psnFolderRemoveObject( psnFolder         * pFolder,
-                             psnHashItem       * pHashItem,
-                             psnSessionContext * pContext );
+void psonFolderRemoveObject( psonFolder         * pFolder,
+                             psonHashItem       * pHashItem,
+                             psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnFolderResize( psnFolder         * pFolder, 
-                       psnSessionContext * pContext  );
+void psonFolderResize( psonFolder         * pFolder, 
+                       psonSessionContext * pContext  );
 
 
 PHOTON_ENGINE_EXPORT
-void psnFolderRollbackEdit( psnFolder          * pFolder,
-                             psnHashItem        * pHashItem, 
+void psonFolderRollbackEdit( psonFolder          * pFolder,
+                             psonHashItem        * pHashItem, 
                              enum psoObjectType    objectType,
-                             psnSessionContext  * pContext );
+                             psonSessionContext  * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -210,52 +210,52 @@ void psnFolderRollbackEdit( psnFolder          * pFolder,
  */
 
 PHOTON_ENGINE_EXPORT
-bool psnTopFolderCloseObject( psnFolderItem     * pDescriptor,
-                               psnSessionContext * pContext );
+bool psonTopFolderCloseObject( psonFolderItem     * pDescriptor,
+                               psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnTopFolderCreateObject( psnFolder          * pFolder,
+bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                 const char          * objectName,
                                 size_t                nameLengthInBytes,
                                 psoObjectDefinition * pDefinition,
-                                psnSessionContext  * pContext );
+                                psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnTopFolderDestroyObject( psnFolder         * pFolder,
+bool psonTopFolderDestroyObject( psonFolder         * pFolder,
                                  const char         * objectName,
                                  size_t               nameLengthInBytes,
-                                 psnSessionContext * pContext );
+                                 psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnTopFolderEditObject( psnFolder         * pFolder,
+bool psonTopFolderEditObject( psonFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
                               enum psoObjectType   objectType, 
-                              psnFolderItem     * pFolderItem,
-                              psnSessionContext * pContext );
+                              psonFolderItem     * pFolderItem,
+                              psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnTopFolderGetDef( psnFolder          * pFolder,
+bool psonTopFolderGetDef( psonFolder          * pFolder,
                           const char          * objectName,
                           size_t                nameLengthInBytes,
                           psoObjectDefinition * pDefinition,
-                          psnFieldDef       ** ppInternalDef,
-                          psnSessionContext  * pContext );
+                          psonFieldDef       ** ppInternalDef,
+                          psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnTopFolderGetStatus( psnFolder         * pFolder,
+bool psonTopFolderGetStatus( psonFolder         * pFolder,
                              const char         * objectName,
                              size_t               nameLengthInBytes,
                              psoObjStatus       * pFolderItem,
-                             psnSessionContext * pContext );
+                             psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnTopFolderOpenObject( psnFolder         * pFolder,
+bool psonTopFolderOpenObject( psonFolder         * pFolder,
                               const char         * objectName,
                               size_t               nameLengthInBytes,
                               enum psoObjectType   objectType, 
-                              psnFolderItem     * pFolderItem,
-                              psnSessionContext * pContext );
+                              psonFolderItem     * pFolderItem,
+                              psonSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -263,6 +263,6 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_FOLDER_H */
+#endif /* PSON_FOLDER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

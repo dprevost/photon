@@ -26,9 +26,9 @@ int main()
 {
 #if defined(USE_DBC)
    int i;
-   pscOptionHandle handle;
+   psocOptionHandle handle;
    
-   struct pscOptStruct opts[5] = {
+   struct psocOptStruct opts[5] = {
       { '3', "three",   1, "", "repeat the loop three times" },
       { 'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog" },
       { 'x', "",        1, "DISPLAY", "X display to use" },
@@ -36,11 +36,11 @@ int main()
       { 'z', "zzz",     1, "", "go to sleep..." }
    };
    
-   for ( i = 0; i < PSC_OPT_COMMENT_LENGTH; ++i ) {
+   for ( i = 0; i < PSOC_OPT_COMMENT_LENGTH; ++i ) {
       opts[2].comment[i] = 'x';
    }
    
-   pscSetSupportedOptions( 5, opts, &handle );
+   psocSetSupportedOptions( 5, opts, &handle );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

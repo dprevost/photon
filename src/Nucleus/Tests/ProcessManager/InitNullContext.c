@@ -24,12 +24,12 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnProcMgr* pManager;
-   psnSessionContext context;
+   psonProcMgr* pManager;
+   psonSessionContext context;
    
    pManager = initProcMgrTest( expectedToPass, &context );
 
-   psnProcMgrInit( pManager, NULL );
+   psonProcMgrInit( pManager, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
    

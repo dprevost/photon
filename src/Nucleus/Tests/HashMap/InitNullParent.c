@@ -24,10 +24,10 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnHashMap * pHashMap;
-   psnSessionContext context;
+   psonHashMap * pHashMap;
+   psonSessionContext context;
    int errcode;
-   psnTxStatus status;
+   psonTxStatus status;
    psoObjectDefinition def = { 
       PSO_HASH_MAP, 
       1, 
@@ -37,10 +37,10 @@ int main()
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   errcode = psnHashMapInit( pHashMap, 
-                              PSN_NULL_OFFSET, 
+   errcode = psonHashMapInit( pHashMap, 
+                              PSON_NULL_OFFSET, 
                               1, 
                               0, 
                               &status, 

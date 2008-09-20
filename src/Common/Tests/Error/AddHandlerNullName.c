@@ -38,11 +38,11 @@ int errorHandler( int errorCode, char* msg, unsigned int msgLength )
 int main()
 {
 #if defined(USE_DBC)
-   pscErrMsgHandle handle;
+   psocErrMsgHandle handle;
    
-   pscInitErrorDefs();
+   psocInitErrorDefs();
 
-   handle = pscAddErrorMsgHandler( NULL, &errorHandler );
+   handle = psocAddErrorMsgHandler( NULL, &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

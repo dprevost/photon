@@ -26,19 +26,19 @@ const bool expectedToPass = true;
 int main()
 {
    bool ok;
-   pscDirIterator iterator;
-   pscErrorHandler errorHandler;
+   psocDirIterator iterator;
+   psocErrorHandler errorHandler;
    
-   pscInitErrorDefs();
-   pscInitDir( &iterator );
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorDefs();
+   psocInitDir( &iterator );
+   psocInitErrorHandler( &errorHandler );
    
-   ok = pscOpenDir( &iterator, "..", &errorHandler );
+   ok = psocOpenDir( &iterator, "..", &errorHandler );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   pscCloseDir( &iterator );
+   psocCloseDir( &iterator );
 
 #if defined (WIN32)
    if ( iterator.handle != PSO_INVALID_HANDLE ) {
@@ -50,9 +50,9 @@ int main()
    }
 #endif
 
-   pscFiniDir( &iterator );
-   pscFiniErrorHandler( &errorHandler );
-   pscFiniErrorDefs();
+   psocFiniDir( &iterator );
+   psocFiniErrorHandler( &errorHandler );
+   psocFiniErrorDefs();
 
    return 0;
 }

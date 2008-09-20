@@ -247,10 +247,10 @@ public:
 
 private:
 
-   /// Pointer to the psaHashMap struct.
+   /// Pointer to the psoaHashMap struct.
    PSO_HANDLE m_objectHandle;
 
-   /// Reference to the psaSession struct (we belong to).
+   /// Reference to the psoaSession struct (we belong to).
    PSO_HANDLE & m_sessionHandle;
    
 };

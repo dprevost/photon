@@ -27,14 +27,14 @@ int main()
 {
 #if defined(USE_DBC)
    bool ok;
-   pscDirIterator iterator;
-   pscErrorHandler errorHandler;
+   psocDirIterator iterator;
+   psocErrorHandler errorHandler;
 
-   pscInitErrorDefs();
-   pscInitDir( &iterator );
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorDefs();
+   psocInitDir( &iterator );
+   psocInitErrorHandler( &errorHandler );
    
-   ok = pscOpenDir( &iterator, "..", NULL );
+   ok = psocOpenDir( &iterator, "..", NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

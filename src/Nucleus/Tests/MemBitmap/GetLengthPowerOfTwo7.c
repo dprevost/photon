@@ -27,7 +27,7 @@ int main()
 #if defined(USE_DBC)
    size_t calculatedSize;
    
-   calculatedSize = psnGetBitmapLengthBytes( 1024, 7 );
+   calculatedSize = psonGetBitmapLengthBytes( 1024, 7 );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

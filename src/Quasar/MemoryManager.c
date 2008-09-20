@@ -24,7 +24,7 @@
 #include "Nucleus/InitEngine.h"
 #include "Quasar/quasarErrors.h"
 
-extern pscErrMsgHandle g_wdErrorHandle;
+extern psocErrMsgHandle g_wdErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -32,7 +32,7 @@ extern pscErrMsgHandle g_wdErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswMemoryManagerInit( vdswMemoryManager * pManager )
+void psoqMemoryManagerInit( psoqMemoryManager * pManager )
 {
    PSO_PRE_CONDITION( pManager != NULL );
 
@@ -43,7 +43,7 @@ void vdswMemoryManagerInit( vdswMemoryManager * pManager )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswMemoryManagerFini( vdswMemoryManager * pManager )
+void psoqMemoryManagerFini( psoqMemoryManager * pManager )
 {
    PSO_PRE_CONDITION( pManager != NULL );
 
@@ -54,19 +54,19 @@ void vdswMemoryManagerFini( vdswMemoryManager * pManager )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdswCreateVDS( vdswMemoryManager  * pManager,
+bool psoqCreateVDS( psoqMemoryManager  * pManager,
                     const char         * memoryFileName,
                     size_t               memorySizekb,
                     int                  filePerms,
-                    psnMemoryHeader  ** ppHeader,
-                    psnSessionContext * pContext )
+                    psonMemoryHeader  ** ppHeader,
+                    psonSessionContext * pContext )
 {
    int errcode = 0;
-   pscMemoryFileStatus fileStatus;
-   psnMemAlloc * pAlloc;
+   psocMemoryFileStatus fileStatus;
+   psonMemAlloc * pAlloc;
    unsigned char * ptr;
-   psnFolder * pFolder;
-   psnProcMgr * processManager;
+   psonFolder * pFolder;
+   psonProcMgr * processManager;
    time_t t;
    struct tm formattedTime;
    unsigned char * pStart;
@@ -79,93 +79,93 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    PSO_PRE_CONDITION( pContext       != NULL );
    PSO_PRE_CONDITION( memorySizekb > 0 );
 
-   PSO_INV_CONDITION( sizeof(psnMemoryHeader) <= PSN_BLOCK_SIZE );
+   PSO_INV_CONDITION( sizeof(psonMemoryHeader) <= PSON_BLOCK_SIZE );
    
    *ppHeader = NULL;
    pManager->memorySizeKB = memorySizekb;   
 
-   pscInitMemoryFile( &pManager->memory, pManager->memorySizeKB, memoryFileName );
+   psocInitMemoryFile( &pManager->memory, pManager->memorySizeKB, memoryFileName );
    
-   pscBackStoreStatus( &pManager->memory, &fileStatus );
+   psocBackStoreStatus( &pManager->memory, &fileStatus );
    
-   ok = pscCreateBackstore( &pManager->memory, filePerms, &pContext->errorHandler );
+   ok = psocCreateBackstore( &pManager->memory, filePerms, &pContext->errorHandler );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
-      pscChainError( &pContext->errorHandler,
+      psocChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
                       PSOQ_CREATE_BACKSTORE_FAILURE );
       return false;
    }
 
-   ok = pscOpenMemFile( &pManager->memory, &pManager->pMemoryAddress, &pContext->errorHandler );   
+   ok = psocOpenMemFile( &pManager->memory, &pManager->pMemoryAddress, &pContext->errorHandler );   
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
-      pscChainError( &pContext->errorHandler,
+      psocChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
                       PSOQ_OPEN_BACKSTORE_FAILURE );
       return false;
    }
       
-   pManager->pHeader = *ppHeader = (psnMemoryHeader*) pManager->pMemoryAddress;
+   pManager->pHeader = *ppHeader = (psonMemoryHeader*) pManager->pMemoryAddress;
    (*ppHeader)->running = 1;
 
    /* Sets the global base address */
    g_pBaseAddr = (unsigned char *) pManager->pMemoryAddress;
    
    /* The memory allocator starts after the header */
-   pStart = (unsigned char*)pManager->pMemoryAddress + PSN_BLOCK_SIZE;
+   pStart = (unsigned char*)pManager->pMemoryAddress + PSON_BLOCK_SIZE;
    
    (*ppHeader)->allocatorOffset = SET_OFFSET( pStart );
-   pAlloc = (psnMemAlloc *) pStart;
+   pAlloc = (psonMemAlloc *) pStart;
    
-   errcode = psnMemAllocInit( pAlloc,
+   errcode = psonMemAllocInit( pAlloc,
                                g_pBaseAddr,
                                pManager->memorySizeKB*1024,
                                pContext );
    if ( errcode != 0 ) {
       (*ppHeader) = NULL;
-      pscSetError( &pContext->errorHandler,
+      psocSetError( &pContext->errorHandler,
                     g_psoErrorHandle,
                     errcode );
       return false;
    }
 
    /* The top folder  */
-   ptr = psnMallocBlocks( pAlloc, PSN_ALLOC_API_OBJ, 1, pContext );
+   ptr = psonMallocBlocks( pAlloc, PSON_ALLOC_API_OBJ, 1, pContext );
    if ( ptr == NULL ) {
       (*ppHeader) = NULL;
-      pscSetError( &pContext->errorHandler,
+      psocSetError( &pContext->errorHandler,
                     g_psoErrorHandle,
                     PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
-   pFolder = (psnFolder *) ptr;
+   pFolder = (psonFolder *) ptr;
 
-   errcode = psnMemObjectInit( &pFolder->memObject, 
-                                PSN_IDENT_FOLDER,
+   errcode = psonMemObjectInit( &pFolder->memObject, 
+                                PSON_IDENT_FOLDER,
                                 &pFolder->blockGroup,
                                 1 );
    if ( errcode != PSO_OK ) {
-      pscSetError( &pContext->errorHandler,
+      psocSetError( &pContext->errorHandler,
                     g_wdErrorHandle,
                     errcode );
       return false;
    }
-   psnTxStatusInit( &pManager->pHeader->topHashItem.txStatus, PSN_NULL_OFFSET );
+   psonTxStatusInit( &pManager->pHeader->topHashItem.txStatus, PSON_NULL_OFFSET );
 
    pFolder->nodeObject.txCounter      = 0;
    pFolder->nodeObject.myNameLength   = 0;
-   pFolder->nodeObject.myNameOffset   = PSN_NULL_OFFSET;
+   pFolder->nodeObject.myNameOffset   = PSON_NULL_OFFSET;
    pFolder->nodeObject.txStatusOffset = 
       SET_OFFSET( &pManager->pHeader->topHashItem.txStatus );
-   pFolder->nodeObject.myParentOffset = PSN_NULL_OFFSET;
+   pFolder->nodeObject.myParentOffset = PSON_NULL_OFFSET;
 
-   errcode = psnHashInit( &pFolder->hashObj, 
+   errcode = psonHashInit( &pFolder->hashObj, 
                       SET_OFFSET(&pFolder->memObject),
                       25, 
                       pContext );
    if ( errcode != PSO_OK ) {
-      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
       return false;
    }   
    (*ppHeader)->treeMgrOffset = SET_OFFSET( ptr );
@@ -176,18 +176,18 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    (*ppHeader)->topDescriptor.apiType = PSO_FOLDER;
 
    /* The Garbage Collection manager */
-   ptr = psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 1, pContext );
+   ptr = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
    if ( ptr == NULL ) {
       (*ppHeader) = NULL;
-      pscSetError( &pContext->errorHandler,
+      psocSetError( &pContext->errorHandler,
                     g_psoErrorHandle,
                     PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
 
-   processManager = (psnProcMgr *) ptr;
+   processManager = (psonProcMgr *) ptr;
    
-   ok = psnProcMgrInit( processManager, pContext );
+   ok = psonProcMgrInit( processManager, pContext );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       (*ppHeader) = NULL;
@@ -200,7 +200,7 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
    /* cookie" to identify the file?) */
 
    strcpy( (*ppHeader)->cookie, "VDS" );
-   (*ppHeader)->version = PSN_MEMORY_VERSION;
+   (*ppHeader)->version = PSON_MEMORY_VERSION;
    (*ppHeader)->totalLength = pManager->memorySizeKB*1024;
 
    (*ppHeader)->sizeofPtr = SIZEOF_VOID_P;
@@ -209,14 +209,14 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
 #else
    (*ppHeader)->bigEndian = false;
 #endif
-   (*ppHeader)->blockSize = PSN_BLOCK_SIZE;
-   (*ppHeader)->alignmentStruct = PSC_ALIGNMENT_STRUCT;
-   (*ppHeader)->alignmentChar   = PSC_ALIGNMENT_CHAR;
-   (*ppHeader)->alignmentInt16  = PSC_ALIGNMENT_INT16;
-   (*ppHeader)->alignmentInt32  = PSC_ALIGNMENT_INT32;
-   (*ppHeader)->alignmentInt64  = PSC_ALIGNMENT_INT64;
+   (*ppHeader)->blockSize = PSON_BLOCK_SIZE;
+   (*ppHeader)->alignmentStruct = PSOC_ALIGNMENT_STRUCT;
+   (*ppHeader)->alignmentChar   = PSOC_ALIGNMENT_CHAR;
+   (*ppHeader)->alignmentInt16  = PSOC_ALIGNMENT_INT16;
+   (*ppHeader)->alignmentInt32  = PSOC_ALIGNMENT_INT32;
+   (*ppHeader)->alignmentInt64  = PSOC_ALIGNMENT_INT64;
 
-   (*ppHeader)->allocationUnit = PSN_ALLOCATION_UNIT;
+   (*ppHeader)->allocationUnit = PSON_ALLOCATION_UNIT;
    strncpy( (*ppHeader)->cpu_type, MYCPU, 19 );
    strncpy( (*ppHeader)->compiler, MYCC, 19);
    strncpy( (*ppHeader)->cxxcompiler, MYCXX, 19);
@@ -256,16 +256,16 @@ bool vdswCreateVDS( vdswMemoryManager  * pManager,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdswOpenVDS( vdswMemoryManager  * pManager, 
+bool psoqOpenVDS( psoqMemoryManager  * pManager, 
                   const char         * memoryFileName,
                   size_t               memorySizekb,
-                  psnMemoryHeader  ** ppHeader,
-                  psnSessionContext * pContext )
+                  psonMemoryHeader  ** ppHeader,
+                  psonSessionContext * pContext )
 {
    bool ok;
    
-   pscMemoryFileStatus fileStatus;
-   pscErrorHandler errorHandler;
+   psocMemoryFileStatus fileStatus;
+   psocErrorHandler errorHandler;
    
    PSO_PRE_CONDITION( pManager       != NULL );
    PSO_PRE_CONDITION( memoryFileName != NULL );
@@ -276,35 +276,35 @@ bool vdswOpenVDS( vdswMemoryManager  * pManager,
    *ppHeader = NULL;
    pManager->memorySizeKB = memorySizekb;
    
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorHandler( &errorHandler );
    
-   pscInitMemoryFile( &pManager->memory, pManager->memorySizeKB, memoryFileName );
+   psocInitMemoryFile( &pManager->memory, pManager->memorySizeKB, memoryFileName );
    
-   pscBackStoreStatus( &pManager->memory, &fileStatus );
+   psocBackStoreStatus( &pManager->memory, &fileStatus );
    
    if ( ! fileStatus.fileExist ) {
-      pscSetError( &pContext->errorHandler,
+      psocSetError( &pContext->errorHandler,
                     g_wdErrorHandle,
                     PSOQ_BACKSTORE_FILE_MISSING );
       return false;
    }
    
-   ok = pscOpenMemFile( &pManager->memory, 
+   ok = psocOpenMemFile( &pManager->memory, 
                          &pManager->pMemoryAddress, 
                          &errorHandler );   
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
-      pscChainError( &pContext->errorHandler,
+      psocChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
                       PSOQ_ERROR_OPENING_MEMORY );
       return false;
    }
    
-   pManager->pHeader = *ppHeader = (psnMemoryHeader*) pManager->pMemoryAddress;
+   pManager->pHeader = *ppHeader = (psonMemoryHeader*) pManager->pMemoryAddress;
 
-   if ( (*ppHeader)->version != PSN_MEMORY_VERSION ) {
+   if ( (*ppHeader)->version != PSON_MEMORY_VERSION ) {
       (*ppHeader) = NULL;
-      pscSetError( &pContext->errorHandler,
+      psocSetError( &pContext->errorHandler,
                     g_wdErrorHandle,
                     PSOQ_INCOMPATIBLE_VERSIONS );
       return false;
@@ -318,13 +318,13 @@ bool vdswOpenVDS( vdswMemoryManager  * pManager,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswCloseVDS( vdswMemoryManager * pManager,
-                   pscErrorHandler  * pError )
+void psoqCloseVDS( psoqMemoryManager * pManager,
+                   psocErrorHandler  * pError )
 {
    PSO_PRE_CONDITION( pManager != NULL );
    PSO_PRE_CONDITION( pError   != NULL );
 
-   pscCloseMemFile( &pManager->memory, pError );
+   psocCloseMemFile( &pManager->memory, pError );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

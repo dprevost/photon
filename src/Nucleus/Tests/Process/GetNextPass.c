@@ -23,21 +23,21 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnProcess * process;
-   psnSessionContext context;
+   psonProcess * process;
+   psonSessionContext context;
    int errcode;
    bool ok;
-   psnSession * pSession1, *pSession2;
+   psonSession * pSession1, *pSession2;
    void * pApiSession = (void *) &errcode; /* A dummy pointer */
    
    process = initProcessTest( expectedToPass, &context );
 
-   ok = psnProcessInit( process, 12345, &context );
+   ok = psonProcessInit( process, 12345, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnProcessAddSession( process,
+   ok = psonProcessAddSession( process,
                                pApiSession,
                                &pSession1,
                                &context );
@@ -45,7 +45,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnProcessGetFirstSession( process,
+   ok = psonProcessGetFirstSession( process,
                                     &pSession1,
                                     &context );
    if ( ok != true ) {
@@ -53,7 +53,7 @@ int main()
    }
    
    /* Only one session - this should fail */
-   ok = psnProcessGetNextSession( process,
+   ok = psonProcessGetNextSession( process,
                                    pSession1,
                                    &pSession2,
                                    &context );
@@ -61,7 +61,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = psnProcessAddSession( process,
+   ok = psonProcessAddSession( process,
                                pApiSession,
                                &pSession1,
                                &context );
@@ -69,14 +69,14 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnProcessGetFirstSession( process,
+   ok = psonProcessGetFirstSession( process,
                                     &pSession1,
                                     &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnProcessGetNextSession( process,
+   ok = psonProcessGetNextSession( process,
                                    pSession1,
                                    &pSession2,
                                    &context );
@@ -85,7 +85,7 @@ int main()
    }
    if ( pSession1 == pSession2 ) return -1;
    
-   psnProcessFini( process, &context );
+   psonProcessFini( process, &context );
                                  
    return 0;
 }

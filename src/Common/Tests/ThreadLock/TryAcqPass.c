@@ -25,22 +25,22 @@ const bool expectedToPass = true;
 
 int main()
 {
-   pscThreadLock lock;
+   psocThreadLock lock;
    bool ok;
    
-   ok = pscInitThreadLock( &lock );
+   ok = psocInitThreadLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = pscTryAcquireThreadLock( &lock, 100 );
+   ok = psocTryAcquireThreadLock( &lock, 100 );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pscReleaseThreadLock( &lock );
+   psocReleaseThreadLock( &lock );
 
-   pscFiniThreadLock( &lock );
+   psocFiniThreadLock( &lock );
 
    return 0;
 }

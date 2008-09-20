@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSA_COMMON_OBJECT_H
-#define PSA_COMMON_OBJECT_H
+#ifndef PSOA_COMMON_OBJECT_H
+#define PSOA_COMMON_OBJECT_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -34,7 +34,7 @@ BEGIN_C_DECLS
 /** 
  * Data common to all api objects (for data containers). 
  */
-typedef struct psaCommonObject
+typedef struct psoaCommonObject
 {
    /**
     * The type of object (as seen from the API, not the engine).
@@ -42,7 +42,7 @@ typedef struct psaCommonObject
     * Note: always put this first to help debug (for example, in gdb:
     * "print * (int *) some_pso_handle" will show the object type).
     */
-   psaObjetType type;
+   psoaObjetType type;
 
    /** 
     * Pointer to our own cleanup object in memory. This object is used by 
@@ -51,26 +51,26 @@ typedef struct psaCommonObject
     *
     * Not used often, yet.
     */
-   psnObjectContext *  pObjectContext;
+   psonObjectContext *  pObjectContext;
 
    /** Pointer to the session we belong to. */
-   struct psaSession* pSession;
+   struct psoaSession* pSession;
 
    /** A folder item. It contains a pointer to the hash item in memory. */
-   psnFolderItem  folderItem;
+   psonFolderItem  folderItem;
 
    /** A pointer to the object in shared memory. */   
    void * pMyMemObject;
 
-} psaCommonObject;
+} psoaCommonObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Common function for opening data containers. */
 PHOTON_API_EXPORT
-int psaCommonObjOpen( psaCommonObject    * pObject,
+int psoaCommonObjOpen( psoaCommonObject    * pObject,
                       enum psoObjectType   objectType, 
-                      psaEditMode          editMode,
+                      psoaEditMode          editMode,
                       const char         * objectName,
                       size_t               nameLengthInBytes );
 
@@ -78,7 +78,7 @@ int psaCommonObjOpen( psaCommonObject    * pObject,
 
 /** Common function for closing data containers. */
 PHOTON_API_EXPORT
-int psaCommonObjClose( psaCommonObject * pObject );
+int psoaCommonObjClose( psoaCommonObject * pObject );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -88,14 +88,14 @@ int psaCommonObjClose( psaCommonObject * pObject );
  * \param[in] pObject Pointer to the object to lock.
 */
 static inline
-bool psaCommonLock( psaCommonObject * pObject )
+bool psoaCommonLock( psoaCommonObject * pObject )
 {
    bool ok = true;
    
    PSO_PRE_CONDITION( pObject != NULL );
 
    if ( g_protectionIsNeeded ) {
-      ok = pscTryAcquireThreadLock( &pObject->pSession->mutex, PSN_LOCK_TIMEOUT );
+      ok = psocTryAcquireThreadLock( &pObject->pSession->mutex, PSON_LOCK_TIMEOUT );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
    
@@ -110,21 +110,21 @@ bool psaCommonLock( psaCommonObject * pObject )
  * \param[in] pObject Pointer to the object to unlock.
  */
 static inline
-void psaCommonUnlock( psaCommonObject * pObject )
+void psoaCommonUnlock( psoaCommonObject * pObject )
 {
    PSO_PRE_CONDITION( pObject != NULL );
 
    if ( g_protectionIsNeeded ) {
-      pscReleaseThreadLock( &pObject->pSession->mutex );
+      psocReleaseThreadLock( &pObject->pSession->mutex );
    }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Called by the psaSession upon session termination.
+ * Called by the psoaSession upon session termination.
  *
- * Setting psaCommonObject::pObjectContext to NULL indicates that a
+ * Setting psoaCommonObject::pObjectContext to NULL indicates that a
  * process or a session has terminated and that no further access to
  * the shared memory is allowed/possible!
  *
@@ -133,7 +133,7 @@ void psaCommonUnlock( psaCommonObject * pObject )
  * \todo Not sure if this makes sense anymore. Revisit!
  */
 static inline
-void psaCommonCloseObject( psaCommonObject * pObject )
+void psoaCommonCloseObject( psoaCommonObject * pObject )
 {
    PSO_PRE_CONDITION( pObject != NULL );
 
@@ -146,7 +146,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSA_COMMON_OBJECT_H */
+#endif /* PSOA_COMMON_OBJECT_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

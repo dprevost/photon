@@ -31,22 +31,22 @@
 
 int psoQueueClose( PSO_HANDLE objectHandle )
 {
-   psaQueue * pQueue;
-   psnQueue * pMemQueue;
+   psoaQueue * pQueue;
+   psonQueue * pMemQueue;
    int errcode = PSO_OK;
    
-   pQueue = (psaQueue *) objectHandle;
+   pQueue = (psoaQueue *) objectHandle;
    if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSOA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( ! pQueue->object.pSession->terminated ) {
-      if ( psaCommonLock( &pQueue->object ) ) {
-         pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
+      if ( psoaCommonLock( &pQueue->object ) ) {
+         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
          /* Reinitialize the iterator, if needed */
          if ( pQueue->iterator != NULL ) {
-            if ( psnQueueRelease( pMemQueue,
+            if ( psonQueueRelease( pMemQueue,
                                    pQueue->iterator,
                                    &pQueue->object.pSession->context ) ) {
                pQueue->iterator = NULL;
@@ -57,10 +57,10 @@ int psoQueueClose( PSO_HANDLE objectHandle )
          }
 
          if ( errcode == PSO_OK ) {
-            errcode = psaCommonObjClose( &pQueue->object );
+            errcode = psoaCommonObjClose( &pQueue->object );
             pQueue->pDefinition = NULL;
          }
-         psaCommonUnlock( &pQueue->object );
+         psoaCommonUnlock( &pQueue->object );
       }
       else {
          errcode = PSO_SESSION_CANNOT_GET_LOCK;
@@ -79,7 +79,7 @@ int psoQueueClose( PSO_HANDLE objectHandle )
       free( pQueue );
    }
    else {
-      pscSetError( &pQueue->object.pSession->context.errorHandler, 
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
          g_psoErrorHandle, errcode );
    }
    
@@ -91,32 +91,32 @@ int psoQueueClose( PSO_HANDLE objectHandle )
 int psoQueueDefinition( PSO_HANDLE             objectHandle,
                         psoObjectDefinition ** ppDefinition )
 {
-   psaQueue * pQueue;
-   psnQueue * pMemQueue;
+   psoaQueue * pQueue;
+   psonQueue * pMemQueue;
    int errcode = PSO_OK;
-   psnSessionContext * pContext;
+   psonSessionContext * pContext;
    
-   pQueue = (psaQueue *) objectHandle;
+   pQueue = (psoaQueue *) objectHandle;
    if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSOA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    pContext = &pQueue->object.pSession->context;
 
    if ( ppDefinition == NULL ) {
-      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
 
    if ( ! pQueue->object.pSession->terminated ) {
-      if ( psaCommonLock( &pQueue->object ) ) {
-         pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
+      if ( psoaCommonLock( &pQueue->object ) ) {
+         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
       
-         errcode = psaGetDefinition( pQueue->pDefinition,
+         errcode = psoaGetDefinition( pQueue->pDefinition,
                                       pMemQueue->numFields,
                                       ppDefinition );
          if ( errcode == PSO_OK ) (*ppDefinition)->type = PSO_QUEUE;
-         psaCommonUnlock( &pQueue->object );
+         psoaCommonUnlock( &pQueue->object );
       }
       else {
          errcode = PSO_SESSION_CANNOT_GET_LOCK;
@@ -127,7 +127,7 @@ int psoQueueDefinition( PSO_HANDLE             objectHandle,
    }
    
    if ( errcode != PSO_OK ) {
-      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -140,15 +140,15 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
                       size_t       bufferLength,
                       size_t     * returnedLength )
 {
-   psaQueue * pQueue;
-   psnQueue * pMemQueue;
+   psoaQueue * pQueue;
+   psonQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
-   pQueue = (psaQueue *) objectHandle;
+   pQueue = (psoaQueue *) objectHandle;
    if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSOA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( buffer == NULL || returnedLength == NULL ) {
       errcode = PSO_NULL_POINTER;
@@ -162,16 +162,16 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( ! psaCommonLock( &pQueue->object ) ) {
+   if ( ! psoaCommonLock( &pQueue->object ) ) {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
    
-   pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
+   pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pQueue->iterator != NULL ) {
-      ok = psnQueueRelease( pMemQueue,
+      ok = psonQueueRelease( pMemQueue,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -180,7 +180,7 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
       pQueue->iterator = NULL;
    }
 
-   ok = psnQueueGet( pMemQueue,
+   ok = psonQueueGet( pMemQueue,
                       PSO_FIRST,
                       &pQueue->iterator,
                       bufferLength,
@@ -191,21 +191,21 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
    *returnedLength = pQueue->iterator->dataLength;
    memcpy( buffer, pQueue->iterator->data, *returnedLength );
 
-   psaCommonUnlock( &pQueue->object );
+   psoaCommonUnlock( &pQueue->object );
 
    return PSO_OK;
 
 error_handler_unlock:
-   psaCommonUnlock( &pQueue->object );
+   psoaCommonUnlock( &pQueue->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
-      pscSetError( &pQueue->object.pSession->context.errorHandler, 
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
          g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = psocGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -218,15 +218,15 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
                      size_t       bufferLength,
                      size_t     * returnedLength )
 {
-   psaQueue * pQueue;
-   psnQueue * pMemQueue;
+   psoaQueue * pQueue;
+   psonQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
-   pQueue = (psaQueue *) objectHandle;
+   pQueue = (psoaQueue *) objectHandle;
    if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSOA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( buffer == NULL || returnedLength == NULL ) {
       errcode = PSO_NULL_POINTER;
@@ -245,14 +245,14 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( ! psaCommonLock( &pQueue->object ) ) {
+   if ( ! psoaCommonLock( &pQueue->object ) ) {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
-   pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
+   pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
-   ok = psnQueueGet( pMemQueue,
+   ok = psonQueueGet( pMemQueue,
                       PSO_NEXT,
                       &pQueue->iterator,
                       bufferLength,
@@ -263,21 +263,21 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
    *returnedLength = pQueue->iterator->dataLength;
    memcpy( buffer, pQueue->iterator->data, *returnedLength );
 
-   psaCommonUnlock( &pQueue->object );
+   psoaCommonUnlock( &pQueue->object );
 
    return PSO_OK;
 
 error_handler_unlock:
-   psaCommonUnlock( &pQueue->object );
+   psoaCommonUnlock( &pQueue->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
-      pscSetError( &pQueue->object.pSession->context.errorHandler, 
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
          g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = psocGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -290,52 +290,52 @@ int psoQueueOpen( PSO_HANDLE   sessionHandle,
                   size_t       nameLengthInBytes,
                   PSO_HANDLE * objectHandle )
 {
-   psaSession * pSession;
-   psaQueue * pQueue = NULL;
-   psnQueue * pMemQueue;
+   psoaSession * pSession;
+   psoaQueue * pQueue = NULL;
+   psonQueue * pMemQueue;
    int errcode;
    
    if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
    *objectHandle = NULL;
 
-   pSession = (psaSession*) sessionHandle;
+   pSession = (psoaSession*) sessionHandle;
    if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( queueName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
       return PSO_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
    
-   pQueue = (psaQueue *) malloc(sizeof(psaQueue));
+   pQueue = (psoaQueue *) malloc(sizeof(psoaQueue));
    if (  pQueue == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
       return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
    
-   memset( pQueue, 0, sizeof(psaQueue) );
-   pQueue->object.type = PSA_QUEUE;
+   memset( pQueue, 0, sizeof(psoaQueue) );
+   pQueue->object.type = PSOA_QUEUE;
    pQueue->object.pSession = pSession;
 
    if ( ! pQueue->object.pSession->terminated ) {
-      errcode = psaCommonObjOpen( &pQueue->object,
+      errcode = psoaCommonObjOpen( &pQueue->object,
                                    PSO_QUEUE,
-                                   PSA_READ_WRITE,
+                                   PSOA_READ_WRITE,
                                    queueName,
                                    nameLengthInBytes );
       if ( errcode == PSO_OK ) {
          *objectHandle = (PSO_HANDLE) pQueue;
-         pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
+         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
          GET_PTR( pQueue->pDefinition, 
                   pMemQueue->dataDefOffset,
-                  psnFieldDef );
-         psaGetLimits( pQueue->pDefinition,
+                  psonFieldDef );
+         psoaGetLimits( pQueue->pDefinition,
                         pMemQueue->numFields,
                         &pQueue->minLength,
                         &pQueue->maxLength );
@@ -355,15 +355,15 @@ int psoQueuePop( PSO_HANDLE   objectHandle,
                  size_t       bufferLength,
                  size_t     * returnedLength )
 {
-   psaQueue * pQueue;
-   psnQueue * pMemQueue;
+   psoaQueue * pQueue;
+   psonQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
-   pQueue = (psaQueue *) objectHandle;
+   pQueue = (psoaQueue *) objectHandle;
    if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSOA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( buffer == NULL || returnedLength == NULL ) {
       errcode = PSO_NULL_POINTER;
@@ -376,16 +376,16 @@ int psoQueuePop( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( ! psaCommonLock( &pQueue->object ) ) {
+   if ( ! psoaCommonLock( &pQueue->object ) ) {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
-   pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
+   pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pQueue->iterator != NULL ) {
-      ok = psnQueueRelease( pMemQueue,
+      ok = psonQueueRelease( pMemQueue,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -394,9 +394,9 @@ int psoQueuePop( PSO_HANDLE   objectHandle,
       pQueue->iterator = NULL;
    }
 
-   ok = psnQueueRemove( pMemQueue,
+   ok = psonQueueRemove( pMemQueue,
                          &pQueue->iterator,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          bufferLength,
                          &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
@@ -405,21 +405,21 @@ int psoQueuePop( PSO_HANDLE   objectHandle,
    *returnedLength = pQueue->iterator->dataLength;
    memcpy( buffer, pQueue->iterator->data, *returnedLength );
 
-   psaCommonUnlock( &pQueue->object );
+   psoaCommonUnlock( &pQueue->object );
 
    return PSO_OK;
 
 error_handler_unlock:
-   psaCommonUnlock( &pQueue->object );
+   psoaCommonUnlock( &pQueue->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
-      pscSetError( &pQueue->object.pSession->context.errorHandler, 
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
          g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = psocGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
 
    return errcode;
@@ -431,40 +431,40 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
                   const void * data,
                   size_t       dataLength )
 {
-   psaQueue * pQueue;
-   psnQueue * pMemQueue;
+   psoaQueue * pQueue;
+   psonQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
-   pQueue = (psaQueue *) objectHandle;
+   pQueue = (psoaQueue *) objectHandle;
    if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSOA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( data == NULL ) {
-      pscSetError( &pQueue->object.pSession->context.errorHandler, 
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
          g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
    
    if ( dataLength < pQueue->minLength || dataLength > pQueue->maxLength ) {
-      pscSetError( &pQueue->object.pSession->context.errorHandler, 
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
          g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
    
    if ( ! pQueue->object.pSession->terminated ) {
-      if ( psaCommonLock( &pQueue->object ) ) {
-         pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
+      if ( psoaCommonLock( &pQueue->object ) ) {
+         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
-         ok = psnQueueInsert( pMemQueue,
+         ok = psonQueueInsert( pMemQueue,
                                data,
                                dataLength,
-                               PSN_QUEUE_LAST,
+                               PSON_QUEUE_LAST,
                                &pQueue->object.pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
 
-         psaCommonUnlock( &pQueue->object );
+         psoaCommonUnlock( &pQueue->object );
       }
       else {
          errcode = PSO_SESSION_CANNOT_GET_LOCK;
@@ -475,12 +475,12 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
    }
    
    if ( errcode != PSO_OK ) {
-      pscSetError( &pQueue->object.pSession->context.errorHandler, 
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
          g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = psocGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -492,40 +492,40 @@ int psoQueuePushNow( PSO_HANDLE   objectHandle,
                      const void * data,
                      size_t       dataLength )
 {
-   psaQueue * pQueue;
-   psnQueue * pMemQueue;
+   psoaQueue * pQueue;
+   psonQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
-   pQueue = (psaQueue *) objectHandle;
+   pQueue = (psoaQueue *) objectHandle;
    if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSOA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( data == NULL ) {
-      pscSetError( &pQueue->object.pSession->context.errorHandler, 
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
          g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
    
    if ( dataLength < pQueue->minLength || dataLength > pQueue->maxLength ) {
-      pscSetError( &pQueue->object.pSession->context.errorHandler, 
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
          g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
    
    if ( ! pQueue->object.pSession->terminated ) {
-      if ( psaCommonLock( &pQueue->object ) ) {
-         pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
+      if ( psoaCommonLock( &pQueue->object ) ) {
+         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
-         ok = psnQueueInsertNow( pMemQueue,
+         ok = psonQueueInsertNow( pMemQueue,
                                   data,
                                   dataLength,
-                                  PSN_QUEUE_LAST,
+                                  PSON_QUEUE_LAST,
                                   &pQueue->object.pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
 
-         psaCommonUnlock( &pQueue->object );
+         psoaCommonUnlock( &pQueue->object );
       }
       else {
          errcode = PSO_SESSION_CANNOT_GET_LOCK;
@@ -536,12 +536,12 @@ int psoQueuePushNow( PSO_HANDLE   objectHandle,
    }
    
    if ( errcode != PSO_OK ) {
-      pscSetError( &pQueue->object.pSession->context.errorHandler, 
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
          g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = psocGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -552,39 +552,39 @@ int psoQueuePushNow( PSO_HANDLE   objectHandle,
 int psoQueueStatus( PSO_HANDLE     objectHandle,
                     psoObjStatus * pStatus )
 {
-   psaQueue * pQueue;
-   psnQueue * pMemQueue;
+   psoaQueue * pQueue;
+   psonQueue * pMemQueue;
    int errcode = PSO_OK;
-   psnSessionContext * pContext;
+   psonSessionContext * pContext;
    
-   pQueue = (psaQueue *) objectHandle;
+   pQueue = (psoaQueue *) objectHandle;
    if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pQueue->object.type != PSOA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    pContext = &pQueue->object.pSession->context;
 
    if ( pStatus == NULL ) {
-      pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
 
    if ( ! pQueue->object.pSession->terminated ) {
-      if ( psaCommonLock( &pQueue->object ) ) {
-         pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
+      if ( psoaCommonLock( &pQueue->object ) ) {
+         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
       
-         if ( psnLock(&pMemQueue->memObject, pContext) ) {
-            psnMemObjectStatus( &pMemQueue->memObject, pStatus );
+         if ( psonLock(&pMemQueue->memObject, pContext) ) {
+            psonMemObjectStatus( &pMemQueue->memObject, pStatus );
 
-            psnQueueStatus( pMemQueue, pStatus );
+            psonQueueStatus( pMemQueue, pStatus );
 
-            psnUnlock( &pMemQueue->memObject, pContext );
+            psonUnlock( &pMemQueue->memObject, pContext );
          }
          else {
             errcode = PSO_OBJECT_CANNOT_GET_LOCK;
          }
       
-         psaCommonUnlock( &pQueue->object );
+         psoaCommonUnlock( &pQueue->object );
       }
       else {
          errcode = PSO_SESSION_CANNOT_GET_LOCK;
@@ -595,7 +595,7 @@ int psoQueueStatus( PSO_HANDLE     objectHandle,
    }
    
    if ( errcode != PSO_OK ) {
-      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -607,32 +607,32 @@ int psoQueueStatus( PSO_HANDLE     objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psaQueueFirst( psaQueue     * pQueue,
-                   psaDataEntry * pEntry )
+int psoaQueueFirst( psoaQueue     * pQueue,
+                   psoaDataEntry * pEntry )
 {
-   psnQueue * pMemQueue;
+   psonQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
    PSO_PRE_CONDITION( pQueue != NULL );
    PSO_PRE_CONDITION( pEntry != NULL );
-   PSO_PRE_CONDITION( pQueue->object.type == PSA_QUEUE );
+   PSO_PRE_CONDITION( pQueue->object.type == PSOA_QUEUE );
    
    if ( pQueue->object.pSession->terminated ) {
       errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
-   if ( ! psaCommonLock( &pQueue->object ) ) {
+   if ( ! psoaCommonLock( &pQueue->object ) ) {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
-   pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
+   pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pQueue->iterator != NULL ) {
-      ok = psnQueueRelease( pMemQueue,
+      ok = psonQueueRelease( pMemQueue,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -641,7 +641,7 @@ int psaQueueFirst( psaQueue     * pQueue,
       pQueue->iterator = NULL;
    }
 
-   ok = psnQueueGet( pMemQueue,
+   ok = psonQueueGet( pMemQueue,
                       PSO_FIRST,
                       &pQueue->iterator,
                       (size_t) -1,
@@ -652,21 +652,21 @@ int psaQueueFirst( psaQueue     * pQueue,
    pEntry->data = pQueue->iterator->data;
    pEntry->length = pQueue->iterator->dataLength;
       
-   psaCommonUnlock( &pQueue->object );
+   psoaCommonUnlock( &pQueue->object );
    
    return PSO_OK;
 
 error_handler_unlock:
-   psaCommonUnlock( &pQueue->object );
+   psoaCommonUnlock( &pQueue->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
-      pscSetError( &pQueue->object.pSession->context.errorHandler, 
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
          g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = psocGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -674,16 +674,16 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psaQueueNext( psaQueue     * pQueue,
-                  psaDataEntry * pEntry )
+int psoaQueueNext( psoaQueue     * pQueue,
+                  psoaDataEntry * pEntry )
 {
-   psnQueue * pMemQueue;
+   psonQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
    PSO_PRE_CONDITION( pQueue != NULL );
    PSO_PRE_CONDITION( pEntry != NULL );
-   PSO_PRE_CONDITION( pQueue->object.type == PSA_QUEUE );
+   PSO_PRE_CONDITION( pQueue->object.type == PSOA_QUEUE );
    PSO_PRE_CONDITION( pQueue->iterator != NULL );
    
    if ( pQueue->object.pSession->terminated ) {
@@ -691,14 +691,14 @@ int psaQueueNext( psaQueue     * pQueue,
       goto error_handler;
    }
 
-   if ( ! psaCommonLock( &pQueue->object ) ) {
+   if ( ! psoaCommonLock( &pQueue->object ) ) {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
-   pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
+   pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
-   ok = psnQueueGet( pMemQueue,
+   ok = psonQueueGet( pMemQueue,
                       PSO_NEXT,
                       &pQueue->iterator,
                       (size_t) -1,
@@ -709,21 +709,21 @@ int psaQueueNext( psaQueue     * pQueue,
    pEntry->data = pQueue->iterator->data;
    pEntry->length = pQueue->iterator->dataLength;
 
-   psaCommonUnlock( &pQueue->object );
+   psoaCommonUnlock( &pQueue->object );
 
    return PSO_OK;
 
 error_handler_unlock:
-   psaCommonUnlock( &pQueue->object );
+   psoaCommonUnlock( &pQueue->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
-      pscSetError( &pQueue->object.pSession->context.errorHandler, 
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
          g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = psocGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
    return errcode;
@@ -731,32 +731,32 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psaQueueRemove( psaQueue     * pQueue,
-                    psaDataEntry * pEntry )
+int psoaQueueRemove( psoaQueue     * pQueue,
+                    psoaDataEntry * pEntry )
 {
-   psnQueue * pMemQueue;
+   psonQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
    PSO_PRE_CONDITION( pQueue != NULL );
    PSO_PRE_CONDITION( pEntry != NULL )
-   PSO_PRE_CONDITION( pQueue->object.type == PSA_QUEUE )
+   PSO_PRE_CONDITION( pQueue->object.type == PSOA_QUEUE )
 
    if ( pQueue->object.pSession->terminated ) {
       errcode = PSO_SESSION_IS_TERMINATED;
       goto error_handler;
    }
 
-   if ( ! psaCommonLock( &pQueue->object ) ) {
+   if ( ! psoaCommonLock( &pQueue->object ) ) {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
       goto error_handler;
    }
 
-   pMemQueue = (psnQueue *) pQueue->object.pMyMemObject;
+   pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
    if ( pQueue->iterator != NULL ) {
-      ok = psnQueueRelease( pMemQueue,
+      ok = psonQueueRelease( pMemQueue,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
@@ -765,9 +765,9 @@ int psaQueueRemove( psaQueue     * pQueue,
       pQueue->iterator = NULL;
    }
 
-   ok = psnQueueRemove( pMemQueue,
+   ok = psonQueueRemove( pMemQueue,
                          &pQueue->iterator,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          (size_t) -1,
                          &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
@@ -776,21 +776,21 @@ int psaQueueRemove( psaQueue     * pQueue,
    pEntry->data = (const void *) pQueue->iterator->data;
    pEntry->length = pQueue->iterator->dataLength;
       
-   psaCommonUnlock( &pQueue->object );
+   psoaCommonUnlock( &pQueue->object );
 
    return PSO_OK;
 
 error_handler_unlock:
-   psaCommonUnlock( &pQueue->object );
+   psoaCommonUnlock( &pQueue->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
-      pscSetError( &pQueue->object.pSession->context.errorHandler, 
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
          g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = pscGetLastError( &pQueue->object.pSession->context.errorHandler );
+      errcode = psocGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
    return errcode;

@@ -24,21 +24,21 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnLogFile logfile;
-   pscErrorHandler errorHandler;
+   psonLogFile logfile;
+   psocErrorHandler errorHandler;
    psoErrors error;
 
-   pscInitErrorDefs();
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorDefs();
+   psocInitErrorHandler( &errorHandler );
 
-   error = psnInitLogFile( &logfile, ".", (void*)0x1234, &errorHandler );
+   error = psonInitLogFile( &logfile, ".", (void*)0x1234, &errorHandler );
    if ( error != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   psnCloseLogFile( &logfile, &errorHandler );
+   psonCloseLogFile( &logfile, &errorHandler );
 
-   pscFiniErrorDefs();
+   psocFiniErrorDefs();
    
    return 0;
 }

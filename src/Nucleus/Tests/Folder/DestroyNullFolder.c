@@ -24,8 +24,8 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnFolder * pFolder;
-   psnSessionContext context;
+   psonFolder * pFolder;
+   psonSessionContext context;
    bool ok;
    
    psoObjectDefinition def = { 
@@ -37,7 +37,7 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psnFolderCreateObject( pFolder,
+   ok = psonFolderCreateObject( pFolder,
                                 "Test1",
                                 strlen("Test1"),
                                 &def,
@@ -46,9 +46,9 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnTxCommit( (psnTx *)context.pTransaction, &context );
+   psonTxCommit( (psonTx *)context.pTransaction, &context );
    
-   ok = psnFolderDestroyObject( NULL,
+   ok = psonFolderDestroyObject( NULL,
                                  "Test1",
                                  strlen("Test1"),
                                  &context );

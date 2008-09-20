@@ -24,23 +24,23 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnSessionContext context;
-   psnMemAlloc*     pAlloc;
+   psonSessionContext context;
+   psonMemAlloc*     pAlloc;
    unsigned char* ptr;
    bool isFree;
-   psnMemBitmap* pBitmap;
+   psonMemBitmap* pBitmap;
    
    initTest( expectedToPass, &context );
 
-   ptr = malloc( 51*PSN_BLOCK_SIZE );
+   ptr = malloc( 51*PSON_BLOCK_SIZE );
    if ( ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   g_pBaseAddr = (unsigned char *)((((size_t)ptr - 1)/PSN_BLOCK_SIZE + 1)*PSN_BLOCK_SIZE);
-   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
-   psnMemAllocInit( pAlloc, g_pBaseAddr, 50*PSN_BLOCK_SIZE, &context );
-   GET_PTR( pBitmap, pAlloc->bitmapOffset, psnMemBitmap );
+   g_pBaseAddr = (unsigned char *)((((size_t)ptr - 1)/PSON_BLOCK_SIZE + 1)*PSON_BLOCK_SIZE);
+   pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
+   psonMemAllocInit( pAlloc, g_pBaseAddr, 50*PSON_BLOCK_SIZE, &context );
+   GET_PTR( pBitmap, pAlloc->bitmapOffset, psonMemBitmap );
    
    if ( (pBitmap->lengthInBits-1)/8+1 != 7 ) {
       fprintf( stderr, "Wrong bitmapLength, got "PSO_SIZE_T_FORMAT
@@ -54,22 +54,22 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   isFree = psnIsBufferFree( pBitmap, 0 );
+   isFree = psonIsBufferFree( pBitmap, 0 );
    if ( isFree ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   isFree = psnIsBufferFree( pBitmap, 2*PSN_BLOCK_SIZE );
+   isFree = psonIsBufferFree( pBitmap, 2*PSON_BLOCK_SIZE );
    if ( ! isFree ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   isFree = psnIsBufferFree( pBitmap, -PSN_BLOCK_SIZE );
+   isFree = psonIsBufferFree( pBitmap, -PSON_BLOCK_SIZE );
    if ( isFree ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   isFree = psnIsBufferFree( pBitmap, 50*PSN_BLOCK_SIZE );
+   isFree = psonIsBufferFree( pBitmap, 50*PSON_BLOCK_SIZE );
    if ( isFree ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_MEMORY_HEADER_H
-#define PSN_MEMORY_HEADER_H
+#ifndef PSON_MEMORY_HEADER_H
+#define PSON_MEMORY_HEADER_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -28,7 +28,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define PSN_MEMORY_VERSION 1
+#define PSON_MEMORY_VERSION 1
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -39,7 +39,7 @@ BEGIN_C_DECLS
  * we can modify VDS on the fly if this structure is changed in future
  * releases.
  */
-struct psnMemoryHeader
+struct psonMemoryHeader
 {
    char            cookie[4];
    int             version;
@@ -67,12 +67,12 @@ struct psnMemoryHeader
    char     watchdogVersion[10];
    char     creationTime[30];
    
-   psnHashItem topHashItem;
-   psnObjectDescriptor topDescriptor;
+   psonHashItem topHashItem;
+   psonObjectDescriptor topDescriptor;
    
 };
 
-typedef struct psnMemoryHeader psnMemoryHeader;
+typedef struct psonMemoryHeader psonMemoryHeader;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -80,7 +80,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_MEMORY_HEADER_H */
+#endif /* PSON_MEMORY_HEADER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

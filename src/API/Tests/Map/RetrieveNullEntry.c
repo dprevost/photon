@@ -98,7 +98,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaMapRetrieve( objHandle,
+   errcode = psoaMapRetrieve( objHandle,
                               key,
                               6,
                               NULL );

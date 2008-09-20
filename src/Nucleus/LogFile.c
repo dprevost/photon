@@ -19,10 +19,10 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-psoErrors psnInitLogFile( psnLogFile*      logFile,
+psoErrors psonInitLogFile( psonLogFile*      logFile,
                            const char*       dirName,
                            void*             pSession,
-                           pscErrorHandler* pError )
+                           psocErrorHandler* pError )
 {
    PSO_PRE_CONDITION( pError   != NULL );
    PSO_PRE_CONDITION( logFile  != NULL );
@@ -33,7 +33,7 @@ psoErrors psnInitLogFile( psnLogFile*      logFile,
    logFile->handle = -1;
 
    if ( access( dirName, F_OK ) != 0 ) {
-      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
+      psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error accessing directoryfor log file = %d\n", errno );
       return PSO_LOGFILE_ERROR;
    }
@@ -49,21 +49,21 @@ psoErrors psnInitLogFile( psnLogFile*      logFile,
                            O_RDWR | O_CREAT | O_APPEND , 
                            0755 );
    if ( logFile->handle == -1 ) {
-      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
+      psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error opening log = %d\n", errno );
       return PSO_LOGFILE_ERROR;
    }
    
-   logFile->initialized = PSN_LOGFILE_SIGNATURE;
+   logFile->initialized = PSON_LOGFILE_SIGNATURE;
    
    return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-psoErrors psnLogTransaction( psnLogFile*      logFile,
+psoErrors psonLogTransaction( psonLogFile*      logFile,
                               int               transactionId,
-                              pscErrorHandler* pError )
+                              psocErrorHandler* pError )
 {
    char msg[80];
    char timeBuf[30];
@@ -77,7 +77,7 @@ psoErrors psnLogTransaction( psnLogFile*      logFile,
 
    PSO_PRE_CONDITION( pError  != NULL );
    PSO_PRE_CONDITION( logFile != NULL );
-   PSO_INV_CONDITION( logFile->initialized == PSN_LOGFILE_SIGNATURE );
+   PSO_INV_CONDITION( logFile->initialized == PSON_LOGFILE_SIGNATURE );
    PSO_INV_CONDITION( logFile->handle != -1 );
    
    memset( timeBuf, '\0', 30 );
@@ -101,14 +101,14 @@ psoErrors psnLogTransaction( psnLogFile*      logFile,
    
    err = write( logFile->handle, msg, strlen(msg) );
    if ( err <= 0 ) {
-      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
+      psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error write log = %d\n", errno );
       return PSO_LOGFILE_ERROR;
    }
    
    err = fdatasync( logFile->handle );
    if ( err < 0 ) {
-      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
+      psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error fdatasync log = %d\n", errno );
       return PSO_LOGFILE_ERROR;
    }
@@ -118,14 +118,14 @@ psoErrors psnLogTransaction( psnLogFile*      logFile,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psnCloseLogFile( psnLogFile*     logFile,
-                       pscErrorHandler* pError )
+void psonCloseLogFile( psonLogFile*     logFile,
+                       psocErrorHandler* pError )
 {
    int err;
 
    PSO_PRE_CONDITION( pError  != NULL );
    PSO_PRE_CONDITION( logFile != NULL );
-   PSO_INV_CONDITION( logFile->initialized == PSN_LOGFILE_SIGNATURE );
+   PSO_INV_CONDITION( logFile->initialized == PSON_LOGFILE_SIGNATURE );
    
    if ( logFile->handle != -1 ) {
       close( logFile->handle );

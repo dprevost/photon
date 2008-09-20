@@ -31,7 +31,7 @@ int main()
 {
    size_t allocatedLength;
 
-   allocatedLength = 8*PSN_BLOCK_SIZE*PSN_BLOCK_SIZE;
+   allocatedLength = 8*PSON_BLOCK_SIZE*PSON_BLOCK_SIZE;
 
    fprintf( stderr, "Amount of memory needed = \n" );
    

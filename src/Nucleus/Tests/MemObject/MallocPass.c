@@ -24,47 +24,47 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnMemObject* pObj;
+   psonMemObject* pObj;
    psoErrors errcode;
-   psnSessionContext context;
+   psonSessionContext context;
    unsigned char *buff[9];
    psotObjDummy  *pDummy;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    pObj = &pDummy->memObject;
    
-   errcode = psnMemObjectInit( pObj, 
-                                PSN_IDENT_ALLOCATOR,
+   errcode = psonMemObjectInit( pObj, 
+                                PSON_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   buff[0] = psnMalloc( pObj, PSN_BLOCK_SIZE, &context );
+   buff[0] = psonMalloc( pObj, PSON_BLOCK_SIZE, &context );
    if ( buff[0] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    if ( pDummy->blockGroup.maxFreeBytes != 
-        pDummy->blockGroup.freeBytes+PSN_BLOCK_SIZE ) {
+        pDummy->blockGroup.freeBytes+PSON_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   buff[1] = psnMalloc( pObj, PSN_BLOCK_SIZE, &context );
+   buff[1] = psonMalloc( pObj, PSON_BLOCK_SIZE, &context );
    if ( buff[1] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   buff[2] = psnMalloc( pObj, PSN_BLOCK_SIZE, &context );
+   buff[2] = psonMalloc( pObj, PSON_BLOCK_SIZE, &context );
    if ( buff[2] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    /* Needs two new blocks at this point */
-   if ( pDummy->blockGroup.freeBytes >= PSN_BLOCK_SIZE ) {
+   if ( pDummy->blockGroup.freeBytes >= PSON_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   buff[3] = psnMalloc( pObj, PSN_BLOCK_SIZE, &context );
+   buff[3] = psonMalloc( pObj, PSON_BLOCK_SIZE, &context );
    if ( buff[3] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -73,7 +73,7 @@ int main()
    }
    
    /* Needs NO new block at this point */
-   buff[4] = psnMalloc( pObj, PSN_BLOCK_SIZE/2, &context );
+   buff[4] = psonMalloc( pObj, PSON_BLOCK_SIZE/2, &context );
    if ( buff[4] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -82,7 +82,7 @@ int main()
    }
    
    /* Needs NO new block at this point */
-   buff[5] = psnMalloc( pObj, PSN_BLOCK_SIZE/2, &context );
+   buff[5] = psonMalloc( pObj, PSON_BLOCK_SIZE/2, &context );
    if ( buff[5] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -91,7 +91,7 @@ int main()
    }
    
    /* Needs a new block at this point */
-   buff[6] = psnMalloc( pObj, PSN_BLOCK_SIZE/2, &context );
+   buff[6] = psonMalloc( pObj, PSON_BLOCK_SIZE/2, &context );
    if ( buff[6] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -100,7 +100,7 @@ int main()
    }
    
    /* Needs a new block at this point */
-   buff[7] = psnMalloc( pObj, PSN_BLOCK_SIZE/2, &context );
+   buff[7] = psonMalloc( pObj, PSON_BLOCK_SIZE/2, &context );
    if ( buff[7] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -109,7 +109,7 @@ int main()
    }
    
    /* We exhausted all the memory */
-   buff[8] = psnMalloc( pObj, PSN_BLOCK_SIZE, &context );
+   buff[8] = psonMalloc( pObj, PSON_BLOCK_SIZE, &context );
    if ( buff[8] != NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -117,7 +117,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = psnMemObjectFini( pObj, PSN_ALLOC_ANY, &context );
+   errcode = psonMemObjectFini( pObj, PSON_ALLOC_ANY, &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

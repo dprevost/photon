@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_SESSION_H
-#define PSN_SESSION_H
+#ifndef PSON_SESSION_H
+#define PSON_SESSION_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -26,7 +26,7 @@
 #include "Nucleus/MemoryObject.h"
 #include "Nucleus/BlockGroup.h"
 
-struct psnTx;
+struct psonTx;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -38,7 +38,7 @@ BEGIN_C_DECLS
  * The context information for each object accessed by a session is 
  * kept in a doubly linked list (for fast access). 
  */
-struct psnObjectContext
+struct psonObjectContext
 {
    /** offset to the object pointer in memory */
    ptrdiff_t offset;
@@ -53,12 +53,12 @@ struct psnObjectContext
     */
    void * pCommonObject; 
    
-   /** Our node in the linked list of the psnSession object. */
-   psnLinkNode node;
+   /** Our node in the linked list of the psonSession object. */
+   psonLinkNode node;
       
 };
 
-typedef struct psnObjectContext psnObjectContext;
+typedef struct psonObjectContext psonObjectContext;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -70,69 +70,69 @@ typedef struct psnObjectContext psnObjectContext;
  * closed objects (->decrease access counter), unlocked objects, etc.
  *
  */
-typedef struct psnSession
+typedef struct psonSession
 {
    /** Always first */
-   struct psnMemObject memObject;
+   struct psonMemObject memObject;
 
-   /** This object is part of the linked list of the psnProcess */
-   psnLinkNode node;
+   /** This object is part of the linked list of the psonProcess */
+   psonLinkNode node;
 
-   /** Pointer to the psaSession. To be used by the process object when
+   /** Pointer to the psoaSession. To be used by the process object when
        it cleans up its sessions. */
    void * pApiSession;
    
    /** Pointer to our transaction object */
-   struct psnTx * pTransaction;
+   struct psonTx * pTransaction;
    
    /** Our own internal list of objects accessed by the current session */
-   psnLinkedList listOfObjects;
+   psonLinkedList listOfObjects;
 
    /** our current list of locks */
-   ptrdiff_t lockOffsets[PSN_MAX_LOCK_DEPTH];
+   ptrdiff_t lockOffsets[PSON_MAX_LOCK_DEPTH];
 
    /** number of locks we are holding */
    int numLocks;
    
    /** Variable size struct - always put at the end */
-   struct psnBlockGroup blockGroup;
+   struct psonBlockGroup blockGroup;
 
-} psnSession;
+} psonSession;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
-bool psnSessionInit( psnSession        * pSession,
+bool psonSessionInit( psonSession        * pSession,
                       void               * pApiSession,
-                      psnSessionContext * pContext );
+                      psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnSessionFini( psnSession        * pSession,
-                      psnSessionContext * pContext );
+void psonSessionFini( psonSession        * pSession,
+                      psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnSessionAddObj( psnSession        * pSession,
+bool psonSessionAddObj( psonSession        * pSession,
                         ptrdiff_t            objOffset, 
                         enum psoObjectType   objType, 
                         void               * pCommonObject,
-                        psnObjectContext ** ppObject,
-                        psnSessionContext * pContext );
+                        psonObjectContext ** ppObject,
+                        psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnSessionRemoveObj( psnSession        * pSession,
-                          psnObjectContext  * pObject,
-                          psnSessionContext * pContext );
-
-/* Lock and Unlock must be used before calling this function */
-PHOTON_ENGINE_EXPORT
-bool psnSessionRemoveFirst( psnSession        * pSession,
-                             psnSessionContext * pContext );
+bool psonSessionRemoveObj( psonSession        * pSession,
+                          psonObjectContext  * pObject,
+                          psonSessionContext * pContext );
 
 /* Lock and Unlock must be used before calling this function */
 PHOTON_ENGINE_EXPORT
-bool psnSessionGetFirst( psnSession        * pSession,
-                          psnObjectContext ** ppObject,
-                          psnSessionContext * pContext );
+bool psonSessionRemoveFirst( psonSession        * pSession,
+                             psonSessionContext * pContext );
+
+/* Lock and Unlock must be used before calling this function */
+PHOTON_ENGINE_EXPORT
+bool psonSessionGetFirst( psonSession        * pSession,
+                          psonObjectContext ** ppObject,
+                          psonSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -140,7 +140,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_SESSION_H */
+#endif /* PSON_SESSION_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

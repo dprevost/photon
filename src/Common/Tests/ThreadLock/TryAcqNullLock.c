@@ -27,14 +27,14 @@ int main()
 {
 #if defined(USE_DBC)
    bool ok;
-   pscThreadLock lock;
+   psocThreadLock lock;
 
-   ok = pscInitThreadLock( &lock );
+   ok = psocInitThreadLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pscTryAcquireThreadLock( NULL, 100 );
+   psocTryAcquireThreadLock( NULL, 100 );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

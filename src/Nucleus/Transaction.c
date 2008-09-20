@@ -23,9 +23,9 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psnTxInit( psnTx             * pTx,
+bool psonTxInit( psonTx             * pTx,
                  size_t               numberOfBlocks,
-                 psnSessionContext * pContext )
+                 psonSessionContext * pContext )
 {
    psoErrors errcode;
    
@@ -33,31 +33,31 @@ bool psnTxInit( psnTx             * pTx,
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( numberOfBlocks  > 0 );
    
-   errcode = psnMemObjectInit( &pTx->memObject, 
-                                PSN_IDENT_TRANSACTION,
+   errcode = psonMemObjectInit( &pTx->memObject, 
+                                PSON_IDENT_TRANSACTION,
                                 &pTx->blockGroup,
                                 numberOfBlocks );
    if ( errcode != PSO_OK ) {
-      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
       return false;
    }
 
-   psnLinkedListInit( &pTx->listOfOps );
+   psonLinkedListInit( &pTx->listOfOps );
 
-   pTx->signature = PSN_TX_SIGNATURE;
+   pTx->signature = PSON_TX_SIGNATURE;
    
    return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psnTxFini( psnTx             * pTx, 
-                 psnSessionContext * pContext )
+void psonTxFini( psonTx             * pTx, 
+                 psonSessionContext * pContext )
 {
    PSO_PRE_CONDITION( pTx      != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pTx->listOfOps.currentSize == 0 );
-   PSO_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
+   PSO_PRE_CONDITION( pTx->signature == PSON_TX_SIGNATURE );
    
    /* Synch the shared memory */
 #if 0
@@ -66,36 +66,36 @@ void psnTxFini( psnTx             * pTx,
 
    /* Close and unlink the log file */
    if ( pContext->pLogFile != NULL ) {
-      psnCloseLogFile( pContext->pLogFile, &pContext->errorHandler );
+      psonCloseLogFile( pContext->pLogFile, &pContext->errorHandler );
    }
    
-   psnLinkedListFini( &pTx->listOfOps );
+   psonLinkedListFini( &pTx->listOfOps );
    pTx->signature = 0;
    
    /* This will remove the blocks of allocated memory */
-   psnMemObjectFini(  &pTx->memObject, PSN_ALLOC_ANY, pContext );
+   psonMemObjectFini(  &pTx->memObject, PSON_ALLOC_ANY, pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psnTxAddOps( psnTx             * pTx,
-                   psnTxType           txType,
+bool psonTxAddOps( psonTx             * pTx,
+                   psonTxType           txType,
                    ptrdiff_t            parentOffset, 
-                   psnMemObjIdent      parentType, 
+                   psonMemObjIdent      parentType, 
                    ptrdiff_t            childOffset,
-                   psnMemObjIdent      childType, 
-                   psnSessionContext * pContext )
+                   psonMemObjIdent      childType, 
+                   psonSessionContext * pContext )
 {
-   psnTxOps * pOps;
+   psonTxOps * pOps;
    
    PSO_PRE_CONDITION( pTx      != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
-   PSO_PRE_CONDITION( parentOffset != PSN_NULL_OFFSET );
-   PSO_PRE_CONDITION( childOffset  != PSN_NULL_OFFSET );
-   PSO_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
+   PSO_PRE_CONDITION( parentOffset != PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( childOffset  != PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( pTx->signature == PSON_TX_SIGNATURE );
 
-   pOps = (psnTxOps *) psnMalloc( &pTx->memObject,
-                                    sizeof(psnTxOps), 
+   pOps = (psonTxOps *) psonMalloc( &pTx->memObject,
+                                    sizeof(psonTxOps), 
                                     pContext );
    if ( pOps != NULL ) {
       pOps->transType    = txType;
@@ -104,13 +104,13 @@ bool psnTxAddOps( psnTx             * pTx,
       pOps->childOffset  = childOffset;
       pOps->childType    = childType;
 
-      psnLinkNodeInit(  &pOps->node );
-      psnLinkedListPutLast( &pTx->listOfOps, &pOps->node );
+      psonLinkNodeInit(  &pOps->node );
+      psonLinkedListPutLast( &pTx->listOfOps, &pOps->node );
 
       return true;
    }
 
-   pscSetError( &pContext->errorHandler, 
+   psocSetError( &pContext->errorHandler, 
                  g_psoErrorHandle, 
                  PSO_NOT_ENOUGH_PSO_MEMORY );
 
@@ -119,49 +119,49 @@ bool psnTxAddOps( psnTx             * pTx,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psnTxRemoveLastOps( psnTx             * pTx, 
-                          psnSessionContext * pContext )
+void psonTxRemoveLastOps( psonTx             * pTx, 
+                          psonSessionContext * pContext )
 {
    bool ok;
-   psnLinkNode * pDummy = NULL;
-   psnTxOps * pOps;
+   psonLinkNode * pDummy = NULL;
+   psonTxOps * pOps;
 
    PSO_PRE_CONDITION( pTx != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
-   PSO_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
+   PSO_PRE_CONDITION( pTx->signature == PSON_TX_SIGNATURE );
    
-   ok = psnLinkedListGetLast( &pTx->listOfOps, &pDummy );
+   ok = psonLinkedListGetLast( &pTx->listOfOps, &pDummy );
 
    PSO_POST_CONDITION( ok );
    
-   pOps = (psnTxOps *)((char *)pDummy - offsetof( psnTxOps, node ));
+   pOps = (psonTxOps *)((char *)pDummy - offsetof( psonTxOps, node ));
    
-   psnFree( &pTx->memObject,
+   psonFree( &pTx->memObject,
              (unsigned char *) pOps,
-             sizeof(psnTxOps), 
+             sizeof(psonTxOps), 
              pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psnTxCommit( psnTx             * pTx,
-                   psnSessionContext * pContext )
+void psonTxCommit( psonTx             * pTx,
+                   psonSessionContext * pContext )
 {
-   psnTxOps     * pOps = NULL;
-   psnLinkNode  * pLinkNode = NULL;
-   psnFolder    * parentFolder,    * pChildFolder;
-   psnMemObject * pChildMemObject, * pParentMemObject;
-   psnTreeNode  * pChildNode;
-   psnTxStatus  * pChildStatus;
-   psnHashMap   * pHashMap;
-   psnQueue     * pQueue;
+   psonTxOps     * pOps = NULL;
+   psonLinkNode  * pLinkNode = NULL;
+   psonFolder    * parentFolder,    * pChildFolder;
+   psonMemObject * pChildMemObject, * pParentMemObject;
+   psonTreeNode  * pChildNode;
+   psonTxStatus  * pChildStatus;
+   psonHashMap   * pHashMap;
+   psonQueue     * pQueue;
    int pOps_invalid_type = 0;
-   psnHashItem  * pHashItem;
-   psnObjectDescriptor * pDesc;
+   psonHashItem  * pHashItem;
+   psonObjectDescriptor * pDesc;
    
    PSO_PRE_CONDITION( pTx      != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
-   PSO_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
+   PSO_PRE_CONDITION( pTx->signature == PSON_TX_SIGNATURE );
       
    /* Synch the shared memory */
 #if 0
@@ -171,7 +171,7 @@ void psnTxCommit( psnTx             * pTx,
 
    /* Write to the log file */
    if ( pContext->pLogFile != NULL ) {
-      errcode = psnLogTransaction( pContext->pLogFile, 
+      errcode = psonLogTransaction( pContext->pLogFile, 
                                     SET_OFFSET(pTx), 
                                     &pContext->errorHandler );
       if ( errcode != PSO_OK ) {
@@ -186,7 +186,7 @@ void psnTxCommit( psnTx             * pTx,
       return;
    }
    
-   while ( psnLinkedListGetFirst( &pTx->listOfOps, &pLinkNode ) ) {
+   while ( psonLinkedListGetFirst( &pTx->listOfOps, &pLinkNode ) ) {
 
       parentFolder = pChildFolder = NULL;
       pChildMemObject = pParentMemObject = NULL;
@@ -195,28 +195,28 @@ void psnTxCommit( psnTx             * pTx,
       pHashMap = NULL;
       pQueue   = NULL;
       
-      pOps = (psnTxOps*)
-         ((char*)pLinkNode - offsetof( psnTxOps, node ));
+      pOps = (psonTxOps*)
+         ((char*)pLinkNode - offsetof( psonTxOps, node ));
       
       switch( pOps->transType ) {
 
-      case PSN_TX_ADD_DATA:
+      case PSON_TX_ADD_DATA:
 
-         if ( pOps->parentType == PSN_IDENT_HASH_MAP ) {
-            GET_PTR( pHashMap, pOps->parentOffset, psnHashMap );
+         if ( pOps->parentType == PSON_IDENT_HASH_MAP ) {
+            GET_PTR( pHashMap, pOps->parentOffset, psonHashMap );
             pParentMemObject = &pHashMap->memObject;
 
-            psnLockNoFailure( pParentMemObject, pContext );
-            psnHashMapCommitAdd( pHashMap, pOps->childOffset, pContext );
-            psnUnlock( pParentMemObject, pContext );
+            psonLockNoFailure( pParentMemObject, pContext );
+            psonHashMapCommitAdd( pHashMap, pOps->childOffset, pContext );
+            psonUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == PSN_IDENT_QUEUE ) {
-            GET_PTR( pQueue, pOps->parentOffset, psnQueue );
+         else if ( pOps->parentType == PSON_IDENT_QUEUE ) {
+            GET_PTR( pQueue, pOps->parentOffset, psonQueue );
             pParentMemObject = &pQueue->memObject;
 
-            psnLockNoFailure( pParentMemObject, pContext );
-            psnQueueCommitAdd( pQueue, pOps->childOffset );
-            psnUnlock( pParentMemObject, pContext );
+            psonLockNoFailure( pParentMemObject, pContext );
+            psonQueueCommitAdd( pQueue, pOps->childOffset );
+            psonUnlock( pParentMemObject, pContext );
          }
          /* We should not come here */
          else {
@@ -225,66 +225,66 @@ void psnTxCommit( psnTx             * pTx,
          
          break;
 
-      case PSN_TX_ADD_OBJECT:
+      case PSON_TX_ADD_OBJECT:
 
-         PSO_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
+         PSO_POST_CONDITION( pOps->parentType == PSON_IDENT_FOLDER );
 
-         GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
-         GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
-         GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
-         GET_PTR( pChildMemObject, pDesc->memOffset, psnMemObject );
+         GET_PTR( parentFolder, pOps->parentOffset, psonFolder );
+         GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
+         GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
+         GET_PTR( pChildMemObject, pDesc->memOffset, psonMemObject );
          pChildStatus = &pHashItem->txStatus;
          
-         psnLockNoFailure( &parentFolder->memObject, pContext );
-         psnLockNoFailure( pChildMemObject, pContext );
+         psonLockNoFailure( &parentFolder->memObject, pContext );
+         psonLockNoFailure( pChildMemObject, pContext );
 
-         psnTxStatusClearTx( pChildStatus );
+         psonTxStatusClearTx( pChildStatus );
          parentFolder->nodeObject.txCounter--;
 
          /* If needed */
-         psnFolderResize( parentFolder, pContext );
+         psonFolderResize( parentFolder, pContext );
 
-         psnUnlock( pChildMemObject, pContext );
-         psnUnlock( &parentFolder->memObject, pContext );
+         psonUnlock( pChildMemObject, pContext );
+         psonUnlock( &parentFolder->memObject, pContext );
          
          break;
 
-      case PSN_TX_ADD_EDIT_OBJECT:
+      case PSON_TX_ADD_EDIT_OBJECT:
 
-         PSO_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
+         PSO_POST_CONDITION( pOps->parentType == PSON_IDENT_FOLDER );
 
-         GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
-         GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
-         GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
+         GET_PTR( parentFolder, pOps->parentOffset, psonFolder );
+         GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
+         GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
          
-         psnLockNoFailure( &parentFolder->memObject, pContext );
+         psonLockNoFailure( &parentFolder->memObject, pContext );
 
-         psnFolderCommitEdit( parentFolder, 
+         psonFolderCommitEdit( parentFolder, 
                                pHashItem, pOps->childType, pContext );
          
          parentFolder->nodeObject.txCounter--;
 
          /* If needed */
-         psnFolderResize( parentFolder, pContext );
+         psonFolderResize( parentFolder, pContext );
 
-         psnUnlock( &parentFolder->memObject, pContext );
+         psonUnlock( &parentFolder->memObject, pContext );
          
          break;
 
-      case PSN_TX_REMOVE_OBJECT:
+      case PSON_TX_REMOVE_OBJECT:
 
-         PSO_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
+         PSO_POST_CONDITION( pOps->parentType == PSON_IDENT_FOLDER );
 
-         GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
-         GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
-         GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
-         GET_PTR( pChildMemObject, pDesc->memOffset, psnMemObject );
-         GET_PTR( pChildNode, pDesc->nodeOffset, psnTreeNode );
+         GET_PTR( parentFolder, pOps->parentOffset, psonFolder );
+         GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
+         GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
+         GET_PTR( pChildMemObject, pDesc->memOffset, psonMemObject );
+         GET_PTR( pChildNode, pDesc->nodeOffset, psonTreeNode );
          pChildStatus = &pHashItem->txStatus;
 
-         psnLockNoFailure( &parentFolder->memObject, pContext );
+         psonLockNoFailure( &parentFolder->memObject, pContext );
 
-         psnLockNoFailure( pChildMemObject, pContext );
+         psonLockNoFailure( pChildMemObject, pContext );
 
          if ( pChildStatus->usageCounter > 0 || 
             pChildNode->txCounter > 0  || pChildStatus->parentCounter > 0 ) {
@@ -293,48 +293,48 @@ void psnTxCommit( psnTx             * pTx,
              * as "Remove is committed" so that the last "user" do delete
              * it.
              */
-            psnTxStatusCommitRemove( pChildStatus );
-            psnUnlock( pChildMemObject, pContext );
+            psonTxStatusCommitRemove( pChildStatus );
+            psonUnlock( pChildMemObject, pContext );
          }
          else {
             /* 
              * No one uses the object to remove and no one can access it
              * since we have a lock on its parent. We can safely unlock it.
              */
-            psnUnlock( pChildMemObject, pContext );
+            psonUnlock( pChildMemObject, pContext );
 
             /* 
              * Remove it from the folder (from the hash list)
              * (this function also decrease the txCounter of the parentFolder 
              */
-            psnFolderRemoveObject( parentFolder, 
+            psonFolderRemoveObject( parentFolder, 
                                     pHashItem,
                                     pContext );
          }
-         psnUnlock( &parentFolder->memObject, pContext );
+         psonUnlock( &parentFolder->memObject, pContext );
 
          break;
 
-      case PSN_TX_REMOVE_DATA:
-         if ( pOps->parentType == PSN_IDENT_HASH_MAP ) {
-            GET_PTR( pHashMap, pOps->parentOffset, psnHashMap );
+      case PSON_TX_REMOVE_DATA:
+         if ( pOps->parentType == PSON_IDENT_HASH_MAP ) {
+            GET_PTR( pHashMap, pOps->parentOffset, psonHashMap );
             pParentMemObject = &pHashMap->memObject;
 
-            psnLockNoFailure( pParentMemObject, pContext );
-            psnHashMapCommitRemove( pHashMap,
+            psonLockNoFailure( pParentMemObject, pContext );
+            psonHashMapCommitRemove( pHashMap,
                                      pOps->childOffset,
                                      pContext );
-            psnUnlock( pParentMemObject, pContext );
+            psonUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == PSN_IDENT_QUEUE ) {
-            GET_PTR( pQueue, pOps->parentOffset, psnQueue );
+         else if ( pOps->parentType == PSON_IDENT_QUEUE ) {
+            GET_PTR( pQueue, pOps->parentOffset, psonQueue );
             pParentMemObject = &pQueue->memObject;
 
-            psnLockNoFailure( pParentMemObject, pContext );
-            psnQueueCommitRemove( pQueue,
+            psonLockNoFailure( pParentMemObject, pContext );
+            psonQueueCommitRemove( pQueue,
                                    pOps->childOffset,
                                    pContext );
-            psnUnlock( pParentMemObject, pContext );
+            psonUnlock( pParentMemObject, pContext );
          }
          /* We should not come here */
          else {
@@ -343,17 +343,17 @@ void psnTxCommit( psnTx             * pTx,
          
          break;
 #if 0
-      case PSN_TX_SELECT:
+      case PSON_TX_SELECT:
          /* Not yet! */
          break;
          
-      case PSN_TX_UPDATE:
+      case PSON_TX_UPDATE:
          /* Not yet! */
          break;
 #endif
       } /* end of switch on type of ops */
 
-      psnFree( &pTx->memObject, (unsigned char*) pOps, sizeof(psnTxOps), 
+      psonFree( &pTx->memObject, (unsigned char*) pOps, sizeof(psonTxOps), 
                 pContext );
                 
    } /* end of while loop on the list of ops */
@@ -362,25 +362,25 @@ void psnTxCommit( psnTx             * pTx,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psnTxRollback( psnTx             * pTx,
-                     psnSessionContext * pContext )
+void psonTxRollback( psonTx             * pTx,
+                     psonSessionContext * pContext )
 {
    int errcode = PSO_OK;
-   psnTxOps     * pOps = NULL;
-   psnLinkNode  * pLinkNode = NULL;
-   psnFolder    * parentFolder,    * pChildFolder;
-   psnMemObject * pChildMemObject, * pParentMemObject;
-   psnTreeNode  * pChildNode;
-   psnTxStatus  * pChildStatus;
-   psnHashMap   * pHashMap;
-   psnQueue     * pQueue;
-   psnHashItem  * pHashItem;
-   psnObjectDescriptor * pDesc;
+   psonTxOps     * pOps = NULL;
+   psonLinkNode  * pLinkNode = NULL;
+   psonFolder    * parentFolder,    * pChildFolder;
+   psonMemObject * pChildMemObject, * pParentMemObject;
+   psonTreeNode  * pChildNode;
+   psonTxStatus  * pChildStatus;
+   psonHashMap   * pHashMap;
+   psonQueue     * pQueue;
+   psonHashItem  * pHashItem;
+   psonObjectDescriptor * pDesc;
    int pOps_invalid_type = 0;
 
    PSO_PRE_CONDITION( pTx      != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
-   PSO_PRE_CONDITION( pTx->signature == PSN_TX_SIGNATURE );
+   PSO_PRE_CONDITION( pTx->signature == PSON_TX_SIGNATURE );
 
 #if 0
    /* Synch the shared memory */
@@ -389,7 +389,7 @@ void psnTxRollback( psnTx             * pTx,
 
    /* Write to the log file */
    if ( pContext->pLogFile != NULL ) {
-      errcode = psnLogTransaction( pContext->pLogFile, 
+      errcode = psonLogTransaction( pContext->pLogFile, 
                                     SET_OFFSET(pTx), 
                                     &pContext->errorHandler );
       if ( errcode != PSO_OK ) {
@@ -403,7 +403,7 @@ void psnTxRollback( psnTx             * pTx,
       return;
    }
    
-   while ( psnLinkedListGetLast( &pTx->listOfOps, 
+   while ( psonLinkedListGetLast( &pTx->listOfOps, 
                                   &pLinkNode ) ) {
       parentFolder = pChildFolder = NULL;
       pChildMemObject = pParentMemObject = NULL;
@@ -412,31 +412,31 @@ void psnTxRollback( psnTx             * pTx,
       pHashMap     = NULL;
       pQueue       = NULL;
       
-      pOps = (psnTxOps*)
-         ((char*)pLinkNode - offsetof( psnTxOps, node ));
+      pOps = (psonTxOps*)
+         ((char*)pLinkNode - offsetof( psonTxOps, node ));
 
       switch( pOps->transType ) {
 
-      case PSN_TX_ADD_DATA:
-         if ( pOps->parentType == PSN_IDENT_HASH_MAP ) {
-            GET_PTR( pHashMap, pOps->parentOffset, psnHashMap );
+      case PSON_TX_ADD_DATA:
+         if ( pOps->parentType == PSON_IDENT_HASH_MAP ) {
+            GET_PTR( pHashMap, pOps->parentOffset, psonHashMap );
             pParentMemObject = &pHashMap->memObject;
 
-            psnLockNoFailure( pParentMemObject, pContext );
-            psnHashMapRollbackAdd( pHashMap, 
+            psonLockNoFailure( pParentMemObject, pContext );
+            psonHashMapRollbackAdd( pHashMap, 
                                     pOps->childOffset,
                                     pContext );
-            psnUnlock( pParentMemObject, pContext );
+            psonUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == PSN_IDENT_QUEUE ) {
-            GET_PTR( pQueue, pOps->parentOffset, psnQueue );
+         else if ( pOps->parentType == PSON_IDENT_QUEUE ) {
+            GET_PTR( pQueue, pOps->parentOffset, psonQueue );
             pParentMemObject = &pQueue->memObject;
 
-            psnLockNoFailure( pParentMemObject, pContext );
-            psnQueueRollbackAdd( pQueue, 
+            psonLockNoFailure( pParentMemObject, pContext );
+            psonQueueRollbackAdd( pQueue, 
                                   pOps->childOffset,
                                   pContext );
-            psnUnlock( pParentMemObject, pContext );
+            psonUnlock( pParentMemObject, pContext );
          }
          /* We should not come here */
          else {
@@ -445,20 +445,20 @@ void psnTxRollback( psnTx             * pTx,
          
          break;
             
-      case PSN_TX_ADD_OBJECT:
+      case PSON_TX_ADD_OBJECT:
 
-         PSO_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
+         PSO_POST_CONDITION( pOps->parentType == PSON_IDENT_FOLDER );
 
-         GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
-         GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
-         GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
-         GET_PTR( pChildMemObject, pDesc->memOffset, psnMemObject );
-         GET_PTR( pChildNode, pDesc->nodeOffset, psnTreeNode );
+         GET_PTR( parentFolder, pOps->parentOffset, psonFolder );
+         GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
+         GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
+         GET_PTR( pChildMemObject, pDesc->memOffset, psonMemObject );
+         GET_PTR( pChildNode, pDesc->nodeOffset, psonTreeNode );
          pChildStatus = &pHashItem->txStatus;
 
-         psnLockNoFailure( &parentFolder->memObject, pContext );
+         psonLockNoFailure( &parentFolder->memObject, pContext );
 
-         psnLockNoFailure( pChildMemObject, pContext );
+         psonLockNoFailure( pChildMemObject, pContext );
 
          if ( pChildStatus->usageCounter > 0 || 
             pChildNode->txCounter > 0  || pChildStatus->parentCounter > 0 ) {
@@ -476,90 +476,90 @@ void psnTxRollback( psnTx             * pTx,
              * as "Remove is committed" so that the last "user" do delete
              * it.
              */
-            psnTxStatusCommitRemove( pChildStatus );
-            psnUnlock( pChildMemObject, pContext );
+            psonTxStatusCommitRemove( pChildStatus );
+            psonUnlock( pChildMemObject, pContext );
          }
          else {
             /* 
              * No one uses the object to remove and no one can access it
              * since we have a lock on its parent. We can safely unlock it.
              */
-            psnUnlock( pChildMemObject, pContext );
+            psonUnlock( pChildMemObject, pContext );
 
             /* Remove it from the folder (from the hash list) */
-            psnFolderRemoveObject( parentFolder,
+            psonFolderRemoveObject( parentFolder,
                                     pHashItem,
                                     pContext );
          }
-         psnUnlock( &parentFolder->memObject, pContext );
+         psonUnlock( &parentFolder->memObject, pContext );
 
          break;
 
-      case PSN_TX_ADD_EDIT_OBJECT:
+      case PSON_TX_ADD_EDIT_OBJECT:
 
-         PSO_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
+         PSO_POST_CONDITION( pOps->parentType == PSON_IDENT_FOLDER );
 
-         GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
-         GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
-         GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
+         GET_PTR( parentFolder, pOps->parentOffset, psonFolder );
+         GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
+         GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
          
-         psnLockNoFailure( &parentFolder->memObject, pContext );
+         psonLockNoFailure( &parentFolder->memObject, pContext );
 
-         psnFolderRollbackEdit( parentFolder, 
+         psonFolderRollbackEdit( parentFolder, 
                                  pHashItem, pOps->childType, pContext );
          
          parentFolder->nodeObject.txCounter--;
 
          /* If needed */
-         psnFolderResize( parentFolder, pContext );
+         psonFolderResize( parentFolder, pContext );
 
-         psnUnlock( &parentFolder->memObject, pContext );
+         psonUnlock( &parentFolder->memObject, pContext );
          
          break;
 
-      case PSN_TX_REMOVE_OBJECT:
+      case PSON_TX_REMOVE_OBJECT:
 
-         PSO_POST_CONDITION( pOps->parentType == PSN_IDENT_FOLDER );
+         PSO_POST_CONDITION( pOps->parentType == PSON_IDENT_FOLDER );
 
-         GET_PTR( parentFolder, pOps->parentOffset, psnFolder );
-         GET_PTR( pHashItem, pOps->childOffset, psnHashItem );
-         GET_PTR( pDesc, pHashItem->dataOffset, psnObjectDescriptor );
-         GET_PTR( pChildMemObject, pDesc->memOffset, psnMemObject );
+         GET_PTR( parentFolder, pOps->parentOffset, psonFolder );
+         GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
+         GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
+         GET_PTR( pChildMemObject, pDesc->memOffset, psonMemObject );
          pChildStatus = &pHashItem->txStatus;
 
-         psnLockNoFailure( &parentFolder->memObject, pContext );
-         psnLockNoFailure( pChildMemObject, pContext );
+         psonLockNoFailure( &parentFolder->memObject, pContext );
+         psonLockNoFailure( pChildMemObject, pContext );
 
-         psnTxStatusClearTx( pChildStatus );
+         psonTxStatusClearTx( pChildStatus );
          parentFolder->nodeObject.txCounter--;
 
          /* If needed */
-         psnFolderResize( parentFolder, pContext );
+         psonFolderResize( parentFolder, pContext );
          
-         psnUnlock( pChildMemObject, pContext );
-         psnUnlock( &parentFolder->memObject, pContext );
+         psonUnlock( pChildMemObject, pContext );
+         psonUnlock( &parentFolder->memObject, pContext );
 
          break;
 
-      case PSN_TX_REMOVE_DATA:
+      case PSON_TX_REMOVE_DATA:
 
-         if ( pOps->parentType == PSN_IDENT_HASH_MAP ) {
-            GET_PTR( pHashMap, pOps->parentOffset, psnHashMap );
+         if ( pOps->parentType == PSON_IDENT_HASH_MAP ) {
+            GET_PTR( pHashMap, pOps->parentOffset, psonHashMap );
             pParentMemObject = &pHashMap->memObject;
 
-            psnLockNoFailure( pParentMemObject, pContext );
-            psnHashMapRollbackRemove( pHashMap, 
+            psonLockNoFailure( pParentMemObject, pContext );
+            psonHashMapRollbackRemove( pHashMap, 
                                        pOps->childOffset, pContext );
-            psnUnlock( pParentMemObject, pContext );
+            psonUnlock( pParentMemObject, pContext );
          }
-         else if ( pOps->parentType == PSN_IDENT_QUEUE ) {
-            GET_PTR( pQueue, pOps->parentOffset, psnQueue );
+         else if ( pOps->parentType == PSON_IDENT_QUEUE ) {
+            GET_PTR( pQueue, pOps->parentOffset, psonQueue );
             pParentMemObject = &pQueue->memObject;
 
-            psnLockNoFailure( pParentMemObject, pContext );
-            psnQueueRollbackRemove( pQueue, 
+            psonLockNoFailure( pParentMemObject, pContext );
+            psonQueueRollbackRemove( pQueue, 
                                      pOps->childOffset );
-            psnUnlock( pParentMemObject, pContext );
+            psonUnlock( pParentMemObject, pContext );
          }
          /* We should not come here */
          else {
@@ -569,17 +569,17 @@ void psnTxRollback( psnTx             * pTx,
          break;
 
 #if 0
-      case PSN_TX_SELECT:
+      case PSON_TX_SELECT:
          /* Not yet! */
          break;
          
-      case PSN_TX_UPDATE:
+      case PSON_TX_UPDATE:
          /* Not yet! */
          break;
 #endif         
       }
 
-      psnFree( &pTx->memObject, (unsigned char*) pOps, sizeof(psnTxOps), 
+      psonFree( &pTx->memObject, (unsigned char*) pOps, sizeof(psonTxOps), 
                 pContext );
    }
    

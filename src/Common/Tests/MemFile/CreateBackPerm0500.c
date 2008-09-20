@@ -25,8 +25,8 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   pscMemoryFile  mem;
-   pscErrorHandler errorHandler;
+   psocMemoryFile  mem;
+   psocErrorHandler errorHandler;
    bool ok;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete
@@ -35,11 +35,11 @@ int main()
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
 
-   pscInitErrorDefs();
-   pscInitErrorHandler( &errorHandler );
-   pscInitMemoryFile( &mem, 10, "MemFile.mem" );
+   psocInitErrorDefs();
+   psocInitErrorHandler( &errorHandler );
+   psocInitMemoryFile( &mem, 10, "MemFile.mem" );
 
-   ok = pscCreateBackstore( &mem, 0500, &errorHandler );
+   ok = psocCreateBackstore( &mem, 0500, &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 #else

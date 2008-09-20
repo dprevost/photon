@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSA_LIFO_H
-#define PSA_LIFO_H
+#ifndef PSOA_LIFO_H
+#define PSOA_LIFO_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -29,23 +29,23 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct psaLifo
+typedef struct psoaLifo
 {
-   psaCommonObject object;
+   psoaCommonObject object;
    
    /**
     * This pointer holds the result of the iteration (the pointer to
-    * the current psnQueueItem).
+    * the current psonQueueItem).
     */
-   psnQueueItem * iterator;
+   psonQueueItem * iterator;
    
    /** A pointer to the data definition of the queue. */
-   psnFieldDef * pDefinition;
+   psonFieldDef * pDefinition;
    
    size_t minLength;
    size_t maxLength;
    
-} psaLifo;
+} psoaLifo;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -54,21 +54,21 @@ typedef struct psaLifo
  * by this function.
  */
 PHOTON_API_EXPORT
-int psaLifoFirst( psaLifo      * pLifo,
-                  psaDataEntry * pEntry );
+int psoaLifoFirst( psoaLifo      * pLifo,
+                  psoaDataEntry * pEntry );
 
 /** 
  * Iterates through the queue - no data items are removed from the queue
  * by this function.
  */
 PHOTON_API_EXPORT
-int psaLifoNext( psaLifo      * pLifo,
-                 psaDataEntry * pEntry );
+int psoaLifoNext( psoaLifo      * pLifo,
+                 psoaDataEntry * pEntry );
 
 /** Remove the first inserted item from a FIFO queue. */
 PHOTON_API_EXPORT
-int psaLifoRemove( psaLifo      * pLifo,
-                   psaDataEntry * pEntry );
+int psoaLifoRemove( psoaLifo      * pLifo,
+                   psoaDataEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -76,7 +76,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSA_LIFO_H */
+#endif /* PSOA_LIFO_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

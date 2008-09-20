@@ -23,11 +23,11 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnFolder * pTopFolder;
-   psnSessionContext context;
+   psonFolder * pTopFolder;
+   psonSessionContext context;
    int errcode;
    bool ok;
-   psnFolderItem folderItem;
+   psonFolderItem folderItem;
    psoObjectDefinition folderDef = { 
       PSO_FOLDER, 
       0, 
@@ -43,7 +43,7 @@ int main()
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psnTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateObject( pTopFolder,
                                    "Test1",
                                    strlen("Test1"),
                                    &folderDef,
@@ -52,7 +52,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateObject( pTopFolder,
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &mapDef,
@@ -61,7 +61,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnTopFolderEditObject( pTopFolder,
+   ok = psonTopFolderEditObject( pTopFolder,
                                  "Test1/Test2",
                                  strlen("Test1/Test2"),
                                  PSO_FAST_MAP,
@@ -71,7 +71,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnTopFolderEditObject( pTopFolder,
+   ok = psonTopFolderEditObject( pTopFolder,
                                  "Test3/Test2",
                                  strlen("Test3/Test2"),
                                  PSO_FAST_MAP,
@@ -80,12 +80,12 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = pscGetLastError( &context.errorHandler );
+   errcode = psocGetLastError( &context.errorHandler );
    if ( errcode != PSO_NO_SUCH_FOLDER ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnTopFolderEditObject( pTopFolder,
+   ok = psonTopFolderEditObject( pTopFolder,
                                  "Test1/Test5",
                                  strlen("Test1/Test5"),
                                  PSO_FAST_MAP,
@@ -94,7 +94,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = pscGetLastError( &context.errorHandler );
+   errcode = psocGetLastError( &context.errorHandler );
    if ( errcode != PSO_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

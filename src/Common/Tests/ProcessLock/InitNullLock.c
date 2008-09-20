@@ -28,7 +28,7 @@ int main()
 #if defined(USE_DBC)
    bool ok;
 
-   ok = pscInitProcessLock( NULL );
+   ok = psocInitProcessLock( NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

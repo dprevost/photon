@@ -76,12 +76,12 @@ string foldername("TestFolder");
 int AddDefectsHashMaps( vector<myMap> & h )
 {
    int api_offset = -1;
-   struct psaHashMap ** apiHashMap;
-   struct psnHashMap * pHashMap;
-   psnTxStatus * txItemStatus, * txHashMapStatus;
+   struct psoaHashMap ** apiHashMap;
+   struct psonHashMap * pHashMap;
+   psonTxStatus * txItemStatus, * txHashMapStatus;
    unsigned long i, ** apiObj;
    ptrdiff_t offset, previousOffset;
-   psnHashItem * pItem;
+   psonHashItem * pItem;
    ptrdiff_t* pArray;   
    bool ok;
    
@@ -92,7 +92,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table (true for g++)
    for ( i = 0; i < sizeof(psoHashMap)/sizeof(void*); ++i, apiObj++ ) {
-      if ( **apiObj == PSA_HASH_MAP ) {
+      if ( **apiObj == PSOA_HASH_MAP ) {
          api_offset = i * sizeof(void*);
          break;
       }
@@ -105,17 +105,17 @@ int AddDefectsHashMaps( vector<myMap> & h )
    cout << "Defect for " << h[0].name << ": None" << endl;
 
    cout << "Defect for " << h[1].name << ": 3 ref. couters" << endl;
-   apiHashMap = (psaHashMap **) ( (unsigned char *) &h[1].map + api_offset );
-   pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyMemObject;
+   apiHashMap = (psoaHashMap **) ( (unsigned char *) &h[1].map + api_offset );
+   pHashMap = (psonHashMap *) (*apiHashMap)->object.pMyMemObject;
    pHashMap->nodeObject.txCounter++;
-   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psonTxStatus );
    txHashMapStatus->usageCounter++;
 
-   ok = psnHashGetFirst( &pHashMap->hashObj, &offset );
+   ok = psonHashGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
    while ( ok ) {
       previousOffset = offset;
-      ok = psnHashGetNext( &pHashMap->hashObj,
+      ok = psonHashGetNext( &pHashMap->hashObj,
                             previousOffset,
                             &offset );
       i++;
@@ -125,44 +125,44 @@ int AddDefectsHashMaps( vector<myMap> & h )
       cerr << "Iteration error in " << h[1].name << endl;
       return -1;
    }
-   GET_PTR( pItem, offset, psnHashItem );
+   GET_PTR( pItem, offset, psonHashItem );
    txItemStatus = &pItem->txStatus;
    txItemStatus->usageCounter++;
 
    cout << "Defect for " << h[2].name << ": object added - not committed" << endl;
-   apiHashMap = (psaHashMap **) ( (unsigned char *) &h[2].map + api_offset );
-   pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyMemObject;
-   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
+   apiHashMap = (psoaHashMap **) ( (unsigned char *) &h[2].map + api_offset );
+   pHashMap = (psonHashMap *) (*apiHashMap)->object.pMyMemObject;
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psonTxStatus );
    txHashMapStatus->txOffset = SET_OFFSET( pHashMap ); 
-   txHashMapStatus->status = PSN_TXS_ADDED;
+   txHashMapStatus->status = PSON_TXS_ADDED;
 
    cout << "Defect for " << h[3].name << ": 5 items removed-committed," << endl;
    cout << "                                  4 items removed - not committed," << endl;
    cout << "                                  9 items added - not committed" << endl;
-   apiHashMap = (psaHashMap **) ( (unsigned char *) &h[3].map + api_offset );
-   pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyMemObject;
+   apiHashMap = (psoaHashMap **) ( (unsigned char *) &h[3].map + api_offset );
+   pHashMap = (psonHashMap *) (*apiHashMap)->object.pMyMemObject;
 
-   ok = psnHashGetFirst( &pHashMap->hashObj, &offset );
+   ok = psonHashGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
    while ( ok ) {      
-      GET_PTR( pItem, offset, psnHashItem );
+      GET_PTR( pItem, offset, psonHashItem );
       txItemStatus = &pItem->txStatus;
 
       if ( i < 5 ) { /* removed committed */
          txItemStatus->txOffset = SET_OFFSET( pHashMap ); 
-         txItemStatus->status = PSN_TXS_DESTROYED_COMMITTED;
+         txItemStatus->status = PSON_TXS_DESTROYED_COMMITTED;
       }
       else if ( i < 9 ) { /* removed uncommitted */
          txItemStatus->txOffset = SET_OFFSET( pHashMap ); 
-         txItemStatus->status = PSN_TXS_DESTROYED;
+         txItemStatus->status = PSON_TXS_DESTROYED;
       }
       else if ( i >= 11 ) { /* Added */
          txItemStatus->txOffset = SET_OFFSET( pHashMap ); 
-         txItemStatus->status = PSN_TXS_ADDED;
+         txItemStatus->status = PSON_TXS_ADDED;
       }
 
       previousOffset = offset;
-      ok = psnHashGetNext( &pHashMap->hashObj,
+      ok = psonHashGetNext( &pHashMap->hashObj,
                             previousOffset,
                             &offset );
       i++;
@@ -174,39 +174,39 @@ int AddDefectsHashMaps( vector<myMap> & h )
    }
    
    cout << "Defect for " << h[4].name << ": object locked" << endl;
-   apiHashMap = (psaHashMap **) ( (unsigned char *) &h[4].map + api_offset );
-   pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
+   apiHashMap = (psoaHashMap **) ( (unsigned char *) &h[4].map + api_offset );
+   pHashMap = (psonHashMap *) (*apiHashMap)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
    cout << "Defect for " << h[5].name << ": items - invalid offset" << endl;
-   apiHashMap = (psaHashMap **) ( (unsigned char *) &h[5].map + api_offset );
-   pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
+   apiHashMap = (psoaHashMap **) ( (unsigned char *) &h[5].map + api_offset );
+   pHashMap = (psonHashMap *) (*apiHashMap)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
    GET_PTR( pArray, pHashMap->hashObj.arrayOffset, ptrdiff_t );
 
-   for ( i = 0; i < g_psnArrayLengths[pHashMap->hashObj.lengthIndex]; ++i ) {
-      if ( pArray[i] != PSN_NULL_OFFSET ) pArray[i] = 0;
+   for ( i = 0; i < g_psonArrayLengths[pHashMap->hashObj.lengthIndex]; ++i ) {
+      if ( pArray[i] != PSON_NULL_OFFSET ) pArray[i] = 0;
    }
    
    cout << "Defect for " << h[6].name << ": item - invalid key length" << endl;
-   apiHashMap = (psaHashMap **) ( (unsigned char *) &h[6].map + api_offset );
-   pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
+   apiHashMap = (psoaHashMap **) ( (unsigned char *) &h[6].map + api_offset );
+   pHashMap = (psonHashMap *) (*apiHashMap)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
-   ok = psnHashGetFirst( &pHashMap->hashObj, &offset );
+   ok = psonHashGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
    while ( ok ) {
       previousOffset = offset;
-      ok = psnHashGetNext( &pHashMap->hashObj,
+      ok = psonHashGetNext( &pHashMap->hashObj,
                             previousOffset,
                             &offset );
       i++;
@@ -216,21 +216,21 @@ int AddDefectsHashMaps( vector<myMap> & h )
       cerr << "Iteration error in " << h[6].name << endl;
       return -1;
    }
-   GET_PTR( pItem, offset, psnHashItem );
+   GET_PTR( pItem, offset, psonHashItem );
    pItem->keyLength = 0;
    
    cout << "Defect for " << h[7].name << ": item - invalid data offset" << endl;
-   apiHashMap = (psaHashMap **) ( (unsigned char *) &h[7].map + api_offset );
-   pHashMap = (psnHashMap *) (*apiHashMap)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
+   apiHashMap = (psoaHashMap **) ( (unsigned char *) &h[7].map + api_offset );
+   pHashMap = (psonHashMap *) (*apiHashMap)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pHashMap->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
-   ok = psnHashGetFirst( &pHashMap->hashObj, &offset );
+   ok = psonHashGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
    while ( ok ) {
       previousOffset = offset;
-      ok = psnHashGetNext( &pHashMap->hashObj,
+      ok = psonHashGetNext( &pHashMap->hashObj,
                             previousOffset,
                             &offset );
       i++;
@@ -240,7 +240,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
       cerr << "Iteration error in " << h[7].name << endl;
       return -1;
    }
-   GET_PTR( pItem, offset, psnHashItem );
+   GET_PTR( pItem, offset, psonHashItem );
    pItem->dataOffset = 0;
 
    return 0;
@@ -251,12 +251,12 @@ int AddDefectsHashMaps( vector<myMap> & h )
 int AddDefectsLifos( vector<myLifo> & l )
 {
    int api_offset = -1;
-   struct psaLifo ** apiLifo;
-   struct psnQueue * pQueue;
-   psnTxStatus * txItemStatus, * txQueueStatus;
+   struct psoaLifo ** apiLifo;
+   struct psonQueue * pQueue;
+   psonTxStatus * txItemStatus, * txQueueStatus;
    unsigned long i, ** apiObj;
-   psnLinkNode * pNode = NULL, *pSavedNode = NULL;
-   psnQueueItem* pQueueItem = NULL;
+   psonLinkNode * pNode = NULL, *pSavedNode = NULL;
+   psonQueueItem* pQueueItem = NULL;
    bool okList;
    
    // Using a (void *) cast to eliminate a gcc warning (dereferencing 
@@ -265,7 +265,7 @@ int AddDefectsLifos( vector<myLifo> & l )
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table
    for ( i = 0; i < sizeof(psoQueue)/sizeof(void*); ++i, apiObj++ ) {
-      if ( **apiObj == PSA_LIFO ) {
+      if ( **apiObj == PSOA_LIFO ) {
          api_offset = i * sizeof(void*);
          break;
       }
@@ -278,16 +278,16 @@ int AddDefectsLifos( vector<myLifo> & l )
    cout << "Defect for " << l[0].name << ": None" << endl;
 
    cout << "Defect for " << l[1].name << ": 3 ref. couters" << endl;
-   apiLifo = (psaLifo **) ( (unsigned char *) &l[1].queue + api_offset );
-   pQueue = (psnQueue *) (*apiLifo)->object.pMyMemObject;
+   apiLifo = (psoaLifo **) ( (unsigned char *) &l[1].queue + api_offset );
+   pQueue = (psonQueue *) (*apiLifo)->object.pMyMemObject;
    pQueue->nodeObject.txCounter++;
-   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
+   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psonTxStatus );
    txQueueStatus->usageCounter++;
    
-   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
@@ -297,77 +297,77 @@ int AddDefectsLifos( vector<myLifo> & l )
       cerr << "Iteration error in " << l[1].name << endl;
       return -1;
    }
-   pQueueItem = (psnQueueItem*) 
-      ((char*)pNode - offsetof( psnQueueItem, node ));
+   pQueueItem = (psonQueueItem*) 
+      ((char*)pNode - offsetof( psonQueueItem, node ));
    txItemStatus = &pQueueItem->txStatus;
    txItemStatus->usageCounter++;
 
    cout << "Defect for " << l[2].name << ": object added - not committed" << endl;
-   apiLifo = (psaLifo **) ( (unsigned char *) &l[2].queue + api_offset );
-   pQueue = (psnQueue *) (*apiLifo)->object.pMyMemObject;
-   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
+   apiLifo = (psoaLifo **) ( (unsigned char *) &l[2].queue + api_offset );
+   pQueue = (psonQueue *) (*apiLifo)->object.pMyMemObject;
+   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psonTxStatus );
    txQueueStatus->txOffset = SET_OFFSET( pQueue ); 
-   txQueueStatus->status = PSN_TXS_ADDED;
+   txQueueStatus->status = PSON_TXS_ADDED;
 
    // Queue 2. Defects: 
    //  - Items added (not committed) and items removed (committed + non-comm)
    cout << "Defect for " << l[3].name << ": 5 items removed-committed," << endl;
    cout << "                                  4 items removed - not committed," << endl;
    cout << "                                  9 items added - not committed" << endl;
-   apiLifo = (psaLifo **) ( (unsigned char *) &l[3].queue + api_offset );
-   pQueue = (psnQueue *) (*apiLifo)->object.pMyMemObject;
+   apiLifo = (psoaLifo **) ( (unsigned char *) &l[3].queue + api_offset );
+   pQueue = (psonQueue *) (*apiLifo)->object.pMyMemObject;
 
-   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      pQueueItem = (psnQueueItem*) 
-         ((char*)pNode - offsetof( psnQueueItem, node ));
+      pQueueItem = (psonQueueItem*) 
+         ((char*)pNode - offsetof( psonQueueItem, node ));
       txItemStatus = &pQueueItem->txStatus;
 
       if ( i < 5 ) { /* removed committed */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->status = PSN_TXS_DESTROYED_COMMITTED;
+         txItemStatus->status = PSON_TXS_DESTROYED_COMMITTED;
       }
       else if ( i < 9 ) { /* removed uncommitted */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->status = PSN_TXS_DESTROYED;
+         txItemStatus->status = PSON_TXS_DESTROYED;
       }
       else if ( i >= 11 ) { /* Added */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->status = PSN_TXS_ADDED;
+         txItemStatus->status = PSON_TXS_ADDED;
       }
       
-      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
                                              pNode, 
                                              &pNode );
       i++;
    }
    
    cout << "Defect for " << l[4].name << ": object locked" << endl;
-   apiLifo = (psaLifo **) ( (unsigned char *) &l[4].queue + api_offset );
-   pQueue = (psnQueue *) (*apiLifo)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
+   apiLifo = (psoaLifo **) ( (unsigned char *) &l[4].queue + api_offset );
+   pQueue = (psonQueue *) (*apiLifo)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
    cout << "Defect for " << l[5].name << ": broken forward link" << endl;
-   apiLifo = (psaLifo **) ( (unsigned char *) &l[5].queue + api_offset );
-   pQueue = (psnQueue *) (*apiLifo)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
+   apiLifo = (psoaLifo **) ( (unsigned char *) &l[5].queue + api_offset );
+   pQueue = (psonQueue *) (*apiLifo)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->nextOffset = PSN_NULL_OFFSET;
+         pNode->nextOffset = PSON_NULL_OFFSET;
          break;
       }
    }
@@ -377,22 +377,22 @@ int AddDefectsLifos( vector<myLifo> & l )
    }
 
    cout << "Defect for " << l[6].name << ": broken backward link" << endl;
-   apiLifo = (psaLifo **) ( (unsigned char *) &l[6].queue + api_offset );
-   pQueue = (psnQueue *) (*apiLifo)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
+   apiLifo = (psoaLifo **) ( (unsigned char *) &l[6].queue + api_offset );
+   pQueue = (psonQueue *) (*apiLifo)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->previousOffset = PSN_NULL_OFFSET;
+         pNode->previousOffset = PSON_NULL_OFFSET;
          break;
       }
    }
@@ -402,24 +402,24 @@ int AddDefectsLifos( vector<myLifo> & l )
    }
    
    cout << "Defect for " << l[7].name << ": 2 broken forward links" << endl;
-   apiLifo = (psaLifo **) ( (unsigned char *) &l[7].queue + api_offset );
-   pQueue = (psnQueue *) (*apiLifo)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
+   apiLifo = (psoaLifo **) ( (unsigned char *) &l[7].queue + api_offset );
+   pQueue = (psonQueue *) (*apiLifo)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) pSavedNode = pNode;
       if ( i == 13 ) {
-         pSavedNode->nextOffset = PSN_NULL_OFFSET;
-         pNode->nextOffset = PSN_NULL_OFFSET;
+         pSavedNode->nextOffset = PSON_NULL_OFFSET;
+         pNode->nextOffset = PSON_NULL_OFFSET;
          break;
       }
    }
@@ -429,24 +429,24 @@ int AddDefectsLifos( vector<myLifo> & l )
    }
 
    cout << "Defect for " << l[8].name << ": 2 broken backward links" << endl;
-   apiLifo = (psaLifo **) ( (unsigned char *) &l[8].queue + api_offset );
-   pQueue = (psnQueue *) (*apiLifo)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
+   apiLifo = (psoaLifo **) ( (unsigned char *) &l[8].queue + api_offset );
+   pQueue = (psonQueue *) (*apiLifo)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) pSavedNode = pNode;
       if ( i == 13 ) {
-         pSavedNode->previousOffset = PSN_NULL_OFFSET;
-         pNode->previousOffset = PSN_NULL_OFFSET;
+         pSavedNode->previousOffset = PSON_NULL_OFFSET;
+         pNode->previousOffset = PSON_NULL_OFFSET;
          break;
       }
    }
@@ -456,23 +456,23 @@ int AddDefectsLifos( vector<myLifo> & l )
    }
 
    cout << "Defect for " << l[9].name << ": broken bw+fw links (eq)" << endl;
-   apiLifo = (psaLifo **) ( (unsigned char *) &l[9].queue + api_offset );
-   pQueue = (psnQueue *) (*apiLifo)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
+   apiLifo = (psoaLifo **) ( (unsigned char *) &l[9].queue + api_offset );
+   pQueue = (psonQueue *) (*apiLifo)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->previousOffset = PSN_NULL_OFFSET;
-         pNode->nextOffset = PSN_NULL_OFFSET;
+         pNode->previousOffset = PSON_NULL_OFFSET;
+         pNode->nextOffset = PSON_NULL_OFFSET;
          break;
       }
    }
@@ -489,12 +489,12 @@ int AddDefectsLifos( vector<myLifo> & l )
 int AddDefectsQueues( vector<myQueue> & q )
 {
    int api_offset = -1;
-   struct psaQueue ** apiQueue;
-   struct psnQueue * pQueue;
-   psnTxStatus * txItemStatus, * txQueueStatus;
+   struct psoaQueue ** apiQueue;
+   struct psonQueue * pQueue;
+   psonTxStatus * txItemStatus, * txQueueStatus;
    unsigned long i, ** apiObj;
-   psnLinkNode * pNode = NULL, *pSavedNode = NULL;
-   psnQueueItem* pQueueItem = NULL;
+   psonLinkNode * pNode = NULL, *pSavedNode = NULL;
+   psonQueueItem* pQueueItem = NULL;
    bool okList;
    
    // Using a (void *) cast to eliminate a gcc warning (dereferencing 
@@ -503,7 +503,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table
    for ( i = 0; i < sizeof(psoQueue)/sizeof(void*); ++i, apiObj++ ) {
-      if ( **apiObj == PSA_QUEUE ) {
+      if ( **apiObj == PSOA_QUEUE ) {
          api_offset = i * sizeof(void*);
          break;
       }
@@ -516,16 +516,16 @@ int AddDefectsQueues( vector<myQueue> & q )
    cout << "Defect for " << q[0].name << ": None" << endl;
 
    cout << "Defect for " << q[1].name << ": 3 ref. couters" << endl;
-   apiQueue = (psaQueue **) ( (unsigned char *) &q[1].queue + api_offset );
-   pQueue = (psnQueue *) (*apiQueue)->object.pMyMemObject;
+   apiQueue = (psoaQueue **) ( (unsigned char *) &q[1].queue + api_offset );
+   pQueue = (psonQueue *) (*apiQueue)->object.pMyMemObject;
    pQueue->nodeObject.txCounter++;
-   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
+   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psonTxStatus );
    txQueueStatus->usageCounter++;
    
-   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
@@ -535,77 +535,77 @@ int AddDefectsQueues( vector<myQueue> & q )
       cerr << "Iteration error in " << q[1].name << endl;
       return -1;
    }
-   pQueueItem = (psnQueueItem*) 
-      ((char*)pNode - offsetof( psnQueueItem, node ));
+   pQueueItem = (psonQueueItem*) 
+      ((char*)pNode - offsetof( psonQueueItem, node ));
    txItemStatus = &pQueueItem->txStatus;
    txItemStatus->usageCounter++;
 
    cout << "Defect for " << q[2].name << ": object added - not committed" << endl;
-   apiQueue = (psaQueue **) ( (unsigned char *) &q[2].queue + api_offset );
-   pQueue = (psnQueue *) (*apiQueue)->object.pMyMemObject;
-   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psnTxStatus );
+   apiQueue = (psoaQueue **) ( (unsigned char *) &q[2].queue + api_offset );
+   pQueue = (psonQueue *) (*apiQueue)->object.pMyMemObject;
+   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psonTxStatus );
    txQueueStatus->txOffset = SET_OFFSET( pQueue ); 
-   txQueueStatus->status = PSN_TXS_ADDED;
+   txQueueStatus->status = PSON_TXS_ADDED;
 
    // Queue 2. Defects: 
    //  - Items added (not committed) and items removed (committed + non-comm)
    cout << "Defect for " << q[3].name << ": 5 items removed-committed," << endl;
    cout << "                                  4 items removed - not committed," << endl;
    cout << "                                  9 items added - not committed" << endl;
-   apiQueue = (psaQueue **) ( (unsigned char *) &q[3].queue + api_offset );
-   pQueue = (psnQueue *) (*apiQueue)->object.pMyMemObject;
+   apiQueue = (psoaQueue **) ( (unsigned char *) &q[3].queue + api_offset );
+   pQueue = (psonQueue *) (*apiQueue)->object.pMyMemObject;
 
-   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      pQueueItem = (psnQueueItem*) 
-         ((char*)pNode - offsetof( psnQueueItem, node ));
+      pQueueItem = (psonQueueItem*) 
+         ((char*)pNode - offsetof( psonQueueItem, node ));
       txItemStatus = &pQueueItem->txStatus;
 
       if ( i < 5 ) { /* removed committed */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->status = PSN_TXS_DESTROYED_COMMITTED;
+         txItemStatus->status = PSON_TXS_DESTROYED_COMMITTED;
       }
       else if ( i < 9 ) { /* removed uncommitted */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->status = PSN_TXS_DESTROYED;
+         txItemStatus->status = PSON_TXS_DESTROYED;
       }
       else if ( i >= 11 ) { /* Added */
          txItemStatus->txOffset = SET_OFFSET( pQueue ); 
-         txItemStatus->status = PSN_TXS_ADDED;
+         txItemStatus->status = PSON_TXS_ADDED;
       }
       
-      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
                                              pNode, 
                                              &pNode );
       i++;
    }
    
    cout << "Defect for " << q[4].name << ": object locked" << endl;
-   apiQueue = (psaQueue **) ( (unsigned char *) &q[4].queue + api_offset );
-   pQueue = (psnQueue *) (*apiQueue)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
+   apiQueue = (psoaQueue **) ( (unsigned char *) &q[4].queue + api_offset );
+   pQueue = (psonQueue *) (*apiQueue)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
    cout << "Defect for " << q[5].name << ": broken forward link" << endl;
-   apiQueue = (psaQueue **) ( (unsigned char *) &q[5].queue + api_offset );
-   pQueue = (psnQueue *) (*apiQueue)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
+   apiQueue = (psoaQueue **) ( (unsigned char *) &q[5].queue + api_offset );
+   pQueue = (psonQueue *) (*apiQueue)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->nextOffset = PSN_NULL_OFFSET;
+         pNode->nextOffset = PSON_NULL_OFFSET;
          break;
       }
    }
@@ -615,22 +615,22 @@ int AddDefectsQueues( vector<myQueue> & q )
    }
 
    cout << "Defect for " << q[6].name << ": broken backward link" << endl;
-   apiQueue = (psaQueue **) ( (unsigned char *) &q[6].queue + api_offset );
-   pQueue = (psnQueue *) (*apiQueue)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
+   apiQueue = (psoaQueue **) ( (unsigned char *) &q[6].queue + api_offset );
+   pQueue = (psonQueue *) (*apiQueue)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->previousOffset = PSN_NULL_OFFSET;
+         pNode->previousOffset = PSON_NULL_OFFSET;
          break;
       }
    }
@@ -640,24 +640,24 @@ int AddDefectsQueues( vector<myQueue> & q )
    }
    
    cout << "Defect for " << q[7].name << ": 2 broken forward links" << endl;
-   apiQueue = (psaQueue **) ( (unsigned char *) &q[7].queue + api_offset );
-   pQueue = (psnQueue *) (*apiQueue)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
+   apiQueue = (psoaQueue **) ( (unsigned char *) &q[7].queue + api_offset );
+   pQueue = (psonQueue *) (*apiQueue)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) pSavedNode = pNode;
       if ( i == 13 ) {
-         pSavedNode->nextOffset = PSN_NULL_OFFSET;
-         pNode->nextOffset = PSN_NULL_OFFSET;
+         pSavedNode->nextOffset = PSON_NULL_OFFSET;
+         pNode->nextOffset = PSON_NULL_OFFSET;
          break;
       }
    }
@@ -667,24 +667,24 @@ int AddDefectsQueues( vector<myQueue> & q )
    }
 
    cout << "Defect for " << q[8].name << ": 2 broken backward links" << endl;
-   apiQueue = (psaQueue **) ( (unsigned char *) &q[8].queue + api_offset );
-   pQueue = (psnQueue *) (*apiQueue)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
+   apiQueue = (psoaQueue **) ( (unsigned char *) &q[8].queue + api_offset );
+   pQueue = (psonQueue *) (*apiQueue)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) pSavedNode = pNode;
       if ( i == 13 ) {
-         pSavedNode->previousOffset = PSN_NULL_OFFSET;
-         pNode->previousOffset = PSN_NULL_OFFSET;
+         pSavedNode->previousOffset = PSON_NULL_OFFSET;
+         pNode->previousOffset = PSON_NULL_OFFSET;
          break;
       }
    }
@@ -694,23 +694,23 @@ int AddDefectsQueues( vector<myQueue> & q )
    }
 
    cout << "Defect for " << q[9].name << ": broken bw+fw links (eq)" << endl;
-   apiQueue = (psaQueue **) ( (unsigned char *) &q[9].queue + api_offset );
-   pQueue = (psnQueue *) (*apiQueue)->object.pMyMemObject;
-   if ( ! pscTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
+   apiQueue = (psoaQueue **) ( (unsigned char *) &q[9].queue + api_offset );
+   pQueue = (psonQueue *) (*apiQueue)->object.pMyMemObject;
+   if ( ! psocTryAcquireProcessLock(&pQueue->memObject.lock, getpid(), 0) ) {
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
 
-   okList = psnLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
+   okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
    i = 0;
    while ( okList ) {
-      okList =  psnLinkedListPeakNext( &pQueue->listOfElements, 
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
                                         pNode, 
                                         &pNode );
       i++;
       if ( i == 9 ) {
-         pNode->previousOffset = PSN_NULL_OFFSET;
-         pNode->nextOffset = PSN_NULL_OFFSET;
+         pNode->previousOffset = PSON_NULL_OFFSET;
+         pNode->nextOffset = PSON_NULL_OFFSET;
          break;
       }
    }

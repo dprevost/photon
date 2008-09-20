@@ -25,34 +25,34 @@ const bool expectedToPass = false;
 /*
  * The following test is pretty weak. Removing an item from the wrong list
  * has one consequence - the list counter becomes wrong. Otherwise all is
- * well (the call psnLinkedListRemoveItem() does remove the link from its
+ * well (the call psonLinkedListRemoveItem() does remove the link from its
  * linked list since it uses the previous and next members of the removed
  * node.
  */
 int main()
 {
 #if defined(USE_DBC)
-   psnLinkedList list1;
-   psnLinkedList list2;
-   psnLinkNode node1, node2;
-   psnSessionContext context;
+   psonLinkedList list1;
+   psonLinkedList list2;
+   psonLinkNode node1, node2;
+   psonSessionContext context;
    
    initTest( expectedToPass, &context );
    InitMem();
    
-   psnLinkNodeInit( &node1 );
-   psnLinkNodeInit( &node2 );
-   psnLinkedListInit( &list1 );
-   psnLinkedListInit( &list2 );
+   psonLinkNodeInit( &node1 );
+   psonLinkNodeInit( &node2 );
+   psonLinkedListInit( &list1 );
+   psonLinkedListInit( &list2 );
    
-   psnLinkedListPutLast( &list1, &node1 );
-   psnLinkedListPutLast( &list2, &node2 );
+   psonLinkedListPutLast( &list1, &node1 );
+   psonLinkedListPutLast( &list2, &node2 );
 
    /* Remove it from the wrong list - should work but... */
-   psnLinkedListRemoveItem( &list2, &node1 );
+   psonLinkedListRemoveItem( &list2, &node1 );
 
    /* Should crash since the number of items in list2 is zero */
-   psnLinkedListRemoveItem( &list2, &node2 );
+   psonLinkedListRemoveItem( &list2, &node2 );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

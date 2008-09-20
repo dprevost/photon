@@ -63,7 +63,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaSessionOpenObj( (psaSession *) sessionHandle,
+   errcode = psoaSessionOpenObj( (psoaSession *) sessionHandle,
                                  PSO_FOLDER,
                                  false,
                                  "/asoono",

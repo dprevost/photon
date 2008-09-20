@@ -29,7 +29,7 @@ int main( int argc, char * argv[] )
 #if defined(USE_DBC)
    PSO_HANDLE sessionHandle;
    int errcode;
-   psaCommonObject object;
+   psoaCommonObject object;
    psoObjectDefinition def = { 
       PSO_FOLDER, 
       0, 
@@ -63,9 +63,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   memset( &object, 0, sizeof(psaCommonObject) );
-   object.pSession = (psaSession *) sessionHandle;
-   errcode = psaCommonObjOpen( &object,
+   memset( &object, 0, sizeof(psoaCommonObject) );
+   object.pSession = (psoaSession *) sessionHandle;
+   errcode = psoaCommonObjOpen( &object,
                                 PSO_FOLDER,
                                 false,
                                 "/accno",
@@ -75,7 +75,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaCommonObjClose( NULL );
+   errcode = psoaCommonObjClose( NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

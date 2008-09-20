@@ -192,10 +192,10 @@ public:
 
 private:
 
-   /// Pointer to the psaLifo struct.
+   /// Pointer to the psoaLifo struct.
    PSO_HANDLE m_objectHandle;
 
-   /// Reference to the psaSession struct (we belong to).
+   /// Reference to the psoaSession struct (we belong to).
    PSO_HANDLE & m_sessionHandle;
 
 };

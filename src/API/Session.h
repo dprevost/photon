@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSA_SESSION_H
-#define PSA_SESSION_H
+#ifndef PSOA_SESSION_H
+#define PSOA_SESSION_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -32,9 +32,9 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psnSession;
-struct psnMemoryHeader;
-struct psaCommonObject;
+struct psonSession;
+struct psonMemoryHeader;
+struct psoaCommonObject;
 
 /**
  * This class handles transactions and other session wide concerns. For 
@@ -42,16 +42,16 @@ struct psaCommonObject;
  * objects.
  */
 
-typedef struct psaSession
+typedef struct psoaSession
 {
-   psaObjetType type;
+   psoaObjetType type;
    
-   psnSessionContext context;
+   psonSessionContext context;
 
    /** Pointer to the header of the shared memory */
-   struct psnMemoryHeader* pHeader;
+   struct psonMemoryHeader* pHeader;
 
-   struct psnSession* pCleanup;
+   struct psonSession* pCleanup;
 
    bool terminated;
    
@@ -60,44 +60,44 @@ typedef struct psaSession
    int numberOfEdits;
    
    /** Our lock to serialize access to this object, if needed. */
-   pscThreadLock  mutex;
+   psocThreadLock  mutex;
    
-   psaListReaders listReaders;
+   psoaListReaders listReaders;
    
-} psaSession;
+} psoaSession;
 
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * No lock is taken on the psaSession.
+ * No lock is taken on the psoaSession.
  */
 PHOTON_API_EXPORT
-int psaCloseSession( psaSession* pSession );
+int psoaCloseSession( psoaSession* pSession );
 
 PHOTON_API_EXPORT
-int psaSessionCloseObj( psaSession             * pSession,
-                        struct psaCommonObject * pObject );
+int psoaSessionCloseObj( psoaSession             * pSession,
+                        struct psoaCommonObject * pObject );
 
 PHOTON_API_EXPORT
-int psaSessionOpenObj( psaSession             * pSession,
+int psoaSessionOpenObj( psoaSession             * pSession,
                        psoObjectType            objectType,
-                       psaEditMode              editMode,
+                       psoaEditMode              editMode,
                        const char             * objectName,
                        size_t                   nameLengthInBytes,
-                       struct psaCommonObject * pObject );
+                       struct psoaCommonObject * pObject );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool psaSessionLock( psaSession * pSession )
+bool psoaSessionLock( psoaSession * pSession )
 {
    bool ok = true;
 
    PSO_PRE_CONDITION( pSession != NULL );
    
    if ( g_protectionIsNeeded ) {
-      ok = pscTryAcquireThreadLock( &pSession->mutex, PSN_LOCK_TIMEOUT );
+      ok = psocTryAcquireThreadLock( &pSession->mutex, PSON_LOCK_TIMEOUT );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
    
@@ -111,10 +111,10 @@ bool psaSessionLock( psaSession * pSession )
 static 
 //#endif
 __inline
-void psaSessionUnlock( psaSession * pSession )
+void psoaSessionUnlock( psoaSession * pSession )
 {
    if ( g_protectionIsNeeded ) {
-      pscReleaseThreadLock( &pSession->mutex );
+      psocReleaseThreadLock( &pSession->mutex );
    }
 }
 
@@ -124,7 +124,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSA_SESSION_H */
+#endif /* PSOA_SESSION_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -24,25 +24,25 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnSessionContext context;
-   psnHash* pHash;
+   psonSessionContext context;
+   psonHash* pHash;
    enum psoErrors errcode;
    char* key1 = "My Key 1";
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
    ptrdiff_t offsetFirstItem;
-   psnHashItem* pNewItem;
+   psonHashItem* pNewItem;
    bool found;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = psnHashInit( pHash, g_memObjOffset, 100, &context );
+   errcode = psonHashInit( pHash, g_memObjOffset, 100, &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = psnHashInsert( pHash,
+   errcode = psonHashInsert( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data1,
@@ -53,7 +53,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = psnHashInsert( pHash,
+   errcode = psonHashInsert( pHash,
                              (unsigned char*)key2,
                              strlen(key2),
                              data2,
@@ -64,9 +64,9 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnHashEmpty( pHash, &context );
+   psonHashEmpty( pHash, &context );
    
-   found = psnHashGetFirst( pHash, &offsetFirstItem );
+   found = psonHashGetFirst( pHash, &offsetFirstItem );
    if ( found ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

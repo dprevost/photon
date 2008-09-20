@@ -37,31 +37,31 @@ int errorHandler( int errorCode, char* msg, unsigned int msgLength )
 
 int main()
 {
-   pscErrMsgHandle handle1, handle2;
-   pscErrorHandler error;
+   psocErrMsgHandle handle1, handle2;
+   psocErrorHandler error;
    char msg[100] = "";
    size_t len;
 
-   pscInitErrorDefs();
+   psocInitErrorDefs();
 
-   handle1 = pscAddErrorMsgHandler( "Dummy", &errorHandler );
-   if ( handle1 == PSC_NO_ERRHANDLER ) {
+   handle1 = psocAddErrorMsgHandler( "Dummy", &errorHandler );
+   if ( handle1 == PSOC_NO_ERRHANDLER ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   handle2 = pscAddErrorMsgHandler( "Dummy2", &errorHandler );
-   if ( handle2 == PSC_NO_ERRHANDLER ) {
+   handle2 = psocAddErrorMsgHandler( "Dummy2", &errorHandler );
+   if ( handle2 == PSOC_NO_ERRHANDLER ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pscInitErrorHandler( &error );
-   pscSetError( &error, handle2, 7 );
+   psocInitErrorHandler( &error );
+   psocSetError( &error, handle2, 7 );
 
-   len = pscGetErrorMsg( &error, msg, 100 );
+   len = psocGetErrorMsg( &error, msg, 100 );
    if ( len == 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pscFiniErrorDefs();
+   psocFiniErrorDefs();
    
    return 0;
 }

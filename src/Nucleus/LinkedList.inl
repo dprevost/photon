@@ -18,25 +18,25 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool psnLinkedListGetFirst( psnLinkedList  * pList,
-                             psnLinkNode   ** ppItem )
+bool psonLinkedListGetFirst( psonLinkedList  * pList,
+                             psonLinkNode   ** ppItem )
 {
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSON_LIST_SIGNATURE );
    PSO_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty queue. */
    if ( pList->currentSize == 0 ) return false;
 
    /* Get the pointer to the first node */
-   *ppItem = GET_PTR_FAST( pList->head.nextOffset, psnLinkNode );
+   *ppItem = GET_PTR_FAST( pList->head.nextOffset, psonLinkNode );
 
    /* Reset the next offset of the head and the previous offset
     * of the item after the item we are removing.
     */
    pList->head.nextOffset = (*ppItem)->nextOffset;
-   GET_PTR_FAST( (*ppItem)->nextOffset, psnLinkNode)->previousOffset = 
+   GET_PTR_FAST( (*ppItem)->nextOffset, psonLinkNode)->previousOffset = 
       SET_OFFSET( &pList->head );
 
    --pList->currentSize;
@@ -49,25 +49,25 @@ bool psnLinkedListGetFirst( psnLinkedList  * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool psnLinkedListGetLast( psnLinkedList  * pList,
-                            psnLinkNode   ** ppItem )
+bool psonLinkedListGetLast( psonLinkedList  * pList,
+                            psonLinkNode   ** ppItem )
 {
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSON_LIST_SIGNATURE );
    PSO_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
    if ( pList->currentSize == 0 ) return false;
 
    /* Get the pointer to the last node */
-   *ppItem = GET_PTR_FAST( pList->head.previousOffset, psnLinkNode );
+   *ppItem = GET_PTR_FAST( pList->head.previousOffset, psonLinkNode );
 
    /* Reset the previous offset of the head and the next offset
     * of the item before the item we are removing.
     */   
    pList->head.previousOffset = (*ppItem)->previousOffset;
-   GET_PTR_FAST( (*ppItem)->previousOffset, psnLinkNode)->nextOffset = 
+   GET_PTR_FAST( (*ppItem)->previousOffset, psonLinkNode)->nextOffset = 
       SET_OFFSET( &pList->head );
 
    --pList->currentSize;
@@ -80,17 +80,17 @@ bool psnLinkedListGetLast( psnLinkedList  * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void 
-psnLinkedListPutLast( psnLinkedList * pList,
-                       psnLinkNode   * pNewItem )
+psonLinkedListPutLast( psonLinkedList * pList,
+                       psonLinkNode   * pNewItem )
 {
    ptrdiff_t tmpOffset;
    
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSON_LIST_SIGNATURE );
    PSO_PRE_CONDITION( pNewItem   != NULL );
-   PSO_PRE_CONDITION( pNewItem->previousOffset == PSN_NULL_OFFSET );
-   PSO_PRE_CONDITION( pNewItem->nextOffset     == PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pNewItem->previousOffset == PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( pNewItem->nextOffset     == PSON_NULL_OFFSET );
 
    tmpOffset = SET_OFFSET( pNewItem );
 
@@ -99,29 +99,29 @@ psnLinkedListPutLast( psnLinkedList * pList,
    pNewItem->previousOffset   = pList->head.previousOffset;
    pList->head.previousOffset = tmpOffset;
 
-   GET_PTR_FAST( pNewItem->previousOffset, psnLinkNode )->nextOffset = 
+   GET_PTR_FAST( pNewItem->previousOffset, psonLinkNode )->nextOffset = 
       tmpOffset;
    
    pList->currentSize++;
 
-   PSO_POST_CONDITION( pNewItem->previousOffset != PSN_NULL_OFFSET );
-   PSO_POST_CONDITION( pNewItem->nextOffset     != PSN_NULL_OFFSET );
+   PSO_POST_CONDITION( pNewItem->previousOffset != PSON_NULL_OFFSET );
+   PSO_POST_CONDITION( pNewItem->nextOffset     != PSON_NULL_OFFSET );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void 
-psnLinkedListPutFirst( psnLinkedList * pList,
-                        psnLinkNode   * pNewItem )
+psonLinkedListPutFirst( psonLinkedList * pList,
+                        psonLinkNode   * pNewItem )
 {
    ptrdiff_t tmpOffset;
    
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSON_LIST_SIGNATURE );
    PSO_PRE_CONDITION( pNewItem   != NULL );
-   PSO_PRE_CONDITION( pNewItem->previousOffset == PSN_NULL_OFFSET );
-   PSO_PRE_CONDITION( pNewItem->nextOffset     == PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pNewItem->previousOffset == PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( pNewItem->nextOffset     == PSON_NULL_OFFSET );
 
    tmpOffset = SET_OFFSET( pNewItem );
 
@@ -131,33 +131,33 @@ psnLinkedListPutFirst( psnLinkedList * pList,
    pNewItem->nextOffset = pList->head.nextOffset;   
    pList->head.nextOffset = tmpOffset;
 
-   GET_PTR_FAST( pNewItem->nextOffset, psnLinkNode )->previousOffset = 
+   GET_PTR_FAST( pNewItem->nextOffset, psonLinkNode )->previousOffset = 
       tmpOffset;
    
    pList->currentSize++;
 
-   PSO_POST_CONDITION( pNewItem->previousOffset != PSN_NULL_OFFSET );
-   PSO_POST_CONDITION( pNewItem->nextOffset     != PSN_NULL_OFFSET );
+   PSO_POST_CONDITION( pNewItem->previousOffset != PSON_NULL_OFFSET );
+   PSO_POST_CONDITION( pNewItem->nextOffset     != PSON_NULL_OFFSET );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void 
-psnLinkedListRemoveItem( psnLinkedList * pList,
-                          psnLinkNode   * pRemovedItem )
+psonLinkedListRemoveItem( psonLinkedList * pList,
+                          psonLinkNode   * pRemovedItem )
 {
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSON_LIST_SIGNATURE );
    PSO_PRE_CONDITION( pRemovedItem != NULL );
-   PSO_PRE_CONDITION( pRemovedItem->previousOffset != PSN_NULL_OFFSET );
-   PSO_PRE_CONDITION( pRemovedItem->nextOffset     != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pRemovedItem->previousOffset != PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( pRemovedItem->nextOffset     != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( pList->currentSize > 0 );
 
-   GET_PTR_FAST( pRemovedItem->nextOffset, psnLinkNode )->previousOffset = 
+   GET_PTR_FAST( pRemovedItem->nextOffset, psonLinkNode )->previousOffset = 
       pRemovedItem->previousOffset;
 
-   GET_PTR_FAST( pRemovedItem->previousOffset, psnLinkNode )->nextOffset = 
+   GET_PTR_FAST( pRemovedItem->previousOffset, psonLinkNode )->nextOffset = 
       pRemovedItem->nextOffset;
 
    --pList->currentSize;
@@ -166,18 +166,18 @@ psnLinkedListRemoveItem( psnLinkedList * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool psnLinkedListPeakFirst( psnLinkedList *  pList,
-                              psnLinkNode   ** ppItem )
+bool psonLinkedListPeakFirst( psonLinkedList *  pList,
+                              psonLinkNode   ** ppItem )
 {
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSON_LIST_SIGNATURE );
    PSO_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
    if ( pList->currentSize == 0 ) return false;
 
-   *ppItem = GET_PTR_FAST( pList->head.nextOffset, psnLinkNode );
+   *ppItem = GET_PTR_FAST( pList->head.nextOffset, psonLinkNode );
 
    PSO_POST_CONDITION( *ppItem != NULL );
 
@@ -187,18 +187,18 @@ bool psnLinkedListPeakFirst( psnLinkedList *  pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool psnLinkedListPeakLast( psnLinkedList  * pList,
-                             psnLinkNode   ** ppItem )
+bool psonLinkedListPeakLast( psonLinkedList  * pList,
+                             psonLinkNode   ** ppItem )
 {
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSON_LIST_SIGNATURE );
    PSO_PRE_CONDITION( ppItem     != NULL );
 
    /* Check for empty list. */
    if ( pList->currentSize == 0 ) return false;
 
-   *ppItem = GET_PTR_FAST( pList->head.previousOffset, psnLinkNode );
+   *ppItem = GET_PTR_FAST( pList->head.previousOffset, psonLinkNode );
 
    PSO_POST_CONDITION( *ppItem != NULL );
 
@@ -208,21 +208,21 @@ bool psnLinkedListPeakLast( psnLinkedList  * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool psnLinkedListPeakNext( psnLinkedList * pList,
-                             psnLinkNode   * pCurrent, 
-                             psnLinkNode  ** ppNext )
+bool psonLinkedListPeakNext( psonLinkedList * pList,
+                             psonLinkNode   * pCurrent, 
+                             psonLinkNode  ** ppNext )
 {
-   psnLinkNode* pNext;
+   psonLinkNode* pNext;
 
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSON_LIST_SIGNATURE );
    PSO_PRE_CONDITION( pCurrent   != NULL );
    PSO_PRE_CONDITION( ppNext     != NULL );
-   PSO_PRE_CONDITION( pCurrent->previousOffset != PSN_NULL_OFFSET );
-   PSO_PRE_CONDITION( pCurrent->nextOffset     != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pCurrent->previousOffset != PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( pCurrent->nextOffset     != PSON_NULL_OFFSET );
 
-   pNext = GET_PTR_FAST( pCurrent->nextOffset, psnLinkNode );
+   pNext = GET_PTR_FAST( pCurrent->nextOffset, psonLinkNode );
    if ( pNext == &pList->head ) return false;
 
    *ppNext = pNext;
@@ -235,21 +235,21 @@ bool psnLinkedListPeakNext( psnLinkedList * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool psnLinkedListPeakPrevious( psnLinkedList * pList,
-                                 psnLinkNode   * pCurrent, 
-                                 psnLinkNode  ** ppPrevious )
+bool psonLinkedListPeakPrevious( psonLinkedList * pList,
+                                 psonLinkNode   * pCurrent, 
+                                 psonLinkNode  ** ppPrevious )
 {
-   psnLinkNode* pPrevious;
+   psonLinkNode* pPrevious;
 
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSON_LIST_SIGNATURE );
    PSO_PRE_CONDITION( pCurrent   != NULL );
    PSO_PRE_CONDITION( ppPrevious != NULL );
-   PSO_PRE_CONDITION( pCurrent->previousOffset != PSN_NULL_OFFSET );
-   PSO_PRE_CONDITION( pCurrent->nextOffset     != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pCurrent->previousOffset != PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( pCurrent->nextOffset     != PSON_NULL_OFFSET );
 
-   pPrevious = GET_PTR_FAST( pCurrent->previousOffset, psnLinkNode );
+   pPrevious = GET_PTR_FAST( pCurrent->previousOffset, psonLinkNode );
    if ( pPrevious == &pList->head ) return false;
 
    *ppPrevious = pPrevious;
@@ -266,31 +266,31 @@ bool psnLinkedListPeakPrevious( psnLinkedList * pList,
  * assumes that pOldItem is in the list... otherwise big trouble!)
  */
 inline void 
-psnLinkedListReplaceItem( psnLinkedList * pList,
-                           psnLinkNode   * pOldItem,
-                           psnLinkNode   * pNewItem )
+psonLinkedListReplaceItem( psonLinkedList * pList,
+                           psonLinkNode   * pOldItem,
+                           psonLinkNode   * pNewItem )
 {
    ptrdiff_t tmpOffset;
 
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSON_LIST_SIGNATURE );
    PSO_PRE_CONDITION( pOldItem != NULL );
-   PSO_PRE_CONDITION( pOldItem->previousOffset != PSN_NULL_OFFSET );
-   PSO_PRE_CONDITION( pOldItem->nextOffset     != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pOldItem->previousOffset != PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( pOldItem->nextOffset     != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( pNewItem != NULL );
-   PSO_PRE_CONDITION( pNewItem->previousOffset == PSN_NULL_OFFSET );
-   PSO_PRE_CONDITION( pNewItem->nextOffset     == PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( pNewItem->previousOffset == PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( pNewItem->nextOffset     == PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( pList->currentSize > 0 );
 
    tmpOffset = SET_OFFSET( pNewItem );
    pNewItem->nextOffset     = pOldItem->nextOffset;
    pNewItem->previousOffset = pOldItem->previousOffset;
 
-   GET_PTR_FAST( pOldItem->nextOffset, psnLinkNode )->previousOffset = 
+   GET_PTR_FAST( pOldItem->nextOffset, psonLinkNode )->previousOffset = 
       tmpOffset;
 
-   GET_PTR_FAST( pOldItem->previousOffset, psnLinkNode )->nextOffset = 
+   GET_PTR_FAST( pOldItem->previousOffset, psonLinkNode )->nextOffset = 
       tmpOffset;
 }
 

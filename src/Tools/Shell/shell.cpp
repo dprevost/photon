@@ -16,7 +16,7 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Tools/Shell/shell.h"
-#include "Nucleus/Engine.h" // For PSN_BLOCK_SIZE
+#include "Nucleus/Engine.h" // For PSON_BLOCK_SIZE
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -689,7 +689,7 @@ void vdsShell::Stat()
    cout << "Object full name     : " << objectName << endl;
    cout << "Object type          : " << constants.Type(status.type)     << endl;
    cout << "Status               : " << constants.Status(status.status) << endl;
-   cout << "Total size           : " << constants.Bytes(status.numBlocks*PSN_BLOCK_SIZE) << endl;
+   cout << "Total size           : " << constants.Bytes(status.numBlocks*PSON_BLOCK_SIZE) << endl;
    cout << "Number of blocks     : " << status.numBlocks << endl;
    cout << "# of group of blocks : " << status.numBlockGroup << endl;
    cout << "Number of data items : " << status.numDataItem << endl;

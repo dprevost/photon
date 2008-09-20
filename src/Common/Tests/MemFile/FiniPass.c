@@ -24,7 +24,7 @@ const bool expectedToPass = true;
 
 int main()
 {
-   pscMemoryFile  mem;
+   psocMemoryFile  mem;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete
     * call is not as synchroneous as it should be...
@@ -32,9 +32,9 @@ int main()
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
    
-   pscInitMemoryFile( &mem, 10, "MemFile.mem" );
+   psocInitMemoryFile( &mem, 10, "MemFile.mem" );
 
-   pscFiniMemoryFile( &mem );
+   psocFiniMemoryFile( &mem );
 
    if ( mem.initialized != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );

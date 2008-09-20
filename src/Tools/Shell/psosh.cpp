@@ -33,30 +33,30 @@ int main( int argc, char *argv[] )
    vdsShell   sh(session);
    bool ok;
    
-   pscOptionHandle optHandle;
+   psocOptionHandle optHandle;
    char *optArgument;
-   struct pscOptStruct opts[1] = { 
+   struct psocOptStruct opts[1] = { 
       { 'a', "address", 0, "quasar_address", "The address of the Photon server" }
    };
 
-   ok = pscSetSupportedOptions( 1, opts, &optHandle );
+   ok = psocSetSupportedOptions( 1, opts, &optHandle );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) return 1;
 
-   errcode = pscValidateUserOptions( optHandle, argc, argv, 1 );
+   errcode = psocValidateUserOptions( optHandle, argc, argv, 1 );
    if ( errcode < 0 ) {
-      pscShowUsage( optHandle, argv[0], "" );
+      psocShowUsage( optHandle, argv[0], "" );
       return 1;
    }
    if ( errcode > 0 ) {
-      pscShowUsage( optHandle, argv[0], "" );
+      psocShowUsage( optHandle, argv[0], "" );
       cout << endl;
       sh.Man();
       
       return 0;
    }
 
-   pscGetShortOptArgument( optHandle, 'a', &optArgument );
+   psocGetShortOptArgument( optHandle, 'a', &optArgument );
    try {
       process.Init( optArgument );
       session.Init();

@@ -27,14 +27,14 @@ int main()
 {
 #if defined(USE_DBC)
    bool ok;
-   pscProcessLock lock;
+   psocProcessLock lock;
 
-   ok = pscInitProcessLock( &lock );
+   ok = psocInitProcessLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( 0, NULL, ; );
    }
    
-   pscFiniProcessLock( NULL );
+   psocFiniProcessLock( NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

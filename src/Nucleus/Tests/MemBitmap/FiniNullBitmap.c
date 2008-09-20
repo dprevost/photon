@@ -25,26 +25,26 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnMemBitmap *pBitmap;
+   psonMemBitmap *pBitmap;
    unsigned char* ptr;
-   psnSessionContext context;
+   psonSessionContext context;
    
    initTest( expectedToPass, &context );
 
-   ptr = malloc( PSN_BLOCK_SIZE*10 );
+   ptr = malloc( PSON_BLOCK_SIZE*10 );
    if (ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    g_pBaseAddr = ptr;
    
-   pBitmap = (psnMemBitmap*) ptr;
+   pBitmap = (psonMemBitmap*) ptr;
    
-   psnMemBitmapInit( pBitmap, 
+   psonMemBitmapInit( pBitmap, 
                       SET_OFFSET(ptr),
-                      10*PSN_BLOCK_SIZE,
+                      10*PSON_BLOCK_SIZE,
                       8 );
 
-   psnMemBitmapFini( NULL );
+   psonMemBitmapFini( NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -21,9 +21,9 @@
 
 /*! 
  * All data members are initialized, including the \em initialized field
- * (to ::PSC_MEMFILE_SIGNATURE).
+ * (to ::PSOC_MEMFILE_SIGNATURE).
  *
- * \param[in] pMem      A pointer to the pscMemoryFile struct itself.
+ * \param[in] pMem      A pointer to the psocMemoryFile struct itself.
  * \param[in] kblength  The length of the shared memory file. It is 
  *                      be provided in kilobytes (although we store it 
  *                      internally in bytes).
@@ -33,9 +33,9 @@
  * \pre \em kblength must be positive
  * \pre \em filename cannot be NULL or the empty string ("")
  */
-void pscInitMemoryFile( pscMemoryFile * pMem,
-                        size_t          kblength,
-                        const char    * filename )
+void psocInitMemoryFile( psocMemoryFile * pMem,
+                         size_t           kblength,
+                         const char     * filename )
 {
    PSO_PRE_CONDITION( pMem != NULL );
    PSO_PRE_CONDITION( kblength > 0 );
@@ -48,7 +48,7 @@ void pscInitMemoryFile( pscMemoryFile * pMem,
    memset( pMem->name, 0, PATH_MAX );
    strncpy( pMem->name, filename, PATH_MAX );
 
-   pMem->initialized = PSC_MEMFILE_SIGNATURE;
+   pMem->initialized = PSOC_MEMFILE_SIGNATURE;
    
 #if defined (WIN32)
    pMem->mapHandle = PSO_INVALID_HANDLE;
@@ -58,15 +58,15 @@ void pscInitMemoryFile( pscMemoryFile * pMem,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*!
- * \param[in] pMem      A pointer to the pscMemoryFile struct itself.
+ * \param[in] pMem      A pointer to the psocMemoryFile struct itself.
  *
  * \pre \em pMem cannot be NULL.
- * \invariant \em pMem->initialized must equal ::PSC_MEMFILE_SIGNATURE.
+ * \invariant \em pMem->initialized must equal ::PSOC_MEMFILE_SIGNATURE.
  */
-void pscFiniMemoryFile( pscMemoryFile * pMem )
+void psocFiniMemoryFile( psocMemoryFile * pMem )
 {
    PSO_PRE_CONDITION( pMem != NULL );
-   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->initialized == PSOC_MEMFILE_SIGNATURE );
    
    pMem->baseAddr = PSO_MAP_FAILED;
    pMem->length   = 0;
@@ -88,19 +88,19 @@ void pscFiniMemoryFile( pscMemoryFile * pMem )
  * all combinations, we will hopefully provide better diagnostics to 
  * correct the problems if any.
  *
- * \param[in] pMem      A pointer to the pscMemoryFile struct itself.
- * \param[in,out] pStatus A pointer to the pscMemoryFileStatus struct. The
+ * \param[in] pMem      A pointer to the psocMemoryFile struct itself.
+ * \param[in,out] pStatus A pointer to the psocMemoryFileStatus struct. The
  *                        pointer itself is not modified but the content of
  *                        the struct is.
  *
  * \pre \em pMem cannot be NULL.
  * \pre \em pStatus cannot be NULL.
- * \invariant \em pMem->initialized must equal ::PSC_MEMFILE_SIGNATURE.
+ * \invariant \em pMem->initialized must equal ::PSOC_MEMFILE_SIGNATURE.
  * \invariant \em pMem->name cannot be empty.
  */
 
-void pscBackStoreStatus( pscMemoryFile       * pMem,
-                         pscMemoryFileStatus * pStatus )
+void psocBackStoreStatus( psocMemoryFile       * pMem,
+                          psocMemoryFileStatus * pStatus )
 {
    int err = 0;
 #if ! HAVE_ACCESS || ! HAVE_STAT
@@ -113,7 +113,7 @@ void pscBackStoreStatus( pscMemoryFile       * pMem,
 #endif
 
    PSO_PRE_CONDITION( pMem    != NULL );
-   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->initialized == PSOC_MEMFILE_SIGNATURE );
    PSO_INV_CONDITION( pMem->name[0] != '\0' );
    PSO_PRE_CONDITION( pStatus != NULL );
 
@@ -170,8 +170,8 @@ void pscBackStoreStatus( pscMemoryFile       * pMem,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 /*!
  *
- * \param[in] pMem   A pointer to the pscMemoryFile struct itself.
- * \param[in] pError  A pointer to the pscErrorHandler struct (used for 
+ * \param[in] pMem   A pointer to the psocMemoryFile struct itself.
+ * \param[in] pError  A pointer to the psocErrorHandler struct (used for 
  *                    handling errors from the OS).
  *
  * \retval true  on success
@@ -179,15 +179,15 @@ void pscBackStoreStatus( pscMemoryFile       * pMem,
  *
  * \pre \em pMem cannot be NULL.
  * \pre \em pError cannot be NULL.
- * \invariant \em pMem->initialized must equal ::PSC_MEMFILE_SIGNATURE.
+ * \invariant \em pMem->initialized must equal ::PSOC_MEMFILE_SIGNATURE.
  * \invariant \em pMem->name cannot be empty.
  * \invariant \em pMem->length must be positive.
  *
  */
 
-bool pscCopyBackstore( pscMemoryFile   * pMem,
-                       int               filePerms,
-                       pscErrorHandler * pError )
+bool psocCopyBackstore( psocMemoryFile   * pMem,
+                        int                filePerms,
+                        psocErrorHandler * pError )
 {
    int fdIn = -1, fdOut = -1;
    char bckName [PATH_MAX];
@@ -196,7 +196,7 @@ bool pscCopyBackstore( pscMemoryFile   * pMem,
    int i, j, k;
    
    PSO_PRE_CONDITION( pMem    != NULL );
-   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->initialized == PSOC_MEMFILE_SIGNATURE );
    PSO_INV_CONDITION( pMem->name[0] != '\0' );
    PSO_INV_CONDITION( pMem->length > 0 );
    PSO_PRE_CONDITION( pError != NULL );
@@ -251,7 +251,7 @@ error:
    if ( fdIn  > -1 ) close( fdIn );
    if ( fdOut > -1 ) close( fdOut );
 
-   pscSetError( pError, PSC_ERRNO_HANDLE, errno );
+   psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
    
    return false;
 }
@@ -259,10 +259,10 @@ error:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 /*!
  *
- * \param[in] pMem   A pointer to the pscMemoryFile struct itself.
+ * \param[in] pMem   A pointer to the psocMemoryFile struct itself.
  * \param[in] filePerms The file permissions for the soon to be created 
  *                      backstore file.
- * \param[in] pError  A pointer to the pscErrorHandler struct (used for 
+ * \param[in] pError  A pointer to the psocErrorHandler struct (used for 
  *                    handling errors from the OS).
  *
  * \retval true  on success
@@ -273,15 +273,15 @@ error:
  * \pre \em filePerms must have at least the read and write bits for the owner
  *          set on (0600). Otherwise we would not be able to access the
  *          file once created.
- * \invariant \em pMem->initialized must equal ::PSC_MEMFILE_SIGNATURE.
+ * \invariant \em pMem->initialized must equal ::PSOC_MEMFILE_SIGNATURE.
  * \invariant \em pMem->name cannot be empty.
  * \invariant \em pMem->length must be positive.
  *
  */
 
-bool pscCreateBackstore( pscMemoryFile   * pMem,
-                         int               filePerms,
-                         pscErrorHandler * pError )
+bool psocCreateBackstore( psocMemoryFile   * pMem,
+                          int                filePerms,
+                          psocErrorHandler * pError )
 {
    FILE* fp;
    size_t numWritten;
@@ -290,7 +290,7 @@ bool pscCreateBackstore( pscMemoryFile   * pMem,
    bool ok = true;
    
    PSO_PRE_CONDITION( pMem    != NULL );
-   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->initialized == PSOC_MEMFILE_SIGNATURE );
    PSO_INV_CONDITION( pMem->name[0] != '\0' );
    PSO_INV_CONDITION( pMem->length > 0 );
    PSO_PRE_CONDITION( pError != NULL );
@@ -299,7 +299,7 @@ bool pscCreateBackstore( pscMemoryFile   * pMem,
    /* Create the file with the right permissions */
    fd = creat( pMem->name, filePerms );
    if ( fd < 0 ) {
-      pscSetError( pError, PSC_ERRNO_HANDLE, errno );      
+      psocSetError( pError, PSOC_ERRNO_HANDLE, errno );      
       return false;
    }
    close( fd );
@@ -312,7 +312,7 @@ bool pscCreateBackstore( pscMemoryFile   * pMem,
     */
    fp = fopen( pMem->name, "wb" );
    if ( fp == NULL ) {
-      pscSetError( pError, PSC_ERRNO_HANDLE, errno );      
+      psocSetError( pError, PSOC_ERRNO_HANDLE, errno );      
       return false;
    }
    
@@ -321,7 +321,7 @@ bool pscCreateBackstore( pscMemoryFile   * pMem,
       buf[0] = 0;
       numWritten = fwrite( buf, 1, 1, fp );
       if ( numWritten != 1 ) {
-         pscSetError( pError, PSC_ERRNO_HANDLE, errno );      
+         psocSetError( pError, PSOC_ERRNO_HANDLE, errno );      
          ok = false;
       }
    }
@@ -340,10 +340,10 @@ bool pscCreateBackstore( pscMemoryFile   * pMem,
  * This means we cannot use regular ANSI calls but must use the Win32 API
  * to open the file, etc.
  *
- * \param[in] pMem   A pointer to the pscMemoryFile struct itself.
+ * \param[in] pMem   A pointer to the psocMemoryFile struct itself.
  * \param[out] ppAddr A pointer to the address where the file is mapped in
  *                    memory.
- * \param[in] pError  A pointer to the pscErrorHandler struct (used for 
+ * \param[in] pError  A pointer to the psocErrorHandler struct (used for 
  *                    handling errors from the OS).
  *
  * \retval true  on success
@@ -352,7 +352,7 @@ bool pscCreateBackstore( pscMemoryFile   * pMem,
  * \pre \em pMem cannot be NULL.
  * \pre \em ppAddr cannot be NULL.
  * \pre \em pError cannot be NULL.
- * \invariant \em pMem->initialized must equal ::PSC_MEMFILE_SIGNATURE.
+ * \invariant \em pMem->initialized must equal ::PSOC_MEMFILE_SIGNATURE.
  * \invariant \em pMem->name cannot be empty.
  * \invariant \em pMem->length must be positive.
  * \post \em *ppAddr cannot be ::PSO_MAP_FAILED (NULL on Win32, (void*)-1
@@ -363,12 +363,12 @@ bool pscCreateBackstore( pscMemoryFile   * pMem,
  *
  */
 
-bool pscOpenMemFile( pscMemoryFile   * pMem, 
-                     void           ** ppAddr,
-                     pscErrorHandler * pError )
+bool psocOpenMemFile( psocMemoryFile   * pMem, 
+                      void            ** ppAddr,
+                      psocErrorHandler * pError )
 {
    PSO_PRE_CONDITION( pMem != NULL );
-   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->initialized == PSOC_MEMFILE_SIGNATURE );
    PSO_INV_CONDITION( pMem->name[0] != '\0' );
    PSO_INV_CONDITION( pMem->length > 0 );
    PSO_PRE_CONDITION( ppAddr != NULL );
@@ -397,7 +397,7 @@ bool pscOpenMemFile( pscMemoryFile   * pMem,
       0,
       0 );
    if ( pMem->fileHandle == PSO_INVALID_HANDLE ) {
-      pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );
+      psocSetError( pError, PSOC_WINERR_HANDLE, GetLastError() );
       return false;
    }
    
@@ -408,7 +408,7 @@ bool pscOpenMemFile( pscMemoryFile   * pMem,
                                          0,
                                          NULL );
    if ( pMem->mapHandle  == PSO_INVALID_HANDLE ) {
-      pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );
+      psocSetError( pError, PSOC_WINERR_HANDLE, GetLastError() );
       return false;
    }
 
@@ -420,7 +420,7 @@ bool pscOpenMemFile( pscMemoryFile   * pMem,
                                      NULL );
 
    if ( pMem->baseAddr == PSO_MAP_FAILED ) {
-      pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );
+      psocSetError( pError, PSOC_WINERR_HANDLE, GetLastError() );
       return false;
    }
 
@@ -430,7 +430,7 @@ bool pscOpenMemFile( pscMemoryFile   * pMem,
 
    pMem->fileHandle = open( pMem->name, O_RDWR );
    if ( pMem->fileHandle == PSO_INVALID_HANDLE ) {
-      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
+      psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
       return false;
    }
 
@@ -442,7 +442,7 @@ bool pscOpenMemFile( pscMemoryFile   * pMem,
                           0 );
 
    if ( pMem->baseAddr == PSO_MAP_FAILED ) {
-      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
+      psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
       return false;
    }
 
@@ -464,24 +464,24 @@ bool pscOpenMemFile( pscMemoryFile   * pMem,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*!
- * \param[in] pMem   A pointer to the pscMemoryFile struct itself.
- * \param[in] pError  A pointer to the pscErrorHandler struct (used for 
+ * \param[in] pMem   A pointer to the psocMemoryFile struct itself.
+ * \param[in] pError  A pointer to the psocErrorHandler struct (used for 
  *                    handling errors from the OS).
  *
  * \pre \em pMem cannot be NULL.
  * \pre \em pError cannot be NULL.
- * \invariant \em pMem->initialized must equal ::PSC_MEMFILE_SIGNATURE.
+ * \invariant \em pMem->initialized must equal ::PSOC_MEMFILE_SIGNATURE.
  *
  */
-void pscCloseMemFile( pscMemoryFile   * pMem,
-                      pscErrorHandler * pError )
+void psocCloseMemFile( psocMemoryFile   * pMem,
+                       psocErrorHandler * pError )
 {
    PSO_PRE_CONDITION( pMem != NULL );
-   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->initialized == PSOC_MEMFILE_SIGNATURE );
    PSO_PRE_CONDITION( pError != NULL );
 
    if ( pMem->baseAddr != PSO_MAP_FAILED ) {
-      pscSyncMemFile( pMem, pError );
+      psocSyncMemFile( pMem, pError );
    }
    
 #if defined (WIN32)
@@ -512,8 +512,8 @@ void pscCloseMemFile( pscMemoryFile   * pMem,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*!
- * \param[in] pMem   A pointer to the pscMemoryFile struct itself.
- * \param[in] pError  A pointer to the pscErrorHandler struct (used for 
+ * \param[in] pMem   A pointer to the psocMemoryFile struct itself.
+ * \param[in] pError  A pointer to the psocErrorHandler struct (used for 
  *                    handling errors from the OS).
  *
  * \retval true  on success
@@ -521,18 +521,18 @@ void pscCloseMemFile( pscMemoryFile   * pMem,
  *
  * \pre \em pMem cannot be NULL.
  * \pre \em pError cannot be NULL.
- * \invariant \em pMem->initialized must equal ::PSC_MEMFILE_SIGNATURE.
+ * \invariant \em pMem->initialized must equal ::PSOC_MEMFILE_SIGNATURE.
  * \invariant \em pMem->baseAddr cannot be equal to ::PSO_MAP_FAILED.
  *
  */
-bool pscSyncMemFile( pscMemoryFile   * pMem,
-                     pscErrorHandler * pError )
+bool psocSyncMemFile( psocMemoryFile   * pMem,
+                      psocErrorHandler * pError )
 {
    int errcode;
    bool ok = true;
    
    PSO_PRE_CONDITION( pMem != NULL );
-   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->initialized == PSOC_MEMFILE_SIGNATURE );
    PSO_INV_CONDITION( pMem->baseAddr != PSO_MAP_FAILED );
    PSO_PRE_CONDITION( pError != NULL );
 
@@ -540,7 +540,7 @@ bool pscSyncMemFile( pscMemoryFile   * pMem,
 
    errcode = FlushViewOfFile( pMem->baseAddr, 0 );
    if ( errcode == 0 ) {
-      pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );
+      psocSetError( pError, PSOC_WINERR_HANDLE, GetLastError() );
       ok = false;
    }
 #elif HAVE_MSYNC

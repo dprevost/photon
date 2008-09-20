@@ -23,10 +23,10 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnQueue * pQueue;
-   psnSessionContext context;
+   psonQueue * pQueue;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus txStatus;
+   psonTxStatus txStatus;
    psoObjStatus status;
    char * data = "My Data";
    psoObjectDefinition def = { 
@@ -38,34 +38,34 @@ int main()
 
    pQueue = initQueueTest( expectedToPass, &context );
 
-   psnTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnQueueInit( pQueue, 
+   ok = psonQueueInit( pQueue, 
                        0, 1, &txStatus, 4, 
                        "Queue1", SET_OFFSET(pQueue), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data,
                          8,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data,
                          8,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnQueueStatus( pQueue, &status );
+   psonQueueStatus( pQueue, &status );
 
    if ( status.numDataItem != 2 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -1,4 +1,4 @@
-.TH "psoInfo" 3 "26 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoInfo" 3 "19 Sep 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -83,35 +83,49 @@ Definition at line 263 of file psoCommon.h.
 .PP
 Total size of the virtual data space. 
 .PP
+
+.PP
 Definition at line 266 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::allocatedSizeInBytes\fP"
 .PP
 Total size of the allocated blocks. 
+.PP
+
 .PP
 Definition at line 269 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::numObjects\fP"
 .PP
 Number of API objects in the pso (internal objects are not counted). 
 .PP
+
+.PP
 Definition at line 272 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::numGroups\fP"
 .PP
 Total number of groups of blocks. 
+.PP
+
 .PP
 Definition at line 275 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::numMallocs\fP"
 .PP
 Number of calls to allocate groups of blocks. 
 .PP
+
+.PP
 Definition at line 278 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::numFrees\fP"
 .PP
 Number of calls to free groups of blocks. 
 .PP
+
+.PP
 Definition at line 281 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::largestFreeInBytes\fP"
 .PP
 Largest contiguous group of free blocks. 
+.PP
+
 .PP
 Definition at line 284 of file psoCommon.h.
 .SS "int \fBpsoInfo::memoryVersion\fP"

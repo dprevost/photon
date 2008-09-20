@@ -25,15 +25,15 @@ const bool expectedToPass = true;
 
 int main()
 {
-   pscThreadLock lock;
+   psocThreadLock lock;
    bool ok;
    
-   ok = pscInitThreadLock( &lock );
+   ok = psocInitThreadLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = pscTryAcquireThreadLock( &lock, 0 );
+   ok = psocTryAcquireThreadLock( &lock, 0 );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -45,28 +45,28 @@ int main()
     * Quite frankly, in retrospect this test seems quite useless but it 
     * does not hurt so...
     */
-   ok = pscTryAcquireThreadLock( &lock, 1000 );
+   ok = psocTryAcquireThreadLock( &lock, 1000 );
 #if defined (WIN32)
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   pscReleaseThreadLock( &lock );
+   psocReleaseThreadLock( &lock );
 #else
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 #endif
 
-   pscReleaseThreadLock( &lock );
+   psocReleaseThreadLock( &lock );
 
-   ok = pscTryAcquireThreadLock( &lock, 1000 );
+   ok = psocTryAcquireThreadLock( &lock, 1000 );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pscReleaseThreadLock( &lock );
+   psocReleaseThreadLock( &lock );
 
-   pscFiniThreadLock( &lock );
+   psocFiniThreadLock( &lock );
 
    return 0;
 }

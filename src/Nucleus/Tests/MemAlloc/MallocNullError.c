@@ -25,10 +25,10 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnSessionContext context;
-   psnMemAlloc*     pAlloc;
+   psonSessionContext context;
+   psonMemAlloc*     pAlloc;
    unsigned char* ptr;
-   size_t allocatedLength = PSN_BLOCK_SIZE*10;
+   size_t allocatedLength = PSON_BLOCK_SIZE*10;
    unsigned char* newBuff;
    
    initTest( expectedToPass, &context );
@@ -39,10 +39,10 @@ int main()
    }
    
    g_pBaseAddr = ptr;
-   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
-   psnMemAllocInit( pAlloc, ptr, allocatedLength, &context );
+   pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
+   psonMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
-   newBuff = psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 2, NULL );
+   newBuff = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

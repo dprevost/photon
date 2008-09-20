@@ -21,14 +21,14 @@
  *
  * This function is to be used for debugging applications build on Photon.
  * It disables write access to the shared memory between API calls. The
- * function pscSetReadWrite() is used to enable write access during calls.
+ * function psocSetReadWrite() is used to enable write access during calls.
  *
  * This could be used to search for a stray pointer corrupting the
  * shared memory while developping applications. This function 
  * requires the C library function mprotect() or equivalent.
  *
- * \param[in] pMem    A pointer to the pscMemoryFile struct itself.
- * \param[in] pError  A pointer to the pscErrorHandler struct (used for 
+ * \param[in] pMem    A pointer to the psocMemoryFile struct itself.
+ * \param[in] pError  A pointer to the psocErrorHandler struct (used for 
  *                    handling errors from the OS).
  *
  * \retval true  on success
@@ -36,13 +36,13 @@
  *
  * \pre \em pMem cannot be NULL.
  * \pre \em pError cannot be NULL.
- * \invariant \em pMem->initialized must equal ::PSC_MEMFILE_SIGNATURE.
+ * \invariant \em pMem->initialized must equal ::PSOC_MEMFILE_SIGNATURE.
  * \invariant \em pMem->baseAddr cannot be NULL.
  *
  */
 
-bool pscSetReadOnly( pscMemoryFile   * pMem,
-                     pscErrorHandler * pError )
+bool psocSetReadOnly( psocMemoryFile   * pMem,
+                      psocErrorHandler * pError )
 {
    int errcode;
    bool ok = true;
@@ -51,7 +51,7 @@ bool pscSetReadOnly( pscMemoryFile   * pMem,
 #endif
 
    PSO_PRE_CONDITION( pMem   != NULL );
-   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->initialized == PSOC_MEMFILE_SIGNATURE );
    PSO_INV_CONDITION( pMem->baseAddr != PSO_MAP_FAILED );
    PSO_PRE_CONDITION( pError != NULL );
 
@@ -61,13 +61,13 @@ bool pscSetReadOnly( pscMemoryFile   * pMem,
                              PAGE_READONLY, 
                              &oldProt );
    if ( errcode == 0 ) {
-      pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );      
+      psocSetError( pError, PSOC_WINERR_HANDLE, GetLastError() );      
       ok = false;
    }
 #elif HAVE_MPROTECT
    errcode = mprotect( pMem->baseAddr, pMem->length, PROT_READ );
    if ( errcode != 0 ) {
-      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
+      psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
       ok = false;
    }
 #else
@@ -84,7 +84,7 @@ bool pscSetReadOnly( pscMemoryFile   * pMem,
  *
  * This function is to be used for debugging applications build on Photon.
  * It enables write access to the shared memory during API calls. The
- * function pscSetReadOnly() is used to block access between calls.
+ * function psocSetReadOnly() is used to block access between calls.
  *
  * This could be used to search for a stray pointer corrupting the
  * shared memory while developping applications. This function 
@@ -93,19 +93,19 @@ bool pscSetReadOnly( pscMemoryFile   * pMem,
  * \retval 0 on success
  * \retval -1 on error (use pError to retrieve the error)
  *
- * \param[in] pMem    A pointer to the pscMemoryFile struct itself.
- * \param[in] pError  A pointer to the pscErrorHandler struct (used for 
+ * \param[in] pMem    A pointer to the psocMemoryFile struct itself.
+ * \param[in] pError  A pointer to the psocErrorHandler struct (used for 
  *                    handling errors from the OS).
  *
  * \pre \em pMem cannot be NULL.
  * \pre \em pError cannot be NULL.
- * \invariant \em pMem->initialized must equal ::PSC_MEMFILE_SIGNATURE.
+ * \invariant \em pMem->initialized must equal ::PSOC_MEMFILE_SIGNATURE.
  * \invariant \em pMem->baseAddr cannot be NULL.
  *
  */
 
-bool pscSetReadWrite( pscMemoryFile   * pMem,
-                      pscErrorHandler * pError )
+bool psocSetReadWrite( psocMemoryFile   * pMem,
+                       psocErrorHandler * pError )
 {
    int errcode;
    bool ok = true;
@@ -114,7 +114,7 @@ bool pscSetReadWrite( pscMemoryFile   * pMem,
 #endif
 
    PSO_PRE_CONDITION( pMem != NULL );
-   PSO_INV_CONDITION( pMem->initialized == PSC_MEMFILE_SIGNATURE );
+   PSO_INV_CONDITION( pMem->initialized == PSOC_MEMFILE_SIGNATURE );
    PSO_INV_CONDITION( pMem->baseAddr != PSO_MAP_FAILED );
    PSO_PRE_CONDITION( pError != NULL );
 
@@ -124,13 +124,13 @@ bool pscSetReadWrite( pscMemoryFile   * pMem,
                              PAGE_READWRITE, 
                              &oldProt );
    if ( errcode == 0 ) {
-      pscSetError( pError, PSC_WINERR_HANDLE, GetLastError() );      
+      psocSetError( pError, PSOC_WINERR_HANDLE, GetLastError() );      
       ok = false;
    }
 #elif HAVE_MPROTECT
    errcode = mprotect( pMem->baseAddr, pMem->length, PROT_READ | PROT_WRITE );
    if ( errcode != 0 ) {
-      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
+      psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
       ok = false;
    }
 #else

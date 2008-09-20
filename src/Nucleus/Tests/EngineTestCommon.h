@@ -24,7 +24,7 @@
 #include "Nucleus/SessionContext.h"
 
 PHOTON_ENGINE_EXPORT
-pscErrMsgHandle g_psoErrorHandle;
+psocErrMsgHandle g_psoErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,20 +33,20 @@ pscErrMsgHandle g_psoErrorHandle;
  * errorhandle for the Photon errors to be initialized. 
  */
  
-void initTest( bool testIsExpectedToSucceed, psnSessionContext* pContext )
+void initTest( bool testIsExpectedToSucceed, psonSessionContext* pContext )
 {
    bool ok;
    
-   memset( pContext, 0, sizeof(psnSessionContext) );
+   memset( pContext, 0, sizeof(psonSessionContext) );
    pContext->pidLocker = getpid();
    
-   ok = psnInitEngine();
+   ok = psonInitEngine();
    if ( ok != true ) {
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
    
-   pscInitErrorHandler( &pContext->errorHandler );
+   psocInitErrorHandler( &pContext->errorHandler );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

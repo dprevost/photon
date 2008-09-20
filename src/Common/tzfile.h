@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef PSC_TZFILE_H
-#define PSC_TZFILE_H
+#ifndef PSOC_TZFILE_H
+#define PSOC_TZFILE_H
 
 /*
 ** This file is in the public domain, so clarified as of
@@ -184,4 +184,4 @@ struct tzhead {
 
 #endif /* !defined USG */
 
-#endif /* !defined PSC_TZFILE_H */
+#endif /* !defined PSOC_TZFILE_H */

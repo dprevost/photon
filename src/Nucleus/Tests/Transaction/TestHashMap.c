@@ -24,21 +24,21 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnTx* pTx;
-   psnFolder * pFolder;
-   psnSessionContext context;
+   psonTx* pTx;
+   psonFolder * pFolder;
+   psonSessionContext context;
    bool ok;
-   psnFolderItem item;
-   psnTxStatus status;
-   psnObjectDescriptor * pDescriptor;
-   psnHashMap * pHashMap;
+   psonFolderItem item;
+   psonTxStatus status;
+   psonObjectDescriptor * pDescriptor;
+   psonHashMap * pHashMap;
    char * key1  = "My key1";
    char * key2  = "My key2";
    char * key3  = "My key3";
    char * data1 = "My data1";
    char * data2 = "My data2";
    char * data3 = "My data3";
-   psnHashItem * pHashItem;
+   psonHashItem * pHashItem;
    psoObjectDefinition def = { 
       PSO_HASH_MAP, 
       1, 
@@ -49,15 +49,15 @@ int main()
    pFolder = initFolderTest( expectedToPass, &context );
    pTx = context.pTransaction;
    
-   psnTxStatusInit( &status, SET_OFFSET( pTx ) );
+   psonTxStatusInit( &status, SET_OFFSET( pTx ) );
    
-   ok = psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 
+   ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 
                              1234, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderInsertObject( pFolder,
+   ok = psonFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -68,9 +68,9 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   psnTxCommit( pTx, &context );
+   psonTxCommit( pTx, &context );
 
-   ok = psnFolderGetObject( pFolder,
+   ok = psonFolderGetObject( pFolder,
                              "test2",
                              5,
                              PSO_HASH_MAP,
@@ -79,11 +79,11 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   GET_PTR( pDescriptor, item.pHashItem->dataOffset, psnObjectDescriptor );
-   GET_PTR( pHashMap, pDescriptor->offset, psnHashMap );
+   GET_PTR( pDescriptor, item.pHashItem->dataOffset, psonObjectDescriptor );
+   GET_PTR( pHashMap, pDescriptor->offset, psonHashMap );
 
    /* Test 1 */
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            key1,
                            strlen(key1),
                            data1,
@@ -92,7 +92,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            key2,
                            strlen(key2),
                            data2,
@@ -101,7 +101,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            key3,
                            strlen(key3),
                            data3,
@@ -118,7 +118,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnTxRollback( pTx, &context );
+   psonTxRollback( pTx, &context );
    if ( pHashMap->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -127,7 +127,7 @@ int main()
    }
    
    /* Test 2 */
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            key1,
                            strlen(key1),
                            data1,
@@ -136,7 +136,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            key2,
                            strlen(key2),
                            data2,
@@ -145,7 +145,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            key3,
                            strlen(key3),
                            data3,
@@ -162,7 +162,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnTxCommit( pTx, &context );
+   psonTxCommit( pTx, &context );
    if ( pHashMap->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -170,21 +170,21 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnHashMapDelete( pHashMap,
+   ok = psonHashMapDelete( pHashMap,
                            key1,
                            strlen(key1),
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapDelete( pHashMap,
+   ok = psonHashMapDelete( pHashMap,
                            key2,
                            strlen(key2),
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapDelete( pHashMap,
+   ok = psonHashMapDelete( pHashMap,
                            key3,
                            strlen(key3),
                            &context );
@@ -199,7 +199,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnTxRollback( pTx, &context );
+   psonTxRollback( pTx, &context );
    if ( pHashMap->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -207,21 +207,21 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnHashMapDelete( pHashMap,
+   ok = psonHashMapDelete( pHashMap,
                            key1,
                            strlen(key1),
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapDelete( pHashMap,
+   ok = psonHashMapDelete( pHashMap,
                            key2,
                            strlen(key2),
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapDelete( pHashMap,
+   ok = psonHashMapDelete( pHashMap,
                            key3,
                            strlen(key3),
                            &context );
@@ -236,7 +236,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnTxCommit( pTx, &context );
+   psonTxCommit( pTx, &context );
    if ( pHashMap->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -245,7 +245,7 @@ int main()
    }
    
    /* Test 3 */
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            key1,
                            strlen(key1),
                            data1,
@@ -254,7 +254,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            key2,
                            strlen(key2),
                            data2,
@@ -263,7 +263,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            key3,
                            strlen(key3),
                            data3,
@@ -273,7 +273,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnHashMapGet( pHashMap,
+   ok = psonHashMapGet( pHashMap,
                         key2,
                         strlen(key2),
                         &pHashItem,
@@ -290,7 +290,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnTxRollback( pTx, &context );
+   psonTxRollback( pTx, &context );
    if ( pHashMap->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -298,7 +298,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnHashMapRelease( pHashMap,
+   ok = psonHashMapRelease( pHashMap,
                             pHashItem,
                             &context );
    if ( ok != true ) {
@@ -312,7 +312,7 @@ int main()
    }
    
    /* Test 4 */
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            key1,
                            strlen(key1),
                            data1,
@@ -321,7 +321,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            key2,
                            strlen(key2),
                            data2,
@@ -330,7 +330,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            key3,
                            strlen(key3),
                            data3,
@@ -340,7 +340,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnHashMapGet( pHashMap,
+   ok = psonHashMapGet( pHashMap,
                         key2,
                         strlen(key2),
                         &pHashItem,
@@ -350,7 +350,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnTxCommit( pTx, &context );
+   psonTxCommit( pTx, &context );
    if ( pHashMap->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -358,7 +358,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnHashMapRelease( pHashMap,
+   ok = psonHashMapRelease( pHashMap,
                             pHashItem,
                             &context );
    if ( ok != true ) {
@@ -371,7 +371,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnHashMapGet( pHashMap,
+   ok = psonHashMapGet( pHashMap,
                         key2,
                         strlen(key2),
                         &pHashItem,
@@ -380,21 +380,21 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapDelete( pHashMap,
+   ok = psonHashMapDelete( pHashMap,
                            key1,
                            strlen(key1),
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapDelete( pHashMap,
+   ok = psonHashMapDelete( pHashMap,
                            key2,
                            strlen(key2),
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapDelete( pHashMap,
+   ok = psonHashMapDelete( pHashMap,
                            key3,
                            strlen(key3),
                            &context );
@@ -402,7 +402,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnTxRollback( pTx, &context );
+   psonTxRollback( pTx, &context );
    if ( pHashMap->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -410,7 +410,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnHashMapRelease( pHashMap,
+   ok = psonHashMapRelease( pHashMap,
                             pHashItem,
                             &context );
    if ( ok != true ) {
@@ -423,7 +423,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnHashMapGet( pHashMap,
+   ok = psonHashMapGet( pHashMap,
                         key2,
                         strlen(key2),
                         &pHashItem,
@@ -433,21 +433,21 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnHashMapDelete( pHashMap,
+   ok = psonHashMapDelete( pHashMap,
                            key1,
                            strlen(key1),
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapDelete( pHashMap,
+   ok = psonHashMapDelete( pHashMap,
                            key2,
                            strlen(key2),
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashMapDelete( pHashMap,
+   ok = psonHashMapDelete( pHashMap,
                            key3,
                            strlen(key3),
                            &context );
@@ -455,7 +455,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnTxCommit( pTx, &context );
+   psonTxCommit( pTx, &context );
    if ( pHashMap->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -463,7 +463,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnHashMapRelease( pHashMap,
+   ok = psonHashMapRelease( pHashMap,
                             pHashItem,
                             &context );
    if ( ok != true ) {

@@ -21,22 +21,22 @@
 
 int main( int argc, char * argv[] )
 {
-   psaProcess process;
+   psoaProcess process;
    int errcode;
    
-   memset( &process, 0, sizeof(psaProcess) );
+   memset( &process, 0, sizeof(psoaProcess) );
    if ( argc > 1 ) {
-      errcode = psaProcessInit( &process, argv[1] );
+      errcode = psoaProcessInit( &process, argv[1] );
    }
    else {
-      errcode = psaProcessInit( &process, "10701" );
+      errcode = psoaProcessInit( &process, "10701" );
    }
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       return -1;
    }
    
-   psaProcessFini();
+   psoaProcessFini();
 
    return 0;
 }

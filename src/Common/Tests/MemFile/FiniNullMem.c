@@ -25,7 +25,7 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   pscMemoryFile  mem;
+   psocMemoryFile  mem;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete
     * call is not as synchroneous as it should be...
@@ -33,9 +33,9 @@ int main()
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
    
-   pscInitMemoryFile( &mem, 10, "MemFile.mem" );
+   psocInitMemoryFile( &mem, 10, "MemFile.mem" );
    
-   pscFiniMemoryFile( NULL );
+   psocFiniMemoryFile( NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

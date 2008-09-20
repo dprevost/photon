@@ -23,8 +23,8 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnFolder * pFolder;
-   psnSessionContext context;
+   psonFolder * pFolder;
+   psonSessionContext context;
    bool ok;
    
    psoObjectDefinition def = { 
@@ -36,7 +36,7 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psnFolderCreateObject( pFolder,
+   ok = psonFolderCreateObject( pFolder,
                                 "Test1",
                                 strlen("Test1"),
                                 &def,
@@ -45,7 +45,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderCreateObject( pFolder,
+   ok = psonFolderCreateObject( pFolder,
                                 "Test2",
                                 strlen("Test2"),
                                 &def,

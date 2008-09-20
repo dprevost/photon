@@ -24,10 +24,10 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnQueue * pQueue;
-   psnSessionContext context;
+   psonQueue * pQueue;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus txStatus;
+   psonTxStatus txStatus;
    psoObjStatus status;
    psoObjectDefinition def = { 
       PSO_QUEUE, 
@@ -38,16 +38,16 @@ int main()
    
    pQueue = initQueueTest( expectedToPass, &context );
 
-   psnTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnQueueInit( pQueue, 
+   ok = psonQueueInit( pQueue, 
                        0, 1, &txStatus, 4, 
                        "Queue1", SET_OFFSET(pQueue), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnQueueStatus( NULL, &status );
+   psonQueueStatus( NULL, &status );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

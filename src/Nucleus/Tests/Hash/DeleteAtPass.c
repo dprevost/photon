@@ -24,20 +24,20 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnSessionContext context;
-   psnHash* pHash;
+   psonSessionContext context;
+   psonHash* pHash;
    enum psoErrors errcode;
    char* key1 = "My Key 1";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
-   psnHashItem* pNewItem;
+   psonHashItem* pNewItem;
    size_t bucket;
-   psnHashItem* pItem = NULL;
+   psonHashItem* pItem = NULL;
    bool ok;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = psnHashInit( pHash, g_memObjOffset, 100, &context );
+   errcode = psonHashInit( pHash, g_memObjOffset, 100, &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -47,7 +47,7 @@ int main()
     * InsertAt() depends on this as you cannot insert in an empty
     * bucket.
     */
-   errcode = psnHashInsert( pHash,
+   errcode = psonHashInsert( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data2,
@@ -57,7 +57,7 @@ int main()
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnHashGet( pHash,
+   ok = psonHashGet( pHash,
                      (unsigned char*)key1,
                      strlen(key1),
                      &pNewItem,
@@ -66,7 +66,7 @@ int main()
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = psnHashInsertAt( pHash,
+   errcode = psonHashInsertAt( pHash,
                                bucket,
                                (unsigned char*)key1,
                                strlen(key1),
@@ -78,11 +78,11 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnHashDelWithItem( pHash,
+   psonHashDelWithItem( pHash,
                            pNewItem,
                            &context );
    
-   ok = psnHashGet( pHash,
+   ok = psonHashGet( pHash,
                      (unsigned char*)key1,
                      strlen(key1),
                      &pItem,

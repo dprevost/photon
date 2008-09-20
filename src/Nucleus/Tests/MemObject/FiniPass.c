@@ -26,19 +26,19 @@ int main()
 {
    psoErrors errcode;
    psotObjDummy *pDummy;
-   psnSessionContext context;
+   psonSessionContext context;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    
-   errcode = psnMemObjectInit( &pDummy->memObject, 
-                                PSN_IDENT_FOLDER,
+   errcode = psonMemObjectInit( &pDummy->memObject, 
+                                PSON_IDENT_FOLDER,
                                 &pDummy->blockGroup,
                                 1 );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = psnMemObjectFini( &pDummy->memObject, PSN_ALLOC_ANY, &context );
+   errcode = psonMemObjectFini( &pDummy->memObject, PSON_ALLOC_ANY, &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

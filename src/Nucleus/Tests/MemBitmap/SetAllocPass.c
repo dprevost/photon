@@ -24,40 +24,40 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnMemBitmap *pBitmap;
+   psonMemBitmap *pBitmap;
    unsigned char* ptr;
    size_t i;
-   psnSessionContext context;
+   psonSessionContext context;
    
    initTest( expectedToPass, &context );
 
-   ptr = malloc( PSN_BLOCK_SIZE*10 );
+   ptr = malloc( PSON_BLOCK_SIZE*10 );
    if (ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    g_pBaseAddr = ptr;
    
-   pBitmap = (psnMemBitmap*) ptr;
+   pBitmap = (psonMemBitmap*) ptr;
    
-   psnMemBitmapInit( pBitmap, 
+   psonMemBitmapInit( pBitmap, 
                       SET_OFFSET(ptr),
-                      10*PSN_BLOCK_SIZE,
+                      10*PSON_BLOCK_SIZE,
                       8 );
 
-   psnSetBufferAllocated( pBitmap,
-                           PSN_BLOCK_SIZE/2, /* offset */
-                           PSN_BLOCK_SIZE/4 ); /* length */
+   psonSetBufferAllocated( pBitmap,
+                           PSON_BLOCK_SIZE/2, /* offset */
+                           PSON_BLOCK_SIZE/4 ); /* length */
 
-   for ( i = PSN_BLOCK_SIZE/2/8/8; i < PSN_BLOCK_SIZE*3/4/8/8 ; ++i ) {
+   for ( i = PSON_BLOCK_SIZE/2/8/8; i < PSON_BLOCK_SIZE*3/4/8/8 ; ++i ) {
       if ( pBitmap->bitmap[i] != 0xff ) {
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
    }
-   if ( pBitmap->bitmap[PSN_BLOCK_SIZE*3/4/8/8] != 0 ) {
+   if ( pBitmap->bitmap[PSON_BLOCK_SIZE*3/4/8/8] != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnMemBitmapFini( pBitmap );
+   psonMemBitmapFini( pBitmap );
 
    return 0;
 }

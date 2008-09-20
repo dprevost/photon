@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_HASH_MAP_H
-#define PSN_HASH_MAP_H
+#ifndef PSON_HASH_MAP_H
+#define PSON_HASH_MAP_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,27 +33,27 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psnHashMapItem
+struct psonHashMapItem
 {
-   psnHashItem * pHashItem;
+   psonHashItem * pHashItem;
 
    ptrdiff_t   itemOffset;
 
 };
 
-typedef struct psnHashMapItem psnHashMapItem;
+typedef struct psonHashMapItem psonHashMapItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psnHashMap
+struct psonHashMap
 {
    /** Always first */
-   struct psnMemObject memObject;
+   struct psonMemObject memObject;
 
    /** Basic info for all leaves and branches of our tree. */
-   struct psnTreeNode  nodeObject;
+   struct psonTreeNode  nodeObject;
 
-   struct psnHash      hashObj;
+   struct psonHash      hashObj;
 
    struct psoKeyDefinition keyDef;
    
@@ -63,101 +63,101 @@ struct psnHashMap
    uint16_t numFields;
    
    /** Variable size struct - always put at the end */
-   struct psnBlockGroup blockGroup;
+   struct psonBlockGroup blockGroup;
 
 };
 
-typedef struct psnHashMap psnHashMap;
+typedef struct psonHashMap psonHashMap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
-void psnHashMapCommitAdd( psnHashMap        * pHashMap, 
+void psonHashMapCommitAdd( psonHashMap        * pHashMap, 
                            ptrdiff_t            itemOffset,
-                           psnSessionContext * pContext  );
+                           psonSessionContext * pContext  );
 
 PHOTON_ENGINE_EXPORT
-void psnHashMapCommitRemove( psnHashMap        * pHashMap, 
+void psonHashMapCommitRemove( psonHashMap        * pHashMap, 
                               ptrdiff_t            itemOffset,
-                              psnSessionContext * pContext );
+                              psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnHashMapDelete( psnHashMap        * pHashMap,
+bool psonHashMapDelete( psonHashMap        * pHashMap,
                         const void         * key,
                         size_t               keyLength, 
-                        psnSessionContext * pContext );
+                        psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnHashMapFini( psnHashMap        * pHashMap,
-                      psnSessionContext * pContext );
+void psonHashMapFini( psonHashMap        * pHashMap,
+                      psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnHashMapGet( psnHashMap        * pHashMap,
+bool psonHashMapGet( psonHashMap        * pHashMap,
                      const void         * pKey,
                      size_t               keyLength, 
-                     psnHashItem      ** ppItem,
+                     psonHashItem      ** ppItem,
                      size_t               bufferLength,
-                     psnSessionContext * pContext );
+                     psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnHashMapGetFirst( psnHashMap        * pHashMap,
-                          psnHashMapItem    * pItem,
+bool psonHashMapGetFirst( psonHashMap        * pHashMap,
+                          psonHashMapItem    * pItem,
                           size_t               keyLength,
                           size_t               bufferLength,
-                          psnSessionContext * pContext );
+                          psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnHashMapGetNext( psnHashMap        * pHashMap,
-                         psnHashMapItem    * pItem,
+bool psonHashMapGetNext( psonHashMap        * pHashMap,
+                         psonHashMapItem    * pItem,
                          size_t               keyLength,
                          size_t               bufferLength,
-                         psnSessionContext * pContext );
+                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnHashMapInit( psnHashMap         * pHashMap,
+bool psonHashMapInit( psonHashMap         * pHashMap,
                       ptrdiff_t             parentOffset,
                       size_t                numberOfBlocks,
                       size_t                expectedNumOfChilds,
-                      psnTxStatus        * pTxStatus,
+                      psonTxStatus        * pTxStatus,
                       size_t                origNameLength,
                       char                * origName,
                       ptrdiff_t             hashItemOffset,
                       psoObjectDefinition * pDefinition,
-                      psnSessionContext  * pContext );
+                      psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnHashMapInsert( psnHashMap        * pHashMap,
+bool psonHashMapInsert( psonHashMap        * pHashMap,
                         const void         * pKey,
                         size_t               keyLength,
                         const void         * pItem,
                         size_t               itemLength,
-                        psnSessionContext * pContext );
+                        psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnHashMapRelease( psnHashMap        * pHashMap,
-                         psnHashItem       * pHashItem,
-                         psnSessionContext * pContext );
+bool psonHashMapRelease( psonHashMap        * pHashMap,
+                         psonHashItem       * pHashItem,
+                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnHashMapReplace( psnHashMap        * pHashMap,
+bool psonHashMapReplace( psonHashMap        * pHashMap,
                          const void         * pKey,
                          size_t               keyLength,
                          const void         * pItem,
                          size_t               itemLength,
-                         psnSessionContext * pContext );
+                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnHashMapRollbackAdd( psnHashMap        * pHashMap, 
+void psonHashMapRollbackAdd( psonHashMap        * pHashMap, 
                              ptrdiff_t            itemOffset,
-                             psnSessionContext * pContext  );
+                             psonSessionContext * pContext  );
 
 PHOTON_ENGINE_EXPORT
-void psnHashMapRollbackRemove( psnHashMap        * pHashMap, 
+void psonHashMapRollbackRemove( psonHashMap        * pHashMap, 
                                 ptrdiff_t            itemOffset,
-                                psnSessionContext * pContext  );
+                                psonSessionContext * pContext  );
 
 PHOTON_ENGINE_EXPORT
-void psnHashMapStatus( psnHashMap  * pHashMap,
+void psonHashMapStatus( psonHashMap  * pHashMap,
                         psoObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -166,7 +166,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_HASH_MAP_H */
+#endif /* PSON_HASH_MAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

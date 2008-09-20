@@ -26,14 +26,14 @@ const bool expectedToPass = true;
 int main()
 {
    bool ok;
-   pscThreadLock lock;
+   psocThreadLock lock;
 
-   ok = pscInitThreadLock( &lock );
+   ok = psocInitThreadLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pscFiniThreadLock( &lock );
+   psocFiniThreadLock( &lock );
 
    if ( lock.initialized != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -31,7 +31,7 @@ extern "C" {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswErrors
+enum psoqErrors
 {
     /**
      * No error...
@@ -257,7 +257,7 @@ enum vdswErrors
     PSOQ_CFG_ACCESS_IS_MISSING = 117
 };
 
-typedef enum vdswErrors vdswErrors;
+typedef enum psoqErrors psoqErrors;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

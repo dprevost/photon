@@ -19,7 +19,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void pscInitTimer( pscTimer * pTimer )
+void psocInitTimer( psocTimer * pTimer )
 {
 #if defined (WIN32)
    pTimer->highResolution = TRUE;
@@ -38,9 +38,9 @@ void pscInitTimer( pscTimer * pTimer )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void 
-pscCalculateTimer( pscTimer      * pTimer,
-                   unsigned long * pSecs,
-                   unsigned long * pnanoSecs )
+psocCalculateTimer( psocTimer     * pTimer,
+                    unsigned long * pSecs,
+                    unsigned long * pnanoSecs )
 {
    unsigned long tmp;
    

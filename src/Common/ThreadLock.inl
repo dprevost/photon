@@ -18,14 +18,14 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void
-pscAcquireThreadLock( pscThreadLock* pLock )
+psocAcquireThreadLock( psocThreadLock * pLock )
 {
 #if ! defined (WIN32)
    int status;
 #endif
 
    PSO_PRE_CONDITION( pLock != NULL );
-   PSO_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
+   PSO_INV_CONDITION( pLock->initialized == PSOC_THREADLOCK_SIGNATURE );
 
 #if defined (WIN32)
    /*
@@ -56,13 +56,13 @@ pscAcquireThreadLock( pscThreadLock* pLock )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline bool
-pscTryAcquireThreadLock( pscThreadLock * pLock,
-                         unsigned int    milliSecs )
+psocTryAcquireThreadLock( psocThreadLock * pLock,
+                          unsigned int     milliSecs )
 {
    int status;
    
    PSO_PRE_CONDITION( pLock != NULL );
-   PSO_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
+   PSO_INV_CONDITION( pLock->initialized == PSOC_THREADLOCK_SIGNATURE );
 
 #if defined (WIN32)
    status = TryEnterCriticalSection( &pLock->mutex );
@@ -111,12 +111,12 @@ pscTryAcquireThreadLock( pscThreadLock * pLock,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void
-pscReleaseThreadLock( pscThreadLock* pLock )
+psocReleaseThreadLock( psocThreadLock * pLock )
 {
    int status;
    
    PSO_PRE_CONDITION( pLock != NULL );
-   PSO_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
+   PSO_INV_CONDITION( pLock->initialized == PSOC_THREADLOCK_SIGNATURE );
 
 #if defined (WIN32)
    status = 0; /* To avoid a warning */

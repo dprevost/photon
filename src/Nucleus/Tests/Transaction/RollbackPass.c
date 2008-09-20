@@ -23,18 +23,18 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnTx* pTx;
-   psnSessionContext context;
+   psonTx* pTx;
+   psonSessionContext context;
    bool ok;
    
    pTx = initTxTest( expectedToPass, &context );
 
-   ok = psnTxInit( pTx, 1, &context );
+   ok = psonTxInit( pTx, 1, &context );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnTxRollback( pTx, &context );
+   psonTxRollback( pTx, &context );
    
    return 0;
 }

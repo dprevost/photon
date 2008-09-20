@@ -23,11 +23,11 @@ const bool expectedToPass = false;
 
 int main()
 {
-   psnFolder* pFolder;
-   psnSessionContext context;
+   psonFolder* pFolder;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus status;
-   psnFolderItem folderItem;
+   psonTxStatus status;
+   psonFolderItem folderItem;
    psoObjectDefinition mapDef = { 
       PSO_FAST_MAP, 
       1, 
@@ -37,14 +37,14 @@ int main()
 
    pFolder = initFolderTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderInsertObject( pFolder,
+   ok = psonFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -56,7 +56,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderEditObject( pFolder,
+   ok = psonFolderEditObject( pFolder,
                               "test2",
                               5,
                               PSO_FAST_MAP,
@@ -66,9 +66,9 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   psnFolderCommitEdit( NULL,
+   psonFolderCommitEdit( NULL,
                          folderItem.pHashItem, 
-                         PSN_IDENT_MAP,
+                         PSON_IDENT_MAP,
                          &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

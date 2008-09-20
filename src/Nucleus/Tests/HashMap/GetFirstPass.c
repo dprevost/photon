@@ -23,13 +23,13 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnHashMap * pHashMap;
-   psnSessionContext context;
+   psonHashMap * pHashMap;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus status;
+   psonTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   psnHashMapItem item;
+   psonHashMapItem item;
    char * ptr;
    psoObjectDefinition def = { 
       PSO_HASH_MAP, 
@@ -40,16 +40,16 @@ int main()
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnHashMapInit( pHashMap, 
+   ok = psonHashMapInit( pHashMap, 
                          0, 1, 0, &status, 4, 
                          "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            (const void *) key,
                            6,
                            (const void *) data,
@@ -59,7 +59,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnHashMapGetFirst( pHashMap,
+   ok = psonHashMapGetFirst( pHashMap,
                              &item,
                              6,
                              20,

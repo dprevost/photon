@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSW_VERIFY_PSO_H
-#define VDSW_VERIFY_PSO_H
+#ifndef PSOQ_VERIFY_PSO_H
+#define PSOQ_VERIFY_PSO_H
 
 #include "Nucleus/MemoryHeader.h"
 
@@ -26,14 +26,14 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswVerify( psnMemoryHeader * pMemoryAddress, 
+void psoqVerify( psonMemoryHeader * pMemoryAddress, 
                  size_t           * pNumObjectsOK,
                  size_t           * pNumObjectsRepaired,
                  size_t           * pNumObjectsDeleted,
                  size_t           * pNumObjectsError,
                  FILE             * fp );
 
-void vdswRepair( psnMemoryHeader * pMemoryAddress,
+void psoqRepair( psonMemoryHeader * pMemoryAddress,
                  size_t           * pNumObjectsOK,
                  size_t           * pNumObjectsRepaired,
                  size_t           * pNumObjectsDeleted,
@@ -46,7 +46,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDSW_VERIFY_PSO_H */
+#endif /* PSOQ_VERIFY_PSO_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

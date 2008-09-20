@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_QUEUE_H
-#define PSN_QUEUE_H
+#ifndef PSON_QUEUE_H
+#define PSON_QUEUE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,22 +33,22 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum psnQueueEnum
+enum psonQueueEnum
 {
-   PSN_QUEUE_FIRST = 101,
-   PSN_QUEUE_LAST  = 202
+   PSON_QUEUE_FIRST = 101,
+   PSON_QUEUE_LAST  = 202
    
 };
 
-typedef enum psnQueueEnum psnQueueEnum;
+typedef enum psonQueueEnum psonQueueEnum;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psnQueueItem
+struct psonQueueItem
 {
-   psnTxStatus  txStatus;
+   psonTxStatus  txStatus;
 
-   psnLinkNode node;
+   psonLinkNode node;
 
    size_t dataLength;
    
@@ -56,23 +56,23 @@ struct psnQueueItem
 
 };
 
-typedef struct psnQueueItem psnQueueItem;
+typedef struct psonQueueItem psonQueueItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psnQueue
+struct psonQueue
 {
    /** Always first */
-   struct psnMemObject memObject;
+   struct psonMemObject memObject;
 
    /** Basic info for all leaves and branches of our tree. */
-   struct psnTreeNode  nodeObject;
+   struct psonTreeNode  nodeObject;
 
    /** The type of queue (as decided when psoCreateObject() was called). */
    enum psoObjectType queueType;
 
    /** Our own doubly-linked list, to hold the data. */
-   psnLinkedList listOfElements;
+   psonLinkedList listOfElements;
 
    /** Offset to the data definition */
    ptrdiff_t  dataDefOffset;
@@ -87,82 +87,82 @@ struct psnQueue
    size_t numValidItems;
 
    /** Variable size struct - always put at the end */
-   struct psnBlockGroup blockGroup;
+   struct psonBlockGroup blockGroup;
 
 };
 
-typedef struct psnQueue psnQueue;
+typedef struct psonQueue psonQueue;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
-bool psnQueueInit( psnQueue           * pQueue,
+bool psonQueueInit( psonQueue           * pQueue,
                     ptrdiff_t             parentOffset,
                     size_t                numberOfBlocks,
-                    psnTxStatus        * pTxStatus,
+                    psonTxStatus        * pTxStatus,
                     size_t                origNameLength,
                     char                * origName,
                     ptrdiff_t             hashItemOffset,
                     psoObjectDefinition * pDefinition,
-                    psnSessionContext  * pContext );
+                    psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnQueueFini( psnQueue          * pQueue,
-                    psnSessionContext * pContext );
+void psonQueueFini( psonQueue          * pQueue,
+                    psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnQueueInsert( psnQueue          * pQueue,
+bool psonQueueInsert( psonQueue          * pQueue,
                       const void         * pItem, 
                       size_t               length,
-                      enum psnQueueEnum   firstOrLast,
-                      psnSessionContext * pContext );
+                      enum psonQueueEnum   firstOrLast,
+                      psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnQueueInsertNow( psnQueue          * pQueue,
+bool psonQueueInsertNow( psonQueue          * pQueue,
                          const void         * pItem, 
                          size_t               length,
-                         enum psnQueueEnum   firstOrLast,
-                         psnSessionContext * pContext );
+                         enum psonQueueEnum   firstOrLast,
+                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnQueueRemove( psnQueue          * pQueue,
-                      psnQueueItem     ** ppQueueItem,
-                      enum psnQueueEnum   firstOrLast,
+bool psonQueueRemove( psonQueue          * pQueue,
+                      psonQueueItem     ** ppQueueItem,
+                      enum psonQueueEnum   firstOrLast,
                       size_t               bufferLength,
-                      psnSessionContext * pContext );
+                      psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnQueueGet( psnQueue          * pQueue,
+bool psonQueueGet( psonQueue          * pQueue,
                    unsigned int         flag,
-                   psnQueueItem     ** ppIterator,
+                   psonQueueItem     ** ppIterator,
                    size_t               bufferLength,
-                   psnSessionContext * pContext );
+                   psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnQueueRelease( psnQueue          * pQueue,
-                       psnQueueItem      * pQueueItem,
-                       psnSessionContext * pContext );
+bool psonQueueRelease( psonQueue          * pQueue,
+                       psonQueueItem      * pQueueItem,
+                       psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnQueueCommitAdd( psnQueue * pQueue, 
+void psonQueueCommitAdd( psonQueue * pQueue, 
                          ptrdiff_t   itemOffset );
 
 PHOTON_ENGINE_EXPORT
-void psnQueueRollbackAdd( psnQueue          * pQueue, 
+void psonQueueRollbackAdd( psonQueue          * pQueue, 
                            ptrdiff_t            itemOffset,
-                           psnSessionContext * pContext  );
+                           psonSessionContext * pContext  );
 
 PHOTON_ENGINE_EXPORT
-void psnQueueCommitRemove( psnQueue          * pQueue, 
+void psonQueueCommitRemove( psonQueue          * pQueue, 
                             ptrdiff_t            itemOffset,
-                            psnSessionContext * pContext );
+                            psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnQueueRollbackRemove( psnQueue * pQueue, 
+void psonQueueRollbackRemove( psonQueue * pQueue, 
                               ptrdiff_t   itemOffset );
 
 PHOTON_ENGINE_EXPORT
-void psnQueueStatus( psnQueue    * pQueue,
+void psonQueueStatus( psonQueue    * pQueue,
                       psoObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -171,7 +171,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_QUEUE_H */
+#endif /* PSON_QUEUE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

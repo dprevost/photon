@@ -24,18 +24,18 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnProcess * process;
-   psnSessionContext context;
+   psonProcess * process;
+   psonSessionContext context;
    bool ok;
    
    process = initProcessTest( expectedToPass, &context );
 
-   ok = psnProcessInit( process, 12345, &context );
+   ok = psonProcessInit( process, 12345, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnProcessFini( process, NULL );
+   psonProcessFini( process, NULL );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

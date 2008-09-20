@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * data1 = "My Data1";
    const char * data2 = "My Data2";
-   psaDataEntry entry;
+   psoaDataEntry entry;
    psoObjectDefinition defQueue = { 
       PSO_QUEUE,
       1, 
@@ -101,13 +101,13 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaQueueFirst( objHandle, &entry );
+   errcode = psoaQueueFirst( objHandle, &entry );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaQueueNext( sessionHandle, &entry );
+   errcode = psoaQueueNext( sessionHandle, &entry );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

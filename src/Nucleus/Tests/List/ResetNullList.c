@@ -25,15 +25,15 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnLinkedList list;
-   psnSessionContext context;
+   psonLinkedList list;
+   psonSessionContext context;
    
    initTest( expectedToPass, &context );
    InitMem();
    
-   psnLinkedListInit( &list );
+   psonLinkedListInit( &list );
 
-   psnLinkedListReset( NULL );
+   psonLinkedListReset( NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -47,13 +47,13 @@ const bool expectedToPass = true;
 
 struct localData
 {
-   pscThreadLock lock;
+   psocThreadLock lock;
    int exitFlag;
    char dum1[150];
    char dum2[250];
 };
 
-pscMemoryFile    g_memFile;
+psocMemoryFile    g_memFile;
 struct localData *g_data = NULL;
 unsigned long     g_maxTime = 0;
 unsigned long     g_failureRate;
@@ -80,7 +80,7 @@ bool              g_tryMode = false;
 int worker( void* arg )
 {
    unsigned long sec, nanoSec;
-   pscTimer timer;
+   psocTimer timer;
    int identifier;
    unsigned long elapsedTime = 0;
    unsigned long loop = 1;
@@ -89,13 +89,13 @@ int worker( void* arg )
    
    identifier = *((int*)arg);
 
-   pscInitTimer( &timer );   
+   psocInitTimer( &timer );   
    psotBarrierWait( &g_barrier );
-   pscBeginTimer( &timer );
+   psocBeginTimer( &timer );
   
    while ( 1 ) {
       if ( (loop%DEFAULT_FAILURE_RATE) != 0 ) {
-         pscAcquireThreadLock( &g_data->lock );
+         psocAcquireThreadLock( &g_data->lock );
       }
       
       sprintf( g_data->dum2, "dumStr2 %d  ", identifier );
@@ -103,8 +103,8 @@ int worker( void* arg )
 
       sscanf( g_data->dum1, "%s %d", dum3, &dumId );
       if ( dumId != identifier ) {
-         pscEndTimer( &timer );
-         pscCalculateTimer( &timer, &sec, &nanoSec );
+         psocEndTimer( &timer );
+         psocCalculateTimer( &timer, &sec, &nanoSec );
 
          fprintf( stderr, "%s - time = %u.%03u secs, \n",
                   "Ok! We got our expected error",
@@ -112,7 +112,7 @@ int worker( void* arg )
                   (unsigned int)(nanoSec/1000/1000) );
          g_data->exitFlag = 1;
          if ( (loop%DEFAULT_FAILURE_RATE) != 0 ) {
-            pscReleaseThreadLock( &g_data->lock );
+            psocReleaseThreadLock( &g_data->lock );
          }
          fprintf( stderr, "Thread #%d, Number of loops = %lu\n", 
                   identifier, loop );
@@ -120,15 +120,15 @@ int worker( void* arg )
       }
       
       if ( (loop%DEFAULT_FAILURE_RATE) != 0 ) {
-         pscReleaseThreadLock( &g_data->lock );
+         psocReleaseThreadLock( &g_data->lock );
       }
 
       if ( g_data->exitFlag == 1 ) break;      
       loop++;
       
       if ( (loop%CHECK_TIMER) != 0 ) {
-         pscEndTimer( &timer );
-         pscCalculateTimer( &timer, &sec, &nanoSec );
+         psocEndTimer( &timer );
+         psocCalculateTimer( &timer, &sec, &nanoSec );
 
          elapsedTime = sec*US_PER_SEC + nanoSec/1000;
          if ( elapsedTime > g_maxTime ) break;
@@ -148,13 +148,13 @@ int main( int argc, char* argv[] )
    char filename[PATH_MAX];
    int errcode;
    bool ok;
-   pscErrorHandler errorHandler;
+   psocErrorHandler errorHandler;
    int i, *identifier, numThreads;
    psotThreadWrap *threadWrap;
    bool foundError = false;
-   pscOptionHandle handle;
+   psocOptionHandle handle;
    char *argument;
-   struct pscOptStruct opts[5] = { 
+   struct psocOptStruct opts[5] = { 
       { 'f', "filename",   1, "memoryFile",    "Filename for shared memory" },
       { 'm', "mode",       1, "lockMode",      "Set this to 'try' for testing TryAcquire" },
       { 'n', "numThreads", 1, "numThreads",    "Number of threads" },
@@ -162,25 +162,25 @@ int main( int argc, char* argv[] )
       { 't', "time",       1, "timeInSecs",    "Time to run the tests" }
    };
    
-   pscInitErrorDefs();
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorDefs();
+   psocInitErrorHandler( &errorHandler );
 
-   ok = pscSetSupportedOptions( 5, opts, &handle );
+   ok = psocSetSupportedOptions( 5, opts, &handle );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = pscValidateUserOptions( handle, argc, argv, 1 );
+   errcode = psocValidateUserOptions( handle, argc, argv, 1 );
    if ( errcode < 0 ) {
-      pscShowUsage( handle, "LockConcurrency", "" );
+      psocShowUsage( handle, "LockConcurrency", "" );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( errcode > 0 ) {
-      pscShowUsage( handle, "LockConcurrency", "" );
+      psocShowUsage( handle, "LockConcurrency", "" );
       return 0;
    }
 
-   if ( pscGetShortOptArgument( handle, 'n', &argument ) ) {
+   if ( psocGetShortOptArgument( handle, 'n', &argument ) ) {
       numThreads = atoi( argument );
       if ( numThreads < 2 ) {
          fprintf( stderr, "Number of childs must be >= to two\n" );
@@ -191,7 +191,7 @@ int main( int argc, char* argv[] )
       numThreads = DEFAULT_NUM_THREADS;
    }
    
-   if ( pscGetShortOptArgument( handle, 'r', &argument ) ) {
+   if ( psocGetShortOptArgument( handle, 'r', &argument ) ) {
       g_failureRate = strtol( argument, NULL, 0 );
       if ( g_failureRate < 1 ) {
          fprintf( stderr, "Failure rate must be positive\n" );
@@ -202,7 +202,7 @@ int main( int argc, char* argv[] )
       g_failureRate = DEFAULT_FAILURE_RATE;
    }
    
-   if ( pscGetShortOptArgument( handle, 't', &argument ) ) {
+   if ( psocGetShortOptArgument( handle, 't', &argument ) ) {
       g_maxTime = strtol( argument, NULL, 0 );
       if ( g_maxTime < 1 ) {
          fprintf( stderr, "Time of test must be positive\n" );
@@ -213,11 +213,11 @@ int main( int argc, char* argv[] )
       g_maxTime = DEFAULT_TIME; /* in seconds */
    }
    
-   if ( pscGetShortOptArgument( handle, 'm', &argument ) ) {
+   if ( psocGetShortOptArgument( handle, 'm', &argument ) ) {
       if ( strcmp( argument, "try" ) == 0 ) g_tryMode = true;
    }
    
-   if ( pscGetShortOptArgument( handle, 'f', &argument ) ) {
+   if ( psocGetShortOptArgument( handle, 'f', &argument ) ) {
       strncpy( filename, argument, PATH_MAX );
       if ( filename[0] == '\0' ) {
          fprintf( stderr, "Empty memfile name\n" );
@@ -246,14 +246,14 @@ int main( int argc, char* argv[] )
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   pscInitMemoryFile( &g_memFile, 10, filename );
+   psocInitMemoryFile( &g_memFile, 10, filename );
 
-   ok = pscCreateBackstore( &g_memFile, 0644, &errorHandler );
+   ok = psocCreateBackstore( &g_memFile, 0644, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   ok = pscOpenMemFile( &g_memFile, &ptr, &errorHandler );
+   ok = psocOpenMemFile( &g_memFile, &ptr, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
@@ -261,7 +261,7 @@ int main( int argc, char* argv[] )
    memset( ptr, 0, 10000 );
    g_data = (struct localData*) ptr;
    
-   ok = pscInitThreadLock( &g_data->lock );
+   ok = psocInitThreadLock( &g_data->lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -289,10 +289,10 @@ int main( int argc, char* argv[] )
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   pscFiniMemoryFile( &g_memFile );
+   psocFiniMemoryFile( &g_memFile );
    psotFiniBarrier( &g_barrier );
-   pscFiniErrorHandler( &errorHandler );
-   pscFiniErrorDefs();
+   psocFiniErrorHandler( &errorHandler );
+   psocFiniErrorDefs();
 
    return 0;
 }

@@ -15,15 +15,15 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSA_LIST_READERS_H
-#define PSA_LIST_READERS_H
+#ifndef PSOA_LIST_READERS_H
+#define PSOA_LIST_READERS_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
 #include "API/api.h"
 
-#define PSA_LIST_READER_SIG 0x1e216507
+#define PSOA_LIST_READER_SIG 0x1e216507
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -31,42 +31,42 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psaReader
+struct psoaReader
 {
-   struct psaReader * previous;
-   struct psaReader * next;
+   struct psoaReader * previous;
+   struct psoaReader * next;
    
-   /** Pointer to the psa* object */
+   /** Pointer to the psoa* object */
    void * address;
    
    /** For the future: we'll likely have more than one type of read-only. */
-   enum psaObjetType type;
+   enum psoaObjetType type;
 };
 
-typedef struct psaReader psaReader;
+typedef struct psoaReader psoaReader;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psaListReaders
+struct psoaListReaders
 {
    size_t currentSize;
 
-   psaReader head;
+   psoaReader head;
 
-   /** Set to PSA_LIST_READER_SIG at initialization. */
+   /** Set to PSOA_LIST_READER_SIG at initialization. */
    unsigned int initialized;
 };
 
-typedef struct psaListReaders psaListReaders;
+typedef struct psoaListReaders psoaListReaders;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psaListReadersFini( psaListReaders * pList )
+void psoaListReadersFini( psoaListReaders * pList )
 {
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
+   PSO_INV_CONDITION( pList->initialized == PSOA_LIST_READER_SIG );
 
    pList->head.previous = pList->head.next = &pList->head;
    pList->currentSize = 0;
@@ -76,24 +76,24 @@ void psaListReadersFini( psaListReaders * pList )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psaListReadersInit( psaListReaders * pList )
+void psoaListReadersInit( psoaListReaders * pList )
 {
    PSO_PRE_CONDITION( pList != NULL );
 
    pList->head.previous = pList->head.next = &pList->head;
    pList->currentSize = 0;
-   pList->initialized = PSA_LIST_READER_SIG;
+   pList->initialized = PSOA_LIST_READER_SIG;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool psaListReadersPeakFirst( psaListReaders * pList,
-                              psaReader     ** ppItem )
+bool psoaListReadersPeakFirst( psoaListReaders * pList,
+                              psoaReader     ** ppItem )
 {
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
+   PSO_INV_CONDITION( pList->initialized == PSOA_LIST_READER_SIG );
    PSO_PRE_CONDITION( ppItem != NULL );
 
    /* Check for empty queue. */
@@ -110,15 +110,15 @@ bool psaListReadersPeakFirst( psaListReaders * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool psaListReadersPeakNext( psaListReaders * pList,
-                             psaReader      * pCurrent, 
-                             psaReader     ** ppNext )
+bool psoaListReadersPeakNext( psoaListReaders * pList,
+                             psoaReader      * pCurrent, 
+                             psoaReader     ** ppNext )
 {
-   psaReader * pNext;
+   psoaReader * pNext;
 
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
+   PSO_INV_CONDITION( pList->initialized == PSOA_LIST_READER_SIG );
    PSO_PRE_CONDITION( pCurrent   != NULL );
    PSO_PRE_CONDITION( ppNext     != NULL );
    PSO_PRE_CONDITION( pCurrent->previous != NULL );
@@ -137,12 +137,12 @@ bool psaListReadersPeakNext( psaListReaders * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psaListReadersPut( psaListReaders * pList,
-                        psaReader      * pNewItem )
+void psoaListReadersPut( psoaListReaders * pList,
+                        psoaReader      * pNewItem )
 {
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
+   PSO_INV_CONDITION( pList->initialized == PSOA_LIST_READER_SIG );
    PSO_PRE_CONDITION( pNewItem != NULL );
 
    pNewItem->next = &pList->head;
@@ -161,12 +161,12 @@ void psaListReadersPut( psaListReaders * pList,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psaListReadersRemove( psaListReaders * pList,
-                           psaReader      * pRemovedItem )
+void psoaListReadersRemove( psoaListReaders * pList,
+                           psoaReader      * pRemovedItem )
 {
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSA_LIST_READER_SIG );
+   PSO_INV_CONDITION( pList->initialized == PSOA_LIST_READER_SIG );
    PSO_PRE_CONDITION( pRemovedItem != NULL );
    PSO_PRE_CONDITION( pRemovedItem->previous != NULL );
    PSO_PRE_CONDITION( pRemovedItem->next     != NULL );
@@ -184,6 +184,6 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSA_LIST_READERS_H */
+#endif /* PSOA_LIST_READERS_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -24,8 +24,8 @@ const bool expectedToPass = true;
 
 int main()
 {
-   pscMemoryFile  mem;
-   pscErrorHandler errorHandler;
+   psocMemoryFile  mem;
+   psocErrorHandler errorHandler;
    bool ok;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete
@@ -34,22 +34,22 @@ int main()
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
    
-   pscInitErrorDefs();
-   pscInitErrorHandler( &errorHandler );
-   pscInitMemoryFile( &mem, 2049, "MemFile.mem" );
+   psocInitErrorDefs();
+   psocInitErrorHandler( &errorHandler );
+   psocInitMemoryFile( &mem, 2049, "MemFile.mem" );
 
-   ok = pscCreateBackstore( &mem, 0755, &errorHandler );
+   ok = psocCreateBackstore( &mem, 0755, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
-   ok = pscCopyBackstore( &mem, 0755, &errorHandler );
+   ok = psocCopyBackstore( &mem, 0755, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, 
          { unlink( "MemFile.mem" ); unlink( "MemFile.mem.bck" ); } );
    }
 
-   ok = pscCopyBackstore( &mem, 0755, &errorHandler );
+   ok = psocCopyBackstore( &mem, 0755, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, 
          { unlink( "MemFile.mem" ); unlink( "MemFile.mem.bck" ); } );
@@ -57,16 +57,16 @@ int main()
    
    unlink( "MemFile.mem" );
 //   unlink( "MemFile.mem" );
-   pscFiniMemoryFile( &mem );
+   psocFiniMemoryFile( &mem );
 
-   pscInitMemoryFile( &mem, 9, "MemFile.mem" );
-   ok = pscCreateBackstore( &mem, 0755, &errorHandler );
+   psocInitMemoryFile( &mem, 9, "MemFile.mem" );
+   ok = psocCreateBackstore( &mem, 0755, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, 
          { unlink( "MemFile.mem" ); unlink( "MemFile.mem.bck" ); } );
    }
    
-   ok = pscCopyBackstore( &mem, 0755, &errorHandler );
+   ok = psocCopyBackstore( &mem, 0755, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, 
          { unlink( "MemFile.mem" ); unlink( "MemFile.mem.bck" ); } );
@@ -74,10 +74,10 @@ int main()
    
    unlink( "MemFile.mem" );
    unlink( "MemFile.mem.bck" );
-   pscFiniMemoryFile( &mem );
+   psocFiniMemoryFile( &mem );
 
-   pscFiniErrorHandler( &errorHandler );
-   pscFiniErrorDefs();
+   psocFiniErrorHandler( &errorHandler );
+   psocFiniErrorDefs();
 
    return 0;
 }

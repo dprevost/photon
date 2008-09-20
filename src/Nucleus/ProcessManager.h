@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_PROCESS_MANAGER_H
-#define PSN_PROCESS_MANAGER_H
+#ifndef PSON_PROCESS_MANAGER_H
+#define PSON_PROCESS_MANAGER_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -40,47 +40,47 @@ BEGIN_C_DECLS
  * closed objects (->decrease access counter), unlocked objects, etc.
  *
  */
-struct psnProcessManager
+struct psonProcessManager
 {
    /** Always first */
-   struct psnMemObject memObject;
+   struct psonMemObject memObject;
 
    /** Our linked lists of cleanup processes objects. */
-   psnLinkedList listOfProcesses;
+   psonLinkedList listOfProcesses;
 
    /** Variable size struct - always put at the end */
-   struct psnBlockGroup blockGroup;
+   struct psonBlockGroup blockGroup;
 
 };
 
-typedef struct psnProcessManager psnProcMgr;
+typedef struct psonProcessManager psonProcMgr;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
-bool psnProcMgrInit( psnProcMgr        * pManager,
-                      psnSessionContext * pContext );
+bool psonProcMgrInit( psonProcMgr        * pManager,
+                      psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnProcMgrAddProcess( psnProcMgr        * pManager,
+bool psonProcMgrAddProcess( psonProcMgr        * pManager,
                             pid_t                pid, 
-                            psnProcess       ** ppCleanupProcess,
-                            psnSessionContext * pContext );
+                            psonProcess       ** ppCleanupProcess,
+                            psonSessionContext * pContext );
 
 /*
  * This function is for the watchdog - to recover from crashes in
  * real time.
  */
 PHOTON_ENGINE_EXPORT
-bool psnProcMgrFindProcess( psnProcMgr        * pManager,
+bool psonProcMgrFindProcess( psonProcMgr        * pManager,
                              pid_t                pid, 
-                             psnProcess       ** ppCleanupProcess,
-                             psnSessionContext * pContext );
+                             psonProcess       ** ppCleanupProcess,
+                             psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnProcMgrRemoveProcess( psnProcMgr        * pManager,
-                               psnProcess        * pCleanupProcess,
-                               psnSessionContext * pContext );
+bool psonProcMgrRemoveProcess( psonProcMgr        * pManager,
+                               psonProcess        * pCleanupProcess,
+                               psonSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -88,7 +88,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_PROCESS_MANAGER_H */
+#endif /* PSON_PROCESS_MANAGER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

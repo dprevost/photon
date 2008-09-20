@@ -24,8 +24,8 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnFolder * pTopFolder;
-   psnSessionContext context;
+   psonFolder * pTopFolder;
+   psonSessionContext context;
    bool ok;
    psoObjStatus status;
    psoObjectDefinition def = { 
@@ -37,7 +37,7 @@ int main()
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psnTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateObject( pTopFolder,
                                    "Test1",
                                    strlen("Test1"),
                                    &def,
@@ -46,7 +46,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateObject( pTopFolder,
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &def,
@@ -55,7 +55,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateObject( pTopFolder,
                                    "Test1/Test3",
                                    strlen("Test1/Test3"),
                                    &def,
@@ -64,7 +64,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnTopFolderGetStatus( pTopFolder,
+   ok = psonTopFolderGetStatus( pTopFolder,
                                 "Test1",
                                 strlen("Test1"),
                                 &status,
@@ -79,7 +79,7 @@ int main()
    if ( status.numBlockGroup != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( status.freeBytes == 0 || status.freeBytes >=PSN_BLOCK_SIZE ) {
+   if ( status.freeBytes == 0 || status.freeBytes >=PSON_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( status.numDataItem != 2 ) {

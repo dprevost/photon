@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSC_BARRIER_H
-#define PSC_BARRIER_H
+#ifndef PSOC_BARRIER_H
+#define PSOC_BARRIER_H
 
 #if defined (WIN32)
 #  include "Common/arch/Barrier-win32.h"
@@ -34,5 +34,5 @@
 #  error "Not implemented yet!"
 #endif
 
-#endif /* PSC_BARRIER_H */
+#endif /* PSOC_BARRIER_H */
 

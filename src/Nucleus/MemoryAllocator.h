@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_MEMORY_ALLOCATOR_H
-#define PSN_MEMORY_ALLOCATOR_H
+#ifndef PSON_MEMORY_ALLOCATOR_H
+#define PSON_MEMORY_ALLOCATOR_H
 
 #include "Nucleus/Engine.h"
 #include "Common/ErrorHandler.h"
@@ -31,13 +31,13 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psnMemAlloc
+struct psonMemAlloc
 {
    /**
-    * The psnMemAlloc is itself a memory object and "inherits" from
+    * The psonMemAlloc is itself a memory object and "inherits" from
     * the memObj structure.
     */
-   psnMemObject memObj;
+   psonMemObject memObj;
    
    /** Total space currently allocated */
    size_t totalAllocBlocks;   
@@ -58,7 +58,7 @@ struct psnMemAlloc
    size_t totalLength;
 
    /** Structure used to hold the list of free buffers. */
-   psnLinkedList freeList;
+   psonLinkedList freeList;
 
    ptrdiff_t bitmapOffset;
    
@@ -66,16 +66,16 @@ struct psnMemAlloc
     * The header of the group of blocks for this object. It MUST be
     * at the end of the struct since it contains a variable array.
     */
-   psnBlockGroup blockGroup;
+   psonBlockGroup blockGroup;
    
 };
 
-typedef struct psnMemAlloc psnMemAlloc;
+typedef struct psonMemAlloc psonMemAlloc;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Initialize the psnMemAlloc struct. The second argument is the start of
+ * Initialize the psonMemAlloc struct. The second argument is the start of
  * the shared memory itself. 
  *
  * This function should only be called by the watchdog (it might move there
@@ -84,48 +84,48 @@ typedef struct psnMemAlloc psnMemAlloc;
  */
 PHOTON_ENGINE_EXPORT
 enum psoErrors 
-psnMemAllocInit( psnMemAlloc       * pAlloc,
+psonMemAllocInit( psonMemAlloc       * pAlloc,
                   unsigned char      * pBaseAddress, 
                   size_t               length,
-                  psnSessionContext * pContext );
+                  psonSessionContext * pContext );
 
 /**
  * 
  */
 PHOTON_ENGINE_EXPORT unsigned char* 
-psnMallocBlocks( psnMemAlloc       * pAlloc,
-                  psnAllocTypeEnum    allocType,
+psonMallocBlocks( psonMemAlloc       * pAlloc,
+                  psonAllocTypeEnum    allocType,
                   size_t               numBlocks,
-                  psnSessionContext * pContext );
+                  psonSessionContext * pContext );
 
 /** Free ptr, the memory is returned to the pool. */
 PHOTON_ENGINE_EXPORT
-void psnFreeBlocks( psnMemAlloc       * pAlloc,
-                     psnAllocTypeEnum    allocType,
+void psonFreeBlocks( psonMemAlloc       * pAlloc,
+                     psonAllocTypeEnum    allocType,
                      unsigned char      * ptr, 
                      size_t               numBlocks,
-                     psnSessionContext * pContext );
+                     psonSessionContext * pContext );
 
 static inline
-bool psnMemAllocLastBlock( psnMemAlloc * pAlloc,
+bool psonMemAllocLastBlock( psonMemAlloc * pAlloc,
                             ptrdiff_t      offset,
                             size_t         numBlocks )
 {
-   return ( pAlloc->totalLength <= (size_t)offset + (numBlocks << PSN_BLOCK_SHIFT));
+   return ( pAlloc->totalLength <= (size_t)offset + (numBlocks << PSON_BLOCK_SHIFT));
 }
 
 PHOTON_ENGINE_EXPORT
-void psnMemAllocClose( psnMemAlloc       * pAlloc,
-                        psnSessionContext * pContext );
+void psonMemAllocClose( psonMemAlloc       * pAlloc,
+                        psonSessionContext * pContext );
 
 /** Returns status and statistics from the memory allocator. Note 
  *  that the number of mallocs/frees are not based on a 64 bits 
  *  integer on 32 bits machine - these numbers might loop around.
  */
 PHOTON_ENGINE_EXPORT
-bool psnMemAllocStats( psnMemAlloc       * pAlloc,
+bool psonMemAllocStats( psonMemAlloc       * pAlloc,
                         psoInfo            * pInfo,
-                        psnSessionContext * pContext  );
+                        psonSessionContext * pContext  );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -133,7 +133,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_MEMORY_ALLOCATOR_H */
+#endif /* PSON_MEMORY_ALLOCATOR_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -35,7 +35,7 @@ int psoInit( const char * wdAddress,
              int          programIsMultiThreaded )                  
 {
    int errcode = PSO_OK;
-   psaProcess * process;
+   psoaProcess * process;
    bool ok;
    
    if ( wdAddress == NULL ) return PSO_INVALID_WATCHDOG_ADDRESS;
@@ -43,16 +43,16 @@ int psoInit( const char * wdAddress,
    g_protectionIsNeeded = programIsMultiThreaded;
    
    if ( g_protectionIsNeeded ) {
-      ok = pscInitThreadLock( &g_ProcessMutex );
+      ok = psocInitThreadLock( &g_ProcessMutex );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) return PSO_NOT_ENOUGH_RESOURCES;
    }
 
-   process = (psaProcess *) malloc( sizeof(psaProcess) );
+   process = (psoaProcess *) malloc( sizeof(psoaProcess) );
    if ( process == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
   
-   memset( process, 0, sizeof(psaProcess) );
-   errcode = psaProcessInit( process, wdAddress );
+   memset( process, 0, sizeof(psoaProcess) );
+   errcode = psoaProcessInit( process, wdAddress );
 
    if ( errcode != PSO_OK ) free( process );
 
@@ -64,7 +64,7 @@ int psoInit( const char * wdAddress,
 void psoExit()
 {
    if ( g_pProcessInstance != NULL ) {
-      psaProcessFini();
+      psoaProcessFini();
    }
 }
 

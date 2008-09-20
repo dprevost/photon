@@ -24,8 +24,8 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnFolder * pFolder;
-   psnSessionContext context;
+   psonFolder * pFolder;
+   psonSessionContext context;
    
    psoObjectDefinition def = { 
       PSO_FOLDER, 
@@ -36,7 +36,7 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   psnFolderCreateObject( pFolder,
+   psonFolderCreateObject( pFolder,
                            NULL,
                            4,
                            &def,

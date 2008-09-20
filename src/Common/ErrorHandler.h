@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSC_ERROR_HANDLER_H
-#define PSC_ERROR_HANDLER_H
+#ifndef PSOC_ERROR_HANDLER_H
+#define PSOC_ERROR_HANDLER_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -27,7 +27,7 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * \defgroup pscErrorHandler The Error Handler module
+ * \defgroup psocErrorHandler The Error Handler module
  *
  * This module provides a unified mechanism to store error codes and
  * to retrieve error messages associated with the error codes.
@@ -42,7 +42,7 @@ BEGIN_C_DECLS
  * provided by errno (or GetLastError() on Windows).
  *
  * IMHO, a better solution is to provide a limited "stack" of error messages
- * (the size of the chain of errors is limited by PSC_ERROR_CHAIN_LENGTH).
+ * (the size of the chain of errors is limited by PSOC_ERROR_CHAIN_LENGTH).
  *
  * Currently the code will generate appropriate error messages for errno
  * and for GetLastError() and WSAGetLastError() on Windows.
@@ -54,7 +54,7 @@ BEGIN_C_DECLS
  * errorParser built it for you (transforming the comments in a header file 
  * describing the error codes in error messages).
  *
- * \ingroup pscCommon
+ * \ingroup psocCommon
  * @{
  */
 
@@ -68,67 +68,67 @@ BEGIN_C_DECLS
  * 
  */
 
-/** Unique identifier for the pscErrorHandler struct. */
-#define PSC_ERROR_HANDLER_SIGNATURE ((unsigned)0xfd13a982)
+/** Unique identifier for the psocErrorHandler struct. */
+#define PSOC_ERROR_HANDLER_SIGNATURE ((unsigned)0xfd13a982)
 
 /** A handle to the function that converts an error code into an error 
  *  message. 
  */
-typedef int pscErrMsgHandle;
+typedef int psocErrMsgHandle;
 
-#define PSC_NO_ERRHANDLER    ((pscErrMsgHandle)-1)
-#define PSC_ERRNO_HANDLE     ((pscErrMsgHandle) 0)
+#define PSOC_NO_ERRHANDLER    ((psocErrMsgHandle)-1)
+#define PSOC_ERRNO_HANDLE     ((psocErrMsgHandle) 0)
 #if defined (WIN32 )
-#  define PSC_WINERR_HANDLE  ((pscErrMsgHandle) 1)
-#  define PSC_SOCKERR_HANDLE ((pscErrMsgHandle) 2)
+#  define PSOC_WINERR_HANDLE  ((psocErrMsgHandle) 1)
+#  define PSOC_SOCKERR_HANDLE ((psocErrMsgHandle) 2)
 #endif
 
-#define PSC_ERROR_CHAIN_LENGTH  5
+#define PSOC_ERROR_CHAIN_LENGTH  5
 
-typedef int (*pscErrMsgHandler_T)(int, char *, unsigned int);
+typedef int (*psocErrMsgHandler_T)(int, char *, unsigned int);
 
-typedef struct pscErrorHandler
+typedef struct psocErrorHandler
 {
-   /** Set to PSC_ERROR_HANDLER_SIGNATURE at initialization. */
+   /** Set to PSOC_ERROR_HANDLER_SIGNATURE at initialization. */
    unsigned int initialized;
    
    /** The length of the chain of errors. */
    int chainLength;
    
    /** Error codes. */
-   int errorCode[PSC_ERROR_CHAIN_LENGTH];
+   int errorCode[PSOC_ERROR_CHAIN_LENGTH];
    
    /** Handle to the function used to retrieve the error message. */
-   pscErrMsgHandle errorHandle[PSC_ERROR_CHAIN_LENGTH];
+   psocErrMsgHandle errorHandle[PSOC_ERROR_CHAIN_LENGTH];
    
-} pscErrorHandler;
+} psocErrorHandler;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Use for initializing our internal data. */
 PHOTON_COMMON_EXPORT
-bool pscInitErrorDefs();
+bool psocInitErrorDefs();
 
 /*! \brief Clear our internal data. */
 PHOTON_COMMON_EXPORT
-void pscFiniErrorDefs();
+void psocFiniErrorDefs();
 
 /*! \brief Add a function to handle error messages. */
 PHOTON_COMMON_EXPORT
-pscErrMsgHandle pscAddErrorMsgHandler( const char         * name, 
-                                       pscErrMsgHandler_T   handler );
+psocErrMsgHandle psocAddErrorMsgHandler( const char          * name, 
+                                         psocErrMsgHandler_T   handler );
 
 /*! \brief Use for initializing the struct or to reset it, as needed. */
 PHOTON_COMMON_EXPORT
-void pscInitErrorHandler( pscErrorHandler * pErrorHandler );
+void psocInitErrorHandler( psocErrorHandler * pErrorHandler );
 
-/*! \brief Terminate access to the struct pscErrorHandler */
+/*! \brief Terminate access to the struct psocErrorHandler */
 PHOTON_COMMON_EXPORT
-void pscFiniErrorHandler( pscErrorHandler * pErrorHandler );
+void psocFiniErrorHandler( psocErrorHandler * pErrorHandler );
 
 /*! Test to see if errors were found. 
  * 
- * \param[in] pErrorHandler A pointer to the pscErrorHandler struct itself.
+ * \param[in] pErrorHandler A pointer to the psocErrorHandler struct itself.
  *
  * \retval true  (1) if there are errors.
  * \retval false (0) if no errors.
@@ -136,7 +136,7 @@ void pscFiniErrorHandler( pscErrorHandler * pErrorHandler );
  * \pre \em pErrorHandler cannot be NULL.
  */
 static inline
-bool pscAnyErrors( pscErrorHandler * pErrorHandler )
+bool psocAnyErrors( psocErrorHandler * pErrorHandler )
 {
    PSO_PRE_CONDITION( pErrorHandler != NULL );
 
@@ -147,40 +147,40 @@ bool pscAnyErrors( pscErrorHandler * pErrorHandler )
  *         messages (if more than one)
  */
 PHOTON_COMMON_EXPORT
-size_t pscGetErrorMsg( pscErrorHandler * pErrorHandler,
-                       char            * msg, 
-                       size_t            maxLength );
+size_t psocGetErrorMsg( psocErrorHandler * pErrorHandler,
+                        char             * msg, 
+                        size_t             maxLength );
 
 /*! \brief Retrieves the length of the error message or the length of a 
  *         concatenation of all error messages (if more than one) - the
  *         space for a NULL terminator is not included.
  */
 PHOTON_COMMON_EXPORT
-size_t pscGetErrorMsgLength( pscErrorHandler * pErrorHandler );
+size_t psocGetErrorMsgLength( psocErrorHandler * pErrorHandler );
 
 /*! \brief 
  * Sets both the error code and the handler for the 
  * error message. It will first reset the chain of error codes to zero.
  */
 PHOTON_COMMON_EXPORT
-void pscSetError( pscErrorHandler * pErrorHandler, 
-                  pscErrMsgHandle   handle,
-                  int               errorCode );   
+void psocSetError( psocErrorHandler * pErrorHandler, 
+                   psocErrMsgHandle   handle,
+                   int                errorCode );   
 
 /*! \brief
  * Adds the error code and the handler for the error message to an 
  * existing chain.
  */
 PHOTON_COMMON_EXPORT
-void pscChainError( pscErrorHandler * pErrorHandler, 
-                    pscErrMsgHandle   handle,
-                    int               errorCode );  
+void psocChainError( psocErrorHandler * pErrorHandler, 
+                     psocErrMsgHandle   handle,
+                     int                errorCode );  
 
 /*! \brief
  * Retrieves the last error number or zero if no errors.
  */
 static inline 
-int pscGetLastError( pscErrorHandler * pErrorHandler )
+int psocGetLastError( psocErrorHandler * pErrorHandler )
 {
    PSO_PRE_CONDITION( pErrorHandler != NULL );
 
@@ -197,5 +197,5 @@ int pscGetLastError( pscErrorHandler * pErrorHandler )
 
 END_C_DECLS
 
-#endif /* PSC_ERROR_HANDLER_H */
+#endif /* PSOC_ERROR_HANDLER_H */
 

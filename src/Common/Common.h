@@ -14,7 +14,7 @@
  */
 
 /**
- * \defgroup pscCommon The Group of all modules in Common
+ * \defgroup psocCommon The Group of all modules in Common
  *
  * Modules in this group provides wrappers for C library function and 
  * low-level functionalities used by the different parts that makes Photon.
@@ -25,8 +25,8 @@
 #  define FD_SETSIZE 100
 #endif
 
-#ifndef PSC_COMMON_H
-#define PSC_COMMON_H
+#ifndef PSOC_COMMON_H
+#define PSOC_COMMON_H
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -406,64 +406,64 @@ typedef int bool;
 #  define PSO_MAP_FAILED MAP_FAILED
 #endif
 
-struct pscTestAlignmentStruct
+struct psocTestAlignmentStruct
 {
    unsigned char c;
-   struct pscTestAlignment2
+   struct psocTestAlignment2
    {
       double d;
    } two;
 };
 
-#define PSC_ALIGNMENT_STRUCT offsetof(struct pscTestAlignmentStruct, two)
+#define PSOC_ALIGNMENT_STRUCT offsetof(struct psocTestAlignmentStruct, two)
 
-struct pscTestAlignmentChar
+struct psocTestAlignmentChar
 {
    unsigned char c1;
    unsigned char c2;
 };
 
-#define PSC_ALIGNMENT_CHAR offsetof(struct pscTestAlignmentChar, c2)
+#define PSOC_ALIGNMENT_CHAR offsetof(struct psocTestAlignmentChar, c2)
 
-struct pscTestAlignmentCharArray
+struct psocTestAlignmentCharArray
 {
    unsigned char c1;
    unsigned char array[11];
 };
 
-#define PSC_ALIGNMENT_CHAR_ARRAY offsetof(struct pscTestAlignmentCharArray, array)
+#define PSOC_ALIGNMENT_CHAR_ARRAY offsetof(struct psocTestAlignmentCharArray, array)
 
-struct pscTestAlignmentInt16
+struct psocTestAlignmentInt16
 {
    unsigned char c;
    uint16_t i16;
 };
 
-#define PSC_ALIGNMENT_INT16 offsetof(struct pscTestAlignmentInt16, i16)
+#define PSOC_ALIGNMENT_INT16 offsetof(struct psocTestAlignmentInt16, i16)
 
-struct pscTestAlignmentInt32
+struct psocTestAlignmentInt32
 {
    unsigned char c;
    uint32_t i32;
 };
 
-#define PSC_ALIGNMENT_INT32 offsetof(struct pscTestAlignmentInt32, i32)
+#define PSOC_ALIGNMENT_INT32 offsetof(struct psocTestAlignmentInt32, i32)
 
-struct pscTestAlignmentInt64
+struct psocTestAlignmentInt64
 {
    unsigned char c;
    uint64_t i64;
 };
 
-#define PSC_ALIGNMENT_INT64 offsetof(struct pscTestAlignmentInt64, i64)
+#define PSOC_ALIGNMENT_INT64 offsetof(struct psocTestAlignmentInt64, i64)
 
-struct pscTestAlignmentBool
+struct psocTestAlignmentBool
 {
    unsigned char c;
    bool b;
 };
 
-#define PSC_ALIGNMENT_BOOL offsetof(struct pscTestAlignmentBool, b)
+#define PSOC_ALIGNMENT_BOOL offsetof(struct psocTestAlignmentBool, b)
 
 /****************************************************************/
 /*
@@ -495,4 +495,4 @@ struct pscTestAlignmentBool
 
 END_C_DECLS
 
-#endif /* PSC_COMMON_H */
+#endif /* PSOC_COMMON_H */

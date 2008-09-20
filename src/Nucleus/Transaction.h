@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_TX_H
-#define PSN_TX_H
+#ifndef PSON_TX_H
+#define PSON_TX_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -26,7 +26,7 @@
 #include "MemoryObject.h"
 #include "BlockGroup.h"
 
-#define PSN_TX_SIGNATURE 0xabc6c981
+#define PSON_TX_SIGNATURE 0xabc6c981
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -34,90 +34,90 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum psnTxType
+enum psonTxType
 {
    /* ops on data */
-   PSN_TX_ADD_DATA = 1,
-   PSN_TX_REMOVE_DATA,
-/*   PSN_TX_REPLACE_DATA, */
+   PSON_TX_ADD_DATA = 1,
+   PSON_TX_REMOVE_DATA,
+/*   PSON_TX_REPLACE_DATA, */
 
    /* ops on objects */
-   PSN_TX_ADD_OBJECT = 0x81,
-   PSN_TX_REMOVE_OBJECT,
-   PSN_TX_ADD_EDIT_OBJECT
+   PSON_TX_ADD_OBJECT = 0x81,
+   PSON_TX_REMOVE_OBJECT,
+   PSON_TX_ADD_EDIT_OBJECT
 
 };
 
-typedef enum psnTxType psnTxType;
+typedef enum psonTxType psonTxType;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Each element of a transaction is kept in a doubly linked list
  * (for fast access). 
  */
-struct psnTxOps
+struct psonTxOps
 {
-   psnTxType      transType;
+   psonTxType      transType;
    ptrdiff_t       parentOffset;  
-   psnMemObjIdent parentType;
+   psonMemObjIdent parentType;
    ptrdiff_t       childOffset;
-   psnMemObjIdent childType;
+   psonMemObjIdent childType;
 
-   psnLinkNode node;
+   psonLinkNode node;
    
 };
 
-typedef struct psnTxOps psnTxOps;
+typedef struct psonTxOps psonTxOps;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psnTx
+struct psonTx
 {
    /** Always first */
-   struct psnMemObject memObject;
+   struct psonMemObject memObject;
 
    int signature;
 
    /** Linked list of all ops of the current transaction */   
-   psnLinkedList listOfOps;
+   psonLinkedList listOfOps;
 
    /** Variable size struct - always put at the end */
-   struct psnBlockGroup blockGroup;
+   struct psonBlockGroup blockGroup;
 
 };
 
-typedef struct psnTx psnTx;
+typedef struct psonTx psonTx;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
-bool psnTxAddOps( psnTx             * pTx,
-                   psnTxType           txType,
+bool psonTxAddOps( psonTx             * pTx,
+                   psonTxType           txType,
                    ptrdiff_t            parentOffset, 
-                   psnMemObjIdent      parentType,
+                   psonMemObjIdent      parentType,
                    ptrdiff_t            childOffset,
-                   psnMemObjIdent      childType,
-                   psnSessionContext * pContext );
+                   psonMemObjIdent      childType,
+                   psonSessionContext * pContext );
    
 PHOTON_ENGINE_EXPORT
-void psnTxRemoveLastOps( psnTx * pTx, psnSessionContext * pContext );
+void psonTxRemoveLastOps( psonTx * pTx, psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnTxInit( psnTx             * pTx,
+bool psonTxInit( psonTx             * pTx,
                  size_t               numberOfBlocks,
-                 psnSessionContext * pContext );
+                 psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnTxFini( psnTx             * pTx, 
-                 psnSessionContext * pContext );
+void psonTxFini( psonTx             * pTx, 
+                 psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnTxCommit( psnTx             * pTx,
-                   psnSessionContext * pContext );
+void psonTxCommit( psonTx             * pTx,
+                   psonSessionContext * pContext );
                   
 PHOTON_ENGINE_EXPORT
-void psnTxRollback( psnTx             * pTx,
-                     psnSessionContext * pContext );
+void psonTxRollback( psonTx             * pTx,
+                     psonSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -125,7 +125,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_TX_H */
+#endif /* PSON_TX_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

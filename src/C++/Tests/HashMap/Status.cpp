@@ -105,7 +105,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   if ( status.freeBytes == 0 || status.freeBytes >=PSN_BLOCK_SIZE ) {
+   if ( status.freeBytes == 0 || status.freeBytes >=PSON_BLOCK_SIZE ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }

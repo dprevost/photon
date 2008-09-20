@@ -23,10 +23,10 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnFolder* pFolder;
-   psnSessionContext context;
+   psonFolder* pFolder;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus status;
+   psonTxStatus status;
    psoObjectDefinition def = { 
       PSO_FOLDER, 
       0, 
@@ -36,14 +36,14 @@ int main()
    
    pFolder = initFolderTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderInsertObject( pFolder,
+   ok = psonFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -58,7 +58,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnFolderInsertObject( pFolder,
+   ok = psonFolderInsertObject( pFolder,
                                 "test3",
                                 "Test3",
                                 5,
@@ -76,7 +76,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnFolderFini( pFolder, &context );
+   psonFolderFini( pFolder, &context );
    
    return 0;
 }

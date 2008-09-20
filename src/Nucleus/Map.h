@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_MAP_H
-#define PSN_MAP_H
+#ifndef PSON_MAP_H
+#define PSON_MAP_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -34,15 +34,15 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psnMap
+struct psonMap
 {
    /** Always first */
-   struct psnMemObject memObject;
+   struct psonMemObject memObject;
 
    /** Basic info for all leaves and branches of our tree. */
-   struct psnTreeNode  nodeObject;
+   struct psonTreeNode  nodeObject;
 
-   struct psnHash      hashObj;
+   struct psonHash      hashObj;
 
    struct psoKeyDefinition keyDef;
    
@@ -56,92 +56,92 @@ struct psnMap
    uint16_t numFields;
    
    /** Variable size struct - always put at the end */
-   struct psnBlockGroup blockGroup;
+   struct psonBlockGroup blockGroup;
 
 };
 
-typedef struct psnMap psnMap;
+typedef struct psonMap psonMap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
-bool psnMapCopy( psnMap            * pHashMap, 
-                  psnMap            * pNewMap,
-                  psnHashItem       * pHashItem,
+bool psonMapCopy( psonMap            * pHashMap, 
+                  psonMap            * pNewMap,
+                  psonHashItem       * pHashItem,
                   const char         * origName,
-                  psnSessionContext * pContext );
+                  psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnMapDelete( psnMap            * pHashMap,
+bool psonMapDelete( psonMap            * pHashMap,
                     const void         * key,
                     size_t               keyLength, 
-                    psnSessionContext * pContext );
+                    psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnMapEmpty( psnMap            * pHashMap,
-                   psnSessionContext * pContext );
+void psonMapEmpty( psonMap            * pHashMap,
+                   psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnMapFini( psnMap            * pHashMap,
-                  psnSessionContext * pContext );
+void psonMapFini( psonMap            * pHashMap,
+                  psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnMapGet( psnMap            * pHashMap,
+bool psonMapGet( psonMap            * pHashMap,
                  const void         * pKey,
                  size_t               keyLength, 
-                 psnHashItem      ** ppItem,
+                 psonHashItem      ** ppItem,
                  size_t               bufferLength,
-                 psnSessionContext * pContext );
+                 psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnMapGetFirst( psnMap            * pHashMap,
-                      psnHashMapItem    * pItem,
+bool psonMapGetFirst( psonMap            * pHashMap,
+                      psonHashMapItem    * pItem,
                       size_t               keyLength,
                       size_t               bufferLength,
-                      psnSessionContext * pContext );
+                      psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnMapGetNext( psnMap            * pHashMap,
-                     psnHashMapItem    * pItem,
+bool psonMapGetNext( psonMap            * pHashMap,
+                     psonHashMapItem    * pItem,
                      size_t               keyLength,
                      size_t               bufferLength,
-                     psnSessionContext * pContext );
+                     psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnMapInit( psnMap             * pHashMap,
+bool psonMapInit( psonMap             * pHashMap,
                   ptrdiff_t             parentOffset,
                   size_t                numberOfBlocks,
                   size_t                expectedNumOfChilds,
-                  psnTxStatus        * pTxStatus,
+                  psonTxStatus        * pTxStatus,
                   size_t                origNameLength,
                   char                * origName,
                   ptrdiff_t             hashItemOffset,
                   psoObjectDefinition * pDefinition,
-                  psnSessionContext  * pContext );
+                  psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnMapInsert( psnMap            * pHashMap,
+bool psonMapInsert( psonMap            * pHashMap,
                     const void         * pKey,
                     size_t               keyLength,
                     const void         * pItem,
                     size_t               itemLength,
-                    psnSessionContext * pContext );
+                    psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnMapRelease( psnMap            * pHashMap,
-                     psnHashItem       * pHashItem,
-                     psnSessionContext * pContext );
+bool psonMapRelease( psonMap            * pHashMap,
+                     psonHashItem       * pHashItem,
+                     psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnMapReplace( psnMap            * pHashMap,
+bool psonMapReplace( psonMap            * pHashMap,
                      const void         * pKey,
                      size_t               keyLength,
                      const void         * pItem,
                      size_t               itemLength,
-                     psnSessionContext * pContext );
+                     psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnMapStatus( psnMap      * pHashMap,
+void psonMapStatus( psonMap      * pHashMap,
                     psoObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -150,7 +150,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_MAP_H */
+#endif /* PSON_MAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

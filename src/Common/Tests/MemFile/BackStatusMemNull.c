@@ -25,10 +25,10 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   pscMemoryFile  mem;
-   pscErrorHandler errorHandler;
+   psocMemoryFile  mem;
+   psocErrorHandler errorHandler;
    bool ok;
-   pscMemoryFileStatus status;
+   psocMemoryFileStatus status;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete
     * call is not as synchroneous as it should be...
@@ -36,16 +36,16 @@ int main()
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
 
-   pscInitErrorDefs();
-   pscInitErrorHandler( &errorHandler );
-   pscInitMemoryFile( &mem, 10, "MemFile.mem" );
+   psocInitErrorDefs();
+   psocInitErrorHandler( &errorHandler );
+   psocInitMemoryFile( &mem, 10, "MemFile.mem" );
 
-   ok = pscCreateBackstore( &mem, 0644, &errorHandler );
+   ok = psocCreateBackstore( &mem, 0644, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
-   pscBackStoreStatus( NULL, &status );
+   psocBackStoreStatus( NULL, &status );
 
    ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
 #else

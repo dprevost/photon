@@ -36,26 +36,26 @@ int main()
 #else
 
    bool ok;
-   pscDirIterator iterator;
-   pscErrorHandler errorHandler;
+   psocDirIterator iterator;
+   psocErrorHandler errorHandler;
 
-   pscInitErrorDefs();
-   pscInitDir( &iterator );
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorDefs();
+   psocInitDir( &iterator );
+   psocInitErrorHandler( &errorHandler );
    
-   ok = pscOpenDir( &iterator, "abc123", &errorHandler );
+   ok = psocOpenDir( &iterator, "abc123", &errorHandler );
    if ( ok ) {
       ERROR_EXIT( expectedToPass, NULL, );
    }
-   if ( ! pscAnyErrors( &errorHandler ) ) {
+   if ( ! psocAnyErrors( &errorHandler ) ) {
       ERROR_EXIT( expectedToPass, NULL, );
    }
    
-   pscCloseDir( &iterator );
+   psocCloseDir( &iterator );
 
-   pscFiniDir( &iterator );
-   pscFiniErrorHandler( &errorHandler );
-   pscFiniErrorDefs();
+   psocFiniDir( &iterator );
+   psocFiniErrorHandler( &errorHandler );
+   psocFiniErrorDefs();
 
    return 0;
 

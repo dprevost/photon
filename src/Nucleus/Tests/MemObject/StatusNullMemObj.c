@@ -28,20 +28,20 @@ int main()
 #if defined(USE_DBC)
    psoErrors errcode;
    psotObjDummy *pDummy;
-   psnSessionContext context;
+   psonSessionContext context;
    psoObjStatus status;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    
-   errcode = psnMemObjectInit( &pDummy->memObject, 
-                                PSN_IDENT_FOLDER,
+   errcode = psonMemObjectInit( &pDummy->memObject, 
+                                PSON_IDENT_FOLDER,
                                 &pDummy->blockGroup,
                                 1 );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnMemObjectStatus( NULL, &status );
+   psonMemObjectStatus( NULL, &status );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

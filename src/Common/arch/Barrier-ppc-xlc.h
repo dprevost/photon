@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSC_ARCH_BARRIER_H
-#define PSC_ARCH_BARRIER_H
+#ifndef PSOC_ARCH_BARRIER_H
+#define PSOC_ARCH_BARRIER_H
 
 #include <builtins.h>
 
@@ -26,14 +26,14 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void pscMemoryBarrier()
+static inline void psocMemoryBarrier()
 {
    __sync();
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void pscReadMemoryBarrier()
+static inline void psocReadMemoryBarrier()
 {
    /* 
     * Normally, lwsync should work on newer 64 bits cpus. There are
@@ -52,14 +52,14 @@ static inline void pscReadMemoryBarrier()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void pscWriteMemoryBarrier()
+static inline void psocWriteMemoryBarrier()
 {
    __eieio();
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSC_ARCH_BARRIER_H */
+#endif /* PSOC_ARCH_BARRIER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -28,7 +28,7 @@
 #include "Tests/PrintError.h"
 
 PHOTON_ENGINE_EXPORT
-pscErrMsgHandle g_psoErrorHandle;
+psocErrMsgHandle g_psoErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -44,26 +44,26 @@ pscErrMsgHandle g_psoErrorHandle;
  * the Init() call.
  */
  
-psnSession * initSessionTest( bool                testIsExpectedToSucceed,
-                               psnSessionContext* pContext )
+psonSession * initSessionTest( bool                testIsExpectedToSucceed,
+                               psonSessionContext* pContext )
 {
    bool ok;
    unsigned char* ptr;
-   psnMemAlloc*  pAlloc;
-   psnTx* pTx;
-   psnSession * pSession;
-   size_t allocatedLength = PSN_BLOCK_SIZE * 25;
+   psonMemAlloc*  pAlloc;
+   psonTx* pTx;
+   psonSession * pSession;
+   size_t allocatedLength = PSON_BLOCK_SIZE * 25;
 
-   memset( pContext, 0, sizeof(psnSessionContext) );
+   memset( pContext, 0, sizeof(psonSessionContext) );
    pContext->pidLocker = getpid();
    
-   ok = psnInitEngine();
+   ok = psonInitEngine();
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in sessionTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   pscInitErrorHandler( &pContext->errorHandler );
+   psocInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
@@ -73,17 +73,17 @@ psnSession * initSessionTest( bool                testIsExpectedToSucceed,
       exit(0);
    }
    g_pBaseAddr = ptr;
-   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
-   psnMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
+   pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
+   psonMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
-   pTx = (psnTx*)psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 1, pContext );
+   pTx = (psonTx*)psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
    if ( pTx == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in sessionTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   ok = psnTxInit( pTx, 1, pContext );
+   ok = psonTxInit( pTx, 1, pContext );
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in sessionTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -92,7 +92,7 @@ psnSession * initSessionTest( bool                testIsExpectedToSucceed,
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the folder object */
-   pSession = (psnSession *) psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 1, pContext );
+   pSession = (psonSession *) psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
    if ( pSession == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in sessionTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);

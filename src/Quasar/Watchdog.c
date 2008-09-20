@@ -24,13 +24,13 @@
 // This should be more than enough...
 #define LINE_MAX_LEN (2*PATH_MAX)
 
-vdswWatchdog * g_pWD = NULL;
+psoqWatchdog * g_pWD = NULL;
 
-pscErrMsgHandle g_wdErrorHandle = -1;
+psocErrMsgHandle g_wdErrorHandle = -1;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdswSetSigHandler();
+bool psoqSetSigHandler();
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -65,7 +65,7 @@ RETSIGTYPE sigpipe_handler( int s )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
+int psoqGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 {
    const char * theMsg;
 
@@ -83,7 +83,7 @@ int vdswGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswWatchdogInit( vdswWatchdog * pWatchdog )
+void psoqWatchdogInit( psoqWatchdog * pWatchdog )
 {
    PSO_PRE_CONDITION( pWatchdog != NULL );
 
@@ -91,30 +91,30 @@ void vdswWatchdogInit( vdswWatchdog * pWatchdog )
    pWatchdog->controlWord = 0;
    pWatchdog->verifyVDSOnly = false;
 
-   vdswLogMsgInit( &pWatchdog->log, PROG_NAME );
+   psoqLogMsgInit( &pWatchdog->log, PROG_NAME );
 
    memset( &pWatchdog->params, 0, sizeof pWatchdog->params );
 
-   if ( ! pscInitErrorDefs() ) {
-      fprintf( stderr, "Internal error in pscInitErrorDefs()\n" );
+   if ( ! psocInitErrorDefs() ) {
+      fprintf( stderr, "Internal error in psocInitErrorDefs()\n" );
    }
-   pscInitErrorHandler( &pWatchdog->errorHandler );
+   psocInitErrorHandler( &pWatchdog->errorHandler );
    
-   g_wdErrorHandle = pscAddErrorMsgHandler( "VDSWD", vdswGetErrorMsg );
-   if ( g_wdErrorHandle == PSC_NO_ERRHANDLER ) {
-      fprintf( stderr, "Error registring the error handler for VDSWD errors\n" );
+   g_wdErrorHandle = psocAddErrorMsgHandler( "Quasar", psoqGetErrorMsg );
+   if ( g_wdErrorHandle == PSOC_NO_ERRHANDLER ) {
+      fprintf( stderr, "Error registring the error handler for Quasar errors\n" );
       fprintf( stderr, "The problem might be a lack of memory\n" );
    }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswWatchdogFini( vdswWatchdog * pWatchdog )
+void psoqWatchdogFini( psoqWatchdog * pWatchdog )
 {
    PSO_PRE_CONDITION( pWatchdog != NULL );
 
-   pscFiniErrorHandler( &pWatchdog->errorHandler );
-   pscFiniErrorDefs();
+   psocFiniErrorHandler( &pWatchdog->errorHandler );
+   psocFiniErrorDefs();
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -124,7 +124,7 @@ void vdswWatchdogFini( vdswWatchdog * pWatchdog )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if !defined ( WIN32 )
-bool vdswDaemon( vdswWatchdog * pWatchdog )
+bool psoqDaemon( psoqWatchdog * pWatchdog )
 {
    pid_t pid = 0;
    int errcode;
@@ -144,7 +144,7 @@ bool vdswDaemon( vdswWatchdog * pWatchdog )
    errcode = access( pWatchdog->params.wdLocation, F_OK );
    if ( errcode != 0 ) {
       fprintf( stderr, "Invalid directory for VDS, error = %d\n", 
-               vdswLastError() );
+               psoqLastError() );
       return false;
    }
    
@@ -152,7 +152,7 @@ bool vdswDaemon( vdswWatchdog * pWatchdog )
    if ( errcode != 0 ) {
       fprintf( stderr, "Invalid file permissions on the %s%d\n", 
                "VDS directory, error = ",
-               vdswLastError() );
+               psoqLastError() );
       return false;
    }
    
@@ -180,7 +180,7 @@ bool vdswDaemon( vdswWatchdog * pWatchdog )
    pid = fork();
 
    if ( pid == -1 ) {
-      fprintf( stderr, "Fork failed, error = %d\n", vdswLastError() );
+      fprintf( stderr, "Fork failed, error = %d\n", psoqLastError() );
       return false;
    }
    
@@ -189,14 +189,14 @@ bool vdswDaemon( vdswWatchdog * pWatchdog )
 
    // Set the log object to sent messages to the log facility of the OS 
    // instead of sending them to stderr.
-   vdswStartUsingLogger( &pWatchdog->log );
+   psoqStartUsingLogger( &pWatchdog->log );
    
    errcode = setsid();
    if ( errcode == -1 ) {
       // The only way setsid() can fail is if we are already a group process
       // leader (our group ID == our pid). But this test does not cost 
       // anything and may detect attempts at "enhancing" the code ...
-      vdswSendMessage( &pWatchdog->log, WD_ERROR,
+      psoqSendMessage( &pWatchdog->log, WD_ERROR,
                          "setsid() error in Daemon() (errno = %d)",
                          errno );
       return false;
@@ -204,7 +204,7 @@ bool vdswDaemon( vdswWatchdog * pWatchdog )
    pid = fork();
 
    if ( pid == -1 ) {
-      vdswSendMessage( &pWatchdog->log, WD_ERROR,
+      psoqSendMessage( &pWatchdog->log, WD_ERROR,
                          "Fork error in Daemon() (errno = %d)",
                          errno );
       return false;
@@ -215,7 +215,7 @@ bool vdswDaemon( vdswWatchdog * pWatchdog )
 
    errcode = chdir( pWatchdog->params.wdLocation );
    if ( errcode != 0 ) {
-      vdswSendMessage( &pWatchdog->log, WD_ERROR,
+      psoqSendMessage( &pWatchdog->log, WD_ERROR,
                          "chdir() error in Daemon() (errno = %d)",
                          errno );
       return false;
@@ -227,14 +227,14 @@ bool vdswDaemon( vdswWatchdog * pWatchdog )
    close( 1 );
    close( 2 );
    
-   vdswSendMessage( &pWatchdog->log, WD_INFO, "Photon Watchdog initialized as a daemon" );   
+   psoqSendMessage( &pWatchdog->log, WD_INFO, "Photon Watchdog initialized as a daemon" );   
    return true;
 }
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswHelp( const char * progName )
+void psoqHelp( const char * progName )
 {
    PSO_PRE_CONDITION( progName != NULL );
 
@@ -256,7 +256,7 @@ void vdswHelp( const char * progName )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-bool vdswInstall( vdswWatchdog * pWatchdog )
+bool psoqInstall( psoqWatchdog * pWatchdog )
 {
    SC_HANDLE   hService;
    SC_HANDLE   hManager;
@@ -398,7 +398,7 @@ bool vdswInstall( vdswWatchdog * pWatchdog )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdswWatchdogReadConfig( vdswWatchdog * pWatchdog, const char* cfgname )
+bool psoqWatchdogReadConfig( psoqWatchdog * pWatchdog, const char* cfgname )
 {
    int len;
    bool rc;
@@ -406,16 +406,16 @@ bool vdswWatchdogReadConfig( vdswWatchdog * pWatchdog, const char* cfgname )
    PSO_PRE_CONDITION( pWatchdog != NULL );
    PSO_PRE_CONDITION( cfgname   != NULL );
 
-   rc = vdswReadConfig( cfgname, &pWatchdog->params, 0, &pWatchdog->errorHandler );
+   rc = psoqReadConfig( cfgname, &pWatchdog->params, 0, &pWatchdog->errorHandler );
    PSO_POST_CONDITION( rc == true || rc == false );
    if ( ! rc ) {
       memset( pWatchdog->errorMsg, 0, WD_MSG_LEN );
       sprintf( pWatchdog->errorMsg, "%s%d%s",
                   "Config error, error code = ", 
-                  pscGetLastError( &pWatchdog->errorHandler ),
+                  psocGetLastError( &pWatchdog->errorHandler ),
                   ", error message = " );
       len = strlen(pWatchdog->errorMsg);
-      pscGetErrorMsg( &pWatchdog->errorHandler, &pWatchdog->errorMsg[len], WD_MSG_LEN-len );
+      psocGetErrorMsg( &pWatchdog->errorHandler, &pWatchdog->errorMsg[len], WD_MSG_LEN-len );
    }
 
    return rc;
@@ -424,7 +424,7 @@ bool vdswWatchdogReadConfig( vdswWatchdog * pWatchdog, const char* cfgname )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-bool vdswReadRegistry( vdswWatchdog * pWatchdog )
+bool psoqReadRegistry( psoqWatchdog * pWatchdog )
 {
    int errcode;
    HKEY hKey;
@@ -438,7 +438,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
                            KEY_QUERY_VALUE,
                            &hKey );
    if ( errcode != ERROR_SUCCESS ) {
-      vdswSendMessage( &pWatchdog->log, WD_ERROR, 
+      psoqSendMessage( &pWatchdog->log, WD_ERROR, 
                          "RegOpenKeyEx error = %d", 
                          GetLastError() );
       return false;
@@ -452,7 +452,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
                               (LPBYTE)pWatchdog->params.wdLocation, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      vdswSendMessage( &pWatchdog->log, WD_ERROR, 
+      psoqSendMessage( &pWatchdog->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -466,7 +466,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
                               (LPBYTE)&pWatchdog->params.memorySizekb, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      vdswSendMessage( &pWatchdog->log, WD_ERROR, 
+      psoqSendMessage( &pWatchdog->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -480,7 +480,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
                               (LPBYTE)pWatchdog->params.wdAddress,
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      vdswSendMessage( &pWatchdog->log, WD_ERROR, 
+      psoqSendMessage( &pWatchdog->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -494,7 +494,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
                               (LPBYTE)&pWatchdog->params.logOn, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      vdswSendMessage( &pWatchdog->log, WD_ERROR, 
+      psoqSendMessage( &pWatchdog->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -508,7 +508,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
                               (LPBYTE)&pWatchdog->params.filePerms, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      vdswSendMessage( &pWatchdog->log, WD_ERROR, 
+      psoqSendMessage( &pWatchdog->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -522,7 +522,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
                               (LPBYTE)&pWatchdog->params.dirPerms, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      vdswSendMessage( &pWatchdog->log, WD_ERROR, 
+      psoqSendMessage( &pWatchdog->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -534,7 +534,7 @@ bool vdswReadRegistry( vdswWatchdog * pWatchdog )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswRun()
+void psoqRun()
 {
    bool rc;
    
@@ -543,28 +543,28 @@ void vdswRun()
    if ( g_pWD == NULL ) {
       // This condition is possible if run is called by the NT SCM (Service
       // Control Manager) instead of being called from main().
-      g_pWD = (vdswWatchdog*) malloc( sizeof(vdswWatchdog) );
+      g_pWD = (psoqWatchdog*) malloc( sizeof(psoqWatchdog) );
 
       // A failure here is very unlikely - however since we need the 
       // watchdog object to log errors... the only way to alert of a
       // problem is by forcing a crash!!!
       assert( g_pWD != NULL );
 
-      vdswWatchdogInit( g_pWD );
+      psoqWatchdogInit( g_pWD );
 
       deallocWD = true;
       
       // Set the log object to sent messages to the log facility of the OS 
       // instead of sending them to stderr.
-      vdswStartUsingLogger( &g_pWD->log );
+      psoqStartUsingLogger( &g_pWD->log );
          
       // We have our object but it is not properly initialized - we need
       // to access the registry (the NT service equivalent of calling 
       // ReadConfig() from main().
-      rc = vdswReadRegistry( g_pWD );
+      rc = psoqReadRegistry( g_pWD );
       PSO_POST_CONDITION( rc == true || rc == false );
       if ( ! rc ) {
-         vdswSendMessage( &g_pWD->log, WD_ERROR, 
+         psoqSendMessage( &g_pWD->log, WD_ERROR, 
                           "ReadRegistry failed - aborting..." );
          return;
       }
@@ -573,29 +573,29 @@ void vdswRun()
    
    PSO_PRE_CONDITION( g_pWD != NULL );
 
-   rc = vdswSetSigHandler();
+   rc = psoqSetSigHandler();
    PSO_POST_CONDITION( rc == true || rc == false );
    if ( ! rc ) {
-      vdswSendMessage( &g_pWD->log, 
+      psoqSendMessage( &g_pWD->log, 
                        WD_ERROR,
                        "Signal Handler Installation error %d",
-                       vdswLastError() );
+                       psoqLastError() );
       return;
    }
 
-   rc = vdswPrepareConnection( &g_pWD->acceptor, g_pWD );
+   rc = psoqPrepareConnection( &g_pWD->acceptor, g_pWD );
    PSO_POST_CONDITION( rc == true || rc == false );
    if ( ! rc ) {
-      vdswSendMessage( &g_pWD->log, WD_ERROR,
+      psoqSendMessage( &g_pWD->log, WD_ERROR,
          "Error in PrepareConnection() - aborting..." );
       return;
    }
    
-   vdswWaitForConnections( &g_pWD->acceptor );
+   psoqWaitForConnections( &g_pWD->acceptor );
    
 #if defined ( WIN32 )
    if ( deallocWD ) {
-      vdswWatchdogFini( g_pWD );
+      psoqWatchdogFini( g_pWD );
       free( g_pWD );
       g_pWD = NULL;
    }
@@ -604,7 +604,7 @@ void vdswRun()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdswSetSigHandler()
+bool psoqSetSigHandler()
 {
 #if defined(WIN32)
    PSO_PRE_CONDITION( g_pWD != NULL );
@@ -627,7 +627,7 @@ bool vdswSetSigHandler()
 
    errcode = sigprocmask( SIG_BLOCK, &new_set, &old_set ); 
    if ( errcode != 0 ) {
-      vdswSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      psoqSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigprocmask error, errno = ", errno );
       return false;
    }
@@ -651,7 +651,7 @@ bool vdswSetSigHandler()
     */
    errcode = sigprocmask( SIG_SETMASK, &old_set, &new_set );
    if ( errcode != 0 ) {
-      vdswSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      psoqSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigprocmask error, errno = ", errno );
       return false;
    }
@@ -668,20 +668,20 @@ bool vdswSetSigHandler()
    action.sa_handler = sigterm_handler;
    errcode = sigaction( SIGTERM, &action, NULL );
    if ( errcode != 0 ) {
-      vdswSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      psoqSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigaction (SIGTERM) error, errno = ", errno );
       return false;
    }
    errcode = sigaction( SIGINT,  &action, NULL );
    if ( errcode != 0 ) {
-      vdswSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      psoqSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigaction (SIGINT) error, errno = ", errno );
       return false;
    }
    action.sa_handler = sighup_handler;
    errcode = sigaction( SIGHUP, &action, NULL );
    if ( errcode != 0 ) {
-      vdswSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      psoqSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigaction (SIGHUP) error, errno = ", errno );
       return false;
    }
@@ -690,7 +690,7 @@ bool vdswSetSigHandler()
    action.sa_handler = sigpipe_handler;
    errcode = sigaction( SIGPIPE, &action, NULL );
    if ( errcode != 0 ) {
-      vdswSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      psoqSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigaction (SIGPIPE) error, errno = ", errno );
       return false;
    }
@@ -702,7 +702,7 @@ bool vdswSetSigHandler()
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-void vdswUninstall( vdswWatchdog * pWatchdog )
+void psoqUninstall( psoqWatchdog * pWatchdog )
 {
    SC_HANDLE   hService;
    SC_HANDLE   hManager;
@@ -774,7 +774,7 @@ void vdswUninstall( vdswWatchdog * pWatchdog )
    }
 
    hService = OpenService( hManager,
-                           "vdswc",
+                           "psoqc",
                            SERVICE_ALL_ACCESS );
    if ( hService == NULL ) {
       // Nothing more can be done at this point...

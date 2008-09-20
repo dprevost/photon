@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSC_TIMER_H
-#define PSC_TIMER_H
+#ifndef PSOC_TIMER_H
+#define PSOC_TIMER_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -42,7 +42,7 @@ BEGIN_C_DECLS
  * might be preferable (and be more accurate?).
  */
 
-struct pscTimer
+struct psocTimer
 {
    struct timeval timeBegin;
    struct timeval timeEnd;
@@ -62,7 +62,9 @@ struct pscTimer
 
 };
 
-typedef struct pscTimer pscTimer;
+typedef struct psocTimer psocTimer;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined(WIN32)
 static inline int gettimeofday( struct timeval * tv, void * tz )
@@ -83,9 +85,11 @@ static inline int gettimeofday( struct timeval * tv, void * tz )
 } 
 #endif
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /** Start the timer */
 static inline void 
-pscBeginTimer( pscTimer * pTimer )
+psocBeginTimer( psocTimer * pTimer )
 {
 #if defined (WIN32)
    if ( pTimer->highResolution == TRUE ) {
@@ -100,9 +104,11 @@ pscBeginTimer( pscTimer * pTimer )
 #endif
 }
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /** Stop the timer */
 static inline
-void pscEndTimer( pscTimer * pTimer )
+void psocEndTimer( psocTimer * pTimer )
 {
 #if defined (WIN32)
    if ( pTimer->highResolution == TRUE ) {
@@ -117,18 +123,20 @@ void pscEndTimer( pscTimer * pTimer )
 #endif
 }
    
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /** Calculates - returns the time to the caller in seconds and nanosecs. */
 PHOTON_COMMON_EXPORT
-void pscCalculateTimer( pscTimer      * pTimer,
-                        unsigned long * pSecs,
-                        unsigned long * pnanoSecs );
-   
+void psocCalculateTimer( psocTimer     * pTimer,
+                         unsigned long * pSecs,
+                         unsigned long * pnanoSecs );
+
 PHOTON_COMMON_EXPORT
-void pscInitTimer( pscTimer * pTimer );
+void psocInitTimer( psocTimer * pTimer );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS
 
-#endif /* PSC_TIMER_H */
+#endif /* PSOC_TIMER_H */
 

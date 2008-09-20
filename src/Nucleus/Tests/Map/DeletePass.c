@@ -23,14 +23,14 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnMap * pHashMap;
-   psnSessionContext context;
+   psonMap * pHashMap;
+   psonSessionContext context;
    bool ok;
    int errcode;
-   psnTxStatus status;
+   psonTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   psnHashItem * pItem;
+   psonHashItem * pItem;
    psoObjectDefinition def = { 
       PSO_FAST_MAP, 
       1, 
@@ -40,16 +40,16 @@ int main()
 
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnMapInit( pHashMap, 
+   ok = psonMapInit( pHashMap, 
                      0, 1, 0, &status, 4, 
                      "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnMapInsert( pHashMap,
+   ok = psonMapInsert( pHashMap,
                        (const void *) key,
                        6,
                        (const void *) data,
@@ -60,7 +60,7 @@ int main()
    }
    
    /* Is the item there? */
-   ok = psnMapGet( pHashMap,
+   ok = psonMapGet( pHashMap,
                     (const void *) key,
                     6,
                     &pItem,
@@ -71,7 +71,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnMapDelete( pHashMap,
+   ok = psonMapDelete( pHashMap,
                        (const void *) key,
                        6,
                        &context );
@@ -79,7 +79,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnMapGet( pHashMap,
+   ok = psonMapGet( pHashMap,
                     (const void *) key,
                     6,
                     &pItem,
@@ -89,7 +89,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    else {
-      errcode = pscGetLastError( &context.errorHandler );
+      errcode = psocGetLastError( &context.errorHandler );
       if ( errcode != PSO_NO_SUCH_ITEM ) {
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }

@@ -33,11 +33,11 @@
 
 /* This define can be set indirectly by using configure with the option
    --enable-set-block-size=value */
-#define PSN_BLOCK_SHIFT 13
+#define PSON_BLOCK_SHIFT 13
 
 /* This define can be set by using configure with the option
    --enable-set-block-size=value */
-#define PSN_BLOCK_SIZE 8192
+#define PSON_BLOCK_SIZE 8192
 
 /* Version number of package */
 #define VERSION "0.3.0"

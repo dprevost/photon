@@ -99,7 +99,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = psaLifoRemove( objHandle, NULL );
+   errcode = psoaLifoRemove( objHandle, NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

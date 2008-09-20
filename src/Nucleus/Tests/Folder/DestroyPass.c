@@ -23,8 +23,8 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnFolder * pFolder;
-   psnSessionContext context;
+   psonFolder * pFolder;
+   psonSessionContext context;
    int errcode;
    bool ok;
    
@@ -37,7 +37,7 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psnFolderCreateObject( pFolder,
+   ok = psonFolderCreateObject( pFolder,
                                 "Test1",
                                 strlen("Test1"),
                                 &def,
@@ -47,7 +47,7 @@ int main()
    }
    
    /* Using the topfolder to create a grandchild! */
-   ok = psnTopFolderCreateObject( pFolder,
+   ok = psonTopFolderCreateObject( pFolder,
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &def,
@@ -56,21 +56,21 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnTxCommit( (psnTx *)context.pTransaction, &context );
+   psonTxCommit( (psonTx *)context.pTransaction, &context );
    
-   ok = psnFolderDestroyObject( pFolder,
+   ok = psonFolderDestroyObject( pFolder,
                                  "Test1",
                                  strlen("Test1"),
                                  &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = pscGetLastError( &context.errorHandler );
+   errcode = psocGetLastError( &context.errorHandler );
    if ( errcode != PSO_FOLDER_IS_NOT_EMPTY ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
                                          
-   ok = psnTopFolderDestroyObject( pFolder,
+   ok = psonTopFolderDestroyObject( pFolder,
                                     "Test1/Test2",
                                     strlen("Test1/Test2"),
                                     &context );
@@ -78,43 +78,43 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderDestroyObject( pFolder,
+   ok = psonFolderDestroyObject( pFolder,
                                  "Test2",
                                  strlen("Test2"),
                                  &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = pscGetLastError( &context.errorHandler );
+   errcode = psocGetLastError( &context.errorHandler );
    if ( errcode != PSO_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = psnFolderDestroyObject( pFolder,
+   ok = psonFolderDestroyObject( pFolder,
                                  "Test1",
                                  PSO_MAX_NAME_LENGTH+1,
                                  &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = pscGetLastError( &context.errorHandler );
+   errcode = psocGetLastError( &context.errorHandler );
    if ( errcode != PSO_OBJECT_NAME_TOO_LONG ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = psnFolderDestroyObject( pFolder,
+   ok = psonFolderDestroyObject( pFolder,
                                  "Test1",
                                  0,
                                  &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = pscGetLastError( &context.errorHandler );
+   errcode = psocGetLastError( &context.errorHandler );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = psnFolderDestroyObject( pFolder,
+   ok = psonFolderDestroyObject( pFolder,
                                  "Test1",
                                  strlen("Test1"),
                                  &context );
@@ -123,14 +123,14 @@ int main()
    }
    
    /* Calling destroy on the same object, twice */
-   ok = psnFolderDestroyObject( pFolder,
+   ok = psonFolderDestroyObject( pFolder,
                                  "Test1",
                                  strlen("Test1"),
                                  &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = pscGetLastError( &context.errorHandler );
+   errcode = psocGetLastError( &context.errorHandler );
    if ( errcode != PSO_OBJECT_IS_IN_USE ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

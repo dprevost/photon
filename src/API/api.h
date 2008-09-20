@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSA_API_H
-#define PSA_API_H
+#ifndef PSOA_API_H
+#define PSOA_API_H
 
 #include "Common/Common.h"
 
@@ -25,29 +25,29 @@
 /**
  * The type of object (as seen from the API, not the engine).
  */
-enum psaObjetType
+enum psoaObjetType
 {
-   PSA_PROCESS = 0x111,
-   PSA_SESSION,
-   PSA_FOLDER,
-   PSA_HASH_MAP,
-   PSA_MAP,
-   PSA_QUEUE,
-   PSA_LIFO
+   PSOA_PROCESS = 0x111,
+   PSOA_SESSION,
+   PSOA_FOLDER,
+   PSOA_HASH_MAP,
+   PSOA_MAP,
+   PSOA_QUEUE,
+   PSOA_LIFO
 };
 
-typedef enum psaObjetType psaObjetType;
+typedef enum psoaObjetType psoaObjetType;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum psaEditMode
+enum psoaEditMode
 {
-   PSA_READ_WRITE = 0,
-   PSA_READ_ONLY,
-   PSA_UPDATE_RO
+   PSOA_READ_WRITE = 0,
+   PSOA_READ_ONLY,
+   PSOA_UPDATE_RO
 };
 
-typedef enum psaEditMode psaEditMode;
+typedef enum psoaEditMode psoaEditMode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -64,7 +64,7 @@ typedef enum psaEditMode psaEditMode;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** A simple struct to simplify arguments to a few functions. */
-struct psaDataEntry
+struct psoaDataEntry
 {
    /** Length of the data in bytes. */
    size_t length;
@@ -74,11 +74,11 @@ struct psaDataEntry
 
 };
 
-typedef struct psaDataEntry psaDataEntry;
+typedef struct psoaDataEntry psoaDataEntry;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSA_API_H */
+#endif /* PSOA_API_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

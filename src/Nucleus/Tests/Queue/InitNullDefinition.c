@@ -24,15 +24,15 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnQueue * pQueue;
-   psnSessionContext context;
-   psnTxStatus status;
+   psonQueue * pQueue;
+   psonSessionContext context;
+   psonTxStatus status;
    
    pQueue = initQueueTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   psnQueueInit( pQueue, 
+   psonQueueInit( pQueue, 
                   0, 1, &status, 4, 
                   "Queue1", SET_OFFSET(pQueue), NULL, &context );
 

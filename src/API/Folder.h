@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSA_FOLDER_H
-#define PSA_FOLDER_H
+#ifndef PSOA_FOLDER_H
+#define PSOA_FOLDER_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -27,16 +27,16 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct psaFolder
+typedef struct psoaFolder
 {
-   psaCommonObject object;
+   psoaCommonObject object;
    
    /**
     * This struct holds the result of the iteration 
     */
-   psnFolderItem iterator;
+   psonFolderItem iterator;
    
-} psaFolder;
+} psoaFolder;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -44,7 +44,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSA_FOLDER_H */
+#endif /* PSOA_FOLDER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

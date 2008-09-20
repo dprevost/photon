@@ -23,10 +23,10 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnQueue * pQueue;
-   psnSessionContext context;
+   psonQueue * pQueue;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus status;
+   psonTxStatus status;
    char * data = "My Data";
    psoObjectDefinition def = { 
       PSO_QUEUE, 
@@ -37,19 +37,19 @@ int main()
    
    pQueue = initQueueTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnQueueInit( pQueue, 
+   ok = psonQueueInit( pQueue, 
                        0, 1, &status, 4, 
                        "Queue1", SET_OFFSET(pQueue), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data,
                          8,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -58,10 +58,10 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data,
                          8,
-                         PSN_QUEUE_LAST,
+                         PSON_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

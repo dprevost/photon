@@ -24,13 +24,13 @@
 #include "Nucleus/SessionContext.h"
 #include "Nucleus/InitEngine.h"
 
-extern pscErrMsgHandle g_wdErrorHandle;
+extern psocErrMsgHandle g_wdErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdswHandlerInit( vdswHandler         * pHandler,
+bool psoqHandlerInit( psoqHandler         * pHandler,
                       struct ConfigParams * pConfig,
-                      psnMemoryHeader   ** ppMemoryAddress,
+                      psonMemoryHeader   ** ppMemoryAddress,
                       bool                  verifyVDSOnly )
 {
    bool ok;
@@ -38,8 +38,8 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
    char path[PATH_MAX];
    char logFile[PATH_MAX];
    int path_len;
-   pscMemoryFileStatus fileStatus;
-   pscMemoryFile memFile;
+   psocMemoryFileStatus fileStatus;
+   psocMemoryFile memFile;
    FILE * fp = NULL;
    char timeBuf[30];
    time_t t;
@@ -55,33 +55,33 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
 
    pHandler->pMemHeader = NULL;
 
-   memset( &pHandler->context, 0, sizeof(psnSessionContext) );
+   memset( &pHandler->context, 0, sizeof(psonSessionContext) );
    pHandler->context.pidLocker = getpid();
    
-   ok = psnInitEngine();
+   ok = psonInitEngine();
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in VdsHandler.cpp\n", __LINE__ );
       exit(1);
    }
-   pscInitErrorHandler( &pHandler->context.errorHandler );
+   psocInitErrorHandler( &pHandler->context.errorHandler );
 
    pHandler->pConfig = pConfig;
 
-   pHandler->pMemManager = (vdswMemoryManager *)calloc( 
-      sizeof(vdswMemoryManager), 1 );
+   pHandler->pMemManager = (psoqMemoryManager *)calloc( 
+      sizeof(psoqMemoryManager), 1 );
    if ( pHandler->pMemManager == NULL ) {
-      pscSetError( &pHandler->context.errorHandler,
+      psocSetError( &pHandler->context.errorHandler,
                     g_wdErrorHandle,
                     PSOQ_NOT_ENOUGH_HEAP_MEMORY );
       return false;
    }
-   vdswMemoryManagerInit( pHandler->pMemManager );
+   psoqMemoryManagerInit( pHandler->pMemManager );
    
    path_len = strlen( pConfig->wdLocation ) + strlen( PSO_DIR_SEPARATOR ) +
       strlen( PSO_MEMFILE_NAME )  + strlen( ".bak" );
    if ( path_len >= PATH_MAX ) {
-      pscSetError( &pHandler->context.errorHandler,
+      psocSetError( &pHandler->context.errorHandler,
                     g_wdErrorHandle,
                     PSOQ_CFG_BCK_LOCATION_TOO_LONG );
       return false;
@@ -90,17 +90,17 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
    sprintf( path, "%s%s%s", pConfig->wdLocation, PSO_DIR_SEPARATOR,
             PSO_MEMFILE_NAME );
    
-   pscInitMemoryFile ( &memFile, pConfig->memorySizekb, path );
-   pscBackStoreStatus( &memFile, &fileStatus );
+   psocInitMemoryFile ( &memFile, pConfig->memorySizekb, path );
+   psocBackStoreStatus( &memFile, &fileStatus );
 
    if ( ! fileStatus.fileExist ) {
       if ( verifyVDSOnly ) {
-         pscSetError( &pHandler->context.errorHandler,
+         psocSetError( &pHandler->context.errorHandler,
                        g_wdErrorHandle,
                        PSOQ_NO_VERIFICATION_POSSIBLE );
          return false;
       }
-      ok = vdswCreateVDS( pHandler->pMemManager,
+      ok = psoqCreateVDS( pHandler->pMemManager,
                                path,
                                pConfig->memorySizekb,
                                pConfig->filePerms,
@@ -116,7 +116,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
                   PSO_LOGDIR_NAME );
          errcode = mkdir( path, pConfig->dirPerms );
          if ( errcode != 0 ) {
-            pscSetError( &pHandler->context.errorHandler,
+            psocSetError( &pHandler->context.errorHandler,
                           g_wdErrorHandle,
                           PSOQ_MKDIR_FAILURE );
             return false;
@@ -127,7 +127,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
    else {
       if ( ! fileStatus.fileReadable || ! fileStatus.fileWritable || 
          ! fileStatus.lenghtOK ) {
-         pscSetError( &pHandler->context.errorHandler,
+         psocSetError( &pHandler->context.errorHandler,
                        g_wdErrorHandle,
                        PSOQ_FILE_NOT_ACCESSIBLE );
          return false;
@@ -152,10 +152,10 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
          errcode = mkdir( logFile, pConfig->dirPerms );
          if ( errcode != 0 ) {
             if ( errno != EEXIST ) {
-               pscSetError( &pHandler->context.errorHandler,
-                             PSC_ERRNO_HANDLE,
+               psocSetError( &pHandler->context.errorHandler,
+                             PSOC_ERRNO_HANDLE,
                              errno );
-               pscChainError( &pHandler->context.errorHandler,
+               psocChainError( &pHandler->context.errorHandler,
                                g_wdErrorHandle,
                                PSOQ_MKDIR_FAILURE );
                return false;
@@ -175,19 +175,19 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
       if ( fp == NULL ) fp = stderr;
 
       if ( ! verifyVDSOnly ) {
-         ok = pscCopyBackstore( &memFile,
+         ok = psocCopyBackstore( &memFile,
                                  pConfig->filePerms,
                                  &pHandler->context.errorHandler );
          PSO_POST_CONDITION( ok == true || ok == false );
          if ( ! ok ) {
-            pscChainError( &pHandler->context.errorHandler,
+            psocChainError( &pHandler->context.errorHandler,
                             g_wdErrorHandle,
                             PSOQ_COPY_BCK_FAILURE );
             return false;
          }
       }
       
-      ok = vdswOpenVDS( pHandler->pMemManager,
+      ok = psoqOpenVDS( pHandler->pMemManager,
                         path,
                         pConfig->memorySizekb,
                         ppMemoryAddress,
@@ -197,7 +197,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
       
       fprintf( stderr, "Starting the recovery of the shared memory, please be patient\n" );
       if ( verifyVDSOnly ) {
-         vdswVerify( *ppMemoryAddress, 
+         psoqVerify( *ppMemoryAddress, 
                      &numObjectsOK,
                      &numObjectsRepaired,
                      &numObjectsDeleted,
@@ -206,7 +206,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
          if ( fp != stderr ) fclose( fp );
          return (numObjectsError == 0);
       }
-      vdswRepair( *ppMemoryAddress, 
+      psoqRepair( *ppMemoryAddress, 
                   &numObjectsOK,
                   &numObjectsRepaired,
                   &numObjectsDeleted,
@@ -270,7 +270,7 @@ bool vdswHandlerInit( vdswHandler         * pHandler,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswHandlerFini( vdswHandler * pHandler )
+void psoqHandlerFini( psoqHandler * pHandler )
 {
    PSO_PRE_CONDITION( pHandler != NULL );
 
@@ -281,7 +281,7 @@ void vdswHandlerFini( vdswHandler * pHandler )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-//void CleanSession( psnSession * pSession )
+//void CleanSession( psonSession * pSession )
 //{
 //   fprintf( stderr, "Session %p\n", pSession );
 
@@ -292,17 +292,17 @@ void vdswHandlerFini( vdswHandler * pHandler )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswHandleCrash( vdswHandler * pHandler, pid_t pid )
+void psoqHandleCrash( psoqHandler * pHandler, pid_t pid )
 {
 //   int errcode;
    PSO_PRE_CONDITION( pHandler != NULL );
 
 #if 0   
-   psnProcess* pProcess = NULL;
-   psnSessionContext context;
-   psnSession* pFirstSession = NULL;
-   psnSession* pCurrSession  = NULL;
-   psnSession* pNextSession  = NULL;
+   psonProcess* pProcess = NULL;
+   psonSessionContext context;
+   psonSession* pFirstSession = NULL;
+   psonSession* pCurrSession  = NULL;
+   psonSession* pNextSession  = NULL;
 
    memset( &context, 0, sizeof context );
    context.lockValue = getpid();
@@ -310,8 +310,8 @@ void vdswHandleCrash( vdswHandler * pHandler, pid_t pid )
    
 //      GET_PTR( m_pMemHeader->allocatorOffset, MemoryAllocator );
 
-   psnProcessManager* pCleanupManager = 
-      GET_PTR( m_pMemHeader->cleanupMgrOffset, psnProcessManager );
+   psonProcessManager* pCleanupManager = 
+      GET_PTR( m_pMemHeader->cleanupMgrOffset, psonProcessManager );
 
    // Start by checking if we are not holding the lock to the 
    // cleanup manager, the memory allocator, etc...

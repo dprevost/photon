@@ -25,11 +25,11 @@
  * that it forces the allocator to use two blocks of memory (because of the
  * bitmap array.
  *
- * We use 8*PSN_BLOCK_SIZE*PSN_BLOCK_SIZE for the size.
+ * We use 8*PSON_BLOCK_SIZE*PSON_BLOCK_SIZE for the size.
  *
- * If the bitmap is PSN_BLOCK_SIZE than adding this with the psnMemAlloc struct
+ * If the bitmap is PSON_BLOCK_SIZE than adding this with the psonMemAlloc struct
  * will force the bitmap to be on 2 blocks. A bitmap of that size contains
- * 8*PSN_BLOCK_SIZE blocks. And of course we multiply this by PSN_BLOCK_SIZE to get the
+ * 8*PSON_BLOCK_SIZE blocks. And of course we multiply this by PSON_BLOCK_SIZE to get the
  * size of the required memory block. 
  */
 
@@ -39,16 +39,16 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnSessionContext context;
-   psnMemAlloc*     pAlloc;
+   psonSessionContext context;
+   psonMemAlloc*     pAlloc;
    unsigned char* ptr;
    size_t allocatedLength, i;
-   unsigned char* buffer[8*PSN_BLOCK_SIZE-2];
-   psnMemBitmap* pBitmap;
+   unsigned char* buffer[8*PSON_BLOCK_SIZE-2];
+   psonMemBitmap* pBitmap;
 
    initTest( expectedToPass, &context );
    
-   allocatedLength = 8*PSN_BLOCK_SIZE*PSN_BLOCK_SIZE;
+   allocatedLength = 8*PSON_BLOCK_SIZE*PSON_BLOCK_SIZE;
 
    ptr = malloc( allocatedLength );
    if ( ptr == NULL ) {
@@ -56,23 +56,23 @@ int main()
    }
    
    g_pBaseAddr = ptr;
-   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
+   pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
    
-   psnMemAllocInit( pAlloc, ptr, allocatedLength, &context );
-   GET_PTR( pBitmap, pAlloc->bitmapOffset, psnMemBitmap );
-   if ( pBitmap->lengthInBits != 8*PSN_BLOCK_SIZE ) {
+   psonMemAllocInit( pAlloc, ptr, allocatedLength, &context );
+   GET_PTR( pBitmap, pAlloc->bitmapOffset, psonMemBitmap );
+   if ( pBitmap->lengthInBits != 8*PSON_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* Allocate all the blocks, one by one. */
-   for ( i = 0; i < 8*PSN_BLOCK_SIZE-3; ++i ) {
-      buffer[i] = psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 1, &context );
+   for ( i = 0; i < 8*PSON_BLOCK_SIZE-3; ++i ) {
+      buffer[i] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, &context );
       if ( buffer[i] == NULL ) {
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }
    }
-   buffer[8*PSN_BLOCK_SIZE-3] = psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 1, &context );
-   if ( buffer[8*PSN_BLOCK_SIZE-3] != NULL ) {
+   buffer[8*PSON_BLOCK_SIZE-3] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, &context );
+   if ( buffer[8*PSON_BLOCK_SIZE-3] != NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -86,8 +86,8 @@ int main()
    }
    
    /* Free 1 block out of two */
-   for ( i = 0; i < 8*PSN_BLOCK_SIZE-3; i += 2 ) {
-      psnFreeBlocks( pAlloc, PSN_ALLOC_ANY, buffer[i], 1, &context );
+   for ( i = 0; i < 8*PSON_BLOCK_SIZE-3; i += 2 ) {
+      psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, buffer[i], 1, &context );
    }
    
    /* Check the bitmap pattern - the first 3 are always busy */

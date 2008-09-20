@@ -23,13 +23,13 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnProcMgr* pManager;
-   psnSessionContext context;
+   psonProcMgr* pManager;
+   psonSessionContext context;
    bool ok;
    
    pManager = initProcMgrTest( expectedToPass, &context );
 
-   ok = psnProcMgrInit( pManager, &context );
+   ok = psonProcMgrInit( pManager, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

@@ -24,10 +24,10 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnMemAlloc*     pAlloc;
+   psonMemAlloc*     pAlloc;
    unsigned char* ptr;
-   size_t allocatedLength = PSN_BLOCK_SIZE*10;
-   psnSessionContext context;
+   size_t allocatedLength = PSON_BLOCK_SIZE*10;
+   psonSessionContext context;
    
    initTest( expectedToPass, &context );
    
@@ -37,10 +37,10 @@ int main()
    }
    
    g_pBaseAddr = ptr;
-   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
-   psnMemAllocInit( pAlloc, ptr, allocatedLength, &context );
+   pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
+   psonMemAllocInit( pAlloc, ptr, allocatedLength, &context );
 
-   psnMemAllocClose( pAlloc, &context );
+   psonMemAllocClose( pAlloc, &context );
    
    return 0;
 }

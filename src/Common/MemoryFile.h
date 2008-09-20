@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSC_MEMORY_FILE_H
-#define PSC_MEMORY_FILE_H
+#ifndef PSOC_MEMORY_FILE_H
+#define PSOC_MEMORY_FILE_H
 
 #include "Common.h"
 #include "ErrorHandler.h"
@@ -26,7 +26,7 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * \defgroup pscMemoryFile The Memory File module
+ * \defgroup psocMemoryFile The Memory File module
  *
  * This module encapsulates the difference between mmap on Unix/Linux 
  * and CreateFileMappingA (and similar calls) on WIN32.
@@ -36,7 +36,7 @@ BEGIN_C_DECLS
  * adding secure access through ACLs) could be added to this module 
  * eventually.
  *
- * \ingroup pscCommon
+ * \ingroup psocCommon
  * @{
  */
 
@@ -51,13 +51,13 @@ BEGIN_C_DECLS
  * eventually.
  */
 
-/** Unique identifier for the pscMemoryFile struct. */
-#define PSC_MEMFILE_SIGNATURE ((unsigned)0x438eb633)
+/** Unique identifier for the psocMemoryFile struct. */
+#define PSOC_MEMFILE_SIGNATURE ((unsigned)0x438eb633)
 
 /**
  * A simple structure used to get information on the status of the backstore.
  */
-struct pscMemoryFileStatus
+struct psocMemoryFileStatus
 {
    /** Set to one if the file exist. */
    int  fileExist;
@@ -71,12 +71,12 @@ struct pscMemoryFileStatus
    size_t actualLLength;
 };
 
-typedef struct pscMemoryFileStatus pscMemoryFileStatus;
+typedef struct psocMemoryFileStatus psocMemoryFileStatus;
 
 /** This struct holds all data needed for accessing the memory file. */
-struct pscMemoryFile
+struct psocMemoryFile
 {
-   /** Set to PSC_MEMFILE_SIGNATURE at initialization. */
+   /** Set to PSOC_MEMFILE_SIGNATURE at initialization. */
    unsigned int initialized;
    
    /**
@@ -113,69 +113,68 @@ struct pscMemoryFile
    
 };
 
-typedef struct pscMemoryFile pscMemoryFile;
+typedef struct psocMemoryFile psocMemoryFile;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/*! \brief Initialize a pscMemoryFile struct. */
+/*! \brief Initialize a psocMemoryFile struct. */
 PHOTON_COMMON_EXPORT
-void pscInitMemoryFile( pscMemoryFile * pMem,
-                        size_t          kblength, 
-                        const char    * filename );
+void psocInitMemoryFile( psocMemoryFile * pMem,
+                         size_t           kblength, 
+                         const char     * filename );
 
-/*! \brief Terminate access to a pscMemoryFile struct. */
+/*! \brief Terminate access to a psocMemoryFile struct. */
 PHOTON_COMMON_EXPORT
-void pscFiniMemoryFile( pscMemoryFile * pMem );
+void psocFiniMemoryFile( psocMemoryFile * pMem );
 
 /*! \brief Return the status of the backstore file. */
 PHOTON_COMMON_EXPORT
-void pscBackStoreStatus( pscMemoryFile       * pMem,
-                         pscMemoryFileStatus * pStatus );
+void psocBackStoreStatus( psocMemoryFile       * pMem,
+                          psocMemoryFileStatus * pStatus );
    
 /*! \brief Create the backstore file */
 PHOTON_COMMON_EXPORT
-bool pscCreateBackstore( pscMemoryFile   * pMem,
-                         int               filePerms,
-                         pscErrorHandler * pError );
+bool psocCreateBackstore( psocMemoryFile   * pMem,
+                          int                filePerms,
+                          psocErrorHandler * pError );
    
 /*! 
  *  \brief "Open" an access to the memory file (this might load the 
  *  backstore in memory).
  */
 PHOTON_COMMON_EXPORT
-bool pscOpenMemFile( pscMemoryFile   * pMem,
-                     void           ** ppAddr,
-                     pscErrorHandler * pError );
+bool psocOpenMemFile( psocMemoryFile   * pMem,
+                      void            ** ppAddr,
+                      psocErrorHandler * pError );
    
 /*! \brief Create a copy of the backstore file */
 PHOTON_COMMON_EXPORT
-bool pscCopyBackstore( pscMemoryFile   * pMem,
-                       int               filePerms,
-                       pscErrorHandler * pError );
+bool psocCopyBackstore( psocMemoryFile   * pMem,
+                        int                filePerms,
+                        psocErrorHandler * pError );
 
 /*!
  *  \brief Close our access the memory file (possibly removing the memory
  *  file itself from memory).
  */
 PHOTON_COMMON_EXPORT
-void pscCloseMemFile( pscMemoryFile   * pMem,
-                      pscErrorHandler * pError );
+void psocCloseMemFile( psocMemoryFile   * pMem,
+                       psocErrorHandler * pError );
 
 /*! \brief Synchronize the memory file to the backstore (disk) */
 PHOTON_COMMON_EXPORT
-bool pscSyncMemFile( pscMemoryFile   * pMem,
-                     pscErrorHandler * pError );
+bool psocSyncMemFile( psocMemoryFile   * pMem,
+                      psocErrorHandler * pError );
 
 /*! \brief Set the shared memory to read-only. */
 static inline
-bool pscSetReadOnly( pscMemoryFile   * pMem,
-                     pscErrorHandler * pError );
+bool psocSetReadOnly( psocMemoryFile   * pMem,
+                      psocErrorHandler * pError );
 
 /*! \brief Set the shared memory to be writable. */
 static inline
-bool pscSetReadWrite( pscMemoryFile   * pMem,
-                      pscErrorHandler * pError );
-
+bool psocSetReadWrite( psocMemoryFile   * pMem,
+                       psocErrorHandler * pError );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -187,4 +186,4 @@ END_C_DECLS
 
 #include "MemoryFile.inl"
 
-#endif /* PSC_MEMORY_FILE_H */
+#endif /* PSOC_MEMORY_FILE_H */

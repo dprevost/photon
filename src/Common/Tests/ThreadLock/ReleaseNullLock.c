@@ -27,18 +27,18 @@ int main()
 {
 #if defined(USE_DBC)
    bool ok;
-   pscThreadLock lock;
+   psocThreadLock lock;
 
-   ok = pscInitThreadLock( &lock );
+   ok = psocInitThreadLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pscAcquireThreadLock( &lock );
+   psocAcquireThreadLock( &lock );
 
-   pscReleaseThreadLock( NULL );
+   psocReleaseThreadLock( NULL );
 
-   pscFiniThreadLock( &lock );
+   psocFiniThreadLock( &lock );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

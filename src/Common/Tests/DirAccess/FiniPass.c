@@ -25,13 +25,13 @@ const bool expectedToPass = true;
 
 int main()
 {
-   pscDirIterator iterator;
+   psocDirIterator iterator;
 
-   pscInitDir( &iterator );
+   psocInitDir( &iterator );
 
-   pscFiniDir( &iterator );
+   psocFiniDir( &iterator );
 
-   if ( iterator.initialized == PSC_DIR_ACCESS_SIGNATURE ) {
+   if ( iterator.initialized == PSOC_DIR_ACCESS_SIGNATURE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

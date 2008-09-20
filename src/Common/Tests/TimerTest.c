@@ -32,7 +32,7 @@ const bool expectedToPass = true;
 int main()
 {
    unsigned long sec, nanoSec, sum;
-   pscTimer timer;
+   psocTimer timer;
    
    unsigned long loop, innerLoop = TEST_LOOP;
    int dum, i, outerLoop = 15;
@@ -41,7 +41,7 @@ int main()
    nanoSec = 0;
    loop = 0;
    dum = 0;
-   pscInitTimer( &timer );
+   psocInitTimer( &timer );
    
    /*
     * The first thing we must do is to calibrate the loop. The problem
@@ -59,7 +59,7 @@ int main()
     * likely that the frequency of the cpu was increased by the heavy 
     * workload of these tests).
     */
-   pscBeginTimer( &timer );
+   psocBeginTimer( &timer );
 
    while ( loop < innerLoop ) {
       dum = (dum+1)*loop;
@@ -68,8 +68,8 @@ int main()
       loop++;
    }
       
-   pscEndTimer( &timer );
-   pscCalculateTimer( &timer, &sec, &nanoSec );
+   psocEndTimer( &timer );
+   psocCalculateTimer( &timer, &sec, &nanoSec );
    fprintf( stderr, "Calibration: Sec = %lu, nanoSec = %lu\n", sec, nanoSec );
 
    /*
@@ -101,7 +101,7 @@ int main()
       loop = 0;
       dum = 0;
       
-      pscBeginTimer( &timer );
+      psocBeginTimer( &timer );
 
       while ( loop < innerLoop*(i+1) ) {
          dum = (dum+1)*loop;
@@ -110,8 +110,8 @@ int main()
          loop++;
       }
       
-      pscEndTimer( &timer );
-      pscCalculateTimer( &timer, &sec, &nanoSec );
+      psocEndTimer( &timer );
+      psocCalculateTimer( &timer, &sec, &nanoSec );
 
       /*
        * Newer version of gcc seem to strip the loop away since dum is not

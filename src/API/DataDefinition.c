@@ -34,7 +34,7 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
 /* 
  * Note: the type of object must be filled by the caller.
  */
-int psaGetDefinition( psnFieldDef          * pInternalDef,
+int psoaGetDefinition( psonFieldDef          * pInternalDef,
                       uint16_t               numFields,
                       psoObjectDefinition ** ppDefinition )
 {
@@ -91,7 +91,7 @@ int psaGetDefinition( psnFieldDef          * pInternalDef,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psaGetKeyLimits( psoKeyDefinition * pKeyDef,
+void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
                       size_t           * pMinLength,
                       size_t           * pMaxLength )
 {
@@ -114,7 +114,7 @@ void psaGetKeyLimits( psoKeyDefinition * pKeyDef,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psaGetLimits( psnFieldDef * pDefinition,
+void psoaGetLimits( psonFieldDef * pDefinition,
                    uint16_t      numFields,
                    size_t      * pMinLength,
                    size_t      * pMaxLength )
@@ -164,16 +164,16 @@ void psaGetLimits( psnFieldDef * pDefinition,
 
       case PSO_INTEGER:
          if ( pDefinition[i].length1 == 1 ) {
-            minLength = ((minLength-1)/PSC_ALIGNMENT_CHAR + 1)*PSC_ALIGNMENT_CHAR;
+            minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
          }
          else if ( pDefinition[i].length1 == 2 ) {
-            minLength = ((minLength-1)/PSC_ALIGNMENT_INT16 + 1)*PSC_ALIGNMENT_INT16;
+            minLength = ((minLength-1)/PSOC_ALIGNMENT_INT16 + 1)*PSOC_ALIGNMENT_INT16;
          }
          else if ( pDefinition[i].length1 == 4 ) {
-            minLength = ((minLength-1)/PSC_ALIGNMENT_INT32 + 1)*PSC_ALIGNMENT_INT32;
+            minLength = ((minLength-1)/PSOC_ALIGNMENT_INT32 + 1)*PSOC_ALIGNMENT_INT32;
          }
          else {
-            minLength = ((minLength-1)/PSC_ALIGNMENT_INT64 + 1)*PSC_ALIGNMENT_INT64;
+            minLength = ((minLength-1)/PSOC_ALIGNMENT_INT64 + 1)*PSOC_ALIGNMENT_INT64;
          }
          
          minLength += pDefinition[i].length1;
@@ -182,25 +182,25 @@ void psaGetLimits( psnFieldDef * pDefinition,
 
       case PSO_BINARY:
       case PSO_STRING:
-         minLength = ((minLength-1)/PSC_ALIGNMENT_CHAR + 1)*PSC_ALIGNMENT_CHAR;
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
          minLength += pDefinition[i].length1;
 
          break;
 
       case PSO_DECIMAL:
-         minLength = ((minLength-1)/PSC_ALIGNMENT_CHAR + 1)*PSC_ALIGNMENT_CHAR;
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
          minLength += pDefinition[i].length1 + 2;
 
          break;
 
       case PSO_BOOLEAN:
-         minLength = ((minLength-1)/PSC_ALIGNMENT_BOOL + 1)*PSC_ALIGNMENT_BOOL;
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_BOOL + 1)*PSOC_ALIGNMENT_BOOL;
          minLength += sizeof(bool);
          break;
 
       case PSO_VAR_BINARY:
       case PSO_VAR_STRING:
-         minLength = ((minLength-1)/PSC_ALIGNMENT_CHAR + 1)*PSC_ALIGNMENT_CHAR;
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
          minLength += pDefinition[i].length1;
 
          if ( pDefinition[i].length2 == 0 ||
@@ -222,7 +222,7 @@ void psaGetLimits( psnFieldDef * pDefinition,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psaValidateDefinition( psoObjectDefinition * pDefinition )
+int psoaValidateDefinition( psoObjectDefinition * pDefinition )
 {
    unsigned int i, j;
    
@@ -413,7 +413,7 @@ int psaValidateDefinition( psoObjectDefinition * pDefinition )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psaXmlToDefinition( const char           * xmlBuffer,
+int psoaXmlToDefinition( const char           * xmlBuffer,
                         size_t                 lengthInBytes,
                         psoObjectDefinition ** ppDefinition,
                         char                ** objectName,

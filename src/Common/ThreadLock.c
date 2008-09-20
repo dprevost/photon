@@ -19,7 +19,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool pscInitThreadLock( pscThreadLock* pLock )
+bool psocInitThreadLock( psocThreadLock * pLock )
 {
 #if defined (WIN32)
    BOOL status;
@@ -39,7 +39,7 @@ bool pscInitThreadLock( pscThreadLock* pLock )
    status = InitializeCriticalSectionAndSpinCount( &pLock->mutex, 100 );
    if ( status == TRUE ) {
       ok = true;
-      pLock->initialized = PSC_THREADLOCK_SIGNATURE;
+      pLock->initialized = PSOC_THREADLOCK_SIGNATURE;
    }
 #else
    /*
@@ -49,7 +49,7 @@ bool pscInitThreadLock( pscThreadLock* pLock )
     */
    rc = pthread_mutex_init( &pLock->mutex, NULL );
    if ( rc == 0 ) {
-      pLock->initialized = PSC_THREADLOCK_SIGNATURE;
+      pLock->initialized = PSOC_THREADLOCK_SIGNATURE;
       ok = true;
    }
 #endif
@@ -59,14 +59,14 @@ bool pscInitThreadLock( pscThreadLock* pLock )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void pscFiniThreadLock( pscThreadLock* pLock )
+void psocFiniThreadLock( psocThreadLock * pLock )
 {
 #if ! defined(WIN32)
    int err = 0;
 #endif
 
    PSO_PRE_CONDITION( pLock != NULL );
-   PSO_INV_CONDITION( pLock->initialized == PSC_THREADLOCK_SIGNATURE );
+   PSO_INV_CONDITION( pLock->initialized == PSOC_THREADLOCK_SIGNATURE );
 
 #if defined (WIN32)
    DeleteCriticalSection( &pLock->mutex );

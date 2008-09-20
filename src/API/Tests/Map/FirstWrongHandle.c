@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * key  = "My Key";
    const char * data = "My Data";
-   psaHashMapEntry entry;
+   psoaHashMapEntry entry;
    psoObjectDefinition mapDef = { 
       PSO_FAST_MAP, 
       1, 
@@ -99,7 +99,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaMapFirst( sessionHandle, &entry );
+   errcode = psoaMapFirst( sessionHandle, &entry );
  
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

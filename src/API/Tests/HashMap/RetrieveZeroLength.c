@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * key  = "My Key";
    const char * data = "My Data";
-   psaDataEntry entry;
+   psoaDataEntry entry;
    psoObjectDefinition mapDef = { 
       PSO_HASH_MAP, 
       1, 
@@ -99,7 +99,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaHashMapRetrieve( objHandle,
+   errcode = psoaHashMapRetrieve( objHandle,
                                   key,
                                   0,
                                   &entry );

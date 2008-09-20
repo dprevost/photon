@@ -28,10 +28,10 @@ int main( int argc, char * argv[] )
    int errcode;
    
    if ( argc > 1 ) {
-      errcode = psaProcessInit( NULL, argv[1] );
+      errcode = psoaProcessInit( NULL, argv[1] );
    }
    else {
-      errcode = psaProcessInit( NULL, "10701" );
+      errcode = psoaProcessInit( NULL, "10701" );
    }
    
    ERROR_EXIT( expectedToPass, NULL, ; );

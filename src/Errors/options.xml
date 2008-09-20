@@ -47,7 +47,7 @@
   <prefix_error> PSO </prefix_error>
   <!-- Prefix to be used for all variables in the code to retrieve the 
        error messages -->
-  <prefix_variable> psn </prefix_variable>
+  <prefix_variable> pson </prefix_variable>
   <!-- How to handle the error message. The problem: the generated C strings
        will be use, eventually, by standard C/C++ libraries and some 
        sequence of characters could have some bad side effects, possibly

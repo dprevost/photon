@@ -21,7 +21,7 @@
 #include "Quasar/Config.h"
 #include "Quasar/quasarErrors.h"
 
-extern pscErrMsgHandle g_wdErrorHandle;
+extern psocErrMsgHandle g_wdErrorHandle;
 
 enum ECFG_PARAMS
 {
@@ -57,7 +57,7 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
  *                      parameters (once read).
  * \param[in]  debug    Set to one to get additional debug information on 
  *                      the terminal. Or zero for no additional information.
- * \param[in,out] pError A pointer to a pscErrorHandler struct.
+ * \param[in,out] pError A pointer to a psocErrorHandler struct.
  *
  * \retval true on success
  * \retval false on error (use pError to retrieve the error(s))
@@ -68,10 +68,10 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
  
  */
  
-bool vdswReadConfig( const char          * cfgname,
+bool psoqReadConfig( const char          * cfgname,
                      struct ConfigParams * pConfig,
                      int                   debug,
-                     pscErrorHandler    * pError )
+                     psocErrorHandler    * pError )
 {
    xmlSchemaPtr schema = NULL;
    xmlSchemaValidCtxtPtr  validCtxt = NULL;
@@ -80,7 +80,7 @@ bool vdswReadConfig( const char          * cfgname,
    xmlDoc  * doc = NULL;
    xmlChar * prop = NULL;
    int i, j, fd = -1, separator = -1;
-   enum vdswErrors errcode = PSOQ_OK;
+   enum psoqErrors errcode = PSOQ_OK;
    char buf[10000];
 
    /* These are to make sure we have read all parameters */
@@ -98,12 +98,12 @@ bool vdswReadConfig( const char          * cfgname,
 
    fd = open( cfgname, O_RDONLY );
    if ( fd == -1 ) {
-      pscSetError( pError, PSC_ERRNO_HANDLE, errno );
+      psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
       return false;
    }
    i = read( fd, buf, 10000 );
    if ( i < 1 ) {
-      if ( i == -1 ) pscSetError( pError, PSC_ERRNO_HANDLE, errno );
+      if ( i == -1 ) psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
       return false;
    }
 
@@ -305,7 +305,7 @@ cleanup:
    if ( doc ) xmlFreeDoc( doc );
 
    if ( errcode != PSOQ_OK ) {
-      pscSetError( pError, g_wdErrorHandle, errcode );
+      psocSetError( pError, g_wdErrorHandle, errcode );
       return false;
    }
    return true;

@@ -24,21 +24,21 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnProcess * process;
-   psnSessionContext context;
+   psonProcess * process;
+   psonSessionContext context;
    int errcode;
    bool ok;
-   psnSession * pSession;
+   psonSession * pSession;
    void * pApiSession = (void *) &errcode; /* A dummy pointer */
    
    process = initProcessTest( expectedToPass, &context );
 
-   ok = psnProcessInit( process, 12345, &context );
+   ok = psonProcessInit( process, 12345, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnProcessAddSession( NULL,
+   psonProcessAddSession( NULL,
                           pApiSession,
                           &pSession,
                           &context );

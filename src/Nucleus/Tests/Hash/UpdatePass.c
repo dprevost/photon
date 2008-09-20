@@ -24,26 +24,26 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnSessionContext context;
-   psnHash* pHash;
+   psonSessionContext context;
+   psonHash* pHash;
    enum psoErrors errcode;
    char* key1 = "My Key 1";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
    char* data3 = "This data is much longer than data1";
-   psnHashItem* pNewItem;
+   psonHashItem* pNewItem;
    size_t bucket;
-   psnHashItem* pItem = NULL;
+   psonHashItem* pItem = NULL;
    bool found;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = psnHashInit( pHash, g_memObjOffset, 100, &context );
+   errcode = psonHashInit( pHash, g_memObjOffset, 100, &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = psnHashInsert( pHash,
+   errcode = psonHashInsert( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data1,
@@ -57,7 +57,7 @@ int main()
    /*
     * Test with same data length
     */
-   errcode = psnHashUpdate( pHash,
+   errcode = psonHashUpdate( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data2,
@@ -67,7 +67,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   found = psnHashGet( pHash,
+   found = psonHashGet( pHash,
                         (unsigned char*)key1,
                         strlen(key1),
                         &pItem,
@@ -83,7 +83,7 @@ int main()
    /*
     * Test with different data length
     */
-   errcode = psnHashUpdate( pHash,
+   errcode = psonHashUpdate( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data3,
@@ -93,7 +93,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   found = psnHashGet( pHash,
+   found = psonHashGet( pHash,
                         (unsigned char*)key1,
                         strlen(key1),
                         &pItem,

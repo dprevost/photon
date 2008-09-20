@@ -23,20 +23,20 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnSession * pSession;
-   psnSessionContext context;
+   psonSession * pSession;
+   psonSessionContext context;
    int errcode;
    void * pApiSession = (void *) &errcode; /* dummy pointer */
    bool ok;
    
    pSession = initSessionTest( expectedToPass, &context );
 
-   ok = psnSessionInit( pSession, pApiSession, &context );
+   ok = psonSessionInit( pSession, pApiSession, &context );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnSessionFini( pSession, &context );
+   psonSessionFini( pSession, &context );
    
    return 0;
 }

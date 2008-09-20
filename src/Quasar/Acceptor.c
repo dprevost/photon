@@ -29,20 +29,20 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static
-bool Accept( vdswAcceptor * pAcceptor );
+bool Accept( psoqAcceptor * pAcceptor );
    
 static
-void Send( vdswAcceptor * pAcceptor, unsigned int indice );
+void Send( psoqAcceptor * pAcceptor, unsigned int indice );
    
 static
-void Receive( vdswAcceptor * pAcceptor, unsigned int indice );
+void Receive( psoqAcceptor * pAcceptor, unsigned int indice );
 
 static
-void HandleAbnormalTermination( vdswAcceptor * pAcceptor, pid_t pid );
+void HandleAbnormalTermination( psoqAcceptor * pAcceptor, pid_t pid );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswAcceptorInit( vdswAcceptor * pAcceptor )
+void psoqAcceptorInit( psoqAcceptor * pAcceptor )
 {
    PSO_PRE_CONDITION( pAcceptor != NULL );
 
@@ -54,7 +54,7 @@ void vdswAcceptorInit( vdswAcceptor * pAcceptor )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswAcceptorFini( vdswAcceptor * pAcceptor )
+void psoqAcceptorFini( psoqAcceptor * pAcceptor )
 {
    PSO_PRE_CONDITION( pAcceptor != NULL );
 
@@ -74,7 +74,7 @@ void vdswAcceptorFini( vdswAcceptor * pAcceptor )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool Accept( vdswAcceptor * pAcceptor )
+bool Accept( psoqAcceptor * pAcceptor )
 {
    PSO_SOCKET newSock = PSO_INVALID_SOCKET;
    int errcode, i;
@@ -100,7 +100,7 @@ bool Accept( vdswAcceptor * pAcceptor )
          return true;
 #endif
       // The error is more serious...
-      vdswSendMessage( &pAcceptor->pWatchdog->log,
+      psoqSendMessage( &pAcceptor->pWatchdog->log,
                        WD_ERROR, 
                        "In function accept(), error = %d",
                        GetSockError() );
@@ -114,7 +114,7 @@ bool Accept( vdswAcceptor * pAcceptor )
 #if defined (WIN32)
    errcode = ioctlsocket( newSock, FIONBIO, &mode );
    if ( errcode == SOCKET_ERROR ) {
-      vdswSendMessage( &pAcceptor->pWatchdog->log,
+      psoqSendMessage( &pAcceptor->pWatchdog->log,
                        WD_ERROR, 
                        "In function ioctlsocket(), error = %d",
                        GetSockError() );
@@ -123,7 +123,7 @@ bool Accept( vdswAcceptor * pAcceptor )
 #else
    errcode = fcntl( newSock, F_SETFL, O_NONBLOCK);
    if ( errcode < 0 ) {
-      vdswSendMessage( &pAcceptor->pWatchdog->log, 
+      psoqSendMessage( &pAcceptor->pWatchdog->log, 
                        WD_ERROR, 
                        "In function fcntl(), error = %d",
                        GetSockError() );
@@ -144,21 +144,21 @@ bool Accept( vdswAcceptor * pAcceptor )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void 
-HandleAbnormalTermination( vdswAcceptor * pAcceptor, pid_t pid )
+HandleAbnormalTermination( psoqAcceptor * pAcceptor, pid_t pid )
 {
-   vdswSendMessage( &pAcceptor->pWatchdog->log, 
+   psoqSendMessage( &pAcceptor->pWatchdog->log, 
                     WD_ERROR, 
                     "Abnormal termination of process %d",
                     pid );
 //                                   " - attempting to recover." );
 
-   vdswHandleAbnormalTermination( pAcceptor->pWatchdog, pid );
+   psoqHandleAbnormalTermination( pAcceptor->pWatchdog, pid );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool vdswPrepareConnection( vdswAcceptor * pAcceptor,
-                            vdswWatchdog * pWatchdog )
+bool psoqPrepareConnection( psoqAcceptor * pAcceptor,
+                            psoqWatchdog * pWatchdog )
 {
    int errcode = 0;
    int one = 1;
@@ -181,7 +181,7 @@ bool vdswPrepareConnection( vdswAcceptor * pAcceptor,
 
    dummy = strtol( pAcceptor->pWatchdog->params.wdAddress, NULL, 10 );
    if ( dummy <= 0 || dummy > 65535 ) {
-      vdswSendMessage( &pAcceptor->pWatchdog->log, WD_ERROR, "Error getting port number" );
+      psoqSendMessage( &pAcceptor->pWatchdog->log, WD_ERROR, "Error getting port number" );
       return false;
    }
    port = (unsigned short) dummy;
@@ -191,7 +191,7 @@ bool vdswPrepareConnection( vdswAcceptor * pAcceptor,
  
    errcode = WSAStartup( versionRequested, &wsaData );
    if ( errcode != 0 ) {
-      vdswSendMessage( &pAcceptor->pWatchdog->log, 
+      psoqSendMessage( &pAcceptor->pWatchdog->log, 
                        WD_ERROR, 
                        "In function WSAStartup(), error = %d",
                        errcode );
@@ -203,7 +203,7 @@ bool vdswPrepareConnection( vdswAcceptor * pAcceptor,
 
    pAcceptor->socketFD = socket( PF_INET, SOCK_STREAM, 0 );
    if ( pAcceptor->socketFD == PSO_INVALID_SOCKET ) {
-      vdswSendMessage( &pAcceptor->pWatchdog->log, 
+      psoqSendMessage( &pAcceptor->pWatchdog->log, 
                        WD_ERROR, 
                        "In function socket(), error = %d",
                        GetSockError() );
@@ -213,7 +213,7 @@ bool vdswPrepareConnection( vdswAcceptor * pAcceptor,
    errcode = setsockopt( pAcceptor->socketFD, SOL_SOCKET, SO_REUSEADDR, 
                          (const char *)&one, sizeof (one) );
    if ( errcode != 0 ) {
-      vdswSendMessage( &pAcceptor->pWatchdog->log, 
+      psoqSendMessage( &pAcceptor->pWatchdog->log, 
                        WD_ERROR, 
                        "In function setsockopt(), error = %d",
                        GetSockError() );
@@ -225,7 +225,7 @@ bool vdswPrepareConnection( vdswAcceptor * pAcceptor,
 #if defined (WIN32)
    errcode = ioctlsocket( pAcceptor->socketFD, FIONBIO, &mode );
    if ( errcode == SOCKET_ERROR ) {
-      vdswSendMessage( &pAcceptor->pWatchdog->log, 
+      psoqSendMessage( &pAcceptor->pWatchdog->log, 
                        WD_ERROR, 
                        "In function ioctlsocket(), error = %d",
                        GetSockError() );
@@ -234,7 +234,7 @@ bool vdswPrepareConnection( vdswAcceptor * pAcceptor,
 #else
    errcode = fcntl( pAcceptor->socketFD, F_SETFL, O_NONBLOCK);
    if ( errcode < 0 ) {
-      vdswSendMessage( &pAcceptor->pWatchdog->log, 
+      psoqSendMessage( &pAcceptor->pWatchdog->log, 
                        WD_ERROR, 
                        "In function fcntl(), error = %d",
                        GetSockError() );
@@ -252,7 +252,7 @@ bool vdswPrepareConnection( vdswAcceptor * pAcceptor,
                    (struct sockaddr *) &addr,
                    sizeof(struct sockaddr_in) );
    if ( errcode != 0 ) {
-      vdswSendMessage( &pAcceptor->pWatchdog->log, 
+      psoqSendMessage( &pAcceptor->pWatchdog->log, 
                        WD_ERROR, 
                        "In function bind(), error = %d",
                        GetSockError() );
@@ -261,7 +261,7 @@ bool vdswPrepareConnection( vdswAcceptor * pAcceptor,
 
    errcode = listen( pAcceptor->socketFD, 5 );
    if ( errcode != 0 ) {
-      vdswSendMessage( &pAcceptor->pWatchdog->log, 
+      psoqSendMessage( &pAcceptor->pWatchdog->log, 
                        WD_ERROR, 
                        "In function listen(), error = %d",
                        GetSockError() );
@@ -274,7 +274,7 @@ bool vdswPrepareConnection( vdswAcceptor * pAcceptor,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void
-Receive( vdswAcceptor * pAcceptor, unsigned int indice )
+Receive( psoqAcceptor * pAcceptor, unsigned int indice )
 {
    int errcode = 0;
    struct WDInput input;
@@ -363,7 +363,7 @@ Receive( vdswAcceptor * pAcceptor, unsigned int indice )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void
-Send( vdswAcceptor * pAcceptor, unsigned int indice )
+Send( psoqAcceptor * pAcceptor, unsigned int indice )
 {
    int errcode = 0;
    char * ptr;
@@ -383,7 +383,7 @@ Send( vdswAcceptor * pAcceptor, unsigned int indice )
    } while ( errcode == -1 && errno == EINTR );
 
    if ( errcode == -1 ) {
-      vdswSendMessage( &pAcceptor->pWatchdog->log, 
+      psoqSendMessage( &pAcceptor->pWatchdog->log, 
                        WD_ERROR, 
                        "In function send(), error = %d",
                        GetSockError() );
@@ -409,7 +409,7 @@ Send( vdswAcceptor * pAcceptor, unsigned int indice )
 #endif
 
       pAcceptor->dispatch[indice].socketId = PSO_INVALID_SOCKET;
-      vdswSendMessage( &pAcceptor->pWatchdog->log,
+      psoqSendMessage( &pAcceptor->pWatchdog->log,
                        WD_WARNING, 
                        "Connection terminated abnormally %s%d",
                        "for process ", 
@@ -425,7 +425,7 @@ Send( vdswAcceptor * pAcceptor, unsigned int indice )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void 
-vdswWaitForConnections( vdswAcceptor * pAcceptor )
+psoqWaitForConnections( psoqAcceptor * pAcceptor )
 {
    int errcode = 0;
    fd_set readSet, writeSet;
@@ -487,7 +487,7 @@ vdswWaitForConnections( vdswAcceptor * pAcceptor )
       
 
       if ( fired == -1 ) {
-         vdswSendMessage( &pAcceptor->pWatchdog->log, 
+         psoqSendMessage( &pAcceptor->pWatchdog->log, 
                           WD_ERROR, 
                           "In function select(), error = %d",
                           GetSockError() );

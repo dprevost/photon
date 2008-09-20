@@ -24,12 +24,12 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnFolder * pFolder;
-   psnSessionContext context;
+   psonFolder * pFolder;
+   psonSessionContext context;
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   psnFolderCreateObject( pFolder,
+   psonFolderCreateObject( pFolder,
                            "Test1",
                            strlen("Test1"),
                            NULL,

@@ -24,10 +24,10 @@ const bool expectedToPass = true;
 
 int main()
 {
-   pscMemoryFile  mem;
-   pscErrorHandler errorHandler;
+   psocMemoryFile  mem;
+   psocErrorHandler errorHandler;
    bool ok;
-   pscMemoryFileStatus status;
+   psocMemoryFileStatus status;
    int errcode;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete
@@ -36,16 +36,16 @@ int main()
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
 
-   pscInitErrorDefs();
-   pscInitErrorHandler( &errorHandler );
-   pscInitMemoryFile( &mem, 10, "MemFile.mem" );
+   psocInitErrorDefs();
+   psocInitErrorHandler( &errorHandler );
+   psocInitMemoryFile( &mem, 10, "MemFile.mem" );
 
-   ok = pscCreateBackstore( &mem, 0644, &errorHandler );
+   ok = psocCreateBackstore( &mem, 0644, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
-   pscBackStoreStatus( &mem, &status );
+   psocBackStoreStatus( &mem, &status );
    if ( status.fileExist != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    }
@@ -67,12 +67,12 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = pscCreateBackstore( &mem, 0600, &errorHandler );
+   ok = psocCreateBackstore( &mem, 0600, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
-   pscBackStoreStatus( &mem, &status );
+   psocBackStoreStatus( &mem, &status );
    if ( status.fileExist != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    }
@@ -88,12 +88,12 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = pscCreateBackstore( &mem, 0660, &errorHandler );
+   ok = psocCreateBackstore( &mem, 0660, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
-   pscBackStoreStatus( &mem, &status );
+   psocBackStoreStatus( &mem, &status );
 
    if ( status.fileExist != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
@@ -107,9 +107,9 @@ int main()
    
    unlink( "MemFile.mem" );
    
-   pscFiniMemoryFile( &mem );
-   pscFiniErrorHandler( &errorHandler );
-   pscFiniErrorDefs();
+   psocFiniMemoryFile( &mem );
+   psocFiniErrorHandler( &errorHandler );
+   psocFiniErrorDefs();
 
    return 0;
 }

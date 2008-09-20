@@ -30,16 +30,16 @@
 
 int main( int argc, char * argv[] )
 {
-   psaProcess process;
+   psoaProcess process;
    int errcode;
-   psnSessionContext context;
+   psonSessionContext context;
    
-   memset( &process, 0, sizeof(psaProcess) );
+   memset( &process, 0, sizeof(psoaProcess) );
    if ( argc > 1 ) {
-      errcode = psaProcessInit( &process, argv[1] );
+      errcode = psoaProcessInit( &process, argv[1] );
    }
    else {
-      errcode = psaProcessInit( &process, "10701" );
+      errcode = psoaProcessInit( &process, "10701" );
    }
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -48,12 +48,12 @@ int main( int argc, char * argv[] )
 
    memset( &context, 0, sizeof context );
    context.pidLocker= getpid();
-   pscInitErrorHandler( &context.errorHandler );
+   psocInitErrorHandler( &context.errorHandler );
    
    psoaCloseMemory( &process, &context );
 
-   /* Cannot call psaProcessFini since it calls CloseMemory()  */
-   psaDisconnect( &process.connector, &context.errorHandler );
+   /* Cannot call psoaProcessFini since it calls CloseMemory()  */
+   psoaDisconnect( &process.connector, &context.errorHandler );
 
    return 0;
 }

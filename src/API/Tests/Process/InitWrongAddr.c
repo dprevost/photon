@@ -21,12 +21,12 @@
 
 int main()
 {
-   psaProcess process;
+   psoaProcess process;
    int errcode;
 
-   memset( &process, 0, sizeof(psaProcess) );
+   memset( &process, 0, sizeof(psoaProcess) );
    /* try something junk... */   
-   errcode = psaProcessInit( &process, "abcdef" );
+   errcode = psoaProcessInit( &process, "abcdef" );
 
    if ( errcode != PSO_INVALID_WATCHDOG_ADDRESS ) {
       fprintf( stderr, "err: %d\n", errcode );

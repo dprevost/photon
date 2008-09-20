@@ -25,17 +25,17 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnSessionContext context;
-   psnHash* pHash;
+   psonSessionContext context;
+   psonHash* pHash;
    enum psoErrors errcode;
    char key[20];
    char data[20];
-   psnHashItem* pNewItem;
+   psonHashItem* pNewItem;
    int i;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = psnHashInit( pHash, g_memObjOffset, 100, &context );
+   errcode = psonHashInit( pHash, g_memObjOffset, 100, &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -44,7 +44,7 @@ int main()
    for ( i = 0; i < 500; ++i ) {
       sprintf( key,  "My Key %d", i );
       sprintf( data, "My Data %d", i );
-      errcode = psnHashInsert( pHash,
+      errcode = psonHashInsert( pHash,
                                 (unsigned char*)key,
                                 strlen(key),
                                 data,
@@ -55,8 +55,8 @@ int main()
          fprintf( stderr, "i = %d %d\n", i, pHash->enumResize );
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }
-      if ( pHash->enumResize == PSN_HASH_TIME_TO_GROW ) {
-         errcode = psnHashResize( pHash, NULL );
+      if ( pHash->enumResize == PSON_HASH_TIME_TO_GROW ) {
+         errcode = psonHashResize( pHash, NULL );
 
          /* We should never come here! */
          ERROR_EXIT( expectedToPass, NULL, ; );

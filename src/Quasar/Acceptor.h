@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSW_ACCEPTOR_H
-#define VDSW_ACCEPTOR_H
+#ifndef PSOQ_ACCEPTOR_H
+#define PSOQ_ACCEPTOR_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -48,19 +48,19 @@ BEGIN_C_DECLS
 /* 
  * Not really a dispatch table but...
  */
-struct vdswDispatch
+struct psoqDispatch
 {
    PSO_SOCKET socketId;
    pid_t      pid;
    size_t     dataToBeWritten;
 };
 
-typedef struct vdswDispatch vdswDispatch;
+typedef struct psoqDispatch psoqDispatch;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 // Forward declaration
-struct vdswWatchdog;
+struct psoqWatchdog;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -81,15 +81,15 @@ struct vdswWatchdog;
  *
  */
 
-struct vdswAcceptor
+struct psoqAcceptor
 {
-   pscErrorHandler errorHandler;
+   psocErrorHandler errorHandler;
    
    PSO_SOCKET socketFD;
 
-   struct vdswWatchdog * pWatchdog;
+   struct psoqWatchdog * pWatchdog;
    
-   struct vdswDispatch dispatch[FD_SETSIZE];
+   struct psoqDispatch dispatch[FD_SETSIZE];
 
    struct WDOutput answer;
 
@@ -99,7 +99,7 @@ struct vdswAcceptor
 #endif
 };
 
-typedef struct vdswAcceptor vdswAcceptor;
+typedef struct psoqAcceptor psoqAcceptor;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -115,20 +115,20 @@ int GetSockError()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswAcceptorInit( vdswAcceptor * pAcceptor );
+void psoqAcceptorInit( psoqAcceptor * pAcceptor );
 
-void vdswAcceptorFini( vdswAcceptor * pAcceptor );
+void psoqAcceptorFini( psoqAcceptor * pAcceptor );
 
-bool vdswPrepareConnection( vdswAcceptor        * pAcceptor,
-                            struct vdswWatchdog * pWatchdog );
+bool psoqPrepareConnection( psoqAcceptor        * pAcceptor,
+                            struct psoqWatchdog * pWatchdog );
 
-void vdswWaitForConnections( vdswAcceptor * pAcceptor );
+void psoqWaitForConnections( psoqAcceptor * pAcceptor );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS
 
-#endif /* VDSW_ACCEPTOR_H */
+#endif /* PSOQ_ACCEPTOR_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSC_DIR_ACCESS_H
-#define PSC_DIR_ACCESS_H
+#ifndef PSOC_DIR_ACCESS_H
+#define PSOC_DIR_ACCESS_H
 
 #include "Common.h"
 #include "ErrorHandler.h"
@@ -26,7 +26,7 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * \defgroup pscDirAccess The Directory Iterator module
+ * \defgroup psocDirAccess The Directory Iterator module
  *
  * This module encapsulates the differences between the different 
  * OSes when it comes to iterate through all files in a directory.
@@ -35,7 +35,7 @@ BEGIN_C_DECLS
  * the standard POSIX way of doing things although the code itself 
  * is not using the POSIX calls on some platforms (Windows, so far).
  *
- * \ingroup pscCommon
+ * \ingroup psocCommon
  * @{
  */
 
@@ -51,8 +51,8 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** Unique identifier for the pscDirIterator struct. */
-#define PSC_DIR_ACCESS_SIGNATURE ((unsigned)0xca3dd33e)
+/** Unique identifier for the psocDirIterator struct. */
+#define PSOC_DIR_ACCESS_SIGNATURE ((unsigned)0xca3dd33e)
 
 /**
  * \cond NO_DIR_DEFINES_PLEASE
@@ -89,9 +89,9 @@ BEGIN_C_DECLS
  * is not using the POSIX calls on some platforms (Windows, so far).
  */
 
-struct pscDirIterator
+struct psocDirIterator
 {
-   /** Set to PSC_DIR_ACCESS_SIGNATURE at initialization. */
+   /** Set to PSOC_DIR_ACCESS_SIGNATURE at initialization. */
    unsigned int initialized;
 
 #if defined ( WIN32 )
@@ -108,32 +108,32 @@ struct pscDirIterator
 
 };
 
-typedef struct pscDirIterator pscDirIterator;
+typedef struct psocDirIterator psocDirIterator;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/*! \brief Initialize the struct pscDirIterator. */
+/*! \brief Initialize the struct psocDirIterator. */
 PHOTON_COMMON_EXPORT
-void pscInitDir( pscDirIterator * pIterator );
+void psocInitDir( psocDirIterator * pIterator );
 
-/*! \brief Terminate access to the struct pscDirIterator. */
+/*! \brief Terminate access to the struct psocDirIterator. */
 PHOTON_COMMON_EXPORT
-void pscFiniDir( pscDirIterator * pIterator );
+void psocFiniDir( psocDirIterator * pIterator );
 
 /*! \brief Open the directory. */
 PHOTON_COMMON_EXPORT
-bool pscOpenDir( pscDirIterator  * pIterator,
-                 const char      * dirName,
-                 pscErrorHandler * pError );
+bool psocOpenDir( psocDirIterator  * pIterator,
+                  const char       * dirName,
+                  psocErrorHandler * pError );
 
 /*! \brief Get the next file name. */
 PHOTON_COMMON_EXPORT
-const char * pscDirGetNextFileName( pscDirIterator  * pIterator,
-                                    pscErrorHandler * pError );
+const char * psocDirGetNextFileName( psocDirIterator  * pIterator,
+                                     psocErrorHandler * pError );
 
 /*! \brief Close the directory. */
 PHOTON_COMMON_EXPORT
-void pscCloseDir( pscDirIterator * pIterator );
+void psocCloseDir( psocDirIterator * pIterator );
 
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -144,5 +144,5 @@ void pscCloseDir( pscDirIterator * pIterator );
 
 END_C_DECLS
 
-#endif /* PSC_DIR_ACCESS_H */
+#endif /* PSOC_DIR_ACCESS_H */
 

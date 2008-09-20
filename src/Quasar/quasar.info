@@ -1,4 +1,4 @@
-This is quasar.info, produced by makeinfo version 4.8 from quasar.texi.
+This is quasar.info, produced by makeinfo version 4.11 from quasar.texi.
 
 START-INFO-DIR-ENTRY
 * quasar: (quasar).             starts the Photon server
@@ -15,7 +15,7 @@ quasar
 Name
 ****
 
-quasar a^€” starts the Photon server
+quasar -- starts the Photon server
 
 
 
@@ -55,9 +55,9 @@ Running normally:
 DESCRIPTION
 ***********
 
-quasar is the crash-recovery daemon (the watchdog) of the Photon
-Framework. Currently, crash recovery is only done when this program is
-started.
+quasar is the shared-memory creator and keeper and the crash-recovery
+server of the Photon Framework. Currently, crash recovery is only done
+when this program is started.
 
 
 
@@ -79,23 +79,39 @@ OPTIONS
      Test the configuration file and exit.
 
 `-v', `--verify'
-     Verify the content of the shared-memory file (VDS) without
-     modifying it and exit.
+     Verify the content of the shared-memory file without modifying it
+     and exit.
 
 
 CONFIGURATION
 *************
 
-The syntax of the configuration file is very simple, pairs of keys and
-values.  Lines starting with # are comments.
+The configuration file is a simple XML file with tags, values and
+attributes as explained below.
 
-_VDSLocation_
-     The path of the directory where the watchdog will find the
+_mem_location_
+     The path of the directory where the server will find the
      shared-memory file and auxiliary files (these files will be
      created if they do not exist).
 
-_MemorySize_
-     The total size of the shared memory in units of kiloBytes.
+     Example: <mem_location>/tmp/photon</mem_location>
+
+_mem_size_
+     The total size of the shared memory. This size canbe expressed in
+     multiple units, kbytes ("kb"), megabytes ("mb") or gigabytes
+     ("gb").  For example a shared memory of 10 Megabytes can either be
+     written as
+
+     <mem_size size="10240" units="kb" />
+
+     or
+
+     <mem_size size="10" units="mb" />.
+
+     On many modern systems, only the actual pages in use will be
+     loaded - therefore this parameter can be quite large (you'll need
+     the space on disk however - in fact twice as large to accomodate a
+     backup of the memory file).
 
 _WatchdogAddress_
      The local TCP/IP port the watchdog will use to listen for new
@@ -119,22 +135,27 @@ Report bugs to <dprevost@photonsoftware.org>.
 COPYRIGHT
 *********
 
-Copyright (C) 2008 Daniel Pre'vost.
+Copyright (C) 2008 Daniel Prévost.
 
 
 
 Tag Table:
-Node: Top171
-Ref: name231
-Ref: synopsis282
-Ref: Testing the configuration file [and exit];303
-Ref: Verifying the shared memory [and exit];444
-Ref: Getting [minimal] help;581
-Ref: Running normally;655
-Ref: DESCRIPTION750
-Ref: OPTIONS923
-Ref: CONFIGURATION1453
-Ref: REPORTING BUGS2158
-Ref: COPYRIGHT2237
+Node: Top172
+Ref: name232
+Ref: synopsis281
+Ref: Testing the configuration file [and exit];302
+Ref: Verifying the shared memory [and exit];443
+Ref: Getting [minimal] help;580
+Ref: Running normally;654
+Ref: DESCRIPTION749
+Ref: OPTIONS948
+Ref: CONFIGURATION1472
+Ref: REPORTING BUGS2708
+Ref: COPYRIGHT2787
 
 End Tag Table
+
+
+Local Variables:
+coding: iso-8859-1
+End:

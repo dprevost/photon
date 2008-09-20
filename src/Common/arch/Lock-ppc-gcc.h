@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSC_ARCH_PROCESS_LOCK_H
-#define PSC_ARCH_PROCESS_LOCK_H
+#ifndef PSOC_ARCH_PROCESS_LOCK_H
+#define PSOC_ARCH_PROCESS_LOCK_H
 
 /*
  * Some help on assembler for aix is available here:
@@ -47,14 +47,14 @@ __asm__ __volatile__ (                                             \
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void
-pscAcquireProcessLock( pscProcessLock * pLock,
-                       pid_t            pid_locker )
+psocAcquireProcessLock( psocProcessLock * pLock,
+                        pid_t             pid_locker )
 {
    int lockValue = 0xff, oldLockValue;
    volatile pso_lock_T * pLockLock;
 
    PSO_PRE_CONDITION( pLock != NULL );
-   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_INV_CONDITION( pLock->initialized == PSOC_LOCK_SIGNATURE );
    PSO_PRE_CONDITION( pid_locker != 0 );
 
    pLockLock = &pLock->lock;
@@ -74,15 +74,15 @@ pscAcquireProcessLock( pscProcessLock * pLock,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline bool
-pscTryAcquireProcessLock( pscProcessLock * pLock,
-                          pid_t            pid_locker,
-                          unsigned int     milliSecs )
+psocTryAcquireProcessLock( psocProcessLock * pLock,
+                           pid_t             pid_locker,
+                           unsigned int      milliSecs )
 {
    int lockValue = 0xff, oldLockValue;
    pso_lock_T * pLockLock;
 
    PSO_PRE_CONDITION( pLock != NULL );
-   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_INV_CONDITION( pLock->initialized == PSOC_LOCK_SIGNATURE );
    PSO_PRE_CONDITION( pid_locker != 0 );
 
    pLockLock = &pLock->lock;
@@ -113,10 +113,10 @@ pscTryAcquireProcessLock( pscProcessLock * pLock,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void
-pscReleaseProcessLock( pscProcessLock * pLock )
+psocReleaseProcessLock( psocProcessLock * pLock )
 {
    PSO_PRE_CONDITION( pLock != NULL );
-   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_INV_CONDITION( pLock->initialized == PSOC_LOCK_SIGNATURE );
 
    pLock->pid = 0;
    /*
@@ -132,7 +132,7 @@ pscReleaseProcessLock( pscProcessLock * pLock )
 
 #undef POWER_PC_LOCK
 
-#endif /* PSC_ARCH_PROCESS_LOCK_H */
+#endif /* PSOC_ARCH_PROCESS_LOCK_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

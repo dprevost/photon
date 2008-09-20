@@ -24,26 +24,26 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnMemBitmap *pBitmap;
+   psonMemBitmap *pBitmap;
    unsigned char* ptr;
    size_t i;
-   psnSessionContext context;
+   psonSessionContext context;
    
    initTest( expectedToPass, &context );
 
-   ptr = malloc( PSN_BLOCK_SIZE*10 );
+   ptr = malloc( PSON_BLOCK_SIZE*10 );
    if (ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    g_pBaseAddr = ptr;
    
-   pBitmap = (psnMemBitmap*) ptr;
+   pBitmap = (psonMemBitmap*) ptr;
    
-   psnMemBitmapInit( pBitmap, 
+   psonMemBitmapInit( pBitmap, 
                       SET_OFFSET(ptr),
-                      10*PSN_BLOCK_SIZE,
+                      10*PSON_BLOCK_SIZE,
                       8 );
-   if ( pBitmap->lengthInBits != 10*PSN_BLOCK_SIZE/8 ) {
+   if ( pBitmap->lengthInBits != 10*PSON_BLOCK_SIZE/8 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pBitmap->allocGranularity != 8 ) {
@@ -58,7 +58,7 @@ int main()
       }
    }
    
-   psnMemBitmapFini( pBitmap );
+   psonMemBitmapFini( pBitmap );
 
    return 0;
 }

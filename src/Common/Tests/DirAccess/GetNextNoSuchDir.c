@@ -35,15 +35,15 @@ int main()
 #else
 
    bool ok;
-   pscDirIterator iterator;
-   pscErrorHandler errorHandler;
+   psocDirIterator iterator;
+   psocErrorHandler errorHandler;
    const char* str;
 
-   pscInitErrorDefs();
-   pscInitDir( &iterator );
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorDefs();
+   psocInitDir( &iterator );
+   psocInitErrorHandler( &errorHandler );
    
-   ok = pscOpenDir( &iterator, "abc123", &errorHandler );
+   ok = psocOpenDir( &iterator, "abc123", &errorHandler );
    if ( ! ok ) {
       /* OpenDir cannot fail on Win32 but someone might update
        * the code eventually...
@@ -51,20 +51,20 @@ int main()
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
 
-   str = pscDirGetNextFileName( &iterator, &errorHandler );
+   str = psocDirGetNextFileName( &iterator, &errorHandler );
 
    if ( str != NULL ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
-   if ( ! pscAnyErrors( &errorHandler ) ) {
+   if ( ! psocAnyErrors( &errorHandler ) ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   pscCloseDir( &iterator );
+   psocCloseDir( &iterator );
 
-   pscFiniDir( &iterator );
-   pscFiniErrorHandler( &errorHandler );
-   pscFiniErrorDefs();
+   psocFiniDir( &iterator );
+   psocFiniErrorHandler( &errorHandler );
+   psocFiniErrorDefs();
 
    return 0;
 

@@ -24,19 +24,19 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnProcMgr* pManager;
-   psnSessionContext context;
-   psnProcess * process;
+   psonProcMgr* pManager;
+   psonSessionContext context;
+   psonProcess * process;
    bool ok;
    
    pManager = initProcMgrTest( expectedToPass, &context );
 
-   ok = psnProcMgrInit( pManager, &context );
+   ok = psonProcMgrInit( pManager, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnProcMgrAddProcess( pManager, 
+   ok = psonProcMgrAddProcess( pManager, 
                                12345, 
                                &process,
                                NULL );

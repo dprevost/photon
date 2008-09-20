@@ -23,14 +23,14 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnHashMap * pHashMap;
-   psnSessionContext context;
+   psonHashMap * pHashMap;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus status;
+   psonTxStatus status;
    char * key  = "my key";
    char * data1 = "my data1";
    char * data2 = "my data2";
-   psnHashItem * pItem;
+   psonHashItem * pItem;
    char * ptr;
    psoObjectDefinition def = { 
       PSO_HASH_MAP, 
@@ -41,16 +41,16 @@ int main()
 
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnHashMapInit( pHashMap, 
+   ok = psonHashMapInit( pHashMap, 
                          0, 1, 0, &status, 4, 
                          "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnHashMapInsert( pHashMap,
+   ok = psonHashMapInsert( pHashMap,
                            (const void *) key,
                            6,
                            (const void *) data1,
@@ -64,7 +64,7 @@ int main()
     * We use get to get to the hash item in order to commit it 
     * (we need to commit the insertion before replacing it)
     */
-   ok = psnHashMapGet( pHashMap,
+   ok = psonHashMapGet( pHashMap,
                         (const void *) key,
                         6,
                         &pItem,
@@ -75,16 +75,16 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
+   psonHashMapCommitAdd( pHashMap, SET_OFFSET(pItem), &context );
 
-   ok = psnHashMapRelease( pHashMap,
+   ok = psonHashMapRelease( pHashMap,
                             pItem,
                             &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnHashMapReplace( pHashMap,
+   ok = psonHashMapReplace( pHashMap,
                             (const void *) key,
                             6,
                             (const void *) data2,
@@ -94,7 +94,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnHashMapGet( pHashMap,
+   ok = psonHashMapGet( pHashMap,
                         (const void *) key,
                         6,
                         &pItem,

@@ -26,27 +26,27 @@ const bool expectedToPass = true;
 int main()
 {
    bool ok;
-   pscDirIterator iterator;
-   pscErrorHandler errorHandler;
+   psocDirIterator iterator;
+   psocErrorHandler errorHandler;
 
-   pscInitErrorDefs();
-   pscInitDir( &iterator );
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorDefs();
+   psocInitDir( &iterator );
+   psocInitErrorHandler( &errorHandler );
    
-   ok = pscOpenDir( &iterator, "..", &errorHandler );
+   ok = psocOpenDir( &iterator, "..", &errorHandler );
 
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
-   if ( pscAnyErrors( &errorHandler ) ) {
+   if ( psocAnyErrors( &errorHandler ) ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
-   pscCloseDir( &iterator );
+   psocCloseDir( &iterator );
 
-   pscFiniDir( &iterator );
-   pscFiniErrorHandler( &errorHandler );
-   pscFiniErrorDefs();
+   psocFiniDir( &iterator );
+   psocFiniErrorHandler( &errorHandler );
+   psocFiniErrorDefs();
 
    return 0;
 }

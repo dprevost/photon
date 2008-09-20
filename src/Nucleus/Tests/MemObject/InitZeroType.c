@@ -25,15 +25,15 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnMemObject* pObj;
+   psonMemObject* pObj;
    psotObjDummy  *pDummy;
-   psnSessionContext context;
+   psonSessionContext context;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    pObj = &pDummy->memObject;
 
-   psnMemObjectInit( pObj, 
-                      (psnMemObjIdent)0,
+   psonMemObjectInit( pObj, 
+                      (psonMemObjIdent)0,
                       &pDummy->blockGroup,
                       4 );
                       

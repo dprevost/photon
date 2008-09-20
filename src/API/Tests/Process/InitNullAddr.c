@@ -25,11 +25,11 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psaProcess process;
+   psoaProcess process;
    int errcode;
    
-   memset( &process, 0, sizeof(psaProcess) );
-   errcode = psaProcessInit( &process, NULL );
+   memset( &process, 0, sizeof(psoaProcess) );
+   errcode = psoaProcessInit( &process, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

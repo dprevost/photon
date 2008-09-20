@@ -25,13 +25,13 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnSessionContext context;
-   psnHash* pHash;
+   psonSessionContext context;
+   psonHash* pHash;
    enum psoErrors errcode;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = psnHashInit( pHash, PSN_NULL_OFFSET, 100, &context );
+   errcode = psonHashInit( pHash, PSON_NULL_OFFSET, 100, &context );
       
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

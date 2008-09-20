@@ -29,7 +29,7 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE sessionHandle;
    int errcode;
-   struct psaCommonObject object;
+   struct psoaCommonObject object;
    psoObjectDefinition def = { 
       PSO_FOLDER, 
       0, 
@@ -63,7 +63,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaSessionOpenObj( (psaSession *) sessionHandle,
+   errcode = psoaSessionOpenObj( (psoaSession *) sessionHandle,
                                  PSO_FOLDER,
                                  false,
                                  "/asoop",

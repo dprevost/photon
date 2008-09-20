@@ -39,21 +39,21 @@
  ************************************
  *
  * Groups of blocks in limbo are identifies with theit first and last 4 bytes
- * (the first bytes set to PSN_IDENT_LIMBO and the field isInLimbo set to 
+ * (the first bytes set to PSON_IDENT_LIMBO and the field isInLimbo set to 
  * true in the endblock).
  *
  * When a group of block is deallocated:
  *  - the object must be locked (or must be unreachable by using its name
  *    through its parent folder and its usage count must be zero).
- *  - call psnFreeBlocks()
+ *  - call psonFreeBlocks()
  *      - if we get a lock on the allocator, go on as usual
  *      - if not
  *         - the bytes following the first bytes must be set with the number of 
- *           blocks in the group (using the psnFreeBlock struct).
+ *           blocks in the group (using the psonFreeBlock struct).
   *        - set a write memory barrier to make sure that the stores will
  *           be properly ordered (in other words, to make sure that isInLimbo
- *           and PSN_IDENT_LIMBO are set last.
- *         - the first bytes must be set to PSN_IDENT_LIMBO.
+ *           and PSON_IDENT_LIMBO are set last.
+ *         - the first bytes must be set to PSON_IDENT_LIMBO.
  *         - set the field isInLimbo to true in the endblock.
  *           (the number of blocks should already be set)
  *  - unlock the object, if needed.
@@ -70,7 +70,7 @@
  *
  * When a group of block is allocated:
  *  - We hold the lock so - no problem of synchronization should arise.
- *  - set the first bytes to PSN_IDENT_ALLOCATED so that the group cannot
+ *  - set the first bytes to PSON_IDENT_ALLOCATED so that the group cannot
  *    be mistaken as in limbo.
  *  - Set the isInLimbo field of the endBlock to false (just in case).
  *  - Set the bitmap of allocated blocks.
@@ -80,19 +80,19 @@
  * allocator lock and the initialization of the group of blocks. We want to
  * make sure that no other thread/process getting a hold of the allocator
  * might think that the group is in limbo.
- * Note: the beginning of the group should be a psnFreeBufferNode that
- *       cannot be confused with PSN_IDENT_LIMBO. But... 
+ * Note: the beginning of the group should be a psonFreeBufferNode that
+ *       cannot be confused with PSON_IDENT_LIMBO. But... 
  *        1 - one never knows if that code will always stay the same.
- *        2 - being explicit and setting PSN_IDENT_ALLOCATED cannot
+ *        2 - being explicit and setting PSON_IDENT_ALLOCATED cannot
  *            hurt and makes the code itself more clear.
  *        3 - and setting the fields like this might help debugging.
  *
- * When trying to regroup loose memory (in psnFreeBlocks):
+ * When trying to regroup loose memory (in psonFreeBlocks):
  *  - if the group is marked as free, just do the normal stuff (concatenate
  *    the buffers).
  *  - when checking previous buffers marked as allocated, if the isInLimbo 
  *    field if true, concatenate.
- *  - when checking forward buffers, if the first bytes are PSN_IDENT_LIMBO,
+ *  - when checking forward buffers, if the first bytes are PSON_IDENT_LIMBO,
  *    concatenate.
  *  - Put a read memory barrier between reading the first bytes (or last bytes)
  *    and reading anything else in the block (to make sure that the compiler 
@@ -104,22 +104,22 @@
  *      read # of blocks in group
  *                            set # blocks in group
  *                            write memory barrier
- *                            set PSN_IDENT_LIMBO
- *      read PSN_IDENT_LIMBO
+ *                            set PSON_IDENT_LIMBO
+ *      read PSON_IDENT_LIMBO
  *
  *    The point being that the cpu/compiler can reorder operations as 
  *    they see fit unless explicitely told not to (a read barrier forces
  *    the load of the # of blocks to be after the loads of either 
- *    PSN_IDENT_LIMBO or isInLimbo.
+ *    PSON_IDENT_LIMBO or isInLimbo.
  *
  */
-struct psnFreeBlock
+struct psonFreeBlock
 {
-    psnMemObjIdent identifier;
+    psonMemObjIdent identifier;
     size_t          numBlocks;
 };
 
-typedef struct psnFreeBlock psnFreeBlock;
+typedef struct psonFreeBlock psonFreeBlock;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -133,20 +133,20 @@ PHOTON_ENGINE_EXPORT unsigned char * g_pBaseAddr = NULL;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum psoErrors 
-psnMemAllocInit( psnMemAlloc       * pAlloc,
+psonMemAllocInit( psonMemAlloc       * pAlloc,
                   unsigned char      * pBaseAddress,
                   size_t               length,
-                  psnSessionContext * pContext )
+                  psonSessionContext * pContext )
 {
    enum psoErrors errcode;
-   psnFreeBufferNode * pNode;
+   psonFreeBufferNode * pNode;
    size_t neededBlocks, neededBytes, bitmapLength;
-   psnMemBitmap * pBitmap = NULL;
+   psonMemBitmap * pBitmap = NULL;
    
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pAlloc   != NULL );
    PSO_PRE_CONDITION( pBaseAddress != NULL );
-   PSO_PRE_CONDITION( length >= (3 << PSN_BLOCK_SHIFT) );
+   PSO_PRE_CONDITION( length >= (3 << PSON_BLOCK_SHIFT) );
    PSO_INV_CONDITION( g_pBaseAddr != NULL );
 
    pContext->pAllocator = (void *) pAlloc;
@@ -164,46 +164,46 @@ psnMemAllocInit( psnMemAlloc       * pAlloc,
     */
 
    /* Calculate the size of the bitmap of the allocator */
-   bitmapLength = offsetof( psnMemBitmap, bitmap ) + 
-                  psnGetBitmapLengthBytes( length, PSN_BLOCK_SIZE );
-   /* Align it on PSN_ALLOCATION_UNIT bytes boundary */
-   bitmapLength = ( (bitmapLength - 1) / PSN_ALLOCATION_UNIT + 1 ) * 
-                 PSN_ALLOCATION_UNIT;
+   bitmapLength = offsetof( psonMemBitmap, bitmap ) + 
+                  psonGetBitmapLengthBytes( length, PSON_BLOCK_SIZE );
+   /* Align it on PSON_ALLOCATION_UNIT bytes boundary */
+   bitmapLength = ( (bitmapLength - 1) / PSON_ALLOCATION_UNIT + 1 ) * 
+                 PSON_ALLOCATION_UNIT;
 
    /* How many blocks do we need, at a minimum, for the allocator */
-   neededBlocks =  ((bitmapLength - 1) >> PSN_BLOCK_SHIFT) + 1;
+   neededBlocks =  ((bitmapLength - 1) >> PSON_BLOCK_SHIFT) + 1;
    
    /* How many bytes do we need for the allocator */
-   neededBytes = offsetof( struct psnMemAlloc, blockGroup ) +
-                 offsetof( psnBlockGroup, bitmap ) + 
-                 offsetof( psnMemBitmap, bitmap ) +
-                 psnGetBitmapLengthBytes( neededBlocks << PSN_BLOCK_SHIFT, 
-                                           PSN_ALLOCATION_UNIT ) +
-                 PSN_ALLOCATION_UNIT; /* The endBlock struct */
+   neededBytes = offsetof( struct psonMemAlloc, blockGroup ) +
+                 offsetof( psonBlockGroup, bitmap ) + 
+                 offsetof( psonMemBitmap, bitmap ) +
+                 psonGetBitmapLengthBytes( neededBlocks << PSON_BLOCK_SHIFT, 
+                                           PSON_ALLOCATION_UNIT ) +
+                 PSON_ALLOCATION_UNIT; /* The endBlock struct */
 
-   /* Align it on PSN_ALLOCATION_UNIT bytes boundary */
-   neededBytes = ( (neededBytes - 1) / PSN_ALLOCATION_UNIT + 1 ) * 
-                 PSN_ALLOCATION_UNIT;
+   /* Align it on PSON_ALLOCATION_UNIT bytes boundary */
+   neededBytes = ( (neededBytes - 1) / PSON_ALLOCATION_UNIT + 1 ) * 
+                 PSON_ALLOCATION_UNIT;
 
    /* So, enough space or not ? */
-   if ( (neededBlocks << PSN_BLOCK_SHIFT) < (neededBytes + bitmapLength) ) {
+   if ( (neededBlocks << PSON_BLOCK_SHIFT) < (neededBytes + bitmapLength) ) {
       neededBlocks++;
    }
    
-   errcode = psnMemObjectInit( &pAlloc->memObj,                         
-                                PSN_IDENT_ALLOCATOR,
+   errcode = psonMemObjectInit( &pAlloc->memObj,                         
+                                PSON_IDENT_ALLOCATOR,
                                 &pAlloc->blockGroup,
                                 neededBlocks );
    if ( errcode != PSO_OK ) return errcode;
    
-   psnEndBlockSet( SET_OFFSET(pAlloc), 
+   psonEndBlockSet( SET_OFFSET(pAlloc), 
                     neededBlocks, 
                     false,   /* isInLimbo */
                     false ); /* is at the end of the shared memory */
                                               
    /* Add the blockGroup to the list of groups of the memObject */
-   psnLinkNodeInit( &pAlloc->blockGroup.node );
-   psnLinkedListPutFirst( &pAlloc->memObj.listBlockGroup, 
+   psonLinkNodeInit( &pAlloc->blockGroup.node );
+   psonLinkedListPutFirst( &pAlloc->memObj.listBlockGroup, 
                            &pAlloc->blockGroup.node );
 
    /* The overall header and the memory allocator itself */
@@ -215,26 +215,26 @@ psnMemAllocInit( psnMemAlloc       * pAlloc,
    pAlloc->totalLength     = length;
 
    /* Initialize the bitmap for the allocator itself */ 
-   pBitmap = (psnMemBitmap*) psnMalloc( &pAlloc->memObj,
+   pBitmap = (psonMemBitmap*) psonMalloc( &pAlloc->memObj,
                                           bitmapLength,
                                           pContext );
-   psnMemBitmapInit( pBitmap,
+   psonMemBitmapInit( pBitmap,
                       0,
                       pAlloc->totalLength,
-                      PSN_BLOCK_SIZE );
-   psnSetBufferAllocated( pBitmap, 0, (neededBlocks+1) << PSN_BLOCK_SHIFT );
+                      PSON_BLOCK_SIZE );
+   psonSetBufferAllocated( pBitmap, 0, (neededBlocks+1) << PSON_BLOCK_SHIFT );
    pAlloc->bitmapOffset = SET_OFFSET( pBitmap );
    
    /* Initialize the linked list */
-   psnLinkedListInit( &pAlloc->freeList );
+   psonLinkedListInit( &pAlloc->freeList );
    
    /* Now put the rest of the free blocks in our free list */
-   pNode = (psnFreeBufferNode*)(pBaseAddress + ((neededBlocks+1) << PSN_BLOCK_SHIFT));
-   pNode->numBuffers = (length >> PSN_BLOCK_SHIFT) - (neededBlocks+1);
-   psnLinkNodeInit( &pNode->node );
-   psnLinkedListPutFirst( &pAlloc->freeList, &pNode->node );   
+   pNode = (psonFreeBufferNode*)(pBaseAddress + ((neededBlocks+1) << PSON_BLOCK_SHIFT));
+   pNode->numBuffers = (length >> PSON_BLOCK_SHIFT) - (neededBlocks+1);
+   psonLinkNodeInit( &pNode->node );
+   psonLinkedListPutFirst( &pAlloc->freeList, &pNode->node );   
    
-   psnEndBlockSet( SET_OFFSET(pNode), pNode->numBuffers, false, true );
+   psonEndBlockSet( SET_OFFSET(pNode), pNode->numBuffers, false, true );
    
    return PSO_OK;
 }
@@ -243,23 +243,23 @@ psnMemAllocInit( psnMemAlloc       * pAlloc,
 
 #define BEST_FIT_MAX_LOOP 100
 /**
- * This function was splitted from the psnMalloc() function in order 
+ * This function was splitted from the psonMalloc() function in order 
  * to be able to test the algorithm without having to setup everything.
  * (And it becomes easier to replace the algorithm, if needed or to 
  * tweak it).
  */
 static inline 
-psnFreeBufferNode * FindBuffer( psnMemAlloc     * pAlloc,
+psonFreeBufferNode * FindBuffer( psonMemAlloc     * pAlloc,
                                  size_t             requestedBlocks,
-                                 pscErrorHandler * pError )
+                                 psocErrorHandler * pError )
 {
    size_t i;
    /* size_t is unsigned. This is check by autoconf AC_TYPE_SIZE_T */
    size_t diff = (size_t) -1;
    size_t numBlocks;
-   psnLinkNode * oldNode = NULL;
-   psnLinkNode * currentNode = NULL;
-   psnLinkNode * bestNode = NULL;
+   psonLinkNode * oldNode = NULL;
+   psonLinkNode * currentNode = NULL;
+   psonLinkNode * bestNode = NULL;
    bool ok;
 
    /* 
@@ -270,10 +270,10 @@ psnFreeBufferNode * FindBuffer( psnMemAlloc     * pAlloc,
     * reallocating arrays...).[N is BEST_FIT_MAX_LOOP, a define just in
     * case the compiler can optimize the loop].
     */
-   ok = psnLinkedListPeakFirst( &pAlloc->freeList, &oldNode );
+   ok = psonLinkedListPeakFirst( &pAlloc->freeList, &oldNode );
    if ( ! ok ) goto error_exit;
 
-   numBlocks = ((psnFreeBufferNode*)oldNode)->numBuffers;
+   numBlocks = ((psonFreeBufferNode*)oldNode)->numBuffers;
    if ( numBlocks == requestedBlocks ) {
       /* Special case - perfect match */
       return (void*) oldNode;
@@ -286,14 +286,14 @@ psnFreeBufferNode * FindBuffer( psnMemAlloc     * pAlloc,
    }
    
    for ( i = 0; i < BEST_FIT_MAX_LOOP; ++i ) {
-      ok = psnLinkedListPeakNext( &pAlloc->freeList,
+      ok = psonLinkedListPeakNext( &pAlloc->freeList,
                                    oldNode,
                                    &currentNode );
       if ( ! ok ) {
          if ( bestNode == NULL ) goto error_exit;
          break;
       }
-      numBlocks = ((psnFreeBufferNode*)currentNode)->numBuffers;
+      numBlocks = ((psonFreeBufferNode*)currentNode)->numBuffers;
       if ( numBlocks == requestedBlocks ) {
          /* Special case - perfect match */
          return (void*) currentNode;
@@ -308,19 +308,19 @@ psnFreeBufferNode * FindBuffer( psnMemAlloc     * pAlloc,
    }
    
    while ( bestNode == NULL ) {
-      ok = psnLinkedListPeakNext( &pAlloc->freeList,
+      ok = psonLinkedListPeakNext( &pAlloc->freeList,
                                    oldNode,
                                    &currentNode );
       if ( ! ok ) goto error_exit;
 
-      numBlocks = ((psnFreeBufferNode*)currentNode)->numBuffers;
+      numBlocks = ((psonFreeBufferNode*)currentNode)->numBuffers;
       if ( numBlocks >= requestedBlocks ) {
          bestNode = currentNode;
       }
       oldNode = currentNode;
    }
    
-   return (psnFreeBufferNode*) bestNode;
+   return (psonFreeBufferNode*) bestNode;
    
  error_exit:
  
@@ -329,7 +329,7 @@ psnFreeBufferNode * FindBuffer( psnMemAlloc     * pAlloc,
     * versus a lack of a chunk big enough to accomodate the # of requested
     * blocks.
     */
-   pscSetError( pError, g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
+   psocSetError( pError, g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
 
    return NULL;
 }
@@ -339,16 +339,16 @@ psnFreeBufferNode * FindBuffer( psnMemAlloc     * pAlloc,
 /**
  * Allocates the blocks of shared memory we need.  
  */
-unsigned char * psnMallocBlocks( psnMemAlloc       * pAlloc,
-                                  psnAllocTypeEnum    allocType,
+unsigned char * psonMallocBlocks( psonMemAlloc       * pAlloc,
+                                  psonAllocTypeEnum    allocType,
                                   size_t               requestedBlocks,
-                                  psnSessionContext * pContext )
+                                  psonSessionContext * pContext )
 {
-   psnFreeBufferNode * pNode = NULL;
-   psnFreeBufferNode * pNewNode = NULL;
+   psonFreeBufferNode * pNode = NULL;
+   psonFreeBufferNode * pNewNode = NULL;
    size_t newNumBlocks = 0;
-   psnMemBitmap * pBitmap;
-   psnMemObjIdent * identifier;
+   psonMemBitmap * pBitmap;
+   psonMemObjIdent * identifier;
    bool ok;
    
    PSO_PRE_CONDITION( pContext != NULL );
@@ -356,64 +356,64 @@ unsigned char * psnMallocBlocks( psnMemAlloc       * pAlloc,
    PSO_PRE_CONDITION( requestedBlocks > 0 );
    PSO_INV_CONDITION( g_pBaseAddr != NULL );
 
-   ok = pscTryAcquireProcessLock( &pAlloc->memObj.lock, 
+   ok = psocTryAcquireProcessLock( &pAlloc->memObj.lock, 
                                    getpid(),
-                                   PSN_LOCK_TIMEOUT );
+                                   PSON_LOCK_TIMEOUT );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
-//BUG?      pscSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+//BUG?      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
 // engine busy vs not enough memory ... not the same thing!!!
       return NULL;
    }
    
-   GET_PTR( pBitmap, pAlloc->bitmapOffset, psnMemBitmap );
+   GET_PTR( pBitmap, pAlloc->bitmapOffset, psonMemBitmap );
    
    pNode = FindBuffer( pAlloc, requestedBlocks, &pContext->errorHandler );
    if ( pNode != NULL ) {
       newNumBlocks = pNode->numBuffers - requestedBlocks;
       if ( newNumBlocks == 0 ) {
          /* Remove the node from the list */
-         psnLinkedListRemoveItem( &pAlloc->freeList, &pNode->node );
+         psonLinkedListRemoveItem( &pAlloc->freeList, &pNode->node );
       }
       else {
-         pNewNode = (psnFreeBufferNode*)
-                    ((unsigned char*) pNode + (requestedBlocks << PSN_BLOCK_SHIFT));
+         pNewNode = (psonFreeBufferNode*)
+                    ((unsigned char*) pNode + (requestedBlocks << PSON_BLOCK_SHIFT));
          pNewNode->numBuffers = newNumBlocks;
-         psnLinkNodeInit( &pNewNode->node );
-         psnLinkedListReplaceItem( &pAlloc->freeList, 
+         psonLinkNodeInit( &pNewNode->node );
+         psonLinkedListReplaceItem( &pAlloc->freeList, 
                                     &pNode->node, 
                                     &pNewNode->node );
          
-         /* Reset the psnEndBlock struct */
-         psnEndBlockSet( SET_OFFSET(pNewNode), 
+         /* Reset the psonEndBlock struct */
+         psonEndBlockSet( SET_OFFSET(pNewNode), 
                           newNumBlocks, 
                           false,
-                          psnMemAllocLastBlock( pAlloc,
+                          psonMemAllocLastBlock( pAlloc,
                                                  SET_OFFSET(pNewNode),
                                                  newNumBlocks ) );
       }
       /* Set the first bytes to "allocated" and set the endBlock of the
        * newly allocated blocks.
        */
-      identifier = (psnMemObjIdent *) pNode;
-      *identifier = PSN_IDENT_ALLOCATED;
-      psnEndBlockSet( SET_OFFSET(pNode), 
+      identifier = (psonMemObjIdent *) pNode;
+      *identifier = PSON_IDENT_ALLOCATED;
+      psonEndBlockSet( SET_OFFSET(pNode), 
                        requestedBlocks, 
                        false,
-                       psnMemAllocLastBlock( pAlloc,
+                       psonMemAllocLastBlock( pAlloc,
                                               SET_OFFSET(pNode),
                                               requestedBlocks ) );
       
       pAlloc->totalAllocBlocks += requestedBlocks;   
       pAlloc->numMallocCalls++;
       pAlloc->numGroups++;
-      if ( allocType == PSN_ALLOC_API_OBJ ) pAlloc->numApiObjects++;
+      if ( allocType == PSON_ALLOC_API_OBJ ) pAlloc->numApiObjects++;
       
       /* Set the bitmap */
-      psnSetBufferAllocated( pBitmap, SET_OFFSET(pNode), 
-                              requestedBlocks << PSN_BLOCK_SHIFT );
+      psonSetBufferAllocated( pBitmap, SET_OFFSET(pNode), 
+                              requestedBlocks << PSON_BLOCK_SHIFT );
    }
-   pscReleaseProcessLock( &pAlloc->memObj.lock );
+   psocReleaseProcessLock( &pAlloc->memObj.lock );
 
    return (unsigned char *)pNode;
 }
@@ -422,51 +422,51 @@ unsigned char * psnMallocBlocks( psnMemAlloc       * pAlloc,
 
 /** Free ptr, the memory is returned to the pool. */
 
-void psnFreeBlocks( psnMemAlloc       * pAlloc,
-                     psnAllocTypeEnum    allocType,
+void psonFreeBlocks( psonMemAlloc       * pAlloc,
+                     psonAllocTypeEnum    allocType,
                      unsigned char      * ptr, 
                      size_t               numBlocks,
-                     psnSessionContext * pContext )
+                     psonSessionContext * pContext )
 {
-   psnFreeBufferNode * otherNode, * previousNode = NULL, * newNode = NULL;
+   psonFreeBufferNode * otherNode, * previousNode = NULL, * newNode = NULL;
    bool otherBufferisFree = false;
-   psnMemBitmap * pBitmap;
-   psnEndBlockGroup * endBlock;
+   psonMemBitmap * pBitmap;
+   psonEndBlockGroup * endBlock;
    bool isInLimbo;
-   psnMemObjIdent ident;
-   psnFreeBlock * pFreeHeader;
+   psonMemObjIdent ident;
+   psonFreeBlock * pFreeHeader;
    
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pAlloc   != NULL );
    PSO_PRE_CONDITION( ptr      != NULL );
    PSO_PRE_CONDITION( numBlocks > 0 );
 
-   if ( ! psnLock( &pAlloc->memObj, pContext ) ) {
+   if ( ! psonLock( &pAlloc->memObj, pContext ) ) {
       /* 
        * So we did not get the lock and still need to free the memory.
        * We can't put the blocks back but we can put them in "limbo".
        *
-       * Setting the field isInLimbo and PSN_IDENT_LIMBO
+       * Setting the field isInLimbo and PSON_IDENT_LIMBO
        * must be done after the memory barrier (to make sure they are the
        * last operations done on this piece of memory from the point of
        * view of other processes using the read barrier to access the
        * same data).
        */
-      pFreeHeader = (psnFreeBlock*) ptr;
-      endBlock = (psnEndBlockGroup *)
-         (ptr + (numBlocks << PSN_BLOCK_SHIFT) - PSN_ALLOCATION_UNIT);
+      pFreeHeader = (psonFreeBlock*) ptr;
+      endBlock = (psonEndBlockGroup *)
+         (ptr + (numBlocks << PSON_BLOCK_SHIFT) - PSON_ALLOCATION_UNIT);
 
       pFreeHeader->numBlocks = numBlocks;
       
-      pscWriteMemoryBarrier();
-      pFreeHeader->identifier = PSN_IDENT_LIMBO;
+      psocWriteMemoryBarrier();
+      pFreeHeader->identifier = PSON_IDENT_LIMBO;
       endBlock->isInLimbo = true;
 
       return;
    }
 
-   GET_PTR( pBitmap, pAlloc->bitmapOffset, psnMemBitmap );
-   newNode = (psnFreeBufferNode*)ptr;
+   GET_PTR( pBitmap, pAlloc->bitmapOffset, psonMemBitmap );
+   newNode = (psonFreeBufferNode*)ptr;
    newNode->numBuffers = numBlocks;
 
    /*
@@ -481,17 +481,17 @@ void psnFreeBlocks( psnMemAlloc       * pAlloc,
     * memory.
     */
    do {
-      endBlock = (psnEndBlockGroup*)((unsigned char*)newNode-PSN_ALLOCATION_UNIT);
+      endBlock = (psonEndBlockGroup*)((unsigned char*)newNode-PSON_ALLOCATION_UNIT);
       isInLimbo = endBlock->isInLimbo;
       
       /* 
        * Impose a load (read) memory barrier before reading the location
        * of the start of the page group, etc.
        */
-      pscReadMemoryBarrier();
+      psocReadMemoryBarrier();
 
-      GET_PTR( previousNode, endBlock->firstBlockOffset, psnFreeBufferNode );
-      otherBufferisFree = psnIsBufferFree( pBitmap, endBlock->firstBlockOffset );
+      GET_PTR( previousNode, endBlock->firstBlockOffset, psonFreeBufferNode );
+      otherBufferisFree = psonIsBufferFree( pBitmap, endBlock->firstBlockOffset );
 
       if ( isInLimbo ) {
          previousNode->numBuffers = newNode->numBuffers + endBlock->numBlocks;
@@ -510,7 +510,7 @@ void psnFreeBlocks( psnMemAlloc       * pAlloc,
           * consolidated group).
           */
          previousNode->numBuffers += newNode->numBuffers;
-         psnLinkedListRemoveItem( &pAlloc->freeList, 
+         psonLinkedListRemoveItem( &pAlloc->freeList, 
                                    &previousNode->node );
          newNode = previousNode;
       }
@@ -523,26 +523,26 @@ void psnFreeBlocks( psnMemAlloc       * pAlloc,
     * Things we have to watchout for:
     *   - not going past the end of the shared memory...
     *   - if the group of block is allocated, test the first few bytes for
-    *     the PSN_IDENT_LIMBO identifier.
+    *     the PSON_IDENT_LIMBO identifier.
     *
     * We use a while loop to test if the current group would not be the last
     * group before doing any data processing beyond the shared memory boundary.
     */
 
-   otherNode = (psnFreeBufferNode*)
-      ((unsigned char*)newNode + (newNode->numBuffers << PSN_BLOCK_SHIFT) );
-   pFreeHeader = (psnFreeBlock*) otherNode;   
+   otherNode = (psonFreeBufferNode*)
+      ((unsigned char*)newNode + (newNode->numBuffers << PSON_BLOCK_SHIFT) );
+   pFreeHeader = (psonFreeBlock*) otherNode;   
    /* 
     * At this point enBlock is set to the end of the current buffer, not to
     * the end of the next one (otherNode) we are looking at.
     */
-   endBlock = (psnEndBlockGroup*)((unsigned char*)otherNode-PSN_ALLOCATION_UNIT);
+   endBlock = (psonEndBlockGroup*)((unsigned char*)otherNode-PSON_ALLOCATION_UNIT);
       
    while ( ! endBlock->lastBlock ) {
-      otherBufferisFree = psnIsBufferFree( pBitmap, SET_OFFSET(otherNode) );
+      otherBufferisFree = psonIsBufferFree( pBitmap, SET_OFFSET(otherNode) );
       if ( otherBufferisFree ) {
          newNode->numBuffers += otherNode->numBuffers;
-         psnLinkedListRemoveItem( &pAlloc->freeList, 
+         psonLinkedListRemoveItem( &pAlloc->freeList, 
                                    &otherNode->node );
       }
       else {
@@ -552,9 +552,9 @@ void psnFreeBlocks( psnMemAlloc       * pAlloc,
           * Impose a load (read) memory barrier before reading the number
           * of blocks  in this group, etc.
           */
-         pscReadMemoryBarrier();
+         psocReadMemoryBarrier();
          
-         if ( ident == PSN_IDENT_LIMBO ) {
+         if ( ident == PSON_IDENT_LIMBO ) {
             newNode->numBuffers += pFreeHeader->numBlocks;
          }
          else {
@@ -562,47 +562,47 @@ void psnFreeBlocks( psnMemAlloc       * pAlloc,
          }
       }
 
-      otherNode = (psnFreeBufferNode*)
-         ((unsigned char*)newNode + (newNode->numBuffers << PSN_BLOCK_SHIFT) );
-      pFreeHeader = (psnFreeBlock*) otherNode;   
+      otherNode = (psonFreeBufferNode*)
+         ((unsigned char*)newNode + (newNode->numBuffers << PSON_BLOCK_SHIFT) );
+      pFreeHeader = (psonFreeBlock*) otherNode;   
       /* 
        * At this point enBlock is set to the end of the current consolidated
        * buffer, not to the end of the next one (otherNode) we'll be looking
        * at in the next iteration.
        */
-      endBlock = (psnEndBlockGroup*)((unsigned char*)otherNode-PSN_ALLOCATION_UNIT);
+      endBlock = (psonEndBlockGroup*)((unsigned char*)otherNode-PSON_ALLOCATION_UNIT);
    }
    /*
     * All consolidation done. Complete the job by putting the group in the
     * free list and setting the bitmap.
     */
-   psnLinkNodeInit( &newNode->node );
-   psnLinkedListPutLast( &pAlloc->freeList, &newNode->node );
+   psonLinkNodeInit( &newNode->node );
+   psonLinkedListPutLast( &pAlloc->freeList, &newNode->node );
                              
    pAlloc->totalAllocBlocks -= numBlocks;   
    pAlloc->numFreeCalls++;
    pAlloc->numGroups--;
-   if ( allocType == PSN_ALLOC_API_OBJ ) pAlloc->numApiObjects--;
+   if ( allocType == PSON_ALLOC_API_OBJ ) pAlloc->numApiObjects--;
 
    /* Set the bitmap */
-   psnSetBufferFree( pBitmap, SET_OFFSET(newNode), newNode->numBuffers << PSN_BLOCK_SHIFT );
+   psonSetBufferFree( pBitmap, SET_OFFSET(newNode), newNode->numBuffers << PSON_BLOCK_SHIFT );
 
-   psnEndBlockSet( SET_OFFSET(newNode), 
+   psonEndBlockSet( SET_OFFSET(newNode), 
                     newNode->numBuffers, 
                     false, /* limbo flag */
-                    psnMemAllocLastBlock( pAlloc,
+                    psonMemAllocLastBlock( pAlloc,
                                            SET_OFFSET(newNode),
                                            newNode->numBuffers ));
    
-   psnUnlock( &pAlloc->memObj, pContext );
+   psonUnlock( &pAlloc->memObj, pContext );
 
    return;
 }
   
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psnMemAllocClose( psnMemAlloc       * pAlloc,
-                        psnSessionContext * pContext )
+void psonMemAllocClose( psonMemAlloc       * pAlloc,
+                        psonSessionContext * pContext )
 {
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pAlloc   != NULL );
@@ -615,50 +615,50 @@ void psnMemAllocClose( psnMemAlloc       * pAlloc,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psnMemAllocStats( psnMemAlloc       * pAlloc,
+bool psonMemAllocStats( psonMemAlloc       * pAlloc,
                         psoInfo            * pInfo,
-                        psnSessionContext * pContext )
+                        psonSessionContext * pContext )
 {
    size_t numBlocks;
-   psnLinkNode *oldNode = NULL;
-   psnLinkNode *currentNode = NULL;
+   psonLinkNode *oldNode = NULL;
+   psonLinkNode *currentNode = NULL;
    bool ok;
    
    PSO_PRE_CONDITION( pAlloc   != NULL );
    PSO_PRE_CONDITION( pInfo    != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
 
-   if ( psnLock( &pAlloc->memObj, pContext ) ) {
+   if ( psonLock( &pAlloc->memObj, pContext ) ) {
 
       pInfo->totalSizeInBytes     = pAlloc->totalLength;
-      pInfo->allocatedSizeInBytes = pAlloc->totalAllocBlocks << PSN_BLOCK_SHIFT;
+      pInfo->allocatedSizeInBytes = pAlloc->totalAllocBlocks << PSON_BLOCK_SHIFT;
       pInfo->numObjects           = pAlloc->numApiObjects;
       pInfo->numGroups            = pAlloc->numGroups;
       pInfo->numMallocs           = pAlloc->numMallocCalls;
       pInfo->numFrees             = pAlloc->numFreeCalls;
       pInfo->largestFreeInBytes   = 0;
       
-      ok = psnLinkedListPeakFirst( &pAlloc->freeList,
+      ok = psonLinkedListPeakFirst( &pAlloc->freeList,
                                     &currentNode );
       while ( ok ) {
-         numBlocks = ((psnFreeBufferNode*)currentNode)->numBuffers;
+         numBlocks = ((psonFreeBufferNode*)currentNode)->numBuffers;
          if ( numBlocks > pInfo->largestFreeInBytes ) {
             pInfo->largestFreeInBytes = numBlocks;
          }
          
          oldNode = currentNode;
-         ok = psnLinkedListPeakNext( &pAlloc->freeList,
+         ok = psonLinkedListPeakNext( &pAlloc->freeList,
                                       oldNode,
                                       &currentNode );
       }
-      pInfo->largestFreeInBytes = pInfo->largestFreeInBytes << PSN_BLOCK_SHIFT;
+      pInfo->largestFreeInBytes = pInfo->largestFreeInBytes << PSON_BLOCK_SHIFT;
       
-      psnUnlock( &pAlloc->memObj, pContext );
+      psonUnlock( &pAlloc->memObj, pContext );
 
       return true;
    }
 
-   pscSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_ENGINE_BUSY );
+   psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_ENGINE_BUSY );
    return false;
 }
 

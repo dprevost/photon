@@ -29,7 +29,7 @@
 
 #define MEM_SIZE (1024)
 
-pscErrorHandler g_info;
+psocErrorHandler g_info;
 unsigned char    g_dum[MEM_SIZE];
 
 void InitMem()
@@ -44,7 +44,7 @@ struct dummyStruct
 {
    int dummy1;
    char dummy2[7];
-   psnLinkNode node;
+   psonLinkNode node;
    int isInUse;
    char dummy3[3];
 };
@@ -53,14 +53,14 @@ typedef struct dummyStruct dummyStruct;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int TestList( psnLinkedList* pList )
+int TestList( psonLinkedList* pList )
 {
    size_t testSize = pList->currentSize;
-   psnLinkNode* pItem = (psnLinkNode*) &pList->head;
+   psonLinkNode* pItem = (psonLinkNode*) &pList->head;
 
    /* Check the chain going forward. */ 
    while ( testSize > 0 ) {
-      GET_PTR( pItem, pItem->nextOffset, psnLinkNode );
+      GET_PTR( pItem, pItem->nextOffset, psonLinkNode );
       if ( pItem == &pList->head ) {
          fprintf( stderr, "Error 1\n" );
          return -1;
@@ -68,7 +68,7 @@ int TestList( psnLinkedList* pList )
       
       testSize--;
    }
-   GET_PTR( pItem, pItem->nextOffset, psnLinkNode );
+   GET_PTR( pItem, pItem->nextOffset, psonLinkNode );
    if ( pItem != &pList->head ) {
       fprintf( stderr, "Error 2\n" );
       return -2;
@@ -76,17 +76,17 @@ int TestList( psnLinkedList* pList )
 
    /* Check the chain going backward. */ 
    testSize = pList->currentSize;
-   pItem =  (psnLinkNode*) &pList->head; 
+   pItem =  (psonLinkNode*) &pList->head; 
 
    while ( testSize > 0 ) {
-      GET_PTR( pItem, pItem->previousOffset, psnLinkNode );
+      GET_PTR( pItem, pItem->previousOffset, psonLinkNode );
       if ( pItem == &pList->head ) {
          fprintf( stderr, "Error 3\n" );
          return -3;
       }
       testSize--;
    }
-   GET_PTR( pItem, pItem->previousOffset, psnLinkNode );
+   GET_PTR( pItem, pItem->previousOffset, psonLinkNode );
    if ( pItem != &pList->head ) {
       fprintf( stderr, "Error 4\n" );
       return -4;
@@ -118,18 +118,18 @@ void mysrand(unsigned seed) {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void DumpList( psnLinkedList* pList )
+void DumpList( psonLinkedList* pList )
 {
    size_t testSize = pList->currentSize;
-   psnLinkNode* pItem = &pList->head;
+   psonLinkNode* pItem = &pList->head;
 
    while ( testSize > 0 ) {
-      GET_PTR( pItem, pItem->nextOffset, psnLinkNode );
+      GET_PTR( pItem, pItem->nextOffset, psonLinkNode );
       fprintf( stderr, PSO_SIZE_T_FORMAT" = %p %p %p %p \n",
                testSize,
                pItem ,
-               GET_PTR_FAST(pItem->nextOffset,psnLinkNode ),
-               GET_PTR_FAST(pItem->previousOffset,psnLinkNode ),
+               GET_PTR_FAST(pItem->nextOffset,psonLinkNode ),
+               GET_PTR_FAST(pItem->previousOffset,psonLinkNode ),
                &pList->head );
       testSize--;
    }

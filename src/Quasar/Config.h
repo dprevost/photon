@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSW_CONFIG_H
-#define VDSW_CONFIG_H
+#ifndef PSOQ_CONFIG_H
+#define PSOQ_CONFIG_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -32,7 +32,7 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * \defgroup vdswConfigFile The config file module
+ * \defgroup psoqConfigFile The config file module
  *
  * Reads the config file needed to start vdsf.
  *
@@ -87,10 +87,10 @@ struct ConfigParams
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Read the configuration file from disk. */
-bool vdswReadConfig( const char          * cfgname,
+bool psoqReadConfig( const char          * cfgname,
                      struct ConfigParams * pConfig,
                      int                   debug,
-                     pscErrorHandler    * pError  );
+                     psocErrorHandler    * pError  );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -100,5 +100,5 @@ bool vdswReadConfig( const char          * cfgname,
 
 END_C_DECLS
 
-#endif /* VDSW_CONFIG_H */
+#endif /* PSOQ_CONFIG_H */
 

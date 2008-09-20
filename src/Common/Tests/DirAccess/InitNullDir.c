@@ -26,9 +26,9 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   pscDirIterator* iterator = NULL;
+   psocDirIterator* iterator = NULL;
 
-   pscInitDir( iterator );
+   psocInitDir( iterator );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

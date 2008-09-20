@@ -23,28 +23,28 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnFolder * pFolder;
-   psnSessionContext context;
+   psonFolder * pFolder;
+   psonSessionContext context;
    bool ok;
-   psnFolderItem item;
-   psnTxStatus status;
+   psonFolderItem item;
+   psonTxStatus status;
    
    pFolder = initFolderTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderGetFirst( pFolder,
+   ok = psonFolderGetFirst( pFolder,
                             &item,
                             &context );
    if ( ok == true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pscGetLastError( &context.errorHandler ) != PSO_IS_EMPTY ) {
+   if ( psocGetLastError( &context.errorHandler ) != PSO_IS_EMPTY ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    

@@ -23,15 +23,15 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnMap * pHashMap;
-   psnSessionContext context;
+   psonMap * pHashMap;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus status;
+   psonTxStatus status;
    char * key1  = "my key1";
    char * key2  = "my key2";
    char * data1 = "my data1";
    char * data2 = "my data2";
-   psnHashMapItem item;
+   psonHashMapItem item;
    char * ptr1, * ptr2;
    psoObjectDefinition def = { 
       PSO_FAST_MAP, 
@@ -42,16 +42,16 @@ int main()
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnMapInit( pHashMap, 
+   ok = psonMapInit( pHashMap, 
                      0, 1, 0, &status, 4, 
                      "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnMapInsert( pHashMap,
+   ok = psonMapInsert( pHashMap,
                        (const void *) key1,
                        7,
                        (const void *) data1,
@@ -60,7 +60,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnMapInsert( pHashMap,
+   ok = psonMapInsert( pHashMap,
                        (const void *) key2,
                        7,
                        (const void *) data2,
@@ -69,7 +69,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnMapGetFirst( pHashMap,
+   ok = psonMapGetFirst( pHashMap,
                          &item,
                          7,
                          20,
@@ -79,7 +79,7 @@ int main()
    }
    GET_PTR( ptr1, item.pHashItem->dataOffset, char );
 
-   ok = psnMapGetNext( pHashMap,
+   ok = psonMapGetNext( pHashMap,
                         &item,
                         7,
                         20,

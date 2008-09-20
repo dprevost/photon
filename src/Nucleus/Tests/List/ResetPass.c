@@ -24,31 +24,31 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnLinkedList list;
-   psnLinkNode* pNode = NULL;
+   psonLinkedList list;
+   psonLinkNode* pNode = NULL;
    bool ok;
-   psnSessionContext context;
+   psonSessionContext context;
   
    initTest( expectedToPass, &context );
    InitMem();
    
-   psnLinkedListInit( &list );
+   psonLinkedListInit( &list );
    
-   psnLinkedListReset( &list );
+   psonLinkedListReset( &list );
 
-   if ( list.initialized != PSN_LIST_SIGNATURE ) {
+   if ( list.initialized != PSON_LIST_SIGNATURE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( list.currentSize != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnLinkedListGetFirst( &list, &pNode );
+   ok = psonLinkedListGetFirst( &list, &pNode );
    if ( ok ) { /* The list is not empty after a reset... problem! */
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnLinkedListFini( &list );
+   psonLinkedListFini( &list );
 
    return 0;
 }

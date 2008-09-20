@@ -25,18 +25,18 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnSessionContext context;
-   psnHash * pOldHash, * pNewHash;
+   psonSessionContext context;
+   psonHash * pOldHash, * pNewHash;
    enum psoErrors errcode;
    char* key1 = "My Key 1";
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
-   psnHashItem* pNewItem;
+   psonHashItem* pNewItem;
    
    initHashCopyTest( expectedToPass, &pOldHash, &pNewHash, true, &context );
    
-   errcode = psnHashInsert( pOldHash,
+   errcode = psonHashInsert( pOldHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data1,
@@ -47,7 +47,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = psnHashInsert( pOldHash,
+   errcode = psonHashInsert( pOldHash,
                              (unsigned char*)key2,
                              strlen(key2),
                              data2,
@@ -58,7 +58,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   errcode = psnHashCopy( NULL,
+   errcode = psonHashCopy( NULL,
                            pNewHash,
                            &context );
 

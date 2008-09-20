@@ -23,14 +23,14 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnFolder* pFolder;
-   psnSessionContext context;
+   psonFolder* pFolder;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus status;
-   psnFolderItem folderItem;
-   psnObjectDescriptor * pDescriptor;
-   psnTxStatus * txItemStatus;
-   psnTreeNode * pNode;
+   psonTxStatus status;
+   psonFolderItem folderItem;
+   psonObjectDescriptor * pDescriptor;
+   psonTxStatus * txItemStatus;
+   psonTreeNode * pNode;
    psoObjectDefinition mapDef = { 
       PSO_FAST_MAP, 
       1, 
@@ -40,14 +40,14 @@ int main()
 
    pFolder = initFolderTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderInsertObject( pFolder,
+   ok = psonFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -59,7 +59,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderEditObject( pFolder,
+   ok = psonFolderEditObject( pFolder,
                               "test2",
                               5,
                               PSO_FAST_MAP,
@@ -68,13 +68,13 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, psnObjectDescriptor );
+   GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, psonObjectDescriptor );
    if ( memcmp( pDescriptor->originalName, 
                 "Test2", 5*sizeof(char) ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   GET_PTR( pNode, pDescriptor->nodeOffset, psnTreeNode);
-   GET_PTR( txItemStatus, pNode->txStatusOffset, psnTxStatus );
+   GET_PTR( pNode, pDescriptor->nodeOffset, psonTreeNode);
+   GET_PTR( txItemStatus, pNode->txStatusOffset, psonTxStatus );
    if ( txItemStatus->parentCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -82,7 +82,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnFolderEditObject( pFolder,
+   ok = psonFolderEditObject( pFolder,
                               "test3",
                               5,
                               PSO_FAST_MAP,
@@ -91,11 +91,11 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pscGetLastError( &context.errorHandler ) != PSO_NO_SUCH_OBJECT ) {
+   if ( psocGetLastError( &context.errorHandler ) != PSO_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderInsertObject( pFolder,
+   ok = psonFolderInsertObject( pFolder,
                                 "test4",
                                 "Test4",
                                 5,
@@ -107,7 +107,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderEditObject( pFolder,
+   ok = psonFolderEditObject( pFolder,
                               "test4",
                               5,
                               PSO_FAST_MAP,
@@ -116,13 +116,13 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, psnObjectDescriptor );
+   GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, psonObjectDescriptor );
    if ( memcmp( pDescriptor->originalName, 
                 "Test4", 5*sizeof(char) ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   GET_PTR( pNode, pDescriptor->nodeOffset, psnTreeNode);
-   GET_PTR( txItemStatus, pNode->txStatusOffset, psnTxStatus );
+   GET_PTR( pNode, pDescriptor->nodeOffset, psonTreeNode);
+   GET_PTR( txItemStatus, pNode->txStatusOffset, psonTxStatus );
    if ( txItemStatus->parentCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -134,7 +134,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnFolderFini( pFolder, &context );
+   psonFolderFini( pFolder, &context );
    
    return 0;
 }

@@ -22,7 +22,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswLogMsgInit( vdswLogMsg * pLog,
+int psoqLogMsgInit( psoqLogMsg * pLog,
                     const char * progName )
 {
    int len = strlen( progName );
@@ -44,7 +44,7 @@ int vdswLogMsgInit( vdswLogMsg * pLog,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswLogMsgFini( vdswLogMsg * pLog )
+void psoqLogMsgFini( psoqLogMsg * pLog )
 {
    PSO_PRE_CONDITION( pLog != NULL );
 
@@ -65,7 +65,7 @@ void vdswLogMsgFini( vdswLogMsg * pLog )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-int vdswLogMsgInstall( vdswLogMsg * pLog,
+int psoqLogMsgInstall( psoqLogMsg * pLog,
                        const char * progName, 
                        const char * msgPathName,
                        int          numCategories )
@@ -148,7 +148,7 @@ int vdswLogMsgInstall( vdswLogMsg * pLog,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswSendMessage( vdswLogMsg         * pLog,
+void psoqSendMessage( psoqLogMsg         * pLog,
                       enum wdMsgSeverity   severity,
                       const char         * format, 
                       ... )
@@ -203,7 +203,7 @@ void vdswSendMessage( vdswLogMsg         * pLog,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswStartUsingLogger( vdswLogMsg * pLog )
+void psoqStartUsingLogger( psoqLogMsg * pLog )
 {
    PSO_PRE_CONDITION( pLog != NULL );
 
@@ -218,7 +218,7 @@ void vdswStartUsingLogger( vdswLogMsg * pLog )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-int vdswLogMsgUninstall( vdswLogMsg * pLog, const char * progName )
+int psoqLogMsgUninstall( psoqLogMsg * pLog, const char * progName )
 {
    HKEY hKey; 
    char buffer[MAX_PATH]; 

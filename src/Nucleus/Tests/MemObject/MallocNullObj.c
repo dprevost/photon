@@ -25,24 +25,24 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnMemObject* pObj;
+   psonMemObject* pObj;
    psoErrors errcode;
-   psnSessionContext context;
+   psonSessionContext context;
    unsigned char *buff[9];
    psotObjDummy  *pDummy;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    pObj = &pDummy->memObject;
    
-   errcode = psnMemObjectInit( pObj, 
-                                PSN_IDENT_ALLOCATOR,
+   errcode = psonMemObjectInit( pObj, 
+                                PSON_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   buff[0] = psnMalloc( NULL, PSN_BLOCK_SIZE, &context );
+   buff[0] = psonMalloc( NULL, PSON_BLOCK_SIZE, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -33,7 +33,7 @@
 <para><userinput>quasar -c|--config</userinput> <emphasis remap='I'>config_filename </emphasis><option>-t|--test</option></para>
 </refsect2>
 
-<refsect2 id='verifying_the_vds'><title>Verifying the shared memory (and exit):</title>
+<refsect2 id='verifying_the_mem'><title>Verifying the shared memory (and exit):</title>
 <para><userinput>quasar -c|--config</userinput> <emphasis remap='I'>config_filename </emphasis><option>-v|--verify</option></para>
 </refsect2>
 
@@ -49,8 +49,8 @@
 <!-- body begins here -->
 
 <refsect1 id='description'><title>DESCRIPTION</title>
-<para>quasar is the crash-recovery daemon (the watchdog) of the Photon 
-Framework. Currently, crash recovery is only done when this program is 
+<para>quasar is the shared-memory creator and keeper and the crash-recovery server
+of the Photon Framework. Currently, crash recovery is only done when this program is 
 started.</para>
 </refsect1>
 
@@ -86,7 +86,7 @@ This option is not available on Windows.</para>
   <varlistentry>
   <term><option>-v</option>, <option>--verify</option></term>
   <listitem>
-<para>Verify the content of the shared-memory file (VDS) without modifying it 
+<para>Verify the content of the shared-memory file without modifying it 
 and exit.</para>
   </listitem>
   </varlistentry>
@@ -94,20 +94,36 @@ and exit.</para>
 </refsect1>
 
 <refsect1 id='configuration'><title>CONFIGURATION</title>
-<para>The syntax of the configuration file is very simple, pairs of keys and values.
-Lines starting with # are comments.</para>
+<para>The configuration file is a simple XML file with tags, values and 
+attributes as explained below.</para>
 <variablelist remap='TP'>
   <varlistentry>
-  <term><emphasis remap='B'>VDSLocation</emphasis></term>
+  <term><emphasis remap='B'>mem_location</emphasis></term>
   <listitem>
-<para>The path of the directory where the watchdog will find the shared-memory file
+<para>The path of the directory where the server will find the shared-memory file
 and auxiliary files (these files will be created if they do not exist).</para>
+<para> Example: &lt;mem_location&gt;/tmp/photon&lt;/mem_location&gt;</para>
   </listitem>
   </varlistentry>
   <varlistentry>
-  <term><emphasis remap='B'>MemorySize</emphasis></term>
+  <term><emphasis remap='B'>mem_size</emphasis></term>
   <listitem>
-<para>The total size of the shared memory in units of kiloBytes.</para>
+<para>The total size of the shared memory. This size canbe expressed in multiple
+ units, kbytes ("kb"), megabytes ("mb") or gigabytes ("gb").  
+ For example a shared memory of 10 Megabytes can either be written as </para>
+ <para>
+       &lt;mem_size size="10240" units="kb" /&gt;
+ </para>
+<para>     or </para>
+<para>
+       &lt;mem_size size="10" units="mb" /&gt;.
+</para>
+<para>
+     On many modern systems, only the actual pages in use will
+     be loaded - therefore this parameter can be quite large 
+     (you'll need the space on disk however - in fact twice as
+     large to accomodate a backup of the memory file). 
+</para>
   </listitem>
   </varlistentry>
   <varlistentry>

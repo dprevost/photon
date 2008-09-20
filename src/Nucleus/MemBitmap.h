@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_MEM_BITMAP_H
-#define PSN_MEM_BITMAP_H
+#ifndef PSON_MEM_BITMAP_H
+#define PSON_MEM_BITMAP_H
 
 #include "Nucleus/Engine.h"
 
@@ -26,7 +26,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psnMemBitmap
+struct psonMemBitmap
 {
    size_t lengthInBits;
    
@@ -39,38 +39,38 @@ struct psnMemBitmap
    
 };
 
-typedef struct psnMemBitmap psnMemBitmap;
+typedef struct psonMemBitmap psonMemBitmap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Initialize the psnMemBitmap struct. 
+ * Initialize the psonMemBitmap struct. 
  */
 PHOTON_ENGINE_EXPORT
-void psnMemBitmapInit( psnMemBitmap * pBitmap,
+void psonMemBitmapInit( psonMemBitmap * pBitmap,
                         ptrdiff_t       offset,
                         size_t          totalLength,
                         size_t          allocationUnit );
 
 PHOTON_ENGINE_EXPORT
-void psnMemBitmapFini( psnMemBitmap * pBitmap );
+void psonMemBitmapFini( psonMemBitmap * pBitmap );
 
 static inline
-bool psnIsBufferFree( psnMemBitmap * pBitmap,
+bool psonIsBufferFree( psonMemBitmap * pBitmap,
                        ptrdiff_t       offset );
 
 static inline
-void psnSetBufferAllocated( psnMemBitmap * pBitmap,
+void psonSetBufferAllocated( psonMemBitmap * pBitmap,
                              ptrdiff_t       offset,
                              size_t          length );
 
 static inline
-void psnSetBufferFree( psnMemBitmap * pBitmap,
+void psonSetBufferFree( psonMemBitmap * pBitmap,
                         ptrdiff_t       offset,
                         size_t          length );
 
 static inline
-size_t psnGetBitmapLengthBytes( size_t length, size_t allocationUnit );
+size_t psonGetBitmapLengthBytes( size_t length, size_t allocationUnit );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -82,7 +82,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_MEM_BITMAP_H */
+#endif /* PSON_MEM_BITMAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

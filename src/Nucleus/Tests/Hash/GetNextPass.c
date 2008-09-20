@@ -24,25 +24,25 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnSessionContext context;
-   psnHash* pHash;
+   psonSessionContext context;
+   psonHash* pHash;
    enum psoErrors errcode;
    char* key1 = "My Key 1";
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
-   ptrdiff_t offsetFirstItem = PSN_NULL_OFFSET, offsetNextItem = PSN_NULL_OFFSET;
-   psnHashItem* pNewItem;
+   ptrdiff_t offsetFirstItem = PSON_NULL_OFFSET, offsetNextItem = PSON_NULL_OFFSET;
+   psonHashItem* pNewItem;
    bool found;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = psnHashInit( pHash, g_memObjOffset, 100, &context );
+   errcode = psonHashInit( pHash, g_memObjOffset, 100, &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = psnHashInsert( pHash,
+   errcode = psonHashInsert( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data1,
@@ -53,7 +53,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = psnHashInsert( pHash,
+   errcode = psonHashInsert( pHash,
                              (unsigned char*)key2,
                              strlen(key2),
                              data2,
@@ -64,23 +64,23 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   found = psnHashGetFirst( pHash, &offsetFirstItem );
+   found = psonHashGetFirst( pHash, &offsetFirstItem );
    if ( ! found ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   found = psnHashGetNext( pHash,
+   found = psonHashGetNext( pHash,
                             offsetFirstItem,
                             &offsetNextItem );
    if ( ! found ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( offsetNextItem == PSN_NULL_OFFSET ) {
+   if ( offsetNextItem == PSON_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* Only 2 items - should fail gracefully ! */
-   found = psnHashGetNext( pHash,
+   found = psonHashGetNext( pHash,
                             offsetNextItem,
                             &offsetNextItem );
    if ( found ) {

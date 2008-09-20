@@ -98,7 +98,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaHashMapRetrieve( objHandle,
+   errcode = psoaHashMapRetrieve( objHandle,
                                   key,
                                   6,
                                   NULL );

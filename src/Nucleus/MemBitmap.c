@@ -19,7 +19,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psnMemBitmapInit( psnMemBitmap* pBitmap,
+void psonMemBitmapInit( psonMemBitmap* pBitmap,
                         ptrdiff_t      baseAddressOffset,
                         size_t         totalLength,
                         size_t         allocGranularity )
@@ -27,7 +27,7 @@ void psnMemBitmapInit( psnMemBitmap* pBitmap,
    size_t len, i;
    
    PSO_PRE_CONDITION( pBitmap     != NULL );
-   PSO_PRE_CONDITION( baseAddressOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( baseAddressOffset != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( totalLength      > 0 );
    /* Testing that it is non-zero and a power of two */
    PSO_PRE_CONDITION( allocGranularity > 0  && 
@@ -45,7 +45,7 @@ void psnMemBitmapInit( psnMemBitmap* pBitmap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psnMemBitmapFini( psnMemBitmap* pBitmap )
+void psonMemBitmapFini( psonMemBitmap* pBitmap )
 {
    size_t len, i;
    PSO_PRE_CONDITION( pBitmap != NULL );
@@ -57,7 +57,7 @@ void psnMemBitmapFini( psnMemBitmap* pBitmap )
    
    pBitmap->lengthInBits = 0;
    pBitmap->allocGranularity = 0;
-   pBitmap->baseAddressOffset = PSN_NULL_OFFSET;
+   pBitmap->baseAddressOffset = PSON_NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

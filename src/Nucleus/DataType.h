@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_DATATYPE_H
-#define PSN_DATATYPE_H
+#ifndef PSON_DATATYPE_H
+#define PSON_DATATYPE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -34,7 +34,7 @@ BEGIN_C_DECLS
  * length is not a multiple of sizeof(void*), you might have an alignment
  * problem on some hardware.
  */
-struct psnFieldDef
+struct psonFieldDef
 {
    enum psoFieldType type;
 
@@ -44,10 +44,10 @@ struct psnFieldDef
    uint32_t length2;
 };
 
-typedef struct psnFieldDef psnFieldDef;
+typedef struct psonFieldDef psonFieldDef;
 
-#define PSN_GET_SCALE(ptr,i) (ptr[i].length2)
-#define PSN_GET_PRECISION(ptr,i) (ptr[i].length1)
+#define PSON_GET_SCALE(ptr,i) (ptr[i].length2)
+#define PSON_GET_PRECISION(ptr,i) (ptr[i].length1)
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -55,7 +55,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_DATATYPE_H */
+#endif /* PSON_DATATYPE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

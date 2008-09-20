@@ -24,31 +24,31 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnLinkedList list;
-   psnLinkNode node, node2;
-   psnSessionContext context;
+   psonLinkedList list;
+   psonLinkNode node, node2;
+   psonSessionContext context;
    int valid;
    
    initTest( expectedToPass, &context );
    InitMem();
 
-   psnLinkNodeInit( &node );
-   psnLinkNodeInit( &node2 );
-   psnLinkedListInit( &list );
+   psonLinkNodeInit( &node );
+   psonLinkNodeInit( &node2 );
+   psonLinkedListInit( &list );
    
-   psnLinkedListPutLast( &list, &node );
+   psonLinkedListPutLast( &list, &node );
    
-   valid = psnLinkedListIsValid( &list, &node );
+   valid = psonLinkedListIsValid( &list, &node );
    if ( ! valid ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   valid = psnLinkedListIsValid( &list, &node2 );
+   valid = psonLinkedListIsValid( &list, &node2 );
    if ( valid ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnLinkedListFini( &list );
+   psonLinkedListFini( &list );
 
    return 0;
 }

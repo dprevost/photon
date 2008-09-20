@@ -19,50 +19,50 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psnBlockGroupFini( psnBlockGroup * pGroup )
+void psonBlockGroupFini( psonBlockGroup * pGroup )
 {
    PSO_PRE_CONDITION( pGroup != NULL );
 
-   psnMemBitmapFini(  &pGroup->bitmap );
-   psnLinkedListFini( &pGroup->freeList );
-   psnLinkNodeFini(   &pGroup->node );
+   psonMemBitmapFini(  &pGroup->bitmap );
+   psonLinkedListFini( &pGroup->freeList );
+   psonLinkNodeFini(   &pGroup->node );
 
    pGroup->numBlocks = 0;
    pGroup->maxFreeBytes = 0;
    pGroup->freeBytes = 0;
-   pGroup->objType = PSN_IDENT_CLEAR;
+   pGroup->objType = PSON_IDENT_CLEAR;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
  * Note: no need to initialize the endBlock struct. It is set by the 
- * memory allocator when calling psnMallocBlocks().
+ * memory allocator when calling psonMallocBlocks().
  */
-void psnBlockGroupInit( psnBlockGroup  * pGroup,
+void psonBlockGroupInit( psonBlockGroup  * pGroup,
                          ptrdiff_t         firstBlockOffset,
                          size_t            numBlocks,
-                         psnMemObjIdent   objType )
+                         psonMemObjIdent   objType )
 {
    ptrdiff_t groupOffset;
    size_t currentLength;
-   psnFreeBufferNode * firstNode;
+   psonFreeBufferNode * firstNode;
    
    PSO_PRE_CONDITION( pGroup != NULL );
-   PSO_PRE_CONDITION( firstBlockOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( firstBlockOffset != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( numBlocks > 0 );
-   PSO_PRE_CONDITION( objType > PSN_IDENT_FIRST && objType < PSN_IDENT_LAST );
+   PSO_PRE_CONDITION( objType > PSON_IDENT_FIRST && objType < PSON_IDENT_LAST );
 
    pGroup->numBlocks = numBlocks;
-   pGroup->objType = PSN_IDENT_PAGE_GROUP & objType;
+   pGroup->objType = PSON_IDENT_PAGE_GROUP & objType;
    
-   psnLinkNodeInit( &pGroup->node );
-   psnLinkedListInit( &pGroup->freeList );
+   psonLinkNodeInit( &pGroup->node );
+   psonLinkedListInit( &pGroup->freeList );
    
-   psnMemBitmapInit( &pGroup->bitmap,
+   psonMemBitmapInit( &pGroup->bitmap,
                       firstBlockOffset,
-                      numBlocks << PSN_BLOCK_SHIFT, 
-                      PSN_ALLOCATION_UNIT );
+                      numBlocks << PSON_BLOCK_SHIFT, 
+                      PSON_ALLOCATION_UNIT );
    
    /* Is the blockGroup struct at the beginning of the group ? */
    groupOffset = SET_OFFSET(pGroup);
@@ -84,33 +84,33 @@ void psnBlockGroupInit( psnBlockGroup  * pGroup,
       currentLength = groupOffset-firstBlockOffset;
    }
 
-   currentLength += offsetof(psnBlockGroup,bitmap) +
-                    offsetof(psnMemBitmap,bitmap) +
-                    psnGetBitmapLengthBytes( numBlocks << PSN_BLOCK_SHIFT, 
-                                              PSN_ALLOCATION_UNIT );
-   currentLength = ((currentLength-1)/PSN_ALLOCATION_UNIT+1)*PSN_ALLOCATION_UNIT;
+   currentLength += offsetof(psonBlockGroup,bitmap) +
+                    offsetof(psonMemBitmap,bitmap) +
+                    psonGetBitmapLengthBytes( numBlocks << PSON_BLOCK_SHIFT, 
+                                              PSON_ALLOCATION_UNIT );
+   currentLength = ((currentLength-1)/PSON_ALLOCATION_UNIT+1)*PSON_ALLOCATION_UNIT;
    
-   pGroup->maxFreeBytes = (numBlocks << PSN_BLOCK_SHIFT) - currentLength;
+   pGroup->maxFreeBytes = (numBlocks << PSON_BLOCK_SHIFT) - currentLength;
    
-   /* remove the space required by the psnEndBlockGroup struct */
-   pGroup->maxFreeBytes -= PSN_ALLOCATION_UNIT;
+   /* remove the space required by the psonEndBlockGroup struct */
+   pGroup->maxFreeBytes -= PSON_ALLOCATION_UNIT;
    pGroup->freeBytes = pGroup->maxFreeBytes;
    
    /* 
     * So we have one free buffer, starting at offset "currentLength"
     * + firstBlockOffset with length "maxFreeBytes". Insert it in our freeList.
     */
-   GET_PTR( firstNode, firstBlockOffset+currentLength, psnFreeBufferNode );
-   psnLinkNodeInit( &firstNode->node );
-   firstNode->numBuffers = pGroup->maxFreeBytes/PSN_ALLOCATION_UNIT;
+   GET_PTR( firstNode, firstBlockOffset+currentLength, psonFreeBufferNode );
+   psonLinkNodeInit( &firstNode->node );
+   firstNode->numBuffers = pGroup->maxFreeBytes/PSON_ALLOCATION_UNIT;
 
-   psnLinkedListPutFirst( &pGroup->freeList, &firstNode->node );
+   psonLinkedListPutFirst( &pGroup->freeList, &firstNode->node );
 
    /* And set the bitmap */
-   psnSetBufferAllocated( &pGroup->bitmap, firstBlockOffset, currentLength );
-   psnSetBufferAllocated( &pGroup->bitmap, 
-                           psnEndBlockOffset(firstBlockOffset, numBlocks), 
-                           PSN_ALLOCATION_UNIT );
+   psonSetBufferAllocated( &pGroup->bitmap, firstBlockOffset, currentLength );
+   psonSetBufferAllocated( &pGroup->bitmap, 
+                           psonEndBlockOffset(firstBlockOffset, numBlocks), 
+                           PSON_ALLOCATION_UNIT );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

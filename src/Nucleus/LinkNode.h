@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_LINK_NODE_H
-#define PSN_LINK_NODE_H
+#ifndef PSON_LINK_NODE_H
+#define PSON_LINK_NODE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -29,7 +29,7 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * A psnLinkNode is the unit element of our linked lists. This might
+ * A psonLinkNode is the unit element of our linked lists. This might
  * seems like a trivial struct but since we use linked lists in many 
  * places, using a struct for the previous and next element simplify 
  * some of the code. Also, do not forget that our linked lists do 
@@ -40,63 +40,63 @@ BEGIN_C_DECLS
  * 64bits machines - this type of error/bug is difficult to find, better
  * not make it in the first place...).
  */
-struct psnLinkNode
+struct psonLinkNode
 {
    ptrdiff_t nextOffset;
    ptrdiff_t previousOffset;
 };
 
-typedef struct	psnLinkNode psnLinkNode;
+typedef struct	psonLinkNode psonLinkNode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * A "specialized" version of psnLinkNode. It is used in many places
+ * A "specialized" version of psonLinkNode. It is used in many places
  * and was put here to avoid circular dependencies...
  */
-struct psnFreeBufferNode
+struct psonFreeBufferNode
 {
    /* The linked node itself */
-   psnLinkNode node;
+   psonLinkNode node;
    
    /* The number of buffers associate with each member of the list. */
    size_t numBuffers;
    
 };
 
-typedef struct psnFreeBufferNode psnFreeBufferNode;
+typedef struct psonFreeBufferNode psonFreeBufferNode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** Initialize the elements of the psnLinkNode to PSN_NULL_OFFSET. */
+/** Initialize the elements of the psonLinkNode to PSON_NULL_OFFSET. */
 static inline
-void psnLinkNodeInit( psnLinkNode * pNode )
+void psonLinkNodeInit( psonLinkNode * pNode )
 {
    PSO_PRE_CONDITION( pNode != NULL );
    
-   pNode->nextOffset     = PSN_NULL_OFFSET;
-   pNode->previousOffset = PSN_NULL_OFFSET;
+   pNode->nextOffset     = PSON_NULL_OFFSET;
+   pNode->previousOffset = PSON_NULL_OFFSET;
 }
 
 static inline
-void psnLinkNodeFini( psnLinkNode * pNode )
+void psonLinkNodeFini( psonLinkNode * pNode )
 {
    PSO_PRE_CONDITION( pNode != NULL );
 
-   psnLinkNodeInit( pNode );
+   psonLinkNodeInit( pNode );
 }
 
-/** Test the values of the elements of the psnLinkNode.
- *  Return true if both elements are not the PSN_NULL_OFFSET
- *  and false if one or both are the PSN_NULL_OFFSET.
+/** Test the values of the elements of the psonLinkNode.
+ *  Return true if both elements are not the PSON_NULL_OFFSET
+ *  and false if one or both are the PSON_NULL_OFFSET.
  */
 static inline
-bool psnLinkNodeTest( psnLinkNode * pNode )
+bool psonLinkNodeTest( psonLinkNode * pNode )
 {
    PSO_PRE_CONDITION( pNode != NULL );
 
-   if ( pNode->nextOffset     == PSN_NULL_OFFSET || 
-        pNode->previousOffset == PSN_NULL_OFFSET ) {
+   if ( pNode->nextOffset     == PSON_NULL_OFFSET || 
+        pNode->previousOffset == PSON_NULL_OFFSET ) {
       return false;
    }
    return true;
@@ -108,6 +108,6 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_LINK_NODE_H */
+#endif /* PSON_LINK_NODE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

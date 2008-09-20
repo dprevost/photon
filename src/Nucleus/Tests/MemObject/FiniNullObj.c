@@ -27,12 +27,12 @@ int main()
 #if defined(USE_DBC)
    psoErrors errcode;
    psotObjDummy *pDummy;
-   psnSessionContext context;
+   psonSessionContext context;
    
    pDummy = initMemObjTest( expectedToPass, &context );
 
-   errcode = psnMemObjectInit( &pDummy->memObject,
-                                PSN_IDENT_ALLOCATOR,
+   errcode = psonMemObjectInit( &pDummy->memObject,
+                                PSON_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
    if ( errcode != PSO_OK ) {
@@ -40,7 +40,7 @@ int main()
    }
    
    /* Should crash at this point */
-   psnMemObjectFini( NULL, PSN_ALLOC_ANY, &context );
+   psonMemObjectFini( NULL, PSON_ALLOC_ANY, &context );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

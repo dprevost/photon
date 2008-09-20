@@ -24,13 +24,13 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnMap * pHashMap;
-   psnSessionContext context;
+   psonMap * pHashMap;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus status;
+   psonTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   psnHashItem * pItem;
+   psonHashItem * pItem;
    psoObjectDefinition def = { 
       PSO_FAST_MAP, 
       1, 
@@ -40,16 +40,16 @@ int main()
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnMapInit( pHashMap, 
+   ok = psonMapInit( pHashMap, 
                      0, 1, 0, &status, 4, 
                      "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnMapInsert( pHashMap,
+   ok = psonMapInsert( pHashMap,
                        (const void *) key,
                        6,
                        (const void *) data,
@@ -59,7 +59,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnMapGet( pHashMap,
+   ok = psonMapGet( pHashMap,
                     (const void *) key,
                     6,
                     &pItem,
@@ -69,7 +69,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnMapRelease( pHashMap,
+   ok = psonMapRelease( pHashMap,
                         NULL,
                         &context );
 

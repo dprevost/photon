@@ -24,11 +24,11 @@ const bool expectedToPass = true;
 
 int main()
 {
-   pscMemoryFile mem;
+   psocMemoryFile mem;
    
-   pscInitMemoryFile( &mem, 10, "MemFile.mem" );
+   psocInitMemoryFile( &mem, 10, "MemFile.mem" );
 
-   if ( mem.initialized != PSC_MEMFILE_SIGNATURE ) {
+   if ( mem.initialized != PSOC_MEMFILE_SIGNATURE ) {
       ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
    }
    
@@ -54,7 +54,7 @@ int main()
    }
 #endif
 
-   pscFiniMemoryFile( &mem );
+   psocFiniMemoryFile( &mem );
 
    return 0;
 }

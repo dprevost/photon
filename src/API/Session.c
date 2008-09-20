@@ -32,19 +32,19 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psaMapResetReader( void * map );
+void psoaMapResetReader( void * map );
 
 static inline
-void psaResetReaders( psaSession * pSession )
+void psoaResetReaders( psoaSession * pSession )
 {
-   psaReader * reader = NULL;
+   psoaReader * reader = NULL;
    
-   if ( psaListReadersPeakFirst( &pSession->listReaders, &reader ) ) {
+   if ( psoaListReadersPeakFirst( &pSession->listReaders, &reader ) ) {
       do {
-         if ( reader->type == PSA_MAP ) {
-            psaMapResetReader( reader->address );
+         if ( reader->type == PSOA_MAP ) {
+            psoaMapResetReader( reader->address );
          }
-      } while (psaListReadersPeakNext(&pSession->listReaders, reader, &reader) );
+      } while (psoaListReadersPeakNext(&pSession->listReaders, reader, &reader) );
    }
 }
 
@@ -57,36 +57,36 @@ void psaResetReaders( psaSession * pSession )
 int psoCommit( PSO_HANDLE sessionHandle )
 {
    int errcode = PSO_OK;
-   psaSession* pSession;
+   psoaSession* pSession;
 
-   pSession = (psaSession*) sessionHandle;
+   pSession = (psoaSession*) sessionHandle;
    if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( pSession->numberOfEdits > 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, 
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, 
          PSO_NOT_ALL_EDIT_ARE_CLOSED );
       return PSO_NOT_ALL_EDIT_ARE_CLOSED;
    }
    
-   if ( psaSessionLock( pSession ) ) {
+   if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         psnTxCommit( (psnTx*)pSession->context.pTransaction, 
+         psonTxCommit( (psonTx*)pSession->context.pTransaction, 
                             &pSession->context );
-         psaResetReaders( pSession );
+         psoaResetReaders( pSession );
       }
       else {
          errcode = PSO_SESSION_IS_TERMINATED;
       }
-      psaSessionUnlock( pSession );
+      psoaSessionUnlock( pSession );
    }
    else {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
    if ( errcode != PSO_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -99,41 +99,41 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
                      size_t                nameLengthInBytes,
                      psoObjectDefinition * pDefinition )
 {
-   psaSession* pSession;
+   psoaSession* pSession;
    int errcode = PSO_OK;
-   psnFolder * pTree;
+   psonFolder * pTree;
    bool ok = true;
    
-   pSession = (psaSession*) sessionHandle;
+   pSession = (psoaSession*) sessionHandle;
    if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
    
    if ( objectName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
       return PSO_INVALID_OBJECT_NAME;
    }
 
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
    
    if ( pDefinition == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
 
-   errcode = psaValidateDefinition( pDefinition );
+   errcode = psoaValidateDefinition( pDefinition );
    if ( errcode != PSO_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
       return errcode;
    }
    
-   if ( psaSessionLock( pSession ) ) {
+   if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psnFolder )
-         ok = psnTopFolderCreateObject( pTree,
+         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
+         ok = psonTopFolderCreateObject( pTree,
                                          objectName,
                                          nameLengthInBytes,
                                          pDefinition,
@@ -143,18 +143,18 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
       else {
          errcode = PSO_SESSION_IS_TERMINATED;
       }
-      psaSessionUnlock( pSession );
+      psoaSessionUnlock( pSession );
    }
    else {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
    if ( errcode != PSO_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = pscGetLastError( &pSession->context.errorHandler );
+      errcode = psocGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;
@@ -166,30 +166,30 @@ int psoDestroyObject( PSO_HANDLE   sessionHandle,
                       const char * objectName,
                       size_t       nameLengthInBytes )
 {
-   psaSession* pSession;
+   psoaSession* pSession;
    int errcode = PSO_OK;
-   psnFolder * pTree;
+   psonFolder * pTree;
    bool ok = true;
    
-   pSession = (psaSession*) sessionHandle;
+   pSession = (psoaSession*) sessionHandle;
    if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( objectName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
       return PSO_INVALID_OBJECT_NAME;
    }
    
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
    
-   if ( psaSessionLock( pSession ) ) {
+   if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psnFolder )
-         ok = psnTopFolderDestroyObject( pTree,
+         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
+         ok = psonTopFolderDestroyObject( pTree,
                                           objectName,
                                           nameLengthInBytes,
                                           &pSession->context );
@@ -198,18 +198,18 @@ int psoDestroyObject( PSO_HANDLE   sessionHandle,
       else {
          errcode = PSO_SESSION_IS_TERMINATED;
       }
-      psaSessionUnlock( pSession );
+      psoaSessionUnlock( pSession );
    }
    else {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
    if ( errcode != PSO_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    
    if ( ! ok ) {
-      errcode = pscGetLastError( &pSession->context.errorHandler );
+      errcode = psocGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;
@@ -221,23 +221,23 @@ int psoErrorMsg( PSO_HANDLE sessionHandle,
                  char *     message,
                  size_t     msgLengthInBytes )
 {
-   psaSession* pSession;
+   psoaSession* pSession;
    int rc = PSO_OK;
    size_t len;
    
-   pSession = (psaSession*) sessionHandle;
+   pSession = (psoaSession*) sessionHandle;
    if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( message == NULL ) return PSO_NULL_POINTER;
    
    if ( msgLengthInBytes < 32 ) return PSO_INVALID_LENGTH;
    
-   if ( psaSessionLock( pSession ) ) {
+   if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         if ( pscGetLastError( &pSession->context.errorHandler ) != 0 ) {
-            len = pscGetErrorMsg( &pSession->context.errorHandler,
+         if ( psocGetLastError( &pSession->context.errorHandler ) != 0 ) {
+            len = psocGetErrorMsg( &pSession->context.errorHandler,
                                    message, 
                                    msgLengthInBytes );
          }
@@ -248,7 +248,7 @@ int psoErrorMsg( PSO_HANDLE sessionHandle,
       else {
          rc = PSO_SESSION_IS_TERMINATED;
       }
-      psaSessionUnlock( pSession );
+      psoaSessionUnlock( pSession );
    }
    else {
       rc = PSO_SESSION_CANNOT_GET_LOCK;
@@ -261,17 +261,17 @@ int psoErrorMsg( PSO_HANDLE sessionHandle,
 
 int psoExitSession( PSO_HANDLE sessionHandle )
 {
-   psaSession * pSession;
-   psnSession * pCleanup;
+   psoaSession * pSession;
+   psonSession * pCleanup;
    bool ok;
    int errcode = 0;
    
-   pSession = (psaSession*) sessionHandle;
+   pSession = (psoaSession*) sessionHandle;
    if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
-   if ( psaProcessLock() ) {
+   if ( psoaProcessLock() ) {
       /*
        * if the exit process was called at the "same time" the session
        * might have been "removed" by the process object.
@@ -279,16 +279,16 @@ int psoExitSession( PSO_HANDLE sessionHandle )
       if ( ! pSession->terminated ) {
          /* ok we are still there */
          pCleanup = pSession->pCleanup;
-         errcode = psaCloseSession( pSession );
+         errcode = psoaCloseSession( pSession );
          
          /*
-          * psaCloseSession can be called by the api process object while
+          * psoaCloseSession can be called by the api process object while
           * it holds the lock to the vdesProcess object. And the next
           * call locks it as well. To avoid a recursive lock (leading to 
-          * a deadlock) we cannot include this call in psaCloseSession.
+          * a deadlock) we cannot include this call in psoaCloseSession.
           */
          if ( errcode == 0 ) {
-            ok = psnProcessRemoveSession( g_pProcessInstance->pCleanup, 
+            ok = psonProcessRemoveSession( g_pProcessInstance->pCleanup, 
                                            pCleanup, 
                                            &pSession->context );
             PSO_POST_CONDITION( ok == true || ok == false );
@@ -298,7 +298,7 @@ int psoExitSession( PSO_HANDLE sessionHandle )
          errcode = PSO_SESSION_IS_TERMINATED;
       }
       
-      psaProcessUnlock();
+      psoaProcessUnlock();
    }
    else {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
@@ -320,12 +320,12 @@ int psoExitSession( PSO_HANDLE sessionHandle )
        */
       pSession->type = 0;
       /* Reset the list to spot logic errors (illegal accesses) with DBC */
-      psaListReadersFini( &pSession->listReaders );
+      psoaListReadersFini( &pSession->listReaders );
       free( pSession );
    }
    
    if ( errcode != 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -338,43 +338,43 @@ int psoGetDefinition( PSO_HANDLE             sessionHandle,
                       size_t                 nameLengthInBytes,
                       psoObjectDefinition ** ppDefinition )
 {
-   psaSession* pSession;
+   psoaSession* pSession;
    int errcode = PSO_OK;
-   psnFolder * pTree;
-   psnFieldDef * pInternalDef;
+   psonFolder * pTree;
+   psonFieldDef * pInternalDef;
    psoObjectDefinition *pDefinition;
    bool ok = true;
    
-   pSession = (psaSession*) sessionHandle;
+   pSession = (psoaSession*) sessionHandle;
 
    if ( pSession == NULL ) return PSO_NULL_HANDLE;   
-   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
    
    if ( objectName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
       return PSO_INVALID_OBJECT_NAME;
    }
 
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
    
    if ( ppDefinition == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
 
    pDefinition = calloc( sizeof(psoObjectDefinition), 1 );
    if ( pDefinition == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
       return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
    
-   if ( psaSessionLock( pSession ) ) {
+   if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psnFolder )
-         ok = psnTopFolderGetDef( pTree, 
+         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
+         ok = psonTopFolderGetDef( pTree, 
                                    objectName,
                                    nameLengthInBytes,
                                    pDefinition,
@@ -386,7 +386,7 @@ int psoGetDefinition( PSO_HANDLE             sessionHandle,
                *ppDefinition = pDefinition;
             }
             else {
-               errcode = psaGetDefinition( pInternalDef,
+               errcode = psoaGetDefinition( pInternalDef,
                                             (uint16_t)pDefinition->numFields,
                                             ppDefinition );
                if ( errcode == 0 ) {
@@ -404,17 +404,17 @@ int psoGetDefinition( PSO_HANDLE             sessionHandle,
       else {
          errcode = PSO_SESSION_IS_TERMINATED;
       }
-      psaSessionUnlock( pSession );
+      psoaSessionUnlock( pSession );
    }
    else {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
    if ( errcode != PSO_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
-      errcode = pscGetLastError( &pSession->context.errorHandler );
+      errcode = psocGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;
@@ -425,27 +425,27 @@ int psoGetDefinition( PSO_HANDLE             sessionHandle,
 int psoGetInfo( PSO_HANDLE   sessionHandle,
                 psoInfo    * pInfo )
 {
-   psaSession* pSession;
+   psoaSession* pSession;
    int errcode = PSO_OK;
    bool ok = true;
-   psnMemAlloc * pAlloc;
-   struct psnMemoryHeader * pHead = g_pProcessInstance->pHeader;
+   psonMemAlloc * pAlloc;
+   struct psonMemoryHeader * pHead = g_pProcessInstance->pHeader;
    
-   pSession = (psaSession*) sessionHandle;
+   pSession = (psoaSession*) sessionHandle;
 
    if ( pSession == NULL ) return PSO_NULL_HANDLE;   
-   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
    
    if ( pInfo == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
    memset( pInfo, 0, sizeof(struct psoInfo) );
    
-   if ( psaSessionLock( pSession ) ) {
+   if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         GET_PTR( pAlloc, pSession->pHeader->allocatorOffset, psnMemAlloc )
-         ok = psnMemAllocStats( pAlloc, pInfo, &pSession->context );
+         GET_PTR( pAlloc, pSession->pHeader->allocatorOffset, psonMemAlloc )
+         ok = psonMemAllocStats( pAlloc, pInfo, &pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
          if ( ok ) {
             pInfo->memoryVersion = pHead->version;
@@ -462,17 +462,17 @@ int psoGetInfo( PSO_HANDLE   sessionHandle,
       else {
          errcode = PSO_SESSION_IS_TERMINATED;
       }
-      psaSessionUnlock( pSession );
+      psoaSessionUnlock( pSession );
    }
    else {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
    if ( errcode != PSO_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
-      errcode = pscGetLastError( &pSession->context.errorHandler );
+      errcode = psocGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;
@@ -485,35 +485,35 @@ int psoGetStatus( PSO_HANDLE     sessionHandle,
                   size_t         nameLengthInBytes,
                   psoObjStatus * pStatus )
 {
-   psaSession* pSession;
+   psoaSession* pSession;
    int errcode = 0;
-   psnFolder * pTree;
+   psonFolder * pTree;
    bool ok = true;
    
-   pSession = (psaSession*) sessionHandle;
+   pSession = (psoaSession*) sessionHandle;
 
    if ( pSession == NULL ) return PSO_NULL_HANDLE;   
-   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
    
    if ( objectName == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
       return PSO_INVALID_OBJECT_NAME;
    }
 
    if ( nameLengthInBytes == 0 ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
    
    if ( pStatus == NULL ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
 
-   if ( psaSessionLock( pSession ) ) {
+   if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psnFolder )
-         ok = psnTopFolderGetStatus( pTree, 
+         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
+         ok = psonTopFolderGetStatus( pTree, 
                                       objectName,
                                       nameLengthInBytes,
                                       pStatus,
@@ -523,17 +523,17 @@ int psoGetStatus( PSO_HANDLE     sessionHandle,
       else {
          errcode = PSO_SESSION_IS_TERMINATED;
       }
-      psaSessionUnlock( pSession );
+      psoaSessionUnlock( pSession );
    }
    else {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
    if ( errcode != PSO_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
-      errcode = pscGetLastError( &pSession->context.errorHandler );
+      errcode = psocGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;
@@ -541,10 +541,10 @@ int psoGetStatus( PSO_HANDLE     sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoInitSession( PSO_HANDLE* sessionHandle )
+int psoInitSession( PSO_HANDLE * sessionHandle )
 {
    psoErrors errcode = PSO_OK;
-   psaSession* pSession = NULL;
+   psoaSession* pSession = NULL;
    void* ptr = NULL;
    bool ok;
    
@@ -554,15 +554,15 @@ int psoInitSession( PSO_HANDLE* sessionHandle )
 
    if ( g_pProcessInstance == NULL ) return PSO_PROCESS_NOT_INITIALIZED;
    
-   pSession = (psaSession*) malloc(sizeof(psaSession));
+   pSession = (psoaSession*) malloc(sizeof(psoaSession));
    if ( pSession == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
    
-   memset( pSession, 0, sizeof(psaSession) );
-   pSession->type = PSA_SESSION;
+   memset( pSession, 0, sizeof(psoaSession) );
+   pSession->type = PSOA_SESSION;
    pSession->context.pLogFile = NULL;
 
    pSession->context.pidLocker = getpid();
-   pscInitErrorHandler( &pSession->context.errorHandler );
+   psocInitErrorHandler( &pSession->context.errorHandler );
 
    /*
     * From this point we can use "goto error_handler" to recover
@@ -570,7 +570,7 @@ int psoInitSession( PSO_HANDLE* sessionHandle )
     */
    
    if ( g_protectionIsNeeded ) {
-      ok = pscInitThreadLock( &pSession->mutex );
+      ok = psocInitThreadLock( &pSession->mutex );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
          errcode = PSO_NOT_ENOUGH_RESOURCES;
@@ -586,14 +586,14 @@ int psoInitSession( PSO_HANDLE* sessionHandle )
 
    GET_PTR( pSession->context.pAllocator, pSession->pHeader->allocatorOffset, void );
    if ( pSession->pHeader->logON ) {
-      ptr = malloc( sizeof(psnLogFile) );
+      ptr = malloc( sizeof(psonLogFile) );
       if ( ptr == NULL ) {
          errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
          goto error_handler;
       }
 
-      pSession->context.pLogFile = (psnLogFile*)ptr;
-      errcode = psnInitLogFile( 
+      pSession->context.pLogFile = (psonLogFile*)ptr;
+      errcode = psonInitLogFile( 
          pSession->context.pLogFile, 
          g_pProcessInstance->logDirName,
          pSession,
@@ -601,20 +601,20 @@ int psoInitSession( PSO_HANDLE* sessionHandle )
       if ( errcode != PSO_OK ) goto error_handler;
    }
    
-   psaListReadersInit( &pSession->listReaders );
+   psoaListReadersInit( &pSession->listReaders );
    
    /*
     * Once a session is added, it can be accessed by other threads
     * in the process (exiting, for example). So we must lock the
     * session, just in case.
     */
-   if ( psaSessionLock( pSession ) ) {
-      ok = psnProcessAddSession( g_pProcessInstance->pCleanup, 
+   if ( psoaSessionLock( pSession ) ) {
+      ok = psonProcessAddSession( g_pProcessInstance->pCleanup, 
                                   pSession, 
                                   &pSession->pCleanup, 
                                   &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
-      psaSessionUnlock( pSession );
+      psoaSessionUnlock( pSession );
       if ( ! ok ) goto error_handler;
    }
    else {
@@ -637,21 +637,21 @@ error_handler:
 
    /* 
     * The last operation that might fail is to add ourselves to the
-    * psnProcess object. If this call succeeded, we would not come
+    * psonProcess object. If this call succeeded, we would not come
     * here - this session is unknown to the rest of the software and
     * we can safely clean ourselves without locks.
     */
    if ( pSession->context.pLogFile != NULL ) {
-      psnCloseLogFile( pSession->context.pLogFile, &pSession->context.errorHandler );
+      psonCloseLogFile( pSession->context.pLogFile, &pSession->context.errorHandler );
       free( pSession->context.pLogFile );
       pSession->context.pLogFile = NULL;
    }
 
    if ( errcode != PSO_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    else {
-      errcode = pscGetLastError( &pSession->context.errorHandler );
+      errcode = psocGetLastError( &pSession->context.errorHandler );
    }
    
    free( pSession );
@@ -663,22 +663,22 @@ error_handler:
 
 int psoLastError( PSO_HANDLE sessionHandle )
 {
-   psaSession* pSession;
+   psoaSession* pSession;
    int rc = PSO_SESSION_CANNOT_GET_LOCK;
    
-   pSession = (psaSession*) sessionHandle;
+   pSession = (psoaSession*) sessionHandle;
    if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
-   if ( psaSessionLock( pSession ) ) {
+   if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         rc = pscGetLastError( &pSession->context.errorHandler );
+         rc = psocGetLastError( &pSession->context.errorHandler );
       }
       else {
          rc = PSO_SESSION_IS_TERMINATED;
       }
-      psaSessionUnlock( pSession );
+      psoaSessionUnlock( pSession );
    }
 
    return rc;
@@ -689,31 +689,31 @@ int psoLastError( PSO_HANDLE sessionHandle )
 int psoRollback( PSO_HANDLE sessionHandle )
 {
    int errcode = PSO_OK;
-   psaSession* pSession;
+   psoaSession* pSession;
 
-   pSession = (psaSession*) sessionHandle;
+   pSession = (psoaSession*) sessionHandle;
 
    if ( pSession == NULL ) return PSO_NULL_HANDLE;
-   if ( pSession->type != PSA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
    
-   if ( psaSessionLock( pSession ) ) {
+   if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         psnTxRollback( (psnTx*)pSession->context.pTransaction, 
+         psonTxRollback( (psonTx*)pSession->context.pTransaction, 
                          &pSession->context );
-         psaResetReaders( pSession );
+         psoaResetReaders( pSession );
       }
       else {
          errcode = PSO_SESSION_IS_TERMINATED;
       }
       
-      psaSessionUnlock( pSession );
+      psoaSessionUnlock( pSession );
    }
    else {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
    if ( errcode != PSO_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -725,8 +725,8 @@ int psoRollback( PSO_HANDLE sessionHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psaSessionCloseObj( psaSession             * pSession,
-                        struct psaCommonObject * pObject )
+int psoaSessionCloseObj( psoaSession             * pSession,
+                        struct psoaCommonObject * pObject )
 {
    int errcode = PSO_OK;
    bool ok = true;
@@ -735,12 +735,12 @@ int psaSessionCloseObj( psaSession             * pSession,
    PSO_PRE_CONDITION( pObject    != NULL );
 
    if ( ! pSession->terminated ) {
-      ok = psnSessionRemoveObj( pSession->pCleanup, 
+      ok = psonSessionRemoveObj( pSession->pCleanup, 
                                  pObject->pObjectContext, 
                                  &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ok ) {
-         ok = psnTopFolderCloseObject( &pObject->folderItem,
+         ok = psonTopFolderCloseObject( &pObject->folderItem,
                                         &pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
          if ( ok ) pSession->numberOfObjects--;
@@ -751,10 +751,10 @@ int psaSessionCloseObj( psaSession             * pSession,
    }
    
    if ( errcode != PSO_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
-      errcode = pscGetLastError( &pSession->context.errorHandler );
+      errcode = psocGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;
@@ -762,26 +762,26 @@ int psaSessionCloseObj( psaSession             * pSession,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psaCloseSession( psaSession* pSession )
+int psoaCloseSession( psoaSession * pSession )
 {
-   psnObjectContext* pObject = NULL;
-   psaCommonObject* pCommonObject = NULL;
+   psonObjectContext* pObject = NULL;
+   psoaCommonObject* pCommonObject = NULL;
    int rc, errcode = PSO_OK;
    bool ok;
    
    PSO_PRE_CONDITION( pSession != NULL );
 
-   if ( psaSessionLock( pSession ) ) {
+   if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          if ( pSession->context.pTransaction != NULL ) {
-            psnTxRollback( (psnTx*)(pSession->context.pTransaction), 
+            psonTxRollback( (psonTx*)(pSession->context.pTransaction), 
                             &pSession->context );
             pSession->context.pTransaction = NULL;
          }
    
-         if ( psnLock( &pSession->pCleanup->memObject, &pSession->context) ) {
+         if ( psonLock( &pSession->pCleanup->memObject, &pSession->context) ) {
             for (;;) {
-               ok = psnSessionGetFirst( pSession->pCleanup, &pObject, &pSession->context );
+               ok = psonSessionGetFirst( pSession->pCleanup, &pObject, &pSession->context );
                PSO_POST_CONDITION( ok == true || ok == false );
                if ( ! ok ) break;
 
@@ -790,15 +790,15 @@ int psaCloseSession( psaSession* pSession )
             
                if ( pObject->pCommonObject == NULL ) continue;
             
-               pCommonObject = (psaCommonObject*) pObject->pCommonObject;
-               rc = psnTopFolderCloseObject( &pCommonObject->folderItem, 
+               pCommonObject = (psoaCommonObject*) pObject->pCommonObject;
+               rc = psonTopFolderCloseObject( &pCommonObject->folderItem, 
                                               &pSession->context );
-               psaCommonCloseObject( pCommonObject );
+               psoaCommonCloseObject( pCommonObject );
 
-               ok = psnSessionRemoveFirst(pSession->pCleanup, &pSession->context );
+               ok = psonSessionRemoveFirst(pSession->pCleanup, &pSession->context );
                PSO_POST_CONDITION( ok == true );
             }
-            psnUnlock( &pSession->pCleanup->memObject, &pSession->context);
+            psonUnlock( &pSession->pCleanup->memObject, &pSession->context);
          }
       
          pSession->pCleanup = NULL;
@@ -809,14 +809,14 @@ int psaCloseSession( psaSession* pSession )
          errcode = PSO_SESSION_IS_TERMINATED;
       }
       
-      psaSessionUnlock( pSession );
+      psoaSessionUnlock( pSession );
    }
    else {
       errcode = PSO_SESSION_CANNOT_GET_LOCK;
    }
    
    if ( errcode != PSO_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -824,16 +824,16 @@ int psaCloseSession( psaSession* pSession )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psaSessionOpenObj( psaSession             * pSession,
+int psoaSessionOpenObj( psoaSession             * pSession,
                        enum psoObjectType       objectType,
-                       psaEditMode              editMode,
+                       psoaEditMode              editMode,
                        const char             * objectName,
                        size_t                   nameLengthInBytes,
-                       struct psaCommonObject * pObject )
+                       struct psoaCommonObject * pObject )
 {
    int errcode = PSO_OK;
-   psnFolder * pTree;
-   psnObjectDescriptor * pDesc;
+   psonFolder * pTree;
+   psonObjectDescriptor * pDesc;
    bool ok = true;
    
    PSO_PRE_CONDITION( pSession   != NULL );
@@ -843,9 +843,9 @@ int psaSessionOpenObj( psaSession             * pSession,
    PSO_PRE_CONDITION( nameLengthInBytes > 0 );
    
    if ( ! pSession->terminated ) {
-      GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psnFolder );
-      if ( editMode == PSA_UPDATE_RO ) {
-         ok = psnTopFolderEditObject( pTree,
+      GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder );
+      if ( editMode == PSOA_UPDATE_RO ) {
+         ok = psonTopFolderEditObject( pTree,
                                        objectName,
                                        nameLengthInBytes,
                                        objectType,
@@ -854,7 +854,7 @@ int psaSessionOpenObj( psaSession             * pSession,
          PSO_POST_CONDITION( ok == true || ok == false );
       }
       else {
-         ok = psnTopFolderOpenObject( pTree,
+         ok = psonTopFolderOpenObject( pTree,
                                        objectName,
                                        nameLengthInBytes,
                                        objectType,
@@ -864,9 +864,9 @@ int psaSessionOpenObj( psaSession             * pSession,
       }
       if ( ok ) {
          GET_PTR( pDesc, pObject->folderItem.pHashItem->dataOffset,
-                          psnObjectDescriptor );
+                          psonObjectDescriptor );
 
-         ok = psnSessionAddObj( pSession->pCleanup,
+         ok = psonSessionAddObj( pSession->pCleanup,
                                  pDesc->offset,
                                  pDesc->apiType,
                                  pObject,
@@ -881,10 +881,10 @@ int psaSessionOpenObj( psaSession             * pSession,
    }
    
    if ( errcode != PSO_OK ) {
-      pscSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
-      errcode = pscGetLastError( &pSession->context.errorHandler );
+      errcode = psocGetLastError( &pSession->context.errorHandler );
    }
    
    return errcode;

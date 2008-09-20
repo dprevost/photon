@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSC_ARCH_BARRIER_H
-#define PSC_ARCH_BARRIER_H
+#ifndef PSOC_ARCH_BARRIER_H
+#define PSOC_ARCH_BARRIER_H
 
 /*
  * A note on win32: declaring a static variable inside an inline function
@@ -25,7 +25,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void pscMemoryBarrier()
+static inline void psocMemoryBarrier()
 {
    static LONG dummy = 0;
    InterlockedIncrement( &dummy );
@@ -33,7 +33,7 @@ static inline void pscMemoryBarrier()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void pscReadMemoryBarrier()
+static inline void psocReadMemoryBarrier()
 {
    static LONG dummy = 0;
    InterlockedIncrement( &dummy );
@@ -41,7 +41,7 @@ static inline void pscReadMemoryBarrier()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static inline void pscWriteMemoryBarrier()
+static inline void psocWriteMemoryBarrier()
 {
    static LONG dummy = 0;
    InterlockedIncrement( &dummy );
@@ -49,7 +49,7 @@ static inline void pscWriteMemoryBarrier()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSC_ARCH_BARRIER_H */
+#endif /* PSOC_ARCH_BARRIER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

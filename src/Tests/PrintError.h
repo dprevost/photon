@@ -19,7 +19,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void printError( pscErrorHandler* pError )
+void printError( psocErrorHandler* pError )
 {
    char* msg = NULL;
    size_t length = 0;
@@ -28,9 +28,9 @@ void printError( pscErrorHandler* pError )
       fprintf( stderr, "Null ErrorHandler...can't help you!\n" );
    }
    else {
-      if ( pscAnyErrors( pError ) ) {
+      if ( psocAnyErrors( pError ) ) {
 
-         length = pscGetErrorMsgLength( pError );
+         length = psocGetErrorMsgLength( pError );
          if ( length == 0 ) {
             fprintf( stderr, "Error in errorHandler... a bit ironic!\n" );
          }
@@ -40,7 +40,7 @@ void printError( pscErrorHandler* pError )
                fprintf( stderr, "Malloc error in printError\n" );
             }
             else {
-               pscGetErrorMsg( pError, msg, length+1 );
+               psocGetErrorMsg( pError, msg, length+1 );
                fprintf( stderr, "Error message: %s\n", msg );
             }
          }

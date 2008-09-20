@@ -24,15 +24,15 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnLinkedList list;
-   psnSessionContext context;
+   psonLinkedList list;
+   psonSessionContext context;
    
    initTest( expectedToPass, &context );
    InitMem();
    
-   psnLinkedListInit( &list );
+   psonLinkedListInit( &list );
    
-   psnLinkedListFini( &list );
+   psonLinkedListFini( &list );
 
    if ( list.initialized != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );

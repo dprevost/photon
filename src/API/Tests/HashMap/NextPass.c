@@ -32,7 +32,7 @@ int main( int argc, char * argv[] )
    const char * data1 = "My Data1";
    const char * key2  = "My Key2";
    const char * data2 = "My Data2";
-   psaHashMapEntry entry;
+   psoaHashMapEntry entry;
    psoObjectDefinition mapDef = { 
       PSO_HASH_MAP, 
       1, 
@@ -110,14 +110,14 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaHashMapFirst( objHandle,
+   errcode = psoaHashMapFirst( objHandle,
                                  &entry );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaHashMapNext( objHandle,
+   errcode = psoaHashMapNext( objHandle,
                                 &entry );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

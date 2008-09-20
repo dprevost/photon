@@ -27,15 +27,15 @@ int main()
 {
 #if defined(USE_DBC)
    bool ok;
-   pscProcessLock lock;
+   psocProcessLock lock;
 
-   ok = pscInitProcessLock( &lock );
+   ok = psocInitProcessLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( 0, NULL, ; );
    }
    
    lock.initialized = 0;
-   pscFiniProcessLock( &lock );
+   psocFiniProcessLock( &lock );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

@@ -24,13 +24,13 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnBlockGroup *pGroup;
+   psonBlockGroup *pGroup;
    unsigned char* ptr;
-   psnSessionContext context;
+   psonSessionContext context;
    
    initTest( expectedToPass, &context );
 
-   ptr = malloc( PSN_BLOCK_SIZE*10 );
+   ptr = malloc( PSON_BLOCK_SIZE*10 );
    if (ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -39,18 +39,18 @@ int main()
    /* This "100" (non-zero) offset should mark this block group 
     * as the first block group of a MemObject.
     */
-   pGroup = (psnBlockGroup*) (ptr + 100);
+   pGroup = (psonBlockGroup*) (ptr + 100);
    
-   psnBlockGroupInit( pGroup, 
+   psonBlockGroupInit( pGroup, 
                       SET_OFFSET(ptr),
                       10,
-                      PSN_IDENT_QUEUE );
-   psnBlockGroupFini( pGroup );
+                      PSON_IDENT_QUEUE );
+   psonBlockGroupFini( pGroup );
    
-   if ( pGroup->node.nextOffset != PSN_NULL_OFFSET ) {
+   if ( pGroup->node.nextOffset != PSON_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pGroup->node.previousOffset != PSN_NULL_OFFSET ) {
+   if ( pGroup->node.previousOffset != PSON_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pGroup->numBlocks != 0 ) {
@@ -62,7 +62,7 @@ int main()
    if (pGroup->freeList.initialized != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pGroup->bitmap.baseAddressOffset != PSN_NULL_OFFSET ) {
+   if ( pGroup->bitmap.baseAddressOffset != PSON_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

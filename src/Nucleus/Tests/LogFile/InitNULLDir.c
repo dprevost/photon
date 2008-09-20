@@ -25,14 +25,14 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnLogFile logfile;
-   pscErrorHandler errorHandler;
+   psonLogFile logfile;
+   psocErrorHandler errorHandler;
    psoErrors error;
    
-   pscInitErrorDefs();
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorDefs();
+   psocInitErrorHandler( &errorHandler );
 
-   error = psnInitLogFile( &logfile, NULL, (void*)0x1234, &errorHandler );
+   error = psonInitLogFile( &logfile, NULL, (void*)0x1234, &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

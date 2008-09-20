@@ -35,7 +35,7 @@ int main()
    size_t partial;
    bool last;
    
-   errcode = psnValidateString( "Test2",
+   errcode = psonValidateString( "Test2",
                                  5,
                                  &partial,
                                  &last );
@@ -49,7 +49,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = psnValidateString( "Test2/Test555",
+   errcode = psonValidateString( "Test2/Test555",
                                  13,
                                  &partial,
                                  &last );
@@ -68,7 +68,7 @@ int main()
    }
    name[PSO_MAX_NAME_LENGTH+9] = 0;
 
-   errcode = psnValidateString( name,
+   errcode = psonValidateString( name,
                                  PSO_MAX_NAME_LENGTH+9, /* not 10 ! */
                                  &partial,
                                  &last );
@@ -76,7 +76,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = psnValidateString( "Test2/",
+   errcode = psonValidateString( "Test2/",
                                  6,
                                  &partial,
                                  &last );
@@ -92,7 +92,7 @@ int main()
    
    name[10] = 0;
    name[4] = '\t';
-   errcode = psnValidateString( name,
+   errcode = psonValidateString( name,
                                  10,
                                  &partial,
                                  &last );
@@ -101,7 +101,7 @@ int main()
    }
    
    name[4] = '=';
-   errcode = psnValidateString( name,
+   errcode = psonValidateString( name,
                                  10,
                                  &partial,
                                  &last );
@@ -111,7 +111,7 @@ int main()
 
    name[0] = '3';
    name[4] = 't';
-   errcode = psnValidateString( name,
+   errcode = psonValidateString( name,
                                  10,
                                  &partial,
                                  &last );
@@ -120,7 +120,7 @@ int main()
    }
 
    name[0] = '_';
-   errcode = psnValidateString( name,
+   errcode = psonValidateString( name,
                                  10,
                                  &partial,
                                  &last );
@@ -130,7 +130,7 @@ int main()
    
    name[0] = 't';
    name[4] = '_';
-   errcode = psnValidateString( name,
+   errcode = psonValidateString( name,
                                  10,
                                  &partial,
                                  &last );
@@ -139,7 +139,7 @@ int main()
    }
 
    name[4] = '3';
-   errcode = psnValidateString( name,
+   errcode = psonValidateString( name,
                                  10,
                                  &partial,
                                  &last );

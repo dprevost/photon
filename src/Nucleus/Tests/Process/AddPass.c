@@ -23,21 +23,21 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnProcess * process;
-   psnSessionContext context;
+   psonProcess * process;
+   psonSessionContext context;
    int errcode;
-   psnSession * pSession;
+   psonSession * pSession;
    bool ok;
    void * pApiSession = (void *) &errcode; /* A dummy pointer */
    
    process = initProcessTest( expectedToPass, &context );
 
-   ok = psnProcessInit( process, 12345, &context );
+   ok = psonProcessInit( process, 12345, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnProcessAddSession( process,
+   ok = psonProcessAddSession( process,
                                pApiSession,
                                &pSession,
                                &context );
@@ -45,7 +45,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnProcessFini( process, &context );
+   psonProcessFini( process, &context );
                                  
    return 0;
 }

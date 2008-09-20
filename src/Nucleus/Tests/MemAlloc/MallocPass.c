@@ -24,10 +24,10 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnSessionContext context;
-   psnMemAlloc*     pAlloc;
+   psonSessionContext context;
+   psonMemAlloc*     pAlloc;
    unsigned char* ptr;
-   size_t allocatedLength = PSN_BLOCK_SIZE*10;
+   size_t allocatedLength = PSON_BLOCK_SIZE*10;
    unsigned char* newBuff[8];
    int i;
    
@@ -39,40 +39,40 @@ int main()
    }
    
    g_pBaseAddr = ptr;
-   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
-   psnMemAllocInit( pAlloc, ptr, allocatedLength, &context );
+   pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
+   psonMemAllocInit( pAlloc, ptr, allocatedLength, &context );
    
-   newBuff[0] = psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 2, &context );
+   newBuff[0] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, &context );
    if ( newBuff[0] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    /* 6 blocks remaining */
-   newBuff[1] = psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 6, &context );
+   newBuff[1] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 6, &context );
    if ( newBuff[1] == NULL ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    /* No blocks remaining */
-   newBuff[2] = psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 6, &context );
+   newBuff[2] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 6, &context );
    if ( newBuff[2] != NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnFreeBlocks( pAlloc, PSN_ALLOC_ANY, newBuff[0], 2, &context );
-   psnFreeBlocks( pAlloc, PSN_ALLOC_ANY, newBuff[1], 6, &context );
+   psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[0], 2, &context );
+   psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[1], 6, &context );
    /* 8 blocks remaining */
    
    for ( i = 0; i < 8; ++i ) {
-      newBuff[i] = psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 1, &context );
+      newBuff[i] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, &context );
       if ( newBuff[i] == NULL ) {
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }
    }
    for ( i = 0; i < 8; i += 2 ) {
-      psnFreeBlocks( pAlloc, PSN_ALLOC_ANY, newBuff[i], 1, &context );
+      psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[i], 1, &context );
    }
    
    /* 4 blocks remaining - fragmented. This new alloc should fail! */
-   newBuff[0] = psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 2, &context );
+   newBuff[0] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, &context );
    if ( newBuff[0] != NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

@@ -26,13 +26,13 @@
 #include "Tests/PrintError.h"
 
 PHOTON_ENGINE_EXPORT
-pscErrMsgHandle g_psoErrorHandle;
+psocErrMsgHandle g_psoErrorHandle;
 
 struct psotObjDummy
 {
-   struct psnMemObject memObject;
+   struct psonMemObject memObject;
    /* Variable size struct - always put at the end */
-   struct psnBlockGroup blockGroup;
+   struct psonBlockGroup blockGroup;
 };
 
 typedef struct psotObjDummy psotObjDummy;
@@ -45,23 +45,23 @@ typedef struct psotObjDummy psotObjDummy;
  */
  
 psotObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
-                              psnSessionContext* pContext )
+                              psonSessionContext* pContext )
 {
    bool ok;
    unsigned char* ptr;
-   psnMemAlloc*  pAlloc;
+   psonMemAlloc*  pAlloc;
    psotObjDummy* pDummy;
-   size_t allocatedLength = PSN_BLOCK_SIZE * 10;
+   size_t allocatedLength = PSON_BLOCK_SIZE * 10;
    
-   memset( pContext, 0, sizeof(psnSessionContext) );
+   memset( pContext, 0, sizeof(psonSessionContext) );
    pContext->pidLocker = getpid();
-   ok = psnInitEngine();
+   ok = psonInitEngine();
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in MemObjTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   pscInitErrorHandler( &pContext->errorHandler );
+   psocInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
@@ -71,11 +71,11 @@ psotObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
       exit(0);
    }
    g_pBaseAddr = ptr;
-   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
-   psnMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
+   pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
+   psonMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for our dummy object + initialize it + blockGroup */
-   pDummy = (psotObjDummy*) psnMallocBlocks( pAlloc, PSN_ALLOC_API_OBJ, 4, pContext );
+   pDummy = (psotObjDummy*) psonMallocBlocks( pAlloc, PSON_ALLOC_API_OBJ, 4, pContext );
    if ( pDummy == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in MemObjTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);

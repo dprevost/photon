@@ -24,21 +24,21 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnSessionContext context;
-   psnHash * pOldHash, * pNewHash;
+   psonSessionContext context;
+   psonHash * pOldHash, * pNewHash;
    enum psoErrors errcode;
    char* key1 = "My Key 1";
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
    unsigned char * pData = NULL;
-   psnHashItem* pNewItem;
+   psonHashItem* pNewItem;
    size_t bucket = (size_t) -1;
    bool found;
    
    initHashCopyTest( expectedToPass, &pOldHash, &pNewHash, false, &context );
    
-   errcode = psnHashInsert( pOldHash,
+   errcode = psonHashInsert( pOldHash,
                              (unsigned char*)key1,
                              strlen(key1),
                              data1,
@@ -49,7 +49,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = psnHashInsert( pOldHash,
+   errcode = psonHashInsert( pOldHash,
                              (unsigned char*)key2,
                              strlen(key2),
                              data2,
@@ -60,7 +60,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   errcode = psnHashCopy( pOldHash,
+   errcode = psonHashCopy( pOldHash,
                            pNewHash,
                            &context );
    fprintf( stderr, "err = %d\n", errcode );
@@ -68,7 +68,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   found = psnHashGet( pNewHash,
+   found = psonHashGet( pNewHash,
                         (unsigned char*)key2,
                         strlen(key2),
                         &pNewItem,

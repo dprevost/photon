@@ -23,18 +23,18 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnProcess * process;
-   psnSessionContext context;
+   psonProcess * process;
+   psonSessionContext context;
    bool ok;
    
    process = initProcessTest( expectedToPass, &context );
 
-   ok = psnProcessInit( process, 12345, &context );
+   ok = psonProcessInit( process, 12345, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnProcessFini( process, &context );
+   psonProcessFini( process, &context );
    
    return 0;
 }

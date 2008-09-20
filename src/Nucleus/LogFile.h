@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_LOG_FILE_H
-#define PSN_LOG_FILE_H
+#ifndef PSON_LOG_FILE_H
+#define PSON_LOG_FILE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -35,7 +35,7 @@ BEGIN_C_DECLS
  * of LogFile.c at that time... The signature is used to indicate
  * that the struct was properly initialized.
  */
-#define PSN_LOGFILE_SIGNATURE ((unsigned int)0xf211c428)
+#define PSON_LOGFILE_SIGNATURE ((unsigned int)0xf211c428)
 
 /**
  * This module is used to log transactions to disk once they are committed.
@@ -46,12 +46,12 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psnLogFile
+struct psonLogFile
 {
    /** File handle as returned by open() */
    int handle;
 
-   /** Set to PSN_LOGFILE_SIGNATURE at initialization. */
+   /** Set to PSON_LOGFILE_SIGNATURE at initialization. */
    unsigned int initialized;
 
    /** File name (the full path) */
@@ -59,13 +59,13 @@ struct psnLogFile
    
 };
 
-typedef struct psnLogFile psnLogFile;
+typedef struct psonLogFile psonLogFile;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
-void psnCloseLogFile( psnLogFile      * logFile,
-                       pscErrorHandler * pError );
+void psonCloseLogFile( psonLogFile      * logFile,
+                       psocErrorHandler * pError );
 
 /**
  * Initialize the log file.
@@ -74,15 +74,15 @@ void psnCloseLogFile( psnLogFile      * logFile,
  * session of a given process would otherwise have the same name).
  */
 PHOTON_ENGINE_EXPORT
-psoErrors psnInitLogFile( psnLogFile      * logFile,
+psoErrors psonInitLogFile( psonLogFile      * logFile,
                            const char       * dirName,
                            void             * pSession,
-                           pscErrorHandler * pError );
+                           psocErrorHandler * pError );
    
 PHOTON_ENGINE_EXPORT
-psoErrors psnLogTransaction( psnLogFile      * logFile,
+psoErrors psonLogTransaction( psonLogFile      * logFile,
                               int                transactionId,
-                              pscErrorHandler * pError );
+                              psocErrorHandler * pError );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -90,7 +90,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_LOG_FILE_H */
+#endif /* PSON_LOG_FILE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

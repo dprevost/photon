@@ -23,20 +23,20 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnTx* pTx;
-   psnSessionContext context;
+   psonTx* pTx;
+   psonSessionContext context;
    bool ok;
    ptrdiff_t parentOffset = 0x1010, childOffset = 0x0101;
    
    pTx = initTxTest( expectedToPass, &context );
 
-   ok = psnTxInit( pTx, 1, &context );
+   ok = psonTxInit( pTx, 1, &context );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnTxAddOps( pTx,
-                      PSN_TX_ADD_DATA,
+   ok = psonTxAddOps( pTx,
+                      PSON_TX_ADD_DATA,
                       parentOffset, 
                       PSO_FOLDER,
                       childOffset,

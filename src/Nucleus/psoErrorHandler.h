@@ -42,7 +42,7 @@ extern "C" {
  *   - the error message if errnum is valid (exists)
  *   - NULL otherwise
  */
-const char * psn_ErrorMessage( int errnum );
+const char * pson_ErrorMessage( int errnum );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

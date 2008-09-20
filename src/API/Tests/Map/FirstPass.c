@@ -30,7 +30,7 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * key  = "My Key";
    const char * data = "My Data";
-   psaHashMapEntry entry;
+   psoaHashMapEntry entry;
    psoObjectDefinition mapDef = { 
       PSO_FAST_MAP, 
       1, 
@@ -98,7 +98,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaMapFirst( objHandle, &entry );
+   errcode = psoaMapFirst( objHandle, &entry );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -116,7 +116,7 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = psaMapFirst( roHandle, &entry );
+   errcode = psoaMapFirst( roHandle, &entry );
    if ( errcode != PSO_IS_EMPTY ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -135,7 +135,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaMapFirst( roHandle, &entry );
+   errcode = psoaMapFirst( roHandle, &entry );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

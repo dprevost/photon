@@ -24,21 +24,21 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnProcess * process;
-   psnSessionContext context;
+   psonProcess * process;
+   psonSessionContext context;
    int errcode;
    bool ok;
-   psnSession * pSession1, *pSession2;
+   psonSession * pSession1, *pSession2;
    void * pApiSession = (void *) &errcode; /* A dummy pointer */
    
    process = initProcessTest( expectedToPass, &context );
 
-   ok = psnProcessInit( process, 12345, &context );
+   ok = psonProcessInit( process, 12345, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnProcessAddSession( process,
+   ok = psonProcessAddSession( process,
                                pApiSession,
                                &pSession1,
                                &context );
@@ -46,7 +46,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnProcessAddSession( process,
+   ok = psonProcessAddSession( process,
                                pApiSession,
                                &pSession1,
                                &context );
@@ -54,14 +54,14 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnProcessGetFirstSession( process,
+   ok = psonProcessGetFirstSession( process,
                                     &pSession1,
                                     &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnProcessGetNextSession( process,
+   psonProcessGetNextSession( process,
                               pSession1,
                               &pSession2,
                               NULL );

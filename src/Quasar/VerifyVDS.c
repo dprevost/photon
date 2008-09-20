@@ -27,13 +27,13 @@
 #include "Nucleus/MemoryAllocator.h"
 #include "Nucleus/Queue.h"
 
-psnMemoryHeader * g_pMemoryAddress = NULL;
+psonMemoryHeader * g_pMemoryAddress = NULL;
 bool               g_bTestAllocator = false;
 FILE *             g_fp = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswValidate( psnMemoryHeader * pMemoryAddress, 
+void psoqValidate( psonMemoryHeader * pMemoryAddress, 
                    size_t           * pNumObjectsOK,
                    size_t           * pNumObjectsRepaired,
                    size_t           * pNumObjectsDeleted,
@@ -41,14 +41,14 @@ void vdswValidate( psnMemoryHeader * pMemoryAddress,
                    FILE             * fp,
                    bool               doRepair )
 {
-   struct psnProcessManager * processMgr;
-   psnFolder * topFolder;
-   psnMemAlloc * memAllocator;
-   enum vdswRecoverError valid;
-   psnSessionContext context;
-   ptrdiff_t  lockOffsets[PSN_MAX_LOCK_DEPTH];
+   struct psonProcessManager * processMgr;
+   psonFolder * topFolder;
+   psonMemAlloc * memAllocator;
+   enum psoqRecoverError valid;
+   psonSessionContext context;
+   ptrdiff_t  lockOffsets[PSON_MAX_LOCK_DEPTH];
    int        numLocks = 0;
-   struct vdswVerifyStruct verifyStruct = { 
+   struct psoqVerifyStruct verifyStruct = { 
       1, 0, stderr, doRepair, 0, 0, 0, 0, NULL };
    char timeBuf[30];
    time_t t;
@@ -73,46 +73,46 @@ void vdswValidate( psnMemoryHeader * pMemoryAddress,
    strftime( timeBuf, 30, "%H:%M:%S", &formattedTime );
    fprintf( fp, "Current time: %s\n\n", timeBuf );
    
-   GET_PTR( processMgr, pMemoryAddress->processMgrOffset, struct psnProcessManager );
-   GET_PTR( topFolder, pMemoryAddress->treeMgrOffset, psnFolder );
-   GET_PTR( memAllocator, pMemoryAddress->allocatorOffset, psnMemAlloc );
+   GET_PTR( processMgr, pMemoryAddress->processMgrOffset, struct psonProcessManager );
+   GET_PTR( topFolder, pMemoryAddress->treeMgrOffset, psonFolder );
+   GET_PTR( memAllocator, pMemoryAddress->allocatorOffset, psonMemAlloc );
 
    /* allocate the bitmap */
-   bitmapLength = offsetof( psnMemBitmap, bitmap ) + 
-      psnGetBitmapLengthBytes( memAllocator->totalLength, PSN_BLOCK_SIZE );
-   verifyStruct.pBitmap = (psnMemBitmap *) malloc(bitmapLength);
-   psnMemBitmapInit( verifyStruct.pBitmap,
+   bitmapLength = offsetof( psonMemBitmap, bitmap ) + 
+      psonGetBitmapLengthBytes( memAllocator->totalLength, PSON_BLOCK_SIZE );
+   verifyStruct.pBitmap = (psonMemBitmap *) malloc(bitmapLength);
+   psonMemBitmapInit( verifyStruct.pBitmap,
                       0,
                       memAllocator->totalLength,
-                      PSN_BLOCK_SIZE );
+                      PSON_BLOCK_SIZE );
 
    // Test the lock of the allocator
-   if ( pscIsItLocked( &memAllocator->memObj.lock ) ) {
-      vdswEcho( &verifyStruct, 
+   if ( psocIsItLocked( &memAllocator->memObj.lock ) ) {
+      psoqEcho( &verifyStruct, 
          "Warning! The memory allocator is locked - the shared memory might be corrupted" );
       if ( doRepair ) {
-         vdswEcho( &verifyStruct, "Trying to reset it..." );
-         pscReleaseProcessLock ( &memAllocator->memObj.lock );
+         psoqEcho( &verifyStruct, "Trying to reset it..." );
+         psocReleaseProcessLock ( &memAllocator->memObj.lock );
       }
       g_bTestAllocator = true;
    }
    
-   vdswEcho( &verifyStruct, "Object name: /" );
+   psoqEcho( &verifyStruct, "Object name: /" );
 
-   psnInitSessionContext( &context );
+   psonInitSessionContext( &context );
    context.pAllocator = (void *) memAllocator;
    context.lockOffsets = lockOffsets;
    context.numLocks = &numLocks;
    
-   valid = vdswVerifyFolder( &verifyStruct, topFolder, &context );
+   valid = psoqVerifyFolder( &verifyStruct, topFolder, &context );
    switch ( valid ) {
-   case VDSWR_OK:
+   case PSOQ_REC_OK:
       verifyStruct.numObjectsOK++;
       break;
-   case VDSWR_CHANGES:
+   case PSOQ_REC_CHANGES:
       verifyStruct.numObjectsRepaired++;
       break;
-   case VDSWR_DELETED_OBJECT:
+   case PSOQ_REC_DELETED_OBJECT:
       verifyStruct.numObjectsDeleted++;
       break;
    default: /* other errors */
@@ -128,7 +128,7 @@ void vdswValidate( psnMemoryHeader * pMemoryAddress,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswVerify( psnMemoryHeader * pMemoryAddress, 
+void psoqVerify( psonMemoryHeader * pMemoryAddress, 
                  size_t           * pNumObjectsOK,
                  size_t           * pNumObjectsRepaired,
                  size_t           * pNumObjectsDeleted,
@@ -137,7 +137,7 @@ void vdswVerify( psnMemoryHeader * pMemoryAddress,
 {
    fprintf( fp, "Verification of VDS (no repair) is starting\n" );
    
-   vdswValidate( pMemoryAddress, 
+   psoqValidate( pMemoryAddress, 
                  pNumObjectsOK,
                  pNumObjectsRepaired,
                  pNumObjectsDeleted,
@@ -148,7 +148,7 @@ void vdswVerify( psnMemoryHeader * pMemoryAddress,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void vdswRepair( psnMemoryHeader * pMemoryAddress, 
+void psoqRepair( psonMemoryHeader * pMemoryAddress, 
                  size_t           * pNumObjectsOK,
                  size_t           * pNumObjectsRepaired,
                  size_t           * pNumObjectsDeleted,
@@ -157,7 +157,7 @@ void vdswRepair( psnMemoryHeader * pMemoryAddress,
 {
    fprintf( fp, "Verification and repair (if needed) of VDS is starting\n" );
    
-   vdswValidate( pMemoryAddress, 
+   psoqValidate( pMemoryAddress, 
                  pNumObjectsOK,
                  pNumObjectsRepaired,
                  pNumObjectsDeleted,

@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSA_CONNECTOR_H
-#define PSA_CONNECTOR_H
+#ifndef PSOA_CONNECTOR_H
+#define PSOA_CONNECTOR_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -60,7 +60,7 @@ BEGIN_C_DECLS
  *
  */
 
-typedef struct psaConnector
+typedef struct psoaConnector
 {
    /** Our socket handle */
    PSO_SOCKET socketFD;
@@ -70,7 +70,7 @@ typedef struct psaConnector
    bool cleanupNeeded;
 #endif
 
-} psaConnector;
+} psoaConnector;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -86,16 +86,16 @@ typedef struct psaConnector
  *               information needed to establish a link to the shared memory.
  * \return A Photon error code.
  */
-int psaConnect( psaConnector    * pConnector,
-                const char      * address,
-                struct WDOutput * pAnswer,
-                pscErrorHandler * errorHandler );
+int psoaConnect( psoaConnector     * pConnector,
+                const char       * address,
+                struct WDOutput  * pAnswer,
+                psocErrorHandler * errorHandler );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Break the connection with the watchdog. */
-void psaDisconnect( psaConnector    * pConnector,
-                    pscErrorHandler * errorHandler );
+void psoaDisconnect( psoaConnector     * pConnector,
+                    psocErrorHandler * errorHandler );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -103,7 +103,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSA_CONNECTOR_H */
+#endif /* PSOA_CONNECTOR_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

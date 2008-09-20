@@ -15,19 +15,19 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSC_ARCH_PROCESS_LOCK_H
-#define PSC_ARCH_PROCESS_LOCK_H
+#ifndef PSOC_ARCH_PROCESS_LOCK_H
+#define PSOC_ARCH_PROCESS_LOCK_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void
-pscAcquireProcessLock( pscProcessLock * pLock,
-                       pid_t            pid_locker )
+psocAcquireProcessLock( psocProcessLock * pLock,
+                        pid_t             pid_locker )
 {
    int isItLocked = -1; /* Value of 0 indicates success */
 
    PSO_PRE_CONDITION( pLock != NULL );
-   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_INV_CONDITION( pLock->initialized == PSOC_LOCK_SIGNATURE );
    PSO_PRE_CONDITION( pid_locker != 0 );
 
    for (;;) {
@@ -52,14 +52,14 @@ pscAcquireProcessLock( pscProcessLock * pLock,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline bool
-pscTryAcquireProcessLock( pscProcessLock * pLock,
-                          pid_t            pid_locker,
-                          unsigned int     milliSecs )
+psocTryAcquireProcessLock( psocProcessLock * pLock,
+                           pid_t             pid_locker,
+                           unsigned int      milliSecs )
 {
    int isItLocked = -1; /* Value of 0 indicates success */
 
    PSO_PRE_CONDITION( pLock != NULL );
-   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_INV_CONDITION( pLock->initialized == PSOC_LOCK_SIGNATURE );
    PSO_PRE_CONDITION( pid_locker != 0 );
 
    if ( pLock->lock == 0 ) {
@@ -97,10 +97,10 @@ pscTryAcquireProcessLock( pscProcessLock * pLock,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline void
-pscReleaseProcessLock( pscProcessLock * pLock )
+psocReleaseProcessLock( psocProcessLock * pLock )
 {
    PSO_PRE_CONDITION( pLock != NULL );
-   PSO_INV_CONDITION( pLock->initialized == PSC_LOCK_SIGNATURE );
+   PSO_INV_CONDITION( pLock->initialized == PSOC_LOCK_SIGNATURE );
 
    pLock->pid = 0;
    /* 
@@ -116,7 +116,7 @@ pscReleaseProcessLock( pscProcessLock * pLock )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSC_ARCH_PROCESS_LOCK_H */
+#endif /* PSOC_ARCH_PROCESS_LOCK_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

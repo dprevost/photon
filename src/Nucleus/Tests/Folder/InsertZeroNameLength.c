@@ -24,10 +24,10 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnFolder* pFolder;
-   psnSessionContext context;
+   psonFolder* pFolder;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus status;
+   psonTxStatus status;
    psoObjectDefinition def = { 
       PSO_FOLDER, 
       0, 
@@ -37,9 +37,9 @@ int main()
    
    pFolder = initFolderTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnFolderInit( pFolder,
+   ok = psonFolderInit( pFolder,
                         0,
                         1,
                         0,
@@ -52,7 +52,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderInsertObject( pFolder,
+   ok = psonFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 0,

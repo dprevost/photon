@@ -27,23 +27,23 @@
 #include <photon/psoErrors.h>
 
 /** Send data on the socket. */
-static int Send( psaConnector    * pConnector,
+static int Send( psoaConnector    * pConnector,
                  void            * ptr, 
                  size_t            length,
-                 pscErrorHandler * errorHandler);   
+                 psocErrorHandler * errorHandler);   
 
 /** Receive data from the socket. */
-static int Receive( psaConnector    * pConnector,
+static int Receive( psoaConnector    * pConnector,
                     void            * ptr, 
                     size_t            length,
-                    pscErrorHandler * errorHandler );
+                    psocErrorHandler * errorHandler );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psaConnect( psaConnector    * pConnector,
-                const char      * address,
-                struct WDOutput * pAnswer,
-                pscErrorHandler * errorHandler )
+int psoaConnect( psoaConnector     * pConnector,
+                const char       * address,
+                struct WDOutput  * pAnswer,
+                psocErrorHandler * errorHandler )
 {
    int errcode = 0;
    unsigned short port;
@@ -74,7 +74,7 @@ int psaConnect( psaConnector    * pConnector,
  
    errcode = WSAStartup( versionRequested, &wsaData );
    if ( errcode != 0 ) {
-      pscSetError( errorHandler, PSC_SOCKERR_HANDLE, WSAGetLastError() );
+      psocSetError( errorHandler, PSOC_SOCKERR_HANDLE, WSAGetLastError() );
       return PSO_SOCKET_ERROR;
    }
    pConnector->cleanupNeeded = true;   
@@ -83,9 +83,9 @@ int psaConnect( psaConnector    * pConnector,
    pConnector->socketFD = socket( PF_INET, SOCK_STREAM, 0 );
    if ( pConnector->socketFD == PSO_INVALID_SOCKET ) {
 #if defined (WIN32) 
-      pscSetError( errorHandler, PSC_SOCKERR_HANDLE, WSAGetLastError() );
+      psocSetError( errorHandler, PSOC_SOCKERR_HANDLE, WSAGetLastError() );
 #else
-      pscSetError( errorHandler, PSC_ERRNO_HANDLE, errno );
+      psocSetError( errorHandler, PSOC_ERRNO_HANDLE, errno );
 #endif
       return PSO_SOCKET_ERROR;
    }
@@ -100,9 +100,9 @@ int psaConnect( psaConnector    * pConnector,
                       sizeof addr );
    if ( errcode != 0 ) {
 #if defined (WIN32) 
-      pscSetError( errorHandler, PSC_SOCKERR_HANDLE, WSAGetLastError() );
+      psocSetError( errorHandler, PSOC_SOCKERR_HANDLE, WSAGetLastError() );
 #else
-      pscSetError( errorHandler, PSC_ERRNO_HANDLE, errno );
+      psocSetError( errorHandler, PSOC_ERRNO_HANDLE, errno );
 #endif
       return PSO_CONNECT_ERROR;
    }
@@ -121,8 +121,8 @@ int psaConnect( psaConnector    * pConnector,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psaDisconnect( psaConnector    * pConnector,
-                    pscErrorHandler * errorHandler )
+void psoaDisconnect( psoaConnector     * pConnector,
+                    psocErrorHandler * errorHandler )
 {
    int errcode = 0;
 
@@ -168,10 +168,10 @@ void psaDisconnect( psaConnector    * pConnector,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int Receive( psaConnector    * pConnector,
-             void            * ptr, 
-             size_t            length,
-             pscErrorHandler * errorHandler )
+int Receive( psoaConnector     * pConnector,
+             void             * ptr, 
+             size_t             length,
+             psocErrorHandler * errorHandler )
 {
    int errcode = 0;
 
@@ -188,11 +188,11 @@ int Receive( psaConnector    * pConnector,
    
    if ( errcode != (int) length ) {
 #if defined (WIN32)
-      pscSetError( errorHandler, PSC_SOCKERR_HANDLE, WSAGetLastError() );
+      psocSetError( errorHandler, PSOC_SOCKERR_HANDLE, WSAGetLastError() );
       shutdown( pConnector->socketFD, SD_BOTH );      
       closesocket( pConnector->socketFD );
 #else
-      pscSetError( errorHandler, PSC_ERRNO_HANDLE, errno );
+      psocSetError( errorHandler, PSOC_ERRNO_HANDLE, errno );
       shutdown( pConnector->socketFD, 2 );      
       close( pConnector->socketFD );
 #endif
@@ -205,10 +205,10 @@ int Receive( psaConnector    * pConnector,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int Send( psaConnector    * pConnector,
-          void            * ptr, 
-          size_t            length,
-          pscErrorHandler * errorHandler )
+int Send( psoaConnector     * pConnector,
+          void             * ptr, 
+          size_t             length,
+          psocErrorHandler * errorHandler )
 {
    int errcode = 0;
    
@@ -225,11 +225,11 @@ int Send( psaConnector    * pConnector,
 
    if ( errcode != (int) length ) {
 #if defined (WIN32)
-      pscSetError( errorHandler, PSC_SOCKERR_HANDLE, WSAGetLastError() );
+      psocSetError( errorHandler, PSOC_SOCKERR_HANDLE, WSAGetLastError() );
       shutdown( pConnector->socketFD, SD_BOTH );      
       closesocket( pConnector->socketFD );
 #else
-      pscSetError( errorHandler, PSC_ERRNO_HANDLE, errno );
+      psocSetError( errorHandler, PSOC_ERRNO_HANDLE, errno );
       shutdown( pConnector->socketFD, 2 );
       close( pConnector->socketFD );
 #endif

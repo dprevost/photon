@@ -1,4 +1,4 @@
-.TH "psoCommon.h" 3 "26 Aug 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoCommon.h" 3 "19 Sep 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -72,28 +72,22 @@ psoCommon.h \-
 .br
 .RI "\fIPSO_HANDLE is an opaque data type used by the C API to reference objects created in the API module. \fP"
 .ti -1c
-.RI "typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
+.RI "typedef struct \fBpsoKeyDefinition\fP \fBpsoKeyDefinition\fP"
 .br
 .ti -1c
-.RI "typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
+.RI "typedef struct \fBpsoFieldDefinition\fP \fBpsoFieldDefinition\fP"
 .br
 .ti -1c
-.RI "typedef \fBpsoKeyDefinition\fP \fBpsoKeyDefinition\fP"
+.RI "typedef struct \fBpsoObjectDefinition\fP \fBpsoObjectDefinition\fP"
 .br
 .ti -1c
-.RI "typedef \fBpsoFieldDefinition\fP \fBpsoFieldDefinition\fP"
+.RI "typedef struct \fBpsoFolderEntry\fP \fBpsoFolderEntry\fP"
 .br
 .ti -1c
-.RI "typedef \fBpsoObjectDefinition\fP \fBpsoObjectDefinition\fP"
+.RI "typedef struct \fBpsoObjStatus\fP \fBpsoObjStatus\fP"
 .br
 .ti -1c
-.RI "typedef \fBpsoFolderEntry\fP \fBpsoFolderEntry\fP"
-.br
-.ti -1c
-.RI "typedef \fBpsoObjStatus\fP \fBpsoObjStatus\fP"
-.br
-.ti -1c
-.RI "typedef \fBpsoInfo\fP \fBpsoInfo\fP"
+.RI "typedef struct \fBpsoInfo\fP \fBpsoInfo\fP"
 .br
 .in -1c
 .SS "Enumerations"
@@ -163,18 +157,12 @@ Definition at line 221 of file psoCommon.h.
 .SS "typedef struct \fBpsoInfo\fP \fBpsoInfo\fP"
 .PP
 Definition at line 311 of file psoCommon.h.
-.SS "typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
-.PP
-Definition at line 108 of file psoCommon.h.
 .SS "typedef struct \fBpsoKeyDefinition\fP \fBpsoKeyDefinition\fP"
 .PP
 Definition at line 153 of file psoCommon.h.
 .SS "typedef struct \fBpsoObjectDefinition\fP \fBpsoObjectDefinition\fP"
 .PP
 Definition at line 193 of file psoCommon.h.
-.SS "typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
-.PP
-Definition at line 100 of file psoCommon.h.
 .SS "typedef struct \fBpsoObjStatus\fP \fBpsoObjStatus\fP"
 .PP
 Definition at line 256 of file psoCommon.h.
@@ -204,7 +192,7 @@ Only valid for the last field of the data definition.
 Only valid for the last field of the data definition. 
 .PP
 Definition at line 115 of file psoCommon.h.
-.SS "enum \fBpsoIteratorType\fP"
+.SS "enum typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
 .PP
 \fBEnumerator: \fP
 .in +1c
@@ -235,7 +223,7 @@ Only valid for the last field of the data definition.
 Only valid for the last field of the data definition. 
 .PP
 Definition at line 131 of file psoCommon.h.
-.SS "enum \fBpsoObjectType\fP"
+.SS "enum typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
 .PP
 The object type as seen from the API. 
 .PP

@@ -231,7 +231,7 @@ public:
    
 private:
 
-   /// Pointer to the psaSession struct
+   /// Pointer to the psoaSession struct
    PSO_HANDLE m_sessionHandle;
    
    friend class psoFastMap;

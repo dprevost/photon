@@ -23,11 +23,11 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnFolder * pTopFolder;
-   psnSessionContext context;
+   psonFolder * pTopFolder;
+   psonSessionContext context;
    int errcode;
    bool ok;
-   psnFolderItem folderItem;
+   psonFolderItem folderItem;
    psoObjectDefinition def = { 
       PSO_FOLDER, 
       0, 
@@ -37,7 +37,7 @@ int main()
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psnTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateObject( pTopFolder,
                                    "Test1",
                                    strlen("Test1"),
                                    &def,
@@ -46,7 +46,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateObject( pTopFolder,
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &def,
@@ -55,7 +55,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnTopFolderOpenObject( pTopFolder,
+   ok = psonTopFolderOpenObject( pTopFolder,
                                  "Test1/Test2",
                                  PSO_MAX_FULL_NAME_LENGTH+1,
                                  PSO_FOLDER,
@@ -64,7 +64,7 @@ int main()
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = pscGetLastError( &context.errorHandler );
+   errcode = psocGetLastError( &context.errorHandler );
    if ( errcode != PSO_OBJECT_NAME_TOO_LONG ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

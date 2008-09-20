@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_SESSION_CONTEXT_H
-#define PSN_SESSION_CONTEXT_H
+#ifndef PSON_SESSION_CONTEXT_H
+#define PSON_SESSION_CONTEXT_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -38,9 +38,9 @@ BEGIN_C_DECLS
  *
  * The pointers are to void* to avoid problems of circular dependency.
  */
-struct psnSessionContext
+struct psonSessionContext
 {
-   pscErrorHandler errorHandler;
+   psocErrorHandler errorHandler;
    
    /** Normally set to the process id (pid) of the process */
    pid_t pidLocker;
@@ -65,19 +65,19 @@ struct psnSessionContext
    
 };
 
-typedef struct psnSessionContext psnSessionContext;
+typedef struct psonSessionContext psonSessionContext;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void psnInitSessionContext( psnSessionContext * pContext )
+void psonInitSessionContext( psonSessionContext * pContext )
 {
    PSO_PRE_CONDITION( pContext != NULL );
    
-   pscInitErrorHandler( &pContext->errorHandler );
+   psocInitErrorHandler( &pContext->errorHandler );
    
    pContext->pidLocker    = getpid();
-   pContext->lockObject   = PSN_NULL_OFFSET;
+   pContext->lockObject   = PSON_NULL_OFFSET;
    pContext->pTransaction = NULL;
    pContext->pAllocator   = NULL;
    pContext->pLogFile     = NULL;
@@ -86,12 +86,12 @@ void psnInitSessionContext( psnSessionContext * pContext )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psnSessionAddLock( psnSessionContext * pSession,
+void psonSessionAddLock( psonSessionContext * pSession,
                          ptrdiff_t            memObjectOffset )
 {
    PSO_PRE_CONDITION( pSession != NULL );
-   PSO_PRE_CONDITION( *pSession->numLocks < PSN_MAX_LOCK_DEPTH );
-   PSO_PRE_CONDITION( memObjectOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( *pSession->numLocks < PSON_MAX_LOCK_DEPTH );
+   PSO_PRE_CONDITION( memObjectOffset != PSON_NULL_OFFSET );
    
    pSession->lockOffsets[*pSession->numLocks] = memObjectOffset;
    (*pSession->numLocks)++;
@@ -100,14 +100,14 @@ void psnSessionAddLock( psnSessionContext * pSession,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psnSessionRemoveLock( psnSessionContext * pSession,
+void psonSessionRemoveLock( psonSessionContext * pSession,
                             ptrdiff_t            memObjectOffset )
 {
    int i, j, n;
    
    PSO_PRE_CONDITION( pSession != NULL );
    PSO_PRE_CONDITION( *pSession->numLocks > 0 );
-   PSO_PRE_CONDITION( memObjectOffset != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( memObjectOffset != PSON_NULL_OFFSET );
    
    n = *pSession->numLocks;
 
@@ -118,7 +118,7 @@ void psnSessionRemoveLock( psnSessionContext * pSession,
             pSession->lockOffsets[j-1] = pSession->lockOffsets[j];
          }
          
-         pSession->lockOffsets[*pSession->numLocks-1] = PSN_NULL_OFFSET;         
+         pSession->lockOffsets[*pSession->numLocks-1] = PSON_NULL_OFFSET;         
          (*pSession->numLocks)--;
       }
    }
@@ -133,7 +133,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_SESSION_CONTEXT_H */
+#endif /* PSON_SESSION_CONTEXT_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

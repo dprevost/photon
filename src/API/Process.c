@@ -26,8 +26,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-psaProcess     *g_pProcessInstance = NULL;
-pscThreadLock   g_ProcessMutex;
+psoaProcess     *g_pProcessInstance = NULL;
+psocThreadLock   g_ProcessMutex;
    
 /** 
  * Set to true if the program is multithreaded.
@@ -40,37 +40,37 @@ bool AreWeTerminated()
 {
    bool ret = true;
    
-   pscAcquireThreadLock( &g_ProcessMutex );
+   psocAcquireThreadLock( &g_ProcessMutex );
 
    if ( g_pProcessInstance->pHeader != NULL ) ret = false;
    
-   pscReleaseThreadLock( &g_ProcessMutex );
+   psocReleaseThreadLock( &g_ProcessMutex );
 
    return ret;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psaProcessInit( psaProcess * process, const char * wdAddress )
+int psoaProcessInit( psoaProcess * process, const char * wdAddress )
 {
    struct WDOutput answer;
    char path[PATH_MAX];
    int errcode = PSO_OK;
-   psnSessionContext context;
-   psnProcMgr* pCleanupManager;
+   psonSessionContext context;
+   psonProcMgr* pCleanupManager;
    bool ok;
    
    PSO_PRE_CONDITION( process   != NULL );
    PSO_PRE_CONDITION( wdAddress != NULL );
    
-   if ( ! psnInitEngine() ) return PSO_INTERNAL_ERROR;
+   if ( ! psonInitEngine() ) return PSO_INTERNAL_ERROR;
    
-   memset( &context, 0, sizeof(psnSessionContext) );
+   memset( &context, 0, sizeof(psonSessionContext) );
    context.pidLocker = getpid();
-   pscInitErrorHandler( &context.errorHandler );
+   psocInitErrorHandler( &context.errorHandler );
    
    if ( g_protectionIsNeeded ) {
-      pscAcquireThreadLock( &g_ProcessMutex );
+      psocAcquireThreadLock( &g_ProcessMutex );
    }
    
    if ( process->pHeader != NULL ) {
@@ -83,7 +83,7 @@ int psaProcessInit( psaProcess * process, const char * wdAddress )
       goto the_exit;
    }
    
-   errcode = psaConnect( &process->connector, 
+   errcode = psoaConnect( &process->connector, 
                           wdAddress, 
                           &answer, 
                           &context.errorHandler );
@@ -100,9 +100,9 @@ int psaProcessInit( psaProcess * process, const char * wdAddress )
    if ( errcode != PSO_OK ) goto the_exit;
 
    GET_PTR( context.pAllocator, process->pHeader->allocatorOffset, void );
-   GET_PTR( pCleanupManager, process->pHeader->processMgrOffset, psnProcMgr );
+   GET_PTR( pCleanupManager, process->pHeader->processMgrOffset, psonProcMgr );
 
-   ok = psnProcMgrAddProcess( pCleanupManager,
+   ok = psonProcMgrAddProcess( pCleanupManager,
                                getpid(), 
                                &process->pCleanup,
                                &context );
@@ -112,13 +112,13 @@ int psaProcessInit( psaProcess * process, const char * wdAddress )
       g_pProcessInstance = process;
    }
    else {
-      errcode = pscGetLastError( &context.errorHandler );
+      errcode = psocGetLastError( &context.errorHandler );
    }
    
 the_exit:
    
    if ( g_protectionIsNeeded ) {
-      pscReleaseThreadLock( &g_ProcessMutex );
+      psocReleaseThreadLock( &g_ProcessMutex );
    }
    
    return errcode;
@@ -126,62 +126,62 @@ the_exit:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psaProcessFini()
+void psoaProcessFini()
 {
-   psnProcMgr * processManager = NULL;
-   psnSessionContext context;
-   psaSession * pApiSession = NULL;
-   psnSession * pMemSession = NULL, * pCurrent;
+   psonProcMgr * processManager = NULL;
+   psonSessionContext context;
+   psoaSession * pApiSession = NULL;
+   psonSession * pMemSession = NULL, * pCurrent;
    int errcode = 0;
-   psaProcess * process;
+   psoaProcess * process;
    bool ok;
    
    process = g_pProcessInstance;
    PSO_PRE_CONDITION( process != NULL );
 
    /* 
-    * This can occurs if the process init (psaProcessInit()) 
+    * This can occurs if the process init (psoaProcessInit()) 
     * was not called from the C API and somehow failed.
     */
    if ( process->pHeader == NULL ) {
-      psaDisconnect( &process->connector, &context.errorHandler );
+      psoaDisconnect( &process->connector, &context.errorHandler );
       return;
    }
    
-   memset( &context, 0, sizeof(psnSessionContext) );
+   memset( &context, 0, sizeof(psonSessionContext) );
    context.pidLocker = getpid();
    GET_PTR( context.pAllocator, process->pHeader->allocatorOffset, void );
-   pscInitErrorHandler( &context.errorHandler );
+   psocInitErrorHandler( &context.errorHandler );
 
    if ( g_protectionIsNeeded ) {
-      pscAcquireThreadLock( &g_ProcessMutex );
+      psocAcquireThreadLock( &g_ProcessMutex );
    }
    
-   GET_PTR( processManager, process->pHeader->processMgrOffset, psnProcMgr );
+   GET_PTR( processManager, process->pHeader->processMgrOffset, psonProcMgr );
 
-   psnProcessNoMoreSessionAllowed( process->pCleanup,
+   psonProcessNoMoreSessionAllowed( process->pCleanup,
                                     &context );
 
-   if ( psnLock(&process->pCleanup->memObject, &context) ) {
-      ok = psnProcessGetFirstSession( process->pCleanup, 
+   if ( psonLock(&process->pCleanup->memObject, &context) ) {
+      ok = psonProcessGetFirstSession( process->pCleanup, 
                                        &pMemSession, 
                                        &context );
       PSO_POST_CONDITION( ok == true || ok == false );
       while ( ok ) {
          pApiSession = pMemSession->pApiSession;
          if ( pApiSession != NULL ) {
-            errcode = psaCloseSession( pApiSession );
+            errcode = psoaCloseSession( pApiSession );
             /** \todo handle error here */
          }
 
          pCurrent = pMemSession;
-         ok = psnProcessGetNextSession( process->pCleanup,
+         ok = psonProcessGetNextSession( process->pCleanup,
                                          pCurrent,
                                          &pMemSession,
                                          &context );
       }
       
-      psnUnlock( &process->pCleanup->memObject, &context );
+      psonUnlock( &process->pCleanup->memObject, &context );
    }
    else {
       errcode = PSO_INTERNAL_ERROR;
@@ -190,9 +190,9 @@ void psaProcessFini()
    
    /*
     * The lock is implicit. This call will also recursively destroy
-    * all the psnSession objects of the current process.
+    * all the psonSession objects of the current process.
     */
-   ok = psnProcMgrRemoveProcess( processManager, process->pCleanup, &context );
+   ok = psonProcMgrRemoveProcess( processManager, process->pCleanup, &context );
    PSO_POST_CONDITION( ok == true || ok == false );
    process->pCleanup = NULL;
    
@@ -204,23 +204,23 @@ void psaProcessFini()
    
 error_handler:
 
-   psaDisconnect( &process->connector, &context.errorHandler );
+   psoaDisconnect( &process->connector, &context.errorHandler );
 
    if ( g_protectionIsNeeded ) {
-      pscReleaseThreadLock( &g_ProcessMutex );
+      psocReleaseThreadLock( &g_ProcessMutex );
    }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaOpenMemory( psaProcess        * process,
+int psoaOpenMemory( psoaProcess        * process,
                     const char        * memoryFileName,
                     size_t              memorySizekb,
-                    psnSessionContext * pContext )
+                    psonSessionContext * pContext )
 {
    int errcode = 0;
    bool ok;
-   pscMemoryFileStatus fileStatus;
+   psocMemoryFileStatus fileStatus;
    void * ptr;
    
    PSO_PRE_CONDITION( process        != NULL );
@@ -229,15 +229,15 @@ int psoaOpenMemory( psaProcess        * process,
 
    process->pHeader = NULL;
    
-   pscInitMemoryFile( &process->memoryFile, memorySizekb, memoryFileName );
+   psocInitMemoryFile( &process->memoryFile, memorySizekb, memoryFileName );
    
-   pscBackStoreStatus( &process->memoryFile, &fileStatus );
+   psocBackStoreStatus( &process->memoryFile, &fileStatus );
    
    if ( ! fileStatus.fileExist ) {
       return PSO_BACKSTORE_FILE_MISSING;
    }
    
-   ok = pscOpenMemFile( &process->memoryFile, 
+   ok = psocOpenMemFile( &process->memoryFile, 
                          &ptr, 
                          &pContext->errorHandler );   
    PSO_POST_CONDITION( ok == true || ok == false );
@@ -247,9 +247,9 @@ int psoaOpenMemory( psaProcess        * process,
    }
    
    g_pBaseAddr = (unsigned char * ) ptr;
-   process->pHeader = (psnMemoryHeader*) g_pBaseAddr;
+   process->pHeader = (psonMemoryHeader*) g_pBaseAddr;
 
-   if ( process->pHeader->version != PSN_MEMORY_VERSION ) {
+   if ( process->pHeader->version != PSON_MEMORY_VERSION ) {
       process->pHeader = NULL;
       return PSO_INCOMPATIBLE_VERSIONS;
    }
@@ -259,13 +259,13 @@ int psoaOpenMemory( psaProcess        * process,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoaCloseMemory( psaProcess        * process,
-                      psnSessionContext * pContext )
+void psoaCloseMemory( psoaProcess        * process,
+                      psonSessionContext * pContext )
 {
    PSO_PRE_CONDITION( process  != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
 
-   pscCloseMemFile( &process->memoryFile, &pContext->errorHandler );
+   psocCloseMemFile( &process->memoryFile, &pContext->errorHandler );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

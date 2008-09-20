@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSA_DATA_DEFINITION_H
-#define PSA_DATA_DEFINITION_H
+#ifndef PSOA_DATA_DEFINITION_H
+#define PSOA_DATA_DEFINITION_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -39,26 +39,26 @@ BEGIN_C_DECLS
  * The memory must be free by the calling program.
  */
 PHOTON_API_EXPORT
-int psaGetDefinition( psnFieldDef          * pInternalDef,
+int psoaGetDefinition( psonFieldDef          * pInternalDef,
                       uint16_t               numFields,
                       psoObjectDefinition ** ppDefinition );
 
 PHOTON_API_EXPORT
-void psaGetKeyLimits( psoKeyDefinition * pKeyDef,
+void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
                       size_t           * pMinLength,
                       size_t           * pMaxLength );
 
 PHOTON_API_EXPORT
-void psaGetLimits( psnFieldDef * pDefinition,
+void psoaGetLimits( psonFieldDef * pDefinition,
                    uint16_t      numFields,
                    size_t      * pMinLength,
                    size_t      * pMaxLength );
 
 PHOTON_API_EXPORT
-int psaValidateDefinition( psoObjectDefinition * pDefinition );
+int psoaValidateDefinition( psoObjectDefinition * pDefinition );
 
 PHOTON_API_EXPORT
-int psaXmlToDefinition( const char           * xmlBuffer,
+int psoaXmlToDefinition( const char           * xmlBuffer,
                         size_t                 lengthInBytes,
                         psoObjectDefinition ** ppDefinition,
                         char                ** objectName,
@@ -70,6 +70,6 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSA_DATA_DEFINITION_H */
+#endif /* PSOA_DATA_DEFINITION_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

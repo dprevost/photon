@@ -26,15 +26,15 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   pscDirIterator iterator;
+   psocDirIterator iterator;
    const char* str;
-   pscErrorHandler errorHandler;
+   psocErrorHandler errorHandler;
    
-   pscInitErrorDefs();
-   pscInitDir( &iterator );
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorDefs();
+   psocInitDir( &iterator );
+   psocInitErrorHandler( &errorHandler );
 
-   str = pscDirGetNextFileName( &iterator, &errorHandler );
+   str = psocDirGetNextFileName( &iterator, &errorHandler );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

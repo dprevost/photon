@@ -26,14 +26,14 @@ const bool expectedToPass = true;
 int main()
 {
    bool ok;
-   pscThreadLock lock;
+   psocThreadLock lock;
 
-   ok = pscInitThreadLock( &lock );
+   ok = psocInitThreadLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pscAcquireThreadLock( &lock );
+   psocAcquireThreadLock( &lock );
 
    /*
     * Normally we should test if the lock is really in place. Because
@@ -44,9 +44,9 @@ int main()
     * We might want to add this test later.
     */
    
-   pscReleaseThreadLock( &lock );
+   psocReleaseThreadLock( &lock );
 
-   pscFiniThreadLock( &lock );
+   psocFiniThreadLock( &lock );
 
    return 0;
 }

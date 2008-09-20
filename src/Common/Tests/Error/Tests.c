@@ -37,35 +37,35 @@ int msgErrorHandler( int errorCode, char* msg, unsigned int msgLength )
 
 int main()
 {
-   pscErrorHandler errorHandler;
+   psocErrorHandler errorHandler;
    char msg[100];
-   pscErrMsgHandle handle1, handle2;
+   psocErrMsgHandle handle1, handle2;
    
-   pscInitErrorDefs();
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorDefs();
+   psocInitErrorHandler( &errorHandler );
   
-   handle1 = pscAddErrorMsgHandler( "Dummy1", &msgErrorHandler );
-   if ( handle1 == PSC_NO_ERRHANDLER ) {
+   handle1 = psocAddErrorMsgHandler( "Dummy1", &msgErrorHandler );
+   if ( handle1 == PSOC_NO_ERRHANDLER ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   handle2 = pscAddErrorMsgHandler( "Dummy2", &msgErrorHandler );
-   if ( handle2 == PSC_NO_ERRHANDLER ) {
+   handle2 = psocAddErrorMsgHandler( "Dummy2", &msgErrorHandler );
+   if ( handle2 == PSOC_NO_ERRHANDLER ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pscSetError( &errorHandler, handle2, 7 );
+   psocSetError( &errorHandler, handle2, 7 );
 
-   pscChainError( &errorHandler, handle1, 17 );
+   psocChainError( &errorHandler, handle1, 17 );
 
    /* This should work, although that would leave a single byte
     * to use for the error message...
     */
-   pscGetErrorMsg( &errorHandler, msg, 81 );
+   psocGetErrorMsg( &errorHandler, msg, 81 );
 
-   pscSetError( &errorHandler, PSC_ERRNO_HANDLE, ENOENT );
+   psocSetError( &errorHandler, PSOC_ERRNO_HANDLE, ENOENT );
 
-   pscFiniErrorHandler( &errorHandler );
-   pscFiniErrorDefs();
+   psocFiniErrorHandler( &errorHandler );
+   psocFiniErrorDefs();
    
    return 0;
 }

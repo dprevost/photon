@@ -26,14 +26,14 @@ const bool expectedToPass = true;
 int main()
 {
    bool ok;
-   pscProcessLock lock;
+   psocProcessLock lock;
 
-   ok = pscInitProcessLock( &lock );
+   ok = psocInitProcessLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pscFiniProcessLock( &lock );
+   psocFiniProcessLock( &lock );
 
    if ( lock.initialized != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );

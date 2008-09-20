@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_HASH_H
-#define PSN_HASH_H
+#ifndef PSON_HASH_H
+#define PSON_HASH_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -30,7 +30,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define PSN_HASH_SIGNATURE  ((unsigned int)0x2026fe02)
+#define PSON_HASH_SIGNATURE  ((unsigned int)0x2026fe02)
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -41,9 +41,9 @@ BEGIN_C_DECLS
  * aligned if we eventually allow direct access to the data (from the 
  * API) or even to be able to use it easily internally. 
  */
-struct psnHashItem
+struct psonHashItem
 {
-   psnTxStatus  txStatus;
+   psonTxStatus  txStatus;
    
    /** Next item in this bucket */
    ptrdiff_t     nextItem;
@@ -58,19 +58,19 @@ struct psnHashItem
    
 };
 
-typedef struct psnHashItem psnHashItem;
+typedef struct psonHashItem psonHashItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum psnHashResizeEnum
+enum psonHashResizeEnum
 {
-   PSN_HASH_NO_RESIZE,
-   PSN_HASH_TIME_TO_GROW,
-   PSN_HASH_TIME_TO_SHRINK
+   PSON_HASH_NO_RESIZE,
+   PSON_HASH_TIME_TO_GROW,
+   PSON_HASH_TIME_TO_SHRINK
    
 };
 
-typedef enum psnHashResizeEnum psnHashResizeEnum;
+typedef enum psonHashResizeEnum psonHashResizeEnum;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -85,12 +85,12 @@ typedef enum psnHashResizeEnum psnHashResizeEnum;
  * (when the array is 100% populated). There is no such limit with buckets 
  * since it is an array of linked lists).
  */
-struct psnHash
+struct psonHash
 {
    /** offset of the memory object we need to use for allocating memory. */
    ptrdiff_t memObjOffset;
    
-   /** Offset to an array of offsets to psnHashItem objects */
+   /** Offset to an array of offsets to psonHashItem objects */
    ptrdiff_t    arrayOffset; 
    
    /** Number of items stored in this hash map. */
@@ -103,18 +103,18 @@ struct psnHash
    int lengthIndex;
 
    /** The mimimum shrinking factor that we can tolerate to accommodate
-    *  the reservedSize argument of psnHashInit() ) */
+    *  the reservedSize argument of psonHashInit() ) */
    int lengthIndexMinimum;
 
    /** Indicator of the current status of the array. */
-   psnHashResizeEnum enumResize;
+   psonHashResizeEnum enumResize;
    
-   /** Set to PSN_HASH_SIGNATURE at initialization. */
+   /** Set to PSON_HASH_SIGNATURE at initialization. */
    unsigned int initialized;
 
 };
 
-typedef struct psnHash psnHash;
+typedef struct psonHash psonHash;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -122,68 +122,68 @@ typedef struct psnHash psnHash;
  * Used to create a copy of a read-only hash map for editing (updates)
  */
 PHOTON_ENGINE_EXPORT
-enum psoErrors psnHashCopy( psnHash           * pOldHash,
-                             psnHash           * pNewHash,
-                             psnSessionContext * pContext );
+enum psoErrors psonHashCopy( psonHash           * pOldHash,
+                             psonHash           * pNewHash,
+                             psonSessionContext * pContext );
 
 /*
  * Used to delete an hash item when you know its exact position
- * (through the psnHashItem) 
+ * (through the psonHashItem) 
  */
 PHOTON_ENGINE_EXPORT 
-void psnHashDelWithItem( psnHash            * pHash,
-                          psnHashItem        * pItem,
-                          psnSessionContext  * pContext );
+void psonHashDelWithItem( psonHash            * pHash,
+                          psonHashItem        * pItem,
+                          psonSessionContext  * pContext );
 
 /* Direct delete using the key and nothing else. */
 PHOTON_ENGINE_EXPORT 
-bool psnHashDelWithKey( psnHash            * pHash,
+bool psonHashDelWithKey( psonHash            * pHash,
                          const unsigned char * pKey, 
                          size_t                keyLength,
-                         psnSessionContext  * pContext );
+                         psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT 
-void psnHashEmpty( psnHash           * pHash,
-                    psnSessionContext * pContext );
+void psonHashEmpty( psonHash           * pHash,
+                    psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnHashFini( psnHash * pHash );
+void psonHashFini( psonHash * pHash );
 
 PHOTON_ENGINE_EXPORT 
-bool psnHashGet( psnHash            * pHash,
+bool psonHashGet( psonHash            * pHash,
                   const unsigned char * pkey,
                   size_t                keyLength,
-                  psnHashItem       ** ppItem,
+                  psonHashItem       ** ppItem,
                   size_t              * pBucket,
-                  psnSessionContext  * pContext );
+                  psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT 
-bool psnHashGetFirst( psnHash  * pHash,
+bool psonHashGetFirst( psonHash  * pHash,
                        ptrdiff_t * pFirstItemOffset );
 
 PHOTON_ENGINE_EXPORT
-bool psnHashGetNext( psnHash  * pHash,
+bool psonHashGetNext( psonHash  * pHash,
                       ptrdiff_t   previousOffset,
                       ptrdiff_t * pNextItemOffset );
 
 PHOTON_ENGINE_EXPORT 
-enum psoErrors psnHashInit( psnHash           * pHash,
+enum psoErrors psonHashInit( psonHash           * pHash,
                              ptrdiff_t            memObjOffset,
                              size_t               reservedSize, 
-                             psnSessionContext * pContext );
+                             psonSessionContext * pContext );
 
 /*
  * ppNewItem is used to access the original name of 
- * objects and the psnTxStatus by the objects themselves 
+ * objects and the psonTxStatus by the objects themselves 
  */
 PHOTON_ENGINE_EXPORT 
-enum psoErrors psnHashInsert( psnHash            * pHash,
+enum psoErrors psonHashInsert( psonHash            * pHash,
                                const unsigned char * pKey,
                                size_t                keyLength,
                                const void          * pData,
                                size_t                dataLength,
-                               psnHashItem       ** ppNewItem,
-                               psnSessionContext  * pContext );
+                               psonHashItem       ** ppNewItem,
+                               psonSessionContext  * pContext );
 
 /*
  * Insert at is used to insert an item in a given bucket, at the end
@@ -191,26 +191,26 @@ enum psoErrors psnHashInsert( psnHash            * pHash,
  * before the change is committed.
  */
 PHOTON_ENGINE_EXPORT 
-enum psoErrors psnHashInsertAt( psnHash            * pHash,
+enum psoErrors psonHashInsertAt( psonHash            * pHash,
                                  size_t                bucket,
                                  const unsigned char * pKey,
                                  size_t                keyLength,
                                  const void          * pData,
                                  size_t                dataLength,
-                                 psnHashItem       ** ppNewItem,
-                                 psnSessionContext  * pContext );
+                                 psonHashItem       ** ppNewItem,
+                                 psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
-enum psoErrors psnHashResize( psnHash           * pHash,
-                               psnSessionContext * pContext );
+enum psoErrors psonHashResize( psonHash           * pHash,
+                               psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-enum psoErrors psnHashUpdate( psnHash            * pHash,
+enum psoErrors psonHashUpdate( psonHash            * pHash,
                                const unsigned char * pKey,
                                size_t                keyLength,
                                const void          * pData,
                                size_t                dataLength,
-                               psnSessionContext  * pContext );
+                               psonSessionContext  * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -228,13 +228,13 @@ enum psoErrors psnHashUpdate( psnHash            * pHash,
  */
  
 #if SIZEOF_VOID_P == 4
-#  define PSN_PRIME_NUMBER_ARRAY_LENGTH 28
+#  define PSON_PRIME_NUMBER_ARRAY_LENGTH 28
 PHOTON_ENGINE_EXPORT
-extern size_t g_psnArrayLengths[PSN_PRIME_NUMBER_ARRAY_LENGTH];
+extern size_t g_psonArrayLengths[PSON_PRIME_NUMBER_ARRAY_LENGTH];
 #else
-#  define PSN_PRIME_NUMBER_ARRAY_LENGTH 60
+#  define PSON_PRIME_NUMBER_ARRAY_LENGTH 60
 PHOTON_ENGINE_EXPORT
-extern size_t g_psnArrayLengths[PSN_PRIME_NUMBER_ARRAY_LENGTH];
+extern size_t g_psonArrayLengths[PSON_PRIME_NUMBER_ARRAY_LENGTH];
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -243,7 +243,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_HASH_MAP_H */
+#endif /* PSON_HASH_MAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

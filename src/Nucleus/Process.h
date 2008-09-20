@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_PROCESS_H
-#define PSN_PROCESS_H
+#ifndef PSON_PROCESS_H
+#define PSON_PROCESS_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -40,69 +40,69 @@ BEGIN_C_DECLS
  * closed objects (->decrease access counter), unlocked objects, etc.
  *
  */
-struct psnProcess
+struct psonProcess
 {
    /** Always first */
-   struct psnMemObject memObject;
+   struct psonMemObject memObject;
 
-   psnLinkNode node;
+   psonLinkNode node;
    
    pid_t pid;
 
-   psnLinkedList listOfSessions;
+   psonLinkedList listOfSessions;
 
    bool processIsTerminating;
 
    /** Variable size struct - always put at the end */
-   struct psnBlockGroup blockGroup;
+   struct psonBlockGroup blockGroup;
 
 };
 
-typedef struct psnProcess psnProcess;
+typedef struct psonProcess psonProcess;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
-bool psnProcessInit( psnProcess        * pProcess,
+bool psonProcessInit( psonProcess        * pProcess,
                       pid_t                pid,
-                      psnSessionContext * pContext );
+                      psonSessionContext * pContext );
    
 PHOTON_ENGINE_EXPORT
-void psnProcessFini( psnProcess        * pProcess,
-                      psnSessionContext * pContext );
+void psonProcessFini( psonProcess        * pProcess,
+                      psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnProcessAddSession( psnProcess        * pProcess,
+bool psonProcessAddSession( psonProcess        * pProcess,
                             void               * pApiSession,
-                            psnSession       ** pSession,
-                            psnSessionContext * pContext );
+                            psonSession       ** pSession,
+                            psonSessionContext * pContext );
 
 /*
- * Takes a lock on the current object. Not on the psnSession itself. 
+ * Takes a lock on the current object. Not on the psonSession itself. 
  */
 PHOTON_ENGINE_EXPORT
-bool psnProcessRemoveSession( psnProcess        * pProcess,
-                               psnSession        * pSession,
-                               psnSessionContext * pContext );
+bool psonProcessRemoveSession( psonProcess        * pProcess,
+                               psonSession        * pSession,
+                               psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnProcessGetFirstSession( psnProcess        * pProcess,
-                                 psnSession       ** ppSession,
-                                 psnSessionContext * pContext );
+bool psonProcessGetFirstSession( psonProcess        * pProcess,
+                                 psonSession       ** ppSession,
+                                 psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psnProcessGetNextSession( psnProcess        * pProcess,
-                                psnSession        * pCurrent,
-                                psnSession       ** ppNext,
-                                psnSessionContext * pContext );
+bool psonProcessGetNextSession( psonProcess        * pProcess,
+                                psonSession        * pCurrent,
+                                psonSession       ** ppNext,
+                                psonSessionContext * pContext );
 
 static inline
-void psnProcessNoMoreSessionAllowed( psnProcess        * pProcess,
-                                      psnSessionContext * pContext )
+void psonProcessNoMoreSessionAllowed( psonProcess        * pProcess,
+                                      psonSessionContext * pContext )
 {
-   if ( psnLock( &pProcess->memObject, pContext ) ) {
+   if ( psonLock( &pProcess->memObject, pContext ) ) {
       pProcess->processIsTerminating = true;
-      psnUnlock( &pProcess->memObject, pContext );
+      psonUnlock( &pProcess->memObject, pContext );
    }
 }
 
@@ -112,7 +112,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_PROCESS_H */
+#endif /* PSON_PROCESS_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

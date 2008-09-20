@@ -20,14 +20,14 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Cleanup the list once we're done with it. */
-void psnLinkedListFini( psnLinkedList* pList )
+void psonLinkedListFini( psonLinkedList* pList )
 {   
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSON_LIST_SIGNATURE );
    
-   /* We reset the node element to PSN_NULL_OFFSET. */
-   psnLinkNodeInit( &pList->head );
+   /* We reset the node element to PSON_NULL_OFFSET. */
+   psonLinkNodeInit( &pList->head );
 
    pList->currentSize    = 0;
    pList->initialized    = 0;
@@ -35,27 +35,27 @@ void psnLinkedListFini( psnLinkedList* pList )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psnLinkedListInit( psnLinkedList* pList )
+void psonLinkedListInit( psonLinkedList* pList )
 {
    PSO_PRE_CONDITION( pList != NULL );
    
-   psnLinkNodeInit( &pList->head );
+   psonLinkNodeInit( &pList->head );
    pList->currentSize = 0;
 
    /* Make the list circular by pointing it back to itself. */
    pList->head.previousOffset = pList->head.nextOffset = 
       SET_OFFSET( &pList->head );
 
-   pList->initialized = PSN_LIST_SIGNATURE;
+   pList->initialized = PSON_LIST_SIGNATURE;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psnLinkedListReset( psnLinkedList* pList )
+void psonLinkedListReset( psonLinkedList* pList )
 {
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSON_LIST_SIGNATURE );
 
    pList->currentSize = 0;
 
@@ -66,28 +66,28 @@ void psnLinkedListReset( psnLinkedList* pList )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psnLinkedListIsValid( psnLinkedList* pList,
-                            psnLinkNode*   pUnknown )
+bool psonLinkedListIsValid( psonLinkedList* pList,
+                            psonLinkNode*   pUnknown )
 {
    bool valid = false;
    
-   psnLinkNode* pItem;
+   psonLinkNode* pItem;
 
    PSO_PRE_CONDITION( pList != NULL );
    /* Test to see if the list is initialized */
-   PSO_INV_CONDITION( pList->initialized == PSN_LIST_SIGNATURE );
+   PSO_INV_CONDITION( pList->initialized == PSON_LIST_SIGNATURE );
    PSO_PRE_CONDITION( pUnknown   != NULL );
 
    pItem = &pList->head;
    
-   GET_PTR( pItem, pItem->nextOffset, psnLinkNode );
+   GET_PTR( pItem, pItem->nextOffset, psonLinkNode );
    while ( pItem != &pList->head ) {
       if ( pItem == pUnknown ) {
          valid = true;
          break;
       }
       
-      GET_PTR( pItem, pItem->nextOffset, psnLinkNode );
+      GET_PTR( pItem, pItem->nextOffset, psonLinkNode );
    }
 
    return valid;

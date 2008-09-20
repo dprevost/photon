@@ -13,7 +13,7 @@
 @anchor{name}
 @chapheading Name
 
-quasar @^a€” starts the Photon server
+quasar --- starts the Photon server
 
 @noindent
 @anchor{synopsis}
@@ -47,8 +47,8 @@ quasar @^a€” starts the Photon server
 @anchor{DESCRIPTION}
 @chapheading DESCRIPTION
 
-quasar is the crash-recovery daemon (the watchdog) of the Photon 
-Framework. Currently, crash recovery is only done when this program is 
+quasar is the shared-memory creator and keeper and the crash-recovery server
+of the Photon Framework. Currently, crash recovery is only done when this program is 
 started.
 
 @noindent
@@ -73,7 +73,7 @@ Display minimal usage information.
 Test the configuration file and exit.
 
 @item @code{-v}, @code{--verify}
-Verify the content of the shared-memory file (VDS) without modifying it 
+Verify the content of the shared-memory file without modifying it 
 and exit.
 @end table
 
@@ -81,17 +81,32 @@ and exit.
 @anchor{CONFIGURATION}
 @chapheading CONFIGURATION
 
-The syntax of the configuration file is very simple, pairs of keys and values.
-Lines starting with # are comments.
+The configuration file is a simple XML file with tags, values and 
+attributes as explained below.
 
 @table @asis
 
-@item @emph{VDSLocation}
-The path of the directory where the watchdog will find the shared-memory file
+@item @emph{mem_location}
+The path of the directory where the server will find the shared-memory file
 and auxiliary files (these files will be created if they do not exist).
 
-@item @emph{MemorySize}
-The total size of the shared memory in units of kiloBytes.
+Example: <mem_location>/tmp/photon</mem_location>
+
+@item @emph{mem_size}
+The total size of the shared memory. This size canbe expressed in multiple
+units, kbytes ("kb"), megabytes ("mb") or gigabytes ("gb").  
+For example a shared memory of 10 Megabytes can either be written as 
+
+<mem_size size="10240" units="kb" />
+
+or 
+
+<mem_size size="10" units="mb" />.
+
+On many modern systems, only the actual pages in use will
+be loaded - therefore this parameter can be quite large 
+(you'll need the space on disk however - in fact twice as
+large to accomodate a backup of the memory file). 
 
 @item @emph{WatchdogAddress}
 The local TCP/IP port the watchdog will use to listen for new connection 

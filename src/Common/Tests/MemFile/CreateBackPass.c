@@ -24,8 +24,8 @@ const bool expectedToPass = true;
 
 int main()
 {
-   pscMemoryFile  mem;
-   pscErrorHandler errorHandler;
+   psocMemoryFile  mem;
+   psocErrorHandler errorHandler;
    bool ok;
    
    /* The rename is a work around for a bug on Windows. It seems that the delete
@@ -34,20 +34,20 @@ int main()
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
 
-   pscInitErrorDefs();
-   pscInitErrorHandler( &errorHandler );
-   pscInitMemoryFile( &mem, 10, "MemFile.mem" );
+   psocInitErrorDefs();
+   psocInitErrorHandler( &errorHandler );
+   psocInitMemoryFile( &mem, 10, "MemFile.mem" );
 
-   ok = pscCreateBackstore( &mem, 0755, &errorHandler );
+   ok = psocCreateBackstore( &mem, 0755, &errorHandler );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
    }
    
    unlink( "MemFile.mem" );
    
-   pscFiniMemoryFile( &mem );
-   pscFiniErrorHandler( &errorHandler );
-   pscFiniErrorDefs();
+   psocFiniMemoryFile( &mem );
+   psocFiniErrorHandler( &errorHandler );
+   psocFiniErrorDefs();
 
    return 0;
 }

@@ -23,24 +23,24 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnSession * pSession;
-   psnSessionContext context;
+   psonSession * pSession;
+   psonSessionContext context;
    int errcode;
    void * pApiObject = (void *) &errcode; /* dummy pointer */
    ptrdiff_t objOffset;
-   psnObjectContext * pObject;
+   psonObjectContext * pObject;
    bool ok;
    
    pSession = initSessionTest( expectedToPass, &context );
 
-   ok = psnSessionInit( pSession, pApiObject, &context );
+   ok = psonSessionInit( pSession, pApiObject, &context );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    objOffset = SET_OFFSET( pSession ); /* Dummy offset */
    
-   ok = psnSessionAddObj( pSession,
+   ok = psonSessionAddObj( pSession,
                            objOffset, 
                            PSO_FOLDER,
                            pApiObject,
@@ -50,7 +50,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = psnSessionGetFirst( pSession, &pObject, &context );
+   ok = psonSessionGetFirst( pSession, &pObject, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

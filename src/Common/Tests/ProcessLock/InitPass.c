@@ -25,24 +25,24 @@ const bool expectedToPass = true;
 int main()
 {
    bool ok;
-   pscProcessLock lock;
+   psocProcessLock lock;
 
-   ok = pscInitProcessLock( &lock );
+   ok = psocInitProcessLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   if ( lock.initialized != PSC_LOCK_SIGNATURE ) {
+   if ( lock.initialized != PSOC_LOCK_SIGNATURE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* A second init call is allowed */
-   ok = pscInitProcessLock( &lock );
+   ok = psocInitProcessLock( &lock );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pscFiniProcessLock( &lock );
+   psocFiniProcessLock( &lock );
 
    return 0;
 }

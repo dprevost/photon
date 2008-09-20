@@ -24,15 +24,15 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnFolder* pFolder;
-   psnSessionContext context;
-   psnTxStatus status;
+   psonFolder* pFolder;
+   psonSessionContext context;
+   psonTxStatus status;
    
    pFolder = initFolderTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", PSN_NULL_OFFSET, &context );
+   psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", PSON_NULL_OFFSET, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

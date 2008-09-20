@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSA_PROCESS_H
-#define PSA_PROCESS_H
+#ifndef PSOA_PROCESS_H
+#define PSOA_PROCESS_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,26 +33,26 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* Forward declarations */
-struct psnMemoryHeader;
-struct psnProcess;
-struct psnObjectContext;
+struct psonMemoryHeader;
+struct psonProcess;
+struct psonObjectContext;
 struct psoProxyObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct psaProcess
+typedef struct psoaProcess
 {
-   psaObjetType type;
+   psoaObjetType type;
 
    /** Pointer to the header of the shared memory. */
-   struct psnMemoryHeader* pHeader;
+   struct psonMemoryHeader* pHeader;
 
    /** 
     * Pointer to our own cleanup object in shared memory. This object is used by 
     * the CleanupManager to hold process-specific information that might
     * be needed in case of a crash (current state of transactions, etc.).
     */
-   struct psnProcess* pCleanup;
+   struct psonProcess* pCleanup;
 
    /** The pid of the process is stored in this member. */
    pso_lock_T lockValue;
@@ -61,16 +61,16 @@ typedef struct psaProcess
    char logDirName[PATH_MAX];
 
    /** This object encapsulates the task of talking with the watchdog. */
-   psaConnector connector;
+   psoaConnector connector;
    
-   pscMemoryFile memoryFile;
+   psocMemoryFile memoryFile;
    
-} psaProcess;
+} psoaProcess;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_API_EXPORT
-extern psaProcess *  g_pProcessInstance;
+extern psoaProcess *  g_pProcessInstance;
 
 PHOTON_API_EXPORT
 extern bool           g_protectionIsNeeded;
@@ -79,29 +79,29 @@ extern bool           g_protectionIsNeeded;
  * This global mutex is needed for opening and closing sessions in 
  * a multi-threaded environment.
  */
-extern pscThreadLock g_ProcessMutex;
+extern psocThreadLock g_ProcessMutex;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_API_EXPORT
-int psaProcessInit( psaProcess * pProcess,
+int psoaProcessInit( psoaProcess * pProcess,
                     const char * wdAddress );
 
 PHOTON_API_EXPORT
-void psaProcessFini();
+void psoaProcessFini();
 
 PHOTON_API_EXPORT
 bool AreWeTerminated();
 
 PHOTON_API_EXPORT
-int psoaOpenMemory( psaProcess        * process,
+int psoaOpenMemory( psoaProcess        * process,
                     const char        * memoryFileName,
                     size_t              memorySizekb,
-                    psnSessionContext * pSession );
+                    psonSessionContext * pSession );
                         
 PHOTON_API_EXPORT
-void psoaCloseMemory( psaProcess        * process,
-                      psnSessionContext * pSession );
+void psoaCloseMemory( psoaProcess        * process,
+                      psonSessionContext * pSession );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -109,12 +109,12 @@ void psoaCloseMemory( psaProcess        * process,
 static 
 #endif
 __inline
-bool psaProcessLock()
+bool psoaProcessLock()
 {
    bool ok = true;
    
    if ( g_protectionIsNeeded ) {
-      ok = pscTryAcquireThreadLock( &g_ProcessMutex, PSN_LOCK_TIMEOUT );
+      ok = psocTryAcquireThreadLock( &g_ProcessMutex, PSON_LOCK_TIMEOUT );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
    
@@ -128,10 +128,10 @@ bool psaProcessLock()
 static 
 #endif
 __inline
-void psaProcessUnlock()
+void psoaProcessUnlock()
 {
    if ( g_protectionIsNeeded ) {
-      pscReleaseThreadLock( &g_ProcessMutex );
+      psocReleaseThreadLock( &g_ProcessMutex );
    }
 }
 
@@ -141,7 +141,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSA_PROCESS_H */
+#endif /* PSOA_PROCESS_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

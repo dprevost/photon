@@ -55,17 +55,17 @@ gf after fini -> assert
 
 int main()
 {
-   psnLinkedList list;
+   psonLinkedList list;
    dummyStruct dummy[MAX_ELEMENTS];
    int i, j, k;
    int randElement;
    unsigned int randAction;
    int errcode, countNext;
-   psnSessionContext context;
+   psonSessionContext context;
    bool ok;
    
    int numInList;
-   psnLinkNode* pNode = NULL;
+   psonLinkNode* pNode = NULL;
    dummyStruct*  pDummy;
    
    initTest( expectedToPass, &context );
@@ -76,15 +76,15 @@ int main()
    
    for ( i = 0; i < MAX_ELEMENTS; ++i ) {
       dummy[i].dummy1 = i;
-      psnLinkNodeInit( &dummy[i].node );
+      psonLinkNodeInit( &dummy[i].node );
    }
 
    /* Initialize the list */
-   psnLinkedListInit( &list );
+   psonLinkedListInit( &list );
 
    for ( i = 0; i < INITIAL_LIST_SIZE; ++i ) {
-      psnLinkNodeInit( &dummy[i].node );
-      psnLinkedListPutLast( &list, &dummy[i].node );
+      psonLinkNodeInit( &dummy[i].node );
+      psonLinkedListPutLast( &list, &dummy[i].node );
       dummy[i].isInUse = 1;
    }
    numInList = INITIAL_LIST_SIZE;
@@ -131,8 +131,8 @@ int main()
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
          
-         psnLinkNodeInit( &dummy[k].node );
-         psnLinkedListPutFirst( &list, &dummy[k].node );
+         psonLinkNodeInit( &dummy[k].node );
+         psonLinkedListPutFirst( &list, &dummy[k].node );
 
          dummy[k].isInUse = 1;
          numInList++;
@@ -166,15 +166,15 @@ int main()
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
 
-         psnLinkNodeInit( &dummy[k].node );
-         psnLinkedListPutLast( &list, &dummy[k].node );
+         psonLinkNodeInit( &dummy[k].node );
+         psonLinkedListPutLast( &list, &dummy[k].node );
 
          dummy[k].isInUse = 1;
          numInList++;
          break;
          
       case 2:
-         ok = psnLinkedListGetFirst( &list, &pNode );
+         ok = psonLinkedListGetFirst( &list, &pNode );
          if ( ! ok ) {
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
@@ -200,7 +200,7 @@ int main()
          break;
          
       case 3:
-         ok = psnLinkedListGetLast( &list, &pNode );
+         ok = psonLinkedListGetLast( &list, &pNode );
          if ( ! ok ) {
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
@@ -251,7 +251,7 @@ int main()
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
 
-         psnLinkedListRemoveItem( &list, &dummy[k].node );
+         psonLinkedListRemoveItem( &list, &dummy[k].node );
 
          dummy[k].isInUse = 0;         
          numInList--;
@@ -291,11 +291,11 @@ int main()
       
       /* Test the iterators */
       if ( ((i+1)%GET_NEXT_LOOP ) == 0 ) {
-         ok = psnLinkedListPeakFirst( &list, &pNode );
+         ok = psonLinkedListPeakFirst( &list, &pNode );
             
          countNext = 1;
          while ( ok ) {
-            ok = psnLinkedListPeakNext( &list, pNode, &pNode );
+            ok = psonLinkedListPeakNext( &list, pNode, &pNode );
             if ( ok ) countNext++;
          }
 
@@ -304,11 +304,11 @@ int main()
             ERROR_EXIT( expectedToPass, NULL, ; );
          }
          
-         ok = psnLinkedListPeakLast( &list, &pNode );
+         ok = psonLinkedListPeakLast( &list, &pNode );
          
          countNext = 1;
          while ( ok ) {
-            ok = psnLinkedListPeakPrevious( &list, 
+            ok = psonLinkedListPeakPrevious( &list, 
                                              pNode, 
                                              &pNode );
             if ( ok ) countNext++;
@@ -323,7 +323,7 @@ int main()
 
    } /* End of for loop */
 
-   psnLinkedListFini( &list );
+   psonLinkedListFini( &list );
 
    return 0;
 }

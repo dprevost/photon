@@ -23,10 +23,10 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnFolder* pFolder;
-   psnSessionContext context;
+   psonFolder* pFolder;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus status;
+   psonTxStatus status;
    psoObjectDefinition def = { 
       PSO_FOLDER, 
       0, 
@@ -36,9 +36,9 @@ int main()
    
    pFolder = initFolderTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnFolderInit( pFolder,
+   ok = psonFolderInit( pFolder,
                         0,
                         1,
                         0,
@@ -51,7 +51,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderInsertObject( pFolder,
+   ok = psonFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -63,20 +63,20 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderDeleteObject( pFolder,
+   ok = psonFolderDeleteObject( pFolder,
                                 "test2",
                                 5,
                                 &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pscGetLastError( &context.errorHandler ) != PSO_OBJECT_IS_IN_USE ) {
+   if ( psocGetLastError( &context.errorHandler ) != PSO_OBJECT_IS_IN_USE ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnTxCommit( (psnTx *)context.pTransaction, &context );
+   psonTxCommit( (psonTx *)context.pTransaction, &context );
    
-   ok = psnFolderDeleteObject( pFolder,
+   ok = psonFolderDeleteObject( pFolder,
                                 "test2",
                                 5,
                                 &context );
@@ -87,18 +87,18 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnFolderDeleteObject( pFolder,
+   ok = psonFolderDeleteObject( pFolder,
                                 "test3",
                                 5,
                                 &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pscGetLastError( &context.errorHandler ) != PSO_NO_SUCH_OBJECT ) {
+   if ( psocGetLastError( &context.errorHandler ) != PSO_NO_SUCH_OBJECT ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnFolderFini( pFolder, &context );
+   psonFolderFini( pFolder, &context );
    
    return 0;
 }

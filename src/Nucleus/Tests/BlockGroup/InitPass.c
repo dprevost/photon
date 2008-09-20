@@ -24,13 +24,13 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnBlockGroup *pGroup;
+   psonBlockGroup *pGroup;
    unsigned char* ptr;
-   psnSessionContext context;
+   psonSessionContext context;
    
    initTest( expectedToPass, &context );
 
-   ptr = malloc( PSN_BLOCK_SIZE*10 );
+   ptr = malloc( PSON_BLOCK_SIZE*10 );
    if (ptr == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -39,26 +39,26 @@ int main()
    /* This "100" (non-zero) offset should mark this block group 
     * as the first block group of a MemObject.
     */
-   pGroup = (psnBlockGroup*) (ptr + 100);
+   pGroup = (psonBlockGroup*) (ptr + 100);
    
-   psnBlockGroupInit( pGroup, 
+   psonBlockGroupInit( pGroup, 
                       SET_OFFSET(ptr),
                       10,
-                      PSN_IDENT_QUEUE );
-   if ( pGroup->node.nextOffset != PSN_NULL_OFFSET ) {
+                      PSON_IDENT_QUEUE );
+   if ( pGroup->node.nextOffset != PSON_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pGroup->node.previousOffset != PSN_NULL_OFFSET ) {
+   if ( pGroup->node.previousOffset != PSON_NULL_OFFSET ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pGroup->numBlocks != 10 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pGroup->maxFreeBytes < 9*PSN_BLOCK_SIZE || 
-            pGroup->maxFreeBytes >= 10*PSN_BLOCK_SIZE ) {
+   if ( pGroup->maxFreeBytes < 9*PSON_BLOCK_SIZE || 
+            pGroup->maxFreeBytes >= 10*PSON_BLOCK_SIZE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if (pGroup->freeList.initialized != PSN_LIST_SIGNATURE ) {
+   if (pGroup->freeList.initialized != PSON_LIST_SIGNATURE ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pGroup->isDeletable == true ) {
@@ -68,16 +68,16 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnBlockGroupFini( pGroup );
+   psonBlockGroupFini( pGroup );
 
    /* A zero offset this time */
-   pGroup = (psnBlockGroup*) ptr;
-   psnBlockGroupInit( pGroup, SET_OFFSET(ptr), 10, PSN_IDENT_QUEUE );
+   pGroup = (psonBlockGroup*) ptr;
+   psonBlockGroupInit( pGroup, SET_OFFSET(ptr), 10, PSON_IDENT_QUEUE );
    if ( pGroup->isDeletable == false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnBlockGroupFini( pGroup );
+   psonBlockGroupFini( pGroup );
    
    return 0;
 }

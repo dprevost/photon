@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * data1 = "My Data1";
    const char * data2 = "My Data2";
-   psaDataEntry entry;
+   psoaDataEntry entry;
    psoObjectDefinition defLilo = { 
       PSO_LIFO,
       1, 
@@ -101,7 +101,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaLifoNext( objHandle, &entry );
+   errcode = psoaLifoNext( objHandle, &entry );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

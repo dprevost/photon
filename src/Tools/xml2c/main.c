@@ -41,20 +41,20 @@ int main( int argc, char * argv[] )
    int fd = -1, errcode = 0, rc = 0, debug = 0;
    size_t length, i, j;
    int separator = -1;
-   pscOptionHandle optHandle;
+   psocOptionHandle optHandle;
    char * buff = NULL;
    bool ok;
    
 #if HAVE_STAT || HAVE__STAT
    struct stat status;
 
-   struct pscOptStruct opts[2] = {
+   struct psocOptStruct opts[2] = {
       { 'i', "input",    0, "input_filename", "Filename for the input (XML)" },
       { 'o', "output",   0, "output_dirname", "Directory name for the output files" }
    };
 
 #else
-   struct pscOptStruct opts[3] = {
+   struct psocOptStruct opts[3] = {
       { 'i', "input",    0, "input_filename", "Filename for the input (XML)" },
       { 'l', "length",   0, "input length",   "Length of input if stat() not supported" },
       { 'o', "output",   0, "output_dirname", "Directory name for the output files" }
@@ -70,29 +70,29 @@ int main( int argc, char * argv[] )
    xmlChar * prop = NULL;
    
 #if HAVE_STAT || HAVE__STAT
-   ok = pscSetSupportedOptions( 2, opts, &optHandle );
+   ok = psocSetSupportedOptions( 2, opts, &optHandle );
 #else
-   ok = pscSetSupportedOptions( 3, opts, &optHandle );
+   ok = psocSetSupportedOptions( 3, opts, &optHandle );
 #endif
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
-      fprintf( stderr, "Internal error in pscSetSupportedOptions\n" );
+      fprintf( stderr, "Internal error in psocSetSupportedOptions\n" );
       return 1;
    }
    
-   errcode = pscValidateUserOptions( optHandle, argc, argv, 1 );
+   errcode = psocValidateUserOptions( optHandle, argc, argv, 1 );
    if ( errcode < 0 ) {
-      pscShowUsage( optHandle, argv[0], "" );
+      psocShowUsage( optHandle, argv[0], "" );
       return 1;
    }
    
    if ( errcode > 0 ) {
-      pscShowUsage( optHandle, argv[0], "" );
+      psocShowUsage( optHandle, argv[0], "" );
       return 0;
    }
 
-   pscGetShortOptArgument( optHandle, 'i', &inputname );
-   pscGetShortOptArgument( optHandle, 'o', &dirname );
+   psocGetShortOptArgument( optHandle, 'i', &inputname );
+   psocGetShortOptArgument( optHandle, 'o', &dirname );
 
 #if HAVE_STAT || HAVE__STAT
    errcode = stat( inputname, &status );
@@ -102,7 +102,7 @@ int main( int argc, char * argv[] )
    }
    length = status.st_size;
 #else   
-   pscGetShortOptArgument( optHandle, 'o', &dummy );
+   psocGetShortOptArgument( optHandle, 'o', &dummy );
    sscanf( dummy, PSO_SIZE_T_FORMAT, &length );
 #endif
 

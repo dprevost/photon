@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_DLINKED_LIST_H
-#define PSN_DLINKED_LIST_H
+#ifndef PSON_DLINKED_LIST_H
+#define PSON_DLINKED_LIST_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,7 +33,7 @@ BEGIN_C_DECLS
  * of LinkedList.c at that time... The signature is used to indicate
  * that the struct was properly initialized.
  */
-#define PSN_LIST_SIGNATURE  ((unsigned int)0x7a3dc233)
+#define PSON_LIST_SIGNATURE  ((unsigned int)0x7a3dc233)
 
 /**
  * This module implements a simple and efficient doubled linked list.
@@ -45,96 +45,96 @@ BEGIN_C_DECLS
  * 2) They will not do synchronisation (locking). Again, this task is left
  *    to the object owning/using the list.
  */	
-struct psnLinkedList
+struct psonLinkedList
 {
    /** The dummy node of the circular linked list. */
-   psnLinkNode head;
+   psonLinkNode head;
 
    /** Current size of the list. */
    size_t currentSize;
 
-   /** Set to PSN_LIST_SIGNATURE at initialization. */
+   /** Set to PSON_LIST_SIGNATURE at initialization. */
    unsigned int initialized;
    
 };
 
-typedef struct psnLinkedList psnLinkedList;
+typedef struct psonLinkedList psonLinkedList;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Cleanup the list once we're done with it. */
 PHOTON_ENGINE_EXPORT void 
-psnLinkedListFini( psnLinkedList * pList );
+psonLinkedListFini( psonLinkedList * pList );
 
 /** Removes and returns the first item on the list. */
 static inline 
-bool psnLinkedListGetFirst( psnLinkedList  * pList,
-                             psnLinkNode   ** ppItem );
+bool psonLinkedListGetFirst( psonLinkedList  * pList,
+                             psonLinkNode   ** ppItem );
 
 /** Removes and returns the last item on the list. */ 
 static inline 
-bool psnLinkedListGetLast( psnLinkedList  * pList,
-                            psnLinkNode   ** ppItem );
+bool psonLinkedListGetLast( psonLinkedList  * pList,
+                            psonLinkNode   ** ppItem );
 
 /** Initialize the linked list. */
 PHOTON_ENGINE_EXPORT 
-void psnLinkedListInit( psnLinkedList * pList );
+void psonLinkedListInit( psonLinkedList * pList );
 
 /** Adds pNewItem to the beginning of the list. */
 static inline 
-void psnLinkedListPutFirst( psnLinkedList * pList,
-                             psnLinkNode   * pNewItem );
+void psonLinkedListPutFirst( psonLinkedList * pList,
+                             psonLinkNode   * pNewItem );
 
 /** Adds pNewItem to the tail of the list. */
 static inline 
-void psnLinkedListPutLast( psnLinkedList * pList,
-                            psnLinkNode   * pNewItem );
+void psonLinkedListPutLast( psonLinkedList * pList,
+                            psonLinkNode   * pNewItem );
 
 /** Returns the first item on the list. The item is not removed. */
 static inline
-bool psnLinkedListPeakFirst( psnLinkedList  * pList,
-                              psnLinkNode   ** ppItem );
+bool psonLinkedListPeakFirst( psonLinkedList  * pList,
+                              psonLinkNode   ** ppItem );
 
 /** Returns the last item on the list. The item is not removed. */
 static inline
-bool psnLinkedListPeakLast( psnLinkedList  * pList,
-                             psnLinkNode   ** ppItem );
+bool psonLinkedListPeakLast( psonLinkedList  * pList,
+                             psonLinkNode   ** ppItem );
 
 /** Returns the item just after pCurrent. The item is not removed. */
 static inline
-bool psnLinkedListPeakNext( psnLinkedList * pList, 
-                             psnLinkNode   * pCurrent, 
-                             psnLinkNode  ** ppNext );
+bool psonLinkedListPeakNext( psonLinkedList * pList, 
+                             psonLinkNode   * pCurrent, 
+                             psonLinkNode  ** ppNext );
 
 /** Returns the item just before pCurrent. The item is not removed. */
 static inline
-bool psnLinkedListPeakPrevious( psnLinkedList * pList,
-                                 psnLinkNode   * pCurrent, 
-                                 psnLinkNode  ** ppPrevious );
+bool psonLinkedListPeakPrevious( psonLinkedList * pList,
+                                 psonLinkNode   * pCurrent, 
+                                 psonLinkNode  ** ppPrevious );
 
 /** 
  * Remove the item pointed to by pRemovedItem from the list (this 
  * assumes that pRemovedItem is in the list... otherwise big trouble!)
  */
 static inline
-void psnLinkedListRemoveItem( psnLinkedList * pList,
-                               psnLinkNode   * pRemovedItem );
+void psonLinkedListRemoveItem( psonLinkedList * pList,
+                               psonLinkNode   * pRemovedItem );
 
 /** 
  * Replace the item pointed to by pOldItem with the item pNewItem (this 
  * assumes that pOldItem is in the list... otherwise big trouble!)
  */
 static inline 
-void psnLinkedListReplaceItem( psnLinkedList * pList,
-                                psnLinkNode   * pOldItem,
-                                psnLinkNode   * pNewItem );
+void psonLinkedListReplaceItem( psonLinkedList * pList,
+                                psonLinkNode   * pOldItem,
+                                psonLinkNode   * pNewItem );
 
 /** Search in the list to see if pUnknown is in it or not - used by the
- *  crash recovery algorithm, psnFree, etc. 
+ *  crash recovery algorithm, psonFree, etc. 
  */
 PHOTON_ENGINE_EXPORT 
-bool psnLinkedListIsValid( psnLinkedList * pList,
-                            psnLinkNode   * pUnknown );
+bool psonLinkedListIsValid( psonLinkedList * pList,
+                            psonLinkNode   * pUnknown );
 
 /*
  * The next functions are part of the recovery algorithm and should not
@@ -145,7 +145,7 @@ bool psnLinkedListIsValid( psnLinkedList * pList,
  *  crash recovery algorithm
  */
 PHOTON_ENGINE_EXPORT 
-void psnLinkedListReset( psnLinkedList * pList );
+void psonLinkedListReset( psonLinkedList * pList );
 
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -158,7 +158,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_DLINKED_LIST_H */
+#endif /* PSON_DLINKED_LIST_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

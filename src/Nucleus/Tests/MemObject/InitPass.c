@@ -25,28 +25,28 @@ const bool expectedToPass = true;
 int main()
 {
    psoErrors errcode;
-   psnMemObject* pObj;
+   psonMemObject* pObj;
    psotObjDummy  *pDummy;
-   psnSessionContext context;
+   psonSessionContext context;
    
    pDummy = initMemObjTest( expectedToPass, &context );
    pObj = &pDummy->memObject;
    
-   errcode = psnMemObjectInit( pObj, 
-                                PSN_IDENT_ALLOCATOR,
+   errcode = psonMemObjectInit( pObj, 
+                                PSON_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( pObj->objType != PSN_IDENT_ALLOCATOR ) {
+   if ( pObj->objType != PSON_IDENT_ALLOCATOR ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pObj->totalBlocks != 4 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnMemObjectFini( pObj, PSN_ALLOC_ANY, &context );
+   psonMemObjectFini( pObj, PSON_ALLOC_ANY, &context );
    
    return 0;
 }

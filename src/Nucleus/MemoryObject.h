@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_MEMORY_OBJECT_H
-#define PSN_MEMORY_OBJECT_H
+#ifndef PSON_MEMORY_OBJECT_H
+#define PSON_MEMORY_OBJECT_H
 
 #include "Nucleus/Engine.h"
 #include "Nucleus/LinkNode.h"
@@ -39,56 +39,56 @@ BEGIN_C_DECLS
  * an object. This way, the identifier is always at the top of a block and it
  * should help debug, recover from crashes, etc. 
  *
- * The psnBlockGroup struct is NOT included in this struct since it
- * contains a variable array size. The psnBlockGroup struct should be
- * put at the end of the container that owns a psnMemObject.
+ * The psonBlockGroup struct is NOT included in this struct since it
+ * contains a variable array size. The psonBlockGroup struct should be
+ * put at the end of the container that owns a psonMemObject.
  */
-struct psnMemObject
+struct psonMemObject
 {
    /** Type of memory object */
-   psnMemObjIdent objType;
+   psonMemObjIdent objType;
    
    /** The lock... obviously */
-   pscProcessLock lock;
+   psocProcessLock lock;
 
    /** Total number of blocks for the current object */
    size_t totalBlocks;
    
-   psnLinkedList listBlockGroup;
+   psonLinkedList listBlockGroup;
    
 };
 
-typedef struct psnMemObject psnMemObject;
+typedef struct psonMemObject psonMemObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
 enum psoErrors 
-psnMemObjectInit( psnMemObject   * pMemObj,
-                   psnMemObjIdent   objType,
-                   psnBlockGroup  * pGroup,
+psonMemObjectInit( psonMemObject   * pMemObj,
+                   psonMemObjIdent   objType,
+                   psonBlockGroup  * pGroup,
                    size_t            numBlocks );
 
 PHOTON_ENGINE_EXPORT
 enum psoErrors 
-psnMemObjectFini( psnMemObject      * pMemObj,
-                   psnAllocTypeEnum    allocType,
-                   psnSessionContext * pContext );
+psonMemObjectFini( psonMemObject      * pMemObj,
+                   psonAllocTypeEnum    allocType,
+                   psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-unsigned char* psnMalloc( psnMemObject      * pMemObj,
+unsigned char* psonMalloc( psonMemObject      * pMemObj,
                            size_t               numBytes,
-                           psnSessionContext * pContext );
+                           psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psnFree( psnMemObject      * pMemObj,
+void psonFree( psonMemObject      * pMemObj,
                unsigned char      * ptr, 
                size_t               numBytes,
-               psnSessionContext * pContext );
+               psonSessionContext * pContext );
 
 static inline
-bool psnLock( psnMemObject      * pMemObj,
-               psnSessionContext * pContext )
+bool psonLock( psonMemObject      * pMemObj,
+               psonSessionContext * pContext )
 {
    bool ok;
 
@@ -96,47 +96,47 @@ bool psnLock( psnMemObject      * pMemObj,
    PSO_PRE_CONDITION( pContext != NULL );
    
    if ( pContext->lockOffsets != NULL ) {
-      psnSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
+      psonSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
    }
    
-   ok = pscTryAcquireProcessLock ( &pMemObj->lock,
+   ok = psocTryAcquireProcessLock ( &pMemObj->lock,
                                    pContext->pidLocker,
-                                   PSN_LOCK_TIMEOUT );
+                                   PSON_LOCK_TIMEOUT );
    PSO_POST_CONDITION( ok == true || ok == false );
    
    return ok;
 }
 
 static inline
-void psnLockNoFailure( psnMemObject      * pMemObj,
-                        psnSessionContext * pContext )
+void psonLockNoFailure( psonMemObject      * pMemObj,
+                        psonSessionContext * pContext )
 {
    PSO_PRE_CONDITION( pMemObj  != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
 
    if ( pContext->lockOffsets != NULL ) {
-      psnSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
+      psonSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
    }
    
-   pscAcquireProcessLock ( &pMemObj->lock, PSN_LOCK_TIMEOUT );
+   psocAcquireProcessLock ( &pMemObj->lock, PSON_LOCK_TIMEOUT );
 }
 
 PHOTON_ENGINE_EXPORT
-void psnMemObjectStatus( psnMemObject * pMemObject, 
+void psonMemObjectStatus( psonMemObject * pMemObject, 
                           psoObjStatus  * pStatus );
 
 static inline
-void psnUnlock( psnMemObject      * pMemObj,
-                 psnSessionContext * pContext  )
+void psonUnlock( psonMemObject      * pMemObj,
+                 psonSessionContext * pContext  )
 {
    PSO_PRE_CONDITION( pMemObj  != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
 
    if ( pContext->lockOffsets != NULL ) {
-      psnSessionRemoveLock( pContext, SET_OFFSET( pMemObj ) );
+      psonSessionRemoveLock( pContext, SET_OFFSET( pMemObj ) );
    }
    
-   pscReleaseProcessLock ( &pMemObj->lock );
+   psocReleaseProcessLock ( &pMemObj->lock );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -145,7 +145,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_MEMORY_OBJECT_H */
+#endif /* PSON_MEMORY_OBJECT_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

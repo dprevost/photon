@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDSW_LOGMSG_H
-#define VDSW_LOGMSG_H
+#ifndef PSOQ_LOGMSG_H
+#define PSOQ_LOGMSG_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -46,7 +46,7 @@ enum wdMsgSeverity
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 /**
- *  The vdswLogMsg class is a wrapper for the differences between different
+ *  The psoqLogMsg class is a wrapper for the differences between different
  *  platform-specific event-logging mechanisms (well... so far this means
  *  EventLog on Windows and syslog on Unix/linux).
  *
@@ -55,7 +55,7 @@ enum wdMsgSeverity
  *  for example) to disturb a production environment.
  */
 
-struct vdswLogMsg
+struct psoqLogMsg
 {
 
    /// True if we are a daemon or an NT service, false otherwise
@@ -68,18 +68,18 @@ struct vdswLogMsg
    char * name;
 };
 
-typedef struct vdswLogMsg vdswLogMsg;
+typedef struct psoqLogMsg psoqLogMsg;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int vdswLogMsgInit( vdswLogMsg * pLog,
+int psoqLogMsgInit( psoqLogMsg * pLog,
                     const char * progName );
    
-void vdswLogMsgFini( vdswLogMsg * pLog );
+void psoqLogMsgFini( psoqLogMsg * pLog );
    
-void vdswStartUsingLogger( vdswLogMsg * pLog );
+void psoqStartUsingLogger( psoqLogMsg * pLog );
    
-void vdswSendMessage( vdswLogMsg         * pLog,
+void psoqSendMessage( psoqLogMsg         * pLog,
                       enum wdMsgSeverity   severity,
                       const char         * format, 
                       ... );
@@ -90,12 +90,12 @@ void vdswSendMessage( vdswLogMsg         * pLog,
     *  This is not mandatory but it makes it easier to examine events
     *  using EventViewer.
     */
-int vdswLogMsgInstall( vdswLogMsg * pLog,
+int psoqLogMsgInstall( psoqLogMsg * pLog,
                        const char * progName, 
                        const char * msgPathName,
                        int          dwNum );
 
-int vdswLogMsgUninstall( vdswLogMsg * pLog,
+int psoqLogMsgUninstall( psoqLogMsg * pLog,
                          const char * progName );
 #endif
 
@@ -103,7 +103,7 @@ int vdswLogMsgUninstall( vdswLogMsg * pLog,
 
 END_C_DECLS
 
-#endif /* VDSW_LOGMSG_H */
+#endif /* PSOQ_LOGMSG_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

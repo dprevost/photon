@@ -71,7 +71,7 @@ typedef struct psotBarrier psotBarrier;
 /*! \brief Initialize the struct psotBarrier. */
 int psotInitBarrier( psotBarrier     * pBarrier,
                      int               numThreads,
-                     pscErrorHandler * pError );
+                     psocErrorHandler * pError );
 
 /*! \brief Terminate access to the struct psotBarrier. */
 void psotFiniBarrier( psotBarrier * pBarrier );

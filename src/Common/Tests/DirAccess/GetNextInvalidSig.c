@@ -27,21 +27,21 @@ int main()
 {
 #if defined(USE_DBC)
    bool ok;
-   pscDirIterator iterator;
-   pscErrorHandler errorHandler;
+   psocDirIterator iterator;
+   psocErrorHandler errorHandler;
    const char* str;
 
-   pscInitErrorDefs();
-   pscInitDir( &iterator );
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorDefs();
+   psocInitDir( &iterator );
+   psocInitErrorHandler( &errorHandler );
    
-   ok = pscOpenDir( &iterator, "..", &errorHandler );
+   ok = psocOpenDir( &iterator, "..", &errorHandler );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, &errorHandler, ; );
    }
    
    iterator.initialized = 0;
-   str = pscDirGetNextFileName( &iterator, &errorHandler );
+   str = psocDirGetNextFileName( &iterator, &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

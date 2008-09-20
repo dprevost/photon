@@ -22,7 +22,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-bool psnIsBufferFree( psnMemBitmap * pBitmap,
+bool psonIsBufferFree( psonMemBitmap * pBitmap,
                        ptrdiff_t       offset )
 {
    size_t byte, bit;
@@ -30,7 +30,7 @@ bool psnIsBufferFree( psnMemBitmap * pBitmap,
    ptrdiff_t localOffset;
    
    PSO_PRE_CONDITION( pBitmap != NULL );
-   PSO_PRE_CONDITION( offset  != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( offset  != PSON_NULL_OFFSET );
 
    localOffset = offset - pBitmap->baseAddressOffset;
    if ( localOffset < 0 ) return false;
@@ -52,7 +52,7 @@ bool psnIsBufferFree( psnMemBitmap * pBitmap,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-void psnSetBufferAllocated( psnMemBitmap * pBitmap,
+void psonSetBufferAllocated( psonMemBitmap * pBitmap,
                              ptrdiff_t       offset,
                              size_t          length )
 {
@@ -61,7 +61,7 @@ void psnSetBufferAllocated( psnMemBitmap * pBitmap,
    ptrdiff_t localOffset;
    
    PSO_PRE_CONDITION( pBitmap != NULL );
-   PSO_PRE_CONDITION( offset  != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( offset  != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( length > 0 );
    
    localOffset = offset - pBitmap->baseAddressOffset;
@@ -90,7 +90,7 @@ void psnSetBufferAllocated( psnMemBitmap * pBitmap,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-void psnSetBufferFree( psnMemBitmap * pBitmap,
+void psonSetBufferFree( psonMemBitmap * pBitmap,
                         ptrdiff_t       offset,
                         size_t          length )
 {
@@ -99,7 +99,7 @@ void psnSetBufferFree( psnMemBitmap * pBitmap,
    ptrdiff_t localOffset;
 
    PSO_PRE_CONDITION( pBitmap != NULL );
-   PSO_PRE_CONDITION( offset  != PSN_NULL_OFFSET );
+   PSO_PRE_CONDITION( offset  != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( length > 0 );
 
    localOffset = offset - pBitmap->baseAddressOffset;
@@ -128,7 +128,7 @@ void psnSetBufferFree( psnMemBitmap * pBitmap,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 inline
-size_t psnGetBitmapLengthBytes( size_t length, size_t allocationUnit )
+size_t psonGetBitmapLengthBytes( size_t length, size_t allocationUnit )
 {
    /* Testing that it is non-zero and a power of two */
    PSO_PRE_CONDITION( allocationUnit > 0  && 

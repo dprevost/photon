@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_TREE_NODE_H
-#define PSN_TREE_NODE_H
+#ifndef PSON_TREE_NODE_H
+#define PSON_TREE_NODE_H
 
 #include "Engine.h"
 
@@ -26,12 +26,12 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 	
-struct psnObjectDescriptor
+struct psonObjectDescriptor
 {
    /** Offset of the object */
    ptrdiff_t offset;
    
-   /** Offset to the psnTreeNode struct. */
+   /** Offset to the psonTreeNode struct. */
    ptrdiff_t nodeOffset;
    
    /** Offset to the memory object struct. */
@@ -54,7 +54,7 @@ struct psnObjectDescriptor
    
 };
 
-typedef struct psnObjectDescriptor psnObjectDescriptor;
+typedef struct psonObjectDescriptor psonObjectDescriptor;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -62,7 +62,7 @@ typedef struct psnObjectDescriptor psnObjectDescriptor;
  * This structure contains the information needed for all the leaves and
  * the branches of the tree of objects/containers visible from the API.
  */
-struct psnTreeNode
+struct psonTreeNode
 {
    /** Count the number of uncommitted/unrollbacked transaction ops are
     * still to be processed on this object (or more exactly on its data).
@@ -80,21 +80,21 @@ struct psnTreeNode
    /** Offset to the string used for the key (lowercase of the original). */
    ptrdiff_t myHashItem;
    
-   /** Offset to the transaction info (psnTxStatus). */
+   /** Offset to the transaction info (psonTxStatus). */
    ptrdiff_t txStatusOffset;
 
    /** Offset to the parent of this object. */
-   /* PSN_NULL_OFFSET for top folder ("/") */
+   /* PSON_NULL_OFFSET for top folder ("/") */
    ptrdiff_t myParentOffset;
    
 };
 
-typedef struct psnTreeNode psnTreeNode;
+typedef struct psonTreeNode psonTreeNode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void psnTreeNodeInit( psnTreeNode * pNode,
+void psonTreeNodeInit( psonTreeNode * pNode,
                        ptrdiff_t      txStatusOffset,
                        size_t         originalNameLength,
                        ptrdiff_t      originalNameOffset,
@@ -114,16 +114,16 @@ void psnTreeNodeInit( psnTreeNode * pNode,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-void psnTreeNodeFini( psnTreeNode * pNode )
+void psonTreeNodeFini( psonTreeNode * pNode )
 {
    PSO_PRE_CONDITION( pNode != NULL );
    
    pNode->txCounter      = 0;
    pNode->myNameLength   = 0;
-   pNode->myNameOffset   = PSN_NULL_OFFSET;
-   pNode->txStatusOffset = PSN_NULL_OFFSET;
-   pNode->myParentOffset = PSN_NULL_OFFSET;
-   pNode->myHashItem     = PSN_NULL_OFFSET;
+   pNode->myNameOffset   = PSON_NULL_OFFSET;
+   pNode->txStatusOffset = PSON_NULL_OFFSET;
+   pNode->myParentOffset = PSON_NULL_OFFSET;
+   pNode->myHashItem     = PSON_NULL_OFFSET;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -132,7 +132,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_TREE_NODE_H */
+#endif /* PSON_TREE_NODE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -23,8 +23,8 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnMap * pOldMap, * pNewMap;
-   psnSessionContext context;
+   psonMap * pOldMap, * pNewMap;
+   psonSessionContext context;
    bool ok;
    char * key1  = "my key1";
    char * key2  = "my key2";
@@ -37,21 +37,21 @@ int main()
       { PSO_KEY_VAR_STRING, 0, 1, 100 }, 
       { { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } } 
    };
-   psnHashItem   hashItem;
-   psnHashItem * pItem;
+   psonHashItem   hashItem;
+   psonHashItem * pItem;
    
    initHashMapCopyTest( expectedToPass, &pOldMap, &pNewMap, &context );
 
-   psnTxStatusInit( &hashItem.txStatus, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &hashItem.txStatus, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnMapInit( pOldMap, 
+   ok = psonMapInit( pOldMap, 
                      0, 1, 0, &hashItem.txStatus, 4, 
                      "Map1", SET_OFFSET(pOldMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnMapInsert( pOldMap,
+   ok = psonMapInsert( pOldMap,
                        (const void *) key1,
                        7,
                        (const void *) data1,
@@ -60,7 +60,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnMapInsert( pOldMap,
+   ok = psonMapInsert( pOldMap,
                        (const void *) key2,
                        7,
                        (const void *) data2,
@@ -70,13 +70,13 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = psnMapCopy( pOldMap, 
+   ok = psonMapCopy( pOldMap, 
                      pNewMap,
                      &hashItem,
                      "Map1",
                      &context );
    
-   ok = psnMapGet( pNewMap,
+   ok = psonMapGet( pNewMap,
                     (const void *) key1,
                     7,
                     &pItem,
@@ -90,7 +90,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   ok = psnMapGet( pNewMap,
+   ok = psonMapGet( pNewMap,
                     (const void *) key2,
                     7,
                     &pItem,

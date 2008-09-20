@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSN_INIT_ENGINE_H
-#define PSN_INIT_ENGINE_H
+#ifndef PSON_INIT_ENGINE_H
+#define PSON_INIT_ENGINE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -35,7 +35,7 @@ PHOTON_ENGINE_EXPORT extern const char * MYCXX;
 #endif
 
 PHOTON_ENGINE_EXPORT 
-bool psnInitEngine();
+bool psonInitEngine();
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -43,7 +43,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSN_INIT_ENGINE_H */
+#endif /* PSON_INIT_ENGINE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -21,26 +21,26 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswRecoverError
-vdswCheckFastMapContent( vdswVerifyStruct   * pVerify,
-                         psnMap            * pHashMap, 
-                         psnSessionContext * pContext )
+enum psoqRecoverError
+psoqCheckFastMapContent( psoqVerifyStruct   * pVerify,
+                         psonMap            * pHashMap, 
+                         psonSessionContext * pContext )
 {
    ptrdiff_t offset, previousOffset;
-   psnHashItem * pItem, * pDeletedItem = NULL;
-   psnTxStatus * txItemStatus;
-   enum vdswRecoverError rc = VDSWR_OK;
+   psonHashItem * pItem, * pDeletedItem = NULL;
+   psonTxStatus * txItemStatus;
+   enum psoqRecoverError rc = PSOQ_REC_OK;
    bool found;
    
    /* The easy case */
    if ( pHashMap->hashObj.numberOfItems == 0 ) return rc;
    
-   found = psnHashGetFirst( &pHashMap->hashObj, &offset );
+   found = psonHashGetFirst( &pHashMap->hashObj, &offset );
    while ( found ) {
-      GET_PTR( pItem, offset, psnHashItem );
+      GET_PTR( pItem, offset, psonHashItem );
       txItemStatus = &pItem->txStatus;
 
-      if ( txItemStatus->txOffset != PSN_NULL_OFFSET ) {
+      if ( txItemStatus->txOffset != PSON_NULL_OFFSET ) {
          /*
           * So we have an interrupted transaction. What kind? 
           *   FLAG                      ACTION          
@@ -51,41 +51,41 @@ vdswCheckFastMapContent( vdswVerifyStruct   * pVerify,
           *
           * Action is the equivalent of what a rollback would do.
           */
-         if ( txItemStatus->status & PSN_TXS_ADDED ) {
-            vdswEcho( pVerify, "Hash item added but not committed" );
+         if ( txItemStatus->status & PSON_TXS_ADDED ) {
+            psoqEcho( pVerify, "Hash item added but not committed" );
             pDeletedItem = pItem;
          }         
-         else if ( txItemStatus->status & PSN_TXS_REPLACED ) {
-            vdswEcho( pVerify, "Hash item replaced but not committed" );
+         else if ( txItemStatus->status & PSON_TXS_REPLACED ) {
+            psoqEcho( pVerify, "Hash item replaced but not committed" );
             pDeletedItem = pItem;
          }
-         else if ( txItemStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
-            vdswEcho( pVerify, "Hash item deleted and committed" );
+         else if ( txItemStatus->status & PSON_TXS_DESTROYED_COMMITTED ) {
+            psoqEcho( pVerify, "Hash item deleted and committed" );
             pDeletedItem = pItem;
          }
-         else if ( txItemStatus->status & PSN_TXS_DESTROYED ) {
-            vdswEcho( pVerify, "Hash item deleted but not committed" );
+         else if ( txItemStatus->status & PSON_TXS_DESTROYED ) {
+            psoqEcho( pVerify, "Hash item deleted but not committed" );
          }
          
          if ( pDeletedItem == NULL && pVerify->doRepair ) {
-            txItemStatus->txOffset = PSN_NULL_OFFSET;
-            txItemStatus->status = PSN_TXS_OK;
-            vdswEcho( pVerify, "Hash item status fields reset to zero" );
+            txItemStatus->txOffset = PSON_NULL_OFFSET;
+            txItemStatus->status = PSON_TXS_OK;
+            psoqEcho( pVerify, "Hash item status fields reset to zero" );
          }
-         rc = VDSWR_CHANGES;
+         rc = PSOQ_REC_CHANGES;
       }
       
       if ( pDeletedItem == NULL && txItemStatus->usageCounter != 0 ) {
-         rc = VDSWR_CHANGES;
-         vdswEcho( pVerify, "Hash item usage counter is not zero" );
+         rc = PSOQ_REC_CHANGES;
+         psoqEcho( pVerify, "Hash item usage counter is not zero" );
          if (pVerify->doRepair) {
             txItemStatus->usageCounter = 0;
-            vdswEcho( pVerify, "Hash item usage counter set to zero" );
+            psoqEcho( pVerify, "Hash item usage counter set to zero" );
          }
       }
       
       previousOffset = offset;
-      found = psnHashGetNext( &pHashMap->hashObj,
+      found = psonHashGetNext( &pHashMap->hashObj,
                                previousOffset,
                                &offset );
 
@@ -95,10 +95,10 @@ vdswCheckFastMapContent( vdswVerifyStruct   * pVerify,
        * retrieve the next item.
        */
       if ( pDeletedItem != NULL && pVerify->doRepair ) {
-         psnHashDelWithItem( &pHashMap->hashObj,
+         psonHashDelWithItem( &pHashMap->hashObj,
                               pDeletedItem,
                               pContext );
-         vdswEcho( pVerify, "Hash item removed from shared memory" );
+         psoqEcho( pVerify, "Hash item removed from shared memory" );
       }
       pDeletedItem = NULL;
    }
@@ -108,30 +108,30 @@ vdswCheckFastMapContent( vdswVerifyStruct   * pVerify,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswRecoverError 
-vdswVerifyFastMap( vdswVerifyStruct   * pVerify,
-                   psnMap            * pHashMap,
-                   psnSessionContext * pContext )
+enum psoqRecoverError 
+psoqVerifyFastMap( psoqVerifyStruct   * pVerify,
+                   psonMap            * pHashMap,
+                   psonSessionContext * pContext )
 {
-   psnTxStatus * txHashMapStatus;
-   enum vdswRecoverError rc = VDSWR_OK, rc2;
+   psonTxStatus * txHashMapStatus;
+   enum psoqRecoverError rc = PSOQ_REC_OK, rc2;
    bool bTestObject = false;
       
    pVerify->spaces += 2;
 
    /* Is the object lock ? */
-   if ( pscIsItLocked( &pHashMap->memObject.lock ) ) {
-      vdswEcho( pVerify, "The object is locked - it might be corrupted" );
+   if ( psocIsItLocked( &pHashMap->memObject.lock ) ) {
+      psoqEcho( pVerify, "The object is locked - it might be corrupted" );
       if ( pVerify->doRepair ) {
-         vdswEcho( pVerify, "Trying to reset the lock..." );
-         pscReleaseProcessLock ( &pHashMap->memObject.lock );
+         psoqEcho( pVerify, "Trying to reset the lock..." );
+         psocReleaseProcessLock ( &pHashMap->memObject.lock );
       }
-      rc = vdswVerifyMemObject( pVerify, &pHashMap->memObject, pContext );
-      if ( rc > VDSWR_START_ERRORS ) {
+      rc = psoqVerifyMemObject( pVerify, &pHashMap->memObject, pContext );
+      if ( rc > PSOQ_REC_START_ERRORS ) {
          pVerify->spaces -= 2;
          return rc;
       }
-      rc = VDSWR_CHANGES;
+      rc = PSOQ_REC_CHANGES;
       bTestObject = true;
    }
 
@@ -140,11 +140,11 @@ vdswVerifyFastMap( vdswVerifyStruct   * pVerify,
     * change (as it is the case for other types of objects) so populate the 
     * bitmap in all cases to be safe.
     */
-   vdswPopulateBitmap( pVerify, &pHashMap->memObject, pContext );
+   psoqPopulateBitmap( pVerify, &pHashMap->memObject, pContext );
 
-   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psnTxStatus );
+   GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psonTxStatus );
 
-   if ( txHashMapStatus->txOffset != PSN_NULL_OFFSET ) {
+   if ( txHashMapStatus->txOffset != PSON_NULL_OFFSET ) {
       /*
        *   FLAG                      ACTION          
        *   TXS_ADDED                 remove object   
@@ -153,65 +153,65 @@ vdswVerifyFastMap( vdswVerifyStruct   * pVerify,
        *
        * Action is the equivalent of what a rollback would do.
        */
-      if ( txHashMapStatus->status & PSN_TXS_ADDED) {
-         vdswEcho( pVerify, "Object added but not committed" );
+      if ( txHashMapStatus->status & PSON_TXS_ADDED) {
+         psoqEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
-         return VDSWR_DELETED_OBJECT;
+         return PSOQ_REC_DELETED_OBJECT;
       }
-      if ( txHashMapStatus->status & PSN_TXS_DESTROYED_COMMITTED ) {
-         vdswEcho( pVerify, "Object deleted and committed" );
+      if ( txHashMapStatus->status & PSON_TXS_DESTROYED_COMMITTED ) {
+         psoqEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
-         return VDSWR_DELETED_OBJECT;
+         return PSOQ_REC_DELETED_OBJECT;
       }
       
-      vdswEcho( pVerify, "Object deleted but not committed" );
-      rc = VDSWR_CHANGES;
+      psoqEcho( pVerify, "Object deleted but not committed" );
+      rc = PSOQ_REC_CHANGES;
       if ( pVerify->doRepair) {
-         vdswEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
-         txHashMapStatus->txOffset = PSN_NULL_OFFSET;
-         txHashMapStatus->status = PSN_TXS_OK;
+         psoqEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
+         txHashMapStatus->txOffset = PSON_NULL_OFFSET;
+         txHashMapStatus->status = PSON_TXS_OK;
       }
    }
 
    if ( txHashMapStatus->usageCounter != 0 ) {
-      rc = VDSWR_CHANGES;
-      vdswEcho( pVerify, "Usage counter is not zero" );
+      rc = PSOQ_REC_CHANGES;
+      psoqEcho( pVerify, "Usage counter is not zero" );
       if (pVerify->doRepair) {
          txHashMapStatus->usageCounter = 0;
-         vdswEcho( pVerify, "Usage counter set to zero" );
+         psoqEcho( pVerify, "Usage counter set to zero" );
       }
    }
    if ( txHashMapStatus->parentCounter != 0 ) {
-      rc = VDSWR_CHANGES;
-      vdswEcho( pVerify, "Parent counter is not zero" );
+      rc = PSOQ_REC_CHANGES;
+      psoqEcho( pVerify, "Parent counter is not zero" );
       if (pVerify->doRepair) {
          txHashMapStatus->parentCounter = 0;
-         vdswEcho( pVerify, "Parent counter set to zero" );
+         psoqEcho( pVerify, "Parent counter set to zero" );
       }
    }
    if ( pHashMap->nodeObject.txCounter != 0 ) {
-      rc = VDSWR_CHANGES;
-      vdswEcho( pVerify, "Transaction counter is not zero" );
+      rc = PSOQ_REC_CHANGES;
+      psoqEcho( pVerify, "Transaction counter is not zero" );
       if (pVerify->doRepair) {
          pHashMap->nodeObject.txCounter = 0;
-         vdswEcho( pVerify, "Transaction counter set to zero" );
+         psoqEcho( pVerify, "Transaction counter set to zero" );
       }
    }
 
    if ( bTestObject ) {
-      rc2 = vdswVerifyHash( pVerify, 
+      rc2 = psoqVerifyHash( pVerify, 
                            &pHashMap->hashObj, 
                            SET_OFFSET(&pHashMap->memObject) );
-      if ( rc2 > VDSWR_START_ERRORS ) {
+      if ( rc2 > PSOQ_REC_START_ERRORS ) {
          pVerify->spaces -= 2;
          return rc2;
       }
-      /* At this point rc is either 0 or VDSWR_CHANGES - same for rc2 */
+      /* At this point rc is either 0 or PSOQ_REC_CHANGES - same for rc2 */
       if ( rc2 > rc ) rc = rc2;
    }
 
-   rc2 = vdswCheckFastMapContent( pVerify, pHashMap, pContext );
-   /* At this point rc is either 0 or VDSWR_CHANGES */
+   rc2 = psoqCheckFastMapContent( pVerify, pHashMap, pContext );
+   /* At this point rc is either 0 or PSOQ_REC_CHANGES */
    if ( rc2 > rc ) rc = rc2;
    pVerify->spaces -= 2;
 

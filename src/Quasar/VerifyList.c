@@ -69,35 +69,35 @@ enum repairMode
 struct repairKit
 {
    enum repairMode mode;
-   struct psnLinkedList * pList;
+   struct psonLinkedList * pList;
    size_t forwardChainLen;
    size_t backwardChainLen;
    bool breakInForwardChain;
    bool breakInBackwardChain;
    bool foundNextBreak;
    /* The last valid node before the break */
-   psnLinkNode * nextBreak;
+   psonLinkNode * nextBreak;
    /* The node before the last valid node before the break */
-   psnLinkNode * nextBreakPrevious;
+   psonLinkNode * nextBreakPrevious;
    /* The last valid node before the break */
-   psnLinkNode * previousBreak;
+   psonLinkNode * previousBreak;
    /* The node before the last valid node before the break */
-   psnLinkNode * previousBreakPrevious;
+   psonLinkNode * previousBreakPrevious;
 
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum vdswRecoverError 
-vdswVerifyList( vdswVerifyStruct      * pVerify,
-                struct psnLinkedList * pList )
+enum psoqRecoverError 
+psoqVerifyList( psoqVerifyStruct      * pVerify,
+                struct psonLinkedList * pList )
 {
-   psnLinkNode * next, * previous;
+   psonLinkNode * next, * previous;
    ptrdiff_t headOffset;
    struct repairKit kit = { \
       NO_REPAIR, pList, 0, 0, false, false, false, NULL, NULL, NULL, NULL };
    bool foundNode;
-   enum vdswRecoverError rc = VDSWR_OK;
+   enum psoqRecoverError rc = PSOQ_REC_OK;
    
    /*
     * Do not add a test for the size of the list here (as in 
@@ -115,82 +115,82 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
    next = &pList->head;
    previous = next;
    while ( next->nextOffset != headOffset ) {
-      if ( next->nextOffset == PSN_NULL_OFFSET ) {
+      if ( next->nextOffset == PSON_NULL_OFFSET ) {
          kit.nextBreak = next;
          kit.nextBreakPrevious = previous;
          kit.breakInForwardChain = true;
          break;
       }
       else {
-         if ( vdswVerifyOffset( pVerify, next->nextOffset ) ) {
+         if ( psoqVerifyOffset( pVerify, next->nextOffset ) ) {
             kit.forwardChainLen++;
          }
          else {
-            vdswEcho( pVerify, "Invalid offset - cannot repair" );
-            return VDSWR_UNRECOVERABLE_ERROR;
+            psoqEcho( pVerify, "Invalid offset - cannot repair" );
+            return PSOQ_REC_UNRECOVERABLE_ERROR;
          }
       }
       previous = next;
-      GET_PTR( next, next->nextOffset, psnLinkNode );
+      GET_PTR( next, next->nextOffset, psonLinkNode );
    }
 
    // Same as before but we loop backward.
    next = &pList->head;
    previous = next;
    while ( next->previousOffset != headOffset ) {
-      if ( next->previousOffset == PSN_NULL_OFFSET ) {
+      if ( next->previousOffset == PSON_NULL_OFFSET ) {
          kit.previousBreak = next;
          kit.previousBreakPrevious = previous;
          kit.breakInBackwardChain = true;
          break;
       }
       else {
-         if ( vdswVerifyOffset( pVerify, next->previousOffset ) ) {
+         if ( psoqVerifyOffset( pVerify, next->previousOffset ) ) {
             kit.backwardChainLen++;
          }
          else {
-            vdswEcho( pVerify, "Invalid offset - cannot repair" );
-            return VDSWR_UNRECOVERABLE_ERROR;
+            psoqEcho( pVerify, "Invalid offset - cannot repair" );
+            return PSOQ_REC_UNRECOVERABLE_ERROR;
          }
       }
       previous = next;
-      GET_PTR( next, next->previousOffset, psnLinkNode );
+      GET_PTR( next, next->previousOffset, psonLinkNode );
    }
    
    // So how did it go?... we have multiple possibilities here.
    if ( kit.breakInForwardChain && kit.breakInBackwardChain ) {
-      rc = VDSWR_CHANGES;
-      vdswEcho( pVerify, "Both chains broken" );
+      rc = PSOQ_REC_CHANGES;
+      psoqEcho( pVerify, "Both chains broken" );
       if ( kit.nextBreak == kit.previousBreak ) {
          kit.mode = REPAIR_WITH_BOTH_EQUAL;
       }
       else {
-         vdswEcho( pVerify, "Chains broken at different places - cannot repair" );
-         return VDSWR_UNRECOVERABLE_ERROR;
+         psoqEcho( pVerify, "Chains broken at different places - cannot repair" );
+         return PSOQ_REC_UNRECOVERABLE_ERROR;
       }
    }
    else if ( kit.breakInForwardChain && ! kit.breakInBackwardChain ) {
-      rc = VDSWR_CHANGES;
+      rc = PSOQ_REC_CHANGES;
       kit.mode = REPAIR_WITH_BW_BREAK;
-      vdswEcho( pVerify, "Forward chain broken" );
+      psoqEcho( pVerify, "Forward chain broken" );
    }
    else if ( ! kit.breakInForwardChain && kit.breakInBackwardChain ) {
-      rc = VDSWR_CHANGES;
+      rc = PSOQ_REC_CHANGES;
       kit.mode = REPAIR_WITH_FW_BREAK;
-      vdswEcho( pVerify, "Backward chain broken" );
+      psoqEcho( pVerify, "Backward chain broken" );
    }
    else {
       if ( kit.backwardChainLen == kit.forwardChainLen ) { /* all is well ! */
          if ( pList->currentSize != kit.forwardChainLen ) {
-            rc = VDSWR_CHANGES;
+            rc = PSOQ_REC_CHANGES;
             kit.mode = REPAIR_LENGTH;
-            vdswEcho( pVerify, "Invalid number of elements in linked list");
+            psoqEcho( pVerify, "Invalid number of elements in linked list");
          }
       }
       else {
-         vdswEcho( pVerify, "Warning - counts in foward and backward chains differ:" );
-         vdswEcho( pVerify, "          using the longest chain to rebuild" );
-         rc = VDSWR_CHANGES;
+         psoqEcho( pVerify, "Warning - counts in foward and backward chains differ:" );
+         psoqEcho( pVerify, "          using the longest chain to rebuild" );
+         rc = PSOQ_REC_CHANGES;
          if ( kit.backwardChainLen > kit.forwardChainLen ) {
             kit.mode = REPAIR_WITH_BW_NO_BREAK;
          }
@@ -208,13 +208,13 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
       break;
       
    case REPAIR_LENGTH:
-      vdswEcho( pVerify, "Small correction in the number of elements of linked list");
+      psoqEcho( pVerify, "Small correction in the number of elements of linked list");
       pList->currentSize = kit.forwardChainLen;
       break;
          
    case REPAIR_WITH_FW_NO_BREAK:
    
-      vdswEcho( pVerify, "Repairing list using forward chain" );
+      psoqEcho( pVerify, "Repairing list using forward chain" );
       
       /*
        * We loop forward until we come back to head. We reset the bw chain
@@ -223,7 +223,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
        */
       previous = &pList->head;
       do {
-         GET_PTR( next, previous->nextOffset, psnLinkNode );
+         GET_PTR( next, previous->nextOffset, psonLinkNode );
          next->previousOffset = SET_OFFSET( previous );
          /* prepare for next round */
          previous = next;
@@ -235,7 +235,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
       
    case REPAIR_WITH_BW_NO_BREAK:
       
-      vdswEcho( pVerify, "Repairing list using backward chain" );
+      psoqEcho( pVerify, "Repairing list using backward chain" );
       
       /*
        * We loop backward until we come back to head. We reset the fw chain
@@ -244,7 +244,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
        */
       previous = &pList->head;
       do {
-         GET_PTR( next, previous->previousOffset, psnLinkNode );
+         GET_PTR( next, previous->previousOffset, psonLinkNode );
          next->nextOffset = SET_OFFSET( previous );
 
          /* prepare for next round */
@@ -257,7 +257,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
       
    case REPAIR_WITH_FW_BREAK:
    
-      vdswEcho( pVerify, "Repairing list using forward chain" );
+      psoqEcho( pVerify, "Repairing list using forward chain" );
       foundNode = false;
       
       /*
@@ -271,7 +271,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
        */
       previous = &pList->head;
       do {
-         GET_PTR( next, previous->nextOffset, psnLinkNode );
+         GET_PTR( next, previous->nextOffset, psonLinkNode );
          next->previousOffset = SET_OFFSET( previous );
          if ( kit.previousBreak == next )
             foundNode = true;
@@ -290,7 +290,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
           * value of kit.previousBreakPrevious->previousOffset (we use it to 
           * recover the value of previous but we also need to reset it).
           */
-         GET_PTR( previous, kit.previousBreakPrevious->previousOffset, psnLinkNode );
+         GET_PTR( previous, kit.previousBreakPrevious->previousOffset, psonLinkNode );
          
          kit.previousBreak->nextOffset = SET_OFFSET( kit.previousBreakPrevious );
          kit.previousBreak->previousOffset = SET_OFFSET( previous );
@@ -304,7 +304,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
       
    case REPAIR_WITH_BW_BREAK:
       
-      vdswEcho( pVerify, "Repairing list using backward chain" );
+      psoqEcho( pVerify, "Repairing list using backward chain" );
       foundNode = false;
       
       /*
@@ -318,7 +318,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
        */
       previous = &pList->head;
       do {
-         GET_PTR( next, previous->previousOffset, psnLinkNode );
+         GET_PTR( next, previous->previousOffset, psonLinkNode );
          next->nextOffset = SET_OFFSET( previous );
          if ( kit.nextBreak == next )
             foundNode = true;
@@ -338,7 +338,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
           * value of kit.nextBreakPrevious->nextOffset (we use it to recover
           * the value of next but we also need to reset it).
           */
-         GET_PTR( next, kit.nextBreakPrevious->nextOffset, psnLinkNode );
+         GET_PTR( next, kit.nextBreakPrevious->nextOffset, psonLinkNode );
          
          kit.nextBreak->previousOffset = SET_OFFSET( kit.nextBreakPrevious );
          kit.nextBreak->nextOffset = SET_OFFSET( next );
@@ -352,7 +352,7 @@ vdswVerifyList( vdswVerifyStruct      * pVerify,
       
    case REPAIR_WITH_BOTH_EQUAL:
    
-      vdswEcho( pVerify, "Repairing both chains" );
+      psoqEcho( pVerify, "Repairing both chains" );
       
       /*
        * No loop needed here - we are just missing the links of the

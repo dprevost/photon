@@ -24,14 +24,14 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** */
-int psaCommonObjOpen( psaCommonObject    * pObject,
+int psoaCommonObjOpen( psoaCommonObject    * pObject,
                       enum psoObjectType   objectType,
-                      psaEditMode          editMode,
+                      psoaEditMode          editMode,
                       const char         * objectName,
                       size_t               nameLengthInBytes )
 {
    int errcode = PSO_OBJECT_CANNOT_GET_LOCK;
-   psnObjectDescriptor * pDesc;
+   psonObjectDescriptor * pDesc;
    
    PSO_PRE_CONDITION( pObject    != NULL );
    PSO_PRE_CONDITION( objectName != NULL );
@@ -41,8 +41,8 @@ int psaCommonObjOpen( psaCommonObject    * pObject,
 
    if ( pObject->pSession == NULL ) return PSO_PROCESS_NOT_INITIALIZED;
 
-   if ( psaCommonLock( pObject ) ) {
-      errcode = psaSessionOpenObj( pObject->pSession,
+   if ( psoaCommonLock( pObject ) ) {
+      errcode = psoaSessionOpenObj( pObject->pSession,
                                     objectType,
                                     editMode,
                                     objectName,
@@ -50,10 +50,10 @@ int psaCommonObjOpen( psaCommonObject    * pObject,
                                     pObject );
       if ( errcode == 0 ) {
          GET_PTR( pDesc, pObject->folderItem.pHashItem->dataOffset,
-                          psnObjectDescriptor );
+                          psonObjectDescriptor );
          GET_PTR( pObject->pMyMemObject, pDesc->offset, void );
       }
-      psaCommonUnlock( pObject );
+      psoaCommonUnlock( pObject );
    }
    
    return errcode;
@@ -61,7 +61,7 @@ int psaCommonObjOpen( psaCommonObject    * pObject,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psaCommonObjClose( psaCommonObject * pObject )
+int psoaCommonObjClose( psoaCommonObject * pObject )
 {
    int errcode = 0;
 
@@ -71,7 +71,7 @@ int psaCommonObjClose( psaCommonObject * pObject )
    if ( pObject->pSession == NULL ) return PSO_PROCESS_NOT_INITIALIZED;
 
    /* No need to lock the api session. The caller already did it! */
-   errcode = psaSessionCloseObj( pObject->pSession, pObject );
+   errcode = psoaSessionCloseObj( pObject->pSession, pObject );
    
    return errcode;
 }

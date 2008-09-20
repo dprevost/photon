@@ -25,7 +25,7 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnLinkNodeTest( NULL );
+   psonLinkNodeTest( NULL );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

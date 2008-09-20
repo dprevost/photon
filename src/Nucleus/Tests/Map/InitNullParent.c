@@ -24,10 +24,10 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psnMap * pHashMap;
-   psnSessionContext context;
+   psonMap * pHashMap;
+   psonSessionContext context;
    bool ok;
-   psnTxStatus status;
+   psonTxStatus status;
    psoObjectDefinition def = { 
       PSO_FAST_MAP, 
       1, 
@@ -37,10 +37,10 @@ int main()
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   psnTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psnMapInit( pHashMap, 
-                     PSN_NULL_OFFSET, 
+   ok = psonMapInit( pHashMap, 
+                     PSON_NULL_OFFSET, 
                      1, 
                      0, 
                      &status, 

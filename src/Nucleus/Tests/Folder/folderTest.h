@@ -28,7 +28,7 @@
 #include "Tests/PrintError.h"
 
 PHOTON_ENGINE_EXPORT
-pscErrMsgHandle g_psoErrorHandle;
+psocErrMsgHandle g_psoErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -44,26 +44,26 @@ pscErrMsgHandle g_psoErrorHandle;
  * the Init() call.
  */
  
-psnFolder* initFolderTest( bool                testIsExpectedToSucceed,
-                            psnSessionContext* pContext )
+psonFolder* initFolderTest( bool                testIsExpectedToSucceed,
+                            psonSessionContext* pContext )
 {
    bool ok;
    unsigned char* ptr;
-   psnMemAlloc*  pAlloc;
-   psnTx* pTx;
-   psnFolder* pFolder;
-   size_t allocatedLength = PSN_BLOCK_SIZE * 25;
+   psonMemAlloc*  pAlloc;
+   psonTx* pTx;
+   psonFolder* pFolder;
+   size_t allocatedLength = PSON_BLOCK_SIZE * 25;
 
-   memset( pContext, 0, sizeof(psnSessionContext) );
+   memset( pContext, 0, sizeof(psonSessionContext) );
    pContext->pidLocker = getpid();
    
-   ok = psnInitEngine();
+   ok = psonInitEngine();
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   pscInitErrorHandler( &pContext->errorHandler );
+   psocInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
@@ -73,17 +73,17 @@ psnFolder* initFolderTest( bool                testIsExpectedToSucceed,
       exit(0);
    }
    g_pBaseAddr = ptr;
-   pAlloc = (psnMemAlloc*)(g_pBaseAddr + PSN_BLOCK_SIZE);
-   psnMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
+   pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
+   psonMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
-   pTx = (psnTx*)psnMallocBlocks( pAlloc, PSN_ALLOC_ANY, 1, pContext );
+   pTx = (psonTx*)psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
    if ( pTx == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }
-   ok = psnTxInit( pTx, 1, pContext );
+   ok = psonTxInit( pTx, 1, pContext );
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -92,7 +92,7 @@ psnFolder* initFolderTest( bool                testIsExpectedToSucceed,
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the folder object */
-   pFolder = (psnFolder*)psnMallocBlocks( pAlloc, PSN_ALLOC_API_OBJ, 1, pContext );
+   pFolder = (psonFolder*)psonMallocBlocks( pAlloc, PSON_ALLOC_API_OBJ, 1, pContext );
    if ( pFolder == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
@@ -104,17 +104,17 @@ psnFolder* initFolderTest( bool                testIsExpectedToSucceed,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-psnTxStatus objTxStatus;
+psonTxStatus objTxStatus;
 
-psnFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
-                               psnSessionContext* pContext )
+psonFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
+                               psonSessionContext* pContext )
 {
    psoErrors errcode;
-   psnFolder* pFolder;
+   psonFolder* pFolder;
    pFolder = initFolderTest( testIsExpectedToSucceed, pContext );
    
-   errcode = psnMemObjectInit( &pFolder->memObject, 
-                                PSN_IDENT_FOLDER,
+   errcode = psonMemObjectInit( &pFolder->memObject, 
+                                PSON_IDENT_FOLDER,
                                 &pFolder->blockGroup,
                                 1 );
    if ( errcode != PSO_OK ) {
@@ -123,16 +123,16 @@ psnFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
       exit(0);
    }
 
-   psnTxStatusInit( &objTxStatus, SET_OFFSET(pContext->pTransaction) );
-   objTxStatus.status = PSN_TXS_ADDED;
+   psonTxStatusInit( &objTxStatus, SET_OFFSET(pContext->pTransaction) );
+   objTxStatus.status = PSON_TXS_ADDED;
 
    pFolder->nodeObject.txCounter      = 0;
    pFolder->nodeObject.myNameLength   = 0;
-   pFolder->nodeObject.myNameOffset   = PSN_NULL_OFFSET;
+   pFolder->nodeObject.myNameOffset   = PSON_NULL_OFFSET;
    pFolder->nodeObject.txStatusOffset = SET_OFFSET(&objTxStatus);
-   pFolder->nodeObject.myParentOffset = PSN_NULL_OFFSET;
+   pFolder->nodeObject.myParentOffset = PSON_NULL_OFFSET;
 
-   errcode = psnHashInit( &pFolder->hashObj, 
+   errcode = psonHashInit( &pFolder->hashObj, 
                            SET_OFFSET(&pFolder->memObject),
                            25, 
                            pContext );

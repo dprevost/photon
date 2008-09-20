@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSA_QUEUE_H
-#define PSA_QUEUE_H
+#ifndef PSOA_QUEUE_H
+#define PSOA_QUEUE_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -29,23 +29,23 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct psaQueue
+typedef struct psoaQueue
 {
-   psaCommonObject object;
+   psoaCommonObject object;
    
    /**
     * This pointer holds the result of the iteration (the pointer to
-    * the current psnQueueItem).
+    * the current psonQueueItem).
     */
-   psnQueueItem * iterator;
+   psonQueueItem * iterator;
    
    /** A pointer to the data definition of the queue. */
-   psnFieldDef * pDefinition;
+   psonFieldDef * pDefinition;
    
    size_t minLength;
    size_t maxLength;
    
-} psaQueue;
+} psoaQueue;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -54,21 +54,21 @@ typedef struct psaQueue
  * by this function.
  */
 PHOTON_API_EXPORT
-int psaQueueFirst( psaQueue     * pQueue,
-                   psaDataEntry * pEntry );
+int psoaQueueFirst( psoaQueue     * pQueue,
+                   psoaDataEntry * pEntry );
 
 /** 
  * Iterates through the queue - no data items are removed from the queue
  * by this function.
  */
 PHOTON_API_EXPORT
-int psaQueueNext( psaQueue     * pQueue,
-                  psaDataEntry * pEntry );
+int psoaQueueNext( psoaQueue     * pQueue,
+                  psoaDataEntry * pEntry );
 
 /** Remove the first inserted item from a FIFO queue. */
 PHOTON_API_EXPORT
-int psaQueueRemove( psaQueue     * pQueue,
-                    psaDataEntry * pEntry );
+int psoaQueueRemove( psoaQueue     * pQueue,
+                    psoaDataEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -76,7 +76,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSA_QUEUE_H */
+#endif /* PSOA_QUEUE_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

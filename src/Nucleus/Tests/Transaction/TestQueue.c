@@ -24,18 +24,18 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psnTx* pTx;
-   psnFolder * pFolder;
-   psnSessionContext context;
+   psonTx* pTx;
+   psonFolder * pFolder;
+   psonSessionContext context;
    bool ok;
-   psnFolderItem item;
-   psnTxStatus status;
-   psnObjectDescriptor * pDescriptor;
-   psnQueue * pQueue;
+   psonFolderItem item;
+   psonTxStatus status;
+   psonObjectDescriptor * pDescriptor;
+   psonQueue * pQueue;
    char * data1 = "My data1";
    char * data2 = "My data2";
    char * data3 = "My data3";
-   psnQueueItem * pQueueItem;
+   psonQueueItem * pQueueItem;
    psoObjectDefinition def = { 
       PSO_QUEUE, 
       1, 
@@ -46,15 +46,15 @@ int main()
    pFolder = initFolderTest( expectedToPass, &context );
    pTx = context.pTransaction;
    
-   psnTxStatusInit( &status, SET_OFFSET( pTx ) );
+   psonTxStatusInit( &status, SET_OFFSET( pTx ) );
    
-   ok = psnFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 
+   ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 
                              1234, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnFolderInsertObject( pFolder,
+   ok = psonFolderInsertObject( pFolder,
                                 "test2",
                                 "Test2",
                                 5,
@@ -66,9 +66,9 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnTxCommit( pTx, &context );
+   psonTxCommit( pTx, &context );
    
-   ok = psnFolderGetObject( pFolder,
+   ok = psonFolderGetObject( pFolder,
                              "test2",
                              5,
                              PSO_QUEUE,
@@ -77,30 +77,30 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   GET_PTR( pDescriptor, item.pHashItem->dataOffset, psnObjectDescriptor );
-   GET_PTR( pQueue, pDescriptor->offset, psnQueue );
+   GET_PTR( pDescriptor, item.pHashItem->dataOffset, psonObjectDescriptor );
+   GET_PTR( pQueue, pDescriptor->offset, psonQueue );
 
    /* Test 1 */
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data1,
                          strlen(data1),
-                         PSN_QUEUE_LAST,
+                         PSON_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data2,
                          strlen(data2),
-                         PSN_QUEUE_LAST,
+                         PSON_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data3,
                          strlen(data3),
-                         PSN_QUEUE_LAST,
+                         PSON_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -113,7 +113,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnTxRollback( pTx, &context );
+   psonTxRollback( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -122,26 +122,26 @@ int main()
    }
    
    /* Test 2 */
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data1,
                          strlen(data1),
-                         PSN_QUEUE_LAST,
+                         PSON_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data2,
                          strlen(data2),
-                         PSN_QUEUE_LAST,
+                         PSON_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data3,
                          strlen(data3),
-                         PSN_QUEUE_LAST,
+                         PSON_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -154,7 +154,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnTxCommit( pTx, &context );
+   psonTxCommit( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -162,43 +162,43 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnQueueRemove( pQueue,
+   ok = psonQueueRemove( pQueue,
                          &pQueueItem,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRelease( pQueue,
+   ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRemove( pQueue,
+   ok = psonQueueRemove( pQueue,
                          &pQueueItem,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRelease( pQueue,
+   ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRemove( pQueue,
+   ok = psonQueueRemove( pQueue,
                          &pQueueItem,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRelease( pQueue,
+   ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
@@ -212,7 +212,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnTxRollback( pTx, &context );
+   psonTxRollback( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -220,43 +220,43 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnQueueRemove( pQueue,
+   ok = psonQueueRemove( pQueue,
                          &pQueueItem,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRelease( pQueue,
+   ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRemove( pQueue,
+   ok = psonQueueRemove( pQueue,
                          &pQueueItem,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRelease( pQueue,
+   ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRemove( pQueue,
+   ok = psonQueueRemove( pQueue,
                          &pQueueItem,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRelease( pQueue,
+   ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
@@ -270,7 +270,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnTxCommit( pTx, &context );
+   psonTxCommit( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -279,32 +279,32 @@ int main()
    }
    
    /* Test 3 */
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data1,
                          strlen(data1),
-                         PSN_QUEUE_LAST,
+                         PSON_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data2,
                          strlen(data2),
-                         PSN_QUEUE_LAST,
+                         PSON_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data3,
                          strlen(data3),
-                         PSN_QUEUE_LAST,
+                         PSON_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnQueueGet( pQueue,
+   ok = psonQueueGet( pQueue,
                       PSO_FIRST,
                       &pQueueItem,
                       (size_t) -1,
@@ -320,7 +320,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psnTxRollback( pTx, &context );
+   psonTxRollback( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -328,7 +328,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnQueueRelease( pQueue,
+   ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
@@ -342,32 +342,32 @@ int main()
    }
    
    /* Test 4 */
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data1,
                          strlen(data1),
-                         PSN_QUEUE_LAST,
+                         PSON_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data2,
                          strlen(data2),
-                         PSN_QUEUE_LAST,
+                         PSON_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueInsert( pQueue,
+   ok = psonQueueInsert( pQueue,
                          data3,
                          strlen(data3),
-                         PSN_QUEUE_LAST,
+                         PSON_QUEUE_LAST,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psnQueueGet( pQueue,
+   ok = psonQueueGet( pQueue,
                       PSO_FIRST,
                       &pQueueItem,
                       (size_t) -1,
@@ -376,7 +376,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnTxCommit( pTx, &context );
+   psonTxCommit( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -384,7 +384,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   ok = psnQueueRelease( pQueue,
+   ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
@@ -397,44 +397,44 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   ok = psnQueueRemove( pQueue,
+   ok = psonQueueRemove( pQueue,
                          &pQueueItem,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRelease( pQueue,
+   ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRemove( pQueue,
+   ok = psonQueueRemove( pQueue,
                          &pQueueItem,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRelease( pQueue,
+   ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRemove( pQueue,
+   ok = psonQueueRemove( pQueue,
                          &pQueueItem,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnTxRollback( pTx, &context );
+   psonTxRollback( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -442,7 +442,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnQueueRelease( pQueue,
+   ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
@@ -455,44 +455,44 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnQueueRemove( pQueue,
+   ok = psonQueueRemove( pQueue,
                          &pQueueItem,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRelease( pQueue,
+   ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRemove( pQueue,
+   ok = psonQueueRemove( pQueue,
                          &pQueueItem,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRelease( pQueue,
+   ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psnQueueRemove( pQueue,
+   ok = psonQueueRemove( pQueue,
                          &pQueueItem,
-                         PSN_QUEUE_FIRST,
+                         PSON_QUEUE_FIRST,
                          (size_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psnTxCommit( pTx, &context );
+   psonTxCommit( pTx, &context );
    if ( pQueue->nodeObject.txCounter != 1 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -500,7 +500,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   ok = psnQueueRelease( pQueue,
+   ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
    if ( ok != true ) {

@@ -349,20 +349,20 @@ AC_ARG_ENABLE([set-block-size],
 	      [block_size=$enableval],
 	      [block_size=8k])
 if test "$block_size" = "1k"; then
-   AC_DEFINE(PSN_BLOCK_SIZE,  1024)
-   AC_DEFINE(PSN_BLOCK_SHIFT,   10)
+   AC_DEFINE(PSON_BLOCK_SIZE,  1024)
+   AC_DEFINE(PSON_BLOCK_SHIFT,   10)
 elif test "$block_size" = "2k"; then
-   AC_DEFINE(PSN_BLOCK_SIZE,  2048)
-   AC_DEFINE(PSN_BLOCK_SHIFT,   11)
+   AC_DEFINE(PSON_BLOCK_SIZE,  2048)
+   AC_DEFINE(PSON_BLOCK_SHIFT,   11)
 elif test "$block_size" = "4k"; then
-   AC_DEFINE(PSN_BLOCK_SIZE,  4096)
-   AC_DEFINE(PSN_BLOCK_SHIFT,   12)
+   AC_DEFINE(PSON_BLOCK_SIZE,  4096)
+   AC_DEFINE(PSON_BLOCK_SHIFT,   12)
 elif test "$block_size" = "8k"; then
-   AC_DEFINE(PSN_BLOCK_SIZE,  8192)
-   AC_DEFINE(PSN_BLOCK_SHIFT,   13)
+   AC_DEFINE(PSON_BLOCK_SIZE,  8192)
+   AC_DEFINE(PSON_BLOCK_SHIFT,   13)
 elif test "$block_size" = "16k"; then
-   AC_DEFINE(PSN_BLOCK_SIZE,  16384, This define can be set by using configure with the option --enable-set-block-size=value)
-   AC_DEFINE(PSN_BLOCK_SHIFT,    14, This define can be set indirectly by using configure with the option --enable-set-block-size=value)
+   AC_DEFINE(PSON_BLOCK_SIZE,  16384, This define can be set by using configure with the option --enable-set-block-size=value)
+   AC_DEFINE(PSON_BLOCK_SHIFT,    14, This define can be set indirectly by using configure with the option --enable-set-block-size=value)
 else
   AC_MSG_ERROR([Invalid value! Values allowed: 1k, 2k, 4k, 8k or 16k])
 fi

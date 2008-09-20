@@ -98,7 +98,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psaHashMapFirst( objHandle,
+   errcode = psoaHashMapFirst( objHandle,
                                NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

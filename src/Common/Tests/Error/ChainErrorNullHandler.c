@@ -26,14 +26,14 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   pscErrorHandler errorHandler;
+   psocErrorHandler errorHandler;
    
-   pscInitErrorDefs();
-   pscInitErrorHandler( &errorHandler );
+   psocInitErrorDefs();
+   psocInitErrorHandler( &errorHandler );
    
-   pscSetError( &errorHandler, PSC_ERRNO_HANDLE, ENOENT );
+   psocSetError( &errorHandler, PSOC_ERRNO_HANDLE, ENOENT );
 
-   pscChainError( NULL, PSC_ERRNO_HANDLE, ENOENT );
+   psocChainError( NULL, PSOC_ERRNO_HANDLE, ENOENT );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else
