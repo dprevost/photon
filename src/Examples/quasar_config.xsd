@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://photonsoftware.org/quasarConfig"
+  xmlns="http://photonsoftware.org/quasarConfig"
+  elementFormDefault="qualified"
+  version="1.0">
+
+<!-- We start by declaring the basic type first -->
+
+<xs:simpleType name="pathString">
+  <xs:restriction base="xs:token">
+    <xs:maxLength value="1024"/>
+    <xs:whiteSpace value='collapse'/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="portType">
+  <xs:restriction base="xs:integer">
+    <xs:minInclusive value="1025"/>
+    <xs:maxInclusive value="65535"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="memoryUnitType">
+  <xs:restriction base="xs:string">
+    <xs:enumeration value="kb"/>
+    <xs:enumeration value="mb"/>
+    <xs:enumeration value="gb"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:complexType name="memType">
+  <xs:attribute name="size" type="xs:positiveInteger" use="required"/>
+  <xs:attribute name="units" type="memoryUnitType" use="required" />
+</xs:complexType>
+
+<xs:simpleType name="userClassType">
+  <xs:restriction base="xs:string">
+    <xs:enumeration value="user"/>
+    <xs:enumeration value="group"/>
+    <xs:enumeration value="world"/>
+    <xs:whiteSpace value='collapse'/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:complexType name="accessType">
+  <xs:attribute name="access" type="userClassType" use="required"/>
+  <xs:attribute name="group" type="xs:token" />
+</xs:complexType>
+
+<!-- This is our root element -->
+<xs:element name="quasar_config">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="mem_location" type="pathString" />
+      <xs:element name="mem_size" type="memType"/>
+      <xs:element name="quasar_address" type="portType" />
+      <xs:element name="file_access" type="accessType" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+</xs:schema>

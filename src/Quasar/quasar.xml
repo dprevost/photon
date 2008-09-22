@@ -108,7 +108,7 @@ and auxiliary files (these files will be created if they do not exist).</para>
   <varlistentry>
   <term><emphasis remap='B'>mem_size</emphasis></term>
   <listitem>
-<para>The total size of the shared memory. This size canbe expressed in multiple
+<para>The total size of the shared memory. This size can be expressed in multiple
  units, kbytes ("kb"), megabytes ("mb") or gigabytes ("gb").  
  For example a shared memory of 10 Megabytes can either be written as </para>
  <para>
@@ -127,22 +127,49 @@ and auxiliary files (these files will be created if they do not exist).</para>
   </listitem>
   </varlistentry>
   <varlistentry>
-  <term><emphasis remap='B'>WatchdogAddress</emphasis></term>
+  <term><emphasis remap='B'>quasar_address</emphasis></term>
   <listitem>
-<para>The local TCP/IP port the watchdog will use to listen for new connection 
+<para>The local TCP/IP port the server will use to listen for new connection 
 requests.</para>
+<para>Example: &lt;quasar_address&gt;10701&lt;/quasar_address&gt;</para>
   </listitem>
   </varlistentry>
   <varlistentry>
-  <term><emphasis remap='B'>FilePermissions</emphasis></term>
+  <term><emphasis remap='B'>file_access access</emphasis></term>
   <listitem>
-<para>The file permissions used for the shared-memory file.</para>
-  </listitem>
-  </varlistentry>
-  <varlistentry>
-  <term><emphasis remap='B'>DirectoryPermissions</emphasis></term>
-  <listitem>
-<para>The file permissions used for the directory holding the shared-memory file.</para>
+
+<para>  
+  This parameter defines which "class" of users should have full access to 
+  the shared-memory backstore and all other related files. In other words, 
+  the class of users that can access and use Photon (Unix only).
+</para>
+<para> Three possible answers: </para>
+<para>
+       "user" - only the user that launched/will launch the server (and 
+                created/will create the files).
+</para>
+<para>
+       "group" - only users that belong to the same group of the user that 
+                 launched/will launched the server...
+</para>
+<para>
+       "world" - no restriction - all users are allowed. Not recommended in
+                 most cases.
+</para>
+<para>
+     If the user launching the server belongs to more than one group,
+     you can specify which group should be used by using something like this:
+</para>
+<para>
+       &lt;file_access access="group" group="photon"/&gt;
+</para>
+<para>
+     Note: this is mainly for future development, for example if you
+     want the web server (or a database or...) to access shared memory,
+     you can create a group, photon, and add the user apache (or
+     equivalent) to this group.
+</para>  
+  
   </listitem>
   </varlistentry>
 </variablelist>

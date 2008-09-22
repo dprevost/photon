@@ -1,4 +1,4 @@
-This is quasar.info, produced by makeinfo version 4.11 from quasar.texi.
+This is quasar.info, produced by makeinfo version 4.8 from quasar.texi.
 
 START-INFO-DIR-ENTRY
 * quasar: (quasar).             starts the Photon server
@@ -15,7 +15,7 @@ quasar
 Name
 ****
 
-quasar -- starts the Photon server
+quasar a^€” starts the Photon server
 
 
 
@@ -97,7 +97,7 @@ _mem_location_
      Example: <mem_location>/tmp/photon</mem_location>
 
 _mem_size_
-     The total size of the shared memory. This size canbe expressed in
+     The total size of the shared memory. This size can be expressed in
      multiple units, kbytes ("kb"), megabytes ("mb") or gigabytes
      ("gb").  For example a shared memory of 10 Megabytes can either be
      written as
@@ -113,16 +113,39 @@ _mem_size_
      the space on disk however - in fact twice as large to accomodate a
      backup of the memory file).
 
-_WatchdogAddress_
-     The local TCP/IP port the watchdog will use to listen for new
+_quasar_address_
+     The local TCP/IP port the server will use to listen for new
      connection requests.
 
-_FilePermissions_
-     The file permissions used for the shared-memory file.
+     Example: <quasar_address>10701</quasar_address>
 
-_DirectoryPermissions_
-     The file permissions used for the directory holding the
-     shared-memory file.
+_file_access access_
+     This parameter defines which "class" of users should have full
+     access to the shared-memory backstore and all other related files.
+     In other words, the class of users that can access and use Photon
+     (Unix only).
+
+     Three possible answers:
+
+     "user" - only the user that launched/will launch the server (and
+     created/will create the files).
+
+     "group" - only users that belong to the same group of the user that
+     launched/will launched the server...
+
+     "world" - no restriction - all users are allowed. Not recommended
+     in most cases.
+
+     If the user launching the server belongs to more than one group,
+     you can specify which group should be used by using something like
+     this:
+
+     <file_access access="group" group="photon"/>
+
+     Note: this is mainly for future development, for example if you
+     want the web server (or a database or...) to access shared memory,
+     you can create a group, photon, and add the user apache (or
+     equivalent) to this group.
 
 
 REPORTING BUGS
@@ -135,27 +158,22 @@ Report bugs to <dprevost@photonsoftware.org>.
 COPYRIGHT
 *********
 
-Copyright (C) 2008 Daniel Prévost.
+Copyright (C) 2008 Daniel Pre'vost.
 
 
 
 Tag Table:
-Node: Top172
-Ref: name232
-Ref: synopsis281
-Ref: Testing the configuration file [and exit];302
-Ref: Verifying the shared memory [and exit];443
-Ref: Getting [minimal] help;580
-Ref: Running normally;654
-Ref: DESCRIPTION749
-Ref: OPTIONS948
-Ref: CONFIGURATION1472
-Ref: REPORTING BUGS2708
-Ref: COPYRIGHT2787
+Node: Top171
+Ref: name231
+Ref: synopsis282
+Ref: Testing the configuration file [and exit];303
+Ref: Verifying the shared memory [and exit];444
+Ref: Getting [minimal] help;581
+Ref: Running normally;655
+Ref: DESCRIPTION750
+Ref: OPTIONS949
+Ref: CONFIGURATION1473
+Ref: REPORTING BUGS3614
+Ref: COPYRIGHT3693
 
 End Tag Table
-
-
-Local Variables:
-coding: iso-8859-1
-End:

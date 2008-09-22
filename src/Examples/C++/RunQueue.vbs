@@ -25,7 +25,7 @@ Dim fso
 Dim exeName, tmpDir, cmdFile
 Dim objArgs
 Dim isoFile
-Dim wdAddr
+Dim quasarAddr
 Dim numIterations
 Dim milliSecs
 Dim cycle
@@ -54,7 +54,7 @@ If objArgs.Count <> 5 Then
    Wscript.Quit(1)
 End If
 isoFile       = objArgs(0)
-wdAddr        = objArgs(1)
+quasarAddr    = objArgs(1)
 numIterations = objArgs(2)
 milliSecs     = objArgs(3)
 cycle         = objArgs(4)
@@ -75,33 +75,36 @@ end if
 
 fso.CreateFolder(tmpDir)
 
-Set cmdFile = fso.CreateTextFile(tmpDir + "\cfg.txt", True)
-cmdFile.WriteLine("# VDSF Config file             ")
-cmdFile.WriteLine("#                              ")
-cmdFile.WriteLine("VDSLocation           " + tmpDir)
-cmdFile.WriteLine("#MemorySize is in kbytes       ")
-cmdFile.WriteLine("MemorySize            10000    ")
-cmdFile.WriteLine("WatchdogAddress       " + wdAddr)
-cmdFile.WriteLine("LogTransaction        0        ")
-cmdFile.WriteLine("FilePermissions       0660     ")
-cmdFile.WriteLine("DirectoryPermissions  0770     ")
+fso.Copyfile "..\quasar_config.xsd", tmpDir + "\quasar_config.xsd"
+
+Set cmdFile = fso.CreateTextFile(tmpDir + "\cfg.xml", True)
+cmdFile.WriteLine("<?xml version=""1.0""?>")
+cmdFile.WriteLine("<quasar_config xmlns=""http://photonsoftware.org/quasarConfig""")
+cmdFile.WriteLine("xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""")
+cmdFile.WriteLine("xsi:schemaLocation=""http://photonsoftware.org/quasarConfig " + tmpDir + "\quasar_config.xsd""> ")
+cmdFile.WriteLine("  <mem_location>" + tmpDir + "</mem_location>")
+cmdFile.WriteLine("  <mem_size size=""10240"" units=""kb"" />")
+cmdFile.WriteLine("  <quasar_address>" + quasarAddr + "</quasar_address>")
+cmdFile.WriteLine("  <file_access access=""group"" />")
+cmdFile.WriteLine("</quasar_config>")
+cmdFile.Close
 
 ' Run the Programs
 
-exeName = "quasar.exe -c " + tmpDir + "\cfg.txt"
+exeName = "quasar.exe -c " + tmpDir + "\cfg.xml"
 
 rc = objShell.Run("%comspec% /c title quasar | " & exeName, 1, false)
 Wscript.Sleep 1000
 
-exeName = "QueueIn.exe " + isoFile + " " + wdAddr + " " + numIterations + _
+exeName = "QueueIn.exe " + isoFile + " " + quasarAddr + " " + numIterations + _
    " " + milliSecs + " " + cycle
 objShell.Run "%comspec% /k title QueueIn | " & exeName, 1, false
 Wscript.Sleep 1000
 
-exeName = "QueueWork.exe " + wdAddr
+exeName = "QueueWork.exe " + quasarAddr
 objShell.Run "%comspec% /k title QueueWork | " & exeName, 1, false
 
-exeName = "QueueOut.exe " + wdAddr
+exeName = "QueueOut.exe " + quasarAddr
 objShell.Run "%comspec% /k title QueueOut | " & exeName, 1, false
 
 wscript.echo "You MUST kill the quasar terminal when the test is over to repeat it"
