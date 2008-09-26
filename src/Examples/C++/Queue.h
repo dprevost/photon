@@ -19,10 +19,10 @@
 // Folder separators can either be Unix style or Windows style:
 //    "fold\\object" or "fold/object"
 
-const std::string inQueueName  = "Queue Example/Input Queue";
-const std::string outQueueName = "Queue Example\\Output Queue";
-const std::string folderName   = "Queue Example";
-const std::string controlName  = "Queue Example/Queue Control";
+const std::string inQueueName  = "QueueExample/InputQueue";
+const std::string outQueueName = "QueueExample\\OutputQueue";
+const std::string folderName   = "QueueExample";
+const std::string controlName  = "QueueExample/QueueControl";
 
 psoProcess process;
 psoSession session;

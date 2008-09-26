@@ -24,7 +24,7 @@
 psoProcess process;
 psoSession session1, session2;
 psoHashMap map1( session1 ), map2( session2 );
-string mapName = "My Hash Map";
+string mapName = "MyHashMap";
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -33,6 +33,17 @@ int createMap()
    int rc;
    char countryCode[2];
    char description[100];
+
+   /*
+    * The content of the hash map is simple: a fixed length key, the country 
+    * code, and the country name (a variable string - max length of 100).
+    */
+   psoObjectDefinition def = { 
+      PSO_HASH_MAP, 
+      1, 
+      { PSO_KEY_STRING, 2, 0, 0}, 
+      { { "CountryName", PSO_VAR_STRING, 0, 1, 100, 0, 0} } 
+   };
 
    // If the map already exists, we remove it.
    try { 
@@ -47,7 +58,7 @@ int createMap()
    }
    
    try { 
-      session1.CreateObject( mapName, PSO_HASH_MAP );
+      session1.CreateObject( mapName, &def );
       session1.Commit();
       map1.Open( mapName );
       /*
