@@ -19,10 +19,10 @@
  * Folder separators can either be Unix style or Windows style:
  *   "fold\\object" or "fold/object"
  */
-const char * inQueueName  = "Queue Example/Input Queue";
-const char * outQueueName = "Queue Example\\Output Queue";
-const char * folderName   = "Queue Example";
-const char * controlName  = "Queue Example/Queue Control";
+const char * inQueueName  = "QueueExample/InputQueue";
+const char * outQueueName = "QueueExample\\OutputQueue";
+const char * folderName   = "QueueExample";
+const char * controlName  = "QueueExample/QueueControl";
 
 PSO_HANDLE session = NULL, inQueue = NULL, outQueue = NULL, control = NULL;
 

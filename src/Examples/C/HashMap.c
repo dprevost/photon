@@ -23,7 +23,7 @@
 /* Some globals to make our life simpler */
 PSO_HANDLE session1 = NULL, session2 = NULL;
 PSO_HANDLE map1 = NULL, map2 = NULL;
-const char* mapName = "My Hash Map";
+const char* mapName = "MyHashMap";
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -46,7 +46,18 @@ int createMap()
    char msg[256];
    char countryCode[2];
    char description[100];
-  
+   
+   /*
+    * The content of the hash map is simple: a fixed length key, the country 
+    * code, and the country name (a variable string - max length of 100).
+    */
+   psoObjectDefinition def = { 
+      PSO_HASH_MAP, 
+      1, 
+      { PSO_KEY_STRING, 2, 0, 0}, 
+      { { "CountryName", PSO_VAR_STRING, 0, 1, 100, 0, 0} } 
+   };
+
    /* If the map already exists, we remove it. */
    rc = psoDestroyObject( session1, mapName, strlen(mapName) );
    if ( rc == PSO_NO_SUCH_OBJECT || rc == PSO_OK ) {
@@ -61,7 +72,7 @@ int createMap()
          return -1;
       }
       
-      rc = psoCreateObject( session1, mapName, strlen(mapName), PSO_HASH_MAP );
+      rc = psoCreateObject( session1, mapName, strlen(mapName), &def );
       if ( rc != 0 ) {
          psoErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );

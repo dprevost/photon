@@ -20,6 +20,7 @@
 #include "iso_3166.h"
 #include "Queue.h"
 #include <time.h>
+#include <stddef.h>
 
 #ifndef PATH_MAX
 #  define PATH_MAX 4096 /* Safe enough on most systems I would think */
@@ -65,6 +66,38 @@ int initObjects()
    int rc;
    char msg[256];
    int controlData;
+   size_t len;
+   
+   psoObjectDefinition defFolder = { 
+      PSO_FOLDER, 
+      0, 
+      { 0, 0, 0, 0}, 
+      { { "", 0, 0, 0, 0, 0, 0} } 
+   };
+
+   psoObjectDefinition defMap = { 
+      PSO_HASH_MAP, 
+      1, 
+      { PSO_KEY_VAR_STRING, 0, 1, 20}, 
+      { { "Status", PSO_INTEGER, 4, 0, 0, 0, 0} } 
+   };
+   psoObjectDefinition * pDefQueue = NULL;
+
+   len = offsetof( psoObjectDefinition, fields ) + 
+      2 * sizeof(psoFieldDefinition);
+   pDefQueue = (psoObjectDefinition *)calloc( len, 1 );
+   pDefQueue->type = PSO_QUEUE;
+   pDefQueue->numFields = 2;
+   pDefQueue->fields[0].type = PSO_STRING;
+   pDefQueue->fields[1].type = PSO_VAR_STRING;
+
+   pDefQueue->fields[0].length = 2;
+   pDefQueue->fields[1].minLength = 1;
+   pDefQueue->fields[1].maxLength = 80;
+
+   strcpy( pDefQueue->fields[0].name, "Countrycode" );
+   strcpy( pDefQueue->fields[1].name, "CountryName" );
+
 
    /* If the objects already exist, we remove them. */
    psoDestroyObject( session, inQueueName,  strlen(inQueueName)  );
@@ -81,26 +114,26 @@ int initObjects()
    }
 
    /* Create the folder first, evidently */
-   rc = psoCreateObject( session, folderName, strlen(folderName), PSO_FOLDER );
+   rc = psoCreateObject( session, folderName, strlen(folderName), &defFolder );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
 
-   rc = psoCreateObject( session, controlName, strlen(controlName), PSO_HASH_MAP );
+   rc = psoCreateObject( session, controlName, strlen(controlName), &defMap );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
-   rc = psoCreateObject( session, inQueueName, strlen(inQueueName), PSO_QUEUE );
+   rc = psoCreateObject( session, inQueueName, strlen(inQueueName), pDefQueue );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
-   rc = psoCreateObject( session, outQueueName, strlen(outQueueName), PSO_QUEUE );
+   rc = psoCreateObject( session, outQueueName, strlen(outQueueName), pDefQueue );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
