@@ -134,6 +134,20 @@ void psoSession::ErrorMsg( char   * message,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void psoSession::GetDefinition( const std::string    & objectName,
+                                psoObjectDefinition ** ppDefinition )
+{
+   int rc = psoGetDefinition( m_sessionHandle,
+                              objectName.c_str(),
+                              objectName.length(),
+                              ppDefinition );
+   if ( rc != 0 ) {
+      throw psoException( rc, m_sessionHandle, "psoSession::GetDefinition" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void psoSession::GetInfo( psoInfo * pInfo )
 {
    int rc = psoGetInfo( m_sessionHandle, pInfo );

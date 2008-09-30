@@ -1,4 +1,4 @@
-.TH "psoSession" 3 "26 Aug 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
+.TH "psoSession" 3 "30 Sep 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -47,6 +47,10 @@ Definition at line 30 of file psoSession.
 .RI "std::string & \fBErrorMsg\fP (std::string &message)"
 .br
 .RI "\fIReturn the error message associated with the last error(s). \fP"
+.ti -1c
+.RI "void \fBGetDefinition\fP (const std::string &objectName, psoObjectDefinition **definition)"
+.br
+.RI "\fIRetrieve the data definition of the named object. \fP"
 .ti -1c
 .RI "void \fBGetInfo\fP (psoInfo *pInfo)"
 .br
@@ -238,6 +242,28 @@ Caveat, some basic errors cannot be captured, if the provided handles (session h
 .RE
 .PP
 
+.SS "void psoSession::GetDefinition (const std::string & objectName, psoObjectDefinition ** definition)"
+.PP
+Retrieve the data definition of the named object. 
+.PP
+\fBWarning:\fP
+.RS 4
+This function allocates a buffer to hold the definition (using malloc()). You must free it (with free()) when you no longer need the definition.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectName\fP The fully qualified name of the object. 
+.br
+\fIdefinition\fP The buffer allocated by the API to hold the content of the object definition. Freeing the memory (with free()) is the responsability of the caller.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpsoException\fP An abnormal error occured. 
+.RE
+.PP
+
 .SS "void psoSession::GetInfo (psoInfo * pInfo)"
 .PP
 Return information on the current status of the shared memory. 
@@ -333,26 +359,26 @@ Note: the internal calls executed by the engine to satisfy this request cannot f
 .PP 
 .SS "friend class psoFastMap\fC [friend]\fP"
 .PP
-Definition at line 237 of file psoSession.
+Definition at line 254 of file psoSession.
 .SS "friend class psoFolder\fC [friend]\fP"
 .PP
-Definition at line 238 of file psoSession.
+Definition at line 255 of file psoSession.
 .SS "friend class psoHashMap\fC [friend]\fP"
 .PP
-Definition at line 239 of file psoSession.
+Definition at line 256 of file psoSession.
 .SS "friend class psoLifo\fC [friend]\fP"
 .PP
-Definition at line 240 of file psoSession.
+Definition at line 257 of file psoSession.
 .SS "friend class psoQueue\fC [friend]\fP"
 .PP
-Definition at line 241 of file psoSession.
+Definition at line 258 of file psoSession.
 .SH "Member Data Documentation"
 .PP 
 .SS "PSO_HANDLE \fBpsoSession::m_sessionHandle\fP\fC [private]\fP"
 .PP
 Pointer to the psoaSession struct. 
 .PP
-Definition at line 235 of file psoSession.
+Definition at line 252 of file psoSession.
 
 .SH "Author"
 .PP 

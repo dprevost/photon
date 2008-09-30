@@ -53,6 +53,10 @@ private:
 
    string & Trim( string & inStr );
    
+   void DisplayKey();
+   
+   void DisplayData();
+   
    // The "list" of currently implemented pseudo-shell commands starts here.
 
    void Cat();

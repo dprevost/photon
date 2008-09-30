@@ -245,6 +245,7 @@ void vdsShell::Cat()
    unsigned char * key, * buffer;
    int rc;
    size_t keyLength, dataLength;
+   psoObjectDefinition * pDefinition = NULL;
    
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -265,6 +266,14 @@ void vdsShell::Cat()
    }
    if ( status.type == PSO_FOLDER ) {
       cerr << "vdssh: cat: " << objectName << ": Is a directory/folder" << endl;
+      return;
+   }
+   
+   try {
+      session.GetDefinition( objectName, &pDefinition );
+   }
+   catch ( psoException exc ) {
+      cerr << "vdssh: cat: " << exc.Message() << endl;
       return;
    }
    
@@ -316,9 +325,12 @@ void vdsShell::Cat()
       }
    }
    catch ( psoException exc ) {
+      if ( pDefinition != NULL ) free(pDefinition);
       cerr << "vdssh: cat: " << exc.Message() << endl;
+      return;
    }
 
+   if ( pDefinition != NULL ) free(pDefinition);
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

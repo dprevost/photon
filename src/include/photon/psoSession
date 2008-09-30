@@ -156,6 +156,23 @@ public:
    std::string & ErrorMsg( std::string & message );
 
    /**
+    * \brief Retrieve the data definition of the named object.
+    *
+    * \warning This function allocates a buffer to hold the definition (using 
+    * malloc()). You must free it (with free()) when you no longer need the
+    * definition.
+    *
+    * \param[in]  objectName The fully qualified name of the object. 
+    * \param[out]  definition The buffer allocated by the API to hold the content 
+    *              of the object definition. Freeing the memory (with free())
+    *              is the responsability of the caller.
+    *
+    * \exception psoException An abnormal error occured.
+    */
+   void GetDefinition( const std::string & objectName,
+                       psoObjectDefinition ** definition );
+
+   /**
     * Return information on the current status of the shared memory.
     *
     * The fetched information is mainly about the current status of the memory 
