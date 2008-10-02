@@ -40,29 +40,38 @@ BEGIN_C_DECLS
  */
 PHOTON_API_EXPORT
 int psoaGetDefinition( psonFieldDef          * pInternalDef,
-                      uint16_t               numFields,
-                      psoObjectDefinition ** ppDefinition );
+                       uint16_t               numFields,
+                       psoObjectDefinition ** ppDefinition );
 
 PHOTON_API_EXPORT
 void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
-                      size_t           * pMinLength,
-                      size_t           * pMaxLength );
+                       size_t           * pMinLength,
+                       size_t           * pMaxLength );
 
 PHOTON_API_EXPORT
 void psoaGetLimits( psonFieldDef * pDefinition,
-                   uint16_t      numFields,
-                   size_t      * pMinLength,
-                   size_t      * pMaxLength );
+                    uint16_t       numFields,
+                    size_t       * pMinLength,
+                    size_t       * pMaxLength );
+
+/*
+ * Similar to psoaGetLimits (but using the api struct), it calculates the 
+ * offsets for each data field.
+ * The array of offsets must be allocated by the caller.
+ */
+PHOTON_API_EXPORT
+void psoaGetOffsets( psoObjectDefinition * pDefinition,
+                     size_t              * pOffsets );
 
 PHOTON_API_EXPORT
 int psoaValidateDefinition( psoObjectDefinition * pDefinition );
 
 PHOTON_API_EXPORT
 int psoaXmlToDefinition( const char           * xmlBuffer,
-                        size_t                 lengthInBytes,
-                        psoObjectDefinition ** ppDefinition,
-                        char                ** objectName,
-                        size_t               * nameLengthInBytes );
+                         size_t                 lengthInBytes,
+                         psoObjectDefinition ** ppDefinition,
+                         char                ** objectName,
+                         size_t               * nameLengthInBytes );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -34,11 +34,11 @@ using namespace std;
 // This class is used for transforming raw data into a more screen-friendly
 // output. 
 
-class vdsConstants
+class psoConstants
 {
 public:
-   vdsConstants();
-   ~vdsConstants();
+   psoConstants();
+   ~psoConstants();
    
    const string & Type( psoObjectType type );
    const string & TypeHeader()

@@ -21,10 +21,11 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include "API/DataDefinition.h" // for psoaGetOffsets
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsShell::vdsShell(psoSession & s)
+psoShell::psoShell(psoSession & s)
    : currentLocation( "/" ),
      session        ( s )
 {
@@ -32,13 +33,13 @@ vdsShell::vdsShell(psoSession & s)
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsShell::~vdsShell()
+psoShell::~psoShell()
 {
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-bool vdsShell::Dispatch()
+bool psoShell::Dispatch()
 {
    bool timeToExit = false;
    string s;
@@ -113,7 +114,7 @@ bool vdsShell::Dispatch()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::Parse( string & inStr )
+void psoShell::Parse( string & inStr )
 {
    istringstream iss( inStr );
    string s;
@@ -175,14 +176,14 @@ void vdsShell::Parse( string & inStr )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::Run()
+void psoShell::Run()
 {
    string inStr;
    bool timeToExit = false;
    
    while ( true ) {
       
-      cout << "vds$ "; // << endl;
+      cout << "pso$ "; // << endl;
       getline( cin, inStr );
       if ( cin.eof() ) { // Control-d was used on a unix shell
          cin.clear();
@@ -198,13 +199,13 @@ void vdsShell::Run()
       }
       catch ( int rc ) {
          if ( rc == 0 ) {
-            cerr << "vdssh: " << tokens[0] << ": command not found" << endl;
+            cerr << "psosh: " << tokens[0] << ": command not found" << endl;
          }
          else if ( rc == 1 ) {
-            cerr << "vdssh: " << tokens[0] << ": invalid number of arguments" << endl;
+            cerr << "psosh: " << tokens[0] << ": invalid number of arguments" << endl;
          }
          else {
-            cerr << "vdssh: " << "Malformed arguments (missing quote?)" << endl;
+            cerr << "psosh: " << "Malformed arguments (missing quote?)" << endl;
          }
       }
       if ( timeToExit ) return;
@@ -213,7 +214,7 @@ void vdsShell::Run()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-string & vdsShell::Trim( string & s )
+string & psoShell::Trim( string & s )
 {
    unsigned i;
 
@@ -238,7 +239,7 @@ string & vdsShell::Trim( string & s )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::Cat()
+void psoShell::Cat()
 {
    string objectName;
    psoObjStatus status;
@@ -246,6 +247,7 @@ void vdsShell::Cat()
    int rc;
    size_t keyLength, dataLength;
    psoObjectDefinition * pDefinition = NULL;
+   size_t * offsets;
    
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -261,11 +263,11 @@ void vdsShell::Cat()
    }
    catch ( psoException exc ) {
       exc = exc; // Avoid a warning
-      cerr << "vdssh: cat: " << objectName << ": Invalid object name" << endl;
+      cerr << "psosh: cat: " << objectName << ": Invalid object name" << endl;
       return;
    }
    if ( status.type == PSO_FOLDER ) {
-      cerr << "vdssh: cat: " << objectName << ": Is a directory/folder" << endl;
+      cerr << "psosh: cat: " << objectName << ": Is a directory/folder" << endl;
       return;
    }
    
@@ -273,8 +275,22 @@ void vdsShell::Cat()
       session.GetDefinition( objectName, &pDefinition );
    }
    catch ( psoException exc ) {
-      cerr << "vdssh: cat: " << exc.Message() << endl;
+      cerr << "psosh: cat: " << exc.Message() << endl;
       return;
+   }
+
+   try {
+      offsets = new size_t[pDefinition->numFields];
+   }
+   catch ( ... ) {
+      cerr << "psosh: cat: Not enough memory " << endl;
+      cerr << "Number of fields in data definition = " << pDefinition->numFields << endl;
+      return;
+   }
+   
+   psoaGetOffsets( pDefinition, offsets );
+   for ( size_t i = 0; i < pDefinition->numFields; ++i ) {
+      cout << "offsets[" << i << "] = " << offsets[i] << endl;
    }
    
    try {
@@ -326,7 +342,7 @@ void vdsShell::Cat()
    }
    catch ( psoException exc ) {
       if ( pDefinition != NULL ) free(pDefinition);
-      cerr << "vdssh: cat: " << exc.Message() << endl;
+      cerr << "psosh: cat: " << exc.Message() << endl;
       return;
    }
 
@@ -335,7 +351,7 @@ void vdsShell::Cat()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::Cd()
+void psoShell::Cd()
 {
    string newLoc;
    psoObjStatus status;
@@ -362,11 +378,11 @@ void vdsShell::Cd()
    }
    catch ( psoException exc ) {
       exc = exc; // Avoid a warning
-      cerr << "vdssh: cd: " << newLoc << ": Invalid folder name" << endl;
+      cerr << "psosh: cd: " << newLoc << ": Invalid folder name" << endl;
       return;
    }
    if ( status.type != PSO_FOLDER ) {
-      cerr << "vdssh: cd: " << newLoc << ": Invalid folder name" << endl;
+      cerr << "psosh: cd: " << newLoc << ": Invalid folder name" << endl;
       return;
    }
    currentLocation = newLoc;
@@ -374,7 +390,7 @@ void vdsShell::Cd()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::Cp()
+void psoShell::Cp()
 {
    string srcName, destName;
    psoObjStatus status;
@@ -405,11 +421,11 @@ void vdsShell::Cp()
    }
    catch ( psoException exc ) {
       exc = exc; // Avoid a warning
-      cerr << "vdssh: cp: " << srcName << ": Invalid object name" << endl;
+      cerr << "psosh: cp: " << srcName << ": Invalid object name" << endl;
       return;
    }
    if ( status.type == PSO_FOLDER ) {
-      cerr << "vdssh: cp: " << srcName << ": Is a directory/folder" << endl;
+      cerr << "psosh: cp: " << srcName << ": Is a directory/folder" << endl;
       return;
    }
    
@@ -462,13 +478,13 @@ void vdsShell::Cp()
    }
    catch ( psoException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
-      cerr << "vdssh: cp: " << exc.Message() << endl;
+      cerr << "psosh: cp: " << exc.Message() << endl;
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::Free()
+void psoShell::Free()
 {
    psoInfo info;
    
@@ -476,23 +492,23 @@ void vdsShell::Free()
       session.GetInfo( &info );
    }
    catch( psoException exc ) {
-      cerr << "vdssh: free: " << exc.Message() << endl;
+      cerr << "psosh: free: " << exc.Message() << endl;
       return;
    }
 
-   cout << "vds total size     : " << constants.Bytes(info.totalSizeInBytes) << endl;
-   cout << "allocated memory   : " << constants.Bytes(info.allocatedSizeInBytes) << endl;
-   cout << "number of objects  : " << info.numObjects << endl;
-   cout << "number of groups   : " << info.numGroups << endl;
-   cout << "number of mallocs  : " << info.numMallocs << endl;
-   cout << "number of frees    : " << info.numFrees << endl;
-   cout << "largest free space : " << constants.Bytes(info.largestFreeInBytes) << endl;
+   cout << "shared-mem total size : " << constants.Bytes(info.totalSizeInBytes) << endl;
+   cout << "allocated memory      : " << constants.Bytes(info.allocatedSizeInBytes) << endl;
+   cout << "number of objects     : " << info.numObjects << endl;
+   cout << "number of groups      : " << info.numGroups << endl;
+   cout << "number of mallocs     : " << info.numMallocs << endl;
+   cout << "number of frees       : " << info.numFrees << endl;
+   cout << "largest free space    : " << constants.Bytes(info.largestFreeInBytes) << endl;
 
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::Ls()
+void psoShell::Ls()
 {
    psoFolder folder( session );
    int rc;
@@ -523,17 +539,17 @@ void vdsShell::Ls()
    catch( psoException exc ) {
       if ( exc.ErrorCode() == PSO_NO_SUCH_OBJECT || 
          exc.ErrorCode() == PSO_NO_SUCH_FOLDER ) {
-         cerr << "vdssh: " << tokens[0] << ": " << "No such file or directory" << endl;
+         cerr << "psosh: " << tokens[0] << ": " << "No such file or directory" << endl;
       }
       else {
-         cerr << "vdssh: " << tokens[0] << ": " << exc.Message() << endl;
+         cerr << "psosh: " << tokens[0] << ": " << exc.Message() << endl;
       }
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::Man()
+void psoShell::Man()
 {
    cout << "List of available commands: " << endl << endl;
    cout << "cat object_name" << endl;
@@ -574,7 +590,7 @@ void vdsShell::Man()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::Mkdir()
+void psoShell::Mkdir()
 {
    string folderName;
    psoObjectDefinition definition;
@@ -594,13 +610,13 @@ void vdsShell::Mkdir()
    }
    catch ( psoException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
-      cerr << "vdssh: mkdir: " << exc.Message() << endl;
+      cerr << "psosh: mkdir: " << exc.Message() << endl;
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::Rm()
+void psoShell::Rm()
 {
    string objectName;
    psoObjStatus status;
@@ -619,11 +635,11 @@ void vdsShell::Rm()
    }
    catch ( psoException exc ) {
       exc = exc; // Avoid a warning
-      cerr << "vdssh: rm: " << objectName << ": Invalid object name" << endl;
+      cerr << "psosh: rm: " << objectName << ": Invalid object name" << endl;
       return;
    }
    if ( status.type == PSO_FOLDER ) {
-      cerr << "vdssh: rm: " << objectName << ": Is a directory/folder" << endl;
+      cerr << "psosh: rm: " << objectName << ": Is a directory/folder" << endl;
       return;
    }
    
@@ -633,13 +649,13 @@ void vdsShell::Rm()
    }
    catch ( psoException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
-      cerr << "vdssh: rm: " << exc.Message() << endl;
+      cerr << "psosh: rm: " << exc.Message() << endl;
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::Rmdir()
+void psoShell::Rmdir()
 {
    string folderName;
    psoObjStatus status;
@@ -658,11 +674,11 @@ void vdsShell::Rmdir()
    }
    catch ( psoException exc ) {
       exc = exc; // Avoid a warning
-      cerr << "vdssh: rmdir: " << folderName << ": Invalid folder name" << endl;
+      cerr << "psosh: rmdir: " << folderName << ": Invalid folder name" << endl;
       return;
    }
    if ( status.type != PSO_FOLDER ) {
-      cerr << "vdssh: rmdir: " << folderName << ": Not a directory/folder" << endl;
+      cerr << "psosh: rmdir: " << folderName << ": Not a directory/folder" << endl;
       return;
    }
    
@@ -672,13 +688,13 @@ void vdsShell::Rmdir()
    }
    catch ( psoException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
-      cerr << "vdssh: rmdir: " << exc.Message() << endl;
+      cerr << "psosh: rmdir: " << exc.Message() << endl;
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::Stat()
+void psoShell::Stat()
 {
    string objectName;
    psoObjStatus status;
@@ -695,7 +711,7 @@ void vdsShell::Stat()
       session.GetStatus( objectName, &status );
    }
    catch ( psoException exc ) {
-      cerr << "vdssh: stat: " << objectName << ": " << exc.Message() << endl;
+      cerr << "psosh: stat: " << objectName << ": " << exc.Message() << endl;
       return;
    }
    cout << "Object full name     : " << objectName << endl;
@@ -710,7 +726,7 @@ void vdsShell::Stat()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void vdsShell::Touch()
+void psoShell::Touch()
 {
    string objectName;
    string option, filename;
@@ -727,7 +743,7 @@ void vdsShell::Touch()
       filename = tokens[1];
    }
    else {
-      cerr << "vdssh: touch: " << "Usage: touch -h|-q object_name" << endl;
+      cerr << "psosh: touch: " << "Usage: touch -h|-q object_name" << endl;
       return;
    }
    
@@ -738,7 +754,7 @@ void vdsShell::Touch()
       definition.type = PSO_HASH_MAP;
    }
    else {
-      cerr << "vdssh: touch: " << "invalid option (" << option << ")" << endl;
+      cerr << "psosh: touch: " << "invalid option (" << option << ")" << endl;
       return;
    }
    
@@ -756,7 +772,7 @@ void vdsShell::Touch()
    }
    catch ( psoException exc ) {
       session.Rollback();  // just in case it's the Commit that fails
-      cerr << "vdssh: touch: " << exc.Message() << endl;
+      cerr << "psosh: touch: " << exc.Message() << endl;
    }
 }
 

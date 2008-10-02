@@ -30,14 +30,16 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsConstants::vdsConstants()
+psoConstants::psoConstants()
 {
    // Make sure that they have equal length.
-   types.push_back( "Unknown " );
-   types.push_back( "Folder  " );
-   types.push_back( "Queue   " );
-   types.push_back( "Hash Map" );
-   headerType =     "Type    ";
+   types.push_back( "Unknown   " );
+   types.push_back( "Folder    " );
+   types.push_back( "Hash Map  " );
+   types.push_back( "LIFO Queue" );
+   types.push_back( "Fast Map  " );
+   types.push_back( "FIFO Queue" );
+   headerType =     "Type      ";
 
    stats.push_back( "Normal " );
    stats.push_back( "Deleted" );
@@ -50,14 +52,14 @@ vdsConstants::vdsConstants()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-vdsConstants::~vdsConstants()
+psoConstants::~psoConstants()
 {
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 const string &
-vdsConstants::Bytes( long numBytes )
+psoConstants::Bytes( long numBytes )
 {
    double d = numBytes;
    ostringstream oss;
@@ -85,7 +87,7 @@ vdsConstants::Bytes( long numBytes )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 const string &
-vdsConstants::Type( psoObjectType type )
+psoConstants::Type( psoObjectType type )
 {
    int i = type;
    
@@ -97,7 +99,7 @@ vdsConstants::Type( psoObjectType type )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 const string &
-vdsConstants::Status( int status )
+psoConstants::Status( int status )
 {
    if ( status < 0 || status > 2 ) status = 3;
    

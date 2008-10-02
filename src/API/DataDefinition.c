@@ -34,9 +34,9 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
 /* 
  * Note: the type of object must be filled by the caller.
  */
-int psoaGetDefinition( psonFieldDef          * pInternalDef,
-                      uint16_t               numFields,
-                      psoObjectDefinition ** ppDefinition )
+int psoaGetDefinition( psonFieldDef         * pInternalDef,
+                       uint16_t               numFields,
+                       psoObjectDefinition ** ppDefinition )
 {
    unsigned int i;
    psoObjectDefinition * ptr;
@@ -92,8 +92,8 @@ int psoaGetDefinition( psonFieldDef          * pInternalDef,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
-                      size_t           * pMinLength,
-                      size_t           * pMaxLength )
+                       size_t           * pMinLength,
+                       size_t           * pMaxLength )
 {
    PSO_PRE_CONDITION( pKeyDef    != NULL );
    PSO_PRE_CONDITION( pMinLength != NULL );
@@ -115,9 +115,9 @@ void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void psoaGetLimits( psonFieldDef * pDefinition,
-                   uint16_t      numFields,
-                   size_t      * pMinLength,
-                   size_t      * pMaxLength )
+                    uint16_t       numFields,
+                    size_t       * pMinLength,
+                    size_t       * pMaxLength )
 {
    unsigned int i;
    size_t minLength = 0, maxLength = 0;
@@ -218,6 +218,102 @@ void psoaGetLimits( psonFieldDef * pDefinition,
    if ( maxLength == 0 ) maxLength = minLength;
    *pMinLength = minLength;
    *pMaxLength = maxLength;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void psoaGetOffsets( psoObjectDefinition * pDefinition,
+                     size_t              * pOffsets )
+{
+   unsigned int i;
+   size_t minLength = 0;
+
+   PSO_PRE_CONDITION( pDefinition != NULL );
+   PSO_PRE_CONDITION( pOffsets    != NULL );
+   
+   /*
+    * The first field is special - the alignment offset is always zero
+    * since we just started.
+    */
+   pOffsets[0] = 0;
+
+   switch( pDefinition->fields[0].type ) {
+
+   case PSO_INTEGER:
+   case PSO_BINARY:
+   case PSO_STRING:
+      minLength = pDefinition->fields[0].length;
+      break;
+
+   case PSO_DECIMAL:
+      minLength = pDefinition->fields[0].precision + 2;
+      break;
+
+   case PSO_BOOLEAN:
+      minLength = sizeof(bool);
+      break;
+
+   case PSO_VAR_BINARY:
+   case PSO_VAR_STRING:
+      /* A single field - a single offset ! */
+      break;
+   }
+   
+   for ( i = 1; i < pDefinition->numFields; ++i ) {
+
+      switch( pDefinition->fields[i].type ) {
+
+      case PSO_INTEGER:
+         if ( pDefinition->fields[i].length == 1 ) {
+            minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
+         }
+         else if ( pDefinition->fields[i].length == 2 ) {
+            minLength = ((minLength-1)/PSOC_ALIGNMENT_INT16 + 1)*PSOC_ALIGNMENT_INT16;
+         }
+         else if ( pDefinition->fields[i].length == 4 ) {
+            minLength = ((minLength-1)/PSOC_ALIGNMENT_INT32 + 1)*PSOC_ALIGNMENT_INT32;
+         }
+         else {
+            minLength = ((minLength-1)/PSOC_ALIGNMENT_INT64 + 1)*PSOC_ALIGNMENT_INT64;
+         }
+         pOffsets[i] = minLength;
+         
+         minLength += pDefinition->fields[i].length;
+
+         break;
+
+      case PSO_BINARY:
+      case PSO_STRING:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
+         pOffsets[i] = minLength;
+
+         minLength += pDefinition->fields[i].length;
+
+         break;
+
+      case PSO_DECIMAL:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
+         pOffsets[i] = minLength;
+
+         minLength += pDefinition->fields[i].precision + 2;
+
+         break;
+
+      case PSO_BOOLEAN:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_BOOL + 1)*PSOC_ALIGNMENT_BOOL;
+         pOffsets[i] = minLength;
+
+         minLength += sizeof(bool);
+         break;
+
+      case PSO_VAR_BINARY:
+      case PSO_VAR_STRING:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
+         pOffsets[i] = minLength;
+
+         break;
+      }
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -414,10 +510,10 @@ int psoaValidateDefinition( psoObjectDefinition * pDefinition )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoaXmlToDefinition( const char           * xmlBuffer,
-                        size_t                 lengthInBytes,
-                        psoObjectDefinition ** ppDefinition,
-                        char                ** objectName,
-                        size_t               * nameLengthInBytes )
+                         size_t                 lengthInBytes,
+                         psoObjectDefinition ** ppDefinition,
+                         char                ** objectName,
+                         size_t               * nameLengthInBytes )
 {
    xmlSchemaPtr schema = NULL;
    xmlSchemaValidCtxtPtr  validCtxt = NULL;

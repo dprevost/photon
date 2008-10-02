@@ -45,11 +45,11 @@ psoFolder::~psoFolder()
 void psoFolder::Close()
 {
    int rc = psoFolderClose( m_objectHandle );
-
+   m_objectHandle = NULL;
+   
    if ( rc != 0 ) {
       throw psoException( rc, m_sessionHandle, "psoFolder::Close" );
    }
-   m_objectHandle = NULL;   
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

@@ -30,7 +30,7 @@ int main( int argc, char *argv[] )
    int errcode = 0;
    psoProcess process;
    psoSession session;
-   vdsShell   sh(session);
+   psoShell   sh(session);
    bool ok;
    
    psocOptionHandle optHandle;

@@ -32,11 +32,11 @@ using namespace std;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class vdsShell
+class psoShell
 {
 public:
-   vdsShell(psoSession & s);
-   ~vdsShell();
+   psoShell(psoSession & s);
+   ~psoShell();
 
    void Run();
    
@@ -45,7 +45,7 @@ private:
    string currentLocation;
    psoSession & session;
    vector<string> tokens;
-   vdsConstants constants;
+   psoConstants constants;
    
    bool Dispatch();
    
@@ -70,7 +70,7 @@ private:
    void Ls();
    
 public:
-   // man is public so that it can be use if the user do vdssh --help (or
+   // man is public so that it can be use if the user do psosh --help (or
    // variants).
    void Man();
    

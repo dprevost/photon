@@ -815,6 +815,9 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
             break;
          case PSO_QUEUE:
          case PSO_LIFO:
+            *ppInternalDef = GET_PTR_FAST(
+               GET_PTR_FAST( pDesc->offset, psonQueue)->dataDefOffset,
+               psonFieldDef );
             pDefinition->numFields = 
                GET_PTR_FAST( pDesc->offset, psonQueue)->numFields;
             break;
@@ -1910,7 +1913,7 @@ bool psonTopFolderCloseObject( psonFolderItem     * pFolderItem,
    GET_PTR( pNode, pDesc->nodeOffset, psonTreeNode);
    
    /* Special case, the top folder */
-   if ( pNode->myParentOffset == PSON_NULL_OFFSET ) return 0;
+   if ( pNode->myParentOffset == PSON_NULL_OFFSET ) return true;
 
    GET_PTR( parentFolder, pNode->myParentOffset, psonFolder );
    GET_PTR( txFolderStatus, parentFolder->nodeObject.txStatusOffset, psonTxStatus );
