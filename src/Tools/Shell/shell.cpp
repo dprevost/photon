@@ -113,6 +113,68 @@ bool psoShell::Dispatch()
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+   
+void psoShell::DisplayData( psoObjectDefinition * pDefinition,
+                            size_t              * offsets,
+                            unsigned char       * buffer,
+                            size_t                length )
+{
+   size_t i, j;
+//   vector<string> segments;
+   string s;
+   
+   for ( i = 0; i < pDefinition->numFields; ++i ) {
+//      ostringstream oss;
+      switch( pDefinition->fields[i].type ) {
+
+      case PSO_BINARY:
+         cout << "0x" << hex;
+         for ( j = 0; j < pDefinition->fields[i].length; ++j )
+            cout << (int) buffer[offsets[i]+j];
+         cout << dec;
+         break;
+      case PSO_STRING:
+         for ( j = 0; j < pDefinition->fields[i].length; ++j )
+            cout << (char) buffer[offsets[i]+j];
+      case PSO_INTEGER:
+//         ptr->fields[i].length = pInternalDef[i].length1;
+         
+         break;
+
+      case PSO_DECIMAL:
+//         ptr->fields[i].precision = pInternalDef[i].length1;
+//         ptr->fields[i].scale     = pInternalDef[i].length2;
+
+         break;
+
+      case PSO_BOOLEAN:
+
+         break;
+
+      case PSO_VAR_BINARY:
+      case PSO_VAR_STRING:
+
+//         ptr->fields[i].minLength = pInternalDef[i].length1;
+  //       ptr->fields[i].maxLength = pInternalDef[i].length2;
+
+         break;
+      }
+      cout << " ";
+//      cout << oss;
+   }
+
+   cout << endl;
+//   cout << buffer << endl;
+
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+   
+void psoShell::DisplayKey()
+{
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void psoShell::Parse( string & inStr )
 {
@@ -332,7 +394,7 @@ void psoShell::Cat()
             memset( buffer, 0, status.maxDataLength+1 );
             rc = queue.GetFirst( buffer, status.maxDataLength, &dataLength );
             while ( rc == 0 ) {
-               cout << buffer << endl;
+               DisplayData( pDefinition, offsets, buffer, dataLength );
                memset( buffer, 0, status.maxDataLength+1 );
                rc = queue.GetNext( buffer, status.maxDataLength, &dataLength );
             }

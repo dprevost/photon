@@ -55,7 +55,10 @@ private:
    
    void DisplayKey();
    
-   void DisplayData();
+   void DisplayData( psoObjectDefinition * pDefinition,
+                     size_t              * offsets,
+                     unsigned char       * buffer,
+                     size_t                length );
    
    // The "list" of currently implemented pseudo-shell commands starts here.
 
