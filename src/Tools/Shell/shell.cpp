@@ -22,6 +22,7 @@
 #include <iostream>
 #include <vector>
 #include "API/DataDefinition.h" // for psoaGetOffsets
+#include "Tools/Shell/util.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -45,24 +46,30 @@ bool psoShell::Dispatch()
    string s;
    
    if ( tokens[0] == s.assign("cat") ) {
-      if ( tokens.size() != 2 ) throw( 1 );
+      if ( tokens.size() != 2 ) throw(1);
       Cat();
    }
    else if ( tokens[0] == s.assign("cd") ) {
-      if ( tokens.size() > 2 ) throw( 1 );
+      if ( tokens.size() > 2 ) throw(1);
       Cd();
    }
    else if ( tokens[0] == s.assign("cp") ) {
-      if ( tokens.size() != 3 ) throw( 1 );
+      if ( tokens.size() != 3 ) throw(1);
       Cp();
    }
    else if ( tokens[0] == s.assign("del") ) {
-      if ( tokens.size() != 2 ) throw( 1 );
+      if ( tokens.size() != 2 ) throw(1);
       Rm();
    }
    else if ( tokens[0] == s.assign("dir") ) {
-      if ( tokens.size() > 2 ) throw( 1 );
+      if ( tokens.size() > 2 ) throw(1);
       Ls();
+   }
+   else if ( tokens[0] == s.assign("echo") ) {
+      cerr << tokens[2] << " - " << tokens.size() << endl;
+      if ( tokens.size() != 4 ) throw(1);
+      if ( tokens[2] != ">" ) throw(2);
+      Echo();
    }
    else if ( tokens[0] == s.assign("exit") ) {
       timeToExit = true;
@@ -80,7 +87,7 @@ bool psoShell::Dispatch()
       Man();
    }
    else if ( tokens[0] == s.assign("mkdir") ) {
-      if ( tokens.size() != 2 ) throw( 1 );
+      if ( tokens.size() != 2 ) throw(1);
       Mkdir();
    }
    else if ( tokens[0] == s.assign("pwd") ) {
@@ -90,23 +97,23 @@ bool psoShell::Dispatch()
       timeToExit = true;
    }
    else if ( tokens[0] == s.assign("rm") ) {
-      if ( tokens.size() != 2 ) throw( 1 );
+      if ( tokens.size() != 2 ) throw(1);
       Rm();
    }
    else if ( tokens[0] == s.assign("rmdir") ) {
-      if ( tokens.size() != 2 ) throw( 1 );
+      if ( tokens.size() != 2 ) throw(1);
       Rmdir();
    }
    else if ( tokens[0] == s.assign("stat") ) {
-      if ( tokens.size() != 2 ) throw( 1 );
+      if ( tokens.size() != 2 ) throw(1);
       Stat();
    }
    else if ( tokens[0] == s.assign("touch") ) {
-      if ( tokens.size() != 3 ) throw( 1 );
+      if ( tokens.size() != 3 ) throw(1);
       Touch();
    }
    else {
-      throw( 0 );
+      throw(0);
    }
    
    return timeToExit;
@@ -186,9 +193,9 @@ void psoShell::Parse( string & inStr )
    tokens.clear();
 
    // Cannot start with a "
-   if ( inStr[0] == '"' ) throw(2);
+   if ( inStr[0] == '\'' ) throw(2);
 
-   len = inStr.find('"');
+   len = inStr.find('\'');
    if ( len == string::npos ) {
       // Simpler case, no quotes
       do {
@@ -209,7 +216,7 @@ void psoShell::Parse( string & inStr )
    // further break down using the ' ' delimiter.
    
    do {
-      getline( iss, s, '"');
+      getline( iss, s, '\'');
       Trim(s);
       if ( s.length() > 0 ) {
          if ( (count % 2) == 0 ) {
@@ -546,6 +553,98 @@ void psoShell::Cp()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void psoShell::Echo()
+{
+   string objectName;
+   psoObjStatus status;
+   unsigned char * key = NULL, * buffer = NULL;
+   size_t keyLength, dataLength;
+   psoObjectDefinition * pDefinition = NULL;
+   
+   if ( tokens[3][0] == '/' ) {
+      // Absolute path
+      objectName = tokens[3];
+   }
+   else {
+      objectName = currentLocation + tokens[3];
+   }
+   
+   // Must check if object exists (and its type)
+   try {
+      session.GetStatus( objectName, &status );
+   }
+   catch ( psoException exc ) {
+      exc = exc; // Avoid a warning
+      cerr << "psosh: echo: " << objectName << ": Invalid object name" << endl;
+      return;
+   }
+   if ( status.type == PSO_FOLDER ) {
+      cerr << "psosh: echo: " << objectName << ": Is a directory/folder" << endl;
+      return;
+   }
+   
+   try {
+      session.GetDefinition( objectName, &pDefinition );
+   }
+   catch ( psoException exc ) {
+      cerr << "psosh: echo: " << exc.Message() << endl;
+      return;
+   }
+
+   try {
+      if ( status.type == PSO_HASH_MAP ) {
+         key = psotsInToKey( tokens[1], pDefinition, keyLength );
+      }
+      buffer = psotsInToBuff( tokens[1], pDefinition, dataLength );
+   }   
+   catch ( exception exc ) {
+      cerr << "psosh: echo: Not enough memory " << endl;
+      cerr << "Number of fields in data definition = " << pDefinition->numFields << endl;
+      return;
+   }
+   catch( unsigned int count ) {
+      if ( count == 0 ) { 
+         cerr << "psosh: echo: Invalid key" << endl;
+      }
+      else {
+         cerr << "psosh: echo: Invalid input field #" << count << endl;
+      }
+   }
+   
+   try {
+      if ( status.type == PSO_HASH_MAP ) {
+   
+         psoHashMap hashMap(session);
+         
+         hashMap.Open( objectName );
+         
+         try {
+            hashMap.Insert( key, keyLength, buffer, dataLength );
+         }
+         catch( ... ) {
+            // we try a replace instead
+         }
+         hashMap.Close();
+      }
+      else if ( status.type == PSO_QUEUE ) {
+         psoQueue queue(session);
+         
+         queue.Open( objectName );
+         
+         queue.Close();
+      }
+   }
+   catch ( psoException exc ) {
+      if ( pDefinition != NULL ) free(pDefinition);
+      cerr << "psosh: cat: " << exc.Message() << endl;
+      return;
+   }
+
+   if ( pDefinition != NULL ) free(pDefinition);
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void psoShell::Free()
 {
    psoInfo info;
@@ -793,7 +892,9 @@ void psoShell::Touch()
    string objectName;
    string option, filename;
    psoObjectDefinition definition;
-
+   bool useXML = false;
+   psoFolder folder( session );
+   
    definition.type = PSO_LAST_OBJECT_TYPE;
    
    if ( tokens[1][0] == '-' ) {
@@ -815,26 +916,45 @@ void psoShell::Touch()
    else if ( option == "-h" || option == "--hashmap" ) {
       definition.type = PSO_HASH_MAP;
    }
+   else if ( option == "-x" || option == "--xml" ) {
+      useXML = true;
+   }
    else {
       cerr << "psosh: touch: " << "invalid option (" << option << ")" << endl;
       return;
    }
+
+   if ( useXML ) {
+      try {
+         cerr << filename << endl;
+         folder.Open( currentLocation );
+         folder.CreateObjectXML( filename );
+         folder.Close();
+         session.Commit();
+      }
+      catch ( psoException exc ) {
+         session.Rollback();  // just in case it's the Commit that fails
+         cerr << "psosh: touch: " << exc.Message() << endl;
+      }
+   }
+   else
+   {
+      if ( filename[0] == '/' ) {
+         // Absolute path
+         objectName = filename;
+      }
+      else {
+         objectName = currentLocation + filename;
+      }
    
-   if ( filename[0] == '/' ) {
-      // Absolute path
-      objectName = filename;
-   }
-   else {
-      objectName = currentLocation + filename;
-   }
-   
-   try {
-      session.CreateObject( objectName, &definition );
-      session.Commit();
-   }
-   catch ( psoException exc ) {
-      session.Rollback();  // just in case it's the Commit that fails
-      cerr << "psosh: touch: " << exc.Message() << endl;
+      try {
+         session.CreateObject( objectName, &definition );
+         session.Commit();
+      }
+      catch ( psoException exc ) {
+         session.Rollback();  // just in case it's the Commit that fails
+         cerr << "psosh: touch: " << exc.Message() << endl;
+      }
    }
 }
 

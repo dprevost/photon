@@ -13,10 +13,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
+/*
+ * Utility functions to be used by the shell program. 
+ */
+ 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef PSO_SHELL_CONSTANTS_H
-#define PSO_SHELL_CONSTANTS_H
+#ifndef PSO_SHELL_UTIL_H
+#define PSO_SHELL_UTIL_H
 
 #include "Common/Common.h"
 #include <photon/photon>
@@ -26,41 +30,26 @@
 #include <string>
 #include <iostream>
 #include <vector>
+//#include "Tools/Shell/constants.h"
 
 using namespace std;
 
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-// This class is used for transforming raw data into a more screen-friendly
-// output. 
+unsigned char * psotsInToBuff( string              & inData, 
+                               psoObjectDefinition * pDefinition,
+                               size_t              & length );
 
-class psoConstants
-{
-public:
-   psoConstants();
-   ~psoConstants();
-   
-   const string & Type( psoObjectType type );
-   const string & TypeHeader()
-      { return headerType; }
-   
-   const string & Status( int status );
-   const string & StatusHeader()
-      { return headerStatus; }
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   const string & Bytes( long );
-   
-private:
+unsigned char * psotsInToKey( string              & inData, 
+                              psoObjectDefinition * pDefinition,
+                              size_t              & length );
 
-   vector<string> types;
-   vector<string> stats;
-   string headerType;
-   string headerStatus;
-   string strSize;
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-};
-
-#endif // PSO_SHELL_CONSTANTS_H
+#endif // PSO_SHELL_UTIL_H
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

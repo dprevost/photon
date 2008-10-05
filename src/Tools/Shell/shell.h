@@ -15,8 +15,8 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef VDSTOOLS_SHELL_H
-#define VDSTOOLS_SHELL_H
+#ifndef PSO_SHELL_SHELL_H
+#define PSO_SHELL_SHELL_H
 
 #include "Common/Common.h"
 #include <photon/photon>
@@ -68,6 +68,8 @@ private:
 
    void Cp();
    
+   void Echo();
+   
    void Free();
    
    void Ls();
@@ -95,7 +97,7 @@ private:
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif // VDSTOOLS_SHELL_H
+#endif // PSO_SHELL_SHELL_H
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

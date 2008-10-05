@@ -33,7 +33,8 @@ endif
 EXTRA_DIST =           \
         $(man_MANS)    \
         psosh.xml      \
-        Makefile.win32 
+        Makefile.win32 \
+        psosh.dsp      
 
 psosh_SOURCES =       \
         constants.cpp \
@@ -41,7 +42,8 @@ psosh_SOURCES =       \
         shell.cpp     \
         shell.h       \
         psosh.cpp     \
-        psosh.dsp     
+        util.cpp      \
+        util.h        
 
 psosh_LDADD = $(top_builddir)/src/C++/libphotoncpp.la
 

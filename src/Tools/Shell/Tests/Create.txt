@@ -1,0 +1,8 @@
+mkdir CreateXmlFolder
+cd CreateXmlFolder
+touch -x '<?xml version="1.0"?> <queue xmlns="http://photonsoftware.org/photon_meta" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://photonsoftware.org/photon_meta ../../../XML/photon_meta10.xsd" objName="My_Queue" > <field name="junk1"><integer size="4" /></field> <field name="junk2"><string length="100"/></field> <field name="junk3"><decimal precision="10" scale="2" /></field> <field name="junk4"><integer size="1" /></field> <field name="junk5"><boolean /></field> <field name="junk6"><binary length="200" /></field> <lastField name="junk7"><varBinary minLength="5" maxLength="0" /></lastField> </queue>'
+ls
+echo '1000,abc,13.3,35,true,0x234512,0X2323234556' > My_Queue
+rm My_Queue
+cd 
+rmdir CreateXmlFolder
