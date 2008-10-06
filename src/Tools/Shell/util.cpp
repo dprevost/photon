@@ -23,13 +23,92 @@
 #include "Common/Common.h"
 #include "API/DataDefinition.h" // for psoaGetOffsets
 
+/*
+ * The read functions read from the buffer (obtained from shared memory)
+ * an transform the "raw data" into something that can be displayed on the
+ * console/terminal.
+ *
+ * The write functions do the inverse operation, they take the input from
+ * the terminal and transform it into "raw data" for the buffer (that can
+ * then be inserted in the shared memory).
+ *
+ * The buffer in both types of function is an array of bytes that repre-
+ * sents the C structure matching the metadata of the object container.
+ */
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-bool getInt( string        & inStr,
-             size_t          intLength,
-             unsigned char * buffer )
+void readInt( string        & inStr,
+              size_t          intLength,
+              unsigned char * buffer )
 {
-   long int i = strtol ( inStr.c_str(), NULL, 0 );
+   ostringstream oss;
+   
+   int8_t  i8;
+   int16_t i16;
+   int32_t i32;
+   int64_t i64;
+   
+   switch( intLength ) {
+   case 1:
+      i8 = buffer[0];
+      oss << (int) i8; // Not a single character, force it to be an int.
+      break;
+   case 2:
+      i16 = *( (int16_t *)buffer);
+      oss << i16;
+      break;
+   case 4:
+      i32 = *( (int32_t *)buffer);
+      oss << i32;
+      break;
+   case 8:
+      i64 = *( (int64_t *)buffer);
+      oss << i64;
+      break;
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void readUint( string        & inStr,
+               size_t          intLength,
+               unsigned char * buffer )
+{
+   ostringstream oss;
+   
+   uint8_t  ui8;
+   uint16_t ui16;
+   uint32_t ui32;
+   uint64_t ui64;
+   
+   switch( intLength ) {
+   case 1:
+      ui8 = buffer[0];
+      oss << (unsigned int) ui8; // Not a single character, force it to be an int.
+      break;
+   case 2:
+      ui16 = *( (uint16_t *)buffer);
+      oss << ui16;
+      break;
+   case 4:
+      ui32 = *( (uint32_t *)buffer);
+      oss << ui32;
+      break;
+   case 8:
+      ui64 = *( (uint64_t *)buffer);
+      oss << ui64;
+      break;
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+bool writeInt( string        & inStr,
+               size_t          intLength,
+               unsigned char * buffer )
+{
+   long int i = strtol( inStr.c_str(), NULL, 0 );
    if ( errno == ERANGE ) return false;
    
    if ( intLength == 1 ) {
@@ -53,11 +132,11 @@ bool getInt( string        & inStr,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-bool getUint( string        & inStr,
-              size_t          intLength,
-              unsigned char * buffer )
+bool writeUint( string        & inStr,
+                size_t          intLength,
+                unsigned char * buffer )
 {
-   unsigned long i = strtoul ( inStr.c_str(), NULL, 0 );
+   unsigned long i = strtoul( inStr.c_str(), NULL, 0 );
    if ( errno == ERANGE ) return false;
    
    if ( intLength == 1 ) {
@@ -78,8 +157,8 @@ bool getUint( string        & inStr,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-bool getBool( string        & inStr,
-              unsigned char * buffer )
+bool writeBool( string        & inStr,
+                unsigned char * buffer )
 {
    bool b, ok = false; // ok == false indicates that no valid value were found
    
@@ -105,10 +184,10 @@ bool getBool( string        & inStr,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-bool getDecimal( string        & inStr,
-                 size_t          precision,
-                 size_t          scale,
-                 unsigned char * buffer )
+bool writeDecimal( string        & inStr,
+                   size_t          precision,
+                   size_t          scale,
+                   unsigned char * buffer )
 {
    size_t i, currentScale = 0;
    bool separator = false, sign = false;
@@ -157,9 +236,9 @@ bool getDecimal( string        & inStr,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-bool getFixString( string        & inStr,
-                   size_t          strLength,
-                   unsigned char * buffer )
+bool writeFixString( string        & inStr,
+                     size_t          strLength,
+                     unsigned char * buffer )
 {
    if ( inStr.length() > strLength ) return false;
    
@@ -170,10 +249,10 @@ bool getFixString( string        & inStr,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-bool getVarString( string        & inStr,
-                   size_t          minLength,
-                   size_t          maxLength,
-                   unsigned char * buffer )
+bool writeVarString( string        & inStr,
+                     size_t          minLength,
+                     size_t          maxLength,
+                     unsigned char * buffer )
 {
    if ( maxLength > 0 && inStr.length() > maxLength ) return false;
    if ( inStr.length() < minLength ) return false;
@@ -185,9 +264,9 @@ bool getVarString( string        & inStr,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-bool getFixBinary( string        & inStr,
-                   size_t          binLength,
-                   unsigned char * buffer )
+bool writeFixBinary( string        & inStr,
+                     size_t          binLength,
+                     unsigned char * buffer )
 {
    size_t length = inStr.length() / 2;
    size_t i;
@@ -219,10 +298,10 @@ bool getFixBinary( string        & inStr,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-bool getVarBinary( string        & inStr,
-                   size_t          minLength,
-                   size_t          maxLength,
-                   unsigned char * buffer )
+bool writeVarBinary( string        & inStr,
+                     size_t          minLength,
+                     size_t          maxLength,
+                     unsigned char * buffer )
 {
    size_t length = inStr.length() / 2;
    size_t i;
@@ -258,7 +337,7 @@ bool getVarBinary( string        & inStr,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-unsigned char * psotsInToBuff( string              & inStr, 
+unsigned char * shellInToBuff( string              & inStr, 
                                psoObjectDefinition * pDefinition,
                                size_t              & length )
 {
@@ -332,41 +411,41 @@ unsigned char * psotsInToBuff( string              & inStr,
       switch( pDefinition->fields[i].type ) {
 
       case PSO_INTEGER:
-         ok = getInt( inData[i],
-                      pDefinition->fields[i].length,
-                      &buffer[offsets[i]] );
+         ok = writeInt( inData[i],
+                        pDefinition->fields[i].length,
+                        &buffer[offsets[i]] );
          break;
       case PSO_BINARY:
-         ok = getFixBinary( inData[i],
-                            pDefinition->fields[i].length,
-                            &buffer[offsets[i]] );
+         ok = writeFixBinary( inData[i],
+                              pDefinition->fields[i].length,
+                              &buffer[offsets[i]] );
          break;
       case PSO_STRING:
-         ok = getFixString( inData[i],
-                            pDefinition->fields[i].length,
-                            &buffer[offsets[i]] );
+         ok = writeFixString( inData[i],
+                              pDefinition->fields[i].length,
+                              &buffer[offsets[i]] );
          break;
 
       case PSO_DECIMAL:
-         ok = getDecimal( inData[i],
-                          pDefinition->fields[i].precision,
-                          pDefinition->fields[i].scale,
-                          &buffer[offsets[i]] );
+         ok = writeDecimal( inData[i],
+                            pDefinition->fields[i].precision,
+                            pDefinition->fields[i].scale,
+                            &buffer[offsets[i]] );
          break;
       case PSO_BOOLEAN:
-         ok = getBool( inData[i], &buffer[offsets[i]] );
+         ok = writeBool( inData[i], &buffer[offsets[i]] );
          break;
       case PSO_VAR_STRING:
-         ok = getVarString( inData[i],
-                            pDefinition->fields[i].minLength,
-                            pDefinition->fields[i].maxLength,
-                            &buffer[offsets[i]] );
+         ok = writeVarString( inData[i],
+                              pDefinition->fields[i].minLength,
+                              pDefinition->fields[i].maxLength,
+                              &buffer[offsets[i]] );
          break;
       case PSO_VAR_BINARY:
-         ok = getVarBinary( inData[i],
-                            pDefinition->fields[i].minLength,
-                            pDefinition->fields[i].maxLength,
-                            &buffer[offsets[i]] );
+         ok = writeVarBinary( inData[i],
+                              pDefinition->fields[i].minLength,
+                              pDefinition->fields[i].maxLength,
+                              &buffer[offsets[i]] );
          break;
       }
       if ( ! ok ) throw(i+1);
@@ -377,22 +456,85 @@ unsigned char * psotsInToBuff( string              & inStr,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-unsigned char * psotsInToKey( string              & inData, 
-                              psoObjectDefinition * pDefinition,
-                              size_t              & length )
+unsigned char * shellInToKey( string           & inKey, 
+                              psoKeyDefinition * pDefinition,
+                              size_t           & length )
 {
-   size_t * offsets = NULL;
    unsigned char * key = NULL;
+   bool ok = false;
    
-   offsets = new size_t[pDefinition->numFields];
-   psoaGetOffsets( pDefinition, offsets );
-   for ( size_t i = 0; i < pDefinition->numFields; ++i ) {
-      cout << "offsets[" << i << "] = " << offsets[i] << endl;
+   // We need to determine the length of the key buffer to allocate.
+   switch( pDefinition->type ) {
+
+   case PSO_KEY_BINARY:
+   case PSO_KEY_STRING:
+   case PSO_KEY_INTEGER:
+      length += pDefinition->length;
+      break;
+
+   case PSO_KEY_VAR_STRING:
+      if ( inKey.length() > pDefinition->minLength ) {
+         length = inKey.length();
+      }
+      else {
+         length = pDefinition->minLength;
+      }
+      break;
+
+   case PSO_KEY_VAR_BINARY:
+      // the input of binary data  is hexadecimal - possibly preceded with
+      // 0x or 0X
+      size_t z = inKey.length() / 2;
+      if ( z > 0 ) {
+         if ( inKey[0] == '0' && (inKey[1] == 'x' || inKey[1] == 'X') ) z--;
+      }
+      if ( z > pDefinition->minLength ) {
+         length += z;
+      }
+      else {
+         length += pDefinition->minLength;
+      }
+      break;
+   }
+   
+   key = new unsigned char[length];
+   memset( key, 0, length );
+   
+   switch( pDefinition->type ) {
+
+   case PSO_KEY_INTEGER:
+      ok = writeInt( inKey,
+                     pDefinition->length,
+                     key );
+      break;
+   case PSO_KEY_BINARY:
+      ok = writeFixBinary( inKey,
+                           pDefinition->length,
+                           key );
+      break;
+   case PSO_KEY_STRING:
+      ok = writeFixString( inKey,
+                           pDefinition->length,
+                           key );
+      break;
+   case PSO_KEY_VAR_STRING:
+      ok = writeVarString( inKey,
+                           pDefinition->minLength,
+                           pDefinition->maxLength,
+                           key );
+      break;
+   case PSO_KEY_VAR_BINARY:
+      ok = writeVarBinary( inKey,
+                           pDefinition->minLength,
+                           pDefinition->maxLength,
+                           key );
+      break;
    }
 
-   throw(0);
+   if ( ! ok ) throw(0);
    
    return key;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

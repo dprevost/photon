@@ -37,15 +37,15 @@ using namespace std;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-unsigned char * psotsInToBuff( string              & inData, 
+unsigned char * shellInToBuff( string              & inData, 
                                psoObjectDefinition * pDefinition,
                                size_t              & length );
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-unsigned char * psotsInToKey( string              & inData, 
-                              psoObjectDefinition * pDefinition,
-                              size_t              & length );
+unsigned char * shellInToKey( string           & inData, 
+                              psoKeyDefinition * pDefinition,
+                              size_t           & length );
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

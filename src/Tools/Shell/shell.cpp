@@ -593,9 +593,9 @@ void psoShell::Echo()
 
    try {
       if ( status.type == PSO_HASH_MAP ) {
-         key = psotsInToKey( tokens[1], pDefinition, keyLength );
+         key = shellInToKey( tokens[1], &pDefinition->key, keyLength );
       }
-      buffer = psotsInToBuff( tokens[1], pDefinition, dataLength );
+      buffer = shellInToBuff( tokens[1], pDefinition, dataLength );
    }   
    catch ( exception exc ) {
       cerr << "psosh: echo: Not enough memory " << endl;
