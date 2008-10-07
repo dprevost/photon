@@ -38,7 +38,7 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void readInt( string        & inStr,
+void readInt( string        & outStr,
               size_t          intLength,
               unsigned char * buffer )
 {
@@ -67,11 +67,13 @@ void readInt( string        & inStr,
       oss << i64;
       break;
    }
+   
+   outStr = oss.str();
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void readUint( string        & inStr,
+void readUint( string        & outStr,
                size_t          intLength,
                unsigned char * buffer )
 {
@@ -100,8 +102,66 @@ void readUint( string        & inStr,
       oss << ui64;
       break;
    }
+
+   outStr = oss.str();
 }
 
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void readBool( string        & outStr,
+               unsigned char * buffer )
+{
+   if ( buffer[0] == 0 ) outStr = "False";
+   else outStr= "True";
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void readDecimal( string        & outStr,
+                  size_t          precision,
+                  unsigned char * buffer )
+{
+   size_t i;
+   
+   for ( i = 0; i < precision+2; ++i )
+      outStr += (char) buffer[i];
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void readString( string        & outStr,
+                 size_t          strLength,
+                 unsigned char * buffer )
+{
+   size_t i;
+   
+   for ( i = 0; i < strLength; ++i )
+      outStr += (char) buffer[i];
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void readBinary( string        & outStr,
+                 size_t          binLength,
+                 unsigned char * buffer )
+{
+   size_t i;
+   unsigned char x;
+   
+   outStr = "0x";
+   
+   for ( i = 0; i < binLength; ++i ) {
+//      cerr << " bin i = " << i << ", val = " << hex << (int) buffer[i] << endl;
+      x = (buffer[i] & 0xf0) >> 4;
+      if ( x > 9 ) outStr += (char) (x + 'a' - 10);
+      else outStr += (char) (x + '0');
+      x = buffer[i] & 0x0f;
+      if ( x > 9 ) outStr += (char) (x + 'a' - 10);
+      else outStr += (char) (x + '0');
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 bool writeInt( string        & inStr,
@@ -198,6 +258,7 @@ bool writeDecimal( string        & inStr,
       if ( inStr[i] >= '0' && inStr[i] <= '9' ) continue;
       if ( inStr[i] == '.' ) {
          if ( separator ) return false; // Two separators!
+         separator = true;
          currentScale = inStr.length() - i - 1;
          continue;
       }
@@ -269,7 +330,7 @@ bool writeFixBinary( string        & inStr,
                      unsigned char * buffer )
 {
    size_t length = inStr.length() / 2;
-   size_t i;
+   size_t i, start = 0;
    unsigned char val1, val2;
    
    if ( (inStr.length()%2) != 0 ) return false;
@@ -277,20 +338,25 @@ bool writeFixBinary( string        & inStr,
    // the input of binary data  is hexadecimal - possibly preceded with
    // 0x or 0X
    if ( length > 0 ) {
-      if ( inStr[0] == '0' && (inStr[1] == 'x' || inStr[1] == 'X') ) length--;
+      if ( inStr[0] == '0' && (inStr[1] == 'x' || inStr[1] == 'X') ) {
+         length--;
+         start = 1;
+      }
    }
    
    if ( length > binLength ) return false;
 
    // Probably reinventing the wheel here, but it's faster to do it 
    // this way instead of looking up the proper C/C++ library call.
-   for ( i = 0; i < length; ++i ) {
+   for ( i = start; i < length+start; ++i ) {
       if ( inStr[2*i] >= '0' && inStr[2*i] <= '9' ) val1 = inStr[2*i] - '0';
       else val1 = inStr[2*i] - 'a' + 10;
       val1 *= 16;
       if ( inStr[2*i+1] >= '0' && inStr[2*i+1] <= '9' ) val2 = inStr[2*i+1] - '0';
       else val2 = inStr[2*i+1] - 'a' + 10;
-      buffer[i] = val1 + val2;
+      buffer[i-start] = val1 + val2;
+      cerr << " bin2 i = " << i << ", val = " << hex << (int) buffer[i] << endl;
+      
    }
    
    return true;
@@ -304,7 +370,7 @@ bool writeVarBinary( string        & inStr,
                      unsigned char * buffer )
 {
    size_t length = inStr.length() / 2;
-   size_t i;
+   size_t i, start = 0;
    unsigned char val1, val2;
    
    cerr << length << " - " << inStr.length() << endl;
@@ -313,7 +379,10 @@ bool writeVarBinary( string        & inStr,
    // the input of binary data  is hexadecimal - possibly preceded with
    // 0x or 0X
    if ( length > 0 ) {
-      if ( inStr[0] == '0' && (inStr[1] == 'x' || inStr[1] == 'X') ) length--;
+      if ( inStr[0] == '0' && (inStr[1] == 'x' || inStr[1] == 'X') ) {
+         length--;
+         start = 1;
+      }
    }
    
    cerr << length << " - " << inStr.length() << endl;
@@ -323,16 +392,95 @@ bool writeVarBinary( string        & inStr,
 
    // Probably reinventing the wheel here, but it's faster to do it 
    // this way instead of looking up the proper C/C++ library call.
-   for ( i = 0; i < length; ++i ) {
+   for ( i = start; i < length+start; ++i ) {
       if ( inStr[2*i] >= '0' && inStr[2*i] <= '9' ) val1 = inStr[2*i] - '0';
       else val1 = inStr[2*i] - 'a' + 10;
       val1 *= 16;
       if ( inStr[2*i+1] >= '0' && inStr[2*i+1] <= '9' ) val2 = inStr[2*i+1] - '0';
       else val2 = inStr[2*i+1] - 'a' + 10;
-      buffer[i] = val1 + val2;
+      buffer[i-start] = val1 + val2;
    }
    
    return true;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void shellBuffToOut( string              & outStr, 
+                     psoObjectDefinition * pDefinition,
+                     unsigned char       * buffer,
+                     size_t                length )
+{
+   size_t * offsets = NULL, i;
+  
+   offsets = new size_t[pDefinition->numFields];
+   psoaGetOffsets( pDefinition, offsets );
+   for ( i = 0; i < pDefinition->numFields; ++i ) {
+      string s;
+      
+      switch( pDefinition->fields[i].type ) {
+
+      case PSO_INTEGER:
+         readInt( s, 
+                  pDefinition->fields[i].length,
+                  &buffer[offsets[i]] );
+         break;
+      case PSO_BINARY:
+         readBinary( s,
+                     pDefinition->fields[i].length,
+                     &buffer[offsets[i]] );
+         break;
+      case PSO_STRING:
+         readString( s,
+                     pDefinition->fields[i].length,
+                     &buffer[offsets[i]] );
+         break;
+      case PSO_DECIMAL:
+         readDecimal( s,
+                      pDefinition->fields[i].precision,
+                      &buffer[offsets[i]] );
+         break;
+      case PSO_BOOLEAN:
+         readBool( s, &buffer[offsets[i]] );
+         break;
+      case PSO_VAR_STRING:
+         readString( s,
+                     length - offsets[i],
+                     &buffer[offsets[i]] );
+         break;
+      case PSO_VAR_BINARY:
+         readBinary( s,
+                     length - offsets[i],
+                     &buffer[offsets[i]] );
+         break;
+      }
+      outStr += s;
+      if ( i < pDefinition->numFields-1) outStr += ", ";
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void shellKeyToOut( string           & outStr, 
+                    psoKeyDefinition * pDefinition,
+                    unsigned char    * key,
+                    size_t             length )
+{
+   switch( pDefinition->type ) {
+
+   case PSO_KEY_INTEGER:
+      readInt( outStr, length, key );
+      break;
+   case PSO_KEY_BINARY:
+   case PSO_KEY_VAR_BINARY:
+      readBinary( outStr, length, key );
+      break;
+   case PSO_KEY_STRING:
+   case PSO_KEY_VAR_STRING:
+      readString( outStr, length, key );
+      break;
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

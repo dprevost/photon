@@ -34,6 +34,19 @@
 
 using namespace std;
 
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void shellBuffToOut( string              & outStr, 
+                     psoObjectDefinition * pDefinition,
+                     unsigned char       * buffer,
+                     size_t                length );
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void shellKeyToOut( string           & outStr, 
+                    psoKeyDefinition * pDefinition,
+                    unsigned char    * key,
+                    size_t             length );
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

@@ -66,9 +66,7 @@ bool psoShell::Dispatch()
       Ls();
    }
    else if ( tokens[0] == s.assign("echo") ) {
-      cerr << tokens[2] << " - " << tokens.size() << endl;
-      if ( tokens.size() != 4 ) throw(1);
-      if ( tokens[2] != ">" ) throw(2);
+      if ( tokens.size() < 4 || tokens.size() > 5 ) throw(1);
       Echo();
    }
    else if ( tokens[0] == s.assign("exit") ) {
@@ -121,68 +119,6 @@ bool psoShell::Dispatch()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
    
-void psoShell::DisplayData( psoObjectDefinition * pDefinition,
-                            size_t              * offsets,
-                            unsigned char       * buffer,
-                            size_t                length )
-{
-   size_t i, j;
-//   vector<string> segments;
-   string s;
-   
-   for ( i = 0; i < pDefinition->numFields; ++i ) {
-//      ostringstream oss;
-      switch( pDefinition->fields[i].type ) {
-
-      case PSO_BINARY:
-         cout << "0x" << hex;
-         for ( j = 0; j < pDefinition->fields[i].length; ++j )
-            cout << (int) buffer[offsets[i]+j];
-         cout << dec;
-         break;
-      case PSO_STRING:
-         for ( j = 0; j < pDefinition->fields[i].length; ++j )
-            cout << (char) buffer[offsets[i]+j];
-      case PSO_INTEGER:
-//         ptr->fields[i].length = pInternalDef[i].length1;
-         
-         break;
-
-      case PSO_DECIMAL:
-//         ptr->fields[i].precision = pInternalDef[i].length1;
-//         ptr->fields[i].scale     = pInternalDef[i].length2;
-
-         break;
-
-      case PSO_BOOLEAN:
-
-         break;
-
-      case PSO_VAR_BINARY:
-      case PSO_VAR_STRING:
-
-//         ptr->fields[i].minLength = pInternalDef[i].length1;
-  //       ptr->fields[i].maxLength = pInternalDef[i].length2;
-
-         break;
-      }
-      cout << " ";
-//      cout << oss;
-   }
-
-   cout << endl;
-//   cout << buffer << endl;
-
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-   
-void psoShell::DisplayKey()
-{
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
 void psoShell::Parse( string & inStr )
 {
    istringstream iss( inStr );
@@ -310,7 +246,7 @@ string & psoShell::Trim( string & s )
 
 void psoShell::Cat()
 {
-   string objectName;
+   string objectName, str;
    psoObjStatus status;
    unsigned char * key, * buffer;
    int rc;
@@ -366,26 +302,68 @@ void psoShell::Cat()
       // Do we have some data to copy?
       if ( status.numDataItem > 0 ) {
          
-         buffer = new unsigned char[status.maxDataLength+1];
+         buffer = new unsigned char[status.maxDataLength];
 
          if ( status.type == PSO_HASH_MAP ) {
-         
             psoHashMap hashMap(session);
          
-            key = new unsigned char[status.maxKeyLength+1];
+            key = new unsigned char[status.maxKeyLength];
          
             hashMap.Open( objectName );
          
-            memset( key, 0, status.maxKeyLength+1 );
-            memset( buffer, 0, status.maxDataLength+1 );
+            memset( key, 0, status.maxKeyLength );
+            memset( buffer, 0, status.maxDataLength );
             rc = hashMap.GetFirst( key, status.maxKeyLength, 
                                    buffer, status.maxDataLength,
                                    &keyLength, &dataLength );
             while ( rc == 0 ) {
-               cout << "key : " << key << endl;
-               cout << "data: " << buffer << endl;
-               memset( key, 0, status.maxKeyLength+1 );
-               memset( buffer, 0, status.maxDataLength+1 );
+               string keyStr, dataStr;
+               
+               shellBuffToOut( dataStr,
+                               pDefinition,
+                               buffer,
+                               dataLength );
+               shellKeyToOut( keyStr,
+                              &pDefinition->key,
+                              key,
+                              keyLength );               
+               cout << "key : " << keyStr << endl;
+               cout << "data: " << dataStr << endl;
+               memset( key, 0, status.maxKeyLength );
+               memset( buffer, 0, status.maxDataLength );
+               rc = hashMap.GetNext( key, status.maxKeyLength, 
+                                     buffer, status.maxDataLength,
+                                     &keyLength, &dataLength );
+            }
+            hashMap.Close();
+         }
+         else if ( status.type == PSO_FAST_MAP ) {
+            psoFastMap hashMap(session);
+         
+            key = new unsigned char[status.maxKeyLength];
+         
+            hashMap.Open( objectName );
+         
+            memset( key, 0, status.maxKeyLength );
+            memset( buffer, 0, status.maxDataLength );
+            rc = hashMap.GetFirst( key, status.maxKeyLength, 
+                                   buffer, status.maxDataLength,
+                                   &keyLength, &dataLength );
+            while ( rc == 0 ) {
+               string keyStr, dataStr;
+               
+               shellBuffToOut( dataStr,
+                               pDefinition,
+                               buffer,
+                               dataLength );
+               shellKeyToOut( keyStr,
+                              &pDefinition->key,
+                              key,
+                              keyLength );
+               cout << "key : " << keyStr << endl;
+               cout << "data: " << dataStr << endl;
+               memset( key, 0, status.maxKeyLength );
+               memset( buffer, 0, status.maxDataLength );
                rc = hashMap.GetNext( key, status.maxKeyLength, 
                                      buffer, status.maxDataLength,
                                      &keyLength, &dataLength );
@@ -398,11 +376,38 @@ void psoShell::Cat()
          
             queue.Open( objectName );
          
-            memset( buffer, 0, status.maxDataLength+1 );
+            memset( buffer, 0, status.maxDataLength );
             rc = queue.GetFirst( buffer, status.maxDataLength, &dataLength );
             while ( rc == 0 ) {
-               DisplayData( pDefinition, offsets, buffer, dataLength );
-               memset( buffer, 0, status.maxDataLength+1 );
+               string dataStr;
+               
+               shellBuffToOut( dataStr,
+                               pDefinition,
+                               buffer,
+                               dataLength );
+               cout << dataStr << endl;
+               memset( buffer, 0, status.maxDataLength );
+               rc = queue.GetNext( buffer, status.maxDataLength, &dataLength );
+            }
+            queue.Close();
+         }
+         else if ( status.type == PSO_LIFO ) {
+
+            psoLifo queue(session);
+         
+            queue.Open( objectName );
+         
+            memset( buffer, 0, status.maxDataLength );
+            rc = queue.GetFirst( buffer, status.maxDataLength, &dataLength );
+            while ( rc == 0 ) {
+               string dataStr;
+               
+               shellBuffToOut( dataStr,
+                               pDefinition,
+                               buffer,
+                               dataLength );
+               cout << dataStr << endl;
+               memset( buffer, 0, status.maxDataLength );
                rc = queue.GetNext( buffer, status.maxDataLength, &dataLength );
             }
             queue.Close();
@@ -560,13 +565,29 @@ void psoShell::Echo()
    unsigned char * key = NULL, * buffer = NULL;
    size_t keyLength, dataLength;
    psoObjectDefinition * pDefinition = NULL;
+   bool nokey = false;
    
-   if ( tokens[3][0] == '/' ) {
-      // Absolute path
-      objectName = tokens[3];
+   if ( tokens.size() == 4 ) nokey = true;
+   
+   if ( nokey ) {
+      if ( tokens[2] != ">" ) throw(2);
+      if ( tokens[3][0] == '/' ) {
+         // Absolute path
+         objectName = tokens[3];
+      }
+      else {
+         objectName = currentLocation + tokens[3];
+      }
    }
    else {
-      objectName = currentLocation + tokens[3];
+      if ( tokens[3] != ">" ) throw(2);
+      if ( tokens[4][0] == '/' ) {
+         // Absolute path
+         objectName = tokens[4];
+      }
+      else {
+         objectName = currentLocation + tokens[4];
+      }
    }
    
    // Must check if object exists (and its type)
@@ -582,6 +603,13 @@ void psoShell::Echo()
       cerr << "psosh: echo: " << objectName << ": Is a directory/folder" << endl;
       return;
    }
+   if ( status.type == PSO_FAST_MAP ) {
+      cerr << "psosh: echo: " << objectName << ": Is a read-only map" << endl;
+      return;
+   }
+   if (status.type == PSO_HASH_MAP && nokey ) {
+      cerr << "psosh: echo: " << objectName << ": Is a hash map - a key is required" << endl;
+   }
    
    try {
       session.GetDefinition( objectName, &pDefinition );
@@ -592,14 +620,19 @@ void psoShell::Echo()
    }
 
    try {
-      if ( status.type == PSO_HASH_MAP ) {
-         key = shellInToKey( tokens[1], &pDefinition->key, keyLength );
+      if ( nokey ) {
+         buffer = shellInToBuff( tokens[1], pDefinition, dataLength );
       }
-      buffer = shellInToBuff( tokens[1], pDefinition, dataLength );
+      else {
+         key = shellInToKey( tokens[1], &pDefinition->key, keyLength );
+         buffer = shellInToBuff( tokens[2], pDefinition, dataLength );
+      }
    }   
    catch ( exception exc ) {
       cerr << "psosh: echo: Not enough memory " << endl;
       cerr << "Number of fields in data definition = " << pDefinition->numFields << endl;
+      if ( key    != NULL ) delete [] key;
+      if ( buffer != NULL ) delete [] buffer;
       return;
    }
    catch( unsigned int count ) {
@@ -609,6 +642,9 @@ void psoShell::Echo()
       else {
          cerr << "psosh: echo: Invalid input field #" << count << endl;
       }
+      if ( key    != NULL ) delete [] key;
+      if ( buffer != NULL ) delete [] buffer;
+      return;
    }
    
    try {
@@ -621,8 +657,12 @@ void psoShell::Echo()
          try {
             hashMap.Insert( key, keyLength, buffer, dataLength );
          }
-         catch( ... ) {
-            // we try a replace instead
+         catch( psoException exc ) {
+            // we try a replace instead if the error code is "already present"
+            if ( exc.ErrorCode() == PSO_ITEM_ALREADY_PRESENT) {
+               hashMap.Replace( key, keyLength, buffer, dataLength );
+            }
+            else throw( exc );
          }
          hashMap.Close();
       }
@@ -631,16 +671,31 @@ void psoShell::Echo()
          
          queue.Open( objectName );
          
+         queue.Push( buffer, dataLength );
+         
+         queue.Close();
+      }
+      else if ( status.type == PSO_LIFO ) {
+         psoLifo queue(session);
+         
+         queue.Open( objectName );
+         
+         queue.Push( buffer, dataLength );
+         
          queue.Close();
       }
    }
    catch ( psoException exc ) {
       if ( pDefinition != NULL ) free(pDefinition);
       cerr << "psosh: cat: " << exc.Message() << endl;
+      if ( key    != NULL ) delete [] key;
+      if ( buffer != NULL ) delete [] buffer;
       return;
    }
 
    if ( pDefinition != NULL ) free(pDefinition);
+   if ( key    != NULL ) delete [] key;
+   if ( buffer != NULL ) delete [] buffer;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -715,7 +770,6 @@ void psoShell::Man()
    cout << "List of available commands: " << endl << endl;
    cout << "cat object_name" << endl;
    cout << "    Display the content of object named object_name." << endl;
-   cout << "    Warning: print the output as strings." << endl;
    cout << "cd [folder_name]" << endl;
    cout << "    Without a name, change the current folder to \"/\"." << endl;
    cout << "    Change the current folder to folder_name." << endl;
@@ -727,6 +781,8 @@ void psoShell::Man()
    cout << "dir/ls [folder_name]" << endl;
    cout << "    Without a name, list the objects of the current folder." << endl;
    cout << "    List the objects of the folder folder_name." << endl;
+   cout << "echo [key] data > object_name" << endl;
+   cout << "    Insert data in the object (use the key for hash maps)." << endl;
    cout << "exit/quit" << endl;
    cout << "    exit the program." << endl;
    cout << "free" << endl;
@@ -746,7 +802,6 @@ void psoShell::Man()
    cout << "    -h or --hashmap: a hash map" << endl;
    cout << "    -q or --queue  : a FIFO queue" << endl;
    cout << endl;
-   cout << "Note: use a pair of \" to include white spaces in names." << endl;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
