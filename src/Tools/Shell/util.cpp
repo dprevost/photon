@@ -47,8 +47,10 @@ void readInt( string        & outStr,
    int8_t  i8;
    int16_t i16;
    int32_t i32;
+#if ! defined (WIN32)
    int64_t i64;
-   
+#endif
+
    switch( intLength ) {
    case 1:
       i8 = buffer[0];
@@ -63,8 +65,22 @@ void readInt( string        & outStr,
       oss << i32;
       break;
    case 8:
+#if defined (WIN32)
+      /*
+       * On some versions of VC++, the overloaded << operator does not
+       * work for 64 bits integer. 
+       *
+       * \todo: To make sure that this #if only applies to the versions
+       * without the appropriate support.
+       */
+      i32 = *( (int32_t *)&buffer[4]);
+      oss << i32;
+      i32 = *( (int32_t *)buffer);
+      oss << i32;
+#else
       i64 = *( (int64_t *)buffer);
       oss << i64;
+#endif
       break;
    }
    
@@ -82,8 +98,10 @@ void readUint( string        & outStr,
    uint8_t  ui8;
    uint16_t ui16;
    uint32_t ui32;
+#if ! defined (WIN32)
    uint64_t ui64;
-   
+#endif
+
    switch( intLength ) {
    case 1:
       ui8 = buffer[0];
@@ -98,8 +116,22 @@ void readUint( string        & outStr,
       oss << ui32;
       break;
    case 8:
+#if defined (WIN32)
+      /*
+       * On some versions of VC++, the overloaded << operator does not
+       * work for 64 bits integer. 
+       *
+       * \todo: To make sure that this #if only applies to the versions
+       * without the appropriate support.
+       */
+      ui32 = *( (uint32_t *)&buffer[4]);
+      oss << ui32;
+      ui32 = *( (uint32_t *)buffer);
+      oss << ui32;
+#else
       ui64 = *( (uint64_t *)buffer);
       oss << ui64;
+#endif
       break;
    }
 

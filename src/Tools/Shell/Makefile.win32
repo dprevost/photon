@@ -32,7 +32,8 @@ CFLAGS_RELEASE= /nologo /MD  /W3 /O2 /I "../.." /I "../../include" /D "WIN32" /D
 OBJS_RELEASE=                             \
         "$(INTDIR_RELEASE)\constants.obj" \
         "$(INTDIR_RELEASE)\shell.obj"     \
-        "$(INTDIR_RELEASE)\psosh.obj"     
+        "$(INTDIR_RELEASE)\psosh.obj"     \
+        "$(INTDIR_RELEASE)\util.obj"      
 
 OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 
