@@ -13,7 +13,7 @@
 @anchor{name}
 @chapheading Name
 
-psosh @^a€” starts a pseudo-shell to access Photon data
+psosh --- starts a pseudo-shell to access Photon data
 
 @noindent
 @anchor{synopsis}
@@ -70,9 +70,9 @@ or relative to the current folder (see the @strong{cd
 @table @asis
 
 @item @strong{cat} @var{object_name}
-Display the content of the object named object_name.
-
-@strong{Warning: }cat will print the output as strings.
+Display the content of the object named object_name. The data is
+formatted using the metadata information of the object and is
+displayed as a comma separated list.
 
 @item @strong{cd} @var{}
 Without a name, change the current folder to "/". Change the current 
@@ -90,6 +90,19 @@ Delete the data container named object_name.
 @item @strong{dir/ls} @var{}
 Without a name, list the objects of the current folder. List the 
 objects of the folder folder_name.
+
+@item @strong{echo }@var{ data > object_name }
+Insert a record into the data container named @emph{ object_name
+}. 
+The key should be used for hash
+maps (if the key exists, the data will be replaced instead of being
+inserted).
+
+The data should be a list of comma-separated values. The whole list
+must be quoted using apostrophes.
+
+Note: binary data should be entered using an hexadecimal format (the
+binary data can start with the optional prefix "0x").
 
 @item @strong{exit/quit}
 Exit the program.
@@ -121,6 +134,12 @@ Create a new object named object_name of the specified type:
 @item
 -q or --queue: a FIFO queue
 @end multitable
+
+@item @strong{touch -x|--xml} @var{ xml_text}
+Create a new object using the provided xml text (the xml is of course
+based on the XSD schema for Photon).
+
+Note: the xml text must be quoted, using apostrophes.
 @end table
 
 @noindent

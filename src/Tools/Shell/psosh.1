@@ -1,10 +1,11 @@
+'\" -*- coding: iso-8859-1 -*-
 .if \n(.g .ds T< \\FC
 .if \n(.g .ds T> \\F[\n[.fam]]
 .de URL
 \\$2 \(la\\$1\(ra\\$3
 ..
 .if \n(.g .mso www.tmac
-.TH psosh 1 "11 September 2008" Photon "User Commands"
+.TH psosh 1 "7 October 2008" Photon "User Commands"
 .SH NAME
 psosh \- starts a pseudo-shell to access Photon data
 .SH SYNOPSIS
@@ -36,9 +37,9 @@ or relative to the current folder (see the \fBcd
 \fRcommand for an explanation on how to change the current folder).
 .TP 
 \fBcat\fR \fIobject_name\fR
-Display the content of the object named object_name.
-
-\fBWarning: \fRcat will print the output as strings.
+Display the content of the object named object_name. The data is
+formatted using the metadata information of the object and is
+displayed as a comma separated list.
 .TP 
 \fBcd\fR \fI[folder_name]\fR
 Without a name, change the current folder to "/". Change the current 
@@ -56,6 +57,19 @@ Delete the data container named object_name.
 \fBdir/ls\fR \fI[folder_name]\fR
 Without a name, list the objects of the current folder. List the 
 objects of the folder folder_name.
+.TP 
+\fBecho \fR\fI[key] data > object_name \fR
+Insert a record into the data container named \fIobject_name
+\fR\&. 
+The key should be used for hash
+maps (if the key exists, the data will be replaced instead of being
+inserted).
+
+The data should be a list of comma-separated values. The whole list
+must be quoted using apostrophes.
+
+Note: binary data should be entered using an hexadecimal format (the
+binary data can start with the optional prefix "0x").
 .TP 
 \fBexit/quit\fR
 Exit the program.
@@ -84,7 +98,13 @@ Create a new object named object_name of the specified type:
 -h or --hashmap: a hash map
 .br
 -q or --queue: a FIFO queue
+.TP 
+\fBtouch -x|--xml\fR \fIxml_text\fR
+Create a new object using the provided xml text (the xml is of course
+based on the XSD schema for Photon).
+
+Note: the xml text must be quoted, using apostrophes.
 .SH "REPORTING BUGS"
 Report bugs to <dprevost@users.sourceforge.net>.
 .SH COPYRIGHT
-Copyright \(^A\(co 2008 Daniel Pr\(~A\(covost.
+Copyright \(co 2008 Daniel Pr\('evost.

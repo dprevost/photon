@@ -1,4 +1,4 @@
-This is psosh.info, produced by makeinfo version 4.8 from psosh.texi.
+This is psosh.info, produced by makeinfo version 4.11 from psosh.texi.
 
 START-INFO-DIR-ENTRY
 * psosh: (psosh).               starts a pseudo-shell to access Photon data
@@ -15,7 +15,7 @@ psosh
 Name
 ****
 
-psosh a^€” starts a pseudo-shell to access Photon data
+psosh -- starts a pseudo-shell to access Photon data
 
 
 
@@ -71,9 +71,9 @@ with /) or relative to the current folder (see the *cd * command for an
 explanation on how to change the current folder).
 
 *cat* OBJECT_NAME
-     Display the content of the object named object_name.
-
-     *Warning: *cat will print the output as strings.
+     Display the content of the object named object_name. The data is
+     formatted using the metadata information of the object and is
+     displayed as a comma separated list.
 
 *cd*
      Without a name, change the current folder to "/". Change the
@@ -90,6 +90,17 @@ explanation on how to change the current folder).
 *dir/ls*
      Without a name, list the objects of the current folder. List the
      objects of the folder folder_name.
+
+*echo * DATA > OBJECT_NAME
+     Insert a record into the data container named _ object_name _.
+     The key should be used for hash maps (if the key exists, the data
+     will be replaced instead of being inserted).
+
+     The data should be a list of comma-separated values. The whole list
+     must be quoted using apostrophes.
+
+     Note: binary data should be entered using an hexadecimal format
+     (the binary data can start with the optional prefix "0x").
 
 *exit/quit*
      Exit the program.
@@ -118,6 +129,12 @@ explanation on how to change the current folder).
      -h or -hashmap: a hash map
      -q or -queue: a FIFO queue
 
+*touch -x|-xml*  XML_TEXT
+     Create a new object using the provided xml text (the xml is of
+     course based on the XSD schema for Photon).
+
+     Note: the xml text must be quoted, using apostrophes.
+
 
 REPORTING BUGS
 **************
@@ -129,20 +146,25 @@ Report bugs to <dprevost@users.sourceforge.net>.
 COPYRIGHT
 *********
 
-Copyright (C) 2008 Daniel Pre'vost.
+Copyright (C) 2008 Daniel Prévost.
 
 
 
 Tag Table:
-Node: Top188
-Ref: name245
-Ref: synopsis314
-Ref: Getting [minimal] help;335
-Ref: Running normally;408
-Ref: DESCRIPTION487
-Ref: OPTIONS810
-Ref: Commands993
-Ref: REPORTING BUGS2460
-Ref: COPYRIGHT2542
+Node: Top189
+Ref: name246
+Ref: synopsis313
+Ref: Getting [minimal] help;334
+Ref: Running normally;407
+Ref: DESCRIPTION486
+Ref: OPTIONS809
+Ref: Commands992
+Ref: REPORTING BUGS3193
+Ref: COPYRIGHT3275
 
 End Tag Table
+
+
+Local Variables:
+coding: iso-8859-1
+End:

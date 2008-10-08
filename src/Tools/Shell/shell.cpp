@@ -962,6 +962,7 @@ void psoShell::Touch()
    }
    else {
       cerr << "psosh: touch: " << "Usage: touch -h|-q object_name" << endl;
+      cerr << "psosh: touch: " << "Usage: touch -x xml_text" << endl;
       return;
    }
    

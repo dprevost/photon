@@ -90,10 +90,9 @@
       <term><emphasis role="bold">cat</emphasis> <replaceable>object_name</replaceable></term>
       <listitem>
         <para>
-          Display the content of the object named object_name.
-        </para>
-        <para>
-          <emphasis role="bold">Warning: </emphasis>cat will print the output as strings.
+          Display the content of the object named object_name. The data is
+          formatted using the metadata information of the object and is
+          displayed as a comma separated list.
         </para>
       </listitem>
     </varlistentry>
@@ -136,6 +135,27 @@
         <para>
           Without a name, list the objects of the current folder. List the 
           objects of the folder folder_name.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><emphasis role="bold">echo </emphasis><replaceable><optional>key</optional> data &gt; object_name </replaceable></term>
+      <listitem>
+        <para>
+          Insert a record into the data container named <emphasis> object_name
+          </emphasis>. 
+          The key should be used for hash
+          maps (if the key exists, the data will be replaced instead of being
+          inserted).
+        </para>
+        <para>
+          The data should be a list of comma-separated values. The whole list
+          must be quoted using apostrophes.
+        </para>
+        <para>
+          Note: binary data should be entered using an hexadecimal format (the
+          binary data can start with the optional prefix "0x").
         </para>
       </listitem>
     </varlistentry>
@@ -215,6 +235,20 @@
         </para>
       </listitem>
     </varlistentry>
+
+    <varlistentry>
+      <term><emphasis role="bold">touch -x|--xml</emphasis> <replaceable> xml_text</replaceable></term>
+      <listitem>
+        <para>
+          Create a new object using the provided xml text (the xml is of course
+          based on the XSD schema for Photon).
+        </para>
+        <para>
+          Note: the xml text must be quoted, using apostrophes.
+        </para>
+      </listitem>
+    </varlistentry>
+
   </variablelist>  
 </refsect1>
 
