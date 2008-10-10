@@ -45,8 +45,8 @@ extern "C" {
  *
  * Insertions and deletions subjected to this call include both data items
  * inserted and deleted from data containers (maps, etc.) and objects 
- * themselves created with ::psoCreateObj and/or destroyed with 
- * ::psoDestroyObj.
+ * themselves created with ::psoCreateObject and/or destroyed with 
+ * ::psoDestroyObject.
  *
  * Note: the internal calls executed by the engine to satisfy this request
  * cannot fail. As such,
