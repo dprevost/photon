@@ -38,7 +38,7 @@ int main()
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = psonHashInit( pHash, g_memObjOffset, 10, &context );
+   errcode = psonHashInit( pHash, g_memObjOffset, 12, &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

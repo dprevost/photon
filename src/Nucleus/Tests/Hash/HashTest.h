@@ -61,7 +61,7 @@ psonHash* initHashTest( bool testIsExpectedToSucceed,
    unsigned char* ptr;
    psonMemAlloc*  pAlloc;
    psotObjDummy* pDummy;
-   size_t allocatedLength = PSON_BLOCK_SIZE * 10;
+   size_t allocatedLength = PSON_BLOCK_SIZE * 12;
    
    ok = psonInitEngine();
    if ( ! ok ) {
