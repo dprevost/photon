@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
+# Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 

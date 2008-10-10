@@ -1,6 +1,6 @@
 #############################################################################
 #                                                                           #
-# Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>   #
+# Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>   #
 #                                                                           #
 # This file is free software; as a special exception the author gives       #
 # unlimited permission to copy and/or distribute it, with or without        #
@@ -26,7 +26,7 @@
 
 AC_INIT([Photon Software],
         [0.3.0],
-        [Daniel Prevost <dprevost@users.sourceforge.net>],
+        [Daniel Prevost <dprevost@photonsoftware.org>],
         [photon])
 
 AC_PREREQ(2.57)

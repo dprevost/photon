@@ -4,7 +4,7 @@ targetNamespace="http://photonsoftware.org/photon_meta"
 xmlns="http://photonsoftware.org/photon_meta"
 elementFormDefault="qualified">
 
-<!-- Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
+<!-- Copyright (C) 2008 Daniel Prevost <dprevost@photonsoftware.org>
 
      This file is part of Photon (photonsoftware.org).
 

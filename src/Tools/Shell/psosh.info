@@ -1,4 +1,4 @@
-This is psosh.info, produced by makeinfo version 4.11 from psosh.texi.
+This is psosh.info, produced by makeinfo version 4.8 from psosh.texi.
 
 START-INFO-DIR-ENTRY
 * psosh: (psosh).               starts a pseudo-shell to access Photon data
@@ -15,7 +15,7 @@ psosh
 Name
 ****
 
-psosh -- starts a pseudo-shell to access Photon data
+psosh a^€” starts a pseudo-shell to access Photon data
 
 
 
@@ -139,32 +139,27 @@ explanation on how to change the current folder).
 REPORTING BUGS
 **************
 
-Report bugs to <dprevost@users.sourceforge.net>.
+Report bugs to <dprevost@photonsoftware.org>.
 
 
 
 COPYRIGHT
 *********
 
-Copyright (C) 2008 Daniel Prévost.
+Copyright (C) 2008 Daniel Pre'vost.
 
 
 
 Tag Table:
-Node: Top189
-Ref: name246
-Ref: synopsis313
-Ref: Getting [minimal] help;334
-Ref: Running normally;407
-Ref: DESCRIPTION486
-Ref: OPTIONS809
-Ref: Commands992
-Ref: REPORTING BUGS3193
-Ref: COPYRIGHT3275
+Node: Top188
+Ref: name245
+Ref: synopsis314
+Ref: Getting [minimal] help;335
+Ref: Running normally;408
+Ref: DESCRIPTION487
+Ref: OPTIONS810
+Ref: Commands993
+Ref: REPORTING BUGS3194
+Ref: COPYRIGHT3273
 
 End Tag Table
-
-
-Local Variables:
-coding: iso-8859-1
-End:

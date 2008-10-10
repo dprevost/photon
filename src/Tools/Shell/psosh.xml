@@ -3,7 +3,7 @@
                    "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
 <refentry id='psosh1'>
 <!--  
-  Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
+  Copyright (C) 2008 Daniel Prevost <dprevost@photonsoftware.org>
 
   This file is part of Photon (photonsoftware.org).
 
@@ -253,7 +253,7 @@
 </refsect1>
 
 <refsect1 id='reporting_bugs'><title>REPORTING BUGS</title>
-  <para>Report bugs to &lt;dprevost@users.sourceforge.net&gt;.</para>
+  <para>Report bugs to &lt;dprevost@photonsoftware.org&gt;.</para>
 </refsect1>
 
 <refsect1 id='copyright'><title>COPYRIGHT</title>

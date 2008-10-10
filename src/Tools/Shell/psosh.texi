@@ -13,7 +13,7 @@
 @anchor{name}
 @chapheading Name
 
-psosh --- starts a pseudo-shell to access Photon data
+psosh @^a€” starts a pseudo-shell to access Photon data
 
 @noindent
 @anchor{synopsis}
@@ -146,7 +146,7 @@ Note: the xml text must be quoted, using apostrophes.
 @anchor{REPORTING BUGS}
 @chapheading REPORTING BUGS
 
-Report bugs to <dprevost@@users.sourceforge.net>.
+Report bugs to <dprevost@@photonsoftware.org>.
 
 @noindent
 @anchor{COPYRIGHT}

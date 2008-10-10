@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2008 Daniel Prevost <dprevost@users.sourceforge.net>
+ * Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *

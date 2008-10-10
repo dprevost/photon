@@ -1,4 +1,4 @@
-dnl  Copyright (C) 2008 Daniel Prevost <dprevost@users.sourceforge.net>
+dnl  Copyright (C) 2008 Daniel Prevost <dprevost@photonsoftware.org>
 dnl
 dnl See the file COPYING_Macros for license information.
 dnl

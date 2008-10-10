@@ -4,7 +4,7 @@ dnl Whether the compiler recognizes the special flag (%zd) for printing
 dnl variables of type size_t.
 dnl
 dnl @category C
-dnl @author Daniel Prevost <dprevost@users.sourceforge.net>
+dnl @author Daniel Prevost <dprevost@photonsoftware.org>
 dnl @version 2008-03-24
 dnl @license AllPermissive
 
