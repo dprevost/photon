@@ -15,9 +15,13 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+#include <sstream>
+#include <iostream>
+
 #include "Common/Common.h"
 #include <photon/psoException>
 #include <photon/psoSession.h>
+#include <Nucleus/psoErrorHandler.h>
 
 using namespace std;
 
@@ -29,22 +33,29 @@ psoException::psoException( int          theErrorCode,
    : errcode( theErrorCode )
 {
    char s[1024];
-   int rc = 0;
+   int rc = 1;
+   const char * str;
+   ostringstream oss;
    
-   if ( sessionHandle != NULL ) {
+   if ( sessionHandle != NULL &&
+      psoLastError(sessionHandle) == theErrorCode ) {
       rc = psoErrorMsg( sessionHandle, s, 1024 );
       msg = functionName;
       msg += " exception: ";
       msg += s;
    }
    
-   if ( rc != 0 || sessionHandle == NULL ) {
-      // We build our own message
-      sprintf(s, "%s exception: %s%d",
-         functionName,
-         "Cannot retrieve the error message - the error code is ",
-         theErrorCode );
-      msg = s;
+   if ( rc != 0 ) {
+      str = pson_ErrorMessage( theErrorCode );
+      if ( str != NULL ) {
+         oss << functionName << " exception: " << str;
+      }
+      else {
+         // We build our own message
+         oss << functionName << " exception: ";
+         oss << "Cannot retrieve the error message - the error code is " << theErrorCode;
+      }
+      msg = oss.str();
    }
 }
 

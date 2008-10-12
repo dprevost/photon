@@ -28,6 +28,7 @@ libphotoncpp_la_LDFLAGS = -version-info 0:0:0
 include_HEADERS = 
 
 libphotoncpp_la_SOURCES = \
+        Definition.cpp    \
         Exception.cpp     \
         FastMap.cpp       \
         FastMapEditor.cpp \

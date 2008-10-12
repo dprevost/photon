@@ -40,7 +40,14 @@ class PHOTON_EXPORT psoDefinition
 {
 public:
 
-   /// Construct a data-container definition
+   /**
+    * Construct a data-container definition.
+    *
+    * \param[in] numberOfFields The number of data fields.
+    *
+    * \exception psoException An abnormal error occured.
+    */
+    
    psoDefinition( size_t numberOfFields );
    
    virtual ~psoDefinition();
@@ -71,7 +78,16 @@ public:
                   size_t         maxLength,
                   size_t         precision,
                   size_t         scale );
-   
+
+   void AddField( const char   * name,
+                  size_t         nameLength,
+                  psoFieldType   type,
+                  size_t         length,
+                  size_t         minLength,
+                  size_t         maxLength,
+                  size_t         precision,
+                  size_t         scale );
+
    void ObjectType( psoObjectType type );
    
    /// Reset the object to be reused for another data container

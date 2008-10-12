@@ -34,6 +34,7 @@ CFLAGS_RELEASE=/nologo /MD  /W3 /O2     /I "..\Common" /I "..\include" /I ".." /
 CFLAGS_DEBUG  =/nologo /MDd /W3 /ZI /Od /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_PHOTON" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c /GX
 
 OBJS_RELEASE=                                 \
+        "$(INTDIR_RELEASE)\Definition.obj"    \
         "$(INTDIR_RELEASE)\Exception.obj"     \
         "$(INTDIR_RELEASE)\FastMap.obj"       \
         "$(INTDIR_RELEASE)\FastMapEditor.obj" \
